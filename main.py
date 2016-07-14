@@ -65,7 +65,7 @@ def get_api_endpoint(access_token):
     p_ret = api_req(API_URL, access_token, req.requests)
 
     try:
-        return ('https://%s/rpc' % p_ret.API_URL)
+        return ('https://%s/rpc' % p_ret.api_url)
     except:
         return None
 
