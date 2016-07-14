@@ -3,9 +3,9 @@ message RequestEnvelop {
   optional int64 rpc_id = 3;
   repeated Requests requests = 4;
   optional Unknown6 unknown6 = 6;
-  optional fixed64 gps_x = 7;
-  optional fixed64 gps_y = 8;
-  optional fixed64 gps_z = 9;
+  optional fixed64 latitude = 7;
+  optional fixed64 longitude = 8;
+  optional fixed64 altitude = 9;
   optional AuthInfo auth = 10;
   optional int64 unknown12 = 12;
 
@@ -68,18 +68,19 @@ message ResponseEnvelop {
   }
 
   message Profile {
-    required int64 unknown1 = 1;
+    required int64 creation_time = 1;
     optional string username = 2;
-    optional bytes unknown7 = 7; 
-    optional Unknown8 unknown8 = 8; 
-    optional int32 unknown9 = 9;
-    optional int32 unknown10 = 10;
+    optional int32 team = 5;
+    optional bytes tutorial = 7; 
+    optional AvatarDetails avatar = 8; 
+    optional int32 poke_storage = 9;
+    optional int32 item_storage = 10;
     optional string unknown11 = 11;
     optional string unknown12 = 12;
     optional string unknown13 = 13;
     repeated Currency currency = 14;
 
-    message Unknown8 {
+    message AvatarDetails {
       optional int32 unknown2 = 2;
       optional int32 unknown3 = 3;
       optional int32 unknown9 = 9;

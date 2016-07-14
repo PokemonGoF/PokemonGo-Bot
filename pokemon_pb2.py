@@ -18,7 +18,7 @@ _sym_db = _symbol_database.Default()
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='pokemon.proto',
   package='',
-  serialized_pb=_b('\n\rpokemon.proto\"\xbd\x04\n\x0eRequestEnvelop\x12\x10\n\x08unknown1\x18\x01 \x02(\x05\x12\x0e\n\x06rpc_id\x18\x03 \x01(\x03\x12*\n\x08requests\x18\x04 \x03(\x0b\x32\x18.RequestEnvelop.Requests\x12*\n\x08unknown6\x18\x06 \x01(\x0b\x32\x18.RequestEnvelop.Unknown6\x12\r\n\x05gps_x\x18\x07 \x01(\x06\x12\r\n\x05gps_y\x18\x08 \x01(\x06\x12\r\n\x05gps_z\x18\t \x01(\x06\x12&\n\x04\x61uth\x18\n \x01(\x0b\x32\x18.RequestEnvelop.AuthInfo\x12\x11\n\tunknown12\x18\x0c \x01(\x03\x1a\x43\n\x08Requests\x12\x0c\n\x04type\x18\x01 \x02(\x05\x12)\n\x07message\x18\x02 \x01(\x0b\x32\x18.RequestEnvelop.Unknown3\x1a\x1c\n\x08Unknown3\x12\x10\n\x08unknown4\x18\x01 \x02(\t\x1ao\n\x08Unknown6\x12\x10\n\x08unknown1\x18\x01 \x02(\x05\x12\x33\n\x08unknown2\x18\x02 \x02(\x0b\x32!.RequestEnvelop.Unknown6.Unknown2\x1a\x1c\n\x08Unknown2\x12\x10\n\x08unknown1\x18\x01 \x02(\x0c\x1au\n\x08\x41uthInfo\x12\x10\n\x08provider\x18\x01 \x02(\t\x12+\n\x05token\x18\x02 \x02(\x0b\x32\x1c.RequestEnvelop.AuthInfo.JWT\x1a*\n\x03JWT\x12\x10\n\x08\x63ontents\x18\x01 \x02(\t\x12\x11\n\tunknown13\x18\x02 \x02(\x05\"\xd3\x06\n\x0fResponseEnvelop\x12\x10\n\x08unknown1\x18\x01 \x02(\x05\x12\x10\n\x08unknown2\x18\x02 \x01(\x03\x12\x0f\n\x07\x61pi_url\x18\x03 \x01(\t\x12+\n\x08unknown6\x18\x06 \x01(\x0b\x32\x19.ResponseEnvelop.Unknown6\x12+\n\x08unknown7\x18\x07 \x01(\x0b\x32\x19.ResponseEnvelop.Unknown7\x12)\n\x07payload\x18\x64 \x03(\x0b\x32\x18.ResponseEnvelop.Payload\x1ap\n\x08Unknown6\x12\x10\n\x08unknown1\x18\x01 \x02(\x05\x12\x34\n\x08unknown2\x18\x02 \x02(\x0b\x32\".ResponseEnvelop.Unknown6.Unknown2\x1a\x1c\n\x08Unknown2\x12\x10\n\x08unknown1\x18\x01 \x02(\x0c\x1a\x43\n\x08Unknown7\x12\x11\n\tunknown71\x18\x01 \x01(\x0c\x12\x11\n\tunknown72\x18\x02 \x01(\x03\x12\x11\n\tunknown73\x18\x03 \x01(\x0c\x1a\x46\n\x07Payload\x12\x10\n\x08unknown1\x18\x01 \x02(\x05\x12)\n\x07profile\x18\x02 \x02(\x0b\x32\x18.ResponseEnvelop.Profile\x1a\x86\x03\n\x07Profile\x12\x10\n\x08unknown1\x18\x01 \x02(\x03\x12\x10\n\x08username\x18\x02 \x01(\t\x12\x10\n\x08unknown7\x18\x07 \x01(\x0c\x12\x33\n\x08unknown8\x18\x08 \x01(\x0b\x32!.ResponseEnvelop.Profile.Unknown8\x12\x10\n\x08unknown9\x18\t \x01(\x05\x12\x11\n\tunknown10\x18\n \x01(\x05\x12\x11\n\tunknown11\x18\x0b \x01(\t\x12\x11\n\tunknown12\x18\x0c \x01(\t\x12\x11\n\tunknown13\x18\r \x01(\t\x12\x33\n\x08\x63urrency\x18\x0e \x03(\x0b\x32!.ResponseEnvelop.Profile.Currency\x1aS\n\x08Unknown8\x12\x10\n\x08unknown2\x18\x02 \x01(\x05\x12\x10\n\x08unknown3\x18\x03 \x01(\x05\x12\x10\n\x08unknown9\x18\t \x01(\x05\x12\x11\n\tunknown10\x18\n \x01(\x05\x1a(\n\x08\x43urrency\x12\x0c\n\x04type\x18\x01 \x02(\t\x12\x0e\n\x06\x61mount\x18\x02 \x01(\x05')
+  serialized_pb=_b('\n\rpokemon.proto\"\xc7\x04\n\x0eRequestEnvelop\x12\x10\n\x08unknown1\x18\x01 \x02(\x05\x12\x0e\n\x06rpc_id\x18\x03 \x01(\x03\x12*\n\x08requests\x18\x04 \x03(\x0b\x32\x18.RequestEnvelop.Requests\x12*\n\x08unknown6\x18\x06 \x01(\x0b\x32\x18.RequestEnvelop.Unknown6\x12\x10\n\x08latitude\x18\x07 \x01(\x06\x12\x11\n\tlongitude\x18\x08 \x01(\x06\x12\x10\n\x08\x61ltitude\x18\t \x01(\x06\x12&\n\x04\x61uth\x18\n \x01(\x0b\x32\x18.RequestEnvelop.AuthInfo\x12\x11\n\tunknown12\x18\x0c \x01(\x03\x1a\x43\n\x08Requests\x12\x0c\n\x04type\x18\x01 \x02(\x05\x12)\n\x07message\x18\x02 \x01(\x0b\x32\x18.RequestEnvelop.Unknown3\x1a\x1c\n\x08Unknown3\x12\x10\n\x08unknown4\x18\x01 \x02(\t\x1ao\n\x08Unknown6\x12\x10\n\x08unknown1\x18\x01 \x02(\x05\x12\x33\n\x08unknown2\x18\x02 \x02(\x0b\x32!.RequestEnvelop.Unknown6.Unknown2\x1a\x1c\n\x08Unknown2\x12\x10\n\x08unknown1\x18\x01 \x02(\x0c\x1au\n\x08\x41uthInfo\x12\x10\n\x08provider\x18\x01 \x02(\t\x12+\n\x05token\x18\x02 \x02(\x0b\x32\x1c.RequestEnvelop.AuthInfo.JWT\x1a*\n\x03JWT\x12\x10\n\x08\x63ontents\x18\x01 \x02(\t\x12\x11\n\tunknown13\x18\x02 \x02(\x05\"\xf5\x06\n\x0fResponseEnvelop\x12\x10\n\x08unknown1\x18\x01 \x02(\x05\x12\x10\n\x08unknown2\x18\x02 \x01(\x03\x12\x0f\n\x07\x61pi_url\x18\x03 \x01(\t\x12+\n\x08unknown6\x18\x06 \x01(\x0b\x32\x19.ResponseEnvelop.Unknown6\x12+\n\x08unknown7\x18\x07 \x01(\x0b\x32\x19.ResponseEnvelop.Unknown7\x12)\n\x07payload\x18\x64 \x03(\x0b\x32\x18.ResponseEnvelop.Payload\x1ap\n\x08Unknown6\x12\x10\n\x08unknown1\x18\x01 \x02(\x05\x12\x34\n\x08unknown2\x18\x02 \x02(\x0b\x32\".ResponseEnvelop.Unknown6.Unknown2\x1a\x1c\n\x08Unknown2\x12\x10\n\x08unknown1\x18\x01 \x02(\x0c\x1a\x43\n\x08Unknown7\x12\x11\n\tunknown71\x18\x01 \x01(\x0c\x12\x11\n\tunknown72\x18\x02 \x01(\x03\x12\x11\n\tunknown73\x18\x03 \x01(\x0c\x1a\x46\n\x07Payload\x12\x10\n\x08unknown1\x18\x01 \x02(\x05\x12)\n\x07profile\x18\x02 \x01(\x0b\x32\x18.ResponseEnvelop.Profile\x1a\xa8\x03\n\x07Profile\x12\x15\n\rcreation_time\x18\x01 \x02(\x03\x12\x10\n\x08username\x18\x02 \x01(\t\x12\x0c\n\x04team\x18\x05 \x01(\x05\x12\x10\n\x08tutorial\x18\x07 \x01(\x0c\x12\x36\n\x06\x61vatar\x18\x08 \x01(\x0b\x32&.ResponseEnvelop.Profile.AvatarDetails\x12\x14\n\x0cpoke_storage\x18\t \x01(\x05\x12\x14\n\x0citem_storage\x18\n \x01(\x05\x12\x11\n\tunknown11\x18\x0b \x01(\t\x12\x11\n\tunknown12\x18\x0c \x01(\t\x12\x11\n\tunknown13\x18\r \x01(\t\x12\x33\n\x08\x63urrency\x18\x0e \x03(\x0b\x32!.ResponseEnvelop.Profile.Currency\x1aX\n\rAvatarDetails\x12\x10\n\x08unknown2\x18\x02 \x01(\x05\x12\x10\n\x08unknown3\x18\x03 \x01(\x05\x12\x10\n\x08unknown9\x18\t \x01(\x05\x12\x11\n\tunknown10\x18\n \x01(\x05\x1a(\n\x08\x43urrency\x12\x0c\n\x04type\x18\x01 \x02(\t\x12\x0e\n\x06\x61mount\x18\x02 \x01(\x05')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -57,8 +57,8 @@ _REQUESTENVELOP_REQUESTS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=262,
-  serialized_end=329,
+  serialized_start=272,
+  serialized_end=339,
 )
 
 _REQUESTENVELOP_UNKNOWN3 = _descriptor.Descriptor(
@@ -86,8 +86,8 @@ _REQUESTENVELOP_UNKNOWN3 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=331,
-  serialized_end=359,
+  serialized_start=341,
+  serialized_end=369,
 )
 
 _REQUESTENVELOP_UNKNOWN6_UNKNOWN2 = _descriptor.Descriptor(
@@ -115,8 +115,8 @@ _REQUESTENVELOP_UNKNOWN6_UNKNOWN2 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=444,
-  serialized_end=472,
+  serialized_start=454,
+  serialized_end=482,
 )
 
 _REQUESTENVELOP_UNKNOWN6 = _descriptor.Descriptor(
@@ -151,8 +151,8 @@ _REQUESTENVELOP_UNKNOWN6 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=361,
-  serialized_end=472,
+  serialized_start=371,
+  serialized_end=482,
 )
 
 _REQUESTENVELOP_AUTHINFO_JWT = _descriptor.Descriptor(
@@ -187,8 +187,8 @@ _REQUESTENVELOP_AUTHINFO_JWT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=549,
-  serialized_end=591,
+  serialized_start=559,
+  serialized_end=601,
 )
 
 _REQUESTENVELOP_AUTHINFO = _descriptor.Descriptor(
@@ -223,8 +223,8 @@ _REQUESTENVELOP_AUTHINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=474,
-  serialized_end=591,
+  serialized_start=484,
+  serialized_end=601,
 )
 
 _REQUESTENVELOP = _descriptor.Descriptor(
@@ -263,21 +263,21 @@ _REQUESTENVELOP = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='gps_x', full_name='RequestEnvelop.gps_x', index=4,
+      name='latitude', full_name='RequestEnvelop.latitude', index=4,
       number=7, type=6, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='gps_y', full_name='RequestEnvelop.gps_y', index=5,
+      name='longitude', full_name='RequestEnvelop.longitude', index=5,
       number=8, type=6, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='gps_z', full_name='RequestEnvelop.gps_z', index=6,
+      name='altitude', full_name='RequestEnvelop.altitude', index=6,
       number=9, type=6, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -309,7 +309,7 @@ _REQUESTENVELOP = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=18,
-  serialized_end=591,
+  serialized_end=601,
 )
 
 
@@ -338,8 +338,8 @@ _RESPONSEENVELOP_UNKNOWN6_UNKNOWN2 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=444,
-  serialized_end=472,
+  serialized_start=454,
+  serialized_end=482,
 )
 
 _RESPONSEENVELOP_UNKNOWN6 = _descriptor.Descriptor(
@@ -374,8 +374,8 @@ _RESPONSEENVELOP_UNKNOWN6 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=799,
-  serialized_end=911,
+  serialized_start=809,
+  serialized_end=921,
 )
 
 _RESPONSEENVELOP_UNKNOWN7 = _descriptor.Descriptor(
@@ -417,8 +417,8 @@ _RESPONSEENVELOP_UNKNOWN7 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=913,
-  serialized_end=980,
+  serialized_start=923,
+  serialized_end=990,
 )
 
 _RESPONSEENVELOP_PAYLOAD = _descriptor.Descriptor(
@@ -437,7 +437,7 @@ _RESPONSEENVELOP_PAYLOAD = _descriptor.Descriptor(
       options=None),
     _descriptor.FieldDescriptor(
       name='profile', full_name='ResponseEnvelop.Payload.profile', index=1,
-      number=2, type=11, cpp_type=10, label=2,
+      number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -453,40 +453,40 @@ _RESPONSEENVELOP_PAYLOAD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=982,
-  serialized_end=1052,
+  serialized_start=992,
+  serialized_end=1062,
 )
 
-_RESPONSEENVELOP_PROFILE_UNKNOWN8 = _descriptor.Descriptor(
-  name='Unknown8',
-  full_name='ResponseEnvelop.Profile.Unknown8',
+_RESPONSEENVELOP_PROFILE_AVATARDETAILS = _descriptor.Descriptor(
+  name='AvatarDetails',
+  full_name='ResponseEnvelop.Profile.AvatarDetails',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='unknown2', full_name='ResponseEnvelop.Profile.Unknown8.unknown2', index=0,
+      name='unknown2', full_name='ResponseEnvelop.Profile.AvatarDetails.unknown2', index=0,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='unknown3', full_name='ResponseEnvelop.Profile.Unknown8.unknown3', index=1,
+      name='unknown3', full_name='ResponseEnvelop.Profile.AvatarDetails.unknown3', index=1,
       number=3, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='unknown9', full_name='ResponseEnvelop.Profile.Unknown8.unknown9', index=2,
+      name='unknown9', full_name='ResponseEnvelop.Profile.AvatarDetails.unknown9', index=2,
       number=9, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='unknown10', full_name='ResponseEnvelop.Profile.Unknown8.unknown10', index=3,
+      name='unknown10', full_name='ResponseEnvelop.Profile.AvatarDetails.unknown10', index=3,
       number=10, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -503,8 +503,8 @@ _RESPONSEENVELOP_PROFILE_UNKNOWN8 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1320,
-  serialized_end=1403,
+  serialized_start=1359,
+  serialized_end=1447,
 )
 
 _RESPONSEENVELOP_PROFILE_CURRENCY = _descriptor.Descriptor(
@@ -539,8 +539,8 @@ _RESPONSEENVELOP_PROFILE_CURRENCY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1405,
-  serialized_end=1445,
+  serialized_start=1449,
+  serialized_end=1489,
 )
 
 _RESPONSEENVELOP_PROFILE = _descriptor.Descriptor(
@@ -551,7 +551,7 @@ _RESPONSEENVELOP_PROFILE = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='unknown1', full_name='ResponseEnvelop.Profile.unknown1', index=0,
+      name='creation_time', full_name='ResponseEnvelop.Profile.creation_time', index=0,
       number=1, type=3, cpp_type=2, label=2,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -565,56 +565,63 @@ _RESPONSEENVELOP_PROFILE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='unknown7', full_name='ResponseEnvelop.Profile.unknown7', index=2,
+      name='team', full_name='ResponseEnvelop.Profile.team', index=2,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='tutorial', full_name='ResponseEnvelop.Profile.tutorial', index=3,
       number=7, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='unknown8', full_name='ResponseEnvelop.Profile.unknown8', index=3,
+      name='avatar', full_name='ResponseEnvelop.Profile.avatar', index=4,
       number=8, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='unknown9', full_name='ResponseEnvelop.Profile.unknown9', index=4,
+      name='poke_storage', full_name='ResponseEnvelop.Profile.poke_storage', index=5,
       number=9, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='unknown10', full_name='ResponseEnvelop.Profile.unknown10', index=5,
+      name='item_storage', full_name='ResponseEnvelop.Profile.item_storage', index=6,
       number=10, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='unknown11', full_name='ResponseEnvelop.Profile.unknown11', index=6,
+      name='unknown11', full_name='ResponseEnvelop.Profile.unknown11', index=7,
       number=11, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='unknown12', full_name='ResponseEnvelop.Profile.unknown12', index=7,
+      name='unknown12', full_name='ResponseEnvelop.Profile.unknown12', index=8,
       number=12, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='unknown13', full_name='ResponseEnvelop.Profile.unknown13', index=8,
+      name='unknown13', full_name='ResponseEnvelop.Profile.unknown13', index=9,
       number=13, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='currency', full_name='ResponseEnvelop.Profile.currency', index=9,
+      name='currency', full_name='ResponseEnvelop.Profile.currency', index=10,
       number=14, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -623,7 +630,7 @@ _RESPONSEENVELOP_PROFILE = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[_RESPONSEENVELOP_PROFILE_UNKNOWN8, _RESPONSEENVELOP_PROFILE_CURRENCY, ],
+  nested_types=[_RESPONSEENVELOP_PROFILE_AVATARDETAILS, _RESPONSEENVELOP_PROFILE_CURRENCY, ],
   enum_types=[
   ],
   options=None,
@@ -631,8 +638,8 @@ _RESPONSEENVELOP_PROFILE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1055,
-  serialized_end=1445,
+  serialized_start=1065,
+  serialized_end=1489,
 )
 
 _RESPONSEENVELOP = _descriptor.Descriptor(
@@ -695,8 +702,8 @@ _RESPONSEENVELOP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=594,
-  serialized_end=1445,
+  serialized_start=604,
+  serialized_end=1489,
 )
 
 _REQUESTENVELOP_REQUESTS.fields_by_name['message'].message_type = _REQUESTENVELOP_UNKNOWN3
@@ -717,9 +724,9 @@ _RESPONSEENVELOP_UNKNOWN6.containing_type = _RESPONSEENVELOP
 _RESPONSEENVELOP_UNKNOWN7.containing_type = _RESPONSEENVELOP
 _RESPONSEENVELOP_PAYLOAD.fields_by_name['profile'].message_type = _RESPONSEENVELOP_PROFILE
 _RESPONSEENVELOP_PAYLOAD.containing_type = _RESPONSEENVELOP
-_RESPONSEENVELOP_PROFILE_UNKNOWN8.containing_type = _RESPONSEENVELOP_PROFILE
+_RESPONSEENVELOP_PROFILE_AVATARDETAILS.containing_type = _RESPONSEENVELOP_PROFILE
 _RESPONSEENVELOP_PROFILE_CURRENCY.containing_type = _RESPONSEENVELOP_PROFILE
-_RESPONSEENVELOP_PROFILE.fields_by_name['unknown8'].message_type = _RESPONSEENVELOP_PROFILE_UNKNOWN8
+_RESPONSEENVELOP_PROFILE.fields_by_name['avatar'].message_type = _RESPONSEENVELOP_PROFILE_AVATARDETAILS
 _RESPONSEENVELOP_PROFILE.fields_by_name['currency'].message_type = _RESPONSEENVELOP_PROFILE_CURRENCY
 _RESPONSEENVELOP_PROFILE.containing_type = _RESPONSEENVELOP
 _RESPONSEENVELOP.fields_by_name['unknown6'].message_type = _RESPONSEENVELOP_UNKNOWN6
@@ -815,10 +822,10 @@ ResponseEnvelop = _reflection.GeneratedProtocolMessageType('ResponseEnvelop', (_
 
   Profile = _reflection.GeneratedProtocolMessageType('Profile', (_message.Message,), dict(
 
-    Unknown8 = _reflection.GeneratedProtocolMessageType('Unknown8', (_message.Message,), dict(
-      DESCRIPTOR = _RESPONSEENVELOP_PROFILE_UNKNOWN8,
+    AvatarDetails = _reflection.GeneratedProtocolMessageType('AvatarDetails', (_message.Message,), dict(
+      DESCRIPTOR = _RESPONSEENVELOP_PROFILE_AVATARDETAILS,
       __module__ = 'pokemon_pb2'
-      # @@protoc_insertion_point(class_scope:ResponseEnvelop.Profile.Unknown8)
+      # @@protoc_insertion_point(class_scope:ResponseEnvelop.Profile.AvatarDetails)
       ))
     ,
 
@@ -843,7 +850,7 @@ _sym_db.RegisterMessage(ResponseEnvelop.Unknown6.Unknown2)
 _sym_db.RegisterMessage(ResponseEnvelop.Unknown7)
 _sym_db.RegisterMessage(ResponseEnvelop.Payload)
 _sym_db.RegisterMessage(ResponseEnvelop.Profile)
-_sym_db.RegisterMessage(ResponseEnvelop.Profile.Unknown8)
+_sym_db.RegisterMessage(ResponseEnvelop.Profile.AvatarDetails)
 _sym_db.RegisterMessage(ResponseEnvelop.Profile.Currency)
 
 
