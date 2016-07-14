@@ -1,12 +1,15 @@
 import requests
 import re
+import struct
 import json
 import argparse
 import pokemon_pb2
 
 from datetime import datetime
+from geopy.geocoders import GoogleV3
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
 
 
 API_URL = 'https://pgorelease.nianticlabs.com/plfe/rpc'
@@ -17,10 +20,36 @@ SESSION = requests.session()
 SESSION.headers.update({'User-Agent': 'Niantic App'})
 SESSION.verify = False
 
+DEBUG = True
+COORDS_LATITUDE = 0
+COORDS_LONGITUDE = 0
+COORDS_ALTITUDE = 0
 
-def get_gps_coords():
-    return (0x404aca0660000000, 0x40241f55a0000000, 0x4048000000000000)
+def f2i(float):
+  return struct.unpack('<Q', struct.pack('<d', float))[0]
 
+def f2h(float):
+  return hex(struct.unpack('<Q', struct.pack('<d', float))[0])
+
+def h2f(hex):
+  return struct.unpack('<d', struct.pack('<Q', int(hex,16)))[0]
+
+def set_location(location_name):
+    geolocator = GoogleV3()
+    loc = geolocator.geocode(location_name)
+
+    print('[!] Your given location: {}'.format(loc.address))
+    print('[!] lat/long/alt: {} {} {}'.format(loc.latitude, loc.longitude, loc.altitude))
+    set_location_coords(loc.latitude, loc.longitude, loc.altitude)
+
+def set_location_coords(lat, long, alt):
+    global COORDS_LATITUDE, COORDS_LONGITUDE, COORDS_ALTITUDE
+    COORDS_LATITUDE = f2i(lat)
+    COORDS_LONGITUDE = f2i(long)
+    COORDS_ALTITUDE = f2i(alt)
+
+def get_location_coords():
+    return (COORDS_LATITUDE, COORDS_LONGITUDE, COORDS_ALTITUDE)
 
 def api_req(api_endpoint, access_token, req):
     try:
@@ -30,7 +59,7 @@ def api_req(api_endpoint, access_token, req):
 
         p_req.requests.MergeFrom(req)
 
-        p_req.latitude, p_req.longitude, p_req.altitude = get_gps_coords()
+        p_req.latitude, p_req.longitude, p_req.altitude = get_location_coords()
 
         p_req.unknown12 = 989
         p_req.auth.provider = 'ptc'
@@ -43,7 +72,9 @@ def api_req(api_endpoint, access_token, req):
         p_ret = pokemon_pb2.ResponseEnvelop()
         p_ret.ParseFromString(r.content)
         return p_ret
-    except:
+    except Exception,e:
+        if DEBUG:
+            print(e)
         return None
 
 
@@ -117,7 +148,17 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-u", "--username", help="PTC Username", required=True)
     parser.add_argument("-p", "--password", help="PTC Password", required=True)
+    parser.add_argument("-l", "--location", help="Location", required=True)
+    parser.add_argument("-d", "--debug", help="Debug Mode", action='store_true')
+    parser.set_defaults(DEBUG=True)
     args = parser.parse_args()
+
+    if args.debug:
+        global DEBUG
+        DEBUG = True
+        print('[!] DEBUG mode on')
+
+    set_location(args.location)
 
     access_token = login_ptc(args.username, args.password)
     if access_token is None:

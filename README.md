@@ -7,7 +7,10 @@
 
 ## Demo
 
-    $ python2 main.py -u tejado -p 1234
+    $ python2 main.py --debug -u tejado -p 1234 --location "New York, Washington Square"
+    [!] DEBUG mode on
+    [!] Your given location: Washington Square, Greenwich, NY 12834, USA
+    [!] lat/long/alt: 43.0909305 -73.4989367 0.0
     [!] login for: tejado
     [+] RPC Session Token: TGT-899360-gFKDueEjBcKX4G ...
     [+] Received API endpoint: https://pgorelease.nianticlabs.com/plfe/401/rpc
