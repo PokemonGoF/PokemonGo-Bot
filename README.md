@@ -1,6 +1,7 @@
 # Pokemon Go API Demo
 
  * USE AT YOUR OWN RISK !
+ * Thanks a lot to [Mila432](https://github.com/Mila432/Pokemon_Go_API) !
  * includes protobuf file
  * maybe you should change some of the proto values like gps cords...
  * ugly code
