@@ -127,8 +127,10 @@ def login_ptc(username, password):
     ticket = None
     try:
         ticket = re.sub('.*ticket=', '', r1.history[0].headers['Location'])
-    except:
-        return False
+    except Exception,e:
+        if DEBUG:
+            print(r1.json()['errors'][0])
+        return None
 
     data1 = {
         'client_id': 'mobile-app_pokemon-go',
