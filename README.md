@@ -2,7 +2,6 @@
 
  * USE AT YOUR OWN RISK !
  * includes protobuf file
- * maybe you should change some of the proto values like gps cords...
  * ugly code
 
 ## Demo
