@@ -192,6 +192,10 @@ def main():
             creation_time.strftime('%Y-%m-%d %H:%M:%S'),
         ))
 
+        print('[+] Poke Storage: {}'.format(profile.poke_storage))
+
+        print('[+] Item Storage: {}'.format(profile.item_storage))
+
         for curr in profile.currency:
             print('[+] {}: {}'.format(curr.type, curr.amount))
     else:
