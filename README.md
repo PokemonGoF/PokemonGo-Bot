@@ -16,6 +16,8 @@
     [+] Login successful
     [+] Username: tejado
     [+] You are playing Pokemon Go since: 2016-07-13 08:10:20
+    [+] Poke Storage: 250
+    [+] Item Storage: 350
     [+] POKECOIN: 0
     [+] STARDUST: 600
 
