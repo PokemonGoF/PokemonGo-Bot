@@ -15,6 +15,7 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 API_URL = 'https://pgorelease.nianticlabs.com/plfe/rpc'
 LOGIN_URL = 'https://sso.pokemon.com/sso/login?service=https%3A%2F%2Fsso.pokemon.com%2Fsso%2Foauth2.0%2FcallbackAuthorize'
 LOGIN_OAUTH = 'https://sso.pokemon.com/sso/oauth2.0/accessToken'
+PTC_CLIENT_SECRET = 'w8ScCUXJQc6kXKw8FiOhd8Fixzht18Dq3PEVkUCP5ZPxtgyWsbTvWHFLm2wNY0JR'
 
 SESSION = requests.session()
 SESSION.headers.update({'User-Agent': 'Niantic App'})
@@ -135,7 +136,7 @@ def login_ptc(username, password):
     data1 = {
         'client_id': 'mobile-app_pokemon-go',
         'redirect_uri': 'https://www.nianticlabs.com/pokemongo/error',
-        'client_secret': 'w8ScCUXJQc6kXKw8FiOhd8Fixzht18Dq3PEVkUCP5ZPxtgyWsbTvWHFLm2wNY0JR',
+        'client_secret': PTC_CLIENT_SECRET,
         'grant_type': 'refresh_token',
         'code': ticket,
     }
@@ -152,6 +153,7 @@ def main():
     parser.add_argument("-p", "--password", help="PTC Password", required=True)
     parser.add_argument("-l", "--location", help="Location", required=True)
     parser.add_argument("-d", "--debug", help="Debug Mode", action='store_true')
+    parser.add_argument("-s", "--client_secret", help="PTC Client Secret")
     parser.set_defaults(DEBUG=True)
     args = parser.parse_args()
 
@@ -159,6 +161,10 @@ def main():
         global DEBUG
         DEBUG = True
         print('[!] DEBUG mode on')
+
+    if args.client_secret is not None:
+        global PTC_CLIENT_SECRET
+        PTC_CLIENT_SECRET = args.client_secret
 
     set_location(args.location)
 
