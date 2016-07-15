@@ -20,4 +20,5 @@
     [+] STARDUST: 600
 
 ## Credits
-Thanks a lot to [Mila432](https://github.com/Mila432/Pokemon_Go_API) !
+Thanks a lot to [Mila432](https://github.com/Mila432/Pokemon_Go_API) !  
+[C# Port](https://github.com/BclEx/pokemongo-api-demo.net) by BclEx
