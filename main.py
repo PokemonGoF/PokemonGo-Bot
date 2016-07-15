@@ -184,8 +184,6 @@ def main():
     if profile is not None:
         print('[+] Login successful')
 
-        print profile
-
         profile = profile.payload[0].profile
         print('[+] Username: {}'.format(profile.username))
 
