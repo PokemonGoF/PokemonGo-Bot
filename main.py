@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import requests
 import re
 import struct
@@ -5,6 +6,7 @@ import json
 import argparse
 import pokemon_pb2
 
+from gpsoauth import perform_master_login, perform_oauth
 from datetime import datetime
 from geopy.geocoders import GoogleV3
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
@@ -25,6 +27,11 @@ DEBUG = True
 COORDS_LATITUDE = 0
 COORDS_LONGITUDE = 0
 COORDS_ALTITUDE = 0
+
+ANDROID_ID = '9774d56d682e549c'
+SERVICE= 'audience:server:client_id:848232511240-7so421jotr2609rmqakceuu1luuq0ptb.apps.googleusercontent.com'
+APP = 'com.nianticlabs.pokemongo'
+CLIENT_SIG = '321187995bc7cdc2b5fc91b11a96e2baa8602c62'
 
 def f2i(float):
   return struct.unpack('<Q', struct.pack('<d', float))[0]
@@ -52,7 +59,7 @@ def set_location_coords(lat, long, alt):
 def get_location_coords():
     return (COORDS_LATITUDE, COORDS_LONGITUDE, COORDS_ALTITUDE)
 
-def api_req(api_endpoint, access_token, req):
+def api_req(service, api_endpoint, access_token, req):
     try:
         p_req = pokemon_pb2.RequestEnvelop()
         p_req.unknown1 = 2
@@ -63,7 +70,7 @@ def api_req(api_endpoint, access_token, req):
         p_req.latitude, p_req.longitude, p_req.altitude = get_location_coords()
 
         p_req.unknown12 = 989
-        p_req.auth.provider = 'ptc'
+        p_req.auth.provider = service
         p_req.auth.token.contents = access_token
         p_req.auth.token.unknown13 = 59
         protobuf = p_req.SerializeToString()
@@ -79,7 +86,7 @@ def api_req(api_endpoint, access_token, req):
         return None
 
 
-def get_api_endpoint(access_token):
+def get_api_endpoint(service, access_token):
     req = pokemon_pb2.RequestEnvelop()
 
     req1 = req.requests.add()
@@ -94,7 +101,7 @@ def get_api_endpoint(access_token):
     req5.type = 5
     req5.message.unknown4 = "4a2e9bc330dae60e7b74fc85b98868ab4700802e"
 
-    p_ret = api_req(API_URL, access_token, req.requests)
+    p_ret = api_req(service, API_URL, access_token, req.requests)
 
     try:
         return ('https://%s/rpc' % p_ret.api_url)
@@ -102,17 +109,25 @@ def get_api_endpoint(access_token):
         return None
 
 
-def get_profile(api_endpoint, access_token):
+def get_profile(service, api_endpoint, access_token):
     req = pokemon_pb2.RequestEnvelop()
 
     req1 = req.requests.add()
     req1.type = 2
 
-    return api_req(api_endpoint, access_token, req.requests)
+    return api_req(service, api_endpoint, access_token, req.requests)
 
+
+def login_google(username, password):
+    print('[!] Google login for: {}'.format(username))
+    r1 = perform_master_login(username, password, ANDROID_ID)
+    r2 = perform_oauth(username, r1.get('Token', ''), ANDROID_ID, SERVICE, APP,
+        CLIENT_SIG)
+
+    return r2.get('Auth') # access token
 
 def login_ptc(username, password):
-    print('[!] login for: {}'.format(username))
+    print('[!] PTC login for: {}'.format(username))
     head = {'User-Agent': 'niantic'}
     r = SESSION.get(LOGIN_URL, headers=head)
     jdata = json.loads(r.content)
@@ -149,13 +164,19 @@ def login_ptc(username, password):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-u", "--username", help="PTC Username", required=True)
-    parser.add_argument("-p", "--password", help="PTC Password", required=True)
+    parser.add_argument("-a", "--auth_service", help="Auth Service",
+        required=True)
+    parser.add_argument("-u", "--username", help="Username", required=True)
+    parser.add_argument("-p", "--password", help="Password", required=True)
     parser.add_argument("-l", "--location", help="Location", required=True)
     parser.add_argument("-d", "--debug", help="Debug Mode", action='store_true')
     parser.add_argument("-s", "--client_secret", help="PTC Client Secret")
     parser.set_defaults(DEBUG=True)
     args = parser.parse_args()
+
+    if args.auth_service not in ['ptc', 'google']:
+      print('[!] Invalid Auth service specified')
+      return
 
     if args.debug:
         global DEBUG
@@ -168,19 +189,23 @@ def main():
 
     set_location(args.location)
 
-    access_token = login_ptc(args.username, args.password)
+    if args.auth_service == 'ptc':
+        access_token = login_ptc(args.username, args.password)
+    else:
+        access_token = login_google(args.username, args.password)
+
     if access_token is None:
         print('[-] Wrong username/password')
         return
     print('[+] RPC Session Token: {} ...'.format(access_token[:25]))
 
-    api_endpoint = get_api_endpoint(access_token)
+    api_endpoint = get_api_endpoint(args.auth_service, access_token)
     if api_endpoint is None:
         print('[-] RPC server offline')
         return
     print('[+] Received API endpoint: {}'.format(api_endpoint))
 
-    profile = get_profile(api_endpoint, access_token)
+    profile = get_profile(args.auth_service, api_endpoint, access_token)
     if profile is not None:
         print('[+] Login successful')
 
