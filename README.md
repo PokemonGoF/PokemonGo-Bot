@@ -37,4 +37,5 @@
 
 ## Credits
 Thanks a lot to [Mila432](https://github.com/Mila432/Pokemon_Go_API) !  
-[C# Port](https://github.com/BclEx/pokemongo-api-demo.net) by BclEx
+[C# Port](https://github.com/BclEx/pokemongo-api-demo.net) by BclEx !
+[Node Port](https://github.com/Armax/Poke.io) by Arm4x
