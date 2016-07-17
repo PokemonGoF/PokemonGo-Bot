@@ -4,6 +4,7 @@ import re
 import struct
 import json
 import argparse
+import os
 import pokemon_pb2
 
 from gpsoauth import perform_master_login, perform_oauth
@@ -12,12 +13,11 @@ from geopy.geocoders import GoogleV3
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-
-
 API_URL = 'https://pgorelease.nianticlabs.com/plfe/rpc'
 LOGIN_URL = 'https://sso.pokemon.com/sso/login?service=https%3A%2F%2Fsso.pokemon.com%2Fsso%2Foauth2.0%2FcallbackAuthorize'
 LOGIN_OAUTH = 'https://sso.pokemon.com/sso/oauth2.0/accessToken'
 PTC_CLIENT_SECRET = 'w8ScCUXJQc6kXKw8FiOhd8Fixzht18Dq3PEVkUCP5ZPxtgyWsbTvWHFLm2wNY0JR'
+CONFIG = "config.json"
 
 SESSION = requests.session()
 SESSION.headers.update({'User-Agent': 'Niantic App'})
@@ -164,15 +164,31 @@ def login_ptc(username, password):
 
 def main():
     parser = argparse.ArgumentParser()
+
+    # If config file exists, load variables from json
+    load   = {}
+    if os.path.isfile(CONFIG):
+        with open(CONFIG) as data:
+            load.update(json.load(data))
+
+    # Read passed in Arguments
+    required = lambda x: not x in load
     parser.add_argument("-a", "--auth_service", help="Auth Service",
-        required=True)
-    parser.add_argument("-u", "--username", help="Username", required=True)
-    parser.add_argument("-p", "--password", help="Password", required=True)
-    parser.add_argument("-l", "--location", help="Location", required=True)
+        required=required("auth_service"))
+    parser.add_argument("-u", "--username", help="Username", required=required("username"))
+    parser.add_argument("-p", "--password", help="Password", required=required("password"))
+    parser.add_argument("-l", "--location", help="Location", required=required("location"))
     parser.add_argument("-d", "--debug", help="Debug Mode", action='store_true')
     parser.add_argument("-s", "--client_secret", help="PTC Client Secret")
     parser.set_defaults(DEBUG=True)
     args = parser.parse_args()
+
+    # Passed in arguments shoud trump
+    for key in args.__dict__:
+        if key in load and args.__dict__[key] == None:
+            args.__dict__[key] = load[key]
+    # Or
+    # args.__dict__.update({key:load[key] for key in load if args.__dict__[key] == None and key in load})
 
     if args.auth_service not in ['ptc', 'google']:
       print('[!] Invalid Auth service specified')

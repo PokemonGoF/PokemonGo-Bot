@@ -34,6 +34,17 @@
     [+] POKECOIN: 0
     [+] STARDUST: 100
 
+## Creating a config file
+Copy config.json.example in config.json and update accordingly eg:
+
+    {
+        "auth_service": "google",
+        "username": "example@gmail.com",
+        "password": "password11!!",
+        "location": "New York",
+        "debug": true,
+        "client_secret": "000000000000000000"
+    }
 
 ## Credits
 Thanks a lot to [Mila432](https://github.com/Mila432/Pokemon_Go_API) for the inspiration and parts of the code!  
