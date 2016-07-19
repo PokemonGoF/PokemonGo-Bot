@@ -154,10 +154,21 @@ class RpcApi:
     def _parse_main_request(self, response_raw, subrequests):
         self.log.debug('Parsing main RPC response...')
         
-        # HTTP check should me made here?!
+        if response_raw.status_code != 200:
+            self.log.warning('Unexpected HTTP server response - needs 200 got %s', response_raw.status_code)
+            self.log.debug('HTTP output: \n%s', response_raw.content)
+            return False
+        
+        if response_raw.content is None:
+            self.log.warning('Empty server response!')
+            return False
     
         response_proto = RpcEnvelope.Response()
-        response_proto.ParseFromString(response_raw.content)
+        try:
+            response_proto.ParseFromString(response_raw.content)
+        except google.protobuf.message.DecodeError as e:
+            self.log.warning('Could not parse response: %s', str(e))
+            return False
         
         self.log.debug('Protobuf structure of rpc response:\n\r%s', response_proto)
        

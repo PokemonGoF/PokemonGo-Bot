@@ -155,9 +155,17 @@ class PGoApi:
         self.download_settings(hash="4a2e9bc330dae60e7b74fc85b98868ab4700802e")
         
         response = self.call()
+        
+        if not response: 
+            self.log.info('Login failed!') 
+            return False
+        
         if 'api_url' in response:
             self._api_endpoint = ('https://{}/rpc'.format(response['api_url']))
             self.log.debug('Setting API endpoint to: %s', self._api_endpoint)
+        else:
+            self.log.error('Login failed - unexpected server response!')
+            return False
         
         if 'auth_ticket' in response:
             self._auth_provider.set_ticket(response['auth_ticket'].values())
