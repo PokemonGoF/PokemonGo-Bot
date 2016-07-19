@@ -118,4 +118,4 @@ If a request needs parameters, they can be added as arguments and pgoapi will tr
 
 ## Ports
 [C# Port](https://github.com/BclEx/pokemongo-api-demo.net) by BclEx  
-[Node Port](https://github.com/Armax/Poke.io) by Arm4x  
+[Node Port](https://github.com/Armax/Pokemon-GO-node-api) by Arm4x  
