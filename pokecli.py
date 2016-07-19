@@ -137,18 +137,34 @@ def main():
         return
 
     # chain subrequests (methods) into one RPC call
+    
     # get player profile call
+    # ----------------------
     api.get_player()
     
     # get inventory call
+    # ----------------------
     #api.get_inventory()
     
     # get map objects call
-    timestamp = "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
-    cellid = get_cellid(position[0], position[1])
-    api.get_map_objects(latitude=f2i(position[0]), longitude=f2i(position[1]), since_timestamp_ms=timestamp, cell_id=cellid)
+    # ----------------------
+    #timestamp = "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
+    #cellid = get_cellid(position[0], position[1])
+    #api.get_map_objects(latitude=f2i(position[0]), longitude=f2i(position[1]), since_timestamp_ms=timestamp, cell_id=cellid)
+    
+    # spin a fort 
+    # ----------------------
+    #fortid = '<your fortid>'
+    #lng = <your longitude>
+    #lat = <your latitude>
+    #api.fort_search(fort_id=fortid, fort_latitude=lat, fort_longitude=lng, player_latitude=f2i(position[0]), player_longitude=f2i(position[1]))
+    
+    # release/transfer a pokemon and get candy for it
+    # ----------------------
+    #api.release_pokemon(pokemon_id = <your pokemonid>)
     
     # get download settings call
+    # ----------------------
     #api.download_settings(hash="4a2e9bc330dae60e7b74fc85b98868ab4700802e")
     
     # execute the RPC call

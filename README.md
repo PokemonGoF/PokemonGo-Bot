@@ -2,23 +2,26 @@
 pgoapi is a client/api/demo for Pokemon Go by https://github.com/tejado.  
 It allows automatic parsing of requests/responses by finding the correct protobuf objects over a naming convention and will return the response in a parsed python dictionary format.   
 
- * USE AT YOUR OWN RISK !
+ * This is unofficial - USE AT YOUR OWN RISK !
  * I don't play pokemon go !
  * No bot/farming code included !
 
-## Requirements
- * Python 2
- * requests
- * protobuf
- * gpsoauth
- * geopy (only for pokecli demo)
- * s2sphere (only for pokecli demo)
- 
 ## Supports
- * GET_PLAYER
- * GET_INVENTORY
- * GET_MAP_OBJECTS
- * DOWNLOAD_SETTINGS
+ * Google/PTC auth
+ * Address parsing for GPS coordinates
+ * Allows chaining of RPC calls
+ * Good logging/debugging possibilities
+ * Easy extension of further calls, just add your protobuf specification
+ * Following RPC calls:
+   * GET_PLAYER
+   * GET_INVENTORY
+   * GET_MAP_OBJECTS
+   * DOWNLOAD_SETTINGS
+   * DOWNLOAD_ITEM_TEMPLATES
+   * CHECK_AWARDED_BADGES
+   * FORT_SEARCH (spinning of pokestops)
+   * RELEASE_POKEMON (release pokemon and get candy/xp)
+   * EVOLVE_POKEMON
  
 ## Usage
 
@@ -108,7 +111,16 @@ If a request needs parameters, they can be added as arguments and pgoapi will tr
     ...
     api.download_settings(hash="4a2e9bc330dae60e7b74fc85b98868ab4700802e")
     api.call()
-  
+
+    
+## Requirements
+ * Python 2
+ * requests
+ * protobuf
+ * gpsoauth
+ * geopy (only for pokecli demo)
+ * s2sphere (only for pokecli demo)
+ 
     
 ## Credits
 [Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets  

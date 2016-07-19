@@ -19,12 +19,220 @@ import RpcEnum_pb2
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='RpcSub.proto',
   package='RpcSub',
-  serialized_pb=_b('\n\x0cRpcSub.proto\x12\x06RpcSub\x1a\rRpcEnum.proto\"G\n\x11GetPlayerResponse\x12\x10\n\x08unknown1\x18\x01 \x01(\x05\x12 \n\x07profile\x18\x02 \x01(\x0b\x32\x0f.RpcSub.Profile\"\xac\x02\n\x07Profile\x12\x15\n\rcreation_time\x18\x01 \x02(\x03\x12\x10\n\x08username\x18\x02 \x01(\t\x12 \n\x04team\x18\x05 \x01(\x0e\x32\x12.RpcEnum.TeamColor\x12\x10\n\x08tutorial\x18\x07 \x01(\x0c\x12%\n\x06\x61vatar\x18\x08 \x01(\x0b\x32\x15.RpcSub.AvatarDetails\x12\x14\n\x0cpoke_storage\x18\t \x01(\x05\x12\x14\n\x0citem_storage\x18\n \x01(\x05\x12\'\n\x0b\x64\x61ily_bonus\x18\x0b \x01(\x0b\x32\x12.RpcSub.DailyBonus\x12\x11\n\tunknown12\x18\x0c \x01(\x0c\x12\x11\n\tunknown13\x18\r \x01(\x0c\x12\"\n\x08\x63urrency\x18\x0e \x03(\x0b\x32\x10.RpcSub.Currency\"Y\n\nDailyBonus\x12\x1e\n\x16NextCollectTimestampMs\x18\x01 \x01(\x03\x12+\n#NextDefenderBonusCollectTimestampMs\x18\x02 \x01(\x03\"(\n\x08\x43urrency\x12\x0c\n\x04type\x18\x01 \x02(\t\x12\x0e\n\x06\x61mount\x18\x02 \x01(\x05\"X\n\rAvatarDetails\x12\x10\n\x08unknown2\x18\x02 \x01(\x05\x12\x10\n\x08unknown3\x18\x03 \x01(\x05\x12\x10\n\x08unknown9\x18\t \x01(\x05\x12\x11\n\tunknown10\x18\n \x01(\x05\"\'\n\x17\x44ownloadSettingsRequest\x12\x0c\n\x04hash\x18\x01 \x01(\t\"X\n\x14GetInventoryResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12/\n\x0finventory_delta\x18\x02 \x01(\x0b\x32\x16.RpcSub.InventoryDelta\"y\n\x0eInventoryDelta\x12\x1d\n\x15original_timestamp_ms\x18\x01 \x01(\x03\x12\x18\n\x10new_timestamp_ms\x18\x02 \x01(\x03\x12.\n\x0finventory_items\x18\x03 \x03(\x0b\x32\x15.RpcSub.InventoryItem\"\x80\x01\n\rInventoryItem\x12\x1d\n\x15modified_timestamp_ms\x18\x01 \x01(\x03\x12\x18\n\x10\x64\x65leted_item_key\x18\x02 \x01(\x03\x12\x36\n\x13inventory_item_data\x18\x03 \x01(\x0b\x32\x19.RpcSub.InventoryItemData\"\xc9\x03\n\x11InventoryItemData\x12 \n\x07pokemon\x18\x01 \x01(\x0b\x32\x0f.RpcSub.Pokemon\x12\x1a\n\x04item\x18\x02 \x01(\x0b\x32\x0c.RpcSub.Item\x12+\n\rpokedex_entry\x18\x03 \x01(\x0b\x32\x14.RpcSub.PokedexEntry\x12)\n\x0cplayer_stats\x18\x04 \x01(\x0b\x32\x13.RpcSub.PlayerStats\x12/\n\x0fplayer_currency\x18\x05 \x01(\x0b\x32\x16.RpcSub.PlayerCurrency\x12+\n\rplayer_camera\x18\x06 \x01(\x0b\x32\x14.RpcSub.PlayerCamera\x12\x35\n\x12inventory_upgrades\x18\x07 \x01(\x0b\x32\x19.RpcSub.InventoryUpgrades\x12+\n\rapplied_items\x18\x08 \x01(\x0b\x32\x14.RpcSub.AppliedItems\x12-\n\x0e\x65gg_incubators\x18\t \x01(\x0b\x32\x15.RpcSub.EggIncubators\x12-\n\x0epokemon_family\x18\n \x01(\x0b\x32\x15.RpcSub.PokemonFamily\"\xd8\x05\n\x07Pokemon\x12\n\n\x02id\x18\x01 \x01(\x05\x12(\n\x0cpokemon_type\x18\x02 \x01(\x0e\x32\x12.RpcEnum.PokemonId\x12\n\n\x02\x63p\x18\x03 \x01(\x05\x12\x0f\n\x07stamina\x18\x04 \x01(\x05\x12\x13\n\x0bstamina_max\x18\x05 \x01(\x05\x12$\n\x06move_1\x18\x06 \x01(\x0e\x32\x14.RpcEnum.PokemonMove\x12$\n\x06move_2\x18\x07 \x01(\x0e\x32\x14.RpcEnum.PokemonMove\x12\x18\n\x10\x64\x65ployed_fort_id\x18\x08 \x01(\x05\x12\x12\n\nowner_name\x18\t \x01(\t\x12\x0e\n\x06is_egg\x18\n \x01(\x08\x12\x1c\n\x14\x65gg_km_walked_target\x18\x0b \x01(\x05\x12\x1b\n\x13\x65gg_km_walked_start\x18\x0c \x01(\x05\x12\x0e\n\x06origin\x18\x0e \x01(\x05\x12\x10\n\x08height_m\x18\x0f \x01(\x02\x12\x11\n\tweight_kg\x18\x10 \x01(\x02\x12\x19\n\x11individual_attack\x18\x11 \x01(\x05\x12\x1a\n\x12individual_defense\x18\x12 \x01(\x05\x12\x1a\n\x12individual_stamina\x18\x13 \x01(\x05\x12\x15\n\rcp_multiplier\x18\x14 \x01(\x05\x12\x10\n\x08pokeball\x18\x15 \x01(\x05\x12\x18\n\x10\x63\x61ptured_cell_id\x18\x16 \x01(\x04\x12\x18\n\x10\x62\x61ttles_attacked\x18\x17 \x01(\x05\x12\x18\n\x10\x62\x61ttles_defended\x18\x18 \x01(\x05\x12\x18\n\x10\x65gg_incubator_id\x18\x19 \x01(\x05\x12\x18\n\x10\x63reation_time_ms\x18\x1a \x01(\x04\x12\x14\n\x0cnum_upgrades\x18\x1b \x01(\x05\x12 \n\x18\x61\x64\x64itional_cp_multiplier\x18\x1c \x01(\x05\x12\x10\n\x08\x66\x61vorite\x18\x1d \x01(\x05\x12\x10\n\x08nickname\x18\x1e \x01(\t\x12\x11\n\tfrom_fort\x18\x1f \x01(\x05\"F\n\x04Item\x12\x1f\n\x04item\x18\x01 \x01(\x0e\x32\x11.RpcEnum.ItemType\x12\r\n\x05\x63ount\x18\x02 \x01(\x05\x12\x0e\n\x06unseen\x18\x03 \x01(\x08\"\x99\x01\n\x0cPokedexEntry\x12\x1c\n\x14pokedex_entry_number\x18\x01 \x01(\x05\x12\x19\n\x11times_encountered\x18\x02 \x01(\x05\x12\x16\n\x0etimes_captured\x18\x03 \x01(\x05\x12\x1e\n\x16\x65volution_stone_pieces\x18\x04 \x01(\x05\x12\x18\n\x10\x65volution_stones\x18\x05 \x01(\x05\"\xed\x04\n\x0bPlayerStats\x12\r\n\x05level\x18\x01 \x01(\x05\x12\x12\n\nexperience\x18\x02 \x01(\x03\x12\x15\n\rprev_level_xp\x18\x03 \x01(\x03\x12\x15\n\rnext_level_xp\x18\x04 \x01(\x03\x12\x11\n\tkm_walked\x18\x05 \x01(\x02\x12\x1c\n\x14pokemons_encountered\x18\x06 \x01(\x05\x12\x1e\n\x16unique_pokedex_entries\x18\x07 \x01(\x05\x12\x19\n\x11pokemons_captured\x18\x08 \x01(\x05\x12\x12\n\nevolutions\x18\t \x01(\x05\x12\x18\n\x10poke_stop_visits\x18\n \x01(\x05\x12\x18\n\x10pokeballs_thrown\x18\x0b \x01(\x05\x12\x14\n\x0c\x65ggs_hatched\x18\x0c \x01(\x05\x12\x1b\n\x13\x62ig_magikarp_caught\x18\r \x01(\x05\x12\x19\n\x11\x62\x61ttle_attack_won\x18\x0e \x01(\x05\x12\x1b\n\x13\x62\x61ttle_attack_total\x18\x0f \x01(\x05\x12\x1b\n\x13\x62\x61ttle_defended_won\x18\x10 \x01(\x05\x12\x1b\n\x13\x62\x61ttle_training_won\x18\x11 \x01(\x05\x12\x1d\n\x15\x62\x61ttle_training_total\x18\x12 \x01(\x05\x12\x1d\n\x15prestige_raised_total\x18\x13 \x01(\x05\x12\x1e\n\x16prestige_dropped_total\x18\x14 \x01(\x05\x12\x18\n\x10pokemon_deployed\x18\x15 \x01(\x05\x12\x1e\n\x16pokemon_caught_by_type\x18\x16 \x01(\x0c\x12\x1c\n\x14small_rattata_caught\x18\x17 \x01(\x05\"\x1e\n\x0ePlayerCurrency\x12\x0c\n\x04gems\x18\x01 \x01(\x05\")\n\x0cPlayerCamera\x12\x19\n\x11is_default_camera\x18\x01 \x01(\x08\"I\n\x11InventoryUpgrades\x12\x34\n\x12inventory_upgrades\x18\x01 \x03(\x0b\x32\x18.RpcSub.InventoryUpgrade\"\x84\x01\n\x10InventoryUpgrade\x12\x1f\n\x04item\x18\x01 \x01(\x0e\x32\x11.RpcEnum.ItemType\x12\x33\n\x0cupgrade_type\x18\x02 \x01(\x0e\x32\x1d.RpcEnum.InventoryUpgradeType\x12\x1a\n\x12\x61\x64\x64itional_storage\x18\x03 \x01(\x05\"1\n\x0c\x41ppliedItems\x12!\n\x04item\x18\x04 \x01(\x0b\x32\x13.RpcSub.AppliedItem\"\x91\x01\n\x0b\x41ppliedItem\x12$\n\titem_type\x18\x01 \x01(\x0e\x32\x11.RpcEnum.ItemType\x12\x35\n\x12item_type_category\x18\x02 \x01(\x0e\x32\x19.RpcEnum.ItemTypeCategory\x12\x11\n\texpire_ms\x18\x03 \x01(\x03\x12\x12\n\napplied_ms\x18\x04 \x01(\x03\"<\n\rEggIncubators\x12+\n\regg_incubator\x18\x01 \x01(\x0b\x32\x14.RpcSub.EggIncubator\"\xd7\x01\n\x0c\x45ggIncubator\x12\x0f\n\x07item_id\x18\x01 \x01(\t\x12$\n\titem_type\x18\x02 \x01(\x0e\x32\x11.RpcEnum.ItemType\x12\x31\n\x0eincubator_type\x18\x03 \x01(\x0e\x32\x19.RpcEnum.EggIncubatorType\x12\x16\n\x0euses_remaining\x18\x04 \x01(\x05\x12\x12\n\npokemon_id\x18\x05 \x01(\x03\x12\x17\n\x0fstart_km_walked\x18\x06 \x01(\x01\x12\x18\n\x10target_km_walked\x18\x07 \x01(\x01\"K\n\rPokemonFamily\x12+\n\tfamily_id\x18\x01 \x01(\x0e\x32\x18.RpcEnum.PokemonFamilyId\x12\r\n\x05\x63\x61ndy\x18\x02 \x01(\x05\"h\n\x14GetMapObjectsRequest\x12\x0f\n\x07\x63\x65ll_id\x18\x01 \x01(\x0c\x12\x1a\n\x12since_timestamp_ms\x18\x02 \x01(\x0c\x12\x10\n\x08latitude\x18\x03 \x01(\x01\x12\x11\n\tlongitude\x18\x04 \x01(\x01\"f\n\x15GetMapObjectsResponse\x12\"\n\tmap_cells\x18\x01 \x03(\x0b\x32\x0f.RpcSub.MapCell\x12)\n\x06status\x18\x02 \x01(\x0e\x32\x19.RpcEnum.MapObjectsStatus\"\xa7\x03\n\x07MapCell\x12\x12\n\ns2_cell_id\x18\x01 \x01(\x04\x12\x1c\n\x14\x63urrent_timestamp_ms\x18\x02 \x01(\x03\x12\x1f\n\x05\x66orts\x18\x03 \x03(\x0b\x32\x10.RpcSub.FortData\x12(\n\x0cspawn_points\x18\x04 \x03(\x0b\x32\x12.RpcSub.SpawnPoint\x12\x17\n\x0f\x64\x65leted_objects\x18\x06 \x03(\t\x12\x19\n\x11is_truncated_list\x18\x07 \x01(\x08\x12+\n\x0e\x66ort_summaries\x18\x08 \x03(\x0b\x32\x13.RpcSub.FortSummary\x12\x32\n\x16\x64\x65\x63imated_spawn_points\x18\t \x03(\x0b\x32\x12.RpcSub.SpawnPoint\x12*\n\rwild_pokemons\x18\x05 \x03(\x0b\x32\x13.RpcSub.WildPokemon\x12.\n\x12\x63\x61tchable_pokemons\x18\n \x03(\x0b\x32\x12.RpcSub.MapPokemon\x12.\n\x0fnearby_pokemons\x18\x0b \x03(\x0b\x32\x15.RpcSub.NearbyPokemon\"\xf8\x03\n\x08\x46ortData\x12\n\n\x02id\x18\x01 \x01(\t\x12\"\n\x1alast_modified_timestamp_ms\x18\x02 \x01(\x03\x12\x10\n\x08latitude\x18\x03 \x01(\x01\x12\x11\n\tlongitude\x18\x04 \x01(\x01\x12\x0f\n\x07\x65nabled\x18\x08 \x01(\x08\x12\x1f\n\x04type\x18\t \x01(\x0e\x32\x11.RpcEnum.FortType\x12)\n\rowned_by_team\x18\x05 \x01(\x0e\x32\x12.RpcEnum.TeamColor\x12,\n\x10guard_pokemon_id\x18\x06 \x01(\x0e\x32\x12.RpcEnum.PokemonId\x12\x18\n\x10guard_pokemon_cp\x18\x07 \x01(\x05\x12\x12\n\ngym_points\x18\n \x01(\x03\x12\x14\n\x0cis_in_battle\x18\x0b \x01(\x08\x12&\n\x1e\x63ooldown_complete_timestamp_ms\x18\x0e \x01(\x03\x12%\n\x07sponsor\x18\x0f \x01(\x0e\x32\x14.RpcEnum.FortSponsor\x12\x32\n\x0erendering_type\x18\x10 \x01(\x0e\x32\x1a.RpcEnum.FortRenderingType\x12\x1c\n\x14\x61\x63tive_fort_modifier\x18\x0c \x01(\x0c\x12\'\n\tlure_info\x18\r \x01(\x0b\x32\x14.RpcSub.FortLureInfo\"\x83\x01\n\x0c\x46ortLureInfo\x12\x0f\n\x07\x66ort_id\x18\x01 \x01(\t\x12\x10\n\x08unknown2\x18\x02 \x01(\x01\x12-\n\x11\x61\x63tive_pokemon_id\x18\x03 \x01(\x0e\x32\x12.RpcEnum.PokemonId\x12!\n\x19lure_expires_timestamp_ms\x18\x04 \x01(\x03\"1\n\nSpawnPoint\x12\x10\n\x08latitude\x18\x02 \x01(\x01\x12\x11\n\tlongitude\x18\x03 \x01(\x01\"o\n\x0b\x46ortSummary\x12\x17\n\x0f\x66ort_summary_id\x18\x01 \x01(\x05\x12\"\n\x1alast_modified_timestamp_ms\x18\x02 \x01(\x05\x12\x10\n\x08latitude\x18\x03 \x01(\x05\x12\x11\n\tlongitude\x18\x04 \x01(\x05\"\xcb\x01\n\x0bWildPokemon\x12\x14\n\x0c\x65ncounter_id\x18\x01 \x01(\x06\x12\"\n\x1alast_modified_timestamp_ms\x18\x02 \x01(\x03\x12\x10\n\x08latitude\x18\x03 \x01(\x01\x12\x11\n\tlongitude\x18\x04 \x01(\x01\x12\x15\n\rspawnpoint_id\x18\x05 \x01(\t\x12)\n\x0cpokemon_data\x18\x07 \x01(\x0b\x32\x13.RpcSub.PokemonData\x12\x1b\n\x13time_till_hidden_ms\x18\x0b \x01(\x05\"\xda\x05\n\x0bPokemonData\x12\n\n\x02id\x18\x01 \x01(\x05\x12&\n\npokemon_id\x18\x02 \x01(\x0e\x32\x12.RpcEnum.PokemonId\x12\n\n\x02\x63p\x18\x03 \x01(\x05\x12\x0f\n\x07stamina\x18\x04 \x01(\x05\x12\x13\n\x0bstamina_max\x18\x05 \x01(\x05\x12$\n\x06move_1\x18\x06 \x01(\x0e\x32\x14.RpcEnum.PokemonMove\x12$\n\x06move_2\x18\x07 \x01(\x0e\x32\x14.RpcEnum.PokemonMove\x12\x18\n\x10\x64\x65ployed_fort_id\x18\x08 \x01(\x05\x12\x12\n\nowner_name\x18\t \x01(\t\x12\x0e\n\x06is_egg\x18\n \x01(\x08\x12\x1c\n\x14\x65gg_km_walked_target\x18\x0b \x01(\x05\x12\x1b\n\x13\x65gg_km_walked_start\x18\x0c \x01(\x05\x12\x0e\n\x06origin\x18\x0e \x01(\x05\x12\x10\n\x08height_m\x18\x0f \x01(\x02\x12\x11\n\tweight_kg\x18\x10 \x01(\x02\x12\x19\n\x11individual_attack\x18\x11 \x01(\x05\x12\x1a\n\x12individual_defense\x18\x12 \x01(\x05\x12\x1a\n\x12individual_stamina\x18\x13 \x01(\x05\x12\x15\n\rcp_multiplier\x18\x14 \x01(\x05\x12\x10\n\x08pokeball\x18\x15 \x01(\x05\x12\x18\n\x10\x63\x61ptured_cell_id\x18\x16 \x01(\x04\x12\x18\n\x10\x62\x61ttles_attacked\x18\x17 \x01(\x05\x12\x18\n\x10\x62\x61ttles_defended\x18\x18 \x01(\x05\x12\x18\n\x10\x65gg_incubator_id\x18\x19 \x01(\x05\x12\x18\n\x10\x63reation_time_ms\x18\x1a \x01(\x04\x12\x14\n\x0cnum_upgrades\x18\x1b \x01(\x05\x12 \n\x18\x61\x64\x64itional_cp_multiplier\x18\x1c \x01(\x05\x12\x10\n\x08\x66\x61vorite\x18\x1d \x01(\x05\x12\x10\n\x08nickname\x18\x1e \x01(\t\x12\x11\n\tfrom_fort\x18\x1f \x01(\x05\"\xa7\x01\n\nMapPokemon\x12\x15\n\rspawnpoint_id\x18\x01 \x01(\t\x12\x14\n\x0c\x65ncounter_id\x18\x02 \x01(\x06\x12&\n\npokemon_id\x18\x03 \x01(\x0e\x32\x12.RpcEnum.PokemonId\x12\x1f\n\x17\x65xpiration_timestamp_ms\x18\x04 \x01(\x03\x12\x10\n\x08latitude\x18\x05 \x01(\x01\x12\x11\n\tlongitude\x18\x06 \x01(\x01\"i\n\rNearbyPokemon\x12&\n\npokemon_id\x18\x01 \x01(\x0e\x32\x12.RpcEnum.PokemonId\x12\x1a\n\x12\x64istance_in_meters\x18\x02 \x01(\x02\x12\x14\n\x0c\x65ncounter_id\x18\x03 \x01(\x06\"a\n\x18\x44ownloadSettingsResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\x12\x0c\n\x04hash\x18\x02 \x01(\t\x12(\n\x08settings\x18\x03 \x01(\x0b\x32\x16.RpcSub.GlobalSettings\"\xee\x01\n\x0eGlobalSettings\x12+\n\rfort_settings\x18\x02 \x01(\x0b\x32\x14.RpcSub.FortSettings\x12)\n\x0cmap_settings\x18\x03 \x01(\x0b\x32\x13.RpcSub.MapSettings\x12-\n\x0elevel_settings\x18\x04 \x01(\x0b\x32\x15.RpcSub.LevelSettings\x12\x35\n\x12inventory_settings\x18\x05 \x01(\x0b\x32\x19.RpcSub.InventorySettings\x12\x1e\n\x16minimum_client_version\x18\x06 \x01(\t\"\xe4\x01\n\x0c\x46ortSettings\x12 \n\x18interaction_range_meters\x18\x01 \x01(\x01\x12\"\n\x1amax_total_deployed_pokemon\x18\x02 \x01(\x05\x12#\n\x1bmax_player_deployed_pokemon\x18\x03 \x01(\x05\x12!\n\x19\x64\x65ploy_stamina_multiplier\x18\x04 \x01(\x01\x12 \n\x18\x64\x65ploy_attack_multiplier\x18\x05 \x01(\x01\x12$\n\x1c\x66\x61r_interaction_range_meters\x18\x06 \x01(\x01\"\x8f\x02\n\x0bMapSettings\x12\x1d\n\x15pokemon_visible_range\x18\x01 \x01(\x01\x12\x1d\n\x15poke_nav_range_meters\x18\x02 \x01(\x01\x12\x1e\n\x16\x65ncounter_range_meters\x18\x03 \x01(\x01\x12+\n#get_map_objects_min_refresh_seconds\x18\x04 \x01(\x02\x12+\n#get_map_objects_max_refresh_seconds\x18\x05 \x01(\x02\x12+\n#get_map_objects_min_distance_meters\x18\x06 \x01(\x02\x12\x1b\n\x13google_maps_api_key\x18\x07 \x01(\t\"Q\n\rLevelSettings\x12\x1b\n\x13trainer_cp_modifier\x18\x02 \x01(\x01\x12#\n\x1btrainer_difficulty_modifier\x18\x03 \x01(\x01\"\x80\x01\n\x11InventorySettings\x12\x13\n\x0bmax_pokemon\x18\x01 \x01(\x05\x12\x15\n\rmax_bag_items\x18\x02 \x01(\x05\x12\x14\n\x0c\x62\x61se_pokemon\x18\x03 \x01(\x05\x12\x16\n\x0e\x62\x61se_bag_items\x18\x04 \x01(\x05\x12\x11\n\tbase_eggs\x18\x05 \x01(\x05')
+  serialized_pb=_b('\n\x0cRpcSub.proto\x12\x06RpcSub\x1a\rRpcEnum.proto\"G\n\x11GetPlayerResponse\x12\x10\n\x08unknown1\x18\x01 \x01(\x05\x12 \n\x07profile\x18\x02 \x01(\x0b\x32\x0f.RpcSub.Profile\"\xac\x02\n\x07Profile\x12\x15\n\rcreation_time\x18\x01 \x02(\x03\x12\x10\n\x08username\x18\x02 \x01(\t\x12 \n\x04team\x18\x05 \x01(\x0e\x32\x12.RpcEnum.TeamColor\x12\x10\n\x08tutorial\x18\x07 \x01(\x0c\x12%\n\x06\x61vatar\x18\x08 \x01(\x0b\x32\x15.RpcSub.AvatarDetails\x12\x14\n\x0cpoke_storage\x18\t \x01(\x05\x12\x14\n\x0citem_storage\x18\n \x01(\x05\x12\'\n\x0b\x64\x61ily_bonus\x18\x0b \x01(\x0b\x32\x12.RpcSub.DailyBonus\x12\x11\n\tunknown12\x18\x0c \x01(\x0c\x12\x11\n\tunknown13\x18\r \x01(\x0c\x12\"\n\x08\x63urrency\x18\x0e \x03(\x0b\x32\x10.RpcSub.Currency\"Y\n\nDailyBonus\x12\x1e\n\x16NextCollectTimestampMs\x18\x01 \x01(\x03\x12+\n#NextDefenderBonusCollectTimestampMs\x18\x02 \x01(\x03\"(\n\x08\x43urrency\x12\x0c\n\x04type\x18\x01 \x02(\t\x12\x0e\n\x06\x61mount\x18\x02 \x01(\x05\"X\n\rAvatarDetails\x12\x10\n\x08unknown2\x18\x02 \x01(\x05\x12\x10\n\x08unknown3\x18\x03 \x01(\x05\x12\x10\n\x08unknown9\x18\t \x01(\x05\x12\x11\n\tunknown10\x18\n \x01(\x05\"\'\n\x17\x44ownloadSettingsRequest\x12\x0c\n\x04hash\x18\x01 \x01(\t\"X\n\x14GetInventoryResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12/\n\x0finventory_delta\x18\x02 \x01(\x0b\x32\x16.RpcSub.InventoryDelta\"y\n\x0eInventoryDelta\x12\x1d\n\x15original_timestamp_ms\x18\x01 \x01(\x03\x12\x18\n\x10new_timestamp_ms\x18\x02 \x01(\x03\x12.\n\x0finventory_items\x18\x03 \x03(\x0b\x32\x15.RpcSub.InventoryItem\"\x80\x01\n\rInventoryItem\x12\x1d\n\x15modified_timestamp_ms\x18\x01 \x01(\x03\x12\x18\n\x10\x64\x65leted_item_key\x18\x02 \x01(\x03\x12\x36\n\x13inventory_item_data\x18\x03 \x01(\x0b\x32\x19.RpcSub.InventoryItemData\"\xcd\x03\n\x11InventoryItemData\x12$\n\x07pokemon\x18\x01 \x01(\x0b\x32\x13.RpcSub.PokemonData\x12\x1a\n\x04item\x18\x02 \x01(\x0b\x32\x0c.RpcSub.Item\x12+\n\rpokedex_entry\x18\x03 \x01(\x0b\x32\x14.RpcSub.PokedexEntry\x12)\n\x0cplayer_stats\x18\x04 \x01(\x0b\x32\x13.RpcSub.PlayerStats\x12/\n\x0fplayer_currency\x18\x05 \x01(\x0b\x32\x16.RpcSub.PlayerCurrency\x12+\n\rplayer_camera\x18\x06 \x01(\x0b\x32\x14.RpcSub.PlayerCamera\x12\x35\n\x12inventory_upgrades\x18\x07 \x01(\x0b\x32\x19.RpcSub.InventoryUpgrades\x12+\n\rapplied_items\x18\x08 \x01(\x0b\x32\x14.RpcSub.AppliedItems\x12-\n\x0e\x65gg_incubators\x18\t \x01(\x0b\x32\x15.RpcSub.EggIncubators\x12-\n\x0epokemon_family\x18\n \x01(\x0b\x32\x15.RpcSub.PokemonFamily\"\xd8\x05\n\x07Pokemon\x12\n\n\x02id\x18\x01 \x01(\x05\x12(\n\x0cpokemon_type\x18\x02 \x01(\x0e\x32\x12.RpcEnum.PokemonId\x12\n\n\x02\x63p\x18\x03 \x01(\x05\x12\x0f\n\x07stamina\x18\x04 \x01(\x05\x12\x13\n\x0bstamina_max\x18\x05 \x01(\x05\x12$\n\x06move_1\x18\x06 \x01(\x0e\x32\x14.RpcEnum.PokemonMove\x12$\n\x06move_2\x18\x07 \x01(\x0e\x32\x14.RpcEnum.PokemonMove\x12\x18\n\x10\x64\x65ployed_fort_id\x18\x08 \x01(\x05\x12\x12\n\nowner_name\x18\t \x01(\t\x12\x0e\n\x06is_egg\x18\n \x01(\x08\x12\x1c\n\x14\x65gg_km_walked_target\x18\x0b \x01(\x05\x12\x1b\n\x13\x65gg_km_walked_start\x18\x0c \x01(\x05\x12\x0e\n\x06origin\x18\x0e \x01(\x05\x12\x10\n\x08height_m\x18\x0f \x01(\x02\x12\x11\n\tweight_kg\x18\x10 \x01(\x02\x12\x19\n\x11individual_attack\x18\x11 \x01(\x05\x12\x1a\n\x12individual_defense\x18\x12 \x01(\x05\x12\x1a\n\x12individual_stamina\x18\x13 \x01(\x05\x12\x15\n\rcp_multiplier\x18\x14 \x01(\x05\x12\x10\n\x08pokeball\x18\x15 \x01(\x05\x12\x18\n\x10\x63\x61ptured_cell_id\x18\x16 \x01(\x04\x12\x18\n\x10\x62\x61ttles_attacked\x18\x17 \x01(\x05\x12\x18\n\x10\x62\x61ttles_defended\x18\x18 \x01(\x05\x12\x18\n\x10\x65gg_incubator_id\x18\x19 \x01(\x05\x12\x18\n\x10\x63reation_time_ms\x18\x1a \x01(\x04\x12\x14\n\x0cnum_upgrades\x18\x1b \x01(\x05\x12 \n\x18\x61\x64\x64itional_cp_multiplier\x18\x1c \x01(\x05\x12\x10\n\x08\x66\x61vorite\x18\x1d \x01(\x05\x12\x10\n\x08nickname\x18\x1e \x01(\t\x12\x11\n\tfrom_fort\x18\x1f \x01(\x05\"F\n\x04Item\x12\x1f\n\x04item\x18\x01 \x01(\x0e\x32\x11.RpcEnum.ItemType\x12\r\n\x05\x63ount\x18\x02 \x01(\x05\x12\x0e\n\x06unseen\x18\x03 \x01(\x08\"\x99\x01\n\x0cPokedexEntry\x12\x1c\n\x14pokedex_entry_number\x18\x01 \x01(\x05\x12\x19\n\x11times_encountered\x18\x02 \x01(\x05\x12\x16\n\x0etimes_captured\x18\x03 \x01(\x05\x12\x1e\n\x16\x65volution_stone_pieces\x18\x04 \x01(\x05\x12\x18\n\x10\x65volution_stones\x18\x05 \x01(\x05\"\xed\x04\n\x0bPlayerStats\x12\r\n\x05level\x18\x01 \x01(\x05\x12\x12\n\nexperience\x18\x02 \x01(\x03\x12\x15\n\rprev_level_xp\x18\x03 \x01(\x03\x12\x15\n\rnext_level_xp\x18\x04 \x01(\x03\x12\x11\n\tkm_walked\x18\x05 \x01(\x02\x12\x1c\n\x14pokemons_encountered\x18\x06 \x01(\x05\x12\x1e\n\x16unique_pokedex_entries\x18\x07 \x01(\x05\x12\x19\n\x11pokemons_captured\x18\x08 \x01(\x05\x12\x12\n\nevolutions\x18\t \x01(\x05\x12\x18\n\x10poke_stop_visits\x18\n \x01(\x05\x12\x18\n\x10pokeballs_thrown\x18\x0b \x01(\x05\x12\x14\n\x0c\x65ggs_hatched\x18\x0c \x01(\x05\x12\x1b\n\x13\x62ig_magikarp_caught\x18\r \x01(\x05\x12\x19\n\x11\x62\x61ttle_attack_won\x18\x0e \x01(\x05\x12\x1b\n\x13\x62\x61ttle_attack_total\x18\x0f \x01(\x05\x12\x1b\n\x13\x62\x61ttle_defended_won\x18\x10 \x01(\x05\x12\x1b\n\x13\x62\x61ttle_training_won\x18\x11 \x01(\x05\x12\x1d\n\x15\x62\x61ttle_training_total\x18\x12 \x01(\x05\x12\x1d\n\x15prestige_raised_total\x18\x13 \x01(\x05\x12\x1e\n\x16prestige_dropped_total\x18\x14 \x01(\x05\x12\x18\n\x10pokemon_deployed\x18\x15 \x01(\x05\x12\x1e\n\x16pokemon_caught_by_type\x18\x16 \x01(\x0c\x12\x1c\n\x14small_rattata_caught\x18\x17 \x01(\x05\"\x1e\n\x0ePlayerCurrency\x12\x0c\n\x04gems\x18\x01 \x01(\x05\")\n\x0cPlayerCamera\x12\x19\n\x11is_default_camera\x18\x01 \x01(\x08\"I\n\x11InventoryUpgrades\x12\x34\n\x12inventory_upgrades\x18\x01 \x03(\x0b\x32\x18.RpcSub.InventoryUpgrade\"\x84\x01\n\x10InventoryUpgrade\x12\x1f\n\x04item\x18\x01 \x01(\x0e\x32\x11.RpcEnum.ItemType\x12\x33\n\x0cupgrade_type\x18\x02 \x01(\x0e\x32\x1d.RpcEnum.InventoryUpgradeType\x12\x1a\n\x12\x61\x64\x64itional_storage\x18\x03 \x01(\x05\"1\n\x0c\x41ppliedItems\x12!\n\x04item\x18\x04 \x01(\x0b\x32\x13.RpcSub.AppliedItem\"\x87\x01\n\x0b\x41ppliedItem\x12\"\n\titem_type\x18\x01 \x01(\x0e\x32\x0f.RpcEnum.ItemId\x12-\n\x12item_type_category\x18\x02 \x01(\x0e\x32\x11.RpcEnum.ItemType\x12\x11\n\texpire_ms\x18\x03 \x01(\x03\x12\x12\n\napplied_ms\x18\x04 \x01(\x03\"<\n\rEggIncubators\x12+\n\regg_incubator\x18\x01 \x01(\x0b\x32\x14.RpcSub.EggIncubator\"\xd7\x01\n\x0c\x45ggIncubator\x12\x0f\n\x07item_id\x18\x01 \x01(\t\x12$\n\titem_type\x18\x02 \x01(\x0e\x32\x11.RpcEnum.ItemType\x12\x31\n\x0eincubator_type\x18\x03 \x01(\x0e\x32\x19.RpcEnum.EggIncubatorType\x12\x16\n\x0euses_remaining\x18\x04 \x01(\x05\x12\x12\n\npokemon_id\x18\x05 \x01(\x03\x12\x17\n\x0fstart_km_walked\x18\x06 \x01(\x01\x12\x18\n\x10target_km_walked\x18\x07 \x01(\x01\"K\n\rPokemonFamily\x12+\n\tfamily_id\x18\x01 \x01(\x0e\x32\x18.RpcEnum.PokemonFamilyId\x12\r\n\x05\x63\x61ndy\x18\x02 \x01(\x05\"h\n\x14GetMapObjectsRequest\x12\x0f\n\x07\x63\x65ll_id\x18\x01 \x01(\x0c\x12\x1a\n\x12since_timestamp_ms\x18\x02 \x01(\x0c\x12\x10\n\x08latitude\x18\x03 \x01(\x01\x12\x11\n\tlongitude\x18\x04 \x01(\x01\"f\n\x15GetMapObjectsResponse\x12\"\n\tmap_cells\x18\x01 \x03(\x0b\x32\x0f.RpcSub.MapCell\x12)\n\x06status\x18\x02 \x01(\x0e\x32\x19.RpcEnum.MapObjectsStatus\"\xa7\x03\n\x07MapCell\x12\x12\n\ns2_cell_id\x18\x01 \x01(\x04\x12\x1c\n\x14\x63urrent_timestamp_ms\x18\x02 \x01(\x03\x12\x1f\n\x05\x66orts\x18\x03 \x03(\x0b\x32\x10.RpcSub.FortData\x12(\n\x0cspawn_points\x18\x04 \x03(\x0b\x32\x12.RpcSub.SpawnPoint\x12\x17\n\x0f\x64\x65leted_objects\x18\x06 \x03(\t\x12\x19\n\x11is_truncated_list\x18\x07 \x01(\x08\x12+\n\x0e\x66ort_summaries\x18\x08 \x03(\x0b\x32\x13.RpcSub.FortSummary\x12\x32\n\x16\x64\x65\x63imated_spawn_points\x18\t \x03(\x0b\x32\x12.RpcSub.SpawnPoint\x12*\n\rwild_pokemons\x18\x05 \x03(\x0b\x32\x13.RpcSub.WildPokemon\x12.\n\x12\x63\x61tchable_pokemons\x18\n \x03(\x0b\x32\x12.RpcSub.MapPokemon\x12.\n\x0fnearby_pokemons\x18\x0b \x03(\x0b\x32\x15.RpcSub.NearbyPokemon\"\xf8\x03\n\x08\x46ortData\x12\n\n\x02id\x18\x01 \x01(\t\x12\"\n\x1alast_modified_timestamp_ms\x18\x02 \x01(\x03\x12\x10\n\x08latitude\x18\x03 \x01(\x01\x12\x11\n\tlongitude\x18\x04 \x01(\x01\x12\x0f\n\x07\x65nabled\x18\x08 \x01(\x08\x12\x1f\n\x04type\x18\t \x01(\x0e\x32\x11.RpcEnum.FortType\x12)\n\rowned_by_team\x18\x05 \x01(\x0e\x32\x12.RpcEnum.TeamColor\x12,\n\x10guard_pokemon_id\x18\x06 \x01(\x0e\x32\x12.RpcEnum.PokemonId\x12\x18\n\x10guard_pokemon_cp\x18\x07 \x01(\x05\x12\x12\n\ngym_points\x18\n \x01(\x03\x12\x14\n\x0cis_in_battle\x18\x0b \x01(\x08\x12&\n\x1e\x63ooldown_complete_timestamp_ms\x18\x0e \x01(\x03\x12%\n\x07sponsor\x18\x0f \x01(\x0e\x32\x14.RpcEnum.FortSponsor\x12\x32\n\x0erendering_type\x18\x10 \x01(\x0e\x32\x1a.RpcEnum.FortRenderingType\x12\x1c\n\x14\x61\x63tive_fort_modifier\x18\x0c \x01(\x0c\x12\'\n\tlure_info\x18\r \x01(\x0b\x32\x14.RpcSub.FortLureInfo\"\x83\x01\n\x0c\x46ortLureInfo\x12\x0f\n\x07\x66ort_id\x18\x01 \x01(\t\x12\x10\n\x08unknown2\x18\x02 \x01(\x01\x12-\n\x11\x61\x63tive_pokemon_id\x18\x03 \x01(\x0e\x32\x12.RpcEnum.PokemonId\x12!\n\x19lure_expires_timestamp_ms\x18\x04 \x01(\x03\"1\n\nSpawnPoint\x12\x10\n\x08latitude\x18\x02 \x01(\x01\x12\x11\n\tlongitude\x18\x03 \x01(\x01\"o\n\x0b\x46ortSummary\x12\x17\n\x0f\x66ort_summary_id\x18\x01 \x01(\x05\x12\"\n\x1alast_modified_timestamp_ms\x18\x02 \x01(\x05\x12\x10\n\x08latitude\x18\x03 \x01(\x05\x12\x11\n\tlongitude\x18\x04 \x01(\x05\"\xcb\x01\n\x0bWildPokemon\x12\x14\n\x0c\x65ncounter_id\x18\x01 \x01(\x06\x12\"\n\x1alast_modified_timestamp_ms\x18\x02 \x01(\x03\x12\x10\n\x08latitude\x18\x03 \x01(\x01\x12\x11\n\tlongitude\x18\x04 \x01(\x01\x12\x15\n\rspawnpoint_id\x18\x05 \x01(\t\x12)\n\x0cpokemon_data\x18\x07 \x01(\x0b\x32\x13.RpcSub.PokemonData\x12\x1b\n\x13time_till_hidden_ms\x18\x0b \x01(\x05\"\xda\x05\n\x0bPokemonData\x12\n\n\x02id\x18\x01 \x01(\x06\x12&\n\npokemon_id\x18\x02 \x01(\x0e\x32\x12.RpcEnum.PokemonId\x12\n\n\x02\x63p\x18\x03 \x01(\x05\x12\x0f\n\x07stamina\x18\x04 \x01(\x05\x12\x13\n\x0bstamina_max\x18\x05 \x01(\x05\x12$\n\x06move_1\x18\x06 \x01(\x0e\x32\x14.RpcEnum.PokemonMove\x12$\n\x06move_2\x18\x07 \x01(\x0e\x32\x14.RpcEnum.PokemonMove\x12\x18\n\x10\x64\x65ployed_fort_id\x18\x08 \x01(\x05\x12\x12\n\nowner_name\x18\t \x01(\t\x12\x0e\n\x06is_egg\x18\n \x01(\x08\x12\x1c\n\x14\x65gg_km_walked_target\x18\x0b \x01(\x05\x12\x1b\n\x13\x65gg_km_walked_start\x18\x0c \x01(\x05\x12\x0e\n\x06origin\x18\x0e \x01(\x05\x12\x10\n\x08height_m\x18\x0f \x01(\x02\x12\x11\n\tweight_kg\x18\x10 \x01(\x02\x12\x19\n\x11individual_attack\x18\x11 \x01(\x05\x12\x1a\n\x12individual_defense\x18\x12 \x01(\x05\x12\x1a\n\x12individual_stamina\x18\x13 \x01(\x05\x12\x15\n\rcp_multiplier\x18\x14 \x01(\x05\x12\x10\n\x08pokeball\x18\x15 \x01(\x05\x12\x18\n\x10\x63\x61ptured_cell_id\x18\x16 \x01(\x04\x12\x18\n\x10\x62\x61ttles_attacked\x18\x17 \x01(\x05\x12\x18\n\x10\x62\x61ttles_defended\x18\x18 \x01(\x05\x12\x18\n\x10\x65gg_incubator_id\x18\x19 \x01(\x05\x12\x18\n\x10\x63reation_time_ms\x18\x1a \x01(\x04\x12\x14\n\x0cnum_upgrades\x18\x1b \x01(\x05\x12 \n\x18\x61\x64\x64itional_cp_multiplier\x18\x1c \x01(\x05\x12\x10\n\x08\x66\x61vorite\x18\x1d \x01(\x05\x12\x10\n\x08nickname\x18\x1e \x01(\t\x12\x11\n\tfrom_fort\x18\x1f \x01(\x05\"\xa7\x01\n\nMapPokemon\x12\x15\n\rspawnpoint_id\x18\x01 \x01(\t\x12\x14\n\x0c\x65ncounter_id\x18\x02 \x01(\x06\x12&\n\npokemon_id\x18\x03 \x01(\x0e\x32\x12.RpcEnum.PokemonId\x12\x1f\n\x17\x65xpiration_timestamp_ms\x18\x04 \x01(\x03\x12\x10\n\x08latitude\x18\x05 \x01(\x01\x12\x11\n\tlongitude\x18\x06 \x01(\x01\"i\n\rNearbyPokemon\x12&\n\npokemon_id\x18\x01 \x01(\x0e\x32\x12.RpcEnum.PokemonId\x12\x1a\n\x12\x64istance_in_meters\x18\x02 \x01(\x02\x12\x14\n\x0c\x65ncounter_id\x18\x03 \x01(\x06\"a\n\x18\x44ownloadSettingsResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\x12\x0c\n\x04hash\x18\x02 \x01(\t\x12(\n\x08settings\x18\x03 \x01(\x0b\x32\x16.RpcSub.GlobalSettings\"\xee\x01\n\x0eGlobalSettings\x12+\n\rfort_settings\x18\x02 \x01(\x0b\x32\x14.RpcSub.FortSettings\x12)\n\x0cmap_settings\x18\x03 \x01(\x0b\x32\x13.RpcSub.MapSettings\x12-\n\x0elevel_settings\x18\x04 \x01(\x0b\x32\x15.RpcSub.LevelSettings\x12\x35\n\x12inventory_settings\x18\x05 \x01(\x0b\x32\x19.RpcSub.InventorySettings\x12\x1e\n\x16minimum_client_version\x18\x06 \x01(\t\"\xe4\x01\n\x0c\x46ortSettings\x12 \n\x18interaction_range_meters\x18\x01 \x01(\x01\x12\"\n\x1amax_total_deployed_pokemon\x18\x02 \x01(\x05\x12#\n\x1bmax_player_deployed_pokemon\x18\x03 \x01(\x05\x12!\n\x19\x64\x65ploy_stamina_multiplier\x18\x04 \x01(\x01\x12 \n\x18\x64\x65ploy_attack_multiplier\x18\x05 \x01(\x01\x12$\n\x1c\x66\x61r_interaction_range_meters\x18\x06 \x01(\x01\"\x8f\x02\n\x0bMapSettings\x12\x1d\n\x15pokemon_visible_range\x18\x01 \x01(\x01\x12\x1d\n\x15poke_nav_range_meters\x18\x02 \x01(\x01\x12\x1e\n\x16\x65ncounter_range_meters\x18\x03 \x01(\x01\x12+\n#get_map_objects_min_refresh_seconds\x18\x04 \x01(\x02\x12+\n#get_map_objects_max_refresh_seconds\x18\x05 \x01(\x02\x12+\n#get_map_objects_min_distance_meters\x18\x06 \x01(\x02\x12\x1b\n\x13google_maps_api_key\x18\x07 \x01(\t\"Q\n\rLevelSettings\x12\x1b\n\x13trainer_cp_modifier\x18\x02 \x01(\x01\x12#\n\x1btrainer_difficulty_modifier\x18\x03 \x01(\x01\"\x80\x01\n\x11InventorySettings\x12\x13\n\x0bmax_pokemon\x18\x01 \x01(\x05\x12\x15\n\rmax_bag_items\x18\x02 \x01(\x05\x12\x14\n\x0c\x62\x61se_pokemon\x18\x03 \x01(\x05\x12\x16\n\x0e\x62\x61se_bag_items\x18\x04 \x01(\x05\x12\x11\n\tbase_eggs\x18\x05 \x01(\x05\":\n\x13PlayerUpdateRequest\x12\x10\n\x08latitude\x18\x01 \x01(\x01\x12\x11\n\tlongitude\x18\x02 \x01(\x01\"y\n\x14PlayerUpdateResponse\x12*\n\rwild_pokemons\x18\x01 \x03(\x0b\x32\x13.RpcSub.WildPokemon\x12\x1f\n\x05\x66orts\x18\x02 \x03(\x0b\x32\x10.RpcSub.FortData\x12\x14\n\x0c\x66orts_nearby\x18\x03 \x01(\x05\"\x1e\n\x1c\x44ownloadItemTemplatesRequest\"\xab\x07\n\x1d\x44ownloadItemTemplatesResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12J\n\x0eitem_templates\x18\x02 \x03(\x0b\x32\x32.RpcSub.DownloadItemTemplatesResponse.ItemTemplate\x12\x14\n\x0ctimestamp_ms\x18\x03 \x01(\x04\x1a\x96\x06\n\x0cItemTemplate\x12\x13\n\x0btemplate_id\x18\x01 \x01(\t\x12\x31\n\x10pokemon_settings\x18\x02 \x01(\x0b\x32\x17.RpcSub.PokemonSettings\x12+\n\ritem_settings\x18\x03 \x01(\x0b\x32\x14.RpcSub.ItemSettings\x12+\n\rmove_settings\x18\x04 \x01(\x0b\x32\x14.RpcSub.MoveSettings\x12<\n\x16move_sequence_settings\x18\x05 \x01(\x0b\x32\x1c.RpcSub.MoveSequenceSettings\x12\x35\n\x0etype_effective\x18\x08 \x01(\x0b\x32\x1d.RpcSub.TypeEffectiveSettings\x12-\n\x0e\x62\x61\x64ge_settings\x18\n \x01(\x0b\x32\x15.RpcSub.BadgeSettings\x12&\n\x06\x63\x61mera\x18\x0b \x01(\x0b\x32\x16.RpcSub.CameraSettings\x12\x31\n\x0cplayer_level\x18\x0c \x01(\x0b\x32\x1b.RpcSub.PlayerLevelSettings\x12+\n\tgym_level\x18\r \x01(\x0b\x32\x18.RpcSub.GymLevelSettings\x12\x32\n\x0f\x62\x61ttle_settings\x18\x0e \x01(\x0b\x32\x19.RpcSub.GymBattleSettings\x12\x35\n\x12\x65ncounter_settings\x18\x0f \x01(\x0b\x32\x19.RpcSub.EncounterSettings\x12\x30\n\x10iap_item_display\x18\x10 \x01(\x0b\x32\x16.RpcSub.IapItemDisplay\x12)\n\x0ciap_settings\x18\x11 \x01(\x0b\x32\x13.RpcSub.IapSettings\x12\x38\n\x10pokemon_upgrades\x18\x12 \x01(\x0b\x32\x1e.RpcSub.PokemonUpgradeSettings\x12\x36\n\x0f\x65quipped_badges\x18\x13 \x01(\x0b\x32\x1d.RpcSub.EquippedBadgeSettings\"i\n\x15UseItemCaptureRequest\x12 \n\x07item_id\x18\x01 \x01(\x0e\x32\x0f.RpcEnum.ItemId\x12\x14\n\x0c\x65ncounter_id\x18\x02 \x01(\x06\x12\x18\n\x10spawn_point_guid\x18\x03 \x01(\t\"\xb1\x01\n\x16UseItemCaptureResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x19\n\x11item_capture_mult\x18\x02 \x01(\x01\x12\x16\n\x0eitem_flee_mult\x18\x03 \x01(\x01\x12\x15\n\rstop_movement\x18\x04 \x01(\x08\x12\x13\n\x0bstop_attack\x18\x05 \x01(\x08\x12\x12\n\ntarget_max\x18\x06 \x01(\x08\x12\x13\n\x0btarget_slow\x18\x07 \x01(\x08\"+\n\x15ReleasePokemonRequest\x12\x12\n\npokemon_id\x18\x01 \x01(\x06\"\xc4\x01\n\x16ReleasePokemonResponse\x12\x35\n\x06result\x18\x01 \x01(\x0e\x32%.RpcSub.ReleasePokemonResponse.Result\x12\x15\n\rcandy_awarded\x18\x02 \x01(\x05\"\\\n\x06Result\x12\t\n\x05UNSET\x10\x00\x12\x0b\n\x07SUCCESS\x10\x01\x12\x14\n\x10POKEMON_DEPLOYED\x10\x02\x12\n\n\x06\x46\x41ILED\x10\x03\x12\x18\n\x14\x45RROR_POKEMON_IS_EGG\x10\x04\"\x17\n\x15GetHatchedEggsRequest\"\x8e\x01\n\x16GetHatchedEggsResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x16\n\npokemon_id\x18\x02 \x03(\x04\x42\x02\x10\x01\x12\x1a\n\x12\x65xperience_awarded\x18\x03 \x03(\x05\x12\x15\n\rcandy_awarded\x18\x04 \x03(\x05\x12\x18\n\x10stardust_awarded\x18\x05 \x03(\x05\"\x86\x01\n\x11\x46ortSearchRequest\x12\x0f\n\x07\x66ort_id\x18\x01 \x01(\t\x12\x17\n\x0fplayer_latitude\x18\x02 \x01(\x01\x12\x18\n\x10player_longitude\x18\x03 \x01(\x01\x12\x15\n\rfort_latitude\x18\x04 \x01(\x01\x12\x16\n\x0e\x66ort_longitude\x18\x05 \x01(\x01\"\xdc\x03\n\x12\x46ortSearchResponse\x12\x31\n\x06result\x18\x01 \x01(\x0e\x32!.RpcSub.FortSearchResponse.Result\x12;\n\ritems_awarded\x18\x02 \x03(\x0b\x32$.RpcSub.FortSearchResponse.ItemAward\x12\x14\n\x0cgems_awarded\x18\x03 \x01(\x05\x12-\n\x10pokemon_data_egg\x18\x04 \x01(\x0b\x32\x13.RpcSub.PokemonData\x12\x1a\n\x12\x65xperience_awarded\x18\x05 \x01(\x05\x12&\n\x1e\x63ooldown_complete_timestamp_ms\x18\x06 \x01(\x03\x12\"\n\x1a\x63hain_hack_sequence_number\x18\x07 \x01(\x05\x1a\x41\n\tItemAward\x12 \n\x07item_id\x18\x01 \x01(\x0e\x32\x0f.RpcEnum.ItemId\x12\x12\n\nitem_count\x18\x02 \x01(\x05\"f\n\x06Result\x12\x11\n\rNO_RESULT_SET\x10\x00\x12\x0b\n\x07SUCCESS\x10\x01\x12\x10\n\x0cOUT_OF_RANGE\x10\x02\x12\x16\n\x12IN_COOLDOWN_PERIOD\x10\x03\x12\x12\n\x0eINVENTORY_FULL\x10\x04\"J\n\x12\x46ortDetailsRequest\x12\x0f\n\x07\x66ort_id\x18\x01 \x01(\t\x12\x10\n\x08latitude\x18\x02 \x01(\x01\x12\x11\n\tlongitude\x18\x03 \x01(\x01\"\xd1\x02\n\x13\x46ortDetailsResponse\x12\x0f\n\x07\x66ort_id\x18\x01 \x01(\t\x12&\n\nteam_color\x18\x02 \x01(\x0e\x32\x12.RpcEnum.TeamColor\x12)\n\x0cpokemon_data\x18\x03 \x01(\x0b\x32\x13.RpcSub.PokemonData\x12\x0c\n\x04name\x18\x04 \x01(\t\x12\x12\n\nimage_urls\x18\x05 \x03(\t\x12\n\n\x02\x66p\x18\x06 \x01(\x05\x12\x0f\n\x07stamina\x18\x07 \x01(\x05\x12\x13\n\x0bmax_stamina\x18\x08 \x01(\x05\x12\x1f\n\x04type\x18\t \x01(\x0e\x32\x11.RpcEnum.FortType\x12\x10\n\x08latitude\x18\n \x01(\x01\x12\x11\n\tlongitude\x18\x0b \x01(\x01\x12\x13\n\x0b\x64\x65scription\x18\x0c \x01(\t\x12\'\n\tmodifiers\x18\r \x03(\x0b\x32\x14.RpcSub.FortModifier\"s\n\x0c\x46ortModifier\x12 \n\x07item_id\x18\x01 \x01(\x0e\x32\x0f.RpcEnum.ItemId\x12\x1f\n\x17\x65xpiration_timestamp_ms\x18\x02 \x01(\x03\x12 \n\x18\x64\x65ployer_player_codename\x18\x03 \x01(\t\"r\n\x10\x45ncounterRequest\x12\x14\n\x0c\x65ncounter_id\x18\x01 \x01(\x06\x12\x15\n\rspawnpoint_id\x18\x02 \x01(\t\x12\x17\n\x0fplayer_latitude\x18\x03 \x01(\x01\x12\x18\n\x10player_longitude\x18\x04 \x01(\x01\"\xe1\x03\n\x11\x45ncounterResponse\x12)\n\x0cwild_pokemon\x18\x01 \x01(\x0b\x32\x13.RpcSub.WildPokemon\x12\x38\n\nbackground\x18\x02 \x01(\x0e\x32$.RpcSub.EncounterResponse.Background\x12\x30\n\x06status\x18\x03 \x01(\x0e\x32 .RpcSub.EncounterResponse.Status\x12\x37\n\x13\x63\x61pture_probability\x18\x04 \x01(\x0b\x32\x1a.RpcSub.CaptureProbability\"\"\n\nBackground\x12\x08\n\x04PARK\x10\x00\x12\n\n\x06\x44\x45SERT\x10\x01\"\xd7\x01\n\x06Status\x12\x13\n\x0f\x45NCOUNTER_ERROR\x10\x00\x12\x15\n\x11\x45NCOUNTER_SUCCESS\x10\x01\x12\x17\n\x13\x45NCOUNTER_NOT_FOUND\x10\x02\x12\x14\n\x10\x45NCOUNTER_CLOSED\x10\x03\x12\x1a\n\x16\x45NCOUNTER_POKEMON_FLED\x10\x04\x12\x1a\n\x16\x45NCOUNTER_NOT_IN_RANGE\x10\x05\x12\x1e\n\x1a\x45NCOUNTER_ALREADY_HAPPENED\x10\x06\x12\x1a\n\x16POKEMON_INVENTORY_FULL\x10\x07\"{\n\x12\x43\x61ptureProbability\x12&\n\rpokeball_type\x18\x01 \x03(\x0e\x32\x0f.RpcEnum.ItemId\x12\x1b\n\x13\x63\x61pture_probability\x18\x02 \x03(\x02\x12 \n\x18reticle_difficulty_scale\x18\x0c \x01(\x01\"p\n\x14\x44iskEncounterRequest\x12\x14\n\x0c\x65ncounter_id\x18\x01 \x01(\x06\x12\x0f\n\x07\x66ort_id\x18\x02 \x01(\t\x12\x17\n\x0fplayer_latitude\x18\x03 \x01(\x01\x12\x18\n\x10player_longitude\x18\x04 \x01(\x01\"\xb7\x02\n\x15\x44iskEncounterResponse\x12\x34\n\x06result\x18\x01 \x01(\x0e\x32$.RpcSub.DiskEncounterResponse.Result\x12)\n\x0cpokemon_data\x18\x02 \x01(\x0b\x32\x13.RpcSub.PokemonData\x12\x37\n\x13\x63\x61pture_probability\x18\x03 \x01(\x0b\x32\x1a.RpcSub.CaptureProbability\"\x83\x01\n\x06Result\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0b\n\x07SUCCESS\x10\x01\x12\x11\n\rNOT_AVAILABLE\x10\x02\x12\x10\n\x0cNOT_IN_RANGE\x10\x03\x12\x1e\n\x1a\x45NCOUNTER_ALREADY_FINISHED\x10\x04\x12\x1a\n\x16POKEMON_INVENTORY_FULL\x10\x05\"\xc3\x01\n\x13\x43\x61tchPokemonRequest\x12\x14\n\x0c\x65ncounter_id\x18\x01 \x01(\x06\x12\x10\n\x08pokeball\x18\x02 \x01(\x05\x12\x1f\n\x17normalized_reticle_size\x18\x03 \x01(\x01\x12\x18\n\x10spawn_point_guid\x18\x04 \x01(\t\x12\x13\n\x0bhit_pokemon\x18\x05 \x01(\x08\x12\x15\n\rspin_modifier\x18\x06 \x01(\x01\x12\x1d\n\x15NormalizedHitPosition\x18\x07 \x01(\x01\"\x90\x02\n\x14\x43\x61tchPokemonResponse\x12\x38\n\x06status\x18\x01 \x01(\x0e\x32(.RpcSub.CatchPokemonResponse.CatchStatus\x12\x14\n\x0cmiss_percent\x18\x02 \x01(\x01\x12\x1b\n\x13\x63\x61ptured_pokemon_id\x18\x03 \x01(\x04\x12$\n\x06scores\x18\x04 \x01(\x0b\x32\x14.RpcSub.CaptureScore\"e\n\x0b\x43\x61tchStatus\x12\x0f\n\x0b\x43\x41TCH_ERROR\x10\x00\x12\x11\n\rCATCH_SUCCESS\x10\x01\x12\x10\n\x0c\x43\x41TCH_ESCAPE\x10\x02\x12\x0e\n\nCATCH_FLEE\x10\x03\x12\x10\n\x0c\x43\x41TCH_MISSED\x10\x04\"i\n\x0c\x43\x61ptureScore\x12,\n\ractivity_type\x18\x01 \x03(\x0e\x32\x15.RpcEnum.ActivityType\x12\n\n\x02xp\x18\x02 \x03(\x05\x12\r\n\x05\x63\x61ndy\x18\x03 \x03(\x05\x12\x10\n\x08stardust\x18\x04 \x03(\x05\"\x1b\n\x19\x43heckAwardedBadgesRequest\"w\n\x1a\x43heckAwardedBadgesResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12*\n\x0e\x61warded_badges\x18\x02 \x03(\x0e\x32\x12.RpcEnum.BadgeType\x12\x1c\n\x14\x61warded_badge_levels\x18\x03 \x03(\x05\"y\n\x15\x45quippedBadgeSettings\x12\x1f\n\x17\x65quip_badge_cooldown_ms\x18\x01 \x01(\x03\x12\x1f\n\x17\x63\x61tch_probability_bonus\x18\x02 \x03(\x02\x12\x1e\n\x16\x66lee_probability_bonus\x18\x03 \x03(\x02\"\x84\x01\n\x16PokemonUpgradeSettings\x12\x1a\n\x12upgrades_per_level\x18\x01 \x01(\x05\x12#\n\x1b\x61llowed_levels_above_player\x18\x02 \x01(\x05\x12\x12\n\ncandy_cost\x18\x03 \x03(\x05\x12\x15\n\rstardust_cost\x18\x04 \x03(\x05\"\x8c\x02\n\x0bIapSettings\x12\x19\n\x11\x64\x61ily_bonus_coins\x18\x01 \x01(\x05\x12(\n daily_defender_bonus_per_pokemon\x18\x02 \x03(\x05\x12*\n\"daily_defender_bonus_max_defenders\x18\x03 \x01(\x05\x12%\n\x1d\x64\x61ily_defender_bonus_currency\x18\x04 \x03(\t\x12\"\n\x1amin_time_between_claims_ms\x18\x05 \x01(\x03\x12\x1b\n\x13\x64\x61ily_bonus_enabled\x18\x06 \x01(\x08\x12$\n\x1c\x64\x61ily_defender_bonus_enabled\x18\x07 \x01(\x08\"\x94\x01\n\x0eIapItemDisplay\x12\x0b\n\x03sku\x18\x01 \x01(\t\x12.\n\x08\x63\x61tegory\x18\x02 \x01(\x0e\x32\x1c.RpcEnum.HoloIapItemCategory\x12\x12\n\nsort_order\x18\x03 \x01(\x05\x12!\n\x08item_ids\x18\x04 \x03(\x0e\x32\x0f.RpcEnum.ItemId\x12\x0e\n\x06\x63ounts\x18\x05 \x03(\x05\"\xae\x01\n\x11\x45ncounterSettings\x12\x1c\n\x14spin_bonus_threshold\x18\x01 \x01(\x02\x12!\n\x19\x65xcellent_throw_threshold\x18\x02 \x01(\x02\x12\x1d\n\x15great_throw_threshold\x18\x03 \x01(\x02\x12\x1c\n\x14nice_throw_threshold\x18\x04 \x01(\x02\x12\x1b\n\x13milestone_threshold\x18\x05 \x01(\x05\"\xc6\x03\n\x11GymBattleSettings\x12\x16\n\x0e\x65nergy_per_sec\x18\x01 \x01(\x02\x12\x19\n\x11\x64odge_energy_cost\x18\x02 \x01(\x02\x12\x18\n\x10retarget_seconds\x18\x03 \x01(\x02\x12\x1d\n\x15\x65nemy_attack_interval\x18\x04 \x01(\x02\x12\x1e\n\x16\x61ttack_server_interval\x18\x05 \x01(\x02\x12\x1e\n\x16round_duration_seconds\x18\x06 \x01(\x02\x12#\n\x1b\x62onus_time_per_ally_seconds\x18\x07 \x01(\x02\x12$\n\x1cmaximum_attackers_per_battle\x18\x08 \x01(\x05\x12)\n!same_type_attack_bonus_multiplier\x18\t \x01(\x02\x12\x16\n\x0emaximum_energy\x18\n \x01(\x05\x12$\n\x1c\x65nergy_delta_per_health_lost\x18\x0b \x01(\x02\x12\x19\n\x11\x64odge_duration_ms\x18\x0c \x01(\x05\x12\x1c\n\x14minimum_player_level\x18\r \x01(\x05\x12\x18\n\x10swap_duration_ms\x18\x0e \x01(\x05\"w\n\x10GymLevelSettings\x12\x1b\n\x13required_experience\x18\x01 \x03(\x05\x12\x14\n\x0cleader_slots\x18\x02 \x03(\x05\x12\x15\n\rtrainer_slots\x18\x03 \x03(\x05\x12\x19\n\x11search_roll_bonus\x18\x04 \x03(\x05\"\x9d\x01\n\x13PlayerLevelSettings\x12\x10\n\x08rank_num\x18\x01 \x03(\x05\x12\x1b\n\x13required_experience\x18\x02 \x03(\x05\x12\x15\n\rcp_multiplier\x18\x03 \x03(\x02\x12\x1c\n\x14max_egg_player_level\x18\x04 \x01(\x05\x12\"\n\x1amax_encounter_player_level\x18\x05 \x01(\x05\"\xc5\x03\n\x0e\x43\x61meraSettings\x12\x13\n\x0bnext_camera\x18\x01 \x01(\t\x12\x33\n\rinterpolation\x18\x02 \x03(\x0e\x32\x1c.RpcEnum.CameraInterpolation\x12*\n\x0btarget_type\x18\x03 \x03(\x0e\x32\x15.RpcEnum.CameraTarget\x12\x15\n\rease_in_speed\x18\x04 \x03(\x02\x12\x16\n\x0e\x65\x61st_out_speed\x18\x05 \x03(\x02\x12\x18\n\x10\x64uration_seconds\x18\x06 \x03(\x02\x12\x14\n\x0cwait_seconds\x18\x07 \x03(\x02\x12\x1a\n\x12transition_seconds\x18\x08 \x03(\x02\x12\x14\n\x0c\x61ngle_degree\x18\t \x03(\x02\x12\x1b\n\x13\x61ngle_offset_degree\x18\n \x03(\x02\x12\x14\n\x0cpitch_degree\x18\x0b \x03(\x02\x12\x1b\n\x13pitch_offset_degree\x18\x0c \x03(\x02\x12\x13\n\x0broll_degree\x18\r \x03(\x02\x12\x17\n\x0f\x64istance_meters\x18\x0e \x03(\x02\x12\x16\n\x0eheight_percent\x18\x0f \x03(\x02\x12\x16\n\x0evert_ctr_ratio\x18\x10 \x03(\x02\"\\\n\rBadgeSettings\x12&\n\nbadge_type\x18\x01 \x01(\x0e\x32\x12.RpcEnum.BadgeType\x12\x12\n\nbadge_rank\x18\x02 \x01(\x05\x12\x0f\n\x07targets\x18\x03 \x03(\x05\"Y\n\x15TypeEffectiveSettings\x12\x15\n\rattack_scalar\x18\x01 \x03(\x02\x12)\n\x0b\x61ttack_type\x18\x02 \x01(\x0e\x32\x14.RpcEnum.PokemonType\"(\n\x14MoveSequenceSettings\x12\x10\n\x08sequence\x18\x01 \x03(\t\"\xa7\x03\n\x0cMoveSettings\x12\x31\n\x0bmovement_id\x18\x01 \x01(\x0e\x32\x1c.RpcEnum.PokemonMovementType\x12\x14\n\x0c\x61nimation_id\x18\x02 \x01(\x05\x12*\n\x0cpokemon_type\x18\x03 \x01(\x0e\x32\x14.RpcEnum.PokemonType\x12\r\n\x05power\x18\x04 \x01(\x02\x12\x17\n\x0f\x61\x63\x63uracy_chance\x18\x05 \x01(\x02\x12\x17\n\x0f\x63ritical_chance\x18\x06 \x01(\x02\x12\x13\n\x0bheal_scalar\x18\x07 \x01(\x02\x12\x1b\n\x13stamina_loss_scalar\x18\x08 \x01(\x02\x12\x19\n\x11trainer_level_min\x18\t \x01(\x05\x12\x19\n\x11trainer_level_max\x18\n \x01(\x05\x12\x10\n\x08vfx_name\x18\x0b \x01(\t\x12\x13\n\x0b\x64uration_ms\x18\x0c \x01(\x05\x12\x1e\n\x16\x64\x61mage_window_start_ms\x18\r \x01(\x05\x12\x1c\n\x14\x64\x61mage_window_end_ms\x18\x0e \x01(\x05\x12\x14\n\x0c\x65nergy_delta\x18\x0f \x01(\x05\"\xed\x05\n\x0fPokemonSettings\x12&\n\npokemon_id\x18\x01 \x01(\x0e\x32\x12.RpcEnum.PokemonId\x12\x13\n\x0bmodel_scale\x18\x03 \x01(\x02\x12\"\n\x04type\x18\x04 \x01(\x0e\x32\x14.RpcEnum.PokemonType\x12$\n\x06type_2\x18\x05 \x01(\x0e\x32\x14.RpcEnum.PokemonType\x12(\n\x06\x63\x61mera\x18\x06 \x01(\x0b\x32\x18.RpcSub.CameraAttributes\x12.\n\tencounter\x18\x07 \x01(\x0b\x32\x1b.RpcSub.EncounterAttributes\x12&\n\x05stats\x18\x08 \x01(\x0b\x32\x17.RpcSub.StatsAttributes\x12)\n\x0bquick_moves\x18\t \x03(\x0e\x32\x14.RpcEnum.PokemonMove\x12-\n\x0f\x63inematic_moves\x18\n \x03(\x0e\x32\x14.RpcEnum.PokemonMove\x12\x16\n\x0e\x61nimation_time\x18\x0b \x03(\x02\x12)\n\revolution_ids\x18\x0c \x03(\x0e\x32\x12.RpcEnum.PokemonId\x12\x16\n\x0e\x65volution_pips\x18\r \x01(\x05\x12$\n\x05\x63lass\x18\x0e \x01(\x0e\x32\x15.RpcEnum.PokemonClass\x12\x18\n\x10pokedex_height_m\x18\x0f \x01(\x02\x12\x19\n\x11pokedex_weight_kg\x18\x10 \x01(\x02\x12-\n\x11parent_pokemon_id\x18\x11 \x01(\x0e\x32\x12.RpcEnum.PokemonId\x12\x16\n\x0eheight_std_dev\x18\x12 \x01(\x02\x12\x16\n\x0eweight_std_dev\x18\x13 \x01(\x02\x12\x1c\n\x14km_distance_to_hatch\x18\x14 \x01(\x02\x12+\n\tfamily_id\x18\x15 \x01(\x0e\x32\x18.RpcEnum.PokemonFamilyId\x12\x17\n\x0f\x63\x61ndy_to_evolve\x18\x16 \x01(\x05\"\x97\x01\n\x10\x43\x61meraAttributes\x12\x15\n\rdisk_radius_m\x18\x01 \x01(\x02\x12\x19\n\x11\x63ylinder_radius_m\x18\x02 \x01(\x02\x12\x19\n\x11\x63ylinder_height_m\x18\x03 \x01(\x02\x12\x19\n\x11\x63ylinder_ground_m\x18\x04 \x01(\x02\x12\x1b\n\x13shoulder_mode_scale\x18\x05 \x01(\x02\"\x9d\x02\n\x13\x45ncounterAttributes\x12\x19\n\x11\x62\x61se_capture_rate\x18\x01 \x01(\x02\x12\x16\n\x0e\x62\x61se_flee_rate\x18\x02 \x01(\x02\x12\x1a\n\x12\x63ollision_radius_m\x18\x03 \x01(\x02\x12\x1a\n\x12\x63ollision_height_m\x18\x04 \x01(\x02\x12\x1f\n\x17\x63ollision_head_radius_m\x18\x05 \x01(\x02\x12\x33\n\rmovement_type\x18\x06 \x01(\x0e\x32\x1c.RpcEnum.PokemonMovementType\x12\x18\n\x10movement_timer_s\x18\x07 \x01(\x02\x12\x13\n\x0bjump_time_s\x18\x08 \x01(\x02\x12\x16\n\x0e\x61ttack_timer_s\x18\t \x01(\x02\"n\n\x0fStatsAttributes\x12\x14\n\x0c\x62\x61se_stamina\x18\x01 \x01(\x05\x12\x13\n\x0b\x62\x61se_attack\x18\x02 \x01(\x05\x12\x14\n\x0c\x62\x61se_defense\x18\x03 \x01(\x05\x12\x1a\n\x12\x64odge_energy_delta\x18\x08 \x01(\x05\"\x8e\x05\n\x0cItemSettings\x12 \n\x07item_id\x18\x01 \x01(\x0e\x32\x0f.RpcEnum.ItemId\x12$\n\titem_type\x18\x02 \x01(\x0e\x32\x11.RpcEnum.ItemType\x12\'\n\x08\x63\x61tegory\x18\x03 \x01(\x0e\x32\x15.RpcEnum.ItemCategory\x12\x11\n\tdrop_freq\x18\x04 \x01(\x02\x12\x1a\n\x12\x64rop_trainer_level\x18\x05 \x01(\x05\x12,\n\x08pokeball\x18\x06 \x01(\x0b\x32\x1a.RpcSub.PokeballAttributes\x12(\n\x06potion\x18\x07 \x01(\x0b\x32\x18.RpcSub.PotionAttributes\x12(\n\x06revive\x18\x08 \x01(\x0b\x32\x18.RpcSub.ReviveAttributes\x12(\n\x06\x62\x61ttle\x18\t \x01(\x0b\x32\x18.RpcSub.BattleAttributes\x12$\n\x04\x66ood\x18\n \x01(\x0b\x32\x16.RpcSub.FoodAttributes\x12=\n\x11inventory_upgrade\x18\x0b \x01(\x0b\x32\".RpcSub.InventoryUpgradeAttributes\x12\x33\n\x08xp_boost\x18\x0c \x01(\x0b\x32!.RpcSub.ExperienceBoostAttributes\x12*\n\x07incense\x18\r \x01(\x0b\x32\x19.RpcSub.IncenseAttributes\x12\x35\n\regg_incubator\x18\x0e \x01(\x0b\x32\x1e.RpcSub.EggIncubatorAttributes\x12\x35\n\rfort_modifier\x18\x0f \x01(\x0b\x32\x1e.RpcSub.FortModifierAttributes\"\'\n\x10\x42\x61ttleAttributes\x12\x13\n\x0bsta_percent\x18\x01 \x01(\x02\"v\n\x16\x45ggIncubatorAttributes\x12\x31\n\x0eincubator_type\x18\x01 \x01(\x0e\x32\x19.RpcEnum.EggIncubatorType\x12\x0c\n\x04uses\x18\x02 \x01(\x05\x12\x1b\n\x13\x64istance_multiplier\x18\x03 \x01(\x02\"M\n\x19\x45xperienceBoostAttributes\x12\x15\n\rxp_multiplier\x18\x01 \x01(\x02\x12\x19\n\x11\x62oost_duration_ms\x18\x02 \x01(\x05\"o\n\x0e\x46oodAttributes\x12(\n\x0bitem_effect\x18\x01 \x03(\x0e\x32\x13.RpcEnum.ItemEffect\x12\x1b\n\x13item_effect_percent\x18\x02 \x03(\x02\x12\x16\n\x0egrowth_percent\x18\x03 \x01(\x02\"b\n\x16\x46ortModifierAttributes\x12!\n\x19modifier_lifetime_seconds\x18\x01 \x01(\x05\x12%\n\x1dtroy_disk_num_pokemon_spawned\x18\x02 \x01(\x05\"\xc9\x02\n\x11IncenseAttributes\x12 \n\x18incense_lifetime_seconds\x18\x01 \x01(\x05\x12*\n\x0cpokemon_type\x18\x02 \x03(\x0e\x32\x14.RpcEnum.PokemonType\x12(\n pokemon_incense_type_probability\x18\x03 \x01(\x02\x12\x30\n(standing_time_between_encounters_seconds\x18\x04 \x01(\x05\x12-\n%moving_time_between_encounter_seconds\x18\x05 \x01(\x05\x12\x35\n-distance_required_for_shorter_interval_meters\x18\x06 \x01(\x05\x12$\n\x1cpokemon_attracted_length_sec\x18\x07 \x01(\x05\"m\n\x1aInventoryUpgradeAttributes\x12\x1a\n\x12\x61\x64\x64itional_storage\x18\x01 \x01(\x05\x12\x33\n\x0cupgrade_type\x18\x02 \x01(\x0e\x32\x1d.RpcEnum.InventoryUpgradeType\"\x8c\x01\n\x12PokeballAttributes\x12(\n\x0bitem_effect\x18\x01 \x01(\x0e\x32\x13.RpcEnum.ItemEffect\x12\x15\n\rcapture_multi\x18\x02 \x01(\x02\x12\x1c\n\x14\x63\x61pture_multi_effect\x18\x03 \x01(\x02\x12\x17\n\x0fitem_effect_mod\x18\x04 \x01(\x02\";\n\x10PotionAttributes\x12\x13\n\x0bsta_percent\x18\x01 \x01(\x02\x12\x12\n\nsta_amount\x18\x02 \x01(\x05\"\'\n\x10ReviveAttributes\x12\x13\n\x0bsta_percent\x18\x01 \x01(\x02')
   ,
   dependencies=[RpcEnum_pb2.DESCRIPTOR,])
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 
+
+_RELEASEPOKEMONRESPONSE_RESULT = _descriptor.EnumDescriptor(
+  name='Result',
+  full_name='RpcSub.ReleasePokemonResponse.Result',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='UNSET', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='SUCCESS', index=1, number=1,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='POKEMON_DEPLOYED', index=2, number=2,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='FAILED', index=3, number=3,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='ERROR_POKEMON_IS_EGG', index=4, number=4,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=9211,
+  serialized_end=9303,
+)
+_sym_db.RegisterEnumDescriptor(_RELEASEPOKEMONRESPONSE_RESULT)
+
+_FORTSEARCHRESPONSE_RESULT = _descriptor.EnumDescriptor(
+  name='Result',
+  full_name='RpcSub.FortSearchResponse.Result',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='NO_RESULT_SET', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='SUCCESS', index=1, number=1,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='OUT_OF_RANGE', index=2, number=2,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='IN_COOLDOWN_PERIOD', index=3, number=3,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='INVENTORY_FULL', index=4, number=4,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=9987,
+  serialized_end=10089,
+)
+_sym_db.RegisterEnumDescriptor(_FORTSEARCHRESPONSE_RESULT)
+
+_ENCOUNTERRESPONSE_BACKGROUND = _descriptor.EnumDescriptor(
+  name='Background',
+  full_name='RpcSub.EncounterResponse.Background',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='PARK', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='DESERT', index=1, number=1,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=10970,
+  serialized_end=11004,
+)
+_sym_db.RegisterEnumDescriptor(_ENCOUNTERRESPONSE_BACKGROUND)
+
+_ENCOUNTERRESPONSE_STATUS = _descriptor.EnumDescriptor(
+  name='Status',
+  full_name='RpcSub.EncounterResponse.Status',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='ENCOUNTER_ERROR', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='ENCOUNTER_SUCCESS', index=1, number=1,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='ENCOUNTER_NOT_FOUND', index=2, number=2,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='ENCOUNTER_CLOSED', index=3, number=3,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='ENCOUNTER_POKEMON_FLED', index=4, number=4,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='ENCOUNTER_NOT_IN_RANGE', index=5, number=5,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='ENCOUNTER_ALREADY_HAPPENED', index=6, number=6,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='POKEMON_INVENTORY_FULL', index=7, number=7,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=11007,
+  serialized_end=11222,
+)
+_sym_db.RegisterEnumDescriptor(_ENCOUNTERRESPONSE_STATUS)
+
+_DISKENCOUNTERRESPONSE_RESULT = _descriptor.EnumDescriptor(
+  name='Result',
+  full_name='RpcSub.DiskEncounterResponse.Result',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='UNKNOWN', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='SUCCESS', index=1, number=1,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='NOT_AVAILABLE', index=2, number=2,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='NOT_IN_RANGE', index=3, number=3,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='ENCOUNTER_ALREADY_FINISHED', index=4, number=4,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='POKEMON_INVENTORY_FULL', index=5, number=5,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=11644,
+  serialized_end=11775,
+)
+_sym_db.RegisterEnumDescriptor(_DISKENCOUNTERRESPONSE_RESULT)
+
+_CATCHPOKEMONRESPONSE_CATCHSTATUS = _descriptor.EnumDescriptor(
+  name='CatchStatus',
+  full_name='RpcSub.CatchPokemonResponse.CatchStatus',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='CATCH_ERROR', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='CATCH_SUCCESS', index=1, number=1,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='CATCH_ESCAPE', index=2, number=2,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='CATCH_FLEE', index=3, number=3,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='CATCH_MISSED', index=4, number=4,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=12147,
+  serialized_end=12248,
+)
+_sym_db.RegisterEnumDescriptor(_CATCHPOKEMONRESPONSE_CATCHSTATUS)
 
 
 _GETPLAYERRESPONSE = _descriptor.Descriptor(
@@ -533,7 +741,7 @@ _INVENTORYITEMDATA = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=1024,
-  serialized_end=1481,
+  serialized_end=1485,
 )
 
 
@@ -765,8 +973,8 @@ _POKEMON = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1484,
-  serialized_end=2212,
+  serialized_start=1488,
+  serialized_end=2216,
 )
 
 
@@ -809,8 +1017,8 @@ _ITEM = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2214,
-  serialized_end=2284,
+  serialized_start=2218,
+  serialized_end=2288,
 )
 
 
@@ -867,8 +1075,8 @@ _POKEDEXENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2287,
-  serialized_end=2440,
+  serialized_start=2291,
+  serialized_end=2444,
 )
 
 
@@ -1051,8 +1259,8 @@ _PLAYERSTATS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2443,
-  serialized_end=3064,
+  serialized_start=2447,
+  serialized_end=3068,
 )
 
 
@@ -1081,8 +1289,8 @@ _PLAYERCURRENCY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3066,
-  serialized_end=3096,
+  serialized_start=3070,
+  serialized_end=3100,
 )
 
 
@@ -1111,8 +1319,8 @@ _PLAYERCAMERA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3098,
-  serialized_end=3139,
+  serialized_start=3102,
+  serialized_end=3143,
 )
 
 
@@ -1141,8 +1349,8 @@ _INVENTORYUPGRADES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3141,
-  serialized_end=3214,
+  serialized_start=3145,
+  serialized_end=3218,
 )
 
 
@@ -1185,8 +1393,8 @@ _INVENTORYUPGRADE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3217,
-  serialized_end=3349,
+  serialized_start=3221,
+  serialized_end=3353,
 )
 
 
@@ -1215,8 +1423,8 @@ _APPLIEDITEMS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3351,
-  serialized_end=3400,
+  serialized_start=3355,
+  serialized_end=3404,
 )
 
 
@@ -1266,8 +1474,8 @@ _APPLIEDITEM = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3403,
-  serialized_end=3548,
+  serialized_start=3407,
+  serialized_end=3542,
 )
 
 
@@ -1296,8 +1504,8 @@ _EGGINCUBATORS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3550,
-  serialized_end=3610,
+  serialized_start=3544,
+  serialized_end=3604,
 )
 
 
@@ -1368,8 +1576,8 @@ _EGGINCUBATOR = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3613,
-  serialized_end=3828,
+  serialized_start=3607,
+  serialized_end=3822,
 )
 
 
@@ -1405,8 +1613,8 @@ _POKEMONFAMILY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3830,
-  serialized_end=3905,
+  serialized_start=3824,
+  serialized_end=3899,
 )
 
 
@@ -1456,8 +1664,8 @@ _GETMAPOBJECTSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3907,
-  serialized_end=4011,
+  serialized_start=3901,
+  serialized_end=4005,
 )
 
 
@@ -1493,8 +1701,8 @@ _GETMAPOBJECTSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4013,
-  serialized_end=4115,
+  serialized_start=4007,
+  serialized_end=4109,
 )
 
 
@@ -1593,8 +1801,8 @@ _MAPCELL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4118,
-  serialized_end=4541,
+  serialized_start=4112,
+  serialized_end=4535,
 )
 
 
@@ -1728,8 +1936,8 @@ _FORTDATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4544,
-  serialized_end=5048,
+  serialized_start=4538,
+  serialized_end=5042,
 )
 
 
@@ -1779,8 +1987,8 @@ _FORTLUREINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5051,
-  serialized_end=5182,
+  serialized_start=5045,
+  serialized_end=5176,
 )
 
 
@@ -1816,8 +2024,8 @@ _SPAWNPOINT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5184,
-  serialized_end=5233,
+  serialized_start=5178,
+  serialized_end=5227,
 )
 
 
@@ -1867,8 +2075,8 @@ _FORTSUMMARY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5235,
-  serialized_end=5346,
+  serialized_start=5229,
+  serialized_end=5340,
 )
 
 
@@ -1939,8 +2147,8 @@ _WILDPOKEMON = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5349,
-  serialized_end=5552,
+  serialized_start=5343,
+  serialized_end=5546,
 )
 
 
@@ -1953,7 +2161,7 @@ _POKEMONDATA = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='id', full_name='RpcSub.PokemonData.id', index=0,
-      number=1, type=5, cpp_type=1, label=1,
+      number=1, type=6, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -2172,8 +2380,8 @@ _POKEMONDATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5555,
-  serialized_end=6285,
+  serialized_start=5549,
+  serialized_end=6279,
 )
 
 
@@ -2237,8 +2445,8 @@ _MAPPOKEMON = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6288,
-  serialized_end=6455,
+  serialized_start=6282,
+  serialized_end=6449,
 )
 
 
@@ -2281,8 +2489,8 @@ _NEARBYPOKEMON = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6457,
-  serialized_end=6562,
+  serialized_start=6451,
+  serialized_end=6556,
 )
 
 
@@ -2325,8 +2533,8 @@ _DOWNLOADSETTINGSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6564,
-  serialized_end=6661,
+  serialized_start=6558,
+  serialized_end=6655,
 )
 
 
@@ -2383,8 +2591,8 @@ _GLOBALSETTINGS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6664,
-  serialized_end=6902,
+  serialized_start=6658,
+  serialized_end=6896,
 )
 
 
@@ -2448,8 +2656,8 @@ _FORTSETTINGS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6905,
-  serialized_end=7133,
+  serialized_start=6899,
+  serialized_end=7127,
 )
 
 
@@ -2520,8 +2728,8 @@ _MAPSETTINGS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7136,
-  serialized_end=7407,
+  serialized_start=7130,
+  serialized_end=7401,
 )
 
 
@@ -2557,8 +2765,8 @@ _LEVELSETTINGS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7409,
-  serialized_end=7490,
+  serialized_start=7403,
+  serialized_end=7484,
 )
 
 
@@ -2615,8 +2823,3209 @@ _INVENTORYSETTINGS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7493,
-  serialized_end=7621,
+  serialized_start=7487,
+  serialized_end=7615,
+)
+
+
+_PLAYERUPDATEREQUEST = _descriptor.Descriptor(
+  name='PlayerUpdateRequest',
+  full_name='RpcSub.PlayerUpdateRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='latitude', full_name='RpcSub.PlayerUpdateRequest.latitude', index=0,
+      number=1, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='longitude', full_name='RpcSub.PlayerUpdateRequest.longitude', index=1,
+      number=2, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=7617,
+  serialized_end=7675,
+)
+
+
+_PLAYERUPDATERESPONSE = _descriptor.Descriptor(
+  name='PlayerUpdateResponse',
+  full_name='RpcSub.PlayerUpdateResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='wild_pokemons', full_name='RpcSub.PlayerUpdateResponse.wild_pokemons', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='forts', full_name='RpcSub.PlayerUpdateResponse.forts', index=1,
+      number=2, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='forts_nearby', full_name='RpcSub.PlayerUpdateResponse.forts_nearby', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=7677,
+  serialized_end=7798,
+)
+
+
+_DOWNLOADITEMTEMPLATESREQUEST = _descriptor.Descriptor(
+  name='DownloadItemTemplatesRequest',
+  full_name='RpcSub.DownloadItemTemplatesRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=7800,
+  serialized_end=7830,
+)
+
+
+_DOWNLOADITEMTEMPLATESRESPONSE_ITEMTEMPLATE = _descriptor.Descriptor(
+  name='ItemTemplate',
+  full_name='RpcSub.DownloadItemTemplatesResponse.ItemTemplate',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='template_id', full_name='RpcSub.DownloadItemTemplatesResponse.ItemTemplate.template_id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pokemon_settings', full_name='RpcSub.DownloadItemTemplatesResponse.ItemTemplate.pokemon_settings', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='item_settings', full_name='RpcSub.DownloadItemTemplatesResponse.ItemTemplate.item_settings', index=2,
+      number=3, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='move_settings', full_name='RpcSub.DownloadItemTemplatesResponse.ItemTemplate.move_settings', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='move_sequence_settings', full_name='RpcSub.DownloadItemTemplatesResponse.ItemTemplate.move_sequence_settings', index=4,
+      number=5, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='type_effective', full_name='RpcSub.DownloadItemTemplatesResponse.ItemTemplate.type_effective', index=5,
+      number=8, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='badge_settings', full_name='RpcSub.DownloadItemTemplatesResponse.ItemTemplate.badge_settings', index=6,
+      number=10, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='camera', full_name='RpcSub.DownloadItemTemplatesResponse.ItemTemplate.camera', index=7,
+      number=11, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='player_level', full_name='RpcSub.DownloadItemTemplatesResponse.ItemTemplate.player_level', index=8,
+      number=12, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='gym_level', full_name='RpcSub.DownloadItemTemplatesResponse.ItemTemplate.gym_level', index=9,
+      number=13, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='battle_settings', full_name='RpcSub.DownloadItemTemplatesResponse.ItemTemplate.battle_settings', index=10,
+      number=14, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='encounter_settings', full_name='RpcSub.DownloadItemTemplatesResponse.ItemTemplate.encounter_settings', index=11,
+      number=15, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='iap_item_display', full_name='RpcSub.DownloadItemTemplatesResponse.ItemTemplate.iap_item_display', index=12,
+      number=16, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='iap_settings', full_name='RpcSub.DownloadItemTemplatesResponse.ItemTemplate.iap_settings', index=13,
+      number=17, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pokemon_upgrades', full_name='RpcSub.DownloadItemTemplatesResponse.ItemTemplate.pokemon_upgrades', index=14,
+      number=18, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='equipped_badges', full_name='RpcSub.DownloadItemTemplatesResponse.ItemTemplate.equipped_badges', index=15,
+      number=19, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=7982,
+  serialized_end=8772,
+)
+
+_DOWNLOADITEMTEMPLATESRESPONSE = _descriptor.Descriptor(
+  name='DownloadItemTemplatesResponse',
+  full_name='RpcSub.DownloadItemTemplatesResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='success', full_name='RpcSub.DownloadItemTemplatesResponse.success', index=0,
+      number=1, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='item_templates', full_name='RpcSub.DownloadItemTemplatesResponse.item_templates', index=1,
+      number=2, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='timestamp_ms', full_name='RpcSub.DownloadItemTemplatesResponse.timestamp_ms', index=2,
+      number=3, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[_DOWNLOADITEMTEMPLATESRESPONSE_ITEMTEMPLATE, ],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=7833,
+  serialized_end=8772,
+)
+
+
+_USEITEMCAPTUREREQUEST = _descriptor.Descriptor(
+  name='UseItemCaptureRequest',
+  full_name='RpcSub.UseItemCaptureRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='item_id', full_name='RpcSub.UseItemCaptureRequest.item_id', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='encounter_id', full_name='RpcSub.UseItemCaptureRequest.encounter_id', index=1,
+      number=2, type=6, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='spawn_point_guid', full_name='RpcSub.UseItemCaptureRequest.spawn_point_guid', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=8774,
+  serialized_end=8879,
+)
+
+
+_USEITEMCAPTURERESPONSE = _descriptor.Descriptor(
+  name='UseItemCaptureResponse',
+  full_name='RpcSub.UseItemCaptureResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='success', full_name='RpcSub.UseItemCaptureResponse.success', index=0,
+      number=1, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='item_capture_mult', full_name='RpcSub.UseItemCaptureResponse.item_capture_mult', index=1,
+      number=2, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='item_flee_mult', full_name='RpcSub.UseItemCaptureResponse.item_flee_mult', index=2,
+      number=3, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='stop_movement', full_name='RpcSub.UseItemCaptureResponse.stop_movement', index=3,
+      number=4, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='stop_attack', full_name='RpcSub.UseItemCaptureResponse.stop_attack', index=4,
+      number=5, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='target_max', full_name='RpcSub.UseItemCaptureResponse.target_max', index=5,
+      number=6, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='target_slow', full_name='RpcSub.UseItemCaptureResponse.target_slow', index=6,
+      number=7, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=8882,
+  serialized_end=9059,
+)
+
+
+_RELEASEPOKEMONREQUEST = _descriptor.Descriptor(
+  name='ReleasePokemonRequest',
+  full_name='RpcSub.ReleasePokemonRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='pokemon_id', full_name='RpcSub.ReleasePokemonRequest.pokemon_id', index=0,
+      number=1, type=6, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=9061,
+  serialized_end=9104,
+)
+
+
+_RELEASEPOKEMONRESPONSE = _descriptor.Descriptor(
+  name='ReleasePokemonResponse',
+  full_name='RpcSub.ReleasePokemonResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='result', full_name='RpcSub.ReleasePokemonResponse.result', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='candy_awarded', full_name='RpcSub.ReleasePokemonResponse.candy_awarded', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+    _RELEASEPOKEMONRESPONSE_RESULT,
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=9107,
+  serialized_end=9303,
+)
+
+
+_GETHATCHEDEGGSREQUEST = _descriptor.Descriptor(
+  name='GetHatchedEggsRequest',
+  full_name='RpcSub.GetHatchedEggsRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=9305,
+  serialized_end=9328,
+)
+
+
+_GETHATCHEDEGGSRESPONSE = _descriptor.Descriptor(
+  name='GetHatchedEggsResponse',
+  full_name='RpcSub.GetHatchedEggsResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='success', full_name='RpcSub.GetHatchedEggsResponse.success', index=0,
+      number=1, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pokemon_id', full_name='RpcSub.GetHatchedEggsResponse.pokemon_id', index=1,
+      number=2, type=4, cpp_type=4, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))),
+    _descriptor.FieldDescriptor(
+      name='experience_awarded', full_name='RpcSub.GetHatchedEggsResponse.experience_awarded', index=2,
+      number=3, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='candy_awarded', full_name='RpcSub.GetHatchedEggsResponse.candy_awarded', index=3,
+      number=4, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='stardust_awarded', full_name='RpcSub.GetHatchedEggsResponse.stardust_awarded', index=4,
+      number=5, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=9331,
+  serialized_end=9473,
+)
+
+
+_FORTSEARCHREQUEST = _descriptor.Descriptor(
+  name='FortSearchRequest',
+  full_name='RpcSub.FortSearchRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='fort_id', full_name='RpcSub.FortSearchRequest.fort_id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='player_latitude', full_name='RpcSub.FortSearchRequest.player_latitude', index=1,
+      number=2, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='player_longitude', full_name='RpcSub.FortSearchRequest.player_longitude', index=2,
+      number=3, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='fort_latitude', full_name='RpcSub.FortSearchRequest.fort_latitude', index=3,
+      number=4, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='fort_longitude', full_name='RpcSub.FortSearchRequest.fort_longitude', index=4,
+      number=5, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=9476,
+  serialized_end=9610,
+)
+
+
+_FORTSEARCHRESPONSE_ITEMAWARD = _descriptor.Descriptor(
+  name='ItemAward',
+  full_name='RpcSub.FortSearchResponse.ItemAward',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='item_id', full_name='RpcSub.FortSearchResponse.ItemAward.item_id', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='item_count', full_name='RpcSub.FortSearchResponse.ItemAward.item_count', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=9920,
+  serialized_end=9985,
+)
+
+_FORTSEARCHRESPONSE = _descriptor.Descriptor(
+  name='FortSearchResponse',
+  full_name='RpcSub.FortSearchResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='result', full_name='RpcSub.FortSearchResponse.result', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='items_awarded', full_name='RpcSub.FortSearchResponse.items_awarded', index=1,
+      number=2, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='gems_awarded', full_name='RpcSub.FortSearchResponse.gems_awarded', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pokemon_data_egg', full_name='RpcSub.FortSearchResponse.pokemon_data_egg', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='experience_awarded', full_name='RpcSub.FortSearchResponse.experience_awarded', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='cooldown_complete_timestamp_ms', full_name='RpcSub.FortSearchResponse.cooldown_complete_timestamp_ms', index=5,
+      number=6, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='chain_hack_sequence_number', full_name='RpcSub.FortSearchResponse.chain_hack_sequence_number', index=6,
+      number=7, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[_FORTSEARCHRESPONSE_ITEMAWARD, ],
+  enum_types=[
+    _FORTSEARCHRESPONSE_RESULT,
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=9613,
+  serialized_end=10089,
+)
+
+
+_FORTDETAILSREQUEST = _descriptor.Descriptor(
+  name='FortDetailsRequest',
+  full_name='RpcSub.FortDetailsRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='fort_id', full_name='RpcSub.FortDetailsRequest.fort_id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='latitude', full_name='RpcSub.FortDetailsRequest.latitude', index=1,
+      number=2, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='longitude', full_name='RpcSub.FortDetailsRequest.longitude', index=2,
+      number=3, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=10091,
+  serialized_end=10165,
+)
+
+
+_FORTDETAILSRESPONSE = _descriptor.Descriptor(
+  name='FortDetailsResponse',
+  full_name='RpcSub.FortDetailsResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='fort_id', full_name='RpcSub.FortDetailsResponse.fort_id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='team_color', full_name='RpcSub.FortDetailsResponse.team_color', index=1,
+      number=2, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pokemon_data', full_name='RpcSub.FortDetailsResponse.pokemon_data', index=2,
+      number=3, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='name', full_name='RpcSub.FortDetailsResponse.name', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='image_urls', full_name='RpcSub.FortDetailsResponse.image_urls', index=4,
+      number=5, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='fp', full_name='RpcSub.FortDetailsResponse.fp', index=5,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='stamina', full_name='RpcSub.FortDetailsResponse.stamina', index=6,
+      number=7, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='max_stamina', full_name='RpcSub.FortDetailsResponse.max_stamina', index=7,
+      number=8, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='type', full_name='RpcSub.FortDetailsResponse.type', index=8,
+      number=9, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='latitude', full_name='RpcSub.FortDetailsResponse.latitude', index=9,
+      number=10, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='longitude', full_name='RpcSub.FortDetailsResponse.longitude', index=10,
+      number=11, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='description', full_name='RpcSub.FortDetailsResponse.description', index=11,
+      number=12, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='modifiers', full_name='RpcSub.FortDetailsResponse.modifiers', index=12,
+      number=13, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=10168,
+  serialized_end=10505,
+)
+
+
+_FORTMODIFIER = _descriptor.Descriptor(
+  name='FortModifier',
+  full_name='RpcSub.FortModifier',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='item_id', full_name='RpcSub.FortModifier.item_id', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='expiration_timestamp_ms', full_name='RpcSub.FortModifier.expiration_timestamp_ms', index=1,
+      number=2, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='deployer_player_codename', full_name='RpcSub.FortModifier.deployer_player_codename', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=10507,
+  serialized_end=10622,
+)
+
+
+_ENCOUNTERREQUEST = _descriptor.Descriptor(
+  name='EncounterRequest',
+  full_name='RpcSub.EncounterRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='encounter_id', full_name='RpcSub.EncounterRequest.encounter_id', index=0,
+      number=1, type=6, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='spawnpoint_id', full_name='RpcSub.EncounterRequest.spawnpoint_id', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='player_latitude', full_name='RpcSub.EncounterRequest.player_latitude', index=2,
+      number=3, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='player_longitude', full_name='RpcSub.EncounterRequest.player_longitude', index=3,
+      number=4, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=10624,
+  serialized_end=10738,
+)
+
+
+_ENCOUNTERRESPONSE = _descriptor.Descriptor(
+  name='EncounterResponse',
+  full_name='RpcSub.EncounterResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='wild_pokemon', full_name='RpcSub.EncounterResponse.wild_pokemon', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='background', full_name='RpcSub.EncounterResponse.background', index=1,
+      number=2, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='status', full_name='RpcSub.EncounterResponse.status', index=2,
+      number=3, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='capture_probability', full_name='RpcSub.EncounterResponse.capture_probability', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+    _ENCOUNTERRESPONSE_BACKGROUND,
+    _ENCOUNTERRESPONSE_STATUS,
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=10741,
+  serialized_end=11222,
+)
+
+
+_CAPTUREPROBABILITY = _descriptor.Descriptor(
+  name='CaptureProbability',
+  full_name='RpcSub.CaptureProbability',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='pokeball_type', full_name='RpcSub.CaptureProbability.pokeball_type', index=0,
+      number=1, type=14, cpp_type=8, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='capture_probability', full_name='RpcSub.CaptureProbability.capture_probability', index=1,
+      number=2, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='reticle_difficulty_scale', full_name='RpcSub.CaptureProbability.reticle_difficulty_scale', index=2,
+      number=12, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=11224,
+  serialized_end=11347,
+)
+
+
+_DISKENCOUNTERREQUEST = _descriptor.Descriptor(
+  name='DiskEncounterRequest',
+  full_name='RpcSub.DiskEncounterRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='encounter_id', full_name='RpcSub.DiskEncounterRequest.encounter_id', index=0,
+      number=1, type=6, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='fort_id', full_name='RpcSub.DiskEncounterRequest.fort_id', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='player_latitude', full_name='RpcSub.DiskEncounterRequest.player_latitude', index=2,
+      number=3, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='player_longitude', full_name='RpcSub.DiskEncounterRequest.player_longitude', index=3,
+      number=4, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=11349,
+  serialized_end=11461,
+)
+
+
+_DISKENCOUNTERRESPONSE = _descriptor.Descriptor(
+  name='DiskEncounterResponse',
+  full_name='RpcSub.DiskEncounterResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='result', full_name='RpcSub.DiskEncounterResponse.result', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pokemon_data', full_name='RpcSub.DiskEncounterResponse.pokemon_data', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='capture_probability', full_name='RpcSub.DiskEncounterResponse.capture_probability', index=2,
+      number=3, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+    _DISKENCOUNTERRESPONSE_RESULT,
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=11464,
+  serialized_end=11775,
+)
+
+
+_CATCHPOKEMONREQUEST = _descriptor.Descriptor(
+  name='CatchPokemonRequest',
+  full_name='RpcSub.CatchPokemonRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='encounter_id', full_name='RpcSub.CatchPokemonRequest.encounter_id', index=0,
+      number=1, type=6, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pokeball', full_name='RpcSub.CatchPokemonRequest.pokeball', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='normalized_reticle_size', full_name='RpcSub.CatchPokemonRequest.normalized_reticle_size', index=2,
+      number=3, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='spawn_point_guid', full_name='RpcSub.CatchPokemonRequest.spawn_point_guid', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='hit_pokemon', full_name='RpcSub.CatchPokemonRequest.hit_pokemon', index=4,
+      number=5, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='spin_modifier', full_name='RpcSub.CatchPokemonRequest.spin_modifier', index=5,
+      number=6, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='NormalizedHitPosition', full_name='RpcSub.CatchPokemonRequest.NormalizedHitPosition', index=6,
+      number=7, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=11778,
+  serialized_end=11973,
+)
+
+
+_CATCHPOKEMONRESPONSE = _descriptor.Descriptor(
+  name='CatchPokemonResponse',
+  full_name='RpcSub.CatchPokemonResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='status', full_name='RpcSub.CatchPokemonResponse.status', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='miss_percent', full_name='RpcSub.CatchPokemonResponse.miss_percent', index=1,
+      number=2, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='captured_pokemon_id', full_name='RpcSub.CatchPokemonResponse.captured_pokemon_id', index=2,
+      number=3, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='scores', full_name='RpcSub.CatchPokemonResponse.scores', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+    _CATCHPOKEMONRESPONSE_CATCHSTATUS,
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=11976,
+  serialized_end=12248,
+)
+
+
+_CAPTURESCORE = _descriptor.Descriptor(
+  name='CaptureScore',
+  full_name='RpcSub.CaptureScore',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='activity_type', full_name='RpcSub.CaptureScore.activity_type', index=0,
+      number=1, type=14, cpp_type=8, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='xp', full_name='RpcSub.CaptureScore.xp', index=1,
+      number=2, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='candy', full_name='RpcSub.CaptureScore.candy', index=2,
+      number=3, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='stardust', full_name='RpcSub.CaptureScore.stardust', index=3,
+      number=4, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=12250,
+  serialized_end=12355,
+)
+
+
+_CHECKAWARDEDBADGESREQUEST = _descriptor.Descriptor(
+  name='CheckAwardedBadgesRequest',
+  full_name='RpcSub.CheckAwardedBadgesRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=12357,
+  serialized_end=12384,
+)
+
+
+_CHECKAWARDEDBADGESRESPONSE = _descriptor.Descriptor(
+  name='CheckAwardedBadgesResponse',
+  full_name='RpcSub.CheckAwardedBadgesResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='success', full_name='RpcSub.CheckAwardedBadgesResponse.success', index=0,
+      number=1, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='awarded_badges', full_name='RpcSub.CheckAwardedBadgesResponse.awarded_badges', index=1,
+      number=2, type=14, cpp_type=8, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='awarded_badge_levels', full_name='RpcSub.CheckAwardedBadgesResponse.awarded_badge_levels', index=2,
+      number=3, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=12386,
+  serialized_end=12505,
+)
+
+
+_EQUIPPEDBADGESETTINGS = _descriptor.Descriptor(
+  name='EquippedBadgeSettings',
+  full_name='RpcSub.EquippedBadgeSettings',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='equip_badge_cooldown_ms', full_name='RpcSub.EquippedBadgeSettings.equip_badge_cooldown_ms', index=0,
+      number=1, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='catch_probability_bonus', full_name='RpcSub.EquippedBadgeSettings.catch_probability_bonus', index=1,
+      number=2, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='flee_probability_bonus', full_name='RpcSub.EquippedBadgeSettings.flee_probability_bonus', index=2,
+      number=3, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=12507,
+  serialized_end=12628,
+)
+
+
+_POKEMONUPGRADESETTINGS = _descriptor.Descriptor(
+  name='PokemonUpgradeSettings',
+  full_name='RpcSub.PokemonUpgradeSettings',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='upgrades_per_level', full_name='RpcSub.PokemonUpgradeSettings.upgrades_per_level', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='allowed_levels_above_player', full_name='RpcSub.PokemonUpgradeSettings.allowed_levels_above_player', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='candy_cost', full_name='RpcSub.PokemonUpgradeSettings.candy_cost', index=2,
+      number=3, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='stardust_cost', full_name='RpcSub.PokemonUpgradeSettings.stardust_cost', index=3,
+      number=4, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=12631,
+  serialized_end=12763,
+)
+
+
+_IAPSETTINGS = _descriptor.Descriptor(
+  name='IapSettings',
+  full_name='RpcSub.IapSettings',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='daily_bonus_coins', full_name='RpcSub.IapSettings.daily_bonus_coins', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='daily_defender_bonus_per_pokemon', full_name='RpcSub.IapSettings.daily_defender_bonus_per_pokemon', index=1,
+      number=2, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='daily_defender_bonus_max_defenders', full_name='RpcSub.IapSettings.daily_defender_bonus_max_defenders', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='daily_defender_bonus_currency', full_name='RpcSub.IapSettings.daily_defender_bonus_currency', index=3,
+      number=4, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='min_time_between_claims_ms', full_name='RpcSub.IapSettings.min_time_between_claims_ms', index=4,
+      number=5, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='daily_bonus_enabled', full_name='RpcSub.IapSettings.daily_bonus_enabled', index=5,
+      number=6, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='daily_defender_bonus_enabled', full_name='RpcSub.IapSettings.daily_defender_bonus_enabled', index=6,
+      number=7, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=12766,
+  serialized_end=13034,
+)
+
+
+_IAPITEMDISPLAY = _descriptor.Descriptor(
+  name='IapItemDisplay',
+  full_name='RpcSub.IapItemDisplay',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='sku', full_name='RpcSub.IapItemDisplay.sku', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='category', full_name='RpcSub.IapItemDisplay.category', index=1,
+      number=2, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sort_order', full_name='RpcSub.IapItemDisplay.sort_order', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='item_ids', full_name='RpcSub.IapItemDisplay.item_ids', index=3,
+      number=4, type=14, cpp_type=8, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='counts', full_name='RpcSub.IapItemDisplay.counts', index=4,
+      number=5, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=13037,
+  serialized_end=13185,
+)
+
+
+_ENCOUNTERSETTINGS = _descriptor.Descriptor(
+  name='EncounterSettings',
+  full_name='RpcSub.EncounterSettings',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='spin_bonus_threshold', full_name='RpcSub.EncounterSettings.spin_bonus_threshold', index=0,
+      number=1, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='excellent_throw_threshold', full_name='RpcSub.EncounterSettings.excellent_throw_threshold', index=1,
+      number=2, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='great_throw_threshold', full_name='RpcSub.EncounterSettings.great_throw_threshold', index=2,
+      number=3, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='nice_throw_threshold', full_name='RpcSub.EncounterSettings.nice_throw_threshold', index=3,
+      number=4, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='milestone_threshold', full_name='RpcSub.EncounterSettings.milestone_threshold', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=13188,
+  serialized_end=13362,
+)
+
+
+_GYMBATTLESETTINGS = _descriptor.Descriptor(
+  name='GymBattleSettings',
+  full_name='RpcSub.GymBattleSettings',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='energy_per_sec', full_name='RpcSub.GymBattleSettings.energy_per_sec', index=0,
+      number=1, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='dodge_energy_cost', full_name='RpcSub.GymBattleSettings.dodge_energy_cost', index=1,
+      number=2, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='retarget_seconds', full_name='RpcSub.GymBattleSettings.retarget_seconds', index=2,
+      number=3, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='enemy_attack_interval', full_name='RpcSub.GymBattleSettings.enemy_attack_interval', index=3,
+      number=4, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='attack_server_interval', full_name='RpcSub.GymBattleSettings.attack_server_interval', index=4,
+      number=5, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='round_duration_seconds', full_name='RpcSub.GymBattleSettings.round_duration_seconds', index=5,
+      number=6, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='bonus_time_per_ally_seconds', full_name='RpcSub.GymBattleSettings.bonus_time_per_ally_seconds', index=6,
+      number=7, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='maximum_attackers_per_battle', full_name='RpcSub.GymBattleSettings.maximum_attackers_per_battle', index=7,
+      number=8, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='same_type_attack_bonus_multiplier', full_name='RpcSub.GymBattleSettings.same_type_attack_bonus_multiplier', index=8,
+      number=9, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='maximum_energy', full_name='RpcSub.GymBattleSettings.maximum_energy', index=9,
+      number=10, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='energy_delta_per_health_lost', full_name='RpcSub.GymBattleSettings.energy_delta_per_health_lost', index=10,
+      number=11, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='dodge_duration_ms', full_name='RpcSub.GymBattleSettings.dodge_duration_ms', index=11,
+      number=12, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='minimum_player_level', full_name='RpcSub.GymBattleSettings.minimum_player_level', index=12,
+      number=13, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='swap_duration_ms', full_name='RpcSub.GymBattleSettings.swap_duration_ms', index=13,
+      number=14, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=13365,
+  serialized_end=13819,
+)
+
+
+_GYMLEVELSETTINGS = _descriptor.Descriptor(
+  name='GymLevelSettings',
+  full_name='RpcSub.GymLevelSettings',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='required_experience', full_name='RpcSub.GymLevelSettings.required_experience', index=0,
+      number=1, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='leader_slots', full_name='RpcSub.GymLevelSettings.leader_slots', index=1,
+      number=2, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='trainer_slots', full_name='RpcSub.GymLevelSettings.trainer_slots', index=2,
+      number=3, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='search_roll_bonus', full_name='RpcSub.GymLevelSettings.search_roll_bonus', index=3,
+      number=4, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=13821,
+  serialized_end=13940,
+)
+
+
+_PLAYERLEVELSETTINGS = _descriptor.Descriptor(
+  name='PlayerLevelSettings',
+  full_name='RpcSub.PlayerLevelSettings',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='rank_num', full_name='RpcSub.PlayerLevelSettings.rank_num', index=0,
+      number=1, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='required_experience', full_name='RpcSub.PlayerLevelSettings.required_experience', index=1,
+      number=2, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='cp_multiplier', full_name='RpcSub.PlayerLevelSettings.cp_multiplier', index=2,
+      number=3, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='max_egg_player_level', full_name='RpcSub.PlayerLevelSettings.max_egg_player_level', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='max_encounter_player_level', full_name='RpcSub.PlayerLevelSettings.max_encounter_player_level', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=13943,
+  serialized_end=14100,
+)
+
+
+_CAMERASETTINGS = _descriptor.Descriptor(
+  name='CameraSettings',
+  full_name='RpcSub.CameraSettings',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='next_camera', full_name='RpcSub.CameraSettings.next_camera', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='interpolation', full_name='RpcSub.CameraSettings.interpolation', index=1,
+      number=2, type=14, cpp_type=8, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='target_type', full_name='RpcSub.CameraSettings.target_type', index=2,
+      number=3, type=14, cpp_type=8, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='ease_in_speed', full_name='RpcSub.CameraSettings.ease_in_speed', index=3,
+      number=4, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='east_out_speed', full_name='RpcSub.CameraSettings.east_out_speed', index=4,
+      number=5, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='duration_seconds', full_name='RpcSub.CameraSettings.duration_seconds', index=5,
+      number=6, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='wait_seconds', full_name='RpcSub.CameraSettings.wait_seconds', index=6,
+      number=7, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='transition_seconds', full_name='RpcSub.CameraSettings.transition_seconds', index=7,
+      number=8, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='angle_degree', full_name='RpcSub.CameraSettings.angle_degree', index=8,
+      number=9, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='angle_offset_degree', full_name='RpcSub.CameraSettings.angle_offset_degree', index=9,
+      number=10, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pitch_degree', full_name='RpcSub.CameraSettings.pitch_degree', index=10,
+      number=11, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pitch_offset_degree', full_name='RpcSub.CameraSettings.pitch_offset_degree', index=11,
+      number=12, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='roll_degree', full_name='RpcSub.CameraSettings.roll_degree', index=12,
+      number=13, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='distance_meters', full_name='RpcSub.CameraSettings.distance_meters', index=13,
+      number=14, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='height_percent', full_name='RpcSub.CameraSettings.height_percent', index=14,
+      number=15, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='vert_ctr_ratio', full_name='RpcSub.CameraSettings.vert_ctr_ratio', index=15,
+      number=16, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=14103,
+  serialized_end=14556,
+)
+
+
+_BADGESETTINGS = _descriptor.Descriptor(
+  name='BadgeSettings',
+  full_name='RpcSub.BadgeSettings',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='badge_type', full_name='RpcSub.BadgeSettings.badge_type', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='badge_rank', full_name='RpcSub.BadgeSettings.badge_rank', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='targets', full_name='RpcSub.BadgeSettings.targets', index=2,
+      number=3, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=14558,
+  serialized_end=14650,
+)
+
+
+_TYPEEFFECTIVESETTINGS = _descriptor.Descriptor(
+  name='TypeEffectiveSettings',
+  full_name='RpcSub.TypeEffectiveSettings',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='attack_scalar', full_name='RpcSub.TypeEffectiveSettings.attack_scalar', index=0,
+      number=1, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='attack_type', full_name='RpcSub.TypeEffectiveSettings.attack_type', index=1,
+      number=2, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=14652,
+  serialized_end=14741,
+)
+
+
+_MOVESEQUENCESETTINGS = _descriptor.Descriptor(
+  name='MoveSequenceSettings',
+  full_name='RpcSub.MoveSequenceSettings',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='sequence', full_name='RpcSub.MoveSequenceSettings.sequence', index=0,
+      number=1, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=14743,
+  serialized_end=14783,
+)
+
+
+_MOVESETTINGS = _descriptor.Descriptor(
+  name='MoveSettings',
+  full_name='RpcSub.MoveSettings',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='movement_id', full_name='RpcSub.MoveSettings.movement_id', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='animation_id', full_name='RpcSub.MoveSettings.animation_id', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pokemon_type', full_name='RpcSub.MoveSettings.pokemon_type', index=2,
+      number=3, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='power', full_name='RpcSub.MoveSettings.power', index=3,
+      number=4, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='accuracy_chance', full_name='RpcSub.MoveSettings.accuracy_chance', index=4,
+      number=5, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='critical_chance', full_name='RpcSub.MoveSettings.critical_chance', index=5,
+      number=6, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='heal_scalar', full_name='RpcSub.MoveSettings.heal_scalar', index=6,
+      number=7, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='stamina_loss_scalar', full_name='RpcSub.MoveSettings.stamina_loss_scalar', index=7,
+      number=8, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='trainer_level_min', full_name='RpcSub.MoveSettings.trainer_level_min', index=8,
+      number=9, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='trainer_level_max', full_name='RpcSub.MoveSettings.trainer_level_max', index=9,
+      number=10, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='vfx_name', full_name='RpcSub.MoveSettings.vfx_name', index=10,
+      number=11, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='duration_ms', full_name='RpcSub.MoveSettings.duration_ms', index=11,
+      number=12, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='damage_window_start_ms', full_name='RpcSub.MoveSettings.damage_window_start_ms', index=12,
+      number=13, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='damage_window_end_ms', full_name='RpcSub.MoveSettings.damage_window_end_ms', index=13,
+      number=14, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='energy_delta', full_name='RpcSub.MoveSettings.energy_delta', index=14,
+      number=15, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=14786,
+  serialized_end=15209,
+)
+
+
+_POKEMONSETTINGS = _descriptor.Descriptor(
+  name='PokemonSettings',
+  full_name='RpcSub.PokemonSettings',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='pokemon_id', full_name='RpcSub.PokemonSettings.pokemon_id', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='model_scale', full_name='RpcSub.PokemonSettings.model_scale', index=1,
+      number=3, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='type', full_name='RpcSub.PokemonSettings.type', index=2,
+      number=4, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='type_2', full_name='RpcSub.PokemonSettings.type_2', index=3,
+      number=5, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='camera', full_name='RpcSub.PokemonSettings.camera', index=4,
+      number=6, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='encounter', full_name='RpcSub.PokemonSettings.encounter', index=5,
+      number=7, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='stats', full_name='RpcSub.PokemonSettings.stats', index=6,
+      number=8, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='quick_moves', full_name='RpcSub.PokemonSettings.quick_moves', index=7,
+      number=9, type=14, cpp_type=8, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='cinematic_moves', full_name='RpcSub.PokemonSettings.cinematic_moves', index=8,
+      number=10, type=14, cpp_type=8, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='animation_time', full_name='RpcSub.PokemonSettings.animation_time', index=9,
+      number=11, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='evolution_ids', full_name='RpcSub.PokemonSettings.evolution_ids', index=10,
+      number=12, type=14, cpp_type=8, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='evolution_pips', full_name='RpcSub.PokemonSettings.evolution_pips', index=11,
+      number=13, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='class', full_name='RpcSub.PokemonSettings.class', index=12,
+      number=14, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pokedex_height_m', full_name='RpcSub.PokemonSettings.pokedex_height_m', index=13,
+      number=15, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pokedex_weight_kg', full_name='RpcSub.PokemonSettings.pokedex_weight_kg', index=14,
+      number=16, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='parent_pokemon_id', full_name='RpcSub.PokemonSettings.parent_pokemon_id', index=15,
+      number=17, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='height_std_dev', full_name='RpcSub.PokemonSettings.height_std_dev', index=16,
+      number=18, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='weight_std_dev', full_name='RpcSub.PokemonSettings.weight_std_dev', index=17,
+      number=19, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='km_distance_to_hatch', full_name='RpcSub.PokemonSettings.km_distance_to_hatch', index=18,
+      number=20, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='family_id', full_name='RpcSub.PokemonSettings.family_id', index=19,
+      number=21, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='candy_to_evolve', full_name='RpcSub.PokemonSettings.candy_to_evolve', index=20,
+      number=22, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=15212,
+  serialized_end=15961,
+)
+
+
+_CAMERAATTRIBUTES = _descriptor.Descriptor(
+  name='CameraAttributes',
+  full_name='RpcSub.CameraAttributes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='disk_radius_m', full_name='RpcSub.CameraAttributes.disk_radius_m', index=0,
+      number=1, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='cylinder_radius_m', full_name='RpcSub.CameraAttributes.cylinder_radius_m', index=1,
+      number=2, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='cylinder_height_m', full_name='RpcSub.CameraAttributes.cylinder_height_m', index=2,
+      number=3, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='cylinder_ground_m', full_name='RpcSub.CameraAttributes.cylinder_ground_m', index=3,
+      number=4, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='shoulder_mode_scale', full_name='RpcSub.CameraAttributes.shoulder_mode_scale', index=4,
+      number=5, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=15964,
+  serialized_end=16115,
+)
+
+
+_ENCOUNTERATTRIBUTES = _descriptor.Descriptor(
+  name='EncounterAttributes',
+  full_name='RpcSub.EncounterAttributes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='base_capture_rate', full_name='RpcSub.EncounterAttributes.base_capture_rate', index=0,
+      number=1, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='base_flee_rate', full_name='RpcSub.EncounterAttributes.base_flee_rate', index=1,
+      number=2, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='collision_radius_m', full_name='RpcSub.EncounterAttributes.collision_radius_m', index=2,
+      number=3, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='collision_height_m', full_name='RpcSub.EncounterAttributes.collision_height_m', index=3,
+      number=4, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='collision_head_radius_m', full_name='RpcSub.EncounterAttributes.collision_head_radius_m', index=4,
+      number=5, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='movement_type', full_name='RpcSub.EncounterAttributes.movement_type', index=5,
+      number=6, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='movement_timer_s', full_name='RpcSub.EncounterAttributes.movement_timer_s', index=6,
+      number=7, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='jump_time_s', full_name='RpcSub.EncounterAttributes.jump_time_s', index=7,
+      number=8, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='attack_timer_s', full_name='RpcSub.EncounterAttributes.attack_timer_s', index=8,
+      number=9, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=16118,
+  serialized_end=16403,
+)
+
+
+_STATSATTRIBUTES = _descriptor.Descriptor(
+  name='StatsAttributes',
+  full_name='RpcSub.StatsAttributes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='base_stamina', full_name='RpcSub.StatsAttributes.base_stamina', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='base_attack', full_name='RpcSub.StatsAttributes.base_attack', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='base_defense', full_name='RpcSub.StatsAttributes.base_defense', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='dodge_energy_delta', full_name='RpcSub.StatsAttributes.dodge_energy_delta', index=3,
+      number=8, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=16405,
+  serialized_end=16515,
+)
+
+
+_ITEMSETTINGS = _descriptor.Descriptor(
+  name='ItemSettings',
+  full_name='RpcSub.ItemSettings',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='item_id', full_name='RpcSub.ItemSettings.item_id', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='item_type', full_name='RpcSub.ItemSettings.item_type', index=1,
+      number=2, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='category', full_name='RpcSub.ItemSettings.category', index=2,
+      number=3, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='drop_freq', full_name='RpcSub.ItemSettings.drop_freq', index=3,
+      number=4, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='drop_trainer_level', full_name='RpcSub.ItemSettings.drop_trainer_level', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pokeball', full_name='RpcSub.ItemSettings.pokeball', index=5,
+      number=6, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='potion', full_name='RpcSub.ItemSettings.potion', index=6,
+      number=7, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='revive', full_name='RpcSub.ItemSettings.revive', index=7,
+      number=8, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='battle', full_name='RpcSub.ItemSettings.battle', index=8,
+      number=9, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='food', full_name='RpcSub.ItemSettings.food', index=9,
+      number=10, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='inventory_upgrade', full_name='RpcSub.ItemSettings.inventory_upgrade', index=10,
+      number=11, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='xp_boost', full_name='RpcSub.ItemSettings.xp_boost', index=11,
+      number=12, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='incense', full_name='RpcSub.ItemSettings.incense', index=12,
+      number=13, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='egg_incubator', full_name='RpcSub.ItemSettings.egg_incubator', index=13,
+      number=14, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='fort_modifier', full_name='RpcSub.ItemSettings.fort_modifier', index=14,
+      number=15, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=16518,
+  serialized_end=17172,
+)
+
+
+_BATTLEATTRIBUTES = _descriptor.Descriptor(
+  name='BattleAttributes',
+  full_name='RpcSub.BattleAttributes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='sta_percent', full_name='RpcSub.BattleAttributes.sta_percent', index=0,
+      number=1, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=17174,
+  serialized_end=17213,
+)
+
+
+_EGGINCUBATORATTRIBUTES = _descriptor.Descriptor(
+  name='EggIncubatorAttributes',
+  full_name='RpcSub.EggIncubatorAttributes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='incubator_type', full_name='RpcSub.EggIncubatorAttributes.incubator_type', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='uses', full_name='RpcSub.EggIncubatorAttributes.uses', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='distance_multiplier', full_name='RpcSub.EggIncubatorAttributes.distance_multiplier', index=2,
+      number=3, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=17215,
+  serialized_end=17333,
+)
+
+
+_EXPERIENCEBOOSTATTRIBUTES = _descriptor.Descriptor(
+  name='ExperienceBoostAttributes',
+  full_name='RpcSub.ExperienceBoostAttributes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='xp_multiplier', full_name='RpcSub.ExperienceBoostAttributes.xp_multiplier', index=0,
+      number=1, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='boost_duration_ms', full_name='RpcSub.ExperienceBoostAttributes.boost_duration_ms', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=17335,
+  serialized_end=17412,
+)
+
+
+_FOODATTRIBUTES = _descriptor.Descriptor(
+  name='FoodAttributes',
+  full_name='RpcSub.FoodAttributes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='item_effect', full_name='RpcSub.FoodAttributes.item_effect', index=0,
+      number=1, type=14, cpp_type=8, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='item_effect_percent', full_name='RpcSub.FoodAttributes.item_effect_percent', index=1,
+      number=2, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='growth_percent', full_name='RpcSub.FoodAttributes.growth_percent', index=2,
+      number=3, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=17414,
+  serialized_end=17525,
+)
+
+
+_FORTMODIFIERATTRIBUTES = _descriptor.Descriptor(
+  name='FortModifierAttributes',
+  full_name='RpcSub.FortModifierAttributes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='modifier_lifetime_seconds', full_name='RpcSub.FortModifierAttributes.modifier_lifetime_seconds', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='troy_disk_num_pokemon_spawned', full_name='RpcSub.FortModifierAttributes.troy_disk_num_pokemon_spawned', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=17527,
+  serialized_end=17625,
+)
+
+
+_INCENSEATTRIBUTES = _descriptor.Descriptor(
+  name='IncenseAttributes',
+  full_name='RpcSub.IncenseAttributes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='incense_lifetime_seconds', full_name='RpcSub.IncenseAttributes.incense_lifetime_seconds', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pokemon_type', full_name='RpcSub.IncenseAttributes.pokemon_type', index=1,
+      number=2, type=14, cpp_type=8, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pokemon_incense_type_probability', full_name='RpcSub.IncenseAttributes.pokemon_incense_type_probability', index=2,
+      number=3, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='standing_time_between_encounters_seconds', full_name='RpcSub.IncenseAttributes.standing_time_between_encounters_seconds', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='moving_time_between_encounter_seconds', full_name='RpcSub.IncenseAttributes.moving_time_between_encounter_seconds', index=4,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='distance_required_for_shorter_interval_meters', full_name='RpcSub.IncenseAttributes.distance_required_for_shorter_interval_meters', index=5,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='pokemon_attracted_length_sec', full_name='RpcSub.IncenseAttributes.pokemon_attracted_length_sec', index=6,
+      number=7, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=17628,
+  serialized_end=17957,
+)
+
+
+_INVENTORYUPGRADEATTRIBUTES = _descriptor.Descriptor(
+  name='InventoryUpgradeAttributes',
+  full_name='RpcSub.InventoryUpgradeAttributes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='additional_storage', full_name='RpcSub.InventoryUpgradeAttributes.additional_storage', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='upgrade_type', full_name='RpcSub.InventoryUpgradeAttributes.upgrade_type', index=1,
+      number=2, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=17959,
+  serialized_end=18068,
+)
+
+
+_POKEBALLATTRIBUTES = _descriptor.Descriptor(
+  name='PokeballAttributes',
+  full_name='RpcSub.PokeballAttributes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='item_effect', full_name='RpcSub.PokeballAttributes.item_effect', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='capture_multi', full_name='RpcSub.PokeballAttributes.capture_multi', index=1,
+      number=2, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='capture_multi_effect', full_name='RpcSub.PokeballAttributes.capture_multi_effect', index=2,
+      number=3, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='item_effect_mod', full_name='RpcSub.PokeballAttributes.item_effect_mod', index=3,
+      number=4, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=18071,
+  serialized_end=18211,
+)
+
+
+_POTIONATTRIBUTES = _descriptor.Descriptor(
+  name='PotionAttributes',
+  full_name='RpcSub.PotionAttributes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='sta_percent', full_name='RpcSub.PotionAttributes.sta_percent', index=0,
+      number=1, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sta_amount', full_name='RpcSub.PotionAttributes.sta_amount', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=18213,
+  serialized_end=18272,
+)
+
+
+_REVIVEATTRIBUTES = _descriptor.Descriptor(
+  name='ReviveAttributes',
+  full_name='RpcSub.ReviveAttributes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='sta_percent', full_name='RpcSub.ReviveAttributes.sta_percent', index=0,
+      number=1, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=18274,
+  serialized_end=18313,
 )
 
 _GETPLAYERRESPONSE.fields_by_name['profile'].message_type = _PROFILE
@@ -2627,7 +6036,7 @@ _PROFILE.fields_by_name['currency'].message_type = _CURRENCY
 _GETINVENTORYRESPONSE.fields_by_name['inventory_delta'].message_type = _INVENTORYDELTA
 _INVENTORYDELTA.fields_by_name['inventory_items'].message_type = _INVENTORYITEM
 _INVENTORYITEM.fields_by_name['inventory_item_data'].message_type = _INVENTORYITEMDATA
-_INVENTORYITEMDATA.fields_by_name['pokemon'].message_type = _POKEMON
+_INVENTORYITEMDATA.fields_by_name['pokemon'].message_type = _POKEMONDATA
 _INVENTORYITEMDATA.fields_by_name['item'].message_type = _ITEM
 _INVENTORYITEMDATA.fields_by_name['pokedex_entry'].message_type = _POKEDEXENTRY
 _INVENTORYITEMDATA.fields_by_name['player_stats'].message_type = _PLAYERSTATS
@@ -2645,8 +6054,8 @@ _INVENTORYUPGRADES.fields_by_name['inventory_upgrades'].message_type = _INVENTOR
 _INVENTORYUPGRADE.fields_by_name['item'].enum_type = RpcEnum_pb2._ITEMTYPE
 _INVENTORYUPGRADE.fields_by_name['upgrade_type'].enum_type = RpcEnum_pb2._INVENTORYUPGRADETYPE
 _APPLIEDITEMS.fields_by_name['item'].message_type = _APPLIEDITEM
-_APPLIEDITEM.fields_by_name['item_type'].enum_type = RpcEnum_pb2._ITEMTYPE
-_APPLIEDITEM.fields_by_name['item_type_category'].enum_type = RpcEnum_pb2._ITEMTYPECATEGORY
+_APPLIEDITEM.fields_by_name['item_type'].enum_type = RpcEnum_pb2._ITEMID
+_APPLIEDITEM.fields_by_name['item_type_category'].enum_type = RpcEnum_pb2._ITEMTYPE
 _EGGINCUBATORS.fields_by_name['egg_incubator'].message_type = _EGGINCUBATOR
 _EGGINCUBATOR.fields_by_name['item_type'].enum_type = RpcEnum_pb2._ITEMTYPE
 _EGGINCUBATOR.fields_by_name['incubator_type'].enum_type = RpcEnum_pb2._EGGINCUBATORTYPE
@@ -2678,6 +6087,94 @@ _GLOBALSETTINGS.fields_by_name['fort_settings'].message_type = _FORTSETTINGS
 _GLOBALSETTINGS.fields_by_name['map_settings'].message_type = _MAPSETTINGS
 _GLOBALSETTINGS.fields_by_name['level_settings'].message_type = _LEVELSETTINGS
 _GLOBALSETTINGS.fields_by_name['inventory_settings'].message_type = _INVENTORYSETTINGS
+_PLAYERUPDATERESPONSE.fields_by_name['wild_pokemons'].message_type = _WILDPOKEMON
+_PLAYERUPDATERESPONSE.fields_by_name['forts'].message_type = _FORTDATA
+_DOWNLOADITEMTEMPLATESRESPONSE_ITEMTEMPLATE.fields_by_name['pokemon_settings'].message_type = _POKEMONSETTINGS
+_DOWNLOADITEMTEMPLATESRESPONSE_ITEMTEMPLATE.fields_by_name['item_settings'].message_type = _ITEMSETTINGS
+_DOWNLOADITEMTEMPLATESRESPONSE_ITEMTEMPLATE.fields_by_name['move_settings'].message_type = _MOVESETTINGS
+_DOWNLOADITEMTEMPLATESRESPONSE_ITEMTEMPLATE.fields_by_name['move_sequence_settings'].message_type = _MOVESEQUENCESETTINGS
+_DOWNLOADITEMTEMPLATESRESPONSE_ITEMTEMPLATE.fields_by_name['type_effective'].message_type = _TYPEEFFECTIVESETTINGS
+_DOWNLOADITEMTEMPLATESRESPONSE_ITEMTEMPLATE.fields_by_name['badge_settings'].message_type = _BADGESETTINGS
+_DOWNLOADITEMTEMPLATESRESPONSE_ITEMTEMPLATE.fields_by_name['camera'].message_type = _CAMERASETTINGS
+_DOWNLOADITEMTEMPLATESRESPONSE_ITEMTEMPLATE.fields_by_name['player_level'].message_type = _PLAYERLEVELSETTINGS
+_DOWNLOADITEMTEMPLATESRESPONSE_ITEMTEMPLATE.fields_by_name['gym_level'].message_type = _GYMLEVELSETTINGS
+_DOWNLOADITEMTEMPLATESRESPONSE_ITEMTEMPLATE.fields_by_name['battle_settings'].message_type = _GYMBATTLESETTINGS
+_DOWNLOADITEMTEMPLATESRESPONSE_ITEMTEMPLATE.fields_by_name['encounter_settings'].message_type = _ENCOUNTERSETTINGS
+_DOWNLOADITEMTEMPLATESRESPONSE_ITEMTEMPLATE.fields_by_name['iap_item_display'].message_type = _IAPITEMDISPLAY
+_DOWNLOADITEMTEMPLATESRESPONSE_ITEMTEMPLATE.fields_by_name['iap_settings'].message_type = _IAPSETTINGS
+_DOWNLOADITEMTEMPLATESRESPONSE_ITEMTEMPLATE.fields_by_name['pokemon_upgrades'].message_type = _POKEMONUPGRADESETTINGS
+_DOWNLOADITEMTEMPLATESRESPONSE_ITEMTEMPLATE.fields_by_name['equipped_badges'].message_type = _EQUIPPEDBADGESETTINGS
+_DOWNLOADITEMTEMPLATESRESPONSE_ITEMTEMPLATE.containing_type = _DOWNLOADITEMTEMPLATESRESPONSE
+_DOWNLOADITEMTEMPLATESRESPONSE.fields_by_name['item_templates'].message_type = _DOWNLOADITEMTEMPLATESRESPONSE_ITEMTEMPLATE
+_USEITEMCAPTUREREQUEST.fields_by_name['item_id'].enum_type = RpcEnum_pb2._ITEMID
+_RELEASEPOKEMONRESPONSE.fields_by_name['result'].enum_type = _RELEASEPOKEMONRESPONSE_RESULT
+_RELEASEPOKEMONRESPONSE_RESULT.containing_type = _RELEASEPOKEMONRESPONSE
+_FORTSEARCHRESPONSE_ITEMAWARD.fields_by_name['item_id'].enum_type = RpcEnum_pb2._ITEMID
+_FORTSEARCHRESPONSE_ITEMAWARD.containing_type = _FORTSEARCHRESPONSE
+_FORTSEARCHRESPONSE.fields_by_name['result'].enum_type = _FORTSEARCHRESPONSE_RESULT
+_FORTSEARCHRESPONSE.fields_by_name['items_awarded'].message_type = _FORTSEARCHRESPONSE_ITEMAWARD
+_FORTSEARCHRESPONSE.fields_by_name['pokemon_data_egg'].message_type = _POKEMONDATA
+_FORTSEARCHRESPONSE_RESULT.containing_type = _FORTSEARCHRESPONSE
+_FORTDETAILSRESPONSE.fields_by_name['team_color'].enum_type = RpcEnum_pb2._TEAMCOLOR
+_FORTDETAILSRESPONSE.fields_by_name['pokemon_data'].message_type = _POKEMONDATA
+_FORTDETAILSRESPONSE.fields_by_name['type'].enum_type = RpcEnum_pb2._FORTTYPE
+_FORTDETAILSRESPONSE.fields_by_name['modifiers'].message_type = _FORTMODIFIER
+_FORTMODIFIER.fields_by_name['item_id'].enum_type = RpcEnum_pb2._ITEMID
+_ENCOUNTERRESPONSE.fields_by_name['wild_pokemon'].message_type = _WILDPOKEMON
+_ENCOUNTERRESPONSE.fields_by_name['background'].enum_type = _ENCOUNTERRESPONSE_BACKGROUND
+_ENCOUNTERRESPONSE.fields_by_name['status'].enum_type = _ENCOUNTERRESPONSE_STATUS
+_ENCOUNTERRESPONSE.fields_by_name['capture_probability'].message_type = _CAPTUREPROBABILITY
+_ENCOUNTERRESPONSE_BACKGROUND.containing_type = _ENCOUNTERRESPONSE
+_ENCOUNTERRESPONSE_STATUS.containing_type = _ENCOUNTERRESPONSE
+_CAPTUREPROBABILITY.fields_by_name['pokeball_type'].enum_type = RpcEnum_pb2._ITEMID
+_DISKENCOUNTERRESPONSE.fields_by_name['result'].enum_type = _DISKENCOUNTERRESPONSE_RESULT
+_DISKENCOUNTERRESPONSE.fields_by_name['pokemon_data'].message_type = _POKEMONDATA
+_DISKENCOUNTERRESPONSE.fields_by_name['capture_probability'].message_type = _CAPTUREPROBABILITY
+_DISKENCOUNTERRESPONSE_RESULT.containing_type = _DISKENCOUNTERRESPONSE
+_CATCHPOKEMONRESPONSE.fields_by_name['status'].enum_type = _CATCHPOKEMONRESPONSE_CATCHSTATUS
+_CATCHPOKEMONRESPONSE.fields_by_name['scores'].message_type = _CAPTURESCORE
+_CATCHPOKEMONRESPONSE_CATCHSTATUS.containing_type = _CATCHPOKEMONRESPONSE
+_CAPTURESCORE.fields_by_name['activity_type'].enum_type = RpcEnum_pb2._ACTIVITYTYPE
+_CHECKAWARDEDBADGESRESPONSE.fields_by_name['awarded_badges'].enum_type = RpcEnum_pb2._BADGETYPE
+_IAPITEMDISPLAY.fields_by_name['category'].enum_type = RpcEnum_pb2._HOLOIAPITEMCATEGORY
+_IAPITEMDISPLAY.fields_by_name['item_ids'].enum_type = RpcEnum_pb2._ITEMID
+_CAMERASETTINGS.fields_by_name['interpolation'].enum_type = RpcEnum_pb2._CAMERAINTERPOLATION
+_CAMERASETTINGS.fields_by_name['target_type'].enum_type = RpcEnum_pb2._CAMERATARGET
+_BADGESETTINGS.fields_by_name['badge_type'].enum_type = RpcEnum_pb2._BADGETYPE
+_TYPEEFFECTIVESETTINGS.fields_by_name['attack_type'].enum_type = RpcEnum_pb2._POKEMONTYPE
+_MOVESETTINGS.fields_by_name['movement_id'].enum_type = RpcEnum_pb2._POKEMONMOVEMENTTYPE
+_MOVESETTINGS.fields_by_name['pokemon_type'].enum_type = RpcEnum_pb2._POKEMONTYPE
+_POKEMONSETTINGS.fields_by_name['pokemon_id'].enum_type = RpcEnum_pb2._POKEMONID
+_POKEMONSETTINGS.fields_by_name['type'].enum_type = RpcEnum_pb2._POKEMONTYPE
+_POKEMONSETTINGS.fields_by_name['type_2'].enum_type = RpcEnum_pb2._POKEMONTYPE
+_POKEMONSETTINGS.fields_by_name['camera'].message_type = _CAMERAATTRIBUTES
+_POKEMONSETTINGS.fields_by_name['encounter'].message_type = _ENCOUNTERATTRIBUTES
+_POKEMONSETTINGS.fields_by_name['stats'].message_type = _STATSATTRIBUTES
+_POKEMONSETTINGS.fields_by_name['quick_moves'].enum_type = RpcEnum_pb2._POKEMONMOVE
+_POKEMONSETTINGS.fields_by_name['cinematic_moves'].enum_type = RpcEnum_pb2._POKEMONMOVE
+_POKEMONSETTINGS.fields_by_name['evolution_ids'].enum_type = RpcEnum_pb2._POKEMONID
+_POKEMONSETTINGS.fields_by_name['class'].enum_type = RpcEnum_pb2._POKEMONCLASS
+_POKEMONSETTINGS.fields_by_name['parent_pokemon_id'].enum_type = RpcEnum_pb2._POKEMONID
+_POKEMONSETTINGS.fields_by_name['family_id'].enum_type = RpcEnum_pb2._POKEMONFAMILYID
+_ENCOUNTERATTRIBUTES.fields_by_name['movement_type'].enum_type = RpcEnum_pb2._POKEMONMOVEMENTTYPE
+_ITEMSETTINGS.fields_by_name['item_id'].enum_type = RpcEnum_pb2._ITEMID
+_ITEMSETTINGS.fields_by_name['item_type'].enum_type = RpcEnum_pb2._ITEMTYPE
+_ITEMSETTINGS.fields_by_name['category'].enum_type = RpcEnum_pb2._ITEMCATEGORY
+_ITEMSETTINGS.fields_by_name['pokeball'].message_type = _POKEBALLATTRIBUTES
+_ITEMSETTINGS.fields_by_name['potion'].message_type = _POTIONATTRIBUTES
+_ITEMSETTINGS.fields_by_name['revive'].message_type = _REVIVEATTRIBUTES
+_ITEMSETTINGS.fields_by_name['battle'].message_type = _BATTLEATTRIBUTES
+_ITEMSETTINGS.fields_by_name['food'].message_type = _FOODATTRIBUTES
+_ITEMSETTINGS.fields_by_name['inventory_upgrade'].message_type = _INVENTORYUPGRADEATTRIBUTES
+_ITEMSETTINGS.fields_by_name['xp_boost'].message_type = _EXPERIENCEBOOSTATTRIBUTES
+_ITEMSETTINGS.fields_by_name['incense'].message_type = _INCENSEATTRIBUTES
+_ITEMSETTINGS.fields_by_name['egg_incubator'].message_type = _EGGINCUBATORATTRIBUTES
+_ITEMSETTINGS.fields_by_name['fort_modifier'].message_type = _FORTMODIFIERATTRIBUTES
+_EGGINCUBATORATTRIBUTES.fields_by_name['incubator_type'].enum_type = RpcEnum_pb2._EGGINCUBATORTYPE
+_FOODATTRIBUTES.fields_by_name['item_effect'].enum_type = RpcEnum_pb2._ITEMEFFECT
+_INCENSEATTRIBUTES.fields_by_name['pokemon_type'].enum_type = RpcEnum_pb2._POKEMONTYPE
+_INVENTORYUPGRADEATTRIBUTES.fields_by_name['upgrade_type'].enum_type = RpcEnum_pb2._INVENTORYUPGRADETYPE
+_POKEBALLATTRIBUTES.fields_by_name['item_effect'].enum_type = RpcEnum_pb2._ITEMEFFECT
 DESCRIPTOR.message_types_by_name['GetPlayerResponse'] = _GETPLAYERRESPONSE
 DESCRIPTOR.message_types_by_name['Profile'] = _PROFILE
 DESCRIPTOR.message_types_by_name['DailyBonus'] = _DAILYBONUS
@@ -2718,6 +6215,59 @@ DESCRIPTOR.message_types_by_name['FortSettings'] = _FORTSETTINGS
 DESCRIPTOR.message_types_by_name['MapSettings'] = _MAPSETTINGS
 DESCRIPTOR.message_types_by_name['LevelSettings'] = _LEVELSETTINGS
 DESCRIPTOR.message_types_by_name['InventorySettings'] = _INVENTORYSETTINGS
+DESCRIPTOR.message_types_by_name['PlayerUpdateRequest'] = _PLAYERUPDATEREQUEST
+DESCRIPTOR.message_types_by_name['PlayerUpdateResponse'] = _PLAYERUPDATERESPONSE
+DESCRIPTOR.message_types_by_name['DownloadItemTemplatesRequest'] = _DOWNLOADITEMTEMPLATESREQUEST
+DESCRIPTOR.message_types_by_name['DownloadItemTemplatesResponse'] = _DOWNLOADITEMTEMPLATESRESPONSE
+DESCRIPTOR.message_types_by_name['UseItemCaptureRequest'] = _USEITEMCAPTUREREQUEST
+DESCRIPTOR.message_types_by_name['UseItemCaptureResponse'] = _USEITEMCAPTURERESPONSE
+DESCRIPTOR.message_types_by_name['ReleasePokemonRequest'] = _RELEASEPOKEMONREQUEST
+DESCRIPTOR.message_types_by_name['ReleasePokemonResponse'] = _RELEASEPOKEMONRESPONSE
+DESCRIPTOR.message_types_by_name['GetHatchedEggsRequest'] = _GETHATCHEDEGGSREQUEST
+DESCRIPTOR.message_types_by_name['GetHatchedEggsResponse'] = _GETHATCHEDEGGSRESPONSE
+DESCRIPTOR.message_types_by_name['FortSearchRequest'] = _FORTSEARCHREQUEST
+DESCRIPTOR.message_types_by_name['FortSearchResponse'] = _FORTSEARCHRESPONSE
+DESCRIPTOR.message_types_by_name['FortDetailsRequest'] = _FORTDETAILSREQUEST
+DESCRIPTOR.message_types_by_name['FortDetailsResponse'] = _FORTDETAILSRESPONSE
+DESCRIPTOR.message_types_by_name['FortModifier'] = _FORTMODIFIER
+DESCRIPTOR.message_types_by_name['EncounterRequest'] = _ENCOUNTERREQUEST
+DESCRIPTOR.message_types_by_name['EncounterResponse'] = _ENCOUNTERRESPONSE
+DESCRIPTOR.message_types_by_name['CaptureProbability'] = _CAPTUREPROBABILITY
+DESCRIPTOR.message_types_by_name['DiskEncounterRequest'] = _DISKENCOUNTERREQUEST
+DESCRIPTOR.message_types_by_name['DiskEncounterResponse'] = _DISKENCOUNTERRESPONSE
+DESCRIPTOR.message_types_by_name['CatchPokemonRequest'] = _CATCHPOKEMONREQUEST
+DESCRIPTOR.message_types_by_name['CatchPokemonResponse'] = _CATCHPOKEMONRESPONSE
+DESCRIPTOR.message_types_by_name['CaptureScore'] = _CAPTURESCORE
+DESCRIPTOR.message_types_by_name['CheckAwardedBadgesRequest'] = _CHECKAWARDEDBADGESREQUEST
+DESCRIPTOR.message_types_by_name['CheckAwardedBadgesResponse'] = _CHECKAWARDEDBADGESRESPONSE
+DESCRIPTOR.message_types_by_name['EquippedBadgeSettings'] = _EQUIPPEDBADGESETTINGS
+DESCRIPTOR.message_types_by_name['PokemonUpgradeSettings'] = _POKEMONUPGRADESETTINGS
+DESCRIPTOR.message_types_by_name['IapSettings'] = _IAPSETTINGS
+DESCRIPTOR.message_types_by_name['IapItemDisplay'] = _IAPITEMDISPLAY
+DESCRIPTOR.message_types_by_name['EncounterSettings'] = _ENCOUNTERSETTINGS
+DESCRIPTOR.message_types_by_name['GymBattleSettings'] = _GYMBATTLESETTINGS
+DESCRIPTOR.message_types_by_name['GymLevelSettings'] = _GYMLEVELSETTINGS
+DESCRIPTOR.message_types_by_name['PlayerLevelSettings'] = _PLAYERLEVELSETTINGS
+DESCRIPTOR.message_types_by_name['CameraSettings'] = _CAMERASETTINGS
+DESCRIPTOR.message_types_by_name['BadgeSettings'] = _BADGESETTINGS
+DESCRIPTOR.message_types_by_name['TypeEffectiveSettings'] = _TYPEEFFECTIVESETTINGS
+DESCRIPTOR.message_types_by_name['MoveSequenceSettings'] = _MOVESEQUENCESETTINGS
+DESCRIPTOR.message_types_by_name['MoveSettings'] = _MOVESETTINGS
+DESCRIPTOR.message_types_by_name['PokemonSettings'] = _POKEMONSETTINGS
+DESCRIPTOR.message_types_by_name['CameraAttributes'] = _CAMERAATTRIBUTES
+DESCRIPTOR.message_types_by_name['EncounterAttributes'] = _ENCOUNTERATTRIBUTES
+DESCRIPTOR.message_types_by_name['StatsAttributes'] = _STATSATTRIBUTES
+DESCRIPTOR.message_types_by_name['ItemSettings'] = _ITEMSETTINGS
+DESCRIPTOR.message_types_by_name['BattleAttributes'] = _BATTLEATTRIBUTES
+DESCRIPTOR.message_types_by_name['EggIncubatorAttributes'] = _EGGINCUBATORATTRIBUTES
+DESCRIPTOR.message_types_by_name['ExperienceBoostAttributes'] = _EXPERIENCEBOOSTATTRIBUTES
+DESCRIPTOR.message_types_by_name['FoodAttributes'] = _FOODATTRIBUTES
+DESCRIPTOR.message_types_by_name['FortModifierAttributes'] = _FORTMODIFIERATTRIBUTES
+DESCRIPTOR.message_types_by_name['IncenseAttributes'] = _INCENSEATTRIBUTES
+DESCRIPTOR.message_types_by_name['InventoryUpgradeAttributes'] = _INVENTORYUPGRADEATTRIBUTES
+DESCRIPTOR.message_types_by_name['PokeballAttributes'] = _POKEBALLATTRIBUTES
+DESCRIPTOR.message_types_by_name['PotionAttributes'] = _POTIONATTRIBUTES
+DESCRIPTOR.message_types_by_name['ReviveAttributes'] = _REVIVEATTRIBUTES
 
 GetPlayerResponse = _reflection.GeneratedProtocolMessageType('GetPlayerResponse', (_message.Message,), dict(
   DESCRIPTOR = _GETPLAYERRESPONSE,
@@ -2999,5 +6549,394 @@ InventorySettings = _reflection.GeneratedProtocolMessageType('InventorySettings'
   ))
 _sym_db.RegisterMessage(InventorySettings)
 
+PlayerUpdateRequest = _reflection.GeneratedProtocolMessageType('PlayerUpdateRequest', (_message.Message,), dict(
+  DESCRIPTOR = _PLAYERUPDATEREQUEST,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.PlayerUpdateRequest)
+  ))
+_sym_db.RegisterMessage(PlayerUpdateRequest)
 
+PlayerUpdateResponse = _reflection.GeneratedProtocolMessageType('PlayerUpdateResponse', (_message.Message,), dict(
+  DESCRIPTOR = _PLAYERUPDATERESPONSE,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.PlayerUpdateResponse)
+  ))
+_sym_db.RegisterMessage(PlayerUpdateResponse)
+
+DownloadItemTemplatesRequest = _reflection.GeneratedProtocolMessageType('DownloadItemTemplatesRequest', (_message.Message,), dict(
+  DESCRIPTOR = _DOWNLOADITEMTEMPLATESREQUEST,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.DownloadItemTemplatesRequest)
+  ))
+_sym_db.RegisterMessage(DownloadItemTemplatesRequest)
+
+DownloadItemTemplatesResponse = _reflection.GeneratedProtocolMessageType('DownloadItemTemplatesResponse', (_message.Message,), dict(
+
+  ItemTemplate = _reflection.GeneratedProtocolMessageType('ItemTemplate', (_message.Message,), dict(
+    DESCRIPTOR = _DOWNLOADITEMTEMPLATESRESPONSE_ITEMTEMPLATE,
+    __module__ = 'RpcSub_pb2'
+    # @@protoc_insertion_point(class_scope:RpcSub.DownloadItemTemplatesResponse.ItemTemplate)
+    ))
+  ,
+  DESCRIPTOR = _DOWNLOADITEMTEMPLATESRESPONSE,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.DownloadItemTemplatesResponse)
+  ))
+_sym_db.RegisterMessage(DownloadItemTemplatesResponse)
+_sym_db.RegisterMessage(DownloadItemTemplatesResponse.ItemTemplate)
+
+UseItemCaptureRequest = _reflection.GeneratedProtocolMessageType('UseItemCaptureRequest', (_message.Message,), dict(
+  DESCRIPTOR = _USEITEMCAPTUREREQUEST,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.UseItemCaptureRequest)
+  ))
+_sym_db.RegisterMessage(UseItemCaptureRequest)
+
+UseItemCaptureResponse = _reflection.GeneratedProtocolMessageType('UseItemCaptureResponse', (_message.Message,), dict(
+  DESCRIPTOR = _USEITEMCAPTURERESPONSE,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.UseItemCaptureResponse)
+  ))
+_sym_db.RegisterMessage(UseItemCaptureResponse)
+
+ReleasePokemonRequest = _reflection.GeneratedProtocolMessageType('ReleasePokemonRequest', (_message.Message,), dict(
+  DESCRIPTOR = _RELEASEPOKEMONREQUEST,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.ReleasePokemonRequest)
+  ))
+_sym_db.RegisterMessage(ReleasePokemonRequest)
+
+ReleasePokemonResponse = _reflection.GeneratedProtocolMessageType('ReleasePokemonResponse', (_message.Message,), dict(
+  DESCRIPTOR = _RELEASEPOKEMONRESPONSE,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.ReleasePokemonResponse)
+  ))
+_sym_db.RegisterMessage(ReleasePokemonResponse)
+
+GetHatchedEggsRequest = _reflection.GeneratedProtocolMessageType('GetHatchedEggsRequest', (_message.Message,), dict(
+  DESCRIPTOR = _GETHATCHEDEGGSREQUEST,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.GetHatchedEggsRequest)
+  ))
+_sym_db.RegisterMessage(GetHatchedEggsRequest)
+
+GetHatchedEggsResponse = _reflection.GeneratedProtocolMessageType('GetHatchedEggsResponse', (_message.Message,), dict(
+  DESCRIPTOR = _GETHATCHEDEGGSRESPONSE,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.GetHatchedEggsResponse)
+  ))
+_sym_db.RegisterMessage(GetHatchedEggsResponse)
+
+FortSearchRequest = _reflection.GeneratedProtocolMessageType('FortSearchRequest', (_message.Message,), dict(
+  DESCRIPTOR = _FORTSEARCHREQUEST,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.FortSearchRequest)
+  ))
+_sym_db.RegisterMessage(FortSearchRequest)
+
+FortSearchResponse = _reflection.GeneratedProtocolMessageType('FortSearchResponse', (_message.Message,), dict(
+
+  ItemAward = _reflection.GeneratedProtocolMessageType('ItemAward', (_message.Message,), dict(
+    DESCRIPTOR = _FORTSEARCHRESPONSE_ITEMAWARD,
+    __module__ = 'RpcSub_pb2'
+    # @@protoc_insertion_point(class_scope:RpcSub.FortSearchResponse.ItemAward)
+    ))
+  ,
+  DESCRIPTOR = _FORTSEARCHRESPONSE,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.FortSearchResponse)
+  ))
+_sym_db.RegisterMessage(FortSearchResponse)
+_sym_db.RegisterMessage(FortSearchResponse.ItemAward)
+
+FortDetailsRequest = _reflection.GeneratedProtocolMessageType('FortDetailsRequest', (_message.Message,), dict(
+  DESCRIPTOR = _FORTDETAILSREQUEST,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.FortDetailsRequest)
+  ))
+_sym_db.RegisterMessage(FortDetailsRequest)
+
+FortDetailsResponse = _reflection.GeneratedProtocolMessageType('FortDetailsResponse', (_message.Message,), dict(
+  DESCRIPTOR = _FORTDETAILSRESPONSE,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.FortDetailsResponse)
+  ))
+_sym_db.RegisterMessage(FortDetailsResponse)
+
+FortModifier = _reflection.GeneratedProtocolMessageType('FortModifier', (_message.Message,), dict(
+  DESCRIPTOR = _FORTMODIFIER,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.FortModifier)
+  ))
+_sym_db.RegisterMessage(FortModifier)
+
+EncounterRequest = _reflection.GeneratedProtocolMessageType('EncounterRequest', (_message.Message,), dict(
+  DESCRIPTOR = _ENCOUNTERREQUEST,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.EncounterRequest)
+  ))
+_sym_db.RegisterMessage(EncounterRequest)
+
+EncounterResponse = _reflection.GeneratedProtocolMessageType('EncounterResponse', (_message.Message,), dict(
+  DESCRIPTOR = _ENCOUNTERRESPONSE,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.EncounterResponse)
+  ))
+_sym_db.RegisterMessage(EncounterResponse)
+
+CaptureProbability = _reflection.GeneratedProtocolMessageType('CaptureProbability', (_message.Message,), dict(
+  DESCRIPTOR = _CAPTUREPROBABILITY,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.CaptureProbability)
+  ))
+_sym_db.RegisterMessage(CaptureProbability)
+
+DiskEncounterRequest = _reflection.GeneratedProtocolMessageType('DiskEncounterRequest', (_message.Message,), dict(
+  DESCRIPTOR = _DISKENCOUNTERREQUEST,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.DiskEncounterRequest)
+  ))
+_sym_db.RegisterMessage(DiskEncounterRequest)
+
+DiskEncounterResponse = _reflection.GeneratedProtocolMessageType('DiskEncounterResponse', (_message.Message,), dict(
+  DESCRIPTOR = _DISKENCOUNTERRESPONSE,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.DiskEncounterResponse)
+  ))
+_sym_db.RegisterMessage(DiskEncounterResponse)
+
+CatchPokemonRequest = _reflection.GeneratedProtocolMessageType('CatchPokemonRequest', (_message.Message,), dict(
+  DESCRIPTOR = _CATCHPOKEMONREQUEST,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.CatchPokemonRequest)
+  ))
+_sym_db.RegisterMessage(CatchPokemonRequest)
+
+CatchPokemonResponse = _reflection.GeneratedProtocolMessageType('CatchPokemonResponse', (_message.Message,), dict(
+  DESCRIPTOR = _CATCHPOKEMONRESPONSE,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.CatchPokemonResponse)
+  ))
+_sym_db.RegisterMessage(CatchPokemonResponse)
+
+CaptureScore = _reflection.GeneratedProtocolMessageType('CaptureScore', (_message.Message,), dict(
+  DESCRIPTOR = _CAPTURESCORE,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.CaptureScore)
+  ))
+_sym_db.RegisterMessage(CaptureScore)
+
+CheckAwardedBadgesRequest = _reflection.GeneratedProtocolMessageType('CheckAwardedBadgesRequest', (_message.Message,), dict(
+  DESCRIPTOR = _CHECKAWARDEDBADGESREQUEST,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.CheckAwardedBadgesRequest)
+  ))
+_sym_db.RegisterMessage(CheckAwardedBadgesRequest)
+
+CheckAwardedBadgesResponse = _reflection.GeneratedProtocolMessageType('CheckAwardedBadgesResponse', (_message.Message,), dict(
+  DESCRIPTOR = _CHECKAWARDEDBADGESRESPONSE,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.CheckAwardedBadgesResponse)
+  ))
+_sym_db.RegisterMessage(CheckAwardedBadgesResponse)
+
+EquippedBadgeSettings = _reflection.GeneratedProtocolMessageType('EquippedBadgeSettings', (_message.Message,), dict(
+  DESCRIPTOR = _EQUIPPEDBADGESETTINGS,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.EquippedBadgeSettings)
+  ))
+_sym_db.RegisterMessage(EquippedBadgeSettings)
+
+PokemonUpgradeSettings = _reflection.GeneratedProtocolMessageType('PokemonUpgradeSettings', (_message.Message,), dict(
+  DESCRIPTOR = _POKEMONUPGRADESETTINGS,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.PokemonUpgradeSettings)
+  ))
+_sym_db.RegisterMessage(PokemonUpgradeSettings)
+
+IapSettings = _reflection.GeneratedProtocolMessageType('IapSettings', (_message.Message,), dict(
+  DESCRIPTOR = _IAPSETTINGS,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.IapSettings)
+  ))
+_sym_db.RegisterMessage(IapSettings)
+
+IapItemDisplay = _reflection.GeneratedProtocolMessageType('IapItemDisplay', (_message.Message,), dict(
+  DESCRIPTOR = _IAPITEMDISPLAY,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.IapItemDisplay)
+  ))
+_sym_db.RegisterMessage(IapItemDisplay)
+
+EncounterSettings = _reflection.GeneratedProtocolMessageType('EncounterSettings', (_message.Message,), dict(
+  DESCRIPTOR = _ENCOUNTERSETTINGS,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.EncounterSettings)
+  ))
+_sym_db.RegisterMessage(EncounterSettings)
+
+GymBattleSettings = _reflection.GeneratedProtocolMessageType('GymBattleSettings', (_message.Message,), dict(
+  DESCRIPTOR = _GYMBATTLESETTINGS,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.GymBattleSettings)
+  ))
+_sym_db.RegisterMessage(GymBattleSettings)
+
+GymLevelSettings = _reflection.GeneratedProtocolMessageType('GymLevelSettings', (_message.Message,), dict(
+  DESCRIPTOR = _GYMLEVELSETTINGS,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.GymLevelSettings)
+  ))
+_sym_db.RegisterMessage(GymLevelSettings)
+
+PlayerLevelSettings = _reflection.GeneratedProtocolMessageType('PlayerLevelSettings', (_message.Message,), dict(
+  DESCRIPTOR = _PLAYERLEVELSETTINGS,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.PlayerLevelSettings)
+  ))
+_sym_db.RegisterMessage(PlayerLevelSettings)
+
+CameraSettings = _reflection.GeneratedProtocolMessageType('CameraSettings', (_message.Message,), dict(
+  DESCRIPTOR = _CAMERASETTINGS,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.CameraSettings)
+  ))
+_sym_db.RegisterMessage(CameraSettings)
+
+BadgeSettings = _reflection.GeneratedProtocolMessageType('BadgeSettings', (_message.Message,), dict(
+  DESCRIPTOR = _BADGESETTINGS,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.BadgeSettings)
+  ))
+_sym_db.RegisterMessage(BadgeSettings)
+
+TypeEffectiveSettings = _reflection.GeneratedProtocolMessageType('TypeEffectiveSettings', (_message.Message,), dict(
+  DESCRIPTOR = _TYPEEFFECTIVESETTINGS,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.TypeEffectiveSettings)
+  ))
+_sym_db.RegisterMessage(TypeEffectiveSettings)
+
+MoveSequenceSettings = _reflection.GeneratedProtocolMessageType('MoveSequenceSettings', (_message.Message,), dict(
+  DESCRIPTOR = _MOVESEQUENCESETTINGS,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.MoveSequenceSettings)
+  ))
+_sym_db.RegisterMessage(MoveSequenceSettings)
+
+MoveSettings = _reflection.GeneratedProtocolMessageType('MoveSettings', (_message.Message,), dict(
+  DESCRIPTOR = _MOVESETTINGS,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.MoveSettings)
+  ))
+_sym_db.RegisterMessage(MoveSettings)
+
+PokemonSettings = _reflection.GeneratedProtocolMessageType('PokemonSettings', (_message.Message,), dict(
+  DESCRIPTOR = _POKEMONSETTINGS,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.PokemonSettings)
+  ))
+_sym_db.RegisterMessage(PokemonSettings)
+
+CameraAttributes = _reflection.GeneratedProtocolMessageType('CameraAttributes', (_message.Message,), dict(
+  DESCRIPTOR = _CAMERAATTRIBUTES,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.CameraAttributes)
+  ))
+_sym_db.RegisterMessage(CameraAttributes)
+
+EncounterAttributes = _reflection.GeneratedProtocolMessageType('EncounterAttributes', (_message.Message,), dict(
+  DESCRIPTOR = _ENCOUNTERATTRIBUTES,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.EncounterAttributes)
+  ))
+_sym_db.RegisterMessage(EncounterAttributes)
+
+StatsAttributes = _reflection.GeneratedProtocolMessageType('StatsAttributes', (_message.Message,), dict(
+  DESCRIPTOR = _STATSATTRIBUTES,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.StatsAttributes)
+  ))
+_sym_db.RegisterMessage(StatsAttributes)
+
+ItemSettings = _reflection.GeneratedProtocolMessageType('ItemSettings', (_message.Message,), dict(
+  DESCRIPTOR = _ITEMSETTINGS,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.ItemSettings)
+  ))
+_sym_db.RegisterMessage(ItemSettings)
+
+BattleAttributes = _reflection.GeneratedProtocolMessageType('BattleAttributes', (_message.Message,), dict(
+  DESCRIPTOR = _BATTLEATTRIBUTES,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.BattleAttributes)
+  ))
+_sym_db.RegisterMessage(BattleAttributes)
+
+EggIncubatorAttributes = _reflection.GeneratedProtocolMessageType('EggIncubatorAttributes', (_message.Message,), dict(
+  DESCRIPTOR = _EGGINCUBATORATTRIBUTES,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.EggIncubatorAttributes)
+  ))
+_sym_db.RegisterMessage(EggIncubatorAttributes)
+
+ExperienceBoostAttributes = _reflection.GeneratedProtocolMessageType('ExperienceBoostAttributes', (_message.Message,), dict(
+  DESCRIPTOR = _EXPERIENCEBOOSTATTRIBUTES,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.ExperienceBoostAttributes)
+  ))
+_sym_db.RegisterMessage(ExperienceBoostAttributes)
+
+FoodAttributes = _reflection.GeneratedProtocolMessageType('FoodAttributes', (_message.Message,), dict(
+  DESCRIPTOR = _FOODATTRIBUTES,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.FoodAttributes)
+  ))
+_sym_db.RegisterMessage(FoodAttributes)
+
+FortModifierAttributes = _reflection.GeneratedProtocolMessageType('FortModifierAttributes', (_message.Message,), dict(
+  DESCRIPTOR = _FORTMODIFIERATTRIBUTES,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.FortModifierAttributes)
+  ))
+_sym_db.RegisterMessage(FortModifierAttributes)
+
+IncenseAttributes = _reflection.GeneratedProtocolMessageType('IncenseAttributes', (_message.Message,), dict(
+  DESCRIPTOR = _INCENSEATTRIBUTES,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.IncenseAttributes)
+  ))
+_sym_db.RegisterMessage(IncenseAttributes)
+
+InventoryUpgradeAttributes = _reflection.GeneratedProtocolMessageType('InventoryUpgradeAttributes', (_message.Message,), dict(
+  DESCRIPTOR = _INVENTORYUPGRADEATTRIBUTES,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.InventoryUpgradeAttributes)
+  ))
+_sym_db.RegisterMessage(InventoryUpgradeAttributes)
+
+PokeballAttributes = _reflection.GeneratedProtocolMessageType('PokeballAttributes', (_message.Message,), dict(
+  DESCRIPTOR = _POKEBALLATTRIBUTES,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.PokeballAttributes)
+  ))
+_sym_db.RegisterMessage(PokeballAttributes)
+
+PotionAttributes = _reflection.GeneratedProtocolMessageType('PotionAttributes', (_message.Message,), dict(
+  DESCRIPTOR = _POTIONATTRIBUTES,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.PotionAttributes)
+  ))
+_sym_db.RegisterMessage(PotionAttributes)
+
+ReviveAttributes = _reflection.GeneratedProtocolMessageType('ReviveAttributes', (_message.Message,), dict(
+  DESCRIPTOR = _REVIVEATTRIBUTES,
+  __module__ = 'RpcSub_pb2'
+  # @@protoc_insertion_point(class_scope:RpcSub.ReviveAttributes)
+  ))
+_sym_db.RegisterMessage(ReviveAttributes)
+
+
+_GETHATCHEDEGGSRESPONSE.fields_by_name['pokemon_id'].has_options = True
+_GETHATCHEDEGGSRESPONSE.fields_by_name['pokemon_id']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\020\001'))
 # @@protoc_insertion_point(module_scope)

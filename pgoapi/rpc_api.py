@@ -171,6 +171,7 @@ class RpcApi:
             return False
         
         self.log.debug('Protobuf structure of rpc response:\n\r%s', response_proto)
+        self.log.debug('Decode raw over protoc (protoc has to be in your PATH):\n\r%s', self.decode_raw(response_raw.content))
        
         response_proto_dict = protobuf_to_dict(response_proto)
         response_proto_dict = self._parse_sub_responses(response_proto, subrequests, response_proto_dict)
@@ -184,8 +185,6 @@ class RpcApi:
         list_len = len(subrequests_list) -1
         i = 0
         for subresponse in response_proto.responses:
-            #self.log.debug( self.decode_raw(subresponse) )
-            
             if i > list_len:
                 self.log.info("Error - something strange happend...")
             
