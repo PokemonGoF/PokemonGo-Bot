@@ -11,7 +11,7 @@ It allows automatic parsing of requests/responses by finding the correct protobu
  * Address parsing for GPS coordinates
  * Allows chaining of RPC calls
  * Good logging/debugging possibilities
- * Easy extension of further calls, just add your protobuf specification
+ * Easy extension of further calls! No source code change required!
  * Following RPC calls:
    * GET_PLAYER
    * GET_INVENTORY
