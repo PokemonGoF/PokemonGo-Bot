@@ -1,53 +1,121 @@
-# Pokemon Go API Demo
+# pgoapi - a python pokemon go api lib/demo
+pgoapi is a client/api/demo for Pokemon Go by https://github.com/tejado.  
+It allows automatic parsing of requests/responses by finding the correct protobuf objects over a naming convention and will return the response in a parsed python dictionary format.   
 
  * USE AT YOUR OWN RISK !
- * includes protobuf file
- * ugly code
+ * I don't play pokemon go !
+ * No bot/farming code included !
 
-## Demo
+## Requirements
+ * Python 2
+ * requests
+ * protobuf
+ * gpsoauth
+ * geopy (only for pokecli demo)
+ * s2sphere (only for pokecli demo)
+ 
+## Supports
+ * GET_PLAYER
+ * GET_INVENTORY
+ * GET_MAP_OBJECTS
+ * DOWNLOAD_SETTINGS
+ 
+## Usage
 
-    $ python main.py -a "ptc" -u "username" -p "password" -l "New York, Washington Square"
-    [!] Your given location: Washington Square, Greenwich, NY 12834, USA
-    [!] lat/long/alt: 43.0909305 -73.4989367 0.0
-    [!] PTC login for: sublimnl
-    [+] RPC Session Token: TGT-842594-vsfLBEELnSrF ...
-    [+] Received API endpoint: https://pgorelease.nianticlabs.com/plfe/94/rpc
-    [+] Login successful
-    [+] Username: username
-    [+] You are playing Pokemon Go since: 2016-07-14 00:05:32
-    [+] Poke Storage: 250
-    [+] Item Storage: 350
-    [+] POKECOIN: 0
-    [+] STARDUST: 300
+### pokecli
+    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-d] [-t]
 
-    $ python main.py -a "google" -u "gmail_account_username@gmail.com" -p "password" -l "New York, Washington Square"
-    [!] Your given location: Washington Square, Greenwich, NY 12834, USA
-    [!] lat/long/alt: 43.0909305 -73.4989367 0.0
-    [!] Google login for: gmail_account_username@gmail.com
-    [+] RPC Session Token: eyJhbGciOiJSUzI1NiIsImt ...
-    [+] Received API endpoint: https://pgorelease.nianticlabs.com/plfe/490/rpc
-    [+] Login successful
-    [+] Username: <nickname>
-    [+] You are playing Pokemon Go since: 2016-07-12 20:59:39
-    [+] Poke Storage: 250
-    [+] Item Storage: 350
-    [+] POKECOIN: 0
-    [+] STARDUST: 100
+    optional arguments:
+      -h, --help                                    show this help message and exit
+      -a AUTH_SERVICE, --auth_service AUTH_SERVICE  Auth Service ('ptc' or 'google')
+      -u USERNAME, --username USERNAME              Username
+      -p PASSWORD, --password PASSWORD              Password
+      -l LOCATION, --location LOCATION              Location
+      -d, --debug                                   Debug Mode
+      -t, --test                                    Only parse the specified location
 
-## Creating a config file
-Copy config.json.example in config.json and update accordingly eg:
 
-    {
-        "auth_service": "google",
-        "username": "example@gmail.com",
-        "password": "password11!!",
-        "location": "New York",
-        "debug": true,
-        "client_secret": "000000000000000000"
+### pokecli demo
+
+    $ python2 pokecli.py -a ptc -u tejado -p 1234 --location "New York, Washington Square"
+    2016-07-19 01:22:14,806 [   pokecli] [ INFO] Your given location: Washington Square, Greenwich, NY 12834, USA
+    2016-07-19 01:22:14,806 [   pokecli] [ INFO] lat/long/alt: 43.0909305 -73.4989367 0.0
+    2016-07-19 01:22:14,808 [  auth_ptc] [ INFO] Login for: tejado
+    2016-07-19 01:22:15,584 [  auth_ptc] [ INFO] PTC Login successful
+    2016-07-19 01:22:15,584 [    pgoapi] [ INFO] Starting RPC login sequence (app simulation)
+    2016-07-19 01:22:15,584 [    pgoapi] [ INFO] Create new request...
+    2016-07-19 01:22:15,584 [    pgoapi] [ INFO] Adding 'GET_PLAYER' to RPC request
+    2016-07-19 01:22:15,584 [    pgoapi] [ INFO] Adding 'GET_HATCHED_EGGS' to RPC request
+    2016-07-19 01:22:15,584 [    pgoapi] [ INFO] Adding 'GET_INVENTORY' to RPC request
+    2016-07-19 01:22:15,584 [    pgoapi] [ INFO] Adding 'CHECK_AWARDED_BADGES' to RPC request
+    2016-07-19 01:22:15,584 [    pgoapi] [ INFO] Adding 'DOWNLOAD_SETTINGS' to RPC request including arguments
+    2016-07-19 01:22:15,585 [    pgoapi] [ INFO] Execution of RPC
+    2016-07-19 01:22:16,259 [    pgoapi] [ INFO] Cleanup of request!
+    2016-07-19 01:22:16,259 [    pgoapi] [ INFO] Finished RPC login sequence (app simulation)
+    2016-07-19 01:22:16,259 [    pgoapi] [ INFO] Login process completed
+    2016-07-19 01:22:16,259 [    pgoapi] [ INFO] Create new request...
+    2016-07-19 01:22:16,259 [    pgoapi] [ INFO] Adding 'GET_PLAYER' to RPC request
+    2016-07-19 01:22:16,259 [    pgoapi] [ INFO] Execution of RPC
+    2016-07-19 01:22:16,907 [    pgoapi] [ INFO] Cleanup of request!
+    Response dictionary:
+    ...
+          "profile": {
+            "username": "tejado",
+            "item_storage": 350,
+            "unknown12": "",
+            "unknown13": "",
+            "creation_time": 1468139...,
+            "currency": [
+              {
+                "type": "POKECOIN"
+              },
+              {
+                "amount": 400,
+                "type": "STARDUST"
+              }
+            ],
+            "daily_bonus": {},
+            "avatar": {
+              "unknown2": 1,
+              "unknown3": 4,
+              "unknown9": 2,
+              "unknown10": 1
+            },
+            "tutorial": "AAEDBAc=\n",
+            "poke_storage": 250
+          },
+    ...
+
+## pgoapi extension
+All (known) RPC calls against the original Pokemon Go servers are listed in the RequestMethod Enum in the pgoapi/protos/RpcEnum.proto file. These can be executed over the name, e.g. the call for get_player is:
+
+    api = PGoApi()
+    ...
+    api.get_player()
+    api.call()
+    
+The pgoapi will send this as a RPC request and tries to parse the response over a protobuf object with the same name (get_player) converted to CamelCase + 'Response'. In our example, it would be 'GetPlayerResponse'. These protobuf definitions have to be inside RpcSub (pgoapi/protos/RpcSub.proto).
+
+If a request needs parameters, they can be added as arguments and pgoapi will try to add them automatically to the request, e.g.:
+
+    *RpcSub.proto:*
+    message DownloadSettingsRequest {
+      optional string hash = 1;
     }
-
+    
+    *python:*
+    api = PGoApi()
+    ...
+    api.download_settings(hash="4a2e9bc330dae60e7b74fc85b98868ab4700802e")
+    api.call()
+  
+    
 ## Credits
-Thanks a lot to [Mila432](https://github.com/Mila432/Pokemon_Go_API) for the inspiration and parts of the code!  
-[C# Port](https://github.com/BclEx/pokemongo-api-demo.net) by BclEx !  
+[Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets  
+[elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR  
+[AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos  
+[AHAAAAAAA](https://github.com/AHAAAAAAA/PokemonGo-Map) for parts of the s2sphere stuff
+
+## Ports
+[C# Port](https://github.com/BclEx/pokemongo-api-demo.net) by BclEx  
 [Node Port](https://github.com/Armax/Poke.io) by Arm4x  
-Thanks a lot to [elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR
