@@ -1,5 +1,10 @@
 # PokemonGo-Auto-Pokestop - a python pokemon script can research your poke stops
 
+## Features:
+ * Search Fort(Spin Pokestop)
+ * Catch Pokemon
+ * Release low cp pokemon
+
 
 
 # The works are based on the Pokemon Go API
