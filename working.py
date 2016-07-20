@@ -36,7 +36,7 @@ def encount_and_catch_pokemon(pokemon,api,position):
 	api.encounter(encounter_id=encounter_id,spawnpoint_id=spawnpoint_id,player_latitude=player_latitude,player_longitude=player_longitude)
 	response_dict = api.call()
 	print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
-	if 'responses' in response_dict:
+	if response_dict and 'responses' in response_dict:
 		if 'ENCOUNTER' in response_dict['responses']:
 			if 'status' in response_dict['responses']['ENCOUNTER']:
 				if response_dict['responses']['ENCOUNTER']['status'] is 1:
@@ -50,6 +50,12 @@ def encount_and_catch_pokemon(pokemon,api,position):
 					response_dict = api.call()
 					print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
 	time.sleep(5)
+def _transfer_low_cp_pokemon(api,value,pokemon):
+	if 'cp' in pokemon and pokemon['cp'] < value:
+		print('need release this pokemon: {}'.format(pokemon))
+		api.release_pokemon(pokemon_id=pokemon['id'])
+		response_dict = api.call()
+		print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
 
 def transfer_low_cp_pokomon(api,value):
 	api.get_inventory()
@@ -64,12 +70,8 @@ def transfer_low_cp_pokomon(api,value):
 						if 'inventory_item_data' in item:
 							if 'pokemon' in item['inventory_item_data']:
 								pokemon = item['inventory_item_data']['pokemon']
-								if 'cp' in pokemon and pokemon['cp'] < value:
-									print('need release this pokemon: {}'.format(pokemon))
-									api.release_pokemon(pokemon_id=pokemon['id'])
-									response_dict = api.call()
-									print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
-									time.sleep(1.2)
+								_transfer_low_cp_pokemon(api,value,pokemon)
+								time.sleep(1.2)
 
 def search_seen_fort(fort,api,position):
 	lat=fort['latitude']
