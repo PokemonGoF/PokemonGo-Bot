@@ -59,8 +59,8 @@ def transfer_low_cp_pokomon(api,value):
 		if 'GET_INVENTORY' in response_dict['responses']:
 			if 'inventory_delta' in response_dict['responses']['GET_INVENTORY']:
 				if 'inventory_items' in response_dict['responses']['GET_INVENTORY']['inventory_delta']:
-					for inventory_item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
-						#print('item {}'.format(inventory_item))
+					for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
+						#print('item {}'.format(item))
 						if 'inventory_item_data' in item:
 							if 'pokemon' in item['inventory_item_data']:
 								pokemon = item['inventory_item_data']['pokemon']
