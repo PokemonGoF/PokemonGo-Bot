@@ -13,8 +13,63 @@ GOOGLEMAPS_KEY = "AIzaSyAZzeHhs-8JZ7i18MjFuM35dJHq70n3Hx4"
 working_thread=None
 gmaps = googlemaps.Client(key=GOOGLEMAPS_KEY)
 
+def spawn_point_work(spawn_point,api,position):
+	lat=spawn_point['latitude']
+	lng=spawn_point['longitude']
+	position=(lat,lng,0.0)
+	api.set_position(*position)
+	api.player_update(latitude=lat,longitude=lng)
+	response_dict = api.call()
+	print('Response dictionary 1: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+	time.sleep(2)
+	api.player_update(latitude=lat,longitude=lng)
+	response_dict = api.call()
+	print('Response dictionary 1: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+	time.sleep(2)
 def convert_toposition(lat,lng,art):
     return (lat, lng, art)
+def encount_and_catch_pokemon(pokemon,api,position):
+	encounter_id=pokemon['encounter_id']
+	spawnpoint_id = pokemon['spawnpoint_id']
+	player_latitude = pokemon['latitude']
+	player_longitude = pokemon['longitude']
+	api.encounter(encounter_id=encounter_id,spawnpoint_id=spawnpoint_id,player_latitude=player_latitude,player_longitude=player_longitude)
+	response_dict = api.call()
+	print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+	if 'responses' in response_dict:
+		if 'ENCOUNTER' in response_dict['responses']:
+			if 'status' in response_dict['responses']['ENCOUNTER']:
+				if response_dict['responses']['ENCOUNTER']['status'] is 1:
+					api.catch_pokemon(encounter_id = encounter_id,
+						pokeball = 1,
+						normalized_reticle_size = 1.950,
+						spawn_point_guid = spawnpoint_id,
+						hit_pokemon = 1,
+						spin_modifier = 1,
+						NormalizedHitPosition = 1)
+					response_dict = api.call()
+					print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+	time.sleep(5)
+
+def transfer_low_cp_pokomon(api,value):
+	api.get_inventory()
+	response_dict = api.call()
+	print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+	if 'responses' in response_dict:
+		if 'GET_INVENTORY' in response_dict['responses']:
+			if 'inventory_delta' in response_dict['responses']['GET_INVENTORY']:
+				if 'inventory_items' in response_dict['responses']['GET_INVENTORY']['inventory_delta']:
+					for inventory_item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
+						#print('item {}'.format(inventory_item))
+						if 'inventory_item_data' in item:
+							if 'pokemon' in item['inventory_item_data']:
+								pokemon = item['inventory_item_data']['pokemon']
+								if pokemon['cp'] < value:
+									print('need release this pokemon: {}'.format(pokemon))
+									api.release_pokemon(pokemon_id=pokemon['id'])
+									response_dict = api.call()
+									print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+									time.sleep(1.2)
 
 def search_seen_fort(fort,api,position):
 	lat=fort['latitude']

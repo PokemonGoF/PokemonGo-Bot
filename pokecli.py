@@ -145,36 +145,81 @@ def main():
 
     response_dict = api.call()
     print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
-    # get inventory call
-    # ----------------------
-    api.get_inventory()
-    response_dict = api.call()
-    print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
 
-    # get map objects call
-    # ----------------------
-    timestamp = "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
-    cellid = get_cellid(position[0], position[1])
-    api.get_map_objects(latitude=f2i(position[0]), longitude=f2i(position[1]), since_timestamp_ms=timestamp, cell_id=cellid)
+    working.transfer_low_cp_pokomon(api,50)
 
-    response_dict = api.call()
-    #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
-    if response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
-        print('got the maps')
-        map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
-        print('map_cells are {}'.format(len(map_cells)))
-        for cell in map_cells:
-            print cell
-            if 'forts' in cell:
-                for fort in cell['forts']:
-                    if 'type' in fort:
-                        print('This is PokeStop')
-                        working.search_seen_fort(fort,api,position)
-                    else:
-                        print('This is Gym')
-                    print(fort)
-            if 'catchable_pokemons' in cell:
-                print 'has pokemon'
+    pos = 1
+    x = 0
+    y = 0
+    dx = 0
+    dy = -1
+    steplimit=10
+    steplimit2 = steplimit**2
+    origin_lat=position[0]
+    origin_lon=position[1]
+    while(True):
+        for step in range(steplimit2):
+            #starting at 0 index
+            print('looping: step {} of {}'.format((step+1), steplimit**2))
+            print('steplimit: {} x: {} y: {} pos: {} dx: {} dy {}'.format(steplimit2, x, y, pos, dx, dy))
+            # Scan location math
+            if -steplimit2 / 2 < x <= steplimit2 / 2 and -steplimit2 / 2 < y <= steplimit2 / 2:
+                position=(x * 0.0025 + origin_lat, y * 0.0025 + origin_lon, 0)
+                api.set_position(*position)
+                print(position)
+            if x == y or x < 0 and x == -y or x > 0 and x == 1 - y:
+                (dx, dy) = (-dy, dx)
+
+            (x, y) = (x + dx, y + dy)
+            # get map objects call
+            # ----------------------
+            timestamp = "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
+            cellid = get_cellid(position[0], position[1])
+            api.get_map_objects(latitude=f2i(position[0]), longitude=f2i(position[1]), since_timestamp_ms=timestamp, cell_id=cellid)
+
+            response_dict = api.call()
+            #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+            if response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
+                print('got the maps')
+                map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
+                print('map_cells are {}'.format(len(map_cells)))
+                for cell in map_cells:
+                    print cell
+                    if 'catchable_pokemons' in cell:
+                        print 'has pokemon'
+                        for pokemon in cell['catchable_pokemons']:
+                            print('catchable_pokemon {}'.format(pokemon))
+                            working.encount_and_catch_pokemon(pokemon,api,position)
+                    if 'wild_pokemons' in cell:
+                        for pokemon in cell['wild_pokemons']:
+                            print('wild_pokemons {}'.format(pokemon))
+                            working.encount_and_catch_pokemon(pokemon,api,position)
+                            #encounter_id=pokemon['encounter_id']
+                            #api.encounter(encounter_id=encounter_id,player_latitude=position[0],player_longitude=position[1])
+                            #response_dict = api.call()
+                            #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+                            """
+                    if 'spawn_points' in cell:
+                        for spawn_point in cell['spawn_points']:
+                            print spawn_point
+                            working.spawn_point_work(spawn_point,api,position)
+
+                            api.get_map_objects(latitude=f2i(position[0]), longitude=f2i(position[1]), since_timestamp_ms=timestamp, cell_id=cellid)
+
+                            response_dict = api.call()
+                            print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+                            time.sleep(2)
+                            """
+                    if 'forts' in cell:
+                        for fort in cell['forts']:
+                            if 'type' in fort:
+                                print('This is PokeStop')
+                                working.search_seen_fort(fort,api,position)
+                            else:
+                                print('This is Gym')
+                time.sleep(10)
+                        #print(fort)
+
     # spin a fort
     # ----------------------
     #fortid = '<your fortid>'
