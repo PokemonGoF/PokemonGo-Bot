@@ -1,4 +1,12 @@
-# pgoapi - a python pokemon go api lib/demo
+# PokemonGo-Auto-Pokestop - a python pokemon script can research your poke stops
+
+
+
+# The works are based on the Pokemon Go API
+
+
+
+
 pgoapi is a client/api/demo for Pokemon Go by https://github.com/tejado.  
 It allows automatic parsing of requests/responses by finding the correct protobuf objects over a naming convention and will return the response in a parsed python dictionary format.   
 
