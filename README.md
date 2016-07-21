@@ -22,7 +22,7 @@
       -a AUTH_SERVICE, --auth_service AUTH_SERVICE  Auth Service ('ptc' or 'google')
       -u USERNAME, --username USERNAME              Username
       -p PASSWORD, --password PASSWORD              Password
-      -l LOCATION, --location LOCATION              Location
+      -l LOCATION, --location LOCATION              Location (Address or 'xx.yyyy,zz.ttttt')
       -w SPEED,  --walk SPEED                       Walk instead of teleport with given speed (meters per second, e.g. 2.5)
       -s SPINSTOP, --spinstop                       Enable Spinning of PokeStops
       -c CP, --cp                                   Set the CP to transfer or lower (eg. 100 will transfer CP0-99)
@@ -31,11 +31,15 @@
 
 
 ### Command Line Example
-
+    Pokomon Training Account:
     $ python2 pokecli.py -a ptc -u tejado -p 1234 --location "New York, Washington Square"
+    Google Account:
+    $ python2 pokecli.py -a google -u tejado -p 1234 --location "New York, Washington Square"
 
 ## FAQ
 
+### Set GEO Location
+    It works, use -l "xx.yyyy,zz.ttttt" to set lat long for location. -- diordache
 ### FLEE
    The status code "3" corresponds to "Flee" - meaning your Pokemon has run away. 
    {"responses": { "CATCH_POKEMON": { "status": 3 } }
