@@ -76,6 +76,11 @@
             "poke_storage": 250
           },
     ...
+    
+# Donation
+
+[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WQUXDC54W6EVY)
+
 ## FAQ
 ### FLEE
    {"responses": { "CATCH_POKEMON": { "status": 3 } }  means  FLEE
