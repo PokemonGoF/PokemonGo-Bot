@@ -45,7 +45,7 @@ def work_on_cell(cell,api,position,config):
 			for fort in cell['forts']:
 				if 'type' in fort:
 					print('This is PokeStop')
-					working.search_seen_fort(fort,api,position)
+					search_seen_fort(fort,api,position)
 				else:
 					print('This is Gym')
 
