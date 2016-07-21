@@ -152,7 +152,21 @@ def main():
     api.get_player()
 
     response_dict = api.call()
-    print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+    #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+    currency_1="0"
+    currency_2="0"
+    if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][0]:
+        currency_1=response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['amount']
+    if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][1]:
+        currency_2=response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['amount']
+    print 'Profile:'
+    print '    Username: ' + str(response_dict['responses']['GET_PLAYER']['profile']['username'])
+    print '    Bag size: ' + str(response_dict['responses']['GET_PLAYER']['profile']['item_storage'])
+    print '    Pokemon Storage Size: ' + str(response_dict['responses']['GET_PLAYER']['profile']['poke_storage'])
+    print '    Account Creation: ' + str(response_dict['responses']['GET_PLAYER']['profile']['creation_time'])
+    print '    Currency: '
+    print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['type']) + ': ' + str(currency_1)
+    print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['type']) + ': ' + str(currency_2)
 
     #working.transfer_low_cp_pokomon(api,50)
 
@@ -194,10 +208,9 @@ def main():
                 'GET_MAP_OBJECTS' in response_dict['responses'] and \
                 'status' in response_dict['responses']['GET_MAP_OBJECTS'] and \
                 response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
-
-                print('got the maps')
+                #print('got the maps')
                 map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
-                print('map_cells are {}'.format(len(map_cells)))
+                #print('map_cells are {}'.format(len(map_cells)))
                 for cell in map_cells:
                     working.work_on_cell(cell,api,position,config)
             time.sleep(10)
