@@ -36,6 +36,8 @@ import time
 import ssl
 import sys
 
+pokemon_list=json.load(open('pokemon.json'))
+
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -47,6 +49,9 @@ from geopy.geocoders import GoogleV3
 from s2sphere import CellId, LatLng
 
 log = logging.getLogger(__name__)
+
+# instantiate pgoapi
+api = PGoApi()
 
 global config
 
@@ -114,6 +119,43 @@ def init_config():
 
     return config
 
+def list_pokemons(response_dict):
+    inventory = response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+    for item in inventory:
+        if "inventory_item_data" in item:
+	    if "pokemon" in item["inventory_item_data"]:
+                if "pokemon_id" in item["inventory_item_data"]["pokemon"]:
+	            pokemon = item["inventory_item_data"]["pokemon"]
+	            print(pokemon_list[int(pokemon["pokemon_id"])]['Name'] + " " + str(pokemon["cp"]))
+
+def print_profile():
+    # get player profile call
+    # ----------------------
+    api.get_player()
+
+    response_dict = api.call()
+    #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+
+    api.get_inventory()
+
+    response_dict2 = api.call()
+    list_pokemons(response_dict2)
+    #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict2, indent=2)))
+    currency_1="0"
+    currency_2="0"
+    if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][0]:
+        currency_1=response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['amount']
+    if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][1]:
+        currency_2=response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['amount']
+    print 'Profile:'
+    print '    Username: ' + str(response_dict['responses']['GET_PLAYER']['profile']['username'])
+    print '    Bag size: ' + str(response_dict['responses']['GET_PLAYER']['profile']['item_storage'])
+    print '    Pokemon Storage Size: ' + str(response_dict['responses']['GET_PLAYER']['profile']['poke_storage'])
+    print '    Account Creation: ' + str(response_dict['responses']['GET_PLAYER']['profile']['creation_time'])
+    print '    Currency: '
+    print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['type']) + ': ' + str(currency_1)
+    print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['type']) + ': ' + str(currency_2)
+
 def main():
     # log settings
     # log format
@@ -138,8 +180,6 @@ def main():
     if config.test:
         return
 
-    # instantiate pgoapi
-    api = PGoApi()
     # provide player position on the earth
     api.set_position(*position)
     print(position)
@@ -148,27 +188,6 @@ def main():
         return
 
     # chain subrequests (methods) into one RPC call
-
-    # get player profile call
-    # ----------------------
-    api.get_player()
-
-    response_dict = api.call()
-    #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
-    currency_1="0"
-    currency_2="0"
-    if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][0]:
-        currency_1=response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['amount']
-    if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][1]:
-        currency_2=response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['amount']
-    print 'Profile:'
-    print '    Username: ' + str(response_dict['responses']['GET_PLAYER']['profile']['username'])
-    print '    Bag size: ' + str(response_dict['responses']['GET_PLAYER']['profile']['item_storage'])
-    print '    Pokemon Storage Size: ' + str(response_dict['responses']['GET_PLAYER']['profile']['poke_storage'])
-    print '    Account Creation: ' + str(response_dict['responses']['GET_PLAYER']['profile']['creation_time'])
-    print '    Currency: '
-    print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['type']) + ': ' + str(currency_1)
-    print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['type']) + ': ' + str(currency_2)
 
     #working.transfer_low_cp_pokomon(api,50)
 
@@ -185,6 +204,7 @@ def main():
         for step in range(steplimit2):
             #starting at 0 index
             print('looping: step {} of {}'.format((step+1), steplimit**2))
+            print_profile()
             print('steplimit: {} x: {} y: {} pos: {} dx: {} dy {}'.format(steplimit2, x, y, pos, dx, dy))
             # Scan location math
             if -steplimit2 / 2 < x <= steplimit2 / 2 and -steplimit2 / 2 < y <= steplimit2 / 2:
