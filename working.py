@@ -8,30 +8,23 @@ from pgoapi import PGoApi
 from pgoapi.utilities import f2i, h2f
 from math import radians, sqrt, sin, cos, atan2
 
-pokemonsJSON = json.load(open('pokemon.en.json'))
-
 GOOGLEMAPS_KEY = "AIzaSyAZzeHhs-8JZ7i18MjFuM35dJHq70n3Hx4"
 
 working_thread=None
 gmaps = googlemaps.Client(key=GOOGLEMAPS_KEY)
 rest_time=1
+pokemon_list=json.load(open('pokemon.json'))
 
 def work_on_cell(cell,api,position,config):
-	print cell
+	#print cell
 	if 'catchable_pokemons' in cell:
 		print 'has pokemon'
 		for pokemon in cell['catchable_pokemons']:
-			curID = str(pokemon['pokemon_id'])
-			curName = pokemonsJSON[curID]
-			print('\n'+'### Pokemon Found! ###')
-			print('# Pokemon ID: '+ curID)
-			print('# Pokemon Name: '+ curName)
-			#print('catchable_pokemon {}'.format(pokemon))
+			print('catchable_pokemon {}'.format(pokemon))
 			encount_and_catch_pokemon(pokemon,api,position,config)
 	if 'wild_pokemons' in cell:
 		for pokemon in cell['wild_pokemons']:
-			print('# Pokemon Is Wild!')
-			#print('wild_pokemons {}'.format(pokemon))
+			print('wild_pokemons {}'.format(pokemon))
 			encount_and_catch_pokemon(pokemon,api,position,config)
 			#encounter_id=pokemon['encounter_id']
 			#api.encounter(encounter_id=encounter_id,player_latitude=position[0],player_longitude=position[1])
@@ -84,7 +77,7 @@ def encount_and_catch_pokemon(pokemon,api,position,config):
 	player_longitude = pokemon['longitude']
 	api.encounter(encounter_id=encounter_id,spawnpoint_id=spawnpoint_id,player_latitude=player_latitude,player_longitude=player_longitude)
 	response_dict = api.call()
-	print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+	#print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
 	if response_dict and 'responses' in response_dict:
 		if 'ENCOUNTER' in response_dict['responses']:
 			if 'status' in response_dict['responses']['ENCOUNTER']:
@@ -94,6 +87,9 @@ def encount_and_catch_pokemon(pokemon,api,position,config):
 						pokemon=response_dict['responses']['ENCOUNTER']['wild_pokemon']
 						if 'pokemon_data' in pokemon and 'cp' in pokemon['pokemon_data']:
 							cp=pokemon['pokemon_data']['cp']
+							pokemon_num=int(pokemon['pokemon_data']['pokemon_id'])-1
+							pokemon_name=pokemon_list[int(pokemon_num)]['Name']
+							print('A Wild ' + str(pokemon_name) + ' appeared! [CP' + str(cp) + ']')
 					while(True):
 						api.catch_pokemon(encounter_id = encounter_id,
 							pokeball = 1,
@@ -103,7 +99,7 @@ def encount_and_catch_pokemon(pokemon,api,position,config):
 							spin_modifier = 1,
 							NormalizedHitPosition = 1)
 						response_dict = api.call()
-						print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+						#print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
 
 						if response_dict and \
 							'responses' in response_dict and \
@@ -111,15 +107,15 @@ def encount_and_catch_pokemon(pokemon,api,position,config):
 							'status' in response_dict['responses']['CATCH_POKEMON']:
 							status = response_dict['responses']['CATCH_POKEMON']['status']
 							if status is 2:
-								print('[-] Attempted to capture pokemon - failed.. trying again!')
+								print('[-] Attempted to capture ' + str(pokemon_name) + ' - failed.. trying again!')
 								time.sleep(1.25)
 								continue
 							if status is 1:
 								if cp < config.cp:
-									print('# Captured Pokemon! [CP' + str(cp) + '] - exchanging for candy')
+									print('Captured ' + str(pokemon_name) + '! [CP' + str(cp) + '] - exchanging for candy')
 									transfer_low_cp_pokomon(api,config.cp)
 								else:
-									print('# Captured Pokemon! [CP' + str(cp) + ']')
+									print('Captured ' + str(pokemon_name) + '! [CP' + str(cp) + ']')
 						break
 	time.sleep(5)
 def _transfer_low_cp_pokemon(api,value,pokemon):
