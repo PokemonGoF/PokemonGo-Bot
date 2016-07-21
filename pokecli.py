@@ -91,6 +91,7 @@ def init_config():
     parser.add_argument("-p", "--password", help="Password", required=required("password"))
     parser.add_argument("-l", "--location", help="Location", required=required("location"))
     parser.add_argument("-s", "--spinstop", help="SpinPokeStop",action='store_true')
+    parser.add_argument("-c", "--cp",help="Set CP less than to transfer(DEFAULT 100)",type=int,default=100)
     parser.add_argument("-d", "--debug", help="Debug Mode", action='store_true')
     parser.add_argument("-t", "--test", help="Only parse the specified location", action='store_true')
     parser.set_defaults(DEBUG=False, TEST=False)

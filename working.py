@@ -20,11 +20,11 @@ def work_on_cell(cell,api,position,config):
 		print 'has pokemon'
 		for pokemon in cell['catchable_pokemons']:
 			print('catchable_pokemon {}'.format(pokemon))
-			encount_and_catch_pokemon(pokemon,api,position)
+			encount_and_catch_pokemon(pokemon,api,position,config)
 	if 'wild_pokemons' in cell:
 		for pokemon in cell['wild_pokemons']:
 			print('wild_pokemons {}'.format(pokemon))
-			encount_and_catch_pokemon(pokemon,api,position)
+			encount_and_catch_pokemon(pokemon,api,position,config)
 			#encounter_id=pokemon['encounter_id']
 			#api.encounter(encounter_id=encounter_id,player_latitude=position[0],player_longitude=position[1])
 			#response_dict = api.call()
@@ -69,7 +69,7 @@ def spawn_point_work(spawn_point,api,position):
 	time.sleep(2)
 def convert_toposition(lat,lng,art):
     return (lat, lng, art)
-def encount_and_catch_pokemon(pokemon,api,position):
+def encount_and_catch_pokemon(pokemon,api,position,config):
 	encounter_id=pokemon['encounter_id']
 	spawnpoint_id = pokemon['spawnpoint_id']
 	player_latitude = pokemon['latitude']
@@ -107,9 +107,9 @@ def encount_and_catch_pokemon(pokemon,api,position):
 								time.sleep(1.25)
 								continue
 							if status is 1:
-								if cp < 100:
+								if cp < config.cp:
 									print('Got it, keep good ones')
-									transfer_low_cp_pokomon(api,100)
+									transfer_low_cp_pokomon(api,config.cp)
 								else:
 									print('got it, keep it')
 								break
@@ -118,7 +118,7 @@ def encount_and_catch_pokemon(pokemon,api,position):
 	time.sleep(5)
 def _transfer_low_cp_pokemon(api,value,pokemon):
 	if 'cp' in pokemon and pokemon['cp'] < value:
-		print('need release this pokemon: {}'.format(pokemon))
+		print('need release this pokemon({}): {}'.format(value,pokemon))
 		api.release_pokemon(pokemon_id=pokemon['id'])
 		response_dict = api.call()
 		print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
