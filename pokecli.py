@@ -179,7 +179,11 @@ def main():
 
             response_dict = api.call()
             #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
-            if response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
+            if response_dict and 'responses' in response_dict and \
+                'GET_MAP_OBJECTS' in response_dict['responses'] and \
+                'status' in response_dict['responses']['GET_MAP_OBJECTS'] and \
+                response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
+
                 print('got the maps')
                 map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
                 print('map_cells are {}'.format(len(map_cells)))
@@ -214,7 +218,7 @@ def main():
                         for fort in cell['forts']:
                             if 'type' in fort:
                                 print('This is PokeStop')
-                                working.search_seen_fort(fort,api,position)
+                                #working.search_seen_fort(fort,api,position)
                             else:
                                 print('This is Gym')
                 time.sleep(10)
