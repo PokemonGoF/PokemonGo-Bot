@@ -45,15 +45,33 @@ class SeenFortWorker(object):
             spin_details = response_dict['responses']['FORT_SEARCH']
             if spin_details['result'] == 1:
                 print("- Loot: ")
-                print("- " + str(spin_details.get('experience_awarded', 0)) + " xp")
-                items_awarded = spin_details.get('items_awarded', [])
-                if len(items_awarded) > 0:
+                experience_awarded = spin_details.get('experience_awarded', False)
+                if experience_awarded:
+                    print("- " + str() + " xp")
+
+                items_awarded = spin_details.get('items_awarded', False)
+                if items_awarded:
                     for item in items_awarded:
                         item_id = str(item['item_id'])
                         item_name = self.item_list[item_id]
                         print("- " + str(item['item_count']) + "x " + item_name)
                 else:
                     print("- Nothing found.")
+
+                pokestop_cooldown = spin_details.get('cooldown_complete_timestamp_ms')
+                if pokestop_cooldown:
+                    print 'PokeStop on cooldown. Time left: %s' % str(pokestop_cooldown/1000)
+
+                if not items_awarded and not experience_awarded and not pokestop_cooldown:
+                    message = (
+                        'Stopped at Pokestop and did not find experience, items '
+                        'or information about the stop cooldown. You are '
+                        'probably softbanned. Try to play on your phone, '
+                        'if pokemons always ran away and you find nothing in '
+                        'PokeStops you are indeed softbanned. Please try again '
+                        'in a few hours.'
+                    )
+                    raise RuntimeError(message)
             elif spin_details['result'] == 2:
                 print("- Pokestop out of range")
             elif spin_details['result'] == 3:
