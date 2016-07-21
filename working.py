@@ -47,7 +47,7 @@ def work_on_cell(cell,api,position,config,balls_stock):
 	else:
         	noPokeballs = True
         	
-	if config.spinstop:
+	if config.spinstop or noPokeballs:
 		if 'forts' in cell:
 			for fort in cell['forts']:
 				if 'type' in fort:
