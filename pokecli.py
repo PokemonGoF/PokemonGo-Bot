@@ -152,6 +152,8 @@ def main():
 
     response_dict = api.call()
     #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+    currency_1="0"
+    currency_2="0"
     if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][0]:
         currency_1=response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['amount']
     if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][1]:
