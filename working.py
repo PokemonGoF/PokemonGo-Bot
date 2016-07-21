@@ -143,9 +143,9 @@ def search_seen_fort(fort,api,position):
 	fortID=fort['id']
 	distant=geocalc(position[0],position[1],lat,lng)*1000
 	global rest_time
-	if --rest_time > 0:
-		print('dont keep search the fort before have a way to check items')
-		return 11
+	#if --rest_time > 0:
+	#	print('dont keep search the fort before have a way to check items')
+	#	return 11
 	print('distant is {}m'.format(distant))
 	if distant > 10:
 		print('need setup the postion to farming fort')
