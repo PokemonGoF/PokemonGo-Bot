@@ -77,7 +77,7 @@ def encount_and_catch_pokemon(pokemon,api,position,config):
 	player_longitude = pokemon['longitude']
 	api.encounter(encounter_id=encounter_id,spawnpoint_id=spawnpoint_id,player_latitude=player_latitude,player_longitude=player_longitude)
 	response_dict = api.call()
-	print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+	#print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
 	if response_dict and 'responses' in response_dict:
 		if 'ENCOUNTER' in response_dict['responses']:
 			if 'status' in response_dict['responses']['ENCOUNTER']:
@@ -89,6 +89,7 @@ def encount_and_catch_pokemon(pokemon,api,position,config):
 							cp=pokemon['pokemon_data']['cp']
 							pokemon_num=int(pokemon['pokemon_data']['pokemon_id'])-1
 							pokemon_name=pokemon_list[int(pokemon_num)]['Name']
+							print('A Wild ' + str(pokemon_name) + ' appeared! [CP' + str(cp) + ']')
 					while(True):
 						api.catch_pokemon(encounter_id = encounter_id,
 							pokeball = 1,
