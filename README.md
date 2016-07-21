@@ -4,6 +4,7 @@
  * Search Fort(Spin Pokestop)
  * Catch Pokemon
  * Release low cp pokemon
+ * Walking as you
 
 ## Usage
 
@@ -14,7 +15,7 @@
 ### Google Protobuf
     MAC:  brew update && brew install --devel protobuf
 ### PokemonGo-Bot
-    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-d] [-t] [-s] [-c]
+    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-w]  [-d] [-t] [-s] [-c]
 
     optional arguments:
       -h, --help                                    show this help message and exit
@@ -22,6 +23,7 @@
       -u USERNAME, --username USERNAME              Username
       -p PASSWORD, --password PASSWORD              Password
       -l LOCATION, --location LOCATION              Location
+      -w SPEED,  --walk SPEED                       Walk instead of teleport with given speed (meters per second, e.g. 2.5)
       -s SPINSTOP, --spinstop                       Enable Spinning of PokeStops
       -c CP, --cp                                   Set the CP to transfer or lower (eg. 100 will transfer CP0-99)
       -d, --debug                                   Debug Mode
