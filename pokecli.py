@@ -204,10 +204,9 @@ def main():
                 'GET_MAP_OBJECTS' in response_dict['responses'] and \
                 'status' in response_dict['responses']['GET_MAP_OBJECTS'] and \
                 response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
-
-                print('got the maps')
+                #print('got the maps')
                 map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
-                print('map_cells are {}'.format(len(map_cells)))
+                #print('map_cells are {}'.format(len(map_cells)))
                 for cell in map_cells:
                     working.work_on_cell(cell,api,position,config)
             time.sleep(10)
