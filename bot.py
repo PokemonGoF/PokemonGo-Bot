@@ -12,10 +12,11 @@ from math import radians, sqrt, sin, cos, atan2
 
 class PokemonGoBot(object):
 
-    def __init__(self, config):
+    def __init__(self, config, visualisation_data):
         self.config = config
         self.pokemon_list=json.load(open('pokemon.json'))
         self.item_list=json.load(open('items.json'))
+        self.visualisation_data = visualisation_data
 
     def start(self):
         self._setup_logging()

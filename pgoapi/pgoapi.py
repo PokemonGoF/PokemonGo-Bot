@@ -133,7 +133,7 @@ class PGoApi:
             self.heartbeat()
         print "Finished walking"
 
-    def walk2(self, speed, out_position, lat, lng, alt):
+    def walk2(self, speed, visualisation_data, lat, lng, alt):
         dist = self.distance(i2f(self._position_lat), i2f(self._position_lng), lat, lng)
         steps = (dist+0.0)/(speed+0.0) # may be rational number
         intSteps = int(steps)
@@ -145,9 +145,9 @@ class PGoApi:
 
             for i in range(intSteps):
                 self.set_position(i2f(self._position_lat) + dLat, i2f(self._position_lng) + dLng, alt)
-                out_position[0]=i2f(self._position_lat) + dLat
-                out_position[1]=i2f(self._position_lng) + dLng
-                out_position[2]=alt
+                visualisation_data[2]=i2f(self._position_lat) + dLat
+                visualisation_data[3]=i2f(self._position_lng) + dLng
+                visualisation_data[4]=alt
                 self.heartbeat()
                 time.sleep(1) # sleep one second
 

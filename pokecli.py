@@ -40,13 +40,14 @@ from flask_googlemaps import Map
 from flask_googlemaps import icons
 import threading
 
-import working
 import webapp
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
 from bot import PokemonGoBot
+
+visualisation_data = [0,0,0,0,0] #initial lat, initial lng, current lat, current lng, current alt
 
 def init_config():
     parser = argparse.ArgumentParser()
@@ -108,7 +109,8 @@ def main():
         logging.getLogger("pgoapi").setLevel(logging.DEBUG)
         logging.getLogger("rpc_api").setLevel(logging.DEBUG)
 
-    bot = PokemonGoBot(config)
+    global visualisation_data
+    bot = PokemonGoBot(config, visualisation_data)
     bot.start()
 
     while(True):
@@ -125,21 +127,10 @@ def register_background_thread(initial_registration=False):
     search_thread.name = 'search_thread'
     search_thread.start()
 
-def get_map():
-    print "get_map" + str(origin_lat) + ", " + str(origin_lon)
-    fullmap = Map(
-        identifier="fullmap2",
-        style='height:100%;width:100%;top:0;left:0;position:absolute;z-index:200;',
-        lat=origin_lat,
-        lng=origin_lon,
-        zoom='15', )
-    return fullmap
-    # markers=get_pokemarkers(),
-
 def get_player_position():
     player_position = {
-        'lat': out_position[0],
-        'lng': out_position[1]
+        'lat': visualisation_data[2],
+        'lng': visualisation_data[3]
     }
 
     return player_position
@@ -151,14 +142,14 @@ webapp = webapp.create_webapp()
 @webapp.route('/')
 def fullmap():
     return render_template(
-        'example_fullmap.html', key=GOOGLEMAPS_KEY, fullmap=get_map(), auto_refresh=0)
+        'example_fullmap.html', key=GOOGLEMAPS_KEY, auto_refresh=0)
 
 @webapp.route('/config')
 def config():
     """ Gets the settings for the Google Maps via REST"""
     center = {
-        'lat': origin_lat,
-        'lng': origin_lon,
+        'lat': visualisation_data[0],
+        'lng': visualisation_data[1],
         'zoom': 15,
         'identifier': "fullmap"
     }
@@ -167,7 +158,6 @@ def config():
 
 @webapp.route('/getPlayerPosition')
 def data():
-    """ Gets all the PokeMarkers via REST """
     return json.dumps(get_player_position())
 
 if __name__ == '__main__':

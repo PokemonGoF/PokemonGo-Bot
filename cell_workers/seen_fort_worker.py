@@ -24,7 +24,7 @@ class SeenFortWorker(object):
             print('Need to move closer to Pokestop')
             position = (lat, lng, 0.0)
             if self.config.walk > 0:
-                self.api.walk(self.config.walk, *position)
+                self.api.walk2(self.config.walk, bot.visualisation_data *position)
             else:
                 self.api.set_position(*position)
             self.api.player_update(latitude=lat,longitude=lng)
