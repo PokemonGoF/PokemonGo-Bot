@@ -76,7 +76,9 @@
             "poke_storage": 250
           },
     ...
-
+## FAQ
+### FLEE
+   {"responses": { "CATCH_POKEMON": { "status": 3 } }  means  FLEE
 ## Requirements
  * Python 2
  * requests
