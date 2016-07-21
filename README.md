@@ -14,6 +14,7 @@
 - [ ] Incubate eggs
 - [ ] Evolve pokemons
 - [ ] Use candy
+- [ ] Code refector
 
 ## Installation
 
