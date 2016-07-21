@@ -15,34 +15,38 @@ gmaps = googlemaps.Client(key=GOOGLEMAPS_KEY)
 rest_time=1
 pokemon_list=json.load(open('pokemon.json'))
 
-def work_on_cell(cell,api,position,config):
+def work_on_cell(cell,api,position,config,balls_stock):
 	#print cell
-	if 'catchable_pokemons' in cell:
-		print 'Something rustles nearby!'
-		for pokemon in cell['catchable_pokemons']:
-			#print('catchable_pokemon {}'.format(pokemon))
-			encount_and_catch_pokemon(pokemon,api,position,config)
-	if 'wild_pokemons' in cell:
-		for pokemon in cell['wild_pokemons']:
-			#print('wild_pokemons {}'.format(pokemon))
-			encount_and_catch_pokemon(pokemon,api,position,config)
-			#encounter_id=pokemon['encounter_id']
-			#api.encounter(encounter_id=encounter_id,player_latitude=position[0],player_longitude=position[1])
-			#response_dict = api.call()
-			#print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
-			"""
-	if 'spawn_points' in cell:
-		for spawn_point in cell['spawn_points']:
-			print spawn_point
-			working.spawn_point_work(spawn_point,api,position)
-
-			api.get_map_objects(latitude=f2i(position[0]), longitude=f2i(position[1]), since_timestamp_ms=timestamp, cell_id=cellid)
-
-			response_dict = api.call()
-			print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
-			time.sleep(2)
-			"""
-
+	if balls_stock[1] != 0:
+        	noPokeballs = False
+		if 'catchable_pokemons' in cell:
+			print 'Something rustles nearby!'
+			for pokemon in cell['catchable_pokemons']:
+				#print('catchable_pokemon {}'.format(pokemon))
+				encount_and_catch_pokemon(pokemon,api,position,config,balls_stock)
+		if 'wild_pokemons' in cell:
+			for pokemon in cell['wild_pokemons']:
+				#print('wild_pokemons {}'.format(pokemon))
+				encount_and_catch_pokemon(pokemon,api,position,config,balls_stock)
+				#encounter_id=pokemon['encounter_id']
+				#api.encounter(encounter_id=encounter_id,player_latitude=position[0],player_longitude=position[1])
+				#response_dict = api.call()
+				#print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+				"""
+		if 'spawn_points' in cell:
+			for spawn_point in cell['spawn_points']:
+				print spawn_point
+				working.spawn_point_work(spawn_point,api,position)
+	
+				api.get_map_objects(latitude=f2i(position[0]), longitude=f2i(position[1]), since_timestamp_ms=timestamp, cell_id=cellid)
+	
+				response_dict = api.call()
+				print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+				time.sleep(2)
+				"""
+	else:
+        	noPokeballs = True
+        	
 	if config.spinstop:
 		if 'forts' in cell:
 			for fort in cell['forts']:
@@ -70,7 +74,7 @@ def spawn_point_work(spawn_point,api,position):
 	time.sleep(2)
 def convert_toposition(lat,lng,art):
     return (lat, lng, art)
-def encount_and_catch_pokemon(pokemon,api,position,config):
+def encount_and_catch_pokemon(pokemon,api,position,config,balls_stock):
 	encounter_id=pokemon['encounter_id']
 	spawnpoint_id = pokemon['spawnpoint_id']
 	player_latitude = pokemon['latitude']
@@ -87,18 +91,23 @@ def encount_and_catch_pokemon(pokemon,api,position,config):
 						pokemon=response_dict['responses']['ENCOUNTER']['wild_pokemon']
 						if 'pokemon_data' in pokemon and 'cp' in pokemon['pokemon_data']:
 							cp=pokemon['pokemon_data']['cp']
+							if cp > 200 and balls_stock[2] != 0:
+								balltype = 2
+							else:
+								balltype = 1
 							pokemon_num=int(pokemon['pokemon_data']['pokemon_id'])-1
 							pokemon_name=pokemon_list[int(pokemon_num)]['Name']
 							print('A Wild ' + str(pokemon_name) + ' appeared! [CP' + str(cp) + ']')
 					while(True):
 						api.catch_pokemon(encounter_id = encounter_id,
-							pokeball = 1,
+							pokeball = balltype,
 							normalized_reticle_size = 1.950,
 							spawn_point_guid = spawnpoint_id,
 							hit_pokemon = 1,
 							spin_modifier = 1,
 							NormalizedHitPosition = 1)
 						response_dict = api.call()
+						--balls_stock[balltype]
 						#print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
 
 						if response_dict and \
