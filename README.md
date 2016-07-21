@@ -89,6 +89,8 @@ Bitcoin Address:  1PJMCx9NNQRasQYaa4MMff9yyNFffhHgLu
    {"responses": { "CATCH_POKEMON": { "status": 3 } }  means  FLEE
 ### finish your tutorial
    then your pokemon will be listed
+### Double XP
+Quick Tip: When using this script, use Lucky egg to double the xp for 30 mins. You will level up fast. Lucky egg is obtained on level 9 and further leveling up. (from VipsForever via /r/pokemongodev)
 
 ## Requirements
  * Python 2
