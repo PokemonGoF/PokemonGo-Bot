@@ -45,10 +45,14 @@ class SeenFortWorker(object):
             if spin_details['result'] == 1:
                 print("- Loot: ")
                 print("- " + str(spin_details.get('experience_awarded', 0)) + " xp")
-                for item in spin_details['items_awarded']:
-                    item_id = str(item['item_id'])
-                    item_name = item_list[item_id]
-                    print("- " + str(item['item_count']) + "x " + item_name)
+                items_awarded = spin_details.get('items_awarded', [])
+                if len(items_awarded) > 0:
+                    for item in items_awarded:
+                        item_id = str(item['item_id'])
+                        item_name = item_list[item_id]
+                        print("- " + str(item['item_count']) + "x " + item_name)
+                else:
+                    print("- Nothing found.")
             elif spin_details['result'] == 2:
                 print("- Pokestop out of range")
             elif spin_details['result'] == 3:
