@@ -151,8 +151,12 @@ def main():
     api.get_player()
 
     response_dict = api.call()
-    print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
-    print('Profile: \n    Username: %s\n    Bag size: %s\n    Pokemon Storage Size: %s\n    Account Creation: %s\n    Currency:\n        %s: %s\n        %s: %s', response_dict['responses']['GET_PLAYER']['profile']['username'], response_dict['responses']['GET_PLAYER']['profile']['item_storage'], response_dict['responses']['GET_PLAYER']['profile']['poke_storage'], response_dict['responses']['GET_PLAYER']['profile']['creation_time'], response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['type'], response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['amount'], response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['type'], response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['amount'])
+    #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+    if response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['amount']:
+        currency_1=response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['amount']
+    if response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['amount']:
+        currency_2=response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['amount']
+    print('Profile: \n    Username: %s\n    Bag size: %s\n    Pokemon Storage Size: %s\n    Account Creation: %s\n    Currency:\n        %s: %s\n        %s: %s', response_dict['responses']['GET_PLAYER']['profile']['username'], response_dict['responses']['GET_PLAYER']['profile']['item_storage'], response_dict['responses']['GET_PLAYER']['profile']['poke_storage'], response_dict['responses']['GET_PLAYER']['profile']['creation_time'], response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['type'], currency_1, response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['type'], currency_2)
 
     #working.transfer_low_cp_pokomon(api,50)
 
