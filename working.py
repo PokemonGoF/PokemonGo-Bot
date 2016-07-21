@@ -60,7 +60,7 @@ def _transfer_low_cp_pokemon(api,value,pokemon):
 def transfer_low_cp_pokomon(api,value):
 	api.get_inventory()
 	response_dict = api.call()
-	print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+	#print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
 	if 'responses' in response_dict:
 		if 'GET_INVENTORY' in response_dict['responses']:
 			if 'inventory_delta' in response_dict['responses']['GET_INVENTORY']:
