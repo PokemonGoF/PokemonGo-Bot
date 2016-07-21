@@ -26,7 +26,7 @@
 
     1. Download or clone the repository.
     1. Using a terminal navigate into the clone repository.
-    1. Install all requirements for the project using `pip install -r ./requirements.text`
+    1. Install all requirements for the project using `pip install -r ./requirements.txt`
  
 ## Usage
     usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-w]  [-d] [-t] [-s] [-c]
