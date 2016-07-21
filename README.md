@@ -10,6 +10,7 @@
 
 ### Python Installation
     Install Python 2.7
+    Install pip
     `pip install -r requirements.txt`
 ### Google Protobuf Installation
     MAC:  brew update && brew install --devel protobuf
