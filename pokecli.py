@@ -152,6 +152,7 @@ def main():
 
     response_dict = api.call()
     print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+    print('Profile: \n    Username: %s\n    Bag size: %s\n    Pokemon Storage Size: %s\n    Account Creation: %s\n    Currency:\n        %s: %s\n        %s: %s', response_dict['profile']['username'], response_dict['profile']['item_storage'], response_dict['profile']['poke_storage'], response_dict['profile']['creation_time'], response_dict['profile']['currency'][0]['type'], response_dict['profile']['currency'][0]['amount'], response_dict['profile']['currency'][1]['type'], response_dict['profile']['currency'][1]['amount'])
 
     #working.transfer_low_cp_pokomon(api,50)
 
