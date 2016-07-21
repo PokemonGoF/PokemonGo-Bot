@@ -99,7 +99,7 @@ def encount_and_catch_pokemon(pokemon,api,position,config):
 							spin_modifier = 1,
 							NormalizedHitPosition = 1)
 						response_dict = api.call()
-						print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+						#print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
 
 						if response_dict and \
 							'responses' in response_dict and \
