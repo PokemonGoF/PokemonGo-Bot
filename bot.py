@@ -14,9 +14,6 @@ class PokemonGoBot(object):
 
     def __init__(self, config):
         self.config = config
-        working_thread=None
-        gmaps = googlemaps.Client(key="AIzaSyAZzeHhs-8JZ7i18MjFuM35dJHq70n3Hx4")
-        rest_time=1
         self.pokemon_list=json.load(open('pokemon.json'))
         self.item_list=json.load(open('items.json'))
 
