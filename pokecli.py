@@ -160,10 +160,10 @@ def main():
         currency_2=response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['amount']
     print 'Profile:'
     print '    Username: ' + str(response_dict['responses']['GET_PLAYER']['profile']['username'])
-    print '    Bag size:' + str(response_dict['responses']['GET_PLAYER']['profile']['item_storage'])
-    print '    Pokemon Storage Size:' + str(response_dict['responses']['GET_PLAYER']['profile']['poke_storage'])
-    print '    Account Creation:' + str(response_dict['responses']['GET_PLAYER']['profile']['creation_time'])
-    print '    Currency:'
+    print '    Bag size: ' + str(response_dict['responses']['GET_PLAYER']['profile']['item_storage'])
+    print '    Pokemon Storage Size: ' + str(response_dict['responses']['GET_PLAYER']['profile']['poke_storage'])
+    print '    Account Creation: ' + str(response_dict['responses']['GET_PLAYER']['profile']['creation_time'])
+    print '    Currency: '
     print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['type']) + ': ' + str(currency_1)
     print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['type']) + ': ' + str(currency_2)
 
