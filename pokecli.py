@@ -157,10 +157,11 @@ def main():
     
     inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
     
+    # get player balls stock
+    # ----------------------
+    
     balls_stock = {1:0,2:0,3:0}
     
-    # get player balls stock
-    # ----------------------    
     for item in inventory_dict:
         try:
             if item['inventory_item_data']['item']['item'] == 1:
@@ -174,6 +175,25 @@ def main():
                 balls_stock[3] = item['inventory_item_data']['item']['count']
         except:
             continue
+
+
+    # get player pokemon[id], store & group them by pokemon[pokemon_id]
+    # ----------------------            
+    pokemon_stock = {}
+    
+    for pokemon in inventory_dict:
+        try:
+            id1 = pokemon['inventory_item_data']['pokemon']['pokemon_id']
+            id2 = pokemon['inventory_item_data']['pokemon']['id']
+            print(str(id1))
+            if id1 not in pokemon_stock:
+                pokemon_stock[id1] = []
+            print(str(id2))
+            pokemon_stock[id1].append(id2)
+        except:
+            continue
+
+    print pokemon_stock
 
     # get player profile call
     # ----------------------
