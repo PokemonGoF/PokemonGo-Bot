@@ -4,16 +4,30 @@
  * Search Fort(Spin Pokestop)
  * Catch Pokemon
  * Release low cp pokemon
- * Walking as you
+ * Walking as you 
+
+# To-Do:
+- [ ] Limit the step to farm specific area for pokestops
+- [ ] Drop items when bag is full
+- [ ] Pokemon catch filter
+- [ ] Hatch eggs
+- [ ] Incubate eggs
+- [ ] Evolve pokemons
+- [ ] Use candy
 
 ## Installation
 
 ### Python Installation
-    Install Python 2.7
-    Install pip
-    `pip install -r requirements.txt`
+    1. [Install Python 2.7](https://wiki.python.org/moin/BeginnersGuide/Download)
+    1. [Install PIP](https://pip.pypa.io/en/stable/installing/)
 ### Google Protobuf Installation
-    MAC:  brew update && brew install --devel protobuf
+    MAC:  brew update && brew install --devel protobuf 
+### Install Pokemon_Go_Bot 
+
+    1. Download or clone the repository.
+    1. Using a terminal navigate into the clone repository.
+    1. Install all requirements for the project using `pip install -r ./requirements.text`
+ 
 ## Usage
     usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-w]  [-d] [-t] [-s] [-c]
 
