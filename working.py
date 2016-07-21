@@ -90,7 +90,7 @@ def encount_and_catch_pokemon(pokemon,api,position,config):
 							cp=pokemon['pokemon_data']['cp']
 							pokemon_num=int(pokemon['pokemon_data']['pokemon_id'])-1
 							pokemon_name=pokemon_list[int(pokemon_num)]['Name']
-							print('A Wild ' + str(pokemon_name) + ' appeared! [CP' + str(cp) + ']')
+							print('A Wild ' + str(pokemon_name) + ' appeared! [CP ' + str(cp) + ']')
 					while(True):
 						api.catch_pokemon(encounter_id = encounter_id,
 							pokeball = 1,
