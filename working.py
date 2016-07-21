@@ -41,7 +41,8 @@ def work_on_cell(cell,api,position,config):
 			print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
 			time.sleep(2)
 			"""
-	if 'spinstop' in config:
+
+	if config.spinstop:
 		if 'forts' in cell:
 			for fort in cell['forts']:
 				if 'type' in fort:
