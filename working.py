@@ -40,15 +40,32 @@ def encount_and_catch_pokemon(pokemon,api,position):
 		if 'ENCOUNTER' in response_dict['responses']:
 			if 'status' in response_dict['responses']['ENCOUNTER']:
 				if response_dict['responses']['ENCOUNTER']['status'] is 1:
-					api.catch_pokemon(encounter_id = encounter_id,
-						pokeball = 1,
-						normalized_reticle_size = 1.950,
-						spawn_point_guid = spawnpoint_id,
-						hit_pokemon = 1,
-						spin_modifier = 1,
-						NormalizedHitPosition = 1)
-					response_dict = api.call()
-					print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+					while(True):
+						api.catch_pokemon(encounter_id = encounter_id,
+							pokeball = 1,
+							normalized_reticle_size = 1.950,
+							spawn_point_guid = spawnpoint_id,
+							hit_pokemon = 1,
+							spin_modifier = 1,
+							NormalizedHitPosition = 1)
+						response_dict = api.call()
+						print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+
+						if response_dict and \
+							'responses' in response_dict and \
+							'CATCH_POKEMON' in response_dict['responses'] and \
+							'status' in response_dict['responses']['CATCH_POKEMON']:
+							status = response_dict['responses']['CATCH_POKEMON']['status']
+							if status is 2:
+								print('Missed, do it again!')
+								time.sleep(1.25)
+								continue
+							if status is 1:
+								print('Got it, keep good ones')
+								transfer_low_cp_pokomon(api,100)
+								break
+						else:
+							break
 	time.sleep(5)
 def _transfer_low_cp_pokemon(api,value,pokemon):
 	if 'cp' in pokemon and pokemon['cp'] < value:
