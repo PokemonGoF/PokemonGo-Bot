@@ -36,6 +36,8 @@ from exceptions import AuthException, NotLoggedInException, ServerBusyOrOfflineE
 
 import protos.RpcEnum_pb2 as RpcEnum
 
+from math import cos, asin, sqrt
+
 logger = logging.getLogger(__name__)
 
 class PGoApi:
@@ -43,73 +45,103 @@ class PGoApi:
     API_ENTRY = 'https://pgorelease.nianticlabs.com/plfe/rpc'
 
     def __init__(self):
-    
+
         self.log = logging.getLogger(__name__)
 
         self._auth_provider = None
         self._api_endpoint = None
-        
+
         self._position_lat = 0
         self._position_lng = 0
         self._position_alt = 0
 
         self._req_method_list = []
-        
+
     def call(self):
         if not self._req_method_list:
             return False
-        
+
         if self._auth_provider is None or not self._auth_provider.is_login():
             self.log.info('Not logged in')
             return False
-        
+
         player_position = self.get_position()
-        
+
         request = RpcApi(self._auth_provider)
-        
+
         if self._api_endpoint:
             api_endpoint = self._api_endpoint
         else:
             api_endpoint = self.API_ENTRY
-        
+
         #self.log.info('Execution of RPC')
         response = None
         try:
             response = request.request(api_endpoint, self._req_method_list, player_position)
         except ServerBusyOrOfflineException as e:
             self.log.info('Server seems to be busy or offline - try again!')
-        
+
         # cleanup after call execution
         #self.log.info('Cleanup of request!')
         self._req_method_list = []
-        
+
         return response
-    
+
     #def get_player(self):
-    
+
     def list_curr_methods(self):
         for i in self._req_method_list:
             print("{} ({})".format(RpcEnum.RequestMethod.Name(i),i))
-    
+
     def set_logger(self, logger):
         self._ = logger or logging.getLogger(__name__)
 
     def get_position(self):
         return (self._position_lat, self._position_lng, self._position_alt)
 
-    def set_position(self, lat, lng, alt):   
+    # do some keep-alive stuff
+    def heartbeat(self):
+        self.get_player()
+        self.get_hatched_eggs()
+        self.get_inventory()
+        self.check_awarded_badges()
+        self.call()
+
+    # Source: http://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
+    def distance(lat1, lon1, lat2, lon2):
+        p = 0.017453292519943295
+        a = 0.5 - cos((lat2 - lat1) * p)/2 + cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2
+        return 12742 * asin(sqrt(a)) * 1000
+
+    def walk(self, lat, lng, alt, speed):
+        dist = self.distance(self._position_lat, self._position_lng, lat, lng)
+        steps = (dist+0.0)/(speed+0.0) # may be rational number
+        intSteps = int(steps)
+        residuum = steps-intSteps
+        print "Walking (approx. "+ str(steps) + " sec.)" # Adding 0.0 for garanteed double division
+        dLat = (lat - self._position_lat) / steps
+        dLng = (lng - self._position_lng) / steps
+
+        for i in range(intSteps):
+            self.set_position(self._position_lat + dLat, self._position_lng + dLng, alt)
+            self.heartbeat()
+
+        self.set_position(self._position_lat + residuum * dLat, self._position_lng * residuum * dLng, alt)
+        self.heartbeat()
+
+    def set_position(self, lat, lng, alt):
         self.log.debug('Set Position - Lat: %s Long: %s Alt: %s', lat, lng, alt)
-        
+
         self._position_lat = f2i(lat)
         self._position_lng = f2i(lng)
         self._position_alt = f2i(alt)
 
     def __getattr__(self, func):
         def function(**kwargs):
-        
+
             #if not self._req_method_list:
                 #self.log.info('Create new request...')
-        
+
             name = func.upper()
             if kwargs:
                 self._req_method_list.append( { RpcEnum.RequestMethod.Value(name): kwargs } )
@@ -118,60 +150,59 @@ class PGoApi:
             else:
                 self._req_method_list.append( RpcEnum.RequestMethod.Value(name) )
                 #self.log.info("Adding '%s' to RPC request", name)
-   
+
             return self
-   
+
         if func.upper() in RpcEnum.RequestMethod.keys():
             return function
         else:
             raise AttributeError
-            
-        
+
+
     def login(self, provider, username, password):
-    
+
         if not isinstance(username, basestring) or not isinstance(password, basestring):
             raise AuthException("Username/password not correctly specified")
-        
+
         if provider == 'ptc':
             self._auth_provider = AuthPtc()
         elif provider == 'google':
             self._auth_provider = AuthGoogle()
         else:
             raise AuthException("Invalid authentication provider - only ptc/google available.")
-            
+
         self.log.debug('Auth provider: %s', provider)
-        
+
         if not self._auth_provider.login(username, password):
-            self.log.info('Login process failed') 
+            self.log.info('Login process failed')
             return False
-        
+
         self.log.info('Starting RPC login sequence (app simulation)')
-        
+
         # making a standard call, like it is also done by the client
         self.get_player()
         self.get_hatched_eggs()
         self.get_inventory()
         self.check_awarded_badges()
         self.download_settings(hash="4a2e9bc330dae60e7b74fc85b98868ab4700802e")
-        
+
         response = self.call()
-        
-        if not response: 
-            self.log.info('Login failed!') 
+
+        if not response:
+            self.log.info('Login failed!')
             return False
-        
+
         if 'api_url' in response:
             self._api_endpoint = ('https://{}/rpc'.format(response['api_url']))
             self.log.debug('Setting API endpoint to: %s', self._api_endpoint)
         else:
             self.log.error('Login failed - unexpected server response!')
             return False
-        
+
         if 'auth_ticket' in response:
             self._auth_provider.set_ticket(response['auth_ticket'].values())
-        
+
         self.log.info('Finished RPC login sequence (app simulation)')
-        self.log.info('Login process completed') 
-        
+        self.log.info('Login process completed')
+
         return True
-        
