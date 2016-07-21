@@ -15,7 +15,7 @@ gmaps = googlemaps.Client(key=GOOGLEMAPS_KEY)
 rest_time=1
 
 def work_on_cell(cell,api,position,config):
-	print cell
+	#print cell
 	if 'catchable_pokemons' in cell:
 		print 'has pokemon'
 		for pokemon in cell['catchable_pokemons']:
