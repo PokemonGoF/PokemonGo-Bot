@@ -16,31 +16,46 @@ class SeenFortWorker(object):
         lat = self.fort['latitude']
         lng = self.fort['longitude']
         fortID = self.fort['id']
-        distant = self._geocalc(self.position[0], self.position[1], lat, lng) * 1000
+        distance = self._geocalc(self.position[0], self.position[1], lat, lng) * 1000
 
-        print('distant is {}m'.format(distant))
-        if distant > 10:
-            print('need walk to farming fort position')
+        print('Found fort {} at distance {}m'.format(fortID, distance))
+        if distance > 10:
+            print('Need to move closer to Pokestop')
             position = (lat, lng, 0.0)
-            print(position,fortID)
             if self.config.walk > 0:
                 self.api.walk(self.config.walk, *position)
             else:
                 self.api.set_position(*position)
             self.api.player_update(latitude=lat,longitude=lng)
             response_dict = self.api.call()
-            print('Response dictionary 1: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+            print('Arrived at Pokestop')
             time.sleep(1.2)
 
         self.api.fort_details(fort_id=self.fort['id'], latitude=position[0], longitude=position[1])
         response_dict = self.api.call()
-        print('Response dictionary 2: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+        fort_details = response_dict['responses']['FORT_DETAILS']
+        print('Now at Pokestop: ' + fort_details['name'] + ' - Spinning...')
         time.sleep(2)
         self.api.fort_search(fort_id=self.fort['id'], fort_latitude=lat, fort_longitude=lng, player_latitude=f2i(position[0]), player_longitude=f2i(position[1]))
         response_dict = self.api.call()
-        print('Response dictionary 3: \n\r{}'.format(json.dumps(response_dict, indent=2)))
         if 'responses' in response_dict and \
             'FORT_SEARCH' in response_dict['responses']:
+
+            spin_details = response_dict['responses']['FORT_SEARCH']
+            if spin_details['result'] == 1:
+                print("- Loot: ")
+                print("- " + str(spin_details.get('experience_awarded', 0)) + " xp")
+                for item in spin_details['items_awarded']:
+                    item_id = str(item['item_id'])
+                    item_name = item_list[item_id]
+                    print("- " + str(item['item_count']) + "x " + item_name)
+            elif spin_details['result'] == 2:
+                print("- Pokestop out of range")
+            elif spin_details['result'] == 3:
+                print("- Pokestop on cooldown")
+            elif spin_details['result'] == 4:
+                print("- Inventory is full!")
+
             if 'chain_hack_sequence_number' in response_dict['responses']['FORT_SEARCH']:
                 time.sleep(2)
                 return response_dict['responses']['FORT_SEARCH']['chain_hack_sequence_number']

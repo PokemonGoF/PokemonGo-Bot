@@ -18,6 +18,7 @@ class PokemonGoBot(object):
         gmaps = googlemaps.Client(key="AIzaSyAZzeHhs-8JZ7i18MjFuM35dJHq70n3Hx4")
         rest_time=1
         self.pokemon_list=json.load(open('pokemon.json'))
+        self.item_list=json.load(open('items.json'))
 
     def start(self):
         self._setup_logging()
@@ -41,15 +42,11 @@ class PokemonGoBot(object):
             if 'forts' in cell:
                 for fort in cell['forts']:
                     if 'type' in fort:
-                        print('This is PokeStop')
                         worker = SeenFortWorker(fort, self)
                         hack_chain = worker.work()
                         if hack_chain > 10:
                             print('need a rest')
                             break
-                    else:
-                        print('This is Gym')
-
 
     def _setup_logging(self):
         self.log = logging.getLogger(__name__)
