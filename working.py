@@ -103,15 +103,15 @@ def encount_and_catch_pokemon(pokemon,api,position,config):
 							'status' in response_dict['responses']['CATCH_POKEMON']:
 							status = response_dict['responses']['CATCH_POKEMON']['status']
 							if status is 2:
-								print('Missed, do it again!')
+								print('[-] Attempted to capture pokemon - failed.. trying again!')
 								time.sleep(1.25)
 								continue
 							if status is 1:
 								if cp < config.cp:
-									print('Got it, keep good ones')
+									print('Captured Pokemon! [CP' + str(cp) + '] - exchanging for candy')
 									transfer_low_cp_pokomon(api,config.cp)
 								else:
-									print('got it, keep it')
+									print('Captured Pokemon! [CP' + str(cp) + ']')
 						break
 	time.sleep(5)
 def _transfer_low_cp_pokemon(api,value,pokemon):
