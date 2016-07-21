@@ -10,6 +10,8 @@
 ### Python Installation
     install python 2.7 first
     pip install -r requirements.txt
+### Google Protobuf
+    MAC:  brew update && brew install --devel protobuf
 ### PokemonGo-Bot
     usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-d] [-t] [-s]
 
