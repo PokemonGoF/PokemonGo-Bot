@@ -7,6 +7,7 @@
  * Walking as you 
 
 # To-Do:
+- [ ] Google Map API key setup
 - [ ] Limit the step to farm specific area for pokestops
 - [ ] Drop items when bag is full
 - [ ] Pokemon catch filter
