@@ -185,11 +185,12 @@ def main():
         try:
             id1 = pokemon['inventory_item_data']['pokemon']['pokemon_id']
             id2 = pokemon['inventory_item_data']['pokemon']['id']
+            id3 = pokemon['inventory_item_data']['pokemon']['cp']
             print(str(id1))
             if id1 not in pokemon_stock:
                 pokemon_stock[id1] = []
             print(str(id2))
-            pokemon_stock[id1].append(id2)
+            pokemon_stock[id1].append({id2:id3})
         except:
             continue
 
