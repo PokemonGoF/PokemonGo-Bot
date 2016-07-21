@@ -48,7 +48,7 @@ def work_on_cell(cell,api,position,config):
 			for fort in cell['forts']:
 				if 'type' in fort:
 					print('This is PokeStop')
-					hack_chain=search_seen_fort(fort,api,position)
+					hack_chain=search_seen_fort(fort,api,position,config)
 					if hack_chain > 10:
 						print('need a rest')
 						break
@@ -141,7 +141,7 @@ def transfer_low_cp_pokomon(api,value):
 	api.get_inventory()
 	response_dict = api.call()
 	transfer_low_cp_pokomon_with_dict(api,value,response_dict)
-def search_seen_fort(fort,api,position):
+def search_seen_fort(fort,api,position,config):
 	lat=fort['latitude']
 	lng=fort['longitude']
 	fortID=fort['id']
@@ -155,7 +155,10 @@ def search_seen_fort(fort,api,position):
 		print('need setup the postion to farming fort')
 		position=convert_toposition(lat, lng, 0.0)
 		print(position,fortID)
-		api.set_position(*position)
+        if config.walk > 0:
+            api.walk(config.walk, *position)
+        else:
+        	api.set_position(*position)
 		api.player_update(latitude=lat,longitude=lng)
 		response_dict = api.call()
 		print('Response dictionary 1: \n\r{}'.format(json.dumps(response_dict, indent=2)))

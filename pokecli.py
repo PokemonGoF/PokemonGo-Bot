@@ -91,6 +91,7 @@ def init_config():
     parser.add_argument("-p", "--password", help="Password", required=required("password"))
     parser.add_argument("-l", "--location", help="Location", required=required("location"))
     parser.add_argument("-s", "--spinstop", help="SpinPokeStop",action='store_true')
+    parser.add_argument("-w", "--walk", help="Walk instead of teleport with given speed (meters per second, e.g. 2.5)", type=float, default=0)
     parser.add_argument("-c", "--cp",help="Set CP less than to transfer(DEFAULT 100)",type=int,default=100)
     parser.add_argument("-d", "--debug", help="Debug Mode", action='store_true')
     parser.add_argument("-t", "--test", help="Only parse the specified location", action='store_true')
@@ -169,7 +170,10 @@ def main():
             # Scan location math
             if -steplimit2 / 2 < x <= steplimit2 / 2 and -steplimit2 / 2 < y <= steplimit2 / 2:
                 position=(x * 0.0025 + origin_lat, y * 0.0025 + origin_lon, 0)
-                api.set_position(*position)
+                if config.walk > 0:
+                    api.walk(config.walk, *position)
+                else:
+                    api.set_position(*position)
                 print(position)
             if x == y or x < 0 and x == -y or x > 0 and x == 1 - y:
                 (dx, dy) = (-dy, dx)

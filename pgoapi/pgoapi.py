@@ -27,7 +27,7 @@ import logging
 import re
 import requests
 
-from utilities import f2i, h2f
+from utilities import f2i, h2f, i2f
 
 from rpc_api import RpcApi
 from auth_ptc import AuthPtc
@@ -36,7 +36,8 @@ from exceptions import AuthException, NotLoggedInException, ServerBusyOrOfflineE
 
 import protos.RpcEnum_pb2 as RpcEnum
 
-from math import cos, asin, sqrt
+from math import cos, asin, sqrt, ceil
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -108,26 +109,29 @@ class PGoApi:
         self.call()
 
     # Source: http://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
-    def distance(lat1, lon1, lat2, lon2):
+    def distance(self, lat1, lon1, lat2, lon2):
         p = 0.017453292519943295
         a = 0.5 - cos((lat2 - lat1) * p)/2 + cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2
         return 12742 * asin(sqrt(a)) * 1000
 
-    def walk(self, lat, lng, alt, speed):
-        dist = self.distance(self._position_lat, self._position_lng, lat, lng)
+    def walk(self, speed, lat, lng, alt):
+        dist = self.distance(i2f(self._position_lat), i2f(self._position_lng), lat, lng)
         steps = (dist+0.0)/(speed+0.0) # may be rational number
         intSteps = int(steps)
         residuum = steps-intSteps
-        print "Walking (approx. "+ str(steps) + " sec.)" # Adding 0.0 for garanteed double division
-        dLat = (lat - self._position_lat) / steps
-        dLng = (lng - self._position_lng) / steps
+        print "Walking from " + str((i2f(self._position_lat), i2f(self._position_lng))) + " to " + str(str((lat, lng))) + " for approx. " + str(ceil(steps)) + "sec"
+        if steps != 0:
+            dLat = (lat - i2f(self._position_lat)) / steps
+            dLng = (lng - i2f(self._position_lng)) / steps
 
-        for i in range(intSteps):
-            self.set_position(self._position_lat + dLat, self._position_lng + dLng, alt)
+            for i in range(intSteps):
+                self.set_position(i2f(self._position_lat) + dLat, i2f(self._position_lng) + dLng, alt)
+                self.heartbeat()
+                time.sleep(1) # sleep one second
+
+            self.set_position(lat, lng, alt)
             self.heartbeat()
-
-        self.set_position(self._position_lat + residuum * dLat, self._position_lng * residuum * dLng, alt)
-        self.heartbeat()
+        print "Finished walking"
 
     def set_position(self, lat, lng, alt):
         self.log.debug('Set Position - Lat: %s Long: %s Alt: %s', lat, lng, alt)
