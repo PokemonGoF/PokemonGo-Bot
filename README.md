@@ -4,11 +4,11 @@
  * Search Fort(Spin Pokestop)
  * Catch Pokemon
  * Release low cp pokemon
- 
+
 ## Usage
 
 ### PokemonGo-Bot
-    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-d] [-t]
+    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-d] [-t] [-s]
 
     optional arguments:
       -h, --help                                    show this help message and exit
@@ -16,6 +16,7 @@
       -u USERNAME, --username USERNAME              Username
       -p PASSWORD, --password PASSWORD              Password
       -l LOCATION, --location LOCATION              Location
+      -s SPINSTOP, --spinstop                       Spin the PokeStop
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
 
@@ -70,7 +71,7 @@
             "poke_storage": 250
           },
     ...
-    
+
 ## Requirements
  * Python 2
  * requests
@@ -79,8 +80,8 @@
  * geopy
  * s2sphere
  * googlemaps
- 
-    
+
+
 ## Credits
 # The works are based on the Pokemon Go API
 [tejado](https://github.com/tejado) many thanks for the API  
@@ -88,4 +89,3 @@
 [elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR  
 [AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos  
 [AHAAAAAAA](https://github.com/AHAAAAAAA/PokemonGo-Map) for parts of the s2sphere stuff
-

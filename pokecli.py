@@ -43,6 +43,8 @@ from s2sphere import CellId, LatLng
 
 log = logging.getLogger(__name__)
 
+global config
+
 def get_pos_by_name(location_name):
     geolocator = GoogleV3()
     loc = geolocator.geocode(location_name)
@@ -88,6 +90,7 @@ def init_config():
     parser.add_argument("-u", "--username", help="Username", required=required("username"))
     parser.add_argument("-p", "--password", help="Password", required=required("password"))
     parser.add_argument("-l", "--location", help="Location", required=required("location"))
+    parser.add_argument("-s", "--spinstop", help="SpinPokeStop",action='store_true')
     parser.add_argument("-d", "--debug", help="Debug Mode", action='store_true')
     parser.add_argument("-t", "--test", help="Only parse the specified location", action='store_true')
     parser.set_defaults(DEBUG=False, TEST=False)
@@ -188,40 +191,8 @@ def main():
                 map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
                 print('map_cells are {}'.format(len(map_cells)))
                 for cell in map_cells:
-                    print cell
-                    if 'catchable_pokemons' in cell:
-                        print 'has pokemon'
-                        for pokemon in cell['catchable_pokemons']:
-                            print('catchable_pokemon {}'.format(pokemon))
-                            working.encount_and_catch_pokemon(pokemon,api,position)
-                    if 'wild_pokemons' in cell:
-                        for pokemon in cell['wild_pokemons']:
-                            print('wild_pokemons {}'.format(pokemon))
-                            working.encount_and_catch_pokemon(pokemon,api,position)
-                            #encounter_id=pokemon['encounter_id']
-                            #api.encounter(encounter_id=encounter_id,player_latitude=position[0],player_longitude=position[1])
-                            #response_dict = api.call()
-                            #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
-                            """
-                    if 'spawn_points' in cell:
-                        for spawn_point in cell['spawn_points']:
-                            print spawn_point
-                            working.spawn_point_work(spawn_point,api,position)
-
-                            api.get_map_objects(latitude=f2i(position[0]), longitude=f2i(position[1]), since_timestamp_ms=timestamp, cell_id=cellid)
-
-                            response_dict = api.call()
-                            print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
-                            time.sleep(2)
-                            """
-                    if 'forts' in cell:
-                        for fort in cell['forts']:
-                            if 'type' in fort:
-                                print('This is PokeStop')
-                                #working.search_seen_fort(fort,api,position)
-                            else:
-                                print('This is Gym')
-                time.sleep(10)
+                    working.work_on_cell(cell,api,position,config)
+            time.sleep(10)
                         #print(fort)
 
     # spin a fort

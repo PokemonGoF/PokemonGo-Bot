@@ -13,6 +13,42 @@ GOOGLEMAPS_KEY = "AIzaSyAZzeHhs-8JZ7i18MjFuM35dJHq70n3Hx4"
 working_thread=None
 gmaps = googlemaps.Client(key=GOOGLEMAPS_KEY)
 
+def work_on_cell(cell,api,position,config):
+	print cell
+	if 'catchable_pokemons' in cell:
+		print 'has pokemon'
+		for pokemon in cell['catchable_pokemons']:
+			print('catchable_pokemon {}'.format(pokemon))
+			encount_and_catch_pokemon(pokemon,api,position)
+	if 'wild_pokemons' in cell:
+		for pokemon in cell['wild_pokemons']:
+			print('wild_pokemons {}'.format(pokemon))
+			encount_and_catch_pokemon(pokemon,api,position)
+			#encounter_id=pokemon['encounter_id']
+			#api.encounter(encounter_id=encounter_id,player_latitude=position[0],player_longitude=position[1])
+			#response_dict = api.call()
+			#print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+			"""
+	if 'spawn_points' in cell:
+		for spawn_point in cell['spawn_points']:
+			print spawn_point
+			working.spawn_point_work(spawn_point,api,position)
+
+			api.get_map_objects(latitude=f2i(position[0]), longitude=f2i(position[1]), since_timestamp_ms=timestamp, cell_id=cellid)
+
+			response_dict = api.call()
+			print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+			time.sleep(2)
+			"""
+	if 'spinstop' in config:
+		if 'forts' in cell:
+			for fort in cell['forts']:
+				if 'type' in fort:
+					print('This is PokeStop')
+					working.search_seen_fort(fort,api,position)
+				else:
+					print('This is Gym')
+
 def spawn_point_work(spawn_point,api,position):
 	lat=spawn_point['latitude']
 	lng=spawn_point['longitude']
@@ -40,6 +76,11 @@ def encount_and_catch_pokemon(pokemon,api,position):
 		if 'ENCOUNTER' in response_dict['responses']:
 			if 'status' in response_dict['responses']['ENCOUNTER']:
 				if response_dict['responses']['ENCOUNTER']['status'] is 1:
+					cp=0
+					if 'wild_pokemon' in response_dict['responses']['ENCOUNTER']:
+						pokemon=response_dict['responses']['ENCOUNTER']['wild_pokemon']
+						if 'pokemon_data' in pokemon and 'cp' in pokemon['pokemon_data']:
+							cp=pokemon['pokemon_data']['cp']
 					while(True):
 						api.catch_pokemon(encounter_id = encounter_id,
 							pokeball = 1,
@@ -61,8 +102,11 @@ def encount_and_catch_pokemon(pokemon,api,position):
 								time.sleep(1.25)
 								continue
 							if status is 1:
-								print('Got it, keep good ones')
-								transfer_low_cp_pokomon(api,100)
+								if cp < 100:
+									print('Got it, keep good ones')
+									transfer_low_cp_pokomon(api,100)
+								else:
+									print('got it, keep it')
 								break
 						else:
 							break
