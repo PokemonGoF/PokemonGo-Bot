@@ -61,8 +61,8 @@ Quick Tip: When using this script, use a Lucky egg to double the XP for 30 mins.
 
 
 ## Contributors
-eggins -- The first pull request :)
-crack00r
+eggins -- The first pull request :)  
+crack00r  
 
 ## Credits
 ### The works are based on the Pokemon Go API
