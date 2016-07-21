@@ -151,7 +151,7 @@ def main():
     api.get_player()
 
     response_dict = api.call()
-    print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+    #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
 
     #working.transfer_low_cp_pokomon(api,50)
 
