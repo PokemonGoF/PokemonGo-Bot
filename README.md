@@ -29,7 +29,20 @@
     Download or clone the repository.
     Using a terminal navigate into the clone repository.
     Install all requirements for the project using `pip install -r ./requirements.txt`
- 
+### Google Maps API (Code is not done yet)
+
+
+Google Maps API: a brief guide to your own key
+
+This project uses Google Maps. There's one map coupled with the project, but as it gets more popular we'll definitely hit the rate-limit making the map unusable. That said, here's how you can get your own and replace ours:
+
+1. Navigate to this [page](https://console.developers.google.com/flows/enableapi?apiid=maps_backend,geocoding_backend,directions_backend,distance_matrix_backend,elevation_backend,places_backend&keyType=CLIENT_SIDE&reusekey=true)
+2. Select 'Create a project' in the dropdown menu.
+3. Wait an eternity.
+4. Click 'Create' on the next page (optionally, fill out the info)
+5. Copy the API key that appears.
+6. After the code done, will update here how to replace
+
 ## Usage
     usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-w]  [-d] [-t] [-s] [-c]
 
