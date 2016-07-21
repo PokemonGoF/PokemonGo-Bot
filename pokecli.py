@@ -31,10 +31,18 @@ import struct
 import logging
 import requests
 import argparse
-import working
 import time
 import ssl
 import sys
+import flask
+from flask import Flask, render_template
+from flask_googlemaps import GoogleMaps
+from flask_googlemaps import Map
+from flask_googlemaps import icons
+import threading
+
+import working
+import webapp
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -49,6 +57,8 @@ from s2sphere import CellId, LatLng
 log = logging.getLogger(__name__)
 
 global config
+origin_lat, origin_lon = None, None
+out_position = [0, 0, 0]
 
 def get_pos_by_name(location_name):
     geolocator = GoogleV3()
@@ -179,6 +189,8 @@ def main():
     dy = -1
     steplimit=10
     steplimit2 = steplimit**2
+    global origin_lat
+    global origin_lon
     origin_lat=position[0]
     origin_lon=position[1]
     while(True):
@@ -189,9 +201,15 @@ def main():
             print('steplimit: {} x: {} y: {} pos: {} dx: {} dy {}'.format(steplimit2, x, y, pos, dx, dy))
             # Scan location math
             if -steplimit2 / 2 < x <= steplimit2 / 2 and -steplimit2 / 2 < y <= steplimit2 / 2:
-                position=(x * 0.0025 + origin_lat, y * 0.0025 + origin_lon, 0)
+                current_lat = x * 0.0025 + origin_lat
+                current_lon = y * 0.0025 + origin_lon
+                global position
+                position=(current_lat, current_lon, 0)
+                global out_position
+                out_position=[current_lat, current_lon, 0]
                 if config.walk > 0:
-                    api.walk(config.walk, *position)
+                    # api.walk(config.walk, *position)
+                    api.walk2(config.walk, out_position, *position)
                 else:
                     api.set_position(*position)
                 print(position)
@@ -241,5 +259,49 @@ def main():
     # alternative:
     # api.get_player().get_inventory().get_map_objects().download_settings(hash="4a2e9bc330dae60e7b74fc85b98868ab4700802e").call()
 
+def register_background_thread(initial_registration=False):
+    global search_thread
+    search_thread = threading.Thread(target=main)
+    search_thread.daemon = True
+    search_thread.name = 'search_thread'
+    search_thread.start()
+
+def get_map():
+    print "get_map" + str(origin_lat) + ", " + str(origin_lon)
+    fullmap = Map(
+        identifier="fullmap2",
+        style='height:100%;width:100%;top:0;left:0;position:absolute;z-index:200;',
+        lat=origin_lat,
+        lng=origin_lon,
+        zoom='15', )
+    return fullmap
+    # markers=get_pokemarkers(),
+
+def get_player_position():
+    player_position = {
+        'lat': out_position[0],
+        'lng': out_position[1]
+    }
+
+    return player_position
+
+GOOGLEMAPS_KEY = "AIzaSyAZzeHhs-8JZ7i18MjFuM35dJHq70n3Hx4"
+
+webapp = webapp.create_webapp()
+
+@webapp.route('/')
+def fullmap():
+    return render_template(
+        'example_fullmap.html', key=GOOGLEMAPS_KEY, fullmap=get_map(), auto_refresh=0)
+
+@webapp.route('/getPlayerPosition')
+def data():
+    """ Gets all the PokeMarkers via REST """
+    return json.dumps(get_player_position())
+
 if __name__ == '__main__':
-    main()
+    # main()
+    register_background_thread(initial_registration=True)
+    webapp.run(debug=True, threaded=True, host="localhost", port=5001)
+
+
