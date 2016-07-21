@@ -83,7 +83,7 @@
     
 ## Credits
 # The works are based on the Pokemon Go API
-[tejado](https://github.com/tejado) for the API -- many thanks
+[tejado](https://github.com/tejado) many thanks for the API  
 [Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets  
 [elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR  
 [AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos  
