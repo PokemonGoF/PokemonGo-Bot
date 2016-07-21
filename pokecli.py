@@ -115,15 +115,18 @@ def init_config():
     return config
 
 def main():
+    # instantiate pgoapi
+    api = PGoApi()
     # log settings
     # log format
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(module)10s] [%(levelname)5s] %(message)s')
     # log level for http request class
     logging.getLogger("requests").setLevel(logging.WARNING)
     # log level for main pgoapi class
-    logging.getLogger("pgoapi").setLevel(logging.INFO)
+    logging.getLogger("pgoapi").setLevel(logging.DEBUG)
     # log level for internal pgoapi class
     logging.getLogger("rpc_api").setLevel(logging.INFO)
+    logging.getLogger('pokecli').setLevel(logging.DEBUG)
 
     config = init_config()
     if not config:
@@ -138,8 +141,6 @@ def main():
     if config.test:
         return
 
-    # instantiate pgoapi
-    api = PGoApi()
     # provide player position on the earth
     api.set_position(*position)
 
@@ -158,6 +159,7 @@ def main():
     for currency in player_profile.get('currency',[]):
         player_profile[currency['type']] = currency.get('amount', 0)
 
+    log.info('#' * 30)
     log.info('Profile:')
     log.info('Username: {username}'.format(**player_profile))
     log.info('Bag Size: {item_storage}'.format(**player_profile))
@@ -165,7 +167,11 @@ def main():
     log.info('Account Creation: {creation_time}'.format(**player_profile))
     log.info('Pokecoin: {POKECOIN}'.format(**player_profile))
     log.info('Stardust: {STARDUST}'.format(**player_profile))
-
+    log.info('#' * 30)
+    log.info("log configuration:")
+    for l in ['pokecli', 'requests', 'pgoapi', 'rpc_api']:
+        log.info('%s: %s', l, logging.getLevelName(logging.getLogger(l).level))
+    log.info('#' * 30)
 
     pos = 1
     x = 0
@@ -205,33 +211,9 @@ def main():
             if map_objects.get('status') == 1:
                 map_cells=map_objects['map_cells']
                 log.debug('Found %s map cells', len(map_cells))
-                #print('map_cells are {}'.format(len(map_cells)))
                 for cell in map_cells:
                     working.work_on_cell(cell,api,position,config)
             time.sleep(10)
-                        #print(fort)
-
-    # spin a fort
-    # ----------------------
-    #fortid = '<your fortid>'
-    #lng = <your longitude>
-    #lat = <your latitude>
-    #api.fort_search(fort_id=fortid, fort_latitude=lat, fort_longitude=lng, player_latitude=f2i(position[0]), player_longitude=f2i(position[1]))
-
-    # release/transfer a pokemon and get candy for it
-    # ----------------------
-    #api.release_pokemon(pokemon_id = <your pokemonid>)
-
-    # get download settings call
-    # ----------------------
-    #api.download_settings(hash="4a2e9bc330dae60e7b74fc85b98868ab4700802e")
-
-    # execute the RPC call
-    #response_dict = api.call()
-    #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
-
-    # alternative:
-    # api.get_player().get_inventory().get_map_objects().download_settings(hash="4a2e9bc330dae60e7b74fc85b98868ab4700802e").call()
 
 if __name__ == '__main__':
     main()

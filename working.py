@@ -16,7 +16,6 @@ def work_on_cell(cell,api,position,config):
     if 'catchable_pokemons' in cell:
         log.debug('Something rustles nearby!')
         for pokemon in cell['catchable_pokemons']:
-            #print('catchable_pokemon {}'.format(pokemon))
             encount_and_catch_pokemon(pokemon,api,position,config)
     if 'wild_pokemons' in cell:
         for pokemon in cell['wild_pokemons']:
@@ -59,9 +58,12 @@ def encount_and_catch_pokemon(pokemon, api, position, config):
     spawnpoint_id = pokemon['spawnpoint_id']
     player_latitude = pokemon['latitude']
     player_longitude = pokemon['longitude']
-    api.encounter(encounter_id=encounter_id,spawnpoint_id=spawnpoint_id,player_latitude=player_latitude,player_longitude=player_longitude)
+    api.encounter(encounter_id=encounter_id,
+                  spawnpoint_id=spawnpoint_id,
+                  player_latitude=player_latitude,
+                  player_longitude=player_longitude)
+
     response_dict = api.call()
-    #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
     if response_dict and 'responses' in response_dict:
         if 'ENCOUNTER' in response_dict['responses']:
             if 'status' in response_dict['responses']['ENCOUNTER']:
@@ -105,10 +107,8 @@ def encount_and_catch_pokemon(pokemon, api, position, config):
     
 def _transfer_low_cp_pokemon(api,value,pokemon):
     if 'cp' in pokemon and pokemon['cp'] < value:
-        #print('need release this pokemon({}): {}'.format(value,pokemon))
         api.release_pokemon(pokemon_id=pokemon['id'])
         response_dict = api.call()
-        #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
         log.debug('Exchanged successfuly!')
 
 
@@ -139,11 +139,11 @@ def search_seen_fort(fort,api,position,config):
     fortID=fort['id']
     distant=geocalc(position[0],position[1],lat,lng)*1000
     global rest_time
-    log.debug('distant is {}m'.format(distant))
+    log.debug('distance is {}m'.format(distant))
     if distant > 10:
         log.debug('need setup the postion to farming fort')
         position=convert_toposition(lat, lng, 0.0)
-        log.debug(position,fortID)
+        log.debug('Fort %s at %s', fortID, position)
         if config.walk > 0:
             api.walk(config.walk, *position)
         else:
