@@ -8,8 +8,9 @@
 ## Usage
 
 ### Python Installation
-    install python 2.7 first
-    pip install -r requirements.txt
+    Install Python 2.7
+    
+    `pip install -r requirements.txt`
 ### Google Protobuf
     MAC:  brew update && brew install --devel protobuf
 ### PokemonGo-Bot
@@ -21,8 +22,8 @@
       -u USERNAME, --username USERNAME              Username
       -p PASSWORD, --password PASSWORD              Password
       -l LOCATION, --location LOCATION              Location
-      -s SPINSTOP, --spinstop                       Spin the PokeStop
-      -c CP, --cp                                   Set the CP less than to release
+      -s SPINSTOP, --spinstop                       Enable Spinning of PokeStops
+      -c CP, --cp                                   Set the CP to transfer or lower (eg. 100 will transfer CP0-99)
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
 
@@ -87,11 +88,12 @@ Bitcoin Address:  1PJMCx9NNQRasQYaa4MMff9yyNFffhHgLu
 ## FAQ
 
 ### FLEE
-   {"responses": { "CATCH_POKEMON": { "status": 3 } }  means  FLEE
-### finish your tutorial
-   then your pokemon will be listed
-### Double XP
-Quick Tip: When using this script, use Lucky egg to double the xp for 30 mins. You will level up fast. Lucky egg is obtained on level 9 and further leveling up. (from VipsForever via /r/pokemongodev)
+   The status code "3" corresponds to "Flee" - meaning your Pokemon has run away. 
+   {"responses": { "CATCH_POKEMON": { "status": 3 } }
+### My pokemon are not showing up in my Pokedex?
+   Finish the tutorial on a smartphone. This will then allow everything to be visible.
+### How can I maximise my XP per hour?
+Quick Tip: When using this script, use a Lucky egg to double the XP for 30 mins. You will level up much faster. A Lucky egg is obtained on level 9 and further on whilst leveling up. (from VipsForever via /r/pokemongodev)
 
 ## Requirements
  * Python 2
@@ -104,7 +106,7 @@ Quick Tip: When using this script, use Lucky egg to double the xp for 30 mins. Y
 
 
 ## Credits
-# The works are based on the Pokemon Go API
+### The works are based on the Pokemon Go API
 [tejado](https://github.com/tejado) many thanks for the API  
 [Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets  
 [elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR  
