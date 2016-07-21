@@ -112,9 +112,7 @@ def encount_and_catch_pokemon(pokemon,api,position,config):
 									transfer_low_cp_pokomon(api,config.cp)
 								else:
 									print('got it, keep it')
-								break
-						else:
-							break
+						break
 	time.sleep(5)
 def _transfer_low_cp_pokemon(api,value,pokemon):
 	if 'cp' in pokemon and pokemon['cp'] < value:
