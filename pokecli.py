@@ -159,13 +159,13 @@ def main():
     if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][1]:
         currency_2=response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['amount']
     print 'Profile:'
-    print '    Username: ' + response_dict['responses']['GET_PLAYER']['profile']['username']
-    print '    Bag size:' + response_dict['responses']['GET_PLAYER']['profile']['item_storage']
-    print '    Pokemon Storage Size:' + response_dict['responses']['GET_PLAYER']['profile']['poke_storage']
-    print '    Account Creation:' + response_dict['responses']['GET_PLAYER']['profile']['creation_time']
+    print '    Username: ' + str(response_dict['responses']['GET_PLAYER']['profile']['username'])
+    print '    Bag size:' + str(response_dict['responses']['GET_PLAYER']['profile']['item_storage'])
+    print '    Pokemon Storage Size:' + str(response_dict['responses']['GET_PLAYER']['profile']['poke_storage'])
+    print '    Account Creation:' + str(response_dict['responses']['GET_PLAYER']['profile']['creation_time'])
     print '    Currency:'
-    print '        ' + response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['type'] + ': ' + currency_1
-    print '        ' + response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['type'] + ': ' + currency_2
+    print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['type']) + ': ' + str(currency_1)
+    print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['type']) + ': ' + str(currency_2)
 
     #working.transfer_low_cp_pokomon(api,50)
 
