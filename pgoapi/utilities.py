@@ -28,6 +28,8 @@ import re
 
 from importlib import import_module
 
+def i2f(int):
+    return struct.unpack('<d', struct.pack('<Q', int))[0]
 
 def f2i(float):
   return struct.unpack('<Q', struct.pack('<d', float))[0]
@@ -37,7 +39,7 @@ def f2h(float):
 
 def h2f(hex):
   return struct.unpack('<d', struct.pack('<Q', int(hex,16)))[0]
-  
+
 def to_camel_case(value):
   def camelcase():
     while True:
@@ -46,10 +48,8 @@ def to_camel_case(value):
   c = camelcase()
   return "".join(c.next()(x) if x else '_' for x in value.split("_"))
 
-      
+
 def get_class(cls):
     module_, class_ = cls.rsplit('.', 1)
     class_ = getattr(import_module(module_), class_)
     return class_
-    
-            
