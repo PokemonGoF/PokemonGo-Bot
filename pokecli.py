@@ -148,6 +148,53 @@ def main():
         return
 
     # chain subrequests (methods) into one RPC call
+    
+    # get player inventory call
+    # ----------------------
+    api.get_player().get_inventory()
+    
+    inventory_req = api.call()
+    
+    inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+    
+    # get player balls stock
+    # ----------------------
+    
+    balls_stock = {1:0,2:0,3:0}
+    
+    for item in inventory_dict:
+        try:
+            if item['inventory_item_data']['item']['item'] == 1:
+                #print('Poke Ball count: ' + str(item['inventory_item_data']['item']['count']))
+                balls_stock[1] = item['inventory_item_data']['item']['count']
+            if item['inventory_item_data']['item']['item'] == 2:
+                #print('Great Ball count: ' + str(item['inventory_item_data']['item']['count']))
+                balls_stock[2] = item['inventory_item_data']['item']['count']
+            if item['inventory_item_data']['item']['item'] == 3:
+                #print('Ultra Ball count: ' + str(item['inventory_item_data']['item']['count']))
+                balls_stock[3] = item['inventory_item_data']['item']['count']
+        except:
+            continue
+
+
+    # get player pokemon[id], store & group them by pokemon[pokemon_id]
+    # ----------------------            
+    pokemon_stock = {}
+    
+    for pokemon in inventory_dict:
+        try:
+            id1 = pokemon['inventory_item_data']['pokemon']['pokemon_id']
+            id2 = pokemon['inventory_item_data']['pokemon']['id']
+            id3 = pokemon['inventory_item_data']['pokemon']['cp']
+            print(str(id1))
+            if id1 not in pokemon_stock:
+                pokemon_stock[id1] = []
+            print(str(id2))
+            pokemon_stock[id1].append({id2:id3})
+        except:
+            continue
+
+    print pokemon_stock
 
     # get player profile call
     # ----------------------
@@ -169,7 +216,10 @@ def main():
     print '    Currency: '
     print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['type']) + ': ' + str(currency_1)
     print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['type']) + ': ' + str(currency_2)
-
+    print '    Balls: '
+    print '        ' + 'Poke Ball: ' + str(balls_stock[1])
+    print '        ' + 'Great Ball: ' + str(balls_stock[2])
+    print '        ' + 'Ultra Ball: ' + str(balls_stock[3])
     #working.transfer_low_cp_pokomon(api,50)
 
     pos = 1
@@ -214,7 +264,7 @@ def main():
                 map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
                 #print('map_cells are {}'.format(len(map_cells)))
                 for cell in map_cells:
-                    working.work_on_cell(cell,api,position,config)
+                    working.work_on_cell(cell,api,position,config,balls_stock)
             time.sleep(10)
                         #print(fort)
 
