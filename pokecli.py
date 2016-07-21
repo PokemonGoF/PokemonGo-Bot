@@ -294,6 +294,18 @@ def fullmap():
     return render_template(
         'example_fullmap.html', key=GOOGLEMAPS_KEY, fullmap=get_map(), auto_refresh=0)
 
+@webapp.route('/config')
+def config():
+    """ Gets the settings for the Google Maps via REST"""
+    center = {
+        'lat': origin_lat,
+        'lng': origin_lon,
+        'zoom': 15,
+        'identifier': "fullmap"
+    }
+    return json.dumps(center)
+
+
 @webapp.route('/getPlayerPosition')
 def data():
     """ Gets all the PokeMarkers via REST """
