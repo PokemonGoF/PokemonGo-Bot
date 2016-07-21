@@ -17,7 +17,7 @@ gmaps = googlemaps.Client(key=GOOGLEMAPS_KEY)
 rest_time=1
 
 def work_on_cell(cell,api,position,config):
-	print cell
+	#print cell
 	if 'catchable_pokemons' in cell:
 		print 'has pokemon'
 		for pokemon in cell['catchable_pokemons']:
@@ -84,7 +84,7 @@ def encount_and_catch_pokemon(pokemon,api,position,config):
 	player_longitude = pokemon['longitude']
 	api.encounter(encounter_id=encounter_id,spawnpoint_id=spawnpoint_id,player_latitude=player_latitude,player_longitude=player_longitude)
 	response_dict = api.call()
-	print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+	#print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
 	if response_dict and 'responses' in response_dict:
 		if 'ENCOUNTER' in response_dict['responses']:
 			if 'status' in response_dict['responses']['ENCOUNTER']:
@@ -103,7 +103,7 @@ def encount_and_catch_pokemon(pokemon,api,position,config):
 							spin_modifier = 1,
 							NormalizedHitPosition = 1)
 						response_dict = api.call()
-						print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+						#print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
 
 						if response_dict and \
 							'responses' in response_dict and \
@@ -111,7 +111,7 @@ def encount_and_catch_pokemon(pokemon,api,position,config):
 							'status' in response_dict['responses']['CATCH_POKEMON']:
 							status = response_dict['responses']['CATCH_POKEMON']['status']
 							if status is 2:
-								print('[-] Attempted to capture pokemon - failed.. trying again!')
+								print('# Pokemon capture failed... retry!')
 								time.sleep(1.25)
 								continue
 							if status is 1:
@@ -124,10 +124,11 @@ def encount_and_catch_pokemon(pokemon,api,position,config):
 	time.sleep(5)
 def _transfer_low_cp_pokemon(api,value,pokemon):
 	if 'cp' in pokemon and pokemon['cp'] < value:
-		print('need release this pokemon({}): {}'.format(value,pokemon))
+		#print('need release this pokemon({}): {}'.format(value,pokemon))
+		print('# Pokemon relased.')
 		api.release_pokemon(pokemon_id=pokemon['id'])
 		response_dict = api.call()
-		print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+		#print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
 def transfer_low_cp_pokomon_with_dict(api,value,response_dict):
 	#print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
 	if 'responses' in response_dict:
@@ -162,16 +163,16 @@ def search_seen_fort(fort,api,position):
 		api.set_position(*position)
 		api.player_update(latitude=lat,longitude=lng)
 		response_dict = api.call()
-		print('Response dictionary 1: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+		#print('Response dictionary 1: \n\r{}'.format(json.dumps(response_dict, indent=2)))
 		time.sleep(1.2)
 
 	api.fort_details(fort_id=fort['id'], latitude=position[0], longitude=position[1])
 	response_dict = api.call()
-	print('Response dictionary 2: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+	#print('Response dictionary 2: \n\r{}'.format(json.dumps(response_dict, indent=2)))
 	time.sleep(2)
 	api.fort_search(fort_id=fort['id'], fort_latitude=lat, fort_longitude=lng, player_latitude=f2i(position[0]), player_longitude=f2i(position[1]))
 	response_dict = api.call()
-	print('Response dictionary 3: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+	#print('Response dictionary 3: \n\r{}'.format(json.dumps(response_dict, indent=2)))
 	if 'responses' in response_dict and \
 		'FORT_SEARCH' in response_dict['responses']:
 		if 'chain_hack_sequence_number' in response_dict['responses']['FORT_SEARCH']:
