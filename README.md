@@ -19,15 +19,15 @@
 ## Installation
 
 ### Python Installation
-    1. [Install Python 2.7](https://wiki.python.org/moin/BeginnersGuide/Download)
-    1. [Install PIP](https://pip.pypa.io/en/stable/installing/)
+    [Install Python 2.7](https://wiki.python.org/moin/BeginnersGuide/Download)
+    [Install PIP](https://pip.pypa.io/en/stable/installing/)
 ### Google Protobuf Installation
     MAC:  brew update && brew install --devel protobuf 
 ### Install Pokemon_Go_Bot 
 
-    1. Download or clone the repository.
-    1. Using a terminal navigate into the clone repository.
-    1. Install all requirements for the project using `pip install -r ./requirements.txt`
+    Download or clone the repository.
+    Using a terminal navigate into the clone repository.
+    Install all requirements for the project using `pip install -r ./requirements.txt`
  
 ## Usage
     usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-w]  [-d] [-t] [-s] [-c]
