@@ -13,7 +13,7 @@
 ### Google Protobuf
     MAC:  brew update && brew install --devel protobuf
 ### PokemonGo-Bot
-    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-d] [-t] [-s]
+    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-d] [-t] [-s] [-c]
 
     optional arguments:
       -h, --help                                    show this help message and exit
@@ -22,6 +22,7 @@
       -p PASSWORD, --password PASSWORD              Password
       -l LOCATION, --location LOCATION              Location
       -s SPINSTOP, --spinstop                       Spin the PokeStop
+      -c CP, --cp                                   Set the CP less than to release
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
 
