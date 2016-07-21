@@ -8,6 +8,8 @@ from pgoapi import PGoApi
 from pgoapi.utilities import f2i, h2f
 from math import radians, sqrt, sin, cos, atan2
 
+pokemonsJSON = json.load(open('pokemon.en.json'))
+
 GOOGLEMAPS_KEY = "AIzaSyAZzeHhs-8JZ7i18MjFuM35dJHq70n3Hx4"
 
 working_thread=None
@@ -19,11 +21,17 @@ def work_on_cell(cell,api,position,config):
 	if 'catchable_pokemons' in cell:
 		print 'has pokemon'
 		for pokemon in cell['catchable_pokemons']:
-			print('catchable_pokemon {}'.format(pokemon))
+			curID = str(pokemon['pokemon_id'])
+			curName = pokemonsJSON[curID]
+			print('\n'+'### Pokemon Found! ###')
+			print('# Pokemon ID: '+ curID)
+			print('# Pokemon Name: '+ curName)
+			#print('catchable_pokemon {}'.format(pokemon))
 			encount_and_catch_pokemon(pokemon,api,position,config)
 	if 'wild_pokemons' in cell:
 		for pokemon in cell['wild_pokemons']:
-			print('wild_pokemons {}'.format(pokemon))
+			print('# Pokemon Is Wild!')
+			#print('wild_pokemons {}'.format(pokemon))
 			encount_and_catch_pokemon(pokemon,api,position,config)
 			#encounter_id=pokemon['encounter_id']
 			#api.encounter(encounter_id=encounter_id,player_latitude=position[0],player_longitude=position[1])
@@ -108,10 +116,10 @@ def encount_and_catch_pokemon(pokemon,api,position,config):
 								continue
 							if status is 1:
 								if cp < config.cp:
-									print('Captured Pokemon! [CP' + str(cp) + '] - exchanging for candy')
+									print('# Captured Pokemon! [CP' + str(cp) + '] - exchanging for candy')
 									transfer_low_cp_pokomon(api,config.cp)
 								else:
-									print('Captured Pokemon! [CP' + str(cp) + ']')
+									print('# Captured Pokemon! [CP' + str(cp) + ']')
 						break
 	time.sleep(5)
 def _transfer_low_cp_pokemon(api,value,pokemon):
