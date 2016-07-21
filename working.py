@@ -107,7 +107,7 @@ def encount_and_catch_pokemon(pokemon,api,position,config,balls_stock):
 							spin_modifier = 1,
 							NormalizedHitPosition = 1)
 						response_dict = api.call()
-						--balls_stock[balltype]
+						balls_stock[balltype] -= 1
 						#print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
 
 						if response_dict and \
