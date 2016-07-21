@@ -36,7 +36,7 @@ import sys
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
-    
+
 from bot import PokemonGoBot
 
 def init_config():
@@ -99,7 +99,11 @@ def main():
     bot.start()
 
     while(True):
-        bot.take_step()
+        try:
+            bot.take_step()
+        except:
+            print('Oops, Exception, have a rest then.')
+            time.sleep(2)
 
 if __name__ == '__main__':
     main()

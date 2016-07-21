@@ -77,18 +77,21 @@ class PokemonGoBot(object):
         #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
         currency_1="0"
         currency_2="0"
-        if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][0]:
-            currency_1=response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['amount']
-        if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][1]:
-            currency_2=response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['amount']
-        print 'Profile:'
-        print '    Username: ' + str(response_dict['responses']['GET_PLAYER']['profile']['username'])
-        print '    Bag size: ' + str(response_dict['responses']['GET_PLAYER']['profile']['item_storage'])
-        print '    Pokemon Storage Size: ' + str(response_dict['responses']['GET_PLAYER']['profile']['poke_storage'])
-        print '    Account Creation: ' + str(response_dict['responses']['GET_PLAYER']['profile']['creation_time'])
-        print '    Currency: '
-        print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['type']) + ': ' + str(currency_1)
-        print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['type']) + ': ' + str(currency_2)
+        try:
+            if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][0]:
+                currency_1=response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['amount']
+            if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][1]:
+                currency_2=response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['amount']
+            print 'Profile:'
+            print '    Username: ' + str(response_dict['responses']['GET_PLAYER']['profile']['username'])
+            print '    Bag size: ' + str(response_dict['responses']['GET_PLAYER']['profile']['item_storage'])
+            print '    Pokemon Storage Size: ' + str(response_dict['responses']['GET_PLAYER']['profile']['poke_storage'])
+            print '    Account Creation: ' + str(response_dict['responses']['GET_PLAYER']['profile']['creation_time'])
+            print '    Currency: '
+            print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['type']) + ': ' + str(currency_1)
+            print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['type']) + ': ' + str(currency_2)
+        except:
+            print('Exception during print player profile')
 
     def _set_starting_position(self):
         self.position = self._get_pos_by_name(self.config.location)
