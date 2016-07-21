@@ -18,13 +18,13 @@ pokemon_list=json.load(open('pokemon.json'))
 def work_on_cell(cell,api,position,config):
 	#print cell
 	if 'catchable_pokemons' in cell:
-		print 'has pokemon'
+		print 'Something rustles nearby!'
 		for pokemon in cell['catchable_pokemons']:
-			print('catchable_pokemon {}'.format(pokemon))
+			#print('catchable_pokemon {}'.format(pokemon))
 			encount_and_catch_pokemon(pokemon,api,position,config)
 	if 'wild_pokemons' in cell:
 		for pokemon in cell['wild_pokemons']:
-			print('wild_pokemons {}'.format(pokemon))
+			#print('wild_pokemons {}'.format(pokemon))
 			encount_and_catch_pokemon(pokemon,api,position,config)
 			#encounter_id=pokemon['encounter_id']
 			#api.encounter(encounter_id=encounter_id,player_latitude=position[0],player_longitude=position[1])
