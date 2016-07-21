@@ -1,44 +1,13 @@
-# PokemonGo-Auto-Pokestop - a python pokemon script can research your poke stops
+# PokemonGo-Bot - a pokemon script can catch pokemon and spin the pokestop.
 
 ## Features:
  * Search Fort(Spin Pokestop)
  * Catch Pokemon
  * Release low cp pokemon
-
-
-
-# The works are based on the Pokemon Go API
-
-
-
-
-pgoapi is a client/api/demo for Pokemon Go by https://github.com/tejado.  
-It allows automatic parsing of requests/responses by finding the correct protobuf objects over a naming convention and will return the response in a parsed python dictionary format.   
-
- * This is unofficial - USE AT YOUR OWN RISK !
- * I don't play pokemon go !
- * No bot/farming code included !
-
-## Supports
- * Google/PTC auth
- * Address parsing for GPS coordinates
- * Allows chaining of RPC calls
- * Good logging/debugging possibilities
- * Easy extension of further calls! No source code change required!
- * Following RPC calls:
-   * GET_PLAYER
-   * GET_INVENTORY
-   * GET_MAP_OBJECTS
-   * DOWNLOAD_SETTINGS
-   * DOWNLOAD_ITEM_TEMPLATES
-   * CHECK_AWARDED_BADGES
-   * FORT_SEARCH (spinning of pokestops)
-   * RELEASE_POKEMON (release pokemon and get candy/xp)
-   * EVOLVE_POKEMON
  
 ## Usage
 
-### pokecli
+### PokemonGo-Bot
     usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-d] [-t]
 
     optional arguments:
@@ -51,7 +20,7 @@ It allows automatic parsing of requests/responses by finding the correct protobu
       -t, --test                                    Only parse the specified location
 
 
-### pokecli demo
+### PokemonGo-Bot
 
     $ python2 pokecli.py -a ptc -u tejado -p 1234 --location "New York, Washington Square"
     2016-07-19 01:22:14,806 [   pokecli] [ INFO] Your given location: Washington Square, Greenwich, NY 12834, USA
@@ -101,46 +70,22 @@ It allows automatic parsing of requests/responses by finding the correct protobu
             "poke_storage": 250
           },
     ...
-
-## pgoapi extension
-All (known) RPC calls against the original Pokemon Go servers are listed in the RequestMethod Enum in the pgoapi/protos/RpcEnum.proto file. These can be executed over the name, e.g. the call for get_player is:
-
-    api = PGoApi()
-    ...
-    api.get_player()
-    api.call()
-    
-The pgoapi will send this as a RPC request and tries to parse the response over a protobuf object with the same name (get_player) converted to CamelCase + 'Response'. In our example, it would be 'GetPlayerResponse'. These protobuf definitions have to be inside RpcSub (pgoapi/protos/RpcSub.proto).
-
-If a request needs parameters, they can be added as arguments and pgoapi will try to add them automatically to the request, e.g.:
-
-    *RpcSub.proto:*
-    message DownloadSettingsRequest {
-      optional string hash = 1;
-    }
-    
-    *python:*
-    api = PGoApi()
-    ...
-    api.download_settings(hash="4a2e9bc330dae60e7b74fc85b98868ab4700802e")
-    api.call()
-
     
 ## Requirements
  * Python 2
  * requests
  * protobuf
  * gpsoauth
- * geopy (only for pokecli demo)
- * s2sphere (only for pokecli demo)
+ * geopy
+ * s2sphere
+ * googlemaps
  
     
 ## Credits
+# The works are based on the Pokemon Go API
+[tejado](https://github.com/tejado) for the API -- many thanks
 [Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets  
 [elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR  
 [AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos  
 [AHAAAAAAA](https://github.com/AHAAAAAAA/PokemonGo-Map) for parts of the s2sphere stuff
 
-## Ports
-[C# Port](https://github.com/BclEx/pokemongo-api-demo.net) by BclEx  
-[Node Port](https://github.com/Armax/Pokemon-GO-node-api) by Arm4x  
