@@ -92,7 +92,7 @@ class PGoApi:
 
     def list_curr_methods(self):
         for i in self._req_method_list:
-            print("{} ({})".format(RpcEnum.RequestMethod.Name(i),i))
+            self.log.debug("{} ({})".format(RpcEnum.RequestMethod.Name(i),i))
 
     def set_logger(self, logger):
         self._ = logger or logging.getLogger(__name__)
@@ -118,8 +118,10 @@ class PGoApi:
         dist = self.distance(i2f(self._position_lat), i2f(self._position_lng), lat, lng)
         steps = (dist+0.0)/(speed+0.0) # may be rational number
         intSteps = int(steps)
-        residuum = steps-intSteps
-        print "Walking from " + str((i2f(self._position_lat), i2f(self._position_lng))) + " to " + str(str((lat, lng))) + " for approx. " + str(ceil(steps)) + "sec"
+        self.log.info('Walking from %s to %s (~%s s)',
+                      (i2f(self._position_lat), i2f(self._position_lng)),
+                      str((lat, lng)),
+                      ceil(steps))
         if steps != 0:
             dLat = (lat - i2f(self._position_lat)) / steps
             dLng = (lng - i2f(self._position_lng)) / steps
@@ -131,7 +133,7 @@ class PGoApi:
 
             self.set_position(lat, lng, alt)
             self.heartbeat()
-        print "Finished walking"
+        self.log.info('Finished walking')
 
     def set_position(self, lat, lng, alt):
         self.log.debug('Set Position - Lat: %s Long: %s Alt: %s', lat, lng, alt)

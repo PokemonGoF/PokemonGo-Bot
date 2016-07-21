@@ -10,12 +10,14 @@ from stepper import Stepper
 from geopy.geocoders import GoogleV3
 from math import radians, sqrt, sin, cos, atan2
 
+
 class PokemonGoBot(object):
 
     def __init__(self, config):
         self.config = config
         self.pokemon_list=json.load(open('pokemon.json'))
         self.item_list=json.load(open('items.json'))
+        self.log = logging.getLogger(__name__)
 
     def start(self):
         self._setup_logging()
@@ -27,7 +29,7 @@ class PokemonGoBot(object):
 
     def work_on_cell(self, cell, position):
         if 'catchable_pokemons' in cell:
-            print 'Something rustles nearby!'
+            self.log.debug('Something rustles nearby!')
             for pokemon in cell['catchable_pokemons']:
                 worker = PokemonCatchWorker(pokemon, self)
                 worker.work()
@@ -42,7 +44,7 @@ class PokemonGoBot(object):
                         worker = SeenFortWorker(fort, self)
                         hack_chain = worker.work()
                         if hack_chain > 10:
-                            print('need a rest')
+                            self.log.info('need a rest')
                             break
 
     def _setup_logging(self):
@@ -74,26 +76,30 @@ class PokemonGoBot(object):
         self.api.get_player()
 
         response_dict = self.api.call()
-        #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
-        currency_1="0"
-        currency_2="0"
-        if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][0]:
-            currency_1=response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['amount']
-        if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][1]:
-            currency_2=response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['amount']
-        print 'Profile:'
-        print '    Username: ' + str(response_dict['responses']['GET_PLAYER']['profile']['username'])
-        print '    Bag size: ' + str(response_dict['responses']['GET_PLAYER']['profile']['item_storage'])
-        print '    Pokemon Storage Size: ' + str(response_dict['responses']['GET_PLAYER']['profile']['poke_storage'])
-        print '    Account Creation: ' + str(response_dict['responses']['GET_PLAYER']['profile']['creation_time'])
-        print '    Currency: '
-        print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['type']) + ': ' + str(currency_1)
-        print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['type']) + ': ' + str(currency_2)
+        player_profile = response_dict['responses']['GET_PLAYER']['profile']
+
+        for currency in player_profile.get('currency', []):
+            player_profile[currency['type']] = currency.get('amount', 0)
+
+        self.log.info('#' * 30)
+        self.log.info('Profile:')
+        self.log.info('Username: {username}'.format(**player_profile))
+        self.log.info('Bag Size: {item_storage}'.format(**player_profile))
+        self.log.info('Pokemon Storage: {poke_storage}'.format(**player_profile))
+        self.log.info('Account Creation: {creation_time}'.format(**player_profile))
+        self.log.info('Pokecoin: {POKECOIN}'.format(**player_profile))
+        self.log.info('Stardust: {STARDUST}'.format(**player_profile))
+        self.log.info('#' * 30)
+        self.log.info("log configuration:")
+        for l in ['pokecli', 'requests', 'pgoapi', 'rpc_api', 'bot', 'stepper', 'seen_fort_worker']:
+            self.log.info('%s: %s', l, logging.getLevelName(logging.getLogger(l).level))
+        self.log.info('#' * 30)
+
+
 
     def _set_starting_position(self):
         self.position = self._get_pos_by_name(self.config.location)
         self.api.set_position(*self.position)
-        print(self.position)
         if self.config.test:
             return
 

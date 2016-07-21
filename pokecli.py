@@ -39,6 +39,9 @@ if sys.version_info >= (2, 7, 9):
     
 from bot import PokemonGoBot
 
+log = logging.getLogger(__name__)
+
+
 def init_config():
     parser = argparse.ArgumentParser()
     config_file = "config.json"
@@ -78,13 +81,18 @@ def init_config():
 def main():
     # log settings
     # log format
-    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(module)10s] [%(levelname)5s] %(message)s')
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(module)16s] [%(levelname)5s] %(message)s')
     # log level for http request class
     logging.getLogger("requests").setLevel(logging.WARNING)
     # log level for main pgoapi class
     logging.getLogger("pgoapi").setLevel(logging.INFO)
     # log level for internal pgoapi class
     logging.getLogger("rpc_api").setLevel(logging.INFO)
+
+    logging.getLogger("bot").setLevel(logging.INFO)
+    logging.getLogger("stepper").setLevel(logging.INFO)
+    logging.getLogger("seen_fort_worker").setLevel(logging.INFO)
+
 
     config = init_config()
     if not config:
@@ -94,6 +102,10 @@ def main():
         logging.getLogger("requests").setLevel(logging.DEBUG)
         logging.getLogger("pgoapi").setLevel(logging.DEBUG)
         logging.getLogger("rpc_api").setLevel(logging.DEBUG)
+
+        logging.getLogger("bot").setLevel(logging.DEBUG)
+        logging.getLogger("stepper").setLevel(logging.DEBUG)
+        logging.getLogger("seen_fort_worker").setLevel(logging.DEBUG)
 
     bot = PokemonGoBot(config)
     bot.start()
