@@ -40,7 +40,7 @@ if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
 from pgoapi import PGoApi
-from pgoapi.utilities import f2i, h2f
+from pgoapi.utilities import f2i
 
 from google.protobuf.internal import encoder
 from geopy.geocoders import GoogleV3
@@ -142,7 +142,6 @@ def main():
     api = PGoApi()
     # provide player position on the earth
     api.set_position(*position)
-    print(position)
 
     if not api.login(config.auth_service, config.username, config.password):
         return
@@ -154,23 +153,19 @@ def main():
     api.get_player()
 
     response_dict = api.call()
-    #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
-    currency_1="0"
-    currency_2="0"
-    if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][0]:
-        currency_1=response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['amount']
-    if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][1]:
-        currency_2=response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['amount']
-    print 'Profile:'
-    print '    Username: ' + str(response_dict['responses']['GET_PLAYER']['profile']['username'])
-    print '    Bag size: ' + str(response_dict['responses']['GET_PLAYER']['profile']['item_storage'])
-    print '    Pokemon Storage Size: ' + str(response_dict['responses']['GET_PLAYER']['profile']['poke_storage'])
-    print '    Account Creation: ' + str(response_dict['responses']['GET_PLAYER']['profile']['creation_time'])
-    print '    Currency: '
-    print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['type']) + ': ' + str(currency_1)
-    print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['type']) + ': ' + str(currency_2)
+    player_profile = response_dict['responses']['GET_PLAYER']['profile']
 
-    #working.transfer_low_cp_pokomon(api,50)
+    for currency in player_profile.get('currency',[]):
+        player_profile[currency['type']] = currency.get('amount', 0)
+
+    log.info('Profile:')
+    log.info('Username: {username}'.format(**player_profile))
+    log.info('Bag Size: {item_storage}'.format(**player_profile))
+    log.info('Pokemon Storage: {poke_storage}'.format(**player_profile))
+    log.info('Account Creation: {creation_time}'.format(**player_profile))
+    log.info('Pokecoin: {POKECOIN}'.format(**player_profile))
+    log.info('Stardust: {STARDUST}'.format(**player_profile))
+
 
     pos = 1
     x = 0
@@ -184,8 +179,8 @@ def main():
     while(True):
         for step in range(steplimit2):
             #starting at 0 index
-            print('looping: step {} of {}'.format((step+1), steplimit**2))
-            print('steplimit: {} x: {} y: {} pos: {} dx: {} dy {}'.format(steplimit2, x, y, pos, dx, dy))
+            log.debug('looping: step {} of {}'.format((step+1), steplimit**2))
+            log.debug('steplimit: {} x: {} y: {} pos: {} dx: {} dy {}'.format(steplimit2, x, y, pos, dx, dy))
             # Scan location math
             if -steplimit2 / 2 < x <= steplimit2 / 2 and -steplimit2 / 2 < y <= steplimit2 / 2:
                 position=(x * 0.0025 + origin_lat, y * 0.0025 + origin_lon, 0)
@@ -193,7 +188,7 @@ def main():
                     api.walk(config.walk, *position)
                 else:
                     api.set_position(*position)
-                print(position)
+                log.debug('Position: %s', position)
             if x == y or x < 0 and x == -y or x > 0 and x == 1 - y:
                 (dx, dy) = (-dy, dx)
 
@@ -204,14 +199,12 @@ def main():
             cellid = get_cellid(position[0], position[1])
             api.get_map_objects(latitude=f2i(position[0]), longitude=f2i(position[1]), since_timestamp_ms=timestamp, cell_id=cellid)
 
-            response_dict = api.call()
-            #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
-            if response_dict and 'responses' in response_dict and \
-                'GET_MAP_OBJECTS' in response_dict['responses'] and \
-                'status' in response_dict['responses']['GET_MAP_OBJECTS'] and \
-                response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
-                #print('got the maps')
-                map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
+            response = api.call()
+            map_objects = response.get('responses', {}).get('GET_MAP_OBJECTS', {})
+
+            if map_objects.get('status') == 1:
+                map_cells=map_objects['map_cells']
+                log.debug('Found %s map cells', len(map_cells))
                 #print('map_cells are {}'.format(len(map_cells)))
                 for cell in map_cells:
                     working.work_on_cell(cell,api,position,config)

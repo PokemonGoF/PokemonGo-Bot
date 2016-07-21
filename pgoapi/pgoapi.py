@@ -24,8 +24,6 @@ Author: tjado <https://github.com/tejado>
 """
 
 import logging
-import re
-import requests
 
 from utilities import f2i, h2f, i2f
 
@@ -80,7 +78,7 @@ class PGoApi:
         try:
             response = request.request(api_endpoint, self._req_method_list, player_position)
         except ServerBusyOrOfflineException as e:
-            self.log.info('Server seems to be busy or offline - try again!')
+            self.log.error('Server seems to be busy or offline - try again!')
 
         # cleanup after call execution
         #self.log.info('Cleanup of request!')
@@ -92,7 +90,7 @@ class PGoApi:
 
     def list_curr_methods(self):
         for i in self._req_method_list:
-            print("{} ({})".format(RpcEnum.RequestMethod.Name(i),i))
+            self.log.debug("{} ({})".format(RpcEnum.RequestMethod.Name(i),i))
 
     def set_logger(self, logger):
         self._ = logger or logging.getLogger(__name__)
@@ -119,7 +117,7 @@ class PGoApi:
         steps = (dist+0.0)/(speed+0.0) # may be rational number
         intSteps = int(steps)
         residuum = steps-intSteps
-        print "Walking from " + str((i2f(self._position_lat), i2f(self._position_lng))) + " to " + str(str((lat, lng))) + " for approx. " + str(ceil(steps)) + "sec"
+        self.log.debug('Walking from ' + str((i2f(self._position_lat), i2f(self._position_lng))) + " to " + str(str((lat, lng))) + " for approx. " + str(ceil(steps)) + "sec")
         if steps != 0:
             dLat = (lat - i2f(self._position_lat)) / steps
             dLng = (lng - i2f(self._position_lng)) / steps
@@ -131,7 +129,7 @@ class PGoApi:
 
             self.set_position(lat, lng, alt)
             self.heartbeat()
-        print "Finished walking"
+        self.log.debug('Finished walking')
 
     def set_position(self, lat, lng, alt):
         self.log.debug('Set Position - Lat: %s Long: %s Alt: %s', lat, lng, alt)
@@ -178,10 +176,10 @@ class PGoApi:
         self.log.debug('Auth provider: %s', provider)
 
         if not self._auth_provider.login(username, password):
-            self.log.info('Login process failed')
+            self.log.warn('Login process failed')
             return False
 
-        self.log.info('Starting RPC login sequence (app simulation)')
+        self.log.debug('Starting RPC login sequence (app simulation)')
 
         # making a standard call, like it is also done by the client
         self.get_player()
@@ -193,20 +191,20 @@ class PGoApi:
         response = self.call()
 
         if not response:
-            self.log.info('Login failed!')
+            self.log.warn('Login failed!')
             return False
 
         if 'api_url' in response:
             self._api_endpoint = ('https://{}/rpc'.format(response['api_url']))
             self.log.debug('Setting API endpoint to: %s', self._api_endpoint)
         else:
-            self.log.error('Login failed - unexpected server response!')
+            self.log.warn('Login failed - unexpected server response!')
             return False
 
         if 'auth_ticket' in response:
             self._auth_provider.set_ticket(response['auth_ticket'].values())
 
-        self.log.info('Finished RPC login sequence (app simulation)')
-        self.log.info('Login process completed')
+        self.log.debug('Finished RPC login sequence (app simulation)')
+        self.log.debug('Login process completed')
 
         return True
