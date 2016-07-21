@@ -33,6 +33,9 @@ import requests
 import argparse
 import working
 import time
+import ssl
+
+ssl._create_default_https_context = ssl._create_unverified_context
 
 from pgoapi import PGoApi
 from pgoapi.utilities import f2i, h2f
