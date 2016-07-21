@@ -12,6 +12,7 @@ GOOGLEMAPS_KEY = "AIzaSyAZzeHhs-8JZ7i18MjFuM35dJHq70n3Hx4"
 
 working_thread=None
 gmaps = googlemaps.Client(key=GOOGLEMAPS_KEY)
+rest_time=1
 
 def work_on_cell(cell,api,position,config):
 	print cell
@@ -45,7 +46,10 @@ def work_on_cell(cell,api,position,config):
 			for fort in cell['forts']:
 				if 'type' in fort:
 					print('This is PokeStop')
-					search_seen_fort(fort,api,position)
+					hack_chain=search_seen_fort(fort,api,position)
+					if hack_chain > 10:
+						print('need a rest')
+						break
 				else:
 					print('This is Gym')
 
@@ -117,10 +121,7 @@ def _transfer_low_cp_pokemon(api,value,pokemon):
 		api.release_pokemon(pokemon_id=pokemon['id'])
 		response_dict = api.call()
 		print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
-
-def transfer_low_cp_pokomon(api,value):
-	api.get_inventory()
-	response_dict = api.call()
+def transfer_low_cp_pokomon_with_dict(api,value,response_dict):
 	#print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
 	if 'responses' in response_dict:
 		if 'GET_INVENTORY' in response_dict['responses']:
@@ -133,12 +134,18 @@ def transfer_low_cp_pokomon(api,value):
 								pokemon = item['inventory_item_data']['pokemon']
 								_transfer_low_cp_pokemon(api,value,pokemon)
 								time.sleep(1.2)
-
+def transfer_low_cp_pokomon(api,value):
+	api.get_inventory()
+	response_dict = api.call()
+	transfer_low_cp_pokomon_with_dict(api,value,response_dict)
 def search_seen_fort(fort,api,position):
 	lat=fort['latitude']
 	lng=fort['longitude']
 	fortID=fort['id']
 	distant=geocalc(position[0],position[1],lat,lng)*1000
+	global rest_time
+	if --rest_time > 0:
+		return 11
 	print('distant is {}m'.format(distant))
 	if distant > 10:
 		print('need setup the postion to farming fort')
@@ -148,15 +155,26 @@ def search_seen_fort(fort,api,position):
 		api.player_update(latitude=lat,longitude=lng)
 		response_dict = api.call()
 		print('Response dictionary 1: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+		time.sleep(1.2)
 
-		api.fort_details(fort_id=fort['id'], latitude=position[0], longitude=position[1])
-		response_dict = api.call()
-		print('Response dictionary 2: \n\r{}'.format(json.dumps(response_dict, indent=2)))
-		time.sleep(2)
-		api.fort_search(fort_id=fort['id'], fort_latitude=lat, fort_longitude=lng, player_latitude=f2i(position[0]), player_longitude=f2i(position[1]))
-		response_dict = api.call()
-		print('Response dictionary 3: \n\r{}'.format(json.dumps(response_dict, indent=2)))
-		time.sleep(8)
+	api.fort_details(fort_id=fort['id'], latitude=position[0], longitude=position[1])
+	response_dict = api.call()
+	print('Response dictionary 2: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+	time.sleep(2)
+	api.fort_search(fort_id=fort['id'], fort_latitude=lat, fort_longitude=lng, player_latitude=f2i(position[0]), player_longitude=f2i(position[1]))
+	response_dict = api.call()
+	print('Response dictionary 3: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+	if 'responses' in response_dict and \
+		'FORT_SEARCH' in response_dict['responses']:
+		if 'chain_hack_sequence_number' in response_dict['responses']['FORT_SEARCH']:
+			time.sleep(2)
+			return response_dict['responses']['FORT_SEARCH']['chain_hack_sequence_number']
+		else:
+			print('may search too often, lets have a rest')
+			rest_time = 50
+			return 11
+	time.sleep(8)
+	return 0
 def geocalc(lat1, lon1, lat2, lon2):
     lat1 = radians(lat1)
     lon1 = radians(lon1)
