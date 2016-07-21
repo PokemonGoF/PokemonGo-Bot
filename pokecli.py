@@ -149,7 +149,7 @@ def main():
     response_dict = api.call()
     print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
 
-    working.transfer_low_cp_pokomon(api,50)
+    #working.transfer_low_cp_pokomon(api,50)
 
     pos = 1
     x = 0
