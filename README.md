@@ -23,7 +23,7 @@
       -u USERNAME, --username USERNAME              Username
       -p PASSWORD, --password PASSWORD              Password
       -l LOCATION, --location LOCATION              Location
-      -w SPEED,  --walk SPEED                       Walk instead of teleport with given speed (meters per second, e.g. 2.5)
+      -w SPEED,  --walk SPEED                       Walk instead of teleport with given speed (meters per second. max. 4.16 becourse of max 15km/h for walking)
       -s SPINSTOP, --spinstop                       Enable Spinning of PokeStops
       -c CP, --cp                                   Set the CP to transfer or lower (eg. 100 will transfer CP0-99)
       -d, --debug                                   Debug Mode
