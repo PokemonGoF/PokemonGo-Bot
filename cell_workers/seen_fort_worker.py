@@ -10,6 +10,7 @@ class SeenFortWorker(object):
         self.api = bot.api
         self.position = bot.position
         self.config = bot.config
+        self.item_list = bot.item_list
         self.rest_time = 50
 
     def work(self):
@@ -49,7 +50,7 @@ class SeenFortWorker(object):
                 if len(items_awarded) > 0:
                     for item in items_awarded:
                         item_id = str(item['item_id'])
-                        item_name = item_list[item_id]
+                        item_name = self.item_list[item_id]
                         print("- " + str(item['item_count']) + "x " + item_name)
                 else:
                     print("- Nothing found.")
