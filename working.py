@@ -88,7 +88,7 @@ def encount_and_catch_pokemon(pokemon,api,position,config):
 						if 'pokemon_data' in pokemon and 'cp' in pokemon['pokemon_data']:
 							cp=pokemon['pokemon_data']['cp']
 							pokemon_num=int(pokemon['pokemon_data']['pokemon_id'])-1
-							pokemon_name=pokemon_list[int(pokemon_num)]['name']
+							pokemon_name=pokemon_list[int(pokemon_num)]['Name']
 					while(True):
 						api.catch_pokemon(encounter_id = encounter_id,
 							pokeball = 1,
