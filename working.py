@@ -125,7 +125,7 @@ def encount_and_catch_pokemon(pokemon,api,position,config):
 def _transfer_low_cp_pokemon(api,value,pokemon):
 	if 'cp' in pokemon and pokemon['cp'] < value:
 		#print('need release this pokemon({}): {}'.format(value,pokemon))
-		print('# Pokemon relased.')
+		print('# Pokemon released.')
 		api.release_pokemon(pokemon_id=pokemon['id'])
 		response_dict = api.call()
 		#print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
