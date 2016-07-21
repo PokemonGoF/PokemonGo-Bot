@@ -72,7 +72,7 @@ class PGoApi:
         else:
             api_endpoint = self.API_ENTRY
         
-        self.log.info('Execution of RPC')
+        #self.log.info('Execution of RPC')
         response = None
         try:
             response = request.request(api_endpoint, self._req_method_list, player_position)
@@ -80,7 +80,7 @@ class PGoApi:
             self.log.info('Server seems to be busy or offline - try again!')
         
         # cleanup after call execution
-        self.log.info('Cleanup of request!')
+        #self.log.info('Cleanup of request!')
         self._req_method_list = []
         
         return response
@@ -107,17 +107,17 @@ class PGoApi:
     def __getattr__(self, func):
         def function(**kwargs):
         
-            if not self._req_method_list:
-                self.log.info('Create new request...')
+            #if not self._req_method_list:
+                #self.log.info('Create new request...')
         
             name = func.upper()
             if kwargs:
                 self._req_method_list.append( { RpcEnum.RequestMethod.Value(name): kwargs } )
-                self.log.info("Adding '%s' to RPC request including arguments", name)
+                #self.log.info("Adding '%s' to RPC request including arguments", name)
                 self.log.debug("Arguments of '%s': \n\r%s", name, kwargs)
             else:
                 self._req_method_list.append( RpcEnum.RequestMethod.Value(name) )
-                self.log.info("Adding '%s' to RPC request", name)
+                #self.log.info("Adding '%s' to RPC request", name)
    
             return self
    
