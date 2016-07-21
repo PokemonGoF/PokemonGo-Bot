@@ -184,6 +184,7 @@ def main():
     while(True):
         for step in range(steplimit2):
             #starting at 0 index
+            print time.strftime("%Y-%m-%d %H:%M")
             print('looping: step {} of {}'.format((step+1), steplimit**2))
             print('steplimit: {} x: {} y: {} pos: {} dx: {} dy {}'.format(steplimit2, x, y, pos, dx, dy))
             # Scan location math
