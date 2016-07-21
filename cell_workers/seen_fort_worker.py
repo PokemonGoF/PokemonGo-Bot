@@ -47,7 +47,7 @@ class SeenFortWorker(object):
                 print("- Loot: ")
                 experience_awarded = spin_details.get('experience_awarded', False)
                 if experience_awarded:
-                    print("- " + str() + " xp")
+                    print("- " + str(experience_awarded) + " xp")
 
                 items_awarded = spin_details.get('items_awarded', False)
                 if items_awarded:
@@ -60,7 +60,8 @@ class SeenFortWorker(object):
 
                 pokestop_cooldown = spin_details.get('cooldown_complete_timestamp_ms')
                 if pokestop_cooldown:
-                    print 'PokeStop on cooldown. Time left: %s' % str(pokestop_cooldown/1000)
+                    seconds_since_epoch = time.time()
+                    print '- PokeStop on cooldown. Time left: %s seconds.' % str((pokestop_cooldown/1000) - seconds_since_epoch)
 
                 if not items_awarded and not experience_awarded and not pokestop_cooldown:
                     message = (
@@ -75,7 +76,10 @@ class SeenFortWorker(object):
             elif spin_details['result'] == 2:
                 print("- Pokestop out of range")
             elif spin_details['result'] == 3:
-                print("- Pokestop on cooldown")
+                pokestop_cooldown = spin_details.get('cooldown_complete_timestamp_ms')
+                if pokestop_cooldown:
+                    seconds_since_epoch = time.time()
+                    print '- PokeStop on cooldown. Time left: %s seconds.' % str((pokestop_cooldown/1000) - seconds_since_epoch)
             elif spin_details['result'] == 4:
                 print("- Inventory is full!")
 
