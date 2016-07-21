@@ -120,10 +120,11 @@ def encount_and_catch_pokemon(pokemon,api,position,config):
 	time.sleep(5)
 def _transfer_low_cp_pokemon(api,value,pokemon):
 	if 'cp' in pokemon and pokemon['cp'] < value:
-		print('need release this pokemon({}): {}'.format(value,pokemon))
+		#print('need release this pokemon({}): {}'.format(value,pokemon))
 		api.release_pokemon(pokemon_id=pokemon['id'])
 		response_dict = api.call()
-		print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+		#print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+		print('Exchanged successfuly!')
 def transfer_low_cp_pokomon_with_dict(api,value,response_dict):
 	#print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
 	if 'responses' in response_dict:
