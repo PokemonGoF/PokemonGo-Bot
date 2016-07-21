@@ -134,6 +134,10 @@ def main():
     logging.getLogger("pgoapi").setLevel(logging.INFO)
     # log level for internal pgoapi class
     logging.getLogger("rpc_api").setLevel(logging.INFO)
+    # log level for flash server
+    logging.getLogger("werkzeug").setLevel(logging.ERROR)
+
+
 
     config = init_config()
     if not config:
@@ -233,7 +237,7 @@ def main():
                 map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
                 #print('map_cells are {}'.format(len(map_cells)))
                 for cell in map_cells:
-                    working.work_on_cell(cell,api,position,config)
+                    working.work_on_cell(cell,api,position,config,out_position)
             time.sleep(10)
                         #print(fort)
 

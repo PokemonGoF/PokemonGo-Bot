@@ -15,7 +15,7 @@ gmaps = googlemaps.Client(key=GOOGLEMAPS_KEY)
 rest_time=1
 pokemon_list=json.load(open('pokemon.json'))
 
-def work_on_cell(cell,api,position,config):
+def work_on_cell(cell,api,position,config,out_position):
 	#print cell
 	if 'catchable_pokemons' in cell:
 		print 'Something rustles nearby!'
@@ -48,7 +48,7 @@ def work_on_cell(cell,api,position,config):
 			for fort in cell['forts']:
 				if 'type' in fort:
 					print('This is PokeStop')
-					hack_chain=search_seen_fort(fort,api,position,config)
+					hack_chain=search_seen_fort(fort,api,position,config,out_position)
 					if hack_chain > 10:
 						print('need a rest')
 						break
@@ -142,7 +142,7 @@ def transfer_low_cp_pokomon(api,value):
 	api.get_inventory()
 	response_dict = api.call()
 	transfer_low_cp_pokomon_with_dict(api,value,response_dict)
-def search_seen_fort(fort,api,position,config):
+def search_seen_fort(fort,api,position,config, out_position):
 	lat=fort['latitude']
 	lng=fort['longitude']
 	fortID=fort['id']
@@ -157,7 +157,7 @@ def search_seen_fort(fort,api,position,config):
 		position=convert_toposition(lat, lng, 0.0)
 		print(position,fortID)
         if config.walk > 0:
-            api.walk(config.walk, *position)
+            api.walk2(config.walk, out_position, *position)
         else:
         	api.set_position(*position)
 		api.player_update(latitude=lat,longitude=lng)
