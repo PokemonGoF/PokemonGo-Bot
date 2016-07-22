@@ -79,12 +79,11 @@ class PokemonCatchWorker(object):
                                     if cp < self.config.cp:
                                         print_green('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + '] - exchanging for candy')
                                         id_list2 = self.count_pokemon_inventory()
-                                        try:
-                                            # Transfering Pokemon
-                                            self.transfer_pokemon(list(Set(id_list2) - Set(id_list1))[0])
-                                        except:
-                                            print_red('[###] Your inventory is full! Please manually delete some items.')
-                                            break
+                                        # Transfering Pokemon
+
+                                        ## TODO - FIX TRANSFERRING OF POKEMON
+                                        self.transfer_pokemon(list(Set(id_list2) - Set(id_list1)))
+                                        print_green('[#] ' + str(pokemon_name) + ' has been exchanged for candy!')
                                     else:
                                         print_green('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + ']')
                             break
@@ -111,12 +110,10 @@ class PokemonCatchWorker(object):
     	if 'cp' in pokemon and pokemon['cp'] < value:
     		self.api.release_pokemon(pokemon_id=pokemon['id'])
     		response_dict = self.api.call()
-    		print('[x] Exchanged successfully!')
 
     def transfer_pokemon(self, pid):
         self.api.release_pokemon(pokemon_id=pid)
         response_dict = self.api.call()
-        print('[x] Exchanged successfully!')
 
     def count_pokemon_inventory(self):
         self.api.get_inventory()

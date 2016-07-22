@@ -47,7 +47,9 @@ class Stepper(object):
                     self._walk_to(self.config.walk, *position)
                 else:
                     self.api.set_position(*position)
-                print(position)
+                print('[#] {}'.format(position))
+                with open('web/location.json', 'w') as outfile:
+                    json.dump({'lat': position[0], 'lng': position[1]}, outfile)
             if self.x == self.y or self.x < 0 and self.x == -self.y or self.x > 0 and self.x == 1 - self.y:
                 (self.dx, self.dy) = (-self.dy, self.dx)
 
@@ -59,8 +61,6 @@ class Stepper(object):
             cellid = self._get_cellid(position[0], position[1])
             timestamp = [0,] * len(cellid)
             self.api.get_map_objects(latitude=f2i(position[0]), longitude=f2i(position[1]), since_timestamp_ms=timestamp, cell_id=cellid)
-            with open('web/location.json', 'w') as outfile:
-                json.dump({'lat': position[0], 'lng': position[1]}, outfile)
 
             response_dict = self.api.call()
             if response_dict and 'responses' in response_dict and \
@@ -83,8 +83,12 @@ class Stepper(object):
             dLng = (lng - i2f(self.api._position_lng)) / steps
 
             for i in range(intSteps):
-                self.api.set_position(i2f(self.api._position_lat) + dLat + random_lat_long_delta(), i2f(self.api._position_lng) + dLng + random_lat_long_delta(), alt)
+                cLat = i2f(self.api._position_lat) + dLat + random_lat_long_delta()
+                cLng = i2f(self.api._position_lng) + dLng + random_lat_long_delta()
+                self.api.set_position(cLat, cLng, alt)
                 self.bot.heartbeat()
+                with open('web/location.json', 'w') as outfile:
+                    json.dump({'lat': cLat, 'lng': cLng}, outfile)
                 sleep(1) # sleep one second plus a random delta
 
             self.api.set_position(lat, lng, alt)
