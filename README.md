@@ -2,9 +2,9 @@
 
 ## Project chat
 
-[![Join the chat at https://gitter.im/PokemonGoF/PokemonGo-Bot](https://badges.gitter.im/PokemonGoF/PokemonGo-Bot.svg)](https://gitter.im/PokemonGoF/PokemonGo-Bot?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Slack Status](https://pokemongo-bot.herokuapp.com/badge.svg)](https://pokemongo-bot.herokuapp.com)
 
-We use [Gitter](https://gitter.im) for a Github-integrated web chat. [Click here to join the chat!](https://gitter.im/PokemonGoF/PokemonGo-Bot)
+We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
 
 ## Features:
  * Search Fort(Spin Pokestop)
@@ -30,13 +30,16 @@ We use [Gitter](https://gitter.im) for a Github-integrated web chat. [Click here
 ### Python Installation
     [Install Python 2.7](https://wiki.python.org/moin/BeginnersGuide/Download)
     [Install PIP](https://pip.pypa.io/en/stable/installing/)
+
 ### Google Protobuf Installation
     MAC:  brew update && brew install --devel protobuf
+
 ### Install Pokemon_Go_Bot
 
-    Download or clone the repository.
+    Download or clone the **master** branch of the repository: `git clone -b master git@github.com:PokemonGoF/PokemonGo-Bot.git `
     Using a terminal navigate into the clone repository.
     Install all requirements for the project using `pip install -r ./requirements.txt`
+
 ### Google Maps API (Code is not done yet)
 
 
