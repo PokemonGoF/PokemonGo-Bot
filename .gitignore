@@ -92,3 +92,4 @@ ENV/
 config.json
 location.json
 src/
+web/*.json
