@@ -159,9 +159,9 @@ class PokemonGoBot(object):
                     pokemon_groups[group_id] = {}
                      
                 pokemon_groups[group_id].update({group_pokemon_cp:group_pokemon})
-                return pokemon_groups
             except:
                 continue
+        return pokemon_groups
             
         
     def update_inventory(self):
