@@ -10,7 +10,8 @@ We use [Gitter](https://gitter.im) for a Github-integrated web chat. [Click here
  * Search Fort(Spin Pokestop)
  * Catch Pokemon
  * Release low cp pokemon
- * Walking as you 
+ * Walking as you
+ * Use the ball you have to catch, don't if you don't have 
 
 # To-Do:
 - [ ] Google Map API key setup
@@ -22,7 +23,7 @@ We use [Gitter](https://gitter.im) for a Github-integrated web chat. [Click here
 - [ ] Incubate eggs
 - [ ] Evolve pokemons
 - [ ] Use candy
-- [x] Code refector
+- [x] Code refactor
 
 ## Installation
 
@@ -74,6 +75,8 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 
 ## FAQ
 
+### Does it run automatally?
+    Not yet, still need a trainer to train the script param.  But we are very close to. 
 ### Set GEO Location
     It works, use -l "xx.yyyy,zz.ttttt" to set lat long for location. -- diordache
 ### FLEE
@@ -96,10 +99,11 @@ Quick Tip: When using this script, use a Lucky egg to double the XP for 30 mins.
  * googlemaps
 
 
-## Contributors
+## Contributors (Don't forget add yours here when you create PR:)
 eggins -- The first pull request :)  
 crack00r  
-ethervoid
+ethervoid 
+Bashin 
 
 ## Credits
 ### The works are based on the Pokemon Go API
