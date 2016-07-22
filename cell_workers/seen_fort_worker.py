@@ -3,7 +3,7 @@ import time
 from math import radians, sqrt, sin, cos, atan2
 from pgoapi.utilities import f2i, h2f
 from utils import distance
-from human_behaviour import sleep
+from pokemongo_bot.human_behaviour import sleep
 
 
 class SeenFortWorker(object):
