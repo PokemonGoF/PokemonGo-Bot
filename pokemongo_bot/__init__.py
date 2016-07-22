@@ -34,8 +34,6 @@ class PokemonGoBot(object):
         if (self.config.mode == "all" or self.config.mode == "poke") and 'catchable_pokemons' in cell:
             print '[#] Something rustles nearby!'
             for pokemon in cell['catchable_pokemons']:
-                with open('web/catchable.json', 'w') as outfile:
-                    json.dump(pokemon, outfile)
                 worker = PokemonCatchWorker(pokemon, self)
                 worker.work()
         if (self.config.mode == "all" or self.config.mode == "poke") and 'wild_pokemons' in cell:
@@ -91,8 +89,6 @@ class PokemonGoBot(object):
         inventory_req = self.api.call()
 
         inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
-        with open('web/info.json', 'w') as outfile:
-            json.dump(inventory_dict, outfile)
 
         # get player pokemon[id] group by pokemon[pokemon_id]
         # ----------------------
@@ -150,7 +146,8 @@ class PokemonGoBot(object):
 
         pokecoins = '0'
         stardust = '0'
-
+        balls_stock = self.pokeball_inventory();
+        
         if 'amount' in player['currencies'][0]:
             pokecoins = player['currencies'][0]['amount']
         if 'amount' in player['currencies'][1]:
@@ -163,6 +160,9 @@ class PokemonGoBot(object):
         print('[#] Pokemon Storage: {}/{}'.format(self.get_inventory_count('pokemon'), player['max_pokemon_storage']))
         print('[#] Stardust: {}'.format(stardust))
         print('[#] Pokecoins: {}'.format(pokecoins))
+        print('[#] PokeBalls: ' + str(balls_stock[1]))
+        print('[#] GreatBalls: ' + str(balls_stock[2]))
+        print('[#] UltraBalls: ' + str(balls_stock[3]))
         self.get_player_info()
         print('[#]')
 

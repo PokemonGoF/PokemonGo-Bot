@@ -43,21 +43,27 @@ class PokemonCatchWorker(object):
                         balls_stock = self.bot.pokeball_inventory();
                         while(True):
                             pokeball = 0
-                            for pokeball_type, pokeball_count in balls_stock.iteritems():
-                                # Masterball
-                                if pokeball_type == 4:
-                                    break
-
-                                if pokeball_count > 0:
-                                    pokeball = pokeball_type
-                                    balls_stock[pokeball_type] = balls_stock[pokeball_type] - 1
-                                    break
+                            
+                            if balls_stock[1] > 0:
+                                #print 'use Poke Ball'
+                                pokeball = 1
+                                
+                            if cp > 300 and balls_stock[2] > 0:
+                                #print 'use Great Ball'
+                                pokeball = 2
+                                
+                            if cp > 700 and balls_stock[3] > 0:
+                                #print 'use Utra Ball'
+                                pokeball = 3
 
                             if pokeball is 0:
                                 print_red('[x] Out of pokeballs...')
                                 # TODO: Begin searching for pokestops.
                                 break
+                            
                             print('[x] Using {}...'.format(self.item_list[str(pokeball)]))
+                            
+                            balls_stock[pokeball] = balls_stock[pokeball] - 1
                             id_list1 = self.count_pokemon_inventory()
                             self.api.catch_pokemon(encounter_id = encounter_id,
                                 pokeball = pokeball,
@@ -95,12 +101,12 @@ class PokemonCatchWorker(object):
         time.sleep(5)
 
     def _transfer_low_cp_pokemon(self, value):
-    	self.api.get_inventory()
-    	response_dict = self.api.call()
-    	self._transfer_all_low_cp_pokemon(value, response_dict)
+        self.api.get_inventory()
+        response_dict = self.api.call()
+        self._transfer_all_low_cp_pokemon(value, response_dict)
 
     def _transfer_all_low_cp_pokemon(self, value, response_dict):
-    	try:
+        try:
             reduce(dict.__getitem__, ["responses", "GET_INVENTORY", "inventory_delta", "inventory_items"], response_dict)
         except KeyError:
             pass
@@ -116,9 +122,9 @@ class PokemonCatchWorker(object):
                     time.sleep(1.2)
 
     def _execute_pokemon_transfer(self, value, pokemon):
-    	if 'cp' in pokemon and pokemon['cp'] < value:
-    		self.api.release_pokemon(pokemon_id=pokemon['id'])
-    		response_dict = self.api.call()
+        if 'cp' in pokemon and pokemon['cp'] < value:
+            self.api.release_pokemon(pokemon_id=pokemon['id'])
+            response_dict = self.api.call()
 
     def transfer_pokemon(self, pid):
         self.api.release_pokemon(pokemon_id=pid)
