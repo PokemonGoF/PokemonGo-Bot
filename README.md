@@ -139,8 +139,9 @@ ethervoid
 Bashin  
 tstumm  
 TheGoldenXY  
-Reaver01  
+Reaver01
 rarshonsky
+earthchie
 
 ## Credits
 ### The works are based on the Pokemon Go API

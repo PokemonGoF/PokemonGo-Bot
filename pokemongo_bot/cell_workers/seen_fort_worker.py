@@ -71,14 +71,16 @@ class SeenFortWorker(object):
                     for item_id, item_count in tmp_count_items.iteritems():
                         item_id = str(item_id)
                         item_name = self.item_list[item_id]
+
                         print_green("[+] " + str(item_count) + "x " + item_name)
+
                 else:
                     print_yellow("[#] Nothing found.")
 
                 pokestop_cooldown = spin_details.get('cooldown_complete_timestamp_ms')
                 if pokestop_cooldown:
                     seconds_since_epoch = time.time()
-                    print '[#] PokeStop on cooldown. Time left: %s seconds.' % str((pokestop_cooldown/1000) - seconds_since_epoch)
+                    print('[#] PokeStop on cooldown. Time left: %s seconds.' % str((pokestop_cooldown/1000) - seconds_since_epoch))
 
                 if not items_awarded and not experience_awarded and not pokestop_cooldown:
                     message = (
