@@ -94,13 +94,13 @@ class PokemonGoBot(object):
 
         for item in inventory_dict:
             try:
-                if item['inventory_item_data']['item']['item'] == 1:
+                if item['inventory_item_data']['item']['item_id'] == 1:
                     #print('Poke Ball count: ' + str(item['inventory_item_data']['item']['count']))
                     balls_stock[1] = item['inventory_item_data']['item']['count']
-                if item['inventory_item_data']['item']['item'] == 2:
+                if item['inventory_item_data']['item']['item_id'] == 2:
                     #print('Great Ball count: ' + str(item['inventory_item_data']['item']['count']))
                     balls_stock[2] = item['inventory_item_data']['item']['count']
-                if item['inventory_item_data']['item']['item'] == 3:
+                if item['inventory_item_data']['item']['item_id'] == 3:
                     #print('Ultra Ball count: ' + str(item['inventory_item_data']['item']['count']))
                     balls_stock[3] = item['inventory_item_data']['item']['count']
             except:
@@ -112,9 +112,9 @@ class PokemonGoBot(object):
 
         for pokemon in inventory_dict:
             try:
-                id1 = pokemon['inventory_item_data']['pokemon']['pokemon_id']
-                id2 = pokemon['inventory_item_data']['pokemon']['id']
-                id3 = pokemon['inventory_item_data']['pokemon']['cp']
+                id1 = pokemon['inventory_item_data']['pokemon_data']['pokemon_id']
+                id2 = pokemon['inventory_item_data']['pokemon_data']['id']
+                id3 = pokemon['inventory_item_data']['pokemon_data']['cp']
                 #DEBUG - Hide
                 #print(str(id1))
                 if id1 not in pokemon_stock:
