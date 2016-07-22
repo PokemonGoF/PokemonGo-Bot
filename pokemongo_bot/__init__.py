@@ -17,8 +17,8 @@ class PokemonGoBot(object):
 
     def __init__(self, config):
         self.config = config
-        self.pokemon_list=json.load(open('pokemon.json'))
-        self.item_list=json.load(open('items.json'))
+        self.pokemon_list=json.load(open('data/pokemon.json'))
+        self.item_list=json.load(open('data/items.json'))
 
     def start(self):
         self._setup_logging()

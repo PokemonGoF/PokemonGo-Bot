@@ -57,7 +57,7 @@ class Stepper(object):
             cellid = self._get_cellid(position[0], position[1])
             timestamp = [0,] * len(cellid)
             self.api.get_map_objects(latitude=f2i(position[0]), longitude=f2i(position[1]), since_timestamp_ms=timestamp, cell_id=cellid)
-            with open('location.json', 'w') as outfile:
+            with open('web/location.json', 'w') as outfile:
                 json.dump({'lat': position[0], 'lng': position[1]}, outfile)
 
             response_dict = self.api.call()

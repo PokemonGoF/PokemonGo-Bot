@@ -69,7 +69,7 @@ class PokemonCatchWorker(object):
                                 status = response_dict['responses']['CATCH_POKEMON']['status']
                                 if status is 2:
                                     print('[-] Attempted to capture ' + str(pokemon_name) + ' - failed.. trying again!')
-                                    sleep(1.25)
+                                    sleep(2)
                                     continue
                                 if status is 3:
                                     print('[x] Oh no! ' + str(pokemon_name) + ' vanished! :(')
