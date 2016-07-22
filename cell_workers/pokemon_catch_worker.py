@@ -1,6 +1,8 @@
 import time
 from sets import Set
-import humanBehaviour
+from human_behaviour import sleep
+
+
 class PokemonCatchWorker(object):
 
     def __init__(self, pokemon, bot):
@@ -33,7 +35,7 @@ class PokemonCatchWorker(object):
                                 pokemon_name=self.pokemon_list[int(pokemon_num)]['Name']
                                 print('[#] A Wild ' + str(pokemon_name) + ' appeared! [CP' + str(cp) + ']')
                                 #Simulate app
-                                humanBehaviour.sleep(3)
+                                sleep(3)
                         while(True):
                             id_list1 = self.count_pokemon_inventory()
                             pokeball = 0
@@ -67,7 +69,7 @@ class PokemonCatchWorker(object):
                                 status = response_dict['responses']['CATCH_POKEMON']['status']
                                 if status is 2:
                                     print('[-] Attempted to capture ' + str(pokemon_name) + ' - failed.. trying again!')
-                                    humanBehaviour.sleep(1.25)
+                                    sleep(1.25)
                                     continue
                                 if status is 3:
                                     print('[x] Oh no! ' + str(pokemon_name) + ' vanished! :(')
@@ -101,7 +103,7 @@ class PokemonCatchWorker(object):
     							if 'pokemon' in item['inventory_item_data']:
     								pokemon = item['inventory_item_data']['pokemon']
     								self._execute_pokemon_transfer(value, pokemon)
-    								humanBehaviour.sleep(1.2)
+    								sleep(1.2)
 
     def _execute_pokemon_transfer(self, value, pokemon):
     	if 'cp' in pokemon and pokemon['cp'] < value:

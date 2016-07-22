@@ -3,7 +3,11 @@ import time
 
 from s2sphere import CellId, LatLng
 from google.protobuf.internal import encoder
-import humanBehaviour
+
+from human_behaviour import sleep, random_lat_long_delta
+
+from cell_workers.utils import distance, i2f
+
 from pgoapi.utilities import f2i, h2f
 
 
@@ -66,10 +70,10 @@ class Stepper(object):
                 #print('map_cells are {}'.format(len(map_cells)))
                 for cell in map_cells:
                     self.bot.work_on_cell(cell,position)
-            humanBehaviour.sleep(10)
+            sleep(10)
 
     def _walk_to(self, speed, lat, lng, alt):
-        dist = self.distance(i2f(self.api._position_lat), i2f(self.api._position_lng), lat, lng)
+        dist = distance(float(self.api._position_lat), float(self.api._position_lng), lat, lng)
         steps = (dist+0.0)/(speed+0.0) # may be rational number
         intSteps = int(steps)
         residuum = steps - intSteps
@@ -78,7 +82,7 @@ class Stepper(object):
             dLng = (lng - i2f(self.api._position_lng)) / steps
 
             for i in range(intSteps):
-                self.api.set_position(i2f(self._position_lat) + dLat + self.random_lat_long(), i2f(self._position_lng) + dLng + self.random_lat_long(), alt)
+                self.api.set_position(i2f(self.api._position_lat) + dLat + random_lat_long_delta(), i2f(self.api._position_lng) + dLng + random_lat_long_delta(), alt)
                 self.api.heartbeat()
                 self.catchThem()
                 time.sleep(1 + self.random_sleep()) # sleep one second plus a random delta
