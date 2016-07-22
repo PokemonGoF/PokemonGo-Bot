@@ -21,7 +21,7 @@
     <script>
       var map;
       var marker;
-      var loc = {};
+      var loc = {}, cachedLoc = {};
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 50.0830986, lng: 6.7613762},
@@ -51,6 +51,9 @@
           function(data) { loc = data; map.panTo({lat: parseFloat(loc.lat), lng: parseFloat(loc.lng)}); },
           function(xhr) { console.error(xhr);}
         );
+        
+        if (loc.lat === cachedLoc.lat && loc.lng === cachedLoc.lng) return;
+        cachedLoc = loc;
         console.log("Move Marker: Trainer - " + loc.lat + ", " + loc.lng);
         marker.setPosition({lat: parseFloat(loc.lat), lng: parseFloat(loc.lng)});
       }
