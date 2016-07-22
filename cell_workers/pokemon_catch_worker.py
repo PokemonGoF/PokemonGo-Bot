@@ -68,7 +68,7 @@ class PokemonCatchWorker(object):
                                     time.sleep(1.25)
                                     continue
                                 if status is 3:
-                                    print(str(pokemon_name) + ' vanished! :(')
+                                    print('[x] Oh no! ' + str(pokemon_name) + ' vanished! :(')
                                 if status is 1:
                                     if cp < self.config.cp:
                                         print('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + '] - exchanging for candy')
