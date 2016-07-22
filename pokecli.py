@@ -67,6 +67,8 @@ def init_config():
     parser.set_defaults(DEBUG=False, TEST=False)
     config = parser.parse_args()
 
+    config.__dict__['tasks'] = load['tasks']
+
     # Passed in arguments shoud trump
     for key in config.__dict__:
         if key in load and config.__dict__[key] == None:

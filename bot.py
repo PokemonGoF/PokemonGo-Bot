@@ -8,6 +8,7 @@ import datetime
 from pgoapi import PGoApi
 from cell_workers import PokemonCatchWorker, SeenFortWorker
 from cell_workers.utils import distance
+from tasks import CatchPokemon, TransferPokemon
 from stepper import Stepper
 from geopy.geocoders import GoogleV3
 from math import radians, sqrt, sin, cos, atan2
@@ -22,11 +23,12 @@ class PokemonGoBot(object):
     def start(self):
         self._setup_logging()
         self._setup_api()
-        self.stepper = Stepper(self)
+        self._setup_tree()
         random.seed()
 
     def take_step(self):
-        self.stepper.take_step()
+        for task in self.tasks:
+            task.tick(self)
 
     def work_on_cell(self, cell, position):
         if 'catchable_pokemons' in cell:
@@ -178,6 +180,16 @@ class PokemonGoBot(object):
         except:
              print('Exception during print player profile')
         self.update_inventory();
+
+    def _setup_tree(self):
+        tasks = []
+
+        for taskConfig in self.config.tasks:
+            taskRef = globals()[taskConfig['type']]
+            task = taskRef(taskConfig['arguments'])
+            tasks.append(task)
+
+        self.tasks = tasks
 
     def update_inventory(self):
         self.api.get_inventory()
