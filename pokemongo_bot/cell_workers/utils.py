@@ -9,3 +9,12 @@ def distance(lat1, lon1, lat2, lon2):
 
 def i2f(int):
     return struct.unpack('<d', struct.pack('<Q', int))[0]
+	
+def print_green(message):
+    print('\033[92m' + message + '\033[0m');
+
+def print_yellow(message):
+    print('\033[93m' + message + '\033[0m');
+
+def print_red(message):
+    print('\033[91m' + message + '\033[0m');
