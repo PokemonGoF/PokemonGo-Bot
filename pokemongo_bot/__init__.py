@@ -157,24 +157,24 @@ class PokemonGoBot(object):
         currency_1="0"
         currency_2="0"
 
-        player = response_dict['responses']['GET_PLAYER']['player_data']
+        player = response_dict['responses']['GET_PLAYER']['profile']
 
         ### @@@ TODO: Convert this to d/m/Y H:M:S
-        creation_date = datetime.datetime.fromtimestamp(player['creation_timestamp_ms'] / 1e3)
+        creation_date = datetime.datetime.fromtimestamp(player['creation_time'] / 1e3)
 
         pokecoins = '0'
         stardust = '0'
 
-        if 'amount' in player['currencies'][0]:
-            pokecoins = player['currencies'][0]['amount']
-        if 'amount' in player['currencies'][1]:
-            stardust = player['currencies'][1]['amount']
+        if 'amount' in player['currency'][0]:
+            pokecoins = player['currency'][0]['amount']
+        if 'amount' in player['currency'][1]:
+            stardust = player['currency'][1]['amount']
 
         print('[#]')
         print('[#] Username: {username}'.format(**player))
         print('[#] Acccount Creation: {}'.format(creation_date))
-        print('[#] Bag Storage: {}/{}'.format(self.get_inventory_count('item'), player['max_item_storage']))
-        print('[#] Pokemon Storage: {}/{}'.format(self.get_inventory_count('pokemon'), player['max_pokemon_storage']))
+        print('[#] Bag Storage: {}/{}'.format(self.get_inventory_count('item'), player['item_storage']))
+        print('[#] Pokemon Storage: {}/{}'.format(self.get_inventory_count('pokemon'), player['poke_storage']))
         print('[#] Stardust: {}'.format(stardust))
         print('[#] Pokecoins: {}'.format(pokecoins))
         self.get_player_info()
