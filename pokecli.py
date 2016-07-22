@@ -66,7 +66,7 @@ def init_config():
     parser.add_argument("-c", "--cp",help="Set CP less than to transfer(DEFAULT 100)",type=int,default=100)
     parser.add_argument("-k", "--gmapkey",help="Set Google Maps API KEY",type=str,default=None)
     parser.add_argument("--maxsteps",help="Set the steps around your initial location(DEFAULT 5 mean 25 cells around your location)",type=int,default=5)
-    parser.add_argument("--firsttrans", help="Transfer all pokemon with same ID on bot start, except pokemons with highest CP", action='store_true')
+    parser.add_argument("--firsttrans", help="Transfer all pokemon with same ID on bot start, except pokemon with highest CP. It works with -c", action='store_true')
     parser.add_argument("-d", "--debug", help="Debug Mode", action='store_true')
     parser.add_argument("-t", "--test", help="Only parse the specified location", action='store_true')
     parser.set_defaults(DEBUG=False, TEST=False)
