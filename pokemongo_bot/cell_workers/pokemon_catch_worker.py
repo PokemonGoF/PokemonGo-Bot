@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import time
 from sets import Set
 from utils import distance, print_green, print_yellow, print_red

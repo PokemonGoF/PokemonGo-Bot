@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
+
 import struct
 from math import cos, asin, sqrt
-
 
 def distance(lat1, lon1, lat2, lon2):
     p = 0.017453292519943295
