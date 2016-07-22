@@ -131,7 +131,7 @@ class PGoApi:
                 self.set_position(i2f(self._position_lat) + dLat + self.random_lat_long(), i2f(self._position_lng) + dLng + self.random_lat_long(), alt)
                 self.heartbeat()
                 if walking_hook:
-                    walking_hook()
+                    walking_hook(i)
                 time.sleep(1 + self.random_sleep()) # sleep one second plus a random delta
 
             self.set_position(lat, lng, alt)

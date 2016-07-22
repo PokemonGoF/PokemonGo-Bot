@@ -12,8 +12,8 @@ class SeenFortWorker(object):
         self.config = bot.config
         self.item_list = bot.item_list
         self.rest_time = 50
-    def walking_hook(own):
-        print('another walking_hook')
+    def walking_hook(own,i):
+        print '\ranother walking_hook ',i, 
     def work(self):
         lat = self.fort['latitude']
         lng = self.fort['longitude']
