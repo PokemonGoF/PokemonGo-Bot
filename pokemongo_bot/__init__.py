@@ -119,41 +119,46 @@ class PokemonGoBot(object):
         print('[#]')
         self.update_inventory();
         
-
-    def first_transfer(self):
-        pokemon_stock = {}
+    def first_transfer_get_groups(self):
+        self.pokemon_groups = {}
         self.api.get_player().get_inventory()
         inventory_req = self.api.call()
-        inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
-       
-        print('[x] First Transfer.')
+        inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']  
         
         for pokemon in inventory_dict:
             try:
-                id1 = pokemon['inventory_item_data']['pokemon_data']['pokemon_id']
-                id2 = pokemon['inventory_item_data']['pokemon_data']['id']
-                id3 = pokemon['inventory_item_data']['pokemon_data']['cp']
-
-                if id1 not in pokemon_stock:
-                    pokemon_stock[id1] = {}
-                    
-                pokemon_stock[id1].update({id3:id2})
+                group_id = pokemon['inventory_item_data']['pokemon_data']['pokemon_id']
+                group_pokemon = pokemon['inventory_item_data']['pokemon_data']['id']
+                group_pokemon_cp = pokemon['inventory_item_data']['pokemon_data']['cp']
+                
+                if group_id not in self.pokemon_groups:
+                    self.pokemon_groups[group_id] = {}
+                     
+                self.pokemon_groups[group_id].update({group_pokemon_cp:group_pokemon})
                 
             except:
                 continue
-                
+        
+    def first_transfer(self):
+        print('[x] First Transfer.')
+        
+        self.first_transfer_get_groups()
+        
         print('[x] Transfering...')
         
-        for id in pokemon_stock:
-            sorted_cp = pokemon_stock[id].keys()
-            if len(sorted_cp) > 1:
-                sorted_cp.sort()
-                sorted_cp.reverse()
+        for id in self.pokemon_groups:
+        
+            group_cp = self.pokemon_groups[id].keys()
+            
+            if len(group_cp) > 1:
+                group_cp.sort()
+                group_cp.reverse()
 
-                for x in range(1, len(sorted_cp)):
-                    self.api.release_pokemon(pokemon_id=pokemon_stock[id][sorted_cp[x]])
+                for x in range(1, len(group_cp)):
+                    self.api.release_pokemon(pokemon_id=self.pokemon_groups[id][group_cp[x]])
                     response_dict = self.api.call()
                     time.sleep(2)
+                    
         print('[x] Transfering Done.')
         
     def update_inventory(self):
