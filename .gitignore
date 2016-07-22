@@ -95,3 +95,5 @@ src/
 info.json
 inventory.json
 pokedex.json
+web/catchable.json
+web/catchable.json
