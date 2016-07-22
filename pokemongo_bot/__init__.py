@@ -11,7 +11,6 @@ from cell_workers.utils import distance
 from stepper import Stepper
 from geopy.geocoders import GoogleV3
 from math import radians, sqrt, sin, cos, atan2
-from collections import OrderedDict
 
 class PokemonGoBot(object):
 
@@ -249,10 +248,7 @@ class PokemonGoBot(object):
             return itemcount
         return '0'
 
-    def get_player_info(self, print_stats=True):
-        player_stats = stats = OrderedDict()
-
-        # Get contents of inventory
+    def get_player_info(self):
         self.api.get_inventory()
         response_dict = self.api.call()
         if 'responses' in response_dict:
@@ -270,19 +266,14 @@ class PokemonGoBot(object):
                                     nextlvlxp = (int(playerdata['next_level_xp']) - int(playerdata['experience']))
 
                                     if 'level' in playerdata:
-                                        player_stats['Level'] = playerdata['level']
+                                        print('[#] -- Level: {level}'.format(**playerdata))
 
                                     if 'experience' in playerdata:
-                                        player_stats['Experience'] = playerdata['experience']
-                                        player_stats['Experience until next level'] = nextlvlxp
+                                        print('[#] -- Experience: {experience}'.format(**playerdata))
+                                        print('[#] -- Experience until next level: {}'.format(nextlvlxp))
 
                                     if 'pokemons_captured' in playerdata:
-                                        player_stats['Pokemon Captured'] = playerdata['pokemons_captured']
+                                        print('[#] -- Pokemon Captured: {pokemons_captured}'.format(**playerdata))
 
                                     if 'poke_stop_visits' in playerdata:
-                                        player_stats['Pokestops Visited'] = playerdata['poke_stop_visits']
-
-        if print_stats:
-            for key in player_stats:
-                 print('[#] -- {}: {}'.format(key, player_stats[key]))
-        return json.dumps(player_stats, indent=4)
+                                        print('[#] -- Pokestops Visited: {poke_stop_visits}'.format(**playerdata))
