@@ -53,22 +53,19 @@ class Stepper(object):
 
             # get map objects call
             # ----------------------
-            # timestamp = "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
-            timestamp = 0
+
             cellid = self._get_cellid(position[0], position[1])
+            timestamp = [0,] * len(cellid)
             self.api.get_map_objects(latitude=f2i(position[0]), longitude=f2i(position[1]), since_timestamp_ms=timestamp, cell_id=cellid)
             with open('location.json', 'w') as outfile:
                 json.dump({'lat': position[0], 'lng': position[1]}, outfile)
 
             response_dict = self.api.call()
-            #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
             if response_dict and 'responses' in response_dict and \
                 'GET_MAP_OBJECTS' in response_dict['responses'] and \
                 'status' in response_dict['responses']['GET_MAP_OBJECTS'] and \
                 response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
-                #print('got the maps')
                 map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
-                #print('map_cells are {}'.format(len(map_cells)))
                 for cell in map_cells:
                     self.bot.work_on_cell(cell,position)
             sleep(10)
@@ -92,19 +89,19 @@ class Stepper(object):
             self.bot.heartbeat()
         print "[#] Finished walking"
 
-    def _get_cellid(self, lat, long):
+    def _get_cellid(self, lat, long, radius=10):
         origin = CellId.from_lat_lng(LatLng.from_degrees(lat, long)).parent(15)
         walk = [origin.id()]
 
         # 10 before and 10 after
         next = origin.next()
         prev = origin.prev()
-        for i in range(10):
+        for i in range(radius):
             walk.append(prev.id())
             walk.append(next.id())
             next = next.next()
             prev = prev.prev()
-        return ''.join(map(self._encode, sorted(walk)))
+        return sorted(walk)
 
     def _encode(self, cellid):
         output = []
