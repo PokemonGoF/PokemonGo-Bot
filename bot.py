@@ -6,8 +6,8 @@ import threading
 import time
 import datetime
 from pgoapi import PGoApi
-from pgoapi.utilities import f2i, h2f, distance
 from cell_workers import PokemonCatchWorker, SeenFortWorker
+from cell_workers.utils import distance
 from stepper import Stepper
 from geopy.geocoders import GoogleV3
 from math import radians, sqrt, sin, cos, atan2
