@@ -25,6 +25,7 @@ Author: tjado <https://github.com/tejado>
 
 import struct
 import re
+from math import cos, asin, sqrt, ceil
 
 from importlib import import_module
 
