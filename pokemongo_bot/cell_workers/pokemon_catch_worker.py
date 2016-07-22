@@ -80,8 +80,8 @@ class PokemonCatchWorker(object):
                                         # Transfering Pokemon
 
                                         ## TODO - FIX TRANSFERRING OF POKEMON
-                                        # self.transfer_pokemon(list(Set(id_list2) - Set(id_list1))[0])
-                                        print('[#####] POKEMON NOT EXCHANGED. THIS CODE NEEDS TO BE LOOKED AT')
+                                        self.transfer_pokemon(list(Set(id_list2) - Set(id_list1)))
+                                        print_green('[#] ' + str(pokemon_name) + ' has been exchanged for candy!')
                                     else:
                                         print_green('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + ']')
                             break
