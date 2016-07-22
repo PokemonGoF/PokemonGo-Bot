@@ -18,6 +18,7 @@ class PokemonGoBot(object):
         self.config = config
         self.pokemon_list=json.load(open('pokemon.json'))
         self.item_list=json.load(open('items.json'))
+        self.noballs = False
 
     def start(self):
         self._setup_logging()
@@ -38,7 +39,7 @@ class PokemonGoBot(object):
             for pokemon in cell['wild_pokemons']:
                 worker = PokemonCatchWorker(pokemon, self)
                 worker.work()
-        if self.config.spinstop:
+        if self.config.spinstop or self.noballs:
             if 'forts' in cell:
                 # Only include those with a lat/long
                 forts = [fort for fort in cell['forts'] if 'latitude' in fort and 'type' in fort]
