@@ -202,9 +202,10 @@ class PokemonGoBot(object):
     def _set_starting_position(self):
         self.position = self._get_pos_by_name(self.config.location)
         self.api.set_position(*self.position)
-
+        print('')
         print('[x] Address found: {}'.format(self.config.location.decode('utf-8')))
         print('[x] Position in-game set as: {}'.format(self.position))
+        print('')
 
         if self.config.test:
             return
