@@ -109,6 +109,7 @@ ethervoid
 Bashin
 tstumm
 TheGoldenXY
+asaf400
 
 ## Credits
 ### The works are based on the Pokemon Go API
