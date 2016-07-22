@@ -208,6 +208,32 @@ class PokemonGoBot(object):
         return balls_stock
 
     def _set_starting_position(self):
+
+        if self.config.test:
+            return
+
+        if self.config.location_cache:
+            try:
+                #
+                # save location flag used to pull the last known location from the location.json
+                with open('location.json') as f:
+                    location_json = json.load(f)
+
+                    self.position = (location_json['lat'], location_json['lng'], 0.0)
+                    self.api.set_position(*self.position)
+
+                    print('')
+                    print('[x] Last location flag used. Overriding passed in location')
+                    print('[x] Last in-game location was set as: {}'.format(self.position))
+                    print('')
+
+                    return
+            except:
+                pass
+
+        #
+        # this will fail if the location.json isn't there or not valid.
+        # Still runs if location is set.
         self.position = self._get_pos_by_name(self.config.location)
         self.api.set_position(*self.position)
         print('')
@@ -215,8 +241,6 @@ class PokemonGoBot(object):
         print('[x] Position in-game set as: {}'.format(self.position))
         print('')
 
-        if self.config.test:
-            return
 
     def _get_pos_by_name(self, location_name):
         geolocator = GoogleV3(api_key=self.config.gmapkey)
