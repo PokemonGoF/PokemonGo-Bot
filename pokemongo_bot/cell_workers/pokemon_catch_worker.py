@@ -58,6 +58,7 @@ class PokemonCatchWorker(object):
                                 # TODO: Begin searching for pokestops.
                                 break
                             print('[x] Using {}...'.format(self.item_list[str(pokeball)]))
+                            id_list1 = self.count_pokemon_inventory()
                             self.api.catch_pokemon(encounter_id = encounter_id,
                                 pokeball = pokeball,
                                 normalized_reticle_size = 1.950,
@@ -83,7 +84,10 @@ class PokemonCatchWorker(object):
                                         print_green('[x] Captured {}! [CP {}] - exchanging for candy'.format(pokemon_name, cp))
                                         id_list2 = self.count_pokemon_inventory()
                                         # Transfering Pokemon
-                                        self.transfer_pokemon(list(Set(id_list2) - Set(id_list1)))
+                                        pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
+                                        if len(pokemon_to_transfer) == 0:
+                                            raise RuntimeError('Trying to transfer 0 pokemons!')
+                                        self.transfer_pokemon(pokemon_to_transfer)
                                         print_green('[#] {} has been exchanged for candy!'.format(pokemon_name))
                                     else:
                                         print_green('[x] Captured {}! [CP {}]'.format(pokemon_name, cp))
@@ -134,11 +138,13 @@ class PokemonCatchWorker(object):
         else:
             for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
                 try:
-                    reduce(dict.__getitem__, ["inventory_item_data", "pokemon"], item)
+                    reduce(dict.__getitem__, ["inventory_item_data", "pokemon_data"], item)
                 except KeyError:
                     pass
                 else:
-                    pokemon = item['inventory_item_data']['pokemon']
+                    pokemon = item['inventory_item_data']['pokemon_data']
+                    if pokemon.get('is_egg', False):
+                        continue
                     id_list.append(pokemon['id'])
 
         return id_list
