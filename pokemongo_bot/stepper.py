@@ -81,8 +81,12 @@ class Stepper(object):
             dLng = (lng - i2f(self.api._position_lng)) / steps
 
             for i in range(intSteps):
-                self.api.set_position(i2f(self.api._position_lat) + dLat + random_lat_long_delta(), i2f(self.api._position_lng) + dLng + random_lat_long_delta(), alt)
+                cLat = i2f(self.api._position_lat) + dLat + random_lat_long_delta()
+                cLng = i2f(self.api._position_lng) + dLng + random_lat_long_delta()
+                self.api.set_position(cLat, cLng, alt)
                 self.bot.heartbeat()
+                with open('web/location.json', 'w') as outfile:
+                    json.dump({'lat': cLat, 'lng': cLng}, outfile)
                 sleep(1) # sleep one second plus a random delta
 
             self.api.set_position(lat, lng, alt)
