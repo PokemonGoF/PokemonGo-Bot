@@ -22,7 +22,7 @@ We use [Gitter](https://gitter.im) for a Github-integrated web chat. [Click here
 - [ ] Incubate eggs
 - [ ] Evolve pokemons
 - [ ] Use candy
-- [x] Code refector
+- [x] Code refactor
 
 ## Installation
 
