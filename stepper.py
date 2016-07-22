@@ -24,6 +24,7 @@ class Stepper(object):
         self.origin_lon = self.bot.position[1]
 
     def take_step(self):
+        position=(self.origin_lat,self.origin_lon)
         for step in range(self.steplimit2):
             #starting at 0 index
             print('looping: step {} of {}'.format((step+1), self.steplimit**2))
