@@ -42,6 +42,7 @@ class PokemonCatchWorker(object):
 
                         balls_stock = self.bot.pokeball_inventory();
                         while(True):
+                            id_list1 = self.count_pokemon_inventory()
                             pokeball = 0
                             for pokeball_type, pokeball_count in balls_stock.iteritems():
                                 # Masterball
