@@ -42,6 +42,7 @@ Using a terminal navigate into the clone repository.
 
 Install all requirements for the project using `pip install -r ./requirements.txt`
 
+
 ### Develop PokemonGo-Bot
 
 Download or clone the **dev** branch of the repository: `git clone -b dev git@github.com:PokemonGoF/PokemonGo-Bot.git `
@@ -50,6 +51,15 @@ Using a terminal navigate into the clone repository.
 
 Install all requirements for the project using `pip install -r ./requirements.txt`
 **Code forest, code!**
+
+### Ubuntu virtualenv install
+
+sudo apt-get install virtualenv -y
+git clone https://github.com/PokemonGoF/PokemonGo-Bot
+cd PokemonGo-Bot
+virtualenv .
+source bin/activate
+pip install -r requirements.txt
 
 ### Google Maps API (Code is not done yet)
 
@@ -66,7 +76,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 6. After the code done, will update here how to replace.
 
 ## Usage
-    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-w]  [-d] [-t] [-s] [-c]
+    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-w] [-d] [-t] [-c] [-m]
 
     optional arguments:
       -h, --help                                    show this help message and exit

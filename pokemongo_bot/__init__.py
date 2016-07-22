@@ -34,6 +34,8 @@ class PokemonGoBot(object):
         if (self.config.mode == "all" or self.config.mode == "poke") and 'catchable_pokemons' in cell:
             print '[#] Something rustles nearby!'
             for pokemon in cell['catchable_pokemons']:
+                with open('web/catchable.json', 'w') as outfile:
+                    json.dump(pokemon, outfile)
                 worker = PokemonCatchWorker(pokemon, self)
                 worker.work()
         if (self.config.mode == "all" or self.config.mode == "poke") and 'wild_pokemons' in cell:
@@ -89,6 +91,8 @@ class PokemonGoBot(object):
         inventory_req = self.api.call()
 
         inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+        with open('web/info.json', 'w') as outfile:
+            json.dump(inventory_dict, outfile)
 
         # get player pokemon[id] group by pokemon[pokemon_id]
         # ----------------------
