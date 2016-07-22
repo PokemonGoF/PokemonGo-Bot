@@ -39,9 +39,10 @@ class PokemonCatchWorker(object):
                                 print_yellow('[#] A Wild {} appeared! [CP {}]'.format(pokemon_name, cp))
                                 #Simulate app
                                 sleep(3)
+
+                        balls_stock = self.bot.pokeball_inventory();
                         while(True):
                             pokeball = 0
-                            balls_stock = self.bot.pokeball_inventory();
                             for pokeball_type, pokeball_count in balls_stock.iteritems():
                                 # Masterball
                                 if pokeball_type == 4:
@@ -49,6 +50,7 @@ class PokemonCatchWorker(object):
 
                                 if pokeball_count > 0:
                                     pokeball = pokeball_type
+                                    balls_stock[pokeball_type] = balls_stock[pokeball_type] - 1
                                     break
 
                             if pokeball is 0:
