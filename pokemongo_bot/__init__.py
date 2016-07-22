@@ -38,6 +38,8 @@ class PokemonGoBot(object):
                     json.dump(pokemon, outfile)
                 worker = PokemonCatchWorker(pokemon, self)
                 worker.work()
+                with open('web/catchable.json', 'w') as outfile:
+                    json.dump({}, outfile)
         if (self.config.mode == "all" or self.config.mode == "poke") and 'wild_pokemons' in cell:
             for pokemon in cell['wild_pokemons']:
                 worker = PokemonCatchWorker(pokemon, self)
@@ -53,7 +55,7 @@ class PokemonGoBot(object):
                     worker = SeenFortWorker(fort, self)
                     hack_chain = worker.work()
                     if hack_chain > 10:
-                        print('need a rest')
+                        #print('need a rest')
                         break
 
     def _setup_logging(self):
@@ -84,56 +86,6 @@ class PokemonGoBot(object):
 
         # chain subrequests (methods) into one RPC call
 
-        # get player inventory call
-        # ----------------------
-        self.api.get_player().get_inventory()
-
-        inventory_req = self.api.call()
-
-        inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
-        with open('web/info.json', 'w') as outfile:
-            json.dump(inventory_dict, outfile)
-
-        # get player pokemon[id] group by pokemon[pokemon_id]
-        # ----------------------
-        pokemon_stock = {}
-
-        for pokemon in inventory_dict:
-            try:
-                id1 = pokemon['inventory_item_data']['pokemon_data']['pokemon_id']
-                id2 = pokemon['inventory_item_data']['pokemon_data']['id']
-                id3 = pokemon['inventory_item_data']['pokemon_data']['cp']
-                #DEBUG - Hide
-                #print(str(id1))
-                if id1 not in pokemon_stock:
-                    pokemon_stock[id1] = {}
-                #DEBUG - Hide
-                #print(str(id2))
-                pokemon_stock[id1].update({id3:id2})
-            except:
-                continue
-
-        #DEBUG - Hide
-        #print pokemon_stock
-
-        for id in pokemon_stock:
-            #DEBUG - Hide
-            #print id
-            sorted_cp = pokemon_stock[id].keys()
-            if len(sorted_cp) > 1:
-                sorted_cp.sort()
-                sorted_cp.reverse()
-                #DEBUG - Hide
-                #print sorted_cp
-
-                #Hide for now. If Unhide transfer all poke duplicates exept most CP.
-                #for x in range(1, len(sorted_cp)):
-                    #DEBUG - Hide
-                    #print x
-                    #print pokemon_stock[id][sorted_cp[x]]
-                    #self.api.release_pokemon(pokemon_id=pokemon_stock[id][sorted_cp[x]])
-                    #response_dict = self.api.call()
-
         # get player profile call
         # ----------------------
         self.api.get_player()
@@ -150,7 +102,8 @@ class PokemonGoBot(object):
 
         pokecoins = '0'
         stardust = '0'
-
+        balls_stock = self.pokeball_inventory();
+        
         if 'amount' in player['currencies'][0]:
             pokecoins = player['currencies'][0]['amount']
         if 'amount' in player['currencies'][1]:
@@ -163,11 +116,60 @@ class PokemonGoBot(object):
         print('[#] Pokemon Storage: {}/{}'.format(self.get_inventory_count('pokemon'), player['max_pokemon_storage']))
         print('[#] Stardust: {}'.format(stardust))
         print('[#] Pokecoins: {}'.format(pokecoins))
+        print('[#] PokeBalls: ' + str(balls_stock[1]))
+        print('[#] GreatBalls: ' + str(balls_stock[2]))
+        print('[#] UltraBalls: ' + str(balls_stock[3]))
         self.get_player_info()
+
+        if self.config.firsttrans:
+            self.first_transfer()
+            
         print('[#]')
-
         self.update_inventory();
+        
+    def first_transfer(self):
+        print('[x] First Transfer.')
+        
+        pokemon_groups = self._first_transfer_get_groups()
+        
+        print('[x] Transfering...')
+        
+        for id in pokemon_groups:
+        
+            group_cp = pokemon_groups[id].keys()
+            
+            if len(group_cp) > 1:
+                group_cp.sort()
+                group_cp.reverse()
 
+                for x in range(1, len(group_cp)):
+                    self.api.release_pokemon(pokemon_id=pokemon_groups[id][group_cp[x]])
+                    response_dict = self.api.call()
+                    time.sleep(2)
+                    
+        print('[x] Transfering Done.')
+        
+    def _first_transfer_get_groups(self):
+        pokemon_groups = {}
+        self.api.get_player().get_inventory()
+        inventory_req = self.api.call()
+        inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']  
+        
+        for pokemon in inventory_dict:
+            try:
+                group_id = pokemon['inventory_item_data']['pokemon_data']['pokemon_id']
+                group_pokemon = pokemon['inventory_item_data']['pokemon_data']['id']
+                group_pokemon_cp = pokemon['inventory_item_data']['pokemon_data']['cp']
+                
+                if group_id not in pokemon_groups:
+                    pokemon_groups[group_id] = {}
+                     
+                pokemon_groups[group_id].update({group_pokemon_cp:group_pokemon})
+            except:
+                continue
+        return pokemon_groups
+            
+        
     def update_inventory(self):
         self.api.get_inventory()
         response = self.api.call()

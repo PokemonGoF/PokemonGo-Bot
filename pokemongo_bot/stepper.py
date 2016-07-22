@@ -48,8 +48,6 @@ class Stepper(object):
                 else:
                     self.api.set_position(*position)
                 print('[#] {}'.format(position))
-                with open('web/location.json', 'w') as outfile:
-                    json.dump({'lat': position[0], 'lng': position[1]}, outfile)
             if self.x == self.y or self.x < 0 and self.x == -self.y or self.x > 0 and self.x == 1 - self.y:
                 (self.dx, self.dy) = (-self.dy, self.dx)
 
@@ -73,11 +71,6 @@ class Stepper(object):
                 cLng = i2f(self.api._position_lng) + dLng + random_lat_long_delta()
                 self.api.set_position(cLat, cLng, alt)
                 self.bot.heartbeat()
-                # Passing Variables through a file
-                with open('web/location.json', 'w') as outfile:
-                    json.dump({'lat': cLat, 'lng': cLng}, outfile)
-
-
                 sleep(1) # sleep one second plus a random delta
                 self._work_at_position(i2f(self.api._position_lat), i2f(self.api._position_lng), alt, False)
 
@@ -89,10 +82,11 @@ class Stepper(object):
         cellid = self._get_cellid(lat, lng)
         timestamp = [0,] * len(cellid)
         self.api.get_map_objects(latitude=f2i(lat), longitude=f2i(lng), since_timestamp_ms=timestamp, cell_id=cellid)
-        with open('location.json', 'w') as outfile:
-            json.dump({'lat': lat, 'lng': lng}, outfile)
 
         response_dict = self.api.call()
+        # Passing Variables through a file
+        with open('web/location.json', 'w') as outfile:
+            json.dump({'lat': lat, 'lng': lng,'cells':response_dict['responses']['GET_MAP_OBJECTS']['map_cells']}, outfile)
         if response_dict and 'responses' in response_dict and \
             'GET_MAP_OBJECTS' in response_dict['responses'] and \
             'status' in response_dict['responses']['GET_MAP_OBJECTS'] and \
