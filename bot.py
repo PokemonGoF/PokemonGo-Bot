@@ -44,7 +44,7 @@ class PokemonGoBot(object):
         if self.noballs and self.ballstock[1] >= 50:
             print ('[#] Gathered 50/50 pokeballs, continue catching!')
             self.noballs = False
-        else if self.noballs and self.ballstock[1] < 50:
+        elif self.noballs and self.ballstock[1] < 50:
             print ('[#] Gathered ' + str(self.ballstock[1]) + '/50 pokeballs, continue farming...') 
         
         if self.config.spinstop or self.noballs:
