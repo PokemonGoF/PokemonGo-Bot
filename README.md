@@ -1,5 +1,7 @@
 # PokemonGo-Bot - a pokemon script can catch pokemon and spin the pokestop.
 
+[![Join the chat at https://gitter.im/PokemonGoF/PokemonGo-Bot](https://badges.gitter.im/PokemonGoF/PokemonGo-Bot.svg)](https://gitter.im/PokemonGoF/PokemonGo-Bot?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## Features:
  * Search Fort(Spin Pokestop)
  * Catch Pokemon
