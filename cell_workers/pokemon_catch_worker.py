@@ -12,7 +12,8 @@ class PokemonCatchWorker(object):
         self.pokemon_list = bot.pokemon_list
         self.item_list = bot.item_list
         self.inventory = bot.inventory
-
+        self.ballstock = bot.ballstock
+        self.noballs = bot.noballs
     def work(self):
         encounter_id = self.pokemon['encounter_id']
         spawnpoint_id = self.pokemon['spawnpoint_id']
@@ -51,20 +52,33 @@ class PokemonCatchWorker(object):
                                 print('[#] A Wild ' + str(pokemon_name) + ' appeared! [CP' + str(cp) + ']')
                         while(True):
                             id_list1 = self.count_pokemon_inventory()
-                            pokeball = 0
-                            for i in range(3):
-                                for item in self.inventory:
-                                    if item['item'] is not i:
-                                        continue
-                                    if item['count'] is 0:
-                                        continue
-                                    pokeball = i
-                                    item['count'] -= 1
-                                    break
+                            
+                            if self.ballstock[1] > 0:
+                                #DEBUG - Hide
+                                #print 'use Poke Ball'
+                                pokeball = 1
+                            else:
+                                #DEBUG - Hide
+                                #print 'no Poke Ball'
+                                pokeball = 0
+                                
+                            if cp > 200 and self.ballstock[2] > 0:
+                                #DEBUG - Hide
+                                #print 'use Great Ball'
+                                pokeball = 2
+                                
+                            if cp > 400 and self.ballstock[3] > 0:
+                                #DEBUG - Hide
+                                #print 'use Utra Ball'
+                                pokeball = 3
+
                             if pokeball is 0:
                                 print('[x] Out of pokeballs...')
                                 # TODO: Begin searching for pokestops.
+                                print('[x] Farming pokeballs...')
+                                self.noballs = True
                                 break
+                            
                             print('[x] Using ' + self.item_list[str(pokeball)] + '...')
                             self.api.catch_pokemon(encounter_id = encounter_id,
                                 pokeball = pokeball,
@@ -74,6 +88,10 @@ class PokemonCatchWorker(object):
                                 spin_modifier = 1,
                                 NormalizedHitPosition = 1)
                             response_dict = self.api.call()
+
+                            #DEBUG - Hide
+                            #print ('used ' + self.item_list[str(pokeball)] + '> [-1]')
+                            self.ballstock[pokeball] -= 1 
 
                             if response_dict and \
                                 'responses' in response_dict and \

@@ -18,6 +18,7 @@ class PokemonGoBot(object):
         self.config = config
         self.pokemon_list=json.load(open('pokemon.json'))
         self.item_list=json.load(open('items.json'))
+        self.noballs = False
 
     def start(self):
         self._setup_logging()
@@ -38,7 +39,12 @@ class PokemonGoBot(object):
             for pokemon in cell['wild_pokemons']:
                 worker = PokemonCatchWorker(pokemon, self)
                 worker.work()
-        if self.config.spinstop:
+                
+        # After [self.noballs = True] and first spining, check if 50 pokeballs was gathered, if so stop spining
+        if self.noballs and self.ballstock[1] >= 50:
+            self.noballs = False
+        
+        if self.config.spinstop or self.noballs:
             if 'forts' in cell:
                 # Only include those with a lat/long
                 forts = [fort for fort in cell['forts'] if 'latitude' in fort and 'type' in fort]
@@ -102,7 +108,9 @@ class PokemonGoBot(object):
                     balls_stock[3] = item['inventory_item_data']['item']['count']
             except:
                 continue
-
+        
+        self.ballstock = balls_stock
+        
         # get player pokemon[id] group by pokemon[pokemon_id]
         # ----------------------
         pokemon_stock = {}
@@ -173,6 +181,9 @@ class PokemonGoBot(object):
             print('[#] Pokemon Storage: ' + str(self.getInventoryCount('pokemon')) + '/' + str(player['poke_storage']))
             print('[#] Stardust: ' + str(stardust))
             print('[#] Pokecoins: ' + str(pokecoins))
+            print('[#] PokeBalls: ' + str(self.ballstock[1]))
+            print('[#] GreatBalls: ' + str(self.ballstock[2]))
+            print('[#] UltraBalls: ' + str(self.ballstock[3]))
             self.getPlayerInfo()
             print('[#]')
         except:
