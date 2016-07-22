@@ -213,7 +213,7 @@ class PokemonGoBot(object):
         if self.config.test:
             return
 
-        if self.config.save_location:
+        if self.config.location_cache:
             try:
                 #
                 # save location flag used to pull the last known location from the location.json
