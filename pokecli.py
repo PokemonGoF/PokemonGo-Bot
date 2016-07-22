@@ -99,11 +99,7 @@ def main():
     bot.start()
 
     while(True):
-        try:
-            bot.take_step()
-        except:
-            print('Oops, Exception, have a rest then.')
-            time.sleep(2)
+        bot.take_step()
 
 if __name__ == '__main__':
     main()
