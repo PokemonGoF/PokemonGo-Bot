@@ -284,5 +284,5 @@ class PokemonGoBot(object):
 
         if print_stats:
             for key in player_stats:
-                 print("[#] -- %s: %s" % (key, player_stats[key]))
+                 print('[#] -- {}: {}'.format(key, player_stats[key]))
         return json.dumps(player_stats, indent=4)
