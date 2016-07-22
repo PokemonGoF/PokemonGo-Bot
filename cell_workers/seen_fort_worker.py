@@ -3,7 +3,7 @@ import time
 from math import radians, sqrt, sin, cos, atan2
 from pgoapi.utilities import f2i, h2f
 from utils import distance
-
+import humanBehaviour
 class SeenFortWorker(object):
 
     def __init__(self, fort, bot):
@@ -33,14 +33,14 @@ class SeenFortWorker(object):
             self.api.player_update(latitude=lat,longitude=lng)
             response_dict = self.api.call()
             print('Arrived at Pokestop')
-            time.sleep(1.2)
+            humanBehaviour.sleep(1.2)
 
         self.api.fort_details(fort_id=self.fort['id'], latitude=position[0], longitude=position[1])
         response_dict = self.api.call()
         fort_details = response_dict['responses']['FORT_DETAILS']
         fort_name = fort_details['name'].encode('utf8', 'replace')
         print('Now at Pokestop: ' + fort_name + ' - Spinning...')
-        time.sleep(2)
+        humanBehaviour.sleep(2)
         self.api.fort_search(fort_id=self.fort['id'], fort_latitude=lat, fort_longitude=lng, player_latitude=f2i(position[0]), player_longitude=f2i(position[1]))
         response_dict = self.api.call()
         if 'responses' in response_dict and \
@@ -93,7 +93,7 @@ class SeenFortWorker(object):
             else:
                 print('may search too often, lets have a rest')
                 return 11
-        time.sleep(8)
+        humanBehaviour.sleep(8)
         return 0
 
     @staticmethod
