@@ -22,6 +22,12 @@
       var map;
       var marker;
       var loc = {}, cachedLoc = {};
+      var inventory = {};
+      var playerInfo = {};
+      var pokedex = {};
+      var bagPokemon = {};
+      var bagItems = {};
+      var bagCandy = {};
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 50.0830986, lng: 6.7613762},
@@ -49,13 +55,24 @@
       function updateTrainer() {
         loadJSON('location.json',
           function(data) { loc = data; map.panTo({lat: parseFloat(loc.lat), lng: parseFloat(loc.lng)}); },
-          function(xhr) { console.error(xhr);}
+          function(xhr) { console.error(xhr); }
         );
         
         if (loc.lat === cachedLoc.lat && loc.lng === cachedLoc.lng) return;
         cachedLoc = loc;
         console.log("Move Marker: Trainer - " + loc.lat + ", " + loc.lng);
         marker.setPosition({lat: parseFloat(loc.lat), lng: parseFloat(loc.lng)});
+      }
+      function updateInventory() {
+        loadJSON('info.json',
+          function(data) { 
+            inventory = data;
+            //playerInfo = filter('player_stats');
+            //pokedex = filter('pokedex_entry');
+            //bagPokemon = filter('pokemon_data');
+          },
+          function(xhr) { console.error(xhr); }
+        );
       }
       function loadJSON(path, success, error) {
         var xhr = new XMLHttpRequest();
