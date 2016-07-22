@@ -48,7 +48,7 @@ class PokemonCatchWorker(object):
                                 #print 'use Poke Ball'
                                 pokeball = 1
                                 
-                            if (cp > 300 or balls_stock[1] < 1 and balls_stock[2] > 20) and balls_stock[2] > 0:
+                            if (cp > 300 or (balls_stock[1] < 1 and balls_stock[2] > 20)) and balls_stock[2] > 0:
                                 #print 'use Great Ball'
                                 pokeball = 2
                                 
