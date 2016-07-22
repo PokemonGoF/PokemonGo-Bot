@@ -25,7 +25,7 @@ class Stepper(object):
     def walking_hook(own):
         print('walking hook')
     def take_step(self):
-        position=(self.origin_lat,self.origin_lon)
+        position=(self.origin_lat,self.origin_lon,0.0)
         self.api.set_position(*position)
         for step in range(self.steplimit2):
             #starting at 0 index
@@ -44,7 +44,7 @@ class Stepper(object):
                 (self.dx, self.dy) = (-self.dy, self.dx)
 
             (self.x, self.y) = (self.x + self.dx, self.y + self.dy)
-            
+
             # get map objects call
             # ----------------------
             timestamp = "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
