@@ -41,6 +41,7 @@ if sys.version_info >= (2, 7, 9):
 
 from pokemongo_bot import PokemonGoBot
 from pokemongo_bot.cell_workers.utils import print_green, print_yellow, print_red
+from server import PokemonGoServer
 
 def init_config():
     parser = argparse.ArgumentParser()
@@ -66,6 +67,7 @@ def init_config():
     parser.add_argument("--maxsteps",help="Set the steps around your initial location(DEFAULT 5 mean 25 cells around your location)",type=int,default=5)
     parser.add_argument("-d", "--debug", help="Debug Mode", action='store_true')
     parser.add_argument("-t", "--test", help="Only parse the specified location", action='store_true')
+    parser.add_argument("-o", "--port", help="Port to run the server on(DEFAULT 5000)", type=int,default=5000)
     parser.set_defaults(DEBUG=False, TEST=False)
     config = parser.parse_args()
 
@@ -100,8 +102,15 @@ def main():
 
     print_green('[x] Starting PokemonGo Bot....')
 
-    while(True):
-        bot.take_step()
+    pid = os.fork()
+
+    if pid == 0:
+        server = PokemonGoServer(bot, config, config.port)
+        server.start()
+    else:
+        while(True):
+            bot.take_step()
+
 
 if __name__ == '__main__':
     main()
