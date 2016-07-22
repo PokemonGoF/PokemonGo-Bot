@@ -22,8 +22,10 @@ class Stepper(object):
         self.steplimit2 = self.steplimit**2
         self.origin_lat = self.bot.position[0]
         self.origin_lon = self.bot.position[1]
-    def walking_hook(own,i):
-        print '\rwalking hook ',i,
+
+    def walking_hook(self, i):
+        print("[#] Walking hook - {}".format(i))
+
     def take_step(self):
         position=(self.origin_lat,self.origin_lon,0.0)
         for step in range(self.steplimit2):
