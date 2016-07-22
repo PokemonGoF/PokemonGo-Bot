@@ -86,15 +86,11 @@ def main():
     sys.stdout = codecs.getwriter('utf8')(sys.stdout)
     sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
-    # @eggins clean log
-    print('[x] Initializing PokemonGO Bot v1.0')
-    time.sleep(1)
-    print('[x] PokemonGo Bot [@PokemonGoF | @eggins | @crack00r | @ethervoid | /r/pokemongodev]')
-
     config = init_config()
     if not config:
         return
 
+    print('[x] PokemonGO Bot v1.0')
     print('[x] Configuration Initialized')
 
     bot = PokemonGoBot(config)
