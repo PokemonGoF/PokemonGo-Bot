@@ -33,7 +33,7 @@ class PokemonCatchWorker(object):
                                 pokemon_name=self.pokemon_list[int(pokemon_num)]['Name']
                                 print('A Wild ' + str(pokemon_name) + ' appeared! [CP' + str(cp) + ']')
                         while(True):
-							id_list1 = self.count_pokemon_inventory()
+                            id_list1 = self.count_pokemon_inventory()
                             pokeball = 0
                             for i in range(3):
                                 for item in self.inventory:
