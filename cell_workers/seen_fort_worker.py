@@ -1,7 +1,8 @@
 import json
 import time
 from math import radians, sqrt, sin, cos, atan2
-from pgoapi.utilities import f2i, h2f, distance
+from pgoapi.utilities import f2i, h2f
+from utils import distance
 
 class SeenFortWorker(object):
 
@@ -12,20 +13,19 @@ class SeenFortWorker(object):
         self.config = bot.config
         self.item_list = bot.item_list
         self.rest_time = 50
-    def walking_hook(own,i):
-        print '\ranother walking_hook ',i, 
+
     def work(self):
         lat = self.fort['latitude']
         lng = self.fort['longitude']
         fortID = self.fort['id']
-        dist = distance(self.position[0], self.position[1], lat, lng)
+        dist = self._distance(self.position[0], self.position[1], lat, lng)
 
         print('Found fort {} at distance {}m'.format(fortID, dist))
         if dist > 10:
             print('Need to move closer to Pokestop')
             position = (lat, lng, 0.0)
             if self.config.walk > 0:
-                self.api.walk(self.config.walk, *position,walking_hook=self.walking_hook)
+                self.api.walk(self.config.walk, *position)
             else:
                 self.api.set_position(*position)
             self.api.player_update(latitude=lat,longitude=lng)
