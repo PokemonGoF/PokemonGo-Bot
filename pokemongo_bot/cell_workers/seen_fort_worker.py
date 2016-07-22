@@ -27,7 +27,7 @@ class SeenFortWorker(object):
         dist = distance(self.position[0], self.position[1], lat, lng)
 
         print('[#] Found fort {} at distance {}m'.format(fortID, dist))
-        if dist > 10:
+        if dist > 3:
             print('[#] Need to move closer to Pokestop')
             position = (lat, lng, 0.0)
 
