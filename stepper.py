@@ -4,7 +4,7 @@ from s2sphere import CellId, LatLng
 from google.protobuf.internal import encoder
 
 from pgoapi.utilities import f2i, h2f
-from math import cos
+
 
 class Stepper(object):
 
@@ -18,7 +18,7 @@ class Stepper(object):
         self.y = 0
         self.dx = 0
         self.dy = -1
-        self.steplimit=10
+        self.steplimit=self.config.steps
         self.steplimit2 = self.steplimit**2
         self.origin_lat = self.bot.position[0]
         self.origin_lon = self.bot.position[1]
@@ -30,7 +30,7 @@ class Stepper(object):
             print('steplimit: {} x: {} y: {} pos: {} dx: {} dy {}'.format(self.steplimit2, self.x, self.y, self.pos, self.dx, self.dy))
             # Scan location math
             if -self.steplimit2 / 2 < self.x <= self.steplimit2 / 2 and -self.steplimit2 / 2 < self.y <= self.steplimit2 / 2:
-                position=(self.x * 0.0025 + self.origin_lat, self.y * 0.0025 / cos(self.origin_lat) + self.origin_lon, 0)
+                position=(self.x * 0.0025 + self.origin_lat, self.y * 0.0025 + self.origin_lon, 0)
                 if self.config.walk > 0:
                     self.api.walk(self.config.walk, *position)
                 else:
