@@ -102,13 +102,18 @@ def main():
     print_green('[x] PokemonGO Bot v1.0')
     print_yellow('[x] Configuration initialized')
 
-    bot = PokemonGoBot(config)
-    bot.start()
+    try:
+        bot = PokemonGoBot(config)
+        bot.start()
 
-    print_green('[x] Starting PokemonGo Bot....')
+        print_green('[x] Starting PokemonGo Bot....')
 
-    while(True):
-        bot.take_step()
+        while(True):
+            bot.take_step()
+
+    except KeyboardInterrupt:
+        print_red("\n"'[x]Exiting PokemonGo Bot')
+        #TODO Add number of pokemon catched, pokestops visited, highest CP pokemon catched, etc.
 
 if __name__ == '__main__':
     main()
