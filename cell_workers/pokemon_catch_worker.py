@@ -1,4 +1,5 @@
 import time
+from sets import Set
 
 class PokemonCatchWorker(object):
 
@@ -32,6 +33,7 @@ class PokemonCatchWorker(object):
                                 pokemon_name=self.pokemon_list[int(pokemon_num)]['Name']
                                 print('A Wild ' + str(pokemon_name) + ' appeared! [CP' + str(cp) + ']')
                         while(True):
+							id_list1 = self.count_pokemon_inventory()
                             pokeball = 0
                             for i in range(3):
                                 for item in self.inventory:
@@ -69,7 +71,9 @@ class PokemonCatchWorker(object):
                                 if status is 1:
                                     if cp < self.config.cp:
                                         print('Captured ' + str(pokemon_name) + '! [CP' + str(cp) + '] - exchanging for candy')
-                                        self._transfer_low_cp_pokemon(self.config.cp)
+                                        # self._transfer_low_cp_pokemon(self.config.cp)
+                                        id_list2 = self.count_pokemon_inventory()
+                                        self.transfer_pokemon(list(Set(id_list2) - Set(id_list1))[0])
                                     else:
                                         print('Captured ' + str(pokemon_name) + '! [CP' + str(cp) + ']')
                             break
@@ -97,3 +101,25 @@ class PokemonCatchWorker(object):
             self.api.release_pokemon(pokemon_id=pokemon['id'])
             response_dict = self.api.call()
             print('Exchanged successfuly!')
+
+    def transfer_pokemon(self, pid):
+        response_dict = self.api.call()
+        print('Exchanged successfuly!')
+
+    def count_pokemon_inventory(self):
+        self.api.get_inventory()
+        response_dict = self.api.call()
+        id_list = []
+        return self.counting_pokemon(response_dict, id_list)
+
+    def counting_pokemon(self, response_dict, id_list):
+        if 'responses' in response_dict:
+            if 'GET_INVENTORY' in response_dict['responses']:
+                if 'inventory_delta' in response_dict['responses']['GET_INVENTORY']:
+                    if 'inventory_items' in response_dict['responses']['GET_INVENTORY']['inventory_delta']:
+                        for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
+                            if 'inventory_item_data' in item:
+                                if 'pokemon' in item['inventory_item_data']:
+                                    pokemon = item['inventory_item_data']['pokemon']
+                                    id_list.append(pokemon['id'])
+        return id_list
