@@ -102,7 +102,8 @@ class PokemonGoBot(object):
 
         pokecoins = '0'
         stardust = '0'
-
+        balls_stock = self.pokeball_inventory();
+        
         if 'amount' in player['currencies'][0]:
             pokecoins = player['currencies'][0]['amount']
         if 'amount' in player['currencies'][1]:
@@ -115,6 +116,9 @@ class PokemonGoBot(object):
         print('[#] Pokemon Storage: {}/{}'.format(self.get_inventory_count('pokemon'), player['max_pokemon_storage']))
         print('[#] Stardust: {}'.format(stardust))
         print('[#] Pokecoins: {}'.format(pokecoins))
+        print('[#] PokeBalls: ' + str(balls_stock[1]))
+        print('[#] GreatBalls: ' + str(balls_stock[2]))
+        print('[#] UltraBalls: ' + str(balls_stock[3]))
         self.get_player_info()
 
         if self.config.firsttrans:
