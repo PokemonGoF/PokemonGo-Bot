@@ -92,6 +92,26 @@ class PokemonGoBot(object):
             print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['type']) + ': ' + str(currency_2)
         except:
             print('Exception during print player profile')
+        self.update_inventory();
+
+    def update_inventory(self):
+        self.api.get_inventory()
+        response = self.api.call()
+        self.inventory = list()
+        if 'responses' in response:
+            if 'GET_INVENTORY' in response['responses']:
+                if 'inventory_delta' in response['responses']['GET_INVENTORY']:
+                    if 'inventory_items' in response['responses']['GET_INVENTORY']['inventory_delta']:
+                        for item in response['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
+                            if not 'inventory_item_data' in item:
+                                continue
+                            if not 'item' in item['inventory_item_data']:
+                                continue
+                            if not 'item' in item['inventory_item_data']['item']:
+                                continue
+                            if not 'count' in item['inventory_item_data']['item']:
+                                continue
+                            self.inventory.append(item['inventory_item_data']['item'])
 
     def _set_starting_position(self):
         self.position = self._get_pos_by_name(self.config.location)
