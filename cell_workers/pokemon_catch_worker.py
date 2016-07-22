@@ -1,5 +1,6 @@
 import time
 from sets import Set
+from pgoapi.utilities import f2i, h2f, distance
 
 class PokemonCatchWorker(object):
 
@@ -17,6 +18,23 @@ class PokemonCatchWorker(object):
         spawnpoint_id = self.pokemon['spawnpoint_id']
         player_latitude = self.pokemon['latitude']
         player_longitude = self.pokemon['longitude']
+
+        dist = distance(self.position[0], self.position[1], player_latitude, player_longitude)
+
+        print('Found pokemon at distance {}m'.format(dist))
+        if dist > 10:
+            print('Need to move closer to Pokestop')
+            position = (player_latitude, player_longitude, 0.0)
+            if self.config.walk > 0:
+                self.api.walk(self.config.walk, *position,walking_hook=None)
+                print('Walked to Pokemon')
+            else:
+                self.api.set_position(*position)
+                print('Teleported to Pokemon')
+            self.api.player_update(latitude=player_latitude,longitude=player_longitude)
+            response_dict = self.api.call()
+            time.sleep(1.2)
+
         self.api.encounter(encounter_id=encounter_id,spawnpoint_id=spawnpoint_id,player_latitude=player_latitude,player_longitude=player_longitude)
         response_dict = self.api.call()
 
