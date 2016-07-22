@@ -96,14 +96,6 @@ def main():
         return
 
     if config.debug:
-        # log level for http request class
-        logging.getLogger("requests").setLevel(logging.WARNING)
-        # log level for main pgoapi class
-        logging.getLogger("pgoapi").setLevel(logging.INFO)
-        # log level for internal pgoapi class
-        logging.getLogger("rpc_api").setLevel(logging.INFO)
-
-    if config.debug:
         logging.getLogger("requests").setLevel(logging.DEBUG)
         logging.getLogger("pgoapi").setLevel(logging.DEBUG)
         logging.getLogger("rpc_api").setLevel(logging.DEBUG)

@@ -1,11 +1,11 @@
 import json
 import time
 
+from math import ceil
 from s2sphere import CellId, LatLng
 from google.protobuf.internal import encoder
 
 from human_behaviour import sleep, random_lat_long_delta
-
 from cell_workers.utils import distance, i2f
 
 from pgoapi.utilities import f2i, h2f
@@ -53,7 +53,8 @@ class Stepper(object):
 
             # get map objects call
             # ----------------------
-            timestamp = "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
+            # timestamp = "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
+            timestamp = 0
             cellid = self._get_cellid(position[0], position[1])
             self.api.get_map_objects(latitude=f2i(position[0]), longitude=f2i(position[1]), since_timestamp_ms=timestamp, cell_id=cellid)
             with open('location.json', 'w') as outfile:
@@ -73,21 +74,22 @@ class Stepper(object):
             sleep(10)
 
     def _walk_to(self, speed, lat, lng, alt):
-        dist = distance(float(self.api._position_lat), float(self.api._position_lng), lat, lng)
+        dist = distance(i2f(self.api._position_lat), i2f(self.api._position_lng), lat, lng)
         steps = (dist+0.0)/(speed+0.0) # may be rational number
         intSteps = int(steps)
         residuum = steps - intSteps
+        print '[#] Walking from ' + str((i2f(self.api._position_lat), i2f(self.api._position_lng))) + " to " + str(str((lat, lng))) + " for approx. " + str(ceil(steps)) + " seconds"
         if steps != 0:
             dLat = (lat - i2f(self.api._position_lat)) / steps
             dLng = (lng - i2f(self.api._position_lng)) / steps
 
             for i in range(intSteps):
                 self.api.set_position(i2f(self.api._position_lat) + dLat + random_lat_long_delta(), i2f(self.api._position_lng) + dLng + random_lat_long_delta(), alt)
-                self.api.heartbeat()
-                self.catchThem()
-                time.sleep(1 + self.random_sleep()) # sleep one second plus a random delta
+                self.bot.heartbeat()
+                sleep(1) # sleep one second plus a random delta
 
-            self.api.heartbeat()
+            self.api.set_position(lat, lng, alt)
+            self.bot.heartbeat()
         print "[#] Finished walking"
 
     def _get_cellid(self, lat, long):
