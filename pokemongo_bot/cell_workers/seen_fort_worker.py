@@ -2,7 +2,7 @@ import json
 import time
 from math import radians, sqrt, sin, cos, atan2
 from pgoapi.utilities import f2i, h2f
-from utils import distance
+from utils import distance, print_green, print_yellow, print_red
 from pokemongo_bot.human_behaviour import sleep
 
 

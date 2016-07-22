@@ -1,7 +1,7 @@
 import time
 from sets import Set
+from utils import distance, print_green, print_yellow, print_red
 from pokemongo_bot.human_behaviour import sleep
-
 
 class PokemonCatchWorker(object):
 
