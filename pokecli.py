@@ -106,11 +106,8 @@ def main():
             bot.take_step()
 
     except KeyboardInterrupt:
-        print_red("\n"'[x] Exiting PokemonGo Bot')
+        print_red("\n"'[x]Exiting PokemonGo Bot')
         #TODO Add number of pokemon catched, pokestops visited, highest CP pokemon catched, etc.
-    except (ValueError,KeyError) as e:
-        print(e)
-        print_yellow('[x] Servers are probably down. Try later')
 
 if __name__ == '__main__':
     main()
