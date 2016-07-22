@@ -21,16 +21,15 @@ class PokemonCatchWorker(object):
 
         dist = distance(self.position[0], self.position[1], player_latitude, player_longitude)
 
-        print('Found pokemon at distance {}m'.format(dist))
+        print('[x] Found pokemon at distance {}m'.format(dist))
         if dist > 10:
-            print('Need to move closer to Pokestop')
             position = (player_latitude, player_longitude, 0.0)
             if self.config.walk > 0:
                 self.api.walk(self.config.walk, *position,walking_hook=None)
-                print('Walked to Pokemon')
+                print('[x] Walked to Pokemon')
             else:
                 self.api.set_position(*position)
-                print('Teleported to Pokemon')
+                print('[x] Teleported to Pokemon')
             self.api.player_update(latitude=player_latitude,longitude=player_longitude)
             response_dict = self.api.call()
             time.sleep(1.2)
