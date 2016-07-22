@@ -198,7 +198,7 @@
       }, 5000);
       }
       function placeTrainer() {
-        loadJSON('location.json',
+        loadJSON('location.json?_=' + new Date().getTime(),
           function(data) { loc = data; map.setZoom(16); map.panTo({lat: parseFloat(loc.lat), lng: parseFloat(loc.lng)}); },
           function(xhr) { console.error(xhr);}
         );
@@ -210,11 +210,11 @@
         });
       }
       function updateTrainer() {
-        loadJSON('location.json',
+        loadJSON('location.json?_=' + new Date().getTime(),
           function(data) { loc = data; map.panTo({lat: parseFloat(loc.lat), lng: parseFloat(loc.lng)}); },
           function(xhr) { console.error(xhr); }
         );
-        
+
         if (loc.lat === cachedLoc.lat && loc.lng === cachedLoc.lng) return;
         cachedLoc = loc;
         console.log("Move Marker: Trainer - " + loc.lat + ", " + loc.lng);
@@ -247,7 +247,7 @@
       }
       function updateInventory() {
         loadJSON('info.json',
-          function(data) { 
+          function(data) {
             inventory = data;
             playerInfo = filter(inventory, 'player_stats');
             pokedex = filter(inventory, 'pokedex_entry');
