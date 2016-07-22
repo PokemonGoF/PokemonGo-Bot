@@ -206,8 +206,15 @@ class PokemonGoBot(object):
 
                                     nextlvlxp = (int(playerdata['next_level_xp']) - int(playerdata['experience']))
 
-                                    print('[#] -- Level: ' + str(playerdata['level']))
-                                    print('[#] -- Experience: ' + str(playerdata['experience']))
-                                    print('[#] -- Experience until next level: ' + str(nextlvlxp))
-                                    print('[#] -- Pokemon Captured: ' + str(playerdata['pokemons_captured']))
-                                    print('[#] -- Pokestops Visited: ' + str(playerdata['poke_stop_visits']))
+                                    if 'level' in playerdata:
+                                        print('[#] -- Level: ' + str(playerdata['level']))
+
+                                    if 'experience' in playerdata:
+                                        print('[#] -- Experience: ' + str(playerdata['experience']))
+                                        print('[#] -- Experience until next level: ' + str(nextlvlxp))
+
+                                    if 'pokemons_captured' in playerdata:
+                                        print('[#] -- Pokemon Captured: ' + str(playerdata['pokemons_captured']))
+
+                                    if 'poke_stop_visits' in playerdata:
+                                        print('[#] -- Pokestops Visited: ' + str(playerdata['poke_stop_visits']))
