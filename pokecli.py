@@ -39,6 +39,7 @@ if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
 from pokemongo_bot import PokemonGoBot
+from server import PokemonGoServer
 
 def init_config():
     parser = argparse.ArgumentParser()
@@ -96,8 +97,14 @@ def main():
     bot = PokemonGoBot(config)
     bot.start()
 
-    while(True):
-        bot.take_step()
+    pid = os.fork()
+
+    if pid == 0:
+        server = PokemonGoServer(bot, 5000)
+        server.start()
+    else:
+        while(True):
+            bot.take_step()
 
 if __name__ == '__main__':
     main()
