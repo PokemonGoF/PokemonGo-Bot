@@ -12,7 +12,7 @@ class PokemonCatchWorker(object):
         self.item_list = bot.item_list
         self.inventory = bot.inventory
         self.ballstock = bot.ballstock
-        
+        self.noballs = bot.noballs
     def work(self):
         encounter_id = self.pokemon['encounter_id']
         spawnpoint_id = self.pokemon['spawnpoint_id']
@@ -58,6 +58,8 @@ class PokemonCatchWorker(object):
                             if pokeball is 0:
                                 print('[x] Out of pokeballs...')
                                 # TODO: Begin searching for pokestops.
+                                print('[x] Farming pokeballs...')
+                                self.noballs = True
                                 break
                             
                             print('[x] Using ' + self.item_list[str(pokeball)] + '...')
