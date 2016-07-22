@@ -1,6 +1,7 @@
 import logging
 import googlemaps
 import json
+import random
 import threading
 import time
 from pgoapi import PGoApi
@@ -21,6 +22,7 @@ class PokemonGoBot(object):
         self._setup_logging()
         self._setup_api()
         self.stepper = Stepper(self)
+        random.seed()
 
     def take_step(self):
         self.stepper.take_step()

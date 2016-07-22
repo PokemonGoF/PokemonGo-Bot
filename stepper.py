@@ -30,7 +30,7 @@ class Stepper(object):
             print('steplimit: {} x: {} y: {} pos: {} dx: {} dy {}'.format(self.steplimit2, self.x, self.y, self.pos, self.dx, self.dy))
             # Scan location math
             if -self.steplimit2 / 2 < self.x <= self.steplimit2 / 2 and -self.steplimit2 / 2 < self.y <= self.steplimit2 / 2:
-                position=(self.x * 0.0025 + self.origin_lat, self.y * 0.0025 + self.origin_lon, 0)
+                position = (self.x * 0.0025 + self.origin_lat, self.y * 0.0025 + self.origin_lon, 0)
                 if self.config.walk > 0:
                     self.api.walk(self.config.walk, *position)
                 else:

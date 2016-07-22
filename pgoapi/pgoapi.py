@@ -26,6 +26,7 @@ Author: tjado <https://github.com/tejado>
 import logging
 import re
 import requests
+import random
 
 from utilities import f2i, h2f, i2f
 
@@ -118,16 +119,16 @@ class PGoApi:
         dist = self.distance(i2f(self._position_lat), i2f(self._position_lng), lat, lng)
         steps = (dist+0.0)/(speed+0.0) # may be rational number
         intSteps = int(steps)
-        residuum = steps-intSteps
+        residuum = steps - intSteps
         print "Walking from " + str((i2f(self._position_lat), i2f(self._position_lng))) + " to " + str(str((lat, lng))) + " for approx. " + str(ceil(steps)) + " seconds"
         if steps != 0:
             dLat = (lat - i2f(self._position_lat)) / steps
             dLng = (lng - i2f(self._position_lng)) / steps
 
             for i in range(intSteps):
-                self.set_position(i2f(self._position_lat) + dLat, i2f(self._position_lng) + dLng, alt)
+                self.set_position(i2f(self._position_lat) + dLat + self.random_lat_long(), i2f(self._position_lng) + dLng + self.random_lat_long(), alt)
                 self.heartbeat()
-                time.sleep(1) # sleep one second
+                time.sleep(1 + self.random_sleep()) # sleep one second plus a random delta
 
             self.set_position(lat, lng, alt)
             self.heartbeat()
@@ -210,3 +211,12 @@ class PGoApi:
         self.log.info('Login process completed')
 
         return True
+
+    def random_lat_long(self):
+        # Return random value from [-.000025, .000025]. Since 364,000 feet is equivalent to one degree of latitude, this
+        # should be 364,000 * .000025 = 9.1. So it returns between [-9.1, 9.1]
+        return ((random.random() * 0.00001) - 0.000005) * 5
+
+    def random_sleep(self):
+        # Returns a random value from [-.2, .2]. Used to randomize sleep time.
+        return (random.random() * 0.4) * -.2
