@@ -15,13 +15,14 @@ class SeenFortWorker(object):
         self.config = bot.config
         self.item_list = bot.item_list
         self.rest_time = 50
+        self.stepper = bot.stepper
 
     def work(self):
         lat = self.fort['latitude']
         lng = self.fort['longitude']
 
         fortID = self.fort['id']
-        dist = self._distance(self.position[0], self.position[1], lat, lng)
+        dist = distance(self.position[0], self.position[1], lat, lng)
 
         print('Found fort {} at distance {}m'.format(fortID, dist))
         if dist > 10:
@@ -29,13 +30,13 @@ class SeenFortWorker(object):
             position = (lat, lng, 0.0)
 
             if self.config.walk > 0:
-                self.api.walk(self.config.walk, *position)
+                self.stepper._walk_to(self.config.walk, *position)
             else:
                 self.api.set_position(*position)
             self.api.player_update(latitude=lat,longitude=lng)
             response_dict = self.api.call()
             print('Arrived at Pokestop')
-            sleep(1.2)
+            sleep(2)
 
         self.api.fort_details(fort_id=self.fort['id'], latitude=position[0], longitude=position[1])
         response_dict = self.api.call()
