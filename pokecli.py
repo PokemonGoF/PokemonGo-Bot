@@ -38,7 +38,7 @@ import codecs
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
-from bot import PokemonGoBot
+from pokemongo_bot import PokemonGoBot
 
 def init_config():
     parser = argparse.ArgumentParser()
