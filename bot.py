@@ -71,7 +71,7 @@ class PokemonGoBot(object):
 
         self._set_starting_position()
 
-        if not self.api.login(self.config.auth_service, self.config.username, self.config.password):
+        if not self.api.login(self.config.auth_service, str(self.config.username), str(self.config.password)):
             print('Login Error, server busy')
             exit(0)
 
