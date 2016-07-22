@@ -44,15 +44,10 @@ class PokemonGoBot(object):
             if 'forts' in cell:
                 # Only include those with a lat/long
                 forts = [fort for fort in cell['forts'] if 'latitude' in fort and 'type' in fort]
-
-                # Sort all by distance from current pos- eventually this should build graph & A* it
-                forts.sort(key=lambda x: distance(self.position[0], self.position[1], fort['latitude'], fort['longitude']))
-                for fort in cell['forts']:
-                    worker = SeenFortWorker(fort, self)
-                    hack_chain = worker.work()
-                    if hack_chain > 10:
-                        print('need a rest')
-                        break
+                forts.sort(key=lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']), reverse=True)
+                if (forts[0] is not None):
+                    worker = SeenFortWorker(forts[0], self)
+                    worker.work()
 
     def _setup_logging(self):
         self.log = logging.getLogger(__name__)
