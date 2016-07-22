@@ -236,7 +236,6 @@ class PokemonGoBot(object):
         # this will fail if the location.json isn't there or not valid.
         # Still runs if location is set.
         self.position = self._get_pos_by_name(self.config.location)
-        print self.position
         self.api.set_position(*self.position)
         print('')
         print(u'[x] Address found: {}'.format(self.config.location.decode('utf-8')))
