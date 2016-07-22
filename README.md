@@ -15,6 +15,7 @@ We use [Gitter](https://gitter.im) for a Github-integrated web chat. [Click here
 # To-Do:
 - [ ] Google Map API key setup
 - [x] Limit the step to farm specific area for pokestops
+- [ ] Pokemon transfer filter
 - [ ] Drop items when bag is full
 - [ ] Pokemon catch filter
 - [ ] Hatch eggs
