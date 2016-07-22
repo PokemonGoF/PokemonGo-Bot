@@ -18,7 +18,7 @@ class Stepper(object):
         self.y = 0
         self.dx = 0
         self.dy = -1
-        self.steplimit=self.config.steps
+        self.steplimit=10
         self.steplimit2 = self.steplimit**2
         self.origin_lat = self.bot.position[0]
         self.origin_lon = self.bot.position[1]
