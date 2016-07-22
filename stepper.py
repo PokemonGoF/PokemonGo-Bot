@@ -24,11 +24,6 @@ class Stepper(object):
         self.origin_lat = self.bot.position[0]
         self.origin_lon = self.bot.position[1]
 
-<<<<<<< HEAD
-    def walking_hook(own):
-        print('[>] walking...')
-=======
->>>>>>> 2ea9e607d5eaa7c46ce7c3620e63b85c85b487c9
     def take_step(self):
         position=(self.origin_lat,self.origin_lon,0.0)
 
