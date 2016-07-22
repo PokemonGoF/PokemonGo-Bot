@@ -21,7 +21,7 @@
     <script>
       var map;
       var marker;
-      var loc = {};
+      var loc = {}, cachedLoc = {};
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 50.0830986, lng: 6.7613762},
@@ -36,23 +36,26 @@
       }
       function placeTrainer() {
         loadJSON('location.json',
-          function(data) { loc = data; map.setZoom(16); map.panTo({lat: parseInt(loc.lat), lng: parseInt(loc.lng)}); },
+          function(data) { loc = data; map.setZoom(16); map.panTo({lat: parseFloat(loc.lat), lng: parseFloat(loc.lng)}); },
           function(xhr) { console.error(xhr);}
         );
         console.log("New Marker: Trainer - " + loc.lat + ", " + loc.lng);
         marker = new google.maps.Marker({
           map: map,
-          position: {lat: parseInt(loc.lat), lng: parseInt(loc.lng)},
+          position: {lat: parseFloat(loc.lat), lng: parseFloat(loc.lng)},
           icon: "image/trainer-icon.png"
         });
       }
       function updateTrainer() {
         loadJSON('location.json',
-          function(data) { loc = data; map.panTo({lat: parseInt(loc.lat), lng: parseInt(loc.lng)}); },
+          function(data) { loc = data; map.panTo({lat: parseFloat(loc.lat), lng: parseFloat(loc.lng)}); },
           function(xhr) { console.error(xhr);}
         );
+        
+        if (loc.lat === cachedLoc.lat && loc.lng === cachedLoc.lng) return;
+        cachedLoc = loc;
         console.log("Move Marker: Trainer - " + loc.lat + ", " + loc.lng);
-        marker.setPosition({lat: parseInt(loc.lat), lng: parseInt(loc.lng)});
+        marker.setPosition({lat: parseFloat(loc.lat), lng: parseFloat(loc.lng)});
       }
       function loadJSON(path, success, error) {
         var xhr = new XMLHttpRequest();
