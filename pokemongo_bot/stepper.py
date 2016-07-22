@@ -57,26 +57,17 @@ class Stepper(object):
         print "[#] Finished walking"
 
     def _work_at_position(self, lat, lng, alt, pokemon_only=False):
-<<<<<<< HEAD
-        with open('location.json', 'w') as outfile:
-            json.dump({'lat': lat, 'lng': lng}, outfile)
-
         position = (lat, lng, alt)
 
         neighbours = get_neighbours(position)
         timestamp = [0] * len(neighbours)
 
         response_dict = self.api.get_map_objects(latitude=f2i(lat), longitude=f2i(lng), since_timestamp_ms=timestamp, cell_id=neighbours).call()
-=======
-        cellid = self._get_cellid(lat, lng)
-        timestamp = [0,] * len(cellid)
-        self.api.get_map_objects(latitude=f2i(lat), longitude=f2i(lng), since_timestamp_ms=timestamp, cell_id=cellid)
 
-        response_dict = self.api.call()
         # Passing Variables through a file
         with open('web/location.json', 'w') as outfile:
             json.dump({'lat': lat, 'lng': lng,'cells':response_dict['responses']['GET_MAP_OBJECTS']['map_cells']}, outfile)
->>>>>>> upstream/dev
+
         if response_dict and 'responses' in response_dict and \
             'GET_MAP_OBJECTS' in response_dict['responses'] and \
             'status' in response_dict['responses']['GET_MAP_OBJECTS'] and \
