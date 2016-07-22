@@ -58,7 +58,7 @@ class PokemonGoBot(object):
                     worker = SeenFortWorker(fort, self)
                     hack_chain = worker.work()
                     if hack_chain > 10:
-                        print('need a rest')
+                        print('[-] Anti-ban resting....')
                         break
 
     def _setup_logging(self):
