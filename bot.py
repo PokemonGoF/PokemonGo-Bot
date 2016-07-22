@@ -102,7 +102,9 @@ class PokemonGoBot(object):
                     balls_stock[3] = item['inventory_item_data']['item']['count']
             except:
                 continue
-
+        
+        self.ballstock = balls_stock
+        
         # get player pokemon[id] group by pokemon[pokemon_id]
         # ----------------------
         pokemon_stock = {}
