@@ -76,6 +76,72 @@ class PokemonGoBot(object):
 
         # chain subrequests (methods) into one RPC call
 
+        # get player inventory call
+        # ----------------------
+        self.api.get_player().get_inventory()
+        
+        inventory_req = self.api.call()
+        
+        inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+        
+        # get player balls stock
+        # ----------------------    
+        balls_stock = {1:0,2:0,3:0,4:0}
+        
+        for item in inventory_dict:
+            try:
+                if item['inventory_item_data']['item']['item'] == 1:
+                    #print('Poke Ball count: ' + str(item['inventory_item_data']['item']['count']))
+                    balls_stock[1] = item['inventory_item_data']['item']['count']
+                if item['inventory_item_data']['item']['item'] == 2:
+                    #print('Great Ball count: ' + str(item['inventory_item_data']['item']['count']))
+                    balls_stock[2] = item['inventory_item_data']['item']['count']
+                if item['inventory_item_data']['item']['item'] == 3:
+                    #print('Ultra Ball count: ' + str(item['inventory_item_data']['item']['count']))
+                    balls_stock[3] = item['inventory_item_data']['item']['count']
+            except:
+                continue
+        
+        # get player pokemon[id] group by pokemon[pokemon_id]
+        # ----------------------            
+        pokemon_stock = {}
+        
+        for pokemon in inventory_dict:
+            try:
+                id1 = pokemon['inventory_item_data']['pokemon']['pokemon_id']
+                id2 = pokemon['inventory_item_data']['pokemon']['id']
+                id3 = pokemon['inventory_item_data']['pokemon']['cp']
+                #DEBUG - Hide
+                #print(str(id1))
+                if id1 not in pokemon_stock:
+                    pokemon_stock[id1] = {}
+                #DEBUG - Hide    
+                #print(str(id2))
+                pokemon_stock[id1].update({id3:id2})
+            except:
+                continue
+        
+        #DEBUG - Hide
+        #print pokemon_stock
+        
+        for id in pokemon_stock:
+            #DEBUG - Hide
+            #print id
+            sorted_cp = pokemon_stock[id].keys()
+            if len(sorted_cp) > 1:
+                sorted_cp.sort()
+                sorted_cp.reverse()
+                #DEBUG - Hide
+                #print sorted_cp
+                
+                #Hide for now. If Unhide transfer all poke duplicates exept most CP.
+                #for x in range(1, len(sorted_cp)):
+                    #DEBUG - Hide
+                    #print x
+                    #print pokemon_stock[id][sorted_cp[x]]
+                    #self.api.release_pokemon(pokemon_id=pokemon_stock[id][sorted_cp[x]])
+                    #response_dict = self.api.call()      
+
         # get player profile call
         # ----------------------
         self.api.get_player()
