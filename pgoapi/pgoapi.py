@@ -121,7 +121,8 @@ class PGoApi:
         steps = (dist+0.0)/(speed+0.0) # may be rational number
         intSteps = int(steps)
         residuum = steps - intSteps
-        print "Walking from " + str((i2f(self._position_lat), i2f(self._position_lng))) + " to " + str(str((lat, lng))) + " for approx. " + str(ceil(steps)) + " seconds"
+        print '[#] Walking from ' + str((i2f(self._position_lat), i2f(self._position_lng))) + " to " + str(str((lat, lng))) + " for approx. " + str(ceil(steps)) + " seconds"
+
         if steps != 0:
             dLat = (lat - i2f(self._position_lat)) / steps
             dLng = (lng - i2f(self._position_lng)) / steps
@@ -135,10 +136,10 @@ class PGoApi:
 
             self.set_position(lat, lng, alt)
             self.heartbeat()
-        print "[#] Finished walking"
+        print "[#] Finished walking to " + str(str((lat, lng)))
 
     def set_position(self, lat, lng, alt):
-        self.log.debug('Set Position - Lat: %s Long: %s Alt: %s', lat, lng, alt)
+        #self.log.debug('Set Position - Lat: %s Long: %s Alt: %s', lat, lng, alt)
 
         self._position_lat = f2i(lat)
         self._position_lng = f2i(lng)

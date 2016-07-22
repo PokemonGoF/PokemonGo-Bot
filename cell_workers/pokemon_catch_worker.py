@@ -31,7 +31,7 @@ class PokemonCatchWorker(object):
                                 cp=pokemon['pokemon_data']['cp']
                                 pokemon_num=int(pokemon['pokemon_data']['pokemon_id'])-1
                                 pokemon_name=self.pokemon_list[int(pokemon_num)]['Name']
-                                print('A Wild ' + str(pokemon_name) + ' appeared! [CP' + str(cp) + ']')
+                                print('[#] A Wild ' + str(pokemon_name) + ' appeared! [CP' + str(cp) + ']')
                         while(True):
                             id_list1 = self.count_pokemon_inventory()
                             pokeball = 0
@@ -45,9 +45,10 @@ class PokemonCatchWorker(object):
                                     item['count'] -= 1
                                     break
                             if pokeball is 0:
-                                print('Out of pokeballs...')
+                                print('[x] Out of pokeballs...')
+                                # TODO: Begin searching for pokestops.
                                 break
-                            print('Using ' + self.item_list[str(pokeball)] + '...')
+                            print('[x] Using ' + self.item_list[str(pokeball)] + '...')
                             self.api.catch_pokemon(encounter_id = encounter_id,
                                 pokeball = pokeball,
                                 normalized_reticle_size = 1.950,
@@ -70,12 +71,12 @@ class PokemonCatchWorker(object):
                                     print(str(pokemon_name) + ' vanished! :(')
                                 if status is 1:
                                     if cp < self.config.cp:
-                                        print('Captured ' + str(pokemon_name) + '! [CP' + str(cp) + '] - exchanging for candy')
-                                        # self._transfer_low_cp_pokemon(self.config.cp)
+                                        print('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + '] - exchanging for candy')
+                                        self._transfer_low_cp_pokemon(self.config.cp)
                                         id_list2 = self.count_pokemon_inventory()
                                         self.transfer_pokemon(list(Set(id_list2) - Set(id_list1))[0])
                                     else:
-                                        print('Captured ' + str(pokemon_name) + '! [CP' + str(cp) + ']')
+                                        print('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + ']')
                             break
         time.sleep(5)
 
@@ -100,11 +101,11 @@ class PokemonCatchWorker(object):
     	if 'cp' in pokemon and pokemon['cp'] < value:
     		self.api.release_pokemon(pokemon_id=pokemon['id'])
     		response_dict = self.api.call()
-    		print('Exchanged successfuly!{}'.format(response_dict))
+    		print('[x] Exchanged successfuly!')
 
     def transfer_pokemon(self, pid):
         response_dict = self.api.call()
-        print('Exchanged successfuly!')
+        print('[x] Exchanged successfuly!')
 
     def count_pokemon_inventory(self):
         self.api.get_inventory()

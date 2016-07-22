@@ -30,7 +30,7 @@ class PokemonGoBot(object):
 
     def work_on_cell(self, cell, position):
         if 'catchable_pokemons' in cell:
-            print 'Something rustles nearby!'
+            print '[#] Something rustles nearby!'
             for pokemon in cell['catchable_pokemons']:
                 worker = PokemonCatchWorker(pokemon, self)
                 worker.work()
@@ -97,24 +97,18 @@ class PokemonGoBot(object):
         if 'amount' in player['currency'][1]:
             stardust = player['currency'][1]['amount']
 
-        #try:
-        if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][0]:
-            currency_1=response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['amount']
-        if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][1]:
-            currency_2=response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['amount']
-
-        print('[#]')
-        print('[#] Username: ' + str(player['username']))
-        print('[#] Acccount Creation: ' + str(creation_date))
-        print('[#] Bag Storage: ' + str(self.getInventoryCount('item')) + '/' + str(player['item_storage']))
-        print('[#] Pokemon Storage: ' + str(self.getInventoryCount('pokemon')) + '/' + str(player['poke_storage']))
-        print('[#] Stardust: ' + str(stardust))
-        print('[#] Pokecoins: ' + str(pokecoins))
-        self.getPlayerInfo()
-        print('[#]')
-
-        # except:
-        #     print('Exception during print player profile')
+        try:
+            print('[#]')
+            print('[#] Username: ' + str(player['username']))
+            print('[#] Acccount Creation: ' + str(creation_date))
+            print('[#] Bag Storage: ' + str(self.getInventoryCount('item')) + '/' + str(player['item_storage']))
+            print('[#] Pokemon Storage: ' + str(self.getInventoryCount('pokemon')) + '/' + str(player['poke_storage']))
+            print('[#] Stardust: ' + str(stardust))
+            print('[#] Pokecoins: ' + str(pokecoins))
+            self.getPlayerInfo()
+            print('[#]')
+        except:
+             print('Exception during print player profile')
         self.update_inventory();
 
     def update_inventory(self):
