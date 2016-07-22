@@ -108,7 +108,7 @@ class PokemonCatchWorker(object):
                                 if status is 1:
                                     self.api.get_inventory()
                                     response_dict = self.api.call()
-                                    if self.config.smart_catch:
+                                    if self.config.cp == "smart":
                                         id_cp_tuples = self.get_id_cp_tuples_for_pokemonid(pokemon['pokemon_data']['pokemon_id'],response_dict)
                                         prev_id, prev_cp = (0,0)
                                         for id_cp in id_cp_tuples:
@@ -118,8 +118,12 @@ class PokemonCatchWorker(object):
                                             elif prev_id != 0:
                                                 self.transfer_pokemon(prev_id)
                                             prev_id,prev_cp = id_cp
+                                    try:
+                                        int_cp = int(self.config.cp)
+                                    except Exception, e:
+                                        int_cp = 0
 
-                                    if cp < self.config.cp:
+                                    if cp < int_cp:
                                         print('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + '] - exchanging for candy')
                                         id_list2 = self.count_pokemon_inventory()
                                         try:
