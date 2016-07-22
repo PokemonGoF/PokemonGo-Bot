@@ -24,19 +24,21 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 Author: tjado <https://github.com/tejado>
 """
 
+## system imports
 from argparse import ArgumentParser
+from codecs import getwriter
 from json import load as read_json
 from os.path import isfile
 from time import sleep
-from codecs import getwriter
 import logging
 import ssl
 import sys
 
+## user imports
+from bot import PokemonGoBot
+
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
-
-from bot import PokemonGoBot
 
 def init_config():
     parser = ArgumentParser()
