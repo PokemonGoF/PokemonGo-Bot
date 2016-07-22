@@ -77,7 +77,7 @@ class PokemonCatchWorker(object):
                                     print_red('[x] Oh no! ' + str(pokemon_name) + ' vanished! :(')
                                 if status is 1:
                                     if cp < self.config.cp:
-                                        print_green('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + '] - exchanging for candy')
+                                        print_green('[x] Captured ' + str(pokemon_name) + '! [CP ' + str(cp) + '] - exchanging for candy')
                                         id_list2 = self.count_pokemon_inventory()
                                         # Transfering Pokemon
 
@@ -85,7 +85,7 @@ class PokemonCatchWorker(object):
                                         self.transfer_pokemon(list(Set(id_list2) - Set(id_list1)))
                                         print_green('[#] ' + str(pokemon_name) + ' has been exchanged for candy!')
                                     else:
-                                        print_green('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + ']')
+                                        print_green('[x] Captured ' + str(pokemon_name) + '! [CP ' + str(cp) + ']')
                             break
         time.sleep(5)
 
