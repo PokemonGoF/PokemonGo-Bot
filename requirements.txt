@@ -1,4 +1,4 @@
--e git://github.com/tejado/pgoapi.git@1f25e907f3e5f1b603330e71041e1ad7bee7580f#egg=pgoapi
+#-e git://github.com/tejado/pgoapi.git@1f25e907f3e5f1b603330e71041e1ad7bee7580f#egg=pgoapi
 geopy==1.11.0
 protobuf==3.0.0b4
 requests==2.10.0
@@ -6,4 +6,6 @@ s2sphere==0.2.4
 gpsoauth==0.3.0
 protobuf-to-dict==0.1.0
 googlemaps==2.4.4
+Flask==0.11.1
+Flask-Classy==0.6.10
 colorama==0.3.7
