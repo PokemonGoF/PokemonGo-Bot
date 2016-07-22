@@ -7,7 +7,6 @@ from random import random, randint
 def sleep(seconds, delta=0.3):
     jitter = ceil(delta * seconds)
     sleep_time = randint(int(seconds-jitter), int(seconds+jitter))
-    print('sleep for '+ str(sleep_time) +' seconds...')
     time.sleep(sleep_time)
 
 def random_lat_long_delta():
