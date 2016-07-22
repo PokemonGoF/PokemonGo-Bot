@@ -132,7 +132,7 @@
           if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
               if (success)
-                success(JSON.parse(xhr.responseText));
+                success(JSON.parse(xhr.responseText.replace(/\bNaN\b/g, "null")));
             } else {
               if (error)
               error(xhr);
