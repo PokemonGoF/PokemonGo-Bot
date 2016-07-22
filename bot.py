@@ -45,7 +45,7 @@ class PokemonGoBot(object):
             '[#] Gathered 50/50 pokeballs, continue catching!'
             self.noballs = False
         else if self.noballs and self.ballstock[1] < 50:
-            '[#] Gathered ' + self.ballstock[1] + '/50 pokeballs, continue farming...'  
+            '[#] Gathered ' + str(self.ballstock[1]) + '/50 pokeballs, continue farming...'  
         
         if self.config.spinstop or self.noballs:
             if 'forts' in cell:
