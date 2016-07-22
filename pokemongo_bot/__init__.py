@@ -34,7 +34,7 @@ class PokemonGoBot(object):
         if (self.config.mode == "all" or self.config.mode == "poke") and 'catchable_pokemons' in cell:
             print '[#] Something rustles nearby!'
             for pokemon in cell['catchable_pokemons']:
-                with open('web/info.json', 'w') as outfile:
+                with open('web/catchable.json', 'w') as outfile:
                     json.dump(pokemon, outfile)
                 worker = PokemonCatchWorker(pokemon, self)
                 worker.work()
