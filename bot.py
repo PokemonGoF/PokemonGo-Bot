@@ -175,6 +175,9 @@ class PokemonGoBot(object):
             print('[#] Pokemon Storage: ' + str(self.getInventoryCount('pokemon')) + '/' + str(player['poke_storage']))
             print('[#] Stardust: ' + str(stardust))
             print('[#] Pokecoins: ' + str(pokecoins))
+            print('[#] PokeBalls: ' + str(self.ballstock[1]))
+            print('[#] GreatBalls: ' + str(self.ballstock[2]))
+            print('[#] UltraBalls: ' + str(self.ballstock[3]))
             self.getPlayerInfo()
             print('[#]')
         except:
