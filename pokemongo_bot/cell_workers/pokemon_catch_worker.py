@@ -77,12 +77,18 @@ class PokemonCatchWorker(object):
                                     if cp < self.config.cp:
                                         print_green('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + '] - exchanging for candy')
                                         id_list2 = self.count_pokemon_inventory()
+<<<<<<< 56a286410e20cbe10e1ab3e7c4ad2bf77e33d370
                                         try:
                                             # Transfering Pokemon
                                             self.transfer_pokemon(list(Set(id_list2) - Set(id_list1))[0])
                                         except:
                                             print_red('[###] Your inventory is full! Please manually delete some items.')
                                             break
+=======
+                                        # Transfering Pokemon
+                                        self.transfer_pokemon(list(Set(id_list2) - Set(id_list1))[0])
+                                        
+>>>>>>> reverting test code before i left - this will throw errors for people to look at.
                                     else:
                                         print_green('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + ']')
                             break
