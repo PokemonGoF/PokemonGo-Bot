@@ -40,7 +40,7 @@ class SeenFortWorker(object):
             print('[#] Arrived at Pokestop')
             sleep(2)
 
-        self.api.fort_details(fort_id=self.fort['id'], latitude=position[0], longitude=position[1])
+        self.api.fort_details(fort_id=self.fort['id'], latitude=lat, longitude=lng)
         response_dict = self.api.call()
         fort_details = response_dict['responses']['FORT_DETAILS']
         fort_name = fort_details['name'].encode('utf8', 'replace')
