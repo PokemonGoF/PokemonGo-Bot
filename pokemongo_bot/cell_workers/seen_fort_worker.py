@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
+
 import json
 import time
 from math import radians, sqrt, sin, cos, atan2
 from pgoapi.utilities import f2i, h2f
-from utils import distance
-from human_behaviour import sleep
+from utils import distance, print_green, print_yellow, print_red
+from pokemongo_bot.human_behaviour import sleep
 
 
 class SeenFortWorker(object):
@@ -15,13 +17,14 @@ class SeenFortWorker(object):
         self.config = bot.config
         self.item_list = bot.item_list
         self.rest_time = 50
+        self.stepper = bot.stepper
 
     def work(self):
         lat = self.fort['latitude']
         lng = self.fort['longitude']
 
         fortID = self.fort['id']
-        dist = self._distance(self.position[0], self.position[1], lat, lng)
+        dist = distance(self.position[0], self.position[1], lat, lng)
 
         print('Found fort {} at distance {}m'.format(fortID, dist))
         if dist > 10:
@@ -29,19 +32,19 @@ class SeenFortWorker(object):
             position = (lat, lng, 0.0)
 
             if self.config.walk > 0:
-                self.api.walk(self.config.walk, *position)
+                self.stepper._walk_to(self.config.walk, *position)
             else:
                 self.api.set_position(*position)
             self.api.player_update(latitude=lat,longitude=lng)
             response_dict = self.api.call()
             print('Arrived at Pokestop')
-            sleep(1.2)
+            sleep(2)
 
         self.api.fort_details(fort_id=self.fort['id'], latitude=position[0], longitude=position[1])
         response_dict = self.api.call()
         fort_details = response_dict['responses']['FORT_DETAILS']
         fort_name = fort_details['name'].encode('utf8', 'replace')
-        print('Now at Pokestop: ' + fort_name + ' - Spinning...')
+        print_yellow('Now at Pokestop: ' + fort_name + ' - Spinning...')
         sleep(2)
         self.api.fort_search(fort_id=self.fort['id'], fort_latitude=lat, fort_longitude=lng, player_latitude=f2i(position[0]), player_longitude=f2i(position[1]))
         response_dict = self.api.call()
@@ -50,19 +53,27 @@ class SeenFortWorker(object):
 
             spin_details = response_dict['responses']['FORT_SEARCH']
             if spin_details['result'] == 1:
-                print("- Loot: ")
+                print_green("- Loot: ")
                 experience_awarded = spin_details.get('experience_awarded', False)
                 if experience_awarded:
-                    print("- " + str(experience_awarded) + " xp")
+                    print_green("- " + str(experience_awarded) + " xp")
 
                 items_awarded = spin_details.get('items_awarded', False)
                 if items_awarded:
+                    tmp_count_items = {}
                     for item in items_awarded:
-                        item_id = str(item['item_id'])
+                        item_id = item['item_id']
+                        if not item_id in tmp_count_items:
+                            tmp_count_items[item_id] = item['item_count']
+                        else:
+                            tmp_count_items[item_id] += item['item_count']
+
+                    for item_id, item_count in tmp_count_items.iteritems():
+                        item_id = str(item_id)
                         item_name = self.item_list[item_id]
-                        print("- " + str(item['item_count']) + "x " + item_name)
+                        print_green("- " + str(item['item_count']) + "x " + item_name)
                 else:
-                    print("- Nothing found.")
+                    print_yellow("- Nothing found.")
 
                 pokestop_cooldown = spin_details.get('cooldown_complete_timestamp_ms')
                 if pokestop_cooldown:
@@ -87,13 +98,13 @@ class SeenFortWorker(object):
                     seconds_since_epoch = time.time()
                     print '- PokeStop on cooldown. Time left: %s seconds.' % str((pokestop_cooldown/1000) - seconds_since_epoch)
             elif spin_details['result'] == 4:
-                print("- Inventory is full!")
+                print_red("- Inventory is full!")
 
             if 'chain_hack_sequence_number' in response_dict['responses']['FORT_SEARCH']:
                 time.sleep(2)
                 return response_dict['responses']['FORT_SEARCH']['chain_hack_sequence_number']
             else:
-                print('may search too often, lets have a rest')
+                print_yellow('may search too often, lets have a rest')
                 return 11
         sleep(8)
         return 0

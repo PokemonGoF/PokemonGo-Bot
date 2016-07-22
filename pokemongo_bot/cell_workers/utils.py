@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
+
 import struct
 from math import cos, asin, sqrt
-
 
 def distance(lat1, lon1, lat2, lon2):
     p = 0.017453292519943295
@@ -9,3 +10,12 @@ def distance(lat1, lon1, lat2, lon2):
 
 def i2f(int):
     return struct.unpack('<d', struct.pack('<Q', int))[0]
+
+def print_green(message):
+    print(u'\033[92m' + message.decode('utf-8') + '\033[0m');
+
+def print_yellow(message):
+    print(u'\033[93m' + message.decode('utf-8') + '\033[0m');
+
+def print_red(message):
+    print(u'\033[91m' + message.decode('utf-8') + '\033[0m');

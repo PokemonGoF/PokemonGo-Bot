@@ -114,6 +114,8 @@ Quick Tip: When using this script, use a Lucky egg to double the XP for 30 mins.
  * geopy
  * s2sphere
  * googlemaps
+ * pgoapi
+To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg=pgoapi` 
 
 
 ## Contributors (Don't forget add yours here when you create PR:)

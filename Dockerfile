@@ -3,7 +3,8 @@ ENV AUTH_SERVICE ""
 ENV USERNAME ""
 ENV PASSWORD ""
 ENV LOCATION ""
+ENV WALK ""
 ENV CP ""
 
-CMD python pokecli.py -a $AUTH_SERVICE -u $USERNAME -p $PASSWORD -l $LOCATION -s -c $CP
+CMD python pokecli.py -a $AUTH_SERVICE -u $USERNAME -p $PASSWORD -l $LOCATION -w $WALK -s -c $CP
 

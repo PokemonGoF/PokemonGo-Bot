@@ -1,9 +1,12 @@
+# -*- coding: utf-8 -*-
+
 import time
+from math import ceil
 from random import random, randint
 
-def sleep(seconds):
-    jitter = seconds * 1000 / 10
-    sleep_time = randint( seconds-jitter ,seconds+jitter)
+def sleep(seconds, delta=0.3):
+    jitter = ceil(delta * seconds)
+    sleep_time = randint(int(seconds-jitter), int(seconds+jitter))
     time.sleep(sleep_time)
 
 def random_lat_long_delta():

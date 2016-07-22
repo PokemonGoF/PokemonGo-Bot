@@ -1,11 +1,13 @@
+# -*- coding: utf-8 -*-
+
 import json
 import time
 
+from math import ceil
 from s2sphere import CellId, LatLng
 from google.protobuf.internal import encoder
 
 from human_behaviour import sleep, random_lat_long_delta
-
 from cell_workers.utils import distance, i2f
 
 from pgoapi.utilities import f2i, h2f
@@ -45,7 +47,9 @@ class Stepper(object):
                     self._walk_to(self.config.walk, *position)
                 else:
                     self.api.set_position(*position)
-                print(position)
+                print('[#] {}'.format(position))
+                with open('web/location.json', 'w') as outfile:
+                    json.dump({'lat': position[0], 'lng': position[1]}, outfile)
             if self.x == self.y or self.x < 0 and self.x == -self.y or self.x > 0 and self.x == 1 - self.y:
                 (self.dx, self.dy) = (-self.dy, self.dx)
 
@@ -53,56 +57,57 @@ class Stepper(object):
 
             # get map objects call
             # ----------------------
-            timestamp = "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
+
             cellid = self._get_cellid(position[0], position[1])
+            timestamp = [0,] * len(cellid)
             self.api.get_map_objects(latitude=f2i(position[0]), longitude=f2i(position[1]), since_timestamp_ms=timestamp, cell_id=cellid)
-            with open('location.json', 'w') as outfile:
-                json.dump({'lat': position[0], 'lng': position[1]}, outfile)
 
             response_dict = self.api.call()
-            #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
             if response_dict and 'responses' in response_dict and \
                 'GET_MAP_OBJECTS' in response_dict['responses'] and \
                 'status' in response_dict['responses']['GET_MAP_OBJECTS'] and \
                 response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
-                #print('got the maps')
                 map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
-                #print('map_cells are {}'.format(len(map_cells)))
                 for cell in map_cells:
                     self.bot.work_on_cell(cell,position)
             sleep(10)
 
     def _walk_to(self, speed, lat, lng, alt):
-        dist = distance(float(self.api._position_lat), float(self.api._position_lng), lat, lng)
+        dist = distance(i2f(self.api._position_lat), i2f(self.api._position_lng), lat, lng)
         steps = (dist+0.0)/(speed+0.0) # may be rational number
         intSteps = int(steps)
         residuum = steps - intSteps
+        print '[#] Walking from ' + str((i2f(self.api._position_lat), i2f(self.api._position_lng))) + " to " + str(str((lat, lng))) + " for approx. " + str(ceil(steps)) + " seconds"
         if steps != 0:
             dLat = (lat - i2f(self.api._position_lat)) / steps
             dLng = (lng - i2f(self.api._position_lng)) / steps
 
             for i in range(intSteps):
-                self.api.set_position(i2f(self.api._position_lat) + dLat + random_lat_long_delta(), i2f(self.api._position_lng) + dLng + random_lat_long_delta(), alt)
-                self.api.heartbeat()
-                self.catchThem()
-                time.sleep(1 + self.random_sleep()) # sleep one second plus a random delta
+                cLat = i2f(self.api._position_lat) + dLat + random_lat_long_delta()
+                cLng = i2f(self.api._position_lng) + dLng + random_lat_long_delta()
+                self.api.set_position(cLat, cLng, alt)
+                self.bot.heartbeat()
+                with open('web/location.json', 'w') as outfile:
+                    json.dump({'lat': cLat, 'lng': cLng}, outfile)
+                sleep(1) # sleep one second plus a random delta
 
-            self.api.heartbeat()
+            self.api.set_position(lat, lng, alt)
+            self.bot.heartbeat()
         print "[#] Finished walking"
 
-    def _get_cellid(self, lat, long):
+    def _get_cellid(self, lat, long, radius=10):
         origin = CellId.from_lat_lng(LatLng.from_degrees(lat, long)).parent(15)
         walk = [origin.id()]
 
         # 10 before and 10 after
         next = origin.next()
         prev = origin.prev()
-        for i in range(10):
+        for i in range(radius):
             walk.append(prev.id())
             walk.append(next.id())
             next = next.next()
             prev = prev.prev()
-        return ''.join(map(self._encode, sorted(walk)))
+        return sorted(walk)
 
     def _encode(self, cellid):
         output = []
