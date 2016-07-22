@@ -93,7 +93,8 @@ class PGoApi:
 
     def list_curr_methods(self):
         for i in self._req_method_list:
-            print("{} ({})".format(RpcEnum.RequestMethod.Name(i),i))
+            print ''
+            #print("{} ({})".format(RpcEnum.RequestMethod.Name(i),i))
 
     def set_logger(self, logger):
         self._ = logger or logging.getLogger(__name__)
@@ -132,7 +133,7 @@ class PGoApi:
 
             self.set_position(lat, lng, alt)
             self.heartbeat()
-        print "Finished walking"
+        print "[#] Finished walking"
 
     def set_position(self, lat, lng, alt):
         self.log.debug('Set Position - Lat: %s Long: %s Alt: %s', lat, lng, alt)

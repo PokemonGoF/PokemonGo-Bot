@@ -4,6 +4,7 @@ import json
 import random
 import threading
 import time
+import datetime
 from pgoapi import PGoApi
 from pgoapi.utilities import f2i, h2f
 from cell_workers import PokemonCatchWorker, SeenFortWorker
@@ -82,21 +83,38 @@ class PokemonGoBot(object):
         #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
         currency_1="0"
         currency_2="0"
-        try:
-            if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][0]:
-                currency_1=response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['amount']
-            if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][1]:
-                currency_2=response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['amount']
-            print 'Profile:'
-            print '    Username: ' + str(response_dict['responses']['GET_PLAYER']['profile']['username'])
-            print '    Bag size: ' + str(response_dict['responses']['GET_PLAYER']['profile']['item_storage'])
-            print '    Pokemon Storage Size: ' + str(response_dict['responses']['GET_PLAYER']['profile']['poke_storage'])
-            print '    Account Creation: ' + str(response_dict['responses']['GET_PLAYER']['profile']['creation_time'])
-            print '    Currency: '
-            print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['type']) + ': ' + str(currency_1)
-            print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['type']) + ': ' + str(currency_2)
-        except:
-            print('Exception during print player profile')
+
+        player = response_dict['responses']['GET_PLAYER']['profile']
+
+        ### @@@ TODO: Convert this to d/m/Y H:M:S
+        creation_date = datetime.datetime.fromtimestamp(player['creation_time'] / 1e3)
+        
+        pokecoins = '0'
+        stardust = '0'
+
+        if 'amount' in player['currency'][0]:
+            pokecoins = player['currency'][0]['amount']
+        if 'amount' in player['currency'][1]:
+            stardust = player['currency'][1]['amount']
+
+        #try:
+        if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][0]:
+            currency_1=response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['amount']
+        if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][1]:
+            currency_2=response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['amount']
+
+        print('[#]')
+        print('[#] Username: ' + str(player['username']))
+        print('[#] Acccount Creation: ' + str(creation_date))
+        print('[#] Bag Storage: ' + str(self.getInventoryCount('item')) + '/' + str(player['item_storage']))
+        print('[#] Pokemon Storage: ' + str(self.getInventoryCount('pokemon')) + '/' + str(player['poke_storage']))
+        print('[#] Stardust: ' + str(stardust))
+        print('[#] Pokecoins: ' + str(pokecoins))
+        self.getPlayerInfo()
+        print('[#]')
+
+        # except:
+        #     print('Exception during print player profile')
         self.update_inventory();
 
     def update_inventory(self):
@@ -121,7 +139,10 @@ class PokemonGoBot(object):
     def _set_starting_position(self):
         self.position = self._get_pos_by_name(self.config.location)
         self.api.set_position(*self.position)
-        print(self.position)
+
+        print('[x] Address found: ' + self.config.location)
+        print('[x] Position in-game set as: ' + str(self.position))
+
         if self.config.test:
             return
 
@@ -129,7 +150,64 @@ class PokemonGoBot(object):
         geolocator = GoogleV3(api_key=self.config.gmapkey)
         loc = geolocator.geocode(location_name)
 
-        self.log.info('Your given location: %s', loc.address.encode('utf-8'))
-        self.log.info('lat/long/alt: %s %s %s', loc.latitude, loc.longitude, loc.altitude)
+        print
+
+        #self.log.info('Your given location: %s', loc.address.encode('utf-8'))
+        #self.log.info('lat/long/alt: %s %s %s', loc.latitude, loc.longitude, loc.altitude)
 
         return (loc.latitude, loc.longitude, loc.altitude)
+
+
+    ###########################################    
+    ## @eggins pretty print functions
+    ###########################################
+
+    ## - Get count of inventory items and return the output for each
+    def getInventoryCount(self, what):
+        # Get contents of inventory
+        self.api.get_inventory()
+        response_dict = self.api.call()
+        if 'responses' in response_dict:
+            if 'GET_INVENTORY' in response_dict['responses']:
+                if 'inventory_delta' in response_dict['responses']['GET_INVENTORY']:
+                    if 'inventory_items' in response_dict['responses']['GET_INVENTORY']['inventory_delta']:
+                        pokecount = 0
+                        itemcount = 1
+                        for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
+                            #print('item {}'.format(item))
+                            if 'inventory_item_data' in item:
+                                if 'pokemon' in item['inventory_item_data']:
+                                    pokecount = pokecount + 1
+                                if 'item' in item['inventory_item_data']:
+                                    if 'count' in item['inventory_item_data']['item']:
+                                        itemcount = itemcount + item['inventory_item_data']['item']['count']
+        if 'pokemon' in what:
+            return pokecount
+        if 'item' in what:
+            return itemcount
+        return '0'
+
+    ## - Get more player information
+    def getPlayerInfo(self):
+        # Get contents of inventory
+        self.api.get_inventory()
+        response_dict = self.api.call()
+        if 'responses' in response_dict:
+            if 'GET_INVENTORY' in response_dict['responses']:
+                if 'inventory_delta' in response_dict['responses']['GET_INVENTORY']:
+                    if 'inventory_items' in response_dict['responses']['GET_INVENTORY']['inventory_delta']:
+                        pokecount = 0
+                        itemcount = 1
+                        for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
+                            #print('item {}'.format(item))
+                            if 'inventory_item_data' in item:
+                                if 'player_stats' in item['inventory_item_data']:
+                                    playerdata = item['inventory_item_data']['player_stats']
+
+                                    nextlvlxp = (int(playerdata['next_level_xp']) - int(playerdata['experience']))
+
+                                    print('[#] -- Level: ' + str(playerdata['level']))
+                                    print('[#] -- Experience: ' + str(playerdata['experience']))
+                                    print('[#] -- Experience until next level: ' + str(nextlvlxp))
+                                    print('[#] -- Pokemon Captured: ' + str(playerdata['pokemons_captured']))
+                                    print('[#] -- Pokestops Visited: ' + str(playerdata['poke_stop_visits']))
