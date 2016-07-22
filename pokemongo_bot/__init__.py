@@ -89,6 +89,8 @@ class PokemonGoBot(object):
         inventory_req = self.api.call()
 
         inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+        with open('web/info.json', 'w') as outfile:
+            json.dump(inventory_dict, outfile)
 
         # get player balls stock
         # ----------------------
