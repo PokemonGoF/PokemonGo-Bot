@@ -23,6 +23,10 @@ class PokemonGoBot(object):
     def start(self):
         self._setup_logging()
         self._setup_api()
+        if self.config.stats:
+            ## exit early and just show stats
+            print '[ stats mode, exiting ... ]'
+            exit()
         self.stepper = Stepper(self)
         random.seed()
 
@@ -39,14 +43,14 @@ class PokemonGoBot(object):
             for pokemon in cell['wild_pokemons']:
                 worker = PokemonCatchWorker(pokemon, self)
                 worker.work()
-                
+
         # After [self.noballs = True] and first spining, check if 50 pokeballs was gathered, if so stop spining
         if self.noballs and self.ballstock[1] >= 50:
             print ('[#] Gathered 50/50 pokeballs, continue catching!')
             self.noballs = False
         elif self.noballs and self.ballstock[1] < 50:
-            print ('[#] Gathered ' + str(self.ballstock[1]) + '/50 pokeballs, continue farming...') 
-        
+            print ('[#] Gathered ' + str(self.ballstock[1]) + '/50 pokeballs, continue farming...')
+
         if self.config.spinstop or self.noballs:
             if 'forts' in cell:
                 # Only include those with a lat/long
@@ -111,9 +115,9 @@ class PokemonGoBot(object):
                     balls_stock[3] = item['inventory_item_data']['item']['count']
             except:
                 continue
-        
+
         self.ballstock = balls_stock
-        
+
         # get player pokemon[id] group by pokemon[pokemon_id]
         # ----------------------
         pokemon_stock = {}
@@ -159,7 +163,7 @@ class PokemonGoBot(object):
         self.api.get_player()
 
         response_dict = self.api.call()
-        #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+        # print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
         currency_1="0"
         currency_2="0"
 
