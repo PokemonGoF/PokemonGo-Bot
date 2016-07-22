@@ -105,12 +105,12 @@ class PokemonCatchWorker(object):
     	if 'cp' in pokemon and pokemon['cp'] < value:
     		self.api.release_pokemon(pokemon_id=pokemon['id'])
     		response_dict = self.api.call()
-    		print('[x] Exchanged successfuly!')
+    		print('[x] Exchanged successfully!')
 
     def transfer_pokemon(self, pid):
         self.api.release_pokemon(pokemon_id=pid)
         response_dict = self.api.call()
-        print('[x] Exchanged successfuly!')
+        print('[x] Exchanged successfully!')
 
     def count_pokemon_inventory(self):
         self.api.get_inventory()
