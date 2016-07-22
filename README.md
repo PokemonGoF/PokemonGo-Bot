@@ -60,7 +60,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -u USERNAME, --username USERNAME              Username
       -p PASSWORD, --password PASSWORD              Password
       -l LOCATION, --location LOCATION              Location (Address or 'xx.yyyy,zz.ttttt')
-      -w SPEED,  --walk SPEED                       Walk instead of teleport with given speed (meters per second max 4.16 becourse of walking end on 15km/h)
+      -w SPEED,  --walk SPEED                       Walk instead of teleport with given speed (meters per second max 4.16 because of walking end on 15km/h)
       -s SPINSTOP, --spinstop                       Enable Spinning of PokeStops
       --maxstep MAX_STEP                            Set the steps around your initial location(DEFAULT 5 mean 25 cells around your location)
       -c CP, --cp                                   Set the CP to transfer or lower (eg. 100 will transfer CP0-99)
@@ -107,6 +107,7 @@ eggins -- The first pull request :)
 crack00r  
 ethervoid
 Bashin
+tstumm
 
 ## Credits
 ### The works are based on the Pokemon Go API

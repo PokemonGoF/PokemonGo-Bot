@@ -33,6 +33,7 @@ import time
 import ssl
 import logging
 import sys
+import codecs
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -81,6 +82,9 @@ def main():
     # log settings
     # log format
     #logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(module)10s] [%(levelname)5s] %(message)s')
+
+    sys.stdout = codecs.getwriter('utf8')(sys.stdout)
+    sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
     # @eggins clean log
     print('[x] Initializing PokemonGO Bot v1.0')

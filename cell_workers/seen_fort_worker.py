@@ -1,7 +1,7 @@
 import json
 import time
 from math import radians, sqrt, sin, cos, atan2
-from pgoapi.utilities import f2i, h2f
+from pgoapi.utilities import f2i, h2f, distance
 
 class SeenFortWorker(object):
 
@@ -18,7 +18,7 @@ class SeenFortWorker(object):
         lat = self.fort['latitude']
         lng = self.fort['longitude']
         fortID = self.fort['id']
-        distance = SeenFortWorker.geocalc(self.position[0], self.position[1], lat, lng) * 1000
+        distance = distance(self.position[0], self.position[1], lat, lng)
 
         print('Found fort {} at distance {}m'.format(fortID, distance))
         if distance > 10:
@@ -92,25 +92,6 @@ class SeenFortWorker(object):
                 return 11
         time.sleep(8)
         return 0
-
-    @staticmethod
-    def geocalc(lat1, lon1, lat2, lon2):
-        lat1 = radians(lat1)
-        lon1 = radians(lon1)
-        lat2 = radians(lat2)
-        lon2 = radians(lon2)
-
-        dlon = lon1 - lon2
-
-        EARTH_R = 6372.8
-
-        y = sqrt(
-            (cos(lat2) * sin(dlon)) ** 2
-            + (cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dlon)) ** 2
-            )
-        x = sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(dlon)
-        c = atan2(y, x)
-        return EARTH_R * c
 
     @staticmethod
     def closest_fort(current_lat, current_long, forts):
