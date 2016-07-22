@@ -34,6 +34,8 @@ import ssl
 import logging
 import sys
 import codecs
+import getpass
+
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -55,7 +57,7 @@ def init_config():
     parser.add_argument("-a", "--auth_service", help="Auth Service ('ptc' or 'google')",
         required=required("auth_service"))
     parser.add_argument("-u", "--username", help="Username", required=required("username"))
-    parser.add_argument("-p", "--password", help="Password", required=required("password"))
+    parser.add_argument("-p", "--password", help="Password")
     parser.add_argument("-l", "--location", help="Location", required=required("location"))
     parser.add_argument("-s", "--spinstop", help="SpinPokeStop", action='store_true')
     parser.add_argument("-w", "--walk", help="Walk instead of teleport with given speed (meters per second, e.g. 2.5)", type=float, default=2.5)
@@ -75,7 +77,11 @@ def init_config():
     if config.auth_service not in ['ptc', 'google']:
       log.error("Invalid Auth service specified! ('ptc' or 'google')")
       return None
-
+      
+    if not config.password :
+        log.warn("Password not passed as argument, Asking User for input")
+        config.password = getpass.getpass("Please enter You're Password: ")
+        
     return config
 
 def main():
