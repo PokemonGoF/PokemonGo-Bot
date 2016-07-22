@@ -6,9 +6,8 @@
     "cp": "100",
     "gmapkey": "CHANGME",
     "maxsteps": "100",
-    "spinstop": "False",
+    "mode": "All",
     "walk": "4.16",
     "debug": "False",
     "test": "False"
 }
-
