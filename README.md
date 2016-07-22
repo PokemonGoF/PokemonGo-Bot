@@ -76,6 +76,8 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 
 ## FAQ
 
+### Losing Starter Pokemon and others
+    You can use -c 1 to protect your first stage low CP pokemon.
 ### Does it run automatally?
     Not yet, still need a trainer to train the script param.  But we are very close to.
 ### Set GEO Location
