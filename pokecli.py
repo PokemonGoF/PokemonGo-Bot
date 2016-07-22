@@ -39,6 +39,7 @@ import codecs
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
+from getpass import getpass
 from pokemongo_bot import PokemonGoBot
 from pokemongo_bot.cell_workers.utils import print_green, print_yellow, print_red
 
@@ -56,9 +57,10 @@ def init_config():
     required = lambda x: not x in load
     parser.add_argument("-a", "--auth_service", help="Auth Service ('ptc' or 'google')",
         required=required("auth_service"))
-    parser.add_argument("-u", "--username", help="Username", required=required("username"))
-    parser.add_argument("-p", "--password", help="Password", required=required("password"))
+    parser.add_argument("-u", "--username", help="Username")
+    parser.add_argument("-p", "--password", help="Password")
     parser.add_argument("-l", "--location", help="Location", required=required("location"))
+    parser.add_argument("-lc", "--use-location-cache", help="Bot will start at last known location", action='store_true', default=False, dest='location_cache')
     parser.add_argument("-m", "--mode", help="Farming Mode", type=str, default="all")
     parser.add_argument("-w", "--walk", help="Walk instead of teleport with given speed (meters per second, e.g. 2.5)", type=float, default=2.5)
     parser.add_argument("-c", "--cp",help="Set CP less than to transfer(DEFAULT 100)",type=int,default=100)
@@ -68,6 +70,11 @@ def init_config():
     parser.add_argument("-t", "--test", help="Only parse the specified location", action='store_true')
     parser.set_defaults(DEBUG=False, TEST=False)
     config = parser.parse_args()
+
+    if not config.username:
+        config.username = raw_input("Username: ")
+    if not config.password:
+        config.password = getpass("Password: ")
 
     # Passed in arguments shoud trump
     for key in config.__dict__:
@@ -95,13 +102,18 @@ def main():
     print_green('[x] PokemonGO Bot v1.0')
     print_yellow('[x] Configuration initialized')
 
-    bot = PokemonGoBot(config)
-    bot.start()
+    try:
+        bot = PokemonGoBot(config)
+        bot.start()
 
-    print_green('[x] Starting PokemonGo Bot....')
+        print_green('[x] Starting PokemonGo Bot....')
 
-    while(True):
-        bot.take_step()
+        while(True):
+            bot.take_step()
+
+    except KeyboardInterrupt:
+        print_red("\n"'[x]Exiting PokemonGo Bot')
+        #TODO Add number of pokemon catched, pokestops visited, highest CP pokemon catched, etc.
 
 if __name__ == '__main__':
     main()
