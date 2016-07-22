@@ -33,11 +33,21 @@ import time
 import ssl
 import logging
 import sys
+import flask
+from flask import Flask, render_template
+from flask_googlemaps import GoogleMaps
+from flask_googlemaps import Map
+from flask_googlemaps import icons
+import threading
+
+import webapp
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
 from bot import PokemonGoBot
+
+visualisation_data = [0,0,0,0,0] #initial lat, initial lng, current lat, current lng, current alt
 
 def init_config():
     parser = argparse.ArgumentParser()
@@ -59,6 +69,7 @@ def init_config():
     parser.add_argument("-s", "--spinstop", help="SpinPokeStop",action='store_true')
     parser.add_argument("-w", "--walk", help="Walk instead of teleport with given speed (meters per second, e.g. 2.5)", type=float, default=0)
     parser.add_argument("-c", "--cp",help="Set CP less than to transfer(DEFAULT 100)",type=int,default=100)
+    parser.add_argument("-v", "--port",help="Set webapp preview port",type=int,default=5000)
     parser.add_argument("-d", "--debug", help="Debug Mode", action='store_true')
     parser.add_argument("-t", "--test", help="Only parse the specified location", action='store_true')
     parser.set_defaults(DEBUG=False, TEST=False)
@@ -85,6 +96,10 @@ def main():
     logging.getLogger("pgoapi").setLevel(logging.INFO)
     # log level for internal pgoapi class
     logging.getLogger("rpc_api").setLevel(logging.INFO)
+    # log level for flash server
+    logging.getLogger("werkzeug").setLevel(logging.ERROR)
+
+
 
     config = init_config()
     if not config:
@@ -95,11 +110,57 @@ def main():
         logging.getLogger("pgoapi").setLevel(logging.DEBUG)
         logging.getLogger("rpc_api").setLevel(logging.DEBUG)
 
-    bot = PokemonGoBot(config)
+    global visualisation_data
+    bot = PokemonGoBot(config, visualisation_data)
     bot.start()
 
     while(True):
         bot.take_step()
 
+def register_background_thread(initial_registration=False):
+    global search_thread
+    search_thread = threading.Thread(target=main)
+    search_thread.daemon = True
+    search_thread.name = 'search_thread'
+    search_thread.start()
+
+def get_player_position():
+    player_position = {
+        'lat': visualisation_data[2],
+        'lng': visualisation_data[3]
+    }
+
+    return player_position
+
+GOOGLEMAPS_KEY = "AIzaSyAZzeHhs-8JZ7i18MjFuM35dJHq70n3Hx4"
+
+webapp = webapp.create_webapp()
+
+@webapp.route('/')
+def fullmap():
+    return render_template(
+        'example_fullmap.html', key=GOOGLEMAPS_KEY, auto_refresh=0)
+
+@webapp.route('/config')
+def config():
+    """ Gets the settings for the Google Maps via REST"""
+    center = {
+        'lat': visualisation_data[0],
+        'lng': visualisation_data[1],
+        'zoom': 15,
+        'identifier': "fullmap"
+    }
+    return json.dumps(center)
+
+
+@webapp.route('/getPlayerPosition')
+def data():
+    return json.dumps(get_player_position())
+
 if __name__ == '__main__':
-    main()
+    config = init_config()
+    register_background_thread(initial_registration=True)
+    if config.port:
+        webapp.run(debug=True, threaded=True, host="localhost", port=config.port)
+
+
