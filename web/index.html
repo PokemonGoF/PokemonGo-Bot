@@ -35,7 +35,6 @@
       var cInfo = {};
       var catchable = {};
       var pokemonArray = {};
-      var div = document.createElement('div');
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 50.0830986, lng: 6.7613762},
@@ -79,17 +78,22 @@
           function(data) { cInfo = data; },
           function(xhr) { console.error(xhr); }
         );
-        loadJSON('../data/pokemon.json',
+        loadJSON('pokemondata.json',
           function(data) { pokemonArray = data; },
           function(xhr) { console.error(xhr); }
         );
         if(cInfo['latitude'] != undefined) {
-          console.log("New Marker: Catchable Pokemon - " + parseFloat(cInfo['latitude']) + ", " + parseFloat(cInfo['longitude']));
-          cMarker = new google.maps.Marker({
-            map: map,
-            position: {lat: parseFloat(cInfo['latitude']), lng: parseFloat(cInfo['longitude'])},
-            icon: "image/" + cInfo['pokemon_id'] + ".png"
-          });
+          if(cMarker == undefined) {
+            console.log("New Marker: Catchable Pokemon - " + parseFloat(cInfo['latitude']) + ", " + parseFloat(cInfo['longitude']));
+            cMarker = new google.maps.Marker({
+              map: map,
+              position: {lat: parseFloat(cInfo['latitude']), lng: parseFloat(cInfo['longitude'])},
+              icon: "image/icons/" + cInfo['pokemon_id'] + ".png"
+            });
+          }
+          console.log("Update Marker: Catchable Pokemon - " + parseFloat(cInfo['latitude']) + ", " + parseFloat(cInfo['longitude']));
+          cMarker.setPosition({lat: parseFloat(cInfo['latitude']), lng: parseFloat(cInfo['longitude'])});
+          cMarker.setIcon("image/icons/" + cInfo['pokemon_id'] + ".png");
         }
       }
       function updateInventory() {
