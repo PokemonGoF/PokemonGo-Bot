@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import time
 from math import ceil
 from random import random, randint
