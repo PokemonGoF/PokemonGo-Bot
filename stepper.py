@@ -1,3 +1,4 @@
+import json
 import time
 
 from s2sphere import CellId, LatLng
@@ -23,8 +24,16 @@ class Stepper(object):
         self.origin_lat = self.bot.position[0]
         self.origin_lon = self.bot.position[1]
 
+<<<<<<< HEAD
+    def walking_hook(own):
+        print('[>] walking...')
+=======
+>>>>>>> 2ea9e607d5eaa7c46ce7c3620e63b85c85b487c9
     def take_step(self):
         position=(self.origin_lat,self.origin_lon,0.0)
+
+        self.api.set_position(*position)
+
         for step in range(self.steplimit2):
             #starting at 0 index
             print('[#] Scanning area for objects ({} / {})'.format((step+1), self.steplimit**2))
@@ -48,6 +57,8 @@ class Stepper(object):
             timestamp = "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
             cellid = self._get_cellid(position[0], position[1])
             self.api.get_map_objects(latitude=f2i(position[0]), longitude=f2i(position[1]), since_timestamp_ms=timestamp, cell_id=cellid)
+            with open('location.json', 'w') as outfile:
+                json.dump({'lat': position[0], 'lng': position[1]}, outfile)
 
             response_dict = self.api.call()
             #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
