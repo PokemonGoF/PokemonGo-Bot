@@ -64,6 +64,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -s SPINSTOP, --spinstop                       Enable Spinning of PokeStops
       --maxstep MAX_STEP                            Set the steps around your initial location(DEFAULT 5 mean 25 cells around your location)
       -c CP, --cp                                   Set the CP to transfer or lower (eg. 100 will transfer CP0-99)
+      -sc, --smart_catch                            Releases same types of pokemon with lower CP on every catch and keeping single copy of pokemon with highest CP. (Note: this will also release your existing pokemon. Use with caution)
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
 
