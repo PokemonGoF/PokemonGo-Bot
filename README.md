@@ -1,5 +1,11 @@
 # PokemonGo-Bot - a pokemon script can catch pokemon and spin the pokestop.
 
+## Project chat
+
+[![Join the chat at https://gitter.im/PokemonGoF/PokemonGo-Bot](https://badges.gitter.im/PokemonGoF/PokemonGo-Bot.svg)](https://gitter.im/PokemonGoF/PokemonGo-Bot?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+We use [Gitter](https://gitter.im) for a Github-integrated web chat. [Click here to join the chat!](https://gitter.im/PokemonGoF/PokemonGo-Bot)
+
 ## Features:
  * Search Fort(Spin Pokestop)
  * Catch Pokemon
@@ -8,7 +14,8 @@
 
 # To-Do:
 - [ ] Google Map API key setup
-- [ ] Limit the step to farm specific area for pokestops
+- [x] Limit the step to farm specific area for pokestops
+- [ ] Pokemon transfer filter
 - [ ] Drop items when bag is full
 - [ ] Pokemon catch filter
 - [ ] Hatch eggs

@@ -10,13 +10,14 @@ class SeenFortWorker(object):
         self.api = bot.api
         self.position = bot.position
         self.config = bot.config
+        self.item_list = bot.item_list
         self.rest_time = 50
 
     def work(self):
         lat = self.fort['latitude']
         lng = self.fort['longitude']
         fortID = self.fort['id']
-        distance = self._geocalc(self.position[0], self.position[1], lat, lng) * 1000
+        distance = SeenFortWorker.geocalc(self.position[0], self.position[1], lat, lng) * 1000
 
         print('Found fort {} at distance {}m'.format(fortID, distance))
         if distance > 10:
@@ -50,19 +51,41 @@ class SeenFortWorker(object):
             spin_details = response_dict['responses']['FORT_SEARCH']
             if spin_details['result'] == 1:
                 print("- Loot: ")
-                print("- " + str(spin_details.get('experience_awarded', 0)) + " xp")
-                items_awarded = spin_details.get('items_awarded', [])
-                if len(items_awarded) > 0:
+                experience_awarded = spin_details.get('experience_awarded', False)
+                if experience_awarded:
+                    print("- " + str(experience_awarded) + " xp")
+
+                items_awarded = spin_details.get('items_awarded', False)
+                if items_awarded:
                     for item in items_awarded:
                         item_id = str(item['item_id'])
-                        item_name = item_list[item_id]
+                        item_name = self.item_list[item_id]
                         print("- " + str(item['item_count']) + "x " + item_name)
                 else:
                     print("- Nothing found.")
+
+                pokestop_cooldown = spin_details.get('cooldown_complete_timestamp_ms')
+                if pokestop_cooldown:
+                    seconds_since_epoch = time.time()
+                    print '- PokeStop on cooldown. Time left: %s seconds.' % str((pokestop_cooldown/1000) - seconds_since_epoch)
+
+                if not items_awarded and not experience_awarded and not pokestop_cooldown:
+                    message = (
+                        'Stopped at Pokestop and did not find experience, items '
+                        'or information about the stop cooldown. You are '
+                        'probably softbanned. Try to play on your phone, '
+                        'if pokemons always ran away and you find nothing in '
+                        'PokeStops you are indeed softbanned. Please try again '
+                        'in a few hours.'
+                    )
+                    raise RuntimeError(message)
             elif spin_details['result'] == 2:
                 print("- Pokestop out of range")
             elif spin_details['result'] == 3:
-                print("- Pokestop on cooldown")
+                pokestop_cooldown = spin_details.get('cooldown_complete_timestamp_ms')
+                if pokestop_cooldown:
+                    seconds_since_epoch = time.time()
+                    print '- PokeStop on cooldown. Time left: %s seconds.' % str((pokestop_cooldown/1000) - seconds_since_epoch)
             elif spin_details['result'] == 4:
                 print("- Inventory is full!")
 
@@ -73,9 +96,10 @@ class SeenFortWorker(object):
                 print('may search too often, lets have a rest')
                 return 11
         time.sleep(8)
-        return 0
+        return 
 
-    def _geocalc(self, lat1, lon1, lat2, lon2):
+    @staticmethod
+    def geocalc(lat1, lon1, lat2, lon2):
         lat1 = radians(lat1)
         lon1 = radians(lon1)
         lat2 = radians(lat2)
@@ -92,3 +116,7 @@ class SeenFortWorker(object):
         x = sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(dlon)
         c = atan2(y, x)
         return EARTH_R * c
+
+    @staticmethod
+    def closest_fort(current_lat, current_long, forts):
+        print x

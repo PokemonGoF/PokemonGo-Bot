@@ -37,13 +37,16 @@ class PokemonGoBot(object):
                 worker.work()
         if self.config.spinstop:
             if 'forts' in cell:
+                # Only include those with a lat/long
+                forts = [fort for fort in cell['forts'] if 'latitude' in fort]
+                # Sort all by distance from current pos- eventually this should build graph & A* it
+                forts.sort(key=lambda x: SeenFortWorker.geocalc(self.position[0], self.position[1], fort['latitude'], fort['longitude'])) 
                 for fort in cell['forts']:
-                    if 'type' in fort:
-                        worker = SeenFortWorker(fort, self)
-                        hack_chain = worker.work()
-                        if hack_chain > 10:
-                            print('need a rest')
-                            break
+                    worker = SeenFortWorker(fort, self)
+                    hack_chain = worker.work()
+                    if hack_chain > 10:
+                        print('need a rest')
+                        break
 
     def _setup_logging(self):
         self.log = logging.getLogger(__name__)
@@ -77,18 +80,21 @@ class PokemonGoBot(object):
         #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
         currency_1="0"
         currency_2="0"
-        if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][0]:
-            currency_1=response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['amount']
-        if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][1]:
-            currency_2=response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['amount']
-        print 'Profile:'
-        print '    Username: ' + str(response_dict['responses']['GET_PLAYER']['profile']['username'])
-        print '    Bag size: ' + str(response_dict['responses']['GET_PLAYER']['profile']['item_storage'])
-        print '    Pokemon Storage Size: ' + str(response_dict['responses']['GET_PLAYER']['profile']['poke_storage'])
-        print '    Account Creation: ' + str(response_dict['responses']['GET_PLAYER']['profile']['creation_time'])
-        print '    Currency: '
-        print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['type']) + ': ' + str(currency_1)
-        print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['type']) + ': ' + str(currency_2)
+        try:
+            if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][0]:
+                currency_1=response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['amount']
+            if 'amount' in response_dict['responses']['GET_PLAYER']['profile']['currency'][1]:
+                currency_2=response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['amount']
+            print 'Profile:'
+            print '    Username: ' + str(response_dict['responses']['GET_PLAYER']['profile']['username'])
+            print '    Bag size: ' + str(response_dict['responses']['GET_PLAYER']['profile']['item_storage'])
+            print '    Pokemon Storage Size: ' + str(response_dict['responses']['GET_PLAYER']['profile']['poke_storage'])
+            print '    Account Creation: ' + str(response_dict['responses']['GET_PLAYER']['profile']['creation_time'])
+            print '    Currency: '
+            print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][0]['type']) + ': ' + str(currency_1)
+            print '        ' + str(response_dict['responses']['GET_PLAYER']['profile']['currency'][1]['type']) + ': ' + str(currency_2)
+        except:
+            print('Exception during print player profile')
 
     def _set_starting_position(self):
         self.position = self._get_pos_by_name(self.config.location)
@@ -98,7 +104,7 @@ class PokemonGoBot(object):
             return
 
     def _get_pos_by_name(self, location_name):
-        geolocator = GoogleV3()
+        geolocator = GoogleV3(api_key=self.config.gmapkey)
         loc = geolocator.geocode(location_name)
 
         self.log.info('Your given location: %s', loc.address.encode('utf-8'))
