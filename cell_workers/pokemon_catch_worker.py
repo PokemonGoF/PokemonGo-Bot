@@ -73,7 +73,11 @@ class PokemonCatchWorker(object):
                                     if cp < self.config.cp:
                                         print('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + '] - exchanging for candy')
                                         self._transfer_low_cp_pokemon(self.config.cp)
-                                        id_list2 = self.count_pokemon_inventory()
+                                        try:
+                                            id_list2 = self.count_pokemon_inventory()
+                                        except:
+                                            print('[###] Your inventory is full! Please manually delete some items.')
+                                            break
                                         self.transfer_pokemon(list(Set(id_list2) - Set(id_list1))[0])
                                     else:
                                         print('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + ']')

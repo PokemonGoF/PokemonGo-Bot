@@ -42,6 +42,7 @@ class PokemonGoBot(object):
             if 'forts' in cell:
                 # Only include those with a lat/long
                 forts = [fort for fort in cell['forts'] if 'latitude' in fort and 'type' in fort]
+                
                 # Sort all by distance from current pos- eventually this should build graph & A* it
                 forts.sort(key=lambda x: distance(self.position[0], self.position[1], fort['latitude'], fort['longitude']))
                 for fort in cell['forts']:
