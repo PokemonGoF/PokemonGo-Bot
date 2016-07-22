@@ -90,24 +90,6 @@ class PokemonGoBot(object):
 
         inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
 
-        # get player balls stock
-        # ----------------------
-        balls_stock = {1:0,2:0,3:0,4:0}
-
-        for item in inventory_dict:
-            try:
-                if item['inventory_item_data']['item']['item_id'] == 1:
-                    #print('Poke Ball count: ' + str(item['inventory_item_data']['item']['count']))
-                    balls_stock[1] = item['inventory_item_data']['item']['count']
-                if item['inventory_item_data']['item']['item_id'] == 2:
-                    #print('Great Ball count: ' + str(item['inventory_item_data']['item']['count']))
-                    balls_stock[2] = item['inventory_item_data']['item']['count']
-                if item['inventory_item_data']['item']['item_id'] == 3:
-                    #print('Ultra Ball count: ' + str(item['inventory_item_data']['item']['count']))
-                    balls_stock[3] = item['inventory_item_data']['item']['count']
-            except:
-                continue
-
         # get player pokemon[id] group by pokemon[pokemon_id]
         # ----------------------
         pokemon_stock = {}
@@ -200,6 +182,31 @@ class PokemonGoBot(object):
                             if not 'count' in item['inventory_item_data']['item']:
                                 continue
                             self.inventory.append(item['inventory_item_data']['item'])
+
+    def pokeball_inventory(self):
+        self.api.get_player().get_inventory()
+
+        inventory_req = self.api.call()
+        inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+
+        # get player balls stock
+        # ----------------------
+        balls_stock = {1:0,2:0,3:0,4:0}
+
+        for item in inventory_dict:
+            try:
+                if item['inventory_item_data']['item']['item_id'] == 1:
+                    #print('Poke Ball count: ' + str(item['inventory_item_data']['item']['count']))
+                    balls_stock[1] = item['inventory_item_data']['item']['count']
+                if item['inventory_item_data']['item']['item_id'] == 2:
+                    #print('Great Ball count: ' + str(item['inventory_item_data']['item']['count']))
+                    balls_stock[2] = item['inventory_item_data']['item']['count']
+                if item['inventory_item_data']['item']['item_id'] == 3:
+                    #print('Ultra Ball count: ' + str(item['inventory_item_data']['item']['count']))
+                    balls_stock[3] = item['inventory_item_data']['item']['count']
+            except:
+                continue
+        return balls_stock
 
     def _set_starting_position(self):
         self.position = self._get_pos_by_name(self.config.location)
