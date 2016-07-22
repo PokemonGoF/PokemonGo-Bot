@@ -35,7 +35,7 @@ class PokemonCatchWorker(object):
                                 cp=pokemon['pokemon_data']['cp']
                                 pokemon_num=int(pokemon['pokemon_data']['pokemon_id'])-1
                                 pokemon_name=self.pokemon_list[int(pokemon_num)]['Name']
-                                print_yellow('[#] A Wild ' + str(pokemon_name) + ' appeared! [CP' + str(cp) + ']')
+                                print_yellow('[#] A Wild {} appeared! [CP {}]'.format(pokemon_name, cp))
                                 #Simulate app
                                 sleep(3)
                         while(True):
@@ -54,7 +54,7 @@ class PokemonCatchWorker(object):
                                 print_red('[x] Out of pokeballs...')
                                 # TODO: Begin searching for pokestops.
                                 break
-                            print('[x] Using ' + self.item_list[str(pokeball)] + '...')
+                            print('[x] Using {}...'.format(self.item_list[str(pokeball)]))
                             self.api.catch_pokemon(encounter_id = encounter_id,
                                 pokeball = pokeball,
                                 normalized_reticle_size = 1.950,
@@ -70,22 +70,22 @@ class PokemonCatchWorker(object):
                                 'status' in response_dict['responses']['CATCH_POKEMON']:
                                 status = response_dict['responses']['CATCH_POKEMON']['status']
                                 if status is 2:
-                                    print_red('[-] Attempted to capture ' + str(pokemon_name) + ' - failed.. trying again!')
+                                    print_red('[-] Attempted to capture {} - failed.. trying again!'.format(pokemon_name))
                                     sleep(2)
                                     continue
                                 if status is 3:
-                                    print_red('[x] Oh no! ' + str(pokemon_name) + ' vanished! :(')
+                                    print_red('[x] Oh no! {} vanished! :('.format(pokemon_name))
                                 if status is 1:
                                     if cp < self.config.cp:
-                                        print_green('[x] Captured ' + str(pokemon_name) + '! [CP ' + str(cp) + '] - exchanging for candy')
+                                        print_green('[x] Captured {}! [CP {}] - exchanging for candy'.format(pokemon_name, cp))
                                         id_list2 = self.count_pokemon_inventory()
                                         # Transfering Pokemon
 
                                         ## TODO - FIX TRANSFERRING OF POKEMON
                                         self.transfer_pokemon(list(Set(id_list2) - Set(id_list1)))
-                                        print_green('[#] ' + str(pokemon_name) + ' has been exchanged for candy!')
+                                        print_green('[#] {} has been exchanged for candy!'.format(pokemon_name))
                                     else:
-                                        print_green('[x] Captured ' + str(pokemon_name) + '! [CP ' + str(cp) + ']')
+                                        print_green('[x] Captured {}! [CP {}]'.format(pokemon_name, cp))
                             break
         time.sleep(5)
 
