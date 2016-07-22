@@ -58,8 +58,16 @@ class SeenFortWorker(object):
 
                 items_awarded = spin_details.get('items_awarded', False)
                 if items_awarded:
+                    tmp_count_items = {}
                     for item in items_awarded:
-                        item_id = str(item['item_id'])
+                        item_id = item['item_id']
+                        if not item_id in tmp_count_items:
+                            tmp_count_items[item_id] = item['item_count']
+                        else:
+                            tmp_count_items[item_id] += item['item_count']
+
+                    for item_id, item_count in tmp_count_items.iteritems():
+                        item_id = str(item_id)
                         item_name = self.item_list[item_id]
                         print_green("- " + str(item['item_count']) + "x " + item_name)
                 else:
