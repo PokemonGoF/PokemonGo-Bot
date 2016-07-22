@@ -79,7 +79,7 @@ def init_config():
       return None
       
     if not config.password :
-        log.warn("Password not passed as argument, Asking User for input")
+        #log.warn("Password not passed as argument, Asking User for input")
         config.password = getpass.getpass("Please enter You're Password: ")
         
     return config
