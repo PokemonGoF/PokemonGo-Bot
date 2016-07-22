@@ -92,4 +92,6 @@ ENV/
 config.json
 location.json
 src/
-web/*.json
+info.json
+inventory.json
+pokedex.json
