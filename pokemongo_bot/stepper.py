@@ -55,7 +55,7 @@ class Stepper(object):
 
             (self.x, self.y) = (self.x + self.dx, self.y + self.dy)
 
-            self._work_at_position(position[0], position[1], position[2], False)
+            self._work_at_position(position[0], position[1], position[2], True)
             sleep(10)
 
     def _walk_to(self, speed, lat, lng, alt):
@@ -76,7 +76,7 @@ class Stepper(object):
                 with open('web/location.json', 'w') as outfile:
                     json.dump({'lat': cLat, 'lng': cLng}, outfile)
                 sleep(1) # sleep one second plus a random delta
-                self._work_at_position(i2f(self.api._position_lat), i2f(self.api._position_lng), alt, True)
+                self._work_at_position(i2f(self.api._position_lat), i2f(self.api._position_lng), alt, False)
 
             self.api.set_position(lat, lng, alt)
             self.bot.heartbeat()
