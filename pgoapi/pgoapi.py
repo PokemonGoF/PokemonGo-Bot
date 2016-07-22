@@ -116,7 +116,7 @@ class PGoApi:
         a = 0.5 - cos((lat2 - lat1) * p)/2 + cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2
         return 12742 * asin(sqrt(a)) * 1000
 
-    def walk(self, speed, lat, lng, alt):
+    def walk(self, speed, lat, lng, alt,walking_hook):
         dist = self.distance(i2f(self._position_lat), i2f(self._position_lng), lat, lng)
         steps = (dist+0.0)/(speed+0.0) # may be rational number
         intSteps = int(steps)
@@ -129,6 +129,8 @@ class PGoApi:
             for i in range(intSteps):
                 self.set_position(i2f(self._position_lat) + dLat + self.random_lat_long(), i2f(self._position_lng) + dLng + self.random_lat_long(), alt)
                 self.heartbeat()
+                if walking_hook:
+                    walking_hook()
                 time.sleep(1 + self.random_sleep()) # sleep one second plus a random delta
 
             self.set_position(lat, lng, alt)

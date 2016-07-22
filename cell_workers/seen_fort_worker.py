@@ -12,7 +12,8 @@ class SeenFortWorker(object):
         self.config = bot.config
         self.item_list = bot.item_list
         self.rest_time = 50
-
+    def walking_hook(own):
+        print('another walking_hook')
     def work(self):
         lat = self.fort['latitude']
         lng = self.fort['longitude']
@@ -24,7 +25,7 @@ class SeenFortWorker(object):
             print('Need to move closer to Pokestop')
             position = (lat, lng, 0.0)
             if self.config.walk > 0:
-                self.api.walk(self.config.walk, *position)
+                self.api.walk(self.config.walk, *position,walking_hook=self.walking_hook)
             else:
                 self.api.set_position(*position)
             self.api.player_update(latitude=lat,longitude=lng)
@@ -90,7 +91,7 @@ class SeenFortWorker(object):
                 print('may search too often, lets have a rest')
                 return 11
         time.sleep(8)
-        return 0 
+        return 0
 
     @staticmethod
     def geocalc(lat1, lon1, lat2, lon2):
