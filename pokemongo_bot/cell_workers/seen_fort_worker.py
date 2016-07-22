@@ -71,7 +71,9 @@ class SeenFortWorker(object):
                     for item_id, item_count in tmp_count_items.iteritems():
                         item_id = str(item_id)
                         item_name = self.item_list[item_id]
-                        print_green("- " + str(item['item_count']) + "x " + item_name)
+
+                        print_green("[+] " + str(item_count) + "x " + item_name)
+
                 else:
                     print_yellow("- Nothing found.")
 
