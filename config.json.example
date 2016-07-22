@@ -6,7 +6,7 @@
     "cp": "100",
     "gmapkey": "CHANGME",
     "maxsteps": "100",
-    "mode": "All",
+    "mode": "all",
     "walk": "4.16",
     "debug": "False",
     "test": "False"
