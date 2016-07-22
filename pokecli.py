@@ -100,7 +100,11 @@ def main():
     bot.start()
 
     while(True):
-        bot.take_step()
+        try:
+            bot.take_step()
+        except:
+            print('Exception in bot, have a rest')
+            time.sleep(2)
 
 if __name__ == '__main__':
     main()
