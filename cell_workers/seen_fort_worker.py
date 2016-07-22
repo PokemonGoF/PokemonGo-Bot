@@ -22,9 +22,16 @@ class SeenFortWorker(object):
         print('Found fort {} at distance {}m'.format(fortID, distance))
         if distance > 10:
             print('Need to move closer to Pokestop')
+            lat = 10 * (lat - self.position[0]) / distance
+            lng = 10 * (lng - self.position[1]) / distance
             position = (lat, lng, 0.0)
             if self.config.walk > 0:
                 self.api.walk(self.config.walk, *position)
+                self.api.player_update(latitude=lat,longitude=lng)
+                response_dict = self.api.call()
+                print('moving close to Pokestop')
+                time.sleep(1.2)
+                return 0
             else:
                 self.api.set_position(*position)
             self.api.player_update(latitude=lat,longitude=lng)
