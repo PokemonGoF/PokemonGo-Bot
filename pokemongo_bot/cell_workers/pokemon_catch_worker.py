@@ -1,7 +1,7 @@
 import time
 from sets import Set
+from utils import distance, print_green, print_yellow, print_red
 from pokemongo_bot.human_behaviour import sleep
-
 
 class PokemonCatchWorker(object):
 
@@ -33,7 +33,7 @@ class PokemonCatchWorker(object):
                                 cp=pokemon['pokemon_data']['cp']
                                 pokemon_num=int(pokemon['pokemon_data']['pokemon_id'])-1
                                 pokemon_name=self.pokemon_list[int(pokemon_num)]['Name']
-                                print('[#] A Wild ' + str(pokemon_name) + ' appeared! [CP' + str(cp) + ']')
+                                print_yellow('[#] A Wild ' + str(pokemon_name) + ' appeared! [CP' + str(cp) + ']')
                                 #Simulate app
                                 sleep(3)
                         while(True):
@@ -49,7 +49,7 @@ class PokemonCatchWorker(object):
                                     item['count'] -= 1
                                     break
                             if pokeball is 0:
-                                print('[x] Out of pokeballs...')
+                                print_red('[x] Out of pokeballs...')
                                 # TODO: Begin searching for pokestops.
                                 break
                             print('[x] Using ' + self.item_list[str(pokeball)] + '...')
@@ -68,23 +68,23 @@ class PokemonCatchWorker(object):
                                 'status' in response_dict['responses']['CATCH_POKEMON']:
                                 status = response_dict['responses']['CATCH_POKEMON']['status']
                                 if status is 2:
-                                    print('[-] Attempted to capture ' + str(pokemon_name) + ' - failed.. trying again!')
+                                    print_red('[-] Attempted to capture ' + str(pokemon_name) + ' - failed.. trying again!')
                                     sleep(2)
                                     continue
                                 if status is 3:
-                                    print('[x] Oh no! ' + str(pokemon_name) + ' vanished! :(')
+                                    print_red('[x] Oh no! ' + str(pokemon_name) + ' vanished! :(')
                                 if status is 1:
                                     if cp < self.config.cp:
-                                        print('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + '] - exchanging for candy')
+                                        print_green('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + '] - exchanging for candy')
                                         id_list2 = self.count_pokemon_inventory()
                                         try:
                                             # Transfering Pokemon
                                             self.transfer_pokemon(list(Set(id_list2) - Set(id_list1))[0])
                                         except:
-                                            print('[###] Your inventory is full! Please manually delete some items.')
+                                            print_red('[###] Your inventory is full! Please manually delete some items.')
                                             break
                                     else:
-                                        print('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + ']')
+                                        print_green('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + ']')
                             break
         time.sleep(5)
 
