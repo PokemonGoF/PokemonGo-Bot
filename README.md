@@ -84,6 +84,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -u USERNAME, --username USERNAME              Username
       -p PASSWORD, --password PASSWORD              Password
       -l LOCATION, --location LOCATION              Location (Address or 'xx.yyyy,zz.ttttt')
+      -s, --save_location                           Save the location. Bot will pickup at last known location
       -w SPEED,  --walk SPEED                       Walk instead of teleport with given speed (meters per second max 4.16 because of walking end on 15km/h)
       -m MODE, --mode MODE                              Set farming Mode for the bot ('all', 'poke', 'farm')
       --maxstep MAX_STEP                            Set the steps around your initial location(DEFAULT 5 mean 25 cells around your location)
