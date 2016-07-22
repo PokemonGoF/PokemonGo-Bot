@@ -87,7 +87,9 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -lc, --use-location-cache                     Bot will start at last known location
       -w SPEED,  --walk SPEED                       Walk instead of teleport with given speed (meters per second max 4.16 because of walking end on 15km/h)
       -m MODE, --mode MODE                              Set farming Mode for the bot ('all', 'poke', 'farm')
-      --maxstep MAX_STEP                            Set the steps around your initial location(DEFAULT 5 mean 25 cells around your location)
+      --maxstep MAX_STEP                            Set the steps around your initial location(DEFAULT 5 mean 25 cells around
+      your location)
+      --firsttrans                                  Transfer all pokemon twins, except the most CP in each twins group
       -c CP, --cp                                   Set the CP to transfer or lower (eg. 100 will transfer CP0-99)
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
