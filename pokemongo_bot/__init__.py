@@ -30,17 +30,17 @@ class PokemonGoBot(object):
     def take_step(self):
         self.stepper.take_step()
 
-    def work_on_cell(self, cell, position):
-        if 'catchable_pokemons' in cell:
+    def work_on_cell(self, cell, position, include_fort_on_path):
+        if (self.config.mode == "all" or self.config.mode == "poke") and 'catchable_pokemons' in cell:
             print '[#] Something rustles nearby!'
             for pokemon in cell['catchable_pokemons']:
                 worker = PokemonCatchWorker(pokemon, self)
                 worker.work()
-        if 'wild_pokemons' in cell:
+        if (self.config.mode == "all" or self.config.mode == "poke") and 'wild_pokemons' in cell:
             for pokemon in cell['wild_pokemons']:
                 worker = PokemonCatchWorker(pokemon, self)
                 worker.work()
-        if self.config.spinstop:
+        if (self.config.mode == "all" or self.config.mode == "farm") and include_fort_on_path:
             if 'forts' in cell:
                 # Only include those with a lat/long
                 forts = [fort for fort in cell['forts'] if 'latitude' in fort and 'type' in fort]
@@ -91,24 +91,6 @@ class PokemonGoBot(object):
         inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
         with open('web/info.json', 'w') as outfile:
             json.dump(inventory_dict, outfile)
-
-        # get player balls stock
-        # ----------------------
-        balls_stock = {1:0,2:0,3:0,4:0}
-
-        for item in inventory_dict:
-            try:
-                if item['inventory_item_data']['item']['item_id'] == 1:
-                    #print('Poke Ball count: ' + str(item['inventory_item_data']['item']['count']))
-                    balls_stock[1] = item['inventory_item_data']['item']['count']
-                if item['inventory_item_data']['item']['item_id'] == 2:
-                    #print('Great Ball count: ' + str(item['inventory_item_data']['item']['count']))
-                    balls_stock[2] = item['inventory_item_data']['item']['count']
-                if item['inventory_item_data']['item']['item_id'] == 3:
-                    #print('Ultra Ball count: ' + str(item['inventory_item_data']['item']['count']))
-                    balls_stock[3] = item['inventory_item_data']['item']['count']
-            except:
-                continue
 
         # get player pokemon[id] group by pokemon[pokemon_id]
         # ----------------------
@@ -203,11 +185,36 @@ class PokemonGoBot(object):
                                 continue
                             self.inventory.append(item['inventory_item_data']['item'])
 
+    def pokeball_inventory(self):
+        self.api.get_player().get_inventory()
+
+        inventory_req = self.api.call()
+        inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+
+        # get player balls stock
+        # ----------------------
+        balls_stock = {1:0,2:0,3:0,4:0}
+
+        for item in inventory_dict:
+            try:
+                if item['inventory_item_data']['item']['item_id'] == 1:
+                    #print('Poke Ball count: ' + str(item['inventory_item_data']['item']['count']))
+                    balls_stock[1] = item['inventory_item_data']['item']['count']
+                if item['inventory_item_data']['item']['item_id'] == 2:
+                    #print('Great Ball count: ' + str(item['inventory_item_data']['item']['count']))
+                    balls_stock[2] = item['inventory_item_data']['item']['count']
+                if item['inventory_item_data']['item']['item_id'] == 3:
+                    #print('Ultra Ball count: ' + str(item['inventory_item_data']['item']['count']))
+                    balls_stock[3] = item['inventory_item_data']['item']['count']
+            except:
+                continue
+        return balls_stock
+
     def _set_starting_position(self):
         self.position = self._get_pos_by_name(self.config.location)
         self.api.set_position(*self.position)
         print('')
-        print('[x] Address found: {}'.format(self.config.location.decode('utf-8')))
+        print(u'[x] Address found: {}'.format(self.config.location.decode('utf-8')))
         print('[x] Position in-game set as: {}'.format(self.position))
         print('')
 

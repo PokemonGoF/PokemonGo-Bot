@@ -42,6 +42,7 @@ Using a terminal navigate into the clone repository.
 
 Install all requirements for the project using `pip install -r ./requirements.txt`
 
+
 ### Develop PokemonGo-Bot
 
 Download or clone the **dev** branch of the repository: `git clone -b dev git@github.com:PokemonGoF/PokemonGo-Bot.git `
@@ -50,6 +51,15 @@ Using a terminal navigate into the clone repository.
 
 Install all requirements for the project using `pip install -r ./requirements.txt`
 **Code forest, code!**
+
+### Ubuntu virtualenv install
+
+sudo apt-get install virtualenv -y
+git clone https://github.com/PokemonGoF/PokemonGo-Bot
+cd PokemonGo-Bot
+virtualenv .
+source bin/activate
+pip install -r requirements.txt
 
 ### Google Maps API (Code is not done yet)
 
@@ -66,7 +76,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 6. After the code done, will update here how to replace.
 
 ## Usage
-    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-w]  [-d] [-t] [-s] [-c]
+    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-w] [-d] [-t] [-c] [-m]
 
     optional arguments:
       -h, --help                                    show this help message and exit
@@ -75,7 +85,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -p PASSWORD, --password PASSWORD              Password
       -l LOCATION, --location LOCATION              Location (Address or 'xx.yyyy,zz.ttttt')
       -w SPEED,  --walk SPEED                       Walk instead of teleport with given speed (meters per second max 4.16 because of walking end on 15km/h)
-      -s SPINSTOP, --spinstop                       Enable Spinning of PokeStops
+      -m MODE, --mode MODE                              Set farming Mode for the bot ('all', 'poke', 'farm')
       --maxstep MAX_STEP                            Set the steps around your initial location(DEFAULT 5 mean 25 cells around your location)
       -c CP, --cp                                   Set the CP to transfer or lower (eg. 100 will transfer CP0-99)
       -d, --debug                                   Debug Mode
@@ -115,7 +125,7 @@ Quick Tip: When using this script, use a Lucky egg to double the XP for 30 mins.
  * s2sphere
  * googlemaps
  * pgoapi
-To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg=pgoapi` 
+To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg=pgoapi`
 
 
 ## Contributors (Don't forget add yours here when you create PR:)
