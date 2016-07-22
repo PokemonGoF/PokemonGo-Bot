@@ -38,21 +38,21 @@ class PokemonCatchWorker(object):
                             
                             if self.ballstock[1] > 0:
                                 #DEBUG - Hide
-                                print 'use Poke Ball'
+                                #print 'use Poke Ball'
                                 pokeball = 1
                             else:
                                 #DEBUG - Hide
-                                print 'no Poke Ball'
+                                #print 'no Poke Ball'
                                 pokeball = 0
                                 
                             if cp > 200 and self.ballstock[2] > 0:
                                 #DEBUG - Hide
-                                print 'use Great Ball'
+                                #print 'use Great Ball'
                                 pokeball = 2
                                 
                             if cp > 400 and self.ballstock[3] > 0:
                                 #DEBUG - Hide
-                                print 'use Utra Ball'
+                                #print 'use Utra Ball'
                                 pokeball = 3
 
                             if pokeball is 0:
@@ -71,7 +71,7 @@ class PokemonCatchWorker(object):
                             response_dict = self.api.call()
 
                             #DEBUG - Hide
-                            print ('used ' + self.item_list[str(pokeball)] + '> [-1]')
+                            #print ('used ' + self.item_list[str(pokeball)] + '> [-1]')
                             self.ballstock[pokeball] -= 1 
 
                             if response_dict and \
