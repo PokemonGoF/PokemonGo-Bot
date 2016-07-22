@@ -6,7 +6,7 @@ import threading
 import time
 import datetime
 from pgoapi import PGoApi
-from pgoapi.utilities import f2i, h2f
+from pgoapi.utilities import f2i, h2f, distance
 from cell_workers import PokemonCatchWorker, SeenFortWorker
 from stepper import Stepper
 from geopy.geocoders import GoogleV3
@@ -43,7 +43,7 @@ class PokemonGoBot(object):
                 # Only include those with a lat/long
                 forts = [fort for fort in cell['forts'] if 'latitude' in fort and 'type' in fort]
                 # Sort all by distance from current pos- eventually this should build graph & A* it
-                forts.sort(key=lambda x: SeenFortWorker.geocalc(self.position[0], self.position[1], fort['latitude'], fort['longitude']))
+                forts.sort(key=lambda x: distance(self.position[0], self.position[1], fort['latitude'], fort['longitude']))
                 for fort in cell['forts']:
                     worker = SeenFortWorker(fort, self)
                     hack_chain = worker.work()
@@ -88,7 +88,7 @@ class PokemonGoBot(object):
 
         ### @@@ TODO: Convert this to d/m/Y H:M:S
         creation_date = datetime.datetime.fromtimestamp(player['creation_time'] / 1e3)
-        
+
         pokecoins = '0'
         stardust = '0'
 
@@ -152,7 +152,7 @@ class PokemonGoBot(object):
         return (loc.latitude, loc.longitude, loc.altitude)
 
 
-    ###########################################    
+    ###########################################
     ## @eggins pretty print functions
     ###########################################
 

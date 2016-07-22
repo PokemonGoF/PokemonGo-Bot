@@ -28,7 +28,7 @@ import re
 import requests
 import random
 
-from utilities import f2i, h2f, i2f
+from utilities import f2i, h2f, i2f, distance
 
 from rpc_api import RpcApi
 from auth_ptc import AuthPtc
@@ -110,14 +110,8 @@ class PGoApi:
         self.check_awarded_badges()
         self.call()
 
-    # Source: http://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
-    def distance(self, lat1, lon1, lat2, lon2):
-        p = 0.017453292519943295
-        a = 0.5 - cos((lat2 - lat1) * p)/2 + cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2
-        return 12742 * asin(sqrt(a)) * 1000
-
     def walk(self, speed, lat, lng, alt,walking_hook):
-        dist = self.distance(i2f(self._position_lat), i2f(self._position_lng), lat, lng)
+        dist = distance(i2f(self._position_lat), i2f(self._position_lng), lat, lng)
         steps = (dist+0.0)/(speed+0.0) # may be rational number
         intSteps = int(steps)
         residuum = steps - intSteps
