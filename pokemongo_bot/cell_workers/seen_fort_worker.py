@@ -47,7 +47,7 @@ class SeenFortWorker(object):
         fort_name = fort_details['name'].encode('utf8', 'replace')
         print_yellow('[#] Now at Pokestop: ' + fort_name + ' - Spinning...')
         sleep(2)
-        self.api.fort_search(fort_id=self.fort['id'], fort_latitude=lat, fort_longitude=lng, player_latitude=f2i(position[0]), player_longitude=f2i(position[1]))
+        self.api.fort_search(fort_id=self.fort['id'], fort_latitude=lat, fort_longitude=lng, player_latitude=f2i(self.position[0]), player_longitude=f2i(self.position[1]))
         response_dict = self.api.call()
         if 'responses' in response_dict and \
             'FORT_SEARCH' in response_dict['responses']:
