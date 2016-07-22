@@ -1,6 +1,7 @@
 import time
 from sets import Set
 from human_behaviour import sleep
+from utils import distance, print_green, print_yellow, print_red
 
 
 class PokemonCatchWorker(object):
