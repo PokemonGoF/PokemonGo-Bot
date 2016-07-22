@@ -80,8 +80,6 @@ class PokemonCatchWorker(object):
                                         print_green('[x] Captured {}! [CP {}] - exchanging for candy'.format(pokemon_name, cp))
                                         id_list2 = self.count_pokemon_inventory()
                                         # Transfering Pokemon
-
-                                        ## TODO - FIX TRANSFERRING OF POKEMON
                                         self.transfer_pokemon(list(Set(id_list2) - Set(id_list1)))
                                         print_green('[#] {} has been exchanged for candy!'.format(pokemon_name))
                                     else:

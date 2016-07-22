@@ -2,6 +2,8 @@
 
 import struct
 from math import cos, asin, sqrt
+from colorama import init
+init()
 
 def distance(lat1, lon1, lat2, lon2):
     p = 0.017453292519943295
