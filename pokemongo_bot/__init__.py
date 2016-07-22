@@ -90,10 +90,6 @@ class PokemonGoBot(object):
 
         inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
 
-        # get player balls stock
-        # ----------------------
-        balls_stock = self.pokeball_inventory()
-
         # get player pokemon[id] group by pokemon[pokemon_id]
         # ----------------------
         pokemon_stock = {}
