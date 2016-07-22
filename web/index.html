@@ -100,7 +100,7 @@
         }
       }
       function updateInventory() {
-        loadJSON('info.json?_=' + new Date().getTime(),
+        loadJSON('info.json',
           function(data) { 
             inventory = data;
             playerInfo = filter(inventory, 'player_stats');
