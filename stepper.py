@@ -23,12 +23,14 @@ class Stepper(object):
         self.steplimit2 = self.steplimit**2
         self.origin_lat = self.bot.position[0]
         self.origin_lon = self.bot.position[1]
+
     def walking_hook(own):
         print('[>] walking...')
     def take_step(self):
         position=(self.origin_lat,self.origin_lon,0.0)
 
         self.api.set_position(*position)
+
         for step in range(self.steplimit2):
             #starting at 0 index
             print('[#] Scanning area for objects ({} / {})'.format((step+1), self.steplimit**2))
@@ -67,22 +69,6 @@ class Stepper(object):
                 for cell in map_cells:
                     self.bot.work_on_cell(cell,position)
             time.sleep(10)
-
-            #starting at 0 index
-            print('looping: step {} of {}'.format((step+1), self.steplimit**2))
-            print('steplimit: {} x: {} y: {} pos: {} dx: {} dy {}'.format(self.steplimit2, self.x, self.y, self.pos, self.dx, self.dy))
-            # Scan location math
-            if -self.steplimit2 / 2 < self.x <= self.steplimit2 / 2 and -self.steplimit2 / 2 < self.y <= self.steplimit2 / 2:
-                position = (self.x * 0.0025 + self.origin_lat, self.y * 0.0025 + self.origin_lon, 0)
-                if self.config.walk > 0:
-                    self.api.walk(self.config.walk, *position,walking_hook=self.walking_hook)
-                else:
-                    self.api.set_position(*position)
-                print(position)
-            if self.x == self.y or self.x < 0 and self.x == -self.y or self.x > 0 and self.x == 1 - self.y:
-                (self.dx, self.dy) = (-self.dy, self.dx)
-
-            (self.x, self.y) = (self.x + self.dx, self.y + self.dy)
 
     def _get_cellid(self, lat, long):
         origin = CellId.from_lat_lng(LatLng.from_degrees(lat, long)).parent(15)
