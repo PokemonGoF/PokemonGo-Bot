@@ -30,17 +30,17 @@ class PokemonGoBot(object):
     def take_step(self):
         self.stepper.take_step()
 
-    def work_on_cell(self, cell, position):
-        if 'catchable_pokemons' in cell:
+    def work_on_cell(self, cell, position, include_fort_on_path):
+        if (self.config.mode == "all" or self.config.mode == "poke") and 'catchable_pokemons' in cell:
             print '[#] Something rustles nearby!'
             for pokemon in cell['catchable_pokemons']:
                 worker = PokemonCatchWorker(pokemon, self)
                 worker.work()
-        if 'wild_pokemons' in cell:
+        if (self.config.mode == "all" or self.config.mode == "poke") and 'wild_pokemons' in cell:
             for pokemon in cell['wild_pokemons']:
                 worker = PokemonCatchWorker(pokemon, self)
                 worker.work()
-        if self.config.spinstop:
+        if (self.config.mode == "all" or self.config.mode == "farm") and include_fort_on_path:
             if 'forts' in cell:
                 # Only include those with a lat/long
                 forts = [fort for fort in cell['forts'] if 'latitude' in fort and 'type' in fort]
