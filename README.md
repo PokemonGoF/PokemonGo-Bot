@@ -54,12 +54,12 @@ Install all requirements for the project using `pip install -r ./requirements.tx
 
 ### Ubuntu virtualenv install
 
-sudo apt-get install virtualenv -y
-git clone https://github.com/PokemonGoF/PokemonGo-Bot
-cd PokemonGo-Bot
-virtualenv .
-source bin/activate
-pip install -r requirements.txt
+    $ sudo apt-get install virtualenv -y
+    $ git clone https://github.com/PokemonGoF/PokemonGo-Bot
+    $ cd PokemonGo-Bot
+    $ virtualenv .
+    $ source bin/activate
+    $ pip install -r requirements.txt
 
 ### Google Maps API (Code is not done yet)
 
