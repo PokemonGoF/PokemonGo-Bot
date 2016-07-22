@@ -10,6 +10,7 @@ class PokemonCatchWorker(object):
     def __init__(self, pokemon, bot):
         self.pokemon = pokemon
         self.api = bot.api
+        self.bot = bot;
         self.position = bot.position
         self.config = bot.config
         self.pokemon_list = bot.pokemon_list
@@ -39,17 +40,17 @@ class PokemonCatchWorker(object):
                                 #Simulate app
                                 sleep(3)
                         while(True):
-                            id_list1 = self.count_pokemon_inventory()
                             pokeball = 0
-                            for i in range(3):
-                                for item in self.inventory:
-                                    if item['item_id'] is not i:
-                                        continue
-                                    if item['count'] is 0:
-                                        continue
-                                    pokeball = i
-                                    item['count'] -= 1
+                            balls_stock = self.bot.pokeball_inventory();
+                            for pokeball_type, pokeball_count in balls_stock.iteritems():
+                                # Masterball
+                                if pokeball_type == 4:
                                     break
+
+                                if pokeball_count > 0:
+                                    pokeball = pokeball_type
+                                    break
+
                             if pokeball is 0:
                                 print_red('[x] Out of pokeballs...')
                                 # TODO: Begin searching for pokestops.
