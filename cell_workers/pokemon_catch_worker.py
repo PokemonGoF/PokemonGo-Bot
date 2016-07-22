@@ -8,9 +8,11 @@ class PokemonCatchWorker(object):
         self.position = bot.position
         self.config = bot.config
         self.pokemon_list = bot.pokemon_list
+        self.item_list = bot.item_list
+        self.inventory = bot.inventory
 
     def work(self):
-        encounter_id=self.pokemon['encounter_id']
+        encounter_id = self.pokemon['encounter_id']
         spawnpoint_id = self.pokemon['spawnpoint_id']
         player_latitude = self.pokemon['latitude']
         player_longitude = self.pokemon['longitude']
@@ -30,8 +32,22 @@ class PokemonCatchWorker(object):
                                 pokemon_name=self.pokemon_list[int(pokemon_num)]['Name']
                                 print('A Wild ' + str(pokemon_name) + ' appeared! [CP' + str(cp) + ']')
                         while(True):
+                            pokeball = 0
+                            for i in range(3):
+                                for item in self.inventory:
+                                    if item['item'] is not i:
+                                        continue
+                                    if item['count'] is 0:
+                                        continue
+                                    pokeball = i
+                                    item['count'] -= 1
+                                    break
+                            if pokeball is 0:
+                                print('Out of pokeballs...')
+                                break
+                            print('Using ' + self.item_list[str(pokeball)] + '...')
                             self.api.catch_pokemon(encounter_id = encounter_id,
-                                pokeball = 1,
+                                pokeball = pokeball,
                                 normalized_reticle_size = 1.950,
                                 spawn_point_guid = spawnpoint_id,
                                 hit_pokemon = 1,
@@ -48,6 +64,8 @@ class PokemonCatchWorker(object):
                                     print('[-] Attempted to capture ' + str(pokemon_name) + ' - failed.. trying again!')
                                     time.sleep(1.25)
                                     continue
+                                if status is 3:
+                                    print(str(pokemon_name) + ' vanished! :(')
                                 if status is 1:
                                     if cp < self.config.cp:
                                         print('Captured ' + str(pokemon_name) + '! [CP' + str(cp) + '] - exchanging for candy')
@@ -58,24 +76,24 @@ class PokemonCatchWorker(object):
         time.sleep(5)
 
     def _transfer_low_cp_pokemon(self, value):
-    	self.api.get_inventory()
-    	response_dict = self.api.call()
-    	self._transfer_all_low_cp_pokemon(value, response_dict)
+        self.api.get_inventory()
+        response_dict = self.api.call()
+        self._transfer_all_low_cp_pokemon(value, response_dict)
 
     def _transfer_all_low_cp_pokemon(self, value, response_dict):
-    	if 'responses' in response_dict:
-    		if 'GET_INVENTORY' in response_dict['responses']:
-    			if 'inventory_delta' in response_dict['responses']['GET_INVENTORY']:
-    				if 'inventory_items' in response_dict['responses']['GET_INVENTORY']['inventory_delta']:
-    					for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
-    						if 'inventory_item_data' in item:
-    							if 'pokemon' in item['inventory_item_data']:
-    								pokemon = item['inventory_item_data']['pokemon']
-    								self._execute_pokemon_transfer(value, pokemon)
-    								time.sleep(1.2)
+        if 'responses' in response_dict:
+            if 'GET_INVENTORY' in response_dict['responses']:
+                if 'inventory_delta' in response_dict['responses']['GET_INVENTORY']:
+                    if 'inventory_items' in response_dict['responses']['GET_INVENTORY']['inventory_delta']:
+                        for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
+                            if 'inventory_item_data' in item:
+                                if 'pokemon' in item['inventory_item_data']:
+                                    pokemon = item['inventory_item_data']['pokemon']
+                                    self._execute_pokemon_transfer(value, pokemon)
+                                    time.sleep(1.2)
 
     def _execute_pokemon_transfer(self, value, pokemon):
-    	if 'cp' in pokemon and pokemon['cp'] < value:
-    		self.api.release_pokemon(pokemon_id=pokemon['id'])
-    		response_dict = self.api.call()
-    		print('Exchanged successfuly!')
+        if 'cp' in pokemon and pokemon['cp'] < value:
+            self.api.release_pokemon(pokemon_id=pokemon['id'])
+            response_dict = self.api.call()
+            print('Exchanged successfuly!')
