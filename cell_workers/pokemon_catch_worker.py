@@ -68,13 +68,17 @@ class PokemonCatchWorker(object):
                                     time.sleep(1.25)
                                     continue
                                 if status is 3:
-                                    print(str(pokemon_name) + ' vanished! :(')
+                                    print('[x] Oh no! ' + str(pokemon_name) + ' vanished! :(')
                                 if status is 1:
                                     if cp < self.config.cp:
                                         print('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + '] - exchanging for candy')
-                                        self._transfer_low_cp_pokemon(self.config.cp)
                                         id_list2 = self.count_pokemon_inventory()
-                                        self.transfer_pokemon(list(Set(id_list2) - Set(id_list1))[0])
+                                        try:
+                                            # Transfering Pokemon
+                                            self.transfer_pokemon(list(Set(id_list2) - Set(id_list1))[0])
+                                        except:
+                                            print('[###] Your inventory is full! Please manually delete some items.')
+                                            break
                                     else:
                                         print('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + ']')
                             break
@@ -101,11 +105,12 @@ class PokemonCatchWorker(object):
     	if 'cp' in pokemon and pokemon['cp'] < value:
     		self.api.release_pokemon(pokemon_id=pokemon['id'])
     		response_dict = self.api.call()
-    		print('[x] Exchanged successfuly!')
+    		print('[x] Exchanged successfully!')
 
     def transfer_pokemon(self, pid):
+        self.api.release_pokemon(pokemon_id=pid)
         response_dict = self.api.call()
-        print('[x] Exchanged successfuly!')
+        print('[x] Exchanged successfully!')
 
     def count_pokemon_inventory(self):
         self.api.get_inventory()
