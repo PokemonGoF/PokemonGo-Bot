@@ -1,6 +1,22 @@
 {
-    "auth_service": "google",
-    "username": "example@gmail.com",
-    "password": "password11!!",
-    "location": "New York"
+  "auth_service": "google",
+  "username": "example@gmail.com",
+  "password": "password11!!",
+  "location": "New York",
+  "tasks": [
+    {
+      "type": "TransferPokemon",
+      "arguments": {
+        "minimumRemainingSlots": 10,
+        "minimumCP": 100
+      }
+    },
+    {
+      "type": "CatchPokemon",
+      "arguments": {
+        "greatBallCP": 300,
+        "ultraBallCP": 500
+      }
+    }
+  ]
 }
