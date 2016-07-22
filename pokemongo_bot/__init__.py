@@ -9,7 +9,7 @@ import time
 import datetime
 from pgoapi import PGoApi
 from cell_workers import PokemonCatchWorker, SeenFortWorker
-from cell_workers.utils import distance
+from cell_workers.utils import filtered_forts, distance
 from stepper import Stepper
 from geopy.geocoders import GoogleV3
 from math import radians, sqrt, sin, cos, atan2
@@ -30,26 +30,29 @@ class PokemonGoBot(object):
     def take_step(self):
         self.stepper.take_step()
 
-    def work_on_cell(self, cell, position, include_fort_on_path):
-        if (self.config.mode == "all" or self.config.mode == "poke") and 'catchable_pokemons' in cell:
+    def work_on_cell(self, map_cells, position, include_fort_on_path):
+        if (self.config.mode == "all" or self.config.mode == "poke"):
             print '[#] Something rustles nearby!'
-            for pokemon in cell['catchable_pokemons']:
-                with open('web/catchable.json', 'w') as outfile:
-                    json.dump(pokemon, outfile)
-                worker = PokemonCatchWorker(pokemon, self)
-                worker.work()
-        if (self.config.mode == "all" or self.config.mode == "poke") and 'wild_pokemons' in cell:
-            for pokemon in cell['wild_pokemons']:
-                worker = PokemonCatchWorker(pokemon, self)
-                worker.work()
+            for cell in map_cells:
+                if 'catchable_pokemons' in cell:
+                    for pokemon in cell['catchable_pokemons']:
+                        with open('web/catchable.json', 'w') as outfile:
+                            json.dump(pokemon, outfile)
+                        worker = PokemonCatchWorker(pokemon, self)
+                        worker.work()
+
+        if (self.config.mode == "all" or self.config.mode == "poke"):
+            for cell in map_cells:
+                if 'wild_pokemons' in cell:
+                    for pokemon in cell['wild_pokemons']:
+                        worker = PokemonCatchWorker(pokemon, self)
+                        worker.work()
+
         if (self.config.mode == "all" or self.config.mode == "farm") and include_fort_on_path:
-            if 'forts' in cell:
-                # Only include those with a lat/long
-                forts = [fort for fort in cell['forts'] if 'latitude' in fort and 'type' in fort]
-                forts.sort(key=lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']), reverse=True)
-                if (forts[0] is not None):
-                    worker = SeenFortWorker(forts[0], self)
-                    worker.work()
+            forts = filtered_forts(self.position[0], self.position[1], sum([cell.get('forts',[]) for cell in map_cells],[]))
+            if forts:
+                worker = SeenFortWorker(forts[0], self)
+                worker.work()
 
     def _setup_logging(self):
         self.log = logging.getLogger(__name__)

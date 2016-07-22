@@ -1,17 +1,40 @@
 # -*- coding: utf-8 -*-
 
+import time
 import struct
-from math import cos, asin, sqrt
+import s2sphere
+
 from colorama import init
+from math import cos, asin, sqrt
+from geopy.distance import VincentyDistance, vincenty
+
 init()
 
 def distance(lat1, lon1, lat2, lon2):
-    p = 0.017453292519943295
-    a = 0.5 - cos((lat2 - lat1) * p)/2 + cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2
-    return 12742 * asin(sqrt(a)) * 1000
+    return vincenty((lat1, lon2), (lat2, lon2)).meters
 
 def i2f(int):
     return struct.unpack('<d', struct.pack('<Q', int))[0]
+
+def filtered_forts(lat, lng, forts):
+    forts = [(fort, distance(lat, lng, fort['latitude'], fort['longitude'])) for fort in forts if ("enabled" in fort or lure_info in fort)]
+    sorted_forts = sorted(forts, lambda x,y : cmp(x[1],y[1]))
+    return [x[0] for x in sorted_forts]
+
+#from pokemongodev slack @erhan
+def get_neighbours(loc, level=15, spread=700):
+    distance = VincentyDistance(meters=spread)
+    center = (loc[0], loc[1], 0)
+    p1 = distance.destination(point=center, bearing=45)
+    p2 = distance.destination(point=center, bearing=225)
+    p1 = s2sphere.LatLng.from_degrees(p1[0], p1[1])
+    p2 = s2sphere.LatLng.from_degrees(p2[0], p2[1])
+    rect = s2sphere.LatLngRect.from_point_pair(p1, p2)
+    region = s2sphere.RegionCoverer()
+    region.min_level = level
+    region.max_level = level
+    cells = region.get_covering(rect)
+    return sorted([c.id() for c in cells])
 
 def print_green(message):
     print(u'\033[92m' + message.decode('utf-8') + '\033[0m');
