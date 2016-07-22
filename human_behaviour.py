@@ -2,7 +2,7 @@ import time
 from random import random, randint
 
 def sleep(seconds):
-    jitter = seconds * 1000 / 10
+    jitter = 0.1 * seconds
     sleep_time = randint( seconds-jitter ,seconds+jitter)
     time.sleep(sleep_time)
 
