@@ -38,6 +38,8 @@ class PokemonGoBot(object):
                     json.dump(pokemon, outfile)
                 worker = PokemonCatchWorker(pokemon, self)
                 worker.work()
+                with open('web/catchable.json', 'w') as outfile:
+                    json.dump({}, outfile)
         if (self.config.mode == "all" or self.config.mode == "poke") and 'wild_pokemons' in cell:
             for pokemon in cell['wild_pokemons']:
                 worker = PokemonCatchWorker(pokemon, self)
@@ -53,7 +55,7 @@ class PokemonGoBot(object):
                     worker = SeenFortWorker(fort, self)
                     hack_chain = worker.work()
                     if hack_chain > 10:
-                        print('need a rest')
+                        #print('need a rest')
                         break
 
     def _setup_logging(self):

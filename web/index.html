@@ -95,6 +95,9 @@
           cMarker.setPosition({lat: parseFloat(cInfo['latitude']), lng: parseFloat(cInfo['longitude'])});
           cMarker.setIcon("image/icons/" + cInfo['pokemon_id'] + ".png");
         }
+        if(cInfo['latitude'] == undefined && cMarker != undefined) {
+          cMarker.setIcon("image/icons/blank.png");
+        }
       }
       function updateInventory() {
         loadJSON('info.json',
