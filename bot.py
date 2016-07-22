@@ -193,7 +193,7 @@ class PokemonGoBot(object):
                                 continue
                             if not 'item' in item['inventory_item_data']:
                                 continue
-                            if not 'item' in item['inventory_item_data']['item']:
+                            if not 'item_id' in item['inventory_item_data']['item']:
                                 continue
                             if not 'count' in item['inventory_item_data']['item']:
                                 continue
@@ -237,7 +237,7 @@ class PokemonGoBot(object):
                         for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
                             #print('item {}'.format(item))
                             if 'inventory_item_data' in item:
-                                if 'pokemon' in item['inventory_item_data']:
+                                if 'pokemon_data' in item['inventory_item_data']:
                                     pokecount = pokecount + 1
                                 if 'item' in item['inventory_item_data']:
                                     if 'count' in item['inventory_item_data']['item']:
