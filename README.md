@@ -1,4 +1,4 @@
-# PokemonGo-Bot - a pokemon script can catch pokemon and spin the pokestop.
+# PokemonGo-Bot - a pokemon script that can catch pokemons and spin the pokestops.
 
 ## Project chat
 
@@ -49,7 +49,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 3. Wait an eternity.
 4. Click 'Create' on the next page (optionally, fill out the info)
 5. Copy the API key that appears.
-6. After the code done, will update here how to replace
+6. After the code done, will update here how to replace.
 
 ## Usage
     usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-w]  [-d] [-t] [-s] [-c]
@@ -69,7 +69,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 
 
 ### Command Line Example
-    Pokomon Training Account:
+    Pokemon Trainer Club (PTC) account:
     $ python2 pokecli.py -a ptc -u tejado -p 1234 --location "New York, Washington Square"
     Google Account:
     $ python2 pokecli.py -a google -u tejado -p 1234 --location "New York, Washington Square"
@@ -79,11 +79,11 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 ### Losing Starter Pokemon and others
     You can use -c 1 to protect your first stage low CP pokemon.
 ### Does it run automatally?
-    Not yet, still need a trainer to train the script param.  But we are very close to.
+    Not yet, still need a trainer to train the script param. But we are very close to.
 ### Set GEO Location
     It works, use -l "xx.yyyy,zz.ttttt" to set lat long for location. -- diordache
 ### FLEE
-   The status code "3" corresponds to "Flee" - meaning your Pokemon has run away.
+   The status code "3" corresponds to "Flee" - meaning your Pokemon has ran away.
    {"responses": { "CATCH_POKEMON": { "status": 3 } }
 ### My pokemon are not showing up in my Pokedex?
    Finish the tutorial on a smartphone. This will then allow everything to be visible.
@@ -108,6 +108,7 @@ crack00r
 ethervoid
 Bashin
 tstumm
+TheGoldenXY
 
 ## Credits
 ### The works are based on the Pokemon Go API
