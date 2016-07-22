@@ -71,9 +71,9 @@ def init_config():
     parser.set_defaults(DEBUG=False, TEST=False)
     config = parser.parse_args()
 
-    if not config.username:
+    if not config.username and not 'username' in load:
         config.username = raw_input("Username: ")
-    if not config.password:
+    if not config.password and not 'password' in load:
         config.password = getpass("Password: ")
 
     # Passed in arguments shoud trump
