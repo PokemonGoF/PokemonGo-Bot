@@ -42,7 +42,7 @@ class PokemonGoBot(object):
             if 'forts' in cell:
                 # Only include those with a lat/long
                 forts = [fort for fort in cell['forts'] if 'latitude' in fort and 'type' in fort]
-                
+
                 # Sort all by distance from current pos- eventually this should build graph & A* it
                 forts.sort(key=lambda x: distance(self.position[0], self.position[1], fort['latitude'], fort['longitude']))
                 for fort in cell['forts']:
@@ -72,22 +72,23 @@ class PokemonGoBot(object):
         self._set_starting_position()
 
         if not self.api.login(self.config.auth_service, self.config.username, self.config.password):
-            return
+            print('Login Error, server busy')
+            exit(0)
 
         # chain subrequests (methods) into one RPC call
 
         # get player inventory call
         # ----------------------
         self.api.get_player().get_inventory()
-        
+
         inventory_req = self.api.call()
-        
+
         inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
-        
+
         # get player balls stock
-        # ----------------------    
+        # ----------------------
         balls_stock = {1:0,2:0,3:0,4:0}
-        
+
         for item in inventory_dict:
             try:
                 if item['inventory_item_data']['item']['item'] == 1:
@@ -101,11 +102,11 @@ class PokemonGoBot(object):
                     balls_stock[3] = item['inventory_item_data']['item']['count']
             except:
                 continue
-        
+
         # get player pokemon[id] group by pokemon[pokemon_id]
-        # ----------------------            
+        # ----------------------
         pokemon_stock = {}
-        
+
         for pokemon in inventory_dict:
             try:
                 id1 = pokemon['inventory_item_data']['pokemon']['pokemon_id']
@@ -115,15 +116,15 @@ class PokemonGoBot(object):
                 #print(str(id1))
                 if id1 not in pokemon_stock:
                     pokemon_stock[id1] = {}
-                #DEBUG - Hide    
+                #DEBUG - Hide
                 #print(str(id2))
                 pokemon_stock[id1].update({id3:id2})
             except:
                 continue
-        
+
         #DEBUG - Hide
         #print pokemon_stock
-        
+
         for id in pokemon_stock:
             #DEBUG - Hide
             #print id
@@ -133,14 +134,14 @@ class PokemonGoBot(object):
                 sorted_cp.reverse()
                 #DEBUG - Hide
                 #print sorted_cp
-                
+
                 #Hide for now. If Unhide transfer all poke duplicates exept most CP.
                 #for x in range(1, len(sorted_cp)):
                     #DEBUG - Hide
                     #print x
                     #print pokemon_stock[id][sorted_cp[x]]
                     #self.api.release_pokemon(pokemon_id=pokemon_stock[id][sorted_cp[x]])
-                    #response_dict = self.api.call()      
+                    #response_dict = self.api.call()
 
         # get player profile call
         # ----------------------
