@@ -103,6 +103,7 @@ class PokemonCatchWorker(object):
     		print('Exchanged successfuly!')
 
     def transfer_pokemon(self, pid):
+        self.api.release_pokemon(pokemon_id=pid)
         response_dict = self.api.call()
         print('Exchanged successfuly!')
 
