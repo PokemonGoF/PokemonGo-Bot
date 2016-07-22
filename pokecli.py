@@ -95,11 +95,6 @@ def main():
     if not config:
         return
 
-    if config.debug:
-        logging.getLogger("requests").setLevel(logging.DEBUG)
-        logging.getLogger("pgoapi").setLevel(logging.DEBUG)
-        logging.getLogger("rpc_api").setLevel(logging.DEBUG)
-
     print('[x] Configuration Initialized')
 
     bot = PokemonGoBot(config)
