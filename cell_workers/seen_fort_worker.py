@@ -13,10 +13,11 @@ class SeenFortWorker(object):
         self.item_list = bot.item_list
         self.rest_time = 50
     def walking_hook(own):
-        print('another walking_hook')
+        print('[>] Walking....')
     def work(self):
         lat = self.fort['latitude']
         lng = self.fort['longitude']
+
         fortID = self.fort['id']
         distance = SeenFortWorker.geocalc(self.position[0], self.position[1], lat, lng) * 1000
 
@@ -24,6 +25,7 @@ class SeenFortWorker(object):
         if distance > 10:
             print('Need to move closer to Pokestop')
             position = (lat, lng, 0.0)
+
             if self.config.walk > 0:
                 self.api.walk(self.config.walk, *position,walking_hook=self.walking_hook)
             else:
@@ -36,7 +38,8 @@ class SeenFortWorker(object):
         self.api.fort_details(fort_id=self.fort['id'], latitude=position[0], longitude=position[1])
         response_dict = self.api.call()
         fort_details = response_dict['responses']['FORT_DETAILS']
-        print('Now at Pokestop: ' + fort_details['name'] + ' - Spinning...')
+        fort_name = fort_details['name'].encode('utf8', 'replace')
+        print('Now at Pokestop: ' + fort_name + ' - Spinning...')
         time.sleep(2)
         self.api.fort_search(fort_id=self.fort['id'], fort_latitude=lat, fort_longitude=lng, player_latitude=f2i(position[0]), player_longitude=f2i(position[1]))
         response_dict = self.api.call()
