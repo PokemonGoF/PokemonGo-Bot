@@ -80,22 +80,31 @@ def init_config():
 def main():
     # log settings
     # log format
-    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(module)10s] [%(levelname)5s] %(message)s')
-    # log level for http request class
-    logging.getLogger("requests").setLevel(logging.WARNING)
-    # log level for main pgoapi class
-    logging.getLogger("pgoapi").setLevel(logging.INFO)
-    # log level for internal pgoapi class
-    logging.getLogger("rpc_api").setLevel(logging.INFO)
+    #logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(module)10s] [%(levelname)5s] %(message)s')
+
+    # @eggins clean log
+    print('[x] Initializing PokemonGO Bot v1.0')
+    time.sleep(1)
+    print('[x] PokemonGo Bot [@PokemonGoF | @eggins | @crack00r | @ethervoid | /r/pokemongodev]')
 
     config = init_config()
     if not config:
         return
 
     if config.debug:
+        # log level for http request class
+        logging.getLogger("requests").setLevel(logging.WARNING)
+        # log level for main pgoapi class
+        logging.getLogger("pgoapi").setLevel(logging.INFO)
+        # log level for internal pgoapi class
+        logging.getLogger("rpc_api").setLevel(logging.INFO)
+
+    if config.debug:
         logging.getLogger("requests").setLevel(logging.DEBUG)
         logging.getLogger("pgoapi").setLevel(logging.DEBUG)
         logging.getLogger("rpc_api").setLevel(logging.DEBUG)
+
+    print('[x] Configuration Initialized')
 
     bot = PokemonGoBot(config)
     bot.start()
