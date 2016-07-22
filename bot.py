@@ -165,18 +165,16 @@ class PokemonGoBot(object):
         if 'amount' in player['currencies'][1]:
             stardust = player['currencies'][1]['amount']
 
-        try:
-            print('[#]')
-            print('[#] Username: ' + str(player['username']))
-            print('[#] Acccount Creation: ' + str(creation_date))
-            print('[#] Bag Storage: ' + str(self.getInventoryCount('item')) + '/' + str(player['item_storage']))
-            print('[#] Pokemon Storage: ' + str(self.getInventoryCount('pokemon')) + '/' + str(player['poke_storage']))
-            print('[#] Stardust: ' + str(stardust))
-            print('[#] Pokecoins: ' + str(pokecoins))
-            self.getPlayerInfo()
-            print('[#]')
-        except:
-             print('Exception during print player profile')
+        print('[#]')
+        print('[#] Username: ' + str(player['username']))
+        print('[#] Acccount Creation: ' + str(creation_date))
+        print('[#] Bag Storage: ' + str(self.getInventoryCount('item')) + '/' + str(player['max_item_storage']))
+        print('[#] Pokemon Storage: ' + str(self.getInventoryCount('pokemon')) + '/' + str(player['max_pokemon_storage']))
+        print('[#] Stardust: ' + str(stardust))
+        print('[#] Pokecoins: ' + str(pokecoins))
+        self.getPlayerInfo()
+        print('[#]')
+
         self.update_inventory();
 
     def update_inventory(self):
@@ -219,6 +217,12 @@ class PokemonGoBot(object):
 
         return (loc.latitude, loc.longitude, loc.altitude)
 
+    def heartbeat(self):
+        self.api.get_player()
+        self.api.get_hatched_eggs()
+        self.api.get_inventory()
+        self.api.check_awarded_badges()
+        self.api.call()
 
     ###########################################
     ## @eggins pretty print functions
