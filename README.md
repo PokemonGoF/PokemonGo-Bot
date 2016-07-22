@@ -15,6 +15,7 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 
 # To-Do:
 - [ ] Google Map API key setup
+- [ ] Show all objects on map
 - [x] Limit the step to farm specific area for pokestops
 - [ ] Pokemon transfer filter
 - [ ] Drop items when bag is full
