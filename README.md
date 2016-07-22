@@ -10,7 +10,8 @@ We use [Gitter](https://gitter.im) for a Github-integrated web chat. [Click here
  * Search Fort(Spin Pokestop)
  * Catch Pokemon
  * Release low cp pokemon
- * Walking as you 
+ * Walking as you
+ * Use the ball you have to catch, don't if you don't have 
 
 # To-Do:
 - [ ] Google Map API key setup
@@ -96,7 +97,7 @@ Quick Tip: When using this script, use a Lucky egg to double the XP for 30 mins.
  * googlemaps
 
 
-## Contributors
+## Contributors (Don't forget add yours here when you create PR:)
 eggins -- The first pull request :)  
 crack00r  
 ethervoid
