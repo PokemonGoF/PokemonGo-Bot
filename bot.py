@@ -38,9 +38,9 @@ class PokemonGoBot(object):
         if self.config.spinstop:
             if 'forts' in cell:
                 # Only include those with a lat/long
-                forts = [fort for fort in cell['forts'] if 'latitude' in fort]
+                forts = [fort for fort in cell['forts'] if 'latitude' in fort and 'type' in fort]
                 # Sort all by distance from current pos- eventually this should build graph & A* it
-                forts.sort(key=lambda x: SeenFortWorker.geocalc(self.position[0], self.position[1], fort['latitude'], fort['longitude'])) 
+                forts.sort(key=lambda x: SeenFortWorker.geocalc(self.position[0], self.position[1], fort['latitude'], fort['longitude']))
                 for fort in cell['forts']:
                     worker = SeenFortWorker(fort, self)
                     hack_chain = worker.work()

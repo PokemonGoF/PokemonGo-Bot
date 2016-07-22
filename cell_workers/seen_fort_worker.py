@@ -90,7 +90,7 @@ class SeenFortWorker(object):
                 print('may search too often, lets have a rest')
                 return 11
         time.sleep(8)
-        return 
+        return 0 
 
     @staticmethod
     def geocalc(lat1, lon1, lat2, lon2):
