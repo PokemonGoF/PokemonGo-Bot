@@ -169,13 +169,13 @@ class PokemonGoBot(object):
             stardust = player['currencies'][1]['amount']
 
         print('[#]')
-        print('[#] Username: ' + str(player['username']))
-        print('[#] Acccount Creation: ' + str(creation_date))
-        print('[#] Bag Storage: ' + str(self.getInventoryCount('item')) + '/' + str(player['max_item_storage']))
-        print('[#] Pokemon Storage: ' + str(self.getInventoryCount('pokemon')) + '/' + str(player['max_pokemon_storage']))
-        print('[#] Stardust: ' + str(stardust))
-        print('[#] Pokecoins: ' + str(pokecoins))
-        self.getPlayerInfo()
+        print('[#] Username: {username}'.format(**player))
+        print('[#] Acccount Creation: {}'.format(creation_date))
+        print('[#] Bag Storage: {}/{}'.format(self.get_inventory_count('item'), player['max_item_storage']))
+        print('[#] Pokemon Storage: {}/{}'.format(self.get_inventory_count('pokemon'), player['max_pokemon_storage']))
+        print('[#] Stardust: {}'.format(stardust))
+        print('[#] Pokecoins: {}'.format(pokecoins))
+        self.get_player_info()
         print('[#]')
 
         self.update_inventory();
@@ -203,8 +203,8 @@ class PokemonGoBot(object):
         self.position = self._get_pos_by_name(self.config.location)
         self.api.set_position(*self.position)
 
-        print('[x] Address found: ' + self.config.location.decode('utf-8'))
-        print('[x] Position in-game set as: ' + str(self.position))
+        print('[x] Address found: {}'.format(self.config.location.decode('utf-8')))
+        print('[x] Position in-game set as: {}'.format(self.position))
 
         if self.config.test:
             return
@@ -212,8 +212,6 @@ class PokemonGoBot(object):
     def _get_pos_by_name(self, location_name):
         geolocator = GoogleV3(api_key=self.config.gmapkey)
         loc = geolocator.geocode(location_name)
-
-        print
 
         #self.log.info('Your given location: %s', loc.address.encode('utf-8'))
         #self.log.info('lat/long/alt: %s %s %s', loc.latitude, loc.longitude, loc.altitude)
@@ -227,13 +225,7 @@ class PokemonGoBot(object):
         self.api.check_awarded_badges()
         self.api.call()
 
-    ###########################################
-    ## @eggins pretty print functions
-    ###########################################
-
-    ## - Get count of inventory items and return the output for each
-    def getInventoryCount(self, what):
-        # Get contents of inventory
+    def get_inventory_count(self, what):
         self.api.get_inventory()
         response_dict = self.api.call()
         if 'responses' in response_dict:
@@ -256,9 +248,7 @@ class PokemonGoBot(object):
             return itemcount
         return '0'
 
-    ## - Get more player information
-    def getPlayerInfo(self):
-        # Get contents of inventory
+    def get_player_info(self):
         self.api.get_inventory()
         response_dict = self.api.call()
         if 'responses' in response_dict:
@@ -276,14 +266,14 @@ class PokemonGoBot(object):
                                     nextlvlxp = (int(playerdata['next_level_xp']) - int(playerdata['experience']))
 
                                     if 'level' in playerdata:
-                                        print('[#] -- Level: ' + str(playerdata['level']))
+                                        print('[#] -- Level: {level}'.format(**playerdata))
 
                                     if 'experience' in playerdata:
-                                        print('[#] -- Experience: ' + str(playerdata['experience']))
-                                        print('[#] -- Experience until next level: ' + str(nextlvlxp))
+                                        print('[#] -- Experience: {experience}'.format(**playerdata))
+                                        print('[#] -- Experience until next level: {}'.format(nextlvlxp))
 
                                     if 'pokemons_captured' in playerdata:
-                                        print('[#] -- Pokemon Captured: ' + str(playerdata['pokemons_captured']))
+                                        print('[#] -- Pokemon Captured: {pokemons_captured}'.format(**playerdata))
 
                                     if 'poke_stop_visits' in playerdata:
-                                        print('[#] -- Pokestops Visited: ' + str(playerdata['poke_stop_visits']))
+                                        print('[#] -- Pokestops Visited: {poke_stop_visits}'.format(**playerdata))
