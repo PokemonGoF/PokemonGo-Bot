@@ -17,7 +17,7 @@ class SeenFortWorker(object):
         lat = self.fort['latitude']
         lng = self.fort['longitude']
         fortID = self.fort['id']
-        distance = self._geocalc(self.position[0], self.position[1], lat, lng) * 1000
+        distance = SeenFortWorker.geocalc(self.position[0], self.position[1], lat, lng) * 1000
 
         print('Found fort {} at distance {}m'.format(fortID, distance))
         if distance > 10:
@@ -90,9 +90,10 @@ class SeenFortWorker(object):
                 print('may search too often, lets have a rest')
                 return 11
         time.sleep(8)
-        return 0
+        return 
 
-    def _geocalc(self, lat1, lon1, lat2, lon2):
+    @staticmethod
+    def geocalc(lat1, lon1, lat2, lon2):
         lat1 = radians(lat1)
         lon1 = radians(lon1)
         lat2 = radians(lat2)
@@ -109,3 +110,7 @@ class SeenFortWorker(object):
         x = sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(dlon)
         c = atan2(y, x)
         return EARTH_R * c
+
+    @staticmethod
+    def closest_fort(current_lat, current_long, forts):
+        print x
