@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import time
-from sets import Set
+from collections import defaultdict
+from operator import itemgetter
 from utils import distance, print_green, print_yellow, print_red
 from pokemongo_bot.human_behaviour import sleep
 
@@ -81,26 +82,21 @@ class PokemonCatchWorker(object):
                                     print_red('[x] Oh no! {} vanished! :('.format(pokemon_name))
                                 if status is 1:
                                     if cp < self.config.cp:
-                                        print_green('[x] Captured {}! [CP {}] - exchanging for candy'.format(pokemon_name, cp))
-                                        id_list2 = self.count_pokemon_inventory()
+                                        print_green('[x] Captured {}! [CP {}]'.format(pokemon_name, cp))
                                         # Transfering Pokemon
-                                        pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
-                                        if len(pokemon_to_transfer) == 0:
-                                            raise RuntimeError('Trying to transfer 0 pokemons!')
-                                        self.transfer_pokemon(pokemon_to_transfer)
-                                        print_green('[#] {} has been exchanged for candy!'.format(pokemon_name))
+                                        self.count_pokemon_inventory()
                                     else:
                                         print_green('[x] Captured {}! [CP {}]'.format(pokemon_name, cp))
                             break
         time.sleep(5)
 
     def _transfer_low_cp_pokemon(self, value):
-    	self.api.get_inventory()
-    	response_dict = self.api.call()
-    	self._transfer_all_low_cp_pokemon(value, response_dict)
+        self.api.get_inventory()
+        response_dict = self.api.call()
+        self._transfer_all_low_cp_pokemon(value, response_dict)
 
     def _transfer_all_low_cp_pokemon(self, value, response_dict):
-    	try:
+        try:
             reduce(dict.__getitem__, ["responses", "GET_INVENTORY", "inventory_delta", "inventory_items"], response_dict)
         except KeyError:
             pass
@@ -116,21 +112,23 @@ class PokemonCatchWorker(object):
                     time.sleep(1.2)
 
     def _execute_pokemon_transfer(self, value, pokemon):
-    	if 'cp' in pokemon and pokemon['cp'] < value:
-    		self.api.release_pokemon(pokemon_id=pokemon['id'])
-    		response_dict = self.api.call()
+        if 'cp' in pokemon and pokemon['cp'] < value:
+            self.api.release_pokemon(pokemon_id=pokemon['id'])
+            response_dict = self.api.call()
 
-    def transfer_pokemon(self, pid):
-        self.api.release_pokemon(pokemon_id=pid)
+    def transfer_pokemon(self, uid):
+        self.api.release_pokemon(pokemon_id=uid)
         response_dict = self.api.call()
+        print_green('[#] Exchanged Successfully for candy!')
 
     def count_pokemon_inventory(self):
         self.api.get_inventory()
         response_dict = self.api.call()
-        id_list = []
-        return self.counting_pokemon(response_dict, id_list)
+        poke_list = []
+        poke_dict = {}
+        self.counting_pokemon(response_dict, poke_list, poke_dict)
 
-    def counting_pokemon(self, response_dict, id_list):
+    def counting_pokemon(self, response_dict, poke_list, poke_dict):
         try:
             reduce(dict.__getitem__, ["responses", "GET_INVENTORY", "inventory_delta", "inventory_items"], response_dict)
         except KeyError:
@@ -138,13 +136,36 @@ class PokemonCatchWorker(object):
         else:
             for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
                 try:
-                    reduce(dict.__getitem__, ["inventory_item_data", "pokemon_data"], item)
+                    reduce(dict.__getitem__, ["inventory_item_data"], item)
                 except KeyError:
                     pass
                 else:
-                    pokemon = item['inventory_item_data']['pokemon_data']
-                    if pokemon.get('is_egg', False):
-                        continue
-                    id_list.append(pokemon['id'])
+                    if 'pokemon_data' in item['inventory_item_data']:
+                        pokemon = item['inventory_item_data']['pokemon_data']
+                        if 'pokemon_id' in pokemon:
+                            pid = pokemon['pokemon_id']
+                            uid = pokemon['id']
+                            cp = pokemon['cp']
+                            poke_info = (pid,uid,cp)
+                            poke_list.append(poke_info)
 
-        return id_list
+        sorted_poke = defaultdict(list)
+        for pid,uid,cp in poke_list:
+            item = {'uid': uid, 'cp': cp}
+            sorted_poke[pid].append(item)
+
+        count = 0
+        sorted_poke = sorted(sorted_poke.items(), key=itemgetter(0))
+        for pokemon in sorted_poke:
+            pokemon[1].sort(key=itemgetter('cp'), reverse=True)
+            if len(pokemon[1]) > 1 :
+                remove_list = pokemon[1][1:]
+                for pokemons in remove_list:
+                    if pokemons['cp'] < self.config.cp:
+                        print_yellow('[#] {} pokemon transfered!'.format(count))
+                        pid = pokemon[0]
+                        uid = pokemons['uid']
+                        pokemon_name=self.pokemon_list[int(pid)]['Name']
+                        print_green('[#] {} having a CP of {} is going to be exchange for candy!'.format(pokemon_name, pokemons['cp']))
+                        count += 1
+                        self.transfer_pokemon(uid)
