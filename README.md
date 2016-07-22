@@ -75,6 +75,8 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 
 ## FAQ
 
+### Does it run automatally?
+    Not yet, still need a trainer to train the script param.  But we are very close to. 
 ### Set GEO Location
     It works, use -l "xx.yyyy,zz.ttttt" to set lat long for location. -- diordache
 ### FLEE
