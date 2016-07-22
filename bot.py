@@ -101,7 +101,7 @@ class PokemonGoBot(object):
             return
 
     def _get_pos_by_name(self, location_name):
-        geolocator = GoogleV3()
+        geolocator = GoogleV3(api_key=self.config.gmapkey)
         loc = geolocator.geocode(location_name)
 
         self.log.info('Your given location: %s', loc.address.encode('utf-8'))
