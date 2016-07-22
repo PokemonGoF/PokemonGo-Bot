@@ -41,7 +41,7 @@ class PokemonCatchWorker(object):
                             pokeball = 0
                             for i in range(3):
                                 for item in self.inventory:
-                                    if item['item'] is not i:
+                                    if item['item_id'] is not i:
                                         continue
                                     if item['count'] is 0:
                                         continue
