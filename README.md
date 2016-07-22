@@ -36,16 +36,20 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 
 ### Install PokemonGo-Bot for NORMAL usage
 
-    Download or clone the **master** branch of the repository: `git clone -b master git@github.com:PokemonGoF/PokemonGo-Bot.git `
-    Using a terminal navigate into the clone repository.
-    Install all requirements for the project using `pip install -r ./requirements.txt`
+Download or clone the **master** branch of the repository: `git clone -b master git@github.com:PokemonGoF/PokemonGo-Bot.git`
+
+Using a terminal navigate into the clone repository.
+
+Install all requirements for the project using `pip install -r ./requirements.txt`
 
 ### Develop PokemonGo-Bot
 
-   Download or clone the **dev** branch of the repository: `git clone -b dev git@github.com:PokemonGoF/PokemonGo-Bot.git `
-   Using a terminal navigate into the clone repository.
-   Install all requirements for the project using `pip install -r ./requirements.txt`
-   **Code forest, code!**
+Download or clone the **dev** branch of the repository: `git clone -b dev git@github.com:PokemonGoF/PokemonGo-Bot.git `
+
+Using a terminal navigate into the clone repository.
+
+Install all requirements for the project using `pip install -r ./requirements.txt`
+**Code forest, code!**
 
 ### Google Maps API (Code is not done yet)
 
