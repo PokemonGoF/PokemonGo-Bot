@@ -3,7 +3,7 @@ import time
 
 from s2sphere import CellId, LatLng
 from google.protobuf.internal import encoder
-
+import humanBehaviour
 from pgoapi.utilities import f2i, h2f
 
 
@@ -66,7 +66,7 @@ class Stepper(object):
                 #print('map_cells are {}'.format(len(map_cells)))
                 for cell in map_cells:
                     self.bot.work_on_cell(cell,position)
-            time.sleep(10)
+            humanBehaviour.sleep(10)
 
     def _walk_to(self, speed, lat, lng, alt):
         dist = self.distance(i2f(self.api._position_lat), i2f(self.api._position_lng), lat, lng)
