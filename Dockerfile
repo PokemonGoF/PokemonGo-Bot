@@ -1,0 +1,9 @@
+FROM python:2.7-onbuild
+ENV AUTH_SERVICE ""
+ENV USERNAME ""
+ENV PASSWORD ""
+ENV LOCATION ""
+ENV CP ""
+
+CMD python pokecli.py -a $AUTH_SERVICE -u $USERNAME -p $PASSWORD -l $LOCATION -s -c $CP
+

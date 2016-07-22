@@ -1,8 +1,0 @@
-{
-    "auth_service": "google",
-    "username": "example@gmail.com",
-    "password": "password11!!",
-    "location": "New York",
-    "debug": true,
-    "client_secret": "000000000000000000"
-}
