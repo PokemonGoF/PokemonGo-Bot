@@ -60,7 +60,7 @@ def init_config():
     parser.add_argument("-u", "--username", help="Username")
     parser.add_argument("-p", "--password", help="Password")
     parser.add_argument("-l", "--location", help="Location")
-    parser.add_argument("-lc", "--location_cache", help="Bot will start at last known location", type=bool, default=False)
+    parser.add_argument("-lc", "--location_cache", help="Bot will start at last known location", action='store_true', default=False)
     parser.add_argument("-m", "--mode", help="Farming Mode", type=str, default="all")
     parser.add_argument("-w", "--walk", help="Walk instead of teleport with given speed (meters per second, e.g. 2.5)", type=float, default=2.5)
     parser.add_argument("-c", "--cp",help="Set CP less than to transfer(DEFAULT 100)",type=int,default=100)
