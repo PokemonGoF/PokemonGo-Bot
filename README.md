@@ -1,43 +1,109 @@
-# PokemonGo-Bot - a pokemon script that can catch pokemons and spin the pokestops.
+<p align="center">
+  <a href="">
+    <img alt="Logo" src="https://www.brooklinelibrary.org/wp-content/uploads/2016/07/2000px-Pok%C3%A9_Ball.svg_-1.png" width="100">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://pokemongo-bot.herokuapp.com/"><img alt="Slack" src="https://pokemongo-bot.herokuapp.com/badge.svg"></a>
+</p>
+
+# PokemonGo-Bot
+A python script for __catching pokemons__ and __spin pokestops__ on PokemonGo.
+
+## Table of Contents
+- [Project Chat](#project-chat)
+- [Features](#features)
+- [Current Status](#current-status)
+- __Installation__
+  - [Requirements](#requirements)
+  - [Mac](#installation-mac)
+  - [Linux](#installation-linux)
+  - [Windows](#installation-windows)
+- [Develop PokemonGo-Bot](develop-pokemonGo-bot)
+- [Usage](#usage)
+- [FAQ](#faq)
+- [Credits](#credits)
+- [Donation](#donation)
 
 ## Project chat
-
-[![Slack Status](https://pokemongo-bot.herokuapp.com/badge.svg)](https://pokemongo-bot.herokuapp.com)
-
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
 
-## Features:
- * Search Fort(Spin Pokestop)
+## Project Chat
+We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
+
+## Features
+ * Search Fort (Spin Pokestop)
  * Catch Pokemon
  * Release low cp pokemon
  * Walking as you
  * Use the ball you have to catch, don't if you don't have
- * Rudimentary IV Functionality filter(Need verify)
+ * Rudimentary IV Functionality filter (Need verify)
  * Auto switch mode(Full of item then catch, no ball useable then farm)
  * Ignore certain pokemon filter
 
-## To-Do:
-- [ ] Standalone Desktop APP
-- [x] Google Map API key setup (Readme update needed)
-- [ ] Show all objects on map
-- [x] Limit the step to farm specific area for pokestops
-- [ ] Pokemon transfer filter
-- [ ] Drop items when bag is full
-- [x] Pokemon catch filter
-- [ ] Hatch eggs
-- [ ] Incubate eggs
-- [ ] Evolve pokemons
-- [ ] Use candy
-- [x] Code refactor
+## Current Status
+
+![Progress](http://progressed.io/bar/25)
+
+
+<table> 
+    <tr>
+        <td align="center"><b>TODO</b></td>
+        <td align="center"><b>In Progress</b></td>
+        <td align="center"><b>Done</b></td>
+    </tr>
+    <tr>
+        <td>
+            <img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%231&desc=Standalone%20Desktop%20APP">
+            <img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%235&desc=Pokemon%20transfer%20filter">
+        </td>
+        <td>
+            <img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%233&desc=Show%20all%20objects%20on%20map">
+        </td>
+        <td>
+            <img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%2312&desc=Code%20refactor">
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%236&desc=Drop%20items%20when%20bag%20is%20full">
+            <img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%238&desc=Hatch%20eggs">
+        </td>
+        <td></td>
+        <td>
+            <img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%232&desc=Google%20Map%20API%20key%20setup%20(Readme%20update%20needed)">
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%239&desc=Incubate%20eggs">
+            <img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%2310&desc=Evolve%20pokemons">
+        </td>
+        <td></td>
+        <td><img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%234&desc=Limit%20the%20step%20to%20farm%20specific%20area%20for%20pokestops"></td>
+    </tr>
+    <tr>
+        <td>
+            <img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%2311&desc=Use%20candy">
+        </td>
+        <td></td>
+        <td>
+            <img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%237&desc=Pokemon%20catch%20filter">
+        </td>
+    </tr>
+</table>
 
 ## Installation
 
 ### Requirements (click each one for install guide)
 
 - [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/)
+- [pip](https://pip.pypa.io/en/stable/installing/)
 - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-- [virtualenv](https://virtualenv.pypa.io/en/stable/installation/)
-- [protobuf 3](https://github.com/google/protobuf)  (OS Dependent, see below)
+- [virtualenv](https://virtualenv.pypa.io/en/stable/installation/) (Optional)
+- [docker](https://docs.docker.com/engine/installation/) (Optional)
+- [protobuf 3](https://github.com/google/protobuf) (OS Dependent, see below)
 
 ### Protobuf 3 installation
 
@@ -45,34 +111,51 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 - Windows: Download protobuf 3.0: [here](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip) and unzip `bin/protoc.exe` into a folder in your PATH.
 - Linux: `apt-get install python-protobuf`
 
-### Installation
 
+### Installation Linux
+
+```
+$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
+$ cd PokemonGo-Bot  
+$ pip install -r requirements.txt
+```
+
+### Installation Mac
+
+```
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
 $ cd PokemonGo-Bot  
 $ virtualenv .  
 $ source bin/activate  
-$ pip install -r requirements.txt  
+$ pip install -r requirements.txt
+```
+
+### Installation Windows
 
 ###### Windows Note
 On Windows, you will need to install PyYaml through the  [installer](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt. 
 
 Windows 10:
     Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl   
-    (If running 64-bit python or if you get a 'not a supported wheel on this platform' error, download the 64 bit version instead: PyYAML-3.11-cp27-cp27m-win_amd64.whl )
-
-    $ cd download-directory
-    $ pip install PyYAML-3.11-cp27-cp27m-win32.whl
-    (replace PyYAML-3.11-cp27-cp27m-win32.whl with PyYAML-3.11-cp27-cp27m-win_amd64.whl if you needed to download the 64-bit version)
-
+    (If running 64-bit python or if you get a 'not a supported wheel on this platform' error, 
+    download the 64 bit version instead: PyYAML-3.11-cp27-cp27m-win_amd64.whl )
+```
+$ cd download-directory
+$ pip install PyYAML-3.11-cp27-cp27m-win32.whl
+// (replace PyYAML-3.11-cp27-cp27m-win32.whl with PyYAML-3.11-cp27-cp27m-win_amd64.whl 
+// if you needed to download the 64-bit version)
+```
 ### Develop PokemonGo-Bot
 
+```
 $ git clone -b dev https://github.com/PokemonGoF/PokemonGo-Bot  
 $ cd PokemonGo-Bot  
 $ virtualenv .  
 $ source bin/activate  
 $ pip install -r requirements.txt  
+```
 
-### Google Maps API (In Development)
+### Google Maps API (in development)
 
 Google Maps API: a brief guide to your own key
 
@@ -211,6 +294,7 @@ To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg
  * mzupan
  * namlehong
  * gnekic(GeXx)
+ * luizperes
 
 ## Credits
 [tejado](https://github.com/tejado) many thanks for the API
