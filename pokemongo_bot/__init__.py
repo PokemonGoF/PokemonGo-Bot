@@ -102,15 +102,15 @@ class PokemonGoBot(object):
                          if 'latitude' in fort and 'type' in fort]
            
                 while len(forts) > 0:
-					# Sort all by distance from current pos- eventually this should
-					# build graph & A* it
-					forts.sort(key=lambda x: distance(self.position[
+                    # Sort all by distance from current pos- eventually this should
+                    # build graph & A* it
+                    forts.sort(key=lambda x: distance(self.position[
                                0], self.position[1], x['latitude'], x['longitude']))
-					fort = forts[0]
+                    fort = forts[0]
                     worker = SeenFortWorker(fort, self)
                     hack_chain = worker.work()
-					if fort in forts:
-						fort.remove(fort)
+                    if fort in forts:
+                        fort.remove(fort)
                     if hack_chain > 10: 
                         #print('need a rest')
                         sleep(10) # Changed to avoid an infinite loop, will now just move on to next location
