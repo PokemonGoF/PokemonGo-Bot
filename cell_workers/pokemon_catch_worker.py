@@ -106,24 +106,33 @@ class PokemonCatchWorker(object):
                                 if status is 3:
                                     print('[x] Oh no! ' + str(pokemon_name) + ' vanished! :(')
                                 if status is 1:
-                                    self.api.get_inventory()
-                                    response_dict = self.api.call()
-                                    if self.config.cp == "smart":
-                                        id_cp_tuples = self.get_id_cp_tuples_for_pokemonid(pokemon['pokemon_data']['pokemon_id'],response_dict)
-                                        prev_id, prev_cp = (0,0)
-                                        for id_cp in id_cp_tuples:
-                                            next_id,next_cp = id_cp
-                                            if next_cp < prev_cp:
-                                                self.transfer_pokemon(next_id)
-                                            elif prev_id != 0:
-                                                self.transfer_pokemon(prev_id)
-                                            prev_id,prev_cp = id_cp
                                     try:
                                         int_cp = int(self.config.cp)
                                     except Exception, e:
                                         int_cp = 0
-
-                                    if cp < int_cp:
+                                    self.api.get_inventory()
+                                    response_dict = self.api.call()
+                                    if self.config.cp == "smart":
+                                        print('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + ']')
+                                        id_cp_tuples = self.get_id_cp_tuples_for_pokemonid(pokemon['pokemon_data']['pokemon_id'],response_dict)
+                                        print("[+] Found same pokemons with CPs " + str([x[1] for x in id_cp_tuples]))
+                                        prev_id, prev_cp = (0,0)
+                                        exchange_pid, exchange_cp = (0,0)
+                                        for id_cp in id_cp_tuples:
+                                            current_id,current_cp = id_cp
+                                            if current_cp <= prev_cp:
+                                                exchange_pid = current_id
+                                                exchange_cp = current_cp
+                                            elif prev_id != 0:
+                                                exchange_pid = prev_id
+                                                exchange_cp = prev_cp
+                                                prev_id,prev_cp = id_cp
+                                            else:
+                                                prev_id,prev_cp = id_cp
+                                            if exchange_cp != 0 and exchange_pid != 0:
+                                                print('[x] Exchanging ' + str(pokemon_name) + ' from inventory with ! [CP' + str(exchange_cp) + ']')
+                                                self.transfer_pokemon(exchange_pid)
+                                    elif cp < int_cp:
                                         print('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + '] - exchanging for candy')
                                         id_list2 = self.count_pokemon_inventory()
                                         try:
