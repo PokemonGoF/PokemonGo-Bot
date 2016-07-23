@@ -141,7 +141,8 @@ To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg
  * earthchie
  * haykuro
  * 05-032
- 
+ * sinistance
+
 ## Credits
 ### The works are based on the Pokemon Go API
 [tejado](https://github.com/tejado) many thanks for the API
