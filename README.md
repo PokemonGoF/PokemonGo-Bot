@@ -19,7 +19,7 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 - [Project Chat](#project-chat)
 - [Features](#features)
 - [TODO List](#todo-list)
-- __Installation__
+- [__Installation__](#installation)
   - [Requirements](#requirements)
   - [Mac](#installation-mac)
   - [Linux](#installation-linux)
@@ -196,6 +196,18 @@ Quick Tip: When using this script, use a Lucky egg to double the XP for 30 mins.
 ### How can I not collect certain pokemon
 You don't want to collect common pokemon once you hit a certain level. It will
 slow down leveling but you won't fill up either.
+### I got an error. Please help
+First of all, make sure you are running the latest version by using the command ```$ git pull```.
+After that, update requirements using the command ```$ pip install -r requirements.txt```.
+Make sure you [installed](#protobuf-3-installation) protobuf.
+Check status of the pokemon go servers [here](http://ispokemongodownornot.com/).
+If the error still persists open an issue or chat with us at [slack](#project-chat) providing following information:
+- Command you are using to run bot
+- OS information
+- __Error code__
+- What branch you are using (dev or master)
+- Logs
+
 ### How do I use the map??
 You can either view the map via opening the html file, or by serving it with SimpleHTTPServer (runs on localhost:8000)  
 To use SimpleHTTPServer:  
