@@ -6,17 +6,14 @@ try:
 except:
     lcd = False
 
-def log(string, color = 'white'):
-    colorHex = {
-        'green': '92m',
-        'yellow': '93m',
-        'red': '91m'
-    }
+
+def log(string, color='white'):
+    colorHex = {'green': '92m', 'yellow': '93m', 'red': '91m'}
 
     if color not in colorHex:
         print(string)
     else:
-        print(u'\033['+ colorHex[color] + string.decode('utf-8') + '\033[0m')
+        print(u'\033[' + colorHex[color] + string.decode('utf-8') + '\033[0m')
     if lcd:
-        if(string):
+        if (string):
             lcd.message(string)
