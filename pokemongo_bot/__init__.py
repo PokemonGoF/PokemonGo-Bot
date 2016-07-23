@@ -282,7 +282,7 @@ class PokemonGoBot(object):
             try:
                 #
                 # save location flag used to pull the last known location from the location.json
-                with open('location.json') as f:
+                with open('data/last-location-%s.json' % (self.config.username)) as f:
                     location_json = json.load(f)
 
                     self.position = (location_json['lat'], location_json['lng'], 0.0)
@@ -310,7 +310,7 @@ class PokemonGoBot(object):
 
     def _get_pos_by_name(self, location_name):
         geolocator = GoogleV3(api_key=self.config.gmapkey)
-        loc = geolocator.geocode(location_name)
+        loc = geolocator.geocode(location_name, timeout=10)
 
         #self.log.info('Your given location: %s', loc.address.encode('utf-8'))
         #self.log.info('lat/long/alt: %s %s %s', loc.latitude, loc.longitude, loc.altitude)
