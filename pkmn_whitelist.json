@@ -1,0 +1,50 @@
+{
+	"any": {
+		"min_cp": 120,
+		"iv_min_stamina": 0,
+		"iv_min_attack": 13,
+		"iv_min_defense": 0
+	},
+	
+	"Magikarp": {
+		"min_cp": 0,
+		"iv_min_stamina": 10,
+		"iv_min_attack": 10,
+		"iv_min_defense": 10
+	},
+	
+	"Eevee": {
+		"min_cp": 0,
+		"iv_min_stamina": 0,
+		"iv_min_attack": 10,
+		"iv_min_defense": 0
+	},
+	
+	"Bulbasaur": {
+		"min_cp": 0,
+		"iv_min_stamina": 5,
+		"iv_min_attack": 0,
+		"iv_min_defense": 10
+	},
+	
+	"Charmander": {
+		"min_cp": 0,
+		"iv_min_stamina": 0,
+		"iv_min_attack": 10,
+		"iv_min_defense": 0
+	},
+	
+	"Squirtle": {
+		"min_cp": 0,
+		"iv_min_stamina": 5,
+		"iv_min_attack": 0,
+		"iv_min_defense": 10
+	},
+	
+	"Pinsir": {
+		"min_cp": 0,
+		"iv_min_stamina": 10,
+		"iv_min_attack": 13,
+		"iv_min_defense": 5
+	}
+}
