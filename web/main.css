@@ -6,11 +6,20 @@ html, body {
 #map {
 	height: 100%;
 }
-#options {
+#menu {
 	position: fixed;
 	right: 10px;
 	top: 10px;
 	z-index: 5;
 	height: auto;
 	width: auto;
+}
+#submenu {
+	position: fixed;
+	left: 20px;
+	top: 30%;
+	max-height: 700px;
+	width: 50%;
+	z-index: 6;
+	display: none;
 }

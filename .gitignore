@@ -103,6 +103,7 @@ pokedex.json
 web/catchable.json
 web/catchable-*.json
 web/location-*.json
+web/inventory-*.json
 web/location.json
 web/userdata.js
 data/last-location*.json
