@@ -60,13 +60,19 @@ class PokemonCatchWorker(object):
                                 #print 'use Poke Ball'
                                 pokeball = 1
 
-                            if cp > 300 and balls_stock[2] > 0:
-                                #print 'use Great Ball'
-                                pokeball = 2
+                            if balls_stock[2] > 0:
+                                if pokeball is 0 and cp <= 300 and balls_stock[2] < 10:
+                                    print('Great Ball stock is low... saving for pokemon with cp greater than 300')
+                                elif cp > 300 or pokeball is 0:
+                                    #print 'use Great Ball'
+                                    pokeball = 2
 
-                            if cp > 700 and balls_stock[3] > 0:
-                                #print 'use Utra Ball'
-                                pokeball = 3
+                            if balls_stock[3] > 0:
+                                if pokeball is 0 and cp <= 700 and balls_stock[3] < 10:
+                                    print('Ultra Ball stock is low... saving for pokemon with cp greater than 700')
+                                elif cp > 700 or pokeball is 0:
+                                    #print 'use Utra Ball'
+                                    pokeball = 3
 
                             if pokeball is 0:
                                 print_red('[x] Out of pokeballs, switching to farming mode...')

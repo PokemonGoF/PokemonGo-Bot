@@ -194,11 +194,13 @@ class PokemonGoBot(object):
                 group_cp.sort()
                 group_cp.reverse()
 
+                pokemon_name=self.pokemon_list[int(id-1)]['Name']
+
                 for x in range(1, len(group_cp)):
                     if self.config.cp and group_cp[x] > self.config.cp:
                         continue
 
-                    print('[x] Releasing Pokemon #{} and CP {}'.format(id, group_cp[x]))
+                    print('[x] Releasing Pokemon #{} ({}) with CP {}'.format(id, pokemon_name, group_cp[x]))
                     self.api.release_pokemon(pokemon_id=pokemon_groups[id][group_cp[x]])
                     response_dict = self.api.call()
                     sleep(2)
