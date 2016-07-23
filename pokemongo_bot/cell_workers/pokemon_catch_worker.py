@@ -92,8 +92,8 @@ class PokemonCatchWorker(object):
                                 self.config.mode = 'farm'
                                 return -1
 
-                            logger.log('[x] Using {}...'.format(self.item_list[
-                                str(pokeball)]))
+                            logger.log('[x] Using {}... ({} left!)'.format(
+                                self.item_list[str(pokeball)], balls_stock[pokeball]-1))
 
                             balls_stock[pokeball] = balls_stock[pokeball] - 1
                             id_list1 = self.count_pokemon_inventory()
