@@ -106,10 +106,6 @@ class PokemonCatchWorker(object):
                                 if status is 3:
                                     print('[x] Oh no! ' + str(pokemon_name) + ' vanished! :(')
                                 if status is 1:
-                                    try:
-                                        int_cp = int(self.config.cp)
-                                    except Exception, e:
-                                        int_cp = 0
                                     self.api.get_inventory()
                                     response_dict = self.api.call()
                                     if self.config.cp == "smart":
@@ -132,7 +128,7 @@ class PokemonCatchWorker(object):
                                             if exchange_cp != 0 and exchange_pid != 0:
                                                 print('[x] Exchanging ' + str(pokemon_name) + ' from inventory with ! [CP' + str(exchange_cp) + ']')
                                                 self.transfer_pokemon(exchange_pid)
-                                    elif cp < int_cp:
+                                    elif self.should_transfer(cp,str(pokemon_name)):
                                         print('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + '] - exchanging for candy')
                                         id_list2 = self.count_pokemon_inventory()
                                         try:
@@ -145,6 +141,18 @@ class PokemonCatchWorker(object):
                                         print('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + ']')
                             break
         time.sleep(5)
+
+    def should_transfer(self, pokemon_cp,pokemon_name):
+         pokemon_name = pokemon_name.lower()
+         transfer_list  = self.config.transfer_list.lower()
+         try:
+             int_cp = int(self.config.cp)
+         except Exception, e:
+             int_cp = 0
+         if pokemon_cp < self.config.cp or pokemon_name in transfer_list:
+             return True
+         else:
+            return False
 
     def _transfer_low_cp_pokemon(self, value):
     	self.api.get_inventory()

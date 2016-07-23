@@ -67,8 +67,10 @@ def init_config():
 
     parser.add_argument("-d", "--debug", help="Debug Mode", action='store_true')
     parser.add_argument("-t", "--test", help="Only parse the specified location", action='store_true')
+    parser.add_argument("-tl", "--transfer_list", help="Transfer these pokemons regardless cp(pidgey,drowzee,rattata)", type=str, default='')
     parser.set_defaults(DEBUG=False, TEST=False)
     config = parser.parse_args()
+    
 
     # Passed in arguments shoud trump
     for key in config.__dict__:
