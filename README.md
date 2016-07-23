@@ -165,7 +165,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
     2. Be careful with the ``any`` configuration!
     
 ## How to run with Docker
-    docker run namlehong/alpine-pgo:dev -a ptc -u tejado -p 1234 -l "New York, Central Park" -iv 0.8 -w 25
+
 
 
 ## How to add/discover new API
