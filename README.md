@@ -16,7 +16,7 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
  * Auto switch mode(Full of item then catch, no ball useable then farm)
  * Ignore certain pokemon filter
 
-# To-Do:
+## To-Do:
 - [ ] Standalone Desktop APP
 - [x] Google Map API key setup (Readme update needed)
 - [ ] Show all objects on map
@@ -37,7 +37,7 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 - [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/)
 - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 - [virtualenv](https://virtualenv.pypa.io/en/stable/installation/)
-- protobuf 3 (see below)
+- [protobuf 3](https://github.com/google/protobuf)  (OS Dependant, see below)
 
 ### Protobuf 3 installation
 
@@ -53,11 +53,12 @@ $ virtualenv .
 $ source bin/activate  
 $ pip install -r requirements.txt  
 
-**Windows Note**
-    On Windows, you will need to install PyYaml through the installer [here](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt  
-    On Windwos 10 follow these instructions:  
-    Go here: [lfd.uci.edu](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml)  
-    Download the Download: PyYAML-3.11-cp27-cp27m-win32.whl file  
+###### Windows Note
+On Windows, you will need to install PyYaml through the  [installer](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt. 
+
+Windwos 10:  
+    Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl 
+    
     $ cd download-directory
     $ pip install PyYAML-3.11-cp27-cp27m-win32.whl
 
@@ -69,7 +70,7 @@ $ virtualenv .
 $ source bin/activate  
 $ pip install -r requirements.txt  
 
-### Google Maps API (Code is not done yet)
+### Google Maps API (In Development)
 
 Google Maps API: a brief guide to your own key
 
@@ -109,7 +110,8 @@ This project uses Google Maps. There's one map coupled with the project, but as 
     $ python2 pokecli.py -a ptc -u tejado -p 1234 --location "New York, Washington Square"
     Google Account:
     $ python2 pokecli.py -a google -u tejado -p 1234 --location "New York, Washington Square"
-]
+
+
 ## How to add/discover new API
   The example is [here](https://github.com/PokemonGoF/PokemonGo-Bot/commit/46e2352ce9f349cc127a408959679282f9999585)  
     1. Check the type of your API request in   [POGOProtos](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/RequestType.proto) For example: RECYCLE_INVENTORY_ITEM  
