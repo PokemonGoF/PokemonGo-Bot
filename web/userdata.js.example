@@ -2,5 +2,4 @@
 var users = ["username"];
 var userZoom = true;
 var userFollow = true;
-
-
+var imageExt = ".png";
