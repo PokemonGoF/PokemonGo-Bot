@@ -1,0 +1,16 @@
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+#map {
+	height: 100%;
+}
+#options {
+	position: fixed;
+	right: 10px;
+	top: 10px;
+	z-index: 5;
+	height: auto;
+	width: auto;
+}

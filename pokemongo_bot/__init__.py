@@ -76,7 +76,8 @@ class PokemonGoBot(object):
                 with open('web/catchable-%s.json' % (self.config.username), 'w') as outfile:
                     json.dump(pokemon, outfile)
                 worker = PokemonCatchWorker(pokemon, self)
-                worker.work()
+                if worker.work() == -1:
+                    break;
                 with open('web/catchable-%s.json' % (self.config.username), 'w') as outfile:
                     json.dump({}, outfile)
         if (self.config.mode == "all" or self.config.mode == "poke") and 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
@@ -84,7 +85,8 @@ class PokemonGoBot(object):
             cell['wild_pokemons'].sort(key=lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
             for pokemon in cell['wild_pokemons']:
                 worker = PokemonCatchWorker(pokemon, self)
-                worker.work()
+                if worker.work() == -1:
+                    break;
         if (self.config.mode == "all" or self.config.mode == "farm") and include_fort_on_path:
             if 'forts' in cell:
                 # Only include those with a lat/long
@@ -280,7 +282,7 @@ class PokemonGoBot(object):
             try:
                 #
                 # save location flag used to pull the last known location from the location.json
-                with open('location.json') as f:
+                with open('data/last-location-%s.json' % (self.config.username)) as f:
                     location_json = json.load(f)
 
                     self.position = (location_json['lat'], location_json['lng'], 0.0)
@@ -308,7 +310,7 @@ class PokemonGoBot(object):
 
     def _get_pos_by_name(self, location_name):
         geolocator = GoogleV3(api_key=self.config.gmapkey)
-        loc = geolocator.geocode(location_name)
+        loc = geolocator.geocode(location_name, timeout=10)
 
         #self.log.info('Your given location: %s', loc.address.encode('utf-8'))
         #self.log.info('lat/long/alt: %s %s %s', loc.latitude, loc.longitude, loc.altitude)
