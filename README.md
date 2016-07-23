@@ -211,6 +211,7 @@ To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg
  * mzupan
  * namlehong
  * gnekic(GeXx)
+ * VirtualSatai
 
 ## Credits
 [tejado](https://github.com/tejado) many thanks for the API
