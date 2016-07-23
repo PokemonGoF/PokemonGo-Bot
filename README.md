@@ -54,7 +54,12 @@ $ source bin/activate
 $ pip install -r requirements.txt  
 
 **Windows Note**
-    On Windows, you will need to install PyYaml through the installer [here](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt
+    On Windows, you will need to install PyYaml through the installer [here](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt  
+    On Windwos 10 follow these instructions:  
+    Go here: [lfd.uci.edu](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml)  
+    Download the Download: PyYAML-3.11-cp27-cp27m-win32.whl file  
+    $ cd download-directory
+    $ pip install PyYAML-3.11-cp27-cp27m-win32.whl
 
 ### Develop PokemonGo-Bot
 
