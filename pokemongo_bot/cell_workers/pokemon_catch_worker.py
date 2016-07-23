@@ -30,8 +30,8 @@ class PokemonCatchWorker(object):
                 if 'status' in response_dict['responses']['ENCOUNTER']:
                     if response_dict['responses']['ENCOUNTER']['status'] is 7:
                         print '[x] Pokemon Bag is full!'
-                        ## TODO: begin transfer logic to free some space
-                    elif response_dict['responses']['ENCOUNTER']['status'] is 1:
+                        self.bot.initial_transfer()
+                    if response_dict['responses']['ENCOUNTER']['status'] is 1:
                         cp=0
                         if 'wild_pokemon' in response_dict['responses']['ENCOUNTER']:
                             pokemon=response_dict['responses']['ENCOUNTER']['wild_pokemon']
@@ -46,15 +46,15 @@ class PokemonCatchWorker(object):
                         balls_stock = self.bot.pokeball_inventory();
                         while(True):
                             pokeball = 0
-                            
+
                             if balls_stock[1] > 0:
                                 #print 'use Poke Ball'
                                 pokeball = 1
-                                
+
                             if cp > 300 and balls_stock[2] > 0:
                                 #print 'use Great Ball'
                                 pokeball = 2
-                                
+
                             if cp > 700 and balls_stock[3] > 0:
                                 #print 'use Utra Ball'
                                 pokeball = 3
@@ -63,9 +63,9 @@ class PokemonCatchWorker(object):
                                 print_red('[x] Out of pokeballs...')
                                 # TODO: Begin searching for pokestops.
                                 break
-                            
+
                             print('[x] Using {}...'.format(self.item_list[str(pokeball)]))
-                            
+
                             balls_stock[pokeball] = balls_stock[pokeball] - 1
                             id_list1 = self.count_pokemon_inventory()
                             self.api.catch_pokemon(encounter_id = encounter_id,
