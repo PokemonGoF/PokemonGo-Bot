@@ -86,6 +86,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       your location)
       --initial-transfer                            Start the bot with a pokemon clean up, keeping only the higher CP of each pokemon. It respects -c as upper limit to release.
       -c CP, --cp                                   Set the CP to transfer or lower (eg. 100 will transfer CP0-99)
+      --distance_unit UNIT                          Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
 
@@ -123,20 +124,21 @@ Quick Tip: When using this script, use a Lucky egg to double the XP for 30 mins.
  * s2sphere
  * googlemaps
  * pgoapi
- * haykuro
+
 To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg=pgoapi`
 
 
 ## Contributors (Don't forget add yours here when you create PR:)
-eggins -- The first pull request :)
-crack00r
-ethervoid
-Bashin
-tstumm
-TheGoldenXY
-Reaver01
-rarshonsky
-earthchie
+ * eggins -- The first pull request :)
+ * crack00r
+ * ethervoid
+ * Bashin
+ * tstumm
+ * TheGoldenXY
+ * Reaver01
+ * rarshonsky
+ * earthchie
+ * haykuro
 
 ## Credits
 ### The works are based on the Pokemon Go API

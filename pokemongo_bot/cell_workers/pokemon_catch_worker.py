@@ -33,13 +33,22 @@ class PokemonCatchWorker(object):
                         self.bot.initial_transfer()
                     if response_dict['responses']['ENCOUNTER']['status'] is 1:
                         cp=0
+                        total_IV = 0
                         if 'wild_pokemon' in response_dict['responses']['ENCOUNTER']:
                             pokemon=response_dict['responses']['ENCOUNTER']['wild_pokemon']
                             if 'pokemon_data' in pokemon and 'cp' in pokemon['pokemon_data']:
                                 cp=pokemon['pokemon_data']['cp']
+                                iv_stats = ['individual_attack','individual_defense','individual_stamina']
+                                for individual_stat in iv_stats:
+                                    try:
+                                        total_IV += pokemon['pokemon_data'][individual_stat]
+                                    except:
+                                        continue
+                                print total_IV
+                                pokemon_potential = round((total_IV / 45.0), 2)
                                 pokemon_num=int(pokemon['pokemon_data']['pokemon_id'])-1
                                 pokemon_name=self.pokemon_list[int(pokemon_num)]['Name']
-                                print_yellow('[#] A Wild {} appeared! [CP {}]'.format(pokemon_name, cp))
+                                print_yellow('[#] A Wild {} appeared! [CP {}] [Potential {}]'.format(pokemon_name, cp, pokemon_potential))
                                 #Simulate app
                                 sleep(3)
 
@@ -90,8 +99,8 @@ class PokemonCatchWorker(object):
                                 if status is 3:
                                     print_red('[x] Oh no! {} vanished! :('.format(pokemon_name))
                                 if status is 1:
-                                    if cp < self.config.cp:
-                                        print_green('[x] Captured {}! [CP {}] - exchanging for candy'.format(pokemon_name, cp))
+                                    if cp < self.config.cp or pokemon_potential < self.config.pokemon_potential:
+                                        print_green('[x] Captured {}! [CP {}] [IV {}] - exchanging for candy'.format(pokemon_name, cp, pokemon_potential))
                                         id_list2 = self.count_pokemon_inventory()
                                         # Transfering Pokemon
                                         pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
