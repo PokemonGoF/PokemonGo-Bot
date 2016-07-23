@@ -72,7 +72,7 @@ class PokemonCatchWorker(object):
                                 print_red('[x] Out of pokeballs, switching to farming mode...')
                                 # Begin searching for pokestops.
                                 self.config.mode='farm'
-                                break
+                                return -1
 
                             print('[x] Using {}...'.format(self.item_list[str(pokeball)]))
 
