@@ -92,7 +92,6 @@ class SeenFortWorker(object):
                             logger.log("[+] Recycling " + str(item_count) + "x " + item_name + "...", 'green')
                             #RECYCLE_INVENTORY_ITEM
                             response_dict_recycle = self.bot.drop_item(item_id=item_id, count=item_count)
-                            print(response_dict_recycle)
                             
                             if response_dict_recycle and \
                                 'responses' in response_dict_recycle and \
