@@ -50,8 +50,10 @@ var trainerFunc = function(data, user_index) {
   } else {
     user_data[users[user_index]].marker.setPosition({lat: parseFloat(data.lat), lng: parseFloat(data.lng)});
   }
-  if (users.length == 1) {
+  if (users.length == 1 && userZoom == true) {
     map.setZoom(16);
+  }
+  if (users.length == 1 && userFollow == true) {
     map.panTo({
       lat: parseFloat(data.lat),
       lng: parseFloat(data.lng)
@@ -84,11 +86,15 @@ var catchSuccess = function(data, user_index) {
           position: {lat: parseFloat(data.latitude), lng: parseFloat(data.longitude)},
           icon: "image/icons/" + data.pokemon_id + ".png"
         });
-        map.setZoom(16);
-        map.panTo({
-          lat: parseFloat(data.latitude),
-          lng: parseFloat(data.longitude)
-        });
+          if (userZoom == true) {
+            map.setZoom(16);
+          }
+          if (userFollow == true) {
+            map.panTo({
+              lat: parseFloat(data.latitude),
+              lng: parseFloat(data.longitude)
+            });
+          }
       } else {
         user_data[users[user_index]].catchables[data.spawnpoint_id].setPosition({
           lat: parseFloat(data.latitude),
