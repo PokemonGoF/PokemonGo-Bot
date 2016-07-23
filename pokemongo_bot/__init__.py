@@ -6,6 +6,7 @@ import json
 import random
 import threading
 import datetime
+import yaml
 from pgoapi import PGoApi
 from cell_workers import PokemonCatchWorker, SeenFortWorker
 from cell_workers.utils import distance
@@ -32,7 +33,42 @@ class PokemonGoBot(object):
         self.stepper.take_step()
 
     def work_on_cell(self, cell, position, include_fort_on_path):
-        if (self.config.mode == "all" or self.config.mode == "poke") and 'catchable_pokemons' in cell:
+        process_ignore = False
+        try:
+            with open("./data/catch-ignore.yml", 'r') as y:
+                ignores = yaml.load(y)['ignore']
+                if len(ignores) > 0:
+                    process_ignore = True
+        except Exception, e:
+            pass
+
+        if process_ignore:
+            #
+            # remove any wild pokemon
+            try:
+                for p in cell['wild_pokemons'][:]:
+                    pokemon_id = p['pokemon_data']['pokemon_id']
+                    pokemon_name = filter(lambda x: int(x.get('Number')) == pokemon_id, self.pokemon_list)[0]['Name']
+
+                    if pokemon_name in ignores:
+                        cell['wild_pokemons'].remove(p)
+            except KeyError:
+                pass
+
+            #
+            # remove catchable pokemon
+            try:
+                for p in cell['catchable_pokemons'][:]:
+                    pokemon_id = p['pokemon_id']
+                    pokemon_name = filter(lambda x: int(x.get('Number')) == pokemon_id, self.pokemon_list)[0]['Name']
+
+                    if pokemon_name in ignores:
+                        cell['catchable_pokemons'].remove(p)
+            except KeyError:
+                pass
+
+
+        if (self.config.mode == "all" or self.config.mode == "poke") and 'catchable_pokemons' in cell and len(cell['catchable_pokemons']) > 0:
             print '[#] Something rustles nearby!'
             # Sort all by distance from current pos- eventually this should build graph & A* it
             cell['catchable_pokemons'].sort(key=lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
@@ -43,7 +79,7 @@ class PokemonGoBot(object):
                 worker.work()
                 with open('web/catchable.json', 'w') as outfile:
                     json.dump({}, outfile)
-        if (self.config.mode == "all" or self.config.mode == "poke") and 'wild_pokemons' in cell:
+        if (self.config.mode == "all" or self.config.mode == "poke") and 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
             # Sort all by distance from current pos- eventually this should build graph & A* it
             cell['wild_pokemons'].sort(key=lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
             for pokemon in cell['wild_pokemons']:

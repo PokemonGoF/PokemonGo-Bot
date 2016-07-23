@@ -116,7 +116,27 @@ This project uses Google Maps. There's one map coupled with the project, but as 
    Finish the tutorial on a smartphone. This will then allow everything to be visible.
 ### How can I maximise my XP per hour?
 Quick Tip: When using this script, use a Lucky egg to double the XP for 30 mins. You will level up much faster. A Lucky egg is obtained on level 9 and further on whilst leveling up. (from VipsForever via /r/pokemongodev)
+### How can I not collect certain pokemon
+You don't want to collect common pokemon once you hit a certain level. It will
+slow down leveling but you won't fill up either.
 
+Create the following filter
+
+```
+./data/catch-ignore.yml
+```
+
+Its a yaml file with a list of names so make it look like
+
+```
+ignore:
+  - Pidgey
+  - Rattata
+  - Pidgeotto
+  - Spearow
+  - Ekans
+  - Zubat
+```
 
 
 ## Requirements
@@ -146,6 +166,7 @@ To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg
  * 05-032
  * sinistance
  * CapCap
+ * mzupan
 
 ## Credits
 ### The works are based on the Pokemon Go API
