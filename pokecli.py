@@ -80,7 +80,7 @@ def init_config():
 
     # Passed in arguments shoud trump
     for key in config.__dict__:
-        if key in load and config.__dict__[key] == None:
+        if key in load:
             config.__dict__[key] = load[key]
 
     if config.auth_service not in ['ptc', 'google']:
