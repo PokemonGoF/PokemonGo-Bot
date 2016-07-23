@@ -12,10 +12,10 @@ from human_behaviour import sleep, random_lat_long_delta
 from cell_workers.utils import distance, i2f, format_time
 
 from pgoapi.utilities import f2i, h2f
+import logger
 
 
 class Stepper(object):
-
     def __init__(self, bot):
         self.bot = bot
         self.api = bot.api
@@ -38,11 +38,13 @@ class Stepper(object):
 
         for step in range(self.steplimit2):
             # starting at 0 index
-            print(
-                '[#] Scanning area for objects ({} / {})'.format((step + 1), self.steplimit**2))
+            logger.log('[#] Scanning area for objects ({} / {})'.format(
+                (step + 1), self.steplimit**2))
             if self.config.debug:
-                print('steplimit: {} x: {} y: {} pos: {} dx: {} dy {}'.format(
-                    self.steplimit2, self.x, self.y, self.pos, self.dx, self.dy))
+                logger.log(
+                    'steplimit: {} x: {} y: {} pos: {} dx: {} dy {}'.format(
+                        self.steplimit2, self.x, self.y, self.pos, self.dx,
+                        self.dy))
             # Scan location math
             if -self.steplimit2 / 2 < self.x <= self.steplimit2 / 2 and -self.steplimit2 / 2 < self.y <= self.steplimit2 / 2:
                 position = (self.x * 0.0025 + self.origin_lat,
@@ -61,12 +63,14 @@ class Stepper(object):
             sleep(10)
 
     def _walk_to(self, speed, lat, lng, alt):
-        dist = distance(i2f(self.api._position_lat),
-                        i2f(self.api._position_lng), lat, lng)
+        dist = distance(
+            i2f(self.api._position_lat), i2f(self.api._position_lng), lat, lng)
         steps = (dist + 0.0) / (speed + 0.0)  # may be rational number
         intSteps = int(steps)
         residuum = steps - intSteps
-        print '[#] Walking from ' + str((i2f(self.api._position_lat), i2f(self.api._position_lng))) + " to " + str(str((lat, lng))) + " for approx. " + str(format_time(ceil(steps)))
+        logger.log('[#] Walking from ' + str((i2f(self.api._position_lat), i2f(
+            self.api._position_lng))) + " to " + str(str((lat, lng))) +
+                   " for approx. " + str(format_time(ceil(steps))))
         if steps != 0:
             dLat = (lat - i2f(self.api._position_lat)) / steps
             dLng = (lng - i2f(self.api._position_lng)) / steps
@@ -79,35 +83,46 @@ class Stepper(object):
                 self.api.set_position(cLat, cLng, alt)
                 self.bot.heartbeat()
                 sleep(1)  # sleep one second plus a random delta
-                self._work_at_position(i2f(self.api._position_lat), i2f(
-                    self.api._position_lng), alt, False)
+                self._work_at_position(
+                    i2f(self.api._position_lat), i2f(self.api._position_lng),
+                    alt, False)
 
             self.api.set_position(lat, lng, alt)
             self.bot.heartbeat()
-        print "[#] Finished walking"
+            logger.log("[#] Finished walking")
 
     def _work_at_position(self, lat, lng, alt, pokemon_only=False):
         cellid = self._get_cellid(lat, lng)
         timestamp = [0, ] * len(cellid)
-        self.api.get_map_objects(latitude=f2i(lat), longitude=f2i(
-            lng), since_timestamp_ms=timestamp, cell_id=cellid)
+        self.api.get_map_objects(latitude=f2i(lat),
+                                 longitude=f2i(lng),
+                                 since_timestamp_ms=timestamp,
+                                 cell_id=cellid)
 
         response_dict = self.api.call()
         # pprint.pprint(response_dict)
         # Passing Variables through a file
         if response_dict and 'responses' in response_dict:
             if 'GET_MAP_OBJECTS' in response_dict['responses']:
-                if 'map_cells' in response_dict['responses']['GET_MAP_OBJECTS']:
-                    with open('web/location-%s.json' % (self.config.username), 'w') as outfile:
-                        json.dump({'lat': lat, 'lng': lng, 'cells': response_dict[
-                                  'responses']['GET_MAP_OBJECTS']['map_cells']}, outfile)
-                    with open('data/last-location-%s.json' % (self.config.username), 'w') as outfile:
+                if 'map_cells' in response_dict['responses'][
+                        'GET_MAP_OBJECTS']:
+                    with open('web/location-%s.json' %
+                              (self.config.username), 'w') as outfile:
+                        json.dump(
+                            {'lat': lat,
+                             'lng': lng,
+                             'cells': response_dict[
+                                 'responses']['GET_MAP_OBJECTS']['map_cells']},
+                            outfile)
+                    with open('data/last-location-%s.json' %
+                              (self.config.username), 'w') as outfile:
                         outfile.truncate()
                         json.dump({'lat': lat, 'lng': lng}, outfile)
         if response_dict and 'responses' in response_dict:
             if 'GET_MAP_OBJECTS' in response_dict['responses']:
                 if 'status' in response_dict['responses']['GET_MAP_OBJECTS']:
-                    if response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
+                    if response_dict['responses']['GET_MAP_OBJECTS'][
+                            'status'] is 1:
                         map_cells = response_dict['responses'][
                             'GET_MAP_OBJECTS']['map_cells']
                         position = (lat, lng, alt)
