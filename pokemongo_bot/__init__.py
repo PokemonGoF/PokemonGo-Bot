@@ -9,6 +9,7 @@ import datetime
 import sys
 import yaml
 import logger
+import re
 from pgoapi import PGoApi
 from cell_workers import PokemonCatchWorker, SeenFortWorker
 from cell_workers.utils import distance
@@ -377,6 +378,15 @@ class PokemonGoBot(object):
         logger.log('')
 
     def _get_pos_by_name(self, location_name):
+        # Check if the given location is already a coordinate.
+        if ',' in location_name:
+            possibleCoordinates = re.findall("[-]?\d{1,3}[.]\d{6,7}", location_name)
+            if len(possibleCoordinates) == 2:
+                # 2 matches, this must be a coordinate. We'll bypass the Google geocode so we keep the exact location.
+                logger.log(
+                    '[x] Coordinates found in passed in location, not geocoding.')
+                return (float(possibleCoordinates[0]), float(possibleCoordinates[1]), float("0.0"))
+
         geolocator = GoogleV3(api_key=self.config.gmapkey)
         loc = geolocator.geocode(location_name, timeout=10)
 
