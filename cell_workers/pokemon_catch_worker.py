@@ -1,6 +1,7 @@
 import time
 from sets import Set
 from pgoapi.utilities import f2i, h2f, distance
+import json
 
 class PokemonCatchWorker(object):
 
@@ -105,9 +106,29 @@ class PokemonCatchWorker(object):
                                 if status is 3:
                                     print('[x] Oh no! ' + str(pokemon_name) + ' vanished! :(')
                                 if status is 1:
-                                    
-                                    if self.should_transfer(cp,str(pokemon_name)):
-                                    
+                                    self.api.get_inventory()
+                                    response_dict = self.api.call()
+                                    if self.config.cp == "smart":
+                                        print('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + ']')
+                                        id_cp_tuples = self.get_id_cp_tuples_for_pokemonid(pokemon['pokemon_data']['pokemon_id'],response_dict)
+                                        print("[+] Found same pokemons with CPs " + str([x[1] for x in id_cp_tuples]))
+                                        prev_id, prev_cp = (0,0)
+                                        exchange_pid, exchange_cp = (0,0)
+                                        for id_cp in id_cp_tuples:
+                                            current_id,current_cp = id_cp
+                                            if current_cp <= prev_cp:
+                                                exchange_pid = current_id
+                                                exchange_cp = current_cp
+                                            elif prev_id != 0:
+                                                exchange_pid = prev_id
+                                                exchange_cp = prev_cp
+                                                prev_id,prev_cp = id_cp
+                                            else:
+                                                prev_id,prev_cp = id_cp
+                                            if exchange_cp != 0 and exchange_pid != 0:
+                                                print('[x] Exchanging ' + str(pokemon_name) + ' from inventory with ! [CP' + str(exchange_cp) + ']')
+                                                self.transfer_pokemon(exchange_pid)
+                                    elif self.should_transfer(cp,str(pokemon_name)):
                                         print('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + '] - exchanging for candy')
                                         id_list2 = self.count_pokemon_inventory()
                                         try:
@@ -124,12 +145,15 @@ class PokemonCatchWorker(object):
     def should_transfer(self, pokemon_cp,pokemon_name):
          pokemon_name = pokemon_name.lower()
          transfer_list  = self.config.transfer_list.lower()
-         
+         try:
+             int_cp = int(self.config.cp)
+         except Exception, e:
+             int_cp = 0
          if pokemon_cp < self.config.cp or pokemon_name in transfer_list:
              return True
          else:
             return False
-        
+
     def _transfer_low_cp_pokemon(self, value):
     	self.api.get_inventory()
     	response_dict = self.api.call()
@@ -175,3 +199,19 @@ class PokemonCatchWorker(object):
                                     pokemon = item['inventory_item_data']['pokemon']
                                     id_list.append(pokemon['id'])
         return id_list
+
+    def get_id_cp_tuples_for_pokemonid(self,pokemon_id,response_dict):
+        id_list = []
+        if 'responses' in response_dict:
+            if 'GET_INVENTORY' in response_dict['responses']:
+                if 'inventory_delta' in response_dict['responses']['GET_INVENTORY']:
+                    if 'inventory_items' in response_dict['responses']['GET_INVENTORY']['inventory_delta']:
+                        for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
+                            if 'inventory_item_data' in item:
+                                if 'pokemon' in item['inventory_item_data'] and 'pokemon_id' in item['inventory_item_data']['pokemon']:
+                                    if item['inventory_item_data']['pokemon']['pokemon_id'] == pokemon_id:
+                                        pokemon = item['inventory_item_data']['pokemon']
+                                        id_list.append((pokemon['id'], pokemon['cp']))
+        return id_list
+
+
