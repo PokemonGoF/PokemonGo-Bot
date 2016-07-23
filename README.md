@@ -123,7 +123,7 @@ Quick Tip: When using this script, use a Lucky egg to double the XP for 30 mins.
  * s2sphere
  * googlemaps
  * pgoapi
- * haykuro
+
 To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg=pgoapi`
 
 
@@ -137,6 +137,7 @@ TheGoldenXY
 Reaver01
 rarshonsky
 earthchie
+haykuro
 
 ## Credits
 ### The works are based on the Pokemon Go API
