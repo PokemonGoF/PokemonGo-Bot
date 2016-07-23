@@ -64,7 +64,7 @@ def init_config():
     parser.add_argument("-m", "--mode", help="Farming Mode", type=str, default="all")
     parser.add_argument("-w", "--walk", help="Walk instead of teleport with given speed (meters per second, e.g. 2.5)", type=float, default=2.5)
     parser.add_argument("-c", "--cp",help="Set CP less than to transfer(DEFAULT 100)",type=int,default=100)
-    parser.add_argument("-iv", "--pokemon_potential",help="Set IV ratio less than to transfer(DEFAULT 0.80)",type=float,default=0.80)
+    parser.add_argument("-iv", "--pokemon_potential",help="Set IV ratio less than to transfer(DEFAULT 0.80)",type=float,default=0)
     parser.add_argument("-k", "--gmapkey",help="Set Google Maps API KEY",type=str,default=None)
     parser.add_argument("--maxsteps",help="Set the steps around your initial location(DEFAULT 5 mean 25 cells around your location)",type=int,default=5)
     parser.add_argument("--initial-transfer", help="Transfer all pokemon with same ID on bot start, except pokemon with highest CP. It works with -c", action='store_true', dest='initial_transfer')

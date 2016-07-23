@@ -44,11 +44,10 @@ class PokemonCatchWorker(object):
                                         total_IV += pokemon['pokemon_data'][individual_stat]
                                     except:
                                         continue
-                                print total_IV
-                                pokemon_potential = round((total_IV / 45.0), 2)
+                                pokemon_potential = round((total_IV / 45.0), 2) * 100
                                 pokemon_num=int(pokemon['pokemon_data']['pokemon_id'])-1
                                 pokemon_name=self.pokemon_list[int(pokemon_num)]['Name']
-                                print_yellow('[#] A Wild {} appeared! [CP {}] [Potential {}]'.format(pokemon_name, cp, pokemon_potential))
+                                print_yellow('[#] A Wild {} appeared! [CP {}] [Potential {}%]'.format(pokemon_name, cp, pokemon_potential))
                                 #Simulate app
                                 sleep(3)
 
@@ -100,7 +99,7 @@ class PokemonCatchWorker(object):
                                     print_red('[x] Oh no! {} vanished! :('.format(pokemon_name))
                                 if status is 1:
                                     if cp < self.config.cp or pokemon_potential < self.config.pokemon_potential:
-                                        print_green('[x] Captured {}! [CP {}] [IV {}] - exchanging for candy'.format(pokemon_name, cp, pokemon_potential))
+                                        print_green('[x] Captured {}! [CP {}] [Potential {}%] - exchanging for candy'.format(pokemon_name, cp, pokemon_potential))
                                         id_list2 = self.count_pokemon_inventory()
                                         # Transfering Pokemon
                                         pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
