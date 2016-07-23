@@ -54,7 +54,7 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 - [ ] Evolve pokemons
 - [ ] Use candy
 - [x] Code refactor
-- 
+
 ## Installation
 
 ### Requirements (click each one for install guide)
