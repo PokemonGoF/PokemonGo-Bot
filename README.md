@@ -51,7 +51,7 @@ Your test contribute and PR for fix are well welcome. Or, you can wait on the ma
 - [ ] Show all objects on map
 - [x] Limit the step to farm specific area for pokestops
 - [ ] Pokemon transfer filter
-- [ ] Drop items when bag is full
+- [x] Drop items when bag is full (In Testing)
 - [x] Pokemon catch filter
 - [ ] Hatch eggs
 - [ ] Incubate eggs
