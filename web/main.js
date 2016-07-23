@@ -21,6 +21,7 @@ function initMap() {
   // load pokemon data now..
   loadJSON('pokemondata.json', function(data, successData) {
     console.log('Loaded pokemon data..');
+    Materialize.toast('Loading pokemon data...', 3000, 'rounded')
     pokemonArray = data;
   }, errorFunc, 'pokemonData');
   for (var i = 0; i < users.length; i++) {
@@ -54,6 +55,14 @@ $('#switchZoom').change(function(){
 
 $('#imageType').change(function(){
     if (this.checked) { imageExt = ".gif" } else { imageExt = ".png"; }
+});
+
+$('#options').click(function(){
+    if ($("#options").hasClass('open')) { $("#options").removeClass('open'); } else { $("#options").addClass('open'); }
+});
+
+$('#trainer').click(function(){
+    if ($("#trainer").hasClass('open')) { $("#trainer").removeClass('open'); } else { $("#trainer").addClass('open'); }
 });
 
 $('#tInfo').click(function(){

@@ -8,12 +8,54 @@ html, body {
 }
 #menu {
 	position: fixed;
-	right: 10px;
-	top: 10px;
+	bottom: -275px;
+	left: 0;
 	z-index: 5;
 	height: auto;
 	width: auto;
 }
+
+#menu .row {
+	position: relative;
+	display: inline-block;
+	max-width: 50%;
+	float: left;
+	margin-left: 0;
+	margin-bottom: 0.75rem;
+	bottom: 0;
+	transition: bottom 1s ease;
+}
+
+#menu .row.open {
+	bottom: 275px;
+}
+
+#menu .row .card .card-title, #menu .row .card .close {
+		cursor: pointer;
+}
+
+#menu .row .card {
+	min-height: 312px;
+	margin-bottom: 0;
+}
+
+#menu .row .card .close {
+	position: absolute;
+	top: 0;
+	right: 0.5em;
+	font-size: 24px;
+	line-height: 48px;
+	transition: 1s ease;
+}
+
+#menu .row.open .card .close {
+	transform: rotate(45deg);
+}
+
+#menu .row .card .card-content {
+	padding-top: 0;
+}
+
 #submenu {
 	position: fixed;
 	left: 20px;
@@ -22,4 +64,13 @@ html, body {
 	width: 50%;
 	z-index: 6;
 	display: none;
+}
+
+.btn {
+  width: 100%;
+}
+
+#toast-container {
+	top: 1em;
+	right: 1em;
 }
