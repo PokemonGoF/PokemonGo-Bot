@@ -6,8 +6,8 @@ from utils import distance, print_green, print_yellow, print_red
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot import logger
 
-class PokemonCatchWorker(object):
 
+class PokemonCatchWorker(object):
     def __init__(self, pokemon, bot):
         self.pokemon = pokemon
         self.api = bot.api
@@ -23,8 +23,10 @@ class PokemonCatchWorker(object):
         spawnpoint_id = self.pokemon['spawnpoint_id']
         player_latitude = self.pokemon['latitude']
         player_longitude = self.pokemon['longitude']
-        self.api.encounter(encounter_id=encounter_id, spawnpoint_id=spawnpoint_id,
-                           player_latitude=player_latitude, player_longitude=player_longitude)
+        self.api.encounter(encounter_id=encounter_id,
+                           spawnpoint_id=spawnpoint_id,
+                           player_latitude=player_latitude,
+                           player_longitude=player_longitude)
         response_dict = self.api.call()
 
         if response_dict and 'responses' in response_dict:
@@ -36,13 +38,17 @@ class PokemonCatchWorker(object):
                     if response_dict['responses']['ENCOUNTER']['status'] is 1:
                         cp = 0
                         total_IV = 0
-                        if 'wild_pokemon' in response_dict['responses']['ENCOUNTER']:
+                        if 'wild_pokemon' in response_dict['responses'][
+                                'ENCOUNTER']:
                             pokemon = response_dict['responses'][
                                 'ENCOUNTER']['wild_pokemon']
-                            if 'pokemon_data' in pokemon and 'cp' in pokemon['pokemon_data']:
+                            if 'pokemon_data' in pokemon and 'cp' in pokemon[
+                                    'pokemon_data']:
                                 cp = pokemon['pokemon_data']['cp']
                                 iv_stats = [
-                                    'individual_attack', 'individual_defense', 'individual_stamina']
+                                    'individual_attack', 'individual_defense',
+                                    'individual_stamina'
+                                ]
                                 for individual_stat in iv_stats:
                                     try:
                                         total_IV += pokemon[
@@ -52,16 +58,18 @@ class PokemonCatchWorker(object):
                                 print total_IV
                                 pokemon_potential = round((total_IV / 45.0), 2)
                                 pokemon_num = int(pokemon['pokemon_data'][
-                                                  'pokemon_id']) - 1
+                                    'pokemon_id']) - 1
                                 pokemon_name = self.pokemon_list[
                                     int(pokemon_num)]['Name']
-                                logger.log('[#] A Wild {} appeared! [CP {}] [Potential {}]'.format(
-                                    pokemon_name, cp, pokemon_potential), 'yellow')
+                                logger.log(
+                                    '[#] A Wild {} appeared! [CP {}] [Potential {}]'.format(
+                                        pokemon_name, cp, pokemon_potential),
+                                    'yellow')
                                 # Simulate app
                                 sleep(3)
 
                         balls_stock = self.bot.pokeball_inventory()
-                        while(True):
+                        while (True):
                             pokeball = 0
 
                             if balls_stock[1] > 0:
@@ -78,23 +86,25 @@ class PokemonCatchWorker(object):
 
                             if pokeball is 0:
                                 logger.log(
-                                    '[x] Out of pokeballs, switching to farming mode...', 'red')
+                                    '[x] Out of pokeballs, switching to farming mode...',
+                                    'red')
                                 # Begin searching for pokestops.
                                 self.config.mode = 'farm'
                                 return -1
 
-                            logger.log('[x] Using {}...'.format(
-                                self.item_list[str(pokeball)]))
+                            logger.log('[x] Using {}...'.format(self.item_list[
+                                str(pokeball)]))
 
                             balls_stock[pokeball] = balls_stock[pokeball] - 1
                             id_list1 = self.count_pokemon_inventory()
-                            self.api.catch_pokemon(encounter_id=encounter_id,
-                                                   pokeball=pokeball,
-                                                   normalized_reticle_size=1.950,
-                                                   spawn_point_guid=spawnpoint_id,
-                                                   hit_pokemon=1,
-                                                   spin_modifier=1,
-                                                   NormalizedHitPosition=1)
+                            self.api.catch_pokemon(
+                                encounter_id=encounter_id,
+                                pokeball=pokeball,
+                                normalized_reticle_size=1.950,
+                                spawn_point_guid=spawnpoint_id,
+                                hit_pokemon=1,
+                                spin_modifier=1,
+                                NormalizedHitPosition=1)
                             response_dict = self.api.call()
 
                             if response_dict and \
@@ -105,30 +115,37 @@ class PokemonCatchWorker(object):
                                     'CATCH_POKEMON']['status']
                                 if status is 2:
                                     logger.log(
-                                        '[-] Attempted to capture {} - failed.. trying again!'.format(pokemon_name), 'red')
+                                        '[-] Attempted to capture {} - failed.. trying again!'.format(
+                                            pokemon_name), 'red')
                                     sleep(2)
                                     continue
                                 if status is 3:
                                     logger.log(
-                                        '[x] Oh no! {} vanished! :('.format(pokemon_name), 'red')
+                                        '[x] Oh no! {} vanished! :('.format(
+                                            pokemon_name), 'red')
                                 if status is 1:
                                     if cp < self.config.cp or pokemon_potential < self.config.pokemon_potential:
-                                        logger.log('[x] Captured {}! [CP {}] [IV {}] - exchanging for candy'.format(
-                                            pokemon_name, cp, pokemon_potential), 'green')
-                                        id_list2 = self.count_pokemon_inventory()
+                                        logger.log(
+                                            '[x] Captured {}! [CP {}] [IV {}] - exchanging for candy'.format(
+                                                pokemon_name, cp,
+                                                pokemon_potential), 'green')
+                                        id_list2 = self.count_pokemon_inventory(
+                                        )
                                         # Transfering Pokemon
-                                        pokemon_to_transfer = list(
-                                            Set(id_list2) - Set(id_list1))
+                                        pokemon_to_transfer = list(Set(
+                                            id_list2) - Set(id_list1))
                                         if len(pokemon_to_transfer) == 0:
                                             raise RuntimeError(
                                                 'Trying to transfer 0 pokemons!')
                                         self.transfer_pokemon(
                                             pokemon_to_transfer[0])
                                         logger.log(
-                                            '[#] {} has been exchanged for candy!'.format(pokemon_name), 'green')
+                                            '[#] {} has been exchanged for candy!'.format(
+                                                pokemon_name), 'green')
                                     else:
                                         logger.log(
-                                            '[x] Captured {}! [CP {}]'.format(pokemon_name, cp), 'green')
+                                            '[x] Captured {}! [CP {}]'.format(
+                                                pokemon_name, cp), 'green')
                             break
         time.sleep(5)
 
@@ -140,14 +157,18 @@ class PokemonCatchWorker(object):
     def _transfer_all_low_cp_pokemon(self, value, response_dict):
         try:
             reduce(dict.__getitem__, [
-                   "responses", "GET_INVENTORY", "inventory_delta", "inventory_items"], response_dict)
+                "responses", "GET_INVENTORY", "inventory_delta",
+                "inventory_items"
+            ], response_dict)
         except KeyError:
             pass
         else:
-            for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
+            for item in response_dict['responses']['GET_INVENTORY'][
+                    'inventory_delta']['inventory_items']:
                 try:
                     reduce(dict.__getitem__, [
-                           "inventory_item_data", "pokemon"], item)
+                        "inventory_item_data", "pokemon"
+                    ], item)
                 except KeyError:
                     pass
                 else:
@@ -173,14 +194,18 @@ class PokemonCatchWorker(object):
     def counting_pokemon(self, response_dict, id_list):
         try:
             reduce(dict.__getitem__, [
-                   "responses", "GET_INVENTORY", "inventory_delta", "inventory_items"], response_dict)
+                "responses", "GET_INVENTORY", "inventory_delta",
+                "inventory_items"
+            ], response_dict)
         except KeyError:
             pass
         else:
-            for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
+            for item in response_dict['responses']['GET_INVENTORY'][
+                    'inventory_delta']['inventory_items']:
                 try:
                     reduce(dict.__getitem__, [
-                           "inventory_item_data", "pokemon_data"], item)
+                        "inventory_item_data", "pokemon_data"
+                    ], item)
                 except KeyError:
                     pass
                 else:
