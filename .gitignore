@@ -108,6 +108,7 @@ web/location.json
 web/userdata.js
 data/last-location*.json
 data/catch-ignore.yml
+release_config.json
 
 # ignore Pycharm config
 .idea
