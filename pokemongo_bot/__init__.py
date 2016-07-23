@@ -33,6 +33,8 @@ class PokemonGoBot(object):
     def work_on_cell(self, cell, position, include_fort_on_path):
         if (self.config.mode == "all" or self.config.mode == "poke") and 'catchable_pokemons' in cell:
             print '[#] Something rustles nearby!'
+            # Sort all by distance from current pos- eventually this should build graph & A* it
+            cell['catchable_pokemons'].sort(key=lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
             for pokemon in cell['catchable_pokemons']:
                 with open('web/catchable.json', 'w') as outfile:
                     json.dump(pokemon, outfile)
@@ -41,6 +43,8 @@ class PokemonGoBot(object):
                 with open('web/catchable.json', 'w') as outfile:
                     json.dump({}, outfile)
         if (self.config.mode == "all" or self.config.mode == "poke") and 'wild_pokemons' in cell:
+            # Sort all by distance from current pos- eventually this should build graph & A* it
+            cell['wild_pokemons'].sort(key=lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
             for pokemon in cell['wild_pokemons']:
                 worker = PokemonCatchWorker(pokemon, self)
                 worker.work()
@@ -50,7 +54,7 @@ class PokemonGoBot(object):
                 forts = [fort for fort in cell['forts'] if 'latitude' in fort and 'type' in fort]
 
                 # Sort all by distance from current pos- eventually this should build graph & A* it
-                forts.sort(key=lambda x: distance(self.position[0], self.position[1], fort['latitude'], fort['longitude']))
+                forts.sort(key=lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
                 for fort in cell['forts']:
                     worker = SeenFortWorker(fort, self)
                     hack_chain = worker.work()
