@@ -106,3 +106,4 @@ web/location-*.json
 # personal docker-compose
 docker-compose.yml
 web/userdata.js
+web/userdata.js
