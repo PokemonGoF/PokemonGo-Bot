@@ -223,19 +223,6 @@ put your username in the quotes instead of "username"
 If using multiple usernames format like this:  
 ```var users = ["username1","username2"];```
 
-## Requirements
- * Python 2
- * requests
- * protobuf
- * gpsoauth
- * geopy
- * s2sphere
- * googlemaps
- * pgoapi
-
-To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg=pgoapi`
-
-
 ## Contributors (Don't forget add yours here when you create PR:)
  * eggins -- The first pull request :)
  * crack00r
