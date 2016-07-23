@@ -97,3 +97,9 @@ inventory.json
 pokedex.json
 web/catchable.json
 data/catch-ignore.yml
+
+# ignore Pycharm config
+.idea
+
+# personal docker-compose
+docker-compose.yml

@@ -42,7 +42,7 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 ### Protobuf 3 installation
 
 - OS X:  `brew update && brew install --devel protobuf`
-- Windows: `PLEASE CONTRIBUTE`
+- Windows: Download protobuf 3.0: [here](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip) and unzip `bin/protoc.exe` into a folder in your PATH.
 - Linux: `PLEASE CONTRIBUTE`
 
 ### Installation
@@ -52,6 +52,14 @@ $ cd PokemonGo-Bot
 $ virtualenv .  
 $ source bin/activate  
 $ pip install -r requirements.txt  
+
+**Windows Note**
+    On Windows, you will need to install PyYaml through the installer [here](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt  
+    On Windwos 10 follow these instructions:  
+    Go here: [lfd.uci.edu](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml)  
+    Download the Download: PyYAML-3.11-cp27-cp27m-win32.whl file  
+    $ cd download-directory
+    $ pip install PyYAML-3.11-cp27-cp27m-win32.whl
 
 ### Develop PokemonGo-Bot
 
@@ -101,6 +109,25 @@ This project uses Google Maps. There's one map coupled with the project, but as 
     $ python2 pokecli.py -a ptc -u tejado -p 1234 --location "New York, Washington Square"
     Google Account:
     $ python2 pokecli.py -a google -u tejado -p 1234 --location "New York, Washington Square"
+]
+## How to add/discover new API
+  The example is [here](https://github.com/PokemonGoF/PokemonGo-Bot/commit/46e2352ce9f349cc127a408959679282f9999585)  
+    1. Check the type of your API request in   [POGOProtos](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/RequestType.proto) For example: RECYCLE_INVENTORY_ITEM  
+    2. Convert to the api call in pokemongo_bot/__init__.py,  RECYCLE_INVENTORY_ITEM change to self.api.recycle_inventory_item
+        ```
+        def drop_item(self,item_id,count):
+            self.api.recycle_inventory_item(...............)
+        ```
+    3. Where is the param list?  
+        You need check this [Requests/Messages/RecycleInventoryItemMessage.proto](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/Messages/RecycleInventoryItemMessage.proto)
+    4. Then our final api call is  
+        ```
+        def drop_item(self,item_id,count):
+            self.api.recycle_inventory_item(item_id=item_id,count=count)
+            inventory_req = self.api.call()
+            print(inventory_req)
+        ```  
+    5. You can now debug on the log to see if get what you need  
 
 ## FAQ
 
