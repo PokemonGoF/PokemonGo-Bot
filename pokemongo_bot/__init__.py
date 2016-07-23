@@ -280,7 +280,7 @@ class PokemonGoBot(object):
             try:
                 #
                 # save location flag used to pull the last known location from the location.json
-                with open('location.json') as f:
+                with open('data/last-location-%s.json' % (self.config.username)) as f:
                     location_json = json.load(f)
 
                     self.position = (location_json['lat'], location_json['lng'], 0.0)

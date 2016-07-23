@@ -25,7 +25,7 @@ class Stepper(object):
         self.y = 0
         self.dx = 0
         self.dy = -1
-        self.steplimit=self.config.maxsteps
+        self.steplimit=self.config.max_steps
         self.steplimit2 = self.steplimit**2
         self.origin_lat = self.bot.position[0]
         self.origin_lon = self.bot.position[1]
@@ -90,6 +90,9 @@ class Stepper(object):
                 if 'map_cells' in response_dict['responses']['GET_MAP_OBJECTS']:
                     with open('web/location-%s.json' % (self.config.username), 'w') as outfile:
                         json.dump({'lat': lat, 'lng': lng,'cells':response_dict['responses']['GET_MAP_OBJECTS']['map_cells']}, outfile)
+                    with open('data/last-location-%s.json' % (self.config.username), 'w') as outfile:
+                        outfile.truncate()
+                        json.dump({'lat': lat, 'lng' : lng},outfile)
         if response_dict and 'responses' in response_dict:
             if 'GET_MAP_OBJECTS' in response_dict['responses']:
                 if 'status' in response_dict['responses']['GET_MAP_OBJECTS']:
