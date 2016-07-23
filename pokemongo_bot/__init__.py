@@ -15,7 +15,7 @@ from stepper import Stepper
 from geopy.geocoders import GoogleV3
 from math import radians, sqrt, sin, cos, atan2
 from item_list import Item
-
+import Logger
 
 class PokemonGoBot(object):
 
@@ -71,7 +71,7 @@ class PokemonGoBot(object):
                 pass
 
         if (self.config.mode == "all" or self.config.mode == "poke") and 'catchable_pokemons' in cell and len(cell['catchable_pokemons']) > 0:
-            print '[#] Something rustles nearby!'
+            Logger.log('[#] Something rustles nearby!')
             # Sort all by distance from current pos- eventually this should
             # build graph & A* it
             cell['catchable_pokemons'].sort(key=lambda x: distance(
@@ -134,7 +134,7 @@ class PokemonGoBot(object):
         self._set_starting_position()
 
         if not self.api.login(self.config.auth_service, str(self.config.username), str(self.config.password)):
-            print('Login Error, server busy')
+            Logger.log('Login Error, server busy', 'red')
             exit(0)
 
         # chain subrequests (methods) into one RPC call
@@ -163,18 +163,16 @@ class PokemonGoBot(object):
         if 'amount' in player['currencies'][1]:
             stardust = player['currencies'][1]['amount']
 
-        print('[#]')
-        print('[#] Username: {username}'.format(**player))
-        print('[#] Acccount Creation: {}'.format(creation_date))
-        print('[#] Bag Storage: {}/{}'.format(self.get_inventory_count('item'),
-                                              player['max_item_storage']))
-        print('[#] Pokemon Storage: {}/{}'.format(self.get_inventory_count('pokemon'),
-                                                  player['max_pokemon_storage']))
-        print('[#] Stardust: {}'.format(stardust))
-        print('[#] Pokecoins: {}'.format(pokecoins))
-        print('[#] PokeBalls: ' + str(balls_stock[1]))
-        print('[#] GreatBalls: ' + str(balls_stock[2]))
-        print('[#] UltraBalls: ' + str(balls_stock[3]))
+        Logger.log('[#]')
+        Logger.log('[#] Username: {username}'.format(**player))
+        Logger.log('[#] Acccount Creation: {}'.format(creation_date))
+        Logger.log('[#] Bag Storage: {}/{}'.format(self.get_inventory_count('item'), player['max_item_storage']))
+        Logger.log('[#] Pokemon Storage: {}/{}'.format(self.get_inventory_count('pokemon'), player['max_pokemon_storage']))
+        Logger.log('[#] Stardust: {}'.format(stardust))
+        Logger.log('[#] Pokecoins: {}'.format(pokecoins))
+        Logger.log('[#] PokeBalls: ' + str(balls_stock[1]))
+        Logger.log('[#] GreatBalls: ' + str(balls_stock[2]))
+        Logger.log('[#] UltraBalls: ' + str(balls_stock[3]))
 
         # Testing
         # self.drop_item(Item.ITEM_POTION.value,1)
@@ -193,14 +191,12 @@ class PokemonGoBot(object):
         print(inventory_req)
 
     def initial_transfer(self):
-        print('[x] Initial Transfer.')
+        Logger.log('[x] Initial Transfer.')
 
         if self.config.cp:
-            print('[x] Will NOT transfer anything above CP {}'.format(
-                self.config.cp))
+            Logger.log('[x] Will NOT transfer anything above CP {}'.format(self.config.cp))
         else:
-            print(
-                '[x] Preparing to transfer all Pokemon duplicates, keeping the highest CP of each one type.')
+            Logger.log('[x] Preparing to transfer all Pokemon duplicates, keeping the highest CP of each one type.')
 
         pokemon_groups = self._initial_transfer_get_groups()
 
@@ -215,14 +211,13 @@ class PokemonGoBot(object):
                     if self.config.cp and group_cp[x] > self.config.cp:
                         continue
 
-                    print('[x] Transferring {} with CP {}'.format(
+                    Logger.log('[x] Transferring {} with CP {}'.format(
                         self.pokemon_list[id-1]['Name'], group_cp[x]))
-                    self.api.release_pokemon(
-                        pokemon_id=pokemon_groups[id][group_cp[x]])
+                    self.api.release_pokemon(pokemon_id=pokemon_groups[id][group_cp[x]])
                     response_dict = self.api.call()
                     sleep(2)
 
-        print('[x] Transferring Done.')
+        Logger.log('[x] Transfering Done.')
 
     def _initial_transfer_get_groups(self):
         pokemon_groups = {}
@@ -318,12 +313,10 @@ class PokemonGoBot(object):
                         location_json['lat'], location_json['lng'], 0.0)
                     self.api.set_position(*self.position)
 
-                    print('')
-                    print(
-                        '[x] Last location flag used. Overriding passed in location')
-                    print(
-                        '[x] Last in-game location was set as: {}'.format(self.position))
-                    print('')
+                    Logger.log('')
+                    Logger.log('[x] Last location flag used. Overriding passed in location')
+                    Logger.log('[x] Last in-game location was set as: {}'.format(self.position))
+                    Logger.log('')
 
                     return
             except:
@@ -334,11 +327,11 @@ class PokemonGoBot(object):
         # Still runs if location is set.
         self.position = self._get_pos_by_name(self.config.location)
         self.api.set_position(*self.position)
-        print('')
-        print(u'[x] Address found: {}'.format(
-            self.config.location.decode('utf-8')))
-        print('[x] Position in-game set as: {}'.format(self.position))
-        print('')
+        Logger.log("")
+        Logger.log('[x] Address found: {}'.format(self.config.location.decode('utf-8')))
+        Logger.log('[x] Position in-game set as: {}'.format(self.position))
+        Logger.log("")
+
 
     def _get_pos_by_name(self, location_name):
         geolocator = GoogleV3(api_key=self.config.gmapkey)
@@ -401,19 +394,14 @@ class PokemonGoBot(object):
                                         int(playerdata['next_level_xp']) - int(playerdata['experience']))
 
                                     if 'level' in playerdata:
-                                        print(
-                                            '[#] -- Level: {level}'.format(**playerdata))
+                                        Logger.log('[#] -- Level: {level}'.format(**playerdata))
 
                                     if 'experience' in playerdata:
-                                        print(
-                                            '[#] -- Experience: {experience}'.format(**playerdata))
-                                        print(
-                                            '[#] -- Experience until next level: {}'.format(nextlvlxp))
+                                        Logger.log('[#] -- Experience: {experience}'.format(**playerdata))
+                                        Logger.log('[#] -- Experience until next level: {}'.format(nextlvlxp))
 
                                     if 'pokemons_captured' in playerdata:
-                                        print(
-                                            '[#] -- Pokemon Captured: {pokemons_captured}'.format(**playerdata))
+                                        Logger.log('[#] -- Pokemon Captured: {pokemons_captured}'.format(**playerdata))
 
                                     if 'poke_stop_visits' in playerdata:
-                                        print(
-                                            '[#] -- Pokestops Visited: {poke_stop_visits}'.format(**playerdata))
+                                        Logger.log('[#] -- Pokestops Visited: {poke_stop_visits}'.format(**playerdata))
