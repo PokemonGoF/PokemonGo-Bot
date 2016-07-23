@@ -8,6 +8,8 @@ var bagItems = {};
 var bagCandy = {};
 var emptyDex = [];
 var pokemonArray = {};
+var forts = [];
+var info_windows = [];
 var i;
 var user_index;
 var trainerSex = ["m","f"]
@@ -56,10 +58,8 @@ var errorFunc = function(xhr) {
   console.error(xhr);
 };
 
-var forts = [];
-var info_windows = [];
 var trainerFunc = function(data, user_index) {
-  var z = 0;
+/*  var z = 0;
   for (var i = 0; i < data.cells.length; i++) {
     cell = data.cells[i];
     for (var x = 0; x < data.cells[i].forts.length; x++) {
@@ -90,6 +90,7 @@ var trainerFunc = function(data, user_index) {
     }
 
   }
+  */
   if (user_data[users[user_index]].hasOwnProperty('marker') === false) {
     console.log("New Marker: Trainer - " + data.lat + ", " + data.lng);
     randomSex = Math.floor(Math.random() * 1)
