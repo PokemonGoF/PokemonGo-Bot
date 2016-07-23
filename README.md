@@ -14,6 +14,7 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
  * Use the ball you have to catch, don't if you don't have
  * Rudimentary IV Functionality filter
  * Auto switch mode(Full of item then catch, no ball useable then farm)
+ * Ignore certain pokemon filter
 
 # To-Do:
 - [ ] Standalone Desktop APP
