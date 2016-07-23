@@ -86,6 +86,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       your location)
       --initial-transfer                            Start the bot with a pokemon clean up, keeping only the higher CP of each pokemon. It respects -c as upper limit to release.
       -c CP, --cp                                   Set the CP to transfer or lower (eg. 100 will transfer CP0-99)
+      --distance_unit UNIT                          Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
 
