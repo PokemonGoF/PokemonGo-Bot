@@ -57,8 +57,9 @@ $ pip install -r requirements.txt
 On Windows, you will need to install PyYaml through the  [installer](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt. 
 
 Windows 10:
-    Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl 
+    Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl   
     (If running 64-bit python or if you get a 'not a supported wheel on this platform' error, download the 64 bit version instead: PyYAML-3.11-cp27-cp27m-win_amd64.whl )
+
     $ cd download-directory
     $ pip install PyYAML-3.11-cp27-cp27m-win32.whl
     (replace PyYAML-3.11-cp27-cp27m-win32.whl with PyYAML-3.11-cp27-cp27m-win_amd64.whl if you needed to download the 64-bit version)
