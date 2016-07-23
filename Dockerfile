@@ -1,21 +1,9 @@
-FROM gliderlabs/alpine:3.4
+FROM python:2.7-onbuild
+ENV AUTH_SERVICE ""
+ENV USERNAME ""
+ENV PASSWORD ""
+ENV LOCATION ""
+ENV CP ""
 
-COPY requirements.txt /app/
-WORKDIR /app/
+CMD python pokecli.py -a $AUTH_SERVICE -u $USERNAME -p $PASSWORD -l $LOCATION -s -c $CP
 
-RUN apk add --update --no-cache \
-  ca-certificates \
-  && update-ca-certificates \
-  && apk add --update --no-cache \
-    git \
-    python \
-    python-dev \
-    py-pip \
-    build-base \
-  && pip install --upgrade pip \
-  && pip install --no-cache-dir -r requirements.txt \
-  && apk del git
-
-COPY . /app
-
-ENTRYPOINT ["/usr/bin/python", "pokecli.py"]
