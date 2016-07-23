@@ -187,7 +187,6 @@ class PokemonGoBot(object):
         self.update_inventory()
 
     def drop_item(self, item_id, count):
-        print('test')
         self.api.recycle_inventory_item(item_id=item_id, count=count)
         inventory_req = self.api.call()
         
