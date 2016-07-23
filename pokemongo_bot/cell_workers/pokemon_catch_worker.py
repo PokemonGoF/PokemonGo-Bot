@@ -98,7 +98,7 @@ class PokemonCatchWorker(object):
                                 if status is 3:
                                     print_red('[x] Oh no! {} vanished! :('.format(pokemon_name))
                                 if status is 1:
-                                    if cp < self.config.cp #Transfer all Pokemon that are below the minimum CP.
+                                    if cp < self.config.cp: #Transfer all Pokemon that are below the minimum CP
                                         print_green('[x] Captured {}! [CP {}] [Potential {}%] - exchanging for candy'.format(pokemon_name, cp, pokemon_potential))
                                         id_list2 = self.count_pokemon_inventory()
                                         # Transfering Pokemon
