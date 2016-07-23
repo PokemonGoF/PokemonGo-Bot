@@ -5,14 +5,16 @@ import googlemaps
 import json
 import random
 import threading
-import time
 import datetime
+import yaml
 from pgoapi import PGoApi
 from cell_workers import PokemonCatchWorker, SeenFortWorker
 from cell_workers.utils import distance
+from human_behaviour import sleep
 from stepper import Stepper
 from geopy.geocoders import GoogleV3
 from math import radians, sqrt, sin, cos, atan2
+from item_list import Item
 
 class PokemonGoBot(object):
 
@@ -31,16 +33,55 @@ class PokemonGoBot(object):
         self.stepper.take_step()
 
     def work_on_cell(self, cell, position, include_fort_on_path):
-        if (self.config.mode == "all" or self.config.mode == "poke") and 'catchable_pokemons' in cell:
+        process_ignore = False
+        try:
+            with open("./data/catch-ignore.yml", 'r') as y:
+                ignores = yaml.load(y)['ignore']
+                if len(ignores) > 0:
+                    process_ignore = True
+        except Exception, e:
+            pass
+
+        if process_ignore:
+            #
+            # remove any wild pokemon
+            try:
+                for p in cell['wild_pokemons'][:]:
+                    pokemon_id = p['pokemon_data']['pokemon_id']
+                    pokemon_name = filter(lambda x: int(x.get('Number')) == pokemon_id, self.pokemon_list)[0]['Name']
+
+                    if pokemon_name in ignores:
+                        cell['wild_pokemons'].remove(p)
+            except KeyError:
+                pass
+
+            #
+            # remove catchable pokemon
+            try:
+                for p in cell['catchable_pokemons'][:]:
+                    pokemon_id = p['pokemon_id']
+                    pokemon_name = filter(lambda x: int(x.get('Number')) == pokemon_id, self.pokemon_list)[0]['Name']
+
+                    if pokemon_name in ignores:
+                        cell['catchable_pokemons'].remove(p)
+            except KeyError:
+                pass
+
+
+        if (self.config.mode == "all" or self.config.mode == "poke") and 'catchable_pokemons' in cell and len(cell['catchable_pokemons']) > 0:
             print '[#] Something rustles nearby!'
+            # Sort all by distance from current pos- eventually this should build graph & A* it
+            cell['catchable_pokemons'].sort(key=lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
             for pokemon in cell['catchable_pokemons']:
-                with open('web/catchable.json', 'w') as outfile:
+                with open('web/catchable-%s.json' % (self.config.username), 'w') as outfile:
                     json.dump(pokemon, outfile)
                 worker = PokemonCatchWorker(pokemon, self)
                 worker.work()
-                with open('web/catchable.json', 'w') as outfile:
+                with open('web/catchable-%s.json' % (self.config.username), 'w') as outfile:
                     json.dump({}, outfile)
-        if (self.config.mode == "all" or self.config.mode == "poke") and 'wild_pokemons' in cell:
+        if (self.config.mode == "all" or self.config.mode == "poke") and 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
+            # Sort all by distance from current pos- eventually this should build graph & A* it
+            cell['wild_pokemons'].sort(key=lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
             for pokemon in cell['wild_pokemons']:
                 worker = PokemonCatchWorker(pokemon, self)
                 worker.work()
@@ -50,7 +91,7 @@ class PokemonGoBot(object):
                 forts = [fort for fort in cell['forts'] if 'latitude' in fort and 'type' in fort]
 
                 # Sort all by distance from current pos- eventually this should build graph & A* it
-                forts.sort(key=lambda x: distance(self.position[0], self.position[1], fort['latitude'], fort['longitude']))
+                forts.sort(key=lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
                 for fort in cell['forts']:
                     worker = SeenFortWorker(fort, self)
                     hack_chain = worker.work()
@@ -103,7 +144,7 @@ class PokemonGoBot(object):
         pokecoins = '0'
         stardust = '0'
         balls_stock = self.pokeball_inventory();
-        
+
         if 'amount' in player['currencies'][0]:
             pokecoins = player['currencies'][0]['amount']
         if 'amount' in player['currencies'][1]:
@@ -119,57 +160,72 @@ class PokemonGoBot(object):
         print('[#] PokeBalls: ' + str(balls_stock[1]))
         print('[#] GreatBalls: ' + str(balls_stock[2]))
         print('[#] UltraBalls: ' + str(balls_stock[3]))
+
+        # Testing
+        #self.drop_item(Item.ITEM_POTION.value,1)
+        #exit(0)
         self.get_player_info()
 
-        if self.config.firsttrans:
-            self.first_transfer()
-            
+        if self.config.initial_transfer:
+            self.initial_transfer()
+
         print('[#]')
         self.update_inventory();
-        
-    def first_transfer(self):
-        print('[x] First Transfer.')
-        
-        pokemon_groups = self._first_transfer_get_groups()
-        
-        print('[x] Transfering...')
-        
+    def drop_item(self,item_id,count):
+        self.api.recycle_inventory_item(item_id=item_id,count=count)
+        inventory_req = self.api.call()
+        print(inventory_req)
+    def initial_transfer(self):
+        print('[x] Initial Transfer.')
+
+        if self.config.cp:
+            print('[x] Will NOT transfer anything above CP {}'.format(self.config.cp))
+        else:
+            print('[x] Preparing to transfer all Pokemon duplicates, keeping the highest CP of each one type.')
+
+        pokemon_groups = self._initial_transfer_get_groups()
+
         for id in pokemon_groups:
-        
+
             group_cp = pokemon_groups[id].keys()
-            
             if len(group_cp) > 1:
                 group_cp.sort()
                 group_cp.reverse()
 
                 for x in range(1, len(group_cp)):
+                    if self.config.cp and group_cp[x] > self.config.cp:
+                        continue
+
+                    print('[x] Releasing Pokemon #{} and CP {}'.format(id, group_cp[x]))
                     self.api.release_pokemon(pokemon_id=pokemon_groups[id][group_cp[x]])
                     response_dict = self.api.call()
-                    time.sleep(2)
-                    
+                    sleep(2)
+
         print('[x] Transfering Done.')
-        
-    def _first_transfer_get_groups(self):
+
+    def _initial_transfer_get_groups(self):
         pokemon_groups = {}
         self.api.get_player().get_inventory()
         inventory_req = self.api.call()
-        inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']  
-        
+        inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+
         for pokemon in inventory_dict:
             try:
-                group_id = pokemon['inventory_item_data']['pokemon_data']['pokemon_id']
-                group_pokemon = pokemon['inventory_item_data']['pokemon_data']['id']
-                group_pokemon_cp = pokemon['inventory_item_data']['pokemon_data']['cp']
-                
-                if group_id not in pokemon_groups:
-                    pokemon_groups[group_id] = {}
-                     
-                pokemon_groups[group_id].update({group_pokemon_cp:group_pokemon})
-            except:
+                reduce(dict.__getitem__, ["inventory_item_data", "pokemon_data", "pokemon_id"], pokemon)
+            except KeyError:
                 continue
+
+            group_id = pokemon['inventory_item_data']['pokemon_data']['pokemon_id']
+            group_pokemon = pokemon['inventory_item_data']['pokemon_data']['id']
+            group_pokemon_cp = pokemon['inventory_item_data']['pokemon_data']['cp']
+
+            if group_id not in pokemon_groups:
+                pokemon_groups[group_id] = {}
+
+            pokemon_groups[group_id].update({group_pokemon_cp:group_pokemon})
         return pokemon_groups
-            
-        
+
+
     def update_inventory(self):
         self.api.get_inventory()
         response = self.api.call()
@@ -201,14 +257,15 @@ class PokemonGoBot(object):
 
         for item in inventory_dict:
             try:
-                if item['inventory_item_data']['item']['item_id'] == 1:
-                    #print('Poke Ball count: ' + str(item['inventory_item_data']['item']['count']))
+                print(item['inventory_item_data']['item'])
+                if item['inventory_item_data']['item']['item_id'] == Item.ITEM_POKE_BALL.value:
+                    print('Poke Ball count: ' + str(item['inventory_item_data']['item']['count']))
                     balls_stock[1] = item['inventory_item_data']['item']['count']
-                if item['inventory_item_data']['item']['item_id'] == 2:
-                    #print('Great Ball count: ' + str(item['inventory_item_data']['item']['count']))
+                if item['inventory_item_data']['item']['item_id'] == Item.ITEM_GREAT_BALL.value:
+                    print('Great Ball count: ' + str(item['inventory_item_data']['item']['count']))
                     balls_stock[2] = item['inventory_item_data']['item']['count']
-                if item['inventory_item_data']['item']['item_id'] == 3:
-                    #print('Ultra Ball count: ' + str(item['inventory_item_data']['item']['count']))
+                if item['inventory_item_data']['item']['item_id'] == Item.ITEM_ULTRA_BALL.value:
+                    print('Ultra Ball count: ' + str(item['inventory_item_data']['item']['count']))
                     balls_stock[3] = item['inventory_item_data']['item']['count']
             except:
                 continue

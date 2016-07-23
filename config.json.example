@@ -3,11 +3,12 @@
     "username": "example@gmail.com",
     "password": "password11!!",
     "location": "New York",
-    "cp": "100",
+    "cp": 100,
     "gmapkey": "CHANGME",
-    "maxsteps": "100",
+    "maxsteps": 100,
     "mode": "all",
-    "walk": "4.16",
-    "debug": "False",
-    "test": "False"
+    "walk": 4.16,
+    "debug": true,
+    "test": false
 }
+

@@ -12,14 +12,18 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
  * Release low cp pokemon
  * Walking as you
  * Use the ball you have to catch, don't if you don't have
+ * Rudimentary IV Functionality filter
+ * Auto switch mode(Full of item then catch, no ball useable then farm)
+ * Ignore certain pokemon filter
 
 # To-Do:
-- [ ] Google Map API key setup
+- [ ] Standalone Desktop APP
+- [x] Google Map API key setup (Readme update needed)
 - [ ] Show all objects on map
 - [x] Limit the step to farm specific area for pokestops
 - [ ] Pokemon transfer filter
 - [ ] Drop items when bag is full
-- [ ] Pokemon catch filter
+- [x] Pokemon catch filter
 - [ ] Hatch eggs
 - [ ] Incubate eggs
 - [ ] Evolve pokemons
@@ -28,42 +32,36 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 
 ## Installation
 
-### Python Installation
-    [Install Python 2.7](https://wiki.python.org/moin/BeginnersGuide/Download)
-    [Install PIP](https://pip.pypa.io/en/stable/installing/)
+### Requirements (click each one for install guide)
 
-### Google Protobuf Installation
-    MAC:  brew update && brew install --devel protobuf
+- [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/)
+- [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+- [virtualenv](https://virtualenv.pypa.io/en/stable/installation/)
+- protobuf 3 (see below)
 
-### Install PokemonGo-Bot for NORMAL usage
+### Protobuf 3 installation
 
-Download or clone the **master** branch of the repository: `git clone -b master git@github.com:PokemonGoF/PokemonGo-Bot.git`
+- OS X:  `brew update && brew install --devel protobuf`
+- Windows: `PLEASE CONTRIBUTE`
+- Linux: `PLEASE CONTRIBUTE`
 
-Using a terminal navigate into the clone repository.
+### Installation
 
-Install all requirements for the project using `pip install -r ./requirements.txt`
-
+$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot
+$ cd PokemonGo-Bot
+$ virtualenv .
+$ source bin/activate
+$ pip install -r requirements.txt
 
 ### Develop PokemonGo-Bot
 
-Download or clone the **dev** branch of the repository: `git clone -b dev git@github.com:PokemonGoF/PokemonGo-Bot.git `
-
-Using a terminal navigate into the clone repository.
-
-Install all requirements for the project using `pip install -r ./requirements.txt`
-**Code forest, code!**
-
-### Ubuntu virtualenv install
-
-    $ sudo apt-get install virtualenv -y
-    $ git clone https://github.com/PokemonGoF/PokemonGo-Bot
-    $ cd PokemonGo-Bot
-    $ virtualenv .
-    $ source bin/activate
-    $ pip install -r requirements.txt
+$ git clone -b dev https://github.com/PokemonGoF/PokemonGo-Bot
+$ cd PokemonGo-Bot
+$ virtualenv .
+$ source bin/activate
+$ pip install -r requirements.txt
 
 ### Google Maps API (Code is not done yet)
-
 
 Google Maps API: a brief guide to your own key
 
@@ -88,10 +86,12 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -lc, --use-location-cache                     Bot will start at last known location
       -w SPEED,  --walk SPEED                       Walk instead of teleport with given speed (meters per second max 4.16 because of walking end on 15km/h)
       -m MODE, --mode MODE                          Set farming Mode for the bot ('all', 'poke', 'farm')
-      --maxstep MAX_STEP                            Set the steps around your initial location(DEFAULT 5 mean 25 cells around
+      --maxsteps MAX_STEP                            Set the steps around your initial location(DEFAULT 5 mean 25 cells around
       your location)
-      --firsttrans                                  Start the bot with a pokemon clean up, keeping only the higher CP of each pokemon
+      --initial-transfer                            Start the bot with a pokemon clean up, keeping only the higher CP of each pokemon. It respects -c as upper limit to release.
       -c CP, --cp                                   Set the CP to transfer or lower (eg. 100 will transfer CP0-99)
+      -iv IV, --pokemon_potential                   Set the ratio for the IV values to transfer (eg. 0.8 will transfer a pokemon with IV 0.5)
+      --distance_unit UNIT                          Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
 
@@ -117,7 +117,27 @@ This project uses Google Maps. There's one map coupled with the project, but as 
    Finish the tutorial on a smartphone. This will then allow everything to be visible.
 ### How can I maximise my XP per hour?
 Quick Tip: When using this script, use a Lucky egg to double the XP for 30 mins. You will level up much faster. A Lucky egg is obtained on level 9 and further on whilst leveling up. (from VipsForever via /r/pokemongodev)
+### How can I not collect certain pokemon
+You don't want to collect common pokemon once you hit a certain level. It will
+slow down leveling but you won't fill up either.
 
+Create the following filter
+
+```
+./data/catch-ignore.yml
+```
+
+Its a yaml file with a list of names so make it look like
+
+```
+ignore:
+  - Pidgey
+  - Rattata
+  - Pidgeotto
+  - Spearow
+  - Ekans
+  - Zubat
+```
 
 
 ## Requirements
@@ -129,26 +149,32 @@ Quick Tip: When using this script, use a Lucky egg to double the XP for 30 mins.
  * s2sphere
  * googlemaps
  * pgoapi
+
 To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg=pgoapi`
 
 
 ## Contributors (Don't forget add yours here when you create PR:)
-eggins -- The first pull request :)  
-crack00r  
-ethervoid  
-Bashin  
-tstumm  
-TheGoldenXY  
-Reaver01
-rarshonsky
-earthchie
+ * eggins -- The first pull request :)
+ * crack00r
+ * ethervoid
+ * Bashin
+ * tstumm
+ * TheGoldenXY
+ * Reaver01
+ * rarshonsky
+ * earthchie
+ * haykuro
+ * 05-032
+ * sinistance
+ * CapCap
+ * mzupan
 
 ## Credits
 ### The works are based on the Pokemon Go API
-[tejado](https://github.com/tejado) many thanks for the API  
-[Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets  
-[elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR  
-[AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos  
+[tejado](https://github.com/tejado) many thanks for the API
+[Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets
+[elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR
+[AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos
 [AHAAAAAAA](https://github.com/AHAAAAAAA/PokemonGo-Map) for parts of the s2sphere stuff
 
 

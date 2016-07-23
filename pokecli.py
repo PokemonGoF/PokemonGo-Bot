@@ -59,16 +59,18 @@ def init_config():
         required=required("auth_service"))
     parser.add_argument("-u", "--username", help="Username")
     parser.add_argument("-p", "--password", help="Password")
-    parser.add_argument("-l", "--location", help="Location", required=required("location"))
+    parser.add_argument("-l", "--location", help="Location")
     parser.add_argument("-lc", "--use-location-cache", help="Bot will start at last known location", action='store_true', default=False, dest='location_cache')
     parser.add_argument("-m", "--mode", help="Farming Mode", type=str, default="all")
     parser.add_argument("-w", "--walk", help="Walk instead of teleport with given speed (meters per second, e.g. 2.5)", type=float, default=2.5)
     parser.add_argument("-c", "--cp",help="Set CP less than to transfer(DEFAULT 100)",type=int,default=100)
+    parser.add_argument("-iv", "--pokemon_potential",help="Set IV ratio less than to transfer(DEFAULT 0.80)",type=float,default=0.80)
     parser.add_argument("-k", "--gmapkey",help="Set Google Maps API KEY",type=str,default=None)
     parser.add_argument("--maxsteps",help="Set the steps around your initial location(DEFAULT 5 mean 25 cells around your location)",type=int,default=5)
-    parser.add_argument("--firsttrans", help="Transfer all pokemon with same ID on bot start, except pokemons with highest CP", action='store_true')
+    parser.add_argument("--initial-transfer", help="Transfer all pokemon with same ID on bot start, except pokemon with highest CP. It works with -c", action='store_true', dest='initial_transfer')
     parser.add_argument("-d", "--debug", help="Debug Mode", action='store_true')
     parser.add_argument("-t", "--test", help="Only parse the specified location", action='store_true')
+    parser.add_argument("--distance_unit", help="Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)", type=str, default="m")
     parser.set_defaults(DEBUG=False, TEST=False)
     config = parser.parse_args()
 
@@ -79,12 +81,16 @@ def init_config():
 
     # Passed in arguments shoud trump
     for key in config.__dict__:
-        if key in load and config.__dict__[key] == None:
+        if key in load:
             config.__dict__[key] = load[key]
 
     if config.auth_service not in ['ptc', 'google']:
-      log.error("Invalid Auth service specified! ('ptc' or 'google')")
-      return None
+        logging.error("Invalid Auth service specified! ('ptc' or 'google')")
+        return None
+
+    if not config.location and not config.location_cache in load:
+        log.error("Needs either --use-location-cache or --location.")
+        return None
 
     return config
 
