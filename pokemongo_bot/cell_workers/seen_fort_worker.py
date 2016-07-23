@@ -100,7 +100,8 @@ class SeenFortWorker(object):
                     seconds_since_epoch = time.time()
                     print '[#] PokeStop on cooldown. Time left: %s seconds.' % str((pokestop_cooldown/1000) - seconds_since_epoch)
             elif spin_details['result'] == 4:
-                print_red("[#] Inventory is full!")
+                print_red("[#] Inventory is full, switching to catch mode...")
+                self.config.mode='poke'
 
             if 'chain_hack_sequence_number' in response_dict['responses']['FORT_SEARCH']:
                 time.sleep(2)
