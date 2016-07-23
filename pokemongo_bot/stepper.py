@@ -5,6 +5,7 @@ import time
 
 from math import ceil
 from s2sphere import CellId, LatLng
+import s2sphere
 from google.protobuf.internal import encoder
 
 from human_behaviour import sleep, random_lat_long_delta
@@ -96,6 +97,11 @@ class Stepper(object):
             response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
             map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
             position = (lat, lng, alt)
+            # Sort all by distance from current pos- eventually this should build graph & A* it
+            print(map_cells)
+            #from_token
+            print( s2sphere.from_token(x['s2_cell_id']) )
+            map_cells.sort(key=lambda x: distance(lat, lng, x['latitude'], x['longitude']))
             for cell in map_cells:
                 self.bot.work_on_cell(cell, position, pokemon_only)
 
