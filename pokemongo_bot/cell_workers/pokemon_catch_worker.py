@@ -68,11 +68,11 @@ class PokemonCatchWorker(object):
                                 # print 'use Poke Ball'
                                 pokeball = 1
 
-                            if cp > 300 and balls_stock[2] > 0:
+                            if (cp > 300 or pokeball == 0) and balls_stock[2] > 0:
                                 # print 'use Great Ball'
                                 pokeball = 2
 
-                            if cp > 700 and balls_stock[3] > 0:
+                            if (cp > 700 or pokeball == 0) and balls_stock[3] > 0:
                                 # print 'use Utra Ball'
                                 pokeball = 3
 
