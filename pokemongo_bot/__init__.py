@@ -178,9 +178,6 @@ class PokemonGoBot(object):
         logger.log('[#] GreatBalls: ' + str(balls_stock[2]))
         logger.log('[#] UltraBalls: ' + str(balls_stock[3]))
 
-        # Testing
-        # self.drop_item(Item.ITEM_POTION.value,1)
-        # exit(0)
         self.get_player_info()
 
         if self.config.initial_transfer:
@@ -190,9 +187,13 @@ class PokemonGoBot(object):
         self.update_inventory()
 
     def drop_item(self, item_id, count):
+        print('test')
         self.api.recycle_inventory_item(item_id=item_id, count=count)
         inventory_req = self.api.call()
-        print(inventory_req)
+        
+        # Example of good request response
+        #{'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
+        return inventory_req
 
     def initial_transfer(self):
         logger.log('[x] Initial Transfer.')
