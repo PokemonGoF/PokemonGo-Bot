@@ -59,7 +59,7 @@ def init_config():
         required=required("auth_service"))
     parser.add_argument("-u", "--username", help="Username")
     parser.add_argument("-p", "--password", help="Password")
-    parser.add_argument("-l", "--location", help="Location", required=required("location"))
+    parser.add_argument("-l", "--location", help="Location")
     parser.add_argument("-lc", "--use-location-cache", help="Bot will start at last known location", action='store_true', default=False, dest='location_cache')
     parser.add_argument("-m", "--mode", help="Farming Mode", type=str, default="all")
     parser.add_argument("-w", "--walk", help="Walk instead of teleport with given speed (meters per second, e.g. 2.5)", type=float, default=2.5)
@@ -85,6 +85,10 @@ def init_config():
 
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")
+        return None
+
+    if not config.location and not config.location_cache in load:
+        log.error("Needs either --use-location-cache or --location.")
         return None
 
     return config
