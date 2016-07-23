@@ -18,7 +18,7 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 ## Table of Contents
 - [Project Chat](#project-chat)
 - [Features](#features)
-- [Current Status](#current-status)
+- [TODO List](#todo-list)
 - __Installation__
   - [Requirements](#requirements)
   - [Mac](#installation-mac)
@@ -40,58 +40,21 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
  * Auto switch mode(Full of item then catch, no ball useable then farm)
  * Ignore certain pokemon filter
 
-## Current Status
+## TODO List
 
-![Progress](http://progressed.io/bar/25)
-
-
-<table> 
-    <tr>
-        <td align="center"><b>TODO</b></td>
-        <td align="center"><b>In Progress</b></td>
-        <td align="center"><b>Done</b></td>
-    </tr>
-    <tr>
-        <td>
-            <img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%231&desc=Standalone%20Desktop%20APP">
-            <img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%235&desc=Pokemon%20transfer%20filter">
-        </td>
-        <td>
-            <img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%233&desc=Show%20all%20objects%20on%20map">
-        </td>
-        <td>
-            <img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%2312&desc=Code%20refactor">
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%236&desc=Drop%20items%20when%20bag%20is%20full">
-            <img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%238&desc=Hatch%20eggs">
-        </td>
-        <td></td>
-        <td>
-            <img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%232&desc=Google%20Map%20API%20key%20setup%20(Readme%20update%20needed)">
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%239&desc=Incubate%20eggs">
-            <img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%2310&desc=Evolve%20pokemons">
-        </td>
-        <td></td>
-        <td><img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%234&desc=Limit%20the%20step%20to%20farm%20specific%20area%20for%20pokestops"></td>
-    </tr>
-    <tr>
-        <td>
-            <img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%2311&desc=Use%20candy">
-        </td>
-        <td></td>
-        <td>
-            <img src="http://api.ideiadoluiz.com.br/postit/?title=Task%20%237&desc=Pokemon%20catch%20filter">
-        </td>
-    </tr>
-</table>
-
+- [ ] Standalone Desktop APP
+- [x] Google Map API key setup (Readme update needed)
+- [ ] Show all objects on map
+- [x] Limit the step to farm specific area for pokestops
+- [ ] Pokemon transfer filter
+- [ ] Drop items when bag is full
+- [x] Pokemon catch filter
+- [ ] Hatch eggs
+- [ ] Incubate eggs
+- [ ] Evolve pokemons
+- [ ] Use candy
+- [x] Code refactor
+- 
 ## Installation
 
 ### Requirements (click each one for install guide)
