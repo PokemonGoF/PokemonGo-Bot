@@ -47,6 +47,7 @@ from pokemongo_bot.cell_workers.utils import print_green, print_yellow, print_re
 def init_config():
     parser = argparse.ArgumentParser()
     config_file = "config.json"
+    release_config_json = "release_config.json"
 
     # If config file exists, load variables from json
     load = {}
@@ -80,17 +81,6 @@ def init_config():
         "Walk instead of teleport with given speed (meters per second, e.g. 2.5)",
         type=float,
         default=2.5)
-    parser.add_argument("-c",
-                        "--cp",
-                        help="Set CP less than to transfer(DEFAULT 100)",
-                        type=int,
-                        default=100)
-    parser.add_argument(
-        "-iv",
-        "--pokemon_potential",
-        help="Set IV ratio less than to transfer(DEFAULT 0.40)",
-        type=float,
-        default=0.40)
     parser.add_argument("-k",
                         "--gmapkey",
                         help="Set Google Maps API KEY",
@@ -107,9 +97,9 @@ def init_config():
         "-it",
         "--initial_transfer",
         help=
-        "Transfer all pokemon with same ID on bot start, except pokemon with highest CP. It works with -c",
-        type=bool,
-        default=False)
+        "Transfer all pokemon with same ID on bot start, except pokemon with highest CP. Can receive a CP number to not transfer above it",
+        type=int,
+        default=999999)
     parser.add_argument("-d",
                         "--debug",
                         help="Debug Mode",
@@ -127,12 +117,14 @@ def init_config():
         "Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)",
         type=str,
         default="km")
-
+    
     parser.add_argument(
-        "-ign",
-        "--ign_init_trans",
-        type=str,
-        default='')
+        "-if",
+        "--item_filter",
+        help=
+        "Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, [\"101\",\"102\",\"103\",\"104\"] to recycle potions when collected)",
+        type=list,
+        default=[])
 
     config = parser.parse_args()
     if not config.username and not 'username' in load:
@@ -152,7 +144,12 @@ def init_config():
     if not (config.location or config.location_cache):
         parser.error("Needs either --use-location-cache or --location.")
         return None
-    print(config)
+
+    config.release_config = {}
+    if os.path.isfile(release_config_json):
+        with open(release_config_json) as data:
+            config.release_config.update(json.load(data))
+
     return config
 
 

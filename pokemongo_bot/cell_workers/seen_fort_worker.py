@@ -13,6 +13,7 @@ class SeenFortWorker(object):
     def __init__(self, fort, bot):
         self.fort = fort
         self.api = bot.api
+        self.bot = bot
         self.position = bot.position
         self.config = bot.config
         self.item_list = bot.item_list
@@ -87,12 +88,27 @@ class SeenFortWorker(object):
                             tmp_count_items[item_id] += item['item_count']
 
                     for item_id, item_count in tmp_count_items.iteritems():
-                        item_id = str(item_id)
-                        item_name = self.item_list[item_id]
+                        item_name = self.item_list[str(item_id)]
 
-                        logger.log("[+] " + str(item_count) + "x " + item_name,
-                                   'green')
-
+                        logger.log("[+] " + str(item_count) +
+                                    "x " + item_name, 'green')
+                        
+                        
+                        # RECYCLING UNWANTED ITEMS
+                        if str(item_id) in self.config.item_filter:
+                            logger.log("[+] Recycling " + str(item_count) + "x " + item_name + "...", 'green')
+                            #RECYCLE_INVENTORY_ITEM
+                            response_dict_recycle = self.bot.drop_item(item_id=item_id, count=item_count)
+                            
+                            if response_dict_recycle and \
+                                'responses' in response_dict_recycle and \
+                                'RECYCLE_INVENTORY_ITEM' in response_dict_recycle['responses'] and \
+                                    'result' in response_dict_recycle['responses']['RECYCLE_INVENTORY_ITEM']:
+                                result = response_dict_recycle['responses']['RECYCLE_INVENTORY_ITEM']['result']
+                            if result is 1: # Request success
+                                logger.log("[+] Recycling success, count of " + item_name + "s kept at : " + str(response_dict_recycle['responses']['RECYCLE_INVENTORY_ITEM']['new_count']), 'green')
+                            else:
+                                logger.log("[+] Recycling failed!", 'red')
                 else:
                     logger.log("[#] Nothing found.", 'yellow')
 

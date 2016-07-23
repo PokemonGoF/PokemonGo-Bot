@@ -178,6 +178,7 @@ class PokemonGoBot(object):
         if 'amount' in player['currencies'][1]:
             stardust = player['currencies'][1]['amount']
 
+        logger.log('[#] IMPORTANT: Remember to check release_config.json for your Pokemon release logic!', 'red')
         logger.log('[#]')
         logger.log('[#] Username: {username}'.format(**player))
         logger.log('[#] Acccount Creation: {}'.format(creation_date))
@@ -192,9 +193,6 @@ class PokemonGoBot(object):
         logger.log('[#] GreatBalls: ' + str(balls_stock[2]))
         logger.log('[#] UltraBalls: ' + str(balls_stock[3]))
 
-        # Testing
-        # self.drop_item(Item.ITEM_POTION.value,1)
-        # exit(0)
         self.get_player_info()
 
         if self.config.initial_transfer:
@@ -206,18 +204,19 @@ class PokemonGoBot(object):
     def drop_item(self, item_id, count):
         self.api.recycle_inventory_item(item_id=item_id, count=count)
         inventory_req = self.api.call()
-        print(inventory_req)
+        
+        # Example of good request response
+        #{'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
+        return inventory_req
 
     def initial_transfer(self):
         logger.log('[x] Initial Transfer.')
-       	ignlist = self.config.ign_init_trans.split(',')
 
-        if self.config.cp:
-            logger.log('[x] Will NOT transfer anything above CP {} or these {}'.format(
-                self.config.cp,ignlist))
-        else:
-            logger.log(
-                '[x] Preparing to transfer all Pokemon duplicates, keeping the highest CP of each one type.')
+        logger.log(
+        '[x] Preparing to transfer all Pokemon duplicates, keeping the highest CP of each one type.')
+
+        logger.log('[x] Will NOT transfer anything above CP {}'.format(
+            self.config.initial_transfer))
 
         pokemon_groups = self._initial_transfer_get_groups()
 
@@ -228,17 +227,12 @@ class PokemonGoBot(object):
                 group_cp.sort()
                 group_cp.reverse()
 
-                pokemon_name=self.pokemon_list[int(id-1)]['Name']
-
                 for x in range(1, len(group_cp)):
-
-                    if (self.config.cp and group_cp[x] > self.config.cp) or\
-                    self.pokemon_list[id - 1]['Name'] in ignlist or\
-                    self.pokemon_list[id - 1]['Number'].lstrip('0') in ignlist:
+                    if self.config.initial_transfer and group_cp[x] > self.config.initial_transfer:
                         continue
 
-                    print('[x] Transferring #{} ({}) with CP {}'.format(
-                        id, pokemon_name, group_cp[x]))
+                    print('[x] Transferring {} with CP {}'.format(
+                        self.pokemon_list[id - 1]['Name'], group_cp[x]))
                     self.api.release_pokemon(
                         pokemon_id=pokemon_groups[id][group_cp[x]])
                     response_dict = self.api.call()
@@ -449,9 +443,6 @@ class PokemonGoBot(object):
                                         'inventory_item_data']:
                                     playerdata = item['inventory_item_data'][
                                         'player_stats']
-
-                                    if 'experience' not in playerdata:
-                                        playerdata['experience'] = 0
 
                                     nextlvlxp = (
                                         int(playerdata['next_level_xp']) -
