@@ -38,6 +38,11 @@
       var pokemonArray = {};
 
       function initMap() {
+        // load pokemon data now..
+        loadJSON('pokemondata.json', function(data, successData) {
+          console.log('Loaded pokemon data..');
+          pokemonArray = data;
+        }, errorFunc, 'pokemonData');
         for (var i = 0; i < users.length; i++) {
           user_data[users[i]] = {};
         }
@@ -61,8 +66,8 @@
       };
 
       var trainerFunc = function(data, user_index) {
-        console.log("New Marker: Trainer - " + data.lat + ", " + data.lng);
         if (user_data[users[user_index]].hasOwnProperty('marker') === false) {
+          console.log("New Marker: Trainer - " + data.lat + ", " + data.lng);
           user_data[users[user_index]].marker = new google.maps.Marker({
             map: map,
             position: {lat: parseFloat(data.lat), lng: parseFloat(data.lng)},
@@ -93,16 +98,22 @@
 
       var catchSuccess = function(data, user_index) {
         if (data !== undefined && Object.keys(data).length > 0) {
-          console.log('catchSuccess:', data);
           if (user_data[users[user_index]].catchables === undefined) {
             user_data[users[user_index]].catchables = {};
           }
           if (data.latitude !== undefined) {
             if (user_data[users[user_index]].catchables.hasOwnProperty(data.spawnpoint_id) === false) {
+              poke_name = pokemonArray[data.pokemon_id-1].Name;
+              console.log(poke_name + ' found near user ' + users[user_index]);
               user_data[users[user_index]].catchables[data.spawnpoint_id] = new google.maps.Marker({
                 map: map,
                 position: {lat: parseFloat(data.latitude), lng: parseFloat(data.longitude)},
                 icon: "image/icons/" + data.pokemon_id + ".png"
+              });
+              map.setZoom(16);
+              map.panTo({
+                lat: parseFloat(data.latitude),
+                lng: parseFloat(data.longitude)
               });
             } else {
               user_data[users[user_index]].catchables[data.spawnpoint_id].setPosition({
@@ -114,10 +125,11 @@
           }
         } else {
           if (user_data[users[user_index]].catchables !== undefined && Object.keys(user_data[users[user_index]].catchables).length > 0) {
-            console.log('clearing all..');
+            console.log('No pokemon found near user ' + users[user_index]);
             for (var key in user_data[users[user_index]].catchables) {
               user_data[users[user_index]].catchables[key].setMap(null);
             }
+            user_data[users[user_index]].catchables = undefined;
           }
         }
       };
@@ -126,11 +138,6 @@
         for (var i = 0; i < users.length; i++) {
           loadJSON('catchable-'+users[i]+'.json', catchSuccess, errorFunc, i);
         }
-
-        /*loadJSON('pokemondata.json', function(data, successData) {
-          console.log('catchSuccess ('+successData+'):', data);
-          pokemonArray = data;
-        }, errorFunc, 'pokemonData');*/
       }
       // function updateInventory() {
       //   loadJSON('info.json',
