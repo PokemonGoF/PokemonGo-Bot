@@ -94,26 +94,27 @@ class PokemonGoBot(object):
         #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
         currency_1="0"
         currency_2="0"
-
-        player = response_dict['responses']['GET_PLAYER']['player_data']
+        import pprint
+        pprint.pprint(response_dict)
+        player = response_dict['responses']['GET_PLAYER']['profile']
 
         ### @@@ TODO: Convert this to d/m/Y H:M:S
-        creation_date = datetime.datetime.fromtimestamp(player['creation_timestamp_ms'] / 1e3)
+        creation_date = datetime.datetime.fromtimestamp(player['creation_time'] / 1e3)
 
         pokecoins = '0'
         stardust = '0'
-        balls_stock = self.pokeball_inventory();
-        
-        if 'amount' in player['currencies'][0]:
-            pokecoins = player['currencies'][0]['amount']
-        if 'amount' in player['currencies'][1]:
-            stardust = player['currencies'][1]['amount']
+        balls_stock = self.pokeball_inventory()
+
+        if 'amount' in player['currency'][0]:
+            pokecoins = player['currency'][0]['amount']
+        if 'amount' in player['currency'][1]:
+            stardust = player['currency'][1]['amount']
 
         print('[#]')
         print('[#] Username: {username}'.format(**player))
         print('[#] Acccount Creation: {}'.format(creation_date))
-        print('[#] Bag Storage: {}/{}'.format(self.get_inventory_count('item'), player['max_item_storage']))
-        print('[#] Pokemon Storage: {}/{}'.format(self.get_inventory_count('pokemon'), player['max_pokemon_storage']))
+        print('[#] Bag Storage: {}/{}'.format(self.get_inventory_count('item'), player['item_storage']))
+        print('[#] Pokemon Storage: {}/{}'.format(self.get_inventory_count('pokemon'), player['poke_storage']))
         print('[#] Stardust: {}'.format(stardust))
         print('[#] Pokecoins: {}'.format(pokecoins))
         print('[#] PokeBalls: ' + str(balls_stock[1]))
@@ -123,21 +124,21 @@ class PokemonGoBot(object):
 
         if self.config.firsttrans:
             self.first_transfer()
-            
+
         print('[#]')
         self.update_inventory();
-        
+
     def first_transfer(self):
         print('[x] First Transfer.')
-        
+
         pokemon_groups = self._first_transfer_get_groups()
-        
+
         print('[x] Transfering...')
-        
+
         for id in pokemon_groups:
-        
+
             group_cp = pokemon_groups[id].keys()
-            
+
             if len(group_cp) > 1:
                 group_cp.sort()
                 group_cp.reverse()
@@ -146,30 +147,29 @@ class PokemonGoBot(object):
                     self.api.release_pokemon(pokemon_id=pokemon_groups[id][group_cp[x]])
                     response_dict = self.api.call()
                     time.sleep(2)
-                    
+
         print('[x] Transfering Done.')
-        
+
     def _first_transfer_get_groups(self):
         pokemon_groups = {}
         self.api.get_player().get_inventory()
         inventory_req = self.api.call()
-        inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']  
-        
+        inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+
         for pokemon in inventory_dict:
             try:
                 group_id = pokemon['inventory_item_data']['pokemon_data']['pokemon_id']
                 group_pokemon = pokemon['inventory_item_data']['pokemon_data']['id']
                 group_pokemon_cp = pokemon['inventory_item_data']['pokemon_data']['cp']
-                
+
                 if group_id not in pokemon_groups:
                     pokemon_groups[group_id] = {}
-                     
+
                 pokemon_groups[group_id].update({group_pokemon_cp:group_pokemon})
             except:
                 continue
         return pokemon_groups
-            
-        
+
     def update_inventory(self):
         self.api.get_inventory()
         response = self.api.call()
