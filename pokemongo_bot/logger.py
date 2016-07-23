@@ -1,3 +1,4 @@
+import time
 try:
     import lcd
     lcd = lcd.lcd()
@@ -12,11 +13,10 @@ def log(string, color = 'white'):
         'yellow': '93m',
         'red': '91m'
     }
-
     if color not in colorHex:
-        print(string)
+        print('[' + time.strftime("%Y-%m-%d %H:%M:%S") + '] '+ string)
     else:
-        print(u'\033['+ colorHex[color] + string.decode('utf-8') + '\033[0m')
+        print(u'\033['+ colorHex[color] + time.strftime("%Y-%m-%d %H:%M:%S") + ' ' + string.decode('utf-8') + '\033[0m')
     if lcd:
         if(string):
             lcd.message(string)

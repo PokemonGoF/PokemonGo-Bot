@@ -8,8 +8,8 @@ from utils import distance, print_green, print_yellow, print_red, format_dist, f
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot import logger
 
-class SeenFortWorker(object):
 
+class SeenFortWorker(object):
     def __init__(self, fort, bot):
         self.fort = fort
         self.api = bot.api
@@ -45,8 +45,9 @@ class SeenFortWorker(object):
             logger.log('[#] Arrived at Pokestop')
             sleep(2)
 
-        self.api.fort_details(
-            fort_id=self.fort['id'], latitude=lat, longitude=lng)
+        self.api.fort_details(fort_id=self.fort['id'],
+                              latitude=lat,
+                              longitude=lng)
         response_dict = self.api.call()
         if 'responses' in response_dict \
                 and'FORT_DETAILS' in response_dict['responses'] \
@@ -55,10 +56,14 @@ class SeenFortWorker(object):
             fort_name = fort_details['name'].encode('utf8', 'replace')
         else:
             fort_name = 'Unknown'
-        logger.log('[#] Now at Pokestop: ' + fort_name + ' - Spinning...', 'yellow')
+        logger.log('[#] Now at Pokestop: ' + fort_name + ' - Spinning...',
+                   'yellow')
         sleep(2)
-        self.api.fort_search(fort_id=self.fort['id'], fort_latitude=lat, fort_longitude=lng, player_latitude=f2i(
-            self.position[0]), player_longitude=f2i(self.position[1]))
+        self.api.fort_search(fort_id=self.fort['id'],
+                             fort_latitude=lat,
+                             fort_longitude=lng,
+                             player_latitude=f2i(self.position[0]),
+                             player_longitude=f2i(self.position[1]))
         response_dict = self.api.call()
         if 'responses' in response_dict and \
                 'FORT_SEARCH' in response_dict['responses']:
@@ -66,10 +71,11 @@ class SeenFortWorker(object):
             spin_details = response_dict['responses']['FORT_SEARCH']
             if spin_details['result'] == 1:
                 logger.log("[+] Loot: ", 'green')
-                experience_awarded = spin_details.get(
-                    'experience_awarded', False)
+                experience_awarded = spin_details.get('experience_awarded',
+                                                      False)
                 if experience_awarded:
-                    logger.log("[+] " + str(experience_awarded) + " xp", 'green')
+                    logger.log("[+] " + str(experience_awarded) + " xp",
+                               'green')
 
                 items_awarded = spin_details.get('items_awarded', False)
                 if items_awarded:
@@ -87,6 +93,7 @@ class SeenFortWorker(object):
                         logger.log("[+] " + str(item_count) +
                                     "x " + item_name, 'green')
                         
+                        
                         # RECYCLING UNWANTED ITEMS
                         if str(item_id) in self.config.item_filter:
                             logger.log("[+] Recycling " + str(item_count) + "x " + item_name + "...", 'green')
@@ -99,10 +106,9 @@ class SeenFortWorker(object):
                                     'result' in response_dict_recycle['responses']['RECYCLE_INVENTORY_ITEM']:
                                 result = response_dict_recycle['responses']['RECYCLE_INVENTORY_ITEM']['result']
                             if result is 1: # Request success
-                                logger.log("[+] Recycling success, count of " + item_name + " kept at : " + str(response_dict_recycle['responses']['RECYCLE_INVENTORY_ITEM']['new_count']), 'green')
+                                logger.log("[+] Recycling success, count of " + item_name + "s kept at : " + str(response_dict_recycle['responses']['RECYCLE_INVENTORY_ITEM']['new_count']), 'green')
                             else:
                                 logger.log("[+] Recycling failed!", 'red')
-
                 else:
                     logger.log("[#] Nothing found.", 'yellow')
 
@@ -110,8 +116,9 @@ class SeenFortWorker(object):
                     'cooldown_complete_timestamp_ms')
                 if pokestop_cooldown:
                     seconds_since_epoch = time.time()
-                    logger.log('[#] PokeStop on cooldown. Time left: ' +
-                          str(format_time((pokestop_cooldown / 1000) - seconds_since_epoch)))
+                    logger.log('[#] PokeStop on cooldown. Time left: ' + str(
+                        format_time((pokestop_cooldown / 1000) -
+                                    seconds_since_epoch)))
 
                 if not items_awarded and not experience_awarded and not pokestop_cooldown:
                     message = (
@@ -120,8 +127,7 @@ class SeenFortWorker(object):
                         'probably softbanned. Try to play on your phone, '
                         'if pokemons always ran away and you find nothing in '
                         'PokeStops you are indeed softbanned. Please try again '
-                        'in a few hours.'
-                    )
+                        'in a few hours.')
                     raise RuntimeError(message)
             elif spin_details['result'] == 2:
                 logger.log("[#] Pokestop out of range")
@@ -131,14 +137,17 @@ class SeenFortWorker(object):
                 if pokestop_cooldown:
                     seconds_since_epoch = time.time()
                     logger.log('[#] PokeStop on cooldown. Time left: ' + str(
-                        format_time((pokestop_cooldown / 1000) - seconds_since_epoch)))
+                        format_time((pokestop_cooldown / 1000) -
+                                    seconds_since_epoch)))
             elif spin_details['result'] == 4:
                 print_red("[#] Inventory is full, switching to catch mode...")
                 self.config.mode = 'poke'
 
-            if 'chain_hack_sequence_number' in response_dict['responses']['FORT_SEARCH']:
+            if 'chain_hack_sequence_number' in response_dict['responses'][
+                    'FORT_SEARCH']:
                 time.sleep(2)
-                return response_dict['responses']['FORT_SEARCH']['chain_hack_sequence_number']
+                return response_dict['responses']['FORT_SEARCH'][
+                    'chain_hack_sequence_number']
             else:
                 print_yellow('[#] may search too often, lets have a rest')
                 return 11

@@ -47,6 +47,7 @@ from pokemongo_bot.cell_workers.utils import print_green, print_yellow, print_re
 def init_config():
     parser = argparse.ArgumentParser()
     config_file = "config.json"
+    release_config_json = "release_config.json"
 
     # If config file exists, load variables from json
     load = {}
@@ -56,35 +57,75 @@ def init_config():
 
     # Read passed in Arguments
     required = lambda x: not x in load
-    parser.add_argument("-a", "--auth_service", help="Auth Service ('ptc' or 'google')",
+    parser.add_argument("-a",
+                        "--auth_service",
+                        help="Auth Service ('ptc' or 'google')",
                         required=required("auth_service"))
     parser.add_argument("-u", "--username", help="Username")
     parser.add_argument("-p", "--password", help="Password")
     parser.add_argument("-l", "--location", help="Location")
-    parser.add_argument("-lc", "--location_cache",
-                        help="Bot will start at last known location", type=bool, default=False)
-    parser.add_argument("-m", "--mode", help="Farming Mode",
-                        type=str, default="all")
+    parser.add_argument("-lc",
+                        "--location_cache",
+                        help="Bot will start at last known location",
+                        type=bool,
+                        default=False)
+    parser.add_argument("-m",
+                        "--mode",
+                        help="Farming Mode",
+                        type=str,
+                        default="all")
     parser.add_argument(
-        "-w", "--walk", help="Walk instead of teleport with given speed (meters per second, e.g. 2.5)", type=float, default=2.5)
+        "-w",
+        "--walk",
+        help=
+        "Walk instead of teleport with given speed (meters per second, e.g. 2.5)",
+        type=float,
+        default=2.5)
+    parser.add_argument("-k",
+                        "--gmapkey",
+                        help="Set Google Maps API KEY",
+                        type=str,
+                        default=None)
     parser.add_argument(
-        "-c", "--cp", help="Set CP less than to transfer(DEFAULT 100)", type=int, default=100)
-    parser.add_argument("-iv", "--pokemon_potential",
-                        help="Set IV ratio less than to transfer(DEFAULT 0.40)", type=float, default=0.40)
-    parser.add_argument("-k", "--gmapkey",
-                        help="Set Google Maps API KEY", type=str, default=None)
+        "-ms",
+        "--max_steps",
+        help=
+        "Set the steps around your initial location(DEFAULT 5 mean 25 cells around your location)",
+        type=int,
+        default=50)
     parser.add_argument(
-        "-ms", "--max_steps", help="Set the steps around your initial location(DEFAULT 5 mean 25 cells around your location)", type=int, default=50)
-    parser.add_argument("-it", "--initial_transfer",
-                        help="Transfer all pokemon with same ID on bot start, except pokemon with highest CP. It works with -c", type=bool, default=False)
-    parser.add_argument("-d", "--debug", help="Debug Mode",
-                        type=bool, default=False)
+        "-it",
+        "--initial_transfer",
+        help=
+        "Transfer all pokemon with same ID on bot start, except pokemon with highest CP. Can receive a CP number to not transfer above it",
+        type=int,
+        default=999999)
+    parser.add_argument("-d",
+                        "--debug",
+                        help="Debug Mode",
+                        type=bool,
+                        default=False)
+    parser.add_argument("-t",
+                        "--test",
+                        help="Only parse the specified location",
+                        type=bool,
+                        default=False)
     parser.add_argument(
-        "-t", "--test", help="Only parse the specified location", type=bool, default=False)
-    parser.add_argument("-du", "--distance_unit",
-                        help="Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)", type=str, default="km")
+        "-du",
+        "--distance_unit",
+        help=
+        "Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)",
+        type=str,
+        default="km")
+    
     parser.add_argument(
-        "-if", "--item_filter", help="Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, [\"101\",\"102\",\"103\",\"104\"] to recycle potions when collected)", type=list, default=[])
+        "-if",
+        "--item_filter",
+        help=
+        "Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, [\"101\",\"102\",\"103\",\"104\"] to recycle potions when collected)",
+        type=list,
+        default=[])
+
     config = parser.parse_args()
     if not config.username and not 'username' in load:
         config.username = raw_input("Username: ")
@@ -103,7 +144,12 @@ def init_config():
     if not (config.location or config.location_cache):
         parser.error("Needs either --use-location-cache or --location.")
         return None
-    print(config)
+
+    config.release_config = {}
+    if os.path.isfile(release_config_json):
+        with open(release_config_json) as data:
+            config.release_config.update(json.load(data))
+
     return config
 
 
@@ -128,13 +174,14 @@ def main():
 
         logger.log('[x] Starting PokemonGo Bot....', 'green')
 
-        while(True):
+        while (True):
             bot.take_step()
 
     except KeyboardInterrupt:
-        logger.log('[x] Exiting PokemonGo Bot','red')
+        logger.log('[x] Exiting PokemonGo Bot', 'red')
         # TODO Add number of pokemon catched, pokestops visited, highest CP
         # pokemon catched, etc.
+
 
 if __name__ == '__main__':
     main()

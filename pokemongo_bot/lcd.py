@@ -48,12 +48,12 @@ class i2c_device:
     def read_block_data(self, cmd):
         return self.bus.read_block_data(self.addr, cmd)
 
-
 # LCD Address
 #ADDRESS = 0x27
 LCD_WIDTH = 20
 LCD_HEIGHT = 2
-LCD_CHARS = [0x40,0x48,0x50,0x58,0x60,0x68,0x70,0x78] #Address position for custom chars
+LCD_CHARS = [0x40, 0x48, 0x50, 0x58, 0x60, 0x68, 0x70,
+             0x78]  #Address position for custom chars
 #Use char generator here: https://omerk.github.io/lcdchargen/ or http://www.quinapalus.com/hd44780udg.html
 # commands
 LCD_CLEARDISPLAY = 0x01
@@ -106,8 +106,6 @@ class lcd:
     # initializes objects and lcd
     #def __init__(self, adress):
 
-
-
     def set_addr(self, adress):
         self.lcd_device = i2c_device(adress)
 
@@ -116,7 +114,8 @@ class lcd:
         self.lcd_write(0x03)
         self.lcd_write(0x02)
 
-        self.lcd_write(LCD_FUNCTIONSET | LCD_2LINE | LCD_5x8DOTS | LCD_4BITMODE)
+        self.lcd_write(LCD_FUNCTIONSET | LCD_2LINE | LCD_5x8DOTS |
+                       LCD_4BITMODE)
         self.displaycontrol = LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF
         self.lcd_write(LCD_DISPLAYCONTROL | LCD_DISPLAYON | LCD_BLINKOFF)
         self.lcd_write(LCD_CLEARDISPLAY)
@@ -191,13 +190,11 @@ class lcd:
             for char in line:
                 self.lcd_write(ord(char), Rs)
 
-
-    def type_string(self, message, line, speed=0.3, style=1, blink = True):
+    def type_string(self, message, line, speed=0.3, style=1, blink=True):
         """Type like a type machine"""
         # style=1 Left justified
         # style=2 Centred
         # style=3 Right justified
-
 
         if line == 1:
             self.lcd_write(0x80)
@@ -214,9 +211,8 @@ class lcd:
         elif style == 3:
             message = message.rjust(LCD_WIDTH, '')
 
-
         for i in range(len(message)):
-            self.lcd_write(ord(message[i]),Rs)
+            self.lcd_write(ord(message[i]), Rs)
             sleep(speed)
 
     def split_every(self, n, iterable):
@@ -234,7 +230,7 @@ class lcd:
         return str1 + fill + str2
 
     # put string function
-    def write_line(self, string, line, style =1):
+    def write_line(self, string, line, style=1):
         if line == 1:
             self.lcd_write(0x80)
         if line == 2:
@@ -257,6 +253,7 @@ class lcd:
     # clear lcd and set to home
     def clear(self):
         self.lcd_clear()
+
     def lcd_clear(self):
         self.lcd_write(LCD_CLEARDISPLAY)
         self.lcd_write(LCD_RETURNHOME)
@@ -273,8 +270,6 @@ class lcd:
         self.lcd_write(LCD_CHARS[charPos], 0)
         for line in charDef:
             self.lcd_write(line, 1)
-
-
 
     def lcd_display_string_pos(self, string, line, pos):
         if line == 1:
