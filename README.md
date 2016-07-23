@@ -222,6 +222,7 @@ Copy userdata.js.example to userdata.js and edit with your favorite text editor.
 put your username in the quotes instead of "username"
 If using multiple usernames format like this:  
 ```var users = ["username1","username2"];```
+
 ## Requirements
  * Python 2
  * requests
