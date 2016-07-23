@@ -129,26 +129,27 @@ Quick Tip: When using this script, use a Lucky egg to double the XP for 30 mins.
  * s2sphere
  * googlemaps
  * pgoapi
+ * haykuro
 To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg=pgoapi`
 
 
 ## Contributors (Don't forget add yours here when you create PR:)
-eggins -- The first pull request :)  
-crack00r  
-ethervoid  
-Bashin  
-tstumm  
-TheGoldenXY  
+eggins -- The first pull request :)
+crack00r
+ethervoid
+Bashin
+tstumm
+TheGoldenXY
 Reaver01
 rarshonsky
 earthchie
 
 ## Credits
 ### The works are based on the Pokemon Go API
-[tejado](https://github.com/tejado) many thanks for the API  
-[Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets  
-[elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR  
-[AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos  
+[tejado](https://github.com/tejado) many thanks for the API
+[Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets
+[elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR
+[AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos
 [AHAAAAAAA](https://github.com/AHAAAAAAA/PokemonGo-Map) for parts of the s2sphere stuff
 
 
