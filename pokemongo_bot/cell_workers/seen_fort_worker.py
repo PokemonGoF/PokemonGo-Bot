@@ -4,7 +4,7 @@ import json
 import time
 from math import radians, sqrt, sin, cos, atan2
 from pgoapi.utilities import f2i, h2f
-from utils import distance, print_green, print_yellow, print_red
+from utils import distance, print_green, print_yellow, print_red, format_dist
 from pokemongo_bot.human_behaviour import sleep
 
 
@@ -22,11 +22,14 @@ class SeenFortWorker(object):
     def work(self):
         lat = self.fort['latitude']
         lng = self.fort['longitude']
+        unit = self.config.distance_unit # Unit to use when printing formatted distance
 
         fortID = self.fort['id']
         dist = distance(self.position[0], self.position[1], lat, lng)
 
-        print('[#] Found fort {} at distance {}m'.format(fortID, dist))
+        #print('[#] Found fort {} at distance {}m'.format(fortID, dist))
+        print(' [#] Found fort {} at distance {}'.format(fortID, format_dist(dist, unit)))
+
         if dist > 10:
             print('[#] Need to move closer to Pokestop')
             position = (lat, lng, 0.0)

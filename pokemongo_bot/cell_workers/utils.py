@@ -10,8 +10,10 @@ def distance(lat1, lon1, lat2, lon2):
     a = 0.5 - cos((lat2 - lat1) * p)/2 + cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2
     return 12742 * asin(sqrt(a)) * 1000
 
+
+
 def convert(distance, from_unit, to_unit): # Converts units
-    # Ex: Convert distance from meters to feet
+    # Example of converting distance from meters to feet:
     # convert(100.0,"m","ft")
     conversions = {
         "mm": {"mm": 1.0, "cm": 1.0 / 10.0, "m": 1.0 / 1000.0, "km": 1.0 / 1000000, "ft": 0.00328084, "yd": 0.00109361, "mi": 1.0 / 1609340.0007802},
@@ -26,6 +28,11 @@ def convert(distance, from_unit, to_unit): # Converts units
 
 def dist_to_str(distance, unit):
     return '{}{}'.format(distance, unit)
+
+def format_dist(distance, unit):
+    # Assumes that distance is in meters and converts it to the given unit, then a formatted string is returned
+    # Ex: format_dist(1500, 'km') returns the string "1.5km"
+    return dist_to_str(convert(distance, 'm', unit), unit)
 
 def i2f(int):
     return struct.unpack('<d', struct.pack('<Q', int))[0]
