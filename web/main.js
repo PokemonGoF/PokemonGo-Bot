@@ -59,11 +59,11 @@ var errorFunc = function(xhr) {
 };
 
 var trainerFunc = function(data, user_index) {
-/*  var z = 0;
+  var z = 0;
   for (var i = 0; i < data.cells.length; i++) {
     cell = data.cells[i];
     if (!cell.hasOwnProperty(forts)) {
-      continue;
+        continue;
     }
     for (var x = 0; x < data.cells[i].forts.length; x++) {
       var fort = cell.forts[x];
@@ -93,7 +93,6 @@ var trainerFunc = function(data, user_index) {
     }
 
   }
-  */
   if (user_data[users[user_index]].hasOwnProperty('marker') === false) {
     console.log("New Marker: Trainer - " + data.lat + ", " + data.lng);
     randomSex = Math.floor(Math.random() * 1)
