@@ -92,8 +92,7 @@ class Stepper(object):
                         json.dump({'lat': lat, 'lng': lng,'cells':response_dict['responses']['GET_MAP_OBJECTS']['map_cells']}, outfile)
         if response_dict and 'responses' in response_dict:
             if 'GET_MAP_OBJECTS' in response_dict['responses']:
-                if 'status' in response_dict['responses']['GET_MAP_OBJECTS']:
-                    response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
+                if 'status' in response_dict['responses']['GET_MAP_OBJECTS'] and response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
                     map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
                     position = (lat, lng, alt)
             # Sort all by distance from current pos- eventually this should build graph & A* it
