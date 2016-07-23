@@ -101,6 +101,25 @@ This project uses Google Maps. There's one map coupled with the project, but as 
     $ python2 pokecli.py -a ptc -u tejado -p 1234 --location "New York, Washington Square"
     Google Account:
     $ python2 pokecli.py -a google -u tejado -p 1234 --location "New York, Washington Square"
+]
+## How to add/discover new API
+  The example is [here](https://github.com/PokemonGoF/PokemonGo-Bot/commit/46e2352ce9f349cc127a408959679282f9999585)  
+    1. Check the type of your API request in   [POGOProtos](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/RequestType.proto) For example: RECYCLE_INVENTORY_ITEM  
+    2. Convert to the api call in pokemongo_bot/__init__.py,  RECYCLE_INVENTORY_ITEM change to self.api.recycle_inventory_item
+        ```
+        def drop_item(self,item_id,count):
+            self.api.recycle_inventory_item(...............)
+        ```
+    3. Where is the param list?  
+        You need check this [Requests/Messages/RecycleInventoryItemMessage.proto](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/Messages/RecycleInventoryItemMessage.proto)
+    4. Then our final api call is  
+        ```
+        def drop_item(self,item_id,count):
+            self.api.recycle_inventory_item(item_id=item_id,count=count)
+            inventory_req = self.api.call()
+            print(inventory_req)
+        ```  
+    5. You can now debug on the log to see if get what you need  
 
 ## FAQ
 
