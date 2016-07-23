@@ -89,7 +89,6 @@ def init_config():
     if not config.location and not config.location_cache in load:
         logging.error("Needs either --use-location-cache or --location.")
         return None
-    print(config)
     return config
 
 def main():
