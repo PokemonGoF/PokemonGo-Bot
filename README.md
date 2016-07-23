@@ -9,7 +9,7 @@
 </p>
 
 # PokemonGo-Bot
-A python script for __catching pokemons__ and __spin pokestops__ on PokemonGo.
+A python script for __catching pokemons__ and __spinning pokestops__ on PokemonGo.
 
 
 ## Project Chat
@@ -196,6 +196,21 @@ Quick Tip: When using this script, use a Lucky egg to double the XP for 30 mins.
 ### How can I not collect certain pokemon
 You don't want to collect common pokemon once you hit a certain level. It will
 slow down leveling but you won't fill up either.
+
+Create the following filter
+```
+./data/catch-ignore.yml
+```
+Its a yaml file with a list of names so make it look like
+```
+ignore:
+  - Pidgey
+  - Rattata
+  - Pidgeotto
+  - Spearow
+  - Ekans
+  - Zubat
+```
 ### How do I use the map??
 You can either view the map via opening the html file, or by serving it with SimpleHTTPServer (runs on localhost:8000)  
 To use SimpleHTTPServer:  
@@ -207,38 +222,6 @@ Copy userdata.js.example to userdata.js and edit with your favorite text editor.
 put your username in the quotes instead of "username"
 If using multiple usernames format like this:  
 ```var users = ["username1","username2"];```
-
-Create the following filter
-
-```
-./data/catch-ignore.yml
-```
-
-Its a yaml file with a list of names so make it look like
-
-```
-ignore:
-  - Pidgey
-  - Rattata
-  - Pidgeotto
-  - Spearow
-  - Ekans
-  - Zubat
-```
-
-
-## Requirements
- * Python 2
- * requests
- * protobuf
- * gpsoauth
- * geopy
- * s2sphere
- * googlemaps
- * pgoapi
-
-To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg=pgoapi`
-
 
 ## Contributors (Don't forget add yours here when you create PR:)
  * eggins -- The first pull request :)
