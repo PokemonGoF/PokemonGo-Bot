@@ -84,7 +84,7 @@ def init_config():
             config.__dict__[key] = load[key]
 
     if config.auth_service not in ['ptc', 'google']:
-        log.error("Invalid Auth service specified! ('ptc' or 'google')")
+        logging.error("Invalid Auth service specified! ('ptc' or 'google')")
         return None
 
     return config
