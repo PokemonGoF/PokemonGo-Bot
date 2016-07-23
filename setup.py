@@ -11,5 +11,4 @@ setup(name='pgoapi',
       version='1.0',
       url='https://github.com/tejado/pgoapi',
       packages=['pgoapi'],
-      install_requires=reqs
-     )
+      install_requires=reqs)

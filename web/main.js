@@ -8,8 +8,14 @@ var bagItems = {};
 var bagCandy = {};
 var emptyDex = [];
 var pokemonArray = {};
+var forts = [];
+var info_windows = [];
 var i;
 var user_index;
+var trainerSex = ["m","f"];
+var numTrainers = [177, 109];
+var menu;
+var stats = {};
 
 function initMap() {
   // load pokemon data now..
@@ -26,6 +32,7 @@ function initMap() {
   });
   document.getElementById("switchPan").checked = userFollow;
   document.getElementById("switchZoom").checked = userZoom;
+  document.getElementById("imageType").checked = false;
   setTimeout(function(){
     placeTrainer();
     addCatchable();
@@ -38,58 +45,123 @@ function initMap() {
 };
 
 $('#switchPan').change(function(){
-    if (this.checked) { userFollow = true } else { userFollow = false }
+    if (this.checked) { userFollow = true } else { userFollow = false; }
 });
 
 $('#switchZoom').change(function(){
-    if (this.checked) { userZoom = true } else { userZoom = false }
+    if (this.checked) { userZoom = true } else { userZoom = false; }
 });
+
+$('#imageType').change(function(){
+    if (this.checked) { imageExt = ".gif" } else { imageExt = ".png"; }
+});
+
+$('#tInfo').click(function(){
+    if (menu == undefined || menu == 1) {
+      $("#submenu").toggle();
+    }
+    if (menu != 1 && $("#submenu").is(':hidden')) {
+      $("#submenu").toggle();
+    }
+    menu = 1;
+    buildMenu();
+});
+
+$('#tItems').click(function(){
+    if (menu == undefined || menu == 2) {
+      $("#submenu").toggle();
+    }
+    if (menu != 2 && $("#submenu").is(':hidden')) {
+      $("#submenu").toggle();
+    }
+    menu = 2;
+    buildMenu();
+});
+
+$('#tPokemon').click(function(){
+    if (menu == undefined || menu == 3) {
+      $("#submenu").toggle();
+    }
+    if (menu != 3 && $("#submenu").is(':hidden')) {
+      $("#submenu").toggle();
+    }
+    menu = 3;
+    buildMenu();
+});
+
+$('#tPokedex').click(function(){
+    if (menu == undefined || menu == 4) {
+      $("#submenu").toggle();
+    }
+    if (menu != 4 && $("#submenu").is(':hidden')) {
+      $("#submenu").toggle();
+    }
+    menu = 4;
+    buildMenu();
+});
+
 
 var errorFunc = function(xhr) {
   console.error(xhr);
 };
 
-var forts = [];
-var info_windows = [];
+var invSuccess = function(data, user_index) {
+  stats = filter(data, 'player_stats');
+  bagItems = filter(data, 'item')
+  bagPokemon = filter(data, 'pokemon_data');
+  pokedex = filter(data, 'pokedex_entry');
+  bagCandy = filter(data, 'pokemon_family')
+}
+
 var trainerFunc = function(data, user_index) {
-  var z = 0;
   for (var i = 0; i < data.cells.length; i++) {
     cell = data.cells[i];
-    for (var x = 0; x < data.cells[i].forts.length; x++) {
-      var fort = cell.forts[x];
-      if (!forts[fort.id]) {
-        forts[fort.id] = new google.maps.Marker({
-          map: map,
-          position: {
-            lat: parseFloat(fort.latitude),
-            lng: parseFloat(fort.longitude)
-          },
-          icon: "image/forts/Pstop.png"
-        });
-        var contentString = fort.id + ' Type ' + fort.type
-        info_windows[fort.id] = new google.maps.InfoWindow({
-          content: contentString
-        });
-
-
-        google.maps.event.addListener(forts[fort.id], 'click', (function(marker, content, infowindow) {
-          return function() {
-            infowindow.setContent(content);
-            infowindow.open(map, marker);
-          };
-        })(forts[fort.id], contentString, info_windows[fort.id]));
-
+    if (data.cells[i].forts != undefined) {
+      for (var x = 0; x < data.cells[i].forts.length; x++) {
+        var fort = cell.forts[x];
+        if (!forts[fort.id]) {
+          if (fort.type === 1 ) {
+            forts[fort.id] = new google.maps.Marker({
+              map: map,
+              position: {
+                lat: parseFloat(fort.latitude),
+                lng: parseFloat(fort.longitude)
+              },
+              icon: "image/forts/Pstop.png"
+            });
+          } else {
+            forts[fort.id] = new google.maps.Marker({
+              map: map,
+              position: {
+                lat: parseFloat(fort.latitude),
+                lng: parseFloat(fort.longitude)
+              },
+              icon: "image/forts/Gym.png"
+            });
+          }
+          var contentString = fort.id + ' Type ' + fort.type
+          info_windows[fort.id] = new google.maps.InfoWindow({
+            content: contentString
+          });
+          google.maps.event.addListener(forts[fort.id], 'click', (function(marker, content, infowindow) {
+            return function() {
+              infowindow.setContent(content);
+              infowindow.open(map, marker);
+            };
+          })(forts[fort.id], contentString, info_windows[fort.id]));
+        }
       }
     }
-
   }
   if (user_data[users[user_index]].hasOwnProperty('marker') === false) {
     console.log("New Marker: Trainer - " + data.lat + ", " + data.lng);
+    randomSex = Math.floor(Math.random() * 1)
     user_data[users[user_index]].marker = new google.maps.Marker({
       map: map,
       position: {lat: parseFloat(data.lat), lng: parseFloat(data.lng)},
-      icon: "image/trainer-icon.png",
-      zIndex: 2
+      icon: "image/trainer/" + trainerSex[randomSex] + Math.floor(Math.random() * numTrainers[randomSex]) + ".png",
+      zIndex: 2,
+      label: users[user_index]
     });
   } else {
     user_data[users[user_index]].marker.setPosition({lat: parseFloat(data.lat), lng: parseFloat(data.lng)});
@@ -125,11 +197,13 @@ var catchSuccess = function(data, user_index) {
       if (user_data[users[user_index]].catchables.hasOwnProperty(data.spawnpoint_id) === false) {
         poke_name = pokemonArray[data.pokemon_id-1].Name;
         console.log(poke_name + ' found near user ' + users[user_index]);
+        Materialize.toast(poke_name + ' appeared near trainer: ' + users[user_index], 3000, 'rounded')
         user_data[users[user_index]].catchables[data.spawnpoint_id] = new google.maps.Marker({
           map: map,
           position: {lat: parseFloat(data.latitude), lng: parseFloat(data.longitude)},
-          icon: "image/icons/" + data.pokemon_id + ".png",
-          zIndex: 4
+          icon: "image/pokemon/" + pad_with_zeroes(data.pokemon_id, 3) + imageExt,
+          zIndex: 4,
+          optimized: false
         });
           if (userZoom == true) {
             map.setZoom(16);
@@ -145,7 +219,7 @@ var catchSuccess = function(data, user_index) {
           lat: parseFloat(data.latitude),
           lng: parseFloat(data.longitude)
         });
-        user_data[users[user_index]].catchables[data.spawnpoint_id].setIcon("image/icons/" + data.pokemon_id + ".png");
+        user_data[users[user_index]].catchables[data.spawnpoint_id].setIcon("image/pokemon/" + pad_with_zeroes(data.pokemon_id, 3) + imageExt);
       }
     }
   } else {
@@ -164,17 +238,20 @@ function addCatchable() {
     loadJSON('catchable-'+users[i]+'.json', catchSuccess, errorFunc, i);
   }
 }
-// function updateInventory() {
-//   loadJSON('info.json',
-//     function(data) {
-//       inventory = data;
-//       playerInfo = filter(inventory, 'player_stats');
-//       pokedex = filter(inventory, 'pokedex_entry');
-//       bagPokemon = filter(inventory, 'pokemon_data');
-//     },
-//     function(xhr) { console.error(xhr); }
-//   );
-// }
+function addInventory() {
+  for (var i = 0; i < users.length; i++) {
+    loadJSON('inventory-'+users[i]+'.json', invSuccess, errorFunc, i);
+  }
+}
+
+function pad_with_zeroes(number, length) {
+  var my_string = '' + number;
+  while (my_string.length < length) {
+      my_string = '0' + my_string;
+  }
+  return my_string;
+}
+
 function filter(arr, search) {
   var filtered = [];
   for(i=0; i < arr.length; i++) {
@@ -182,15 +259,7 @@ function filter(arr, search) {
   }
   return filtered;
 }
-function buildPokedex() {
-  var arr = pokedex;
-  for(i=0; i < arr.length; i++) {
-    if(document.getElementById('p'+i) != null) {
-      document.getElementById('p'+i).innerHTML = '<table><tr><td>Number:</td><td>' + arr[i].inventory_item_data.pokedex_entry.pokedex_entry_number + '</td></tr><tr><td>Encountered:</td><td>' + arr[i].inventory_item_data.pokedex_entry.times_encountered + '</td></tr><tr><td>Captured:</td><td>' + arr[i].inventory_item_data.pokedex_entry.times_captured + '</td></tr></table>';
-    }
-  }
-  return emptyDex;
-}
+
 function loadJSON(path, success, error, successData) {
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function() {
@@ -206,4 +275,28 @@ function loadJSON(path, success, error, successData) {
   };
 xhr.open("GET", path, true);
 xhr.send();
+}
+
+$(document).ready(function(){
+  $('.tooltipped').tooltip({delay: 50});
+});
+
+function buildMenu() {
+  addInventory();
+  if (menu == 1) {
+    document.getElementById('subtitle').innerHTML = "Trainer Info";
+    document.getElementById('subcontent').innerHTML = stats;
+  }
+  if (menu == 2) {
+    document.getElementById('subtitle').innerHTML = "Items in Bag";
+    document.getElementById('subcontent').innerHTML = bagItems;
+  }
+  if (menu == 3) {
+    document.getElementById('subtitle').innerHTML = "Pokemon in Bag";
+    document.getElementById('subcontent').innerHTML = bagPokemon;
+  }
+  if (menu == 4) {
+    document.getElementById('subtitle').innerHTML = "Pokedex";
+    document.getElementById('subcontent').innerHTML = pokedex;
+  }
 }

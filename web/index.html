@@ -15,42 +15,82 @@
     <link rel="stylesheet" href="main.css">
   </head>
   <body>
-    <div id="pokedex"><div id="p1"></div><div id="p2"></div><div id="p3"></div><div id="p4"></div><div id="p5"></div><div id="p6"></div><div id="p7"></div><div id="p8"></div><div id="p9"></div><div id="p10"></div><div id="p11"></div><div id="p12"></div><div id="p13"></div><div id="p14"></div><div id="p15"></div><div id="p16"></div><div id="p17"></div><div id="p18"></div><div id="p19"></div><div id="p20"></div><div id="p21"></div><div id="p22"></div><div id="p23"></div><div id="p24"></div><div id="p25"></div><div id="p26"></div><div id="p27"></div><div id="p28"></div><div id="p29"></div><div id="p30"></div><div id="p31"></div><div id="p32"></div><div id="p33"></div><div id="p34"></div><div id="p35"></div><div id="p36"></div><div id="p37"></div><div id="p38"></div><div id="p39"></div><div id="p40"></div><div id="p41"></div><div id="p42"></div><div id="p43"></div><div id="p44"></div><div id="p45"></div><div id="p46"></div><div id="p47"></div><div id="p48"></div><div id="p49"></div><div id="p50"></div><div id="p51"></div><div id="p52"></div><div id="p53"></div><div id="p54"></div><div id="p55"></div><div id="p56"></div><div id="p57"></div><div id="p58"></div><div id="p59"></div><div id="p60"></div><div id="p61"></div><div id="p62"></div><div id="p63"></div><div id="p64"></div><div id="p65"></div><div id="p66"></div><div id="p67"></div><div id="p68"></div><div id="p69"></div><div id="p70"></div><div id="p71"></div><div id="p72"></div><div id="p73"></div><div id="p74"></div><div id="p75"></div><div id="p76"></div><div id="p77"></div><div id="p78"></div><div id="p79"></div><div id="p80"></div><div id="p81"></div><div id="p82"></div><div id="p83"></div><div id="p84"></div><div id="p85"></div><div id="p86"></div><div id="p87"></div><div id="p88"></div><div id="p89"></div><div id="p90"></div><div id="p91"></div><div id="p92"></div><div id="p93"></div><div id="p94"></div><div id="p95"></div><div id="p96"></div><div id="p97"></div><div id="p98"></div><div id="p99"></div><div id="p100"></div><div id="p101"></div><div id="p102"></div><div id="p103"></div><div id="p104"></div><div id="p105"></div><div id="p106"></div><div id="p107"></div><div id="p108"></div><div id="p109"></div><div id="p110"></div><div id="p111"></div><div id="p112"></div><div id="p113"></div><div id="p114"></div><div id="p115"></div><div id="p116"></div><div id="p117"></div><div id="p118"></div><div id="p119"></div><div id="p120"></div><div id="p121"></div><div id="p122"></div><div id="p123"></div><div id="p124"></div><div id="p125"></div><div id="p126"></div><div id="p127"></div><div id="p128"></div><div id="p129"></div><div id="p130"></div><div id="p131"></div><div id="p132"></div><div id="p133"></div><div id="p134"></div><div id="p135"></div><div id="p136"></div><div id="p137"></div><div id="p138"></div><div id="p139"></div><div id="p140"></div><div id="p141"></div><div id="p142"></div><div id="p143"></div><div id="p144"></div><div id="p145"></div><div id="p146"></div><div id="p147"></div><div id="p148"></div><div id="p149"></div><div id="p150"></div><div id="p151"></div></div>
-    <div class="row" id="options">
-      <div class="col s12">
-        <div class="card white">
-          <div class="card-content black-text">
-            <span class="card-title">Options</span>
+    <div class="container" id="menu">
+      <div class="row" id="options">
+        <div class="col s12">
+          <div class="card white">
+            <div class="card-content black-text">
+              <span class="card-title">Options</span>
+              <ul>
+                <li>
+                  Pan
+                  <div class="switch">
+                    <label>
+                      Off
+                      <input type="checkbox" id="switchPan">
+                      <span class="lever"></span>
+                      On
+                    </label>
+                  </div>
+                  <br>
+                </li>
+                <li>
+                  Zoom
+                  <div class="switch">
+                    <label>
+                      Off
+                      <input type="checkbox" id="switchZoom">
+                      <span class="lever"></span>
+                      On
+                    </label>
+                  </div>
+                  <br>
+                </li>
+                <li>
+                  Image Type
+                  <div class="switch">
+                    <label>
+                      png
+                      <input type="checkbox" id="imageType">
+                      <span class="lever"></span>
+                      gif
+                    </label>
+                  </div>
+                  <br>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" id="trainer">
+        <div class="col s12">
+          <div class="card white">
+            <div class="card-content black-text">
+              <span class="card-title">Trainer</span>
             <ul>
-              <li>
-                Pan
-                <div class="switch">
-                  <label>
-                    Off
-                    <input type="checkbox" id="switchPan">
-                    <span class="lever"></span>
-                    On
-                  </label>
-                </div>
-                <br>
-              </li>
-              <li>
-                Zoom
-                <div class="switch">
-                  <label>
-                    Off
-                    <input type="checkbox" id="switchZoom">
-                    <span class="lever"></span>
-                    On
-                  </label>
-                </div>
-                <br>
-              </li>
+              <li><a class="waves-effect waves-light btn" id="tInfo">Info</a></li><br>
+              <li><a class="waves-effect waves-light btn" id="tItems">Items</a></li><br>
+              <li><a class="waves-effect waves-light btn" id="tPokemon">Pokemon</a></li><br>
+              <li><a class="waves-effect waves-light btn" id="tPokedex">Pokedex</a></li>
             </ul>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <div class="container" id="submenu">
+        <div class="col s12">
+          <div class="card white">
+            <div class="card-content black-text">
+              <span class="card-title" id="subtitle">Submenu</span>
+              <div id="subcontent"></div>
+            </div>
+          </div>
+        </div>
+    </div>
+
     <div id="map"></div>
     <script type="text/javascript" src="userdata.js"></script>
     <script type="text/javascript" src="main.js"></script>
