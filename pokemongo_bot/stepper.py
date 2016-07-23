@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import json
 import time
 
@@ -45,29 +47,13 @@ class Stepper(object):
                     self._walk_to(self.config.walk, *position)
                 else:
                     self.api.set_position(*position)
-                print(position)
+                print('[#] {}'.format(position))
             if self.x == self.y or self.x < 0 and self.x == -self.y or self.x > 0 and self.x == 1 - self.y:
                 (self.dx, self.dy) = (-self.dy, self.dx)
 
             (self.x, self.y) = (self.x + self.dx, self.y + self.dy)
 
-            # get map objects call
-            # ----------------------
-
-            cellid = self._get_cellid(position[0], position[1])
-            timestamp = [0,] * len(cellid)
-            self.api.get_map_objects(latitude=f2i(position[0]), longitude=f2i(position[1]), since_timestamp_ms=timestamp, cell_id=cellid)
-            with open('location.json', 'w') as outfile:
-                json.dump({'lat': position[0], 'lng': position[1]}, outfile)
-
-            response_dict = self.api.call()
-            if response_dict and 'responses' in response_dict and \
-                'GET_MAP_OBJECTS' in response_dict['responses'] and \
-                'status' in response_dict['responses']['GET_MAP_OBJECTS'] and \
-                response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
-                map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
-                for cell in map_cells:
-                    self.bot.work_on_cell(cell,position)
+            self._work_at_position(position[0], position[1], position[2], True)
             sleep(10)
 
     def _walk_to(self, speed, lat, lng, alt):
@@ -81,13 +67,34 @@ class Stepper(object):
             dLng = (lng - i2f(self.api._position_lng)) / steps
 
             for i in range(intSteps):
-                self.api.set_position(i2f(self.api._position_lat) + dLat + random_lat_long_delta(), i2f(self.api._position_lng) + dLng + random_lat_long_delta(), alt)
+                cLat = i2f(self.api._position_lat) + dLat + random_lat_long_delta()
+                cLng = i2f(self.api._position_lng) + dLng + random_lat_long_delta()
+                self.api.set_position(cLat, cLng, alt)
                 self.bot.heartbeat()
                 sleep(1) # sleep one second plus a random delta
+                self._work_at_position(i2f(self.api._position_lat), i2f(self.api._position_lng), alt, False)
 
             self.api.set_position(lat, lng, alt)
             self.bot.heartbeat()
         print "[#] Finished walking"
+
+    def _work_at_position(self, lat, lng, alt, pokemon_only=False):
+        cellid = self._get_cellid(lat, lng)
+        timestamp = [0,] * len(cellid)
+        self.api.get_map_objects(latitude=f2i(lat), longitude=f2i(lng), since_timestamp_ms=timestamp, cell_id=cellid)
+
+        response_dict = self.api.call()
+        # Passing Variables through a file
+        with open('web/location.json', 'w') as outfile:
+            json.dump({'lat': lat, 'lng': lng,'cells':response_dict['responses']['GET_MAP_OBJECTS']['map_cells']}, outfile)
+        if response_dict and 'responses' in response_dict and \
+            'GET_MAP_OBJECTS' in response_dict['responses'] and \
+            'status' in response_dict['responses']['GET_MAP_OBJECTS'] and \
+            response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
+            map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
+            position = (lat, lng, alt)
+            for cell in map_cells:
+                self.bot.work_on_cell(cell, position, pokemon_only)
 
     def _get_cellid(self, lat, long, radius=10):
         origin = CellId.from_lat_lng(LatLng.from_degrees(lat, long)).parent(15)

@@ -91,3 +91,8 @@ ENV/
 # Personal load details
 config.json
 location.json
+src/
+info.json
+inventory.json
+pokedex.json
+web/catchable.json
