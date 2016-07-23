@@ -150,39 +150,26 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
 
-
 ### Command Line Example
     Pokemon Trainer Club (PTC) account:
     $ python2 pokecli.py -a ptc -u tejado -p 1234 --location "New York, Washington Square"
     Google Account:
     $ python2 pokecli.py -a google -u tejado -p 1234 --location "New York, Washington Square"
 
-<<<<<<< HEAD
 ### Advance Releasing Configuration
-    Sometimes filter desired pokemon with ``-iv`` is not enough. Some Pokemons have decent stats but their potential value is low because how the value distribted between stamina, attack, and defense. E.g. Charmeleon with IVs 15/15/0, its potential value is 0.67 which quite low - the truth is this dude is badass, you don't really need to care much about defense for this guy. He is fragile anyway xD
+    Sometimes filter desired pokemon with ``-iv`` is not enough. Some Pokemons have decent stats but their potential value is low because how the value distributed between stamina, attack, and defense. E.g. Jolteon with IVs 15/15/0, its potential value is 0.67 which quite low - the truth is this dude is badass, you don't really need to care much about defense for this guy. He is fragile anyway xD
+	
+	![image](https://cloud.githubusercontent.com/assets/7013039/17079596/340709fc-513f-11e6-94a4-7f141590ba8f.png)
     
     To config the whitelist, copy file ``pkmn_whitelist.json.example`` and rename it to  ``pkmn_whitelist.json``
     Edit this file however you like, but keep in mind:
     1. Pokemon name is always capitalize and case-sensitive
     2. These settings will override ``-c`` and ``-iv``. Especially field ``any``, so use with caution.
     
-=======
-
-### Advance Releasing Configuration
-    Sometimes filter desired pokemon with ``-iv`` is not enough. Some Pokemons have decent stats but their potential value is low because how the value distribted between stamina, attack, and defense. E.g. Charmeleon with IVs 15/15/0, its potential value is 0.67 which quite low - the truth is this dude is badass, you don't really need to care much about defense for this guy. He is fragile anyway xD
-    
-    To config the whitelist, copy file ``pkmn_whitelist.json.example`` and rename it to  ``pkmn_whitelist.json``
-    Edit this file however you like, but keep in mind:
-    1. Pokemon name is always capitalize and case-sensitive
-    2. These settings will override ``-c`` and ``-iv``. Especially field ``any``, so use with caution.
-    
-=======
-
 ## How to run with Docker
     docker run namlehong/alpine-pgo:dev -a ptc -u tejado -p 1234 -l "New York, Central Park" -iv 0.8 -w 25
 
 
->>>>>>> bb4afa9e2ea876e9545b2df7ac300768866d69b5
 ## How to add/discover new API
   The example is [here](https://github.com/PokemonGoF/PokemonGo-Bot/commit/46e2352ce9f349cc127a408959679282f9999585)  
     1. Check the type of your API request in   [POGOProtos](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/RequestType.proto) For example: RECYCLE_INVENTORY_ITEM  
