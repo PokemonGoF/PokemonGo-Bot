@@ -31,7 +31,7 @@ html, body {
 }
 
 #menu .row .card .card-title, #menu .row .card .close {
-		cursor: pointer;
+	cursor: pointer;
 }
 
 #menu .row .card {
@@ -60,17 +60,35 @@ html, body {
 	position: fixed;
 	left: 20px;
 	top: 30%;
-	max-height: 700px;
+	max-height: 400px;
 	width: 50%;
 	z-index: 6;
 	display: none;
 }
 
 .btn {
-  width: 100%;
+	width: 100%;
 }
 
 #toast-container {
 	top: 1em;
 	right: 1em;
 }
+
+.items {
+	max-height: 350px !important;
+	overflow-y: scroll;
+}
+.item_img {
+	width: 75px;
+	height: auto;
+}
+.gif_img {
+	width: 38px;
+	height: auto;
+}
+.png_img {
+	width: 96px;
+	height: auto;
+}
+>>>>>>> upstream/dev
