@@ -5,11 +5,11 @@ import googlemaps
 import json
 import random
 import threading
-import time
 import datetime
 from pgoapi import PGoApi
 from cell_workers import PokemonCatchWorker, SeenFortWorker
 from cell_workers.utils import distance
+from human_behaviour import sleep
 from stepper import Stepper
 from geopy.geocoders import GoogleV3
 from math import radians, sqrt, sin, cos, atan2
@@ -103,7 +103,7 @@ class PokemonGoBot(object):
         pokecoins = '0'
         stardust = '0'
         balls_stock = self.pokeball_inventory();
-        
+
         if 'amount' in player['currencies'][0]:
             pokecoins = player['currencies'][0]['amount']
         if 'amount' in player['currencies'][1]:
@@ -121,55 +121,63 @@ class PokemonGoBot(object):
         print('[#] UltraBalls: ' + str(balls_stock[3]))
         self.get_player_info()
 
-        if self.config.firsttrans:
-            self.first_transfer()
-            
+        if self.config.initial_transfer:
+            self.initial_transfer()
+
         print('[#]')
         self.update_inventory();
-        
-    def first_transfer(self):
-        print('[x] First Transfer.')
-        
-        pokemon_groups = self._first_transfer_get_groups()
-        
-        print('[x] Transfering...')
-        
+
+    def initial_transfer(self):
+        print('[x] Initial Transfer.')
+
+        if self.config.cp:
+            print('[x] Will NOT transfer anything above CP {}'.format(self.config.cp))
+        else:
+            print('[x] Preparing to transfer all Pokemon duplicates, keeping the highest CP of each one type.')
+
+        pokemon_groups = self._initial_transfer_get_groups()
+
         for id in pokemon_groups:
-        
+
             group_cp = pokemon_groups[id].keys()
-            
             if len(group_cp) > 1:
                 group_cp.sort()
                 group_cp.reverse()
 
                 for x in range(1, len(group_cp)):
+                    if self.config.cp and group_cp[x] > self.config.cp:
+                        continue
+
+                    print('[x] Releasing Pokemon #{} and CP {}'.format(id, group_cp[x]))
                     self.api.release_pokemon(pokemon_id=pokemon_groups[id][group_cp[x]])
                     response_dict = self.api.call()
-                    time.sleep(2)
-                    
+                    sleep(2)
+
         print('[x] Transfering Done.')
-        
-    def _first_transfer_get_groups(self):
+
+    def _initial_transfer_get_groups(self):
         pokemon_groups = {}
         self.api.get_player().get_inventory()
         inventory_req = self.api.call()
-        inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']  
-        
+        inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+
         for pokemon in inventory_dict:
             try:
-                group_id = pokemon['inventory_item_data']['pokemon_data']['pokemon_id']
-                group_pokemon = pokemon['inventory_item_data']['pokemon_data']['id']
-                group_pokemon_cp = pokemon['inventory_item_data']['pokemon_data']['cp']
-                
-                if group_id not in pokemon_groups:
-                    pokemon_groups[group_id] = {}
-                     
-                pokemon_groups[group_id].update({group_pokemon_cp:group_pokemon})
-            except:
+                reduce(dict.__getitem__, ["inventory_item_data", "pokemon_data", "pokemon_id"], pokemon)
+            except KeyError:
                 continue
+
+            group_id = pokemon['inventory_item_data']['pokemon_data']['pokemon_id']
+            group_pokemon = pokemon['inventory_item_data']['pokemon_data']['id']
+            group_pokemon_cp = pokemon['inventory_item_data']['pokemon_data']['cp']
+
+            if group_id not in pokemon_groups:
+                pokemon_groups[group_id] = {}
+
+            pokemon_groups[group_id].update({group_pokemon_cp:group_pokemon})
         return pokemon_groups
-            
-        
+
+
     def update_inventory(self):
         self.api.get_inventory()
         response = self.api.call()
