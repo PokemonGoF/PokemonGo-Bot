@@ -89,10 +89,10 @@ class SeenFortWorker(object):
 
                     for item_id, item_count in tmp_count_items.iteritems():
                         item_name = self.item_list[str(item_id)]
-
-                        logger.log("[+] " + str(item_count) +
-                                    "x " + item_name, 'green')
                         
+                        logger.log("[+] " + str(item_count) +
+                                    "x " + item_name +
+                                    " (Total: " + str(self.bot.item_inventory_count(item_id)) + ")", 'green')
                         
                         # RECYCLING UNWANTED ITEMS
                         if str(item_id) in self.config.item_filter:
