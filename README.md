@@ -40,6 +40,8 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
  * Rudimentary IV Functionality filter (Need verify)
  * Auto switch mode(Full of item then catch, no ball useable then farm)
  * Ignore certain pokemon filter
+ * Use superior ball types when necessary
+ * When out of normal pokeballs, use the next type of ball unless there are less than 10 of that type, in which case — switch to farm mode
 
 ## TODO List
 
@@ -256,6 +258,7 @@ If using multiple usernames format like this:
  * mzupan
  * namlehong
  * gnekic(GeXx)
+ * Shoh
  * luizperes
  * brantje
  * VirtualSatai

@@ -227,12 +227,14 @@ class PokemonGoBot(object):
                 group_cp.sort()
                 group_cp.reverse()
 
+                pokemon_name=self.pokemon_list[int(id-1)]['Name']
+
                 for x in range(1, len(group_cp)):
                     if self.config.cp and group_cp[x] > self.config.cp:
                         continue
 
-                    print('[x] Transferring {} with CP {}'.format(
-                        self.pokemon_list[id - 1]['Name'], group_cp[x]))
+                    print('[x] Transferring #{} ({}) with CP {}'.format(
+                        id, pokemon_name, group_cp[x]))
                     self.api.release_pokemon(
                         pokemon_id=pokemon_groups[id][group_cp[x]])
                     response_dict = self.api.call()
