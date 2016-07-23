@@ -14,7 +14,7 @@ A python script for __catching pokemons__ and __spinning pokestops__ on PokemonG
 
 ## Project Chat
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
-
+Alternatively, feel free to use IRC - [irc.freenode.net#pokemongobot](http://webchat.freenode.net/?channels=#pokemongobot)
 ## Table of Contents
 - [Project Chat](#project-chat)
 - [Features](#features)
