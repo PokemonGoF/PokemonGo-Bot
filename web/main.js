@@ -16,6 +16,9 @@ var trainerSex = ["m","f"];
 var numTrainers = [177, 109];
 var menu;
 var stats = {};
+var userFollow = true;
+var userZoom = true;
+var imageExt = 'png';
 
 function initMap() {
   // load pokemon data now..
