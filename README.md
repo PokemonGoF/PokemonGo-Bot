@@ -133,17 +133,19 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 
 ## FAQ
 
+### What's IV ?
+Here's the [introduction](http://bulbapedia.bulbagarden.net/wiki/Individual_values) 
 ### Losing Starter Pokemon and others
-    You can use -c 1 to protect your first stage low CP pokemon.
+You can use -c 1 to protect your first stage low CP pokemon. 
 ### Does it run automatally?
-    Not yet, still need a trainer to train the script param. But we are very close to.
+Not yet, still need a trainer to train the script param. But we are very close to. 
 ### Set GEO Location
-    It works, use -l "xx.yyyy,zz.ttttt" to set lat long for location. -- diordache
+It works, use -l "xx.yyyy,zz.ttttt" to set lat long for location. -- diordache
 ### FLEE
-   The status code "3" corresponds to "Flee" - meaning your Pokemon has ran away.
-   {"responses": { "CATCH_POKEMON": { "status": 3 } }
+The status code "3" corresponds to "Flee" - meaning your Pokemon has ran away. 
+   {"responses": { "CATCH_POKEMON": { "status": 3 } } 
 ### My pokemon are not showing up in my Pokedex?
-   Finish the tutorial on a smartphone. This will then allow everything to be visible.
+Finish the tutorial on a smartphone. This will then allow everything to be visible.
 ### How can I maximise my XP per hour?
 Quick Tip: When using this script, use a Lucky egg to double the XP for 30 mins. You will level up much faster. A Lucky egg is obtained on level 9 and further on whilst leveling up. (from VipsForever via /r/pokemongodev)
 ### How can I not collect certain pokemon
