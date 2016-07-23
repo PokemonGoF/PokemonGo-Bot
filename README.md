@@ -262,7 +262,6 @@ If using multiple usernames format like this:
  * sinistance
  * CapCap
  * mzupan
- * namlehong
  * gnekic(GeXx)
  * Shoh
  * luizperes
