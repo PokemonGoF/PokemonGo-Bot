@@ -47,13 +47,14 @@ from pokemongo_bot.cell_workers.utils import print_green, print_yellow, print_re
 def init_config():
     parser = argparse.ArgumentParser()
     config_file = "config.json"
+    pkmn_whitelist_json = "pkmn_whitelist.json"
 
     # If config file exists, load variables from json
     load = {}
     if os.path.isfile(config_file):
         with open(config_file) as data:
             load.update(json.load(data))
-
+    
     # Read passed in Arguments
     required = lambda x: not x in load
     parser.add_argument("-a",
@@ -145,7 +146,12 @@ def init_config():
     if not (config.location or config.location_cache):
         parser.error("Needs either --use-location-cache or --location.")
         return None
-    print(config)
+    
+    config.pkmn_whitelist = {}
+    if os.path.isfile(pkmn_whitelist_json):
+        with open(pkmn_whitelist_json) as data:
+            config.pkmn_whitelist.update(json.load(data))
+            
     return config
 
 
