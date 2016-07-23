@@ -250,6 +250,7 @@ If using multiple usernames format like this:
  * VirtualSatai
  * dmateusp
  * jtdroste
+ * c0re
 
 ## Credits
 - [tejado](https://github.com/tejado) many thanks for the API
