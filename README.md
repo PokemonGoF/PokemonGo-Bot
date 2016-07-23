@@ -47,19 +47,19 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 
 ### Installation
 
-$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot
-$ cd PokemonGo-Bot
-$ virtualenv .
-$ source bin/activate
-$ pip install -r requirements.txt
+$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
+$ cd PokemonGo-Bot  
+$ virtualenv .  
+$ source bin/activate  
+$ pip install -r requirements.txt  
 
 ### Develop PokemonGo-Bot
 
-$ git clone -b dev https://github.com/PokemonGoF/PokemonGo-Bot
-$ cd PokemonGo-Bot
-$ virtualenv .
-$ source bin/activate
-$ pip install -r requirements.txt
+$ git clone -b dev https://github.com/PokemonGoF/PokemonGo-Bot  
+$ cd PokemonGo-Bot  
+$ virtualenv .  
+$ source bin/activate  
+$ pip install -r requirements.txt  
 
 ### Google Maps API (Code is not done yet)
 
