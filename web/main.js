@@ -49,8 +49,8 @@ var errorFunc = function(xhr) {
   console.error(xhr);
 };
 
-var forts = []
-var info_windows = []
+var forts = [];
+var info_windows = [];
 var trainerFunc = function(data, user_index) {
   var z = 0;
   for (var i = 0; i < data.cells.length; i++) {
@@ -70,7 +70,6 @@ var trainerFunc = function(data, user_index) {
         info_windows[fort.id] = new google.maps.InfoWindow({
           content: contentString
         });
-        console.log(forts[fort.id])
 
 
         google.maps.event.addListener(forts[fort.id], 'click', (function(marker, content, infowindow) {
