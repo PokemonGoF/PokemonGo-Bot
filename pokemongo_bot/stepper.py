@@ -5,7 +5,6 @@ import time
 
 from math import ceil
 from s2sphere import CellId, LatLng
-import s2sphere
 from google.protobuf.internal import encoder
 
 from human_behaviour import sleep, random_lat_long_delta
