@@ -258,13 +258,13 @@ class PokemonGoBot(object):
         for item in inventory_dict:
             try:
                 # print(item['inventory_item_data']['item'])
-                if item['inventory_item_data']['item']['item_id'] == Item.ITEM_POKE_BALL:
+                if item['inventory_item_data']['item']['item_id'] == Item.ITEM_POKE_BALL.value:
                     # print('Poke Ball count: ' + str(item['inventory_item_data']['item']['count']))
                     balls_stock[1] = item['inventory_item_data']['item']['count']
-                if item['inventory_item_data']['item']['item_id'] == Item.ITEM_GREAT_BALL:
+                if item['inventory_item_data']['item']['item_id'] == Item.ITEM_GREAT_BALL.value:
                     # print('Great Ball count: ' + str(item['inventory_item_data']['item']['count']))
                     balls_stock[2] = item['inventory_item_data']['item']['count']
-                if item['inventory_item_data']['item']['item_id'] == Item.ITEM_ULTRA_BALL:
+                if item['inventory_item_data']['item']['item_id'] == Item.ITEM_ULTRA_BALL.value:
                     # print('Ultra Ball count: ' + str(item['inventory_item_data']['item']['count']))
                     balls_stock[3] = item['inventory_item_data']['item']['count']
             except:
