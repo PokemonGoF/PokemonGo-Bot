@@ -3,6 +3,7 @@
 import json
 import time
 import pprint
+import Logger
 
 from math import ceil
 from s2sphere import CellId, LatLng
@@ -37,12 +38,10 @@ class Stepper(object):
         self.api.set_position(*position)
 
         for step in range(self.steplimit2):
-            # starting at 0 index
-            print(
-                '[#] Scanning area for objects ({} / {})'.format((step + 1), self.steplimit**2))
+            #starting at 0 index
+            Logger.log('[#] Scanning area for objects ({} / {})'.format((step+1), self.steplimit**2))
             if self.config.debug:
-                print('steplimit: {} x: {} y: {} pos: {} dx: {} dy {}'.format(
-                    self.steplimit2, self.x, self.y, self.pos, self.dx, self.dy))
+                Logger.log('steplimit: {} x: {} y: {} pos: {} dx: {} dy {}'.format(self.steplimit2, self.x, self.y, self.pos, self.dx, self.dy))
             # Scan location math
             if -self.steplimit2 / 2 < self.x <= self.steplimit2 / 2 and -self.steplimit2 / 2 < self.y <= self.steplimit2 / 2:
                 position = (self.x * 0.0025 + self.origin_lat,
@@ -66,7 +65,7 @@ class Stepper(object):
         steps = (dist + 0.0) / (speed + 0.0)  # may be rational number
         intSteps = int(steps)
         residuum = steps - intSteps
-        print '[#] Walking from ' + str((i2f(self.api._position_lat), i2f(self.api._position_lng))) + " to " + str(str((lat, lng))) + " for approx. " + str(format_time(ceil(steps)))
+        Logger.log('[#] Walking from ' + str((i2f(self.api._position_lat), i2f(self.api._position_lng))) + " to " + str(str((lat, lng))) + " for approx. " + str(format_time(ceil(steps))))
         if steps != 0:
             dLat = (lat - i2f(self.api._position_lat)) / steps
             dLng = (lng - i2f(self.api._position_lng)) / steps
@@ -84,7 +83,7 @@ class Stepper(object):
 
             self.api.set_position(lat, lng, alt)
             self.bot.heartbeat()
-        print "[#] Finished walking"
+        Logger.log("[#] Finished walking")
 
     def _work_at_position(self, lat, lng, alt, pokemon_only=False):
         cellid = self._get_cellid(lat, lng)

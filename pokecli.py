@@ -35,6 +35,7 @@ import ssl
 import logging
 import sys
 import codecs
+from pokemongo_bot import Logger
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -42,7 +43,6 @@ if sys.version_info >= (2, 7, 9):
 from getpass import getpass
 from pokemongo_bot import PokemonGoBot
 from pokemongo_bot.cell_workers.utils import print_green, print_yellow, print_red
-
 
 def init_config():
     parser = argparse.ArgumentParser()
@@ -104,7 +104,6 @@ def init_config():
     print(config)
     return config
 
-
 def main():
     # log settings
     # log format
@@ -117,22 +116,21 @@ def main():
     if not config:
         return
 
-    print_green('[x] PokemonGO Bot v1.0')
-    print_yellow('[x] Configuration initialized')
+    Logger.log('[x] PokemonGO Bot v1.0', 'green')
+    Logger.log('[x] Configuration initialized', 'yellow')
 
     try:
         bot = PokemonGoBot(config)
         bot.start()
 
-        print_green('[x] Starting PokemonGo Bot....')
+        Logger.log('[x] Starting PokemonGo Bot....', 'green')
 
         while(True):
             bot.take_step()
 
     except KeyboardInterrupt:
-        print_red("\n"'[x]Exiting PokemonGo Bot')
-        # TODO Add number of pokemon catched, pokestops visited, highest CP
-        # pokemon catched, etc.
+        Logger.log('[x]Exiting PokemonGo Bot', 'red')
+        #TODO Add number of pokemon catched, pokestops visited, highest CP pokemon catched, etc.
 
 if __name__ == '__main__':
     main()
