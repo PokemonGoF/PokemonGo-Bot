@@ -210,6 +210,8 @@ class PokemonGoBot(object):
         self.api.get_player().get_inventory()
         inventory_req = self.api.call()
         inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+        with open('web/inventory-%s.json' % (self.config.username), 'w') as outfile:
+            json.dump(inventory_dict, outfile)
 
         for pokemon in inventory_dict:
             try:
@@ -252,6 +254,8 @@ class PokemonGoBot(object):
 
         inventory_req = self.api.call()
         inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+        with open('web/inventory-%s.json' % (self.config.username), 'w') as outfile:
+            json.dump(inventory_dict, outfile)
 
         # get player balls stock
         # ----------------------

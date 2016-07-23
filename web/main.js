@@ -15,6 +15,7 @@ var user_index;
 var trainerSex = ["m","f"];
 var numTrainers = [177, 109];
 var menu;
+var filteredInv = {};
 
 function initMap() {
   // load pokemon data now..
@@ -104,8 +105,15 @@ var errorFunc = function(xhr) {
   console.error(xhr);
 };
 
+var invSuccess = function(data, user_index) {
+  for (var i = 0; i < data.inventory_item_data.length; i++) {
+    if (data.inventory_item_data[i].player_stats != undefined) {
+      
+    }
+  }
+}
+
 var trainerFunc = function(data, user_index) {
-  var z = 0;
   for (var i = 0; i < data.cells.length; i++) {
     cell = data.cells[i];
     if (data.cells[i].forts != undefined) {
@@ -221,18 +229,11 @@ function addCatchable() {
     loadJSON('catchable-'+users[i]+'.json', catchSuccess, errorFunc, i);
   }
 }
-// function updateInventory() {
-//   loadJSON('info.json',
-//     function(data) {
-//       inventory = data;
-//       playerInfo = filter(inventory, 'player_stats');
-//       pokedex = filter(inventory, 'pokedex_entry');
-//       bagPokemon = filter(inventory, 'pokemon_data');
-//     },
-//     function(xhr) { console.error(xhr); }
-//   );
-// }
-
+function addInventory() {
+  for (var i = 0; i < users.length; i++) {
+    loadJSON('inventory-'+users[i]+'.json', invSuccess, errorFunc, i);
+  }
+}
 
 function pad_with_zeroes(number, length) {
   var my_string = '' + number;
@@ -280,17 +281,21 @@ $(document).ready(function(){
   $('.tooltipped').tooltip({delay: 50});
 });
 
-function buildMenu () {
+function buildMenu() {
   if (menu == 1) {
     document.getElementById('subtitle').innerHTML = "Trainer Info";
+    document.getElementById('subcontent').innerHTML = buildTrainer('player_stats');
   }
   if (menu == 2) {
     document.getElementById('subtitle').innerHTML = "Items in Bag";
+    document.getElementById('subcontent').innerHTML = buildTrainer('item');
   }
   if (menu == 3) {
     document.getElementById('subtitle').innerHTML = "Pokemon in Bag";
+    document.getElementById('subcontent').innerHTML = buildTrainer('pokemon_data');
   }
   if (menu == 4) {
     document.getElementById('subtitle').innerHTML = "Pokedex";
+    document.getElementById('subcontent').innerHTML = buildTrainer('pokedex_entry');
   }
 }
