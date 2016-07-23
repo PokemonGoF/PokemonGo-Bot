@@ -40,6 +40,8 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
  * Rudimentary IV Functionality filter (Need verify)
  * Auto switch mode(Full of item then catch, no ball useable then farm)
  * Ignore certain pokemon filter
+ * Use superior ball types when necessary
+ * When out of normal pokeballs, use the next type of ball unless there are less than 10 of that type, in which case — switch to farm mode
 
 ## TODO List
 
@@ -95,16 +97,16 @@ $ pip install -r requirements.txt
 ### Installation Windows
 
 ###### Windows Note
-On Windows, you will need to install PyYaml through the  [installer](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt. 
+On Windows, you will need to install PyYaml through the  [installer](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt.
 
 Windows 10:
     Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl   
-    (If running 64-bit python or if you get a 'not a supported wheel on this platform' error, 
+    (If running 64-bit python or if you get a 'not a supported wheel on this platform' error,
     download the 64 bit version instead: PyYAML-3.11-cp27-cp27m-win_amd64.whl )
 ```
 $ cd download-directory
 $ pip install PyYAML-3.11-cp27-cp27m-win32.whl
-// (replace PyYAML-3.11-cp27-cp27m-win32.whl with PyYAML-3.11-cp27-cp27m-win_amd64.whl 
+// (replace PyYAML-3.11-cp27-cp27m-win32.whl with PyYAML-3.11-cp27-cp27m-win_amd64.whl
 // if you needed to download the 64-bit version)
 ```
 ### Develop PokemonGo-Bot
@@ -131,7 +133,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 6. After the code done, will update here how to replace.
 
 ## Usage
-    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-lc] [-c] [-m] [-w] [--distance_unit] [--initial-transfer] [--maxsteps] [-iv] [-d] [-t] 
+    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-lc] [-c] [-m] [-w] [--distance_unit] [--initial-transfer] [--maxsteps] [-iv] [-d] [-t]
 
     optional arguments:
       -h, --help                                    show this help message and exit
@@ -184,16 +186,26 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 ## FAQ
 
 ### What's IV ?
-Here's the [introduction](http://bulbapedia.bulbagarden.net/wiki/Individual_values) 
+Here's the [introduction](http://bulbapedia.bulbagarden.net/wiki/Individual_values)
 ### Losing Starter Pokemon and others
-You can use -c 1 to protect your first stage low CP pokemon. 
+You can use -c 1 to protect your first stage low CP pokemon.
 ### Does it run automatally?
-Not yet, still need a trainer to train the script param. But we are very close to. 
+Not yet, still need a trainer to train the script param. But we are very close to.
 ### Set GEO Location
 It works, use -l "xx.yyyy,zz.ttttt" to set lat long for location. -- diordache
+
+### Google login issues (Login Error, Server busy)?
+
+Try to generate an [app password](!https://support.google.com/accounts/answer/185833?hl=en) and set is as
+```
+-p "<your-app-password>"
+```
+This error is mostly occurs for those who using 2 factor authentication but either way for the purpose of security would be nice to have a separate password for the bot app.
+
+
 ### FLEE
-The status code "3" corresponds to "Flee" - meaning your Pokemon has ran away. 
-   {"responses": { "CATCH_POKEMON": { "status": 3 } } 
+The status code "3" corresponds to "Flee" - meaning your Pokemon has ran away.
+   {"responses": { "CATCH_POKEMON": { "status": 3 } }
 ### My pokemon are not showing up in my Pokedex?
 Finish the tutorial on a smartphone. This will then allow everything to be visible.
 ### How can I maximise my XP per hour?
@@ -219,7 +231,7 @@ ignore:
 ### How do I use the map??
 You can either view the map via opening the html file, or by serving it with SimpleHTTPServer (runs on localhost:8000)  
 To use SimpleHTTPServer:  
-```$ python -m SimpleHTTPServer [port]``` 
+```$ python -m SimpleHTTPServer [port]```
 The default port is 8080, you can change that by giving a port number.
 Anything above port 1000 does not require root.
 You will need to set your username(s) in the userdata.js file before opening:  
@@ -228,6 +240,7 @@ put your username in the quotes instead of "username"
 If using multiple usernames format like this:  
 ```var users = ["username1","username2"];```
 
+---------
 ## Contributors (Don't forget add yours here when you create PR:)
  * eggins -- The first pull request :)
  * crack00r
@@ -245,12 +258,15 @@ If using multiple usernames format like this:
  * mzupan
  * namlehong
  * gnekic(GeXx)
+ * Shoh
  * luizperes
  * brantje
  * VirtualSatai
  * dmateusp
  * jtdroste
+ * msoedov
 
+-------
 ## Credits
 - [tejado](https://github.com/tejado) many thanks for the API
 - [Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets

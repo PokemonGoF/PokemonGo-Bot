@@ -210,10 +210,11 @@ class PokemonGoBot(object):
 
     def initial_transfer(self):
         logger.log('[x] Initial Transfer.')
+       	ignlist = self.config.ign_init_trans.split(',')
 
         if self.config.cp:
-            logger.log('[x] Will NOT transfer anything above CP {}'.format(
-                self.config.cp))
+            logger.log('[x] Will NOT transfer anything above CP {} or these {}'.format(
+                self.config.cp,ignlist))
         else:
             logger.log(
                 '[x] Preparing to transfer all Pokemon duplicates, keeping the highest CP of each one type.')
@@ -227,12 +228,17 @@ class PokemonGoBot(object):
                 group_cp.sort()
                 group_cp.reverse()
 
+                pokemon_name=self.pokemon_list[int(id-1)]['Name']
+
                 for x in range(1, len(group_cp)):
-                    if self.config.cp and group_cp[x] > self.config.cp:
+
+                    if (self.config.cp and group_cp[x] > self.config.cp) or\
+                    self.pokemon_list[id - 1]['Name'] in ignlist or\
+                    self.pokemon_list[id - 1]['Number'].lstrip('0') in ignlist:
                         continue
 
-                    print('[x] Transferring {} with CP {}'.format(
-                        self.pokemon_list[id - 1]['Name'], group_cp[x]))
+                    print('[x] Transferring #{} ({}) with CP {}'.format(
+                        id, pokemon_name, group_cp[x]))
                     self.api.release_pokemon(
                         pokemon_id=pokemon_groups[id][group_cp[x]])
                     response_dict = self.api.call()
@@ -443,6 +449,9 @@ class PokemonGoBot(object):
                                         'inventory_item_data']:
                                     playerdata = item['inventory_item_data'][
                                         'player_stats']
+
+                                    if 'experience' not in playerdata:
+                                        playerdata['experience'] = 0
 
                                     nextlvlxp = (
                                         int(playerdata['next_level_xp']) -
