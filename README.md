@@ -41,7 +41,7 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
  * Auto switch mode(Full of item then catch, no ball useable then farm)
  * Ignore certain pokemon filter
  * Use superior ball types when necessary
- * When out of normal pokeballs, use the next type of ball unless there are less than 10 of that type, in which case — switch to farm mode
+ * When out of normal pokeballs, use the next type of ball unless there are less than 10 of that type, in which case switch to farm mode
 
 ## TODO List
 
@@ -142,16 +142,13 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -p PASSWORD, --password PASSWORD              Password
       -l LOCATION, --location LOCATION              Location (Address or 'xx.yyyy,zz.ttttt')
       -lc, --location_cache                         Bot will start at last known location
-      -c CP, --cp                                   Set the CP to transfer or lower (eg. 100 will transfer CP0-99)
       -m MODE, --mode MODE                          Set farming Mode for the bot ('all', 'poke', 'farm')
       -w SPEED,  --walk SPEED                       Walk instead of teleport with given speed (meters per second max 4.16 because of walking end on 15km/h)
       -du, --distance_unit UNIT                     Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
       -it, --initial_transfer                       Start the bot with a pokemon clean up, keeping only the higher CP of each pokemon. It respects -c as upper limit to release.
       -ms, --max_steps MAX_STEP                     Set the steps around your initial location (DEFAULT 5 mean 25 cells around your location)
-      -iv IV, --pokemon_potential                   Set the ratio for the IV values to transfer (DEFAULT 0.4 eg. 0.4 will transfer a pokemon with IV 0.3)
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
-
 
 ### Command Line Example
     Pokemon Trainer Club (PTC) account:
@@ -159,7 +156,14 @@ This project uses Google Maps. There's one map coupled with the project, but as 
     Google Account:
     $ python2 pokecli.py -a google -u tejado -p 1234 --location "New York, Washington Square"
 
+### Advance Releasing Configuration
+    To edit the pokemon release configuration, copy file ``release_config.json.example`` and rename it to ``release_config.json``
 
+    Edit this file however you like, but keep in mind:
+
+    1. Pokemon name is always capitalize and case-sensitive
+    2. Be careful with the ``any`` configuration!
+    
 ## How to run with Docker
     docker run namlehong/alpine-pgo:dev -a ptc -u tejado -p 1234 -l "New York, Central Park" -iv 0.8 -w 25
 
