@@ -12,7 +12,7 @@ from human_behaviour import sleep, random_lat_long_delta
 from cell_workers.utils import distance, i2f, format_time
 
 from pgoapi.utilities import f2i, h2f
-
+import logger
 
 class Stepper(object):
 
@@ -38,10 +38,10 @@ class Stepper(object):
 
         for step in range(self.steplimit2):
             # starting at 0 index
-            print(
+            logger.log(
                 '[#] Scanning area for objects ({} / {})'.format((step + 1), self.steplimit**2))
             if self.config.debug:
-                print('steplimit: {} x: {} y: {} pos: {} dx: {} dy {}'.format(
+                logger.log('steplimit: {} x: {} y: {} pos: {} dx: {} dy {}'.format(
                     self.steplimit2, self.x, self.y, self.pos, self.dx, self.dy))
             # Scan location math
             if -self.steplimit2 / 2 < self.x <= self.steplimit2 / 2 and -self.steplimit2 / 2 < self.y <= self.steplimit2 / 2:
@@ -66,7 +66,7 @@ class Stepper(object):
         steps = (dist + 0.0) / (speed + 0.0)  # may be rational number
         intSteps = int(steps)
         residuum = steps - intSteps
-        print '[#] Walking from ' + str((i2f(self.api._position_lat), i2f(self.api._position_lng))) + " to " + str(str((lat, lng))) + " for approx. " + str(format_time(ceil(steps)))
+        logger.log('[#] Walking from ' + str((i2f(self.api._position_lat), i2f(self.api._position_lng))) + " to " + str(str((lat, lng))) + " for approx. " + str(format_time(ceil(steps))))
         if steps != 0:
             dLat = (lat - i2f(self.api._position_lat)) / steps
             dLng = (lng - i2f(self.api._position_lng)) / steps
@@ -84,7 +84,7 @@ class Stepper(object):
 
             self.api.set_position(lat, lng, alt)
             self.bot.heartbeat()
-        print "[#] Finished walking"
+            logger.log("[#] Finished walking")
 
     def _work_at_position(self, lat, lng, alt, pokemon_only=False):
         cellid = self._get_cellid(lat, lng)

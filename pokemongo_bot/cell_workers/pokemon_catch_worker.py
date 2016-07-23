@@ -4,7 +4,7 @@ import time
 from sets import Set
 from utils import distance, print_green, print_yellow, print_red
 from pokemongo_bot.human_behaviour import sleep
-
+from pokemongo_bot import logger
 
 class PokemonCatchWorker(object):
 
@@ -31,7 +31,7 @@ class PokemonCatchWorker(object):
             if 'ENCOUNTER' in response_dict['responses']:
                 if 'status' in response_dict['responses']['ENCOUNTER']:
                     if response_dict['responses']['ENCOUNTER']['status'] is 7:
-                        print '[x] Pokemon Bag is full!'
+                        logger.log('[x] Pokemon Bag is full!', 'red')
                         self.bot.initial_transfer()
                     if response_dict['responses']['ENCOUNTER']['status'] is 1:
                         cp = 0
@@ -55,8 +55,8 @@ class PokemonCatchWorker(object):
                                                   'pokemon_id']) - 1
                                 pokemon_name = self.pokemon_list[
                                     int(pokemon_num)]['Name']
-                                print_yellow('[#] A Wild {} appeared! [CP {}] [Potential {}]'.format(
-                                    pokemon_name, cp, pokemon_potential))
+                                logger.log('[#] A Wild {} appeared! [CP {}] [Potential {}]'.format(
+                                    pokemon_name, cp, pokemon_potential), 'yellow')
                                 # Simulate app
                                 sleep(3)
 
@@ -77,13 +77,13 @@ class PokemonCatchWorker(object):
                                 pokeball = 3
 
                             if pokeball is 0:
-                                print_red(
-                                    '[x] Out of pokeballs, switching to farming mode...')
+                                logger.log(
+                                    '[x] Out of pokeballs, switching to farming mode...', 'red')
                                 # Begin searching for pokestops.
                                 self.config.mode = 'farm'
                                 return -1
 
-                            print('[x] Using {}...'.format(
+                            logger.log('[x] Using {}...'.format(
                                 self.item_list[str(pokeball)]))
 
                             balls_stock[pokeball] = balls_stock[pokeball] - 1
@@ -104,17 +104,17 @@ class PokemonCatchWorker(object):
                                 status = response_dict['responses'][
                                     'CATCH_POKEMON']['status']
                                 if status is 2:
-                                    print_red(
-                                        '[-] Attempted to capture {} - failed.. trying again!'.format(pokemon_name))
+                                    logger.log(
+                                        '[-] Attempted to capture {} - failed.. trying again!'.format(pokemon_name), 'red')
                                     sleep(2)
                                     continue
                                 if status is 3:
-                                    print_red(
-                                        '[x] Oh no! {} vanished! :('.format(pokemon_name))
+                                    logger.log(
+                                        '[x] Oh no! {} vanished! :('.format(pokemon_name), 'red')
                                 if status is 1:
                                     if cp < self.config.cp or pokemon_potential < self.config.pokemon_potential:
-                                        print_green('[x] Captured {}! [CP {}] [IV {}] - exchanging for candy'.format(
-                                            pokemon_name, cp, pokemon_potential))
+                                        logger.log('[x] Captured {}! [CP {}] [IV {}] - exchanging for candy'.format(
+                                            pokemon_name, cp, pokemon_potential), 'green')
                                         id_list2 = self.count_pokemon_inventory()
                                         # Transfering Pokemon
                                         pokemon_to_transfer = list(
@@ -124,11 +124,11 @@ class PokemonCatchWorker(object):
                                                 'Trying to transfer 0 pokemons!')
                                         self.transfer_pokemon(
                                             pokemon_to_transfer[0])
-                                        print_green(
-                                            '[#] {} has been exchanged for candy!'.format(pokemon_name))
+                                        logger.log(
+                                            '[#] {} has been exchanged for candy!'.format(pokemon_name), 'green')
                                     else:
-                                        print_green(
-                                            '[x] Captured {}! [CP {}]'.format(pokemon_name, cp))
+                                        logger.log(
+                                            '[x] Captured {}! [CP {}]'.format(pokemon_name, cp), 'green')
                             break
         time.sleep(5)
 
