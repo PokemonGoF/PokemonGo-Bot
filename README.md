@@ -271,6 +271,7 @@ If using multiple usernames format like this:
  * jtdroste
  * msoedov
  * Grace
+ * Calcyfer
 
 -------
 ## Credits
