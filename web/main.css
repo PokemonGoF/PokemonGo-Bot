@@ -10,9 +10,7 @@ html, body {
 	position: fixed;
 	right: 10px;
 	top: 10px;
-	width: auto;
-	height: auto;
 	z-index: 5;
-	background-color: #ffffff;
-	padding-right: 20px;
+	height: auto;
+	width: auto;
 }
