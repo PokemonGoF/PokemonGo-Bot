@@ -199,9 +199,11 @@ slow down leveling but you won't fill up either.
 ### How do I use the map??
 You can either view the map via opening the html file, or by serving it with SimpleHTTPServer (runs on localhost:8000)  
 To use SimpleHTTPServer:  
-```$ python -m SimpleHTTPServer```  
+```$ python -m SimpleHTTPServer [port]``` 
+The default port is 8080, you can change that by giving a port number.
+Anything above port 1000 does not require root.
 You will need to set your username(s) in the userdata.js file before opening:  
-Open userdata.js with your favorite text editor.  
+Copy userdata.js.example to userdata.js and edit with your favorite text editor.
 put your username in the quotes instead of "username"
 If using multiple usernames format like this:  
 ```var users = ["username1","username2"];```
@@ -256,6 +258,8 @@ To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg
  * namlehong
  * gnekic(GeXx)
  * luizperes
+ * brantje
+ * VirtualSatai
 
 ## Credits
 [tejado](https://github.com/tejado) many thanks for the API

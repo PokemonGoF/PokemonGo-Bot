@@ -24,6 +24,8 @@ function initMap() {
     center: {lat: 50.0830986, lng: 6.7613762},
     zoom: 8
   });
+  document.getElementById("switchPan").checked = userFollow;
+  document.getElementById("switchZoom").checked = userZoom;
   setTimeout(function(){
     placeTrainer();
     addCatchable();
@@ -33,19 +35,62 @@ function initMap() {
       setInterval(addCatchable, 1000);
     }, 5000);
   }, 5000);
-}
+};
+
+$('#switchPan').change(function(){
+    if (this.checked) { userFollow = true } else { userFollow = false }
+});
+
+$('#switchZoom').change(function(){
+    if (this.checked) { userZoom = true } else { userZoom = false }
+});
 
 var errorFunc = function(xhr) {
   console.error(xhr);
 };
 
+var forts = []
+var info_windows = []
 var trainerFunc = function(data, user_index) {
+  var z = 0;
+  for (var i = 0; i < data.cells.length; i++) {
+    cell = data.cells[i];
+    for (var x = 0; x < data.cells[i].forts.length; x++) {
+      var fort = cell.forts[x];
+      if (!forts[fort.id]) {
+        forts[fort.id] = new google.maps.Marker({
+          map: map,
+          position: {
+            lat: parseFloat(fort.latitude),
+            lng: parseFloat(fort.longitude)
+          },
+          icon: "image/forts/Pstop.png"
+        });
+        var contentString = fort.id + ' Type ' + fort.type
+        info_windows[fort.id] = new google.maps.InfoWindow({
+          content: contentString
+        });
+        console.log(forts[fort.id])
+
+
+        google.maps.event.addListener(forts[fort.id], 'click', (function(marker, content, infowindow) {
+          return function() {
+            infowindow.setContent(content);
+            infowindow.open(map, marker);
+          };
+        })(forts[fort.id], contentString, info_windows[fort.id]));
+
+      }
+    }
+
+  }
   if (user_data[users[user_index]].hasOwnProperty('marker') === false) {
     console.log("New Marker: Trainer - " + data.lat + ", " + data.lng);
     user_data[users[user_index]].marker = new google.maps.Marker({
       map: map,
       position: {lat: parseFloat(data.lat), lng: parseFloat(data.lng)},
-      icon: "image/trainer-icon.png"
+      icon: "image/trainer-icon.png",
+      zIndex: 2
     });
   } else {
     user_data[users[user_index]].marker.setPosition({lat: parseFloat(data.lat), lng: parseFloat(data.lng)});
@@ -84,7 +129,8 @@ var catchSuccess = function(data, user_index) {
         user_data[users[user_index]].catchables[data.spawnpoint_id] = new google.maps.Marker({
           map: map,
           position: {lat: parseFloat(data.latitude), lng: parseFloat(data.longitude)},
-          icon: "image/icons/" + data.pokemon_id + ".png"
+          icon: "image/icons/" + data.pokemon_id + ".png",
+          zIndex: 4
         });
           if (userZoom == true) {
             map.setZoom(16);
