@@ -86,7 +86,11 @@ class Stepper(object):
         response_dict = self.api.call()
         # Passing Variables through a file
         with open('web/location.json', 'w') as outfile:
-            json.dump({'lat': lat, 'lng': lng,'cells':response_dict['responses']['GET_MAP_OBJECTS']['map_cells']}, outfile)
+            try:
+                json.dump({'lat': lat, 'lng': lng,'cells':response_dict['responses']['GET_MAP_OBJECTS']['map_cells']}, outfile)
+            except LookupError:
+                print "[!] Failed to save location"
+                pass
         if response_dict and 'responses' in response_dict and \
             'GET_MAP_OBJECTS' in response_dict['responses'] and \
             'status' in response_dict['responses']['GET_MAP_OBJECTS'] and \
