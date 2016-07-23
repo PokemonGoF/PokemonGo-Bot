@@ -106,7 +106,6 @@ class PokemonCatchWorker(object):
                                     print('[x] Oh no! ' + str(pokemon_name) + ' vanished! :(')
                                 if status is 1:
                                     
-                                    
                                     if self.should_transfer(cp,str(pokemon_name)):
                                     
                                         print('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + '] - exchanging for candy')
@@ -124,8 +123,9 @@ class PokemonCatchWorker(object):
 
     def should_transfer(self, pokemon_cp,pokemon_name):
          pokemon_name = pokemon_name.lower()
-         exchange_list  = self.config.transfer_list.lower()
-         if pokemon_cp < self.config.cp or pokemon_name in exchange_list:
+         transfer_list  = self.config.transfer_list.lower()
+         
+         if pokemon_cp < self.config.cp or pokemon_name in transfer_list:
              return True
          else:
             return False
