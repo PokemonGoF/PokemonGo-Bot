@@ -124,6 +124,10 @@ class PokemonGoBot(object):
         print('[#] PokeBalls: ' + str(balls_stock[1]))
         print('[#] GreatBalls: ' + str(balls_stock[2]))
         print('[#] UltraBalls: ' + str(balls_stock[3]))
+
+        # Testing
+        #self.drop_item(Item.ITEM_POTION.value,1)
+        #exit(0)
         self.get_player_info()
 
         if self.config.initial_transfer:
@@ -131,7 +135,10 @@ class PokemonGoBot(object):
 
         print('[#]')
         self.update_inventory();
-
+    def drop_item(self,item_id,count):
+        self.api.recycle_inventory_item(item_id=item_id,count=count)
+        inventory_req = self.api.call()
+        print(inventory_req)
     def initial_transfer(self):
         print('[x] Initial Transfer.')
 
