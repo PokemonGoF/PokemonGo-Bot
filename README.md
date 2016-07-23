@@ -1,22 +1,47 @@
-# PokemonGo-Bot - a pokemon script that can catch pokemons and spin the pokestops.
+<p align="center">
+  <a href="">
+    <img alt="Logo" src="https://www.brooklinelibrary.org/wp-content/uploads/2016/07/2000px-Pok%C3%A9_Ball.svg_-1.png" width="100">
+  </a>
+</p>
 
-## Project chat
+<p align="center">
+  <a href="https://pokemongo-bot.herokuapp.com/"><img alt="Slack" src="https://pokemongo-bot.herokuapp.com/badge.svg"></a>
+</p>
 
-[![Slack Status](https://pokemongo-bot.herokuapp.com/badge.svg)](https://pokemongo-bot.herokuapp.com)
+# PokemonGo-Bot
+A python script for __catching pokemons__ and __spin pokestops__ on PokemonGo.
 
+
+## Project Chat
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
 
-## Features:
- * Search Fort(Spin Pokestop)
+## Table of Contents
+- [Project Chat](#project-chat)
+- [Features](#features)
+- [TODO List](#todo-list)
+- __Installation__
+  - [Requirements](#requirements)
+  - [Mac](#installation-mac)
+  - [Linux](#installation-linux)
+  - [Windows](#installation-windows)
+- [Develop PokemonGo-Bot](develop-pokemonGo-bot)
+- [Usage](#usage)
+- [FAQ](#faq)
+- [Credits](#credits)
+- [Donation](#donation)
+
+## Features
+ * Search Fort (Spin Pokestop)
  * Catch Pokemon
  * Release low cp pokemon
  * Walking as you
  * Use the ball you have to catch, don't if you don't have
- * Rudimentary IV Functionality filter(Need verify)
+ * Rudimentary IV Functionality filter (Need verify)
  * Auto switch mode(Full of item then catch, no ball useable then farm)
  * Ignore certain pokemon filter
 
-## To-Do:
+## TODO List
+
 - [ ] Standalone Desktop APP
 - [x] Google Map API key setup (Readme update needed)
 - [ ] Show all objects on map
@@ -35,9 +60,11 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 ### Requirements (click each one for install guide)
 
 - [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/)
+- [pip](https://pip.pypa.io/en/stable/installing/)
 - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-- [virtualenv](https://virtualenv.pypa.io/en/stable/installation/)
-- [protobuf 3](https://github.com/google/protobuf)  (OS Dependent, see below)
+- [virtualenv](https://virtualenv.pypa.io/en/stable/installation/) (Optional)
+- [docker](https://docs.docker.com/engine/installation/) (Optional)
+- [protobuf 3](https://github.com/google/protobuf) (OS Dependent, see below)
 
 ### Protobuf 3 installation
 
@@ -45,34 +72,51 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 - Windows: Download protobuf 3.0: [here](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip) and unzip `bin/protoc.exe` into a folder in your PATH.
 - Linux: `apt-get install python-protobuf`
 
-### Installation
 
+### Installation Linux
+
+```
+$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
+$ cd PokemonGo-Bot  
+$ pip install -r requirements.txt
+```
+
+### Installation Mac
+
+```
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
 $ cd PokemonGo-Bot  
 $ virtualenv .  
 $ source bin/activate  
-$ pip install -r requirements.txt  
+$ pip install -r requirements.txt
+```
+
+### Installation Windows
 
 ###### Windows Note
 On Windows, you will need to install PyYaml through the  [installer](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt. 
 
 Windows 10:
     Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl   
-    (If running 64-bit python or if you get a 'not a supported wheel on this platform' error, download the 64 bit version instead: PyYAML-3.11-cp27-cp27m-win_amd64.whl )
-
-    $ cd download-directory
-    $ pip install PyYAML-3.11-cp27-cp27m-win32.whl
-    (replace PyYAML-3.11-cp27-cp27m-win32.whl with PyYAML-3.11-cp27-cp27m-win_amd64.whl if you needed to download the 64-bit version)
-
+    (If running 64-bit python or if you get a 'not a supported wheel on this platform' error, 
+    download the 64 bit version instead: PyYAML-3.11-cp27-cp27m-win_amd64.whl )
+```
+$ cd download-directory
+$ pip install PyYAML-3.11-cp27-cp27m-win32.whl
+// (replace PyYAML-3.11-cp27-cp27m-win32.whl with PyYAML-3.11-cp27-cp27m-win_amd64.whl 
+// if you needed to download the 64-bit version)
+```
 ### Develop PokemonGo-Bot
 
+```
 $ git clone -b dev https://github.com/PokemonGoF/PokemonGo-Bot  
 $ cd PokemonGo-Bot  
 $ virtualenv .  
 $ source bin/activate  
 $ pip install -r requirements.txt  
+```
 
-### Google Maps API (In Development)
+### Google Maps API (in development)
 
 Google Maps API: a brief guide to your own key
 
@@ -94,13 +138,13 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -u USERNAME, --username USERNAME              Username
       -p PASSWORD, --password PASSWORD              Password
       -l LOCATION, --location LOCATION              Location (Address or 'xx.yyyy,zz.ttttt')
-      -lc, --use-location-cache                     Bot will start at last known location
+      -lc, --location_cache                         Bot will start at last known location
       -c CP, --cp                                   Set the CP to transfer or lower (eg. 100 will transfer CP0-99)
       -m MODE, --mode MODE                          Set farming Mode for the bot ('all', 'poke', 'farm')
       -w SPEED,  --walk SPEED                       Walk instead of teleport with given speed (meters per second max 4.16 because of walking end on 15km/h)
-      --distance_unit UNIT                          Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
-      --initial-transfer                            Start the bot with a pokemon clean up, keeping only the higher CP of each pokemon. It respects -c as upper limit to release.
-      --maxsteps MAX_STEP                           Set the steps around your initial location (DEFAULT 5 mean 25 cells around your location)
+      -du, --distance_unit UNIT                     Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
+      -it, --initial_transfer                       Start the bot with a pokemon clean up, keeping only the higher CP of each pokemon. It respects -c as upper limit to release.
+      -ms, --max_steps MAX_STEP                     Set the steps around your initial location (DEFAULT 5 mean 25 cells around your location)
       -iv IV, --pokemon_potential                   Set the ratio for the IV values to transfer (eg. 0.8 will transfer a pokemon with IV 0.5)
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
@@ -213,8 +257,10 @@ To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg
  * mzupan
  * namlehong
  * gnekic(GeXx)
+ * luizperes
  * brantje
  * VirtualSatai
+ * dmateusp
 
 ## Credits
 [tejado](https://github.com/tejado) many thanks for the API
@@ -228,4 +274,6 @@ To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg
 
 Bitcoin Address:  1PJMCx9NNQRasQYaa4MMff9yyNFffhHgLu
 
-[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WQUXDC54W6EVY)
+<p align="center">
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WQUXDC54W6EVY"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"></a>
+</p>
