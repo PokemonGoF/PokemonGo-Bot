@@ -62,36 +62,33 @@ var trainerFunc = function(data, user_index) {
   var z = 0;
   for (var i = 0; i < data.cells.length; i++) {
     cell = data.cells[i];
-    if (data.cells[i].forts == undefined) {
-        return;
-    }
-    for (var x = 0; x < data.cells[i].forts.length; x++) {
-      var fort = cell.forts[x];
-      if (!forts[fort.id]) {
-        forts[fort.id] = new google.maps.Marker({
-          map: map,
-          position: {
-            lat: parseFloat(fort.latitude),
-            lng: parseFloat(fort.longitude)
-          },
-          icon: "image/forts/Pstop.png"
-        });
-        var contentString = fort.id + ' Type ' + fort.type
-        info_windows[fort.id] = new google.maps.InfoWindow({
-          content: contentString
-        });
+    if (data.cells[i].forts != undefined) {
+      for (var x = 0; x < data.cells[i].forts.length; x++) {
+        var fort = cell.forts[x];
+        if (!forts[fort.id]) {
+          forts[fort.id] = new google.maps.Marker({
+            map: map,
+            position: {
+              lat: parseFloat(fort.latitude),
+              lng: parseFloat(fort.longitude)
+            },
+            icon: "image/forts/Pstop.png"
+          });
+          var contentString = fort.id + ' Type ' + fort.type
+          info_windows[fort.id] = new google.maps.InfoWindow({
+            content: contentString
+          });
 
 
-        google.maps.event.addListener(forts[fort.id], 'click', (function(marker, content, infowindow) {
-          return function() {
-            infowindow.setContent(content);
-            infowindow.open(map, marker);
-          };
-        })(forts[fort.id], contentString, info_windows[fort.id]));
-
+          google.maps.event.addListener(forts[fort.id], 'click', (function(marker, content, infowindow) {
+            return function() {
+              infowindow.setContent(content);
+              infowindow.open(map, marker);
+            };
+          })(forts[fort.id], contentString, info_windows[fort.id]));
+        }
       }
     }
-
   }
   if (user_data[users[user_index]].hasOwnProperty('marker') === false) {
     console.log("New Marker: Trainer - " + data.lat + ", " + data.lng);
