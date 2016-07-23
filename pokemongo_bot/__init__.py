@@ -94,8 +94,6 @@ class PokemonGoBot(object):
         #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
         currency_1="0"
         currency_2="0"
-        import pprint
-        pprint.pprint(response_dict)
         player = response_dict['responses']['GET_PLAYER']['profile']
 
         ### @@@ TODO: Convert this to d/m/Y H:M:S
