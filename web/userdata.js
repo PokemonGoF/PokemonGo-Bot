@@ -1,5 +1,5 @@
 // MUST CONFIGURE THE USER ARRAY.
-var users = ["superstoner"];
+var users = ["username"];
 var userZoom = true;
 var userFollow = true;
 
