@@ -98,10 +98,9 @@ class Stepper(object):
             map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
             position = (lat, lng, alt)
             # Sort all by distance from current pos- eventually this should build graph & A* it
-            print(map_cells)
-            #from_token
-            print( s2sphere.from_token(x['s2_cell_id']) )
-            map_cells.sort(key=lambda x: distance(lat, lng, x['latitude'], x['longitude']))
+            #print(map_cells)
+            #print( s2sphere.from_token(x['s2_cell_id']) )
+            #map_cells.sort(key=lambda x: distance(lat, lng, x['latitude'], x['longitude']))
             for cell in map_cells:
                 self.bot.work_on_cell(cell, position, pokemon_only)
 
