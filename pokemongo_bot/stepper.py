@@ -35,8 +35,6 @@ class Stepper(object):
         position = (self.origin_lat, self.origin_lon, 0.0)
 
         self.api.set_position(*position)
-        print(self.api.list_curr_methods())
-        self.api.list_curr_methods()
         for step in range(self.steplimit2):
             # starting at 0 index
             logger.log('[#] Scanning area for objects ({} / {})'.format(
