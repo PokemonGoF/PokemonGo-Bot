@@ -162,7 +162,8 @@ This project uses Google Maps. There's one map coupled with the project, but as 
     Edit this file however you like, but keep in mind:
 
     1. Pokemon name is always capitalize and case-sensitive
-    2. These settings will override ``-c`` and ``-iv``. Be careful with the ``any`` configuration!
+    2. Be careful with the ``any`` configuration!
+    
 ## How to run with Docker
     docker run namlehong/alpine-pgo:dev -a ptc -u tejado -p 1234 -l "New York, Central Park" -iv 0.8 -w 25
 
