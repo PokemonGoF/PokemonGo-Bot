@@ -444,6 +444,9 @@ class PokemonGoBot(object):
                                     playerdata = item['inventory_item_data'][
                                         'player_stats']
 
+                                    if 'experience' not in playerdata:
+                                        playerdata['experience'] = 0
+
                                     nextlvlxp = (
                                         int(playerdata['next_level_xp']) -
                                         int(playerdata['experience']))
