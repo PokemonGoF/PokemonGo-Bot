@@ -14,7 +14,6 @@ A python script for __catching pokemons__ and __spinning pokestops__ on PokemonG
 
 ## Project Chat
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
-Alternatively, feel free to use IRC - [irc.freenode.net#pokemongobot](http://webchat.freenode.net/?channels=#pokemongobot)
 ## Table of Contents
 - [Project Chat](#project-chat)
 - [Features](#features)
@@ -191,6 +190,8 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 
 ## FAQ
 
+### Is this stable?
+Kinds of, we need your contribute for testing, currently.
 ### What's IV ?
 Here's the [introduction](http://bulbapedia.bulbagarden.net/wiki/Individual_values)
 ### Losing Starter Pokemon and others
@@ -200,7 +201,7 @@ Not yet, still need a trainer to train the script param. But we are very close t
 ### Set GEO Location
 It works, use -l "xx.yyyy,zz.ttttt" to set lat long for location. -- diordache
 ### What if I can't join or don't want to use Slack?
-You can connect to #PokemonGoBot on irc.freenode.net, which is running a Slack-IRC bridge. Or, connect [here](http://webchat.freenode.net/?channels=#pokemongobot)
+You can connect to #PokemonGoBot on irc.freenode.net, which is running a Slack-IRC bridge. Or, connect [here](http://webchat.freenode.net/?channels=#pokemongobot) (Keep in your mind, your IP would be leak.)
 ### Google login issues (Login Error, Server busy)?
 
 Try to generate an [app password](!https://support.google.com/accounts/answer/185833?hl=en) and set is as
