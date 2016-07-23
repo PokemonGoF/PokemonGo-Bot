@@ -94,13 +94,13 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -u USERNAME, --username USERNAME              Username
       -p PASSWORD, --password PASSWORD              Password
       -l LOCATION, --location LOCATION              Location (Address or 'xx.yyyy,zz.ttttt')
-      -lc, --use-location-cache                     Bot will start at last known location
+      -lc, --location_cache                         Bot will start at last known location
       -c CP, --cp                                   Set the CP to transfer or lower (eg. 100 will transfer CP0-99)
       -m MODE, --mode MODE                          Set farming Mode for the bot ('all', 'poke', 'farm')
       -w SPEED,  --walk SPEED                       Walk instead of teleport with given speed (meters per second max 4.16 because of walking end on 15km/h)
-      --distance_unit UNIT                          Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
-      --initial-transfer                            Start the bot with a pokemon clean up, keeping only the higher CP of each pokemon. It respects -c as upper limit to release.
-      --maxsteps MAX_STEP                           Set the steps around your initial location (DEFAULT 5 mean 25 cells around your location)
+      -du, --distance_unit UNIT                     Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
+      -it, --initial_transfer                       Start the bot with a pokemon clean up, keeping only the higher CP of each pokemon. It respects -c as upper limit to release.
+      -ms, --max_steps MAX_STEP                     Set the steps around your initial location (DEFAULT 5 mean 25 cells around your location)
       -iv IV, --pokemon_potential                   Set the ratio for the IV values to transfer (eg. 0.8 will transfer a pokemon with IV 0.5)
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
@@ -155,9 +155,11 @@ slow down leveling but you won't fill up either.
 ### How do I use the map??
 You can either view the map via opening the html file, or by serving it with SimpleHTTPServer (runs on localhost:8000)  
 To use SimpleHTTPServer:  
-```$ python -m SimpleHTTPServer```  
+```$ python -m SimpleHTTPServer [port]``` 
+The default port is 8080, you can change that by giving a port number.
+Anything above port 1000 does not require root.
 You will need to set your username(s) in the userdata.js file before opening:  
-Open userdata.js with your favorite text editor.  
+Copy userdata.js.example to userdata.js and edit with your favorite text editor.
 put your username in the quotes instead of "username"
 If using multiple usernames format like this:  
 ```var users = ["username1","username2"];```
@@ -211,6 +213,8 @@ To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg
  * mzupan
  * namlehong
  * gnekic(GeXx)
+ * brantje
+ * VirtualSatai
  * dmateusp
 
 ## Credits

@@ -76,7 +76,8 @@ class PokemonGoBot(object):
                 with open('web/catchable-%s.json' % (self.config.username), 'w') as outfile:
                     json.dump(pokemon, outfile)
                 worker = PokemonCatchWorker(pokemon, self)
-                worker.work()
+                if worker.work() == -1:
+                    break;
                 with open('web/catchable-%s.json' % (self.config.username), 'w') as outfile:
                     json.dump({}, outfile)
         if (self.config.mode == "all" or self.config.mode == "poke") and 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
@@ -84,7 +85,8 @@ class PokemonGoBot(object):
             cell['wild_pokemons'].sort(key=lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
             for pokemon in cell['wild_pokemons']:
                 worker = PokemonCatchWorker(pokemon, self)
-                worker.work()
+                if worker.work() == -1:
+                    break;
         if (self.config.mode == "all" or self.config.mode == "farm") and include_fort_on_path:
             if 'forts' in cell:
                 # Only include those with a lat/long
