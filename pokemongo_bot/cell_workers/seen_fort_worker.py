@@ -4,7 +4,7 @@ import json
 import time
 from math import radians, sqrt, sin, cos, atan2
 from pgoapi.utilities import f2i, h2f
-from utils import distance, print_green, print_yellow, print_red, format_dist
+from utils import distance, print_green, print_yellow, print_red, format_dist, format_time
 from pokemongo_bot.human_behaviour import sleep
 
 
@@ -83,7 +83,7 @@ class SeenFortWorker(object):
                 pokestop_cooldown = spin_details.get('cooldown_complete_timestamp_ms')
                 if pokestop_cooldown:
                     seconds_since_epoch = time.time()
-                    print('[#] PokeStop on cooldown. Time left: %s seconds.' % str((pokestop_cooldown/1000) - seconds_since_epoch))
+                    print('[#] PokeStop on cooldown. Time left: ' + str(format_time((pokestop_cooldown/1000) - seconds_since_epoch)))
 
                 if not items_awarded and not experience_awarded and not pokestop_cooldown:
                     message = (
@@ -101,7 +101,8 @@ class SeenFortWorker(object):
                 pokestop_cooldown = spin_details.get('cooldown_complete_timestamp_ms')
                 if pokestop_cooldown:
                     seconds_since_epoch = time.time()
-                    print '[#] PokeStop on cooldown. Time left: %s seconds.' % str((pokestop_cooldown/1000) - seconds_since_epoch)
+                    print('[#] PokeStop on cooldown. Time left: ' + str(
+                        format_time((pokestop_cooldown / 1000) - seconds_since_epoch)))
             elif spin_details['result'] == 4:
                 print_red("[#] Inventory is full, switching to catch mode...")
                 self.config.mode='poke'

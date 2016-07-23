@@ -27,12 +27,24 @@ def convert(distance, from_unit, to_unit): # Converts units
     return distance * conversions[from_unit][to_unit]
 
 def dist_to_str(distance, unit):
-    return '{}{}'.format(distance, unit)
+    return '{:.2f}{}'.format(distance, unit)
 
 def format_dist(distance, unit):
     # Assumes that distance is in meters and converts it to the given unit, then a formatted string is returned
     # Ex: format_dist(1500, 'km') returns the string "1.5km"
     return dist_to_str(convert(distance, 'm', unit), unit)
+
+def format_time(seconds):
+    # Return a string displaying the time given as seconds or minutes
+    if seconds <= 1.0:
+        return '{:.2f} second'.format(seconds)
+    elif seconds < 60:
+        return '{:.2f} seconds'.format(seconds)
+    elif seconds > 60 and seconds < 3600:
+        minutes = seconds/60
+        return '{:.2f} minutes'.format(minutes)
+    return '{:.2f} seconds'.format(seconds)
+
 
 def i2f(int):
     return struct.unpack('<d', struct.pack('<Q', int))[0]
