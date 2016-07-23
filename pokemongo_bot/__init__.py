@@ -178,6 +178,7 @@ class PokemonGoBot(object):
         if 'amount' in player['currencies'][1]:
             stardust = player['currencies'][1]['amount']
 
+        logger.log('[#] IMPORTANT: Remember to check release_config.json for your Pokemon release logic!', 'red')
         logger.log('[#]')
         logger.log('[#] Username: {username}'.format(**player))
         logger.log('[#] Acccount Creation: {}'.format(creation_date))
