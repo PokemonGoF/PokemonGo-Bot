@@ -57,8 +57,9 @@ $ pip install -r requirements.txt
 On Windows, you will need to install PyYaml through the  [installer](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt. 
 
 Windows 10:
-    Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl 
+    Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl   
     (If running 64-bit python or if you get a 'not a supported wheel on this platform' error, download the 64 bit version instead: PyYAML-3.11-cp27-cp27m-win_amd64.whl )
+
     $ cd download-directory
     $ pip install PyYAML-3.11-cp27-cp27m-win32.whl
     (replace PyYAML-3.11-cp27-cp27m-win32.whl with PyYAML-3.11-cp27-cp27m-win_amd64.whl if you needed to download the 64-bit version)
@@ -85,7 +86,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 6. After the code done, will update here how to replace.
 
 ## Usage
-    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-w] [-d] [-t] [-c] [-m]
+    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-lc] [-c] [-m] [-w] [--distance_unit] [--initial-transfer] [--maxsteps] [-iv] [-d] [-t] 
 
     optional arguments:
       -h, --help                                    show this help message and exit
@@ -94,14 +95,13 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -p PASSWORD, --password PASSWORD              Password
       -l LOCATION, --location LOCATION              Location (Address or 'xx.yyyy,zz.ttttt')
       -lc, --use-location-cache                     Bot will start at last known location
-      -w SPEED,  --walk SPEED                       Walk instead of teleport with given speed (meters per second max 4.16 because of walking end on 15km/h)
-      -m MODE, --mode MODE                          Set farming Mode for the bot ('all', 'poke', 'farm')
-      --maxsteps MAX_STEP                            Set the steps around your initial location(DEFAULT 5 mean 25 cells around
-      your location)
-      --initial-transfer                            Start the bot with a pokemon clean up, keeping only the higher CP of each pokemon. It respects -c as upper limit to release.
       -c CP, --cp                                   Set the CP to transfer or lower (eg. 100 will transfer CP0-99)
-      -iv IV, --pokemon_potential                   Set the ratio for the IV values to transfer (eg. 0.8 will transfer a pokemon with IV 0.5)
+      -m MODE, --mode MODE                          Set farming Mode for the bot ('all', 'poke', 'farm')
+      -w SPEED,  --walk SPEED                       Walk instead of teleport with given speed (meters per second max 4.16 because of walking end on 15km/h)
       --distance_unit UNIT                          Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
+      --initial-transfer                            Start the bot with a pokemon clean up, keeping only the higher CP of each pokemon. It respects -c as upper limit to release.
+      --maxsteps MAX_STEP                           Set the steps around your initial location (DEFAULT 5 mean 25 cells around your location)
+      -iv IV, --pokemon_potential                   Set the ratio for the IV values to transfer (eg. 0.8 will transfer a pokemon with IV 0.5)
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
 
