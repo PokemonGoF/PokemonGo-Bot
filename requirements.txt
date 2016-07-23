@@ -8,3 +8,4 @@ protobuf-to-dict==0.1.0
 googlemaps==2.4.4
 colorama==0.3.7
 enum34==1.1.6
+pyaml==3.11
