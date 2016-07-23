@@ -64,9 +64,10 @@ class PokemonCatchWorker(object):
 
                                 logger.log(
                                     '[#] A Wild {} appeared! [CP {}] [Potential {}]'.format(
-                                        pokemon_name, cp, pokemon_potential),
-                                    'yellow')
-                                
+                                        pokemon_name, cp, pokemon_potential
+                                    ),
+                                'yellow')
+
                                 logger.log('[#] IV [Stamina/Attack/Defense] = [{}/{}/{}]'.format(
                                     pokemon['pokemon_data']['individual_stamina'],
                                     pokemon['pokemon_data']['individual_attack'],
@@ -105,7 +106,9 @@ class PokemonCatchWorker(object):
                                 return -1
 
                             logger.log('[x] Using {}... ({} left!)'.format(
-                                self.item_list[str(pokeball)], balls_stock[pokeball]-1))
+                                self.item_list[str(pokeball)], 
+                                balls_stock[pokeball]-1)
+                            )
 
                             balls_stock[pokeball] = balls_stock[pokeball] - 1
                             id_list1 = self.count_pokemon_inventory()
@@ -128,22 +131,26 @@ class PokemonCatchWorker(object):
                                 if status is 2:
                                     logger.log(
                                         '[-] Attempted to capture {} - failed.. trying again!'.format(
-                                            pokemon_name), 'red')
+                                            pokemon_name
+                                    ), 'red')
                                     sleep(2)
                                     continue
                                 if status is 3:
                                     logger.log(
                                         '[x] Oh no! {} vanished! :('.format(
-                                            pokemon_name), 'red')
+                                            pokemon_name
+                                    ), 'red')
                                 if status is 1:
 
+
                                     if not whitelist and (cp < self.config.cp or pokemon_potential < self.config.pokemon_potential):
+
                                         logger.log(
                                             '[x] Captured {}! [CP {}] [IV {}] - exchanging for candy'.format(
                                                 pokemon_name, cp,
-                                                pokemon_potential), 'green')
-                                        id_list2 = self.count_pokemon_inventory(
-                                        )
+                                                pokemon_potential
+                                        ), 'green')
+                                        id_list2 = self.count_pokemon_inventory()
 
                                         # Transfering Pokemon
                                         pokemon_to_transfer = list(Set(
@@ -155,11 +162,14 @@ class PokemonCatchWorker(object):
                                             pokemon_to_transfer[0])
                                         logger.log(
                                             '[#] {} has been exchanged for candy!'.format(
-                                                pokemon_name), 'green')
+                                                pokemon_name
+                                        ), 'green')
                                     else:
                                         logger.log(
                                             '[x] Captured {}! [CP {}]'.format(
-                                                pokemon_name, cp), 'green')
+                                                pokemon_name, 
+                                                cp
+                                        ), 'green')
                             break
         time.sleep(5)
 
