@@ -14,6 +14,9 @@ A python script for __catching pokemons__ and __spinning pokestops__ on PokemonG
 
 ## Project Chat
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
+## About dev Branch
+This branch has most up to date feature and even everyone handle the part well, still, will have broken changes.
+Your test contribute and PR for fix are well welcome. Or, you can wait on the master branch.
 ## Table of Contents
 - [Project Chat](#project-chat)
 - [Features](#features)
@@ -190,8 +193,6 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 
 ## FAQ
 
-### Is this stable?
-Kinds of, we need your contribute for testing, currently.
 ### What's IV ?
 Here's the [introduction](http://bulbapedia.bulbagarden.net/wiki/Individual_values)
 ### Losing Starter Pokemon and others
