@@ -2,6 +2,7 @@
 
 import json
 import time
+import pprint
 
 from math import ceil
 from s2sphere import CellId, LatLng
@@ -84,6 +85,7 @@ class Stepper(object):
         self.api.get_map_objects(latitude=f2i(lat), longitude=f2i(lng), since_timestamp_ms=timestamp, cell_id=cellid)
 
         response_dict = self.api.call()
+        #pprint.pprint(response_dict)
         # Passing Variables through a file
         if response_dict and 'responses' in response_dict:
             if 'GET_MAP_OBJECTS' in response_dict['responses']:
@@ -96,10 +98,10 @@ class Stepper(object):
                     if response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
                         map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
                         position = (lat, lng, alt)
-            # Sort all by distance from current pos- eventually this should build graph & A* it
-            #print(map_cells)
-            #print( s2sphere.from_token(x['s2_cell_id']) )
-            #map_cells.sort(key=lambda x: distance(lat, lng, x['latitude'], x['longitude']))
+                    # Sort all by distance from current pos- eventually this should build graph & A* it
+                    #print(map_cells)
+                    #print( s2sphere.from_token(x['s2_cell_id']) )
+                    map_cells.sort(key=lambda x: distance(lat, lng, x['forts'][0]['latitude'], x['forts'][0]['longitude']) if 'forts' in x and x['forts'] != [] else 1e6)
                     for cell in map_cells:
                         self.bot.work_on_cell(cell, position, pokemon_only)
 
