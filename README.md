@@ -12,7 +12,7 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
  * Release low cp pokemon
  * Walking as you
  * Use the ball you have to catch, don't if you don't have
- * Rudimentary IV Functionality filter
+ * Rudimentary IV Functionality filter(Need verify)
  * Auto switch mode(Full of item then catch, no ball useable then farm)
  * Ignore certain pokemon filter
 
@@ -152,6 +152,15 @@ Quick Tip: When using this script, use a Lucky egg to double the XP for 30 mins.
 ### How can I not collect certain pokemon
 You don't want to collect common pokemon once you hit a certain level. It will
 slow down leveling but you won't fill up either.
+### How do I use the map??
+You can either view the map via opening the html file, or by serving it with SimpleHTTPServer (runs on localhost:8000)  
+To use SimpleHTTPServer:  
+```$ python -m SimpleHTTPServer```  
+You will need to set your username(s) in the userdata.js file before opening:  
+Open userdata.js with your favorite text editor.  
+put your username in the quotes instead of "username"
+If using multiple usernames format like this:  
+```var users = ["username1","username2"];```
 
 Create the following filter
 
@@ -203,7 +212,6 @@ To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg
  * namlehong
 
 ## Credits
-### The works are based on the Pokemon Go API
 [tejado](https://github.com/tejado) many thanks for the API
 [Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets
 [elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR
