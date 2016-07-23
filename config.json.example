@@ -11,7 +11,8 @@
     "debug": false,
     "test": false,
     "initial_transfer": false,
-    "pokemon_potential": 0.70,
+    "pokemon_potential": 0.1,
     "location_cache": true,
-    "distance_unit": "km"
+    "distance_unit": "km",
+    "item_filter": ["101","102","103","104"]
 }
