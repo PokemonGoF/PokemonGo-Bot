@@ -47,7 +47,7 @@ class PokemonCatchWorker(object):
                                     try:
                                         total_IV += pokemon['pokemon_data'][individual_stat]
                                     except:
-										pokemon['pokemon_data'][individual_stat] = 0
+                                        pokemon['pokemon_data'][individual_stat] = 0
                                         continue
                                 print total_IV
                                 pokemon_potential = round((total_IV / 45.0), 2)
