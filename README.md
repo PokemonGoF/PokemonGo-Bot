@@ -11,6 +11,10 @@
 # PokemonGo-Bot
 A python script for __catching pokemons__ and __spin pokestops__ on PokemonGo.
 
+
+## Project Chat
+We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
+
 ## Table of Contents
 - [Project Chat](#project-chat)
 - [Features](#features)
@@ -25,9 +29,6 @@ A python script for __catching pokemons__ and __spin pokestops__ on PokemonGo.
 - [FAQ](#faq)
 - [Credits](#credits)
 - [Donation](#donation)
-
-## Project Chat
-We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
 
 ## Features
  * Search Fort (Spin Pokestop)
