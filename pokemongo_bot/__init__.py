@@ -143,8 +143,17 @@ class PokemonGoBot(object):
     def _setup_api(self):
         # instantiate pgoapi
         self.api = PGoApi()
-        # provide player position on the earth
 
+        # check if the release_config file exists
+        try:
+            with open('release_config.json') as file:
+               pass
+        except:
+            # the file does not exist, warn the user and exit.
+            logger.log('[#] IMPORTANT: Rename and configure release_config.json.example for your Pokemon release logic first!', 'red')
+            exit(0)
+
+        # provide player position on the earth
         self._set_starting_position()
 
         if not self.api.login(self.config.auth_service,
@@ -179,8 +188,6 @@ class PokemonGoBot(object):
         if 'amount' in player['currencies'][1]:
             stardust = player['currencies'][1]['amount']
 
-        logger.log('[#] IMPORTANT: Remember to check release_config.json for your Pokemon release logic!', 'red')
-        logger.log('[#]')
         logger.log('[#] Username: {username}'.format(**player))
         logger.log('[#] Acccount Creation: {}'.format(creation_date))
         logger.log('[#] Bag Storage: {}/{}'.format(
