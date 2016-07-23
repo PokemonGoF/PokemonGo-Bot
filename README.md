@@ -1,22 +1,47 @@
-# PokemonGo-Bot - a pokemon script that can catch pokemons and spin the pokestops.
+<p align="center">
+  <a href="">
+    <img alt="Logo" src="https://www.brooklinelibrary.org/wp-content/uploads/2016/07/2000px-Pok%C3%A9_Ball.svg_-1.png" width="100">
+  </a>
+</p>
 
-## Project chat
+<p align="center">
+  <a href="https://pokemongo-bot.herokuapp.com/"><img alt="Slack" src="https://pokemongo-bot.herokuapp.com/badge.svg"></a>
+</p>
 
-[![Slack Status](https://pokemongo-bot.herokuapp.com/badge.svg)](https://pokemongo-bot.herokuapp.com)
+# PokemonGo-Bot
+A python script for __catching pokemons__ and __spin pokestops__ on PokemonGo.
 
+
+## Project Chat
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
 
-## Features:
- * Search Fort(Spin Pokestop)
+## Table of Contents
+- [Project Chat](#project-chat)
+- [Features](#features)
+- [TODO List](#todo-list)
+- __Installation__
+  - [Requirements](#requirements)
+  - [Mac](#installation-mac)
+  - [Linux](#installation-linux)
+  - [Windows](#installation-windows)
+- [Develop PokemonGo-Bot](develop-pokemonGo-bot)
+- [Usage](#usage)
+- [FAQ](#faq)
+- [Credits](#credits)
+- [Donation](#donation)
+
+## Features
+ * Search Fort (Spin Pokestop)
  * Catch Pokemon
  * Release low cp pokemon
  * Walking as you
  * Use the ball you have to catch, don't if you don't have
- * Rudimentary IV Functionality filter(Need verify)
+ * Rudimentary IV Functionality filter (Need verify)
  * Auto switch mode(Full of item then catch, no ball useable then farm)
  * Ignore certain pokemon filter
 
-## To-Do:
+## TODO List
+
 - [ ] Standalone Desktop APP
 - [x] Google Map API key setup (Readme update needed)
 - [ ] Show all objects on map
@@ -35,9 +60,11 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 ### Requirements (click each one for install guide)
 
 - [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/)
+- [pip](https://pip.pypa.io/en/stable/installing/)
 - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-- [virtualenv](https://virtualenv.pypa.io/en/stable/installation/)
-- [protobuf 3](https://github.com/google/protobuf)  (OS Dependent, see below)
+- [virtualenv](https://virtualenv.pypa.io/en/stable/installation/) (Optional)
+- [docker](https://docs.docker.com/engine/installation/) (Optional)
+- [protobuf 3](https://github.com/google/protobuf) (OS Dependent, see below)
 
 ### Protobuf 3 installation
 
@@ -45,34 +72,51 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 - Windows: Download protobuf 3.0: [here](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip) and unzip `bin/protoc.exe` into a folder in your PATH.
 - Linux: `apt-get install python-protobuf`
 
-### Installation
 
+### Installation Linux
+
+```
+$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
+$ cd PokemonGo-Bot  
+$ pip install -r requirements.txt
+```
+
+### Installation Mac
+
+```
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
 $ cd PokemonGo-Bot  
 $ virtualenv .  
 $ source bin/activate  
-$ pip install -r requirements.txt  
+$ pip install -r requirements.txt
+```
+
+### Installation Windows
 
 ###### Windows Note
 On Windows, you will need to install PyYaml through the  [installer](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt. 
 
 Windows 10:
     Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl   
-    (If running 64-bit python or if you get a 'not a supported wheel on this platform' error, download the 64 bit version instead: PyYAML-3.11-cp27-cp27m-win_amd64.whl )
-
-    $ cd download-directory
-    $ pip install PyYAML-3.11-cp27-cp27m-win32.whl
-    (replace PyYAML-3.11-cp27-cp27m-win32.whl with PyYAML-3.11-cp27-cp27m-win_amd64.whl if you needed to download the 64-bit version)
-
+    (If running 64-bit python or if you get a 'not a supported wheel on this platform' error, 
+    download the 64 bit version instead: PyYAML-3.11-cp27-cp27m-win_amd64.whl )
+```
+$ cd download-directory
+$ pip install PyYAML-3.11-cp27-cp27m-win32.whl
+// (replace PyYAML-3.11-cp27-cp27m-win32.whl with PyYAML-3.11-cp27-cp27m-win_amd64.whl 
+// if you needed to download the 64-bit version)
+```
 ### Develop PokemonGo-Bot
 
+```
 $ git clone -b dev https://github.com/PokemonGoF/PokemonGo-Bot  
 $ cd PokemonGo-Bot  
 $ virtualenv .  
 $ source bin/activate  
 $ pip install -r requirements.txt  
+```
 
-### Google Maps API (In Development)
+### Google Maps API (in development)
 
 Google Maps API: a brief guide to your own key
 
@@ -155,9 +199,11 @@ slow down leveling but you won't fill up either.
 ### How do I use the map??
 You can either view the map via opening the html file, or by serving it with SimpleHTTPServer (runs on localhost:8000)  
 To use SimpleHTTPServer:  
-```$ python -m SimpleHTTPServer```  
+```$ python -m SimpleHTTPServer [port]``` 
+The default port is 8080, you can change that by giving a port number.
+Anything above port 1000 does not require root.
 You will need to set your username(s) in the userdata.js file before opening:  
-Open userdata.js with your favorite text editor.  
+Copy userdata.js.example to userdata.js and edit with your favorite text editor.
 put your username in the quotes instead of "username"
 If using multiple usernames format like this:  
 ```var users = ["username1","username2"];```
@@ -211,6 +257,9 @@ To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg
  * mzupan
  * namlehong
  * gnekic(GeXx)
+ * luizperes
+ * brantje
+ * VirtualSatai
 
 ## Credits
 [tejado](https://github.com/tejado) many thanks for the API
@@ -224,4 +273,6 @@ To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg
 
 Bitcoin Address:  1PJMCx9NNQRasQYaa4MMff9yyNFffhHgLu
 
-[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WQUXDC54W6EVY)
+<p align="center">
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WQUXDC54W6EVY"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"></a>
+</p>
