@@ -145,7 +145,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -du, --distance_unit UNIT                     Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
       -it, --initial_transfer                       Start the bot with a pokemon clean up, keeping only the higher CP of each pokemon. It respects -c as upper limit to release.
       -ms, --max_steps MAX_STEP                     Set the steps around your initial location (DEFAULT 5 mean 25 cells around your location)
-      -iv IV, --pokemon_potential                   Set the ratio for the IV values to transfer (eg. 0.8 will transfer a pokemon with IV 0.5)
+      -iv IV, --pokemon_potential                   Set the ratio for the IV values to transfer (DEFAULT 0.4 eg. 0.4 will transfer a pokemon with IV 0.3)
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
 
@@ -261,6 +261,7 @@ To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg
  * brantje
  * VirtualSatai
  * dmateusp
+ * jtdroste
 
 ## Credits
 [tejado](https://github.com/tejado) many thanks for the API
