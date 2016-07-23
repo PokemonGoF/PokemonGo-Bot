@@ -200,8 +200,8 @@ class PokemonCatchWorker(object):
                     id_list.append(pokemon['id'])
 
         return id_list
-	
-	def is_whitelist(self, pokemon):
+    
+    def is_whitelist(self, pokemon):
         try:
             requirements = self.config.pkmn_whitelist[pokemon['name']]
         except:
@@ -209,7 +209,7 @@ class PokemonCatchWorker(object):
                 requirements = self.config.pkmn_whitelist['any']
             except:
                 return False
-		return self.is_meet_requirements(pokemon, requirements)
+        return self.is_meet_requirements(pokemon, requirements)
     
     def is_meet_requirements(self, pokemon, requirements):
         
