@@ -119,9 +119,9 @@ This project uses Google Maps. There's one map coupled with the project, but as 
         ```
         def drop_item(self,item_id,count):
             self.api.recycle_inventory_item(...............)
-        ```
+        ```  
     3. Where is the param list?  
-        You need check this [Requests/Messages/RecycleInventoryItemMessage.proto](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/Messages/RecycleInventoryItemMessage.proto)
+        You need check this [Requests/Messages/RecycleInventoryItemMessage.proto](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/Messages/RecycleInventoryItemMessage.proto)  
     4. Then our final api call is  
         ```
         def drop_item(self,item_id,count):
