@@ -5,11 +5,11 @@ import googlemaps
 import json
 import random
 import threading
-import time
 import datetime
 from pgoapi import PGoApi
 from cell_workers import PokemonCatchWorker, SeenFortWorker
 from cell_workers.utils import distance
+from human_behaviour import sleep
 from stepper import Stepper
 from geopy.geocoders import GoogleV3
 from math import radians, sqrt, sin, cos, atan2
@@ -119,20 +119,21 @@ class PokemonGoBot(object):
         print('[#] UltraBalls: ' + str(balls_stock[3]))
         self.get_player_info()
 
-        if self.config.firsttrans:
-            self.first_transfer()
+        if self.config.initial_transfer:
+            self.initial_transfer()
 
         print('[#]')
         self.update_inventory();
 
-    def first_transfer(self):
-        print('[x] First Transfer.')
+    def initial_transfer(self):
+        print('[x] Initial Transfer.')
 
-        pokemon_groups = self._first_transfer_get_groups()
+        if self.config.cp:
+            print('[x] Will NOT transfer anything above CP {}'.format(self.config.cp))
+        else:
+            print('[x] Preparing to transfer all Pokemon duplicates, keeping the highest CP of each one type.')
 
-        print('[x] Transfering...')
-
-        print('[x] Pokemon groups: {}'.format(str(pokemon_groups)))
+        pokemon_groups = self._initial_transfer_get_groups()
 
         for id in pokemon_groups:
 
@@ -145,14 +146,14 @@ class PokemonGoBot(object):
                     if self.config.cp and group_cp[x] > self.config.cp:
                         continue
 
-                    print('[x] Releasing Pokemon with id {} with CP {} to be released'.format(id, group_cp[x]))
-                    # self.api.release_pokemon(pokemon_id=pokemon_groups[id][group_cp[x]])
-                    # response_dict = self.api.call()
-                    # time.sleep(2)
+                    print('[x] Releasing Pokemon #{} and CP {}'.format(id, group_cp[x]))
+                    self.api.release_pokemon(pokemon_id=pokemon_groups[id][group_cp[x]])
+                    response_dict = self.api.call()
+                    sleep(2)
 
         print('[x] Transfering Done.')
 
-    def _first_transfer_get_groups(self):
+    def _initial_transfer_get_groups(self):
         pokemon_groups = {}
         self.api.get_player().get_inventory()
         inventory_req = self.api.call()
