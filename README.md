@@ -206,6 +206,7 @@ If the error still persists open an issue or chat with us at [slack](#project-ch
 - OS information
 - __Error code__
 - What branch you are using (dev or master)
+- Logs
 
 ### How do I use the map??
 You can either view the map via opening the html file, or by serving it with SimpleHTTPServer (runs on localhost:8000)  
