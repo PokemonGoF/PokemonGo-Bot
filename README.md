@@ -42,7 +42,7 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 ### Protobuf 3 installation
 
 - OS X:  `brew update && brew install --devel protobuf`
-- Windows: `PLEASE CONTRIBUTE`
+- Windows: Download protobuf 3.0: [here](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip) and unzip `bin/protoc.exe` into a folder in your PATH.
 - Linux: `PLEASE CONTRIBUTE`
 
 ### Installation
@@ -52,6 +52,9 @@ $ cd PokemonGo-Bot
 $ virtualenv .
 $ source bin/activate
 $ pip install -r requirements.txt
+
+**Windows Note**
+    On Windows, you will need to install PyYaml through the installer [here](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt
 
 ### Develop PokemonGo-Bot
 
