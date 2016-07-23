@@ -9,6 +9,7 @@ import datetime
 import sys
 import yaml
 import logger
+import re
 from pgoapi import PGoApi
 from cell_workers import PokemonCatchWorker, SeenFortWorker
 from cell_workers.utils import distance
@@ -193,9 +194,6 @@ class PokemonGoBot(object):
         logger.log('[#] GreatBalls: ' + str(balls_stock[2]))
         logger.log('[#] UltraBalls: ' + str(balls_stock[3]))
 
-        # Testing
-        # self.drop_item(Item.ITEM_POTION.value,1)
-        # exit(0)
         self.get_player_info()
 
         if self.config.initial_transfer:
@@ -207,7 +205,10 @@ class PokemonGoBot(object):
     def drop_item(self, item_id, count):
         self.api.recycle_inventory_item(item_id=item_id, count=count)
         inventory_req = self.api.call()
-        print(inventory_req)
+        
+        # Example of good request response
+        #{'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
+        return inventory_req
 
     def initial_transfer(self):
         logger.log('[x] Initial Transfer.')
@@ -377,6 +378,15 @@ class PokemonGoBot(object):
         logger.log('')
 
     def _get_pos_by_name(self, location_name):
+        # Check if the given location is already a coordinate.
+        if ',' in location_name:
+            possibleCoordinates = re.findall("[-]?\d{1,3}[.]\d{6,7}", location_name)
+            if len(possibleCoordinates) == 2:
+                # 2 matches, this must be a coordinate. We'll bypass the Google geocode so we keep the exact location.
+                logger.log(
+                    '[x] Coordinates found in passed in location, not geocoding.')
+                return (float(possibleCoordinates[0]), float(possibleCoordinates[1]), float("0.0"))
+
         geolocator = GoogleV3(api_key=self.config.gmapkey)
         loc = geolocator.geocode(location_name, timeout=10)
 

@@ -117,6 +117,14 @@ def init_config():
         "Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)",
         type=str,
         default="km")
+    
+    parser.add_argument(
+        "-if",
+        "--item_filter",
+        help=
+        "Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, [\"101\",\"102\",\"103\",\"104\"] to recycle potions when collected)",
+        type=list,
+        default=[])
 
     config = parser.parse_args()
     if not config.username and not 'username' in load:

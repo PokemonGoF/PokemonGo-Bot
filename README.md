@@ -9,12 +9,13 @@
 </p>
 
 # PokemonGo-Bot
-A python script for __catching pokemons__ and __spinning pokestops__ on PokemonGo.
-
+The Pokemon Go Bot, baking with community.
 
 ## Project Chat
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
-Alternatively, feel free to use IRC - [irc.freenode.net#pokemongobot](http://webchat.freenode.net/?channels=#pokemongobot)
+## About dev Branch
+This branch has most up to date feature and even everyone handle the part well, still, will have broken changes.
+Your test contribute and PR for fix are well welcome. Or, you can wait on the master branch.
 ## Table of Contents
 - [Project Chat](#project-chat)
 - [Features](#features)
@@ -37,7 +38,7 @@ Alternatively, feel free to use IRC - [irc.freenode.net#pokemongobot](http://web
  * Release low cp pokemon
  * Walking as you
  * Use the ball you have to catch, don't if you don't have
- * Rudimentary IV Functionality filter (Need verify)
+ * Rudimentary IV Functionality filter
  * Auto switch mode(Full of item then catch, no ball useable then farm)
  * Ignore certain pokemon filter
  * Use superior ball types when necessary
@@ -47,10 +48,10 @@ Alternatively, feel free to use IRC - [irc.freenode.net#pokemongobot](http://web
 
 - [ ] Standalone Desktop APP
 - [x] Google Map API key setup (Readme update needed)
-- [ ] Show all objects on map
+- [x] Show all objects on map (In Testing)
 - [x] Limit the step to farm specific area for pokestops
 - [ ] Pokemon transfer filter
-- [ ] Drop items when bag is full
+- [x] Drop items when bag is full (In Testing)
 - [x] Pokemon catch filter
 - [ ] Hatch eggs
 - [ ] Incubate eggs
@@ -133,7 +134,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 6. After the code done, will update here how to replace.
 
 ## Usage
-    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-lc] [-c] [-m] [-w] [--distance_unit] [--initial-transfer] [--maxsteps] [-iv] [-d] [-t]
+    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-lc] [-m] [-w] [--distance_unit] [--initial-transfer] [--maxsteps] [-iv] [-d] [-t]
 
     optional arguments:
       -h, --help                                    show this help message and exit
@@ -145,8 +146,10 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -m MODE, --mode MODE                          Set farming Mode for the bot ('all', 'poke', 'farm')
       -w SPEED,  --walk SPEED                       Walk instead of teleport with given speed (meters per second max 4.16 because of walking end on 15km/h)
       -du, --distance_unit UNIT                     Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
-      -it, --initial_transfer                       Start the bot with a pokemon clean up, keeping only the higher CP of each pokemon. It respects -c as upper limit to release.
+      -it, --initial_transfer                       Transfer all pokemon with same ID on bot start, except pokemon with highest CP. Can receive a CP number to not transfer above it
       -ms, --max_steps MAX_STEP                     Set the steps around your initial location (DEFAULT 5 mean 25 cells around your location)
+      -iv IV, --pokemon_potential                   Set the ratio for the IV values to transfer (DEFAULT 0.4 eg. 0.4 will transfer a pokemon with IV 0.3)
+      -if LIST, --item_filter LIST                  Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, [\"101\",\"102\",\"103\",\"104\"] to recycle potions when collected)" 
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
 
@@ -197,8 +200,6 @@ You can use -c 1 to protect your first stage low CP pokemon.
 Not yet, still need a trainer to train the script param. But we are very close to.
 ### Set GEO Location
 It works, use -l "xx.yyyy,zz.ttttt" to set lat long for location. -- diordache
-### What if I can't join or don't want to use Slack?
-You can connect to #PokemonGoBot on irc.freenode.net, which is running a Slack-IRC bridge. Or, connect [here](http://webchat.freenode.net/?channels=#pokemongobot)
 ### Google login issues (Login Error, Server busy)?
 
 Try to generate an [app password](!https://support.google.com/accounts/answer/185833?hl=en) and set is as
@@ -261,7 +262,6 @@ If using multiple usernames format like this:
  * sinistance
  * CapCap
  * mzupan
- * namlehong
  * gnekic(GeXx)
  * Shoh
  * luizperes
@@ -271,6 +271,7 @@ If using multiple usernames format like this:
  * jtdroste
  * msoedov
  * Grace
+ * Calcyfer
 
 -------
 ## Credits
