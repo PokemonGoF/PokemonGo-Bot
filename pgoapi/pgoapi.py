@@ -130,7 +130,7 @@ class PGoApi:
 
             self.set_position(lat, lng, alt)
             self.heartbeat()
-        print "[#] Finished walking to " + str(str((lat, lng)))
+        print "\r[#] Finished walking to " + str(str((lat, lng)))
 
     def set_position(self, lat, lng, alt):
         #self.log.debug('Set Position - Lat: %s Long: %s Alt: %s', lat, lng, alt)
