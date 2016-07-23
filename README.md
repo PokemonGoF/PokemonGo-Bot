@@ -37,7 +37,7 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 - [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/)
 - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 - [virtualenv](https://virtualenv.pypa.io/en/stable/installation/)
-- [protobuf 3](https://github.com/google/protobuf)  (OS Dependant, see below)
+- [protobuf 3](https://github.com/google/protobuf)  (OS Dependent, see below)
 
 ### Protobuf 3 installation
 
@@ -56,11 +56,12 @@ $ pip install -r requirements.txt
 ###### Windows Note
 On Windows, you will need to install PyYaml through the  [installer](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt. 
 
-Windwos 10:  
+Windows 10:
     Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl 
-    
+    (If running 64-bit python or if you get a 'not a supported wheel on this platform' error, download the 64 bit version instead: PyYAML-3.11-cp27-cp27m-win_amd64.whl )
     $ cd download-directory
     $ pip install PyYAML-3.11-cp27-cp27m-win32.whl
+    (replace PyYAML-3.11-cp27-cp27m-win32.whl with PyYAML-3.11-cp27-cp27m-win_amd64.whl if you needed to download the 64-bit version)
 
 ### Develop PokemonGo-Bot
 
@@ -119,9 +120,9 @@ This project uses Google Maps. There's one map coupled with the project, but as 
         ```
         def drop_item(self,item_id,count):
             self.api.recycle_inventory_item(...............)
-        ```  
+        ```
     3. Where is the param list?  
-        You need check this [Requests/Messages/RecycleInventoryItemMessage.proto](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/Messages/RecycleInventoryItemMessage.proto)  
+        You need check this [Requests/Messages/RecycleInventoryItemMessage.proto](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/Messages/RecycleInventoryItemMessage.proto)
     4. Then our final api call is  
         ```
         def drop_item(self,item_id,count):
