@@ -12,14 +12,17 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
  * Release low cp pokemon
  * Walking as you
  * Use the ball you have to catch, don't if you don't have
+ * Rudimentary IV Functionality filter
+ * Auto switch mode(Full of item then catch, no ball useable then farm)
 
 # To-Do:
-- [ ] Google Map API key setup
+- [ ] Standalone Desktop APP
+- [x] Google Map API key setup (Readme update needed)
 - [ ] Show all objects on map
 - [x] Limit the step to farm specific area for pokestops
 - [ ] Pokemon transfer filter
 - [ ] Drop items when bag is full
-- [ ] Pokemon catch filter
+- [x] Pokemon catch filter
 - [ ] Hatch eggs
 - [ ] Incubate eggs
 - [ ] Evolve pokemons
