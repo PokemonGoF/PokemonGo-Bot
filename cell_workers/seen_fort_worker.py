@@ -1,5 +1,6 @@
 import json
 import time
+import sys
 from math import radians, sqrt, sin, cos, atan2
 from pgoapi.utilities import f2i, h2f, distance
 
@@ -13,7 +14,8 @@ class SeenFortWorker(object):
         self.item_list = bot.item_list
         self.rest_time = 50
     def walking_hook(own,i):
-        print '\ranother walking_hook ',i, 
+				sys.stdout.write("\rNow walking [" + str(i) + "s]")
+				sys.stdout.flush()
     def work(self):
         lat = self.fort['latitude']
         lng = self.fort['longitude']
