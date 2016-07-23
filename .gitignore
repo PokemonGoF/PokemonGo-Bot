@@ -114,3 +114,4 @@ data/catch-ignore.yml
 # personal docker-compose
 docker-compose.yml
 web/userdata.js
+location.json

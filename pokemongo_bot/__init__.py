@@ -16,12 +16,13 @@ from geopy.geocoders import GoogleV3
 from math import radians, sqrt, sin, cos, atan2
 from item_list import Item
 
+
 class PokemonGoBot(object):
 
     def __init__(self, config):
         self.config = config
-        self.pokemon_list=json.load(open('data/pokemon.json'))
-        self.item_list=json.load(open('data/items.json'))
+        self.pokemon_list = json.load(open('data/pokemon.json'))
+        self.item_list = json.load(open('data/items.json'))
 
     def start(self):
         self._setup_logging()
@@ -48,7 +49,8 @@ class PokemonGoBot(object):
             try:
                 for p in cell['wild_pokemons'][:]:
                     pokemon_id = p['pokemon_data']['pokemon_id']
-                    pokemon_name = filter(lambda x: int(x.get('Number')) == pokemon_id, self.pokemon_list)[0]['Name']
+                    pokemon_name = filter(lambda x: int(
+                        x.get('Number')) == pokemon_id, self.pokemon_list)[0]['Name']
 
                     if pokemon_name in ignores:
                         cell['wild_pokemons'].remove(p)
@@ -60,40 +62,47 @@ class PokemonGoBot(object):
             try:
                 for p in cell['catchable_pokemons'][:]:
                     pokemon_id = p['pokemon_id']
-                    pokemon_name = filter(lambda x: int(x.get('Number')) == pokemon_id, self.pokemon_list)[0]['Name']
+                    pokemon_name = filter(lambda x: int(
+                        x.get('Number')) == pokemon_id, self.pokemon_list)[0]['Name']
 
                     if pokemon_name in ignores:
                         cell['catchable_pokemons'].remove(p)
             except KeyError:
                 pass
 
-
         if (self.config.mode == "all" or self.config.mode == "poke") and 'catchable_pokemons' in cell and len(cell['catchable_pokemons']) > 0:
             print '[#] Something rustles nearby!'
-            # Sort all by distance from current pos- eventually this should build graph & A* it
-            cell['catchable_pokemons'].sort(key=lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
+            # Sort all by distance from current pos- eventually this should
+            # build graph & A* it
+            cell['catchable_pokemons'].sort(key=lambda x: distance(
+                self.position[0], self.position[1], x['latitude'], x['longitude']))
             for pokemon in cell['catchable_pokemons']:
                 with open('web/catchable-%s.json' % (self.config.username), 'w') as outfile:
                     json.dump(pokemon, outfile)
                 worker = PokemonCatchWorker(pokemon, self)
                 if worker.work() == -1:
-                    break;
+                    break
                 with open('web/catchable-%s.json' % (self.config.username), 'w') as outfile:
                     json.dump({}, outfile)
         if (self.config.mode == "all" or self.config.mode == "poke") and 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
-            # Sort all by distance from current pos- eventually this should build graph & A* it
-            cell['wild_pokemons'].sort(key=lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
+            # Sort all by distance from current pos- eventually this should
+            # build graph & A* it
+            cell['wild_pokemons'].sort(key=lambda x: distance(
+                self.position[0], self.position[1], x['latitude'], x['longitude']))
             for pokemon in cell['wild_pokemons']:
                 worker = PokemonCatchWorker(pokemon, self)
                 if worker.work() == -1:
-                    break;
+                    break
         if (self.config.mode == "all" or self.config.mode == "farm") and include_fort_on_path:
             if 'forts' in cell:
                 # Only include those with a lat/long
-                forts = [fort for fort in cell['forts'] if 'latitude' in fort and 'type' in fort]
+                forts = [fort for fort in cell['forts']
+                         if 'latitude' in fort and 'type' in fort]
 
-                # Sort all by distance from current pos- eventually this should build graph & A* it
-                forts.sort(key=lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
+                # Sort all by distance from current pos- eventually this should
+                # build graph & A* it
+                forts.sort(key=lambda x: distance(self.position[
+                           0], self.position[1], x['latitude'], x['longitude']))
                 for fort in cell['forts']:
                     worker = SeenFortWorker(fort, self)
                     hack_chain = worker.work()
@@ -105,7 +114,8 @@ class PokemonGoBot(object):
         self.log = logging.getLogger(__name__)
         # log settings
         # log format
-        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(module)10s] [%(levelname)5s] %(message)s')
+        logging.basicConfig(
+            level=logging.DEBUG, format='%(asctime)s [%(module)10s] [%(levelname)5s] %(message)s')
 
         if self.config.debug:
             logging.getLogger("requests").setLevel(logging.DEBUG)
@@ -135,17 +145,18 @@ class PokemonGoBot(object):
 
         response_dict = self.api.call()
         #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
-        currency_1="0"
-        currency_2="0"
+        currency_1 = "0"
+        currency_2 = "0"
 
         player = response_dict['responses']['GET_PLAYER']['player_data']
 
-        ### @@@ TODO: Convert this to d/m/Y H:M:S
-        creation_date = datetime.datetime.fromtimestamp(player['creation_timestamp_ms'] / 1e3)
+        # @@@ TODO: Convert this to d/m/Y H:M:S
+        creation_date = datetime.datetime.fromtimestamp(
+            player['creation_timestamp_ms'] / 1e3)
 
         pokecoins = '0'
         stardust = '0'
-        balls_stock = self.pokeball_inventory();
+        balls_stock = self.pokeball_inventory()
 
         if 'amount' in player['currencies'][0]:
             pokecoins = player['currencies'][0]['amount']
@@ -155,8 +166,10 @@ class PokemonGoBot(object):
         print('[#]')
         print('[#] Username: {username}'.format(**player))
         print('[#] Acccount Creation: {}'.format(creation_date))
-        print('[#] Bag Storage: {}/{}'.format(self.get_inventory_count('item'), player['max_item_storage']))
-        print('[#] Pokemon Storage: {}/{}'.format(self.get_inventory_count('pokemon'), player['max_pokemon_storage']))
+        print('[#] Bag Storage: {}/{}'.format(self.get_inventory_count('item'),
+                                              player['max_item_storage']))
+        print('[#] Pokemon Storage: {}/{}'.format(self.get_inventory_count('pokemon'),
+                                                  player['max_pokemon_storage']))
         print('[#] Stardust: {}'.format(stardust))
         print('[#] Pokecoins: {}'.format(pokecoins))
         print('[#] PokeBalls: ' + str(balls_stock[1]))
@@ -164,26 +177,30 @@ class PokemonGoBot(object):
         print('[#] UltraBalls: ' + str(balls_stock[3]))
 
         # Testing
-        #self.drop_item(Item.ITEM_POTION.value,1)
-        #exit(0)
+        # self.drop_item(Item.ITEM_POTION.value,1)
+        # exit(0)
         self.get_player_info()
 
         if self.config.initial_transfer:
             self.initial_transfer()
 
         print('[#]')
-        self.update_inventory();
-    def drop_item(self,item_id,count):
-        self.api.recycle_inventory_item(item_id=item_id,count=count)
+        self.update_inventory()
+
+    def drop_item(self, item_id, count):
+        self.api.recycle_inventory_item(item_id=item_id, count=count)
         inventory_req = self.api.call()
         print(inventory_req)
+
     def initial_transfer(self):
         print('[x] Initial Transfer.')
 
         if self.config.cp:
-            print('[x] Will NOT transfer anything above CP {}'.format(self.config.cp))
+            print('[x] Will NOT transfer anything above CP {}'.format(
+                self.config.cp))
         else:
-            print('[x] Preparing to transfer all Pokemon duplicates, keeping the highest CP of each one type.')
+            print(
+                '[x] Preparing to transfer all Pokemon duplicates, keeping the highest CP of each one type.')
 
         pokemon_groups = self._initial_transfer_get_groups()
 
@@ -200,8 +217,10 @@ class PokemonGoBot(object):
                     if self.config.cp and group_cp[x] > self.config.cp:
                         continue
 
-                    print('[x] Releasing Pokemon #{} ({}) with CP {}'.format(id, pokemon_name, group_cp[x]))
-                    self.api.release_pokemon(pokemon_id=pokemon_groups[id][group_cp[x]])
+                    print('[x] Releasing Pokemon #{} ({}) with CP {}'.format(
+                        id, pokemon_name, group_cp[x]))
+                    self.api.release_pokemon(
+                        pokemon_id=pokemon_groups[id][group_cp[x]])
                     response_dict = self.api.call()
                     sleep(2)
 
@@ -211,24 +230,28 @@ class PokemonGoBot(object):
         pokemon_groups = {}
         self.api.get_player().get_inventory()
         inventory_req = self.api.call()
-        inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+        inventory_dict = inventory_req['responses'][
+            'GET_INVENTORY']['inventory_delta']['inventory_items']
 
         for pokemon in inventory_dict:
             try:
-                reduce(dict.__getitem__, ["inventory_item_data", "pokemon_data", "pokemon_id"], pokemon)
+                reduce(dict.__getitem__, [
+                       "inventory_item_data", "pokemon_data", "pokemon_id"], pokemon)
             except KeyError:
                 continue
 
-            group_id = pokemon['inventory_item_data']['pokemon_data']['pokemon_id']
-            group_pokemon = pokemon['inventory_item_data']['pokemon_data']['id']
-            group_pokemon_cp = pokemon['inventory_item_data']['pokemon_data']['cp']
+            group_id = pokemon['inventory_item_data'][
+                'pokemon_data']['pokemon_id']
+            group_pokemon = pokemon['inventory_item_data'][
+                'pokemon_data']['id']
+            group_pokemon_cp = pokemon[
+                'inventory_item_data']['pokemon_data']['cp']
 
             if group_id not in pokemon_groups:
                 pokemon_groups[group_id] = {}
 
-            pokemon_groups[group_id].update({group_pokemon_cp:group_pokemon})
+            pokemon_groups[group_id].update({group_pokemon_cp: group_pokemon})
         return pokemon_groups
-
 
     def update_inventory(self):
         self.api.get_inventory()
@@ -247,30 +270,35 @@ class PokemonGoBot(object):
                                 continue
                             if not 'count' in item['inventory_item_data']['item']:
                                 continue
-                            self.inventory.append(item['inventory_item_data']['item'])
+                            self.inventory.append(
+                                item['inventory_item_data']['item'])
 
     def pokeball_inventory(self):
         self.api.get_player().get_inventory()
 
         inventory_req = self.api.call()
-        inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+        inventory_dict = inventory_req['responses'][
+            'GET_INVENTORY']['inventory_delta']['inventory_items']
 
         # get player balls stock
         # ----------------------
-        balls_stock = {1:0,2:0,3:0,4:0}
+        balls_stock = {1: 0, 2: 0, 3: 0, 4: 0}
 
         for item in inventory_dict:
             try:
                 # print(item['inventory_item_data']['item'])
                 if item['inventory_item_data']['item']['item_id'] == Item.ITEM_POKE_BALL.value:
                     # print('Poke Ball count: ' + str(item['inventory_item_data']['item']['count']))
-                    balls_stock[1] = item['inventory_item_data']['item']['count']
+                    balls_stock[1] = item[
+                        'inventory_item_data']['item']['count']
                 if item['inventory_item_data']['item']['item_id'] == Item.ITEM_GREAT_BALL.value:
                     # print('Great Ball count: ' + str(item['inventory_item_data']['item']['count']))
-                    balls_stock[2] = item['inventory_item_data']['item']['count']
+                    balls_stock[2] = item[
+                        'inventory_item_data']['item']['count']
                 if item['inventory_item_data']['item']['item_id'] == Item.ITEM_ULTRA_BALL.value:
                     # print('Ultra Ball count: ' + str(item['inventory_item_data']['item']['count']))
-                    balls_stock[3] = item['inventory_item_data']['item']['count']
+                    balls_stock[3] = item[
+                        'inventory_item_data']['item']['count']
             except:
                 continue
         return balls_stock
@@ -283,16 +311,20 @@ class PokemonGoBot(object):
         if self.config.location_cache:
             try:
                 #
-                # save location flag used to pull the last known location from the location.json
+                # save location flag used to pull the last known location from
+                # the location.json
                 with open('data/last-location-%s.json' % (self.config.username)) as f:
                     location_json = json.load(f)
 
-                    self.position = (location_json['lat'], location_json['lng'], 0.0)
+                    self.position = (
+                        location_json['lat'], location_json['lng'], 0.0)
                     self.api.set_position(*self.position)
 
                     print('')
-                    print('[x] Last location flag used. Overriding passed in location')
-                    print('[x] Last in-game location was set as: {}'.format(self.position))
+                    print(
+                        '[x] Last location flag used. Overriding passed in location')
+                    print(
+                        '[x] Last in-game location was set as: {}'.format(self.position))
                     print('')
 
                     return
@@ -305,10 +337,10 @@ class PokemonGoBot(object):
         self.position = self._get_pos_by_name(self.config.location)
         self.api.set_position(*self.position)
         print('')
-        print(u'[x] Address found: {}'.format(self.config.location.decode('utf-8')))
+        print(u'[x] Address found: {}'.format(
+            self.config.location.decode('utf-8')))
         print('[x] Position in-game set as: {}'.format(self.position))
         print('')
-
 
     def _get_pos_by_name(self, location_name):
         geolocator = GoogleV3(api_key=self.config.gmapkey)
@@ -342,7 +374,9 @@ class PokemonGoBot(object):
                                     pokecount = pokecount + 1
                                 if 'item' in item['inventory_item_data']:
                                     if 'count' in item['inventory_item_data']['item']:
-                                        itemcount = itemcount + item['inventory_item_data']['item']['count']
+                                        itemcount = itemcount + \
+                                            item['inventory_item_data'][
+                                                'item']['count']
         if 'pokemon' in what:
             return pokecount
         if 'item' in what:
@@ -362,19 +396,26 @@ class PokemonGoBot(object):
                             #print('item {}'.format(item))
                             if 'inventory_item_data' in item:
                                 if 'player_stats' in item['inventory_item_data']:
-                                    playerdata = item['inventory_item_data']['player_stats']
+                                    playerdata = item['inventory_item_data'][
+                                        'player_stats']
 
-                                    nextlvlxp = (int(playerdata['next_level_xp']) - int(playerdata['experience']))
+                                    nextlvlxp = (
+                                        int(playerdata['next_level_xp']) - int(playerdata['experience']))
 
                                     if 'level' in playerdata:
-                                        print('[#] -- Level: {level}'.format(**playerdata))
+                                        print(
+                                            '[#] -- Level: {level}'.format(**playerdata))
 
                                     if 'experience' in playerdata:
-                                        print('[#] -- Experience: {experience}'.format(**playerdata))
-                                        print('[#] -- Experience until next level: {}'.format(nextlvlxp))
+                                        print(
+                                            '[#] -- Experience: {experience}'.format(**playerdata))
+                                        print(
+                                            '[#] -- Experience until next level: {}'.format(nextlvlxp))
 
                                     if 'pokemons_captured' in playerdata:
-                                        print('[#] -- Pokemon Captured: {pokemons_captured}'.format(**playerdata))
+                                        print(
+                                            '[#] -- Pokemon Captured: {pokemons_captured}'.format(**playerdata))
 
                                     if 'poke_stop_visits' in playerdata:
-                                        print('[#] -- Pokestops Visited: {poke_stop_visits}'.format(**playerdata))
+                                        print(
+                                            '[#] -- Pokestops Visited: {poke_stop_visits}'.format(**playerdata))
