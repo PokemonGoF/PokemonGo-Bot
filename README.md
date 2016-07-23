@@ -248,7 +248,7 @@ If using multiple usernames format like this:
 ```var users = ["username1","username2"];```
 
 ---------
-## Contributors (Don't forget add yours here when you create PR:)
+## Contributors (Don't forget add yours here when you create PR)
  * eggins -- The first pull request :)
  * crack00r
  * ethervoid
@@ -272,6 +272,7 @@ If using multiple usernames format like this:
  * dmateusp
  * jtdroste
  * msoedov
+ * Grace
 
 -------
 ## Credits
