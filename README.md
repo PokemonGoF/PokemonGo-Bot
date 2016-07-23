@@ -38,7 +38,7 @@ Your test contribute and PR for fix are well welcome. Or, you can wait on the ma
  * Release low cp pokemon
  * Walking as you
  * Use the ball you have to catch, don't if you don't have
- * Rudimentary IV Functionality filter (Need verify)
+ * Rudimentary IV Functionality filter
  * Auto switch mode(Full of item then catch, no ball useable then farm)
  * Ignore certain pokemon filter
  * Use superior ball types when necessary
@@ -48,10 +48,10 @@ Your test contribute and PR for fix are well welcome. Or, you can wait on the ma
 
 - [ ] Standalone Desktop APP
 - [x] Google Map API key setup (Readme update needed)
-- [ ] Show all objects on map
+- [x] Show all objects on map (In Testing)
 - [x] Limit the step to farm specific area for pokestops
 - [ ] Pokemon transfer filter
-- [ ] Drop items when bag is full
+- [x] Drop items when bag is full (In Testing)
 - [x] Pokemon catch filter
 - [ ] Hatch eggs
 - [ ] Incubate eggs
