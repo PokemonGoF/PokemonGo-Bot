@@ -12,7 +12,7 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
  * Release low cp pokemon
  * Walking as you
  * Use the ball you have to catch, don't if you don't have
- * Rudimentary IV Functionality filter
+ * Rudimentary IV Functionality filter(Need verify)
  * Auto switch mode(Full of item then catch, no ball useable then farm)
  * Ignore certain pokemon filter
 
