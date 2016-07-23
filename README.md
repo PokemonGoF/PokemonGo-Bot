@@ -134,38 +134,41 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 6. After the code done, will update here how to replace.
 
 ## Usage
-    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-lc] [-m] [-w] [--distance_unit] [--initial-transfer] [--maxsteps] [-iv] [-d] [-t]
+    ### config.json:
+    Edit config.json.example to your specific parameters and then rename the file to config.json
 
-    optional arguments:
-      -h, --help                                    show this help message and exit
-      -a AUTH_SERVICE, --auth_service AUTH_SERVICE  Auth Service ('ptc' or 'google')
-      -u USERNAME, --username USERNAME              Username
-      -p PASSWORD, --password PASSWORD              Password
-      -l LOCATION, --location LOCATION              Location (Address or 'xx.yyyy,zz.ttttt')
-      -lc, --location_cache                         Bot will start at last known location
-      -m MODE, --mode MODE                          Set farming Mode for the bot ('all', 'poke', 'farm')
-      -w SPEED,  --walk SPEED                       Walk instead of teleport with given speed (meters per second max 4.16 because of walking end on 15km/h)
-      -du, --distance_unit UNIT                     Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
-      -it, --initial_transfer                       Start the bot with a pokemon clean up, keeping only the higher CP of each pokemon. It respects -c as upper limit to release.
-      -ms, --max_steps MAX_STEP                     Set the steps around your initial location (DEFAULT 5 mean 25 cells around your location)
-      -iv IV, --pokemon_potential                   Set the ratio for the IV values to transfer (DEFAULT 0.4 eg. 0.4 will transfer a pokemon with IV 0.3)
-      -if LIST, --item_filter LIST                  Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, [\"101\",\"102\",\"103\",\"104\"] to recycle potions when collected)" 
-      -d, --debug                                   Debug Mode
-      -t, --test                                    Only parse the specified location
+    Example:
+    {
+      "auth_service": "google",
+      "username": "your@gmail.com",
+      "password": "yourpassword",
+      "location": "Union Square, San Francisco",
+      "cp": 1000,
+      "gmapkey": "See google map api section on how to get your gmap key",
+      "max_steps": 50,
+      "mode": "all",
+      "walk": 30,
+      "debug": false,
+      "test": false,
+      "initial_transfer": 400,
+      "pokemon_potential": 0.1,
+      "location_cache": false,
+      "distance_unit": "km",
+      "item_filter": ["101","102","701","201"]
+    }
 
-### Command Line Example
-    Pokemon Trainer Club (PTC) account:
-    $ python2 pokecli.py -a ptc -u tejado -p 1234 --location "New York, Washington Square"
-    Google Account:
-    $ python2 pokecli.py -a google -u tejado -p 1234 --location "New York, Washington Square"
-
-### Advance Releasing Configuration
+### release_config.json
     To edit the pokemon release configuration, copy file ``release_config.json.example`` and rename it to ``release_config.json``
 
     Edit this file however you like, but keep in mind:
 
-    1. Pokemon name is always capitalize and case-sensitive
+    1. Pokemon name is always capitalized and case-sensitive
     2. Be careful with the ``any`` configuration!
+    3. It transfers either minimum cp OR minimum iv! For example, if you set cp to 400 and iv to 0.5 and you capture a 500cp pokemon with 0.4 iv, it will get transferred. To use only cp or iv, set iv to 0.001 or cp to 9, respectively.
+
+### Command Line Example
+    After editing both config.json and release_config.json, run:
+    python pokecli.py
     
 ## How to run with Docker
 
