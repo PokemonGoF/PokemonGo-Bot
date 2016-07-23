@@ -15,7 +15,7 @@ var user_index;
 var trainerSex = ["m","f"];
 var numTrainers = [177, 109];
 var menu;
-var filteredInv = {};
+var stats = {};
 
 function initMap() {
   // load pokemon data now..
@@ -106,11 +106,11 @@ var errorFunc = function(xhr) {
 };
 
 var invSuccess = function(data, user_index) {
-  for (var i = 0; i < data.inventory_item_data.length; i++) {
-    if (data.inventory_item_data[i].player_stats != undefined) {
-      
-    }
-  }
+  stats = filter(data, 'player_stats');
+  bagItems = filter(data, 'item')
+  bagPokemon = filter(data, 'pokemon_data');
+  pokedex = filter(data, 'pokedex_entry');
+  bagCandy = filter(data, 'pokemon_family')
 }
 
 var trainerFunc = function(data, user_index) {
@@ -120,20 +120,29 @@ var trainerFunc = function(data, user_index) {
       for (var x = 0; x < data.cells[i].forts.length; x++) {
         var fort = cell.forts[x];
         if (!forts[fort.id]) {
-          forts[fort.id] = new google.maps.Marker({
-            map: map,
-            position: {
-              lat: parseFloat(fort.latitude),
-              lng: parseFloat(fort.longitude)
-            },
-            icon: "image/forts/Pstop.png"
-          });
+          if (fort.type === 1 ) {
+            forts[fort.id] = new google.maps.Marker({
+              map: map,
+              position: {
+                lat: parseFloat(fort.latitude),
+                lng: parseFloat(fort.longitude)
+              },
+              icon: "image/forts/Pstop.png"
+            });
+          } else {
+            forts[fort.id] = new google.maps.Marker({
+              map: map,
+              position: {
+                lat: parseFloat(fort.latitude),
+                lng: parseFloat(fort.longitude)
+              },
+              icon: "image/forts/Gym.png"
+            });
+          }
           var contentString = fort.id + ' Type ' + fort.type
           info_windows[fort.id] = new google.maps.InfoWindow({
             content: contentString
           });
-
-
           google.maps.event.addListener(forts[fort.id], 'click', (function(marker, content, infowindow) {
             return function() {
               infowindow.setContent(content);
@@ -243,7 +252,6 @@ function pad_with_zeroes(number, length) {
   return my_string;
 }
 
-
 function filter(arr, search) {
   var filtered = [];
   for(i=0; i < arr.length; i++) {
@@ -251,15 +259,7 @@ function filter(arr, search) {
   }
   return filtered;
 }
-function buildPokedex() {
-  var arr = pokedex;
-  for(i=0; i < arr.length; i++) {
-    if(document.getElementById('p'+i) != null) {
-      document.getElementById('p'+i).innerHTML = '<table><tr><td>Number:</td><td>' + arr[i].inventory_item_data.pokedex_entry.pokedex_entry_number + '</td></tr><tr><td>Encountered:</td><td>' + arr[i].inventory_item_data.pokedex_entry.times_encountered + '</td></tr><tr><td>Captured:</td><td>' + arr[i].inventory_item_data.pokedex_entry.times_captured + '</td></tr></table>';
-    }
-  }
-  return emptyDex;
-}
+
 function loadJSON(path, success, error, successData) {
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function() {
@@ -282,20 +282,21 @@ $(document).ready(function(){
 });
 
 function buildMenu() {
+  addInventory();
   if (menu == 1) {
     document.getElementById('subtitle').innerHTML = "Trainer Info";
-    document.getElementById('subcontent').innerHTML = buildTrainer('player_stats');
+    document.getElementById('subcontent').innerHTML = stats;
   }
   if (menu == 2) {
     document.getElementById('subtitle').innerHTML = "Items in Bag";
-    document.getElementById('subcontent').innerHTML = buildTrainer('item');
+    document.getElementById('subcontent').innerHTML = bagItems;
   }
   if (menu == 3) {
     document.getElementById('subtitle').innerHTML = "Pokemon in Bag";
-    document.getElementById('subcontent').innerHTML = buildTrainer('pokemon_data');
+    document.getElementById('subcontent').innerHTML = bagPokemon;
   }
   if (menu == 4) {
     document.getElementById('subtitle').innerHTML = "Pokedex";
-    document.getElementById('subcontent').innerHTML = buildTrainer('pokedex_entry');
+    document.getElementById('subcontent').innerHTML = pokedex;
   }
 }
