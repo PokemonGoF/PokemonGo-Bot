@@ -66,7 +66,8 @@ var trainerFunc = function(data, user_index) {
       for (var x = 0; x < data.cells[i].forts.length; x++) {
         var fort = cell.forts[x];
         if (!forts[fort.id]) {
-          forts[fort.id] = new google.maps.Marker({
+        if (fort.type === 1 ) {
+            forts[fort.id] = new google.maps.Marker({
             map: map,
             position: {
               lat: parseFloat(fort.latitude),
@@ -74,12 +75,20 @@ var trainerFunc = function(data, user_index) {
             },
             icon: "image/forts/Pstop.png"
           });
+      } else {
+        forts[fort.id] = new google.maps.Marker({
+          map: map,
+          position: {
+            lat: parseFloat(fort.latitude),
+            lng: parseFloat(fort.longitude)
+          },
+          icon: "image/forts/Gym.png"
+        });
+      }
           var contentString = fort.id + ' Type ' + fort.type
           info_windows[fort.id] = new google.maps.InfoWindow({
             content: contentString
           });
-
-
           google.maps.event.addListener(forts[fort.id], 'click', (function(marker, content, infowindow) {
             return function() {
               infowindow.setContent(content);
