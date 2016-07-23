@@ -21,11 +21,7 @@
     <div id="map"></div>
     <script type="text/javascript">
       // MUST CONFIGURE THE USER ARRAY.
-      var users = [
-        // 'user1',
-        // 'user2',
-        // 'user3'
-      ];
+      var users = [];
       var user_data = {};
       var map;
       var inventory = {};
@@ -43,6 +39,10 @@
           console.log('Loaded pokemon data..');
           pokemonArray = data;
         }, errorFunc, 'pokemonData');
+        loadJSON('userconfig.json', function(data, successData) {
+          console.log('Loaded user data..');
+          users = data;
+        }, errorFunc, 'userData');
         for (var i = 0; i < users.length; i++) {
           user_data[users[i]] = {};
         }
