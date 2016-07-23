@@ -85,23 +85,23 @@ class Stepper(object):
 
         response_dict = self.api.call()
         # Passing Variables through a file
-        if response_dict and 'responses' in response_dict and \
-            'GET_MAP_OBJECTS' in response_dict['responses'] and \
-            'map_cells' in response_dict['responses']['GET_MAP_OBJECTS']:
-            with open('web/location.json', 'w') as outfile:
-                json.dump({'lat': lat, 'lng': lng,'cells':response_dict['responses']['GET_MAP_OBJECTS']['map_cells']}, outfile)
-        if response_dict and 'responses' in response_dict and \
-            'GET_MAP_OBJECTS' in response_dict['responses'] and \
-            'status' in response_dict['responses']['GET_MAP_OBJECTS'] and \
-            response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
-            map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
-            position = (lat, lng, alt)
+        if response_dict and 'responses' in response_dict:
+            if 'GET_MAP_OBJECTS' in response_dict['responses']:
+                if 'map_cells' in response_dict['responses']['GET_MAP_OBJECTS']:
+                    with open('web/location-%s.json' % (self.config.username), 'w') as outfile:
+                        json.dump({'lat': lat, 'lng': lng,'cells':response_dict['responses']['GET_MAP_OBJECTS']['map_cells']}, outfile)
+        if response_dict and 'responses' in response_dict:
+            if 'GET_MAP_OBJECTS' in response_dict['responses']:
+                if 'status' in response_dict['responses']['GET_MAP_OBJECTS']:
+                    if response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
+                        map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
+                        position = (lat, lng, alt)
             # Sort all by distance from current pos- eventually this should build graph & A* it
             #print(map_cells)
             #print( s2sphere.from_token(x['s2_cell_id']) )
             #map_cells.sort(key=lambda x: distance(lat, lng, x['latitude'], x['longitude']))
-            for cell in map_cells:
-                self.bot.work_on_cell(cell, position, pokemon_only)
+                    for cell in map_cells:
+                        self.bot.work_on_cell(cell, position, pokemon_only)
 
     def _get_cellid(self, lat, long, radius=10):
         origin = CellId.from_lat_lng(LatLng.from_degrees(lat, long)).parent(15)

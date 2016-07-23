@@ -14,8 +14,9 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
  * Use the ball you have to catch, don't if you don't have
  * Rudimentary IV Functionality filter
  * Auto switch mode(Full of item then catch, no ball useable then farm)
+ * Ignore certain pokemon filter
 
-# To-Do:
+## To-Do:
 - [ ] Standalone Desktop APP
 - [x] Google Map API key setup (Readme update needed)
 - [ ] Show all objects on map
@@ -36,31 +37,40 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 - [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/)
 - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 - [virtualenv](https://virtualenv.pypa.io/en/stable/installation/)
-- protobuf 3 (see below)
+- [protobuf 3](https://github.com/google/protobuf)  (OS Dependant, see below)
 
 ### Protobuf 3 installation
 
 - OS X:  `brew update && brew install --devel protobuf`
-- Windows: `PLEASE CONTRIBUTE`
+- Windows: Download protobuf 3.0: [here](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip) and unzip `bin/protoc.exe` into a folder in your PATH.
 - Linux: `PLEASE CONTRIBUTE`
 
 ### Installation
 
-$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot
-$ cd PokemonGo-Bot
-$ virtualenv .
-$ source bin/activate
-$ pip install -r requirements.txt
+$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
+$ cd PokemonGo-Bot  
+$ virtualenv .  
+$ source bin/activate  
+$ pip install -r requirements.txt  
+
+###### Windows Note
+On Windows, you will need to install PyYaml through the  [installer](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt. 
+
+Windwos 10:  
+    Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl 
+    
+    $ cd download-directory
+    $ pip install PyYAML-3.11-cp27-cp27m-win32.whl
 
 ### Develop PokemonGo-Bot
 
-$ git clone -b dev https://github.com/PokemonGoF/PokemonGo-Bot
-$ cd PokemonGo-Bot
-$ virtualenv .
-$ source bin/activate
-$ pip install -r requirements.txt
+$ git clone -b dev https://github.com/PokemonGoF/PokemonGo-Bot  
+$ cd PokemonGo-Bot  
+$ virtualenv .  
+$ source bin/activate  
+$ pip install -r requirements.txt  
 
-### Google Maps API (Code is not done yet)
+### Google Maps API (In Development)
 
 Google Maps API: a brief guide to your own key
 
@@ -101,6 +111,26 @@ This project uses Google Maps. There's one map coupled with the project, but as 
     Google Account:
     $ python2 pokecli.py -a google -u tejado -p 1234 --location "New York, Washington Square"
 
+
+## How to add/discover new API
+  The example is [here](https://github.com/PokemonGoF/PokemonGo-Bot/commit/46e2352ce9f349cc127a408959679282f9999585)  
+    1. Check the type of your API request in   [POGOProtos](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/RequestType.proto) For example: RECYCLE_INVENTORY_ITEM  
+    2. Convert to the api call in pokemongo_bot/__init__.py,  RECYCLE_INVENTORY_ITEM change to self.api.recycle_inventory_item
+        ```
+        def drop_item(self,item_id,count):
+            self.api.recycle_inventory_item(...............)
+        ```
+    3. Where is the param list?  
+        You need check this [Requests/Messages/RecycleInventoryItemMessage.proto](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/Messages/RecycleInventoryItemMessage.proto)
+    4. Then our final api call is  
+        ```
+        def drop_item(self,item_id,count):
+            self.api.recycle_inventory_item(item_id=item_id,count=count)
+            inventory_req = self.api.call()
+            print(inventory_req)
+        ```  
+    5. You can now debug on the log to see if get what you need  
+
 ## FAQ
 
 ### Losing Starter Pokemon and others
@@ -116,7 +146,27 @@ This project uses Google Maps. There's one map coupled with the project, but as 
    Finish the tutorial on a smartphone. This will then allow everything to be visible.
 ### How can I maximise my XP per hour?
 Quick Tip: When using this script, use a Lucky egg to double the XP for 30 mins. You will level up much faster. A Lucky egg is obtained on level 9 and further on whilst leveling up. (from VipsForever via /r/pokemongodev)
+### How can I not collect certain pokemon
+You don't want to collect common pokemon once you hit a certain level. It will
+slow down leveling but you won't fill up either.
 
+Create the following filter
+
+```
+./data/catch-ignore.yml
+```
+
+Its a yaml file with a list of names so make it look like
+
+```
+ignore:
+  - Pidgey
+  - Rattata
+  - Pidgeotto
+  - Spearow
+  - Ekans
+  - Zubat
+```
 
 
 ## Requirements
@@ -146,6 +196,7 @@ To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg
  * 05-032
  * sinistance
  * CapCap
+ * mzupan
 
 ## Credits
 ### The works are based on the Pokemon Go API
