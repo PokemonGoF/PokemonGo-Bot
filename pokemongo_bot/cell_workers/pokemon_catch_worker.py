@@ -124,7 +124,7 @@ class PokemonCatchWorker(object):
                                         '[x] Oh no! {} vanished! :('.format(
                                             pokemon_name), 'red')
                                 if status is 1:
-                                    if cp < self.config.cp or pokemon_potential < self.config.pokemon_potential:
+                                    if cp < self.config.cp and pokemon_potential < self.config.pokemon_potential:
                                         logger.log(
                                             '[x] Captured {}! [CP {}] [IV {}] - exchanging for candy'.format(
                                                 pokemon_name, cp,
