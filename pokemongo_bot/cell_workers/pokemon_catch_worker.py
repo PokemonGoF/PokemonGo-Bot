@@ -98,8 +98,17 @@ class PokemonCatchWorker(object):
                                 if status is 3:
                                     print_red('[x] Oh no! {} vanished! :('.format(pokemon_name))
                                 if status is 1:
-                                    if cp < self.config.cp or pokemon_potential < self.config.pokemon_potential:
+                                    if cp < self.config.cp #Transfer all Pokemon that are below the minimum CP.
                                         print_green('[x] Captured {}! [CP {}] [Potential {}%] - exchanging for candy'.format(pokemon_name, cp, pokemon_potential))
+                                        id_list2 = self.count_pokemon_inventory()
+                                        # Transfering Pokemon
+                                        pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
+                                        if len(pokemon_to_transfer) == 0:
+                                            raise RuntimeError('Trying to transfer 0 pokemons!')
+                                        self.transfer_pokemon(pokemon_to_transfer)
+                                        print_green('[#] {} has been exchanged for candy!'.format(pokemon_name))
+                                    elif cp < self.config.very_important_cp and pokemon_potential < self.config.pokemon_potential: #Transfer all Pokemon that have low IV and are below the maximum CP
+                                        print_green('[x] Captured {}! [CP {}] [Potential {}%] - exchanging for candy due to low IV and CP below VICP'.format(pokemon_name, cp, pokemon_potential))
                                         id_list2 = self.count_pokemon_inventory()
                                         # Transfering Pokemon
                                         pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
