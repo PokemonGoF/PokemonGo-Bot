@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="main.css">
+  </head>
+  <body>
+    <div class="container" id="menu">
+      <div class="row" id="options">
+        <div class="col s12">
+          <div class="card white">
+            <div class="card-content black-text">
+              <span class="card-title">Options</span>
+              <ul>
+                <li>
+                  Pan
+                  <div class="switch">
+                    <label>
+                      Off
+                      <input type="checkbox" id="switchPan">
+                      <span class="lever"></span>
+                      On
+                    </label>
+                  </div>
+                  <br>
+                </li>
+                <li>
+                  Zoom
+                  <div class="switch">
+                    <label>
+                      Off
+                      <input type="checkbox" id="switchZoom">
+                      <span class="lever"></span>
+                      On
+                    </label>
+                  </div>
+                  <br>
+                </li>
+                <li>
+                  Image Type
+                  <div class="switch">
+                    <label>
+                      png
+                      <input type="checkbox" id="imageType">
+                      <span class="lever"></span>
+                      gif
+                    </label>
+                  </div>
+                  <br>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" id="trainer">
+        <div class="col s12">
+          <div class="card white">
+            <div class="card-content black-text">
+              <span class="card-title">Trainer</span>
+            <ul>
+              <li><a class="waves-effect waves-light btn" id="tInfo">Info</a></li><br>
+              <li><a class="waves-effect waves-light btn" id="tItems">Items</a></li><br>
+              <li><a class="waves-effect waves-light btn" id="tPokemon">Pokemon</a></li><br>
+              <li><a class="waves-effect waves-light btn" id="tPokedex">Pokedex</a></li>
+            </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container" id="submenu">
+        <div class="col s12">
+          <div class="card white">
+            <div class="card-content black-text">
+              <span class="card-title" id="subtitle">Submenu</span>
+              <div id="subcontent"></div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div id="map"></div>
+    <script type="text/javascript" src="userdata.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBWa0ZYeH6RBZnNTAIj30FyDIVnXV74D9o&callback=initMap"
+    async defer></script>
+  </body>
+</html>
