@@ -26,9 +26,6 @@ A python script for __catching pokemons__ and __spin pokestops__ on PokemonGo.
 - [Credits](#credits)
 - [Donation](#donation)
 
-## Project chat
-We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
-
 ## Project Chat
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
 
