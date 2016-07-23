@@ -28,42 +28,36 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 
 ## Installation
 
-### Python Installation
-    [Install Python 2.7](https://wiki.python.org/moin/BeginnersGuide/Download)
-    [Install PIP](https://pip.pypa.io/en/stable/installing/)
+### Requirements (click each one for install guide)
 
-### Google Protobuf Installation
-    MAC:  brew update && brew install --devel protobuf
+- [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/)
+- [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+- [virtualenv](https://virtualenv.pypa.io/en/stable/installation/)
+- protobuf 3 (see below)
 
-### Install PokemonGo-Bot for NORMAL usage
+### Protobuf 3 installation
 
-Download or clone the **master** branch of the repository: `git clone -b master git@github.com:PokemonGoF/PokemonGo-Bot.git`
+- OS X:  `brew update && brew install --devel protobuf`
+- Windows: `PLEASE CONTRIBUTE`
+- Linux: `PLEASE CONTRIBUTE`
 
-Using a terminal navigate into the clone repository.
+### Installation
 
-Install all requirements for the project using `pip install -r ./requirements.txt`
-
+$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot
+$ cd PokemonGo-Bot
+$ virtualenv .
+$ source bin/activate
+$ pip install -r requirements.txt
 
 ### Develop PokemonGo-Bot
 
-Download or clone the **dev** branch of the repository: `git clone -b dev git@github.com:PokemonGoF/PokemonGo-Bot.git `
-
-Using a terminal navigate into the clone repository.
-
-Install all requirements for the project using `pip install -r ./requirements.txt`
-**Code forest, code!**
-
-### Ubuntu virtualenv install
-
-    $ sudo apt-get install virtualenv -y
-    $ git clone https://github.com/PokemonGoF/PokemonGo-Bot
-    $ cd PokemonGo-Bot
-    $ virtualenv .
-    $ source bin/activate
-    $ pip install -r requirements.txt
+$ git clone -b dev https://github.com/PokemonGoF/PokemonGo-Bot
+$ cd PokemonGo-Bot
+$ virtualenv .
+$ source bin/activate
+$ pip install -r requirements.txt
 
 ### Google Maps API (Code is not done yet)
-
 
 Google Maps API: a brief guide to your own key
 
