@@ -35,20 +35,33 @@ class PokemonCatchWorker(object):
                         cp=0
                         total_IV = 0
                         if 'wild_pokemon' in response_dict['responses']['ENCOUNTER']:
+                            
                             pokemon=response_dict['responses']['ENCOUNTER']['wild_pokemon']
                             if 'pokemon_data' in pokemon and 'cp' in pokemon['pokemon_data']:
+                                
                                 cp=pokemon['pokemon_data']['cp']
                                 iv_stats = ['individual_attack','individual_defense','individual_stamina']
+                                
                                 for individual_stat in iv_stats:
                                     try:
                                         total_IV += pokemon['pokemon_data'][individual_stat]
                                     except:
+                                        pokemon['pokemon_data'][individual_stat] = 0
                                         continue
                                 print total_IV
                                 pokemon_potential = round((total_IV / 45.0), 2)
                                 pokemon_num=int(pokemon['pokemon_data']['pokemon_id'])-1
                                 pokemon_name=self.pokemon_list[int(pokemon_num)]['Name']
+                                pokemon['pokemon_data']['name'] = pokemon_name
+                                
                                 print_yellow('[#] A Wild {} appeared! [CP {}] [Potential {}]'.format(pokemon_name, cp, pokemon_potential))
+                                
+                                print('[#] IV [Stamina/Attack/Defense] = [{}/{}/{}]'.format(pokemon['pokemon_data']['individual_stamina'],pokemon['pokemon_data']['individual_attack'],pokemon['pokemon_data']['individual_defense']))
+                                
+								whitelist = self.is_whitelist(pokemon['pokemon_data'])
+                                if whitelist:
+                                    print_red('[#] Matched Whitelist!')
+                                
                                 #Simulate app
                                 sleep(3)
 
@@ -72,7 +85,7 @@ class PokemonCatchWorker(object):
                                 print_red('[x] Out of pokeballs, switching to farming mode...')
                                 # Begin searching for pokestops.
                                 self.config.mode='farm'
-                                return -1
+                                break
 
                             print('[x] Using {}...'.format(self.item_list[str(pokeball)]))
 
@@ -99,7 +112,7 @@ class PokemonCatchWorker(object):
                                 if status is 3:
                                     print_red('[x] Oh no! {} vanished! :('.format(pokemon_name))
                                 if status is 1:
-                                    if cp < self.config.cp or pokemon_potential < self.config.pokemon_potential:
+                                    if not whitelist and (cp < self.config.cp or pokemon_potential < self.config.pokemon_potential):
                                         print_green('[x] Captured {}! [CP {}] [IV {}] - exchanging for candy'.format(pokemon_name, cp, pokemon_potential))
                                         id_list2 = self.count_pokemon_inventory()
                                         # Transfering Pokemon
@@ -167,3 +180,28 @@ class PokemonCatchWorker(object):
                     id_list.append(pokemon['id'])
 
         return id_list
+        
+    def is_whitelist(self, pokemon):
+        try:
+            requirements = self.config.pkmn_whitelist[pokemon['name']]
+        except:
+            try:
+                requirements = self.config.pkmn_whitelist['any']
+            except:
+                return False
+		return self.is_meet_requirements(pokemon, requirements)
+    
+    def is_meet_requirements(self, pokemon, requirements):
+        
+        try:
+            is_pass = True
+            is_pass = is_pass and (pokemon['cp'] >= requirements['min_cp'])
+            is_pass = is_pass and (pokemon['individual_stamina'] >= requirements['iv_min_stamina'])
+            is_pass = is_pass and (pokemon['individual_attack'] >= requirements['iv_min_attack'])
+            is_pass = is_pass and (pokemon['individual_defense'] >= requirements['iv_min_defense'])
+            return is_pass
+        except:
+            return False
+        
+        
+        
