@@ -193,7 +193,8 @@ You can use -c 1 to protect your first stage low CP pokemon.
 Not yet, still need a trainer to train the script param. But we are very close to.
 ### Set GEO Location
 It works, use -l "xx.yyyy,zz.ttttt" to set lat long for location. -- diordache
-
+### What if I can't join or don't want to use Slack?
+You can connect to #PokemonGoBot on irc.freenode.net, which is running a Slack-IRC bridge. Or, connect [here](http://webchat.freenode.net/?channels=#pokemongobot)
 ### Google login issues (Login Error, Server busy)?
 
 Try to generate an [app password](!https://support.google.com/accounts/answer/185833?hl=en) and set is as
