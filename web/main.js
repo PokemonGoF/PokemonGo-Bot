@@ -62,6 +62,9 @@ var trainerFunc = function(data, user_index) {
 /*  var z = 0;
   for (var i = 0; i < data.cells.length; i++) {
     cell = data.cells[i];
+    if (!cell.hasOwnProperty(forts)) {
+      continue;
+    }
     for (var x = 0; x < data.cells[i].forts.length; x++) {
       var fort = cell.forts[x];
       if (!forts[fort.id]) {

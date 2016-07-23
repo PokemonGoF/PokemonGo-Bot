@@ -30,6 +30,12 @@ var/
 *.manifest
 *.spec
 
+# Eclipse Users
+.project
+.pydevproject
+.settings/
+
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
@@ -90,15 +96,17 @@ ENV/
 
 # Personal load details
 config.json
-location.json
 src/
 info.json
 inventory.json
 pokedex.json
 web/catchable.json
-data/catch-ignore.yml
 web/catchable-*.json
 web/location-*.json
+web/location.json
+web/userdata.js
+data/last-location*.json
+data/catch-ignore.yml
 
 # ignore Pycharm config
 .idea
