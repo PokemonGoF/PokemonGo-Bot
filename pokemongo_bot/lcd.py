@@ -168,11 +168,10 @@ class lcd:
         # style=4 typing
 
         self.clear()
-        n = 20
         words = iter(message.split())
         lines, current = [], next(words)
         for word in words:
-            if len(current) + 1 + len(word) > n:
+            if len(current) + 1 + len(word) > LCD_WIDTH:
                 lines.append(current)
                 current = word
             else:
