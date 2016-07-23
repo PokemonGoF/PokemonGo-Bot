@@ -67,7 +67,7 @@ var trainerFunc = function(data, user_index) {
         var fort = cell.forts[x];
         if (!forts[fort.id]) {
         if (fort.type === 1 ) {
-          forts[fort.id] = new google.maps.Marker({
+            forts[fort.id] = new google.maps.Marker({
             map: map,
             position: {
               lat: parseFloat(fort.latitude),
@@ -89,8 +89,6 @@ var trainerFunc = function(data, user_index) {
           info_windows[fort.id] = new google.maps.InfoWindow({
             content: contentString
           });
-
-
           google.maps.event.addListener(forts[fort.id], 'click', (function(marker, content, infowindow) {
             return function() {
               infowindow.setContent(content);
