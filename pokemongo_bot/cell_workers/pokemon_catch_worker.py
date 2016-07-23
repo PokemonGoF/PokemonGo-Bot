@@ -44,23 +44,23 @@ class PokemonCatchWorker(object):
                         while(True):
                             pokeball = 0
                             
-                            if balls_stock[1] > 0:
-                                #print 'use Poke Ball'
+                           if balls_stock[1] > 0:
+                                # Use Pokeballs
                                 pokeball = 1
                                 
-                            if cp > 300 and balls_stock[2] > 0:
-                                #print 'use Great Ball'
+                            if (cp > 300 and balls_stock[2] > 0) or (pokeball == 0 and balls_stock[2] > 0):
+                                # Use Great ball if CP > 300 or ran out of Pokeballs
                                 pokeball = 2
                                 
-                            if cp > 700 and balls_stock[3] > 0:
-                                #print 'use Utra Ball'
+                            if (cp > 700 and balls_stock[3] > 0) or (pokeball == 0 and balls_stock[3] > 0):
+                                # Use Ultra ball if CP > 700 or ran out of both Pokeballs and Great Balls
                                 pokeball = 3
 
                             if pokeball is 0:
                                 print_red('[x] Out of pokeballs...')
                                 # TODO: Begin searching for pokestops.
                                 break
-                            
+								
                             print('[x] Using {}...'.format(self.item_list[str(pokeball)]))
                             
                             balls_stock[pokeball] = balls_stock[pokeball] - 1
