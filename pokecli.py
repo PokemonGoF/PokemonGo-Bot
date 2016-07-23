@@ -70,7 +70,7 @@ def init_config():
     parser.add_argument(
         "-c", "--cp", help="Set CP less than to transfer(DEFAULT 100)", type=int, default=100)
     parser.add_argument("-iv", "--pokemon_potential",
-                        help="Set IV ratio less than to transfer(DEFAULT 0.80)", type=float, default=0.80)
+                        help="Set IV ratio less than to transfer(DEFAULT 0.40)", type=float, default=0.40)
     parser.add_argument("-k", "--gmapkey",
                         help="Set Google Maps API KEY", type=str, default=None)
     parser.add_argument(
