@@ -26,6 +26,7 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
   - [Windows](#installation-windows)
 - [Develop PokemonGo-Bot](develop-pokemonGo-bot)
 - [Usage](#usage)
+- [Docker Usage](#how-to-run-with-docker)
 - [FAQ](#faq)
 - [Credits](#credits)
 - [Donation](#donation)
@@ -159,6 +160,10 @@ This project uses Google Maps. There's one map coupled with the project, but as 
     $ python2 pokecli.py -a google -u tejado -p 1234 --location "New York, Washington Square"
 
 
+## How to run with Docker
+    docker run namlehong/alpine-pgo:dev -a ptc -u tejado -p 1234 -l "New York, Central Park" -iv 0.8 -w 25
+
+
 ## How to add/discover new API
   The example is [here](https://github.com/PokemonGoF/PokemonGo-Bot/commit/46e2352ce9f349cc127a408959679282f9999585)  
     1. Check the type of your API request in   [POGOProtos](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/RequestType.proto) For example: RECYCLE_INVENTORY_ITEM  
@@ -250,11 +255,11 @@ If using multiple usernames format like this:
  * jtdroste
 
 ## Credits
-[tejado](https://github.com/tejado) many thanks for the API
-[Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets
-[elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR
-[AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos
-[AHAAAAAAA](https://github.com/AHAAAAAAA/PokemonGo-Map) for parts of the s2sphere stuff
+- [tejado](https://github.com/tejado) many thanks for the API
+- [Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets
+- [elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR
+- [AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos
+- [AHAAAAAAA](https://github.com/AHAAAAAAA/PokemonGo-Map) for parts of the s2sphere stuff
 
 
 ## Donation
