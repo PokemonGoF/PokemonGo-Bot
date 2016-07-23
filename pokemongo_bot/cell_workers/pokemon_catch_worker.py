@@ -28,7 +28,10 @@ class PokemonCatchWorker(object):
         if response_dict and 'responses' in response_dict:
             if 'ENCOUNTER' in response_dict['responses']:
                 if 'status' in response_dict['responses']['ENCOUNTER']:
-                    if response_dict['responses']['ENCOUNTER']['status'] is 1:
+                    if response_dict['responses']['ENCOUNTER']['status'] is 7:
+                        print '[x] Pokemon Bag is full!'
+                        ## TODO: begin transfer logic to free some space
+                    elif response_dict['responses']['ENCOUNTER']['status'] is 1:
                         cp=0
                         if 'wild_pokemon' in response_dict['responses']['ENCOUNTER']:
                             pokemon=response_dict['responses']['ENCOUNTER']['wild_pokemon']
