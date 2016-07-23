@@ -210,6 +210,7 @@ To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg
  * CapCap
  * mzupan
  * namlehong
+ * gnekic(GeXx)
 
 ## Credits
 [tejado](https://github.com/tejado) many thanks for the API
