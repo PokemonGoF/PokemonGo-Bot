@@ -10,7 +10,6 @@ var emptyDex = [];
 var pokemonArray = {};
 var i;
 var user_index;
-var imageExt = ".png";
 var trainerSex = ["m","f"]
 var numTrainers = [177, 109]
 
