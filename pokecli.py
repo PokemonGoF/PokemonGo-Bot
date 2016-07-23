@@ -118,12 +118,6 @@ def init_config():
         type=str,
         default="km")
 
-    parser.add_argument(
-        "-ign",
-        "--ign_init_trans",
-        type=str,
-        default='')
-
     config = parser.parse_args()
     if not config.username and not 'username' in load:
         config.username = raw_input("Username: ")
