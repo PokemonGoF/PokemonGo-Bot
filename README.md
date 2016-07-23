@@ -66,6 +66,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -c CP, --cp                                   Set the CP to transfer or lower (eg. 100 will transfer CP0-99)
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
+      -tl, --transfer_list                          Transfer These Pokemons regardless their CP
 
 
 ### Command Line Example
@@ -109,6 +110,7 @@ ethervoid
 Bashin
 tstumm
 TheGoldenXY
+Tienkhoi
 
 ## Credits
 ### The works are based on the Pokemon Go API
