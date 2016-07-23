@@ -10,6 +10,9 @@ var emptyDex = [];
 var pokemonArray = {};
 var i;
 var user_index;
+var imageExt = ".png";
+var trainerSex = ["m","f"]
+var numTrainers = [177, 109]
 
 function initMap() {
   // load pokemon data now..
@@ -26,6 +29,7 @@ function initMap() {
   });
   document.getElementById("switchPan").checked = userFollow;
   document.getElementById("switchZoom").checked = userZoom;
+  document.getElementById("imageType").checked = false;
   setTimeout(function(){
     placeTrainer();
     addCatchable();
@@ -38,11 +42,15 @@ function initMap() {
 };
 
 $('#switchPan').change(function(){
-    if (this.checked) { userFollow = true } else { userFollow = false }
+    if (this.checked) { userFollow = true } else { userFollow = false; }
 });
 
 $('#switchZoom').change(function(){
-    if (this.checked) { userZoom = true } else { userZoom = false }
+    if (this.checked) { userZoom = true } else { userZoom = false; }
+});
+
+$('#imageType').change(function(){
+    if (this.checked) { imageExt = ".gif" } else { imageExt = ".png"; }
 });
 
 var errorFunc = function(xhr) {
@@ -52,11 +60,13 @@ var errorFunc = function(xhr) {
 var trainerFunc = function(data, user_index) {
   if (user_data[users[user_index]].hasOwnProperty('marker') === false) {
     console.log("New Marker: Trainer - " + data.lat + ", " + data.lng);
+    randomSex = Math.floor(Math.random() * 1)
     user_data[users[user_index]].marker = new google.maps.Marker({
       map: map,
       position: {lat: parseFloat(data.lat), lng: parseFloat(data.lng)},
-      icon: "image/trainer-icon.png",
-      zIndex: 2
+      icon: "image/trainer/" + trainerSex[randomSex] + Math.floor(Math.random() * numTrainers[randomSex]) + ".png",
+      zIndex: 2,
+      label: users[user_index]
     });
   } else {
     user_data[users[user_index]].marker.setPosition({lat: parseFloat(data.lat), lng: parseFloat(data.lng)});
@@ -95,8 +105,9 @@ var catchSuccess = function(data, user_index) {
         user_data[users[user_index]].catchables[data.spawnpoint_id] = new google.maps.Marker({
           map: map,
           position: {lat: parseFloat(data.latitude), lng: parseFloat(data.longitude)},
-          icon: "image/icons/" + data.pokemon_id + ".png",
-          zIndex: 4
+          icon: "image/pokemon/" + pad_with_zeroes(data.pokemon_id, 3) + imageExt,
+          zIndex: 4,
+          optimized: false
         });
           if (userZoom == true) {
             map.setZoom(16);
@@ -112,7 +123,7 @@ var catchSuccess = function(data, user_index) {
           lat: parseFloat(data.latitude),
           lng: parseFloat(data.longitude)
         });
-        user_data[users[user_index]].catchables[data.spawnpoint_id].setIcon("image/icons/" + data.pokemon_id + ".png");
+        user_data[users[user_index]].catchables[data.spawnpoint_id].setIcon("image/pokemon/" + pad_with_zeroes(data.pokemon_id, 3) + imageExt);
       }
     }
   } else {
@@ -142,6 +153,17 @@ function addCatchable() {
 //     function(xhr) { console.error(xhr); }
 //   );
 // }
+
+
+function pad_with_zeroes(number, length) {
+  var my_string = '' + number;
+  while (my_string.length < length) {
+      my_string = '0' + my_string;
+  }
+  return my_string;
+}
+
+
 function filter(arr, search) {
   var filtered = [];
   for(i=0; i < arr.length; i++) {
