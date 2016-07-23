@@ -104,6 +104,7 @@ class PokemonCatchWorker(object):
                                         id_list2 = self.count_pokemon_inventory()
                                         # Transfering Pokemon
                                         pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
+                                        print_red('DEBUG: '.pokemon_to_transfer)
                                         if len(pokemon_to_transfer) == 0:
                                             raise RuntimeError('Trying to transfer 0 pokemons!')
                                         self.transfer_pokemon(pokemon_to_transfer)
