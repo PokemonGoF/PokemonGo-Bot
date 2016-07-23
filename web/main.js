@@ -189,7 +189,17 @@ var trainerFunc = function(data, user_index) {
               icon: "image/forts/" + teams[fort.owned_by_team] + ".png"
             });
           }
-          var contentString = 'Id: ' + fort.id + '<br>Type: Gym<br>Guard Pokemon: ' + fort.guard_pokemon_id + '<br>Team: ' + teams[fort.owned_by_team] + '<br>Points: ' + fort.gym_points;
+          pokemonGuard = '';
+          fortType = 'PokeStop';
+          fortTeam = '';
+          fortPoints = '';
+          if (fort.guard_pokemon_id != undefined) {
+            pokemonGuard = 'Guard Pokemon: ' + pokemonArray[fort.guard_pokemon_id-1].Name + '<br>';
+            fortType = 'Gym';
+            fortTeam = 'Team: ' + teams[fort.owned_by_team] + '<br>';
+            fortPoints = 'Points: ' + fort.gym_points;
+          }
+          var contentString = 'Id: ' + fort.id + '<br>Type: ' + fortType + '<br>' + pokemonGuard + fortPoints;
           info_windows[fort.id] = new google.maps.InfoWindow({
             content: contentString
           });
