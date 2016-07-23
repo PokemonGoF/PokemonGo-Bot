@@ -205,6 +205,10 @@ class PokemonCatchWorker(object):
 
     def should_release_pokemon(self, pokemon_name, cp, iv, response_dict):
         release_config = self._get_release_config_for(pokemon_name)
+        cp_iv_logic = release_config.get('cp_iv_logic')
+        if not cp_iv_logic:
+            cp_iv_logic = self._get_release_config_for('any').get('cp_iv_logic', 'and')
+
         release_results = {
             'cp':               False,
             'iv':               False,
@@ -223,14 +227,19 @@ class PokemonCatchWorker(object):
         if release_config.get('always_release'):
             return True
 
-        cp_iv_logic = release_config.get('cp_iv_logic')
-        if not cp_iv_logic:
-            cp_iv_logic = self._get_release_config_for('any').get('cp_iv_logic', 'and')
-
         logic_to_function = {
             'or': lambda x, y: x or y,
             'and': lambda x, y: x and y
         }
+
+        print_yellow(
+            "[x] Release config for {}: CP {} {} IV {}".format(
+                pokemon_name,
+                min_cp,
+                cp_iv_logic,
+                min_iv
+            )
+        )
 
         return logic_to_function[cp_iv_logic](*release_results.values())
 
