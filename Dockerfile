@@ -1,10 +1,8 @@
-FROM python:2.7-onbuild
-ENV AUTH_SERVICE ""
-ENV USERNAME ""
-ENV PASSWORD ""
-ENV LOCATION ""
-ENV WALK ""
-ENV CP ""
+FROM namlehong/alpine-pgo-base:latest
 
-CMD python pokecli.py -a $AUTH_SERVICE -u $USERNAME -p $PASSWORD -l $LOCATION -w $WALK -s -c $CP
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
 
+COPY . /app
+
+ENTRYPOINT ["/usr/bin/python", "pokecli.py"]

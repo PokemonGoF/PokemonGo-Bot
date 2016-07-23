@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
 pgoapi - Pokemon Go API
 Copyright (c) 2016 tjado <https://github.com/tejado>
@@ -38,6 +39,7 @@ import codecs
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
+from getpass import getpass
 from pokemongo_bot import PokemonGoBot
 from pokemongo_bot.cell_workers.utils import print_green, print_yellow, print_red
 
@@ -55,27 +57,40 @@ def init_config():
     required = lambda x: not x in load
     parser.add_argument("-a", "--auth_service", help="Auth Service ('ptc' or 'google')",
         required=required("auth_service"))
-    parser.add_argument("-u", "--username", help="Username", required=required("username"))
-    parser.add_argument("-p", "--password", help="Password", required=required("password"))
-    parser.add_argument("-l", "--location", help="Location", required=required("location"))
-    parser.add_argument("-s", "--spinstop", help="SpinPokeStop", action='store_true')
+    parser.add_argument("-u", "--username", help="Username")
+    parser.add_argument("-p", "--password", help="Password")
+    parser.add_argument("-l", "--location", help="Location")
+    parser.add_argument("-lc", "--use-location-cache", help="Bot will start at last known location", action='store_true', default=False, dest='location_cache')
+    parser.add_argument("-m", "--mode", help="Farming Mode", type=str, default="all")
     parser.add_argument("-w", "--walk", help="Walk instead of teleport with given speed (meters per second, e.g. 2.5)", type=float, default=2.5)
     parser.add_argument("-c", "--cp",help="Set CP less than to transfer(DEFAULT 100)",type=int,default=100)
+    parser.add_argument("-iv", "--pokemon_potential",help="Set IV ratio less than to transfer(DEFAULT 0.80)",type=float,default=0.80)
     parser.add_argument("-k", "--gmapkey",help="Set Google Maps API KEY",type=str,default=None)
     parser.add_argument("--maxsteps",help="Set the steps around your initial location(DEFAULT 5 mean 25 cells around your location)",type=int,default=5)
+    parser.add_argument("--initial-transfer", help="Transfer all pokemon with same ID on bot start, except pokemon with highest CP. It works with -c", action='store_true', dest='initial_transfer')
     parser.add_argument("-d", "--debug", help="Debug Mode", action='store_true')
     parser.add_argument("-t", "--test", help="Only parse the specified location", action='store_true')
+    parser.add_argument("--distance_unit", help="Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)", type=str, default="m")
     parser.set_defaults(DEBUG=False, TEST=False)
     config = parser.parse_args()
 
+    if not config.username and not 'username' in load:
+        config.username = raw_input("Username: ")
+    if not config.password and not 'password' in load:
+        config.password = getpass("Password: ")
+
     # Passed in arguments shoud trump
     for key in config.__dict__:
-        if key in load and config.__dict__[key] == None:
+        if key in load:
             config.__dict__[key] = load[key]
 
     if config.auth_service not in ['ptc', 'google']:
-      log.error("Invalid Auth service specified! ('ptc' or 'google')")
-      return None
+        logging.error("Invalid Auth service specified! ('ptc' or 'google')")
+        return None
+
+    if not config.location and not config.location_cache in load:
+        logging.error("Needs either --use-location-cache or --location.")
+        return None
 
     return config
 
@@ -94,13 +109,18 @@ def main():
     print_green('[x] PokemonGO Bot v1.0')
     print_yellow('[x] Configuration initialized')
 
-    bot = PokemonGoBot(config)
-    bot.start()
+    try:
+        bot = PokemonGoBot(config)
+        bot.start()
 
-    print_green('[x] Starting PokemonGo Bot....')
+        print_green('[x] Starting PokemonGo Bot....')
 
-    while(True):
-        bot.take_step()
+        while(True):
+            bot.take_step()
+
+    except KeyboardInterrupt:
+        print_red("\n"'[x]Exiting PokemonGo Bot')
+        #TODO Add number of pokemon catched, pokestops visited, highest CP pokemon catched, etc.
 
 if __name__ == '__main__':
     main()

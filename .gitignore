@@ -91,3 +91,17 @@ ENV/
 # Personal load details
 config.json
 location.json
+src/
+info.json
+inventory.json
+pokedex.json
+web/catchable.json
+data/catch-ignore.yml
+web/catchable-*.json
+web/location-*.json
+
+# ignore Pycharm config
+.idea
+
+# personal docker-compose
+docker-compose.yml
