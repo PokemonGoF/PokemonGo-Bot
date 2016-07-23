@@ -28,41 +28,54 @@ class PokemonCatchWorker(object):
         if response_dict and 'responses' in response_dict:
             if 'ENCOUNTER' in response_dict['responses']:
                 if 'status' in response_dict['responses']['ENCOUNTER']:
+                    if response_dict['responses']['ENCOUNTER']['status'] is 7:
+                        print '[x] Pokemon Bag is full!'
+                        self.bot.initial_transfer()
                     if response_dict['responses']['ENCOUNTER']['status'] is 1:
                         cp=0
+                        total_IV = 0
                         if 'wild_pokemon' in response_dict['responses']['ENCOUNTER']:
                             pokemon=response_dict['responses']['ENCOUNTER']['wild_pokemon']
                             if 'pokemon_data' in pokemon and 'cp' in pokemon['pokemon_data']:
                                 cp=pokemon['pokemon_data']['cp']
+                                iv_stats = ['individual_attack','individual_defense','individual_stamina']
+                                for individual_stat in iv_stats:
+                                    try:
+                                        total_IV += pokemon['pokemon_data'][individual_stat]
+                                    except:
+                                        continue
+                                print total_IV
+                                pokemon_potential = round((total_IV / 45.0), 2)
                                 pokemon_num=int(pokemon['pokemon_data']['pokemon_id'])-1
                                 pokemon_name=self.pokemon_list[int(pokemon_num)]['Name']
-                                print_yellow('[#] A Wild {} appeared! [CP {}]'.format(pokemon_name, cp))
+                                print_yellow('[#] A Wild {} appeared! [CP {}] [Potential {}]'.format(pokemon_name, cp, pokemon_potential))
                                 #Simulate app
                                 sleep(3)
 
                         balls_stock = self.bot.pokeball_inventory();
                         while(True):
                             pokeball = 0
-                            
-                           if balls_stock[1] > 0:
-                                # Use Pokeballs
+
+                            if balls_stock[1] > 0:
+                                #print 'use Poke Ball'
                                 pokeball = 1
-                                
-                            if (cp > 300 and balls_stock[2] > 0) or (pokeball == 0 and balls_stock[2] > 0):
-                                # Use Great ball if CP > 300 or ran out of Pokeballs
+
+                            if cp > 300 and balls_stock[2] > 0:
+                                #print 'use Great Ball'
                                 pokeball = 2
-                                
-                            if (cp > 700 and balls_stock[3] > 0) or (pokeball == 0 and balls_stock[3] > 0):
-                                # Use Ultra ball if CP > 700 or ran out of both Pokeballs and Great Balls
+
+                            if cp > 700 and balls_stock[3] > 0:
+                                #print 'use Utra Ball'
                                 pokeball = 3
 
                             if pokeball is 0:
-                                print_red('[x] Out of pokeballs...')
-                                # TODO: Begin searching for pokestops.
-                                break
-								
+                                print_red('[x] Out of pokeballs, switching to farming mode...')
+                                # Begin searching for pokestops.
+                                self.config.mode='farm'
+                                return -1
+
                             print('[x] Using {}...'.format(self.item_list[str(pokeball)]))
-                            
+
                             balls_stock[pokeball] = balls_stock[pokeball] - 1
                             id_list1 = self.count_pokemon_inventory()
                             self.api.catch_pokemon(encounter_id = encounter_id,
@@ -86,14 +99,14 @@ class PokemonCatchWorker(object):
                                 if status is 3:
                                     print_red('[x] Oh no! {} vanished! :('.format(pokemon_name))
                                 if status is 1:
-                                    if cp < self.config.cp:
-                                        print_green('[x] Captured {}! [CP {}] - exchanging for candy'.format(pokemon_name, cp))
+                                    if cp < self.config.cp or pokemon_potential < self.config.pokemon_potential:
+                                        print_green('[x] Captured {}! [CP {}] [IV {}] - exchanging for candy'.format(pokemon_name, cp, pokemon_potential))
                                         id_list2 = self.count_pokemon_inventory()
                                         # Transfering Pokemon
                                         pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
                                         if len(pokemon_to_transfer) == 0:
                                             raise RuntimeError('Trying to transfer 0 pokemons!')
-                                        self.transfer_pokemon(pokemon_to_transfer)
+                                        self.transfer_pokemon(pokemon_to_transfer[0])
                                         print_green('[#] {} has been exchanged for candy!'.format(pokemon_name))
                                     else:
                                         print_green('[x] Captured {}! [CP {}]'.format(pokemon_name, cp))

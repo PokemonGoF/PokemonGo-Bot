@@ -2,13 +2,14 @@
 
 import json
 import time
+import pprint
 
 from math import ceil
 from s2sphere import CellId, LatLng
 from google.protobuf.internal import encoder
 
 from human_behaviour import sleep, random_lat_long_delta
-from cell_workers.utils import distance, i2f
+from cell_workers.utils import distance, i2f, format_time
 
 from pgoapi.utilities import f2i, h2f
 
@@ -25,7 +26,7 @@ class Stepper(object):
         self.y = 0
         self.dx = 0
         self.dy = -1
-        self.steplimit=self.config.maxsteps
+        self.steplimit=self.config.max_steps
         self.steplimit2 = self.steplimit**2
         self.origin_lat = self.bot.position[0]
         self.origin_lon = self.bot.position[1]
@@ -61,7 +62,7 @@ class Stepper(object):
         steps = (dist+0.0)/(speed+0.0) # may be rational number
         intSteps = int(steps)
         residuum = steps - intSteps
-        print '[#] Walking from ' + str((i2f(self.api._position_lat), i2f(self.api._position_lng))) + " to " + str(str((lat, lng))) + " for approx. " + str(ceil(steps)) + " seconds"
+        print '[#] Walking from ' + str((i2f(self.api._position_lat), i2f(self.api._position_lng))) + " to " + str(str((lat, lng))) + " for approx. " + str(format_time(ceil(steps)))
         if steps != 0:
             dLat = (lat - i2f(self.api._position_lat)) / steps
             dLng = (lng - i2f(self.api._position_lng)) / steps
@@ -84,17 +85,28 @@ class Stepper(object):
         self.api.get_map_objects(latitude=f2i(lat), longitude=f2i(lng), since_timestamp_ms=timestamp, cell_id=cellid)
 
         response_dict = self.api.call()
+        #pprint.pprint(response_dict)
         # Passing Variables through a file
-        with open('web/location.json', 'w') as outfile:
-            json.dump({'lat': lat, 'lng': lng,'cells':response_dict['responses']['GET_MAP_OBJECTS']['map_cells']}, outfile)
-        if response_dict and 'responses' in response_dict and \
-            'GET_MAP_OBJECTS' in response_dict['responses'] and \
-            'status' in response_dict['responses']['GET_MAP_OBJECTS'] and \
-            response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
-            map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
-            position = (lat, lng, alt)
-            for cell in map_cells:
-                self.bot.work_on_cell(cell, position, pokemon_only)
+        if response_dict and 'responses' in response_dict:
+            if 'GET_MAP_OBJECTS' in response_dict['responses']:
+                if 'map_cells' in response_dict['responses']['GET_MAP_OBJECTS']:
+                    with open('web/location-%s.json' % (self.config.username), 'w') as outfile:
+                        json.dump({'lat': lat, 'lng': lng,'cells':response_dict['responses']['GET_MAP_OBJECTS']['map_cells']}, outfile)
+                    with open('data/last-location-%s.json' % (self.config.username), 'w') as outfile:
+                        outfile.truncate()
+                        json.dump({'lat': lat, 'lng' : lng},outfile)
+        if response_dict and 'responses' in response_dict:
+            if 'GET_MAP_OBJECTS' in response_dict['responses']:
+                if 'status' in response_dict['responses']['GET_MAP_OBJECTS']:
+                    if response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
+                        map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
+                        position = (lat, lng, alt)
+                    # Sort all by distance from current pos- eventually this should build graph & A* it
+                    #print(map_cells)
+                    #print( s2sphere.from_token(x['s2_cell_id']) )
+                    map_cells.sort(key=lambda x: distance(lat, lng, x['forts'][0]['latitude'], x['forts'][0]['longitude']) if 'forts' in x and x['forts'] != [] else 1e6)
+                    for cell in map_cells:
+                        self.bot.work_on_cell(cell, position, pokemon_only)
 
     def _get_cellid(self, lat, long, radius=10):
         origin = CellId.from_lat_lng(LatLng.from_degrees(lat, long)).parent(15)

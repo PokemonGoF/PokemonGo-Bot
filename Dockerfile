@@ -1,3 +1,8 @@
-FROM python:2.7-onbuild
+FROM namlehong/alpine-pgo-base:latest
 
-ENTRYPOINT ["python", "pokecli.py"]
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . /app
+
+ENTRYPOINT ["/usr/bin/python", "pokecli.py"]
