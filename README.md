@@ -152,6 +152,15 @@ Quick Tip: When using this script, use a Lucky egg to double the XP for 30 mins.
 ### How can I not collect certain pokemon
 You don't want to collect common pokemon once you hit a certain level. It will
 slow down leveling but you won't fill up either.
+### How do I use the map??
+You can either view the map via opening the html file, or by serving it with SimpleHTTPServer (runs on localhost:8000)  
+To use SimpleHTTPServer:  
+```$ python -m SimpleHTTPServer```  
+You will need to set your username(s) in the userdata.js file before opening:  
+Open userdata.js with your favorite text editor.  
+put your username in the quotes instead of "username"
+If using multiple usernames format like this:  
+```var users = ["username1","username2"];```
 
 Create the following filter
 
