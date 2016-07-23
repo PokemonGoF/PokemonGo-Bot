@@ -12,8 +12,9 @@ var forts = [];
 var info_windows = [];
 var i;
 var user_index;
-var trainerSex = ["m","f"]
-var numTrainers = [177, 109]
+var trainerSex = ["m","f"];
+var numTrainers = [177, 109];
+var menu;
 
 function initMap() {
   // load pokemon data now..
@@ -53,6 +54,51 @@ $('#switchZoom').change(function(){
 $('#imageType').change(function(){
     if (this.checked) { imageExt = ".gif" } else { imageExt = ".png"; }
 });
+
+$('#tInfo').click(function(){
+    if (menu == undefined || menu == 1) {
+      $("#submenu").toggle();
+    }
+    if (menu != 1 && $("#submenu").is(':hidden')) {
+      $("#submenu").toggle();
+    }
+    menu = 1;
+    buildMenu();
+});
+
+$('#tItems').click(function(){
+    if (menu == undefined || menu == 2) {
+      $("#submenu").toggle();
+    }
+    if (menu != 2 && $("#submenu").is(':hidden')) {
+      $("#submenu").toggle();
+    }
+    menu = 2;
+    buildMenu();
+});
+
+$('#tPokemon').click(function(){
+    if (menu == undefined || menu == 3) {
+      $("#submenu").toggle();
+    }
+    if (menu != 3 && $("#submenu").is(':hidden')) {
+      $("#submenu").toggle();
+    }
+    menu = 3;
+    buildMenu();
+});
+
+$('#tPokedex').click(function(){
+    if (menu == undefined || menu == 4) {
+      $("#submenu").toggle();
+    }
+    if (menu != 4 && $("#submenu").is(':hidden')) {
+      $("#submenu").toggle();
+    }
+    menu = 4;
+    buildMenu();
+});
+
 
 var errorFunc = function(xhr) {
   console.error(xhr);
@@ -233,3 +279,18 @@ xhr.send();
 $(document).ready(function(){
   $('.tooltipped').tooltip({delay: 50});
 });
+
+function buildMenu () {
+  if (menu == 1) {
+    document.getElementById('subtitle').innerHTML = "Trainer Info";
+  }
+  if (menu == 2) {
+    document.getElementById('subtitle').innerHTML = "Items in Bag";
+  }
+  if (menu == 3) {
+    document.getElementById('subtitle').innerHTML = "Pokemon in Bag";
+  }
+  if (menu == 4) {
+    document.getElementById('subtitle').innerHTML = "Pokedex";
+  }
+}

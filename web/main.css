@@ -14,3 +14,12 @@ html, body {
 	height: auto;
 	width: auto;
 }
+#submenu {
+	position: fixed;
+	left: 20px;
+	top: 30%;
+	max-height: 700px;
+	width: 50%;
+	z-index: 6;
+	display: none;
+}
