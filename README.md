@@ -43,7 +43,7 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 
 - OS X:  `brew update && brew install --devel protobuf`
 - Windows: Download protobuf 3.0: [here](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip) and unzip `bin/protoc.exe` into a folder in your PATH.
-- Linux: `PLEASE CONTRIBUTE`
+- Linux: `apt-get install python-protobuf`
 
 ### Installation
 
