@@ -9,7 +9,7 @@
 </p>
 
 # PokemonGo-Bot
-A python script for __catching pokemons__ and __spin pokestops__ on PokemonGo.
+A python script for __catching pokemons__ and __spinning pokestops__ on PokemonGo.
 
 
 ## Project Chat
@@ -145,7 +145,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -du, --distance_unit UNIT                     Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
       -it, --initial_transfer                       Start the bot with a pokemon clean up, keeping only the higher CP of each pokemon. It respects -c as upper limit to release.
       -ms, --max_steps MAX_STEP                     Set the steps around your initial location (DEFAULT 5 mean 25 cells around your location)
-      -iv IV, --pokemon_potential                   Set the ratio for the IV values to transfer (eg. 0.8 will transfer a pokemon with IV 0.5)
+      -iv IV, --pokemon_potential                   Set the ratio for the IV values to transfer (DEFAULT 0.4 eg. 0.4 will transfer a pokemon with IV 0.3)
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
 
@@ -196,6 +196,21 @@ Quick Tip: When using this script, use a Lucky egg to double the XP for 30 mins.
 ### How can I not collect certain pokemon
 You don't want to collect common pokemon once you hit a certain level. It will
 slow down leveling but you won't fill up either.
+
+Create the following filter
+```
+./data/catch-ignore.yml
+```
+Its a yaml file with a list of names so make it look like
+```
+ignore:
+  - Pidgey
+  - Rattata
+  - Pidgeotto
+  - Spearow
+  - Ekans
+  - Zubat
+```
 ### How do I use the map??
 You can either view the map via opening the html file, or by serving it with SimpleHTTPServer (runs on localhost:8000)  
 To use SimpleHTTPServer:  
@@ -207,38 +222,6 @@ Copy userdata.js.example to userdata.js and edit with your favorite text editor.
 put your username in the quotes instead of "username"
 If using multiple usernames format like this:  
 ```var users = ["username1","username2"];```
-
-Create the following filter
-
-```
-./data/catch-ignore.yml
-```
-
-Its a yaml file with a list of names so make it look like
-
-```
-ignore:
-  - Pidgey
-  - Rattata
-  - Pidgeotto
-  - Spearow
-  - Ekans
-  - Zubat
-```
-
-
-## Requirements
- * Python 2
- * requests
- * protobuf
- * gpsoauth
- * geopy
- * s2sphere
- * googlemaps
- * pgoapi
-
-To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg=pgoapi`
-
 
 ## Contributors (Don't forget add yours here when you create PR:)
  * eggins -- The first pull request :)
