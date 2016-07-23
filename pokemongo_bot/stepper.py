@@ -93,9 +93,9 @@ class Stepper(object):
         if response_dict and 'responses' in response_dict:
             if 'GET_MAP_OBJECTS' in response_dict['responses']:
                 if 'status' in response_dict['responses']['GET_MAP_OBJECTS']:
-                    response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
-                    map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
-                    position = (lat, lng, alt)
+                    if response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
+                        map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
+                        position = (lat, lng, alt)
             # Sort all by distance from current pos- eventually this should build graph & A* it
             #print(map_cells)
             #print( s2sphere.from_token(x['s2_cell_id']) )
