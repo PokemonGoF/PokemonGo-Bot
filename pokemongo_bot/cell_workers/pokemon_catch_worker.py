@@ -126,7 +126,7 @@ class PokemonCatchWorker(object):
                                         '[x] Oh no! {} vanished! :('.format(pokemon_name))
                                 if status is 1:
                                     print_green(
-                                        '[x] Captured {}! [CP {}] [IV {}] - exchanging for candy'.format(
+                                        '[x] Captured {}! [CP {}] [IV {}] - Checking Release Config'.format(
                                             pokemon_name,
                                             cp,
                                             pokemon_potential
