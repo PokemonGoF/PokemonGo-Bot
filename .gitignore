@@ -97,6 +97,8 @@ inventory.json
 pokedex.json
 web/catchable.json
 data/catch-ignore.yml
+web/catchable-*.json
+web/location-*.json
 
 # ignore Pycharm config
 .idea
