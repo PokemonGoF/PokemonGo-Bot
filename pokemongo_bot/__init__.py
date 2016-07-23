@@ -9,7 +9,7 @@ import time
 import datetime
 from pgoapi import PGoApi
 from cell_workers import PokemonCatchWorker, SeenFortWorker
-from cell_workers.utils import distance
+from cell_workers.utils import filtered_forts, distance
 from stepper import Stepper
 from geopy.geocoders import GoogleV3
 from math import radians, sqrt, sin, cos, atan2
@@ -30,33 +30,29 @@ class PokemonGoBot(object):
     def take_step(self):
         self.stepper.take_step()
 
-    def work_on_cell(self, cell, position, include_fort_on_path):
-        if (self.config.mode == "all" or self.config.mode == "poke") and 'catchable_pokemons' in cell:
+    def work_on_cell(self, map_cells, position, include_fort_on_path):
+        if (self.config.mode == "all" or self.config.mode == "poke"):
             print '[#] Something rustles nearby!'
-            for pokemon in cell['catchable_pokemons']:
-                with open('web/catchable.json', 'w') as outfile:
-                    json.dump(pokemon, outfile)
-                worker = PokemonCatchWorker(pokemon, self)
-                worker.work()
-                with open('web/catchable.json', 'w') as outfile:
-                    json.dump({}, outfile)
-        if (self.config.mode == "all" or self.config.mode == "poke") and 'wild_pokemons' in cell:
-            for pokemon in cell['wild_pokemons']:
-                worker = PokemonCatchWorker(pokemon, self)
-                worker.work()
-        if (self.config.mode == "all" or self.config.mode == "farm") and include_fort_on_path:
-            if 'forts' in cell:
-                # Only include those with a lat/long
-                forts = [fort for fort in cell['forts'] if 'latitude' in fort and 'type' in fort]
+            for cell in map_cells:
+                if 'catchable_pokemons' in cell:
+                    for pokemon in cell['catchable_pokemons']:
+                        with open('web/catchable.json', 'w') as outfile:
+                            json.dump(pokemon, outfile)
+                        worker = PokemonCatchWorker(pokemon, self)
+                        worker.work()
 
-                # Sort all by distance from current pos- eventually this should build graph & A* it
-                forts.sort(key=lambda x: distance(self.position[0], self.position[1], fort['latitude'], fort['longitude']))
-                for fort in cell['forts']:
-                    worker = SeenFortWorker(fort, self)
-                    hack_chain = worker.work()
-                    if hack_chain > 10:
-                        #print('need a rest')
-                        break
+        if (self.config.mode == "all" or self.config.mode == "poke"):
+            for cell in map_cells:
+                if 'wild_pokemons' in cell:
+                    for pokemon in cell['wild_pokemons']:
+                        worker = PokemonCatchWorker(pokemon, self)
+                        worker.work()
+
+        if (self.config.mode == "all" or self.config.mode == "farm") and include_fort_on_path:
+            forts = filtered_forts(self.position[0], self.position[1], sum([cell.get('forts',[]) for cell in map_cells],[]))
+            if forts:
+                worker = SeenFortWorker(forts[0], self)
+                worker.work()
 
     def _setup_logging(self):
         self.log = logging.getLogger(__name__)
@@ -103,7 +99,7 @@ class PokemonGoBot(object):
         pokecoins = '0'
         stardust = '0'
         balls_stock = self.pokeball_inventory();
-        
+
         if 'amount' in player['currencies'][0]:
             pokecoins = player['currencies'][0]['amount']
         if 'amount' in player['currencies'][1]:
@@ -123,21 +119,21 @@ class PokemonGoBot(object):
 
         if self.config.firsttrans:
             self.first_transfer()
-            
+
         print('[#]')
         self.update_inventory();
-        
+
     def first_transfer(self):
         print('[x] First Transfer.')
-        
+
         pokemon_groups = self._first_transfer_get_groups()
-        
+
         print('[x] Transfering...')
-        
+
         for id in pokemon_groups:
-        
+
             group_cp = pokemon_groups[id].keys()
-            
+
             if len(group_cp) > 1:
                 group_cp.sort()
                 group_cp.reverse()
@@ -146,30 +142,30 @@ class PokemonGoBot(object):
                     self.api.release_pokemon(pokemon_id=pokemon_groups[id][group_cp[x]])
                     response_dict = self.api.call()
                     time.sleep(2)
-                    
+
         print('[x] Transfering Done.')
-        
+
     def _first_transfer_get_groups(self):
         pokemon_groups = {}
         self.api.get_player().get_inventory()
         inventory_req = self.api.call()
-        inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']  
-        
+        inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+
         for pokemon in inventory_dict:
             try:
                 group_id = pokemon['inventory_item_data']['pokemon_data']['pokemon_id']
                 group_pokemon = pokemon['inventory_item_data']['pokemon_data']['id']
                 group_pokemon_cp = pokemon['inventory_item_data']['pokemon_data']['cp']
-                
+
                 if group_id not in pokemon_groups:
                     pokemon_groups[group_id] = {}
-                     
+
                 pokemon_groups[group_id].update({group_pokemon_cp:group_pokemon})
             except:
                 continue
         return pokemon_groups
-            
-        
+
+
     def update_inventory(self):
         self.api.get_inventory()
         response = self.api.call()
@@ -250,7 +246,7 @@ class PokemonGoBot(object):
 
 
     def _get_pos_by_name(self, location_name):
-        geolocator = GoogleV3(api_key=self.config.gmapkey)
+        geolocator = GoogleV3(api_key=self.config.gmapkey,timeout=10)
         loc = geolocator.geocode(location_name)
 
         #self.log.info('Your given location: %s', loc.address.encode('utf-8'))

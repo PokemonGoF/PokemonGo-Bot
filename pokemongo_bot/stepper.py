@@ -8,7 +8,7 @@ from s2sphere import CellId, LatLng
 from google.protobuf.internal import encoder
 
 from human_behaviour import sleep, random_lat_long_delta
-from cell_workers.utils import distance, i2f
+from cell_workers.utils import get_neighbours, distance, i2f
 
 from pgoapi.utilities import f2i, h2f
 
@@ -21,40 +21,18 @@ class Stepper(object):
         self.config = bot.config
 
         self.pos = 1
-        self.x = 0
-        self.y = 0
-        self.dx = 0
-        self.dy = -1
         self.steplimit=self.config.maxsteps
         self.steplimit2 = self.steplimit**2
         self.origin_lat = self.bot.position[0]
         self.origin_lon = self.bot.position[1]
 
     def take_step(self):
-        position=(self.origin_lat,self.origin_lon,0.0)
-
+        position=(self.origin_lat, self.origin_lon, 0.0)
         self.api.set_position(*position)
+        self.bot.heartbeat()
 
-        for step in range(self.steplimit2):
-            #starting at 0 index
-            print('[#] Scanning area for objects ({} / {})'.format((step+1), self.steplimit**2))
-            if self.config.debug:
-                print('steplimit: {} x: {} y: {} pos: {} dx: {} dy {}'.format(self.steplimit2, self.x, self.y, self.pos, self.dx, self.dy))
-            # Scan location math
-            if -self.steplimit2 / 2 < self.x <= self.steplimit2 / 2 and -self.steplimit2 / 2 < self.y <= self.steplimit2 / 2:
-                position = (self.x * 0.0025 + self.origin_lat, self.y * 0.0025 + self.origin_lon, 0)
-                if self.config.walk > 0:
-                    self._walk_to(self.config.walk, *position)
-                else:
-                    self.api.set_position(*position)
-                print('[#] {}'.format(position))
-            if self.x == self.y or self.x < 0 and self.x == -self.y or self.x > 0 and self.x == 1 - self.y:
-                (self.dx, self.dy) = (-self.dy, self.dx)
-
-            (self.x, self.y) = (self.x + self.dx, self.y + self.dy)
-
-            self._work_at_position(position[0], position[1], position[2], True)
-            sleep(10)
+        self._work_at_position(position[0], position[1], position[2], True)
+        sleep(10)
 
     def _walk_to(self, speed, lat, lng, alt):
         dist = distance(i2f(self.api._position_lat), i2f(self.api._position_lng), lat, lng)
@@ -79,22 +57,23 @@ class Stepper(object):
         print "[#] Finished walking"
 
     def _work_at_position(self, lat, lng, alt, pokemon_only=False):
-        cellid = self._get_cellid(lat, lng)
-        timestamp = [0,] * len(cellid)
-        self.api.get_map_objects(latitude=f2i(lat), longitude=f2i(lng), since_timestamp_ms=timestamp, cell_id=cellid)
+        position = (lat, lng, alt)
 
-        response_dict = self.api.call()
+        neighbours = get_neighbours(position)
+        timestamp = [0] * len(neighbours)
+
+        response_dict = self.api.get_map_objects(latitude=f2i(lat), longitude=f2i(lng), since_timestamp_ms=timestamp, cell_id=neighbours).call()
+
         # Passing Variables through a file
         with open('web/location.json', 'w') as outfile:
             json.dump({'lat': lat, 'lng': lng,'cells':response_dict['responses']['GET_MAP_OBJECTS']['map_cells']}, outfile)
+
         if response_dict and 'responses' in response_dict and \
             'GET_MAP_OBJECTS' in response_dict['responses'] and \
             'status' in response_dict['responses']['GET_MAP_OBJECTS'] and \
             response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
             map_cells=response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
-            position = (lat, lng, alt)
-            for cell in map_cells:
-                self.bot.work_on_cell(cell, position, pokemon_only)
+            self.bot.work_on_cell(map_cells, position, pokemon_only)
 
     def _get_cellid(self, lat, long, radius=10):
         origin = CellId.from_lat_lng(LatLng.from_degrees(lat, long)).parent(15)
