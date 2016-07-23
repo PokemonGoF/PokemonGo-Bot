@@ -104,11 +104,9 @@ class PokemonCatchWorker(object):
                                         id_list2 = self.count_pokemon_inventory()
                                         # Transfering Pokemon
                                         pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
-                                        print_red('DEBUG: ')
-                                        print(pokemon_to_transfer)
                                         if len(pokemon_to_transfer) == 0:
                                             raise RuntimeError('Trying to transfer 0 pokemons!')
-                                        self.transfer_pokemon(pokemon_to_transfer)
+                                        self.transfer_pokemon(pokemon_to_transfer[0])
                                         print_green('[#] {} has been exchanged for candy!'.format(pokemon_name))
                                     else:
                                         print_green('[x] Captured {}! [CP {}]'.format(pokemon_name, cp))
