@@ -1,7 +1,12 @@
 # PokemonGo-Bot - a pokemon script that can catch pokemons and spin the pokestops.
 
 ## Project chat
+[![Slack Status](https://pokemongo-bot.herokuapp.com/badge.svg)](https://pokemongo-bot.herokuapp.com)
+
+We use [Slack](https://slack.com) and IRC. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
+
 [![#pokemongobot IRC channel on freenode](https://img.shields.io/badge/irc%20channel-%23pokemongobot%20on%20freenode-blue.svg)](https://avatar.playat.ch:5000/)
+
 
 ## Features:
  * Search Fort(Spin Pokestop)
