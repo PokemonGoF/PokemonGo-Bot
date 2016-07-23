@@ -9,7 +9,7 @@
 </p>
 
 # PokemonGo-Bot
-A python script for __catching pokemons__ and __spin pokestops__ on PokemonGo.
+A python script for __catching pokemons__ and __spinning pokestops__ on PokemonGo.
 
 
 ## Project Chat
@@ -26,6 +26,7 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
   - [Windows](#installation-windows)
 - [Develop PokemonGo-Bot](develop-pokemonGo-bot)
 - [Usage](#usage)
+- [Docker Usage](#how-to-run-with-docker)
 - [FAQ](#faq)
 - [Credits](#credits)
 - [Donation](#donation)
@@ -145,7 +146,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -du, --distance_unit UNIT                     Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
       -it, --initial_transfer                       Start the bot with a pokemon clean up, keeping only the higher CP of each pokemon. It respects -c as upper limit to release.
       -ms, --max_steps MAX_STEP                     Set the steps around your initial location (DEFAULT 5 mean 25 cells around your location)
-      -iv IV, --pokemon_potential                   Set the ratio for the IV values to transfer (eg. 0.8 will transfer a pokemon with IV 0.5)
+      -iv IV, --pokemon_potential                   Set the ratio for the IV values to transfer (DEFAULT 0.4 eg. 0.4 will transfer a pokemon with IV 0.3)
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
 
@@ -156,6 +157,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
     Google Account:
     $ python2 pokecli.py -a google -u tejado -p 1234 --location "New York, Washington Square"
 
+<<<<<<< HEAD
 ### Advance Releasing Configuration
     Sometimes filter desired pokemon with ``-iv`` is not enough. Some Pokemons have decent stats but their potential value is low because how the value distribted between stamina, attack, and defense. E.g. Charmeleon with IVs 15/15/0, its potential value is 0.67 which quite low - the truth is this dude is badass, you don't really need to care much about defense for this guy. He is fragile anyway xD
     
@@ -164,6 +166,13 @@ This project uses Google Maps. There's one map coupled with the project, but as 
     1. Pokemon name is always capitalize and case-sensitive
     2. These settings will override ``-c`` and ``-iv``. Especially field ``any``, so use with caution.
     
+=======
+
+## How to run with Docker
+    docker run namlehong/alpine-pgo:dev -a ptc -u tejado -p 1234 -l "New York, Central Park" -iv 0.8 -w 25
+
+
+>>>>>>> bb4afa9e2ea876e9545b2df7ac300768866d69b5
 ## How to add/discover new API
   The example is [here](https://github.com/PokemonGoF/PokemonGo-Bot/commit/46e2352ce9f349cc127a408959679282f9999585)  
     1. Check the type of your API request in   [POGOProtos](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/RequestType.proto) For example: RECYCLE_INVENTORY_ITEM  
@@ -203,6 +212,21 @@ Quick Tip: When using this script, use a Lucky egg to double the XP for 30 mins.
 ### How can I not collect certain pokemon
 You don't want to collect common pokemon once you hit a certain level. It will
 slow down leveling but you won't fill up either.
+
+Create the following filter
+```
+./data/catch-ignore.yml
+```
+Its a yaml file with a list of names so make it look like
+```
+ignore:
+  - Pidgey
+  - Rattata
+  - Pidgeotto
+  - Spearow
+  - Ekans
+  - Zubat
+```
 ### How do I use the map??
 You can either view the map via opening the html file, or by serving it with SimpleHTTPServer (runs on localhost:8000)  
 To use SimpleHTTPServer:  
@@ -214,38 +238,6 @@ Copy userdata.js.example to userdata.js and edit with your favorite text editor.
 put your username in the quotes instead of "username"
 If using multiple usernames format like this:  
 ```var users = ["username1","username2"];```
-
-Create the following filter
-
-```
-./data/catch-ignore.yml
-```
-
-Its a yaml file with a list of names so make it look like
-
-```
-ignore:
-  - Pidgey
-  - Rattata
-  - Pidgeotto
-  - Spearow
-  - Ekans
-  - Zubat
-```
-
-
-## Requirements
- * Python 2
- * requests
- * protobuf
- * gpsoauth
- * geopy
- * s2sphere
- * googlemaps
- * pgoapi
-
-To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg=pgoapi`
-
 
 ## Contributors (Don't forget add yours here when you create PR:)
  * eggins -- The first pull request :)
@@ -271,11 +263,11 @@ To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg
  * jtdroste
 
 ## Credits
-[tejado](https://github.com/tejado) many thanks for the API
-[Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets
-[elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR
-[AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos
-[AHAAAAAAA](https://github.com/AHAAAAAAA/PokemonGo-Map) for parts of the s2sphere stuff
+- [tejado](https://github.com/tejado) many thanks for the API
+- [Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets
+- [elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR
+- [AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos
+- [AHAAAAAAA](https://github.com/AHAAAAAAA/PokemonGo-Map) for parts of the s2sphere stuff
 
 
 ## Donation
