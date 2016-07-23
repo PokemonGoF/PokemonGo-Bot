@@ -105,7 +105,9 @@ class PokemonCatchWorker(object):
                                 if status is 3:
                                     print('[x] Oh no! ' + str(pokemon_name) + ' vanished! :(')
                                 if status is 1:
-                                    if cp < self.config.cp:
+                                    
+                                    if self.should_transfer(cp,str(pokemon_name)):
+                                    
                                         print('[x] Captured ' + str(pokemon_name) + '! [CP' + str(cp) + '] - exchanging for candy')
                                         id_list2 = self.count_pokemon_inventory()
                                         try:
@@ -119,6 +121,15 @@ class PokemonCatchWorker(object):
                             break
         time.sleep(5)
 
+    def should_transfer(self, pokemon_cp,pokemon_name):
+         pokemon_name = pokemon_name.lower()
+         transfer_list  = self.config.transfer_list.lower()
+         
+         if pokemon_cp < self.config.cp or pokemon_name in transfer_list:
+             return True
+         else:
+            return False
+        
     def _transfer_low_cp_pokemon(self, value):
     	self.api.get_inventory()
     	response_dict = self.api.call()

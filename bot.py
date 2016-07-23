@@ -11,13 +11,14 @@ from cell_workers import PokemonCatchWorker, SeenFortWorker
 from stepper import Stepper
 from geopy.geocoders import GoogleV3
 from math import radians, sqrt, sin, cos, atan2
+import os
 
 class PokemonGoBot(object):
 
     def __init__(self, config):
         self.config = config
-        self.pokemon_list=json.load(open('pokemon.json'))
-        self.item_list=json.load(open('items.json'))
+        self.pokemon_list=json.load(open(os.path.dirname(__file__) + '/pokemon.json'))
+        self.item_list=json.load(open(os.path.dirname(__file__)    + '/items.json'))
         self.noballs = False
 
     def start(self):
@@ -29,7 +30,6 @@ class PokemonGoBot(object):
             exit()
         self.stepper = Stepper(self)
         random.seed()
-
     def take_step(self):
         self.stepper.take_step()
 
