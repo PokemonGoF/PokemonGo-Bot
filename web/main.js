@@ -134,6 +134,7 @@ var catchSuccess = function(data, user_index) {
       if (user_data[users[user_index]].catchables.hasOwnProperty(data.spawnpoint_id) === false) {
         poke_name = pokemonArray[data.pokemon_id-1].Name;
         console.log(poke_name + ' found near user ' + users[user_index]);
+        Materialize.toast(poke_name + ' appeared near trainer: ' + users[user_index], 3000, 'rounded')
         user_data[users[user_index]].catchables[data.spawnpoint_id] = new google.maps.Marker({
           map: map,
           position: {lat: parseFloat(data.latitude), lng: parseFloat(data.longitude)},
@@ -228,3 +229,7 @@ function loadJSON(path, success, error, successData) {
 xhr.open("GET", path, true);
 xhr.send();
 }
+
+$(document).ready(function(){
+  $('.tooltipped').tooltip({delay: 50});
+});
