@@ -98,8 +98,8 @@ def init_config():
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")
         return None
 
-    if not config.location and not config.location_cache in load:
-        logging.error("Needs either --use-location-cache or --location.")
+    if not (config.location or config.location_cache):
+        parser.error("Needs either --use-location-cache or --location.")
         return None
     print(config)
     return config

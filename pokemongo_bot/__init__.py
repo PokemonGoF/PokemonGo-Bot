@@ -6,6 +6,7 @@ import json
 import random
 import threading
 import datetime
+import sys
 import yaml
 from pgoapi import PGoApi
 from cell_workers import PokemonCatchWorker, SeenFortWorker
@@ -329,7 +330,10 @@ class PokemonGoBot(object):
 
                     return
             except:
-                pass
+                if not self.config.location:
+                    sys.exit("No cached Location. Please specify initial location.")
+                else:
+                    pass
 
         #
         # this will fail if the location.json isn't there or not valid.
