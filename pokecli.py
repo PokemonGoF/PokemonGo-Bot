@@ -69,6 +69,7 @@ def init_config():
     parser.add_argument("--initial-transfer", help="Transfer all pokemon with same ID on bot start, except pokemon with highest CP. It works with -c", action='store_true', dest='initial_transfer')
     parser.add_argument("-d", "--debug", help="Debug Mode", action='store_true')
     parser.add_argument("-t", "--test", help="Only parse the specified location", action='store_true')
+    parser.add_argument("--distance_unit", help="Set the unit to display distance in", type=str, default="m")
     parser.set_defaults(DEBUG=False, TEST=False)
     config = parser.parse_args()
 
@@ -83,8 +84,8 @@ def init_config():
             config.__dict__[key] = load[key]
 
     if config.auth_service not in ['ptc', 'google']:
-      log.error("Invalid Auth service specified! ('ptc' or 'google')")
-      return None
+        log.error("Invalid Auth service specified! ('ptc' or 'google')")
+        return None
 
     return config
 
