@@ -155,14 +155,7 @@ class PokemonCatchWorker(object):
                                     logger.log(
                                         '[x] Oh no! {} vanished! :('.format(pokemon_name), 'red')
                                 if status is 1:
-                                    logger.log(
-                                        '[x] Captured {}! [CP {}] [IV {}]'.format(
-                                            pokemon_name,
-                                            cp,
-                                            pokemon_potential
-                                        ), 'green'
-                                    )
-
+                                    
                                     id_list2 = self.count_pokemon_inventory()
 
                                     if self.config.evolve_captured:
@@ -189,8 +182,13 @@ class PokemonCatchWorker(object):
                                         logger.log(
                                             '[#] {} has been exchanged for candy!'.format(pokemon_name), 'green')
                                     else:
-                                        logger.log(
-                                        '[x] Captured {}! [CP {}]'.format(pokemon_name, cp), 'green')
+                                        logger.log('[x] Captured {}! [CP {}] [{}/{}/{}]'.format(
+                                            pokemon_name, 
+                                            cp,
+                                            pokemon['pokemon_data']['individual_stamina'],
+                                            pokemon['pokemon_data']['individual_attack'],
+                                            pokemon['pokemon_data']['individual_defense']
+                                        ), 'blue')
                             break
         time.sleep(5)
 
