@@ -301,6 +301,7 @@ var sideMenu = {
   selectedTab: false,
   hideAllSubs: function() {
     sideMenu.trainerStatsEl.hide();
+    $("#unfinished_toggles").hide();
     sideMenu.selectedTab = false;
     sideMenu.submenuContainerEl.hide();
   },
@@ -310,17 +311,18 @@ var sideMenu = {
       sideMenu.hideAllSubs();
     } else {
       // window isn't visible, show it.
+      sideMenu.hideAllSubs();
       if (tab == 'stats') {
         sideMenu.showStats();
       } else if (tab == 'items') {
-        sideMenu.hideAllSubs();
         sideMenu.showItems();
+        $("#unfinished_toggles").show();
       } else if (tab == 'pokemon') {
-        sideMenu.hideAllSubs();
         sideMenu.showPokemon();
+        $("#unfinished_toggles").show();
       } else if (tab == 'pokedex') {
-        sideMenu.hideAllSubs();
         sideMenu.showPokedex();
+        $("#unfinished_toggles").show();
       }
       sideMenu.submenuContainerEl.show();
     }
