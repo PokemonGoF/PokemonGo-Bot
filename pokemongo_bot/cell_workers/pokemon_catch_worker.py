@@ -75,22 +75,29 @@ class PokemonCatchWorker(object):
                         while(True):
                         
                             pokeball = 1 # default:poke ball
+                            usable_balls_stock = balls_stock
                             
-                            if balls_stock[1] <= 0: # if poke ball are out of stock
-                                if balls_stock[2] > 0: # and player has great balls in stock...
+                            usable_balls_stock[3] -= 10 # save 10 ultra ball for super hight cp pokemon
+                            
+                            if usable_balls_stock[1] <= 0: # if poke ball are out of stock
+                                if usable_balls_stock[2] > 0: # and player has great balls in stock...
                                     pokeball = 2 # then use great balls
-                                elif balls_stock[3] > 0: # or if great balls are out of stock too, and player has ultra balls...
+                                elif usable_balls_stock[3] > 0: # or if great balls are out of stock too, and player has ultra balls...
                                     pokeball = 3 # then use ultra balls
                                 else:
                                     pokeball = 0 # player doesn't have any of pokeballs, great balls or ultra balls
                             
                             while(pokeball < 3):
-                                if catch_rate[pokeball-1] < 0.35 and balls_stock[pokeball+1] > 0:
+                                if catch_rate[pokeball-1] < 0.35 and usable_balls_stock[pokeball+1] > 0:
                                     # if current ball chance to catch is under 35%, and player has better ball - then use it
                                     pokeball = pokeball+1 # use better ball
                                 else:
                                     break
-                                
+                            
+                            # use ultra ball for super hight cp pokemon
+                            if (cp >= 1000) and balls_stock[3] > 0:
+                                pokeball = 3
+
                             # @TODO, use the best ball in stock to catch VIP (Very Important Pokemon: Configurable)
                             
                             if pokeball is 0:
