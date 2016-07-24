@@ -155,6 +155,11 @@ def init_config():
                         help="Bot will use lcd at given i2c address",
                         type=lambda x: hex(int(x, 0)),
                         default=False)
+    parser.add_argument("-wc",
+                        "--walk_coordinates",
+                        help="Bot will print walking coordinates",
+                        type=bool,
+                        default=False)
 
     config = parser.parse_args()
     if not config.username and 'username' not in load:
