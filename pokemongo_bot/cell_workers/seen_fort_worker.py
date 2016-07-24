@@ -52,7 +52,7 @@ class SeenFortWorker(object):
             spin_details = response_dict['responses']['FORT_SEARCH']
             if spin_details['result'] == 1:
                 logger.log("[+] Loot: ", 'green')
-                rewards = ['Rewards: ']
+                rewards = []
                 experience_awarded = spin_details.get('experience_awarded',
                                                       False)
                 if experience_awarded:
@@ -94,7 +94,8 @@ class SeenFortWorker(object):
                             else:
                                 logger.log("[+] Recycling failed!", 'red')
                     if hasattr(self.config, 'lcd'):
-                        self.config.lcd.message(', '.join(rewards))
+                        msg = 'Rewards: '+ ', '.join(rewards)
+                        self.config.lcd.message(msg)
                         time.sleep(3)
                 else:
                     if hasattr(self.config, 'lcd'):
