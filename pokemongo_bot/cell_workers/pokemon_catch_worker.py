@@ -42,11 +42,11 @@ class PokemonCatchWorker(object):
                         if 'wild_pokemon' in response_dict['responses']['ENCOUNTER']:
                             pokemon = response_dict['responses']['ENCOUNTER']['wild_pokemon']
                             catch_rate = response_dict['responses']['ENCOUNTER']['capture_probability']['capture_probability'] # 0 = pokeballs, 1 great balls, 3 ultra balls
-                            
+
                             if 'pokemon_data' in pokemon and 'cp' in pokemon['pokemon_data']:
                                 cp = pokemon['pokemon_data']['cp']
                                 iv_stats = ['individual_attack', 'individual_defense', 'individual_stamina']
-                                
+
                                 for individual_stat in iv_stats:
                                     try:
                                         total_IV += pokemon['pokemon_data'][individual_stat]
@@ -73,9 +73,9 @@ class PokemonCatchWorker(object):
 
                         balls_stock = self.bot.pokeball_inventory()
                         while(True):
-                        
+
                             pokeball = 1 # default:poke ball
-                            
+
                             if balls_stock[1] <= 0: # if poke ball are out of stock
                                 if balls_stock[2] > 0: # and player has great balls in stock...
                                     pokeball = 2 # then use great balls
@@ -83,16 +83,16 @@ class PokemonCatchWorker(object):
                                     pokeball = 3 # then use ultra balls
                                 else:
                                     pokeball = 0 # player doesn't have any of pokeballs, great balls or ultra balls
-                            
+
                             while(pokeball < 3):
                                 if catch_rate[pokeball-1] < 0.35 and balls_stock[pokeball+1] > 0:
                                     # if current ball chance to catch is under 35%, and player has better ball - then use it
                                     pokeball = pokeball+1 # use better ball
                                 else:
                                     break
-                                
+
                             # @TODO, use the best ball in stock to catch VIP (Very Important Pokemon: Configurable)
-                            
+
                             if pokeball is 0:
                                 logger.log(
                                     '[x] Out of pokeballs, switching to farming mode...', 'red')
