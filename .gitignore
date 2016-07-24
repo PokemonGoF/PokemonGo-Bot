@@ -94,6 +94,9 @@ ENV/
 # Rope project settings
 .ropeproject
 
+# PyCharm IDE settings
+.idea/
+
 # Personal load details
 config.json
 src/

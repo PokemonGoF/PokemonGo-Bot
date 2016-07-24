@@ -89,10 +89,10 @@ class SeenFortWorker(object):
 
                     for item_id, item_count in tmp_count_items.iteritems():
                         item_name = self.item_list[str(item_id)]
-
-                        logger.log("[+] " + str(item_count) +
-                                    "x " + item_name, 'green')
                         
+                        logger.log("[+] " + str(item_count) +
+                                    "x " + item_name +
+                                    " (Total: " + str(self.bot.item_inventory_count(item_id)) + ")", 'green')
                         
                         # RECYCLING UNWANTED ITEMS
                         if str(item_id) in self.config.item_filter:
@@ -106,7 +106,7 @@ class SeenFortWorker(object):
                                     'result' in response_dict_recycle['responses']['RECYCLE_INVENTORY_ITEM']:
                                 result = response_dict_recycle['responses']['RECYCLE_INVENTORY_ITEM']['result']
                             if result is 1: # Request success
-                                logger.log("[+] Recycling success, count of " + item_name + "s kept at : " + str(response_dict_recycle['responses']['RECYCLE_INVENTORY_ITEM']['new_count']), 'green')
+                                logger.log("[+] Recycling success", 'green')
                             else:
                                 logger.log("[+] Recycling failed!", 'red')
                 else:

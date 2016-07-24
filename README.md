@@ -134,7 +134,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 6. After the code done, will update here how to replace.
 
 ## Usage
-    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-lc] [-c] [-m] [-w] [--distance_unit] [--initial-transfer] [--maxsteps] [-iv] [-d] [-t]
+    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-lc] [-m] [-w] [--distance_unit] [--initial-transfer] [--maxsteps] [-iv] [-d] [-t]
 
     optional arguments:
       -h, --help                                    show this help message and exit
@@ -194,8 +194,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 
 ### What's IV ?
 Here's the [introduction](http://bulbapedia.bulbagarden.net/wiki/Individual_values)
-### Losing Starter Pokemon and others
-You can use -c 1 to protect your first stage low CP pokemon.
+
 ### Does it run automatally?
 Not yet, still need a trainer to train the script param. But we are very close to.
 ### Set GEO Location
