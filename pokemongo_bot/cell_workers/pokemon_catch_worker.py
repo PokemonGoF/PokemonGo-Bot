@@ -84,9 +84,12 @@ class PokemonCatchWorker(object):
                                 else:
                                     pokeball = 0 # player doesn't have any of pokeballs, great balls or ultra balls
                             
-                            if pokeball < 3 and balls_stock[pokeball+1] > 0 and catch_rate[pokeball] < 0.5:
-                                # if current ball has low chance to catch (under 50%), and player has better ball - then use it
-                                pokeball = pokeball+1 # use better ball
+                            while(pokeball < 3)
+                                if catch_rate[pokeball] < 0.5 and balls_stock[pokeball+1] > 0:
+                                    # if current ball has low chance to catch (under 50%), and player has better ball - then use it
+                                    pokeball = pokeball+1 # use better ball
+                                else:
+                                    break
                                 
                             # @TODO, use the best ball in stock to catch VIP (Very Important Pokemon: Configurable)
                             
