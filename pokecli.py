@@ -33,17 +33,12 @@ import time
 import ssl
 import sys
 import codecs
-from pokemongo_bot import logger
-if sys.version_info >= (2, 7, 9):
-    ssl._create_default_https_context = ssl._create_unverified_context
-
 from getpass import getpass
 import logging
 import requests
 from pokemongo_bot import logger
 from pokemongo_bot import PokemonGoBot
 from pokemongo_bot.cell_workers.utils import print_green, print_yellow, print_red
-from pokemongo_bot import lcd
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -150,11 +145,6 @@ def init_config():
                         type=bool,
                         default=False)
 
-    parser.add_argument("-lcd-addr",
-                        "--lcd-address",
-                        help="Bot will use lcd at given i2c address",
-                        type=lambda x: hex(int(x, 0)),
-                        default=False)
     parser.add_argument("-wc",
                         "--walk_coordinates",
                         help="Bot will print walking coordinates",
@@ -213,34 +203,20 @@ def main():
     if not config:
         return
 
-    if config.lcd_address:
-        config.lcd = lcd.lcd()
-        config.lcd.set_addr(int(config.lcd_address))
-        config.lcd.message('PokemonGo Bot v1.0')
-        time.sleep(1)
-        config.lcd.message('Configuration initialized')
-
     logger.log('[x] PokemonGO Bot v1.0', 'green')
     logger.log('[x] Configuration initialized', 'yellow')
 
     try:
-        if hasattr(config, 'lcd'):
-            config.lcd.message('Logging in...')
-
         bot = PokemonGoBot(config)
         bot.start()
-        if hasattr(config, 'lcd'):
-            config.lcd.message('Starting PokemonGO Bot')
 
         logger.log('[x] Starting PokemonGo Bot....', 'green')
 
-        while (True):
+        while True:
             bot.take_step()
 
     except KeyboardInterrupt:
         logger.log('[x] Exiting PokemonGo Bot', 'red')
-        if hasattr(config, 'lcd'):
-            config.lcd.message('Exiting PokemonGo Bot')
         # TODO Add number of pokemon catched, pokestops visited, highest CP
         # pokemon catched, etc.
 
