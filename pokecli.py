@@ -47,7 +47,6 @@ from pokemongo_bot.cell_workers.utils import print_green, print_yellow, print_re
 def init_config():
     parser = argparse.ArgumentParser()
     config_file = "config.json"
-    release_config_json = "release_config.json"
 
     # If config file exists, load variables from json
     load = {}
@@ -117,7 +116,7 @@ def init_config():
         "Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)",
         type=str,
         default="km")
-    
+
     parser.add_argument(
         "-if",
         "--item_filter",
@@ -137,6 +136,8 @@ def init_config():
         if key in load:
             config.__dict__[key] = load[key]
 
+    config.__dict__['release_config'] = load['release_config']
+
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")
         return None
@@ -145,11 +146,6 @@ def init_config():
         parser.error("Needs either --use-location-cache or --location.")
         return None
 
-    config.release_config = {}
-    if os.path.isfile(release_config_json):
-        with open(release_config_json) as data:
-            config.release_config.update(json.load(data))
-            
     if config.gmapkey:
         find_url = 'https:\/\/maps.googleapis.com\/maps\/api\/js\?key=\S*'
         replace_url = "https://maps.googleapis.com/maps/api/js?key=%s&callback=initMap\""
