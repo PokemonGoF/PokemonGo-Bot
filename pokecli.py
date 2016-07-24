@@ -35,7 +35,6 @@ import ssl
 import logging
 import sys
 import codecs
-import fileinput
 from pokemongo_bot import logger
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
