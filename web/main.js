@@ -19,49 +19,50 @@ var stats = {};
 var teams = ["TeamLess", "Mystic", "Valor", "Instinct"];
 var out;
 var out1;
+var eggs = 0;
 var outArray = [];
 var itemsArray = {
-    "0": "Unknown",
+  "0": "Unknown",
 
-    "1": "Pokeball",
-    "2": "Greatball",
-    "3": "Ultraball",
-    "4": "Masterball",
+  "1": "Pokeball",
+  "2": "Greatball",
+  "3": "Ultraball",
+  "4": "Masterball",
 
-    "101": "Potion",
-    "102": "Super Potion",
-    "103": "Hyper Potion",
-    "104": "Max Potion",
+  "101": "Potion",
+  "102": "Super Potion",
+  "103": "Hyper Potion",
+  "104": "Max Potion",
 
-    "201": "Revive",
-    "202": "Max Revive",
+  "201": "Revive",
+  "202": "Max Revive",
 
-    "301": "Lucky Egg",
+  "301": "Lucky Egg",
 
-    "401": "Incense",
-    "402": "Spicy Incense",
-    "403": "Cool Incense",
-    "404": "Floral Incense",
+  "401": "Incense",
+  "402": "Spicy Incense",
+  "403": "Cool Incense",
+  "404": "Floral Incense",
 
-    "501": "Troy Disk",
+  "501": "Troy Disk",
 
-    "602": "X Attack",
-    "603": "X Defense",
-    "604": "X Miracle",
+  "602": "X Attack",
+  "603": "X Defense",
+  "604": "X Miracle",
 
-    "701": "Razz Berry",
-    "702": "Bluk Berry",
-    "703": "Nanab Berry",
-    "704": "Wepar Berry",
-    "705": "Pinap Berry",
+  "701": "Razz Berry",
+  "702": "Bluk Berry",
+  "703": "Nanab Berry",
+  "704": "Wepar Berry",
+  "705": "Pinap Berry",
 
-    "801": "Special Camera",
+  "801": "Special Camera",
 
-    "901": "Incubator (Unlimited)",
-    "902": "Incubator",
+  "901": "Incubator (Unlimited)",
+  "902": "Incubator",
 
-    "1001": "Pokemon Storage Upgrade",
-    "1002": "Item Storage Upgrade"
+  "1001": "Pokemon Storage Upgrade",
+  "1002": "Item Storage Upgrade"
 }
 
 
@@ -95,59 +96,59 @@ function initMap() {
 };
 
 $('#switchPan').change(function(){
-    if (this.checked) { userFollow = true } else { userFollow = false; }
+  if (this.checked) { userFollow = true } else { userFollow = false; }
 });
 
 $('#switchZoom').change(function(){
-    if (this.checked) { userZoom = true } else { userZoom = false; }
+  if (this.checked) { userZoom = true } else { userZoom = false; }
 });
 
 $('#imageType').change(function(){
-    if (this.checked) { imageExt = ".gif" } else { imageExt = ".png"; }
+  if (this.checked) { imageExt = ".gif" } else { imageExt = ".png"; }
 });
 
 $('#tInfo').click(function(){
-    if (menu == undefined || menu == 1) {
-      $("#submenu").toggle();
-    }
-    if (menu != 1 && $("#submenu").is(':hidden')) {
-      $("#submenu").toggle();
-    }
-    menu = 1;
-    buildMenu();
+  if (menu == undefined || menu == 1) {
+    $("#submenu").toggle();
+  }
+  if (menu != 1 && $("#submenu").is(':hidden')) {
+    $("#submenu").toggle();
+  }
+  menu = 1;
+  buildMenu();
 });
 
 $('#tItems').click(function(){
-    if (menu == undefined || menu == 2) {
-      $("#submenu").toggle();
-    }
-    if (menu != 2 && $("#submenu").is(':hidden')) {
-      $("#submenu").toggle();
-    }
-    menu = 2;
-    buildMenu();
+  if (menu == undefined || menu == 2) {
+    $("#submenu").toggle();
+  }
+  if (menu != 2 && $("#submenu").is(':hidden')) {
+    $("#submenu").toggle();
+  }
+  menu = 2;
+  buildMenu();
 });
 
 $('#tPokemon').click(function(){
-    if (menu == undefined || menu == 3) {
-      $("#submenu").toggle();
-    }
-    if (menu != 3 && $("#submenu").is(':hidden')) {
-      $("#submenu").toggle();
-    }
-    menu = 3;
-    buildMenu();
+  if (menu == undefined || menu == 3) {
+    $("#submenu").toggle();
+  }
+  if (menu != 3 && $("#submenu").is(':hidden')) {
+    $("#submenu").toggle();
+  }
+  menu = 3;
+  buildMenu();
 });
 
 $('#tPokedex').click(function(){
-    if (menu == undefined || menu == 4) {
-      $("#submenu").toggle();
-    }
-    if (menu != 4 && $("#submenu").is(':hidden')) {
-      $("#submenu").toggle();
-    }
-    menu = 4;
-    buildMenu();
+  if (menu == undefined || menu == 4) {
+    $("#submenu").toggle();
+  }
+  if (menu != 4 && $("#submenu").is(':hidden')) {
+    $("#submenu").toggle();
+  }
+  menu = 4;
+  buildMenu();
 });
 
 
@@ -265,15 +266,15 @@ var catchSuccess = function(data, user_index) {
           zIndex: 4,
           optimized: false
         });
-          if (userZoom == true) {
-            map.setZoom(16);
-          }
-          if (userFollow == true) {
-            map.panTo({
-              lat: parseFloat(data.latitude),
-              lng: parseFloat(data.longitude)
-            });
-          }
+        if (userZoom == true) {
+          map.setZoom(16);
+        }
+        if (userFollow == true) {
+          map.panTo({
+            lat: parseFloat(data.latitude),
+            lng: parseFloat(data.longitude)
+          });
+        }
       } else {
         user_data[users[user_index]].catchables[data.spawnpoint_id].setPosition({
           lat: parseFloat(data.latitude),
@@ -307,7 +308,7 @@ function addInventory() {
 function pad_with_zeroes(number, length) {
   var my_string = '' + number;
   while (my_string.length < length) {
-      my_string = '0' + my_string;
+    my_string = '0' + my_string;
   }
   return my_string;
 }
@@ -329,12 +330,12 @@ function loadJSON(path, success, error, successData) {
           success(JSON.parse(xhr.responseText.replace(/\bNaN\b/g, "null")), successData);
       } else {
         if (error)
-        error(xhr);
+          error(xhr);
       }
     }
   };
-xhr.open("GET", path, true);
-xhr.send();
+  xhr.open("GET", path, true);
+  xhr.send();
 }
 
 $(document).ready(function(){
@@ -348,17 +349,17 @@ function buildMenu() {
     out = '';
     for (var i = 0; i < stats.length; i++) {
       out += '<div class="row"><div class="col s12"><h5>' + users[0] + '</h5><br>Level: ' + stats[i].inventory_item_data.player_stats.level +
-      '<br>Exp: ' + stats[i].inventory_item_data.player_stats.experience +
-      '<br>Exp to Lvl ' + (parseInt(stats[i].inventory_item_data.player_stats.level) + 1) + ': ' + (parseInt(stats[i].inventory_item_data.player_stats.next_level_xp) - stats[i].inventory_item_data.player_stats.experience) +
-      '<br>Pokemon Encountered: ' + stats[i].inventory_item_data.player_stats.pokemons_encountered +
-      '<br>Pokeballs Thrown: ' + stats[i].inventory_item_data.player_stats.pokeballs_thrown +
-      '<br>Pokemon Caught: ' + stats[i].inventory_item_data.player_stats.pokemons_captured +
-      '<br>Small Ratata Caught: ' + stats[i].inventory_item_data.player_stats.small_rattata_caught +
-      '<br>Pokemon Evolved: ' + stats[i].inventory_item_data.player_stats.evolutions +
-      '<br>Eggs Hatched: ' + stats[i].inventory_item_data.player_stats.eggs_hatched +
-      '<br>Unique Pokedex Entries: ' + stats[i].inventory_item_data.player_stats.unique_pokedex_entries +
-      '<br>PokeStops Visited: ' + stats[i].inventory_item_data.player_stats.poke_stop_visits +
-      '<br>Kilometers Walked: ' + parseFloat(stats[i].inventory_item_data.player_stats.km_walked).toFixed(2) + '</div></div>';
+          '<br>Exp: ' + stats[i].inventory_item_data.player_stats.experience +
+          '<br>Exp to Lvl ' + (parseInt(stats[i].inventory_item_data.player_stats.level) + 1) + ': ' + (parseInt(stats[i].inventory_item_data.player_stats.next_level_xp) - stats[i].inventory_item_data.player_stats.experience) +
+          '<br>Pokemon Encountered: ' + stats[i].inventory_item_data.player_stats.pokemons_encountered +
+          '<br>Pokeballs Thrown: ' + stats[i].inventory_item_data.player_stats.pokeballs_thrown +
+          '<br>Pokemon Caught: ' + stats[i].inventory_item_data.player_stats.pokemons_captured +
+          '<br>Small Ratata Caught: ' + stats[i].inventory_item_data.player_stats.small_rattata_caught +
+          '<br>Pokemon Evolved: ' + stats[i].inventory_item_data.player_stats.evolutions +
+          '<br>Eggs Hatched: ' + stats[i].inventory_item_data.player_stats.eggs_hatched +
+          '<br>Unique Pokedex Entries: ' + stats[i].inventory_item_data.player_stats.unique_pokedex_entries +
+          '<br>PokeStops Visited: ' + stats[i].inventory_item_data.player_stats.poke_stop_visits +
+          '<br>Kilometers Walked: ' + parseFloat(stats[i].inventory_item_data.player_stats.km_walked).toFixed(2) + '</div></div>';
     }
     document.getElementById('subcontent').innerHTML = out;
   }
@@ -366,30 +367,27 @@ function buildMenu() {
     document.getElementById('subtitle').innerHTML = "Items in Bag";
     out = '<div class="row items"><div class="col s12"><h5>' + users[0] + '</h5>';
     for (var i = 0; i < bagItems.length; i++) {
-      out += '<table><tr><td><img src="image/items/' + bagItems[i].inventory_item_data.item.item_id + '.png" class="item_img"></td><td>Item: ' + itemsArray[bagItems[i].inventory_item_data.item.item_id] +
-      '<br>Count: ' + (bagItems[i].inventory_item_data.item.count || 0) + '</td>';
+
+      if (i % 3 == 0) out += '<div class="row">'
+
+      out += '<div class="col s4 center-align">'
+      out += '<img src="image/items/' + bagItems[i].inventory_item_data.item.item_id + '.png" class="item_img"><br />';
+      out += 'Item: ' + itemsArray[bagItems[i].inventory_item_data.item.item_id] + '<br \>'
+      out += 'Count: ' + (bagItems[i].inventory_item_data.item.count || 0);
+      out += '</div>';
+
+      if ((i + 1) % 3 == 0) out += '</div>'
+
     }
-    out += '</tr></table></div></div>';
+
+    out += '</div></div>';
+
     document.getElementById('subcontent').innerHTML = out;
   }
   if (menu == 3) {
-    document.getElementById('subtitle').innerHTML = "Pokemon in Bag";
-    out = '<div class="row items"><div class="col s12"><h5>' + users[0] + '</h5><table>';
-    for (var i = 0; i < bagPokemon.length; i++) {
-      if (bagPokemon[i].inventory_item_data.pokemon_data.is_egg) {
-        pkmnNum = "???"
-        pkmnImage = "Egg.png"
-        pkmnName = "Egg"
-      } else {
-        pkmnNum = bagPokemon[i].inventory_item_data.pokemon_data.pokemon_id
-        pkmnImage = pad_with_zeroes(bagPokemon[i].inventory_item_data.pokemon_data.pokemon_id, 3) + '.png'
-        pkmnName = pokemonArray[pkmnNum-1].Name
-      }
-      out += '<tr><td><img src="image/pokemon/' + pkmnImage + '" class="png_img"></td><td class="left-align">Name: ' + pkmnName +
-      '<br>Number: ' + pkmnNum + '</td></tr>';
-    }
-    out += '</table></div></div>';
-    document.getElementById('subcontent').innerHTML = out;
+
+    sortAndShowBagPokemon('cp')
+
   }
   if (menu == 4) {
     document.getElementById('subtitle').innerHTML = "Pokedex";
@@ -399,10 +397,116 @@ function buildMenu() {
       pkmnImage = pad_with_zeroes(pokedex[i].inventory_item_data.pokedex_entry.pokedex_entry_number, 3) + '.png'
       pkmnName = pokemonArray[pkmnNum-1].Name
       out += '<tr><td><img src="image/pokemon/' + pkmnImage + '" class="png_img"></td><td class="left-align">Name: ' + pkmnName +
-      '<br>Number: ' + pkmnNum + '<br>Times Encountered: ' + pokedex[i].inventory_item_data.pokedex_entry.times_encountered + 
-      '<br>Times Caught: ' + pokedex[i].inventory_item_data.pokedex_entry.times_captured + '</td></tr>';
+          '<br>Number: ' + pkmnNum + '<br>Times Encountered: ' + pokedex[i].inventory_item_data.pokedex_entry.times_encountered +
+          '<br>Times Caught: ' + pokedex[i].inventory_item_data.pokedex_entry.times_captured + '</td></tr>';
     }
     out += '</table></div></div>';
     document.getElementById('subcontent').innerHTML = out;
   }
+}
+
+function sortAndShowBagPokemon(sortOn)
+{
+
+  obj = bagPokemon;
+
+  if(!obj.length) return;
+
+  sortButtons = '<div style="float: right">Sort : ';
+  sortButtons += '<div class="chip"><a href="javascript:sortAndShowBagPokemon(\'cp\')">CP</a></div>';
+  sortButtons += '<div class="chip"><a href="javascript:sortAndShowBagPokemon(\'iv\')">IV</a></div>';
+  sortButtons += '<div class="chip"><a href="javascript:sortAndShowBagPokemon(\'name\')">Name</a></div>';
+  sortButtons += '<div class="chip"><a href="javascript:sortAndShowBagPokemon(\'id\')">ID</a></div>';
+  sortButtons += '</div>';
+
+  document.getElementById('subtitle').innerHTML = "Pokemon in Bag" + sortButtons;
+  out = '<div class="row items"><div class="col s12"><h5>' + users[0] + '</h5>';
+
+  eggs = 0;
+
+  sortOn=sortOn || 'name';
+
+  var sortedPokemon =[];
+  for (var i = 0; i < obj.length; i++) {
+
+    if(obj[i].inventory_item_data.pokemon_data.is_egg) {
+      eggs++;
+      continue;
+    };
+
+    pkmID = obj[i].inventory_item_data.pokemon_data.pokemon_id;
+
+    pkmnName = pokemonArray[pkmID-1].Name
+
+    pkmCP = obj[i].inventory_item_data.pokemon_data.cp
+
+    pkmIVA = obj[i].inventory_item_data.pokemon_data.individual_attack || 0;
+    pkmIVD = obj[i].inventory_item_data.pokemon_data.individual_defense || 0;
+    pkmIVS = obj[i].inventory_item_data.pokemon_data.individual_stamina || 0;
+    pkmIV = ((pkmIVA + pkmIVD + pkmIVS) / 45.0).toFixed(2);
+
+    sortedPokemon.push({
+      "name": pkmnName,
+      "id":pkmID,
+      "cp": pkmCP,
+      "iv": pkmIV
+    });
+  }
+
+  switch(sortOn) {
+    case 'name':
+      sortedPokemon.sort(function(a, b){
+        if(a.name < b.name) return -1;
+        if(a.name > b.name) return 1;
+        return 0;
+      })
+      break;
+    case 'id':
+      sortedPokemon.sort(function(a, b){
+        return a.id - b.id
+      })
+      break;
+    case 'cp':
+      sortedPokemon.sort(function(a, b){
+        return a.cp < b.cp
+      })
+      break;
+    case 'iv':
+      sortedPokemon.sort(function(a, b){
+        return parseFloat(a.iv) < parseFloat(b.iv)
+      })
+      break;
+  }
+
+  for (var i = 0; i < sortedPokemon.length; i++) {
+
+    pkmnNum = sortedPokemon[i].id
+    pkmnImage = pad_with_zeroes(pkmnNum, 3) + '.png'
+    pkmnName = pokemonArray[pkmnNum-1].Name
+    pkmCP = sortedPokemon[i].cp
+    pkmIV = sortedPokemon[i].iv
+
+    if (i % 4 == 0) out += '<div class="row">'
+
+    out += '<div class="col s3 center-align">'
+    out += '<img src="/image/pokemon/' + pkmnImage + '" class="png_img"><br />';
+    out += pkmnName + '<br />';
+    out += 'CP ' + pkmCP + '<br />';
+    out += 'IV ' + pkmIV;
+    out += '</div>';
+
+    if ((i + 1) % 4 == 0) out += '</div>'
+  }
+
+  // Add number of eggs
+  out += '<div class="row">'
+  out += '<div class="col s12 center-align">'
+  out += '<img src="/image/pokemon/Egg.png" class="png_img"><br />';
+  out += 'You have ' + eggs + ' eggs'
+  out += '</div>';
+  out += '</div>';
+
+  out += '</div></div>';
+
+  document.getElementById('subcontent').innerHTML = out;
 }
