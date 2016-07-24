@@ -14,7 +14,7 @@ The Pokemon Go Bot, baking with community.
 ## Project Chat
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
 ## About dev/stable/master Branch
-Dev branch has most up to date feature and even everyone handle the part well, still, will have broken changes. Your test contribute and PR for fix are warm welcome. 
+Dev branch has most up to date feature and even everyone handle the part well, still, will have broken changes. Your test contribute and PR for fix are warm welcome.
 Stable branch is better than dev branch. Setup with milestone tag.  
 Master branch is the thing you familiar.  
 No PR on stable/master branch to keep things easier.  
@@ -149,7 +149,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -du, --distance_unit UNIT                     Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
       -it, --initial_transfer                       Transfer all duplicate pokemon with same ID on bot start, except pokemon with highest CP. Accepts a number to prevent transferring pokemon with a CP above the provided value.  Default is 0 (aka transfer none).
       -ms, --max_steps MAX_STEP                     Set the steps around your initial location (DEFAULT 5 mean 25 cells around your location)
-      -if LIST, --item_filter LIST                  Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, [\"101\",\"102\",\"103\",\"104\"] to recycle potions when collected)" 
+      -if LIST, --item_filter LIST                  Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, [\"101\",\"102\",\"103\",\"104\"] to recycle potions when collected)"
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
 
@@ -166,7 +166,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 
     1. Pokemon name is always capitalize and case-sensitive
     2. Be careful with the ``any`` configuration!
-    
+
 ## How to run with Docker
 
 
@@ -294,6 +294,7 @@ If using multiple usernames format like this:
  * Calcyfer
  * asaf400
  * guyz
+ * DavidK1m
 
 -------
 ## Credits

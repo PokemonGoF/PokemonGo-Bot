@@ -124,7 +124,7 @@ def init_config():
         "Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)",
         type=str,
         default="km")
-    
+
     parser.add_argument(
         "-if",
         "--item_filter",
@@ -136,6 +136,12 @@ def init_config():
     parser.add_argument("-ev",
                         "--evolve_all",
                         help="Bot will start by attempting to evolve all pokemons. Great after popping a lucky egg!",
+                        type=bool,
+                        default=False)
+
+    parser.add_argument("-ec",
+                        "--evolve_captured",
+                        help="Bot will attempt to evolve all the pokemons captured!",
                         type=bool,
                         default=False)
 
@@ -162,7 +168,7 @@ def init_config():
     if os.path.isfile(release_config_json):
         with open(release_config_json) as data:
             config.release_config.update(json.load(data))
-            
+
     if config.gmapkey:
         find_url = 'https:\/\/maps.googleapis.com\/maps\/api\/js\?key=\S*'
         replace_url = "https://maps.googleapis.com/maps/api/js?key=%s&callback=initMap\""

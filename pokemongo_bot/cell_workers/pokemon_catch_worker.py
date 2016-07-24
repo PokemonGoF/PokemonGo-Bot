@@ -134,9 +134,10 @@ class PokemonCatchWorker(object):
                                             pokemon_potential
                                         ), 'green'
                                     )
-                                    
+
                                     id_list2 = self.count_pokemon_inventory()
 
+                                    if self.config.evolve_captured:
                                     pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
                                     self.api.evolve_pokemon(pokemon_id=pokemon_to_transfer[0])
                                     response_dict = self.api.call()
@@ -145,20 +146,22 @@ class PokemonCatchWorker(object):
                                             logger.log(
                                                 '[#] {} has been evolved!'.format(pokemon_name), 'green')
                                     else:
-                                        if self.should_release_pokemon(pokemon_name, cp, pokemon_potential, response_dict):
-                                            # Transfering Pokemon
-                                            pokemon_to_transfer = list(
-                                                Set(id_list2) - Set(id_list1))
-                                            if len(pokemon_to_transfer) == 0:
-                                                raise RuntimeError(
-                                                    'Trying to transfer 0 pokemons!')
-                                            self.transfer_pokemon(
-                                                pokemon_to_transfer[0])
-                                            logger.log(
-                                                '[#] {} has been exchanged for candy!'.format(pokemon_name), 'green')
-                                        else:
-                                            logger.log(
-                                            '[x] Captured {}! [CP {}]'.format(pokemon_name, cp), 'green')
+                                        logger.log(
+                                            '[x] Failed to evolve {}!'.format(pokemon_name))
+                                    if self.should_release_pokemon(pokemon_name, cp, pokemon_potential, response_dict):
+                                        # Transfering Pokemon
+                                        pokemon_to_transfer = list(
+                                            Set(id_list2) - Set(id_list1))
+                                        if len(pokemon_to_transfer) == 0:
+                                            raise RuntimeError(
+                                                'Trying to transfer 0 pokemons!')
+                                        self.transfer_pokemon(
+                                            pokemon_to_transfer[0])
+                                        logger.log(
+                                            '[#] {} has been exchanged for candy!'.format(pokemon_name), 'green')
+                                    else:
+                                        logger.log(
+                                        '[x] Captured {}! [CP {}]'.format(pokemon_name, cp), 'green')
                             break
         time.sleep(5)
 
