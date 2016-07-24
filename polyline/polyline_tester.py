@@ -4,7 +4,7 @@ import haversine
 import polyline
 from math import ceil
 from polyline_walker import PolylineWalker
-URL = 'https://maps.googleapis.com/maps/api/directions/json?origin=Poststrasse+1,Zug,CH&destination=Poststrasse+9,Zug,CH&mode=walking'
+URL = 'https://maps.googleapis.com/maps/api/directions/json?origin=Poststrasse+1,Zug,CH&destination=Guggiweg+7,Zug,CH&mode=walking'
 a = PolylineWalker([x['polyline']['points'] for x in  requests.get(URL).json()['routes'][0]['legs'][0]['steps']], 80)
 print('Walking polyline: ', a.polyline)
 print('Encoded level: ','B'*len(a.points))
