@@ -4,29 +4,71 @@ import json
 import time
 from math import radians, sqrt, sin, cos, atan2
 from pgoapi.utilities import f2i, h2f
-from utils import print_green, print_yellow, print_red, format_time
+from utils import print_green, print_yellow, print_red, format_time, distance, format_dist
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot import logger
 
 
 class SeenFortWorker(object):
-    def __init__(self, fort, bot):
-        self.fort = fort
-        self.api = bot.api
+    def __init__(self, bot):
         self.bot = bot
-        self.position = bot.position
+        self.fort = None
+        self.config = bot.config
+        self.fort = None
+        self.api = bot.api
+        self.position = None
         self.config = bot.config
         self.item_list = bot.item_list
         self.rest_time = 50
         self.stepper = bot.stepper
+        self.in_progress = False
 
-    def work(self):
-        lat = self.fort['latitude']
-        lng = self.fort['longitude']
+    def work(self, fort):
+        self.position = self.bot.position
+        self.fort = fort
+        self.in_progress = True
+        fort_lat = self.fort['latitude']
+        fort_lng = self.fort['longitude']
+        fort_posistion = (fort_lat, fort_lng)
+        fortID = self.fort['id']
+        dist = distance(self.position[0], self.position[1], fort_lat, fort_lng)
 
-        self.api.fort_details(fort_id=self.fort['id'],
-                              latitude=lat,
-                              longitude=lng)
+        if self.config.mode == "all":
+            self.distance_before_break = 50 #maybe add to -m argument?
+        if self.config.mode == "farm":
+            self.distance_before_break = dist
+        if self.config.mode == "poke":
+            return 11
+
+        break_amount = int(dist/self.distance_before_break)
+        unit = self.config.distance_unit  # Unit to use when printing formatted distance
+        print('[#] Found fort {} at distance {}'.format(
+            fortID, format_dist(dist, unit)))
+
+        # divides the distance into even pieces
+        for breaks in range(1, break_amount, 1):
+            t = breaks/float(break_amount)
+            temp_lat = self.position[0] * (1-t) + fort_lat * t
+            temp_lng = self.position[1] * (1-t) + fort_lng * t
+            self.stepper._walk_to(temp_lat, temp_lng, 0)
+            print ("[x] Break %d out of %d before pokestop") % (breaks, break_amount-1)
+            self.bot.work_on_cells()
+
+        self.spin_pokestop(fort_lat, fort_lng)
+
+    def spin_pokestop(self, fort_lat, fort_lng):
+        self.in_progress = False
+        position = (fort_lat, fort_lng, 0.0)
+
+        if self.config.walk > 0:
+            self.stepper._walk_to(*position)
+        else:
+            self.api.set_position(*position)
+        self.api.player_update(latitude=fort_lat, longitude=fort_lng)
+        response_dict = self.api.call()
+        sleep(1)
+
+        self.api.fort_details(fort_id=self.fort['id'], latitude=fort_lat, longitude=fort_lng)
         response_dict = self.api.call()
         if 'responses' in response_dict \
                 and'FORT_DETAILS' in response_dict['responses'] \
@@ -37,12 +79,9 @@ class SeenFortWorker(object):
             fort_name = 'Unknown'
         logger.log('[#] Now at Pokestop: ' + fort_name + ' - Spinning...',
                    'yellow')
-        sleep(2)
-        self.api.fort_search(fort_id=self.fort['id'],
-                             fort_latitude=lat,
-                             fort_longitude=lng,
-                             player_latitude=f2i(self.position[0]),
-                             player_longitude=f2i(self.position[1]))
+        sleep(1)
+        self.api.fort_search(fort_id=self.fort['id'], fort_latitude=fort_lat, fort_longitude=fort_lng, player_latitude=f2i(
+            self.position[0]), player_longitude=f2i(self.position[1]))
         response_dict = self.api.call()
         if 'responses' in response_dict and \
                 'FORT_SEARCH' in response_dict['responses']:
@@ -121,6 +160,7 @@ class SeenFortWorker(object):
             elif spin_details['result'] == 4:
                 print_red("[#] Inventory is full, switching to catch mode...")
                 self.config.mode = 'poke'
+                return 11
 
             if 'chain_hack_sequence_number' in response_dict['responses'][
                     'FORT_SEARCH']:

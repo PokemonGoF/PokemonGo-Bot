@@ -7,11 +7,11 @@ from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot import logger
 
 class PokemonCatchWorker(object):
-    BAG_FULL = 'bag_full'
-    NO_POKEBALLS = 'no_pokeballs'
+    BAG_FULL = True
+    NO_POKEBALLS = True
 
-    def __init__(self, pokemon, bot):
-        self.pokemon = pokemon
+    def __init__(self, bot):
+        self.pokemon = None
         self.api = bot.api
         self.bot = bot
         self.position = bot.position
@@ -20,7 +20,8 @@ class PokemonCatchWorker(object):
         self.item_list = bot.item_list
         self.inventory = bot.inventory
 
-    def work(self):
+    def work(self, pokemon):
+        self.pokemon = pokemon
         encounter_id = self.pokemon['encounter_id']
         spawnpoint_id = self.pokemon['spawnpoint_id']
         player_latitude = self.pokemon['latitude']
@@ -166,9 +167,6 @@ class PokemonCatchWorker(object):
                                             pokemon_to_transfer[0])
                                         logger.log(
                                             '[#] {} has been exchanged for candy!'.format(pokemon_name), 'green')
-                                    else:
-                                        logger.log(
-                                        '[x] Captured {}! [CP {}]'.format(pokemon_name, cp), 'green')
                             break
         time.sleep(5)
 
