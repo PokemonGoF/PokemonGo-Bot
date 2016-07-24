@@ -97,9 +97,9 @@ def init_config():
         "-it",
         "--initial_transfer",
         help=
-        "Transfer all pokemon with same ID on bot start, except pokemon with highest CP. Can receive a CP number to not transfer above it",
+        "Transfer all duplicate pokemon with same ID on bot start, except pokemon with highest CP. Accepts a number to prevent transferring pokemon with a CP above the provided value.  Default is 0 (aka transfer none).",
         type=int,
-        default=999999)
+        default=0)
     parser.add_argument("-d",
                         "--debug",
                         help="Debug Mode",
@@ -132,7 +132,7 @@ def init_config():
     if not config.password and not 'password' in load:
         config.password = getpass("Password: ")
 
-    # Passed in arguments shoud trump
+    # Passed in arguments should trump
     for key in config.__dict__:
         if key in load:
             config.__dict__[key] = load[key]
@@ -150,6 +150,16 @@ def init_config():
     if os.path.isfile(release_config_json):
         with open(release_config_json) as data:
             config.release_config.update(json.load(data))
+            
+    if config.gmapkey:
+        find_url = 'https:\/\/maps.googleapis.com\/maps\/api\/js\?key=\S*'
+        replace_url = "https://maps.googleapis.com/maps/api/js?key=%s&callback=initMap\""
+        #Someone make this pretty! (Efficient)
+        with open("web/index.html", "r") as sources:
+            lines = sources.readlines()
+        with open("web/index.html", "w") as sources:
+            for line in lines:
+                sources.write(re.sub(r"%s" % find_url, replace_url % config.gmapkey, line))
 
     return config
 

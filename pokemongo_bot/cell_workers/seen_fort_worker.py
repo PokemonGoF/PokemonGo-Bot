@@ -4,7 +4,7 @@ import json
 import time
 from math import radians, sqrt, sin, cos, atan2
 from pgoapi.utilities import f2i, h2f
-from utils import distance, print_green, print_yellow, print_red, format_dist, format_time
+from utils import print_green, print_yellow, print_red, format_time
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot import logger
 
@@ -23,27 +23,6 @@ class SeenFortWorker(object):
     def work(self):
         lat = self.fort['latitude']
         lng = self.fort['longitude']
-        unit = self.config.distance_unit  # Unit to use when printing formatted distance
-
-        fortID = self.fort['id']
-        dist = distance(self.position[0], self.position[1], lat, lng)
-
-        # print('[#] Found fort {} at distance {}m'.format(fortID, dist))
-        logger.log('[#] Found fort {} at distance {}'.format(
-            fortID, format_dist(dist, unit)))
-
-        if dist > 10:
-            logger.log('[#] Need to move closer to Pokestop')
-            position = (lat, lng, 0.0)
-
-            if self.config.walk > 0:
-                self.stepper._walk_to(self.config.walk, *position)
-            else:
-                self.api.set_position(*position)
-            self.api.player_update(latitude=lat, longitude=lng)
-            response_dict = self.api.call()
-            logger.log('[#] Arrived at Pokestop')
-            sleep(2)
 
         self.api.fort_details(fort_id=self.fort['id'],
                               latitude=lat,
@@ -91,22 +70,22 @@ class SeenFortWorker(object):
                         item_name = self.item_list[str(item_id)]
 
                         logger.log("[+] " + str(item_count) +
-                                    "x " + item_name, 'green')
-                        
-                        
+                                    "x " + item_name +
+                                    " (Total: " + str(self.bot.item_inventory_count(item_id)) + ")", 'green')
+
                         # RECYCLING UNWANTED ITEMS
                         if str(item_id) in self.config.item_filter:
                             logger.log("[+] Recycling " + str(item_count) + "x " + item_name + "...", 'green')
                             #RECYCLE_INVENTORY_ITEM
                             response_dict_recycle = self.bot.drop_item(item_id=item_id, count=item_count)
-                            
+
                             if response_dict_recycle and \
                                 'responses' in response_dict_recycle and \
                                 'RECYCLE_INVENTORY_ITEM' in response_dict_recycle['responses'] and \
                                     'result' in response_dict_recycle['responses']['RECYCLE_INVENTORY_ITEM']:
                                 result = response_dict_recycle['responses']['RECYCLE_INVENTORY_ITEM']['result']
                             if result is 1: # Request success
-                                logger.log("[+] Recycling success, count of " + item_name + "s kept at : " + str(response_dict_recycle['responses']['RECYCLE_INVENTORY_ITEM']['new_count']), 'green')
+                                logger.log("[+] Recycling success", 'green')
                             else:
                                 logger.log("[+] Recycling failed!", 'red')
                 else:
