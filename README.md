@@ -14,11 +14,11 @@ The Pokemon Go Bot, baking with community.
 ## Project Chat
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
 ## About dev/stable/master Branch
-Dev branch has most up to date feature and even everyone handle the part well, still, will have broken changes.
-Your test contribute and PR for fix are well welcome. Or, you can wait on the master branch.
-Stable branch is better than dev branch.
-Master branch is the thing you familiar.
-No PR on stable/master branch to keep things easier.
+Dev branch has most up to date feature and even everyone handle the part well, still, will have broken changes.  
+Your test contribute and PR for fix are well welcome. Or, you can wait on the master branch.  
+Stable branch is better than dev branch.  
+Master branch is the thing you familiar.  
+No PR on stable/master branch to keep things easier.  
 ## Table of Contents
 - [Project Chat](#project-chat)
 - [Features](#features)
