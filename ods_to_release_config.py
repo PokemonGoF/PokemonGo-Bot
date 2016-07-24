@@ -1,3 +1,5 @@
+#v1.0 Witzbold script to configure release_config. 
+
 from pyexcel_ods import get_data
 
 data = get_data("release_config.ods")
