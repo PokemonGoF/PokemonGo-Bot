@@ -374,7 +374,7 @@ function buildMenu() {
   }
   if (menu == 3) {
     document.getElementById('subtitle').innerHTML = "Pokemon in Bag";
-    out = '<div class="row items"><div class="col s12"><h5>' + users[0] + '</h5><table>';
+    out = '<div class="row items"><div class="col s12"><h5>' + users[0] + '</h5>';
     for (var i = 0; i < bagPokemon.length; i++) {
       if (bagPokemon[i].inventory_item_data.pokemon_data.is_egg) {
 
@@ -385,6 +385,7 @@ function buildMenu() {
         pkmIV = "???"
 
       } else {
+
         pkmnNum = bagPokemon[i].inventory_item_data.pokemon_data.pokemon_id
         pkmnImage = pad_with_zeroes(bagPokemon[i].inventory_item_data.pokemon_data.pokemon_id, 3) + '.png'
         pkmnName = pokemonArray[pkmnNum-1].Name
@@ -396,13 +397,19 @@ function buildMenu() {
         pkmIV = ((pkmIVA + pkmIVD + pkmIVS) / 45.0).toFixed(2);
 
       }
-      out += '<tr>'
-      out += '<td><img src="/image/pokemon/' + pkmnImage + '" class="png_img"></td>';
-      out += '<td class="left-align">Name: ' + pkmnName + '<br>CP: ' + pkmCP + '</td>';
-      out += '<td class="left-align">IV: ' + pkmIV + '<br>ID: ' + pkmnNum + '</td>';
-      out += '</tr>';
+
+      if (i % 4 == 0) out += '<div class="row">'
+
+      out += '<div class="col s3 center-align">'
+      out += '<img src="/image/pokemon/' + pkmnImage + '" class="png_img"><br />';
+      out += pkmnName + '<br />';
+      out += 'CP ' + pkmCP + '<br />';
+      out += 'IV ' + pkmIV;
+      out += '</div>';
+
+      if ((i + 1) % 4 == 0) out += '</div>'
     }
-    out += '</table></div></div>';
+    out += '</div></div>';
     document.getElementById('subcontent').innerHTML = out;
   }
   if (menu == 4) {
