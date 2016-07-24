@@ -1,20 +1,23 @@
+import requests
 import polyline
 import haversine
 import time
 from itertools import  chain
+from math import ceil
 
 class PolylineWalker(object):
 
-    def __init__(self, polyline_points, speed):
-        """
-        :param polyline_points:
-        URL = 'https://maps.googleapis.com/maps/api/directions/json?origin=Riedmatt+34,Zug&destination=Chamerstrasse+177,6300,Zug,CH&mode=walking'
-        polyline_points =[x['polyline']['points'] for x in
-                          requests.get(URL).json()['routes'][0]['legs'][0]['steps']]
-        :param speed:
-        """
+    def __init__(self, origin, destination, speed):
+        self.DISTANCE_API_URL='https://maps.googleapis.com/maps/api/directions/json?mode=walking'
+        self.origin = origin
+        self.destination = destination
+        self.polyline_points = [x['polyline']['points'] for x in
+                                requests.get(self.DISTANCE_API_URL+'&origin='+
+                                             self.origin+'&destination='+
+                                             self.destination
+                                             ).json()['routes'][0]['legs'][0]['steps']]
         self.speed = float(speed)
-        self.points = self.get_points(polyline_points)
+        self.points = self.get_points(self.polyline_points)
         self.lat, self.long = self.points[0][0], self.points[0][1]
         self.polyline = self.combine_polylines(self.points)
         self._timestamp = time.time()
@@ -74,7 +77,7 @@ class PolylineWalker(object):
                 break
         step_distance = haversine.haversine(*steps_dict[walked_end_step])*1000
         if walked_end_step >= time_passed_distance:
-            percentage_walked = ( walked_end_step - time_passed_distance ) / step_distance
+            percentage_walked = (time_passed_distance - (walked_end_step - step_distance)) / step_distance
         else:
             percentage_walked = 1.0
         return self.calculate_coord(percentage_walked, *steps_dict[walked_end_step])
@@ -83,4 +86,8 @@ class PolylineWalker(object):
         lat = o[0]+ (d[0] -o[0]) * percentage
         lon = o[1]+ (d[1] -o[1]) * percentage
         return [(lat, lon)]
+
+    def get_total_distance(self):
+        return ceil(sum([haversine.haversine(*x)*1000 for x in self.walk_steps()]))
+
 
