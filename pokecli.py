@@ -28,11 +28,9 @@ Author: tjado <https://github.com/tejado>
 import os
 import re
 import json
-import requests
 import argparse
 import time
 import ssl
-import logging
 import sys
 import codecs
 from pokemongo_bot import logger
@@ -40,9 +38,16 @@ if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
 from getpass import getpass
+import logging
+import requests
+from pokemongo_bot import logger
 from pokemongo_bot import PokemonGoBot
 from pokemongo_bot.cell_workers.utils import print_green, print_yellow, print_red
 from pokemongo_bot import lcd
+
+if sys.version_info >= (2, 7, 9):
+    ssl._create_default_https_context = ssl._create_unverified_context
+
 
 def init_config():
     parser = argparse.ArgumentParser()
@@ -54,7 +59,7 @@ def init_config():
 
     # Select a config file code
     parser.add_argument("-cf", "--config", help="Config File to use")
-    config_arg =unicode(parser.parse_args().config)
+    config_arg = unicode(parser.parse_args().config)
     if os.path.isfile(config_arg):
         with open(config_arg) as data:
             load.update(json.load(data))
@@ -124,7 +129,7 @@ def init_config():
         "Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)",
         type=str,
         default="km")
-    
+
     parser.add_argument(
         "-if",
         "--item_filter",
@@ -138,7 +143,7 @@ def init_config():
                         help="Bot will start by attempting to evolve all pokemons. Great after popping a lucky egg!",
                         type=bool,
                         default=False)
-                        
+
     parser.add_argument("-ec",
                         "--evolve_captured",
                         help="Bot will attempt to evolve all the pokemons captured!",
@@ -152,16 +157,15 @@ def init_config():
                         default=False)
 
     config = parser.parse_args()
-    if not config.username and not 'username' in load:
+    if not config.username and 'username' not in load:
         config.username = raw_input("Username: ")
-    if not config.password and not 'password' in load:
+    if not config.password and 'password' not in load:
         config.password = getpass("Password: ")
 
     # Passed in arguments should trump
     for key in config.__dict__:
         if key in load:
             config.__dict__[key] = load[key]
-
 
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")
@@ -173,12 +177,12 @@ def init_config():
 
     if config.item_filter:
         config.item_filter = [str(item_id) for item_id in config.item_filter.split(',')]
-        
+
     config.release_config = {}
     if os.path.isfile(release_config_json):
         with open(release_config_json) as data:
             config.release_config.update(json.load(data))
-            
+
     if config.gmapkey:
         find_url = 'https:\/\/maps.googleapis.com\/maps\/api\/js\?key=\S*'
         replace_url = "https://maps.googleapis.com/maps/api/js?key=%s&callback=initMap\""
@@ -188,6 +192,7 @@ def init_config():
         with open("web/index.html", "w") as sources:
             for line in lines:
                 sources.write(re.sub(r"%s" % find_url, replace_url % config.gmapkey, line))
+
     return config
 
 

@@ -85,9 +85,9 @@ class PokemonCatchWorker(object):
                         balls_stock = self.bot.pokeball_inventory()
                         while(True):
                         
-                            pokeball = 1 # default: poke ball
+                            pokeball = 1 # default:poke ball
                             
-                            if balls_stock[1] < 0: # if poke ball are out of stock
+                            if balls_stock[1] <= 0: # if poke ball are out of stock
                                 if balls_stock[2] > 0: # and player has great balls in stock...
                                     pokeball = 2 # then use great balls
                                 elif balls_stock[3] > 0: # or if great balls are out of stock too, and player has ultra balls...
@@ -155,7 +155,7 @@ class PokemonCatchWorker(object):
                                             '[x] Oh no! {} vanished! :('.format(pokemon_name))
                                 if status is 1:
                                     logger.log(
-                                        '[x] Captured {}! [CP {}] [IV {}] - Checking Release Config'.format(
+                                        '[x] Captured {}! [CP {}] [IV {}]'.format(
                                             pokemon_name,
                                             cp,
                                             pokemon_potential
@@ -298,14 +298,14 @@ class PokemonCatchWorker(object):
                 'and': lambda x, y: x and y
             }
 
-            logger.log(
-                "[x] Release config for {}: CP {} {} IV {}".format(
-                    pokemon_name,
-                    min_cp,
-                    cp_iv_logic,
-                    min_iv
-                ), 'yellow'
-            )
+            #logger.log(
+            #    "[x] Release config for {}: CP {} {} IV {}".format(
+            #        pokemon_name,
+            #        min_cp,
+            #        cp_iv_logic,
+            #        min_iv
+            #    ), 'yellow'
+            #)
 
             return logic_to_function[cp_iv_logic](*release_results.values())
 
