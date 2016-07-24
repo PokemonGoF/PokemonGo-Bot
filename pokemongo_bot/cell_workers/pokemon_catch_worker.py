@@ -84,6 +84,28 @@ class PokemonCatchWorker(object):
                                 else:
                                     pokeball = 0 # player doesn't have any of pokeballs, great balls or ultra balls
                             
+                            ## Use berry to increase success chance.
+                            berry_id = 701 # @ TODO: use better berries if possible
+                            berries_count = self.bot.item_inventory_count(berry_id)
+                            if(catch_rate[pokeball-1] < 0.5 and berries_count > 0): # and potion is in stock
+                                success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
+                                logger.log('[x] Catch Rate is low ({}%). Throwing {}... ({} left!)'.format(success_percentage,self.item_list[str(pokeball)],berries_count-1))
+                                self.api.use_item_capture(
+                                    item_id=berry_id, 
+                                    encounter_id = encounter_id, 
+                                    spawn_point_guid = spawnpoint_id
+                                )
+                                response_dict = self.api.call()
+                                if response_dict and response_dict['status_code'] is 1:
+                                
+                                    for i in catch_rate:
+                                        catch_rate[i] = catch_rate[i] * response_dict['responses']['USE_ITEM_CAPTURE']['item_capture_mult']
+                                        
+                                    success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
+                                    logger.log('[#] Catch Rate has increased to {}%'.format(success_percentage))
+                                else:
+                                    logger.log('[x] Fail to use berry. Status Code: {}'.format(response_dict['status_code']),'red')
+                            
                             while(pokeball < 3):
                                 if catch_rate[pokeball-1] < 0.35 and balls_stock[pokeball+1] > 0:
                                     # if current ball chance to catch is under 35%, and player has better ball - then use it
@@ -99,25 +121,6 @@ class PokemonCatchWorker(object):
                                 # Begin searching for pokestops.
                                 self.config.mode = 'farm'
                                 return PokemonCatchWorker.NO_POKEBALLS
-                            
-                            ## Use berry to increase success chance.
-                            berry_id = 701 # @ TODO: use better berries if possible
-                            berries_count = self.bot.item_inventory_count(berry_id)
-                            if(catch_rate[pokeball-1] < 0.5 and berries_count > 0): # and potion is in stock
-                                success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
-                                logger.log('[x] Catch Rate is low ({}%). Throwing {}... ({} left!)'.format(success_percentage,self.item_list[str(pokeball)],berries_count-1))
-                                self.api.use_item_capture(
-                                    item_id=berry_id, 
-                                    encounter_id = encounter_id, 
-                                    spawn_point_guid = spawnpoint_id
-                                )
-                                response_dict = self.api.call()
-                                if response_dict and response_dict['status_code'] is 1:
-                                    catch_rate[pokeball-1] = catch_rate[pokeball-1] * response_dict['responses']['USE_ITEM_CAPTURE']['item_capture_mult']
-                                    success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
-                                    logger.log('[#] Catch Rate has increased to {}%'.format(success_percentage))
-                                else:
-                                    logger.log('[x] Fail to use berry. Status Code: {}'.format(response_dict['status_code']),'red')
                                     
                             balls_stock[pokeball] = balls_stock[pokeball] - 1
                             success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
