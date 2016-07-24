@@ -321,8 +321,7 @@ class PokemonGoBot(object):
         self.position = self._get_pos_by_name(self.config.location)
         self.api.set_position(*self.position)
         logger.log('')
-        logger.log(u'[x] Address found: {}'.format(self.config.location.decode(
-            'utf-8')))
+        logger.log(u'[x] Address found: {}'.format(self.config.location))
         logger.log('[x] Position in-game set as: {}'.format(self.position))
         logger.log('')
 
