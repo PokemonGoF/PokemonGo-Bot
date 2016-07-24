@@ -365,12 +365,12 @@ function buildMenu() {
   }
   if (menu == 2) {
     document.getElementById('subtitle').innerHTML = "Items in Bag";
-    out = '<div class="row items"><div class="col s12"><h5>' + users[0] + '</h5>';
+    out = '<div class="row items"><div class="col s12"><h5>' + users[0] + '</h5><table>';
     for (var i = 0; i < bagItems.length; i++) {
-      out += '<table><tr><td><img src="image/items/' + bagItems[i].inventory_item_data.item.item_id + '.png" class="item_img"></td><td>Item: ' + itemsArray[bagItems[i].inventory_item_data.item.item_id] +
-      '<br>Count: ' + (bagItems[i].inventory_item_data.item.count || 0) + '</td>';
+      out += '<tr><td><img src="image/items/' + bagItems[i].inventory_item_data.item.item_id + '.png" class="item_img"></td><td>Item: ' + itemsArray[bagItems[i].inventory_item_data.item.item_id] +
+          '<br>Count: ' + (bagItems[i].inventory_item_data.item.count || 0) + '</td></tr>';
     }
-    out += '</tr></table></div></div>';
+    out += '</table></div></div>';
     document.getElementById('subcontent').innerHTML = out;
   }
   if (menu == 3) {
