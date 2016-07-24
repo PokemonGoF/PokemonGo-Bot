@@ -98,9 +98,12 @@ class PokemonCatchWorker(object):
                                 return -1
 
                             balls_stock[pokeball] = balls_stock[pokeball] - 1
-                            success_percentage = catch_rate[pokeball]*100
-                            logger.log('[x] Using {} ({0:.2f}% success)... ({} left!)'.format(
-                                self.item_list[str(pokeball)], success_percentage, balls_stock[pokeball]))
+                            success_percentage = '{0:.2f}'.format(catch_rate[pokeball]*100)
+                            logger.log('[x] Using {} ({}% success)... ({} left!)'.format(
+                                self.item_list[str(pokeball)], 
+                                success_percentage, 
+                                balls_stock[pokeball]
+                            ))
 
                             id_list1 = self.count_pokemon_inventory()
                             self.api.catch_pokemon(encounter_id=encounter_id,
