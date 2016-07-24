@@ -126,15 +126,15 @@ def init_config():
         type=list,
         default=[])
 
-    config = parser.parse_args()
+    args = config = parser.parse_args()
     if not config.username and not 'username' in load:
         config.username = raw_input("Username: ")
     if not config.password and not 'password' in load:
         config.password = getpass("Password: ")
 
     # Passed in arguments should trump
-    for key in config.__dict__:
-        if key in load:
+    for key in load:
+        if key not in config.__dict__:
             config.__dict__[key] = load[key]
 
     if config.auth_service not in ['ptc', 'google']:
