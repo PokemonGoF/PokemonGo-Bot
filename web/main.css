@@ -23,6 +23,9 @@ html, body {
 	z-index: 6;
 	display: none;
 }
+#submenu td:first-child {
+	width: 20%;
+}
 .items {
 	max-height: 350px !important;
 	overflow-y: scroll;

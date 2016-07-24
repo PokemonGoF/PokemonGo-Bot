@@ -13,9 +13,12 @@ The Pokemon Go Bot, baking with community.
 
 ## Project Chat
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
-## About dev Branch
-This branch has most up to date feature and even everyone handle the part well, still, will have broken changes.
-Your test contribute and PR for fix are well welcome. Or, you can wait on the master branch.
+## About dev/stable/master Branch
+Dev branch has most up to date feature and even everyone handle the part well, still, will have broken changes.  
+Your test contribute and PR for fix are well welcome. Or, you can wait on the master branch.  
+Stable branch is better than dev branch.  
+Master branch is the thing you familiar.  
+No PR on stable/master branch to keep things easier.  
 ## Table of Contents
 - [Project Chat](#project-chat)
 - [Features](#features)
@@ -55,7 +58,7 @@ Your test contribute and PR for fix are well welcome. Or, you can wait on the ma
 - [x] Pokemon catch filter
 - [ ] Hatch eggs
 - [ ] Incubate eggs
-- [ ] Evolve pokemons
+- [x] Evolve pokemons (Code in, Need input, In Testing)
 - [ ] Use candy
 - [x] Code refactor
 
@@ -146,7 +149,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -m MODE, --mode MODE                          Set farming Mode for the bot ('all', 'poke', 'farm')
       -w SPEED,  --walk SPEED                       Walk instead of teleport with given speed (meters per second max 4.16 because of walking end on 15km/h)
       -du, --distance_unit UNIT                     Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
-      -it, --initial_transfer                       Transfer all pokemon with same ID on bot start, except pokemon with highest CP. Can receive a CP number to not transfer above it
+      -it, --initial_transfer                       Transfer all duplicate pokemon with same ID on bot start, except pokemon with highest CP. Accepts a number to prevent transferring pokemon with a CP above the provided value.  Default is 0 (aka transfer none).
       -ms, --max_steps MAX_STEP                     Set the steps around your initial location (DEFAULT 5 mean 25 cells around your location)
       -iv IV, --pokemon_potential                   Set the ratio for the IV values to transfer (DEFAULT 0.4 eg. 0.4 will transfer a pokemon with IV 0.3)
       -if LIST, --item_filter LIST                  Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, \"101,102,103,104\" to recycle potions when collected)"
@@ -189,6 +192,27 @@ This project uses Google Maps. There's one map coupled with the project, but as 
             print(inventory_req)
         ```  
     5. You can now debug on the log to see if get what you need  
+
+## How to set up a simple webserver with nginx
+### Nginx on Ubuntu 14.x, 16.x
+#### 1. Install nginx on your Ubuntu machine (e.g. on locally or AWS)
+```
+sudo apt-get update
+sudo apt-get install nginx
+```
+
+#### 2. Check the webserver
+Check if the webserver is running by using your browser and entering the IP address of your local machine/server.
+On a local machine this would be http://127.0.0.1. On AWS this is your public DNS if you havent configured an elastic IP.
+
+#### 3. Change Base Directory of the Webserver
+```
+sudo nano "/etc/nginx/sites-enabled/default"
+```
+Comment out following line: ```root /var/www/html;``` and change it to the web folder of your PokemonGo-Bot: eg:
+```
+/home/user/dev/PokemonGo-Bot/web;
+```
 
 ## FAQ
 
@@ -271,6 +295,7 @@ If using multiple usernames format like this:
  * msoedov
  * Grace
  * Calcyfer
+ * asaf400
 
 -------
 ## Credits

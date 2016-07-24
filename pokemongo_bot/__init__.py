@@ -11,7 +11,7 @@ import yaml
 import logger
 import re
 from pgoapi import PGoApi
-from cell_workers import PokemonCatchWorker, SeenFortWorker
+from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker
 from cell_workers.utils import distance
 from human_behaviour import sleep
 from stepper import Stepper
@@ -117,6 +117,9 @@ class PokemonGoBot(object):
                 forts.sort(key=lambda x: distance(self.position[
                            0], self.position[1], x['latitude'], x['longitude']))
                 for fort in cell['forts']:
+                    worker = MoveToFortWorker(fort, self)
+                    worker.work()
+
                     worker = SeenFortWorker(fort, self)
                     hack_chain = worker.work()
                     if hack_chain > 10:
@@ -212,7 +215,7 @@ class PokemonGoBot(object):
     def drop_item(self, item_id, count):
         self.api.recycle_inventory_item(item_id=item_id, count=count)
         inventory_req = self.api.call()
-        
+
         # Example of good request response
         #{'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
         return inventory_req
@@ -221,7 +224,7 @@ class PokemonGoBot(object):
         logger.log('[x] Initial Transfer.')
 
         logger.log(
-        '[x] Preparing to transfer all Pokemon duplicates, keeping the highest CP of each one type.')
+        '[x] Preparing to transfer all duplicate Pokemon, keeping the highest CP of each type.')
 
         logger.log('[x] Will NOT transfer anything above CP {}'.format(
             self.config.initial_transfer))
@@ -362,7 +365,16 @@ class PokemonGoBot(object):
         if self.config.test:
             return
 
-        if self.config.location_cache:
+        if self.config.location:
+            try:
+                location_str = str(self.config.location)
+                start_coordinate = [x.strip() for x in location_str.split(',')]
+                self.position = (float(start_coordinate[0]), float(start_coordinate[0]), 0.0)
+                self.api.set_position(*self.position)
+            except:
+                pass
+
+        if self.config.location_cache and not self.config.location:
             try:
                 #
                 # save location flag used to pull the last known location from
