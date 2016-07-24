@@ -28,29 +28,37 @@ Author: tjado <https://github.com/tejado>
 import os
 import re
 import json
-import requests
 import argparse
 import time
 import ssl
-import logging
 import sys
 import codecs
-from pokemongo_bot import logger
-if sys.version_info >= (2, 7, 9):
-    ssl._create_default_https_context = ssl._create_unverified_context
-
 from getpass import getpass
+import logging
+import requests
+from pokemongo_bot import logger
 from pokemongo_bot import PokemonGoBot
 from pokemongo_bot.cell_workers.utils import print_green, print_yellow, print_red
+
+if sys.version_info >= (2, 7, 9):
+    ssl._create_default_https_context = ssl._create_unverified_context
 
 
 def init_config():
     parser = argparse.ArgumentParser()
     config_file = "config.json"
+    release_config_json = "release_config.json"
 
     # If config file exists, load variables from json
     load = {}
-    if os.path.isfile(config_file):
+
+    # Select a config file code
+    parser.add_argument("-cf", "--config", help="Config File to use")
+    config_arg = unicode(parser.parse_args().config)
+    if os.path.isfile(config_arg):
+        with open(config_arg) as data:
+            load.update(json.load(data))
+    elif os.path.isfile(config_file):
         with open(config_file) as data:
             load.update(json.load(data))
 
@@ -80,17 +88,6 @@ def init_config():
         "Walk instead of teleport with given speed (meters per second, e.g. 2.5)",
         type=float,
         default=2.5)
-    parser.add_argument("-c",
-                        "--cp",
-                        help="Set CP less than to transfer(DEFAULT 100)",
-                        type=int,
-                        default=100)
-    parser.add_argument(
-        "-iv",
-        "--pokemon_potential",
-        help="Set IV ratio less than to transfer(DEFAULT 0.40)",
-        type=float,
-        default=0.40)
     parser.add_argument("-k",
                         "--gmapkey",
                         help="Set Google Maps API KEY",
@@ -107,9 +104,9 @@ def init_config():
         "-it",
         "--initial_transfer",
         help=
-        "Transfer all pokemon with same ID on bot start, except pokemon with highest CP. It works with -c",
-        type=bool,
-        default=False)
+        "Transfer all duplicate pokemon with same ID on bot start, except pokemon with highest CP. Accepts a number to prevent transferring pokemon with a CP above the provided value.  Default is 0 (aka transfer none).",
+        type=int,
+        default=0)
     parser.add_argument("-d",
                         "--debug",
                         help="Debug Mode",
@@ -127,13 +124,34 @@ def init_config():
         "Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)",
         type=str,
         default="km")
+
+    parser.add_argument(
+        "-if",
+        "--item_filter",
+        help=
+        "Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, \"101,102,103,104\" to recycle potions when collected)",
+        type=str,
+        default=[])
+
+    parser.add_argument("-ev",
+                        "--evolve_all",
+                        help="Bot will start by attempting to evolve all pokemons. Great after popping a lucky egg!",
+                        type=bool,
+                        default=False)
+
+    parser.add_argument("-ec",
+                        "--evolve_captured",
+                        help="Bot will attempt to evolve all the pokemons captured!",
+                        type=bool,
+                        default=False)
+
     config = parser.parse_args()
-    if not config.username and not 'username' in load:
+    if not config.username and 'username' not in load:
         config.username = raw_input("Username: ")
-    if not config.password and not 'password' in load:
+    if not config.password and 'password' not in load:
         config.password = getpass("Password: ")
 
-    # Passed in arguments shoud trump
+    # Passed in arguments should trump
     for key in config.__dict__:
         if key in load:
             config.__dict__[key] = load[key]
@@ -145,7 +163,25 @@ def init_config():
     if not (config.location or config.location_cache):
         parser.error("Needs either --use-location-cache or --location.")
         return None
-    print(config)
+
+    if config.item_filter:
+        config.item_filter = [str(item_id) for item_id in config.item_filter.split(',')]
+
+    config.release_config = {}
+    if os.path.isfile(release_config_json):
+        with open(release_config_json) as data:
+            config.release_config.update(json.load(data))
+
+    if config.gmapkey:
+        find_url = 'https:\/\/maps.googleapis.com\/maps\/api\/js\?key=\S*'
+        replace_url = "https://maps.googleapis.com/maps/api/js?key=%s&callback=initMap\""
+        #Someone make this pretty! (Efficient)
+        with open("web/index.html", "r") as sources:
+            lines = sources.readlines()
+        with open("web/index.html", "w") as sources:
+            for line in lines:
+                sources.write(re.sub(r"%s" % find_url, replace_url % config.gmapkey, line))
+
     return config
 
 
@@ -170,7 +206,7 @@ def main():
 
         logger.log('[x] Starting PokemonGo Bot....', 'green')
 
-        while (True):
+        while True:
             bot.take_step()
 
     except KeyboardInterrupt:
