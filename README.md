@@ -91,6 +91,8 @@ No PR on stable/master branch to keep things easier.
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
 $ cd PokemonGo-Bot  
 $ pip install -r requirements.txt
+$ git submodule init
+$ git submodule update
 ```
 
 ### Installation Mac
@@ -101,9 +103,19 @@ $ cd PokemonGo-Bot
 $ virtualenv .  
 $ source bin/activate  
 $ pip install -r requirements.txt
+$ git submodule init
+$ git submodule update
 ```
 
 ### Installation Windows
+
+```
+$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
+$ cd PokemonGo-Bot  
+$ pip install -r requirements.txt
+$ git submodule init
+$ git submodule update
+```
 
 ###### Windows Note
 On Windows, you will need to install PyYaml through the  [installer](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt.
@@ -126,6 +138,8 @@ $ cd PokemonGo-Bot
 $ virtualenv .  
 $ source bin/activate  
 $ pip install -r requirements.txt  
+$ git submodule init
+$ git submodule update
 ```
 
 ### Google Maps API (in development)
@@ -141,7 +155,11 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 5. Copy the API key that appears.
 6. After the code done, will update here how to replace.
 
+### Python bug
+If you encounter problems with the module ssl and it function `_create_unverified_context`. Just comment it. (Solution available in Python 2.7.11)
+
 ## Usage
+	(maybe deprecated)
     usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-lc] [-m] [-w] [--distance_unit] [--initial-transfer] [--maxsteps] [-iv] [-d] [-t]
 
     optional arguments:
@@ -161,6 +179,12 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
 
+## Usage with config (up to date)
+	1/ copy `config.json.example` to `config.json` and `release_config.json.example` to `release_config.json`.
+	2/ Edit those files with your preference (required for config.json, optional for release_config.json)
+	
+	  usage: python pokecli.py (windows)
+	  
 ### Command Line Example
     Pokemon Trainer Club (PTC) account:
     $ python2 pokecli.py -a ptc -u tejado -p 1234 --location "New York, Washington Square"
@@ -174,7 +198,23 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 
     1. Pokemon name is always capitalize and case-sensitive
     2. Be careful with the ``any`` configuration!
+
+### Evolve All Configuration
+    By setting the `evolve_all` attribute in config.json, you can instruct the bot to automatically
+    evolve specified pokemons on startup. This is especially useful for batch-evolving after popping up
+    a lucky egg (currently this needs to be done manually).
     
+    The evolve all mechanism evolves only higher CP pokemons. It does this by first ordering them from high-to-low CP.
+    It will also automatically transfer the evolved pokemons based on the release configuration.
+    
+    Examples on how to use (set in config.json):
+    
+    1. "evolve_all": "all"
+      Will evolve ALL pokemons.
+    2. "evolve_all": "Pidgey,Weedle"
+      Will only evolve Pidgey and Weedle.
+    3. Not setting evolve_all or having any other string would not evolve any pokemons on startup.
+
 ## How to run with Docker
 
 

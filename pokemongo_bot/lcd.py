@@ -11,9 +11,13 @@ Made available under GNU GENERAL PUBLIC LICENSE
 """
 #
 #
-import smbus
+import os
 from itertools import islice
 from time import *
+
+# This import is NOT available on Mac OS X, check for ARM OS before loading
+if (os.name()).lower() == 'arm':
+    import smbus
 
 
 class i2c_device:
