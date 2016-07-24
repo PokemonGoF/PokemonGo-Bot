@@ -14,9 +14,8 @@ The Pokemon Go Bot, baking with community.
 ## Project Chat
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
 ## About dev/stable/master Branch
-Dev branch has most up to date feature and even everyone handle the part well, still, will have broken changes.  
-Your test contribute and PR for fix are well welcome. Or, you can wait on the master branch.  
-Stable branch is better than dev branch.  
+Dev branch has most up to date feature and even everyone handle the part well, still, will have broken changes. Your test contribute and PR for fix are warm welcome. 
+Stable branch is better than dev branch. Setup with milestone tag.  
 Master branch is the thing you familiar.  
 No PR on stable/master branch to keep things easier.  
 ## Table of Contents
@@ -40,27 +39,26 @@ No PR on stable/master branch to keep things easier.
  * Catch Pokemon
  * Release low cp pokemon
  * Walking as you
+ * Limit the step to farm specific area for pokestops
  * Use the ball you have to catch, don't if you don't have
  * Rudimentary IV Functionality filter
  * Auto switch mode(Full of item then catch, no ball useable then farm)
  * Ignore certain pokemon filter
  * Use superior ball types when necessary
  * When out of normal pokeballs, use the next type of ball unless there are less than 10 of that type, in which case switch to farm mode
+ * Drop items when bag is full (In Testing, Document contribute needed)
+ * Pokemon catch filter (In Testing, Document contribute needed)
+ * Google Map API key setup (Readme update needed)
+ * Show all objects on map (In Testing)
+ * Evolve pokemons (Code in, Need input, In Testing)
 
 ## TODO List
 
 - [ ] Standalone Desktop APP
-- [x] Google Map API key setup (Readme update needed)
-- [x] Show all objects on map (In Testing)
-- [x] Limit the step to farm specific area for pokestops
-- [ ] Pokemon transfer filter
-- [x] Drop items when bag is full (In Testing)
-- [x] Pokemon catch filter
+- [ ] Pokemon transfer filter ?? This already done, right?
 - [ ] Hatch eggs
 - [ ] Incubate eggs
-- [ ] Evolve pokemons
 - [ ] Use candy
-- [x] Code refactor
 
 ## Installation
 
@@ -151,7 +149,8 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -du, --distance_unit UNIT                     Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
       -it, --initial_transfer                       Transfer all duplicate pokemon with same ID on bot start, except pokemon with highest CP. Accepts a number to prevent transferring pokemon with a CP above the provided value.  Default is 0 (aka transfer none).
       -ms, --max_steps MAX_STEP                     Set the steps around your initial location (DEFAULT 5 mean 25 cells around your location)
-      -if LIST, --item_filter LIST                  Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, [\"101\",\"102\",\"103\",\"104\"] to recycle potions when collected)" 
+      -iv IV, --pokemon_potential                   Set the ratio for the IV values to transfer (DEFAULT 0.4 eg. 0.4 will transfer a pokemon with IV 0.3)
+      -if LIST, --item_filter LIST                  Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, \"101,102,103,104\" to recycle potions when collected)"
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
 
@@ -295,7 +294,10 @@ If using multiple usernames format like this:
  * Grace
  * Calcyfer
  * asaf400
-
+ * guyz
+ * DavidK1m
+ * budi-khoirudin
+ 
 -------
 ## Credits
 - [tejado](https://github.com/tejado) many thanks for the API

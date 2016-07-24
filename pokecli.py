@@ -51,7 +51,14 @@ def init_config():
 
     # If config file exists, load variables from json
     load = {}
-    if os.path.isfile(config_file):
+
+    # Select a config file code
+    parser.add_argument("-cf", "--config", help="Config File to use")
+    config_arg =unicode(parser.parse_args().config)
+    if os.path.isfile(config_arg):
+        with open(config_arg) as data:
+            load.update(json.load(data))
+    elif os.path.isfile(config_file):
         with open(config_file) as data:
             load.update(json.load(data))
 
@@ -122,19 +129,32 @@ def init_config():
         "-if",
         "--item_filter",
         help=
-        "Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, [\"101\",\"102\",\"103\",\"104\"] to recycle potions when collected)",
-        type=list,
+        "Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, \"101,102,103,104\" to recycle potions when collected)",
+        type=str,
         default=[])
 
-    args = config = parser.parse_args()
+    parser.add_argument("-ev",
+                        "--evolve_all",
+                        help="Bot will start by attempting to evolve all pokemons. Great after popping a lucky egg!",
+                        type=bool,
+                        default=False)
+                        
+    parser.add_argument("-ec",
+                        "--evolve_captured",
+                        help="Bot will attempt to evolve all the pokemons captured!",
+                        type=bool,
+                        default=False)
+
+    config = parser.parse_args()
+
     if not config.username and not 'username' in load:
         config.username = raw_input("Username: ")
     if not config.password and not 'password' in load:
         config.password = getpass("Password: ")
 
     # Passed in arguments should trump
-    for key in load:
-        if key not in config.__dict__:
+    for key in config.__dict__:
+        if key in load:
             config.__dict__[key] = load[key]
 
     if config.auth_service not in ['ptc', 'google']:
@@ -145,6 +165,9 @@ def init_config():
         parser.error("Needs either --use-location-cache or --location.")
         return None
 
+    if config.item_filter:
+        config.item_filter = [str(item_id) for item_id in config.item_filter.split(',')]
+        
     config.release_config = {}
     if os.path.isfile(release_config_json):
         with open(release_config_json) as data:
