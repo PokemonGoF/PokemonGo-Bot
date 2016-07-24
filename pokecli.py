@@ -131,6 +131,11 @@ def init_config():
                         help="Bot will start by attempting to evolve all pokemons. Great after popping a lucky egg!",
                         type=bool,
                         default=False)
+    parser.add_argument("-ec",
+                        "--evolve_captured",
+                        help="Bot will attempt to evolve all the pokemons captured!",
+                        type=bool,
+                        default=False)
 
     config = parser.parse_args()
     if not config.username and not 'username' in load:
