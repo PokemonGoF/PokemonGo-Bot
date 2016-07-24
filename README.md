@@ -15,6 +15,7 @@ The Pokemon Go Bot, baking with community.
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
 ## Breaking Changes
 You need modify config.json (config.json.example for example)
+Please clean up your old clone if you have issue, and following the [install instruction](https://github.com/PokemonGoF/PokemonGo-Bot#installation).
 then pokecli.py --config config.json
 ## CI ERROR Need Help
 Our CI check turn lots of lint error, please help to fix. 
