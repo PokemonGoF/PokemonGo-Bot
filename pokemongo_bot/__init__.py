@@ -181,6 +181,7 @@ class PokemonGoBot(object):
         if 'amount' in player['currencies'][1]:
             stardust = player['currencies'][1]['amount']
 
+        logger.log('[#] IMPORTANT: Remember to check release_config.json for your Pokemon release logic!', 'red')
         logger.log('[#]')
         logger.log('[#] Username: {username}'.format(**player))
         logger.log('[#] Acccount Creation: {}'.format(creation_date))
@@ -214,12 +215,11 @@ class PokemonGoBot(object):
     def initial_transfer(self):
         logger.log('[x] Initial Transfer.')
 
-        if self.config.cp:
-            logger.log('[x] Will NOT transfer anything above CP {}'.format(
-                self.config.cp))
-        else:
-            logger.log(
-                '[x] Preparing to transfer all Pokemon duplicates, keeping the highest CP of each one type.')
+        logger.log(
+        '[x] Preparing to transfer all Pokemon duplicates, keeping the highest CP of each one type.')
+
+        logger.log('[x] Will NOT transfer anything above CP {}'.format(
+            self.config.initial_transfer))
 
         pokemon_groups = self._initial_transfer_get_groups()
 
@@ -231,7 +231,7 @@ class PokemonGoBot(object):
                 group_cp.reverse()
 
                 for x in range(1, len(group_cp)):
-                    if self.config.cp and group_cp[x] > self.config.cp:
+                    if self.config.initial_transfer and group_cp[x] > self.config.initial_transfer:
                         continue
 
                     print('[x] Transferring {} with CP {}'.format(
