@@ -94,6 +94,9 @@ ENV/
 # Rope project settings
 .ropeproject
 
+# PyCharm IDE settings
+.idea/
+
 # Personal load details
 config.json
 src/
@@ -108,11 +111,6 @@ web/location.json
 web/userdata.js
 data/last-location*.json
 data/catch-ignore.yml
-
-# ignore Pycharm config
-.idea
-
-# personal docker-compose
-docker-compose.yml
+release_config.json
 web/userdata.js
 location.json

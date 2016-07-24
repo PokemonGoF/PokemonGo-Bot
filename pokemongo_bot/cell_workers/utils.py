@@ -82,7 +82,9 @@ def format_dist(distance, unit):
 
 def format_time(seconds):
     # Return a string displaying the time given as seconds or minutes
-    if seconds <= 1.0:
+    if seconds <= 0.0:
+        return '{:.2f} seconds'.format(seconds)
+    elif seconds <= 1.0:
         return '{:.2f} second'.format(seconds)
     elif seconds < 60:
         return '{:.2f} seconds'.format(seconds)
