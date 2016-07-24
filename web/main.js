@@ -436,9 +436,13 @@ function buildMenu(user_id) {
         pkmnImage = pad_with_zeroes(user_data[users[user_id]].bagPokemon[i].inventory_item_data.pokemon_data.pokemon_id, 3) + '.png';
         pkmnName = pokemonArray[pkmnNum-1].Name;
         pkmnCP = "CP "+user_data[users[user_id]].bagPokemon[i].inventory_item_data.pokemon_data.cp;
+        pkmnIVA = user_data[users[user_id]].bagPokemon[i].inventory_item_data.pokemon_data.individual_attack || 0;
+        pkmnIVD = user_data[users[user_id]].bagPokemon[i].inventory_item_data.pokemon_data.individual_defense || 0;
+        pkmnIVS = user_data[users[user_id]].bagPokemon[i].inventory_item_data.pokemon_data.individual_stamina || 0;
+        pkmnIV = ((pkmnIVA + pkmnIVD + pkmnIVS) / 45.0).toFixed(2);
       }
       out += '<div class="col s12 m4 l3 center" style="float: left;"><img src="image/pokemon/' + pkmnImage + '" class="png_img"><br><b>' + pkmnName +
-      '</b><br>' + pkmnCP + '</div>';
+      '</b><br>' + pkmnCP + '<br>IV '+pkmnIV+'</div>';
     }
     out += '</div>';
     document.getElementById('subcontent').innerHTML = out;
