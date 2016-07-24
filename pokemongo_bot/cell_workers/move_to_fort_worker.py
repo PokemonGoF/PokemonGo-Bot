@@ -14,20 +14,18 @@ class MoveToFortWorker(object):
         lat = self.fort['latitude']
         lng = self.fort['longitude']
         fortID = self.fort['id']
-        unit = self.config.distance_unit  # Unit to use when printing formatted distance
+        unit = self.config['location']['distance_unit']
 
         dist = distance(self.position[0], self.position[1], lat, lng)
 
-        # print('[#] Found fort {} at distance {}m'.format(fortID, dist))
-        logger.log('[#] Found fort {} at distance {}'.format(
-            fortID, format_dist(dist, unit)))
+        logger.log('[#] Found fort {} at distance {}'.format(fortID, format_dist(dist, unit)))
 
         if dist > 10:
             logger.log('[#] Need to move closer to Pokestop')
             position = (lat, lng, 0.0)
 
-            if self.config.walk > 0:
-                self.stepper._walk_to(self.config.walk, *position)
+            if self.config['bot']['speed'] > 0:
+                self.stepper._walk_to(self.config['bot']['speed'], *position)
             else:
                 self.api.set_position(*position)
 

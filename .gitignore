@@ -98,7 +98,7 @@ ENV/
 .idea/
 
 # Personal load details
-config.json
+conf.toml
 src/
 info.json
 inventory.json

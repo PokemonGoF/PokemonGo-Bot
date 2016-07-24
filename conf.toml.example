@@ -1,0 +1,41 @@
+[auth]
+# Auth provider
+#    google
+#    ptc
+service = "ptc"
+
+#
+# Username for the service
+username = "user"
+
+#
+# Password for the service
+password = "password"
+
+
+[location]
+#
+# Starting location.
+# The bot will start at this location. On a restart the bot will pickup
+# where it left off. This can be overwritten with the -l flag
+start_location = "San Jose, CA"
+
+#
+# This is the units you want to display distance in
+#   - mile
+#   - km
+distance_unit = "mile"
+
+[bot]
+#
+# How fast do you want the bot to walk
+# Average walking speed is around 2m/s
+# Too fast you will get banned
+speed = "2"
+
+#
+# what mode to put the bot in
+#   all - farm and collect
+#   collect - just collect pokemon
+#   farm - just spin pokestops
+mode = "all"
