@@ -10,6 +10,7 @@ import sys
 import yaml
 import logger
 import re
+import time
 from pgoapi import PGoApi
 from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
 from cell_workers.utils import distance
@@ -36,6 +37,10 @@ class PokemonGoBot(object):
         self.stepper.take_step()
 
     def work_on_cell(self, cell, position, include_fort_on_path):
+        if self.config.starttime+60*60 < time.time(): #after 1 hour, relogin
+            self._setup_api()
+            logger.log("[!] Relogin!")
+
         if self.config.evolve_all:
             # Run evolve all once. Flip the bit.
             print('[#] Attempting to evolve all pokemons ...')
@@ -135,6 +140,8 @@ class PokemonGoBot(object):
                               str(self.config.password)):
             logger.log('Login Error, server busy', 'red')
             exit(0)
+			
+        self.config.starttime = time.time()
 
         # chain subrequests (methods) into one RPC call
 
@@ -174,7 +181,7 @@ class PokemonGoBot(object):
         logger.log('[#] PokeBalls: ' + str(balls_stock[1]))
         logger.log('[#] GreatBalls: ' + str(balls_stock[2]))
         logger.log('[#] UltraBalls: ' + str(balls_stock[3]))
-
+		
         self.get_player_info()
 
         if self.config.initial_transfer:
