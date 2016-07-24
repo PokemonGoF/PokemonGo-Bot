@@ -75,12 +75,13 @@ class PokemonGoBot(object):
                 forts = [fort
                          for fort in cell['forts']
                          if 'latitude' in fort and 'type' in fort]
+		gyms = [gym for gym in cell['forts'] if 'gym_points' in gym]
 
                 # Sort all by distance from current pos- eventually this should
                 # build graph & A* it
                 forts.sort(key=lambda x: distance(self.position[
                            0], self.position[1], x['latitude'], x['longitude']))
-                for fort in cell['forts']:
+                for fort in forts:
                     worker = MoveToFortWorker(fort, self)
                     worker.work()
 
