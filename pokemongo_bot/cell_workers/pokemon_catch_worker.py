@@ -168,7 +168,7 @@ class PokemonCatchWorker(object):
                                             '[#] {} has been exchanged for candy!'.format(pokemon_name), 'green')
                                     else:
                                         logger.log(
-                                        '[x] Captured {}! [CP {}]'.format(pokemon_name, cp), 'green')
+                                        '[x] {} has been added to your Pokémon! [CP {}]'.format(pokemon_name, cp), 'green')
                             break
         time.sleep(5)
 
