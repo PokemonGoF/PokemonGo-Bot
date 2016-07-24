@@ -153,7 +153,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -if LIST, --item_filter LIST                  Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, [\"101\",\"102\",\"103\",\"104\"] to recycle potions when collected)" 
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
-
+      -cf --config                                  Set what config file you would like to use (.json only)
 ### Command Line Example
     Pokemon Trainer Club (PTC) account:
     $ python2 pokecli.py -a ptc -u tejado -p 1234 --location "New York, Washington Square"
@@ -295,7 +295,7 @@ If using multiple usernames format like this:
  * Calcyfer
  * asaf400
  * guyz
-
+ * ColeGreenlee
 -------
 ## Credits
 - [tejado](https://github.com/tejado) many thanks for the API
