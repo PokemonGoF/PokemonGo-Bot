@@ -111,13 +111,27 @@ class Stepper(object):
             if 'GET_MAP_OBJECTS' in response_dict['responses']:
                 if 'map_cells' in response_dict['responses'][
                         'GET_MAP_OBJECTS']:
+                    map_cells = response_dict['responses'][
+                            'GET_MAP_OBJECTS']['map_cells']
+                    for cell in map_cells:
+                            if 'forts' in cell:
+                                for fort in cell['forts']:
+                                    if fort.get('type') != 1:
+                                        self.api.get_gym_details(gym_id=fort.get('id'),
+                                                                 player_latitude=lng,
+                                                                 player_longitude=lat,
+                                                                 gym_latitude=fort.get('latitude'),
+                                                                 gym_longitude=fort.get('longitude'))
+                                        response_gym_details = self.api.call()
+                                        item = {'id': fort.get('id')}
+                                        fort['gym_details'] = response_gym_details['responses']['GET_GYM_DETAILS']
+
                     with open('web/location-%s.json' %
                               (self.config.username), 'w') as outfile:
                         json.dump(
                             {'lat': lat,
                              'lng': lng,
-                             'cells': response_dict[
-                                 'responses']['GET_MAP_OBJECTS']['map_cells']},
+                             'cells': map_cells},
                             outfile)
                     with open('data/last-location-%s.json' %
                               (self.config.username), 'w') as outfile:
@@ -132,7 +146,7 @@ class Stepper(object):
                             'GET_MAP_OBJECTS']['map_cells']
                         position = (lat, lng, alt)
                     # Sort all by distance from current pos- eventually this should build graph & A* it
-                    # print(map_cells)
+                    #print(map_cells)
                     #print( s2sphere.from_token(x['s2_cell_id']) )
                     map_cells.sort(key=lambda x: distance(lat, lng, x['forts'][0]['latitude'], x[
                                    'forts'][0]['longitude']) if 'forts' in x and x['forts'] != [] else 1e6)
@@ -191,7 +205,7 @@ class Stepper(object):
             return
 
         self.api.evolve_pokemon(pokemon_id=pokemon['id'])
-        response_dict = self.api.call() 
+        response_dict = self.api.call()
         status = response_dict['responses']['EVOLVE_POKEMON']['result']
         if status == 1:
             print('[#] Successfully evolved {}!'.format(

@@ -190,16 +190,42 @@ var trainerFunc = function(data, user_index) {
             });
           }
           pokemonGuard = '';
+          fortName = '';
           fortType = 'PokeStop';
           fortTeam = '';
           fortPoints = '';
+          fortMembers = '';
           if (fort.guard_pokemon_id != undefined) {
+            console.log(fort.id);
             pokemonGuard = 'Guard Pokemon: ' + pokemonArray[fort.guard_pokemon_id-1].Name + '<br>';
             fortType = 'Gym';
             fortTeam = 'Team: ' + teams[fort.owned_by_team] + '<br>';
             fortPoints = 'Points: ' + fort.gym_points;
+            if(fort.gym_details.result == 1)
+            {
+              fortName = fort.gym_details.name;
+              fortMembers = '<table style="text-align: center"><tr><th>Pokemon</th><th>CP</th><th>Owner</th><th>Level</th></tr>'
+              for (var m = 0; m < fort.gym_details.gym_state.memberships.length; m++) {
+                  var member = fort.gym_details.gym_state.memberships[m];
+                  fortMembers += '<tr>';
+                  fortMembers += '<th>' + pokemonArray[member.pokemon_data.pokemon_id-1].Name+'</th>';
+                  fortMembers += '<th>' + member.pokemon_data.cp + '</th>';
+                  fortMembers += '<th>' + member.trainer_public_profile.name + '</th>';
+                  fortMembers += '<th>' + member.trainer_public_profile.level + '</th>';
+                  fortMembers += '</tr>';
+              }
+              fortMembers += '</table>';
+            }
           }
-          var contentString = 'Id: ' + fort.id + '<br>Type: ' + fortType + '<br>' + pokemonGuard + fortPoints;
+
+          var contentString = 'Id: ' + fort.id;
+          if(fortName != '') {
+            contentString += '<br>Name: ' + fortName;
+          }
+          contentString += '<br>Type: ' + fortType + '<br>' + pokemonGuard + fortPoints;
+          if(fortMembers != '') {
+            contentString += '<br>'+ fortMembers;
+          }
           info_windows[fort.id] = new google.maps.InfoWindow({
             content: contentString
           });
@@ -399,7 +425,7 @@ function buildMenu() {
       pkmnImage = pad_with_zeroes(pokedex[i].inventory_item_data.pokedex_entry.pokedex_entry_number, 3) + '.png'
       pkmnName = pokemonArray[pkmnNum-1].Name
       out += '<tr><td><img src="image/pokemon/' + pkmnImage + '" class="png_img"></td><td class="left-align">Name: ' + pkmnName +
-      '<br>Number: ' + pkmnNum + '<br>Times Encountered: ' + pokedex[i].inventory_item_data.pokedex_entry.times_encountered + 
+      '<br>Number: ' + pkmnNum + '<br>Times Encountered: ' + pokedex[i].inventory_item_data.pokedex_entry.times_encountered +
       '<br>Times Caught: ' + pokedex[i].inventory_item_data.pokedex_entry.times_captured + '</td></tr>';
     }
     out += '</table></div></div>';
