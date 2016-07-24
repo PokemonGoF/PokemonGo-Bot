@@ -109,6 +109,14 @@ $ git submodule update
 
 ### Installation Windows
 
+```
+$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
+$ cd PokemonGo-Bot  
+$ pip install -r requirements.txt
+$ git submodule init
+$ git submodule update
+```
+
 ###### Windows Note
 On Windows, you will need to install PyYaml through the  [installer](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt.
 
@@ -147,7 +155,11 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 5. Copy the API key that appears.
 6. After the code done, will update here how to replace.
 
+### Python bug
+If you encounter problems with the module ssl and it function `_create_unverified_context`. Just comment it. (Solution available in Python 2.7.11)
+
 ## Usage
+	(maybe deprecated)
     usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-lc] [-m] [-w] [--distance_unit] [--initial-transfer] [--maxsteps] [-iv] [-d] [-t]
 
     optional arguments:
@@ -167,6 +179,12 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
 
+## Usage with config (up to date)
+	1/ copy `config.json.example` to `config.json` and `release_config.json.example` to `release_config.json`.
+	2/ Edit those files with your preference (required for config.json, optional for release_config.json)
+	
+	  usage: python pokecli.py (windows)
+	  
 ### Command Line Example
     Pokemon Trainer Club (PTC) account:
     $ python2 pokecli.py -a ptc -u tejado -p 1234 --location "New York, Washington Square"
