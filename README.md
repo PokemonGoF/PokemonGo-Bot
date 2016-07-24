@@ -117,7 +117,7 @@ $ git submodule update
 On Windows, you will need to install PyYaml through the installer and not through requirements.txt.
 
 ##### Windows vista, 7, 8:
-Got to : http://pyyaml.org/wiki/PyYAML download the right version for your pc and install it
+Go to : http://pyyaml.org/wiki/PyYAML , download the right version for your pc and install it
 
 ##### Windows 10:
 Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl   
@@ -127,11 +127,11 @@ download the 64 bit version instead: PyYAML-3.11-cp27-cp27m-win_amd64.whl )
 ```
 $ cd download-directory
 $ pip install PyYAML-3.11-cp27-cp27m-win32.whl
-// (replace PyYAML-3.11-cp27-cp27m-win32.whl with PyYAML-3.11-cp27-cp27m-win_amd64.whl
 // if you needed to download the 64-bit version)
+// (replace PyYAML-3.11-cp27-cp27m-win32.whl with PyYAML-3.11-cp27-cp27m-win_amd64.whl
 ```
 
-After install it just do :
+After this, just do :
 
 ```
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
@@ -170,25 +170,19 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 If you encounter problems with the module `ssl` and it function `_create_unverified_context`. Just comment it. (Solution available in Python 2.7.11)
 To do it follow instruction below :
 - edit `pokecli.py`
-- put `#` before `if` (ligne 43) and `ssl` (ligne 44)
+- put `#` before `if` (line 43) and `ssl` (line 44)
 - save it
 
 Please keep in mind that this fix is necessary only if your python version don't have the `_create_unverified_context` argument in ssl module.
 
-### Update
-To update your project simply do `git pull` in the project folder
+## Update
+To update your project do: `git pull` in the project folder
 
 ## Usage (up to date)
 	1/ copy `config.json.example` to `config.json` and `release_config.json.example` to `release_config.json`.
-	2/ Edit `config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (others key are optionnal)
-	  
-### Command Line Example
-    Pokemon Trainer Club (PTC) account:
-    $ python2 pokecli.py -a ptc -u tejado -p 1234 --location "New York, Washington Square"
-    Google Account:
-    $ python2 pokecli.py -a google -u tejado -p 1234 --location "New York, Washington Square"
+	2/ Edit `config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (others keys are optional, check `Advance Configuration` below)
 
-### Advance Configuration
+## Advance Configuration
 - `max_steps` :
 - `mode` :
 - `walk` :
