@@ -51,7 +51,14 @@ def init_config():
 
     # If config file exists, load variables from json
     load = {}
-    if os.path.isfile(config_file):
+
+    # Select a config file code
+    parser.add_argument("-cf", "--config", help="Config File to use")
+    config_arg =unicode(parser.parse_args().config)
+    if os.path.isfile(config_arg):
+        with open(config_arg) as data:
+            load.update(json.load(data))
+    elif os.path.isfile(config_file):
         with open(config_file) as data:
             load.update(json.load(data))
 
