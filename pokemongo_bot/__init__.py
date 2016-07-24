@@ -11,7 +11,7 @@ import yaml
 import logger
 import re
 from pgoapi import PGoApi
-from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker
+from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
 from cell_workers.utils import distance
 from human_behaviour import sleep
 from stepper import Stepper
@@ -36,6 +36,13 @@ class PokemonGoBot(object):
         self.stepper.take_step()
 
     def work_on_cell(self, cell, position, include_fort_on_path):
+        if self.config.evolve_all:
+            # Run evolve all once. Flip the bit.
+            print('[#] Attempting to evolve all pokemons ...')
+            self.config.evolve_all = False
+            worker = EvolveAllWorker(self)
+            worker.work()
+
         self._filter_ignored_pokemons(cell)
 
         if (self.config.mode == "all" or self.config.mode ==
