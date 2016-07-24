@@ -225,6 +225,9 @@ class PokemonCatchWorker(object):
             'iv':               False,
         }
 
+        min_cp = 0
+        min_iv = 0
+
         if release_config.get('release_under_cp'):
             min_cp = release_config['release_under_cp']
             if cp < min_cp:
