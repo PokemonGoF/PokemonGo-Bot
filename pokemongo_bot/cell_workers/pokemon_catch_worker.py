@@ -33,7 +33,9 @@ class PokemonCatchWorker(object):
                 if 'status' in response_dict['responses']['ENCOUNTER']:
                     if response_dict['responses']['ENCOUNTER']['status'] is 7:
                         logger.log('[x] Pokemon Bag is full!', 'red')
-                        self.bot.initial_transfer()
+                        worker = InitialTransferWorker(self.bot)
+                        worker.work()
+
                     if response_dict['responses']['ENCOUNTER']['status'] is 1:
                         cp = 0
                         total_IV = 0
@@ -239,15 +241,12 @@ class PokemonCatchWorker(object):
                 'iv':               False,
             }
 
-            min_cp = 0
-            min_iv = 0
-
-            if release_config.get('release_under_cp'):
+            if 'release_under_cp' in release_config:
                 min_cp = release_config['release_under_cp']
                 if cp < min_cp:
                     release_results['cp'] = True
 
-            if release_config.get('release_under_iv'):
+            if 'release_under_iv' in release_config:
                 min_iv = release_config['release_under_iv']
                 if iv < min_iv:
                     release_results['iv'] = True

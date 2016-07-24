@@ -11,7 +11,7 @@ import yaml
 import logger
 import re
 from pgoapi import PGoApi
-from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker
+from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker
 from cell_workers.utils import distance
 from human_behaviour import sleep
 from stepper import Stepper
@@ -171,7 +171,8 @@ class PokemonGoBot(object):
         self.get_player_info()
 
         if self.config.initial_transfer:
-            self.initial_transfer()
+            worker = InitialTransferWorker(self)
+            worker.work()
 
         logger.log('[#]')
         self.update_inventory()
@@ -183,68 +184,6 @@ class PokemonGoBot(object):
         # Example of good request response
         #{'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
         return inventory_req
-
-    def initial_transfer(self):
-        logger.log('[x] Initial Transfer.')
-
-        logger.log(
-        '[x] Preparing to transfer all duplicate Pokemon, keeping the highest CP of each type.')
-
-        logger.log('[x] Will NOT transfer anything above CP {}'.format(
-            self.config.initial_transfer))
-
-        pokemon_groups = self._initial_transfer_get_groups()
-
-        for id in pokemon_groups:
-
-            group_cp = pokemon_groups[id].keys()
-            if len(group_cp) > 1:
-                group_cp.sort()
-                group_cp.reverse()
-
-                for x in range(1, len(group_cp)):
-                    if self.config.initial_transfer and group_cp[x] > self.config.initial_transfer:
-                        continue
-
-                    print('[x] Transferring {} with CP {}'.format(
-                        self.pokemon_list[id - 1]['Name'], group_cp[x]))
-                    self.api.release_pokemon(
-                        pokemon_id=pokemon_groups[id][group_cp[x]])
-                    response_dict = self.api.call()
-                    sleep(2)
-
-        logger.log('[x] Transferring Done.')
-
-    def _initial_transfer_get_groups(self):
-        pokemon_groups = {}
-        self.api.get_player().get_inventory()
-        inventory_req = self.api.call()
-        inventory_dict = inventory_req['responses']['GET_INVENTORY'][
-            'inventory_delta']['inventory_items']
-        with open('web/inventory-%s.json' %
-                  (self.config.username), 'w') as outfile:
-            json.dump(inventory_dict, outfile)
-
-        for pokemon in inventory_dict:
-            try:
-                reduce(dict.__getitem__, [
-                    "inventory_item_data", "pokemon_data", "pokemon_id"
-                ], pokemon)
-            except KeyError:
-                continue
-
-            group_id = pokemon['inventory_item_data'][
-                'pokemon_data']['pokemon_id']
-            group_pokemon = pokemon['inventory_item_data'][
-                'pokemon_data']['id']
-            group_pokemon_cp = pokemon[
-                'inventory_item_data']['pokemon_data']['cp']
-
-            if group_id not in pokemon_groups:
-                pokemon_groups[group_id] = {}
-
-            pokemon_groups[group_id].update({group_pokemon_cp: group_pokemon})
-        return pokemon_groups
 
     def update_inventory(self):
         self.api.get_inventory()
@@ -492,8 +431,8 @@ class PokemonGoBot(object):
                                         'player_stats']
 
                                     nextlvlxp = (
-                                        int(playerdata['next_level_xp']) -
-                                        int(playerdata['experience']))
+                                        int(playerdata.get('next_level_xp', 0)) -
+                                        int(playerdata.get('experience', 0)))
 
                                     if 'level' in playerdata:
                                         logger.log(
