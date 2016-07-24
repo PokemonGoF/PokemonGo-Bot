@@ -37,8 +37,6 @@ class SeenFortWorker(object):
             fort_name = 'Unknown'
         logger.log('[#] Now at Pokestop: ' + fort_name + ' - Spinning...',
                    'yellow')
-        if hasattr(self.config, 'lcd'):
-            self.config.lcd.message('Now at Pokestop: ' + fort_name + ' - Spinning...')
         sleep(2)
         self.api.fort_search(fort_id=self.fort['id'],
                              fort_latitude=lat,
@@ -52,14 +50,11 @@ class SeenFortWorker(object):
             spin_details = response_dict['responses']['FORT_SEARCH']
             if spin_details['result'] == 1:
                 logger.log("[+] Loot: ", 'green')
-                rewards = ['Rewards: ']
                 experience_awarded = spin_details.get('experience_awarded',
                                                       False)
                 if experience_awarded:
                     logger.log("[+] " + str(experience_awarded) + " xp",
                                'green')
-                    rewards.append('+' + str(experience_awarded) +' xp')
-
 
                 items_awarded = spin_details.get('items_awarded', False)
                 if items_awarded:
@@ -73,7 +68,7 @@ class SeenFortWorker(object):
 
                     for item_id, item_count in tmp_count_items.iteritems():
                         item_name = self.item_list[str(item_id)]
-                        rewards.append('+' + str(item_count) + 'x '+ item_name)
+
                         logger.log("[+] " + str(item_count) +
                                     "x " + item_name +
                                     " (Total: " + str(self.bot.item_inventory_count(item_id)) + ")", 'green')
@@ -93,13 +88,7 @@ class SeenFortWorker(object):
                                 logger.log("[+] Recycling success", 'green')
                             else:
                                 logger.log("[+] Recycling failed!", 'red')
-                    if hasattr(self.config, 'lcd'):
-                        self.config.lcd.message(', '.join(rewards))
-                        time.sleep(3)
                 else:
-                    if hasattr(self.config, 'lcd'):
-                        self.config.lcd.message('Nothing found...')
-
                     logger.log("[#] Nothing found.", 'yellow')
 
                 pokestop_cooldown = spin_details.get(
@@ -121,18 +110,12 @@ class SeenFortWorker(object):
                     raise RuntimeError(message)
             elif spin_details['result'] == 2:
                 logger.log("[#] Pokestop out of range")
-                if hasattr(self.config, 'lcd'):
-                    self.config.lcd.message('Pokestop out of range...')
             elif spin_details['result'] == 3:
                 pokestop_cooldown = spin_details.get(
                     'cooldown_complete_timestamp_ms')
                 if pokestop_cooldown:
                     seconds_since_epoch = time.time()
                     logger.log('[#] PokeStop on cooldown. Time left: ' + str(
-                        format_time((pokestop_cooldown / 1000) -
-                                    seconds_since_epoch)))
-                    if hasattr(self.config, 'lcd'):
-                        self.config.lcd.message('PokeStop on cooldown. Time left: ' + str(
                         format_time((pokestop_cooldown / 1000) -
                                     seconds_since_epoch)))
             elif spin_details['result'] == 4:
