@@ -35,6 +35,7 @@ import ssl
 import logging
 import sys
 import codecs
+import fileinput
 from pokemongo_bot import logger
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -149,6 +150,16 @@ def init_config():
     if os.path.isfile(release_config_json):
         with open(release_config_json) as data:
             config.release_config.update(json.load(data))
+            
+    if config.gmapkey:
+        find_url = 'https:\/\/maps.googleapis.com\/maps\/api\/js\?key=\S*'
+        replace_url = "https://maps.googleapis.com/maps/api/js?key=%s&callback=initMap\""
+        #Someone make this pretty! (Efficient)
+        with open("web/index.html", "r") as sources:
+            lines = sources.readlines()
+        with open("web/index.html", "w") as sources:
+            for line in lines:
+                sources.write(re.sub(r"%s" % find_url, replace_url % config.gmapkey, line))
 
     return config
 
