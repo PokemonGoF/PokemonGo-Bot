@@ -32,16 +32,6 @@ class Stepper(object):
         self.origin_lon = self.bot.position[1]
 
     def take_step(self):
-<<<<<<< HEAD
-=======
-        if self.config.evolve_all:
-            # Run evolve all once. Flip the bit.
-            print('[#] Attempting to evolve all pokemons ...')
-            self.config.lcd.message('Attempting to evolve all pokemons')
-            self.config.evolve_all = False
-            self._evolve_all()
-
->>>>>>> dev
         position = (self.origin_lat, self.origin_lon, 0.0)
 
         self.api.set_position(*position)
