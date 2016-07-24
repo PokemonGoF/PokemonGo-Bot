@@ -102,7 +102,7 @@ class PokemonCatchWorker(object):
 
                             balls_stock[pokeball] = balls_stock[pokeball] - 1
                             success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
-                            logger.log('[x] Using {} ({}% success)... ({} left!)'.format(
+                            logger.log('[x] Using {} (chance: {}%)... ({} left!)'.format(
                                 self.item_list[str(pokeball)], 
                                 success_percentage, 
                                 balls_stock[pokeball]
