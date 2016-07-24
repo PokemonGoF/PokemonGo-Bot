@@ -41,7 +41,7 @@ class PokemonCatchWorker(object):
                         total_IV = 0
                         if 'wild_pokemon' in response_dict['responses']['ENCOUNTER']:
                             pokemon = response_dict['responses']['ENCOUNTER']['wild_pokemon']
-                            catch_rate = response_dict['responses']['ENCOUNTER']['capture_probability']['capture_probability']
+                            catch_rate = response_dict['responses']['ENCOUNTER']['capture_probability']['capture_probability'] # 0 = pokeballs, 1 great balls, 3 ultra balls
                             
                             if 'pokemon_data' in pokemon and 'cp' in pokemon['pokemon_data']:
                                 cp = pokemon['pokemon_data']['cp']
@@ -85,7 +85,7 @@ class PokemonCatchWorker(object):
                                     pokeball = 0 # player doesn't have any of pokeballs, great balls or ultra balls
                             
                             while(pokeball < 3):
-                                if catch_rate[pokeball] < 0.5 and balls_stock[pokeball+1] > 0:
+                                if catch_rate[pokeball-1] < 0.5 and balls_stock[pokeball+1] > 0:
                                     # if current ball has low chance to catch (under 50%), and player has better ball - then use it
                                     pokeball = pokeball+1 # use better ball
                                 else:
@@ -101,7 +101,7 @@ class PokemonCatchWorker(object):
                                 return -1
 
                             balls_stock[pokeball] = balls_stock[pokeball] - 1
-                            success_percentage = '{0:.2f}'.format(catch_rate[pokeball]*100)
+                            success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
                             logger.log('[x] Using {} ({}% success)... ({} left!)'.format(
                                 self.item_list[str(pokeball)], 
                                 success_percentage, 
