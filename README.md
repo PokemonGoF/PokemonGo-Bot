@@ -13,9 +13,6 @@ The Pokemon Go Bot, baking with community.
 
 ## Project Chat
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
-## Breaking Changes
-You need modify config.json (config.json.example for example)
-then pokecli.py -fc config.json
 ## About dev/stable/master Branch
 Dev branch has most up to date feature and even everyone handle the part well, still, will have broken changes. Your test contribute and PR for fix are warm welcome. 
 Stable branch is better than dev branch. Setup with milestone tag.  
@@ -139,6 +136,10 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 6. After the code done, will update here how to replace.
 
 ## Usage
+For dev branch; config.json.example needs to be renamed config.json and needs to be populated.
+after this one can run python pokecli.py to use the default config file.
+For alternate config files one can run python pokecli.py -cf alternate.json
+
     usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-lc] [-m] [-w] [--distance_unit] [--initial-transfer] [--maxsteps] [-iv] [-d] [-t]
 
     optional arguments:
