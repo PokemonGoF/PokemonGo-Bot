@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import logging
 import googlemaps
 import json
@@ -54,16 +55,18 @@ class PokemonGoBot(object):
             cell['catchable_pokemons'].sort(
                 key=
                 lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
-            for pokemon in cell['catchable_pokemons']:
-                with open('web/catchable-%s.json' %
-                          (self.config.username), 'w') as outfile:
-                    json.dump(pokemon, outfile)
 
-                if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
-                    break
-                with open('web/catchable-%s.json' %
-                          (self.config.username), 'w') as outfile:
-                    json.dump({}, outfile)
+            user_web_catchable = 'web/catchable-%s.json' % (self.config.username)
+            if os.path.isfile(user_web_catchable): # only write to file if it exists
+                for pokemon in cell['catchable_pokemons']:
+                    with open(user_web_catchable, 'w') as outfile:
+                        json.dump(pokemon, outfile)
+
+                    if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
+                        break
+                    with open(user_web_catchable, 'w') as outfile:
+                        json.dump({}, outfile)
+
         if (self.config.mode == "all" or self.config.mode == "poke"
             ) and 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
             # Sort all by distance from current pos- eventually this should
@@ -121,7 +124,7 @@ class PokemonGoBot(object):
         # check if the release_config file exists
         try:
             with open('release_config.json') as file:
-               pass
+                pass
         except:
             # the file does not exist, warn the user and exit.
             logger.log('[#] IMPORTANT: Rename and configure release_config.json.example for your Pokemon release logic first!', 'red')
@@ -232,9 +235,11 @@ class PokemonGoBot(object):
         inventory_req = self.api.call()
         inventory_dict = inventory_req['responses']['GET_INVENTORY'][
             'inventory_delta']['inventory_items']
-        with open('web/inventory-%s.json' %
-                  (self.config.username), 'w') as outfile:
-            json.dump(inventory_dict, outfile)
+
+        user_web_inventory = 'web/inventory-%s.json' % (self.config.username)
+        if os.path.isfile(user_web_inventory):
+            with open(user_web_inventory, 'w') as outfile:
+                json.dump(inventory_dict, outfile)
 
         # get player balls stock
         # ----------------------
@@ -243,21 +248,18 @@ class PokemonGoBot(object):
         for item in inventory_dict:
             try:
                 # print(item['inventory_item_data']['item'])
-                if item['inventory_item_data']['item'][
-                        'item_id'] == Item.ITEM_POKE_BALL.value:
-                    # print('Poke Ball count: ' + str(item['inventory_item_data']['item']['count']))
-                    balls_stock[1] = item[
-                        'inventory_item_data']['item']['count']
-                if item['inventory_item_data']['item'][
-                        'item_id'] == Item.ITEM_GREAT_BALL.value:
-                    # print('Great Ball count: ' + str(item['inventory_item_data']['item']['count']))
-                    balls_stock[2] = item[
-                        'inventory_item_data']['item']['count']
-                if item['inventory_item_data']['item'][
-                        'item_id'] == Item.ITEM_ULTRA_BALL.value:
-                    # print('Ultra Ball count: ' + str(item['inventory_item_data']['item']['count']))
-                    balls_stock[3] = item[
-                        'inventory_item_data']['item']['count']
+                item_id = item['inventory_item_data']['item']['item_id']
+                item_count = item['inventory_item_data']['item']['count']
+
+                if item_id == Item.ITEM_POKE_BALL.value:
+                    # print('Poke Ball count: ' + str(item_count))
+                    balls_stock[1] = item_count
+                if item_id == Item.ITEM_GREAT_BALL.value:
+                    # print('Great Ball count: ' + str(item_count))
+                    balls_stock[2] = item_count
+                if item_id == Item.ITEM_ULTRA_BALL.value:
+                    # print('Ultra Ball count: ' + str(item_count))
+                    balls_stock[3] = item_count
             except:
                 continue
         return balls_stock

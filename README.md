@@ -114,6 +114,14 @@ $ git submodule update
 ### Installation Windows
 (change master to dev for the newer version)
 
+```
+$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
+$ cd PokemonGo-Bot  
+$ pip install -r requirements.txt
+$ git submodule init
+$ git submodule update
+```
+
 On Windows, you will need to install PyYaml through the  [installer](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt.
 
 Windows 10:
@@ -177,7 +185,6 @@ To update your project simply do `git pull` in the project folder
 ## Usage (up to date)
 	1/ copy `config.json.example` to `config.json` and `release_config.json.example` to `release_config.json`.
 	2/ Edit `config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (others key are optionnal)
-	  usage: python pokecli.py (windows)
 	  
 ### Command Line Example
     Pokemon Trainer Club (PTC) account:
@@ -210,8 +217,6 @@ To update your project simply do `git pull` in the project folder
     3. Not setting evolve_all or having any other string would not evolve any pokemons on startup.
 
 ## How to run with Docker
-
-
 
 ## How to add/discover new API
   The example is [here](https://github.com/PokemonGoF/PokemonGo-Bot/commit/46e2352ce9f349cc127a408959679282f9999585)  
