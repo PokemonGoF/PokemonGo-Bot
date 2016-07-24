@@ -380,13 +380,26 @@ function buildMenu() {
         pkmnNum = "???"
         pkmnImage = "Egg.png"
         pkmnName = "Egg"
+        pkmCP = "???"
+        pkmIV = "???"
+
       } else {
         pkmnNum = bagPokemon[i].inventory_item_data.pokemon_data.pokemon_id
         pkmnImage = pad_with_zeroes(bagPokemon[i].inventory_item_data.pokemon_data.pokemon_id, 3) + '.png'
         pkmnName = pokemonArray[pkmnNum-1].Name
+        pkmCP = bagPokemon[i].inventory_item_data.pokemon_data.cp
+
+        pkmIVA = bagPokemon[i].inventory_item_data.pokemon_data.individual_attack || 0;
+        pkmIVD = bagPokemon[i].inventory_item_data.pokemon_data.individual_defense || 0;
+        pkmIVS = bagPokemon[i].inventory_item_data.pokemon_data.individual_stamina || 0;
+        pkmIV = ((pkmIVA + pkmIVD + pkmIVS) / 45.0).toFixed(2);
+
       }
-      out += '<tr><td><img src="/image/pokemon/' + pkmnImage + '" class="png_img"></td><td class="left-align">Name: ' + pkmnName +
-      '<br>Number: ' + pkmnNum + '</td></tr>';
+      out += '<tr>'
+      out += '<td><img src="/image/pokemon/' + pkmnImage + '" class="png_img"></td>';
+      out += '<td class="left-align">Name: ' + pkmnName + '<br>CP: ' + pkmCP + '</td>';
+      out += '<td class="left-align">IV: ' + pkmIV + '<br>ID: ' + pkmnNum + '</td>';
+      out += '</tr>';
     }
     out += '</table></div></div>';
     document.getElementById('subcontent').innerHTML = out;
@@ -399,7 +412,7 @@ function buildMenu() {
       pkmnImage = pad_with_zeroes(pokedex[i].inventory_item_data.pokedex_entry.pokedex_entry_number, 3) + '.png'
       pkmnName = pokemonArray[pkmnNum-1].Name
       out += '<tr><td><img src="/image/pokemon/' + pkmnImage + '" class="png_img"></td><td class="left-align">Name: ' + pkmnName +
-      '<br>Number: ' + pkmnNum + '<br>Times Encountered: ' + pokedex[i].inventory_item_data.pokedex_entry.times_encountered + 
+      '<br>Number: ' + pkmnNum + '<br>Times Encountered: ' + pokedex[i].inventory_item_data.pokedex_entry.times_encountered +
       '<br>Times Caught: ' + pokedex[i].inventory_item_data.pokedex_entry.times_captured + '</td></tr>';
     }
     out += '</table></div></div>';
