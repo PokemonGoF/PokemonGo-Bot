@@ -100,6 +100,11 @@ class PokemonCatchWorker(object):
                                 self.item_list[str(pokeball)]))
 
                             balls_stock[pokeball] = balls_stock[pokeball] - 1
+
+                            print('[#] {} {}s remaining'.format(
+                                balls_stock[pokeball],
+                                self.item_list[str(pokeball)]))
+
                             id_list1 = self.count_pokemon_inventory()
                             self.api.catch_pokemon(encounter_id=encounter_id,
                                                    pokeball=pokeball,
