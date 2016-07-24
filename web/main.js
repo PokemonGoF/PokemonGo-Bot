@@ -400,7 +400,7 @@ function buildMenu() {
       pkmnName = pokemonArray[pkmnNum-1].Name
       out += '<tr><td><img src="image/pokemon/' + pkmnImage + '" class="png_img"></td><td class="left-align">Name: ' + pkmnName +
       '<br>Number: ' + pkmnNum + '<br>Times Encountered: ' + pokedex[i].inventory_item_data.pokedex_entry.times_encountered + 
-      '<br>Times Caught: ' + pokedex[i].inventory_item_data.pokedex_entry.times_captured + '</td></tr>';
+      '<br>Times Caught: ' + (pokedex[i].inventory_item_data.pokedex_entry.times_captured || 0) + '</td></tr>';
     }
     out += '</table></div></div>';
     document.getElementById('subcontent').innerHTML = out;
