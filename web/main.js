@@ -18,6 +18,7 @@ var menu;
 var stats = {};
 var teams = ["TeamLess", "Mystic", "Valor", "Instinct"];
 var out;
+var eggs = 0;
 var out1;
 var outArray = [];
 var itemsArray = {
@@ -373,44 +374,9 @@ function buildMenu() {
     document.getElementById('subcontent').innerHTML = out;
   }
   if (menu == 3) {
-    document.getElementById('subtitle').innerHTML = "Pokemon in Bag";
-    out = '<div class="row items"><div class="col s12"><h5>' + users[0] + '</h5>';
-    for (var i = 0; i < bagPokemon.length; i++) {
-      if (bagPokemon[i].inventory_item_data.pokemon_data.is_egg) {
 
-        pkmnNum = "???"
-        pkmnImage = "Egg.png"
-        pkmnName = "Egg"
-        pkmCP = "???"
-        pkmIV = "???"
+    sortAndShowBagPokemon('cp')
 
-      } else {
-
-        pkmnNum = bagPokemon[i].inventory_item_data.pokemon_data.pokemon_id
-        pkmnImage = pad_with_zeroes(bagPokemon[i].inventory_item_data.pokemon_data.pokemon_id, 3) + '.png'
-        pkmnName = pokemonArray[pkmnNum-1].Name
-        pkmCP = bagPokemon[i].inventory_item_data.pokemon_data.cp
-
-        pkmIVA = bagPokemon[i].inventory_item_data.pokemon_data.individual_attack || 0;
-        pkmIVD = bagPokemon[i].inventory_item_data.pokemon_data.individual_defense || 0;
-        pkmIVS = bagPokemon[i].inventory_item_data.pokemon_data.individual_stamina || 0;
-        pkmIV = ((pkmIVA + pkmIVD + pkmIVS) / 45.0).toFixed(2);
-
-      }
-
-      if (i % 4 == 0) out += '<div class="row">'
-
-      out += '<div class="col s3 center-align">'
-      out += '<img src="/image/pokemon/' + pkmnImage + '" class="png_img"><br />';
-      out += pkmnName + '<br />';
-      out += 'CP ' + pkmCP + '<br />';
-      out += 'IV ' + pkmIV;
-      out += '</div>';
-
-      if ((i + 1) % 4 == 0) out += '</div>'
-    }
-    out += '</div></div>';
-    document.getElementById('subcontent').innerHTML = out;
   }
   if (menu == 4) {
     document.getElementById('subtitle').innerHTML = "Pokedex";
@@ -426,4 +392,110 @@ function buildMenu() {
     out += '</table></div></div>';
     document.getElementById('subcontent').innerHTML = out;
   }
+}
+
+function sortAndShowBagPokemon(sortOn)
+{
+
+  obj = bagPokemon;
+
+  if(!obj.length) return;
+
+  sortButtons = '<div style="float: right">Sort : ';
+  sortButtons += '<div class="chip"><a href="javascript:sortAndShowBagPokemon(\'cp\')">CP</a></div>';
+  sortButtons += '<div class="chip"><a href="javascript:sortAndShowBagPokemon(\'iv\')">IV</a></div>';
+  sortButtons += '<div class="chip"><a href="javascript:sortAndShowBagPokemon(\'name\')">Name</a></div>';
+  sortButtons += '<div class="chip"><a href="javascript:sortAndShowBagPokemon(\'id\')">ID</a></div>';
+  sortButtons += '</div>';
+
+  document.getElementById('subtitle').innerHTML = "Pokemon in Bag" + sortButtons;
+  out = '<div class="row items"><div class="col s12"><h5>' + users[0] + '</h5>';
+
+  eggs = 0;
+
+  sortOn=sortOn || 'name';
+
+  var sortedPokemon =[];
+  for (var i = 0; i < obj.length; i++) {
+
+    if(obj[i].inventory_item_data.pokemon_data.is_egg) {
+      eggs++;
+      continue;
+    };
+
+    pkmID = obj[i].inventory_item_data.pokemon_data.pokemon_id;
+
+    pkmnName = pokemonArray[pkmID-1].Name
+
+    pkmCP = obj[i].inventory_item_data.pokemon_data.cp
+
+    pkmIVA = obj[i].inventory_item_data.pokemon_data.individual_attack || 0;
+    pkmIVD = obj[i].inventory_item_data.pokemon_data.individual_defense || 0;
+    pkmIVS = obj[i].inventory_item_data.pokemon_data.individual_stamina || 0;
+    pkmIV = ((pkmIVA + pkmIVD + pkmIVS) / 45.0).toFixed(2);
+
+    sortedPokemon.push({
+      "name": pkmnName,
+      "id":pkmID,
+      "cp": pkmCP,
+      "iv": pkmIV
+    });
+  }
+
+  switch(sortOn) {
+    case 'name':
+      sortedPokemon.sort(function(a, b){
+        if(a.name < b.name) return -1;
+        if(a.name > b.name) return 1;
+        return 0;
+      })
+      break;
+    case 'id':
+      sortedPokemon.sort(function(a, b){
+        return a.id - b.id
+      })
+      break;
+    case 'cp':
+      sortedPokemon.sort(function(a, b){
+        return a.cp < b.cp
+      })
+      break;
+    case 'iv':
+      sortedPokemon.sort(function(a, b){
+        return parseFloat(a.iv) < parseFloat(b.iv)
+      })
+      break;
+  }
+
+  for (var i = 0; i < sortedPokemon.length; i++) {
+
+    pkmnNum = sortedPokemon[i].id
+    pkmnImage = pad_with_zeroes(pkmnNum, 3) + '.png'
+    pkmnName = pokemonArray[pkmnNum-1].Name
+    pkmCP = sortedPokemon[i].cp
+    pkmIV = sortedPokemon[i].iv
+
+    if (i % 4 == 0) out += '<div class="row">'
+
+    out += '<div class="col s3 center-align">'
+    out += '<img src="/image/pokemon/' + pkmnImage + '" class="png_img"><br />';
+    out += pkmnName + '<br />';
+    out += 'CP ' + pkmCP + '<br />';
+    out += 'IV ' + pkmIV;
+    out += '</div>';
+
+    if ((i + 1) % 4 == 0) out += '</div>'
+  }
+
+  // Add number of eggs
+  out += '<div class="row">'
+  out += '<div class="col s12 center-align">'
+  out += '<img src="/image/pokemon/Egg.png" class="png_img"><br />';
+  out += 'You have ' + eggs + ' eggs'
+  out += '</div>';
+  out += '</div>';
+
+  out += '</div></div>';
+
+  document.getElementById('subcontent').innerHTML = out;
 }
