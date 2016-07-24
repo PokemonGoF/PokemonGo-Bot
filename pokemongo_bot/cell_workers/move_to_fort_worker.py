@@ -1,4 +1,6 @@
 from utils import distance, format_dist
+from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot import logger
 
 class MoveToFortWorker(object):
     def __init__(self, fort, bot):
@@ -6,6 +8,7 @@ class MoveToFortWorker(object):
         self.api = bot.api
         self.config = bot.config
         self.stepper = bot.stepper
+        self.position = bot.position
 
     def work(self):
         lat = self.fort['latitude']
@@ -32,5 +35,6 @@ class MoveToFortWorker(object):
             response_dict = self.api.call()
             logger.log('[#] Arrived at Pokestop')
             sleep(2)
+            return response_dict
 
-        return response_dict
+        return None
