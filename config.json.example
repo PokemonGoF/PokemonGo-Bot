@@ -3,15 +3,14 @@
     "username": "YOURACCOUNT@gmail.com",
     "password": "YOURPASSWORD",
     "location": "SOME LOCATION",
-    "cp": 100,
     "gmapkey": "AGMAPAPIKEY",
-    "max_steps": 50,
+    "max_steps": 5,
     "mode": "all",
     "walk": 4.16,
     "debug": false,
     "test": false,
-    "initial_transfer": false,
-    "pokemon_potential": 0.70,
+    "initial_transfer": 0,
     "location_cache": true,
-    "distance_unit": "km"
+    "distance_unit": "km",
+    "item_filter": "101,102,103,104"
 }

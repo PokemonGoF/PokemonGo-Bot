@@ -9,12 +9,21 @@
 </p>
 
 # PokemonGo-Bot
-A python script for __catching pokemons__ and __spinning pokestops__ on PokemonGo.
-
+The Pokemon Go Bot, baking with community.
 
 ## Project Chat
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
-
+## Breaking Changes
+You need modify config.json (config.json.example for example)
+then pokecli.py --config config.json
+## CI ERROR Need Help
+Our CI check turn lots of lint error, please help to fix. 
+Commit comment set to 'CI FIX, File: ' 
+## About dev/stable/master Branch
+Dev branch has most up to date feature and even everyone handle the part well, still, will have broken changes. Your test contribute and PR for fix are warm welcome. 
+Stable branch is better than dev branch. Setup with milestone tag.  
+Master branch is the thing you familiar.  
+No PR on stable/master branch to keep things easier.  
 ## Table of Contents
 - [Project Chat](#project-chat)
 - [Features](#features)
@@ -36,27 +45,27 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
  * Catch Pokemon
  * Release low cp pokemon
  * Walking as you
+ * Limit the step to farm specific area for pokestops
  * Use the ball you have to catch, don't if you don't have
- * Rudimentary IV Functionality filter (Need verify)
+ * Rudimentary IV Functionality filter
  * Auto switch mode(Full of item then catch, no ball useable then farm)
  * Ignore certain pokemon filter
  * Use superior ball types when necessary
  * When out of normal pokeballs, use the next type of ball unless there are less than 10 of that type, in which case switch to farm mode
+ * Drop items when bag is full (In Testing, Document contribute needed)
+ * Pokemon catch filter (In Testing, Document contribute needed)
+ * Google Map API key setup (Readme update needed)
+ * Show all objects on map (In Testing)
+ * Evolve pokemons (Code in, Need input, In Testing)
 
 ## TODO List
 
 - [ ] Standalone Desktop APP
-- [x] Google Map API key setup (Readme update needed)
-- [ ] Show all objects on map
-- [x] Limit the step to farm specific area for pokestops
-- [ ] Pokemon transfer filter
-- [ ] Drop items when bag is full
-- [x] Pokemon catch filter
+- [ ] Pokemon transfer filter ?? This already done, right?
 - [ ] Hatch eggs
 - [ ] Incubate eggs
-- [ ] Evolve pokemons
 - [ ] Use candy
-- [x] Code refactor
+- [ ] Fight Gym
 
 ## Installation
 
@@ -133,7 +142,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 6. After the code done, will update here how to replace.
 
 ## Usage
-    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-lc] [-c] [-m] [-w] [--distance_unit] [--initial-transfer] [--maxsteps] [-iv] [-d] [-t]
+    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-lc] [-m] [-w] [--distance_unit] [--initial-transfer] [--maxsteps] [-iv] [-d] [-t]
 
     optional arguments:
       -h, --help                                    show this help message and exit
@@ -145,8 +154,10 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -m MODE, --mode MODE                          Set farming Mode for the bot ('all', 'poke', 'farm')
       -w SPEED,  --walk SPEED                       Walk instead of teleport with given speed (meters per second max 4.16 because of walking end on 15km/h)
       -du, --distance_unit UNIT                     Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
-      -it, --initial_transfer                       Start the bot with a pokemon clean up, keeping only the higher CP of each pokemon. It respects -c as upper limit to release.
+      -it, --initial_transfer                       Transfer all duplicate pokemon with same ID on bot start, except pokemon with highest CP. Accepts a number to prevent transferring pokemon with a CP above the provided value.  Default is 0 (aka transfer none).
       -ms, --max_steps MAX_STEP                     Set the steps around your initial location (DEFAULT 5 mean 25 cells around your location)
+      -iv IV, --pokemon_potential                   Set the ratio for the IV values to transfer (DEFAULT 0.4 eg. 0.4 will transfer a pokemon with IV 0.3)
+      -if LIST, --item_filter LIST                  Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, \"101,102,103,104\" to recycle potions when collected)"
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
 
@@ -165,7 +176,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
     2. Be careful with the ``any`` configuration!
     
 ## How to run with Docker
-    docker run namlehong/alpine-pgo:dev -a ptc -u tejado -p 1234 -l "New York, Central Park" -iv 0.8 -w 25
+
 
 
 ## How to add/discover new API
@@ -187,18 +198,36 @@ This project uses Google Maps. There's one map coupled with the project, but as 
         ```  
     5. You can now debug on the log to see if get what you need  
 
+## How to set up a simple webserver with nginx
+### Nginx on Ubuntu 14.x, 16.x
+#### 1. Install nginx on your Ubuntu machine (e.g. on locally or AWS)
+```
+sudo apt-get update
+sudo apt-get install nginx
+```
+
+#### 2. Check the webserver
+Check if the webserver is running by using your browser and entering the IP address of your local machine/server.
+On a local machine this would be http://127.0.0.1. On AWS this is your public DNS if you havent configured an elastic IP.
+
+#### 3. Change Base Directory of the Webserver
+```
+sudo nano "/etc/nginx/sites-enabled/default"
+```
+Comment out following line: ```root /var/www/html;``` and change it to the web folder of your PokemonGo-Bot: eg:
+```
+/home/user/dev/PokemonGo-Bot/web;
+```
+
 ## FAQ
 
 ### What's IV ?
 Here's the [introduction](http://bulbapedia.bulbagarden.net/wiki/Individual_values)
-### Losing Starter Pokemon and others
-You can use -c 1 to protect your first stage low CP pokemon.
+
 ### Does it run automatally?
 Not yet, still need a trainer to train the script param. But we are very close to.
 ### Set GEO Location
 It works, use -l "xx.yyyy,zz.ttttt" to set lat long for location. -- diordache
-### What if I can't join or don't want to use Slack?
-You can connect to #PokemonGoBot on irc.freenode.net, which is running a Slack-IRC bridge. Or, connect [here](http://webchat.freenode.net/?channels=#pokemongobot)
 ### Google login issues (Login Error, Server busy)?
 
 Try to generate an [app password](!https://support.google.com/accounts/answer/185833?hl=en) and set is as
@@ -246,7 +275,7 @@ If using multiple usernames format like this:
 ```var users = ["username1","username2"];```
 
 ---------
-## Contributors (Don't forget add yours here when you create PR:)
+## Contributors (Don't forget add yours here when you create PR)
  * eggins -- The first pull request :)
  * crack00r
  * ethervoid
@@ -261,7 +290,6 @@ If using multiple usernames format like this:
  * sinistance
  * CapCap
  * mzupan
- * namlehong
  * gnekic(GeXx)
  * Shoh
  * luizperes
@@ -270,7 +298,14 @@ If using multiple usernames format like this:
  * dmateusp
  * jtdroste
  * msoedov
-
+ * Grace
+ * Calcyfer
+ * asaf400
+ * guyz
+ * DavidK1m
+ * budi-khoirudin
+ * riberod07
+ 
 -------
 ## Credits
 - [tejado](https://github.com/tejado) many thanks for the API
