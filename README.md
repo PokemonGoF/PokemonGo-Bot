@@ -109,14 +109,6 @@ $ git submodule update
 
 ### Installation Windows
 
-```
-$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
-$ cd PokemonGo-Bot  
-$ pip install -r requirements.txt
-$ git submodule init
-$ git submodule update
-```
-
 ###### Windows Note
 On Windows, you will need to install PyYaml through the  [installer](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt.
 
@@ -155,11 +147,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 5. Copy the API key that appears.
 6. After the code done, will update here how to replace.
 
-### Python bug
-If you encounter problems with the module ssl and it function `_create_unverified_context`. Just comment it. (Solution available in Python 2.7.11)
-
 ## Usage
-	(maybe deprecated)
     usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-lc] [-m] [-w] [--distance_unit] [--initial-transfer] [--maxsteps] [-iv] [-d] [-t]
 
     optional arguments:
@@ -175,16 +163,10 @@ If you encounter problems with the module ssl and it function `_create_unverifie
       -it, --initial_transfer                       Transfer all duplicate pokemon with same ID on bot start, except pokemon with highest CP. Accepts a number to prevent transferring pokemon with a CP above the provided value.  Default is 0 (aka transfer none).
       -ms, --max_steps MAX_STEP                     Set the steps around your initial location (DEFAULT 5 mean 25 cells around your location)
       -iv IV, --pokemon_potential                   Set the ratio for the IV values to transfer (DEFAULT 0.4 eg. 0.4 will transfer a pokemon with IV 0.3)
-      -if LIST, --item_filter LIST                  Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, \"101,102,103,104\" to recycle potions when collected)"
+      -if LIST, --item_filter LIST                  Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, SYNTAX FOR CONFIG.JSON : ["101","102","103","104"] to recycle potions when collected, SYNTAX FOR CONSOLE ARGUMENT : "101,102,103,104" 
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
 
-## Usage with config (up to date)
-	1/ copy `config.json.example` to `config.json` and `release_config.json.example` to `release_config.json`.
-	2/ Edit those files with your preference (required for config.json, optional for release_config.json)
-	
-	  usage: python pokecli.py (windows)
-	  
 ### Command Line Example
     Pokemon Trainer Club (PTC) account:
     $ python2 pokecli.py -a ptc -u tejado -p 1234 --location "New York, Washington Square"
