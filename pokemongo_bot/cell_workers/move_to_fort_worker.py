@@ -1,4 +1,6 @@
 from utils import distance, format_dist
+from .. import logger
+from ..human_behaviour import sleep
 
 class MoveToFortWorker(object):
     def __init__(self, fort, bot):
@@ -6,6 +8,7 @@ class MoveToFortWorker(object):
         self.api = bot.api
         self.config = bot.config
         self.stepper = bot.stepper
+        self.position = bot.position
 
     def work(self):
         lat = self.fort['latitude']
