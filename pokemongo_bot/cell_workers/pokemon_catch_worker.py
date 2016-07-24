@@ -33,7 +33,9 @@ class PokemonCatchWorker(object):
                 if 'status' in response_dict['responses']['ENCOUNTER']:
                     if response_dict['responses']['ENCOUNTER']['status'] is 7:
                         logger.log('[x] Pokemon Bag is full!', 'red')
-                        self.bot.initial_transfer()
+                        worker = InitialTransferWorker(self.bot)
+                        worker.work()
+
                     if response_dict['responses']['ENCOUNTER']['status'] is 1:
                         cp = 0
                         total_IV = 0
