@@ -294,6 +294,7 @@ If using multiple usernames format like this:
  * Calcyfer
  * asaf400
  * guyz
+ * DavidK1m
 
 -------
 ## Credits
