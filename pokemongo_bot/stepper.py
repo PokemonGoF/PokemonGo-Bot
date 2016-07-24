@@ -32,13 +32,6 @@ class Stepper(object):
         self.origin_lon = self.bot.position[1]
 
     def take_step(self):
-        if self.config.evolve_all:
-            # Run evolve all once. Flip the bit.
-            print('[#] Attempting to evolve all pokemons ...')
-            self.config.lcd.message('Attempting to evolve all pokemons')
-            self.config.evolve_all = False
-            self._evolve_all()
-
         position = (self.origin_lat, self.origin_lon, 0.0)
 
         self.api.set_position(*position)
@@ -164,50 +157,3 @@ class Stepper(object):
         output = []
         encoder._VarintEncoder()(output.append, cellid)
         return ''.join(output)
-
-    def _evolve_all(self):
-        self.api.get_inventory()
-        response_dict = self.api.call()
-        cache = {}
-
-        try:
-            reduce(dict.__getitem__, [
-                   "responses", "GET_INVENTORY", "inventory_delta", "inventory_items"], response_dict)
-        except KeyError:
-            pass
-        else:
-            for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
-                try:
-                    reduce(dict.__getitem__, [
-                           "inventory_item_data", "pokemon_data"], item)
-                except KeyError:
-                    pass
-                else:
-                    try:
-                        pokemon = item['inventory_item_data']['pokemon_data']
-                        self._execute_pokemon_evolve(pokemon, cache)
-                        time.sleep(1.2)
-                    except:
-                        pass
-
-    def _execute_pokemon_evolve(self, pokemon, cache):
-        pokemon_num = int(pokemon['pokemon_id']) - 1
-        pokemon_name = self.bot.pokemon_list[
-            int(pokemon_num)]['Name']
-        if pokemon_name in cache:
-            return
-
-        self.api.evolve_pokemon(pokemon_id=pokemon['id'])
-        response_dict = self.api.call() 
-        status = response_dict['responses']['EVOLVE_POKEMON']['result']
-        if status == 1:
-            print('[#] Successfully evolved {}!'.format(
-                pokemon_name
-            ))
-            if hasattr(self.config, 'lcd'):
-                self.config.lcd.message('Successfully evolved {}!'.format(
-                pokemon_name
-            ))
-        else:
-            # cache pokemons we can't evolve. Less server calls
-            cache[pokemon_name] = 1
