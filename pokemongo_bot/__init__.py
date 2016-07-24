@@ -495,8 +495,8 @@ class PokemonGoBot(object):
                                         'player_stats']
 
                                     nextlvlxp = (
-                                        int(playerdata['next_level_xp']) -
-                                        int(playerdata['experience']))
+                                        int(playerdata.get('next_level_xp', 0)]) -
+                                        int(playerdata.get('experience', 0)]))
 
                                     if 'level' in playerdata:
                                         logger.log(
