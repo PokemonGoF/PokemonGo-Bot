@@ -81,8 +81,6 @@ class PokemonCatchWorker(object):
                                     pokeball = 2 # then use great balls
                                 elif balls_stock[3] > 0: # or if great balls are out of stock too, and player has ultra balls...
                                     pokeball = 3 # then use ultra balls
-                                else:
-                                    pokeball = 0 # player doesn't have any of pokeballs, great balls or ultra balls
                             
                             ## Use berry to increase success chance.
                             berry_id = 701 # @ TODO: use better berries if possible
@@ -115,7 +113,7 @@ class PokemonCatchWorker(object):
                                 
                             # @TODO, use the best ball in stock to catch VIP (Very Important Pokemon: Configurable)
                             
-                            if pokeball is 0:
+                            if balls_stock[pokeball] is 0:
                                 logger.log(
                                     '[x] Out of pokeballs, switching to farming mode...', 'red')
                                 # Begin searching for pokestops.
@@ -148,7 +146,7 @@ class PokemonCatchWorker(object):
                                     'CATCH_POKEMON']['status']
                                 if status is 2:
                                     logger.log(
-                                        '[-] Attempted to capture {}- failed.. trying again!'.format(pokemon_name), 'red')
+                                        '[-] Attempted to capture {} - failed.. trying again!'.format(pokemon_name), 'red')
                                     sleep(2)
                                     continue
                                 if status is 3:
