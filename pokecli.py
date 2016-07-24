@@ -54,20 +54,10 @@ def init_config():
 
     # Select a config file code
     parser.add_argument("-cf", "--config", help="Config File to use")
-    config_arg =unicode(parser.parse_args().config)
-    if os.path.isfile(config_arg):
-        with open(config_arg) as data:
-            load.update(json.load(data))
-    elif os.path.isfile(config_file):
-        with open(config_file) as data:
-            load.update(json.load(data))
-
     # Read passed in Arguments
-    required = lambda x: not x in load
     parser.add_argument("-a",
                         "--auth_service",
-                        help="Auth Service ('ptc' or 'google')",
-                        required=required("auth_service"))
+                        help="Auth Service ('ptc' or 'google')", default='google')
     parser.add_argument("-u", "--username", help="Username")
     parser.add_argument("-p", "--password", help="Password")
     parser.add_argument("-l", "--location", help="Location")
@@ -146,6 +136,15 @@ def init_config():
                         default=False)
 
     config = parser.parse_args()
+
+    if config.config:
+        if os.path.isfile(config.config):
+            with open(config.config) as data:
+                load.update(json.load(data))
+        elif os.path.isfile(config_file):
+            with open(config_file) as data:
+                load.update(json.load(data))
+
     if not config.username and not 'username' in load:
         config.username = raw_input("Username: ")
     if not config.password and not 'password' in load:

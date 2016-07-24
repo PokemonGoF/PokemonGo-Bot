@@ -20,6 +20,10 @@ lib64/
 parts/
 sdist/
 var/
+bin/
+cell_workers/
+include/
+pgoapi/
 *.egg-info/
 .installed.cfg
 *.egg
@@ -112,5 +116,5 @@ web/userdata.js
 data/last-location*.json
 data/catch-ignore.yml
 release_config.json
-web/userdata.js
 location.json
+pip-selfcheck.json
