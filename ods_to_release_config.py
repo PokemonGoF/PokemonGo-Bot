@@ -12,7 +12,7 @@ def initConfig():
     configfile.write(''+
     '{\n'+
     '    "any": {\n'+
-    '        "release_under_cp": 500,\n'+
+    '        "release_under_cp": 0,\n'+
     '        "release_under_iv": 0,\n'+
     '        "cp_iv_logic": "or"\n'+
     '    },\n'+
