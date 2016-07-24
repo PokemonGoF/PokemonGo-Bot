@@ -1,23 +1,21 @@
 # -*- coding: utf-8 -*-
 
-import logging
-import googlemaps
-import json
-import random
-import threading
 import datetime
-import sys
-import yaml
-import logger
+import json
+import logging
+import random
 import re
-from pgoapi import PGoApi
+import sys
+
+import logger
+import yaml
 from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker
 from cell_workers.utils import distance
-from human_behaviour import sleep
-from stepper import Stepper
 from geopy.geocoders import GoogleV3
-from math import radians, sqrt, sin, cos, atan2
+from human_behaviour import sleep
 from item_list import Item
+from pgoapi import PGoApi
+from stepper import Stepper
 
 
 class PokemonGoBot(object):
@@ -42,7 +40,7 @@ class PokemonGoBot(object):
                 ignores = yaml.load(y)['ignore']
                 if len(ignores) > 0:
                     process_ignore = True
-        except Exception, e:
+        except Exception as e:
             pass
 
         if process_ignore:

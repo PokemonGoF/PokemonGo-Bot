@@ -25,23 +25,22 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 Author: tjado <https://github.com/tejado>
 """
 
+import argparse
+import codecs
+import json
+import logging
 import os
 import re
-import json
-import requests
-import argparse
-import time
 import ssl
-import logging
 import sys
-import codecs
-from pokemongo_bot import logger
+
+import pokemongo_bot
+
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
 from getpass import getpass
 from pokemongo_bot import PokemonGoBot
-from pokemongo_bot.cell_workers.utils import print_green, print_yellow, print_red
 
 
 def init_config():
@@ -124,7 +123,7 @@ def init_config():
         "Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)",
         type=str,
         default="km")
-    
+
     parser.add_argument(
         "-if",
         "--item_filter",
@@ -138,7 +137,7 @@ def init_config():
                         help="Bot will start by attempting to evolve all pokemons. Great after popping a lucky egg!",
                         type=bool,
                         default=False)
-                        
+
     parser.add_argument("-ec",
                         "--evolve_captured",
                         help="Bot will attempt to evolve all the pokemons captured!",
@@ -166,12 +165,12 @@ def init_config():
 
     if config.item_filter:
         config.item_filter = [str(item_id) for item_id in config.item_filter.split(',')]
-        
+
     config.release_config = {}
     if os.path.isfile(release_config_json):
         with open(release_config_json) as data:
             config.release_config.update(json.load(data))
-            
+
     if config.gmapkey:
         find_url = 'https:\/\/maps.googleapis.com\/maps\/api\/js\?key=\S*'
         replace_url = "https://maps.googleapis.com/maps/api/js?key=%s&callback=initMap\""
@@ -197,20 +196,20 @@ def main():
     if not config:
         return
 
-    logger.log('[x] PokemonGO Bot v1.0', 'green')
-    logger.log('[x] Configuration initialized', 'yellow')
+    pokemongo_bot.logger.log('[x] PokemonGO Bot v1.0', 'green')
+    pokemongo_bot.logger.log('[x] Configuration initialized', 'yellow')
 
     try:
         bot = PokemonGoBot(config)
         bot.start()
 
-        logger.log('[x] Starting PokemonGo Bot....', 'green')
+        pokemongo_bot.logger.log('[x] Starting PokemonGo Bot....', 'green')
 
         while (True):
             bot.take_step()
 
     except KeyboardInterrupt:
-        logger.log('[x] Exiting PokemonGo Bot', 'red')
+        pokemongo_bot.logger.log('[x] Exiting PokemonGo Bot', 'red')
         # TODO Add number of pokemon catched, pokestops visited, highest CP
         # pokemon catched, etc.
 
