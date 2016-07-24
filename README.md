@@ -174,7 +174,23 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 
     1. Pokemon name is always capitalize and case-sensitive
     2. Be careful with the ``any`` configuration!
+
+### Evolve All Configuration
+    By setting the `evolve_all` attribute in config.json, you can instruct the bot to automatically
+    evolve specified pokemons on startup. This is especially useful for batch-evolving after popping up
+    a lucky egg (currently this needs to be done manually).
     
+    The evolve all mechanism evolves only higher CP pokemons. It does this by first ordering them from high-to-low CP.
+    It will also automatically transfer the evolved pokemons based on the release configuration.
+    
+    Examples on how to use (set in config.json):
+    
+    1. "evolve_all": "all"
+      Will evolve ALL pokemons.
+    2. "evolve_all": "Pidgey,Weedle"
+      Will only evolve Pidgey and Weedle.
+    3. Not setting evolve_all or having any other string would not evolve any pokemons on startup.
+
 ## How to run with Docker
 
 

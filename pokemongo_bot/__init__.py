@@ -39,9 +39,9 @@ class PokemonGoBot(object):
         if self.config.evolve_all:
             # Run evolve all once. Flip the bit.
             print('[#] Attempting to evolve all pokemons ...')
-            self.config.evolve_all = False
             worker = EvolveAllWorker(self)
             worker.work()
+            self.config.evolve_all = []
 
         self._filter_ignored_pokemons(cell)
 
