@@ -163,7 +163,7 @@ class PokemonCatchWorker(object):
                                     )
                                     if hasattr(self.config, 'lcd'):
                                         self.config.lcd.message(
-                                            'Captured {}! [CP {}] [IV {}] - Checking Release Config'.format(
+                                            'Captured {}! [CP {}] [IV {}]'.format(
                                             pokemon_name,
                                             cp,
                                             pokemon_potential
@@ -202,8 +202,7 @@ class PokemonCatchWorker(object):
                                     else:
                                         logger.log(
                                         '[x] Captured {}! [CP {}]'.format(pokemon_name, cp), 'green')
-                                        if hasattr(self.config, 'lcd'):
-                                            self.config.lcd.message('Captured {}! [CP {}]'.format(pokemon_name, cp))
+
                             break
         time.sleep(5)
 
