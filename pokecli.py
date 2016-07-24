@@ -122,8 +122,8 @@ def init_config():
         "-if",
         "--item_filter",
         help=
-        "Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, [\"101\",\"102\",\"103\",\"104\"] to recycle potions when collected)",
-        type=list,
+        "Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, \"101,102,103,104\" to recycle potions when collected)",
+        type=str,
         default=[])
 
     config = parser.parse_args()
@@ -145,6 +145,9 @@ def init_config():
         parser.error("Needs either --use-location-cache or --location.")
         return None
 
+    if config.item_filter:
+        config.item_filter = [str(item_id) for item_id in config.item_filter.split(',')]
+        
     config.release_config = {}
     if os.path.isfile(release_config_json):
         with open(release_config_json) as data:
