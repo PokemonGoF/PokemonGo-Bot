@@ -10,6 +10,7 @@ import sys
 import yaml
 import logger
 import re
+import time
 from pgoapi import PGoApi
 from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
 from cell_workers.utils import distance
@@ -36,6 +37,12 @@ class PokemonGoBot(object):
         self.stepper.take_step()
 
     def work_on_cell(self, cell, position, include_fort_on_path):
+    	
+    	#after 1 hour, relogin. because we cant catch or spin pokestop after 1 hour maybe google token timeup
+    	if self.config.starttime+60*60 < time.time():
+            self._setup_api()
+            logger.log("[!] Relogin!")
+    	
         if self.config.evolve_all:
             # Run evolve all once. Flip the bit.
             print('[#] Attempting to evolve all pokemons ...')
@@ -135,6 +142,9 @@ class PokemonGoBot(object):
                               str(self.config.password)):
             logger.log('Login Error, server busy', 'red')
             exit(0)
+	
+	#how we can get google token time
+	self.config.starttime = time.time()
 
         # chain subrequests (methods) into one RPC call
 
