@@ -165,7 +165,7 @@ def init_config():
         return None
 
     if config.item_filter:
-        config.item_filter = [str(item_id) for item_id in config.item_filter.split(',')]
+        config.item_filter = [str(item_id) for item_id in config.item_filter]
         
     config.release_config = {}
     if os.path.isfile(release_config_json):
