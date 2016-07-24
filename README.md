@@ -13,9 +13,11 @@ The Pokemon Go Bot, baking with community.
 
 ## Project Chat
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
-## About dev Branch
-This branch has most up to date feature and even everyone handle the part well, still, will have broken changes.
-Your test contribute and PR for fix are well welcome. Or, you can wait on the master branch.
+## About dev/stable/master Branch
+Dev branch has most up to date feature and even everyone handle the part well, still, will have broken changes. Your test contribute and PR for fix are warm welcome. 
+Stable branch is better than dev branch. Setup with milestone tag.  
+Master branch is the thing you familiar.  
+No PR on stable/master branch to keep things easier.  
 ## Table of Contents
 - [Project Chat](#project-chat)
 - [Features](#features)
@@ -55,7 +57,7 @@ Your test contribute and PR for fix are well welcome. Or, you can wait on the ma
 - [x] Pokemon catch filter
 - [ ] Hatch eggs
 - [ ] Incubate eggs
-- [ ] Evolve pokemons
+- [x] Evolve pokemons (Code in, Need input, In Testing)
 - [ ] Use candy
 - [x] Code refactor
 
