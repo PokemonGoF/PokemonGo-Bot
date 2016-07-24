@@ -11,7 +11,7 @@ import yaml
 import logger
 import re
 from pgoapi import PGoApi
-from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker
+from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
 from cell_workers.utils import distance
 from human_behaviour import sleep
 from stepper import Stepper
@@ -36,6 +36,13 @@ class PokemonGoBot(object):
         self.stepper.take_step()
 
     def work_on_cell(self, cell, position, include_fort_on_path):
+        if self.config.evolve_all:
+            # Run evolve all once. Flip the bit.
+            print('[#] Attempting to evolve all pokemons ...')
+            self.config.evolve_all = False
+            worker = EvolveAllWorker(self)
+            worker.work()
+
         self._filter_ignored_pokemons(cell)
 
         if (self.config.mode == "all" or self.config.mode ==
@@ -51,8 +58,8 @@ class PokemonGoBot(object):
                 with open('web/catchable-%s.json' %
                           (self.config.username), 'w') as outfile:
                     json.dump(pokemon, outfile)
-                worker = PokemonCatchWorker(pokemon, self)
-                if worker.work() == -1:
+
+                if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
                     break
                 with open('web/catchable-%s.json' %
                           (self.config.username), 'w') as outfile:
@@ -65,8 +72,7 @@ class PokemonGoBot(object):
                 key=
                 lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
             for pokemon in cell['wild_pokemons']:
-                worker = PokemonCatchWorker(pokemon, self)
-                if worker.work() == -1:
+                if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
                     break
         if (self.config.mode == "all" or
                 self.config.mode == "farm") and include_fort_on_path:
@@ -75,12 +81,13 @@ class PokemonGoBot(object):
                 forts = [fort
                          for fort in cell['forts']
                          if 'latitude' in fort and 'type' in fort]
+		gyms = [gym for gym in cell['forts'] if 'gym_points' in gym]
 
                 # Sort all by distance from current pos- eventually this should
                 # build graph & A* it
                 forts.sort(key=lambda x: distance(self.position[
                            0], self.position[1], x['latitude'], x['longitude']))
-                for fort in cell['forts']:
+                for fort in forts:
                     worker = MoveToFortWorker(fort, self)
                     worker.work()
 
@@ -140,7 +147,6 @@ class PokemonGoBot(object):
         currency_1 = "0"
         currency_2 = "0"
 
-        logger.log('[#] Response API: {}'.format(response_dict))
         player = response_dict['responses']['GET_PLAYER']['profile']
 
         # @@@ TODO: Convert this to d/m/Y H:M:S
@@ -177,6 +183,16 @@ class PokemonGoBot(object):
 
         logger.log('[#]')
         self.update_inventory()
+
+    def catch_pokemon(self, pokemon):
+        worker = PokemonCatchWorker(pokemon, self)
+        return_value = worker.work()
+
+        if return_value == PokemonCatchWorker.BAG_FULL:
+            worker = InitialTransferWorker(self)
+            worker.work()
+
+        return return_value
 
     def drop_item(self, item_id, count):
         self.api.recycle_inventory_item(item_id=item_id, count=count)
@@ -313,8 +329,7 @@ class PokemonGoBot(object):
         self.position = self._get_pos_by_name(self.config.location)
         self.api.set_position(*self.position)
         logger.log('')
-        logger.log(u'[x] Address found: {}'.format(self.config.location.decode(
-            'utf-8')))
+        logger.log(u'[x] Address found: {}'.format(self.config.location))
         logger.log('[x] Position in-game set as: {}'.format(self.position))
         logger.log('')
 

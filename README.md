@@ -13,6 +13,12 @@ The Pokemon Go Bot, baking with community.
 
 ## Project Chat
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
+## Breaking Changes
+You need modify config.json (config.json.example for example)
+then pokecli.py --config config.json
+## CI ERROR Need Help
+Our CI check turn lots of lint error, please help to fix. 
+Commit comment set to 'CI FIX, File: ' 
 ## About dev/stable/master Branch
 Dev branch has most up to date feature and even everyone handle the part well, still, will have broken changes. Your test contribute and PR for fix are warm welcome. 
 Stable branch is better than dev branch. Setup with milestone tag.  
@@ -298,6 +304,7 @@ If using multiple usernames format like this:
  * guyz
  * DavidK1m
  * budi-khoirudin
+ * riberod07
  
 -------
 ## Credits
