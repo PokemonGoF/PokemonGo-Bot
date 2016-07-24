@@ -61,7 +61,18 @@ class PokemonCatchWorker(object):
                                     int(pokemon_num)]['Name']
                                 logger.log('[#] A Wild {} appeared! [CP {}] [Potential {}]'.format(
                                     pokemon_name, cp, pokemon_potential), 'yellow')
+                                if hasattr(self.config, 'lcd'):
+                                    self.config.lcd.message(
+                                        'A Wild {} appeared! [CP {}] [Potential {}] [{}/{}/{}]'.format(
+                                        pokemon_name,
+                                            cp,
+                                            pokemon_potential,
+                                            pokemon['pokemon_data']['individual_stamina'],
+                                            pokemon['pokemon_data']['individual_attack'],
+                                            pokemon['pokemon_data']['individual_defense']
+                                        )
 
+                                    )
                                 logger.log('[#] IV [Stamina/Attack/Defense] = [{}/{}/{}]'.format(
                                     pokemon['pokemon_data']['individual_stamina'],
                                     pokemon['pokemon_data']['individual_attack'],
@@ -74,12 +85,12 @@ class PokemonCatchWorker(object):
                         balls_stock = self.bot.pokeball_inventory()
                         while(True):
                         
-                            pokeball = 1 # default: poke ball
+                            pokeball = 1 # default:poke ball
                             
-                            if balls_stock[1] < 0: # if poke ball are out of stock
+                            if balls_stock[1] <= 0: # if poke ball are out of stock
                                 if balls_stock[2] > 0: # and player has great balls in stock...
                                     pokeball = 2 # then use great balls
-                                elif ball_stock[3] > 0: # or if great balls are out of stock too, and player has ultra balls...
+                                elif balls_stock[3] > 0: # or if great balls are out of stock too, and player has ultra balls...
                                     pokeball = 3 # then use ultra balls
                                 else:
                                     pokeball = 0 # player doesn't have any of pokeballs, great balls or ultra balls
@@ -107,6 +118,11 @@ class PokemonCatchWorker(object):
                                 success_percentage, 
                                 balls_stock[pokeball]
                             ))
+                            if hasattr(self.config, 'lcd'):
+                                self.config.lcd.message('Throwing a {} with {}% of success'.format(
+                                    self.item_list[str(pokeball)],
+                                    success_percentage,
+                                ))
 
                             id_list1 = self.count_pokemon_inventory()
                             self.api.catch_pokemon(encounter_id=encounter_id,
@@ -127,20 +143,31 @@ class PokemonCatchWorker(object):
                                 if status is 2:
                                     logger.log(
                                         '[-] Attempted to capture {}- failed.. trying again!'.format(pokemon_name), 'red')
+                                    if hasattr(self.config, 'lcd'):
+                                        self.config.lcd.message( 'Attempted to capture {}- failed.. trying again!'.format(pokemon_name))
                                     sleep(2)
                                     continue
                                 if status is 3:
                                     logger.log(
                                         '[x] Oh no! {} vanished! :('.format(pokemon_name), 'red')
+                                    if hasattr(self.config, 'lcd'):
+                                        self.config.lcd.message(
+                                            '[x] Oh no! {} vanished! :('.format(pokemon_name))
                                 if status is 1:
                                     logger.log(
-                                        '[x] Captured {}! [CP {}] [IV {}] - Checking Release Config'.format(
+                                        '[x] Captured {}! [CP {}] [IV {}]'.format(
                                             pokemon_name,
                                             cp,
                                             pokemon_potential
                                         ), 'green'
                                     )
-
+                                    if hasattr(self.config, 'lcd'):
+                                        self.config.lcd.message(
+                                            'Captured {}! [CP {}] [IV {}] - Checking Release Config'.format(
+                                            pokemon_name,
+                                            cp,
+                                            pokemon_potential
+                                        ))
                                     id_list2 = self.count_pokemon_inventory()
 
                                     if self.config.evolve_captured:
@@ -151,9 +178,13 @@ class PokemonCatchWorker(object):
                                         if status == 1:
                                             logger.log(
                                                     '[#] {} has been evolved!'.format(pokemon_name), 'green')
+                                            if hasattr(self.config, 'lcd'):
+                                                    self.config.lcd.message('{} has been evolved!'.format(pokemon_name))
                                         else:
                                             logger.log(
                                             '[x] Failed to evolve {}!'.format(pokemon_name))
+                                            if hasattr(self.config, 'lcd'):
+                                                self.config.lcd.message('Failed to evolve {}!'.format(pokemon_name))
 
                                     if self.should_release_pokemon(pokemon_name, cp, pokemon_potential, response_dict):
                                         # Transfering Pokemon
@@ -166,9 +197,13 @@ class PokemonCatchWorker(object):
                                             pokemon_to_transfer[0])
                                         logger.log(
                                             '[#] {} has been exchanged for candy!'.format(pokemon_name), 'green')
+                                        if hasattr(self.config, 'lcd'):
+                                            self.config.lcd.message('{} has been exchanged for candy!'.format(pokemon_name))
                                     else:
                                         logger.log(
                                         '[x] Captured {}! [CP {}]'.format(pokemon_name, cp), 'green')
+                                        if hasattr(self.config, 'lcd'):
+                                            self.config.lcd.message('Captured {}! [CP {}]'.format(pokemon_name, cp))
                             break
         time.sleep(5)
 
@@ -263,14 +298,14 @@ class PokemonCatchWorker(object):
                 'and': lambda x, y: x and y
             }
 
-            logger.log(
-                "[x] Release config for {}: CP {} {} IV {}".format(
-                    pokemon_name,
-                    min_cp,
-                    cp_iv_logic,
-                    min_iv
-                ), 'yellow'
-            )
+            #logger.log(
+            #    "[x] Release config for {}: CP {} {} IV {}".format(
+            #        pokemon_name,
+            #        min_cp,
+            #        cp_iv_logic,
+            #        min_iv
+            #    ), 'yellow'
+            #)
 
             return logic_to_function[cp_iv_logic](*release_results.values())
 
