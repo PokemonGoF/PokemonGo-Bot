@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import json
-import time
-import pprint
 
 from math import ceil
 from s2sphere import CellId, LatLng
@@ -11,7 +9,7 @@ from google.protobuf.internal import encoder
 from human_behaviour import sleep, random_lat_long_delta
 from cell_workers.utils import distance, i2f, format_time
 
-from pgoapi.utilities import f2i, h2f
+from pgoapi.utilities import f2i
 import logger
 
 
@@ -52,7 +50,7 @@ class Stepper(object):
                     self._walk_to(self.config.walk, *position)
                 else:
                     self.api.set_position(*position)
-                print('[#] {}'.format(position))
+                print '[#] {}'.format(position)
             if self.x == self.y or self.x < 0 and self.x == -self.y or self.x > 0 and self.x == 1 - self.y:
                 (self.dx, self.dy) = (-self.dy, self.dx)
 
@@ -101,37 +99,28 @@ class Stepper(object):
         response_dict = self.api.call()
         # pprint.pprint(response_dict)
         # Passing Variables through a file
+        if response_dict and 'responses' in response_dict and 'GET_MAP_OBJECTS' in response_dict['responses'] and \
+                'map_cells' in response_dict['responses']['GET_MAP_OBJECTS']:
+            with open('web/location-%s.json' % self.config.username, 'w') as outfile:
+                json.dump(
+                    {'lat': lat,
+                     'lng': lng,
+                     'cells': response_dict['responses']['GET_MAP_OBJECTS']['map_cells']},
+                    outfile)
+            with open('data/last-location-%s.json' % self.config.username, 'w') as outfile:
+                outfile.truncate()
+                json.dump({'lat': lat, 'lng': lng}, outfile)
         if response_dict and 'responses' in response_dict:
-            if 'GET_MAP_OBJECTS' in response_dict['responses']:
-                if 'map_cells' in response_dict['responses'][
-                        'GET_MAP_OBJECTS']:
-                    with open('web/location-%s.json' %
-                              (self.config.username), 'w') as outfile:
-                        json.dump(
-                            {'lat': lat,
-                             'lng': lng,
-                             'cells': response_dict[
-                                 'responses']['GET_MAP_OBJECTS']['map_cells']},
-                            outfile)
-                    with open('data/last-location-%s.json' %
-                              (self.config.username), 'w') as outfile:
-                        outfile.truncate()
-                        json.dump({'lat': lat, 'lng': lng}, outfile)
-        if response_dict and 'responses' in response_dict:
-            if 'GET_MAP_OBJECTS' in response_dict['responses']:
-                if 'status' in response_dict['responses']['GET_MAP_OBJECTS']:
-                    if response_dict['responses']['GET_MAP_OBJECTS'][
-                            'status'] is 1:
-                        map_cells = response_dict['responses'][
-                            'GET_MAP_OBJECTS']['map_cells']
-                        position = (lat, lng, alt)
-                    # Sort all by distance from current pos- eventually this should build graph & A* it
-                    # print(map_cells)
-                    #print( s2sphere.from_token(x['s2_cell_id']) )
-                    map_cells.sort(key=lambda x: distance(lat, lng, x['forts'][0]['latitude'], x[
-                                   'forts'][0]['longitude']) if 'forts' in x and x['forts'] != [] else 1e6)
-                    for cell in map_cells:
-                        self.bot.work_on_cell(cell, position, pokemon_only)
+            if 'GET_MAP_OBJECTS' in response_dict['responses'] and 'status' in response_dict['responses']['GET_MAP_OBJECTS']:
+                if response_dict['responses']['GET_MAP_OBJECTS']['status'] is 1:
+                    map_cells = response_dict['responses']['GET_MAP_OBJECTS']['map_cells']
+                    position = (lat, lng, alt)
+                # Sort all by distance from current pos- eventually this should build graph & A* it
+                # print(map_cells)
+                # print( s2sphere.from_token(x['s2_cell_id']) )
+                map_cells.sort(key=lambda x: distance(lat, lng, x['forts'][0]['latitude'], x['forts'][0]['longitude']) if 'forts' in x and x['forts'] != [] else 1e6)
+                for cell in map_cells:
+                    self.bot.work_on_cell(cell, position, pokemon_only)
 
     def _get_cellid(self, lat, long, radius=10):
         origin = CellId.from_lat_lng(LatLng.from_degrees(lat, long)).parent(15)
