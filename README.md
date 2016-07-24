@@ -108,6 +108,14 @@ $ git submodule update
 ```
 
 ### Installation Windows
+```
+$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
+$ cd PokemonGo-Bot  
+$ pip install -r requirements.txt
+$ git submodule init
+$ git submodule update
+```
+
 
 ###### Windows Note
 On Windows, you will need to install PyYaml through the  [installer](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt.
@@ -170,6 +178,13 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -if LIST, --item_filter LIST                  Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, SYNTAX FOR CONFIG.JSON : ["101","102","103","104"] to recycle potions when collected, SYNTAX FOR CONSOLE ARGUMENT : "101,102,103,104" 
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
+      
+## Usage with config (up to date)
+   1/ copy `config.json.example` to `config.json` and `release_config.json.example` to `release_config.json`.
+   2/ Edit those files with your preference (required for config.json, optional for release_config.json)
+   
+     usage: python pokecli.py (windows)
+
 
 ### Command Line Example
     Pokemon Trainer Club (PTC) account:
