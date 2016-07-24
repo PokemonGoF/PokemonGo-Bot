@@ -2,7 +2,7 @@ language: python
 python:
   - "2.7"
 install:
+  - apt-get install python-protobuf
   - pip install -r requirements.txt
   - pip install pylint
-  - apt-get install python-protobuf
 script: "pylint **/*.py"
