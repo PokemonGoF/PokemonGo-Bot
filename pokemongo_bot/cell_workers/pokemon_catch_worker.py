@@ -97,8 +97,8 @@ class PokemonCatchWorker(object):
                                 )
                                 response_dict = self.api.call()
                                 if response_dict and response_dict['status_code'] is 1:
-                                
-                                    for i in catch_rate:
+
+                                    for i in range(len(catch_rate)):
                                         catch_rate[i] = catch_rate[i] * response_dict['responses']['USE_ITEM_CAPTURE']['item_capture_mult']
                                         
                                     success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
