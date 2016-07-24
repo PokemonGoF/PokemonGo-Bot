@@ -212,7 +212,7 @@ class PokemonCatchWorker(object):
         return id_list
 
     def should_release_pokemon(self, pokemon_name, cp, iv, response_dict):
-        if self._always_capture_exception_for(pokemon_name):
+        if self._check_always_capture_exception_for(pokemon_name):
             return False
         else:
             release_config = self._get_release_config_for(pokemon_name)
@@ -271,12 +271,14 @@ class PokemonCatchWorker(object):
 
     def _get_always_capture_list(self):
         exceptions = self._get_exceptions()
+        if not exceptions:
+            return []
         always_capture_list = exceptions['always_capture']
         if not always_capture_list:
             return []
         return always_capture_list
 
-    def _always_capture_exception_for(self, pokemon_name):
+    def _check_always_capture_exception_for(self, pokemon_name):
         always_capture_list = self._get_always_capture_list()
         if not always_capture_list:
             return False

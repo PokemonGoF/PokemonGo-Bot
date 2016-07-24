@@ -356,7 +356,16 @@ class PokemonGoBot(object):
         if self.config.test:
             return
 
-        if self.config.location_cache:
+        if self.config.location:
+            try:
+                location_str = str(self.config.location)
+                start_coordinate = [x.strip() for x in location_str.split(',')]
+                self.position = (float(start_coordinate[0]), float(start_coordinate[0]), 0.0)
+                self.api.set_position(*self.position)
+            except:
+                pass
+
+        if self.config.location_cache and not self.config.location:
             try:
                 #
                 # save location flag used to pull the last known location from
