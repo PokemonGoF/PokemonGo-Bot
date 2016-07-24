@@ -172,16 +172,6 @@ def init_config():
         with open(release_config_json) as data:
             config.release_config.update(json.load(data))
 
-    web_index = 'web/index.html'
-    if config.gmapkey and os.path.isfile(web_index):
-        find_url = 'https:\/\/maps.googleapis.com\/maps\/api\/js\?key=\S*'
-        replace_url = "https://maps.googleapis.com/maps/api/js?key=%s&callback=initMap\""
-        #Someone make this pretty! (Efficient)
-        with open(web_index, "r+") as sources: # r+ is read + write
-            lines = sources.readlines()
-            for line in lines:
-                sources.write(re.sub(r"%s" % find_url, replace_url % config.gmapkey, line))
-
     if config.evolve_all:
         config.evolve_all = [str(pokemon_name) for pokemon_name in config.evolve_all.split(',')]
 
