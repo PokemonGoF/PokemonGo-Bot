@@ -34,7 +34,7 @@ class PokemonCatchWorker(object):
                 if 'status' in response_dict['responses']['ENCOUNTER']:
                     if response_dict['responses']['ENCOUNTER']['status'] is 7:
                         logger.log('[x] Pokemon Bag is full!', 'red')
-                        return PokmeonCatchWorker.BAG_FULL
+                        return PokemonCatchWorker.BAG_FULL
 
                     if response_dict['responses']['ENCOUNTER']['status'] is 1:
                         cp = 0
