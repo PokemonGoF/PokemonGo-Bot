@@ -272,6 +272,7 @@ If using multiple usernames format like this:
  * Grace
  * Calcyfer
  * asaf400
+ * ChrisStory
 
 -------
 ## Credits
