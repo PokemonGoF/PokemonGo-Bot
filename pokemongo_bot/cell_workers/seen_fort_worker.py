@@ -90,7 +90,7 @@ class SeenFortWorker(object):
                                 logger.log("[+] Recycling failed!", 'red')
                 else:
                     logger.log("[#] Nothing found.", 'yellow')
-
+                self.update_inventory()
                 pokestop_cooldown = spin_details.get(
                     'cooldown_complete_timestamp_ms')
                 if pokestop_cooldown:
@@ -133,6 +133,30 @@ class SeenFortWorker(object):
         sleep(8)
         return 0
 
+    def update_inventory(self):
+        self.api.get_inventory()
+        response = self.api.call()
+        self.inventory = list()
+        if 'responses' in response:
+            if 'GET_INVENTORY' in response['responses']:
+                if 'inventory_delta' in response['responses']['GET_INVENTORY']:
+                    if 'inventory_items' in response['responses'][
+                            'GET_INVENTORY']['inventory_delta']:
+                        for item in response['responses']['GET_INVENTORY'][
+                                'inventory_delta']['inventory_items']:
+                            if not 'inventory_item_data' in item:
+                                continue
+                            if not 'item' in item['inventory_item_data']:
+                                continue
+                            if not 'item_id' in item['inventory_item_data'][
+                                    'item']:
+                                continue
+                            if not 'count' in item['inventory_item_data'][
+                                    'item']:
+                                continue
+                            self.inventory.append(item['inventory_item_data'][
+                                'item'])
+                                
     @staticmethod
     def closest_fort(current_lat, current_long, forts):
         print x
