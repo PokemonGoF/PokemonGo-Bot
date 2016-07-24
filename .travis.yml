@@ -9,5 +9,7 @@ addons:
    - python-protobuf
 install:
   - pip install -r requirements.txt
-  - pip install pylint
-script: "pylint **/*.py"
+#  - pip install pylint
+script:
+#  - "pylint **/*.py"
+  - "python -m compileall ."
