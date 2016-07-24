@@ -3,12 +3,15 @@ html, body {
 	margin: 0;
 	padding: 0;
 }
+.trainer_card {
+	display: none;
+}
 #map {
 	height: 100%;
 }
 #menu {
 	position: fixed;
-	right: 10px;
+	right: 3em;
 	top: 10px;
 	z-index: 5;
 	height: auto;
