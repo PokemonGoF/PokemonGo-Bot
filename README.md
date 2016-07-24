@@ -56,7 +56,7 @@ No PR on stable/master branch to keep things easier.
  * Pokemon catch filter (In Testing, Document contribute needed)
  * Google Map API key setup (Readme update needed)
  * Show all objects on map (In Testing)
- * Evolve pokemons (Code in, Need input, In Testing)
+ * Evolve pokemon (Code in, Need input, In Testing)
 
 ## TODO List
 

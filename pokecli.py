@@ -135,13 +135,13 @@ def init_config():
 
     parser.add_argument("-ev",
                         "--evolve_all",
-                        help="Bot will start by attempting to evolve all pokemons. Great after popping a lucky egg!",
+                        help="Bot will start by attempting to evolve all pokemon. Great after popping a lucky egg!",
                         type=bool,
                         default=False)
 
     parser.add_argument("-ec",
                         "--evolve_captured",
-                        help="Bot will attempt to evolve all the pokemons captured!",
+                        help="Bot will attempt to evolve all the pokemon captured!",
                         type=bool,
                         default=False)
 

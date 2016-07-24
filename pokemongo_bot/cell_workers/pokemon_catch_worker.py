@@ -161,7 +161,7 @@ class PokemonCatchWorker(object):
                                             Set(id_list2) - Set(id_list1))
                                         if len(pokemon_to_transfer) == 0:
                                             raise RuntimeError(
-                                                'Trying to transfer 0 pokemons!')
+                                                'Trying to transfer 0 pokemon!')
                                         self.transfer_pokemon(
                                             pokemon_to_transfer[0])
                                         logger.log(

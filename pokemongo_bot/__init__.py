@@ -38,7 +38,7 @@ class PokemonGoBot(object):
     def work_on_cell(self, cell, position, include_fort_on_path):
         if self.config.evolve_all:
             # Run evolve all once. Flip the bit.
-            print('[#] Attempting to evolve all pokemons ...')
+            print('[#] Attempting to evolve all pokemon ...')
             self.config.evolve_all = False
             worker = EvolveAllWorker(self)
             worker.work()
