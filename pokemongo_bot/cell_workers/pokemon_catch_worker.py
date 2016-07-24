@@ -212,50 +212,76 @@ class PokemonCatchWorker(object):
         return id_list
 
     def should_release_pokemon(self, pokemon_name, cp, iv, response_dict):
-        release_config = self._get_release_config_for(pokemon_name)
-        cp_iv_logic = release_config.get('cp_iv_logic')
-        if not cp_iv_logic:
-            cp_iv_logic = self._get_release_config_for('any').get('cp_iv_logic', 'and')
+        if self._always_capture_exception_for(pokemon_name):
+            return False
+        else:
+            release_config = self._get_release_config_for(pokemon_name)
+            cp_iv_logic = release_config.get('cp_iv_logic')
+            if not cp_iv_logic:
+                cp_iv_logic = self._get_release_config_for('any').get('cp_iv_logic', 'and')
 
-        release_results = {
-            'cp':               False,
-            'iv':               False,
-        }
+            release_results = {
+                'cp':               False,
+                'iv':               False,
+            }
 
-        min_cp = 0
-        min_iv = 0
+            min_cp = 0
+            min_iv = 0
 
-        if release_config.get('release_under_cp'):
-            min_cp = release_config['release_under_cp']
-            if cp < min_cp:
-                release_results['cp'] = True
+            if release_config.get('release_under_cp'):
+                min_cp = release_config['release_under_cp']
+                if cp < min_cp:
+                    release_results['cp'] = True
 
-        if release_config.get('release_under_iv'):
-            min_iv = release_config['release_under_iv']
-            if iv < min_iv:
-                release_results['iv'] = True
+            if release_config.get('release_under_iv'):
+                min_iv = release_config['release_under_iv']
+                if iv < min_iv:
+                    release_results['iv'] = True
 
-        if release_config.get('always_release'):
-            return True
+            if release_config.get('always_release'):
+                return True
 
-        logic_to_function = {
-            'or': lambda x, y: x or y,
-            'and': lambda x, y: x and y
-        }
+            logic_to_function = {
+                'or': lambda x, y: x or y,
+                'and': lambda x, y: x and y
+            }
 
-        logger.log(
-            "[x] Release config for {}: CP {} {} IV {}".format(
-                pokemon_name,
-                min_cp,
-                cp_iv_logic,
-                min_iv
-            ), 'yellow'
-        )
+            logger.log(
+                "[x] Release config for {}: CP {} {} IV {}".format(
+                    pokemon_name,
+                    min_cp,
+                    cp_iv_logic,
+                    min_iv
+                ), 'yellow'
+            )
 
-        return logic_to_function[cp_iv_logic](*release_results.values())
+            return logic_to_function[cp_iv_logic](*release_results.values())
 
     def _get_release_config_for(self, pokemon):
         release_config = self.config.release_config.get(pokemon)
         if not release_config:
             release_config = self.config.release_config['any']
         return release_config
+
+    def _get_exceptions(self):
+        exceptions = self.config.release_config.get('exceptions')
+        if not exceptions:
+            return None
+        return exceptions
+
+    def _get_always_capture_list(self):
+        exceptions = self._get_exceptions()
+        always_capture_list = exceptions['always_capture']
+        if not always_capture_list:
+            return []
+        return always_capture_list
+
+    def _always_capture_exception_for(self, pokemon_name):
+        always_capture_list = self._get_always_capture_list()
+        if not always_capture_list:
+            return False
+        else:
+            for pokemon in always_capture_list:
+                if pokemon_name == str(pokemon):
+                    return True
+        return False
