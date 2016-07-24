@@ -79,8 +79,7 @@ class PokemonGoBot(object):
 
                 # Sort all by distance from current pos- eventually this should
                 # build graph & A* it
-                forts.sort(key=lambda x: distance(self.position[
-                                                      0], self.position[1], x['latitude'], x['longitude']))
+                forts.sort(key=lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
                 for fort in forts:
                     worker = MoveToFortWorker(fort, self)
                     worker.work()
@@ -203,8 +202,7 @@ class PokemonGoBot(object):
         response = self.api.call()
         self.inventory = list()
         if 'responses' in response and 'GET_INVENTORY' in response['responses'] and 'inventory_delta' in \
-                response['responses'][
-                    'GET_INVENTORY'] and 'inventory_items' in \
+                response['responses']['GET_INVENTORY'] and 'inventory_items' in \
                 response['responses']['GET_INVENTORY']['inventory_delta']:
             for item in response['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
                 if 'inventory_item_data' not in item:
@@ -281,8 +279,7 @@ class PokemonGoBot(object):
                 #
                 # save location flag used to pull the last known location from
                 # the location.json
-                with open('data/last-location-%s.json' %
-                                  (self.config.username)) as f:
+                with open('data/last-location-%s.json' % self.config.username) as f:
                     location_json = json.load(f)
 
                     self.position = (location_json['lat'],
@@ -407,42 +404,39 @@ class PokemonGoBot(object):
         self.api.get_inventory()
         response_dict = self.api.call()
         if 'responses' in response_dict:
-            if 'GET_INVENTORY' in response_dict['responses']:
-                if 'inventory_delta' in response_dict['responses']['GET_INVENTORY']:
-                    if 'inventory_items' in response_dict['responses']['GET_INVENTORY']['inventory_delta']:
-                        pokecount = 0
-                        itemcount = 1
-                        for item in response_dict['responses'][
-                            'GET_INVENTORY']['inventory_delta'][
-                            'inventory_items']:
-                            # print('item {}'.format(item))
-                            if 'inventory_item_data' in item:
-                                if 'player_stats' in item['inventory_item_data']:
-                                    playerdata = item['inventory_item_data']['player_stats']
+            if 'GET_INVENTORY' in response_dict['responses'] and \
+                    'inventory_delta' in response_dict['responses']['GET_INVENTORY'] and \
+                    'inventory_items' in response_dict['responses']['GET_INVENTORY']['inventory_delta']:
+                pokecount = 0
+                itemcount = 1
+                for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
+                    # print('item {}'.format(item))
+                    if 'inventory_item_data' in item and 'player_stats' in item['inventory_item_data']:
+                        playerdata = item['inventory_item_data']['player_stats']
 
-                                    nextlvlxp = (
-                                        int(playerdata.get('next_level_xp', 0)) -
-                                        int(playerdata.get('experience', 0)))
+                        nextlvlxp = (
+                            int(playerdata.get('next_level_xp', 0)) -
+                            int(playerdata.get('experience', 0)))
 
-                                    if 'level' in playerdata:
-                                        logger.log(
-                                            '[#] -- Level: {level}'.format(
-                                                **playerdata))
+                        if 'level' in playerdata:
+                            logger.log(
+                                '[#] -- Level: {level}'.format(
+                                    **playerdata))
 
-                                    if 'experience' in playerdata:
-                                        logger.log(
-                                            '[#] -- Experience: {experience}'.format(
-                                                **playerdata))
-                                        logger.log(
-                                            '[#] -- Experience until next level: {}'.format(
-                                                nextlvlxp))
+                        if 'experience' in playerdata:
+                            logger.log(
+                                '[#] -- Experience: {experience}'.format(
+                                    **playerdata))
+                            logger.log(
+                                '[#] -- Experience until next level: {}'.format(
+                                    nextlvlxp))
 
-                                    if 'pokemons_captured' in playerdata:
-                                        logger.log(
-                                            '[#] -- Pokemon Captured: {pokemons_captured}'.format(
-                                                **playerdata))
+                        if 'pokemons_captured' in playerdata:
+                            logger.log(
+                                '[#] -- Pokemon Captured: {pokemons_captured}'.format(
+                                    **playerdata))
 
-                                    if 'poke_stop_visits' in playerdata:
-                                        logger.log(
-                                            '[#] -- Pokestops Visited: {poke_stop_visits}'.format(
-                                                **playerdata))
+                        if 'poke_stop_visits' in playerdata:
+                            logger.log(
+                                '[#] -- Pokestops Visited: {poke_stop_visits}'.format(
+                                    **playerdata))
