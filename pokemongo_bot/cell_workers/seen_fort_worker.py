@@ -140,7 +140,7 @@ class SeenFortWorker(object):
                         format_time((pokestop_cooldown / 1000) -
                                     seconds_since_epoch)))
             elif spin_details['result'] == 4:
-                print_red("[#] Inventory is full, switching to catch mode...")
+                logger.log("[#] Inventory is full, switching to catch mode...", "red")
                 self.config.mode = 'poke'
 
             if 'chain_hack_sequence_number' in response_dict['responses'][
@@ -149,7 +149,7 @@ class SeenFortWorker(object):
                 return response_dict['responses']['FORT_SEARCH'][
                     'chain_hack_sequence_number']
             else:
-                print_yellow('[#] may search too often, lets have a rest')
+                logger.log('[#] may search too often, lets have a rest', 'yellow')
                 return 11
         sleep(8)
         return 0

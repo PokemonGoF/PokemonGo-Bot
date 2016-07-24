@@ -239,7 +239,7 @@ class PokemonGoBot(object):
                     if self.config.initial_transfer and group_cp[x] > self.config.initial_transfer:
                         continue
 
-                    print('[x] Transferring {} with CP {}'.format(
+                    logger.log('[x] Transferring {} with CP {}'.format(
                         self.pokemon_list[id - 1]['Name'], group_cp[x]))
                     self.api.release_pokemon(
                         pokemon_id=pokemon_groups[id][group_cp[x]])
