@@ -366,7 +366,7 @@ function buildMenu() {
     document.getElementById('subtitle').innerHTML = "Items in Bag";
     out = '<div class="row items"><div class="col s12"><h5>' + users[0] + '</h5>';
     for (var i = 0; i < bagItems.length; i++) {
-      out += '<table><tr><td><img src="/image/items/' + bagItems[i].inventory_item_data.item.item_id + '.png" class="item_img"></td><td>Item: ' + itemsArray[bagItems[i].inventory_item_data.item.pokemon_id] +
+      out += '<table><tr><td><img src="image/items/' + bagItems[i].inventory_item_data.item.item_id + '.png" class="item_img"></td><td>Item: ' + itemsArray[bagItems[i].inventory_item_data.item.pokemon_id] +
       '<br>Count: ' + bagItems[i].inventory_item_data.item.count + '</td>';
     }
     out += '</tr></table></div></div>';
