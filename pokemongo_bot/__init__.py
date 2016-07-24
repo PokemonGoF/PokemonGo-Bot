@@ -224,7 +224,7 @@ class PokemonGoBot(object):
         logger.log('[x] Initial Transfer.')
 
         logger.log(
-        '[x] Preparing to transfer all Pokemon duplicates, keeping the highest CP of each one type.')
+        '[x] Preparing to transfer all duplicate Pokemon, keeping the highest CP of each type.')
 
         logger.log('[x] Will NOT transfer anything above CP {}'.format(
             self.config.initial_transfer))
