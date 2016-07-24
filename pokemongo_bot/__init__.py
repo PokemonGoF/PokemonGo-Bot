@@ -51,8 +51,8 @@ class PokemonGoBot(object):
                 with open('web/catchable-%s.json' %
                           (self.config.username), 'w') as outfile:
                     json.dump(pokemon, outfile)
-                worker = PokemonCatchWorker(pokemon, self)
-                if worker.work() == -1:
+
+                if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
                     break
                 with open('web/catchable-%s.json' %
                           (self.config.username), 'w') as outfile:
@@ -65,8 +65,7 @@ class PokemonGoBot(object):
                 key=
                 lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
             for pokemon in cell['wild_pokemons']:
-                worker = PokemonCatchWorker(pokemon, self)
-                if worker.work() == -1:
+                if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
                     break
         if (self.config.mode == "all" or
                 self.config.mode == "farm") and include_fort_on_path:
@@ -176,6 +175,16 @@ class PokemonGoBot(object):
 
         logger.log('[#]')
         self.update_inventory()
+
+    def catch_pokemon(self, pokemon):
+        worker = PokemonCatchWorker(pokemon, self)
+        return_value = worker.work()
+
+        if return_value == PokemonCatchWorker.BAG_FULL:
+            worker = InitialTransferWorker(self)
+            worker.work()
+
+        return return_value
 
     def drop_item(self, item_id, count):
         self.api.recycle_inventory_item(item_id=item_id, count=count)
