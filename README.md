@@ -39,27 +39,26 @@ No PR on stable/master branch to keep things easier.
  * Catch Pokemon
  * Release low cp pokemon
  * Walking as you
+ * Limit the step to farm specific area for pokestops
  * Use the ball you have to catch, don't if you don't have
  * Rudimentary IV Functionality filter
  * Auto switch mode(Full of item then catch, no ball useable then farm)
  * Ignore certain pokemon filter
  * Use superior ball types when necessary
  * When out of normal pokeballs, use the next type of ball unless there are less than 10 of that type, in which case switch to farm mode
+ * Drop items when bag is full (In Testing, Document contribute needed)
+ * Pokemon catch filter (In Testing, Document contribute needed)
+ * Google Map API key setup (Readme update needed)
+ * Show all objects on map (In Testing)
+ * Evolve pokemons (Code in, Need input, In Testing)
 
 ## TODO List
 
 - [ ] Standalone Desktop APP
-- [x] Google Map API key setup (Readme update needed)
-- [x] Show all objects on map (In Testing)
-- [x] Limit the step to farm specific area for pokestops
-- [ ] Pokemon transfer filter
-- [x] Drop items when bag is full (In Testing)
-- [x] Pokemon catch filter
+- [ ] Pokemon transfer filter ?? This already done, right?
 - [ ] Hatch eggs
 - [ ] Incubate eggs
-- [x] Evolve pokemons (Code in, Need input, In Testing)
 - [ ] Use candy
-- [x] Code refactor
 
 ## Installation
 
@@ -296,8 +295,9 @@ If using multiple usernames format like this:
  * Calcyfer
  * asaf400
  * guyz
+ * DavidK1m
  * budi-khoirudin
-
+ 
 -------
 ## Credits
 - [tejado](https://github.com/tejado) many thanks for the API
