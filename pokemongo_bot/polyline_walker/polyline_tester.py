@@ -1,11 +1,9 @@
-import requests
 import time
 import haversine
 import polyline
 from math import ceil
 from polyline_walker import PolylineWalker
-URL = 'https://maps.googleapis.com/maps/api/directions/json?origin=Poststrasse+20,Zug,CH&destination=Guggiweg+7,Zug,CH&mode=walking'
-a = PolylineWalker([x['polyline']['points'] for x in  requests.get(URL).json()['routes'][0]['legs'][0]['steps']], 100)
+a = PolylineWalker('Poststrasse+20,Zug,CH', 'Guggiweg+7,Zug,CH', 100)
 print('Walking polyline: ', a.polyline)
 print('Encoded level: ','B'*len(a.points))
 print('Initialted with speed: ', a.speed, 'm/s')
