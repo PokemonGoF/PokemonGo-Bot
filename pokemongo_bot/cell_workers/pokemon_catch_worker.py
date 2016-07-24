@@ -96,14 +96,10 @@ class PokemonCatchWorker(object):
                                 self.config.mode = 'farm'
                                 return -1
 
-                            print('[x] Using {}...'.format(
-                                self.item_list[str(pokeball)]))
-
                             balls_stock[pokeball] = balls_stock[pokeball] - 1
 
-                            print('[#] {} {}s remaining'.format(
-                                balls_stock[pokeball],
-                                self.item_list[str(pokeball)]))
+                            print('[x] Using {}... ({} left!)'.format(
+                                self.item_list[str(pokeball)], balls_stock[pokeball]))
 
                             id_list1 = self.count_pokemon_inventory()
                             self.api.catch_pokemon(encounter_id=encounter_id,
