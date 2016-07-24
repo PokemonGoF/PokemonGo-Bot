@@ -84,8 +84,11 @@ No PR on stable/master branch to keep things easier.
 - Windows: Download protobuf 3.0: [here](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip) and unzip `bin/protoc.exe` into a folder in your PATH.
 - Linux: `apt-get install python-protobuf`
 
+### Note on branch
+Please keep in mind that master is not always up to date whereas 'dev' is. In the installation note below change `master` to `dev` if you want to get the latest version.
 
 ### Installation Linux
+(change master to dev for the newer version)
 
 ```
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
@@ -96,6 +99,7 @@ $ git submodule update
 ```
 
 ### Installation Mac
+(change master to dev for the newer version)
 
 ```
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
@@ -108,6 +112,28 @@ $ git submodule update
 ```
 
 ### Installation Windows
+
+(change master to dev for the newer version)
+
+On Windows, you will need to install PyYaml through the installer and not through requirements.txt.
+
+##### Windows vista, 7, 8:
+Go to : http://pyyaml.org/wiki/PyYAML , download the right version for your pc and install it
+
+##### Windows 10:
+Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl   
+(If running 64-bit python or if you get a 'not a supported wheel on this platform' error,
+download the 64 bit version instead: PyYAML-3.11-cp27-cp27m-win_amd64.whl )
+
+```
+$ cd download-directory
+$ pip install PyYAML-3.11-cp27-cp27m-win32.whl
+// if you needed to download the 64-bit version)
+// (replace PyYAML-3.11-cp27-cp27m-win32.whl with PyYAML-3.11-cp27-cp27m-win_amd64.whl
+```
+
+After this, just do :
+
 ```
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
 $ cd PokemonGo-Bot  
@@ -116,20 +142,6 @@ $ git submodule init
 $ git submodule update
 ```
 
-
-###### Windows Note
-On Windows, you will need to install PyYaml through the  [installer](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt.
-
-Windows 10:
-    Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl   
-    (If running 64-bit python or if you get a 'not a supported wheel on this platform' error,
-    download the 64 bit version instead: PyYAML-3.11-cp27-cp27m-win_amd64.whl )
-```
-$ cd download-directory
-$ pip install PyYAML-3.11-cp27-cp27m-win32.whl
-// (replace PyYAML-3.11-cp27-cp27m-win32.whl with PyYAML-3.11-cp27-cp27m-win_amd64.whl
-// if you needed to download the 64-bit version)
-```
 ### Develop PokemonGo-Bot
 
 ```
@@ -155,50 +167,33 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 5. Copy the API key that appears.
 6. After the code done, will update here how to replace.
 
--### Python bug
--If you encounter problems with the module ssl and it function `_create_unverified_context`. Just comment it. (Solution available in Python 2.7.11)
--
- ## Usage
--   (maybe deprecated)
-    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-lc] [-m] [-w] [--distance_unit] [--initial-transfer] [--maxsteps] [-iv] [-d] [-t]
+### Python possible bug
+If you encounter problems with the module `ssl` and it function `_create_unverified_context`. Just comment it. (Solution available in Python 2.7.11)
+To do it follow instruction below :
+- edit `pokecli.py`
+- put `#` before `if` (line 43) and `ssl` (line 44)
+- save it
 
-    optional arguments:
-      -h, --help                                    show this help message and exit
-      -a AUTH_SERVICE, --auth_service AUTH_SERVICE  Auth Service ('ptc' or 'google')
-      -u USERNAME, --username USERNAME              Username
-      -p PASSWORD, --password PASSWORD              Password
-      -l LOCATION, --location LOCATION              Location (Address or 'xx.yyyy,zz.ttttt')
-      -lc, --location_cache                         Bot will start at last known location
-      -m MODE, --mode MODE                          Set farming Mode for the bot ('all', 'poke', 'farm')
-      -w SPEED,  --walk SPEED                       Walk instead of teleport with given speed (meters per second max 4.16 because of walking end on 15km/h)
-      -du, --distance_unit UNIT                     Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
-      -it, --initial_transfer                       Transfer all duplicate pokemon with same ID on bot start, except pokemon with highest CP. Accepts a number to prevent transferring pokemon with a CP above the provided value.  Default is 0 (aka transfer none).
-      -ms, --max_steps MAX_STEP                     Set the steps around your initial location (DEFAULT 5 mean 25 cells around your location)
-      -iv IV, --pokemon_potential                   Set the ratio for the IV values to transfer (DEFAULT 0.4 eg. 0.4 will transfer a pokemon with IV 0.3)
-      -if LIST, --item_filter LIST                  Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, SYNTAX FOR CONFIG.JSON : ["101","102","103","104"] to recycle potions when collected, SYNTAX FOR CONSOLE ARGUMENT : "101,102,103,104" 
-      -d, --debug                                   Debug Mode
-      -t, --test                                    Only parse the specified location
-      
-## Usage with config (up to date)
-   1/ copy `config.json.example` to `config.json` and `release_config.json.example` to `release_config.json`.
-   2/ Edit those files with your preference (required for config.json, optional for release_config.json)
-   
-     usage: python pokecli.py (windows)
+Please keep in mind that this fix is necessary only if your python version don't have the `_create_unverified_context` argument in ssl module.
 
+## Update
+To update your project do: `git pull` in the project folder
 
-### Command Line Example
-    Pokemon Trainer Club (PTC) account:
-    $ python2 pokecli.py -a ptc -u tejado -p 1234 --location "New York, Washington Square"
-    Google Account:
-    $ python2 pokecli.py -a google -u tejado -p 1234 --location "New York, Washington Square"
+## Usage (up to date)
+	1/ copy `config.json.example` to `config.json` and `release_config.json.example` to `release_config.json`.
+	2/ Edit `config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (others keys are optional, check `Advance Configuration` below)
 
-### Advance Releasing Configuration
-    To edit the pokemon release configuration, copy file ``release_config.json.example`` and rename it to ``release_config.json``
-
-    Edit this file however you like, but keep in mind:
-
-    1. Pokemon name is always capitalize and case-sensitive
-    2. Be careful with the ``any`` configuration!
+## Advance Configuration
+- `max_steps` :
+- `mode` :
+- `walk` :
+- `debug` : Let the default value here except if you are developper
+- `test` : Let the default value here except if you are developper
+- `initial_transfer` : Set this to 1 if you want to transfer pokemon
+- `location_cache` : 
+- `distance_unit` :
+- `item_filter` :
+- `evolve_all` : Set to true to evolve pokemon if possible
 
 ### Evolve All Configuration
     By setting the `evolve_all` attribute in config.json, you can instruct the bot to automatically
@@ -217,8 +212,6 @@ This project uses Google Maps. There's one map coupled with the project, but as 
     3. Not setting evolve_all or having any other string would not evolve any pokemons on startup.
 
 ## How to run with Docker
-
-
 
 ## How to add/discover new API
   The example is [here](https://github.com/PokemonGoF/PokemonGo-Bot/commit/46e2352ce9f349cc127a408959679282f9999585)  
@@ -347,6 +340,7 @@ If using multiple usernames format like this:
  * budi-khoirudin
  * riberod07
  * th3w4y
+ * Leaklessgfy
  
 -------
 ## Credits
