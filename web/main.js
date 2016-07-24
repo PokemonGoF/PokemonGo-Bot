@@ -1,12 +1,5 @@
 var map;
 var user_data = {};
-var inventory = {};
-var playerInfo = {};
-var pokedex = {};
-var bagPokemon = {};
-var bagItems = {};
-var bagCandy = {};
-var emptyDex = [];
 var pokemonArray = {};
 var forts = [];
 var info_windows = [];
@@ -15,7 +8,6 @@ var user_index;
 var trainerSex = ["m","f"];
 var numTrainers = [177, 109];
 var menu;
-var stats = {};
 var teams = ["TeamLess", "Mystic", "Valor", "Instinct"];
 var out;
 var out1;
@@ -71,9 +63,12 @@ function initMap() {
     console.log('Loaded pokemon data..');
     pokemonArray = data;
   }, errorFunc, 'pokemonData');
+  var trainer_options = "";
   for (var i = 0; i < users.length; i++) {
     user_data[users[i]] = {};
+    trainer_options += "<option value=\"" + i + "\">" + users[i] + "</option>";
   }
+  $("#trainer_users").html(trainer_options);
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 50.0830986, lng: 6.7613762},
     zoom: 8
@@ -84,10 +79,8 @@ function initMap() {
   setTimeout(function(){
     placeTrainer();
     addCatchable();
-    for (menu = 1; menu < 5; menu++) {
-      buildMenu()
-    }
     setTimeout(function(){
+      setInterval(addInventory, 1000);
       setInterval(updateTrainer, 1000);
       setInterval(addCatchable, 1000);
     }, 5000);
@@ -106,62 +99,19 @@ $('#imageType').change(function(){
     if (this.checked) { imageExt = ".gif" } else { imageExt = ".png"; }
 });
 
-$('#tInfo').click(function(){
-    if (menu == undefined || menu == 1) {
-      $("#submenu").toggle();
-    }
-    if (menu != 1 && $("#submenu").is(':hidden')) {
-      $("#submenu").toggle();
-    }
-    menu = 1;
-    buildMenu();
-});
-
-$('#tItems').click(function(){
-    if (menu == undefined || menu == 2) {
-      $("#submenu").toggle();
-    }
-    if (menu != 2 && $("#submenu").is(':hidden')) {
-      $("#submenu").toggle();
-    }
-    menu = 2;
-    buildMenu();
-});
-
-$('#tPokemon').click(function(){
-    if (menu == undefined || menu == 3) {
-      $("#submenu").toggle();
-    }
-    if (menu != 3 && $("#submenu").is(':hidden')) {
-      $("#submenu").toggle();
-    }
-    menu = 3;
-    buildMenu();
-});
-
-$('#tPokedex').click(function(){
-    if (menu == undefined || menu == 4) {
-      $("#submenu").toggle();
-    }
-    if (menu != 4 && $("#submenu").is(':hidden')) {
-      $("#submenu").toggle();
-    }
-    menu = 4;
-    buildMenu();
-});
-
 
 var errorFunc = function(xhr) {
   console.error(xhr);
 };
 
 var invSuccess = function(data, user_index) {
-  stats = filter(data, 'player_stats');
-  bagItems = filter(data, 'item')
-  bagPokemon = filter(data, 'pokemon_data');
-  pokedex = filter(data, 'pokedex_entry');
-  bagCandy = filter(data, 'pokemon_family')
-}
+  user_data[users[user_index]].player_stats = filter(data, 'player_stats');
+  user_data[users[user_index]].bag_items = filter(data, 'item');
+  user_data[users[user_index]].bag_pokemon = filter(data, 'pokemon_data');
+  user_data[users[user_index]].pokedex = filter(data, 'pokedex_entry');
+  user_data[users[user_index]].bag_candy = filter(data, 'pokemon_family');
+  $(".trainer_card").show();
+};
 
 var trainerFunc = function(data, user_index) {
   for (var i = 0; i < data.cells.length; i++) {
@@ -341,68 +291,139 @@ $(document).ready(function(){
   $('.tooltipped').tooltip({delay: 50});
 });
 
-function buildMenu() {
-  addInventory();
-  if (menu == 1) {
-    document.getElementById('subtitle').innerHTML = "Trainer Info";
-    out = '';
-    for (var i = 0; i < stats.length; i++) {
-      out += '<div class="row"><div class="col s12"><h5>' + users[0] + '</h5><br>Level: ' + stats[i].inventory_item_data.player_stats.level +
-      '<br>Exp: ' + stats[i].inventory_item_data.player_stats.experience +
-      '<br>Exp to Lvl ' + (parseInt(stats[i].inventory_item_data.player_stats.level) + 1) + ': ' + (parseInt(stats[i].inventory_item_data.player_stats.next_level_xp) - stats[i].inventory_item_data.player_stats.experience) +
-      '<br>Pokemon Encountered: ' + stats[i].inventory_item_data.player_stats.pokemons_encountered +
-      '<br>Pokeballs Thrown: ' + stats[i].inventory_item_data.player_stats.pokeballs_thrown +
-      '<br>Pokemon Caught: ' + stats[i].inventory_item_data.player_stats.pokemons_captured +
-      '<br>Small Ratata Caught: ' + stats[i].inventory_item_data.player_stats.small_rattata_caught +
-      '<br>Pokemon Evolved: ' + stats[i].inventory_item_data.player_stats.evolutions +
-      '<br>Eggs Hatched: ' + stats[i].inventory_item_data.player_stats.eggs_hatched +
-      '<br>Unique Pokedex Entries: ' + stats[i].inventory_item_data.player_stats.unique_pokedex_entries +
-      '<br>PokeStops Visited: ' + stats[i].inventory_item_data.player_stats.poke_stop_visits +
-      '<br>Kilometers Walked: ' + parseFloat(stats[i].inventory_item_data.player_stats.km_walked).toFixed(2) + '</div></div>';
+var sideMenu = {
+  subTitle: 'Window Title',
+  subTitleEl: $('#submenu .card-title'),
+  sideContentEl: $('#subcontent'),
+  submenuContainerEl: $('#submenu'),
+  trainerStatsEl: $('#submenu .trainer_info'),
+  selectedUser: 0,
+  selectedTab: false,
+  hideAllSubs: function() {
+    sideMenu.trainerStatsEl.hide();
+    $("#unfinished_toggles").hide();
+    sideMenu.selectedTab = false;
+    sideMenu.submenuContainerEl.hide();
+  },
+  toggleWindow: function(tab) {
+    if (sideMenu.submenuContainerEl.is(':visible') && sideMenu.selectedTab == tab) {
+      // window already visible, hide it.
+      sideMenu.hideAllSubs();
+    } else {
+      // window isn't visible, show it.
+      sideMenu.hideAllSubs();
+      if (tab == 'stats') {
+        sideMenu.showStats();
+      } else if (tab == 'items') {
+        sideMenu.showItems();
+        $("#unfinished_toggles").show();
+      } else if (tab == 'pokemon') {
+        sideMenu.showPokemon();
+        $("#unfinished_toggles").show();
+      } else if (tab == 'pokedex') {
+        sideMenu.showPokedex();
+        $("#unfinished_toggles").show();
+      }
+      sideMenu.submenuContainerEl.show();
     }
-    document.getElementById('subcontent').innerHTML = out;
-  }
-  if (menu == 2) {
-    document.getElementById('subtitle').innerHTML = "Items in Bag";
-    out = '<div class="row items"><div class="col s12"><h5>' + users[0] + '</h5>';
-    for (var i = 0; i < bagItems.length; i++) {
-      out += '<table><tr><td><img src="/image/items/' + bagItems[i].inventory_item_data.item.item_id + '.png" class="item_img"></td><td>Item: ' + itemsArray[bagItems[i].inventory_item_data.item.pokemon_id] +
-      '<br>Count: ' + bagItems[i].inventory_item_data.item.count + '</td>';
+  },
+  showStats: function(e) {
+    sideMenu.subTitleEl.html('Trainer Info');
+    var trainer = user_data[users[sideMenu.selectedUser]];
+    var trainer_stats = trainer.player_stats[0];
+
+    $('.trainer_info .username').html(users[sideMenu.selectedUser]);
+    $('.trainer_info .level').html(trainer_stats.inventory_item_data.player_stats.level);
+    $('.trainer_info .experience').html(trainer_stats.inventory_item_data.player_stats.experience);
+    $('.trainer_info .exptolevel').html((parseInt(trainer_stats.inventory_item_data.player_stats.level) + 1) + ': ' + (parseInt(trainer_stats.inventory_item_data.player_stats.next_level_xp) - trainer_stats.inventory_item_data.player_stats.experience));
+    $('.trainer_info .pokemon_encountered').html(trainer_stats.inventory_item_data.player_stats.pokemons_encountered);
+    $('.trainer_info .pokeballs_thrown').html(trainer_stats.inventory_item_data.player_stats.pokeballs_thrown);
+    $('.trainer_info .pokemon_caught').html(trainer_stats.inventory_item_data.player_stats.pokemons_captured);
+    $('.trainer_info .small_ratata_caught').html(trainer_stats.inventory_item_data.player_stats.small_rattata_caught);
+    $('.trainer_info .pokemon_evolved').html(trainer_stats.inventory_item_data.player_stats.evolutions);
+    $('.trainer_info .eggs_hatched').html(trainer_stats.inventory_item_data.player_stats.eggs_hatched);
+    $('.trainer_info .unique_pokedex_entries').html(trainer_stats.inventory_item_data.player_stats.unique_pokedex_entries);
+    $('.trainer_info .pokestops_visited').html(trainer_stats.inventory_item_data.player_stats.poke_stop_visits);
+    $('.trainer_info .km_walked').html(parseFloat(trainer_stats.inventory_item_data.player_stats.km_walked).toFixed(2));
+    sideMenu.trainerStatsEl.show();
+    sideMenu.selectedTab = 'stats';
+  },
+  showItems: function(e) {
+    sideMenu.subTitleEl.html('Items in Bag');
+    var trainer = user_data[users[sideMenu.selectedUser]];
+    var trainer_bag_items = trainer.bag_items;
+
+    out = '<div class="row items"><div class="col s12"><h5>' + users[sideMenu.selectedUser] + '</h5>';
+
+    for (var i = 0; i < trainer_bag_items.length; i++) {
+      out += '<table><tr><td><img src="/image/items/' + trainer_bag_items[i].inventory_item_data.item.item_id + '.png" class="item_img"></td><td>Item: ' + itemsArray[trainer_bag_items[i].inventory_item_data.item.item_id] +
+      '<br>Count: ' + trainer_bag_items[i].inventory_item_data.item.count + '</td>';
     }
     out += '</tr></table></div></div>';
-    document.getElementById('subcontent').innerHTML = out;
-  }
-  if (menu == 3) {
-    document.getElementById('subtitle').innerHTML = "Pokemon in Bag";
-    out = '<div class="row items"><div class="col s12"><h5>' + users[0] + '</h5><table>';
-    for (var i = 0; i < bagPokemon.length; i++) {
-      if (bagPokemon[i].inventory_item_data.pokemon_data.is_egg) {
-        pkmnNum = "???"
-        pkmnImage = "Egg.png"
-        pkmnName = "Egg"
+    $('#unfinished_toggles').html(out);
+    sideMenu.selectedTab = 'items';
+  },
+  showPokemon: function(e) {
+    sideMenu.subTitleEl.html('Pokemon in Bag');
+    var trainer = user_data[users[sideMenu.selectedUser]];
+    var trainer_pokemon = trainer.bag_pokemon;
+
+    out = '<div class="row items"><div class="col s12"><h5>' + users[sideMenu.selectedUser] + '</h5><table>';
+    for (var i = 0; i < trainer_pokemon.length; i++) {
+      if (trainer_pokemon[i].inventory_item_data.pokemon_data.is_egg) {
+        pkmnNum = "???";
+        pkmnImage = "Egg.png";
+        pkmnName = "Egg";
       } else {
-        pkmnNum = bagPokemon[i].inventory_item_data.pokemon_data.pokemon_id
-        pkmnImage = pad_with_zeroes(bagPokemon[i].inventory_item_data.pokemon_data.pokemon_id, 3) + '.png'
-        pkmnName = pokemonArray[pkmnNum-1].Name
+        pkmnNum = trainer_pokemon[i].inventory_item_data.pokemon_data.pokemon_id;
+        pkmnImage = pad_with_zeroes(trainer_pokemon[i].inventory_item_data.pokemon_data.pokemon_id, 3) + '.png';
+        pkmnName = pokemonArray[pkmnNum-1].Name;
       }
+      the_cp = trainer_pokemon[i].inventory_item_data.pokemon_data.cp ? trainer_pokemon[i].inventory_item_data.pokemon_data.cp : '???';
       out += '<tr><td><img src="/image/pokemon/' + pkmnImage + '" class="png_img"></td><td class="left-align">Name: ' + pkmnName +
-      '<br>Number: ' + pkmnNum + '</td></tr>';
+      '<br>Number: ' + pkmnNum + '<br>CP: ' + the_cp +'</td></tr>';
     }
     out += '</table></div></div>';
-    document.getElementById('subcontent').innerHTML = out;
-  }
-  if (menu == 4) {
-    document.getElementById('subtitle').innerHTML = "Pokedex";
-    out = '<div class="row items"><div class="col s12"><h5>' + users[0] + '</h5><table>';
+    $('#unfinished_toggles').html(out);
+    sideMenu.selectedTab = 'pokemon';
+  },
+  showPokedex: function(e) {
+    sideMenu.subTitleEl.html('Pokedex');
+    var trainer = user_data[users[sideMenu.selectedUser]];
+    var pokedex = trainer.pokedex;
+
+    out = '<div class="row items"><div class="col s12"><h5>' + users[sideMenu.selectedUser] + '</h5><table>';
     for (var i = 0; i < pokedex.length; i++) {
-      pkmnNum = pokedex[i].inventory_item_data.pokedex_entry.pokedex_entry_number
-      pkmnImage = pad_with_zeroes(pokedex[i].inventory_item_data.pokedex_entry.pokedex_entry_number, 3) + '.png'
-      pkmnName = pokemonArray[pkmnNum-1].Name
+      pkmnNum = pokedex[i].inventory_item_data.pokedex_entry.pokedex_entry_number;
+      pkmnImage = pad_with_zeroes(pokedex[i].inventory_item_data.pokedex_entry.pokedex_entry_number, 3) + '.png';
+      pkmnName = pokemonArray[pkmnNum-1].Name;
       out += '<tr><td><img src="/image/pokemon/' + pkmnImage + '" class="png_img"></td><td class="left-align">Name: ' + pkmnName +
-      '<br>Number: ' + pkmnNum + '<br>Times Encountered: ' + pokedex[i].inventory_item_data.pokedex_entry.times_encountered + 
+      '<br>Number: ' + pkmnNum + '<br>Times Encountered: ' + pokedex[i].inventory_item_data.pokedex_entry.times_encountered +
       '<br>Times Caught: ' + pokedex[i].inventory_item_data.pokedex_entry.times_captured + '</td></tr>';
     }
     out += '</table></div></div>';
-    document.getElementById('subcontent').innerHTML = out;
+    $('#unfinished_toggles').html(out);
+    sideMenu.selectedTab = 'pokedex';
   }
-}
+};
+
+$("#trainer_users").on('change', function(e) {
+  sideMenu.selectedUser = e.target.value;
+  sideMenu.hideAllSubs();
+});
+
+$('#tInfo').click(function() {
+  sideMenu.toggleWindow('stats');
+});
+
+$('#tItems').click(function(){
+  sideMenu.toggleWindow('items');
+});
+
+$('#tPokemon').click(function(){
+    sideMenu.toggleWindow('pokemon');
+});
+
+$('#tPokedex').click(function(){
+    sideMenu.toggleWindow('pokedex');
+});
