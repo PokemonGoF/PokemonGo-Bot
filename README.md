@@ -81,18 +81,18 @@ No PR on stable/master branch to keep things easier.
 ### Installation Linux
 
 ```
-$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
-$ cd PokemonGo-Bot  
+$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot
+$ cd PokemonGo-Bot
 $ pip install -r requirements.txt
 ```
 
 ### Installation Mac
 
 ```
-$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
-$ cd PokemonGo-Bot  
-$ virtualenv .  
-$ source bin/activate  
+$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot
+$ cd PokemonGo-Bot
+$ virtualenv .
+$ source bin/activate
 $ pip install -r requirements.txt
 ```
 
@@ -102,7 +102,7 @@ $ pip install -r requirements.txt
 On Windows, you will need to install PyYaml through the  [installer](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt.
 
 Windows 10:
-    Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl   
+    Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl
     (If running 64-bit python or if you get a 'not a supported wheel on this platform' error,
     download the 64 bit version instead: PyYAML-3.11-cp27-cp27m-win_amd64.whl )
 ```
@@ -114,11 +114,11 @@ $ pip install PyYAML-3.11-cp27-cp27m-win32.whl
 ### Develop PokemonGo-Bot
 
 ```
-$ git clone -b dev https://github.com/PokemonGoF/PokemonGo-Bot  
-$ cd PokemonGo-Bot  
-$ virtualenv .  
-$ source bin/activate  
-$ pip install -r requirements.txt  
+$ git clone -b dev https://github.com/PokemonGoF/PokemonGo-Bot
+$ cd PokemonGo-Bot
+$ virtualenv .
+$ source bin/activate
+$ pip install -r requirements.txt
 ```
 
 ### Google Maps API (in development)
@@ -149,7 +149,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -du, --distance_unit UNIT                     Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
       -it, --initial_transfer                       Transfer all duplicate pokemon with same ID on bot start, except pokemon with highest CP. Accepts a number to prevent transferring pokemon with a CP above the provided value.  Default is 0 (aka transfer none).
       -ms, --max_steps MAX_STEP                     Set the steps around your initial location (DEFAULT 5 mean 25 cells around your location)
-      -if LIST, --item_filter LIST                  Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, [\"101\",\"102\",\"103\",\"104\"] to recycle potions when collected)" 
+      -if LIST, --item_filter LIST                  Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, [\"101\",\"102\",\"103\",\"104\"] to recycle potions when collected)"
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
 
@@ -160,35 +160,35 @@ This project uses Google Maps. There's one map coupled with the project, but as 
     $ python2 pokecli.py -a google -u tejado -p 1234 --location "New York, Washington Square"
 
 ### Advance Releasing Configuration
-    To edit the pokemon release configuration, copy file ``release_config.json.example`` and rename it to ``release_config.json``
+    To edit the pokemon release configuration, edit the release_config key in ``config.json``.
 
-    Edit this file however you like, but keep in mind:
+    Keep in mind:
 
     1. Pokemon name is always capitalize and case-sensitive
     2. Be careful with the ``any`` configuration!
-    
+
 ## How to run with Docker
 
 
 
 ## How to add/discover new API
-  The example is [here](https://github.com/PokemonGoF/PokemonGo-Bot/commit/46e2352ce9f349cc127a408959679282f9999585)  
-    1. Check the type of your API request in   [POGOProtos](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/RequestType.proto) For example: RECYCLE_INVENTORY_ITEM  
+  The example is [here](https://github.com/PokemonGoF/PokemonGo-Bot/commit/46e2352ce9f349cc127a408959679282f9999585)
+    1. Check the type of your API request in   [POGOProtos](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/RequestType.proto) For example: RECYCLE_INVENTORY_ITEM
     2. Convert to the api call in pokemongo_bot/__init__.py,  RECYCLE_INVENTORY_ITEM change to self.api.recycle_inventory_item
         ```
         def drop_item(self,item_id,count):
             self.api.recycle_inventory_item(...............)
         ```
-    3. Where is the param list?  
+    3. Where is the param list?
         You need check this [Requests/Messages/RecycleInventoryItemMessage.proto](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/Messages/RecycleInventoryItemMessage.proto)
-    4. Then our final api call is  
+    4. Then our final api call is
         ```
         def drop_item(self,item_id,count):
             self.api.recycle_inventory_item(item_id=item_id,count=count)
             inventory_req = self.api.call()
             print(inventory_req)
-        ```  
-    5. You can now debug on the log to see if get what you need  
+        ```
+    5. You can now debug on the log to see if get what you need
 
 ## How to set up a simple webserver with nginx
 ### Nginx on Ubuntu 14.x, 16.x
@@ -255,15 +255,15 @@ ignore:
   - Zubat
 ```
 ### How do I use the map??
-You can either view the map via opening the html file, or by serving it with SimpleHTTPServer (runs on localhost:8000)  
-To use SimpleHTTPServer:  
+You can either view the map via opening the html file, or by serving it with SimpleHTTPServer (runs on localhost:8000)
+To use SimpleHTTPServer:
 ```$ python -m SimpleHTTPServer [port]```
 The default port is 8080, you can change that by giving a port number.
 Anything above port 1000 does not require root.
-You will need to set your username(s) in the userdata.js file before opening:  
+You will need to set your username(s) in the userdata.js file before opening:
 Copy userdata.js.example to userdata.js and edit with your favorite text editor.
 put your username in the quotes instead of "username"
-If using multiple usernames format like this:  
+If using multiple usernames format like this:
 ```var users = ["username1","username2"];```
 
 ---------

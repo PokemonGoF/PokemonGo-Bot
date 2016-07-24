@@ -147,15 +147,6 @@ class PokemonGoBot(object):
         # instantiate pgoapi
         self.api = PGoApi()
 
-        # check if the release_config file exists
-        try:
-            with open('release_config.json') as file:
-               pass
-        except:
-            # the file does not exist, warn the user and exit.
-            logger.log('[#] IMPORTANT: Rename and configure release_config.json.example for your Pokemon release logic first!', 'red')
-            exit(0)
-
         # provide player position on the earth
         self._set_starting_position()
 
