@@ -8,5 +8,14 @@
 		"release_under_cp": 0,
 		"release_under_iv": 0,
 		"cp_iv_logic": "or"
+	},
+	"exceptions": {
+		"always_capture": [
+			"Dragonite",
+			"Snorlax",
+			"Charmander",
+			"Squirtle",
+			"Bulbasaur"
+		]
 	}
 }
