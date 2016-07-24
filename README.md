@@ -85,7 +85,7 @@ No PR on stable/master branch to keep things easier.
 - Linux: `apt-get install python-protobuf`
 
 ### Note on branch
-Please keep in mind that master is not alwais up to date whereas 'dev' is. In the installation note below change `master` to `dev` if you want to get the lastest version.
+Please keep in mind that master is not always up to date whereas 'dev' is. In the installation note below change `master` to `dev` if you want to get the latest version.
 
 ### Installation Linux
 (change master to dev for the newer version)
