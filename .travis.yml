@@ -1,8 +1,13 @@
 language: python
 python:
   - "2.7"
+addons:
+ apt:
+   packages:
+   - protobuf-compiler
+   - protobuf-c-compiler
+   - python-protobuf
 install:
-  - apt-get install python-protobuf
   - pip install -r requirements.txt
   - pip install pylint
 script: "pylint **/*.py"
