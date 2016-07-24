@@ -184,7 +184,10 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 ### Evolve All Configuration
     By setting the `evolve_all` attribute in config.json, you can instruct the bot to automatically
     evolve specified pokemons on startup. This is especially useful for batch-evolving after popping up
-    a lucky egg (currently this needs to be done manually).
+    a lucky egg. 
+	
+	A lucky egg can be used before evolving by setting the `use_lucky_egg` to true in config.json. If a
+	lucky egg is not available and "use_lucky_egg" is set to true, evolving will be skipped. 
     
     The evolve all mechanism evolves only higher CP pokemons. It does this by first ordering them from high-to-low CP.
     It will also automatically transfer the evolved pokemons based on the release configuration.
@@ -328,6 +331,7 @@ If using multiple usernames format like this:
  * budi-khoirudin
  * riberod07
  * th3w4y
+ * codybaldwin
  
 -------
 ## Credits

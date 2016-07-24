@@ -12,6 +12,7 @@
     "initial_transfer": 0,
     "location_cache": true,
     "distance_unit": "km",
-    "item_filter": "101,102,103,104"
-    "evolve_all": "NONE"
+    "item_filter": "101,102,103,104",
+    "evolve_all": "NONE",
+    "use_lucky_egg": false
 }
