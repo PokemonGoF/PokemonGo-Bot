@@ -36,43 +36,7 @@ class PokemonGoBot(object):
         self.stepper.take_step()
 
     def work_on_cell(self, cell, position, include_fort_on_path):
-        process_ignore = False
-        try:
-            with open("./data/catch-ignore.yml", 'r') as y:
-                ignores = yaml.load(y)['ignore']
-                if len(ignores) > 0:
-                    process_ignore = True
-        except Exception, e:
-            pass
-
-        if process_ignore:
-            #
-            # remove any wild pokemon
-            try:
-                for p in cell['wild_pokemons'][:]:
-                    pokemon_id = p['pokemon_data']['pokemon_id']
-                    pokemon_name = filter(
-                        lambda x: int(x.get('Number')) == pokemon_id,
-                        self.pokemon_list)[0]['Name']
-
-                    if pokemon_name in ignores:
-                        cell['wild_pokemons'].remove(p)
-            except KeyError:
-                pass
-
-            #
-            # remove catchable pokemon
-            try:
-                for p in cell['catchable_pokemons'][:]:
-                    pokemon_id = p['pokemon_id']
-                    pokemon_name = filter(
-                        lambda x: int(x.get('Number')) == pokemon_id,
-                        self.pokemon_list)[0]['Name']
-
-                    if pokemon_name in ignores:
-                        cell['catchable_pokemons'].remove(p)
-            except KeyError:
-                pass
+        self._filter_ignored_pokemons(cell)
 
         if (self.config.mode == "all" or self.config.mode ==
                 "poke") and 'catchable_pokemons' in cell and len(cell[
@@ -431,6 +395,45 @@ class PokemonGoBot(object):
         #self.log.info('lat/long/alt: %s %s %s', loc.latitude, loc.longitude, loc.altitude)
 
         return (loc.latitude, loc.longitude, loc.altitude)
+
+    def _filter_ignored_pokemons(self, cell):
+        process_ignore = False
+        try:
+            with open("./data/catch-ignore.yml", 'r') as y:
+                ignores = yaml.load(y)['ignore']
+                if len(ignores) > 0:
+                    process_ignore = True
+        except Exception, e:
+            pass
+
+        if process_ignore:
+            #
+            # remove any wild pokemon
+            try:
+                for p in cell['wild_pokemons'][:]:
+                    pokemon_id = p['pokemon_data']['pokemon_id']
+                    pokemon_name = filter(
+                        lambda x: int(x.get('Number')) == pokemon_id,
+                        self.pokemon_list)[0]['Name']
+
+                    if pokemon_name in ignores:
+                        cell['wild_pokemons'].remove(p)
+            except KeyError:
+                pass
+
+            #
+            # remove catchable pokemon
+            try:
+                for p in cell['catchable_pokemons'][:]:
+                    pokemon_id = p['pokemon_id']
+                    pokemon_name = filter(
+                        lambda x: int(x.get('Number')) == pokemon_id,
+                        self.pokemon_list)[0]['Name']
+
+                    if pokemon_name in ignores:
+                        cell['catchable_pokemons'].remove(p)
+            except KeyError:
+                pass
 
     def heartbeat(self):
         self.api.get_player()
