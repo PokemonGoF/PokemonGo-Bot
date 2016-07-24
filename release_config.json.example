@@ -1,12 +1,12 @@
 {
 	"any": {
-		"min_cp": 400,
-		"min_iv": 0.8,
+		"release_under_cp": 400,
+		"release_under_iv": 0.8,
 		"cp_iv_logic": "or"
 	},
 	"My Pokemon": {
-		"min_cp": 0,
-		"min_iv": 0,
+		"release_under_cp": 0,
+		"release_under_iv": 0,
 		"cp_iv_logic": "or"
 	}
 }
