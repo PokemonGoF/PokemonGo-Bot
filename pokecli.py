@@ -144,11 +144,6 @@ def init_config():
                         help="(Ad-hoc mode) Bot will attempt to evolve all the pokemons captured!",
                         type=bool,
                         default=False)
-    parser.add_argument("-le",
-                        "--use_lucky_egg",
-                        help="Uses lucky egg when using evolve_all",
-                        type=bool,
-                        default=False)
 
     config = parser.parse_args()
     if not config.username and 'username' not in load:
