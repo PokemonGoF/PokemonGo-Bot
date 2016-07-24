@@ -188,13 +188,17 @@ To update your project simply do `git pull` in the project folder
     Google Account:
     $ python2 pokecli.py -a google -u tejado -p 1234 --location "New York, Washington Square"
 
-### Advance Releasing Configuration
-    To edit the pokemon release configuration, copy file ``release_config.json.example`` and rename it to ``release_config.json``
-
-    Edit this file however you like, but keep in mind:
-
-    1. Pokemon name is always capitalize and case-sensitive
-    2. Be careful with the ``any`` configuration!
+### Advance Configuration
+- `max_steps` :
+- `mode` :
+- `walk` :
+- `debug` : Let the default value here except if you are developper
+- `test` : Let the default value here except if you are developper
+- `initial_transfer` : Set this to 1 if you want to transfer pokemon
+- `location_cache` : 
+- `distance_unit` :
+- `item_filter` :
+- `evolve_all` : Set to true to evolve pokemon if possible
 
 ### Evolve All Configuration
     By setting the `evolve_all` attribute in config.json, you can instruct the bot to automatically
