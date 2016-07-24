@@ -58,7 +58,7 @@ No PR on stable/master branch to keep things easier.
 - [x] Pokemon catch filter
 - [ ] Hatch eggs
 - [ ] Incubate eggs
-- [ ] Evolve pokemons
+- [x] Evolve pokemons (Code in, Need input, In Testing)
 - [ ] Use candy
 - [x] Code refactor
 
