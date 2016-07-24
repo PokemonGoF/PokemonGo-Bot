@@ -10,6 +10,8 @@
     "debug": false,
     "test": false,
     "initial_transfer": 0,
+    "evolve_all": false,
+    "evolve_captured": false,
     "location_cache": true,
     "distance_unit": "km",
     "item_filter": "101,102,103,104"
