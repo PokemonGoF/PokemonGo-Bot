@@ -194,8 +194,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 
 ### What's IV ?
 Here's the [introduction](http://bulbapedia.bulbagarden.net/wiki/Individual_values)
-### Losing Starter Pokemon and others
-You can use -c 1 to protect your first stage low CP pokemon.
+
 ### Does it run automatally?
 Not yet, still need a trainer to train the script param. But we are very close to.
 ### Set GEO Location
@@ -272,6 +271,7 @@ If using multiple usernames format like this:
  * msoedov
  * Grace
  * Calcyfer
+ * asaf400
 
 -------
 ## Credits
