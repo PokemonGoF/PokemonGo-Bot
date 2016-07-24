@@ -189,6 +189,27 @@ This project uses Google Maps. There's one map coupled with the project, but as 
         ```  
     5. You can now debug on the log to see if get what you need  
 
+## How to set up a simple webserver with nginx
+### Nginx on Ubuntu 14.x, 16.x
+#### 1. Install nginx on your Ubuntu machine (e.g. on locally or AWS)
+```
+sudo apt-get update
+sudo apt-get install nginx
+```
+
+#### 2. Check the webserver
+Check if the webserver is running by using your browser and entering the IP address of your local machine/server.
+On a local machine this would be http://127.0.0.1. On AWS this is your public DNS if you havent configured an elastic IP.
+
+#### 3. Change Base Directory of the Webserver
+```
+sudo nano "/etc/nginx/sites-enabled/default"
+```
+Comment out following line: ```root /var/www/html;``` and change it to the web folder of your PokemonGo-Bot: eg:
+```
+/home/user/dev/PokemonGo-Bot/web;
+```
+
 ## FAQ
 
 ### What's IV ?
