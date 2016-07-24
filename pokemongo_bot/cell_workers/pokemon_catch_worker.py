@@ -76,7 +76,7 @@ class PokemonCatchWorker(object):
                         
                             pokeball = 1 # default:poke ball
                             
-                            if balls_stock[1] == 0: # if poke ball are out of stock
+                            if balls_stock[1] <= 0: # if poke ball are out of stock
                                 if balls_stock[2] > 0: # and player has great balls in stock...
                                     pokeball = 2 # then use great balls
                                 elif ball_stock[3] > 0: # or if great balls are out of stock too, and player has ultra balls...
