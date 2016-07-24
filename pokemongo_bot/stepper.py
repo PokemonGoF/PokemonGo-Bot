@@ -35,6 +35,7 @@ class Stepper(object):
         if self.config.evolve_all:
             # Run evolve all once. Flip the bit.
             print('[#] Attempting to evolve all pokemons ...')
+            self.config.lcd.message('Attempting to evolve all pokemons')
             self.config.evolve_all = False
             self._evolve_all()
 
@@ -76,6 +77,9 @@ class Stepper(object):
         logger.log('[#] Walking from ' + str((i2f(self.api._position_lat), i2f(
             self.api._position_lng))) + " to " + str(str((lat, lng))) +
                    " for approx. " + str(format_time(ceil(steps))))
+        if hasattr(self.config, 'lcd'):
+            self.config.lcd.message('Walking for approx '+ str(format_time(ceil(steps))))
+
         if steps != 0:
             dLat = (lat - i2f(self.api._position_lat)) / steps
             dLng = (lng - i2f(self.api._position_lng)) / steps
@@ -95,6 +99,9 @@ class Stepper(object):
             self.api.set_position(lat, lng, alt)
             self.bot.heartbeat()
             logger.log("[#] Finished walking")
+            if hasattr(self.config, 'lcd'):
+                self.config.lcd.message('Finished walking')
+
 
     def _work_at_position(self, lat, lng, alt, pokemon_only=False):
         cellid = self._get_cellid(lat, lng)
@@ -195,6 +202,10 @@ class Stepper(object):
         status = response_dict['responses']['EVOLVE_POKEMON']['result']
         if status == 1:
             print('[#] Successfully evolved {}!'.format(
+                pokemon_name
+            ))
+            if hasattr(self.config, 'lcd'):
+                self.config.lcd.message('Successfully evolved {}!'.format(
                 pokemon_name
             ))
         else:
