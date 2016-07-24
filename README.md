@@ -147,7 +147,11 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 5. Copy the API key that appears.
 6. After the code done, will update here how to replace.
 
-## Usage
+-### Python bug
+-If you encounter problems with the module ssl and it function `_create_unverified_context`. Just comment it. (Solution available in Python 2.7.11)
+-
+ ## Usage
+-   (maybe deprecated)
     usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-lc] [-m] [-w] [--distance_unit] [--initial-transfer] [--maxsteps] [-iv] [-d] [-t]
 
     optional arguments:
