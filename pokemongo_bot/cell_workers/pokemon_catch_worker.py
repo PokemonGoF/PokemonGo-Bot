@@ -119,7 +119,7 @@ class PokemonCatchWorker(object):
                                 # Begin searching for pokestops.
                                 self.config.mode = 'farm'
                                 return PokemonCatchWorker.NO_POKEBALLS
-                                    
+
                             balls_stock[pokeball] = balls_stock[pokeball] - 1
                             success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
                             logger.log('[x] Using {} (chance: {}%)... ({} left!)'.format(
@@ -155,7 +155,15 @@ class PokemonCatchWorker(object):
                                 if status is 1:
                                     
                                     id_list2 = self.count_pokemon_inventory()
-
+                                    
+                                    logger.log('[x] Captured {}! [CP {}] [{}/{}/{}]'.format(
+                                        pokemon_name, 
+                                        cp,
+                                        pokemon['pokemon_data']['individual_stamina'],
+                                        pokemon['pokemon_data']['individual_attack'],
+                                        pokemon['pokemon_data']['individual_defense']
+                                    ), 'blue')
+                                        
                                     if self.config.evolve_captured:
                                         pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
                                         self.api.evolve_pokemon(pokemon_id=pokemon_to_transfer[0])
@@ -179,14 +187,7 @@ class PokemonCatchWorker(object):
                                             pokemon_to_transfer[0])
                                         logger.log(
                                             '[#] {} has been exchanged for candy!'.format(pokemon_name), 'green')
-                                    else:
-                                        logger.log('[x] Captured {}! [CP {}] [{}/{}/{}]'.format(
-                                            pokemon_name, 
-                                            cp,
-                                            pokemon['pokemon_data']['individual_stamina'],
-                                            pokemon['pokemon_data']['individual_attack'],
-                                            pokemon['pokemon_data']['individual_defense']
-                                        ), 'blue')
+
                             break
         time.sleep(5)
 
