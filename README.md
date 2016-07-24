@@ -84,7 +84,6 @@ No PR on stable/master branch to keep things easier.
 - Windows: Download protobuf 3.0: [here](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip) and unzip `bin/protoc.exe` into a folder in your PATH.
 - Linux: `apt-get install python-protobuf`
 
-
 ### Note on branch
 Please keep in mind that master is not alwais up to date whereas 'dev' is. In the installation note below change `master` to `dev` if you want to get the lastest version.
 
@@ -171,6 +170,9 @@ To do it follow instruction below :
 - save it
 
 Please keep in mind that this fix is necessary only if your python version don't have the `_create_unverified_context` argument in ssl module.
+
+### Update
+To update your project simply do `git pull` in the project folder
 
 ## Usage (up to date)
 	1/ copy `config.json.example` to `config.json` and `release_config.json.example` to `release_config.json`.
