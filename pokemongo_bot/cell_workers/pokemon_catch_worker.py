@@ -43,7 +43,10 @@ class PokemonCatchWorker(object):
                             pokemon = response_dict['responses']['ENCOUNTER']['wild_pokemon']
                             catch_rate = response_dict['responses']['ENCOUNTER']['capture_probability']['capture_probability'] # 0 = pokeballs, 1 great balls, 3 ultra balls
                             
+                            pokemon_data = None
+
                             if 'pokemon_data' in pokemon and 'cp' in pokemon['pokemon_data']:
+                                pokemon_data = pokemon['pokemon_data']
                                 cp = pokemon['pokemon_data']['cp']
                                 iv_stats = ['individual_attack', 'individual_defense', 'individual_stamina']
                                 
@@ -109,6 +112,8 @@ class PokemonCatchWorker(object):
                             ))
 
                             id_list1 = self.count_pokemon_inventory()
+                            max_cp_pokemon_list = self.get_max_cp_pokemon_list()
+
                             self.api.catch_pokemon(encounter_id=encounter_id,
                                                    pokeball=pokeball,
                                                    normalized_reticle_size=1.950,
@@ -155,7 +160,7 @@ class PokemonCatchWorker(object):
                                             logger.log(
                                             '[x] Failed to evolve {}!'.format(pokemon_name))
 
-                                    if self.should_release_pokemon(pokemon_name, cp, pokemon_potential, response_dict):
+                                    if self.should_release_pokemon(pokemon_name, cp, pokemon_potential, response_dict, max_cp_pokemon_list, pokemon_data):
                                         # Transfering Pokemon
                                         pokemon_to_transfer = list(
                                             Set(id_list2) - Set(id_list1))
@@ -211,6 +216,15 @@ class PokemonCatchWorker(object):
         return self.counting_pokemon(response_dict, id_list)
 
     def counting_pokemon(self, response_dict, id_list):
+        callback = lambda pokemon : self._append_pokemon_id(id_list, pokemon)
+        self._foreach_pokemon_in_inventory(response_dict, callback)
+        return id_list
+
+    def _append_pokemon_id(self, id_list, pokemon):
+        if (not pokemon.get('is_egg', False)): 
+            id_list.append(pokemon['id'])
+
+    def _foreach_pokemon_in_inventory(self, response_dict, callback):
         try:
             reduce(dict.__getitem__, [
                    "responses", "GET_INVENTORY", "inventory_delta", "inventory_items"], response_dict)
@@ -225,13 +239,54 @@ class PokemonCatchWorker(object):
                     pass
                 else:
                     pokemon = item['inventory_item_data']['pokemon_data']
-                    if pokemon.get('is_egg', False):
-                        continue
-                    id_list.append(pokemon['id'])
+                    callback(pokemon)
 
-        return id_list
 
-    def should_release_pokemon(self, pokemon_name, cp, iv, response_dict):
+    # Returns True if pokemon is better than other_pokemon
+    def _is_better(self, pokemon, other_pokemon):
+        return (pokemon['cp'] >= other_pokemon['cp'])
+
+    def get_max_cp_pokemon_list(self):
+        self.api.get_inventory()
+        response_dict = self.api.call()
+        return self._get_max_cp_pokemon_list(response_dict)
+
+    # Takes a get_inventory request result and returns a list of pokemons and their data, whereas the list contains no 
+    # duplicate pokemons. If there are duplicate pokemons in the inventory the strongest one (max CP) is returned. 
+    def _get_max_cp_pokemon_list(self, response_dict):
+        pokemon_map = {}
+        callback = lambda pokemon : self._add_or_replace_pokemon(pokemon_map, pokemon)
+        self._foreach_pokemon_in_inventory(response_dict, callback)
+        return pokemon_map
+
+    # Takes a map(pokemon_id, pokemon) and a pokemon and either adds the pokemon if it's not yet in the map or if it's
+    # stronger than the one in the map.
+    def _add_or_replace_pokemon(self, pokemon_map, pokemon):
+        if (not pokemon.get('is_egg', False)): 
+            pokemon_id = pokemon['pokemon_id']
+            if (pokemon_id in pokemon_map):
+                if (self._is_better(pokemon, pokemon_map[pokemon_id])):
+                    pokemon_map[pokemon_id] = pokemon
+            else:
+                pokemon_map[pokemon_id] = pokemon
+
+    def should_release_pokemon(self, pokemon_name, cp, iv, response_dict, max_cp_pokemon_list, pokemon_data):
+        if self.config.keep_best and pokemon_data is not None:
+            pokemon_id = pokemon_data['pokemon_id']
+            if (pokemon_id in max_cp_pokemon_list):
+                owned = max_cp_pokemon_list[pokemon_id];
+                better = self._is_better(pokemon_data, owned)
+                if (better):
+                    logger.log('[#] Owning weaker {}({}). Replacing it with {}!'.format(pokemon_name, owned['cp'], cp), 'green')
+                    self.transfer_pokemon(owned['id'])
+                    logger.log('[#] Weaker {}({}) has been exchanged for candy!'.format(pokemon_name, owned['cp']), 'green')
+                    return False
+                logger.log('[#] Owning better {}({}) already!'.format(pokemon_name, owned['cp']), 'green')
+                return True
+            else:
+                logger.log('[#] Not owning {}. Keeping it!'.format(pokemon_name), 'green')
+                return False
+
         if self._check_always_capture_exception_for(pokemon_name):
             return False
         else:

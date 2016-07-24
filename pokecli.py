@@ -145,6 +145,12 @@ def init_config():
                         type=bool,
                         default=False)
 
+    parser.add_argument("-kp",
+                        "--keep_best",
+                        help="Bot only keeps pokemon if it's not already owned or is better than the owned one.",
+                        type=bool,
+                        default=False)
+
     config = parser.parse_args()
     if not config.username and 'username' not in load:
         config.username = raw_input("Username: ")
