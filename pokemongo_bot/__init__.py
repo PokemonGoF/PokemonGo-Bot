@@ -1,23 +1,20 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import googlemaps
 import json
 import random
-import threading
 import datetime
 import sys
 import yaml
-import logger
 import re
-from pgoapi import PGoApi
-from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
-from cell_workers.utils import distance
-from human_behaviour import sleep
-from stepper import Stepper
+import pokemongo_bot.logger
+from pokemongo_bot.cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
+from pokemongo_bot.cell_workers.utils import distance
+from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot.stepper import Stepper
+from pokemongo_bot.item_list import Item
 from geopy.geocoders import GoogleV3
-from math import radians, sqrt, sin, cos, atan2
-from item_list import Item
+from pgoapi import PGoApi
 
 
 class PokemonGoBot(object):
@@ -40,8 +37,8 @@ class PokemonGoBot(object):
             # Run evolve all once. Flip the bit.
             print('[#] Attempting to evolve all pokemons ...')
             self.config.evolve_all = False
-            worker = EvolveAllWorker(self)
-            worker.work()
+            evolve_worker = EvolveAllWorker(self)
+            evolve_worker.work()
 
         self._filter_ignored_pokemons(cell)
 
@@ -81,11 +78,11 @@ class PokemonGoBot(object):
                 # build graph & A* it
                 forts.sort(key=lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
                 for fort in forts:
-                    worker = MoveToFortWorker(fort, self)
-                    worker.work()
+                    fort_move_worker = MoveToFortWorker(fort, self)
+                    fort_move_worker.work()
 
-                    worker = SeenFortWorker(fort, self)
-                    hack_chain = worker.work()
+                    fort_seen_worker = SeenFortWorker(fort, self)
+                    hack_chain = fort_seen_worker.work()
                     if hack_chain > 10:
                         # print('need a rest')
                         break
@@ -173,19 +170,19 @@ class PokemonGoBot(object):
         self.get_player_info()
 
         if self.config.initial_transfer:
-            worker = InitialTransferWorker(self)
-            worker.work()
+            initial_transfer_worker = InitialTransferWorker(self)
+            initial_transfer_worker.work()
 
         logger.log('[#]')
         self.update_inventory()
 
     def catch_pokemon(self, pokemon):
-        worker = PokemonCatchWorker(pokemon, self)
-        return_value = worker.work()
+        catch_worker = PokemonCatchWorker(pokemon, self)
+        return_value = catch_worker.work()
 
         if return_value == PokemonCatchWorker.BAG_FULL:
-            worker = InitialTransferWorker(self)
-            worker.work()
+            initial_transfer_worker = InitialTransferWorker(self)
+            initial_transfer_worker.work()
 
         return return_value
 

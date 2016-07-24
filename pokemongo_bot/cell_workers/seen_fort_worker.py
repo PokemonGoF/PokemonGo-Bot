@@ -135,4 +135,4 @@ class SeenFortWorker(object):
 
     @staticmethod
     def closest_fort(current_lat, current_long, forts):
-        print x
+        print forts
