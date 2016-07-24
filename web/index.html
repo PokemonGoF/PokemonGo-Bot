@@ -4,24 +4,24 @@
     <title>Simple Map</title>
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
-    <style>
-    </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" type="text/javascript"></script>
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css" type="text/css">
     <!-- Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
-    <link rel="stylesheet" href="main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js" type="text/javascript" ></script>
+    <link rel="stylesheet" href="main.css" type="text/css">
   </head>
   <body>
     <div class="container" id="menu">
       <div class="row" id="options">
         <div class="col s12">
-          <div class="card white">
-            <div class="card-content black-text">
-              <span class="card-title">Options</span>
-              <ul>
+          <ul class="collapsible" data-collapsible="accordion">
+          <li>
+            <div class="collapsible-header"><i class="material-icons">settings</i>Settings</div>
+            <div class="collapsible-body">
+              <ul id="optionsList">
                 <li>
                   Pan
                   <div class="switch">
@@ -60,23 +60,11 @@
                 </li>
               </ul>
             </div>
-          </div>
+          </li>
+        </ul>
         </div>
       </div>
-      <div class="row" id="trainer">
-        <div class="col s12">
-          <div class="card white">
-            <div class="card-content black-text">
-              <span class="card-title">Trainer</span>
-            <ul>
-              <li><a class="waves-effect waves-light btn" id="tInfo">Info</a></li><br>
-              <li><a class="waves-effect waves-light btn" id="tItems">Items</a></li><br>
-              <li><a class="waves-effect waves-light btn" id="tPokemon">Pokemon</a></li><br>
-              <li><a class="waves-effect waves-light btn" id="tPokedex">Pokedex</a></li>
-            </ul>
-            </div>
-          </div>
-        </div>
+      <div class="row" id="trainers">
       </div>
     </div>
 
@@ -85,6 +73,7 @@
           <div class="card white">
             <div class="card-content black-text">
               <span class="card-title" id="subtitle">Submenu</span>
+              <span id="close">×</span>
               <div id="subcontent"></div>
             </div>
           </div>
@@ -94,7 +83,5 @@
     <div id="map"></div>
     <script type="text/javascript" src="userdata.js"></script>
     <script type="text/javascript" src="main.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=API_KEY_AUTO_FILLEDcallback=initMap"
-    async defer></script>
   </body>
 </html>

@@ -1,72 +1,102 @@
+var i;
 var map;
-var user_data = {};
+var menu;
+var out1;
+var out;
+var user_index;
+
+var emptyDex = [];
+var forts = [];
+var info_windows = [];
+var outArray = [];
+var numTrainers = [
+  177, 
+  109
+];
+var teams = [
+  'TeamLess',
+  'Mystic',
+  'Valor',
+  'Instinct'
+];
+var trainerSex = [
+  'm',
+  'f'
+];
+
+var bagCandy = {};
+var bagItems = {};
+var bagPokemon = {};
 var inventory = {};
 var playerInfo = {};
 var pokedex = {};
-var bagPokemon = {};
-var bagItems = {};
-var bagCandy = {};
-var emptyDex = [];
 var pokemonArray = {};
-var forts = [];
-var info_windows = [];
-var i;
-var user_index;
-var trainerSex = ["m","f"];
-var numTrainers = [177, 109];
-var menu;
 var stats = {};
-var teams = ["TeamLess", "Mystic", "Valor", "Instinct"];
-var out;
-var out1;
-var outArray = [];
+var user_data = {};
 var itemsArray = {
-    "0": "Unknown",
+  '0': 'Unknown',
+  '1': 'Pokeball',
+  '2': 'Greatball',
+  '3': 'Ultraball',
+  '4': 'Masterball',
+  '101': 'Potion',
+  '102': 'Super Potion',
+  '103': 'Hyper Potion',
+  '104': 'Max Potion',
+  '201': 'Revive',
+  '202': 'Max Revive',
+  '301': 'Lucky Egg',
+  '401': 'Incense',
+  '402': 'Spicy Incense',
+  '403': 'Cool Incense',
+  '404': 'Floral Incense',
+  '501': 'Troy Disk',
+  '602': 'X Attack',
+  '603': 'X Defense',
+  '604': 'X Miracle',
+  '701': 'Razz Berry',
+  '702': 'Bluk Berry',
+  '703': 'Nanab Berry',
+  '704': 'Wepar Berry',
+  '705': 'Pinap Berry',
+  '801': 'Special Camera',
+  '901': 'Incubator (Unlimited)',
+  '902': 'Incubator',
+  '1001': 'Pokemon Storage Upgrade',
+  '1002': 'Item Storage Upgrade'
+};
 
-    "1": "Pokeball",
-    "2": "Greatball",
-    "3": "Ultraball",
-    "4": "Masterball",
+$(document).ready(function() {
+  loadScript("https://maps.googleapis.com/maps/api/js?key=" + gMapsAPIKey + "&libraries=drawing&callback=initMap");
+});
 
-    "101": "Potion",
-    "102": "Super Potion",
-    "103": "Hyper Potion",
-    "104": "Max Potion",
-
-    "201": "Revive",
-    "202": "Max Revive",
-
-    "301": "Lucky Egg",
-
-    "401": "Incense",
-    "402": "Spicy Incense",
-    "403": "Cool Incense",
-    "404": "Floral Incense",
-
-    "501": "Troy Disk",
-
-    "602": "X Attack",
-    "603": "X Defense",
-    "604": "X Miracle",
-
-    "701": "Razz Berry",
-    "702": "Bluk Berry",
-    "703": "Nanab Berry",
-    "704": "Wepar Berry",
-    "705": "Pinap Berry",
-
-    "801": "Special Camera",
-
-    "901": "Incubator (Unlimited)",
-    "902": "Incubator",
-
-    "1001": "Pokemon Storage Upgrade",
-    "1002": "Item Storage Upgrade"
+function loadScript(src) {
+  var element = document.createElement("script");
+  element.src = src;
+  document.body.appendChild(element);
 }
 
+function buildTrainerList() {
+  var out = '<div class="col s12"><ul id="bots-list" class="collapsible" data-collapsible="accordion"> \
+              <li><div class="collapsible-title"><i class="material-icons">people</i>Bots</div></li>';
+  for(var i = 0; i < users.length; i++)
+  {
+    out += '<li><div class="collapsible-header">'+users[i]
+           +'</div><div class="collapsible-body"><ul user_id="'+i+'">\
+           <li><a class="indigo waves-effect waves-light btn tInfo">Info</a></li><br>\
+           <li><a class="indigo waves-effect waves-light btn tItems">Items</a></li><br>\
+           <li><a class="indigo waves-effect waves-light btn tPokemon">Pokemon</a></li><br>\
+           <li><a class="indigo waves-effect waves-light btn tPokedex">Pokedex</a></li>\
+           </ul> \
+           </div>\
+           </li>';
+  }
+  out += "</ul></div>";
+  document.getElementById('trainers').innerHTML = out;
+  $('.collapsible').collapsible();
+}
 
 function initMap() {
-  // load pokemon data now..
   loadJSON('pokemondata.json', function(data, successData) {
     console.log('Loaded pokemon data..');
     pokemonArray = data;
@@ -78,90 +108,87 @@ function initMap() {
     center: {lat: 50.0830986, lng: 6.7613762},
     zoom: 8
   });
-  document.getElementById("switchPan").checked = userFollow;
-  document.getElementById("switchZoom").checked = userZoom;
-  document.getElementById("imageType").checked = false;
-  setTimeout(function(){
-    placeTrainer();
-    addCatchable();
-    for (menu = 1; menu < 5; menu++) {
-      buildMenu()
-    }
-    setTimeout(function(){
-      setInterval(updateTrainer, 1000);
-      setInterval(addCatchable, 1000);
-    }, 5000);
-  }, 5000);
-};
+
+  document.getElementById('switchPan').checked = userFollow;
+  document.getElementById('switchZoom').checked = userZoom;
+  document.getElementById('imageType').checked = (imageExt != '.png');
+  placeTrainer();
+  addCatchable();
+  setInterval(updateTrainer, 1000);
+  setInterval(addCatchable, 1000);
+}
 
 $('#switchPan').change(function(){
-    if (this.checked) { userFollow = true } else { userFollow = false; }
+    if (this.checked) {
+      userFollow = true;
+    } else {
+      userFollow = false;
+    }
 });
 
 $('#switchZoom').change(function(){
-    if (this.checked) { userZoom = true } else { userZoom = false; }
+    if (this.checked) {
+      userZoom = true;
+    } else {
+      userZoom = false;
+    }
 });
 
 $('#imageType').change(function(){
-    if (this.checked) { imageExt = ".gif" } else { imageExt = ".png"; }
+    if (this.checked) {
+      imageExt = '.gif';
+    } else {
+      imageExt = '.png';
+    }
 });
 
-$('#tInfo').click(function(){
-    if (menu == undefined || menu == 1) {
-      $("#submenu").toggle();
-    }
-    if (menu != 1 && $("#submenu").is(':hidden')) {
-      $("#submenu").toggle();
-    }
+$('#optionsButton').click(function(){
+    $('#optionsList').toggle();
+});
+
+$('#trainerButton').click(function(){
+    $('#trainerList').toggle();
+});
+
+$(document).on('click','.tInfo',function(){
+    $("#submenu").show();
     menu = 1;
-    buildMenu();
+    buildMenu($(this).closest("ul").attr("user_id"));
 });
 
-$('#tItems').click(function(){
-    if (menu == undefined || menu == 2) {
-      $("#submenu").toggle();
-    }
-    if (menu != 2 && $("#submenu").is(':hidden')) {
-      $("#submenu").toggle();
-    }
+$(document).on('click','.tItems',function(){
+    $("#submenu").show();
     menu = 2;
-    buildMenu();
+    buildMenu($(this).closest("ul").attr("user_id"));
 });
 
-$('#tPokemon').click(function(){
-    if (menu == undefined || menu == 3) {
-      $("#submenu").toggle();
-    }
-    if (menu != 3 && $("#submenu").is(':hidden')) {
-      $("#submenu").toggle();
-    }
+$(document).on('click','.tPokemon',function(){
+    $("#submenu").show();
     menu = 3;
-    buildMenu();
+    buildMenu($(this).closest("ul").attr("user_id"));
 });
 
-$('#tPokedex').click(function(){
-    if (menu == undefined || menu == 4) {
-      $("#submenu").toggle();
-    }
-    if (menu != 4 && $("#submenu").is(':hidden')) {
-      $("#submenu").toggle();
-    }
+$(document).on('click','.tPokedex',function(){
+    $("#submenu").show();
     menu = 4;
-    buildMenu();
+    buildMenu($(this).closest("ul").attr("user_id"));
 });
 
+$(document).on('click','#close',function(){
+  $('#submenu').toggle();
+});
 
 var errorFunc = function(xhr) {
   console.error(xhr);
 };
 
 var invSuccess = function(data, user_index) {
-  stats = filter(data, 'player_stats');
-  bagItems = filter(data, 'item')
-  bagPokemon = filter(data, 'pokemon_data');
-  pokedex = filter(data, 'pokedex_entry');
-  bagCandy = filter(data, 'pokemon_family')
-}
+  user_data[users[user_index]].bagCandy = filter(data, 'pokemon_family');
+  user_data[users[user_index]].bagItems = filter(data, 'item');
+  user_data[users[user_index]].bagPokemon = filter(data, 'pokemon_data');
+  user_data[users[user_index]].pokedex = filter(data, 'pokedex_entry');
+  user_data[users[user_index]].stats = filter(data, 'player_stats');
+};
 
 var trainerFunc = function(data, user_index) {
   for (var i = 0; i < data.cells.length; i++) {
@@ -177,7 +204,7 @@ var trainerFunc = function(data, user_index) {
                 lat: parseFloat(fort.latitude),
                 lng: parseFloat(fort.longitude)
               },
-              icon: "image/forts/img_pokestop.png"
+              icon: 'image/forts/img_pokestop.png'
             });
           } else {
             forts[fort.id] = new google.maps.Marker({
@@ -186,18 +213,18 @@ var trainerFunc = function(data, user_index) {
                 lat: parseFloat(fort.latitude),
                 lng: parseFloat(fort.longitude)
               },
-              icon: "image/forts/" + teams[fort.owned_by_team] + ".png"
+              icon: 'image/forts/' + teams[fort.owned_by_team] + '.png'
             });
           }
-          pokemonGuard = '';
-          fortType = 'PokeStop';
-          fortTeam = '';
           fortPoints = '';
+          fortTeam = '';
+          fortType = 'PokeStop';
+          pokemonGuard = '';
           if (fort.guard_pokemon_id != undefined) {
-            pokemonGuard = 'Guard Pokemon: ' + pokemonArray[fort.guard_pokemon_id-1].Name + '<br>';
-            fortType = 'Gym';
-            fortTeam = 'Team: ' + teams[fort.owned_by_team] + '<br>';
             fortPoints = 'Points: ' + fort.gym_points;
+            fortTeam = 'Team: ' + teams[fort.owned_by_team] + '<br>';
+            fortType = 'Gym';
+            pokemonGuard = 'Guard Pokemon: ' + pokemonArray[fort.guard_pokemon_id-1].Name + '<br>';
           }
           var contentString = 'Id: ' + fort.id + '<br>Type: ' + fortType + '<br>' + pokemonGuard + fortPoints;
           info_windows[fort.id] = new google.maps.InfoWindow({
@@ -214,22 +241,24 @@ var trainerFunc = function(data, user_index) {
     }
   }
   if (user_data[users[user_index]].hasOwnProperty('marker') === false) {
-    console.log("New Marker: Trainer - " + data.lat + ", " + data.lng);
-    randomSex = Math.floor(Math.random() * 1)
+    buildTrainerList();
+    addInventory();
+    Materialize.toast('New Marker: Trainer - ' + data.lat + ', ' + data.lng + users[user_index], 3000, 'rounded');
+    randomSex = Math.floor(Math.random() * 1);
     user_data[users[user_index]].marker = new google.maps.Marker({
       map: map,
       position: {lat: parseFloat(data.lat), lng: parseFloat(data.lng)},
-      icon: "image/trainer/" + trainerSex[randomSex] + Math.floor(Math.random() * numTrainers[randomSex]) + ".png",
+      icon: 'image/trainer/' + trainerSex[randomSex] + Math.floor(Math.random() * numTrainers[randomSex]) + '.png',
       zIndex: 2,
       label: users[user_index]
     });
   } else {
     user_data[users[user_index]].marker.setPosition({lat: parseFloat(data.lat), lng: parseFloat(data.lng)});
   }
-  if (users.length == 1 && userZoom == true) {
+  if (users.length === 1 && userZoom === true) {
     map.setZoom(16);
   }
-  if (users.length == 1 && userFollow == true) {
+  if (users.length === 1 && userFollow === true) {
     map.panTo({
       lat: parseFloat(data.lat),
       lng: parseFloat(data.lng)
@@ -239,12 +268,12 @@ var trainerFunc = function(data, user_index) {
 
 function placeTrainer() {
   for (var i = 0; i < users.length; i++) {
-    loadJSON('location-'+users[i]+'.json', trainerFunc, errorFunc, i);
+    loadJSON('location-' + users[i] + '.json', trainerFunc, errorFunc, i);
   }
 }
 function updateTrainer() {
   for (var i = 0; i < users.length; i++) {
-    loadJSON('location-'+users[i]+'.json', trainerFunc, errorFunc, i);
+    loadJSON('location-' + users[i] + '.json', trainerFunc, errorFunc, i);
   }
 }
 
@@ -256,19 +285,18 @@ var catchSuccess = function(data, user_index) {
     if (data.latitude !== undefined) {
       if (user_data[users[user_index]].catchables.hasOwnProperty(data.spawnpoint_id) === false) {
         poke_name = pokemonArray[data.pokemon_id-1].Name;
-        console.log(poke_name + ' found near user ' + users[user_index]);
-        Materialize.toast(poke_name + ' appeared near trainer: ' + users[user_index], 3000, 'rounded')
+        Materialize.toast(poke_name + ' appeared near trainer: ' + users[user_index], 3000, 'rounded');
         user_data[users[user_index]].catchables[data.spawnpoint_id] = new google.maps.Marker({
           map: map,
           position: {lat: parseFloat(data.latitude), lng: parseFloat(data.longitude)},
-          icon: "image/pokemon/" + pad_with_zeroes(data.pokemon_id, 3) + imageExt,
+          icon: 'image/pokemon/' + pad_with_zeroes(data.pokemon_id, 3) + imageExt,
           zIndex: 4,
           optimized: false
         });
-          if (userZoom == true) {
+          if (userZoom === true) {
             map.setZoom(16);
           }
-          if (userFollow == true) {
+          if (userFollow === true) {
             map.panTo({
               lat: parseFloat(data.latitude),
               lng: parseFloat(data.longitude)
@@ -279,12 +307,12 @@ var catchSuccess = function(data, user_index) {
           lat: parseFloat(data.latitude),
           lng: parseFloat(data.longitude)
         });
-        user_data[users[user_index]].catchables[data.spawnpoint_id].setIcon("image/pokemon/" + pad_with_zeroes(data.pokemon_id, 3) + imageExt);
+        user_data[users[user_index]].catchables[data.spawnpoint_id].setIcon('image/pokemon/' + pad_with_zeroes(data.pokemon_id, 3) + imageExt);
       }
     }
   } else {
     if (user_data[users[user_index]].catchables !== undefined && Object.keys(user_data[users[user_index]].catchables).length > 0) {
-      console.log('No pokemon found near user ' + users[user_index]);
+      Materialize.toast('The Pokemon has been caught or fled' + users[user_index], 3000, 'rounded');
       for (var key in user_data[users[user_index]].catchables) {
         user_data[users[user_index]].catchables[key].setMap(null);
       }
@@ -295,12 +323,12 @@ var catchSuccess = function(data, user_index) {
 
 function addCatchable() {
   for (var i = 0; i < users.length; i++) {
-    loadJSON('catchable-'+users[i]+'.json', catchSuccess, errorFunc, i);
+    loadJSON('catchable-' + users[i] + '.json', catchSuccess, errorFunc, i);
   }
 }
 function addInventory() {
   for (var i = 0; i < users.length; i++) {
-    loadJSON('inventory-'+users[i]+'.json', invSuccess, errorFunc, i);
+    loadJSON('inventory-' + users[i] + '.json', invSuccess, errorFunc, i);
   }
 }
 
@@ -315,7 +343,9 @@ function pad_with_zeroes(number, length) {
 function filter(arr, search) {
   var filtered = [];
   for(i=0; i < arr.length; i++) {
-    if(arr[i].inventory_item_data[search] != undefined) { filtered.push(arr[i]); };
+    if(arr[i].inventory_item_data[search] != undefined) {
+      filtered.push(arr[i]);
+    }
   }
   return filtered;
 }
@@ -326,14 +356,14 @@ function loadJSON(path, success, error, successData) {
     if (xhr.readyState === XMLHttpRequest.DONE) {
       if (xhr.status === 200) {
         if (success)
-          success(JSON.parse(xhr.responseText.replace(/\bNaN\b/g, "null")), successData);
+          success(JSON.parse(xhr.responseText.replace(/\bNaN\b/g, 'null')), successData);
       } else {
         if (error)
         error(xhr);
       }
     }
   };
-xhr.open("GET", path, true);
+xhr.open('GET', path, true);
 xhr.send();
 }
 
@@ -341,68 +371,104 @@ $(document).ready(function(){
   $('.tooltipped').tooltip({delay: 50});
 });
 
-function buildMenu() {
-  addInventory();
+function buildMenu(user_id) {
   if (menu == 1) {
-    document.getElementById('subtitle').innerHTML = "Trainer Info";
+    document.getElementById('subtitle').innerHTML = 'Trainer Info';
     out = '';
-    for (var i = 0; i < stats.length; i++) {
-      out += '<div class="row"><div class="col s12"><h5>' + users[0] + '</h5><br>Level: ' + stats[i].inventory_item_data.player_stats.level +
-      '<br>Exp: ' + stats[i].inventory_item_data.player_stats.experience +
-      '<br>Exp to Lvl ' + (parseInt(stats[i].inventory_item_data.player_stats.level) + 1) + ': ' + (parseInt(stats[i].inventory_item_data.player_stats.next_level_xp) - stats[i].inventory_item_data.player_stats.experience) +
-      '<br>Pokemon Encountered: ' + stats[i].inventory_item_data.player_stats.pokemons_encountered +
-      '<br>Pokeballs Thrown: ' + stats[i].inventory_item_data.player_stats.pokeballs_thrown +
-      '<br>Pokemon Caught: ' + stats[i].inventory_item_data.player_stats.pokemons_captured +
-      '<br>Small Ratata Caught: ' + stats[i].inventory_item_data.player_stats.small_rattata_caught +
-      '<br>Pokemon Evolved: ' + stats[i].inventory_item_data.player_stats.evolutions +
-      '<br>Eggs Hatched: ' + stats[i].inventory_item_data.player_stats.eggs_hatched +
-      '<br>Unique Pokedex Entries: ' + stats[i].inventory_item_data.player_stats.unique_pokedex_entries +
-      '<br>PokeStops Visited: ' + stats[i].inventory_item_data.player_stats.poke_stop_visits +
-      '<br>Kilometers Walked: ' + parseFloat(stats[i].inventory_item_data.player_stats.km_walked).toFixed(2) + '</div></div>';
-    }
+    var current_user_data = user_data[users[user_id]].stats[0];
+      out += '<div class="row"><div class="col s12"><h5>' +
+              users[user_id] +
+              '</h5><br>Level: ' +
+              current_user_data.inventory_item_data.player_stats.level +
+              '<br>Exp: ' +
+              current_user_data.inventory_item_data.player_stats.experience +
+              '<br>Exp to Lvl ' +
+              ( parseInt(current_user_data.inventory_item_data.player_stats.level, 10) + 1 ) +
+              ': ' +
+              (parseInt(current_user_data.inventory_item_data.player_stats.next_level_xp, 10) - current_user_data.inventory_item_data.player_stats.experience) +
+              '<br>Pokemon Encountered: ' +
+              current_user_data.inventory_item_data.player_stats.pokemons_encountered +
+              '<br>Pokeballs Thrown: ' +
+              current_user_data.inventory_item_data.player_stats.pokeballs_thrown +
+              '<br>Pokemon Caught: ' +
+              current_user_data.inventory_item_data.player_stats.pokemons_captured +
+              '<br>Small Ratata Caught: ' +
+              current_user_data.inventory_item_data.player_stats.small_rattata_caught +
+              '<br>Pokemon Evolved: ' +
+              current_user_data.inventory_item_data.player_stats.evolutions +
+              '<br>Eggs Hatched: ' +
+              current_user_data.inventory_item_data.player_stats.eggs_hatched +
+              '<br>Unique Pokedex Entries: ' +
+              current_user_data.inventory_item_data.player_stats.unique_pokedex_entries +
+              '<br>PokeStops Visited: ' +
+              current_user_data.inventory_item_data.player_stats.poke_stop_visits +
+              '<br>Kilometers Walked: ' +
+              parseFloat(current_user_data.inventory_item_data.player_stats.km_walked).toFixed(2) +
+              '</div></div>';
+    
     document.getElementById('subcontent').innerHTML = out;
   }
   if (menu == 2) {
-    document.getElementById('subtitle').innerHTML = "Items in Bag";
-    out = '<div class="row items"><div class="col s12"><h5>' + users[0] + '</h5>';
-    for (var i = 0; i < bagItems.length; i++) {
-      out += '<table><tr><td><img src="image/items/' + bagItems[i].inventory_item_data.item.item_id + '.png" class="item_img"></td><td>Item: ' + itemsArray[bagItems[i].inventory_item_data.item.item_id] +
-      '<br>Count: ' + (bagItems[i].inventory_item_data.item.count || 0) + '</td>';
+    document.getElementById('subtitle').innerHTML = user_data[users[user_id]].bagItems.length+" items in Bag";
+    out = '<div class="row items">';
+    for (i = 0; i < user_data[users[user_id]].bagItems.length; i++) {
+      out += '<div class="col s12 m4 l3 center" style="float: left"><img src="image/items/' +
+              user_data[users[user_id]].bagItems[i].inventory_item_data.item.item_id +
+              '.png" class="item_img"><br><b>' +
+              itemsArray[user_data[users[user_id]].bagItems[i].inventory_item_data.item.item_id] +
+              '</b><br>Count: ' +
+              user_data[users[user_id]].bagItems[i].inventory_item_data.item.count +
+              '</div>';
     }
-    out += '</tr></table></div></div>';
+    out += '</div>';
     document.getElementById('subcontent').innerHTML = out;
   }
   if (menu == 3) {
-    document.getElementById('subtitle').innerHTML = "Pokemon in Bag";
-    out = '<div class="row items"><div class="col s12"><h5>' + users[0] + '</h5><table>';
-    for (var i = 0; i < bagPokemon.length; i++) {
-      if (bagPokemon[i].inventory_item_data.pokemon_data.is_egg) {
-        pkmnNum = "???"
-        pkmnImage = "Egg.png"
-        pkmnName = "Egg"
+    pkmnTotal = user_data[users[user_id]].bagPokemon.length;
+    document.getElementById('subtitle').innerHTML = pkmnTotal+" Pokemons";
+    out = '<div class="row items">';
+    user_data[users[user_id]].bagPokemon.sort(function(a, b){return b.inventory_item_data.pokemon_data.cp - a.inventory_item_data.pokemon_data.cp});
+    for (i = 0; i < user_data[users[user_id]].bagPokemon.length; i++) {
+      if (user_data[users[user_id]].bagPokemon[i].inventory_item_data.pokemon_data.is_egg) {
+        continue;
       } else {
-        pkmnNum = bagPokemon[i].inventory_item_data.pokemon_data.pokemon_id
-        pkmnImage = pad_with_zeroes(bagPokemon[i].inventory_item_data.pokemon_data.pokemon_id, 3) + '.png'
-        pkmnName = pokemonArray[pkmnNum-1].Name
+        pkmnNum = user_data[users[user_id]].bagPokemon[i].inventory_item_data.pokemon_data.pokemon_id;
+        pkmnImage = pad_with_zeroes(user_data[users[user_id]].bagPokemon[i].inventory_item_data.pokemon_data.pokemon_id, 3) + '.png';
+        pkmnName = pokemonArray[pkmnNum-1].Name;
+        pkmnCP = "CP "+user_data[users[user_id]].bagPokemon[i].inventory_item_data.pokemon_data.cp;
+        pkmnIVA = user_data[users[user_id]].bagPokemon[i].inventory_item_data.pokemon_data.individual_attack || 0;
+        pkmnIVD = user_data[users[user_id]].bagPokemon[i].inventory_item_data.pokemon_data.individual_defense || 0;
+        pkmnIVS = user_data[users[user_id]].bagPokemon[i].inventory_item_data.pokemon_data.individual_stamina || 0;
+        pkmnIV = ((pkmnIVA + pkmnIVD + pkmnIVS) / 45.0).toFixed(2);
       }
-      out += '<tr><td><img src="image/pokemon/' + pkmnImage + '" class="png_img"></td><td class="left-align">Name: ' + pkmnName +
-      '<br>Number: ' + pkmnNum + '</td></tr>';
+      out += '<div class="col s12 m4 l3 center" style="float: left;"><img src="image/pokemon/' + pkmnImage + '" class="png_img"><br><b>' + pkmnName +
+      '</b><br>' + pkmnCP + '<br>IV '+pkmnIV+'</div>';
     }
-    out += '</table></div></div>';
+    out += '</div>';
     document.getElementById('subcontent').innerHTML = out;
   }
   if (menu == 4) {
-    document.getElementById('subtitle').innerHTML = "Pokedex";
-    out = '<div class="row items"><div class="col s12"><h5>' + users[0] + '</h5><table>';
-    for (var i = 0; i < pokedex.length; i++) {
-      pkmnNum = pokedex[i].inventory_item_data.pokedex_entry.pokedex_entry_number
-      pkmnImage = pad_with_zeroes(pokedex[i].inventory_item_data.pokedex_entry.pokedex_entry_number, 3) + '.png'
-      pkmnName = pokemonArray[pkmnNum-1].Name
-      out += '<tr><td><img src="image/pokemon/' + pkmnImage + '" class="png_img"></td><td class="left-align">Name: ' + pkmnName +
-      '<br>Number: ' + pkmnNum + '<br>Times Encountered: ' + pokedex[i].inventory_item_data.pokedex_entry.times_encountered + 
-      '<br>Times Caught: ' + pokedex[i].inventory_item_data.pokedex_entry.times_captured + '</td></tr>';
+    pkmnTotal = user_data[users[user_id]].pokedex.length;
+    document.getElementById('subtitle').innerHTML = "Pokedex "+ pkmnTotal + ' / 151';
+    
+    out = '<div class="row items">';
+    for (i = 0; i < user_data[users[user_id]].pokedex.length; i++) {
+      pkmnNum = user_data[users[user_id]].pokedex[i].inventory_item_data.pokedex_entry.pokedex_entry_number;
+      pkmnImage = pad_with_zeroes(user_data[users[user_id]].pokedex[i].inventory_item_data.pokedex_entry.pokedex_entry_number, 3) +'.png';
+      pkmnName = pokemonArray[pkmnNum-1].Name;
+      out += '<div class="col m6 s12"><img src="image/pokemon/' +
+              pkmnImage +
+              '" class="png_img"><br><b> ' +
+              pkmnName +
+              '</b><br>Number: ' +
+              pkmnNum +
+              '<br>Times Encountered: ' +
+              user_data[users[user_id]].pokedex[i].inventory_item_data.pokedex_entry.times_encountered + 
+              '<br>Times Caught: ' +
+              user_data[users[user_id]].pokedex[i].inventory_item_data.pokedex_entry.times_captured +
+              '</div>';
     }
-    out += '</table></div></div>';
+    out += '</div>';
     document.getElementById('subcontent').innerHTML = out;
   }
 }
