@@ -59,6 +59,7 @@ No PR on stable/master branch to keep things easier.
 - [ ] Hatch eggs
 - [ ] Incubate eggs
 - [ ] Use candy
+- [ ] Fight Gym
 
 ## Installation
 
