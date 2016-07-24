@@ -10,6 +10,7 @@ import sys
 import yaml
 import logger
 import re
+import time
 from pgoapi import PGoApi
 from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker
 from cell_workers.utils import distance
@@ -42,6 +43,8 @@ class PokemonGoBot(object):
                 "poke") and 'catchable_pokemons' in cell and len(cell[
                     'catchable_pokemons']) > 0:
             logger.log('[#] Something rustles nearby!')
+            if hasattr(self.config, 'lcd'):
+                self.config.lcd.message('Something rustles nearby!')
             # Sort all by distance from current pos- eventually this should
             # build graph & A* it
             cell['catchable_pokemons'].sort(
@@ -168,6 +171,8 @@ class PokemonGoBot(object):
         logger.log('[#] GreatBalls: ' + str(balls_stock[2]))
         logger.log('[#] UltraBalls: ' + str(balls_stock[3]))
 
+
+        self.player = player
         self.get_player_info()
 
         if self.config.initial_transfer:
@@ -424,6 +429,7 @@ class PokemonGoBot(object):
     def get_player_info(self):
         self.api.get_inventory()
         response_dict = self.api.call()
+
         if 'responses' in response_dict:
             if 'GET_INVENTORY' in response_dict['responses']:
                 if 'inventory_delta' in response_dict['responses'][
@@ -450,6 +456,8 @@ class PokemonGoBot(object):
                                         logger.log(
                                             '[#] -- Level: {level}'.format(
                                                 **playerdata))
+                                        if hasattr(self.config, 'lcd'):
+                                            self.config.lcd.write_line('Level {level}'.format(**playerdata), 1)
 
                                     if 'experience' in playerdata:
                                         logger.log(
@@ -468,3 +476,11 @@ class PokemonGoBot(object):
                                         logger.log(
                                             '[#] -- Pokestops Visited: {poke_stop_visits}'.format(
                                                 **playerdata))
+
+        if playerdata:
+            if hasattr(self.config, 'lcd'):
+                self.config.lcd.write_line('Welcome {username}'.format(**self.player), 1)
+                self.config.lcd.write_line('Level {level}'.format(**playerdata), 2)
+                self.config.lcd.write_line('Experience {experience}'.format(**playerdata), 3)
+                self.config.lcd.write_line('Captured {pokemons_captured}'.format(**playerdata), 4)
+                time.sleep(5)

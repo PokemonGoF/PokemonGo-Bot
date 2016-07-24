@@ -42,7 +42,7 @@ if sys.version_info >= (2, 7, 9):
 from getpass import getpass
 from pokemongo_bot import PokemonGoBot
 from pokemongo_bot.cell_workers.utils import print_green, print_yellow, print_red
-
+from pokemongo_bot import lcd
 
 def init_config():
     parser = argparse.ArgumentParser()
@@ -145,6 +145,12 @@ def init_config():
                         type=bool,
                         default=False)
 
+    parser.add_argument("-lcd-addr",
+                        "--lcd-address",
+                        help="Bot will use lcd at given i2c address",
+                        type=lambda x: hex(int(x, 0)),
+                        default=False)
+
     config = parser.parse_args()
     if not config.username and not 'username' in load:
         config.username = raw_input("Username: ")
@@ -155,6 +161,7 @@ def init_config():
     for key in config.__dict__:
         if key in load:
             config.__dict__[key] = load[key]
+
 
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")
@@ -181,7 +188,6 @@ def init_config():
         with open("web/index.html", "w") as sources:
             for line in lines:
                 sources.write(re.sub(r"%s" % find_url, replace_url % config.gmapkey, line))
-
     return config
 
 
@@ -197,12 +203,24 @@ def main():
     if not config:
         return
 
+    if config.lcd_address:
+        config.lcd = lcd.lcd()
+        config.lcd.set_addr(int(config.lcd_address))
+        config.lcd.message('PokemonGo Bot v1.0')
+        time.sleep(1)
+        config.lcd.message('Configuration initialized')
+
     logger.log('[x] PokemonGO Bot v1.0', 'green')
     logger.log('[x] Configuration initialized', 'yellow')
 
     try:
+        if hasattr(config, 'lcd'):
+            config.lcd.message('Logging in...')
+
         bot = PokemonGoBot(config)
         bot.start()
+        if hasattr(config, 'lcd'):
+            config.lcd.message('Starting PokemonGO Bot')
 
         logger.log('[x] Starting PokemonGo Bot....', 'green')
 
@@ -211,6 +229,8 @@ def main():
 
     except KeyboardInterrupt:
         logger.log('[x] Exiting PokemonGo Bot', 'red')
+        if hasattr(config, 'lcd'):
+            config.lcd.message('Exiting PokemonGo Bot')
         # TODO Add number of pokemon catched, pokestops visited, highest CP
         # pokemon catched, etc.
 
