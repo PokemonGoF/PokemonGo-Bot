@@ -133,6 +133,12 @@ def init_config():
         type=list,
         default=[])
 
+    parser.add_argument("-ev",
+                        "--evolve_all",
+                        help="Bot will start by attempting to evolve all pokemons. Great after popping a lucky egg!",
+                        type=bool,
+                        default=False)
+
     config = parser.parse_args()
     if not config.username and not 'username' in load:
         config.username = raw_input("Username: ")
