@@ -77,7 +77,7 @@ function loadScript(src) {
 }
 
 function buildTrainerList() {
-  var out = '<div class="col s12"><ul class="collapsible" data-collapsible="accordion"> \
+  var out = '<div class="col s12"><ul id="bots-list" class="collapsible" data-collapsible="accordion"> \
               <li><div class="collapsible-title"><i class="material-icons">people</i>Bots</div></li>';
   for(var i = 0; i < users.length; i++)
   {

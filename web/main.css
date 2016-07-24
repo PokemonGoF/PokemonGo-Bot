@@ -62,6 +62,13 @@ html, body {
 #trainerList {
 	display: none;
 }
+#bots-list {
+	overflow-y: scroll;
+    max-height: 80vh;
+}
+#bots-list::-webkit-scrollbar { 
+    display: none; 
+}
 .collapsible-body {
 	background: #FFF;
 	padding: 1em;

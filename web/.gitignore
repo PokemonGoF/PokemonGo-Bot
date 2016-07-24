@@ -1,0 +1,22 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtualenvs
+env/
+venv/
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Other useless files
+.DS_Store
+Thumbs.db
+
+# Generated and config files
+userdata.js
+catchable-*.json
+inventory-*.json
+location-*.json
