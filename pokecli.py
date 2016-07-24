@@ -117,7 +117,7 @@ def init_config():
         "Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)",
         type=str,
         default="km")
-    
+
     parser.add_argument(
         "-if",
         "--item_filter",
@@ -144,6 +144,7 @@ def init_config():
     if not (config.location or config.location_cache):
         parser.error("Needs either --use-location-cache or --location.")
         return None
+
 
     config.release_config = {}
     if os.path.isfile(release_config_json):
