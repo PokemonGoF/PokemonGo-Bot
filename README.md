@@ -134,9 +134,10 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 1. Navigate to this [page](https://console.developers.google.com/flows/enableapi?apiid=maps_backend,geocoding_backend,directions_backend,distance_matrix_backend,elevation_backend,places_backend&keyType=CLIENT_SIDE&reusekey=true)
 2. Select 'Create a project' in the dropdown menu.
 3. Wait an eternity.
-4. Click 'Create' on the next page (optionally, fill out the info)
-5. Copy the API key that appears.
-6. After the code done, will update here how to replace.
+4. Go to 'Google Maps JavaScript API', click on 'Activate'
+5. Click 'Create' on the next page (optionally, fill out the info)
+6. Copy the API key that appears.
+7. Open /web/index.html and replace `maps.googleapis.com/maps/api/js?key=AIzaSyBWa0ZYeH6RBZnNTAIj30FyDIVnXV74D9o&callback=initMap` with `maps.googleapis.com/maps/api/js?key=YOURAPIKEY&callback=initMap`
 
 ## Usage
     usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-lc] [-m] [-w] [--distance_unit] [--initial-transfer] [--maxsteps] [-iv] [-d] [-t]
