@@ -12,5 +12,6 @@
     "initial_transfer": 0,
     "location_cache": true,
     "distance_unit": "km",
-    "item_filter": "101,102,103,104"
+    "item_filter": "101,102,103,104",
+    "walk_coordinates": false
 }

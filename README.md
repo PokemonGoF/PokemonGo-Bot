@@ -158,6 +158,7 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -ms, --max_steps MAX_STEP                     Set the steps around your initial location (DEFAULT 5 mean 25 cells around your location)
       -iv IV, --pokemon_potential                   Set the ratio for the IV values to transfer (DEFAULT 0.4 eg. 0.4 will transfer a pokemon with IV 0.3)
       -if LIST, --item_filter LIST                  Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, \"101,102,103,104\" to recycle potions when collected)"
+      -wc, --walk_coordinates                       Print bot walking coordinates. So, you are able to know where is it without gui. (default FALSE)
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
 
