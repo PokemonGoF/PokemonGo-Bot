@@ -8,7 +8,7 @@ class PolylineWalker(object):
     def __init__(self, polyline_points, speed):
         """
         :param polyline_points:
-        URL = 'https://maps.googleapis.com/maps/api/directions/json?origin=Riedmatt+34,Zug&destination=Chamerstrasse+177,6300,Zug,CH&mode=walking'
+        URL = 'https://maps.googleapis.com/maps/api/directions/json?origin=Poststrasse+20,Zug,CH&destination=Guggiweg+7,Zug,CH&mode=walking'
         polyline_points =[x['polyline']['points'] for x in
                           requests.get(URL).json()['routes'][0]['legs'][0]['steps']]
         :param speed:
@@ -74,7 +74,7 @@ class PolylineWalker(object):
                 break
         step_distance = haversine.haversine(*steps_dict[walked_end_step])*1000
         if walked_end_step >= time_passed_distance:
-            percentage_walked = ( walked_end_step - time_passed_distance ) / step_distance
+            percentage_walked = (time_passed_distance - (walked_end_step - step_distance)) / step_distance
         else:
             percentage_walked = 1.0
         return self.calculate_coord(percentage_walked, *steps_dict[walked_end_step])
@@ -82,5 +82,5 @@ class PolylineWalker(object):
     def calculate_coord(self, percentage, o, d):
         lat = o[0]+ (d[0] -o[0]) * percentage
         lon = o[1]+ (d[1] -o[1]) * percentage
-        return [(lat, lon)]
+        return [(round(lat, 5), round(lon, 5))]
 
