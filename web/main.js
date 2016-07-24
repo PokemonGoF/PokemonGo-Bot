@@ -380,13 +380,15 @@ function buildMenu() {
         pkmnNum = "???"
         pkmnImage = "Egg.png"
         pkmnName = "Egg"
+        pkmnCP = ""
       } else {
         pkmnNum = bagPokemon[i].inventory_item_data.pokemon_data.pokemon_id
         pkmnImage = pad_with_zeroes(bagPokemon[i].inventory_item_data.pokemon_data.pokemon_id, 3) + '.png'
         pkmnName = pokemonArray[pkmnNum-1].Name
+        pkmnCP = "<br>Combat Power: " + bagPokemon[i].inventory_item_data.pokemon_data.cp
       }
       out += '<tr><td><img src="image/pokemon/' + pkmnImage + '" class="png_img"></td><td class="left-align">Name: ' + pkmnName +
-      '<br>Number: ' + pkmnNum + '</td></tr>';
+      '<br>Number: ' + pkmnNum + pkmnCP + '</td></tr>';
     }
     out += '</table></div></div>';
     document.getElementById('subcontent').innerHTML = out;
