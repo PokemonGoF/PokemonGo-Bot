@@ -149,7 +149,8 @@ This project uses Google Maps. There's one map coupled with the project, but as 
       -du, --distance_unit UNIT                     Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
       -it, --initial_transfer                       Transfer all duplicate pokemon with same ID on bot start, except pokemon with highest CP. Accepts a number to prevent transferring pokemon with a CP above the provided value.  Default is 0 (aka transfer none).
       -ms, --max_steps MAX_STEP                     Set the steps around your initial location (DEFAULT 5 mean 25 cells around your location)
-      -if LIST, --item_filter LIST                  Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, [\"101\",\"102\",\"103\",\"104\"] to recycle potions when collected)" 
+      -iv IV, --pokemon_potential                   Set the ratio for the IV values to transfer (DEFAULT 0.4 eg. 0.4 will transfer a pokemon with IV 0.3)
+      -if LIST, --item_filter LIST                  Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, \"101,102,103,104\" to recycle potions when collected)"
       -d, --debug                                   Debug Mode
       -t, --test                                    Only parse the specified location
 
@@ -295,7 +296,8 @@ If using multiple usernames format like this:
  * asaf400
  * guyz
  * DavidK1m
-
+ * budi-khoirudin
+ 
 -------
 ## Credits
 - [tejado](https://github.com/tejado) many thanks for the API

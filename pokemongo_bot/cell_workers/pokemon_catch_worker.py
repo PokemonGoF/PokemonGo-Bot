@@ -134,7 +134,7 @@ class PokemonCatchWorker(object):
                                             pokemon_potential
                                         ), 'green'
                                     )
-                                    
+
                                     id_list2 = self.count_pokemon_inventory()
 
                                     if self.config.evolve_captured:
