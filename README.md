@@ -91,6 +91,8 @@ No PR on stable/master branch to keep things easier.
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
 $ cd PokemonGo-Bot  
 $ pip install -r requirements.txt
+$ git submodule init
+$ git submodule update
 ```
 
 ### Installation Mac
@@ -101,6 +103,8 @@ $ cd PokemonGo-Bot
 $ virtualenv .  
 $ source bin/activate  
 $ pip install -r requirements.txt
+$ git submodule init
+$ git submodule update
 ```
 
 ### Installation Windows
@@ -126,6 +130,8 @@ $ cd PokemonGo-Bot
 $ virtualenv .  
 $ source bin/activate  
 $ pip install -r requirements.txt  
+$ git submodule init
+$ git submodule update
 ```
 
 ### Google Maps API (in development)
