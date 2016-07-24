@@ -6,8 +6,9 @@ from utils import distance
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot import logger
 
-
 class PokemonCatchWorker(object):
+    BAG_FULL = 'bag_full'
+    NO_POKEBALLS = 'no_pokeballs'
 
     def __init__(self, pokemon, bot):
         self.pokemon = pokemon
@@ -33,8 +34,7 @@ class PokemonCatchWorker(object):
                 if 'status' in response_dict['responses']['ENCOUNTER']:
                     if response_dict['responses']['ENCOUNTER']['status'] is 7:
                         logger.log('[x] Pokemon Bag is full!', 'red')
-                        worker = InitialTransferWorker(self.bot)
-                        worker.work()
+                        return PokmeonCatchWorker.BAG_FULL
 
                     if response_dict['responses']['ENCOUNTER']['status'] is 1:
                         cp = 0
@@ -98,7 +98,7 @@ class PokemonCatchWorker(object):
                                     '[x] Out of pokeballs, switching to farming mode...', 'red')
                                 # Begin searching for pokestops.
                                 self.config.mode = 'farm'
-                                return -1
+                                return PokemonCatchWorker.NO_POKEBALLS
 
                             balls_stock[pokeball] = balls_stock[pokeball] - 1
                             success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
