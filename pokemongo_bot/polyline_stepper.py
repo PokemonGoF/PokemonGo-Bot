@@ -4,9 +4,7 @@ from stepper import Stepper
 from math import ceil
 from human_behaviour import sleep
 from cell_workers.utils import i2f
-
 import logger
-
 
 class PolylineStepper(Stepper):
 
