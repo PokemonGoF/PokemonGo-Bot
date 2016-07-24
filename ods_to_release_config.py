@@ -1,26 +1,3 @@
-'''
-INSALLATION:
-
-use: 
-	$ pip install pyexcel-ods
-
-	or
-
-	$ git clone http://github.com/pyexcel/pyexcel-ods.git
-	$ cd pyexcel-ods
-	$ python setup.py install
-
-
-
-
-USAGE:
-
-edit release_config.ods file to ur custom needs
-run      $ python ods_to_release_config.py
-enjoy ur custom release_config.json file
-
-'''
-
 from pyexcel_ods import get_data
 
 data = get_data("release_config.ods")
