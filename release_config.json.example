@@ -11,11 +11,16 @@
 	},
 	"exceptions": {
 		"always_capture": [
+		    "Arcanine",
+		    "Lapras",
 			"Dragonite",
 			"Snorlax",
-			"Charmander",
-			"Squirtle",
-			"Bulbasaur"
+			"Blastoise",
+			"Moltres",
+			"Articuno",
+			"Zapdos",
+			"Mew",
+			"Mewtwo"
 		]
 	}
 }
