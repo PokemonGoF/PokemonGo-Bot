@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
 import logging
 import googlemaps
 import json
@@ -91,15 +90,14 @@ class PokemonGoBot(object):
                 lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
 
             user_web_catchable = 'web/catchable-%s.json' % (self.config.username)
-            if os.path.isfile(user_web_catchable): # only write to file if it exists
-                for pokemon in cell['catchable_pokemons']:
-                    with open(user_web_catchable, 'w') as outfile:
-                        json.dump(pokemon, outfile)
+            for pokemon in cell['catchable_pokemons']:
+                with open(user_web_catchable, 'w') as outfile:
+                    json.dump(pokemon, outfile)
 
-                    if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
-                        break
-                    with open(user_web_catchable, 'w') as outfile:
-                        json.dump({}, outfile)
+                if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
+                    break
+                with open(user_web_catchable, 'w') as outfile:
+                    json.dump({}, outfile)
 
         if (self.config.mode == "all" or self.config.mode == "poke"
             ) and 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
@@ -272,9 +270,8 @@ class PokemonGoBot(object):
             'inventory_delta']['inventory_items']
 
         user_web_inventory = 'web/inventory-%s.json' % (self.config.username)
-        if os.path.isfile(user_web_inventory):
-            with open(user_web_inventory, 'w') as outfile:
-                json.dump(inventory_dict, outfile)
+        with open(user_web_inventory, 'w') as outfile:
+            json.dump(inventory_dict, outfile)
 
         # get player balls stock
         # ----------------------
