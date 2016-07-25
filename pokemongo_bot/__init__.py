@@ -14,7 +14,6 @@ from pgoapi import PGoApi
 from pgoapi.utilities import f2i, h2f
 from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
 from cell_workers.utils import distance, get_cellid, encode
-from step_walker import StepWalker
 from human_behaviour import sleep
 from spiral_navigator import SpiralNavigator
 from geopy.geocoders import GoogleV3
@@ -31,7 +30,6 @@ class PokemonGoBot(object):
     def start(self):
         self._setup_logging()
         self._setup_api()
-        self.step_walker = StepWalker(self)
         self.navigator = SpiralNavigator(self)
         random.seed()
 
@@ -73,7 +71,7 @@ class PokemonGoBot(object):
         if self.config.evolve_all:
             # Will skip evolving if user wants to use an egg and there is none
             skip_evolves = False
-            
+
             # Pop lucky egg before evolving to maximize xp gain
             use_lucky_egg = self.config.use_lucky_egg
             lucky_egg_count = self.item_inventory_count(Item.ITEM_LUCKY_EGG.value)
@@ -102,7 +100,7 @@ class PokemonGoBot(object):
                 print('[#] Attempting to evolve all pokemons ...')
                 worker = EvolveAllWorker(self)
                 worker.work()
-            
+
             # Flip the bit.
             self.config.evolve_all = []
 
@@ -267,7 +265,7 @@ class PokemonGoBot(object):
         # Example of good request response
         #{'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
         return inventory_req
-    
+
     def use_lucky_egg(self):
         self.api.use_item_xp_boost(item_id=301)
         inventory_req = self.api.call()
@@ -352,9 +350,9 @@ class PokemonGoBot(object):
         return item_count
 
     def _set_starting_position(self):
-        
+
         has_position = False
-        
+
         if self.config.test:
             # TODO: Add unit tests
             return
@@ -398,7 +396,7 @@ class PokemonGoBot(object):
                         '[x] Last in-game location was set as: {}'.format(
                             self.position))
                     logger.log('')
-                    
+
                     has_position = True
                     return
             except:
