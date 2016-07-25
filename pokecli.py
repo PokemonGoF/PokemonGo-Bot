@@ -43,11 +43,9 @@ from pokemongo_bot.cell_workers.utils import print_green, print_yellow, print_re
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
-
 def init_config():
     parser = argparse.ArgumentParser()
     config_file = "configs/config.json"
-    release_config_json = "configs/release_config.json"
     web_dir = "web"
 
     # If config file exists, load variables from json
@@ -165,6 +163,8 @@ def init_config():
     for key in config.__dict__:
         if key in load:
             config.__dict__[key] = load[key]
+    config.catch = load['catch']
+    config.release = load['release']
 
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")
@@ -174,14 +174,9 @@ def init_config():
         parser.error("Needs either --use-location-cache or --location.")
         return None
 
-    config.release_config = {}
-    if os.path.isfile(release_config_json):
-        with open(release_config_json) as data:
-            config.release_config.update(json.load(data))
+    # When config.item_filter looks like "101,102,103" needs to be converted to ["101","102","103"]
     if isinstance(config.item_filter, basestring):
-        #When config.item_filter looks like "101,102,103" needs to be converted to ["101","102","103"]
         config.item_filter= config.item_filter.split(",")
-        
 
     # create web dir if not exists
     try: 

@@ -185,6 +185,26 @@ To update your project do: `git pull` in the project folder
 - `item_filter` :
 - `evolve_all` : Set to true to evolve pokemons if possible
 
+## Catch Configuration
+Default configuration will capture all Pokemon.
+```"any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"}```
+You can override the global configuration with Pokemon-specific options, such as:
+```"Pidgey": {"catch_above_cp": 0, "catch_above_iv": 0.8", "logic": "and"}```
+to only capture Pidgey with a good roll.
+Additionally, you can specify always_capture and never_capture flags. For example:
+```"Pidgey": {"never_capture": true}```
+will stop catching Pidgey entirely.
+
+## Release Configuration
+Default configuration will not release any Pokemon.
+```"any": {"release_under_cp": 0, "release_under_iv": 0, "logic": "or"}```
+You can override the global configuration with Pokemon-specific options, such as:
+```"Pidgey": {"release_below_cp": 0, "release_below_iv": 0.8", "logic": "or"}```
+to only release Pidgey with bad rolls.
+Additionally, you can specify always_release and never_release flags. For example:
+```"Pidgey": {"always_release": true}```
+will release all Pidgey caught.
+
 ### Evolve All Configuration
     By setting the `evolve_all` attribute in config.json, you can instruct the bot to automatically
     evolve specified pokemons on startup. This is especially useful for batch-evolving after popping up
@@ -232,7 +252,7 @@ sudo apt-get install nginx
 
 #### 2. Check the webserver
 Check if the webserver is running by using your browser and entering the IP address of your local machine/server.
-On a local machine this would be http://127.0.0.1. On AWS this is your public DNS if you havent configured an elastic IP.
+On a local machine this would be http://127.0.0.1. On AWS this is your public DNS if you haven't configured an elastic IP.
 
 #### 3. Change Base Directory of the Webserver
 ```
@@ -248,7 +268,7 @@ Comment out following line: ```root /var/www/html;``` and change it to the web f
 ### What's IV ?
 Here's the [introduction](http://bulbapedia.bulbagarden.net/wiki/Individual_values)
 
-### Does it run automatally?
+### Does it run automatically?
 Not yet, still need a trainer to train the script param. But we are very close to.
 ### Set GEO Location
 It works, use -l "xx.yyyy,zz.ttttt" to set lat long for location. -- diordache
