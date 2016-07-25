@@ -42,8 +42,9 @@ class PokemonGoBot(object):
         if self.api._auth_provider and self.api._auth_provider._ticket_expire:
             remaining_time = self.api._auth_provider._ticket_expire/1000 - time.time()
 
-            logger.log("Session stale, re-logging in", 'yellow')
-            self.login()
+            if remaining_time < 60:
+                logger.log("Session stale, re-logging in", 'yellow')
+                self.login()
  
         if self.config.evolve_all:
             # Run evolve all once. Flip the bit.
