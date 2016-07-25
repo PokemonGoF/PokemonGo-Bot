@@ -14,7 +14,7 @@ The Pokemon Go Bot, baking with community.
 ## Project Chat
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
 ## Breaking Changes
-You need modify config.json (config.json.example for example) then pokecli.py --config config.json 
+You need modify config/config.json (config.json.example for example) then pokecli.py --config config/config.json 
 Please clean up your old clone if you have issue, and following the [install instruction](https://github.com/PokemonGoF/PokemonGo-Bot#installation).
 
 ## About dev/master Branch
@@ -177,8 +177,8 @@ Please keep in mind that this fix is necessary only if your python version don't
 To update your project do: `git pull` in the project folder
 
 ## Usage (up to date)
-	1/ copy `config.json.example` to `config.json` and `release_config.json.example` to `release_config.json`.
-	2/ Edit `config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (others keys are optional, check `Advance Configuration` below)
+	1/ copy `config/config.json.example` to `config/config.json` and `config/release_config.json.example` to `config/release_config.json`.
+	2/ Edit `config/config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (others keys are optional, check `Advance Configuration` below)
 
 ## Advance Configuration
 - `max_steps` :
