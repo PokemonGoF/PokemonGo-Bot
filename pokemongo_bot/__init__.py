@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
 import logging
 import googlemaps
 import json
@@ -72,10 +71,39 @@ class PokemonGoBot(object):
 
     def work_on_cell(self, cell, position):
         if self.config.evolve_all:
-            # Run evolve all once. Flip the bit.
-            print('[#] Attempting to evolve all pokemons ...')
-            worker = EvolveAllWorker(self)
-            worker.work()
+            # Will skip evolving if user wants to use an egg and there is none
+            skip_evolves = False
+            
+            # Pop lucky egg before evolving to maximize xp gain
+            use_lucky_egg = self.config.use_lucky_egg
+            lucky_egg_count = self.item_inventory_count(Item.ITEM_LUCKY_EGG.value)
+
+            if  use_lucky_egg and lucky_egg_count > 0:
+                logger.log('[#] Using lucky egg ... you have {}'
+                           .format(lucky_egg_count))
+                response_dict_lucky_egg = self.use_lucky_egg()
+                if response_dict_lucky_egg and 'responses' in response_dict_lucky_egg and \
+                    'USE_ITEM_XP_BOOST' in response_dict_lucky_egg['responses'] and \
+                    'result' in response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']:
+                    result = response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']['result']
+                    if result is 1: # Request success
+                        logger.log('[+] Successfully used lucky egg... ({} left!)'
+                                   .format(lucky_egg_count-1), 'green')
+                    else:
+                        logger.log('[+] Failed to use lucky egg!', 'red')
+                        skip_evolves = True
+            elif use_lucky_egg: #lucky_egg_count is 0
+                # Skipping evolve so they aren't wasted
+                logger.log('[#] No lucky eggs... skipping evolve!', 'yellow')
+                skip_evolves = True
+
+            if not skip_evolves:
+                # Run evolve all once.
+                print('[#] Attempting to evolve all pokemons ...')
+                worker = EvolveAllWorker(self)
+                worker.work()
+            
+            # Flip the bit.
             self.config.evolve_all = []
 
         self._filter_ignored_pokemons(cell)
@@ -91,15 +119,14 @@ class PokemonGoBot(object):
                 lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
 
             user_web_catchable = 'web/catchable-%s.json' % (self.config.username)
-            if os.path.isfile(user_web_catchable): # only write to file if it exists
-                for pokemon in cell['catchable_pokemons']:
-                    with open(user_web_catchable, 'w') as outfile:
-                        json.dump(pokemon, outfile)
+            for pokemon in cell['catchable_pokemons']:
+                with open(user_web_catchable, 'w') as outfile:
+                    json.dump(pokemon, outfile)
 
-                    if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
-                        break
-                    with open(user_web_catchable, 'w') as outfile:
-                        json.dump({}, outfile)
+                if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
+                    break
+                with open(user_web_catchable, 'w') as outfile:
+                    json.dump({}, outfile)
 
         if (self.config.mode == "all" or self.config.mode == "poke"
             ) and 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
@@ -240,6 +267,13 @@ class PokemonGoBot(object):
         # Example of good request response
         #{'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
         return inventory_req
+    
+    def use_lucky_egg(self):
+        self.api.use_item_xp_boost(item_id=301)
+        inventory_req = self.api.call()
+
+        return inventory_req
+
 
     def update_inventory(self):
         self.api.get_inventory()
@@ -273,9 +307,8 @@ class PokemonGoBot(object):
             'inventory_delta']['inventory_items']
 
         user_web_inventory = 'web/inventory-%s.json' % (self.config.username)
-        if os.path.isfile(user_web_inventory):
-            with open(user_web_inventory, 'w') as outfile:
-                json.dump(inventory_dict, outfile)
+        with open(user_web_inventory, 'w') as outfile:
+            json.dump(inventory_dict, outfile)
 
         # get player balls stock
         # ----------------------
@@ -319,7 +352,9 @@ class PokemonGoBot(object):
         return item_count
 
     def _set_starting_position(self):
-
+        
+        has_position = False
+        
         if self.config.test:
             # TODO: Add unit tests
             return
@@ -335,22 +370,25 @@ class PokemonGoBot(object):
                     'utf-8')))
                 logger.log('[x] Position in-game set as: {}'.format(self.position))
                 logger.log('')
+                has_position = True
                 return
             except:
                 logger.log('[x] The location given using -l could not be parsed. Checking for a cached location.')
                 pass
 
-        if self.config.location_cache and not self.config.location:
+        if self.config.location_cache and not has_position:
             try:
                 #
                 # save location flag used to pull the last known location from
                 # the location.json
+                logger.log('[x] Parsing cached location...')
                 with open('data/last-location-%s.json' %
                           (self.config.username)) as f:
                     location_json = json.load(f)
 
                     self.position = (location_json['lat'],
                                      location_json['lng'], 0.0)
+                    print(self.position)
                     self.api.set_position(*self.position)
 
                     logger.log('')
@@ -360,14 +398,12 @@ class PokemonGoBot(object):
                         '[x] Last in-game location was set as: {}'.format(
                             self.position))
                     logger.log('')
-
+                    
+                    has_position = True
                     return
             except:
-                if not self.config.location:
-                    sys.exit(
-                        "No cached Location. Please specify initial location.")
-                else:
-                    pass
+                sys.exit(
+                    "No cached Location. Please specify initial location.")
 
     def _get_pos_by_name(self, location_name):
         # Check if the given location is already a coordinate.
