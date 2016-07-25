@@ -6,6 +6,7 @@ import googlemaps
 import json
 import random
 import threading
+import time
 import datetime
 import sys
 import yaml
@@ -37,6 +38,13 @@ class PokemonGoBot(object):
         self.stepper.take_step()
 
     def work_on_cell(self, cell, position, include_fort_on_path):
+        # Check session expiry
+        if self.api._auth_provider and self.api._auth_provider._ticket_expire:
+            remaining_time = self.api._auth_provider._ticket_expire/1000 - time.time()
+
+            logger.log("Session stale, re-logging in", 'yellow')
+            self.login()
+ 
         if self.config.evolve_all:
             # Run evolve all once. Flip the bit.
             print('[#] Attempting to evolve all pokemons ...')
@@ -117,6 +125,19 @@ class PokemonGoBot(object):
             logging.getLogger("pgoapi").setLevel(logging.ERROR)
             logging.getLogger("rpc_api").setLevel(logging.ERROR)
 
+    def login(self):
+        logger.log('[#] Attempting login to Pokemon Go.', 'white')
+
+        self.api.set_position(*self.position)
+
+        while not self.api.login(self.config.auth_service,
+                               str(self.config.username),
+                               str(self.config.password)):
+            logger.log('[X] Login Error, server busy', 'red')
+            time.sleep(10)
+
+        logger.log('[+] Login to Pokemon Go successful.', 'green')
+
     def _setup_api(self):
         # instantiate pgoapi
         self.api = PGoApi()
@@ -133,11 +154,7 @@ class PokemonGoBot(object):
         # provide player position on the earth
         self._set_starting_position()
 
-        if not self.api.login(self.config.auth_service,
-                              str(self.config.username),
-                              str(self.config.password)):
-            logger.log('Login Error, server busy', 'red')
-            exit(0)
+        self.login()
 
         # chain subrequests (methods) into one RPC call
 
