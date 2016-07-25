@@ -1,5 +1,4 @@
 import json
-import os
 
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot import logger
@@ -51,9 +50,8 @@ class InitialTransferWorker(object):
             'inventory_delta']['inventory_items']
 
         user_web_inventory = 'web/inventory-%s.json' % (self.config.username)
-        if os.path.isfile(user_web_inventory):
-            with open(user_web_inventory, 'w') as outfile:
-                json.dump(inventory_dict, outfile)
+        with open(user_web_inventory, 'w') as outfile:
+            json.dump(inventory_dict, outfile)
 
         for pokemon in inventory_dict:
             try:

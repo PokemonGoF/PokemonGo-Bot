@@ -17,12 +17,13 @@ class PolylineStepper(Stepper):
         proposed_lat = proposed_origin[0]
         proposed_lng = proposed_origin[1]
         if proposed_lat != lat and proposed_lng != lng:
-            logger.log('[#] Using _old_walk_to to go to the proposed_origin: ' +str(proposed_origin))
+            logger.log('[#] Using _old_walk_to to go to the proposed_origin: {}'
+                       .format(proposed_origin))
             self._old_walk_to(speed, proposed_lat, proposed_lng, alt)
         if proposed_origin != proposed_destination:
             duration = polyline_walker.get_total_distance() / speed
-            logger.log('[#] Using PolylineWalker from '+ str(proposed_origin) +
-                       ' to ' +str(proposed_destination)  + " for approx. " + str(ceil(duration)) + ' seconds')
+            logger.log('[#] Using PolylineWalker from {} to {} for approx. {} seconds.'
+                       .format(proposed_origin, proposed_destination, ceil(duration)))
             while proposed_destination != polyline_walker.get_pos()[0]:
                 cLat, cLng = polyline_walker.get_pos()[0]
                 self.api.set_position(cLat, cLng, alt)
@@ -30,8 +31,8 @@ class PolylineStepper(Stepper):
                 self._work_at_position(i2f(self.api._position_lat), i2f(self.api._position_lng), alt, False)
                 sleep(1)  # sleep one second plus a random delta
         if proposed_lat != self.api._position_lat and proposed_lng != self.api._position_lng:
-            logger.log('[#] Using _old_walk_to to go from the proposed destination : ' +
-                       str(proposed_destination) + ' to ' + str((lat, lng)))
+            logger.log('[#] Using _old_walk_to to go from the proposed destination : {} to {}'
+                       .format(proposed_destination, (lat, lng)))
             self._old_walk_to(speed, lat, lng, alt)
 
     def _old_walk_to(self, speed, lat, lng, alt):

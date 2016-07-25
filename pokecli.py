@@ -46,8 +46,9 @@ if sys.version_info >= (2, 7, 9):
 
 def init_config():
     parser = argparse.ArgumentParser()
-    config_file = "config.json"
-    release_config_json = "release_config.json"
+    config_file = "configs/config.json"
+    release_config_json = "configs/release_config.json"
+    web_dir = "web"
 
     # If config file exists, load variables from json
     load = {}
@@ -59,8 +60,12 @@ def init_config():
         with open(config_arg) as data:
             load.update(json.load(data))
     elif os.path.isfile(config_file):
+        logger.log('[x] No config argument specified, checking for /configs/config.json', 'yellow')
         with open(config_file) as data:
             load.update(json.load(data))
+    else:
+        logger.log('[x] Error: No /configs/config.json or specified config', 'red')
+
 
     # Read passed in Arguments
     required = lambda x: not x in load
@@ -129,8 +134,8 @@ def init_config():
         "-if",
         "--item_filter",
         help=
-        "Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, \"101,102,103,104\" to recycle potions when collected)",
-        type=str,
+        "Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, SYNTAX FOR CONFIG.JSON : [\"101\",\"102\",\"103\",\"104\"] to recycle potions when collected, SYNTAX FOR CONSOLE ARGUMENT : \"101\",\"102\",\"103\",\"104\")",
+        type=list,
         default=[])
 
     parser.add_argument("-ev",
@@ -142,6 +147,11 @@ def init_config():
     parser.add_argument("-ec",
                         "--evolve_captured",
                         help="(Ad-hoc mode) Bot will attempt to evolve all the pokemons captured!",
+                        type=bool,
+                        default=False)
+    parser.add_argument("-le",
+                        "--use_lucky_egg",
+                        help="Uses lucky egg when using evolve_all",
                         type=bool,
                         default=False)
 
@@ -164,35 +174,31 @@ def init_config():
         parser.error("Needs either --use-location-cache or --location.")
         return None
 
-    if config.item_filter:
-        config.item_filter = [str(item_id) for item_id in config.item_filter.split(',')]
-
     config.release_config = {}
     if os.path.isfile(release_config_json):
         with open(release_config_json) as data:
             config.release_config.update(json.load(data))
+    if isinstance(config.item_filter, basestring):
+        #When config.item_filter looks like "101,102,103" needs to be converted to ["101","102","103"]
+        config.item_filter= config.item_filter.split(",")
+        
 
-    web_index = 'web/index.html'
-    if config.gmapkey and os.path.isfile(web_index):
-        find_url = 'https:\/\/maps.googleapis.com\/maps\/api\/js\?key=\S*'
-        replace_url = "https://maps.googleapis.com/maps/api/js?key=%s&callback=initMap\""
-        #Someone make this pretty! (Efficient)
-        with open(web_index, "r+") as sources: # r+ is read + write
-            lines = sources.readlines()
-            for line in lines:
-                sources.write(re.sub(r"%s" % find_url, replace_url % config.gmapkey, line))
+    # create web dir if not exists
+    try: 
+        os.makedirs(web_dir)
+    except OSError:
+        if not os.path.isdir(web_dir):
+            raise
 
     if config.evolve_all:
         config.evolve_all = [str(pokemon_name) for pokemon_name in config.evolve_all.split(',')]
 
     return config
 
-
 def main():
     # log settings
     # log format
     #logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(module)10s] [%(levelname)5s] %(message)s')
-
     sys.stdout = codecs.getwriter('utf8')(sys.stdout)
     sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 

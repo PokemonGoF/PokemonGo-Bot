@@ -1,33 +1,37 @@
 #! /usr/bin/env python
 '''
+Author: gregorynicholas (github), modified by Jacob Henderson (jacohend, github)
 Module that runs pylint on all python scripts found in a directory tree..
-'''
+''' 
 
 import os
 import re
 import sys
 
-total = 0.0
-count = 0
+passed = 0
+failed = 0
+errors = list()
 
 def check(module):
+  global passed, failed
   '''
   apply pylint to the file specified if it is a *.py file
   '''
-  global total, count
-
   if module[-3:] == ".py":
-
+     
     print "CHECKING ", module
     pout = os.popen('pylint %s'% module, 'r')
     for line in pout:
-      if  re.match("E....:.", line):
-        print line
       if "Your code has been rated at" in line:
-        print line
-        score = re.findall("\d.\d\d", line)[0]
-        total += float(score)
-        count += 1
+        print "PASSED pylint inspection: " + line
+        passed += 1
+        return True
+      if "-error" in line:
+        print "FAILED pylint inspection: " + line
+        failed += 1
+        errors.append("FILE: " + module)
+        errors.append("FAILED pylint inspection: " + line)
+        return False
   
 if __name__ == "__main__":
   try:
@@ -36,13 +40,18 @@ if __name__ == "__main__":
   except IndexError:
     print "no directory specified, defaulting to current working directory"
     BASE_DIRECTORY = os.getcwd()
+ 
 
   print "looking for *.py scripts in subdirectories of ", BASE_DIRECTORY 
   for root, dirs, files in os.walk(BASE_DIRECTORY):
     for name in files:
       filepath = os.path.join(root, name)
       check(filepath)
-      
-  print "==" * 50
-  print "%d modules found"% count
-  print "AVERAGE SCORE = %.02f"% (total / count)
+  print "Passed: " + str(passed) + " Failed: " + str(failed)
+  print "\n"
+  print "Showing errors:"
+  if (str(failed)):
+    for err in errors:
+      print err
+
+    sys.exit("Pylint failed with errors")
