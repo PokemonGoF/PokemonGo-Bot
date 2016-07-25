@@ -116,7 +116,7 @@ web/userdata.js
 location.json
 
 #Multiple config
-configs/
+configs/*
 !configs/config.json.example
 !configs/release_config.json.example
 !config.json.example
