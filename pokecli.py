@@ -46,8 +46,8 @@ if sys.version_info >= (2, 7, 9):
 
 def init_config():
     parser = argparse.ArgumentParser()
-    config_file = "config.json"
-    release_config_json = "release_config.json"
+    config_file = "configs/config.json"
+    release_config_json = "configs/release_config.json"
     web_dir = "web"
 
     # If config file exists, load variables from json
