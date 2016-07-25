@@ -109,6 +109,7 @@ $ git submodule update
 ```
 
 ### Installation Windows
+
 (change master to dev for the newer version)
 
 On Windows, you will need to install PyYaml through the installer and not through requirements.txt.
@@ -210,6 +211,41 @@ To update your project do: `git pull` in the project folder
     2. "evolve_all": "Pidgey,Weedle"
       Will only evolve Pidgey and Weedle.
     3. Not setting evolve_all or having any other string would not evolve any pokemons on startup.
+
+## How to run multiple accounts at the same time(skyl1ne94)
+    Before u start with this, make sure you create a copy of the config file for a second account by typing 
+    "cp config.json.example config_acc1" in the Terminal. Fill in your details in the file "config_acc1"
+    
+    To actually make PokemonGo-Bot run multiple accounts, you can follow this tutorial:
+    
+    Linux:
+    1. Download the template for Linux [here](https://onedrive.live.com/download?cid=8A1EC0D384061BB1&resid=8A1EC0D384061BB1%2116640&authkey=AEZ6QGJ8xIACQ6U)
+    2. Place the template in the root folder of the PokemonGo-Bot.
+    3. Copy the template and give it your own identity "cp startlinux_acc1_example startlinux_acc1".
+    4. Open the file with notepad and edit the following parts:
+       - LOCATION OF PokemonGo-Bot FOLDER (e.g. /root/PokemonGo-Bot);
+       - git pull origin to "dev" or "master" (e.g. git pull origin dev);
+       - config.json to the config file of the other account (e.g. config_acc1.json).
+    5. You can run the bot now by opening a terminal and filling in "./startbotacc1".
+    6. To run multiple accounts at the same time:
+       - Create a copy of "config_acc1" to "config_acc2"
+       - Create a copy of "startwin_acc1" to "startwin_acc2"
+    7. Now use the command "screen" to create a screen for each bot to seperate the bots from each other. For a manual of the command    "screen" use "man screen" in the Terminal.
+
+    
+    Windows
+    1. Download the template for Windows [here](https://onedrive.live.com/download?cid=8A1EC0D384061BB1&resid=8A1EC0D384061BB1%2116639&authkey=AH04lpHZWP6ISWg)
+    2. Place the template in the root folder of the PokemonGo-Bot.
+    3. Copy the template and give it your own identity "cp startwin_acc1_example startwin_acc1".
+    4. Open the file with notepad and edit the following parts:
+       - LOCATION OF PokemonGo-Bot FOLDER (e.g. C:\Program Files\PokemonGo-Bot);
+       - git pull origin to "dev" or "master" (e.g. git pull origin dev);
+       - config.json to the config file of the other account (e.g. config_acc1.json).
+    5. You can run the bot by opening "startwin_acc1"
+    6. To run multiple accounts at the same time:
+       - Create a copy of "config_acc1" to "config_acc2"
+       - Create a copy of "startwin_acc1" to "startwin_acc2"
+    7. Change the values in these files to the credentials and details of the second account and you are good to go a second bot!
 
 ## How to run with Docker
 
@@ -342,6 +378,7 @@ If using multiple usernames format like this:
  * th3w4y
  * Leaklessgfy
  * codybaldwin
+ * skyl1ne94
  
 -------
 ## Credits
