@@ -197,7 +197,7 @@ class PokemonGoBot(object):
         self.api._auth_token = None
         self.api._auth_provider = None
         self.api._api_endpoint = None
-        self.api.set_position(*self.position)
+        self.api.set_position(*self.position[0:2])
 
         while not self.api.login(self.config.auth_service,
                                str(self.config.username),
