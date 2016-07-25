@@ -114,4 +114,8 @@ data/catch-ignore.yml
 release_config.json
 web/userdata.js
 location.json
+
+#config directory
 configs/
+!release_config.json.example
+!config.json.example
