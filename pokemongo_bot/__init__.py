@@ -144,7 +144,7 @@ class PokemonGoBot(object):
         self.api.get_player()
 
         response_dict = self.api.call()
-        print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+        #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
         currency_1 = "0"
         currency_2 = "0"
 
