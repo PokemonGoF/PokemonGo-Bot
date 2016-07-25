@@ -14,7 +14,7 @@ The Pokemon Go Bot, baking with community.
 ## Project Chat
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
 ## Breaking Changes
-You need modify config.json (config.json.example for example) then pokecli.py --config config.json 
+You need modify config.json (config.json.example for example) then pokecli.py --config config.json
 Please clean up your old clone if you have issue, and following the [install instruction](https://github.com/PokemonGoF/PokemonGo-Bot#installation).
 
 ## About dev/stable/master Branch
@@ -118,7 +118,7 @@ On Windows, you will need to install PyYaml through the installer and not throug
 Go to : http://pyyaml.org/wiki/PyYAML , download the right version for your pc and install it
 
 ##### Windows 10:
-Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl   
+Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl
 (If running 64-bit python or if you get a 'not a supported wheel on this platform' error,
 download the 64 bit version instead: PyYAML-3.11-cp27-cp27m-win_amd64.whl )
 
@@ -132,8 +132,8 @@ $ pip install PyYAML-3.11-cp27-cp27m-win32.whl
 After this, just do :
 
 ```
-$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
-$ cd PokemonGo-Bot  
+$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot
+$ cd PokemonGo-Bot
 $ pip install -r requirements.txt
 $ git submodule init
 $ git submodule update
@@ -187,7 +187,7 @@ To update your project do: `git pull` in the project folder
 - `debug` : Let the default value here except if you are developper
 - `test` : Let the default value here except if you are developper
 - `initial_transfer` : Set this to 1 if you want to transfer pokemon
-- `location_cache` : 
+- `location_cache` :
 - `distance_unit` :
 - `item_filter` :
 - `evolve_all` : Set to true to evolve pokemon if possible
@@ -196,12 +196,12 @@ To update your project do: `git pull` in the project folder
     By setting the `evolve_all` attribute in config.json, you can instruct the bot to automatically
     evolve specified pokemons on startup. This is especially useful for batch-evolving after popping up
     a lucky egg (currently this needs to be done manually).
-    
+
     The evolve all mechanism evolves only higher CP pokemons. It does this by first ordering them from high-to-low CP.
     It will also automatically transfer the evolved pokemons based on the release configuration.
-    
+
     Examples on how to use (set in config.json):
-    
+
     1. "evolve_all": "all"
       Will evolve ALL pokemons.
     2. "evolve_all": "Pidgey,Weedle"
@@ -338,7 +338,7 @@ If using multiple usernames format like this:
  * riberod07
  * th3w4y
  * Leaklessgfy
- 
+
 -------
 ## Credits
 - [tejado](https://github.com/tejado) many thanks for the API

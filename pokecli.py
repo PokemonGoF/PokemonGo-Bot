@@ -145,6 +145,12 @@ def init_config():
                         type=bool,
                         default=False)
 
+    parser.add_argument("-wc",
+                        "--walk_coordinates",
+                        help="Bot will print walking coordinates",
+                        type=bool,
+                        default=False)
+
     config = parser.parse_args()
     if not config.username and 'username' not in load:
         config.username = raw_input("Username: ")

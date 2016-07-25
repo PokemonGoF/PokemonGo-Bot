@@ -53,7 +53,7 @@ class Stepper(object):
                     self._walk_to(self.config.walk, *position)
                 else:
                     self.api.set_position(*position)
-                print('[#] {}'.format(position))
+                logger.log('[#] {}'.format(position))
             if self.x == self.y or self.x < 0 and self.x == -self.y or self.x > 0 and self.x == 1 - self.y:
                 (self.dx, self.dy) = (-self.dy, self.dx)
 
@@ -82,6 +82,8 @@ class Stepper(object):
                     dLng + random_lat_long_delta()
                 self.api.set_position(cLat, cLng, alt)
                 self.bot.heartbeat()
+                if self.config.walk_coordinates:
+                    logger.log('[#] Step at ({}, {})'.format(cLat, cLng))
                 sleep(1)  # sleep one second plus a random delta
                 self._work_at_position(
                     i2f(self.api._position_lat), i2f(self.api._position_lng),
