@@ -88,7 +88,7 @@ class PokemonCatchWorker(object):
                             ## Use berry to increase success chance.
                             berry_id = 701 # @ TODO: use better berries if possible
                             berries_count = self.bot.item_inventory_count(berry_id)
-                            if(catch_rate[pokeball-1] < 0.5 and berries_count > 0): # and potion is in stock
+                            if(catch_rate[pokeball-1] < 0.5 and berries_count > 0): # and berry is in stock
                                 success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
                                 logger.log('[x] Catch Rate with normal Pokeball is low ({}%). Throwing {}... ({} left!)'.format(success_percentage,self.item_list[str(berry_id)],berries_count-1))
                                 self.api.use_item_capture(
@@ -97,7 +97,7 @@ class PokemonCatchWorker(object):
                                     spawn_point_guid = spawnpoint_id
                                 )
                                 response_dict = self.api.call()
-                                if response_dict and response_dict['status_code'] is 1:
+                                if response_dict and response_dict['status_code'] is 1 and 'item_capture_mult' in response_dict['responses']['USE_ITEM_CAPTURE']:
                                 
                                     for i in range(len(catch_rate)):
                                         catch_rate[i] = catch_rate[i] * response_dict['responses']['USE_ITEM_CAPTURE']['item_capture_mult']
