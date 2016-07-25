@@ -138,7 +138,7 @@ class PokemonCatchWorker(object):
                                             pokemon_name,
                                             cp,
                                             pokemon_potential
-                                        ), 'green'
+                                        ), 'cyan'
                                     )
 
                                     id_list2 = self.count_pokemon_inventory()
