@@ -17,6 +17,7 @@
     "use_lucky_egg": false,
     "evolve_captured": false,
     "catch": {
+      "any": {"catch_above_cp": 300, "catch_above_iv": 0.5, "logic": "or" },
 
       // Pokemons with example { "always_catch" : true }
       // Gets filtered with release parameters
@@ -55,6 +56,7 @@
       // Exeggcute evolves to Exeggutor
       "Exeggcute" : { "catch_above_cp" : 384, "catch_above_iv" : 0.8, "cp_iv_logic" : "and" },
       // Eevee evolves to many versions, like Vaporeon, Flareon
+      "Eevee" : { "catch_above_cp" : 376, "catch_above_iv" : 0.8, "cp_iv_logic" : "and"},
 
       // A-Tier pokemons
       "Slowbro" : { "always_catch" : true },
@@ -92,6 +94,7 @@
       "Kangaskhan" : { "always_catch" : true }
     },
     "release": {
+      "any": {"release_under_cp": 600, "release_under_iv": 0.75, "logic": "and" },
 
       // Ledgendary pokemons (Goes under S-Tier)
       "Lapras" : { "release_under_cp" : 1041, "release_under_iv" : 0.8, "cp_iv_logic" : "and" },
@@ -100,6 +103,7 @@
       "Articuno" : { "release_under_cp" : 1039, "release_under_iv" : 0.8, "cp_iv_logic" : "and" },
 
       // S-Tier pokemons (if pokemon can be evolved into tier, list the representative)
+      "Mewtwo" : { "release_under_cp" : 1447, "release_under_iv" : 0.8, "cp_iv_logic" : "and"},
       "Dragonite" : { "release_under_cp" : 1221, "release_under_iv" : 0.8, "cp_iv_logic" : "and" },
       "Snorlax" : { "release_under_cp" : 1087, "release_under_iv" : 0.8, "cp_iv_logic" : "and" },
       // Mew evolves to Mewtwo
