@@ -17,9 +17,6 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 You need modify config.json (config.json.example for example) then pokecli.py --config config.json 
 Please clean up your old clone if you have issue, and following the [install instruction](https://github.com/PokemonGoF/PokemonGo-Bot#installation).
 
-## CI ERROR Need Help
-Our CI check turn lots of lint error, please help to fix. 
-Commit comment set to 'CI FIX, File: ' 
 ## About dev/stable/master Branch
 Dev branch has most up to date feature and even everyone handle the part well, still, will have broken changes. Your test contribute and PR for fix are warm welcome. 
 Stable branch is better than dev branch. Setup with milestone tag.  
