@@ -174,16 +174,18 @@ To update your project do: `git pull` in the project folder
   2/ Edit `config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (other keys are optional, check `Advance Configuration` below)
 
 ## Advance Configuration
-- `max_steps` :
-- `mode` :
-- `walk` :
-- `debug` : Let the default value here except if you are developper
-- `test` : Let the default value here except if you are developper
-- `initial_transfer` : Set this to 1 if you want to transfer pokemon
-- `location_cache` : 
-- `distance_unit` :
-- `item_filter` :
-- `evolve_all` : Set to true to evolve pokemons if possible
+Option | Meaning
+------ | -------
+`max_steps` |		The steps around your initial location (DEFAULT 5 mean 25 cells around your location) that will be explored
+`mode` |  		Set farming Mode for the bot ('all', 'poke', 'farm'). 'all' means both spinning pokéstops and catching pokémon; 'poke'means only catching pokémon and 'farm' means only spinning pokéstops
+`walk` | Walk with the given speed (meters per second max 4.16 because of walking end on 15km/h)
+`debug` | 		Let the default value here except if you are developer
+`test` | 		Let the default value here except if you are developer
+`initial_transfer` | 	Set this to 1 if you want to transfer pokemon
+`location_cache` | 	Bot will start at last known location
+`distance_unit` | 	Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
+`item_filter` | 	Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, [\"101\",\"102\",\"103\",\"104\"] to recycle potions when collected)
+`evolve_all` | 	Set to true to evolve pokemons if possible, takes pokémon as an argument as well.
 
 ## Catch Configuration
 Default configuration will capture all Pokemon.
