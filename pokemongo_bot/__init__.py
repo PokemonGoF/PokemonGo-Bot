@@ -183,7 +183,7 @@ class PokemonGoBot(object):
 
         # check if the release_config file exists
         try:
-            with open('release_config.json') as file:
+            with open('configs/release_config.json') as file:
                 pass
         except:
             # the file does not exist, warn the user and exit.

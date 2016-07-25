@@ -46,8 +46,8 @@ if sys.version_info >= (2, 7, 9):
 
 def init_config():
     parser = argparse.ArgumentParser()
-    config_file = "config.json"
-    release_config_json = "release_config.json"
+    config_file = "configs/config.json"
+    release_config_json = "configs/release_config.json"
     web_dir = "web"
 
     # If config file exists, load variables from json
@@ -60,8 +60,12 @@ def init_config():
         with open(config_arg) as data:
             load.update(json.load(data))
     elif os.path.isfile(config_file):
+        logger.log('[x] No config argument specified, checking for /configs/config.json', 'yellow')
         with open(config_file) as data:
             load.update(json.load(data))
+    else:
+        logger.log('[x] Error: No /configs/config.json or specified config', 'red')
+
 
     # Read passed in Arguments
     required = lambda x: not x in load
