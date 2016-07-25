@@ -15,13 +15,6 @@ class StepWalker(object):
         if self.api._position_lat == lat and self.api._position_lng == lng:
             return True
 
-        dist = distance(
-            i2f(self.api._position_lat),
-            i2f(self.api._position_lng),
-            lat,
-            lng
-        )
-
         dLat = (lat - i2f(self.api._position_lat))
         dLng = (lng - i2f(self.api._position_lng))
 

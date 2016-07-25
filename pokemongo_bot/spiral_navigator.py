@@ -10,7 +10,7 @@ from s2sphere import CellId, LatLng
 from google.protobuf.internal import encoder
 
 from human_behaviour import sleep, random_lat_long_delta
-from cell_workers.utils import distance, i2f, format_time
+from cell_workers.utils import distance, i2f, format_time, format_dist
 
 from pgoapi.utilities import f2i, h2f
 import logger
@@ -49,8 +49,16 @@ class SpiralNavigator(object):
             position = (self.x * 0.0025 + self.origin_lat,
                         self.y * 0.0025 + self.origin_lon, 0)
             if self.config.walk > 0:
+
+                dist = distance(
+                    i2f(self.api._position_lat),
+                    i2f(self.api._position_lng),
+                    position[0],
+                    position[1]
+                )
+
                 logger.log('[#] Walking from ' + str((i2f(self.api._position_lat), i2f(
-                    self.api._position_lng))) + " to " + str((str(position[0:2]))))
+                    self.api._position_lng))) + " to " + str((str(position[0:2]))) + " " + format_dist(dist, self.config.distance_unit))
                 self.bot.step_walker.step(self.config.walk, *position[0:2])
             else:
                 self.api.set_position(*position)
