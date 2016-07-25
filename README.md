@@ -21,41 +21,10 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 - [ ] Use candy
 - [ ] Fight Gym
 
+## Wiki
+All information on [Getting Started](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Getting-Started) is available in the [Wiki](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/)!
+To ensure that all updates are documented - [@eggins](https://github.com/eggins) will keep the Wiki updated with the latest information on installing, updating and configuring the bot.
 
-## Contributors
- * eggins -- The first pull request :)
- * crack00r
- * ethervoid
- * Bashin
- * tstumm
- * TheGoldenXY
- * Reaver01
- * rarshonsky
- * earthchie
- * haykuro
- * 05-032
- * sinistance
- * CapCap
- * mzupan
- * gnekic(GeXx)
- * Shoh
- * luizperes
- * brantje
- * VirtualSatai
- * dmateusp
- * jtdroste
- * msoedov
- * Grace
- * Calcyfer
- * asaf400
- * guyz
- * DavidK1m
- * budi-khoirudin
- * riberod07
- * th3w4y
- * Leaklessgfy
- 
--------
 ## Credits
 - [tejado](https://github.com/tejado) many thanks for the API
 - [Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets
