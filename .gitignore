@@ -112,7 +112,6 @@ web/userdata.js
 data/last-location*.json
 data/catch-ignore.yml
 release_config.json
-web/userdata.js
 location.json
 
 #Multiple config
