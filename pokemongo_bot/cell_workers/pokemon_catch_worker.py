@@ -202,6 +202,38 @@ class PokemonCatchWorker(object):
                             break
         time.sleep(5)
 
+    def _check_if_higher_cp_pokemon(self, pokemon_name, value):
+	self.api.get_inventory()
+	response_dict = self.api.call()
+	return self._check_if_higher_cp_pokemon_all(pokemon_name, value, response_dict)
+
+    def _check_if_higher_cp_pokemon_all(self, pokemon_name, value, response_dict):
+	try:
+		reduce(dict.__getitem__, [
+			   "responses", "GET_INVENTORY", "inventory_delta", "inventory_items"], response_dict)
+	except KeyError:
+		pass
+	else:
+		for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
+			try:
+				reduce(dict.__getitem__, [
+					   "inventory_item_data", "pokemon"], item)
+			except KeyError:
+				pass
+			else:
+				pokemon = item['inventory_item_data']['pokemon']
+				if self._check_if_cp_higher(value, pokemon_name, pokemon):
+					return True						
+	return False
+						
+					
+				
+    def _check_if_cp_higher(self, value, pokemon_name, pokemon):
+	if 'name' in pokemon and pokemon['name'] == pokemon_name:
+		if 'cp' in pokemon and pokemon['cp'] > value:
+			return True
+	else:
+		return False
     def _transfer_low_cp_pokemon(self, value):
         self.api.get_inventory()
         response_dict = self.api.call()
@@ -277,8 +309,8 @@ class PokemonCatchWorker(object):
 
         if catch_config.get('always_catch', False):
             return True
-
-        catch_cp = catch_config.get('catch_above_cp', 0)
+        
+	catch_cp = catch_config.get('catch_above_cp', 0)
         if cp > catch_cp:
             catch_results['cp'] = True
 
@@ -324,8 +356,12 @@ class PokemonCatchWorker(object):
 
         if release_config.get('always_release', False):
             return True
-
-        release_cp = release_config.get('release_below_cp', 0)
+	
+	if release_config.get('keep_best_cp', True):
+	    if not self._check_if_higher_cp_pokemon(pokemon_name, cp):
+		return True
+        
+	release_cp = release_config.get('release_below_cp', 0)
         if cp < release_cp:
             release_results['cp'] = True
 
