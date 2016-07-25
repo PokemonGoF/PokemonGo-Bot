@@ -11,6 +11,7 @@ from google.protobuf.internal import encoder
 
 from human_behaviour import sleep, random_lat_long_delta
 from cell_workers.utils import distance, i2f, format_time, format_dist
+from step_walker import StepWalker
 
 from pgoapi.utilities import f2i, h2f
 import logger
@@ -31,6 +32,7 @@ class SpiralNavigator(object):
         self.steplimit2 = self.steplimit**2
         self.origin_lat = self.bot.position[0]
         self.origin_lon = self.bot.position[1]
+        self._step_walker = None
 
     def take_step(self):
         position = (self.origin_lat, self.origin_lon, 0.0)
@@ -49,6 +51,15 @@ class SpiralNavigator(object):
             position = (self.x * 0.0025 + self.origin_lat,
                         self.y * 0.0025 + self.origin_lon, 0)
             if self.config.walk > 0:
+                if not self._step_walker:
+                    self._step_walker = StepWalker(
+                        self.bot,
+                        self.config.walk,
+                        self.api._position_lat,
+                        self.api._position_lng,
+                        position[0],
+                        position[1]
+                    )
 
                 dist = distance(
                     i2f(self.api._position_lat),
@@ -59,7 +70,9 @@ class SpiralNavigator(object):
 
                 logger.log('[#] Walking from ' + str((i2f(self.api._position_lat), i2f(
                     self.api._position_lng))) + " to " + str((str(position[0:2]))) + " " + format_dist(dist, self.config.distance_unit))
-                self.bot.step_walker.step(self.config.walk, *position[0:2])
+
+                if self._step_walker.step():
+                    self._step_walker = None
             else:
                 self.api.set_position(*position)
         if self.x == self.y or self.x < 0 and self.x == -self.y or self.x > 0 and self.x == 1 - self.y:
