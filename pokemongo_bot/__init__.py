@@ -9,16 +9,16 @@ import threading
 import datetime
 import sys
 import yaml
-import logger
+import pokemongo_bot.logger
 import re
 from pgoapi import PGoApi
-from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
-from cell_workers.utils import distance
-from human_behaviour import sleep
-from stepper import Stepper
+from pokemongo_bot.cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
+from pokemongo_bot.cell_workers.utils import distance
+from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot.stepper import Stepper
 from geopy.geocoders import GoogleV3
 from math import radians, sqrt, sin, cos, atan2
-from item_list import Item
+from pokemongo_bot.item_list import Item
 
 
 class PokemonGoBot(object):
