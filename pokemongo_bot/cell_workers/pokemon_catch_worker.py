@@ -94,8 +94,6 @@ class PokemonCatchWorker(object):
                                 
                                 if balls_stock[pokeball] is 0:
                                     break
-                                else:
-                                    print 'we got balls in atlanta'
                                 
                                 self.api.use_item_capture(
                                     item_id=berry_id, 
