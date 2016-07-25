@@ -83,7 +83,7 @@ class SpiralNavigator(object):
                     i2f(self.api._position_lng),
                     position[0],
                     position[1]
-                ) < 1:
+                ) <= 1 or (self.config.walk > 0 and self._step_walker == None):
             (self.x, self.y) = (self.x + self.dx, self.y + self.dy)
-        sleep(2)
+        sleep(1)
         return position[0:2]
