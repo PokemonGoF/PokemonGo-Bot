@@ -18,7 +18,6 @@ class SeenFortWorker(object):
         self.config = bot.config
         self.item_list = bot.item_list
         self.rest_time = 50
-        self.stepper = bot.stepper
 
     def work(self):
         lat = self.fort['latitude']

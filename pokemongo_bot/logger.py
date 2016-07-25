@@ -9,9 +9,10 @@ except:
 
 def log(string, color = 'white'):
     colorHex = {
+        'red': '91m',
         'green': '92m',
         'yellow': '93m',
-        'red': '91m'
+        'blue': '94m'
     }
     if color not in colorHex:
         print('[' + time.strftime("%Y-%m-%d %H:%M:%S") + '] '+ string)
