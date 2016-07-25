@@ -22,6 +22,8 @@ class StepWalker(object):
             lng
         )
 
+        logger.log('[#] Walking {} m (or km)'.format(str(dist)))
+
         logger.log('[#] Taking a small step from ' + str((i2f(self.api._position_lat), i2f(
             self.api._position_lng))) + " to " + str(str((lat, lng))))
 
