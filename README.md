@@ -1,30 +1,82 @@
-<p align="center">
-  <a href="">
-    <img alt="Logo" src="https://www.brooklinelibrary.org/wp-content/uploads/2016/07/2000px-Pok%C3%A9_Ball.svg_-1.png" width="100">
-  </a>
-</p>
-
-<p align="center">
-  <a href="https://pokemongo-bot.herokuapp.com/"><img alt="Slack" src="https://pokemongo-bot.herokuapp.com/badge.svg"></a>
-</p>
-
 # PokemonGo-Bot
-The Pokemon Go Bot, baking with community.
+PokemonGo bot is a project created by the [PokemonGoF](https://github.com/PokemonGoF) team.
+The project is currently setup in two different branches. `dev` and `master`.
 
-## Project Chat
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
-## Breaking Changes
-You need modify configs/config.json (config.json.example for example) then pokecli.py --config configs/config.json 
-Please clean up your old clone if you have issue, and following the [install instruction](https://github.com/PokemonGoF/PokemonGo-Bot#installation).
 
-## About dev/master Branch
-Dev branch has most up to date feature and even everyone handle the part well, still, will have broken changes. Your test contribute and PR for fix are warm welcome. 
-Master branch is the stable branch.  
-No PR on master branch to keep things easier.  
+## Features
+- [x] GPS Location configuration
+- [x] Search Pokestops
+- [x] Catch Pokemon
+- [x] Determine which pokeball to use (uses Razz Berry if the catch percentage is low!)
+- [x] Exchange Pokemon as per configuration
+- [x] Evolve Pokemon as per configuration
+- [x] Auto switch mode (Inventory Checks - switches between catch/farming items)
+- [x] Limit the step to farm specific area for pokestops
+- [x] Rudimentary IV Functionality filter
+- [x] Ignore certain pokemon filter
+- [ ] Standalone Desktop Application
+- [ ] Hatch eggs
+- [ ] Incubate eggs
+- [ ] Use candy
+- [ ] Fight Gym
+
+
+## Contributors
+ * eggins -- The first pull request :)
+ * crack00r
+ * ethervoid
+ * Bashin
+ * tstumm
+ * TheGoldenXY
+ * Reaver01
+ * rarshonsky
+ * earthchie
+ * haykuro
+ * 05-032
+ * sinistance
+ * CapCap
+ * mzupan
+ * gnekic(GeXx)
+ * Shoh
+ * luizperes
+ * brantje
+ * VirtualSatai
+ * dmateusp
+ * jtdroste
+ * msoedov
+ * Grace
+ * Calcyfer
+ * asaf400
+ * guyz
+ * DavidK1m
+ * budi-khoirudin
+ * riberod07
+ * th3w4y
+ * Leaklessgfy
+ 
+-------
+## Credits
+- [tejado](https://github.com/tejado) many thanks for the API
+- [Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets
+- [elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR
+- [AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos
+- [AHAAAAAAA](https://github.com/AHAAAAAAA/PokemonGo-Map) for parts of the s2sphere stuff
+
+
+## Donation
+
+Bitcoin Address:  1PJMCx9NNQRasQYaa4MMff9yyNFffhHgLu
+
+<p align="center">
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WQUXDC54W6EVY"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"></a>
+</p>
+
+
+
+## OLD README BELOW. STILL UPDATING THIS.
+
 ## Table of Contents
-- [Project Chat](#project-chat)
-- [Features](#features)
-- [TODO List](#todo-list)
 - __Installation__
   - [Requirements](#requirements)
   - [Mac](#installation-mac)
@@ -36,33 +88,6 @@ No PR on master branch to keep things easier.
 - [FAQ](#faq)
 - [Credits](#credits)
 - [Donation](#donation)
-
-## Features
- * Search Fort (Spin Pokestop)
- * Catch Pokemon
- * Release low cp pokemon
- * Walking as you
- * Limit the step to farm specific area for pokestops
- * Use the ball you have to catch, don't if you don't have
- * Rudimentary IV Functionality filter
- * Auto switch mode(Full of item then catch, no ball useable then farm)
- * Ignore certain pokemon filter
- * Use superior ball types when necessary
- * When out of normal pokeballs, use the next type of ball unless there are less than 10 of that type, in which case switch to farm mode
- * Drop items when bag is full (In Testing, Document contribute needed)
- * Pokemon catch filter (In Testing, Document contribute needed)
- * Google Map API key setup (Readme update needed)
- * Show all objects on map (In Testing)
- * Evolve pokemons (Code in, Need input, In Testing)
-
-## TODO List
-
-- [ ] Standalone Desktop APP
-- [ ] Pokemon transfer filter ?? This already done, right?
-- [ ] Hatch eggs
-- [ ] Incubate eggs
-- [ ] Use candy
-- [ ] Fight Gym
 
 ## Installation
 
@@ -82,10 +107,10 @@ No PR on master branch to keep things easier.
 - Linux: `apt-get install python-protobuf`
 
 ### Note on branch
-Please keep in mind that master is not always up to date whereas 'dev' is. In the installation note below change `master` to `dev` if you want to get the latest version.
+Please keep in mind that master is not always up-to-date whereas 'dev' is. In the installation note below change `master` to `dev` if you want to get and use the latest version.
 
 ### Installation Linux
-(change master to dev for the newer version)
+(change master to dev for the latest version)
 
 ```
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
@@ -96,7 +121,7 @@ $ git submodule update
 ```
 
 ### Installation Mac
-(change master to dev for the newer version)
+(change master to dev for the latest version)
 
 ```
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
@@ -109,8 +134,7 @@ $ git submodule update
 ```
 
 ### Installation Windows
-
-(change master to dev for the newer version)
+(change master to dev for the latest version)
 
 On Windows, you will need to install PyYaml through the installer and not through requirements.txt.
 
@@ -129,7 +153,7 @@ $ pip install PyYAML-3.11-cp27-cp27m-win32.whl
 // (replace PyYAML-3.11-cp27-cp27m-win32.whl with PyYAML-3.11-cp27-cp27m-win_amd64.whl
 ```
 
-After this, just do :
+After this, just do:
 
 ```
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
@@ -165,20 +189,20 @@ This project uses Google Maps. There's one map coupled with the project, but as 
 6. After the code done, will update here how to replace.
 
 ### Python possible bug
-If you encounter problems with the module `ssl` and it function `_create_unverified_context`. Just comment it. (Solution available in Python 2.7.11)
-To do it follow instruction below :
+If you encounter problems with the module `ssl` and it's function `_create_unverified_context`, just comment it. (Solution available in Python 2.7.11)
+In order to comment out the function and the module, please follow the instructions below:
 - edit `pokecli.py`
 - put `#` before `if` (line 43) and `ssl` (line 44)
 - save it
 
-Please keep in mind that this fix is necessary only if your python version don't have the `_create_unverified_context` argument in ssl module.
+Please keep in mind that this fix is only necessary if your python version don't have the `_create_unverified_context` argument in the ssl module.
 
 ## Update
 To update your project do: `git pull` in the project folder
 
-## Usage (up to date)
-	1/ copy `configs/config.json.example` to `configs/config.json` and `configs/release_config.json.example` to `configs/release_config.json`.
-	2/ Edit `configs/config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (others keys are optional, check `Advance Configuration` below)
+## Usage (up-to-date)
+  1/ copy `config.json.example` to `config.json` and `release_config.json.example` to `release_config.json`.
+  2/ Edit `config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (other keys are optional, check `Advance Configuration` below)
 
 ## Advance Configuration
 - `max_steps` :
@@ -190,16 +214,12 @@ To update your project do: `git pull` in the project folder
 - `location_cache` : 
 - `distance_unit` :
 - `item_filter` :
-- `evolve_all` : Set to true to evolve pokemon if possible
-- `use_lucky_egg` : Set to true to use lucky egg (if available) before evolve_all
+- `evolve_all` : Set to true to evolve pokemons if possible
 
 ### Evolve All Configuration
     By setting the `evolve_all` attribute in config.json, you can instruct the bot to automatically
     evolve specified pokemons on startup. This is especially useful for batch-evolving after popping up
-    a lucky egg.
-	
-	A lucky egg can be used before evolving by setting the `use_lucky_egg` to true in config.json. If a
-	lucky egg is not available and "use_lucky_egg" is set to true, evolving will be skipped. 
+    a lucky egg (currently this needs to be done manually).
     
     The evolve all mechanism evolves only higher CP pokemons. It does this by first ordering them from high-to-low CP.
     It will also automatically transfer the evolved pokemons based on the release configuration.
@@ -211,41 +231,6 @@ To update your project do: `git pull` in the project folder
     2. "evolve_all": "Pidgey,Weedle"
       Will only evolve Pidgey and Weedle.
     3. Not setting evolve_all or having any other string would not evolve any pokemons on startup.
-
-## How to run multiple accounts at the same time(skyl1ne94)
-    Before u start with this, make sure you create a copy of the config file for a second account by typing 
-    "cp config.json.example config_acc1" in the Terminal. Fill in your details in the file "config_acc1"
-    
-    To actually make PokemonGo-Bot run multiple accounts, you can follow this tutorial:
-    
-    Linux:
-    1. Download the template for Linux [here](https://onedrive.live.com/download?cid=8A1EC0D384061BB1&resid=8A1EC0D384061BB1%2116640&authkey=AEZ6QGJ8xIACQ6U)
-    2. Place the template in the root folder of the PokemonGo-Bot.
-    3. Copy the template and give it your own identity "cp startlinux_acc1_example startlinux_acc1".
-    4. Open the file with notepad and edit the following parts:
-       - LOCATION OF PokemonGo-Bot FOLDER (e.g. /root/PokemonGo-Bot);
-       - git pull origin to "dev" or "master" (e.g. git pull origin dev);
-       - config.json to the config file of the other account (e.g. config_acc1.json).
-    5. You can run the bot now by opening a terminal and filling in "./startbotacc1".
-    6. To run multiple accounts at the same time:
-       - Create a copy of "config_acc1" to "config_acc2"
-       - Create a copy of "startwin_acc1" to "startwin_acc2"
-    7. Now use the command "screen" to create a screen for each bot to seperate the bots from each other. For a manual of the command    "screen" use "man screen" in the Terminal.
-
-    
-    Windows
-    1. Download the template for Windows [here](https://onedrive.live.com/download?cid=8A1EC0D384061BB1&resid=8A1EC0D384061BB1%2116639&authkey=AH04lpHZWP6ISWg)
-    2. Place the template in the root folder of the PokemonGo-Bot.
-    3. Copy the template and give it your own identity "cp startwin_acc1_example startwin_acc1".
-    4. Open the file with notepad and edit the following parts:
-       - LOCATION OF PokemonGo-Bot FOLDER (e.g. C:\Program Files\PokemonGo-Bot);
-       - git pull origin to "dev" or "master" (e.g. git pull origin dev);
-       - config.json to the config file of the other account (e.g. config_acc1.json).
-    5. You can run the bot by opening "startwin_acc1"
-    6. To run multiple accounts at the same time:
-       - Create a copy of "config_acc1" to "config_acc2"
-       - Create a copy of "startwin_acc1" to "startwin_acc2"
-    7. Change the values in these files to the credentials and details of the second account and you are good to go a second bot!
 
 ## How to run with Docker
 
@@ -304,7 +289,7 @@ Try to generate an [app password](!https://support.google.com/accounts/answer/18
 ```
 -p "<your-app-password>"
 ```
-This error is mostly occurs for those who using 2 factor authentication but either way for the purpose of security would be nice to have a separate password for the bot app.
+This error mostly occurs for those who are using 2 factor authentication, but either way, for the purpose of security it would be nice to have a separate password for the bot app.
 
 
 ### FLEE
@@ -322,7 +307,7 @@ Create the following filter
 ```
 ./data/catch-ignore.yml
 ```
-Its a yaml file with a list of names so make it look like
+It's a yaml file with a list of names so make it look like
 ```
 ignore:
   - Pidgey
@@ -345,55 +330,3 @@ If using multiple usernames format like this:
 ```var users = ["username1","username2"];```
 
 ---------
-## Contributors (Don't forget add yours here when you create PR)
- * eggins -- The first pull request :)
- * crack00r
- * ethervoid
- * Bashin
- * tstumm
- * TheGoldenXY
- * Reaver01
- * rarshonsky
- * earthchie
- * haykuro
- * 05-032
- * sinistance
- * CapCap
- * mzupan
- * gnekic(GeXx)
- * Shoh
- * luizperes
- * brantje
- * VirtualSatai
- * dmateusp
- * jtdroste
- * msoedov
- * Grace
- * Calcyfer
- * asaf400
- * guyz
- * DavidK1m
- * budi-khoirudin
- * riberod07
- * th3w4y
- * Leaklessgfy
- * codybaldwin
- * skyl1ne94
- * Heihachi
- 
--------
-## Credits
-- [tejado](https://github.com/tejado) many thanks for the API
-- [Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets
-- [elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR
-- [AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos
-- [AHAAAAAAA](https://github.com/AHAAAAAAA/PokemonGo-Map) for parts of the s2sphere stuff
-
-
-## Donation
-
-Bitcoin Address:  1PJMCx9NNQRasQYaa4MMff9yyNFffhHgLu
-
-<p align="center">
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WQUXDC54W6EVY"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"></a>
-</p>
