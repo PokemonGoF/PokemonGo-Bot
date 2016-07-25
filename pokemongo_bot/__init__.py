@@ -1,24 +1,23 @@
 # -*- coding: utf-8 -*-
 
-import logging
-import googlemaps
-import json
-import random
-import threading
-import time
 import datetime
-import sys
-import logger
+import json
+import logging
+import random
 import re
+import sys
+import time
+
+from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
-from pgoapi.utilities import f2i, h2f
+from pgoapi.utilities import f2i
+
+import logger
 from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
 from cell_workers.utils import distance, get_cellid, encode
 from human_behaviour import sleep
-from spiral_navigator import SpiralNavigator
-from geopy.geocoders import GoogleV3
-from math import radians, sqrt, sin, cos, atan2
 from item_list import Item
+from spiral_navigator import SpiralNavigator
 
 
 class PokemonGoBot(object):
@@ -184,7 +183,7 @@ class PokemonGoBot(object):
                 forts = [fort
                          for fort in cell['forts']
                          if 'latitude' in fort and 'type' in fort]
-		gyms = [gym for gym in cell['forts'] if 'gym_points' in gym]
+                gyms = [gym for gym in cell['forts'] if 'gym_points' in gym]
 
                 # Sort all by distance from current pos- eventually this should
                 # build graph & A* it

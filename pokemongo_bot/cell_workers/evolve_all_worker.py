@@ -1,7 +1,8 @@
-from utils import distance, format_dist
-from pokemongo_bot.human_behaviour import sleep
-from pokemongo_bot import logger
 from sets import Set
+
+from pokemongo_bot import logger
+from pokemongo_bot.human_behaviour import sleep
+
 
 class EvolveAllWorker(object):
     def __init__(self, bot):

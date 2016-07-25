@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import json
 import time
-from math import radians, sqrt, sin, cos, atan2
-from pgoapi.utilities import f2i, h2f
-from utils import print_green, print_yellow, print_red, format_time
-from pokemongo_bot.human_behaviour import sleep
+
+from pgoapi.utilities import f2i
+
 from pokemongo_bot import logger
+from pokemongo_bot.human_behaviour import sleep
+from utils import format_time
 
 
 class SeenFortWorker(object):

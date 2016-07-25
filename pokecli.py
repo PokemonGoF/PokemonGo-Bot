@@ -25,20 +25,17 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 Author: tjado <https://github.com/tejado>
 """
 
-import os
-import re
-import json
 import argparse
-import time
+import codecs
+import json
+import logging
+import os
 import ssl
 import sys
-import codecs
 from getpass import getpass
-import logging
-import requests
-from pokemongo_bot import logger
+
 from pokemongo_bot import PokemonGoBot
-from pokemongo_bot.cell_workers.utils import print_green, print_yellow, print_red
+from pokemongo_bot import logger
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
