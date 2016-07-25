@@ -39,7 +39,7 @@ class MoveToFortWorker(object):
                 )
 
                 while True:
-                    if step_walker.step(self.config.walk, *position[0:2]):
+                    if step_walker.step():
                         break
 
             else:
