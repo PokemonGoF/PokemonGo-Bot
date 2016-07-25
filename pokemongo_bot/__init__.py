@@ -71,14 +71,8 @@ class PokemonGoBot(object):
         return map_cells
 
     def work_on_cell(self, cell, position):
-        # Check session expiry
-        if self.api._auth_provider and self.api._auth_provider._ticket_expire:
-            remaining_time = self.api._auth_provider._ticket_expire/1000 - time.time()
-
-            if remaining_time < 60:
-                logger.log("Session stale, re-logging in", 'yellow')
-                self.position = position
-                self.login()
+        # Check if session token has expired
+        self.check_session(location)
 
         if self.config.evolve_all:
             # Will skip evolving if user wants to use an egg and there is none
@@ -188,6 +182,17 @@ class PokemonGoBot(object):
             logging.getLogger("requests").setLevel(logging.ERROR)
             logging.getLogger("pgoapi").setLevel(logging.ERROR)
             logging.getLogger("rpc_api").setLevel(logging.ERROR)
+
+    def check_session(self, position):
+        # Check session expiry
+        if self.api._auth_provider and self.api._auth_provider._ticket_expire:
+            remaining_time = self.api._auth_provider._ticket_expire/1000 - time.time()
+
+            if remaining_time < 60:
+                logger.log("Session stale, re-logging in", 'yellow')
+                self.position = position
+                self.login()
+
 
     def login(self):
         logger.log('[#] Attempting login to Pokemon Go.', 'white')
