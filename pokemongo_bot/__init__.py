@@ -197,7 +197,7 @@ class PokemonGoBot(object):
         self.api._auth_token = None
         self.api._auth_provider = None
         self.api._api_endpoint = None
-        lat, lng = *self.position[0:2]
+        lat, lng = self.position[0:2]
         self.api.set_position(lat, lng, 0)
 
         while not self.api.login(self.config.auth_service,
