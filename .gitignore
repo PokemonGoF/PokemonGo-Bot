@@ -119,3 +119,5 @@ location.json
 configs/
 !configs/config.json.example
 !configs/release_config.json.example
+!config.json.example
+!release_config.json.example
