@@ -54,7 +54,7 @@ No PR on master branch to keep things easier.
  * Google Map API key setup (Readme update needed)
  * Show all objects on map (In Testing)
  * Evolve pokemons (Code in, Need input, In Testing)
-
+ * Use multiple config files to support separate accounts
 ## TODO List
 
 - [ ] Standalone Desktop APP
