@@ -41,6 +41,45 @@ class PokemonGoBot(object):
         for cell in cells:
             self.work_on_cell(cell, location)
 
+    def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
+        # we can call the function with no arguments and still get the position and map_cells
+        if lat == None:
+            lat = self.position[0]
+        if lng == None:
+            lng = self.position[1]
+        if alt == None:
+            alt = self.position[2]
+
+        if cells == []:
+            cellid = get_cellid(lat, lng)
+            timestamp = [0, ] * len(cellid)
+            self.api.get_map_objects(
+                latitude=f2i(lat),
+                longitude=f2i(lng),
+                since_timestamp_ms=timestamp,
+                cell_id=cellid
+            )
+            response_dict = self.api.call()
+            map_objects = response_dict.get('responses', {}).get('GET_MAP_OBJECTS', {})
+            status = map_objects.get('status', None)
+            cells = map_objects['map_cells']
+
+        user_web_location = 'web/location-%s.json' % (self.config.username)
+        # should check if file exists first but os is not imported here
+        # alt is unused atm but makes using *location easier      
+        with open(user_web_location,'w') as outfile:
+            json.dump(
+                {'lat': lat,
+                'lng': lng,
+                'alt': alt,
+                'cells': cells 
+                }, outfile)
+
+        user_data_lastlocation = 'data/last-location-%s.json' % (self.config.username)
+        with open(user_data_lastlocation, 'w') as outfile:
+            outfile.truncate()
+            json.dump({'lat': lat, 'lng': lng}, outfile)
+
     def find_close_cells(self, lat, lng):
         cellid = get_cellid(lat, lng)
         timestamp = [0, ] * len(cellid)
@@ -66,6 +105,7 @@ class PokemonGoBot(object):
                     x['forts'][0]['latitude'],
                     x['forts'][0]['longitude']) if x.get('forts', []) else 1e6
             )
+        self.update_web_location(map_cells,lat,lng)
         return map_cells
 
     def work_on_cell(self, cell, position):
@@ -276,6 +316,8 @@ class PokemonGoBot(object):
 
         logger.log('[#]')
         self.update_inventory()
+        # send empty map_cells and then our position
+        self.update_web_location([],*self.position)
 
     def catch_pokemon(self, pokemon):
         worker = PokemonCatchWorker(pokemon, self)
@@ -325,7 +367,7 @@ class PokemonGoBot(object):
                                 continue
                             self.inventory.append(item['inventory_item_data'][
                                 'item'])
-
+    
     def pokeball_inventory(self):
         self.api.get_player().get_inventory()
 
@@ -495,6 +537,7 @@ class PokemonGoBot(object):
         self.api.get_inventory()
         self.api.check_awarded_badges()
         self.api.call()
+        self.update_web_location() # updates every tick
 
     def get_inventory_count(self, what):
         self.api.get_inventory()

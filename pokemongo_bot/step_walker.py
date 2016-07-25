@@ -61,6 +61,7 @@ class StepWalker(object):
         cLng = i2f(self.api._position_lng) + scaledDLng + random_lat_long_delta()
 
         self.api.set_position(cLat, cLng, 0)
+        self.bot.position = (cLat,cLng,0) # set position so we can use it later on
         self.bot.heartbeat()
         sleep(1)  # sleep one second plus a random delta
         # self._work_at_position(
