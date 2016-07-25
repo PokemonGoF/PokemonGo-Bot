@@ -70,7 +70,7 @@ class PokemonGoBot(object):
 
     def work_on_cell(self, cell, position):
         # Check if session token has expired
-        self.check_session(location)
+        self.check_session(position)
 
         if self.config.evolve_all:
             # Will skip evolving if user wants to use an egg and there is none
