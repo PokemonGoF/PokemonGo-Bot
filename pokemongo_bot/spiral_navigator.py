@@ -78,6 +78,12 @@ class SpiralNavigator(object):
         if self.x == self.y or self.x < 0 and self.x == -self.y or self.x > 0 and self.x == 1 - self.y:
             (self.dx, self.dy) = (-self.dy, self.dx)
 
-        (self.x, self.y) = (self.x + self.dx, self.y + self.dy)
-        sleep(10)
+        if distance(
+                    i2f(self.api._position_lat),
+                    i2f(self.api._position_lng),
+                    position[0],
+                    position[1]
+                ) < 1:
+            (self.x, self.y) = (self.x + self.dx, self.y + self.dy)
+        sleep(2)
         return position[0:2]
