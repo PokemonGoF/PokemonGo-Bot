@@ -5,17 +5,18 @@ import time
 from itertools import  chain
 from math import ceil
 
-class PolylineWalker(object):
+class Polyline(object):
 
     def __init__(self, origin, destination, speed):
         self.DISTANCE_API_URL='https://maps.googleapis.com/maps/api/directions/json?mode=walking'
         self.origin = origin
         self.destination = destination
+        URL = '{}&origin={}&destination={}'.format(self.DISTANCE_API_URL,
+                                                   '{},{}'.format(*self.origin),
+                                                   '{},{}'.format(*self.destination))
+        print(URL)
         self.polyline_points = [x['polyline']['points'] for x in
-                                requests.get(self.DISTANCE_API_URL+'&origin='+
-                                             self.origin+'&destination='+
-                                             self.destination
-                                             ).json()['routes'][0]['legs'][0]['steps']]
+                                requests.get(URL).json()['routes'][0]['legs'][0]['steps']]
         self.speed = float(speed)
         self.points = [self.origin] + self.get_points(self.polyline_points) + [self.destination]
         self.lat, self.long = self.points[0][0], self.points[0][1]

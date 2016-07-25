@@ -2,8 +2,9 @@ import time
 import haversine
 import polyline
 from math import ceil
-from polyline_walker import PolylineWalker
-a = PolylineWalker('Poststrasse+20,Zug,CH', 'Guggiweg+7,Zug,CH', 100)
+from polyline_generator import Polyline
+a = Polyline((47.1706378, 8.5167405), (47.1700271, 8.518072999999998), 100)
+print(a.points)
 print('Walking polyline: ', a.polyline)
 print('Encoded level: ','B'*len(a.points))
 print('Initialted with speed: ', a.speed, 'm/s')
