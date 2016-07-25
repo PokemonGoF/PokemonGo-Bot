@@ -130,8 +130,8 @@ def init_config():
         "-if",
         "--item_filter",
         help=
-        "Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, \"101,102,103,104\" to recycle potions when collected)",
-        type=str,
+        "Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, SYNTAX FOR CONFIG.JSON : [\"101\",\"102\",\"103\",\"104\"] to recycle potions when collected, SYNTAX FOR CONSOLE ARGUMENT : \"101\",\"102\",\"103\",\"104\")",
+        type=list,
         default=[])
 
     parser.add_argument("-ev",
@@ -170,13 +170,14 @@ def init_config():
         parser.error("Needs either --use-location-cache or --location.")
         return None
 
-    if config.item_filter:
-        config.item_filter = [str(item_id) for item_id in config.item_filter.split(',')]
-
     config.release_config = {}
     if os.path.isfile(release_config_json):
         with open(release_config_json) as data:
             config.release_config.update(json.load(data))
+    if isinstance(config.item_filter, basestring):
+        #When config.item_filter looks like "101,102,103" needs to be converted to ["101","102","103"]
+        config.item_filter= config.item_filter.split(",")
+        
 
     # create web dir if not exists
     try: 
@@ -190,12 +191,10 @@ def init_config():
 
     return config
 
-
 def main():
     # log settings
     # log format
     #logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(module)10s] [%(levelname)5s] %(message)s')
-
     sys.stdout = codecs.getwriter('utf8')(sys.stdout)
     sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
