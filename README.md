@@ -17,11 +17,10 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 You need modify config.json (config.json.example for example) then pokecli.py --config config.json 
 Please clean up your old clone if you have issue, and following the [install instruction](https://github.com/PokemonGoF/PokemonGo-Bot#installation).
 
-## About dev/stable/master Branch
+## About dev/master Branch
 Dev branch has most up to date feature and even everyone handle the part well, still, will have broken changes. Your test contribute and PR for fix are warm welcome. 
-Stable branch is better than dev branch. Setup with milestone tag.  
-Master branch is the thing you familiar.  
-No PR on stable/master branch to keep things easier.  
+Master branch is the stable branch.  
+No PR on master branch to keep things easier.  
 ## Table of Contents
 - [Project Chat](#project-chat)
 - [Features](#features)
@@ -191,11 +190,15 @@ To update your project do: `git pull` in the project folder
 - `distance_unit` :
 - `item_filter` :
 - `evolve_all` : Set to true to evolve pokemon if possible
+- `use_lucky_egg` : Set to true to use lucky egg (if available) before evolve_all
 
 ### Evolve All Configuration
     By setting the `evolve_all` attribute in config.json, you can instruct the bot to automatically
     evolve specified pokemons on startup. This is especially useful for batch-evolving after popping up
-    a lucky egg (currently this needs to be done manually).
+    a lucky egg.
+	
+	A lucky egg can be used before evolving by setting the `use_lucky_egg` to true in config.json. If a
+	lucky egg is not available and "use_lucky_egg" is set to true, evolving will be skipped. 
     
     The evolve all mechanism evolves only higher CP pokemons. It does this by first ordering them from high-to-low CP.
     It will also automatically transfer the evolved pokemons based on the release configuration.
@@ -338,6 +341,7 @@ If using multiple usernames format like this:
  * riberod07
  * th3w4y
  * Leaklessgfy
+ * codybaldwin
  
 -------
 ## Credits
