@@ -37,7 +37,7 @@ class SpiralNavigator(object):
     def take_step(self):
         position = (self.origin_lat, self.origin_lon, 0.0)
 
-        logger.log('[#] Scanning area for objects....')
+        logger.log('Scanning area for objects....')
         # logger.log('[#] Scanning area for objects ({} / {})'.format(
         #     (step + 1), self.steplimit**2))
         if self.config.debug:
@@ -68,7 +68,7 @@ class SpiralNavigator(object):
                     position[1]
                 )
 
-                logger.log('[#] Walking from ' + str((i2f(self.api._position_lat), i2f(
+                logger.log('Walking from ' + str((i2f(self.api._position_lat), i2f(
                     self.api._position_lng))) + " to " + str((str(position[0:2]))) + " " + format_dist(dist, self.config.distance_unit))
 
                 if self._step_walker.step():
@@ -78,6 +78,12 @@ class SpiralNavigator(object):
         if self.x == self.y or self.x < 0 and self.x == -self.y or self.x > 0 and self.x == 1 - self.y:
             (self.dx, self.dy) = (-self.dy, self.dx)
 
-        (self.x, self.y) = (self.x + self.dx, self.y + self.dy)
-        sleep(10)
+        if distance(
+                    i2f(self.api._position_lat),
+                    i2f(self.api._position_lng),
+                    position[0],
+                    position[1]
+                ) <= 1 or (self.config.walk > 0 and self._step_walker == None):
+            (self.x, self.y) = (self.x + self.dx, self.y + self.dy)
+        sleep(1)
         return position[0:2]
