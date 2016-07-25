@@ -421,6 +421,17 @@ class PokemonGoBot(object):
         return (loc.latitude, loc.longitude, loc.altitude)
 
     def _filter_ignored_pokemons(self, cell):
+        # remove all pokemon EXCEPT those with ids from only_track_filter
+        if self.config.only_track_filter:
+            try:
+                cell['wild_pokemons'] = filter(lambda x: x['pokemon_data']['pokemon_id'] in self.config.only_track_filter, cell['wild_pokemons'])
+            except KeyError:
+                pass
+            try:
+                cell['catchable_pokemons'] = filter(lambda x: x['pokemon_id'] in self.config.only_track_filter, cell['catchable_pokemons'])
+            except KeyError:
+                pass
+
         process_ignore = False
         try:
             with open("./data/catch-ignore.yml", 'r') as y:

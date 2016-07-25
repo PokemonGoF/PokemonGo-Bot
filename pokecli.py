@@ -127,6 +127,14 @@ def init_config():
         default="km")
 
     parser.add_argument(
+        "-otf",
+        "--only_track_filter",
+        help=
+        "Pass in a comma separated list of pokemon ids that you wish to track and capture (defaults to all)",
+        type=str,
+        default=False)
+
+    parser.add_argument(
         "-if",
         "--item_filter",
         help=
@@ -172,6 +180,9 @@ def init_config():
 
     if config.item_filter:
         config.item_filter = [str(item_id) for item_id in config.item_filter.split(',')]
+
+    if config.only_track_filter:
+        config.only_track_filter = [int(id) for id in config.only_track_filter.split(',')]
 
     config.release_config = {}
     if os.path.isfile(release_config_json):
