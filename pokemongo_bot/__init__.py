@@ -284,6 +284,7 @@ class PokemonGoBot(object):
             stardust = player['currencies'][1]['amount']
         logger.log('')
         logger.log('--- {username} ---'.format(**player), 'cyan')
+        self.get_player_info()
         logger.log('Pokemon Bag: {}/{}'.format(self.get_inventory_count('pokemon'), player['max_pokemon_storage']), 'cyan')
         logger.log('Items: {}/{}'.format(self.get_inventory_count('item'), player['max_item_storage']), 'cyan')
         logger.log('Stardust: {}'.format(stardust) + ' | Pokecoins: {}'.format(pokecoins), 'cyan')
@@ -292,8 +293,6 @@ class PokemonGoBot(object):
             ' | GreatBalls: ' + str(balls_stock[2]) + 
             ' | UltraBalls: ' + str(balls_stock[3]), 'cyan')
         logger.log('Razz Berries: ' + str(self.item_inventory_count(701)), 'cyan')
-
-        self.get_player_info()
 
         logger.log('')
 
