@@ -7,7 +7,8 @@ class MoveToFortWorker(object):
         self.fort = fort
         self.api = bot.api
         self.config = bot.config
-        self.stepper = bot.stepper
+        self.navigator = bot.navigator
+        self.step_walker = bot.step_walker
         self.position = bot.position
 
     def work(self):
@@ -27,7 +28,7 @@ class MoveToFortWorker(object):
             position = (lat, lng, 0.0)
 
             if self.config.walk > 0:
-                self.stepper._walk_to(self.config.walk, *position)
+                self.step_walker.step(self.config.walk, *position[0:2])
             else:
                 self.api.set_position(*position)
 

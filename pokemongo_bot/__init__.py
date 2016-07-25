@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import logging
 import googlemaps
 import json
@@ -11,10 +12,12 @@ import yaml
 import logger
 import re
 from pgoapi import PGoApi
+from pgoapi.utilities import f2i, h2f
 from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
-from cell_workers.utils import distance
+from cell_workers.utils import distance, get_cellid, encode
+from step_walker import StepWalker
 from human_behaviour import sleep
-from stepper import Stepper
+from spiral_navigator import SpiralNavigator
 from geopy.geocoders import GoogleV3
 from math import radians, sqrt, sin, cos, atan2
 from item_list import Item
@@ -29,19 +32,51 @@ class PokemonGoBot(object):
     def start(self):
         self._setup_logging()
         self._setup_api()
-        self.stepper = Stepper(self)
+        self.step_walker = StepWalker(self)
+        self.navigator = SpiralNavigator(self)
         random.seed()
 
     def take_step(self):
-        self.stepper.take_step()
+        location = self.navigator.take_step()
+        cells = self.find_close_cells(*location)
 
-    def work_on_cell(self, cell, position, include_fort_on_path):
+        for cell in cells:
+            self.work_on_cell(cell, location)
+
+    def find_close_cells(self, lat, lng):
+        cellid = get_cellid(lat, lng)
+        timestamp = [0, ] * len(cellid)
+
+        self.api.get_map_objects(
+            latitude=f2i(lat),
+            longitude=f2i(lng),
+            since_timestamp_ms=timestamp,
+            cell_id=cellid
+        )
+        response_dict = self.api.call()
+        map_objects = response_dict.get('responses', {}).get('GET_MAP_OBJECTS', {})
+        status = map_objects.get('status', None)
+
+        map_cells = []
+        if status and status == 1:
+            map_cells = map_objects['map_cells']
+            position = (lat, lng, 0)
+            map_cells.sort(
+                key=lambda x: distance(
+                    lat,
+                    lng,
+                    x['forts'][0]['latitude'],
+                    x['forts'][0]['longitude']) if x.get('forts', []) else 1e6
+            )
+        return map_cells
+
+    def work_on_cell(self, cell, position):
         if self.config.evolve_all:
             # Run evolve all once. Flip the bit.
             print('[#] Attempting to evolve all pokemons ...')
-            self.config.evolve_all = False
             worker = EvolveAllWorker(self)
             worker.work()
+            self.config.evolve_all = []
 
         self._filter_ignored_pokemons(cell)
 
@@ -54,16 +89,18 @@ class PokemonGoBot(object):
             cell['catchable_pokemons'].sort(
                 key=
                 lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
-            for pokemon in cell['catchable_pokemons']:
-                with open('web/catchable-%s.json' %
-                          (self.config.username), 'w') as outfile:
-                    json.dump(pokemon, outfile)
 
-                if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
-                    break
-                with open('web/catchable-%s.json' %
-                          (self.config.username), 'w') as outfile:
-                    json.dump({}, outfile)
+            user_web_catchable = 'web/catchable-%s.json' % (self.config.username)
+            if os.path.isfile(user_web_catchable): # only write to file if it exists
+                for pokemon in cell['catchable_pokemons']:
+                    with open(user_web_catchable, 'w') as outfile:
+                        json.dump(pokemon, outfile)
+
+                    if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
+                        break
+                    with open(user_web_catchable, 'w') as outfile:
+                        json.dump({}, outfile)
+
         if (self.config.mode == "all" or self.config.mode == "poke"
             ) and 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
             # Sort all by distance from current pos- eventually this should
@@ -75,7 +112,7 @@ class PokemonGoBot(object):
                 if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
                     break
         if (self.config.mode == "all" or
-                self.config.mode == "farm") and include_fort_on_path:
+                self.config.mode == "farm"):
             if 'forts' in cell:
                 # Only include those with a lat/long
                 forts = [fort
@@ -87,6 +124,7 @@ class PokemonGoBot(object):
                 # build graph & A* it
                 forts.sort(key=lambda x: distance(self.position[
                            0], self.position[1], x['latitude'], x['longitude']))
+
                 for fort in forts:
                     worker = MoveToFortWorker(fort, self)
                     worker.work()
@@ -121,7 +159,7 @@ class PokemonGoBot(object):
         # check if the release_config file exists
         try:
             with open('release_config.json') as file:
-               pass
+                pass
         except:
             # the file does not exist, warn the user and exit.
             logger.log('[#] IMPORTANT: Rename and configure release_config.json.example for your Pokemon release logic first!', 'red')
@@ -233,9 +271,11 @@ class PokemonGoBot(object):
         inventory_req = self.api.call()
         inventory_dict = inventory_req['responses']['GET_INVENTORY'][
             'inventory_delta']['inventory_items']
-        with open('web/inventory-%s.json' %
-                  (self.config.username), 'w') as outfile:
-            json.dump(inventory_dict, outfile)
+
+        user_web_inventory = 'web/inventory-%s.json' % (self.config.username)
+        if os.path.isfile(user_web_inventory):
+            with open(user_web_inventory, 'w') as outfile:
+                json.dump(inventory_dict, outfile)
 
         # get player balls stock
         # ----------------------
@@ -244,21 +284,18 @@ class PokemonGoBot(object):
         for item in inventory_dict:
             try:
                 # print(item['inventory_item_data']['item'])
-                if item['inventory_item_data']['item'][
-                        'item_id'] == Item.ITEM_POKE_BALL.value:
-                    # print('Poke Ball count: ' + str(item['inventory_item_data']['item']['count']))
-                    balls_stock[1] = item[
-                        'inventory_item_data']['item']['count']
-                if item['inventory_item_data']['item'][
-                        'item_id'] == Item.ITEM_GREAT_BALL.value:
-                    # print('Great Ball count: ' + str(item['inventory_item_data']['item']['count']))
-                    balls_stock[2] = item[
-                        'inventory_item_data']['item']['count']
-                if item['inventory_item_data']['item'][
-                        'item_id'] == Item.ITEM_ULTRA_BALL.value:
-                    # print('Ultra Ball count: ' + str(item['inventory_item_data']['item']['count']))
-                    balls_stock[3] = item[
-                        'inventory_item_data']['item']['count']
+                item_id = item['inventory_item_data']['item']['item_id']
+                item_count = item['inventory_item_data']['item']['count']
+
+                if item_id == Item.ITEM_POKE_BALL.value:
+                    # print('Poke Ball count: ' + str(item_count))
+                    balls_stock[1] = item_count
+                if item_id == Item.ITEM_GREAT_BALL.value:
+                    # print('Great Ball count: ' + str(item_count))
+                    balls_stock[2] = item_count
+                if item_id == Item.ITEM_ULTRA_BALL.value:
+                    # print('Ultra Ball count: ' + str(item_count))
+                    balls_stock[3] = item_count
             except:
                 continue
         return balls_stock
@@ -284,15 +321,23 @@ class PokemonGoBot(object):
     def _set_starting_position(self):
 
         if self.config.test:
+            # TODO: Add unit tests
             return
 
         if self.config.location:
             try:
                 location_str = str(self.config.location)
-                start_coordinate = [x.strip() for x in location_str.split(',')]
-                self.position = (float(start_coordinate[0]), float(start_coordinate[0]), 0.0)
+                location = (self._get_pos_by_name(location_str.replace(" ", "")))
+                self.position = location
                 self.api.set_position(*self.position)
+                logger.log('')
+                logger.log(u'[x] Address found: {}'.format(self.config.location.decode(
+                    'utf-8')))
+                logger.log('[x] Position in-game set as: {}'.format(self.position))
+                logger.log('')
+                return
             except:
+                logger.log('[x] The location given using -l could not be parsed. Checking for a cached location.')
                 pass
 
         if self.config.location_cache and not self.config.location:
@@ -323,16 +368,6 @@ class PokemonGoBot(object):
                         "No cached Location. Please specify initial location.")
                 else:
                     pass
-
-        #
-        # this will fail if the location.json isn't there or not valid.
-        # Still runs if location is set.
-        self.position = self._get_pos_by_name(self.config.location)
-        self.api.set_position(*self.position)
-        logger.log('')
-        logger.log(u'[x] Address found: {}'.format(self.config.location))
-        logger.log('[x] Position in-game set as: {}'.format(self.position))
-        logger.log('')
 
     def _get_pos_by_name(self, location_name):
         # Check if the given location is already a coordinate.
