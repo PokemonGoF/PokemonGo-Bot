@@ -41,11 +41,32 @@ class PokemonGoBot(object):
         for cell in cells:
             self.work_on_cell(cell, location)
 
-    def update_web_location(self, cells, lat, lng, alt=0):
-        logger.log("Updating web location!","blue")
+    def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
+        # we can call the function with no arguments and still get the position and map_cells
+        if lat == None:
+            lat = self.position[0]
+        if lng == None:
+            lng = self.position[1]
+        if alt == None:
+            alt = self.position[2]
+
+        if cells == []:
+            cellid = get_cellid(lat, lng)
+            timestamp = [0, ] * len(cellid)
+            self.api.get_map_objects(
+                latitude=f2i(lat),
+                longitude=f2i(lng),
+                since_timestamp_ms=timestamp,
+                cell_id=cellid
+            )
+            response_dict = self.api.call()
+            map_objects = response_dict.get('responses', {}).get('GET_MAP_OBJECTS', {})
+            status = map_objects.get('status', None)
+            cells = map_objects['map_cells']
+
         user_web_location = 'web/location-%s.json' % (self.config.username)
         # should check if file exists first but os is not imported here
-        # alt is unused atm but makes using *location easier
+        # alt is unused atm but makes using *location easier      
         with open(user_web_location,'w') as outfile:
             json.dump(
                 {'lat': lat,
@@ -511,6 +532,7 @@ class PokemonGoBot(object):
         self.api.get_inventory()
         self.api.check_awarded_badges()
         self.api.call()
+        self.update_web_location() # updates every tick
 
     def get_inventory_count(self, what):
         self.api.get_inventory()
