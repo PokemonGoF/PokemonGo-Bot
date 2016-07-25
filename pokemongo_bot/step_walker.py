@@ -15,8 +15,8 @@ class StepWalker(object):
         if self.api._position_lat == lat and self.api._position_lng == lng:
             return True
 
-        dLat = (lat - i2f(self.api._position_lat))
-        dLng = (lng - i2f(self.api._position_lng))
+        dLat = (lat - i2f(self.api._position_lat)) / speed
+        dLng = (lng - i2f(self.api._position_lng)) / speed
 
         cLat = i2f(self.api._position_lat) + dLat + random_lat_long_delta()
         cLng = i2f(self.api._position_lng) + dLng + random_lat_long_delta()
