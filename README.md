@@ -25,11 +25,11 @@ No PR on master branch to keep things easier.
 - [Project Chat](#project-chat)
 - [Features](#features)
 - [TODO List](#todo-list)
-- __Installation__
+- __Getting Started__
   - [Requirements](#requirements)
-  - [Mac](#installation-mac)
-  - [Linux](#installation-linux)
-  - [Windows](#installation-windows)
+  - [Mac](#mac)
+  - [Linux](#linux)
+  - [Windows](#windows)
 - [Develop PokemonGo-Bot](develop-pokemonGo-bot)
 - [Usage](#usage)
 - [Docker Usage](#how-to-run-with-docker)
@@ -64,7 +64,7 @@ No PR on master branch to keep things easier.
 - [ ] Use candy
 - [ ] Fight Gym
 
-## Installation
+## Getting Started
 
 ### Requirements (click each one for install guide)
 
@@ -81,10 +81,10 @@ No PR on master branch to keep things easier.
 - Windows: Download protobuf 3.0: [here](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip) and unzip `bin/protoc.exe` into a folder in your PATH.
 - Linux: `apt-get install python-protobuf`
 
-### Note on branch
+### Installation
 Please keep in mind that master is not always up to date whereas 'dev' is. In the installation note below change `master` to `dev` if you want to get the latest version.
 
-### Installation Linux
+#### Linux
 (change master to dev for the newer version)
 
 ```
@@ -95,7 +95,7 @@ $ git submodule init
 $ git submodule update
 ```
 
-### Installation Mac
+#### Mac
 (change master to dev for the newer version)
 
 ```
@@ -108,7 +108,7 @@ $ git submodule init
 $ git submodule update
 ```
 
-### Installation Windows
+#### Windows
 
 (change master to dev for the newer version)
 
@@ -125,11 +125,11 @@ download the 64 bit version instead: PyYAML-3.11-cp27-cp27m-win_amd64.whl )
 ```
 $ cd download-directory
 $ pip install PyYAML-3.11-cp27-cp27m-win32.whl
-// if you needed to download the 64-bit version)
-// (replace PyYAML-3.11-cp27-cp27m-win32.whl with PyYAML-3.11-cp27-cp27m-win_amd64.whl
 ```
+If you need to download the 64-bit version, replace `PyYAML-3.11-cp27-cp27m-win32.whl` with `PyYAML-3.11-cp27-cp27m-win_amd64.whl`.
 
-After this, just do :
+
+After this, type the following:
 
 ```
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
@@ -176,9 +176,11 @@ Please keep in mind that this fix is necessary only if your python version don't
 ## Update
 To update your project do: `git pull` in the project folder
 
-## Usage (up to date)
-	1/ copy `configs/config.json.example` to `configs/config.json` and `configs/release_config.json.example` to `configs/release_config.json`.
-	2/ Edit `configs/config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (others keys are optional, check `Advance Configuration` below)
+## Usage
+
+1. Copy `config.json.example` to `config.json` and `release_config.json.example` to `release_config.json`.
+2. Edit `config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (others keys are optional, check `Advance Configuration` below)
+3. Run it by typing `pokecli.py` or `python ./pokecli.py`
 
 ## Advance Configuration
 - `max_steps` :
