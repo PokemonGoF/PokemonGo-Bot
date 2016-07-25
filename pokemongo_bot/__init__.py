@@ -41,7 +41,7 @@ class PokemonGoBot(object):
         cells = self.find_close_cells(*location)
 
         for cell in cells:
-            self.work_on_cell(cell, location, False)
+            self.work_on_cell(cell, location)
 
     def find_close_cells(self, lat, lng):
         cellid = get_cellid(lat, lng)
