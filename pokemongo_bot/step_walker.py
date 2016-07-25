@@ -1,8 +1,7 @@
-import logger
+from math import sqrt
 
-from cell_workers.utils import distance, i2f, format_time, format_dist
+from cell_workers.utils import distance, i2f
 from human_behaviour import random_lat_long_delta, sleep
-from math import ceil, sqrt
 
 
 class StepWalker(object):

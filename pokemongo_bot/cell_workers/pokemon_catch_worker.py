@@ -2,9 +2,10 @@
 
 import time
 from sets import Set
-from utils import distance
-from pokemongo_bot.human_behaviour import sleep
+
 from pokemongo_bot import logger
+from pokemongo_bot.human_behaviour import sleep
+
 
 class PokemonCatchWorker(object):
     BAG_FULL = 'bag_full'

@@ -1,9 +1,11 @@
-import requests
-import polyline
-import haversine
 import time
-from itertools import  chain
+from itertools import chain
 from math import ceil
+
+import haversine
+import polyline
+import requests
+
 
 class PolylineWalker(object):
 
