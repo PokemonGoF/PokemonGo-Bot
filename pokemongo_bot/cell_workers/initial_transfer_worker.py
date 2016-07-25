@@ -10,13 +10,8 @@ class InitialTransferWorker(object):
         self.api = bot.api
 
     def work(self):
-        logger.log('[x] Initial Transfer.')
-
-        logger.log(
-        '[x] Preparing to transfer all duplicate Pokemon, keeping the highest CP of each type.')
-
-        logger.log('[x] Will NOT transfer anything above CP {}'.format(
-            self.config.initial_transfer))
+        logger.log('Cleaning up Pokemon Bag of anything below {} CP'.format(
+            self.config.initial_transfer), 'cyan')
 
         pokemon_groups = self._initial_transfer_get_groups()
 
@@ -33,14 +28,14 @@ class InitialTransferWorker(object):
                     if self.config.initial_transfer and group_cp[x] > self.config.initial_transfer:
                         continue
 
-                    print('[x] Transferring {} with CP {}'.format(
+                    logger.log('Exchanging {} with {} CP'.format(
                         self.pokemon_list[id - 1]['Name'], group_cp[x]))
                     self.api.release_pokemon(
                         pokemon_id=pokemon_groups[id][group_cp[x]])
                     response_dict = self.api.call()
                     sleep(2)
 
-        logger.log('[x] Transferring Done.')
+        logger.log('Pokemon Bag has been cleaned up!', 'green')
 
     def _initial_transfer_get_groups(self):
         pokemon_groups = {}

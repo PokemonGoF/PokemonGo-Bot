@@ -34,7 +34,7 @@ class PokemonCatchWorker(object):
                 if 'status' in response_dict['responses']['ENCOUNTER']:
                     if response_dict['responses']['ENCOUNTER']['status'] is 7:
                         if self.config.initial_transfer:
-                            logger.log('[x] Pokemon Bag is full!', 'red')
+                            logger.log('Pokemon Bag is full!', 'red')
                             return PokemonCatchWorker.BAG_FULL
                         else:
                             raise RuntimeError('Pokemon Bag is full!')
@@ -62,10 +62,10 @@ class PokemonCatchWorker(object):
                                                   'pokemon_id']) - 1
                                 pokemon_name = self.pokemon_list[
                                     int(pokemon_num)]['Name']
-                                logger.log('[#] A Wild {} appeared! [CP {}] [Potential {}]'.format(
+                                logger.log('A Wild {} appeared! [CP {}] [Potential {}]'.format(
                                     pokemon_name, cp, pokemon_potential), 'yellow')
 
-                                logger.log('[#] IV [Stamina/Attack/Defense] = [{}/{}/{}]'.format(
+                                logger.log('IV [Stamina/Attack/Defense] = [{}/{}/{}]'.format(
                                     pokemon['pokemon_data']['individual_stamina'],
                                     pokemon['pokemon_data']['individual_attack'],
                                     pokemon['pokemon_data']['individual_defense']
@@ -90,7 +90,13 @@ class PokemonCatchWorker(object):
                             berries_count = self.bot.item_inventory_count(berry_id)
                             if(catch_rate[pokeball-1] < 0.5 and berries_count > 0): # and berry is in stock
                                 success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
-                                logger.log('[x] Catch Rate with normal Pokeball is low ({}%). Throwing {}... ({} left!)'.format(success_percentage,self.item_list[str(berry_id)],berries_count-1))
+                                logger.log('Catch Rate with normal Pokeball is low ({}%). Throwing {}... ({} left!)'.format(success_percentage,self.item_list[str(berry_id)],berries_count-1))
+                                
+                                if balls_stock[pokeball] is 0:
+                                    break
+                                else:
+                                    print 'we got balls in atlanta'
+                                
                                 self.api.use_item_capture(
                                     item_id=berry_id, 
                                     encounter_id = encounter_id, 
@@ -103,9 +109,9 @@ class PokemonCatchWorker(object):
                                         catch_rate[i] = catch_rate[i] * response_dict['responses']['USE_ITEM_CAPTURE']['item_capture_mult']
                                         
                                     success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
-                                    logger.log('[#] Catch Rate with normal Pokeball has increased to {}%'.format(success_percentage))
+                                    logger.log('Catch Rate with normal Pokeball has increased to {}%'.format(success_percentage))
                                 else:
-                                    logger.log('[x] Fail to use berry. Status Code: {}'.format(response_dict['status_code']),'red')
+                                    logger.log('Fail to use berry. Status Code: {}'.format(response_dict['status_code']),'red')
 
                             while(pokeball < 3):
                                 if catch_rate[pokeball-1] < 0.35 and balls_stock[pokeball+1] > 0:
@@ -118,14 +124,14 @@ class PokemonCatchWorker(object):
                             
                             if balls_stock[pokeball] is 0:
                                 logger.log(
-                                    '[x] Out of pokeballs, switching to farming mode...', 'red')
+                                    'Out of pokeballs, switching to farming mode...', 'red')
                                 # Begin searching for pokestops.
                                 self.config.mode = 'farm'
                                 return PokemonCatchWorker.NO_POKEBALLS
 
                             balls_stock[pokeball] = balls_stock[pokeball] - 1
                             success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
-                            logger.log('[x] Using {} (chance: {}%)... ({} left!)'.format(
+                            logger.log('Using {} (chance: {}%)... ({} left!)'.format(
                                 self.item_list[str(pokeball)], 
                                 success_percentage, 
                                 balls_stock[pokeball]
@@ -154,12 +160,12 @@ class PokemonCatchWorker(object):
                                     continue
                                 if status is 3:
                                     logger.log(
-                                        '[x] Oh no! {} vanished! :('.format(pokemon_name), 'red')
+                                        'Oh no! {} vanished! :('.format(pokemon_name), 'red')
                                 if status is 1:
                                     
                                     id_list2 = self.count_pokemon_inventory()
                                     
-                                    logger.log('[x] Captured {}! [CP {}] [{}/{}/{}]'.format(
+                                    logger.log('Captured {}! [CP {}] [{}/{}/{}]'.format(
                                         pokemon_name, 
                                         cp,
                                         pokemon['pokemon_data']['individual_stamina'],
@@ -174,10 +180,10 @@ class PokemonCatchWorker(object):
                                         status = response_dict['responses']['EVOLVE_POKEMON']['result']
                                         if status == 1:
                                             logger.log(
-                                                    '[#] {} has been evolved!'.format(pokemon_name), 'green')
+                                                    '{} has been evolved!'.format(pokemon_name), 'green')
                                         else:
                                             logger.log(
-                                            '[x] Failed to evolve {}!'.format(pokemon_name))
+                                            'Failed to evolve {}!'.format(pokemon_name))
 
                                     if self.should_release_pokemon(pokemon_name, cp, pokemon_potential, response_dict):
                                         # Transfering Pokemon
@@ -189,7 +195,7 @@ class PokemonCatchWorker(object):
                                         self.transfer_pokemon(
                                             pokemon_to_transfer[0])
                                         logger.log(
-                                            '[#] {} has been exchanged for candy!'.format(pokemon_name), 'green')
+                                            '{} has been exchanged for candy!'.format(pokemon_name), 'green')
 
                             break
         time.sleep(5)
@@ -286,7 +292,7 @@ class PokemonCatchWorker(object):
             }
 
             #logger.log(
-            #    "[x] Release config for {}: CP {} {} IV {}".format(
+            #    "Release config for {}: CP {} {} IV {}".format(
             #        pokemon_name,
             #        min_cp,
             #        cp_iv_logic,

@@ -20,12 +20,12 @@ class MoveToFortWorker(object):
 
         dist = distance(self.position[0], self.position[1], lat, lng)
 
-        # print('[#] Found fort {} at distance {}m'.format(fortID, dist))
-        logger.log('[#] Found fort {} at distance {}'.format(
+        # print('Found fort {} at distance {}m'.format(fortID, dist))
+        logger.log('Found fort {} at distance {}'.format(
             fortID, format_dist(dist, unit)))
 
         if dist > 10:
-            logger.log('[#] Need to move closer to Pokestop')
+            logger.log('Need to move closer to Pokestop')
             position = (lat, lng, 0.0)
 
             if self.config.walk > 0:
@@ -47,7 +47,7 @@ class MoveToFortWorker(object):
 
             self.api.player_update(latitude=lat, longitude=lng)
             response_dict = self.api.call()
-            logger.log('[#] Arrived at Pokestop')
+            logger.log('Arrived at Pokestop')
             sleep(2)
             return response_dict
 

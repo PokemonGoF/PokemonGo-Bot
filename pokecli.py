@@ -60,11 +60,11 @@ def init_config():
         with open(config_arg) as data:
             load.update(json.load(data))
     elif os.path.isfile(config_file):
-        logger.log('[x] No config argument specified, checking for /configs/config.json', 'yellow')
+        logger.log('No config argument specified, checking for /configs/config.json', 'yellow')
         with open(config_file) as data:
             load.update(json.load(data))
     else:
-        logger.log('[x] Error: No /configs/config.json or specified config', 'red')
+        logger.log('Error: No /configs/config.json or specified config', 'red')
 
 
     # Read passed in Arguments
@@ -196,6 +196,8 @@ def init_config():
     return config
 
 def main():
+
+    logger.log('PokemonGO Bot v1.0', 'green')
     # log settings
     # log format
     #logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(module)10s] [%(levelname)5s] %(message)s')
@@ -205,21 +207,19 @@ def main():
     config = init_config()
     if not config:
         return
-
-    logger.log('[x] PokemonGO Bot v1.0', 'green')
-    logger.log('[x] Configuration initialized', 'yellow')
+    logger.log('Configuration initialized', 'yellow')
 
     try:
         bot = PokemonGoBot(config)
         bot.start()
 
-        logger.log('[x] Starting PokemonGo Bot....', 'green')
+        logger.log('Starting PokemonGo Bot....', 'green')
 
         while True:
             bot.take_step()
 
     except KeyboardInterrupt:
-        logger.log('[x] Exiting PokemonGo Bot', 'red')
+        logger.log('Exiting PokemonGo Bot', 'red')
         # TODO Add number of pokemon catched, pokestops visited, highest CP
         # pokemon catched, etc.
 
