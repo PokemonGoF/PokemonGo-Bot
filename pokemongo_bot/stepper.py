@@ -107,14 +107,13 @@ class Stepper(object):
                 if 'map_cells' in response_dict['responses'][
                         'GET_MAP_OBJECTS']:
                     user_web_location = 'web/location-%s.json' % (self.config.username)
-                    if os.path.isfile(user_web_location):
-                        with open(user_web_location, 'w') as outfile:
-                            json.dump(
-                                {'lat': lat,
-                                'lng': lng,
-                                'cells': response_dict[
-                                    'responses']['GET_MAP_OBJECTS']['map_cells']},
-                                outfile)
+                    with open(user_web_location, 'w') as outfile:
+                        json.dump(
+                            {'lat': lat,
+                            'lng': lng,
+                            'cells': response_dict[
+                                'responses']['GET_MAP_OBJECTS']['map_cells']},
+                            outfile)
 
                     user_data_lastlocation = 'data/last-location-%s.json' % (self.config.username)
                     if os.path.isfile(user_data_lastlocation):
