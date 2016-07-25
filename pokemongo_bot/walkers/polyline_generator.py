@@ -11,12 +11,11 @@ class Polyline(object):
         self.DISTANCE_API_URL='https://maps.googleapis.com/maps/api/directions/json?mode=walking'
         self.origin = origin
         self.destination = destination
-        URL = '{}&origin={}&destination={}'.format(self.DISTANCE_API_URL,
+        self.URL = '{}&origin={}&destination={}'.format(self.DISTANCE_API_URL,
                                                    '{},{}'.format(*self.origin),
                                                    '{},{}'.format(*self.destination))
-        print(URL)
         self.polyline_points = [x['polyline']['points'] for x in
-                                requests.get(URL).json()['routes'][0]['legs'][0]['steps']]
+                                requests.get(self.URL).json()['routes'][0]['legs'][0]['steps']]
         self.speed = float(speed)
         self.points = [self.origin] + self.get_points(self.polyline_points) + [self.destination]
         self.lat, self.long = self.points[0][0], self.points[0][1]

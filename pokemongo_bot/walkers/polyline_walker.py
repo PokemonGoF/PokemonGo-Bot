@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 from polyline_generator import Polyline
 from math import ceil
-from human_behaviour import sleep
-from cell_workers.utils import i2f
-import logger
+from ..human_behaviour import sleep
+from ..cell_workers.utils import i2f
 from pokemongo_bot.step_walker import StepWalker
+from pokemongo_bot import logger
 
 class PolylineWalker(StepWalker):
 
     def __init__(self, bot, speed, initLat, initLng, destLat, destLng):
         super(PolylineWalker, self).__init__(bot, speed, initLat, initLng, destLat, destLng)
-        self.polyline_walker = Polyline(i2f(self.api._position_lat), i2f(self.api._position_lng), self.speed)
+        self.polyline_walker = Polyline((i2f(self.api._position_lat), i2f(self.api._position_lng)),
+                                        (self.destLat, self.destLng), self.speed)
+        logger.log('[#] {}'.format(self.polyline_walker.URL))
 
     def step(self):
         self.polyline_walker.unpause()
