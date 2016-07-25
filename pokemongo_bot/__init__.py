@@ -39,6 +39,7 @@ class PokemonGoBot(object):
     def take_step(self):
         location = self.navigator.take_step()
         cells = self.find_close_cells(*location)
+
         for cell in cells:
             self.work_on_cell(cell, location, False)
 
@@ -69,7 +70,7 @@ class PokemonGoBot(object):
             )
         return map_cells
 
-    def work_on_cell(self, cell, position, include_fort_on_path):
+    def work_on_cell(self, cell, position):
         if self.config.evolve_all:
             # Run evolve all once. Flip the bit.
             print('[#] Attempting to evolve all pokemons ...')
@@ -111,7 +112,7 @@ class PokemonGoBot(object):
                 if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
                     break
         if (self.config.mode == "all" or
-                self.config.mode == "farm") and include_fort_on_path:
+                self.config.mode == "farm"):
             if 'forts' in cell:
                 # Only include those with a lat/long
                 forts = [fort
@@ -123,6 +124,7 @@ class PokemonGoBot(object):
                 # build graph & A* it
                 forts.sort(key=lambda x: distance(self.position[
                            0], self.position[1], x['latitude'], x['longitude']))
+
                 for fort in forts:
                     worker = MoveToFortWorker(fort, self)
                     worker.work()

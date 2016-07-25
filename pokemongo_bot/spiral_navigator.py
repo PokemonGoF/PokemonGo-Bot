@@ -49,6 +49,8 @@ class SpiralNavigator(object):
             position = (self.x * 0.0025 + self.origin_lat,
                         self.y * 0.0025 + self.origin_lon, 0)
             if self.config.walk > 0:
+                logger.log('[#] Walking from ' + str((i2f(self.api._position_lat), i2f(
+                    self.api._position_lng))) + " to " + str((str(position[0:2]))))
                 self.bot.step_walker.step(self.config.walk, *position[0:2])
             else:
                 self.api.set_position(*position)
