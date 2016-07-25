@@ -17,7 +17,7 @@ class PolylineWalker(object):
                                              self.destination
                                              ).json()['routes'][0]['legs'][0]['steps']]
         self.speed = float(speed)
-        self.points = [self.origin] + self.get_points(self.polyline_points) + [self.destination]
+        self.points = self.get_points(self.polyline_points)
         self.lat, self.long = self.points[0][0], self.points[0][1]
         self.polyline = self.combine_polylines(self.points)
         self._timestamp = time.time()
