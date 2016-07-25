@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import time
-from random import random
+from random import random, uniform
 
 
 def sleep(seconds, delta=0.3):
     jitter = delta * seconds
-    sleep_time = random.uniform(seconds - jitter, seconds + jitter)
+    sleep_time = uniform(seconds - jitter, seconds + jitter)
     time.sleep(sleep_time)
 
 
