@@ -109,6 +109,7 @@ $ git submodule update
 ```
 
 ### Installation Windows
+
 (change master to dev for the newer version)
 
 On Windows, you will need to install PyYaml through the installer and not through requirements.txt.
