@@ -12,10 +12,12 @@ import yaml
 import logger
 import re
 from pgoapi import PGoApi
+from pgoapi.utilities import f2i, h2f
 from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
-from cell_workers.utils import distance
+from cell_workers.utils import distance, get_cellid, encode
+from step_walker import StepWalker
 from human_behaviour import sleep
-from stepper import Stepper
+from spiral_navigator import SpiralNavigator
 from geopy.geocoders import GoogleV3
 from math import radians, sqrt, sin, cos, atan2
 from item_list import Item
@@ -30,13 +32,45 @@ class PokemonGoBot(object):
     def start(self):
         self._setup_logging()
         self._setup_api()
-        self.stepper = Stepper(self)
+        self.step_walker = StepWalker(self)
+        self.navigator = SpiralNavigator(self)
         random.seed()
 
     def take_step(self):
-        self.stepper.take_step()
+        location = self.navigator.take_step()
+        cells = self.find_close_cells(*location)
 
-    def work_on_cell(self, cell, position, include_fort_on_path):
+        for cell in cells:
+            self.work_on_cell(cell, location)
+
+    def find_close_cells(self, lat, lng):
+        cellid = get_cellid(lat, lng)
+        timestamp = [0, ] * len(cellid)
+
+        self.api.get_map_objects(
+            latitude=f2i(lat),
+            longitude=f2i(lng),
+            since_timestamp_ms=timestamp,
+            cell_id=cellid
+        )
+        response_dict = self.api.call()
+        map_objects = response_dict.get('responses', {}).get('GET_MAP_OBJECTS', {})
+        status = map_objects.get('status', None)
+
+        map_cells = []
+        if status and status == 1:
+            map_cells = map_objects['map_cells']
+            position = (lat, lng, 0)
+            map_cells.sort(
+                key=lambda x: distance(
+                    lat,
+                    lng,
+                    x['forts'][0]['latitude'],
+                    x['forts'][0]['longitude']) if x.get('forts', []) else 1e6
+            )
+        return map_cells
+
+    def work_on_cell(self, cell, position):
         if self.config.evolve_all:
             # Run evolve all once. Flip the bit.
             print('[#] Attempting to evolve all pokemons ...')
@@ -78,7 +112,7 @@ class PokemonGoBot(object):
                 if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
                     break
         if (self.config.mode == "all" or
-                self.config.mode == "farm") and include_fort_on_path:
+                self.config.mode == "farm"):
             if 'forts' in cell:
                 # Only include those with a lat/long
                 forts = [fort
@@ -90,6 +124,7 @@ class PokemonGoBot(object):
                 # build graph & A* it
                 forts.sort(key=lambda x: distance(self.position[
                            0], self.position[1], x['latitude'], x['longitude']))
+
                 for fort in forts:
                     worker = MoveToFortWorker(fort, self)
                     worker.work()
