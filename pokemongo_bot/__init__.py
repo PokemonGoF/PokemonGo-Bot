@@ -44,8 +44,9 @@ class PokemonGoBot(object):
 
             if remaining_time < 60:
                 logger.log("Session stale, re-logging in", 'yellow')
+                self.position = position
                 self.login()
- 
+
         if self.config.evolve_all:
             # Run evolve all once. Flip the bit.
             print('[#] Attempting to evolve all pokemons ...')
@@ -128,13 +129,17 @@ class PokemonGoBot(object):
 
     def login(self):
         logger.log('[#] Attempting login to Pokemon Go.', 'white')
-
+        self.api._auth_token = None
+        self.api._auth_provider = None
+        self.api._api_endpoint = None
         self.api.set_position(*self.position)
 
         while not self.api.login(self.config.auth_service,
                                str(self.config.username),
                                str(self.config.password)):
+
             logger.log('[X] Login Error, server busy', 'red')
+            logger.log('[X] Waiting 10 seconds to try again', 'red')
             time.sleep(10)
 
         logger.log('[+] Login to Pokemon Go successful.', 'green')
