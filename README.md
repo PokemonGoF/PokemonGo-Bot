@@ -204,7 +204,6 @@ to only release Pidgey with bad rolls.
 Additionally, you can specify always_release and never_release flags. For example:
 ```"Pidgey": {"always_release": true}```
 will release all Pidgey caught.
->>>>>>> upstream/dev
 
 ### Evolve All Configuration
     By setting the `evolve_all` attribute in config.json, you can instruct the bot to automatically
