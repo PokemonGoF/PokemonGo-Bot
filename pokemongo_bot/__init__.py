@@ -38,10 +38,39 @@ class PokemonGoBot(object):
 
     def work_on_cell(self, cell, position, include_fort_on_path):
         if self.config.evolve_all:
-            # Run evolve all once. Flip the bit.
-            print('[#] Attempting to evolve all pokemons ...')
-            worker = EvolveAllWorker(self)
-            worker.work()
+            # Will skip evolving if user wants to use an egg and there is none
+            skip_evolves = False
+            
+            # Pop lucky egg before evolving to maximize xp gain
+            use_lucky_egg = self.config.use_lucky_egg
+            lucky_egg_count = self.item_inventory_count(Item.ITEM_LUCKY_EGG.value)
+
+            if  use_lucky_egg and lucky_egg_count > 0:
+                logger.log('[#] Using lucky egg ... you have {}'
+                           .format(lucky_egg_count))
+                response_dict_lucky_egg = self.use_lucky_egg()
+                if response_dict_lucky_egg and 'responses' in response_dict_lucky_egg and \
+                    'USE_ITEM_XP_BOOST' in response_dict_lucky_egg['responses'] and \
+                    'result' in response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']:
+                    result = response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']['result']
+                    if result is 1: # Request success
+                        logger.log('[+] Successfully used lucky egg... ({} left!)'
+                                   .format(lucky_egg_count-1), 'green')
+                    else:
+                        logger.log('[+] Failed to use lucky egg!', 'red')
+                        skip_evolves = True
+            elif use_lucky_egg: #lucky_egg_count is 0
+                # Skipping evolve so they aren't wasted
+                logger.log('[#] No lucky eggs... skipping evolve!', 'yellow')
+                skip_evolves = True
+
+            if not skip_evolves:
+                # Run evolve all once.
+                print('[#] Attempting to evolve all pokemons ...')
+                worker = EvolveAllWorker(self)
+                worker.work()
+            
+            # Flip the bit.
             self.config.evolve_all = []
 
         self._filter_ignored_pokemons(cell)
@@ -204,6 +233,13 @@ class PokemonGoBot(object):
         # Example of good request response
         #{'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
         return inventory_req
+    
+    def use_lucky_egg(self):
+        self.api.use_item_xp_boost(item_id=301)
+        inventory_req = self.api.call()
+
+        return inventory_req
+
 
     def update_inventory(self):
         self.api.get_inventory()
