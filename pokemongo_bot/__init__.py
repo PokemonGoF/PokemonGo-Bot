@@ -239,7 +239,6 @@ class PokemonGoBot(object):
         logger.log('[#] PokeBalls: ' + str(balls_stock[1]))
         logger.log('[#] GreatBalls: ' + str(balls_stock[2]))
         logger.log('[#] UltraBalls: ' + str(balls_stock[3]))
-        logger.log('[#] Razz Berries: ' + str(self.item_inventory_count(701)))
 
         self.get_player_info()
 
