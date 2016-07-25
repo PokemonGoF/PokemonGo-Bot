@@ -125,7 +125,7 @@ class EvolveAllWorker(object):
             print('[#] Successfully evolved {} with {} CP and {} IV!'.format(
                 pokemon_name, pokemon_cp, pokemon_iv
             ))
-            sleep(5.7)
+            sleep(3.7)
         else:
             # cache pokemons we can't evolve. Less server calls
             cache[pokemon_name] = 1
