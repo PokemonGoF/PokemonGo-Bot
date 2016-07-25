@@ -4,7 +4,6 @@ from stepper import Stepper
 from math import ceil
 from human_behaviour import sleep
 from cell_workers.utils import i2f
-
 import logger
 
 class PolylineStepper(Stepper):
@@ -34,7 +33,6 @@ class PolylineStepper(Stepper):
         if proposed_lat != self.api._position_lat and proposed_lng != self.api._position_lng:
             logger.log('[#] Using _old_walk_to to go from the proposed destination : {} to {}'
                        .format(proposed_destination, (lat, lng)))
-
             self._old_walk_to(speed, lat, lng, alt)
 
     def _old_walk_to(self, speed, lat, lng, alt):

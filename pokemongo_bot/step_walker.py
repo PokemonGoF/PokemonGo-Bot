@@ -25,7 +25,7 @@ class StepWalker(object):
 
         self.steps = (dist + 0.0) / (speed + 0.0)
 
-        if dist < 0.01 or self.steps < 1:
+        if dist < speed or self.steps < 1:
             self.dLat = 0
             self.dLng = 0
             self.magnitude = 0;
@@ -44,7 +44,8 @@ class StepWalker(object):
         # print 'distance'
         # print dist
 
-        if (self.dLat == 0 and self.dLng == 0) or dist < 15:
+        if (self.dLat == 0 and self.dLng == 0) or dist < self.speed:
+            self.api.set_position(self.destLat, self.destLng, 0)
             return True
 
         totalDLat = (self.destLat - i2f(self.api._position_lat))
