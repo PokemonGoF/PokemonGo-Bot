@@ -17,7 +17,7 @@ class PolylineWalker(object):
                                              self.destination
                                              ).json()['routes'][0]['legs'][0]['steps']]
         self.speed = float(speed)
-        self.points = self.get_points(self.polyline_points)
+        self.points = [self.origin] + self.get_points(self.polyline_points) + [self.destination]
         self.lat, self.long = self.points[0][0], self.points[0][1]
         self.polyline = self.combine_polylines(self.points)
         self._timestamp = time.time()
@@ -85,7 +85,7 @@ class PolylineWalker(object):
     def calculate_coord(self, percentage, o, d):
         lat = o[0]+ (d[0] -o[0]) * percentage
         lon = o[1]+ (d[1] -o[1]) * percentage
-        return [(round(lat, 5), round(lon, 5))]
+        return [(lat, lon)]
 
     def get_total_distance(self):
         return ceil(sum([haversine.haversine(*x)*1000 for x in self.walk_steps()]))
