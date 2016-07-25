@@ -97,7 +97,7 @@ class PokemonGoBot(object):
 
             if not skip_evolves:
                 # Run evolve all once.
-                print('[#] Attempting to evolve all pokemons ...')
+                print('[#] Attempting to evolve all pokemon ...')
                 worker = EvolveAllWorker(self)
                 worker.work()
 
