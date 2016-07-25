@@ -19,6 +19,7 @@ from spiral_navigator import SpiralNavigator
 from geopy.geocoders import GoogleV3
 from math import radians, sqrt, sin, cos, atan2
 from item_list import Item
+from webdump import file_does_exist
 
 
 class PokemonGoBot(object):
@@ -64,17 +65,21 @@ class PokemonGoBot(object):
             cells = map_objects['map_cells']
 
         user_web_location = 'web/location-%s.json' % (self.config.username)
-        # should check if file exists first but os is not imported here
-        # alt is unused atm but makes using *location easier      
-        with open(user_web_location,'w') as outfile:
-            json.dump(
-                {'lat': lat,
+        if file_does_exist(user_web_location) is False:
+            open(user_web_location, 'a').close()
+
+        with open(user_web_location, 'w') as outfile:
+            json.dump({
+                'lat': lat,
                 'lng': lng,
                 'alt': alt,
-                'cells': cells 
-                }, outfile)
+                'cells': cells
+            }, outfile)
 
         user_data_lastlocation = 'data/last-location-%s.json' % (self.config.username)
+        if file_does_exist(user_data_lastlocation) is False:
+            open(user_data_lastlocation, 'a').close()
+
         with open(user_data_lastlocation, 'w') as outfile:
             outfile.truncate()
             json.dump({'lat': lat, 'lng': lng}, outfile)
@@ -289,8 +294,8 @@ class PokemonGoBot(object):
         logger.log('Items: {}/{}'.format(self.get_inventory_count('item'), player['max_item_storage']), 'cyan')
         logger.log('Stardust: {}'.format(stardust) + ' | Pokecoins: {}'.format(pokecoins), 'cyan')
         # Pokeball Output
-        logger.log('PokeBalls: ' + str(balls_stock[1]) + 
-            ' | GreatBalls: ' + str(balls_stock[2]) + 
+        logger.log('PokeBalls: ' + str(balls_stock[1]) +
+            ' | GreatBalls: ' + str(balls_stock[2]) +
             ' | UltraBalls: ' + str(balls_stock[3]), 'cyan')
         logger.log('Razz Berries: ' + str(self.item_inventory_count(701)), 'cyan')
 
@@ -351,7 +356,7 @@ class PokemonGoBot(object):
                                 continue
                             self.inventory.append(item['inventory_item_data'][
                                 'item'])
-    
+
     def pokeball_inventory(self):
         self.api.get_player().get_inventory()
 
@@ -545,7 +550,7 @@ class PokemonGoBot(object):
                                             logger.log('Level: {level}'.format(**playerdata) +
                                                 ' (Next Level: {} XP)'.format(nextlvlxp) +
                                                  ' (Total: {experience} XP)'.format(**playerdata), 'cyan')
-                                                  
+
 
                                     if 'pokemons_captured' in playerdata:
                                         if 'poke_stop_visits' in playerdata:
