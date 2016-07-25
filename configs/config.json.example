@@ -14,5 +14,6 @@
     "distance_unit": "km",
     "item_filter": "101,102,103,104",
     "evolve_all": "NONE",
+    "min_cp": 300,
     "use_lucky_egg": false
 }
