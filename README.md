@@ -181,7 +181,7 @@ Option | Meaning
 `walk` | Walk with the given speed (meters per second max 4.16 because of walking end on 15km/h)
 `debug` | 		Let the default value here except if you are developer
 `test` | 		Let the default value here except if you are developer
-`initial_transfer` | 	Set this to 1 if you want to transfer pokemon at the beginning of the run. It will still transfer pokémon during your exploration, depending on how your release_config.json is setup.
+`initial_transfer` | 	Set this to an upper bound of the cp level which you want to transfer at the beginning of the run. For example, set the value to 0 to disable the initial transfer, set it to 100 to enable initial transfer for cp levels 0-99. It will still transfer pokémon during your exploration, depending on how your release_config.json is setup.
 `location_cache` | 	Bot will start at last known location
 `distance_unit` | 	Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
 `item_filter` | 	Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, ["101","102","103","104"] to recycle potions when collected)
