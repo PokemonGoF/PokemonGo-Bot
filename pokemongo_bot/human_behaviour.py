@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import time
-from math import ceil
-from random import random, randint
+from random import random, uniform
 
 
 def sleep(seconds, delta=0.3):
-    jitter = ceil(delta * seconds)
-    sleep_time = randint(int(seconds - jitter), int(seconds + jitter))
+    jitter = delta * seconds
+    sleep_time = uniform(seconds - jitter, seconds + jitter)
     time.sleep(sleep_time)
 
 
