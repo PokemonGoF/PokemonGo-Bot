@@ -189,14 +189,16 @@ To update your project do: `git pull` in the project folder
 - `location_cache` : 
 - `distance_unit` :
 - `item_filter` :
-- `evolve_all` : Set to true to evolve pokemon if possible
+- `evolve_all` : Set to "all" or specify a list (e.g., "Pidgey,Weedle") to evolve pokemons
 
 ### Evolve All Configuration
     By setting the `evolve_all` attribute in config.json, you can instruct the bot to automatically
     evolve specified pokemons on startup. This is especially useful for batch-evolving after popping up
-    a lucky egg (currently this needs to be done manually).
+    a lucky egg.
     
-    The evolve all mechanism evolves only higher CP pokemons. It does this by first ordering them from high-to-low CP.
+    The evolve all mechanism evolves only higher IV/CP pokemons. It works by sorting the high CP pokemons (default: 300 CP or higher)
+    based on their IV values. After evolving all high CP pokemons, the mechanism will move on to evolving lower CP pokemons
+    only based on their CP (if it can).
     It will also automatically transfer the evolved pokemons based on the release configuration.
     
     Examples on how to use (set in config.json):
@@ -206,6 +208,10 @@ To update your project do: `git pull` in the project folder
     2. "evolve_all": "Pidgey,Weedle"
       Will only evolve Pidgey and Weedle.
     3. Not setting evolve_all or having any other string would not evolve any pokemons on startup.
+    
+    If you wish to change the default threshold of 300 CP, simply add the following to the config file:
+    	"cp_min": <number>
+    
 
 ## How to run with Docker
 
