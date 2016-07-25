@@ -197,7 +197,7 @@ will stop catching Pidgey entirely.
 
 ## Release Configuration
 Default configuration will not release any Pokemon.
-```"any": {"release_under_cp": 0, "release_under_iv": 0, "logic": "or"}```
+```"any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or"}```
 You can override the global configuration with Pokemon-specific options, such as:
 ```"Pidgey": {"release_below_cp": 0, "release_below_iv": 0.8", "logic": "or"}```
 to only release Pidgey with bad rolls.
