@@ -41,6 +41,19 @@ class PokemonGoBot(object):
         for cell in cells:
             self.work_on_cell(cell, location)
 
+    def update_web_location(self, cells, lat, lng, alt=0):
+        logger.log("Updating web location!","blue")
+        user_web_location = 'web/location-%s.json' % (self.config.username)
+        # should check if file exists first but os is not imported here
+        # alt is unused atm but makes using *location easier
+        with open(user_web_location,'w') as outfile:
+            json.dump(
+                {'lat': lat,
+                'lng': lng,
+                'alt': alt,
+                'cells': cells 
+                }, outfile)
+
     def find_close_cells(self, lat, lng):
         cellid = get_cellid(lat, lng)
         timestamp = [0, ] * len(cellid)
@@ -66,6 +79,7 @@ class PokemonGoBot(object):
                     x['forts'][0]['latitude'],
                     x['forts'][0]['longitude']) if x.get('forts', []) else 1e6
             )
+        self.update_web_location(map_cells,lat,lng)
         return map_cells
 
     def work_on_cell(self, cell, position):
@@ -276,6 +290,8 @@ class PokemonGoBot(object):
 
         logger.log('[#]')
         self.update_inventory()
+        # send empty map_cells and then our position
+        self.update_web_location([],*self.position)
 
     def catch_pokemon(self, pokemon):
         worker = PokemonCatchWorker(pokemon, self)
@@ -325,7 +341,7 @@ class PokemonGoBot(object):
                                 continue
                             self.inventory.append(item['inventory_item_data'][
                                 'item'])
-
+    
     def pokeball_inventory(self):
         self.api.get_player().get_inventory()
 
