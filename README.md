@@ -379,6 +379,7 @@ If using multiple usernames format like this:
  * Leaklessgfy
  * codybaldwin
  * skyl1ne94
+ * Heihachi
  
 -------
 ## Credits

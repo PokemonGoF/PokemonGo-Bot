@@ -75,6 +75,11 @@ class PokemonGoBot(object):
                 'cells': cells 
                 }, outfile)
 
+        user_data_lastlocation = 'data/last-location-%s.json' % (self.config.username)
+        with open(user_data_lastlocation, 'w') as outfile:
+            outfile.truncate()
+            json.dump({'lat': lat, 'lng': lng}, outfile)
+
     def find_close_cells(self, lat, lng):
         cellid = get_cellid(lat, lng)
         timestamp = [0, ] * len(cellid)
