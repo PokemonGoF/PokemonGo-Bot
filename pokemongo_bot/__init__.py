@@ -8,7 +8,6 @@ import threading
 import time
 import datetime
 import sys
-import yaml
 import logger
 import re
 from pgoapi import PGoApi
@@ -148,8 +147,6 @@ class PokemonGoBot(object):
             # Flip the bit.
             self.config.evolve_all = []
 
-        self._filter_ignored_pokemons(cell)
-
         if (self.config.mode == "all" or self.config.mode ==
                 "poke") and 'catchable_pokemons' in cell and len(cell[
                     'catchable_pokemons']) > 0:
@@ -254,15 +251,6 @@ class PokemonGoBot(object):
         # instantiate pgoapi
         self.api = PGoApi()
 
-        # check if the release_config file exists
-        try:
-            with open('configs/release_config.json') as file:
-                pass
-        except:
-            # the file does not exist, warn the user and exit.
-            logger.log('IMPORTANT: Rename and configure release_config.json.example for your Pokemon release logic first!', 'red')
-            exit(0)
-
         # provide player position on the earth
         self._set_starting_position()
 
@@ -296,6 +284,7 @@ class PokemonGoBot(object):
             stardust = player['currencies'][1]['amount']
         logger.log('')
         logger.log('--- {username} ---'.format(**player), 'cyan')
+        self.get_player_info()
         logger.log('Pokemon Bag: {}/{}'.format(self.get_inventory_count('pokemon'), player['max_pokemon_storage']), 'cyan')
         logger.log('Items: {}/{}'.format(self.get_inventory_count('item'), player['max_item_storage']), 'cyan')
         logger.log('Stardust: {}'.format(stardust) + ' | Pokecoins: {}'.format(pokecoins), 'cyan')
@@ -304,8 +293,6 @@ class PokemonGoBot(object):
             ' | GreatBalls: ' + str(balls_stock[2]) + 
             ' | UltraBalls: ' + str(balls_stock[3]), 'cyan')
         logger.log('Razz Berries: ' + str(self.item_inventory_count(701)), 'cyan')
-
-        self.get_player_info()
 
         logger.log('')
 
@@ -339,9 +326,7 @@ class PokemonGoBot(object):
     def use_lucky_egg(self):
         self.api.use_item_xp_boost(item_id=301)
         inventory_req = self.api.call()
-
         return inventory_req
-
 
     def update_inventory(self):
         self.api.get_inventory()
@@ -490,45 +475,6 @@ class PokemonGoBot(object):
         #self.log.info('lat/long/alt: %s %s %s', loc.latitude, loc.longitude, loc.altitude)
 
         return (loc.latitude, loc.longitude, loc.altitude)
-
-    def _filter_ignored_pokemons(self, cell):
-        process_ignore = False
-        try:
-            with open("./data/catch-ignore.yml", 'r') as y:
-                ignores = yaml.load(y)['ignore']
-                if len(ignores) > 0:
-                    process_ignore = True
-        except Exception, e:
-            pass
-
-        if process_ignore:
-            #
-            # remove any wild pokemon
-            try:
-                for p in cell['wild_pokemons'][:]:
-                    pokemon_id = p['pokemon_data']['pokemon_id']
-                    pokemon_name = filter(
-                        lambda x: int(x.get('Number')) == pokemon_id,
-                        self.pokemon_list)[0]['Name']
-
-                    if pokemon_name in ignores:
-                        cell['wild_pokemons'].remove(p)
-            except KeyError:
-                pass
-
-            #
-            # remove catchable pokemon
-            try:
-                for p in cell['catchable_pokemons'][:]:
-                    pokemon_id = p['pokemon_id']
-                    pokemon_name = filter(
-                        lambda x: int(x.get('Number')) == pokemon_id,
-                        self.pokemon_list)[0]['Name']
-
-                    if pokemon_name in ignores:
-                        cell['catchable_pokemons'].remove(p)
-            except KeyError:
-                pass
 
     def heartbeat(self):
         self.api.get_player()
