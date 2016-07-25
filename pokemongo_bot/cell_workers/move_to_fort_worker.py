@@ -1,13 +1,15 @@
 from utils import distance, format_dist
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot import logger
+from pokemongo_bot.step_walker import StepWalker
 
 class MoveToFortWorker(object):
     def __init__(self, fort, bot):
+        self.bot = bot
         self.fort = fort
         self.api = bot.api
         self.config = bot.config
-        self.stepper = bot.stepper
+        self.navigator = bot.navigator
         self.position = bot.position
 
     def work(self):
@@ -27,7 +29,19 @@ class MoveToFortWorker(object):
             position = (lat, lng, 0.0)
 
             if self.config.walk > 0:
-                self.stepper._walk_to(self.config.walk, *position)
+                step_walker = StepWalker(
+                    self.bot,
+                    self.config.walk,
+                    self.api._position_lat,
+                    self.api._position_lng,
+                    position[0],
+                    position[1]
+                )
+
+                while True:
+                    if step_walker.step():
+                        break
+
             else:
                 self.api.set_position(*position)
 

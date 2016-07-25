@@ -14,14 +14,13 @@ The Pokemon Go Bot, baking with community.
 ## Project Chat
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
 ## Breaking Changes
-You need modify config.json (config.json.example for example) then pokecli.py --config config.json 
+You need modify configs/config.json (config.json.example for example) then pokecli.py --config configs/config.json 
 Please clean up your old clone if you have issue, and following the [install instruction](https://github.com/PokemonGoF/PokemonGo-Bot#installation).
 
-## About dev/stable/master Branch
+## About dev/master Branch
 Dev branch has most up to date feature and even everyone handle the part well, still, will have broken changes. Your test contribute and PR for fix are warm welcome. 
-Stable branch is better than dev branch. Setup with milestone tag.  
-Master branch is the thing you familiar.  
-No PR on stable/master branch to keep things easier.  
+Master branch is the stable branch.  
+No PR on master branch to keep things easier.  
 ## Table of Contents
 - [Project Chat](#project-chat)
 - [Features](#features)
@@ -110,6 +109,7 @@ $ git submodule update
 ```
 
 ### Installation Windows
+
 (change master to dev for the newer version)
 
 On Windows, you will need to install PyYaml through the installer and not through requirements.txt.
@@ -177,8 +177,8 @@ Please keep in mind that this fix is necessary only if your python version don't
 To update your project do: `git pull` in the project folder
 
 ## Usage (up to date)
-	1/ copy `config.json.example` to `config.json` and `release_config.json.example` to `release_config.json`.
-	2/ Edit `config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (others keys are optional, check `Advance Configuration` below)
+	1/ copy `configs/config.json.example` to `configs/config.json` and `configs/release_config.json.example` to `configs/release_config.json`.
+	2/ Edit `configs/config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (others keys are optional, check `Advance Configuration` below)
 
 ## Advance Configuration
 - `max_steps` :
@@ -191,11 +191,15 @@ To update your project do: `git pull` in the project folder
 - `distance_unit` :
 - `item_filter` :
 - `evolve_all` : Set to "all" or specify a list (e.g., "Pidgey,Weedle") to evolve pokemons
+- `use_lucky_egg` : Set to true to use lucky egg (if available) before evolve_all
 
 ### Evolve All Configuration
     By setting the `evolve_all` attribute in config.json, you can instruct the bot to automatically
     evolve specified pokemons on startup. This is especially useful for batch-evolving after popping up
     a lucky egg.
+	
+	A lucky egg can be used before evolving by setting the `use_lucky_egg` to true in config.json. If a
+	lucky egg is not available and "use_lucky_egg" is set to true, evolving will be skipped. 
     
     The evolve all mechanism evolves only higher IV/CP pokemons. It works by sorting the high CP pokemons (default: 300 CP or higher)
     based on their IV values. After evolving all high CP pokemons, the mechanism will move on to evolving lower CP pokemons
@@ -213,6 +217,41 @@ To update your project do: `git pull` in the project folder
     If you wish to change the default threshold of 300 CP, simply add the following to the config file:
     	"cp_min": <number>
     
+
+## How to run multiple accounts at the same time(skyl1ne94)
+    Before u start with this, make sure you create a copy of the config file for a second account by typing 
+    "cp config.json.example config_acc1" in the Terminal. Fill in your details in the file "config_acc1"
+    
+    To actually make PokemonGo-Bot run multiple accounts, you can follow this tutorial:
+    
+    Linux:
+    1. Download the template for Linux [here](https://onedrive.live.com/download?cid=8A1EC0D384061BB1&resid=8A1EC0D384061BB1%2116640&authkey=AEZ6QGJ8xIACQ6U)
+    2. Place the template in the root folder of the PokemonGo-Bot.
+    3. Copy the template and give it your own identity "cp startlinux_acc1_example startlinux_acc1".
+    4. Open the file with notepad and edit the following parts:
+       - LOCATION OF PokemonGo-Bot FOLDER (e.g. /root/PokemonGo-Bot);
+       - git pull origin to "dev" or "master" (e.g. git pull origin dev);
+       - config.json to the config file of the other account (e.g. config_acc1.json).
+    5. You can run the bot now by opening a terminal and filling in "./startbotacc1".
+    6. To run multiple accounts at the same time:
+       - Create a copy of "config_acc1" to "config_acc2"
+       - Create a copy of "startwin_acc1" to "startwin_acc2"
+    7. Now use the command "screen" to create a screen for each bot to seperate the bots from each other. For a manual of the command    "screen" use "man screen" in the Terminal.
+
+    
+    Windows
+    1. Download the template for Windows [here](https://onedrive.live.com/download?cid=8A1EC0D384061BB1&resid=8A1EC0D384061BB1%2116639&authkey=AH04lpHZWP6ISWg)
+    2. Place the template in the root folder of the PokemonGo-Bot.
+    3. Copy the template and give it your own identity "cp startwin_acc1_example startwin_acc1".
+    4. Open the file with notepad and edit the following parts:
+       - LOCATION OF PokemonGo-Bot FOLDER (e.g. C:\Program Files\PokemonGo-Bot);
+       - git pull origin to "dev" or "master" (e.g. git pull origin dev);
+       - config.json to the config file of the other account (e.g. config_acc1.json).
+    5. You can run the bot by opening "startwin_acc1"
+    6. To run multiple accounts at the same time:
+       - Create a copy of "config_acc1" to "config_acc2"
+       - Create a copy of "startwin_acc1" to "startwin_acc2"
+    7. Change the values in these files to the credentials and details of the second account and you are good to go a second bot!
 
 ## How to run with Docker
 
@@ -344,6 +383,8 @@ If using multiple usernames format like this:
  * riberod07
  * th3w4y
  * Leaklessgfy
+ * codybaldwin
+ * skyl1ne94
  
 -------
 ## Credits
