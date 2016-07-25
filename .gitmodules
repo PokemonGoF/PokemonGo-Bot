@@ -1,6 +1,5 @@
 [submodule "origin"]
 	path = web
-	url = https://github.com/OpenPoGo/OpenPoGoWeb.git
 [submodule "web"]
 	path = web
-	url = git@github.com:OpenPoGo/OpenPoGoWeb.git
+	url = https://github.com/OpenPoGo/OpenPoGoWeb.git
