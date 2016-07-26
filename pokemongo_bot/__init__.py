@@ -131,7 +131,6 @@ class PokemonGoBot(object):
                     x['forts'][0]['latitude'],
                     x['forts'][0]['longitude']) if x.get('forts', []) else 1e6
             )
-        self.update_web_location(map_cells)
         return map_cells
 
     def work_on_cell(self, cell, position, work_on_forts=1):
