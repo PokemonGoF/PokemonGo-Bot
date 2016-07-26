@@ -71,7 +71,7 @@ class PokemonCatchWorker(object):
                                 logger.log('A Wild {} appeared! [CP {}] [Potential {}]'.format(
                                     pokemon_name, cp, pokemon_potential), 'yellow')
 
-                                logger.log('IV [Stamina/Attack/Defense] = [{}]'.format(iv_display)
+                                logger.log('IV [Stamina/Attack/Defense] = [{}]'.format(iv_display))
                                 pokemon['pokemon_data']['name'] = pokemon_name
                                 # Simulate app
                                 sleep(3)
