@@ -1,0 +1,28 @@
+{
+    "auth_service": "google",
+    "username": "YOUR_USERNAME",
+    "password": "YOUR_PASSWORD",
+    "location": "SOME_LOCATION",
+    "gmapkey": "GOOGLE_MAPS_API_KEY",
+    "max_steps": 5,
+    "mode": "all",
+    "walk": 4.16,
+    "debug": false,
+    "test": false,
+    "initial_transfer": 0,
+    "location_cache": true,
+    "distance_unit": "km",
+    "item_filter": "",
+    "evolve_all": "NONE",
+    "cp_min": 300,
+    "use_lucky_egg": false,
+    "evolve_captured": false,
+    "catch": {
+      "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
+      // "Rattata": { "always_catch" : true }
+    },
+    "release": {
+      "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or"},
+      // "Rattata": { "always_release" : true }
+    }
+}
