@@ -19,10 +19,12 @@
     "evolve_captured": false,
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
-      // "Rattata": { "always_catch" : true }
+      "// Example of always catching Rattata:": {},
+      "// Rattata": { "always_catch" : true }
     },
     "release": {
       "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or"},
-      // "Rattata": { "always_release" : true }
+      "// Example of always releasing Rattata:": {},
+      "// Rattata": { "always_release" : true }
     }
 }
