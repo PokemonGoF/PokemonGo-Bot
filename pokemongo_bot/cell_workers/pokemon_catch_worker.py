@@ -87,7 +87,7 @@ class PokemonCatchWorker(object):
                             pokeball = 1 # start from 1 - PokeBalls
                             
                             current_type = pokeball
-                            while(balls_stock[current_type] is 0 and current_type < 3: # if this type's stock = 0 and not top tier yet
+                            while(balls_stock[current_type] is 0 and current_type < 3): # if this type's stock = 0 and not top tier yet
                                 current_type = current_type + 1 # progress to next tier
                                 if(balls_stock[current_type] > 0) # next tier's stock > 0
                                     pokeball = current_type
