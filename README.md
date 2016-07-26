@@ -90,7 +90,7 @@ Please keep in mind that master is not always up-to-date whereas 'dev' is. In th
 ```
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
 $ cd PokemonGo-Bot  
-$ pip install -r requirements.txt
+$ sudo pip install -r requirements.txt
 $ git submodule init
 $ git submodule update
 ```
@@ -103,7 +103,7 @@ $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot
 $ cd PokemonGo-Bot  
 $ virtualenv .  
 $ source bin/activate  
-$ pip install -r requirements.txt
+$ sudp pip install -r requirements.txt
 $ git submodule init
 $ git submodule update
 ```
