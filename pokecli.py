@@ -160,7 +160,7 @@ def init_config():
     for key in config.__dict__:
         if key in load:
             config.__dict__[key] = load[key]
-            
+
     if 'catch' in load:
         config.catch = load['catch']
 
