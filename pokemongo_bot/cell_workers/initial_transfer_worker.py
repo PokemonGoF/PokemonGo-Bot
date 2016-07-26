@@ -19,6 +19,8 @@ class InitialTransferWorker(object):
             self.config.initial_transfer))
 
         pokemon_groups = self._initial_transfer_get_groups()
+        self.show_iv(pokemon_groups)
+        raw_input("Press Enter to continue...")
 
         for id in pokemon_groups:
 
@@ -36,11 +38,31 @@ class InitialTransferWorker(object):
                     print('[x] Transferring {} with CP {}'.format(
                         self.pokemon_list[id - 1]['Name'], group_cp[x]))
                     self.api.release_pokemon(
-                        pokemon_id=pokemon_groups[id][group_cp[x]])
+                        pokemon_id=pokemon_groups[id][group_cp[x]]['id'])
                     response_dict = self.api.call()
                     sleep(2)
 
         logger.log('[x] Transferring Done.')
+
+    def show_iv(self,pokemon_groups):
+        for id in pokemon_groups:
+            group_cp = pokemon_groups[id].keys()
+            if len(group_cp) > 0:
+                group_cp.sort()
+                group_cp.reverse()
+                for x in range(0, len(group_cp)):
+                    res_str = self.pokemon_list[id - 1]['Name'] +"\tCP:"+str(group_cp[x])+"\tIV:"+str(pokemon_groups[id][group_cp[x]]['iv'])+"%"
+                    if group_cp[x] <= self.config.initial_transfer:
+                        logger.log(res_str, 'red')
+                    elif (pokemon_groups[id][group_cp[x]]['iv']>85):
+                        logger.log(res_str, 'green')
+                    elif (pokemon_groups[id][group_cp[x]]['iv']>70):
+                        logger.log(res_str, 'green')
+                    elif (pokemon_groups[id][group_cp[x]]['iv']>50):
+                        logger.log(res_str, 'yellow')
+                    else:
+                        logger.log(res_str, 'yellow')
+
 
     def _initial_transfer_get_groups(self):
         pokemon_groups = {}
@@ -61,15 +83,23 @@ class InitialTransferWorker(object):
             except KeyError:
                 continue
 
-            group_id = pokemon['inventory_item_data'][
-                'pokemon_data']['pokemon_id']
-            group_pokemon = pokemon['inventory_item_data'][
-                'pokemon_data']['id']
-            group_pokemon_cp = pokemon[
-                'inventory_item_data']['pokemon_data']['cp']
+            data = pokemon['inventory_item_data']['pokemon_data']
+
+            group_id = data['pokemon_id']
+            group_pokemon = data['id']
+            group_pokemon_cp = data['cp']
+            total_IV = 0
+            iv_stats = ['individual_attack', 'individual_defense', 'individual_stamina']
+            for individual_stat in iv_stats:
+                try:
+                    total_IV += data[individual_stat]
+                except:
+                    data[individual_stat] = 0
+                    continue
+            group_iv = (total_IV * 100 / 45)
 
             if group_id not in pokemon_groups:
                 pokemon_groups[group_id] = {}
 
-            pokemon_groups[group_id].update({group_pokemon_cp: group_pokemon})
+            pokemon_groups[group_id].update({group_pokemon_cp: {'id': group_pokemon, 'iv': group_iv}})
         return pokemon_groups
