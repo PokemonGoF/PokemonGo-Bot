@@ -22,9 +22,14 @@ class SpiralNavigator(object):
         self.origin_lon = self.bot.position[1]
         self._step_walker = None
 
-    def take_step(self):
+    def take_stepE(self):
         position = (self.origin_lat, self.origin_lon, 0.0)
+        return self.take_step_(position)
 
+    def take_step(self, position):
+        return self.take_step_(position)
+
+    def take_step_(self,position):
         logger.log('Scanning area for objects....')
         # logger.log('[#] Scanning area for objects ({} / {})'.format(
         #     (step + 1), self.steplimit**2))

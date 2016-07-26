@@ -13,7 +13,7 @@ from pgoapi import PGoApi
 from pgoapi.utilities import f2i
 
 import logger
-from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
+from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, TransferWorker, EvolveAllWorker
 from cell_workers.utils import distance, get_cellid, encode
 from human_behaviour import sleep
 from item_list import Item
@@ -33,7 +33,7 @@ class PokemonGoBot(object):
         random.seed()
 
     def take_step(self):
-        location = self.navigator.take_step()
+        location = self.navigator.take_stepE()
         cells = self.find_close_cells(*location)
 
         for cell in cells:
@@ -119,6 +119,42 @@ class PokemonGoBot(object):
         self.update_web_location(map_cells,lat,lng)
         return map_cells
 
+    def _work_on_cell_catch(self, position):
+        if (self.config.mode != "all" and self.config.mode != "poke"):
+            return
+
+        locationTmp = self.navigator.take_step(self.position)
+        cellsTmp = self.find_close_cells(*locationTmp)
+
+        for cell in cellsTmp:
+            if 'catchable_pokemons' in cell and len(cell['catchable_pokemons']) > 0:
+                logger.log('Something rustles nearby!')
+                # Sort all by distance from current pos- eventually this should
+                # build graph & A* it
+                cell['catchable_pokemons'].sort(
+                    key=
+                    lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
+
+                user_web_catchable = 'web/catchable-%s.json' % (self.config.username)
+                for pokemon in cell['catchable_pokemons']:
+                    with open(user_web_catchable, 'w') as outfile:
+                        json.dump(pokemon, outfile)
+
+                    if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
+                        break
+                    with open(user_web_catchable, 'w') as outfile:
+                        json.dump({}, outfile)
+
+            if 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
+                # Sort all by distance from current pos- eventually this should
+                # build graph & A* it
+                cell['wild_pokemons'].sort(
+                    key=
+                    lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
+                for pokemon in cell['wild_pokemons']:
+                    if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
+                                break
+
     def work_on_cell(self, cell, position):
         # Check if session token has expired
         self.check_session(position)
@@ -159,36 +195,8 @@ class PokemonGoBot(object):
             # Flip the bit.
             self.config.evolve_all = []
 
-        if (self.config.mode == "all" or self.config.mode ==
-                "poke") and 'catchable_pokemons' in cell and len(cell[
-                    'catchable_pokemons']) > 0:
-            logger.log('Something rustles nearby!')
-            # Sort all by distance from current pos- eventually this should
-            # build graph & A* it
-            cell['catchable_pokemons'].sort(
-                key=
-                lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
+        self._work_on_cell_catch(position)
 
-            user_web_catchable = 'web/catchable-%s.json' % (self.config.username)
-            for pokemon in cell['catchable_pokemons']:
-                with open(user_web_catchable, 'w') as outfile:
-                    json.dump(pokemon, outfile)
-
-                if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
-                    break
-                with open(user_web_catchable, 'w') as outfile:
-                    json.dump({}, outfile)
-
-        if (self.config.mode == "all" or self.config.mode == "poke"
-            ) and 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
-            # Sort all by distance from current pos- eventually this should
-            # build graph & A* it
-            cell['wild_pokemons'].sort(
-                key=
-                lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
-            for pokemon in cell['wild_pokemons']:
-                if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
-                    break
         if (self.config.mode == "all" or
                 self.config.mode == "farm"):
             if 'forts' in cell:
@@ -204,7 +212,7 @@ class PokemonGoBot(object):
                            0], self.position[1], x['latitude'], x['longitude']))
 
                 for fort in forts:
-                    worker = MoveToFortWorker(fort, self)
+                    worker = MoveToFortWorker(fort, self, cell)
                     worker.work()
 
                     worker = SeenFortWorker(fort, self)
@@ -309,7 +317,7 @@ class PokemonGoBot(object):
         logger.log('')
 
         if self.config.initial_transfer:
-            worker = InitialTransferWorker(self)
+            worker = TransferWorker(self)
             worker.work()
 
         logger.log('')
@@ -322,7 +330,7 @@ class PokemonGoBot(object):
         return_value = worker.work()
 
         if return_value == PokemonCatchWorker.BAG_FULL:
-            worker = InitialTransferWorker(self)
+            worker = TransferWorker(self)
             worker.work()
 
         return return_value

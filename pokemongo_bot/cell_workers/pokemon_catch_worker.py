@@ -2,10 +2,10 @@
 
 import time
 from sets import Set
+from transfer_worker import TransferWorker
 
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import sleep
-
 
 class PokemonCatchWorker(object):
     BAG_FULL = 'bag_full'
@@ -22,6 +22,7 @@ class PokemonCatchWorker(object):
         self.inventory = bot.inventory
 
     def work(self):
+        worker = TransferWorker(self);
         encounter_id = self.pokemon['encounter_id']
         spawnpoint_id = self.pokemon['spawnpoint_id']
         player_latitude = self.pokemon['latitude']
@@ -82,7 +83,7 @@ class PokemonCatchWorker(object):
                         
                         balls_stock = self.bot.pokeball_inventory()
                         while(True):
-                            
+
                             ## pick the most simple ball from stock
                             pokeball = 1 # start from 1 - PokeBalls
                             
@@ -98,7 +99,7 @@ class PokemonCatchWorker(object):
                                 # Begin searching for pokestops.
                                 self.config.mode = 'farm'
                                 return PokemonCatchWorker.NO_POKEBALLS
-                                
+
                             ## Use berry to increase success chance.
                             berry_id = 701 # @ TODO: use better berries if possible
                             berries_count = self.bot.item_inventory_count(berry_id)
@@ -137,7 +138,7 @@ class PokemonCatchWorker(object):
                                     pokeball = current_type # use better ball
 
                             # @TODO, use the best ball in stock to catch VIP (Very Important Pokemon: Configurable)
-                            
+
                             balls_stock[pokeball] = balls_stock[pokeball] - 1
                             success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
                             logger.log('Using {} (chance: {}%)... ({} left!)'.format(
@@ -146,7 +147,7 @@ class PokemonCatchWorker(object):
                                 balls_stock[pokeball]
                             ))
 
-                            id_list1 = self.count_pokemon_inventory()
+                            id_list1 = self.mapDictId(worker.count_pokemon_inventory())
                             self.api.catch_pokemon(encounter_id=encounter_id,
                                                    pokeball=pokeball,
                                                    normalized_reticle_size=1.950,
@@ -172,7 +173,7 @@ class PokemonCatchWorker(object):
                                         'Oh no! {} vanished! :('.format(pokemon_name), 'red')
                                 if status is 1:
                                     
-                                    id_list2 = self.count_pokemon_inventory()
+                                    id_list2 = self.mapDictId(worker.count_pokemon_inventory())
                                     
                                     logger.log('Captured {}! [CP {}] [{}]'.format(
                                         pokemon_name, 
@@ -192,14 +193,13 @@ class PokemonCatchWorker(object):
                                             logger.log(
                                             'Failed to evolve {}!'.format(pokemon_name))
 
-                                    if self.should_release_pokemon(pokemon_name, cp, pokemon_potential, response_dict):
+                                    if worker.should_release_pokemon(pokemon_name, cp, pokemon_potential):
                                         # Transfering Pokemon
-                                        pokemon_to_transfer = list(
-                                            Set(id_list2) - Set(id_list1))
+                                        pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
                                         if len(pokemon_to_transfer) == 0:
                                             raise RuntimeError(
                                                 'Trying to transfer 0 pokemons!')
-                                        self.transfer_pokemon(
+                                        worker.transfer_pokemon(
                                             pokemon_to_transfer[0])
                                         logger.log(
                                             '{} has been exchanged for candy!'.format(pokemon_name), 'green')
@@ -207,64 +207,7 @@ class PokemonCatchWorker(object):
                             break
         time.sleep(5)
 
-    def _transfer_low_cp_pokemon(self, value):
-        self.api.get_inventory()
-        response_dict = self.api.call()
-        self._transfer_all_low_cp_pokemon(value, response_dict)
 
-    def _transfer_all_low_cp_pokemon(self, value, response_dict):
-        try:
-            reduce(dict.__getitem__, [
-                   "responses", "GET_INVENTORY", "inventory_delta", "inventory_items"], response_dict)
-        except KeyError:
-            pass
-        else:
-            for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
-                try:
-                    reduce(dict.__getitem__, [
-                           "inventory_item_data", "pokemon"], item)
-                except KeyError:
-                    pass
-                else:
-                    pokemon = item['inventory_item_data']['pokemon']
-                    self._execute_pokemon_transfer(value, pokemon)
-                    time.sleep(1.2)
-
-    def _execute_pokemon_transfer(self, value, pokemon):
-        if 'cp' in pokemon and pokemon['cp'] < value:
-            self.api.release_pokemon(pokemon_id=pokemon['id'])
-            response_dict = self.api.call()
-
-    def transfer_pokemon(self, pid):
-        self.api.release_pokemon(pokemon_id=pid)
-        response_dict = self.api.call()
-
-    def count_pokemon_inventory(self):
-        self.api.get_inventory()
-        response_dict = self.api.call()
-        id_list = []
-        return self.counting_pokemon(response_dict, id_list)
-
-    def counting_pokemon(self, response_dict, id_list):
-        try:
-            reduce(dict.__getitem__, [
-                   "responses", "GET_INVENTORY", "inventory_delta", "inventory_items"], response_dict)
-        except KeyError:
-            pass
-        else:
-            for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
-                try:
-                    reduce(dict.__getitem__, [
-                           "inventory_item_data", "pokemon_data"], item)
-                except KeyError:
-                    pass
-                else:
-                    pokemon = item['inventory_item_data']['pokemon_data']
-                    if pokemon.get('is_egg', False):
-                        continue
-                    id_list.append(pokemon['id'])
-
-        return id_list
 
     def should_capture_pokemon(self, pokemon_name, cp, iv, response_dict):
         catch_config = self._get_catch_config_for(pokemon_name)
@@ -313,49 +256,8 @@ class PokemonCatchWorker(object):
             catch_config = self.config.catch['any']
         return catch_config
 
-    def should_release_pokemon(self, pokemon_name, cp, iv, response_dict):
-        release_config = self._get_release_config_for(pokemon_name)
-        cp_iv_logic = release_config.get('logic')
-        if not cp_iv_logic:
-            cp_iv_logic = self._get_release_config_for('any').get('logic', 'and')
-
-        release_results = {
-            'cp': False,
-            'iv': False,
-        }
-        
-        if release_config.get('never_release', False):
-            return False
-
-        if release_config.get('always_release', False):
-            return True
-
-        release_cp = release_config.get('release_below_cp', 0)
-        if cp < release_cp:
-            release_results['cp'] = True
-
-        release_iv = release_config.get('release_below_iv', 0)
-        if iv < release_iv:
-            release_results['iv'] = True
-
-        logic_to_function = {
-            'or': lambda x, y: x or y,
-            'and': lambda x, y: x and y
-        }
-
-        #logger.log(
-        #    "Release config for {}: CP {} {} IV {}".format(
-        #        pokemon_name,
-        #        min_cp,
-        #        cp_iv_logic,
-        #        min_iv
-        #    ), 'yellow'
-        #)
-
-        return logic_to_function[cp_iv_logic](*release_results.values())
-
-    def _get_release_config_for(self, pokemon):
-        release_config = self.config.release.get(pokemon)
-        if not release_config:
-            release_config = self.config.release['any']
-        return release_config
+    def mapDictId(self, list):
+        ret = []
+        for i in list:
+            ret.append(i['id'])
+        return ret

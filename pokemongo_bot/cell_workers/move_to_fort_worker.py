@@ -2,15 +2,17 @@ from utils import distance, format_dist
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot import logger
 from pokemongo_bot.step_walker import StepWalker
+import json
 
 class MoveToFortWorker(object):
-    def __init__(self, fort, bot):
+    def __init__(self, fort, bot, cell):
         self.bot = bot
         self.fort = fort
         self.api = bot.api
         self.config = bot.config
         self.navigator = bot.navigator
         self.position = bot.position
+        self.cell = cell
 
     def work(self):
         lat = self.fort['latitude']
@@ -41,6 +43,8 @@ class MoveToFortWorker(object):
                 while True:
                     if step_walker.step():
                         break
+                    else:
+						self.bot._work_on_cell_catch(self.position)
 
             else:
                 self.api.set_position(*position)
