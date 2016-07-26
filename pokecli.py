@@ -198,6 +198,11 @@ def init_config():
     else:
         config.release = {}
 
+    if 'item_filter' in load:
+        config.item_filter = load['item_filter']
+    else:
+        config.item_filter = {}
+
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")
         return None
