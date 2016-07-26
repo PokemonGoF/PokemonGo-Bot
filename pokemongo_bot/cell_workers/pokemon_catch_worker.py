@@ -59,11 +59,11 @@ class PokemonCatchWorker(object):
                                     pokemon['pokemon_data']['individual_defense'] = 0
 
                                 iv_stats = ['individual_attack', 'individual_defense', 'individual_stamina']
-                                #iv_display = '{}/{}/{}'.format(
-                                #    pokemon['pokemon_data']['individual_stamina'],
-                                #    pokemon['pokemon_data']['individual_attack'],
-                                #    pokemon['pokemon_data']['individual_defense']
-                                #)
+                                iv_display = '{}/{}/{}'.format(
+                                    pokemon['pokemon_data']['individual_stamina'],
+                                    pokemon['pokemon_data']['individual_attack'],
+                                    pokemon['pokemon_data']['individual_defense']
+                                )
 
                                 for individual_stat in iv_stats:
                                     try:
@@ -80,7 +80,7 @@ class PokemonCatchWorker(object):
                                 logger.log('A Wild {} appeared! [CP {}] [Potential {}]'.format(
                                     pokemon_name, cp, pokemon_potential), 'yellow')
 
-                                #logger.log('IV [Stamina/Attack/Defense] = [{}]'.format(iv_display))
+                                logger.log('IV [Stamina/Attack/Defense] = [{}]'.format(iv_display))
                                 pokemon['pokemon_data']['name'] = pokemon_name
                                 # Simulate app
                                 sleep(3)
@@ -183,9 +183,10 @@ class PokemonCatchWorker(object):
 
                                     id_list2 = self.count_pokemon_inventory()
 
-                                    logger.log('Captured {}! [CP {}] '.format(
+                                    logger.log('Captured {}! [CP {}] [{}]'.format(
                                         pokemon_name,
-                                        cp
+                                        cp,
+                                        iv_display
                                     ), 'blue')
 
                                     if self.config.evolve_captured:
