@@ -45,7 +45,7 @@ class PokemonCatchWorker(object):
                         total_IV = 0
                         if 'wild_pokemon' in response_dict['responses'][self.response_key] or 'pokemon_data' in \
                                 response_dict['responses'][self.response_key]:
-                            if self.RESPONSE_KEY == 'ENCOUNTER':
+                            if self.response_key == 'ENCOUNTER':
                                 pokemon = response_dict['responses'][self.response_key]['wild_pokemon']
                             else:
                                 pokemon = response_dict['responses'][self.response_key]
@@ -131,7 +131,7 @@ class PokemonCatchWorker(object):
                                 self.api.use_item_capture(
                                     item_id=berry_id,
                                     encounter_id=encounter_id,
-                                    spawn_point_guid=self.spawn_point_guid
+                                    spawn_point_id=self.spawn_point_guid
                                 )
                                 response_dict = self.api.call()
                                 if response_dict and response_dict['status_code'] is 1 and 'item_capture_mult' in response_dict['responses']['USE_ITEM_CAPTURE']:
@@ -169,7 +169,7 @@ class PokemonCatchWorker(object):
                             self.api.catch_pokemon(encounter_id=encounter_id,
                                                    pokeball=pokeball,
                                                    normalized_reticle_size=1.950,
-                                                   spawn_point_guid=self.spawn_point_guid,
+                                                   spawn_point_id=self.spawn_point_guid,
                                                    hit_pokemon=1,
                                                    spin_modifier=1,
                                                    NormalizedHitPosition=1)
