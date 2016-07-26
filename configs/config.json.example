@@ -14,6 +14,7 @@
     "distance_unit": "km",
     "item_filter": "",
     "evolve_all": "NONE",
+    "cp_min": 300,
     "use_lucky_egg": false,
     "evolve_captured": false,
     "catch": {

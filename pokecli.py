@@ -138,6 +138,14 @@ def init_config():
                         help="(Batch mode) Pass \"all\" or a list of pokemons to evolve (e.g., \"Pidgey,Weedle,Caterpie\"). Bot will start by attempting to evolve all pokemons. Great after popping a lucky egg!",
                         type=str,
                         default=[])
+    
+    parser.add_argument(
+        "-cm",
+        "--cp_min",
+        help=
+        "Minimum CP for evolve all. Bot will attempt to first evolve highest IV pokemons with CP larger than this.",
+        type=int,
+        default=300)
 
     parser.add_argument("-ec",
                         "--evolve_captured",
