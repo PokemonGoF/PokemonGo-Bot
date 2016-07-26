@@ -177,9 +177,9 @@ To update your project do: `git pull` in the project folder
 ## Advance Configuration
 Option | Meaning
 ------ | -------
-`max_steps` |		The steps around your initial location (DEFAULT 5 mean 25 cells around your location) that will be explored
+`max_steps` |		The steps around your initial location (DEFAULT 5 mean 25 cells around your location) that will be explored. (1 step = ~0.1 km)
 `mode` |  		Set farming Mode for the bot ('all', 'poke', 'farm'). 'all' means both spinning pokéstops and catching pokémon; 'poke'means only catching pokémon and 'farm' means only spinning pokéstops
-`walk` | 		Set the walking speed in kilometers per hour.(14km/h is the maximum speed for egg hatching)
+`walk` | 		Set the walking speed in meter per second.(14km/h, 3.88 m/s is the maximum speed for egg hatching)
 `debug` | 		Let the default value here except if you are developer
 `test` | 		Let the default value here except if you are developer
 `initial_transfer` | 	Set this to an upper bound of the cp level which you want to transfer at the beginning of the run. For example, set the value to 0 to disable the initial transfer, set it to 100 to enable initial transfer for cp levels 0-99. It will still transfer pokémon during your exploration, depending on how your release_config.json is setup.
