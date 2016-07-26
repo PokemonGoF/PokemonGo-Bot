@@ -205,8 +205,8 @@ def init_config():
         return None
 
     # When config.item_filter looks like "101,102,103" needs to be converted to ["101","102","103"]
-    if isinstance(config.item_filter, basestring):
-        config.item_filter= config.item_filter.split(",")
+    #if isinstance(config.item_filter, basestring):
+    #    config.item_filter= config.item_filter.split(",")
 
     # create web dir if not exists
     try:
