@@ -71,20 +71,20 @@ class PokemonGoBot(object):
             status = map_objects.get('status', None)
             cells = map_objects['map_cells']
 
-            #insert detail info about gym to fort
+            # insert detail info about gym to fort
             for cell in cells:
                 if 'forts' in cell:
                     for fort in cell['forts']:
-                        if fort.get('type') != 1:
-                            self.api.get_gym_details(gym_id=fort.get('id'),
+                        if fort['type'] != 1:
+                            self.api.get_gym_details(gym_id=fort['id'],
                                                      player_latitude=lng,
                                                      player_longitude=lat,
-                                                     gym_latitude=fort.get('latitude'),
-                                                     gym_longitude=fort.get('longitude'))
+                                                     gym_latitude=fort['latitude'],
+                                                     gym_longitude=fort.get['longitude'])
                             response_gym_details = self.api.call()
                             fort['gym_details'] = response_gym_details['responses']['GET_GYM_DETAILS']
 
-        user_web_location = os.path.join('web', 'location-%s.json' % (self.config.username))
+        user_web_location = os.path.join('web', 'location-%s.json' % self.config.username)
         # alt is unused atm but makes using *location easier
         try:
             with open(user_web_location,'w') as outfile:
