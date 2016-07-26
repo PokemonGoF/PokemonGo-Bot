@@ -227,8 +227,8 @@ def main():
             # pokemon catched, etc.
 
         except NotLoggedInException:
-            logger.log('[x] Error while connecting to the server, please wait %s' % config.reconnecting_timeout, 'red')
-            time.sleep(reconnecting_timeout)
+            logger.log('[x] Error while connecting to the server, please wait %s minutes' % config.reconnecting_timeout, 'red')
+            time.sleep(config.reconnecting_timeout)
 
 
 if __name__ == '__main__':
