@@ -75,6 +75,10 @@ No PR on master branch to keep things easier.
 - [docker](https://docs.docker.com/engine/installation/) (Optional)
 - [protobuf 3](https://github.com/google/protobuf) (OS Dependent, see below)
 
+### Note on virtualenv 
+We recommend you use virtualenv, not only will this tool keep your OS clean from all the python plugins.
+It also provide an virtual space for more than 1 instance! 
+
 ### Protobuf 3 installation
 
 - OS X:  `brew update && brew install --devel protobuf`
@@ -99,6 +103,7 @@ $ git submodule update
 
 ### Installation Mac
 (change master to dev for the latest version)
+
 Make sure you install the following first:
 [Requirements](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation)
 
