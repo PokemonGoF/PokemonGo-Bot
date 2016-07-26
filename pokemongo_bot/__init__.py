@@ -87,7 +87,7 @@ class PokemonGoBot(object):
                     'cells': cells
                     }, outfile)
         except IOError as e:
-            logger.log('[x] Error while creating location file: %s' % e, 'red')
+            logger.log('[x] Error while opening location file: %s' % e, 'red')
 
         user_data_lastlocation = os.path.join('data', 'last-location-%s.json' % (self.config.username))
         try:
@@ -95,7 +95,7 @@ class PokemonGoBot(object):
                 outfile.truncate()
                 json.dump({'lat': lat, 'lng': lng}, outfile)
         except IOError as e:
-            logger.log('[x] Error while creating location file: %s' % e, 'red')
+            logger.log('[x] Error while opening location file: %s' % e, 'red')
 
 
     def find_close_cells(self, lat, lng):
