@@ -62,15 +62,28 @@ class PokemonGoBot(object):
             status = map_objects.get('status', None)
             cells = map_objects['map_cells']
 
+            #insert detail info about gym to fort
+            for cell in cells:
+                if 'forts' in cell:
+                    for fort in cell['forts']:
+                        if fort.get('type') != 1:
+                            self.api.get_gym_details(gym_id=fort.get('id'),
+                                                     player_latitude=lng,
+                                                     player_longitude=lat,
+                                                     gym_latitude=fort.get('latitude'),
+                                                     gym_longitude=fort.get('longitude'))
+                            response_gym_details = self.api.call()
+                            fort['gym_details'] = response_gym_details['responses']['GET_GYM_DETAILS']
+
         user_web_location = 'web/location-%s.json' % (self.config.username)
         # should check if file exists first but os is not imported here
-        # alt is unused atm but makes using *location easier      
+        # alt is unused atm but makes using *location easier
         with open(user_web_location,'w') as outfile:
             json.dump(
                 {'lat': lat,
                 'lng': lng,
                 'alt': alt,
-                'cells': cells 
+                'cells': cells
                 }, outfile)
 
         user_data_lastlocation = 'data/last-location-%s.json' % (self.config.username)
@@ -288,8 +301,8 @@ class PokemonGoBot(object):
         logger.log('Items: {}/{}'.format(self.get_inventory_count('item'), player['max_item_storage']), 'cyan')
         logger.log('Stardust: {}'.format(stardust) + ' | Pokecoins: {}'.format(pokecoins), 'cyan')
         # Pokeball Output
-        logger.log('PokeBalls: ' + str(balls_stock[1]) + 
-            ' | GreatBalls: ' + str(balls_stock[2]) + 
+        logger.log('PokeBalls: ' + str(balls_stock[1]) +
+            ' | GreatBalls: ' + str(balls_stock[2]) +
             ' | UltraBalls: ' + str(balls_stock[3]), 'cyan')
         logger.log('Razz Berries: ' + str(self.item_inventory_count(701)), 'cyan')
 
@@ -350,7 +363,7 @@ class PokemonGoBot(object):
                                 continue
                             self.inventory.append(item['inventory_item_data'][
                                 'item'])
-    
+
     def pokeball_inventory(self):
         self.api.get_player().get_inventory()
 
@@ -544,7 +557,7 @@ class PokemonGoBot(object):
                                             logger.log('Level: {level}'.format(**playerdata) +
                                                 ' (Next Level: {} XP)'.format(nextlvlxp) +
                                                  ' (Total: {experience} XP)'.format(**playerdata), 'cyan')
-                                                  
+
 
                                     if 'pokemons_captured' in playerdata:
                                         if 'poke_stop_visits' in playerdata:
