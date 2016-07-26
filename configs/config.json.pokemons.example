@@ -22,7 +22,7 @@
       "// Pokemons with example": { "always_catch": true },
       "// Gets filtered with release parameters": {},
 
-      "// Ledgendary pokemons (Goes under S-Tier)": {},
+      "// Legendary pokemons (Goes under S-Tier)": {},
       "Lapras": { "always_catch": true },
       "Moltres": { "always_catch": true },
       "Zapdos": { "always_catch": true },
@@ -46,8 +46,6 @@
       "Growlithe": { "catch_above_cp": 465, "catch_above_iv": 0.8, "cp_iv_logic": "and" },
       "// Dragonair evolves to Dragonite": {},
       "Dragonair": { "catch_above_cp": 0, "catch_above_iv": 0.8, "cp_iv_logic": "and" },
-      "// Munchlax evolves to Snorlax": {},
-      "Munchlax": { "catch_above_cp": 0, "catch_above_iv": 0.8, "cp_iv_logic": "and" },
       "// Grimer evolves to Muk": {},
       "Grimer": { "catch_above_cp": 448, "catch_above_iv": 0.8, "cp_iv_logic": "and" },
 
@@ -96,7 +94,7 @@
     "release": {
       "any": {"release_under_cp": 0, "release_under_iv": 0, "logic": "or" },
 
-      "// Ledgendary pokemons (Goes under S-Tier)": {},
+      "// Legendary pokemons (Goes under S-Tier)": {},
       "Lapras": { "release_under_cp": 1041, "release_under_iv": 0.8, "cp_iv_logic": "and" },
       "Moltres": { "release_under_cp": 1132, "release_under_iv": 0.8, "cp_iv_logic": "and" },
       "Zapdos": { "release_under_cp": 1087, "release_under_iv": 0.8, "cp_iv_logic": "and" },
@@ -120,8 +118,6 @@
       "Growlithe": { "release_under_cp": 465, "release_under_iv": 0.8, "cp_iv_logic": "and" },
       "// Dragonair evolves to Dragonite": {},
       "Dragonair": { "release_under_cp": 609, "release_under_iv": 0.8, "cp_iv_logic": "and" },
-      "// Munchlax evolves to Snorlax": {},
-      "Munchlax": { "release_under_cp": 1221, "release_under_iv": 0.8, "cp_iv_logic": "and" },
       "// Grimer evolves to Muk": {},
       "Grimer": { "release_under_cp": 448, "release_under_iv": 0.8, "cp_iv_logic": "and" },
       "// Magikarp evolves to Gyarados": {},

@@ -115,11 +115,15 @@ Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and downloa
 (If running 64-bit python or if you get a 'not a supported wheel on this platform' error,
 download the 64 bit version instead: PyYAML-3.11-cp27-cp27m-win_amd64.whl )
 
+*(Run the following commands from Git Bash.)*
+
 ```
+// switch to the directory where you downloaded PyYAML
 $ cd download-directory
-$ pip install PyYAML-3.11-cp27-cp27m-win32.whl
-// if you needed to download the 64-bit version)
-// (replace PyYAML-3.11-cp27-cp27m-win32.whl with PyYAML-3.11-cp27-cp27m-win_amd64.whl
+// install 32-bit version
+$ pip2 install PyYAML-3.11-cp27-cp27m-win32.whl
+// if you need to install the 64-bit version, do this instead:
+// pip2 install PyYAML-3.11-cp27-cp27m-win_amd64.whl
 ```
 
 After this, just do:
@@ -127,7 +131,7 @@ After this, just do:
 ```
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
 $ cd PokemonGo-Bot  
-$ pip install -r requirements.txt
+$ pip2 install -r requirements.txt
 $ git submodule init
 $ git submodule update
 ```
@@ -137,8 +141,9 @@ $ git submodule update
 ```
 $ git clone -b dev https://github.com/PokemonGoF/PokemonGo-Bot  
 $ cd PokemonGo-Bot  
-$ virtualenv .  
-$ source bin/activate  
+// create virtualenv using Python 2.7 executable
+$ virtualenv -p C:\python27\python.exe venv
+$ source venv/Scripts/activate  
 $ pip install -r requirements.txt  
 $ git submodule init
 $ git submodule update
@@ -210,7 +215,9 @@ will release all Pidgey caught.
     evolve specified pokemons on startup. This is especially useful for batch-evolving after popping up
     a lucky egg (currently this needs to be done manually).
     
-    The evolve all mechanism evolves only higher CP pokemons. It does this by first ordering them from high-to-low CP.
+    The evolve all mechanism evolves only higher IV/CP pokemons. It works by sorting the high CP pokemons (default: 300 CP or higher)
+    based on their IV values. After evolving all high CP pokemons, the mechanism will move on to evolving lower CP pokemons
+    only based on their CP (if it can).
     It will also automatically transfer the evolved pokemons based on the release configuration.
     
     Examples on how to use (set in config.json):
@@ -220,6 +227,10 @@ will release all Pidgey caught.
     2. "evolve_all": "Pidgey,Weedle"
       Will only evolve Pidgey and Weedle.
     3. Not setting evolve_all or having any other string would not evolve any pokemons on startup.
+    
+    If you wish to change the default threshold of 300 CP, simply add the following to the config file:
+    	"cp_min": <number>
+    
 
 ## How to run with Docker
 
