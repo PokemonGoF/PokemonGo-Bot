@@ -2,6 +2,7 @@ from sets import Set
 
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import sleep
+from item_list import Item
 
 
 class EvolveAllWorker(object):
