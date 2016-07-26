@@ -1,17 +1,12 @@
 import time
 from itertools import chain
 from math import ceil
-
-<<<<<<< HEAD:pokemongo_bot/walkers/polyline_generator.py
-class Polyline(object):
-=======
 import haversine
 import polyline
 import requests
 
 
-class PolylineWalker(object):
->>>>>>> 508eb404835e9abdfe1d42bad2720db11cfab1a0:pokemongo_bot/polyline_walker/polyline_walker.py
+class Polyline(object):
 
     def __init__(self, origin, destination, speed):
         self.DISTANCE_API_URL='https://maps.googleapis.com/maps/api/directions/json?mode=walking'
@@ -91,7 +86,7 @@ class PolylineWalker(object):
     def calculate_coord(self, percentage, o, d):
         lat = o[0]+ (d[0] -o[0]) * percentage
         lon = o[1]+ (d[1] -o[1]) * percentage
-        return [(round(lat, 5), round(lon, 5))]
+        return [(lat, lon)]
 
     def get_total_distance(self):
         return ceil(sum([haversine.haversine(*x)*1000 for x in self.walk_steps()]))
