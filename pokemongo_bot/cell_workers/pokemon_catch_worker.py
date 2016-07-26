@@ -23,30 +23,48 @@ class PokemonCatchWorker(object):
 
     def work(self):
         encounter_id = self.pokemon['encounter_id']
-        spawnpoint_id = self.pokemon['spawnpoint_id']
         player_latitude = self.pokemon['latitude']
         player_longitude = self.pokemon['longitude']
-        self.api.encounter(encounter_id=encounter_id, spawnpoint_id=spawnpoint_id,
-                           player_latitude=player_latitude, player_longitude=player_longitude)
+
+        if 'spawn_point_id' in self.pokemon:
+            spawn_point_id = self.pokemon['spawn_point_id']
+            spawn_point_guid = spawn_point_id
+            response_key = 'ENCOUNTER'
+            response_status_key = 'status'
+            self.api.encounter(encounter_id=encounter_id, spawn_point_id=spawn_point_id,
+                               player_latitude=player_latitude, player_longitude=player_longitude)
+        else:
+            fort_id = self.pokemon['fort_id']
+            spawn_point_guid = fort_id
+            response_key = 'DISK_ENCOUNTER'
+            response_status_key = 'result'
+            self.api.disk_encounter(encounter_id=encounter_id, fort_id=fort_id,
+                                    player_latitude=player_latitude, player_longitude=player_longitude)
+
         response_dict = self.api.call()
 
         if response_dict and 'responses' in response_dict:
-            if 'ENCOUNTER' in response_dict['responses']:
-                if 'status' in response_dict['responses']['ENCOUNTER']:
-                    if response_dict['responses']['ENCOUNTER']['status'] is 7:
+            if response_key in response_dict['responses']:
+                if response_status_key in response_dict['responses'][response_key]:
+                    if response_dict['responses'][response_key][response_status_key] is 7:
                         if self.config.initial_transfer:
                             logger.log('Pokemon Bag is full!', 'red')
                             return PokemonCatchWorker.BAG_FULL
                         else:
                             raise RuntimeError('Pokemon Bag is full!')
 
-                    if response_dict['responses']['ENCOUNTER']['status'] is 1:
+                    if response_dict['responses'][response_key][response_status_key] is 1:
                         cp = 0
                         total_IV = 0
-                        if 'wild_pokemon' in response_dict['responses']['ENCOUNTER']:
-                            pokemon = response_dict['responses']['ENCOUNTER']['wild_pokemon']
-                            catch_rate = response_dict['responses']['ENCOUNTER']['capture_probability']['capture_probability'] # 0 = pokeballs, 1 great balls, 3 ultra balls
+                        if 'wild_pokemon' in response_dict['responses'][response_key] or 'pokemon_data' in \
+                                response_dict['responses'][response_key]:
+                            if RESPONSE_KEY == 'ENCOUNTER':
+                                pokemon = response_dict['responses'][response_key]['wild_pokemon']
+                            else:
+                                pokemon = response_dict['responses'][response_key]
 
+                            catch_rate = response_dict['responses'][response_key]['capture_probability'][
+                                'capture_probability']  # 0 = pokeballs, 1 great balls, 3 ultra balls
                             if 'pokemon_data' in pokemon and 'cp' in pokemon['pokemon_data']:
                                 cp = pokemon['pokemon_data']['cp']
 
@@ -91,13 +109,13 @@ class PokemonCatchWorker(object):
                                 sleep(3)
 
                         if not self.should_capture_pokemon(pokemon_name, cp, pokemon_potential, response_dict):
-                            #logger.log('[x] Rule prevents capture.')
+                            # logger.log('[x] Rule prevents capture.')
                             return False
 
                         balls_stock = self.bot.pokeball_inventory()
                         while(True):
 
-                            ## pick the most simple ball from stock
+                            # pick the most simple ball from stock
                             pokeball = 1 # start from 1 - PokeBalls
 
                             current_type = pokeball
@@ -106,14 +124,14 @@ class PokemonCatchWorker(object):
                                 if balls_stock[current_type] > 0: # next tier's stock > 0
                                     pokeball = current_type
 
-                            ## re-check stock again
+                            # re-check stock again
                             if balls_stock[pokeball] is 0:
                                 logger.log('Out of pokeballs, switching to farming mode...', 'red')
                                 # Begin searching for pokestops.
                                 self.config.mode = 'farm'
                                 return PokemonCatchWorker.NO_POKEBALLS
 
-                            ## Use berry to increase success chance.
+                            # Use berry to increase success chance.
                             berry_id = 701 # @ TODO: use better berries if possible
                             berries_count = self.bot.item_inventory_count(berry_id)
                             if(catch_rate[pokeball-1] < 0.5 and berries_count > 0): # and berry is in stock
@@ -164,7 +182,7 @@ class PokemonCatchWorker(object):
                             self.api.catch_pokemon(encounter_id=encounter_id,
                                                    pokeball=pokeball,
                                                    normalized_reticle_size=1.950,
-                                                   spawn_point_guid=spawnpoint_id,
+                                                   spawn_point_guid=spawn_point_guid,
                                                    hit_pokemon=1,
                                                    spin_modifier=1,
                                                    NormalizedHitPosition=1)
