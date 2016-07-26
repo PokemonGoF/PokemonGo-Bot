@@ -11,7 +11,7 @@ def progress_bar(percentage):
         return
     sys.stdout.write('\r')
     # http://www.fileformat.info/info/unicode/char/2588/index.htm
-    msg = (u"[%-40s] %d%%" % (u"\u2588"*int(percentage*2//5), percentage))
+    msg = (u"[%-40s] %d%%" % (u"\u003D"*int(percentage*2//5), percentage))
     sys.stdout.write(msg)
     sys.stdout.flush()
 
