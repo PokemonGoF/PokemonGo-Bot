@@ -219,6 +219,24 @@ To update your project do: `git pull` in the project folder
     3. Not setting evolve_all or having any other string would not evolve any pokemons on startup.
 
 ## How to run with Docker
+Start by downloading for your platform: [Mac](https://www.docker.com/products/docker#/mac), [Windows](https://www.docker.com/products/docker#/windows), or [Linux](https://www.docker.com/products/docker#/linux). Once you have Docker installed, simply create the various config.json files for your different accounts (e.g. `config-account1.json`) and then create a Docker image for PokemonGo-Bot using the Dockerfile in this repo.
+```
+cd PokemonGo-Bot
+docker build -t pokemongo-bot .
+```
+You can verify that the image was created with:
+```
+docker images
+```
+
+To run PokemonGo-Bot Docker image you've created, simple run:
+```
+docker run --it --rm --name=pgo-bot-acct1 pokemongo-bot -cf config-account1.json
+```
+
+If you want to run multiple accounts with the same Docker image, simply specify different config.json and names in the Docker run command.
+
+TODO: Add configuration for running multiple Docker containers from the same image for every bot instance, and a single container for the web UI.
 
 ## How to add/discover new API
   The example is [here](https://github.com/PokemonGoF/PokemonGo-Bot/commit/46e2352ce9f349cc127a408959679282f9999585)  
@@ -348,6 +366,7 @@ If using multiple usernames format like this:
  * riberod07
  * th3w4y
  * Leaklessgfy
+ * Dontrebootme
  
 -------
 ## Credits
