@@ -212,6 +212,8 @@ class PokemonGoBot(object):
                     if hack_chain > 10:
                         #print('need a rest')
                         break
+                    if self.config.mode == "poke":
+                        break
 
     def _setup_logging(self):
         self.log = logging.getLogger(__name__)
