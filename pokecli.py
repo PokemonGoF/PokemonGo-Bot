@@ -52,7 +52,7 @@ def init_config():
     # Select a config file code
     parser.add_argument("-cf", "--config", help="Config File to use")
     config_arg = parser.parse_known_args() and parser.parse_known_args()[0].config or None
-    if os.path.isfile(config_arg):
+    if config_arg and os.path.isfile(config_arg):
         with open(config_arg) as data:
             load.update(json.load(data))
     elif os.path.isfile(config_file):
