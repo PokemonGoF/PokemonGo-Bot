@@ -12,6 +12,9 @@ class EvolveAllWorker(object):
         # self.position = bot.position
 
     def work(self):
+        if not self._should_run():
+            return
+
         self.api.get_inventory()
         response_dict = self.api.call()
         cache = {}
@@ -26,7 +29,7 @@ class EvolveAllWorker(object):
             if self.config.evolve_all[0] != 'all':
                 # filter out non-listed pokemons
                 evolve_list = [x for x in evolve_list if str(x[1]) in self.config.evolve_all]
-            
+
             # enable to limit number of pokemons to evolve. Useful for testing.
             # nn = 3
             # if len(evolve_list) > nn:
@@ -47,6 +50,35 @@ class EvolveAllWorker(object):
                     len(release_cand_list_ids)
                 ))
                 self._release_evolved(release_cand_list_ids)
+
+    def _should_run(self):
+        # Will skip evolving if user wants to use an egg and there is none
+        skip_evolves = False
+
+        # Pop lucky egg before evolving to maximize xp gain
+        use_lucky_egg = self.config.use_lucky_egg
+        lucky_egg_count = self.bot.item_inventory_count(Item.ITEM_LUCKY_EGG.value)
+
+        if  use_lucky_egg and lucky_egg_count > 0:
+            logger.log('Using lucky egg ... you have {}'
+                       .format(lucky_egg_count))
+            response_dict_lucky_egg = self.bot.use_lucky_egg()
+            if response_dict_lucky_egg and 'responses' in response_dict_lucky_egg and \
+                'USE_ITEM_XP_BOOST' in response_dict_lucky_egg['responses'] and \
+                'result' in response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']:
+                result = response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']['result']
+                if result is 1: # Request success
+                    logger.log('Successfully used lucky egg... ({} left!)'
+                               .format(lucky_egg_count-1), 'green')
+                else:
+                    logger.log('Failed to use lucky egg!', 'red')
+                    skip_evolves = True
+        elif use_lucky_egg: #lucky_egg_count is 0
+            # Skipping evolve so they aren't wasted
+            logger.log('No lucky eggs... skipping evolve!', 'yellow')
+            skip_evolves = True
+
+        return skip_evolves
 
     def _release_evolved(self, release_cand_list_ids):
         self.api.get_inventory()
@@ -131,7 +163,7 @@ class EvolveAllWorker(object):
             # cache pokemons we can't evolve. Less server calls
             cache[pokemon_name] = 1
             sleep(0.7)
-        
+
 
     # TODO: move to utils. These methods are shared with other workers.
     def transfer_pokemon(self, pid):
@@ -243,7 +275,7 @@ class EvolveAllWorker(object):
     def _compute_iv(self, pokemon):
         total_IV = 0.0
         iv_stats = ['individual_attack', 'individual_defense', 'individual_stamina']
-        
+
         for individual_stat in iv_stats:
             try:
                 total_IV += pokemon[individual_stat]
