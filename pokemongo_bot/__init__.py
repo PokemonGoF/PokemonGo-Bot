@@ -17,6 +17,7 @@ from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, I
 from cell_workers.utils import distance, get_cellid, encode
 from human_behaviour import sleep
 from item_list import Item
+from webdump import file_does_exist
 from spiral_navigator import SpiralNavigator
 
 
@@ -76,17 +77,21 @@ class PokemonGoBot(object):
                             fort['gym_details'] = response_gym_details['responses']['GET_GYM_DETAILS']
 
         user_web_location = 'web/location-%s.json' % (self.config.username)
-        # should check if file exists first but os is not imported here
-        # alt is unused atm but makes using *location easier
-        with open(user_web_location,'w') as outfile:
-            json.dump(
-                {'lat': lat,
+        if file_does_exist(user_web_location) is False:
+            open(user_web_location, 'a').close()
+
+        with open(user_web_location, 'w') as outfile:
+            json.dump({
+                'lat': lat,
                 'lng': lng,
                 'alt': alt,
                 'cells': cells
-                }, outfile)
+            }, outfile)
 
         user_data_lastlocation = 'data/last-location-%s.json' % (self.config.username)
+        if file_does_exist(user_data_lastlocation) is False:
+            open(user_data_lastlocation, 'a').close()
+
         with open(user_data_lastlocation, 'w') as outfile:
             outfile.truncate()
             json.dump({'lat': lat, 'lng': lng}, outfile)
