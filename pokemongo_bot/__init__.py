@@ -15,7 +15,7 @@ from pgoapi.utilities import f2i
 
 import logger
 from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
-from cell_workers.utils import distance, get_cellid, encode, i2f
+from cell_workers.utils import distance, get_cellid, encode
 from human_behaviour import sleep
 from item_list import Item
 from spiral_navigator import SpiralNavigator
@@ -25,7 +25,7 @@ class PokemonGoBot(object):
 
     @property
     def position(self):
-        return (i2f(self.api._position_lat), i2f(self.api._position_lng), 0)
+        return (self.api._position_lat, self.api._position_lng, 0)
 
     def __init__(self, config):
         self.config = config
@@ -51,9 +51,9 @@ class PokemonGoBot(object):
     def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
         # we can call the function with no arguments and still get the position and map_cells
         if lat == None:
-            lat = i2f(self.api._position_lat)
+            lat = self.api._position_lat
         if lng == None:
-            lng = i2f(self.api._position_lng)
+            lng = self.api._position_lng
         if alt == None:
             alt = 0
 

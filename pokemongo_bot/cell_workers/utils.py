@@ -114,10 +114,6 @@ def format_time(seconds):
     return '{:.2f} seconds'.format(seconds)
 
 
-def i2f(int):
-    return struct.unpack('<d', struct.pack('<Q', int))[0]
-
-
 def print_green(message):
     print(u'\033[92m' + message.decode('utf-8') + '\033[0m')
 
