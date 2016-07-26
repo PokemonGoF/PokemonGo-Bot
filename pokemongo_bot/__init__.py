@@ -34,11 +34,7 @@ class PokemonGoBot(object):
 
     def take_step(self):
         location = self.navigator.take_step()
-        cells = self.find_close_cells(*location)
-
-        self.work_on_cells(cells,location)
-        #for cell in cells:
-        #    self.work_on_cell(cell, location)
+        self.cells_on_tick(*location)
 
     def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
         # we can call the function with no arguments and still get the position and map_cells
@@ -91,6 +87,19 @@ class PokemonGoBot(object):
         with open(user_data_lastlocation, 'w') as outfile:
             outfile.truncate()
             json.dump({'lat': lat, 'lng': lng}, outfile)
+
+    def cells_on_tick(self, lat, lng, alt=0):
+        if self.cellUpdate == None:
+            self.cellUpdate = time.time()
+            cells = self.find_close_cells(lat,lng)
+            self.work_on_cells(cells,(lat,lng,alt))
+        else:
+            t_time = time.time()
+            diff = t_time - self.cellUpdate
+            if diff >= 10: # update cells every 10 secs
+                self.cellUpdate = t_time
+                cells = self.find_close_cells(lat,lng)
+                self.work_on_cells(cells,(lat,lng,alt))
 
     def find_close_cells(self, lat, lng):
         cellid = get_cellid(lat, lng)
@@ -333,6 +342,7 @@ class PokemonGoBot(object):
         self.config.originalmode = self.config.mode
         # send empty map_cells and then our position
         self.update_web_location([],*self.position)
+        self.cellUpdate = None
 
     def catch_pokemon(self, pokemon):
         worker = PokemonCatchWorker(pokemon, self)
