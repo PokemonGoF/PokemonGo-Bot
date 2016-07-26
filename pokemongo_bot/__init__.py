@@ -36,8 +36,9 @@ class PokemonGoBot(object):
         location = self.navigator.take_step()
         cells = self.find_close_cells(*location)
 
-        for cell in cells:
-            self.work_on_cell(cell, location)
+        self.work_on_cells(cells,location)
+        #for cell in cells:
+        #    self.work_on_cell(cell, location)
 
     def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
         # we can call the function with no arguments and still get the position and map_cells
@@ -104,10 +105,13 @@ class PokemonGoBot(object):
         response_dict = self.api.call()
         map_objects = response_dict.get('responses', {}).get('GET_MAP_OBJECTS', {})
         status = map_objects.get('status', None)
-
+        
         map_cells = []
         if status and status == 1:
             map_cells = map_objects['map_cells']
+            for cell in map_cells:
+                if 'catchable_pokemons' in cell:
+                    logger.log("DEBUG: {}".format(cell['catchable_pokemons']),"red")
             position = (lat, lng, 0)
             map_cells.sort(
                 key=lambda x: distance(
@@ -119,10 +123,15 @@ class PokemonGoBot(object):
         self.update_web_location(map_cells,lat,lng)
         return map_cells
 
+    def work_on_cells(self, cells, location):
+        for cell in cells:
+            logger.log("DEBUG: {}".format(cell))
+            self.work_on_cell(cell, location)
+
     def work_on_cell(self, cell, position):
         # Check if session token has expired
         self.check_session(position)
-
+        
         if self.config.evolve_all:
             # Will skip evolving if user wants to use an egg and there is none
             skip_evolves = False
@@ -159,38 +168,48 @@ class PokemonGoBot(object):
             # Flip the bit.
             self.config.evolve_all = []
 
-        if (self.config.mode == "all" or self.config.mode ==
-                "poke") and 'catchable_pokemons' in cell and len(cell[
-                    'catchable_pokemons']) > 0:
-            logger.log('Something rustles nearby!')
-            # Sort all by distance from current pos- eventually this should
-            # build graph & A* it
-            cell['catchable_pokemons'].sort(
-                key=
-                lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
+        if (self.config.mode == "all" or self.config.mode =="poke"):
+            if self.config.originalmode == "all" and self.config.mode == "poke":
+                self.api.get_player()
 
-            user_web_catchable = 'web/catchable-%s.json' % (self.config.username)
-            for pokemon in cell['catchable_pokemons']:
-                with open(user_web_catchable, 'w') as outfile:
-                    json.dump(pokemon, outfile)
+                response_dict = self.api.call()
+                player = response_dict['responses']['GET_PLAYER']['player_data']
+                slotsLeft = player['max_item_storage'] - self.get_inventory_count('item')
+                if slotsLeft > 50:
+                    logger.log("We 50 or more slots for items free reverting back to original mode.","green")
+                    self.config.mode = "all"
 
-                if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
-                    break
-                with open(user_web_catchable, 'w') as outfile:
-                    json.dump({}, outfile)
+            if 'catchable_pokemons' in cell and len(cell['catchable_pokemons']) > 0:
+                logger.log('Something rustles nearby!')
+                # Sort all by distance from current pos- eventually this should
+                # build graph & A* it
+                cell['catchable_pokemons'].sort(
+                    key=
+                    lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
 
-        if (self.config.mode == "all" or self.config.mode == "poke"
-            ) and 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
-            # Sort all by distance from current pos- eventually this should
-            # build graph & A* it
-            cell['wild_pokemons'].sort(
-                key=
-                lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
-            for pokemon in cell['wild_pokemons']:
-                if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
-                    break
-        if (self.config.mode == "all" or
-                self.config.mode == "farm"):
+                user_web_catchable = 'web/catchable-%s.json' % (self.config.username)
+                for pokemon in cell['catchable_pokemons']:
+                    with open(user_web_catchable, 'w') as outfile:
+                        json.dump(pokemon, outfile)
+
+                    if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
+                        break
+                    with open(user_web_catchable, 'w') as outfile:
+                        json.dump({}, outfile)
+            elif 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
+                cell['wild_pokemons'].sort(
+                    key=
+                    lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
+                for pokemon in cell['wild_pokemons']:
+                    if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
+                        break
+
+        if (self.config.mode == "all" or self.config.mode == "farm"):
+            if self.config.originalmode == "all" and self.config.mode == "farm": # we can default back to all if we are done farming
+                balls_stock = self.pokeball_inventory()
+                if balls_stock[1] > 10 or balls_stock[2] > 10 or balls_stock[3] > 10:
+                    logger.log("We farmed 10 or more pokeballs reverting back to original mode.","green")
+                    self.config.mode = "all"
             if 'forts' in cell:
                 # Only include those with a lat/long
                 forts = [fort
@@ -314,6 +333,8 @@ class PokemonGoBot(object):
 
         logger.log('')
         self.update_inventory()
+        # set the original mode so we can return to it later if needed
+        self.config.originalmode = self.config.mode
         # send empty map_cells and then our position
         self.update_web_location([],*self.position)
 
