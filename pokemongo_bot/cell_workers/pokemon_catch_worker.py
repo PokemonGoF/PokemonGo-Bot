@@ -59,9 +59,14 @@ class PokemonCatchWorker(object):
                                     pokemon['pokemon_data']['individual_defense'] = 0
 
                                 iv_stats = ['individual_attack', 'individual_defense', 'individual_stamina']
+                                individual_attack = 0
+
+                                individual_attack = pokemon['pokemon_data'].get("individual_attack", 0)
+                                individual_stamina = pokemon['pokemon_data'].get("individual_stamina", 0)
+
                                 iv_display = '{}/{}/{}'.format(
-                                    pokemon['pokemon_data']['individual_stamina'],
-                                    pokemon['pokemon_data']['individual_attack'],
+                                    individual_stamina,
+                                    individual_attack,
                                     pokemon['pokemon_data']['individual_defense']
                                 )
 

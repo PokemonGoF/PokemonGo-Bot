@@ -2,6 +2,18 @@ from math import sqrt
 
 from cell_workers.utils import distance, i2f
 from human_behaviour import random_lat_long_delta, sleep
+import sys
+
+
+def progress_bar(percentage):
+    percentage = min(100, max(0, percentage))
+    if not sys.stdout.isatty():
+        return
+    sys.stdout.write('\r')
+    # http://www.fileformat.info/info/unicode/char/2588/index.htm
+    msg = (u"[%-40s] %d%%" % (u"\u2588"*int(percentage*2//5), percentage))
+    sys.stdout.write(msg)
+    sys.stdout.flush()
 
 
 class StepWalker(object):
@@ -21,6 +33,7 @@ class StepWalker(object):
 
         self.destLat = destLat
         self.destLng = destLng
+        self.totalDist = max(1, dist)
 
         self.steps = (dist + 0.0) / (speed + 0.0)
 
@@ -40,10 +53,12 @@ class StepWalker(object):
             self.destLat,
             self.destLng
         )
-        # print 'distance'
-        # print dist
+
+        progress_bar(int(100 * (1 - dist/self.totalDist)))
 
         if (self.dLat == 0 and self.dLng == 0) or dist < self.speed:
+            if sys.stdout.isatty():
+                sys.stdout.write('\n')
             self.api.set_position(self.destLat, self.destLng, 0)
             return True
 
@@ -60,7 +75,6 @@ class StepWalker(object):
         cLng = i2f(self.api._position_lng) + scaledDLng + random_lat_long_delta()
 
         self.api.set_position(cLat, cLng, 0)
-        self.bot.position = (cLat,cLng,0) # set position so we can use it later on
         self.bot.heartbeat()
         sleep(1)  # sleep one second plus a random delta
         # self._work_at_position(
