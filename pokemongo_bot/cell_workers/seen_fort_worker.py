@@ -47,7 +47,8 @@ class SeenFortWorker(object):
                 'FORT_SEARCH' in response_dict['responses']:
 
             spin_details = response_dict['responses']['FORT_SEARCH']
-            if spin_details['result'] == 1:
+            spin_result = spin_details.get('result', -1)
+            if spin_result == 1:
                 logger.log("Loot: ", 'green')
                 experience_awarded = spin_details.get('experience_awarded',
                                                       False)
@@ -105,9 +106,9 @@ class SeenFortWorker(object):
                         'PokeStops you are indeed softbanned. Please try again '
                         'in a few hours.')
                     raise RuntimeError(message)
-            elif spin_details['result'] == 2:
+            elif spin_result == 2:
                 logger.log("[#] Pokestop out of range")
-            elif spin_details['result'] == 3:
+            elif spin_result == 3:
                 pokestop_cooldown = spin_details.get(
                     'cooldown_complete_timestamp_ms')
                 if pokestop_cooldown:
@@ -115,9 +116,11 @@ class SeenFortWorker(object):
                     logger.log('PokeStop on cooldown. Time left: ' + str(
                         format_time((pokestop_cooldown / 1000) -
                                     seconds_since_epoch)))
-            elif spin_details['result'] == 4:
+            elif spin_result == 4:
                 logger.log("Inventory is full, switching to catch mode...", 'red')
                 self.config.mode = 'poke'
+            else:
+                logger.log("Unknown spin result: " + str(spin_result), 'red')
 
             if 'chain_hack_sequence_number' in response_dict['responses'][
                     'FORT_SEARCH']:
