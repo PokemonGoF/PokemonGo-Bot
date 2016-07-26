@@ -4,6 +4,7 @@ import os
 import json
 import time
 import pprint
+import sys
 
 from math import ceil
 from s2sphere import CellId, LatLng
@@ -74,6 +75,7 @@ class Stepper(object):
         if steps != 0:
             dLat = (lat - i2f(self.api._position_lat)) / steps
             dLng = (lng - i2f(self.api._position_lng)) / steps
+            bar_length = 40
 
             for i in range(intSteps):
                 cLat = i2f(self.api._position_lat) + \
@@ -82,6 +84,11 @@ class Stepper(object):
                     dLng + random_lat_long_delta()
                 self.api.set_position(cLat, cLng, alt)
                 self.bot.heartbeat()
+                percent = float(i) / intSteps
+                hashes = '#' * int(round(percent * bar_length))
+                spaces = ' ' * (bar_length - len(hashes))
+                sys.stdout.write("\r[#] Percent: [{0}] {1}%".format(hashes + spaces, int(round(percent * 100))))
+                sys.stdout.flush()
                 sleep(1)  # sleep one second plus a random delta
                 self._work_at_position(
                     i2f(self.api._position_lat), i2f(self.api._position_lng),
