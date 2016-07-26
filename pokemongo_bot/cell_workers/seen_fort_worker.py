@@ -118,7 +118,13 @@ class SeenFortWorker(object):
                                     seconds_since_epoch)))
             elif spin_result == 4:
                 logger.log("Inventory is full, switching to catch mode...", 'red')
-                self.config.mode = 'poke'
+                #self.config.mode = 'poke'
+                self.api.get_player()
+                response_dict = self.api.call()
+                player = response_dict['responses']['GET_PLAYER']['player_data']
+                items_count = self.bot.get_inventory_count('item')
+                items_stock = self.bot.current_inventory()
+                self.bot.check_inventory_space(items_count, player['max_item_storage'], items_stock.copy())
             else:
                 logger.log("Unknown spin result: " + str(spin_result), 'red')
 
