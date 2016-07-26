@@ -109,9 +109,6 @@ class PokemonGoBot(object):
         map_cells = []
         if status and status == 1:
             map_cells = map_objects['map_cells']
-            for cell in map_cells:
-                if 'catchable_pokemons' in cell:
-                    logger.log("DEBUG: {}".format(cell['catchable_pokemons']),"red")
             position = (lat, lng, 0)
             map_cells.sort(
                 key=lambda x: distance(
@@ -125,7 +122,6 @@ class PokemonGoBot(object):
 
     def work_on_cells(self, cells, location):
         for cell in cells:
-            logger.log("DEBUG: {}".format(cell))
             self.work_on_cell(cell, location)
 
     def work_on_cell(self, cell, position):
