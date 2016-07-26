@@ -10,7 +10,7 @@
 
 # PokemonGo-Bot
 The Pokemon Go Bot, baking with community.
-
+## Help Needed on [Desktop Version](https://github.com/PokemonGoF/PokemonGo-Bot-Desktop)
 ## Project Chat
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
 ## Breaking Changes
