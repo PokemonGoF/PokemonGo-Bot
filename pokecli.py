@@ -32,8 +32,9 @@ import logging
 import os
 import ssl
 import sys
+import time
 from getpass import getpass
-from pgoapi.exceptions import import NotLoggedInException
+from pgoapi.exceptions import NotLoggedInException
 
 from pokemongo_bot import PokemonGoBot
 from pokemongo_bot import logger
