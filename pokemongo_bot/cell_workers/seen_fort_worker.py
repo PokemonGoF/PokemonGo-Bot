@@ -6,6 +6,7 @@ from pgoapi.utilities import f2i
 
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot.cell_workers import PokemonCatchWorker
 from utils import format_time
 
 
@@ -16,7 +17,11 @@ class SeenFortWorker(object):
         self.bot = bot
         self.position = bot.position
         self.config = bot.config
+        self.pokemon_list = bot.pokemon_list
         self.item_list = bot.item_list
+        self.inventory = bot.inventory
+        self.pokeball_inventory = bot.pokeball_inventory
+        self.item_inventory_count = bot.item_inventory_count
         self.rest_time = 50
 
     def work(self):
@@ -34,9 +39,28 @@ class SeenFortWorker(object):
             fort_name = fort_details['name'].encode('utf8', 'replace')
         else:
             fort_name = 'Unknown'
-        logger.log('Now at Pokestop: ' + fort_name + ' - Spinning...',
+        logger.log('Now at Pokestop: ' + fort_name,
                    'cyan')
-        sleep(2)
+        if self.config.mode != 'farm' and 'lure_info' in self.fort:
+            # Check if the lure has a pokemon active
+            if 'encounter_id' in self.fort['lure_info']:
+                logger.log("Found a lure on this pokestop! Catching pokemon...", 'cyan')
+
+                pokemon = {
+                    'encounter_id': self.fort['lure_info']['encounter_id'],
+                    'fort_id': self.fort['id'],
+                    'latitude': self.fort['latitude'],
+                    'longitude': self.fort['longitude']
+                }
+
+                self.catch_pokemon(pokemon)
+
+            else:
+                logger.log('Found a lure, but there is no pokemon present.', 'yellow')
+            sleep(2)
+
+        logger.log('Spinning ...', 'cyan')
+
         self.api.fort_search(fort_id=self.fort['id'],
                              fort_latitude=lat,
                              fort_longitude=lng,
@@ -140,6 +164,16 @@ class SeenFortWorker(object):
                 return 11
         sleep(8)
         return 0
+
+    def catch_pokemon(self, pokemon):
+        worker = PokemonCatchWorker(pokemon, self)
+        return_value = worker.work()
+
+        if return_value == PokemonCatchWorker.BAG_FULL:
+            worker = InitialTransferWorker(self)
+            worker.work()
+
+        return return_value
 
     @staticmethod
     def closest_fort(current_lat, current_long, forts):
