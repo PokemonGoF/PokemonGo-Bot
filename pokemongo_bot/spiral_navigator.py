@@ -11,67 +11,87 @@ class SpiralNavigator(object):
         self.api = bot.api
         self.config = bot.config
 
-        self.pos = 1
-        self.x = 0
-        self.y = 0
-        self.dx = 0
-        self.dy = -1
         self.steplimit = self.config.max_steps
-        self.steplimit2 = self.steplimit**2
         self.origin_lat = self.bot.position[0]
         self.origin_lon = self.bot.position[1]
+
+        self.points = self._generate_spiral(self.origin_lat, self.origin_lon, 0.0018, self.steplimit)
+        self.ptr = 0
+        self.direction = 1
+        self.cnt = 0
         self._step_walker = None
 
-    def take_step(self):
-        position = (self.origin_lat, self.origin_lon, 0.0)
+    # Source: https://github.com/tejado/pgoapi/blob/master/examples/spiral_poi_search.py
+    @staticmethod
+    def _generate_spiral(starting_lat, starting_lng, step_size, step_limit):
+        coords = [{'lat': starting_lat, 'lng': starting_lng}]
+        steps, x, y, d, m = 1, 0, 0, 1, 1
 
-        logger.log('Scanning area for objects....')
-        # logger.log('[#] Scanning area for objects ({} / {})'.format(
-        #     (step + 1), self.steplimit**2))
-        if self.config.debug:
-            logger.log(
-                'steplimit: {} x: {} y: {} pos: {} dx: {} dy {}'.format(
-                    self.steplimit2, self.x, self.y, self.pos, self.dx,
-                    self.dy))
+        while steps < step_limit:
+            while 2 * x * d < m and steps < step_limit:
+                x = x + d
+                steps += 1
+                lat = x * step_size + starting_lat
+                lng = y * step_size + starting_lng
+                coords.append({'lat': lat, 'lng': lng})
+            while 2 * y * d < m and steps < step_limit:
+                y = y + d
+                steps += 1
+                lat = x * step_size + starting_lat
+                lng = y * step_size + starting_lng
+                coords.append({'lat': lat, 'lng': lng})
+
+            d *= -1
+            m += 1
+        return coords
+
+    def take_step(self):
+        point = self.points[self.ptr]
+        self.cnt += 1
+
+        if self.cnt == 1:
+            logger.log('Scanning area for objects....')
+
         # Scan location math
 
-        if -self.steplimit2 / 2 < self.x <= self.steplimit2 / 2 and -self.steplimit2 / 2 < self.y <= self.steplimit2 / 2:
-            position = (self.x * 0.0025 + self.origin_lat,
-                        self.y * 0.0025 + self.origin_lon, 0)
-            if self.config.walk > 0:
-                if not self._step_walker:
-                    self._step_walker = StepWalker(
-                        self.bot,
-                        self.config.walk,
-                        self.api._position_lat,
-                        self.api._position_lng,
-                        position[0],
-                        position[1]
-                    )
-
-                dist = distance(
-                    i2f(self.api._position_lat),
-                    i2f(self.api._position_lng),
-                    position[0],
-                    position[1]
+        if self.config.walk > 0:
+            if not self._step_walker:
+                self._step_walker = StepWalker(
+                    self.bot,
+                    self.config.walk,
+                    self.api._position_lat,
+                    self.api._position_lng,
+                    point['lat'],
+                    point['lng']
                 )
 
-                logger.log('Walking from ' + str((i2f(self.api._position_lat), i2f(
-                    self.api._position_lng))) + " to " + str((str(position[0:2]))) + " " + format_dist(dist, self.config.distance_unit))
+            dist = distance(
+                i2f(self.api._position_lat),
+                i2f(self.api._position_lng),
+                point['lat'],
+                point['lng']
+            )
 
-                if self._step_walker.step():
-                    self._step_walker = None
-            else:
-                self.api.set_position(*position)
-        if self.x == self.y or self.x < 0 and self.x == -self.y or self.x > 0 and self.x == 1 - self.y:
-            (self.dx, self.dy) = (-self.dy, self.dx)
+            if self.cnt == 1:
+                logger.log('Walking from ' + str((i2f(self.api._position_lat), i2f(
+                    self.api._position_lng))) + " to " + str([point['lat'], point['lng']]) + " " + format_dist(dist,
+                                                                                                   self.config.distance_unit))
+
+            if self._step_walker.step():
+                self._step_walker = None
+        else:
+            self.api.set_position(point['lat'], point['lng'])
 
         if distance(
                     i2f(self.api._position_lat),
                     i2f(self.api._position_lng),
-                    position[0],
-                    position[1]
+                    point['lat'],
+                    point['lng']
                 ) <= 1 or (self.config.walk > 0 and self._step_walker == None):
-            (self.x, self.y) = (self.x + self.dx, self.y + self.dy)
+            if self.ptr + self.direction == len(self.points) or self.ptr + self.direction == -1:
+                self.direction *= -1
+            self.ptr += self.direction
+            self.cnt = 0
+
         sleep(1)
-        return position[0:2]
+        return [point['lat'], point['lng']]
