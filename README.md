@@ -71,7 +71,7 @@ No PR on master branch to keep things easier.
 - [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/)
 - [pip](https://pip.pypa.io/en/stable/installing/)
 - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-- [virtualenv](https://virtualenv.pypa.io/en/stable/installation/) (Optional)
+- [virtualenv](https://virtualenv.pypa.io/en/stable/installation/) (Recommend)
 - [docker](https://docs.docker.com/engine/installation/) (Optional)
 - [protobuf 3](https://github.com/google/protobuf) (OS Dependent, see below)
 
@@ -89,8 +89,10 @@ Please keep in mind that master is not always up-to-date whereas 'dev' is. In th
 
 ```
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
-$ cd PokemonGo-Bot  
-$ sudo pip install -r requirements.txt
+$ cd PokemonGo-Bot
+$ virtualenv .
+$ source bin/activate
+$ pip install -r requirements.txt
 $ git submodule init
 $ git submodule update
 ```
@@ -105,7 +107,7 @@ $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot
 $ cd PokemonGo-Bot  
 $ virtualenv .  
 $ source bin/activate  
-$ sudo pip install -r requirements.txt
+$ pip install -r requirements.txt
 $ git submodule init
 $ git submodule update
 ```
@@ -134,7 +136,9 @@ After this, just do:
 
 ```
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
-$ cd PokemonGo-Bot  
+$ cd PokemonGo-Bot 
+$ virtualenv .  
+$ source bin/activate
 $ pip install -r requirements.txt
 $ git submodule init
 $ git submodule update
