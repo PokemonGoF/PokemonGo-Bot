@@ -89,7 +89,6 @@ class PokemonGoBot(object):
         except IOError as e:
             logger.log('[x] Error while creating location file: %s' % e, 'red')
 
-
         user_data_lastlocation = os.path.join('data', 'last-location-%s.json' % (self.config.username))
         try:
             with open(user_data_lastlocation, 'w') as outfile:
