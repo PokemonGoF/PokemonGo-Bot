@@ -188,6 +188,16 @@ class PokemonCatchWorker(object):
 
                                     id_list2 = self.count_pokemon_inventory()
 
+                                    if cp > self.bot.highest_cp['cp']:
+                                        self.bot.highest_cp =\
+                                            {'cp': cp, 'desc':'{} [CP: {}] [IV: {}] Potential: {} '
+                                                .format(pokemon_name, cp, iv_display, pokemon_potential)}
+
+                                    if total_IV > self.bot.most_perfect['total_iv']:
+                                        self.bot.most_perfect =\
+                                            {'total_iv': cp, 'desc':'{} [CP: {}] [IV: {}] Potential: {} '
+                                                .format(pokemon_name, cp, iv_display, pokemon_potential)}
+
                                     logger.log('Captured {}! [CP {}] [{}]'.format(
                                         pokemon_name,
                                         cp,
