@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import datetime
 import json
 import logging
@@ -23,8 +24,8 @@ from spiral_navigator import SpiralNavigator
 class PokemonGoBot(object):
     def __init__(self, config):
         self.config = config
-        self.pokemon_list = json.load(open('data/pokemon.json'))
-        self.item_list = json.load(open('data/items.json'))
+        self.pokemon_list = json.load(open(os.path.join('data', 'pokemon.json')))
+        self.item_list = json.load(open(os.path.join('data', 'items.json')))
 
     def start(self):
         self._setup_logging()
@@ -75,21 +76,28 @@ class PokemonGoBot(object):
                             response_gym_details = self.api.call()
                             fort['gym_details'] = response_gym_details['responses']['GET_GYM_DETAILS']
 
-        user_web_location = 'web/location-%s.json' % (self.config.username)
-        # should check if file exists first but os is not imported here
+        user_web_location = os.path.join('web', 'location-%s.json' % (self.config.username))
         # alt is unused atm but makes using *location easier
-        with open(user_web_location,'w') as outfile:
-            json.dump(
-                {'lat': lat,
-                'lng': lng,
-                'alt': alt,
-                'cells': cells
-                }, outfile)
+        try:
+            with open(user_web_location,'w') as outfile:
+                json.dump(
+                    {'lat': lat,
+                    'lng': lng,
+                    'alt': alt,
+                    'cells': cells
+                    }, outfile)
+        except IOError as e:
+            logger.log('[x] Error while creating location file: %s' % e, 'red')
 
-        user_data_lastlocation = 'data/last-location-%s.json' % (self.config.username)
-        with open(user_data_lastlocation, 'w') as outfile:
-            outfile.truncate()
-            json.dump({'lat': lat, 'lng': lng}, outfile)
+
+        user_data_lastlocation = os.path.join('data', 'last-location-%s.json' % (self.config.username))
+        try:
+            with open(user_data_lastlocation, 'w') as outfile:
+                outfile.truncate()
+                json.dump({'lat': lat, 'lng': lng}, outfile)
+        except IOError as e:
+            logger.log('[x] Error while creating location file: %s' % e, 'red')
+
 
     def find_close_cells(self, lat, lng):
         cellid = get_cellid(lat, lng)
