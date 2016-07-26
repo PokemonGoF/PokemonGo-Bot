@@ -13,7 +13,7 @@ class InitialTransferWorker(object):
         if not self.config.initial_transfer:
             return
 
-        logger.log('Cleaning up Pokemon Bag using the release CP config', 'cyan')
+        logger.log('Cleaning up Pokemon Bag using the release config', 'cyan')
 
         pokemon_groups = self._initial_transfer_get_groups()
 
