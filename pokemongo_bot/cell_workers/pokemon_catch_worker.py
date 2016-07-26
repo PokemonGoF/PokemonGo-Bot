@@ -89,20 +89,20 @@ class PokemonCatchWorker(object):
                             #logger.log('[x] Rule prevents capture.')
                             return False
 
-                        balls_stock = self.bot.pokeball_inventory()
+                        items_stock = self.bot.current_inventory()
                         while(True):
 
                             ## pick the most simple ball from stock
                             pokeball = 1 # start from 1 - PokeBalls
 
                             current_type = pokeball
-                            while(balls_stock[current_type] is 0 and current_type < 3): # if this type's stock = 0 and not top tier yet
+                            while(items_stock[current_type] is 0 and current_type < 3): # if this type's stock = 0 and not top tier yet
                                 current_type = current_type + 1 # progress to next tier
-                                if balls_stock[current_type] > 0: # next tier's stock > 0
+                                if items_stock[current_type] > 0: # next tier's stock > 0
                                     pokeball = current_type
 
                             ## re-check stock again
-                            if balls_stock[pokeball] is 0:
+                            if items_stock[pokeball] is 0:
                                 logger.log('Out of pokeballs, switching to farming mode...', 'red')
                                 # Begin searching for pokestops.
                                 self.config.mode = 'farm'
@@ -115,7 +115,7 @@ class PokemonCatchWorker(object):
                                 success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
                                 logger.log('Catch Rate with normal Pokeball is low ({}%). Throwing {}... ({} left!)'.format(success_percentage,self.item_list[str(berry_id)],berries_count-1))
 
-                                if balls_stock[pokeball] is 0:
+                                if items_stock[pokeball] is 0:
                                     break
 
                                 self.api.use_item_capture(
@@ -141,18 +141,18 @@ class PokemonCatchWorker(object):
                             current_type = pokeball
                             while(current_type < 3):
                                 current_type = current_type+1
-                                if catch_rate[pokeball-1] < 0.35 and balls_stock[current_type] > 0:
+                                if catch_rate[pokeball-1] < 0.35 and items_stock[current_type] > 0:
                                     # if current ball chance to catch is under 35%, and player has better ball - then use it
                                     pokeball = current_type # use better ball
 
                             # @TODO, use the best ball in stock to catch VIP (Very Important Pokemon: Configurable)
 
-                            balls_stock[pokeball] = balls_stock[pokeball] - 1
+                            items_stock[pokeball] = items_stock[pokeball] - 1
                             success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
                             logger.log('Using {} (chance: {}%)... ({} left!)'.format(
                                 self.item_list[str(pokeball)],
                                 success_percentage,
-                                balls_stock[pokeball]
+                                items_stock[pokeball]
                             ))
 
                             id_list1 = self.count_pokemon_inventory()
