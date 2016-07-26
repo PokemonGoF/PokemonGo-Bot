@@ -1,20 +1,8 @@
 # -*- coding: utf-8 -*-
-
-import os
-import json
-import time
-import pprint
-
-from math import ceil
-from s2sphere import CellId, LatLng
-from google.protobuf.internal import encoder
-
-from human_behaviour import sleep, random_lat_long_delta
-from cell_workers.utils import distance, i2f, format_time, format_dist
-from step_walker import StepWalker
-
-from pgoapi.utilities import f2i, h2f
 import logger
+from cell_workers.utils import distance, i2f, format_dist
+from human_behaviour import sleep
+from step_walker import StepWalker
 
 
 class SpiralNavigator(object):
@@ -37,7 +25,7 @@ class SpiralNavigator(object):
     def take_step(self):
         position = (self.origin_lat, self.origin_lon, 0.0)
 
-        logger.log('[#] Scanning area for objects....')
+        logger.log('Scanning area for objects....')
         # logger.log('[#] Scanning area for objects ({} / {})'.format(
         #     (step + 1), self.steplimit**2))
         if self.config.debug:
@@ -68,7 +56,7 @@ class SpiralNavigator(object):
                     position[1]
                 )
 
-                logger.log('[#] Walking from ' + str((i2f(self.api._position_lat), i2f(
+                logger.log('Walking from ' + str((i2f(self.api._position_lat), i2f(
                     self.api._position_lng))) + " to " + str((str(position[0:2]))) + " " + format_dist(dist, self.config.distance_unit))
 
                 if self._step_walker.step():

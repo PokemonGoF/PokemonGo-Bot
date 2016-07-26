@@ -1,10 +1,19 @@
 import time
+from math import ceil
+
 import haversine
 import polyline
+<<<<<<< HEAD:pokemongo_bot/walkers/polyline_generator_tester.py
 from math import ceil
 from polyline_generator import Polyline
 a = Polyline((47.1706378, 8.5167405), (47.1700271, 8.518072999999998), 100)
 print(a.points)
+=======
+
+from polyline_walker import PolylineWalker
+
+a = PolylineWalker('Poststrasse+20,Zug,CH', 'Guggiweg+7,Zug,CH', 100)
+>>>>>>> 508eb404835e9abdfe1d42bad2720db11cfab1a0:pokemongo_bot/polyline_walker/polyline_tester.py
 print('Walking polyline: ', a.polyline)
 print('Encoded level: ','B'*len(a.points))
 print('Initialted with speed: ', a.speed, 'm/s')

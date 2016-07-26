@@ -1,11 +1,17 @@
-import requests
-import polyline
-import haversine
 import time
-from itertools import  chain
+from itertools import chain
 from math import ceil
 
+<<<<<<< HEAD:pokemongo_bot/walkers/polyline_generator.py
 class Polyline(object):
+=======
+import haversine
+import polyline
+import requests
+
+
+class PolylineWalker(object):
+>>>>>>> 508eb404835e9abdfe1d42bad2720db11cfab1a0:pokemongo_bot/polyline_walker/polyline_walker.py
 
     def __init__(self, origin, destination, speed):
         self.DISTANCE_API_URL='https://maps.googleapis.com/maps/api/directions/json?mode=walking'
