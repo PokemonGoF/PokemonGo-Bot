@@ -148,9 +148,9 @@ def init_config():
                         default=False)
     parser.add_argument("-rt",
                         "--reconnecting_timeout",
-                        help="Timeout between reconnecting if error occured (in minutes, e.g. 5)",
+                        help="Timeout between reconnecting if error occured (in minutes, e.g. 15)",
                         type=float,
-                        default=5)
+                        default=15)
  
 
     config = parser.parse_args()
