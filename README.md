@@ -182,7 +182,7 @@ Option | Meaning
 `walk` | 		Set the walking speed in kilometers per hour.(14km/h is the maximum speed for egg hatching)
 `debug` | 		Let the default value here except if you are developer
 `test` | 		Let the default value here except if you are developer
-`initial_transfer` | 	Set this to an upper bound of the cp level which you want to transfer at the beginning of the run. For example, set the value to 0 to disable the initial transfer, set it to 100 to enable initial transfer for cp levels 0-99. It will still transfer pokémon during your exploration, depending on how your release_config.json is setup.
+`initial_transfer` | 	Set this to true to transfer your pokemons at the beginning of the run based on the release config (currently only takes CP into account).
 `location_cache` | Bot will start at last known location if you do not have location set in the config
 `distance_unit` | 	Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
 `item_filter` | 	Pass a list of unwanted items (in CSV format) to recycle when collected at a Pokestop (e.g, "101,102,103,104" to recycle potions when collected)
