@@ -107,7 +107,7 @@ class Stepper(object):
                 if 'map_cells' in response_dict['responses'][
                         'GET_MAP_OBJECTS']:
                     user_web_location = os.path.join('web', 'location-%s.json' % (self.config.username))
-                    if os.path.isfile(user_web_location) or not os.path.exists(user_web_location):
+                    try:
                         with open(user_web_location, 'w') as outfile:
                             json.dump(
                                 {'lat': lat,
@@ -115,12 +115,18 @@ class Stepper(object):
                                 'cells': response_dict[
                                     'responses']['GET_MAP_OBJECTS']['map_cells']},
                                 outfile)
+                    except IOError as e:
+                        logger.log('[x] Error while creating location file: %s' % e, 'red')
 
                     user_data_lastlocation = os.path.join('data', 'last-location-%s.json' % (self.config.username))
-                    if os.path.isfile(user_data_lastlocation) or not os.path.exists(user_data_lastlocation):
+                    try:
                         with open(user_data_lastlocation, 'w') as outfile:
                             outfile.truncate()
                             json.dump({'lat': lat, 'lng': lng}, outfile)
+                    except IOError as e:
+                        logger.log('[x] Error while creating location file: %s' % e, 'red')
+
+
 
         if response_dict and 'responses' in response_dict:
             if 'GET_MAP_OBJECTS' in response_dict['responses']:
