@@ -14,11 +14,15 @@
     "distance_unit": "km",
     "item_filter": "",
     "evolve_all": "NONE",
+    "cp_min": 300,
     "use_lucky_egg": false,
+    "evolve_captured": false,
     "catch": {
-      "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"}
+      "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
+      // "Rattata": { "always_catch" : true }
     },
     "release": {
-      "any": {"release_under_cp": 0, "release_under_iv": 0, "logic": "or"}
+      "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or"},
+      // "Rattata": { "always_release" : true }
     }
 }

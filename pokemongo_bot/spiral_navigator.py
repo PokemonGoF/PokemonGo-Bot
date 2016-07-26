@@ -1,20 +1,8 @@
 # -*- coding: utf-8 -*-
-
-import os
-import json
-import time
-import pprint
-
-from math import ceil
-from s2sphere import CellId, LatLng
-from google.protobuf.internal import encoder
-
-from human_behaviour import sleep, random_lat_long_delta
-from cell_workers.utils import distance, i2f, format_time, format_dist
-from step_walker import StepWalker
-
-from pgoapi.utilities import f2i, h2f
 import logger
+from cell_workers.utils import distance, i2f, format_dist
+from human_behaviour import sleep
+from step_walker import StepWalker
 
 
 class SpiralNavigator(object):

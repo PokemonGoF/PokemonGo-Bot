@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
-from polyline_walker import PolylineWalker
-from stepper import Stepper
 from math import ceil
-from human_behaviour import sleep
-from cell_workers.utils import i2f
+
+from stepper import Stepper
 
 import logger
+from cell_workers.utils import i2f
+from human_behaviour import sleep
+from polyline_walker import PolylineWalker
+
 
 class PolylineStepper(Stepper):
 

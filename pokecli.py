@@ -25,20 +25,17 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 Author: tjado <https://github.com/tejado>
 """
 
-import os
-import re
-import json
 import argparse
-import time
+import codecs
+import json
+import logging
+import os
 import ssl
 import sys
-import codecs
 from getpass import getpass
-import logging
-import requests
-from pokemongo_bot import logger
+
 from pokemongo_bot import PokemonGoBot
-from pokemongo_bot.cell_workers.utils import print_green, print_yellow, print_red
+from pokemongo_bot import logger
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -141,6 +138,14 @@ def init_config():
                         help="(Batch mode) Pass \"all\" or a list of pokemons to evolve (e.g., \"Pidgey,Weedle,Caterpie\"). Bot will start by attempting to evolve all pokemons. Great after popping a lucky egg!",
                         type=str,
                         default=[])
+    
+    parser.add_argument(
+        "-cm",
+        "--cp_min",
+        help=
+        "Minimum CP for evolve all. Bot will attempt to first evolve highest IV pokemons with CP larger than this.",
+        type=int,
+        default=300)
 
     parser.add_argument("-ec",
                         "--evolve_captured",
@@ -163,8 +168,12 @@ def init_config():
     for key in config.__dict__:
         if key in load:
             config.__dict__[key] = load[key]
-    config.catch = load['catch']
-    config.release = load['release']
+            
+    if 'catch' in load:
+        config.catch = load['catch']
+
+    if 'release' in load:
+        config.release = load['release']
 
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")
