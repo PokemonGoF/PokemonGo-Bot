@@ -8,8 +8,7 @@
   <a href="https://pokemongo-bot.herokuapp.com/"><img alt="Slack" src="https://pokemongo-bot.herokuapp.com/badge.svg"></a>
 </p>
 
-# PokemonGo-Bot
-The Pokemon Go Bot, baking with community.
+# The Smartest Bot, Training By Community
 ## Help Needed on [Desktop Version](https://github.com/PokemonGoF/PokemonGo-Bot-Desktop)
 ## Project Chat
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
