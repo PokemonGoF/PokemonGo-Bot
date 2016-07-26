@@ -79,7 +79,7 @@ No PR on master branch to keep things easier.
 
 - OS X:  `brew update && brew install --devel protobuf`
 - Windows: Download protobuf 3.0: [here](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip) and unzip `bin/protoc.exe` into a folder in your PATH.
-- Linux: `apt-get install python-protobuf`
+- Linux: `sudo apt-get install python-protobuf`
 
 ### Note on branch
 Please keep in mind that master is not always up-to-date whereas 'dev' is. In the installation note below change `master` to `dev` if you want to get and use the latest version.
@@ -97,6 +97,8 @@ $ git submodule update
 
 ### Installation Mac
 (change master to dev for the latest version)
+Make sure you install the following first:
+[Requirements](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation)
 
 ```
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
