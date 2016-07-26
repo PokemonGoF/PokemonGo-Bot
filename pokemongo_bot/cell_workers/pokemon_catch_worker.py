@@ -10,6 +10,7 @@ from pokemongo_bot.human_behaviour import sleep
 class PokemonCatchWorker(object):
     BAG_FULL = 'bag_full'
     NO_POKEBALLS = 'no_pokeballs'
+    IGNORE_ENCOUNTER = 'ignore_encounter'
 
     def __init__(self, pokemon, bot):
         self.pokemon = pokemon
@@ -27,6 +28,7 @@ class PokemonCatchWorker(object):
         spawnpoint_id = self.pokemon['spawnpoint_id']
         player_latitude = self.pokemon['latitude']
         player_longitude = self.pokemon['longitude']
+
         self.api.encounter(encounter_id=encounter_id, spawnpoint_id=spawnpoint_id,
                            player_latitude=player_latitude, player_longitude=player_longitude)
         response_dict = self.api.call()
@@ -67,21 +69,21 @@ class PokemonCatchWorker(object):
                                 logger.log('A Wild {} appeared! [CP {}] [Potential {}]'.format(
                                     pokemon_name, cp, pokemon_potential), 'yellow')
 
-                                logger.log('IV [Stamina/Attack/Defense] = [{}]'.format(
+                                logger.log('IV [Stamina/Attack/Defense] = [{}/{}/{}]'.format(
                                 pokemon['pokemon_data']['individual_stamina'],
                                 pokemon['pokemon_data']['individual_attack'],
                                 pokemon['pokemon_data']['individual_defense']))
                                 pokemon['pokemon_data']['name'] = pokemon_name
+
                                 # Simulate app
                                 sleep(3)
 
                         if not self.should_capture_pokemon(pokemon_name, cp, pokemon_potential, response_dict):
                             #logger.log('[x] Rule prevents capture.')
-                            return False
-                        
+                            return PokemonCatchWorker.IGNORE_ENCOUNTER
+
                         balls_stock = self.bot.pokeball_inventory()
                         while(True):
-
                             ## pick the most simple ball from stock
                             pokeball = 1 # start from 1 - PokeBalls
                             
@@ -176,7 +178,9 @@ class PokemonCatchWorker(object):
                                     logger.log('Captured {}! [CP {}] [{}]'.format(
                                         pokemon_name, 
                                         cp,
-                                        iv_display
+                                        (pokemon['pokemon_data']['individual_stamina'],
+                                        pokemon['pokemon_data']['individual_attack'],
+                                        pokemon['pokemon_data']['individual_defense'])
                                     ), 'blue')
                                         
                                     if self.config.evolve_captured:

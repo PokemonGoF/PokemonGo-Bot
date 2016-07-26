@@ -13,6 +13,8 @@ class MoveToFortWorker(object):
         self.navigator = bot.navigator
         self.position = bot.position
         self.cell = cell
+        self._is_moving = False
+        self._step_walker = None
 
     def work(self):
         lat = self.fort['latitude']
@@ -21,38 +23,36 @@ class MoveToFortWorker(object):
         unit = self.config.distance_unit  # Unit to use when printing formatted distance
 
         dist = distance(self.position[0], self.position[1], lat, lng)
+        teleported = False
 
-        # print('Found fort {} at distance {}m'.format(fortID, dist))
-        logger.log('Found fort {} at distance {}'.format(
-            fortID, format_dist(dist, unit)))
+        if not self._is_moving:
+            # print('Found fort {} at distance {}m'.format(fortID, dist))
+            logger.log('Moving to fort {} at distance {}'.format(
+                fortID, format_dist(dist, unit)))
+            if dist > 10:
+                logger.log('Need to move closer to Pokestop')
+                position = (lat, lng, 0.0)
+                self._is_moving = True
+                if self.config.walk > 0:
+                    self._step_walker = StepWalker(
+                        self.bot,
+                        self.config.walk,
+                        self.api._position_lat,
+                        self.api._position_lng,
+                        position[0],
+                        position[1]
+                    )
+                else:
+                    self.api.set_position(*position)
+                    teleported = True
 
         if dist > 10:
-            logger.log('Need to move closer to Pokestop')
-            position = (lat, lng, 0.0)
-
-            if self.config.walk > 0:
-                step_walker = StepWalker(
-                    self.bot,
-                    self.config.walk,
-                    self.api._position_lat,
-                    self.api._position_lng,
-                    position[0],
-                    position[1]
-                )
-
-                while True:
-                    if step_walker.step():
-                        break
-                    else:
-						self.bot._work_on_cell_catch(self.position)
-
-            else:
-                self.api.set_position(*position)
-
-            self.api.player_update(latitude=lat, longitude=lng)
-            response_dict = self.api.call()
-            logger.log('Arrived at Pokestop')
-            sleep(2)
-            return response_dict
-
+            if self._step_walker.step() or teleported:
+                self._is_moving = False
+                self._step_walker = None
+                self.api.player_update(latitude=lat, longitude=lng)
+                response_dict = self.api.call()
+                logger.log('Arrived at Pokestop')
+                sleep(2)
+                return response_dict
         return None

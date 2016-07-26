@@ -25,6 +25,7 @@ class PokemonGoBot(object):
         self.config = config
         self.pokemon_list = json.load(open('data/pokemon.json'))
         self.item_list = json.load(open('data/items.json'))
+        self.ignore_encounter_cache = [] # (timestamp, encounter_id); timestamp is used to release the array entry after 15 minutes (expiry)
 
     def start(self):
         self._setup_logging()
@@ -33,7 +34,7 @@ class PokemonGoBot(object):
         random.seed()
 
     def take_step(self):
-        location = self.navigator.take_stepE()
+        location = self.navigator.take_step()
         cells = self.find_close_cells(*location)
 
         for cell in cells:
@@ -58,6 +59,15 @@ class PokemonGoBot(object):
                 cell_id=cellid
             )
             response_dict = self.api.call()
+            for i in range(1,3):
+                if not response_dict:
+                    if len(cells)==0:
+                        time.sleep(i)
+                        response_dict = self.api.call()
+                else:
+                    break;
+            if not response_dict:
+                return
             map_objects = response_dict.get('responses', {}).get('GET_MAP_OBJECTS', {})
             status = map_objects.get('status', None)
             cells = map_objects['map_cells']
@@ -123,12 +133,11 @@ class PokemonGoBot(object):
         if (self.config.mode != "all" and self.config.mode != "poke"):
             return
 
-        locationTmp = self.navigator.take_step(self.position)
+        locationTmp = self.position[0:2]
         cellsTmp = self.find_close_cells(*locationTmp)
 
         for cell in cellsTmp:
             if 'catchable_pokemons' in cell and len(cell['catchable_pokemons']) > 0:
-                logger.log('Something rustles nearby!')
                 # Sort all by distance from current pos- eventually this should
                 # build graph & A* it
                 cell['catchable_pokemons'].sort(
@@ -140,7 +149,14 @@ class PokemonGoBot(object):
                     with open(user_web_catchable, 'w') as outfile:
                         json.dump(pokemon, outfile)
 
-                    if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
+                    if any(t[1] == pokemon['encounter_id'] for t in self.ignore_encounter_cache):
+                        continue
+
+                    retVal = self.catch_pokemon(pokemon)
+                    if retVal == PokemonCatchWorker.NO_POKEBALLS:
+                        break
+                    elif retVal == PokemonCatchWorker.IGNORE_ENCOUNTER:
+                        self.ignore_encounter_cache.append((time.time(),pokemon['encounter_id']))
                         break
                     with open(user_web_catchable, 'w') as outfile:
                         json.dump({}, outfile)
@@ -152,8 +168,16 @@ class PokemonGoBot(object):
                     key=
                     lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
                 for pokemon in cell['wild_pokemons']:
-                    if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
-                                break
+
+                    if any(t[1] == pokemon['encounter_id'] for t in self.ignore_encounter_cache):
+                        continue
+
+                    retVal = self.catch_pokemon(pokemon)
+                    if retVal == PokemonCatchWorker.NO_POKEBALLS:
+                        break
+                    elif retVal == PokemonCatchWorker.IGNORE_ENCOUNTER:
+                        self.ignore_encounter_cache.append((time.time(),pokemon['encounter_id']))
+                        break
 
     def work_on_cell(self, cell, position):
         # Check if session token has expired
@@ -213,10 +237,14 @@ class PokemonGoBot(object):
 
                 for fort in forts:
                     worker = MoveToFortWorker(fort, self, cell)
-                    worker.work()
-
-                    worker = SeenFortWorker(fort, self)
-                    hack_chain = worker.work()
+                    hack_chain = None;
+                    while True:
+                        if worker.work():
+                            worker = SeenFortWorker(fort, self)
+                            hack_chain = worker.work()
+                            break;
+                        else:
+                            self._work_on_cell_catch(self.position)
                     if hack_chain > 10:
                         #print('need a rest')
                         break

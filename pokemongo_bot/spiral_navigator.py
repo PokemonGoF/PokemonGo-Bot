@@ -22,11 +22,9 @@ class SpiralNavigator(object):
         self.origin_lon = self.bot.position[1]
         self._step_walker = None
 
-    def take_stepE(self):
-        position = (self.origin_lat, self.origin_lon, 0.0)
-        return self.take_step_(position)
-
-    def take_step(self, position):
+    def take_step(self, position=None):
+        if not position:
+            position = (self.origin_lat, self.origin_lon, 0.0)
         return self.take_step_(position)
 
     def take_step_(self,position):
