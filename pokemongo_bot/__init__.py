@@ -43,7 +43,7 @@ class PokemonGoBot(object):
         location = self.navigator.take_step()
         cells = self.find_close_cells(*self.position[0:2])
 
-        cells = self.find_close_cells(*location)
+        cells += self.find_close_cells(*location)
 
         # Combine all cells into a single dict of the items we care about.
         forts = []
@@ -237,7 +237,7 @@ class PokemonGoBot(object):
                 worker = MoveToFortWorker(forts[0], self)
                 worker.work()
                 worker = SeenFortWorker(forts[0], self)
-                worker.work
+                worker.work()
 
     def _setup_logging(self):
         self.log = logging.getLogger(__name__)
