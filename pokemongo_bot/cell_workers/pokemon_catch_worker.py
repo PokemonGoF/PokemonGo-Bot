@@ -174,10 +174,9 @@ class PokemonCatchWorker(object):
 
                                     id_list2 = self.count_pokemon_inventory()
 
-                                    logger.log('Captured {}! [CP {}] [{}]'.format(
+                                    logger.log('Captured {}! [CP {}] '.format(
                                         pokemon_name,
-                                        cp,
-                                        iv_display
+                                        cp
                                     ), 'blue')
 
                                     if self.config.evolve_captured:
