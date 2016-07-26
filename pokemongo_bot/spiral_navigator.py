@@ -18,6 +18,7 @@ class SpiralNavigator(object):
         self.points = self._generate_spiral(self.origin_lat, self.origin_lon, 0.0018, self.steplimit)
         self.ptr = 0
         self.direction = 1
+        self.cnt = 0
         self._step_walker = None
 
     # Source: https://github.com/tejado/pgoapi/blob/master/examples/spiral_poi_search.py
@@ -46,8 +47,10 @@ class SpiralNavigator(object):
 
     def take_step(self):
         point = self.points[self.ptr]
+        self.cnt += 1
 
-        logger.log('Scanning area for objects....')
+        if self.cnt == 1:
+            logger.log('Scanning area for objects....')
 
         # Scan location math
 
@@ -69,8 +72,9 @@ class SpiralNavigator(object):
                 point['lng']
             )
 
-            logger.log('Walking from ' + str((i2f(self.api._position_lat), i2f(
-                self.api._position_lng))) + " to " + str([point['lat'], point['lng']]) + " " + format_dist(dist,
+            if self.cnt == 1:
+                logger.log('Walking from ' + str((i2f(self.api._position_lat), i2f(
+                    self.api._position_lng))) + " to " + str([point['lat'], point['lng']]) + " " + format_dist(dist,
                                                                                                    self.config.distance_unit))
 
             if self._step_walker.step():
@@ -87,6 +91,7 @@ class SpiralNavigator(object):
             if self.ptr + self.direction == len(self.points) or self.ptr + self.direction == -1:
                 self.direction *= -1
             self.ptr += self.direction
+            self.cnt = 0
 
         sleep(1)
         return [point['lat'], point['lng']]
