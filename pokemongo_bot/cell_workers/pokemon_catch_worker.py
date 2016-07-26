@@ -20,54 +20,37 @@ class PokemonCatchWorker(object):
         self.pokemon_list = bot.pokemon_list
         self.item_list = bot.item_list
         self.inventory = bot.inventory
+        self.spawn_point_guid = ''
+        self.response_key = ''
+        self.response_status_key = ''
 
     def work(self):
+
         encounter_id = self.pokemon['encounter_id']
-        player_latitude = self.pokemon['latitude']
-        player_longitude = self.pokemon['longitude']
 
-        if 'spawn_point_id' not in self.pokemon and 'fort_id' not in self.pokemon:
-            logger.log("Please update pgoapi using pip install --upgrade -r requirements.txt", 'red')
-            exit(0)
-
-        if 'spawn_point_id' in self.pokemon:
-            spawn_point_id = self.pokemon['spawn_point_id']
-            spawn_point_guid = spawn_point_id
-            response_key = 'ENCOUNTER'
-            response_status_key = 'status'
-            self.api.encounter(encounter_id=encounter_id, spawn_point_id=spawn_point_id,
-                               player_latitude=player_latitude, player_longitude=player_longitude)
-        else:
-            fort_id = self.pokemon['fort_id']
-            spawn_point_guid = fort_id
-            response_key = 'DISK_ENCOUNTER'
-            response_status_key = 'result'
-            self.api.disk_encounter(encounter_id=encounter_id, fort_id=fort_id,
-                                    player_latitude=player_latitude, player_longitude=player_longitude)
-
-        response_dict = self.api.call()
+        response_dict = self.create_encounter_api_call()
 
         if response_dict and 'responses' in response_dict:
-            if response_key in response_dict['responses']:
-                if response_status_key in response_dict['responses'][response_key]:
-                    if response_dict['responses'][response_key][response_status_key] is 7:
+            if self.response_key in response_dict['responses']:
+                if self.response_status_key in response_dict['responses'][self.response_key]:
+                    if response_dict['responses'][self.response_key][self.response_status_key] is 7:
                         if self.config.initial_transfer:
                             logger.log('Pokemon Bag is full!', 'red')
                             return PokemonCatchWorker.BAG_FULL
                         else:
                             raise RuntimeError('Pokemon Bag is full!')
 
-                    if response_dict['responses'][response_key][response_status_key] is 1:
+                    if response_dict['responses'][self.response_key][self.response_status_key] is 1:
                         cp = 0
                         total_IV = 0
-                        if 'wild_pokemon' in response_dict['responses'][response_key] or 'pokemon_data' in \
-                                response_dict['responses'][response_key]:
-                            if RESPONSE_KEY == 'ENCOUNTER':
-                                pokemon = response_dict['responses'][response_key]['wild_pokemon']
+                        if 'wild_pokemon' in response_dict['responses'][self.response_key] or 'pokemon_data' in \
+                                response_dict['responses'][self.response_key]:
+                            if self.RESPONSE_KEY == 'ENCOUNTER':
+                                pokemon = response_dict['responses'][self.response_key]['wild_pokemon']
                             else:
-                                pokemon = response_dict['responses'][response_key]
+                                pokemon = response_dict['responses'][self.response_key]
 
-                            catch_rate = response_dict['responses'][response_key]['capture_probability'][
+                            catch_rate = response_dict['responses'][self.response_key]['capture_probability'][
                                 'capture_probability']  # 0 = pokeballs, 1 great balls, 3 ultra balls
                             if 'pokemon_data' in pokemon and 'cp' in pokemon['pokemon_data']:
                                 cp = pokemon['pokemon_data']['cp']
@@ -148,7 +131,7 @@ class PokemonCatchWorker(object):
                                 self.api.use_item_capture(
                                     item_id=berry_id,
                                     encounter_id=encounter_id,
-                                    spawn_point_guid=spawn_point_guid
+                                    spawn_point_guid=self.spawn_point_guid
                                 )
                                 response_dict = self.api.call()
                                 if response_dict and response_dict['status_code'] is 1 and 'item_capture_mult' in response_dict['responses']['USE_ITEM_CAPTURE']:
@@ -186,7 +169,7 @@ class PokemonCatchWorker(object):
                             self.api.catch_pokemon(encounter_id=encounter_id,
                                                    pokeball=pokeball,
                                                    normalized_reticle_size=1.950,
-                                                   spawn_point_guid=spawn_point_guid,
+                                                   spawn_point_guid=self.spawn_point_guid,
                                                    hit_pokemon=1,
                                                    spin_modifier=1,
                                                    NormalizedHitPosition=1)
@@ -399,3 +382,26 @@ class PokemonCatchWorker(object):
         if not release_config:
             release_config = {}
         return release_config
+
+    def create_encounter_api_call(self):
+
+        encounter_id = self.pokemon['encounter_id']
+        player_latitude = self.pokemon['latitude']
+        player_longitude = self.pokemon['longitude']
+
+        if 'spawn_point_id' in self.pokemon:
+            spawn_point_id = self.pokemon['spawn_point_id']
+            self.spawn_point_guid = spawn_point_id
+            self.response_key = 'ENCOUNTER'
+            self.response_status_key = 'status'
+            self.api.encounter(encounter_id=encounter_id, spawn_point_id=spawn_point_id,
+                               player_latitude=player_latitude, player_longitude=player_longitude)
+        else:
+            fort_id = self.pokemon['fort_id']
+            self.spawn_point_guid = fort_id
+            self.response_key = 'DISK_ENCOUNTER'
+            self. response_status_key = 'result'
+            self.api.disk_encounter(encounter_id=encounter_id, fort_id=fort_id,
+                                    player_latitude=player_latitude, player_longitude=player_longitude)
+
+        return self.api.call()
