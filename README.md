@@ -82,24 +82,20 @@ Please keep in mind that master is not always up-to-date whereas 'dev' is. In th
 (change master to dev for the latest version)
 
 ```
-$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
+$ git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot  
 $ cd PokemonGo-Bot  
 $ pip install -r requirements.txt
-$ git submodule init
-$ git submodule update
 ```
 
 ### Installation Mac
 (change master to dev for the latest version)
 
 ```
-$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
+$ git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot  
 $ cd PokemonGo-Bot  
 $ virtualenv .  
 $ source bin/activate  
 $ pip install -r requirements.txt
-$ git submodule init
-$ git submodule update
 ```
 
 ### Installation Windows
@@ -139,14 +135,12 @@ $ git submodule update
 ### Develop PokemonGo-Bot
 
 ```
-$ git clone -b dev https://github.com/PokemonGoF/PokemonGo-Bot  
+$ git clone --recursive -b dev https://github.com/PokemonGoF/PokemonGo-Bot  
 $ cd PokemonGo-Bot  
 // create virtualenv using Python 2.7 executable
 $ virtualenv -p C:\python27\python.exe venv
 $ source venv/Scripts/activate  
 $ pip install -r requirements.txt  
-$ git submodule init
-$ git submodule update
 ```
 
 ### Google Maps API (in development)
