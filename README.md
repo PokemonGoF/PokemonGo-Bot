@@ -20,6 +20,7 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 - [ ] Incubate eggs
 - [ ] Use candy
 - [ ] Fight Gym
+- [ ] Inventory cleaner
 
 ## Wiki
 All information on [Getting Started](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Getting-Started) is available in the [Wiki](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/)!
