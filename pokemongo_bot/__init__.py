@@ -7,6 +7,7 @@ import random
 import re
 import sys
 import time
+import pprint
 
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
@@ -34,11 +35,32 @@ class PokemonGoBot(object):
         random.seed()
 
     def take_step(self):
-        location = self.navigator.take_step()
+        # Check if session token has expired
+        self.check_session(self.position)
+
+        location = self.navigator.take_step(self.position)
         cells = self.find_close_cells(*location)
 
+        self.work_on_evolving()
+
+        forts = []
+        wildpoke = []
         for cell in cells:
-            self.work_on_cell(cell, location)
+            if 'forts' in cell:
+                # Only include those with a lat/long
+                forts.extend([fort
+                    for fort in cell['forts']
+                    if 'latitude' in fort and 'type' in fort and not 'cooldown_complete_timestamp_ms' in fort])
+            if 'catchable_pokemons' in cell and len(cell['catchable_pokemons']) > 0:
+                wildpoke.extend([poke
+                    for poke in cell['catchable_pokemons']])
+            if 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
+                wildpoke.extend([poke
+                    for poke in cell['wild_pokemons']])
+
+        self.work_on_catching(wildpoke)
+        self.work_on_fort(forts)
+
 
     def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
         # we can call the function with no arguments and still get the position and map_cells
@@ -59,14 +81,7 @@ class PokemonGoBot(object):
                 cell_id=cellid
             )
             response_dict = self.api.call()
-            for i in range(1,3):
-                if not response_dict:
-                    if len(cells)==0:
-                        time.sleep(i)
-                        response_dict = self.api.call()
-                else:
-                    break;
-            if not response_dict:
+            if response_dict is None:
                 return
             map_objects = response_dict.get('responses', {}).get('GET_MAP_OBJECTS', {})
             status = map_objects.get('status', None)
@@ -101,7 +116,7 @@ class PokemonGoBot(object):
             outfile.truncate()
             json.dump({'lat': lat, 'lng': lng}, outfile)
 
-    def find_close_cells(self, lat, lng):
+    def find_close_cells(self, lat, lng, alt=0):
         cellid = get_cellid(lat, lng)
         timestamp = [0, ] * len(cellid)
 
@@ -129,60 +144,42 @@ class PokemonGoBot(object):
         self.update_web_location(map_cells,lat,lng)
         return map_cells
 
-    def _work_on_cell_catch(self, position):
+    def work_on_catching(self, wildpoke):
         if (self.config.mode != "all" and self.config.mode != "poke"):
             return
 
-        locationTmp = self.position[0:2]
-        cellsTmp = self.find_close_cells(*locationTmp)
+        # Sort all by distance from current pos- eventually this should
+        # build graph & A* it
+        wildpoke.sort(key=lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
 
-        for cell in cellsTmp:
-            if 'catchable_pokemons' in cell and len(cell['catchable_pokemons']) > 0:
-                # Sort all by distance from current pos- eventually this should
-                # build graph & A* it
-                cell['catchable_pokemons'].sort(
-                    key=
-                    lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
+        for pokemon in wildpoke:
+            if any(t[1] == pokemon['encounter_id'] for t in self.ignore_encounter_cache):
+                continue
 
-                user_web_catchable = 'web/catchable-%s.json' % (self.config.username)
-                for pokemon in cell['catchable_pokemons']:
-                    with open(user_web_catchable, 'w') as outfile:
-                        json.dump(pokemon, outfile)
+            retVal = self.catch_pokemon(pokemon)
+            if retVal == PokemonCatchWorker.NO_POKEBALLS:
+                break
+            elif retVal == PokemonCatchWorker.IGNORE_ENCOUNTER:
+                self.ignore_encounter_cache.append((time.time(),pokemon['encounter_id']))
+                break
 
-                    if any(t[1] == pokemon['encounter_id'] for t in self.ignore_encounter_cache):
-                        continue
+    def work_on_fort(self, forts):
+        # Sort all by distance from current pos- eventually this should
+        # build graph & A* it
+        forts.sort(key=lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
 
-                    retVal = self.catch_pokemon(pokemon)
-                    if retVal == PokemonCatchWorker.NO_POKEBALLS:
-                        break
-                    elif retVal == PokemonCatchWorker.IGNORE_ENCOUNTER:
-                        self.ignore_encounter_cache.append((time.time(),pokemon['encounter_id']))
-                        break
-                    with open(user_web_catchable, 'w') as outfile:
-                        json.dump({}, outfile)
+        if len(forts) > 0:
+            fort = forts[0]
+            if (self.config.mode == "all" or self.config.mode == "farm"):
+                worker = MoveToFortWorker(fort, self)
+                if worker.work():
+                    worker = SeenFortWorker(fort, self)
+                    hack_chain = worker.work()
+                    #if hack_chain > 10:
+                        #print('need a rest')
+                        #break
 
-            if 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
-                # Sort all by distance from current pos- eventually this should
-                # build graph & A* it
-                cell['wild_pokemons'].sort(
-                    key=
-                    lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
-                for pokemon in cell['wild_pokemons']:
-
-                    if any(t[1] == pokemon['encounter_id'] for t in self.ignore_encounter_cache):
-                        continue
-
-                    retVal = self.catch_pokemon(pokemon)
-                    if retVal == PokemonCatchWorker.NO_POKEBALLS:
-                        break
-                    elif retVal == PokemonCatchWorker.IGNORE_ENCOUNTER:
-                        self.ignore_encounter_cache.append((time.time(),pokemon['encounter_id']))
-                        break
-
-    def work_on_cell(self, cell, position):
-        # Check if session token has expired
-        self.check_session(position)
-
+    def work_on_evolving(self):
         if self.config.evolve_all:
             # Will skip evolving if user wants to use an egg and there is none
             skip_evolves = False
@@ -219,36 +216,6 @@ class PokemonGoBot(object):
             # Flip the bit.
             self.config.evolve_all = []
 
-        self._work_on_cell_catch(position)
-
-        if (self.config.mode == "all" or
-                self.config.mode == "farm"):
-            if 'forts' in cell:
-                # Only include those with a lat/long
-                forts = [fort
-                         for fort in cell['forts']
-                         if 'latitude' in fort and 'type' in fort]
-                gyms = [gym for gym in cell['forts'] if 'gym_points' in gym]
-
-                # Sort all by distance from current pos- eventually this should
-                # build graph & A* it
-                forts.sort(key=lambda x: distance(self.position[
-                           0], self.position[1], x['latitude'], x['longitude']))
-
-                for fort in forts:
-                    worker = MoveToFortWorker(fort, self, cell)
-                    hack_chain = None;
-                    while True:
-                        if worker.work():
-                            worker = SeenFortWorker(fort, self)
-                            hack_chain = worker.work()
-                            break;
-                        else:
-                            self._work_on_cell_catch(self.position)
-                    if hack_chain > 10:
-                        #print('need a rest')
-                        break
-
     def _setup_logging(self):
         self.log = logging.getLogger(__name__)
         # log settings
@@ -275,7 +242,6 @@ class PokemonGoBot(object):
                 logger.log("Session stale, re-logging in", 'yellow')
                 self.position = position
                 self.login()
-
 
     def login(self):
         logger.log('Attempting login to Pokemon Go.', 'white')

@@ -79,7 +79,7 @@ class PokemonCatchWorker(object):
                                 sleep(3)
 
                         if not self.should_capture_pokemon(pokemon_name, cp, pokemon_potential, response_dict):
-                            #logger.log('[x] Rule prevents capture.')
+                            logger.log('[x] Rule prevents capture.')
                             return PokemonCatchWorker.IGNORE_ENCOUNTER
 
                         balls_stock = self.bot.pokeball_inventory()
