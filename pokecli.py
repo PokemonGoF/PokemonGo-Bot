@@ -36,6 +36,7 @@ import codecs
 from getpass import getpass
 import logging
 import requests
+from pgoapi.exceptions import NotLoggedInException
 from pokemongo_bot import logger
 from pokemongo_bot import PokemonGoBot
 from pokemongo_bot.cell_workers.utils import print_green, print_yellow, print_red
@@ -145,6 +146,12 @@ def init_config():
                         help="(Ad-hoc mode) Bot will attempt to evolve all the pokemons captured!",
                         type=bool,
                         default=False)
+    parser.add_argument("-rt",
+                        "--reconnecting_timeout",
+                        help="Timeout between reconnecting if error occured (in minutes, e.g. 5)",
+                        type=float,
+                        default=5)
+ 
 
     config = parser.parse_args()
     if not config.username and 'username' not in load:
@@ -201,19 +208,27 @@ def main():
     logger.log('[x] PokemonGO Bot v1.0', 'green')
     logger.log('[x] Configuration initialized', 'yellow')
 
-    try:
-        bot = PokemonGoBot(config)
-        bot.start()
+    finished = False
 
-        logger.log('[x] Starting PokemonGo Bot....', 'green')
+    while not finished:
+        try:
+            bot = PokemonGoBot(config)
+            bot.start()
 
-        while True:
-            bot.take_step()
+            logger.log('[x] Starting PokemonGo Bot....', 'green')
 
-    except KeyboardInterrupt:
-        logger.log('[x] Exiting PokemonGo Bot', 'red')
-        # TODO Add number of pokemon catched, pokestops visited, highest CP
-        # pokemon catched, etc.
+            while True:
+                bot.take_step()
+
+        except KeyboardInterrupt:
+            logger.log('[x] Exiting PokemonGo Bot', 'red')
+            finished = True
+            # TODO Add number of pokemon catched, pokestops visited, highest CP
+            # pokemon catched, etc.
+
+        except NotLoggedInException:
+            logger.log('[x] Error while connecting to the server, please wait %s' % config.reconnecting_timeout, 'red')
+            time.sleep(reconnecting_timeout)
 
 
 if __name__ == '__main__':
