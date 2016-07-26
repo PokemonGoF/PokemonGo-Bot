@@ -28,7 +28,6 @@ class PokemonCatchWorker(object):
 
         if 'spawn_point_id' in self.pokemon:
             return
-            logger.log('Catching pokemon.')
             spawn_point_id = self.pokemon['spawn_point_id']
             spawn_point_guid = spawn_point_id
             response_key = 'ENCOUNTER'
@@ -36,7 +35,6 @@ class PokemonCatchWorker(object):
             self.api.encounter(encounter_id=encounter_id, spawn_point_id=spawn_point_id,
                                player_latitude=player_latitude, player_longitude=player_longitude)
         else:
-            logger.log('Catching lured pokemon.')
             fort_id = self.pokemon['fort_id']
             spawn_point_guid = fort_id
             response_key = 'DISK_ENCOUNTER'
