@@ -175,8 +175,8 @@ Please keep in mind that this fix is only necessary if your python version don't
 To update your project do: `git pull` in the project folder
 
 ## Usage (up-to-date)
-  1/ copy `config.json.example` to `config.json` and `release_config.json.example` to `release_config.json`.
-  2/ Edit `config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (other keys are optional, check `Advance Configuration` below)
+  1. copy `config.json.example` to `config.json` and `release_config.json.example` to `release_config.json`
+  2. Edit `config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (other keys are optional, check `Advance Configuration` below)
 
 ## Advance Configuration
 - `max_steps` :
