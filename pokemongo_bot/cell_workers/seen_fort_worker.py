@@ -71,17 +71,25 @@ class SeenFortWorker(object):
 
                         logger.log('- ' + str(item_count) + "x " + item_name + " (Total: " + str(self.bot.item_inventory_count(item_id)) + ")", 'yellow')
 
-                        # RECYCLING UNWANTED ITEMS
-                        if str(item_id) in self.config.item_filter:
-                            logger.log("-- Recycling " + str(item_count) + "x " + item_name + "...", 'green')
-                            #RECYCLE_INVENTORY_ITEM
-                            response_dict_recycle = self.bot.drop_item(item_id=item_id, count=item_count)
 
+                        # RECYCLING UNWANTED ITEMS
+                        id_filter = self.config.item_filter.get(str(item_id), 0)
+                        if id_filter is not 0:
+                            id_filter_keep = id_filter.get('keep',20)
+                        new_bag_count = item_count + self.bot.item_inventory_count(item_id)
+                        if str(item_id) in self.config.item_filter and new_bag_count >= id_filter_keep:
+                            #RECYCLE_INVENTORY_ITEM
+                            items_recycle_count = new_bag_count - id_filter_keep
+                            logger.log("-- Recycling " + str(items_recycle_count) + "x " + item_name + " to match filter "+ str(id_filter_keep) +"...", 'green')
+                            response_dict_recycle = self.bot.drop_item(item_id=item_id, count=items_recycle_count)
+
+                            result = 0
                             if response_dict_recycle and \
                                 'responses' in response_dict_recycle and \
                                 'RECYCLE_INVENTORY_ITEM' in response_dict_recycle['responses'] and \
-                                    'result' in response_dict_recycle['responses']['RECYCLE_INVENTORY_ITEM']:
+                                'result' in response_dict_recycle['responses']['RECYCLE_INVENTORY_ITEM']:
                                 result = response_dict_recycle['responses']['RECYCLE_INVENTORY_ITEM']['result']
+
                             if result is 1: # Request success
                                 logger.log("-- Recycled " + item_name + "!", 'green')
                             else:
