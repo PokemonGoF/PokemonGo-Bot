@@ -171,13 +171,14 @@ To update your project do: `git pull` in the project folder
 ## Usage (up-to-date)
   1. copy `config.json.example` to `config.json` and `release_config.json.example` to `release_config.json`
   2. Edit `config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (other keys are optional, check `Advance Configuration` below)
+  3. Simply launch the script with : `./run.sh` or `./pokecli.py` or `python pokecli.py --config-file ./configs/config.json` if you want to specify a config file
 
 ## Advance Configuration
 Option | Meaning
 ------ | -------
 `max_steps` |		The steps around your initial location (DEFAULT 5 mean 25 cells around your location) that will be explored
 `mode` |  		Set farming Mode for the bot ('all', 'poke', 'farm'). 'all' means both spinning pokéstops and catching pokémon; 'poke'means only catching pokémon and 'farm' means only spinning pokéstops
-`walk` | Walk with the given speed (meters per second max 4.16 because of walking end on 15km/h)
+`walk` | 		Set the walking speed in kilometers per hour.(14km/h is the maximum speed for egg hatching)
 `debug` | 		Let the default value here except if you are developer
 `test` | 		Let the default value here except if you are developer
 `initial_transfer` | 	Set this to an upper bound of the cp level which you want to transfer at the beginning of the run. For example, set the value to 0 to disable the initial transfer, set it to 100 to enable initial transfer for cp levels 0-99. It will still transfer pokémon during your exploration, depending on how your release_config.json is setup.
