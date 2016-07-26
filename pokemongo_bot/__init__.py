@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import datetime
 import json
 import logging
@@ -21,15 +22,15 @@ from spiral_navigator import SpiralNavigator
 
 
 class PokemonGoBot(object):
-    
+
     @property
     def position(self):
         return (i2f(self.api._position_lat), i2f(self.api._position_lng), 0)
 
     def __init__(self, config):
         self.config = config
-        self.pokemon_list = json.load(open('data/pokemon.json'))
-        self.item_list = json.load(open('data/items.json'))
+        self.pokemon_list = json.load(open(os.path.join('data', 'pokemon.json')))
+        self.item_list = json.load(open(os.path.join('data', 'items.json')))
 
         # Stats collection
         self.start_time = None
@@ -55,10 +56,13 @@ class PokemonGoBot(object):
 
     def take_step(self):
         location = self.navigator.take_step()
-        cells = self.find_close_cells(*self.position[0:2])
+        self.process_cells(work_on_forts=True)
 
+    def process_cells(self, work_on_forts=True):
+        location = self.position[0:2]
+        cells = self.find_close_cells(*location)
         for cell in cells:
-            self.work_on_cell(cell, location)
+            self.work_on_cell(cell, location, work_on_forts)
 
     def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
         # we can call the function with no arguments and still get the position and map_cells
@@ -96,21 +100,27 @@ class PokemonGoBot(object):
                             response_gym_details = self.api.call()
                             fort['gym_details'] = response_gym_details['responses']['GET_GYM_DETAILS']
 
-        user_web_location = 'web/location-%s.json' % (self.config.username)
-        # should check if file exists first but os is not imported here
+        user_web_location = os.path.join('web', 'location-%s.json' % (self.config.username))
         # alt is unused atm but makes using *location easier
-        with open(user_web_location,'w') as outfile:
-            json.dump(
-                {'lat': lat,
-                'lng': lng,
-                'alt': alt,
-                'cells': cells
-                }, outfile)
+        try:
+            with open(user_web_location,'w') as outfile:
+                json.dump(
+                    {'lat': lat,
+                    'lng': lng,
+                    'alt': alt,
+                    'cells': cells
+                    }, outfile)
+        except IOError as e:
+            logger.log('[x] Error while opening location file: %s' % e, 'red')
 
-        user_data_lastlocation = 'data/last-location-%s.json' % (self.config.username)
-        with open(user_data_lastlocation, 'w') as outfile:
-            outfile.truncate()
-            json.dump({'lat': lat, 'lng': lng}, outfile)
+        user_data_lastlocation = os.path.join('data', 'last-location-%s.json' % (self.config.username))
+        try:
+            with open(user_data_lastlocation, 'w') as outfile:
+                outfile.truncate()
+                json.dump({'lat': lat, 'lng': lng}, outfile)
+        except IOError as e:
+            logger.log('[x] Error while opening location file: %s' % e, 'red')
+
 
     def find_close_cells(self, lat, lng):
         cellid = get_cellid(lat, lng)
@@ -140,7 +150,7 @@ class PokemonGoBot(object):
         self.update_web_location(map_cells)
         return map_cells
 
-    def work_on_cell(self, cell, position):
+    def work_on_cell(self, cell, position, work_on_forts=1):
         # Check if session token has expired
         self.check_session(position)
 
@@ -210,8 +220,8 @@ class PokemonGoBot(object):
             for pokemon in cell['wild_pokemons']:
                 if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
                     break
-        if (self.config.mode == "all" or
-                self.config.mode == "farm"):
+        if ((self.config.mode == "all" or
+                self.config.mode == "farm") and work_on_forts):
             if 'forts' in cell:
                 # Only include those with a lat/long
                 forts = [fort
@@ -451,12 +461,11 @@ class PokemonGoBot(object):
 
         if self.config.location:
             try:
-                location_str = u'{}'.format(str(self.config.location))
+                location_str = self.config.location.encode('utf-8')
                 location = (self._get_pos_by_name(location_str.replace(" ", "")))
                 self.api.set_position(*location)
                 logger.log('')
-                logger.log(u'Location Found: {}'.format(self.config.location.decode(
-                    'utf-8')))
+                logger.log(u'Location Found: {}'.format(self.config.location))
                 logger.log('GeoPosition: {}'.format(self.position))
                 logger.log('')
                 has_position = True

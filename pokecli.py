@@ -141,13 +141,6 @@ def init_config():
         default="km"
     )
     parser.add_argument(
-        "-if",
-        "--item_filter",
-        help="Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, SYNTAX FOR CONFIG.JSON : [\"101\",\"102\",\"103\",\"104\"] to recycle potions when collected, SYNTAX FOR CONSOLE ARGUMENT : \"101\",\"102\",\"103\",\"104\")",
-        type=list,
-        default=[]
-    )
-    parser.add_argument(
         "-ev",
         "--evolve_all",
         help="(Batch mode) Pass \"all\" or a list of pokemons to evolve (e.g., \"Pidgey,Weedle,Caterpie\"). Bot will start by attempting to evolve all pokemons. Great after popping a lucky egg!",
