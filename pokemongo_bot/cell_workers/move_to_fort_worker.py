@@ -28,7 +28,6 @@ class MoveToFortWorker(object):
             fortID, format_dist(dist, unit)))
         if dist > 10:
             position = (lat, lng, 0.0)
-            self._is_moving = True
             if self.config.walk > 0:
                 _step_walker = StepWalker(
                     self.bot,
