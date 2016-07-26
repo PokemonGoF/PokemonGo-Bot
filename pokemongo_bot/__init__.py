@@ -3,6 +3,7 @@
 import datetime
 import json
 import logging
+import os
 import random
 import re
 import sys
@@ -266,6 +267,11 @@ class PokemonGoBot(object):
         logger.log('Login to Pokemon Go successful.', 'green')
 
     def _setup_api(self):
+        # warn the user if the old API is still present
+        if os.path.isdir('src/pgoapi'):
+            logger.log(
+                '[#] IMPORTANT: Remove the src/pgoapi folder to avoid errors because of the outdated API!', 'red')
+
         # instantiate pgoapi
         self.api = PGoApi()
 
