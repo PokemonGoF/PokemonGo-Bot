@@ -50,11 +50,6 @@ class PokemonCatchWorker(object):
                             if 'pokemon_data' in pokemon and 'cp' in pokemon['pokemon_data']:
                                 cp = pokemon['pokemon_data']['cp']
                                 iv_stats = ['individual_attack', 'individual_defense', 'individual_stamina']
-                                iv_display = '{}/{}/{}'.format(
-                                    pokemon['pokemon_data']['individual_stamina'],
-                                    pokemon['pokemon_data']['individual_attack'],
-                                    pokemon['pokemon_data']['individual_defense']
-                                )
 
                                 for individual_stat in iv_stats:
                                     try:
@@ -62,6 +57,12 @@ class PokemonCatchWorker(object):
                                     except:
                                         pokemon['pokemon_data'][individual_stat] = 0
                                         continue
+
+                                iv_display = '{}/{}/{}'.format(
+                                    pokemon['pokemon_data']['individual_stamina'],
+                                    pokemon['pokemon_data']['individual_attack'],
+                                    pokemon['pokemon_data']['individual_defense']
+                                )
 
                                 pokemon_potential = round((total_IV / 45.0), 2)
                                 pokemon_num = int(pokemon['pokemon_data'][
