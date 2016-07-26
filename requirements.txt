@@ -1,4 +1,4 @@
--e git+https://github.com/tejado/pgoapi.git@v1.1.0#egg=pgoapi
+-e git+https://github.com/tejado/pgoapi.git#egg=pgoapi
 geopy==1.11.0
 protobuf==3.0.0b4
 requests==2.10.0
