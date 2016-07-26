@@ -37,8 +37,9 @@ class MoveToFortWorker(object):
                     position[0],
                     position[1]
                 )
-
+                
                 while True:
+                    self.bot.cells_on_tick(*position)
                     if step_walker.step():
                         break
 

@@ -127,6 +127,7 @@ class SeenFortWorker(object):
             else:
                 logger.log('Possibly searching too often - taking a short rest :)', 'yellow')
                 return 11
+        self.bot.cells_on_tick(self.fort['latitude'],self.fort['longitude'])
         sleep(8)
         return 0
 
