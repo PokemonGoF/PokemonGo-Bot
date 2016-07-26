@@ -105,7 +105,7 @@ $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot
 $ cd PokemonGo-Bot  
 $ virtualenv .  
 $ source bin/activate  
-$ sudp pip install -r requirements.txt
+$ sudo pip install -r requirements.txt
 $ git submodule init
 $ git submodule update
 ```
