@@ -138,7 +138,7 @@ def init_config():
                         help="(Batch mode) Pass \"all\" or a list of pokemons to evolve (e.g., \"Pidgey,Weedle,Caterpie\"). Bot will start by attempting to evolve all pokemons. Great after popping a lucky egg!",
                         type=str,
                         default=[])
-    
+
     parser.add_argument(
         "-cm",
         "--cp_min",
@@ -168,12 +168,16 @@ def init_config():
     for key in config.__dict__:
         if key in load:
             config.__dict__[key] = load[key]
-            
+
     if 'catch' in load:
         config.catch = load['catch']
+    else:
+        config.catch = {}
 
     if 'release' in load:
         config.release = load['release']
+    else:
+        config.release = {}
 
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")
@@ -188,7 +192,7 @@ def init_config():
         config.item_filter= config.item_filter.split(",")
 
     # create web dir if not exists
-    try: 
+    try:
         os.makedirs(web_dir)
     except OSError:
         if not os.path.isdir(web_dir):
