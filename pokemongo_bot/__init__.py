@@ -22,7 +22,7 @@ from spiral_navigator import SpiralNavigator
 
 
 class PokemonGoBot(object):
-    
+
     @property
     def position(self):
         return (i2f(self.api._position_lat), i2f(self.api._position_lng), 0)
@@ -40,10 +40,13 @@ class PokemonGoBot(object):
 
     def take_step(self):
         location = self.navigator.take_step()
-        cells = self.find_close_cells(*self.position[0:2])
+        self.process_cells(work_on_forts=True)
 
+    def process_cells(self, work_on_forts=True):
+        location = self.position[0:2]
+        cells = self.find_close_cells(*location)
         for cell in cells:
-            self.work_on_cell(cell, location)
+            self.work_on_cell(cell, location, work_on_forts)
 
     def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
         # we can call the function with no arguments and still get the position and map_cells
@@ -131,7 +134,7 @@ class PokemonGoBot(object):
         self.update_web_location(map_cells)
         return map_cells
 
-    def work_on_cell(self, cell, position):
+    def work_on_cell(self, cell, position, work_on_forts=1):
         # Check if session token has expired
         self.check_session(position)
 
@@ -201,8 +204,8 @@ class PokemonGoBot(object):
             for pokemon in cell['wild_pokemons']:
                 if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
                     break
-        if (self.config.mode == "all" or
-                self.config.mode == "farm"):
+        if ((self.config.mode == "all" or
+                self.config.mode == "farm") and work_on_forts):
             if 'forts' in cell:
                 # Only include those with a lat/long
                 forts = [fort
