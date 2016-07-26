@@ -94,4 +94,4 @@ class SpiralNavigator(object):
             self.cnt = 0
 
         sleep(1)
-        return [point['lat'], point['lng'], 0]
+        return [self.api._position_lat, self.api._position_lng, 0]
