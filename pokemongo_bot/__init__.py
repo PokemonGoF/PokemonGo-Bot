@@ -34,7 +34,7 @@ class PokemonGoBot(object):
 
     def take_step(self):
         location = self.navigator.take_step()
-        cells = self.find_close_cells(*location)
+        cells = self.find_close_cells(*location[0:2])
 
         for cell in cells:
             self.work_on_cell(cell, location)
