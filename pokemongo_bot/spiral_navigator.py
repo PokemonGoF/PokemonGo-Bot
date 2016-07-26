@@ -15,7 +15,7 @@ class SpiralNavigator(object):
         self.origin_lat = self.bot.position[0]
         self.origin_lon = self.bot.position[1]
 
-        self.points = self._generate_spiral(self.origin_lat, self.origin_lon, 0.0018, self.steplimit)
+        self.points = self._generate_spiral(self.origin_lat, self.origin_lon, 0.0025, self.steplimit)
         self.ptr = 0
         self.direction = 1
         self.cnt = 0
@@ -94,4 +94,4 @@ class SpiralNavigator(object):
             self.cnt = 0
 
         sleep(1)
-        return [point['lat'], point['lng']]
+        return [point['lat'], point['lng'], 0]
