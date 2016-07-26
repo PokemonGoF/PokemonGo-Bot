@@ -10,8 +10,10 @@ class InitialTransferWorker(object):
         self.api = bot.api
 
     def work(self):
-        logger.log('Cleaning up Pokemon Bag of anything below {} CP'.format(
-            self.config.initial_transfer), 'cyan')
+        if not self.config.initial_transfer:
+            return
+
+        logger.log('Cleaning up Pokemon Bag using the release CP config', 'cyan')
 
         pokemon_groups = self._initial_transfer_get_groups()
 
@@ -25,15 +27,14 @@ class InitialTransferWorker(object):
 
 
                 for x in range(1, len(group_cp)):
-                    if self.config.initial_transfer and group_cp[x] > self.config.initial_transfer:
-                        continue
-
-                    logger.log('Exchanging {} with {} CP'.format(
-                        self.pokemon_list[id - 1]['Name'], group_cp[x]))
-                    self.api.release_pokemon(
-                        pokemon_id=pokemon_groups[id][group_cp[x]])
-                    response_dict = self.api.call()
-                    sleep(2)
+                    pokemon_name = self.pokemon_list[id - 1]['Name']
+                    if self.should_release_pokemon(pokemon_name, group_cp[x]):
+                        logger.log('Exchanging {} with {} CP'.format(
+                            pokemon_name, group_cp[x]))
+                        self.api.release_pokemon(
+                            pokemon_id=pokemon_groups[id][group_cp[x]])
+                        response_dict = self.api.call()
+                        sleep(2)
 
         logger.log('Pokemon Bag has been cleaned up!', 'green')
 
@@ -68,3 +69,23 @@ class InitialTransferWorker(object):
 
             pokemon_groups[group_id].update({group_pokemon_cp: group_pokemon})
         return pokemon_groups
+
+    def should_release_pokemon(self, pokemon_name, cp):
+        release_config = self._get_release_config_for(pokemon_name)
+
+        if release_config.get('never_release', False):
+            return False
+
+        if release_config.get('always_release', False):
+            return True
+
+        release_cp = release_config.get('release_below_cp', 0)
+        return cp < release_cp
+
+    def _get_release_config_for(self, pokemon):
+        release_config = self.config.release.get(pokemon)
+        if not release_config:
+            release_config = self.config.release.get('any')
+        if not release_config:
+            release_config = {}
+        return release_config
