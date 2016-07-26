@@ -142,8 +142,8 @@ def init_config():
         "-if",
         "--item_filter",
         help="Pass a list of unwanted items to recycle when collected at a Pokestop (e.g, SYNTAX FOR CONFIG.JSON : [\"101\",\"102\",\"103\",\"104\"] to recycle potions when collected, SYNTAX FOR CONSOLE ARGUMENT : \"101\",\"102\",\"103\",\"104\")",
-        type=list,
-        default=[]
+        type=dict,
+        default={}
     )
     parser.add_argument(
         "-ev",
