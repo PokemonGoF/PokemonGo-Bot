@@ -14,13 +14,18 @@ from pgoapi.utilities import f2i
 
 import logger
 from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
-from cell_workers.utils import distance, get_cellid, encode
+from cell_workers.utils import distance, get_cellid, encode, i2f
 from human_behaviour import sleep
 from item_list import Item
 from spiral_navigator import SpiralNavigator
 
 
 class PokemonGoBot(object):
+    
+    @property
+    def position(self):
+        return (i2f(self.api._position_lat), i2f(self.api._position_lng), 0)
+
     def __init__(self, config):
         self.config = config
         self.pokemon_list = json.load(open('data/pokemon.json'))
@@ -34,7 +39,7 @@ class PokemonGoBot(object):
 
     def take_step(self):
         location = self.navigator.take_step()
-        cells = self.find_close_cells(*location)
+        cells = self.find_close_cells(*location[0:2])
 
         for cell in cells:
             self.work_on_cell(cell, location)
@@ -42,11 +47,11 @@ class PokemonGoBot(object):
     def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
         # we can call the function with no arguments and still get the position and map_cells
         if lat == None:
-            lat = self.position[0]
+            lat = i2f(self.api._position_lat)
         if lng == None:
-            lng = self.position[1]
+            lng = i2f(self.api._position_lng)
         if alt == None:
-            alt = self.position[2]
+            alt = 0
 
         if cells == []:
             cellid = get_cellid(lat, lng)
@@ -116,7 +121,7 @@ class PokemonGoBot(object):
                     x['forts'][0]['latitude'],
                     x['forts'][0]['longitude']) if x.get('forts', []) else 1e6
             )
-        self.update_web_location(map_cells,lat,lng)
+        self.update_web_location(map_cells)
         return map_cells
 
     def work_on_cell(self, cell, position):
@@ -212,6 +217,8 @@ class PokemonGoBot(object):
                     if hack_chain > 10:
                         #print('need a rest')
                         break
+                    if self.config.mode == "poke":
+                        break
 
     def _setup_logging(self):
         self.log = logging.getLogger(__name__)
@@ -237,7 +244,6 @@ class PokemonGoBot(object):
 
             if remaining_time < 60:
                 logger.log("Session stale, re-logging in", 'yellow')
-                self.position = position
                 self.login()
 
 
@@ -270,10 +276,21 @@ class PokemonGoBot(object):
 
         # chain subrequests (methods) into one RPC call
 
+        self._print_character_info()
+
+        if self.config.initial_transfer:
+            worker = InitialTransferWorker(self)
+            worker.work()
+
+        logger.log('')
+        self.update_inventory()
+        # send empty map_cells and then our position
+        self.update_web_location()
+
+    def _print_character_info(self):
         # get player profile call
         # ----------------------
         self.api.get_player()
-
         response_dict = self.api.call()
         #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
         currency_1 = "0"
@@ -307,15 +324,6 @@ class PokemonGoBot(object):
         logger.log('Razz Berries: ' + str(self.item_inventory_count(701)), 'cyan')
 
         logger.log('')
-
-        if self.config.initial_transfer:
-            worker = InitialTransferWorker(self)
-            worker.work()
-
-        logger.log('')
-        self.update_inventory()
-        # send empty map_cells and then our position
-        self.update_web_location([],*self.position)
 
     def catch_pokemon(self, pokemon):
         worker = PokemonCatchWorker(pokemon, self)
@@ -426,10 +434,9 @@ class PokemonGoBot(object):
 
         if self.config.location:
             try:
-                location_str = str(self.config.location)
+                location_str = u'{}'.format(str(self.config.location))
                 location = (self._get_pos_by_name(location_str.replace(" ", "")))
-                self.position = location
-                self.api.set_position(*self.position)
+                self.api.set_position(*location)
                 logger.log('')
                 logger.log(u'Location Found: {}'.format(self.config.location.decode(
                     'utf-8')))

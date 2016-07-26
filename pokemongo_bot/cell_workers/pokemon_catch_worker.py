@@ -319,7 +319,9 @@ class PokemonCatchWorker(object):
     def _get_catch_config_for(self, pokemon):
         catch_config = self.config.catch.get(pokemon)
         if not catch_config:
-            catch_config = self.config.catch['any']
+            catch_config = self.config.catch.get('any')
+        if not catch_config:
+            catch_config = {}
         return catch_config
 
     def should_release_pokemon(self, pokemon_name, cp, iv, response_dict):
@@ -366,5 +368,7 @@ class PokemonCatchWorker(object):
     def _get_release_config_for(self, pokemon):
         release_config = self.config.release.get(pokemon)
         if not release_config:
-            release_config = self.config.release['any']
+            release_config = self.config.release.get('any')
+        if not release_config:
+            release_config = {}
         return release_config
