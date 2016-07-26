@@ -35,6 +35,9 @@ var/
 .pydevproject
 .settings/
 
+# Visual Studio Code Users
+.vscode
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
