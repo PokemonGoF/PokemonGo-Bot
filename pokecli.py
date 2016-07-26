@@ -32,7 +32,9 @@ import logging
 import os
 import ssl
 import sys
+import time
 from getpass import getpass
+from pgoapi.exceptions import NotLoggedInException
 
 from pokemongo_bot import PokemonGoBot
 from pokemongo_bot import logger
@@ -166,6 +168,13 @@ def init_config():
         type=bool,
         default=False
     )
+    parser.add_argument(
+        "-rt",
+        "--reconnecting_timeout",
+        help="Timeout between reconnecting if error occured (in minutes, e.g. 15)",
+        type=float,
+        default=15.0
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()
@@ -220,19 +229,27 @@ def main():
         return
     logger.log('Configuration initialized', 'yellow')
 
-    try:
-        bot = PokemonGoBot(config)
-        bot.start()
+    finished = False
 
-        logger.log('Starting PokemonGo Bot....', 'green')
+    while not finished:
+        try:
+            bot = PokemonGoBot(config)
+            bot.start()
 
-        while True:
-            bot.take_step()
+            logger.log('Starting PokemonGo Bot....', 'green')
 
-    except KeyboardInterrupt:
-        logger.log('Exiting PokemonGo Bot', 'red')
-        # TODO Add number of pokemon catched, pokestops visited, highest CP
-        # pokemon catched, etc.
+            while True:
+                bot.take_step()
+
+        except KeyboardInterrupt:
+            logger.log('Exiting PokemonGo Bot', 'red')
+            finished = True
+            # TODO Add number of pokemon catched, pokestops visited, highest CP
+            # pokemon catched, etc.
+
+        except NotLoggedInException:
+            logger.log('[x] Error while connecting to the server, please wait %s minutes' % config.reconnecting_timeout, 'red')
+            time.sleep(config.reconnecting_timeout * 60)
 
 
 if __name__ == '__main__':
