@@ -7,7 +7,6 @@ from pgoapi.utilities import f2i
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.cell_workers import PokemonCatchWorker
-from pokemongo_bot.cell_workers import InitialTransferWorker
 from utils import format_time
 
 

@@ -26,6 +26,10 @@ class PokemonCatchWorker(object):
         player_latitude = self.pokemon['latitude']
         player_longitude = self.pokemon['longitude']
 
+        if 'spawn_point_id' not in self.pokemon and 'fort_id' not in self.pokemon:
+            logger.log("Please update pgoapi using pip install --upgrade -r requirements.txt", 'red')
+            exit(0)
+
         if 'spawn_point_id' in self.pokemon:
             spawn_point_id = self.pokemon['spawn_point_id']
             spawn_point_guid = spawn_point_id
