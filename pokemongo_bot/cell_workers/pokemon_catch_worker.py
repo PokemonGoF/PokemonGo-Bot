@@ -143,8 +143,8 @@ class PokemonCatchWorker(object):
 
                                 self.api.use_item_capture(
                                     item_id=berry_id,
-                                    encounter_id = encounter_id,
-                                    spawn_point_guid = spawnpoint_id
+                                    encounter_id=encounter_id,
+                                    spawn_point_guid=spawn_point_guid
                                 )
                                 response_dict = self.api.call()
                                 if response_dict and response_dict['status_code'] is 1 and 'item_capture_mult' in response_dict['responses']['USE_ITEM_CAPTURE']:
@@ -160,7 +160,7 @@ class PokemonCatchWorker(object):
                                     else:
                                         logger.log('Fail to use berry. Status Code: {}'.format(response_dict['status_code']),'red')
 
-                            ## change ball to next tier if catch rate is too low
+                            # change ball to next tier if catch rate is too low
                             current_type = pokeball
                             while(current_type < 3):
                                 current_type = current_type+1
