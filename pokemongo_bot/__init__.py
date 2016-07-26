@@ -270,10 +270,21 @@ class PokemonGoBot(object):
 
         # chain subrequests (methods) into one RPC call
 
+        self._print_character_info()
+
+        if self.config.initial_transfer:
+            worker = InitialTransferWorker(self)
+            worker.work()
+
+        logger.log('')
+        self.update_inventory()
+        # send empty map_cells and then our position
+        self.update_web_location([],*self.position)
+
+    def _print_character_info(self):
         # get player profile call
         # ----------------------
         self.api.get_player()
-
         response_dict = self.api.call()
         #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
         currency_1 = "0"
@@ -307,15 +318,6 @@ class PokemonGoBot(object):
         logger.log('Razz Berries: ' + str(self.item_inventory_count(701)), 'cyan')
 
         logger.log('')
-
-        if self.config.initial_transfer:
-            worker = InitialTransferWorker(self)
-            worker.work()
-
-        logger.log('')
-        self.update_inventory()
-        # send empty map_cells and then our position
-        self.update_web_location([],*self.position)
 
     def catch_pokemon(self, pokemon):
         worker = PokemonCatchWorker(pokemon, self)
