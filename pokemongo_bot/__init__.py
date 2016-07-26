@@ -24,7 +24,7 @@ class PokemonGoBot(object):
     
     @property
     def position(self):
-        return (self.api._position_lat, self.api._position_lng)
+        return (i2f(self.api._position_lat), i2f(self.api._position_lng), 0)
 
     def __init__(self, config):
         self.config = config
@@ -244,7 +244,6 @@ class PokemonGoBot(object):
 
             if remaining_time < 60:
                 logger.log("Session stale, re-logging in", 'yellow')
-                self.position = [i2f(self.api._position_lat), i2f(self.api._position_lng), 0]
                 self.login()
 
 
@@ -437,8 +436,7 @@ class PokemonGoBot(object):
             try:
                 location_str = u'{}'.format(str(self.config.location))
                 location = (self._get_pos_by_name(location_str.replace(" ", "")))
-                self.position = location
-                self.api.set_position(*self.position)
+                self.api.set_position(*location)
                 logger.log('')
                 logger.log(u'Location Found: {}'.format(self.config.location.decode(
                     'utf-8')))
