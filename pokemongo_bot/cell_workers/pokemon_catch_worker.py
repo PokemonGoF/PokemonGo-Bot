@@ -49,6 +49,15 @@ class PokemonCatchWorker(object):
 
                             if 'pokemon_data' in pokemon and 'cp' in pokemon['pokemon_data']:
                                 cp = pokemon['pokemon_data']['cp']
+
+                                # make sure we catch any missing iv information
+                                if 'individual_stamina' not in pokemon['pokemon_data']:
+                                    pokemon['pokemon_data']['individual_stamina'] = 0
+                                if 'individual_attack' not in pokemon['pokemon_data']:
+                                    pokemon['pokemon_data']['individual_attack'] = 0
+                                if 'individual_defense' not in pokemon['pokemon_data']:
+                                    pokemon['pokemon_data']['individual_defense'] = 0
+
                                 iv_stats = ['individual_attack', 'individual_defense', 'individual_stamina']
                                 #iv_display = '{}/{}/{}'.format(
                                 #    pokemon['pokemon_data']['individual_stamina'],
