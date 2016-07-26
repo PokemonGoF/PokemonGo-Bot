@@ -71,15 +71,19 @@ No PR on master branch to keep things easier.
 - [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/)
 - [pip](https://pip.pypa.io/en/stable/installing/)
 - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-- [virtualenv](https://virtualenv.pypa.io/en/stable/installation/) (Optional)
+- [virtualenv](https://virtualenv.pypa.io/en/stable/installation/) (Recommended)
 - [docker](https://docs.docker.com/engine/installation/) (Optional)
 - [protobuf 3](https://github.com/google/protobuf) (OS Dependent, see below)
+
+### Note on virtualenv 
+We recommend you use virtualenv, not only will this tool keep your OS clean from all the python plugins.
+It also provide an virtual space for more than 1 instance! 
 
 ### Protobuf 3 installation
 
 - OS X:  `brew update && brew install --devel protobuf`
 - Windows: Download protobuf 3.0: [here](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip) and unzip `bin/protoc.exe` into a folder in your PATH.
-- Linux: `apt-get install python-protobuf`
+- Linux: `sudo apt-get install python-protobuf`
 
 ### Note on branch
 Please keep in mind that master is not always up-to-date whereas 'dev' is. In the installation note below change `master` to `dev` if you want to get and use the latest version.
@@ -89,7 +93,9 @@ Please keep in mind that master is not always up-to-date whereas 'dev' is. In th
 
 ```
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
-$ cd PokemonGo-Bot  
+$ cd PokemonGo-Bot
+$ virtualenv .
+$ source bin/activate
 $ pip install -r requirements.txt
 $ git submodule init
 $ git submodule update
@@ -97,6 +103,9 @@ $ git submodule update
 
 ### Installation Mac
 (change master to dev for the latest version)
+
+Make sure you install the following first:
+[Requirements](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation)
 
 ```
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
@@ -132,7 +141,9 @@ After this, just do:
 
 ```
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
-$ cd PokemonGo-Bot  
+$ cd PokemonGo-Bot 
+$ virtualenv .  
+$ source bin/activate
 $ pip install -r requirements.txt
 $ git submodule init
 $ git submodule update
