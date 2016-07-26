@@ -14,7 +14,7 @@ from pgoapi.utilities import f2i
 
 import logger
 from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
-from cell_workers.utils import distance, get_cellid, encode
+from cell_workers.utils import distance, get_cellid, encode, i2f
 from human_behaviour import sleep
 from item_list import Item
 from spiral_navigator import SpiralNavigator
@@ -42,11 +42,11 @@ class PokemonGoBot(object):
     def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
         # we can call the function with no arguments and still get the position and map_cells
         if lat == None:
-            lat = self.position[0]
+            lat = i2f(self.api._position_lat)
         if lng == None:
-            lng = self.position[1]
+            lng = i2f(self.api._position_lng)
         if alt == None:
-            alt = self.position[2]
+            alt = 0
 
         if cells == []:
             cellid = get_cellid(lat, lng)
@@ -116,7 +116,7 @@ class PokemonGoBot(object):
                     x['forts'][0]['latitude'],
                     x['forts'][0]['longitude']) if x.get('forts', []) else 1e6
             )
-        self.update_web_location(map_cells,lat,lng)
+        self.update_web_location(map_cells)
         return map_cells
 
     def work_on_cell(self, cell, position):
@@ -239,7 +239,7 @@ class PokemonGoBot(object):
 
             if remaining_time < 60:
                 logger.log("Session stale, re-logging in", 'yellow')
-                self.position = position
+                self.position = [i2f(self.api._position_lat), i2f(self.api._position_lng), 0]
                 self.login()
 
 
@@ -281,7 +281,7 @@ class PokemonGoBot(object):
         logger.log('')
         self.update_inventory()
         # send empty map_cells and then our position
-        self.update_web_location([],*self.position)
+        self.update_web_location()
 
     def _print_character_info(self):
         # get player profile call
