@@ -80,6 +80,11 @@ class PokemonGoBot(object):
                             response_gym_details = self.api.call()
                             fort['gym_details'] = response_gym_details['responses']['GET_GYM_DETAILS']
 
+        user_data_cells = "data/cells-%s.json" % (self.config.username)
+        with open(user_data_cells, 'w') as outfile:
+            outfile.truncate()
+            json.dump(cells, outfile)
+
         user_web_location = 'web/location-%s.json' % (self.config.username)
         # should check if file exists first but os is not imported here
         # alt is unused atm but makes using *location easier
