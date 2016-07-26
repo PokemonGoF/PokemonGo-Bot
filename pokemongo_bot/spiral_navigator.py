@@ -16,7 +16,6 @@ class SpiralNavigator(object):
         self.origin_lon = self.bot.position[1]
 
         self.points = self._generate_spiral(self.origin_lat, self.origin_lon, 0.0018, self.steplimit)
-        self._print_gmaps_dbug(self.points)
         self.ptr = 0
         self.direction = 1
         self._step_walker = None
