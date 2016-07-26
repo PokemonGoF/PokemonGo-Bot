@@ -9,7 +9,7 @@
     "walk": 4.16,
     "debug": false,
     "test": false,
-    "initial_transfer": 0,
+    "initial_transfer": false,
     "location_cache": true,
     "distance_unit": "km",
     "item_filter": {
