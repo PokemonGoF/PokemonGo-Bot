@@ -128,3 +128,14 @@ def print_yellow(message):
 
 def print_red(message):
     print(u'\033[91m' + message.decode('utf-8') + '\033[0m')
+
+def calc_iv_percent(pokemon_data):
+    total_IV = 0.00
+    iv_stats = ['individual_attack', 'individual_defense', 'individual_stamina']
+    for individual_stat in iv_stats:
+        try:
+            total_IV += pokemon_data[individual_stat]
+        except:
+            pokemon_data[individual_stat] = 0
+            continue
+    return round((total_IV / 45.0), 2)

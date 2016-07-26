@@ -13,7 +13,7 @@ from pgoapi import PGoApi
 from pgoapi.utilities import f2i
 
 import logger
-from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
+from cell_workers import PokemonCatchWorker, PokemonReleaseWorker, SeenFortWorker, MoveToFortWorker, PokemonEvolveWorker
 from cell_workers.utils import distance, get_cellid, encode
 from human_behaviour import sleep
 from item_list import Item
@@ -63,7 +63,7 @@ class PokemonGoBot(object):
             cells = map_objects['map_cells']
 
         user_web_location = 'web/location-%s.json' % (self.config.username)
-        # should check if file exists first but os is not imported here
+        
         # alt is unused atm but makes using *location easier      
         with open(user_web_location,'w') as outfile:
             json.dump(
@@ -139,9 +139,8 @@ class PokemonGoBot(object):
 
             if not skip_evolves:
                 # Run evolve all once.
-                logger.log('Attempting to evolve all pokemons ...', 'cyan')
-                worker = EvolveAllWorker(self)
-                worker.work()
+                pokemonEvolveWorker = PokemonEvolveWorker(self)
+                pokemonEvolveWorker.work()
 
             # Flip the bit.
             self.config.evolve_all = []
@@ -165,6 +164,9 @@ class PokemonGoBot(object):
                     break
                 with open(user_web_catchable, 'w') as outfile:
                     json.dump({}, outfile)
+
+            pokemonReleaseWorker = PokemonReleaseWorker(self)
+            pokemonReleaseWorker.work()
 
         if (self.config.mode == "all" or self.config.mode == "poke"
             ) and 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
@@ -294,12 +296,6 @@ class PokemonGoBot(object):
         logger.log('Razz Berries: ' + str(self.item_inventory_count(701)), 'cyan')
 
         logger.log('')
-
-        if self.config.initial_transfer:
-            worker = InitialTransferWorker(self)
-            worker.work()
-
-        logger.log('')
         self.update_inventory()
         # send empty map_cells and then our position
         self.update_web_location([],*self.position)
@@ -309,7 +305,7 @@ class PokemonGoBot(object):
         return_value = worker.work()
 
         if return_value == PokemonCatchWorker.BAG_FULL:
-            worker = InitialTransferWorker(self)
+            worker = PokemonReleaseWorker(self)
             worker.work()
 
         return return_value

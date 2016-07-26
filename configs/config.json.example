@@ -9,19 +9,18 @@
     "walk": 4.16,
     "debug": false,
     "test": false,
-    "initial_transfer": 0,
     "location_cache": true,
     "distance_unit": "km",
     "item_filter": "",
     "evolve_all": "NONE",
-    "use_lucky_egg": false,
     "evolve_captured": false,
+    "use_lucky_egg": false,
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
-      // "Rattata": { "always_catch" : true }
+      // "Rattata": {"always_catch": true}
     },
     "release": {
       "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or"},
-      // "Rattata": { "always_release" : true }
+      // "Rattata": {"always_release": true}
     }
 }
