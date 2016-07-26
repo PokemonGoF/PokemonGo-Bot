@@ -76,7 +76,7 @@ class SeenFortWorker(object):
                         id_filter = self.config.item_filter.get(str(item_id), 0)
                         if id_filter is not 0:
                             id_filter_keep = id_filter.get('keep',20)
-                        new_bag_count = item_count + self.bot.item_inventory_count(item_id)
+                        new_bag_count = self.bot.item_inventory_count(item_id)
                         if str(item_id) in self.config.item_filter and new_bag_count >= id_filter_keep:
                             #RECYCLE_INVENTORY_ITEM
                             items_recycle_count = new_bag_count - id_filter_keep
