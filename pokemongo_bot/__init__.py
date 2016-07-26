@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import datetime
 import json
 import logging
@@ -28,8 +29,8 @@ class PokemonGoBot(object):
 
     def __init__(self, config):
         self.config = config
-        self.pokemon_list = json.load(open('data/pokemon.json'))
-        self.item_list = json.load(open('data/items.json'))
+        self.pokemon_list = json.load(open(os.path.join('data', 'pokemon.json')))
+        self.item_list = json.load(open(os.path.join('data', 'items.json')))
 
     def start(self):
         self._setup_logging()
@@ -80,21 +81,27 @@ class PokemonGoBot(object):
                             response_gym_details = self.api.call()
                             fort['gym_details'] = response_gym_details['responses']['GET_GYM_DETAILS']
 
-        user_web_location = 'web/location-%s.json' % (self.config.username)
-        # should check if file exists first but os is not imported here
+        user_web_location = os.path.join('web', 'location-%s.json' % (self.config.username))
         # alt is unused atm but makes using *location easier
-        with open(user_web_location,'w') as outfile:
-            json.dump(
-                {'lat': lat,
-                'lng': lng,
-                'alt': alt,
-                'cells': cells
-                }, outfile)
+        try:
+            with open(user_web_location,'w') as outfile:
+                json.dump(
+                    {'lat': lat,
+                    'lng': lng,
+                    'alt': alt,
+                    'cells': cells
+                    }, outfile)
+        except IOError as e:
+            logger.log('[x] Error while opening location file: %s' % e, 'red')
 
-        user_data_lastlocation = 'data/last-location-%s.json' % (self.config.username)
-        with open(user_data_lastlocation, 'w') as outfile:
-            outfile.truncate()
-            json.dump({'lat': lat, 'lng': lng}, outfile)
+        user_data_lastlocation = os.path.join('data', 'last-location-%s.json' % (self.config.username))
+        try:
+            with open(user_data_lastlocation, 'w') as outfile:
+                outfile.truncate()
+                json.dump({'lat': lat, 'lng': lng}, outfile)
+        except IOError as e:
+            logger.log('[x] Error while opening location file: %s' % e, 'red')
+
 
     def find_close_cells(self, lat, lng):
         cellid = get_cellid(lat, lng)
@@ -434,12 +441,11 @@ class PokemonGoBot(object):
 
         if self.config.location:
             try:
-                location_str = u'{}'.format(str(self.config.location))
+                location_str = self.config.location.encode('utf-8')
                 location = (self._get_pos_by_name(location_str.replace(" ", "")))
                 self.api.set_position(*location)
                 logger.log('')
-                logger.log(u'Location Found: {}'.format(self.config.location.decode(
-                    'utf-8')))
+                logger.log(u'Location Found: {}'.format(self.config.location))
                 logger.log('GeoPosition: {}'.format(self.position))
                 logger.log('')
                 has_position = True
