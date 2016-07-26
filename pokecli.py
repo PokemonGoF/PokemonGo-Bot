@@ -25,6 +25,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 Author: tjado <https://github.com/tejado>
 """
 
+import signal
 import os
 import re
 import json
@@ -174,7 +175,7 @@ def init_config():
             config.release_config.update(json.load(data))
 
     # create web dir if not exists
-    try: 
+    try:
         os.makedirs(web_dir)
     except OSError:
         if not os.path.isdir(web_dir):
@@ -185,6 +186,10 @@ def init_config():
 
     return config
 
+def reread_config(signum, frame):
+    print_yellow('reread config.json')
+    main()
+    idle = False
 
 def main():
     # log settings
@@ -206,15 +211,20 @@ def main():
         bot.start()
 
         logger.log('[x] Starting PokemonGo Bot....', 'green')
+        idle = True
 
-        while True:
+        while idle:
             bot.take_step()
+
+        return
 
     except KeyboardInterrupt:
         logger.log('[x] Exiting PokemonGo Bot', 'red')
         # TODO Add number of pokemon catched, pokestops visited, highest CP
         # pokemon catched, etc.
 
+signal.signal(signal.SIGUSR2, reread_config)
 
 if __name__ == '__main__':
-    main()
+    while True:
+        main()
