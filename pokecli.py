@@ -25,29 +25,24 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 Author: tjado <https://github.com/tejado>
 """
 
-import os
-import re
-import json
 import argparse
-import time
+import codecs
+import json
+import logging
+import os
 import ssl
 import sys
-import codecs
 from getpass import getpass
-import logging
-import requests
-from pokemongo_bot import logger
+
 from pokemongo_bot import PokemonGoBot
-from pokemongo_bot.cell_workers.utils import print_green, print_yellow, print_red
+from pokemongo_bot import logger
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
-
 def init_config():
     parser = argparse.ArgumentParser()
     config_file = "configs/config.json"
-    release_config_json = "configs/release_config.json"
     web_dir = "web"
 
     # If config file exists, load variables from json
@@ -60,11 +55,11 @@ def init_config():
         with open(config_arg) as data:
             load.update(json.load(data))
     elif os.path.isfile(config_file):
-        logger.log('[x] No config argument specified, checking for /configs/config.json', 'yellow')
+        logger.log('No config argument specified, checking for /configs/config.json', 'yellow')
         with open(config_file) as data:
             load.update(json.load(data))
     else:
-        logger.log('[x] Error: No /configs/config.json or specified config', 'red')
+        logger.log('Error: No /configs/config.json or specified config', 'red')
 
 
     # Read passed in Arguments
@@ -143,6 +138,14 @@ def init_config():
                         help="(Batch mode) Pass \"all\" or a list of pokemons to evolve (e.g., \"Pidgey,Weedle,Caterpie\"). Bot will start by attempting to evolve all pokemons. Great after popping a lucky egg!",
                         type=str,
                         default=[])
+    
+    parser.add_argument(
+        "-cm",
+        "--cp_min",
+        help=
+        "Minimum CP for evolve all. Bot will attempt to first evolve highest IV pokemons with CP larger than this.",
+        type=int,
+        default=300)
 
     parser.add_argument("-ec",
                         "--evolve_captured",
@@ -165,6 +168,12 @@ def init_config():
     for key in config.__dict__:
         if key in load:
             config.__dict__[key] = load[key]
+            
+    if 'catch' in load:
+        config.catch = load['catch']
+
+    if 'release' in load:
+        config.release = load['release']
 
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")
@@ -174,14 +183,9 @@ def init_config():
         parser.error("Needs either --use-location-cache or --location.")
         return None
 
-    config.release_config = {}
-    if os.path.isfile(release_config_json):
-        with open(release_config_json) as data:
-            config.release_config.update(json.load(data))
+    # When config.item_filter looks like "101,102,103" needs to be converted to ["101","102","103"]
     if isinstance(config.item_filter, basestring):
-        #When config.item_filter looks like "101,102,103" needs to be converted to ["101","102","103"]
         config.item_filter= config.item_filter.split(",")
-        
 
     # create web dir if not exists
     try: 
@@ -196,6 +200,8 @@ def init_config():
     return config
 
 def main():
+
+    logger.log('PokemonGO Bot v1.0', 'green')
     # log settings
     # log format
     #logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(module)10s] [%(levelname)5s] %(message)s')
@@ -205,21 +211,19 @@ def main():
     config = init_config()
     if not config:
         return
-
-    logger.log('[x] PokemonGO Bot v1.0', 'green')
-    logger.log('[x] Configuration initialized', 'yellow')
+    logger.log('Configuration initialized', 'yellow')
 
     try:
         bot = PokemonGoBot(config)
         bot.start()
 
-        logger.log('[x] Starting PokemonGo Bot....', 'green')
+        logger.log('Starting PokemonGo Bot....', 'green')
 
         while True:
             bot.take_step()
 
     except KeyboardInterrupt:
-        logger.log('[x] Exiting PokemonGo Bot', 'red')
+        logger.log('Exiting PokemonGo Bot', 'red')
         # TODO Add number of pokemon catched, pokestops visited, highest CP
         # pokemon catched, etc.
 
