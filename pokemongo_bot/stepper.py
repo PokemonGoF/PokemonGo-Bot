@@ -135,6 +135,10 @@ class Stepper(object):
                     #print( s2sphere.from_token(x['s2_cell_id']) )
                     map_cells.sort(key=lambda x: distance(lat, lng, x['forts'][0]['latitude'], x[
                                    'forts'][0]['longitude']) if 'forts' in x and x['forts'] != [] else 1e6)
+                    user_data_cells = "data/cells-%s.json" % (self.config.username)
+                    with open(user_data_cells, 'w') as outfile:
+                        outfile.truncate()
+                        json.dump(map_cells, outfile)
                     for cell in map_cells:
                         self.bot.work_on_cell(cell, position, pokemon_only)
 
