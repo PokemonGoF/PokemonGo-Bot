@@ -177,9 +177,8 @@ To update your project do: `git pull` in the project folder
 - `max_steps` :
 - `mode` :
 - `walk` :
-- `debug` : Let the default value here except if you are developper
-- `test` : Let the default value here except if you are developper
-- `initial_transfer` : Set this to 1 if you want to transfer pokemon
+- `debug` : Let the default value here except if you are developer
+- `test` : Let the default value here except if you are developer
 - `location_cache` : 
 - `distance_unit` :
 - `item_filter` :
@@ -288,24 +287,7 @@ The status code "3" corresponds to "Flee" - meaning your Pokemon has ran away.
 Finish the tutorial on a smartphone. This will then allow everything to be visible.
 ### How can I maximise my XP per hour?
 Quick Tip: When using this script, use a Lucky egg to double the XP for 30 mins. You will level up much faster. A Lucky egg is obtained on level 9 and further on whilst leveling up. (from VipsForever via /r/pokemongodev)
-### How can I not collect certain pokemon
-You don't want to collect common pokemon once you hit a certain level. It will
-slow down leveling but you won't fill up either.
 
-Create the following filter
-```
-./data/catch-ignore.yml
-```
-It's a yaml file with a list of names so make it look like
-```
-ignore:
-  - Pidgey
-  - Rattata
-  - Pidgeotto
-  - Spearow
-  - Ekans
-  - Zubat
-```
 ### How do I use the map??
 You can either view the map via opening the html file, or by serving it with SimpleHTTPServer (runs on localhost:8000)  
 To use SimpleHTTPServer:  

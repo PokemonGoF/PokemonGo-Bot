@@ -160,8 +160,10 @@ def init_config():
     for key in config.__dict__:
         if key in load:
             config.__dict__[key] = load[key]
-    config.catch = load['catch']
-    config.release = load['release']
+
+    # by default, catch everything and release nothing
+    config.catch = load.get('catch', {'any': {'catch_above_cp':0, 'catch_above_iv':0, 'logic':'or'}})
+    config.release = load.get('release', {'any': {'release_below_cp':0, 'release_below_iv':0, 'logic':'and'}})
 
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pokemon_catch_worker import PokemonCatchWorker
+from pokemon_release_worker import PokemonReleaseWorker
 from seen_fort_worker import SeenFortWorker
 from move_to_fort_worker import MoveToFortWorker
-from initial_transfer_worker import InitialTransferWorker
-from evolve_all_worker import EvolveAllWorker
+from pokemon_evolve_worker import PokemonEvolveWorker
