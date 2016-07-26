@@ -201,7 +201,7 @@ class PokemonGoBot(object):
                         break
                     with open(user_web_catchable, 'w') as outfile:
                         json.dump({}, outfile)
-            elif 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
+            if 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
                 cell['wild_pokemons'].sort(
                     key=
                     lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
