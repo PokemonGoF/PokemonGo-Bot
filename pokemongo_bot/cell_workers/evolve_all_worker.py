@@ -209,13 +209,13 @@ class EvolveAllWorker(object):
             return logic_to_function[cp_iv_logic](*release_results.values())
 
     def _get_release_config_for(self, pokemon):
-        release_config = self.config.release_config.get(pokemon)
+        release_config = self.config.release.get(pokemon)
         if not release_config:
-            release_config = self.config.release_config['any']
+            release_config = self.config.release['any']
         return release_config
 
     def _get_exceptions(self):
-        exceptions = self.config.release_config.get('exceptions')
+        exceptions = self.config.release.get('exceptions')
         if not exceptions:
             return None
         return exceptions
