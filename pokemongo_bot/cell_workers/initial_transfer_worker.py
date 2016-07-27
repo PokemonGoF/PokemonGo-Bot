@@ -3,12 +3,11 @@ import json
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot import logger
 
-class PokemonTransferWorker(object):
+class InitialTransferWorker(object):
     def __init__(self, bot):
         self.config = bot.config
         self.pokemon_list = bot.pokemon_list
         self.api = bot.api
-        self.metrics = bot.metrics
 
     def work(self):
         if not self.config.initial_transfer:
@@ -30,22 +29,17 @@ class PokemonTransferWorker(object):
                     pokemon_data = pokemon_groups[id][pokemon_cp]
                     pokemon_potential = self.get_pokemon_potential(pokemon_data)
                     if self.should_release_pokemon(pokemon_name, pokemon_cp, pokemon_potential):
-                        logger.log('Exchanging {} [CP {}] [Potential {}] for candy!'.format(
-                            pokemon_name, pokemon_cp, pokemon_potential))
-                        self.transfer_pokemon(pokemon_data['id'])
+                        message = 'Exchanging {} [CP {}] [Potential {}]'.format(
+                            pokemon_name,
+                            pokemon_cp,
+                            pokemon_potential
+                        )
+                        logger.log(message, 'red')
+                        self.api.release_pokemon(
+                            pokemon_id=pokemon_data['id'])
+                        response_dict = self.api.call()
                         sleep(2)
 
-    def release_catched_pokemon(self, pokemon_name, pokemon_to_transfer, cp, iv):
-        # Transfering Pokemon
-        self.transfer_pokemon(pokemon_to_transfer)
-        self.metrics.released_pokemon()
-        logger.log(
-            '{} has been exchanged for candy!'.format(pokemon_name), 'green')
-        
-    def transfer_pokemon(self, pid):
-         self.api.release_pokemon(pokemon_id=pid)
-         response_dict = self.api.call()
-         
     def _initial_transfer_get_groups(self):
         pokemon_groups = {}
         self.api.get_player().get_inventory()
@@ -81,7 +75,7 @@ class PokemonTransferWorker(object):
         for individual_stat in iv_stats:
             try:
                 total_iv += pokemon_data[individual_stat]
-            except:
+            except Exception:
                 continue
         return round((total_iv / 45.0), 2)
 
