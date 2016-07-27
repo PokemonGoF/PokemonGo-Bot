@@ -59,8 +59,6 @@ class SpiralNavigator(object):
                 self._step_walker = StepWalker(
                     self.bot,
                     self.config.walk,
-                    self.api._position_lat,
-                    self.api._position_lng,
                     point['lat'],
                     point['lng']
                 )

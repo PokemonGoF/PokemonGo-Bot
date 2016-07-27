@@ -5,6 +5,7 @@ from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
 
 class MoveToFortWorker(object):
+
     def __init__(self, fort, bot):
         self.bot = bot
         self.fort = fort
@@ -12,7 +13,6 @@ class MoveToFortWorker(object):
         self.config = bot.config
         self.navigator = bot.navigator
         self.position = bot.position
-        self._step_walker = None
 
     def work(self):
         lat = self.fort['latitude']
@@ -23,26 +23,22 @@ class MoveToFortWorker(object):
         dist = distance(self.position[0], self.position[1], lat, lng)
 
         # print('Found fort {} at distance {}m'.format(fortID, dist))
-        logger.log('Found fort {} at distance {}'.format(
+        logger.log('[x] Found fort {} at distance {}'.format(
             fortID, format_dist(dist, unit)))
 
         if dist > 10:
-            logger.log('Need to move closer to Pokestop')
-            position = (lat, lng, 0.0)
+            logger.log('[x] Need to move closer to Pokestop')
 
-            if self._step_walker == None:
-                self._step_walker = StepWalker(
-                    self.bot,
-                    self.config.walk,
-                    self.api._position_lat,
-                    self.api._position_lng,
-                    position[0],
-                    position[1]
-                )
+            step_walker = StepWalker(
+                self.bot,
+                self.config.walk,
+                lat,
+                lng
+            )
 
 
-            if not self._step_walker.step():
+            if not step_walker.step():
                 return WorkerResult.RUNNING
 
-        logger.log('Arrived at Pokestop')
+        logger.log('[o] Arrived at Pokestop')
         return WorkerResult.SUCCESS
