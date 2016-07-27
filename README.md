@@ -20,6 +20,7 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 - [ ] Incubate eggs
 - [ ] Use candy
 - [ ] Fight Gym
+- [ ] Inventory cleaner
 
 ## Wiki
 All information on [Getting Started](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Getting-Started) is available in the [Wiki](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/)!
@@ -82,24 +83,20 @@ Please keep in mind that master is not always up-to-date whereas 'dev' is. In th
 (change master to dev for the latest version)
 
 ```
-$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
+$ git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot  
 $ cd PokemonGo-Bot  
 $ pip install -r requirements.txt
-$ git submodule init
-$ git submodule update
 ```
 
 ### Installation Mac
 (change master to dev for the latest version)
 
 ```
-$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
+$ git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot  
 $ cd PokemonGo-Bot  
 $ virtualenv .  
 $ source bin/activate  
 $ pip install -r requirements.txt
-$ git submodule init
-$ git submodule update
 ```
 
 ### Installation Windows
@@ -139,14 +136,12 @@ $ git submodule update
 ### Develop PokemonGo-Bot
 
 ```
-$ git clone -b dev https://github.com/PokemonGoF/PokemonGo-Bot  
+$ git clone --recursive -b dev https://github.com/PokemonGoF/PokemonGo-Bot  
 $ cd PokemonGo-Bot  
 // create virtualenv using Python 2.7 executable
 $ virtualenv -p C:\python27\python.exe venv
 $ source venv/Scripts/activate  
 $ pip install -r requirements.txt  
-$ git submodule init
-$ git submodule update
 ```
 
 ### Google Maps API (in development)
@@ -175,20 +170,23 @@ Please keep in mind that this fix is only necessary if your python version don't
 To update your project do: `git pull` in the project folder
 
 ## Usage (up-to-date)
-  1/ copy `config.json.example` to `config.json` and `release_config.json.example` to `release_config.json`.
-  2/ Edit `config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (other keys are optional, check `Advance Configuration` below)
+  1. copy `config.json.example` to `config.json` and `release_config.json.example` to `release_config.json`
+  2. Edit `config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (other keys are optional, check `Advance Configuration` below)
+  3. Simply launch the script with : `./run.sh` or `./pokecli.py` or `python pokecli.py --config-file ./configs/config.json` if you want to specify a config file
 
 ## Advance Configuration
-- `max_steps` :
-- `mode` :
-- `walk` :
-- `debug` : Let the default value here except if you are developper
-- `test` : Let the default value here except if you are developper
-- `initial_transfer` : Set this to 1 if you want to transfer pokemon
-- `location_cache` : 
-- `distance_unit` :
-- `item_filter` :
-- `evolve_all` : Set to true to evolve pokemons if possible
+Option | Meaning
+------ | -------
+`max_steps` |		The steps around your initial location (DEFAULT 5 mean 25 cells around your location) that will be explored
+`mode` |  		Set farming Mode for the bot ('all', 'poke', 'farm'). 'all' means both spinning pokéstops and catching pokémon; 'poke'means only catching pokémon and 'farm' means only spinning pokéstops
+`walk` | 		Set the walking speed in kilometers per hour.(14km/h is the maximum speed for egg hatching)
+`debug` | 		Let the default value here except if you are developer
+`test` | 		Let the default value here except if you are developer
+`initial_transfer` | 	Set this to true to transfer your pokemon at the beginning of the run based on your release config.
+`location_cache` | Bot will start at last known location if you do not have location set in the config
+`distance_unit` | 	Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
+`item_filter` | 	Pass a list of unwanted items (in CSV format) to recycle when collected at a Pokestop (e.g, "101,102,103,104" to recycle potions when collected)
+`evolve_all` | 	Set to true to evolve pokemon if possible, takes pokémon as an argument as well.
 
 ## Catch Configuration
 Default configuration will capture all Pokemon.
@@ -212,21 +210,21 @@ will release all Pidgey caught.
 
 ### Evolve All Configuration
     By setting the `evolve_all` attribute in config.json, you can instruct the bot to automatically
-    evolve specified pokemons on startup. This is especially useful for batch-evolving after popping up
+    evolve specified pokemon on startup. This is especially useful for batch-evolving after popping up
     a lucky egg (currently this needs to be done manually).
     
-    The evolve all mechanism evolves only higher IV/CP pokemons. It works by sorting the high CP pokemons (default: 300 CP or higher)
-    based on their IV values. After evolving all high CP pokemons, the mechanism will move on to evolving lower CP pokemons
+    The evolve all mechanism evolves only higher IV/CP pokemon. It works by sorting the high CP pokemon (default: 300 CP or higher)
+    based on their IV values. After evolving all high CP pokemon, the mechanism will move on to evolving lower CP pokemon
     only based on their CP (if it can).
-    It will also automatically transfer the evolved pokemons based on the release configuration.
+    It will also automatically transfer the evolved pokemon based on the release configuration.
     
     Examples on how to use (set in config.json):
     
     1. "evolve_all": "all"
-      Will evolve ALL pokemons.
+      Will evolve ALL pokemon.
     2. "evolve_all": "Pidgey,Weedle"
       Will only evolve Pidgey and Weedle.
-    3. Not setting evolve_all or having any other string would not evolve any pokemons on startup.
+    3. Not setting evolve_all or having any other string would not evolve any pokemon on startup.
     
     If you wish to change the default threshold of 300 CP, simply add the following to the config file:
     	"cp_min": <number>
@@ -321,7 +319,7 @@ ignore:
 You can either view the map via opening the html file, or by serving it with SimpleHTTPServer (runs on localhost:8000)  
 To use SimpleHTTPServer:  
 ```$ python -m SimpleHTTPServer [port]```
-The default port is 8080, you can change that by giving a port number.
+The default port is 8000, you can change that by giving a port number.
 Anything above port 1000 does not require root.
 You will need to set your username(s) in the userdata.js file before opening:  
 Copy userdata.js.example to userdata.js and edit with your favorite text editor.

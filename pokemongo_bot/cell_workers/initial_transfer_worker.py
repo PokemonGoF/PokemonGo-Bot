@@ -5,7 +5,7 @@ import pprint
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot import logger
 
-class TransferWorker(object):
+class InitialTransferWorker(object):
     def __init__(self, bot):
         self.config = bot.config
         self.pokemon_list = bot.pokemon_list
