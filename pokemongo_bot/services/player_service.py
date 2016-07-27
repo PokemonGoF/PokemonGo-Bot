@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import logger
+from pokemongo_bot import logger
 
 class PlayerService():
     def __init__(self, api):
