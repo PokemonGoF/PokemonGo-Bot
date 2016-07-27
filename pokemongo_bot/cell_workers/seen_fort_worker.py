@@ -103,8 +103,7 @@ class SeenFortWorker(object):
                         format_time((pokestop_cooldown / 1000) -
                                     seconds_since_epoch)))
             elif spin_result == 4:
-                logger.log("Inventory is full, switching to catch mode...", 'red')
-                self.config.mode = 'poke'
+                logger.log("Inventory is full", 'red')
             else:
                 logger.log("Unknown spin result: " + str(spin_result), 'red')
 
