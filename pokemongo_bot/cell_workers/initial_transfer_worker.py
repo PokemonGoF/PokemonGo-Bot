@@ -15,9 +15,6 @@ class InitialTransferWorker(object):
 
         pokemon_groups = self._initial_transfer_get_groups()
 
-
-        has_transferred = False
-
         for id in pokemon_groups:
 
             group_cp = pokemon_groups[id].keys()
@@ -32,19 +29,12 @@ class InitialTransferWorker(object):
                     pokemon_data = pokemon_groups[id][pokemon_cp]
                     pokemon_potential = self.get_pokemon_potential(pokemon_data)
                     if self.should_release_pokemon(pokemon_name, pokemon_cp, pokemon_potential):
-                        if not has_transferred:
-                            logger.log('Cleaning up Pokemon Bag using the release config', 'cyan')
-                            has_transferred = True
-
                         logger.log('Exchanging {} [CP {}] [Potential {}]'.format(
                             pokemon_name, pokemon_cp, pokemon_potential))
                         self.api.release_pokemon(
                             pokemon_id=pokemon_data['id'])
                         response_dict = self.api.call()
                         sleep(2)
-
-        if has_transferred:
-            logger.log('Pokemon Bag has been cleaned up!', 'green')
 
     def _initial_transfer_get_groups(self):
         pokemon_groups = {}
