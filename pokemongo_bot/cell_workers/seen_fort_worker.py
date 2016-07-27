@@ -20,8 +20,9 @@ class SeenFortWorker(object):
         self.item_list = bot.item_list
         self.pokemon_list = bot.pokemon_list
         self.inventory = bot.inventory
-        self.pokeball_inventory = bot.pokeball_inventory
+        self.current_inventory = bot.current_inventory
         self.item_inventory_count = bot.item_inventory_count
+        self.metrics = bot.metrics
         self.rest_time = 50
 
     def work(self):

@@ -168,7 +168,7 @@ class PokemonGoBot(object):
         if worker.work() == WorkerResult.RUNNING:
             return
 
-        RecycleItemsWorker(self).work()
+        # RecycleItemsWorker(self).work()
 
         worker = CatchVisiblePokemonWorker(self, cell)
         if worker.work() == WorkerResult.RUNNING:
@@ -272,7 +272,12 @@ class PokemonGoBot(object):
         currency_1 = "0"
         currency_2 = "0"
 
-        player = response_dict['responses']['GET_PLAYER']['player_data']
+        if response_dict:
+            player = response_dict['responses']['GET_PLAYER']['player_data']
+        else:
+            logger.log("The API didn't return player info, servers are unstable - retrying.", 'red')
+            sleep(5)
+            self._print_character_info()
 
         # @@@ TODO: Convert this to d/m/Y H:M:S
         creation_date = datetime.datetime.fromtimestamp(
