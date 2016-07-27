@@ -36,7 +36,6 @@ class MoveToFortWorker(object):
                 lng
             )
 
-
             if not step_walker.step():
                 return WorkerResult.RUNNING
 
