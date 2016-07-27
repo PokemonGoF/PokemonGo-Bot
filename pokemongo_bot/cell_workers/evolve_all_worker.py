@@ -2,7 +2,7 @@ from sets import Set
 
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import sleep
-from item_list import Item
+from pokemongo_bot.item_list import Item
 
 
 class EvolveAllWorker(object):
@@ -159,12 +159,12 @@ class EvolveAllWorker(object):
             print('[#] Successfully evolved {} with {} CP and {} IV!'.format(
                 pokemon_name, pokemon_cp, pokemon_iv
             ))
-            
+
             if self.config.evolve_speed:
                 sleep(self.config.evolve_speed)
             else:
                 sleep(3.7)
-            
+
         else:
             # cache pokemons we can't evolve. Less server calls
             cache[pokemon_name] = 1
