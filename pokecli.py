@@ -245,6 +245,7 @@ def main():
             if bot.metrics.start_time is None:
                 return  # Bot didn't actually start, no metrics to show.
 
+            bot.bot_event.logout()
             metrics = bot.metrics
             metrics.capture_stats()
             logger.log('')
