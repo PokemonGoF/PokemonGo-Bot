@@ -232,6 +232,10 @@ will release all Pidgey caught.
 
 ## How to run with Docker
 
+1. Build the image docker `build -t PokemonGo-Bot:latest .`
+2. Start a new container from this newly created image `docker run -d --name pgobot PokemonGo-Bot:latest`
+3. Check the logs in real-time `docker logs -f pgobot`
+
 ## How to add/discover new API
   The example is [here](https://github.com/PokemonGoF/PokemonGo-Bot/commit/46e2352ce9f349cc127a408959679282f9999585)  
     1. Check the type of your API request in   [POGOProtos](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/RequestType.proto) For example: RECYCLE_INVENTORY_ITEM  
