@@ -84,9 +84,15 @@ class Polyline(object):
         return self.calculate_coord(percentage_walked, *steps_dict[walked_end_step])
 
     def calculate_coord(self, percentage, o, d):
-        lat = o[0]+ (d[0] -o[0]) * percentage
-        lon = o[1]+ (d[1] -o[1]) * percentage
-        return [(lat, lon)]
+        # If this is the destination then returning as such
+        if self.points[-1] == d:
+            return [d]
+        else:
+            # intermediary points returned with 5 decimals precision only
+            # this ensures ~3-50cm ofset from the geometrical point calculated
+            lat = o[0]+ (d[0] -o[0]) * percentage
+            lon = o[1]+ (d[1] -o[1]) * percentage
+            return [(round(lat, 5), round(lon, 5))]
 
     def get_total_distance(self):
         return ceil(sum([haversine.haversine(*x)*1000 for x in self.walk_steps()]))
