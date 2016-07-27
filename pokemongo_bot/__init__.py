@@ -20,6 +20,7 @@ from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
 from spiral_navigator import SpiralNavigator
+from worker_result import WorkerResult
 
 
 class PokemonGoBot(object):
@@ -42,7 +43,6 @@ class PokemonGoBot(object):
         random.seed()
 
     def take_step(self):
-        location = self.navigator.take_step()
         self.process_cells(work_on_forts=True)
 
     def process_cells(self, work_on_forts=True):
@@ -161,16 +161,19 @@ class PokemonGoBot(object):
 
         if self.config.initial_transfer:
             worker = InitialTransferWorker(self)
-            worker.work()
+            if worker.work() == WorkerResult.RUNNING:
+                return
             self.config.initial_transfer = False
 
         if self.config.evolve_all:
             worker = EvolveAllWorker(self)
-            worker.work()
+            if worker.work() == WorkerResult.RUNNING:
+                return
             self.config.evolve_all = []
 
         worker = CatchVisiblePokemonWorker(self, cell)
-        worker.work()
+        if worker.work() == WorkerResult.RUNNING:
+            return
 
         if ((self.config.mode == "all" or
                 self.config.mode == "farm") and work_on_forts):
@@ -191,8 +194,12 @@ class PokemonGoBot(object):
 
                 if len(forts) > 0:
                     # Move to and spin the nearest stop.
-                    MoveToFortWorker(forts[0], self).work()
-                    SeenFortWorker(forts[0], self).work()
+                    if MoveToFortWorker(forts[0], self).work() == WorkerResult.RUNNING:
+                        return
+                    if SeenFortWorker(forts[0], self).work() == WorkerResult.RUNNING:
+                        return
+
+        self.navigator.take_step()
 
     def _setup_logging(self):
         self.log = logging.getLogger(__name__)
