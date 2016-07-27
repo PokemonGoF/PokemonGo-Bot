@@ -154,41 +154,16 @@ class PokemonGoBot(object):
         # Check if session token has expired
         self.check_session(position)
 
+        if self.config.initial_transfer:
+            worker = InitialTransferWorker(self)
+            worker.work()
+            self.config.initial_transfer = False
+
         if self.config.evolve_all:
-            # Will skip evolving if user wants to use an egg and there is none
-            skip_evolves = False
-
-            # Pop lucky egg before evolving to maximize xp gain
-            use_lucky_egg = self.config.use_lucky_egg
-            lucky_egg_count = self.item_inventory_count(Item.ITEM_LUCKY_EGG.value)
-
-            if  use_lucky_egg and lucky_egg_count > 0:
-                logger.log('Using lucky egg ... you have {}'
-                           .format(lucky_egg_count))
-                response_dict_lucky_egg = self.use_lucky_egg()
-                if response_dict_lucky_egg and 'responses' in response_dict_lucky_egg and \
-                    'USE_ITEM_XP_BOOST' in response_dict_lucky_egg['responses'] and \
-                    'result' in response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']:
-                    result = response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']['result']
-                    if result is 1: # Request success
-                        logger.log('Successfully used lucky egg... ({} left!)'
-                                   .format(lucky_egg_count-1), 'green')
-                    else:
-                        logger.log('Failed to use lucky egg!', 'red')
-                        skip_evolves = True
-            elif use_lucky_egg: #lucky_egg_count is 0
-                # Skipping evolve so they aren't wasted
-                logger.log('No lucky eggs... skipping evolve!', 'yellow')
-                skip_evolves = True
-
-            if not skip_evolves:
-                # Run evolve all once.
-                logger.log('Attempting to evolve all pokemons ...', 'cyan')
-                worker = EvolveAllWorker(self)
-                worker.work()
-
-            # Flip the bit.
+            worker = EvolveAllWorker(self)
+            worker.work()
             self.config.evolve_all = []
+
 
         if (self.config.mode == "all" or self.config.mode ==
                 "poke") and 'catchable_pokemons' in cell and len(cell[
@@ -299,10 +274,6 @@ class PokemonGoBot(object):
         # chain subrequests (methods) into one RPC call
 
         self._print_character_info()
-
-        if self.config.initial_transfer:
-            worker = InitialTransferWorker(self)
-            worker.work()
 
         logger.log('')
         self.update_inventory()
