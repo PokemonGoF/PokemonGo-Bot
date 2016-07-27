@@ -57,11 +57,18 @@ class EvolveAllWorker(object):
             return False
 
         # Pop lucky egg before evolving to maximize xp gain
-        use_lucky_egg = True if self.config.use_lucky_egg is True else False
+        use_lucky_egg = self.config.use_lucky_egg
         lucky_egg_count = self.bot.item_inventory_count(Item.ITEM_LUCKY_EGG.value)
 
         if not use_lucky_egg:
             return True
+
+        # Try to use a lucky egg just at the beginning (for now)
+        if self.bot.tried_lucky_egg:
+            return True
+
+        # Doesn't matter if you activate one, fail or don't have any, it will try just at the beginning
+        self.bot.tried_lucky_egg = True
 
         if lucky_egg_count > 0:
             logger.log('You have {} lucky egg{}'.format(lucky_egg_count, 's' if lucky_egg_count > 1 else ''))
