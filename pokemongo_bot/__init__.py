@@ -375,10 +375,10 @@ class PokemonGoBot(object):
         inventory_dict = inventory_req['responses'][
             'GET_INVENTORY']['inventory_delta']['inventory_items']
 
-        if id != 'all':
-            return self._item_inventory_count_per_id(id, inventory_dict)
-        else:
+        if id == 'all':
             return self._all_items_inventory_count(inventory_dict)
+        else:
+            return self._item_inventory_count_per_id(id, inventory_dict)
 
     def _item_inventory_count_per_id(self, id, inventory_dict):
         item_count = 0
