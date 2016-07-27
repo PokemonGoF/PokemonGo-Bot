@@ -39,6 +39,7 @@ import requests
 from pokemongo_bot import logger
 from pokemongo_bot import PokemonGoBot
 from pokemongo_bot.cell_workers.utils import print_green, print_yellow, print_red
+from pgoapi.exceptions import AuthException, NotLoggedInException, ServerBusyOrOfflineException
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -201,20 +202,30 @@ def main():
     logger.log('[x] PokemonGO Bot v1.0', 'green')
     logger.log('[x] Configuration initialized', 'yellow')
 
-    try:
-        bot = PokemonGoBot(config)
-        bot.start()
-
-        logger.log('[x] Starting PokemonGo Bot....', 'green')
-
-        while True:
-            bot.take_step()
-
-    except KeyboardInterrupt:
-        logger.log('[x] Exiting PokemonGo Bot', 'red')
-        # TODO Add number of pokemon catched, pokestops visited, highest CP
-        # pokemon catched, etc.
-
+    while True:
+        try:
+            bot = PokemonGoBot(config)
+            bot.start()
+    
+            logger.log('[x] Starting PokemonGo Bot....', 'green')
+    
+            while True:
+                bot.take_step()
+    
+        except KeyboardInterrupt:
+            logger.log('[x] Exiting PokemonGo Bot', 'red')
+            # TODO Add number of pokemon catched, pokestops visited, highest CP
+            # pokemon catched, etc.
+            break
+        except AuthException:
+            logger.log('[x] Login credentials are not correct, please check config.json!', 'red')
+            break
+        except ServerBusyOrOfflineException:
+            logger.log('[x] Server busy or offline!', 'red')
+            break
+        except NotLoggedInException:
+            logger.log('[x] Not logged in! Restarting....', 'yellow')
+            continue
 
 if __name__ == '__main__':
     main()
