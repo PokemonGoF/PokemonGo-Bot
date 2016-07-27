@@ -11,7 +11,7 @@ class PokemonTransferWorker(object):
         self.metrics = bot.metrics
 
     def work(self):
-        if not self.config.initial_transfer:
+        if not self.config.release_pokemons:
             return
 
         pokemon_groups = self._initial_transfer_get_groups()
@@ -32,20 +32,10 @@ class PokemonTransferWorker(object):
                     if self.should_release_pokemon(pokemon_name, pokemon_cp, pokemon_potential):
                         logger.log('Exchanging {} [CP {}] [Potential {}] for candy!'.format(
                             pokemon_name, pokemon_cp, pokemon_potential))
-                        self.transfer_pokemon(pokemon_data['id'])
+                        self.api.release_pokemon(pokemon_id=pokemon_data['id'])
+                        response_dict = self.api.call()
                         sleep(2)
 
-    def release_catched_pokemon(self, pokemon_to_transfer):
-        # Transfering Pokemon
-        self.transfer_pokemon(pokemon_to_transfer)
-        self.metrics.released_pokemon()
-        logger.log(
-            '{} has been exchanged for candy!'.format(pokemon_name), 'green')
-        
-    def transfer_pokemon(self, pid):
-         self.api.release_pokemon(pokemon_id=pid)
-         response_dict = self.api.call()
-         
     def _initial_transfer_get_groups(self):
         pokemon_groups = {}
         self.api.get_player().get_inventory()

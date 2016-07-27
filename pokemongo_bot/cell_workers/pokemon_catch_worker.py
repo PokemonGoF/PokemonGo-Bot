@@ -5,7 +5,6 @@ from sets import Set
 
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import sleep
-from pokemon_transfer_worker import PokemonTransferWorker
 
 class PokemonCatchWorker(object):
     BAG_FULL = 'bag_full'
@@ -216,10 +215,6 @@ class PokemonCatchWorker(object):
                                         else:
                                             logger.log(
                                             'Failed to evolve {}!'.format(pokemon_name))
-                                            
-                                    worker = PokemonTransferWorker(self.bot)
-                                    if worker.should_release_pokemon(pokemon_name, cp, pokemon_potential):
-                                        worker.release_catched_pokemon(pokemon_to_transfer[0])
 
                             break
         time.sleep(5)

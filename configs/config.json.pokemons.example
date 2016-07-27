@@ -9,7 +9,6 @@
     "walk": 4.16,
     "debug": false,
     "test": false,
-    "initial_transfer": false,
     "location_cache": true,
     "distance_unit": "km",
     "item_filter": {
@@ -24,6 +23,7 @@
     "evolve_speed": 20,
     "use_lucky_egg": false,
     "evolve_captured": false,
+    "release_pokemons": true,
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or" },
 
