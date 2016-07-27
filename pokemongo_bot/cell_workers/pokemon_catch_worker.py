@@ -218,7 +218,7 @@ class PokemonCatchWorker(object):
                                                 'Trying to transfer 0 pokemons!')
                                         # Add slight delay between capture & candy transfer #774
                                         logger.log("Waiting briefly before transferring pokemon")
-                                        click_action_delay(1, 4)
+                                        click_action_delay(self.config.action_wait_min, self.config.action_wait_max)
                                         self.transfer_pokemon(pokemon_to_transfer[0])
                                         self.bot.metrics.released_pokemon()
                                         logger.log(

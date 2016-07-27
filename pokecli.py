@@ -203,6 +203,16 @@ def init_config():
         config.item_filter = load['item_filter']
     else:
         config.item_filter = {}
+    
+    if 'action_wait_min' in load:
+        config.action_wait_min = load['action_wait_min']
+    else:
+        config.action_wait_min = 1
+    
+    if 'action_wait_max' in load:
+        config.action_wait_max = load['action_wait_max']
+    else:
+        config.action_wait_max = 4
 
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")
