@@ -39,6 +39,7 @@ import requests
 from pokemongo_bot import logger
 from pokemongo_bot import PokemonGoBot
 from pokemongo_bot.cell_workers.utils import print_green, print_yellow, print_red
+from pgoapi.exceptions import NotLoggedInException
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -208,7 +209,13 @@ def main():
         logger.log('[x] Starting PokemonGo Bot....', 'green')
 
         while True:
-            bot.take_step()
+			try:
+				bot.take_step()
+			except NotLoggedInException:
+				logger.log('pgoapi is reporting that you are no longer logged in. Reinitializing...', 'red')
+				# re-initialize the bot wit the same config.
+				bot = PokemonGoBot(config)
+				bot.start()
 
     except KeyboardInterrupt:
         logger.log('[x] Exiting PokemonGo Bot', 'red')
