@@ -30,7 +30,7 @@ class Stepper(object):
         self.steplimit2 = self.steplimit**2
         self.origin_lat = self.bot.position[0]
         self.origin_lon = self.bot.position[1]
-        self.totalDistance = 0
+        self.total_distance = 0
 
     def take_step(self):
         position = (self.origin_lat, self.origin_lon, 0.0)
@@ -65,7 +65,7 @@ class Stepper(object):
     def _walk_to(self, speed, lat, lng, alt):
         dist = distance(
             i2f(self.api._position_lat), i2f(self.api._position_lng), lat, lng)
-        self.totalDistance += dist
+        self.total_distance += dist
         steps = (dist + 0.0) / (speed + 0.0)  # may be rational number
         intSteps = int(steps)
         residuum = steps - intSteps
@@ -91,7 +91,7 @@ class Stepper(object):
             self.api.set_position(lat, lng, alt)
             self.bot.heartbeat()
             logger.log("[#] Finished walking")
-            logger.log('[#] Total distance walked: ' + str(convert(self.totalDistance, "m", "km")) + ' kilometers | ' + str(convert(self.totalDistance, "m", "mi")) + ' miles.')
+            logger.log('[#] Total distance walked: ' + str(convert(self.total_distance, "m", self.config.distance_unit)) + ' ' + self.config.distance_unit + '.')
 
     def _work_at_position(self, lat, lng, alt, pokemon_only=False):
         cellid = self._get_cellid(lat, lng)
