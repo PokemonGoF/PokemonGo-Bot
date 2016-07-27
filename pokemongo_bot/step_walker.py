@@ -32,8 +32,6 @@ class StepWalker(object):
             destLng
         )
 
-        logger.log('DIST: {}'.format(str(self.dist)))
-
         self.speed = speed
 
         self.destLat = destLat
@@ -56,7 +54,6 @@ class StepWalker(object):
             if sys.stdout.isatty():
                 sys.stdout.write('\n')
             self.api.set_position(self.destLat, self.destLng, 0)
-            logger.log('[x] Now at ({}, {})'.format(self.destLat, self.destLng))
             return True
 
         totalDLat = (self.destLat - self.initLat)
@@ -74,7 +71,6 @@ class StepWalker(object):
         self.api.set_position(cLat, cLng, 0)
         self.bot.heartbeat()
 
-        logger.log('[x] Now at ({}, {})'.format(*self.bot.position[0:2]))
         sleep(1)  # sleep one second plus a random delta
         # self._work_at_position(
         #     self.initLat, self.initLng,
