@@ -216,8 +216,10 @@ class PokemonCatchWorker(object):
                                         else:
                                             logger.log(
                                             'Failed to evolve {}!'.format(pokemon_name))
+                                            
                                     worker = PokemonTransferWorker(self.bot)
-                                    worker.release_catched_pokemon(pokemon_name, pokemon_to_transfer[0], cp, pokemon_potential)
+                                    if worker.should_release_pokemon(pokemon_name, cp, pokemon_potential):
+                                        worker.release_catched_pokemon(pokemon_to_transfer[0])
 
                             break
         time.sleep(5)

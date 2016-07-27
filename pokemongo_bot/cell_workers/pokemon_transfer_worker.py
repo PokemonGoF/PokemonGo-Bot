@@ -35,7 +35,7 @@ class PokemonTransferWorker(object):
                         self.transfer_pokemon(pokemon_data['id'])
                         sleep(2)
 
-    def release_catched_pokemon(self, pokemon_name, pokemon_to_transfer, cp, iv):
+    def release_catched_pokemon(self, pokemon_to_transfer):
         # Transfering Pokemon
         self.transfer_pokemon(pokemon_to_transfer)
         self.metrics.released_pokemon()
