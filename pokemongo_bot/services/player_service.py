@@ -1,4 +1,6 @@
+# -*- coding: utf-8 -*-
 
+import logger
 
 class PlayerService():
     def __init__(self, api):
@@ -47,7 +49,32 @@ class PlayerService():
 
         return self.latest_inventory
 
-    def _print_character_info(self):
+    def current_inventory(self):
+        inventory_req = self.get_inventory()
+        inventory_dict = inventory_req['responses']['GET_INVENTORY'][
+            'inventory_delta']['inventory_items']
+
+        user_web_inventory = 'web/inventory-%s.json' % (self.config.username)
+        with open(user_web_inventory, 'w') as outfile:
+            json.dump(inventory_dict, outfile)
+
+        # get player items stock
+        items_stock = {x.value:0 for x in list(Item)}
+
+        for item in inventory_dict:
+            try:
+                # print(item['inventory_item_data']['item'])
+                item_id = item['inventory_item_data']['item']['item_id']
+                item_count = item['inventory_item_data']['item']['count']
+
+                if item_id in items_stock:
+                    items_stock[item_id] = item_count
+            except:
+                continue
+
+        return items_stock
+
+    def print_character_info(self):
         # get player profile call
         self.api.get_player()
         response_dict = self.api.call()
@@ -61,11 +88,10 @@ class PlayerService():
         else:
             logger.log("The API didn't return player info, servers are unstable - retrying.", 'red')
             sleep(5)
-            self._print_character_info()
+            self.print_character_info()
 
         # @@@ TODO: Convert this to d/m/Y H:M:S
-        creation_date = datetime.datetime.fromtimestamp(
-            player['creation_timestamp_ms'] / 1e3)
+        creation_date = datetime.datetime.fromtimestamp(player['creation_timestamp_ms'] / 1e3)
         creation_date = creation_date.strftime("%Y/%m/%d %H:%M:%S")
 
         pokecoins = '0'
@@ -76,6 +102,7 @@ class PlayerService():
             pokecoins = player['currencies'][0]['amount']
         if 'amount' in player['currencies'][1]:
             stardust = player['currencies'][1]['amount']
+            
         logger.log('')
         logger.log('--- {username} ---'.format(**player), 'cyan')
 
