@@ -19,7 +19,6 @@ class SeenFortWorker(object):
         self.item_list = bot.item_list
         self.rest_time = 50
 
-    @property
     def work(self):
         lat = self.fort['latitude']
         lng = self.fort['longitude']
