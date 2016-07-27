@@ -1,39 +1,131 @@
 {
+    /************************************************************
+        NOTE: Comments are allowed now because this file is
+            passed through jsmin before reading it in!
+    *************************************************************/
+
+    // Account type: "google" or "ptc"
     "auth_service": "google",
+
+    // For google it's your email (i.e. "user@gmail.com")
+    // For ptc it's your username (i.e. "pokemaster1")
     "username": "YOUR_USERNAME",
     "password": "YOUR_PASSWORD",
+
+    // Can be coordinates or an address
     "location": "SOME_LOCATION",
-    "gmapkey": "GOOGLE_MAPS_API_KEY",
-    "max_steps": 5,
-    "mode": "all",
-    "walk": 4.16,
-    "debug": false,
-    "test": false,
-    "initial_transfer": false,
+
+    // Set to true if you would like to start from the last known bot location
     "location_cache": true,
+
+    // Your google maps API key
+    // Instructions on how to get one can be found here: https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/README.md#google-maps-api-in-development
+    "gmapkey": "GOOGLE_MAPS_API_KEY",
+
+    // Specifies the max circumference that the bot can walk - best to keep it pretty low
+    "max_steps": 5,
+
+    /*  modes:
+            "all"   - catch pokemon + farm pokestops
+            "poke"  - start out only catching pokemon
+            "farm"  - start out only farming pokestops
+    */
+    "mode": "all",
+
+    // Walk speed - 4.16 is the max speed the bot can walk and still hatch eggs
+    // WARNING: Should not go too high above 4.16 unless you want to get banned!
+    "walk": 4.16,
+
+    // Set to a value greater than 0 if you want to transfer (duplicate) pokemon that have
+    // a CP lower than the provided value.  i.e. 400 would transfer anything below 400 CP
+    "initial_transfer": 0,
+
+    // Specify the distance unit to display measurements in:
+    //      "km", "mi", or "ft"
     "distance_unit": "km",
+
+    // Timeout between reconnecting if an error occured (in minutes, e.g. 15)
     "reconnecting_timeout": 15,
+
+    /* Specify items to filter when spinning Pokestops.
+
+        Common items:
+            1 - Pokeball
+            2 - Greatball
+            3 - Ultraball
+            4 - Masterball
+
+            101 - Potion
+            102 - Super Potion
+            103 - Hyper Potion
+
+            201 - Revive
+
+            701 - Razz Berry
+    */
     "item_filter": {
-      "1": { "keep" : 100 },
-      "101": { "keep" : 10 },
-      "102": { "keep" : 30 },
-      "103": { "keep" : 30 },
-      "201": { "keep" : 30 },
-      "701": { "keep" : 100 }
+      "1": { "keep" : 100 },  // Pokeball
+      "101": { "keep" : 10 }, // Potion
+      "102": { "keep" : 30 }, // Super Potion
+      "103": { "keep" : 30 }, // Hyper Potion
+      "201": { "keep" : 30 }, // Revive
+      "701": { "keep" : 100 } // Razz Berry
     },
+
+    /* Evolve Pokemon on startup.  Accepts a comma-separated string of
+        Pokemon or "NONE" or "all".
+
+        Possible values:
+            "NONE"  - Disable feature. (Do not evolve any)
+            "all"   - Evolve all Pokemon that are able.
+            "Pidgey,Weedle,Caterpie"    - Evolve only Pidgey, Weedle, and Caterpie.
+    */
     "evolve_all": "NONE",
+
+    // Set the speed between each evolve in seconds. (Defaults to 3.7 seconds if not set)
     "evolve_speed": 20,
+
+    // Minimum CP for evolve all. Bot will attempt to first evolve highest IV pokemon
+    // with CP larger than the specified value.
     "cp_min": 300,
+
+    // Set to true to use a lucky egg before attempting to evolve for max XP
     "use_lucky_egg": false,
+
+    // Set to true to evolve pokemon when they're captured
     "evolve_captured": false,
+
+    /*
+        Use these settings to specify criteria for attempting to catch a pokemon.
+        If an encountered Pokemon does not meet the minimum criteria specified here,
+        no Pokeballs will be thrown at the Pokemon.
+    */
     "catch": {
-      "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
-      "// Example of always catching Rattata:": {},
-      "// Rattata": { "always_catch" : true }
+      "any": { "catch_above_cp": 0, "catch_above_iv": 0, "logic": "or" }
+      // Example of always catching Rattata:
+      // "Rattata": { "always_catch" : true }
     },
+
+    /*
+        Use these settings to specify criteria for releasing pokemon when they are first caught.
+        If an encountered Pokemon gets caught and does not meet the minimum criteria specified here,
+        the Pokemon will be transferred/exchanged for candy immediately.
+    */
     "release": {
-      "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or"},
-      "// Example of always releasing Rattata:": {},
-      "// Rattata": { "always_release" : true }
-    }
+      "any": { "release_below_cp": 0, "release_below_iv": 0, "logic": "or" }
+      // Example of always releasing Rattata:
+      // "Rattata": { "always_release" : true }
+    },
+
+    /*
+        Put the bot into debug mode.
+        (Can someone please provide more details on debug mode? i.e. what does it enable?)
+    */
+    "debug": false,
+
+    /*
+        Turn on 'test' mode: Only parse the specified location
+        (is this still accurate?)
+    */
+    "test": false
 }
