@@ -146,12 +146,13 @@ class SeenFortWorker(object):
         return 0
 
     def catch_pokemon(self, pokemon):
-        worker = PokemonCatchWorker(pokemon, self)
+        worker = PokemonCatchWorker(pokemon, self.bot)
         return_value = worker.work()
 
-        if return_value == PokemonCatchWorker.BAG_FULL:
-            worker = InitialTransferWorker(self)
-            worker.work()
+        # Disabled for now, importing InitialTransferWorker fails.
+        # if return_value == PokemonCatchWorker.BAG_FULL:
+        #    worker = InitialTransferWorker(self)
+        #    worker.work()
 
         return return_value
 
