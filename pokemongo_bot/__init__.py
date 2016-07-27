@@ -18,6 +18,7 @@ from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, I
 from cell_workers.utils import distance, get_cellid, encode, i2f
 from human_behaviour import sleep
 from item_list import Item
+from metrics import Metrics
 from spiral_navigator import SpiralNavigator
 
 
@@ -31,22 +32,7 @@ class PokemonGoBot(object):
         self.config = config
         self.pokemon_list = json.load(open(os.path.join('data', 'pokemon.json')))
         self.item_list = json.load(open(os.path.join('data', 'items.json')))
-
-        # Stats collection
-        self.start_time = None
-        self.start_dust = 0
-        self.xp = {'start': None, 'latest': None}
-        self.distance = {'start': None, 'latest': None}
-        self.encounters = {'start': None, 'latest': None}
-        self.throws = {'start': None, 'latest': None}
-        self.captures = {'start': None, 'latest': None}
-        self.visits = {'start': None, 'latest': None}
-        self.unique_mons = {'start': None, 'latest': None}
-        self.evolutions = {'start': None, 'latest': None}
-
-        self.releases = 0
-        self.highest_cp = {'cp': 0, 'desc': ''}
-        self.most_perfect = {'total_iv': 0, 'desc':''}
+        self.metrics = Metrics(self)
 
     def start(self):
         self._setup_logging()
@@ -337,7 +323,6 @@ class PokemonGoBot(object):
             pokecoins = player['currencies'][0]['amount']
         if 'amount' in player['currencies'][1]:
             stardust = player['currencies'][1]['amount']
-            self.start_dust = stardust
         logger.log('')
         logger.log('--- {username} ---'.format(**player), 'cyan')
         self.get_player_info()
@@ -560,7 +545,7 @@ class PokemonGoBot(object):
             return itemcount
         return '0'
 
-    def get_player_info(self, logging=True):
+    def get_player_info(self):
         self.api.get_inventory()
         response_dict = self.api.call()
         if 'responses' in response_dict:
@@ -584,55 +569,15 @@ class PokemonGoBot(object):
                                     if 'level' in playerdata:
                                         if 'experience' in playerdata:
                                             current_xp = playerdata.get('experience', 0)
-                                            if self.xp['start'] is None: self.xp['start'] = current_xp
-                                            self.xp['latest'] = current_xp
                                             nextlvlxp = (
                                                 int(playerdata.get('next_level_xp', 0)) - int(current_xp))
-                                            if logging:
-                                                logger.log('Level: {level}'.format(**playerdata) +
-                                                    ' (Next Level: {} XP)'.format(nextlvlxp) +
-                                                     ' (Total: {experience} XP)'.format(**playerdata), 'cyan')
+                                            logger.log('Level: {level}'.format(**playerdata) +
+                                                ' (Next Level: {} XP)'.format(nextlvlxp) +
+                                                 ' (Total: {experience} XP)'.format(**playerdata), 'cyan')
 
 
                                     if 'pokemons_captured' in playerdata:
                                         if 'poke_stop_visits' in playerdata:
-                                            if self.visits['start'] is None: self.visits['start'] = \
-                                                playerdata.get('poke_stop_visits')
-                                            self.visits['latest'] = playerdata.get('poke_stop_visits')
-                                            if self.captures['start'] is None: self.captures['start'] = \
-                                                playerdata.get('pokemons_captured')
-                                            self.captures['latest'] = playerdata.get('pokemons_captured')
-                                            if logging:
-                                                logger.log(
-                                                    'Pokemon Captured: {pokemons_captured}'.format(**playerdata) +
-                                                    ' | Pokestops Visited: {poke_stop_visits}'.format(**playerdata), 'cyan')
-
-                                    if 'km_walked' in playerdata:
-                                        if self.distance['start'] is None: self.distance['start'] = \
-                                            playerdata.get('km_walked')
-                                        self.distance['latest'] = playerdata.get('km_walked')
-
-                                    if 'pokemons_encountered' in playerdata:
-                                        if self.encounters['start'] is None: self.encounters['start'] = \
-                                            playerdata.get('pokemons_encountered')
-                                        self.encounters['latest'] = playerdata.get('pokemons_encountered')
-
-                                    if 'pokeballs_thrown' in playerdata:
-                                        if self.throws['start'] is None: self.throws['start'] = \
-                                            playerdata.get('pokeballs_thrown')
-                                        self.throws['latest'] = playerdata.get('pokeballs_thrown')
-
-                                    if 'unique_pokedex_entries' in playerdata:
-                                        if self.unique_mons['start'] is None: self.unique_mons['start'] = \
-                                            playerdata.get('unique_pokedex_entries')
-                                        self.unique_mons['latest'] = playerdata.get('unique_pokedex_entries')
-
-                                    if 'poke_stop_visits' in playerdata:
-                                        if self.visits['start'] is None: self.visits['start'] = \
-                                            playerdata.get('poke_stop_visits')
-                                        self.visits['latest'] = playerdata.get('poke_stop_visits')
-
-                                    if 'evolutions' in playerdata:
-                                        if self.evolutions['start'] is None: self.evolutions['start'] = \
-                                            playerdata.get('evolutions')
-                                        self.evolutions['latest'] = playerdata.get('evolutions')
+                                            logger.log(
+                                                'Pokemon Captured: {pokemons_captured}'.format(**playerdata) +
+                                                ' | Pokestops Visited: {poke_stop_visits}'.format(**playerdata), 'cyan')

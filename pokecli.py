@@ -225,7 +225,7 @@ def main():
     try:
         bot = PokemonGoBot(config)
         bot.start()
-        bot.start_time = time.time()
+        bot.metrics.capture_stats()
 
         logger.log('Starting PokemonGo Bot....', 'green')
 
@@ -234,33 +234,26 @@ def main():
 
     except KeyboardInterrupt:
         logger.log('Exiting PokemonGo Bot', 'red')
-        if bot.start_time is None:
+        if bot.metrics.start_time is None:
             return  # Bot didn't actually start, no metrics to show.
 
-        bot.api.get_player()
-        dust = bot.api.call()['responses']['GET_PLAYER']['player_data']['currencies'][1]['amount']
-        bot.get_player_info(logging=False)
+        metrics = bot.metrics
+        metrics.capture_stats()
         logger.log('')
-        seconds_ran = time.time() - bot.start_time
-        logger.log('Ran for {}'.format(str(timedelta(seconds=round(seconds_ran)))), 'red')
-        xp_earned = bot.xp['latest'] - bot.xp['start']
-        logger.log('Total XP Earned: {}  Average: {:.2f}/h'.format(xp_earned, xp_earned/(seconds_ran/60/60)), 'red')
-        logger.log('Travelled {:.2f}km'.format(bot.distance['latest'] - bot.distance['start']),'red')
-        logger.log('Visited {} stops'.format(bot.visits['latest'] - bot.visits['start']), 'red')
+        logger.log('Ran for {}'.format(metrics.runtime()), 'red')
+        logger.log('Total XP Earned: {}  Average: {:.2f}/h'.format(metrics.xp_earned, metrics.xp_per_hour()), 'red')
+        logger.log('Travelled {:.2f}km'.format(metrics.distance_travelled()),'red')
+        logger.log('Visited {} stops'.format(metrics.visits['latest'] - metrics.visits['start']), 'red')
         logger.log('Encountered {} pokemon, {} caught, {} released, {} evolved, {} never seen before'
-            .format(bot.encounters['latest'] - bot.encounters['start'],
-                    bot.captures['latest'] - bot.captures['start'],
-                    bot.releases,
-                    bot.evolutions['latest'] - bot.evolutions['start'],
-                    bot.unique_mons['latest'] - bot.unique_mons['start']), 'red')
-        throws = bot.throws['latest'] - bot.throws['start']
-        logger.log('Threw {} pokeball{}'.format(throws, '' if throws == 1 else 's'), 'red')
-        logger.log('Earned {} Stardust'.format(dust - bot.start_dust), 'red')
+            .format(metrics.num_encounters(), metrics.num_captures(), metrics.releases,
+                    metrics.num_evolutions(), metrics.num_new_mons()), 'red')
+        logger.log('Threw {} pokeball{}'.format(metrics.num_throws(), '' if metrics.num_throws() == 1 else 's'), 'red')
+        logger.log('Earned {} Stardust'.format(metrics.earned_dust()), 'red')
         logger.log('')
-        if bot.highest_cp is not None:
-            logger.log('Highest CP Pokemon: {}'.format(bot.highest_cp['desc']), 'red')
-        if bot.most_perfect is not None:
-            logger.log('Most Perfect Pokemon: {}'.format(bot.most_perfect['desc']), 'red')
+        if metrics.highest_cp is not None:
+            logger.log('Highest CP Pokemon: {}'.format(metrics.highest_cp['desc']), 'red')
+        if metrics.most_perfect is not None:
+            logger.log('Most Perfect Pokemon: {}'.format(metrics.most_perfect['desc']), 'red')
 
 
 
