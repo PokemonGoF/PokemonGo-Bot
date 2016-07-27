@@ -17,16 +17,16 @@
     "use_lucky_egg": false,
     "evolve_captured": false,
     "catch": {
-      "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or" },
+      "any": {"catch_above_cp": 0, "catch_above_iv": 0, "keep_best_cp": true, "logic": "or" },
 
       "// Pokemons with example": { "always_catch": true },
       "// Gets filtered with release parameters": {},
 
       "// Legendary pokemons (Goes under S-Tier)": {},
-      "Lapras": { "always_catch": true },
-      "Moltres": { "always_catch": true },
-      "Zapdos": { "always_catch": true },
-      "Articuno": { "always_catch": true },
+      "Lapras": { "keep_best_cp": false, "always_catch": true },
+      "Moltres": { "keep_best_cp": false, "always_catch": true },
+      "Zapdos": { "keep_best_cp": false, "always_catch": true },
+      "Articuno": { "keep_best_cp": false, "always_catch": true },
 
       "// S-Tier pokemons (if pokemon can be evolved into tier, list the representative)": {},
       "Mewtwo": { "always_catch": true },
