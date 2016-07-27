@@ -284,7 +284,7 @@ message WildPokemon {
   optional int64 last_modified_timestamp_ms = 2;
   optional double latitude = 3;
   optional double longitude = 4;
-  optional string spawnpoint_id = 5;
+  optional string spawn_point_id = 5;
   optional PokemonData pokemon_data = 7;
   optional int32 time_till_hidden_ms = 11;
 }
@@ -323,7 +323,7 @@ message PokemonData {
 }
 
 message MapPokemon {
-  optional string spawnpoint_id = 1;
+  optional string spawn_point_id = 1;
   optional fixed64 encounter_id = 2;
   optional RpcEnum.PokemonId pokemon_id = 3;
   // After this timestamp, the pokemon will be gone.
@@ -532,7 +532,7 @@ message FortModifier {
 
 message EncounterRequest {
   optional fixed64 encounter_id = 1;
-  optional string spawnpoint_id = 2;
+  optional string spawn_point_id = 2;
   optional double player_latitude = 3;
   optional double player_longitude = 4;
 }
