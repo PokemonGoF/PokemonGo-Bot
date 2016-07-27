@@ -22,7 +22,7 @@ from spiral_navigator import SpiralNavigator
 
 
 class PokemonGoBot(object):
-    
+
     @property
     def position(self):
         return (i2f(self.api._position_lat), i2f(self.api._position_lng), 0)
@@ -41,9 +41,11 @@ class PokemonGoBot(object):
 
     def take_step(self):
         location = self.navigator.take_step()
-        cells = self.find_close_cells(*self.position[0:2])
+        self.process_cells(work_on_forts=True)
 
-        cells += self.find_close_cells(*location)
+    def process_cells(self, work_on_forts=True):
+        location = self.position[0:2]
+        cells = self.find_close_cells(*location)
 
         # Combine all cells into a single dict of the items we care about.
         forts = []
@@ -58,7 +60,8 @@ class PokemonGoBot(object):
                 catchable_pokemons += cell["catchable_pokemons"]
 
         # Have the worker treat the whole area as a single cell.
-        self.work_on_cell({"forts": forts, "wild_pokemons": wild_pokemons, "catchable_pokemons": catchable_pokemons}, location)
+        self.work_on_cell({"forts": forts, "wild_pokemons": wild_pokemons,
+                           "catchable_pokemons": catchable_pokemons}, location, work_on_forts)
 
     def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
         # we can call the function with no arguments and still get the position and map_cells
@@ -143,10 +146,9 @@ class PokemonGoBot(object):
                     x['forts'][0]['latitude'],
                     x['forts'][0]['longitude']) if x.get('forts', []) else 1e6
             )
-        self.update_web_location(map_cells)
         return map_cells
 
-    def work_on_cell(self, cell, position):
+    def work_on_cell(self, cell, position, work_on_forts=1):
         # Check if session token has expired
         self.check_session(position)
 
@@ -216,8 +218,8 @@ class PokemonGoBot(object):
                 lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
             self.catch_pokemon(cell['wild_pokemons'][0])
             return
-        if (self.config.mode == "all" or
-                self.config.mode == "farm"):
+        if ((self.config.mode == "all" or
+                self.config.mode == "farm") and work_on_forts):
             if 'forts' in cell:
                 # Only include those with a lat/long
                 forts = [fort
@@ -453,12 +455,11 @@ class PokemonGoBot(object):
 
         if self.config.location:
             try:
-                location_str = u'{}'.format(str(self.config.location))
+                location_str = self.config.location.encode('utf-8')
                 location = (self._get_pos_by_name(location_str.replace(" ", "")))
                 self.api.set_position(*location)
                 logger.log('')
-                logger.log(u'Location Found: {}'.format(self.config.location.decode(
-                    'utf-8')))
+                logger.log(u'Location Found: {}'.format(self.config.location))
                 logger.log('GeoPosition: {}'.format(self.position))
                 logger.log('')
                 has_position = True

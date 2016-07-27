@@ -41,6 +41,8 @@ class MoveToFortWorker(object):
                 while distance(i2f(self.api._position_lat), i2f(self.api._position_lng), lat, lng) > 10:
                     if step_walker.step():
                         break
+                    else:
+                        self.bot.process_cells(work_on_forts=False)
 
             else:
                 self.api.set_position(*position)

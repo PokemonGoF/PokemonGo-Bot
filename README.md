@@ -182,11 +182,11 @@ Option | Meaning
 `walk` | 		Set the walking speed in kilometers per hour.(14km/h is the maximum speed for egg hatching)
 `debug` | 		Let the default value here except if you are developer
 `test` | 		Let the default value here except if you are developer
-`initial_transfer` | 	Set this to an upper bound of the cp level which you want to transfer at the beginning of the run. For example, set the value to 0 to disable the initial transfer, set it to 100 to enable initial transfer for cp levels 0-99. It will still transfer pokémon during your exploration, depending on how your release_config.json is setup.
+`initial_transfer` | 	Set this to true to transfer your pokemon at the beginning of the run based on your release config.
 `location_cache` | Bot will start at last known location if you do not have location set in the config
 `distance_unit` | 	Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
 `item_filter` | 	Pass a list of unwanted items (in CSV format) to recycle when collected at a Pokestop (e.g, "101,102,103,104" to recycle potions when collected)
-`evolve_all` | 	Set to true to evolve pokemons if possible, takes pokémon as an argument as well.
+`evolve_all` | 	Set to true to evolve pokemon if possible, takes pokémon as an argument as well.
 
 ## Catch Configuration
 Default configuration will capture all Pokemon.
@@ -210,27 +210,31 @@ will release all Pidgey caught.
 
 ### Evolve All Configuration
     By setting the `evolve_all` attribute in config.json, you can instruct the bot to automatically
-    evolve specified pokemons on startup. This is especially useful for batch-evolving after popping up
+    evolve specified pokemon on startup. This is especially useful for batch-evolving after popping up
     a lucky egg (currently this needs to be done manually).
     
-    The evolve all mechanism evolves only higher IV/CP pokemons. It works by sorting the high CP pokemons (default: 300 CP or higher)
-    based on their IV values. After evolving all high CP pokemons, the mechanism will move on to evolving lower CP pokemons
+    The evolve all mechanism evolves only higher IV/CP pokemon. It works by sorting the high CP pokemon (default: 300 CP or higher)
+    based on their IV values. After evolving all high CP pokemon, the mechanism will move on to evolving lower CP pokemon
     only based on their CP (if it can).
-    It will also automatically transfer the evolved pokemons based on the release configuration.
+    It will also automatically transfer the evolved pokemon based on the release configuration.
     
     Examples on how to use (set in config.json):
     
     1. "evolve_all": "all"
-      Will evolve ALL pokemons.
+      Will evolve ALL pokemon.
     2. "evolve_all": "Pidgey,Weedle"
       Will only evolve Pidgey and Weedle.
-    3. Not setting evolve_all or having any other string would not evolve any pokemons on startup.
+    3. Not setting evolve_all or having any other string would not evolve any pokemon on startup.
     
     If you wish to change the default threshold of 300 CP, simply add the following to the config file:
     	"cp_min": <number>
     
 
 ## How to run with Docker
+
+1. Build the image docker `build -t PokemonGo-Bot:latest .`
+2. Start a new container from this newly created image `docker run -d --name pgobot PokemonGo-Bot:latest`
+3. Check the logs in real-time `docker logs -f pgobot`
 
 ## How to add/discover new API
   The example is [here](https://github.com/PokemonGoF/PokemonGo-Bot/commit/46e2352ce9f349cc127a408959679282f9999585)  
