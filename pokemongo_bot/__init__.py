@@ -265,66 +265,6 @@ class PokemonGoBot(object):
         # send empty map_cells and then our position
         self.update_web_location()
 
-<<<<<<< HEAD
-=======
-    def _print_character_info(self):
-        # get player profile call
-        # ----------------------
-        self.api.get_player()
-        response_dict = self.api.call()
-        #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
-        currency_1 = "0"
-        currency_2 = "0"
-
-        if response_dict:
-            self._player = response_dict['responses']['GET_PLAYER']['player_data']
-            player = self._player
-        else:
-            logger.log("The API didn't return player info, servers are unstable - retrying.", 'red')
-            sleep(5)
-            self._print_character_info()
-
-        # @@@ TODO: Convert this to d/m/Y H:M:S
-        creation_date = datetime.datetime.fromtimestamp(
-            player['creation_timestamp_ms'] / 1e3)
-        creation_date = creation_date.strftime("%Y/%m/%d %H:%M:%S")
-
-        pokecoins = '0'
-        stardust = '0'
-        items_stock = self.current_inventory()
-
-        if 'amount' in player['currencies'][0]:
-            pokecoins = player['currencies'][0]['amount']
-        if 'amount' in player['currencies'][1]:
-            stardust = player['currencies'][1]['amount']
-        logger.log('')
-        logger.log('--- {username} ---'.format(**player), 'cyan')
-        self.get_player_info()
-        logger.log('Pokemon Bag: {}/{}'.format(self.get_inventory_count('pokemon'), player['max_pokemon_storage']), 'cyan')
-        logger.log('Items: {}/{}'.format(self.get_inventory_count('item'), player['max_item_storage']), 'cyan')
-        logger.log('Stardust: {}'.format(stardust) + ' | Pokecoins: {}'.format(pokecoins), 'cyan')
-        # Items Output
-        logger.log('PokeBalls: ' + str(items_stock[1]) +
-            ' | GreatBalls: ' + str(items_stock[2]) +
-            ' | UltraBalls: ' + str(items_stock[3]), 'cyan')
-        logger.log('RazzBerries: ' + str(items_stock[701]) +
-            ' | BlukBerries: ' + str(items_stock[702]) +
-            ' | NanabBerries: ' + str(items_stock[703]), 'cyan')
-        logger.log('LuckyEgg: ' + str(items_stock[301]) +
-            ' | Incubator: ' + str(items_stock[902]) +
-            ' | TroyDisk: ' + str(items_stock[501]), 'cyan')
-        logger.log('Potion: ' + str(items_stock[101]) +
-            ' | SuperPotion: ' + str(items_stock[102]) +
-            ' | HyperPotion: ' + str(items_stock[103]), 'cyan')
-        logger.log('Incense: ' + str(items_stock[401]) +
-            ' | IncenseSpicy: ' + str(items_stock[402]) +
-            ' | IncenseCool: ' + str(items_stock[403]), 'cyan')
-        logger.log('Revive: ' + str(items_stock[201]) +
-            ' | MaxRevive: ' + str(items_stock[202]), 'cyan')
-
-        logger.log('')
-
->>>>>>> f9468efb454c0e32d87fa7bfc1d398d4c1d65fcf
     def use_lucky_egg(self):
         self.api.use_item_xp_boost(item_id=301)
         inventory_req = self.api.call()
