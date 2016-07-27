@@ -14,7 +14,7 @@ from pgoapi import PGoApi
 from pgoapi.utilities import f2i
 
 import logger
-from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
+from cell_workers import CatchVisiblePokemonWorker, PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
 from cell_workers.utils import distance, get_cellid, encode, i2f
 from human_behaviour import sleep
 from item_list import Item
@@ -164,37 +164,9 @@ class PokemonGoBot(object):
             worker.work()
             self.config.evolve_all = []
 
+        worker = CatchVisiblePokemonWorker(self, cell)
+        worker.work()
 
-        if (self.config.mode == "all" or self.config.mode ==
-                "poke") and 'catchable_pokemons' in cell and len(cell[
-                    'catchable_pokemons']) > 0:
-            logger.log('Something rustles nearby!')
-            # Sort all by distance from current pos- eventually this should
-            # build graph & A* it
-            cell['catchable_pokemons'].sort(
-                key=
-                lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
-
-            user_web_catchable = 'web/catchable-%s.json' % (self.config.username)
-            for pokemon in cell['catchable_pokemons']:
-                with open(user_web_catchable, 'w') as outfile:
-                    json.dump(pokemon, outfile)
-
-                with open(user_web_catchable, 'w') as outfile:
-                    json.dump({}, outfile)
-
-            self.catch_pokemon(cell['catchable_pokemons'][0])
-            return
-
-        if (self.config.mode == "all" or self.config.mode == "poke"
-            ) and 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
-            # Sort all by distance from current pos- eventually this should
-            # build graph & A* it
-            cell['wild_pokemons'].sort(
-                key=
-                lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
-            self.catch_pokemon(cell['wild_pokemons'][0])
-            return
         if ((self.config.mode == "all" or
                 self.config.mode == "farm") and work_on_forts):
             if 'forts' in cell:
@@ -317,16 +289,6 @@ class PokemonGoBot(object):
         logger.log('Razz Berries: ' + str(self.item_inventory_count(701)), 'cyan')
 
         logger.log('')
-
-    def catch_pokemon(self, pokemon):
-        worker = PokemonCatchWorker(pokemon, self)
-        return_value = worker.work()
-
-        if return_value == PokemonCatchWorker.BAG_FULL:
-            worker = InitialTransferWorker(self)
-            worker.work()
-
-        return return_value
 
     def drop_item(self, item_id, count):
         self.api.recycle_inventory_item(item_id=item_id, count=count)
