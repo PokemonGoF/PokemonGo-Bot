@@ -233,7 +233,7 @@ class PokemonCatchWorker(object):
         try:
             reduce(dict.__getitem__, [
                    "responses", "GET_INVENTORY", "inventory_delta", "inventory_items"], response_dict)
-        except KeyError:
+        except (KeyError, TypeError):
             pass
         else:
             for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
