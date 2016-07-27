@@ -449,11 +449,10 @@ class PokemonGoBot(object):
                 with open('data/last-location-%s.json' %
                           (self.config.username)) as f:
                     location_json = json.load(f)
-
-                    self.position = (location_json['lat'],
+                    location = (location_json['lat'],
                                      location_json['lng'], 0.0)
-                    print(self.position)
-                    self.api.set_position(*self.position)
+                    print(location)
+                    self.api.set_position(*location)
 
                     logger.log('')
                     logger.log(
