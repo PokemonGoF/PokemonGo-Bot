@@ -35,6 +35,7 @@ class PokemonGoBot(object):
         self.pokemon_list = json.load(open(os.path.join('data', 'pokemon.json')))
         self.item_list = json.load(open(os.path.join('data', 'items.json')))
         self.metrics = Metrics(self)
+        self.latest_inventory = None
 
     def start(self):
         self._setup_logging()
@@ -313,15 +314,20 @@ class PokemonGoBot(object):
 
         logger.log('')
 
-
     def use_lucky_egg(self):
         self.api.use_item_xp_boost(item_id=301)
         inventory_req = self.api.call()
         return inventory_req
 
+    def get_inventory(self):
+        if self.latest_inventory is None:
+            self.api.get_inventory()
+            response = self.api.call()
+            self.latest_inventory = response
+        return self.latest_inventory
+
     def update_inventory(self):
-        self.api.get_inventory()
-        response = self.api.call()
+        response = self.get_inventory()
         self.inventory = list()
         if 'responses' in response:
             if 'GET_INVENTORY' in response['responses']:
@@ -344,9 +350,7 @@ class PokemonGoBot(object):
                                 'item'])
 
     def current_inventory(self):
-        self.api.get_player().get_inventory()
-
-        inventory_req = self.api.call()
+        inventory_req = self.get_inventory()
         inventory_dict = inventory_req['responses']['GET_INVENTORY'][
             'inventory_delta']['inventory_items']
 
@@ -371,9 +375,7 @@ class PokemonGoBot(object):
         return items_stock
 
     def item_inventory_count(self, id):
-        self.api.get_player().get_inventory()
-
-        inventory_req = self.api.call()
+        inventory_req = self.get_inventory()
         inventory_dict = inventory_req['responses'][
             'GET_INVENTORY']['inventory_delta']['inventory_items']
 
@@ -480,14 +482,12 @@ class PokemonGoBot(object):
                               if timeout >= time.time() * 1000}
         self.api.get_player()
         self.api.get_hatched_eggs()
-        self.api.get_inventory()
         self.api.check_awarded_badges()
         self.api.call()
         self.update_web_location() # updates every tick
 
     def get_inventory_count(self, what):
-        self.api.get_inventory()
-        response_dict = self.api.call()
+        response_dict = self.get_inventory()
         if 'responses' in response_dict:
             if 'GET_INVENTORY' in response_dict['responses']:
                 if 'inventory_delta' in response_dict['responses'][
@@ -517,8 +517,7 @@ class PokemonGoBot(object):
         return '0'
 
     def get_player_info(self):
-        self.api.get_inventory()
-        response_dict = self.api.call()
+        response_dict = self.get_inventory()
         if 'responses' in response_dict:
             if 'GET_INVENTORY' in response_dict['responses']:
                 if 'inventory_delta' in response_dict['responses'][

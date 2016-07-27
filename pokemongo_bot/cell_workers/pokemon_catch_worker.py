@@ -225,8 +225,7 @@ class PokemonCatchWorker(object):
         time.sleep(5)
 
     def _transfer_low_cp_pokemon(self, value):
-        self.api.get_inventory()
-        response_dict = self.api.call()
+        response_dict = self.bot.get_inventory()
         self._transfer_all_low_cp_pokemon(value, response_dict)
 
     def _transfer_all_low_cp_pokemon(self, value, response_dict):
@@ -257,8 +256,8 @@ class PokemonCatchWorker(object):
         response_dict = self.api.call()
 
     def count_pokemon_inventory(self):
-        self.api.get_inventory()
-        response_dict = self.api.call()
+        self.bot.latest_inventory = None  # Need accurate count of balls/berries/pokemons
+        response_dict = self.bot.get_inventory()
         id_list = []
         return self.counting_pokemon(response_dict, id_list)
 
