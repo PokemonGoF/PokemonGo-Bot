@@ -28,12 +28,15 @@ class MoveToFortWorker(object):
         if dist > 10:
             logger.log('[x] Need to move closer to Pokestop')
 
-            step_walker = StepWalker(
-                self.bot,
-                self.config.walk,
-                lat,
-                lng
-            )
+            if self.config.walk > 0:
+                step_walker = StepWalker(
+                    self.bot,
+                    self.config.walk,
+                    self.api._position_lat,
+                    self.api._position_lng,
+                    position[0],
+                    position[1]
+                )
 
             if not step_walker.step():
                 return WorkerResult.RUNNING
