@@ -27,7 +27,7 @@ class PokemonGoBot(object):
 
     @property
     def position(self):
-        return (i2f(self.api._position_lat), i2f(self.api._position_lng), 0)
+        return self.api._position_lat, self.api._position_lng, 0
 
     def __init__(self, config):
         self.config = config
@@ -69,9 +69,9 @@ class PokemonGoBot(object):
     def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
         # we can call the function with no arguments and still get the position and map_cells
         if lat == None:
-            lat = i2f(self.api._position_lat)
+            lat = self.api._position_lat
         if lng == None:
-            lng = i2f(self.api._position_lng)
+            lng = self.api._position_lng
         if alt == None:
             alt = 0
 
@@ -272,7 +272,12 @@ class PokemonGoBot(object):
         currency_1 = "0"
         currency_2 = "0"
 
-        player = response_dict['responses']['GET_PLAYER']['player_data']
+        if response_dict:
+            player = response_dict['responses']['GET_PLAYER']['player_data']
+        else:
+            logger.log("The API didn't return player info, servers are unstable - retrying.", 'red')
+            sleep(5)
+            self._print_character_info()
 
         # @@@ TODO: Convert this to d/m/Y H:M:S
         creation_date = datetime.datetime.fromtimestamp(
@@ -426,7 +431,7 @@ class PokemonGoBot(object):
                 has_position = True
                 return
             except:
-                logger.log('[x] The location given using -l could not be parsed. Checking for a cached location.')
+                logger.log('[x] The location given in the config could not be parsed. Checking for a cached location.')
                 pass
 
         if self.config.location_cache and not has_position:
@@ -460,20 +465,17 @@ class PokemonGoBot(object):
     def _get_pos_by_name(self, location_name):
         # Check if the given location is already a coordinate.
         if ',' in location_name:
-            possibleCoordinates = re.findall("[-]?\d{1,3}[.]\d{6,7}", location_name)
-            if len(possibleCoordinates) == 2:
+            possible_coordinates = re.findall("[-]?\d{1,3}[.]\d{6,7}", location_name)
+            if len(possible_coordinates) == 2:
                 # 2 matches, this must be a coordinate. We'll bypass the Google geocode so we keep the exact location.
                 logger.log(
                     '[x] Coordinates found in passed in location, not geocoding.')
-                return (float(possibleCoordinates[0]), float(possibleCoordinates[1]), float("0.0"))
+                return float(possible_coordinates[0]), float(possible_coordinates[1]), float("0.0")
 
         geolocator = GoogleV3(api_key=self.config.gmapkey)
         loc = geolocator.geocode(location_name, timeout=10)
 
-        #self.log.info('Your given location: %s', loc.address.encode('utf-8'))
-        #self.log.info('lat/long/alt: %s %s %s', loc.latitude, loc.longitude, loc.altitude)
-
-        return (loc.latitude, loc.longitude, loc.altitude)
+        return float(loc.latitude), float(loc.longitude), float(loc.altitude)
 
     def heartbeat(self):
         # Remove forts that we can now spin again.

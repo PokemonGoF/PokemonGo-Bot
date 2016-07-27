@@ -62,15 +62,15 @@ class SpiralNavigator(object):
             )
 
             dist = distance(
-                i2f(self.api._position_lat),
-                i2f(self.api._position_lng),
+                self.api._position_lat,
+                self.api._position_lng,
                 point['lat'],
                 point['lng']
             )
 
             if self.cnt == 1:
-                logger.log('Walking from ' + str((i2f(self.api._position_lat), i2f(
-                    self.api._position_lng))) + " to " + str([point['lat'], point['lng']]) + " " + format_dist(dist,
+                logger.log('Walking from ' + str((self.api._position_lat,
+                    self.api._position_lng)) + " to " + str([point['lat'], point['lng']]) + " " + format_dist(dist,
                                                                                                    self.config.distance_unit))
 
             if step_walker.step():
@@ -79,8 +79,8 @@ class SpiralNavigator(object):
             self.api.set_position(point['lat'], point['lng'])
 
         if distance(
-                    i2f(self.api._position_lat),
-                    i2f(self.api._position_lng),
+                    self.api._position_lat,
+                    self.api._position_lng,
                     point['lat'],
                     point['lng']
                 ) <= 1 or (self.config.walk > 0 and step_walker == None):
