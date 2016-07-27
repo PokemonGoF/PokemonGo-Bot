@@ -18,6 +18,7 @@ from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, I
 from cell_workers.utils import distance, get_cellid, encode, i2f
 from human_behaviour import sleep
 from item_list import Item
+from metrics import Metrics
 from spiral_navigator import SpiralNavigator
 
 
@@ -31,6 +32,7 @@ class PokemonGoBot(object):
         self.config = config
         self.pokemon_list = json.load(open(os.path.join('data', 'pokemon.json')))
         self.item_list = json.load(open(os.path.join('data', 'items.json')))
+        self.metrics = Metrics(self)
 
     def start(self):
         self._setup_logging()
