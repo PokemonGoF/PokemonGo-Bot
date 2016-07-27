@@ -1,16 +1,13 @@
 import time
-
 try:
     import lcd
-
     lcd = lcd.lcd()
     # Change this to your i2c address
     lcd.set_addr(0x23)
 except:
     lcd = False
 
-
-def log(string, color='white'):
+def log(string, color = 'white'):
     colorHex = {
         'red': '91m',
         'green': '92m',
@@ -19,9 +16,9 @@ def log(string, color='white'):
         'cyan': '96m'
     }
     if color not in colorHex:
-        print('[' + time.strftime("%H:%M:%S") + '] ' + string)
+        print('[' + time.strftime("%H:%M:%S") + '] '+ string)
     else:
-        print('[' + time.strftime("%H:%M:%S") + '] ' + u'\033[' + colorHex[color] + string.decode('utf-8') + '\033[0m')
+        print('[' + time.strftime("%H:%M:%S") + '] ' + u'\033['+ colorHex[color] + string.decode('utf-8') + '\033[0m')
     if lcd:
-        if (string):
+        if(string):
             lcd.message(string)
