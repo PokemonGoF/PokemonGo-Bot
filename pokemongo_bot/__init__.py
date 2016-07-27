@@ -379,7 +379,7 @@ class PokemonGoBot(object):
 
                 if item_id in items_stock:
                     items_stock[item_id] = item_count
-            except:
+            except Exception:
                 continue
         return items_stock
 
@@ -433,7 +433,7 @@ class PokemonGoBot(object):
                 logger.log('GeoPosition: {}'.format(self.position))
                 logger.log('')
                 has_position = True
-            except:
+            except Exception:
                 logger.log('[x] The location given in the config could not be parsed. Checking for a cached location.')
                 pass
 
@@ -461,12 +461,11 @@ class PokemonGoBot(object):
 
                     has_position = True
                     return
-            except:
+            except Exception:
                 if(has_position == False):
                     sys.exit(
                         "No cached Location. Please specify initial location.")
                 logger.log('[x] Parsing cached location failed, try to use the initial location...')
-                pass
 
     def _get_pos_by_name(self, location_name):
         # Check if the given location is already a coordinate.
