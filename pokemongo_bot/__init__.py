@@ -164,8 +164,9 @@ class PokemonGoBot(object):
             worker.work()
             self.config.evolve_all = []
 
-        worker = DropItemsWorker(self)
-        worker.check()
+        # add a config option
+        worker = DropItemsWorker(self, 0.9) #0.9 is 90% used space, if it's greater than clean
+        worker.work()
 
         worker = CatchVisiblePokemonWorker(self, cell)
         worker.work()
