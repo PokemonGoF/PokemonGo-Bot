@@ -10,7 +10,6 @@ class RecycleItemsWorker(object):
         self.item_list = bot.item_list
 
     def work(self):
-        logger.log('Starting to recycle items...', 'yellow')
         item_count_dict = self.bot.item_inventory_count('all')
 
         for item_id, bag_count in item_count_dict.iteritems():
@@ -42,7 +41,6 @@ class RecycleItemsWorker(object):
                     logger.log(message, 'green')
                 else:
                     logger.log("-- Failed to recycle " + item_name + "has failed!", 'red')
-        logger.log('Finished.', 'yellow')
 
     def send_recycle_item_request(self, item_id, count):
         self.api.recycle_inventory_item(item_id=item_id, count=count)
