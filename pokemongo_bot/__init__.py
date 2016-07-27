@@ -565,11 +565,12 @@ class PokemonGoBot(object):
                                     playerdata = item['inventory_item_data'][
                                         'player_stats']
 
+                                    nextlvlxp = (
+                                        int(playerdata.get('next_level_xp', 0)) -
+                                        int(playerdata.get('experience', 0)))
+
                                     if 'level' in playerdata:
                                         if 'experience' in playerdata:
-                                            current_xp = playerdata.get('experience', 0)
-                                            nextlvlxp = (
-                                                int(playerdata.get('next_level_xp', 0)) - int(current_xp))
                                             logger.log('Level: {level}'.format(**playerdata) +
                                                 ' (Next Level: {} XP)'.format(nextlvlxp) +
                                                  ' (Total: {experience} XP)'.format(**playerdata), 'cyan')
