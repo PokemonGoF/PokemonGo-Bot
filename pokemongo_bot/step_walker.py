@@ -6,17 +6,6 @@ from human_behaviour import random_lat_long_delta, sleep
 import sys
 
 
-def progress_bar(percentage):
-    percentage = min(100, max(0, percentage))
-    if not sys.stdout.isatty():
-        return
-    sys.stdout.write('\r')
-    # http://www.fileformat.info/info/unicode/char/003D/index.htm
-    msg = (u"[%-40s] %d%%" % (u"\u003D"*int(percentage*2//5), percentage))
-    sys.stdout.write(msg)
-    sys.stdout.flush()
-
-
 class StepWalker(object):
 
     def __init__(self, bot, speed, destLat, destLng):
