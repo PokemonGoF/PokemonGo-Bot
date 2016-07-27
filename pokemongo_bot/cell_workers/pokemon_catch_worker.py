@@ -131,7 +131,7 @@ class PokemonCatchWorker(object):
                                 self.api.use_item_capture(
                                     item_id=berry_id,
                                     encounter_id = encounter_id,
-                                    spawn_point_id = spawnpoint_id
+                                    spawn_point_id = self.spawn_point_guid
                                 )
                                 response_dict = self.api.call()
                                 if response_dict and response_dict['status_code'] is 1 and 'item_capture_mult' in response_dict['responses']['USE_ITEM_CAPTURE']:
@@ -400,7 +400,7 @@ class PokemonCatchWorker(object):
             fort_id = self.pokemon['fort_id']
             self.spawn_point_guid = fort_id
             self.response_key = 'DISK_ENCOUNTER'
-            self. response_status_key = 'result'
+            self.response_status_key = 'result'
             self.api.disk_encounter(encounter_id=encounter_id, fort_id=fort_id,
                                     player_latitude=player_latitude, player_longitude=player_longitude)
 
