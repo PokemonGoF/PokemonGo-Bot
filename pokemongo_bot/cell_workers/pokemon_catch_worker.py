@@ -169,6 +169,16 @@ class PokemonCatchWorker(object):
                                     else:
                                         logger.log(
                                         '[x] Captured {}! [CP {}]'.format(pokemon_name, cp), 'green')
+                                        f = open("ivlist.txt", "w")
+                                        f.write('[')
+                                        f.write(time.strftime("%Y-%m-%d %H:%M:%S"))
+                                        f.write(']')
+                                        f.write('[x] Captured {}! [CP {}] [IV {}]'.format(
+                                            pokemon_name,
+                                            cp,
+                                            pokemon_potential
+                                        ) + '\n')
+                                        f.close()
                             break
         time.sleep(5)
 
