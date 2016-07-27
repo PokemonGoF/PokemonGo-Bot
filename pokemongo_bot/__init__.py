@@ -255,7 +255,7 @@ class PokemonGoBot(object):
         self.login()
 
         # chain subrequests (methods) into one RPC call
-        self.player_service._print_character_info()
+        self.player_service.print_character_info()
         logger.log('')
 
         self.inventory = self.player_service.update_inventory()
