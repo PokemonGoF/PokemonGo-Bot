@@ -5,6 +5,7 @@ import time
 from pgoapi.utilities import f2i
 
 from pokemongo_bot import logger
+from pokemongo_bot.cell_workers.drop_items_worker import DropItemsWorker
 from pokemongo_bot.human_behaviour import sleep
 from utils import format_time
 
@@ -117,14 +118,15 @@ class SeenFortWorker(object):
                         format_time((pokestop_cooldown / 1000) -
                                     seconds_since_epoch)))
             elif spin_result == 4:
-                logger.log("Inventory is full, switching to catch mode...", 'red')
+                logger.log("Inventory is full, drop items...", 'red')
                 #self.config.mode = 'poke'
                 self.api.get_player()
                 response_dict_player = self.api.call()
                 player = response_dict_player['responses']['GET_PLAYER']['player_data']
                 items_count = self.bot.get_inventory_count('item')
                 items_stock = self.bot.current_inventory()
-                self.bot.check_inventory_space(items_count, player['max_item_storage'], items_stock.copy())
+                worker = DropItemsWorker(self.bot, items_count, player['max_item_storage'], items_stock.copy())
+                worker.work()
             else:
                 logger.log("Unknown spin result: " + str(spin_result), 'red')
 
