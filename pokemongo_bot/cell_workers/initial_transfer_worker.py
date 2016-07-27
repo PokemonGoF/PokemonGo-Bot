@@ -29,8 +29,12 @@ class InitialTransferWorker(object):
                     pokemon_data = pokemon_groups[id][pokemon_cp]
                     pokemon_potential = self.get_pokemon_potential(pokemon_data)
                     if self.should_release_pokemon(pokemon_name, pokemon_cp, pokemon_potential):
-                        logger.log('Exchanging {} [CP {}] [Potential {}]'.format(
-                            pokemon_name, pokemon_cp, pokemon_potential))
+                        message = 'Exchanging {} [CP {}] [Potential {}]'.format(
+                            pokemon_name,
+                            pokemon_cp,
+                            pokemon_potential
+                        )
+                        logger.log(message, 'red')
                         self.api.release_pokemon(
                             pokemon_id=pokemon_data['id'])
                         response_dict = self.api.call()
