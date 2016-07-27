@@ -100,7 +100,8 @@ class PokemonGoBot(object):
                                                      gym_latitude=fort.get('latitude'),
                                                      gym_longitude=fort.get('longitude'))
                             response_gym_details = self.api.call()
-                            fort['gym_details'] = response_gym_details['responses']['GET_GYM_DETAILS']
+                            if response_gym_details['responses'] is not None:
+                                fort['gym_details'] = response_gym_details['responses']['GET_GYM_DETAILS']
 
         user_data_cells = "data/cells-%s.json" % (self.config.username)
         with open(user_data_cells, 'w') as outfile:
