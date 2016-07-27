@@ -281,7 +281,7 @@ class PokemonGoBot(object):
 
         pokecoins = '0'
         stardust = '0'
-        balls_stock = self.pokeball_inventory()
+        items_stock = self.current_inventory()
 
         if 'amount' in player['currencies'][0]:
             pokecoins = player['currencies'][0]['amount']
@@ -293,13 +293,27 @@ class PokemonGoBot(object):
         logger.log('Pokemon Bag: {}/{}'.format(self.get_inventory_count('pokemon'), player['max_pokemon_storage']), 'cyan')
         logger.log('Items: {}/{}'.format(self.get_inventory_count('item'), player['max_item_storage']), 'cyan')
         logger.log('Stardust: {}'.format(stardust) + ' | Pokecoins: {}'.format(pokecoins), 'cyan')
-        # Pokeball Output
-        logger.log('PokeBalls: ' + str(balls_stock[1]) +
-            ' | GreatBalls: ' + str(balls_stock[2]) +
-            ' | UltraBalls: ' + str(balls_stock[3]), 'cyan')
-        logger.log('Razz Berries: ' + str(self.item_inventory_count(701)), 'cyan')
+        # Items Output
+        logger.log('PokeBalls: ' + str(items_stock[1]) +
+            ' | GreatBalls: ' + str(items_stock[2]) +
+            ' | UltraBalls: ' + str(items_stock[3]), 'cyan')
+        logger.log('RazzBerries: ' + str(items_stock[701]) +
+            ' | BlukBerries: ' + str(items_stock[702]) +
+            ' | NanabBerries: ' + str(items_stock[703]), 'cyan')
+        logger.log('LuckyEgg: ' + str(items_stock[301]) +
+            ' | Incubator: ' + str(items_stock[902]) +
+            ' | TroyDisk: ' + str(items_stock[501]), 'cyan')
+        logger.log('Potion: ' + str(items_stock[101]) +
+            ' | SuperPotion: ' + str(items_stock[102]) +
+            ' | HyperPotion: ' + str(items_stock[103]), 'cyan')
+        logger.log('Incense: ' + str(items_stock[401]) +
+            ' | IncenseSpicy: ' + str(items_stock[402]) +
+            ' | IncenseCool: ' + str(items_stock[403]), 'cyan')
+        logger.log('Revive: ' + str(items_stock[201]) +
+            ' | MaxRevive: ' + str(items_stock[202]), 'cyan')
 
         logger.log('')
+
 
     def use_lucky_egg(self):
         self.api.use_item_xp_boost(item_id=301)
@@ -330,7 +344,7 @@ class PokemonGoBot(object):
                             self.inventory.append(item['inventory_item_data'][
                                 'item'])
 
-    def pokeball_inventory(self):
+    def current_inventory(self):
         self.api.get_player().get_inventory()
 
         inventory_req = self.api.call()
@@ -341,9 +355,9 @@ class PokemonGoBot(object):
         with open(user_web_inventory, 'w') as outfile:
             json.dump(inventory_dict, outfile)
 
-        # get player balls stock
+        # get player items stock
         # ----------------------
-        balls_stock = {1: 0, 2: 0, 3: 0, 4: 0}
+        items_stock = {x.value:0 for x in list(Item)}
 
         for item in inventory_dict:
             try:
@@ -351,18 +365,11 @@ class PokemonGoBot(object):
                 item_id = item['inventory_item_data']['item']['item_id']
                 item_count = item['inventory_item_data']['item']['count']
 
-                if item_id == Item.ITEM_POKE_BALL.value:
-                    # print('Poke Ball count: ' + str(item_count))
-                    balls_stock[1] = item_count
-                if item_id == Item.ITEM_GREAT_BALL.value:
-                    # print('Great Ball count: ' + str(item_count))
-                    balls_stock[2] = item_count
-                if item_id == Item.ITEM_ULTRA_BALL.value:
-                    # print('Ultra Ball count: ' + str(item_count))
-                    balls_stock[3] = item_count
+                if item_id in items_stock:
+                    items_stock[item_id] = item_count
             except:
                 continue
-        return balls_stock
+        return items_stock
 
     def item_inventory_count(self, id):
         self.api.get_player().get_inventory()
