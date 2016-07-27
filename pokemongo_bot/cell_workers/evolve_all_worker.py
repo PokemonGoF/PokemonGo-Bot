@@ -203,22 +203,22 @@ class EvolveAllWorker(object):
             return False
         else:
             release_config = self._get_release_config_for(pokemon_name)
-            cp_iv_logic = release_config.get('cp_iv_logic')
+            cp_iv_logic = release_config.get('logic')
             if not cp_iv_logic:
-                cp_iv_logic = self._get_release_config_for('any').get('cp_iv_logic', 'and')
+                cp_iv_logic = self._get_release_config_for('any').get('logic', 'and')
 
             release_results = {
                 'cp':               False,
                 'iv':               False,
             }
 
-            if 'release_under_cp' in release_config:
-                min_cp = release_config['release_under_cp']
+            if 'release_below_cp' in release_config:
+                min_cp = release_config['release_below_cp']
                 if cp < min_cp:
                     release_results['cp'] = True
 
-            if 'release_under_iv' in release_config:
-                min_iv = release_config['release_under_iv']
+            if 'release_below_iv' in release_config:
+                min_iv = release_config['release_below_iv']
                 if iv < min_iv:
                     release_results['iv'] = True
 

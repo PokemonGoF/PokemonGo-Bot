@@ -59,9 +59,14 @@ class PokemonCatchWorker(object):
                                     pokemon['pokemon_data']['individual_defense'] = 0
 
                                 iv_stats = ['individual_attack', 'individual_defense', 'individual_stamina']
+                                individual_attack = 0
+
+                                individual_attack = pokemon['pokemon_data'].get("individual_attack", 0)
+                                individual_stamina = pokemon['pokemon_data'].get("individual_stamina", 0)
+
                                 iv_display = '{}/{}/{}'.format(
-                                    pokemon['pokemon_data']['individual_stamina'],
-                                    pokemon['pokemon_data']['individual_attack'],
+                                    individual_stamina,
+                                    individual_attack,
                                     pokemon['pokemon_data']['individual_defense']
                                 )
 
@@ -183,6 +188,8 @@ class PokemonCatchWorker(object):
 
                                     id_list2 = self.count_pokemon_inventory()
 
+                                    self.bot.metrics.captured_pokemon(pokemon_name, cp, iv_display, pokemon_potential)
+
                                     logger.log('Captured {}! [CP {}] [{}]'.format(
                                         pokemon_name,
                                         cp,
@@ -191,6 +198,7 @@ class PokemonCatchWorker(object):
 
                                     if self.config.evolve_captured:
                                         pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
+                                        # No need to capture this even for metrics, player stats includes it.
                                         self.api.evolve_pokemon(pokemon_id=pokemon_to_transfer[0])
                                         response_dict = self.api.call()
                                         status = response_dict['responses']['EVOLVE_POKEMON']['result']
