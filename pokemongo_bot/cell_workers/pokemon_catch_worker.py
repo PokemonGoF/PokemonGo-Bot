@@ -395,7 +395,7 @@ class PokemonCatchWorker(object):
             self.spawn_point_guid = spawnpoint_id
             self.response_key = 'ENCOUNTER'
             self.response_status_key = 'status'
-            self.api.encounter(encounter_id=encounter_id, spawn_point_id=spawnpoint_id,
+            self.api.encounter(encounter_id=encounter_id, spawnpoint_id=spawnpoint_id,
                                player_latitude=player_latitude, player_longitude=player_longitude)
         else:
             fort_id = self.pokemon['fort_id']
