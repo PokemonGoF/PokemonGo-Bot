@@ -216,6 +216,9 @@ class PokemonCatchWorker(object):
                                         if len(pokemon_to_transfer) == 0:
                                             raise RuntimeError(
                                                 'Trying to transfer 0 pokemons!')
+                                        # Add slight delay between capture & candy transfer #774
+                                        logger.log("Waiting briefly before transferring pokemon")
+                                        sleep(3)
                                         self.transfer_pokemon(pokemon_to_transfer[0])
                                         self.bot.metrics.released_pokemon()
                                         logger.log(
