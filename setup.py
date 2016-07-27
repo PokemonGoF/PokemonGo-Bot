@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from distutils.core import setup
 from pip.req import parse_requirements
 
 install_reqs = parse_requirements("requirements.txt", session=False)

@@ -5,7 +5,7 @@ import logger
 from cell_workers.utils import i2f
 from human_behaviour import sleep
 from polyline_walker import PolylineWalker
-
+from stepper import Stepper
 
 class PolylineStepper(Stepper):
 
