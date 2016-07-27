@@ -21,6 +21,7 @@ from item_list import Item
 from metrics import Metrics
 from spiral_navigator import SpiralNavigator
 from worker_result import WorkerResult
+from central_ai import BotEvent
 
 
 class PokemonGoBot(object):
@@ -36,6 +37,7 @@ class PokemonGoBot(object):
         self.item_list = json.load(open(os.path.join('data', 'items.json')))
         self.metrics = Metrics(self)
         self.latest_inventory = None
+        self.bot_event = BotEvent()
 
     def start(self):
         self._setup_logging()
@@ -227,6 +229,7 @@ class PokemonGoBot(object):
 
             if remaining_time < 60:
                 logger.log("Session stale, re-logging in", 'yellow')
+                self.bot_event.login_retry()
                 self.login()
 
 
@@ -245,7 +248,7 @@ class PokemonGoBot(object):
             logger.log('[X] Login Error, server busy', 'red')
             logger.log('[X] Waiting 10 seconds to try again', 'red')
             time.sleep(10)
-
+        self.bot_event.login_success()
         logger.log('Login to Pokemon Go successful.', 'green')
 
     def _setup_api(self):
