@@ -2,7 +2,6 @@
 from math import ceil
 
 import logger
-from cell_workers.utils import i2f
 from human_behaviour import sleep
 from polyline_walker import PolylineWalker
 
@@ -10,7 +9,7 @@ from polyline_walker import PolylineWalker
 class PolylineStepper(Stepper):
 
     def _walk_to(self, speed, lat, lng, alt):
-        origin = ','.join([str(i2f(self.api._position_lat)), str(i2f(self.api._position_lng))])
+        origin = ','.join([str(self.api._position_lat), str(self.api._position_lng)])
         destination = ','.join([str(lat), str(lng)])
         polyline_walker = PolylineWalker(origin, destination, speed)
         proposed_origin = polyline_walker.points[0]
@@ -29,7 +28,7 @@ class PolylineStepper(Stepper):
                 cLat, cLng = polyline_walker.get_pos()[0]
                 self.api.set_position(cLat, cLng, alt)
                 self.bot.heartbeat()
-                self._work_at_position(i2f(self.api._position_lat), i2f(self.api._position_lng), alt, False)
+                self._work_at_position(self.api._position_lat, self.api._position_lng, alt, False)
                 sleep(1)  # sleep one second plus a random delta
         if proposed_lat != self.api._position_lat and proposed_lng != self.api._position_lng:
             logger.log('[#] Using _old_walk_to to go from the proposed destination : {} to {}'

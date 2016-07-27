@@ -1,30 +1,22 @@
 from math import sqrt
 
+from pokemongo_bot import logger
 from cell_workers.utils import distance, i2f
 from human_behaviour import random_lat_long_delta, sleep
 import sys
 
 
-def progress_bar(percentage):
-    percentage = min(100, max(0, percentage))
-    if not sys.stdout.isatty():
-        return
-    sys.stdout.write('\r')
-    # http://www.fileformat.info/info/unicode/char/003D/index.htm
-    msg = (u"[%-40s] %d%%" % (u"\u003D"*int(percentage*2//5), percentage))
-    sys.stdout.write(msg)
-    sys.stdout.flush()
-
-
 class StepWalker(object):
 
-    def __init__(self, bot, speed, initLat, initLng, destLat, destLng):
+    def __init__(self, bot, speed, destLat, destLng):
         self.bot = bot
         self.api = bot.api
 
-        dist = distance(
-            i2f(initLat),
-            i2f(initLng),
+        self.initLat, self.initLng = self.bot.position[0:2]
+
+        self.dist = distance(
+            self.initLat,
+            self.initLng,
             destLat,
             destLng
         )
@@ -33,37 +25,28 @@ class StepWalker(object):
 
         self.destLat = destLat
         self.destLng = destLng
-        self.totalDist = max(1, dist)
+        self.totalDist = max(1, self.dist)
 
-        self.steps = (dist + 0.0) / (speed + 0.0)
+        self.steps = (self.dist + 0.0) / (speed + 0.0)
 
-        if dist < speed or self.steps < 1:
+        if self.dist < speed or int(self.steps) <= 1:
             self.dLat = 0
             self.dLng = 0
             self.magnitude = 0;
         else:
-            self.dLat = (destLat - i2f(initLat)) / self.steps
-            self.dLng = (destLng - i2f(initLng)) / self.steps
+            self.dLat = (destLat - self.initLat) / int(self.steps)
+            self.dLng = (destLng - self.initLng) / int(self.steps)
             self.magnitude = self._pythagorean(self.dLat, self.dLng)
 
     def step(self):
-        dist = distance(
-            i2f(self.api._position_lat),
-            i2f(self.api._position_lng),
-            self.destLat,
-            self.destLng
-        )
-
-        progress_bar(int(100 * (1 - dist/self.totalDist)))
-
-        if (self.dLat == 0 and self.dLng == 0) or dist < self.speed:
+        if (self.dLat == 0 and self.dLng == 0) or self.dist < self.speed:
             if sys.stdout.isatty():
                 sys.stdout.write('\n')
             self.api.set_position(self.destLat, self.destLng, 0)
             return True
 
-        totalDLat = (self.destLat - i2f(self.api._position_lat))
-        totalDLng = (self.destLng - i2f(self.api._position_lng))
+        totalDLat = (self.destLat - self.initLat)
+        totalDLng = (self.destLng - self.initLng)
         magnitude = self._pythagorean(totalDLat, totalDLng)
         unitLat = totalDLat / magnitude
         unitLng = totalDLng / magnitude
@@ -71,14 +54,15 @@ class StepWalker(object):
         scaledDLat = unitLat * self.magnitude
         scaledDLng = unitLng * self.magnitude
 
-        cLat = i2f(self.api._position_lat) + scaledDLat + random_lat_long_delta()
-        cLng = i2f(self.api._position_lng) + scaledDLng + random_lat_long_delta()
+        cLat = self.initLat + scaledDLat + random_lat_long_delta()
+        cLng = self.initLng + scaledDLng + random_lat_long_delta()
 
         self.api.set_position(cLat, cLng, 0)
         self.bot.heartbeat()
+
         sleep(1)  # sleep one second plus a random delta
         # self._work_at_position(
-        #     i2f(self.api._position_lat), i2f(self.api._position_lng),
+        #     self.initLat, self.initLng,
         #     alt, False)
 
     def _pythagorean(self, lat, lng):
