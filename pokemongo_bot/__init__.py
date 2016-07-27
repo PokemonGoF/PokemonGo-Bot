@@ -38,7 +38,7 @@ class PokemonGoBot(object):
         self.metrics = Metrics(self)
         self.latest_inventory = None
         self.api = PGoApi()
-        self.player_service = PlayerService(self.api)
+        self.player_service = PlayerService(self.api, config)
 
     def start(self):
         self._setup_logging()
@@ -259,6 +259,7 @@ class PokemonGoBot(object):
 
         # chain subrequests (methods) into one RPC call
         self.player_service.print_character_info()
+        self._player = self.player_service.get_player()
         logger.log('')
 
         self.inventory = self.player_service.update_inventory()
@@ -379,3 +380,12 @@ class PokemonGoBot(object):
         self.api.check_awarded_badges()
         self.api.call()
         self.update_web_location() # updates every tick
+
+    def current_inventory(self):
+        return self.player_service.current_inventory()
+
+    def get_inventory(self):
+        return self.player_service.get_inventory()
+
+    def get_inventory_count(self, what):
+        return self.player_service.get_inventory_count(what)

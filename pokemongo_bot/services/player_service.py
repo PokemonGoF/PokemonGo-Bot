@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
 
+import datetime
+import json
+
 from pokemongo_bot import logger
+from pokemongo_bot.item_list import Item
 
 class PlayerService():
-    def __init__(self, api):
+    def __init__(self, api, config):
         self.api = api
+        self.config = config
         self.latest_inventory = None
 
     def update_inventory(self):
@@ -73,6 +78,9 @@ class PlayerService():
                 continue
 
         return items_stock
+
+    def get_player(self):
+        return self._player
 
     def print_character_info(self):
         # get player profile call
@@ -176,7 +184,7 @@ class PlayerService():
 
         return '0'
 
-    def get_player_info(self, response_dict):
+    def get_player_info(self):
         response_dict = self.get_inventory()
 
         if not 'responses' in response_dict:
