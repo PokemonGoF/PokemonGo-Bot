@@ -298,7 +298,7 @@ class PokemonGoBot(object):
 
         pokecoins = '0'
         stardust = '0'
-        balls_stock = self.pokeball_inventory()
+        items_stock = self.current_inventory()
 
         if 'amount' in player['currencies'][0]:
             pokecoins = player['currencies'][0]['amount']
@@ -308,15 +308,31 @@ class PokemonGoBot(object):
         logger.log('--- {username} ---'.format(**player), 'cyan')
         self.get_player_info()
         logger.log('Pokemon Bag: {}/{}'.format(self.get_inventory_count('pokemon'), player['max_pokemon_storage']), 'cyan')
-        logger.log('Items: {}/{}'.format(self.get_inventory_count('item'), player['max_item_storage']), 'cyan')
+        items_count = self.get_inventory_count('item')
+        logger.log('Items: {}/{}'.format(items_count, player['max_item_storage']), 'cyan')
         logger.log('Stardust: {}'.format(stardust) + ' | Pokecoins: {}'.format(pokecoins), 'cyan')
-        # Pokeball Output
-        logger.log('PokeBalls: ' + str(balls_stock[1]) +
-            ' | GreatBalls: ' + str(balls_stock[2]) +
-            ' | UltraBalls: ' + str(balls_stock[3]), 'cyan')
-        logger.log('Razz Berries: ' + str(self.item_inventory_count(701)), 'cyan')
+        # Items Output
+        logger.log('PokeBalls: ' + str(items_stock[1]) +
+            ' | GreatBalls: ' + str(items_stock[2]) +
+            ' | UltraBalls: ' + str(items_stock[3]), 'cyan')
+        logger.log('RazzBerries: ' + str(items_stock[701]) +
+            ' | BlukBerries: ' + str(items_stock[702]) +
+            ' | NanabBerries: ' + str(items_stock[703]), 'cyan')
+        logger.log('LuckyEgg: ' + str(items_stock[301]) +
+            ' | Incubator: ' + str(items_stock[902]) +
+            ' | TroyDisk: ' + str(items_stock[501]), 'cyan')
+        logger.log('Potion: ' + str(items_stock[101]) +
+            ' | SuperPotion: ' + str(items_stock[102]) +
+            ' | HyperPotion: ' + str(items_stock[103]), 'cyan')
+        logger.log('Incense: ' + str(items_stock[401]) +
+            ' | IncenseSpicy: ' + str(items_stock[402]) +
+            ' | IncenseCool: ' + str(items_stock[403]), 'cyan')
+        logger.log('Revive: ' + str(items_stock[201]) +
+            ' | MaxRevive: ' + str(items_stock[202]), 'cyan')
 
         logger.log('')
+
+        self.check_inventory_space(items_count, player['max_item_storage'], items_stock.copy())
 
     def catch_pokemon(self, pokemon):
         worker = PokemonCatchWorker(pokemon, self)
@@ -335,6 +351,120 @@ class PokemonGoBot(object):
         # Example of good request response
         #{'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
         return inventory_req
+
+    def check_inventory_space(self, items_count, max_storage, items):
+        if (items_count*100)/max_storage > 95:
+            items_to_remove = []
+            if items[Item.ITEM_MASTER_BALL.value] > 45:
+                how_many = items[Item.ITEM_MASTER_BALL.value] - 45
+                items_to_remove.append([Item.ITEM_MASTER_BALL.value, how_many, '{} Master Ball'.format(how_many)])
+                items[Item.ITEM_MASTER_BALL.value] = items[Item.ITEM_MASTER_BALL.value] - how_many
+                if items[Item.ITEM_ULTRA_BALL.value]>30:
+                    how_many = items[Item.ITEM_ULTRA_BALL.value] - 30
+                    items_to_remove.append([Item.ITEM_ULTRA_BALL.value, how_many, '{} Ultra Ball'.format(how_many)])
+                    items[Item.ITEM_ULTRA_BALL.value] = items[Item.ITEM_ULTRA_BALL.value] - (how_many)
+                if items[Item.ITEM_GREAT_BALL.value]:
+                    how_many = items[Item.ITEM_GREAT_BALL.value]
+                    items_to_remove.append([Item.ITEM_GREAT_BALL.value, how_many, '{} Great Ball'.format(how_many)])
+                    items[Item.ITEM_GREAT_BALL.value] = 0
+                if items[Item.ITEM_POKE_BALL.value]:
+                    how_many = items[Item.ITEM_POKE_BALL.value]
+                    items_to_remove.append([Item.ITEM_POKE_BALL.value, how_many, '{} Poke Ball'.format(how_many)])
+                    items[Item.ITEM_POKE_BALL.value] = 0
+            if items[Item.ITEM_ULTRA_BALL.value] > 45:
+                how_many = items[Item.ITEM_ULTRA_BALL.value] - 45
+                items_to_remove.append([Item.ITEM_ULTRA_BALL.value, how_many, '{} Ultra Ball'.format(how_many)])
+                items[Item.ITEM_ULTRA_BALL.value] = items[Item.ITEM_ULTRA_BALL.value] - (how_many)
+                if items[Item.ITEM_GREAT_BALL.value]>30:
+                    how_many = items[Item.ITEM_GREAT_BALL.value] - 30
+                    items_to_remove.append([Item.ITEM_GREAT_BALL.value, how_many, '{} Great Ball'.format(how_many)])
+                    items[Item.ITEM_GREAT_BALL.value] = items[Item.ITEM_GREAT_BALL.value] - (how_many)
+                if items[Item.ITEM_POKE_BALL.value]:
+                    how_many = items[Item.ITEM_POKE_BALL.value]
+                    items_to_remove.append([Item.ITEM_POKE_BALL.value, how_many, '{} Poke Ball'.format(how_many)])
+                    items[Item.ITEM_POKE_BALL.value] = 0
+            if items[Item.ITEM_GREAT_BALL.value] > 45:
+                how_many = items[Item.ITEM_GREAT_BALL.value] - 45
+                items_to_remove.append([Item.ITEM_GREAT_BALL.value, how_many, '{} Great Ball'.format(how_many)])
+                items[Item.ITEM_GREAT_BALL.value] = items[Item.ITEM_GREAT_BALL.value] - (how_many)
+                if items[Item.ITEM_POKE_BALL.value]>30:
+                    how_many = items[Item.ITEM_POKE_BALL.value] - 30
+                    items_to_remove.append([Item.ITEM_POKE_BALL.value, how_many, '{} Poke Ball'.format(how_many)])
+                    items[Item.ITEM_POKE_BALL.value] = items[Item.ITEM_POKE_BALL.value] - (how_many)
+            if items[Item.ITEM_POKE_BALL.value] > 45:
+                how_many = items[Item.ITEM_POKE_BALL.value] - 45
+                items_to_remove.append([Item.ITEM_POKE_BALL.value, how_many, '{} Poke Ball'.format(how_many)])
+                items[Item.ITEM_POKE_BALL.value] = items[Item.ITEM_POKE_BALL.value] - (how_many)
+
+            if items[Item.ITEM_MAX_POTION.value] > 25:
+                how_many = items[Item.ITEM_MAX_POTION.value] - 25
+                items_to_remove.append([Item.ITEM_MAX_POTION.value, how_many, '{} Max Potion'.format(how_many)])
+                items[Item.ITEM_MAX_POTION.value] = items[Item.ITEM_MAX_POTION.value] - (how_many)
+                if items[Item.ITEM_HYPER_POTION.value]>20:
+                    how_many = items[Item.ITEM_HYPER_POTION.value] - 20
+                    items_to_remove.append([Item.ITEM_HYPER_POTION.value, how_many, '{} Hyper Potion'.format(how_many)])
+                    items[Item.ITEM_HYPER_POTION.value] = items[Item.ITEM_HYPER_POTION.value] - (how_many)
+                if items[Item.ITEM_SUPER_POTION.value]:
+                    how_many = items[Item.ITEM_SUPER_POTION.value]
+                    items_to_remove.append([Item.ITEM_SUPER_POTION.value, how_many, '{} Super Potion'.format(how_many)])
+                    items[Item.ITEM_SUPER_POTION.value] = 0
+                if items[Item.ITEM_POTION.value]:
+                    how_many = items[Item.ITEM_POTION.value]
+                    items_to_remove.append([Item.ITEM_POTION.value, how_many, '{} Potion'.format(how_many)])
+                    items[Item.ITEM_POTION.value] = 0
+            if items[Item.ITEM_HYPER_POTION.value] > 25:
+                how_many = items[Item.ITEM_HYPER_POTION.value] - 25
+                items_to_remove.append([Item.ITEM_HYPER_POTION.value, how_many, '{} Hyper Potion'.format(how_many)])
+                items[Item.ITEM_HYPER_POTION.value] = items[Item.ITEM_HYPER_POTION.value] - (how_many)
+                if items[Item.ITEM_SUPER_POTION.value]>20:
+                    how_many = items[Item.ITEM_SUPER_POTION.value] - 20
+                    items_to_remove.append([Item.ITEM_SUPER_POTION.value, how_many, '{} Super Potion'.format(how_many)])
+                    items[Item.ITEM_SUPER_POTION.value] = items[Item.ITEM_SUPER_POTION.value] - (how_many)
+                if items[Item.ITEM_POTION.value]:
+                    how_many = items[Item.ITEM_POTION.value]
+                    items_to_remove.append([Item.ITEM_POTION.value, how_many, '{} Potion'.format(how_many)])
+                    items[Item.ITEM_POTION.value] = 0
+            if items[Item.ITEM_SUPER_POTION.value] > 25:
+                how_many = items[Item.ITEM_SUPER_POTION.value] - 25
+                items_to_remove.append([Item.ITEM_SUPER_POTION.value, how_many, '{} Super Potion'.format(how_many)])
+                items[Item.ITEM_SUPER_POTION.value] = items[Item.ITEM_SUPER_POTION.value] - (how_many)
+                if items[Item.ITEM_POTION.value]>20:
+                    how_many = items[Item.ITEM_POTION.value] - 20
+                    items_to_remove.append([Item.ITEM_POTION.value, how_many, '{} Potion'.format(how_many)])
+                    items[Item.ITEM_POTION.value] = items[Item.ITEM_POTION.value] - (how_many)
+            if items[Item.ITEM_POTION.value] > 25:
+                how_many = items[Item.ITEM_POTION.value] - 25
+                items_to_remove.append([Item.ITEM_POTION.value, how_many, '{} Potion'.format(how_many)])
+                items[Item.ITEM_POTION.value] = items[Item.ITEM_POTION.value] - (how_many)
+
+            if items[Item.ITEM_MAX_REVIVE.value] > 25:
+                how_many = items[Item.ITEM_MAX_REVIVE.value] - 25
+                items_to_remove.append([Item.ITEM_MAX_REVIVE.value, how_many, '{} Max Revive'.format(how_many)])
+                items[Item.ITEM_MAX_REVIVE.value] = items[Item.ITEM_MAX_REVIVE.value] - (how_many)
+                if items[Item.ITEM_REVIVE.value]>20:
+                    how_many = items[Item.ITEM_REVIVE.value] - 20
+                    items_to_remove.append([Item.ITEM_REVIVE.value, how_many, '{} Revive'.format(how_many)])
+                    items[Item.ITEM_REVIVE.value] = items[Item.ITEM_REVIVE.value] - (how_many)
+            if items[Item.ITEM_REVIVE.value] > 25:
+                how_many = items[Item.ITEM_REVIVE.value] - 25
+                items_to_remove.append([Item.ITEM_REVIVE.value, how_many, '{} Revive'.format(how_many)])
+                items[Item.ITEM_REVIVE.value] = items[Item.ITEM_REVIVE.value] - (how_many)
+
+            if items_to_remove:
+                logger.log('Start to drop items', 'yellow')
+                for item in items_to_remove:
+                    response_drop = self.drop_item(item_id=item[0], count=item[1])
+                    if response_drop and 'responses' in response_drop and \
+                        'RECYCLE_INVENTORY_ITEM' in response_drop['responses'] and \
+                            'result' in response_drop['responses']['RECYCLE_INVENTORY_ITEM']:
+                        result_drop = response_drop['responses']['RECYCLE_INVENTORY_ITEM']['result']
+                        if result_drop is 1: # Request success
+                            logger.log("-- Recycled " + item[2] + "!", 'green')
+                        else:
+                            logger.log("-- Recycling " + item[2] + "has failed!", 'red')
+                        sleep(random.random()*2)
+                logger.log('Complete!', 'yellow')
+
 
     def use_lucky_egg(self):
         self.api.use_item_xp_boost(item_id=301)
@@ -365,7 +495,7 @@ class PokemonGoBot(object):
                             self.inventory.append(item['inventory_item_data'][
                                 'item'])
 
-    def pokeball_inventory(self):
+    def current_inventory(self):
         self.api.get_player().get_inventory()
 
         inventory_req = self.api.call()
@@ -378,7 +508,7 @@ class PokemonGoBot(object):
 
         # get player balls stock
         # ----------------------
-        balls_stock = {1: 0, 2: 0, 3: 0, 4: 0}
+        items_stock = {x.value:0 for x in list(Item)}
 
         for item in inventory_dict:
             try:
@@ -386,18 +516,12 @@ class PokemonGoBot(object):
                 item_id = item['inventory_item_data']['item']['item_id']
                 item_count = item['inventory_item_data']['item']['count']
 
-                if item_id == Item.ITEM_POKE_BALL.value:
-                    # print('Poke Ball count: ' + str(item_count))
-                    balls_stock[1] = item_count
-                if item_id == Item.ITEM_GREAT_BALL.value:
-                    # print('Great Ball count: ' + str(item_count))
-                    balls_stock[2] = item_count
-                if item_id == Item.ITEM_ULTRA_BALL.value:
-                    # print('Ultra Ball count: ' + str(item_count))
-                    balls_stock[3] = item_count
+                if item_id in items_stock:
+                    items_stock[item_id] = item_count
+
             except:
                 continue
-        return balls_stock
+        return items_stock
 
     def item_inventory_count(self, id):
         self.api.get_player().get_inventory()
