@@ -43,7 +43,6 @@ class PokemonGoBot(object):
         random.seed()
 
     def take_step(self):
-        RecycleItemsWorker(self).work()
         location = self.navigator.take_step()
         self.process_cells(work_on_forts=True)
 
@@ -172,6 +171,8 @@ class PokemonGoBot(object):
             if worker.work() == WorkerResult.RUNNING:
                 return
             self.config.evolve_all = []
+
+        RecycleItemsWorker(self).work()
 
         worker = CatchVisiblePokemonWorker(self, cell)
         if worker.work() == WorkerResult.RUNNING:
