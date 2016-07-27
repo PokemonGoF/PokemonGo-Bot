@@ -36,6 +36,7 @@ import time
 from datetime import timedelta
 from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException
+from jsmin import jsmin
 
 from pokemongo_bot import PokemonGoBot
 from pokemongo_bot import logger
@@ -57,11 +58,15 @@ def init_config():
     config_arg = parser.parse_known_args() and parser.parse_known_args()[0].config or None
     if config_arg and os.path.isfile(config_arg):
         with open(config_arg) as data:
-            load.update(json.load(data))
+            load.update(json.loads(
+                jsmin( # minify json file to strip any comments
+                    data.read())))
     elif os.path.isfile(config_file):
         logger.log('No config argument specified, checking for /configs/config.json', 'yellow')
         with open(config_file) as data:
-            load.update(json.load(data))
+            load.update(json.loads(
+                jsmin( # minify json file to strip any comments
+                    data.read())))
     else:
         logger.log('Error: No /configs/config.json or specified config', 'red')
 
@@ -111,7 +116,7 @@ def init_config():
         help=
         "Set the steps around your initial location(DEFAULT 5 mean 25 cells around your location)",
         type=int,
-        default=50
+        default=5
     )
     parser.add_argument(
         "-it",
@@ -208,7 +213,7 @@ def init_config():
         if not os.path.isdir(web_dir):
             raise
 
-    if config.evolve_all:
+    if config.evolve_all != 'NONE':
         config.evolve_all = [str(pokemon_name) for pokemon_name in config.evolve_all.split(',')]
 
     return config
