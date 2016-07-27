@@ -65,8 +65,8 @@ class StepWalker(object):
         scaledDLat = unitLat * self.magnitude
         scaledDLng = unitLng * self.magnitude
 
-        cLat = self.initLat + scaledDLat #+ random_lat_long_delta()
-        cLng = self.initLng + scaledDLng #+ random_lat_long_delta()
+        cLat = self.initLat + scaledDLat + random_lat_long_delta()
+        cLng = self.initLng + scaledDLng + random_lat_long_delta()
 
         self.api.set_position(cLat, cLng, 0)
         self.bot.heartbeat()
