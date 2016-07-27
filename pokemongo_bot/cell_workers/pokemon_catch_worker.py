@@ -209,9 +209,52 @@ class PokemonCatchWorker(object):
                                             logger.log(
                                             'Failed to evolve {}!'.format(pokemon_name))
 
+                                    if self.should_release_pokemon(pokemon_name, cp, pokemon_potential, response_dict):
+                                        # Transfering Pokemon
+                                        pokemon_to_transfer = list(
+                                            Set(id_list2) - Set(id_list1))
+                                        if len(pokemon_to_transfer) == 0:
+                                            raise RuntimeError(
+                                                'Trying to transfer 0 pokemons!')
+                                        self.transfer_pokemon(pokemon_to_transfer[0])
+                                        self.bot.metrics.released_pokemon()
+                                        logger.log(
+                                            '{} has been exchanged for candy!'.format(pokemon_name), 'green')
+
                             break
         time.sleep(5)
 
+    def _transfer_low_cp_pokemon(self, value):
+        self.api.get_inventory()
+        response_dict = self.api.call()
+        self._transfer_all_low_cp_pokemon(value, response_dict)
+
+    def _transfer_all_low_cp_pokemon(self, value, response_dict):
+        try:
+            reduce(dict.__getitem__, [
+                   "responses", "GET_INVENTORY", "inventory_delta", "inventory_items"], response_dict)
+        except KeyError:
+            pass
+        else:
+            for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
+                try:
+                    reduce(dict.__getitem__, [
+                           "inventory_item_data", "pokemon"], item)
+                except KeyError:
+                    pass
+                else:
+                    pokemon = item['inventory_item_data']['pokemon']
+                    self._execute_pokemon_transfer(value, pokemon)
+                    time.sleep(1.2)
+
+    def _execute_pokemon_transfer(self, value, pokemon):
+        if 'cp' in pokemon and pokemon['cp'] < value:
+            self.api.release_pokemon(pokemon_id=pokemon['id'])
+            response_dict = self.api.call()
+
+    def transfer_pokemon(self, pid):
+        self.api.release_pokemon(pokemon_id=pid)
+        response_dict = self.api.call()
 
     def count_pokemon_inventory(self):
         self.api.get_inventory()
@@ -286,3 +329,52 @@ class PokemonCatchWorker(object):
         if not catch_config:
             catch_config = self.config.catch.get('any')
         return catch_config
+
+    def should_release_pokemon(self, pokemon_name, cp, iv, response_dict):
+        release_config = self._get_release_config_for(pokemon_name)
+        cp_iv_logic = release_config.get('logic')
+        if not cp_iv_logic:
+            cp_iv_logic = self._get_release_config_for('any').get('logic', 'and')
+
+        release_results = {
+            'cp': False,
+            'iv': False,
+        }
+
+        if release_config.get('never_release', False):
+            return False
+
+        if release_config.get('always_release', False):
+            return True
+
+        release_cp = release_config.get('release_below_cp', 0)
+        if cp < release_cp:
+            release_results['cp'] = True
+
+        release_iv = release_config.get('release_below_iv', 0)
+        if iv < release_iv:
+            release_results['iv'] = True
+
+        logic_to_function = {
+            'or': lambda x, y: x or y,
+            'and': lambda x, y: x and y
+        }
+
+        #logger.log(
+        #    "Release config for {}: CP {} {} IV {}".format(
+        #        pokemon_name,
+        #        min_cp,
+        #        cp_iv_logic,
+        #        min_iv
+        #    ), 'yellow'
+        #)
+
+        return logic_to_function[cp_iv_logic](*release_results.values())
+
+    def _get_release_config_for(self, pokemon):
+        release_config = self.config.release.get(pokemon)
+        if not release_config:
+            release_config = self.config.release.get('any')
+        if not release_config:
+            release_config = {}
+        return release_config
