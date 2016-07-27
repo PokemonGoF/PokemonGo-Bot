@@ -43,7 +43,6 @@ class PokemonGoBot(object):
         random.seed()
 
     def take_step(self):
-        location = self.navigator.take_step()
         self.process_cells(work_on_forts=True)
 
     def process_cells(self, work_on_forts=True):
