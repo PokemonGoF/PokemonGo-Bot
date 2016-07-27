@@ -56,11 +56,14 @@ class EvolveAllWorker(object):
         # Will skip evolving if user wants to use an egg and there is none
         skip_evolves = False
 
+        if self.config.evolve_all:
+            return skip_evolves
+
         # Pop lucky egg before evolving to maximize xp gain
         use_lucky_egg = self.config.use_lucky_egg
         lucky_egg_count = self.bot.item_inventory_count(Item.ITEM_LUCKY_EGG.value)
 
-        if  use_lucky_egg and lucky_egg_count > 0:
+        if use_lucky_egg and lucky_egg_count > 0:
             logger.log('Using lucky egg ... you have {}'
                        .format(lucky_egg_count))
             response_dict_lucky_egg = self.bot.use_lucky_egg()

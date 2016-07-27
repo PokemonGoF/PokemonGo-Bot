@@ -160,17 +160,13 @@ class PokemonGoBot(object):
         # Check if session token has expired
         self.check_session(position)
 
-        if self.config.initial_transfer:
-            worker = InitialTransferWorker(self)
-            if worker.work() == WorkerResult.RUNNING:
-                return
-            self.config.initial_transfer = False
+        worker = InitialTransferWorker(self)
+        if worker.work() == WorkerResult.RUNNING:
+            return
 
-        if self.config.evolve_all:
-            worker = EvolveAllWorker(self)
-            if worker.work() == WorkerResult.RUNNING:
-                return
-            self.config.evolve_all = []
+        worker = EvolveAllWorker(self)
+        if worker.work() == WorkerResult.RUNNING:
+            return
 
         RecycleItemsWorker(self).work()
 
