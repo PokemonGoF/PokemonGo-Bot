@@ -320,12 +320,11 @@ class PokemonGoBot(object):
                 logger.log('GeoPosition: {}'.format(self.position))
                 logger.log('')
                 has_position = True
-                return
-            except:
+            except Exception:
                 logger.log('[x] The location given in the config could not be parsed. Checking for a cached location.')
                 pass
 
-        if self.config.location_cache and not has_position:
+        if self.config.location_cache:
             try:
                 #
                 # save location flag used to pull the last known location from
@@ -336,7 +335,7 @@ class PokemonGoBot(object):
                     location_json = json.load(f)
                     location = (location_json['lat'],
                                      location_json['lng'], 0.0)
-                    print(location)
+                    #print(location)
                     self.api.set_position(*location)
 
                     logger.log('')
@@ -349,9 +348,11 @@ class PokemonGoBot(object):
 
                     has_position = True
                     return
-            except:
-                sys.exit(
-                    "No cached Location. Please specify initial location.")
+            except Exception:
+                if(has_position == False):
+                    sys.exit(
+                        "No cached Location. Please specify initial location.")
+                logger.log('[x] Parsing cached location failed, try to use the initial location...')
 
     def _get_pos_by_name(self, location_name):
         # Check if the given location is already a coordinate.

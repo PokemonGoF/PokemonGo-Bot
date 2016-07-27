@@ -4,7 +4,7 @@ try:
     lcd = lcd.lcd()
     # Change this to your i2c address
     lcd.set_addr(0x23)
-except:
+except Exception:
     lcd = False
 
 def log(string, color = 'white'):
