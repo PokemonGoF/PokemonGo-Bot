@@ -76,22 +76,24 @@ class PlayerService():
 
     def print_character_info(self):
         # get player profile call
+        # ----------------------
         self.api.get_player()
         response_dict = self.api.call()
-
         #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
         currency_1 = "0"
         currency_2 = "0"
 
         if response_dict:
-            player = response_dict['responses']['GET_PLAYER']['player_data']
+            self._player = response_dict['responses']['GET_PLAYER']['player_data']
+            player = self._player
         else:
             logger.log("The API didn't return player info, servers are unstable - retrying.", 'red')
             sleep(5)
             self.print_character_info()
 
         # @@@ TODO: Convert this to d/m/Y H:M:S
-        creation_date = datetime.datetime.fromtimestamp(player['creation_timestamp_ms'] / 1e3)
+        creation_date = datetime.datetime.fromtimestamp(
+            player['creation_timestamp_ms'] / 1e3)
         creation_date = creation_date.strftime("%Y/%m/%d %H:%M:%S")
 
         pokecoins = '0'
@@ -102,12 +104,9 @@ class PlayerService():
             pokecoins = player['currencies'][0]['amount']
         if 'amount' in player['currencies'][1]:
             stardust = player['currencies'][1]['amount']
-            
         logger.log('')
         logger.log('--- {username} ---'.format(**player), 'cyan')
-
         self.get_player_info()
-
         logger.log('Pokemon Bag: {}/{}'.format(self.get_inventory_count('pokemon'), player['max_pokemon_storage']), 'cyan')
         logger.log('Items: {}/{}'.format(self.get_inventory_count('item'), player['max_item_storage']), 'cyan')
         logger.log('Stardust: {}'.format(stardust) + ' | Pokecoins: {}'.format(pokecoins), 'cyan')
