@@ -7,7 +7,7 @@ class Metrics(object):
 
     def __init__(self, bot):
         self.bot = bot
-        self.start_time = None
+        self.start_time = time.time()
         self.dust = {'start': None, 'latest': None}
         self.xp = {'start': None, 'latest': None}
         self.distance = {'start': None, 'latest': None}
@@ -23,13 +23,13 @@ class Metrics(object):
         self.most_perfect = {'potential': 0, 'desc': ''}
 
     def runtime(self):
-        return str(timedelta(seconds=round(time.time() - self.start_time)))
+        return timedelta(seconds=round(time.time() - self.start_time))
 
     def xp_earned(self):
         return self.xp['latest'] - self.xp['start']
 
     def xp_per_hour(self):
-        return self.xp_earned/(time.time() - self.start_time/60/60)
+        return self.xp_earned()/(time.time() - self.start_time)*3600
 
     def distance_travelled(self):
         return self.distance['latest'] - self.distance['start']
@@ -63,7 +63,7 @@ class Metrics(object):
 
         if potential > self.most_perfect['potential']:
             self.most_perfect = \
-                {'potential': cp, 'desc': '{} [CP: {}] [IV: {}] Potential: {} '
+                {'potential': potential, 'desc': '{} [CP: {}] [IV: {}] Potential: {} '
                     .format(name, cp, iv_display, potential)}
         return
 
@@ -71,7 +71,6 @@ class Metrics(object):
         self.releases += count
 
     def capture_stats(self):
-        if self.start_time is None: self.start_time = time.time()
         self.bot.api.get_inventory()
         self.bot.api.get_player()
         response_dict = self.bot.api.call()

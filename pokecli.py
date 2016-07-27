@@ -257,21 +257,21 @@ def main():
             metrics = bot.metrics
             metrics.capture_stats()
             logger.log('')
-            logger.log('Ran for {}'.format(metrics.runtime()), 'red')
-            logger.log('Total XP Earned: {}  Average: {:.2f}/h'.format(metrics.xp_earned, metrics.xp_per_hour()), 'red')
-            logger.log('Travelled {:.2f}km'.format(metrics.distance_travelled()), 'red')
-            logger.log('Visited {} stops'.format(metrics.visits['latest'] - metrics.visits['start']), 'red')
+            logger.log('Ran for {}'.format(metrics.runtime()), 'cyan')
+            logger.log('Total XP Earned: {}  Average: {:.2f}/h'.format(metrics.xp_earned(), metrics.xp_per_hour()), 'cyan')
+            logger.log('Travelled {:.2f}km'.format(metrics.distance_travelled()), 'cyan')
+            logger.log('Visited {} stops'.format(metrics.visits['latest'] - metrics.visits['start']), 'cyan')
             logger.log('Encountered {} pokemon, {} caught, {} released, {} evolved, {} never seen before'
                        .format(metrics.num_encounters(), metrics.num_captures(), metrics.releases,
-                               metrics.num_evolutions(), metrics.num_new_mons()), 'red')
+                               metrics.num_evolutions(), metrics.num_new_mons()), 'cyan')
             logger.log('Threw {} pokeball{}'.format(metrics.num_throws(), '' if metrics.num_throws() == 1 else 's'),
-                       'red')
-            logger.log('Earned {} Stardust'.format(metrics.earned_dust()), 'red')
+                       'cyan')
+            logger.log('Earned {} Stardust'.format(metrics.earned_dust()), 'cyan')
             logger.log('')
             if metrics.highest_cp is not None:
-                logger.log('Highest CP Pokemon: {}'.format(metrics.highest_cp['desc']), 'red')
+                logger.log('Highest CP Pokemon: {}'.format(metrics.highest_cp['desc']), 'cyan')
             if metrics.most_perfect is not None:
-                logger.log('Most Perfect Pokemon: {}'.format(metrics.most_perfect['desc']), 'red')
+                logger.log('Most Perfect Pokemon: {}'.format(metrics.most_perfect['desc']), 'cyan')
 
 
         except NotLoggedInException:
