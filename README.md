@@ -191,15 +191,15 @@ To update your project do: `git pull` in the project folder
 	2/ Edit `config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (other keys are optional, check `Advance Configuration` below)
 
 ## Advance Configuration
-- `max_steps` :
-- `mode` :
-- `walk` :
+- `max_steps` : This is the scan area around your current position. Value will be squared to represent a square area of cells around you.
+- `mode` : farm, poke, all  Farm-Run from Pokemon, only goto pokestops.  Poke-Ignore pokestops, just collect pokemon.  All-Goto pokestops, collect pokemon on the way.
+- `walk` : set the walking speed to locations.  default is 2.5
 - `debug` : Let the default value here except if you are developper
 - `test` : Let the default value here except if you are developper
 - `initial_transfer` : Set this to 1 if you want to transfer pokemon
-- `location_cache` : 
-- `distance_unit` :
-- `item_filter` :
+- `location_cache` : set to true if you wish to save you last known location and use that.
+- `distance_unit` : km, mi, or ft (Kilometers, Miles, Feet)
+- `item_filter` : put the item ID here to recycle that item automatically when collected. *list is comma delimited)
 - `evolve_all` : Set to true to evolve pokemons if possible
 
 ### Evolve All Configuration
