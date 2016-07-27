@@ -14,7 +14,7 @@ from pgoapi import PGoApi
 from pgoapi.utilities import f2i
 
 import logger
-from cell_workers import CatchVisiblePokemonWorker, PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker, RecycleItemsWorker
+from cell_workers import CatchVisiblePokemonWorker, PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker, RecycleItemsWorker, EggIncubationWorker
 from cell_workers.utils import distance, get_cellid, encode, i2f
 from human_behaviour import sleep
 from item_list import Item
@@ -100,7 +100,10 @@ class PokemonGoBot(object):
                                                      gym_latitude=fort.get('latitude'),
                                                      gym_longitude=fort.get('longitude'))
                             response_gym_details = self.api.call()
-                            fort['gym_details'] = response_gym_details['responses']['GET_GYM_DETAILS']
+                            try:
+                                fort['gym_details'] = response_gym_details['responses']['GET_GYM_DETAILS']
+                            except:
+                                print fort
 
         user_data_cells = "data/cells-%s.json" % (self.config.username)
         with open(user_data_cells, 'w') as outfile:
@@ -169,6 +172,10 @@ class PokemonGoBot(object):
             return
 
         RecycleItemsWorker(self).work()
+        
+        if self.config.incubate_eggs:
+            worker = EggIncubationWorker(self)
+            worker.work()
 
         worker = CatchVisiblePokemonWorker(self, cell)
         if worker.work() == WorkerResult.RUNNING:
@@ -488,7 +495,6 @@ class PokemonGoBot(object):
                               in self.fort_timeouts.iteritems()
                               if timeout >= time.time() * 1000}
         self.api.get_player()
-        self.api.get_hatched_eggs()
         self.api.check_awarded_badges()
         self.api.call()
         self.update_web_location() # updates every tick
