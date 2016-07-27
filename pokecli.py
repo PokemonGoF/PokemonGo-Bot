@@ -33,6 +33,7 @@ import os
 import ssl
 import sys
 import time
+from datetime import timedelta
 from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException
 
@@ -240,6 +241,7 @@ def main():
         try:
             bot = PokemonGoBot(config)
             bot.start()
+            bot.metrics.capture_stats()
 
             logger.log('Starting PokemonGo Bot....', 'green')
 
@@ -249,8 +251,28 @@ def main():
         except KeyboardInterrupt:
             logger.log('Exiting PokemonGo Bot', 'red')
             finished = True
-            # TODO Add number of pokemon catched, pokestops visited, highest CP
-            # pokemon catched, etc.
+            if bot.metrics.start_time is None:
+                return  # Bot didn't actually start, no metrics to show.
+
+            metrics = bot.metrics
+            metrics.capture_stats()
+            logger.log('')
+            logger.log('Ran for {}'.format(metrics.runtime()), 'red')
+            logger.log('Total XP Earned: {}  Average: {:.2f}/h'.format(metrics.xp_earned, metrics.xp_per_hour()), 'red')
+            logger.log('Travelled {:.2f}km'.format(metrics.distance_travelled()), 'red')
+            logger.log('Visited {} stops'.format(metrics.visits['latest'] - metrics.visits['start']), 'red')
+            logger.log('Encountered {} pokemon, {} caught, {} released, {} evolved, {} never seen before'
+                       .format(metrics.num_encounters(), metrics.num_captures(), metrics.releases,
+                               metrics.num_evolutions(), metrics.num_new_mons()), 'red')
+            logger.log('Threw {} pokeball{}'.format(metrics.num_throws(), '' if metrics.num_throws() == 1 else 's'),
+                       'red')
+            logger.log('Earned {} Stardust'.format(metrics.earned_dust()), 'red')
+            logger.log('')
+            if metrics.highest_cp is not None:
+                logger.log('Highest CP Pokemon: {}'.format(metrics.highest_cp['desc']), 'red')
+            if metrics.most_perfect is not None:
+                logger.log('Most Perfect Pokemon: {}'.format(metrics.most_perfect['desc']), 'red')
+
 
         except NotLoggedInException:
             logger.log('[x] Error while connecting to the server, please wait %s minutes' % config.reconnecting_timeout, 'red')
