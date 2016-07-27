@@ -23,8 +23,8 @@ class StepWalker(object):
         self.api = bot.api
 
         dist = distance(
-            i2f(initLat),
-            i2f(initLng),
+            initLat,
+            initLng,
             destLat,
             destLng
         )
@@ -42,14 +42,14 @@ class StepWalker(object):
             self.dLng = 0
             self.magnitude = 0;
         else:
-            self.dLat = (destLat - i2f(initLat)) / self.steps
-            self.dLng = (destLng - i2f(initLng)) / self.steps
+            self.dLat = (destLat - initLat) / self.steps
+            self.dLng = (destLng - initLng) / self.steps
             self.magnitude = self._pythagorean(self.dLat, self.dLng)
 
     def step(self):
         dist = distance(
-            i2f(self.api._position_lat),
-            i2f(self.api._position_lng),
+            self.api._position_lat,
+            self.api._position_lng,
             self.destLat,
             self.destLng
         )
@@ -62,8 +62,8 @@ class StepWalker(object):
             self.api.set_position(self.destLat, self.destLng, 0)
             return True
 
-        totalDLat = (self.destLat - i2f(self.api._position_lat))
-        totalDLng = (self.destLng - i2f(self.api._position_lng))
+        totalDLat = (self.destLat - self.api._position_lat)
+        totalDLng = (self.destLng - self.api._position_lng)
         magnitude = self._pythagorean(totalDLat, totalDLng)
         unitLat = totalDLat / magnitude
         unitLng = totalDLng / magnitude
@@ -71,8 +71,8 @@ class StepWalker(object):
         scaledDLat = unitLat * self.magnitude
         scaledDLng = unitLng * self.magnitude
 
-        cLat = i2f(self.api._position_lat) + scaledDLat + random_lat_long_delta()
-        cLng = i2f(self.api._position_lng) + scaledDLng + random_lat_long_delta()
+        cLat = self.api._position_lat + scaledDLat + random_lat_long_delta()
+        cLng = self.api._position_lng + scaledDLng + random_lat_long_delta()
 
         self.api.set_position(cLat, cLng, 0)
         self.bot.heartbeat()
