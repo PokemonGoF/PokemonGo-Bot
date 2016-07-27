@@ -14,12 +14,13 @@ from pgoapi import PGoApi
 from pgoapi.utilities import f2i
 
 import logger
-from cell_workers import CatchVisiblePokemonWorker, PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
+from cell_workers import CatchVisiblePokemonWorker, PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker, RecycleItemsWorker
 from cell_workers.utils import distance, get_cellid, encode, i2f
 from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
 from spiral_navigator import SpiralNavigator
+from worker_result import WorkerResult
 
 
 class PokemonGoBot(object):
@@ -101,6 +102,11 @@ class PokemonGoBot(object):
                             response_gym_details = self.api.call()
                             fort['gym_details'] = response_gym_details['responses']['GET_GYM_DETAILS']
 
+        user_data_cells = "data/cells-%s.json" % (self.config.username)
+        with open(user_data_cells, 'w') as outfile:
+            outfile.truncate()
+            json.dump(cells, outfile)
+
         user_web_location = os.path.join('web', 'location-%s.json' % (self.config.username))
         # alt is unused atm but makes using *location easier
         try:
@@ -154,18 +160,19 @@ class PokemonGoBot(object):
         # Check if session token has expired
         self.check_session(position)
 
-        if self.config.initial_transfer:
-            worker = InitialTransferWorker(self)
-            worker.work()
-            self.config.initial_transfer = False
+        worker = InitialTransferWorker(self)
+        if worker.work() == WorkerResult.RUNNING:
+            return
 
-        if self.config.evolve_all:
-            worker = EvolveAllWorker(self)
-            worker.work()
-            self.config.evolve_all = []
+        worker = EvolveAllWorker(self)
+        if worker.work() == WorkerResult.RUNNING:
+            return
+
+        RecycleItemsWorker(self).work()
 
         worker = CatchVisiblePokemonWorker(self, cell)
-        worker.work()
+        if worker.work() == WorkerResult.RUNNING:
+            return
 
         if ((self.config.mode == "all" or
                 self.config.mode == "farm") and work_on_forts):
@@ -186,8 +193,12 @@ class PokemonGoBot(object):
 
                 if len(forts) > 0:
                     # Move to and spin the nearest stop.
-                    MoveToFortWorker(forts[0], self).work()
-                    SeenFortWorker(forts[0], self).work()
+                    if MoveToFortWorker(forts[0], self).work() == WorkerResult.RUNNING:
+                        return
+                    if SeenFortWorker(forts[0], self).work() == WorkerResult.RUNNING:
+                        return
+
+        self.navigator.take_step()
 
     def _setup_logging(self):
         self.log = logging.getLogger(__name__)
@@ -290,14 +301,6 @@ class PokemonGoBot(object):
 
         logger.log('')
 
-    def drop_item(self, item_id, count):
-        self.api.recycle_inventory_item(item_id=item_id, count=count)
-        inventory_req = self.api.call()
-
-        # Example of good request response
-        #{'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
-        return inventory_req
-
     def use_lucky_egg(self):
         self.api.use_item_xp_boost(item_id=301)
         inventory_req = self.api.call()
@@ -368,16 +371,32 @@ class PokemonGoBot(object):
         inventory_dict = inventory_req['responses'][
             'GET_INVENTORY']['inventory_delta']['inventory_items']
 
+        if id == 'all':
+            return self._all_items_inventory_count(inventory_dict)
+        else:
+            return self._item_inventory_count_per_id(id, inventory_dict)
+
+    def _item_inventory_count_per_id(self, id, inventory_dict):
         item_count = 0
 
         for item in inventory_dict:
-            try:
-                if item['inventory_item_data']['item']['item_id'] == int(id):
-                    item_count = item[
-                        'inventory_item_data']['item']['count']
-            except:
-                continue
-        return item_count
+            item_dict = item.get('inventory_item_data', {}).get('item', {})
+            item_id = item_dict.get('item_id', False)
+            item_count = item_dict.get('count', False)
+            if  item_id == int(id) and item_count:
+                return item_count
+
+    def _all_items_inventory_count(self, inventory_dict):
+        item_count_dict = {}
+
+        for item in inventory_dict:
+            item_dict = item.get('inventory_item_data', {}).get('item', {})
+            item_id = item_dict.get('item_id', False)
+            item_count = item_dict.get('count', False)
+            if item_id and item_count:
+                item_count_dict[item_id] = item_count
+
+        return item_count_dict
 
     def _set_starting_position(self):
 
