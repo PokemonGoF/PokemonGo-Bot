@@ -1,4 +1,4 @@
-from utils import distance, format_dist
+from utils import distance, format_dist, i2f
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot import logger
 from pokemongo_bot.step_walker import StepWalker
@@ -38,9 +38,11 @@ class MoveToFortWorker(object):
                     position[1]
                 )
 
-                while True:
+                while distance(i2f(self.api._position_lat), i2f(self.api._position_lng), lat, lng) > 10:
                     if step_walker.step():
                         break
+                    else:
+                        self.bot.process_cells(work_on_forts=False)
 
             else:
                 self.api.set_position(*position)

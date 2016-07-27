@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import datetime
 import json
 import logging
@@ -17,19 +18,22 @@ from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, I
 from cell_workers.utils import distance, get_cellid, encode, i2f
 from human_behaviour import sleep
 from item_list import Item
+from metrics import Metrics
 from spiral_navigator import SpiralNavigator
 
 
 class PokemonGoBot(object):
-    
+
     @property
     def position(self):
         return (i2f(self.api._position_lat), i2f(self.api._position_lng), 0)
 
     def __init__(self, config):
         self.config = config
-        self.pokemon_list = json.load(open('data/pokemon.json'))
-        self.item_list = json.load(open('data/items.json'))
+        self.fort_timeouts = dict()
+        self.pokemon_list = json.load(open(os.path.join('data', 'pokemon.json')))
+        self.item_list = json.load(open(os.path.join('data', 'items.json')))
+        self.metrics = Metrics(self)
 
     def start(self):
         self._setup_logging()
@@ -39,10 +43,27 @@ class PokemonGoBot(object):
 
     def take_step(self):
         location = self.navigator.take_step()
-        cells = self.find_close_cells(*location[0:2])
+        self.process_cells(work_on_forts=True)
 
+    def process_cells(self, work_on_forts=True):
+        location = self.position[0:2]
+        cells = self.find_close_cells(*location)
+
+        # Combine all cells into a single dict of the items we care about.
+        forts = []
+        wild_pokemons = []
+        catchable_pokemons = []
         for cell in cells:
-            self.work_on_cell(cell, location)
+            if "forts" in cell and len(cell["forts"]):
+                forts += cell["forts"]
+            if "wild_pokemons" in cell and len(cell["wild_pokemons"]):
+                wild_pokemons += cell["wild_pokemons"]
+            if "catchable_pokemons" in cell and len(cell["catchable_pokemons"]):
+                catchable_pokemons += cell["catchable_pokemons"]
+
+        # Have the worker treat the whole area as a single cell.
+        self.work_on_cell({"forts": forts, "wild_pokemons": wild_pokemons,
+                           "catchable_pokemons": catchable_pokemons}, location, work_on_forts)
 
     def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
         # we can call the function with no arguments and still get the position and map_cells
@@ -80,21 +101,27 @@ class PokemonGoBot(object):
                             response_gym_details = self.api.call()
                             fort['gym_details'] = response_gym_details['responses']['GET_GYM_DETAILS']
 
-        user_web_location = 'web/location-%s.json' % (self.config.username)
-        # should check if file exists first but os is not imported here
+        user_web_location = os.path.join('web', 'location-%s.json' % (self.config.username))
         # alt is unused atm but makes using *location easier
-        with open(user_web_location,'w') as outfile:
-            json.dump(
-                {'lat': lat,
-                'lng': lng,
-                'alt': alt,
-                'cells': cells
-                }, outfile)
+        try:
+            with open(user_web_location,'w') as outfile:
+                json.dump(
+                    {'lat': lat,
+                    'lng': lng,
+                    'alt': alt,
+                    'cells': cells
+                    }, outfile)
+        except IOError as e:
+            logger.log('[x] Error while opening location file: %s' % e, 'red')
 
-        user_data_lastlocation = 'data/last-location-%s.json' % (self.config.username)
-        with open(user_data_lastlocation, 'w') as outfile:
-            outfile.truncate()
-            json.dump({'lat': lat, 'lng': lng}, outfile)
+        user_data_lastlocation = os.path.join('data', 'last-location-%s.json' % (self.config.username))
+        try:
+            with open(user_data_lastlocation, 'w') as outfile:
+                outfile.truncate()
+                json.dump({'lat': lat, 'lng': lng}, outfile)
+        except IOError as e:
+            logger.log('[x] Error while opening location file: %s' % e, 'red')
+
 
     def find_close_cells(self, lat, lng):
         cellid = get_cellid(lat, lng)
@@ -121,48 +148,22 @@ class PokemonGoBot(object):
                     x['forts'][0]['latitude'],
                     x['forts'][0]['longitude']) if x.get('forts', []) else 1e6
             )
-        self.update_web_location(map_cells)
         return map_cells
 
-    def work_on_cell(self, cell, position):
+    def work_on_cell(self, cell, position, work_on_forts=1):
         # Check if session token has expired
         self.check_session(position)
 
+        if self.config.initial_transfer:
+            worker = InitialTransferWorker(self)
+            worker.work()
+            self.config.initial_transfer = False
+
         if self.config.evolve_all:
-            # Will skip evolving if user wants to use an egg and there is none
-            skip_evolves = False
-
-            # Pop lucky egg before evolving to maximize xp gain
-            use_lucky_egg = self.config.use_lucky_egg
-            lucky_egg_count = self.item_inventory_count(Item.ITEM_LUCKY_EGG.value)
-
-            if  use_lucky_egg and lucky_egg_count > 0:
-                logger.log('Using lucky egg ... you have {}'
-                           .format(lucky_egg_count))
-                response_dict_lucky_egg = self.use_lucky_egg()
-                if response_dict_lucky_egg and 'responses' in response_dict_lucky_egg and \
-                    'USE_ITEM_XP_BOOST' in response_dict_lucky_egg['responses'] and \
-                    'result' in response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']:
-                    result = response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']['result']
-                    if result is 1: # Request success
-                        logger.log('Successfully used lucky egg... ({} left!)'
-                                   .format(lucky_egg_count-1), 'green')
-                    else:
-                        logger.log('Failed to use lucky egg!', 'red')
-                        skip_evolves = True
-            elif use_lucky_egg: #lucky_egg_count is 0
-                # Skipping evolve so they aren't wasted
-                logger.log('No lucky eggs... skipping evolve!', 'yellow')
-                skip_evolves = True
-
-            if not skip_evolves:
-                # Run evolve all once.
-                logger.log('Attempting to evolve all pokemons ...', 'cyan')
-                worker = EvolveAllWorker(self)
-                worker.work()
-
-            # Flip the bit.
+            worker = EvolveAllWorker(self)
+            worker.work()
             self.config.evolve_all = []
+
 
         if (self.config.mode == "all" or self.config.mode ==
                 "poke") and 'catchable_pokemons' in cell and len(cell[
@@ -179,10 +180,11 @@ class PokemonGoBot(object):
                 with open(user_web_catchable, 'w') as outfile:
                     json.dump(pokemon, outfile)
 
-                if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
-                    break
                 with open(user_web_catchable, 'w') as outfile:
                     json.dump({}, outfile)
+
+            self.catch_pokemon(cell['catchable_pokemons'][0])
+            return
 
         if (self.config.mode == "all" or self.config.mode == "poke"
             ) and 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
@@ -191,11 +193,10 @@ class PokemonGoBot(object):
             cell['wild_pokemons'].sort(
                 key=
                 lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
-            for pokemon in cell['wild_pokemons']:
-                if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
-                    break
-        if (self.config.mode == "all" or
-                self.config.mode == "farm"):
+            self.catch_pokemon(cell['wild_pokemons'][0])
+            return
+        if ((self.config.mode == "all" or
+                self.config.mode == "farm") and work_on_forts):
             if 'forts' in cell:
                 # Only include those with a lat/long
                 forts = [fort
@@ -203,22 +204,18 @@ class PokemonGoBot(object):
                          if 'latitude' in fort and 'type' in fort]
                 gyms = [gym for gym in cell['forts'] if 'gym_points' in gym]
 
+                # Remove stops that are still on timeout
+                forts = filter(lambda x: x["id"] not in self.fort_timeouts, forts)
+
                 # Sort all by distance from current pos- eventually this should
                 # build graph & A* it
                 forts.sort(key=lambda x: distance(self.position[
                            0], self.position[1], x['latitude'], x['longitude']))
 
-                for fort in forts:
-                    worker = MoveToFortWorker(fort, self)
-                    worker.work()
-
-                    worker = SeenFortWorker(fort, self)
-                    hack_chain = worker.work()
-                    if hack_chain > 10:
-                        #print('need a rest')
-                        break
-                    if self.config.mode == "poke":
-                        break
+                if len(forts) > 0:
+                    # Move to and spin the nearest stop.
+                    MoveToFortWorker(forts[0], self).work()
+                    SeenFortWorker(forts[0], self).work()
 
     def _setup_logging(self):
         self.log = logging.getLogger(__name__)
@@ -277,10 +274,6 @@ class PokemonGoBot(object):
         # chain subrequests (methods) into one RPC call
 
         self._print_character_info()
-
-        if self.config.initial_transfer:
-            worker = InitialTransferWorker(self)
-            worker.work()
 
         logger.log('')
         self.update_inventory()
@@ -434,12 +427,11 @@ class PokemonGoBot(object):
 
         if self.config.location:
             try:
-                location_str = u'{}'.format(str(self.config.location))
+                location_str = self.config.location.encode('utf-8')
                 location = (self._get_pos_by_name(location_str.replace(" ", "")))
                 self.api.set_position(*location)
                 logger.log('')
-                logger.log(u'Location Found: {}'.format(self.config.location.decode(
-                    'utf-8')))
+                logger.log(u'Location Found: {}'.format(self.config.location))
                 logger.log('GeoPosition: {}'.format(self.position))
                 logger.log('')
                 has_position = True
@@ -457,11 +449,10 @@ class PokemonGoBot(object):
                 with open('data/last-location-%s.json' %
                           (self.config.username)) as f:
                     location_json = json.load(f)
-
-                    self.position = (location_json['lat'],
+                    location = (location_json['lat'],
                                      location_json['lng'], 0.0)
-                    print(self.position)
-                    self.api.set_position(*self.position)
+                    print(location)
+                    self.api.set_position(*location)
 
                     logger.log('')
                     logger.log(
@@ -496,6 +487,10 @@ class PokemonGoBot(object):
         return (loc.latitude, loc.longitude, loc.altitude)
 
     def heartbeat(self):
+        # Remove forts that we can now spin again.
+        self.fort_timeouts = {id: timeout for id ,timeout
+                              in self.fort_timeouts.iteritems()
+                              if timeout >= time.time() * 1000}
         self.api.get_player()
         self.api.get_hatched_eggs()
         self.api.get_inventory()

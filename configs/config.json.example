@@ -9,20 +9,31 @@
     "walk": 4.16,
     "debug": false,
     "test": false,
-    "initial_transfer": 0,
+    "initial_transfer": false,
     "location_cache": true,
     "distance_unit": "km",
-    "item_filter": "",
+    "reconnecting_timeout": 15,
+    "item_filter": {
+      "1": { "keep" : 100 },
+      "101": { "keep" : 10 },
+      "102": { "keep" : 30 },
+      "103": { "keep" : 30 },
+      "201": { "keep" : 30 },
+      "701": { "keep" : 100 }
+    },
     "evolve_all": "NONE",
+    "evolve_speed": 20,
     "cp_min": 300,
     "use_lucky_egg": false,
     "evolve_captured": false,
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
-      // "Rattata": { "always_catch" : true }
+      "// Example of always catching Rattata:": {},
+      "// Rattata": { "always_catch" : true }
     },
     "release": {
       "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or"},
-      // "Rattata": { "always_release" : true }
+      "// Example of always releasing Rattata:": {},
+      "// Rattata": { "always_release" : true }
     }
 }

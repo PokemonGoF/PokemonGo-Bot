@@ -2,6 +2,18 @@ from math import sqrt
 
 from cell_workers.utils import distance, i2f
 from human_behaviour import random_lat_long_delta, sleep
+import sys
+
+
+def progress_bar(percentage):
+    percentage = min(100, max(0, percentage))
+    if not sys.stdout.isatty():
+        return
+    sys.stdout.write('\r')
+    # http://www.fileformat.info/info/unicode/char/003D/index.htm
+    msg = (u"[%-40s] %d%%" % (u"\u003D"*int(percentage*2//5), percentage))
+    sys.stdout.write(msg)
+    sys.stdout.flush()
 
 
 class StepWalker(object):
@@ -21,6 +33,7 @@ class StepWalker(object):
 
         self.destLat = destLat
         self.destLng = destLng
+        self.totalDist = max(1, dist)
 
         self.steps = (dist + 0.0) / (speed + 0.0)
 
@@ -40,10 +53,12 @@ class StepWalker(object):
             self.destLat,
             self.destLng
         )
-        # print 'distance'
-        # print dist
+
+        progress_bar(int(100 * (1 - dist/self.totalDist)))
 
         if (self.dLat == 0 and self.dLng == 0) or dist < self.speed:
+            if sys.stdout.isatty():
+                sys.stdout.write('\n')
             self.api.set_position(self.destLat, self.destLng, 0)
             return True
 
