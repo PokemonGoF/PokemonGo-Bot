@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from math import ceil
 
-from stepper import Stepper
-
 import logger
 from cell_workers.utils import i2f
 from human_behaviour import sleep
