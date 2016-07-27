@@ -20,7 +20,7 @@ class DropItemsWorker(object):
         except:
             return None
 
-        if max_storage/self.items_count > self.storage_trigger:
+        if self.items_count/max_storage > self.storage_trigger:
             items_to_remove = []
             if self.items[Item.ITEM_MASTER_BALL.value] > 45:
                 how_many = self.items[Item.ITEM_MASTER_BALL.value] - 45
