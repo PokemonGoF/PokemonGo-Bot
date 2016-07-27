@@ -4,8 +4,7 @@ import time
 from sets import Set
 
 from pokemongo_bot import logger
-from pokemongo_bot.human_behaviour import sleep
-
+from pokemongo_bot.human_behaviour import sleep, normalized_reticle_size, spin_modifier
 
 class PokemonCatchWorker(object):
 
@@ -146,12 +145,15 @@ class PokemonCatchWorker(object):
 
                             id_list1 = self.count_pokemon_inventory()
 
+                            reticle_size_parameter = normalized_reticle_size(self.config.catch_randomize_reticle_factor)
+                            spin_modifier_parameter = spin_modifier(self.config.catch_randomize_spin_factor)
+
                             self.api.catch_pokemon(encounter_id=encounter_id,
                                                    pokeball=pokeball,
-                                                   normalized_reticle_size=1.950,
+                                                   normalized_reticle_size=reticle_size_parameter,
                                                    spawn_point_id=self.spawn_point_guid,
                                                    hit_pokemon=1,
-                                                   spin_modifier=1,
+                                                   spin_modifier=spin_modifier_parameter,
                                                    NormalizedHitPosition=1)
                             response_dict = self.api.call()
 
