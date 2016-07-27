@@ -32,7 +32,6 @@ import logging
 import os
 import ssl
 import sys
-import signal
 import time
 from datetime import timedelta
 from getpass import getpass
@@ -43,10 +42,6 @@ from pokemongo_bot import logger
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
-
-def stop_bot(signum, frame):
-    logger.log('Time is up, will exit now..', 'yellow')
-    sys.exit(0)
 
 def init_config():
     parser = argparse.ArgumentParser()
@@ -225,11 +220,8 @@ def init_config():
 
     if config.stop_after:
         try:
-            signal.signal(signal.SIGALRM, stop_bot)
-            config.stop_after = float(config.stop_after)
-            signal.alarm(int(config.stop_after * 60))
-            logger.log('Bot will stop farming after ' + str(config.stop_after) + ' minutes.', 'yellow')
-        except Exception as e:
+            logger.log('Bot will stop farming in ' + str(config.stop_after) + ' minutes.', 'yellow')
+        except:
             logger.log('Stop after value should be numeric.', 'red')
             logger.log('Bot will run until user-interrupted.', 'green')
 
@@ -257,6 +249,7 @@ def main():
     logger.log('Configuration initialized', 'yellow')
 
     finished = False
+    stop_after = time.time() + config.stop_after*60
 
     while not finished:
         try:
@@ -268,6 +261,10 @@ def main():
 
             while True:
                 bot.take_step()
+                if config.stop_after and time.time() > stop_after:
+                    logger.log('Time is up, will exit now..', 'yellow')
+                    # TODO: write a function for bot metrics and call it here too
+                    sys.exit(0)
 
         except KeyboardInterrupt:
             logger.log('Exiting PokemonGo Bot', 'red')
