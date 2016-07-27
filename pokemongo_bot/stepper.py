@@ -10,7 +10,7 @@ from s2sphere import CellId, LatLng
 from google.protobuf.internal import encoder
 
 from human_behaviour import sleep, random_lat_long_delta
-from cell_workers.utils import distance, i2f, format_time, convert
+from cell_workers.utils import distance, i2f, format_time, format_dist
 
 from pgoapi.utilities import f2i, h2f
 import logger
@@ -91,7 +91,7 @@ class Stepper(object):
             self.api.set_position(lat, lng, alt)
             self.bot.heartbeat()
             logger.log("[#] Finished walking")
-            logger.log('[#] Total distance walked: ' + str(convert(self.total_distance, "m", self.config.distance_unit)) + self.config.distance_unit)
+            logger.log('[#] Total distance walked: ' + format_dist(self.total_distance, self.config.distance_unit))
 
     def _work_at_position(self, lat, lng, alt, pokemon_only=False):
         cellid = self._get_cellid(lat, lng)
