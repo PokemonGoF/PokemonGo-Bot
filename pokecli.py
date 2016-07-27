@@ -189,31 +189,6 @@ def init_config():
         if key in config and value:
             setattr(config, key, value)
 
-    if 'catch' in load:
-        config.catch = load['catch']
-    else:
-        config.catch = {}
-
-    if 'release' in load:
-        config.release = load['release']
-    else:
-        config.release = {}
-
-    if 'item_filter' in load:
-        config.item_filter = load['item_filter']
-    else:
-        config.item_filter = {}
-    
-    if 'action_wait_min' in load:
-        config.action_wait_min = load['action_wait_min']
-    else:
-        config.action_wait_min = 1
-    
-    if 'action_wait_max' in load:
-        config.action_wait_max = load['action_wait_max']
-    else:
-        config.action_wait_max = 4
-
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.item_filter = load.get('item_filter', {})
