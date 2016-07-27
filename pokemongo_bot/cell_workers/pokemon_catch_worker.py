@@ -216,8 +216,8 @@ class PokemonCatchWorker(object):
                                         if len(pokemon_to_transfer) == 0:
                                             raise RuntimeError(
                                                 'Trying to transfer 0 pokemons!')
-                                        self.transfer_pokemon(
-                                            pokemon_to_transfer[0])
+                                        self.transfer_pokemon(pokemon_to_transfer[0])
+                                        self.bot.metrics.released_pokemon()
                                         logger.log(
                                             '{} has been exchanged for candy!'.format(pokemon_name), 'green')
 
