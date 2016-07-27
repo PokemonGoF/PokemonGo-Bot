@@ -91,7 +91,7 @@ class Stepper(object):
             self.api.set_position(lat, lng, alt)
             self.bot.heartbeat()
             logger.log("[#] Finished walking")
-            logger.log('[#] Total distance walked: ' + str(convert(self.total_distance, "m", self.config.distance_unit)) + ' ' + self.config.distance_unit + '.')
+            logger.log('[#] Total distance walked: ' + str(convert(self.total_distance, "m", self.config.distance_unit)) + self.config.distance_unit)
 
     def _work_at_position(self, lat, lng, alt, pokemon_only=False):
         cellid = self._get_cellid(lat, lng)
