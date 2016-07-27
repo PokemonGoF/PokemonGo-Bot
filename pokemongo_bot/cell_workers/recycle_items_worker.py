@@ -10,6 +10,7 @@ class RecycleItemsWorker(object):
         self.item_list = bot.item_list
 
     def work(self):
+        logger.log('Starting to recycle items...', 'yellow')
         item_count_dict = self.bot.item_inventory_count('all')
 
         for item_id, bag_count in item_count_dict.iteritems():
@@ -21,7 +22,6 @@ class RecycleItemsWorker(object):
             bag_count = self.bot.item_inventory_count(item_id)
             if str(item_id) in self.config.item_filter and bag_count > id_filter_keep:
                 items_recycle_count = bag_count - id_filter_keep
-                logger.log("-- Recycling " + str(items_recycle_count) + "x " + item_name + " to match filter "+ str(id_filter_keep) +"...", 'green')
 
                 response_dict_recycle = self.send_recycle_item_request(
                     item_id=item_id,
@@ -33,9 +33,16 @@ class RecycleItemsWorker(object):
                     .get('result', 0)
 
                 if result == 1: # Request success
-                    logger.log("-- Recycled " + item_name + "!", 'green')
+                    message_template = "-- Recycled {}x {} (keeps only {} maximum) "
+                    message = message_template.format(
+                        str(items_recycle_count),
+                        item_name,
+                        str(id_filter_keep)
+                    )
+                    logger.log(message, 'green')
                 else:
-                    logger.log("-- Recycling " + item_name + "has failed!", 'red')
+                    logger.log("-- Failed to recycle " + item_name + "has failed!", 'red')
+        logger.log('Finished.', 'yellow')
 
     def send_recycle_item_request(self, item_id, count):
         self.api.recycle_inventory_item(item_id=item_id, count=count)
