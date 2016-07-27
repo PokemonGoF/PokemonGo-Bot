@@ -101,6 +101,7 @@ src/
 web/
 data/last-location*.json
 data/catch-ignore.yml
+data/cells-*.json
 
 #Multiple config
 configs/*
