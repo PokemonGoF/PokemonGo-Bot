@@ -94,8 +94,13 @@ def format_time(seconds):
     return '{:.2f} seconds'.format(seconds)
 
 
-def i2f(int):
-    return struct.unpack('<d', struct.pack('<Q', int))[0]
+def i2f(intVal):
+    #0-255 only so negative numbers don't work and other times 
+    try: 
+        odd_number = struct.unpack('<d', struct.pack('<d', intVal))[0]
+        return odd_number
+    except struct.error as e:
+        return struct.unpack('<d', struct.pack('<d', abs(intVal)))[0]
 
 
 def print_green(message):
