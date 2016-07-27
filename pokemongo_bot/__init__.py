@@ -16,11 +16,15 @@ from pgoapi.utilities import f2i
 import logger
 from cell_workers import CatchVisiblePokemonWorker, PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker, RecycleItemsWorker
 from cell_workers.utils import distance, get_cellid, encode, i2f
+from event_handlers import LoggingHandler
 from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
+from pokemongo_bot.event_handlers.sio_runner import SocketIoRunner
+from pokemongo_bot.event_handlers.socketio_handler import SocketIoHandler
 from spiral_navigator import SpiralNavigator
 from worker_result import WorkerResult
+from event_manager import EventManager
 
 
 class PokemonGoBot(object):
@@ -36,6 +40,13 @@ class PokemonGoBot(object):
         self.item_list = json.load(open(os.path.join('data', 'items.json')))
         self.metrics = Metrics(self)
         self.latest_inventory = None
+        self.event_manager = EventManager()
+        self.event_manager.add_handler(LoggingHandler())
+        self.sio_runner = SocketIoRunner('', 8000)
+        self.sio_runner.start_listening_async()
+        self.event_manager.add_handler(SocketIoHandler(self.sio_runner))
+        self.event_manager.register_event("location", parameters=['lat', 'lng'])
+        self.event_manager.register_event("player_info", parameters=['player'])
 
     def start(self):
         self._setup_logging()
@@ -44,6 +55,7 @@ class PokemonGoBot(object):
         random.seed()
 
     def take_step(self):
+        #pass
         self.process_cells()
 
     def process_cells(self):
@@ -119,6 +131,8 @@ class PokemonGoBot(object):
                     }, outfile)
         except IOError as e:
             logger.log('[x] Error while opening location file: %s' % e, 'red')
+
+        self.event_manager.emit("location", lat=lat, lng=lng)
 
         user_data_lastlocation = os.path.join('data', 'last-location-%s.json' % (self.config.username))
         try:
@@ -525,6 +539,7 @@ class PokemonGoBot(object):
     def get_player_info(self):
         response_dict = self.get_inventory()
         if 'responses' in response_dict:
+            self.event_manager.emit("player_info", player=response_dict)
             if 'GET_INVENTORY' in response_dict['responses']:
                 if 'inventory_delta' in response_dict['responses'][
                         'GET_INVENTORY']:
