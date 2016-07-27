@@ -44,9 +44,9 @@ class PokemonGoBot(object):
         random.seed()
 
     def take_step(self):
-        self.process_cells(work_on_forts=True)
+        self.process_cells()
 
-    def process_cells(self, work_on_forts=True):
+    def process_cells(self):
         location = self.position[0:2]
         cells = self.find_close_cells(*location)
 
@@ -64,7 +64,7 @@ class PokemonGoBot(object):
 
         # Have the worker treat the whole area as a single cell.
         self.work_on_cell({"forts": forts, "wild_pokemons": wild_pokemons,
-                           "catchable_pokemons": catchable_pokemons}, location, work_on_forts)
+                           "catchable_pokemons": catchable_pokemons}, location)
 
     def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
         # we can call the function with no arguments and still get the position and map_cells
@@ -156,7 +156,7 @@ class PokemonGoBot(object):
             )
         return map_cells
 
-    def work_on_cell(self, cell, position, work_on_forts=1):
+    def work_on_cell(self, cell, position):
         # Check if session token has expired
         self.check_session(position)
 
@@ -174,8 +174,11 @@ class PokemonGoBot(object):
         if worker.work() == WorkerResult.RUNNING:
             return
 
-        if ((self.config.mode == "all" or
-                self.config.mode == "farm") and work_on_forts):
+
+        number_of_things_gained_by_stop = 5
+
+        if ((self.get_inventory_count('item') < self._player['max_item_storage'] - 5) and
+            (self.config.mode == "all" or self.config.mode == "farm")):
             if 'forts' in cell:
                 # Only include those with a lat/long
                 forts = [fort
@@ -273,7 +276,8 @@ class PokemonGoBot(object):
         currency_2 = "0"
 
         if response_dict:
-            player = response_dict['responses']['GET_PLAYER']['player_data']
+            self._player = response_dict['responses']['GET_PLAYER']['player_data']
+            player = self._player
         else:
             logger.log("The API didn't return player info, servers are unstable - retrying.", 'red')
             sleep(5)
