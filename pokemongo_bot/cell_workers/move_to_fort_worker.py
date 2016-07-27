@@ -30,30 +30,19 @@ class MoveToFortWorker(object):
             logger.log('Need to move closer to Pokestop')
             position = (lat, lng, 0.0)
 
-            if self.config.walk > 0:
-                if self._step_walker == None:
-                    self._step_walker = StepWalker(
-                        self.bot,
-                        self.config.walk,
-                        self.api._position_lat,
-                        self.api._position_lng,
-                        position[0],
-                        position[1]
-                    )
+            if self._step_walker == None:
+                self._step_walker = StepWalker(
+                    self.bot,
+                    self.config.walk,
+                    self.api._position_lat,
+                    self.api._position_lng,
+                    position[0],
+                    position[1]
+                )
 
 
-                if self._step_walker.step():
-                    return WorkerResult.SUCCESS
-                else:
-                    return WorkerResult.RUNNING
+            if not self._step_walker.step():
+                return WorkerResult.RUNNING
 
-            else:
-                self.api.set_position(*position)
-
-            self.api.player_update(latitude=lat, longitude=lng)
-            response_dict = self.api.call()
-            logger.log('Arrived at Pokestop')
-            sleep(2)
-            return WorkerResult.SUCCESS
-
-        return None
+        logger.log('Arrived at Pokestop')
+        return WorkerResult.SUCCESS
