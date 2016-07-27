@@ -12,6 +12,7 @@
     "initial_transfer": false,
     "location_cache": true,
     "distance_unit": "km",
+    "stop_after": 60,
     "item_filter": {
       "1": { "keep" : 100 },
       "101": { "keep" : 10 },
