@@ -10,6 +10,7 @@ class RecycleItemsWorker(object):
         self.item_list = bot.item_list
 
     def work(self):
+        self.bot.latest_inventory = None
         item_count_dict = self.bot.item_inventory_count('all')
 
         for item_id, bag_count in item_count_dict.iteritems():
