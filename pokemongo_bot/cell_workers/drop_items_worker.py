@@ -5,23 +5,22 @@ from pokemongo_bot.item_list import Item
 from pokemongo_bot import logger
 
 class DropItemsWorker(object):
-    def __init__(self, bot, items_count=0, max_storage=100, items={}):
+    def __init__(self, bot, storage_trigger):
         self.bot = bot
         self.api = bot.api
-        self.items_count = items_count
-        self.max_storage = max_storage
-        self.items = items
-
-    def check(self):
-        self.api.get_player()
-        response_dict = self.api.call()
-        self.max_storage = response_dict['responses']['GET_PLAYER']['player_data']['max_item_storage']
         self.items_count = self.bot.get_inventory_count('item')
         self.items = self.bot.current_inventory()
-        self.work()
+        self.storage_trigger = storage_trigger
 
     def work(self):
-        if (self.items_count*100)/self.max_storage > 80:
+        try:
+            self.api.get_player()
+            response_dict = self.api.call()
+            max_storage = response_dict['responses']['GET_PLAYER']['player_data']['max_item_storage']
+        except:
+            return None
+
+        if max_storage/self.items_count > self.storage_trigger:
             items_to_remove = []
             if self.items[Item.ITEM_MASTER_BALL.value] > 45:
                 how_many = self.items[Item.ITEM_MASTER_BALL.value] - 45
