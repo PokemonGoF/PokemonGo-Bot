@@ -2,6 +2,7 @@ from utils import distance, format_dist, i2f
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot import logger
 from pokemongo_bot.step_walker import StepWalker
+from pokemongo_bot.worker_result import WorkerResult
 
 class MoveToFortWorker(object):
     def __init__(self, fort, bot):
@@ -11,6 +12,7 @@ class MoveToFortWorker(object):
         self.config = bot.config
         self.navigator = bot.navigator
         self.position = bot.position
+        self._step_walker = None
 
     def work(self):
         lat = self.fort['latitude']
@@ -29,20 +31,21 @@ class MoveToFortWorker(object):
             position = (lat, lng, 0.0)
 
             if self.config.walk > 0:
-                step_walker = StepWalker(
-                    self.bot,
-                    self.config.walk,
-                    self.api._position_lat,
-                    self.api._position_lng,
-                    position[0],
-                    position[1]
-                )
+                if self._step_walker == None:
+                    self._step_walker = StepWalker(
+                        self.bot,
+                        self.config.walk,
+                        self.api._position_lat,
+                        self.api._position_lng,
+                        position[0],
+                        position[1]
+                    )
 
-                while distance(i2f(self.api._position_lat), i2f(self.api._position_lng), lat, lng) > 10:
-                    if step_walker.step():
-                        break
-                    else:
-                        self.bot.process_cells(work_on_forts=False)
+
+                if self._step_walker.step():
+                    return WorkerResult.SUCCESS
+                else:
+                    return WorkerResult.RUNNING
 
             else:
                 self.api.set_position(*position)
@@ -51,6 +54,6 @@ class MoveToFortWorker(object):
             response_dict = self.api.call()
             logger.log('Arrived at Pokestop')
             sleep(2)
-            return response_dict
+            return WorkerResult.SUCCESS
 
         return None
