@@ -378,29 +378,3 @@ class PokemonCatchWorker(object):
         if not release_config:
             release_config = {}
         return release_config
-<<<<<<< HEAD
-
-    def create_encounter_api_call(self):
-
-        encounter_id = self.pokemon['encounter_id']
-        player_latitude = self.pokemon['latitude']
-        player_longitude = self.pokemon['longitude']
-
-        if 'spawnpoint_id' in self.pokemon:
-            spawnpoint_id = self.pokemon['spawnpoint_id']
-            self.spawn_point_guid = spawnpoint_id
-            self.response_key = 'ENCOUNTER'
-            self.response_status_key = 'status'
-            self.api.encounter(encounter_id=encounter_id, spawnpoint_id=spawnpoint_id,
-                               player_latitude=player_latitude, player_longitude=player_longitude)
-        else:
-            fort_id = self.pokemon['fort_id']
-            self.spawn_point_guid = fort_id
-            self.response_key = 'DISK_ENCOUNTER'
-            self. response_status_key = 'result'
-            self.api.disk_encounter(encounter_id=encounter_id, fort_id=fort_id,
-                                    player_latitude=player_latitude, player_longitude=player_longitude)
-
-        return self.api.call()
-=======
->>>>>>> parent of 6a28333... Fixed 'Pokemon will now be caught from lures' (#1072)
