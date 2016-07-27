@@ -348,6 +348,7 @@ If using multiple usernames format like this:
  * riberod07
  * th3w4y
  * Leaklessgfy
+ * kennycoc
  
 -------
 ## Credits
