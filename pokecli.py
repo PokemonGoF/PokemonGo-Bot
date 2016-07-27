@@ -176,6 +176,12 @@ def init_config():
         type=float,
         default=15.0
     )
+    parser.add_argument(
+        "-ie",
+        "--incubate-eggs",
+        help="Bot will manage egg hatching and incubation",
+        action='store_true'
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()
