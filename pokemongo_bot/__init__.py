@@ -13,7 +13,7 @@ from pgoapi import PGoApi
 from pgoapi.utilities import f2i
 
 import logger
-from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
+from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker, DropItemsWorker
 from cell_workers.utils import distance, get_cellid, encode, i2f
 from human_behaviour import sleep
 from item_list import Item
@@ -339,7 +339,8 @@ class PokemonGoBot(object):
 
         logger.log('')
 
-        self.check_inventory_space(items_count, player['max_item_storage'], items_stock.copy())
+        worker = DropItemsWorker(self, items_count, player['max_item_storage'], items_stock.copy())
+        worker.work()
 
     def catch_pokemon(self, pokemon):
         worker = PokemonCatchWorker(pokemon, self)
