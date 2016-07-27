@@ -116,7 +116,7 @@ class SeenFortWorker(object):
                 logger.log('Possibly searching too often - taking a short rest :)', 'yellow')
                 self.bot.fort_timeouts[self.fort["id"]] = (time.time() + 300) * 1000  # Don't spin for 5m
                 return 11
-        sleep(8)
+        sleep(2)
         return 0
 
     @staticmethod
