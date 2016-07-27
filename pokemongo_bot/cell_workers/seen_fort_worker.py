@@ -99,6 +99,7 @@ class SeenFortWorker(object):
 
                 pokestop_cooldown = spin_details.get(
                     'cooldown_complete_timestamp_ms')
+                self.bot.fort_timeouts.update({self.fort["id"]: pokestop_cooldown})
                 if pokestop_cooldown:
                     seconds_since_epoch = time.time()
                     logger.log('PokeStop on cooldown. Time left: ' + str(
@@ -120,6 +121,7 @@ class SeenFortWorker(object):
                 pokestop_cooldown = spin_details.get(
                     'cooldown_complete_timestamp_ms')
                 if pokestop_cooldown:
+                    self.bot.fort_timeouts.update({self.fort["id"]: pokestop_cooldown})
                     seconds_since_epoch = time.time()
                     logger.log('PokeStop on cooldown. Time left: ' + str(
                         format_time((pokestop_cooldown / 1000) -
@@ -137,6 +139,7 @@ class SeenFortWorker(object):
                     'chain_hack_sequence_number']
             else:
                 logger.log('Possibly searching too often - taking a short rest :)', 'yellow')
+                self.bot.fort_timeouts[self.fort["id"]] = (time.time() + 300) * 1000  # Don't spin for 5m
                 return 11
         sleep(8)
         return 0

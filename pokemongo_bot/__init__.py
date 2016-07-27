@@ -30,6 +30,7 @@ class PokemonGoBot(object):
 
     def __init__(self, config):
         self.config = config
+        self.fort_timeouts = dict()
         self.pokemon_list = json.load(open(os.path.join('data', 'pokemon.json')))
         self.item_list = json.load(open(os.path.join('data', 'items.json')))
         self.metrics = Metrics(self)
@@ -47,8 +48,22 @@ class PokemonGoBot(object):
     def process_cells(self, work_on_forts=True):
         location = self.position[0:2]
         cells = self.find_close_cells(*location)
+
+        # Combine all cells into a single dict of the items we care about.
+        forts = []
+        wild_pokemons = []
+        catchable_pokemons = []
         for cell in cells:
-            self.work_on_cell(cell, location, work_on_forts)
+            if "forts" in cell and len(cell["forts"]):
+                forts += cell["forts"]
+            if "wild_pokemons" in cell and len(cell["wild_pokemons"]):
+                wild_pokemons += cell["wild_pokemons"]
+            if "catchable_pokemons" in cell and len(cell["catchable_pokemons"]):
+                catchable_pokemons += cell["catchable_pokemons"]
+
+        # Have the worker treat the whole area as a single cell.
+        self.work_on_cell({"forts": forts, "wild_pokemons": wild_pokemons,
+                           "catchable_pokemons": catchable_pokemons}, location, work_on_forts)
 
     def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
         # we can call the function with no arguments and still get the position and map_cells
@@ -190,10 +205,11 @@ class PokemonGoBot(object):
                 with open(user_web_catchable, 'w') as outfile:
                     json.dump(pokemon, outfile)
 
-                if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
-                    break
                 with open(user_web_catchable, 'w') as outfile:
                     json.dump({}, outfile)
+
+            self.catch_pokemon(cell['catchable_pokemons'][0])
+            return
 
         if (self.config.mode == "all" or self.config.mode == "poke"
             ) and 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
@@ -202,9 +218,8 @@ class PokemonGoBot(object):
             cell['wild_pokemons'].sort(
                 key=
                 lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
-            for pokemon in cell['wild_pokemons']:
-                if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
-                    break
+            self.catch_pokemon(cell['wild_pokemons'][0])
+            return
         if ((self.config.mode == "all" or
                 self.config.mode == "farm") and work_on_forts):
             if 'forts' in cell:
@@ -214,22 +229,18 @@ class PokemonGoBot(object):
                          if 'latitude' in fort and 'type' in fort]
                 gyms = [gym for gym in cell['forts'] if 'gym_points' in gym]
 
+                # Remove stops that are still on timeout
+                forts = filter(lambda x: x["id"] not in self.fort_timeouts, forts)
+
                 # Sort all by distance from current pos- eventually this should
                 # build graph & A* it
                 forts.sort(key=lambda x: distance(self.position[
                            0], self.position[1], x['latitude'], x['longitude']))
 
-                for fort in forts:
-                    worker = MoveToFortWorker(fort, self)
-                    worker.work()
-
-                    worker = SeenFortWorker(fort, self)
-                    hack_chain = worker.work()
-                    if hack_chain > 10:
-                        #print('need a rest')
-                        break
-                    if self.config.mode == "poke":
-                        break
+                if len(forts) > 0:
+                    # Move to and spin the nearest stop.
+                    MoveToFortWorker(forts[0], self).work()
+                    SeenFortWorker(forts[0], self).work()
 
     def _setup_logging(self):
         self.log = logging.getLogger(__name__)
@@ -506,6 +517,10 @@ class PokemonGoBot(object):
         return (loc.latitude, loc.longitude, loc.altitude)
 
     def heartbeat(self):
+        # Remove forts that we can now spin again.
+        self.fort_timeouts = {id: timeout for id ,timeout
+                              in self.fort_timeouts.iteritems()
+                              if timeout >= time.time() * 1000}
         self.api.get_player()
         self.api.get_hatched_eggs()
         self.api.get_inventory()
