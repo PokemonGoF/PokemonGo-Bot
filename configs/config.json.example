@@ -22,6 +22,7 @@
       "701": { "keep" : 100 }
     },
     "evolve_all": "NONE",
+    "evolve_speed": 20,
     "cp_min": 300,
     "use_lucky_egg": false,
     "evolve_captured": false,
