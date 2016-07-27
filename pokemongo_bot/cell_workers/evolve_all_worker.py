@@ -16,8 +16,7 @@ class EvolveAllWorker(object):
         if not self._should_run():
             return
 
-        self.api.get_inventory()
-        response_dict = self.api.call()
+        response_dict = self.bot.get_inventory()
         cache = {}
 
         try:
@@ -85,8 +84,7 @@ class EvolveAllWorker(object):
         return skip_evolves
 
     def _release_evolved(self, release_cand_list_ids):
-        self.api.get_inventory()
-        response_dict = self.api.call()
+        response_dict = self.bot.get_inventory()
         cache = {}
 
         try:
@@ -180,8 +178,7 @@ class EvolveAllWorker(object):
         response_dict = self.api.call()
 
     def count_pokemon_inventory(self):
-        self.api.get_inventory()
-        response_dict = self.api.call()
+        response_dict = self.bot.get_inventory()
         id_list = []
         return self.counting_pokemon(response_dict, id_list)
 

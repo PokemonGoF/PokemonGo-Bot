@@ -58,6 +58,7 @@ class SeenFortWorker(object):
 
                 items_awarded = spin_details.get('items_awarded', False)
                 if items_awarded:
+                    self.bot.latest_inventory = None
                     tmp_count_items = {}
                     for item in items_awarded:
                         item_id = item['item_id']
