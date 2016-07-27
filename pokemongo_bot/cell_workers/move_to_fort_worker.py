@@ -2,7 +2,6 @@ from utils import distance, format_dist, i2f
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot import logger
 from pokemongo_bot.step_walker import StepWalker
-from pokemongo_bot.worker_result import WorkerResult
 
 class MoveToFortWorker(object):
 
