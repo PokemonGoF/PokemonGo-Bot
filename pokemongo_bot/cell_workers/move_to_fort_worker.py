@@ -41,14 +41,16 @@ class MoveToFortWorker(object):
                 )
 
 
-        step_walker = self._step_walker
-            if step_walker == True:
+            step_walker = self._step_walker
+                if step_walker == True:
                 self.api.player_update(latitude=lat, longitude=lng)
                 response_dict = self.api.call()
-                logger.log('Arrived at Pokestop')
+                logger.log('[#] Arrived at Pokestop')
                 return WorkerResult.SUCCESS
+                sleep(2)
                 elif step_walker == False:
                 return WorkerResult.RUNNING
+                 
 
         logger.log('Arrived at Pokestop')
         return WorkerResult.SUCCESS
