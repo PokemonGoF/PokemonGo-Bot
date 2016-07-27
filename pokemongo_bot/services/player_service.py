@@ -104,12 +104,15 @@ class PlayerService():
             pokecoins = player['currencies'][0]['amount']
         if 'amount' in player['currencies'][1]:
             stardust = player['currencies'][1]['amount']
+
         logger.log('')
         logger.log('--- {username} ---'.format(**player), 'cyan')
         self.get_player_info()
+
         logger.log('Pokemon Bag: {}/{}'.format(self.get_inventory_count('pokemon'), player['max_pokemon_storage']), 'cyan')
         logger.log('Items: {}/{}'.format(self.get_inventory_count('item'), player['max_item_storage']), 'cyan')
         logger.log('Stardust: {}'.format(stardust) + ' | Pokecoins: {}'.format(pokecoins), 'cyan')
+
         # Items Output
         logger.log('PokeBalls: ' + str(items_stock[1]) +
             ' | GreatBalls: ' + str(items_stock[2]) +
@@ -134,67 +137,86 @@ class PlayerService():
     def get_inventory_count(self, what):
         response_dict = self.get_inventory()
 
-        if 'responses' in response_dict:
-            if 'GET_INVENTORY' in response_dict['responses']:
-                if 'inventory_delta' in response_dict['responses'][
-                        'GET_INVENTORY']:
-                    if 'inventory_items' in response_dict['responses'][
-                            'GET_INVENTORY']['inventory_delta']:
-                        pokecount = 0
-                        itemcount = 1
-                        for item in response_dict['responses'][
-                                'GET_INVENTORY']['inventory_delta'][
-                                    'inventory_items']:
-                            #print('item {}'.format(item))
-                            if 'inventory_item_data' in item:
-                                if 'pokemon_data' in item[
-                                        'inventory_item_data']:
-                                    pokecount = pokecount + 1
-                                if 'item' in item['inventory_item_data']:
-                                    if 'count' in item['inventory_item_data'][
-                                            'item']:
-                                        itemcount = itemcount + \
-                                            item['inventory_item_data'][
-                                                'item']['count']
+        if not 'responses' in response_dict:
+            return
+
+        if not 'GET_INVENTORY' in response_dict['responses']:
+            return
+
+        if not 'inventory_delta' in response_dict['responses']['GET_INVENTORY']:
+            return
+
+        if not 'inventory_items' in response_dict['responses']['GET_INVENTORY']['inventory_delta']:
+            return
+
+        pokecount = 0
+        itemcount = 1
+        r = response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+
+        for item in r:
+            #print('item {}'.format(item))
+            if not 'inventory_item_data' in item:
+                continue
+
+            if 'pokemon_data' in item['inventory_item_data']:
+                    pokecount = pokecount + 1
+
+            if not 'item' in item['inventory_item_data']:
+                continue
+
+            if 'count' in item['inventory_item_data']['item']:
+                itemcount = itemcount + \
+                    item['inventory_item_data'][
+                        'item']['count']
+
         if 'pokemon' in what:
             return pokecount
         if 'item' in what:
             return itemcount
+
         return '0'
 
     def get_player_info(self, response_dict):
         response_dict = self.get_inventory()
-        if 'responses' in response_dict:
-            if 'GET_INVENTORY' in response_dict['responses']:
-                if 'inventory_delta' in response_dict['responses'][
-                        'GET_INVENTORY']:
-                    if 'inventory_items' in response_dict['responses'][
-                            'GET_INVENTORY']['inventory_delta']:
-                        pokecount = 0
-                        itemcount = 1
-                        for item in response_dict['responses'][
-                                'GET_INVENTORY']['inventory_delta'][
-                                    'inventory_items']:
-                            #print('item {}'.format(item))
-                            if 'inventory_item_data' in item:
-                                if 'player_stats' in item[
-                                        'inventory_item_data']:
-                                    playerdata = item['inventory_item_data'][
-                                        'player_stats']
 
-                                    nextlvlxp = (
-                                        int(playerdata.get('next_level_xp', 0)) -
-                                        int(playerdata.get('experience', 0)))
+        if not 'responses' in response_dict:
+            return
 
-                                    if 'level' in playerdata:
-                                        if 'experience' in playerdata:
-                                            logger.log('Level: {level}'.format(**playerdata) +
-                                                ' (Next Level: {} XP)'.format(nextlvlxp) +
-                                                 ' (Total: {experience} XP)'.format(**playerdata), 'cyan')
+        if not 'GET_INVENTORY' in response_dict['responses']:
+            return
 
+        if not 'inventory_delta' in response_dict['responses']['GET_INVENTORY']:
+            return
 
-                                    if 'pokemons_captured' in playerdata:
-                                        if 'poke_stop_visits' in playerdata:
-                                            logger.log(
-                                                'Pokemon Captured: {pokemons_captured}'.format(**playerdata) +
-                                                ' | Pokestops Visited: {poke_stop_visits}'.format(**playerdata), 'cyan')
+        if not 'inventory_items' in response_dict['responses']['GET_INVENTORY']['inventory_delta']:
+            return
+
+        pokecount = 0
+        itemcount = 1
+        r = response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+
+        for item in r:
+            #print('item {}'.format(item))
+            if not 'inventory_item_data' in item:
+                continue
+
+            if not 'player_stats' in item['inventory_item_data']:
+                continue
+
+            playerdata = item['inventory_item_data']['player_stats']
+
+            nextlvlxp = (
+                int(playerdata.get('next_level_xp', 0)) -
+                int(playerdata.get('experience', 0)))
+
+            if 'level' in playerdata:
+                if 'experience' in playerdata:
+                    logger.log('Level: {level}'.format(**playerdata) +
+                        ' (Next Level: {} XP)'.format(nextlvlxp) +
+                         ' (Total: {experience} XP)'.format(**playerdata), 'cyan')
+
+            if 'pokemons_captured' in playerdata:
+                if 'poke_stop_visits' in playerdata:
+                    logger.log(
+                        'Pokemon Captured: {pokemons_captured}'.format(**playerdata) +
+                        ' | Pokestops Visited: {poke_stop_visits}'.format(**playerdata), 'cyan')
