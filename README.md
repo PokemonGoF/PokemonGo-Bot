@@ -212,29 +212,44 @@ will release all Pidgey caught.
     By setting the `evolve_all` attribute in config.json, you can instruct the bot to automatically
     evolve specified pokemon on startup. This is especially useful for batch-evolving after popping up
     a lucky egg (currently this needs to be done manually).
-    
+
     The evolve all mechanism evolves only higher IV/CP pokemon. It works by sorting the high CP pokemon (default: 300 CP or higher)
     based on their IV values. After evolving all high CP pokemon, the mechanism will move on to evolving lower CP pokemon
     only based on their CP (if it can).
     It will also automatically transfer the evolved pokemon based on the release configuration.
-    
+
     Examples on how to use (set in config.json):
-    
+
     1. "evolve_all": "all"
       Will evolve ALL pokemon.
     2. "evolve_all": "Pidgey,Weedle"
       Will only evolve Pidgey and Weedle.
     3. Not setting evolve_all or having any other string would not evolve any pokemon on startup.
-    
+
     If you wish to change the default threshold of 300 CP, simply add the following to the config file:
     	"cp_min": <number>
-    
+
 
 ## How to run with Docker
+Start by downloading for your platform: [Mac](https://www.docker.com/products/docker#/mac), [Windows](https://www.docker.com/products/docker#/windows), or [Linux](https://www.docker.com/products/docker#/linux). Once you have Docker installed, simply create the various config.json files for your different accounts (e.g. `config-account1.json`) and then create a Docker image for PokemonGo-Bot using the Dockerfile in this repo.
+```
+cd PokemonGo-Bot
+docker build -t pokemongo-bot .
+```
+You can verify that the image was created with:
+```
+docker images
+```
 
-1. Build the image docker `build -t PokemonGo-Bot:latest .`
-2. Start a new container from this newly created image `docker run -d --name pgobot PokemonGo-Bot:latest`
-3. Check the logs in real-time `docker logs -f pgobot`
+To run PokemonGo-Bot Docker image you've created, simple run:
+```
+docker run --it --rm --name=pgo-bot-acct1 pokemongo-bot -cf config-account1.json
+```
+
+If you want to run multiple accounts with the same Docker image, simply specify different config.json and names in the Docker run command.
+Do not push your image to a registry with your config.json and account details in it!
+
+TODO: Add configuration for running multiple Docker containers from the same image for every bot instance, and a single container for the web UI.
 
 ## How to add/discover new API
   The example is [here](https://github.com/PokemonGoF/PokemonGo-Bot/commit/46e2352ce9f349cc127a408959679282f9999585)  
