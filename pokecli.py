@@ -185,24 +185,13 @@ def init_config():
         config.password = getpass("Password: ")
 
     # Passed in arguments should trump
-    for key in config.__dict__:
-        if key in load and load[key]:
-            config.__dict__[key] = load[key]
+    for key, value in load.iteritems():
+        if key in config and value:
+            setattr(config, key, value)
 
-    if 'catch' in load:
-        config.catch = load['catch']
-    else:
-        config.catch = {}
-
-    if 'release' in load:
-        config.release = load['release']
-    else:
-        config.release = {}
-
-    if 'item_filter' in load:
-        config.item_filter = load['item_filter']
-    else:
-        config.item_filter = {}
+    config.catch = load.get('catch', {})
+    config.release = load.get('release', {})
+    config.item_filter = load.get('item_filter', {})
 
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")
