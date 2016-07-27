@@ -187,6 +187,7 @@ Option | Meaning
 `distance_unit` | 	Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
 `item_filter` | 	Pass a list of unwanted items (in CSV format) to recycle when collected at a Pokestop (e.g, "101,102,103,104" to recycle potions when collected)
 `evolve_all` | 	Set to true to evolve pokemon if possible, takes pokémon as an argument as well.
+`evolve_speed` | 	Set the speed between each evolves in seconds. (Defaults to 3.7 seconds if not set)
 
 ## Catch Configuration
 Default configuration will capture all Pokemon.
