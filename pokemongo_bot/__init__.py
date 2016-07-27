@@ -219,12 +219,19 @@ class PokemonGoBot(object):
                 forts.sort(key=lambda x: distance(self.position[
                            0], self.position[1], x['latitude'], x['longitude']))
 
-                for fort in forts:
+                while len(forts) > 0:
+                    # Sort all by distance from current pos- eventually this should
+                    # build graph & A* it
+                    forts.sort(key=lambda x: distance(self.position[
+                            0], self.position[1], x['latitude'], x['longitude']))
+                    fort = forts[0]
                     worker = MoveToFortWorker(fort, self)
                     worker.work()
-
+                    if fort in forts:
+                        forts.remove(fort)
                     worker = SeenFortWorker(fort, self)
                     hack_chain = worker.work()
+                    self.position = worker.position #Update our position to the bots position
                     if hack_chain > 10:
                         #print('need a rest')
                         break

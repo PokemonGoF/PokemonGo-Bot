@@ -36,6 +36,7 @@ class SeenFortWorker(object):
             fort_name = 'Unknown'
         logger.log('Now at Pokestop: ' + fort_name + ' - Spinning...',
                    'cyan')
+        self.position = [self.fort['latitude'], self.fort['longitude']]
         sleep(2)
         self.api.fort_search(fort_id=self.fort['id'],
                              fort_latitude=lat,
