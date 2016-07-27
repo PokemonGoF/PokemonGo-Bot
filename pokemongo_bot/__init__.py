@@ -235,9 +235,10 @@ class PokemonGoBot(object):
                 forts.sort(key=lambda x: distance(self.position[
                            0], self.position[1], x['latitude'], x['longitude']))
 
-                # Move to and spin the nearest stop.
-                MoveToFortWorker(forts[0], self).work()
-                SeenFortWorker(forts[0], self).work()
+                if len(forts) > 0:
+                    # Move to and spin the nearest stop.
+                    MoveToFortWorker(forts[0], self).work()
+                    SeenFortWorker(forts[0], self).work()
 
     def _setup_logging(self):
         self.log = logging.getLogger(__name__)
