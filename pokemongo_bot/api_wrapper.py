@@ -16,7 +16,7 @@ class ApiWrapper(object):
 
     # wrap api methods
     def _can_call(self):
-        if not self._api._req_method_list:
+        if not self._api._req_method_list or len(self._api._req_method_list) == 0:
             raise RuntimeError('Trying to call the api without setting any request')
         if self._api._auth_provider is None or not self._api._auth_provider.is_login():
             logger.log('Not logged in!', 'red')
@@ -32,7 +32,7 @@ class ApiWrapper(object):
         max_retry = 5 # TODO configuration param
         try_cnt = 0
         while True:
-            self._api._req_method_list = api_req_method_list # api internally clear this field after a call
+            self._api._req_method_list = [req_method for req_method in api_req_method_list] # api internally clear this field after a call
             result = self._api.call()
             if result is None:
                 try_cnt += 1
@@ -44,15 +44,12 @@ class ApiWrapper(object):
                 break
         return result
 
-    def get_position(self):
-        return self._api.get_position()
+    def login(self, provider, username, password):
+        return self._api.login(provider, username, password)
 
-    def set_position(self, lat, lng, alt):
-        self._api.set_position(lat, lng, alt)
-
+    # fallback
     def __getattr__(self, func):
         return getattr(self._api, func)
 
-    def login(self, provider, username, password):
-        return self._api.login(provider, username, password)
+
 
