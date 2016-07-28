@@ -44,6 +44,10 @@ class PokemonTransferWorker(object):
                         logger.log("Keep {} best {}, based on {}".format(len(best_pokemons),
                                                                          pokemon_name,
                                                                          order_criteria), "green")
+                        for best_pokemon in best_pokemons:
+                            logger.log("{} [CP {}] [Potential {}]".format(pokemon_name,
+                                                                          best_pokemon['cp'],
+                                                                          best_pokemon['iv']), 'green')
 
                     if all_pokemons:
                         logger.log("Exchange {} pokemon(s)".format(len(all_pokemons)), "green")
