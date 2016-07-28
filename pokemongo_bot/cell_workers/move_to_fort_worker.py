@@ -22,9 +22,19 @@ class MoveToFortWorker(object):
 
         dist = distance(self.position[0], self.position[1], lat, lng)
 
+	global original_dist
+	try:	
+	    if not original_dist > 0:
+	        original_dist = dist
+	except NameError:
+	    original_dist = dist    
+
+	progress_scale = 3;
+	progress = (((original_dist - dist) / original_dist)*100)
+	progressbar = "[" + ("|" * int(progress//progress_scale)).ljust(int(100/progress_scale)) + "]"  
         # print('Found fort {} at distance {}m'.format(fortID, dist))
-        logger.log('[x] Found fort {} at distance {}'.format(
-            fortID, format_dist(dist, unit)))
+        logger.log('[x] Found fort {} at distance {} (initial distance {}) progress {} {}%'.format(
+            fortID, format_dist(dist, unit), format_dist(original_dist, unit), progressbar, int(progress) ))
 
         if dist > 10:
             logger.log('[x] Need to move closer to Pokestop')
@@ -40,4 +50,5 @@ class MoveToFortWorker(object):
                 return WorkerResult.RUNNING
 
         logger.log('[o] Arrived at Pokestop')
+	original_dist = 0
         return WorkerResult.SUCCESS
