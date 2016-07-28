@@ -49,7 +49,7 @@ class ApiWrapper(object):
         return True
 
 
-    def call(self, max_retry=5):
+    def call(self, max_retry=5, fail_notify=3):
         request_callers = self._pop_request_callers()
         if not self._can_call():
             return False # currently this is never ran, exceptions are raised before
@@ -62,7 +62,8 @@ class ApiWrapper(object):
             result = self._api.call()
             if not self._is_response_valid(result, request_callers):
                 try_cnt += 1
-                logger.log('Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry), 'red')
+                if try_cnt >= fail_notify:
+                    logger.log('Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry), 'red')
                 if try_cnt >= max_retry:
                     raise ServerBusyOrOfflineException()
                 sleep(1)
