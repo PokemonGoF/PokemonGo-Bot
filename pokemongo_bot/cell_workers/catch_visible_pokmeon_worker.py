@@ -15,9 +15,7 @@ class CatchVisiblePokemonWorker(object):
         self.position = bot.position
 
     def work(self):
-        config_wants_pokmeon = self.config.mode == "all" or self.config.mode == "poke"
-
-        if not config_wants_pokmeon:
+        if not self.config.catch_pokemon:
             return
 
         if 'catchable_pokemons' in self.cell and len(self.cell['catchable_pokemons']) > 0:
