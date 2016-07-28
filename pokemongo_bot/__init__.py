@@ -248,11 +248,16 @@ class PokemonGoBot(object):
         currency_1 = "0"
         currency_2 = "0"
 
-        if response_dict:
-            self._player = response_dict['responses']['GET_PLAYER']['player_data']
-            player = self._player
-        else:
-            logger.log("The API didn't return player info, servers are unstable - retrying.", 'red')
+        try:
+            if response_dict:
+                self._player = response_dict['responses']['GET_PLAYER']['player_data']
+                player = self._player
+            else:
+                logger.log("The API didn't return player info, servers are unstable - retrying.", 'red')
+                sleep(5)
+                self._print_character_info()
+        except KeyError:
+            logger.log("The response is empty, servers are unstable - retrying.", 'red')
             sleep(5)
             self._print_character_info()
 
