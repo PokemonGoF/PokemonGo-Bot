@@ -2,6 +2,7 @@
 
 from pgoapi import PGoApi
 from pgoapi.exceptions import NotLoggedInException
+from human_behaviour import sleep
 import logger
 
 class ApiWrapper(object):
