@@ -7,9 +7,9 @@ from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.cell_workers import PokemonCatchWorker
 
 class CatchVisiblePokemonWorker(object):
-    def __init__(self, bot, cell):
+    def __init__(self, bot):
         self.bot = bot
-        self.cell = cell;
+        self.cell = bot.cell;
         self.api = bot.api
         self.config = bot.config
         self.position = bot.position
