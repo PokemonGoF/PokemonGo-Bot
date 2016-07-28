@@ -22,6 +22,7 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 - [x] Limit the step to farm specific area for pokestops
 - [x] Rudimentary IV Functionality filter
 - [x] Ignore certain pokemon filter
+- [x] Adjust delay between Pokemon capture & Transfer as per configuration
 - [ ] Standalone Desktop Application
 - [ ] Hatch eggs
 - [ ] Incubate eggs
