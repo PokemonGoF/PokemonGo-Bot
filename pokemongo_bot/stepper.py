@@ -77,7 +77,7 @@ class Stepper(object):
                    " for approx. " + str(format_time(ceil(steps))))
 
         if steps != 0:
-            dist_per_step = dist / steps  # Calculate distance per step walked, for statistics
+            dist_per_step = (dist / steps)/1000  # Calculate distance per step walked, for statistics
             dLat = (lat - i2f(self.api._position_lat)) / steps
             dLng = (lng - i2f(self.api._position_lng)) / steps
 
