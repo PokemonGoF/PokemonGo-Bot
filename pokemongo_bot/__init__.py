@@ -173,7 +173,7 @@ class PokemonGoBot(object):
 
         RecycleItemsWorker(self).work()
 
-        worker = CatchVisiblePokemonWorker(self, cell)
+        worker = CatchVisiblePokemonWorker(self)
         if worker.work() == WorkerResult.RUNNING:
             return
 
