@@ -196,11 +196,6 @@ def init_config():
     if not config.password and 'password' not in load:
         config.password = getpass("Password: ")
 
-    # Passed in arguments should trump
-    for key, value in load.iteritems():
-        if key in config and value:
-            setattr(config, key, value)
-
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.item_filter = load.get('item_filter', {})
