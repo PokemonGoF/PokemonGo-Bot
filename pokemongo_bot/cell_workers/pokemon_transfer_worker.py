@@ -119,6 +119,9 @@ class PokemonTransferWorker(object):
         return logic_to_function[cp_iv_logic](*release_results.values())
 
     def check_stronger_pokemon(self, pokemon_name, pokemon_data, max_criteria_pokemon_list):
+        if not self.config.release_pokemon:
+            return
+
         release_config = self._get_release_config_for(pokemon_name)
         if release_config.get('keep_best_cp', False) or release_config.get('keep_best_iv', False):
             if release_config.get('keep_best_cp', False) and release_config.get('keep_best_iv', False):
