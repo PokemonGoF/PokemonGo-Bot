@@ -45,8 +45,7 @@ class PokemonGoBot(object):
         random.seed()
 
     def tick(self):
-        meta_cell = self.get_meta_cell()
-        self.cell = meta_cell
+        self.cell = self.get_meta_cell()
 
         # Check if session token has expired
         self.check_session(self.position[0:2])
