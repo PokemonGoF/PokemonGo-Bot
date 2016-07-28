@@ -31,12 +31,12 @@ class IncubateEggsWorker(object):
 
                 if "egg_incubators" in inv_data:
                     for incubator in inv_data.get("egg_incubators", {}).get("egg_incubator", []):
-                        if "start_km_walked" not in incubator:
+                        if "pokemon_id" not in incubator:
                             incubators.append({"id":incubator.get("id", -1), "used":False})
 
                 if "pokemon_data" in inv_data:
                     pokemon = inv_data.get("pokemon_data", {})
-                    if pokemon.get("is_egg", False) and "egg_km_walked_target" in pokemon:
+                    if pokemon.get("is_egg", False) and "egg_incubator_id" not in pokemon:
                         eggs.append({"id": pokemon.get("id", -1), "km": pokemon.get("egg_km_walked_target", -1), "used": False})
 
             sorting = self.config.longer_eggs_first
