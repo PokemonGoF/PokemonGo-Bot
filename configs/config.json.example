@@ -13,6 +13,9 @@
     "test": false,
     "location_cache": true,
     "distance_unit": "km",
+    "pokestop_cooldown": "300",
+    "cooldown_min": 300,
+    "cooldown_max": 900,
     "reconnecting_timeout": 15,
     "item_filter": {
       "1": { "keep" : 100 },
