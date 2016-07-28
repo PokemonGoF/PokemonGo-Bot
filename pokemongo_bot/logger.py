@@ -16,6 +16,7 @@ def log(string, color = 'white'):
 		logs_file.close()
 	except:
 		print "Unknown error while writing logs file!"
+		raise
     
 	colorHex = {
         'red': '91m',
