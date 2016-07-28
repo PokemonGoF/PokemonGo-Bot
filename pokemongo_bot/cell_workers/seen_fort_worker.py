@@ -75,7 +75,7 @@ class SeenFortWorker(object):
 
             spin_details = response_dict['responses']['FORT_SEARCH']
             spin_result = spin_details.get('result', -1)
-            userpokestop_coolwon = 0
+            userpokestop_cooldown = 0
 
             if self.config.pokestop_cooldown == 'random':
                 userpokestop_cooldown = (time.time() + random.randint(int(self.config.cooldown_min), int(self.config.cooldown_max))) * 1000
