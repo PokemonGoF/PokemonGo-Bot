@@ -27,8 +27,10 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 - [ ] Hatch eggs
 - [ ] Incubate eggs
 - [ ] Use candy
-- [ ] Fight Gym
 - [ ] Inventory cleaner
+
+## Gym Battles
+This bot takes a strong stance against automating gym battles. Botting gyms will have a negative effect on most players and thus the game as a whole. We will thus never accept contributions or changes containing code specific for gym battles.
 
 ## Wiki
 All information on [Getting Started](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Getting-Started) is available in the [Wiki](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/)!
