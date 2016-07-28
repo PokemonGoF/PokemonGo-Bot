@@ -71,7 +71,7 @@ class PokemonTransferWorker(object):
         for individual_stat in iv_stats:
             try:
                 total_iv += pokemon_data[individual_stat]
-            except:
+            except Exception:
                 continue
         return round((total_iv / 45.0), 2)
 
