@@ -198,7 +198,7 @@ def init_config():
 
     # Passed in arguments should trump
     for key, value in load.iteritems():
-        if key in config and value:
+        if key in config and value is not None:
             setattr(config, key, value)
 
     config.catch = load.get('catch', {})
