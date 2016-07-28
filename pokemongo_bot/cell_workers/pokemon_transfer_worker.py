@@ -31,7 +31,7 @@ class PokemonTransferWorker(object):
                         order_criteria = 'iv'
                         limit = keep_best_iv
 
-                    best_pokemons = sorted(group, key=lambda x: x[order_criteria])[:limit]
+                    best_pokemons = sorted(group, key=lambda x: x[order_criteria], reverse=True)[:limit]
 
                     # remove best pokemons from all pokemons array
                     all_pokemons = group
@@ -45,10 +45,13 @@ class PokemonTransferWorker(object):
                                                                          pokemon_name,
                                                                          order_criteria), "green")
 
+                    if all_pokemons:
+                        logger.log("Exchange other {} pokemons".format(len(all_pokemons)))
+
                     for pokemon in all_pokemons:
                         self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
                 else:
-                    group = sorted(group, key=lambda x: x['cp'])
+                    group = sorted(group, key=lambda x: x['cp'], reverse=True)
                     for item in group:
                         pokemon_cp = item['cp']
                         pokemon_potential = item['iv']
