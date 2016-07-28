@@ -42,7 +42,7 @@ class SeenFortWorker(object):
             fort_name = 'Unknown'
         logger.log('Now at Pokestop: ' + fort_name,
                    'cyan')
-        if self.config.mode != 'farm' and 'lure_info' in self.fort:
+        if self.config.catch_pokemon and 'lure_info' in self.fort:
             # Check if the lure has a pokemon active
             if 'encounter_id' in self.fort['lure_info']:
                 logger.log("Found a lure on this pokestop! Catching pokemon...", 'cyan')

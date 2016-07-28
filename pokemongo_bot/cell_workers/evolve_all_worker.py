@@ -40,7 +40,7 @@ class EvolveAllWorker(object):
             for pokemon in evolve_list:
                 try:
                     self._execute_pokemon_evolve(pokemon, cache)
-                except:
+                except Exception:
                     pass
             id_list2 = self.count_pokemon_inventory()
             release_cand_list_ids = list(Set(id_list2) - Set(id_list1))
@@ -129,11 +129,11 @@ class EvolveAllWorker(object):
                             pokemon['cp'],
                             self._compute_iv(pokemon)
                         ]
-                    if pokemon['cp'] > self.config.cp_min:
+                    if pokemon['cp'] > self.config.evolve_cp_min:
                         pokemons1.append(v)
                     else:
                         pokemons2.append(v)
-                except:
+                except Exception:
                     pass
 
         ## Sort larger CP pokemons by IV, tie breaking by CP
@@ -285,7 +285,7 @@ class EvolveAllWorker(object):
         for individual_stat in iv_stats:
             try:
                 total_IV += pokemon[individual_stat]
-            except:
+            except Exception:
                 pokemon[individual_stat] = 0
                 continue
         pokemon_potential = round((total_IV / 45.0), 2)
