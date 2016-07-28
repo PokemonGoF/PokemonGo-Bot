@@ -12,16 +12,12 @@ class Namespace(BaseNamespace):
     def on_connect(self):
         print('[Connected]')
 
-    def on_location(self, msg):
+    def on_broadcast(self, msg):
         print('test: ', msg)
-
-    def on_player_info(self, dict):
-        print('player_info: ', dict)
-
 
 if __name__ == "__main__":
     try:
-        with SocketIO('localhost', 8000, Namespace) as socketIO:
+        with SocketIO('localhost', 4000, Namespace) as socketIO:
             while True:
                 socketIO.wait(seconds=5)
 

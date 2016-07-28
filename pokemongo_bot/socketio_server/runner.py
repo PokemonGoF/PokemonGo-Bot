@@ -1,40 +1,14 @@
 import threading
-
-import socketio
 import eventlet
-from eventlet import wsgi
-from flask import Flask, render_template
-
-from eventlet import patcher
+import socketio
+import logging
+from eventlet import patcher, wsgi
+from app import app, sio
 
 patcher.monkey_patch(all=True)
 
-sio = socketio.Server(async_mode='eventlet')
-app = Flask(__name__)
+class SocketIORunner(object):
 
-
-@app.route('/')
-def index():
-    """Serve the client-side application."""
-    return render_template('index.html')
-
-
-@sio.on('connect')
-def connect(sid, environ):
-    print('connect ', sid)
-
-
-@sio.on('my message')
-def message(sid, data):
-    print('message ', data)
-
-
-@sio.on('disconnect')
-def disconnect(sid):
-    print('disconnect ', sid)
-
-
-class SocketIoRunner(object):
     def __init__(self, listen_address, listen_port):
         self.listen_address = listen_address
         self.listen_port = listen_port
@@ -56,12 +30,4 @@ class SocketIoRunner(object):
     def _start_listening_blocking(self):
         # deploy as an eventlet WSGI server
         listener = eventlet.listen((self.listen_address, self.listen_port))
-        self.server = wsgi.server(listener, self.app)
-
-    def handle_event(self, event, kwargs):
-        print("%s:%s" % (event, kwargs))
-        sio.emit(event, data=kwargs)
-
-
-
-
+        self.server = wsgi.server(listener, self.app, log=logging.NullHandler, log_output=False, debug=False)
