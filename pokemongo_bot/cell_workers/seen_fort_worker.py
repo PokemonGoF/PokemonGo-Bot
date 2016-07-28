@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import time
-<<<<<<< HEAD
 import json
 import random
-=======
-import random
 
->>>>>>> refs/remotes/origin/patch-2
 from pgoapi.utilities import f2i
 
 from pokemongo_bot import logger
@@ -79,7 +75,6 @@ class SeenFortWorker(object):
 
             spin_details = response_dict['responses']['FORT_SEARCH']
             spin_result = spin_details.get('result', -1)
-<<<<<<< HEAD
             userpokestop_coolwon = 0
 
             if self.config.pokestop_cooldown == 'random':
@@ -89,11 +84,6 @@ class SeenFortWorker(object):
             else:
                 userpokestop_cooldown = (time.time() + 300) * 1000
 
-=======
-            ran_timer = random.randint(300, 600)
-            self.bot.fort_timeouts[self.fort["id"]] = (time.time() + ran_timer) * 1000 #set fort cooldown for random time between 5 and 15 min.
-            
->>>>>>> refs/remotes/origin/patch-2
             if spin_result == 1:
                 logger.log("Loot: ", 'green')
                 experience_awarded = spin_details.get('experience_awarded',
@@ -118,13 +108,7 @@ class SeenFortWorker(object):
                         logger.log('- ' + str(item_count) + "x " + item_name + " (Total: " + str(self.bot.item_inventory_count(item_id)) + ")", 'yellow')
                 else:
                     logger.log("[#] Nothing found.", 'yellow')
-<<<<<<< HEAD
-                    
                 pokestop_cooldown = userpokestop_cooldown
-=======
-
-                pokestop_cooldown = self.bot.fort_timeouts[self.fort["id"]]
->>>>>>> refs/remotes/origin/patch-2
                 self.bot.fort_timeouts.update({self.fort["id"]: pokestop_cooldown})
                 
                 if pokestop_cooldown:
@@ -164,10 +148,7 @@ class SeenFortWorker(object):
                     'chain_hack_sequence_number']
             else:
                 logger.log('Possibly searching too often - taking a short rest :)', 'yellow')
-<<<<<<< HEAD
                 self.bot.fort_timeouts[self.fort["id"]] = pokestop_cooldown
-=======
->>>>>>> refs/remotes/origin/patch-2
                 return 11
         sleep(2)
         return 0
