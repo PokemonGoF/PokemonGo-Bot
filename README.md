@@ -261,6 +261,12 @@ Comment out following line: ```root /var/www/html;``` and change it to the web f
 ```
 /home/user/dev/PokemonGo-Bot/web;
 ```
+Use `nginx -s reload` to load the new configurations.
+
+#### 4. Configure the client
+In `/home/user/dev/PokemonGo-Bot/web` copy `userdata.js.example` to `userdata.js` and open the file. In the variable `users` set your google account e-mail or pokemon trainer club username. In `gMapsAPIKey` set your API-key. 
+
+Finally start the bot in a terminal, go to [http://localhost:8080/](http://localhost:8080/) (or whatever you configured) and enjoy.
 
 ## FAQ
 
