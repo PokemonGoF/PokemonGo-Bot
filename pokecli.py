@@ -176,6 +176,13 @@ def init_config():
         type=float,
         default=15.0
     )
+    parser.add_argument(
+        "-hr",
+        "--health_record",
+        help="Send anonymous bot event to GA for bot health record. Set \"health_record\":false if you need disable it.",
+        type=bool,
+        default=True
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()
