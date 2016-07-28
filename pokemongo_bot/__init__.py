@@ -177,29 +177,16 @@ class PokemonGoBot(object):
 
         number_of_things_gained_by_stop = 5
 
-        if ((self.get_inventory_count('item') < self._player['max_item_storage'] - 5) and
-            (self.config.mode == "all" or self.config.mode == "farm")):
-            if 'forts' in cell:
-                # Only include those with a lat/long
-                forts = [fort
-                         for fort in cell['forts']
-                         if 'latitude' in fort and 'type' in fort]
-                gyms = [gym for gym in cell['forts'] if 'gym_points' in gym]
+        if (self.config.spin_forts and
+            (self.get_inventory_count('item') < self._player['max_item_storage'] - number_of_things_gained_by_stop)):
+            nearest_fort = self.get_nearest_fort(cell)
 
-                # Remove stops that are still on timeout
-                forts = filter(lambda x: x["id"] not in self.fort_timeouts, forts)
-
-                # Sort all by distance from current pos- eventually this should
-                # build graph & A* it
-                forts.sort(key=lambda x: distance(self.position[
-                           0], self.position[1], x['latitude'], x['longitude']))
-
-                if len(forts) > 0:
-                    # Move to and spin the nearest stop.
-                    if MoveToFortWorker(forts[0], self).work() == WorkerResult.RUNNING:
-                        return
-                    if SeenFortWorker(forts[0], self).work() == WorkerResult.RUNNING:
-                        return
+            if nearest_fort:
+                # Move to and spin the nearest stop.
+                if MoveToFortWorker(nearest_fort, self).work() == WorkerResult.RUNNING:
+                    return
+                if SeenFortWorker(nearest_fort, self).work() == WorkerResult.RUNNING:
+                    return
 
         self.navigator.take_step()
 
@@ -228,7 +215,6 @@ class PokemonGoBot(object):
             if remaining_time < 60:
                 logger.log("Session stale, re-logging in", 'yellow')
                 self.login()
-
 
     def login(self):
         logger.log('Attempting login to Pokemon Go.', 'white')
@@ -322,6 +308,27 @@ class PokemonGoBot(object):
             ' | MaxRevive: ' + str(items_stock[202]), 'cyan')
 
         logger.log('')
+
+    def get_nearest_fort(self, cell):
+        if 'forts' in cell:
+            # Only include those with a lat/long
+            forts = [fort
+                     for fort in cell['forts']
+                     if 'latitude' in fort and 'type' in fort]
+            gyms = [gym for gym in cell['forts'] if 'gym_points' in gym]
+
+            # Remove stops that are still on timeout
+            forts = filter(lambda x: x["id"] not in self.fort_timeouts, forts)
+
+            # Sort all by distance from current pos- eventually this should
+            # build graph & A* it
+            forts.sort(key=lambda x: distance(self.position[
+                       0], self.position[1], x['latitude'], x['longitude']))
+
+            if len(forts) > 0:
+                return forts[0]
+            else:
+                return None
 
     def use_lucky_egg(self):
         self.api.use_item_xp_boost(item_id=301)

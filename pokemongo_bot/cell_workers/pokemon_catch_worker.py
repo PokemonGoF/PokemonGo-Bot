@@ -108,9 +108,8 @@ class PokemonCatchWorker(object):
 
                             ## re-check stock again
                             if items_stock[pokeball] is 0:
-                                logger.log('Out of pokeballs, switching to farming mode...', 'red')
+                                logger.log('Out of pokeballs', 'red')
                                 # Begin searching for pokestops.
-                                self.config.mode = 'farm'
                                 return PokemonCatchWorker.NO_POKEBALLS
 
                             ## Use berry to increase success chance.
