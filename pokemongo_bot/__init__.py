@@ -59,8 +59,12 @@ class PokemonGoBot(object):
         self.sio_runner = SocketIoRunner('localhost', 4000)
         self.sio_runner.start_listening_async()
 
-        self.event_manager.register_event("location", parameters=['lat', 'lng'])
-        self.event_manager.register_event("player_info", parameters=['player'])
+        # Registering event:
+        # self.event_manager.register_event("location", parameters=['lat', 'lng'])
+        #
+        # Emitting event should be enough to add logging and send websocket
+        # message: :
+        # self.event_manager.emit('location', 'level'='info', data={'lat': 1, 'lng':1),
 
     def tick(self):
         self.cell = self.get_meta_cell()
