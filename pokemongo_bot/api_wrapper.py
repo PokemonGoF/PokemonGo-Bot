@@ -40,6 +40,8 @@ class ApiWrapper(object):
         if not isinstance(result['responses'], dict):
             return False
 
+        # the response can still programatically be valid at this point
+        # but still be wrong. we need to check if the server did sent what we asked it
         for request_caller in request_callers:
             if not request_caller in result['responses']:
                 return False
