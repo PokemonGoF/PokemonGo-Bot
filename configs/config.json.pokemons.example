@@ -272,6 +272,7 @@
       "Venomoth": { "release_below_cp": 660, "release_below_iv": 0.8, "logic": "and" },
       "Golbat": { "release_below_cp": 672, "release_below_iv": 0.8, "logic": "and" },
       "Raichu": { "release_below_cp": 708, "release_below_iv": 0.8, "logic": "and" },
-      "Cloyster": { "release_below_cp": 717, "release_below_iv": 0.8, "logic": "and"}
+      "Cloyster": { "release_below_cp": 717, "release_below_iv": 0.8, "logic": "and"},
+      "Mr. Mime": { "release_below_cp": 650, "release_below_iv": 0.8, "logic": "and" }
     }
 }
