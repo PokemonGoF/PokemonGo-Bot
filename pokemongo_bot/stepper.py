@@ -60,10 +60,6 @@ class Stepper(object):
             if self.x == self.y or self.x < 0 and self.x == -self.y or self.x > 0 and self.x == 1 - self.y:
                 (self.dx, self.dy) = (-self.dy, self.dx)
 
-            # Calculate and log distance walked.
-            distance_walked = vincenty((self.x, self.y), (self.x + self.dx, self.y + self.dy)).kilometers
-            self.stats.distance_walked += distance_walked
-
             (self.x, self.y) = (self.x + self.dx, self.y + self.dy)
 
             self._work_at_position(position[0], position[1], position[2], True)
@@ -72,24 +68,30 @@ class Stepper(object):
     def _walk_to(self, speed, lat, lng, alt):
         dist = distance(
             i2f(self.api._position_lat), i2f(self.api._position_lng), lat, lng)
+
         steps = (dist + 0.0) / (speed + 0.0)  # may be rational number
         intSteps = int(steps)
         residuum = steps - intSteps
         logger.log('[#] Walking from ' + str((i2f(self.api._position_lat), i2f(
             self.api._position_lng))) + " to " + str(str((lat, lng))) +
                    " for approx. " + str(format_time(ceil(steps))))
+
         if steps != 0:
+            dist_per_step = dist / steps  # Calculate distance per step walked, for statistics
             dLat = (lat - i2f(self.api._position_lat)) / steps
             dLng = (lng - i2f(self.api._position_lng)) / steps
 
             for i in range(intSteps):
+
                 cLat = i2f(self.api._position_lat) + \
                     dLat + random_lat_long_delta()
                 cLng = i2f(self.api._position_lng) + \
                     dLng + random_lat_long_delta()
                 self.api.set_position(cLat, cLng, alt)
                 self.bot.heartbeat()
+                self.stats.distance_walked += dist_per_step  # record the distance logged per successful step.
                 sleep(1)  # sleep one second plus a random delta
+
                 self._work_at_position(
                     i2f(self.api._position_lat), i2f(self.api._position_lng),
                     alt, False)
