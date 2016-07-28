@@ -74,15 +74,31 @@ def init_config():
         required=required("auth_service"),
         default=load.get('auth_service', None)
     )
-    parser.add_argument("-u", "--username", help="Username")
-    parser.add_argument("-p", "--password", help="Password")
-    parser.add_argument("-l", "--location", help="Location", type=lambda s: unicode(s, 'utf8'))
+    parser.add_argument(
+        "-u",
+        "--username",
+        help="Username",
+        default=load.get('username', None)
+    )
+    parser.add_argument(
+        "-p",
+        "--password",
+        help="Password",
+        default=load.get('password', None)
+    )
+    parser.add_argument(
+        "-l",
+        "--location",
+        help="Location",
+        type=lambda s: unicode(s, 'utf8'),
+        default=load.get('location', None)
+    )
     parser.add_argument(
         "-lc",
         "--location_cache",
         help="Bot will start at last known location",
         type=bool,
-        default=False
+        default=load.get('location_cache', False)
     )
     parser.add_argument(
         "--catch_pokemon",
