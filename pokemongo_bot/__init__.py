@@ -45,7 +45,6 @@ class PokemonGoBot(object):
 
 
     def start(self):
-        self._setup_event_system()
         self._setup_logging()
         self._setup_api()
         self.navigator = SpiralNavigator(self)
@@ -56,7 +55,7 @@ class PokemonGoBot(object):
             LoggingHandler(),
             SocketIoHandler()
         )
-        
+
         self.sio_runner = SocketIoRunner('localhost', 4000)
         self.sio_runner.start_listening_async()
 
@@ -159,8 +158,6 @@ class PokemonGoBot(object):
                     }, outfile)
         except IOError as e:
             logger.log('[x] Error while opening location file: %s' % e, 'red')
-
-        self.event_manager.emit("location", lat=lat, lng=lng)
 
         user_data_lastlocation = os.path.join('data', 'last-location-%s.json' % (self.config.username))
         try:
@@ -424,18 +421,14 @@ class PokemonGoBot(object):
             return
 
         if self.config.location:
-            try:
-                location_str = self.config.location.encode('utf-8')
-                location = (self._get_pos_by_name(location_str.replace(" ", "")))
-                self.api.set_position(*location)
-                logger.log('')
-                logger.log(u'Location Found: {}'.format(self.config.location))
-                logger.log('GeoPosition: {}'.format(self.position))
-                logger.log('')
-                has_position = True
-            except Exception:
-                logger.log('[x] The location given in the config could not be parsed. Checking for a cached location.')
-                pass
+            location_str = self.config.location.encode('utf-8')
+            location = (self._get_pos_by_name(location_str.replace(" ", "")))
+            self.api.set_position(*location)
+            logger.log('')
+            logger.log(u'Location Found: {}'.format(self.config.location))
+            logger.log('GeoPosition: {}'.format(self.position))
+            logger.log('')
+            has_position = True
 
         if self.config.location_cache:
             try:
@@ -526,7 +519,6 @@ class PokemonGoBot(object):
     def get_player_info(self):
         response_dict = self.get_inventory()
         if 'responses' in response_dict:
-            self.event_manager.emit("player_info", player=response_dict)
             if 'GET_INVENTORY' in response_dict['responses']:
                 if 'inventory_delta' in response_dict['responses'][
                         'GET_INVENTORY']:
