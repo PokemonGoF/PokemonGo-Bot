@@ -17,9 +17,9 @@ class EventHandler(object):
 
 
 class EventManager(object):
-    def __init__(self):
+    def __init__(self, *handlers):
         self._registered_events = dict()
-        self._handlers = []
+        self._handlers = handlers or []
 
     def add_handler(self, event_handler):
         self._handlers.append(event_handler)
@@ -39,4 +39,4 @@ class EventManager(object):
 
         # send off to the handlers
         for handler in self._handlers:
-            handler.handle_event(event, kwargs)
+            handler.handle_event(event, **kwargs)

@@ -7,7 +7,7 @@ from app import app, sio
 
 patcher.monkey_patch(all=True)
 
-class SocketIORunner(object):
+class SocketIoRunner(object):
 
     def __init__(self, listen_address, listen_port):
         self.listen_address = listen_address
@@ -30,4 +30,4 @@ class SocketIORunner(object):
     def _start_listening_blocking(self):
         # deploy as an eventlet WSGI server
         listener = eventlet.listen((self.listen_address, self.listen_port))
-        self.server = wsgi.server(listener, self.app, log=logging.NullHandler, log_output=False, debug=False)
+        self.server = wsgi.server(listener, self.app, log_output=False, debug=False)

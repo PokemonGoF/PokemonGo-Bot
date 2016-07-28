@@ -16,16 +16,17 @@ from pgoapi.utilities import f2i
 import logger
 from cell_workers import SpinNearestFortWorker, CatchVisiblePokemonWorker, PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, PokemonTransferWorker, EvolveAllWorker, RecycleItemsWorker, IncubateEggsWorker
 from cell_workers.utils import distance, get_cellid, encode, i2f
-from event_handlers import LoggingHandler
 from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
-from pokemongo_bot.event_handlers.sio_runner import SocketIoRunner
-from pokemongo_bot.event_handlers.socketio_handler import SocketIoHandler
+from pokemongo_bot.event_handlers import LoggingHandler
+from pokemongo_bot.event_handlers import SocketIoHandler
+from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from spiral_navigator import SpiralNavigator
 from worker_result import WorkerResult
 from event_manager import EventManager
 from api_wrapper import ApiWrapper
+
 
 class PokemonGoBot(object):
 
@@ -42,19 +43,25 @@ class PokemonGoBot(object):
         self.latest_inventory = None
         self.cell = None
 
-        self.event_manager = EventManager()
-        self.event_manager.add_handler(LoggingHandler())
-        self.sio_runner = SocketIoRunner('localhost', 4000)
-        self.sio_runner.start_listening_async()
-        self.event_manager.add_handler(SocketIoHandler(self.sio_runner))
-        self.event_manager.register_event("location", parameters=['lat', 'lng'])
-        self.event_manager.register_event("player_info", parameters=['player'])
 
     def start(self):
+        self._setup_event_system()
         self._setup_logging()
         self._setup_api()
         self.navigator = SpiralNavigator(self)
         random.seed()
+
+    def _setup_event_system(self):
+        self.event_manager = EventManager(
+            LoggingHandler(),
+            SocketIoHandler()
+        )
+        
+        self.sio_runner = SocketIoRunner('localhost', 4000)
+        self.sio_runner.start_listening_async()
+
+        self.event_manager.register_event("location", parameters=['lat', 'lng'])
+        self.event_manager.register_event("player_info", parameters=['player'])
 
     def tick(self):
         self.cell = self.get_meta_cell()
@@ -201,10 +208,18 @@ class PokemonGoBot(object):
 
         if self.config.debug:
             logging.getLogger("requests").setLevel(logging.DEBUG)
+            logging.getLogger("websocket").setLevel(logging.DEBUG)
+            logging.getLogger("socketio").setLevel(logging.DEBUG)
+            logging.getLogger("engineio").setLevel(logging.DEBUG)
+            logging.getLogger("socketIO-client").setLevel(logging.DEBUG)
             logging.getLogger("pgoapi").setLevel(logging.DEBUG)
             logging.getLogger("rpc_api").setLevel(logging.DEBUG)
         else:
             logging.getLogger("requests").setLevel(logging.ERROR)
+            logging.getLogger("websocket").setLevel(logging.ERROR)
+            logging.getLogger("socketio").setLevel(logging.ERROR)
+            logging.getLogger("engineio").setLevel(logging.ERROR)
+            logging.getLogger("socketIO-client").setLevel(logging.ERROR)
             logging.getLogger("pgoapi").setLevel(logging.ERROR)
             logging.getLogger("rpc_api").setLevel(logging.ERROR)
 
