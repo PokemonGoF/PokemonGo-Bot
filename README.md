@@ -62,3 +62,4 @@ Bitcoin Address:  1PJMCx9NNQRasQYaa4MMff9yyNFffhHgLu
 <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WQUXDC54W6EVY"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"></a>
 </p>
 
+[![Analytics](https://ga-beacon.appspot.com/UA-81468120-1/welcome-page-dev)](https://github.com/igrigorik/ga-beacon)
