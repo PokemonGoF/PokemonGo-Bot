@@ -179,7 +179,7 @@ def init_config():
     parser.add_argument(
         "-hr",
         "--health_record",
-        help="Send anonymous bot event to GA for bot heath record, furthur ML will depend on it. Set \"health_record\"=false if you need disable it.",
+        help="Send anonymous bot event to GA for bot heath record, furthur ML will depend on it. Set \"health_record\":false if you need disable it.",
         type=bool,
         default=True
     )
@@ -252,7 +252,6 @@ def main():
             if bot.metrics.start_time is None:
                 return  # Bot didn't actually start, no metrics to show.
 
-            bot.bot_event.logout()
             metrics = bot.metrics
             metrics.capture_stats()
             logger.log('')
