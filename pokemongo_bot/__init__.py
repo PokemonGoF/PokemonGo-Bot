@@ -14,19 +14,20 @@ from pgoapi import PGoApi
 from pgoapi.utilities import f2i
 
 import logger
-from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
+from cell_workers import CatchVisiblePokemonWorker, PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, PokemonTransferWorker, EvolveAllWorker, RecycleItemsWorker
 from cell_workers.utils import distance, get_cellid, encode, i2f
 from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
 from spiral_navigator import SpiralNavigator
+from worker_result import WorkerResult
 
 
 class PokemonGoBot(object):
 
     @property
     def position(self):
-        return (i2f(self.api._position_lat), i2f(self.api._position_lng), 0)
+        return self.api._position_lat, self.api._position_lng, 0
 
     def __init__(self, config):
         self.config = config
@@ -34,6 +35,7 @@ class PokemonGoBot(object):
         self.pokemon_list = json.load(open(os.path.join('data', 'pokemon.json')))
         self.item_list = json.load(open(os.path.join('data', 'items.json')))
         self.metrics = Metrics(self)
+        self.latest_inventory = None
 
     def start(self):
         self._setup_logging()
@@ -42,10 +44,9 @@ class PokemonGoBot(object):
         random.seed()
 
     def take_step(self):
-        location = self.navigator.take_step()
-        self.process_cells(work_on_forts=True)
+        self.process_cells()
 
-    def process_cells(self, work_on_forts=True):
+    def process_cells(self):
         location = self.position[0:2]
         cells = self.find_close_cells(*location)
 
@@ -63,14 +64,14 @@ class PokemonGoBot(object):
 
         # Have the worker treat the whole area as a single cell.
         self.work_on_cell({"forts": forts, "wild_pokemons": wild_pokemons,
-                           "catchable_pokemons": catchable_pokemons}, location, work_on_forts)
+                           "catchable_pokemons": catchable_pokemons}, location)
 
     def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
         # we can call the function with no arguments and still get the position and map_cells
         if lat == None:
-            lat = i2f(self.api._position_lat)
+            lat = self.api._position_lat
         if lng == None:
-            lng = i2f(self.api._position_lng)
+            lng = self.api._position_lng
         if alt == None:
             alt = 0
 
@@ -100,6 +101,11 @@ class PokemonGoBot(object):
                                                      gym_longitude=fort.get('longitude'))
                             response_gym_details = self.api.call()
                             fort['gym_details'] = response_gym_details['responses']['GET_GYM_DETAILS']
+
+        user_data_cells = "data/cells-%s.json" % (self.config.username)
+        with open(user_data_cells, 'w') as outfile:
+            outfile.truncate()
+            json.dump(cells, outfile)
 
         user_web_location = os.path.join('web', 'location-%s.json' % (self.config.username))
         # alt is unused atm but makes using *location easier
@@ -150,78 +156,29 @@ class PokemonGoBot(object):
             )
         return map_cells
 
-    def work_on_cell(self, cell, position, work_on_forts=1):
+    def work_on_cell(self, cell, position):
         # Check if session token has expired
         self.check_session(position)
 
-        if self.config.evolve_all:
-            # Will skip evolving if user wants to use an egg and there is none
-            skip_evolves = False
-
-            # Pop lucky egg before evolving to maximize xp gain
-            use_lucky_egg = self.config.use_lucky_egg
-            lucky_egg_count = self.item_inventory_count(Item.ITEM_LUCKY_EGG.value)
-
-            if  use_lucky_egg and lucky_egg_count > 0:
-                logger.log('Using lucky egg ... you have {}'
-                           .format(lucky_egg_count))
-                response_dict_lucky_egg = self.use_lucky_egg()
-                if response_dict_lucky_egg and 'responses' in response_dict_lucky_egg and \
-                    'USE_ITEM_XP_BOOST' in response_dict_lucky_egg['responses'] and \
-                    'result' in response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']:
-                    result = response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']['result']
-                    if result is 1: # Request success
-                        logger.log('Successfully used lucky egg... ({} left!)'
-                                   .format(lucky_egg_count-1), 'green')
-                    else:
-                        logger.log('Failed to use lucky egg!', 'red')
-                        skip_evolves = True
-            elif use_lucky_egg: #lucky_egg_count is 0
-                # Skipping evolve so they aren't wasted
-                logger.log('No lucky eggs... skipping evolve!', 'yellow')
-                skip_evolves = True
-
-            if not skip_evolves:
-                # Run evolve all once.
-                logger.log('Attempting to evolve all pokemons ...', 'cyan')
-                worker = EvolveAllWorker(self)
-                worker.work()
-
-            # Flip the bit.
-            self.config.evolve_all = []
-
-        if (self.config.mode == "all" or self.config.mode ==
-                "poke") and 'catchable_pokemons' in cell and len(cell[
-                    'catchable_pokemons']) > 0:
-            logger.log('Something rustles nearby!')
-            # Sort all by distance from current pos- eventually this should
-            # build graph & A* it
-            cell['catchable_pokemons'].sort(
-                key=
-                lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
-
-            user_web_catchable = 'web/catchable-%s.json' % (self.config.username)
-            for pokemon in cell['catchable_pokemons']:
-                with open(user_web_catchable, 'w') as outfile:
-                    json.dump(pokemon, outfile)
-
-                with open(user_web_catchable, 'w') as outfile:
-                    json.dump({}, outfile)
-
-            self.catch_pokemon(cell['catchable_pokemons'][0])
+        worker = PokemonTransferWorker(self)
+        if worker.work() == WorkerResult.RUNNING:
             return
 
-        if (self.config.mode == "all" or self.config.mode == "poke"
-            ) and 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
-            # Sort all by distance from current pos- eventually this should
-            # build graph & A* it
-            cell['wild_pokemons'].sort(
-                key=
-                lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
-            self.catch_pokemon(cell['wild_pokemons'][0])
+        worker = EvolveAllWorker(self)
+        if worker.work() == WorkerResult.RUNNING:
             return
-        if ((self.config.mode == "all" or
-                self.config.mode == "farm") and work_on_forts):
+
+        RecycleItemsWorker(self).work()
+
+        worker = CatchVisiblePokemonWorker(self, cell)
+        if worker.work() == WorkerResult.RUNNING:
+            return
+
+
+        number_of_things_gained_by_stop = 5
+
+        if ((self.get_inventory_count('item') < self._player['max_item_storage'] - 5) and
+            (self.config.mode == "all" or self.config.mode == "farm")):
             if 'forts' in cell:
                 # Only include those with a lat/long
                 forts = [fort
@@ -239,8 +196,12 @@ class PokemonGoBot(object):
 
                 if len(forts) > 0:
                     # Move to and spin the nearest stop.
-                    MoveToFortWorker(forts[0], self).work()
-                    SeenFortWorker(forts[0], self).work()
+                    if MoveToFortWorker(forts[0], self).work() == WorkerResult.RUNNING:
+                        return
+                    if SeenFortWorker(forts[0], self).work() == WorkerResult.RUNNING:
+                        return
+
+        self.navigator.take_step()
 
     def _setup_logging(self):
         self.log = logging.getLogger(__name__)
@@ -300,10 +261,6 @@ class PokemonGoBot(object):
 
         self._print_character_info()
 
-        if self.config.initial_transfer:
-            worker = InitialTransferWorker(self)
-            worker.work()
-
         logger.log('')
         self.update_inventory()
         # send empty map_cells and then our position
@@ -318,7 +275,13 @@ class PokemonGoBot(object):
         currency_1 = "0"
         currency_2 = "0"
 
-        player = response_dict['responses']['GET_PLAYER']['player_data']
+        if response_dict:
+            self._player = response_dict['responses']['GET_PLAYER']['player_data']
+            player = self._player
+        else:
+            logger.log("The API didn't return player info, servers are unstable - retrying.", 'red')
+            sleep(5)
+            self._print_character_info()
 
         # @@@ TODO: Convert this to d/m/Y H:M:S
         creation_date = datetime.datetime.fromtimestamp(
@@ -327,7 +290,7 @@ class PokemonGoBot(object):
 
         pokecoins = '0'
         stardust = '0'
-        balls_stock = self.pokeball_inventory()
+        items_stock = self.current_inventory()
 
         if 'amount' in player['currencies'][0]:
             pokecoins = player['currencies'][0]['amount']
@@ -339,40 +302,41 @@ class PokemonGoBot(object):
         logger.log('Pokemon Bag: {}/{}'.format(self.get_inventory_count('pokemon'), player['max_pokemon_storage']), 'cyan')
         logger.log('Items: {}/{}'.format(self.get_inventory_count('item'), player['max_item_storage']), 'cyan')
         logger.log('Stardust: {}'.format(stardust) + ' | Pokecoins: {}'.format(pokecoins), 'cyan')
-        # Pokeball Output
-        logger.log('PokeBalls: ' + str(balls_stock[1]) +
-            ' | GreatBalls: ' + str(balls_stock[2]) +
-            ' | UltraBalls: ' + str(balls_stock[3]), 'cyan')
-        logger.log('Razz Berries: ' + str(self.item_inventory_count(701)), 'cyan')
+        # Items Output
+        logger.log('PokeBalls: ' + str(items_stock[1]) +
+            ' | GreatBalls: ' + str(items_stock[2]) +
+            ' | UltraBalls: ' + str(items_stock[3]), 'cyan')
+        logger.log('RazzBerries: ' + str(items_stock[701]) +
+            ' | BlukBerries: ' + str(items_stock[702]) +
+            ' | NanabBerries: ' + str(items_stock[703]), 'cyan')
+        logger.log('LuckyEgg: ' + str(items_stock[301]) +
+            ' | Incubator: ' + str(items_stock[902]) +
+            ' | TroyDisk: ' + str(items_stock[501]), 'cyan')
+        logger.log('Potion: ' + str(items_stock[101]) +
+            ' | SuperPotion: ' + str(items_stock[102]) +
+            ' | HyperPotion: ' + str(items_stock[103]), 'cyan')
+        logger.log('Incense: ' + str(items_stock[401]) +
+            ' | IncenseSpicy: ' + str(items_stock[402]) +
+            ' | IncenseCool: ' + str(items_stock[403]), 'cyan')
+        logger.log('Revive: ' + str(items_stock[201]) +
+            ' | MaxRevive: ' + str(items_stock[202]), 'cyan')
 
         logger.log('')
-
-    def catch_pokemon(self, pokemon):
-        worker = PokemonCatchWorker(pokemon, self)
-        return_value = worker.work()
-
-        if return_value == PokemonCatchWorker.BAG_FULL:
-            worker = InitialTransferWorker(self)
-            worker.work()
-
-        return return_value
-
-    def drop_item(self, item_id, count):
-        self.api.recycle_inventory_item(item_id=item_id, count=count)
-        inventory_req = self.api.call()
-
-        # Example of good request response
-        #{'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
-        return inventory_req
 
     def use_lucky_egg(self):
         self.api.use_item_xp_boost(item_id=301)
         inventory_req = self.api.call()
         return inventory_req
 
+    def get_inventory(self):
+        if self.latest_inventory is None:
+            self.api.get_inventory()
+            response = self.api.call()
+            self.latest_inventory = response
+        return self.latest_inventory
+
     def update_inventory(self):
-        self.api.get_inventory()
-        response = self.api.call()
+        response = self.get_inventory()
         self.inventory = list()
         if 'responses' in response:
             if 'GET_INVENTORY' in response['responses']:
@@ -394,10 +358,8 @@ class PokemonGoBot(object):
                             self.inventory.append(item['inventory_item_data'][
                                 'item'])
 
-    def pokeball_inventory(self):
-        self.api.get_player().get_inventory()
-
-        inventory_req = self.api.call()
+    def current_inventory(self):
+        inventory_req = self.get_inventory()
         inventory_dict = inventory_req['responses']['GET_INVENTORY'][
             'inventory_delta']['inventory_items']
 
@@ -405,9 +367,9 @@ class PokemonGoBot(object):
         with open(user_web_inventory, 'w') as outfile:
             json.dump(inventory_dict, outfile)
 
-        # get player balls stock
+        # get player items stock
         # ----------------------
-        balls_stock = {1: 0, 2: 0, 3: 0, 4: 0}
+        items_stock = {x.value:0 for x in list(Item)}
 
         for item in inventory_dict:
             try:
@@ -415,36 +377,43 @@ class PokemonGoBot(object):
                 item_id = item['inventory_item_data']['item']['item_id']
                 item_count = item['inventory_item_data']['item']['count']
 
-                if item_id == Item.ITEM_POKE_BALL.value:
-                    # print('Poke Ball count: ' + str(item_count))
-                    balls_stock[1] = item_count
-                if item_id == Item.ITEM_GREAT_BALL.value:
-                    # print('Great Ball count: ' + str(item_count))
-                    balls_stock[2] = item_count
-                if item_id == Item.ITEM_ULTRA_BALL.value:
-                    # print('Ultra Ball count: ' + str(item_count))
-                    balls_stock[3] = item_count
-            except:
+                if item_id in items_stock:
+                    items_stock[item_id] = item_count
+            except Exception:
                 continue
-        return balls_stock
+        return items_stock
 
     def item_inventory_count(self, id):
-        self.api.get_player().get_inventory()
-
-        inventory_req = self.api.call()
+        inventory_req = self.get_inventory()
         inventory_dict = inventory_req['responses'][
             'GET_INVENTORY']['inventory_delta']['inventory_items']
 
+        if id == 'all':
+            return self._all_items_inventory_count(inventory_dict)
+        else:
+            return self._item_inventory_count_per_id(id, inventory_dict)
+
+    def _item_inventory_count_per_id(self, id, inventory_dict):
         item_count = 0
 
         for item in inventory_dict:
-            try:
-                if item['inventory_item_data']['item']['item_id'] == int(id):
-                    item_count = item[
-                        'inventory_item_data']['item']['count']
-            except:
-                continue
-        return item_count
+            item_dict = item.get('inventory_item_data', {}).get('item', {})
+            item_id = item_dict.get('item_id', False)
+            item_count = item_dict.get('count', False)
+            if  item_id == int(id) and item_count:
+                return item_count
+
+    def _all_items_inventory_count(self, inventory_dict):
+        item_count_dict = {}
+
+        for item in inventory_dict:
+            item_dict = item.get('inventory_item_data', {}).get('item', {})
+            item_id = item_dict.get('item_id', False)
+            item_count = item_dict.get('count', False)
+            if item_id and item_count:
+                item_count_dict[item_id] = item_count
+
+        return item_count_dict
 
     def _set_starting_position(self):
 
@@ -464,12 +433,11 @@ class PokemonGoBot(object):
                 logger.log('GeoPosition: {}'.format(self.position))
                 logger.log('')
                 has_position = True
-                return
-            except:
-                logger.log('[x] The location given using -l could not be parsed. Checking for a cached location.')
+            except Exception:
+                logger.log('[x] The location given in the config could not be parsed. Checking for a cached location.')
                 pass
 
-        if self.config.location_cache and not has_position:
+        if self.config.location_cache:
             try:
                 #
                 # save location flag used to pull the last known location from
@@ -478,11 +446,10 @@ class PokemonGoBot(object):
                 with open('data/last-location-%s.json' %
                           (self.config.username)) as f:
                     location_json = json.load(f)
-
-                    self.position = (location_json['lat'],
+                    location = (location_json['lat'],
                                      location_json['lng'], 0.0)
-                    print(self.position)
-                    self.api.set_position(*self.position)
+                    #print(location)
+                    self.api.set_position(*location)
 
                     logger.log('')
                     logger.log(
@@ -494,27 +461,26 @@ class PokemonGoBot(object):
 
                     has_position = True
                     return
-            except:
-                sys.exit(
-                    "No cached Location. Please specify initial location.")
+            except Exception:
+                if(has_position == False):
+                    sys.exit(
+                        "No cached Location. Please specify initial location.")
+                logger.log('[x] Parsing cached location failed, try to use the initial location...')
 
     def _get_pos_by_name(self, location_name):
         # Check if the given location is already a coordinate.
         if ',' in location_name:
-            possibleCoordinates = re.findall("[-]?\d{1,3}[.]\d{6,7}", location_name)
-            if len(possibleCoordinates) == 2:
+            possible_coordinates = re.findall("[-]?\d{1,3}[.]\d{6,7}", location_name)
+            if len(possible_coordinates) == 2:
                 # 2 matches, this must be a coordinate. We'll bypass the Google geocode so we keep the exact location.
                 logger.log(
                     '[x] Coordinates found in passed in location, not geocoding.')
-                return (float(possibleCoordinates[0]), float(possibleCoordinates[1]), float("0.0"))
+                return float(possible_coordinates[0]), float(possible_coordinates[1]), float("0.0")
 
         geolocator = GoogleV3(api_key=self.config.gmapkey)
         loc = geolocator.geocode(location_name, timeout=10)
 
-        #self.log.info('Your given location: %s', loc.address.encode('utf-8'))
-        #self.log.info('lat/long/alt: %s %s %s', loc.latitude, loc.longitude, loc.altitude)
-
-        return (loc.latitude, loc.longitude, loc.altitude)
+        return float(loc.latitude), float(loc.longitude), float(loc.altitude)
 
     def heartbeat(self):
         # Remove forts that we can now spin again.
@@ -523,14 +489,12 @@ class PokemonGoBot(object):
                               if timeout >= time.time() * 1000}
         self.api.get_player()
         self.api.get_hatched_eggs()
-        self.api.get_inventory()
         self.api.check_awarded_badges()
         self.api.call()
         self.update_web_location() # updates every tick
 
     def get_inventory_count(self, what):
-        self.api.get_inventory()
-        response_dict = self.api.call()
+        response_dict = self.get_inventory()
         if 'responses' in response_dict:
             if 'GET_INVENTORY' in response_dict['responses']:
                 if 'inventory_delta' in response_dict['responses'][
@@ -560,8 +524,7 @@ class PokemonGoBot(object):
         return '0'
 
     def get_player_info(self):
-        self.api.get_inventory()
-        response_dict = self.api.call()
+        response_dict = self.get_inventory()
         if 'responses' in response_dict:
             if 'GET_INVENTORY' in response_dict['responses']:
                 if 'inventory_delta' in response_dict['responses'][

@@ -100,15 +100,13 @@ ENV/
 src/
 web/
 data/last-location*.json
-data/catch-ignore.yml
+data/cells-*.json
 
 #Multiple config
 configs/*
 !configs/config.json.example
 !configs/release_config.json.example
 !configs/config.json.pokemons.example
-config.json
-release_config.json
 
 # Virtualenv folders
 bin/

@@ -114,11 +114,11 @@ def init_config():
         default=50
     )
     parser.add_argument(
-        "-it",
-        "--initial_transfer",
-        help="Transfer all duplicate pokemon with same ID on bot start, except pokemon with highest CP. Accepts a number to prevent transferring pokemon with a CP above the provided value.  Default is 0 (aka transfer none).",
-        type=int,
-        default=0
+        "-rp",
+        "--release_pokemon",
+        help="Allow transfer pokemon to professor based on release configuration. Default is false",
+        type=bool,
+        default=False
     )
     parser.add_argument(
         "-d",
@@ -185,24 +185,15 @@ def init_config():
         config.password = getpass("Password: ")
 
     # Passed in arguments should trump
-    for key in config.__dict__:
-        if key in load and load[key]:
-            config.__dict__[key] = load[key]
+    for key, value in load.iteritems():
+        if key in config and value:
+            setattr(config, key, value)
 
-    if 'catch' in load:
-        config.catch = load['catch']
-    else:
-        config.catch = {}
-
-    if 'release' in load:
-        config.release = load['release']
-    else:
-        config.release = {}
-
-    if 'item_filter' in load:
-        config.item_filter = load['item_filter']
-    else:
-        config.item_filter = {}
+    config.catch = load.get('catch', {})
+    config.release = load.get('release', {})
+    config.item_filter = load.get('item_filter', {})
+    config.action_wait_max = load.get('action_wait_max', 4)
+    config.action_wait_min = load.get('action_wait_min', 1)
 
     if 'pokestop_cooldown' in load:
         config.pokestop_cooldown = load['pokestop_cooldown']
@@ -272,21 +263,21 @@ def main():
             metrics = bot.metrics
             metrics.capture_stats()
             logger.log('')
-            logger.log('Ran for {}'.format(metrics.runtime()), 'red')
-            logger.log('Total XP Earned: {}  Average: {:.2f}/h'.format(metrics.xp_earned, metrics.xp_per_hour()), 'red')
-            logger.log('Travelled {:.2f}km'.format(metrics.distance_travelled()), 'red')
-            logger.log('Visited {} stops'.format(metrics.visits['latest'] - metrics.visits['start']), 'red')
+            logger.log('Ran for {}'.format(metrics.runtime()), 'cyan')
+            logger.log('Total XP Earned: {}  Average: {:.2f}/h'.format(metrics.xp_earned(), metrics.xp_per_hour()), 'cyan')
+            logger.log('Travelled {:.2f}km'.format(metrics.distance_travelled()), 'cyan')
+            logger.log('Visited {} stops'.format(metrics.visits['latest'] - metrics.visits['start']), 'cyan')
             logger.log('Encountered {} pokemon, {} caught, {} released, {} evolved, {} never seen before'
                        .format(metrics.num_encounters(), metrics.num_captures(), metrics.releases,
-                               metrics.num_evolutions(), metrics.num_new_mons()), 'red')
+                               metrics.num_evolutions(), metrics.num_new_mons()), 'cyan')
             logger.log('Threw {} pokeball{}'.format(metrics.num_throws(), '' if metrics.num_throws() == 1 else 's'),
-                       'red')
-            logger.log('Earned {} Stardust'.format(metrics.earned_dust()), 'red')
+                       'cyan')
+            logger.log('Earned {} Stardust'.format(metrics.earned_dust()), 'cyan')
             logger.log('')
             if metrics.highest_cp is not None:
-                logger.log('Highest CP Pokemon: {}'.format(metrics.highest_cp['desc']), 'red')
+                logger.log('Highest CP Pokemon: {}'.format(metrics.highest_cp['desc']), 'cyan')
             if metrics.most_perfect is not None:
-                logger.log('Most Perfect Pokemon: {}'.format(metrics.most_perfect['desc']), 'red')
+                logger.log('Most Perfect Pokemon: {}'.format(metrics.most_perfect['desc']), 'cyan')
 
 
         except NotLoggedInException:

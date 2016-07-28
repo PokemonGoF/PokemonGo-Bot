@@ -1,47 +1,40 @@
 import json
 
-from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot import logger
 
-class InitialTransferWorker(object):
+class PokemonTransferWorker(object):
     def __init__(self, bot):
         self.config = bot.config
         self.pokemon_list = bot.pokemon_list
         self.api = bot.api
 
     def work(self):
-        if not self.config.initial_transfer:
+        if not self.config.release_pokemon:
             return
 
-        logger.log('Cleaning up Pokemon Bag using the release config', 'cyan')
-
-        pokemon_groups = self._initial_transfer_get_groups()
-
+        pokemon_groups = self._release_pokemon_get_groups()
         for id in pokemon_groups:
-
             group_cp = pokemon_groups[id].keys()
 
             if len(group_cp) > 1:
                 group_cp.sort()
                 group_cp.reverse()
 
-
                 for x in range(1, len(group_cp)):
                     pokemon_name = self.pokemon_list[id - 1]['Name']
                     pokemon_cp = group_cp[x]
                     pokemon_data = pokemon_groups[id][pokemon_cp]
                     pokemon_potential = self.get_pokemon_potential(pokemon_data)
+                    #logger.log('Checking {} [CP {}] [Potential {}] for release!'.format(pokemon_name, pokemon_cp, pokemon_potential))
                     if self.should_release_pokemon(pokemon_name, pokemon_cp, pokemon_potential):
-                        logger.log('Exchanging {} [CP {}] [Potential {}]'.format(
-                            pokemon_name, pokemon_cp, pokemon_potential))
-                        self.api.release_pokemon(
-                            pokemon_id=pokemon_data['id'])
+                        logger.log('Exchanging {} for candy!'.format(
+                            pokemon_name), 'green')
+                        self.api.release_pokemon(pokemon_id=pokemon_data['id'])
                         response_dict = self.api.call()
-                        sleep(2)
+                        action_delay(self.config.action_wait_min, self.config.action_wait_max)
 
-        logger.log('Pokemon Bag has been cleaned up!', 'green')
-
-    def _initial_transfer_get_groups(self):
+    def _release_pokemon_get_groups(self):
         pokemon_groups = {}
         self.api.get_player().get_inventory()
         inventory_req = self.api.call()
@@ -76,7 +69,7 @@ class InitialTransferWorker(object):
         for individual_stat in iv_stats:
             try:
                 total_iv += pokemon_data[individual_stat]
-            except:
+            except Exception:
                 continue
         return round((total_iv / 45.0), 2)
 
@@ -110,14 +103,17 @@ class InitialTransferWorker(object):
             'and': lambda x, y: x and y
         }
 
-        #logger.log(
-        #    "Release config for {}: CP {} {} IV {}".format(
-        #        pokemon_name,
-        #        min_cp,
-        #        cp_iv_logic,
-        #        min_iv
-        #    ), 'yellow'
-        #)
+        if logic_to_function[cp_iv_logic](*release_results.values()):
+            logger.log(
+                "Release config for {}: Conf, CP {} {} IV {} - Poke, CP {} IV {}".format(
+                    pokemon_name,
+                    release_cp,
+                    cp_iv_logic,
+                    release_iv,
+                    cp,
+                    iv
+                ), 'yellow'
+            )
 
         return logic_to_function[cp_iv_logic](*release_results.values())
 

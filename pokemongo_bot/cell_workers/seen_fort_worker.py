@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
 
 import time
+<<<<<<< HEAD
 import json
 import random
+=======
+import random
+
+>>>>>>> refs/remotes/origin/patch-2
 from pgoapi.utilities import f2i
 
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot.cell_workers import PokemonCatchWorker
 from utils import format_time
 
 
@@ -18,6 +24,11 @@ class SeenFortWorker(object):
         self.position = bot.position
         self.config = bot.config
         self.item_list = bot.item_list
+        self.pokemon_list = bot.pokemon_list
+        self.inventory = bot.inventory
+        self.current_inventory = bot.current_inventory
+        self.item_inventory_count = bot.item_inventory_count
+        self.metrics = bot.metrics
         self.rest_time = 50
 
     def work(self):
@@ -35,9 +46,28 @@ class SeenFortWorker(object):
             fort_name = fort_details['name'].encode('utf8', 'replace')
         else:
             fort_name = 'Unknown'
-        logger.log('Now at Pokestop: ' + fort_name + ' - Spinning...',
+        logger.log('Now at Pokestop: ' + fort_name,
                    'cyan')
-        sleep(2)
+        if self.config.mode != 'farm' and 'lure_info' in self.fort:
+            # Check if the lure has a pokemon active
+            if 'encounter_id' in self.fort['lure_info']:
+                logger.log("Found a lure on this pokestop! Catching pokemon...", 'cyan')
+
+                pokemon = {
+                    'encounter_id': self.fort['lure_info']['encounter_id'],
+                    'fort_id': self.fort['id'],
+                    'latitude': self.fort['latitude'],
+                    'longitude': self.fort['longitude']
+                }
+
+                self.catch_pokemon(pokemon)
+
+            else:
+                logger.log('Found a lure, but there is no pokemon present.', 'yellow')
+            sleep(2)
+
+        logger.log('Spinning ...', 'cyan')
+
         self.api.fort_search(fort_id=self.fort['id'],
                              fort_latitude=lat,
                              fort_longitude=lng,
@@ -49,6 +79,7 @@ class SeenFortWorker(object):
 
             spin_details = response_dict['responses']['FORT_SEARCH']
             spin_result = spin_details.get('result', -1)
+<<<<<<< HEAD
             userpokestop_coolwon = 0
 
             if self.config.pokestop_cooldown == 'random':
@@ -58,6 +89,11 @@ class SeenFortWorker(object):
             else:
                 userpokestop_cooldown = (time.time() + 300) * 1000
 
+=======
+            ran_timer = random.randint(300, 600)
+            self.bot.fort_timeouts[self.fort["id"]] = (time.time() + ran_timer) * 1000 #set fort cooldown for random time between 5 and 15 min.
+            
+>>>>>>> refs/remotes/origin/patch-2
             if spin_result == 1:
                 logger.log("Loot: ", 'green')
                 experience_awarded = spin_details.get('experience_awarded',
@@ -68,6 +104,7 @@ class SeenFortWorker(object):
 
                 items_awarded = spin_details.get('items_awarded', False)
                 if items_awarded:
+                    self.bot.latest_inventory = None
                     tmp_count_items = {}
                     for item in items_awarded:
                         item_id = item['item_id']
@@ -78,36 +115,16 @@ class SeenFortWorker(object):
 
                     for item_id, item_count in tmp_count_items.iteritems():
                         item_name = self.item_list[str(item_id)]
-
                         logger.log('- ' + str(item_count) + "x " + item_name + " (Total: " + str(self.bot.item_inventory_count(item_id)) + ")", 'yellow')
-
-
-                        # RECYCLING UNWANTED ITEMS
-                        id_filter = self.config.item_filter.get(str(item_id), 0)
-                        if id_filter is not 0:
-                            id_filter_keep = id_filter.get('keep',20)
-                        new_bag_count = self.bot.item_inventory_count(item_id)
-                        if str(item_id) in self.config.item_filter and new_bag_count >= id_filter_keep:
-                            #RECYCLE_INVENTORY_ITEM
-                            items_recycle_count = new_bag_count - id_filter_keep
-                            logger.log("-- Recycling " + str(items_recycle_count) + "x " + item_name + " to match filter "+ str(id_filter_keep) +"...", 'green')
-                            response_dict_recycle = self.bot.drop_item(item_id=item_id, count=items_recycle_count)
-
-                            result = 0
-                            if response_dict_recycle and \
-                                'responses' in response_dict_recycle and \
-                                'RECYCLE_INVENTORY_ITEM' in response_dict_recycle['responses'] and \
-                                'result' in response_dict_recycle['responses']['RECYCLE_INVENTORY_ITEM']:
-                                result = response_dict_recycle['responses']['RECYCLE_INVENTORY_ITEM']['result']
-
-                            if result is 1: # Request success
-                                logger.log("-- Recycled " + item_name + "!", 'green')
-                            else:
-                                logger.log("-- Recycling " + item_name + "has failed!", 'red')
                 else:
                     logger.log("[#] Nothing found.", 'yellow')
+<<<<<<< HEAD
                     
                 pokestop_cooldown = userpokestop_cooldown
+=======
+
+                pokestop_cooldown = self.bot.fort_timeouts[self.fort["id"]]
+>>>>>>> refs/remotes/origin/patch-2
                 self.bot.fort_timeouts.update({self.fort["id"]: pokestop_cooldown})
                 
                 if pokestop_cooldown:
@@ -136,8 +153,7 @@ class SeenFortWorker(object):
                         format_time((pokestop_cooldown / 1000) -
                                     seconds_since_epoch)))
             elif spin_result == 4:
-                logger.log("Inventory is full, switching to catch mode...", 'red')
-                self.config.mode = 'poke'
+                logger.log("Inventory is full", 'red')
             else:
                 logger.log("Unknown spin result: " + str(spin_result), 'red')
 
@@ -148,10 +164,24 @@ class SeenFortWorker(object):
                     'chain_hack_sequence_number']
             else:
                 logger.log('Possibly searching too often - taking a short rest :)', 'yellow')
+<<<<<<< HEAD
                 self.bot.fort_timeouts[self.fort["id"]] = pokestop_cooldown
+=======
+>>>>>>> refs/remotes/origin/patch-2
                 return 11
-        sleep(8)
+        sleep(2)
         return 0
+
+    def catch_pokemon(self, pokemon):
+        worker = PokemonCatchWorker(pokemon, self.bot)
+        return_value = worker.work()
+
+        # Disabled for now, importing InitialTransferWorker fails.
+        # if return_value == PokemonCatchWorker.BAG_FULL:
+        #    worker = InitialTransferWorker(self)
+        #    worker.work()
+
+        return return_value
 
     @staticmethod
     def closest_fort(current_lat, current_long, forts):
