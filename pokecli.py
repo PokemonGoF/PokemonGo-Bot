@@ -114,11 +114,11 @@ def init_config():
         default=50
     )
     parser.add_argument(
-        "-it",
-        "--initial_transfer",
-        help="Transfer all duplicate pokemon with same ID on bot start, except pokemon with highest CP. Accepts a number to prevent transferring pokemon with a CP above the provided value.  Default is 0 (aka transfer none).",
-        type=int,
-        default=0
+        "-rp",
+        "--release_pokemon",
+        help="Allow transfer pokemon to professor based on release configuration. Default is false",
+        type=bool,
+        default=False
     )
     parser.add_argument(
         "-d",

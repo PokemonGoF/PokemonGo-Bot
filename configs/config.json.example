@@ -11,7 +11,6 @@
     "action_wait_max": 4,
     "debug": false,
     "test": false,
-    "initial_transfer": false,
     "location_cache": true,
     "distance_unit": "km",
     "reconnecting_timeout": 15,
@@ -28,6 +27,7 @@
     "cp_min": 300,
     "use_lucky_egg": false,
     "evolve_captured": false,
+    "release_pokemon": true,
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},

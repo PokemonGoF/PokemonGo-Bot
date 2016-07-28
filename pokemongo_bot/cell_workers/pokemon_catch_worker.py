@@ -4,8 +4,8 @@ import time
 from sets import Set
 
 from pokemongo_bot import logger
-from pokemongo_bot.human_behaviour import sleep, action_delay
-
+from pokemongo_bot.human_behaviour import sleep
+from pokemon_transfer_worker import PokemonTransferWorker
 
 class PokemonCatchWorker(object):
     BAG_FULL = 'bag_full'
@@ -34,9 +34,11 @@ class PokemonCatchWorker(object):
             if self.response_key in response_dict['responses']:
                 if self.response_status_key in response_dict['responses'][self.response_key]:
                     if response_dict['responses'][self.response_key][self.response_status_key] is 7:
-                        if self.config.initial_transfer:
+                        if self.config.release_pokemon:
                             logger.log('Pokemon Bag is full!', 'red')
-                            return PokemonCatchWorker.BAG_FULL
+                            worker = PokemonTransferWorker(self)
+                            worker.work()
+
                         else:
                             raise RuntimeError('Pokemon Bag is full!')
 
@@ -187,8 +189,6 @@ class PokemonCatchWorker(object):
                                         'Oh no! {} vanished! :('.format(pokemon_name), 'red')
                                 if status is 1:
 
-                                    id_list2 = self.count_pokemon_inventory()
-
                                     self.bot.metrics.captured_pokemon(pokemon_name, cp, iv_display, pokemon_potential)
 
                                     logger.log('Captured {}! [CP {}] [Potential {}] [{}]'.format(
@@ -199,8 +199,14 @@ class PokemonCatchWorker(object):
                                     ), 'blue')
 
                                     if self.config.evolve_captured:
-                                        pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
                                         # No need to capture this even for metrics, player stats includes it.
+                                        id_list2 = self.count_pokemon_inventory()
+                                        pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
+
+                                        # TODO dont throw RuntimeError, do something better
+                                        if len(pokemon_to_transfer) == 0:
+                                            raise RuntimeError(
+                                                'Trying to evolve 0 pokemons!')
                                         self.api.evolve_pokemon(pokemon_id=pokemon_to_transfer[0])
                                         response_dict = self.api.call()
                                         status = response_dict['responses']['EVOLVE_POKEMON']['result']
@@ -211,55 +217,8 @@ class PokemonCatchWorker(object):
                                             logger.log(
                                             'Failed to evolve {}!'.format(pokemon_name))
 
-                                    if self.should_release_pokemon(pokemon_name, cp, pokemon_potential, pokemon_data,
-                                                                   max_criteria_pokemon_list):
-                                        # Transfering Pokemon
-                                        pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
-                                        if len(pokemon_to_transfer) == 0:
-                                            raise RuntimeError(
-                                                'Trying to transfer 0 pokemons!')
-                                        # Add slight delay between capture & candy transfer #774
-                                        logger.log("Waiting briefly before transferring pokemon")
-                                        action_delay(self.config.action_wait_min, self.config.action_wait_max)
-                                        self.transfer_pokemon(pokemon_to_transfer[0])
-                                        self.bot.metrics.released_pokemon()
-                                        logger.log(
-                                            '{} has been exchanged for candy!'.format(pokemon_name), 'green')
-
                             break
         time.sleep(5)
-
-    def _transfer_low_cp_pokemon(self, value):
-        response_dict = self.bot.get_inventory()
-        self._transfer_all_low_cp_pokemon(value, response_dict)
-
-    def _transfer_all_low_cp_pokemon(self, value, response_dict):
-        try:
-            reduce(dict.__getitem__, [
-                   "responses", "GET_INVENTORY", "inventory_delta", "inventory_items"], response_dict)
-        except KeyError:
-            pass
-        else:
-            for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
-                try:
-                    reduce(dict.__getitem__, [
-                           "inventory_item_data", "pokemon"], item)
-                except KeyError:
-                    pass
-                else:
-                    pokemon = item['inventory_item_data']['pokemon']
-                    self._execute_pokemon_transfer(value, pokemon)
-                    time.sleep(1.2)
-
-    def _execute_pokemon_transfer(self, value, pokemon):
-        if 'cp' in pokemon and pokemon['cp'] < value:
-            self.api.release_pokemon(pokemon_id=pokemon['id'])
-            response_dict = self.api.call()
-
-    def transfer_pokemon(self, pid):
-        self.api.release_pokemon(pokemon_id=pid)
-        response_dict = self.api.call()
-
     def count_pokemon_inventory(self):
         # don't use cached bot.get_inventory() here
         # because we need to have actual information in capture logic
