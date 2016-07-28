@@ -37,7 +37,9 @@
       "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or"},
       "// Example of always releasing Rattata:": {},
       "// Rattata": { "always_release" : true },
-      "// Example of keeping stronger Pidgey:": {},
-      "// Pidgey": { "keep_best_cp" : true }
+      "// Example of keeping stronger (based on CP) Pidgey:": {},
+      "// Pidgey": { "keep_best_cp" : true },
+      "// Example of keeping stronger (based on IV) Zubat:": {},
+      "// Zubat": { "keep_best_iv" : true }
     }
 }
