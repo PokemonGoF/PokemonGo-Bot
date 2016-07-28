@@ -151,7 +151,7 @@ def init_config():
         short_flag="-l",
         long_flag="--location",
         help="Location",
-        type=lambda s: not isinstance(s, unicode) and unicode(s, 'utf8') or str(s),
+        type=unicode,
         default=''
     )
     add_config(
