@@ -26,7 +26,7 @@ class PokemonGoBot(object):
         self.config = config
         self.pokemon_list = json.load(open('data/pokemon.json'))
         self.item_list = json.load(open('data/items.json'))
-        self.stats = StatisticsKeeper()
+        self.stats = StatisticsKeeper() # Stats module for keep track of summary data.
 
     def start(self):
         self._setup_logging()

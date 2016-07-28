@@ -60,6 +60,7 @@ class Stepper(object):
             if self.x == self.y or self.x < 0 and self.x == -self.y or self.x > 0 and self.x == 1 - self.y:
                 (self.dx, self.dy) = (-self.dy, self.dx)
 
+            # Calculate and log distance walked.
             distance_walked = vincenty((self.x, self.y), (self.x + self.dx, self.y + self.dy)).kilometers
             self.stats.distance_walked += distance_walked
 

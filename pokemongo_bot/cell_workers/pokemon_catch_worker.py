@@ -143,6 +143,8 @@ class PokemonCatchWorker(object):
                                             pokemon_potential
                                         ), 'green'
                                     )
+
+                                    # register caught pokemon.
                                     self.stats.increment_caught_pokemon(pokemon_name)
 
                                     id_list2 = self.count_pokemon_inventory()

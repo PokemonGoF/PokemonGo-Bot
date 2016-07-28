@@ -50,6 +50,7 @@ class SeenFortWorker(object):
 
             spin_details = response_dict['responses']['FORT_SEARCH']
             if spin_details['result'] == 1:
+                # register visited pokestop.
                 self.stats.visited_pokestops += 1
 
                 logger.log("[+] Loot: ", 'green')

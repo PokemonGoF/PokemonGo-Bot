@@ -212,8 +212,6 @@ def main():
 
     except KeyboardInterrupt:
         logger.log('[x] Exiting PokemonGo Bot', 'red')
-        # TODO Add number of pokemon catched, pokestops visited, highest CP
-        # pokemon catched, etc.
         logger.log("\nActivity Summary: \n{0}".format(bot.stats), color='yellow')
 
 
