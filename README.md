@@ -14,13 +14,13 @@ The Pokemon Go Bot, baking with community.
 ## Project Chat
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
 ## Breaking Changes
-You need modify config.json (config.json.example for example) then pokecli.py --config config.json 
+You need modify config.json (config.json.example for example) then pokecli.py --config config.json
 Please clean up your old clone if you have issue, and following the [install instruction](https://github.com/PokemonGoF/PokemonGo-Bot#installation).
 
 ## About dev/master Branch
-Dev branch has the most up-to-date features, but be aware that there might be some broken changes. Your contribution and PR for fixes are warm welcome. 
-Master branch is the stable branch.  
-No PR on master branch to keep things easier.  
+Dev branch has the most up-to-date features, but be aware that there might be some broken changes. Your contribution and PR for fixes are warm welcome.
+Master branch is the stable branch.
+No PR on master branch to keep things easier.
 ## Table of Contents
 - [Project Chat](#project-chat)
 - [Features](#features)
@@ -62,7 +62,9 @@ No PR on master branch to keep things easier.
 - [ ] Hatch eggs
 - [ ] Incubate eggs
 - [ ] Use candy
-- [ ] Fight Gym
+
+## Gym Battles
+This bot takes a strong stance against automating gym battles. Botting gyms will have a negative effect on most players and thus the game as a whole. We will thus never accept contributions or changes containing code specific for gym battles.
 
 ## Installation
 
@@ -75,9 +77,9 @@ No PR on master branch to keep things easier.
 - [docker](https://docs.docker.com/engine/installation/) (Optional)
 - [protobuf 3](https://github.com/google/protobuf) (OS Dependent, see below)
 
-### Note on virtualenv 
+### Note on virtualenv
 We recommend you use virtualenv, not only will this tool keep your OS clean from all the python plugins.
-It also provide an virtual space for more than 1 instance! 
+It also provide an virtual space for more than 1 instance!
 
 ### Protobuf 3 installation
 
@@ -92,7 +94,7 @@ Please keep in mind that master is not always up-to-date whereas 'dev' is. In th
 (change master to dev for the latest version)
 
 ```
-$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
+$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot
 $ cd PokemonGo-Bot
 $ virtualenv .
 $ source bin/activate
@@ -108,10 +110,10 @@ Make sure you install the following first:
 [Requirements](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation)
 
 ```
-$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
-$ cd PokemonGo-Bot  
-$ virtualenv .  
-$ source bin/activate  
+$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot
+$ cd PokemonGo-Bot
+$ virtualenv .
+$ source bin/activate
 $ pip install -r requirements.txt
 $ git submodule init
 $ git submodule update
@@ -126,7 +128,7 @@ On Windows, you will need to install PyYaml through the installer and not throug
 Go to : http://pyyaml.org/wiki/PyYAML , download the right version for your pc and install it
 
 ##### Windows 10:
-Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl   
+Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl
 (If running 64-bit python or if you get a 'not a supported wheel on this platform' error,
 download the 64 bit version instead: PyYAML-3.11-cp27-cp27m-win_amd64.whl )
 
@@ -140,9 +142,9 @@ $ pip install PyYAML-3.11-cp27-cp27m-win32.whl
 After this, just do:
 
 ```
-$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
-$ cd PokemonGo-Bot 
-$ virtualenv .  
+$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot
+$ cd PokemonGo-Bot
+$ virtualenv .
 $ source bin/activate
 $ pip install -r requirements.txt
 $ git submodule init
@@ -152,11 +154,11 @@ $ git submodule update
 ### Develop PokemonGo-Bot
 
 ```
-$ git clone -b dev https://github.com/PokemonGoF/PokemonGo-Bot  
-$ cd PokemonGo-Bot  
-$ virtualenv .  
-$ source bin/activate  
-$ pip install -r requirements.txt  
+$ git clone -b dev https://github.com/PokemonGoF/PokemonGo-Bot
+$ cd PokemonGo-Bot
+$ virtualenv .
+$ source bin/activate
+$ pip install -r requirements.txt
 $ git submodule init
 $ git submodule update
 ```
@@ -197,7 +199,7 @@ To update your project do: `git pull` in the project folder
 - `debug` : Let the default value here except if you are developper
 - `test` : Let the default value here except if you are developper
 - `initial_transfer` : Set this to 1 if you want to transfer pokemon
-- `location_cache` : 
+- `location_cache` :
 - `distance_unit` :
 - `item_filter` :
 - `evolve_all` : Set to true to evolve pokemons if possible
@@ -206,12 +208,12 @@ To update your project do: `git pull` in the project folder
     By setting the `evolve_all` attribute in config.json, you can instruct the bot to automatically
     evolve specified pokemons on startup. This is especially useful for batch-evolving after popping up
     a lucky egg (currently this needs to be done manually).
-    
+
     The evolve all mechanism evolves only higher CP pokemons. It does this by first ordering them from high-to-low CP.
     It will also automatically transfer the evolved pokemons based on the release configuration.
-    
+
     Examples on how to use (set in config.json):
-    
+
     1. "evolve_all": "all"
       Will evolve ALL pokemons.
     2. "evolve_all": "Pidgey,Weedle"
@@ -221,23 +223,23 @@ To update your project do: `git pull` in the project folder
 ## How to run with Docker
 
 ## How to add/discover new API
-  The example is [here](https://github.com/PokemonGoF/PokemonGo-Bot/commit/46e2352ce9f349cc127a408959679282f9999585)  
-    1. Check the type of your API request in   [POGOProtos](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/RequestType.proto) For example: RECYCLE_INVENTORY_ITEM  
+  The example is [here](https://github.com/PokemonGoF/PokemonGo-Bot/commit/46e2352ce9f349cc127a408959679282f9999585)
+    1. Check the type of your API request in   [POGOProtos](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/RequestType.proto) For example: RECYCLE_INVENTORY_ITEM
     2. Convert to the api call in pokemongo_bot/__init__.py,  RECYCLE_INVENTORY_ITEM change to self.api.recycle_inventory_item
         ```
         def drop_item(self,item_id,count):
             self.api.recycle_inventory_item(...............)
         ```
-    3. Where is the param list?  
+    3. Where is the param list?
         You need check this [Requests/Messages/RecycleInventoryItemMessage.proto](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/Messages/RecycleInventoryItemMessage.proto)
-    4. Then our final api call is  
+    4. Then our final api call is
         ```
         def drop_item(self,item_id,count):
             self.api.recycle_inventory_item(item_id=item_id,count=count)
             inventory_req = self.api.call()
             print(inventory_req)
-        ```  
-    5. You can now debug on the log to see if get what you need  
+        ```
+    5. You can now debug on the log to see if get what you need
 
 ## How to set up a simple webserver with nginx
 ### Nginx on Ubuntu 14.x, 16.x
@@ -304,15 +306,15 @@ ignore:
   - Zubat
 ```
 ### How do I use the map??
-You can either view the map via opening the html file, or by serving it with SimpleHTTPServer (runs on localhost:8000)  
-To use SimpleHTTPServer:  
+You can either view the map via opening the html file, or by serving it with SimpleHTTPServer (runs on localhost:8000)
+To use SimpleHTTPServer:
 ```$ python -m SimpleHTTPServer [port]```
 The default port is 8080, you can change that by giving a port number.
 Anything above port 1000 does not require root.
-You will need to set your username(s) in the userdata.js file before opening:  
+You will need to set your username(s) in the userdata.js file before opening:
 Copy userdata.js.example to userdata.js and edit with your favorite text editor.
 put your username in the quotes instead of "username"
-If using multiple usernames format like this:  
+If using multiple usernames format like this:
 ```var users = ["username1","username2"];```
 
 ---------
@@ -348,8 +350,8 @@ If using multiple usernames format like this:
  * riberod07
  * th3w4y
  * Leaklessgfy
- * DLai0001
- 
+ * Dlai0001
+
 -------
 ## Credits
 - [tejado](https://github.com/tejado) many thanks for the API
