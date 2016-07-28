@@ -11,7 +11,7 @@ def jitter(value, delta=0.3):
     jitter = delta * value
     return uniform(value-jitter, value+jitter)
 
-def click_action_delay(low, high):
+def action_delay(low, high):
     # Waits for random number of seconds between low & high numbers
     longNum = uniform(low, high)
     shortNum = float("{0:.2f}".format(longNum))
