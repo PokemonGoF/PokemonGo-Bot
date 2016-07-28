@@ -16,33 +16,60 @@ class PokemonTransferWorker(object):
             return
 
         pokemon_groups = self._release_pokemon_get_groups()
-        for id in pokemon_groups:
-            group_cp = pokemon_groups[id].keys()
+        for pokemon_id in pokemon_groups:
+            group = pokemon_groups[pokemon_id]
 
-            if len(group_cp) > 1:
-                group_cp.sort()
-                group_cp.reverse()
+            if len(group) > 1:
+                pokemon_name = self.pokemon_list[pokemon_id - 1]['Name']
+                keep_best, keep_best_cp, keep_best_iv = self._validate_keep_best_config(pokemon_name)
 
-                for x in range(1, len(group_cp)):
-                    pokemon_name = self.pokemon_list[id - 1]['Name']
-                    pokemon_cp = group_cp[x]
-                    pokemon_data = pokemon_groups[id][pokemon_cp]
-                    pokemon_potential = self.get_pokemon_potential(pokemon_data)
-                    #logger.log('Checking {} [CP {}] [Potential {}] for release!'.format(pokemon_name, pokemon_cp, pokemon_potential))
-                    if self.should_release_pokemon(pokemon_name, pokemon_cp, pokemon_potential):
-                        logger.log('Exchanging {} for candy!'.format(
-                            pokemon_name), 'green')
-                        self.release_pokemon(pokemon_data['id'])
-                        action_delay(self.config.action_wait_min, self.config.action_wait_max)
+                if keep_best:
+                    order_criteria = 'cp'
+                    limit = keep_best_cp
+
+                    if keep_best_iv >= 1:
+                        order_criteria = 'iv'
+                        limit = keep_best_iv
+
+                    best_pokemons = sorted(group, key=lambda x: x[order_criteria], reverse=True)[:limit]
+
+                    # remove best pokemons from all pokemons array
+                    all_pokemons = group
+                    for best_pokemon in best_pokemons:
+                        for pokemon in all_pokemons:
+                            if best_pokemon['pokemon_data']['id'] == pokemon['pokemon_data']['id']:
+                                all_pokemons.remove(pokemon)
+
+                    if best_pokemons and all_pokemons:
+                        logger.log("Keep {} best {}, based on {}".format(len(best_pokemons),
+                                                                         pokemon_name,
+                                                                         order_criteria), "green")
+                        for best_pokemon in best_pokemons:
+                            logger.log("{} [CP {}] [Potential {}]".format(pokemon_name,
+                                                                          best_pokemon['cp'],
+                                                                          best_pokemon['iv']), 'green')
+
+                        logger.log("Exchange {} pokemon(s)".format(len(all_pokemons)), "green")
+
+                    for pokemon in all_pokemons:
+                        self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
+                else:
+                    group = sorted(group, key=lambda x: x['cp'], reverse=True)
+                    for item in group:
+                        pokemon_cp = item['cp']
+                        pokemon_potential = item['iv']
+
+                        if self.should_release_pokemon(pokemon_name, pokemon_cp, pokemon_potential):
+                            self.release_pokemon(pokemon_name, item['cp'], item['iv'], item['pokemon_data']['id'])
 
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
         self.api.get_player().get_inventory()
         inventory_req = self.api.call()
-        
+
         if inventory_req.get('responses', False) is False:
             return pokemon_groups
-        
+
         inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
 
         user_web_inventory = 'web/inventory-%s.json' % (self.config.username)
@@ -60,11 +87,17 @@ class PokemonTransferWorker(object):
             pokemon_data = pokemon['inventory_item_data']['pokemon_data']
             group_id = pokemon_data['pokemon_id']
             group_pokemon_cp = pokemon_data['cp']
+            group_pokemon_iv = self.get_pokemon_potential(pokemon_data)
 
             if group_id not in pokemon_groups:
-                pokemon_groups[group_id] = {}
+                pokemon_groups[group_id] = []
 
-            pokemon_groups[group_id].update({group_pokemon_cp: pokemon_data})
+            pokemon_groups[group_id].append({
+                'cp': group_pokemon_cp,
+                'iv': group_pokemon_iv,
+                'pokemon_data': pokemon_data
+            })
+
         return pokemon_groups
 
     def get_pokemon_potential(self, pokemon_data):
@@ -109,83 +142,25 @@ class PokemonTransferWorker(object):
 
         if logic_to_function[cp_iv_logic](*release_results.values()):
             logger.log(
-                "Release config for {}: Conf, CP {} {} IV {} - Poke, CP {} IV {}".format(
+                "Releasing {} with CP {} and IV {}. Matching release rule: CP < {} {} IV < {}. ".format(
                     pokemon_name,
-                    release_cp,
-                    cp_iv_logic,
-                    release_iv,
                     cp,
-                    iv
+                    iv,
+                    release_cp,
+                    cp_iv_logic.upper(),
+                    release_iv
                 ), 'yellow'
             )
 
         return logic_to_function[cp_iv_logic](*release_results.values())
 
-    def check_stronger_pokemon(self, pokemon_name, pokemon_data, max_criteria_pokemon_list, captured_pokemon_id):
-        if not self.config.release_pokemon:
-            return
-
-        release_config = self._get_release_config_for(pokemon_name)
-        if release_config.get('keep_best_cp', False) or release_config.get('keep_best_iv', False):
-            if release_config.get('keep_best_cp', False) and release_config.get('keep_best_iv', False):
-                logger.log("keep_best_cp and keep_best_iv can't be set true at the same time. Ignore this settings",
-                           "red")
-            else:
-                pokemon_id = pokemon_data['pokemon_id']
-                display_pokemon = '{} [CP {}] [Potential {}]'.format(pokemon_name,
-                                                                     pokemon_data['cp'],
-                                                                     self.pokemon_potential(pokemon_data))
-                if pokemon_id in max_criteria_pokemon_list:
-                    owned = max_criteria_pokemon_list[pokemon_id]
-                    owned_display = '{} [CP {}] [Potential {}]'.format(pokemon_name,
-                                                                       owned['cp'],
-                                                                       self.pokemon_potential(owned))
-
-                    better = self.is_greater_by_criteria(pokemon_data, owned)
-                    if better:
-                        logger.log('Owning weaker {}. Replacing it with {}!'.format(owned_display, display_pokemon), 'blue')
-                        action_delay(self.config.action_wait_min, self.config.action_wait_max)
-                        self.release_pokemon(owned['id'])
-                        logger.log('Weaker {} has been exchanged for candy!'.format(owned_display), 'blue')
-                        return False
-                    else:
-                        if captured_pokemon_id:
-                            action_delay(self.config.action_wait_min, self.config.action_wait_max)
-                            self.release_pokemon(captured_pokemon_id)
-                        logger.log('Owning better {} already!'.format(owned_display), 'blue')
-                        return True
-                else:
-                    logger.log('Not owning {}. Keeping it!'.format(display_pokemon), 'blue')
-                    return False
-
-    def is_greater_by_criteria(self, pokemon, other_pokemon):
-        pokemon_num = int(pokemon['pokemon_id']) - 1
-        pokemon_name = self.pokemon_list[int(pokemon_num)]['Name']
-
-        release_config = self._get_release_config_for(pokemon_name)
-        if release_config.get('keep_best_cp', False):
-            return pokemon['cp'] > other_pokemon['cp']
-        elif release_config.get('keep_best_iv', False):
-            return self.pokemon_potential(pokemon) > self.pokemon_potential(other_pokemon)
-        else:
-            return False
-
-    def pokemon_potential(self, pokemon_data):
-        total_iv = 0
-        iv_stats = ['individual_attack', 'individual_defense', 'individual_stamina']
-
-        for individual_stat in iv_stats:
-            try:
-                total_iv += pokemon_data[individual_stat]
-            except:
-                pokemon_data[individual_stat] = 0
-                continue
-
-        return round((total_iv / 45.0), 2)
-
-    def release_pokemon(self, pokemon_id):
+    def release_pokemon(self, pokemon_name, cp, iv, pokemon_id):
+        logger.log('Exchanging {} [CP {}] [Potential {}] for candy!'.format(pokemon_name,
+                                                                            cp,
+                                                                            iv), 'green')
         self.api.release_pokemon(pokemon_id=pokemon_id)
         response_dict = self.api.call()
+        action_delay(self.config.action_wait_min, self.config.action_wait_max)
 
     def _get_release_config_for(self, pokemon):
         release_config = self.config.release.get(pokemon)
@@ -194,3 +169,36 @@ class PokemonTransferWorker(object):
         if not release_config:
             release_config = {}
         return release_config
+
+    def _validate_keep_best_config(self, pokemon_name):
+        keep_best = False
+
+        release_config = self._get_release_config_for(pokemon_name)
+
+        keep_best_cp = release_config.get('keep_best_cp', 0)
+        keep_best_iv = release_config.get('keep_best_iv', 0)
+
+        if keep_best_cp or keep_best_iv:
+            keep_best = True
+            try:
+                keep_best_cp = int(keep_best_cp)
+            except ValueError:
+                keep_best_cp = 0
+
+            try:
+                keep_best_iv = int(keep_best_iv)
+            except ValueError:
+                keep_best_iv = 0
+
+            if keep_best_cp > 1 and keep_best_iv > 1:
+                logger.log("keep_best_cp and keep_best_iv can't be > 0 at the same time. Ignore it.", "red")
+                keep_best = False
+
+            if keep_best_cp < 0 or keep_best_iv < 0:
+                logger.log("Keep best can't be < 0. Ignore it.", "red")
+                keep_best = False
+
+            if keep_best_cp == 0 and keep_best_iv == 0:
+                keep_best = False
+
+        return keep_best, keep_best_cp, keep_best_iv

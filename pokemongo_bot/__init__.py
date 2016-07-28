@@ -21,6 +21,7 @@ from item_list import Item
 from metrics import Metrics
 from spiral_navigator import SpiralNavigator
 from worker_result import WorkerResult
+from api_wrapper import ApiWrapper
 
 
 class PokemonGoBot(object):
@@ -121,7 +122,7 @@ class PokemonGoBot(object):
                                                      gym_latitude=fort.get('latitude'),
                                                      gym_longitude=fort.get('longitude'))
                             response_gym_details = self.api.call()
-                            fort['gym_details'] = response_gym_details['responses']['GET_GYM_DETAILS']
+                            fort['gym_details'] = response_gym_details.get('responses', {}).get('GET_GYM_DETAILS', None)
 
         user_data_cells = "data/cells-%s.json" % (self.config.username)
         with open(user_data_cells, 'w') as outfile:
@@ -205,9 +206,7 @@ class PokemonGoBot(object):
 
     def login(self):
         logger.log('Attempting login to Pokemon Go.', 'white')
-        self.api._auth_token = None
-        self.api._auth_provider = None
-        self.api._api_endpoint = None
+        self.api.reset_auth()
         lat, lng = self.position[0:2]
         self.api.set_position(lat, lng, 0)
 
@@ -223,7 +222,7 @@ class PokemonGoBot(object):
 
     def _setup_api(self):
         # instantiate pgoapi
-        self.api = PGoApi()
+        self.api = ApiWrapper(PGoApi())
 
         # provide player position on the earth
         self._set_starting_position()
