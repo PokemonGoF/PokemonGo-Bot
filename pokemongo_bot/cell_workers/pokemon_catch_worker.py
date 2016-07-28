@@ -4,7 +4,7 @@ import time
 from sets import Set
 
 from pokemongo_bot import logger
-from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot.human_behaviour import sleep, action_delay
 
 
 class PokemonCatchWorker(object):
@@ -221,6 +221,9 @@ class PokemonCatchWorker(object):
                                         if len(pokemon_to_transfer) == 0:
                                             raise RuntimeError(
                                                 'Trying to transfer 0 pokemons!')
+                                        # Add slight delay between capture & candy transfer #774
+                                        logger.log("Waiting briefly before transferring pokemon")
+                                        action_delay(self.config.action_wait_min, self.config.action_wait_max)
                                         self.transfer_pokemon(pokemon_to_transfer[0])
                                         self.bot.metrics.released_pokemon()
                                         logger.log(
