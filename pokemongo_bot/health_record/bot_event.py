@@ -19,13 +19,13 @@ class BotEvent(object):
     # No RAW send function to be added here, to keep everything clean
     def login_success(self):
         if self.bot.config.health_record:
-            self.tracker.send('pageview', '/health_record', title='succ')
+            self.tracker.send('pageview', '/loggedin', title='succ')
     def login_failed(self):
         if self.bot.config.health_record:
-            self.tracker.send('pageview', '/health_record', title='fail')
+            self.tracker.send('pageview', '/login', title='fail')
     def login_retry(self):
         if self.bot.config.health_record:
-            self.tracker.send('pageview', '/health_record', title='relogin')
+            self.tracker.send('pageview', '/relogin', title='relogin')
     def logout(self):
         if self.bot.config.health_record:
-            self.tracker.send('pageview', '/health_record', title='logout')
+            self.tracker.send('pageview', '/logout', title='logout')
