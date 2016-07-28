@@ -28,6 +28,8 @@
     "evolve_all": "NONE",
     "evolve_speed": 20,
     "use_lucky_egg": false,
+    "hatch_eggs": true,
+    "longer_eggs_first": true,
     "evolve_captured": false,
     "release_pokemon": true,
     "catch": {
