@@ -5,7 +5,7 @@ from seen_fort_worker import SeenFortWorker
 from move_to_fort_worker import MoveToFortWorker
 from pokemon_transfer_worker import PokemonTransferWorker
 from evolve_all_worker import EvolveAllWorker
-from catch_visible_pokmeon_worker import CatchVisiblePokemonWorker
+from catch_visible_pokemon_worker import CatchVisiblePokemonWorker
 from recycle_items_worker import RecycleItemsWorker
 from spin_nearest_fort_worker import SpinNearestFortWorker
 from incubate_eggs_worker import IncubateEggsWorker
