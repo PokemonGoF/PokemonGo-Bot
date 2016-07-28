@@ -71,7 +71,8 @@ def init_config():
         "-a",
         "--auth_service",
         help="Auth Service ('ptc' or 'google')",
-        required=required("auth_service")
+        required=required("auth_service"),
+        default=load.get('auth_service', None)
     )
     parser.add_argument("-u", "--username", help="Username")
     parser.add_argument("-p", "--password", help="Password")
