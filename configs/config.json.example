@@ -5,11 +5,14 @@
     "location": "SOME_LOCATION",
     "gmapkey": "GOOGLE_MAPS_API_KEY",
     "max_steps": 5,
-    "mode": "all",
+    "catch_pokemon": true,
+    "spin_forts": true,
     "walk": 4.16,
+    "action_wait_min": 1,
+    "action_wait_max": 4,
     "debug": false,
     "test": false,
-    "initial_transfer": false,
+    "health_record": true,
     "location_cache": true,
     "distance_unit": "km",
     "reconnecting_timeout": 15,
@@ -26,6 +29,7 @@
     "cp_min": 300,
     "use_lucky_egg": false,
     "evolve_captured": false,
+    "release_pokemon": true,
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},
@@ -34,6 +38,10 @@
     "release": {
       "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or"},
       "// Example of always releasing Rattata:": {},
-      "// Rattata": { "always_release" : true }
+      "// Rattata": { "always_release" : true },
+      "// Example of keeping stronger (based on CP) Pidgey:": {},
+      "// Pidgey": { "keep_best_cp" : true },
+      "// Example of keeping stronger (based on IV) Zubat:": {},
+      "// Zubat": { "keep_best_iv" : true }
     }
 }

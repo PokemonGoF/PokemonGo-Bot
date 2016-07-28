@@ -22,6 +22,7 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 - [x] Limit the step to farm specific area for pokestops
 - [x] Rudimentary IV Functionality filter
 - [x] Ignore certain pokemon filter
+- [x] Adjust delay between Pokemon capture & Transfer as per configuration
 - [ ] Standalone Desktop Application
 - [ ] Hatch eggs
 - [ ] Incubate eggs
@@ -60,3 +61,5 @@ Bitcoin Address:  1PJMCx9NNQRasQYaa4MMff9yyNFffhHgLu
 <p align="center">
 <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WQUXDC54W6EVY"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"></a>
 </p>
+
+[![Analytics](https://ga-beacon.appspot.com/UA-81468120-1/welcome-page-dev)](https://github.com/igrigorik/ga-beacon)

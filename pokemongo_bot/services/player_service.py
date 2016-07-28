@@ -16,19 +16,7 @@ class PlayerService():
         response = self.get_inventory()
         inventory = list()
 
-        if not 'responses' in response:
-            return
-
-        if not 'GET_INVENTORY' in response['responses']:
-            return
-
-        if not 'inventory_delta' in response['responses']['GET_INVENTORY']:
-            return
-
-        if not 'inventory_items' in response['responses']['GET_INVENTORY']['inventory_delta']:
-            return
-
-        r = response['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+        r = response.get('responses', {}).get('GET_INVENTORY', {}).get('inventory_delta', {}).get('inventory_items', {})
 
         for item in r:
             if not 'inventory_item_data' in item:
@@ -68,7 +56,6 @@ class PlayerService():
 
         for item in inventory_dict:
             try:
-                # print(item['inventory_item_data']['item'])
                 item_id = item['inventory_item_data']['item']['item_id']
                 item_count = item['inventory_item_data']['item']['count']
 
@@ -84,10 +71,8 @@ class PlayerService():
 
     def print_character_info(self):
         # get player profile call
-        # ----------------------
         self.api.get_player()
         response_dict = self.api.call()
-        #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
         currency_1 = "0"
         currency_2 = "0"
 
@@ -145,24 +130,11 @@ class PlayerService():
     def get_inventory_count(self, what):
         response_dict = self.get_inventory()
 
-        if not 'responses' in response_dict:
-            return
-
-        if not 'GET_INVENTORY' in response_dict['responses']:
-            return
-
-        if not 'inventory_delta' in response_dict['responses']['GET_INVENTORY']:
-            return
-
-        if not 'inventory_items' in response_dict['responses']['GET_INVENTORY']['inventory_delta']:
-            return
-
         pokecount = 0
         itemcount = 1
-        r = response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+        r = response.get('responses', {}).get('GET_INVENTORY', {}).get('inventory_delta', {}).get('inventory_items', {})
 
         for item in r:
-            #print('item {}'.format(item))
             if not 'inventory_item_data' in item:
                 continue
 
@@ -187,24 +159,11 @@ class PlayerService():
     def get_player_info(self):
         response_dict = self.get_inventory()
 
-        if not 'responses' in response_dict:
-            return
-
-        if not 'GET_INVENTORY' in response_dict['responses']:
-            return
-
-        if not 'inventory_delta' in response_dict['responses']['GET_INVENTORY']:
-            return
-
-        if not 'inventory_items' in response_dict['responses']['GET_INVENTORY']['inventory_delta']:
-            return
-
         pokecount = 0
         itemcount = 1
-        r = response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+        r = response.get('responses', {}).get('GET_INVENTORY', {}).get('inventory_delta', {}).get('inventory_items', {})
 
         for item in r:
-            #print('item {}'.format(item))
             if not 'inventory_item_data' in item:
                 continue
 
