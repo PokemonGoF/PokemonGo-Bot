@@ -9,6 +9,7 @@
     "walk": 4.16,
     "debug": false,
     "test": false,
+    "health_record": true,
     "initial_transfer": false,
     "location_cache": true,
     "distance_unit": "km",

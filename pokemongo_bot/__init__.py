@@ -37,7 +37,7 @@ class PokemonGoBot(object):
         self.item_list = json.load(open(os.path.join('data', 'items.json')))
         self.metrics = Metrics(self)
         self.latest_inventory = None
-        self.bot_event = BotEvent()
+        self.bot_event = BotEvent(self)
 
     def start(self):
         self._setup_logging()
