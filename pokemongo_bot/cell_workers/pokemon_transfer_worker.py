@@ -46,7 +46,7 @@ class PokemonTransferWorker(object):
                                                                          order_criteria), "green")
 
                     if all_pokemons:
-                        logger.log("Exchange other {} pokemons".format(len(all_pokemons)))
+                        logger.log("Exchange {} pokemon(s)".format(len(all_pokemons)), "green")
 
                     for pokemon in all_pokemons:
                         self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
