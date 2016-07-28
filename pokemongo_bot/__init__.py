@@ -14,7 +14,7 @@ from pgoapi import PGoApi
 from pgoapi.utilities import f2i
 
 import logger
-from cell_workers import SpinNearestFortWorker, CatchVisiblePokemonWorker, PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, PokemonTransferWorker, EvolveAllWorker, RecycleItemsWorker
+from cell_workers import SpinNearestFortWorker, CatchVisiblePokemonWorker, PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, PokemonTransferWorker, EvolveAllWorker, RecycleItemsWorker, IncubateEggsWorker
 from cell_workers.utils import distance, get_cellid, encode, i2f
 from human_behaviour import sleep
 from item_list import Item
@@ -51,6 +51,7 @@ class PokemonGoBot(object):
         self.check_session(self.position[0:2])
 
         workers = [
+            IncubateEggsWorker,
             PokemonTransferWorker,
             EvolveAllWorker,
             RecycleItemsWorker,

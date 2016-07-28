@@ -207,6 +207,9 @@ def init_config():
     config.action_wait_max = load.get('action_wait_max', 4)
     config.action_wait_min = load.get('action_wait_min', 1)
 
+    config.hatch_eggs = load.get("hatch_eggs", True)
+    config.longer_eggs_first = load.get("longer_eggs_first", True)
+
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")
         return None
