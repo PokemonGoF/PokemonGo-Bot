@@ -315,6 +315,9 @@ def init_config():
     config.hatch_eggs = load.get("hatch_eggs", True)
     config.longer_eggs_first = load.get("longer_eggs_first", True)
 
+    config.avoid_circles = load.get("avoid_circles", False)
+    config.max_circle_size = load.get("max_circle_size", 20)
+
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")
         return None

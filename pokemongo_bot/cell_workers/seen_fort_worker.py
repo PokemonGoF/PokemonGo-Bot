@@ -116,6 +116,8 @@ class SeenFortWorker(object):
                         'PokeStops you are indeed softbanned. Please try again '
                         'in a few hours.')
                     raise RuntimeError(message)
+
+                self.bot.path = self.bot.path[1:] + [self.fort['id']]
             elif spin_result == 2:
                 logger.log("[#] Pokestop out of range")
             elif spin_result == 3:
