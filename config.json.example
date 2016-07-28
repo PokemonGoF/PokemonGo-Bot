@@ -13,5 +13,6 @@
     "location_cache": true,
     "distance_unit": "km",
     "item_filter": "101,102,103,104",
-    "evolve_all": "NONE"
+    "evolve_all": "NONE",
+    "reconnecting_timeout": 15
 }
