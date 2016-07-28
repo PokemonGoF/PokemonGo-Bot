@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import struct
-import json
 from math import cos, asin, sqrt
 from colorama import init
 from s2sphere import CellId, LatLng
