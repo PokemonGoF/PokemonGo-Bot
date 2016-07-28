@@ -114,11 +114,11 @@ def init_config():
         default=50
     )
     parser.add_argument(
-        "-it",
-        "--initial_transfer",
-        help="Transfer all duplicate pokemon with same ID on bot start, except pokemon with highest CP. Accepts a number to prevent transferring pokemon with a CP above the provided value.  Default is 0 (aka transfer none).",
-        type=int,
-        default=0
+        "-rp",
+        "--release_pokemon",
+        help="Allow transfer pokemon to professor based on release configuration. Default is false",
+        type=bool,
+        default=false
     )
     parser.add_argument(
         "-d",
@@ -192,6 +192,7 @@ def init_config():
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.item_filter = load.get('item_filter', {})
+    
 
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")

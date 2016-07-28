@@ -11,7 +11,7 @@ class PokemonTransferWorker(object):
         self.metrics = bot.metrics
 
     def work(self):
-        if not self.config.release_pokemons:
+        if not self.config.release_pokemon:
             return
 
         pokemon_groups = self._initial_transfer_get_groups()

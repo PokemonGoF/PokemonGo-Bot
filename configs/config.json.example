@@ -25,7 +25,7 @@
     "cp_min": 300,
     "use_lucky_egg": false,
     "evolve_captured": false,
-    "release_pokemons": true,
+    "release_pokemon": true,
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},
