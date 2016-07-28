@@ -5,7 +5,7 @@ from sets import Set
 
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import sleep
-from pokemon_transfer_worker import PokemonTransferWorker
+
 
 class PokemonCatchWorker(object):
 
@@ -34,10 +34,6 @@ class PokemonCatchWorker(object):
                 if self.response_status_key in response_dict['responses'][self.response_key]:
                     if response_dict['responses'][self.response_key][self.response_status_key] is 7:
                         if self.config.release_pokemon:
-                            logger.log('Pokemon Bag is full!', 'red')
-                            worker = PokemonTransferWorker(self)
-                            worker.work()
-                        else:
                             raise RuntimeError('Pokemon Bag is full!')
 
                     if response_dict['responses'][self.response_key][self.response_status_key] is 1:
