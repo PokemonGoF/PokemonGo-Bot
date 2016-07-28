@@ -118,7 +118,7 @@ class PokemonTransferWorker(object):
 
         return logic_to_function[cp_iv_logic](*release_results.values())
 
-    def check_stronger_pokemon(self, pokemon_name, pokemon_data, max_criteria_pokemon_list):
+    def check_stronger_pokemon(self, pokemon_name, pokemon_data, max_criteria_pokemon_list, captured_pokemon_id):
         if not self.config.release_pokemon:
             return
 
@@ -142,10 +142,13 @@ class PokemonTransferWorker(object):
                     if better:
                         logger.log('Owning weaker {}. Replacing it with {}!'.format(owned_display, display_pokemon), 'blue')
                         action_delay(self.config.action_wait_min, self.config.action_wait_max)
-                        self.release_pokemon(pokemon_data['pokemon_id'])
+                        self.release_pokemon(owned['id'])
                         logger.log('Weaker {} has been exchanged for candy!'.format(owned_display), 'blue')
                         return False
                     else:
+                        if captured_pokemon_id:
+                            action_delay(self.config.action_wait_min, self.config.action_wait_max)
+                            self.release_pokemon(captured_pokemon_id)
                         logger.log('Owning better {} already!'.format(owned_display), 'blue')
                         return True
                 else:

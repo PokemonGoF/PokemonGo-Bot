@@ -186,6 +186,7 @@ class PokemonCatchWorker(object):
                                     logger.log(
                                         'Oh no! {} vanished! :('.format(pokemon_name), 'red')
                                 if status is 1:
+                                    id_list2 = self.count_pokemon_inventory()
 
                                     self.bot.metrics.captured_pokemon(pokemon_name, cp, iv_display, pokemon_potential)
 
@@ -198,7 +199,6 @@ class PokemonCatchWorker(object):
 
                                     if self.config.evolve_captured:
                                         # No need to capture this even for metrics, player stats includes it.
-                                        id_list2 = self.count_pokemon_inventory()
                                         pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
 
                                         # TODO dont throw RuntimeError, do something better
@@ -215,9 +215,13 @@ class PokemonCatchWorker(object):
                                             logger.log(
                                             'Failed to evolve {}!'.format(pokemon_name))
 
+                                    captured_pokemon_id = list(Set(id_list2) - Set(id_list1))
+                                    captured_pokemon_id = captured_pokemon_id and captured_pokemon_id[0] or None
+
                                     self.transfer_worker.check_stronger_pokemon(pokemon_name,
                                                                                 pokemon_data,
-                                                                                max_criteria_pokemon_list)
+                                                                                max_criteria_pokemon_list,
+                                                                                captured_pokemon_id)
 
                             break
         time.sleep(5)
