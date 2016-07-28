@@ -200,10 +200,6 @@ class PokemonTransferWorker(object):
             except ValueError:
                 keep_best_iv = 0
 
-            if keep_best_cp > 1 and keep_best_iv > 1:
-                logger.log("keep_best_cp and keep_best_iv can't be > 0 at the same time. Ignore it.", "red")
-                keep_best = False
-
             if keep_best_cp < 0 or keep_best_iv < 0:
                 logger.log("Keep best can't be < 0. Ignore it.", "red")
                 keep_best = False

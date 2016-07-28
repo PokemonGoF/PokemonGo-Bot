@@ -48,6 +48,6 @@
       "// Also, it is working with any": {},
       "// any": {"keep_best_iv": 3},
       "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat:": {},
-      "// Zubat": {"keep_best_cp": 3, "keep_best_iv": 3}
+      "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3}
     }
 }
