@@ -348,7 +348,7 @@ If using multiple usernames format like this:
  * riberod07
  * th3w4y
  * Leaklessgfy
- 
+ * Mobman (GregTampa)
 -------
 ## Credits
 - [tejado](https://github.com/tejado) many thanks for the API
