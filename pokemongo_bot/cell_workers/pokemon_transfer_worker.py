@@ -24,21 +24,31 @@ class PokemonTransferWorker(object):
                 keep_best, keep_best_cp, keep_best_iv = self._validate_keep_best_config(pokemon_name)
 
                 if keep_best:
-                    order_criteria = 'cp'
-                    limit = keep_best_cp
+                    best_pokemon_ids = set()
+                    order_criteria = 'none'
+                    if keep_best_cp >= 1:
+                        cp_limit = keep_best_cp
+                        best_cp_pokemons = sorted(group, key=lambda x: x['cp'], reverse=True)[:cp_limit]
+                        best_pokemon_ids = set(pokemon['pokemon_data']['id'] for pokemon in best_cp_pokemons)
+                        order_criteria = 'cp'
 
                     if keep_best_iv >= 1:
-                        order_criteria = 'iv'
-                        limit = keep_best_iv
-
-                    best_pokemons = sorted(group, key=lambda x: x[order_criteria], reverse=True)[:limit]
+                        iv_limit = keep_best_iv
+                        best_iv_pokemons = sorted(group, key=lambda x: x['iv'], reverse=True)[:iv_limit]
+                        best_pokemon_ids |= set(pokemon['pokemon_data']['id'] for pokemon in best_iv_pokemons)
+                        if order_criteria == 'cp':
+                            order_criteria = 'cp and iv'
+                        else:
+                            order_criteria = 'iv'
 
                     # remove best pokemons from all pokemons array
                     all_pokemons = group
-                    for best_pokemon in best_pokemons:
+                    best_pokemons = []
+                    for best_pokemon_id in best_pokemon_ids:
                         for pokemon in all_pokemons:
-                            if best_pokemon['pokemon_data']['id'] == pokemon['pokemon_data']['id']:
+                            if best_pokemon_id == pokemon['pokemon_data']['id']:
                                 all_pokemons.remove(pokemon)
+                                best_pokemons.append(pokemon)
 
                     if best_pokemons and all_pokemons:
                         logger.log("Keep {} best {}, based on {}".format(len(best_pokemons),
