@@ -8,6 +8,7 @@ from pokemongo_bot.human_behaviour import sleep
 from pokemon_transfer_worker import PokemonTransferWorker
 
 class PokemonCatchWorker(object):
+
     BAG_FULL = 'bag_full'
     NO_POKEBALLS = 'no_pokeballs'
 
@@ -23,12 +24,12 @@ class PokemonCatchWorker(object):
         self.spawn_point_guid = ''
         self.response_key = ''
         self.response_status_key = ''
+        self.transfer_worker = None
 
     def work(self):
-
         encounter_id = self.pokemon['encounter_id']
-
         response_dict = self.create_encounter_api_call()
+        self.transfer_worker = PokemonTransferWorker(self)
 
         if response_dict and 'responses' in response_dict:
             if self.response_key in response_dict['responses']:
@@ -36,15 +37,13 @@ class PokemonCatchWorker(object):
                     if response_dict['responses'][self.response_key][self.response_status_key] is 7:
                         if self.config.release_pokemon:
                             logger.log('Pokemon Bag is full!', 'red')
-                            worker = PokemonTransferWorker(self)
-                            worker.work()
+                            self.transfer_worker.work()
 
                         else:
                             raise RuntimeError('Pokemon Bag is full!')
 
                     if response_dict['responses'][self.response_key][self.response_status_key] is 1:
                         cp = 0
-                        total_IV = 0
                         if 'wild_pokemon' in response_dict['responses'][self.response_key] or 'pokemon_data' in \
                                 response_dict['responses'][self.response_key]:
                             if self.response_key == 'ENCOUNTER':
@@ -217,8 +216,13 @@ class PokemonCatchWorker(object):
                                             logger.log(
                                             'Failed to evolve {}!'.format(pokemon_name))
 
+                                    self.transfer_worker.check_stronger_pokemon(pokemon_name,
+                                                                                pokemon_data,
+                                                                                max_criteria_pokemon_list)
+
                             break
         time.sleep(5)
+
     def count_pokemon_inventory(self):
         # don't use cached bot.get_inventory() here
         # because we need to have actual information in capture logic
@@ -248,18 +252,6 @@ class PokemonCatchWorker(object):
                     if not pokemon.get('is_egg', False):
                         callback(pokemon)
 
-    def _is_greater_by_criteria(self, pokemon, other_pokemon):
-        pokemon_num = int(pokemon['pokemon_id']) - 1
-        pokemon_name = self.pokemon_list[int(pokemon_num)]['Name']
-
-        release_config = self._get_release_config_for(pokemon_name)
-        if release_config.get('keep_best_cp', False):
-            return pokemon['cp'] > other_pokemon['cp']
-        elif release_config.get('keep_best_iv', False):
-            return self.pokemon_potential(pokemon) > self.pokemon_potential(other_pokemon)
-        else:
-            return False
-
     def get_max_criteria_pokemon_list(self):
         """
         Takes a get_inventory request result and returns a list of pokemons and their data,
@@ -279,7 +271,7 @@ class PokemonCatchWorker(object):
         """
         pokemon_id = pokemon['pokemon_id']
         if pokemon_id in pokemon_map:
-            if self._is_greater_by_criteria(pokemon, pokemon_map[pokemon_id]):
+            if self.transfer_worker.is_greater_by_criteria(pokemon, pokemon_map[pokemon_id]):
                 pokemon_map[pokemon_id] = pokemon
         else:
             pokemon_map[pokemon_id] = pokemon
@@ -343,76 +335,6 @@ class PokemonCatchWorker(object):
         if not catch_config:
             catch_config = self.config.catch.get('any')
         return catch_config
-
-    def should_release_pokemon(self, pokemon_name, cp, iv, pokemon_data, max_criteria_pokemon_list):
-        release_config = self._get_release_config_for(pokemon_name)
-        cp_iv_logic = release_config.get('logic')
-        if not cp_iv_logic:
-            cp_iv_logic = self._get_release_config_for('any').get('logic', 'and')
-
-        release_results = {
-            'cp': False,
-            'iv': False,
-        }
-
-        if release_config.get('never_release', False):
-            return False
-
-        if release_config.get('always_release', False):
-            return True
-
-        if release_config.get('keep_best_cp', False) or release_config.get('keep_best_iv', False):
-            if release_config.get('keep_best_cp', False) and release_config.get('keep_best_iv', False):
-                logger.log("keep_best_cp and keep_best_iv can't be set true at the same time. Ignore this settings",
-                           "red")
-            else:
-                pokemon_id = pokemon_data['pokemon_id']
-                display_pokemon = '{} [CP {}] [Potential {}]'.format(pokemon_name,
-                                                                     cp,
-                                                                     self.pokemon_potential(pokemon_data))
-                if pokemon_id in max_criteria_pokemon_list:
-                    owned = max_criteria_pokemon_list[pokemon_id]
-                    owned_display = '{} [CP {}] [Potential {}]'.format(pokemon_name,
-                                                                       owned['cp'],
-                                                                       self.pokemon_potential(owned))
-
-                    better = self._is_greater_by_criteria(pokemon_data, owned)
-                    if better:
-                        logger.log('Owning weaker {}. Replacing it with {}!'.format(owned_display, display_pokemon), 'blue')
-                        action_delay(self.config.action_wait_min, self.config.action_wait_max)
-                        self.transfer_pokemon(owned['id'])
-                        logger.log('Weaker {} has been exchanged for candy!'.format(owned_display), 'blue')
-                        return False
-                    else:
-                        logger.log('Owning better {} already!'.format(owned_display), 'blue')
-                        return True
-                else:
-                    logger.log('Not owning {}. Keeping it!'.format(display_pokemon), 'blue')
-                    return False
-
-        release_cp = release_config.get('release_below_cp', 0)
-        if cp < release_cp:
-            release_results['cp'] = True
-
-        release_iv = release_config.get('release_below_iv', 0)
-        if iv < release_iv:
-            release_results['iv'] = True
-
-        logic_to_function = {
-            'or': lambda x, y: x or y,
-            'and': lambda x, y: x and y
-        }
-
-        #logger.log(
-        #    "Release config for {}: CP {} {} IV {}".format(
-        #        pokemon_name,
-        #        min_cp,
-        #        cp_iv_logic,
-        #        min_iv
-        #    ), 'yellow'
-        #)
-
-        return logic_to_function[cp_iv_logic](*release_results.values())
 
     def _get_release_config_for(self, pokemon):
         release_config = self.config.release.get(pokemon)

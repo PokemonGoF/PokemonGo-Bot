@@ -4,10 +4,12 @@ from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot import logger
 
 class PokemonTransferWorker(object):
+
     def __init__(self, bot):
         self.config = bot.config
         self.pokemon_list = bot.pokemon_list
         self.api = bot.api
+        self.bot = bot
 
     def work(self):
         if not self.config.release_pokemon:
@@ -30,8 +32,7 @@ class PokemonTransferWorker(object):
                     if self.should_release_pokemon(pokemon_name, pokemon_cp, pokemon_potential):
                         logger.log('Exchanging {} for candy!'.format(
                             pokemon_name), 'green')
-                        self.api.release_pokemon(pokemon_id=pokemon_data['id'])
-                        response_dict = self.api.call()
+                        self.release_pokemon(pokemon_data['id'])
                         action_delay(self.config.action_wait_min, self.config.action_wait_max)
 
     def _release_pokemon_get_groups(self):
@@ -116,6 +117,66 @@ class PokemonTransferWorker(object):
             )
 
         return logic_to_function[cp_iv_logic](*release_results.values())
+
+    def check_stronger_pokemon(self, pokemon_name, pokemon_data, max_criteria_pokemon_list):
+        release_config = self._get_release_config_for(pokemon_name)
+        if release_config.get('keep_best_cp', False) or release_config.get('keep_best_iv', False):
+            if release_config.get('keep_best_cp', False) and release_config.get('keep_best_iv', False):
+                logger.log("keep_best_cp and keep_best_iv can't be set true at the same time. Ignore this settings",
+                           "red")
+            else:
+                pokemon_id = pokemon_data['pokemon_id']
+                display_pokemon = '{} [CP {}] [Potential {}]'.format(pokemon_name,
+                                                                     pokemon_data['cp'],
+                                                                     self.pokemon_potential(pokemon_data))
+                if pokemon_id in max_criteria_pokemon_list:
+                    owned = max_criteria_pokemon_list[pokemon_id]
+                    owned_display = '{} [CP {}] [Potential {}]'.format(pokemon_name,
+                                                                       owned['cp'],
+                                                                       self.pokemon_potential(owned))
+
+                    better = self.is_greater_by_criteria(pokemon_data, owned)
+                    if better:
+                        logger.log('Owning weaker {}. Replacing it with {}!'.format(owned_display, display_pokemon), 'blue')
+                        action_delay(self.config.action_wait_min, self.config.action_wait_max)
+                        self.release_pokemon(pokemon_data['id'])
+                        logger.log('Weaker {} has been exchanged for candy!'.format(owned_display), 'blue')
+                        return False
+                    else:
+                        logger.log('Owning better {} already!'.format(owned_display), 'blue')
+                        return True
+                else:
+                    logger.log('Not owning {}. Keeping it!'.format(display_pokemon), 'blue')
+                    return False
+
+    def is_greater_by_criteria(self, pokemon, other_pokemon):
+        pokemon_num = int(pokemon['pokemon_id']) - 1
+        pokemon_name = self.pokemon_list[int(pokemon_num)]['Name']
+
+        release_config = self._get_release_config_for(pokemon_name)
+        if release_config.get('keep_best_cp', False):
+            return pokemon['cp'] > other_pokemon['cp']
+        elif release_config.get('keep_best_iv', False):
+            return self.pokemon_potential(pokemon) > self.pokemon_potential(other_pokemon)
+        else:
+            return False
+
+    def pokemon_potential(self, pokemon_data):
+        total_iv = 0
+        iv_stats = ['individual_attack', 'individual_defense', 'individual_stamina']
+
+        for individual_stat in iv_stats:
+            try:
+                total_iv += pokemon_data[individual_stat]
+            except:
+                pokemon_data[individual_stat] = 0
+                continue
+
+        return round((total_iv / 45.0), 2)
+
+    def release_pokemon(self, pokemon_id):
+        self.api.release_pokemon(pokemon_id=pokemon_id)
+        response_dict = self.api.call()
 
     def _get_release_config_for(self, pokemon):
         release_config = self.config.release.get(pokemon)
