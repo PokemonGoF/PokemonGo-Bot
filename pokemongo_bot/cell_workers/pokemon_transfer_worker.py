@@ -142,7 +142,7 @@ class PokemonTransferWorker(object):
                     if better:
                         logger.log('Owning weaker {}. Replacing it with {}!'.format(owned_display, display_pokemon), 'blue')
                         action_delay(self.config.action_wait_min, self.config.action_wait_max)
-                        self.release_pokemon(pokemon_data['id'])
+                        self.release_pokemon(pokemon_data['pokemon_id'])
                         logger.log('Weaker {} has been exchanged for candy!'.format(owned_display), 'blue')
                         return False
                     else:
