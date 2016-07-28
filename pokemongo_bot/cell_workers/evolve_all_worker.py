@@ -16,8 +16,7 @@ class EvolveAllWorker(object):
         if not self._should_run():
             return
 
-        self.api.get_inventory()
-        response_dict = self.api.call()
+        response_dict = self.bot.get_inventory()
         cache = {}
 
         try:
@@ -41,7 +40,7 @@ class EvolveAllWorker(object):
             for pokemon in evolve_list:
                 try:
                     self._execute_pokemon_evolve(pokemon, cache)
-                except:
+                except Exception:
                     pass
             id_list2 = self.count_pokemon_inventory()
             release_cand_list_ids = list(Set(id_list2) - Set(id_list1))
@@ -56,11 +55,14 @@ class EvolveAllWorker(object):
         # Will skip evolving if user wants to use an egg and there is none
         skip_evolves = False
 
+        if self.config.evolve_all:
+            return skip_evolves
+
         # Pop lucky egg before evolving to maximize xp gain
         use_lucky_egg = self.config.use_lucky_egg
         lucky_egg_count = self.bot.item_inventory_count(Item.ITEM_LUCKY_EGG.value)
 
-        if  use_lucky_egg and lucky_egg_count > 0:
+        if use_lucky_egg and lucky_egg_count > 0:
             logger.log('Using lucky egg ... you have {}'
                        .format(lucky_egg_count))
             response_dict_lucky_egg = self.bot.use_lucky_egg()
@@ -82,8 +84,7 @@ class EvolveAllWorker(object):
         return skip_evolves
 
     def _release_evolved(self, release_cand_list_ids):
-        self.api.get_inventory()
-        response_dict = self.api.call()
+        response_dict = self.bot.get_inventory()
         cache = {}
 
         try:
@@ -106,7 +107,7 @@ class EvolveAllWorker(object):
                     # Transfering Pokemon
                     self.transfer_pokemon(pokemon_id)
                     logger.log(
-                        '[#] {} has been exchanged for candy!'.format(pokemon_name), 'green')
+                        '[#] {} has been exchanged for candy!'.format(pokemon_name), 'red')
 
     def _sort_by_cp_iv(self, inventory_items):
         pokemons1 = []
@@ -132,7 +133,7 @@ class EvolveAllWorker(object):
                         pokemons1.append(v)
                     else:
                         pokemons2.append(v)
-                except:
+                except Exception:
                     pass
 
         ## Sort larger CP pokemons by IV, tie breaking by CP
@@ -177,8 +178,7 @@ class EvolveAllWorker(object):
         response_dict = self.api.call()
 
     def count_pokemon_inventory(self):
-        self.api.get_inventory()
-        response_dict = self.api.call()
+        response_dict = self.bot.get_inventory()
         id_list = []
         return self.counting_pokemon(response_dict, id_list)
 
@@ -285,7 +285,7 @@ class EvolveAllWorker(object):
         for individual_stat in iv_stats:
             try:
                 total_IV += pokemon[individual_stat]
-            except:
+            except Exception:
                 pokemon[individual_stat] = 0
                 continue
         pokemon_potential = round((total_IV / 45.0), 2)

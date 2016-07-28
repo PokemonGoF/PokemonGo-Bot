@@ -356,13 +356,20 @@ class PokemonGoBot(object):
         return items_stock
 
     def item_inventory_count(self, id):
-        inventory_req = self.get_inventory()
-	try:
-        	inventory_dict = inventory_req['responses'][
-            	'GET_INVENTORY']['inventory_delta']['inventory_items']
-        except TypeError:
-	    return 0
+<<<<<<< HEAD
+        self.api.get_player().get_inventory()
 
+        inventory_req = self.api.call()
+        try:
+            inventory_dict = inventory_req['responses'][
+                'GET_INVENTORY']['inventory_delta']['inventory_items']
+        except TypeError:
+            return 0
+=======
+        inventory_req = self.get_inventory()
+        inventory_dict = inventory_req['responses'][
+            'GET_INVENTORY']['inventory_delta']['inventory_items']
+>>>>>>> upstream/dev
 
         if id == 'all':
             return self._all_items_inventory_count(inventory_dict)

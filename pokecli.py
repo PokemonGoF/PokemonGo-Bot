@@ -84,11 +84,16 @@ def init_config():
         default=False
     )
     parser.add_argument(
-        "-m",
-        "--mode",
-        help="Farming Mode",
-        type=str,
-        default="all"
+        "--catch_pokemon",
+        help="Enable catching pokemon",
+        type=bool,
+        default=True
+    )
+    parser.add_argument(
+        "--spin_forts",
+        help="Enable Spinning Pokestops",
+        type=bool,
+        default=True
     )
     parser.add_argument(
         "-w",
@@ -114,11 +119,11 @@ def init_config():
         default=50
     )
     parser.add_argument(
-        "-it",
-        "--initial_transfer",
-        help="Transfer all duplicate pokemon with same ID on bot start, except pokemon with highest CP. Accepts a number to prevent transferring pokemon with a CP above the provided value.  Default is 0 (aka transfer none).",
-        type=int,
-        default=0
+        "-rp",
+        "--release_pokemon",
+        help="Allow transfer pokemon to professor based on release configuration. Default is false",
+        type=bool,
+        default=False
     )
     parser.add_argument(
         "-d",
@@ -176,6 +181,13 @@ def init_config():
         type=float,
         default=15.0
     )
+    parser.add_argument(
+        "-hr",
+        "--health_record",
+        help="Send anonymous bot event to GA for bot health record. Set \"health_record\":false if you need disable it.",
+        type=bool,
+        default=True
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()
@@ -185,27 +197,23 @@ def init_config():
         config.password = getpass("Password: ")
 
     # Passed in arguments should trump
-    for key in config.__dict__:
-        if key in load and load[key]:
-            config.__dict__[key] = load[key]
+    for key, value in load.iteritems():
+        if key in config and value:
+            setattr(config, key, value)
 
-    if 'catch' in load:
-        config.catch = load['catch']
-    else:
-        config.catch = {}
-
-    if 'release' in load:
-        config.release = load['release']
-    else:
-        config.release = {}
-
-    if 'item_filter' in load:
-        config.item_filter = load['item_filter']
-    else:
-        config.item_filter = {}
+    config.catch = load.get('catch', {})
+    config.release = load.get('release', {})
+    config.item_filter = load.get('item_filter', {})
+    config.action_wait_max = load.get('action_wait_max', 4)
+    config.action_wait_min = load.get('action_wait_min', 1)
 
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")
+        return None
+
+    if 'mode' in load or 'mode' in config:
+        parser.error('"mode" has been removed and replaced with two new flags: "catch_pokemon" and "spin_forts". ' +
+            ' Set these to true or false and remove "mode" from your configuration')
         return None
 
     if not (config.location or config.location_cache):
@@ -246,7 +254,7 @@ def main():
             logger.log('Starting PokemonGo Bot....', 'green')
 
             while True:
-                bot.take_step()
+                bot.tick()
 
         except KeyboardInterrupt:
             logger.log('Exiting PokemonGo Bot', 'red')
