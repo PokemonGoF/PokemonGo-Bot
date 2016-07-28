@@ -33,4 +33,10 @@
  * steffwiz
  * pulgalipe
  * BartKoppelmans
+ * phil9l
  * VictorChen
+ * AlvaroGzP
+ * fierysolid
+ * surfaace
+ * surceis
+ * SpaceWhale
