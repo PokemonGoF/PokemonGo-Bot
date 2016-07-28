@@ -84,11 +84,16 @@ def init_config():
         default=False
     )
     parser.add_argument(
-        "-m",
-        "--mode",
-        help="Farming Mode",
-        type=str,
-        default="all"
+        "--catch_pokemon",
+        help="Enable catching pokemon",
+        type=bool,
+        default=True
+    )
+    parser.add_argument(
+        "--spin_forts",
+        help="Enable Spinning Pokestops",
+        type=bool,
+        default=True
     )
     parser.add_argument(
         "-w",
@@ -176,6 +181,13 @@ def init_config():
         type=float,
         default=15.0
     )
+    parser.add_argument(
+        "-hr",
+        "--health_record",
+        help="Send anonymous bot event to GA for bot health record. Set \"health_record\":false if you need disable it.",
+        type=bool,
+        default=True
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()
@@ -194,12 +206,17 @@ def init_config():
     config.item_filter = load.get('item_filter', {})
     config.action_wait_max = load.get('action_wait_max', 4)
     config.action_wait_min = load.get('action_wait_min', 1)
-    config.pokestop_cooldown = load.get('pokestop_cooldown', "300")
-    config.cooldown_min = load.get('cooldown_min', 300)
-    config.cooldown_max = load.get('cooldown_max', 900)
+    config.add_fort_cooldown = load.get('add_cooldown_time', {})
+    config.hatch_eggs = load.get("hatch_eggs", True)
+    config.longer_eggs_first = load.get("longer_eggs_first", True)
 
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")
+        return None
+
+    if 'mode' in load or 'mode' in config:
+        parser.error('"mode" has been removed and replaced with two new flags: "catch_pokemon" and "spin_forts". ' +
+            ' Set these to true or false and remove "mode" from your configuration')
         return None
 
     if not (config.location or config.location_cache):
@@ -240,7 +257,7 @@ def main():
             logger.log('Starting PokemonGo Bot....', 'green')
 
             while True:
-                bot.take_step()
+                bot.tick()
 
         except KeyboardInterrupt:
             logger.log('Exiting PokemonGo Bot', 'red')
