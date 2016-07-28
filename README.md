@@ -257,7 +257,7 @@ On a local machine this would be http://127.0.0.1. On AWS this is your public DN
 ```
 sudo nano "/etc/nginx/sites-enabled/default"
 ```
-Comment out following line: ```root /var/www/html;``` and change it to the web folder of your PokemonGo-Bot: eg:
+Comment out following line: ```root /var/www/html;``` or ```root /usr/share/nginx/html;``` and change it to the web folder of your PokemonGo-Bot: eg:
 ```
 /home/user/dev/PokemonGo-Bot/web;
 ```
