@@ -66,10 +66,10 @@ class PokemonTransferWorker(object):
         pokemon_groups = {}
         self.api.get_player().get_inventory()
         inventory_req = self.api.call()
-        
+
         if inventory_req.get('responses', False) is False:
             return pokemon_groups
-        
+
         inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
 
         user_web_inventory = 'web/inventory-%s.json' % (self.config.username)
@@ -142,13 +142,13 @@ class PokemonTransferWorker(object):
 
         if logic_to_function[cp_iv_logic](*release_results.values()):
             logger.log(
-                "Release config for {}: Conf, CP {} {} IV {} - Poke, CP {} IV {}".format(
+                "Releasing {} with CP {} and IV {}. Matching release rule: CP < {} {} IV < {}. ".format(
                     pokemon_name,
-                    release_cp,
-                    cp_iv_logic,
-                    release_iv,
                     cp,
-                    iv
+                    iv,
+                    release_cp,
+                    cp_iv_logic.upper(),
+                    release_iv
                 ), 'yellow'
             )
 
