@@ -14,7 +14,7 @@ from pgoapi import PGoApi
 from pgoapi.utilities import f2i
 
 import logger
-from cell_workers import CatchVisiblePokemonWorker, PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, PokemonTransferWorker, EvolveAllWorker, RecycleItemsWorker
+from cell_workers import SpinNearestFortWorker, CatchVisiblePokemonWorker, PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, PokemonTransferWorker, EvolveAllWorker, RecycleItemsWorker
 from cell_workers.utils import distance, get_cellid, encode, i2f
 from human_behaviour import sleep
 from item_list import Item
@@ -36,6 +36,7 @@ class PokemonGoBot(object):
         self.item_list = json.load(open(os.path.join('data', 'items.json')))
         self.metrics = Metrics(self)
         self.latest_inventory = None
+        self.cell = None
 
     def start(self):
         self._setup_logging()
@@ -157,6 +158,8 @@ class PokemonGoBot(object):
         return map_cells
 
     def work_on_cell(self, cell, position):
+        self.cell = cell
+
         # Check if session token has expired
         self.check_session(position)
 
@@ -174,19 +177,8 @@ class PokemonGoBot(object):
         if worker.work() == WorkerResult.RUNNING:
             return
 
-
-        number_of_things_gained_by_stop = 5
-
-        if (self.config.spin_forts and
-            (self.get_inventory_count('item') < self._player['max_item_storage'] - number_of_things_gained_by_stop)):
-            nearest_fort = self.get_nearest_fort(cell)
-
-            if nearest_fort:
-                # Move to and spin the nearest stop.
-                if MoveToFortWorker(nearest_fort, self).work() == WorkerResult.RUNNING:
-                    return
-                if SeenFortWorker(nearest_fort, self).work() == WorkerResult.RUNNING:
-                    return
+        if SpinNearestFortWorker(self).work() == WorkerResult.RUNNING:
+            return
 
         self.navigator.take_step()
 
@@ -308,27 +300,6 @@ class PokemonGoBot(object):
             ' | MaxRevive: ' + str(items_stock[202]), 'cyan')
 
         logger.log('')
-
-    def get_nearest_fort(self, cell):
-        if 'forts' in cell:
-            # Only include those with a lat/long
-            forts = [fort
-                     for fort in cell['forts']
-                     if 'latitude' in fort and 'type' in fort]
-            gyms = [gym for gym in cell['forts'] if 'gym_points' in gym]
-
-            # Remove stops that are still on timeout
-            forts = filter(lambda x: x["id"] not in self.fort_timeouts, forts)
-
-            # Sort all by distance from current pos- eventually this should
-            # build graph & A* it
-            forts.sort(key=lambda x: distance(self.position[
-                       0], self.position[1], x['latitude'], x['longitude']))
-
-            if len(forts) > 0:
-                return forts[0]
-            else:
-                return None
 
     def use_lucky_egg(self):
         self.api.use_item_xp_boost(item_id=301)
