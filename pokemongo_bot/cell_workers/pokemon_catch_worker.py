@@ -193,12 +193,6 @@ class PokemonCatchWorker(object):
                                         'Oh no! {} vanished! :('.format(pokemon_name), 'red')
                                 if status is 1:
 
-                                    id_list2 = self.count_pokemon_inventory()
-                                    pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
-                                    if len(pokemon_to_transfer) == 0:
-                                        raise RuntimeError(
-                                            'Trying to transfer or evolve 0 pokemons!')
-
                                     self.bot.metrics.captured_pokemon(pokemon_name, cp, iv_display, pokemon_potential)
 
                                     logger.log('Captured {}! [CP {}] [{}]'.format(
@@ -209,6 +203,13 @@ class PokemonCatchWorker(object):
 
                                     if self.config.evolve_captured:
                                         # No need to capture this even for metrics, player stats includes it.
+                                        id_list2 = self.count_pokemon_inventory()
+                                        pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
+
+                                        # TODO dont throw RuntimeError, do something better
+                                        if len(pokemon_to_transfer) == 0:
+                                            raise RuntimeError(
+                                                'Trying to evolve 0 pokemons!')
                                         self.api.evolve_pokemon(pokemon_id=pokemon_to_transfer[0])
                                         response_dict = self.api.call()
                                         status = response_dict['responses']['EVOLVE_POKEMON']['result']
