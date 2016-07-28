@@ -24,6 +24,7 @@ class SeenFortWorker(object):
         self.item_inventory_count = bot.item_inventory_count
         self.metrics = bot.metrics
         self.rest_time = 50
+        self.pokestop_softban_retries = 45
 
     def work(self):
         lat = self.fort['latitude']
@@ -60,6 +61,23 @@ class SeenFortWorker(object):
                 logger.log('Found a lure, but there is no pokemon present.', 'yellow')
             sleep(2)
 
+
+        response_dict = self.spin(lat, lng)
+
+        if 'chain_hack_sequence_number' in response_dict['responses'][
+                'FORT_SEARCH']:
+            time.sleep(2)
+            return response_dict['responses']['FORT_SEARCH'][
+                'chain_hack_sequence_number']
+        else:
+            logger.log('Possibly searching too often - taking a short rest :)', 'yellow')
+            self.bot.fort_timeouts[self.fort["id"]] = (time.time() + 300) * 1000  # Don't spin for 5m
+            return 11
+        sleep(2)
+        return 0
+
+
+    def spin(self, lat, lng, try_number=0):
         logger.log('Spinning ...', 'cyan')
 
         self.api.fort_search(fort_id=self.fort['id'],
@@ -94,7 +112,8 @@ class SeenFortWorker(object):
 
                     for item_id, item_count in tmp_count_items.iteritems():
                         item_name = self.item_list[str(item_id)]
-                        logger.log('- ' + str(item_count) + "x " + item_name + " (Total: " + str(self.bot.item_inventory_count(item_id)) + ")", 'yellow')
+                        logger.log('- ' + str(item_count) + "x " + item_name + " (Total: " + str(
+                            self.bot.item_inventory_count(item_id)) + ")", 'yellow')
                 else:
                     logger.log("[#] Nothing found.", 'yellow')
 
@@ -111,11 +130,14 @@ class SeenFortWorker(object):
                     message = (
                         'Stopped at Pokestop and did not find experience, items '
                         'or information about the stop cooldown. You are '
-                        'probably softbanned. Try to play on your phone, '
-                        'if pokemons always ran away and you find nothing in '
-                        'PokeStops you are indeed softbanned. Please try again '
-                        'in a few hours.')
-                    raise RuntimeError(message)
+                        'probably softbanned.')
+                    if (try_number < self.pokestop_softban_retries):
+                        if (0 == try_number):
+                            logger.log(message, 'red')
+                            logger.log('Releasing the ban :)', 'green')
+                        self.spin(lat, lng, try_number + 1)
+                    else:
+                        raise RuntimeError(message)
             elif spin_result == 2:
                 logger.log("[#] Pokestop out of range")
             elif spin_result == 3:
@@ -132,17 +154,7 @@ class SeenFortWorker(object):
             else:
                 logger.log("Unknown spin result: " + str(spin_result), 'red')
 
-            if 'chain_hack_sequence_number' in response_dict['responses'][
-                    'FORT_SEARCH']:
-                time.sleep(2)
-                return response_dict['responses']['FORT_SEARCH'][
-                    'chain_hack_sequence_number']
-            else:
-                logger.log('Possibly searching too often - taking a short rest :)', 'yellow')
-                self.bot.fort_timeouts[self.fort["id"]] = (time.time() + 300) * 1000  # Don't spin for 5m
-                return 11
-        sleep(2)
-        return 0
+        return response_dict
 
     def catch_pokemon(self, pokemon):
         worker = PokemonCatchWorker(pokemon, self.bot)
