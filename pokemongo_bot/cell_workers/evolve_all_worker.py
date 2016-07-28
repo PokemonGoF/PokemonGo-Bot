@@ -129,7 +129,7 @@ class EvolveAllWorker(object):
                             pokemon['cp'],
                             self._compute_iv(pokemon)
                         ]
-                    if pokemon['cp'] > self.config.cp_min:
+                    if pokemon['cp'] > self.config.evolve_cp_min:
                         pokemons1.append(v)
                     else:
                         pokemons2.append(v)
