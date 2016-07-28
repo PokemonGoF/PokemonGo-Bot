@@ -66,8 +66,6 @@ class Stepper(object):
             (self.x, self.y) = (self.x + self.dx, self.y + self.dy)
 
             self._work_at_position(position[0], position[1], position[2], True)
-
-
             sleep(10)
 
     def _walk_to(self, speed, lat, lng, alt):
