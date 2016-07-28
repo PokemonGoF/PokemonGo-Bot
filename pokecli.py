@@ -176,6 +176,20 @@ def init_config():
         type=float,
         default=15.0
     )
+    parser.add_argument(
+        "-kc",
+        "--keep_best_cp",
+        help="Keep a pokemon with highest CP",
+        type=bool,
+        default=False
+    )
+    parser.add_argument(
+        "-ki",
+        "--keep_best_iv",
+        help="Keep a pokemon with highest IV",
+        type=bool,
+        default=False
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()

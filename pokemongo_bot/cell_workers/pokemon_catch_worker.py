@@ -52,46 +52,40 @@ class PokemonCatchWorker(object):
 
                             catch_rate = response_dict['responses'][self.response_key]['capture_probability'][
                                 'capture_probability']  # 0 = pokeballs, 1 great balls, 3 ultra balls
+
+                            pokemon_data = None
                             if 'pokemon_data' in pokemon and 'cp' in pokemon['pokemon_data']:
-                                cp = pokemon['pokemon_data']['cp']
+                                pokemon_data = pokemon['pokemon_data']
+                                cp = pokemon_data['cp']
 
                                 # make sure we catch any missing iv information
-                                if 'individual_stamina' not in pokemon['pokemon_data']:
-                                    pokemon['pokemon_data']['individual_stamina'] = 0
-                                if 'individual_attack' not in pokemon['pokemon_data']:
-                                    pokemon['pokemon_data']['individual_attack'] = 0
-                                if 'individual_defense' not in pokemon['pokemon_data']:
-                                    pokemon['pokemon_data']['individual_defense'] = 0
+                                if 'individual_stamina' not in pokemon_data:
+                                    pokemon_data['individual_stamina'] = 0
+                                if 'individual_attack' not in pokemon_data:
+                                    pokemon_data['individual_attack'] = 0
+                                if 'individual_defense' not in pokemon_data:
+                                    pokemon_data['individual_defense'] = 0
 
                                 iv_stats = ['individual_attack', 'individual_defense', 'individual_stamina']
                                 individual_attack = 0
 
-                                individual_attack = pokemon['pokemon_data'].get("individual_attack", 0)
-                                individual_stamina = pokemon['pokemon_data'].get("individual_stamina", 0)
+                                individual_attack = pokemon_data.get("individual_attack", 0)
+                                individual_stamina = pokemon_data.get("individual_stamina", 0)
 
                                 iv_display = '{}/{}/{}'.format(
                                     individual_stamina,
                                     individual_attack,
-                                    pokemon['pokemon_data']['individual_defense']
+                                    pokemon_data['individual_defense']
                                 )
 
-                                for individual_stat in iv_stats:
-                                    try:
-                                        total_IV += pokemon['pokemon_data'][individual_stat]
-                                    except Exception:
-                                        pokemon['pokemon_data'][individual_stat] = 0
-                                        continue
-
-                                pokemon_potential = round((total_IV / 45.0), 2)
-                                pokemon_num = int(pokemon['pokemon_data'][
-                                                  'pokemon_id']) - 1
-                                pokemon_name = self.pokemon_list[
-                                    int(pokemon_num)]['Name']
+                                pokemon_potential = self.pokemon_potential(pokemon_data)
+                                pokemon_num = int(pokemon_data['pokemon_id']) - 1
+                                pokemon_name = self.pokemon_list[int(pokemon_num)]['Name']
                                 logger.log('A Wild {} appeared! [CP {}] [Potential {}]'.format(
                                     pokemon_name, cp, pokemon_potential), 'yellow')
 
                                 logger.log('IV [Stamina/Attack/Defense] = [{}]'.format(iv_display))
-                                pokemon['pokemon_data']['name'] = pokemon_name
+                                pokemon_data['name'] = pokemon_name
                                 # Simulate app
                                 sleep(3)
 
@@ -166,6 +160,8 @@ class PokemonCatchWorker(object):
                             ))
 
                             id_list1 = self.count_pokemon_inventory()
+                            max_criteria_pokemon_list = self.get_max_criteria_pokemon_list()
+
                             self.api.catch_pokemon(encounter_id=encounter_id,
                                                    pokeball=pokeball,
                                                    normalized_reticle_size=1.950,
@@ -195,9 +191,10 @@ class PokemonCatchWorker(object):
 
                                     self.bot.metrics.captured_pokemon(pokemon_name, cp, iv_display, pokemon_potential)
 
-                                    logger.log('Captured {}! [CP {}] [{}]'.format(
+                                    logger.log('Captured {}! [CP {}] [Potential {}] [{}]'.format(
                                         pokemon_name,
                                         cp,
+                                        pokemon_potential,
                                         iv_display
                                     ), 'blue')
 
@@ -214,13 +211,12 @@ class PokemonCatchWorker(object):
                                             logger.log(
                                             'Failed to evolve {}!'.format(pokemon_name))
 
-                                    if self.should_release_pokemon(pokemon_name, cp, pokemon_potential, response_dict):
+                                    if self.should_release_pokemon(pokemon_name, cp, pokemon_potential, pokemon_data,
+                                                                   max_criteria_pokemon_list):
                                         # Transfering Pokemon
-                                        pokemon_to_transfer = list(
-                                            Set(id_list2) - Set(id_list1))
+                                        pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
                                         if len(pokemon_to_transfer) == 0:
-                                            raise RuntimeError(
-                                                'Trying to transfer 0 pokemons!')
+                                            raise RuntimeError('Trying to transfer 0 pokemons!')
                                         self.transfer_pokemon(pokemon_to_transfer[0])
                                         self.bot.metrics.released_pokemon()
                                         logger.log(
@@ -261,31 +257,82 @@ class PokemonCatchWorker(object):
         response_dict = self.api.call()
 
     def count_pokemon_inventory(self):
-        self.bot.latest_inventory = None  # Need accurate count of balls/berries/pokemons
-        response_dict = self.bot.get_inventory()
-        id_list = []
-        return self.counting_pokemon(response_dict, id_list)
+        # don't use cached bot.get_inventory() here
+        # because we need to have actual information in capture logic
+        self.api.get_inventory()
+        response_dict = self.api.call()
 
-    def counting_pokemon(self, response_dict, id_list):
+        id_list = []
+        callback = lambda pokemon: id_list.append(pokemon['id'])
+        self._foreach_pokemon_in_inventory(response_dict, callback)
+        return id_list
+
+    def _foreach_pokemon_in_inventory(self, response_dict, callback):
         try:
             reduce(dict.__getitem__, [
-                   "responses", "GET_INVENTORY", "inventory_delta", "inventory_items"], response_dict)
+                "responses", "GET_INVENTORY", "inventory_delta", "inventory_items"], response_dict)
         except KeyError:
             pass
         else:
             for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
                 try:
                     reduce(dict.__getitem__, [
-                           "inventory_item_data", "pokemon_data"], item)
+                        "inventory_item_data", "pokemon_data"], item)
                 except KeyError:
                     pass
                 else:
                     pokemon = item['inventory_item_data']['pokemon_data']
-                    if pokemon.get('is_egg', False):
-                        continue
-                    id_list.append(pokemon['id'])
+                    if not pokemon.get('is_egg', False):
+                        callback(pokemon)
 
-        return id_list
+    def _is_greater_by_criteria(self, pokemon, other_pokemon):
+        pokemon_num = int(pokemon['pokemon_id']) - 1
+        pokemon_name = self.pokemon_list[int(pokemon_num)]['Name']
+
+        release_config = self._get_release_config_for(pokemon_name)
+        if release_config.get('keep_best_cp', False):
+            return pokemon['cp'] > other_pokemon['cp']
+        elif release_config.get('keep_best_iv', False):
+            return self.pokemon_potential(pokemon) > self.pokemon_potential(other_pokemon)
+        else:
+            return False
+
+    def get_max_criteria_pokemon_list(self):
+        """
+        Takes a get_inventory request result and returns a list of pokemons and their data,
+        whereas the list contains no duplicate pokemons.
+        If there are duplicate pokemons in the inventory the strongest one (max CP) is returned.
+        """
+        response_dict = self.bot.get_inventory()
+        pokemon_map = {}
+        callback = lambda pokemon: self._add_or_replace_pokemon(pokemon_map, pokemon)
+        self._foreach_pokemon_in_inventory(response_dict, callback)
+        return pokemon_map
+
+    def _add_or_replace_pokemon(self, pokemon_map, pokemon):
+        """
+        Takes a map(pokemon_id, pokemon) and a pokemon and either adds the pokemon
+        if it's not yet in the map or if it's stronger than the one in the map.
+        """
+        pokemon_id = pokemon['pokemon_id']
+        if pokemon_id in pokemon_map:
+            if self._is_greater_by_criteria(pokemon, pokemon_map[pokemon_id]):
+                pokemon_map[pokemon_id] = pokemon
+        else:
+            pokemon_map[pokemon_id] = pokemon
+
+    def pokemon_potential(self, pokemon_data):
+        total_iv = 0
+        iv_stats = ['individual_attack', 'individual_defense', 'individual_stamina']
+
+        for individual_stat in iv_stats:
+            try:
+                total_iv += pokemon_data[individual_stat]
+            except:
+                pokemon_data[individual_stat] = 0
+                continue
+
+        return round((total_iv / 45.0), 2)
 
     def should_capture_pokemon(self, pokemon_name, cp, iv, response_dict):
         catch_config = self._get_catch_config_for(pokemon_name)
@@ -334,7 +381,7 @@ class PokemonCatchWorker(object):
             catch_config = self.config.catch.get('any')
         return catch_config
 
-    def should_release_pokemon(self, pokemon_name, cp, iv, response_dict):
+    def should_release_pokemon(self, pokemon_name, cp, iv, pokemon_data, max_criteria_pokemon_list):
         release_config = self._get_release_config_for(pokemon_name)
         cp_iv_logic = release_config.get('logic')
         if not cp_iv_logic:
@@ -350,6 +397,34 @@ class PokemonCatchWorker(object):
 
         if release_config.get('always_release', False):
             return True
+
+        if release_config.get('keep_best_cp', False) or release_config.get('keep_best_iv', False):
+            if release_config.get('keep_best_cp', False) and release_config.get('keep_best_iv', False):
+                logger.log("keep_best_cp and keep_best_iv can't be set true at the same time. Ignore this settings",
+                           "red")
+            else:
+                pokemon_id = pokemon_data['pokemon_id']
+                display_pokemon = '{} [CP {}] [Potential {}]'.format(pokemon_name,
+                                                                     cp,
+                                                                     self.pokemon_potential(pokemon_data))
+                if pokemon_id in max_criteria_pokemon_list:
+                    owned = max_criteria_pokemon_list[pokemon_id]
+                    owned_display = '{} [CP {}] [Potential {}]'.format(pokemon_name,
+                                                                       owned['cp'],
+                                                                       self.pokemon_potential(owned))
+
+                    better = self._is_greater_by_criteria(pokemon_data, owned)
+                    if better:
+                        logger.log('Owning weaker {}. Replacing it with {}!'.format(owned_display, display_pokemon), 'blue')
+                        self.transfer_pokemon(owned['id'])
+                        logger.log('Weaker {} has been exchanged for candy!'.format(owned_display), 'blue')
+                        return False
+                    else:
+                        logger.log('Owning better {} already!'.format(owned_display), 'blue')
+                        return True
+                else:
+                    logger.log('Not owning {}. Keeping it!'.format(display_pokemon), 'blue')
+                    return False
 
         release_cp = release_config.get('release_below_cp', 0)
         if cp < release_cp:
