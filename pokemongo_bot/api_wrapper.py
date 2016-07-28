@@ -24,13 +24,12 @@ class ApiWrapper(object):
             raise NotLoggedInException()
         return True
 
-    def call(self):
+    def call(self, max_retry=5):
         if not self._can_call():
             return False
 
         api_req_method_list = self._api._req_method_list
         result = None
-        max_retry = 5 # TODO configuration param
         try_cnt = 0
         while True:
             self._api._req_method_list = [req_method for req_method in api_req_method_list] # api internally clear this field after a call
