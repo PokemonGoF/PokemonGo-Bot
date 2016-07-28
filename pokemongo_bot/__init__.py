@@ -40,9 +40,11 @@ class PokemonGoBot(object):
 
     def start(self):
         self._setup_logging()
-        self._setup_api()
-        self.navigator = SpiralNavigator(self)
-        random.seed()
+        if self._setup_api():
+            self.navigator = SpiralNavigator(self)
+            random.seed()
+            return True
+        return False
 
     def tick(self):
         self.cell = self.get_meta_cell()
@@ -210,15 +212,23 @@ class PokemonGoBot(object):
         lat, lng = self.position[0:2]
         self.api.set_position(lat, lng, 0)
 
-        while not self.api.login(self.config.auth_service,
-                               str(self.config.username),
-                               str(self.config.password)):
+        logged = False
+        while not logged:
+            try:
+                logged = self.api.login(self.config.auth_service,
+                                            str(self.config.username),
+                                            str(self.config.password))
+                if not logged:
+                    logger.log('[X] Login Error, server busy', 'red')
+                    logger.log('[X] Waiting 10 seconds to try again', 'red')
+                    time.sleep(10)
 
-            logger.log('[X] Login Error, server busy', 'red')
-            logger.log('[X] Waiting 10 seconds to try again', 'red')
-            time.sleep(10)
+            except KeyboardInterrupt:
+                logger.log('Login attempt cancelled by client', 'red')
+                return False
 
         logger.log('Login to Pokemon Go successful.', 'green')
+        return True
 
     def _setup_api(self):
         # instantiate pgoapi
@@ -227,16 +237,18 @@ class PokemonGoBot(object):
         # provide player position on the earth
         self._set_starting_position()
 
-        self.login()
+        logged = self.login()
+        
+        if logged:
+            # chain subrequests (methods) into one RPC call
+            self._print_character_info()
+            logger.log('')
+            self.update_inventory()
 
-        # chain subrequests (methods) into one RPC call
+            # send empty map_cells and then our position
+            self.update_web_location()
 
-        self._print_character_info()
-
-        logger.log('')
-        self.update_inventory()
-        # send empty map_cells and then our position
-        self.update_web_location()
+        return logged
 
     def _print_character_info(self):
         # get player profile call
