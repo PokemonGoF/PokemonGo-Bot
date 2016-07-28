@@ -87,13 +87,13 @@ def init_config():
         "--catch_pokemon",
         help="Enable catching pokemon",
         type=bool,
-        default=True
+        default=load.get('catch_pokemon', True)
     )
     parser.add_argument(
         "--spin_forts",
         help="Enable Spinning Pokestops",
         type=bool,
-        default=True
+        default=load.get('spin_forts', True)
     )
     parser.add_argument(
         "-w",
@@ -101,14 +101,14 @@ def init_config():
         help=
         "Walk instead of teleport with given speed (meters per second, e.g. 2.5)",
         type=float,
-        default=2.5
+        default=load.get('walk', 2.5)
     )
     parser.add_argument(
         "-k",
         "--gmapkey",
         help="Set Google Maps API KEY",
         type=str,
-        default=None
+        default=load.get('gmapkey', None)
     )
     parser.add_argument(
         "-ms",
@@ -116,21 +116,21 @@ def init_config():
         help=
         "Set the steps around your initial location(DEFAULT 5 mean 25 cells around your location)",
         type=int,
-        default=50
+        default=load.get('max_steps', 50)
     )
     parser.add_argument(
         "-rp",
         "--release_pokemon",
         help="Allow transfer pokemon to professor based on release configuration. Default is false",
         type=bool,
-        default=False
+        default=load.get('release_pokemon', False)
     )
     parser.add_argument(
         "-d",
         "--debug",
         help="Debug Mode",
         type=bool,
-        default=False
+        default=load.get('debug', False)
     )
     parser.add_argument(
         "-t",
@@ -144,49 +144,49 @@ def init_config():
         "--distance_unit",
         help="Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)",
         type=str,
-        default="km"
+        default=load.get('distance_unit', 'km')
     )
     parser.add_argument(
         "-ev",
         "--evolve_all",
         help="(Batch mode) Pass \"all\" or a list of pokemons to evolve (e.g., \"Pidgey,Weedle,Caterpie\"). Bot will start by attempting to evolve all pokemons. Great after popping a lucky egg!",
         type=str,
-        default=[]
+        default=load.get('evolve_all', [])
     )
     parser.add_argument(
         "-cm",
         "--cp_min",
         help="Minimum CP for evolve all. Bot will attempt to first evolve highest IV pokemons with CP larger than this.",
         type=int,
-        default=300
+        default=load.get('cp_min', 300)
     )
     parser.add_argument(
         "-ec",
         "--evolve_captured",
         help="(Ad-hoc mode) Bot will attempt to evolve all the pokemons captured!",
         type=bool,
-        default=False
+        default=load.get('evolve_captured', False)
     )
     parser.add_argument(
         "-le",
         "--use_lucky_egg",
         help="Uses lucky egg when using evolve_all",
         type=bool,
-        default=False
+        default=load.get('use_lucky_egg', False)
     )
     parser.add_argument(
         "-rt",
         "--reconnecting_timeout",
         help="Timeout between reconnecting if error occured (in minutes, e.g. 15)",
         type=float,
-        default=15.0
+        default=load.get('reconnecting_timeout', 15.0)
     )
     parser.add_argument(
         "-hr",
         "--health_record",
         help="Send anonymous bot event to GA for bot health record. Set \"health_record\":false if you need disable it.",
         type=bool,
-        default=True
+        default=load.get('health_record', True)
     )
 
     # Start to parse other attrs
@@ -201,8 +201,6 @@ def init_config():
         if key in config and value:
             setattr(config, key, value)
 
-    config.spin_forts = load.get('spin_forts', config.spin_forts)
-    config.catch_pokemon = load.get('catch_pokemon', config.catch_pokemon)
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.item_filter = load.get('item_filter', {})
@@ -229,7 +227,7 @@ def init_config():
         if not os.path.isdir(web_dir):
             raise
 
-    if config.evolve_all:
+    if config.evolve_all and isinstance(config.evolve_all, str):
         config.evolve_all = [str(pokemon_name) for pokemon_name in config.evolve_all.split(',')]
 
     return config
