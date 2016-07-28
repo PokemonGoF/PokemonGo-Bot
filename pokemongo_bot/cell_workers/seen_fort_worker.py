@@ -28,7 +28,7 @@ class SeenFortWorker(object):
                               latitude=lat,
                               longitude=lng)
         response_dict = self.api.call()
-        if respone_dict and 'responses' in response_dict \
+        if respone_dict is not None and 'responses' in response_dict \
                 and'FORT_DETAILS' in response_dict['responses'] \
                 and 'name' in response_dict['responses']['FORT_DETAILS']:
             fort_details = response_dict['responses']['FORT_DETAILS']
