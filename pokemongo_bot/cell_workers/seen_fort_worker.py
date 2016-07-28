@@ -2,6 +2,7 @@
 
 import time
 import json
+import random
 from pgoapi.utilities import f2i
 
 from pokemongo_bot import logger
@@ -51,9 +52,9 @@ class SeenFortWorker(object):
             userpokestop_coolwon = 0
 
             if self.config.pokestop_cooldown == 'random':
-                userpokestop_cooldown = (time.time() + ran_timer) * 1000
+                userpokestop_cooldown = (time.time() + random.randint(int(self.config.cooldown_min), int(self.config.cooldown_max))) * 1000
             elif int(self.config.pokestop_cooldown) > 300:
-                    userpokestop_cooldown = (time.time() + int(self.config.pokestop_cooldown)) * 1000
+                userpokestop_cooldown = (time.time() + int(self.config.pokestop_cooldown)) * 1000
             else:
                 userpokestop_cooldown = (time.time() + 300) * 1000
 
@@ -105,9 +106,10 @@ class SeenFortWorker(object):
                                 logger.log("-- Recycling " + item_name + "has failed!", 'red')
                 else:
                     logger.log("[#] Nothing found.", 'yellow')
-
+                    
                 pokestop_cooldown = userpokestop_cooldown
                 self.bot.fort_timeouts.update({self.fort["id"]: pokestop_cooldown})
+                
                 if pokestop_cooldown:
                     seconds_since_epoch = time.time()
                     logger.log('PokeStop on cooldown. Time left: ' + str(
@@ -126,8 +128,7 @@ class SeenFortWorker(object):
             elif spin_result == 2:
                 logger.log("[#] Pokestop out of range")
             elif spin_result == 3:
-                pokestop_cooldown = spin_details.get(
-                    'cooldown_complete_timestamp_ms')
+                pokestop_cooldown = userpokestop_cooldown
                 if pokestop_cooldown:
                     self.bot.fort_timeouts.update({self.fort["id"]: pokestop_cooldown})
                     seconds_since_epoch = time.time()
