@@ -84,11 +84,16 @@ def init_config():
         default=False
     )
     parser.add_argument(
-        "-m",
-        "--mode",
-        help="Farming Mode",
-        type=str,
-        default="all"
+        "--catch_pokemon",
+        help="Enable catching pokemon",
+        type=bool,
+        default=True
+    )
+    parser.add_argument(
+        "--spin_forts",
+        help="Enable Spinning Pokestops",
+        type=bool,
+        default=True
     )
     parser.add_argument(
         "-w",
@@ -204,6 +209,11 @@ def init_config():
 
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")
+        return None
+
+    if 'mode' in load or 'mode' in config:
+        parser.error('"mode" has been removed and replaced with two new flags: "catch_pokemon" and "spin_forts". ' +
+            ' Set these to true or false and remove "mode" from your configuration')
         return None
 
     if not (config.location or config.location_cache):

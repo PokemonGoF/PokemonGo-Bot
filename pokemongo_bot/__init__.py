@@ -177,8 +177,8 @@ class PokemonGoBot(object):
 
         number_of_things_gained_by_stop = 5
 
-        if ((self.get_inventory_count('item') < self._player['max_item_storage'] - number_of_things_gained_by_stop) and
-            (self.config.mode == "all" or self.config.mode == "farm")):
+        if (self.config.spin_forts and
+            (self.get_inventory_count('item') < self._player['max_item_storage'] - number_of_things_gained_by_stop)):
             nearest_fort = self.get_nearest_fort(cell)
 
             if nearest_fort:
