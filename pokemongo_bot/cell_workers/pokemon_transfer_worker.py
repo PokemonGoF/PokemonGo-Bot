@@ -26,7 +26,7 @@ class PokemonTransferWorker(object):
                     pokemon_cp = group_cp[x]
                     pokemon_data = pokemon_groups[id][pokemon_cp]
                     pokemon_potential = self.get_pokemon_potential(pokemon_data)
-                    logger.log('Checking {} [CP {}] [Potential {}] for release!'.format(pokemon_name, pokemon_cp, pokemon_potential))
+                    #logger.log('Checking {} [CP {}] [Potential {}] for release!'.format(pokemon_name, pokemon_cp, pokemon_potential))
                     if self.should_release_pokemon(pokemon_name, pokemon_cp, pokemon_potential):
                         logger.log('Exchanging {} for candy!'.format(
                             pokemon_name), 'green')
@@ -103,14 +103,17 @@ class PokemonTransferWorker(object):
             'and': lambda x, y: x and y
         }
 
-        logger.log(
-            "Release config for {}: CP {} {} IV {}".format(
-                pokemon_name,
-                release_cp,
-                cp_iv_logic,
-                release_iv
-            ), 'yellow'
-        )
+        if logic_to_function[cp_iv_logic](*release_results.values()):
+            logger.log(
+                "Release config for {}: Conf, CP {} {} IV {} - Poke, CP {} IV {}".format(
+                    pokemon_name,
+                    release_cp,
+                    cp_iv_logic,
+                    release_iv,
+                    cp,
+                    iv
+                ), 'yellow'
+            )
 
         return logic_to_function[cp_iv_logic](*release_results.values())
 
