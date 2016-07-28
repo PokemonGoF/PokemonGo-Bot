@@ -251,14 +251,16 @@ def main():
     while not finished:
         try:
             bot = PokemonGoBot(config)
-            bot.start()
-            bot.metrics.capture_stats()
+            if bot.start():
+                bot.metrics.capture_stats()
 
-            logger.log('Starting PokemonGo Bot....', 'green')
+                logger.log('Starting PokemonGo Bot....', 'green')
 
-            while True:
-                bot.tick()
-
+                while True:
+                    bot.tick()
+            else:
+                finished = True
+        
         except KeyboardInterrupt:
             logger.log('Exiting PokemonGo Bot', 'red')
             finished = True
