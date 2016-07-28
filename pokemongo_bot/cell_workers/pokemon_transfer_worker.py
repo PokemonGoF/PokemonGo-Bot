@@ -1,4 +1,5 @@
 import json
+import operator
 
 from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot import logger
@@ -28,13 +29,13 @@ class PokemonTransferWorker(object):
                     order_criteria = 'none'
                     if keep_best_cp >= 1:
                         cp_limit = keep_best_cp
-                        best_cp_pokemons = sorted(group, key=lambda x: x['cp'], reverse=True)[:cp_limit]
+                        best_cp_pokemons = sorted(group, key=lambda x: (x['cp'], x['iv']), reverse=True)[:cp_limit]
                         best_pokemon_ids = set(pokemon['pokemon_data']['id'] for pokemon in best_cp_pokemons)
                         order_criteria = 'cp'
 
                     if keep_best_iv >= 1:
                         iv_limit = keep_best_iv
-                        best_iv_pokemons = sorted(group, key=lambda x: x['iv'], reverse=True)[:iv_limit]
+                        best_iv_pokemons = sorted(group, key=lambda x: (x['iv'], x['cp']), reverse=True)[:iv_limit]
                         best_pokemon_ids |= set(pokemon['pokemon_data']['id'] for pokemon in best_iv_pokemons)
                         if order_criteria == 'cp':
                             order_criteria = 'cp and iv'
