@@ -249,7 +249,7 @@ def init_config():
         load,
         short_flag="-ev",
         long_flag="--evolve_all",
-        help="(Batch mode) Pass \"all\" or a list of pokemons to evolve (e.g., \"Pidgey,Weedle,Caterpie\"). Bot will start by attempting to evolve all pokemons. Great after popping a lucky egg!",
+        help="(Batch mode) Pass \"all\" or a list of pokemon to evolve (e.g., \"Pidgey,Weedle,Caterpie\"). Bot will start by attempting to evolve all pokemon. Great after popping a lucky egg!",
         type=str,
         default=[]
     )
@@ -258,7 +258,7 @@ def init_config():
         load,
         short_flag="-ecm",
         long_flag="--evolve_cp_min",
-        help="Minimum CP for evolve all. Bot will attempt to first evolve highest IV pokemons with CP larger than this.",
+        help="Minimum CP for evolve all. Bot will attempt to first evolve highest IV pokemon with CP larger than this.",
         type=int,
         default=300
     )
@@ -267,7 +267,7 @@ def init_config():
         load,
         short_flag="-ec",
         long_flag="--evolve_captured",
-        help="(Ad-hoc mode) Bot will attempt to evolve all the pokemons captured!",
+        help="(Ad-hoc mode) Bot will attempt to evolve all the pokemon captured!",
         type=bool,
         default=False
     )
