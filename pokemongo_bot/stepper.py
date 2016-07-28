@@ -10,11 +10,10 @@ from s2sphere import CellId, LatLng
 from google.protobuf.internal import encoder
 
 from human_behaviour import sleep, random_lat_long_delta
-from cell_workers.utils import distance, i2f, format_time
+from cell_workers.utils import distance, i2f, format_time, format_dist
 
 from pgoapi.utilities import f2i, h2f
 import logger
-
 
 class Stepper(object):
     def __init__(self, bot):
@@ -31,6 +30,7 @@ class Stepper(object):
         self.steplimit2 = self.steplimit**2
         self.origin_lat = self.bot.position[0]
         self.origin_lon = self.bot.position[1]
+        self.total_distance = 0
 
     def take_step(self):
         position = (self.origin_lat, self.origin_lon, 0.0)
@@ -65,6 +65,7 @@ class Stepper(object):
     def _walk_to(self, speed, lat, lng, alt):
         dist = distance(
             i2f(self.api._position_lat), i2f(self.api._position_lng), lat, lng)
+        self.total_distance += dist
         steps = (dist + 0.0) / (speed + 0.0)  # may be rational number
         intSteps = int(steps)
         residuum = steps - intSteps
@@ -90,6 +91,7 @@ class Stepper(object):
             self.api.set_position(lat, lng, alt)
             self.bot.heartbeat()
             logger.log("[#] Finished walking")
+            logger.log('[#] Total distance walked: ' + format_dist(self.total_distance, self.config.distance_unit))
 
     def _work_at_position(self, lat, lng, alt, pokemon_only=False):
         cellid = self._get_cellid(lat, lng)
