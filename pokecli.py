@@ -221,6 +221,37 @@ def init_config():
         type=int,
         default=50
     )
+
+    add_config(
+        parser,
+        load,
+        short_flag="-n",
+        long_flag="--navigator.type",
+        help="Set the navigator to be used(DEFAULT spiral)",
+        type=str,
+        default='spiral'
+    )
+
+    add_config(
+        parser,
+        load,
+        short_flag="-pm",
+        long_flag="--navigator.path_mode",
+        help="Set the mode for the path navigator (DEFAULT loop)",
+        type=str,
+        default="loop"
+    )
+
+    add_config(
+        parser,
+        load,
+        short_flag="-pf",
+        long_flag="--navigator.path_file",
+        help="Set the file containing the path for the path navigator (GPX or JSON).",
+        type=str,
+        default=None
+    )
+    
     add_config(
         parser,
         load,
