@@ -44,10 +44,27 @@ class PokemonGoBot(object):
         self.navigator = SpiralNavigator(self)
         random.seed()
 
-    def take_step(self):
-        self.process_cells()
+    def tick(self):
+        self.cell = self.get_meta_cell()
 
-    def process_cells(self):
+        # Check if session token has expired
+        self.check_session(self.position[0:2])
+
+        workers = [
+            PokemonTransferWorker,
+            EvolveAllWorker,
+            RecycleItemsWorker,
+            CatchVisiblePokemonWorker,
+            SpinNearestFortWorker
+        ]
+
+        for worker in workers:
+            if worker(self).work() == WorkerResult.RUNNING:
+                return
+
+        self.navigator.take_step()
+
+    def get_meta_cell(self):
         location = self.position[0:2]
         cells = self.find_close_cells(*location)
 
@@ -63,9 +80,11 @@ class PokemonGoBot(object):
             if "catchable_pokemons" in cell and len(cell["catchable_pokemons"]):
                 catchable_pokemons += cell["catchable_pokemons"]
 
-        # Have the worker treat the whole area as a single cell.
-        self.work_on_cell({"forts": forts, "wild_pokemons": wild_pokemons,
-                           "catchable_pokemons": catchable_pokemons}, location)
+        return {
+            "forts": forts,
+            "wild_pokemons": wild_pokemons,
+            "catchable_pokemons": catchable_pokemons
+        }
 
     def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
         # we can call the function with no arguments and still get the position and map_cells
@@ -156,26 +175,6 @@ class PokemonGoBot(object):
                     x['forts'][0]['longitude']) if x.get('forts', []) else 1e6
             )
         return map_cells
-
-    def work_on_cell(self, cell, position):
-        self.cell = cell
-
-        # Check if session token has expired
-        self.check_session(position)
-
-        workers = [
-            PokemonTransferWorker,
-            EvolveAllWorker,
-            RecycleItemsWorker,
-            CatchVisiblePokemonWorker,
-            SpinNearestFortWorker
-        ]
-
-        for worker in workers:
-            if worker(self).work() == WorkerResult.RUNNING:
-                return
-
-        self.navigator.take_step()
 
     def _setup_logging(self):
         self.log = logging.getLogger(__name__)
