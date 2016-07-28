@@ -311,6 +311,9 @@ def init_config():
     config.item_filter = load.get('item_filter', {})
     config.action_wait_max = load.get('action_wait_max', 4)
     config.action_wait_min = load.get('action_wait_min', 1)
+    config.pokestop_cooldown = load.get('pokestop_cooldown', "300")
+    config.cooldown_min = load.get('cooldown_min', 300)
+    config.cooldown_max = load.get('cooldown_max', 900)
 
     config.hatch_eggs = load.get("hatch_eggs", True)
     config.longer_eggs_first = load.get("longer_eggs_first", True)
