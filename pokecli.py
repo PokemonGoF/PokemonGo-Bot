@@ -118,7 +118,7 @@ def init_config():
         "--release_pokemon",
         help="Allow transfer pokemon to professor based on release configuration. Default is false",
         type=bool,
-        default=false
+        default=False
     )
     parser.add_argument(
         "-d",
