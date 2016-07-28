@@ -31,11 +31,12 @@ class IncubateEggsWorker(object):
 
                 if "egg_incubators" in inv_data:
                     for incubator in inv_data.get("egg_incubators", {}).get("egg_incubator", []):
-                        incubators.append({"id":incubator.get("item_id", -1), "used":False})
+                        if "start_km_walked" not in incubator:
+                            incubators.append({"id":incubator.get("id", -1), "used":False})
 
                 if "pokemon_data" in inv_data:
                     pokemon = inv_data.get("pokemon_data", {})
-                    if pokemon.get("is_egg", False):
+                    if pokemon.get("is_egg", False) and "egg_km_walked_target" in pokemon:
                         eggs.append({"id": pokemon.get("id", -1), "km": pokemon.get("egg_km_walked_target", -1), "used": False})
 
             sorting = self.config.longer_eggs_first
@@ -46,20 +47,21 @@ class IncubateEggsWorker(object):
                     continue
 
                 for egg in eggs:
-                    if egg["used"]:
+                    if egg["used"] or egg["km"] == -1:
                         continue
 
-                    self.api.use_item_egg_incubator(item_inc=incubator["id"], pokemon_id=egg["id"])
+                    self.api.use_item_egg_incubator(item_id=incubator["id"], pokemon_id=egg["id"])
                     ret = self.api.call()
                     if ret:
                         code = ret.get("responses", {}).get("USE_ITEM_EGG_INCUBATOR", {}).get("result", 0)
                         if code == 1:
+                            logger.log('Successfully incubated a ' + str(egg["km"]) + "km egg", 'green')
                             egg["used"] = True
                             incubator["used"] = True
+                            break
                         elif code == 5 or code == 7:
                             incubator["used"] = True
                             break
                         elif code == 6:
                             egg["used"] = True
-                        elif code == 2:
-                            logger.log('Successfully incubated a ' + str(egg["km"]) + "km egg", 'green')
+
