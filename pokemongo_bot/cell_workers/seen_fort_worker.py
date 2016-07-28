@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import time
-import json
 import random
 
 from pgoapi.utilities import f2i
@@ -44,7 +43,7 @@ class SeenFortWorker(object):
             fort_name = 'Unknown'
         logger.log('Now at Pokestop: ' + fort_name,
                    'cyan')
-        if self.config.mode != 'farm' and 'lure_info' in self.fort:
+        if self.config.catch_pokemon and 'lure_info' in self.fort:
             # Check if the lure has a pokemon active
             if 'encounter_id' in self.fort['lure_info']:
                 logger.log("Found a lure on this pokestop! Catching pokemon...", 'cyan')
@@ -73,21 +72,14 @@ class SeenFortWorker(object):
         if 'responses' in response_dict and \
                 'FORT_SEARCH' in response_dict['responses']:
 
-            spin_details = response_dict['responses']['FORT_SEARCH']
-            spin_result = spin_details.get('result', -1)
-            userpokestop_cooldown = 0
-
-            if self.config.pokestop_cooldown == 'random':
-                userpokestop_cooldown = (time.time() + random.randint(int(self.config.cooldown_min), int(self.config.cooldown_max))) * 1000
-            elif int(self.config.pokestop_cooldown) > 300:
-                userpokestop_cooldown = (time.time() + int(self.config.pokestop_cooldown)) * 1000
-            else:
-                userpokestop_cooldown = (time.time() + 300) * 1000
+            self.spin_details = response_dict['responses']['FORT_SEARCH']
+            self.spin_result = spin_details.get('result', -1)
 
             if spin_result == 1:
                 logger.log("Loot: ", 'green')
-                experience_awarded = spin_details.get('experience_awarded',
-                                                      False)
+                experience_awarded = spin_details.get('experience_awarded', False)
+                ps_cooldowntimer()
+                
                 if experience_awarded:
                     logger.log(str(experience_awarded) + " xp",
                                'green')
@@ -108,16 +100,8 @@ class SeenFortWorker(object):
                         logger.log('- ' + str(item_count) + "x " + item_name + " (Total: " + str(self.bot.item_inventory_count(item_id)) + ")", 'yellow')
                 else:
                     logger.log("[#] Nothing found.", 'yellow')
-                pokestop_cooldown = userpokestop_cooldown
-                self.bot.fort_timeouts.update({self.fort["id"]: pokestop_cooldown})
-                
-                if pokestop_cooldown:
-                    seconds_since_epoch = time.time()
-                    logger.log('PokeStop on cooldown. Time left: ' + str(
-                        format_time((pokestop_cooldown / 1000) -
-                                    seconds_since_epoch)))
 
-                if not items_awarded and not experience_awarded and not pokestop_cooldown:
+                if not items_awarded and not experience_awarded and not self.spin_details.get('cooldown_complete_timestamp_ms'):
                     message = (
                         'Stopped at Pokestop and did not find experience, items '
                         'or information about the stop cooldown. You are '
@@ -126,18 +110,16 @@ class SeenFortWorker(object):
                         'PokeStops you are indeed softbanned. Please try again '
                         'in a few hours.')
                     raise RuntimeError(message)
+            
             elif spin_result == 2:
                 logger.log("[#] Pokestop out of range")
+            
             elif spin_result == 3:
-                pokestop_cooldown = userpokestop_cooldown
-                if pokestop_cooldown:
-                    self.bot.fort_timeouts.update({self.fort["id"]: pokestop_cooldown})
-                    seconds_since_epoch = time.time()
-                    logger.log('PokeStop on cooldown. Time left: ' + str(
-                        format_time((pokestop_cooldown / 1000) -
-                                    seconds_since_epoch)))
+                ps_cooldowntimer()
+            
             elif spin_result == 4:
                 logger.log("Inventory is full", 'red')
+            
             else:
                 logger.log("Unknown spin result: " + str(spin_result), 'red')
 
@@ -148,11 +130,24 @@ class SeenFortWorker(object):
                     'chain_hack_sequence_number']
             else:
                 logger.log('Possibly searching too often - taking a short rest :)', 'yellow')
-                self.bot.fort_timeouts[self.fort["id"]] = pokestop_cooldown
+                logger.log('PokeStop on Cooldown timer. Time: ' + str(format_time((actual_pokestop_cooldown / 1000))))
                 return 11
         sleep(2)
         return 0
 
+    def ps_cooldowntimer():
+        actual_pokestop_cooldown = self.spin_details.get('cooldown_complete_timestamp_ms')
+        ran_pokestop_cooldown = actual_pokestop_cooldown + ((time.time() + random.randint(int(self.config.add_fort_cooldown['cd_min_delta']), int(self.config.add_fort_cooldown['cd_max_delta']))) * 1000)
+        if self.config.add_fort_cooldown['add_cooldown_time'] == 'random' and ran_pokestopcooldown >= 300:
+            self.bot.fort_timeouts[self.fort["id"]] = ran_pokestop_cooldown
+            logger.log('PokeStop on Cooldown timer. Time: ' + str(format_time((ran_pokestop_cooldown / 1000))))
+        elif int(self.config.add_fort_cooldown['add_cooldown_time']) >= 0:
+            self.bot.fort_timeouts[self.fort["id"]] = actual_pokestop_cooldown + int(self.config.add_fort_cooldown['add_cooldown_time'])
+            logger.log('PokeStop on Cooldown timer. Time: ' + str(format_time((ran_pokestop_cooldown / 1000))))
+        else:
+            self.bot.fort_timeouts[self.fort["id"]] = actual_pokestop_cooldown
+            logger.log('PokeStop on Cooldown timer. Time: ' + str(format_time((actual_pokestop_cooldown / 1000))))
+          
     def catch_pokemon(self, pokemon):
         worker = PokemonCatchWorker(pokemon, self.bot)
         return_value = worker.work()
