@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import struct
+import json
+import random
 from math import cos, asin, sqrt
 from colorama import init
 from s2sphere import CellId, LatLng
@@ -128,3 +130,8 @@ def print_yellow(message):
 
 def print_red(message):
     print(u'\033[91m' + message.decode('utf-8') + '\033[0m')
+
+def ran_timer(cooldown_min, cooldown_max):
+    cd_min = self.config.cooldown_min
+    cd_max = self.config.cooldown_max
+    return random.randint(cd_min, cd_max)

@@ -204,6 +204,21 @@ def init_config():
     else:
         config.item_filter = {}
 
+    if 'pokestop_cooldown' in load:
+        config.pokestop_cooldown = load['pokestop_cooldown']
+    else:
+        config.pokestop_cooldown = 300
+    
+    if 'cooldown_min' in load:
+        config.cooldown_min = load['cooldown_min']
+    else:
+        config.cooldown_min = 300
+
+    if 'cooldown_max' in load:
+        config.cooldown_max = load['cooldown_max']
+    else:
+        config.cooldown_max = 900
+
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")
         return None
