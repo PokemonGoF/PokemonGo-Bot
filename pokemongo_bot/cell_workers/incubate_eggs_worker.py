@@ -14,8 +14,7 @@ class IncubateEggsWorker(object):
         if not self.config.hatch_eggs:
             return
 
-        self.api.get_inventory()
-        response_dict = self.api.call()
+        response_dict = self.bot.get_inventory()
         inv = {}
         incubators = []
         eggs = []
