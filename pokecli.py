@@ -151,7 +151,7 @@ def init_config():
         short_flag="-l",
         long_flag="--location",
         help="Location",
-        type=unicode,
+        type=parse_str,
         default=''
     )
     add_config(
@@ -351,6 +351,12 @@ def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
     else:
         args = (long_flag,)
     parser.add_argument(*args, **kwargs)
+    
+def parse_str(string):
+    try:
+        return string.decode('utf8')
+    except UnicodeEncodeError:
+        return string
 
     
 if __name__ == '__main__':
