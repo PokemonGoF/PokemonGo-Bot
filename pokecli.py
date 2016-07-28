@@ -90,8 +90,8 @@ def init_config():
         "-l",
         "--location",
         help="Location",
-        type=lambda s: unicode(s, 'utf8'),
-        default=load.get('location', None)
+        type=lambda s: not isinstance(s, unicode) and unicode(s, 'utf8') or str(s),
+        default=load.get('location', '')
     )
     parser.add_argument(
         "-lc",
