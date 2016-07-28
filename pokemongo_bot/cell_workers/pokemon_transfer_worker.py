@@ -40,7 +40,7 @@ class PokemonTransferWorker(object):
                             if best_pokemon['pokemon_data']['id'] == pokemon['pokemon_data']['id']:
                                 all_pokemons.remove(pokemon)
 
-                    if best_pokemons:
+                    if best_pokemons and all_pokemons:
                         logger.log("Keep {} best {}, based on {}".format(len(best_pokemons),
                                                                          pokemon_name,
                                                                          order_criteria), "green")
@@ -49,7 +49,6 @@ class PokemonTransferWorker(object):
                                                                           best_pokemon['cp'],
                                                                           best_pokemon['iv']), 'green')
 
-                    if all_pokemons:
                         logger.log("Exchange {} pokemon(s)".format(len(all_pokemons)), "green")
 
                     for pokemon in all_pokemons:
