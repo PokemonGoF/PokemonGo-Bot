@@ -5,17 +5,21 @@
     "location": "SOME_LOCATION",
     "gmapkey": "GOOGLE_MAPS_API_KEY",
     "max_steps": 5,
-    "mode": "all",
+    "catch_pokemon": true,
+    "spin_forts": true,
+    "add_fort_cooldown": {
+    "add_cooldown_time": "random",
+    "cd_min_delta": 300,
+    "cd_max_delta": 900
+    },
     "walk": 4.16,
     "action_wait_min": 1,
     "action_wait_max": 4,
     "debug": false,
     "test": false,
+    "health_record": true,
     "location_cache": true,
     "distance_unit": "km",
-    "pokestop_cooldown": "300",
-    "cooldown_min": 300,
-    "cooldown_max": 900,
     "reconnecting_timeout": 15,
     "item_filter": {
       "1": { "keep" : 100 },
@@ -29,6 +33,8 @@
     "evolve_speed": 20,
     "cp_min": 300,
     "use_lucky_egg": false,
+    "hatch_eggs": true,
+    "longer_eggs_first": true,
     "evolve_captured": false,
     "release_pokemon": true,
     "catch": {
@@ -39,6 +45,10 @@
     "release": {
       "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or"},
       "// Example of always releasing Rattata:": {},
-      "// Rattata": { "always_release" : true }
+      "// Rattata": { "always_release" : true },
+      "// Example of keeping stronger (based on CP) Pidgey:": {},
+      "// Pidgey": { "keep_best_cp" : true },
+      "// Example of keeping stronger (based on IV) Zubat:": {},
+      "// Zubat": { "keep_best_iv" : true }
     }
 }
