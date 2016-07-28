@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from polyline_generator import Polyline
 from math import ceil
-from ..human_behaviour import sleep
-from ..cell_workers.utils import i2f
+from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot.cell_workers.utils import i2f
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot import logger
 

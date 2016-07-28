@@ -3,7 +3,7 @@ from math import ceil
 
 import logger
 from human_behaviour import sleep
-from polyline_walker import PolylineWalker
+from walkers.polyline_walker import PolylineWalker
 
 
 class PolylineStepper(Stepper):
