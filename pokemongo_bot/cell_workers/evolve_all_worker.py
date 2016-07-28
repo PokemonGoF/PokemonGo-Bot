@@ -52,36 +52,47 @@ class EvolveAllWorker(object):
                 self._release_evolved(release_cand_list_ids)
 
     def _should_run(self):
-        # Will skip evolving if user wants to use an egg and there is none
-        skip_evolves = False
-
-        if self.config.evolve_all:
-            return skip_evolves
+        # Skip Evolving if there is no config
+        if not self.config.evolve_all or self.config.evolve_all is "NONE":
+            return False
 
         # Pop lucky egg before evolving to maximize xp gain
         use_lucky_egg = self.config.use_lucky_egg
         lucky_egg_count = self.bot.item_inventory_count(Item.ITEM_LUCKY_EGG.value)
 
-        if use_lucky_egg and lucky_egg_count > 0:
-            logger.log('Using lucky egg ... you have {}'
-                       .format(lucky_egg_count))
+        if not use_lucky_egg:
+            return True
+
+        # Try to use a lucky egg just at the beginning (for now)
+        if self.bot.tried_lucky_egg:
+            return True
+
+        # Doesn't matter if you activate one, fail or don't have any, it will try just at the beginning
+        self.bot.tried_lucky_egg = True
+
+        if lucky_egg_count > 0:
+            logger.log('You have {} lucky egg{}'.format(lucky_egg_count, 's' if lucky_egg_count > 1 else ''))
+            logger.log('Trying to use lucky egg...')
             response_dict_lucky_egg = self.bot.use_lucky_egg()
+
             if response_dict_lucky_egg and 'responses' in response_dict_lucky_egg and \
                 'USE_ITEM_XP_BOOST' in response_dict_lucky_egg['responses'] and \
                 'result' in response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']:
-                result = response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']['result']
-                if result is 1: # Request success
-                    logger.log('Successfully used lucky egg... ({} left!)'
-                               .format(lucky_egg_count-1), 'green')
-                else:
-                    logger.log('Failed to use lucky egg!', 'red')
-                    skip_evolves = True
-        elif use_lucky_egg: #lucky_egg_count is 0
-            # Skipping evolve so they aren't wasted
-            logger.log('No lucky eggs... skipping evolve!', 'yellow')
-            skip_evolves = True
 
-        return skip_evolves
+                result = response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']['result']
+
+                if result is 1:
+                    logger.log('Successfully used lucky egg. You have {} left.'.format(lucky_egg_count-1), 'green')
+                    return True
+                else:
+                    logger.log('Failed to use lucky egg.', 'red')
+                    return False
+
+            logger.log('There was an error in response.', 'red')
+            return False
+
+        logger.log('You have no lucky eggs. Skipping evolving phase.', 'yellow')
+        return False
 
     def _release_evolved(self, release_cand_list_ids):
         response_dict = self.bot.get_inventory()

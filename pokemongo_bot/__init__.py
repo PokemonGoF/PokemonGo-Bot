@@ -36,6 +36,7 @@ class PokemonGoBot(object):
         self.item_list = json.load(open(os.path.join('data', 'items.json')))
         self.metrics = Metrics(self)
         self.latest_inventory = None
+        self.tried_lucky_egg = False
 
     def start(self):
         self._setup_logging()
