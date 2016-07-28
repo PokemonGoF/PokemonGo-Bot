@@ -78,7 +78,7 @@ class PokemonCatchWorker(object):
                                 for individual_stat in iv_stats:
                                     try:
                                         total_IV += pokemon['pokemon_data'][individual_stat]
-                                    except:
+                                    except Exception:
                                         pokemon['pokemon_data'][individual_stat] = 0
                                         continue
 
