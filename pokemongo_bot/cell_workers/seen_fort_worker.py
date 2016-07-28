@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
+import random
 
 from pgoapi.utilities import f2i
 
@@ -73,6 +74,9 @@ class SeenFortWorker(object):
 
             spin_details = response_dict['responses']['FORT_SEARCH']
             spin_result = spin_details.get('result', -1)
+            ran_timer = random.randint(300, 600)
+            self.bot.fort_timeouts[self.fort["id"]] = (time.time() + ran_timer) * 1000 #set fort cooldown for random time between 5 and 15 min.
+            
             if spin_result == 1:
                 logger.log("Loot: ", 'green')
                 experience_awarded = spin_details.get('experience_awarded',
@@ -98,8 +102,7 @@ class SeenFortWorker(object):
                 else:
                     logger.log("[#] Nothing found.", 'yellow')
 
-                pokestop_cooldown = spin_details.get(
-                    'cooldown_complete_timestamp_ms')
+                pokestop_cooldown = self.bot.fort_timeouts[self.fort["id"]]
                 self.bot.fort_timeouts.update({self.fort["id"]: pokestop_cooldown})
                 if pokestop_cooldown:
                     seconds_since_epoch = time.time()
@@ -139,7 +142,6 @@ class SeenFortWorker(object):
                     'chain_hack_sequence_number']
             else:
                 logger.log('Possibly searching too often - taking a short rest :)', 'yellow')
-                self.bot.fort_timeouts[self.fort["id"]] = (time.time() + 300) * 1000  # Don't spin for 5m
                 return 11
         sleep(2)
         return 0
