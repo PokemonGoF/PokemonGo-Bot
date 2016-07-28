@@ -254,7 +254,7 @@ def main():
             logger.log('Starting PokemonGo Bot....', 'green')
 
             while True:
-                bot.take_step()
+                bot.tick()
 
         except KeyboardInterrupt:
             logger.log('Exiting PokemonGo Bot', 'red')
