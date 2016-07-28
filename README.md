@@ -196,8 +196,8 @@ To update your project do: `git pull` in the project folder
 - `max_steps` :
 - `mode` :
 - `walk` :
-- `debug` : Let the default value here except if you are developper
-- `test` : Let the default value here except if you are developper
+- `debug` : Let the default value here except if you are developer
+- `test` : Let the default value here except if you are developer
 - `initial_transfer` : Set this to 1 if you want to transfer pokemon
 - `location_cache` :
 - `distance_unit` :
