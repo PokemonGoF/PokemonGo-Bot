@@ -24,12 +24,10 @@ class PokemonCatchWorker(object):
         self.spawn_point_guid = ''
         self.response_key = ''
         self.response_status_key = ''
-        self.transfer_worker = None
 
     def work(self):
         encounter_id = self.pokemon['encounter_id']
         response_dict = self.create_encounter_api_call()
-        self.transfer_worker = PokemonTransferWorker(self)
 
         if response_dict and 'responses' in response_dict:
             if self.response_key in response_dict['responses']:
@@ -37,8 +35,8 @@ class PokemonCatchWorker(object):
                     if response_dict['responses'][self.response_key][self.response_status_key] is 7:
                         if self.config.release_pokemon:
                             logger.log('Pokemon Bag is full!', 'red')
-                            self.transfer_worker.work()
-
+                            worker = PokemonTransferWorker(self)
+                            worker.work()
                         else:
                             raise RuntimeError('Pokemon Bag is full!')
 
@@ -54,29 +52,18 @@ class PokemonCatchWorker(object):
                             catch_rate = response_dict['responses'][self.response_key]['capture_probability'][
                                 'capture_probability']  # 0 = pokeballs, 1 great balls, 3 ultra balls
 
-                            pokemon_data = None
                             if 'pokemon_data' in pokemon and 'cp' in pokemon['pokemon_data']:
                                 pokemon_data = pokemon['pokemon_data']
                                 cp = pokemon_data['cp']
 
-                                # make sure we catch any missing iv information
-                                if 'individual_stamina' not in pokemon_data:
-                                    pokemon_data['individual_stamina'] = 0
-                                if 'individual_attack' not in pokemon_data:
-                                    pokemon_data['individual_attack'] = 0
-                                if 'individual_defense' not in pokemon_data:
-                                    pokemon_data['individual_defense'] = 0
-
-                                iv_stats = ['individual_attack', 'individual_defense', 'individual_stamina']
-                                individual_attack = 0
-
                                 individual_attack = pokemon_data.get("individual_attack", 0)
                                 individual_stamina = pokemon_data.get("individual_stamina", 0)
+                                individual_defense = pokemon_data.get("individual_defense", 0)
 
                                 iv_display = '{}/{}/{}'.format(
                                     individual_stamina,
                                     individual_attack,
-                                    pokemon_data['individual_defense']
+                                    individual_defense
                                 )
 
                                 pokemon_potential = self.pokemon_potential(pokemon_data)
@@ -95,27 +82,28 @@ class PokemonCatchWorker(object):
                             return False
 
                         items_stock = self.bot.current_inventory()
-                        while(True):
-
+                        while True:
                             ## pick the most simple ball from stock
                             pokeball = 1 # start from 1 - PokeBalls
 
                             current_type = pokeball
-                            while(items_stock[current_type] is 0 and current_type < 3): # if this type's stock = 0 and not top tier yet
-                                current_type = current_type + 1 # progress to next tier
-                                if items_stock[current_type] > 0: # next tier's stock > 0
+                            # if this type's stock = 0 and not top tier yet
+                            while items_stock[current_type] is 0 and current_type < 3:
+                                # progress to next tier
+                                current_type += 1
+                                # next tier's stock > 0
+                                if items_stock[current_type] > 0:
                                     pokeball = current_type
 
-                            ## re-check stock again
+                            # re-check stock again
                             if items_stock[pokeball] is 0:
                                 logger.log('Out of pokeballs', 'red')
-                                # Begin searching for pokestops.
                                 return PokemonCatchWorker.NO_POKEBALLS
 
-                            ## Use berry to increase success chance.
+                            # Use berry to increase success chance.
                             berry_id = 701 # @ TODO: use better berries if possible
                             berries_count = self.bot.item_inventory_count(berry_id)
-                            if(catch_rate[pokeball-1] < 0.5 and berries_count > 0): # and berry is in stock
+                            if catch_rate[pokeball-1] < 0.5 and berries_count > 0: # and berry is in stock
                                 success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
                                 logger.log('Catch Rate with normal Pokeball is low ({}%). Throwing {}... ({} left!)'.format(success_percentage,self.item_list[str(berry_id)],berries_count-1))
 
@@ -124,34 +112,35 @@ class PokemonCatchWorker(object):
 
                                 self.api.use_item_capture(
                                     item_id=berry_id,
-                                    encounter_id = encounter_id,
-                                    spawn_point_id = self.spawn_point_guid
+                                    encounter_id=encounter_id,
+                                    spawn_point_id=self.spawn_point_guid
                                 )
                                 response_dict = self.api.call()
                                 if response_dict and response_dict['status_code'] is 1 and 'item_capture_mult' in response_dict['responses']['USE_ITEM_CAPTURE']:
 
                                     for i in range(len(catch_rate)):
-                                        catch_rate[i] = catch_rate[i] * response_dict['responses']['USE_ITEM_CAPTURE']['item_capture_mult']
+                                        if 'item_capture_mult' in response_dict['responses']['USE_ITEM_CAPTURE']:
+                                            catch_rate[i] = catch_rate[i] * response_dict['responses']['USE_ITEM_CAPTURE']['item_capture_mult']
 
                                     success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
                                     logger.log('Catch Rate with normal Pokeball has increased to {}%'.format(success_percentage))
                                 else:
                                     if response_dict['status_code'] is 1:
-                                        logger.log('Fail to use berry. Seem like you are softbanned.','red')
+                                        logger.log('Fail to use berry. Seem like you are softbanned.', 'red')
                                     else:
                                         logger.log('Fail to use berry. Status Code: {}'.format(response_dict['status_code']),'red')
 
-                            ## change ball to next tier if catch rate is too low
+                            # change ball to next tier if catch rate is too low
                             current_type = pokeball
-                            while(current_type < 3):
-                                current_type = current_type+1
+                            while current_type < 3:
+                                current_type += 1
                                 if catch_rate[pokeball-1] < 0.35 and items_stock[current_type] > 0:
                                     # if current ball chance to catch is under 35%, and player has better ball - then use it
                                     pokeball = current_type # use better ball
 
                             # @TODO, use the best ball in stock to catch VIP (Very Important Pokemon: Configurable)
 
-                            items_stock[pokeball] = items_stock[pokeball] - 1
+                            items_stock[pokeball] -= 1
                             success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
                             logger.log('Using {} (chance: {}%)... ({} left!)'.format(
                                 self.item_list[str(pokeball)],
@@ -160,7 +149,6 @@ class PokemonCatchWorker(object):
                             ))
 
                             id_list1 = self.count_pokemon_inventory()
-                            max_criteria_pokemon_list = self.get_max_criteria_pokemon_list()
 
                             self.api.catch_pokemon(encounter_id=encounter_id,
                                                    pokeball=pokeball,
@@ -186,8 +174,6 @@ class PokemonCatchWorker(object):
                                     logger.log(
                                         'Oh no! {} vanished! :('.format(pokemon_name), 'red')
                                 if status is 1:
-                                    id_list2 = self.count_pokemon_inventory()
-
                                     self.bot.metrics.captured_pokemon(pokemon_name, cp, iv_display, pokemon_potential)
 
                                     logger.log('Captured {}! [CP {}] [Potential {}] [{}]'.format(
@@ -198,6 +184,7 @@ class PokemonCatchWorker(object):
                                     ), 'blue')
 
                                     if self.config.evolve_captured:
+                                        id_list2 = self.count_pokemon_inventory()
                                         # No need to capture this even for metrics, player stats includes it.
                                         pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
 
@@ -214,15 +201,6 @@ class PokemonCatchWorker(object):
                                         else:
                                             logger.log(
                                             'Failed to evolve {}!'.format(pokemon_name))
-
-                                    captured_pokemon_id = list(Set(id_list2) - Set(id_list1))
-                                    captured_pokemon_id = captured_pokemon_id and captured_pokemon_id[0] or None
-
-                                    self.transfer_worker.check_stronger_pokemon(pokemon_name,
-                                                                                pokemon_data,
-                                                                                max_criteria_pokemon_list,
-                                                                                captured_pokemon_id)
-
                             break
         time.sleep(5)
 
@@ -254,30 +232,6 @@ class PokemonCatchWorker(object):
                     pokemon = item['inventory_item_data']['pokemon_data']
                     if not pokemon.get('is_egg', False):
                         callback(pokemon)
-
-    def get_max_criteria_pokemon_list(self):
-        """
-        Takes a get_inventory request result and returns a list of pokemons and their data,
-        whereas the list contains no duplicate pokemons.
-        If there are duplicate pokemons in the inventory the strongest one (max CP) is returned.
-        """
-        response_dict = self.bot.get_inventory()
-        pokemon_map = {}
-        callback = lambda pokemon: self._add_or_replace_pokemon(pokemon_map, pokemon)
-        self._foreach_pokemon_in_inventory(response_dict, callback)
-        return pokemon_map
-
-    def _add_or_replace_pokemon(self, pokemon_map, pokemon):
-        """
-        Takes a map(pokemon_id, pokemon) and a pokemon and either adds the pokemon
-        if it's not yet in the map or if it's stronger than the one in the map.
-        """
-        pokemon_id = pokemon['pokemon_id']
-        if pokemon_id in pokemon_map:
-            if self.transfer_worker.is_greater_by_criteria(pokemon, pokemon_map[pokemon_id]):
-                pokemon_map[pokemon_id] = pokemon
-        else:
-            pokemon_map[pokemon_id] = pokemon
 
     def pokemon_potential(self, pokemon_data):
         total_iv = 0
@@ -339,16 +293,7 @@ class PokemonCatchWorker(object):
             catch_config = self.config.catch.get('any')
         return catch_config
 
-    def _get_release_config_for(self, pokemon):
-        release_config = self.config.release.get(pokemon)
-        if not release_config:
-            release_config = self.config.release.get('any')
-        if not release_config:
-            release_config = {}
-        return release_config
-
     def create_encounter_api_call(self):
-
         encounter_id = self.pokemon['encounter_id']
         player_latitude = self.pokemon['latitude']
         player_longitude = self.pokemon['longitude']
