@@ -220,7 +220,7 @@ def init_config():
 
     if config.stop_after:
         try:
-            logger.log('Bot will stop farming in ' + str(config.stop_after) + ' minutes.', 'yellow')
+            logger.log('Bot will stop farming in ' + str(config.stop_after) + ' minutes', 'yellow')
         except:
             logger.log('Stop after value should be numeric.', 'red')
             logger.log('Bot will run until user-interrupted.', 'green')
@@ -266,7 +266,7 @@ def main():
                     # TODO: write a function for bot metrics and call it here too
                     sys.exit(0)
 
-        except KeyboardInterrupt:
+        except (KeyboardInterrupt, SystemExit):
             logger.log('Exiting PokemonGo Bot', 'red')
             finished = True
             if bot.metrics.start_time is None:
