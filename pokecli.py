@@ -40,7 +40,7 @@ from pgoapi.exceptions import NotLoggedInException
 from pokemongo_bot import PokemonGoBot
 from pokemongo_bot import logger
 
-if sys.version_info >= (2, 7, 9):
+if sys.version_info >= (2, 7, 9) and hasattr(ssl, "_create_unverified_context"):
     ssl._create_default_https_context = ssl._create_unverified_context
 
 
