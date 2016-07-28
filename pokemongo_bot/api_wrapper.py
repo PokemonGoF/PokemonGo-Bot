@@ -1,7 +1,7 @@
 # api_wrapper.py
 
 from pgoapi import PGoApi
-from pgoapi.exceptions import NotLoggedInException
+from pgoapi.exceptions import NotLoggedInException, ServerBusyOrOfflineException
 from human_behaviour import sleep
 import logger
 
@@ -61,13 +61,16 @@ class ApiWrapper(object):
             self._api._req_method_list = [req_method for req_method in api_req_method_list] # api internally clear this field after a call
             result = self._api.call()
             if not self._is_response_valid(result, request_callers):
-                try_cnt += 1
-                logger.log('Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry), 'red')
-                if try_cnt >= max_retry:
-                    raise ServerBusyOrOfflineException()
-                sleep(1)
-            else:
-                break
+                while try_cnt < max_retry:
+                    try_cnt += 1
+                    logger.log('Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry), 'red')
+                    if try_cnt >= max_retry:
+                        raise ServerBusyOrOfflineException()
+                        logger.log(
+                            'Maximum Retry Count Reached. Exiting', 'red')
+                    sleep(1)
+                else:
+                    break
         return result
 
     def login(self, provider, username, password):
