@@ -1,6 +1,6 @@
 import json
 
-from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot import logger
 
 class PokemonTransferWorker(object):
@@ -8,16 +8,13 @@ class PokemonTransferWorker(object):
         self.config = bot.config
         self.pokemon_list = bot.pokemon_list
         self.api = bot.api
-        self.metrics = bot.metrics
 
     def work(self):
         if not self.config.release_pokemon:
             return
 
-        pokemon_groups = self._initial_transfer_get_groups()
-
+        pokemon_groups = self._release_pokemon_get_groups()
         for id in pokemon_groups:
-
             group_cp = pokemon_groups[id].keys()
 
             if len(group_cp) > 1:
@@ -29,14 +26,15 @@ class PokemonTransferWorker(object):
                     pokemon_cp = group_cp[x]
                     pokemon_data = pokemon_groups[id][pokemon_cp]
                     pokemon_potential = self.get_pokemon_potential(pokemon_data)
+                    logger.log('Checking {} [CP {}] [Potential {}] for release!'.format(pokemon_name, pokemon_cp, pokemon_potential))
                     if self.should_release_pokemon(pokemon_name, pokemon_cp, pokemon_potential):
-                        logger.log('Exchanging {} [CP {}] [Potential {}] for candy!'.format(
-                            pokemon_name, pokemon_cp, pokemon_potential))
+                        logger.log('Exchanging {} for candy!'.format(
+                            pokemon_name), 'green')
                         self.api.release_pokemon(pokemon_id=pokemon_data['id'])
                         response_dict = self.api.call()
-                        sleep(2)
+                        action_delay(self.config.action_wait_min, self.config.action_wait_max)
 
-    def _initial_transfer_get_groups(self):
+    def _release_pokemon_get_groups(self):
         pokemon_groups = {}
         self.api.get_player().get_inventory()
         inventory_req = self.api.call()
@@ -105,14 +103,14 @@ class PokemonTransferWorker(object):
             'and': lambda x, y: x and y
         }
 
-        #logger.log(
-        #    "Release config for {}: CP {} {} IV {}".format(
-        #        pokemon_name,
-        #        min_cp,
-        #        cp_iv_logic,
-        #        min_iv
-        #    ), 'yellow'
-        #)
+        logger.log(
+            "Release config for {}: CP {} {} IV {}".format(
+                pokemon_name,
+                release_cp,
+                cp_iv_logic,
+                release_iv
+            ), 'yellow'
+        )
 
         return logic_to_function[cp_iv_logic](*release_results.values())
 
