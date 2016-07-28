@@ -6,6 +6,8 @@ import time
 import pprint
 
 from math import ceil
+
+from geopy.distance import vincenty
 from s2sphere import CellId, LatLng
 from google.protobuf.internal import encoder
 
@@ -21,6 +23,7 @@ class Stepper(object):
         self.bot = bot
         self.api = bot.api
         self.config = bot.config
+        self.stats = bot.stats
 
         self.pos = 1
         self.x = 0
@@ -57,9 +60,14 @@ class Stepper(object):
             if self.x == self.y or self.x < 0 and self.x == -self.y or self.x > 0 and self.x == 1 - self.y:
                 (self.dx, self.dy) = (-self.dy, self.dx)
 
+            distance_walked = vincenty((self.x, self.y), (self.x + self.dx, self.y + self.dy)).kilometers
+            self.stats.distance_walked += distance_walked
+
             (self.x, self.y) = (self.x + self.dx, self.y + self.dy)
 
             self._work_at_position(position[0], position[1], position[2], True)
+
+
             sleep(10)
 
     def _walk_to(self, speed, lat, lng, alt):
