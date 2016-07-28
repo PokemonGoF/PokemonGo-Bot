@@ -27,16 +27,16 @@ class EventManager(object):
     def register_event(self, name, parameters=None):
         self._registered_events[name] = parameters
 
-    def emit(self, event, **kwargs):
+    def emit(self, event, level='info', data={}):
         if event not in self._registered_events:
             raise EventNotRegisteredException("Event %s not registered..." % event)
 
         # verify params match event
         parameters = self._registered_events[event]
-        for k, v in kwargs.iteritems():
+        for k, v in data.iteritems():
             if k not in parameters:
                 raise EventMalformedException("Event %s does not require parameter %s" % (event, k))
 
         # send off to the handlers
         for handler in self._handlers:
-            handler.handle_event(event, **kwargs)
+            handler.handle_event(event, level, **data)
