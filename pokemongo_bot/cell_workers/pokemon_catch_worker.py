@@ -107,9 +107,9 @@ class PokemonCatchWorker(object):
                                     break
 
                                 self.api.use_item_capture(
-                                    item_id=berry_id,
-                                    encounter_id=encounter_id,
-                                    spawn_point_id=self.spawn_point_guid
+                                    item_id = berry_id,
+                                    encounter_id = encounter_id,
+                                    spawn_point_id = self.spawn_point_guid
                                 )
                                 response_dict = self.api.call()
                                 if response_dict and response_dict['status_code'] is 1 and 'item_capture_mult' in response_dict['responses']['USE_ITEM_CAPTURE']:
