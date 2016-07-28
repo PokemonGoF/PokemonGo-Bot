@@ -67,143 +67,183 @@ def init_config():
 
     # Read passed in Arguments
     required = lambda x: not x in load
-    parser.add_argument(
-        "-a",
-        "--auth_service",
+    add_config(
+        parser,
+        load,
+        short_flag="-a",
+        long_flag="--auth_service",
         help="Auth Service ('ptc' or 'google')",
         required=required("auth_service"),
-        default=load.get('auth_service', None)
+        default=None
     )
-    parser.add_argument(
-        "-u",
-        "--username",
+    add_config(
+        parser,
+        load,
+        short_flag="-u",
+        long_flag="--username",
         help="Username",
-        default=load.get('username', None)
+        default=None
     )
-    parser.add_argument(
-        "-p",
-        "--password",
+    add_config(
+        parser,
+        load,
+        short_flag="-p",
+        long_flag="--password",
         help="Password",
-        default=load.get('password', None)
+        default=None
     )
-    parser.add_argument(
-        "-l",
-        "--location",
+    add_config(
+        parser,
+        load,
+        short_flag="-l",
+        long_flag="--location",
         help="Location",
         type=lambda s: not isinstance(s, unicode) and unicode(s, 'utf8') or str(s),
-        default=load.get('location', '')
+        default=''
     )
-    parser.add_argument(
-        "-lc",
-        "--location_cache",
+    add_config(
+        parser,
+        load,
+        short_flag="-lc",
+        long_flag="--location_cache",
         help="Bot will start at last known location",
         type=bool,
-        default=load.get('location_cache', False)
+        default=False
     )
-    parser.add_argument(
-        "--catch_pokemon",
+    add_config(
+        parser,
+        load,
+        long_flag="--catch_pokemon",
         help="Enable catching pokemon",
         type=bool,
-        default=load.get('catch_pokemon', True)
+        default=True
     )
-    parser.add_argument(
-        "--spin_forts",
+    add_config(
+        parser,
+        load,
+        long_flag="--spin_forts",
         help="Enable Spinning Pokestops",
         type=bool,
-        default=load.get('spin_forts', True)
+        default=True
     )
-    parser.add_argument(
-        "-w",
-        "--walk",
+    add_config(
+        parser,
+        load,
+        short_flag="-w",
+        long_flag="--walk",
         help=
         "Walk instead of teleport with given speed (meters per second, e.g. 2.5)",
         type=float,
-        default=load.get('walk', 2.5)
+        default=2.5
     )
-    parser.add_argument(
-        "-k",
-        "--gmapkey",
+    add_config(
+        parser,
+        load,
+        short_flag="-k",
+        long_flag="--gmapkey",
         help="Set Google Maps API KEY",
         type=str,
-        default=load.get('gmapkey', None)
+        default=None
     )
-    parser.add_argument(
-        "-ms",
-        "--max_steps",
+    add_config(
+        parser,
+        load,
+        short_flag="-ms",
+        long_flag="--max_steps",
         help=
         "Set the steps around your initial location(DEFAULT 5 mean 25 cells around your location)",
         type=int,
-        default=load.get('max_steps', 50)
+        default=50
     )
-    parser.add_argument(
-        "-rp",
-        "--release_pokemon",
+    add_config(
+        parser,
+        load,
+        short_flag="-rp",
+        long_flag="--release_pokemon",
         help="Allow transfer pokemon to professor based on release configuration. Default is false",
         type=bool,
-        default=load.get('release_pokemon', False)
+        default=False
     )
-    parser.add_argument(
-        "-d",
-        "--debug",
+    add_config(
+        parser,
+        load,
+        short_flag="-d",
+        long_flag="--debug",
         help="Debug Mode",
         type=bool,
-        default=load.get('debug', False)
+        default=False
     )
-    parser.add_argument(
-        "-t",
-        "--test",
+    add_config(
+        parser,
+        load,
+        short_flag="-t",
+        long_flag="--test",
         help="Only parse the specified location",
         type=bool,
         default=False
     )
-    parser.add_argument(
-        "-du",
-        "--distance_unit",
+    add_config(
+        parser,
+        load,
+        short_flag="-du",
+        long_flag="--distance_unit",
         help="Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)",
         type=str,
-        default=load.get('distance_unit', 'km')
+        default='km'
     )
-    parser.add_argument(
-        "-ev",
-        "--evolve_all",
+    add_config(
+        parser,
+        load,
+        short_flag="-ev",
+        long_flag="--evolve_all",
         help="(Batch mode) Pass \"all\" or a list of pokemons to evolve (e.g., \"Pidgey,Weedle,Caterpie\"). Bot will start by attempting to evolve all pokemons. Great after popping a lucky egg!",
         type=str,
-        default=load.get('evolve_all', [])
+        default=[]
     )
-    parser.add_argument(
-        "-cm",
-        "--cp_min",
+    add_config(
+        parser,
+        load,
+        short_flag="-ecm",
+        long_flag="--evolve_cp_min",
         help="Minimum CP for evolve all. Bot will attempt to first evolve highest IV pokemons with CP larger than this.",
         type=int,
-        default=load.get('cp_min', 300)
+        default=300
     )
-    parser.add_argument(
-        "-ec",
-        "--evolve_captured",
+    add_config(
+        parser,
+        load,
+        short_flag="-ec",
+        long_flag="--evolve_captured",
         help="(Ad-hoc mode) Bot will attempt to evolve all the pokemons captured!",
         type=bool,
-        default=load.get('evolve_captured', False)
+        default=False
     )
-    parser.add_argument(
-        "-le",
-        "--use_lucky_egg",
+    add_config(
+        parser,
+        load,
+        short_flag="-le",
+        long_flag="--use_lucky_egg",
         help="Uses lucky egg when using evolve_all",
         type=bool,
-        default=load.get('use_lucky_egg', False)
+        default=False
     )
-    parser.add_argument(
-        "-rt",
-        "--reconnecting_timeout",
+    add_config(
+        parser,
+        load,
+        short_flag="-rt",
+        long_flag="--reconnecting_timeout",
         help="Timeout between reconnecting if error occured (in minutes, e.g. 15)",
         type=float,
-        default=load.get('reconnecting_timeout', 15.0)
+        default=15.0
     )
-    parser.add_argument(
-        "-hr",
-        "--health_record",
+    add_config(
+        parser,
+        load,
+        short_flag="-hr",
+        long_flag="--health_record",
         help="Send anonymous bot event to GA for bot health record. Set \"health_record\":false if you need disable it.",
         type=bool,
-        default=load.get('health_record', True)
+        default=True
     )
 
     # Start to parse other attrs
@@ -243,6 +283,19 @@ def init_config():
         config.evolve_all = [str(pokemon_name) for pokemon_name in config.evolve_all.split(',')]
 
     return config
+
+
+def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
+    if not long_flag:
+        raise Exception('add_config calls requires long_flag parameter!')
+    if 'default' in kwargs:
+        attribute_name = long_flag.split('--')[1]
+        kwargs['default'] = json_config.get(attribute_name, kwargs['default'])
+    if short_flag:
+        args = (short_flag, long_flag)
+    else:
+        args = (long_flag,)
+    parser.add_argument(*args, **kwargs)
 
 
 def main():
