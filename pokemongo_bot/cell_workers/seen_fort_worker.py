@@ -112,8 +112,7 @@ class SeenFortWorker(object):
 
                     for item_id, item_count in tmp_count_items.iteritems():
                         item_name = self.item_list[str(item_id)]
-                        logger.log('- ' + str(item_count) + "x " + item_name + " (Total: " + str(
-                            self.bot.item_inventory_count(item_id)) + ")", 'yellow')
+                        logger.log('- ' + str(item_count) + "x " + item_name + " (Total: " + str(self.bot.item_inventory_count(item_id)) + ")", 'yellow')
                 else:
                     logger.log("[#] Nothing found.", 'yellow')
 
