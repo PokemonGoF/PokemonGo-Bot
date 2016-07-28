@@ -48,10 +48,10 @@ class ApiWrapper(object):
 
 
     def call(self, max_retry=5):
+        request_callers = self._pop_request_callers()
         if not self._can_call():
             return False # currently this is never ran, exceptions are raised before
 
-        request_callers = self._pop_request_callers()
         api_req_method_list = self._api._req_method_list
         result = None
         try_cnt = 0
