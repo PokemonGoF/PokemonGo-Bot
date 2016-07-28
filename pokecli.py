@@ -201,6 +201,8 @@ def init_config():
         if key in config and value:
             setattr(config, key, value)
 
+    config.spin_forts = load.get('spin_forts', config.spin_forts)
+    config.catch_pokemon = load.get('catch_pokemon', config.catch_pokemon)
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.item_filter = load.get('item_filter', {})
