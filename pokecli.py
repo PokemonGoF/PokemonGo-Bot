@@ -43,7 +43,6 @@ from pokemongo_bot import logger
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
-
 def init_config():
     parser = argparse.ArgumentParser()
     config_file = "configs/config.json"
@@ -176,6 +175,13 @@ def init_config():
         type=float,
         default=15.0
     )
+    parser.add_argument(
+        "-sa",
+        "--stop_after",
+        help="Stop the bot after the time specified (in minutes, e.g. 120)",
+        type=float,
+        default=None
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()
@@ -203,6 +209,13 @@ def init_config():
         parser.error("Needs either --use-location-cache or --location.")
         return None
 
+    if config.stop_after:
+        try:
+            logger.log('Bot will stop farming in ' + str(config.stop_after) + ' minutes.', 'yellow')
+        except:
+            logger.log('Stop after value should be numeric.', 'red')
+            logger.log('Bot will run until user-interrupted.', 'green')
+
     # create web dir if not exists
     try:
         os.makedirs(web_dir)
@@ -227,6 +240,7 @@ def main():
     logger.log('Configuration initialized', 'yellow')
 
     finished = False
+    stop_after = time.time() + config.stop_after*60
 
     while not finished:
         try:
@@ -238,6 +252,10 @@ def main():
 
             while True:
                 bot.take_step()
+                if config.stop_after and time.time() > stop_after:
+                    logger.log('Time is up, will exit now..', 'yellow')
+                    # TODO: write a function for bot metrics and call it here too
+                    sys.exit(0)
 
         except KeyboardInterrupt:
             logger.log('Exiting PokemonGo Bot', 'red')

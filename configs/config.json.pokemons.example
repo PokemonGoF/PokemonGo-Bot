@@ -13,6 +13,7 @@
     "test": false,
     "location_cache": true,
     "distance_unit": "km",
+    "stop_after": 60,
     "item_filter": {
       "1": { "keep" : 50 },
       "2": { "keep" : 50 },

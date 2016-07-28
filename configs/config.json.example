@@ -14,6 +14,7 @@
     "location_cache": true,
     "distance_unit": "km",
     "reconnecting_timeout": 15,
+    "stop_after": 60,
     "item_filter": {
       "1": { "keep" : 100 },
       "101": { "keep" : 10 },
