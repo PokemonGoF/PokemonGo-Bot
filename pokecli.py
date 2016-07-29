@@ -359,7 +359,7 @@ def init_config():
     if config.evolve_all and isinstance(config.evolve_all, str):
         config.evolve_all = [str(pokemon_name) for pokemon_name in config.evolve_all.split(',')]
 
-    import pdb; pdb.set_trace()
+    fix_nested_config(config)
     return config
 
 def add_config(parser, json_config, short_flag=None, long_flag=None, embedded_in=None, **kwargs):
