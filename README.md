@@ -203,6 +203,7 @@ To update your project do: `git pull` in the project folder
 - `distance_unit` :
 - `item_filter` :
 - `evolve_all` : Set to true to evolve pokemons if possible
+- `ignore_list` : set list of pokemon you want to ignore.
 
 ### Evolve All Configuration
     By setting the `evolve_all` attribute in config.json, you can instruct the bot to automatically
@@ -359,5 +360,13 @@ If using multiple usernames format like this:
 - [AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos
 - [AHAAAAAAA](https://github.com/AHAAAAAAA/PokemonGo-Map) for parts of the s2sphere stuff
 
+
+## Donation
+
+Bitcoin Address:  1PJMCx9NNQRasQYaa4MMff9yyNFffhHgLu
+
+<p align="center">
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WQUXDC54W6EVY"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"></a>
+</p>
 
 [![Analytics](https://ga-beacon.appspot.com/UA-81468120-1/welcome-page-master)](https://github.com/igrigorik/ga-beacon)

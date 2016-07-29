@@ -61,7 +61,9 @@ class PokemonCatchWorker(object):
                                     int(pokemon_num)]['Name']
                                 logger.log('[#] A Wild {} appeared! [CP {}] [Potential {}]'.format(
                                     pokemon_name, cp, pokemon_potential), 'yellow')
-
+                                if self._check_ignore_pokemon(pokemon_name): 
+                                    logger.log('[#] A Wild {} is ignored]'.format(pokemon_name), 'red')
+                                    return
                                 logger.log('[#] IV [Stamina/Attack/Defense] = [{}/{}/{}]'.format(
                                     pokemon['pokemon_data']['individual_stamina'],
                                     pokemon['pokemon_data']['individual_attack'],
@@ -294,6 +296,9 @@ class PokemonCatchWorker(object):
         if not always_capture_list:
             return []
         return always_capture_list
+
+    def _check_ignore_pokemon(self, name):
+        return self.config.ignore_list and name in self.config.ignore_list
 
     def _check_always_capture_exception_for(self, pokemon_name):
         always_capture_list = self._get_always_capture_list()

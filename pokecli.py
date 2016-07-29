@@ -146,6 +146,12 @@ def init_config():
                         type=bool,
                         default=False)
 
+    parser.add_argument("-ig",
+                        "--ignore_list",
+                        help="(Batch mode) Pass a list of pokemons to ignore pokemons (e.g., \"Pidgey,Weedle,Caterpie\"). Bot will ignore this pokemon",
+                        type=str,
+                        default=[])
+
     config = parser.parse_args()
     if not config.username and 'username' not in load:
         config.username = raw_input("Username: ")
@@ -182,6 +188,9 @@ def init_config():
 
     if config.evolve_all:
         config.evolve_all = [str(pokemon_name) for pokemon_name in config.evolve_all.split(',')]
+
+    if config.ignore_list:
+        config.ignore_list = [str(pokemon_name) for pokemon_name in config.ignore_list.split(',')]
 
     return config
 
