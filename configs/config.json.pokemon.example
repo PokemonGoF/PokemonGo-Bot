@@ -39,20 +39,20 @@
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or" },
 
-      "// Pokemons with example": { "always_catch": true },
-      "// Gets filtered with release parameters": {},
+      // Pokemons with example": { "always_catch": true }
+      // Gets filtered with release parameters
 
-      "// Legendary pokemons (Goes under S-Tier)": {},
+      // Legendary pokemons (Goes under S-Tier)
       "Lapras": { "always_catch": true },
       "Moltres": { "always_catch": true },
       "Zapdos": { "always_catch": true },
       "Articuno": { "always_catch": true },
 
-      "// S-Tier pokemons (if pokemon can be evolved into tier, list the representative)": {},
+      // S-Tier pokemons (if pokemon can be evolved into tier, list the representative)
       "Mewtwo": { "always_catch": true },
       "Dragonite": { "always_catch": true },
       "Snorlax": { "always_catch": true },
-      "// Mew evolves to Mewtwo": {},
+      // Mew evolves to Mewtwo
       "Mew": { "always_catch": true },
       "Arcanine": { "always_catch": true },
       "Vaporeon": { "always_catch": true },
@@ -62,21 +62,21 @@
       "Weezing": { "always_catch": true },
       "Flareon": { "always_catch": true },
 
-      "// Growlithe evolves to Arcanine": {},
+      // Growlithe evolves to Arcanine
       "Growlithe": { "always_catch": true },
-      "// Dragonair evolves to Dragonite": {},
+      // Dragonair evolves to Dragonite
       "Dragonair": { "always_catch": true },
-      "// Grimer evolves to Muk": {},
+      // Grimer evolves to Muk
       "Grimer": { "always_catch": true },
 
-      "// Magikarp evolves to Gyarados": {},
+      // Magikarp evolves to Gyarados
       "Magikarp": { "always_catch": true },
-      "// Exeggcute evolves to Exeggutor": {},
+      // Exeggcute evolves to Exeggutor
       "Exeggcute": { "always_catch": true },
-      "// Eevee evolves to many versions, like Vaporeon, Flareon": {},
+      // Eevee evolves to many versions, like Vaporeon, Flareon
       "Eevee": { "always_catch": true },
 
-      "// A-Tier pokemons": {},
+      // A-Tier pokemons
       "Slowbro": { "always_catch": true },
       "Victreebel": { "always_catch": true },
       "Machamp": { "always_catch": true },
@@ -114,17 +114,17 @@
     "release": {
       "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or" },
 
-      "// Legendary pokemons (Goes under S-Tier)": {},
+      // Legendary pokemons (Goes under S-Tier)
       "Lapras": { "release_below_cp": 1041, "release_below_iv": 0.8, "logic": "and" },
       "Moltres": { "release_below_cp": 1132, "release_below_iv": 0.8, "logic": "and" },
       "Zapdos": { "release_below_cp": 1087, "release_below_iv": 0.8, "logic": "and" },
       "Articuno": { "release_below_cp": 1039, "release_below_iv": 0.8, "logic": "and" },
 
-      "// S-Tier pokemons (if pokemon can be evolved into tier, list the representative)": {},
+      // S-Tier pokemons (if pokemon can be evolved into tier, list the representative)
       "Mewtwo": { "release_below_cp": 1447, "release_below_iv": 0.8, "logic": "and"},
       "Dragonite": { "release_below_cp": 1221, "release_below_iv": 0.8, "logic": "and" },
       "Snorlax": { "release_below_cp": 1087, "release_below_iv": 0.8, "logic": "and" },
-      "// Mew evolves to Mewtwo": {},
+      // Mew evolves to Mewtwo
       "Mew": { "release_below_cp": 1152, "release_below_iv": 0.8, "logic": "and" },
       "Arcanine": { "release_below_cp": 1041, "release_below_iv": 0.8, "logic": "and" },
       "Vaporeon": { "release_below_cp": 984, "release_below_iv": 0.8, "logic": "and" },
@@ -134,20 +134,20 @@
       "Weezing": { "release_below_cp": 784, "release_below_iv": 0.8, "logic": "and" },
       "Flareon": { "release_below_cp": 924, "release_below_iv": 0.8, "logic": "and" },
 
-      "// Growlithe evolves to Arcanine": {},
+      // Growlithe evolves to Arcanine
       "Growlithe": { "release_below_cp": 465, "release_below_iv": 0.8, "logic": "and" },
-      "// Dragonair evolves to Dragonite": {},
+      // Dragonair evolves to Dragonite
       "Dragonair": { "release_below_cp": 609, "release_below_iv": 0.8, "logic": "and" },
-      "// Grimer evolves to Muk": {},
+      // Grimer evolves to Muk
       "Grimer": { "release_below_cp": 448, "release_below_iv": 0.8, "logic": "and" },
-      "// Magikarp evolves to Gyarados": {},
+      // Magikarp evolves to Gyarados
       "Magikarp": { "release_below_cp": 91, "release_below_iv": 0.8, "logic": "and" },
-      "// Exeggcute evolves to Exeggutor": {},
+      // Exeggcute evolves to Exeggutor
       "Exeggcute": { "release_below_cp": 384, "release_below_iv": 0.8, "logic": "and" },
-      "// Eevee evolves to many versions, like Vaporeon, Flareon": {},
+      // Eevee evolves to many versions, like Vaporeon, Flareon
       "Eevee": { "release_below_cp": 376, "release_below_iv": 0.8, "logic": "and" },
 
-      "// A-Tier pokemons": {},
+      // A-Tier pokemons
       "Slowbro": { "release_below_cp": 907, "release_below_iv": 0.8, "logic": "and" },
       "Victreebel": { "release_below_cp": 883, "release_below_iv": 0.8, "logic": "and" },
       "Machamp": { "release_below_cp": 907, "release_below_iv": 0.8, "logic": "and" },
@@ -182,10 +182,10 @@
       "Seaking": { "release_below_cp": 712, "release_below_iv": 0.8, "logic": "and" },
       "Kangaskhan": { "release_below_cp": 712, "release_below_iv": 0.8, "logic": "and" },
 
-      "// Koffing evolves to Weezing (A-Tier)": {},
+      // Koffing evolves to Weezing (A-Tier)
       "Koffing": { "release_below_cp": 403, "release_below_iv": 0.8, "logic": "and" },
 
-      "// Below is B-tier and lower pokemons": {},
+      // Below is B-tier and lower pokemons
       "Caterpie": { "release_below_cp": 156, "release_below_iv": 0.8, "logic": "and" },
       "Weedle": { "release_below_cp": 156, "release_below_iv": 0.8, "logic": "and" },
       "Diglett": { "release_below_cp": 158, "release_below_iv": 0.8, "logic": "and" },
