@@ -44,6 +44,32 @@ class CatchVisiblePokemonWorker(object):
                 lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
             return self.catch_pokemon(self.cell['wild_pokemons'][0])
 
+        lured_pokemon = self.get_lured_pokemon()
+        if lured_pokemon:
+            self.catch_pokemon(lured_pokemon)
+
+    def get_lured_pokemon(self):
+        forts = self.bot.get_forts(order_by_distance=True)
+        fort = forts[0]
+
+        self.api.fort_details(fort_id=fort['id'],
+                              latitude=fort['latitude'],
+                              longitude=fort['longitude'])
+        response_dict = self.api.call()
+        fort_details = response_dict.get('responses', {}).get('FORT_DETAILS', {})
+        fort_name = fort_details.get('name', 'Unknown').encode('utf8', 'replace')
+
+        encounter_id = fort.get('lure_info', {}).get('encounter_id', None)
+
+        pokemon = {
+            'encounter_id': encounter_id,
+            'fort_id': fort['id'],
+            'latitude': fort['latitude'],
+            'longitude': fort['longitude']
+        }
+
+        return pokemon
+
     def catch_pokemon(self, pokemon):
         worker = PokemonCatchWorker(pokemon, self.bot)
         return_value = worker.work()
