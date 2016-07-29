@@ -182,18 +182,10 @@ def init_config():
     add_config(
         parser,
         load,
-<<<<<<< HEAD
-        long_flag="--spin",
-        help="Enable Spinning Pokestops",
-        type=bool,
-        default=True,
-        embedded_in='forts'
-=======
         long_flag="--forts.spin",
         help="Enable Spinning Pokestops",
         type=bool,
         default=True,
->>>>>>> 6154939256147a79882e616ad7b71fd83dee879e
     )
     add_config(
         parser,
@@ -373,13 +365,9 @@ def init_config():
         config.evolve_all = [str(pokemon_name) for pokemon_name in config.evolve_all.split(',')]
 
     fix_nested_config(config)
-<<<<<<< HEAD
-=======
-    import pdb; pdb.set_trace()
->>>>>>> 6154939256147a79882e616ad7b71fd83dee879e
     return config
 
-def add_config(parser, json_config, short_flag=None, long_flag=None, embedded_in=None, **kwargs):
+def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
     if not long_flag:
         raise Exception('add_config calls requires long_flag parameter!')
 
@@ -392,15 +380,6 @@ def add_config(parser, json_config, short_flag=None, long_flag=None, embedded_in
             json_config = json_config.get(level, {})
 
     if 'default' in kwargs:
-<<<<<<< HEAD
-        attribute_name = long_flag.split('--')[1]
-        if embedded_in:
-            json_config = json_config.get(embedded_in, None)
-            if not json_config:
-                raise Exception('Container "{}" for key "{}" didnt found!'.format(embedded_in, attribute_name))
-            kwargs['dest'] = "{}_{}".format(embedded_in, attribute_name)
-=======
->>>>>>> 6154939256147a79882e616ad7b71fd83dee879e
         kwargs['default'] = json_config.get(attribute_name, kwargs['default'])
     if short_flag:
         args = (short_flag, long_flag)
@@ -408,8 +387,6 @@ def add_config(parser, json_config, short_flag=None, long_flag=None, embedded_in
         args = (long_flag,)
     parser.add_argument(*args, **kwargs)
 
-<<<<<<< HEAD
-=======
 
 def fix_nested_config(config):
     config_dict = config.__dict__
@@ -420,7 +397,6 @@ def fix_nested_config(config):
             config_dict[new_key] = value
             del config_dict[key]
 
->>>>>>> 6154939256147a79882e616ad7b71fd83dee879e
 def parse_unicode_str(string):
     try:
         return string.decode('utf8')
