@@ -20,7 +20,7 @@ class PokemonTransferWorker(object):
         for pokemon_id in pokemon_groups:
             group = pokemon_groups[pokemon_id]
 
-            if len(group) > 1:
+            if len(group) > 0:
                 pokemon_name = self.pokemon_list[pokemon_id - 1]['Name']
                 keep_best, keep_best_cp, keep_best_iv = self._validate_keep_best_config(pokemon_name)
 
