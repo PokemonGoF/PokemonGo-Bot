@@ -31,12 +31,8 @@ class SeenFortWorker(object):
         lat = fort['latitude']
         lng = fort['longitude']
 
-        try:
-            details = fort_details(self.bot, fort['id'], lat, lng)
-            fort_name = details['name'].encode('utf8', 'replace')
-        except KeyError:
-            fort_name = 'Unknown'
-
+        details = fort_details(self.bot, fort['id'], lat, lng)
+        fort_name = details.get('name', 'Unknown').encode('utf8', 'replace')
         logger.log('Now at Pokestop: {0}'.format(fort_name), 'cyan')
         logger.log('Spinning ...', 'cyan')
 
