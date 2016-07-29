@@ -14,17 +14,31 @@ from pgoapi import PGoApi
 from pgoapi.utilities import f2i
 
 import logger
-from cell_workers import SpinNearestFortWorker, CatchVisiblePokemonWorker, PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, PokemonTransferWorker, EvolveAllWorker, RecycleItemsWorker, IncubateEggsWorker
+import cell_workers
 from cell_workers.utils import distance, get_cellid, encode, i2f
 from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
+from pokemongo_bot.event_handlers import LoggingHandler
+from pokemongo_bot.event_handlers import SocketIoHandler
+from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from spiral_navigator import SpiralNavigator
 from worker_result import WorkerResult
+from event_manager import EventManager
 from api_wrapper import ApiWrapper
 
 
 class PokemonGoBot(object):
+
+    WORKERS = [
+        cell_workers.IncubateEggsWorker,
+        cell_workers.PokemonTransferWorker,
+        cell_workers.EvolveAllWorker,
+        cell_workers.RecycleItemsWorker,
+        cell_workers.CatchVisiblePokemonWorker,
+        cell_workers.SeenFortWorker,
+        cell_workers.MoveToFortWorker
+    ]
 
     @property
     def position(self):
@@ -38,7 +52,11 @@ class PokemonGoBot(object):
         self.metrics = Metrics(self)
         self.latest_inventory = None
         self.cell = None
-        self.recent_forts = [None] * config.max_circle_size
+        self.recent_forts = [None] * config.forts_max_circle_size
+        self.tick_count = 0
+
+        # Make our own copy of the workers for this instance
+        self.workers = list(self.WORKERS)
 
     def start(self):
         self._setup_logging()
@@ -46,26 +64,37 @@ class PokemonGoBot(object):
         self.navigator = SpiralNavigator(self)
         random.seed()
 
+    def _setup_event_system(self):
+        handlers = [LoggingHandler()]
+        if self.config.websocket_server:
+            websocket_handler = SocketIoHandler(self.config.websocket_server)
+            handlers.append(websocket_handler)
+
+            self.sio_runner = SocketIoRunner(self.config.websocket_server)
+            self.sio_runner.start_listening_async()
+
+        self.event_manager = EventManager(*handlers)
+
+        # Registering event:
+        # self.event_manager.register_event("location", parameters=['lat', 'lng'])
+        #
+        # Emitting event should be enough to add logging and send websocket
+        # message: :
+        # self.event_manager.emit('location', 'level'='info', data={'lat': 1, 'lng':1}),
+
     def tick(self):
         self.cell = self.get_meta_cell()
 
         # Check if session token has expired
         self.check_session(self.position[0:2])
 
-        workers = [
-            IncubateEggsWorker,
-            PokemonTransferWorker,
-            EvolveAllWorker,
-            RecycleItemsWorker,
-            CatchVisiblePokemonWorker,
-            SpinNearestFortWorker
-        ]
-
-        for worker in workers:
+        for worker in self.workers:
             if worker(self).work() == WorkerResult.RUNNING:
                 return
 
         self.navigator.take_step()
+
+        self.tick_count +=1
 
     def get_meta_cell(self):
         location = self.position[0:2]
@@ -185,14 +214,22 @@ class PokemonGoBot(object):
         # log format
         logging.basicConfig(
             level=logging.DEBUG,
-            format='%(asctime)s [%(module)10s] [%(levelname)5s] %(message)s')
+            format='%(asctime)s [%(name)10s] [%(levelname)5s] %(message)s')
 
         if self.config.debug:
             logging.getLogger("requests").setLevel(logging.DEBUG)
+            logging.getLogger("websocket").setLevel(logging.DEBUG)
+            logging.getLogger("socketio").setLevel(logging.DEBUG)
+            logging.getLogger("engineio").setLevel(logging.DEBUG)
+            logging.getLogger("socketIO-client").setLevel(logging.DEBUG)
             logging.getLogger("pgoapi").setLevel(logging.DEBUG)
             logging.getLogger("rpc_api").setLevel(logging.DEBUG)
         else:
             logging.getLogger("requests").setLevel(logging.ERROR)
+            logging.getLogger("websocket").setLevel(logging.ERROR)
+            logging.getLogger("socketio").setLevel(logging.ERROR)
+            logging.getLogger("engineio").setLevel(logging.ERROR)
+            logging.getLogger("socketIO-client").setLevel(logging.ERROR)
             logging.getLogger("pgoapi").setLevel(logging.ERROR)
             logging.getLogger("rpc_api").setLevel(logging.ERROR)
 
@@ -397,18 +434,14 @@ class PokemonGoBot(object):
             return
 
         if self.config.location:
-            try:
-                location_str = self.config.location.encode('utf-8')
-                location = (self._get_pos_by_name(location_str.replace(" ", "")))
-                self.api.set_position(*location)
-                logger.log('')
-                logger.log(u'Location Found: {}'.format(self.config.location))
-                logger.log('GeoPosition: {}'.format(self.position))
-                logger.log('')
-                has_position = True
-            except Exception:
-                logger.log('[x] The location given in the config could not be parsed. Checking for a cached location.')
-                pass
+            location_str = self.config.location.encode('utf-8')
+            location = (self._get_pos_by_name(location_str.replace(" ", "")))
+            self.api.set_position(*location)
+            logger.log('')
+            logger.log(u'Location Found: {}'.format(self.config.location))
+            logger.log('GeoPosition: {}'.format(self.position))
+            logger.log('')
+            has_position = True
 
         if self.config.location_cache:
             try:
@@ -461,7 +494,6 @@ class PokemonGoBot(object):
                               in self.fort_timeouts.iteritems()
                               if timeout >= time.time() * 1000}
         self.api.get_player()
-        self.api.get_hatched_eggs()
         self.api.check_awarded_badges()
         self.api.call()
         self.update_web_location() # updates every tick
@@ -532,3 +564,24 @@ class PokemonGoBot(object):
                                             logger.log(
                                                 'Pokemon Captured: {pokemons_captured}'.format(**playerdata) +
                                                 ' | Pokestops Visited: {poke_stop_visits}'.format(**playerdata), 'cyan')
+
+    def has_space_for_loot(self):
+        number_of_things_gained_by_stop = 5
+        enough_space = self.get_inventory_count('item') < self._player['max_item_storage'] - number_of_things_gained_by_stop
+
+        return enough_space
+
+    def get_forts(self, order_by_distance=False):
+        forts = [fort
+             for fort in self.cell['forts']
+             if 'latitude' in fort and 'type' in fort]
+
+        if order_by_distance:
+            forts.sort(key=lambda x: distance(
+                self.position[0],
+                self.position[1],
+                x['latitude'],
+                x['longitude']
+            ))
+
+        return forts
