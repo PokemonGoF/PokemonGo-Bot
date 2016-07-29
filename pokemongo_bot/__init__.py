@@ -44,6 +44,7 @@ class PokemonGoBot(object):
         self.cell = None
         self.recent_forts = [None] * config.max_circle_size
         self.tick_count = 0
+        self.lastFort = {}
 
 
     def start(self):
