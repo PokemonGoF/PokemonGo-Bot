@@ -20,11 +20,7 @@ class SeenFortWorker(object):
         self.item_list = bot.item_list
 
     def should_run(self):
-        number_of_things_gained_by_stop = 5
-
-        enough_space = self.bot.get_inventory_count('item') < self.bot._player['max_item_storage'] - number_of_things_gained_by_stop
-
-        return self.config.spin_forts and enough_space
+        return self.config.spin_forts and self.bot.has_space_for_loot()
 
     def work(self):
         fort = self.get_fort_in_range()
