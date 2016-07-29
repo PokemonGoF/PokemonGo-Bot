@@ -12,7 +12,7 @@ class SpinNearestFortWorker(object):
         self.cell = bot.cell
         self.fort_timeouts = bot.fort_timeouts
         self.position = bot.position
-        self.path = bot.path
+        self.recent_forts = bot.recent_forts
 
     def work(self):
         if not self.should_run():
@@ -49,7 +49,7 @@ class SpinNearestFortWorker(object):
 
             # Remove all forts which were spun in the last ticks to avoid circles if set
             if self.config.avoid_circles:
-                forts = filter(lambda x: x["id"] not in self.bot.path, forts)
+                forts = filter(lambda x: x["id"] not in self.recent_forts, forts)
 
             # Sort all by distance from current pos- eventually this should
             # build graph & A* it

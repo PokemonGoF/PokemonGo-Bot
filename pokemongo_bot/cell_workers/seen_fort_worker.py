@@ -117,7 +117,7 @@ class SeenFortWorker(object):
                         'in a few hours.')
                     raise RuntimeError(message)
 
-                self.bot.path = self.bot.path[1:] + [self.fort['id']]
+                self.bot.recent_forts = self.bot.recent_forts[1:] + [self.fort['id']]
             elif spin_result == 2:
                 logger.log("[#] Pokestop out of range")
             elif spin_result == 3:

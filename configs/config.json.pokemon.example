@@ -32,8 +32,10 @@
     "longer_eggs_first": true,
     "evolve_captured": false,
     "release_pokemon": true,
-    "avoid_circles": false,
-    "max_circle_size": 10,
+    "spin_forts": {
+      "avoid_circles": false,
+      "max_circle_size": 10
+    },
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or" },
 
