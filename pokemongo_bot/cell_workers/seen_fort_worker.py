@@ -20,7 +20,7 @@ class SeenFortWorker(object):
         self.item_list = bot.item_list
 
     def should_run(self):
-        return self.config.spin_forts and self.bot.has_space_for_loot()
+        return self.config.forts_spin and self.bot.has_space_for_loot()
 
     def work(self):
         fort = self.get_fort_in_range()
