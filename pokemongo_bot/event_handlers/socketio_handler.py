@@ -1,5 +1,6 @@
-from pokemongo_bot.event_manager import EventHandler
 from socketIO_client import SocketIO
+
+from pokemongo_bot.event_manager import EventHandler
 
 
 class SocketIoHandler(EventHandler):

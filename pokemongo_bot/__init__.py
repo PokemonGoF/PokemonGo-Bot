@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import os
 import datetime
 import json
 import logging
+import os
 import random
 import re
 import sys
@@ -11,26 +11,26 @@ import time
 
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
-from pgoapi.utilities import f2i
+from pgoapi.utilities import f2i, get_cell_ids
 
-import logger
 import cell_workers
-from cell_workers.utils import distance, get_cellid, encode, i2f
+import logger
+from api_wrapper import ApiWrapper
+from cell_workers.utils import distance
+from event_manager import EventManager
 from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
-from pokemongo_bot.event_handlers import LoggingHandler
-from pokemongo_bot.event_handlers import SocketIoHandler
+from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from spiral_navigator import SpiralNavigator
 from worker_result import WorkerResult
-from event_manager import EventManager
-from api_wrapper import ApiWrapper
 
 
 class PokemonGoBot(object):
 
     WORKERS = [
+        cell_workers.SoftBanWorker,
         cell_workers.IncubateEggsWorker,
         cell_workers.PokemonTransferWorker,
         cell_workers.EvolveAllWorker,
@@ -55,6 +55,7 @@ class PokemonGoBot(object):
         self.cell = None
         self.recent_forts = [None] * config.forts_max_circle_size
         self.tick_count = 0
+        self.softban = False
 
         # Make our own copy of the workers for this instance
         self.workers = list(self.WORKERS)
@@ -84,7 +85,6 @@ class PokemonGoBot(object):
         # self.event_manager.emit('location', 'level'='info', data={'lat': 1, 'lng':1}),
 
     def tick(self):
-        logger.log('')
         self.cell = self.get_meta_cell()
         self.tick_count +=1
 
@@ -129,7 +129,7 @@ class PokemonGoBot(object):
             alt = 0
 
         if cells == []:
-            cellid = get_cellid(lat, lng)
+            cellid = get_cell_ids(lat, lng)
             timestamp = [0, ] * len(cellid)
             self.api.get_map_objects(
                 latitude=f2i(lat),
@@ -181,7 +181,7 @@ class PokemonGoBot(object):
 
 
     def find_close_cells(self, lat, lng):
-        cellid = get_cellid(lat, lng)
+        cellid = get_cell_ids(lat, lng)
         timestamp = [0, ] * len(cellid)
 
         self.api.get_map_objects(

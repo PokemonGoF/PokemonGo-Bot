@@ -1,6 +1,7 @@
 import time
 from itertools import chain
 from math import ceil
+
 import haversine
 import polyline
 import requests
@@ -62,7 +63,8 @@ class Polyline(object):
             walk_steps = zip(chain([self.points[0]], self.points),
                              chain(self.points, [self.points[-1]]))
             walk_steps = filter(None, [(o, d) if o != d else None for o, d in walk_steps])
-            return walk_steps
+            # consume the filter as list https://github.com/th3w4y/PokemonGo-Bot/issues/27
+            return list(walk_steps)
         else:
             return []
 
@@ -73,19 +75,24 @@ class Polyline(object):
         else:
             time_passed = self._last_paused_timestamp
         time_passed_distance = self.speed * abs(time_passed - self._timestamp - self._paused_total)
-        steps_dict = {}
-        for step in self.walk_steps():
-            walked_distance += haversine.haversine(*step)*1000
-            steps_dict[walked_distance] = step
-        for walked_end_step in sorted(steps_dict.keys()):
+        # check if there are any steps to take https://github.com/th3w4y/PokemonGo-Bot/issues/27
+        if self.walk_steps():
+            steps_dict = {}
+            for step in self.walk_steps():
+                walked_distance += haversine.haversine(*step)*1000
+                steps_dict[walked_distance] = step
+            for walked_end_step in sorted(steps_dict.keys()):
+                if walked_end_step >= time_passed_distance:
+                    break
+            step_distance = haversine.haversine(*steps_dict[walked_end_step])*1000
             if walked_end_step >= time_passed_distance:
-                break
-        step_distance = haversine.haversine(*steps_dict[walked_end_step])*1000
-        if walked_end_step >= time_passed_distance:
-            percentage_walked = (time_passed_distance - (walked_end_step - step_distance)) / step_distance
+                percentage_walked = (time_passed_distance - (walked_end_step - step_distance)) / step_distance
+            else:
+                percentage_walked = 1.0
+            return self.calculate_coord(percentage_walked, *steps_dict[walked_end_step])
         else:
-            percentage_walked = 1.0
-        return self.calculate_coord(percentage_walked, *steps_dict[walked_end_step])
+            # otherwise return the destination https://github.com/th3w4y/PokemonGo-Bot/issues/27
+            return [self.points[-1]]
 
     def calculate_coord(self, percentage, o, d):
         # If this is the destination then returning as such
@@ -100,5 +107,3 @@ class Polyline(object):
 
     def get_total_distance(self):
         return ceil(sum([haversine.haversine(*x)*1000 for x in self.walk_steps()]))
-
-

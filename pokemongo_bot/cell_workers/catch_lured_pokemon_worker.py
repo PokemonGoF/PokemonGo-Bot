@@ -1,16 +1,12 @@
-
-import json
-from utils import distance, format_dist, i2f
-from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot import logger
-from pokemongo_bot.step_walker import StepWalker
-from pokemongo_bot.cell_workers import fort_details, PokemonCatchWorker
+from pokemongo_bot.cell_workers import fort_details
+from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 
 
 class CatchLuredPokemonWorker(object):
     def __init__(self, bot):
         self.bot = bot
-        self.cell = bot.cell;
+        self.cell = bot.cell
         self.api = bot.api
         self.config = bot.config
         self.position = bot.position

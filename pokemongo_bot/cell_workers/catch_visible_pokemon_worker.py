@@ -1,16 +1,14 @@
-
 import json
-from utils import distance, format_dist, i2f
-from pokemongo_bot.human_behaviour import sleep
+
 from pokemongo_bot import logger
-from pokemongo_bot.step_walker import StepWalker
-from pokemongo_bot.cell_workers import PokemonCatchWorker
+from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
+from utils import distance
 
 
 class CatchVisiblePokemonWorker(object):
     def __init__(self, bot):
         self.bot = bot
-        self.cell = bot.cell;
+        self.cell = bot.cell
         self.api = bot.api
         self.config = bot.config
         self.position = bot.position
@@ -27,7 +25,7 @@ class CatchVisiblePokemonWorker(object):
                 key=
                 lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
 
-            user_web_catchable = 'web/catchable-%s.json' % (self.config.username)
+            user_web_catchable = 'web/catchable-%s.json' % self.config.username
             for pokemon in self.cell['catchable_pokemons']:
                 with open(user_web_catchable, 'w') as outfile:
                     json.dump(pokemon, outfile)
