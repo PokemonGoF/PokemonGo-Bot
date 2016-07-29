@@ -1,4 +1,6 @@
 import time
+from datetime import date
+
 try:
     import lcd
     lcd = lcd.lcd()
@@ -7,18 +9,24 @@ try:
 except Exception:
     lcd = False
 
-def log(string, color = 'white'):
-    colorHex = {
+def log(message, color='white'):
+    color2hex = {
         'red': '91m',
         'green': '92m',
         'yellow': '93m',
         'blue': '94m',
         'cyan': '96m'
     }
-    if color not in colorHex:
-        print('[' + time.strftime("%H:%M:%S") + '] '+ string)
+
+    today = date.today().strftime('%Y-%m-%d')
+    now = time.strftime("%H:%M:%S")
+    log_format = '[%s %s] %s'
+
+    if color not in color2hex:
+        print(log_format % (today, now, message))
     else:
-        print('[' + time.strftime("%H:%M:%S") + '] ' + u'\033['+ colorHex[color] + string.decode('utf-8') + '\033[0m')
+        colored_message = u'\033[' + color2hex[color] + message.decode('utf-8') + '\033[0m'
+        print(log_format % (today, now, colored_message))
     if lcd:
-        if(string):
-            lcd.message(string)
+        if message:
+            lcd.message(message)
