@@ -491,7 +491,6 @@ class PokemonGoBot(object):
                               in self.fort_timeouts.iteritems()
                               if timeout >= time.time() * 1000}
         self.api.get_player()
-        self.api.get_hatched_eggs()
         self.api.check_awarded_badges()
         self.api.call()
         self.update_web_location() # updates every tick
