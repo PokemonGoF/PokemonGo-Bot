@@ -84,4 +84,5 @@ class SpiralNavigator(object):
             self.ptr += self.direction
             self.cnt = 0
 
+        logger.log('')
         return [point['lat'], point['lng']]
