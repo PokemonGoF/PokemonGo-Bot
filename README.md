@@ -145,7 +145,7 @@ After this, just do:
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot
 $ cd PokemonGo-Bot
 $ virtualenv .
-$ source bin/activate
+$ Scripts\activate
 $ pip install -r requirements.txt
 $ git submodule init
 $ git submodule update
@@ -157,7 +157,7 @@ $ git submodule update
 $ git clone -b dev https://github.com/PokemonGoF/PokemonGo-Bot
 $ cd PokemonGo-Bot
 $ virtualenv .
-$ source bin/activate
+$ Scripts\activate
 $ pip install -r requirements.txt
 $ git submodule init
 $ git submodule update
