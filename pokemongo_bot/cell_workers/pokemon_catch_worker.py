@@ -78,6 +78,9 @@ class PokemonCatchWorker(object):
                             return False
 
                         items_stock = self.bot.current_inventory()
+                        berry_id = 701 # @ TODO: use better berries if possible
+                        berries_count = self.bot.item_inventory_count(berry_id)
+                        
                         while True:
                             ## pick the most simple ball from stock
                             pokeball = 1 # start from 1 - PokeBalls
@@ -97,8 +100,7 @@ class PokemonCatchWorker(object):
                                 return PokemonCatchWorker.NO_POKEBALLS
 
                             # Use berry to increase success chance.
-                            berry_id = 701 # @ TODO: use better berries if possible
-                            berries_count = self.bot.item_inventory_count(berry_id)
+
                             if catch_rate[pokeball-1] < 0.5 and berries_count > 0: # and berry is in stock
                                 success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
                                 logger.log('Catch Rate with normal Pokeball is low ({}%). Throwing {}... ({} left!)'.format(success_percentage,self.item_list[str(berry_id)],berries_count-1))
@@ -119,6 +121,7 @@ class PokemonCatchWorker(object):
                                             catch_rate[i] = catch_rate[i] * response_dict['responses']['USE_ITEM_CAPTURE']['item_capture_mult']
 
                                     success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
+                                    berries_count = berries_count -1
                                     logger.log('Catch Rate with normal Pokeball has increased to {}%'.format(success_percentage))
                                 else:
                                     if response_dict['status_code'] is 1:
