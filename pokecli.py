@@ -140,6 +140,14 @@ def init_config():
     add_config(
         parser,
         load,
+        short_flag="-ws",
+        long_flag="--websocket_server",
+        help="Start websocket server (format 'host:port')",
+        default=False
+    )
+    add_config(
+        parser,
+        load,
         short_flag="-p",
         long_flag="--password",
         help="Password",
@@ -369,13 +377,13 @@ def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
     else:
         args = (long_flag,)
     parser.add_argument(*args, **kwargs)
-    
+
 def parse_unicode_str(string):
     try:
         return string.decode('utf8')
     except UnicodeEncodeError:
         return string
 
-    
+
 if __name__ == '__main__':
     main()
