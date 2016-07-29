@@ -3,8 +3,8 @@ import time
 
 class CacheObject(object):
     
-    def __init__(self, name, data):
-        self.name = name
+    def __init__(self, response_type, data):
+        self.response_type = response_type
         self.data = data
         self.time_stamp = int(time.time())
         
@@ -21,30 +21,39 @@ class Cache(object):
     @staticmethod
     def process_response(response):
         responses = response['responses']
-        for type in responses:
-            Cache.set(type, responses[type])
+        for response_type in responses:
+            Cache.set(response_type, responses[response_type])
     
     @staticmethod
-    def get(type):
-        return Cache.database[type]
+    def get(response_type):
+        return Cache.database[response_type]
         
     @staticmethod
-    def set(type, data):
-        Cache.database[type] = CacheObject(type, data)
+    def set(response_type, data):
+        Cache.database[response_type] = CacheObject(response_type, data)
         
     @staticmethod
-    def remove(type):
-        del Cache.database[type]
+    def remove(response_type):
+        del Cache.database[response_type]
         
     @staticmethod
     def clear():
         Cache.database = {}
-        
+    
+    def clean(max_age=60):
+        db = Cache.database
+        for response_type in db:
+            cache_object = db[response_type]
+            
+    @staticmethod
+    def list_response_types():
+        return Cache.database.keys()
+    
     @staticmethod
     def print_ages():
         db = Cache.database
-        for type in db:
-            cache_object = db[type]
-            logger.log("[CACHE] {} - {}".format(type, cache_object.age()), 'yellow')
+        for response_type in db:
+            cache_object = db[response_type]
+            logger.log("[CACHE] {} - {}".format(response_type, cache_object.age()), 'yellow')
             
     
