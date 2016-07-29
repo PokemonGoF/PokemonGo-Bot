@@ -24,8 +24,8 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 - [x] Ignore certain pokemon filter
 - [x] Adjust delay between Pokemon capture & Transfer as per configuration
 - [ ] Standalone Desktop Application
-- [x] Hatch eggs
-- [x] Incubate eggs
+- [ ] Hatch eggs
+- [ ] Incubate eggs
 - [ ] Use candy
 - [ ] Inventory cleaner
 
