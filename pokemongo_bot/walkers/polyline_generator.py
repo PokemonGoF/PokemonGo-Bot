@@ -1,6 +1,7 @@
 import time
 from itertools import chain
 from math import ceil
+
 import haversine
 import polyline
 import requests
@@ -106,5 +107,3 @@ class Polyline(object):
 
     def get_total_distance(self):
         return ceil(sum([haversine.haversine(*x)*1000 for x in self.walk_steps()]))
-
-

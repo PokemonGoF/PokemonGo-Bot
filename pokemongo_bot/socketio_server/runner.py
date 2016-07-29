@@ -1,14 +1,15 @@
 import threading
+
 import eventlet
 import socketio
-import logging
 from eventlet import patcher, wsgi
+
 from app import app, sio
 
 patcher.monkey_patch(all=True)
 
-class SocketIoRunner(object):
 
+class SocketIoRunner(object):
     def __init__(self, url):
         self.host, port_str = url.split(':')
         self.port = int(port_str)

@@ -1,4 +1,4 @@
-from socketIO_client import SocketIO, LoggingNamespace, BaseNamespace
+from socketIO_client import SocketIO
 
 
 def on_location(msg):
