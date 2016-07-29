@@ -8,7 +8,7 @@
     "catch_pokemon": true,
     "websocket_server": false,
     "spin_forts": true,
-    "walk": 4.16,
+    "walk": 15,
     "action_wait_min": 1,
     "action_wait_max": 4,
     "debug": false,
