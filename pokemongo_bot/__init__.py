@@ -205,7 +205,7 @@ class PokemonGoBot(object):
         # log format
         logging.basicConfig(
             level=logging.DEBUG,
-            format='%(asctime)s [%(module)10s] [%(levelname)5s] %(message)s')
+            format='%(asctime)s [%(name)10s] [%(levelname)5s] %(message)s')
 
         if self.config.debug:
             logging.getLogger("requests").setLevel(logging.DEBUG)
