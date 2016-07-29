@@ -298,6 +298,24 @@ def init_config():
         type=bool,
         default=True
     )
+    add_config(
+        parser,
+        load,
+        short_flag="-ac",
+        long_flag="--avoid_circles",
+        help="Avoids circles (pokestops) of the max size set in max_circle_size flag",
+        type=bool,
+        default=False
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-mcs",
+        long_flag="--max_circle_size",
+        help="If avoid_circles flag is set, this flag specifies the maximum size of circles (pokestops) avoided",
+        type=int,
+        default=10
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()
