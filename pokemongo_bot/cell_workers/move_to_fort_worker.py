@@ -17,7 +17,7 @@ class MoveToFortWorker(object):
         self.position = bot.position
 
     def should_run(self):
-        return self.config.spin_forts and self.bot.has_space_for_loot()
+        return self.config.forts_spin and self.bot.has_space_for_loot()
 
     def work(self):
         if not self.should_run():
