@@ -44,7 +44,7 @@ class SpiralNavigator(object):
             m += 1
         return coords
 
-    def take_step(self):
+    def work(self):
         point = self.points[self.ptr]
         self.cnt += 1
 

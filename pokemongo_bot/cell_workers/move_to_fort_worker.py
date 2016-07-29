@@ -13,7 +13,6 @@ class MoveToFortWorker(object):
         self.config = bot.config
         self.fort_timeouts = bot.fort_timeouts
         self.recent_forts = bot.recent_forts
-        self.navigator = bot.navigator
         self.position = bot.position
 
     def should_run(self):
