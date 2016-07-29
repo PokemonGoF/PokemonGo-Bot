@@ -7,17 +7,15 @@ from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.cell_workers import PokemonCatchWorker
 
 class CatchVisiblePokemonWorker(object):
-    def __init__(self, bot, cell):
+    def __init__(self, bot):
         self.bot = bot
-        self.cell = cell;
+        self.cell = bot.cell;
         self.api = bot.api
         self.config = bot.config
         self.position = bot.position
 
     def work(self):
-        config_wants_pokmeon = self.config.mode == "all" or self.config.mode == "poke"
-
-        if not config_wants_pokmeon:
+        if not self.config.catch_pokemon:
             return
 
         if 'catchable_pokemons' in self.cell and len(self.cell['catchable_pokemons']) > 0:

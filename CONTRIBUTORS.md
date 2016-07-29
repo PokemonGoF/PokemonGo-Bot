@@ -39,3 +39,6 @@
  * fierysolid
  * surfaace
  * surceis
+ * SpaceWhale
+ * klingan
+ * reddivision
