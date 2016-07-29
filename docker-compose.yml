@@ -2,8 +2,15 @@ bot:
   build: .
   volumes:
     - .:/web
-  ports:
-    - "8800:80"
   command: /bin/bash -c "cd /web/;
     pip install -r requirements.txt;
     python pokecli.py"
+
+web:
+  image: python:2.7-onbuild
+  ports:
+    - "8000:8000"
+  volumes_from:
+    - bot
+  command: bash -c " cd /web/web/;
+    python -m SimpleHTTPServer"
