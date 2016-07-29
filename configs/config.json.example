@@ -7,7 +7,6 @@
     "max_steps": 5,
     "catch_pokemon": true,
     "websocket_server": false,
-    "spin_forts": true,
     "walk": 4.16,
     "action_wait_min": 1,
     "action_wait_max": 4,
@@ -33,9 +32,10 @@
     "longer_eggs_first": true,
     "evolve_captured": false,
     "release_pokemon": true,
-    "spin_forts": {
-      "avoid_circles": false,
-      "max_circle_size": 10
+    "forts": {
+      "spin_forts": true,
+      "avoid_circles": true,
+      "max_circle_size": 100
     },
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
