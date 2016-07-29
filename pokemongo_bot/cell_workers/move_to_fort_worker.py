@@ -56,7 +56,7 @@ class MoveToFortWorker(object):
             if not step_walker.step():
                 return WorkerResult.RUNNING
 
-	logger.log('Arrived at pokestop.')
+        logger.log('Arrived at pokestop.')
         return WorkerResult.SUCCESS
 
     def get_nearest_fort(self):
