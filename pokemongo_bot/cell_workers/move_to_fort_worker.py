@@ -1,3 +1,4 @@
+import sys
 from utils import distance, format_dist, i2f
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.human_behaviour import sleep
@@ -41,8 +42,10 @@ class MoveToFortWorker(object):
         )
 
         if dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
-            logger.log('Moving towards fort {}, {} left'.format(fortID, format_dist(dist, unit)))
-
+	    sys.stdout.write("\033[K")
+            sys.stdout.write('\rMoving towards fort {}, {} left\r'.format(fortID, format_dist(dist, unit)))
+            sys.stdout.flush()
+	    sys.stdout.write("\033[K")
             step_walker = StepWalker(
                 self.bot,
                 self.config.walk,
@@ -53,7 +56,7 @@ class MoveToFortWorker(object):
             if not step_walker.step():
                 return WorkerResult.RUNNING
 
-        logger.log('Arrived at pokestop.')
+	logger.log('Arrived at pokestop.')
         return WorkerResult.SUCCESS
 
     def get_nearest_fort(self):
