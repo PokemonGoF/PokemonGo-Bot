@@ -1,3 +1,3 @@
 class WorkerResult(object):
-	RUNNING = 'RUNNING'
-	SUCCESS = 'SUCCESS'
+    RUNNING = 'RUNNING'
+    SUCCESS = 'SUCCESS'
