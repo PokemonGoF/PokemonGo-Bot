@@ -39,11 +39,6 @@ class Cache(object):
     @staticmethod
     def clear():
         Cache.database = {}
-    
-    def clean(max_age=60):
-        db = Cache.database
-        for response_type in db:
-            cache_object = db[response_type]
             
     @staticmethod
     def list_response_types():
