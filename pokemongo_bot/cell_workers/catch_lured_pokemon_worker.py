@@ -41,14 +41,16 @@ class CatchLuredPokemonWorker(object):
 
         encounter_id = fort.get('lure_info', {}).get('encounter_id', None)
 
-        pokemon = {
-            'encounter_id': encounter_id,
-            'fort_id': fort['id'],
-            'latitude': fort['latitude'],
-            'longitude': fort['longitude']
-        }
+        if encounter_id:
+            logger.log('Lured pokemon at fort {}'.format(fort['id']))
+            return {
+                'encounter_id': encounter_id,
+                'fort_id': fort['id'],
+                'latitude': fort['latitude'],
+                'longitude': fort['longitude']
+            }
 
-        return pokemon
+        return False
 
     def catch_pokemon(self, pokemon):
         worker = PokemonCatchWorker(pokemon, self.bot)
