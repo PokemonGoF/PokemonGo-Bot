@@ -34,7 +34,7 @@
     "use_lucky_egg": false,
     "hatch_eggs": true,
     "longer_eggs_first": true,
-    "evolve_captured": false,
+    "evolve_captured": "NONE",
     "release_pokemon": true,
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or" },

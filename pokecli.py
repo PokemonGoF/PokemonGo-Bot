@@ -275,9 +275,9 @@ def init_config():
         load,
         short_flag="-ec",
         long_flag="--evolve_captured",
-        help="(Ad-hoc mode) Bot will attempt to evolve all the pokemon captured!",
-        type=bool,
-        default=False
+        help="(Ad-hoc mode) Pass \"all\" or a list of pokemon to evolve (e.g., \"Pidgey,Weedle,Caterpie\"). Bot will attempt to evolve all the pokemon captured!",
+        type=str,
+        default=[]
     )
     add_config(
         parser,
@@ -350,6 +350,13 @@ def init_config():
             ' Set these to true or false and remove "mode" from your configuration')
         return None
 
+    if (config.evolve_captured
+        and (not isinstance(config.evolve_captured, str)
+             or str(config.evolve_captured).lower() in ["true", "false"])):
+        parser.error('"evolve_captured" should be list of pokemons: use "all" or "none" to match all ' +
+                     'or none of the pokemons, or use a comma separated list such as "Pidgey,Weedle,Caterpie"')
+        return None
+
     if not (config.location or config.location_cache):
         parser.error("Needs either --use-location-cache or --location.")
         return None
@@ -363,6 +370,8 @@ def init_config():
 
     if config.evolve_all and isinstance(config.evolve_all, str):
         config.evolve_all = [str(pokemon_name) for pokemon_name in config.evolve_all.split(',')]
+    if config.evolve_captured and isinstance(config.evolve_captured, str):
+        config.evolve_captured = [str(pokemon_name) for pokemon_name in config.evolve_captured.split(',')]
 
     fix_nested_config(config)
     return config
