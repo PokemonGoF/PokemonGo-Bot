@@ -82,6 +82,7 @@ class PokemonGoBot(object):
             EvolveAllWorker,
             RecycleItemsWorker,
             CatchVisiblePokemonWorker,
+            SeenFortWorker,
             SpinNearestFortWorker
         ]
 
