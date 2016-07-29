@@ -24,8 +24,6 @@ class SpinNearestFortWorker(object):
             # Move to and spin the nearest stop.
             if MoveToFortWorker(nearest_fort, self.bot).work() == WorkerResult.RUNNING:
                 return WorkerResult.RUNNING
-            if SeenFortWorker(nearest_fort, self.bot).work() == WorkerResult.RUNNING:
-                return WorkerResult.RUNNING
 
         return WorkerResult.SUCCESS
 
