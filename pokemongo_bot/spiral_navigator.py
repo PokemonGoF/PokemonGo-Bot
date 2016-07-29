@@ -48,11 +48,6 @@ class SpiralNavigator(object):
         point = self.points[self.ptr]
         self.cnt += 1
 
-        if self.cnt == 1:
-            logger.log('Scanning area for objects....')
-
-        # Scan location math
-
         if self.config.walk > 0:
             step_walker = StepWalker(
                 self.bot,

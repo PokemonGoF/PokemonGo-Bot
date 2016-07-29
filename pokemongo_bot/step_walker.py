@@ -40,8 +40,6 @@ class StepWalker(object):
 
     def step(self):
         if (self.dLat == 0 and self.dLng == 0) or self.dist < self.speed:
-            if sys.stdout.isatty():
-                sys.stdout.write('\n')
             self.api.set_position(self.destLat, self.destLng, 0)
             return True
 
