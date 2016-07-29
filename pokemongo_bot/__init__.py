@@ -71,7 +71,6 @@ class PokemonGoBot(object):
         # self.event_manager.emit('location', 'level'='info', data={'lat': 1, 'lng':1}),
 
     def tick(self):
-        logger.log(str(self.recent_forts))
         self.cell = self.get_meta_cell()
 
         # Check if session token has expired
