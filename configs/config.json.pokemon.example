@@ -5,25 +5,37 @@
     "location": "SOME_LOCATION",
     "gmapkey": "GOOGLE_MAPS_API_KEY",
     "max_steps": 5,
-    "mode": "all",
+    "catch_pokemon": true,
+    "forts": {
+      "spin": true,
+      "avoid_circles": true,
+      "max_circle_size": 50
+    },
     "walk": 4.16,
+    "action_wait_min": 1,
+    "action_wait_max": 4,
     "debug": false,
     "test": false,
-    "initial_transfer": false,
+    "health_record": true,
     "location_cache": true,
     "distance_unit": "km",
     "item_filter": {
-      "1": { "keep" : 100 },
+      "1": { "keep" : 50 },
+      "2": { "keep" : 50 },
+      "3": { "keep" : 50 },
       "101": { "keep" : 10 },
-      "102": { "keep" : 30 },
-      "103": { "keep" : 30 },
-      "201": { "keep" : 30 },
+      "102": { "keep" : 25 },
+      "103": { "keep" : 25 },
+      "201": { "keep" : 25 },
       "701": { "keep" : 100 }
     },
     "evolve_all": "NONE",
     "evolve_speed": 20,
     "use_lucky_egg": false,
-    "evolve_captured": false,
+    "hatch_eggs": true,
+    "longer_eggs_first": true,
+    "evolve_captured": "NONE",
+    "release_pokemon": true,
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or" },
 
@@ -51,18 +63,18 @@
       "Flareon": { "always_catch": true },
 
       "// Growlithe evolves to Arcanine": {},
-      "Growlithe": { "catch_above_cp": 465, "catch_above_iv": 0.8, "logic": "and" },
+      "Growlithe": { "always_catch": true },
       "// Dragonair evolves to Dragonite": {},
-      "Dragonair": { "catch_above_cp": 0, "catch_above_iv": 0.8, "logic": "and" },
+      "Dragonair": { "always_catch": true },
       "// Grimer evolves to Muk": {},
-      "Grimer": { "catch_above_cp": 448, "catch_above_iv": 0.8, "logic": "and" },
+      "Grimer": { "always_catch": true },
 
       "// Magikarp evolves to Gyarados": {},
-      "Magikarp": { "catch_above_cp": 91, "catch_above_iv": 0.9, "logic": "and" },
+      "Magikarp": { "always_catch": true },
       "// Exeggcute evolves to Exeggutor": {},
-      "Exeggcute": { "catch_above_cp": 384, "catch_above_iv": 0.8, "logic": "and" },
+      "Exeggcute": { "always_catch": true },
       "// Eevee evolves to many versions, like Vaporeon, Flareon": {},
-      "Eevee": { "catch_above_cp": 376, "catch_above_iv": 0.8, "logic": "and"},
+      "Eevee": { "always_catch": true },
 
       "// A-Tier pokemons": {},
       "Slowbro": { "always_catch": true },
@@ -174,7 +186,6 @@
       "Koffing": { "release_below_cp": 403, "release_below_iv": 0.8, "logic": "and" },
 
       "// Below is B-tier and lower pokemons": {},
-      "Magikarp": { "release_below_cp": 91, "release_below_iv": 0.8, "logic": "and" },
       "Caterpie": { "release_below_cp": 156, "release_below_iv": 0.8, "logic": "and" },
       "Weedle": { "release_below_cp": 156, "release_below_iv": 0.8, "logic": "and" },
       "Diglett": { "release_below_cp": 158, "release_below_iv": 0.8, "logic": "and" },
@@ -266,6 +277,7 @@
       "Venomoth": { "release_below_cp": 660, "release_below_iv": 0.8, "logic": "and" },
       "Golbat": { "release_below_cp": 672, "release_below_iv": 0.8, "logic": "and" },
       "Raichu": { "release_below_cp": 708, "release_below_iv": 0.8, "logic": "and" },
-      "Cloyster": { "release_below_cp": 717, "release_below_iv": 0.8, "logic": "and"}
+      "Cloyster": { "release_below_cp": 717, "release_below_iv": 0.8, "logic": "and"},
+      "Mr. Mime": { "release_below_cp": 650, "release_below_iv": 0.8, "logic": "and" }
     }
 }

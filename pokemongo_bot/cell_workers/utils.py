@@ -6,6 +6,13 @@ from colorama import init
 from s2sphere import CellId, LatLng
 init()
 
+TIME_PERIODS = (
+    (60, 'minute'),
+    (3600, 'hour'),
+    (86400, 'day'),
+    (86400*7, 'week')
+)
+
 
 def get_cellid(lat, long, radius=10):
     origin = CellId.from_lat_lng(LatLng.from_degrees(lat, long)).parent(15)
@@ -102,16 +109,17 @@ def format_dist(distance, unit):
 
 def format_time(seconds):
     # Return a string displaying the time given as seconds or minutes
-    if seconds <= 0.0:
-        return '{:.2f} seconds'.format(seconds)
-    elif seconds <= 1.0:
-        return '{:.2f} second'.format(seconds)
-    elif seconds < 60:
-        return '{:.2f} seconds'.format(seconds)
-    elif seconds > 60 and seconds < 3600:
-        minutes = seconds / 60
-        return '{:.2f} minutes'.format(minutes)
-    return '{:.2f} seconds'.format(seconds)
+    num, duration = 0, long(round(seconds))
+    runtime = []
+    for period, unit in TIME_PERIODS[::-1]:
+        num, duration = divmod(duration, period)
+        if num:
+            p = '{0}{1}'.format(unit, 's'*(num!=1))
+            runtime.append('{0} {1}'.format(num, p))
+
+    runtime.append('{0} second{1}'.format(duration, 's'*(duration!=1)))
+
+    return ', '.join(runtime)
 
 
 def i2f(int):
