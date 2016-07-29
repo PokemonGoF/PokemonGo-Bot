@@ -341,8 +341,16 @@ class PokemonGoBot(object):
 
     def get_inventory(self):
         if self.latest_inventory is None:
-            self.api.get_inventory()
-            response = self.api.call()
+            retries = 0
+            while True:
+                time.sleep((2**retries * 100) / 1000.0)
+                self.api.get_inventory()
+                response = self.api.call()
+                try:
+                    get_inventory = response['responses']['GET_INVENTORY']
+                    break
+                except:
+                    retries += 1
             self.latest_inventory = response
         return self.latest_inventory
 

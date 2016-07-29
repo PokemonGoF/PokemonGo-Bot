@@ -75,8 +75,7 @@ class PokemonTransferWorker(object):
 
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
-        self.api.get_player().get_inventory()
-        inventory_req = self.api.call()
+        inventory_req = self.bot.get_inventory()
 
         if inventory_req.get('responses', False) is False:
             return pokemon_groups
