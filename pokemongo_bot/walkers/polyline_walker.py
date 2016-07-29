@@ -13,11 +13,12 @@ class PolylineWalker(StepWalker):
         logger.log('[#] {}'.format(self.polyline_walker.URL))
 
     def step(self):
-        self.polyline_walker.unpause()
-        sleep(1)
-        self.polyline_walker.pause()
-        cLat, cLng = self.polyline_walker.get_pos()[0]
-        self.api.set_position(round(cLat, 5), round(cLng, 5), 0)
-        self.bot.heartbeat()
-        if self.destLat == cLat and self.destLng == cLng:
-            return True
+        cLat, cLng = self.api._position_lat, self.api._position_lng
+        while (cLat, cLng) != self.polyline_walker.get_pos()[0]
+            self.polyline_walker.unpause()
+            sleep(1)
+            self.polyline_walker.pause()
+            cLat, cLng = self.polyline_walker.get_pos()[0]
+            self.api.set_position(round(cLat, 5), round(cLng, 5), 0)
+            self.bot.heartbeat()
+        return True
