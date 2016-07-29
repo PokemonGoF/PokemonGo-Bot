@@ -1,0 +1,9 @@
+bot:
+  build: .
+  volumes:
+    - .:/web
+  ports:
+    - "8800:80"
+  command: /bin/bash -c "cd /web/;
+    pip install -r requirements.txt;
+    python pokecli.py"
