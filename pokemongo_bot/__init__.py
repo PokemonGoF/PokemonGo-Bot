@@ -157,7 +157,6 @@ class PokemonGoBot(object):
 
         user_data_cells = "data/cells-%s.json" % (self.config.username)
         with open(user_data_cells, 'w') as outfile:
-            outfile.truncate()
             json.dump(cells, outfile)
 
         user_web_location = os.path.join('web', 'location-%s.json' % (self.config.username))
@@ -176,7 +175,6 @@ class PokemonGoBot(object):
         user_data_lastlocation = os.path.join('data', 'last-location-%s.json' % (self.config.username))
         try:
             with open(user_data_lastlocation, 'w') as outfile:
-                outfile.truncate()
                 json.dump({'lat': lat, 'lng': lng}, outfile)
         except IOError as e:
             logger.log('[x] Error while opening location file: %s' % e, 'red')
@@ -453,21 +451,21 @@ class PokemonGoBot(object):
                 with open('data/last-location-%s.json' %
                           (self.config.username)) as f:
                     location_json = json.load(f)
-                    location = (location_json['lat'],
-                                     location_json['lng'], 0.0)
-                    #print(location)
-                    self.api.set_position(*location)
+                location = (location_json['lat'],
+                                 location_json['lng'], 0.0)
+                #print(location)
+                self.api.set_position(*location)
 
-                    logger.log('')
-                    logger.log(
-                        '[x] Last location flag used. Overriding passed in location')
-                    logger.log(
-                        '[x] Last in-game location was set as: {}'.format(
-                            self.position))
-                    logger.log('')
+                logger.log('')
+                logger.log(
+                    '[x] Last location flag used. Overriding passed in location')
+                logger.log(
+                    '[x] Last in-game location was set as: {}'.format(
+                        self.position))
+                logger.log('')
 
-                    has_position = True
-                    return
+                has_position = True
+                return
             except Exception:
                 if(has_position == False):
                     sys.exit(
