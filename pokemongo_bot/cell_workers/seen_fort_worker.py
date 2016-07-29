@@ -34,7 +34,7 @@ class SeenFortWorker(object):
         if self.bot.config.forts_show_name:
             # For user friendliness, restore the old PokeStop names
             try:
-                details = fort_details(fort['id'], lat, lng)
+                details = fort_details(self.bot, fort['id'], lat, lng)
                 fort_name = details['name'].encode('utf8', 'replace')
             except KeyError:
                 fort_name = 'Unknown'
