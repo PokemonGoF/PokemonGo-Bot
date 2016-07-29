@@ -26,7 +26,7 @@
     },
     "evolve_all": "NONE",
     "evolve_speed": 20,
-    "cp_min": 300,
+    "evolve_cp_min": 300,
     "use_lucky_egg": false,
     "hatch_eggs": true,
     "longer_eggs_first": true,
