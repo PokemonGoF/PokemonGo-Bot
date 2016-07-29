@@ -3,6 +3,7 @@
 from pgoapi import PGoApi
 from pgoapi.exceptions import NotLoggedInException
 from human_behaviour import sleep
+import time
 import logger
 
 class ApiWrapper(object):
@@ -10,6 +11,8 @@ class ApiWrapper(object):
         self._api = api
         self.request_callers = []
         self.reset_auth()
+        self.last_api_request_time = None
+        self.requests_per_seconds = 2
 
     def reset_auth(self):
         self._api._auth_token = None
@@ -54,22 +57,26 @@ class ApiWrapper(object):
         if not self._can_call():
             return False # currently this is never ran, exceptions are raised before
 
+        request_timestamp = None
+
         api_req_method_list = self._api._req_method_list
         result = None
         try_cnt = 0
         while True:
+            request_timestamp = self.throttle_sleep()
             self._api._req_method_list = [req_method for req_method in api_req_method_list] # api internally clear this field after a call
             result = self._api.call()
             if not self._is_response_valid(result, request_callers):
                 try_cnt += 1
-                if try_cnt > 1:
-                    logger.log('Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry), 'red')
-                    
+                logger.log('Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry), 'red')
+
                 if try_cnt >= max_retry:
                     raise ServerBusyOrOfflineException()
                 sleep(1)
             else:
                 break
+
+        self.last_api_request_time = request_timestamp
         return result
 
     def login(self, provider, username, password):
@@ -82,5 +89,14 @@ class ApiWrapper(object):
             self.request_callers.append(func)
         return getattr(self._api, func)
 
+    def throttle_sleep(self):
+        now_milliseconds = time.time() * 1000
+        required_delay_between_requests = 1000 / self.requests_per_seconds
 
+        difference = now_milliseconds - (self.last_api_request_time if self.last_api_request_time else 0)
 
+        if (self.last_api_request_time != None and difference < required_delay_between_requests):
+            sleep_time = required_delay_between_requests - difference
+            time.sleep(sleep_time / 1000)
+
+        return now_milliseconds
