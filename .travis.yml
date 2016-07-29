@@ -12,4 +12,4 @@ install:
   - pip install pylint
 script:
   - python pylint-recursive.py
-  - python -m unittest discover -s pokemongo_bot -p "*_test.py"
+  - nosetests --verbosity=2 ./tests
