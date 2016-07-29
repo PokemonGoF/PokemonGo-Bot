@@ -122,6 +122,7 @@ class PokemonCatchWorker(object):
                                 else:
                                     if response_dict['status_code'] is 1:
                                         logger.log('Fail to use berry. Seem like you are softbanned.', 'red')
+                                        self.bot.softban = True
                                     else:
                                         logger.log('Fail to use berry. Status Code: {}'.format(response_dict['status_code']),'red')
 
@@ -171,6 +172,8 @@ class PokemonCatchWorker(object):
                                 if status is 3:
                                     logger.log(
                                         'Oh no! {} vanished! :('.format(pokemon_name), 'red')
+                                    if success_percentage == 100:
+                                        self.softban = True
                                 if status is 1:
                                     self.bot.metrics.captured_pokemon(pokemon_name, cp, iv_display, pokemon_potential)
 
@@ -180,6 +183,7 @@ class PokemonCatchWorker(object):
                                         pokemon_potential,
                                         iv_display
                                     ), 'blue')
+                                    self.bot.softban = False
 
                                     if (self.config.evolve_captured
                                         and (self.config.evolve_captured[0] == 'all'

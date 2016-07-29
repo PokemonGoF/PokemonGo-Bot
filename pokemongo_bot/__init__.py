@@ -31,6 +31,7 @@ from api_wrapper import ApiWrapper
 class PokemonGoBot(object):
 
     WORKERS = [
+        cell_workers.SoftBanWorker,
         cell_workers.IncubateEggsWorker,
         cell_workers.PokemonTransferWorker,
         cell_workers.EvolveAllWorker,
@@ -55,6 +56,7 @@ class PokemonGoBot(object):
         self.cell = None
         self.recent_forts = [None] * config.forts_max_circle_size
         self.tick_count = 0
+        self.softban = False
 
         # Make our own copy of the workers for this instance
         self.workers = list(self.WORKERS)
