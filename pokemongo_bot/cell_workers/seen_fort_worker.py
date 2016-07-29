@@ -42,6 +42,8 @@ class SeenFortWorker(object):
             fort_name = 'Unknown'
         logger.log('Now at Pokestop: ' + fort_name,
                    'cyan')
+	global original_dist
+	original_dist = 0
         if self.config.catch_pokemon and 'lure_info' in self.fort:
             # Check if the lure has a pokemon active
             if 'encounter_id' in self.fort['lure_info']:

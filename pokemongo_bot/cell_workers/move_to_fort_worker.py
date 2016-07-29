@@ -13,6 +13,7 @@ class MoveToFortWorker(object):
         self.config = bot.config
         self.navigator = bot.navigator
         self.position = bot.position
+	self.progress_scale = 3;
 
     def work(self):
         lat = self.fort['latitude']
@@ -22,8 +23,19 @@ class MoveToFortWorker(object):
 
         dist = distance(self.position[0], self.position[1], lat, lng)
 
+        global original_dist
+        try:
+            if not original_dist > 0:
+                original_dist = dist
+        except NameError:
+            original_dist = dist
+
+        progress = (((original_dist - dist) / original_dist)*100)
+        progressbar = "[" + ("|" * int(progress//self.progress_scale)).ljust(int(100/self.progress_scale)) + "]"
+
+
         if dist > 10:
-            logger.log('Moving towards fort {}, {} left'.format(fortID, format_dist(dist, unit)))
+            logger.log('Moving towards fort {}, {} left {} {}%'.format(fortID, format_dist(dist, unit),progressbar, int(progress)))
 
             step_walker = StepWalker(
                 self.bot,
@@ -36,4 +48,5 @@ class MoveToFortWorker(object):
                 return WorkerResult.RUNNING
 
         logger.log('Arrived at Pokestop')
+	original_dist = 0
         return WorkerResult.SUCCESS
