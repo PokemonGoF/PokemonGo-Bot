@@ -1,7 +1,7 @@
 import json
 
-from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot import logger
+from pokemongo_bot.human_behaviour import action_delay
 
 
 class PokemonTransferWorker(object):

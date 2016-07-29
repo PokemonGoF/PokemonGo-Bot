@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import struct
-from math import cos, asin, sqrt
+from math import asin, cos, sqrt
+
 from colorama import init
+
 init()
 
 TIME_PERIODS = (
@@ -12,10 +14,12 @@ TIME_PERIODS = (
     (86400*7, 'week')
 )
 
+
 def encode(cellid):
     output = []
     encoder._VarintEncoder()(output.append, cellid)
     return ''.join(output)
+
 
 def distance(lat1, lon1, lat2, lon2):
     p = 0.017453292519943295
