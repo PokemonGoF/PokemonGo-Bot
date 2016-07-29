@@ -1,25 +1,24 @@
 import time
 from itertools import chain
 from math import ceil
-
 import haversine
 import polyline
 import requests
 
 
-class PolylineWalker(object):
+class Polyline(object):
 
     def __init__(self, origin, destination, speed):
         self.DISTANCE_API_URL='https://maps.googleapis.com/maps/api/directions/json?mode=walking'
         self.origin = origin
         self.destination = destination
+        self.URL = '{}&origin={}&destination={}'.format(self.DISTANCE_API_URL,
+                                                   '{},{}'.format(*self.origin),
+                                                   '{},{}'.format(*self.destination))
         self.polyline_points = [x['polyline']['points'] for x in
-                                requests.get(self.DISTANCE_API_URL+'&origin='+
-                                             self.origin+'&destination='+
-                                             self.destination
-                                             ).json()['routes'][0]['legs'][0]['steps']]
+                                requests.get(self.URL).json()['routes'][0]['legs'][0]['steps']]
         self.speed = float(speed)
-        self.points = self.get_points(self.polyline_points)
+        self.points = [self.origin] + self.get_points(self.polyline_points) + [self.destination]
         self.lat, self.long = self.points[0][0], self.points[0][1]
         self.polyline = self.combine_polylines(self.points)
         self._timestamp = time.time()
@@ -85,9 +84,15 @@ class PolylineWalker(object):
         return self.calculate_coord(percentage_walked, *steps_dict[walked_end_step])
 
     def calculate_coord(self, percentage, o, d):
-        lat = o[0]+ (d[0] -o[0]) * percentage
-        lon = o[1]+ (d[1] -o[1]) * percentage
-        return [(lat, lon)]
+        # If this is the destination then returning as such
+        if self.points[-1] == d:
+            return [d]
+        else:
+            # intermediary points returned with 5 decimals precision only
+            # this ensures ~3-50cm ofset from the geometrical point calculated
+            lat = o[0]+ (d[0] -o[0]) * percentage
+            lon = o[1]+ (d[1] -o[1]) * percentage
+            return [(round(lat, 5), round(lon, 5))]
 
     def get_total_distance(self):
         return ceil(sum([haversine.haversine(*x)*1000 for x in self.walk_steps()]))

@@ -151,7 +151,7 @@ def init_config():
         short_flag="-l",
         long_flag="--location",
         help="Location",
-        type=lambda s: not isinstance(s, unicode) and unicode(s, 'utf8') or str(s),
+        type=parse_unicode_str,
         default=''
     )
     add_config(
@@ -298,6 +298,24 @@ def init_config():
         type=bool,
         default=True
     )
+    add_config(
+        parser,
+        load,
+        short_flag="-ac",
+        long_flag="--avoid_circles",
+        help="Avoids circles (pokestops) of the max size set in max_circle_size flag",
+        type=bool,
+        default=False
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-mcs",
+        long_flag="--max_circle_size",
+        help="If avoid_circles flag is set, this flag specifies the maximum size of circles (pokestops) avoided",
+        type=int,
+        default=10
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()
@@ -351,6 +369,12 @@ def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
     else:
         args = (long_flag,)
     parser.add_argument(*args, **kwargs)
+    
+def parse_unicode_str(string):
+    try:
+        return string.decode('utf8')
+    except UnicodeEncodeError:
+        return string
 
     
 if __name__ == '__main__':
