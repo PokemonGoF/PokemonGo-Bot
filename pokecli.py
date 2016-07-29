@@ -146,6 +146,12 @@ def init_config():
                         type=bool,
                         default=False)
 
+    parser.add_argument('-rc',
+                        '--random_capture',
+                        help='Bot will random the capture parameters of circle size and spin',
+                        type=bool,
+                        default=False)
+
     config = parser.parse_args()
     if not config.username and 'username' not in load:
         config.username = raw_input("Username: ")
@@ -174,7 +180,7 @@ def init_config():
             config.release_config.update(json.load(data))
 
     # create web dir if not exists
-    try: 
+    try:
         os.makedirs(web_dir)
     except OSError:
         if not os.path.isdir(web_dir):

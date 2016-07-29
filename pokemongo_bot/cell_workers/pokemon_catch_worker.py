@@ -5,6 +5,7 @@ from sets import Set
 from utils import distance
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot import logger
+from random import uniform
 
 class PokemonCatchWorker(object):
     BAG_FULL = 'bag_full'
@@ -103,18 +104,27 @@ class PokemonCatchWorker(object):
                             balls_stock[pokeball] = balls_stock[pokeball] - 1
                             success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
                             logger.log('[x] Using {} (chance: {}%)... ({} left!)'.format(
-                                self.item_list[str(pokeball)], 
-                                success_percentage, 
+                                self.item_list[str(pokeball)],
+                                success_percentage,
                                 balls_stock[pokeball]
                             ))
 
                             id_list1 = self.count_pokemon_inventory()
+
+                            # random capture parameters
+                            if self.config.random_capture:
+                                reticle_size = uniform(1, 3)
+                                spin_modifier = uniform(0.8, 1)
+                            else:
+                                reticle_size = 1.950
+                                spin_modifier = 1
+
                             self.api.catch_pokemon(encounter_id=encounter_id,
                                                    pokeball=pokeball,
-                                                   normalized_reticle_size=1.950,
+                                                   normalized_reticle_size=reticle_size,
                                                    spawn_point_guid=spawnpoint_id,
                                                    hit_pokemon=1,
-                                                   spin_modifier=1,
+                                                   spin_modifier=spin_modifier,
                                                    NormalizedHitPosition=1)
                             response_dict = self.api.call()
 
