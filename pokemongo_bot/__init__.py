@@ -562,7 +562,17 @@ class PokemonGoBot(object):
                                                 'Pokemon Captured: {pokemons_captured}'.format(**playerdata) +
                                                 ' | Pokestops Visited: {poke_stop_visits}'.format(**playerdata), 'cyan')
 
-    def get_forts(self):
-        return [fort
+    def get_forts(self, order_by_distance=False):
+        forts = [fort
              for fort in self.cell['forts']
              if 'latitude' in fort and 'type' in fort]
+
+        if order_by_distance:
+            forts.sort(key=lambda x: distance(
+                self.position[0],
+                self.position[1],
+                x['latitude'],
+                x['longitude']
+            ))
+
+        return forts

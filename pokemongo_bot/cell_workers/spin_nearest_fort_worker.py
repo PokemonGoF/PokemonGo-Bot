@@ -46,11 +46,6 @@ class SpinNearestFortWorker(object):
         if self.config.avoid_circles:
             forts = filter(lambda x: x["id"] not in self.recent_forts, forts)
 
-        # Sort all by distance from current pos- eventually this should
-        # build graph & A* it
-        forts.sort(key=lambda x: distance(self.position[
-                   0], self.position[1], x['latitude'], x['longitude']))
-
         if len(forts) > 0:
             return forts[0]
         else:
