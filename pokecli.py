@@ -324,15 +324,6 @@ def init_config():
         type=int,
         default=10,
     )
-    add_config(
-        parser,
-        load,
-        short_flag="-sn",
-        long_flag="--forts.show_name",
-        help="Toggle displaying the name of the Pokestops as you pass by.",
-        type=bool,
-        default=True,
-    )
 
     # Start to parse other attrs
     config = parser.parse_args()
