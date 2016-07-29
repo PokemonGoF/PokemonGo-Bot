@@ -30,8 +30,8 @@ No PR on master branch to keep things easier.
   - [Mac](#installation-mac)
   - [Linux](#installation-linux)
   - [Windows](#installation-windows)
+- [Usage](#usage-up-to-date)
 - [Develop PokemonGo-Bot](develop-pokemonGo-bot)
-- [Usage](#usage)
 - [Docker Usage](#how-to-run-with-docker)
 - [FAQ](#faq)
 - [Credits](#credits)
@@ -151,6 +151,11 @@ $ git submodule init
 $ git submodule update
 ```
 
+## Usage (up-to-date)
+1. Copy `config.json.example` to `config.json` and `release_config.json.example` to `release_config.json`.
+2. Edit `config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (other keys are optional, check `Advance Configuration` below)
+3. Run `python pokecli.py`
+
 ### Develop PokemonGo-Bot
 
 ```
@@ -187,10 +192,6 @@ Please keep in mind that this fix is only necessary if your python version don't
 
 ## Update
 To update your project do: `git pull` in the project folder
-
-## Usage (up-to-date)
-	1/ copy `config.json.example` to `config.json` and `release_config.json.example` to `release_config.json`.
-	2/ Edit `config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (other keys are optional, check `Advance Configuration` below)
 
 ## Advance Configuration
 - `max_steps` :
