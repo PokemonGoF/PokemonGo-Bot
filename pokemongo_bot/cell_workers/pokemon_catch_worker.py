@@ -4,8 +4,7 @@ import time
 from sets import Set
 
 from pokemongo_bot import logger
-from pokemongo_bot.human_behaviour import sleep
-
+from pokemongo_bot.human_behaviour import sleep, normalized_reticle_size, spin_modifier
 
 class PokemonCatchWorker(object):
 
@@ -146,12 +145,15 @@ class PokemonCatchWorker(object):
 
                             id_list1 = self.count_pokemon_inventory()
 
+                            reticle_size_parameter = normalized_reticle_size(self.config.catch_randomize_reticle_factor)
+                            spin_modifier_parameter = spin_modifier(self.config.catch_randomize_spin_factor)
+
                             self.api.catch_pokemon(encounter_id=encounter_id,
                                                    pokeball=pokeball,
-                                                   normalized_reticle_size=1.950,
+                                                   normalized_reticle_size=reticle_size_parameter,
                                                    spawn_point_id=self.spawn_point_guid,
                                                    hit_pokemon=1,
-                                                   spin_modifier=1,
+                                                   spin_modifier=spin_modifier_parameter,
                                                    NormalizedHitPosition=1)
                             response_dict = self.api.call()
 
@@ -172,11 +174,12 @@ class PokemonCatchWorker(object):
                                 if status is 1:
                                     self.bot.metrics.captured_pokemon(pokemon_name, cp, iv_display, pokemon_potential)
 
-                                    logger.log('Captured {}! [CP {}] [Potential {}] [{}]'.format(
+                                    logger.log('Captured {}! [CP {}] [Potential {}] [{}] [+{} exp]'.format(
                                         pokemon_name,
                                         cp,
                                         pokemon_potential,
-                                        iv_display
+                                        iv_display,
+                                        sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
                                     ), 'blue')
 
                                     if (self.config.evolve_captured
