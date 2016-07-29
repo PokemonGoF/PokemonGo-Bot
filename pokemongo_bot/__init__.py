@@ -39,6 +39,7 @@ class PokemonGoBot(object):
         self.latest_inventory = None
         self.cell = None
         self.recent_forts = [None] * config.max_circle_size
+        self.tick_count = 0
 
     def start(self):
         self._setup_logging()
@@ -66,6 +67,8 @@ class PokemonGoBot(object):
                 return
 
         self.navigator.take_step()
+        
+        self.tick_count +=1
 
     def get_meta_cell(self):
         location = self.position[0:2]
