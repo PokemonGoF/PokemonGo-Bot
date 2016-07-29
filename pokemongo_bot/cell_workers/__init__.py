@@ -8,3 +8,4 @@ from evolve_all_worker import EvolveAllWorker
 from catch_visible_pokemon_worker import CatchVisiblePokemonWorker
 from recycle_items_worker import RecycleItemsWorker
 from incubate_eggs_worker import IncubateEggsWorker
+from catch_lured_pokemon_worker import CatchLuredPokemonWorker
