@@ -3,6 +3,7 @@
 from pgoapi import PGoApi
 from pgoapi.exceptions import NotLoggedInException, ServerBusyOrOfflineException
 from human_behaviour import sleep
+from cache import Cache
 import time
 import logger
 
@@ -77,6 +78,7 @@ class ApiWrapper(object):
                 break
 
         self.last_api_request_time = request_timestamp
+        Cache.process_response(result)
         return result
 
     def login(self, provider, username, password):
