@@ -179,7 +179,9 @@ class PokemonCatchWorker(object):
                                         iv_display
                                     ), 'blue')
 
-                                    if self.config.evolve_captured:
+                                    if (self.config.evolve_captured
+                                        and (self.config.evolve_captured[0] == 'all'
+                                             or pokemon_name in self.config.evolve_captured)):
                                         id_list2 = self.count_pokemon_inventory()
                                         # No need to capture this even for metrics, player stats includes it.
                                         pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))

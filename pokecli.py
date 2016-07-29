@@ -267,9 +267,9 @@ def init_config():
         load,
         short_flag="-ec",
         long_flag="--evolve_captured",
-        help="(Ad-hoc mode) Bot will attempt to evolve all the pokemon captured!",
-        type=bool,
-        default=False
+        help="(Ad-hoc mode) Pass \"all\" or a list of pokemon to evolve (e.g., \"Pidgey,Weedle,Caterpie\"). Bot will attempt to evolve all the pokemon captured!",
+        type=str,
+        default=[]
     )
     add_config(
         parser,
@@ -355,6 +355,8 @@ def init_config():
 
     if config.evolve_all and isinstance(config.evolve_all, str):
         config.evolve_all = [str(pokemon_name) for pokemon_name in config.evolve_all.split(',')]
+    if config.evolve_captured and isinstance(config.evolve_captured, str):
+        config.evolve_captured = [str(pokemon_name) for pokemon_name in config.evolve_captured.split(',')]
 
     return config
 
