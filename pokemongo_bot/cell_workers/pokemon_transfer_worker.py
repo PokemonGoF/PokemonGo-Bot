@@ -60,7 +60,7 @@ class PokemonTransferWorker(object):
                                                                           best_pokemon['cp'],
                                                                           best_pokemon['iv']), 'green')
 
-                        logger.log("Exchange {} pokemon(s)".format(len(all_pokemons)), "green")
+                        logger.log("Exchanging {} pokemon".format(len(all_pokemons)), "green")
 
                     for pokemon in all_pokemons:
                         self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
