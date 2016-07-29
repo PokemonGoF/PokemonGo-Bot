@@ -22,7 +22,6 @@ from metrics import Metrics
 from pokemongo_bot.event_handlers import LoggingHandler
 from pokemongo_bot.event_handlers import SocketIoHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
-from spiral_navigator import SpiralNavigator
 from worker_result import WorkerResult
 from event_manager import EventManager
 from api_wrapper import ApiWrapper

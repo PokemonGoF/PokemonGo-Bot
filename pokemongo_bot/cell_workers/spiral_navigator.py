@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import logger
+from pokemongo_bot import logger
 from cell_workers.utils import distance, i2f, format_dist
 from human_behaviour import sleep
 from step_walker import StepWalker
