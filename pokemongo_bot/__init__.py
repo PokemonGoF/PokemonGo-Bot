@@ -14,6 +14,7 @@ from pgoapi import PGoApi
 from cell_workers import PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, InitialTransferWorker, EvolveAllWorker
 from cell_workers.utils import distance
 from human_behaviour import sleep
+from pokemongo_bot.statistics_keeper import StatisticsKeeper
 from stepper import Stepper
 from geopy.geocoders import GoogleV3
 from math import radians, sqrt, sin, cos, atan2
@@ -25,6 +26,7 @@ class PokemonGoBot(object):
         self.config = config
         self.pokemon_list = json.load(open('data/pokemon.json'))
         self.item_list = json.load(open('data/items.json'))
+        self.stats = StatisticsKeeper() # Stats module for keep track of summary data.
 
     def start(self):
         self._setup_logging()

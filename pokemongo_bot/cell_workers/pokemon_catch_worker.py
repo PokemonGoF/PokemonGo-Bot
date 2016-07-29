@@ -19,6 +19,7 @@ class PokemonCatchWorker(object):
         self.pokemon_list = bot.pokemon_list
         self.item_list = bot.item_list
         self.inventory = bot.inventory
+        self.stats = bot.stats
 
     def work(self):
         encounter_id = self.pokemon['encounter_id']
@@ -31,6 +32,8 @@ class PokemonCatchWorker(object):
 
         if response_dict and 'responses' in response_dict:
             if 'ENCOUNTER' in response_dict['responses']:
+                self.stats.pokemon_encountered += 1
+
                 if 'status' in response_dict['responses']['ENCOUNTER']:
                     if response_dict['responses']['ENCOUNTER']['status'] is 7:
                         logger.log('[x] Pokemon Bag is full!', 'red')
@@ -140,6 +143,9 @@ class PokemonCatchWorker(object):
                                             pokemon_potential
                                         ), 'green'
                                     )
+
+                                    # register caught pokemon.
+                                    self.stats.increment_caught_pokemon(pokemon_name)
 
                                     id_list2 = self.count_pokemon_inventory()
 

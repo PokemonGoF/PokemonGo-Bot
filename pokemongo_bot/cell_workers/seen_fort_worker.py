@@ -19,6 +19,7 @@ class SeenFortWorker(object):
         self.item_list = bot.item_list
         self.rest_time = 50
         self.stepper = bot.stepper
+        self.stats = bot.stats
 
     def work(self):
         lat = self.fort['latitude']
@@ -49,6 +50,9 @@ class SeenFortWorker(object):
 
             spin_details = response_dict['responses']['FORT_SEARCH']
             if spin_details['result'] == 1:
+                # register visited pokestop.
+                self.stats.visited_pokestops += 1
+
                 logger.log("[+] Loot: ", 'green')
                 experience_awarded = spin_details.get('experience_awarded',
                                                       False)
