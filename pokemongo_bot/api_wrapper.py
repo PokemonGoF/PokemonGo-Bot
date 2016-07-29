@@ -2,6 +2,7 @@
 
 from pgoapi import PGoApi
 from pgoapi.exceptions import NotLoggedInException
+from POGOProtos.Networking.Requests_pb2 import RequestType
 from human_behaviour import sleep
 import logger
 
@@ -63,6 +64,7 @@ class ApiWrapper(object):
             if not self._is_response_valid(result, request_callers):
                 try_cnt += 1
                 logger.log('Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry), 'red')
+                logger.log('Attempted to call: {}'.format(", ".join([RequestType.Name(isinstance(req_method, dict) and req_method.keys()[0] or req_method) for req_method in api_req_method_list])), 'red')
                 if try_cnt >= max_retry:
                     raise ServerBusyOrOfflineException()
                 sleep(1)
