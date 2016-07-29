@@ -324,6 +324,22 @@ def init_config():
         type=int,
         default=10,
     )
+    add_config(
+        parser,
+        load,
+        long_flag="--catch_randomize_reticle_factor",
+        help="Randomize factor for pokeball throwing accuracy (DEFAULT 1.0 means no randomize: always 'Excellent' throw. 0.0 randomizes between normal and 'Excellent' throw)",
+        type=float,
+        default=1.0
+    )
+    add_config(
+        parser,
+        load,
+        long_flag="--catch_randomize_spin_factor",
+        help="Randomize factor for pokeball curve throwing (DEFAULT 1.0 means no randomize: always perfect 'Super Spin' curve ball. 0.0 randomizes between normal and 'Super Spin' curve ball)",
+        type=float,
+        default=1.0
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()
@@ -359,6 +375,14 @@ def init_config():
 
     if not (config.location or config.location_cache):
         parser.error("Needs either --use-location-cache or --location.")
+        return None
+
+    if config.catch_randomize_reticle_factor < 0 or 1 < config.catch_randomize_reticle_factor:
+        parser.error("--catch_randomize_reticle_factor is out of range! (should be 0 <= catch_randomize_reticle_factor <= 1)")
+        return None
+
+    if config.catch_randomize_spin_factor < 0 or 1 < config.catch_randomize_spin_factor:
+        parser.error("--catch_randomize_spin_factor is out of range! (should be 0 <= catch_randomize_spin_factor <= 1)")
         return None
 
     # create web dir if not exists
