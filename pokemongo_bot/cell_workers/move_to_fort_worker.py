@@ -1,10 +1,10 @@
 import sys
-from utils import distance, format_dist, i2f
-from pokemongo_bot.constants import Constants
-from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot import logger
+from pokemongo_bot.constants import Constants
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
+from utils import distance, format_dist
+
 
 class MoveToFortWorker(object):
 
@@ -26,7 +26,7 @@ class MoveToFortWorker(object):
 
         nearest_fort = self.get_nearest_fort()
 
-        if nearest_fort == None:
+        if nearest_fort is None:
             return WorkerResult.SUCCESS
 
         lat = nearest_fort['latitude']

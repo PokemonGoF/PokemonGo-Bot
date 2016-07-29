@@ -1,5 +1,3 @@
-
-
 class EventNotRegisteredException(Exception):
     pass
 

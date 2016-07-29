@@ -1,9 +1,10 @@
-import socketio
 import logging
-from eventlet import wsgi
-from flask import Flask, render_template
-from pokemongo_bot.event_manager import EventManager
+
+import socketio
+from flask import Flask
+
 from pokemongo_bot.event_handlers import LoggingHandler
+from pokemongo_bot.event_manager import EventManager
 
 sio = socketio.Server(async_mode='eventlet', logging=logging.NullHandler)
 app = Flask(__name__)
