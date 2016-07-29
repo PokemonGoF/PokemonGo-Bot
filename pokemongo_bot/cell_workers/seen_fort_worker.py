@@ -8,9 +8,7 @@ from pokemongo_bot import logger
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.worker_result import WorkerResult
-from utils import distance, format_time
-
-FORT_CACHE = {}
+from utils import distance, format_time, fort_details
 
 class SeenFortWorker(object):
     def __init__(self, bot):
@@ -33,11 +31,11 @@ class SeenFortWorker(object):
         lat = fort['latitude']
         lng = fort['longitude']
 
-        if getattr(self.bot.config, 'forts_show_name', False) == True:
+        if self.bot.config.forts_show_name:
             # For user friendliness, restore the old PokeStop names
             try:
-                fort_details = self.get_fort_details(fort['id'], lat, lng)
-                fort_name = fort_details['name'].encode('utf8', 'replace')
+                details = fort_details(fort['id'], lat, lng)
+                fort_name = details['name'].encode('utf8', 'replace')
             except KeyError:
                 fort_name = 'Unknown'
 
@@ -150,23 +148,3 @@ class SeenFortWorker(object):
             return fort
 
         return None
-
-    def get_fort_details(self, fort_id, latitude, longitude):
-        """
-        Lookup fort metadata and (if possible) serve from cache.
-        """
-
-        if fort_id not in FORT_CACHE:
-            """
-            Lookup the fort details and cache the response for future use.
-            """
-            self.api.fort_details(fort_id=fort_id, latitude=latitude, longitude=longitude)
-
-            try:
-                response_dict = self.api.call()
-                FORT_CACHE[fort_id] = response_dict['responses']['FORT_DETAILS']
-            except Exception:
-                pass
-
-        # Just to avoid KeyErrors
-        return FORT_CACHE.get(fort_id, {})
