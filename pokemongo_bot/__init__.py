@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import os
 import datetime
 import json
 import logging
+import os
 import random
 import re
 import sys
@@ -13,23 +13,24 @@ from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
 from pgoapi.utilities import f2i, get_cell_ids
 
-import logger
 import cell_workers
-from cell_workers.utils import distance, encode, i2f
+import logger
+from api_wrapper import ApiWrapper
+from cell_workers.utils import distance
+from event_manager import EventManager
 from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
-from pokemongo_bot.event_handlers import LoggingHandler
-from pokemongo_bot.event_handlers import SocketIoHandler
+from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
+from spiral_navigator import SpiralNavigator
 from worker_result import WorkerResult
-from event_manager import EventManager
-from api_wrapper import ApiWrapper
 
 
 class PokemonGoBot(object):
 
     WORKERS = [
+        cell_workers.SoftBanWorker,
         cell_workers.IncubateEggsWorker,
         cell_workers.PokemonTransferWorker,
         cell_workers.EvolveAllWorker,
@@ -37,8 +38,7 @@ class PokemonGoBot(object):
         cell_workers.CatchVisiblePokemonWorker,
         cell_workers.MoveToFortWorker,
         cell_workers.CatchLuredPokemonWorker,
-        cell_workers.SeenFortWorker,
-        cell_workers.SpiralNavigator
+        cell_workers.SeenFortWorker
     ]
 
     @property
@@ -55,6 +55,7 @@ class PokemonGoBot(object):
         self.cell = None
         self.recent_forts = [None] * config.forts_max_circle_size
         self.tick_count = 0
+        self.softban = False
 
         # Make our own copy of the workers for this instance
         self.workers = list(self.WORKERS)
@@ -62,6 +63,7 @@ class PokemonGoBot(object):
     def start(self):
         self._setup_logging()
         self._setup_api()
+        self.navigator = SpiralNavigator(self)
         random.seed()
 
     def _setup_event_system(self):
@@ -92,6 +94,8 @@ class PokemonGoBot(object):
         for worker in self.workers:
             if worker(self).work() == WorkerResult.RUNNING:
                 return
+
+        self.navigator.take_step()
 
     def get_meta_cell(self):
         location = self.position[0:2]

@@ -9,8 +9,6 @@ Made available under GNU GENERAL PUBLIC LICENSE
 # By DenisFromHR (Denis Pleic)
 # 2015-02-10, ver 0.1
 """
-#
-#
 import os
 from itertools import islice
 from time import *
@@ -52,13 +50,13 @@ class i2c_device:
     def read_block_data(self, cmd):
         return self.bus.read_block_data(self.addr, cmd)
 
+
 # LCD Address
-#ADDRESS = 0x27
+# ADDRESS = 0x27
 LCD_WIDTH = 20
 LCD_HEIGHT = 2
-LCD_CHARS = [0x40, 0x48, 0x50, 0x58, 0x60, 0x68, 0x70,
-             0x78]  #Address position for custom chars
-#Use char generator here: https://omerk.github.io/lcdchargen/ or http://www.quinapalus.com/hd44780udg.html
+LCD_CHARS = [0x40, 0x48, 0x50, 0x58, 0x60, 0x68, 0x70, 0x78]  # Address position for custom chars
+# Use char generator here: https://omerk.github.io/lcdchargen/ or http://www.quinapalus.com/hd44780udg.html
 # commands
 LCD_CLEARDISPLAY = 0x01
 LCD_RETURNHOME = 0x02
@@ -108,7 +106,7 @@ Rs = 0b00000001  # Register select bit
 
 class lcd:
     # initializes objects and lcd
-    #def __init__(self, adress):
+    # def __init__(self, adress):
 
     def set_addr(self, adress):
         self.lcd_device = i2c_device(adress)
