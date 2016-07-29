@@ -27,7 +27,14 @@ class EventManager(object):
     def register_event(self, name, parameters=None):
         self._registered_events[name] = parameters
 
-    def emit(self, event, level='info', data={}):
+    def emit(self, event, sender=None, level='info', data={}):
+        if not sender:
+            raise ArgumentError('Event needs a sender!')
+
+        levels = ['info', 'warning', 'error', 'critical', 'debug']
+        if not level in levels:
+            raise ArgumentError('Event level needs to be in: {}'.format(levels))
+
         if event not in self._registered_events:
             raise EventNotRegisteredException("Event %s not registered..." % event)
 
@@ -39,4 +46,4 @@ class EventManager(object):
 
         # send off to the handlers
         for handler in self._handlers:
-            handler.handle_event(event, level, **data)
+            handler.handle_event(event, sender, level, data)

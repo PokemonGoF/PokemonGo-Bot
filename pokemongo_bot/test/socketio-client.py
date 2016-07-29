@@ -1,13 +1,13 @@
 from socketIO_client import SocketIO, LoggingNamespace, BaseNamespace
 
 
-def on_events(msg):
-    print('received event: ', msg)
+def on_location(msg):
+    print('received location: {}'.format(msg))
 
 if __name__ == "__main__":
     try:
         socketio = SocketIO('localhost', 4000)
-        socketio.on('events', on_events)
+        socketio.on('location', on_location)
         while True:
             socketio.wait(seconds=5)
 
