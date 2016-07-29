@@ -14,7 +14,7 @@ from pgoapi import PGoApi
 from pgoapi.utilities import f2i
 
 import logger
-from cell_workers import SpinNearestFortWorker, CatchVisiblePokemonWorker, PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, PokemonTransferWorker, EvolveAllWorker, RecycleItemsWorker, IncubateEggsWorker
+from cell_workers import SpinNearestFortWorker, CatchVisiblePokemonWorker, PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, PokemonTransferWorker, EvolveAllWorker, RecycleItemsWorker, IncubateEggsWorker, SoftBanWorker
 from cell_workers.utils import distance, get_cellid, encode, i2f
 from human_behaviour import sleep
 from item_list import Item
@@ -35,6 +35,7 @@ class PokemonGoBot(object):
         return self.api._position_lat, self.api._position_lng, 0
 
     def __init__(self, config):
+        self.softbanned = False
         self.config = config
         self.fort_timeouts = dict()
         self.pokemon_list = json.load(open(os.path.join('data', 'pokemon.json')))
@@ -77,6 +78,7 @@ class PokemonGoBot(object):
         self.check_session(self.position[0:2])
 
         workers = [
+            SoftBanWorker,
             IncubateEggsWorker,
             PokemonTransferWorker,
             EvolveAllWorker,

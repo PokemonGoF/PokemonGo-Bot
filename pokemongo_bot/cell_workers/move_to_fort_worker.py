@@ -23,7 +23,8 @@ class MoveToFortWorker(object):
         dist = distance(self.position[0], self.position[1], lat, lng)
 
         if dist > 10:
-            logger.log('Moving towards fort {}, {} left'.format(fortID, format_dist(dist, unit)))
+            if self.bot.softbanned == False:
+                logger.log('Moving towards fort {}, {} left'.format(fortID, format_dist(dist, unit)))
 
             step_walker = StepWalker(
                 self.bot,
@@ -35,5 +36,8 @@ class MoveToFortWorker(object):
             if not step_walker.step():
                 return WorkerResult.RUNNING
 
-        logger.log('Arrived at Pokestop')
+        if self.bot.softbanned == False:
+            logger.log('Arrived at Pokestop')
+
         return WorkerResult.SUCCESS
+
