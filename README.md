@@ -145,7 +145,7 @@ After this, just do:
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot
 $ cd PokemonGo-Bot
 $ virtualenv .
-$ source bin/activate
+$ Scripts\activate
 $ pip install -r requirements.txt
 $ git submodule init
 $ git submodule update
@@ -162,6 +162,8 @@ $ pip install -r requirements.txt
 $ git submodule init
 $ git submodule update
 ```
+
+For Windows replace "source bin/activate" with "Scripts\activate".
 
 ### Google Maps API (in development)
 
