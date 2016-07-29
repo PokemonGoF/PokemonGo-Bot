@@ -84,7 +84,6 @@ class PokemonGoBot(object):
         # self.event_manager.emit('location', 'level'='info', data={'lat': 1, 'lng':1}),
 
     def tick(self):
-        logger.log('')
         self.cell = self.get_meta_cell()
         self.tick_count +=1
 
