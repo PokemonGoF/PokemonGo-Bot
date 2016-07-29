@@ -1,2 +1,3 @@
 class Constants(object):
-  MAX_DISTANCE_FORT_IS_REACHABLE = 40 # meters
+    MAX_DISTANCE_FORT_IS_REACHABLE = 40 # meters
+    NORMALIZED_LAT_LNG_DISTANCE_STEP = 6.3593e-6
