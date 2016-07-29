@@ -19,8 +19,12 @@ from cell_workers.utils import distance, get_cellid, encode, i2f
 from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
+from pokemongo_bot.event_handlers import LoggingHandler
+from pokemongo_bot.event_handlers import SocketIoHandler
+from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from spiral_navigator import SpiralNavigator
 from worker_result import WorkerResult
+from event_manager import EventManager
 from api_wrapper import ApiWrapper
 
 
@@ -41,11 +45,30 @@ class PokemonGoBot(object):
         self.recent_forts = [None] * config.max_circle_size
         self.tick_count = 0
 
+
     def start(self):
         self._setup_logging()
         self._setup_api()
         self.navigator = SpiralNavigator(self)
         random.seed()
+
+    def _setup_event_system(self):
+        handlers = [LoggingHandler()]
+        if self.config.websocket_server:
+            websocket_handler = SocketIoHandler(self.config.websocket_server)
+            handlers.append(websocket_handler)
+
+            self.sio_runner = SocketIoRunner(self.config.websocket_server)
+            self.sio_runner.start_listening_async()
+
+        self.event_manager = EventManager(*handlers)
+
+        # Registering event:
+        # self.event_manager.register_event("location", parameters=['lat', 'lng'])
+        #
+        # Emitting event should be enough to add logging and send websocket
+        # message: :
+        # self.event_manager.emit('location', 'level'='info', data={'lat': 1, 'lng':1}),
 
     def tick(self):
         self.cell = self.get_meta_cell()
@@ -188,14 +211,22 @@ class PokemonGoBot(object):
         # log format
         logging.basicConfig(
             level=logging.DEBUG,
-            format='%(asctime)s [%(module)10s] [%(levelname)5s] %(message)s')
+            format='%(asctime)s [%(name)10s] [%(levelname)5s] %(message)s')
 
         if self.config.debug:
             logging.getLogger("requests").setLevel(logging.DEBUG)
+            logging.getLogger("websocket").setLevel(logging.DEBUG)
+            logging.getLogger("socketio").setLevel(logging.DEBUG)
+            logging.getLogger("engineio").setLevel(logging.DEBUG)
+            logging.getLogger("socketIO-client").setLevel(logging.DEBUG)
             logging.getLogger("pgoapi").setLevel(logging.DEBUG)
             logging.getLogger("rpc_api").setLevel(logging.DEBUG)
         else:
             logging.getLogger("requests").setLevel(logging.ERROR)
+            logging.getLogger("websocket").setLevel(logging.ERROR)
+            logging.getLogger("socketio").setLevel(logging.ERROR)
+            logging.getLogger("engineio").setLevel(logging.ERROR)
+            logging.getLogger("socketIO-client").setLevel(logging.ERROR)
             logging.getLogger("pgoapi").setLevel(logging.ERROR)
             logging.getLogger("rpc_api").setLevel(logging.ERROR)
 
@@ -400,18 +431,14 @@ class PokemonGoBot(object):
             return
 
         if self.config.location:
-            try:
-                location_str = self.config.location.encode('utf-8')
-                location = (self._get_pos_by_name(location_str.replace(" ", "")))
-                self.api.set_position(*location)
-                logger.log('')
-                logger.log(u'Location Found: {}'.format(self.config.location))
-                logger.log('GeoPosition: {}'.format(self.position))
-                logger.log('')
-                has_position = True
-            except Exception:
-                logger.log('[x] The location given in the config could not be parsed. Checking for a cached location.')
-                pass
+            location_str = self.config.location.encode('utf-8')
+            location = (self._get_pos_by_name(location_str.replace(" ", "")))
+            self.api.set_position(*location)
+            logger.log('')
+            logger.log(u'Location Found: {}'.format(self.config.location))
+            logger.log('GeoPosition: {}'.format(self.position))
+            logger.log('')
+            has_position = True
 
         if self.config.location_cache:
             try:
