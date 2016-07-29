@@ -22,6 +22,7 @@ from metrics import Metrics
 from pokemongo_bot.event_handlers import LoggingHandler
 from pokemongo_bot.event_handlers import SocketIoHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
+from spiral_navigator import SpiralNavigator
 from worker_result import WorkerResult
 from event_manager import EventManager
 from api_wrapper import ApiWrapper
@@ -37,8 +38,7 @@ class PokemonGoBot(object):
         cell_workers.CatchVisiblePokemonWorker,
         cell_workers.MoveToFortWorker,
         cell_workers.CatchLuredPokemonWorker,
-        cell_workers.SeenFortWorker,
-        cell_workers.SpiralNavigator
+        cell_workers.SeenFortWorker
     ]
 
     @property
@@ -62,6 +62,7 @@ class PokemonGoBot(object):
     def start(self):
         self._setup_logging()
         self._setup_api()
+        self.navigator = SpiralNavigator(self)
         random.seed()
 
     def _setup_event_system(self):
@@ -92,6 +93,8 @@ class PokemonGoBot(object):
         for worker in self.workers:
             if worker(self).work() == WorkerResult.RUNNING:
                 return
+
+        self.navigator.take_step()
 
     def get_meta_cell(self):
         location = self.position[0:2]

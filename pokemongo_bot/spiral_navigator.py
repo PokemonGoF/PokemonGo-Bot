@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
-from pokemongo_bot import logger
-from pokemongo_bot.cell_workers.utils import distance, format_dist
-from pokemongo_bot.step_walker import StepWalker
+import logger
+from cell_workers.utils import distance, i2f, format_dist
+from human_behaviour import sleep
+from step_walker import StepWalker
+
 
 class SpiralNavigator(object):
     def __init__(self, bot):
@@ -42,7 +44,7 @@ class SpiralNavigator(object):
             m += 1
         return coords
 
-    def work(self):
+    def take_step(self):
         point = self.points[self.ptr]
         self.cnt += 1
 
@@ -62,11 +64,9 @@ class SpiralNavigator(object):
             )
 
             if self.cnt == 1:
-                logger.log('Walking from {} to {} {}'.format(
-                    str((self.api._position_lat, self.api._position_lng)),
-                    str([point['lat'], point['lng']]),
-                    format_dist(dist, self.config.distance_unit)
-                ))
+                logger.log('Walking from ' + str((self.api._position_lat,
+                    self.api._position_lng)) + " to " + str([point['lat'], point['lng']]) + " " + format_dist(dist,
+                                                                                                   self.config.distance_unit))
 
             if step_walker.step():
                 step_walker = None
@@ -74,11 +74,11 @@ class SpiralNavigator(object):
             self.api.set_position(point['lat'], point['lng'])
 
         if distance(
-                self.api._position_lat,
-                self.api._position_lng,
-                point['lat'],
-                point['lng']
-            ) <= 1 or (self.config.walk > 0 and step_walker is None):
+                    self.api._position_lat,
+                    self.api._position_lng,
+                    point['lat'],
+                    point['lng']
+                ) <= 1 or (self.config.walk > 0 and step_walker == None):
             if self.ptr + self.direction == len(self.points) or self.ptr + self.direction == -1:
                 self.direction *= -1
             self.ptr += self.direction

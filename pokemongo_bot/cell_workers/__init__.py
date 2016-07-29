@@ -9,4 +9,3 @@ from catch_visible_pokemon_worker import CatchVisiblePokemonWorker
 from recycle_items_worker import RecycleItemsWorker
 from incubate_eggs_worker import IncubateEggsWorker
 from catch_lured_pokemon_worker import CatchLuredPokemonWorker
-from spiral_navigator import SpiralNavigator
