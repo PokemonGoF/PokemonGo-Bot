@@ -58,7 +58,7 @@ class EvolveAllWorker(object):
 
         # Evolve all is used - Don't run after the first tick or if the config flag is false
         if self.bot.tick_count is not 0 or not self.config.use_lucky_egg:
-            return True
+            return False 
 
         lucky_egg_count = self.bot.item_inventory_count(Item.ITEM_LUCKY_EGG.value)
 
