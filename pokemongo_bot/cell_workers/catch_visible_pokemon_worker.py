@@ -55,6 +55,7 @@ class CatchVisiblePokemonWorker(object):
         self.api.fort_details(fort_id=fort['id'],
                               latitude=fort['latitude'],
                               longitude=fort['longitude'])
+
         response_dict = self.api.call()
         fort_details = response_dict.get('responses', {}).get('FORT_DETAILS', {})
         fort_name = fort_details.get('name', 'Unknown').encode('utf8', 'replace')

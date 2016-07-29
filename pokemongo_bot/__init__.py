@@ -36,6 +36,7 @@ class PokemonGoBot(object):
         cell_workers.EvolveAllWorker,
         cell_workers.RecycleItemsWorker,
         cell_workers.CatchVisiblePokemonWorker,
+        cell_workers.SeenFortWorker,
         cell_workers.SpinNearestFortWorker
     ]
 
