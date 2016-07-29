@@ -223,6 +223,7 @@ class PokemonCatchWorker(object):
                             break
         time.sleep(5)
 
+
     def count_pokemon_inventory(self):
         # don't use cached bot.get_inventory() here
         # because we need to have actual information in capture logic
