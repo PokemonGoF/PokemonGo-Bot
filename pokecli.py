@@ -311,6 +311,7 @@ def init_config():
         load,
         short_flag="-ac",
         long_flag="--avoid_circles",
+        embedded_in="forts",
         help="Avoids circles (pokestops) of the max size set in max_circle_size flag",
         type=bool,
         default=False
@@ -320,6 +321,7 @@ def init_config():
         load,
         short_flag="-mcs",
         long_flag="--max_circle_size",
+        embedded_in="forts",
         help="If avoid_circles flag is set, this flag specifies the maximum size of circles (pokestops) avoided",
         type=int,
         default=10
@@ -366,12 +368,15 @@ def init_config():
 
     return config
 
-def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
+def add_config(parser, json_config, short_flag=None, long_flag=None, embedded_in=None, **kwargs):
     if not long_flag:
         raise Exception('add_config calls requires long_flag parameter!')
     if 'default' in kwargs:
         attribute_name = long_flag.split('--')[1]
-        kwargs['default'] = json_config.get(attribute_name, kwargs['default'])
+        if embedded_in is not None:
+            kwargs['default'] = json_config.get(embedded_in).get(attribute_name, kwargs['default'])
+        else:
+            kwargs['default'] = json_config.get(attribute_name, kwargs['default'])
     if short_flag:
         args = (short_flag, long_flag)
     else:
