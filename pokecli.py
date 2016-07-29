@@ -373,7 +373,7 @@ def add_config(parser, json_config, short_flag=None, long_flag=None, embedded_in
         raise Exception('add_config calls requires long_flag parameter!')
     if 'default' in kwargs:
         attribute_name = long_flag.split('--')[1]
-        if embedded_in:
+        if embedded_in is not None:
             kwargs['default'] = json_config.get(embedded_in).get(attribute_name, kwargs['default'])
         else:
             kwargs['default'] = json_config.get(attribute_name, kwargs['default'])
