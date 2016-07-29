@@ -69,15 +69,20 @@ class IncubateEggsWorker(object):
         for inv_data in inv:
             inv_data = inv_data.get("inventory_item_data", {})
             if "egg_incubators" in inv_data:
-                for incubator in inv_data.get("egg_incubators", {}).get("egg_incubator", []):
+                incubators = inv_data.get("egg_incubators", {}).get("egg_incubator",[])
+                if isinstance(incubators, basestring): # checking for old response
+                    incubators = [incubators]
+                for incubator in incubators:
                     if 'pokemon_id' in incubator:
                         self.used_incubators.append({"id":incubator.get('id', -1), "km":incubator.get('target_km_walked', 9001)})
                     else:
                         self.ready_incubators.append({"id":incubator.get('id',-1)})
+                continue
             if "pokemon_data" in inv_data:
                 pokemon = inv_data.get("pokemon_data", {})
                 if pokemon.get("is_egg", False) and "egg_incubator_id" not in pokemon:
                     self.eggs.append({"id": pokemon.get("id", -1), "km": pokemon.get("egg_km_walked_target", -1), "used": False})
+                continue
             if "player_stats" in inv_data:
                 self.km_walked = inv_data.get("player_stats", {}).get("km_walked", 0)
 
