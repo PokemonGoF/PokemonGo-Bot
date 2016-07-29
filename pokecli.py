@@ -342,6 +342,13 @@ def init_config():
             ' Set these to true or false and remove "mode" from your configuration')
         return None
 
+    if (config.evolve_captured
+        and (not isinstance(config.evolve_captured, str)
+             or str(config.evolve_captured).lower() in ["true", "false"])):
+        parser.error('"evolve_captured" should be list of pokemons: use "all" or "none" to match all ' +
+                     'or none of the pokemons, or use a comma separated list such as "Pidgey,Weedle,Caterpie"')
+        return None
+
     if not (config.location or config.location_cache):
         parser.error("Needs either --use-location-cache or --location.")
         return None
