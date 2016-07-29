@@ -34,7 +34,8 @@ class SoftBanWorker(object):
         if fort_distance > Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
             MoveToFortWorker(self.bot).work()
             self.bot.recent_forts = self.bot.recent_forts[0:-1]
-            del self.bot.fort_timeouts[forts[0]['id']]
+            if forts[0]['id'] in self.bot.fort_timeouts:
+                del self.bot.fort_timeouts[forts[0]['id']]
             return WorkerResult.RUNNING
         else:
             logger.log('Starting 50 spins...')
