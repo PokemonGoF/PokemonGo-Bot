@@ -10,7 +10,7 @@
       "spin": true,
       "avoid_circles": true,
       "max_circle_size": 50,
-      "show_name": false
+      "show_name": true
     },
     "websocket_server": false,
     "walk": 4.16,
