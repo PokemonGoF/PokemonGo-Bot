@@ -27,7 +27,7 @@ Author: tjado <https://github.com/tejado>
 
 import argparse
 import codecs
-import json
+import commentjson as json
 import logging
 import os
 import ssl
