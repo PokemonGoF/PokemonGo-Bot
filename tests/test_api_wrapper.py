@@ -1,3 +1,7 @@
+import sys
+
+sys.path.append('../')
+
 from mock import Mock, MagicMock, patch
 from nose.tools import *
 
