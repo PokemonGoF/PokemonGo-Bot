@@ -8,6 +8,7 @@ import logger
 class ApiWrapper(object):
     def __init__(self, api):
         self._api = api
+        self.request_callers = []
         self.reset_auth()
 
     def reset_auth(self):
@@ -24,9 +25,34 @@ class ApiWrapper(object):
             raise NotLoggedInException()
         return True
 
-    def call(self, max_retry=5):
-        if not self._can_call():
+    def _pop_request_callers(self):
+        r = self.request_callers
+        self.request_callers = []
+        return [i.upper() for i in r]
+
+    def _is_response_valid(self, result, request_callers):
+        if not result or result is None or not isinstance(result, dict):
             return False
+
+        if not 'responses' in result or not 'status_code' in result:
+            return False
+
+        if not isinstance(result['responses'], dict):
+            return False
+
+        # the response can still programatically be valid at this point
+        # but still be wrong. we need to check if the server did sent what we asked it
+        for request_caller in request_callers:
+            if not request_caller in result['responses']:
+                return False
+
+        return True
+
+
+    def call(self, max_retry=5):
+        request_callers = self._pop_request_callers()
+        if not self._can_call():
+            return False # currently this is never ran, exceptions are raised before
 
         api_req_method_list = self._api._req_method_list
         result = None
@@ -34,7 +60,7 @@ class ApiWrapper(object):
         while True:
             self._api._req_method_list = [req_method for req_method in api_req_method_list] # api internally clear this field after a call
             result = self._api.call()
-            if result is None:
+            if not self._is_response_valid(result, request_callers):
                 try_cnt += 1
                 logger.log('Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry), 'red')
                 if try_cnt >= max_retry:
@@ -49,6 +75,9 @@ class ApiWrapper(object):
 
     # fallback
     def __getattr__(self, func):
+        DEFAULT_ATTRS = ['_position_lat', '_position_lng', '_auth_provider', '_api_endpoint', 'set_position', 'get_position']
+        if func not in DEFAULT_ATTRS:
+            self.request_callers.append(func)
         return getattr(self._api, func)
 
 
