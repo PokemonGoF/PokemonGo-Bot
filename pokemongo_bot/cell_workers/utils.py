@@ -3,7 +3,6 @@
 import struct
 from math import cos, asin, sqrt
 from colorama import init
-from s2sphere import CellId, LatLng
 init()
 
 TIME_PERIODS = (
@@ -12,21 +11,6 @@ TIME_PERIODS = (
     (86400, 'day'),
     (86400*7, 'week')
 )
-
-
-def get_cellid(lat, long, radius=10):
-    origin = CellId.from_lat_lng(LatLng.from_degrees(lat, long)).parent(15)
-    walk = [origin.id()]
-
-    # 10 before and 10 after
-    next = origin.next()
-    prev = origin.prev()
-    for i in range(radius):
-        walk.append(prev.id())
-        walk.append(next.id())
-        next = next.next()
-        prev = prev.prev()
-    return sorted(walk)
 
 def encode(cellid):
     output = []

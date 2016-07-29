@@ -11,11 +11,11 @@ import time
 
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
-from pgoapi.utilities import f2i
+from pgoapi.utilities import f2i, get_cell_ids
 
 import logger
 import cell_workers
-from cell_workers.utils import distance, get_cellid, encode, i2f
+from cell_workers.utils import distance, encode, i2f
 from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
@@ -129,7 +129,7 @@ class PokemonGoBot(object):
             alt = 0
 
         if cells == []:
-            cellid = get_cellid(lat, lng)
+            cellid = get_cell_ids(lat, lng)
             timestamp = [0, ] * len(cellid)
             self.api.get_map_objects(
                 latitude=f2i(lat),
@@ -181,7 +181,7 @@ class PokemonGoBot(object):
 
 
     def find_close_cells(self, lat, lng):
-        cellid = get_cellid(lat, lng)
+        cellid = get_cell_ids(lat, lng)
         timestamp = [0, ] * len(cellid)
 
         self.api.get_map_objects(
