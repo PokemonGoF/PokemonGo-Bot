@@ -28,6 +28,7 @@ class SeenFortWorker(object):
     def work(self):
         lat = self.fort['latitude']
         lng = self.fort['longitude']
+        ret = 0
 
         self.api.fort_details(fort_id=self.fort['id'],
                               latitude=lat,
@@ -40,25 +41,11 @@ class SeenFortWorker(object):
             fort_name = fort_details['name'].encode('utf8', 'replace')
         else:
             fort_name = 'Unknown'
-        logger.log('Now at Pokestop: ' + fort_name,
+        if self.bot.softbanned == False:
+            logger.log('Now at Pokestop: ' + fort_name,
                    'cyan')
-        if self.config.catch_pokemon and 'lure_info' in self.fort:
-            # Check if the lure has a pokemon active
-            if 'encounter_id' in self.fort['lure_info']:
-                logger.log("Found a lure on this pokestop! Catching pokemon...", 'cyan')
-
-                pokemon = {
-                    'encounter_id': self.fort['lure_info']['encounter_id'],
-                    'fort_id': self.fort['id'],
-                    'latitude': self.fort['latitude'],
-                    'longitude': self.fort['longitude']
-                }
-
-                self.catch_pokemon(pokemon)
-
-            else:
-                logger.log('Found a lure, but there is no pokemon present.', 'yellow')
-            sleep(2)
+        else:
+            logger.log('Using Pokestop: ' + fort_name + ' to try to remove ban', 'red')
 
         logger.log('Spinning ...', 'cyan')
 
@@ -74,15 +61,18 @@ class SeenFortWorker(object):
             spin_details = response_dict['responses']['FORT_SEARCH']
             spin_result = spin_details.get('result', -1)
             if spin_result == 1:
-                logger.log("Loot: ", 'green')
                 experience_awarded = spin_details.get('experience_awarded',
                                                       False)
                 if experience_awarded:
+                    logger.log("Loot: ", 'green')
                     logger.log(str(experience_awarded) + " xp",
                                'green')
+                    if self.bot.softbanned == True:
+                       logger.log("Softban removed!", "green") 
+                       self.bot.softbanned = False
 
                 items_awarded = spin_details.get('items_awarded', False)
-                if items_awarded:
+                if items_awarded and self.bot.softbanned == False:
                     self.bot.latest_inventory = None
                     tmp_count_items = {}
                     for item in items_awarded:
@@ -96,7 +86,8 @@ class SeenFortWorker(object):
                         item_name = self.item_list[str(item_id)]
                         logger.log('- ' + str(item_count) + "x " + item_name + " (Total: " + str(self.bot.item_inventory_count(item_id)) + ")", 'yellow')
                 else:
-                    logger.log("[#] Nothing found.", 'yellow')
+                    if self.bot.softbanned == False:
+                        logger.log("[#] Nothing found.", 'yellow')
 
                 pokestop_cooldown = spin_details.get(
                     'cooldown_complete_timestamp_ms')
@@ -107,17 +98,10 @@ class SeenFortWorker(object):
                         format_time((pokestop_cooldown / 1000) -
                                     seconds_since_epoch)))
 
-                if not items_awarded and not experience_awarded and not pokestop_cooldown:
-                    message = (
-                        'Stopped at Pokestop and did not find experience, items '
-                        'or information about the stop cooldown. You are '
-                        'probably softbanned. Try to play on your phone, '
-                        'if pokemons always ran away and you find nothing in '
-                        'PokeStops you are indeed softbanned. Please try again '
-                        'in a few hours.')
-                    raise RuntimeError(message)
+                if self.bot.softbanned == False and not items_awarded and not experience_awarded and not pokestop_cooldown:
+                    logger.log("Seems you are softbanned, trying to fix...", "red")
+                    self.bot.softbanned = True
 
-                self.bot.recent_forts = self.bot.recent_forts[1:] + [self.fort['id']]
             elif spin_result == 2:
                 logger.log("[#] Pokestop out of range")
             elif spin_result == 3:
@@ -140,11 +124,30 @@ class SeenFortWorker(object):
                 return response_dict['responses']['FORT_SEARCH'][
                     'chain_hack_sequence_number']
             else:
-                logger.log('Possibly searching too often - taking a short rest :)', 'yellow')
+                if self.bot.softbanned == False:
+                    logger.log('Possibly searching too often - taking a short rest :)', 'yellow')
                 self.bot.fort_timeouts[self.fort["id"]] = (time.time() + 300) * 1000  # Don't spin for 5m
-                return 11
+                ret = 11
+ 
+        if self.config.catch_pokemon and 'lure_info' in self.fort and self.bot.softbanned == False:
+            # Check if the lure has a pokemon active
+            if 'encounter_id' in self.fort['lure_info']:
+                logger.log("Found a lure on this pokestop! Catching pokemon...", 'cyan')
+
+                pokemon = {
+                    'encounter_id': self.fort['lure_info']['encounter_id'],
+                    'fort_id': self.fort['id'],
+                    'latitude': self.fort['latitude'],
+                    'longitude': self.fort['longitude']
+                }
+
+                self.catch_pokemon(pokemon)
+
+            else:
+                logger.log('Found a lure, but there is no pokemon present.', 'yellow')
+
         sleep(2)
-        return 0
+        return ret
 
     def catch_pokemon(self, pokemon):
         worker = PokemonCatchWorker(pokemon, self.bot)

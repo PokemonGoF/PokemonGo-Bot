@@ -60,3 +60,4 @@ class SpinNearestFortWorker(object):
                 return forts[0]
             else:
                 return None
+

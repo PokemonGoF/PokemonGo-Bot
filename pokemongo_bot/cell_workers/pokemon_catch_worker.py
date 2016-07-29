@@ -122,9 +122,12 @@ class PokemonCatchWorker(object):
                                     logger.log('Catch Rate with normal Pokeball has increased to {}%'.format(success_percentage))
                                 else:
                                     if response_dict['status_code'] is 1:
-                                        logger.log('Fail to use berry. Seem like you are softbanned.', 'red')
+                                        logger.log('Failed to use berry. Seems like you are softbanned.', 'red')
+                                        logger.log('Heading to nearest Pokestop to attempt unban.', 'red')
+                                        self.bot.softbanned = True
+                                        break
                                     else:
-                                        logger.log('Fail to use berry. Status Code: {}'.format(response_dict['status_code']),'red')
+                                        logger.log('Failed to use berry. Status Code: {}'.format(response_dict['status_code']),'red')
 
                             # change ball to next tier if catch rate is too low
                             current_type = pokeball

@@ -15,7 +15,7 @@ class CatchVisiblePokemonWorker(object):
         self.position = bot.position
 
     def work(self):
-        if not self.config.catch_pokemon:
+        if not self.config.catch_pokemon or self.bot.softbanned:
             return
 
         if 'catchable_pokemons' in self.cell and len(self.cell['catchable_pokemons']) > 0:
