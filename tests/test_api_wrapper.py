@@ -1,25 +1,21 @@
-import sys
-
-sys.path.append('../')
-
 from mock import Mock, MagicMock, patch
-from nose.tools import *
+from nose.tools import ok_, eq_, raises, timed, TimeExpired
 
 from pgoapi import PGoApi
 from pgoapi.exceptions import NotLoggedInException, ServerBusyOrOfflineException
 from pokemongo_bot.api_wrapper import ApiWrapper
 
 class TestApiWrapper(object):
-    def setUp(self):
+    def setup(self):
         self._api = PGoApi()
         self.api = ApiWrapper(self._api)
         self.api.requests_per_seconds = 5
 
-    def tearDown(self):
+    def teardown(self):
         pass
 
     @raises(NotLoggedInException)
-    def test_raises_NotLoggedInException(self):
+    def test_raises_not_logged_in_exception(self):
         self.api.get_inventory(test='awesome')
         self.api.call()
 
@@ -29,7 +25,7 @@ class TestApiWrapper(object):
 
     @raises(ServerBusyOrOfflineException)
     @patch('pokemongo_bot.api_wrapper.sleep')
-    def test_api_server_is_unreachable_raises_ServerBusyOrOfflineException(self, sleep):
+    def test_api_server_is_unreachable_raises_server_busy_or_offline_exception(self, sleep):
         sleep.return_value = True # we don't need to really sleep
         self._api.call = MagicMock(return_value=True)
         self.api._can_call = MagicMock(return_value=True)
@@ -60,8 +56,8 @@ class TestApiWrapper(object):
         for wrong in wrong_return_values:
             # self._api.call = MagicMock(return_value=wrong)
 
-            isValid = self.api._is_response_valid(wrong, request_callers)
-            ok_(isValid == False, 'return value {} is valid somehow ?'.format(wrong))
+            is_valid = self.api._is_response_valid(wrong, request_callers)
+            ok_(is_valid == False, 'return value {} is valid somehow ?'.format(wrong))
 
 
     def test_return_value_is_valid(self):
@@ -102,7 +98,3 @@ class TestApiWrapper(object):
 
         for i in range(self.api.requests_per_seconds * 2):
             self.api.call()
-
-
-
-
