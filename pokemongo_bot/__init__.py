@@ -52,7 +52,7 @@ class PokemonGoBot(object):
         self.metrics = Metrics(self)
         self.latest_inventory = None
         self.cell = None
-        self.recent_forts = [None] * config.max_circle_size
+        self.recent_forts = [None] * config.forts_max_circle_size
         self.tick_count = 0
 
         # Make our own copy of the workers for this instance
