@@ -41,4 +41,3 @@
  * surceis
  * SpaceWhale
  * klingan
- * reddivision
