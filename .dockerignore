@@ -1,3 +1,4 @@
 .idea
 .git*
-configs/config.json
+**/*config.json
+**/*userdata.js
