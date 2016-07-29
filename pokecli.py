@@ -140,6 +140,14 @@ def init_config():
     add_config(
         parser,
         load,
+        short_flag="-ws",
+        long_flag="--websocket_server",
+        help="Start websocket server (format 'host:port')",
+        default=False
+    )
+    add_config(
+        parser,
+        load,
         short_flag="-p",
         long_flag="--password",
         help="Password",
@@ -174,10 +182,10 @@ def init_config():
     add_config(
         parser,
         load,
-        long_flag="--spin_forts",
+        long_flag="--forts.spin",
         help="Enable Spinning Pokestops",
         type=bool,
-        default=True
+        default=True,
     )
     add_config(
         parser,
@@ -267,9 +275,9 @@ def init_config():
         load,
         short_flag="-ec",
         long_flag="--evolve_captured",
-        help="(Ad-hoc mode) Bot will attempt to evolve all the pokemon captured!",
-        type=bool,
-        default=False
+        help="(Ad-hoc mode) Pass \"all\" or a list of pokemon to evolve (e.g., \"Pidgey,Weedle,Caterpie\"). Bot will attempt to evolve all the pokemon captured!",
+        type=str,
+        default=[]
     )
     add_config(
         parser,
@@ -302,19 +310,19 @@ def init_config():
         parser,
         load,
         short_flag="-ac",
-        long_flag="--avoid_circles",
+        long_flag="--forts.avoid_circles",
         help="Avoids circles (pokestops) of the max size set in max_circle_size flag",
         type=bool,
-        default=False
+        default=False,
     )
     add_config(
         parser,
         load,
         short_flag="-mcs",
-        long_flag="--max_circle_size",
+        long_flag="--forts.max_circle_size",
         help="If avoid_circles flag is set, this flag specifies the maximum size of circles (pokestops) avoided",
         type=int,
-        default=10
+        default=10,
     )
 
     # Start to parse other attrs
@@ -342,6 +350,13 @@ def init_config():
             ' Set these to true or false and remove "mode" from your configuration')
         return None
 
+    if (config.evolve_captured
+        and (not isinstance(config.evolve_captured, str)
+             or str(config.evolve_captured).lower() in ["true", "false"])):
+        parser.error('"evolve_captured" should be list of pokemons: use "all" or "none" to match all ' +
+                     'or none of the pokemons, or use a comma separated list such as "Pidgey,Weedle,Caterpie"')
+        return None
+
     if not (config.location or config.location_cache):
         parser.error("Needs either --use-location-cache or --location.")
         return None
@@ -355,27 +370,48 @@ def init_config():
 
     if config.evolve_all and isinstance(config.evolve_all, str):
         config.evolve_all = [str(pokemon_name) for pokemon_name in config.evolve_all.split(',')]
+    if config.evolve_captured and isinstance(config.evolve_captured, str):
+        config.evolve_captured = [str(pokemon_name) for pokemon_name in config.evolve_captured.split(',')]
 
+    fix_nested_config(config)
     return config
 
 def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
     if not long_flag:
         raise Exception('add_config calls requires long_flag parameter!')
+
+    full_attribute_path = long_flag.split('--')[1]
+    attribute_name = full_attribute_path.split('.')[-1]
+
+    if '.' in full_attribute_path: # embedded config!
+        embedded_in = full_attribute_path.split('.')[0: -1]
+        for level in embedded_in:
+            json_config = json_config.get(level, {})
+
     if 'default' in kwargs:
-        attribute_name = long_flag.split('--')[1]
         kwargs['default'] = json_config.get(attribute_name, kwargs['default'])
     if short_flag:
         args = (short_flag, long_flag)
     else:
         args = (long_flag,)
     parser.add_argument(*args, **kwargs)
-    
+
+
+def fix_nested_config(config):
+    config_dict = config.__dict__
+
+    for key, value in config_dict.iteritems():
+        if '.' in key:
+            new_key = key.replace('.', '_')
+            config_dict[new_key] = value
+            del config_dict[key]
+
 def parse_unicode_str(string):
     try:
         return string.decode('utf8')
     except UnicodeEncodeError:
         return string
 
-    
+
 if __name__ == '__main__':
     main()

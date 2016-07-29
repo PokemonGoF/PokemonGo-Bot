@@ -6,6 +6,7 @@ from pokemongo_bot import logger
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.cell_workers import PokemonCatchWorker
 
+
 class CatchVisiblePokemonWorker(object):
     def __init__(self, bot):
         self.bot = bot
@@ -30,9 +31,6 @@ class CatchVisiblePokemonWorker(object):
             for pokemon in self.cell['catchable_pokemons']:
                 with open(user_web_catchable, 'w') as outfile:
                     json.dump(pokemon, outfile)
-
-                with open(user_web_catchable, 'w') as outfile:
-                    json.dump({}, outfile)
 
             return self.catch_pokemon(self.cell['catchable_pokemons'][0])
 

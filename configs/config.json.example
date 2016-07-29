@@ -6,7 +6,12 @@
     "gmapkey": "GOOGLE_MAPS_API_KEY",
     "max_steps": 5,
     "catch_pokemon": true,
-    "spin_forts": true,
+    "forts": {
+      "spin": true,
+      "avoid_circles": true,
+      "max_circle_size": 50
+    },
+    "websocket_server": false,
     "walk": 4.16,
     "action_wait_min": 1,
     "action_wait_max": 4,
@@ -30,12 +35,8 @@
     "use_lucky_egg": false,
     "hatch_eggs": true,
     "longer_eggs_first": true,
-    "evolve_captured": false,
+    "evolve_captured": "NONE",
     "release_pokemon": true,
-    "spin_forts": {
-      "avoid_circles": false,
-      "max_circle_size": 10
-    },
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},

@@ -15,8 +15,12 @@ class Polyline(object):
         self.URL = '{}&origin={}&destination={}'.format(self.DISTANCE_API_URL,
                                                    '{},{}'.format(*self.origin),
                                                    '{},{}'.format(*self.destination))
-        self.polyline_points = [x['polyline']['points'] for x in
-                                requests.get(self.URL).json()['routes'][0]['legs'][0]['steps']]
+        self.request_responce = requests.get(self.URL).json()
+        try:
+            self.polyline_points = [x['polyline']['points'] for x in
+                                    self.request_responce['routes'][0]['legs'][0]['steps']]
+        except IndexError:
+            self.polyline_points = self.request_responce['routes']
         self.speed = float(speed)
         self.points = [self.origin] + self.get_points(self.polyline_points) + [self.destination]
         self.lat, self.long = self.points[0][0], self.points[0][1]
