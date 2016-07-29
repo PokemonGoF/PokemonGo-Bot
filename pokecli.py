@@ -363,13 +363,25 @@ def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
         raise Exception('add_config calls requires long_flag parameter!')
     if 'default' in kwargs:
         attribute_name = long_flag.split('--')[1]
-        kwargs['default'] = json_config.get(attribute_name, kwargs['default'])
+        val = _search_nested_dict(json_config, attribute_name)
+        if val is not None:
+            kwargs['default'] = val
     if short_flag:
         args = (short_flag, long_flag)
     else:
         args = (long_flag,)
     parser.add_argument(*args, **kwargs)
-    
+
+
+def _search_nested_dict(dict_, key):
+    if key in dict_:
+            return dict_[key]
+    for k, v in dict_.items():
+        if isinstance(v, dict):
+            val = _search_nested_dict(v, key)
+            if val is not None:
+                return val
+
 def parse_unicode_str(string):
     try:
         return string.decode('utf8')
