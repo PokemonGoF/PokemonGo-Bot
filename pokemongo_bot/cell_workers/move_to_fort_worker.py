@@ -24,14 +24,14 @@ class MoveToFortWorker(object):
         # print('Found fort {} at distance {}m'.format(fortID, dist))
         if fortID not in self.bot.lastFort:
             self.bot.lastFort = {fortID:dist}
-            logger.log('[x] Found fort {} at distance {}'.format(
+            logger.log('Found fort {} at distance {}'.format(
                 fortID, format_dist(dist, unit)))
             if dist > 10:
-                logger.log('[x] Need to move closer to Pokestop')
+                logger.log('Need to move closer to Pokestop')
         else:
             changed = self.bot.lastFort[fortID] - dist
             if changed >= 10:
-                logger.log("[x] We are now {} away from fort {}".format(
+                logger.log("We are now {} away from fort {}".format(
                     format_dist(dist,unit),fortID))
                 self.bot.lastFort[fortID] = dist
         if dist > 10:
@@ -45,5 +45,5 @@ class MoveToFortWorker(object):
             if not step_walker.step():
                 return WorkerResult.RUNNING
 
-        logger.log('[o] Arrived at Pokestop')
+        logger.log('Arrived at Pokestop')
         return WorkerResult.SUCCESS
