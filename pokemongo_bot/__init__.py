@@ -51,13 +51,15 @@ class PokemonGoBot(object):
         random.seed()
 
     def _setup_event_system(self):
-        self.event_manager = EventManager(
-            LoggingHandler(),
-            SocketIoHandler()
-        )
+        handlers = [LoggingHandler()]
+        if self.config.websocket_server:
+            websocket_handler = SocketIoHandler(self.config.websocket_server)
+            handlers.append(websocket_handler)
 
-        self.sio_runner = SocketIoRunner('localhost', 4000)
-        self.sio_runner.start_listening_async()
+            self.sio_runner = SocketIoRunner(self.config.websocket_server)
+            self.sio_runner.start_listening_async()
+
+        self.event_manager = EventManager(*handlers)
 
         # Registering event:
         # self.event_manager.register_event("location", parameters=['lat', 'lng'])

@@ -9,9 +9,9 @@ patcher.monkey_patch(all=True)
 
 class SocketIoRunner(object):
 
-    def __init__(self, listen_address, listen_port):
-        self.listen_address = listen_address
-        self.listen_port = listen_port
+    def __init__(self, url):
+        self.host, port_str = url.split(':')
+        self.port = int(port_str)
         self.server = None
 
         # create the thread object
@@ -29,5 +29,5 @@ class SocketIoRunner(object):
 
     def _start_listening_blocking(self):
         # deploy as an eventlet WSGI server
-        listener = eventlet.listen((self.listen_address, self.listen_port))
+        listener = eventlet.listen((self.host, self.port))
         self.server = wsgi.server(listener, self.app, log_output=False, debug=False)

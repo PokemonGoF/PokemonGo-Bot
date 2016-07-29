@@ -6,6 +6,7 @@
     "gmapkey": "GOOGLE_MAPS_API_KEY",
     "max_steps": 5,
     "catch_pokemon": true,
+    "websocket_server": false,
     "spin_forts": true,
     "walk": 4.16,
     "action_wait_min": 1,
