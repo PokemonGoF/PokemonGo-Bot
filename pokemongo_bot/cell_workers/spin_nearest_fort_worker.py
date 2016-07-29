@@ -37,26 +37,16 @@ class SpinNearestFortWorker(object):
         return self.config.forts_spin and enough_space
 
     def get_nearest_fort(self):
-        if 'forts' in self.cell:
-            # Only include those with a lat/long
-            forts = [fort
-                     for fort in self.cell['forts']
-                     if 'latitude' in fort and 'type' in fort]
-            gyms = [gym for gym in self.cell['forts'] if 'gym_points' in gym]
+        forts = self.bot.get_forts()
 
-            # Remove stops that are still on timeout
-            forts = filter(lambda x: x["id"] not in self.fort_timeouts, forts)
+        # Remove stops that are still on timeout
+        forts = filter(lambda x: x["id"] not in self.fort_timeouts, forts)
 
-            # Remove all forts which were spun in the last ticks to avoid circles if set
-            if self.config.forts_void_circles:
-                forts = filter(lambda x: x["id"] not in self.recent_forts, forts)
+        # Remove all forts which were spun in the last ticks to avoid circles if set
+        if self.config.avoid_circles:
+            forts = filter(lambda x: x["id"] not in self.recent_forts, forts)
 
-            # Sort all by distance from current pos- eventually this should
-            # build graph & A* it
-            forts.sort(key=lambda x: distance(self.position[
-                       0], self.position[1], x['latitude'], x['longitude']))
-
-            if len(forts) > 0:
-                return forts[0]
-            else:
-                return None
+        if len(forts) > 0:
+            return forts[0]
+        else:
+            return None

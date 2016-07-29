@@ -22,12 +22,8 @@ class MoveToFortWorker(object):
 
         dist = distance(self.position[0], self.position[1], lat, lng)
 
-        # print('Found fort {} at distance {}m'.format(fortID, dist))
-        logger.log('[x] Found fort {} at distance {}'.format(
-            fortID, format_dist(dist, unit)))
-
         if dist > 10:
-            logger.log('[x] Need to move closer to Pokestop')
+            logger.log('Moving towards fort {}, {} left'.format(fortID, format_dist(dist, unit)))
 
             step_walker = StepWalker(
                 self.bot,
@@ -39,5 +35,5 @@ class MoveToFortWorker(object):
             if not step_walker.step():
                 return WorkerResult.RUNNING
 
-        logger.log('[o] Arrived at Pokestop')
+        logger.log('Arrived at Pokestop')
         return WorkerResult.SUCCESS

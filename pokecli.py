@@ -140,6 +140,14 @@ def init_config():
     add_config(
         parser,
         load,
+        short_flag="-ws",
+        long_flag="--websocket_server",
+        help="Start websocket server (format 'host:port')",
+        default=False
+    )
+    add_config(
+        parser,
+        load,
         short_flag="-p",
         long_flag="--password",
         help="Password",
