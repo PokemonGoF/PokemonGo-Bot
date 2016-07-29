@@ -36,7 +36,7 @@ This bot takes a strong stance against automating gym battles. Botting gyms will
 All information on [Getting Started](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Getting-Started) is available in the [Wiki](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/)!
 - __Installation__
   - [Requirements] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation#requirements-click-each-one-for-install-guide)
-  - [How to run with Docker](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation#how-to-run-with-docker)
+  - [How to run with Docker](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/How-to-run-with-Docker)
   - [Linux] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation#installation-linux)
   - [Mac] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation#installation-mac)
   - [Windows] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation#installation-windows)
