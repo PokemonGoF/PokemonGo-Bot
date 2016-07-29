@@ -41,7 +41,7 @@ class SpinNearestFortWorker(object):
         forts = filter(lambda x: x["id"] not in self.fort_timeouts, forts)
 
         # Remove all forts which were spun in the last ticks to avoid circles if set
-        if self.config.avoid_circles:
+        if self.config.forts_avoid_circles:
             forts = filter(lambda x: x["id"] not in self.recent_forts, forts)
 
         if len(forts) > 0:
