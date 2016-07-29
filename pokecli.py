@@ -182,11 +182,10 @@ def init_config():
     add_config(
         parser,
         load,
-        long_flag="--spin",
+        long_flag="--forts.spin",
         help="Enable Spinning Pokestops",
         type=bool,
         default=True,
-        embedded_in='forts'
     )
     add_config(
         parser,
@@ -311,21 +310,19 @@ def init_config():
         parser,
         load,
         short_flag="-ac",
-        long_flag="--avoid_circles",
+        long_flag="--forts.avoid_circles",
         help="Avoids circles (pokestops) of the max size set in max_circle_size flag",
         type=bool,
         default=False,
-        embedded_in='forts'
     )
     add_config(
         parser,
         load,
         short_flag="-mcs",
-        long_flag="--max_circle_size",
+        long_flag="--forts.max_circle_size",
         help="If avoid_circles flag is set, this flag specifies the maximum size of circles (pokestops) avoided",
         type=int,
         default=10,
-        embedded_in='forts'
     )
 
     # Start to parse other attrs
@@ -370,22 +367,35 @@ def init_config():
     import pdb; pdb.set_trace()
     return config
 
-def add_config(parser, json_config, short_flag=None, long_flag=None, embedded_in=None, **kwargs):
+def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
     if not long_flag:
         raise Exception('add_config calls requires long_flag parameter!')
+
+    full_attribute_path = long_flag.split('--')[1]
+    attribute_name = full_attribute_path.split('.')[-1]
+
+    if '.' in full_attribute_path: # embedded config!
+        embedded_in = full_attribute_path.split('.')[0: -1]
+        for level in embedded_in:
+            json_config = json_config.get(level, {})
+
     if 'default' in kwargs:
-        attribute_name = long_flag.split('--')[1]
-        if embedded_in:
-            json_config = json_config.get(embedded_in, None)
-            if not json_config:
-                raise Exception('Container "{}" for key "{}" didnt found!'.format(embedded_in, attribute_name))
-            kwargs['dest'] = "{}_{}".format(embedded_in, attribute_name)
         kwargs['default'] = json_config.get(attribute_name, kwargs['default'])
     if short_flag:
         args = (short_flag, long_flag)
     else:
         args = (long_flag,)
     parser.add_argument(*args, **kwargs)
+
+
+def fix_nested_config(config):
+    config_dict = config.__dict__
+
+    for key, value in config_dict.iteritems():
+        if '.' in key:
+            new_key = key.replace('.', '_')
+            config_dict[new_key] = value
+            del config_dict[key]
 
 def parse_unicode_str(string):
     try:
