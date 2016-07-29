@@ -34,6 +34,7 @@ class ApiWrapper(object):
         return [i.upper() for i in r]
 
     def _is_response_valid(self, result, request_callers):
+     
         if not result or result is None or not isinstance(result, dict):
             return False
 
@@ -66,6 +67,8 @@ class ApiWrapper(object):
             request_timestamp = self.throttle_sleep()
             self._api._req_method_list = [req_method for req_method in api_req_method_list] # api internally clear this field after a call
             result = self._api.call()
+            time.sleep(0.2)  #This solves a null response porlbem at first try.
+            
             if not self._is_response_valid(result, request_callers):
                 try_cnt += 1
                 logger.log('Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry), 'red')
