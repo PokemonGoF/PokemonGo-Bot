@@ -13,7 +13,6 @@ class MoveToFortWorker(object):
         self.config = bot.config
         self.fort_timeouts = bot.fort_timeouts
         self.recent_forts = bot.recent_forts
-        self.navigator = bot.navigator
         self.position = bot.position
 
     def should_run(self):
@@ -57,7 +56,7 @@ class MoveToFortWorker(object):
         return WorkerResult.SUCCESS
 
     def get_nearest_fort(self):
-        forts = self.bot.get_forts()
+        forts = self.bot.get_forts(order_by_distance=True)
 
         # Remove stops that are still on timeout
         forts = filter(lambda x: x["id"] not in self.fort_timeouts, forts)
