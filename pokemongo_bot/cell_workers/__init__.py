@@ -9,3 +9,4 @@ from pokemon_catch_worker import PokemonCatchWorker
 from pokemon_transfer_worker import PokemonTransferWorker
 from recycle_items_worker import RecycleItemsWorker
 from seen_fort_worker import SeenFortWorker
+from soft_ban_worker import SoftBanWorker

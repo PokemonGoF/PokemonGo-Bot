@@ -46,6 +46,7 @@ class SeenFortWorker(object):
             spin_details = response_dict['responses']['FORT_SEARCH']
             spin_result = spin_details.get('result', -1)
             if spin_result == 1:
+                self.bot.softban = False
                 logger.log("Loot: ", 'green')
                 experience_awarded = spin_details.get('experience_awarded',
                                                       False)
@@ -82,16 +83,6 @@ class SeenFortWorker(object):
                         format_time((pokestop_cooldown / 1000) -
                                     seconds_since_epoch)))
 
-                if not items_awarded and not experience_awarded and not pokestop_cooldown:
-                    message = (
-                        'Stopped at Pokestop and did not find experience, items '
-                        'or information about the stop cooldown. You are '
-                        'probably softbanned. Try to play on your phone, '
-                        'if pokemons always ran away and you find nothing in '
-                        'PokeStops you are indeed softbanned. Please try again '
-                        'in a few hours.')
-                    raise RuntimeError(message)
-
                 self.bot.recent_forts = self.bot.recent_forts[1:] + [fort['id']]
             elif spin_result == 2:
                 logger.log("[#] Pokestop out of range")
@@ -116,7 +107,11 @@ class SeenFortWorker(object):
                     'chain_hack_sequence_number']
             else:
                 logger.log('Possibly searching too often - taking a short rest :)', 'yellow')
-                self.bot.fort_timeouts[fort["id"]] = (time.time() + 300) * 1000  # Don't spin for 5m
+                if spin_result == 1 and not items_awarded and not experience_awarded and not pokestop_cooldown:
+                    self.bot.softban = True
+                    logger.log('[!] Possibly got softban too...', 'red')
+                else:
+                    self.bot.fort_timeouts[fort["id"]] = (time.time() + 300) * 1000  # Don't spin for 5m
                 return 11
         sleep(2)
         return 0

@@ -300,6 +300,15 @@ def init_config():
     add_config(
         parser,
         load,
+        short_flag="-bf",
+        long_flag="--softban_fix",
+        help="Fix softban automatically",
+        type=bool,
+        default=False
+    )
+    add_config(
+        parser,
+        load,
         short_flag="-hr",
         long_flag="--health_record",
         help="Send anonymous bot event to GA for bot health record. Set \"health_record\":false if you need disable it.",
