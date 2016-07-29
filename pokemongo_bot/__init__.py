@@ -36,8 +36,9 @@ class PokemonGoBot(object):
         cell_workers.EvolveAllWorker,
         cell_workers.RecycleItemsWorker,
         cell_workers.CatchVisiblePokemonWorker,
-        cell_workers.SeenFortWorker,
-        cell_workers.MoveToFortWorker
+        cell_workers.MoveToFortWorker,
+        cell_workers.CatchLuredPokemonWorker,
+        cell_workers.SeenFortWorker
     ]
 
     @property
@@ -83,7 +84,9 @@ class PokemonGoBot(object):
         # self.event_manager.emit('location', 'level'='info', data={'lat': 1, 'lng':1}),
 
     def tick(self):
+        logger.log('')
         self.cell = self.get_meta_cell()
+        self.tick_count +=1
 
         # Check if session token has expired
         self.check_session(self.position[0:2])
@@ -93,8 +96,6 @@ class PokemonGoBot(object):
                 return
 
         self.navigator.take_step()
-
-        self.tick_count +=1
 
     def get_meta_cell(self):
         location = self.position[0:2]
