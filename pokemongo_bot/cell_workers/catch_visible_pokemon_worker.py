@@ -32,9 +32,6 @@ class CatchVisiblePokemonWorker(object):
                 with open(user_web_catchable, 'w') as outfile:
                     json.dump(pokemon, outfile)
 
-                with open(user_web_catchable, 'w') as outfile:
-                    json.dump({}, outfile)
-
             return self.catch_pokemon(self.cell['catchable_pokemons'][0])
 
         if 'wild_pokemons' in self.cell and len(self.cell['wild_pokemons']) > 0:
