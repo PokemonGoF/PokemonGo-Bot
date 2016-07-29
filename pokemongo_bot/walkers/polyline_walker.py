@@ -14,7 +14,7 @@ class PolylineWalker(StepWalker):
 
     def step(self):
         cLat, cLng = self.api._position_lat, self.api._position_lng
-        while (cLat, cLng) != self.polyline_walker.get_pos()[0]
+        while (cLat, cLng) != self.polyline_walker.get_pos()[0]:
             self.polyline_walker.unpause()
             sleep(1)
             self.polyline_walker.pause()
