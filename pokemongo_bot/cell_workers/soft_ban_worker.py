@@ -6,6 +6,7 @@ from pokemongo_bot.cell_workers import MoveToFortWorker, SeenFortWorker
 from pokemongo_bot.cell_workers.utils import distance
 from pokemongo_bot.worker_result import WorkerResult
 
+
 class SoftBanWorker(object):
 
     def __init__(self, bot):
