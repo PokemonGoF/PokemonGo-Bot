@@ -32,6 +32,10 @@ class MoveToFortWorker(object):
         lat = nearest_fort['latitude']
         lng = nearest_fort['longitude']
         fortID = nearest_fort['id']
+	if not self.bot.last_fort == fortID:
+	    self.bot.last_fort = fortID
+	    logger.log("Moving to new fort: {}".format(fortID))
+	
         unit = self.config.distance_unit  # Unit to use when printing formatted distance
 
         dist = distance(
