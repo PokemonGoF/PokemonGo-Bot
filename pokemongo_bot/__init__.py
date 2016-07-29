@@ -37,7 +37,7 @@ class PokemonGoBot(object):
         cell_workers.RecycleItemsWorker,
         cell_workers.CatchVisiblePokemonWorker,
         cell_workers.SeenFortWorker,
-        cell_workers.SpinNearestFortWorker
+        cell_workers.MoveToFortWorker
     ]
 
     @property
@@ -564,6 +564,12 @@ class PokemonGoBot(object):
                                             logger.log(
                                                 'Pokemon Captured: {pokemons_captured}'.format(**playerdata) +
                                                 ' | Pokestops Visited: {poke_stop_visits}'.format(**playerdata), 'cyan')
+
+    def has_space_for_loot(self):
+        number_of_things_gained_by_stop = 5
+        enough_space = self.get_inventory_count('item') < self._player['max_item_storage'] - number_of_things_gained_by_stop
+
+        return enough_space
 
     def get_forts(self, order_by_distance=False):
         forts = [fort
