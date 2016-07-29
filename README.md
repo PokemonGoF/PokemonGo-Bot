@@ -30,7 +30,7 @@ No PR on master branch to keep things easier.
   - [Mac](#installation-mac)
   - [Linux](#installation-linux)
   - [Windows](#installation-windows)
-- [Develop PokemonGo-Bot](develop-pokemonGo-bot)
+- [Develop PokemonGo-Bot](#develop-pokemonGo-bot)
 - [Usage](#usage)
 - [Docker Usage](#how-to-run-with-docker)
 - [FAQ](#faq)
