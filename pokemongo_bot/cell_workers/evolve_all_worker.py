@@ -25,7 +25,7 @@ class EvolveAllWorker(object):
             if self.config.evolve_all[0] != 'all':
                 # filter out non-listed pokemons
                 evolve_list = [x for x in evolve_list if str(x[1]) in self.config.evolve_all]
-            
+
             ## enable to limit number of pokemons to evolve. Useful for testing.
             # nn = 1
             # if len(evolve_list) > nn:
@@ -229,7 +229,7 @@ class EvolveAllWorker(object):
     def _compute_iv(self, pokemon):
         total_IV = 0.0
         iv_stats = ['individual_attack', 'individual_defense', 'individual_stamina']
-        
+
         for individual_stat in iv_stats:
             try:
                 total_IV += pokemon[individual_stat]

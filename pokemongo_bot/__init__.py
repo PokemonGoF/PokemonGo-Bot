@@ -93,9 +93,11 @@ class PokemonGoBot(object):
                     worker.work()
 
                     worker = SeenFortWorker(fort, self)
+
                     hack_chain = worker.work()
                     if hack_chain > 10:
-                        #print('need a rest')
+                        while hack_chain > 10:
+                            hack_chain = worker.work()
                         break
 
     def _setup_logging(self):
