@@ -1,7 +1,7 @@
 # api_wrapper.py
 
 from pgoapi import PGoApi
-from pgoapi.exceptions import NotLoggedInException
+from pgoapi.exceptions import NotLoggedInException, ServerBusyOrOfflineException
 from human_behaviour import sleep
 import logger
 
