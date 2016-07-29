@@ -21,14 +21,20 @@ class MoveToFortWorker(object):
         unit = self.config.distance_unit  # Unit to use when printing formatted distance
 
         dist = distance(self.position[0], self.position[1], lat, lng)
-
         # print('Found fort {} at distance {}m'.format(fortID, dist))
-        logger.log('[x] Found fort {} at distance {}'.format(
-            fortID, format_dist(dist, unit)))
-
+        if fortID not in self.bot.lastFort:
+            self.bot.lastFort = {fortID:dist}
+            logger.log('[x] Found fort {} at distance {}'.format(
+                fortID, format_dist(dist, unit)))
+            if dist > 10:
+                logger.log('[x] Need to move closer to Pokestop')
+        else:
+            changed = self.bot.lastFort[fortID] - dist
+            if changed >= 10:
+                logger.log("[x] We are now {} away from fort {}".format(
+                    format_dist(dist,unit),fortID))
+                self.bot.lastFort[fortID] = dist
         if dist > 10:
-            logger.log('[x] Need to move closer to Pokestop')
-
             step_walker = StepWalker(
                 self.bot,
                 self.config.walk,
