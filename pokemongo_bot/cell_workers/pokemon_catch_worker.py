@@ -177,11 +177,12 @@ class PokemonCatchWorker(object):
                                 if status is 1:
                                     self.bot.metrics.captured_pokemon(pokemon_name, cp, iv_display, pokemon_potential)
 
-                                    logger.log('Captured {}! [CP {}] [Potential {}] [{}]'.format(
+                                    logger.log('Captured {}! [CP {}] [Potential {}] [{}] [+{} exp]'.format(
                                         pokemon_name,
                                         cp,
                                         pokemon_potential,
-                                        iv_display
+                                        iv_display,
+                                        sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
                                     ), 'blue')
                                     self.bot.softban = False
 
