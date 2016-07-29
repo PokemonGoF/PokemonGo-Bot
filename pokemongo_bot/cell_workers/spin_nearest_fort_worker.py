@@ -34,7 +34,7 @@ class SpinNearestFortWorker(object):
 
         enough_space = self.bot.get_inventory_count('item') < self.bot._player['max_item_storage'] - number_of_things_gained_by_stop
 
-        return self.config.spin_forts and enough_space
+        return self.config.forts_spin and enough_space
 
     def get_nearest_fort(self):
         if 'forts' in self.cell:
@@ -48,7 +48,7 @@ class SpinNearestFortWorker(object):
             forts = filter(lambda x: x["id"] not in self.fort_timeouts, forts)
 
             # Remove all forts which were spun in the last ticks to avoid circles if set
-            if self.config.avoid_circles:
+            if self.config.forts_void_circles:
                 forts = filter(lambda x: x["id"] not in self.recent_forts, forts)
 
             # Sort all by distance from current pos- eventually this should

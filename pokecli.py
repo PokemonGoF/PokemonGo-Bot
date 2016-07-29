@@ -174,10 +174,11 @@ def init_config():
     add_config(
         parser,
         load,
-        long_flag="--spin_forts",
+        long_flag="--spin",
         help="Enable Spinning Pokestops",
         type=bool,
-        default=True
+        default=True,
+        embedded_in='forts'
     )
     add_config(
         parser,
@@ -305,7 +306,8 @@ def init_config():
         long_flag="--avoid_circles",
         help="Avoids circles (pokestops) of the max size set in max_circle_size flag",
         type=bool,
-        default=False
+        default=False,
+        embedded_in='forts'
     )
     add_config(
         parser,
@@ -314,7 +316,8 @@ def init_config():
         long_flag="--max_circle_size",
         help="If avoid_circles flag is set, this flag specifies the maximum size of circles (pokestops) avoided",
         type=int,
-        default=10
+        default=10,
+        embedded_in='forts'
     )
 
     # Start to parse other attrs
@@ -356,26 +359,32 @@ def init_config():
     if config.evolve_all and isinstance(config.evolve_all, str):
         config.evolve_all = [str(pokemon_name) for pokemon_name in config.evolve_all.split(',')]
 
+    import pdb; pdb.set_trace()
     return config
 
-def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
+def add_config(parser, json_config, short_flag=None, long_flag=None, embedded_in=None, **kwargs):
     if not long_flag:
         raise Exception('add_config calls requires long_flag parameter!')
     if 'default' in kwargs:
         attribute_name = long_flag.split('--')[1]
+        if embedded_in:
+            json_config = json_config.get(embedded_in, None)
+            if not json_config:
+                raise Exception('Container "{}" for key "{}" didnt found!'.format(embedded_in, attribute_name))
+            kwargs['dest'] = "{}_{}".format(embedded_in, attribute_name)
         kwargs['default'] = json_config.get(attribute_name, kwargs['default'])
     if short_flag:
         args = (short_flag, long_flag)
     else:
         args = (long_flag,)
     parser.add_argument(*args, **kwargs)
-    
+
 def parse_unicode_str(string):
     try:
         return string.decode('utf8')
     except UnicodeEncodeError:
         return string
 
-    
+
 if __name__ == '__main__':
     main()
