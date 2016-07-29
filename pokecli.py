@@ -298,6 +298,24 @@ def init_config():
         type=bool,
         default=True
     )
+    add_config(
+        parser,
+        load,
+        short_flag="-ac",
+        long_flag="--avoid_circles",
+        help="Avoids circles (pokestops) of the max size set in max_circle_size flag",
+        type=bool,
+        default=False
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-mcs",
+        long_flag="--max_circle_size",
+        help="If avoid_circles flag is set, this flag specifies the maximum size of circles (pokestops) avoided",
+        type=int,
+        default=10
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()
@@ -314,9 +332,6 @@ def init_config():
 
     config.hatch_eggs = load.get("hatch_eggs", True)
     config.longer_eggs_first = load.get("longer_eggs_first", True)
-
-    config.avoid_circles = load.get("avoid_circles", False)
-    config.max_circle_size = load.get("max_circle_size", 20)
 
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")
