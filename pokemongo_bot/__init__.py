@@ -14,7 +14,7 @@ from pgoapi import PGoApi
 from pgoapi.utilities import f2i
 
 import logger
-from cell_workers import SpinNearestFortWorker, CatchVisiblePokemonWorker, PokemonCatchWorker, SeenFortWorker, MoveToFortWorker, PokemonTransferWorker, EvolveAllWorker, RecycleItemsWorker, IncubateEggsWorker
+import cell_workers
 from cell_workers.utils import distance, get_cellid, encode, i2f
 from human_behaviour import sleep
 from item_list import Item
@@ -29,6 +29,16 @@ from api_wrapper import ApiWrapper
 
 
 class PokemonGoBot(object):
+
+    WORKERS = [
+        cell_workers.IncubateEggsWorker,
+        cell_workers.PokemonTransferWorker,
+        cell_workers.EvolveAllWorker,
+        cell_workers.RecycleItemsWorker,
+        cell_workers.CatchVisiblePokemonWorker,
+        cell_workers.SeenFortWorker,
+        cell_workers.SpinNearestFortWorker
+    ]
 
     @property
     def position(self):
@@ -45,6 +55,8 @@ class PokemonGoBot(object):
         self.recent_forts = [None] * config.max_circle_size
         self.tick_count = 0
 
+        # Make our own copy of the workers for this instance
+        self.workers = list(self.WORKERS)
 
     def start(self):
         self._setup_logging()
@@ -76,17 +88,7 @@ class PokemonGoBot(object):
         # Check if session token has expired
         self.check_session(self.position[0:2])
 
-        workers = [
-            IncubateEggsWorker,
-            PokemonTransferWorker,
-            EvolveAllWorker,
-            RecycleItemsWorker,
-            CatchVisiblePokemonWorker,
-            SeenFortWorker,
-            SpinNearestFortWorker
-        ]
-
-        for worker in workers:
+        for worker in self.workers:
             if worker(self).work() == WorkerResult.RUNNING:
                 return
 
