@@ -9,7 +9,8 @@
     "forts": {
       "spin": true,
       "avoid_circles": true,
-      "max_circle_size": 50
+      "max_circle_size": 50,
+      "show_name": false
     },
     "websocket_server": false,
     "walk": 4.16,
