@@ -8,7 +8,7 @@ class PolylineWalker(StepWalker):
 
     def __init__(self, bot, speed, destLat, destLng):
         super(PolylineWalker, self).__init__(bot, speed, destLat, destLng)
-        self.polyline_walker = Polyline((self.api._position_lat, self.api._position_ln),
+        self.polyline_walker = Polyline((self.api._position_lat, self.api._position_lng),
                                         (self.destLat, self.destLng), self.speed)
         logger.log('[#] {}'.format(self.polyline_walker.URL))
 
