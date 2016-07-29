@@ -52,9 +52,9 @@ class CatchVisiblePokemonWorker(object):
         forts = self.bot.get_forts(order_by_distance=True)
         fort = forts[0]
 
-        self.api.fort_details(fort_id=self.fort['id'],
-                              latitude=lat,
-                              longitude=lng)
+        self.api.fort_details(fort_id=fort['id'],
+                              latitude=fort['latitude'],
+                              longitude=fort['longitude'])
         response_dict = self.api.call()
         fort_details = response_dict.get('responses', {}).get('FORT_DETAILS', {})
         fort_name = fort_details.get('name', 'Unknown').encode('utf8', 'replace')
@@ -68,7 +68,7 @@ class CatchVisiblePokemonWorker(object):
             'longitude': fort['longitude']
         }
 
-        return pokmeon
+        return pokemon
 
     def catch_pokemon(self, pokemon):
         worker = PokemonCatchWorker(pokemon, self.bot)
