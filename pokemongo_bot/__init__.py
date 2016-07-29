@@ -64,7 +64,7 @@ class PokemonGoBot(object):
         #
         # Emitting event should be enough to add logging and send websocket
         # message: :
-        # self.event_manager.emit('location', 'level'='info', data={'lat': 1, 'lng':1),
+        # self.event_manager.emit('location', 'level'='info', data={'lat': 1, 'lng':1}),
 
     def tick(self):
         self.cell = self.get_meta_cell()
