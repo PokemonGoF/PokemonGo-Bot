@@ -3,6 +3,7 @@ import json
 from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot import logger
 
+
 class PokemonTransferWorker(object):
 
     def __init__(self, bot):
@@ -24,21 +25,31 @@ class PokemonTransferWorker(object):
                 keep_best, keep_best_cp, keep_best_iv = self._validate_keep_best_config(pokemon_name)
 
                 if keep_best:
-                    order_criteria = 'cp'
-                    limit = keep_best_cp
+                    best_pokemon_ids = set()
+                    order_criteria = 'none'
+                    if keep_best_cp >= 1:
+                        cp_limit = keep_best_cp
+                        best_cp_pokemons = sorted(group, key=lambda x: (x['cp'], x['iv']), reverse=True)[:cp_limit]
+                        best_pokemon_ids = set(pokemon['pokemon_data']['id'] for pokemon in best_cp_pokemons)
+                        order_criteria = 'cp'
 
                     if keep_best_iv >= 1:
-                        order_criteria = 'iv'
-                        limit = keep_best_iv
-
-                    best_pokemons = sorted(group, key=lambda x: x[order_criteria], reverse=True)[:limit]
+                        iv_limit = keep_best_iv
+                        best_iv_pokemons = sorted(group, key=lambda x: (x['iv'], x['cp']), reverse=True)[:iv_limit]
+                        best_pokemon_ids |= set(pokemon['pokemon_data']['id'] for pokemon in best_iv_pokemons)
+                        if order_criteria == 'cp':
+                            order_criteria = 'cp and iv'
+                        else:
+                            order_criteria = 'iv'
 
                     # remove best pokemons from all pokemons array
                     all_pokemons = group
-                    for best_pokemon in best_pokemons:
+                    best_pokemons = []
+                    for best_pokemon_id in best_pokemon_ids:
                         for pokemon in all_pokemons:
-                            if best_pokemon['pokemon_data']['id'] == pokemon['pokemon_data']['id']:
+                            if best_pokemon_id == pokemon['pokemon_data']['id']:
                                 all_pokemons.remove(pokemon)
+                                best_pokemons.append(pokemon)
 
                     if best_pokemons and all_pokemons:
                         logger.log("Keep {} best {}, based on {}".format(len(best_pokemons),
@@ -66,10 +77,10 @@ class PokemonTransferWorker(object):
         pokemon_groups = {}
         self.api.get_player().get_inventory()
         inventory_req = self.api.call()
-        
+
         if inventory_req.get('responses', False) is False:
             return pokemon_groups
-        
+
         inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
 
         user_web_inventory = 'web/inventory-%s.json' % (self.config.username)
@@ -142,13 +153,13 @@ class PokemonTransferWorker(object):
 
         if logic_to_function[cp_iv_logic](*release_results.values()):
             logger.log(
-                "Release config for {}: Conf, CP {} {} IV {} - Poke, CP {} IV {}".format(
+                "Releasing {} with CP {} and IV {}. Matching release rule: CP < {} {} IV < {}. ".format(
                     pokemon_name,
-                    release_cp,
-                    cp_iv_logic,
-                    release_iv,
                     cp,
-                    iv
+                    iv,
+                    release_cp,
+                    cp_iv_logic.upper(),
+                    release_iv
                 ), 'yellow'
             )
 
@@ -189,10 +200,6 @@ class PokemonTransferWorker(object):
                 keep_best_iv = int(keep_best_iv)
             except ValueError:
                 keep_best_iv = 0
-
-            if keep_best_cp > 1 and keep_best_iv > 1:
-                logger.log("keep_best_cp and keep_best_iv can't be > 0 at the same time. Ignore it.", "red")
-                keep_best = False
 
             if keep_best_cp < 0 or keep_best_iv < 0:
                 logger.log("Keep best can't be < 0. Ignore it.", "red")
