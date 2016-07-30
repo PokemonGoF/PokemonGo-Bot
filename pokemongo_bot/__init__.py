@@ -62,11 +62,13 @@ class PokemonGoBot(object):
         self.cached_destination = None
 
         # Make our own copy of the workers for this instance
-        self.workers = list(self.WORKERS)
+        self.workers = []
+
 
     def start(self):
         self._setup_logging()
         self._setup_api()
+        self._setup_workers()
         self.navigator = SpiralNavigator(self)
         random.seed()
 
@@ -96,7 +98,7 @@ class PokemonGoBot(object):
         self.check_session(self.position[0:2])
 
         for worker in self.workers:
-            if worker(self).work() == WorkerResult.RUNNING:
+            if worker.work() == WorkerResult.RUNNING:
                 return
 
         self.navigator.take_step()
@@ -278,6 +280,20 @@ class PokemonGoBot(object):
         self.update_inventory()
         # send empty map_cells and then our position
         self.update_web_location()
+
+    def _setup_workers(self):
+        self.workers = [
+            cell_workers.SoftBanWorker(self),
+            cell_workers.IncubateEggsWorker(self),
+            cell_workers.PokemonTransferWorker(self),
+            cell_workers.EvolveAllWorker(self),
+            cell_workers.RecycleItemsWorker(self),
+            cell_workers.CatchVisiblePokemonWorker(self),
+            cell_workers.SeenFortWorker(self),
+            cell_workers.MoveToFortWorker(self),
+            cell_workers.CatchLuredPokemonWorker(self),
+            cell_workers.SeenFortWorker(self)
+        ]
 
     def _print_character_info(self):
         # get player profile call

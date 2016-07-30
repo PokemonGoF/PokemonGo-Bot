@@ -6,9 +6,7 @@ from pokemongo_bot.item_list import Item
 class EvolveAllWorker(object):
     def __init__(self, bot):
         self.api = bot.api
-        self.config = bot.config
         self.bot = bot
-        # self.position = bot.position
 
     def work(self):
         if not self._should_run():
@@ -25,9 +23,9 @@ class EvolveAllWorker(object):
         else:
             evolve_list = self._sort_by_cp_iv(
                 response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items'])
-            if self.config.evolve_all[0] != 'all':
+            if self.bot.config.evolve_all[0] != 'all':
                 # filter out non-listed pokemons
-                evolve_list = [x for x in evolve_list if str(x[1]) in self.config.evolve_all]
+                evolve_list = [x for x in evolve_list if str(x[1]) in self.bot.config.evolve_all]
 
             # enable to limit number of pokemons to evolve. Useful for testing.
             # nn = 3
@@ -52,11 +50,11 @@ class EvolveAllWorker(object):
 
     def _should_run(self):
         # Will skip evolving if user wants to use an egg and there is none
-        if not self.config.evolve_all:
+        if not self.bot.config.evolve_all:
             return False
 
         # Evolve all is used - Don't run after the first tick or if the config flag is false
-        if self.bot.tick_count is not 0 or not self.config.use_lucky_egg:
+        if self.bot.tick_count is not 0 or not self.bot.config.use_lucky_egg:
             return True
 
         lucky_egg_count = self.bot.item_inventory_count(Item.ITEM_LUCKY_EGG.value)
@@ -128,7 +126,7 @@ class EvolveAllWorker(object):
                         pokemon['cp'],
                         self._compute_iv(pokemon)
                     ]
-                    if pokemon['cp'] > self.config.evolve_cp_min:
+                    if pokemon['cp'] > self.bot.config.evolve_cp_min:
                         pokemons1.append(v)
                     else:
                         pokemons2.append(v)
@@ -160,8 +158,8 @@ class EvolveAllWorker(object):
                 pokemon_name, pokemon_cp, pokemon_iv
             ))
 
-            if self.config.evolve_speed:
-                sleep(self.config.evolve_speed)
+            if self.bot.config.evolve_speed:
+                sleep(self.bot.config.evolve_speed)
             else:
                 sleep(3.7)
 
@@ -245,13 +243,13 @@ class EvolveAllWorker(object):
             return logic_to_function[cp_iv_logic](*release_results.values())
 
     def _get_release_config_for(self, pokemon):
-        release_config = self.config.release.get(pokemon)
+        release_config = self.bot.config.release.get(pokemon)
         if not release_config:
-            release_config = self.config.release['any']
+            release_config = self.bot.config.release['any']
         return release_config
 
     def _get_exceptions(self):
-        exceptions = self.config.release.get('exceptions')
+        exceptions = self.bot.config.release.get('exceptions')
         if not exceptions:
             return None
         return exceptions
