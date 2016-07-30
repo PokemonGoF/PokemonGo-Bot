@@ -130,7 +130,7 @@ class IncubateEggsWorker(object):
         try:
             pokemon_data = self._check_inventory(pokemon_ids)
         except:
-            pass  # just proceed with what we have
+            pokemon_data = [] # just proceed with what we have
         for pokemon in pokemon_data:
             # pokemon ids seem to be offset by one
             pokemon['name'] = self.bot.pokemon_list[(pokemon['pokemon_id']-1)]['Name']
