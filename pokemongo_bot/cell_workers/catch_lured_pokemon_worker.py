@@ -1,5 +1,5 @@
 from pokemongo_bot import logger
-from pokemongo_bot.cell_workers import fort_details
+from pokemongo_bot.cell_workers.utils import fort_details
 from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 
 
