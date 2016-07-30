@@ -1,4 +1,5 @@
 from pokemongo_bot import logger
+from pokemongo_bot.cell_workers import fort_details
 from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 
 
@@ -25,14 +26,10 @@ class CatchLuredPokemonWorker(object):
             return False
 
         fort = forts[0]
-
-        self.api.fort_details(fort_id=fort['id'],
+        details = fort_details(self.bot, fort_id=fort['id'],
                               latitude=fort['latitude'],
                               longitude=fort['longitude'])
-
-        response_dict = self.api.call()
-        fort_details = response_dict.get('responses', {}).get('FORT_DETAILS', {})
-        fort_name = fort_details.get('name', 'Unknown').encode('utf8', 'replace')
+        fort_name = details.get('name', 'Unknown').encode('utf8', 'replace')
 
         encounter_id = fort.get('lure_info', {}).get('encounter_id', None)
 

@@ -8,7 +8,7 @@ from pokemongo_bot import logger
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.worker_result import WorkerResult
-from utils import distance, format_time
+from utils import distance, format_time, fort_details
 
 
 class SeenFortWorker(object):
@@ -32,6 +32,9 @@ class SeenFortWorker(object):
         lat = fort['latitude']
         lng = fort['longitude']
 
+        details = fort_details(self.bot, fort['id'], lat, lng)
+        fort_name = details.get('name', 'Unknown').encode('utf8', 'replace')
+        logger.log('Now at Pokestop: {0}'.format(fort_name), 'cyan')
         logger.log('Spinning ...', 'cyan')
 
         self.api.fort_search(fort_id=fort['id'],
