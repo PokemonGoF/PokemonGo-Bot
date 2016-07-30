@@ -45,6 +45,7 @@ class PokemonGoBot(object):
         self.recent_forts = [None] * config.forts_max_circle_size
         self.tick_count = 0
         self.softban = False
+        self.start_position = None
 
         # Make our own copy of the workers for this instance
         self.workers = []
@@ -181,7 +182,7 @@ class PokemonGoBot(object):
         )
         try:
             with open(user_data_lastlocation, 'w') as outfile:
-                json.dump({'lat': lat, 'lng': lng}, outfile)
+                json.dump({'lat': lat, 'lng': lng, 'start_position': self.start_position}, outfile)
         except IOError as e:
             logger.log('[x] Error while opening location file: %s' % e, 'red')
 
@@ -500,6 +501,7 @@ class PokemonGoBot(object):
             location_str = self.config.location.encode('utf-8')
             location = (self.get_pos_by_name(location_str.replace(" ", "")))
             self.api.set_position(*location)
+            self.start_position = self.position
             logger.log('')
             logger.log(u'Location Found: {}'.format(self.config.location))
             logger.log('GeoPosition: {}'.format(self.position))
@@ -519,7 +521,17 @@ class PokemonGoBot(object):
                     location_json['lng'],
                     0.0
                 )
-                # print(location)
+
+                # If location has been set in config, only use cache if starting position has not differed
+                if has_position and 'start_position' in location_json:
+                    last_start_position = tuple(location_json.get('start_position', []))
+
+                    # Start position has to have been set on a previous run to do this check
+                    if last_start_position and last_start_position != self.start_position:
+                        logger.log('[x] Last location flag used but with a stale starting location', 'yellow')
+                        logger.log('[x] Using new starting location, {}'.format(self.position))
+                        return
+
                 self.api.set_position(*location)
 
                 logger.log('')
@@ -534,7 +546,6 @@ class PokemonGoBot(object):
                 logger.log('')
 
                 has_position = True
-                return
             except Exception:
                 if has_position is False:
                     sys.exit(
