@@ -4,6 +4,7 @@ from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
 from utils import distance, format_dist
 
+
 class MoveToPositionWorker(object):
 
     def __init__(self, bot):
