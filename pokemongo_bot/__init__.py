@@ -52,7 +52,6 @@ class PokemonGoBot(object):
     def start(self):
         self._setup_logging()
         self._setup_api()
-        self._setup_workers()
 
         if self.config.navigator_type == 'spiral':
             self.navigator=navigators.SpiralNavigator(self)
@@ -242,7 +241,7 @@ class PokemonGoBot(object):
     def check_session(self, position):
         # Check session expiry
         if self.api._auth_provider and self.api._auth_provider._ticket_expire:
-            
+
             # prevent crash if return not numeric value
             if not self.is_numeric(self.api._auth_provider._ticket_expire):
                 logger.log("Ticket expired value is not numeric", 'yellow')
@@ -257,7 +256,7 @@ class PokemonGoBot(object):
 
     @staticmethod
     def is_numeric(s):
-        try: 
+        try:
             float(s)
             return True
         except ValueError:
@@ -296,20 +295,6 @@ class PokemonGoBot(object):
         self.update_inventory()
         # send empty map_cells and then our position
         self.update_web_location()
-
-    def _setup_workers(self):
-        self.workers = [
-            cell_workers.SoftBanWorker(self),
-            cell_workers.IncubateEggsWorker(self),
-            cell_workers.PokemonTransferWorker(self),
-            cell_workers.EvolveAllWorker(self),
-            cell_workers.RecycleItemsWorker(self),
-            cell_workers.CatchVisiblePokemonWorker(self),
-            cell_workers.SeenFortWorker(self),
-            cell_workers.MoveToFortWorker(self),
-            cell_workers.CatchLuredPokemonWorker(self),
-            cell_workers.SeenFortWorker(self)
-        ]
 
     def _print_character_info(self):
         # get player profile call
