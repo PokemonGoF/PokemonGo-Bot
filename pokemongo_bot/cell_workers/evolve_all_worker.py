@@ -42,7 +42,7 @@ class EvolveAllWorker(object):
             release_cand_list_ids = list(Set(id_list2) - Set(id_list1))
 
             if release_cand_list_ids:
-                print('[#] Evolved {} pokemons! Checking if any of them needs to be released ...'.format(
+                print('[#] Evolved {} pokemons! Checking if any of them need to be released ...'.format(
                     len(release_cand_list_ids)
                 ))
                 self._release_evolved(release_cand_list_ids)
