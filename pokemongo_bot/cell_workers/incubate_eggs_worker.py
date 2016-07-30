@@ -140,7 +140,7 @@ class IncubateEggsWorker(object):
         except:
             pokemon_data = [{"name":"error","cp":"error","iv":"error"}]
         logger.log("-"*30, log_color)
-        if pokemon_data[0]['name'] == "error":
+        if not pokemon_ids or pokemon_data[0]['name'] == "error":
             logger.log("[!] Eggs hatched, but we had trouble with the response. Please check your inventory to find your new pokemon!",'red')
             return
         logger.log("[!] {} eggs hatched! Received:".format(len(pokemon_data)), log_color)
