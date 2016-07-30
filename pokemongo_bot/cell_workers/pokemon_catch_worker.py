@@ -390,6 +390,8 @@ class PokemonCatchWorker(object):
             return True
         else:
             catch_config = self.config.vips.get("any")
+            if not catch_config:
+                return False
             cp_iv_logic = catch_config.get('logic', 'or')
         catch_results = {
             'cp': False,
