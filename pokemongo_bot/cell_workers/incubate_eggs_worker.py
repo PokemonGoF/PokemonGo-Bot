@@ -129,19 +129,19 @@ class IncubateEggsWorker(object):
         self.bot.latest_inventory = None
         try:
             pokemon_data = self._check_inventory(pokemon_ids)
+            for pokemon in pokemon_data:
+                # pokemon ids seem to be offset by one
+                pokemon['name'] = self.bot.pokemon_list[(pokemon['pokemon_id']-1)]['Name']
+            logger.log("-"*30, log_color)
+            logger.log("[!] {} eggs hatched! Received:".format(len(pokemon_data)), log_color)
+            for i in range(len(pokemon_data)):
+                logger.log("-"*30,log_color)
+                logger.log("[!] Pokemon: {}".format(pokemon_data[i]['name']), log_color)
+                logger.log("[!] CP: {}".format(pokemon_data[i]['cp']), log_color)
+                logger.log("[!] IV: {}".format("/".join(map(str, pokemon_data[i]['iv']))), log_color)
+                logger.log("[!] XP: {}".format(xp[i]), log_color)
+                logger.log("[!] Stardust: {}".format(stardust[i]), log_color)
+                logger.log("[!] Candy: {}".format(candy[i]), log_color)
+            logger.log("-"*30, log_color)
         except:
             pass  # just proceed with what we have
-        for pokemon in pokemon_data:
-            # pokemon ids seem to be offset by one
-            pokemon['name'] = self.bot.pokemon_list[(pokemon['pokemon_id']-1)]['Name']
-        logger.log("-"*30, log_color)
-        logger.log("[!] {} eggs hatched! Received:".format(len(pokemon_data)), log_color)
-        for i in range(len(pokemon_data)):
-            logger.log("-"*30,log_color)
-            logger.log("[!] Pokemon: {}".format(pokemon_data[i]['name']), log_color)
-            logger.log("[!] CP: {}".format(pokemon_data[i]['cp']), log_color)
-            logger.log("[!] IV: {}".format("/".join(map(str, pokemon_data[i]['iv']))), log_color)
-            logger.log("[!] XP: {}".format(xp[i]), log_color)
-            logger.log("[!] Stardust: {}".format(stardust[i]), log_color)
-            logger.log("[!] Candy: {}".format(candy[i]), log_color)
-        logger.log("-"*30, log_color)
