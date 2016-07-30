@@ -15,7 +15,6 @@ from pgoapi.utilities import f2i, get_cell_ids
 
 import cell_workers
 import logger
-import navigators
 from api_wrapper import ApiWrapper
 from cell_workers.utils import distance
 from event_manager import EventManager
@@ -55,9 +54,9 @@ class PokemonGoBot(object):
         self._setup_workers()
 
         if self.config.navigator_type == 'spiral':
-            self.navigator=navigators.SpiralNavigator(self)
+            self.navigator=cell_workers.FollowSpiral(self)
         elif self.config.navigator_type == 'path':
-            self.navigator=navigators.PathNavigator(self)
+            self.navigator=cell_workers.FollowPath(self)
 
         random.seed()
 

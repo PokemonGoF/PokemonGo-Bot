@@ -10,3 +10,5 @@ from transfer_pokemon import TransferPokemon
 from recycle_items import RecycleItems
 from spin_fort import SpinFort
 from handle_soft_ban import HandleSoftBan
+from follow_path import FollowPath
+from follow_spiral import FollowSpiral
