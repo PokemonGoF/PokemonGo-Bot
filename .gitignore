@@ -102,7 +102,7 @@ web/
 data/last-location*.json
 data/cells-*.json
 
-#Multiple config
+# Multiple config
 configs/*
 !configs/config.json.example
 !configs/release_config.json.example
@@ -113,5 +113,5 @@ configs/*
 bin/
 include/
 
-#Pip check file
+# Pip check file
 pip-selfcheck.json
