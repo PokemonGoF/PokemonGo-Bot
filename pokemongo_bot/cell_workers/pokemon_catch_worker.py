@@ -177,7 +177,7 @@ class PokemonCatchWorker(object):
                                         cp,
                                         pokemon_potential,
                                         iv_display
-                                    ), 'blue')
+                                    ), 'purple')
 
                                     if (self.config.evolve_captured
                                         and (self.config.evolve_captured[0] == 'all'

@@ -13,6 +13,7 @@ def log(string, color = 'white'):
         'green': '92m',
         'yellow': '93m',
         'blue': '94m',
+		'purple': '95m',
         'cyan': '96m'
     }
     if color not in colorHex:
