@@ -24,35 +24,20 @@ class SpiralNavigator(object):
 
     @staticmethod
     def _generate_spiral(starting_lat, starting_lng, step_size, step_limit):
-        """
-        Sourced from:
-        https://github.com/tejado/pgoapi/blob/master/examples/spiral_poi_search.py
-
-        :param starting_lat:
-        :param starting_lng:
-        :param step_size:
-        :param step_limit:
-        :return:
-        """
         coords = [{'lat': starting_lat, 'lng': starting_lng}]
-        steps, x, y, d, m = 1, 0, 0, 1, 1
+        num_steps = 0
+        theta = 1
+        chord = step_size
+        away = step_size
 
-        while steps < step_limit:
-            while 2 * x * d < m and steps < step_limit:
-                x = x + d
-                steps += 1
-                lat = x * step_size + starting_lat
-                lng = y * step_size + starting_lng
-                coords.append({'lat': lat, 'lng': lng})
-            while 2 * y * d < m and steps < step_limit:
-                y = y + d
-                steps += 1
-                lat = x * step_size + starting_lat
-                lng = y * step_size + starting_lng
-                coords.append({'lat': lat, 'lng': lng})
+        while away < step_limit * step_size:
+            num_steps += 1
+            away = (step_size / 4) * theta
+            x = math.cos(theta) * away
+            y = math.sin(theta) * away
+            theta += chord / (away + 0.0001)
+            coords.append({'lat': starting_lat + x, 'lng': starting_lng + y})
 
-            d *= -1
-            m += 1
         return coords
 
     def take_step(self):
