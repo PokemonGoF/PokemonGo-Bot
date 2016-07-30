@@ -394,6 +394,12 @@ def init_config():
         parser.error("--catch_randomize_spin_factor is out of range! (should be 0 <= catch_randomize_spin_factor <= 1)")
         return None
 
+    # item list config verification
+    item_list = json.load(open(os.path.join('data', 'items.json')))
+    for config_item_name, bag_count in config.item_filter.iteritems():
+        if config_item_name not in item_list.viewvalues():
+            raise Exception('Config.json error - item "' + config_item_name + '" does not exist (spelling mistake?)')
+
     # create web dir if not exists
     try:
         os.makedirs(web_dir)
