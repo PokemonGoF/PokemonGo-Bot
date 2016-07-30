@@ -19,7 +19,7 @@ def log(string, color='white'):
         'cyan': '96m'
     }
     if color not in color_hex:
-        print('[{time} {string}] '.format(
+        print('[{time}] {string}'.format(
             time=time.strftime("%H:%M:%S"),
             string=string.decode('utf-8')
         ))
