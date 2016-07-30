@@ -4,7 +4,6 @@ from pokemongo_bot.cell_workers import MoveToPositionWorker
 from utils import distance
 import json
 
-
 class ShouldMoveToPositionWorker(object):
     def __init__(self, bot):
         self.bot = bot
