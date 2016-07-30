@@ -25,7 +25,7 @@ from metrics import Metrics
 from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from worker_result import WorkerResult
-
+from tree_config_builder import ConfigException, TreeConfigBuilder
 
 class PokemonGoBot(object):
     @property
