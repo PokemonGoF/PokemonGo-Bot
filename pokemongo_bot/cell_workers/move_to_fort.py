@@ -24,9 +24,10 @@ class MoveToFort(object):
             self.bot,
             self.bot.config.walk,
             self.nearest_fort['latitude'],
-            self.nearest_fort['longitude']
+            self.nearest_fort['longitude'],
+            label='FortWalker'
         )
-        
+
     def work(self):
         if not self.should_run():
             return WorkerResult.SUCCESS

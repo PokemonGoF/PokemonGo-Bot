@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import struct
+from pokemongo_bot import logger
 from math import asin, cos, sqrt
 
 from colorama import init
