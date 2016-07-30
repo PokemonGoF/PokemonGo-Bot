@@ -29,7 +29,7 @@ class IncubateEggsWorker(object):
             if km_left <= 0:
                 self._hatch_eggs()
             else:
-                logger.log('[x] Next egg incubates in {0:.2f} km'.format(km_left),'yellow')
+                logger.log('[x] Next egg incubates in {:.2f} km'.format(km_left),'yellow')
             IncubateEggsWorker.last_km_walked = self.km_walked
 
         sorting = self.bot.config.longer_eggs_first
@@ -121,6 +121,7 @@ class IncubateEggsWorker(object):
             result = reduce(dict.__getitem__, ["responses", "GET_HATCHED_EGGS"], response_dict)
         except KeyError:
             return
+        pokemon_ids = []
         if 'pokemon_id' in result:
             pokemon_ids = [id for id in result['pokemon_id']]
         stardust = result.get('stardust_awarded', "error")
@@ -139,12 +140,15 @@ class IncubateEggsWorker(object):
         except:
             pokemon_data = [{"name":"error","cp":"error","iv":"error"}]
         logger.log("-"*30, log_color)
+        if pokemon_data[0]['name'] == "error":
+            logger.log("[!] Eggs hatched, but we had trouble with the response. Please check your inventory to find your new pokemon!",'red')
+            return
         logger.log("[!] {} eggs hatched! Received:".format(len(pokemon_data)), log_color)
         for i in range(len(pokemon_data)):
             logger.log("-"*30,log_color)
             logger.log("[!] Pokemon: {}".format(pokemon_data[i]['name']), log_color)
             logger.log("[!] CP: {}".format(pokemon_data[i]['cp']), log_color)
-            logger.log("[!] IV: {} ({0:.2f})".format("/".join(map(str, pokemon_data[i]['iv'])),(sum(pokemon_data[i]['iv'])/self.max_iv)), log_color)
+            logger.log("[!] IV: {} ({:.2f})".format("/".join(map(str, pokemon_data[i]['iv'])),(sum(pokemon_data[i]['iv'])/self.max_iv)), log_color)
             logger.log("[!] XP: {}".format(xp[i]), log_color)
             logger.log("[!] Stardust: {}".format(stardust[i]), log_color)
             logger.log("[!] Candy: {}".format(candy[i]), log_color)
