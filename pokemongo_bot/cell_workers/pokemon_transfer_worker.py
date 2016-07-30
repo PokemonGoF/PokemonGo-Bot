@@ -93,6 +93,11 @@ class PokemonTransferWorker(object):
                 continue
 
             pokemon_data = pokemon['inventory_item_data']['pokemon_data']
+
+            # pokemon in fort, so we cant transfer it
+            if 'deployed_fort_id' in pokemon_data and pokemon_data['deployed_fort_id']:
+                continue
+
             group_id = pokemon_data['pokemon_id']
             group_pokemon_cp = pokemon_data['cp']
             group_pokemon_iv = self.get_pokemon_potential(pokemon_data)
