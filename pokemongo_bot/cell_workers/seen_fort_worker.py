@@ -79,6 +79,8 @@ class SeenFortWorker(object):
                             #RECYCLE_INVENTORY_ITEM
                             response_dict_recycle = self.bot.drop_item(item_id=item_id, count=item_count)
 
+                            result = 0
+
                             if response_dict_recycle and \
                                 'responses' in response_dict_recycle and \
                                 'RECYCLE_INVENTORY_ITEM' in response_dict_recycle['responses'] and \
