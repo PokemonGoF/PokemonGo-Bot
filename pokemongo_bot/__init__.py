@@ -15,6 +15,7 @@ from pgoapi.utilities import f2i, get_cell_ids
 
 import cell_workers
 import logger
+import navigators
 from api_wrapper import ApiWrapper
 from cell_workers.utils import distance
 from event_manager import EventManager
@@ -23,7 +24,6 @@ from item_list import Item
 from metrics import Metrics
 from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
-from spiral_navigator import SpiralNavigator
 from worker_result import WorkerResult
 
 
@@ -53,7 +53,12 @@ class PokemonGoBot(object):
         self._setup_logging()
         self._setup_api()
         self._setup_workers()
-        self.navigator = SpiralNavigator(self)
+
+        if self.config.navigator_type == 'spiral':
+            self.navigator=navigators.SpiralNavigator(self)
+        elif self.config.navigator_type == 'path':
+            self.navigator=navigators.PathNavigator(self)
+
         random.seed()
 
     def _setup_event_system(self):
