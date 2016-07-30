@@ -37,7 +37,7 @@ class PathNavigator(object):
             if self.bot.config.debug:
                 logger.log("Resolving Point {} - {}".format(index, point))
             point_tuple = self.bot.get_pos_by_name(point['location'])
-            points[index] = self.to_dict(point_tuple)
+            points[index] = self.lat_lng_tuple_to_dict(point_tuple)
         return points
 
     def lat_lng_tuple_to_dict(self, tpl):
