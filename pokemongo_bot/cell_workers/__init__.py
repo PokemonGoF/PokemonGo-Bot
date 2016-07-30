@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from catch_lured_pokemon_worker import CatchLuredPokemonWorker
-from catch_visible_pokemon_worker import CatchVisiblePokemonWorker
-from evolve_all_worker import EvolveAllWorker
-from incubate_eggs_worker import IncubateEggsWorker
-from move_to_fort_worker import MoveToFortWorker
+from catch_lured_pokemon import CatchLuredPokemon
+from catch_visible_pokemon import CatchVisiblePokemon
+from evolve_all import EvolveAll
+from incubate_eggs import IncubateEggs
+from move_to_fort import MoveToFort
 from pokemon_catch_worker import PokemonCatchWorker
-from pokemon_transfer_worker import PokemonTransferWorker
-from recycle_items_worker import RecycleItemsWorker
-from seen_fort_worker import SeenFortWorker
-from soft_ban_worker import SoftBanWorker
+from pokemon_transfer import PokemonTransfer
+from recycle_items import RecycleItems
+from seen_fort import SeenFort
+from soft_ban import SoftBan

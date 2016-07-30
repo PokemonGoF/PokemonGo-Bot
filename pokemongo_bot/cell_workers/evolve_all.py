@@ -3,7 +3,7 @@ from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.item_list import Item
 
 
-class EvolveAllWorker(object):
+class EvolveAll(object):
     def __init__(self, bot):
         self.api = bot.api
         self.bot = bot

@@ -1,7 +1,7 @@
 from pokemongo_bot import logger
 
 
-class RecycleItemsWorker(object):
+class RecycleItems(object):
 
     def __init__(self, bot):
         self.bot = bot

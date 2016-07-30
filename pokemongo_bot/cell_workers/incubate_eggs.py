@@ -2,7 +2,7 @@ from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import sleep
 
 
-class IncubateEggsWorker(object):
+class IncubateEggs(object):
     last_km_walked = 0
 
     def __init__(self, bot):
@@ -23,14 +23,14 @@ class IncubateEggsWorker(object):
         except:
             return
 
-        if self.used_incubators and IncubateEggsWorker.last_km_walked != self.km_walked:
+        if self.used_incubators and IncubateEggs.last_km_walked != self.km_walked:
             self.used_incubators.sort(key=lambda x: x.get("km"))
             km_left = self.used_incubators[0]['km']-self.km_walked
             if km_left <= 0:
                 self._hatch_eggs()
             else:
                 logger.log('[x] Next egg incubates in {:.2f} km'.format(km_left),'yellow')
-            IncubateEggsWorker.last_km_walked = self.km_walked
+            IncubateEggs.last_km_walked = self.km_walked
 
         sorting = self.bot.config.longer_eggs_first
         self.eggs.sort(key=lambda x: x.get("km"), reverse=sorting)

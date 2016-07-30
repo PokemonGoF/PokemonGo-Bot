@@ -11,7 +11,7 @@ from pokemongo_bot.worker_result import WorkerResult
 from utils import distance, format_time, fort_details
 
 
-class SeenFortWorker(object):
+class SeenFort(object):
     def __init__(self, bot):
         self.bot = bot
 
