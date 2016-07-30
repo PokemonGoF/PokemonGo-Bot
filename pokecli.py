@@ -32,6 +32,11 @@ import logging
 import os
 import ssl
 import sys
+
+# this is required to fix unicode errors in python 2.x
+reload(sys)
+sys.setdefaultencoding('utf8')
+
 import time
 from datetime import timedelta
 from getpass import getpass
