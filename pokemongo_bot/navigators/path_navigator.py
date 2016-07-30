@@ -41,7 +41,7 @@ class PathNavigator(object):
         return points
 
     def lat_lng_tuple_to_dict(self, tpl):
-        return {'lag': tpl[0], 'lng': tpl[1]}
+        return {'lat': tpl[0], 'lng': tpl[1]}
 
     def load_gpx(self, file):
         gpx_file = open(file, 'r')
