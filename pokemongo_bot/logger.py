@@ -10,6 +10,10 @@ except Exception:
 
 
 def log(string, color='white'):
+    try:
+        string = string.decode('utf8')
+    except UnicodeEncodeError:
+        pass
     color_hex = {
         'red': '91m',
         'green': '92m',
