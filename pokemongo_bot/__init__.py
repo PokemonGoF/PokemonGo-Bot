@@ -236,11 +236,24 @@ class PokemonGoBot(object):
     def check_session(self, position):
         # Check session expiry
         if self.api._auth_provider and self.api._auth_provider._ticket_expire:
+            
+            # prevent crash if return not numeric value
+            if not is_number(self.api._auth_provider._ticket_expire):
+                logger.log("Ticket expired value is not numeric", 'yellow')
+                return
+
             remaining_time = self.api._auth_provider._ticket_expire/1000 - time.time()
 
             if remaining_time < 60:
                 logger.log("Session stale, re-logging in", 'yellow')
                 self.login()
+
+    def is_numeric(self, s):
+        try: 
+            float(s)
+            return True
+        except ValueError:
+            return False
 
     def login(self):
         logger.log('Attempting login to Pokemon Go.', 'white')
