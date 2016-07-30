@@ -16,6 +16,7 @@ The Pokemon Go Bot, baking with community.
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
 ## Breaking Changes
 You need modify config.json (config.json.pokemon.example for example) then python pokecli.py --config configs/config.json
+
 [More details about config file](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Configuration-files)
 Please clean up your old clone if you have issue, and following the [install instruction](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation).
 
@@ -61,7 +62,7 @@ No PR on master branch to keep things easier.
 This bot takes a strong stance against automating gym battles. Botting gyms will have a negative effect on most players and thus the game as a whole. We will thus never accept contributions or changes containing code specific for gym battles.
 
 ## Installation
-[Getting started guide]((https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Getting-Started)
+[Getting started guide](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Getting-Started)
 [Jump right into installing](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation)
 
 ### Note on virtualenv
@@ -155,7 +156,7 @@ Research Website [Nice Tool](https://thesilphroad.com/research)
  * riberod07
  * th3w4y
  * Leaklessgfy
- * Mobman
+ * GregTampa
 
 -------
 ## Credits
