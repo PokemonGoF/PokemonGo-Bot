@@ -186,22 +186,6 @@ def init_config():
     return config
 
 
-def start_bot(bot, retries=2):
-    if retries == 0:
-            logger.log('[x] All retries failed', 'yellow')
-            logger.log('[x] Terminating PokemonGo Bot', 'yellow')
-            from sys import exit
-            exit(-1)
-
-    try:
-        bot.start()
-    except Exception as err:
-        logger.log('[x] Error starting bot, reason: {}'.format(err), 'yellow')
-        logger.log('[x] Trying to start the bot again.', 'yellow')
-        logger.log('[x] Retries remaining: {}.'.format(retries - 1), 'yellow')
-        start_bot(bot, retries - 1)
-
-
 def main():
     # log settings
     # log format
@@ -217,14 +201,15 @@ def main():
     logger.log('[x] PokemonGO Bot v1.0', 'green')
     logger.log('[x] Configuration initialized', 'yellow')
 
-    logger.log('[x] Starting PokemonGo Bot....', 'green')
-
-    bot = PokemonGoBot(config)
-    start_bot(bot)
-
     try:
+        bot = PokemonGoBot(config)
+        bot.start()
+
+        logger.log('[x] Starting PokemonGo Bot....', 'green')
+
         while True:
             bot.take_step()
+
     except KeyboardInterrupt:
         logger.log('[x] Exiting PokemonGo Bot', 'red')
         # TODO Add number of pokemon catched, pokestops visited, highest CP
