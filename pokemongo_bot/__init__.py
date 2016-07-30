@@ -299,16 +299,16 @@ class PokemonGoBot(object):
 
     def _setup_workers(self):
         self.workers = [
-            cell_workers.SoftBan(self),
+            cell_workers.HandleSoftBan(self),
             cell_workers.IncubateEggs(self),
-            cell_workers.PokemonTransfer(self),
+            cell_workers.TransferPokemon(self),
             cell_workers.EvolveAll(self),
             cell_workers.RecycleItems(self),
             cell_workers.CatchVisiblePokemon(self),
-            cell_workers.SeenFort(self),
+            cell_workers.SpinFort(self),
             cell_workers.MoveToFort(self),
             cell_workers.CatchLuredPokemon(self),
-            cell_workers.SeenFort(self)
+            cell_workers.SpinFort(self)
         ]
 
     def _print_character_info(self):

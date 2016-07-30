@@ -1,7 +1,7 @@
 import unittest
 import json
 from pokemongo_bot import PokemonGoBot, ConfigException, TreeConfigBuilder
-from pokemongo_bot.cell_workers import SoftBan, CatchLuredPokemon
+from pokemongo_bot.cell_workers import HandleSoftBan, CatchLuredPokemon
 
 def convert_from_json(str):
     return json.loads(str)
@@ -36,18 +36,18 @@ class TreeConfigBuilderTest(unittest.TestCase):
 
     def test_creating_worker(self):
         obj = convert_from_json("""[{
-                "type": "SoftBan"
+                "type": "HandleSoftBan"
             }]""")
 
         builder = TreeConfigBuilder(self.bot, obj)
         tree = builder.build()
 
-        self.assertIsInstance(tree[0], SoftBan)
+        self.assertIsInstance(tree[0], HandleSoftBan)
         self.assertIs(tree[0].bot, self.bot)
 
     def test_creating_two_workers(self):
         obj = convert_from_json("""[{
-                "type": "SoftBan"
+                "type": "HandleSoftBan"
             }, {
                 "type": "CatchLuredPokemon"
             }]""")
@@ -55,7 +55,7 @@ class TreeConfigBuilderTest(unittest.TestCase):
         builder = TreeConfigBuilder(self.bot, obj)
         tree = builder.build()
 
-        self.assertIsInstance(tree[0], SoftBan)
+        self.assertIsInstance(tree[0], HandleSoftBan)
         self.assertIs(tree[0].bot, self.bot)
         self.assertIsInstance(tree[1], CatchLuredPokemon)
         self.assertIs(tree[1].bot, self.bot)
