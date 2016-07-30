@@ -9,50 +9,56 @@ class MoveToFort(object):
 
     def __init__(self, bot):
         self.bot = bot
+        self.initialized = False
+        self.nearest_fort = None
+        self.step_walker = None
 
     def should_run(self):
         return (self.bot.config.forts_spin and \
          self.bot.config.forts_move_to_spin and \
          self.bot.has_space_for_loot()) or self.bot.softban
 
+    def navigate_to_fort(self):
+        self.nearest_fort = self.get_nearest_fort()
+        self.step_walker = StepWalker(
+            self.bot,
+            self.bot.config.walk,
+            self.nearest_fort['latitude'],
+            self.nearest_fort['longitude']
+        )
+        
     def work(self):
         if not self.should_run():
             return WorkerResult.SUCCESS
 
-        nearest_fort = self.get_nearest_fort()
+        if not self.initialized:
+            self.navigate_to_fort()
+            self.initialized = True
 
-        if nearest_fort is None:
+        if self.nearest_fort is None:
             return WorkerResult.SUCCESS
 
-        lat = nearest_fort['latitude']
-        lng = nearest_fort['longitude']
-        fortID = nearest_fort['id']
-        details = fort_details(self.bot, fortID, lat, lng)
+        lat = self.nearest_fort['latitude']
+        lng = self.nearest_fort['longitude']
+        fort_id = self.nearest_fort['id']
+        details = fort_details(self.bot, fort_id, lat, lng)
         fort_name = details.get('name', 'Unknown').encode('utf8', 'replace')
-
         unit = self.bot.config.distance_unit  # Unit to use when printing formatted distance
 
         dist = distance(
             self.bot.position[0],
             self.bot.position[1],
-            lat,
-            lng
+            self.nearest_fort['latitude'],
+            self.nearest_fort['longitude']
         )
 
         if dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
             logger.log('Moving towards fort {}, {} left'.format(fort_name, format_dist(dist, unit)))
-
-            step_walker = StepWalker(
-                self.bot,
-                self.bot.config.walk,
-                lat,
-                lng
-            )
-
-            if not step_walker.step():
+            if not self.step_walker.step():
                 return WorkerResult.RUNNING
 
         logger.log('Arrived at pokestop.')
+        self.navigate_to_fort()
         return WorkerResult.SUCCESS
 
     def get_nearest_fort(self):
