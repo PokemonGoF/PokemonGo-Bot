@@ -16,8 +16,6 @@ class ShouldMoveToPositionWorker(object):
         return WorkerResult.SUCCESS
 
     def should_run(self):
-        if bool(self.cached_destination):
-            return True
         self.get_json()
 
     def get_json(self):
