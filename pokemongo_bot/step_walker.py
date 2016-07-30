@@ -34,9 +34,6 @@ class StepWalker(object):
             self.dLat = (dest_lat - init_lat) / int(self.steps)
             self.dLng = (dest_lng - init_lng) / int(self.steps)
 
-    def stop(self):
-        self.lastTime = None
-
     def step(self):
         # Since speed is m/s, we need to scale up our distance to move by
         # the number of seconds elapsed since we last moved
@@ -46,15 +43,22 @@ class StepWalker(object):
             time_scale = current_time - self.lastTime
             self.lastTime = current_time
 
-        if (self.dLat == 0 and self.dLng == 0) or self.dist < self.speed:
+        if (self.dLat == 0 and self.dLng == 0) or self.dist < (self.speed * time_scale):
             self.api.set_position(self.destLat, self.destLng, 0)
             self.lastTime = None
             return True
 
-        cLat = self.bot.position[0] + (self.dLat * time_scale) + random_lat_long_delta()
-        cLng = self.bot.position[1] + (self.dLng * time_scale) + random_lat_long_delta()
+        c_lat = self.bot.position[0] + (self.dLat * time_scale) + random_lat_long_delta()
+        c_lng = self.bot.position[1] + (self.dLng * time_scale) + random_lat_long_delta()
 
-        self.api.set_position(cLat, cLng, 0)
+        self.api.set_position(c_lat, c_lng, 0)
+        self.dist = distance(
+            c_lat,
+            c_lng,
+            self.destLat,
+            self.destLng
+        )
+
         self.lastTime = current_time
         self.bot.heartbeat()
 
