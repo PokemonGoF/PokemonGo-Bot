@@ -2,7 +2,7 @@ from pokemongo_bot import logger
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
-from utils import distance, format_dist, fort_details
+from pokemongo_bot.cell_workers.utils import distance, format_dist, fort_details
 
 
 class MoveToFortWorker(object):

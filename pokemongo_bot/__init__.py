@@ -13,18 +13,18 @@ from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
 from pgoapi.utilities import f2i, get_cell_ids
 
-import cell_workers
-import logger
-from api_wrapper import ApiWrapper
-from cell_workers.utils import distance
-from event_manager import EventManager
-from human_behaviour import sleep
-from item_list import Item
-from metrics import Metrics
+import pokemongo_bot.cell_workers
+import pokemongo_bot.logger
+from pokemongo_bot.api_wrapper import ApiWrapper
+from pokemongo_bot.cell_workers.utils import distance
+from pokemongo_bot.event_manager import EventManager
+from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot.item_list import Item
+from pokemongo_bot.metrics import Metrics
 from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
-from spiral_navigator import SpiralNavigator
-from worker_result import WorkerResult
+from pokemongo_bot.spiral_navigator import SpiralNavigator
+from pokemongo_bot.worker_result import WorkerResult
 
 
 class PokemonGoBot(object):

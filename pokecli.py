@@ -314,15 +314,6 @@ def init_config():
     add_config(
         parser,
         load,
-        short_flag="-hr",
-        long_flag="--health_record",
-        help="Send anonymous bot event to GA for bot health record. Set \"health_record\":false if you need disable it.",
-        type=bool,
-        default=True
-    )
-    add_config(
-        parser,
-        load,
         short_flag="-ac",
         long_flag="--forts.avoid_circles",
         help="Avoids circles (pokestops) of the max size set in max_circle_size flag",

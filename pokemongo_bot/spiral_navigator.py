@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import logger
-from cell_workers.utils import distance, format_dist
-from step_walker import StepWalker
+import pokemongo_bot.logger
+from pokemongo_bot.cell_workers.utils import distance, format_dist
+from pokemongo_bot.step_walker import StepWalker
 
 
 class SpiralNavigator(object):

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from catch_lured_pokemon_worker import CatchLuredPokemonWorker
-from catch_visible_pokemon_worker import CatchVisiblePokemonWorker
-from evolve_all_worker import EvolveAllWorker
-from incubate_eggs_worker import IncubateEggsWorker
-from move_to_fort_worker import MoveToFortWorker
-from pokemon_catch_worker import PokemonCatchWorker
-from pokemon_transfer_worker import PokemonTransferWorker
-from recycle_items_worker import RecycleItemsWorker
-from seen_fort_worker import SeenFortWorker
-from soft_ban_worker import SoftBanWorker
+from pokemongo_bot.cell_workers.catch_lured_pokemon_worker import CatchLuredPokemonWorker
+from pokemongo_bot.cell_workers.catch_visible_pokemon_worker import CatchVisiblePokemonWorker
+from pokemongo_bot.cell_workers.evolve_all_worker import EvolveAllWorker
+from pokemongo_bot.cell_workers.incubate_eggs_worker import IncubateEggsWorker
+from pokemongo_bot.cell_workers.move_to_fort_worker import MoveToFortWorker
+from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
+from pokemongo_bot.cell_workers.pokemon_transfer_worker import PokemonTransferWorker
+from pokemongo_bot.cell_workers.recycle_items_worker import RecycleItemsWorker
+from pokemongo_bot.cell_workers.seen_fort_worker import SeenFortWorker
+from pokemongo_bot.cell_workers.soft_ban_worker import SoftBanWorker

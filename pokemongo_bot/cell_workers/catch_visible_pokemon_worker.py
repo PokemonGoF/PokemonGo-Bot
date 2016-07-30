@@ -2,7 +2,7 @@ import json
 
 from pokemongo_bot import logger
 from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
-from utils import distance
+from pokemongo_bot.cell_workers.utils import distance
 
 
 class CatchVisiblePokemonWorker(object):

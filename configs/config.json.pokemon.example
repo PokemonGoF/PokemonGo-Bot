@@ -18,7 +18,6 @@
     "action_wait_max": 4,
     "debug": false,
     "test": false,
-    "health_record": true,
     "location_cache": true,
     "distance_unit": "km",
     "reconnecting_timeout": 15,

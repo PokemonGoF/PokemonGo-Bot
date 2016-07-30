@@ -1,2 +1,2 @@
-from logging_handler import LoggingHandler
-from socketio_handler import SocketIoHandler
+from pokemongo_bot.event_handlers.logging_handler import LoggingHandler
+from pokemongo_bot.event_handlers.socketio_handler import SocketIoHandler

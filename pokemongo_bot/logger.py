@@ -10,6 +10,10 @@ except Exception:
 
 
 def log(string, color='white'):
+    try:
+        string = string.decode('utf-8')
+    except:
+        pass
     color_hex = {
         'red': '91m',
         'green': '92m',
@@ -20,7 +24,7 @@ def log(string, color='white'):
     if color not in color_hex:
         print('[' + time.strftime("%H:%M:%S") + '] ' + string)
     else:
-        print('[' + time.strftime("%H:%M:%S") + '] ' + u'\033[' + color_hex[color] + string.decode('utf-8') + '\033[0m')
+        print('[' + time.strftime("%H:%M:%S") + '] ' + u'\033[' + color_hex[color] + string + '\033[0m')
     if lcd:
         if string:
             lcd.message(string)

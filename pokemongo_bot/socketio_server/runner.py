@@ -4,7 +4,7 @@ import eventlet
 import socketio
 from eventlet import patcher, wsgi
 
-from app import app, sio
+from pokemongo_bot.socketio_server.app import app, sio
 
 patcher.monkey_patch(all=True)
 

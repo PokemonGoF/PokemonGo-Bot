@@ -1,7 +1,7 @@
 from math import sqrt
 
-from cell_workers.utils import distance
-from human_behaviour import random_lat_long_delta, sleep
+from pokemongo_bot.cell_workers.utils import distance
+from pokemongo_bot.human_behaviour import random_lat_long_delta, sleep
 
 
 class StepWalker(object):

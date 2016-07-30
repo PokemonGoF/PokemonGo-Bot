@@ -3,8 +3,8 @@ import time
 from pgoapi.exceptions import (NotLoggedInException,
                                ServerBusyOrOfflineException)
 
-import logger
-from human_behaviour import sleep
+import pokemongo_bot.logger
+from pokemongo_bot.human_behaviour import sleep
 
 
 class ApiWrapper(object):
