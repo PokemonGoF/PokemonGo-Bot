@@ -25,7 +25,7 @@
         "type": "CatchVisiblePokemonWorker"
       },
       {
-        "type": "SeenFortWorker"
+        "type": "SpinFortWorker"
       },
       {
         "type": "MoveToFortWorker"
@@ -34,7 +34,7 @@
         "type": "CatchLuredPokemonWorker"
       },
       {
-        "type": "SeenFortWorker"
+        "type": "SpinFortWorker"
       }
     ],
     "catch_pokemon": true,
