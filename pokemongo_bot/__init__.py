@@ -113,7 +113,7 @@ class PokemonGoBot(object):
         if lat == None:
             lat = self.api._position_lat
         if lng == None:
-            lng = self.api._position_lng
+            lng = selfnumber_of_things_gained_by_stop.api._position_lng
         if alt == None:
             alt = 0
 
@@ -581,7 +581,7 @@ class PokemonGoBot(object):
                                                 ' | Pokestops Visited: {poke_stop_visits}'.format(**playerdata), 'cyan')
 
     def has_space_for_loot(self):
-        number_of_things_gained_by_stop = 5
+        number_of_things_gained_by_stop = 8
         enough_space = self.get_inventory_count('item') < self._player['max_item_storage'] - number_of_things_gained_by_stop
 
         return enough_space
