@@ -195,7 +195,7 @@ class PokemonCatchWorker(object):
 
                                 # Add this logic to avoid Pokeball = 0, Great Ball = 0, Ultra Ball = X
                                 # And this logic saves Ultra Balls if it's a weak trash pokemon
-                                if catch_rate[pokeball-1]<0.30 and item_stock[3]>0:
+                                if catch_rate[pokeball-1]<0.30 and items_stock[3]>0:
                                     pokeball = 3
                                     
                             items_stock[pokeball] -= 1
