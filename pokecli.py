@@ -186,20 +186,20 @@ def init_config():
     return config
 
 
-def start_bot(bot, retries=1):
-    try:
-        bot.start()
-    except Exception, e:
-        logger.log('[x] Error starting bot, reason: {e}'.format(e), 'red')
-        if retries == 0:
-            logger.log('[x] All retries failed', 'red')
-            logger.log('[x] Terminating PokemonGo Bot', 'red')
+def start_bot(bot, retries=2):
+    if retries == 0:
+            logger.log('[x] All retries failed', 'yellow')
+            logger.log('[x] Terminating PokemonGo Bot', 'yellow')
             from sys import exit
             exit(-1)
-        else:
-            logger.log('[x] Trying to start the bot again.', 'yellow')
-            logger.log('[x] Retries remaining: {}.'.format(retries - 1), 'yellow')
-            start_bot(retries - 1)
+
+    try:
+        bot.start()
+    except Exception as err:
+        logger.log('[x] Error starting bot, reason: {}'.format(err), 'yellow')
+        logger.log('[x] Trying to start the bot again.', 'yellow')
+        logger.log('[x] Retries remaining: {}.'.format(retries - 1), 'yellow')
+        start_bot(bot, retries - 1)
 
 
 def main():
