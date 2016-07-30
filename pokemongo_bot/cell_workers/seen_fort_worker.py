@@ -13,15 +13,10 @@ from utils import distance, format_time, fort_details
 
 class SeenFortWorker(object):
     def __init__(self, bot):
-        self.api = bot.api
         self.bot = bot
-        self.fort_timeouts = bot.fort_timeouts
-        self.position = bot.position
-        self.config = bot.config
-        self.item_list = bot.item_list
 
     def should_run(self):
-        return self.config.forts_spin and self.bot.has_space_for_loot()
+        return self.bot.config.forts_spin and self.bot.has_space_for_loot()
 
     def work(self):
         fort = self.get_fort_in_range()
@@ -37,12 +32,12 @@ class SeenFortWorker(object):
         logger.log('Now at Pokestop: {0}'.format(fort_name), 'cyan')
         logger.log('Spinning ...', 'cyan')
 
-        self.api.fort_search(fort_id=fort['id'],
+        self.bot.api.fort_search(fort_id=fort['id'],
                              fort_latitude=lat,
                              fort_longitude=lng,
-                             player_latitude=f2i(self.position[0]),
-                             player_longitude=f2i(self.position[1]))
-        response_dict = self.api.call()
+                             player_latitude=f2i(self.bot.position[0]),
+                             player_longitude=f2i(self.bot.position[1]))
+        response_dict = self.bot.api.call()
         if 'responses' in response_dict and \
                 'FORT_SEARCH' in response_dict['responses']:
 
@@ -69,7 +64,7 @@ class SeenFortWorker(object):
                             tmp_count_items[item_id] += item['item_count']
 
                     for item_id, item_count in tmp_count_items.iteritems():
-                        item_name = self.item_list[str(item_id)]
+                        item_name = self.bot.item_list[str(item_id)]
                         logger.log(
                             '- ' + str(item_count) + "x " + item_name +
                             " (Total: " + str(self.bot.item_inventory_count(item_id)) + ")", 'yellow'
@@ -122,7 +117,7 @@ class SeenFortWorker(object):
     def get_fort_in_range(self):
         forts = self.bot.get_forts(order_by_distance=True)
 
-        forts = filter(lambda x: x["id"] not in self.fort_timeouts, forts)
+        forts = filter(lambda x: x["id"] not in self.bot.fort_timeouts, forts)
 
         if len(forts) == 0:
             return None
@@ -130,8 +125,8 @@ class SeenFortWorker(object):
         fort = forts[0]
 
         distance_to_fort = distance(
-            self.position[0],
-            self.position[1],
+            self.bot.position[0],
+            self.bot.position[1],
             fort['latitude'],
             fort['longitude']
         )

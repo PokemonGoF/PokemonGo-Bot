@@ -11,8 +11,6 @@ class SoftBanWorker(object):
 
     def __init__(self, bot):
         self.bot = bot
-        self.api = bot.api
-        self.config = bot.config
 
     def work(self):
         if not self.should_run():
@@ -48,14 +46,14 @@ class SoftBanWorker(object):
             logger.log('Softban should be fixed.')
 
     def spin_fort(self, fort):
-        self.api.fort_search(
+        self.bot.api.fort_search(
             fort_id=fort['id'],
             fort_latitude=fort['latitude'],
             fort_longitude=fort['longitude'],
             player_latitude=f2i(self.bot.position[0]),
             player_longitude=f2i(self.bot.position[1])
         )
-        self.api.call()
+        self.bot.api.call()
 
     def should_run(self):
         return self.bot.config.softban_fix and self.bot.softban
