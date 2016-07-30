@@ -29,6 +29,5 @@ def log(message, color='white'):
     else:
         colored_message = u'\033[' + color2hex[color] + message + '\033[0m'
         print(log_format % (today, now, colored_message))
-    if lcd:
-        if(string):
-            lcd.message(string)
+    if lcd and message:
+        lcd.message(string)
