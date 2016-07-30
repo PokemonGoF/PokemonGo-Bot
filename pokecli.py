@@ -70,32 +70,37 @@ def main():
         except KeyboardInterrupt:
             logger.log('Exiting PokemonGo Bot', 'red')
             finished = True
-            if bot.metrics.start_time is None:
-                return  # Bot didn't actually start, no metrics to show.
-
-            metrics = bot.metrics
-            metrics.capture_stats()
-            logger.log('')
-            logger.log('Ran for {}'.format(metrics.runtime()), 'cyan')
-            logger.log('Total XP Earned: {}  Average: {:.2f}/h'.format(metrics.xp_earned(), metrics.xp_per_hour()), 'cyan')
-            logger.log('Travelled {:.2f}km'.format(metrics.distance_travelled()), 'cyan')
-            logger.log('Visited {} stops'.format(metrics.visits['latest'] - metrics.visits['start']), 'cyan')
-            logger.log('Encountered {} pokemon, {} caught, {} released, {} evolved, {} never seen before'
-                       .format(metrics.num_encounters(), metrics.num_captures(), metrics.releases,
-                               metrics.num_evolutions(), metrics.num_new_mons()), 'cyan')
-            logger.log('Threw {} pokeball{}'.format(metrics.num_throws(), '' if metrics.num_throws() == 1 else 's'),
-                       'cyan')
-            logger.log('Earned {} Stardust'.format(metrics.earned_dust()), 'cyan')
-            logger.log('')
-            if metrics.highest_cp is not None:
-                logger.log('Highest CP Pokemon: {}'.format(metrics.highest_cp['desc']), 'cyan')
-            if metrics.most_perfect is not None:
-                logger.log('Most Perfect Pokemon: {}'.format(metrics.most_perfect['desc']), 'cyan')
-
-
+            report_summary(bot)
         except NotLoggedInException:
             logger.log('[x] Error while connecting to the server, please wait %s minutes' % config.reconnecting_timeout, 'red')
             time.sleep(config.reconnecting_timeout * 60)
+        except:
+            # always report session summary and then raise exception
+            report_summary(bot)
+            raise
+
+def report_summary(bot):
+    if bot.metrics.start_time is None:
+        return  # Bot didn't actually start, no metrics to show.
+
+    metrics = bot.metrics
+    metrics.capture_stats()
+    logger.log('')
+    logger.log('Ran for {}'.format(metrics.runtime()), 'cyan')
+    logger.log('Total XP Earned: {}  Average: {:.2f}/h'.format(metrics.xp_earned(), metrics.xp_per_hour()), 'cyan')
+    logger.log('Travelled {:.2f}km'.format(metrics.distance_travelled()), 'cyan')
+    logger.log('Visited {} stops'.format(metrics.visits['latest'] - metrics.visits['start']), 'cyan')
+    logger.log('Encountered {} pokemon, {} caught, {} released, {} evolved, {} never seen before'
+                .format(metrics.num_encounters(), metrics.num_captures(), metrics.releases,
+                        metrics.num_evolutions(), metrics.num_new_mons()), 'cyan')
+    logger.log('Threw {} pokeball{}'.format(metrics.num_throws(), '' if metrics.num_throws() == 1 else 's'),
+                'cyan')
+    logger.log('Earned {} Stardust'.format(metrics.earned_dust()), 'cyan')
+    logger.log('')
+    if metrics.highest_cp is not None:
+        logger.log('Highest CP Pokemon: {}'.format(metrics.highest_cp['desc']), 'cyan')
+    if metrics.most_perfect is not None:
+        logger.log('Most Perfect Pokemon: {}'.format(metrics.most_perfect['desc']), 'cyan')
 
 def init_config():
     parser = argparse.ArgumentParser()
