@@ -68,6 +68,9 @@ class IncubateEggsWorker(object):
         inv = {}
         response_dict = self.bot.get_inventory()
         matched_pokemon = []
+        temp_eggs = []
+        temp_used_incubators = []
+        temp_ready_incubators = []
         inv = reduce(
             dict.__getitem__,
             ["responses", "GET_INVENTORY", "inventory_delta", "inventory_items"],
@@ -76,24 +79,26 @@ class IncubateEggsWorker(object):
         for inv_data in inv:
             inv_data = inv_data.get("inventory_item_data", {})
             if "egg_incubators" in inv_data:
+                temp_used_incubators = []
+                temp_ready_incubators = []
                 incubators = inv_data.get("egg_incubators", {}).get("egg_incubator",[])
                 if isinstance(incubators, basestring):  # checking for old response
                     incubators = [incubators]
                 for incubator in incubators:
                     if 'pokemon_id' in incubator:
-                        self.used_incubators.append({
+                        temp_used_incubators.append({
                             "id": incubator.get('id', -1),
                             "km": incubator.get('target_km_walked', 9001)
                         })
                     else:
-                        self.ready_incubators.append({
+                        temp_ready_incubators.append({
                             "id": incubator.get('id', -1)
                         })
                 continue
             if "pokemon_data" in inv_data:
                 pokemon = inv_data.get("pokemon_data", {})
                 if pokemon.get("is_egg", False) and "egg_incubator_id" not in pokemon:
-                    self.eggs.append({
+                    temp_eggs.append({
                         "id": pokemon.get("id", -1),
                         "km": pokemon.get("egg_km_walked_target", -1),
                         "used": False
@@ -111,6 +116,12 @@ class IncubateEggsWorker(object):
                 continue
             if "player_stats" in inv_data:
                 self.km_walked = inv_data.get("player_stats", {}).get("km_walked", 0)
+        if temp_used_incubators:
+            self.used_incubators = temp_used_incubators
+        if temp_ready_incubators:
+            self.ready_incubators = temp_ready_incubators
+        if temp_eggs:
+            self.eggs = temp_eggs
         return matched_pokemon
 
     def _hatch_eggs(self):
