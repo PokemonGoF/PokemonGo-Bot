@@ -6,13 +6,9 @@ from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 class CatchLuredPokemonWorker(object):
     def __init__(self, bot):
         self.bot = bot
-        self.cell = bot.cell
-        self.api = bot.api
-        self.config = bot.config
-        self.position = bot.position
 
     def work(self):
-        if not self.config.catch_pokemon:
+        if not self.bot.config.catch_pokemon:
             return
 
         lured_pokemon = self.get_lured_pokemon()
