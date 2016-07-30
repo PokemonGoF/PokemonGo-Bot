@@ -445,7 +445,8 @@ def init_config():
     item_list = json.load(open(os.path.join('data', 'items.json')))
     for config_item_name, bag_count in config.item_filter.iteritems():
         if config_item_name not in item_list.viewvalues():
-            raise Exception('Config.json error - item "' + config_item_name + '" does not exist (spelling mistake?)')
+            parser.error('item "' + config_item_name + '" does not exist, spelling mistake? (check for valid item names in data/items.json)')
+            return None
 
     # create web dir if not exists
     try:
