@@ -10,11 +10,11 @@ class StepWalker(object):
         self.bot = bot
         self.api = bot.api
 
-        self.initLat, self.initLng = self.bot.position[0:2]
+        init_lat, init_lng = self.bot.position[0:2]
 
         self.dist = distance(
-            self.initLat,
-            self.initLng,
+            init_lat,
+            init_lng,
             dest_lat,
             dest_lng
         )
@@ -31,8 +31,8 @@ class StepWalker(object):
             self.dLat = 0
             self.dLng = 0
         else:
-            self.dLat = (dest_lat - self.initLat) / int(self.steps)
-            self.dLng = (dest_lng - self.initLng) / int(self.steps)
+            self.dLat = (dest_lat - init_lat) / int(self.steps)
+            self.dLng = (dest_lng - init_lng) / int(self.steps)
 
     def stop(self):
         self.lastTime = None
@@ -51,8 +51,8 @@ class StepWalker(object):
             self.lastTime = None
             return True
 
-        cLat = self.initLat + (self.dLat * time_scale) + random_lat_long_delta()
-        cLng = self.initLng + (self.dLng * time_scale) + random_lat_long_delta()
+        cLat = self.bot.position[0] + (self.dLat * time_scale) + random_lat_long_delta()
+        cLng = self.bot.position[1] + (self.dLng * time_scale) + random_lat_long_delta()
 
         self.api.set_position(cLat, cLng, 0)
         self.lastTime = current_time
