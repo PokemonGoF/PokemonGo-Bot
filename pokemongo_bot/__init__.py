@@ -581,7 +581,7 @@ class PokemonGoBot(object):
                                                 ' | Pokestops Visited: {poke_stop_visits}'.format(**playerdata), 'cyan')
 
     def has_space_for_loot(self):
-        number_of_things_gained_by_stop = 5
+        number_of_things_gained_by_stop = 8
         enough_space = self.get_inventory_count('item') < self._player['max_item_storage'] - number_of_things_gained_by_stop
 
         return enough_space
