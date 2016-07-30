@@ -157,6 +157,7 @@ class PokemonGoBot(object):
         user_data_cells = "data/cells-%s.json" % (self.config.username)
         with open(user_data_cells, 'w') as outfile:
             json.dump(cells, outfile)
+            outfile.close()
 
         user_web_location = os.path.join('web', 'location-%s.json' % (self.config.username))
         # alt is unused atm but makes using *location easier
@@ -168,6 +169,7 @@ class PokemonGoBot(object):
                     'alt': alt,
                     'cells': cells
                     }, outfile)
+                outfile.close()
         except IOError as e:
             logger.log('[x] Error while opening location file: %s' % e, 'red')
 
@@ -175,6 +177,7 @@ class PokemonGoBot(object):
         try:
             with open(user_data_lastlocation, 'w') as outfile:
                 json.dump({'lat': lat, 'lng': lng}, outfile)
+                outfile.close()
         except IOError as e:
             logger.log('[x] Error while opening location file: %s' % e, 'red')
 
@@ -374,6 +377,7 @@ class PokemonGoBot(object):
         user_web_inventory = 'web/inventory-%s.json' % (self.config.username)
         with open(user_web_inventory, 'w') as outfile:
             json.dump(inventory_dict, outfile)
+            outfile.close()
 
         # get player items stock
         # ----------------------
@@ -450,6 +454,7 @@ class PokemonGoBot(object):
                 with open('data/last-location-%s.json' %
                           (self.config.username)) as f:
                     location_json = json.load(f)
+                    f.close()
                 location = (location_json['lat'],
                                  location_json['lng'], 0.0)
                 #print(location)
