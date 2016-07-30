@@ -30,28 +30,17 @@ class StepWalker(object):
         if self.dist < speed or int(self.steps) <= 1:
             self.dLat = 0
             self.dLng = 0
-            self.magnitude = 0
         else:
             self.dLat = (dest_lat - self.initLat) / int(self.steps)
             self.dLng = (dest_lng - self.initLng) / int(self.steps)
-            self.magnitude = self._pythagorean(self.dLat, self.dLng)
 
     def step(self):
         if (self.dLat == 0 and self.dLng == 0) or self.dist < self.speed:
             self.api.set_position(self.destLat, self.destLng, 0)
             return True
 
-        totalDLat = (self.destLat - self.initLat)
-        totalDLng = (self.destLng - self.initLng)
-        magnitude = self._pythagorean(totalDLat, totalDLng)
-        unitLat = totalDLat / magnitude
-        unitLng = totalDLng / magnitude
-
-        scaledDLat = unitLat * self.magnitude
-        scaledDLng = unitLng * self.magnitude
-
-        cLat = self.initLat + scaledDLat + random_lat_long_delta()
-        cLng = self.initLng + scaledDLng + random_lat_long_delta()
+        cLat = self.initLat + self.dLat + random_lat_long_delta()
+        cLng = self.initLng + self.dLng + random_lat_long_delta()
 
         self.api.set_position(cLat, cLng, 0)
         self.bot.heartbeat()
