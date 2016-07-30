@@ -6,7 +6,13 @@
     "gmapkey": "GOOGLE_MAPS_API_KEY",
     "max_steps": 5,
     "catch_pokemon": true,
-    "spin_forts": true,
+    "forts": {
+      "spin": true,
+      "move_to_spin": true,
+      "avoid_circles": true,
+      "max_circle_size": 50
+    },
+    "websocket_server": false,
     "walk": 4.16,
     "action_wait_min": 1,
     "action_wait_max": 4,
@@ -15,6 +21,7 @@
     "health_record": true,
     "location_cache": true,
     "distance_unit": "km",
+    "reconnecting_timeout": 15,
     "item_filter": {
       "1": { "keep" : 50 },
       "2": { "keep" : 50 },
@@ -27,15 +34,14 @@
     },
     "evolve_all": "NONE",
     "evolve_speed": 20,
+    "evolve_cp_min": 300,
     "use_lucky_egg": false,
     "hatch_eggs": true,
     "longer_eggs_first": true,
-    "evolve_captured": false,
+    "evolve_captured": "NONE",
     "release_pokemon": true,
-    "spin_forts": {
-      "avoid_circles": false,
-      "max_circle_size": 10
-    },
+    "catch_randomize_reticle_factor": 1.0,
+    "catch_randomize_spin_factor": 1.0,
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or" },
 

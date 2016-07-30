@@ -1,4 +1,5 @@
 import logging
+
 from pokemongo_bot.event_manager import EventHandler
 
 
