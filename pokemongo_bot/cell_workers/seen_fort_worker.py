@@ -100,14 +100,9 @@ class SeenFortWorker(object):
                                     seconds_since_epoch)))
 
                 if not items_awarded and not experience_awarded and not pokestop_cooldown:
-                    message = (
-                        'Stopped at Pokestop and did not find experience, items '
-                        'or information about the stop cooldown. You are '
-                        'probably softbanned. Try to play on your phone, '
-                        'if pokemons always ran away and you find nothing in '
-                        'PokeStops you are indeed softbanned. Please try again '
-                        'in a few hours.')
-                    raise RuntimeError(message)
+                    message = ('You are soft banned. We will now try to spin this fort till you are un-soft banned')
+                    logger.log('[#]' + message)
+                    return self.work()
             elif spin_details['result'] == 2:
                 logger.log("[#] Pokestop out of range")
             elif spin_details['result'] == 3:
