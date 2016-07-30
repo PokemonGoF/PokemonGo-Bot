@@ -2,12 +2,12 @@ from pgoapi.utilities import f2i
 
 from pokemongo_bot import logger
 from pokemongo_bot.constants import Constants
-from pokemongo_bot.cell_workers import MoveToFort, SeenFort
+from pokemongo_bot.cell_workers import MoveToFort
 from pokemongo_bot.cell_workers.utils import distance
 from pokemongo_bot.worker_result import WorkerResult
 
 
-class SoftBan(object):
+class HandleSoftBan(object):
 
     def __init__(self, bot):
         self.bot = bot
