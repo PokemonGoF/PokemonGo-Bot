@@ -28,6 +28,22 @@ from worker_result import WorkerResult
 
 
 class PokemonGoBot(object):
+
+    WORKERS = [
+        cell_workers.SoftBanWorker,
+        cell_workers.IncubateEggsWorker,
+        cell_workers.PokemonTransferWorker,
+        cell_workers.EvolveAllWorker,
+        cell_workers.RecycleItemsWorker,
+        cell_workers.CatchVisiblePokemonWorker,
+        cell_workers.ShouldMoveToPositionWorker,
+        cell_workers.MoveToPositionWorker,
+        cell_workers.SeenFortWorker,
+        cell_workers.MoveToFortWorker,
+        cell_workers.CatchLuredPokemonWorker,
+        cell_workers.SeenFortWorker
+    ]
+
     @property
     def position(self):
         return self.api._position_lat, self.api._position_lng, 0
@@ -43,6 +59,7 @@ class PokemonGoBot(object):
         self.recent_forts = [None] * config.forts_max_circle_size
         self.tick_count = 0
         self.softban = False
+        self.cached_destination = None
 
         # Make our own copy of the workers for this instance
         self.workers = []
@@ -450,7 +467,7 @@ class PokemonGoBot(object):
 
         if self.config.location:
             location_str = self.config.location.encode('utf-8')
-            location = (self._get_pos_by_name(location_str.replace(" ", "")))
+            location = (self.get_pos_by_name(location_str.replace(" ", "")))
             self.api.set_position(*location)
             logger.log('')
             logger.log(u'Location Found: {}'.format(self.config.location))
@@ -488,7 +505,7 @@ class PokemonGoBot(object):
                         "No cached Location. Please specify initial location.")
                 logger.log('[x] Parsing cached location failed, try to use the initial location...')
 
-    def _get_pos_by_name(self, location_name):
+    def get_pos_by_name(self, location_name):
         # Check if the given location is already a coordinate.
         if ',' in location_name:
             possible_coordinates = re.findall("[-]?\d{1,3}[.]\d{6,7}", location_name)
