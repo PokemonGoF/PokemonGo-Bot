@@ -5,7 +5,7 @@ from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 from utils import distance
 
 
-class CatchVisiblePokemonWorker(object):
+class CatchVisiblePokemon(object):
     def __init__(self, bot):
         self.bot = bot
 

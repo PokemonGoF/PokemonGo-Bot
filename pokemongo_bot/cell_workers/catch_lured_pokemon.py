@@ -3,7 +3,7 @@ from pokemongo_bot.cell_workers.utils import fort_details
 from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 
 
-class CatchLuredPokemonWorker(object):
+class CatchLuredPokemon(object):
     def __init__(self, bot):
         self.bot = bot
 

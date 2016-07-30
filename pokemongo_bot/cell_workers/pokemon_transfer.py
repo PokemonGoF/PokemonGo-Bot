@@ -4,7 +4,7 @@ from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import action_delay
 
 
-class PokemonTransferWorker(object):
+class PokemonTransfer(object):
 
     def __init__(self, bot):
         self.bot = bot

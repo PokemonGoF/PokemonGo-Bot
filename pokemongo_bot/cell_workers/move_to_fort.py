@@ -5,7 +5,7 @@ from pokemongo_bot.worker_result import WorkerResult
 from utils import distance, format_dist, fort_details
 
 
-class MoveToFortWorker(object):
+class MoveToFort(object):
 
     def __init__(self, bot):
         self.bot = bot
@@ -29,7 +29,7 @@ class MoveToFortWorker(object):
         fortID = nearest_fort['id']
         details = fort_details(self.bot, fortID, lat, lng)
         fort_name = details.get('name', 'Unknown').encode('utf8', 'replace')
-        
+
         unit = self.bot.config.distance_unit  # Unit to use when printing formatted distance
 
         dist = distance(
