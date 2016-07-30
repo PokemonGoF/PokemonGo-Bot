@@ -28,6 +28,7 @@ from worker_result import WorkerResult
 from tree_config_builder import ConfigException, TreeConfigBuilder
 
 class PokemonGoBot(object):
+
     @property
     def position(self):
         return self.api._position_lat, self.api._position_lng, 0
@@ -45,6 +46,7 @@ class PokemonGoBot(object):
         self.recent_forts = [None] * config.forts_max_circle_size
         self.tick_count = 0
         self.softban = False
+        self.cached_destination = None
 
         # Make our own copy of the workers for this instance
         self.workers = []
@@ -305,6 +307,8 @@ class PokemonGoBot(object):
             cell_workers.EvolveAllWorker(self),
             cell_workers.RecycleItemsWorker(self),
             cell_workers.CatchVisiblePokemonWorker(self),
+            cell_workers.ShouldMoveToPositionWorker(self),
+            cell_workers.MoveToPositionWorker(self),
             cell_workers.SeenFortWorker(self),
             cell_workers.MoveToFortWorker(self),
             cell_workers.CatchLuredPokemonWorker(self),
@@ -498,7 +502,7 @@ class PokemonGoBot(object):
 
         if self.config.location:
             location_str = self.config.location.encode('utf-8')
-            location = (self._get_pos_by_name(location_str.replace(" ", "")))
+            location = (self.get_pos_by_name(location_str.replace(" ", "")))
             self.api.set_position(*location)
             logger.log('')
             logger.log(u'Location Found: {}'.format(self.config.location))
@@ -545,7 +549,7 @@ class PokemonGoBot(object):
                     'initial location...'
                 )
 
-    def _get_pos_by_name(self, location_name):
+    def get_pos_by_name(self, location_name):
         # Check if the given location is already a coordinate.
         if ',' in location_name:
             possible_coordinates = re.findall(
