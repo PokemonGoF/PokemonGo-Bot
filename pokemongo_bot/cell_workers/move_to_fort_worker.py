@@ -2,7 +2,7 @@ from pokemongo_bot import logger
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
-from utils import distance, format_dist
+from utils import distance, format_dist, fort_details
 
 
 class MoveToFortWorker(object):
@@ -27,6 +27,9 @@ class MoveToFortWorker(object):
         lat = nearest_fort['latitude']
         lng = nearest_fort['longitude']
         fortID = nearest_fort['id']
+        details = fort_details(self.bot, fortID, lat, lng)
+        fort_name = details.get('name', 'Unknown').encode('utf8', 'replace')
+        
         unit = self.bot.config.distance_unit  # Unit to use when printing formatted distance
 
         dist = distance(
@@ -37,7 +40,7 @@ class MoveToFortWorker(object):
         )
 
         if dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
-            logger.log('Moving towards fort {}, {} left'.format(fortID, format_dist(dist, unit)))
+            logger.log('Moving towards fort {}, {} left'.format(fort_name, format_dist(dist, unit)))
 
             step_walker = StepWalker(
                 self.bot,
