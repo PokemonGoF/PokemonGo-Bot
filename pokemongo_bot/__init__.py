@@ -238,7 +238,7 @@ class PokemonGoBot(object):
         if self.api._auth_provider and self.api._auth_provider._ticket_expire:
             
             # prevent crash if return not numeric value
-            if not is_number(self.api._auth_provider._ticket_expire):
+            if not self.is_numeric(self.api._auth_provider._ticket_expire):
                 logger.log("Ticket expired value is not numeric", 'yellow')
                 return
 
