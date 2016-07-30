@@ -40,3 +40,6 @@
  * surfaace
  * surceis
  * SpaceWhale
+ * klingan
+ * reddivision
+ * kbinani

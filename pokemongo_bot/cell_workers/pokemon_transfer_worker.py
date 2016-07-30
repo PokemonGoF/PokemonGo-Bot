@@ -1,44 +1,52 @@
 import json
 
-from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot import logger
+from pokemongo_bot.human_behaviour import action_delay
+
 
 class PokemonTransferWorker(object):
 
     def __init__(self, bot):
-        self.config = bot.config
-        self.pokemon_list = bot.pokemon_list
-        self.api = bot.api
         self.bot = bot
 
     def work(self):
-        if not self.config.release_pokemon:
+        if not self.bot.config.release_pokemon:
             return
 
         pokemon_groups = self._release_pokemon_get_groups()
         for pokemon_id in pokemon_groups:
             group = pokemon_groups[pokemon_id]
 
-            if len(group) > 1:
-                pokemon_name = self.pokemon_list[pokemon_id - 1]['Name']
+            if len(group) > 0:
+                pokemon_name = self.bot.pokemon_list[pokemon_id - 1]['Name']
                 keep_best, keep_best_cp, keep_best_iv = self._validate_keep_best_config(pokemon_name)
 
                 if keep_best:
-                    order_criteria = 'cp'
-                    limit = keep_best_cp
+                    best_pokemon_ids = set()
+                    order_criteria = 'none'
+                    if keep_best_cp >= 1:
+                        cp_limit = keep_best_cp
+                        best_cp_pokemons = sorted(group, key=lambda x: (x['cp'], x['iv']), reverse=True)[:cp_limit]
+                        best_pokemon_ids = set(pokemon['pokemon_data']['id'] for pokemon in best_cp_pokemons)
+                        order_criteria = 'cp'
 
                     if keep_best_iv >= 1:
-                        order_criteria = 'iv'
-                        limit = keep_best_iv
-
-                    best_pokemons = sorted(group, key=lambda x: x[order_criteria], reverse=True)[:limit]
+                        iv_limit = keep_best_iv
+                        best_iv_pokemons = sorted(group, key=lambda x: (x['iv'], x['cp']), reverse=True)[:iv_limit]
+                        best_pokemon_ids |= set(pokemon['pokemon_data']['id'] for pokemon in best_iv_pokemons)
+                        if order_criteria == 'cp':
+                            order_criteria = 'cp and iv'
+                        else:
+                            order_criteria = 'iv'
 
                     # remove best pokemons from all pokemons array
                     all_pokemons = group
-                    for best_pokemon in best_pokemons:
+                    best_pokemons = []
+                    for best_pokemon_id in best_pokemon_ids:
                         for pokemon in all_pokemons:
-                            if best_pokemon['pokemon_data']['id'] == pokemon['pokemon_data']['id']:
+                            if best_pokemon_id == pokemon['pokemon_data']['id']:
                                 all_pokemons.remove(pokemon)
+                                best_pokemons.append(pokemon)
 
                     if best_pokemons and all_pokemons:
                         logger.log("Keep {} best {}, based on {}".format(len(best_pokemons),
@@ -49,7 +57,7 @@ class PokemonTransferWorker(object):
                                                                           best_pokemon['cp'],
                                                                           best_pokemon['iv']), 'green')
 
-                        logger.log("Exchange {} pokemon(s)".format(len(all_pokemons)), "green")
+                        logger.log("Transferring {} pokemon".format(len(all_pokemons)), "green")
 
                     for pokemon in all_pokemons:
                         self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
@@ -64,15 +72,15 @@ class PokemonTransferWorker(object):
 
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
-        self.api.get_player().get_inventory()
-        inventory_req = self.api.call()
-        
+        self.bot.api.get_player().get_inventory()
+        inventory_req = self.bot.api.call()
+
         if inventory_req.get('responses', False) is False:
             return pokemon_groups
-        
+
         inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
 
-        user_web_inventory = 'web/inventory-%s.json' % (self.config.username)
+        user_web_inventory = 'web/inventory-%s.json' % (self.bot.config.username)
         with open(user_web_inventory, 'w') as outfile:
             json.dump(inventory_dict, outfile)
 
@@ -85,6 +93,11 @@ class PokemonTransferWorker(object):
                 continue
 
             pokemon_data = pokemon['inventory_item_data']['pokemon_data']
+
+            # pokemon in fort, so we cant transfer it
+            if 'deployed_fort_id' in pokemon_data and pokemon_data['deployed_fort_id']:
+                continue
+
             group_id = pokemon_data['pokemon_id']
             group_pokemon_cp = pokemon_data['cp']
             group_pokemon_iv = self.get_pokemon_potential(pokemon_data)
@@ -142,13 +155,13 @@ class PokemonTransferWorker(object):
 
         if logic_to_function[cp_iv_logic](*release_results.values()):
             logger.log(
-                "Release config for {}: Conf, CP {} {} IV {} - Poke, CP {} IV {}".format(
+                "Releasing {} with CP {} and IV {}. Matching release rule: CP < {} {} IV < {}. ".format(
                     pokemon_name,
-                    release_cp,
-                    cp_iv_logic,
-                    release_iv,
                     cp,
-                    iv
+                    iv,
+                    release_cp,
+                    cp_iv_logic.upper(),
+                    release_iv
                 ), 'yellow'
             )
 
@@ -158,14 +171,14 @@ class PokemonTransferWorker(object):
         logger.log('Exchanging {} [CP {}] [Potential {}] for candy!'.format(pokemon_name,
                                                                             cp,
                                                                             iv), 'green')
-        self.api.release_pokemon(pokemon_id=pokemon_id)
-        response_dict = self.api.call()
-        action_delay(self.config.action_wait_min, self.config.action_wait_max)
+        self.bot.api.release_pokemon(pokemon_id=pokemon_id)
+        response_dict = self.bot.api.call()
+        action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
 
     def _get_release_config_for(self, pokemon):
-        release_config = self.config.release.get(pokemon)
+        release_config = self.bot.config.release.get(pokemon)
         if not release_config:
-            release_config = self.config.release.get('any')
+            release_config = self.bot.config.release.get('any')
         if not release_config:
             release_config = {}
         return release_config
@@ -189,10 +202,6 @@ class PokemonTransferWorker(object):
                 keep_best_iv = int(keep_best_iv)
             except ValueError:
                 keep_best_iv = 0
-
-            if keep_best_cp > 1 and keep_best_iv > 1:
-                logger.log("keep_best_cp and keep_best_iv can't be > 0 at the same time. Ignore it.", "red")
-                keep_best = False
 
             if keep_best_cp < 0 or keep_best_iv < 0:
                 logger.log("Keep best can't be < 0. Ignore it.", "red")

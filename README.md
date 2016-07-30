@@ -24,17 +24,19 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 - [x] Ignore certain pokemon filter
 - [x] Adjust delay between Pokemon capture & Transfer as per configuration
 - [ ] Standalone Desktop Application
-- [ ] Hatch eggs
-- [ ] Incubate eggs
+- [x] Hatch eggs
+- [x] Incubate eggs
 - [ ] Use candy
-- [ ] Fight Gym
 - [ ] Inventory cleaner
+
+## Gym Battles
+This bot takes a strong stance against automating gym battles. Botting gyms will have a negative effect on most players and thus the game as a whole. We will thus never accept contributions or changes containing code specific for gym battles.
 
 ## Wiki
 All information on [Getting Started](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Getting-Started) is available in the [Wiki](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/)!
 - __Installation__
   - [Requirements] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation#requirements-click-each-one-for-install-guide)
-  - [How to run with Docker](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation#how-to-run-with-docker)
+  - [How to run with Docker](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/How-to-run-with-Docker)
   - [Linux] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation#installation-linux)
   - [Mac] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation#installation-mac)
   - [Windows] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation#installation-windows)
@@ -53,13 +55,5 @@ To ensure that all updates are documented - [@eggins](https://github.com/eggins)
 - [AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos
 - [AHAAAAAAA](https://github.com/AHAAAAAAA/PokemonGo-Map) for parts of the s2sphere stuff
 
-
-## Donation
-
-Bitcoin Address:  1PJMCx9NNQRasQYaa4MMff9yyNFffhHgLu
-
-<p align="center">
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WQUXDC54W6EVY"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"></a>
-</p>
 
 [![Analytics](https://ga-beacon.appspot.com/UA-81468120-1/welcome-page-dev)](https://github.com/igrigorik/ga-beacon)

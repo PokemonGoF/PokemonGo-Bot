@@ -6,7 +6,13 @@
     "gmapkey": "GOOGLE_MAPS_API_KEY",
     "max_steps": 5,
     "catch_pokemon": true,
-    "spin_forts": true,
+    "forts": {
+      "spin": true,
+      "move_to_spin": true,
+      "avoid_circles": true,
+      "max_circle_size": 50
+    },
+    "websocket_server": false,
     "walk": 4.16,
     "action_wait_min": 1,
     "action_wait_max": 4,
@@ -26,12 +32,14 @@
     },
     "evolve_all": "NONE",
     "evolve_speed": 20,
-    "cp_min": 300,
+    "evolve_cp_min": 300,
     "use_lucky_egg": false,
     "hatch_eggs": true,
     "longer_eggs_first": true,
-    "evolve_captured": false,
+    "evolve_captured": "NONE",
     "release_pokemon": true,
+    "catch_randomize_reticle_factor": 1.0,
+    "catch_randomize_spin_factor": 1.0,
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},
@@ -46,6 +54,8 @@
       "// Example of keeping 2 stronger (based on IV) Zubat:": {},
       "// Zubat": {"keep_best_iv": 2},
       "// Also, it is working with any": {},
-      "// any": {"keep_best_iv": 3}
+      "// any": {"keep_best_iv": 3},
+      "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat:": {},
+      "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3}
     }
 }

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import logger
-from cell_workers.utils import distance, i2f, format_dist
-from human_behaviour import sleep
+from cell_workers.utils import distance, format_dist
 from step_walker import StepWalker
 
 
@@ -47,11 +46,6 @@ class SpiralNavigator(object):
     def take_step(self):
         point = self.points[self.ptr]
         self.cnt += 1
-
-        if self.cnt == 1:
-            logger.log('Scanning area for objects....')
-
-        # Scan location math
 
         if self.config.walk > 0:
             step_walker = StepWalker(

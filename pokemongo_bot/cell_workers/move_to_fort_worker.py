@@ -1,37 +1,50 @@
-from utils import distance, format_dist, i2f
-from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot import logger
+from pokemongo_bot.constants import Constants
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
+from utils import distance, format_dist, fort_details
+
 
 class MoveToFortWorker(object):
 
-    def __init__(self, fort, bot):
+    def __init__(self, bot):
         self.bot = bot
-        self.fort = fort
-        self.api = bot.api
-        self.config = bot.config
-        self.navigator = bot.navigator
-        self.position = bot.position
+
+    def should_run(self):
+        return (self.bot.config.forts_spin and \
+         self.bot.config.forts_move_to_spin and \
+         self.bot.has_space_for_loot()) or self.bot.softban
 
     def work(self):
-        lat = self.fort['latitude']
-        lng = self.fort['longitude']
-        fortID = self.fort['id']
-        unit = self.config.distance_unit  # Unit to use when printing formatted distance
+        if not self.should_run():
+            return WorkerResult.SUCCESS
 
-        dist = distance(self.position[0], self.position[1], lat, lng)
+        nearest_fort = self.get_nearest_fort()
 
-        # print('Found fort {} at distance {}m'.format(fortID, dist))
-        logger.log('[x] Found fort {} at distance {}'.format(
-            fortID, format_dist(dist, unit)))
+        if nearest_fort is None:
+            return WorkerResult.SUCCESS
 
-        if dist > 10:
-            logger.log('[x] Need to move closer to Pokestop')
+        lat = nearest_fort['latitude']
+        lng = nearest_fort['longitude']
+        fortID = nearest_fort['id']
+        details = fort_details(self.bot, fortID, lat, lng)
+        fort_name = details.get('name', 'Unknown').encode('utf8', 'replace')
+        
+        unit = self.bot.config.distance_unit  # Unit to use when printing formatted distance
+
+        dist = distance(
+            self.bot.position[0],
+            self.bot.position[1],
+            lat,
+            lng
+        )
+
+        if dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
+            logger.log('Moving towards fort {}, {} left'.format(fort_name, format_dist(dist, unit)))
 
             step_walker = StepWalker(
                 self.bot,
-                self.config.walk,
+                self.bot.config.walk,
                 lat,
                 lng
             )
@@ -39,5 +52,20 @@ class MoveToFortWorker(object):
             if not step_walker.step():
                 return WorkerResult.RUNNING
 
-        logger.log('[o] Arrived at Pokestop')
+        logger.log('Arrived at pokestop.')
         return WorkerResult.SUCCESS
+
+    def get_nearest_fort(self):
+        forts = self.bot.get_forts(order_by_distance=True)
+
+        # Remove stops that are still on timeout
+        forts = filter(lambda x: x["id"] not in self.bot.fort_timeouts, forts)
+
+        # Remove all forts which were spun in the last ticks to avoid circles if set
+        if self.bot.config.forts_avoid_circles:
+            forts = filter(lambda x: x["id"] not in self.bot.recent_forts, forts)
+
+        if len(forts) > 0:
+            return forts[0]
+        else:
+            return None
