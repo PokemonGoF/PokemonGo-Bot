@@ -5,6 +5,29 @@
     "location": "SOME_LOCATION",
     "gmapkey": "GOOGLE_MAPS_API_KEY",
     "max_steps": 5,
+    "tasks": [
+      {
+        "type": "SoftBanWorker"
+      }, {
+        "type": "IncubateEggsWorker"
+      }, {
+        "type": "PokemonTransferWorker"
+      }, {
+        "type": "EvolveAllWorker"
+      }, {
+        "type": "RecycleItemsWorker"
+      }, {
+        "type": "CatchVisiblePokemonWorker"
+      }, {
+        "type": "SeenFortWorker"
+      }, {
+        "type": "MoveToFortWorker"
+      }, {
+        "type": "CatchLuredPokemonWorker"
+      }, {
+        "type": "SeenFortWorker"
+      }
+    ],
     "catch_pokemon": true,
     "forts": {
       "spin": true,
@@ -57,7 +80,7 @@
       "// any": {"keep_best_iv": 3},
       "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat:": {},
       "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3}
-    },    
+    },
     "vips" : {
          "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate!": {},
         "any": {"catch_above_cp": 1200, "catch_above_iv": 0.9, "logic": "or" },
@@ -79,6 +102,6 @@
         "Muk": {},
         "Weezing": {},
         "Flareon": {}
-        
-    } 
+
+    }
 }

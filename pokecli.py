@@ -59,9 +59,9 @@ def main():
     while not finished:
         try:
             bot = PokemonGoBot(config)
-            tree = TreeConfigBuilder(config.raw_tasks).build()
-            bot.workers = tree
             bot.start()
+            tree = TreeConfigBuilder(bot, config.raw_tasks).build()
+            bot.workers = tree
             bot.metrics.capture_stats()
 
             logger.log('Starting PokemonGo Bot....', 'green')
