@@ -34,10 +34,10 @@ class PokemonGoBot(object):
     def __init__(self, config):
         self.config = config
         self.fort_timeouts = dict()
-        self.pokemon_list = json.load(
-            open(os.path.join('data', 'pokemon.json'))
-        )
-        self.item_list = json.load(open(os.path.join('data', 'items.json')))
+        with open(os.path.join('data', 'pokemon.json')) as fp:
+            self.pokemon_list = json.load(fp)
+        with open(os.path.join('data', 'items.json')) as fp:
+            self.item_list = json.load(fp)
         self.metrics = Metrics(self)
         self.latest_inventory = None
         self.cell = None
