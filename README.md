@@ -44,19 +44,20 @@ No PR on master branch to keep things easier.
  * Ignore certain pokemon filter
  * Use superior ball types when necessary
  * When out of normal pokeballs, use the next type of ball unless there are less than 10 of that type, in which case switch to farm mode
- * Drop items when bag is full (In Testing, Document contribute needed)
- * Pokemon catch filter (In Testing, Document contribute needed)
+ * Drop items
+ * Pokemon catch filter 
  * Google Map API key setup
  * Show all objects on map (In Testing)
  * Evolve pokemons (Code in, Need input, In Testing)
  * Incubate eggs
+ * Hatch eggs
+ * Pokemon transfer filter
+
 ## TODO List
 
 - [ ] Standalone Desktop APP
-- [ ] Pokemon transfer filter ?? This already done, right?
-- [ ] Hatch eggs
 - [ ] Use candy
-- [ ] Softban Bypass
+- [ ] Softban Bypass (In Development)
 
 ## Gym Battles
 This bot takes a strong stance against automating gym battles. Botting gyms will have a negative effect on most players and thus the game as a whole. We will thus never accept contributions or changes containing code specific for gym battles.
