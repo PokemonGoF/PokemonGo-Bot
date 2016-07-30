@@ -18,7 +18,7 @@ def log(string, color='white'):
         'cyan': '96m'
     }
     if color not in color_hex:
-        print('[' + time.strftime("%H:%M:%S") + '] ' + tring.decode('utf-8'))
+        print('[' + time.strftime("%H:%M:%S") + '] ' + string.decode('utf-8'))
     else:
         print('[' + time.strftime("%H:%M:%S") + '] ' + u'\033[' + color_hex[color] + string.decode('utf-8') + '\033[0m')
     if lcd:
