@@ -38,13 +38,6 @@ class MoveToFort(object):
         if self.nearest_fort is None:
             return WorkerResult.SUCCESS
 
-        lat = self.nearest_fort['latitude']
-        lng = self.nearest_fort['longitude']
-        fort_id = self.nearest_fort['id']
-        details = fort_details(self.bot, fort_id, lat, lng)
-        fort_name = details.get('name', 'Unknown').encode('utf8', 'replace')
-        unit = self.bot.config.distance_unit  # Unit to use when printing formatted distance
-
         dist = distance(
             self.bot.position[0],
             self.bot.position[1],
@@ -53,6 +46,13 @@ class MoveToFort(object):
         )
 
         if dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
+            lat = self.nearest_fort['latitude']
+            lng = self.nearest_fort['longitude']
+            fort_id = self.nearest_fort['id']
+            details = fort_details(self.bot, fort_id, lat, lng)
+            fort_name = details.get('name', 'Unknown').encode('utf8', 'replace')
+            unit = self.bot.config.distance_unit  # Unit to use when printing formatted distance
+
             logger.log('Moving towards fort {}, {} left'.format(fort_name, format_dist(dist, unit)))
             if not self.step_walker.step():
                 return WorkerResult.RUNNING
