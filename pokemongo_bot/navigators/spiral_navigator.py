@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-import logger
-from cell_workers.utils import distance, i2f, format_dist
-from human_behaviour import sleep
-from step_walker import StepWalker
+from __future__ import absolute_import, unicode_literals
+import pokemongo_bot.logger as logger
+from pokemongo_bot.cell_workers.utils import distance, format_dist
+from pokemongo_bot.step_walker import StepWalker
 
 
 class SpiralNavigator(object):
@@ -15,14 +15,25 @@ class SpiralNavigator(object):
         self.origin_lat = self.bot.position[0]
         self.origin_lon = self.bot.position[1]
 
-        self.points = self._generate_spiral(self.origin_lat, self.origin_lon, 0.0018, self.steplimit)
+        self.points = self._generate_spiral(
+            self.origin_lat, self.origin_lon, 0.0018, self.steplimit
+        )
         self.ptr = 0
         self.direction = 1
         self.cnt = 0
 
-    # Source: https://github.com/tejado/pgoapi/blob/master/examples/spiral_poi_search.py
     @staticmethod
     def _generate_spiral(starting_lat, starting_lng, step_size, step_limit):
+        """
+        Sourced from:
+        https://github.com/tejado/pgoapi/blob/master/examples/spiral_poi_search.py
+
+        :param starting_lat:
+        :param starting_lng:
+        :param step_size:
+        :param step_limit:
+        :return:
+        """
         coords = [{'lat': starting_lat, 'lng': starting_lng}]
         steps, x, y, d, m = 1, 0, 0, 1, 1
 
@@ -48,11 +59,6 @@ class SpiralNavigator(object):
         point = self.points[self.ptr]
         self.cnt += 1
 
-        if self.cnt == 1:
-            logger.log('Scanning area for objects....')
-
-        # Scan location math
-
         if self.config.walk > 0:
             step_walker = StepWalker(
                 self.bot,
@@ -69,7 +75,8 @@ class SpiralNavigator(object):
             )
 
             if self.cnt == 1:
-                logger.log('Walking from ' + str((self.api._position_lat,
+                logger.log(
+                    'Walking from ' + str((self.api._position_lat,
                     self.api._position_lng)) + " to " + str([point['lat'], point['lng']]) + " " + format_dist(dist,
                                                                                                    self.config.distance_unit))
 

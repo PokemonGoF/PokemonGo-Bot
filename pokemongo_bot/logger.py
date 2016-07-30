@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import time
 from datetime import date
 
@@ -20,13 +21,14 @@ def log(message, color='white'):
 
     today = date.today().strftime('%Y-%m-%d')
     now = time.strftime("%H:%M:%S")
+    message = message.decode('utf-8')
     log_format = '[%s %s] %s'
 
     if color not in color2hex:
         print(log_format % (today, now, message))
     else:
-        colored_message = u'\033[' + color2hex[color] + message.decode('utf-8') + '\033[0m'
+        colored_message = u'\033[' + color2hex[color] + message + '\033[0m'
         print(log_format % (today, now, colored_message))
     if lcd:
-        if message:
-            lcd.message(message)
+        if(string):
+            lcd.message(string)

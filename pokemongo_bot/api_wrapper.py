@@ -1,10 +1,11 @@
-# api_wrapper.py
-
-from pgoapi import PGoApi
-from pgoapi.exceptions import NotLoggedInException, ServerBusyOrOfflineException
-from human_behaviour import sleep
 import time
+
+from pgoapi.exceptions import (NotLoggedInException,
+                               ServerBusyOrOfflineException)
+
 import logger
+from human_behaviour import sleep
+
 
 class ApiWrapper(object):
     def __init__(self, api):
@@ -50,7 +51,6 @@ class ApiWrapper(object):
                 return False
 
         return True
-
 
     def call(self, max_retry=5):
         request_callers = self._pop_request_callers()

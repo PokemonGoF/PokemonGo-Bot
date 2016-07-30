@@ -1,5 +1,6 @@
-from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot import logger
+from pokemongo_bot.human_behaviour import sleep
+
 
 class IncubateEggsWorker(object):
     last_km_walked = 0
@@ -20,19 +21,19 @@ class IncubateEggsWorker(object):
             self._check_inventory()
         except:
             return
-            
-        if self.used_incubators and IncubateEggsWorker.last_km_walked!=self.km_walked:
+
+        if self.used_incubators and IncubateEggsWorker.last_km_walked != self.km_walked:
             self.used_incubators.sort(key=lambda x: x.get("km"))
             km_left = self.used_incubators[0]['km']-self.km_walked
-            if km_left<=0:
+            if km_left <= 0:
                 self._hatch_eggs()
             else:
                 logger.log('[x] Next egg incubates in {:.2f} km'.format(km_left),'yellow')
             IncubateEggsWorker.last_km_walked = self.km_walked
-        
+
         sorting = self.bot.config.longer_eggs_first
-        self.eggs.sort(key=lambda x: x.get("km"),reverse=sorting)
-        
+        self.eggs.sort(key=lambda x: x.get("km"), reverse=sorting)
+
         if self.ready_incubators:
             self._apply_incubators()
 
@@ -40,9 +41,9 @@ class IncubateEggsWorker(object):
         for incubator in self.ready_incubators:
             for egg in self.eggs:
                 if egg["used"] or egg["km"] == -1:
-                    continue                
-                if self.bot.config.debug:    
-                    logger.log('[x] Attempting to apply incubator {} to egg {}'.format(incubator['id'],egg['id']))
+                    continue
+                if self.bot.config.debug:
+                    logger.log('[x] Attempting to apply incubator {} to egg {}'.format(incubator['id'], egg['id']))
                 self.bot.api.use_item_egg_incubator(item_id=incubator["id"], pokemon_id=egg["id"])
                 ret = self.bot.api.call()
                 if ret:
@@ -62,31 +63,50 @@ class IncubateEggsWorker(object):
                             logger.log('[x] Egg already incubating')
                         egg["used"] = True
 
-    def _check_inventory(self,lookup_ids=[]):
+    def _check_inventory(self, lookup_ids=[]):
         inv = {}
         response_dict = self.bot.get_inventory()
         matched_pokemon = []
-        inv = reduce(dict.__getitem__, ["responses", "GET_INVENTORY", "inventory_delta", "inventory_items"], response_dict)
+        inv = reduce(
+            dict.__getitem__,
+            ["responses", "GET_INVENTORY", "inventory_delta", "inventory_items"],
+            response_dict
+        )
         for inv_data in inv:
             inv_data = inv_data.get("inventory_item_data", {})
             if "egg_incubators" in inv_data:
                 incubators = inv_data.get("egg_incubators", {}).get("egg_incubator",[])
-                if isinstance(incubators, basestring): # checking for old response
+                if isinstance(incubators, basestring):  # checking for old response
                     incubators = [incubators]
                 for incubator in incubators:
                     if 'pokemon_id' in incubator:
-                        self.used_incubators.append({"id":incubator.get('id', -1), "km":incubator.get('target_km_walked', 9001)})
+                        self.used_incubators.append({
+                            "id": incubator.get('id', -1),
+                            "km": incubator.get('target_km_walked', 9001)
+                        })
                     else:
-                        self.ready_incubators.append({"id":incubator.get('id',-1)})
+                        self.ready_incubators.append({
+                            "id": incubator.get('id', -1)
+                        })
                 continue
             if "pokemon_data" in inv_data:
                 pokemon = inv_data.get("pokemon_data", {})
                 if pokemon.get("is_egg", False) and "egg_incubator_id" not in pokemon:
-                    self.eggs.append({"id": pokemon.get("id", -1), "km": pokemon.get("egg_km_walked_target", -1), "used": False})
+                    self.eggs.append({
+                        "id": pokemon.get("id", -1),
+                        "km": pokemon.get("egg_km_walked_target", -1),
+                        "used": False
+                    })
                 elif 'is_egg' not in pokemon and pokemon['id'] in lookup_ids:
-                    matched_pokemon.append({"pokemon_id":pokemon.get('pokemon_id',-1),"cp":pokemon.get('cp',-1),"iv":[pokemon.get('individual_attack',-1),
-                    pokemon.get('individual_stamina',-1),
-                    pokemon.get('individual_defense',-1)]})
+                    matched_pokemon.append({
+                        "pokemon_id": pokemon.get('pokemon_id', -1),
+                        "cp": pokemon.get('cp', -1),
+                        "iv": [
+                            pokemon.get('individual_attack', -1),
+                            pokemon.get('individual_stamina', -1),
+                            pokemon.get('individual_defense', -1)
+                        ]
+                    })
                 continue
             if "player_stats" in inv_data:
                 self.km_walked = inv_data.get("player_stats", {}).get("km_walked", 0)
@@ -110,18 +130,18 @@ class IncubateEggsWorker(object):
         try:
             pokemon_data = self._check_inventory(pokemon_ids)
         except:
-            pass # just proceed with what we have
+            return  # pokemon_data is unassigned
         for pokemon in pokemon_data:
-            pokemon['name'] = self.bot.pokemon_list[(pokemon['pokemon_id']-1)]['Name'] # pokemon ids seem to be offset by one
-        logger.log("-"*30,log_color)
+            # pokemon ids seem to be offset by one
+            pokemon['name'] = self.bot.pokemon_list[(pokemon['pokemon_id']-1)]['Name']
+        logger.log("-"*30, log_color)
         logger.log("[!] {} eggs hatched! Received:".format(len(pokemon_data)), log_color)
         for i in range(len(pokemon_data)):
             logger.log("-"*30,log_color)
-            logger.log("[!] Pokemon: {}".format(pokemon_data[i]['name']),log_color)
-            logger.log("[!] CP: {}".format(pokemon_data[i]['cp']),log_color)
-            logger.log("[!] IV: {}".format("/".join(map(str,pokemon_data[i]['iv']))),log_color)
-            logger.log("[!] XP: {}".format(xp[i]),log_color)
-            logger.log("[!] Stardust: {}".format(stardust[i]),log_color)
-            logger.log("[!] Candy: {}".format(candy[i]),log_color)
-        logger.log("-"*30,log_color)
-        
+            logger.log("[!] Pokemon: {}".format(pokemon_data[i]['name']), log_color)
+            logger.log("[!] CP: {}".format(pokemon_data[i]['cp']), log_color)
+            logger.log("[!] IV: {}".format("/".join(map(str, pokemon_data[i]['iv']))), log_color)
+            logger.log("[!] XP: {}".format(xp[i]), log_color)
+            logger.log("[!] Stardust: {}".format(stardust[i]), log_color)
+            logger.log("[!] Candy: {}".format(candy[i]), log_color)
+        logger.log("-"*30, log_color)
