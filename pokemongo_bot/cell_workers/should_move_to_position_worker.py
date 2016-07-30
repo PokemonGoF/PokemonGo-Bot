@@ -1,6 +1,5 @@
 from pokemongo_bot import logger
 from pokemongo_bot.worker_result import WorkerResult
-from pokemongo_bot.cell_workers import MoveToPositionWorker
 from utils import distance
 import json
 
@@ -39,7 +38,7 @@ class ShouldMoveToPositionWorker(object):
                 if location:
                     location = (self.bot.get_pos_by_name(location.replace(" ", "")))
                     # location_str = location.encode('utf-8')
-                    logger.log("[!] Move To Position Directive Detected Successfully at {}".format(location))
+                    logger.log("[!] Move To Position Directive Detected")
                     location_json['destination'] = ""
                     f.seek(0)
                     try:
@@ -51,6 +50,7 @@ class ShouldMoveToPositionWorker(object):
                         logger.log("Unknown Error occurred attempting to empty the destination file")
                     f.truncate()
                     self.bot.cached_destination = location
+                    logger.log("[V] Succesfully Parsed Destination, Moving to {}".format(location))
                     return
                 return
         except IOError:
