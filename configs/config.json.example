@@ -8,6 +8,7 @@
     "catch_pokemon": true,
     "forts": {
       "spin": true,
+      "move_to_spin": true,
       "avoid_circles": true,
       "max_circle_size": 50
     },
