@@ -8,9 +8,14 @@
     "catch_pokemon": true,
     "forts": {
       "spin": true,
-      "move_to_spin": true,
+      "move_to_spin": false,
       "avoid_circles": true,
       "max_circle_size": 50
+    },
+    "navigator": {
+      "type": "path",
+      "path_mode": "loop",
+      "path_file": "configs/path.example.json"
     },
     "websocket_server": false,
     "walk": 4.16,
@@ -23,12 +28,12 @@
     "distance_unit": "km",
     "reconnecting_timeout": 15,
     "item_filter": {
-      "Pokeball":       { "keep" : 100 },
-      "Potion":         { "keep" : 10 },
-      "Super Potion":   { "keep" : 20 },
-      "Hyper Potion":   { "keep" : 30 },
-      "Revive":         { "keep" : 30 },
-      "Razz Berry":     { "keep" : 100 }
+      "1": { "keep" : 100 },
+      "101": { "keep" : 10 },
+      "102": { "keep" : 30 },
+      "103": { "keep" : 30 },
+      "201": { "keep" : 30 },
+      "701": { "keep" : 100 }
     },
     "evolve_all": "NONE",
     "evolve_speed": 20,
@@ -57,28 +62,5 @@
       "// any": {"keep_best_iv": 3},
       "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat:": {},
       "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3}
-    },    
-    "vips" : {
-         "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate!": {},
-        "any": {"catch_above_cp": 1200, "catch_above_iv": 0.9, "logic": "or" },
-        "Lapras": {},
-        "Moltres": {},
-        "Zapdos": {},
-        "Articuno": {},
-
-        "// S-Tier pokemons (if pokemon can be evolved into tier, list the representative)": {},
-        "Mewtwo": {},
-        "Dragonite": {},
-        "Snorlax": {},
-        "// Mew evolves to Mewtwo": {},
-        "Mew": {},
-        "Arcanine": {},
-        "Vaporeon": {},
-        "Gyarados": {},
-        "Exeggutor": {},
-        "Muk": {},
-        "Weezing": {},
-        "Flareon": {}
-        
-    } 
+    }
 }

@@ -70,32 +70,37 @@ def main():
         except KeyboardInterrupt:
             logger.log('Exiting PokemonGo Bot', 'red')
             finished = True
-            if bot.metrics.start_time is None:
-                return  # Bot didn't actually start, no metrics to show.
-
-            metrics = bot.metrics
-            metrics.capture_stats()
-            logger.log('')
-            logger.log('Ran for {}'.format(metrics.runtime()), 'cyan')
-            logger.log('Total XP Earned: {}  Average: {:.2f}/h'.format(metrics.xp_earned(), metrics.xp_per_hour()), 'cyan')
-            logger.log('Travelled {:.2f}km'.format(metrics.distance_travelled()), 'cyan')
-            logger.log('Visited {} stops'.format(metrics.visits['latest'] - metrics.visits['start']), 'cyan')
-            logger.log('Encountered {} pokemon, {} caught, {} released, {} evolved, {} never seen before'
-                       .format(metrics.num_encounters(), metrics.num_captures(), metrics.releases,
-                               metrics.num_evolutions(), metrics.num_new_mons()), 'cyan')
-            logger.log('Threw {} pokeball{}'.format(metrics.num_throws(), '' if metrics.num_throws() == 1 else 's'),
-                       'cyan')
-            logger.log('Earned {} Stardust'.format(metrics.earned_dust()), 'cyan')
-            logger.log('')
-            if metrics.highest_cp is not None:
-                logger.log('Highest CP Pokemon: {}'.format(metrics.highest_cp['desc']), 'cyan')
-            if metrics.most_perfect is not None:
-                logger.log('Most Perfect Pokemon: {}'.format(metrics.most_perfect['desc']), 'cyan')
-
-
+            report_summary(bot)
         except NotLoggedInException:
             logger.log('[x] Error while connecting to the server, please wait %s minutes' % config.reconnecting_timeout, 'red')
             time.sleep(config.reconnecting_timeout * 60)
+        except:
+            # always report session summary and then raise exception
+            report_summary(bot)
+            raise
+
+def report_summary(bot):
+    if bot.metrics.start_time is None:
+        return  # Bot didn't actually start, no metrics to show.
+
+    metrics = bot.metrics
+    metrics.capture_stats()
+    logger.log('')
+    logger.log('Ran for {}'.format(metrics.runtime()), 'cyan')
+    logger.log('Total XP Earned: {}  Average: {:.2f}/h'.format(metrics.xp_earned(), metrics.xp_per_hour()), 'cyan')
+    logger.log('Travelled {:.2f}km'.format(metrics.distance_travelled()), 'cyan')
+    logger.log('Visited {} stops'.format(metrics.visits['latest'] - metrics.visits['start']), 'cyan')
+    logger.log('Encountered {} pokemon, {} caught, {} released, {} evolved, {} never seen before'
+                .format(metrics.num_encounters(), metrics.num_captures(), metrics.releases,
+                        metrics.num_evolutions(), metrics.num_new_mons()), 'cyan')
+    logger.log('Threw {} pokeball{}'.format(metrics.num_throws(), '' if metrics.num_throws() == 1 else 's'),
+                'cyan')
+    logger.log('Earned {} Stardust'.format(metrics.earned_dust()), 'cyan')
+    logger.log('')
+    if metrics.highest_cp is not None:
+        logger.log('Highest CP Pokemon: {}'.format(metrics.highest_cp['desc']), 'cyan')
+    if metrics.most_perfect is not None:
+        logger.log('Most Perfect Pokemon: {}'.format(metrics.most_perfect['desc']), 'cyan')
 
 def init_config():
     parser = argparse.ArgumentParser()
@@ -216,6 +221,37 @@ def init_config():
         type=int,
         default=50
     )
+
+    add_config(
+        parser,
+        load,
+        short_flag="-n",
+        long_flag="--navigator.type",
+        help="Set the navigator to be used(DEFAULT spiral)",
+        type=str,
+        default='spiral'
+    )
+
+    add_config(
+        parser,
+        load,
+        short_flag="-pm",
+        long_flag="--navigator.path_mode",
+        help="Set the mode for the path navigator (DEFAULT loop)",
+        type=str,
+        default="loop"
+    )
+
+    add_config(
+        parser,
+        load,
+        short_flag="-pf",
+        long_flag="--navigator.path_file",
+        help="Set the file containing the path for the path navigator (GPX or JSON).",
+        type=str,
+        default=None
+    )
+    
     add_config(
         parser,
         load,
@@ -336,6 +372,15 @@ def init_config():
     add_config(
         parser,
         load,
+        short_flag="-mts",
+        long_flag="--forts.move_to_spin",
+        help="Moves to forts nearby ",
+        type=bool,
+        default=True
+    )
+    add_config(
+        parser,
+        load,
         long_flag="--catch_randomize_reticle_factor",
         help="Randomize factor for pokeball throwing accuracy (DEFAULT 1.0 means no randomize: always 'Excellent' throw. 0.0 randomizes between normal and 'Excellent' throw)",
         type=float,
@@ -365,6 +410,8 @@ def init_config():
 
     config.hatch_eggs = load.get("hatch_eggs", True)
     config.longer_eggs_first = load.get("longer_eggs_first", True)
+    
+    config.vips = load.get('vips',{})
 
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")

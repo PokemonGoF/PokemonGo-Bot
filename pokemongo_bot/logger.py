@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import time
 
 try:
@@ -18,9 +19,18 @@ def log(string, color='white'):
         'cyan': '96m'
     }
     if color not in color_hex:
-        print('[' + time.strftime("%H:%M:%S") + '] ' + string)
+        print('[{time}] {string}'.format(
+            time=time.strftime("%H:%M:%S"),
+            string=string.decode('utf-8')
+        ))
     else:
-        print('[' + time.strftime("%H:%M:%S") + '] ' + u'\033[' + color_hex[color] + string.decode('utf-8') + '\033[0m')
+        print(
+            '[{time}] \033[{color} {string} \033[0m'.format(
+                time=time.strftime("%H:%M:%S"),
+                color=color_hex[color],
+                string=string.decode('utf-8')
+            )
+        )
     if lcd:
         if string:
             lcd.message(string)
