@@ -127,6 +127,7 @@ class IncubateEggsWorker(object):
         xp = result.get('experience_awarded', 0)
         sleep(self.hatching_animation_delay)
         self.bot.latest_inventory = None
+        pokemon_data = []
         try:
             pokemon_data = self._check_inventory(pokemon_ids)
         except:
