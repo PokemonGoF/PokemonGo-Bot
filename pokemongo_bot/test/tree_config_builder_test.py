@@ -1,6 +1,5 @@
 import unittest
 import json
-from mock import patch
 from pokemongo_bot import PokemonGoBot, ConfigException, TreeConfigBuilder
 from pokemongo_bot.cell_workers import SoftBanWorker, CatchLuredPokemonWorker
 
