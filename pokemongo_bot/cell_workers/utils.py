@@ -14,6 +14,26 @@ TIME_PERIODS = (
     (86400*7, 'week')
 )
 
+FORT_CACHE = {}
+def fort_details(bot, fort_id, latitude, longitude):
+    """
+    Lookup fort metadata and (if possible) serve from cache.
+    """
+
+    if fort_id not in FORT_CACHE:
+        """
+        Lookup the fort details and cache the response for future use.
+        """
+        bot.api.fort_details(fort_id=fort_id, latitude=latitude, longitude=longitude)
+
+        try:
+            response_dict = bot.api.call()
+            FORT_CACHE[fort_id] = response_dict['responses']['FORT_DETAILS']
+        except Exception:
+            pass
+
+    # Just to avoid KeyErrors
+    return FORT_CACHE.get(fort_id, {})
 
 def encode(cellid):
     output = []

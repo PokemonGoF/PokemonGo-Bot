@@ -7,13 +7,10 @@ from pokemongo_bot.human_behaviour import action_delay
 class PokemonTransferWorker(object):
 
     def __init__(self, bot):
-        self.config = bot.config
-        self.pokemon_list = bot.pokemon_list
-        self.api = bot.api
         self.bot = bot
 
     def work(self):
-        if not self.config.release_pokemon:
+        if not self.bot.config.release_pokemon:
             return
 
         pokemon_groups = self._release_pokemon_get_groups()
@@ -21,7 +18,7 @@ class PokemonTransferWorker(object):
             group = pokemon_groups[pokemon_id]
 
             if len(group) > 0:
-                pokemon_name = self.pokemon_list[pokemon_id - 1]['Name']
+                pokemon_name = self.bot.pokemon_list[pokemon_id - 1]['Name']
                 keep_best, keep_best_cp, keep_best_iv = self._validate_keep_best_config(pokemon_name)
 
                 if keep_best:
@@ -75,15 +72,15 @@ class PokemonTransferWorker(object):
 
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
-        self.api.get_player().get_inventory()
-        inventory_req = self.api.call()
+        self.bot.api.get_player().get_inventory()
+        inventory_req = self.bot.api.call()
 
         if inventory_req.get('responses', False) is False:
             return pokemon_groups
 
         inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
 
-        user_web_inventory = 'web/inventory-%s.json' % (self.config.username)
+        user_web_inventory = 'web/inventory-%s.json' % (self.bot.config.username)
         with open(user_web_inventory, 'w') as outfile:
             json.dump(inventory_dict, outfile)
 
@@ -96,6 +93,11 @@ class PokemonTransferWorker(object):
                 continue
 
             pokemon_data = pokemon['inventory_item_data']['pokemon_data']
+
+            # pokemon in fort, so we cant transfer it
+            if 'deployed_fort_id' in pokemon_data and pokemon_data['deployed_fort_id']:
+                continue
+
             group_id = pokemon_data['pokemon_id']
             group_pokemon_cp = pokemon_data['cp']
             group_pokemon_iv = self.get_pokemon_potential(pokemon_data)
@@ -169,14 +171,14 @@ class PokemonTransferWorker(object):
         logger.log('Exchanging {} [CP {}] [Potential {}] for candy!'.format(pokemon_name,
                                                                             cp,
                                                                             iv), 'green')
-        self.api.release_pokemon(pokemon_id=pokemon_id)
-        response_dict = self.api.call()
-        action_delay(self.config.action_wait_min, self.config.action_wait_max)
+        self.bot.api.release_pokemon(pokemon_id=pokemon_id)
+        response_dict = self.bot.api.call()
+        action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
 
     def _get_release_config_for(self, pokemon):
-        release_config = self.config.release.get(pokemon)
+        release_config = self.bot.config.release.get(pokemon)
         if not release_config:
-            release_config = self.config.release.get('any')
+            release_config = self.bot.config.release.get('any')
         if not release_config:
             release_config = {}
         return release_config
