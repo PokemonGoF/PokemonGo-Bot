@@ -113,7 +113,7 @@ class PokemonGoBot(object):
         if lat == None:
             lat = self.api._position_lat
         if lng == None:
-            lng = selfnumber_of_things_gained_by_stop.api._position_lng
+            lng = self.api._position_lng
         if alt == None:
             alt = 0
 
