@@ -190,7 +190,7 @@ def start_bot(bot, retries=1):
     try:
         bot.start()
     except Exception, e:
-        logger.log('[x] Error starting bot, reason: {e}'.format(), 'red')
+        logger.log('[x] Error starting bot, reason: {e}'.format(e), 'red')
         if retries == 0:
             logger.log('[x] All retries failed', 'red')
             logger.log('[x] Terminating PokemonGo Bot', 'red')
