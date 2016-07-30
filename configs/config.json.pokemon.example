@@ -8,23 +8,32 @@
     "tasks": [
       {
         "type": "SoftBanWorker"
-      }, {
+      },
+      {
         "type": "IncubateEggsWorker"
-      }, {
+      },
+      {
         "type": "PokemonTransferWorker"
-      }, {
+      },
+      {
         "type": "EvolveAllWorker"
-      }, {
+      },
+      {
         "type": "RecycleItemsWorker"
-      }, {
+      },
+      {
         "type": "CatchVisiblePokemonWorker"
-      }, {
+      },
+      {
         "type": "SeenFortWorker"
-      }, {
+      },
+      {
         "type": "MoveToFortWorker"
-      }, {
+      },
+      {
         "type": "CatchLuredPokemonWorker"
-      }, {
+      },
+      {
         "type": "SeenFortWorker"
       }
     ],
