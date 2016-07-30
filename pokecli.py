@@ -37,7 +37,7 @@ from datetime import timedelta
 from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException
 
-from pokemongo_bot import PokemonGoBot
+from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
 from pokemongo_bot import logger
 
 if sys.version_info >= (2, 7, 9):
@@ -60,6 +60,8 @@ def main():
         try:
             bot = PokemonGoBot(config)
             bot.start()
+            tree = TreeConfigBuilder(bot, config.raw_tasks).build()
+            bot.workers = tree
             bot.metrics.capture_stats()
 
             logger.log('Starting PokemonGo Bot....', 'green')
@@ -251,7 +253,7 @@ def init_config():
         type=str,
         default=None
     )
-    
+
     add_config(
         parser,
         load,
@@ -407,11 +409,16 @@ def init_config():
     config.item_filter = load.get('item_filter', {})
     config.action_wait_max = load.get('action_wait_max', 4)
     config.action_wait_min = load.get('action_wait_min', 1)
+    config.raw_tasks = load.get('tasks', [])
 
     config.hatch_eggs = load.get("hatch_eggs", True)
     config.longer_eggs_first = load.get("longer_eggs_first", True)
-    
+
     config.vips = load.get('vips',{})
+
+    if len(config.raw_tasks) == 0:
+        logging.error("No tasks are configured. Did you mean to configure some behaviors?")
+        return None
 
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")

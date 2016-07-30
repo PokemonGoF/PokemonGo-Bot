@@ -5,6 +5,38 @@
     "location": "SOME_LOCATION",
     "gmapkey": "GOOGLE_MAPS_API_KEY",
     "max_steps": 5,
+    "tasks": [
+      {
+        "type": "SoftBanWorker"
+      },
+      {
+        "type": "IncubateEggsWorker"
+      },
+      {
+        "type": "PokemonTransferWorker"
+      },
+      {
+        "type": "EvolveAllWorker"
+      },
+      {
+        "type": "RecycleItemsWorker"
+      },
+      {
+        "type": "CatchVisiblePokemonWorker"
+      },
+      {
+        "type": "SpinFortWorker"
+      },
+      {
+        "type": "MoveToFortWorker"
+      },
+      {
+        "type": "CatchLuredPokemonWorker"
+      },
+      {
+        "type": "SpinFortWorker"
+      }
+    ],
     "catch_pokemon": true,
     "forts": {
       "spin": true,
@@ -307,6 +339,6 @@
         "Muk": {},
         "Weezing": {},
         "Flareon": {}
-        
-    }    
+
+    }
 }

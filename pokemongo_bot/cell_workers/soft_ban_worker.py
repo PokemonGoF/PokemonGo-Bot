@@ -2,7 +2,7 @@ from pgoapi.utilities import f2i
 
 from pokemongo_bot import logger
 from pokemongo_bot.constants import Constants
-from pokemongo_bot.cell_workers import MoveToFortWorker, SeenFortWorker
+from pokemongo_bot.cell_workers import MoveToFortWorker, SpinFortWorker
 from pokemongo_bot.cell_workers.utils import distance
 from pokemongo_bot.worker_result import WorkerResult
 
