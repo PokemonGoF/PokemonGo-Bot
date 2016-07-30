@@ -498,7 +498,7 @@ class PokemonGoBot(object):
 
         if self.config.location:
             location_str = self.config.location.encode('utf-8')
-            location = (self._get_pos_by_name(location_str.replace(" ", "")))
+            location = (self.get_pos_by_name(location_str.replace(" ", "")))
             self.api.set_position(*location)
             logger.log('')
             logger.log(u'Location Found: {}'.format(self.config.location))
@@ -545,7 +545,7 @@ class PokemonGoBot(object):
                     'initial location...'
                 )
 
-    def _get_pos_by_name(self, location_name):
+    def get_pos_by_name(self, location_name):
         # Check if the given location is already a coordinate.
         if ',' in location_name:
             possible_coordinates = re.findall(
