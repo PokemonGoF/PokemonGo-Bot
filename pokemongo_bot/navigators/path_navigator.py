@@ -30,7 +30,18 @@ class PathNavigator(object):
 
     def load_json(self, file):
         with open(file) as data_file:
-            return json.load(data_file)
+            points=json.load(data_file)
+        # Replace Verbal Location with lat&lng.
+        logger.log("Resolving Navigation Paths (GeoLocating Strings)")
+        for index, point in enumerate(points):
+            if self.bot.config.debug:
+                logger.log("Resolving Point {} - {}".format(index, point))
+            point_tuple = self.bot.get_pos_by_name(point['location'])
+            points[index] = self.lat_lng_tuple_to_dict(point_tuple)
+        return points
+
+    def lat_lng_tuple_to_dict(self, tpl):
+        return {'lat': tpl[0], 'lng': tpl[1]}
 
     def load_gpx(self, file):
         gpx_file = open(file, 'r')
