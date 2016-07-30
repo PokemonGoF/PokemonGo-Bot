@@ -9,15 +9,9 @@ class MoveToFortWorker(object):
 
     def __init__(self, bot):
         self.bot = bot
-        self.api = bot.api
-        self.config = bot.config
-        self.fort_timeouts = bot.fort_timeouts
-        self.recent_forts = bot.recent_forts
-        self.navigator = bot.navigator
-        self.position = bot.position
 
     def should_run(self):
-        return self.config.forts_spin and self.bot.has_space_for_loot()
+        return self.bot.config.forts_spin and self.bot.has_space_for_loot()
 
     def work(self):
         if not self.should_run():
@@ -31,11 +25,11 @@ class MoveToFortWorker(object):
         lat = nearest_fort['latitude']
         lng = nearest_fort['longitude']
         fortID = nearest_fort['id']
-        unit = self.config.distance_unit  # Unit to use when printing formatted distance
+        unit = self.bot.config.distance_unit  # Unit to use when printing formatted distance
 
         dist = distance(
-            self.position[0],
-            self.position[1],
+            self.bot.position[0],
+            self.bot.position[1],
             lat,
             lng
         )
@@ -45,7 +39,7 @@ class MoveToFortWorker(object):
 
             step_walker = StepWalker(
                 self.bot,
-                self.config.walk,
+                self.bot.config.walk,
                 lat,
                 lng
             )
@@ -60,11 +54,11 @@ class MoveToFortWorker(object):
         forts = self.bot.get_forts(order_by_distance=True)
 
         # Remove stops that are still on timeout
-        forts = filter(lambda x: x["id"] not in self.fort_timeouts, forts)
+        forts = filter(lambda x: x["id"] not in self.bot.fort_timeouts, forts)
 
         # Remove all forts which were spun in the last ticks to avoid circles if set
-        if self.config.forts_avoid_circles:
-            forts = filter(lambda x: x["id"] not in self.recent_forts, forts)
+        if self.bot.config.forts_avoid_circles:
+            forts = filter(lambda x: x["id"] not in self.bot.recent_forts, forts)
 
         if len(forts) > 0:
             return forts[0]

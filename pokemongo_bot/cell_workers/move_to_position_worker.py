@@ -1,16 +1,14 @@
-from utils import distance, format_dist, i2f
 from pokemongo_bot import logger
+from pokemongo_bot.constants import Constants
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
+from utils import distance, format_dist
 
 class MoveToPositionWorker(object):
 
     def __init__(self, bot):
         self.bot = bot
-        self.api = bot.api
         self.config = bot.config
-        self.navigator = bot.navigator
-        self.position = bot.position
         self.location = self.bot.cached_destination
 
     def should_run(self):
@@ -32,7 +30,7 @@ class MoveToPositionWorker(object):
 
         # print('Found fort {} at distance {}m'.format(fortID, dist))
 
-        if dist > 5:
+        if dist > Constants.MAX_DISTANCE_DEST_ACCURACY:
             logger.log('[x] Moving Closer to Destination {}, {} left'.format(self.location, format_dist(dist, unit)))
 
             step_walker = StepWalker(

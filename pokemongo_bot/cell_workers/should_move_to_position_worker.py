@@ -9,8 +9,6 @@ class ShouldMoveToPositionWorker(object):
     def __init__(self, bot):
         self.bot = bot
         self.config = bot.config
-        self.cell = bot.cell
-        self.position = bot.position
         self.cached_destination = self.bot.cached_destination
 
     def work(self):
