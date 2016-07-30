@@ -55,6 +55,7 @@ class PokemonGoBot(object):
         self.latest_inventory = None
         self.cell = None
         self.recent_forts = [None] * config.forts_max_circle_size
+	self.last_fort = None
         self.tick_count = 0
         self.softban = False
 
