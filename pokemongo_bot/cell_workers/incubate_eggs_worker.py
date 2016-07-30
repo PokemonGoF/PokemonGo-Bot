@@ -12,6 +12,7 @@ class IncubateEggsWorker(object):
         self.eggs = []
         self.km_walked = 0
         self.hatching_animation_delay = 4.20
+        self.max_iv = 45.0
 
     def work(self):
         if not self.bot.config.hatch_eggs:
@@ -28,7 +29,7 @@ class IncubateEggsWorker(object):
             if km_left <= 0:
                 self._hatch_eggs()
             else:
-                logger.log('[x] Next egg incubates in {:.2f} km'.format(km_left),'yellow')
+                logger.log('[x] Next egg incubates in {0:.2f} km'.format(km_left),'yellow')
             IncubateEggsWorker.last_km_walked = self.km_walked
 
         sorting = self.bot.config.longer_eggs_first
@@ -100,11 +101,11 @@ class IncubateEggsWorker(object):
                 elif 'is_egg' not in pokemon and pokemon['id'] in lookup_ids:
                     matched_pokemon.append({
                         "pokemon_id": pokemon.get('pokemon_id', -1),
-                        "cp": pokemon.get('cp', -1),
+                        "cp": pokemon.get('cp', 0),
                         "iv": [
-                            pokemon.get('individual_attack', -1),
-                            pokemon.get('individual_stamina', -1),
-                            pokemon.get('individual_defense', -1)
+                            pokemon.get('individual_attack', 0),
+                            pokemon.get('individual_defense', 0),
+                            pokemon.get('individual_stamina', 0)
                         ]
                     })
                 continue
@@ -122,25 +123,28 @@ class IncubateEggsWorker(object):
             return
         if 'pokemon_id' in result:
             pokemon_ids = [id for id in result['pokemon_id']]
-        stardust = result.get('stardust_awarded', 0)
-        candy = result.get('candy_awarded', 0)
-        xp = result.get('experience_awarded', 0)
+        stardust = result.get('stardust_awarded', "error")
+        candy = result.get('candy_awarded', "error")
+        xp = result.get('experience_awarded', "error")
         sleep(self.hatching_animation_delay)
         self.bot.latest_inventory = None
         try:
             pokemon_data = self._check_inventory(pokemon_ids)
+            for pokemon in pokemon_data:
+                # pokemon ids seem to be offset by one
+                if pokemon['pokemon_id']!=-1:
+                    pokemon['name'] = self.bot.pokemon_list[(pokemon['pokemon_id']-1)]['Name']
+                else:
+                    pokemon['name'] = "error"
         except:
-            return  # pokemon_data is unassigned
-        for pokemon in pokemon_data:
-            # pokemon ids seem to be offset by one
-            pokemon['name'] = self.bot.pokemon_list[(pokemon['pokemon_id']-1)]['Name']
+            pokemon_data = [{"name":"error","cp":"error","iv":"error"}]
         logger.log("-"*30, log_color)
         logger.log("[!] {} eggs hatched! Received:".format(len(pokemon_data)), log_color)
         for i in range(len(pokemon_data)):
             logger.log("-"*30,log_color)
             logger.log("[!] Pokemon: {}".format(pokemon_data[i]['name']), log_color)
             logger.log("[!] CP: {}".format(pokemon_data[i]['cp']), log_color)
-            logger.log("[!] IV: {}".format("/".join(map(str, pokemon_data[i]['iv']))), log_color)
+            logger.log("[!] IV: {} ({0:.2f})".format("/".join(map(str, pokemon_data[i]['iv'])),(sum(pokemon_data[i]['iv'])/self.max_iv)), log_color)
             logger.log("[!] XP: {}".format(xp[i]), log_color)
             logger.log("[!] Stardust: {}".format(stardust[i]), log_color)
             logger.log("[!] Candy: {}".format(candy[i]), log_color)
