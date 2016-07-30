@@ -42,7 +42,7 @@ class SoftBanWorker(object):
                 if (i + 1) % 10 == 0:
                     logger.log('Spin #{}'.format(str(i+1)))
                 self.spin_fort(forts[0])
-            self.softban = False
+            self.bot.softban = False
             logger.log('Softban should be fixed.')
 
     def spin_fort(self, fort):
