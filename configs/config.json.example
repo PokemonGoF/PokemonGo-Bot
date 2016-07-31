@@ -68,9 +68,10 @@
               "Squirtle": 3,
               "Mewtwo": 100
           },
-          "ignore": {
-              "Drowzee"
-          }
+          "ignore": [
+            "Drowzee",
+            "Jynx"
+        	]
         }
       },
       {
