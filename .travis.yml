@@ -12,4 +12,4 @@ install:
   - pip install pylint
 script:
   - python pylint-recursive.py
-  - ./run_tests.sh
+  - python run_tests.py

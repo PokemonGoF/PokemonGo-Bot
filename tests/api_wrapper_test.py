@@ -1,10 +1,11 @@
-import unittest
+import unittest, os
 from mock import MagicMock, patch
-from timeout_decorator import timeout, TimeoutError
+from tests import TimeoutError, timeout, SKIP_TIMED
 
 from pgoapi import PGoApi
 from pgoapi.exceptions import NotLoggedInException, ServerBusyOrOfflineException
 from pokemongo_bot.api_wrapper import ApiWrapper
+
 
 class TestApiWrapper(unittest.TestCase):
     def setUp(self):
@@ -82,6 +83,7 @@ class TestApiWrapper(unittest.TestCase):
         result = self.api.call()
         self.assertEqual(result, good_return_value)
 
+    @unittest.skipIf(SKIP_TIMED, "Please install module 'timeout_decorator'")
     @timeout(1)
     def test_api_call_throttle_should_pass(self):
         self.api._can_call = MagicMock(return_value=True)
@@ -90,6 +92,7 @@ class TestApiWrapper(unittest.TestCase):
         for i in range(self.api.requests_per_seconds):
             self.api.call()
 
+    @unittest.skipIf(SKIP_TIMED, "Please install module 'timeout_decorator'")
     @timeout(1)
     def test_api_call_throttle_should_fail(self):
         self.api._can_call = MagicMock(return_value=True)
