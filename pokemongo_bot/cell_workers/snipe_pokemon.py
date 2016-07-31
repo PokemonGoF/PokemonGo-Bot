@@ -23,14 +23,19 @@ class SnipePokemon(object):
         # process additional configs
 
     def work(self):
+        if self.bot.tick_count is not 1:
+            return
+
         while True:
             location = raw_input('Enter snipe location: ')
             location = location.replace(' ', '')
 
-            if len(location) > 0:
+            pattern = "^(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)$"
+            if re.match(pattern, location):
                 self.snipe_pokemon(location)
             else:
-                break   
+                logger.log('Wrong format location!', 'red')
+                break
 
 
     def snipe_pokemon(self, location, delay=2): 
@@ -94,6 +99,8 @@ class SnipePokemon(object):
             self.api.set_position(*prevPosition)
             time.sleep(delay)
             self.heartbeat()
+
+            return None
 
         catchWorker = PokemonCatchWorker(catch_pokemon, self.bot)
         
