@@ -21,7 +21,10 @@
         "type": "TransferPokemon"
       },
       {
-        "type": "EvolveAll"
+        "type": "EvolveAll",
+        "config": {
+          "evolve_speed": 20
+        }
       },
       {
         "type": "RecycleItems"
@@ -68,7 +71,6 @@
       "701": { "keep" : 100 }
     },
     "evolve_all": "NONE",
-    "evolve_speed": 20,
     "evolve_cp_min": 300,
     "use_lucky_egg": false,
     "evolve_captured": "NONE",

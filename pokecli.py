@@ -408,7 +408,7 @@ def init_config():
             """.format(flag_name))
 
     old_flags = ['mode', 'catch_pokemon', 'spin_forts', 'forts_spin', 'hatch_eggs', 'release_pokemon', 'softban_fix',
-                'longer_eggs_first']
+                'longer_eggs_first', 'evolve_speed']
     for flag in old_flags:
         if flag in load:
             task_configuration_error(flag)
