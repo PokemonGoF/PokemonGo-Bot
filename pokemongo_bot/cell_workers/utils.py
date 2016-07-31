@@ -144,3 +144,11 @@ def print_yellow(message):
 
 def print_red(message):
     print(u'\033[91m' + message.decode('utf-8') + '\033[0m')
+
+
+def float_equal(f1, f2, epsilon=1e-8):
+    if f1 > f2:
+        return f1 - f2 < epsilon
+    if f2 > f1:
+       return f2 - f1 < epsilon
+    return True

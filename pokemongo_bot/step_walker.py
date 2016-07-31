@@ -1,6 +1,6 @@
 from math import sqrt
 
-from cell_workers.utils import distance
+from cell_workers.utils import distance, float_equal
 from human_behaviour import random_lat_long_delta, sleep
 
 
@@ -35,6 +35,12 @@ class StepWalker(object):
             self.dLat = (dest_lat - self.initLat) / int(self.steps)
             self.dLng = (dest_lng - self.initLng) / int(self.steps)
             self.magnitude = self._pythagorean(self.dLat, self.dLng)
+
+            if float_equal(self.dLat, 0) or float_equal(self.dLng, 0):
+                # self.steps is very big, reducing the division to nearly 0
+                # the user should use smaller parameters (dest_lat, dest_lng)
+                raise RuntimeError('Coordinate passed to StepWalker are too far away from the Bot')
+
 
     def step(self):
         if (self.dLat == 0 and self.dLng == 0) or self.dist < self.speed:
