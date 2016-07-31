@@ -43,10 +43,10 @@ def sleep(seconds):
     '''
     sleep for (given seconds + jitter + human reflex) seconds.
     '''
-    time.sleep(seconds + jitter() + human_reflex())
+    time.sleep(seconds + jitter_rng() + human_reflex_rng())
 
 
-def jitter(ping=80, ping_range=30):
+def jitter_rng(ping=80, ping_range=30):
     '''
     Simple lognormal jitter model for given ping and range.
     Actually wider range is preferred for accurate modeling,
@@ -62,12 +62,24 @@ def jitter(ping=80, ping_range=30):
     return lag
 
 
-def human_reflex(reflex_mean=270, reflex_range=100):
+def human_reflex_rng(reflex_mean=270, reflex_range=100):
     '''
     Simulates human reflexes.
     '''
     mu_, sigma = lognormal_model()[reflex_mean][reflex_range]
     return min(1.0, lognormal(mu_, sigma))
+
+
+def random_lat_long_delta(radius=0.00025):
+    '''
+    Simulates gps noise.
+    '''
+    # Return random value from [-.000025, .000025]ish 99.73% of time.
+    # Since 364,000 feet is equivalent to one degree of latitude, this
+    # Gaussian is better for gps errors
+    noise = gauss(0, radius/3.0)
+    noise = min(max(-radius, noise), radius)
+    return noise
 
 
 def action_delay(low, high):
@@ -77,36 +89,68 @@ def action_delay(low, high):
     time.sleep(shortNum)
 
 
-def random_lat_long_delta(radius=0.00025):
+def ball_throw_reticle_fail_delay(success_prob=0.95):
     '''
-    Simulates gps error.
+    Chances to skip the reticle should be constant,
+    so the wait time before throwing is binomial,
+    given that the monster does not interrupt... <- TODO
     '''
-    # Return random value from [-.000025, .000025]ish 99.73% of time.
-    # Since 364,000 feet is equivalent to one degree of latitude, this
-    # Gaussian is better for gps errors
-    error = gauss(0, radius/3.0)
-    error = min(max(-radius, error), radius)
-    return error
+    for trial in range(10):
+        if random() < success_prob:
+            break
+    return trial
+    time.sleep(1.8*(trial+random()))
+
+
+def aim_rng(target, std=0.05):
+    '''
+    noise from the target point should be approximated by gaussian,
+    we can wait for the missed reticles etc, which means we get
+    another chance to try...
+    
+    '''
+    for trial in range(10):
+        r = gauss(0, std)
+        if 0 <= target + r and target + r <= 1:
+            break
+    else:
+        # couldnt find target + gauss between [0, 1]
+        return random()
+    return target + r
 
 
 # Humanized `normalized_reticle_size` parameter for `catch_pokemon` API.
 # 1.0 => normal, 1.950 => excellent
-def normalized_reticle_size(factor):
-    minimum = 1.0
-    maximum = 1.950
-    return uniform(
-        minimum + (maximum - minimum) * factor,
-        maximum)
+def normalized_reticle_size(factor, mode='human'):
+    if 'bot' == mode:
+        return 1.950
+    elif 'uniform' == mode:
+        minimum = 1.0
+        maximum = 1.950
+        return uniform(
+            minimum + (maximum - minimum) * factor,
+            maximum)
+    elif 'human' == mode:
+        return 2 * aim_rng(factor)
+    else:
+        return mode(factor) # strategy
 
 
 # Humanized `spin_modifier` parameter for `catch_pokemon` API.
 # 0.0 => normal ball, 1.0 => super spin curve ball
-def spin_modifier(factor):
-    minimum = 0.0
-    maximum = 1.0
-    return uniform(
-        minimum + (maximum - minimum) * factor,
-        maximum)
+def spin_modifier(factor, mode='human'):
+    if 'bot' == mode:
+        return 1.0
+    elif 'uniform' == mode:
+        minimum = 0.0
+        maximum = 1.0
+        return uniform(
+            minimum + (maximum - minimum) * factor,
+            maximum)
+    elif 'human' == mode:
+        return aim_rng(factor)
+    else:
+        return mode(factor)
 
 
 def _precalc_lognormal_ping_param(
