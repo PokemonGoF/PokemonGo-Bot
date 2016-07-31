@@ -264,6 +264,15 @@ def init_config():
     add_config(
         parser,
         load,
+        short_flag="-spl",
+        long_flag="--snipe_list",
+        help="File containing locations to snipe",
+        type=str,
+        default=None
+    )
+    add_config(
+        parser,
+        load,
         short_flag="-d",
         long_flag="--debug",
         help="Debug Mode",
