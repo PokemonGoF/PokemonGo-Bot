@@ -91,6 +91,10 @@ class TransferPokemon(BaseTask):
             if 'deployed_fort_id' in pokemon_data and pokemon_data['deployed_fort_id']:
                 continue
 
+            # favorite pokemon can't transfer in official game client
+            if pokemon_data.get('favorite', 0) is 1:
+                continue
+
             group_id = pokemon_data['pokemon_id']
             group_pokemon_cp = pokemon_data['cp']
             group_pokemon_iv = self.get_pokemon_potential(pokemon_data)
