@@ -213,17 +213,20 @@ def rad2deg(rad):
     return rad * 180.0 / pi
 
 
-def find_biggest_cluster(radius, points):
+def find_biggest_cluster(radius, points, order=None):
     graph = nx.Graph()
     for point in points:
-            f = point['latitude'], point['longitude']
+            if order is 'lure_info':
+                f = point['latitude'], point['longitude'], point['lure_info']['lure_expires_timestamp_ms']
+            else:
+                f = point['latitude'], point['longitude'], 0
             graph.add_node(f)
             for node in graph.nodes():
                 if node != f and distance(f[0], f[1], node[0], node[1]) <= radius*2:
                     graph.add_edge(f, node)
     cliques = list(find_cliques(graph))
     if len(cliques) > 0:
-        max_clique = max(list(find_cliques(graph)), key=len)
+        max_clique = max(list(find_cliques(graph)), key=lambda l: (len(l), sum(x[2] for x in l)))
         merc_clique = [coord2merc(x[0], x[1]) for x in max_clique]
         clique_x, clique_y = zip(*merc_clique)
         best_point = np.mean(clique_x), np.mean(clique_y)
