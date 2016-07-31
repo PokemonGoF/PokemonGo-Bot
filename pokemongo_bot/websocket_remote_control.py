@@ -11,6 +11,7 @@ class WebsocketRemoteControl(object):
         self.port = int(port_str)
         self.sio = SocketIO(self.host, self.port)
         self.sio.on('bot:process_request', self.on_remote_command)
+        self.thread = threading.Thread(target=self.process_messages)
 
     def start(self):
         self.thread.start()
