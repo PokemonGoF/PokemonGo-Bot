@@ -43,18 +43,17 @@
         "type": "MoveToFort"
       },
       {
-        "type": "FollowSpiral"
+        "type": "FollowPath",
+        "config": {
+          "path_mode": "loop",
+          "path_file": "configs/path.example.json"
+        }
       }
     ],
     "max_steps": 5,
     "forts": {
       "avoid_circles": true,
       "max_circle_size": 50
-    },
-    "navigator": {
-      "type": "path",
-      "path_mode": "loop",
-      "path_file": "configs/path.example.json"
     },
     "websocket_server": false,
     "walk": 4.16,

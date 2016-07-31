@@ -4,6 +4,8 @@ The project is currently setup in two main branches. `dev` and `master`.
 
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
 
+## Wiki is moving to [wikimedia](http://wiki.pikabot.org/index.php/Main_Page)
+
 ## Table of Contents
 - [Features](#features)
 - [Wiki](#wiki)
