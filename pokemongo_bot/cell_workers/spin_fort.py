@@ -14,7 +14,7 @@ from utils import distance, format_time, fort_details
 
 class SpinFort(BaseTask):
     def should_run(self):
-        return self.bot.has_space_for_loot()
+        return self.bot.should_move_to_fort_for_loot()
 
     def work(self):
         fort = self.get_fort_in_range()
@@ -41,14 +41,16 @@ class SpinFort(BaseTask):
 
             spin_details = response_dict['responses']['FORT_SEARCH']
             spin_result = spin_details.get('result', -1)
-            if spin_result == 1:
+            if spin_result == 1 or spin_result == 4:
+                if spin_result == 4:
+                    logger.log('Inventory is full', 'red')
+
                 self.bot.softban = False
                 logger.log("Loot: ", 'green')
                 experience_awarded = spin_details.get('experience_awarded',
                                                       False)
                 if experience_awarded:
-                    logger.log(str(experience_awarded) + " xp",
-                               'green')
+                    logger.log('- {} xp'.format(experience_awarded), 'yellow')
 
                 items_awarded = spin_details.get('items_awarded', False)
                 if items_awarded:
@@ -67,7 +69,7 @@ class SpinFort(BaseTask):
                             '- ' + str(item_count) + "x " + item_name +
                             " (Total: " + str(self.bot.item_inventory_count(item_id)) + ")", 'yellow'
                         )
-                else:
+                elif spin_result == 1:
                     logger.log("[#] Nothing found.", 'yellow')
 
                 pokestop_cooldown = spin_details.get(
@@ -91,8 +93,6 @@ class SpinFort(BaseTask):
                     logger.log('PokeStop on cooldown. Time left: ' + str(
                         format_time((pokestop_cooldown / 1000) -
                                     seconds_since_epoch)))
-            elif spin_result == 4:
-                logger.log("Inventory is full", 'red')
             else:
                 logger.log("Unknown spin result: " + str(spin_result), 'red')
 

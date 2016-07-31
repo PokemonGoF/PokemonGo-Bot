@@ -639,14 +639,14 @@ class PokemonGoBot(object):
                                                 '{poke_stop_visits}'.format(
                                                     **playerdata), 'cyan')
 
-    def has_space_for_loot(self):
+    def should_move_to_fort_for_loot(self):
         number_of_things_gained_by_stop = 5
         enough_space = (
             self.get_inventory_count('item') <
             self._player['max_item_storage'] - number_of_things_gained_by_stop
         )
 
-        return enough_space
+        return enough_space or self.config.move_to_fort_even_if_full_inventory
 
     def get_forts(self, order_by_distance=False):
         forts = [fort

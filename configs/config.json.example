@@ -74,6 +74,7 @@
     "evolve_captured": "NONE",
     "catch_randomize_reticle_factor": 1.0,
     "catch_randomize_spin_factor": 1.0,
+    "move_to_fort_even_if_full_inventory": false,
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},
