@@ -12,3 +12,4 @@ from spin_fort import SpinFort
 from handle_soft_ban import HandleSoftBan
 from follow_path import FollowPath
 from follow_spiral import FollowSpiral
+from base_task import BaseTask
