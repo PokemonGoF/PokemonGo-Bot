@@ -69,7 +69,6 @@
     "use_lucky_egg": false,
     "longer_eggs_first": true,
     "evolve_captured": "NONE",
-    "release_pokemon": true,
     "catch_randomize_reticle_factor": 1.0,
     "catch_randomize_spin_factor": 1.0,
     "catch": {
