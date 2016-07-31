@@ -4,16 +4,10 @@ from __future__ import absolute_import, unicode_literals
 from pokemongo_bot import logger
 from pokemongo_bot.cell_workers.utils import fort_details
 from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
+from pokemongo_bot.cell_workers.base_task import BaseTask
 
-
-class CatchLuredPokemonWorker(object):
-    def __init__(self, bot):
-        self.bot = bot
-
+class CatchLuredPokemon(BaseTask):
     def work(self):
-        if not self.bot.config.catch_pokemon:
-            return
-
         lured_pokemon = self.get_lured_pokemon()
         if lured_pokemon:
             self.catch_pokemon(lured_pokemon)

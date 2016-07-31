@@ -4,18 +4,13 @@ from __future__ import absolute_import, unicode_literals
 import json
 
 from pokemongo_bot import logger
+from pokemongo_bot.cell_workers.base_task import BaseTask
 from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 from .utils import distance
 
 
-class CatchVisiblePokemonWorker(object):
-    def __init__(self, bot):
-        self.bot = bot
-
+class CatchVisiblePokemon(BaseTask):
     def work(self):
-        if not self.bot.config.catch_pokemon:
-            return
-
         if 'catchable_pokemons' in self.bot.cell and len(self.bot.cell['catchable_pokemons']) > 0:
             logger.log('Something rustles nearby!')
             # Sort all by distance from current pos- eventually this should

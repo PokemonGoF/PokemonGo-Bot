@@ -2,17 +2,10 @@ import json
 
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import action_delay
+from pokemongo_bot.cell_workers.base_task import BaseTask
 
-
-class PokemonTransferWorker(object):
-
-    def __init__(self, bot):
-        self.bot = bot
-
+class TransferPokemon(BaseTask):
     def work(self):
-        if not self.bot.config.release_pokemon:
-            return
-
         pokemon_groups = self._release_pokemon_get_groups()
         for pokemon_id in pokemon_groups:
             group = pokemon_groups[pokemon_id]

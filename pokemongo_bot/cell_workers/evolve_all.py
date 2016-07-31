@@ -4,12 +4,12 @@ from __future__ import absolute_import, unicode_literals
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.item_list import Item
+from pokemongo_bot.cell_workers.base_task import BaseTask
 
-
-class EvolveAllWorker(object):
-    def __init__(self, bot):
-        self.api = bot.api
-        self.bot = bot
+class EvolveAll(BaseTask):
+    def initialize(self):
+        self.evolve_speed = self.config.get('evolve_speed', 3.7)
+        self.use_lucky_egg = self.config.get('use_lucky_egg', False)
 
     def work(self):
         if not self._should_run():
@@ -57,7 +57,7 @@ class EvolveAllWorker(object):
             return False
 
         # Evolve all is used - Don't run after the first tick or if the config flag is false
-        if self.bot.tick_count is not 1 or not self.bot.config.use_lucky_egg:
+        if self.bot.tick_count is not 1 or not self.use_lucky_egg:
             return True
 
         lucky_egg_count = self.bot.item_inventory_count(Item.ITEM_LUCKY_EGG.value)
@@ -153,18 +153,15 @@ class EvolveAllWorker(object):
         if pokemon_name in cache:
             return
 
-        self.api.evolve_pokemon(pokemon_id=pokemon_id)
-        response_dict = self.api.call()
+        self.bot.api.evolve_pokemon(pokemon_id=pokemon_id)
+        response_dict = self.bot.api.call()
         status = response_dict['responses']['EVOLVE_POKEMON']['result']
         if status == 1:
             print('[#] Successfully evolved {} with {} CP and {} IV!'.format(
                 pokemon_name, pokemon_cp, pokemon_iv
             ))
 
-            if self.bot.config.evolve_speed:
-                sleep(self.bot.config.evolve_speed)
-            else:
-                sleep(3.7)
+            sleep(self.evolve_speed)
 
         else:
             # cache pokemons we can't evolve. Less server calls
@@ -173,8 +170,8 @@ class EvolveAllWorker(object):
 
     # TODO: move to utils. These methods are shared with other workers.
     def transfer_pokemon(self, pid):
-        self.api.release_pokemon(pokemon_id=pid)
-        response_dict = self.api.call()
+        self.bot.api.release_pokemon(pokemon_id=pid)
+        response_dict = self.bot.api.call()
 
     def count_pokemon_inventory(self):
         response_dict = self.bot.get_inventory()

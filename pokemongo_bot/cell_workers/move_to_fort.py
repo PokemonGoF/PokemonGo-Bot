@@ -4,20 +4,13 @@ from pokemongo_bot import logger
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
+from pokemongo_bot.cell_workers.base_task import BaseTask
 from .utils import distance, format_dist, fort_details
 
 
-class MoveToFortWorker(object):
-
-    def __init__(self, bot):
-        self.bot = bot
-
+class MoveToFort(BaseTask):
     def should_run(self):
-        return (
-            self.bot.config.forts_spin and
-            self.bot.config.forts_move_to_spin and
-            self.bot.has_space_for_loot()
-        ) or self.bot.softban
+        return (self.bot.has_space_for_loot()) or self.bot.softban
 
     def work(self):
         if not self.should_run():
@@ -46,7 +39,7 @@ class MoveToFortWorker(object):
 
         if dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
             logger.log('Moving towards fort {}, {} left'.format(
-                fort_name.decode('utf-8'), format_dist(dist, unit))
+                fort_name, format_dist(dist, unit))
             )
 
             step_walker = StepWalker(
