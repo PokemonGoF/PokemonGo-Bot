@@ -101,6 +101,10 @@ class MoveToMapPokemon(object):
 
             if self.config['mode'] == 'priority' and pokemon['score'] < 1:
                 continue
+
+            if pokemon['name'] in self.config['ignore']:
+                continue
+
             new_list.append(pokemon)
         return new_list
 
