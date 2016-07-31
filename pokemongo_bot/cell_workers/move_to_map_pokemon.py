@@ -54,7 +54,7 @@ class MoveToMapPokemon(object):
                 lon
             )
 
-            if dist > self.config['max_distance']:
+            if dist > self.config['max_distance'] and self.config['mode'] != 'snipe':
                 continue
 
             if encounter_id in self.caught:
