@@ -92,7 +92,7 @@ class SnipePokemon(BaseTask):
             # go back 
             self.api.set_position(*prevPosition)
             time.sleep(delay)
-            self.heartbeat()
+            self.bot.heartbeat()
 
             return None
 
@@ -109,4 +109,5 @@ class SnipePokemon(BaseTask):
         time.sleep(delay)
         self.bot.heartbeat()
 
+        # Catch 'em all
         catchWorker.work(apiEncounterResponse)
