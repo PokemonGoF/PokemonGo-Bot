@@ -37,7 +37,6 @@
       }
     ],
     "max_steps": 5,
-    "catch_pokemon": true,
     "forts": {
       "spin": true,
       "move_to_spin": false,

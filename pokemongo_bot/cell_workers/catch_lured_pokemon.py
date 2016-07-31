@@ -8,9 +8,6 @@ class CatchLuredPokemon(object):
         self.bot = bot
 
     def work(self):
-        if not self.bot.config.catch_pokemon:
-            return
-
         lured_pokemon = self.get_lured_pokemon()
         if lured_pokemon:
             self.catch_pokemon(lured_pokemon)
