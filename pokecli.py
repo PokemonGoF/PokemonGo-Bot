@@ -338,6 +338,14 @@ def init_config():
         type=float,
         default=1.0
     )
+    add_config(
+        parser,
+        load,
+        long_flag="--move_to_fort_even_if_full_inventory",
+        help="Move to fort and spin it for XP, even if inventory is full",
+        type=bool,
+        default=False
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()

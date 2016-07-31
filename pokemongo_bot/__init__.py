@@ -34,10 +34,10 @@ class PokemonGoBot(object):
     def __init__(self, config):
         self.config = config
         self.fort_timeouts = dict()
-        self.pokemon_list = json.load(
-            open(os.path.join('data', 'pokemon.json'))
-        )
-        self.item_list = json.load(open(os.path.join('data', 'items.json')))
+        with open(os.path.join('data', 'pokemon.json')) as fp:
+            self.pokemon_list = json.load(fp)
+        with open(os.path.join('data', 'items.json')) as fp:
+            self.item_list = json.load(fp)
         self.metrics = Metrics(self)
         self.latest_inventory = None
         self.cell = None
@@ -601,14 +601,14 @@ class PokemonGoBot(object):
                             '{poke_stop_visits}'.format(
                                 **playerdata), 'cyan')
 
-    def has_space_for_loot(self):
+    def should_move_to_fort_for_loot(self):
         number_of_things_gained_by_stop = 5
         enough_space = (
             self.get_inventory_count('item') <
             self._player['max_item_storage'] - number_of_things_gained_by_stop
         )
 
-        return enough_space
+        return enough_space or self.config.move_to_fort_even_if_full_inventory
 
     def get_forts(self, order_by_distance=False):
         forts = [fort

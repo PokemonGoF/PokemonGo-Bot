@@ -8,7 +8,10 @@ from utils import distance, format_dist, fort_details
 
 class MoveToFort(BaseTask):
     def should_run(self):
-        return (self.bot.has_space_for_loot()) or self.bot.softban
+        if self.bot.softban:
+            return True
+        else:
+            return self.bot.should_move_to_fort_for_loot()
 
     def work(self):
         if not self.should_run():
