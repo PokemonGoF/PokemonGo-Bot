@@ -15,9 +15,6 @@ class IncubateEggs(object):
         self.max_iv = 45.0
 
     def work(self):
-        if not self.bot.config.hatch_eggs:
-            return
-
         try:
             self._check_inventory()
         except:
