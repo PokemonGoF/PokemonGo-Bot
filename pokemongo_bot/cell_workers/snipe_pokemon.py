@@ -5,23 +5,16 @@ import sys
 import time
 
 from . import PokemonCatchWorker
+from base_task import BaseTask
 from pokemongo_bot import logger
 from utils import distance
 
-class SnipePokemon(object):
+class SnipePokemon(BaseTask):
 
-    def __init__(self, bot, config):
-        self.bot = bot
-        self.api = bot.api
-        self.config = config
-        self.pokemon_list = bot.pokemon_list
-        self.position = bot.position
-
-        self._process_config()
-
-    def _process_config(self):
-        # process additional configs
-        return
+    def initialize(self):
+        self.api = self.bot.api
+        self.pokemon_list = self.bot.pokemon_list
+        self.position = self.bot.position
 
     def work(self):
         if self.bot.tick_count is not 1:
