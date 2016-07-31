@@ -21,6 +21,7 @@ class SnipePokemon(object):
 
     def _process_config(self):
         # process additional configs
+        return
 
     def work(self):
         if self.bot.tick_count is not 1:
