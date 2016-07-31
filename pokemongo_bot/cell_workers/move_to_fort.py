@@ -20,6 +20,10 @@ class MoveToFort(object):
 
     def navigate_to_fort(self):
         self.nearest_fort = self.get_nearest_fort()
+
+        if self.nearest_fort is None:
+            return
+
         self.step_walker = StepWalker(
             self.bot,
             self.bot.config.walk,

@@ -65,7 +65,7 @@ class FollowSpiral(object):
         self.ptr += self.direction
         self.step_walker = StepWalker(
             self.bot,
-            self.config.walk,
+            self.bot.config.walk,
             self.next_point['lat'],
             self.next_point['lng'],
             label='SpiralNavigator'
@@ -76,15 +76,15 @@ class FollowSpiral(object):
             self.walk_to_next_point()
 
         dist = distance(
-            self.api._position_lat,
-            self.api._position_lng,
+            self.bot.api._position_lat,
+            self.bot.api._position_lng,
             self.next_point['lat'],
             self.next_point['lng']
         )
 
-        logger.log('Spiraling from ' + str((self.api._position_lat, self.api._position_lng)) +
+        logger.log('Spiraling from ' + str((self.bot.api._position_lat, self.bot.api._position_lng)) +
             ' to ' + str([self.next_point['lat'], self.next_point['lng']]) + ' ' +
-            format_dist(dist, self.config.distance_unit))
+            format_dist(dist, self.bot.config.distance_unit))
 
         if self.step_walker.step():
             self.step_walker = None
