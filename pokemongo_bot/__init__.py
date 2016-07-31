@@ -54,11 +54,6 @@ class PokemonGoBot(object):
         self._setup_logging()
         self._setup_api()
 
-        if self.config.navigator_type == 'spiral':
-            self.navigator = cell_workers.FollowSpiral
-        elif self.config.navigator_type == 'path':
-            self.navigator = cell_workers.FollowPath
-
         random.seed()
 
     def _setup_event_system(self):
@@ -139,7 +134,7 @@ class PokemonGoBot(object):
             status = map_objects.get('status', None)
             cells = map_objects['map_cells']
 
-            #insert detail info about gym to fort
+            # insert detail info about gym to fort
             for cell in cells:
                 if 'forts' in cell:
                     for fort in cell['forts']:
@@ -165,7 +160,7 @@ class PokemonGoBot(object):
         )
         # alt is unused atm but makes using *location easier
         try:
-            with open(user_web_location,'w') as outfile:
+            with open(user_web_location, 'w') as outfile:
                 json.dump({
                     'lat': lat,
                     'lng': lng,
@@ -395,25 +390,13 @@ class PokemonGoBot(object):
     def update_inventory(self):
         response = self.get_inventory()
         self.inventory = list()
-        if 'responses' in response:
-            if 'GET_INVENTORY' in response['responses']:
-                if 'inventory_delta' in response['responses']['GET_INVENTORY']:
-                    if 'inventory_items' in response['responses'][
-                            'GET_INVENTORY']['inventory_delta']:
-                        for item in response['responses']['GET_INVENTORY'][
-                                'inventory_delta']['inventory_items']:
-                            if not 'inventory_item_data' in item:
-                                continue
-                            if not 'item' in item['inventory_item_data']:
-                                continue
-                            if not 'item_id' in item['inventory_item_data'][
-                                    'item']:
-                                continue
-                            if not 'count' in item['inventory_item_data'][
-                                    'item']:
-                                continue
-                            self.inventory.append(item['inventory_item_data'][
-                                'item'])
+        inventory_items = response.get('responses', {}).get('GET_INVENTORY', {}).get(
+            'inventory_delta', {}).get('inventory_items', {})
+        if inventory_items:
+            for item in inventory_items:
+                item_info = item.get('inventory_item_data', {}).get('item')
+                if {"item_id", "count"}.issubset(set(item_info.keys())):
+                    self.inventory.append(item['inventory_item_data']['item'])
 
     def current_inventory(self):
         inventory_req = self.get_inventory()
@@ -458,7 +441,7 @@ class PokemonGoBot(object):
             item_dict = item.get('inventory_item_data', {}).get('item', {})
             item_id = item_dict.get('item_id', False)
             item_count = item_dict.get('count', False)
-            if  item_id == int(id) and item_count:
+            if item_id == int(id) and item_count:
                 return item_count
 
     def _all_items_inventory_count(self, inventory_dict):
@@ -553,8 +536,7 @@ class PokemonGoBot(object):
                     '[x] Coordinates found in passed in location, '
                     'not geocoding.'
                 )
-                return float(possible_coordinates[0]), \
-                       float(possible_coordinates[1]), float("0.0")
+                return float(possible_coordinates[0]), float(possible_coordinates[1]), float("0.0")
 
         geolocator = GoogleV3(api_key=self.config.gmapkey)
         loc = geolocator.geocode(location_name, timeout=10)
@@ -573,28 +555,16 @@ class PokemonGoBot(object):
 
     def get_inventory_count(self, what):
         response_dict = self.get_inventory()
-        if 'responses' in response_dict:
-            if 'GET_INVENTORY' in response_dict['responses']:
-                if 'inventory_delta' in response_dict['responses'][
-                        'GET_INVENTORY']:
-                    if 'inventory_items' in response_dict['responses'][
-                            'GET_INVENTORY']['inventory_delta']:
-                        pokecount = 0
-                        itemcount = 1
-                        for item in response_dict['responses'][
-                                'GET_INVENTORY']['inventory_delta'][
-                                    'inventory_items']:
-                            # print('item {}'.format(item))
-                            if 'inventory_item_data' in item:
-                                if 'pokemon_data' in item[
-                                        'inventory_item_data']:
-                                    pokecount += 1
-                                if 'item' in item['inventory_item_data']:
-                                    if 'count' in item['inventory_item_data'][
-                                            'item']:
-                                        itemcount = itemcount + \
-                                            item['inventory_item_data'][
-                                                'item']['count']
+        inventory_items = response_dict.get('responses', {}).get('GET_INVENTORY', {}).get(
+            'inventory_delta', {}).get('inventory_items', {})
+        if inventory_items:
+            pokecount = 0
+            itemcount = 1
+            for item in inventory_items:
+                if 'inventory_item_data' in item:
+                    if 'pokemon_data' in item['inventory_item_data']:
+                        pokecount += 1
+                    itemcount += item['inventory_item_data'].get('item', {}).get('count', 0)
         if 'pokemon' in what:
             return pokecount
         if 'item' in what:
@@ -603,47 +573,34 @@ class PokemonGoBot(object):
 
     def get_player_info(self):
         response_dict = self.get_inventory()
-        if 'responses' in response_dict:
-            if 'GET_INVENTORY' in response_dict['responses']:
-                if 'inventory_delta' in response_dict['responses'][
-                        'GET_INVENTORY']:
-                    if 'inventory_items' in response_dict['responses'][
-                            'GET_INVENTORY']['inventory_delta']:
-                        pokecount = 0
-                        itemcount = 1
-                        for item in response_dict['responses'][
-                                'GET_INVENTORY']['inventory_delta'][
-                                    'inventory_items']:
-                            #print('item {}'.format(item))
-                            if 'inventory_item_data' in item:
-                                if 'player_stats' in item[
-                                        'inventory_item_data']:
-                                    playerdata = item['inventory_item_data'][
-                                        'player_stats']
+        inventory_items = response_dict.get('responses', {}).get('GET_INVENTORY', {}).get(
+            'inventory_delta', {}).get('inventory_items', {})
+        if inventory_items:
+            pokecount = 0
+            itemcount = 1
+            for item in inventory_items:
+                # print('item {}'.format(item))
+                playerdata = item.get('inventory_item_data', {}).get('player_stats')
+                if playerdata:
+                    nextlvlxp = (int(playerdata.get('next_level_xp', 0)) - int(playerdata.get('experience', 0)))
 
-                                    nextlvlxp = (
-                                        int(playerdata.get('next_level_xp', 0)) -
-                                        int(playerdata.get('experience', 0)))
+                    if 'level' in playerdata and 'experience' in playerdata:
+                        logger.log(
+                            'Level: {level}'.format(
+                                **playerdata) +
+                            ' (Next Level: {} XP)'.format(
+                                nextlvlxp) +
+                            ' (Total: {experience} XP)'
+                            ''.format(**playerdata), 'cyan')
 
-                                    if 'level' in playerdata:
-                                        if 'experience' in playerdata:
-                                            logger.log(
-                                                'Level: {level}'.format(
-                                                    **playerdata) +
-                                                ' (Next Level: {} XP)'.format(
-                                                    nextlvlxp) +
-                                                ' (Total: {experience} XP)'
-                                                ''.format(**playerdata), 'cyan')
-
-                                    if 'pokemons_captured' in playerdata:
-                                        if 'poke_stop_visits' in playerdata:
-                                            logger.log(
-                                                'Pokemon Captured: '
-                                                '{pokemons_captured}'.format(
-                                                    **playerdata) +
-                                                ' | Pokestops Visited: '
-                                                '{poke_stop_visits}'.format(
-                                                    **playerdata), 'cyan')
+                    if 'pokemons_captured' in playerdata and 'poke_stop_visits' in playerdata:
+                        logger.log(
+                            'Pokemon Captured: '
+                            '{pokemons_captured}'.format(
+                                **playerdata) +
+                            ' | Pokestops Visited: '
+                            '{poke_stop_visits}'.format(
+                                **playerdata), 'cyan')
 
     def has_space_for_loot(self):
         number_of_things_gained_by_stop = 5

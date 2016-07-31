@@ -21,7 +21,11 @@
         "type": "TransferPokemon"
       },
       {
-        "type": "EvolveAll"
+        "type": "EvolveAll",
+        "config": {
+          "evolve_speed": 20,
+          "use_lucky_egg": true
+        }
       },
       {
         "type": "RecycleItems"
@@ -39,18 +43,17 @@
         "type": "MoveToFort"
       },
       {
-        "type": "FollowSpiral"
+        "type": "FollowPath",
+        "config": {
+          "path_mode": "loop",
+          "path_file": "configs/path.example.json"
+        }
       }
     ],
     "max_steps": 5,
     "forts": {
       "avoid_circles": true,
       "max_circle_size": 50
-    },
-    "navigator": {
-      "type": "path",
-      "path_mode": "loop",
-      "path_file": "configs/path.example.json"
     },
     "websocket_server": false,
     "walk": 4.16,
@@ -71,9 +74,7 @@
       "701": { "keep" : 100 }
     },
     "evolve_all": "NONE",
-    "evolve_speed": 20,
     "evolve_cp_min": 300,
-    "use_lucky_egg": false,
     "evolve_captured": "NONE",
     "catch_randomize_reticle_factor": 1.0,
     "catch_randomize_spin_factor": 1.0,

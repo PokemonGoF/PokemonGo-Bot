@@ -318,15 +318,6 @@ def init_config():
     add_config(
         parser,
         load,
-        short_flag="-le",
-        long_flag="--use_lucky_egg",
-        help="Uses lucky egg when using evolve_all",
-        type=bool,
-        default=False
-    )
-    add_config(
-        parser,
-        load,
         short_flag="-rt",
         long_flag="--reconnecting_timeout",
         help="Timeout between reconnecting if error occured (in minutes, e.g. 15)",
@@ -409,7 +400,7 @@ def init_config():
             """.format(flag_name))
 
     old_flags = ['mode', 'catch_pokemon', 'spin_forts', 'forts_spin', 'hatch_eggs', 'release_pokemon', 'softban_fix',
-                'longer_eggs_first']
+                'longer_eggs_first', 'evolve_speed', 'use_lucky_egg']
     for flag in old_flags:
         if flag in load:
             task_configuration_error(flag)
