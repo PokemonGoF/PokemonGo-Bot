@@ -56,4 +56,4 @@ class HandleSoftBan(object):
         self.bot.api.call()
 
     def should_run(self):
-        return self.bot.config.softban_fix and self.bot.softban
+        return self.bot.softban
