@@ -1,8 +1,7 @@
 import unittest
-from mock import Mock, MagicMock, patch
+from mock import MagicMock, patch
 
 from pokemongo_bot.step_walker import StepWalker
-from pokemongo_bot.constants import Constants
 from pokemongo_bot.cell_workers.utils import float_equal
 
 NORMALIZED_LAT_LNG_DISTANCE_STEP = 6.3593e-6

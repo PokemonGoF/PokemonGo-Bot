@@ -1,4 +1,4 @@
-import unittest, os
+import unittest
 from mock import MagicMock, patch
 from tests import TimeoutError, timeout, SKIP_TIMED
 
@@ -104,5 +104,3 @@ class TestApiWrapper(unittest.TestCase):
         with self.assertRaises(TimeoutError):
             for i in range(self.api.requests_per_seconds * 2):
                 self.api.call()
-
-

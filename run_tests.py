@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 import unittest
 
-loader = unittest.TestLoader()
-tests = loader.discover(start_dir='.', pattern='*_test.py')
-testRunner = unittest.runner.TextTestRunner(verbosity=2)
-testRunner.run(tests)
+def main():
+    loader = unittest.TestLoader()
+    tests = loader.discover(start_dir='.', pattern='*_test.py')
+    test_runner = unittest.runner.TextTestRunner(verbosity=2)
+    test_runner.run(tests)
+
+if __name__ == '__main__':
+    main()

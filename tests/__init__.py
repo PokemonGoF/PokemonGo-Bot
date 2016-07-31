@@ -6,10 +6,10 @@ try:
 except ImportError:
     SKIP_TIMED = True
     TimeoutError = None
-    def timeout(x):
+    def timeout(_unused):
         # decorator that does nothing
-        def wrap(f):
+        def wrap(func):
             def wrapped_f(*args, **kwargs):
-                return f(*args, **kwargs)
+                return func(*args, **kwargs)
             return wrapped_f
         return wrap
