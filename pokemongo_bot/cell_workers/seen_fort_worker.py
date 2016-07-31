@@ -103,11 +103,20 @@ class SeenFortWorker(object):
                     message = (
                         'Stopped at Pokestop and did not find experience, items '
                         'or information about the stop cooldown. You are '
-                        'probably softbanned. Try to play on your phone, '
-                        'if pokemons always ran away and you find nothing in '
-                        'PokeStops you are indeed softbanned. Please try again '
-                        'in a few hours.')
-                    raise RuntimeError(message)
+                        'probably softbanned.' )
+                    logger.warn(message)
+                    logger.log('Quickspin started in order to unban.')
+                    for x in range(1,46):
+                         self.api.fort_search(fort_id=self.fort['id'],
+                         fort_latitude=lat,
+                         fort_longitude=lng,
+                         player_latitude=f2i(self.position[0]),
+                         player_longitude=f2i(self.position[1]))
+                         response_dict = self.api.call()
+                         time.sleep(.4)
+                         logger.log('Quickspining... %i/45.' % x)
+                    logger.log('Finished.')
+            
             elif spin_details['result'] == 2:
                 logger.log("[#] Pokestop out of range")
             elif spin_details['result'] == 3:
