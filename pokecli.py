@@ -424,13 +424,11 @@ def init_config():
             Read https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Configuration-files#configuring-tasks for more information.
             """.format(flag_name))
 
-    if 'mode' in load:
-        task_configuration_error("mode")
-        return None
-
-    if 'catch_pokemon' in load:
-        task_configuration_error("catch_pokemon")
-        return None
+    old_flags = ['mode', 'catch_pokemon']
+    for flag in old_flags:
+        if flag in load:
+            task_configuration_error(flag)
+            return None
 
     if (config.evolve_captured
         and (not isinstance(config.evolve_captured, str)
