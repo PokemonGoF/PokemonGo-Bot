@@ -3,8 +3,10 @@
 import time
 
 from pokemongo_bot import logger
+from pokemongo_bot.enums import PokemonMove
 from pokemongo_bot.human_behaviour import (normalized_reticle_size, sleep,
                                            spin_modifier)
+
 
 
 class PokemonCatchWorker(object):
@@ -58,10 +60,15 @@ class PokemonCatchWorker(object):
                                 )
 
                                 pokemon_potential = self.pokemon_potential(pokemon_data)
+                                pokemon_moves_details = self.get_pokemon_move_details(pokemon_data)
                                 pokemon_num = int(pokemon_data['pokemon_id']) - 1
                                 pokemon_name = self.pokemon_list[int(pokemon_num)]['Name']
-                                logger.log('A Wild {} appeared! [CP {}] [Potential {}]'.format(
-                                    pokemon_name, cp, pokemon_potential), 'yellow')
+                                logger.log('A Wild {} appeared! [CP {}] [Potential {}] [{}]'.format(
+                                        pokemon_name,
+                                        cp,
+                                        pokemon_potential,
+                                        pokemon_moves_details
+                                    ), 'yellow')
 
                                 logger.log('IV [Stamina/Attack/Defense] = [{}]'.format(iv_display))
                                 pokemon_data['name'] = pokemon_name
@@ -236,11 +243,12 @@ class PokemonCatchWorker(object):
                                 if status is 1:
                                     self.bot.metrics.captured_pokemon(pokemon_name, cp, iv_display, pokemon_potential)
 
-                                    logger.log('Captured {}! [CP {}] [Potential {}] [{}] [+{} exp]'.format(
+                                    logger.log('Captured {}! [CP {}] [Potential {}] [{}] [{}] [+{} exp]'.format(
                                         pokemon_name,
                                         cp,
                                         pokemon_potential,
                                         iv_display,
+                                        pokemon_moves_details,
                                         sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
                                     ), 'blue')
                                     self.bot.softban = False
@@ -267,6 +275,22 @@ class PokemonCatchWorker(object):
                                                 'Failed to evolve {}!'.format(pokemon_name))
                             break
         time.sleep(5)
+
+    def get_pokemon_move_details(self, pokemon_data):
+        move1 = pokemon_data['move_1']
+        move2 = pokemon_data['move_2']
+
+        return 'Move 1: {} | Move 2: {}'.format(
+                self._get_move_name(move1),
+                self._get_move_name(move2)
+            )
+
+    def _get_move_name(self, move_id):
+        for move in PokemonMove:
+            if move.value == move_id:
+                return move.name.lower().replace('_', ' ').title()
+
+        return ''           
 
     def count_pokemon_inventory(self):
         # don't use cached bot.get_inventory() here
