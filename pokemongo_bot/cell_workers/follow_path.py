@@ -10,23 +10,21 @@ from pokemongo_bot.step_walker import StepWalker
 from pgoapi.utilities import f2i
 
 
-class PathNavigator(object):
+class FollowPath(object):
 
     def __init__(self, bot):
         self.bot = bot
-        self.api = bot.api
-        self.config = bot.config
         self.ptr = 0
         self.points = self.load_path()
 
     def load_path(self):
-        if self.config.navigator_path_file == None:
+        if self.bot.config.navigator_path_file == None:
             raise RuntimeError('You need to specify a path file (json or gpx)')
 
-        if self.config.navigator_path_file.endswith('.json'):
-            return self.load_json(self.config.navigator_path_file)
-        elif self.config.navigator_path_file.endswith('.gpx'):
-            return self.load_gpx(self.config.navigator_path_file)
+        if self.bot.config.navigator_path_file.endswith('.json'):
+            return self.load_json(self.bot.config.navigator_path_file)
+        elif self.bot.config.navigator_path_file.endswith('.gpx'):
+            return self.load_gpx(self.bot.config.navigator_path_file)
 
     def load_json(self, file):
         with open(file) as data_file:
@@ -63,10 +61,10 @@ class PathNavigator(object):
         lat = float(point['lat'])
         lng = float(point['lng'])
 
-        if self.config.walk > 0:
+        if self.bot.config.walk > 0:
             step_walker = StepWalker(
                 self.bot,
-                self.config.walk,
+                self.bot.config.walk,
                 lat,
                 lng
             )
@@ -76,19 +74,19 @@ class PathNavigator(object):
                 is_at_destination = True
 
         else:
-            self.api.set_position(lat, lng)
+            self.bot.api.set_position(lat, lng)
 
         dist = distance(
-            self.api._position_lat,
-            self.api._position_lng,
+            self.bot.api._position_lat,
+            self.bot.api._position_lng,
             lat,
             lng
         )
 
-        if dist <= 1 or (self.config.walk > 0 and is_at_destination):
+        if dist <= 1 or (self.bot.config.walk > 0 and is_at_destination):
             if (self.ptr + 1) == len(self.points):
                 self.ptr = 0
-                if self.config.navigator_path_mode == 'linear':
+                if self.bot.config.navigator_path_mode == 'linear':
                     self.points = list(reversed(self.points))
             else:
                 self.ptr += 1

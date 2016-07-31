@@ -5,13 +5,11 @@ from pokemongo_bot.cell_workers.utils import distance, format_dist
 from pokemongo_bot.step_walker import StepWalker
 
 
-class SpiralNavigator(object):
+class FollowSpiral(object):
     def __init__(self, bot):
         self.bot = bot
-        self.api = bot.api
-        self.config = bot.config
 
-        self.steplimit = self.config.max_steps
+        self.steplimit = self.bot.config.max_steps
         self.origin_lat = self.bot.position[0]
         self.origin_lon = self.bot.position[1]
 
