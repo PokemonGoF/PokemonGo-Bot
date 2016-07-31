@@ -32,7 +32,7 @@ class ApiWrapper(object):
     def _pop_request_callers(self):
         r = self.request_callers
         self.request_callers = []
-        return r
+        return [i.upper() for i in r]
 
     def _is_response_valid(self, result, request_callers):
         if not result or result is None or not isinstance(result, dict):
@@ -84,9 +84,9 @@ class ApiWrapper(object):
 
     # fallback
     def __getattr__(self, func):
-        DEFAULT_ATTRS = ['_position_lat', '_position_lng', '_position_alt', '_auth_provider', '_api_endpoint', 'set_position', 'get_position']
+        DEFAULT_ATTRS = ['_position_lat', '_position_lng', '_auth_provider', '_api_endpoint', 'set_position', 'get_position']
         if func not in DEFAULT_ATTRS:
-            self.request_callers.append(func.upper())
+            self.request_callers.append(func)
         return getattr(self._api, func)
 
     def throttle_sleep(self):
