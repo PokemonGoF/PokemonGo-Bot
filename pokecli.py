@@ -377,8 +377,6 @@ def init_config():
 
     config.raw_tasks = load.get('tasks', [])
 
-    config.longer_eggs_first = load.get("longer_eggs_first", True)
-
     config.vips = load.get('vips',{})
 
     if len(config.raw_tasks) == 0:
@@ -396,7 +394,8 @@ def init_config():
             Read https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Configuration-files#configuring-tasks for more information.
             """.format(flag_name))
 
-    old_flags = ['mode', 'catch_pokemon', 'spin_forts', 'forts_spin', 'hatch_eggs', 'release_pokemon', 'softban_fix']
+    old_flags = ['mode', 'catch_pokemon', 'spin_forts', 'forts_spin', 'hatch_eggs', 'release_pokemon', 'softban_fix',
+                'longer_eggs_first']
     for flag in old_flags:
         if flag in load:
             task_configuration_error(flag)

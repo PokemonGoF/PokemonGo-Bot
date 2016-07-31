@@ -12,7 +12,7 @@ from pgoapi.utilities import f2i
 
 class FollowPath(object):
 
-    def __init__(self, bot):
+    def __init__(self, bot, config):
         self.bot = bot
         self.ptr = 0
         self.points = self.load_path()

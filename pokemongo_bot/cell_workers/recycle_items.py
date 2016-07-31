@@ -3,7 +3,7 @@ from pokemongo_bot import logger
 
 class RecycleItems(object):
 
-    def __init__(self, bot):
+    def __init__(self, bot, config):
         self.bot = bot
 
     def work(self):
