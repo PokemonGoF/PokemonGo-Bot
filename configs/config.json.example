@@ -40,7 +40,11 @@
         "type": "SpinFort"
       },
       {
-        "type": "MoveToFort"
+        "type": "MoveToFort",
+        "config": {
+            "lure_attraction": false,
+            "lure_max_distance": 1000
+        }
       },
       {
         "type": "FollowSpiral"
