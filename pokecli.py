@@ -418,7 +418,7 @@ def init_config():
     config.vips = load.get('vips',{})
 
     if len(config.raw_tasks) == 0:
-        logging.error("No tasks are configured. Did you mean to configure some behaviors?")
+        logging.error("No tasks are configured. Did you mean to configure some behaviors? Read https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Configuration-files#configuring-tasks for more information")
         return None
 
     if config.auth_service not in ['ptc', 'google']:
