@@ -75,7 +75,7 @@ class MoveToMapPokemon(object):
     def get_name_from_id(self, pokemon_id):
         return self.pokemon_data[pokemon_id - 1]['Name']
 
-    def is_in_vip(self, pokemon_id):
+    def is_vip(self, pokemon_id):
         return self.get_name_from_id(pokemon_id) in self.bot.config.vips
 
     def get_config_priority(self, pokemon_id):
@@ -91,10 +91,14 @@ class MoveToMapPokemon(object):
 
     def score_pokemon(self, pokemon_list):
         new_list = []
+        has_vips = False
+        for pokemon in pokemon_list:
+            if self.config['prioritize_vips'] and self.is_vip(pokemon['pokemon_id']):
+                has_vips = True
+                break
+
         for pokemon in pokemon_list:
             score = 0
-            if self.config['prioritize_vips'] and self.is_in_vip(pokemon['pokemon_id']):
-                score += 10000
             if self.config['mode'] == 'distance':
                 score -= pokemon['dist']
             elif self.config['mode'] == 'priority':
@@ -111,6 +115,10 @@ class MoveToMapPokemon(object):
 
             if pokemon['name'] in self.config['ignore']:
                 continue
+
+            if has_vips:
+                if not self.is_vip(pokemon['pokemon_id']):
+                pokemon['score'] = 0
 
             new_list.append(pokemon)
         return new_list
