@@ -181,14 +181,6 @@ def init_config():
     add_config(
         parser,
         load,
-        long_flag="--catch_pokemon",
-        help="Enable catching pokemon",
-        type=bool,
-        default=True
-    )
-    add_config(
-        parser,
-        load,
         long_flag="--forts.spin",
         help="Enable Spinning Pokestops",
         type=bool,
@@ -425,9 +417,19 @@ def init_config():
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")
         return None
 
-    if 'mode' in load or 'mode' in config:
-        parser.error('"mode" has been removed and replaced with two new flags: "catch_pokemon" and "spin_forts". ' +
-            ' Set these to true or false and remove "mode" from your configuration')
+    def task_configuration_error(flag_name):
+        parser.error("""
+            \"{}\" was removed from the configuration options.
+            You can now change the behavior of the bot by modifying the \"tasks\" key.
+            Read https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Configuration-files#configuring-tasks for more information.
+            """.format(flag_name))
+
+    if 'mode' in load:
+        task_configuration_error("mode")
+        return None
+
+    if 'catch_pokemon' in load:
+        task_configuration_error("catch_pokemon")
         return None
 
     if (config.evolve_captured
