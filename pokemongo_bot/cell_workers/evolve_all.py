@@ -150,8 +150,8 @@ class EvolveAll(BaseTask):
         if pokemon_name in cache:
             return
 
-        self.api.evolve_pokemon(pokemon_id=pokemon_id)
-        response_dict = self.api.call()
+        self.bot.api.evolve_pokemon(pokemon_id=pokemon_id)
+        response_dict = self.bot.api.call()
         status = response_dict['responses']['EVOLVE_POKEMON']['result']
         if status == 1:
             print('[#] Successfully evolved {} with {} CP and {} IV!'.format(
@@ -167,8 +167,8 @@ class EvolveAll(BaseTask):
 
     # TODO: move to utils. These methods are shared with other workers.
     def transfer_pokemon(self, pid):
-        self.api.release_pokemon(pokemon_id=pid)
-        response_dict = self.api.call()
+        self.bot.api.release_pokemon(pokemon_id=pid)
+        response_dict = self.bot.api.call()
 
     def count_pokemon_inventory(self):
         response_dict = self.bot.get_inventory()
