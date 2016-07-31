@@ -16,7 +16,8 @@ class SpinFort(BaseTask):
     def should_run(self):
         if not self.bot.has_space_for_loot():
             logger.log("Not spinning any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently.", 'yellow')
-        return self.bot.has_space_for_loot()
+            return False
+        return True
 
     def work(self):
         fort = self.get_fort_in_range()
