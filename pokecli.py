@@ -148,8 +148,24 @@ def init_config():
         parser,
         load,
         short_flag="-ws",
-        long_flag="--websocket_server",
-        help="Start websocket server (format 'host:port')",
+        long_flag="--websocket.server_url",
+        help="Connect to websocket server at given url",
+        default=False
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-wss",
+        long_flag="--websocket.start_embedded_server",
+        help="Start embedded websocket server",
+        default=False
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-wsr",
+        long_flag="--websocket.remote_control",
+        help="Enable remote control through websocket (requires websocekt server url)",
         default=False
     )
     add_config(
@@ -245,7 +261,6 @@ def init_config():
         type=str,
         default=None
     )
-
     add_config(
         parser,
         load,
@@ -374,7 +389,6 @@ def init_config():
     config.item_filter = load.get('item_filter', {})
     config.action_wait_max = load.get('action_wait_max', 4)
     config.action_wait_min = load.get('action_wait_min', 1)
-
     config.raw_tasks = load.get('tasks', [])
 
     config.vips = load.get('vips', {})

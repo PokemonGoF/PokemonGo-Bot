@@ -9,6 +9,9 @@
         "type": "HandleSoftBan"
       },
       {
+        "type": "CollectLevelUpReward"
+      },
+      {
         "type": "IncubateEggs",
         "config": {
           "longer_eggs_first": true

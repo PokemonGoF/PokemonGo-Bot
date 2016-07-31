@@ -1,13 +1,9 @@
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.item_list import Item
+from pokemongo_bot.cell_workers.base_task import BaseTask
 
-
-class EvolveAll(object):
-    def __init__(self, bot, config):
-        self.api = bot.api
-        self.bot = bot
-
+class EvolveAll(BaseTask):
     def work(self):
         if not self._should_run():
             return
