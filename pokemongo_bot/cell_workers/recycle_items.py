@@ -7,7 +7,6 @@ class RecycleItems(object):
         self.bot = bot
 
     def work(self):
-
         self.bot.latest_inventory = None
         item_count_dict = self.bot.item_inventory_count('all')
 
