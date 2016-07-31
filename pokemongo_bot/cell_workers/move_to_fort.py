@@ -7,7 +7,7 @@ from utils import distance, format_dist, fort_details
 
 class MoveToFort(object):
 
-    def __init__(self, bot):
+    def __init__(self, bot, config):
         self.bot = bot
 
     def should_run(self):

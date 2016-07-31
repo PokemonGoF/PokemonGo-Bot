@@ -4,7 +4,7 @@ from pokemongo_bot.item_list import Item
 
 
 class EvolveAll(object):
-    def __init__(self, bot):
+    def __init__(self, bot, config):
         self.api = bot.api
         self.bot = bot
 

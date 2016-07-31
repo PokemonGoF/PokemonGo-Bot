@@ -6,7 +6,7 @@ from pokemongo_bot.human_behaviour import action_delay
 
 class TransferPokemon(object):
 
-    def __init__(self, bot):
+    def __init__(self, bot, config):
         self.bot = bot
 
     def work(self):

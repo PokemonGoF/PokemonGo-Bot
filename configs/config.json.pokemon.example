@@ -9,7 +9,10 @@
         "type": "HandleSoftBan"
       },
       {
-        "type": "IncubateEggs"
+        "type": "IncubateEggs",
+        "config": {
+          "longer_eggs_first": true
+        }
       },
       {
         "type": "TransferPokemon"
@@ -65,7 +68,6 @@
     "evolve_speed": 20,
     "evolve_cp_min": 300,
     "use_lucky_egg": false,
-    "longer_eggs_first": true,
     "evolve_captured": "NONE",
     "catch_randomize_reticle_factor": 1.0,
     "catch_randomize_spin_factor": 1.0,
