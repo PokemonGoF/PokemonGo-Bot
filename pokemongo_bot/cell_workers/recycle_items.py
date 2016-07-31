@@ -21,15 +21,16 @@ class RecycleItems(BaseTask):
         return self.bot.item_list[str(item_id)]
 
     def get_amount_to_keep(self, item_id):
-            item_name = self.get_item_name(item_id)
-            id_filter = self.bot.config.item_filter.get(item_name, 0)
+        id_filter_keep = None
+        item_name = self.get_item_name(item_id)
+        id_filter = self.bot.config.item_filter.get(item_name, 0)
+        if id_filter is not 0:
+            id_filter_keep = id_filter.get('keep', 20)
+        else:
+            id_filter = self.bot.config.item_filter.get(str(item_id), 0)
             if id_filter is not 0:
                 id_filter_keep = id_filter.get('keep', 20)
-            else:
-                id_filter = self.bot.config.item_filter.get(str(item_id), 0)
-                if id_filter is not 0:
-                    id_filter_keep = id_filter.get('keep', 20)
-            return id_filter_keep
+        return id_filter_keep
 
     def recycle(self, item_id, recycle_count, show_amount=True):
         item_name = self.get_item_name(item_id)
