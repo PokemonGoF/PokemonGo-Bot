@@ -87,7 +87,7 @@ class PokemonCatchWorker(object):
                             berry_used = False
 
                             if flag_VIP:
-                                if(berries_count>0):
+                                if(berries_count>0 and catch_rate[pokeball-1] < 0.9):
                                     success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
                                     logger.log('Catch Rate with normal Pokeball is low ({}%). Thinking to throw a {}... ({} left!)'.format(success_percentage,self.item_list[str(berry_id)],berries_count-1))
                                     # Out of all pokeballs! Let's don't waste berry.
