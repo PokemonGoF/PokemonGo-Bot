@@ -23,14 +23,14 @@ class FollowCluster(object):
         log_lured_str = ''
         if self.lured:
             log_lured_str = 'lured '
-            lured_forts = filter(lambda x: True if x.get('lure_info', None) != None else False, forts)
+            lured_forts = [x for x in forts if 'lure_info' in x]
             if len(lured_forts) > 0:
-                forts = lured_forts
+                self.dest = find_biggest_cluster(self.radius, lured_forts, 'lure_info')
             else:
                 log_lure_avail_str = 'No lured pokestops in vicinity. Search for normal ones instead. '
-
-
-        self.dest = find_biggest_cluster(self.radius, forts)
+                self.dest = find_biggest_cluster(self.radius, forts)
+        else:
+            self.dest = find_biggest_cluster(self.radius, forts)
 
         if self.dest is not None:
 
