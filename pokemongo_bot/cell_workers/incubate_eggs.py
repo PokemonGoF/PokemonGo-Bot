@@ -5,14 +5,20 @@ from pokemongo_bot.human_behaviour import sleep
 class IncubateEggs(object):
     last_km_walked = 0
 
-    def __init__(self, bot):
+    def __init__(self, bot, config):
         self.bot = bot
+        self.config = config
         self.ready_incubators = []
         self.used_incubators = []
         self.eggs = []
         self.km_walked = 0
         self.hatching_animation_delay = 4.20
         self.max_iv = 45.0
+
+        self._process_config()
+
+    def _process_config(self):
+        self.longer_eggs_first = self.config.get("longer_eggs_first", True)
 
     def work(self):
         try:
@@ -29,7 +35,7 @@ class IncubateEggs(object):
                 logger.log('[x] Next egg incubates in {:.2f} km'.format(km_left),'yellow')
             IncubateEggs.last_km_walked = self.km_walked
 
-        sorting = self.bot.config.longer_eggs_first
+        sorting = self.longer_eggs_first
         self.eggs.sort(key=lambda x: x.get("km"), reverse=sorting)
 
         if self.ready_incubators:

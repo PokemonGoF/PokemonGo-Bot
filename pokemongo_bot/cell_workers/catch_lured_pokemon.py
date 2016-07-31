@@ -4,7 +4,7 @@ from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 
 
 class CatchLuredPokemon(object):
-    def __init__(self, bot):
+    def __init__(self, bot, config):
         self.bot = bot
 
     def work(self):

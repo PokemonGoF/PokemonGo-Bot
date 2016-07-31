@@ -249,15 +249,6 @@ def init_config():
     add_config(
         parser,
         load,
-        short_flag="-rp",
-        long_flag="--release_pokemon",
-        help="Allow transfer pokemon to professor based on release configuration. Default is false",
-        type=bool,
-        default=False
-    )
-    add_config(
-        parser,
-        load,
         short_flag="-d",
         long_flag="--debug",
         help="Debug Mode",
@@ -330,15 +321,6 @@ def init_config():
     add_config(
         parser,
         load,
-        short_flag="-bf",
-        long_flag="--softban_fix",
-        help="Fix softban automatically",
-        type=bool,
-        default=False
-    )
-    add_config(
-        parser,
-        load,
         short_flag="-hr",
         long_flag="--health_record",
         help="Send anonymous bot event to GA for bot health record. Set \"health_record\":false if you need disable it.",
@@ -362,15 +344,6 @@ def init_config():
         help="If avoid_circles flag is set, this flag specifies the maximum size of circles (pokestops) avoided",
         type=int,
         default=10,
-    )
-    add_config(
-        parser,
-        load,
-        short_flag="-mts",
-        long_flag="--forts.move_to_spin",
-        help="Moves to forts nearby ",
-        type=bool,
-        default=True
     )
     add_config(
         parser,
@@ -444,8 +417,6 @@ def init_config():
 
     config.raw_tasks = load.get('tasks', [])
 
-    config.longer_eggs_first = load.get("longer_eggs_first", True)
-
     config.vips = load.get('vips', {})
     config.map_priority = load.get('map', {}).get('priority', {})
 
@@ -464,10 +435,17 @@ def init_config():
             Read https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Configuration-files#configuring-tasks for more information.
             """.format(flag_name))
 
-    old_flags = ['mode', 'catch_pokemon', 'spin_forts', 'forts_spin', 'hatch_eggs']
+    old_flags = ['mode', 'catch_pokemon', 'spin_forts', 'forts_spin', 'hatch_eggs', 'release_pokemon', 'softban_fix',
+                'longer_eggs_first']
     for flag in old_flags:
         if flag in load:
             task_configuration_error(flag)
+            return None
+
+    nested_old_flags = [('forts', 'spin'), ('forts', 'move_to_spin')]
+    for outer, inner in nested_old_flags:
+        if load.get(outer, {}).get(inner, None):
+            task_configuration_error('{}.{}'.format(outer, inner))
             return None
 
     if (config.evolve_captured
@@ -489,12 +467,13 @@ def init_config():
         parser.error("--catch_randomize_spin_factor is out of range! (should be 0 <= catch_randomize_spin_factor <= 1)")
         return None
 
-    # item list config verification
-    item_list = json.load(open(os.path.join('data', 'items.json')))
-    for config_item_name, bag_count in config.item_filter.iteritems():
-        if config_item_name not in item_list.viewvalues():
-            parser.error('item "' + config_item_name + '" does not exist, spelling mistake? (check for valid item names in data/items.json)')
-            return None
+        # item list config verification
+        item_list = json.load(open(os.path.join('data', 'items.json')))
+        for config_item_name, bag_count in config.item_filter.iteritems():
+            if config_item_name not in item_list.viewvalues():
+                if config_item_name not in item_list:
+                    parser.error('item "' + config_item_name + '" does not exist, spelling mistake? (check for valid item names in data/items.json)')
+                    return None
 
     # create web dir if not exists
     try:

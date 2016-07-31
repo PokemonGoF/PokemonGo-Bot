@@ -12,7 +12,7 @@ from utils import distance, format_time, fort_details
 
 
 class SpinFort(object):
-    def __init__(self, bot):
+    def __init__(self, bot, config):
         self.bot = bot
 
     def should_run(self):

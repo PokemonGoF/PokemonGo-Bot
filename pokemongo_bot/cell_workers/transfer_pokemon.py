@@ -6,13 +6,10 @@ from pokemongo_bot.human_behaviour import action_delay
 
 class TransferPokemon(object):
 
-    def __init__(self, bot):
+    def __init__(self, bot, config):
         self.bot = bot
 
     def work(self):
-        if not self.bot.config.release_pokemon:
-            return
-
         pokemon_groups = self._release_pokemon_get_groups()
         for pokemon_id in pokemon_groups:
             group = pokemon_groups[pokemon_id]
