@@ -110,6 +110,7 @@ configs/*
 !configs/config.json.pokemon.example
 !configs/config.json.path.example
 !configs/path.example.json
+!config.json.cluster.example
 
 # Virtualenv folders
 bin/

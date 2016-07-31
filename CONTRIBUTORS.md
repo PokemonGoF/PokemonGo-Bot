@@ -44,4 +44,5 @@
  * reddivision
  * DayBr3ak
  * kbinani
+ * MFizz
  * NamPNQ
