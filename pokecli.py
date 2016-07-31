@@ -39,6 +39,7 @@ import requests
 from pokemongo_bot import logger
 from pokemongo_bot import PokemonGoBot
 from pokemongo_bot.cell_workers.utils import print_green, print_yellow, print_red
+from pgoapi.exceptions import NotLoggedInException
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -209,6 +210,9 @@ def main():
 
         while True:
             bot.take_step()
+    except NotLoggedInException:
+        logger.log('[x] Restarting PokemonGo Bot....', 'red')
+        main()
 
     except KeyboardInterrupt:
         logger.log('[x] Exiting PokemonGo Bot', 'red')
