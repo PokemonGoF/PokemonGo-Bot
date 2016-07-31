@@ -15,4 +15,7 @@ else
     fi
 fi
 
-python pokecli.py --config ${config}
+while [ 1 ]; do  # Always run, if something goes wrong, just run again...
+    python pokecli.py --config ${config}
+    sleep 30
+done
