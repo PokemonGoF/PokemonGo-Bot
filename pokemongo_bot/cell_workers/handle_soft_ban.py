@@ -2,16 +2,13 @@ from pgoapi.utilities import f2i
 
 from pokemongo_bot import logger
 from pokemongo_bot.constants import Constants
+from pokemongo_bot.cell_workers.base_task import BaseTask
 from pokemongo_bot.cell_workers import MoveToFort
 from pokemongo_bot.cell_workers.utils import distance
 from pokemongo_bot.worker_result import WorkerResult
 
 
-class HandleSoftBan(object):
-
-    def __init__(self, bot, config):
-        self.bot = bot
-
+class HandleSoftBan(BaseTask):
     def work(self):
         if not self.should_run():
             return

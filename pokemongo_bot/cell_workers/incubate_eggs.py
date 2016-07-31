@@ -1,13 +1,12 @@
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot.cell_workers.base_task import BaseTask
 
 
-class IncubateEggs(object):
+class IncubateEggs(BaseTask):
     last_km_walked = 0
 
-    def __init__(self, bot, config):
-        self.bot = bot
-        self.config = config
+    def initialize(self):
         self.ready_incubators = []
         self.used_incubators = []
         self.eggs = []

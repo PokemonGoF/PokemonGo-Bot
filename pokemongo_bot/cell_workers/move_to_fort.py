@@ -2,14 +2,11 @@ from pokemongo_bot import logger
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
+from pokemongo_bot.cell_workers.base_task import BaseTask
 from utils import distance, format_dist, fort_details
 
 
-class MoveToFort(object):
-
-    def __init__(self, bot, config):
-        self.bot = bot
-
+class MoveToFort(BaseTask):
     def should_run(self):
         return (self.bot.has_space_for_loot()) or self.bot.softban
 
