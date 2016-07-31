@@ -5,6 +5,7 @@ from catch_visible_pokemon import CatchVisiblePokemon
 from evolve_all import EvolveAll
 from incubate_eggs import IncubateEggs
 from move_to_fort import MoveToFort
+from move_to_map_pokemon import MoveToMapPokemon
 from pokemon_catch_worker import PokemonCatchWorker
 from transfer_pokemon import TransferPokemon
 from recycle_items import RecycleItems
