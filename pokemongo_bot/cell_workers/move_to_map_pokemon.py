@@ -138,8 +138,12 @@ class MoveToMapPokemon(object):
 
     def snipe(self, pokemon):
         last_position = self.bot.position[0:2]
-        logger.log('Teleporting to {} ({})'.format(pokemon['name'], format_dist(pokemon['dist'], self.unit)))
+        self.bot.check_session(last_position)
+        self.bot.heartbeat()
+
+        logger.log('Teleporting to {} ({})'.format(pokemon['name'], format_dist(pokemon['dist'], self.unit)), 'green')
         self.bot.api.set_position(pokemon['lat'], pokemon['lon'], 0)
+        cell = self.bot.get_meta_cell()
 
         logger.log('Encounter pokemon', 'green')
         pokemon['latitude'] = pokemon['lat']
@@ -148,12 +152,13 @@ class MoveToMapPokemon(object):
         apiEncounterResponse = catchWorker.create_encounter_api_call()
 
         time.sleep(2)
-        logger.log('Teleport back previous location..', 'green')
+        logger.log('Teleport back to previous location..', 'green')
         self.bot.api.set_position(last_position[0], last_position[1], 0)
         time.sleep(2)
         self.bot.heartbeat()
 
         catchWorker.work(apiEncounterResponse)
+        self.addCaught(pokemon)
 
         return WorkerResult.SUCCESS
 
@@ -172,6 +177,9 @@ class MoveToMapPokemon(object):
 
         if (len(pokemon_on_map) < 1):
             return
+
+        for idx in xrange(5):
+            print pokemon_on_map[0]
 
         pokemon = pokemon_on_map[0]
         now = int(time.time())
