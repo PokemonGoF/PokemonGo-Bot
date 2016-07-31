@@ -7,7 +7,7 @@ class FollowClusterTestCase(unittest.TestCase):
 
     @patch('pokemongo_bot.PokemonGoBot')
     def testWorkAway(self, mock_pokemongo_bot):
-        forts_path = os.path.join(os.path.curdir, 'resources', 'example_forts.pickle')
+        forts_path = os.path.join(os.path.dirname(__file__), 'resources', 'example_forts.pickle')
         with open(forts_path, 'rb') as forts:
             ex_forts = pickle.load(forts)
         config = {'radius': 50}
@@ -21,7 +21,7 @@ class FollowClusterTestCase(unittest.TestCase):
 
     @patch('pokemongo_bot.PokemonGoBot')
     def testWorkArrived(self, mock_pokemongo_bot):
-        forts_path = os.path.join('resources', 'example_forts.pickle')
+        forts_path = os.path.join(os.path.dirname(__file__), 'resources', 'example_forts.pickle')
         with open(forts_path, 'rb') as forts:
             ex_forts = pickle.load(forts)
         config = {'radius': 50}
