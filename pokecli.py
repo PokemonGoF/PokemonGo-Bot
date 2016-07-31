@@ -235,35 +235,6 @@ def init_config():
     add_config(
         parser,
         load,
-        short_flag="-n",
-        long_flag="--navigator.type",
-        help="Set the navigator to be used(DEFAULT spiral)",
-        type=str,
-        default='spiral'
-    )
-
-    add_config(
-        parser,
-        load,
-        short_flag="-pm",
-        long_flag="--navigator.path_mode",
-        help="Set the mode for the path navigator (DEFAULT loop)",
-        type=str,
-        default="loop"
-    )
-
-    add_config(
-        parser,
-        load,
-        short_flag="-pf",
-        long_flag="--navigator.path_file",
-        help="Set the file containing the path for the path navigator (GPX or JSON).",
-        type=str,
-        default=None
-    )
-    add_config(
-        parser,
-        load,
         short_flag="-d",
         long_flag="--debug",
         help="Debug Mode",
@@ -405,7 +376,7 @@ def init_config():
             task_configuration_error(flag)
             return None
 
-    nested_old_flags = [('forts', 'spin'), ('forts', 'move_to_spin')]
+    nested_old_flags = [('forts', 'spin'), ('forts', 'move_to_spin'), ('navigator', 'path_mode'), ('navigator', 'path_file'), ('navigator', 'type')]
     for outer, inner in nested_old_flags:
         if load.get(outer, {}).get(inner, None):
             task_configuration_error('{}.{}'.format(outer, inner))
