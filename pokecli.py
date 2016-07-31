@@ -382,6 +382,9 @@ def init_config():
     config.action_wait_min = load.get('action_wait_min', 1)
     config.raw_tasks = load.get('tasks', [])
     config.vips = load.get('vips',{})
+    config.vip_strategy = True
+    if not config.vips:
+        config.vip_strategy = False
 
     if len(config.raw_tasks) == 0:
         logging.error("No tasks are configured. Did you mean to configure some behaviors? Read https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Configuration-files#configuring-tasks for more information")
