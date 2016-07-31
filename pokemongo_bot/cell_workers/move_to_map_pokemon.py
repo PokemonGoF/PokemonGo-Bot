@@ -118,7 +118,7 @@ class MoveToMapPokemon(object):
 
             if has_vips:
                 if not self.is_vip(pokemon['pokemon_id']):
-                pokemon['score'] = 0
+                    pokemon['score'] = 0
 
             new_list.append(pokemon)
         return new_list
