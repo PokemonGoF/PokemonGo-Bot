@@ -395,6 +395,8 @@ class PokemonGoBot(object):
         if inventory_items:
             for item in inventory_items:
                 item_info = item.get('inventory_item_data', {}).get('item')
+                if not item_info:
+                    continue
                 if {"item_id", "count"}.issubset(set(item_info.keys())):
                     self.inventory.append(item['inventory_item_data']['item'])
 
