@@ -12,4 +12,4 @@ install:
   - pip install pylint
 script:
   - python pylint-recursive.py
-  - nosetests --verbosity=2 ./tests
+  - nosetests --verbosity=2
