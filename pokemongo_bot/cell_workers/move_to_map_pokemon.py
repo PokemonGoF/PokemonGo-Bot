@@ -98,7 +98,6 @@ class MoveToMapPokemon(BaseTask):
 
         logger.log('Teleporting to {} ({})'.format(pokemon['name'], format_dist(pokemon['dist'], self.unit)), 'green')
         self.bot.api.set_position(pokemon['latitude'], pokemon['longitude'], 0)
-        cell = self.bot.get_meta_cell()
 
         logger.log('Encounter pokemon', 'green')
         catchWorker = PokemonCatchWorker(pokemon, self.bot)
@@ -136,6 +135,9 @@ class MoveToMapPokemon(BaseTask):
                 if pokemon['encounter_id'] == catchable_pokemon['encounter_id']:
                     self.addCaught(pokemon)
                     return WorkerResult.SUCCESS
+
+        if self.config['snipe']:
+            return self.snipe(pokemon)
 
         now = int(time.time())
         logger.log('Moving towards {}, {} left ({})'.format(pokemon['name'], format_dist(pokemon['dist'], self.unit), format_time(pokemon['disappear_time'] - now)))
