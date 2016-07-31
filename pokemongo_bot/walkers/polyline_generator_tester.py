@@ -3,8 +3,9 @@ from math import ceil
 
 import haversine
 import polyline
-from math import ceil
+
 from polyline_generator import Polyline
+
 a = Polyline((47.1706378, 8.5167405), (47.1700271, 8.518072999999998), 100)
 print(a.points)
 print('Walking polyline: ', a.polyline)

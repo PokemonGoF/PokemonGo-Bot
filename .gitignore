@@ -102,16 +102,18 @@ web/
 data/last-location*.json
 data/cells-*.json
 
-#Multiple config
+# Multiple config
 configs/*
 !configs/config.json.example
 !configs/release_config.json.example
 !configs/config.json.pokemons.example
 !configs/config.json.pokemon.example
+!configs/config.json.path.example
+!configs/path.example.json
 
 # Virtualenv folders
 bin/
 include/
 
-#Pip check file
+# Pip check file
 pip-selfcheck.json

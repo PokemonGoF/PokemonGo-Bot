@@ -1,14 +1,12 @@
 from math import sqrt
 
-from pokemongo_bot import logger
-from cell_workers.utils import distance, i2f
+from cell_workers.utils import distance
 from human_behaviour import random_lat_long_delta, sleep
-import sys
 
 
 class StepWalker(object):
 
-    def __init__(self, bot, speed, destLat, destLng):
+    def __init__(self, bot, speed, dest_lat, dest_lng):
         self.bot = bot
         self.api = bot.api
 
@@ -17,14 +15,14 @@ class StepWalker(object):
         self.dist = distance(
             self.initLat,
             self.initLng,
-            destLat,
-            destLng
+            dest_lat,
+            dest_lng
         )
 
         self.speed = speed
 
-        self.destLat = destLat
-        self.destLng = destLng
+        self.destLat = dest_lat
+        self.destLng = dest_lng
         self.totalDist = max(1, self.dist)
 
         self.steps = (self.dist + 0.0) / (speed + 0.0)
@@ -32,16 +30,14 @@ class StepWalker(object):
         if self.dist < speed or int(self.steps) <= 1:
             self.dLat = 0
             self.dLng = 0
-            self.magnitude = 0;
+            self.magnitude = 0
         else:
-            self.dLat = (destLat - self.initLat) / int(self.steps)
-            self.dLng = (destLng - self.initLng) / int(self.steps)
+            self.dLat = (dest_lat - self.initLat) / int(self.steps)
+            self.dLng = (dest_lng - self.initLng) / int(self.steps)
             self.magnitude = self._pythagorean(self.dLat, self.dLng)
 
     def step(self):
         if (self.dLat == 0 and self.dLng == 0) or self.dist < self.speed:
-            if sys.stdout.isatty():
-                sys.stdout.write('\n')
             self.api.set_position(self.destLat, self.destLng, 0)
             return True
 
