@@ -12,21 +12,22 @@ from pokemongo_bot.worker_result import WorkerResult
 
 class MoveToMapPokemon(object):
 
-    def __init__(self, bot):
+    def __init__(self, bot, config):
         self.bot = bot
+        self.config = config
         self.ptr = 0
         self.db = self.load_db()
         self.pokemon_data = bot.pokemon_list
         self.caught = []
 
     def load_db(self):
-        if self.bot.config.map_db_file == None:
+        if self.config['db_file'] == None:
             raise RuntimeError('You need to specify a db file (sqlite)')
 
         try:
-            conn = sqlite3.connect(self.bot.config.map_db_file)
+            conn = sqlite3.connect(self.config['db_file'])
         except:
-            raise RuntimeError('Could not open db file "{}"'.format(self.bot.config.map.db_file))
+            raise RuntimeError('Could not open db file "{}"'.format(self.config['db_file']))
         return conn
 
     def get_pokemon_from_map(self):
@@ -34,7 +35,7 @@ class MoveToMapPokemon(object):
 
         pokemon_list = []
 
-        now = int(time.time() + self.bot.config.map_min_time)
+        now = int(time.time() + self.config['min_time'])
         for row in cursor.execute('SELECT * FROM pokemon WHERE datetime(disappear_time) > datetime(?, "unixepoch");', (now, )):
             encounter_id = row[1]
             pokemon_id = row[2]
@@ -48,7 +49,7 @@ class MoveToMapPokemon(object):
                 lon
             )
 
-            if dist > self.bot.config.map_max_distance:
+            if dist > self.config['max_distance']:
                 continue
 
             if encounter_id in self.caught:
@@ -72,8 +73,8 @@ class MoveToMapPokemon(object):
         return self.get_name_from_id(pokemon_id) in self.bot.config.vips
 
     def get_config_priority(self, pokemon_id):
-        if (self.get_name_from_id(pokemon_id) in self.bot.config.map_priority):
-            return self.bot.config.map_priority[self.get_name_from_id(pokemon_id)]
+        if (self.get_name_from_id(pokemon_id) in self.config['priority']):
+            return self.config['priority'][self.get_name_from_id(pokemon_id)]
         else:
             return 0
 
@@ -86,17 +87,17 @@ class MoveToMapPokemon(object):
         new_list = []
         for pokemon in pokemon_list:
             score = 0
-            if self.bot.config.map_prioritize_vips and self.is_in_vip(pokemon['pokemon_id']):
+            if self.config['prioritize_vips'] and self.is_in_vip(pokemon['pokemon_id']):
                 score += 1000
-            if self.bot.config.map_mode == 'distance':
+            if self.config['mode'] == 'distance':
                 score -= pokemon['dist']
-            elif self.bot.config.map_mode == 'priority':
+            elif self.config['mode'] == 'priority':
                 score += self.get_config_priority(pokemon['pokemon_id'])
 
             pokemon['name'] = self.get_name_from_id(pokemon['pokemon_id'])
             pokemon['score'] = score
 
-            if self.bot.config.map_mode == 'priority' and pokemon['score'] < 1:
+            if self.config['mode'] == 'priority' and pokemon['score'] < 1:
                 continue
             new_list.append(pokemon)
         return new_list
