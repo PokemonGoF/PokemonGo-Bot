@@ -38,6 +38,3 @@ class BaseTaskTest(unittest.TestCase):
             self.bot,
             self.config
         )
-
-if __name__ == '__main__':
-    unittest.main()

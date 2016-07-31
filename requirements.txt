@@ -17,3 +17,5 @@ socketIO_client==0.7.0
 eventlet==0.19.0
 universal-analytics-python==0.2.4
 gpxpy==1.1.1
+mock==2.0.0
+timeout-decorator==0.3.2
