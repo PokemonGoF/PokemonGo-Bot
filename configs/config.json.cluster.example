@@ -36,7 +36,8 @@
       {
         "type": "FollowCluster",
         "config": {
-            "radius": 50
+            "radius": 50,
+            "lured": true
         }
       }
     ],

@@ -14,10 +14,22 @@ class FollowCluster(object):
         self._process_config()
 
     def _process_config(self):
+        self.lured = self.config.get("lured", True)
         self.radius = self.config.get("radius", 50)
 
     def work(self):
         forts = self.bot.get_forts()
+        log_lure_avail_str = ''
+        log_lured_str = ''
+        if self.lured:
+            log_lured_str = 'lured '
+            lured_forts = filter(lambda x: True if x.get('lure_info', None) != None else False, forts)
+            if len(lured_forts) > 0:
+                forts = lured_forts
+            else:
+                log_lure_avail_str = 'No lured pokestops in vicinity. Search for normal ones instead. '
+
+
         self.dest = find_biggest_cluster(self.radius, forts)
 
         if self.dest is not None:
@@ -27,8 +39,9 @@ class FollowCluster(object):
             cnt = self.dest['num_points']
 
             if not self.is_at_destination:
-                log_str = 'Move to destiny. ' + str(cnt) + ' pokestops will in range of ' \
-                          + str(self.radius) + 'm. Arrive in ' \
+
+                log_str = log_lure_avail_str + 'Move to destiny. ' + str(cnt) + ' ' + log_lured_str + \
+                          'pokestops will be in range of ' + str(self.radius) + 'm. Arrive in ' \
                           + str(distance(self.bot.position[0], self.bot.position[1], lat, lng)) + 'm.'
                 logger.log(log_str)
                 self.announced = False
