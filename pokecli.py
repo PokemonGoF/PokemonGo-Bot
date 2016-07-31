@@ -44,31 +44,35 @@ if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
 
+class LoadFromFile (argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        with values as f:
+            parser.parse_args(
+                [
+                    '--{}={}'.format(k, v)
+                    for k, v
+                    in json.load(f).items()
+                    if v is not False  # false means the flag should not show up
+                ],
+                namespace
+            )
+
+
 def init_config():
     parser = argparse.ArgumentParser()
     config_file = "config.json"
     release_config_json = "release_config.json"
     web_dir = "web"
 
-    # If config file exists, load variables from json
-    load = {}
-
     # Select a config file code
-    parser.add_argument("-cf", "--config", help="Config File to use")
-    config_arg = unicode(parser.parse_args().config)
-    if os.path.isfile(config_arg):
-        with open(config_arg) as data:
-            load.update(json.load(data))
-    elif os.path.isfile(config_file):
-        with open(config_file) as data:
-            load.update(json.load(data))
+    parser.add_argument("-cf", "--config", default=config_file,
+                        help="Config File to use", type=open, action=LoadFromFile)
 
     # Read passed in Arguments
-    required = lambda x: not x in load
     parser.add_argument("-a",
                         "--auth_service",
                         help="Auth Service ('ptc' or 'google')",
-                        required=required("auth_service"))
+                        )
     parser.add_argument("-u", "--username", help="Username")
     parser.add_argument("-p", "--password", help="Password")
     parser.add_argument("-l", "--location", help="Location")
@@ -146,16 +150,15 @@ def init_config():
                         type=bool,
                         default=False)
 
+    print 'pre-parse'
     config = parser.parse_args()
-    if not config.username and 'username' not in load:
+    print '------------------'
+    print config
+    print 'post-parse'
+    if not config.username:
         config.username = raw_input("Username: ")
-    if not config.password and 'password' not in load:
+    if not config.password:
         config.password = getpass("Password: ")
-
-    # Passed in arguments should trump
-    for key in config.__dict__:
-        if key in load:
-            config.__dict__[key] = load[key]
 
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")
@@ -174,7 +177,7 @@ def init_config():
             config.release_config.update(json.load(data))
 
     # create web dir if not exists
-    try: 
+    try:
         os.makedirs(web_dir)
     except OSError:
         if not os.path.isdir(web_dir):
