@@ -26,6 +26,7 @@ from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from worker_result import WorkerResult
 from tree_config_builder import ConfigException, TreeConfigBuilder
 
+
 class PokemonGoBot(object):
     @property
     def position(self):
@@ -469,7 +470,7 @@ class PokemonGoBot(object):
             self.api.set_position(*location)
             self.start_position = self.position
             logger.log('')
-            logger.log(u'Location Found: {}'.format(self.config.location))
+            logger.log('Location Found: {}'.format(location_str))
             logger.log('GeoPosition: {}'.format(self.position))
             logger.log('')
             has_position = True

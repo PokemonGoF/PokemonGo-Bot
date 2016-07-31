@@ -111,6 +111,7 @@ configs/*
 !configs/config.json.path.example
 !configs/config.json.map.example
 !configs/path.example.json
+!config.json.cluster.example
 
 # Virtualenv folders
 bin/

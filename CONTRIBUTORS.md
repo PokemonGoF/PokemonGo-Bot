@@ -42,6 +42,8 @@
  * SpaceWhale
  * klingan
  * reddivision
+ * DayBr3ak
  * kbinani
  * mhdasding
+ * MFizz
  * NamPNQ

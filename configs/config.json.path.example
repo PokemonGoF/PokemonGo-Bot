@@ -24,7 +24,7 @@
         "type": "EvolveAll",
         "config": {
           "evolve_speed": 20,
-          "use_lucky_egg": true
+          "use_lucky_egg": false
         }
       },
       {
