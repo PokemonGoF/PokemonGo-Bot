@@ -18,7 +18,8 @@ class FollowSpiral(object):
         )
         self.ptr = 0
         self.direction = 1
-        self.cnt = 0
+        self.step_walker = None
+        self.next_point = None
 
     @staticmethod
     def _generate_spiral(starting_lat, starting_lng, step_size, step_limit):
@@ -53,45 +54,38 @@ class FollowSpiral(object):
             m += 1
         return coords
 
+    def walk_to_next_point(self):
+        # Turn around after getting to the end of the list
+        if self.ptr == 0:
+            self.direction = 1
+        elif self.ptr == len(self.points) - 1:
+            self.direction = -1
+
+        self.next_point = self.points[self.ptr]
+        self.ptr += self.direction
+        self.step_walker = StepWalker(
+            self.bot,
+            self.config.walk,
+            self.next_point['lat'],
+            self.next_point['lng'],
+            label='SpiralNavigator'
+        )
+
     def take_step(self):
-        point = self.points[self.ptr]
-        self.cnt += 1
+        if self.step_walker is None:
+            self.walk_to_next_point()
 
-        if self.bot.config.walk > 0:
-            step_walker = StepWalker(
-                self.bot,
-                self.bot.config.walk,
-                point['lat'],
-                point['lng']
-            )
+        dist = distance(
+            self.api._position_lat,
+            self.api._position_lng,
+            self.next_point['lat'],
+            self.next_point['lng']
+        )
 
-            dist = distance(
-                self.bot.api._position_lat,
-                self.bot.api._position_lng,
-                point['lat'],
-                point['lng']
-            )
+        logger.log('Spiraling from ' + str((self.api._position_lat, self.api._position_lng)) +
+            ' to ' + str([self.next_point['lat'], self.next_point['lng']]) + ' ' +
+            format_dist(dist, self.config.distance_unit))
 
-            if self.cnt == 1:
-                logger.log(
-                    'Walking from ' + str((self.bot.api._position_lat,
-                    self.bot.api._position_lng)) + " to " + str([point['lat'], point['lng']]) + " " + format_dist(dist,
-                                                                                                   self.bot.config.distance_unit))
+        if self.step_walker.step():
+            self.step_walker = None
 
-            if step_walker.step():
-                step_walker = None
-        else:
-            self.bot.api.set_position(point['lat'], point['lng'])
-
-        if distance(
-                    self.bot.api._position_lat,
-                    self.bot.api._position_lng,
-                    point['lat'],
-                    point['lng']
-                ) <= 1 or (self.bot.config.walk > 0 and step_walker == None):
-            if self.ptr + self.direction == len(self.points) or self.ptr + self.direction == -1:
-                self.direction *= -1
-            self.ptr += self.direction
-            self.cnt = 0
-
-        return [point['lat'], point['lng']]
