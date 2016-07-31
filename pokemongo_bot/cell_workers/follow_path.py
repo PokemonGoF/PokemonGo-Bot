@@ -56,7 +56,7 @@ class FollowPath(object):
 
         return points;
 
-    def take_step(self):
+    def work(self):
         point = self.points[self.ptr]
         lat = float(point['lat'])
         lng = float(point['lng'])
