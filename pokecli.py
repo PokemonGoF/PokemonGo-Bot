@@ -153,9 +153,17 @@ def init_config():
     add_config(
         parser,
         load,
-        short_flag="-ws",
+        short_flag="-wss",
         long_flag="--websocket.start_embedded_server",
         help="Start embedded websocket server",
+        default=False
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-wsr",
+        long_flag="--websocket.remote_control",
+        help="Enable remote control through websocket (requires websocekt server url)",
         default=False
     )
     add_config(
