@@ -55,11 +55,10 @@
         "type": "SpinFort"
       },
       {
-        "type": "MoveToFort",
-        "config": {
-            "lure_attraction": true,
-            "lure_max_distance": 2000
-        }
+        "type": "MoveToMapPokemon"
+      },
+      {
+        "type": "MoveToFort"
       },
       {
         "type": "FollowSpiral",
@@ -73,6 +72,18 @@
     "forts": {
       "avoid_circles": true,
       "max_circle_size": 50
+    },
+    "map": {
+        "db_file": "../PokemonGo-Map/pogom.db",
+        "max_distance": 300,
+        "min_time": 60,
+        "prioritize_vips": true,
+        "mode": "distance",
+        "priority": {
+            "Bulbasaur": 1,
+            "Squirtle": 3,
+            "Mewtwo": 100
+        }
     },
     "websocket_server": false,
     "walk": 4.16,
