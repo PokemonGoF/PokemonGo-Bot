@@ -65,7 +65,10 @@ class TestApiWrapper(unittest.TestCase):
         self.api._can_call = MagicMock(return_value=True)
         self.api.get_inventory(test='awesome')
 
-        good_return_value = {'responses': {'GET_INVENTORY': {}}, 'status_code': 0}
+        request = self.api.request_callers[0] # only one request
+        self.assertEqual(request.upper(), 'GET_INVENTORY')
+
+        good_return_value = {'responses': {request.upper(): {}}, 'status_code': 0}
         self._api.call = MagicMock(return_value=good_return_value)
 
         result = self.api.call()
