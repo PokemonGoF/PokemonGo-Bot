@@ -111,7 +111,7 @@ class PokemonGoBot(object):
 
         if (len(forts) == 0):
             forts = oldForts
-            logger.log('using old forts list')
+#            logger.log('using old forts list')
 
         return {
             "forts": forts,
