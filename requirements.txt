@@ -1,4 +1,3 @@
-mock==1.3.0
 numpy==1.11.0
 networkx==1.11
 -e git+https://github.com/tejado/pgoapi.git@81e786cabf027a1c8fbd1e9a07e1c11aa3d8ee8b#egg=pgoapi
