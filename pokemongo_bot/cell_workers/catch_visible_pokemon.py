@@ -20,6 +20,7 @@ class CatchVisiblePokemon(BaseTask):
             for pokemon in self.bot.cell['catchable_pokemons']:
                 with open(user_web_catchable, 'w') as outfile:
                     json.dump(pokemon, outfile)
+
             return self.catch_pokemon(self.bot.cell['catchable_pokemons'][0])
 
         if 'wild_pokemons' in self.bot.cell and len(self.bot.cell['wild_pokemons']) > 0:
