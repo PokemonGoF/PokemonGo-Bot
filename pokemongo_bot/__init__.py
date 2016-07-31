@@ -469,7 +469,7 @@ class PokemonGoBot(object):
             self.api.set_position(*location)
             self.start_position = self.position
             logger.log('')
-            logger.log(u'Location Found: {}'.format(self.config.location))
+            logger.log('Location Found: {}'.format(location_str))
             logger.log('GeoPosition: {}'.format(self.position))
             logger.log('')
             has_position = True
