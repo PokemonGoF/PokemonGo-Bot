@@ -9,11 +9,15 @@ class FindBiggestCluster(object):
     def __init__(self, bot, config):
         self.bot = bot
         self.dest = None
+        self.config = config
+        self._process_config()
+
+    def _process_config(self):
+        self.radius = self.config.get("radius", 50)
 
     def work(self):
         forts = self.bot.get_forts()
-        radius = self.bot.config.navigator_radius
-        self.dest = find_biggest_cluster(radius, forts)
+        self.dest = find_biggest_cluster(self.radius, forts)
 
 
 def find_biggest_cluster(radius, points):

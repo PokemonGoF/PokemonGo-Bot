@@ -13,9 +13,11 @@ class FollowCluster(object):
 
     def work(self):
         worker = [x for x in self.bot.workers if type(x) == find_biggest_cluster.FindBiggestCluster][0]
+        self.radius = worker.radius
 
         if worker.dest is not None:
             self.dest = worker.dest
+
         if self.dest is not None:
 
             lat = self.dest['latitude']
@@ -24,7 +26,7 @@ class FollowCluster(object):
 
             if not self.is_at_destination:
                 log_str = 'Move to destiny. ' + str(cnt) + ' pokestops will in range of ' \
-                          + str(self.bot.config.navigator_radius) + 'm. Arrive in ' \
+                          + str(self.radius) + 'm. Arrive in ' \
                           + str(distance(self.bot.position[0], self.bot.position[1], lat, lng)) + 'm.'
                 logger.log(log_str)
                 self.announced = False
@@ -45,7 +47,7 @@ class FollowCluster(object):
 
             elif not self.announced:
                 log_str = 'Arrived at destiny. ' + str(cnt) + ' pokestops are in range of ' \
-                         + str(self.bot.config.navigator_radius) + 'm.'
+                         + str(self.radius) + 'm.'
                 logger.log(log_str)
                 self.announced = True
         else:

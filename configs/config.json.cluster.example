@@ -33,7 +33,10 @@
         "type": "SpinFort"
       },
       {
-        "type": "FindBiggestCluster"
+        "type": "FindBiggestCluster",
+        "config": {
+        "radius": 50
+        }
       },
       {
         "type": "FollowCluster"
@@ -46,7 +49,6 @@
     },
     "navigator": {
       "type": "cluster",
-      "radius": 5AD0
     },
     "websocket_server": false,
     "walk": 4.16,
