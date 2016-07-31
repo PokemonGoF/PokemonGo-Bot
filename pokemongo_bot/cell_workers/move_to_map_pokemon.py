@@ -25,7 +25,7 @@ class MoveToMapPokemon(object):
         self.unit = self.bot.config.distance_unit
 
     def load_db(self):
-        if self.config['db_file'] == None:
+        if not 'db_file' in self.config:
             raise RuntimeError('You need to specify a db file (sqlite)')
 
         try:

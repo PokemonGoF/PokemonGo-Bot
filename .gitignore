@@ -109,6 +109,7 @@ configs/*
 !configs/config.json.pokemons.example
 !configs/config.json.pokemon.example
 !configs/config.json.path.example
+!configs/config.json.map.example
 !configs/path.example.json
 
 # Virtualenv folders
