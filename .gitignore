@@ -108,6 +108,8 @@ configs/*
 !configs/release_config.json.example
 !configs/config.json.pokemons.example
 !configs/config.json.pokemon.example
+config.json
+release_config.json
 
 # Virtualenv folders
 bin/
