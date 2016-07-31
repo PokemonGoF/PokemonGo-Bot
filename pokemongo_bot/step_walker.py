@@ -43,28 +43,30 @@ class StepWalker(object):
 
     def step(self):
         if (self.dLat == 0 and self.dLng == 0) or self.dist < self.speed:
-            self.api.set_position(self.destLat, self.destLng, 0)
-            return True
+            cLat, cLng = self.destLat, self.destLng
+            stayInPlace = True
+        else:
+            totalDLat = (self.destLat - self.initLat)
+            totalDLng = (self.destLng - self.initLng)
+            magnitude = self._pythagorean(totalDLat, totalDLng)
+            unitLat = totalDLat / magnitude
+            unitLng = totalDLng / magnitude
 
-        totalDLat = (self.destLat - self.initLat)
-        totalDLng = (self.destLng - self.initLng)
-        magnitude = self._pythagorean(totalDLat, totalDLng)
-        unitLat = totalDLat / magnitude
-        unitLng = totalDLng / magnitude
+            scaledDLat = unitLat * self.magnitude
+            scaledDLng = unitLng * self.magnitude
 
-        scaledDLat = unitLat * self.magnitude
-        scaledDLng = unitLng * self.magnitude
+            cLat = self.initLat + scaledDLat + random_lat_long_delta()
+            cLng = self.initLng + scaledDLng + random_lat_long_delta()
 
-        cLat = self.initLat + scaledDLat + random_lat_long_delta()
-        cLng = self.initLng + scaledDLng + random_lat_long_delta()
+            stayInPlace = False
 
         self.api.set_position(cLat, cLng, 0)
         self.bot.heartbeat()
-
         sleep(1)  # sleep one second plus a random delta
         # self._work_at_position(
         #     self.initLat, self.initLng,
         #     alt, False)
+        return stayInPlace
 
     def _pythagorean(self, lat, lng):
         return sqrt((lat ** 2) + (lng ** 2))

@@ -1,5 +1,3 @@
-[MASTER]
-init-hook='import sys; sys.path.append("./")'
 [MESSAGES CONTROL]
 disable=line-too-long,
 	missing-docstring
