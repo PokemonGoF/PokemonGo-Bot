@@ -411,6 +411,12 @@ def init_config():
             task_configuration_error(flag)
             return None
 
+    nested_old_flags = [('forts', 'spin')]
+    for outer, inner in nested_old_flags:
+        if load.get(outer, {}).get(inner, None):
+            task_configuration_error('{}.{}'.format(outer, inner))
+            return None
+
     if (config.evolve_captured
         and (not isinstance(config.evolve_captured, str)
              or str(config.evolve_captured).lower() in ["true", "false"])):

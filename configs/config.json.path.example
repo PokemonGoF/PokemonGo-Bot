@@ -38,7 +38,6 @@
     ],
     "max_steps": 5,
     "forts": {
-      "spin": true,
       "move_to_spin": false,
       "avoid_circles": true,
       "max_circle_size": 50
