@@ -4,6 +4,7 @@ import json
 import time
 import sqlite3
 import requests
+import base64
 from pokemongo_bot import logger
 from pokemongo_bot.cell_workers.utils import distance, i2f, format_dist
 from pokemongo_bot.human_behaviour import sleep
@@ -38,7 +39,7 @@ class MoveToMapPokemon(object):
 
         now = int(time.time() + self.config['min_time'])
         for row in cursor.execute('SELECT * FROM pokemon WHERE datetime(disappear_time) > datetime(?, "unixepoch");', (now, )):
-            encounter_id = row[1]
+            encounter_id = long(base64.b64decode(row[0]))
             pokemon_id = row[2]
             lat = row[3]
             lon = row[4]
@@ -82,6 +83,7 @@ class MoveToMapPokemon(object):
     def addCaught(self, pokemon):
         if len(self.caught) >= 200:
             self.caught.pop(0)
+        logger.log('e_id: {}'.format(pokemon['encounter_id']))
         self.caught.append(pokemon['encounter_id'])
 
     def score_pokemon(self, pokemon_list):
@@ -127,6 +129,11 @@ class MoveToMapPokemon(object):
     def work(self):
         self.update_map_location()
         unit = self.bot.config.distance_unit
+
+        if 'catched_pokemon' in self.bot.passon:
+            self.addCaught(self.bot.passon['catched_pokemon'])
+            del self.bot.passon['catched_pokemon']
+            return WorkerResult.SUCCESS
         pokemon_on_map = self.get_pokemon_from_map()
         pokemon_on_map = self.score_pokemon(pokemon_on_map)
         pokemon_on_map.sort(key=lambda x: x['score'], reverse=True)

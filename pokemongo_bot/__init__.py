@@ -45,6 +45,7 @@ class PokemonGoBot(object):
         self.tick_count = 0
         self.softban = False
         self.start_position = None
+        self.passon = {}
 
         # Make our own copy of the workers for this instance
         self.workers = []
