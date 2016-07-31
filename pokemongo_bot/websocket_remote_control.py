@@ -18,8 +18,7 @@ class WebsocketRemoteControl(object):
         return self
 
     def process_messages(self):
-        while True:
-            self.sio.wait(5)
+        self.sio.wait()
 
     def on_remote_command(self, command):
         name = command['name']
