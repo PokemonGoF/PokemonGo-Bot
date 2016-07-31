@@ -213,7 +213,7 @@ class PokemonCatchWorker(object):
                                                    spawn_point_id=self.spawn_point_guid,
                                                    hit_pokemon=1,
                                                    spin_modifier=spin_modifier_parameter,
-                                                   NormalizedHitPosition=1)
+                                                   normalized_hit_position=1)
                             response_dict = self.api.call()
 
                             if response_dict and \
