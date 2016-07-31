@@ -178,9 +178,6 @@ class MoveToMapPokemon(object):
         if (len(pokemon_on_map) < 1):
             return
 
-        for idx in xrange(5):
-            print pokemon_on_map[0]
-
         pokemon = pokemon_on_map[0]
         now = int(time.time())
 
