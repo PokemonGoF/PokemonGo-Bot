@@ -1,12 +1,9 @@
-{
-    "auth_service": "google",
-    "username": "YOUR_USERNAME",
-    "password": "YOUR_PASSWORD",
-    "location": "SOME_LOCATION",
-    "gmapkey": "GOOGLE_MAPS_API_KEY",
-    "tasks": [
+"tasks": [
       {
         "type": "HandleSoftBan"
+      },
+      {
+        "type": "CollectLevelUpReward"
       },
       {
         "type": "IncubateEggs",
@@ -18,7 +15,11 @@
         "type": "TransferPokemon"
       },
       {
-        "type": "EvolveAll"
+        "type": "EvolveAll",
+        "config": {
+          "evolve_speed": 20,
+          "use_lucky_egg": true
+        }
       },
       {
         "type": "RecycleItems"
@@ -33,22 +34,16 @@
         "type": "SpinFort"
       },
       {
-        "type": "FindBiggestCluster",
+        "type": "FollowCluster",
         "config": {
-        "radius": 50
+            "radius": 50
         }
-      },
-      {
-        "type": "FollowCluster"
       }
     ],
     "max_steps": 5,
     "forts": {
       "avoid_circles": true,
       "max_circle_size": 50
-    },
-    "navigator": {
-      "type": "cluster",
     },
     "websocket_server": false,
     "walk": 4.16,
@@ -69,50 +64,7 @@
       "Razz Berry":     { "keep" : 100 }
     },
     "evolve_all": "NONE",
-    "evolve_speed": 20,
     "evolve_cp_min": 300,
-    "use_lucky_egg": false,
     "evolve_captured": "NONE",
     "catch_randomize_reticle_factor": 1.0,
     "catch_randomize_spin_factor": 1.0,
-    "catch": {
-      "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
-      "// Example of always catching Rattata:": {},
-      "// Rattata": { "always_catch" : true }
-    },
-    "release": {
-      "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or"},
-      "// Example of always releasing Rattata:": {},
-      "// Rattata": {"always_release": true},
-      "// Example of keeping 3 stronger (based on CP) Pidgey:": {},
-      "// Pidgey": {"keep_best_cp": 3},
-      "// Example of keeping 2 stronger (based on IV) Zubat:": {},
-      "// Zubat": {"keep_best_iv": 2},
-      "// Also, it is working with any": {},
-      "// any": {"keep_best_iv": 3},
-      "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat:": {},
-      "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3}
-    },
-    "vips" : {
-         "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate!": {},
-        "any": {"catch_above_cp": 1200, "catch_above_iv": 0.9, "logic": "or" },
-        "Lapras": {},
-        "Moltres": {},
-        "Zapdos": {},
-        "Articuno": {},
-
-        "// S-Tier pokemons (if pokemon can be evolved into tier, list the representative)": {},
-        "Mewtwo": {},
-        "Dragonite": {},
-        "Snorlax": {},
-        "// Mew evolves to Mewtwo": {},
-        "Mew": {},
-        "Arcanine": {},
-        "Vaporeon": {},
-        "Gyarados": {},
-        "Exeggutor": {},
-        "Muk": {},
-        "Weezing": {},
-        "Flareon": {}
-    }
-}
