@@ -404,7 +404,6 @@ def init_config():
 
     config.raw_tasks = load.get('tasks', [])
 
-    config.hatch_eggs = load.get("hatch_eggs", True)
     config.longer_eggs_first = load.get("longer_eggs_first", True)
 
     config.vips = load.get('vips',{})
