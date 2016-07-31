@@ -9,7 +9,10 @@
         "type": "HandleSoftBan"
       },
       {
-        "type": "IncubateEggs"
+        "type": "IncubateEggs",
+        "config": {
+          "longer_eggs_first": true
+        }
       },
       {
         "type": "TransferPokemon"
