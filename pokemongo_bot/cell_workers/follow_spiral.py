@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 
-from . import logger
-from .cell_workers.utils import distance, format_dist
-from .step_walker import StepWalker
+from pokemongo_bot import logger
+from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot.step_walker import StepWalker
+from .utils import distance, format_dist
+
 
 class FollowSpiral(BaseTask):
     def initialize(self):
