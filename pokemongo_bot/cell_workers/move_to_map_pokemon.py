@@ -10,6 +10,7 @@ from pokemongo_bot.cell_workers.utils import distance, i2f, format_dist
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
+from pokemon_catch_worker import PokemonCatchWorker
 
 
 class MoveToMapPokemon(object):
@@ -21,9 +22,7 @@ class MoveToMapPokemon(object):
         self.db = self.load_db()
         self.pokemon_data = bot.pokemon_list
         self.caught = []
-        self.last_position = None
-        self.sniped_last_tick = False
-        self.sniped_pokemon = None
+        self.unit = self.bot.config.distance_unit
 
     def load_db(self):
         if self.config['db_file'] == None:
@@ -43,6 +42,7 @@ class MoveToMapPokemon(object):
         now = int(time.time() + self.config['min_time'])
         for row in cursor.execute('SELECT * FROM pokemon WHERE datetime(disappear_time) > datetime(?, "unixepoch");', (now, )):
             encounter_id = long(base64.b64decode(row[0]))
+            spawn_point_id = row[1]
             pokemon_id = row[2]
             lat = row[3]
             lon = row[4]
@@ -62,6 +62,7 @@ class MoveToMapPokemon(object):
 
             pokemon_list.append({
                 'encounter_id': encounter_id,
+                'spawn_point_id': spawn_point_id,
                 'pokemon_id': pokemon_id,
                 'lat': lat,
                 'lon': lon,
@@ -135,23 +136,35 @@ class MoveToMapPokemon(object):
             logger.log('Updated PokemonGo-Map position')
             self.last_map_update = now
 
+    def snipe(self, pokemon):
+        last_position = self.bot.position[0:2]
+        logger.log('Teleporting to {} ({})'.format(pokemon['name'], format_dist(pokemon['dist'], self.unit)))
+        self.bot.api.set_position(pokemon['lat'], pokemon['lon'], 0)
+
+        logger.log('Encounter pokemon', 'green')
+        pokemon['latitude'] = pokemon['lat']
+        pokemon['longitude'] = pokemon['lon']
+        catchWorker = PokemonCatchWorker(pokemon, self.bot)
+        apiEncounterResponse = catchWorker.create_encounter_api_call()
+
+        time.sleep(2)
+        logger.log('Teleport back previous location..', 'green')
+        self.bot.api.set_position(last_position[0], last_position[1], 0)
+        time.sleep(2)
+        self.bot.heartbeat()
+
+        catchWorker.work(apiEncounterResponse)
+
+        return WorkerResult.SUCCESS
+
+
     def work(self):
         self.update_map_location()
-        unit = self.bot.config.distance_unit
 
         if 'catched_pokemon' in self.bot.passon:
             self.addCaught(self.bot.passon['catched_pokemon'])
             del self.bot.passon['catched_pokemon']
             return WorkerResult.SUCCESS
-
-        # teleport back if sniped
-        if self.sniped_last_tick:
-            logger.log('Teleport back')
-            self.bot.api.set_position(self.last_position[0], self.last_position[1], 0)
-            self.addCaught(self.sniped_pokemon)
-            self.sniped_last_tick = False
-            return WorkerResult.SUCCESS
-
 
         pokemon_on_map = self.get_pokemon_from_map()
         pokemon_on_map = self.score_pokemon(pokemon_on_map)
@@ -164,14 +177,9 @@ class MoveToMapPokemon(object):
         now = int(time.time())
 
         if self.bot.config.walk <= 0 or self.config['snipe']:
-            logger.log('Teleporting to {} ({})'.format(pokemon['name'], format_dist(pokemon['dist'], unit)))
-            self.bot.api.set_position(pokemon['lat'], pokemon['lon'], 0)
-            self.last_position = self.bot.position[0:2]
-            self.sniped_last_tick = True
-            self.sniped_pokemon = pokemon
-            return WorkerResult.RUNNING
+            return self.snipe(pokemon)
 
-        logger.log('Moving towards {}, {} left'.format(pokemon['name'], format_dist(pokemon['dist'], unit)))
+        logger.log('Moving towards {}, {} left'.format(pokemon['name'], format_dist(pokemon['dist'], self.unit)))
         step_walker = StepWalker(
             self.bot,
             self.bot.config.walk,
