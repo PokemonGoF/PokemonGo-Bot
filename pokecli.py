@@ -321,6 +321,24 @@ def init_config():
     add_config(
         parser,
         load,
+        short_flag="-bf",
+        long_flag="--softban_fix",
+        help="Fix softban automatically",
+        type=bool,
+        default=False
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-hl",
+        long_flag="--home_location",
+        help="Fly home to get rid of being banned when catch with changed location",
+        type=str,
+        default=[]
+    )
+    add_config(
+        parser,
+        load,
         short_flag="-hr",
         long_flag="--health_record",
         help="Send anonymous bot event to GA for bot health record. Set \"health_record\":false if you need disable it.",

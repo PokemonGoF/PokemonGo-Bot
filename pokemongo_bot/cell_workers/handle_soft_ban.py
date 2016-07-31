@@ -43,6 +43,8 @@ class HandleSoftBan(object):
                     logger.log('Spin #{}'.format(str(i+1)))
                 self.spin_fort(forts[0])
             self.bot.softban = False
+            if self.bot.config.home_location:
+                self.bot.config.home_location = ', '.join([str(x) for x in self.bot.position])
             logger.log('Softban should be fixed.')
 
     def spin_fort(self, fort):
