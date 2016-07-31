@@ -181,3 +181,4 @@ class PokemonMove(Enum):
     STEEL_WING_FAST = 239
     FIRE_FANG_FAST = 240
     ROCK_SMASH_FAST = 241
+    
