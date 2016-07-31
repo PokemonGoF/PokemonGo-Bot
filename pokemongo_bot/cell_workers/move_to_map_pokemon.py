@@ -83,7 +83,6 @@ class MoveToMapPokemon(object):
     def addCaught(self, pokemon):
         if len(self.caught) >= 200:
             self.caught.pop(0)
-        logger.log('e_id: {}'.format(pokemon['encounter_id']))
         self.caught.append(pokemon['encounter_id'])
 
     def score_pokemon(self, pokemon_list):
