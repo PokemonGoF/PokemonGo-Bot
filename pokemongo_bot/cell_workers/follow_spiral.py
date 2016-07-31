@@ -3,12 +3,11 @@ from __future__ import absolute_import, unicode_literals
 import pokemongo_bot.logger as logger
 from pokemongo_bot.cell_workers.utils import distance, format_dist
 from pokemongo_bot.step_walker import StepWalker
+from pokemongo_bot.cell_workers.base_task import BaseTask
 
 
-class FollowSpiral(object):
-    def __init__(self, bot):
-        self.bot = bot
-
+class FollowSpiral(BaseTask):
+    def initialize(self):
         self.steplimit = self.bot.config.max_steps
         self.origin_lat = self.bot.position[0]
         self.origin_lon = self.bot.position[1]

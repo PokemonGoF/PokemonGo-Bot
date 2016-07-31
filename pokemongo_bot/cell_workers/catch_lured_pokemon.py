@@ -1,12 +1,9 @@
 from pokemongo_bot import logger
 from pokemongo_bot.cell_workers.utils import fort_details
 from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
+from pokemongo_bot.cell_workers.base_task import BaseTask
 
-
-class CatchLuredPokemon(object):
-    def __init__(self, bot):
-        self.bot = bot
-
+class CatchLuredPokemon(BaseTask):
     def work(self):
         lured_pokemon = self.get_lured_pokemon()
         if lured_pokemon:

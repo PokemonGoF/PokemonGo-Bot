@@ -25,7 +25,7 @@ class EventManager(object):
     def register_event(self, name, parameters=None):
         self._registered_events[name] = parameters
 
-    def emit(self, event, sender=None, level='info', data={}):
+    def emit(self, event, sender=None, level='info', formatted=None, data={}):
         if not sender:
             raise ArgumentError('Event needs a sender!')
 
@@ -42,6 +42,8 @@ class EventManager(object):
             if k not in parameters:
                 raise EventMalformedException("Event %s does not require parameter %s" % (event, k))
 
+        formatted_msg = formatted.format(**data)
+
         # send off to the handlers
         for handler in self._handlers:
-            handler.handle_event(event, sender, level, data)
+            handler.handle_event(event, sender, level, formatted_msg, data)

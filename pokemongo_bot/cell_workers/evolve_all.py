@@ -1,12 +1,11 @@
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.item_list import Item
+from pokemongo_bot.cell_workers.base_task import BaseTask
 
-
-class EvolveAll(object):
-    def __init__(self, bot):
-        self.api = bot.api
-        self.bot = bot
+class EvolveAll(BaseTask):
+    def initialize(self):
+        self.evolve_speed = self.config.get('evolve_speed', 3.7)
 
     def work(self):
         if not self._should_run():
@@ -158,10 +157,7 @@ class EvolveAll(object):
                 pokemon_name, pokemon_cp, pokemon_iv
             ))
 
-            if self.bot.config.evolve_speed:
-                sleep(self.bot.config.evolve_speed)
-            else:
-                sleep(3.7)
+            sleep(self.evolve_speed)
 
         else:
             # cache pokemons we can't evolve. Less server calls

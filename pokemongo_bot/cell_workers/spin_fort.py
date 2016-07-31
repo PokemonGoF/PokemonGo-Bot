@@ -8,13 +8,11 @@ from pokemongo_bot import logger
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.worker_result import WorkerResult
+from pokemongo_bot.cell_workers.base_task import BaseTask
 from utils import distance, format_time, fort_details
 
 
-class SpinFort(object):
-    def __init__(self, bot):
-        self.bot = bot
-
+class SpinFort(BaseTask):
     def should_run(self):
         return self.bot.has_space_for_loot()
 

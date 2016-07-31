@@ -8,9 +8,6 @@ class TreeConfigBuilder(object):
         self.bot = bot
         self.tasks_raw = tasks_raw
 
-    def build(self):
-        print 'build'
-
     def _get_worker_by_name(self, name):
         try:
             worker = getattr(cell_workers, name)
@@ -27,8 +24,10 @@ class TreeConfigBuilder(object):
             if task_type is None:
                 raise ConfigException('No type found for given task {}'.format(task))
 
+            task_config = task.get('config', {})
+
             worker = self._get_worker_by_name(task_type)
-            instance = worker(self.bot)
+            instance = worker(self.bot, task_config)
             workers.append(instance)
 
         return workers
