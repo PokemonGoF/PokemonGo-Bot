@@ -72,14 +72,15 @@ class MoveToFort(BaseTask):
         if self.bot.config.forts_avoid_circles:
             forts = filter(lambda x: x["id"] not in self.bot.recent_forts, forts)
 
+        if (len(lures) and self.lure_attraction):
+            dist_lure_me = distance(self.bot.position[0], self.bot.position[1],
+                                    lures[0]['latitude'],lures[0]['longitude'])
+        else:
+            dist_lure_me = 0
+
         # add lure attraction if needed
-        if self.lure_attraction and len(lures):
-            dist_lure_me = distance(
-                            self.bot.position[0],
-                            self.bot.position[1],
-                            lures[0]['latitude'],
-                            lures[0]['longitude']
-                            )
+        if dist_lure_me > 0 and dist_lure_me < self.lure_max_distance:
+
             self.lure_distance = dist_lure_me
 
             for fort in forts:
@@ -109,4 +110,3 @@ class MoveToFort(BaseTask):
             return forts[0]
         else:
             return None
-                                                                             
