@@ -95,6 +95,9 @@ class MoveToMapPokemon(object):
                 score -= pokemon['dist']
             elif self.config['mode'] == 'priority':
                 score += self.get_config_priority(pokemon['pokemon_id'])
+            elif self.config['mode'] == 'hybrid':
+                score += self.get_config_priority(pokemon['pokemon_id'])
+                score -= pokemon['dist']
 
             pokemon['name'] = self.get_name_from_id(pokemon['pokemon_id'])
             pokemon['score'] = score
@@ -145,14 +148,19 @@ class MoveToMapPokemon(object):
             return
 
         pokemon = pokemon_on_map[0]
+        now = int(time.time())
         logger.log('Moving towards {}, {} left'.format(pokemon['name'], format_dist(pokemon['dist'], unit)))
 
-        step_walker = StepWalker(
-                self.bot,
-                self.bot.config.walk,
-                pokemon['lat'],
-                pokemon['lon']
-            )
+
+        if self.bot.config.walk > 0:
+            step_walker = StepWalker(
+                    self.bot,
+                    self.bot.config.walk,
+                    pokemon['lat'],
+                    pokemon['lon']
+                )
+        else:
+            self.bot.api.set_position(pokemon['lat'], pokemon['lon'])
 
         if not step_walker.step():
             return WorkerResult.RUNNING
