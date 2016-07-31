@@ -91,14 +91,14 @@ def action_delay(low, high):
 
 def ball_throw_reticle_fail_delay(success_prob=0.95):
     '''
-    Chances to skip the reticle should be constant,
+    Chances to skip the reticle could be considered constant,
     so the wait time before throwing is binomial,
-    given that the monster does not interrupt... <- TODO
+    given that the pokemon does not interrupt... <- TODO
     '''
     for trial in range(10):
         if random() < success_prob:
             break
-    return trial
+
     time.sleep(1.8*(trial+random()))
 
 
