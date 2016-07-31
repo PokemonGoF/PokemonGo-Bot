@@ -29,7 +29,5 @@ class TestLocationParser(unittest.TestCase):
         self.bot.config.location = u"àéùƱǣЊ؍ ข᠃"
         self.bot.get_pos_by_name = MagicMock(return_value=position)
 
-        # FIXME fix unicode error
-        with self.assertRaises(UnicodeEncodeError):
-            self.bot._set_starting_position()
-            self.assertEqual(self.bot.position, position)
+        self.bot._set_starting_position()
+        self.assertEqual(self.bot.position, position)
