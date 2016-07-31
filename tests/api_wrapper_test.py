@@ -7,44 +7,50 @@ from pgoapi.exceptions import NotLoggedInException, ServerBusyOrOfflineException
 from pokemongo_bot.api_wrapper import ApiWrapper
 
 
+def fakeApiWrapperWithReturn(return_value):
+    api = PGoApi()
+    wrapper = ApiWrapper(api)
+    api.call = MagicMock(return_value=return_value)
+    wrapper._can_call = MagicMock(return_value=True)
+    return wrapper
+
+def setFakeApiReturnValue(fake_api, value):
+    fake_api._api.call.return_value = value
+
 class TestApiWrapper(unittest.TestCase):
-    def setUp(self):
-        self._api = PGoApi()
-        self.api = ApiWrapper(self._api)
-        self.api.requests_per_seconds = 5
-
-    def tearDown(self):
-        pass
-
     def test_raises_not_logged_in_exception(self):
+        api = ApiWrapper(PGoApi())
+        api.get_inventory(test='awesome')
         with self.assertRaises(NotLoggedInException):
-            self.api.get_inventory(test='awesome')
-            self.api.call()
+            api.call()
 
     def test_api_call_with_no_requests_set(self):
+        api = ApiWrapper(PGoApi())
         with self.assertRaises(RuntimeError):
-            self.api.call()
+            api.call()
 
     @patch('pokemongo_bot.api_wrapper.sleep')
     def test_api_server_is_unreachable_raises_server_busy_or_offline_exception(self, sleep):
         sleep.return_value = True # we don't need to really sleep
-        self._api.call = MagicMock(return_value=True)
-        self.api._can_call = MagicMock(return_value=True)
-        self.api.get_inventory(test='awesome')
+        api = fakeApiWrapperWithReturn('Wrong Value')
+        api.get_inventory(test='awesome')
+        # we expect an exception because the "server" isn't returning a valid response
         with self.assertRaises(ServerBusyOrOfflineException):
-            self.api.call()
+            api.call()
 
     def test_mocked_call(self):
-        self._api.call = MagicMock(return_value=True)
-        self.api._can_call = MagicMock(return_value=True)
-        self.api._is_response_valid = MagicMock(return_value=True)
-        self.api.get_inventory(test='awesome')
-        result = self.api.call()
+        api = fakeApiWrapperWithReturn(True)
+        api._is_response_valid = MagicMock(return_value=True)
+        api.get_inventory(test='awesome')
+        result = api.call()
         self.assertTrue(result)
 
     def test_return_value_is_not_valid(self):
-        self.api._can_call = MagicMock(return_value=True)
-        self.api.get_inventory(test='awesome')
+
+        def returnApi(ret_value):
+            api = fakeApiWrapperWithReturn(ret_value)
+            api.get_inventory(test='awesome')
+            return api
 
         wrong_return_values = [
             None,
@@ -54,51 +60,53 @@ class TestApiWrapper(unittest.TestCase):
             {'status_code': 0},
             {'responses': {'GET_INVENTORY_OR_NOT': {}}, 'status_code': 0}
         ]
-        request_callers = self.api.request_callers
         for wrong in wrong_return_values:
-            # self._api.call = MagicMock(return_value=wrong)
+            api = returnApi(wrong)
+            request_callers = api._pop_request_callers() # we can pop because we do no call
 
-            is_valid = self.api._is_response_valid(wrong, request_callers)
+            is_valid = api._is_response_valid(wrong, request_callers)
             self.assertFalse(is_valid, 'return value {} is valid somehow ?'.format(wrong))
 
     def test_return_value_is_valid(self):
-        self.api._can_call = MagicMock(return_value=True)
-        self.api.get_inventory(test='awesome')
+        api = fakeApiWrapperWithReturn(None) # we set the return value below
+        api.get_inventory(test='awesome')
 
-        request = self.api.request_callers[0] # only one request
+        request = api.request_callers[0] # only one request
         self.assertEqual(request.upper(), 'GET_INVENTORY')
 
         good_return_value = {'responses': {request.upper(): {}}, 'status_code': 0}
-        self._api.call = MagicMock(return_value=good_return_value)
+        setFakeApiReturnValue(api, good_return_value)
 
-        result = self.api.call()
+        result = api.call()
         self.assertEqual(result, good_return_value)
-        self.assertEqual(len(self.api.request_callers), 0, 'request_callers must be empty')
+        self.assertEqual(len(api.request_callers), 0, 'request_callers must be empty')
 
     def test_multiple_requests(self):
-        self.api._can_call = MagicMock(return_value=True)
-        self.api.get_inventory(test='awesome')
-        self.api.fort_details()
+        api = fakeApiWrapperWithReturn(None)
+        api.get_inventory(test='awesome')
+        api.fort_details()
 
         good_return_value = {'responses': {'GET_INVENTORY': {}, 'FORT_DETAILS': {}}, 'status_code': 0}
-        self._api.call = MagicMock(return_value=good_return_value)
+        setFakeApiReturnValue(api, good_return_value)
 
-        result = self.api.call()
+        result = api.call()
         self.assertEqual(result, good_return_value)
 
     @timeout(1)
     def test_api_call_throttle_should_pass(self):
-        self.api._can_call = MagicMock(return_value=True)
-        self.api._is_response_valid = MagicMock(return_value=True)
+        api = fakeApiWrapperWithReturn(True)
+        api._is_response_valid = MagicMock(return_value=True)
+        api.requests_per_seconds = 5
 
-        for i in range(self.api.requests_per_seconds):
-            self.api.call()
+        for i in range(api.requests_per_seconds):
+            api.call()
 
-    @timeout(1)
+    @timeout(1) # expects a timeout
     def test_api_call_throttle_should_fail(self):
-        self.api._can_call = MagicMock(return_value=True)
-        self.api._is_response_valid = MagicMock(return_value=True)
+        api = fakeApiWrapperWithReturn(True)
+        api._is_response_valid = MagicMock(return_value=True)
+        api.requests_per_seconds = 5
 
         with self.assertRaises(TimeoutError):
-            for i in range(self.api.requests_per_seconds * 2):
-                self.api.call()
+            for i in range(api.requests_per_seconds * 2):
+                api.call()
