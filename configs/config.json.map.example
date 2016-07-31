@@ -42,7 +42,6 @@
       {
         "type": "MoveToMapPokemon",
         "config": {
-          "db_file": "../PokemonGo-Map/pogom.db",
           "address": "http://localhost:5000",
           "max_distance": 500,
           "min_time": 60,
