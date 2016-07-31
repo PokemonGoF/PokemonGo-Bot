@@ -152,7 +152,7 @@ class MoveToMapPokemon(object):
         logger.log('Moving towards {}, {} left'.format(pokemon['name'], format_dist(pokemon['dist'], unit)))
 
 
-        if self.bot.config.walk > 0:
+        if self.bot.config.walk > 0 and not self.config['snipe']:
             step_walker = StepWalker(
                     self.bot,
                     self.bot.config.walk,
