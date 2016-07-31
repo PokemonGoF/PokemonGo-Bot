@@ -53,11 +53,6 @@ class PokemonGoBot(object):
         self._setup_logging()
         self._setup_api()
 
-        if self.config.navigator_type == 'spiral':
-            self.navigator = cell_workers.FollowSpiral
-        elif self.config.navigator_type == 'path':
-            self.navigator = cell_workers.FollowPath
-
         random.seed()
 
     def _setup_event_system(self):
