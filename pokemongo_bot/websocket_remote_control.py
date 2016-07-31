@@ -23,7 +23,16 @@ class WebsocketRemoteControl(object):
 
     def on_remote_command(self, command):
         name = command['name']
-        command_handler = getattr(self, name)
+        command_handler = getattr(self, name, None)
+        if not command_handler or not callable(command_handler):
+            self.sio.emit(
+                'bot:send_reply',
+                {
+                    'response': '',
+                    'command': 'command_not_found'
+                }
+            )
+            return
         if 'args' in command:
             command_handler(*args)
             return
