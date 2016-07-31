@@ -94,7 +94,7 @@ class MoveToMapPokemon(object):
         for pokemon in pokemon_list:
             score = 0
             if self.config['prioritize_vips'] and self.is_in_vip(pokemon['pokemon_id']):
-                score += 1000
+                score += 10000
             if self.config['mode'] == 'distance':
                 score -= pokemon['dist']
             elif self.config['mode'] == 'priority':
