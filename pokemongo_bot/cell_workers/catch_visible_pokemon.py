@@ -20,7 +20,6 @@ class CatchVisiblePokemon(BaseTask):
             for pokemon in self.bot.cell['catchable_pokemons']:
                 with open(user_web_catchable, 'w') as outfile:
                     json.dump(pokemon, outfile)
-            self.bot.passon['catched_pokemon'] = self.bot.cell['catchable_pokemons'][0]
             return self.catch_pokemon(self.bot.cell['catchable_pokemons'][0])
 
         if 'wild_pokemons' in self.bot.cell and len(self.bot.cell['wild_pokemons']) > 0:
@@ -29,7 +28,6 @@ class CatchVisiblePokemon(BaseTask):
             self.bot.cell['wild_pokemons'].sort(
                 key=
                 lambda x: distance(self.bot.position[0], self.bot.position[1], x['latitude'], x['longitude']))
-            self.bot.passon['catched_pokemon'] = self.bot.cell['wild_pokemons'][0]
             return self.catch_pokemon(self.bot.cell['wild_pokemons'][0])
 
     def catch_pokemon(self, pokemon):

@@ -47,17 +47,12 @@
           "min_time": 60,
           "prioritize_vips": true,
           "snipe": false,
-          "mode": "distance",
-          "priority": {
+          "mode": "priority",
+          "catch": {
               "Bulbasaur": 1,
               "Squirtle": 3,
               "Mewtwo": 100
-          },
-          "ignore": [
-            "Drowzee",
-            "Jynx"
-        	]
-        }
+          }
       },
       {
         "type": "MoveToFort"

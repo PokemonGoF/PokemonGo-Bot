@@ -9,11 +9,6 @@ from utils import distance, format_dist, fort_details
 
 
 class MoveToFort(BaseTask):
-    SUPPORTED_TASK_API_VERSION = 1
-
-    def __init__(self, bot, config=None):
-        self.bot = bot
-
     def should_run(self):
         has_space_for_loot = self.bot.has_space_for_loot()
         if not has_space_for_loot:
