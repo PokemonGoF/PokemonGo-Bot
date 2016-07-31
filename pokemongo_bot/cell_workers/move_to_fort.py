@@ -11,8 +11,7 @@ class MoveToFort(object):
         self.bot = bot
 
     def should_run(self):
-        return (self.bot.config.forts_move_to_spin and \
-         self.bot.has_space_for_loot()) or self.bot.softban
+        return (self.bot.has_space_for_loot()) or self.bot.softban
 
     def work(self):
         if not self.should_run():
