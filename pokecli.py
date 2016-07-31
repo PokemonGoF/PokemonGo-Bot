@@ -146,8 +146,16 @@ def init_config():
         parser,
         load,
         short_flag="-ws",
-        long_flag="--websocket_server",
-        help="Start websocket server (format 'host:port')",
+        long_flag="--websocket.server_url",
+        help="Connect to websocket server at given url",
+        default=False
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-ws",
+        long_flag="--websocket.start_embedded_server",
+        help="Start embedded websocket server",
         default=False
     )
     add_config(
@@ -251,7 +259,7 @@ def init_config():
         type=str,
         default=None
     )
-    
+
     add_config(
         parser,
         load,
@@ -410,7 +418,7 @@ def init_config():
 
     config.hatch_eggs = load.get("hatch_eggs", True)
     config.longer_eggs_first = load.get("longer_eggs_first", True)
-    
+
     config.vips = load.get('vips',{})
 
     if config.auth_service not in ['ptc', 'google']:

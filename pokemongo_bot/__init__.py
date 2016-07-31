@@ -64,11 +64,12 @@ class PokemonGoBot(object):
     def _setup_event_system(self):
         handlers = [LoggingHandler()]
         if self.config.websocket_server:
-            websocket_handler = SocketIoHandler(self.config.websocket_server)
+            websocket_handler = SocketIoHandler(self.config.websocket_server_url)
             handlers.append(websocket_handler)
 
-            self.sio_runner = SocketIoRunner(self.config.websocket_server)
-            self.sio_runner.start_listening_async()
+            if self.config.websocket_start_embedded_server:
+                self.sio_runner = SocketIoRunner(self.config.websocket_server_url)
+                self.sio_runner.start_listening_async()
 
         self.event_manager = EventManager(*handlers)
 

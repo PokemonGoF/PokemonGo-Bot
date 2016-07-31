@@ -11,7 +11,14 @@ class SocketIoHandler(EventHandler):
         self.host, port_str = url.split(':')
         self.port = int(port_str)
 
-
-    def handle_event(self, event, sender, level, data):
+    def handle_event(self, event, sender, level, msg, data):
+        if msg:
+            date['msg'] = msg
         with SocketIO(self.host, self.port) as sio:
-            sio.emit('bot:broadcast', {'event': event, 'data': data})
+            sio.emit(
+                'bot:broadcast',
+                {
+                    'event': event,
+                    'data': data,
+                }
+            )
