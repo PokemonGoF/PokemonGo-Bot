@@ -8,6 +8,8 @@ from utils import distance, format_dist, fort_details
 
 class MoveToFort(BaseTask):
     def should_run(self):
+        if not self.bot.has_space_for_loot():
+            logger.log("Not moving to any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently.", 'yellow')
         return (self.bot.has_space_for_loot()) or self.bot.softban
 
     def work(self):
