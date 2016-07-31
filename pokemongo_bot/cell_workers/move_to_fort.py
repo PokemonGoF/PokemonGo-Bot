@@ -11,10 +11,8 @@ from utils import distance, format_dist, fort_details
 class MoveToFort(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
-    def initialize(self):
-        self.lure_distance = 0
-        self.lure_attraction = True #self.config.get("lure_attraction", True)
-        self.lure_max_distance = 2000 #self.config.get("lure_max_distance", 2000)
+    def __init__(self, bot, config=None):
+        self.bot = bot
 
     def should_run(self):
         has_space_for_loot = self.bot.has_space_for_loot()
