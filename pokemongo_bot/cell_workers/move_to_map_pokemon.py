@@ -21,6 +21,9 @@ class MoveToMapPokemon(object):
         self.db = self.load_db()
         self.pokemon_data = bot.pokemon_list
         self.caught = []
+        self.last_position = None
+        self.sniped_last_tick = False
+        self.sniped_pokemon = None
 
     def load_db(self):
         if self.config['db_file'] == None:
@@ -140,6 +143,16 @@ class MoveToMapPokemon(object):
             self.addCaught(self.bot.passon['catched_pokemon'])
             del self.bot.passon['catched_pokemon']
             return WorkerResult.SUCCESS
+
+        # teleport back if sniped
+        if self.sniped_last_tick:
+            logger.log('Teleport back')
+            self.bot.api.set_position(self.last_position[0], self.last_position[1], 0)
+            self.addCaught(self.sniped_pokemon)
+            self.sniped_last_tick = False
+            return WorkerResult.SUCCESS
+
+
         pokemon_on_map = self.get_pokemon_from_map()
         pokemon_on_map = self.score_pokemon(pokemon_on_map)
         pokemon_on_map.sort(key=lambda x: x['score'], reverse=True)
@@ -149,23 +162,26 @@ class MoveToMapPokemon(object):
 
         pokemon = pokemon_on_map[0]
         now = int(time.time())
+
+        if self.bot.config.walk <= 0 or self.config['snipe']:
+            logger.log('Teleporting to {} ({})'.format(pokemon['name'], format_dist(pokemon['dist'], unit)))
+            self.bot.api.set_position(pokemon['lat'], pokemon['lon'], 0)
+            self.last_position = self.bot.position[0:2]
+            self.sniped_last_tick = True
+            self.sniped_pokemon = pokemon
+            return WorkerResult.RUNNING
+
         logger.log('Moving towards {}, {} left'.format(pokemon['name'], format_dist(pokemon['dist'], unit)))
-
-
-        if self.bot.config.walk > 0 and not self.config['snipe']:
-            step_walker = StepWalker(
-                    self.bot,
-                    self.bot.config.walk,
-                    pokemon['lat'],
-                    pokemon['lon']
-                )
-        else:
-            self.bot.api.set_position(pokemon['lat'], pokemon['lon'])
+        step_walker = StepWalker(
+            self.bot,
+            self.bot.config.walk,
+            pokemon['lat'],
+            pokemon['lon']
+        )
 
         if not step_walker.step():
             return WorkerResult.RUNNING
 
         logger.log('Arrived at {}'.format(pokemon['name']))
         self.addCaught(pokemon)
-
         return WorkerResult.SUCCESS
