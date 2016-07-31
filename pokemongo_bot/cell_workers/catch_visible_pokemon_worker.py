@@ -1,8 +1,11 @@
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
+
 import json
 
 from pokemongo_bot import logger
 from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
-from utils import distance
+from .utils import distance
 
 
 class CatchVisiblePokemonWorker(object):

@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import sleep
 
@@ -24,11 +26,14 @@ class IncubateEggsWorker(object):
 
         if self.used_incubators and IncubateEggsWorker.last_km_walked != self.km_walked:
             self.used_incubators.sort(key=lambda x: x.get("km"))
-            km_left = self.used_incubators[0]['km']-self.km_walked
+            km_left = self.used_incubators[0]['km'] - self.km_walked
             if km_left <= 0:
                 self._hatch_eggs()
             else:
-                logger.log('[x] Next egg incubates in {:.2f} km'.format(km_left),'yellow')
+                logger.log(
+                    '[x] Next egg incubates in {:.2f} km'.format(km_left),
+                    'yellow'
+                )
             IncubateEggsWorker.last_km_walked = self.km_walked
 
         sorting = self.bot.config.longer_eggs_first
@@ -43,13 +48,27 @@ class IncubateEggsWorker(object):
                 if egg["used"] or egg["km"] == -1:
                     continue
                 if self.bot.config.debug:
-                    logger.log('[x] Attempting to apply incubator {} to egg {}'.format(incubator['id'], egg['id']))
-                self.bot.api.use_item_egg_incubator(item_id=incubator["id"], pokemon_id=egg["id"])
+                    logger.log(
+                        '[x] Attempting to apply incubator {} to egg {}'.format(
+                            incubator['id'], egg['id'])
+                    )
+                self.bot.api.use_item_egg_incubator(
+                    item_id=incubator["id"], pokemon_id=egg["id"]
+                )
                 ret = self.bot.api.call()
                 if ret:
-                    code = ret.get("responses", {}).get("USE_ITEM_EGG_INCUBATOR", {}).get("result", 0)
+                    code = ret.get(
+                        "responses", {}
+                    ).get(
+                        "USE_ITEM_EGG_INCUBATOR", {}
+                    ).get("result", 0)
+
                     if code == 1:
-                        logger.log('[x] Now incubating a ' + str(egg["km"]) + "km egg", 'green')
+                        logger.log(
+                            '[x] Now incubating a {eggkm}km egg'.format(
+                                eggkm=str(egg["km"])
+                            ), 'green'
+                        )
                         egg["used"] = True
                         incubator["used"] = True
                         break
@@ -75,7 +94,9 @@ class IncubateEggsWorker(object):
         for inv_data in inv:
             inv_data = inv_data.get("inventory_item_data", {})
             if "egg_incubators" in inv_data:
-                incubators = inv_data.get("egg_incubators", {}).get("egg_incubator",[])
+                incubators = inv_data.get(
+                    "egg_incubators", {}
+                ).get("egg_incubator", [])
                 if isinstance(incubators, basestring):  # checking for old response
                     incubators = [incubators]
                 for incubator in incubators:
@@ -109,7 +130,8 @@ class IncubateEggsWorker(object):
                     })
                 continue
             if "player_stats" in inv_data:
-                self.km_walked = inv_data.get("player_stats", {}).get("km_walked", 0)
+                self.km_walked = inv_data.get(
+                    "player_stats", {}).get("km_walked", 0)
         return matched_pokemon
 
     def _hatch_eggs(self):
@@ -117,7 +139,11 @@ class IncubateEggsWorker(object):
         response_dict = self.bot.api.call()
         log_color = 'green'
         try:
-            result = reduce(dict.__getitem__, ["responses", "GET_HATCHED_EGGS"], response_dict)
+            result = reduce(
+                dict.__getitem__,
+                ["responses", "GET_HATCHED_EGGS"],
+                response_dict
+            )
         except KeyError:
             return
         if 'pokemon_id' in result:
@@ -131,16 +157,30 @@ class IncubateEggsWorker(object):
             pokemon_data = self._check_inventory(pokemon_ids)
         except:
             pass  # just proceed with what we have
+            pokemon_data = []
         for pokemon in pokemon_data:
             # pokemon ids seem to be offset by one
-            pokemon['name'] = self.bot.pokemon_list[(pokemon['pokemon_id']-1)]['Name']
+            pokemon['name'] = self.bot.pokemon_list[
+                (pokemon['pokemon_id']-1)
+            ]['Name']
         logger.log("-"*30, log_color)
-        logger.log("[!] {} eggs hatched! Received:".format(len(pokemon_data)), log_color)
+        logger.log(
+            "[!] {} eggs hatched! Received:".format(
+                len(pokemon_data)
+            ), log_color)
         for i in range(len(pokemon_data)):
-            logger.log("-"*30,log_color)
-            logger.log("[!] Pokemon: {}".format(pokemon_data[i]['name']), log_color)
-            logger.log("[!] CP: {}".format(pokemon_data[i]['cp']), log_color)
-            logger.log("[!] IV: {}".format("/".join(map(str, pokemon_data[i]['iv']))), log_color)
+            logger.log("-"*30, log_color)
+            logger.log(
+                "[!] Pokemon: {}".format(pokemon_data[i]['name']), log_color
+            )
+            logger.log(
+                "[!] CP: {}".format(pokemon_data[i]['cp']), log_color
+            )
+            logger.log(
+                "[!] IV: {}".format(
+                    "/".join(map(str, pokemon_data[i]['iv']))
+                ), log_color
+            )
             logger.log("[!] XP: {}".format(xp[i]), log_color)
             logger.log("[!] Stardust: {}".format(stardust[i]), log_color)
             logger.log("[!] Candy: {}".format(candy[i]), log_color)

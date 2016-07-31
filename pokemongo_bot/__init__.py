@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
 
 import datetime
 import json
@@ -13,18 +14,18 @@ from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
 from pgoapi.utilities import f2i, get_cell_ids
 
-import cell_workers
-import logger
-from api_wrapper import ApiWrapper
-from cell_workers.utils import distance
-from event_manager import EventManager
-from human_behaviour import sleep
-from item_list import Item
-from metrics import Metrics
-from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler
-from pokemongo_bot.socketio_server.runner import SocketIoRunner
-from spiral_navigator import SpiralNavigator
-from worker_result import WorkerResult
+from . import cell_workers
+from . import logger
+from .api_wrapper import ApiWrapper
+from .cell_workers.utils import distance
+from .event_handlers import LoggingHandler, SocketIoHandler
+from .event_manager import EventManager
+from .human_behaviour import sleep
+from .item_list import Item
+from .metrics import Metrics
+from .socketio_server.runner import SocketIoRunner
+from .spiral_navigator import SpiralNavigator
+from .worker_result import WorkerResult
 
 
 class PokemonGoBot(object):

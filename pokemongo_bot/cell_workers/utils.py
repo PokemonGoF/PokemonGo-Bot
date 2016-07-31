@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
 import struct
+from colorama import init
 from math import asin, cos, sqrt
 
-from colorama import init
 
 init()
 
@@ -15,6 +16,8 @@ TIME_PERIODS = (
 )
 
 FORT_CACHE = {}
+
+
 def fort_details(bot, fort_id, latitude, longitude):
     """
     Lookup fort metadata and (if possible) serve from cache.
@@ -24,7 +27,9 @@ def fort_details(bot, fort_id, latitude, longitude):
         """
         Lookup the fort details and cache the response for future use.
         """
-        bot.api.fort_details(fort_id=fort_id, latitude=latitude, longitude=longitude)
+        bot.api.fort_details(
+            fort_id=fort_id, latitude=latitude, longitude=longitude
+        )
 
         try:
             response_dict = bot.api.call()
@@ -34,6 +39,7 @@ def fort_details(bot, fort_id, latitude, longitude):
 
     # Just to avoid KeyErrors
     return FORT_CACHE.get(fort_id, {})
+
 
 def encode(cellid):
     output = []
@@ -110,7 +116,8 @@ def dist_to_str(distance, unit):
 
 
 def format_dist(distance, unit):
-    # Assumes that distance is in meters and converts it to the given unit, then a formatted string is returned
+    # Assumes that distance is in meters and converts it to the given unit,
+    # then a formatted string is returned
     # Ex: format_dist(1500, 'km') returns the string "1.5km"
     return dist_to_str(convert(distance, 'm', unit), unit)
 
@@ -125,7 +132,7 @@ def format_time(seconds):
             p = '{0}{1}'.format(unit, 's'*(num!=1))
             runtime.append('{0} {1}'.format(num, p))
 
-    runtime.append('{0} second{1}'.format(duration, 's'*(duration!=1)))
+    runtime.append('{0} second{1}'.format(duration, 's'*(duration != 1)))
 
     return ', '.join(runtime)
 

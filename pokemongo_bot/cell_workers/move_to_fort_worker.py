@@ -1,8 +1,10 @@
+from __future__ import absolute_import, unicode_literals
+
 from pokemongo_bot import logger
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
-from utils import distance, format_dist, fort_details
+from .utils import distance, format_dist, fort_details
 
 
 class MoveToFortWorker(object):
@@ -11,9 +13,11 @@ class MoveToFortWorker(object):
         self.bot = bot
 
     def should_run(self):
-        return (self.bot.config.forts_spin and \
-         self.bot.config.forts_move_to_spin and \
-         self.bot.has_space_for_loot()) or self.bot.softban
+        return (
+            self.bot.config.forts_spin and
+            self.bot.config.forts_move_to_spin and
+            self.bot.has_space_for_loot()
+        ) or self.bot.softban
 
     def work(self):
         if not self.should_run():
@@ -29,8 +33,9 @@ class MoveToFortWorker(object):
         fortID = nearest_fort['id']
         details = fort_details(self.bot, fortID, lat, lng)
         fort_name = details.get('name', 'Unknown').encode('utf8', 'replace')
-        
-        unit = self.bot.config.distance_unit  # Unit to use when printing formatted distance
+
+        # Unit to use when printing formatted distance
+        unit = self.bot.config.distance_unit
 
         dist = distance(
             self.bot.position[0],
@@ -40,7 +45,9 @@ class MoveToFortWorker(object):
         )
 
         if dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
-            logger.log('Moving towards fort {}, {} left'.format(fort_name, format_dist(dist, unit)))
+            logger.log('Moving towards fort {}, {} left'.format(
+                fort_name.decode('utf-8'), format_dist(dist, unit))
+            )
 
             step_walker = StepWalker(
                 self.bot,
@@ -61,9 +68,12 @@ class MoveToFortWorker(object):
         # Remove stops that are still on timeout
         forts = filter(lambda x: x["id"] not in self.bot.fort_timeouts, forts)
 
-        # Remove all forts which were spun in the last ticks to avoid circles if set
+        # Remove all forts which were spun in the last ticks to avoid circles
+        # if set
         if self.bot.config.forts_avoid_circles:
-            forts = filter(lambda x: x["id"] not in self.bot.recent_forts, forts)
+            forts = filter(
+                lambda x: x["id"] not in self.bot.recent_forts, forts
+            )
 
         if len(forts) > 0:
             return forts[0]
