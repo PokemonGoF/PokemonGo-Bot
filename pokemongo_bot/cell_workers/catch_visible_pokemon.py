@@ -6,13 +6,10 @@ from utils import distance
 
 
 class CatchVisiblePokemon(object):
-    def __init__(self, bot):
+    def __init__(self, bot, config):
         self.bot = bot
 
     def work(self):
-        if not self.bot.config.catch_pokemon:
-            return
-
         if 'catchable_pokemons' in self.bot.cell and len(self.bot.cell['catchable_pokemons']) > 0:
             logger.log('Something rustles nearby!')
             # Sort all by distance from current pos- eventually this should

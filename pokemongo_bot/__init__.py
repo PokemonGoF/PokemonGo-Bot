@@ -52,12 +52,11 @@ class PokemonGoBot(object):
     def start(self):
         self._setup_logging()
         self._setup_api()
-        self._setup_workers()
 
         if self.config.navigator_type == 'spiral':
-            self.navigator=cell_workers.FollowSpiral(self)
+            self.navigator = cell_workers.FollowSpiral
         elif self.config.navigator_type == 'path':
-            self.navigator=cell_workers.FollowPath(self)
+            self.navigator = cell_workers.FollowPath
 
         random.seed()
 
@@ -90,8 +89,6 @@ class PokemonGoBot(object):
         for worker in self.workers:
             if worker.work() == WorkerResult.RUNNING:
                 return
-
-        self.navigator.take_step()
 
     def get_meta_cell(self):
         location = self.position[0:2]
@@ -297,20 +294,6 @@ class PokemonGoBot(object):
         self.update_inventory()
         # send empty map_cells and then our position
         self.update_web_location()
-
-    def _setup_workers(self):
-        self.workers = [
-            cell_workers.HandleSoftBan(self),
-            cell_workers.IncubateEggs(self),
-            cell_workers.TransferPokemon(self),
-            cell_workers.EvolveAll(self),
-            cell_workers.RecycleItems(self),
-            cell_workers.CatchVisiblePokemon(self),
-            cell_workers.SpinFort(self),
-            cell_workers.MoveToFort(self),
-            cell_workers.CatchLuredPokemon(self),
-            cell_workers.SpinFort(self)
-        ]
 
     def _print_character_info(self):
         # get player profile call

@@ -6,7 +6,7 @@ from pokemongo_bot.step_walker import StepWalker
 
 
 class FollowSpiral(object):
-    def __init__(self, bot):
+    def __init__(self, bot, config):
         self.bot = bot
 
         self.steplimit = self.bot.config.max_steps
@@ -53,7 +53,7 @@ class FollowSpiral(object):
             m += 1
         return coords
 
-    def take_step(self):
+    def work(self):
         point = self.points[self.ptr]
         self.cnt += 1
 

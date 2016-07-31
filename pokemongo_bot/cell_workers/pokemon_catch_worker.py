@@ -31,10 +31,6 @@ class PokemonCatchWorker(object):
         if response_dict and 'responses' in response_dict:
             if self.response_key in response_dict['responses']:
                 if self.response_status_key in response_dict['responses'][self.response_key]:
-                    if response_dict['responses'][self.response_key][self.response_status_key] is 7:
-                        if self.config.release_pokemon:
-                            raise RuntimeError('Pokemon Bag is full!')
-
                     if response_dict['responses'][self.response_key][self.response_status_key] is 1:
                         cp = 0
                         if 'wild_pokemon' in response_dict['responses'][self.response_key] or 'pokemon_data' in \

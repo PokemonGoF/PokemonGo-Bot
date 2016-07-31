@@ -9,7 +9,7 @@ from pokemongo_bot.worker_result import WorkerResult
 
 class HandleSoftBan(object):
 
-    def __init__(self, bot):
+    def __init__(self, bot, config):
         self.bot = bot
 
     def work(self):
@@ -56,4 +56,4 @@ class HandleSoftBan(object):
         self.bot.api.call()
 
     def should_run(self):
-        return self.bot.config.softban_fix and self.bot.softban
+        return self.bot.softban

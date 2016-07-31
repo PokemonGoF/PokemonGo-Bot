@@ -12,11 +12,11 @@ from utils import distance, format_time, fort_details
 
 
 class SpinFort(object):
-    def __init__(self, bot):
+    def __init__(self, bot, config):
         self.bot = bot
 
     def should_run(self):
-        return self.bot.config.forts_spin and self.bot.has_space_for_loot()
+        return self.bot.has_space_for_loot()
 
     def work(self):
         fort = self.get_fort_in_range()
