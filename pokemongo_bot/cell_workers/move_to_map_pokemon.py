@@ -3,6 +3,7 @@
 import json
 import time
 import sqlite3
+import requests
 from pokemongo_bot import logger
 from pokemongo_bot.cell_workers.utils import distance, i2f, format_dist
 from pokemongo_bot.human_behaviour import sleep
@@ -15,7 +16,7 @@ class MoveToMapPokemon(object):
     def __init__(self, bot, config):
         self.bot = bot
         self.config = config
-        self.ptr = 0
+        self.last_map_update = 0
         self.db = self.load_db()
         self.pokemon_data = bot.pokemon_list
         self.caught = []
@@ -102,7 +103,29 @@ class MoveToMapPokemon(object):
             new_list.append(pokemon)
         return new_list
 
+    def update_map_location(self):
+        r = requests.get('{}/loc'.format(self.config['address']))
+        if r.status_code != 200:
+            logger.log('Could not reach PokemonGo-Map Server', color='red')
+            return
+        j = r.json()
+
+        dist = distance(
+            self.bot.position[0],
+            self.bot.position[1],
+            j['lat'],
+            j['lng']
+        )
+
+        # update map when 500m away from center and last update longer than 2 minutes away
+        now = int(time.time())
+        if dist > 500 and now - self.last_map_update > 2 * 60:
+            requests.post('{}/next_loc?lat={}&lon={}'.format(self.config['address'], self.bot.position[0], self.bot.position[1]))
+            logger.log('Updated PokemonGo-Map position')
+            self.last_map_update = now
+
     def work(self):
+        self.update_map_location()
         unit = self.bot.config.distance_unit
         pokemon_on_map = self.get_pokemon_from_map()
         pokemon_on_map = self.score_pokemon(pokemon_on_map)
