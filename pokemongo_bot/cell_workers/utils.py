@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import struct
-from math import asin, cos, sqrt
+from math import asin, atan, cos, exp, log, pi, sin, sqrt, tan
 
 from colorama import init
+from networkx.algorithms.clique import find_cliques
+
+import networkx as nx
+import numpy as np
 
 init()
 
@@ -145,9 +149,85 @@ def print_yellow(message):
 def print_red(message):
     print(u'\033[91m' + message.decode('utf-8') + '\033[0m')
 
+
 def float_equal(f1, f2, epsilon=1e-8):
   if f1 > f2:
     return f1 - f2 < epsilon
   if f2 > f1:
     return f2 - f1 < epsilon
   return True
+
+
+# pseudo mercator projection
+EARTH_RADIUS_MAJ = 6378137.0
+EARTH_RADIUS_MIN = 6356752.3142
+RATIO = (EARTH_RADIUS_MIN / EARTH_RADIUS_MAJ)
+ECCENT = sqrt(1.0 - RATIO**2)
+COM = 0.5 * ECCENT
+
+
+def coord2merc(lat, lng):
+    return lng2x(lng), lat2y(lat)
+
+
+def merc2coord(vec):
+    return y2lat(vec[1]), x2lng(vec[0])
+
+
+def y2lat(y):
+    ts = exp(-y / EARTH_RADIUS_MAJ)
+    phi = pi / 2.0 - 2 * atan(ts)
+    dphi = 1.0
+    for i in range(15):
+        if abs(dphi) < 0.000000001:
+            break
+        con = ECCENT * sin(phi)
+        dphi = pi / 2.0 - 2 * atan (ts * pow((1.0 - con) / (1.0 + con), COM)) - phi
+        phi += dphi
+    return rad2deg(phi)
+
+
+def lat2y(lat):
+    lat = min(89.5, max(lat, -89.5))
+    phi = deg2rad(lat)
+    sinphi = sin(phi)
+    con = ECCENT * sinphi
+    con = pow((1.0 - con) / (1.0 + con), COM)
+    ts = tan(0.5 * (pi * 0.5 - phi)) / con
+    return 0 - EARTH_RADIUS_MAJ * log(ts)
+
+
+def x2lng(x):
+    return rad2deg(x) / EARTH_RADIUS_MAJ
+
+
+def lng2x(lng):
+    return EARTH_RADIUS_MAJ * deg2rad(lng);
+
+
+def deg2rad(deg):
+    return deg * pi / 180.0
+
+
+def rad2deg(rad):
+    return rad * 180.0 / pi
+
+
+def find_biggest_cluster(radius, points):
+    graph = nx.Graph()
+    for point in points:
+            f = point['latitude'], point['longitude']
+            graph.add_node(f)
+            for node in graph.nodes():
+                if node != f and distance(f[0], f[1], node[0], node[1]) <= radius*2:
+                    graph.add_edge(f, node)
+    cliques = list(find_cliques(graph))
+    if len(cliques) > 0:
+        max_clique = max(list(find_cliques(graph)), key=len)
+        merc_clique = [coord2merc(x[0], x[1]) for x in max_clique]
+        clique_x, clique_y = zip(*merc_clique)
+        best_point = np.mean(clique_x), np.mean(clique_y)
+        best_coord = merc2coord(best_point)
+        return {'latitude': best_coord[0], 'longitude': best_coord[1], 'num_points': len(max_clique)}
+    else:
+        return None
