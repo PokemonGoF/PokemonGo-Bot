@@ -2,7 +2,6 @@
 
 import json
 import time
-import sqlite3
 import requests
 import base64
 from pokemongo_bot import logger
@@ -19,57 +18,44 @@ class MoveToMapPokemon(object):
         self.bot = bot
         self.config = config
         self.last_map_update = 0
-        self.db = self.load_db()
         self.pokemon_data = bot.pokemon_list
         self.caught = []
         self.unit = self.bot.config.distance_unit
 
-    def load_db(self):
-        if not 'db_file' in self.config:
-            raise RuntimeError('You need to specify a db file (sqlite)')
-
-        try:
-            conn = sqlite3.connect(self.config['db_file'])
-        except:
-            raise RuntimeError('Could not open db file "{}"'.format(self.config['db_file']))
-        return conn
-
     def get_pokemon_from_map(self):
-        cursor = self.db.cursor()
+        try:
+            r = requests.get('{}/raw_data?gyms=false&scanned=false'.format(self.config['address']))
+        except:
+            logger.log('Could not reach PokemonGo-Map Server', color='red')
+            return []
+
+        raw_data = r.json()
 
         pokemon_list = []
+        now = int(time.time())
 
-        now = int(time.time() + self.config['min_time'])
-        for row in cursor.execute('SELECT * FROM pokemon WHERE datetime(disappear_time) > datetime(?, "unixepoch");', (now, )):
-            encounter_id = long(base64.b64decode(row[0]))
-            spawn_point_id = row[1]
-            pokemon_id = row[2]
-            lat = row[3]
-            lon = row[4]
+        for pokemon in raw_data['pokemons']:
+            pokemon['encounter_id'] = long(base64.b64decode(pokemon['encounter_id']))
+            pokemon['spawn_point_id'] = pokemon['spawnpoint_id']
 
-            dist = distance(
+            pokemon['dist'] = distance(
                 self.bot.position[0],
                 self.bot.position[1],
-                lat,
-                lon
+                pokemon['latitude'],
+                pokemon['longitude'],
             )
 
-            if dist > self.config['max_distance'] and self.config['mode'] != 'snipe':
+            if pokemon['disappear_time'] < (now + self.config['min_time']):
                 continue
 
-            if encounter_id in self.caught:
+            if pokemon['dist'] > self.config['max_distance'] and self.config['mode'] != 'snipe':
                 continue
 
-            pokemon_list.append({
-                'encounter_id': encounter_id,
-                'spawn_point_id': spawn_point_id,
-                'pokemon_id': pokemon_id,
-                'lat': lat,
-                'lon': lon,
-                'dist': dist
-            })
+            if pokemon['encounter_id'] in self.caught:
+                continue
 
-        cursor.close()
+            pokemon_list.append(pokemon)
+
         return pokemon_list
 
     def get_name_from_id(self, pokemon_id):
@@ -126,8 +112,9 @@ class MoveToMapPokemon(object):
         return new_list
 
     def update_map_location(self):
-        r = requests.get('{}/loc'.format(self.config['address']))
-        if r.status_code != 200:
+        try:
+            r = requests.get('{}/loc'.format(self.config['address']))
+        except:
             logger.log('Could not reach PokemonGo-Map Server', color='red')
             return
         j = r.json()
@@ -152,12 +139,10 @@ class MoveToMapPokemon(object):
         self.bot.heartbeat()
 
         logger.log('Teleporting to {} ({})'.format(pokemon['name'], format_dist(pokemon['dist'], self.unit)), 'green')
-        self.bot.api.set_position(pokemon['lat'], pokemon['lon'], 0)
+        self.bot.api.set_position(pokemon['latitude'], pokemon['longitude'], 0)
         cell = self.bot.get_meta_cell()
 
         logger.log('Encounter pokemon', 'green')
-        pokemon['latitude'] = pokemon['lat']
-        pokemon['longitude'] = pokemon['lon']
         catchWorker = PokemonCatchWorker(pokemon, self.bot)
         apiEncounterResponse = catchWorker.create_encounter_api_call()
 
@@ -186,7 +171,7 @@ class MoveToMapPokemon(object):
         pokemon_on_map.sort(key=lambda x: x['score'], reverse=True)
 
         if (len(pokemon_on_map) < 1):
-            return
+            return WorkerResult.SUCCESS
 
         pokemon = pokemon_on_map[0]
         now = int(time.time())
@@ -198,8 +183,8 @@ class MoveToMapPokemon(object):
         step_walker = StepWalker(
             self.bot,
             self.bot.config.walk,
-            pokemon['lat'],
-            pokemon['lon']
+            pokemon['latitude'],
+            pokemon['longitude']
         )
 
         if not step_walker.step():
