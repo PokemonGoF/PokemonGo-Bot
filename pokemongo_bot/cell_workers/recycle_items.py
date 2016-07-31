@@ -1,11 +1,7 @@
 from pokemongo_bot import logger
+from pokemongo_bot.cell_workers.base_task import BaseTask
 
-
-class RecycleItems(object):
-
-    def __init__(self, bot, config):
-        self.bot = bot
-
+class RecycleItems(BaseTask):
     def work(self):
         self.bot.latest_inventory = None
         item_count_dict = self.bot.item_inventory_count('all')
