@@ -5,7 +5,7 @@ import time
 import requests
 import base64
 from pokemongo_bot import logger
-from pokemongo_bot.cell_workers.utils import distance, i2f, format_dist
+from pokemongo_bot.cell_workers.utils import distance, i2f, format_dist, format_time
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
@@ -37,6 +37,7 @@ class MoveToMapPokemon(object):
         for pokemon in raw_data['pokemons']:
             pokemon['encounter_id'] = long(base64.b64decode(pokemon['encounter_id']))
             pokemon['spawn_point_id'] = pokemon['spawnpoint_id']
+            pokemon['disappear_time'] = int(pokemon['disappear_time'] / 1000)
 
             pokemon['dist'] = distance(
                 self.bot.position[0],
@@ -179,7 +180,7 @@ class MoveToMapPokemon(object):
         if self.bot.config.walk <= 0 or self.config['snipe']:
             return self.snipe(pokemon)
 
-        logger.log('Moving towards {}, {} left'.format(pokemon['name'], format_dist(pokemon['dist'], self.unit)))
+        logger.log('Moving towards {}, {} left ({})'.format(pokemon['name'], format_dist(pokemon['dist'], self.unit), format_time(pokemon['disappear_time'] - now)))
         step_walker = StepWalker(
             self.bot,
             self.bot.config.walk,
