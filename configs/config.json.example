@@ -6,6 +6,9 @@
     "gmapkey": "GOOGLE_MAPS_API_KEY",
     "tasks": [
       {
+        "type": "SnipePokemon"
+      },
+      {
         "type": "HandleSoftBan"
       },
       {
