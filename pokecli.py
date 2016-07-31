@@ -370,10 +370,42 @@ def init_config():
     add_config(
         parser,
         load,
-        long_flag="--map_object_cache_time",
-        help="Amount of seconds to keep the map object in cache (bypass Niantic throttling)",
-        type=float,
-        default=5.0
+        long_flag="--map.db_file",
+        help="PokemonGo-Map db file",
+        type=str,
+        default=None
+    )
+    add_config(
+        parser,
+        load,
+        long_flag="--map.max_distance",
+        help="Max distance to move for a pokemon in meters",
+        type=int,
+        default=100
+    )
+    add_config(
+        parser,
+        load,
+        long_flag="--map.min_time",
+        help="Min time for the monster until despawn in seconds",
+        type=int,
+        default=30
+    )
+    add_config(
+        parser,
+        load,
+        long_flag="--map.prioritize_vips",
+        help="Catch VIP Pokemon from the map first",
+        type=bool,
+        default=True
+    )
+    add_config(
+        parser,
+        load,
+        long_flag="--map.mode",
+        help="Score pokemon either by distance or priority",
+        type=str,
+        default="distance"
     )
 
     # Start to parse other attrs
@@ -392,9 +424,8 @@ def init_config():
 
     config.vips = load.get('vips', {})
 
-    if config.map_object_cache_time < 0.0:
-        parser.error("--map_object_cache_time is out of range! (should be >= 0.0)")
-        return None
+    config.vips = load.get('vips', {})
+    config.map_priority = load.get('map', {}).get('priority', {})
 
     if len(config.raw_tasks) == 0:
         logging.error("No tasks are configured. Did you mean to configure some behaviors? Read https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Configuration-files#configuring-tasks for more information")
