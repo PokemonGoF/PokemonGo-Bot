@@ -1,3 +1,5 @@
+import time
+
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.cell_workers.base_task import BaseTask
@@ -157,12 +159,29 @@ class IncubateEggs(BaseTask):
             logger.log("[!] Eggs hatched, but we had trouble with the response. Please check your inventory to find your new pokemon!",'red')
             return
         logger.log("[!] {} eggs hatched! Received:".format(len(pokemon_data)), log_color)
+        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+        file_output = ('-'*30) + '\n'
+        file_output += 'Hatched: ' + timestamp + '\n'
         for i in range(len(pokemon_data)):
+            iv_stats = '/'.join(map(str, pokemon_data[i]['iv']))
+            iv_potential = (sum(pokemon_data[i]['iv'])/self.max_iv)
             logger.log("-"*30,log_color)
             logger.log("[!] Pokemon: {}".format(pokemon_data[i]['name']), log_color)
             logger.log("[!] CP: {}".format(pokemon_data[i]['cp']), log_color)
-            logger.log("[!] IV: {} ({:.2f})".format("/".join(map(str, pokemon_data[i]['iv'])),(sum(pokemon_data[i]['iv'])/self.max_iv)), log_color)
+            logger.log("[!] IV: {} ({:.2f})".format(iv_stats, iv_potential), log_color)
             logger.log("[!] XP: {}".format(xp[i]), log_color)
             logger.log("[!] Stardust: {}".format(stardust[i]), log_color)
             logger.log("[!] Candy: {}".format(candy[i]), log_color)
+
+            file_output += "[!] Pokemon: {}\n".format(pokemon_data[i]['name'])
+            file_output += "[!] CP: {}\n".format(pokemon_data[i]['cp'])
+            file_output += "[!] IV: {} ({:.2f})\n".format(iv_stats, iv_potential)
+            file_output += "[!] XP: {}\n".format(xp[i])
+            file_output += "[!] Stardust: {}\n".format(stardust[i])
+            file_output += "[!] Candy: {}\n".format(candy[i])
+
         logger.log("-"*30, log_color)
+        file_output += ('-'*30) + '\n'
+        hatched_file = 'hatched-' + self.bot.config.username + '.txt'
+        with open(hatched_file, 'a') as outfile:
+            outfile.write(file_output)
