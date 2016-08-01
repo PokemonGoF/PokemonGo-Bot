@@ -12,6 +12,12 @@
         "type": "CollectLevelUpReward"
       },
       {
+        "type": "NicknamePokemon",
+        "config": {
+          "nickname_template": "{iv_pct}_{iv_ads}"
+        }
+      },
+      {
         "type": "IncubateEggs",
         "config": {
           "longer_eggs_first": true
