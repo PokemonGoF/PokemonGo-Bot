@@ -9,6 +9,7 @@ class TransferPokemon(BaseTask):
     def work(self):
         pokemon_groups = self._release_pokemon_get_groups()
         candies = self._get_candies()
+        evolvable = 0
         for pokemon_id in pokemon_groups:
             group = pokemon_groups[pokemon_id]
 
@@ -82,6 +83,7 @@ class TransferPokemon(BaseTask):
                             evo_pokemon = group
                             group = []
 
+                        evolvable += len(evo_pokemon)
                         if len(evo_pokemon) > 0:
                             logger.log("Keep {} {}, for evolution - {} candies".format(len(evo_pokemon),
                                                                              pokemon_name, candy), "green")
@@ -94,6 +96,9 @@ class TransferPokemon(BaseTask):
 
                 for pokemon in group:
                     self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
+
+        logger.log("{} pokemon transferred total. {} evolutions ready (based on pokemons additional to the ones kept"
+                   " with cp/iv criteria)".format(len(group), evolvable), "green")
 
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
