@@ -16,7 +16,6 @@ class MoveToMapPokemon(BaseTask):
         self.last_map_update = 0
         self.pokemon_data = self.bot.pokemon_list
         self.caught = []
-        self.seen = []
         self.unit = self.bot.config.distance_unit
 
     def get_pokemon_from_map(self):
@@ -38,7 +37,7 @@ class MoveToMapPokemon(BaseTask):
             pokemon['name'] = self.pokemon_data[pokemon['pokemon_id'] - 1]['Name']
             pokemon['is_vip'] = pokemon['name'] in self.bot.config.vips
 
-            if pokemon['name'] not in self.config['catch'] and pokemon['name'] not in self.bot.config.vips:
+            if pokemon['name'] not in self.config['catch'] and not pokemon['is_vip']:
                 continue
 
             if pokemon['disappear_time'] < (now + self.config['min_time']):
@@ -80,20 +79,6 @@ class MoveToMapPokemon(BaseTask):
                 return True
         return False
 
-    def add_seen(self, pokemon):
-        for seen_pokemon in self.seen:
-            if seen_pokemon['encounter_id'] == pokemon['encounter_id']:
-                return
-        if len(self.seen) >= 200:
-            self.seen.pop(0)
-        self.seen.append(pokemon)
-
-    def remove_seen(self, pokemon):
-        for idx in xrange(len(self.seen)):
-            if self.seen[idx]['encounter_id'] == pokemon['encounter_id']:
-                del self.seen[idx]
-                return
-
     def update_map_location(self):
         if not self.config['update_map']:
             return
@@ -131,7 +116,7 @@ class MoveToMapPokemon(BaseTask):
         api_encounter_response = catch_worker.create_encounter_api_call()
 
         time.sleep(2)
-        logger.log('Teleport back to previous location..', 'green')
+        logger.log('Teleporting back to previous location..', 'green')
         self.bot.api.set_position(last_position[0], last_position[1], 0)
         time.sleep(2)
         self.bot.heartbeat()
@@ -144,22 +129,6 @@ class MoveToMapPokemon(BaseTask):
 
     def work(self):
         self.update_map_location()
-
-        # remove caught pokemon from candidates
-        if not self.config['snipe']:
-            cell = self.bot.get_meta_cell()
-            for catchable_pokemon in cell['catchable_pokemons']:
-                self.add_seen(catchable_pokemon)
-
-            for seen_pokemon in self.seen:
-                caught = True
-                for catchable_pokemon in self.bot.cell['catchable_pokemons']:
-                    if catchable_pokemon['encounter_id'] == seen_pokemon['encounter_id']:
-                        caught = False
-                        break
-                if caught:
-                    self.remove_seen(seen_pokemon)
-                    self.add_caught(seen_pokemon)
 
         pokemon_list = self.get_pokemon_from_map()
         pokemon_list.sort(key=lambda x: x['dist'])
