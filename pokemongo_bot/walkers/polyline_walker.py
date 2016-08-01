@@ -12,7 +12,13 @@ class PolylineWalker(StepWalker):
         super(PolylineWalker, self).__init__(bot, speed, dest_lat, dest_lng)
         self.polyline_walker = Polyline((self.api._position_lat, self.api._position_lng),
                                         (self.destLat, self.destLng), self.speed)
-        logger.log('[#] {}'.format(self.polyline_walker.URL))
+        self.bot.event_manager.emit(
+            'polyline_request',
+            sender=self,
+            level='info',
+            formatted="{url}",
+            data={'url': self.polyline_walker.URL}
+        )
 
     def step(self):
         cLat, cLng = self.api._position_lat, self.api._position_lng

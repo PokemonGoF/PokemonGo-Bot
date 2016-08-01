@@ -39,11 +39,23 @@ class FollowCluster(object):
             cnt = self.dest['num_points']
 
             if not self.is_at_destination:
+                msg = log_lure_avail_str + (
+                    "Move to destiny {num_points}. {forts} "
+                    "pokestops will be in range of {radius}. Walking {distance}m."
+                )
+                self.bot.event_manager.emit(
+                    'found_cluster',
+                    sender=self,
+                    level='info',
+                    formatted=msg,
+                    data={
+                        'num_points': cnt,
+                        'forts': log_lured_str,
+                        'radius': str(self.radius),
+                        'distance': str(distance(self.bot.position[0], self.bot.position[1], lat, lng))
+                    }
+                )
 
-                log_str = log_lure_avail_str + 'Move to destiny. ' + str(cnt) + ' ' + log_lured_str + \
-                          'pokestops will be in range of ' + str(self.radius) + 'm. Arrive in ' \
-                          + str(distance(self.bot.position[0], self.bot.position[1], lat, lng)) + 'm.'
-                logger.log(log_str)
                 self.announced = False
 
                 if self.bot.config.walk > 0:
@@ -61,14 +73,19 @@ class FollowCluster(object):
                     self.bot.api.set_position(lat, lng)
 
             elif not self.announced:
-                log_str = 'Arrived at destiny. ' + str(cnt) + ' pokestops are in range of ' \
-                         + str(self.radius) + 'm.'
-                logger.log(log_str)
+                self.bot.event_manager.emit(
+                    'arrived_at_cluster',
+                    sender=self,
+                    level='info',
+                    formatted="Arrived at cluster. {forts} are in a range of {radius}m radius.",
+                    data={
+                        'forts': str(cnt),
+                        'radius': radius
+                    }
+                )
                 self.announced = True
         else:
             lat = self.bot.position[0]
             lng = self.bot.position[1]
 
         return [lat, lng]
-
-

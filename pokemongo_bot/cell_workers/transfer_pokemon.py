@@ -213,7 +213,6 @@ class TransferPokemon(BaseTask):
                 keep_best_iv = 0
 
             if keep_best_cp < 0 or keep_best_iv < 0:
-                logger.log("Keep best can't be < 0. Ignore it.", "red")
                 keep_best = False
 
             if keep_best_cp == 0 and keep_best_iv == 0:

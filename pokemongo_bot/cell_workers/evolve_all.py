@@ -42,9 +42,6 @@ class EvolveAll(BaseTask):
             release_cand_list_ids = list(set(id_list2) - set(id_list1))
 
             if release_cand_list_ids:
-                print('[#] Evolved {} pokemons! Checking if any of them needs to be released ...'.format(
-                    len(release_cand_list_ids)
-                ))
                 self._release_evolved(release_cand_list_ids)
 
     def _should_run(self):
@@ -84,11 +81,14 @@ class EvolveAll(BaseTask):
                         level='error',
                         formatted='Failed to use lucky egg!'
                     )
-                    logger.log('Failed to use lucky egg!', 'red')
                     return False
         else:
-            # Skipping evolve so they aren't wasted
-            logger.log('No lucky eggs... skipping evolve!', 'yellow')
+            self.bot.event_manager.emit(
+                'skip_evolve',
+                sender=self,
+                level='info',
+                formatted='Skipping evolve because has no lucky egg.'
+            )
             return False
 
     def _release_evolved(self, release_cand_list_ids):
@@ -115,8 +115,6 @@ class EvolveAll(BaseTask):
                 if self.should_release_pokemon(pokemon_name, pokemon_cp, pokemon_potential):
                     # Transfering Pokemon
                     self.transfer_pokemon(pokemon_id)
-                    logger.log(
-                        '[#] {} has been exchanged for candy!'.format(pokemon_name), 'red')
 
     def _sort_by_cp_iv(self, inventory_items):
         pokemons1 = []
@@ -166,10 +164,17 @@ class EvolveAll(BaseTask):
         response_dict = self.bot.api.call()
         status = response_dict['responses']['EVOLVE_POKEMON']['result']
         if status == 1:
-            print('[#] Successfully evolved {} with {} CP and {} IV!'.format(
-                pokemon_name, pokemon_cp, pokemon_iv
-            ))
-
+            self.bot.event_manager.emit(
+                'pokemon_evolved',
+                sender=self,
+                level='info',
+                formatted="Successfully evolved {pokemon} with CP {cp} and IV {iv}!",
+                data={
+                    'pokemon': pokemon_name,
+                    'iv': pokemon_iv,
+                    'cp': pokemon_cp
+                }
+            )
             sleep(self.evolve_speed)
 
         else:
@@ -239,15 +244,6 @@ class EvolveAll(BaseTask):
                 'or': lambda x, y: x or y,
                 'and': lambda x, y: x and y
             }
-
-            # logger.log(
-            #    "[x] Release config for {}: CP {} {} IV {}".format(
-            #        pokemon_name,
-            #        min_cp,
-            #        cp_iv_logic,
-            #        min_iv
-            #    ), 'yellow'
-            # )
 
             return logic_to_function[cp_iv_logic](*release_results.values())
 

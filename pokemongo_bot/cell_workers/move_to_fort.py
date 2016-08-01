@@ -1,4 +1,3 @@
-from pokemongo_bot import logger
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
@@ -10,7 +9,12 @@ class MoveToFort(BaseTask):
     def should_run(self):
         has_space_for_loot = self.bot.has_space_for_loot()
         if not has_space_for_loot:
-            logger.log("Not moving to any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently.", 'yellow')
+            self.bot.event_manager.emit(
+                'inventory_full',
+                sender=self,
+                level='info',
+                formatted="Not moving to any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently."
+            )
         return has_space_for_loot or self.bot.softban
 
     def work(self):

@@ -198,7 +198,6 @@ class IncubateEggs(BaseTask):
                     'candy': 'error',
                 }
             )
-            logger.log("[!] Eggs hatched, but we had trouble with the response. Please check your inventory to find your new pokemon!",'red')
             return
 
         for i in range(len(pokemon_data)):

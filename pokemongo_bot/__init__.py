@@ -216,12 +216,13 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'pokemon_evolved',
-            parameters=('pokemon',)
+            parameters=('pokemon', 'iv', 'cp')
         )
         self.event_manager.register_event(
             'pokemon_evolve_fail',
             parameters=('pokemon',)
         )
+        self.event_manager.register_event('skip_evolve')
         self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
         self.event_manager.register_event('vip_pokemon')
 
@@ -309,6 +310,25 @@ class PokemonGoBot(object):
             parameters=('pokemon', 'cp', 'iv')
         )
 
+        # polyline walker
+        self.event_manager.register_event(
+            'polyline_request',
+            parameters=('url',)
+        )
+
+        # cluster
+        self.event_manager.register_event(
+            'found_cluster',
+            parameters=(
+                'num_points', 'forts', 'radius', 'distance'
+            )
+        )
+        self.event_manager.register_event(
+            'arrived_at_cluster',
+            parameters=(
+                'forts', 'radius'
+            )
+        )
 
     def tick(self):
         self.cell = self.get_meta_cell()
