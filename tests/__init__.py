@@ -3,6 +3,7 @@ from mock import MagicMock
 
 from pgoapi import PGoApi
 from pokemongo_bot.api_wrapper import ApiWrapper
+from pokemongo_bot.event_manager import EventManager
 from pokemongo_bot import PokemonGoBot
 
 class FakeApi(ApiWrapper):
@@ -21,6 +22,7 @@ class FakeBot(PokemonGoBot):
     def __init__(self):
         self.config = MagicMock()
         self.api = FakeApi()
+        self.event_manager = EventManager()
 
     def updateConfig(self, conf):
         self.config.__dict__.update(conf)
