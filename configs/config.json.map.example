@@ -47,6 +47,7 @@
           "min_time": 60,
           "prioritize_vips": true,
           "snipe": false,
+          "update_map": true,
           "mode": "priority",
           "catch": {
               "Bulbasaur": 1,
