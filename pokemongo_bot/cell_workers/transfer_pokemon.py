@@ -41,7 +41,14 @@ class TransferPokemon(BaseTask):
                                 all_pokemons.remove(pokemon)
                                 best_pokemons.append(pokemon)
 
-                    transfer_pokemons = [pokemon for pokemon in all_pokemons
+                    transfer_pokemons = []
+                    release_config = self._get_release_config_for(pokemon_name)
+                    release_always = release_config.get('release_always',False)
+                    never_release = release_config.get('never_release',False)
+                    if not (release_always or never_release):
+                        transfer_pokemons = all_pokemons
+                    else:
+                        transfer_pokemons = [pokemon for pokemon in all_pokemons
                                          if self.should_release_pokemon(pokemon_name,
                                                                         pokemon['cp'],
                                                                         pokemon['iv'])]
