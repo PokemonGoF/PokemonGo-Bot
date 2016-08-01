@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import json
 import time
-import requests
 import base64
+import requests
 from pokemongo_bot import logger
-from pokemongo_bot.cell_workers.utils import distance, i2f, format_dist, format_time
-from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot.cell_workers.utils import distance, format_dist, format_time
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.cell_workers.base_task import BaseTask
-from pokemon_catch_worker import PokemonCatchWorker
+from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 
 
 class MoveToMapPokemon(BaseTask):
@@ -23,12 +21,12 @@ class MoveToMapPokemon(BaseTask):
 
     def get_pokemon_from_map(self):
         try:
-            r = requests.get('{}/raw_data?gyms=false&scanned=false'.format(self.config['address']))
-        except:
+            req = requests.get('{}/raw_data?gyms=false&scanned=false'.format(self.config['address']))
+        except requests.exceptions.ConnectionError:
             logger.log('Could not reach PokemonGo-Map Server', color='red')
             return []
 
-        raw_data = r.json()
+        raw_data = req.json()
 
         pokemon_list = []
         now = int(time.time())
@@ -46,7 +44,7 @@ class MoveToMapPokemon(BaseTask):
             if pokemon['disappear_time'] < (now + self.config['min_time']):
                 continue
 
-            if self.wasCaught(pokemon):
+            if self.was_caught(pokemon):
                 continue
 
             if pokemon['name'] in self.config['catch']:
@@ -68,7 +66,7 @@ class MoveToMapPokemon(BaseTask):
 
         return pokemon_list
 
-    def addCaught(self, pokemon):
+    def add_caught(self, pokemon):
         for caught_pokemon in self.caught:
             if caught_pokemon['encounter_id'] == pokemon['encounter_id']:
                 return
@@ -76,13 +74,13 @@ class MoveToMapPokemon(BaseTask):
             self.caught.pop(0)
         self.caught.append(pokemon)
 
-    def wasCaught(self, pokemon):
+    def was_caught(self, pokemon):
         for caught_pokemon in self.caught:
             if pokemon['encounter_id'] == caught_pokemon['encounter_id']:
                 return True
         return False
 
-    def addSeen(self, pokemon):
+    def add_seen(self, pokemon):
         for seen_pokemon in self.seen:
             if seen_pokemon['encounter_id'] == pokemon['encounter_id']:
                 return
@@ -90,7 +88,7 @@ class MoveToMapPokemon(BaseTask):
             self.seen.pop(0)
         self.seen.append(pokemon)
 
-    def removeSeen(self, pokemon):
+    def remove_seen(self, pokemon):
         for idx in xrange(len(self.seen)):
             if self.seen[idx]['encounter_id'] == pokemon['encounter_id']:
                 del self.seen[idx]
@@ -100,17 +98,17 @@ class MoveToMapPokemon(BaseTask):
         if not self.config['update_map']:
             return
         try:
-            r = requests.get('{}/loc'.format(self.config['address']))
-        except:
+            req = requests.get('{}/loc'.format(self.config['address']))
+        except requests.exceptions.ConnectionError:
             logger.log('Could not reach PokemonGo-Map Server', color='red')
             return
-        j = r.json()
+        loc_json = req.json()
 
         dist = distance(
             self.bot.position[0],
             self.bot.position[1],
-            j['lat'],
-            j['lng']
+            loc_json['lat'],
+            loc_json['lng']
         )
 
         # update map when 500m away from center and last update longer than 2 minutes away
@@ -129,8 +127,8 @@ class MoveToMapPokemon(BaseTask):
         self.bot.api.set_position(pokemon['latitude'], pokemon['longitude'], 0)
 
         logger.log('Encounter pokemon', 'green')
-        catchWorker = PokemonCatchWorker(pokemon, self.bot)
-        apiEncounterResponse = catchWorker.create_encounter_api_call()
+        catch_worker = PokemonCatchWorker(pokemon, self.bot)
+        api_encounter_response = catch_worker.create_encounter_api_call()
 
         time.sleep(2)
         logger.log('Teleport back to previous location..', 'green')
@@ -138,8 +136,8 @@ class MoveToMapPokemon(BaseTask):
         time.sleep(2)
         self.bot.heartbeat()
 
-        catchWorker.work(apiEncounterResponse)
-        self.addCaught(pokemon)
+        catch_worker.work(api_encounter_response)
+        self.add_caught(pokemon)
 
         return WorkerResult.SUCCESS
 
@@ -148,16 +146,20 @@ class MoveToMapPokemon(BaseTask):
         self.update_map_location()
 
         # remove caught pokemon from candidates
-        if 'catchable_pokemons' in self.bot.cell and len(self.bot.cell['catchable_pokemons']) > 0:
-            for catchable_pokemon in self.bot.cell['catchable_pokemons']:
-                self.addSeen(catchable_pokemon)
+        if not self.config['snipe']:
+            cell = self.bot.get_meta_cell()
+            for catchable_pokemon in cell['catchable_pokemons']:
+                self.add_seen(catchable_pokemon)
 
             for seen_pokemon in self.seen:
+                caught = True
                 for catchable_pokemon in self.bot.cell['catchable_pokemons']:
                     if catchable_pokemon['encounter_id'] == seen_pokemon['encounter_id']:
-                        self.removeSeen(seen_pokemon)
-                        self.addCaught(seen_pokemon)
+                        caught = False
                         break
+                if caught:
+                    self.remove_seen(seen_pokemon)
+                    self.add_caught(seen_pokemon)
 
         pokemon_list = self.get_pokemon_from_map()
         pokemon_list.sort(key=lambda x: x['dist'])
@@ -166,7 +168,7 @@ class MoveToMapPokemon(BaseTask):
         if self.config['prioritize_vips'] == 'priority':
             pokemon_list.sort(key=lambda x: x['is_vip'])
 
-        if (len(pokemon_list) < 1):
+        if len(pokemon_list) < 1:
             return WorkerResult.SUCCESS
 
         pokemon = pokemon_list[0]
@@ -187,5 +189,5 @@ class MoveToMapPokemon(BaseTask):
             return WorkerResult.RUNNING
 
         logger.log('Arrived at {}'.format(pokemon['name']))
-        self.addCaught(pokemon)
+        self.add_caught(pokemon)
         return WorkerResult.SUCCESS
