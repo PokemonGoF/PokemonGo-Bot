@@ -101,7 +101,7 @@ class PokemonCatchWorker(object):
                             berry_used = False
 
                             if flag_VIP:
-                                if(berries_count>0):
+                                if(berries_count>0 and catch_rate[pokeball-1] < 0.9):
                                     success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
                                     self.bot.event_manager.emit(
                                         'pokemon_catch_rate',
@@ -328,7 +328,7 @@ class PokemonCatchWorker(object):
                                                    spawn_point_id=self.spawn_point_guid,
                                                    hit_pokemon=1,
                                                    spin_modifier=spin_modifier_parameter,
-                                                   NormalizedHitPosition=1)
+                                                   normalized_hit_position=1)
                             response_dict = self.api.call()
 
                             if response_dict and \
