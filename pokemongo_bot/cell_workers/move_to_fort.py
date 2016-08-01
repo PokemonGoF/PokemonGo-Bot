@@ -22,6 +22,9 @@ class MoveToFort(BaseTask):
     def is_attracted(self):
         return (self.lure_distance > 0)
 
+    def is_attracted(self):
+        return (self.lure_distance > 0)
+
     def work(self):
         if not self.should_run():
             return WorkerResult.SUCCESS
