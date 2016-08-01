@@ -78,7 +78,7 @@ class MoveToMapPokemon(BaseTask):
 
     def wasCaught(self, pokemon):
         for caught_pokemon in self.caught:
-            if pokemon['encounter_id'] == caught['encounter_id']:
+            if pokemon['encounter_id'] == caught_pokemon['encounter_id']:
                 return True
         return False
 
