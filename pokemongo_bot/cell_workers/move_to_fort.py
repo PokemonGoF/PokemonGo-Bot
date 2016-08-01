@@ -16,7 +16,7 @@ class MoveToFort(BaseTask):
     def should_run(self):
         has_space_for_loot = self.bot.has_space_for_loot()
         if not has_space_for_loot:
-            logger.log("Not moving to any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently.", 'yellow')
+            logger.log("Not moving to any pokestops as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently.", 'yellow')
         return has_space_for_loot or self.bot.softban
 
     def is_attracted(self):
@@ -52,7 +52,7 @@ class MoveToFort(BaseTask):
             else:
                 add_str = ''
 
-            logger.log('Moving towards fort {}, {} left{}'.format(fort_name, format_dist(dist, unit), add_str))
+            logger.log('Moving towards pokestop: {}, {} left{}'.format(fort_name, format_dist(dist, unit), add_str))
 
             step_walker = StepWalker(
                 self.bot,
