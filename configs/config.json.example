@@ -62,7 +62,7 @@
     "distance_unit": "km",
     "reconnecting_timeout": 15,
     "item_filter": {
-      "Anyball":        { "keep" : 150 },
+      "Pokeball":       { "keep" : 100 },
       "Potion":         { "keep" : 10 },
       "Super Potion":   { "keep" : 20 },
       "Hyper Potion":   { "keep" : 30 },
