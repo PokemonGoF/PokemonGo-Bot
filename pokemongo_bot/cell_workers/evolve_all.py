@@ -49,7 +49,7 @@ class EvolveAll(BaseTask):
             release_cand_list_ids = list(set(id_list2) - set(id_list1))
 
             if release_cand_list_ids:
-                print('[#] Evolved {} pokemons! Checking if any of them needs to be released ...'.format(
+                logger.log('[#] Evolved {} pokemons! Checking if any of them needs to be released ...'.format(
                     len(release_cand_list_ids)
                 ))
                 self._release_evolved(release_cand_list_ids)
@@ -160,7 +160,7 @@ class EvolveAll(BaseTask):
         response_dict = self.bot.api.call()
         status = response_dict['responses']['EVOLVE_POKEMON']['result']
         if status == 1:
-            print('[#] Successfully evolved {} with {} CP and {} IV!'.format(
+            logger.log('[#] Successfully evolved {} with {} CP and {} IV!'.format(
                 pokemon_name, pokemon_cp, pokemon_iv
             ))
 
