@@ -23,6 +23,7 @@
       {
         "type": "EvolveAll",
         "config": {
+          "evolve_all": "NONE",
           "evolve_speed": 20,
           "use_lucky_egg": false
         }
@@ -75,7 +76,6 @@
     "location_cache": true,
     "distance_unit": "km",
     "reconnecting_timeout": 15,
-    "evolve_all": "NONE",
     "evolve_cp_min": 300,
     "evolve_captured": "NONE",
     "catch_randomize_reticle_factor": 1.0,

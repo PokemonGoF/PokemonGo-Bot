@@ -5,8 +5,14 @@ from pokemongo_bot.cell_workers.base_task import BaseTask
 
 class EvolveAll(BaseTask):
     def initialize(self):
+        self.evolve_all = self.config.get('evolve_all', [])
         self.evolve_speed = self.config.get('evolve_speed', 3.7)
         self.use_lucky_egg = self.config.get('use_lucky_egg', False)
+
+
+    def _validate_config(self):
+        if isinstance(self.evolve_all, str):
+            self.evolve_all = [str(pokemon_name) for pokemon_name in self.evolve_all.split(',')]
 
     def work(self):
         if not self._should_run():
@@ -23,9 +29,9 @@ class EvolveAll(BaseTask):
         else:
             evolve_list = self._sort_by_cp_iv(
                 response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items'])
-            if self.bot.config.evolve_all[0] != 'all':
+            if self.evolve_all[0] != 'all':
                 # filter out non-listed pokemons
-                evolve_list = [x for x in evolve_list if str(x[1]) in self.bot.config.evolve_all]
+                evolve_list = [x for x in evolve_list if str(x[1]) in self.evolve_all]
 
             # enable to limit number of pokemons to evolve. Useful for testing.
             # nn = 3
@@ -50,7 +56,7 @@ class EvolveAll(BaseTask):
 
     def _should_run(self):
         # Will skip evolving if user wants to use an egg and there is none
-        if not self.bot.config.evolve_all:
+        if not self.evolve_all:
             return False
 
         # Evolve all is used - Don't run after the first tick or if the config flag is false
