@@ -97,6 +97,8 @@ class MoveToMapPokemon(BaseTask):
                 return
 
     def update_map_location(self):
+        if not self.config['update_map']:
+            return
         try:
             r = requests.get('{}/loc'.format(self.config['address']))
         except:
