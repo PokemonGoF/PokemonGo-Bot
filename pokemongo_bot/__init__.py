@@ -46,6 +46,8 @@ class PokemonGoBot(object):
         self.tick_count = 0
         self.softban = False
         self.start_position = None
+        self.last_map_object = None
+        self.last_time_map_object = 0
 
         # Make our own copy of the workers for this instance
         self.workers = []
@@ -121,13 +123,7 @@ class PokemonGoBot(object):
         if cells == []:
             cellid = get_cell_ids(lat, lng)
             timestamp = [0, ] * len(cellid)
-            self.api.get_map_objects(
-                latitude=f2i(lat),
-                longitude=f2i(lng),
-                since_timestamp_ms=timestamp,
-                cell_id=cellid
-            )
-            response_dict = self.api.call()
+            response_dict = self.get_map_objects(lat, lng, timestamp, cellid)
             map_objects = response_dict.get(
                 'responses', {}
             ).get('GET_MAP_OBJECTS', {})
@@ -182,14 +178,7 @@ class PokemonGoBot(object):
     def find_close_cells(self, lat, lng):
         cellid = get_cell_ids(lat, lng)
         timestamp = [0, ] * len(cellid)
-
-        self.api.get_map_objects(
-            latitude=f2i(lat),
-            longitude=f2i(lng),
-            since_timestamp_ms=timestamp,
-            cell_id=cellid
-        )
-        response_dict = self.api.call()
+        response_dict = self.get_map_objects(lat, lng, timestamp, cellid)
         map_objects = response_dict.get(
             'responses', {}
         ).get('GET_MAP_OBJECTS', {})
@@ -625,3 +614,19 @@ class PokemonGoBot(object):
             ))
 
         return forts
+
+    def get_map_objects(self, lat, lng, timestamp, cellid):
+        if time.time() - self.last_time_map_object < self.config.map_object_cache_time:
+            return self.last_map_object
+
+        self.api.get_map_objects(
+            latitude=f2i(lat),
+            longitude=f2i(lng),
+            since_timestamp_ms=timestamp,
+            cell_id=cellid
+        )
+
+        self.last_map_object = self.api.call()
+        self.last_time_map_object = time.time()
+
+        return self.last_map_object
