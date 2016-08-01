@@ -16,6 +16,7 @@ class Metrics(object):
         self.visits = {'start': None, 'latest': None}
         self.unique_mons = {'start': None, 'latest': None}
         self.evolutions = {'start': None, 'latest': None}
+        self.catches = list()
 
         self.releases = 0
         self.highest_cp = {'cp': 0, 'desc': ''}
