@@ -81,7 +81,7 @@ class FollowSpiral(BaseTask):
                         'last_position': self.bot.position,
                         'current_position': (point['lat'], point['lng'], 0),
                         'distance': dist,
-                        'distance_unit': self.bot.config.distance_unit
+                        'distance_unit': 'm'
                     }
                 )
 
