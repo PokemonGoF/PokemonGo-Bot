@@ -10,6 +10,10 @@ try:
 except Exception:
     lcd = False
 
+
+logger_format = '[{day} {time}] {message}'
+
+
 def log(message, color='white'):
     color2hex = {
         'red': '91m',
@@ -22,12 +26,18 @@ def log(message, color='white'):
     today = date.today().strftime('%Y-%m-%d')
     now = time.strftime("%H:%M:%S")
     message = message.decode('utf-8')
-    log_format = '[%s %s] %s'
 
-    if color not in color2hex:
-        print(log_format % (today, now, message))
-    else:
+    if color in color2hex:
         colored_message = u'\033[' + color2hex[color] + message + '\033[0m'
-        print(log_format % (today, now, colored_message))
+        formatted_message = logger_format.format(message=colored_message,
+                                                 day=today,
+                                                 time=now)
+        print(formatted_message)
+    else:
+        formatted_message = logger_format.format(message=message,
+                                                 day=today,
+                                                 time=now)
+        print(formatted_message)
+
     if lcd and message:
-        lcd.message(string)
+        lcd.message(message)
