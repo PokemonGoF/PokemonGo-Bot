@@ -2,17 +2,10 @@ import json
 
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import action_delay
+from pokemongo_bot.cell_workers.base_task import BaseTask
 
-
-class PokemonTransferWorker(object):
-
-    def __init__(self, bot):
-        self.bot = bot
-
+class TransferPokemon(BaseTask):
     def work(self):
-        if not self.bot.config.release_pokemon:
-            return
-
         pokemon_groups = self._release_pokemon_get_groups()
         for pokemon_id in pokemon_groups:
             group = pokemon_groups[pokemon_id]
@@ -48,7 +41,12 @@ class PokemonTransferWorker(object):
                                 all_pokemons.remove(pokemon)
                                 best_pokemons.append(pokemon)
 
-                    if best_pokemons and all_pokemons:
+                    transfer_pokemons = [pokemon for pokemon in all_pokemons
+                                         if self.should_release_pokemon(pokemon_name,
+                                                                        pokemon['cp'],
+                                                                        pokemon['iv'])]
+
+                    if transfer_pokemons:
                         logger.log("Keep {} best {}, based on {}".format(len(best_pokemons),
                                                                          pokemon_name,
                                                                          order_criteria), "green")
@@ -57,10 +55,10 @@ class PokemonTransferWorker(object):
                                                                           best_pokemon['cp'],
                                                                           best_pokemon['iv']), 'green')
 
-                        logger.log("Transferring {} pokemon".format(len(all_pokemons)), "green")
+                        logger.log("Transferring {} pokemon".format(len(transfer_pokemons)), "green")
 
-                    for pokemon in all_pokemons:
-                        self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
+                        for pokemon in transfer_pokemons:
+                            self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
                 else:
                     group = sorted(group, key=lambda x: x['cp'], reverse=True)
                     for item in group:
@@ -96,6 +94,10 @@ class PokemonTransferWorker(object):
 
             # pokemon in fort, so we cant transfer it
             if 'deployed_fort_id' in pokemon_data and pokemon_data['deployed_fort_id']:
+                continue
+
+            # favorite pokemon can't transfer in official game client
+            if pokemon_data.get('favorite', 0) is 1:
                 continue
 
             group_id = pokemon_data['pokemon_id']

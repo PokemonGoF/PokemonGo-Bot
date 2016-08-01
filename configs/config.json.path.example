@@ -52,10 +52,11 @@
         "type": "SpinFort"
       },
       {
-        "type": "MoveToFort"
-      },
-      {
-        "type": "FollowSpiral"
+        "type": "FollowPath",
+        "config": {
+          "path_mode": "loop",
+          "path_file": "configs/path.example.json"
+        }
       }
     ],
     "max_steps": 5,
@@ -76,13 +77,6 @@
     "evolve_captured": "NONE",
     "catch_randomize_reticle_factor": 1.0,
     "catch_randomize_spin_factor": 1.0,
-    "pokemon_map": {
-        "use": false,
-        "host": "127.0.0.1",
-        "port": 5000,
-        "ids": "3,5,6,8,9,25,26,34,40,59,64,65,78,87,91,94,101,113,115,128,132,142,148,149,150,151",
-        "speed": 30
-    },
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},
@@ -100,28 +94,5 @@
       "// any": {"keep_best_iv": 3},
       "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat:": {},
       "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3}
-    },
-    "vips" : {
-         "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate!": {},
-        "any": {"catch_above_cp": 1200, "catch_above_iv": 0.9, "logic": "or" },
-        "Lapras": {},
-        "Moltres": {},
-        "Zapdos": {},
-        "Articuno": {},
-
-        "// S-Tier pokemons (if pokemon can be evolved into tier, list the representative)": {},
-        "Mewtwo": {},
-        "Dragonite": {},
-        "Snorlax": {},
-        "// Mew evolves to Mewtwo": {},
-        "Mew": {},
-        "Arcanine": {},
-        "Vaporeon": {},
-        "Gyarados": {},
-        "Exeggutor": {},
-        "Muk": {},
-        "Weezing": {},
-        "Flareon": {}
-
     }
 }

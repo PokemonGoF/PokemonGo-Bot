@@ -2,16 +2,13 @@ from pgoapi.utilities import f2i
 
 from pokemongo_bot import logger
 from pokemongo_bot.constants import Constants
-from pokemongo_bot.cell_workers import MoveToFortWorker, SeenFortWorker
+from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot.cell_workers import MoveToFort
 from pokemongo_bot.cell_workers.utils import distance
 from pokemongo_bot.worker_result import WorkerResult
 
 
-class SoftBanWorker(object):
-
-    def __init__(self, bot):
-        self.bot = bot
-
+class HandleSoftBan(BaseTask):
     def work(self):
         if not self.should_run():
             return
@@ -31,7 +28,7 @@ class SoftBanWorker(object):
         )
 
         if fort_distance > Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
-            MoveToFortWorker(self.bot).work()
+            MoveToFort(self.bot, config=None).work()
             self.bot.recent_forts = self.bot.recent_forts[0:-1]
             if forts[0]['id'] in self.bot.fort_timeouts:
                 del self.bot.fort_timeouts[forts[0]['id']]
@@ -56,4 +53,4 @@ class SoftBanWorker(object):
         self.bot.api.call()
 
     def should_run(self):
-        return self.bot.config.softban_fix and self.bot.softban
+        return self.bot.softban
