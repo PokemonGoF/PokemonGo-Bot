@@ -57,6 +57,7 @@
         "config": {
             "lure_attraction": true,
             "lure_max_distance": 2000
+        }
       },
       {
         "type": "FollowSpiral"
