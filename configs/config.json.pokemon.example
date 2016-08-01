@@ -4,11 +4,60 @@
     "password": "YOUR_PASSWORD",
     "location": "SOME_LOCATION",
     "gmapkey": "GOOGLE_MAPS_API_KEY",
+    "tasks": [
+      {
+        "type": "HandleSoftBan"
+      },
+      {
+        "type": "CollectLevelUpReward"
+      },
+      {
+        "type": "IncubateEggs",
+        "config": {
+          "longer_eggs_first": true
+        }
+      },
+      {
+        "type": "TransferPokemon"
+      },
+      {
+        "type": "EvolveAll",
+        "config": {
+          "evolve_speed": 20,
+          "use_lucky_egg": false
+        }
+      },
+      {
+        "type": "RecycleItems",
+        "config": {
+          "item_filter": {
+            "Pokeball":       { "keep" : 100 },
+            "Potion":         { "keep" : 10 },
+            "Super Potion":   { "keep" : 20 },
+            "Hyper Potion":   { "keep" : 30 },
+            "Revive":         { "keep" : 30 },
+            "Razz Berry":     { "keep" : 100 }
+          }
+        }
+      },
+      {
+        "type": "CatchVisiblePokemon"
+      },
+      {
+        "type": "CatchLuredPokemon"
+      },
+      {
+        "type": "SpinFort"
+      },
+      {
+        "type": "MoveToFort"
+      },
+      {
+        "type": "FollowSpiral"
+      }
+    ],
     "max_steps": 5,
-    "catch_pokemon": true,
     "forts": {
-      "spin": true,
-      "move_to_spin": true,
       "avoid_circles": true,
       "max_circle_size": 50
     },
@@ -22,24 +71,9 @@
     "location_cache": true,
     "distance_unit": "km",
     "reconnecting_timeout": 15,
-    "item_filter": {
-      "1": { "keep" : 50 },
-      "2": { "keep" : 50 },
-      "3": { "keep" : 50 },
-      "101": { "keep" : 10 },
-      "102": { "keep" : 25 },
-      "103": { "keep" : 25 },
-      "201": { "keep" : 25 },
-      "701": { "keep" : 100 }
-    },
     "evolve_all": "NONE",
-    "evolve_speed": 20,
     "evolve_cp_min": 300,
-    "use_lucky_egg": false,
-    "hatch_eggs": true,
-    "longer_eggs_first": true,
     "evolve_captured": "NONE",
-    "release_pokemon": true,
     "catch_randomize_reticle_factor": 1.0,
     "catch_randomize_spin_factor": 1.0,
     "catch": {
@@ -307,6 +341,6 @@
         "Muk": {},
         "Weezing": {},
         "Flareon": {}
-        
-    }    
+
+    }
 }

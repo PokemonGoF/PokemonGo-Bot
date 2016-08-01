@@ -37,7 +37,7 @@ from datetime import timedelta
 from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException
 
-from pokemongo_bot import PokemonGoBot
+from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
 from pokemongo_bot import logger
 
 if sys.version_info >= (2, 7, 9):
@@ -60,6 +60,8 @@ def main():
         try:
             bot = PokemonGoBot(config)
             bot.start()
+            tree = TreeConfigBuilder(bot, config.raw_tasks).build()
+            bot.workers = tree
             bot.metrics.capture_stats()
 
             logger.log('Starting PokemonGo Bot....', 'green')
@@ -146,8 +148,24 @@ def init_config():
         parser,
         load,
         short_flag="-ws",
-        long_flag="--websocket_server",
-        help="Start websocket server (format 'host:port')",
+        long_flag="--websocket.server_url",
+        help="Connect to websocket server at given url",
+        default=False
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-wss",
+        long_flag="--websocket.start_embedded_server",
+        help="Start embedded websocket server",
+        default=False
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-wsr",
+        long_flag="--websocket.remote_control",
+        help="Enable remote control through websocket (requires websocekt server url)",
         default=False
     )
     add_config(
@@ -175,14 +193,6 @@ def init_config():
         help="Bot will start at last known location",
         type=bool,
         default=False
-    )
-    add_config(
-        parser,
-        load,
-        long_flag="--catch_pokemon",
-        help="Enable catching pokemon",
-        type=bool,
-        default=True
     )
     add_config(
         parser,
@@ -222,45 +232,6 @@ def init_config():
         default=50
     )
 
-    add_config(
-        parser,
-        load,
-        short_flag="-n",
-        long_flag="--navigator.type",
-        help="Set the navigator to be used(DEFAULT spiral)",
-        type=str,
-        default='spiral'
-    )
-
-    add_config(
-        parser,
-        load,
-        short_flag="-pm",
-        long_flag="--navigator.path_mode",
-        help="Set the mode for the path navigator (DEFAULT loop)",
-        type=str,
-        default="loop"
-    )
-
-    add_config(
-        parser,
-        load,
-        short_flag="-pf",
-        long_flag="--navigator.path_file",
-        help="Set the file containing the path for the path navigator (GPX or JSON).",
-        type=str,
-        default=None
-    )
-    
-    add_config(
-        parser,
-        load,
-        short_flag="-rp",
-        long_flag="--release_pokemon",
-        help="Allow transfer pokemon to professor based on release configuration. Default is false",
-        type=bool,
-        default=False
-    )
     add_config(
         parser,
         load,
@@ -318,29 +289,11 @@ def init_config():
     add_config(
         parser,
         load,
-        short_flag="-le",
-        long_flag="--use_lucky_egg",
-        help="Uses lucky egg when using evolve_all",
-        type=bool,
-        default=False
-    )
-    add_config(
-        parser,
-        load,
         short_flag="-rt",
         long_flag="--reconnecting_timeout",
         help="Timeout between reconnecting if error occured (in minutes, e.g. 15)",
         type=float,
         default=15.0
-    )
-    add_config(
-        parser,
-        load,
-        short_flag="-bf",
-        long_flag="--softban_fix",
-        help="Fix softban automatically",
-        type=bool,
-        default=False
     )
     add_config(
         parser,
@@ -372,15 +325,6 @@ def init_config():
     add_config(
         parser,
         load,
-        short_flag="-mts",
-        long_flag="--forts.move_to_spin",
-        help="Moves to forts nearby ",
-        type=bool,
-        default=True
-    )
-    add_config(
-        parser,
-        load,
         long_flag="--catch_randomize_reticle_factor",
         help="Randomize factor for pokeball throwing accuracy (DEFAULT 1.0 means no randomize: always 'Excellent' throw. 0.0 randomizes between normal and 'Excellent' throw)",
         type=float,
@@ -404,23 +348,38 @@ def init_config():
 
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
-    config.item_filter = load.get('item_filter', {})
     config.action_wait_max = load.get('action_wait_max', 4)
     config.action_wait_min = load.get('action_wait_min', 1)
-
-    config.hatch_eggs = load.get("hatch_eggs", True)
-    config.longer_eggs_first = load.get("longer_eggs_first", True)
-    
+    config.raw_tasks = load.get('tasks', [])
     config.vips = load.get('vips',{})
+
+    if len(config.raw_tasks) == 0:
+        logging.error("No tasks are configured. Did you mean to configure some behaviors? Read https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Configuration-files#configuring-tasks for more information")
+        return None
 
     if config.auth_service not in ['ptc', 'google']:
         logging.error("Invalid Auth service specified! ('ptc' or 'google')")
         return None
 
-    if 'mode' in load or 'mode' in config:
-        parser.error('"mode" has been removed and replaced with two new flags: "catch_pokemon" and "spin_forts". ' +
-            ' Set these to true or false and remove "mode" from your configuration')
-        return None
+    def task_configuration_error(flag_name):
+        parser.error("""
+            \"{}\" was removed from the configuration options.
+            You can now change the behavior of the bot by modifying the \"tasks\" key.
+            Read https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Configuration-files#configuring-tasks for more information.
+            """.format(flag_name))
+
+    old_flags = ['mode', 'catch_pokemon', 'spin_forts', 'forts_spin', 'hatch_eggs', 'release_pokemon', 'softban_fix',
+                'longer_eggs_first', 'evolve_speed', 'use_lucky_egg', 'item_filter']
+    for flag in old_flags:
+        if flag in load:
+            task_configuration_error(flag)
+            return None
+
+    nested_old_flags = [('forts', 'spin'), ('forts', 'move_to_spin'), ('navigator', 'path_mode'), ('navigator', 'path_file'), ('navigator', 'type')]
+    for outer, inner in nested_old_flags:
+        if load.get(outer, {}).get(inner, None):
+            task_configuration_error('{}.{}'.format(outer, inner))
+            return None
 
     if (config.evolve_captured
         and (not isinstance(config.evolve_captured, str)

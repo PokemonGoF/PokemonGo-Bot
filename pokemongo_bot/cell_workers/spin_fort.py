@@ -8,15 +8,16 @@ from pokemongo_bot import logger
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.worker_result import WorkerResult
+from pokemongo_bot.cell_workers.base_task import BaseTask
 from utils import distance, format_time, fort_details
 
 
-class SeenFortWorker(object):
-    def __init__(self, bot):
-        self.bot = bot
-
+class SpinFort(BaseTask):
     def should_run(self):
-        return self.bot.config.forts_spin and self.bot.has_space_for_loot()
+        if not self.bot.has_space_for_loot():
+            logger.log("Not spinning any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently.", 'yellow')
+            return False
+        return True
 
     def work(self):
         fort = self.get_fort_in_range()
