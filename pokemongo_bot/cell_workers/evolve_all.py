@@ -31,11 +31,6 @@ class EvolveAll(BaseTask):
             # filter out non-listed pokemons
             evolve_list = filter(lambda x: x["name"] in self.evolve_all, evolve_list)
 
-        # enable to limit number of pokemons to evolve. Useful for testing.
-        nn = 2
-        if len(evolve_list) > nn:
-            evolve_list = evolve_list[:nn]
-
         cache = {}
         candy_list = self._get_candy_list(inventory_items)
         id_list1 = self._pokemon_ids_list()
