@@ -39,7 +39,7 @@ class MoveToMapPokemon(BaseTask):
             pokemon['name'] = self.pokemon_data[pokemon['pokemon_id'] - 1]['Name']
             pokemon['is_vip'] = pokemon['name'] in self.bot.config.vips
 
-            if (pokemon['name'] not in self.config['catch']):
+            if pokemon['name'] not in self.config['catch'] and pokemon['name'] not in self.bot.config.vips:
                 continue
 
             if pokemon['disappear_time'] < (now + self.config['min_time']):
