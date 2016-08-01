@@ -6,6 +6,7 @@ from pokemongo_bot.cell_workers.base_task import BaseTask
 class EvolveAll(BaseTask):
     def initialize(self):
         self.evolve_speed = self.config.get('evolve_speed', 3.7)
+        self.use_lucky_egg = self.config.get('use_lucky_egg', False)
 
     def work(self):
         if not self._should_run():
@@ -53,7 +54,7 @@ class EvolveAll(BaseTask):
             return False
 
         # Evolve all is used - Don't run after the first tick or if the config flag is false
-        if self.bot.tick_count is not 1 or not self.bot.config.use_lucky_egg:
+        if self.bot.tick_count is not 1 or not self.use_lucky_egg:
             return True
 
         lucky_egg_count = self.bot.item_inventory_count(Item.ITEM_LUCKY_EGG.value)
@@ -149,8 +150,8 @@ class EvolveAll(BaseTask):
         if pokemon_name in cache:
             return
 
-        self.api.evolve_pokemon(pokemon_id=pokemon_id)
-        response_dict = self.api.call()
+        self.bot.api.evolve_pokemon(pokemon_id=pokemon_id)
+        response_dict = self.bot.api.call()
         status = response_dict['responses']['EVOLVE_POKEMON']['result']
         if status == 1:
             print('[#] Successfully evolved {} with {} CP and {} IV!'.format(
@@ -166,8 +167,8 @@ class EvolveAll(BaseTask):
 
     # TODO: move to utils. These methods are shared with other workers.
     def transfer_pokemon(self, pid):
-        self.api.release_pokemon(pokemon_id=pid)
-        response_dict = self.api.call()
+        self.bot.api.release_pokemon(pokemon_id=pid)
+        response_dict = self.bot.api.call()
 
     def count_pokemon_inventory(self):
         response_dict = self.bot.get_inventory()

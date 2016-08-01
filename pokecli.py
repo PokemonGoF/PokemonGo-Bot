@@ -235,35 +235,6 @@ def init_config():
     add_config(
         parser,
         load,
-        short_flag="-n",
-        long_flag="--navigator.type",
-        help="Set the navigator to be used(DEFAULT spiral)",
-        type=str,
-        default='spiral'
-    )
-
-    add_config(
-        parser,
-        load,
-        short_flag="-pm",
-        long_flag="--navigator.path_mode",
-        help="Set the mode for the path navigator (DEFAULT loop)",
-        type=str,
-        default="loop"
-    )
-
-    add_config(
-        parser,
-        load,
-        short_flag="-pf",
-        long_flag="--navigator.path_file",
-        help="Set the file containing the path for the path navigator (GPX or JSON).",
-        type=str,
-        default=None
-    )
-    add_config(
-        parser,
-        load,
         short_flag="-d",
         long_flag="--debug",
         help="Debug Mode",
@@ -314,15 +285,6 @@ def init_config():
         help="(Ad-hoc mode) Pass \"all\" or a list of pokemon to evolve (e.g., \"Pidgey,Weedle,Caterpie\"). Bot will attempt to evolve all the pokemon captured!",
         type=str,
         default=[]
-    )
-    add_config(
-        parser,
-        load,
-        short_flag="-le",
-        long_flag="--use_lucky_egg",
-        help="Uses lucky egg when using evolve_all",
-        type=bool,
-        default=False
     )
     add_config(
         parser,
@@ -408,13 +370,13 @@ def init_config():
             """.format(flag_name))
 
     old_flags = ['mode', 'catch_pokemon', 'spin_forts', 'forts_spin', 'hatch_eggs', 'release_pokemon', 'softban_fix',
-                'longer_eggs_first', 'evolve_speed']
+                'longer_eggs_first', 'evolve_speed', 'use_lucky_egg']
     for flag in old_flags:
         if flag in load:
             task_configuration_error(flag)
             return None
 
-    nested_old_flags = [('forts', 'spin'), ('forts', 'move_to_spin')]
+    nested_old_flags = [('forts', 'spin'), ('forts', 'move_to_spin'), ('navigator', 'path_mode'), ('navigator', 'path_file'), ('navigator', 'type')]
     for outer, inner in nested_old_flags:
         if load.get(outer, {}).get(inner, None):
             task_configuration_error('{}.{}'.format(outer, inner))

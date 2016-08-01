@@ -14,19 +14,24 @@ from pgoapi.utilities import f2i
 class FollowPath(BaseTask):
     def initialize(self):
         self.ptr = 0
+        self._process_config()
         self.points = self.load_path()
 
+    def _process_config(self):
+        self.path_file = self.config.get("path_file", None)
+        self.path_mode = self.config.get("path_mode", "linear")
+
     def load_path(self):
-        if self.bot.config.navigator_path_file == None:
+        if self.path_file is None:
             raise RuntimeError('You need to specify a path file (json or gpx)')
 
-        if self.bot.config.navigator_path_file.endswith('.json'):
-            return self.load_json(self.bot.config.navigator_path_file)
-        elif self.bot.config.navigator_path_file.endswith('.gpx'):
-            return self.load_gpx(self.bot.config.navigator_path_file)
+        if self.path_file.endswith('.json'):
+            return self.load_json()
+        elif self.path_file.endswith('.gpx'):
+            return self.load_gpx()
 
-    def load_json(self, file):
-        with open(file) as data_file:
+    def load_json(self):
+        with open(self.path_file) as data_file:
             points=json.load(data_file)
         # Replace Verbal Location with lat&lng.
         logger.log("Resolving Navigation Paths (GeoLocating Strings)")
@@ -40,8 +45,8 @@ class FollowPath(BaseTask):
     def lat_lng_tuple_to_dict(self, tpl):
         return {'lat': tpl[0], 'lng': tpl[1]}
 
-    def load_gpx(self, file):
-        gpx_file = open(file, 'r')
+    def load_gpx(self):
+        gpx_file = open(self.path_file, 'r')
         gpx = gpxpy.parse(gpx_file)
 
         if len(gpx.tracks) == 0:
@@ -53,7 +58,7 @@ class FollowPath(BaseTask):
             for point in segment.points:
                 points.append({"lat": point.latitude, "lng": point.longitude})
 
-        return points;
+        return points
 
     def work(self):
         point = self.points[self.ptr]
@@ -85,7 +90,7 @@ class FollowPath(BaseTask):
         if dist <= 1 or (self.bot.config.walk > 0 and is_at_destination):
             if (self.ptr + 1) == len(self.points):
                 self.ptr = 0
-                if self.bot.config.navigator_path_mode == 'linear':
+                if self.path_mode == 'linear':
                     self.points = list(reversed(self.points))
             else:
                 self.ptr += 1

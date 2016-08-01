@@ -23,7 +23,8 @@
       {
         "type": "EvolveAll",
         "config": {
-          "evolve_speed": 20
+          "evolve_speed": 20,
+          "use_lucky_egg": false
         }
       },
       {
@@ -70,7 +71,6 @@
     },
     "evolve_all": "NONE",
     "evolve_cp_min": 300,
-    "use_lucky_egg": false,
     "evolve_captured": "NONE",
     "catch_randomize_reticle_factor": 1.0,
     "catch_randomize_spin_factor": 1.0,
