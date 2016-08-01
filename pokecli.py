@@ -324,6 +324,14 @@ def init_config():
         type=float,
         default=1.0
     )
+    add_config(
+        parser,
+        load,
+        long_flag="--map_object_cache_time",
+        help="Amount of seconds to keep the map object in cache (bypass Niantic throttling)",
+        type=float,
+        default=5.0
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()
@@ -338,6 +346,10 @@ def init_config():
     config.action_wait_min = load.get('action_wait_min', 1)
     config.raw_tasks = load.get('tasks', [])
     config.vips = load.get('vips',{})
+
+    if config.map_object_cache_time < 0.0:
+        parser.error("--map_object_cache_time is out of range! (should be >= 0.0)")
+        return None
 
     if len(config.raw_tasks) == 0:
         logging.error("No tasks are configured. Did you mean to configure some behaviors? Read https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Configuration-files#configuring-tasks for more information")
