@@ -417,7 +417,7 @@ class PokemonGoBot(object):
             item_count = item_dict.get('count')
             item_id = item_dict.get('item_id')
 
-            if not item_count and not item_id:
+            if item_count and item_id:
                 if item_id in items_stock:
                     items_stock[item_id] = item_count
         return items_stock
