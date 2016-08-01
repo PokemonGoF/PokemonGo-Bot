@@ -70,24 +70,25 @@ class TransferPokemon(BaseTask):
                         logger.log("Api call for candies failed, try again")
                         return
                     candy = candies[pokemon_id]
-                    req_candy = self.bot.pokemon_list[pokemon_id - 1]['Next Evolution Requirements']['Amount']
-                    num_keep = (len(group) + candy) / (req_candy + 1)
+                    if 'Next Evolution Requirements' in self.bot.pokemon_list[pokemon_id - 1]:
+                        req_candy = self.bot.pokemon_list[pokemon_id - 1]['Next Evolution Requirements']['Amount']
+                        num_keep = (len(group) + candy) / (req_candy + 1)
 
-                    if len(group) > num_keep:
-                        group.sort(key=lambda x: x['iv'], reverse=True)
-                        evo_pokemon = group[:num_keep]
-                        group = group[num_keep:]
-                    else:
-                        evo_pokemon = group
-                        group = []
+                        if len(group) > num_keep:
+                            group.sort(key=lambda x: x['iv'], reverse=True)
+                            evo_pokemon = group[:num_keep]
+                            group = group[num_keep:]
+                        else:
+                            evo_pokemon = group
+                            group = []
 
-                    if len(evo_pokemon) > 0:
-                        logger.log("Keep {} {}, for evolution - {} candies".format(len(evo_pokemon),
-                                                                         pokemon_name, candy), "green")
-                        for evo_pokemon in evo_pokemon:
-                            logger.log("{} [CP {}] [Potential {}]".format(pokemon_name,
-                                                                          evo_pokemon['cp'],
-                                                                          evo_pokemon['iv']), 'green')
+                        if len(evo_pokemon) > 0:
+                            logger.log("Keep {} {}, for evolution - {} candies".format(len(evo_pokemon),
+                                                                             pokemon_name, candy), "green")
+                            for evo_pokemon in evo_pokemon:
+                                logger.log("{} [CP {}] [Potential {}]".format(pokemon_name,
+                                                                              evo_pokemon['cp'],
+                                                                              evo_pokemon['iv']), 'green')
 
                 logger.log("Transferring {} pokemon".format(len(group)), "green")
 
