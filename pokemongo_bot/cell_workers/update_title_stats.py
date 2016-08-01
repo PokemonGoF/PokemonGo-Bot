@@ -71,11 +71,11 @@ class UpdateTitleStats(BaseTask):
         :rtype: WorkerResult
         """
         if not self._should_display():
-            return
+            return WorkerResult.SUCCESS
         title = self._get_stats_title(self._get_player_stats())
         # If title is empty, it couldn't be generated.
         if not title:
-            return
+            return WorkerResult.SUCCESS
         self._update_title(title, _platform)
         return WorkerResult.SUCCESS
 
