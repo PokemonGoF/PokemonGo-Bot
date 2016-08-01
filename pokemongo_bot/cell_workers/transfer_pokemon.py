@@ -90,7 +90,7 @@ class TransferPokemon(BaseTask):
                                                                               evo_pokemon['cp'],
                                                                               evo_pokemon['iv']), 'green')
 
-                logger.log("Transferring {} pokemon".format(len(group)), "green")
+                logger.log("Transferring {} {}".format(len(group), pokemon_name), "green")
 
                 for pokemon in group:
                     self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
