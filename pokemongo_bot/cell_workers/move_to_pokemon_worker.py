@@ -39,25 +39,26 @@ class MoveToPokemonWorker(object):
         
         needed_speed = max((dist / max_travel_time), self.bot.config.pokemon_map_speed)
         
-        secs_since_last_run = max((int(time.time()) - self.bot.last_run_mtp_timestamp), 0)
+        secs_since_last_ran = max((int(time.time()) - self.bot.last_ran_mtp_timestamp), 0)
         
         if (needed_speed * 3600 / 1000) < 120:
             logger.log('Found {} in PokemonGo-Map. Moving @{} km/h , {} and {} left to get there'.format(pokemonName, (needed_speed * 3600 / 1000), format_dist(dist, unit), format_time(max_travel_time)))
 
             step_walker = StepWalker(
                 self.bot,
-                needed_speed,
+                (needed_speed * secs_since_last_ran),
                 lat,
                 lng
             )
             
             self.bot.running_to_pokemon = True
             
-            self.bot.last_run_mtp_timestamp = int(time.time())
+            self.bot.last_ran_mtp_timestamp = int(time.time())
 
             if not step_walker.step():
                 return WorkerResult.RUNNING
         else:
+            self.bot.encounter_ids.append(nearest_pokemon['encounter_id'])
             return WorkerResult.SUCCESS 
 
         if dist > 2:
@@ -78,22 +79,14 @@ class MoveToPokemonWorker(object):
     def get_nearest_pokemon(self):
         try:
             if len(self.bot.config.pokemon_map_ids) > 0:
-                raw_data = requests.get('http://' + self.bot.config.pokemon_map_host + ':' +
+                encounters = [x for x in requests.get('http://' + self.bot.config.pokemon_map_host + ':' +
                                             str(self.bot.config.pokemon_map_port) + '/raw_data?ids=' +
                                             self.bot.config.pokemon_map_ids
-                                            )
-                if len(raw_data) > 0:
-                    encounters = [x for x in raw_data.json()['pokemons']]
-                else:
-                    return None
+                                            ).json()['pokemons']]
             else:
-                raw_data = requests.get('http://' + self.bot.config.pokemon_map_host + ':' +
+                encounters = [x for x in requests.get('http://' + self.bot.config.pokemon_map_host + ':' +
                                             str(self.bot.config.pokemon_map_port) + '/raw_data'
-                                            )
-                if len(raw_data) > 0:
-                    encounters = [x for x in raw_data.json()['pokemons']]
-                else:
-                    return None
+                                            ).json()['pokemons']]
         except requests.exceptions.RequestException as e:
             logger.log('The connection to the PokemonGo-Map server is failing. Probably you forgot to spin it up first')
             return None
