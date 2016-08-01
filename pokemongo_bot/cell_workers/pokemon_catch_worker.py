@@ -332,6 +332,8 @@ class PokemonCatchWorker(object):
             catch_results['cp'] = True
 
         catch_iv = catch_config.get('catch_above_iv', 0)
+        if catch_iv > 1:
+            catch_iv = 0
         if iv > catch_iv:
             catch_results['iv'] = True
 
@@ -398,6 +400,8 @@ class PokemonCatchWorker(object):
         if cp > catch_cp:
             catch_results['cp'] = True
         catch_iv = catch_config.get('catch_above_iv', 0)
+        if catch_iv > 1:
+            catch_iv = 0
         if iv > catch_iv:
             catch_results['iv'] = True
         logic_to_function = {
@@ -405,4 +409,3 @@ class PokemonCatchWorker(object):
             'and': lambda x, y: x and y
         }
         return logic_to_function[cp_iv_logic](*catch_results.values())
-
