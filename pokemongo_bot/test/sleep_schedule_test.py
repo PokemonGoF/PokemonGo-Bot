@@ -1,16 +1,16 @@
 import unittest
 from datetime import timedelta, datetime
 from mock import patch, MagicMock
-from pokemongo_bot.cell_workers.sleeper import Sleeper
+from pokemongo_bot.cell_workers.sleeper import SleepSchedule
 from tests import FakeBot
 
 
-class SleeperTestCase(unittest.TestCase):
+class SleepScheculeTestCase(unittest.TestCase):
     config = {'time': '12:20', 'duration': '01:05', 'time_random_offset': '00:05', 'duration_random_offset': '00:05'}
 
     def setUp(self):
         self.bot = FakeBot()
-        self.worker = Sleeper(self.bot, self.config)
+        self.worker = SleepSchedule(self.bot, self.config)
 
     def test_config(self):
         self.assertEqual(self.worker.time.hour, 12)
@@ -63,23 +63,23 @@ class SleeperTestCase(unittest.TestCase):
 
     @patch('pokemongo_bot.cell_workers.sleeper.sleep')
     def test_sleep(self, mock_sleep):
-        self.worker._next_duration = Sleeper.LOG_INTERVAL_SECONDS * 10
+        self.worker._next_duration = SleepSchedule.LOG_INTERVAL_SECONDS * 10
         self.worker._sleep()
         #Sleep should be  called 10 times with LOG_INTERVAL_SECONDS as argument
         self.assertEqual(mock_sleep.call_count, 10)
         calls = [x[0][0] for x in mock_sleep.call_args_list]
         for arg in calls:
-            self.assertEqual(arg, Sleeper.LOG_INTERVAL_SECONDS)
+            self.assertEqual(arg, SleepSchedule.LOG_INTERVAL_SECONDS)
 
     @patch('pokemongo_bot.cell_workers.sleeper.sleep')
     def test_sleep_not_divedable_by_interval(self, mock_sleep):
-        self.worker._next_duration = Sleeper.LOG_INTERVAL_SECONDS * 10 + 5
+        self.worker._next_duration = SleepSchedule.LOG_INTERVAL_SECONDS * 10 + 5
         self.worker._sleep()
         self.assertEqual(mock_sleep.call_count, 11)
 
         calls = [x[0][0] for x in mock_sleep.call_args_list]
         for arg in calls[:-1]:
-            self.assertEqual(arg, Sleeper.LOG_INTERVAL_SECONDS)
+            self.assertEqual(arg, SleepSchedule.LOG_INTERVAL_SECONDS)
         #Last call must be 5
         self.assertEqual(calls[-1], 5)
 

@@ -5,7 +5,7 @@ from pokemongo_bot import logger
 from pokemongo_bot.cell_workers.base_task import BaseTask
 
 
-class Sleeper(BaseTask):
+class SleepSchedule(BaseTask):
     """Pauses the execution of the bot every day for some time
 
     Simulates the user going to sleep every day for some time, the sleep time
@@ -13,7 +13,7 @@ class Sleeper(BaseTask):
     config file
     Example Config:
     {
-        "type": "Sleeper",
+        "type": "SleepSchedule",
         "config": {
           "time": "12:00",
           "duration":"5:30",
