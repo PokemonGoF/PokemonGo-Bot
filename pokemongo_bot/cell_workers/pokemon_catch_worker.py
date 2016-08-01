@@ -192,6 +192,10 @@ class PokemonCatchWorker(object):
                                 if catch_rate[pokeball-1]<0.30 and items_stock[3]>0:
                                     pokeball = 3
 
+                            if items_stock[pokeball] == 0:
+                                logger.log('Seems to be out of balls to throw')
+                                return PokemonCatchWorker.NO_POKEBALLS
+
                             items_stock[pokeball] -= 1
                             success_percentage = '{0:.2f}'.format(catch_rate[pokeball - 1] * 100)
                             logger.log('Using {} (chance: {}%)... ({} left!)'.format(
