@@ -191,7 +191,7 @@ class IncubateEggs(BaseTask):
                     'pokemon': 'error',
                     'cp': 'error',
                     'iv': 'error',
-                    'xp': 'error',
+                    'exp': 'error',
                     'stardust': 'error',
                     'candy': 'error',
                 }

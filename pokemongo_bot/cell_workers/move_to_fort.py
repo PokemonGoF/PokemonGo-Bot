@@ -30,7 +30,7 @@ class MoveToFort(BaseTask):
         lng = nearest_fort['longitude']
         fortID = nearest_fort['id']
         details = fort_details(self.bot, fortID, lat, lng)
-        fort_name = details.get('name', 'Unknown').encode('utf8', 'replace')
+        fort_name = details.get('name', 'Unknown')
 
         unit = self.bot.config.distance_unit  # Unit to use when printing formatted distance
 
@@ -48,7 +48,7 @@ class MoveToFort(BaseTask):
                 level='info',
                 formatted="Moving towards fort {fort_name} - {distance} {distance_unit}",
                 data={
-                    'fort_name': fort_name,
+                    'fort_name': unicode(fort_name.decode('utf-8')),
                     'distance': dist,
                     'distance_unit': unit
                 }
