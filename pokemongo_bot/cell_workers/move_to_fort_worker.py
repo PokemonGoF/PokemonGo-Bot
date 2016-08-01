@@ -11,9 +11,11 @@ class MoveToFortWorker(object):
         self.bot = bot
 
     def should_run(self):
-        return (self.bot.config.forts_spin and \
+        return ((self.bot.config.forts_spin and \
          self.bot.config.forts_move_to_spin and \
-         self.bot.has_space_for_loot()) or self.bot.softban
+         self.bot.has_space_for_loot()) or \
+         self.bot.softban) and not self.bot.running_to_pokemon
+        
 
     def work(self):
         if not self.should_run():

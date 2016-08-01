@@ -45,6 +45,9 @@ class PokemonGoBot(object):
         self.recent_forts = [None] * config.forts_max_circle_size
         self.tick_count = 0
         self.softban = False
+        self.encounter_ids = []
+        self.running_to_pokemon = False
+        self.last_ran_mtp_timestamp = 0
 
         # Make our own copy of the workers for this instance
         self.workers = []
@@ -303,7 +306,7 @@ class PokemonGoBot(object):
             cell_workers.SeenFortWorker(self),
             cell_workers.MoveToFortWorker(self),
             cell_workers.CatchLuredPokemonWorker(self),
-            cell_workers.SeenFortWorker(self)
+            cell_workers.MoveToPokemonWorker(self)
         ]
 
     def _print_character_info(self):

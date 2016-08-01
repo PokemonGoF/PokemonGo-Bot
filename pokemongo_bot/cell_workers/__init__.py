@@ -10,3 +10,4 @@ from pokemon_transfer_worker import PokemonTransferWorker
 from recycle_items_worker import RecycleItemsWorker
 from seen_fort_worker import SeenFortWorker
 from soft_ban_worker import SoftBanWorker
+from move_to_pokemon_worker import MoveToPokemonWorker
