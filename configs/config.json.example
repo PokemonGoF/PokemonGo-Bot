@@ -43,10 +43,12 @@
         "type": "MoveToFort"
       },
       {
-        "type": "FollowSpiral"
+        "type": "FollowSpiral",
+        "config": {
+          "diameter": 4
+        }
       }
     ],
-    "max_steps": 5,
     "forts": {
       "avoid_circles": true,
       "max_circle_size": 50
