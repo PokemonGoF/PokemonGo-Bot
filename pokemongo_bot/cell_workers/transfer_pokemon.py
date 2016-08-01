@@ -67,6 +67,11 @@ class TransferPokemon(BaseTask):
                                                                       high_pokemon['iv']), 'green')
 
                 if keep_for_evo and len(group) > 0:
+                    if 'Previous evolution(s)' in self.bot.pokemon_list[pokemon_id - 1]:
+                        logger.log(
+                            '{} has previous evolution stages. This focuses on 1st stage because they use less '
+                            'candy'.format(pokemon_name), 'red')
+                        continue
 
                     if candies == {}:
                         logger.log("Api call for candies failed, try again")
@@ -87,7 +92,7 @@ class TransferPokemon(BaseTask):
                         evolvable += len(evo_pokemon)
                         if len(evo_pokemon) > 0:
                             logger.log("Keep {} {}, for evolution - {} candies".format(len(evo_pokemon),
-                                                                             pokemon_name, candy), "green")
+                                                                                       pokemon_name, candy), "green")
                             for evo_pokemon in evo_pokemon:
                                 logger.log("{} [CP {}] [Potential {}]".format(pokemon_name,
                                                                               evo_pokemon['cp'],
