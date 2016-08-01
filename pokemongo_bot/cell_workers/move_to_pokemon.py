@@ -33,11 +33,11 @@ class MoveToPokemon(BaseTask):
 
         max_travel_time = int(nearest_pokemon['disappear_time'] / 1000) - int(time.time()) - 15
         
-        needed_speed = max((dist / max_travel_time), self.bot.config.pokemon_map_speed)
+        needed_speed = max((dist / max_travel_time), self.bot.config.pokemon_map_min_speed)
         
         secs_since_last_ran = max((int(time.time()) - self.bot.last_ran_mtp_timestamp), 0)
         
-        if (needed_speed * 3600 / 1000) < 120:
+        if (needed_speed * 3600 / 1000) < (self.bot.config.pokemon_map_max_speed * 3600 / 1000):
             logger.log('Found {} in PokemonGo-Map. Moving @{} km/h , {} and {} left to get there'.format(pokemonName, (needed_speed * 3600 / 1000), format_dist(dist, unit), format_time(max_travel_time)))
 
             step_walker = StepWalker(
