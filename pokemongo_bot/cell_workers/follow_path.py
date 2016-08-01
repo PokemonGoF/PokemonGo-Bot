@@ -46,11 +46,11 @@ class FollowPath(BaseTask):
         return {'lat': tpl[0], 'lng': tpl[1]}
 
     def load_gpx(self):
-        gpx_file = open(self.path_file, 'r')
-        gpx = gpxpy.parse(gpx_file)
+        with open(self.path_file, 'r') as gpx_file:
+            gpx = gpxpy.parse(gpx_file)
 
         if len(gpx.tracks) == 0:
-            raise RuntimeError('GPX file does not cotain a track')
+            raise RuntimeError('GPX file does not contain a track')
 
         points = []
         track = gpx.tracks[0]
