@@ -42,7 +42,7 @@ class FollowCluster(object):
 
                 log_str = log_lure_avail_str + 'Move to destiny. ' + str(cnt) + ' ' + log_lured_str + \
                           'pokestops will be in range of ' + str(self.radius) + 'm. Arrive in ' \
-                          + str(round(distance(self.bot.position[0], self.bot.position[1], lat, lng))) + 'm.'
+                          + str(distance(self.bot.position[0], self.bot.position[1], lat, lng)) + 'm.'
                 logger.log(log_str)
                 self.announced = False
 
