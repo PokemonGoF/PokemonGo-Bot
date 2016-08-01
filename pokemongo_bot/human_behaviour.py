@@ -131,7 +131,10 @@ def normalized_reticle_size(factor, mode='human'):
             minimum + (maximum - minimum) * factor,
             maximum)
     elif 'human' == mode:
-        return 2 * aim_rng(factor)
+        rnd = gauss(factor, 0.05)
+        # mirror the bounds
+        rnd = rnd%1.0
+        return 2 * rnd
     else:
         return mode(factor) # strategy
 
@@ -151,6 +154,57 @@ def spin_modifier(factor, mode='human'):
         return aim_rng(factor)
     else:
         return mode(factor)
+
+
+def _visualize():
+    '''
+    Visualize rng distributions.
+    '''
+    import numpy as np
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    K = 10000
+
+    # lognormal simulations
+    human_reflex = [human_reflex_rng() for x in range(K)]
+    jitter = [jitter_rng(80,30) for x in range(K)]
+
+    df_time = pd.DataFrame()
+    df_time.loc[:,'time'] = human_reflex + jitter
+    df_time.loc[:,'type'] = ['reflex']*len(human_reflex)+['jitter']*len(jitter)
+
+    g = sns.FacetGrid(df_time, col='type')
+    g.map(sns.distplot, 'time')
+    sns.plt.savefig('time.png')
+
+
+    # spin simulation
+    spin9 = [spin_modifier(.9) for x in range(K)]
+    spin5 = [spin_modifier(.5) for x in range(K)]
+    spin1 = [spin_modifier(.1) for x in range(K)]
+
+    df_time = pd.DataFrame()
+    df_time.loc[:,'value'] = spin9 + spin5 + spin1
+    df_time.loc[:,'factor'] = ['0.9']*len(spin9)+['0.5']*len(spin5)+['0.1']*len(spin1)
+
+    g = sns.FacetGrid(df_time, col='factor')
+    g.map(sns.distplot, 'value')
+    sns.plt.savefig('spin.png')
+
+    # reticle simulation
+    reti9 = [normalized_reticle_size(.9) for x in range(K)]
+    reti5 = [normalized_reticle_size(.5) for x in range(K)]
+    reti1 = [normalized_reticle_size(.1) for x in range(K)]
+
+    df_time = pd.DataFrame()
+    df_time.loc[:,'value'] = reti9 + reti5 + reti1
+    df_time.loc[:,'factor'] = ['0.9']*len(spin9)+['0.5']*len(spin5)+['0.1']*len(spin1)
+
+    g = sns.FacetGrid(df_time, col='factor')
+    g.map(sns.distplot, 'value')
+    sns.plt.savefig('reticle.png')
 
 
 def _precalc_lognormal_ping_param(
@@ -216,4 +270,6 @@ def _precalc_lognormal_ping_param(
 
 
 if '__main__' == __name__:
-    _precalc_lognormal_ping_param()
+    # _precalc_lognormal_ping_param()
+    # _visualize()
+    pass
