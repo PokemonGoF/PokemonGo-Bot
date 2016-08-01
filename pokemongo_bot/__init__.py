@@ -93,6 +93,9 @@ class PokemonGoBot(object):
         cells = self.find_close_cells(*location)
 
         # Combine all cells into a single dict of the items we care about.
+        oldForts = []
+        if (self.cell and "forts" in self.cell):
+            oldForts = self.cell['forts']
         forts = []
         wild_pokemons = []
         catchable_pokemons = []
@@ -103,6 +106,10 @@ class PokemonGoBot(object):
                 wild_pokemons += cell["wild_pokemons"]
             if "catchable_pokemons" in cell and len(cell["catchable_pokemons"]):
                 catchable_pokemons += cell["catchable_pokemons"]
+
+        if (len(forts) == 0):
+            forts = oldForts
+#            logger.log('using old forts list')
 
         return {
             "forts": forts,
