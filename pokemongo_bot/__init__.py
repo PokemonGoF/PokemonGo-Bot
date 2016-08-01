@@ -137,6 +137,15 @@ class PokemonGoBot(object):
             )
         )
         self.event_manager.register_event(
+            'moving_to_lured_fort',
+            parameters=(
+                'fort_name',
+                'distance',
+                'lure_distance',
+                'distance_unit'
+            )
+        )
+        self.event_manager.register_event(
             'spun_pokestop',
             parameters=(
                 'pokestop', 'exp', 'items'
@@ -363,7 +372,7 @@ class PokemonGoBot(object):
                 wild_pokemons += cell["wild_pokemons"]
             if "catchable_pokemons" in cell and len(cell["catchable_pokemons"]):
                 catchable_pokemons += cell["catchable_pokemons"]
-        
+
         # If there are forts present in the cells sent from the server or we don't yet have any cell data, return all data retrieved
         if len(forts) > 1 or not self.cell:
             return {
