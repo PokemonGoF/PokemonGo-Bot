@@ -105,7 +105,7 @@ class PokemonGoBot(object):
                 catchable_pokemons += cell["catchable_pokemons"]
         
         # If there are forts present in the cells sent from the server or we don't yet have any cell data, return all data retrieved
-        if len(forts) or not self.cell:
+        if len(forts) > 1 or not self.cell:
             return {
                 "forts": forts,
                 "wild_pokemons": wild_pokemons,
