@@ -53,7 +53,7 @@ class IncubateEggs(BaseTask):
             for egg in self.eggs:
                 if egg["used"] or egg["km"] == -1:
                     continue
-                self.event_manager.emit(
+                self.bot.event_manager.emit(
                     'incubate_try',
                     sender=self,
                     level='debug',
@@ -68,7 +68,7 @@ class IncubateEggs(BaseTask):
                 if ret:
                     code = ret.get("responses", {}).get("USE_ITEM_EGG_INCUBATOR", {}).get("result", 0)
                     if code == 1:
-                        self.event_manager.emit(
+                        self.bot.event_manager.emit(
                             'incubate',
                             sender=self,
                             level='info',
@@ -81,7 +81,7 @@ class IncubateEggs(BaseTask):
                         incubator["used"] = True
                         break
                     elif code == 5 or code == 7:
-                        self.event_manager.emit(
+                        self.bot.event_manager.emit(
                             'incubator_already_used',
                             sender=self,
                             level='debug',
@@ -90,7 +90,7 @@ class IncubateEggs(BaseTask):
                         incubator["used"] = True
                         break
                     elif code == 6:
-                        self.event_manager.emit(
+                        self.bot.event_manager.emit(
                             'egg_already_incubating',
                             sender=self,
                             level='debug',
