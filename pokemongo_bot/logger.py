@@ -23,14 +23,14 @@ def log(string, color='white'):
     if color not in color_hex:
         print('[{time}] {string}'.format(
             time=time.strftime("%H:%M:%S"),
-            string=string.decode('utf-8')
+            string=unicode(string)
         ))
     else:
         print(
             '[{time}] \033[{color} {string} \033[0m'.format(
                 time=time.strftime("%H:%M:%S"),
                 color=color_hex[color],
-                string=string.decode('utf-8')
+                string=unicode(string)
             )
         )
     if lcd:
