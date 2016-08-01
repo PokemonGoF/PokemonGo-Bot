@@ -7,8 +7,8 @@ class EvolveAll(BaseTask):
     def initialize(self):
         self.evolve_all = self.config.get('evolve_all', [])
         self.evolve_speed = self.config.get('evolve_speed', 3.7)
+        self.evolve_cp_min = self.config.get('evolve_cp_min', 300)
         self.use_lucky_egg = self.config.get('use_lucky_egg', False)
-
 
     def _validate_config(self):
         if isinstance(self.evolve_all, str):
@@ -132,7 +132,7 @@ class EvolveAll(BaseTask):
                         pokemon['cp'],
                         self._compute_iv(pokemon)
                     ]
-                    if pokemon['cp'] > self.bot.config.evolve_cp_min:
+                    if pokemon['cp'] > self.evolve_cp_min:
                         pokemons1.append(v)
                     else:
                         pokemons2.append(v)
