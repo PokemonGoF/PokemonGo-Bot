@@ -235,35 +235,6 @@ def init_config():
     add_config(
         parser,
         load,
-        short_flag="-n",
-        long_flag="--navigator.type",
-        help="Set the navigator to be used(DEFAULT spiral)",
-        type=str,
-        default='spiral'
-    )
-
-    add_config(
-        parser,
-        load,
-        short_flag="-pm",
-        long_flag="--navigator.path_mode",
-        help="Set the mode for the path navigator (DEFAULT loop)",
-        type=str,
-        default="loop"
-    )
-
-    add_config(
-        parser,
-        load,
-        short_flag="-pf",
-        long_flag="--navigator.path_file",
-        help="Set the file containing the path for the path navigator (GPX or JSON).",
-        type=str,
-        default=None
-    )
-    add_config(
-        parser,
-        load,
         short_flag="-d",
         long_flag="--debug",
         help="Debug Mode",
@@ -287,24 +258,6 @@ def init_config():
         help="Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)",
         type=str,
         default='km'
-    )
-    add_config(
-        parser,
-        load,
-        short_flag="-ev",
-        long_flag="--evolve_all",
-        help="(Batch mode) Pass \"all\" or a list of pokemon to evolve (e.g., \"Pidgey,Weedle,Caterpie\"). Bot will start by attempting to evolve all pokemon. Great after popping a lucky egg!",
-        type=str,
-        default=[]
-    )
-    add_config(
-        parser,
-        load,
-        short_flag="-ecm",
-        long_flag="--evolve_cp_min",
-        help="Minimum CP for evolve all. Bot will attempt to first evolve highest IV pokemon with CP larger than this.",
-        type=int,
-        default=300
     )
     add_config(
         parser,
@@ -377,7 +330,6 @@ def init_config():
 
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
-    config.item_filter = load.get('item_filter', {})
     config.action_wait_max = load.get('action_wait_max', 4)
     config.action_wait_min = load.get('action_wait_min', 1)
     config.raw_tasks = load.get('tasks', [])
@@ -399,13 +351,13 @@ def init_config():
             """.format(flag_name))
 
     old_flags = ['mode', 'catch_pokemon', 'spin_forts', 'forts_spin', 'hatch_eggs', 'release_pokemon', 'softban_fix',
-                'longer_eggs_first', 'evolve_speed', 'use_lucky_egg']
+                'longer_eggs_first', 'evolve_speed', 'use_lucky_egg', 'item_filter', 'evolve_all', 'evolve_cp_min']
     for flag in old_flags:
         if flag in load:
             task_configuration_error(flag)
             return None
 
-    nested_old_flags = [('forts', 'spin'), ('forts', 'move_to_spin')]
+    nested_old_flags = [('forts', 'spin'), ('forts', 'move_to_spin'), ('navigator', 'path_mode'), ('navigator', 'path_file'), ('navigator', 'type')]
     for outer, inner in nested_old_flags:
         if load.get(outer, {}).get(inner, None):
             task_configuration_error('{}.{}'.format(outer, inner))
@@ -430,14 +382,6 @@ def init_config():
         parser.error("--catch_randomize_spin_factor is out of range! (should be 0 <= catch_randomize_spin_factor <= 1)")
         return None
 
-        # item list config verification
-        item_list = json.load(open(os.path.join('data', 'items.json')))
-        for config_item_name, bag_count in config.item_filter.iteritems():
-            if config_item_name not in item_list.viewvalues():
-                if config_item_name not in item_list:
-                    parser.error('item "' + config_item_name + '" does not exist, spelling mistake? (check for valid item names in data/items.json)')
-                    return None
-
     # create web dir if not exists
     try:
         os.makedirs(web_dir)
@@ -445,8 +389,6 @@ def init_config():
         if not os.path.isdir(web_dir):
             raise
 
-    if config.evolve_all and isinstance(config.evolve_all, str):
-        config.evolve_all = [str(pokemon_name) for pokemon_name in config.evolve_all.split(',')]
     if config.evolve_captured and isinstance(config.evolve_captured, str):
         config.evolve_captured = [str(pokemon_name) for pokemon_name in config.evolve_captured.split(',')]
 

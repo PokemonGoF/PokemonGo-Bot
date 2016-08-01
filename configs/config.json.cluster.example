@@ -52,10 +52,11 @@
         "type": "SpinFort"
       },
       {
-        "type": "MoveToFort"
-      },
-      {
-        "type": "FollowSpiral"
+        "type": "FollowCluster",
+        "config": {
+            "radius": 50,
+            "lured": true
+        }
       }
     ],
     "max_steps": 5,

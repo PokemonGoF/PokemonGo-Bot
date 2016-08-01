@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import time
-
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import (normalized_reticle_size, sleep,
                                            spin_modifier)
-
 
 class PokemonCatchWorker(object):
     BAG_FULL = 'bag_full'
@@ -52,9 +50,9 @@ class PokemonCatchWorker(object):
                                 individual_defense = pokemon_data.get("individual_defense", 0)
 
                                 iv_display = '{}/{}/{}'.format(
-                                    individual_stamina,
                                     individual_attack,
-                                    individual_defense
+                                    individual_defense,
+                                    individual_stamina
                                 )
 
                                 pokemon_potential = self.pokemon_potential(pokemon_data)
@@ -63,7 +61,7 @@ class PokemonCatchWorker(object):
                                 logger.log('A Wild {} appeared! [CP {}] [Potential {}]'.format(
                                     pokemon_name, cp, pokemon_potential), 'yellow')
 
-                                logger.log('IV [Stamina/Attack/Defense] = [{}]'.format(iv_display))
+                                logger.log('IV [Attack/Defense/Stamina] = [{}]'.format(iv_display))
                                 pokemon_data['name'] = pokemon_name
                                 # Simulate app
                                 sleep(3)
@@ -87,7 +85,7 @@ class PokemonCatchWorker(object):
                             berry_used = False
 
                             if flag_VIP:
-                                if(berries_count>0):
+                                if(berries_count>0 and catch_rate[pokeball-1] < 0.9):
                                     success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
                                     logger.log('Catch Rate with normal Pokeball is low ({}%). Thinking to throw a {}... ({} left!)'.format(success_percentage,self.item_list[str(berry_id)],berries_count-1))
                                     # Out of all pokeballs! Let's don't waste berry.
@@ -213,7 +211,7 @@ class PokemonCatchWorker(object):
                                                    spawn_point_id=self.spawn_point_guid,
                                                    hit_pokemon=1,
                                                    spin_modifier=spin_modifier_parameter,
-                                                   NormalizedHitPosition=1)
+                                                   normalized_hit_position=1)
                             response_dict = self.api.call()
 
                             if response_dict and \

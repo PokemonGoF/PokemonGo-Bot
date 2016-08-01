@@ -71,6 +71,3 @@ class TreeConfigBuilderTest(unittest.TestCase):
         builder = TreeConfigBuilder(self.bot, obj)
         tree = builder.build()
         self.assertTrue(tree[0].config.get('longer_eggs_first', False))
-
-if __name__ == '__main__':
-    unittest.main()
