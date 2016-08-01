@@ -233,15 +233,17 @@ class PokemonCatchWorker(object):
                                         self.softban = True
                                 if status is 1:
                                     self.bot.metrics.captured_pokemon(pokemon_name, cp, iv_display, pokemon_potential)
+                                    xp = sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
 
                                     logger.log('Captured {}! [CP {}] [Potential {}] [{}] [+{} exp]'.format(
                                         pokemon_name,
                                         cp,
                                         pokemon_potential,
                                         iv_display,
-                                        sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
+                                        xp
                                     ), 'blue')
                                     self.bot.softban = False
+                                    evolved = False
 
                                     if (self.config.evolve_captured
                                         and (self.config.evolve_captured[0] == 'all'
@@ -260,9 +262,11 @@ class PokemonCatchWorker(object):
                                         if status == 1:
                                             logger.log(
                                                 '{} has been evolved!'.format(pokemon_name), 'green')
+                                            evolved = True
                                         else:
                                             logger.log(
                                                 'Failed to evolve {}!'.format(pokemon_name))
+                                    self.bot.metrics.catches.append({'pokemon_name': pokemon_name, 'cp': cp, 'pokemon_potential': pokemon_potential, 'iv_display': iv_display, 'xp': xp, 'evolved': evolved})
                             break
         time.sleep(5)
 
