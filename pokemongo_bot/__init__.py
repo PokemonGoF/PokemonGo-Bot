@@ -248,6 +248,7 @@ class PokemonGoBot(object):
         self.event_manager.register_event('lucky_egg_error')
 
         # softban
+        self.event_manager.register_event('softban')
         self.event_manager.register_event('softban_fix')
         self.event_manager.register_event('softban_fix_done')
 
@@ -273,7 +274,7 @@ class PokemonGoBot(object):
             'egg_hatched',
             parameters=(
                 'pokemon',
-                'cp', 'iv', 'xp', 'stardust', 'candy'
+                'cp', 'iv', 'exp', 'stardust', 'candy'
             )
         )
 

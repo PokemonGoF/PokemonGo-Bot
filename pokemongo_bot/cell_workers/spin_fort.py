@@ -75,7 +75,7 @@ class SpinFort(BaseTask):
                     )
                 else:
                     self.bot.event_manager.emit(
-                        'empty_pokestop',
+                        'pokestop_empty',
                         sender=self,
                         level='info',
                         formatted='Found nothing in pokestop {pokestop}.',

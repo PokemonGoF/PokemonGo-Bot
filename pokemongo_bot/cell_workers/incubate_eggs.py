@@ -201,7 +201,7 @@ class IncubateEggs(BaseTask):
             return
 
         for i in range(len(pokemon_data)):
-            msg = "Egg hatched with a {pokemon} (CP {cp} - IV {iv}), {exp} exp, {startdust} stardust and {candy} candies."
+            msg = "Egg hatched with a {pokemon} (CP {cp} - IV {iv}), {exp} exp, {stardust} stardust and {candy} candies."
             self.bot.event_manager.emit(
                 'egg_hatched',
                 sender=self,
@@ -214,7 +214,7 @@ class IncubateEggs(BaseTask):
                         "/".join(map(str, pokemon_data[i]['iv'])),
                         sum(pokemon_data[i]['iv'])/self.max_iv
                     ),
-                    'xp': xp[i],
+                    'exp': xp[i],
                     'stardust': stardust[i],
                     'candy': candy[i],
                 }
