@@ -37,7 +37,7 @@ class HandleSoftBan(BaseTask):
             return WorkerResult.RUNNING
         else:
             spins = randint(50,60)
-            logger.log('Starting % spins...' % spins)
+            logger.log('Starting %s spins...' % spins)
             for i in xrange(spins):
                 if (i + 1) % 10 == 0:
                     logger.log('Spin #{}'.format(str(i+1)))
