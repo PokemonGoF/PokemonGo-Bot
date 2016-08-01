@@ -41,7 +41,12 @@ class TransferPokemon(BaseTask):
                                 all_pokemons.remove(pokemon)
                                 best_pokemons.append(pokemon)
 
-                    if best_pokemons and all_pokemons:
+                    transfer_pokemons = [pokemon for pokemon in all_pokemons
+                                         if self.should_release_pokemon(pokemon_name,
+                                                                        pokemon['cp'],
+                                                                        pokemon['iv'])]
+
+                    if transfer_pokemons:
                         logger.log("Keep {} best {}, based on {}".format(len(best_pokemons),
                                                                          pokemon_name,
                                                                          order_criteria), "green")
@@ -50,10 +55,10 @@ class TransferPokemon(BaseTask):
                                                                           best_pokemon['cp'],
                                                                           best_pokemon['iv']), 'green')
 
-                        logger.log("Transferring {} pokemon".format(len(all_pokemons)), "green")
+                        logger.log("Transferring {} pokemon".format(len(transfer_pokemons)), "green")
 
-                    for pokemon in all_pokemons:
-                        self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
+                        for pokemon in transfer_pokemons:
+                            self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
                 else:
                     group = sorted(group, key=lambda x: x['cp'], reverse=True)
                     for item in group:
