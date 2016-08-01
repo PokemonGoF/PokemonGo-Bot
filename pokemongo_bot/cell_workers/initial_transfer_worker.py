@@ -30,7 +30,7 @@ class InitialTransferWorker(object):
 
 
                 for x in range(1, len(group_cp)):
-                    if self.config.initial_transfer and group_cp[x] > self.config.initial_transfer:
+                    if group_cp[x] > self.config.initial_transfer:
                         continue
 
                     print('[x] Transferring {} with CP {}'.format(
