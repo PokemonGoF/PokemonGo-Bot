@@ -16,3 +16,4 @@ from follow_spiral import FollowSpiral
 from collect_level_up_reward import CollectLevelUpReward
 from base_task import BaseTask
 from follow_cluster import FollowCluster
+from sleep_schedule import SleepSchedule
