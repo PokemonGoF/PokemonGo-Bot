@@ -72,10 +72,18 @@ class FollowSpiral(BaseTask):
             )
 
             if self.cnt == 1:
-                logger.log(
-                    'Walking from ' + str((self.bot.api._position_lat,
-                    self.bot.api._position_lng)) + " to " + str([point['lat'], point['lng']]) + " " + format_dist(dist,
-                                                                                                   self.bot.config.distance_unit))
+                self.bot.event_manager.emit(
+                    'position_update',
+                    sender=self,
+                    level='info',
+                    formatted="Walking from {last_position} to {current_position} ({distance} {distance_unit})",
+                    data={
+                        'last_position': self.bot.position,
+                        'current_position': (point['lat'], point['lng'], 0),
+                        'distance': dist,
+                        'distance_unit': self.bot.config.distance_unit
+                    }
+                )
 
             if step_walker.step():
                 step_walker = None

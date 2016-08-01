@@ -13,7 +13,7 @@ class SocketIoHandler(EventHandler):
 
     def handle_event(self, event, sender, level, msg, data):
         if msg:
-            date['msg'] = msg
+            data['msg'] = msg
         with SocketIO(self.host, self.port) as sio:
             sio.emit(
                 'bot:broadcast',

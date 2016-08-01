@@ -50,6 +50,7 @@ class PokemonGoBot(object):
         self.workers = []
 
     def start(self):
+        self._setup_event_system()
         self._setup_logging()
         self._setup_api()
 
@@ -57,7 +58,7 @@ class PokemonGoBot(object):
 
     def _setup_event_system(self):
         handlers = [LoggingHandler()]
-        if self.config.websocket_server:
+        if self.config.websocket_server_url:
             websocket_handler = SocketIoHandler(self.config.websocket_server_url)
             handlers.append(websocket_handler)
 
@@ -66,6 +67,7 @@ class PokemonGoBot(object):
                 self.sio_runner.start_listening_async()
 
         self.event_manager = EventManager(*handlers)
+        self._register_events()
 
         # Registering event:
         # self.event_manager.register_event("location", parameters=['lat', 'lng'])
@@ -73,6 +75,239 @@ class PokemonGoBot(object):
         # Emitting event should be enough to add logging and send websocket
         # message: :
         # self.event_manager.emit('location', 'level'='info', data={'lat': 1, 'lng':1}),
+
+    def _register_events(self):
+        self.event_manager.register_event(
+            'location_found',
+            parameters=('position', 'location')
+        )
+
+        self.event_manager.register_event('login_started')
+        self.event_manager.register_event('login_failed')
+        self.event_manager.register_event('login_successful')
+
+        self.event_manager.register_event('set_start_location')
+        self.event_manager.register_event('load_cached_location')
+        self.event_manager.register_event('location_cache_ignored')
+        self.event_manager.register_event(
+            'position_update',
+            parameters=(
+                'current_position',
+                'last_position',
+                'distance', # optional
+                'distance_unit' # optional
+            )
+        )
+        self.event_manager.register_event('location_cache_error')
+
+        self.event_manager.register_event('bot_start')
+        self.event_manager.register_event('bot_exit')
+
+        # fort stuff
+        self.event_manager.register_event(
+            'spun_fort',
+            parameters=(
+                'fort_id',
+                'latitude',
+                'longitude'
+            )
+        )
+        self.event_manager.register_event(
+            'lured_pokemon_found',
+            parameters=(
+                'fort_id',
+                'encounter_id',
+                'latitude',
+                'longitude'
+            )
+        )
+        self.event_manager.register_event(
+            'moving_to_fort',
+            parameters=(
+                'fort_name',
+                'distance',
+                'distance_unit'
+            )
+        )
+        self.event_manager.register_event(
+            'spun_pokestop',
+            parameters=(
+                'pokestop', 'exp', 'items'
+            )
+        )
+        self.event_manager.register_event(
+            'pokestop_empty',
+            parameters=('pokestop',)
+        )
+        self.event_manager.register_event(
+            'pokestop_out_of_range',
+            parameters=('pokestop',)
+        )
+        self.event_manager.register_event(
+            'pokestop_on_cooldown',
+            parameters=('pokestop', 'minutes_left')
+        )
+        self.event_manager.register_event(
+            'unknown_spin_result',
+            parameters=('status_code',)
+        )
+        self.event_manager.register_event('pokestop_searching_too_often')
+        self.event_manager.register_event('arrived_at_fort')
+
+        # pokemon stuff
+        self.event_manager.register_event(
+            'catchable_pokemon',
+            parameters=(
+                'pokemon_id',
+                'spawn_point_id',
+                'encounter_id',
+                'latitude',
+                'longitude',
+                'expiration_timestamp_ms'
+            )
+        )
+        self.event_manager.register_event(
+            'pokemon_appeared',
+            parameters=(
+                'pokemon',
+                'cp',
+                'iv',
+                'iv_display',
+            )
+        )
+        self.event_manager.register_event(
+            'pokemon_catch_rate',
+            parameters=(
+                'catch_rate',
+                'berry_name',
+                'berry_count'
+            )
+        )
+        self.event_manager.register_event(
+            'threw_berry',
+            parameters=(
+                'berry_name',
+                'new_catch_rate'
+            )
+        )
+        self.event_manager.register_event(
+            'threw_pokeball',
+            parameters=(
+                'pokeball',
+                'success_percentage',
+                'count_left'
+            )
+        )
+        self.event_manager.register_event(
+            'pokemon_fled',
+            parameters=('pokemon',)
+        )
+        self.event_manager.register_event(
+            'pokemon_vanished',
+            parameters=('pokemon',)
+        )
+        self.event_manager.register_event(
+            'pokemon_caught',
+            parameters=(
+                'pokemon',
+                'cp', 'iv', 'iv_display', 'exp'
+            )
+        )
+        self.event_manager.register_event(
+            'pokemon_evolved',
+            parameters=('pokemon',)
+        )
+        self.event_manager.register_event(
+            'pokemon_evolve_fail',
+            parameters=('pokemon',)
+        )
+        self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
+        self.event_manager.register_event('vip_pokemon')
+
+
+        # level up stuff
+        self.event_manager.register_event(
+            'level_up',
+            parameters=(
+                'previous_level',
+                'current_level'
+            )
+        )
+        self.event_manager.register_event(
+            'level_up_reward',
+            parameters=('items',)
+        )
+
+        # lucky egg
+        self.event_manager.register_event(
+            'used_lucky_egg',
+            parameters=('amount_left',)
+        )
+        self.event_manager.register_event('lucky_egg_error')
+
+        # softban
+        self.event_manager.register_event('softban_fix')
+        self.event_manager.register_event('softban_fix_done')
+
+        # egg incubating
+        self.event_manager.register_event(
+            'incubate_try',
+            parameters=(
+                'incubator_id',
+                'egg_id'
+            )
+        )
+        self.event_manager.register_event(
+            'incubate',
+            parameters=('distance_in_km')
+        )
+        self.event_manager.register_event(
+            'next_egg_incubates',
+            parameters=('distance_in_km')
+        )
+        self.event_manager.register_event('incubator_already_used')
+        self.event_manager.register_event('egg_already_incubating')
+        self.event_manager.register_event(
+            'egg_hatched',
+            parameters=(
+                'pokemon',
+                'cp', 'iv', 'xp', 'stardust', 'candy'
+            )
+        )
+
+        # discard item
+        self.event_manager.register_event(
+            'item_discarded',
+            parameters=(
+                'amount', 'item', 'maximum'
+            )
+        )
+        self.event_manager.register_event(
+            'item_discard_fail',
+            parameters=('item',)
+        )
+
+        # inventory
+        self.event_manager.register_event('inventory_full')
+
+        # release
+        self.event_manager.register_event(
+            'keep_best_release',
+            parameters=(
+                'amount', 'pokemon', 'criteria'
+            )
+        )
+        self.event_manager.register_event(
+            'future_pokemon_release',
+            parameters=(
+                'pokemon', 'cp', 'iv', 'below_iv', 'below_cp', 'cp_iv_logic'
+            )
+        )
+        self.event_manager.register_event(
+            'pokemon_release',
+            parameters=('pokemon', 'cp', 'iv')
+        )
+
 
     def tick(self):
         self.cell = self.get_meta_cell()
@@ -257,7 +492,12 @@ class PokemonGoBot(object):
             return False
 
     def login(self):
-        logger.log('Attempting login to Pokemon Go.', 'white')
+        self.event_manager.emit(
+            'login_started',
+            sender=self,
+            level='info',
+            formatted="Login procedure started."
+        )
         self.api.reset_auth()
         lat, lng = self.position[0:2]
         self.api.set_position(lat, lng, 0)
@@ -265,12 +505,20 @@ class PokemonGoBot(object):
         while not self.api.login(self.config.auth_service,
                                 str(self.config.username),
                                 str(self.config.password)):
-
-            logger.log('[X] Login Error, server busy', 'red')
-            logger.log('[X] Waiting 10 seconds to try again', 'red')
+            self.event_manager.emit(
+                'login_failed',
+                sender=self,
+                level='info',
+                formatted="Login error, server busy. Waiting 10 seconds to try again."
+            )
             time.sleep(10)
 
-        logger.log('Login to Pokemon Go successful.', 'green')
+        self.event_manager.emit(
+            'login_successful',
+            sender=self,
+            level='info',
+            formatted="Login successful."
+        )
 
     def _setup_api(self):
         # instantiate pgoapi
@@ -280,7 +528,6 @@ class PokemonGoBot(object):
         self._set_starting_position()
 
         self.login()
-
         # chain subrequests (methods) into one RPC call
 
         self._print_character_info()
@@ -457,6 +704,13 @@ class PokemonGoBot(object):
 
     def _set_starting_position(self):
 
+        self.event_manager.emit(
+            'set_start_location',
+            sender=self,
+            level='info',
+            formatted='Setting start location.'
+        )
+
         has_position = False
 
         if self.config.test:
@@ -466,21 +720,49 @@ class PokemonGoBot(object):
         if self.config.location:
             location_str = self.config.location.encode('utf-8')
             location = (self.get_pos_by_name(location_str.replace(" ", "")))
+            msg = "Location found: {location} {position}"
+            self.event_manager.emit(
+                'location_found',
+                sender=self,
+                level='info',
+                formatted=msg,
+                data={
+                    'location': location_str,
+                    'position': location
+                }
+            )
+
             self.api.set_position(*location)
+
+            self.event_manager.emit(
+                'position_update',
+                sender=self,
+                level='info',
+                formatted="Now at {current_position}",
+                data={
+                    'current_position': self.position,
+                    'last_position': '',
+                    'distance': '',
+                    'distance_unit': ''
+                }
+            )
+
             self.start_position = self.position
-            logger.log('')
-            logger.log('Location Found: {}'.format(location_str))
-            logger.log('GeoPosition: {}'.format(self.position))
-            logger.log('')
+
             has_position = True
 
         if self.config.location_cache:
             try:
                 # save location flag used to pull the last known location from
                 # the location.json
-                logger.log('[x] Parsing cached location...')
+                self.event_manager.emit(
+                    'load_cached_location',
+                    sender=self,
+                    level='debug',
+                    formatted='Loading cached location...'
+                )
                 with open('data/last-location-%s.json' %
-                          self.config.username) as f:
+                    self.config.username) as f:
                     location_json = json.load(f)
                 location = (
                     location_json['lat'],
@@ -494,22 +776,28 @@ class PokemonGoBot(object):
 
                     # Start position has to have been set on a previous run to do this check
                     if last_start_position and last_start_position != self.start_position:
-                        logger.log('[x] Last location flag used but with a stale starting location', 'yellow')
-                        logger.log('[x] Using new starting location, {}'.format(self.position))
+                        msg = 'Going to a new place, ignoring cached location.'
+                        self.event_manager.emit(
+                            'location_cache_ignored',
+                            sender=self,
+                            level='debug',
+                            formatted=msg
+                        )
                         return
 
                 self.api.set_position(*location)
-
-                logger.log('')
-                logger.log(
-                    '[x] Last location flag used. Overriding passed in location'
+                self.event_manager.emit(
+                    'position_update',
+                    sender=self,
+                    level='debug',
+                    formatted='Loaded location {location} from cache',
+                    data={
+                        'current_position': location,
+                        'last_position': '',
+                        'distance': '',
+                        'distance_unit': ''
+                    }
                 )
-                logger.log(
-                    '[x] Last in-game location was set as: {}'.format(
-                        self.position
-                    )
-                )
-                logger.log('')
 
                 has_position = True
             except Exception:
@@ -517,9 +805,11 @@ class PokemonGoBot(object):
                     sys.exit(
                         "No cached Location. Please specify initial location."
                     )
-                logger.log(
-                    '[x] Parsing cached location failed, try to use the '
-                    'initial location...'
+                self.event_manager.emit(
+                    'location_cache_error',
+                    sender=self,
+                    level='debug',
+                    formatted_msg='Parsing cached location failed.'
                 )
 
     def get_pos_by_name(self, location_name):

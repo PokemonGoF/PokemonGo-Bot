@@ -25,7 +25,7 @@ class EventManager(object):
     def register_event(self, name, parameters=None):
         self._registered_events[name] = parameters
 
-    def emit(self, event, sender=None, level='info', formatted=None, data={}):
+    def emit(self, event, sender=None, level='info', formatted='', data={}):
         if not sender:
             raise ArgumentError('Event needs a sender!')
 
@@ -38,9 +38,10 @@ class EventManager(object):
 
         # verify params match event
         parameters = self._registered_events[event]
-        for k, v in data.iteritems():
-            if k not in parameters:
-                raise EventMalformedException("Event %s does not require parameter %s" % (event, k))
+        if parameters:
+            for k, v in data.iteritems():
+                if k not in parameters:
+                    raise EventMalformedException("Event %s does not require parameter %s" % (event, k))
 
         formatted_msg = formatted.format(**data)
 

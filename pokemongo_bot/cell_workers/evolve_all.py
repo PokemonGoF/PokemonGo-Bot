@@ -1,4 +1,3 @@
-from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.cell_workers.base_task import BaseTask
@@ -62,16 +61,29 @@ class EvolveAll(BaseTask):
         # Lucky Egg should only be popped at the first tick
         # Make sure the user has a lucky egg and skip if not
         if lucky_egg_count > 0:
-            logger.log('Using lucky egg ... you have {}'.format(lucky_egg_count))
             response_dict_lucky_egg = self.bot.use_lucky_egg()
             if response_dict_lucky_egg and 'responses' in response_dict_lucky_egg and \
                             'USE_ITEM_XP_BOOST' in response_dict_lucky_egg['responses'] and \
                             'result' in response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']:
                 result = response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']['result']
                 if result is 1:  # Request success
-                    logger.log('Successfully used lucky egg... ({} left!)'.format(lucky_egg_count - 1), 'green')
+                    self.bot.event_manager.emit(
+                        'used_lucky_egg',
+                        sender=self,
+                        level='info',
+                        formmated='Used lucky egg ({amount_left} left).',
+                        data={
+                             'amount_left': lucky_egg_count - 1
+                        }
+                    )
                     return True
                 else:
+                    self.bot.event_manager.emit(
+                        'lucky_egg_error',
+                        sender=self,
+                        level='error',
+                        formatted='Failed to use lucky egg!'
+                    )
                     logger.log('Failed to use lucky egg!', 'red')
                     return False
         else:

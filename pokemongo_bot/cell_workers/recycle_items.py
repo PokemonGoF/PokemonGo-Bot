@@ -1,4 +1,3 @@
-from pokemongo_bot import logger
 from pokemongo_bot.cell_workers.base_task import BaseTask
 
 class RecycleItems(BaseTask):
@@ -23,11 +22,27 @@ class RecycleItems(BaseTask):
                 result = response_dict_recycle.get('responses', {}).get('RECYCLE_INVENTORY_ITEM', {}).get('result', 0)
 
                 if result == 1: # Request success
-                    message_template = "-- Discarded {}x {} (keeps only {} maximum) "
-                    message = message_template.format(str(items_recycle_count), item_name, str(id_filter_keep))
-                    logger.log(message, 'green')
+                    self.bot.event_manager.emit(
+                        'item_discarded',
+                        sender=self,
+                        level='info',
+                        formatted='Discarded {amount}x {item} (maximum {maximum}).',
+                        data={
+                            'amount': str(items_recycle_count),
+                            'item': item_name,
+                            'maximum': str(id_filter_keep)
+                        }
+                    )
                 else:
-                    logger.log("-- Failed to discard " + item_name, 'red')
+                    self.bot.event_manager.emit(
+                        'item_discard_fail',
+                        sender=self,
+                        level='info',
+                        formatted="Failed to discard {item}",
+                        data={
+                            'item': item_name
+                        }
+                    )
 
     def send_recycle_item_request(self, item_id, count):
         self.bot.api.recycle_inventory_item(item_id=item_id, count=count)

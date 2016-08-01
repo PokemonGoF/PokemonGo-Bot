@@ -64,17 +64,35 @@ def main():
             bot.workers = tree
             bot.metrics.capture_stats()
 
-            logger.log('Starting PokemonGo Bot....', 'green')
+            bot.event_manager.emit(
+                'bot_start',
+                sender=bot,
+                level='info',
+                formatted='Starting bot...'
+            )
 
             while True:
                 bot.tick()
 
         except KeyboardInterrupt:
-            logger.log('Exiting PokemonGo Bot', 'red')
+            bot.event_manager.emit(
+                'bot_exit',
+                sender=bot,
+                level='info',
+                formatted='Exiting bot.'
+            )
             finished = True
             report_summary(bot)
         except NotLoggedInException:
-            logger.log('[x] Error while connecting to the server, please wait %s minutes' % config.reconnecting_timeout, 'red')
+            msg = 'Error while connecting to server, wait {} minutes'.format(
+                config.reconnecting_timeout
+            )
+            bot.event_manager.emit(
+                'not_logged_in',
+                sender=bot,
+                level='info',
+                formmated=msg
+            )
             time.sleep(config.reconnecting_timeout * 60)
         except:
             # always report session summary and then raise exception

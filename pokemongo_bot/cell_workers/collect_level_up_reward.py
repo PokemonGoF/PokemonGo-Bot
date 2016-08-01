@@ -1,4 +1,3 @@
-from pokemongo_bot import logger
 from pokemongo_bot.cell_workers.base_task import BaseTask
 
 
@@ -19,7 +18,16 @@ class CollectLevelUpReward(BaseTask):
             self._collect_level_reward()
         # level up situation
         elif self.current_level > self.previous_level:
-            logger.log('Level up from {} to {}!'.format(self.previous_level, self.current_level), 'green')
+            self.bot.event_manager.emit(
+                'level_up',
+                sender=self,
+                level='info',
+                formatted='Level up from {previous_level} to {current_level}',
+                data={
+                    'previous_level': self.previous_level,
+                    'current_level': self.current_level
+                }
+            )
             self._collect_level_reward()
 
         self.previous_level = self.current_level
@@ -33,14 +41,21 @@ class CollectLevelUpReward(BaseTask):
                     .get('LEVEL_UP_REWARDS', {})
                     .get('items_awarded', []))
 
-            if data:
-                logger.log('Collected level up rewards:', 'green')
-
             for item in data:
                 if 'item_id' in item and str(item['item_id']) in self.bot.item_list:
                     got_item = self.bot.item_list[str(item['item_id'])]
+                    item['name'] = got_item
                     count = 'item_count' in item and item['item_count'] or 0
-                    logger.log('{} x {}'.format(got_item, count), 'green')
+
+            self.bot.event_manager.emit(
+                'level_up_reward',
+                sender=self,
+                level='info',
+                formmated='Received level up reward: {items}',
+                data={
+                    'items': data
+                }
+            )
 
     def _get_current_level(self):
         level = 0

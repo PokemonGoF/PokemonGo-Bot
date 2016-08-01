@@ -1,7 +1,7 @@
-from pokemongo_bot import logger
 from pokemongo_bot.cell_workers.utils import fort_details
 from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 from pokemongo_bot.cell_workers.base_task import BaseTask
+
 
 class CatchLuredPokemon(BaseTask):
     def work(self):
@@ -24,13 +24,21 @@ class CatchLuredPokemon(BaseTask):
         encounter_id = fort.get('lure_info', {}).get('encounter_id', None)
 
         if encounter_id:
-            logger.log('Lured pokemon at fort {}'.format(fort['id']))
-            return {
+            result = {
                 'encounter_id': encounter_id,
                 'fort_id': fort['id'],
                 'latitude': fort['latitude'],
                 'longitude': fort['longitude']
             }
+
+            self.bot.event_manager.emit(
+                'lured_pokemon_found',
+                sender=self,
+                level='info',
+                formatted='Lured pokemon at fort {fort_id}',
+                data=result
+            )
+            return result
 
         return False
 
