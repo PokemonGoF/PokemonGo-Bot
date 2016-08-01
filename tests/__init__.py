@@ -20,7 +20,7 @@ class FakeApi(ApiWrapper):
 
 class FakeBot(PokemonGoBot):
     def __init__(self):
-        self.config = MagicMock()
+        self.config = MagicMock(websocket_server_url=False)
         self.api = FakeApi()
         self.event_manager = EventManager()
         self._setup_event_system()

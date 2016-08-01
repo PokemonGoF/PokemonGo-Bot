@@ -15,7 +15,7 @@ class FollowClusterTestCase(unittest.TestCase):
         mock_pokemongo_bot.config.walk = 4.16
         mock_pokemongo_bot.get_forts.return_value = ex_forts
         follow_cluster = FollowCluster(mock_pokemongo_bot, config)
-        assert follow_cluster.work() == [37.39718375014263, -5.9932912500000013]
+        assert follow_cluster.work() == [37.397183750142624, -5.9932912500000013]
         assert follow_cluster.is_at_destination == False
         assert follow_cluster.announced == False
 
@@ -29,6 +29,6 @@ class FollowClusterTestCase(unittest.TestCase):
         mock_pokemongo_bot.config.walk = 4.16
         mock_pokemongo_bot.get_forts.return_value = ex_forts
         follow_cluster = FollowCluster(mock_pokemongo_bot, config)
-        assert follow_cluster.work() == [37.39718375014263, -5.9932912500000013]
+        assert follow_cluster.work() == [37.397183750142624, -5.9932912500000013]
         assert follow_cluster.is_at_destination == True
         assert follow_cluster.announced == False
