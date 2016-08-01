@@ -63,7 +63,7 @@ class SleepSchedule(BaseTask):
     def _schedule_next_sleep(self):
         self._next_sleep = self._get_next_sleep_schedule()
         self._next_duration = self._get_next_duration()
-        logger.log('Sleeper: next sleep at {}'.format(str(self._next_sleep)), color='green')
+        logger.log('SleepSchedule: next sleep at {}'.format(str(self._next_sleep)), color='green')
 
     def _get_next_sleep_schedule(self):
         now = datetime.now() + self.SCHEDULING_MARGIN
