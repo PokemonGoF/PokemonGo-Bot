@@ -18,6 +18,7 @@ class MoveToMapPokemon(BaseTask):
         self.last_map_update = 0
         self.pokemon_data = self.bot.pokemon_list
         self.caught = []
+        self.seen = []
         self.unit = self.bot.config.distance_unit
 
     def get_pokemon_from_map(self):
@@ -68,9 +69,26 @@ class MoveToMapPokemon(BaseTask):
         return pokemon_list
 
     def addCaught(self, pokemon):
+        for caught_pokemon in self.caught:
+            if caught_pokemon['encounter_id'] == pokemon['encounter_id']:
+                return
         if len(self.caught) >= 200:
             self.caught.pop(0)
         self.caught.append(pokemon['encounter_id'])
+
+    def addSeen(self, pokemon):
+        for seen_pokemon in self.seen:
+            if seen_pokemon['encounter_id'] == pokemon['encounter_id']:
+                return
+        if len(self.seen) >= 200:
+            self.seen.pop(0)
+        self.seen.append(pokemon['encounter_id'])
+
+    def removeSeen(self, pokemon):
+        for idx in xrange(len(self.seen)):
+            if self.seen[idx]['encounter_id'] == pokemon['encounter_id']:
+                del self.seen[idx]
+                return
 
     def update_map_location(self):
         try:
@@ -121,6 +139,19 @@ class MoveToMapPokemon(BaseTask):
     def work(self):
         self.update_map_location()
 
+        # remove caught pokemon from candidates
+        if 'catchable_pokemons' in self.bot.cell and len(self.bot.cell['catchable_pokemons']) > 0:
+            for catchable_pokemon in self.bot.cell['catchable_pokemons']:
+                if pokemon['encounter_id'] == catchable_pokemon['encounter_id']:
+                    self.addSeen(pokemon)
+
+            for seen_pokemon in self.seen:
+                for catchable_pokemon in self.bot.cell['catchable_pokemons']:
+                    if catchable_pokemon['encounter_id'] == seen_pokemon['encounter_id']:
+                        self.removeSeen(seen_pokemon)
+                        self.addCaught(seen_pokemon)
+                        break
+
         pokemon_list = self.get_pokemon_from_map()
         pokemon_list.sort(key=lambda x: x['dist'])
         if self.config['mode'] == 'priority':
@@ -132,12 +163,6 @@ class MoveToMapPokemon(BaseTask):
             return WorkerResult.SUCCESS
 
         pokemon = pokemon_list[0]
-
-        if 'catchable_pokemons' in self.bot.cell and len(self.bot.cell['catchable_pokemons']) > 0:
-            for catchable_pokemon in self.bot.cell['catchable_pokemons']:
-                if pokemon['encounter_id'] == catchable_pokemon['encounter_id']:
-                    self.addCaught(pokemon)
-                    return WorkerResult.SUCCESS
 
         if self.config['snipe']:
             return self.snipe(pokemon)
