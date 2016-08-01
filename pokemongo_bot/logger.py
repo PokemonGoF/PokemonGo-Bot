@@ -28,7 +28,7 @@ def log(message, color='white'):
     message = message.decode('utf-8')
 
     if color in color2hex:
-        colored_message = u'\033[' + color2hex[color] + message + '\033[0m'
+        colored_message = u'\033[%s%s\033[0m' % (color2hex[color], message)
         formatted_message = logger_format.format(message=colored_message,
                                                  day=today,
                                                  time=now)
