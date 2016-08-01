@@ -57,11 +57,9 @@ class SpinFort(BaseTask):
                         item_id = item['item_id']
                         item_name = self.bot.item_list[str(item_id)]
                         if not item_name in tmp_count_items:
-                            tmp_count_items[item_name] = {
-                                'count': item['item_count'],
-                            }
+                            tmp_count_items[item_name] = item['item_count']
                         else:
-                            tmp_count_items[item_name]['count'] += item['item_count']
+                            tmp_count_items[item_name] += item['item_count']
 
                 if experience_awarded or items_awarded:
                     self.bot.event_manager.emit(
