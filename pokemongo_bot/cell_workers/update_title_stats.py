@@ -1,4 +1,4 @@
-from ctypes import *
+import ctypes
 from sys import stdout, platform as _platform
 from datetime import datetime, timedelta
 
@@ -51,18 +51,27 @@ class UpdateTitleStats(BaseTask):
             see available stats above.
     """
 
+    DEFAULT_MIN_INTERVAL = 20
+    DEFAULT_DISPLAYED_STATS = []
+
     def __init__(self, bot, config):
+        """
+        Initializes the worker.
+        :param bot: The bot instance.
+        :type bot: PokemonGoBot
+        :param config: The task configuration.
+        :type config: dict
+        """
         super(UpdateTitleStats, self).__init__(bot, config)
 
         self.next_update = None
+        self.min_interval = self.DEFAULT_MIN_INTERVAL
+        self.displayed_stats = self.DEFAULT_DISPLAYED_STATS
+
+        self._process_config()
 
     def initialize(self):
-        """
-        Initializes the worker.
-        :return: Nothing.
-        :rtype: None
-        """
-        self._process_config()
+        pass
 
     def work(self):
         """
@@ -101,7 +110,7 @@ class UpdateTitleStats(BaseTask):
         if platform == "linux" or platform == "linux2" or platform == "darwin":
             stdout.write("\x1b]2;{}\x07".format(title))
         elif platform == "win32":
-            windll.kernel32.SetConsoleTitleA(title)
+            ctypes.windll.kernel32.SetConsoleTitleA(title)
         else:
             raise RuntimeError("unsupported platform '{}'".format(platform))
 
@@ -113,8 +122,8 @@ class UpdateTitleStats(BaseTask):
         :return: Nothing.
         :rtype: None
         """
-        self.min_interval = int(self.config.get('min_interval', 20))
-        self.displayed_stats = self.config.get('stats', [])
+        self.min_interval = int(self.config.get('min_interval', self.DEFAULT_MIN_INTERVAL))
+        self.displayed_stats = self.config.get('stats', self.DEFAULT_DISPLAYED_STATS)
 
     def _get_stats_title(self, player_stats):
         """
