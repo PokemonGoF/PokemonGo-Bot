@@ -134,7 +134,7 @@ def normalized_reticle_size(factor, mode='human'):
         rnd = gauss(factor, 0.05)
         # mirror the bounds
         rnd = rnd%1.0
-        return 2 * rnd
+        return 1.950 * rnd
     else:
         return mode(factor) # strategy
 
