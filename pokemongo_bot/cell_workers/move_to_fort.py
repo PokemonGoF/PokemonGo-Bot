@@ -38,7 +38,7 @@ class MoveToFort(BaseTask):
         )
 
         if dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
-            logger.log('Moving towards fort {}, {} left'.format(fort_name, format_dist(dist, unit)))
+            logger.log('Moving towards PokeStop: {}, {} left'.format(fort_name, format_dist(dist, unit)))
 
             step_walker = StepWalker(
                 self.bot,
@@ -50,7 +50,7 @@ class MoveToFort(BaseTask):
             if not step_walker.step():
                 return WorkerResult.RUNNING
 
-        logger.log('Arrived at pokestop.')
+        logger.log('Arrived at PokeStop.')
         return WorkerResult.SUCCESS
 
     def get_nearest_fort(self):

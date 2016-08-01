@@ -242,7 +242,7 @@ class PokemonCatchWorker(object):
                                         pokemon_potential,
                                         iv_display,
                                         sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
-                                    ), 'blue')
+                                    ), 'purple')
                                     self.bot.softban = False
 
                                     if (self.config.evolve_captured

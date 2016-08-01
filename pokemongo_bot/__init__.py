@@ -496,7 +496,7 @@ class PokemonGoBot(object):
                     # Start position has to have been set on a previous run to do this check
                     if last_start_position and last_start_position != self.start_position:
                         logger.log('[x] Last location flag used but with a stale starting location', 'yellow')
-                        logger.log('[x] Using new starting location, {}'.format(self.position))
+                        logger.log('[x] Using new starting location, {0:.8g}'.format(self.position))
                         return
 
                 self.api.set_position(*location)
@@ -506,7 +506,7 @@ class PokemonGoBot(object):
                     '[x] Last location flag used. Overriding passed in location'
                 )
                 logger.log(
-                    '[x] Last in-game location was set as: {}'.format(
+                    '[x] Last in-game location was set as: {0:.8g}'.format(
                         self.position
                     )
                 )
@@ -598,7 +598,7 @@ class PokemonGoBot(object):
                             'Pokemon Captured: '
                             '{pokemons_captured}'.format(
                                 **playerdata) +
-                            ' | Pokestops Visited: '
+                            ' | PokeStops Visited: '
                             '{poke_stop_visits}'.format(
                                 **playerdata), 'cyan')
 
