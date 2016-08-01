@@ -46,7 +46,7 @@ class MoveToMapPokemon(BaseTask):
             if pokemon['disappear_time'] < (now + self.config['min_time']):
                 continue
 
-            if pokemon['encounter_id'] in self.caught:
+            if self.wasCaught(pokemon):
                 continue
 
             if pokemon['name'] in self.config['catch']:
@@ -75,6 +75,12 @@ class MoveToMapPokemon(BaseTask):
         if len(self.caught) >= 200:
             self.caught.pop(0)
         self.caught.append(pokemon)
+
+    def wasCaught(self, pokemon):
+        for caught_pokemon in self.caught:
+            if pokemon['encounter_id'] == caught['encounter_id']:
+                return True
+        return False
 
     def addSeen(self, pokemon):
         for seen_pokemon in self.seen:
