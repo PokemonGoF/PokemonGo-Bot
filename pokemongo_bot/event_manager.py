@@ -7,6 +7,7 @@ class EventMalformedException(Exception):
 
 
 class EventHandler(object):
+
     def __init__(self):
         pass
 
@@ -15,14 +16,24 @@ class EventHandler(object):
 
 
 class EventManager(object):
+
     def __init__(self, *handlers):
         self._registered_events = dict()
         self._handlers = handlers or []
 
+    def event_report(self):
+        for event, parameters in self._registered_events.iteritems():
+            print '-'*80
+            print 'Event: {}'.format(event)
+            if parameters:
+                print 'Parameters:'
+                for parameter in parameters:
+                    print '* {}'.format(parameter)
+
     def add_handler(self, event_handler):
         self._handlers.append(event_handler)
 
-    def register_event(self, name, parameters=None):
+    def register_event(self, name, parameters=[]):
         self._registered_events[name] = parameters
 
     def emit(self, event, sender=None, level='info', formatted='', data={}):

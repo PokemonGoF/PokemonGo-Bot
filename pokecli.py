@@ -253,7 +253,15 @@ def init_config():
         type=int,
         default=50
     )
-
+    add_config(
+        parser,
+        load,
+        short_flag="-e",
+        long_flag="--show_events",
+        help="Show events",
+        type=bool,
+        default=False
+    )
     add_config(
         parser,
         load,

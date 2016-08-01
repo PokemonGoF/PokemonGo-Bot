@@ -71,6 +71,9 @@ class PokemonGoBot(object):
 
         self.event_manager = EventManager(*handlers)
         self._register_events()
+        if self.config.show_events:
+            self.event_manager.event_report()
+            sys.exit(1)
 
         # Registering event:
         # self.event_manager.register_event("location", parameters=['lat', 'lng'])
@@ -265,11 +268,11 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'incubate',
-            parameters=('distance_in_km')
+            parameters=('distance_in_km',)
         )
         self.event_manager.register_event(
             'next_egg_incubates',
-            parameters=('distance_in_km')
+            parameters=('distance_in_km',)
         )
         self.event_manager.register_event('incubator_already_used')
         self.event_manager.register_event('egg_already_incubating')
