@@ -94,19 +94,30 @@ class PokemonGoBot(object):
         forts = []
         wild_pokemons = []
         catchable_pokemons = []
+        fortspresent = False
         for cell in cells:
             if "forts" in cell and len(cell["forts"]):
+                fortspresent = True
                 forts += cell["forts"]
             if "wild_pokemons" in cell and len(cell["wild_pokemons"]):
                 wild_pokemons += cell["wild_pokemons"]
             if "catchable_pokemons" in cell and len(cell["catchable_pokemons"]):
                 catchable_pokemons += cell["catchable_pokemons"]
 
-        return {
-            "forts": forts,
-            "wild_pokemons": wild_pokemons,
-            "catchable_pokemons": catchable_pokemons
-        }
+        # If there are forts present in the cells sent from the server or we don't yet have any cell data, return all data retrieved
+        if fortspresent or not self.cell:
+            return {
+                "forts": forts,
+                "wild_pokemons": wild_pokemons,
+                "catchable_pokemons": catchable_pokemons
+            }
+        # If there are no forts present in the data from the server, keep our existing fort data and only update the pokemon cells.
+        else:
+            return {
+                "forts": self.cell["forts"],
+                "wild_pokemons": wild_pokemons,
+                "catchable_pokemons": catchable_pokemons
+            }
 
     def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
         # we can call the function with no arguments and still get the position
@@ -119,20 +130,8 @@ class PokemonGoBot(object):
             alt = 0
 
         if cells == []:
-            cellid = get_cell_ids(lat, lng)
-            timestamp = [0, ] * len(cellid)
-            self.api.get_map_objects(
-                latitude=f2i(lat),
-                longitude=f2i(lng),
-                since_timestamp_ms=timestamp,
-                cell_id=cellid
-            )
-            response_dict = self.api.call()
-            map_objects = response_dict.get(
-                'responses', {}
-            ).get('GET_MAP_OBJECTS', {})
-            status = map_objects.get('status', None)
-            cells = map_objects['map_cells']
+            location = self.position[0:2]
+            cells = self.find_close_cells(*location)
 
             # insert detail info about gym to fort
             for cell in cells:
