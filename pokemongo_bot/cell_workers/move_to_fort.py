@@ -48,7 +48,7 @@ class MoveToFort(BaseTask):
                 level='info',
                 formatted="Moving towards fort {fort_name} - {distance} {distance_unit}",
                 data={
-                    'fort_name': unicode(fort_name.decode('utf-8')),
+                    'fort_name': u"{}".format(fort_name),
                     'distance': dist,
                     'distance_unit': unit
                 }
