@@ -1,7 +1,7 @@
 import unittest
 from datetime import timedelta, datetime
 from mock import patch, MagicMock
-from pokemongo_bot.cell_workers.sleeper import SleepSchedule
+from pokemongo_bot.cell_workers.sleep_schedule import SleepSchedule
 from tests import FakeBot
 
 
@@ -19,7 +19,7 @@ class SleepScheculeTestCase(unittest.TestCase):
         self.assertEqual(self.worker.time_random_offset, timedelta(minutes=5).total_seconds())
         self.assertEqual(self.worker.duration_random_offset, timedelta(minutes=5).total_seconds())
 
-    @patch('pokemongo_bot.cell_workers.sleeper.datetime')
+    @patch('pokemongo_bot.cell_workers.sleep_schedule.datetime')
     def test_get_next_time(self, mock_datetime):
         mock_datetime.now.return_value = datetime(year=2016, month=8, day=01, hour=8, minute=0)
 
@@ -30,7 +30,7 @@ class SleepScheculeTestCase(unittest.TestCase):
         self.assertGreaterEqual(next_time, from_date)
         self.assertLessEqual(next_time, to_date)
 
-    @patch('pokemongo_bot.cell_workers.sleeper.datetime')
+    @patch('pokemongo_bot.cell_workers.sleep_schedule.datetime')
     def test_get_next_time_called_near_activation_time(self, mock_datetime):
         mock_datetime.now.return_value = datetime(year=2016, month=8, day=1, hour=12, minute=25)
 
@@ -41,7 +41,7 @@ class SleepScheculeTestCase(unittest.TestCase):
         self.assertGreaterEqual(next, from_date)
         self.assertLessEqual(next, to_date)
 
-    @patch('pokemongo_bot.cell_workers.sleeper.datetime')
+    @patch('pokemongo_bot.cell_workers.sleep_schedule.datetime')
     def test_get_next_time_called_when_this_days_time_passed(self, mock_datetime):
         mock_datetime.now.return_value = datetime(year=2016, month=8, day=1, hour=14, minute=0)
 
@@ -61,7 +61,7 @@ class SleepScheculeTestCase(unittest.TestCase):
         self.assertGreaterEqual(duration, from_seconds)
         self.assertLessEqual(duration, to_seconds)
 
-    @patch('pokemongo_bot.cell_workers.sleeper.sleep')
+    @patch('pokemongo_bot.cell_workers.sleep_schedule.sleep')
     def test_sleep(self, mock_sleep):
         self.worker._next_duration = SleepSchedule.LOG_INTERVAL_SECONDS * 10
         self.worker._sleep()
@@ -71,7 +71,7 @@ class SleepScheculeTestCase(unittest.TestCase):
         for arg in calls:
             self.assertEqual(arg, SleepSchedule.LOG_INTERVAL_SECONDS)
 
-    @patch('pokemongo_bot.cell_workers.sleeper.sleep')
+    @patch('pokemongo_bot.cell_workers.sleep_schedule.sleep')
     def test_sleep_not_divedable_by_interval(self, mock_sleep):
         self.worker._next_duration = SleepSchedule.LOG_INTERVAL_SECONDS * 10 + 5
         self.worker._sleep()
@@ -83,8 +83,8 @@ class SleepScheculeTestCase(unittest.TestCase):
         #Last call must be 5
         self.assertEqual(calls[-1], 5)
 
-    @patch('pokemongo_bot.cell_workers.sleeper.sleep')
-    @patch('pokemongo_bot.cell_workers.sleeper.datetime')
+    @patch('pokemongo_bot.cell_workers.sleep_schedule.sleep')
+    @patch('pokemongo_bot.cell_workers.sleep_schedule.datetime')
     def test_call_work_before_schedule(self, mock_datetime, mock_sleep):
         self.worker._next_sleep = datetime(year=2016, month=8, day=1, hour=12, minute=0)
         mock_datetime.now.return_value = self.worker._next_sleep - timedelta(minutes=5)
@@ -93,8 +93,8 @@ class SleepScheculeTestCase(unittest.TestCase):
 
         self.assertEqual(mock_sleep.call_count, 0)
 
-    @patch('pokemongo_bot.cell_workers.sleeper.sleep')
-    @patch('pokemongo_bot.cell_workers.sleeper.datetime')
+    @patch('pokemongo_bot.cell_workers.sleep_schedule.sleep')
+    @patch('pokemongo_bot.cell_workers.sleep_schedule.datetime')
     def test_call_work_after_schedule(self, mock_datetime, mock_sleep):
         self.bot.login = MagicMock()
         self.worker._next_sleep = datetime(year=2016, month=8, day=1, hour=12, minute=0)
