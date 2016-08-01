@@ -1,16 +1,12 @@
 import time
 import requests
-
 from pokemongo_bot import logger
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
+from pokemongo_bot.cell_workers.base_task import BaseTask
 from utils import distance, format_dist, format_time
 
-class MoveToPokemonWorker(object):
-
-    def __init__(self, bot):
-        self.bot = bot
-
+class MoveToPokemon(BaseTask):
     def should_run(self):
         return self.bot.config.pokemon_map_use and not self.bot.softban
 

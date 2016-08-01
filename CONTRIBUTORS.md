@@ -44,9 +44,6 @@
  * reddivision
  * DayBr3ak
  * kbinani
-<<<<<<< HEAD
- * GNSPS
-=======
  * MFizz
  * NamPNQ
->>>>>>> PokemonGoF/dev
+ * GNSPS

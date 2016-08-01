@@ -7,13 +7,7 @@ from incubate_eggs import IncubateEggs
 from move_to_fort import MoveToFort
 from nickname_pokemon import NicknamePokemon
 from pokemon_catch_worker import PokemonCatchWorker
-<<<<<<< HEAD
-from pokemon_transfer_worker import PokemonTransferWorker
-from recycle_items_worker import RecycleItemsWorker
-from seen_fort_worker import SeenFortWorker
-from soft_ban_worker import SoftBanWorker
-from move_to_pokemon_worker import MoveToPokemonWorker
-=======
+from move_to_pokemon import MoveToPokemon
 from transfer_pokemon import TransferPokemon
 from recycle_items import RecycleItems
 from spin_fort import SpinFort
@@ -24,4 +18,3 @@ from collect_level_up_reward import CollectLevelUpReward
 from base_task import BaseTask
 from follow_cluster import FollowCluster
 from sleep_schedule import SleepSchedule
->>>>>>> PokemonGoF/dev

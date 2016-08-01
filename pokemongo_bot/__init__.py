@@ -45,13 +45,10 @@ class PokemonGoBot(object):
         self.recent_forts = [None] * config.forts_max_circle_size
         self.tick_count = 0
         self.softban = False
-<<<<<<< HEAD
+        self.start_position = None
         self.encounter_ids = []
         self.running_to_pokemon = False
         self.last_ran_mtp_timestamp = 0
-=======
-        self.start_position = None
->>>>>>> PokemonGoF/dev
 
         # Make our own copy of the workers for this instance
         self.workers = []
@@ -296,24 +293,7 @@ class PokemonGoBot(object):
         self.update_inventory()
         # send empty map_cells and then our position
         self.update_web_location()
-
-<<<<<<< HEAD
-    def _setup_workers(self):
-        self.workers = [
-            cell_workers.SoftBanWorker(self),
-            cell_workers.IncubateEggsWorker(self),
-            cell_workers.PokemonTransferWorker(self),
-            cell_workers.EvolveAllWorker(self),
-            cell_workers.RecycleItemsWorker(self),
-            cell_workers.CatchVisiblePokemonWorker(self),
-            cell_workers.SeenFortWorker(self),
-            cell_workers.MoveToFortWorker(self),
-            cell_workers.CatchLuredPokemonWorker(self),
-            cell_workers.MoveToPokemonWorker(self)
-        ]
-
-=======
->>>>>>> PokemonGoF/dev
+    
     def _print_character_info(self):
         # get player profile call
         # ----------------------

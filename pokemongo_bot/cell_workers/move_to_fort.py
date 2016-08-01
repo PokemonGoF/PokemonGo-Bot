@@ -8,18 +8,10 @@ from utils import distance, format_dist, fort_details
 
 class MoveToFort(BaseTask):
     def should_run(self):
-<<<<<<< HEAD:pokemongo_bot/cell_workers/move_to_fort_worker.py
-        return ((self.bot.config.forts_spin and \
-         self.bot.config.forts_move_to_spin and \
-         self.bot.has_space_for_loot()) or \
-         self.bot.softban) and not self.bot.running_to_pokemon
-        
-=======
         has_space_for_loot = self.bot.has_space_for_loot()
         if not has_space_for_loot:
             logger.log("Not moving to any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently.", 'yellow')
         return has_space_for_loot or self.bot.softban
->>>>>>> PokemonGoF/dev:pokemongo_bot/cell_workers/move_to_fort.py
 
     def work(self):
         if not self.should_run():
