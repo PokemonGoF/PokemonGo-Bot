@@ -51,7 +51,7 @@ class CollectLevelUpReward(BaseTask):
                 'level_up_reward',
                 sender=self,
                 level='info',
-                formmated='Received level up reward: {items}',
+                formatted='Received level up reward: {items}',
                 data={
                     'items': data
                 }
