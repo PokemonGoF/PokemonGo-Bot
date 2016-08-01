@@ -348,7 +348,6 @@ def init_config():
 
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
-    config.item_filter = load.get('item_filter', {})
     config.action_wait_max = load.get('action_wait_max', 4)
     config.action_wait_min = load.get('action_wait_min', 1)
     config.raw_tasks = load.get('tasks', [])
@@ -370,7 +369,7 @@ def init_config():
             """.format(flag_name))
 
     old_flags = ['mode', 'catch_pokemon', 'spin_forts', 'forts_spin', 'hatch_eggs', 'release_pokemon', 'softban_fix',
-                'longer_eggs_first', 'evolve_speed', 'use_lucky_egg']
+                'longer_eggs_first', 'evolve_speed', 'use_lucky_egg', 'item_filter']
     for flag in old_flags:
         if flag in load:
             task_configuration_error(flag)
@@ -400,14 +399,6 @@ def init_config():
     if config.catch_randomize_spin_factor < 0 or 1 < config.catch_randomize_spin_factor:
         parser.error("--catch_randomize_spin_factor is out of range! (should be 0 <= catch_randomize_spin_factor <= 1)")
         return None
-
-        # item list config verification
-        item_list = json.load(open(os.path.join('data', 'items.json')))
-        for config_item_name, bag_count in config.item_filter.iteritems():
-            if config_item_name not in item_list.viewvalues():
-                if config_item_name not in item_list:
-                    parser.error('item "' + config_item_name + '" does not exist, spelling mistake? (check for valid item names in data/items.json)')
-                    return None
 
     # create web dir if not exists
     try:
