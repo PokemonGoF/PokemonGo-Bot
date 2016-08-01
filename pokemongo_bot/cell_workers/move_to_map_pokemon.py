@@ -48,7 +48,10 @@ class MoveToMapPokemon(BaseTask):
             if pokemon['encounter_id'] in self.caught:
                 continue
 
-            pokemon['priority'] = self.config['catch'][pokemon['name']]
+            if pokemon['name'] in self.config['catch']:
+                pokemon['priority'] = self.config['catch'][pokemon['name']]
+            else:
+                pokemon['priority'] = 0
 
             pokemon['dist'] = distance(
                 self.bot.position[0],
