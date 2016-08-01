@@ -10,13 +10,15 @@ except Exception:
     lcd = False
 
 
-def log(string, color='white'):
+def log(string, color='none'):
     color_hex = {
         'red': '91m',
         'green': '92m',
         'yellow': '93m',
         'blue': '94m',
-        'cyan': '96m'
+        'purple': '95m',
+        'cyan': '96m',
+        'white': '97m'
     }
     if color not in color_hex:
         print('[{time}] {string}'.format(
