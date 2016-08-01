@@ -28,6 +28,7 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 - [x] Incubate eggs
 - [ ] Use candy
 - [ ] Inventory cleaner
+- [x] Search for wanted rare pokemon (interface for [AHAAAAAAA/PokemonGo-Map](https://github.com/AHAAAAAAA/PokemonGo-Map))
 
 ## Gym Battles
 This bot takes a strong stance against automating gym battles. Botting gyms will have a negative effect on most players and thus the game as a whole. We will thus never accept contributions or changes containing code specific for gym battles.
@@ -42,7 +43,7 @@ All information on [Getting Started](https://github.com/PokemonGoF/PokemonGo-Bot
   - [Windows] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation#installation-windows)
 - [Develop PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Develop-PokemonGo-Bot)
 - [Configuration-files](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Configuration-files)
-- [Front end web module - Google Maps API] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Google-Maps-API-(web-page))
+- [Front end web module - Google Maps API](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Google-Maps-API-(web-page))
 - [Docker Usage](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/FAQ#how-to-run-with-docker)
 - [FAQ](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/FAQ)
 

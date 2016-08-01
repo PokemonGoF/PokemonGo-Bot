@@ -76,6 +76,15 @@
     "evolve_captured": "NONE",
     "catch_randomize_reticle_factor": 1.0,
     "catch_randomize_spin_factor": 1.0,
+    "pokemon_map": {
+        "use": false,
+        "host": "127.0.0.1",
+        "port": 5000,
+        "ids": "3,5,6,8,9,25,26,34,40,59,64,65,78,87,91,94,101,113,115,128,132,142,148,149,150,151",
+        "// The speeds below are in m/s and please be careful with the max_speed as that could get you softbanned": {},
+        "min_speed": 10,
+        "max_speed": 33
+    },
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},

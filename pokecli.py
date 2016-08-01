@@ -324,6 +324,51 @@ def init_config():
         type=float,
         default=1.0
     )
+    add_config(
+        parser,
+        load,
+        short_flag="-mu",
+        long_flag="--pokemon_map.use",
+        help="Flag to use a PokemonGo-Map server to find wanted pokemons",
+        type=bool,
+        default=False
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-mh",
+        long_flag="--pokemon_map.host",
+        help="PokemonGo-Map server hostname (default: 127.0.0.1)",
+        type=str,
+        default='127.0.0.1'
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-mp",
+        long_flag="--pokemon_map.port",
+        help="PokemonGo-Map server port (default: 5000)",
+        type=int,
+        default=5000
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-mi",
+        long_flag="--pokemon_map.ids",
+        help="List of wanted pokemon IDs comma-separated (e.g.: '3,6,9,149,150')",
+        type=str,
+        default=[]
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-mms",
+        long_flag="--pokemon_map.speed",
+        help="Walk speed in m/s to use when meeting the found Pokemon (max: 33)",
+        type=int,
+        default=0
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()

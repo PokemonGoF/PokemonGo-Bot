@@ -7,6 +7,7 @@ from incubate_eggs import IncubateEggs
 from move_to_fort import MoveToFort
 from nickname_pokemon import NicknamePokemon
 from pokemon_catch_worker import PokemonCatchWorker
+from move_to_pokemon import MoveToPokemon
 from transfer_pokemon import TransferPokemon
 from recycle_items import RecycleItems
 from spin_fort import SpinFort

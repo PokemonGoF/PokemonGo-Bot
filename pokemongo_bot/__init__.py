@@ -46,6 +46,9 @@ class PokemonGoBot(object):
         self.tick_count = 0
         self.softban = False
         self.start_position = None
+        self.encounter_ids = []
+        self.running_to_pokemon = False
+        self.last_ran_mtp_timestamp = 0
 
         # Make our own copy of the workers for this instance
         self.workers = []
@@ -290,7 +293,7 @@ class PokemonGoBot(object):
         self.update_inventory()
         # send empty map_cells and then our position
         self.update_web_location()
-
+    
     def _print_character_info(self):
         # get player profile call
         # ----------------------
