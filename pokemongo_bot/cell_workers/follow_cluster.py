@@ -27,7 +27,7 @@ class FollowCluster(object):
             if len(lured_forts) > 0:
                 self.dest = find_biggest_cluster(self.radius, lured_forts, 'lure_info')
             else:
-                log_lure_avail_str = 'No lured pokestops in vicinity. Search for normal ones instead. '
+                log_lure_avail_str = 'No lured PokeStops in vicinity. Search for normal ones instead. '
                 self.dest = find_biggest_cluster(self.radius, forts)
         else:
             self.dest = find_biggest_cluster(self.radius, forts)
@@ -41,8 +41,8 @@ class FollowCluster(object):
             if not self.is_at_destination:
 
                 log_str = log_lure_avail_str + 'Move to destiny. ' + str(cnt) + ' ' + log_lured_str + \
-                          'pokestops will be in range of ' + str(self.radius) + 'm. Arrive in ' \
-                          + str(distance(self.bot.position[0], self.bot.position[1], lat, lng)) + 'm.'
+                          'PokeStops will be in range of ' + str(self.radius) + 'm. Arrive in ' \
+                          + str('{0:.3}'.format(distance(self.bot.position[0], self.bot.position[1], lat, lng))) + 'm.'
                 logger.log(log_str)
                 self.announced = False
 
@@ -61,7 +61,7 @@ class FollowCluster(object):
                     self.bot.api.set_position(lat, lng)
 
             elif not self.announced:
-                log_str = 'Arrived at destiny. ' + str(cnt) + ' pokestops are in range of ' \
+                log_str = 'Arrived at destiny. ' + str(cnt) + ' PokeStops are in range of ' \
                          + str(self.radius) + 'm.'
                 logger.log(log_str)
                 self.announced = True

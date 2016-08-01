@@ -30,7 +30,7 @@ class SpinFort(BaseTask):
 
         details = fort_details(self.bot, fort['id'], lat, lng)
         fort_name = details.get('name', 'Unknown').encode('utf8', 'replace')
-        logger.log('Now at Pokestop: {0}'.format(fort_name), 'cyan')
+        logger.log('Now at PokeStop: {0}'.format(fort_name), 'cyan')
         logger.log('Spinning ...', 'cyan')
 
         self.bot.api.fort_search(fort_id=fort['id'],
@@ -73,26 +73,26 @@ class SpinFort(BaseTask):
                 else:
                     logger.log("[#] Nothing found.", 'yellow')
 
-                pokestop_cooldown = spin_details.get(
+                PokeStop_cooldown = spin_details.get(
                     'cooldown_complete_timestamp_ms')
-                self.bot.fort_timeouts.update({fort["id"]: pokestop_cooldown})
-                if pokestop_cooldown:
+                self.bot.fort_timeouts.update({fort["id"]: PokeStop_cooldown})
+                if PokeStop_cooldown:
                     seconds_since_epoch = time.time()
                     logger.log('PokeStop on cooldown. Time left: ' + str(
-                        format_time((pokestop_cooldown / 1000) -
+                        format_time((PokeStop_cooldown / 1000) -
                                     seconds_since_epoch)))
 
                 self.bot.recent_forts = self.bot.recent_forts[1:] + [fort['id']]
             elif spin_result == 2:
-                logger.log("[#] Pokestop out of range")
+                logger.log("[#] PokeStop out of range")
             elif spin_result == 3:
-                pokestop_cooldown = spin_details.get(
+                PokeStop_cooldown = spin_details.get(
                     'cooldown_complete_timestamp_ms')
-                if pokestop_cooldown:
-                    self.bot.fort_timeouts.update({fort["id"]: pokestop_cooldown})
+                if PokeStop_cooldown:
+                    self.bot.fort_timeouts.update({fort["id"]: PokeStop_cooldown})
                     seconds_since_epoch = time.time()
                     logger.log('PokeStop on cooldown. Time left: ' + str(
-                        format_time((pokestop_cooldown / 1000) -
+                        format_time((PokeStop_cooldown / 1000) -
                                     seconds_since_epoch)))
             elif spin_result == 4:
                 logger.log("Inventory is full", 'red')
@@ -106,7 +106,7 @@ class SpinFort(BaseTask):
                     'chain_hack_sequence_number']
             else:
                 logger.log('Possibly searching too often - taking a short rest :)', 'yellow')
-                if spin_result == 1 and not items_awarded and not experience_awarded and not pokestop_cooldown:
+                if spin_result == 1 and not items_awarded and not experience_awarded and not PokeStop_cooldown:
                     self.bot.softban = True
                     logger.log('[!] Possibly got softban too...', 'red')
                 else:
