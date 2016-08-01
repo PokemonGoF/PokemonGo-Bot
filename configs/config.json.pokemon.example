@@ -48,6 +48,7 @@
             "first_evolve_by": "cp",
             "evolve_above_cp": 500,
             "evolve_above_iv": 0.8,
+            "evolve_num_min": 5,
             "logic": "or",
             "evolve_speed": 20,
             "use_lucky_egg": false
