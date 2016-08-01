@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import time
-
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import (normalized_reticle_size, sleep,
                                            spin_modifier)
-
 
 class PokemonCatchWorker(object):
     BAG_FULL = 'bag_full'
@@ -54,9 +52,9 @@ class PokemonCatchWorker(object):
                                 individual_defense = pokemon_data.get("individual_defense", 0)
 
                                 iv_display = '{}/{}/{}'.format(
-                                    individual_stamina,
                                     individual_attack,
-                                    individual_defense
+                                    individual_defense,
+                                    individual_stamina
                                 )
 
                                 pokemon_potential = self.pokemon_potential(pokemon_data)
@@ -65,7 +63,7 @@ class PokemonCatchWorker(object):
                                 logger.log('A Wild {} appeared! [CP {}] [Potential {}]'.format(
                                     pokemon_name, cp, pokemon_potential), 'yellow')
 
-                                logger.log('IV [Stamina/Attack/Defense] = [{}]'.format(iv_display))
+                                logger.log('IV [Attack/Defense/Stamina] = [{}]'.format(iv_display))
                                 pokemon_data['name'] = pokemon_name
                                 # Simulate app
                                 sleep(3)

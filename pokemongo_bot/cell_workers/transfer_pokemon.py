@@ -41,7 +41,13 @@ class TransferPokemon(BaseTask):
                                 all_pokemons.remove(pokemon)
                                 best_pokemons.append(pokemon)
 
-                    if best_pokemons and all_pokemons:
+                    transfer_pokemons = [pokemon for pokemon in all_pokemons
+                                         if self.should_release_pokemon(pokemon_name,
+                                                                        pokemon['cp'],
+                                                                        pokemon['iv'],
+                                                                        True)]
+
+                    if transfer_pokemons:
                         logger.log("Keep {} best {}, based on {}".format(len(best_pokemons),
                                                                          pokemon_name,
                                                                          order_criteria), "green")
@@ -50,10 +56,10 @@ class TransferPokemon(BaseTask):
                                                                           best_pokemon['cp'],
                                                                           best_pokemon['iv']), 'green')
 
-                        logger.log("Transferring {} pokemon".format(len(all_pokemons)), "green")
+                        logger.log("Transferring {} pokemon".format(len(transfer_pokemons)), "green")
 
-                    for pokemon in all_pokemons:
-                        self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
+                        for pokemon in transfer_pokemons:
+                            self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
                 else:
                     group = sorted(group, key=lambda x: x['cp'], reverse=True)
                     for item in group:
@@ -120,8 +126,16 @@ class TransferPokemon(BaseTask):
                 continue
         return round((total_iv / 45.0), 2)
 
-    def should_release_pokemon(self, pokemon_name, cp, iv):
+    def should_release_pokemon(self, pokemon_name, cp, iv, keep_best_mode = False):
         release_config = self._get_release_config_for(pokemon_name)
+
+        if (keep_best_mode
+            and not release_config.has_key('never_release')
+            and not release_config.has_key('always_release')
+            and not release_config.has_key('release_below_cp')
+            and not release_config.has_key('release_below_iv')):
+            return True
+
         cp_iv_logic = release_config.get('logic')
         if not cp_iv_logic:
             cp_iv_logic = self._get_release_config_for('any').get('logic', 'and')
