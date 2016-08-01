@@ -74,7 +74,7 @@ class MoveToMapPokemon(BaseTask):
                 return
         if len(self.caught) >= 200:
             self.caught.pop(0)
-        self.caught.append(pokemon['encounter_id'])
+        self.caught.append(pokemon)
 
     def addSeen(self, pokemon):
         for seen_pokemon in self.seen:
@@ -82,7 +82,7 @@ class MoveToMapPokemon(BaseTask):
                 return
         if len(self.seen) >= 200:
             self.seen.pop(0)
-        self.seen.append(pokemon['encounter_id'])
+        self.seen.append(pokemon)
 
     def removeSeen(self, pokemon):
         for idx in xrange(len(self.seen)):
@@ -142,8 +142,7 @@ class MoveToMapPokemon(BaseTask):
         # remove caught pokemon from candidates
         if 'catchable_pokemons' in self.bot.cell and len(self.bot.cell['catchable_pokemons']) > 0:
             for catchable_pokemon in self.bot.cell['catchable_pokemons']:
-                if pokemon['encounter_id'] == catchable_pokemon['encounter_id']:
-                    self.addSeen(pokemon)
+                self.addSeen(catchable_pokemon)
 
             for seen_pokemon in self.seen:
                 for catchable_pokemon in self.bot.cell['catchable_pokemons']:
