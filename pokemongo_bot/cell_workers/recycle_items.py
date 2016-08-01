@@ -1,5 +1,6 @@
 from pokemongo_bot import logger
 from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot import random
 
 class RecycleItems(BaseTask):
     def work(self):
@@ -15,6 +16,8 @@ class RecycleItems(BaseTask):
                 id_filter = self.bot.config.item_filter.get(str(item_id), 0)
                 if id_filter is not 0:
                     id_filter_keep = id_filter.get('keep', 20)
+
+            id_filter_keep = id_filter_keep + (random.randint(-1,1) * (random.randint(0, id_filter_keep/10)))
 
             bag_count = self.bot.item_inventory_count(item_id)
             if (item_name in self.bot.config.item_filter or str(item_id) in self.bot.config.item_filter) and bag_count > id_filter_keep:
