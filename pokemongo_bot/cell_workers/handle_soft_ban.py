@@ -1,3 +1,5 @@
+from random import randint
+
 from pgoapi.utilities import f2i
 
 from pokemongo_bot import logger
@@ -34,8 +36,9 @@ class HandleSoftBan(BaseTask):
                 del self.bot.fort_timeouts[forts[0]['id']]
             return WorkerResult.RUNNING
         else:
-            logger.log('Starting 50 spins...')
-            for i in xrange(50):
+            spins = randint(50,60)
+            logger.log('Starting % spins...' % spins)
+            for i in xrange(spins):
                 if (i + 1) % 10 == 0:
                     logger.log('Spin #{}'.format(str(i+1)))
                 self.spin_fort(forts[0])
