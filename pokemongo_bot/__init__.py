@@ -119,6 +119,7 @@ class PokemonGoBot(object):
             'lured_pokemon_found',
             parameters=(
                 'fort_id',
+                'fort_name',
                 'encounter_id',
                 'latitude',
                 'longitude'
