@@ -23,6 +23,7 @@ class FakeBot(PokemonGoBot):
         self.config = MagicMock()
         self.api = FakeApi()
         self.event_manager = EventManager()
+        self._setup_event_system()
 
     def updateConfig(self, conf):
         self.config.__dict__.update(conf)
