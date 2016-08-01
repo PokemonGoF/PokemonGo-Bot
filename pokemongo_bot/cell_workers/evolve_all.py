@@ -8,6 +8,7 @@ class EvolveAll(BaseTask):
         self.evolve_all = self.config.get('evolve_all', [])
         self.evolve_speed = self.config.get('evolve_speed', 3.7)
         self.evolve_cp_min = self.config.get('evolve_cp_min', 300)
+        self.evolve_num_min = self.config.get('evolve_num_min', 5)
         self.use_lucky_egg = self.config.get('use_lucky_egg', False)
 
     def _validate_config(self):
@@ -27,11 +28,38 @@ class EvolveAll(BaseTask):
         except KeyError:
             pass
         else:
-            evolve_list = self._sort_by_cp_iv(
-                response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items'])
-            if self.evolve_all[0] != 'all':
-                # filter out non-listed pokemons
-                evolve_list = [x for x in evolve_list if str(x[1]) in self.evolve_all]
+            inventory_items = response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+            candy_data = self._get_candy_data(inventory_items)
+            evolve_list = self._sort_by_cp_iv(inventory_items)
+
+            # filter out non-listed pokemen and those with not enough candy
+            evolve_list = [x for x in evolve_list if self._is_evolvable(x, candy_data)]
+
+            # Don't evolve unless the evolvable candidates number is no less than evolve_num_min
+            if len(evolve_list) < self.evolve_num_min:
+                # logger.log('Evolvable candidates number is {}, which is less than {}... skipping evolve.'.format(
+                #     len(evolve_list), self.evolve_num_min),
+                #     'green')
+                return
+
+            if self.use_lucky_egg:
+                lucky_egg_count = self.bot.item_inventory_count(Item.ITEM_LUCKY_EGG.value)
+                # Sometimes remaining lucky egg count get changed, check again for sure
+                if lucky_egg_count <= 0:
+                    logger.log('No lucky eggs... skipping evolve!', 'yellow')
+                    return
+
+                logger.log('Using lucky egg ... you have {}'.format(lucky_egg_count))
+                response_dict_lucky_egg = self.bot.use_lucky_egg()
+                if response_dict_lucky_egg and 'responses' in response_dict_lucky_egg and \
+                                'USE_ITEM_XP_BOOST' in response_dict_lucky_egg['responses'] and \
+                                'result' in response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']:
+                    result = response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']['result']
+                    if result is 1:  # Request success
+                        logger.log('Successfully used lucky egg... ({} left!)'.format(lucky_egg_count - 1), 'green')
+                    else:
+                        logger.log('Failed to use lucky egg!', 'red')
+                        return
 
             # enable to limit number of pokemons to evolve. Useful for testing.
             # nn = 3
@@ -55,35 +83,20 @@ class EvolveAll(BaseTask):
                 self._release_evolved(release_cand_list_ids)
 
     def _should_run(self):
-        # Will skip evolving if user wants to use an egg and there is none
-        if not self.evolve_all:
+        # Don't run after the first tick
+        # Lucky Egg should only be popped at the first tick
+        if not self.evolve_all or self.bot.tick_count is 1:
             return False
 
-        # Evolve all is used - Don't run after the first tick or if the config flag is false
-        if self.bot.tick_count is not 1 or not self.use_lucky_egg:
-            return True
-
+        # Will skip evolving if user wants to use an egg and there is none
         lucky_egg_count = self.bot.item_inventory_count(Item.ITEM_LUCKY_EGG.value)
-
-        # Lucky Egg should only be popped at the first tick
-        # Make sure the user has a lucky egg and skip if not
-        if lucky_egg_count > 0:
-            logger.log('Using lucky egg ... you have {}'.format(lucky_egg_count))
-            response_dict_lucky_egg = self.bot.use_lucky_egg()
-            if response_dict_lucky_egg and 'responses' in response_dict_lucky_egg and \
-                            'USE_ITEM_XP_BOOST' in response_dict_lucky_egg['responses'] and \
-                            'result' in response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']:
-                result = response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']['result']
-                if result is 1:  # Request success
-                    logger.log('Successfully used lucky egg... ({} left!)'.format(lucky_egg_count - 1), 'green')
-                    return True
-                else:
-                    logger.log('Failed to use lucky egg!', 'red')
-                    return False
-        else:
-            # Skipping evolve so they aren't wasted
+        if self.use_lucky_egg and lucky_egg_count <= 0:
             logger.log('No lucky eggs... skipping evolve!', 'yellow')
             return False
+
+        # Otherwise try evolving
+        return True
+
 
     def _release_evolved(self, release_cand_list_ids):
         response_dict = self.bot.get_inventory()
@@ -112,6 +125,23 @@ class EvolveAll(BaseTask):
                     logger.log(
                         '[#] {} has been exchanged for candy!'.format(pokemon_name), 'red')
 
+    def _get_candy_data(self, inventory_items):
+        candy = {}
+        for item in inventory_items:
+            try:
+                reduce(dict.__getitem__, [
+                    "inventory_item_data", "candy"], item)
+            except KeyError:
+                pass
+            else:
+                try:
+                    pokemon_candy = item['inventory_item_data']['candy']
+                    candy[pokemon_candy['family_id']] = pokemon_candy['candy']
+                except Exception:
+                    pass
+        return candy
+
+
     def _sort_by_cp_iv(self, inventory_items):
         pokemons1 = []
         pokemons2 = []
@@ -130,7 +160,8 @@ class EvolveAll(BaseTask):
                         pokemon['id'],
                         pokemon_name,
                         pokemon['cp'],
-                        self._compute_iv(pokemon)
+                        self._compute_iv(pokemon),
+                        pokemon['pokemon_id']
                     ]
                     if pokemon['cp'] > self.evolve_cp_min:
                         pokemons1.append(v)
@@ -146,6 +177,32 @@ class EvolveAll(BaseTask):
         pokemons2.sort(key=lambda x: (x[2], x[3]), reverse=True)
 
         return pokemons1 + pokemons2
+
+    def _is_evolvable(self, pokemon, candy_data):
+        pokemon_name = pokemon[1]
+        family_id = pokemon[4]
+        # python list is index 0 based, thus - 1
+        pokemon_idx = int(family_id) - 1
+
+        # Non-evolvable or top-tier pokemon
+        if 'Next Evolution Requirements' not in self.bot.pokemon_list[pokemon_idx]:
+            return False
+
+        # filter out non-listed pokemen
+        if self.evolve_all[0] != 'all' and pokemon_name not in self.evolve_all:
+            return False
+
+        # filter out those with not enough candy
+        if 'Previous evolution(s)' in self.bot.pokemon_list[pokemon_idx]:
+            family_id = int(self.bot.pokemon_list[pokemon_idx]['Previous evolution(s)'][0]['Number'])
+
+        need_candies = int(self.bot.pokemon_list[pokemon_idx]['Next Evolution Requirements']['Amount'])
+        # print('{} need {} candies to evolve, currently have {}'.
+        # format(pokemon_name, need_candies, candy_data[family_id]))
+        if candy_data[family_id] >= need_candies:
+            candy_data[family_id] -= need_candies
+            return True
+        return False
 
     def _execute_pokemon_evolve(self, pokemon, cache):
         pokemon_id = pokemon[0]
