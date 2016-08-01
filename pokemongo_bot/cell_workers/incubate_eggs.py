@@ -31,7 +31,7 @@ class IncubateEggs(BaseTask):
             if km_left <= 0:
                 self._hatch_eggs()
             else:
-                logger.log('[x] Next egg incubates in {:.2f} km'.format(km_left),'yellow')
+                logger.log('[x] Current egg hatches in {:.2f} km'.format(km_left),'yellow')
             IncubateEggs.last_km_walked = self.km_walked
 
         sorting = self.longer_eggs_first
