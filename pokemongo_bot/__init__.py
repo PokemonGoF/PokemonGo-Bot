@@ -413,9 +413,11 @@ class PokemonGoBot(object):
         items_stock = {x.value: 0 for x in list(Item)}
 
         for item in inventory_dict:
-            item_id = item.get('inventory_item_data', {}).get('item', {}).get('item_id', {})
-            item_count = item.get('inventory_item_data', {}).get('item', {}).get('count', {})
-            if item_count != {} and item_id != {}:
+            item_dict = item.get('inventory_item_data', {}).get('item', {})
+            item_count = item_dict.get('count')
+            item_id = item_dict.get('item_id')
+
+            if not item_count and not item_id:
                 if item_id in items_stock:
                     items_stock[item_id] = item_count
         return items_stock
