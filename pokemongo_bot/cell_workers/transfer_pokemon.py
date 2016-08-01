@@ -3,12 +3,13 @@ import json
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot.cell_workers.utils import get_candies
 
 
 class TransferPokemon(BaseTask):
     def work(self):
         pokemon_groups = self._release_pokemon_get_groups()
-        candies = self._get_candies()
+        candies = get_candies(self.bot)
         evolvable = 0
         for pokemon_id in pokemon_groups:
             group = pokemon_groups[pokemon_id]
@@ -255,13 +256,3 @@ class TransferPokemon(BaseTask):
                 keep_best = False
 
         return keep_best, keep_best_cp, keep_best_iv, keep_for_evo
-
-    def _get_candies(self):
-        response_dict = self.bot.get_inventory()
-        inv = response_dict.get("responses", {}).get("GET_INVENTORY", {}).get("inventory_delta").get("inventory_items")
-        candies = {}
-        for item in inv:
-            candy = item.get("inventory_item_data", {}).get("candy", {})
-            if candy != {}:
-                candies[candy['family_id']] = candy['candy']
-        return candies
