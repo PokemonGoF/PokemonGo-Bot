@@ -800,7 +800,7 @@ class PokemonGoBot(object):
                     'position_update',
                     sender=self,
                     level='debug',
-                    formatted='Loaded location {location} from cache',
+                    formatted='Loaded location {current_position} from cache',
                     data={
                         'current_position': location,
                         'last_position': '',
