@@ -138,15 +138,13 @@ class IncubateEggs(BaseTask):
                         "used": False
                     })
                 elif 'is_egg' not in pokemon and pokemon['id'] in lookup_ids:
-                    matched_pokemon.append({
-                        "pokemon_id": pokemon.get('pokemon_id', -1),
-                        "cp": pokemon.get('cp', 0),
+                    matched_pokemon.append(pokemon.update({
                         "iv": [
                             pokemon.get('individual_attack', 0),
                             pokemon.get('individual_defense', 0),
                             pokemon.get('individual_stamina', 0)
                         ]
-                    })
+                    }))
                 continue
             if "player_stats" in inv_data:
                 self.km_walked = inv_data.get("player_stats", {}).get("km_walked", 0)
@@ -179,7 +177,7 @@ class IncubateEggs(BaseTask):
             for pokemon in pokemon_data:
                 # pokemon ids seem to be offset by one
                 if pokemon['pokemon_id']!=-1:
-                    pokemon['name'] = self.bot.pokemon_list[(pokemon['pokemon_id']-1)]['Name']
+                    pokemon['name'] = self.bot.pokemon_list[(pokemon.get('pokemon_id')-1)]['Name']
                 else:
                     pokemon['name'] = "error"
         except:

@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import time
-
 from pokemongo_bot.human_behaviour import (normalized_reticle_size, sleep,
                                            spin_modifier)
-
 
 class PokemonCatchWorker(object):
     BAG_FULL = 'bag_full'
@@ -51,9 +49,9 @@ class PokemonCatchWorker(object):
                                 individual_defense = pokemon_data.get("individual_defense", 0)
 
                                 iv_display = '{}/{}/{}'.format(
-                                    individual_stamina,
                                     individual_attack,
-                                    individual_defense
+                                    individual_defense,
+                                    individual_stamina
                                 )
 
                                 pokemon_potential = self.pokemon_potential(pokemon_data)

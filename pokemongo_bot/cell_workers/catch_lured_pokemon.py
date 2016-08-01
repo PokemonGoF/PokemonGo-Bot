@@ -27,6 +27,7 @@ class CatchLuredPokemon(BaseTask):
             result = {
                 'encounter_id': encounter_id,
                 'fort_id': fort['id'],
+                'fort_name': fort_name,
                 'latitude': fort['latitude'],
                 'longitude': fort['longitude']
             }
@@ -35,7 +36,7 @@ class CatchLuredPokemon(BaseTask):
                 'lured_pokemon_found',
                 sender=self,
                 level='info',
-                formatted='Lured pokemon at fort {fort_id}',
+                formatted='Lured pokemon at fort {fort_name} ({fort_id})',
                 data=result
             )
             return result
