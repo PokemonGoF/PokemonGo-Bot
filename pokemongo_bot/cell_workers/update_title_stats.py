@@ -51,7 +51,7 @@ class UpdateTitleStats(BaseTask):
             see available stats above.
     """
 
-    DEFAULT_MIN_INTERVAL = 20
+    DEFAULT_MIN_INTERVAL = 10
     DEFAULT_DISPLAYED_STATS = []
 
     def __init__(self, bot, config):
