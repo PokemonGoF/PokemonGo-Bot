@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 import time
+from datetime import date
 
 try:
     import lcd
@@ -10,27 +11,33 @@ except Exception:
     lcd = False
 
 
-def log(string, color='white'):
-    color_hex = {
+logger_format = '[{day} {time}] {message}'
+
+
+def log(message, color='white'):
+    color2hex = {
         'red': '91m',
         'green': '92m',
         'yellow': '93m',
         'blue': '94m',
         'cyan': '96m'
     }
-    if color not in color_hex:
-        print('[{time}] {string}'.format(
-            time=time.strftime("%H:%M:%S"),
-            string=string.decode('utf-8')
-        ))
+
+    today = date.today().strftime('%Y-%m-%d')
+    now = time.strftime("%H:%M:%S")
+    message = message.decode('utf-8')
+
+    if color in color2hex:
+        colored_message = u'\033[%s%s\033[0m' % (color2hex[color], message)
+        formatted_message = logger_format.format(message=colored_message,
+                                                 day=today,
+                                                 time=now)
+        print(formatted_message)
     else:
-        print(
-            '[{time}] \033[{color} {string} \033[0m'.format(
-                time=time.strftime("%H:%M:%S"),
-                color=color_hex[color],
-                string=string.decode('utf-8')
-            )
-        )
-    if lcd:
-        if string:
-            lcd.message(string)
+        formatted_message = logger_format.format(message=message,
+                                                 day=today,
+                                                 time=now)
+        print(formatted_message)
+
+    if lcd and message:
+        lcd.message(message)
