@@ -43,7 +43,11 @@ class MoveToMapPokemon(BaseTask):
         now = int(time.time())
 
         for pokemon in raw_data['pokemons']:
-            pokemon['encounter_id'] = long(base64.b64decode(pokemon['encounter_id']))
+            try:
+                pokemon['encounter_id'] = long(base64.b64decode(pokemon['encounter_id']))
+            except TypeError:
+                log.logger('base64 error: {}'.format(pokemon['encounter_id']), 'red')
+                continue
             pokemon['spawn_point_id'] = pokemon['spawnpoint_id']
             pokemon['disappear_time'] = int(pokemon['disappear_time'] / 1000)
             pokemon['name'] = self.pokemon_data[pokemon['pokemon_id'] - 1]['Name']
