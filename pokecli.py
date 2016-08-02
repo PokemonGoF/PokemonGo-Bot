@@ -350,7 +350,7 @@ def init_config():
     if not config.password and 'password' not in load:
         config.password = getpass("Password: ")
    
-    set_proxy_if_exists(config)
+    setup_proxy(config)
             
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
@@ -423,7 +423,7 @@ def init_config():
     fix_nested_config(config)
     return config
 
-def set_proxy_if_exists(config):
+def setup_proxy(config):
     if config.proxy_ip and len(config.proxy_ip)>0 and config.proxy_ip.count('.') == 3 and  all(0<=int(num)<256 for num in config.proxy_ip.rstrip().split('.')):
         if config.proxy_port and int(config.proxy_port )<65536 and  int(config.proxy_port )>1:
             os.environ['http_proxy']="http://"+config.proxy_ip+":"+str(config.proxy_port)+"/"
