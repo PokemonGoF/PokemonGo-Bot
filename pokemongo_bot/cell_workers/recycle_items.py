@@ -44,9 +44,9 @@ class RecycleItems(BaseTask):
                     logger.log("-- Failed to discard " + item_name, 'red')
 
     def send_recycle_item_request(self, item_id, count):
-        self.bot.api.recycle_inventory_item(item_id=item_id, count=count)
-        inventory_req = self.bot.api.call()
-
         # Example of good request response
         #{'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
-        return inventory_req
+        return self.bot.api.recycle_inventory_item(
+            item_id=item_id,
+            count=count
+        )
