@@ -3,7 +3,7 @@ from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.cell_workers.base_task import BaseTask
 
-class EvolveAll(BaseTask):
+class EvolvePokemon(BaseTask):
     def initialize(self):
         self.api = self.bot.api
         self.evolve_all = self.config.get('evolve_all', [])
