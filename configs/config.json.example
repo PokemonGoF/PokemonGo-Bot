@@ -4,8 +4,6 @@
     "password": "YOUR_PASSWORD",
     "location": "SOME_LOCATION",
     "gmapkey": "GOOGLE_MAPS_API_KEY",
-    "proxy_ip": "" ,
-    "proxy_port": 0,
     "tasks": [
       {
         "type": "HandleSoftBan"
