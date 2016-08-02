@@ -3,8 +3,9 @@
 import time
 from pokemongo_bot.human_behaviour import (normalized_reticle_size, sleep,
                                            spin_modifier)
+from pokemongo_bot.cell_workers.base_task import BaseTask
 
-class PokemonCatchWorker(object):
+class PokemonCatchWorker(BaseTask):
     BAG_FULL = 'bag_full'
     NO_POKEBALLS = 'no_pokeballs'
 
