@@ -180,17 +180,7 @@ class PokemonGoBot(object):
     def find_close_cells(self, lat, lng):
         cellid = get_cell_ids(lat, lng)
         timestamp = [0, ] * len(cellid)
-<<<<<<< 2450ccbab106693fd3cceddc48b21c85ff39a46b
         response_dict = self.get_map_objects(lat, lng, timestamp, cellid)
-=======
-
-        response_dict = self.api.get_map_objects(
-            latitude=f2i(lat),
-            longitude=f2i(lng),
-            since_timestamp_ms=timestamp,
-            cell_id=cellid
-        )
->>>>>>> add tests, and modify calls to api accordingly
         map_objects = response_dict.get(
             'responses', {}
         ).get('GET_MAP_OBJECTS', {})
@@ -625,14 +615,12 @@ class PokemonGoBot(object):
         if time.time() - self.last_time_map_object < self.config.map_object_cache_time:
             return self.last_map_object
 
-        self.api.get_map_objects(
+        self.last_map_object = self.api.get_map_objects(
             latitude=f2i(lat),
             longitude=f2i(lng),
             since_timestamp_ms=timestamp,
             cell_id=cellid
         )
-
-        self.last_map_object = self.api.call()
         self.last_time_map_object = time.time()
 
         return self.last_map_object
