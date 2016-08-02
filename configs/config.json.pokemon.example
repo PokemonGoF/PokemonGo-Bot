@@ -25,7 +25,7 @@
         "config": {
           "evolve_all": "NONE",
           "evolve_cp_min": 300,
-          "evolve_speed": 20,
+          "evolve_every_n_tick": 10,
           "use_lucky_egg": false
         }
       },

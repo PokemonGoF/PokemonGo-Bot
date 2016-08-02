@@ -6,7 +6,7 @@ from pokemongo_bot.cell_workers.base_task import BaseTask
 class EvolveAll(BaseTask):
     def initialize(self):
         self.evolve_all = self.config.get('evolve_all', [])
-        self.evolve_speed = self.config.get('evolve_speed', 3.7)
+        self.evolve_every_n_tick = round(self.config.get('evolve_every_n_tick', 10))
         self.evolve_cp_min = self.config.get('evolve_cp_min', 300)
         self.use_lucky_egg = self.config.get('use_lucky_egg', False)
         self._validate_config()
@@ -58,6 +58,9 @@ class EvolveAll(BaseTask):
     def _should_run(self):
         # Will skip evolving if user wants to use an egg and there is none
         if not self.evolve_all:
+            return False
+
+        if (self.bot.tick_count % self.evolve_every_n_tick != 0):
             return False
 
         # Evolve all is used - Don't run after the first tick or if the config flag is false
@@ -163,8 +166,6 @@ class EvolveAll(BaseTask):
             logger.log('[#] Successfully evolved {} with {} CP and {} IV!'.format(
                 pokemon_name, pokemon_cp, pokemon_iv
             ))
-
-            sleep(self.evolve_speed)
 
         else:
             # cache pokemons we can't evolve. Less server calls
