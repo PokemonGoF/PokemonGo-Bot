@@ -164,7 +164,7 @@ class PokemonGoBot(object):
             with open(self.config.user_journal, 'w') as outfile:
                 ts = time.time()
                 st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-                outfile.write('Bot started at %s' % st)
+                outfile.write('Bot started at %s \n' % st)
 
         user_web_location = os.path.join(
             'web', 'location-%s.json' % self.config.username

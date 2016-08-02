@@ -231,7 +231,7 @@ class PokemonCatchWorker(object):
                                         'Oh no! {} vanished! :('.format(pokemon_name), 'red')
                                     if self.config.journal:
                                         with open(user_journal, 'w') as outfile:
-                                            outfile.write('Oh no! %s vanished!' % pokemon_name)
+                                            outfile.write('Oh no! %s vanished!\n' % pokemon_name)
                                             if success_percentage == 100:
                                                 self.softban = True
                                 if status is 1:
@@ -246,7 +246,7 @@ class PokemonCatchWorker(object):
                                     ), 'blue')
                                     if self.config.journal:
                                         with open(self.config.user_journal, 'a') as outfile:
-                                            outfile.write('Captured %s! [CP %s] [Potential %s] [%s] [+%s exp]' % (
+                                            outfile.write('Captured %s! [CP %s] [Potential %s] [%s] [+%s exp]\n' % (
                                                 pokemon_name, cp, pokemon_potential, iv_display,
                                                 sum(response_dict['responses']['CATCH_POKEMON']['capture_award'][
                                                         'xp'])))
@@ -271,7 +271,7 @@ class PokemonCatchWorker(object):
                                                 '{} has been evolved!'.format(pokemon_name), 'green')
                                             if self.config.journal:
                                                 with open(self.config.user_journal, 'a') as outfile:
-                                                    outfile.write('%s has been evolved!' % pokemon_name)
+                                                    outfile.write('%s has been evolved!\n' % pokemon_name)
                                         else:
                                             logger.log(
                                                 'Failed to evolve {}!'.format(pokemon_name))

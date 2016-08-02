@@ -52,7 +52,7 @@ class SpinFort(BaseTask):
                 logger.log("Loot: ", 'green')
                 if self.bot.config.journal:
                     with open(self.bot.config.user_journal, 'a') as outfile:
-                        outfile.write('Loot:')
+                        outfile.write('Loot:\n')
                 experience_awarded = spin_details.get('experience_awarded',
                                                       False)
                 if experience_awarded:
@@ -60,7 +60,7 @@ class SpinFort(BaseTask):
                                'green')
                     if self.bot.config.journal:
                         with open(self.bot.config.user_journal, 'a') as outfile:
-                            outfile.write('%s xp' % str(experience_awarded))
+                            outfile.write('%s xp\n' % str(experience_awarded))
 
                 items_awarded = spin_details.get('items_awarded', False)
                 if items_awarded:
@@ -81,7 +81,7 @@ class SpinFort(BaseTask):
                         )
                         if self.bot.config.journal:
                             with open(self.bot.config.user_journal, 'a') as outfile:
-                                outfile.write('- %sx %s (Total: %s)' % (
+                                outfile.write('- %sx %s (Total: %s)\n' % (
                                 str(item_count), item_name, str(self.bot.item_inventory_count(item_id))))
                 else:
                     logger.log("[#] Nothing found.", 'yellow')
