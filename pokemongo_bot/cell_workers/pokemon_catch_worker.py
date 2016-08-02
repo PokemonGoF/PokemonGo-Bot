@@ -95,8 +95,11 @@ class PokemonCatchWorker(object):
                                         break
 
                                     # Use the berry to catch
-                                    self.api.use_item_capture(item_id = berry_id,encounter_id = encounter_id,spawn_point_id = self.spawn_point_guid)
-                                    response_dict = self.api.call()
+                                    response_dict = self.api.use_item_capture(
+                                        item_id=berry_id,
+                                        encounter_id=encounter_id,
+                                        spawn_point_id=self.spawn_point_guid
+                                    )
                                     if response_dict and response_dict['status_code'] is 1 and 'item_capture_mult' in response_dict['responses']['USE_ITEM_CAPTURE']:
                                         for i in range(len(catch_rate)):
                                             if 'item_capture_mult' in response_dict['responses']['USE_ITEM_CAPTURE']:
@@ -128,8 +131,10 @@ class PokemonCatchWorker(object):
 
                                     success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
                                     logger.log('Catch Rate with normal Pokeball is low ({}%). Thinking to throw a {}... ({} left!)'.format(success_percentage,self.item_list[str(berry_id)],berries_count-1))
-                                    self.api.use_item_capture(item_id = berry_id,encounter_id = encounter_id,spawn_point_id = self.spawn_point_guid)
-                                    response_dict = self.api.call()
+                                    response_dict = self.api.use_item_capture(item_id=berry_id,
+                                        encounter_id=encounter_id,
+                                        spawn_point_id=self.spawn_point_guid
+                                    )
                                     if response_dict and response_dict['status_code'] is 1 and 'item_capture_mult' in response_dict['responses']['USE_ITEM_CAPTURE']:
                                         for i in range(len(catch_rate)):
                                             if 'item_capture_mult' in response_dict['responses']['USE_ITEM_CAPTURE']:
@@ -161,8 +166,10 @@ class PokemonCatchWorker(object):
 
                                     success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
                                     logger.log('Catch Rate with normal Pokeball is low ({}%). Thinking to throw a {}... ({} left!)'.format(success_percentage,self.item_list[str(berry_id)],berries_count-1))
-                                    self.api.use_item_capture(item_id = berry_id,encounter_id = encounter_id,spawn_point_id = self.spawn_point_guid)
-                                    response_dict = self.api.call()
+                                    response_dict = self.api.use_item_capture(item_id=berry_id,
+                                        encounter_id=encounter_id,
+                                        spawn_point_id=self.spawn_point_guid
+                                    )
                                     if response_dict and response_dict['status_code'] is 1 and 'item_capture_mult' in response_dict['responses']['USE_ITEM_CAPTURE']:
                                         for i in range(len(catch_rate)):
                                             if 'item_capture_mult' in response_dict['responses']['USE_ITEM_CAPTURE']:
@@ -213,14 +220,15 @@ class PokemonCatchWorker(object):
 
                             id_list1 = self.count_pokemon_inventory()
 
-                            self.api.catch_pokemon(encounter_id=encounter_id,
-                                                   pokeball=pokeball,
-                                                   normalized_reticle_size=throw_parameters['normalized_reticle_size'],
-                                                   spawn_point_id=self.spawn_point_guid,
-                                                   hit_pokemon=1,
-                                                   spin_modifier=throw_parameters['spin_modifier'],
-                                                   normalized_hit_position=throw_parameters['normalized_hit_position'])
-                            response_dict = self.api.call()
+                            response_dict = self.api.catch_pokemon(
+                                encounter_id=encounter_id,
+                                pokeball=pokeball,
+                                normalized_reticle_size=throw_parameters['normalized_reticle_size'],
+                                spawn_point_id=self.spawn_point_guid,
+                                hit_pokemon=1,
+                                spin_modifier=throw_parameters['spin_modifier'],
+                                normalized_hit_position=throw_parameters['normalized_hit_position']
+                            )
 
                             if response_dict and \
                                             'responses' in response_dict and \
@@ -262,8 +270,7 @@ class PokemonCatchWorker(object):
                                         if len(pokemon_to_transfer) == 0:
                                             raise RuntimeError(
                                                 'Trying to evolve 0 pokemons!')
-                                        self.api.evolve_pokemon(pokemon_id=pokemon_to_transfer[0])
-                                        response_dict = self.api.call()
+                                        response_dict = self.api.evolve_pokemon(pokemon_id=pokemon_to_transfer[0])
                                         status = response_dict['responses']['EVOLVE_POKEMON']['result']
                                         if status == 1:
                                             logger.log(
@@ -277,8 +284,7 @@ class PokemonCatchWorker(object):
     def count_pokemon_inventory(self):
         # don't use cached bot.get_inventory() here
         # because we need to have actual information in capture logic
-        self.api.get_inventory()
-        response_dict = self.api.call()
+        response_dict = self.api.get_inventory()
 
         id_list = []
         callback = lambda pokemon: id_list.append(pokemon['id'])
@@ -368,22 +374,30 @@ class PokemonCatchWorker(object):
         player_latitude = self.pokemon['latitude']
         player_longitude = self.pokemon['longitude']
 
+        request = self.api.create_request()
         if 'spawn_point_id' in self.pokemon:
             spawn_point_id = self.pokemon['spawn_point_id']
             self.spawn_point_guid = spawn_point_id
             self.response_key = 'ENCOUNTER'
             self.response_status_key = 'status'
-            self.api.encounter(encounter_id=encounter_id, spawn_point_id=spawn_point_id,
-                               player_latitude=player_latitude, player_longitude=player_longitude)
+            request.encounter(
+                encounter_id=encounter_id,
+                spawn_point_id=spawn_point_id,
+                player_latitude=player_latitude,
+                player_longitude=player_longitude
+            )
         else:
             fort_id = self.pokemon['fort_id']
             self.spawn_point_guid = fort_id
             self.response_key = 'DISK_ENCOUNTER'
             self.response_status_key = 'result'
-            self.api.disk_encounter(encounter_id=encounter_id, fort_id=fort_id,
-                                    player_latitude=player_latitude, player_longitude=player_longitude)
-
-        return self.api.call()
+            request.disk_encounter(
+                encounter_id=encounter_id,
+                fort_id=fort_id,
+                player_latitude=player_latitude,
+                player_longitude=player_longitude
+            )
+        return request.call()
 
     def check_vip_pokemon(self,pokemon, cp, iv):
 

@@ -33,12 +33,13 @@ class SpinFort(BaseTask):
         logger.log('Now at Pokestop: {0}'.format(fort_name), 'cyan')
         logger.log('Spinning ...', 'cyan')
 
-        self.bot.api.fort_search(fort_id=fort['id'],
-                             fort_latitude=lat,
-                             fort_longitude=lng,
-                             player_latitude=f2i(self.bot.position[0]),
-                             player_longitude=f2i(self.bot.position[1]))
-        response_dict = self.bot.api.call()
+        response_dict = self.bot.api.fort_search(
+            fort_id=fort['id'],
+            fort_latitude=lat,
+            fort_longitude=lng,
+            player_latitude=f2i(self.bot.position[0]),
+            player_longitude=f2i(self.bot.position[1])
+        )
         if 'responses' in response_dict and \
                 'FORT_SEARCH' in response_dict['responses']:
 
