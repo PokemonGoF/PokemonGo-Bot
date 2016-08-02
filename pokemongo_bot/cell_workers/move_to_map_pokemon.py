@@ -54,10 +54,7 @@ class MoveToMapPokemon(BaseTask):
             if self.was_caught(pokemon):
                 continue
 
-            if pokemon['name'] in self.config['catch']:
-                pokemon['priority'] = self.config['catch'][pokemon['name']]
-            else:
-                pokemon['priority'] = 0
+            pokemon['priority'] = self.config['catch'].get(pokemon['name'], 0)
 
             pokemon['dist'] = distance(
                 self.bot.position[0],
@@ -156,7 +153,7 @@ class MoveToMapPokemon(BaseTask):
         if self.config['mode'] == 'priority':
             pokemon_list.sort(key=lambda x: x['priority'], reverse=True)
         if self.config['prioritize_vips'] == 'priority':
-            pokemon_list.sort(key=lambda x: x['is_vip'])
+            pokemon_list.sort(key=lambda x: x['is_vip'], reverse=True)
 
         if len(pokemon_list) < 1:
             return WorkerResult.SUCCESS
