@@ -1,4 +1,3 @@
-from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.cell_workers.base_task import BaseTask
 

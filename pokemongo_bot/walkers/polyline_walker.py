@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.step_walker import StepWalker
 from polyline_generator import Polyline

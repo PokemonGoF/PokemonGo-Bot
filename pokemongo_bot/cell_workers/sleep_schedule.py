@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 from time import sleep
 from random import uniform
-from pokemongo_bot import logger
 from pokemongo_bot.cell_workers.base_task import BaseTask
 
 

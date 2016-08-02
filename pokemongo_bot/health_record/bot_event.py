@@ -5,8 +5,6 @@ from time import sleep
 
 from UniversalAnalytics import Tracker
 
-from pokemongo_bot import logger
-
 
 class BotEvent(object):
     def __init__(self, bot):

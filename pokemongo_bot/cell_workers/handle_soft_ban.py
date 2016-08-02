@@ -1,6 +1,5 @@
 from pgoapi.utilities import f2i
 
-from pokemongo_bot import logger
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.cell_workers.base_task import BaseTask
 from pokemongo_bot.cell_workers import MoveToFort
