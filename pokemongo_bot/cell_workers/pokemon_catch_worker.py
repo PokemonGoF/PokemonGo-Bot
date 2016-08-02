@@ -4,8 +4,8 @@ import time
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import (normalized_reticle_size, sleep,
                                            spin_modifier)
-import math
 from random import random
+
 
 class PokemonCatchWorker(object):
     BAG_FULL = 'bag_full'
