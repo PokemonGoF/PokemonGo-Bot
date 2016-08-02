@@ -84,10 +84,8 @@ class FollowSpiral(BaseTask):
             )
 
             if self.cnt == 1:
-                self.bot.event_manager.emit(
+                self.emit_event(
                     'position_update',
-                    sender=self,
-                    level='info',
                     formatted="Walking from {last_position} to {current_position} ({distance} {distance_unit})",
                     data={
                         'last_position': self.bot.position,

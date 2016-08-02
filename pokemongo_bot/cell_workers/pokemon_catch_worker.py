@@ -59,11 +59,9 @@ class PokemonCatchWorker(object):
                                 pokemon_name = self.pokemon_list[int(pokemon_num)]['Name']
 
                                 msg = 'A wild {pokemon} appeared! [CP {cp}] [Potential {iv}] [S/A/D {iv_display}]'
-                                self.bot.event_manager.emit(
+                                self.emit_event(
                                     'pokemon_appeared',
-                                    sender=self,
                                     formatted=msg,
-                                    level='info',
                                     data={
                                         'pokemon': pokemon_name,
                                         'cp': cp,
@@ -82,10 +80,8 @@ class PokemonCatchWorker(object):
                         flag_VIP = False
                         # @TODO, use the best ball in stock to catch VIP (Very Important Pokemon: Configurable)
                         if self.check_vip_pokemon(pokemon_name, cp, pokemon_potential):
-                            self.bot.event_manager.emit(
+                            self.emit_event(
                                 'vip_pokemon',
-                                sender=self,
-                                level='info',
                                 formatted='This is a VIP pokemon. Catch!!!'
                             )
                             flag_VIP=True
@@ -101,9 +97,8 @@ class PokemonCatchWorker(object):
                             if flag_VIP:
                                 if(berries_count>0 and catch_rate[pokeball-1] < 0.9):
                                     success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
-                                    self.bot.event_manager.emit(
+                                    self.emit_event(
                                         'pokemon_catch_rate',
-                                        sender=self,
                                         level='debug',
                                         formatted="Catch rate of {catch_rate} is low. Maybe will throw {berry_name} ({berry_count} left)",
                                         data={
@@ -126,10 +121,8 @@ class PokemonCatchWorker(object):
                                         success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
                                         berries_count = berries_count -1
                                         berry_used = True
-                                        self.bot.event_manager.emit(
+                                        self.emit_event(
                                             'threw_berry',
-                                            sender=self,
-                                            level='info',
                                             formatted="Threw a {berry_name}! Catch rate now: {new_catch_rate}",
                                             data={
                                                 "berry_name": self.item_list[str(berry_id)],
@@ -138,17 +131,14 @@ class PokemonCatchWorker(object):
                                         )
                                     else:
                                         if response_dict['status_code'] is 1:
-                                            self.bot.event_manager.emit(
+                                            self.emit_event(
                                                 'softban',
-                                                sender=self,
                                                 level='warning',
                                                 formatted='Failed to use berry. You may be softbanned.'
                                             )
                                         else:
-                                            self.bot.event_manager.emit(
+                                            self.emit_event(
                                                 'threw_berry_failed',
-                                                sender=self,
-                                                level='info',
                                                 formatted='Unknown response when throwing berry: {status_code}.',
                                                 data={
                                                     'status_code': response_dict['status_code']
@@ -171,9 +161,8 @@ class PokemonCatchWorker(object):
                                         break
 
                                     success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
-                                    self.bot.event_manager.emit(
+                                    self.emit_event(
                                         'pokemon_catch_rate',
-                                        sender=self,
                                         level='debug',
                                         formatted="Catch rate of {catch_rate} is low. Maybe will throw {berry_name} ({berry_count} left)",
                                         data={
@@ -191,10 +180,8 @@ class PokemonCatchWorker(object):
                                         success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
                                         berries_count = berries_count -1
                                         berry_used = True
-                                        self.bot.event_manager.emit(
+                                        self.emit_event(
                                             'threw_berry',
-                                            sender=self,
-                                            level='info',
                                             formatted="Threw a {berry_name}! Catch rate now: {new_catch_rate}",
                                             data={
                                                 "berry_name": self.item_list[str(berry_id)],
@@ -203,17 +190,14 @@ class PokemonCatchWorker(object):
                                         )
                                     else:
                                         if response_dict['status_code'] is 1:
-                                            self.bot.event_manager.emit(
+                                            self.emit_event(
                                                 'softban',
-                                                sender=self,
                                                 level='warning',
                                                 formatted='Failed to use berry. You may be softbanned.'
                                             )
                                         else:
-                                            self.bot.event_manager.emit(
+                                            self.emit_event(
                                                 'threw_berry_failed',
-                                                sender=self,
-                                                level='info',
                                                 formatted='Unknown response when throwing berry: {status_code}.',
                                                 data={
                                                     'status_code': response_dict['status_code']
@@ -236,9 +220,8 @@ class PokemonCatchWorker(object):
                                         break
 
                                     success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
-                                    self.bot.event_manager.emit(
+                                    self.emit_event(
                                         'pokemon_catch_rate',
-                                        sender=self,
                                         level='debug',
                                         formatted="Catch rate of {catch_rate} is low. Throwing {berry_name} ({berry_count} left)",
                                         data={
@@ -256,10 +239,8 @@ class PokemonCatchWorker(object):
                                         success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
                                         berries_count = berries_count -1
                                         berry_used = True
-                                        self.bot.event_manager.emit(
+                                        self.emit_event(
                                             'threw_berry',
-                                            sender=self,
-                                            level='info',
                                             formatted="Threw a {berry_name}! Catch rate now: {new_catch_rate}",
                                             data={
                                                 "berry_name": self.item_list[str(berry_id)],
@@ -268,17 +249,14 @@ class PokemonCatchWorker(object):
                                         )
                                     else:
                                         if response_dict['status_code'] is 1:
-                                            self.bot.event_manager.emit(
+                                            self.emit_event(
                                                 'softban',
-                                                sender=self,
                                                 level='warning',
                                                 formatted='Failed to use berry. You may be softbanned.'
                                             )
                                         else:
-                                            self.bot.event_manager.emit(
+                                            self.emit_event(
                                                 'threw_berry_failed',
-                                                sender=self,
-                                                level='info',
                                                 formatted='Unknown response when throwing berry: {status_code}.',
                                                 data={
                                                     'status_code': response_dict['status_code']
@@ -304,10 +282,8 @@ class PokemonCatchWorker(object):
 
                             items_stock[pokeball] -= 1
                             success_percentage = '{0:.2f}'.format(catch_rate[pokeball - 1] * 100)
-                            self.bot.event_manager.emit(
+                            self.emit_event(
                                 'threw_pokeball',
-                                sender=self,
-                                level='info',
                                 formatted='Used {pokeball}, with chance {success_percentage} ({count_left} left)',
                                 data={
                                     'pokeball': self.item_list[str(pokeball)],
@@ -336,20 +312,16 @@ class PokemonCatchWorker(object):
                                 status = response_dict['responses'][
                                     'CATCH_POKEMON']['status']
                                 if status is 2:
-                                    self.bot.event_manager.emit(
+                                    self.emit_event(
                                         'pokemon_fled',
-                                        sender=self,
-                                        level='info',
                                         formatted="{pokemon} fled.",
                                         data={'pokemon': pokemon_name}
                                     )
                                     sleep(2)
                                     continue
                                 if status is 3:
-                                    self.bot.event_manager.emit(
+                                    self.emit_event(
                                         'pokemon_vanished',
-                                        sender=self,
-                                        level='info',
                                         formatted="{pokemon} vanished!",
                                         data={'pokemon': pokemon_name}
                                     )
@@ -358,10 +330,8 @@ class PokemonCatchWorker(object):
                                 if status is 1:
                                     self.bot.metrics.captured_pokemon(pokemon_name, cp, iv_display, pokemon_potential)
 
-                                    self.bot.event_manager.emit(
+                                    self.emit_event(
                                         'pokemon_caught',
-                                        sender=self,
-                                        level='info',
                                         formatted='Captured {pokemon}! [CP {cp}] [Potential {iv}] [{iv_display}] [+{exp} exp]',
                                         data={
                                             'pokemon': pokemon_name,
@@ -388,18 +358,14 @@ class PokemonCatchWorker(object):
                                         response_dict = self.api.call()
                                         status = response_dict['responses']['EVOLVE_POKEMON']['result']
                                         if status == 1:
-                                            self.bot.event_manager.emit(
+                                            self.emit_event(
                                                 'pokemon_evolved',
-                                                sender=self,
-                                                level='info',
                                                 formatted="{pokemon} evolved!",
                                                 data={'pokemon': pokemon_name}
                                             )
                                         else:
-                                            self.bot.event_manager.emit(
+                                            self.emit_event(
                                                 'pokemon_evolve_fail',
-                                                sender=self,
-                                                level='info',
                                                 formatted="Failed to evolve {pokemon}!",
                                                 data={'pokemon': pokemon_name}
                                             )

@@ -16,9 +16,8 @@ class CatchVisiblePokemon(BaseTask):
             )
 
             for pokemon in self.bot.cell['catchable_pokemons']:
-                self.bot.event_manager.emit(
+                self.emit_event(
                     'catchable_pokemon',
-                    sender=self,
                     level='debug',
                     data={
                         'pokemon_id': pokemon['pokemon_id'],

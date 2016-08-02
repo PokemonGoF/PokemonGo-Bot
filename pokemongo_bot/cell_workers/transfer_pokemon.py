@@ -42,10 +42,8 @@ class TransferPokemon(BaseTask):
                                 best_pokemons.append(pokemon)
 
                     if best_pokemons and all_pokemons:
-                        self.bot.event_manager.emit(
+                        self.emit_event(
                             'keep_best_release',
-                            sender=self,
-                            level='info',
                             formatted="Keeping best {amount} {pokemon}, based on {criteria}",
                             data={
                                 'amount': len(best_pokemons),
@@ -168,10 +166,8 @@ class TransferPokemon(BaseTask):
         }
 
         if logic_to_function[cp_iv_logic](*release_results.values()):
-            self.bot.event_manager.emit(
+            self.emit_event(
                 'future_pokemon_release',
-                sender=self,
-                level='info',
                 formatted="Releasing {pokemon} (CP {cp}/IV {iv}) based on rule: CP < {below_cp} {cp_iv_logic} IV < {below_iv}",
                 data={
                     'pokemon': pokemon_name,
@@ -188,10 +184,8 @@ class TransferPokemon(BaseTask):
     def release_pokemon(self, pokemon_name, cp, iv, pokemon_id):
         self.bot.api.release_pokemon(pokemon_id=pokemon_id)
         response_dict = self.bot.api.call()
-        self.bot.event_manager.emit(
+        self.emit_event(
             'pokemon_release',
-            sender=self,
-            level='info',
             formatted='Exchanging {pokemon} [CP {cp}] [IV {iv}] for candy.',
             data={
                 'pokemon': pokemon_name,

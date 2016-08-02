@@ -36,10 +36,8 @@ class RecycleItems(BaseTask):
                 result = response_dict_recycle.get('responses', {}).get('RECYCLE_INVENTORY_ITEM', {}).get('result', 0)
 
                 if result == 1: # Request success
-                    self.bot.event_manager.emit(
+                    self.emit_event(
                         'item_discarded',
-                        sender=self,
-                        level='info',
                         formatted='Discarded {amount}x {item} (maximum {maximum}).',
                         data={
                             'amount': str(items_recycle_count),
@@ -48,10 +46,8 @@ class RecycleItems(BaseTask):
                         }
                     )
                 else:
-                    self.bot.event_manager.emit(
+                    self.emit_event(
                         'item_discard_fail',
-                        sender=self,
-                        level='info',
                         formatted="Failed to discard {item}",
                         data={
                             'item': item_name

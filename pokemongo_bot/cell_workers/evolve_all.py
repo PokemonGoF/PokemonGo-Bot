@@ -71,10 +71,8 @@ class EvolveAll(BaseTask):
                             'result' in response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']:
                 result = response_dict_lucky_egg['responses']['USE_ITEM_XP_BOOST']['result']
                 if result is 1:  # Request success
-                    self.bot.event_manager.emit(
+                    self.emit_event(
                         'used_lucky_egg',
-                        sender=self,
-                        level='info',
                         formmated='Used lucky egg ({amount_left} left).',
                         data={
                              'amount_left': lucky_egg_count - 1
@@ -82,18 +80,15 @@ class EvolveAll(BaseTask):
                     )
                     return True
                 else:
-                    self.bot.event_manager.emit(
+                    self.emit_event(
                         'lucky_egg_error',
-                        sender=self,
                         level='error',
                         formatted='Failed to use lucky egg!'
                     )
                     return False
         else:
-            self.bot.event_manager.emit(
+            self.emit_event(
                 'skip_evolve',
-                sender=self,
-                level='info',
                 formatted='Skipping evolve because has no lucky egg.'
             )
             return False
@@ -171,10 +166,8 @@ class EvolveAll(BaseTask):
         response_dict = self.bot.api.call()
         status = response_dict['responses']['EVOLVE_POKEMON']['result']
         if status == 1:
-            self.bot.event_manager.emit(
+            self.emit_event(
                 'pokemon_evolved',
-                sender=self,
-                level='info',
                 formatted="Successfully evolved {pokemon} with CP {cp} and IV {iv}!",
                 data={
                     'pokemon': pokemon_name,

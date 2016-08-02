@@ -18,10 +18,8 @@ class CollectLevelUpReward(BaseTask):
             self._collect_level_reward()
         # level up situation
         elif self.current_level > self.previous_level:
-            self.bot.event_manager.emit(
+            self.emit_event(
                 'level_up',
-                sender=self,
-                level='info',
                 formatted='Level up from {previous_level} to {current_level}',
                 data={
                     'previous_level': self.previous_level,
@@ -47,10 +45,8 @@ class CollectLevelUpReward(BaseTask):
                     item['name'] = got_item
                     count = 'item_count' in item and item['item_count'] or 0
 
-            self.bot.event_manager.emit(
+            self.emit_event(
                 'level_up_reward',
-                sender=self,
-                level='info',
                 formatted='Received level up reward: {items}',
                 data={
                     'items': data

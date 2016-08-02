@@ -32,19 +32,15 @@ class HandleSoftBan(BaseTask):
                 del self.bot.fort_timeouts[forts[0]['id']]
             return WorkerResult.RUNNING
         else:
-            self.bot.event_manager.emit(
+            self.emit_event(
                 'softban_fix',
-                sender=self,
-                level='info',
                 formatted='Fixing softban.'
             )
             for i in xrange(50):
                 self.spin_fort(forts[0])
             self.bot.softban = False
-            self.bot.event_manager.emit(
+            self.emit_event(
                 'softban_fix_done',
-                sender=self,
-                level='info',
                 formatted='Softban should be fixed'
             )
 
@@ -59,7 +55,6 @@ class HandleSoftBan(BaseTask):
         self.bot.api.call()
         self.bot.event_handler.emit(
             'spun_fort',
-            sender=self,
             level='debug',
             formatted="Spun fort {fort_id}",
             data={

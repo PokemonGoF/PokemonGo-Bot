@@ -31,10 +31,8 @@ class IncubateEggs(BaseTask):
             if km_left <= 0:
                 self._hatch_eggs()
             else:
-                self.bot.event_manager.emit(
+                self.emit_event(
                     'next_egg_incubates',
-                    sender=self,
-                    level='info',
                     formatted='Next egg incubates in {distance_in_km:.2f} km',
                     data={
                         'distance_in_km': km_left
@@ -53,9 +51,8 @@ class IncubateEggs(BaseTask):
             for egg in self.eggs:
                 if egg["used"] or egg["km"] == -1:
                     continue
-                self.bot.event_manager.emit(
+                self.emit_event(
                     'incubate_try',
-                    sender=self,
                     level='debug',
                     formatted="Attempting to apply incubator {incubator_id} to egg {egg_id}",
                     data={
@@ -68,10 +65,8 @@ class IncubateEggs(BaseTask):
                 if ret:
                     code = ret.get("responses", {}).get("USE_ITEM_EGG_INCUBATOR", {}).get("result", 0)
                     if code == 1:
-                        self.bot.event_manager.emit(
+                        self.emit_event(
                             'incubate',
-                            sender=self,
-                            level='info',
                             formatted='Incubating a {distance_in_km} egg.',
                             data={
                                 'distance_in_km': str(egg['km'])
@@ -81,18 +76,16 @@ class IncubateEggs(BaseTask):
                         incubator["used"] = True
                         break
                     elif code == 5 or code == 7:
-                        self.bot.event_manager.emit(
+                        self.emit_event(
                             'incubator_already_used',
-                            sender=self,
                             level='debug',
                             formatted='Incubator in use.',
                         )
                         incubator["used"] = True
                         break
                     elif code == 6:
-                        self.bot.event_manager.emit(
+                        self.emit_event(
                             'egg_already_incubating',
-                            sender=self,
                             level='debug',
                             formatted='Egg already incubating',
                         )
@@ -183,10 +176,8 @@ class IncubateEggs(BaseTask):
         except:
             pokemon_data = [{"name":"error","cp":"error","iv":"error"}]
         if not pokemon_ids or pokemon_data[0]['name'] == "error":
-            self.bot.event_manager.emit(
+            self.emit_event(
                 'egg_hatched',
-                sender=self,
-                level='info',
                 data={
                     'pokemon': 'error',
                     'cp': 'error',
@@ -200,10 +191,8 @@ class IncubateEggs(BaseTask):
 
         for i in range(len(pokemon_data)):
             msg = "Egg hatched with a {pokemon} (CP {cp} - IV {iv}), {exp} exp, {stardust} stardust and {candy} candies."
-            self.bot.event_manager.emit(
+            self.emit_event(
                 'egg_hatched',
-                sender=self,
-                level='info',
                 formatted=msg,
                 data={
                     'pokemon': pokemon_data[i]['name'],

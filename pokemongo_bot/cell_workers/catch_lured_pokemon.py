@@ -32,10 +32,8 @@ class CatchLuredPokemon(BaseTask):
                 'longitude': fort['longitude']
             }
 
-            self.bot.event_manager.emit(
+            self.emit_event(
                 'lured_pokemon_found',
-                sender=self,
-                level='info',
                 formatted='Lured pokemon at fort {fort_name} ({fort_id})',
                 data=result
             )

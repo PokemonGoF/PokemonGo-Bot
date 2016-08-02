@@ -17,10 +17,8 @@ class MoveToFort(BaseTask):
     def should_run(self):
         has_space_for_loot = self.bot.has_space_for_loot()
         if not has_space_for_loot:
-            self.bot.event_manager.emit(
+            self.emit_event(
                 'inventory_full',
-                sender=self,
-                level='info',
                 formatted="Not moving to any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently."
             )
         return has_space_for_loot or self.bot.softban
@@ -60,18 +58,14 @@ class MoveToFort(BaseTask):
 
             if self.is_attracted() > 0:
                 fort_event_data.update(lure_distance=format_dist(self.lure_distance, unit))
-                self.bot.event_manager.emit(
+                self.emit_event(
                     'moving_to_lured_fort',
-                    sender=self,
-                    level='info',
                     formatted="Moving towards pokestop {fort_name} - {distance} (attraction of lure {lure_distance})",
                     data=fort_event_data
                 )
             else:
-                self.bot.event_manager.emit(
+                self.emit_event(
                     'moving_to_fort',
-                    sender=self,
-                    level='info',
                     formatted="Moving towards pokestop {fort_name} - {distance}",
                     data=fort_event_data
                 )
@@ -86,10 +80,8 @@ class MoveToFort(BaseTask):
             if not step_walker.step():
                 return WorkerResult.RUNNING
 
-        self.bot.event_manager.emit(
+        self.emit_event(
             'arrived_at_fort',
-            sender=self,
-            level='info',
             formatted='Arrived at fort.'
         )
         return WorkerResult.SUCCESS

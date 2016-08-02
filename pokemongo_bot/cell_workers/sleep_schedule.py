@@ -63,10 +63,8 @@ class SleepSchedule(BaseTask):
     def _schedule_next_sleep(self):
         self._next_sleep = self._get_next_sleep_schedule()
         self._next_duration = self._get_next_duration()
-        self.bot.event_manager.emit(
+        self.emit_event(
             'next_sleep',
-            sender=self,
-            level='info',
             formatted="Next sleep at {time}",
             data={
                 'time': str(self._next_sleep)
@@ -95,10 +93,8 @@ class SleepSchedule(BaseTask):
 
     def _sleep(self):
         sleep_to_go = self._next_duration
-        self.bot.event_manager.emit(
+        self.emit_event(
             'bot_sleep',
-            sender=self,
-            level='info',
             formatted="Sleeping for {time_in_seconds}",
             data={
                 'time_in_seconds': sleep_to_go

@@ -35,9 +35,8 @@ class FollowPath(BaseTask):
         # Replace Verbal Location with lat&lng.
         for index, point in enumerate(points):
             point_tuple = self.bot.get_pos_by_name(point['location'])
-            self.bot.event_manager.emit(
+            self.emit_event(
                 'location_found',
-                sender=self,
                 level='debug',
                 formatted="Location found: {location} {position}",
                 data={

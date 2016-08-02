@@ -43,10 +43,8 @@ class FollowCluster(object):
                     "Move to destiny {num_points}. {forts} "
                     "pokestops will be in range of {radius}. Walking {distance}m."
                 )
-                self.bot.event_manager.emit(
+                self.emit_event(
                     'found_cluster',
-                    sender=self,
-                    level='info',
                     formatted=msg,
                     data={
                         'num_points': cnt,
@@ -73,10 +71,8 @@ class FollowCluster(object):
                     self.bot.api.set_position(lat, lng)
 
             elif not self.announced:
-                self.bot.event_manager.emit(
+                self.emit_event(
                     'arrived_at_cluster',
-                    sender=self,
-                    level='info',
                     formatted="Arrived at cluster. {forts} are in a range of {radius}m radius.",
                     data={
                         'forts': str(cnt),

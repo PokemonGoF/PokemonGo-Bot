@@ -35,10 +35,8 @@ class NicknamePokemon(BaseTask):
         new_name = ""
         instance_id = pokemon.get('id',0)
         if not instance_id:
-            self.bot.event_manager.emit(
+            self.emit_event(
                 'api_error',
-                sender=self,
-                level='info',
                 formatted='Failed to get pokemon name, will not rename.'
             )
             return
@@ -64,10 +62,8 @@ class NicknamePokemon(BaseTask):
                                     iv_sum=iv_sum,
                                     iv_pct=iv_pct)[:12]
         except KeyError as bad_key:
-            self.bot.event_manager.emit(
+            self.emit_event(
                 'config_error',
-                sender=self,
-                level='info',
                 formatted="Unable to nickname {} due to bad template ({})".format(name,bad_key)
             )
         if pokemon.get('nickname', '') == new_name:
@@ -78,10 +74,8 @@ class NicknamePokemon(BaseTask):
         try:
             result =  reduce(dict.__getitem__, ["responses", "NICKNAME_POKEMON"], response)
         except KeyError:
-            self.bot.event_manager.emit(
+            self.emit_event(
                 'api_error',
-                sender=self,
-                level='info',
                 formatted='Attempt to nickname received bad response from server.'
             )
             if self.bot.config.debug:
@@ -90,17 +84,13 @@ class NicknamePokemon(BaseTask):
         result = result['result']
         new_name = new_name or name
         if result == 0:
-            self.bot.event_manager.emit(
+            self.emit_event(
                 'unset_pokemon_nickname',
-                sender=self,
-                level='info',
                 formatted="Pokemon nickname unset."
             )
         elif result == 1:
-            self.bot.event_manager.emit(
+            self.emit_event(
                 'rename_pokemon',
-                sender=self,
-                level='info',
                 formatted="Pokemon {old_name} renamed to {current_name}",
                 data={
                     'old_name': name,
@@ -109,10 +99,8 @@ class NicknamePokemon(BaseTask):
             )
             pokemon['nickname'] = new_name
         elif result == 2:
-            self.bot.event_manager.emit(
+            self.emit_event(
                 'pokemon_nickname_invalid',
-                sender=self,
-                level='info',
                 formatted="Nickname {nickname} is invalid",
                 data={'nickname': new_name}
             )

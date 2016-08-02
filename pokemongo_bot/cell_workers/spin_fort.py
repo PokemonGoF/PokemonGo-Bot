@@ -14,10 +14,8 @@ from utils import distance, format_time, fort_details
 class SpinFort(BaseTask):
     def should_run(self):
         if not self.bot.has_space_for_loot():
-            self.bot.event_manager.emit(
+            self.emit_event(
                 'inventory_full',
-                sender=self,
-                level='info',
                 formatted="Not moving to any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently."
             )
             return False
@@ -62,10 +60,8 @@ class SpinFort(BaseTask):
                             tmp_count_items[item_name] += item['item_count']
 
                 if experience_awarded or items_awarded:
-                    self.bot.event_manager.emit(
+                    self.emit_event(
                         'spun_pokestop',
-                        sender=self,
-                        level='info',
                         formatted="Spun pokestop {pokestop}. Experience awarded: {exp}. Items awarded: {items}",
                         data={
                             'pokestop': fort_name,
@@ -74,10 +70,8 @@ class SpinFort(BaseTask):
                         }
                     )
                 else:
-                    self.bot.event_manager.emit(
+                    self.emit_event(
                         'pokestop_empty',
-                        sender=self,
-                        level='info',
                         formatted='Found nothing in pokestop {pokestop}.',
                         data={'pokestop': fort_name}
                     )
@@ -86,10 +80,8 @@ class SpinFort(BaseTask):
                 self.bot.fort_timeouts.update({fort["id"]: pokestop_cooldown})
                 self.bot.recent_forts = self.bot.recent_forts[1:] + [fort['id']]
             elif spin_result == 2:
-                self.bot.event_manager.emit(
+                self.emit_event(
                     'pokestop_out_of_range',
-                    sender=self,
-                    level='info',
                     formatted="Pokestop {pokestop} out of range.",
                     data={'pokestop': fort_name}
                 )
@@ -102,25 +94,19 @@ class SpinFort(BaseTask):
                     minutes_left = format_time(
                         (pokestop_cooldown / 1000) - seconds_since_epoch
                     )
-                    self.bot.event_manager.emit(
+                    self.emit_event(
                         'pokestop_on_cooldown',
-                        sender=self,
-                        level='info',
                         formatted="Pokestop {pokestop} on cooldown. Time left: {minutes_left}.",
                         data={'pokestop': fort_name, 'minutes_left': minutes_left}
                     )
             elif spin_result == 4:
-                self.bot.event_manager.emit(
+                self.emit_event(
                     'inventory_full',
-                    sender=self,
-                    level='info',
                     formatted="Inventory is full!"
                 )
             else:
-                self.bot.event_manager.emit(
+                self.emit_event(
                     'unknown_spin_result',
-                    sender=self,
-                    level='info',
                     formatted="Unknown spint result {status_code}",
                     data={'status_code': str(spin_result)}
                 )
@@ -130,18 +116,14 @@ class SpinFort(BaseTask):
                 return response_dict['responses']['FORT_SEARCH'][
                     'chain_hack_sequence_number']
             else:
-                self.bot.event_manager.emit(
+                self.emit_event(
                     'pokestop_searching_too_often',
-                    sender=self,
-                    level='info',
                     formatted="Possibly searching too often, take a rest."
                 )
                 if spin_result == 1 and not items_awarded and not experience_awarded and not pokestop_cooldown:
                     self.bot.softban = True
-                    self.bot.event_manager.emit(
+                    self.emit_event(
                         'softban',
-                        sender=self,
-                        level='info',
                         formatted='Probably got softban.'
                     )
                 else:
