@@ -104,7 +104,7 @@ class ApiRequest(PGoApiRequest):
 
             if should_retry:
                 throttling_retry += 1
-                logger.log("Server is throttling, let's slow down a bit")
+                #logger.log("Server is throttling, let's slow down a bit")
                 if throttling_retry >= max_retry:
                     raise ServerSideRequestThrottlingException('Server throttled too many times')
                 sleep(1) # huge sleep ?
