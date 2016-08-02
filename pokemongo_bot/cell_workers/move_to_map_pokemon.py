@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import os
 import time
+import json
 import base64
 import requests
 from pokemongo_bot import logger
@@ -15,8 +17,14 @@ class MoveToMapPokemon(BaseTask):
     def initialize(self):
         self.last_map_update = 0
         self.pokemon_data = self.bot.pokemon_list
-        self.caught = []
         self.unit = self.bot.config.distance_unit
+        self.caught = []
+
+        data_file = 'data/map-caught-{}.json'.format(self.bot.config.username)
+        if os.path.isfile(data_file):
+            self.caught = json.load(
+                open(data_file)
+            )
 
     def get_pokemon_from_map(self):
         try:
@@ -126,9 +134,14 @@ class MoveToMapPokemon(BaseTask):
 
         return WorkerResult.SUCCESS
 
+    def dump_caught_pokemon(self):
+        user_data_map_caught = 'data/map-caught-{}.json'.format(self.bot.config.username)
+        with open(user_data_map_caught, 'w') as outfile:
+            json.dump(self.caught, outfile)
 
     def work(self):
         self.update_map_location()
+        self.dump_caught_pokemon()
 
         pokemon_list = self.get_pokemon_from_map()
         pokemon_list.sort(key=lambda x: x['dist'])
