@@ -141,12 +141,11 @@ class MoveToMapPokemon(BaseTask):
 
     def work(self):
         # check for pokeballs (excluding masterball)
-        pokeballs = 0
-        pokeballs += self.bot.item_inventory_count(1)
-        pokeballs += self.bot.item_inventory_count(2)
-        pokeballs += self.bot.item_inventory_count(3)
+        pokeballs = self.bot.item_inventory_count(1)
+        superballs = self.bot.item_inventory_count(2)
+        ultraballs = self.bot.item_inventory_count(3)
 
-        if pokeballs < 1:
+        if (pokeballs + superballs + ultraballs) < 1:
             return WorkerResult.SUCCESS
 
         self.update_map_location()
@@ -163,6 +162,10 @@ class MoveToMapPokemon(BaseTask):
             return WorkerResult.SUCCESS
 
         pokemon = pokemon_list[0]
+
+        # if we only have ultraballs and the target is not a vip don't snipe/walk
+        if (pokeballs + superballs) < 1 and not pokemon['is_vip']:
+            return WorkerResult.SUCCESS
 
         if self.config['snipe']:
             return self.snipe(pokemon)
