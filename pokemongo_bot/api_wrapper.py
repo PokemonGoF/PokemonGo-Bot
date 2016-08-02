@@ -125,7 +125,6 @@ class ApiRequest(PGoApiRequest):
                     sleep(2)
                 continue
                 
-
             if not self.is_response_valid(result, request_callers):
                 try_cnt += 1
                 if try_cnt > 3:
