@@ -3,13 +3,13 @@
 import gpxpy
 import gpxpy.gpx
 import json
+import googlemaps
 import pokemongo_bot.logger as logger
 from pokemongo_bot.cell_workers.base_task import BaseTask
 from pokemongo_bot.cell_workers.utils import distance, i2f, format_dist
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.step_walker import StepWalker
 from pgoapi.utilities import f2i
-import googlemaps
 
 
 class FollowHumanPath(BaseTask):

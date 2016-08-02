@@ -9,10 +9,10 @@ import re
 import sys
 import time
 
+import googlemaps
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
 from pgoapi.utilities import f2i, get_cell_ids
-import googlemaps
 
 import cell_workers
 import logger
