@@ -35,7 +35,7 @@ import sys
 import time
 from datetime import timedelta
 from getpass import getpass
-from pgoapi.exceptions import NotLoggedInException
+from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException
 from geopy.exc import GeocoderQuotaExceeded
 
 from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
@@ -74,9 +74,12 @@ def main():
             logger.log('Exiting PokemonGo Bot', 'red')
             finished = True
             report_summary(bot)
-        except NotLoggedInException:
+        except (NotLoggedInException, ServerBusyOrOfflineException):
             logger.log('[x] Error while connecting to the server, please wait %s minutes' % config.reconnecting_timeout, 'red')
             time.sleep(config.reconnecting_timeout * 60)
+        except ServerSideRequestThrottlingException:
+            logger.log('Server is throttling, reconnecting in 30sec')
+            time.sleep(30)
         except GeocoderQuotaExceeded:
             logger.log('[x] The given maps api key has gone over the requests limit.', 'red')
             finished = True

@@ -82,7 +82,7 @@ class ApiRequest(PGoApiRequest):
 
         return True
 
-    def call(self, max_retry=5):
+    def call(self, max_retry=15):
         request_callers = self._pop_request_callers()
         if not self.can_call():
             return False # currently this is never ran, exceptions are raised before
@@ -104,7 +104,6 @@ class ApiRequest(PGoApiRequest):
 
             if should_retry:
                 throttling_retry += 1
-                logger.log("Server is throttling, let's slow down a bit")
                 if throttling_retry >= max_retry:
                     raise ServerSideRequestThrottlingException('Server throttled too many times')
                 sleep(1) # huge sleep ?
@@ -112,7 +111,8 @@ class ApiRequest(PGoApiRequest):
 
             if not self.is_response_valid(result, request_callers):
                 try_cnt += 1
-                logger.log('Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry), 'red')
+                if try_cnt > 3:
+                    logger.log('Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry), 'red')
                 if try_cnt >= max_retry:
                     raise ServerBusyOrOfflineException()
                 sleep(1)
