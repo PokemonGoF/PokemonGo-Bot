@@ -309,6 +309,14 @@ def init_config():
     add_config(
         parser,
         load,
+        long_flag="--log_timing_info",
+        help="Enable timing logs to evaluate worker performance",
+        type=bool,
+        default=False
+    )
+    add_config(
+        parser,
+        load,
         long_flag="--catch_randomize_spin_factor",
         help="Randomize factor for pokeball curve throwing (DEFAULT 1.0 means no randomize: always perfect 'Super Spin' curve ball. 0.0 randomizes between normal and 'Super Spin' curve ball)",
         type=float,

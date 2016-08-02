@@ -27,7 +27,7 @@ class TreeConfigBuilder(object):
             task_config = task.get('config', {})
 
             worker = self._get_worker_by_name(task_type)
-            instance = worker(self.bot, task_config)
+            instance = worker(self.bot, task_config, task_type)
             workers.append(instance)
 
         return workers
