@@ -28,10 +28,10 @@ def fort_details(bot, fort_id, latitude, longitude):
         """
         Lookup the fort details and cache the response for future use.
         """
-        bot.api.fort_details(fort_id=fort_id, latitude=latitude, longitude=longitude)
-
+        request = bot.api.create_request()
+        request.fort_details(fort_id=fort_id, latitude=latitude, longitude=longitude)
         try:
-            response_dict = bot.api.call()
+            response_dict = request.call()
             FORT_CACHE[fort_id] = response_dict['responses']['FORT_DETAILS']
         except Exception:
             pass
