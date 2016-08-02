@@ -182,9 +182,9 @@ class TransferPokemon(BaseTask):
         logger.log('Exchanging {} [CP {}] [Potential {}] for candy!'.format(pokemon_name,
                                                                             cp,
                                                                             iv), 'green')
+        action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
         self.bot.api.release_pokemon(pokemon_id=pokemon_id)
         response_dict = self.bot.api.call()
-        action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
 
     def _get_release_config_for(self, pokemon):
         release_config = self.bot.config.release.get(pokemon)
