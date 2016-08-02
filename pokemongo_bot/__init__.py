@@ -392,38 +392,41 @@ class PokemonGoBot(object):
                     self.inventory.append(item['inventory_item_data']['item'])
 
     def current_inventory(self):
-        inventory_req = self.get_inventory()
-        inventory_dict = inventory_req['responses']['GET_INVENTORY'][
-            'inventory_delta']['inventory_items']
+        response = self.get_inventory()
+        inventory_items = response.get('responses', {}).get('GET_INVENTORY', {}).get(
+            'inventory_delta', {}).get('inventory_items', {})
 
-        user_web_inventory = 'web/inventory-%s.json' % self.config.username
+        items_stock = None
+        if inventory_items:
+            user_web_inventory = 'web/inventory-%s.json' % self.config.username
 
-        with open(user_web_inventory, 'w') as outfile:
-            json.dump(inventory_dict, outfile)
+            with open(user_web_inventory, 'w') as outfile:
+                json.dump(inventory_items, outfile)
 
-        # get player items stock
-        # ----------------------
-        items_stock = {x.value: 0 for x in list(Item)}
+            # get player items stock
+            # ----------------------
+            items_stock = {x.value: 0 for x in list(Item)}
 
-        for item in inventory_dict:
-            item_dict = item.get('inventory_item_data', {}).get('item', {})
-            item_count = item_dict.get('count')
-            item_id = item_dict.get('item_id')
+            for item in inventory_items:
+                item_dict = item.get('inventory_item_data', {}).get('item', {})
+                item_count = item_dict.get('count')
+                item_id = item_dict.get('item_id')
 
-            if item_count and item_id:
-                if item_id in items_stock:
-                    items_stock[item_id] = item_count
+                if item_count and item_id:
+                    if item_id in items_stock:
+                        items_stock[item_id] = item_count
         return items_stock
 
     def item_inventory_count(self, id):
-        inventory_req = self.get_inventory()
-        inventory_dict = inventory_req['responses'][
-            'GET_INVENTORY']['inventory_delta']['inventory_items']
+        response = self.get_inventory()
+        inventory_items = response.get('responses', {}).get('GET_INVENTORY', {}).get(
+            'inventory_delta', {}).get('inventory_items', {})
 
-        if id == 'all':
-            return self._all_items_inventory_count(inventory_dict)
-        else:
-            return self._item_inventory_count_per_id(id, inventory_dict)
+        if inventory_items:
+            if id == 'all':
+                return self._all_items_inventory_count(inventory_items)
+            else:
+                return self._item_inventory_count_per_id(id, inventory_items)
 
     def _item_inventory_count_per_id(self, id, inventory_dict):
         item_count = 0
