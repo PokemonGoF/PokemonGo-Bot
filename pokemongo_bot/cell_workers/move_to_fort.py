@@ -38,7 +38,7 @@ class MoveToFort(BaseTask):
         )
 
         if dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
-            logger.log('Moving towards fort {}, {} left'.format(fort_name, format_dist(dist, unit)))
+            logger.log('Moving towards Pokestop {}, {} left'.format(fort_name, format_dist(dist, unit)))
 
             step_walker = StepWalker(
                 self.bot,
