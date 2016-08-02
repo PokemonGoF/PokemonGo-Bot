@@ -122,3 +122,4 @@ include/
 pip-selfcheck.json
 
 local/
+share/
