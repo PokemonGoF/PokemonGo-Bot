@@ -146,7 +146,6 @@ class MoveToMapPokemon(BaseTask):
         pokeballs += self.bot.item_inventory_count(2)
         pokeballs += self.bot.item_inventory_count(3)
 
-        print pokeballs
         if pokeballs < 1:
             return
 
