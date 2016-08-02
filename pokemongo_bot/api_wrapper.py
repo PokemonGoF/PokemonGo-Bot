@@ -1,4 +1,5 @@
 import time
+import logging
 
 from pgoapi.exceptions import ServerSideRequestThrottlingException, NotLoggedInException, ServerBusyOrOfflineException, NoPlayerPositionSetException, EmptySubrequestChainException
 from pgoapi.pgoapi import PGoApi, PGoApiRequest, RpcApi
@@ -39,6 +40,7 @@ class ApiWrapper(PGoApi):
 class ApiRequest(PGoApiRequest):
     def __init__(self, *args):
         PGoApiRequest.__init__(self, *args)
+        self.logger = logging.getLogger(__name__)
         self.request_callers = []
         self.last_api_request_time = None
         self.requests_per_seconds = 2
@@ -104,7 +106,7 @@ class ApiRequest(PGoApiRequest):
 
             if should_retry:
                 throttling_retry += 1
-                logger.log("Server is throttling, let's slow down a bit")
+                self.logger.warning("Server is throttling, let's slow down a bit")
                 if throttling_retry >= max_retry:
                     raise ServerSideRequestThrottlingException('Server throttled too many times')
                 sleep(1) # huge sleep ?
@@ -112,7 +114,7 @@ class ApiRequest(PGoApiRequest):
 
             if not self.is_response_valid(result, request_callers):
                 try_cnt += 1
-                logger.log('Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry), 'red')
+                self.logger.warning('Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry), 'red')
                 if try_cnt >= max_retry:
                     raise ServerBusyOrOfflineException()
                 sleep(1)

@@ -39,21 +39,26 @@ from pgoapi.exceptions import NotLoggedInException
 from geopy.exc import GeocoderQuotaExceeded
 
 from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
-from pokemongo_bot import logger
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(name)10s] [%(levelname)s] %(message)s')
+logger = logging.getLogger('cli')
+logger.setLevel(logging.INFO)
 
 def main():
-    logger.log('PokemonGO Bot v1.0', 'green')
+
+    logger.info('PokemonGO Bot v1.0')
     sys.stdout = codecs.getwriter('utf8')(sys.stdout)
     sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
     config = init_config()
     if not config:
         return
-    logger.log('Configuration initialized', 'yellow')
+    logger.info('Configuration initialized')
 
     finished = False
 
@@ -96,7 +101,7 @@ def main():
             )
             time.sleep(config.reconnecting_timeout * 60)
         except GeocoderQuotaExceeded:
-            logger.log('[x] The given maps api key has gone over the requests limit.', 'red')
+            logger.info('[x] The given maps api key has gone over the requests limit.')
             finished = True
         except:
             # always report session summary and then raise exception
@@ -109,22 +114,21 @@ def report_summary(bot):
 
     metrics = bot.metrics
     metrics.capture_stats()
-    logger.log('')
-    logger.log('Ran for {}'.format(metrics.runtime()), 'cyan')
-    logger.log('Total XP Earned: {}  Average: {:.2f}/h'.format(metrics.xp_earned(), metrics.xp_per_hour()), 'cyan')
-    logger.log('Travelled {:.2f}km'.format(metrics.distance_travelled()), 'cyan')
-    logger.log('Visited {} stops'.format(metrics.visits['latest'] - metrics.visits['start']), 'cyan')
-    logger.log('Encountered {} pokemon, {} caught, {} released, {} evolved, {} never seen before'
+    logger.info('')
+    logger.info('Ran for {}'.format(metrics.runtime()))
+    logger.info('Total XP Earned: {}  Average: {:.2f}/h'.format(metrics.xp_earned(), metrics.xp_per_hour()))
+    logger.info('Travelled {:.2f}km'.format(metrics.distance_travelled()))
+    logger.info('Visited {} stops'.format(metrics.visits['latest'] - metrics.visits['start']))
+    logger.info('Encountered {} pokemon, {} caught, {} released, {} evolved, {} never seen before'
                 .format(metrics.num_encounters(), metrics.num_captures(), metrics.releases,
-                        metrics.num_evolutions(), metrics.num_new_mons()), 'cyan')
-    logger.log('Threw {} pokeball{}'.format(metrics.num_throws(), '' if metrics.num_throws() == 1 else 's'),
-                'cyan')
-    logger.log('Earned {} Stardust'.format(metrics.earned_dust()), 'cyan')
-    logger.log('')
+                        metrics.num_evolutions(), metrics.num_new_mons()))
+    logger.info('Threw {} pokeball{}'.format(metrics.num_throws(), '' if metrics.num_throws() == 1 else 's'))
+    logger.info('Earned {} Stardust'.format(metrics.earned_dust()))
+    logger.info('')
     if metrics.highest_cp is not None:
-        logger.log('Highest CP Pokemon: {}'.format(metrics.highest_cp['desc']), 'cyan')
+        logger.info('Highest CP Pokemon: {}'.format(metrics.highest_cp['desc']))
     if metrics.most_perfect is not None:
-        logger.log('Most Perfect Pokemon: {}'.format(metrics.most_perfect['desc']), 'cyan')
+        logger.info('Most Perfect Pokemon: {}'.format(metrics.most_perfect['desc']))
 
 def init_config():
     parser = argparse.ArgumentParser()
@@ -141,11 +145,11 @@ def init_config():
         with open(config_arg) as data:
             load.update(json.load(data))
     elif os.path.isfile(config_file):
-        logger.log('No config argument specified, checking for /configs/config.json', 'yellow')
+        logger.info('No config argument specified, checking for /configs/config.json')
         with open(config_file) as data:
             load.update(json.load(data))
     else:
-        logger.log('Error: No /configs/config.json or specified config', 'red')
+        logger.info('Error: No /configs/config.json or specified config')
 
     # Read passed in Arguments
     required = lambda x: not x in load
