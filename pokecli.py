@@ -322,6 +322,26 @@ def init_config():
         type=float,
         default=5.0
     )
+    add_config(
+        parser,
+        load,
+        short_flag="-prxip",
+        long_flag="--proxy_ip",
+        help="Proxy (https and http)",
+        required=required("proxy_ip"),
+        type=str,
+        default=None
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-prxp",
+        long_flag="--proxy_port",
+        help="Proxy port",
+        required=required("proxy_port"),
+        type=int,
+        default=None
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()
@@ -329,7 +349,11 @@ def init_config():
         config.username = raw_input("Username: ")
     if not config.password and 'password' not in load:
         config.password = getpass("Password: ")
-
+    if config.proxy_ip and len(config.proxy_ip)>0 and config.proxy_ip.count('.') == 3 and  all(0<=int(num)<256 for num in config.proxy_ip.rstrip().split('.')):
+        if config.proxy_port and int(config.proxy_port )<65536 and  int(config.proxy_port )>1:
+            os.environ['http_proxy']="http://"+config.proxy_ip+":"+str(config.proxy_port)+"/"
+            os.environ['https_proxy']="http://"+config.proxy_ip+":"+str(config.proxy_port)+"/"
+            
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.action_wait_max = load.get('action_wait_max', 4)
