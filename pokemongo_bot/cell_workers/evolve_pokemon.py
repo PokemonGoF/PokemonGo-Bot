@@ -23,8 +23,7 @@ class EvolvePokemon(BaseTask):
         if not self._should_run():
             return
 
-        self.api.get_inventory()
-        response_dict = self.api.call()
+        response_dict = self.api.get_inventory()
         inventory_items = response_dict.get('responses', {}).get('GET_INVENTORY', {}).get('inventory_delta', {}).get(
             'inventory_items', {})
 
@@ -135,8 +134,7 @@ class EvolvePokemon(BaseTask):
         if pokemon_name in cache:
             return False
 
-        self.bot.api.evolve_pokemon(pokemon_id=pokemon_id)
-        response_dict = self.bot.api.call()
+        response_dict = self.api.evolve_pokemon(pokemon_id=pokemon_id)
         if response_dict.get('responses', {}).get('EVOLVE_POKEMON', {}).get('result', 0) == 1:
             logger.log('Successfully evolved {} with {} CP and {} IV!'.format(pokemon_name, pokemon_cp, pokemon_iv))
             candy_list[pokemon["candies_family"]] -= pokemon["candies_amount"]
