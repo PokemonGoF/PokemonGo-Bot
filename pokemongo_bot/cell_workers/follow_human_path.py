@@ -14,14 +14,22 @@ from pgoapi.utilities import f2i
 
 class FollowHumanPath(BaseTask):
     def get_gmap_directions(self, origin, destination):
-        tmp = googlemaps.directions.directions(self.gmap_client, origin, destination, mode="walking", optimize_waypoints=True)
-        tmp = googlemaps.convert.decode_polyline(tmp[0]['overview_polyline']['points'])
-        return tmp
+        directions_json = googlemaps.directions.directions(self.gmap_client, origin, destination, mode="walking", optimize_waypoints=True)
+        ret = []
+        array = None
+        try:
+            array = directions_json[0]['routes'][0]['legs']
+        except:
+            array = directions_json[0]['legs']
+        for item in array[0]['steps']:
+            ret.extend(googlemaps.convert.decode_polyline(item['polyline']['points']))
+        return ret
 
     def initialize(self):
         try:
             self.gmap_client = googlemaps.Client(self.bot.config.gmapkey)
         except:
+            logger.log("Failed initializing gmap_client")
             self.gmap_client = None
         self.ptr = 0
         self._process_config()
@@ -41,6 +49,7 @@ class FollowHumanPath(BaseTask):
         elif self.path_file.endswith('.gpx'):
             path = self.load_gpx()
         if not self.gmap_client == None:
+            logger.log("Applying GMaps Directions API logic")
             new_path = []
             for index, point in enumerate(path):
                 if not index + 1 >= len(path):
