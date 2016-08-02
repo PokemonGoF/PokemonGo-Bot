@@ -2,15 +2,14 @@ from pokemongo_bot import logger
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.cell_workers.utils import distance
 from pokemongo_bot.cell_workers.utils import find_biggest_cluster
+from pokemongo_bot.cell_workers.base_task import BaseTask
 
+class FollowCluster(BaseTask):
 
-class FollowCluster(object):
-    def __init__(self, bot, config):
-        self.bot = bot
+    def initialize(self):
         self.is_at_destination = False
         self.announced = False
         self.dest = None
-        self.config = config
         self._process_config()
 
     def _process_config(self):

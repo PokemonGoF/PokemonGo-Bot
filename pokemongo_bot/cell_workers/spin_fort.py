@@ -33,12 +33,13 @@ class SpinFort(BaseTask):
         details = fort_details(self.bot, fort['id'], lat, lng)
         fort_name = details.get('name', 'Unknown').decode('utf8')
 
-        self.bot.api.fort_search(fort_id=fort['id'],
-                             fort_latitude=lat,
-                             fort_longitude=lng,
-                             player_latitude=f2i(self.bot.position[0]),
-                             player_longitude=f2i(self.bot.position[1]))
-        response_dict = self.bot.api.call()
+        response_dict = self.bot.api.fort_search(
+            fort_id=fort['id'],
+            fort_latitude=lat,
+            fort_longitude=lng,
+            player_latitude=f2i(self.bot.position[0]),
+            player_longitude=f2i(self.bot.position[1])
+        )
         if 'responses' in response_dict and \
                 'FORT_SEARCH' in response_dict['responses']:
 

@@ -12,7 +12,7 @@ class LoggingHandler(EventHandler):
     def handle_event(self, event, sender, level, formatted_msg, data):
         logger = logging.getLogger(type(sender).__name__)
         if formatted_msg:
-            message = "[{}] {}".format(event, formatted_msg.decode('utf8'))
+            message = u"[{}] {}".format(event, formatted_msg)
         else:
-            message = '{}: {}'.format(event, str(data).decode('utf8'))
+            message = u'{}: {}'.format(event, str(data).decode('utf8'))
         getattr(logger, level)(message)

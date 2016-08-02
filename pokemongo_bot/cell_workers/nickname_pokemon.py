@@ -68,8 +68,7 @@ class NicknamePokemon(BaseTask):
             )
         if pokemon.get('nickname', '') == new_name:
             return
-        self.bot.api.nickname_pokemon(pokemon_id=instance_id,nickname=new_name)
-        response = self.bot.api.call()
+        response = self.bot.api.nickname_pokemon(pokemon_id=instance_id,nickname=new_name)
         sleep(1.2)
         try:
             result =  reduce(dict.__getitem__, ["responses", "NICKNAME_POKEMON"], response)
