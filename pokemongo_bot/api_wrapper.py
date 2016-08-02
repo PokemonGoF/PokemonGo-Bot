@@ -2,9 +2,9 @@ import time
 
 from pgoapi.exceptions import NotLoggedInException, ServerBusyOrOfflineException, NoPlayerPositionSetException, EmptySubrequestChainException
 from pgoapi.pgoapi import PGoApi, PGoApiRequest, RpcApi
-from POGOProtos.Networking.Requests_pb2 import RequestType
+from pgoapi.protos.POGOProtos.Networking.Requests_pb2 import RequestType
 
-import logger
+import pokemongo_bot.logger as logger
 from human_behaviour import sleep
 
 class ApiWrapper(PGoApi):
@@ -117,7 +117,7 @@ class ApiRequest(PGoApiRequest):
 
         difference = now_milliseconds - (self.last_api_request_time if self.last_api_request_time else 0)
 
-        if (self.last_api_request_time != None and difference < required_delay_between_requests):
+        if self.last_api_request_time != None and difference < required_delay_between_requests:
             sleep_time = required_delay_between_requests - difference
             time.sleep(sleep_time / 1000)
 
