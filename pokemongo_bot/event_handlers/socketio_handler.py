@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 
 from socketIO_client import SocketIO
 
@@ -16,7 +18,7 @@ class SocketIoHandler(EventHandler):
 
     def handle_event(self, event, sender, level, msg, data):
         if msg:
-            data['msg'] = msg.decode('utf8')
+            data['msg'] = msg
 
         self.sio.emit(
             'bot:broadcast',

@@ -54,7 +54,7 @@ class EventManager(object):
                 if k not in parameters:
                     raise EventMalformedException("Event %s does not require parameter %s" % (event, k))
 
-        formatted_msg = formatted.decode('utf8').format(**data)
+        formatted_msg = formatted.encode('utf8', 'replace').format(**data)
 
         # send off to the handlers
         for handler in self._handlers:

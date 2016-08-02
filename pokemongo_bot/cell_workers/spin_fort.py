@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
 import time
 
@@ -31,7 +32,7 @@ class SpinFort(BaseTask):
         lng = fort['longitude']
 
         details = fort_details(self.bot, fort['id'], lat, lng)
-        fort_name = details.get('name', 'Unknown').decode('utf8')
+        fort_name = details.get('name', 'Unknown')
 
         response_dict = self.bot.api.fort_search(
             fort_id=fort['id'],
