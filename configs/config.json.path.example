@@ -83,6 +83,11 @@
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},
       "// Rattata": { "always_catch" : true }
+      "// Example of keeping as many Zubat as you have candy to evolve,
+      "// Zubat": {"keep_for_evo": true}
+      "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat and on top as many Zubat
+      as you have candy to evolve:": {},
+      "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3, "keep_for_evo": true}
     },
     "release": {
       "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or"},
