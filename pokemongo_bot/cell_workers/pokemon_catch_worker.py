@@ -245,7 +245,7 @@ class PokemonCatchWorker(object):
                                         sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
                                     ), 'blue')
                                     if self.config.journal:
-                                        with open(self.config.user_journal, 'w') as outfile:
+                                        with open(self.config.user_journal, 'a') as outfile:
                                             outfile.write('Captured %s! [CP %s] [Potential %s] [%s] [+%s exp]' % (
                                                 pokemon_name, cp, pokemon_potential, iv_display,
                                                 sum(response_dict['responses']['CATCH_POKEMON']['capture_award'][
@@ -270,7 +270,7 @@ class PokemonCatchWorker(object):
                                             logger.log(
                                                 '{} has been evolved!'.format(pokemon_name), 'green')
                                             if self.config.journal:
-                                                with open(self.config.user_journal, 'w') as outfile:
+                                                with open(self.config.user_journal, 'a') as outfile:
                                                     outfile.write('%s has been evolved!' % pokemon_name)
                                         else:
                                             logger.log(

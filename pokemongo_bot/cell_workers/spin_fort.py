@@ -31,8 +31,8 @@ class SpinFort(BaseTask):
         details = fort_details(self.bot, fort['id'], lat, lng)
         fort_name = details.get('name', 'Unknown').encode('utf8', 'replace')
         logger.log('Now at Pokestop: {0}'.format(fort_name), 'cyan')
-        if self.config.journal:
-            with open(self.config.user_journal, 'w') as outfile:
+        if self.bot.config.journal:
+            with open(self.bot.config.user_journal, 'a') as outfile:
                 outfile.write('Now at Pokestop: %s' % fort_name)
         logger.log('Spinning ...', 'cyan')
 
@@ -50,16 +50,16 @@ class SpinFort(BaseTask):
             if spin_result == 1:
                 self.bot.softban = False
                 logger.log("Loot: ", 'green')
-                if self.config.journal:
-                    with open(self.config.user_journal, 'w') as outfile:
+                if self.bot.config.journal:
+                    with open(self.bot.config.user_journal, 'a') as outfile:
                         outfile.write('Loot:')
                 experience_awarded = spin_details.get('experience_awarded',
                                                       False)
                 if experience_awarded:
                     logger.log(str(experience_awarded) + " xp",
                                'green')
-                    if self.config.journal:
-                        with open(self.config.user_journal, 'w') as outfile:
+                    if self.bot.config.journal:
+                        with open(self.bot.config.user_journal, 'a') as outfile:
                             outfile.write('%s xp' % str(experience_awarded))
 
                 items_awarded = spin_details.get('items_awarded', False)
@@ -79,8 +79,8 @@ class SpinFort(BaseTask):
                             '- ' + str(item_count) + "x " + item_name +
                             " (Total: " + str(self.bot.item_inventory_count(item_id)) + ")", 'yellow'
                         )
-                        if self.config.journal:
-                            with open(self.config.user_journal, 'w') as outfile:
+                        if self.bot.config.journal:
+                            with open(self.bot.config.user_journal, 'a') as outfile:
                                 outfile.write('- %sx %s (Total: %s)' % (
                                 str(item_count), item_name, str(self.bot.item_inventory_count(item_id))))
                 else:
