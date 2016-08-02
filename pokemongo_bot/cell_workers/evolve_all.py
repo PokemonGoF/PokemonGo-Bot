@@ -5,14 +5,10 @@ from pokemongo_bot.cell_workers.base_task import BaseTask
 
 class EvolveAll(BaseTask):
     def initialize(self):
-        self.evolve_all = self.config.get('evolve_all', [])
+        self.evolve_all = [str(pokemon_name) for pokemon_name in self.config.get('evolve_all', 'None').split(',')]
         self.evolve_speed = self.config.get('evolve_speed', 3.7)
         self.evolve_cp_min = self.config.get('evolve_cp_min', 300)
         self.use_lucky_egg = self.config.get('use_lucky_egg', False)
-
-    def _validate_config(self):
-        if isinstance(self.evolve_all, str):
-            self.evolve_all = [str(pokemon_name) for pokemon_name in self.evolve_all.split(',')]
 
     def work(self):
         if not self._should_run():
