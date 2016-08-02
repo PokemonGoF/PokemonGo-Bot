@@ -74,7 +74,7 @@ class FollowCluster(BaseTask):
                     formatted="Arrived at cluster. {forts} are in a range of {radius}m radius.",
                     data={
                         'forts': str(cnt),
-                        'radius': radius
+                        'radius': self.radius
                     }
                 )
                 self.announced = True
