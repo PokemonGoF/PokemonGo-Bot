@@ -234,3 +234,14 @@ def find_biggest_cluster(radius, points, order=None):
         return {'latitude': best_coord[0], 'longitude': best_coord[1], 'num_points': len(max_clique)}
     else:
         return None
+
+
+def get_candies(bot):
+        response_dict = bot.get_inventory()
+        inv = response_dict.get("responses", {}).get("GET_INVENTORY", {}).get("inventory_delta").get("inventory_items")
+        candies = {}
+        for item in inv:
+            candy = item.get("inventory_item_data", {}).get("candy", {})
+            if candy != {}:
+                candies[candy['family_id']] = candy['candy']
+        return candies
