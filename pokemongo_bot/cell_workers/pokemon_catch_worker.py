@@ -29,6 +29,9 @@ class PokemonCatchWorker(object):
         if response_dict and 'responses' in response_dict:
             if self.response_key in response_dict['responses']:
                 if self.response_status_key in response_dict['responses'][self.response_key]:
+                    if self.config.home_location:
+                        self.reset_location()
+
                     if response_dict['responses'][self.response_key][self.response_status_key] is 1:
                         cp = 0
                         if 'wild_pokemon' in response_dict['responses'][self.response_key] or 'pokemon_data' in \
@@ -230,7 +233,7 @@ class PokemonCatchWorker(object):
                                     logger.log(
                                         'Oh no! {} vanished! :('.format(pokemon_name), 'red')
                                     if success_percentage == 100:
-                                        self.softban = True
+                                        self.bot.softban = True
                                 if status is 1:
                                     self.bot.metrics.captured_pokemon(pokemon_name, cp, iv_display, pokemon_potential)
 
@@ -265,6 +268,13 @@ class PokemonCatchWorker(object):
                                                 'Failed to evolve {}!'.format(pokemon_name))
                             break
         time.sleep(5)
+
+    def reset_location(self):
+        location_str = str(self.config.home_location)
+        location = (self.bot.get_pos_by_name(location_str.replace(" ", "")))
+        self.position = location
+        self.api.set_position(*self.position)
+        logger.log('Location has been reset to home_location {}'.format(self.position), 'red')
 
     def count_pokemon_inventory(self):
         # don't use cached bot.get_inventory() here
@@ -367,7 +377,7 @@ class PokemonCatchWorker(object):
             self.response_status_key = 'status'
             self.api.encounter(encounter_id=encounter_id, spawn_point_id=spawn_point_id,
                                player_latitude=player_latitude, player_longitude=player_longitude)
-        else:
+        elif (not self.config.home_location) or (self.config.home_location == self.config.location):
             fort_id = self.pokemon['fort_id']
             self.spawn_point_guid = fort_id
             self.response_key = 'DISK_ENCOUNTER'
