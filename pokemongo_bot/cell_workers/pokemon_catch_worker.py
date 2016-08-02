@@ -143,7 +143,7 @@ class PokemonCatchWorker(object):
 
                                     id_list2 = self.count_pokemon_inventory()
 
-                                    if self.config.evolve_captured:
+                                    if self.config.evolve_captured == 'all' or pokemon_name in self.config.evolve_captured.split(','):
                                         pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
                                         self.api.evolve_pokemon(pokemon_id=pokemon_to_transfer[0])
                                         response_dict = self.api.call()
