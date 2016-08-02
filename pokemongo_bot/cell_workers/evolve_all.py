@@ -8,9 +8,10 @@ class EvolveAll(BaseTask):
         self.api = self.bot.api
         self.evolve_all = self.config.get('evolve_all', [])
         self.evolve_speed = self.config.get('evolve_speed', 3.7)
-        self.order_by = self.config.get('order_by', 'cp')
-        self.evolve_cp_min = self.config.get('evolve_cp_min', 300)
-        self.evolve_iv_min = self.config.get('evolve_iv_min', 0.8)
+        self.first_evolve_by = self.config.get('first_evolve_by', 'cp')
+        self.evolve_above_cp = self.config.get('evolve_above_cp', 500)
+        self.evolve_above_iv = self.config.get('evolve_above_iv', 0.8)
+        self.cp_iv_logic = self.config.get('logic', 'or')
         self.use_lucky_egg = self.config.get('use_lucky_egg', False)
         self._validate_config()
 
@@ -85,11 +86,15 @@ class EvolveAll(BaseTask):
 
     def _sort_and_filter(self, inventory_items):
         pokemons = []
+        logic_to_function = {
+            'or': lambda pokemon: pokemon["cp"] >= self.evolve_above_cp or pokemon["iv"] >= self.evolve_above_iv,
+            'and': lambda pokemon: pokemon["cp"] >= self.evolve_above_cp and pokemon["iv"] >= self.evolve_above_iv
+        }
         for item in inventory_items:
             pokemon = item.get('inventory_item_data', {}).get('pokemon_data', {})
             pokemon_num = int(pokemon.get('pokemon_id', 0)) - 1
             next_evol = self.bot.pokemon_list[pokemon_num].get('Next Evolution Requirements', {})
-            pokemons.append({
+            pokemon = {
                 'id': pokemon.get('id', 0),
                 'num': pokemon_num,
                 'name': self.bot.pokemon_list[pokemon_num]['Name'],
@@ -97,15 +102,13 @@ class EvolveAll(BaseTask):
                 'iv': self._compute_iv(pokemon),
                 'candies_family': next_evol.get('Name', ""),
                 'candies_amount': next_evol.get('Amount', 0)
-            })
+            }
+            if pokemon["id"] > 0 and pokemon["candies_amount"] > 0 and (logic_to_function[self.cp_iv_logic](pokemon)):
+                pokemons.append(pokemon)
 
-        pokemons = filter(lambda x: x["id"] > 0 and x["cp"] > 0 and x["iv"] > 0 and x["candies_amount"] > 0, pokemons)
-
-        if self.order_by == "cp":
-            pokemons = filter(lambda x: x["cp"] >= self.evolve_cp_min, pokemons)
+        if self.first_evolve_by == "cp":
             pokemons.sort(key=lambda x: (x['num'], x["cp"], x["iv"]), reverse=True)
         else:
-            pokemons = filter(lambda x: x["iv"] >= self.evolve_iv_min, pokemons)
             pokemons.sort(key=lambda x: (x['num'], x["iv"], x["cp"]), reverse=True)
 
         return pokemons
