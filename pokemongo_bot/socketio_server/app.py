@@ -27,5 +27,4 @@ def request_reply(sid, response):
 
 @sio.on('bot:broadcast')
 def bot_broadcast(sid, env):
-    print 'Broadcasting {}'.format(env['event'])
     sio.emit(env['event'], data=env['data'])
