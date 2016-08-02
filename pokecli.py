@@ -225,16 +225,6 @@ def init_config():
         type=str,
         default=None
     )
-    add_config(
-        parser,
-        load,
-        short_flag="-ms",
-        long_flag="--max_steps",
-        help=
-        "Set the steps around your initial location(DEFAULT 5 mean 25 cells around your location)",
-        type=int,
-        default=50
-    )
 
     add_config(
         parser,
