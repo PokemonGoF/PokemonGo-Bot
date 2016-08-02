@@ -25,8 +25,7 @@ class CollectLevelUpReward(BaseTask):
         self.previous_level = self.current_level
 
     def _collect_level_reward(self):
-        self.bot.api.level_up_rewards(level=self.current_level)
-        response_dict = self.bot.api.call()
+        response_dict = self.bot.api.level_up_rewards(level=self.current_level)
         if 'status_code' in response_dict and response_dict['status_code'] == 1:
             data = (response_dict
                     .get('responses', {})

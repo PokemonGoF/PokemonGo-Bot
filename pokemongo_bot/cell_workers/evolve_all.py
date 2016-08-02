@@ -9,9 +9,10 @@ class EvolveAll(BaseTask):
         self.evolve_speed = self.config.get('evolve_speed', 3.7)
         self.evolve_cp_min = self.config.get('evolve_cp_min', 300)
         self.use_lucky_egg = self.config.get('use_lucky_egg', False)
+        self._validate_config()
 
     def _validate_config(self):
-        if isinstance(self.evolve_all, str):
+        if isinstance(self.evolve_all, basestring):
             self.evolve_all = [str(pokemon_name) for pokemon_name in self.evolve_all.split(',')]
 
     def work(self):
@@ -156,8 +157,7 @@ class EvolveAll(BaseTask):
         if pokemon_name in cache:
             return
 
-        self.bot.api.evolve_pokemon(pokemon_id=pokemon_id)
-        response_dict = self.bot.api.call()
+        response_dict = self.bot.api.evolve_pokemon(pokemon_id=pokemon_id)
         status = response_dict['responses']['EVOLVE_POKEMON']['result']
         if status == 1:
             logger.log('[#] Successfully evolved {} with {} CP and {} IV!'.format(
@@ -173,8 +173,7 @@ class EvolveAll(BaseTask):
 
     # TODO: move to utils. These methods are shared with other workers.
     def transfer_pokemon(self, pid):
-        self.bot.api.release_pokemon(pokemon_id=pid)
-        response_dict = self.bot.api.call()
+        response_dict = self.bot.api.release_pokemon(pokemon_id=pid)
 
     def count_pokemon_inventory(self):
         response_dict = self.bot.get_inventory()

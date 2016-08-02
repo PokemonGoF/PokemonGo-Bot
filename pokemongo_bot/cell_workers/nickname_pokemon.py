@@ -7,7 +7,7 @@ class NicknamePokemon(BaseTask):
         self.template = self.config.get('nickname_template','').lower().strip()
         if self.template == "{name}":
             self.template = ""
-    
+
     def work(self):
         try:
             inventory = reduce(dict.__getitem__, ["responses", "GET_INVENTORY", "inventory_delta", "inventory_items"], self.bot.get_inventory())
@@ -16,8 +16,8 @@ class NicknamePokemon(BaseTask):
         else:
             pokemon_data = self._get_inventory_pokemon(inventory)
             for pokemon in pokemon_data:
-                self._nickname_pokemon(pokemon) 
-            
+                self._nickname_pokemon(pokemon)
+
     def _get_inventory_pokemon(self,inventory_dict):
         pokemon_data = []
         for inv_data in inventory_dict:
@@ -29,7 +29,7 @@ class NicknamePokemon(BaseTask):
                 if not pokemon.get('is_egg',False):
                     pokemon_data.append(pokemon)
         return pokemon_data
-        
+
     def _nickname_pokemon(self,pokemon):
         """This requies a pokemon object containing all the standard fields: id, ivs, cp, etc"""
         new_name = ""
@@ -62,10 +62,9 @@ class NicknamePokemon(BaseTask):
             logger.log("Unable to nickname {} due to bad template ({})".format(name,bad_key),log_color)
         if pokemon.get('nickname', "") == new_name:
             return
-        self.bot.api.nickname_pokemon(pokemon_id=instance_id,nickname=new_name)
-        response = self.bot.api.call()
+        response = self.bot.api.nickname_pokemon(pokemon_id=instance_id,nickname=new_name)
         sleep(1.2)
-        try: 
+        try:
             result =  reduce(dict.__getitem__, ["responses", "NICKNAME_POKEMON"], response)
         except KeyError:
             logger.log("Attempt to nickname received bad response from server.",log_color)

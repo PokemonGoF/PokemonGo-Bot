@@ -50,7 +50,6 @@ class HandleSoftBan(BaseTask):
             player_latitude=f2i(self.bot.position[0]),
             player_longitude=f2i(self.bot.position[1])
         )
-        self.bot.api.call()
 
     def should_run(self):
         return self.bot.softban
