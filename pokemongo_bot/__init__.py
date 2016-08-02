@@ -46,6 +46,8 @@ class PokemonGoBot(object):
         self.tick_count = 0
         self.softban = False
         self.start_position = None
+        self.last_map_object = None
+        self.last_time_map_object = 0
 
         # Make our own copy of the workers for this instance
         self.workers = []
@@ -101,12 +103,21 @@ class PokemonGoBot(object):
                 wild_pokemons += cell["wild_pokemons"]
             if "catchable_pokemons" in cell and len(cell["catchable_pokemons"]):
                 catchable_pokemons += cell["catchable_pokemons"]
-
-        return {
-            "forts": forts,
-            "wild_pokemons": wild_pokemons,
-            "catchable_pokemons": catchable_pokemons
-        }
+        
+        # If there are forts present in the cells sent from the server or we don't yet have any cell data, return all data retrieved
+        if len(forts) > 1 or not self.cell:
+            return {
+                "forts": forts,
+                "wild_pokemons": wild_pokemons,
+                "catchable_pokemons": catchable_pokemons
+            }
+        # If there are no forts present in the data from the server, keep our existing fort data and only update the pokemon cells.
+        else:
+            return {
+                "forts": self.cell["forts"],
+                "wild_pokemons": wild_pokemons,
+                "catchable_pokemons": catchable_pokemons
+            }
 
     def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
         # we can call the function with no arguments and still get the position
@@ -119,20 +130,8 @@ class PokemonGoBot(object):
             alt = 0
 
         if cells == []:
-            cellid = get_cell_ids(lat, lng)
-            timestamp = [0, ] * len(cellid)
-            self.api.get_map_objects(
-                latitude=f2i(lat),
-                longitude=f2i(lng),
-                since_timestamp_ms=timestamp,
-                cell_id=cellid
-            )
-            response_dict = self.api.call()
-            map_objects = response_dict.get(
-                'responses', {}
-            ).get('GET_MAP_OBJECTS', {})
-            status = map_objects.get('status', None)
-            cells = map_objects['map_cells']
+            location = self.position[0:2]
+            cells = self.find_close_cells(*location)
 
             # insert detail info about gym to fort
             for cell in cells:
@@ -182,14 +181,7 @@ class PokemonGoBot(object):
     def find_close_cells(self, lat, lng):
         cellid = get_cell_ids(lat, lng)
         timestamp = [0, ] * len(cellid)
-
-        self.api.get_map_objects(
-            latitude=f2i(lat),
-            longitude=f2i(lng),
-            since_timestamp_ms=timestamp,
-            cell_id=cellid
-        )
-        response_dict = self.api.call()
+        response_dict = self.get_map_objects(lat, lng, timestamp, cellid)
         map_objects = response_dict.get(
             'responses', {}
         ).get('GET_MAP_OBJECTS', {})
@@ -413,15 +405,13 @@ class PokemonGoBot(object):
         items_stock = {x.value: 0 for x in list(Item)}
 
         for item in inventory_dict:
-            try:
-                # print(item['inventory_item_data']['item'])
-                item_id = item['inventory_item_data']['item']['item_id']
-                item_count = item['inventory_item_data']['item']['count']
+            item_dict = item.get('inventory_item_data', {}).get('item', {})
+            item_count = item_dict.get('count')
+            item_id = item_dict.get('item_id')
 
+            if item_count and item_id:
                 if item_id in items_stock:
                     items_stock[item_id] = item_count
-            except Exception:
-                continue
         return items_stock
 
     def item_inventory_count(self, id):
@@ -625,3 +615,19 @@ class PokemonGoBot(object):
             ))
 
         return forts
+
+    def get_map_objects(self, lat, lng, timestamp, cellid):
+        if time.time() - self.last_time_map_object < self.config.map_object_cache_time:
+            return self.last_map_object
+
+        self.api.get_map_objects(
+            latitude=f2i(lat),
+            longitude=f2i(lng),
+            since_timestamp_ms=timestamp,
+            cell_id=cellid
+        )
+
+        self.last_map_object = self.api.call()
+        self.last_time_map_object = time.time()
+
+        return self.last_map_object

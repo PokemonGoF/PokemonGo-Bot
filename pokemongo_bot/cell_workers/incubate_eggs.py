@@ -31,7 +31,7 @@ class IncubateEggs(BaseTask):
             if km_left <= 0:
                 self._hatch_eggs()
             else:
-                logger.log('[x] Next egg incubates in {:.2f} km'.format(km_left),'yellow')
+                logger.log('[x] Current egg hatches in {:.2f} km'.format(km_left),'yellow')
             IncubateEggs.last_km_walked = self.km_walked
 
         sorting = self.longer_eggs_first
@@ -106,15 +106,13 @@ class IncubateEggs(BaseTask):
                         "used": False
                     })
                 elif 'is_egg' not in pokemon and pokemon['id'] in lookup_ids:
-                    matched_pokemon.append({
-                        "pokemon_id": pokemon.get('pokemon_id', -1),
-                        "cp": pokemon.get('cp', 0),
+                    matched_pokemon.append(pokemon.update({
                         "iv": [
                             pokemon.get('individual_attack', 0),
                             pokemon.get('individual_defense', 0),
                             pokemon.get('individual_stamina', 0)
                         ]
-                    })
+                    }))
                 continue
             if "player_stats" in inv_data:
                 self.km_walked = inv_data.get("player_stats", {}).get("km_walked", 0)
@@ -147,7 +145,7 @@ class IncubateEggs(BaseTask):
             for pokemon in pokemon_data:
                 # pokemon ids seem to be offset by one
                 if pokemon['pokemon_id']!=-1:
-                    pokemon['name'] = self.bot.pokemon_list[(pokemon['pokemon_id']-1)]['Name']
+                    pokemon['name'] = self.bot.pokemon_list[(pokemon.get('pokemon_id')-1)]['Name']
                 else:
                     pokemon['name'] = "error"
         except:
@@ -160,7 +158,7 @@ class IncubateEggs(BaseTask):
         for i in range(len(pokemon_data)):
             logger.log("-"*30,log_color)
             logger.log("[!] Pokemon: {}".format(pokemon_data[i]['name']), log_color)
-            logger.log("[!] CP: {}".format(pokemon_data[i]['cp']), log_color)
+            logger.log("[!] CP: {}".format(pokemon_data[i].get('cp',0)), log_color)
             logger.log("[!] IV: {} ({:.2f})".format("/".join(map(str, pokemon_data[i]['iv'])),(sum(pokemon_data[i]['iv'])/self.max_iv)), log_color)
             logger.log("[!] XP: {}".format(xp[i]), log_color)
             logger.log("[!] Stardust: {}".format(stardust[i]), log_color)
