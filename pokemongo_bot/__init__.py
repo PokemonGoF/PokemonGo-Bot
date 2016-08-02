@@ -862,7 +862,7 @@ class PokemonGoBot(object):
                     'location_cache_error',
                     sender=self,
                     level='debug',
-                    formatted_msg='Parsing cached location failed.'
+                    formatted='Parsing cached location failed.'
                 )
 
     def get_pos_by_name(self, location_name):
