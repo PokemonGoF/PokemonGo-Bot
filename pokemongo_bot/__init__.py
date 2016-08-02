@@ -153,19 +153,20 @@ class PokemonGoBot(object):
         user_data_cells = "data/cells-%s.json" % self.config.username
         with open(user_data_cells, 'w') as outfile:
             json.dump(cells, outfile)
-        logger.log('Testing if the user journal is enabled', 'green')
-        if self.config.journal:
-            logger.log('journal = true', 'green')
-            self.config.user_journal = os.path.join(
-                'data', 'journal-%s.txt' % self.config.username
-            )
-            logger.log('Setting journal path %s' % self.config.user_journal, 'green')
+        # logger.log('Testing if the user journal is enabled', 'green')
+        self.config.user_journal = os.path.join(
+            'data', 'journal-%s.txt' % self.config.username
+        )
+        if self.config.journal and not os.path.exists(self.config.user_journal):
+            # logger.log('journal = true', 'green')
+
+            # logger.log('Setting journal path %s' % self.config.user_journal, 'green')
             with open(self.config.user_journal, 'w') as outfile:
                 ts = time.time()
                 st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
                 outfile.write('Bot started at %s' % st)
 
-                user_web_location = os.path.join(
+        user_web_location = os.path.join(
             'web', 'location-%s.json' % self.config.username
         )
         # alt is unused atm but makes using *location easier
