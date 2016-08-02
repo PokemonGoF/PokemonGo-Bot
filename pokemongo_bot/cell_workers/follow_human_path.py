@@ -51,6 +51,7 @@ class FollowHumanPath(BaseTask):
         if not self.gmap_client == None:
             logger.log("Applying GMaps Directions API logic")
             new_path = []
+            new_path.extend(self.get_gmap_directions({"lat": self.bot.api._position_lat, "lng": self.bot.api._position_lng}, path[0]))
             for index, point in enumerate(path):
                 if not index + 1 >= len(path):
                     new_path.extend(self.get_gmap_directions(path[index], path[index + 1]))
