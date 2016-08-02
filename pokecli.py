@@ -53,7 +53,8 @@ def main():
     config = init_config()
     if not config:
         return
-    logger.log('Configuration initialized', 'yellow')
+    if config.debug:
+        logger.log('Configuration initialized', 'yellow')
 
     finished = False
 
@@ -65,7 +66,8 @@ def main():
             bot.workers = tree
             bot.metrics.capture_stats()
 
-            logger.log('Starting PokemonGo Bot....', 'green')
+            if config.debug:
+                logger.log('Starting PokemonGo Bot....', 'green')
 
             while True:
                 bot.tick()

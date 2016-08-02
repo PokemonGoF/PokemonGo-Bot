@@ -83,7 +83,7 @@ class FollowSpiral(BaseTask):
                 point['lng']
             )
 
-            if self.cnt == 1:
+            if self.cnt == 1 and self.bot.config.debug:
                 logger.log(
                     'Walking from ' + str((self.bot.api._position_lat,
                     self.bot.api._position_lng)) + " to " + str([point['lat'], point['lng']]) + " " + format_dist(dist,
