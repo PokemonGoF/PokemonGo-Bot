@@ -53,17 +53,16 @@ class MoveToFort(BaseTask):
         if dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
             fort_event_data = {
                 'fort_name': u"{}".format(fort_name),
-                'distance': dist,
-                'distance_unit': unit,
+                'distance': format_dist(dist, unit),
             }
 
             if self.is_attracted() > 0:
-                fort_event_data.update(lure_distance=self.lure_distance)
+                fort_event_data.update(lure_distance=format_dist(self.lure_distance, unit))
                 self.bot.event_manager.emit(
                     'moving_to_lured_fort',
                     sender=self,
                     level='info',
-                    formatted="Moving towards pokestop {fort_name} - {distance:.2f} (attraction of lure {lure_distance:.2f}{distance_unit})",
+                    formatted="Moving towards pokestop {fort_name} - {distance} (attraction of lure {lure_distance})",
                     data=fort_event_data
                 )
             else:
@@ -71,7 +70,7 @@ class MoveToFort(BaseTask):
                     'moving_to_fort',
                     sender=self,
                     level='info',
-                    formatted="Moving towards pokestop {fort_name} - {distance} {distance_unit}",
+                    formatted="Moving towards pokestop {fort_name} - {distance}",
                     data=fort_event_data
                 )
 
