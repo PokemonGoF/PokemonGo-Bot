@@ -36,7 +36,7 @@ class FollowHumanPath(BaseTask):
             path = self.load_json()
         elif self.path_file.endswith('.gpx'):
             path = self.load_gpx()
-        if not self.gmap_client == None:
+        if not self.bot.gmap_client == None:
             new_path = []
             for index, point in enumerate(path):
                 if not index + 1 >= len(path):
