@@ -230,10 +230,10 @@ class PokemonCatchWorker(object):
                                     logger.log(
                                         'Oh no! {} vanished! :('.format(pokemon_name), 'red')
                                     if self.config.journal:
-                                with open(user_journal, 'w') as outfile:
-                                    outfile.write('Oh no! %s vanished!' % pokemon_name)
-                                    if success_percentage == 100:
-                                        self.softban = True
+                                        with open(user_journal, 'w') as outfile:
+                                            outfile.write('Oh no! %s vanished!' % pokemon_name)
+                                            if success_percentage == 100:
+                                                self.softban = True
                                 if status is 1:
                                     self.bot.metrics.captured_pokemon(pokemon_name, cp, iv_display, pokemon_potential)
 
