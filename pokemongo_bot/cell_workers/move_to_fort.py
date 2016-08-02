@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from socketIO_client import SocketIO
 
 from pokemongo_bot.event_manager import EventHandler
@@ -14,7 +16,7 @@ class SocketIoHandler(EventHandler):
 
     def handle_event(self, event, sender, level, msg, data):
         if msg:
-            data['msg'] = unicode(msg.decode('utf-8'))
+            data['msg'] = msg.decode('utf8')
 
         self.sio.emit(
             'bot:broadcast',

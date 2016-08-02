@@ -33,7 +33,7 @@ class SpinFort(BaseTask):
         lng = fort['longitude']
 
         details = fort_details(self.bot, fort['id'], lat, lng)
-        fort_name = details.get('name', 'Unknown').encode('utf8')
+        fort_name = details.get('name', 'Unknown').decode('utf8')
 
         self.bot.api.fort_search(fort_id=fort['id'],
                              fort_latitude=lat,
