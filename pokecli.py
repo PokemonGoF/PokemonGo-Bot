@@ -35,7 +35,7 @@ import sys
 import time
 from datetime import timedelta
 from getpass import getpass
-from pgoapi.exceptions import NotLoggedInException
+from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException
 from geopy.exc import GeocoderQuotaExceeded
 
 from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
@@ -89,24 +89,37 @@ def main():
             )
             finished = True
             report_summary(bot)
+
         except NotLoggedInException:
-            msg = 'Error while connecting to server, wait {} minutes'.format(
-                config.reconnecting_timeout
-            )
+            wait_time = config.reconnecting_timeout * 60
             bot.event_manager.emit(
-                'not_logged_in',
+                'api_error',
                 sender=bot,
                 level='info',
-                formmated=msg
+                formmated='Log logged in, reconnecting in {:s}'.format(wait_time)
             )
-            time.sleep(config.reconnecting_timeout * 60)
+            time.sleep(wait_time)
+        except ServerBusyOrOfflineException:
+            bot.event_manager.emit(
+                'api_error',
+                sender=bot,
+                level='info',
+                formatted='Server busy or offline'
+            )
+        except ServerSideRequestThrottlingException:
+            bot.event_manager.emit(
+                'api_error',
+                sender=bot,
+                level='info',
+                formatted='Server is throttling, reconnecting in 30 seconds'
+            )
+            time.sleep(30)
         except GeocoderQuotaExceeded:
-            logger.info('[x] The given maps api key has gone over the requests limit.')
-            finished = True
-        except:
+            raise "Google Maps API key over requests limit."
+        except Exception as e:
             # always report session summary and then raise exception
             report_summary(bot)
-            raise
+            raise e
 
 def report_summary(bot):
     if bot.metrics.start_time is None:
