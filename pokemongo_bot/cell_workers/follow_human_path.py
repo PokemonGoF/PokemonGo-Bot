@@ -14,11 +14,15 @@ from pgoapi.utilities import f2i
 
 class FollowHumanPath(BaseTask):
     def get_gmap_directions(self, origin, destination):
-        tmp = googlemaps.directions.directions(self.bot.gmap_client, origin, destination, mode="walking", optimize_waypoints=True)
+        tmp = googlemaps.directions.directions(self.gmap_client, origin, destination, mode="walking", optimize_waypoints=True)
         tmp = googlemaps.convert.decode_polyline(tmp[0]['overview_polyline']['points'])
         return tmp
 
     def initialize(self):
+        try:
+            self.gmap_client = googlemaps.Client(self.bot.config.gmapkey)
+        except:
+            self.gmap_client = None
         self.ptr = 0
         self._process_config()
         self.points = self.load_path()
@@ -36,7 +40,7 @@ class FollowHumanPath(BaseTask):
             path = self.load_json()
         elif self.path_file.endswith('.gpx'):
             path = self.load_gpx()
-        if not self.bot.gmap_client == None:
+        if not self.gmap_client == None:
             new_path = []
             for index, point in enumerate(path):
                 if not index + 1 >= len(path):

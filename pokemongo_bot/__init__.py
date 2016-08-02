@@ -9,7 +9,6 @@ import re
 import sys
 import time
 
-import googlemaps
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
 from pgoapi.utilities import f2i, get_cell_ids
@@ -35,10 +34,6 @@ class PokemonGoBot(object):
 
     def __init__(self, config):
         self.config = config
-        try:
-            self.gmap_client = googlemaps.Client(config.gmapkey)
-        except:
-            self.gmap_client = None
         self.fort_timeouts = dict()
         self.pokemon_list = json.load(
             open(os.path.join('data', 'pokemon.json'))

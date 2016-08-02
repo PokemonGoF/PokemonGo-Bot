@@ -33,7 +33,6 @@ import os
 import ssl
 import sys
 import time
-import googlemaps
 from datetime import timedelta
 from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException
