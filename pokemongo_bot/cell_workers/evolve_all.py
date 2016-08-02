@@ -12,7 +12,7 @@ class EvolveAll(BaseTask):
         self._validate_config()
 
     def _validate_config(self):
-        if isinstance(self.evolve_all, str) or isinstance(self.evolve_all, unicode):
+        if isinstance(self.evolve_all, basestring):
             self.evolve_all = [str(pokemon_name) for pokemon_name in self.evolve_all.split(',')]
 
     def work(self):
