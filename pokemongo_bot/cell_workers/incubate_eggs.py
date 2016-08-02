@@ -34,7 +34,7 @@ class IncubateEggs(BaseTask):
                 self._hatch_eggs()
             else:
                 logger.log(
-                    '[x] Next egg incubates in {:.2f} km'.format(km_left),
+                    '[x] Current egg hatches in {:.2f} km'.format(km_left),
                     'yellow'
                 )
             IncubateEggs.last_km_walked = self.km_walked
