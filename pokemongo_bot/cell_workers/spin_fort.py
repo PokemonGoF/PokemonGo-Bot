@@ -33,7 +33,7 @@ class SpinFort(BaseTask):
         logger.log('Now at Pokestop: {0}'.format(fort_name), 'cyan')
         if self.bot.config.journal:
             with open(self.bot.config.user_journal, 'a') as outfile:
-                outfile.write('Now at Pokestop: %s' % fort_name)
+                outfile.write('Now at Pokestop: %s\n' % fort_name)
         logger.log('Spinning ...', 'cyan')
 
         self.bot.api.fort_search(fort_id=fort['id'],
