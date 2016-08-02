@@ -1,20 +1,15 @@
 # __init__.py
 from mock import MagicMock
 
-from pokemongo_bot.api_wrapper import ApiWrapper
+from pokemongo_bot.api_wrapper import ApiWrapper, ApiRequest
 from pokemongo_bot import PokemonGoBot
 
 class FakeApi(ApiWrapper):
-    def __init__(self, return_value=None):
-        super(FakeApi, self).__init__()
-        self._call = MagicMock(return_value=return_value)
-
-    def _can_call(self):
-        return True
-
-    def setApiReturnValue(self, value):
-        self._call.return_value = value
-
+    def create_request(self, return_value=None):
+        request = ApiWrapper.create_request(self)
+        request.can_call = MagicMock(return_value=True)
+        request._call = MagicMock(return_value=return_value)
+        return request
 
 class FakeBot(PokemonGoBot):
     def __init__(self):

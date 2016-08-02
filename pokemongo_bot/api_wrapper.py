@@ -2,7 +2,7 @@ import time
 
 from pgoapi.exceptions import NotLoggedInException, ServerBusyOrOfflineException, NoPlayerPositionSetException, EmptySubrequestChainException
 
-from pgoapi import PGoApi, PGoApiRequest, RpcApi
+from pgoapi.pgoapi import PGoApi, PGoApiRequest, RpcApi
 from POGOProtos.Networking.Requests_pb2 import RequestType
 
 import logger
@@ -27,7 +27,7 @@ class ApiWrapper(PGoApi):
 
 class ApiRequest(PGoApiRequest):
     def __init__(self, *args):
-        super(ApiRequest, self).__init__(*args)
+        PGoApiRequest.__init__(self, *args)
         self.request_callers = []
         self.last_api_request_time = None
         self.requests_per_seconds = 2
@@ -46,14 +46,14 @@ class ApiRequest(PGoApiRequest):
         return True
 
     def _call(self):
-        return super(ApiRequest, self).call()
+        return PGoApiRequest.call(self)
 
     def _pop_request_callers(self):
         r = self.request_callers
         self.request_callers = []
         return [i.upper() for i in r]
 
-    def _is_response_valid(self, result, request_callers):
+    def is_response_valid(self, result, request_callers):
         if not result or result is None or not isinstance(result, dict):
             return False
 
@@ -101,7 +101,7 @@ class ApiRequest(PGoApiRequest):
     def __getattr__(self, func):
         if func.upper() in  RequestType.keys():
             self.request_callers.append(func)
-        return super(ApiRequest, self).__getattr__(func)
+        return PGoApiRequest.__getattr__(self, func)
 
     def throttle_sleep(self):
         now_milliseconds = time.time() * 1000
