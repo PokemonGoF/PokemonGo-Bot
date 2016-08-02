@@ -65,7 +65,7 @@ class PokemonGoBot(object):
             if self.config.websocket_start_embedded_server:
                 self.sio_runner = SocketIoRunner(self.config.websocket_server_url)
                 self.sio_runner.start_listening_async()
-                
+
             websocket_handler = SocketIoHandler(self.config.websocket_server_url)
             handlers.append(websocket_handler)
 
@@ -88,6 +88,8 @@ class PokemonGoBot(object):
             'location_found',
             parameters=('position', 'location')
         )
+        self.event_manager.register_event('api_error')
+        self.event_manager.register_event('config_error')
 
         self.event_manager.register_event('login_started')
         self.event_manager.register_event('login_failed')
@@ -109,6 +111,16 @@ class PokemonGoBot(object):
 
         self.event_manager.register_event('bot_start')
         self.event_manager.register_event('bot_exit')
+
+        # sleep stuff
+        self.event_manager.register_event(
+            'next_sleep',
+            arguments=('time',)
+        )
+        self.event_manager.register_event(
+            'bot_sleep',
+            arguments=('time_in_seconds',)
+        )
 
         # fort stuff
         self.event_manager.register_event(
@@ -344,6 +356,19 @@ class PokemonGoBot(object):
                 'forts', 'radius'
             )
         )
+
+        # rename
+        self.event_manager.register_event(
+            'rename_pokemon',
+            parameters=(
+                'old_name', 'current_name'
+            )
+        )
+        self.event_manager.register_event(
+            'pokemon_nickname_invalid',
+            parameters=('nickname',)
+        )
+        self.event_manager.register_event('unset_pokemon_nickname')
 
     def tick(self):
         self.cell = self.get_meta_cell()

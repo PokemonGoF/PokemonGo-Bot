@@ -63,7 +63,15 @@ class SleepSchedule(BaseTask):
     def _schedule_next_sleep(self):
         self._next_sleep = self._get_next_sleep_schedule()
         self._next_duration = self._get_next_duration()
-        logger.log('SleepSchedule: next sleep at {}'.format(str(self._next_sleep)), color='green')
+        self.bot.event_manager.emit(
+            'next_sleep',
+            sender=self,
+            level='info',
+            formatted="Next sleep at {time}",
+            data={
+                'time': str(self._next_sleep)
+            }
+        )
 
     def _get_next_sleep_schedule(self):
         now = datetime.now() + self.SCHEDULING_MARGIN
@@ -87,9 +95,16 @@ class SleepSchedule(BaseTask):
 
     def _sleep(self):
         sleep_to_go = self._next_duration
-        logger.log('It\'s time for sleep.')
+        self.bot.event_manager.emit(
+            'bot_sleep',
+            sender=self,
+            level='info',
+            formatted="Sleeping for {time_in_seconds}",
+            data={
+                'time_in_seconds': sleep_to_go
+            }
+        )
         while sleep_to_go > 0:
-            logger.log('Sleeping for {} more seconds'.format(sleep_to_go), 'yellow')
             if sleep_to_go < self.LOG_INTERVAL_SECONDS:
                 sleep(sleep_to_go)
                 sleep_to_go = 0
