@@ -152,7 +152,7 @@ class MoveToMapPokemon(BaseTask):
         pokemon_list.sort(key=lambda x: x['dist'])
         if self.config['mode'] == 'priority':
             pokemon_list.sort(key=lambda x: x['priority'], reverse=True)
-        if self.config['prioritize_vips'] == 'priority':
+        if self.config['prioritize_vips']:
             pokemon_list.sort(key=lambda x: x['is_vip'], reverse=True)
 
         if len(pokemon_list) < 1:
