@@ -432,6 +432,7 @@ class PokemonGoBot(object):
             item_count = item_dict.get('count', False)
             if item_id == int(id) and item_count:
                 return item_count
+        return 0
 
     def _all_items_inventory_count(self, inventory_dict):
         item_count_dict = {}

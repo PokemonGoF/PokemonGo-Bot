@@ -147,7 +147,7 @@ class MoveToMapPokemon(BaseTask):
         pokeballs += self.bot.item_inventory_count(3)
 
         if pokeballs < 1:
-            return
+            return WorkerResult.SUCCESS
 
         self.update_map_location()
         self.dump_caught_pokemon()
