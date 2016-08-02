@@ -9,9 +9,9 @@ from utils import distance, format_dist, fort_details
 class MoveToFort(BaseTask):
     def should_run(self):
         has_space_for_loot = self.bot.has_space_for_loot()
-        if not has_space_for_loot:
-            logger.log("Not moving to any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently.", 'yellow')
-        return has_space_for_loot or self.bot.softban
+        if not has_space_for_loot and self.bot.config.debug:
+            logger.log("Not moving to any forts as there isn't enough space. Try changing your config to recycle more items", 'yellow')
+        return self.bot.softban
 
     def work(self):
         if not self.should_run():
@@ -38,7 +38,8 @@ class MoveToFort(BaseTask):
         )
 
         if dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
-            logger.log('Moving towards fort {}, {} left'.format(fort_name, format_dist(dist, unit)))
+            if self.bot.config.debug:
+                logger.log('Moving towards fort {}, {} left'.format(fort_name, format_dist(dist, unit)))
 
             step_walker = StepWalker(
                 self.bot,
@@ -49,8 +50,8 @@ class MoveToFort(BaseTask):
 
             if not step_walker.step():
                 return WorkerResult.RUNNING
-
-        logger.log('Arrived at pokestop.')
+        if self.bot.config.debug:
+            logger.log('Arrived at pokestop.')
         return WorkerResult.SUCCESS
 
     def get_nearest_fort(self):

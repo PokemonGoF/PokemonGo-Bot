@@ -247,7 +247,8 @@ class PokemonGoBot(object):
             return False
 
     def login(self):
-        logger.log('Attempting login to Pokemon Go.', 'white')
+        if self.config.debug:
+            logger.log('Attempting login to Pokemon Go.', 'white')
         self.api.reset_auth()
         lat, lng = self.position[0:2]
         self.api.set_position(lat, lng, 0)
@@ -275,7 +276,6 @@ class PokemonGoBot(object):
 
         self._print_character_info()
 
-        logger.log('')
         self.update_inventory()
         # send empty map_cells and then our position
         self.update_web_location()
@@ -313,7 +313,7 @@ class PokemonGoBot(object):
             pokecoins = player['currencies'][0]['amount']
         if 'amount' in player['currencies'][1]:
             stardust = player['currencies'][1]['amount']
-        logger.log('')
+
         logger.log('--- {username} ---'.format(**player), 'cyan')
         self.get_player_info()
         logger.log(
@@ -362,8 +362,6 @@ class PokemonGoBot(object):
             'Revive: ' + str(items_stock[201]) +
             ' | MaxRevive: ' + str(items_stock[202]), 'cyan')
 
-        logger.log('')
-
     def use_lucky_egg(self):
         self.api.use_item_xp_boost(item_id=301)
         inventory_req = self.api.call()
@@ -405,10 +403,11 @@ class PokemonGoBot(object):
             item_dict = item.get('inventory_item_data', {}).get('item', {})
             item_count = item_dict.get('count')
             item_id = item_dict.get('item_id')
-
+  
             if item_count and item_id:
                 if item_id in items_stock:
                     items_stock[item_id] = item_count
+
         return items_stock
 
     def item_inventory_count(self, id):
@@ -456,10 +455,8 @@ class PokemonGoBot(object):
             location = (self.get_pos_by_name(location_str.replace(" ", "")))
             self.api.set_position(*location)
             self.start_position = self.position
-            logger.log('')
             logger.log('Location Found: {}'.format(location_str))
             logger.log('GeoPosition: {}'.format(self.position))
-            logger.log('')
             has_position = True
 
         if self.config.location_cache:
@@ -488,7 +485,6 @@ class PokemonGoBot(object):
 
                 self.api.set_position(*location)
 
-                logger.log('')
                 logger.log(
                     '[x] Last location flag used. Overriding passed in location'
                 )
@@ -497,7 +493,6 @@ class PokemonGoBot(object):
                         self.position
                     )
                 )
-                logger.log('')
 
                 has_position = True
             except Exception:

@@ -33,9 +33,6 @@ class CollectLevelUpReward(BaseTask):
                     .get('LEVEL_UP_REWARDS', {})
                     .get('items_awarded', []))
 
-            if data:
-                logger.log('Collected level up rewards:', 'green')
-
             for item in data:
                 if 'item_id' in item and str(item['item_id']) in self.bot.item_list:
                     got_item = self.bot.item_list[str(item['item_id'])]

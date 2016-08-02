@@ -48,18 +48,34 @@ class TransferPokemon(BaseTask):
                                                                         True)]
 
                     if transfer_pokemons:
-                        logger.log("Keep {} best {}, based on {}".format(len(best_pokemons),
-                                                                         pokemon_name,
-                                                                         order_criteria), "green")
-                        for best_pokemon in best_pokemons:
-                            logger.log("{} [CP {}] [Potential {}]".format(pokemon_name,
-                                                                          best_pokemon['cp'],
-                                                                          best_pokemon['iv']), 'green')
+                        if self.bot.config.debug:
+                            logger.log("Keep {} best {}, based on {}".format(len(best_pokemons),
+                                                                             pokemon_name,
+                                                                             order_criteria), "green")
 
-                        logger.log("Transferring {} pokemon".format(len(transfer_pokemons)), "green")
+                            logger.log("Transferring {} pokemon".format(len(transfer_pokemons)), "green")
 
                         for pokemon in transfer_pokemons:
-                            self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
+                            self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data'])
+
+                        msg = "Keeping: "
+                        for best_pokemon in best_pokemons:
+                            if msg == "Keeping: ":
+                                msg += pokemon_name + " "
+                            else:
+                                msg += ", "
+                            pokemon_data = best_pokemon['pokemon_data']
+                            individual_attack = pokemon_data.get("individual_attack", 0)
+                            individual_stamina = pokemon_data.get("individual_stamina", 0)
+                            individual_defense = pokemon_data.get("individual_defense", 0)
+
+                            iv_display = '{}/{}/{}'.format(
+                                individual_attack,
+                                individual_defense,
+                                individual_stamina
+                            )
+                            msg += "[{} CP - {} - {}%]".format(best_pokemon['cp'], iv_display, best_pokemon['iv'])
+                        logger.log(msg, 'white')
                 else:
                     group = sorted(group, key=lambda x: x['cp'], reverse=True)
                     for item in group:
@@ -67,7 +83,7 @@ class TransferPokemon(BaseTask):
                         pokemon_potential = item['iv']
 
                         if self.should_release_pokemon(pokemon_name, pokemon_cp, pokemon_potential):
-                            self.release_pokemon(pokemon_name, item['cp'], item['iv'], item['pokemon_data']['id'])
+                            self.release_pokemon(pokemon_name, item['cp'], item['iv'], item['pokemon_data'])
 
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
@@ -164,30 +180,28 @@ class TransferPokemon(BaseTask):
             'and': lambda x, y: x and y
         }
 
-        if logic_to_function[cp_iv_logic](*release_results.values()):
-            logger.log(
-                "Releasing {} with CP {} and IV {}. Matching release rule: CP < {} {} IV < {}. ".format(
-                    pokemon_name,
-                    cp,
-                    iv,
-                    release_cp,
-                    cp_iv_logic.upper(),
-                    release_iv
-                ), 'yellow'
-            )
-
         return logic_to_function[cp_iv_logic](*release_results.values())
 
-    def release_pokemon(self, pokemon_name, cp, iv, pokemon_id):
-        logger.log('Exchanging {} [CP {}] [Potential {}] for candy!'.format(pokemon_name,
-                                                                            cp,
-                                                                            iv), 'green')
-        self.bot.api.release_pokemon(pokemon_id=pokemon_id)
+    def release_pokemon(self, pokemon_name, cp, iv, pokemon_data):
+
+        individual_attack = pokemon_data.get("individual_attack", 0)
+        individual_stamina = pokemon_data.get("individual_stamina", 0)
+        individual_defense = pokemon_data.get("individual_defense", 0)
+
+        iv_display = '{}/{}/{}'.format(
+            individual_attack,
+            individual_defense,
+            individual_stamina
+        )
+        logger.log('Exchanging {} [{} CP - {} - {}%] for candy!'.format(pokemon_name,
+                                                                            cp, iv_display,
+                                                                            iv), 'yellow')
+        self.bot.api.release_pokemon(pokemon_id=pokemon_data['id'])
         response_dict = self.bot.api.call()
         action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
 
-    def _get_release_config_for(self, pokemon):
-        release_config = self.bot.config.release.get(pokemon)
+    def _get_release_config_for(self, pokemon_name):
+        release_config = self.bot.config.release.get(pokemon_name)
         if not release_config:
             release_config = self.bot.config.release.get('any')
         if not release_config:

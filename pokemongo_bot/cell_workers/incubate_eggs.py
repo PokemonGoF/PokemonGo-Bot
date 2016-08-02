@@ -30,7 +30,7 @@ class IncubateEggs(BaseTask):
             km_left = self.used_incubators[0]['km']-self.km_walked
             if km_left <= 0:
                 self._hatch_eggs()
-            else:
+            elif self.bot.config.debug:
                 logger.log('[x] Current egg hatches in {:.2f} km'.format(km_left),'yellow')
             IncubateEggs.last_km_walked = self.km_walked
 
