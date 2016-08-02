@@ -1,7 +1,6 @@
 import time
 
 from pgoapi.exceptions import NotLoggedInException, ServerBusyOrOfflineException, NoPlayerPositionSetException, EmptySubrequestChainException
-
 from pgoapi.pgoapi import PGoApi, PGoApiRequest, RpcApi
 from POGOProtos.Networking.Requests_pb2 import RequestType
 
@@ -19,10 +18,19 @@ class ApiWrapper(PGoApi):
         )
         return request
 
-    def reset_auth(self):
-        self._auth_token = None
-        self._auth_provider = None
-        self._api_endpoint = None
+    def create_vanilla_request(self):
+        return PGoApi.create_request(self)
+
+    def login(self, *args):
+        # login needs base class "create_request"
+        old_request = self.create_request
+        self.create_request = self.create_vanilla_request
+        try:
+            ret_value = PGoApi.login(self, *args)
+        finally:
+            # cleanup code
+            self.create_request = old_request
+        return ret_value
 
 
 class ApiRequest(PGoApiRequest):

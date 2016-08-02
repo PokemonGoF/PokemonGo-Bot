@@ -260,13 +260,13 @@ class PokemonGoBot(object):
 
     def login(self):
         logger.log('Attempting login to Pokemon Go.', 'white')
-        self.api.reset_auth()
         lat, lng = self.position[0:2]
         self.api.set_position(lat, lng, 0)
 
-        while not self.api.login(self.config.auth_service,
-                                str(self.config.username),
-                                str(self.config.password)):
+        while not self.api.login(
+            self.config.auth_service,
+            str(self.config.username),
+            str(self.config.password)):
 
             logger.log('[X] Login Error, server busy', 'red')
             logger.log('[X] Waiting 10 seconds to try again', 'red')
