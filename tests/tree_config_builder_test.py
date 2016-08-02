@@ -34,6 +34,18 @@ class TreeConfigBuilderTest(unittest.TestCase):
             "No worker named foo defined",
             builder.build)
 
+    def test_should_throw_on_wrong_evolve_task_name(self):
+        obj = convert_from_json("""[{
+                "type": "EvolveAll"
+            }]""")
+
+        builder = TreeConfigBuilder(self.bot, obj)
+
+        self.assertRaisesRegexp(
+            ConfigException,
+            "The EvolveAll task has been renamed to EvolvePokemon",
+            builder.build)
+
     def test_creating_worker(self):
         obj = convert_from_json("""[{
                 "type": "HandleSoftBan"
