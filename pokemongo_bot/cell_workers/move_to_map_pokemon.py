@@ -30,10 +30,14 @@ class MoveToMapPokemon(BaseTask):
         try:
             req = requests.get('{}/raw_data?gyms=false&scanned=false'.format(self.config['address']))
         except requests.exceptions.ConnectionError:
-            logger.log('Could not reach PokemonGo-Map Server', color='red')
+            logger.log('Could not reach PokemonGo-Map Server', 'red')
             return []
 
-        raw_data = req.json()
+        try:
+            raw_data = req.json()
+        except ValueError:
+            logger.log('Map data was not valid', 'red')
+            return []
 
         pokemon_list = []
         now = int(time.time())
@@ -90,9 +94,14 @@ class MoveToMapPokemon(BaseTask):
         try:
             req = requests.get('{}/loc'.format(self.config['address']))
         except requests.exceptions.ConnectionError:
-            logger.log('Could not reach PokemonGo-Map Server', color='red')
+            logger.log('Could not reach PokemonGo-Map Server', 'red')
             return
-        loc_json = req.json()
+
+        try:
+            loc_json = req.json()
+        except ValueError:
+            return log.logger('Map location data was not valid', 'red')
+
 
         dist = distance(
             self.bot.position[0],
@@ -110,7 +119,7 @@ class MoveToMapPokemon(BaseTask):
 
     def snipe(self, pokemon):
         last_position = self.bot.position[0:2]
-        self.bot.check_session(last_position)
+
         self.bot.heartbeat()
 
         logger.log('Teleporting to {} ({})'.format(pokemon['name'], format_dist(pokemon['dist'], self.unit)), 'green')
