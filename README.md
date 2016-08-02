@@ -10,7 +10,7 @@
 
 # PokemonGo-Bot
 The Pokemon Go Bot, baking with community.
-"This project is licensed under the terms of the GNU General Public License."
+"This project is licensed under the terms of the GNU General Public License Version 3."
 ## Help Needed on [Desktop Version](https://github.com/PokemonGoF/PokemonGo-Bot-Desktop)
 ## Help with the project [Dev Bot](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Develop-PokemonGo-Bot)
 ## Project Chat
