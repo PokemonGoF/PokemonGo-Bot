@@ -1,10 +1,14 @@
-import unittest
+# -*- coding: utf-8 -*-
 import json
+import unittest
+
 from pokemongo_bot import PokemonGoBot, ConfigException, TreeConfigBuilder
 from pokemongo_bot.cell_workers import HandleSoftBan, CatchLuredPokemon
 
-def convert_from_json(str):
-    return json.loads(str)
+
+def convert_from_json(string):
+    return json.loads(string)
+
 
 class TreeConfigBuilderTest(unittest.TestCase):
     def setUp(self):

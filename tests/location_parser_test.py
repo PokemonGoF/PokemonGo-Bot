@@ -1,6 +1,6 @@
 # coding: utf-8
-import unittest
 from mock import MagicMock
+import unittest
 
 from geopy.exc import GeocoderQueryError
 from tests import FakeBot

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
 import time
 
@@ -15,7 +16,12 @@ from utils import distance, format_time, fort_details
 class SpinFort(BaseTask):
     def should_run(self):
         if not self.bot.has_space_for_loot():
-            logger.log("Not spinning any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently.", 'yellow')
+            logger.log(
+                "Not spinning any forts as there aren't enough space. You "
+                "might want to change your config to recycle more items if "
+                "this message appears consistently.",
+                'yellow'
+            )
             return False
         return True
 
@@ -30,28 +36,35 @@ class SpinFort(BaseTask):
 
         details = fort_details(self.bot, fort['id'], lat, lng)
         fort_name = details.get('name', 'Unknown').encode('utf8', 'replace')
-        logger.log('Now at Pokestop: {0}'.format(fort_name), 'cyan')
+        logger.log('Now at Pokestop: {0}'.format(
+            unicode(fort_name, 'utf-8')
+        ), 'cyan')
         logger.log('Spinning ...', 'cyan')
 
-        self.bot.api.fort_search(fort_id=fort['id'],
-                             fort_latitude=lat,
-                             fort_longitude=lng,
-                             player_latitude=f2i(self.bot.position[0]),
-                             player_longitude=f2i(self.bot.position[1]))
+        self.bot.api.fort_search(
+            fort_id=fort['id'],
+            fort_latitude=lat,
+            fort_longitude=lng,
+            player_latitude=f2i(self.bot.position[0]),
+            player_longitude=f2i(self.bot.position[1])
+        )
         response_dict = self.bot.api.call()
         if 'responses' in response_dict and \
                 'FORT_SEARCH' in response_dict['responses']:
 
             spin_details = response_dict['responses']['FORT_SEARCH']
             spin_result = spin_details.get('result', -1)
+
             if spin_result == 1:
                 self.bot.softban = False
                 logger.log("Loot: ", 'green')
-                experience_awarded = spin_details.get('experience_awarded',
-                                                      False)
+                experience_awarded = spin_details.get(
+                    'experience_awarded', False)
                 if experience_awarded:
-                    logger.log(str(experience_awarded) + " xp",
-                               'green')
+                    logger.log(
+                        str(experience_awarded) + " xp",
+                        'green'
+                    )
 
                 items_awarded = spin_details.get('items_awarded', False)
                 if items_awarded:
@@ -67,8 +80,15 @@ class SpinFort(BaseTask):
                     for item_id, item_count in tmp_count_items.iteritems():
                         item_name = self.bot.item_list[str(item_id)]
                         logger.log(
-                            '- ' + str(item_count) + "x " + item_name +
-                            " (Total: " + str(self.bot.item_inventory_count(item_id)) + ")", 'yellow'
+                            "- {item_count}x {item_name} (Total: {total})"
+                            "".format(
+                                item_count=item_count,
+                                item_name=item_name,
+                                total=str(
+                                    self.bot.item_inventory_count(item_id)
+                                )
+                            ),
+                            'yellow'
                         )
                 else:
                     logger.log("[#] Nothing found.", 'yellow')
@@ -83,13 +103,17 @@ class SpinFort(BaseTask):
                                     seconds_since_epoch)))
 
                 self.bot.recent_forts = self.bot.recent_forts[1:] + [fort['id']]
+
             elif spin_result == 2:
                 logger.log("[#] Pokestop out of range")
             elif spin_result == 3:
                 pokestop_cooldown = spin_details.get(
-                    'cooldown_complete_timestamp_ms')
+                    'cooldown_complete_timestamp_ms'
+                )
                 if pokestop_cooldown:
-                    self.bot.fort_timeouts.update({fort["id"]: pokestop_cooldown})
+                    self.bot.fort_timeouts.update(
+                        {fort["id"]: pokestop_cooldown}
+                    )
                     seconds_since_epoch = time.time()
                     logger.log('PokeStop on cooldown. Time left: ' + str(
                         format_time((pokestop_cooldown / 1000) -
@@ -105,12 +129,17 @@ class SpinFort(BaseTask):
                 return response_dict['responses']['FORT_SEARCH'][
                     'chain_hack_sequence_number']
             else:
-                logger.log('Possibly searching too often - taking a short rest :)', 'yellow')
+                logger.log(
+                    'Possibly searching too often - taking a short rest :)',
+                    'yellow'
+                )
                 if spin_result == 1 and not items_awarded and not experience_awarded and not pokestop_cooldown:
                     self.bot.softban = True
                     logger.log('[!] Possibly got softban too...', 'red')
                 else:
-                    self.bot.fort_timeouts[fort["id"]] = (time.time() + 300) * 1000  # Don't spin for 5m
+                    self.bot.fort_timeouts[
+                        fort["id"]] = (time.time() + 300) * 1000
+                        # Don't spin for 5m
                 return 11
         sleep(2)
         return 0

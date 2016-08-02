@@ -1,9 +1,10 @@
-# __init__.py
+# -*- coding: utf-8 -*-
 from mock import MagicMock
 
 from pgoapi import PGoApi
 from pokemongo_bot.api_wrapper import ApiWrapper
 from pokemongo_bot import PokemonGoBot
+
 
 class FakeApi(ApiWrapper):
     def __init__(self, return_value=None):

@@ -1,12 +1,14 @@
-import unittest
+# -*- coding: utf-8 -*-
 from mock import MagicMock, patch
+import unittest
 from timeout_decorator import timeout, TimeoutError
-
-from tests import FakeApi
 
 from pgoapi import PGoApi
 from pgoapi.exceptions import NotLoggedInException, ServerBusyOrOfflineException
 from pokemongo_bot.api_wrapper import ApiWrapper
+
+from tests import FakeApi
+
 
 class TestApiWrapper(unittest.TestCase):
     def test_raises_not_logged_in_exception(self):
@@ -21,11 +23,13 @@ class TestApiWrapper(unittest.TestCase):
             api.call()
 
     @patch('pokemongo_bot.api_wrapper.sleep')
-    def test_api_server_is_unreachable_raises_server_busy_or_offline_exception(self, sleep):
-        sleep.return_value = True # we don't need to really sleep
+    def test_api_server_is_unreachable_raises_server_busy_or_offline_exception(
+            self, sleep):
+        sleep.return_value = True  # we don't need to really sleep
         api = FakeApi('Wrong Value')
         api.get_inventory(test='awesome')
-        # we expect an exception because the "server" isn't returning a valid response
+        # we expect an exception because the "server" isn't returning a
+        # valid response
         with self.assertRaises(ServerBusyOrOfflineException):
             api.call()
 
@@ -53,31 +57,47 @@ class TestApiWrapper(unittest.TestCase):
         ]
         for wrong in wrong_return_values:
             api = returnApi(wrong)
-            request_callers = api._pop_request_callers() # we can pop because we do no call
+            request_callers = api._pop_request_callers()
+            # we can pop because we do no call
 
             is_valid = api._is_response_valid(wrong, request_callers)
-            self.assertFalse(is_valid, 'return value {} is valid somehow ?'.format(wrong))
+            self.assertFalse(
+                is_valid, 'return value {} is valid somehow ?'.format(wrong)
+            )
 
     def test_return_value_is_valid(self):
-        api = FakeApi() # we set the return value below
+        api = FakeApi()  # we set the return value below
         api.get_inventory(test='awesome')
 
-        request = api.request_callers[0] # only one request
+        request = api.request_callers[0]  # only one request
         self.assertEqual(request.upper(), 'GET_INVENTORY')
 
-        good_return_value = {'responses': {request.upper(): {}}, 'status_code': 0}
+        good_return_value = {
+            'responses': {
+                request.upper(): {}
+            },
+            'status_code': 0
+        }
         api.setApiReturnValue(good_return_value)
 
         result = api.call()
         self.assertEqual(result, good_return_value)
-        self.assertEqual(len(api.request_callers), 0, 'request_callers must be empty')
+        self.assertEqual(
+            len(api.request_callers), 0, 'request_callers must be empty'
+        )
 
     def test_multiple_requests(self):
         api = FakeApi()
         api.get_inventory(test='awesome')
         api.fort_details()
 
-        good_return_value = {'responses': {'GET_INVENTORY': {}, 'FORT_DETAILS': {}}, 'status_code': 0}
+        good_return_value = {
+            'responses': {
+                'GET_INVENTORY': {},
+                'FORT_DETAILS': {}
+            },
+            'status_code': 0
+        }
         api.setApiReturnValue(good_return_value)
 
         result = api.call()
@@ -92,7 +112,7 @@ class TestApiWrapper(unittest.TestCase):
         for i in range(api.requests_per_seconds):
             api.call()
 
-    @timeout(1) # expects a timeout
+    @timeout(1)  # expects a timeout
     def test_api_call_throttle_should_fail(self):
         api = FakeApi(True)
         api._is_response_valid = MagicMock(return_value=True)

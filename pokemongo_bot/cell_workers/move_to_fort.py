@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 
 from pokemongo_bot import logger
@@ -12,7 +13,12 @@ class MoveToFort(BaseTask):
     def should_run(self):
         has_space_for_loot = self.bot.has_space_for_loot()
         if not has_space_for_loot:
-            logger.log("Not moving to any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently.", 'yellow')
+            logger.log(
+                "Not moving to any forts as there aren't enough space. You "
+                "might want to change your config to recycle more items if "
+                "this message appears consistently.",
+                'yellow'
+            )
         return has_space_for_loot or self.bot.softban
 
     def work(self):
@@ -42,7 +48,7 @@ class MoveToFort(BaseTask):
 
         if dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
             logger.log('Moving towards fort {}, {} left'.format(
-                fort_name, format_dist(dist, unit))
+                unicode(fort_name, 'utf-8'), format_dist(dist, unit))
             )
 
             step_walker = StepWalker(

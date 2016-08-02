@@ -1,6 +1,9 @@
-import unittest
+# -*- coding: utf-8 -*-
 import json
+import unittest
+
 from pokemongo_bot.cell_workers import BaseTask
+
 
 class FakeTask(BaseTask):
     def initialize(self):
@@ -9,12 +12,15 @@ class FakeTask(BaseTask):
     def work(self):
         pass
 
+
 class FakeTaskWithoutInitialize(BaseTask):
     def work(self):
         pass
 
+
 class FakeTaskWithoutWork(BaseTask):
     pass
+
 
 class BaseTaskTest(unittest.TestCase):
     def setUp(self):
