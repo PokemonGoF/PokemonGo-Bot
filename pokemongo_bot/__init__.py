@@ -32,6 +32,10 @@ class PokemonGoBot(object):
     def position(self):
         return self.api._position_lat, self.api._position_lng, 0
 
+    @position.setter
+    def position(self, position_tuple):
+        self.api._position_lat, self.api._position_lng, self.api._position_alt = position_tuple
+
     def __init__(self, config):
         self.config = config
         self.fort_timeouts = dict()
@@ -238,6 +242,9 @@ class PokemonGoBot(object):
 
             if remaining_time < 60:
                 logger.log("Session stale, re-logging in", 'yellow')
+                position = self.position
+                self.api = ApiWrapper()
+                self.position = position
                 self.login()
 
     @staticmethod

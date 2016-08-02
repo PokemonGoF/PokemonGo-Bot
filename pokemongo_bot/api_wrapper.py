@@ -8,28 +8,31 @@ import pokemongo_bot.logger as logger
 from human_behaviour import sleep
 
 class ApiWrapper(PGoApi):
+    def __init__(self):
+        PGoApi.__init__(self)
+        self.useVanillaRequest = False
+
     def create_request(self):
-        request = ApiRequest(
+        RequestClass = ApiRequest
+        if self.useVanillaRequest:
+            RequestClass = PGoApiRequest
+
+        return RequestClass(
             self._api_endpoint,
             self._auth_provider,
             self._position_lat,
             self._position_lng,
             self._position_alt
         )
-        return request
-
-    def create_vanilla_request(self):
-        return PGoApi.create_request(self)
 
     def login(self, *args):
         # login needs base class "create_request"
-        old_request = self.create_request
-        self.create_request = self.create_vanilla_request
+        self.useVanillaRequest = True
         try:
             ret_value = PGoApi.login(self, *args)
         finally:
             # cleanup code
-            self.create_request = old_request
+            self.useVanillaRequest = False
         return ret_value
 
 
