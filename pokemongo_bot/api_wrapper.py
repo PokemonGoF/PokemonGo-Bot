@@ -1,6 +1,9 @@
 import time
 
-from pgoapi.exceptions import ServerSideRequestThrottlingException, NotLoggedInException, ServerBusyOrOfflineException, NoPlayerPositionSetException, EmptySubrequestChainException
+from pgoapi.exceptions import (ServerSideRequestThrottlingException,
+    NotLoggedInException, ServerBusyOrOfflineException,
+    NoPlayerPositionSetException, EmptySubrequestChainException,
+    UnexpectedResponseException)
 from pgoapi.pgoapi import PGoApi, PGoApiRequest, RpcApi
 from pgoapi.protos.POGOProtos.Networking.Requests_pb2 import RequestType
 
@@ -99,7 +102,7 @@ class ApiRequest(PGoApiRequest):
             try:
                 result = self._call()
                 should_retry = False
-            except ServerSideRequestThrottlingException:
+            except (ServerSideRequestThrottlingException, UnexpectedResponseException):
                 should_retry = True
 
             if should_retry:
