@@ -317,6 +317,14 @@ def init_config():
     add_config(
         parser,
         load,
+        long_flag="--minimum_tick_time",
+        help="Sleeps until a tick reaches this minimum, in seconds",
+        type=float,
+        default=1.5
+    )
+    add_config(
+        parser,
+        load,
         long_flag="--catch_randomize_spin_factor",
         help="Randomize factor for pokeball curve throwing (DEFAULT 1.0 means no randomize: always perfect 'Super Spin' curve ball. 0.0 randomizes between normal and 'Super Spin' curve ball)",
         type=float,

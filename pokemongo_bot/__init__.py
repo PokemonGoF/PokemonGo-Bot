@@ -79,7 +79,7 @@ class PokemonGoBot(object):
 
     def tick(self):
         start_time = time.time()
-        minimum_tick_time = 5
+
         self.cell = self.get_meta_cell()
         self.tick_count += 1
 
@@ -90,14 +90,14 @@ class PokemonGoBot(object):
             worker_start = time.time()
             result = worker.work()
             worker_time = time.time() - worker_start
-            
+
             if self.config.log_timing_info:
                 logger.log('[T] {}s - {}'.format(round(worker_time, 2), worker.type), 'blue')
             if result == WorkerResult.RUNNING:
                 break
 
         elapsed_time = time.time() - start_time
-        sleep_time = max(0, minimum_tick_time - elapsed_time)
+        sleep_time = max(0, self.config.minimum_tick_time - elapsed_time)
         if self.config.log_timing_info:
             logger.log('[T] {}s - Tick #{}'.format(round(elapsed_time, 2), self.tick_count), 'blue')
         if sleep_time > 0:
@@ -121,7 +121,7 @@ class PokemonGoBot(object):
                 wild_pokemons += cell["wild_pokemons"]
             if "catchable_pokemons" in cell and len(cell["catchable_pokemons"]):
                 catchable_pokemons += cell["catchable_pokemons"]
-        
+
         # If there are forts present in the cells sent from the server or we don't yet have any cell data, return all data retrieved
         if len(forts) > 1 or not self.cell:
             return {
