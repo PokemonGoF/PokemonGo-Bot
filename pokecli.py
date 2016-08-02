@@ -317,6 +317,14 @@ def init_config():
     add_config(
         parser,
         load,
+        long_flag="--minimum_tick_time",
+        help="Sleeps until a tick reaches this minimum, in seconds",
+        type=float,
+        default=1.5
+    )
+    add_config(
+        parser,
+        load,
         long_flag="--map_object_cache_time",
         help="Amount of seconds to keep the map object in cache (bypass Niantic throttling)",
         type=float,
