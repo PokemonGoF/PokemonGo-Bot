@@ -225,16 +225,6 @@ def init_config():
         type=str,
         default=None
     )
-    add_config(
-        parser,
-        load,
-        short_flag="-ms",
-        long_flag="--max_steps",
-        help=
-        "Set the steps around your initial location(DEFAULT 5 mean 25 cells around your location)",
-        type=int,
-        default=50
-    )
 
     add_config(
         parser,
@@ -396,7 +386,7 @@ def init_config():
             """.format(flag_name))
 
     old_flags = ['mode', 'catch_pokemon', 'spin_forts', 'forts_spin', 'hatch_eggs', 'release_pokemon', 'softban_fix',
-                'longer_eggs_first', 'evolve_speed', 'use_lucky_egg', 'item_filter', 'evolve_all', 'evolve_cp_min']
+                'longer_eggs_first', 'evolve_speed', 'use_lucky_egg', 'item_filter', 'evolve_all', 'evolve_cp_min', 'max_steps']
     for flag in old_flags:
         if flag in load:
             task_configuration_error(flag)
