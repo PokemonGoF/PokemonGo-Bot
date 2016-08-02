@@ -3,20 +3,16 @@ import json
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.cell_workers.base_task import BaseTask
-from pokemongo_bot.cell_workers.utils import get_candies
-
 
 class TransferPokemon(BaseTask):
     def work(self):
         pokemon_groups = self._release_pokemon_get_groups()
-        candies = get_candies(self.bot)
-        evolvable = 0
         for pokemon_id in pokemon_groups:
             group = pokemon_groups[pokemon_id]
 
             if len(group) > 0:
                 pokemon_name = self.bot.pokemon_list[pokemon_id - 1]['Name']
-                keep_best, keep_best_cp, keep_best_iv, keep_for_evo = self._validate_keep_best_config(pokemon_name)
+                keep_best, keep_best_cp, keep_best_iv = self._validate_keep_best_config(pokemon_name)
 
                 if keep_best:
                     best_pokemon_ids = set()
@@ -37,74 +33,41 @@ class TransferPokemon(BaseTask):
                             order_criteria = 'iv'
 
                     # remove best pokemons from all pokemons array
-                    best_pokemon = []
+                    all_pokemons = group
+                    best_pokemons = []
                     for best_pokemon_id in best_pokemon_ids:
-                        for pokemon in group:
+                        for pokemon in all_pokemons:
                             if best_pokemon_id == pokemon['pokemon_data']['id']:
-                                group.remove(pokemon)
-                                best_pokemon.append(pokemon)
+                                all_pokemons.remove(pokemon)
+                                best_pokemons.append(pokemon)
 
-                    if len(best_pokemon) > 0:
-                        logger.log("Keep {} best {}, based on {}".format(len(best_pokemon),
+                    transfer_pokemons = [pokemon for pokemon in all_pokemons
+                                         if self.should_release_pokemon(pokemon_name,
+                                                                        pokemon['cp'],
+                                                                        pokemon['iv'],
+                                                                        True)]
+
+                    if transfer_pokemons:
+                        logger.log("Keep {} best {}, based on {}".format(len(best_pokemons),
                                                                          pokemon_name,
                                                                          order_criteria), "green")
-                        for best_pokemon in best_pokemon:
+                        for best_pokemon in best_pokemons:
                             logger.log("{} [CP {}] [Potential {}]".format(pokemon_name,
                                                                           best_pokemon['cp'],
                                                                           best_pokemon['iv']), 'green')
 
-                high_pokemon = []
-                for pokemon in group:
-                    if self.should_release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv']):
-                        group.remove(pokemon)
-                        high_pokemon.append(pokemon)
-                if len(high_pokemon) > 0:
-                    logger.log("Keep {} {}, based on cp/iv criteria".format(len(high_pokemon),
-                                                                            pokemon_name), "green")
-                    for high_pokemon in high_pokemon:
-                        logger.log("{} [CP {}] [Potential {}]".format(pokemon_name,
-                                                                      high_pokemon['cp'],
-                                                                      high_pokemon['iv']), 'green')
+                        logger.log("Transferring {} pokemon".format(len(transfer_pokemons)), "green")
 
-                if keep_for_evo and len(group) > 0:
-                    if 'Previous evolution(s)' in self.bot.pokemon_list[pokemon_id - 1]:
-                        logger.log(
-                            '{} has previous evolution stages. This focuses on 1st stage because they use less '
-                            'candy'.format(pokemon_name), 'red')
-                        continue
+                        for pokemon in transfer_pokemons:
+                            self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
+                else:
+                    group = sorted(group, key=lambda x: x['cp'], reverse=True)
+                    for item in group:
+                        pokemon_cp = item['cp']
+                        pokemon_potential = item['iv']
 
-                    if candies == {}:
-                        logger.log("Api call for candies failed, try again")
-                        return
-                    candy = candies[pokemon_id]
-                    if 'Next Evolution Requirements' in self.bot.pokemon_list[pokemon_id - 1]:
-                        req_candy = self.bot.pokemon_list[pokemon_id - 1]['Next Evolution Requirements']['Amount']
-                        num_keep = (len(group) + candy) / (req_candy + 1)
-
-                        if len(group) > num_keep:
-                            group.sort(key=lambda x: x['iv'], reverse=True)
-                            evo_pokemon = group[:num_keep]
-                            group = group[num_keep:]
-                        else:
-                            evo_pokemon = group
-                            group = []
-
-                        evolvable += len(evo_pokemon)
-                        if len(evo_pokemon) > 0:
-                            logger.log("Keep {} {}, for evolution - {} candies".format(len(evo_pokemon),
-                                                                                       pokemon_name, candy), "green")
-                            for evo_pokemon in evo_pokemon:
-                                logger.log("{} [CP {}] [Potential {}]".format(pokemon_name,
-                                                                              evo_pokemon['cp'],
-                                                                              evo_pokemon['iv']), 'green')
-
-                logger.log("Transferring {} {}".format(len(group), pokemon_name), "green")
-
-                for pokemon in group:
-                    self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
-
-        logger.log("{} pokemon transferred total. {} evolutions ready (based on pokemons additional to the ones kept"
-                   " with cp/iv criteria)".format(len(group), evolvable), "green")
+                        if self.should_release_pokemon(pokemon_name, pokemon_cp, pokemon_potential):
+                            self.release_pokemon(pokemon_name, item['cp'], item['iv'], item['pokemon_data']['id'])
 
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
@@ -163,16 +126,15 @@ class TransferPokemon(BaseTask):
                 continue
         return round((total_iv / 45.0), 2)
 
-    def should_release_pokemon(self, pokemon_name, cp, iv):
+    def should_release_pokemon(self, pokemon_name, cp, iv, keep_best_mode = False):
         release_config = self._get_release_config_for(pokemon_name)
 
-        release_strings = ['never_release', 'always_release', 'release_below_cp', 'release_below_iv']
-        keep_strings = ['keep_best_cp', 'keep_best_iv']
-        if not any(x in release_config for x in release_strings):
-            if any(x in release_config for x in keep_strings):
-                return True
-            else:
-                return False
+        if (keep_best_mode
+            and not release_config.has_key('never_release')
+            and not release_config.has_key('always_release')
+            and not release_config.has_key('release_below_cp')
+            and not release_config.has_key('release_below_iv')):
+            return True
 
         cp_iv_logic = release_config.get('logic')
         if not cp_iv_logic:
@@ -239,7 +201,6 @@ class TransferPokemon(BaseTask):
 
         keep_best_cp = release_config.get('keep_best_cp', 0)
         keep_best_iv = release_config.get('keep_best_iv', 0)
-        keep_for_evo = release_config.get('keep_for_evo', False)
 
         if keep_best_cp or keep_best_iv:
             keep_best = True
@@ -260,4 +221,4 @@ class TransferPokemon(BaseTask):
             if keep_best_cp == 0 and keep_best_iv == 0:
                 keep_best = False
 
-        return keep_best, keep_best_cp, keep_best_iv, keep_for_evo
+        return keep_best, keep_best_cp, keep_best_iv
