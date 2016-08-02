@@ -35,7 +35,10 @@ class PokemonGoBot(object):
 
     def __init__(self, config):
         self.config = config
-        self.gmap_client = googlemaps.Client(config.gmapkey)
+        try:
+            self.gmap_client = googlemaps.Client(config.gmapkey)
+        except:
+            self.gmap_client = None
         self.fort_timeouts = dict()
         self.pokemon_list = json.load(
             open(os.path.join('data', 'pokemon.json'))
