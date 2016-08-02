@@ -101,6 +101,7 @@ src/
 web/
 data/last-location*.json
 data/cells-*.json
+data/map-caught-*.json
 
 # Multiple config
 configs/*
