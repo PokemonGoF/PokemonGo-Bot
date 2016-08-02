@@ -1,6 +1,6 @@
 import time
 
-from pgoapi.exceptions import NotLoggedInException, ServerBusyOrOfflineException, NoPlayerPositionSetException, EmptySubrequestChainException
+from pgoapi.exceptions import ServerSideRequestThrottlingException, NotLoggedInException, ServerBusyOrOfflineException, NoPlayerPositionSetException, EmptySubrequestChainException
 from pgoapi.pgoapi import PGoApi, PGoApiRequest, RpcApi
 from pgoapi.protos.POGOProtos.Networking.Requests_pb2 import RequestType
 
@@ -88,12 +88,25 @@ class ApiRequest(PGoApiRequest):
         api_req_method_list = self._req_method_list
         result = None
         try_cnt = 0
-
+        throttling_retry = 0
         while True:
             request_timestamp = self.throttle_sleep()
             # self._call internally clear this field, so save it
             self._req_method_list = [req_method for req_method in api_req_method_list]
-            result = self._call()
+            try:
+                result = self._call()
+                should_retry = False
+            except ServerSideRequestThrottlingException:
+                should_retry = True
+
+            if should_retry:
+                throttling_retry += 1
+                logger.log("Server is throttling, let's slow down a bit")
+                if throttling_retry >= max_retry:
+                    raise ServerSideRequestThrottlingException('Server throttled too many times')
+                sleep(1) # huge sleep ?
+                continue # skip response checking
+
             if not self.is_response_valid(result, request_callers):
                 try_cnt += 1
                 logger.log('Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry), 'red')
