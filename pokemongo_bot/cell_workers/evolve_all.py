@@ -10,9 +10,10 @@ class EvolveAll(BaseTask):
         self.evolve_cp_min = self.config.get('evolve_cp_min', 300)
         self.evolve_num_min = self.config.get('evolve_num_min', 5)
         self.use_lucky_egg = self.config.get('use_lucky_egg', False)
+        self._validate_config()
 
     def _validate_config(self):
-        if isinstance(self.evolve_all, str):
+        if isinstance(self.evolve_all, basestring):
             self.evolve_all = [str(pokemon_name) for pokemon_name in self.evolve_all.split(',')]
 
     def work(self):
