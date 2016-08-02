@@ -154,7 +154,17 @@ class PokemonGoBot(object):
         with open(user_data_cells, 'w') as outfile:
             json.dump(cells, outfile)
 
-        user_web_location = os.path.join(
+        if self.config.journal:
+            self.config.user_journal = os.path.join(
+                'data', 'journal-%s.txt' % self.config.username
+            )
+            logger.log('Setting journal path', 'green')
+            with open(self.config.user_journal, 'w') as outfile:
+                ts = time.time()
+                st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+                outfile.write('Bot started at %s' % st)
+
+                user_web_location = os.path.join(
             'web', 'location-%s.json' % self.config.username
         )
         # alt is unused atm but makes using *location easier

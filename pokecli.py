@@ -332,6 +332,15 @@ def init_config():
         type=float,
         default=5.0
     )
+    add_config(
+        parser,
+        load,
+        short_flag="-j",
+        long_flag="--journal",
+        help="Enable to disable writing the player journal to file",
+        type=bool,
+        default=True
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()
@@ -340,6 +349,7 @@ def init_config():
     if not config.password and 'password' not in load:
         config.password = getpass("Password: ")
 
+    config.user_journal = None
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.action_wait_max = load.get('action_wait_max', 4)
