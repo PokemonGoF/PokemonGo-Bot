@@ -77,9 +77,6 @@ class NicknamePokemon(BaseTask):
                 'api_error',
                 formatted='Attempt to nickname received bad response from server.'
             )
-            if self.bot.config.debug:
-                logger.log(response,log_color)
-            return
         result = result['result']
         new_name = new_name or name
         if result == 0:
