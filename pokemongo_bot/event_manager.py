@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+
 class EventNotRegisteredException(Exception):
     pass
 
@@ -54,7 +58,7 @@ class EventManager(object):
                 if k not in parameters:
                     raise EventMalformedException("Event %s does not require parameter %s" % (event, k))
 
-        formatted_msg = formatted.encode('utf8', 'replace').format(**data)
+        formatted_msg = formatted.format(**data)
 
         # send off to the handlers
         for handler in self._handlers:

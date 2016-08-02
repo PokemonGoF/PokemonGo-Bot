@@ -10,8 +10,8 @@ from pokemongo_bot.event_manager import EventHandler
 class SocketIoHandler(EventHandler):
 
 
-    def __init__(self, url):
-        super(EventHandler, self).__init__()
+    def __init__(self, bot, url):
+        self.bot = bot
         self.host, port_str = url.split(':')
         self.port = int(port_str)
         self.sio = SocketIO(self.host, self.port)
@@ -24,6 +24,7 @@ class SocketIoHandler(EventHandler):
             'bot:broadcast',
             {
                 'event': event,
-                'data': data,
+                'account': self.bot.config.username,
+                'data': data
             }
         )

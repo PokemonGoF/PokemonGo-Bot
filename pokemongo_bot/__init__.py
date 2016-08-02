@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
 import datetime
 import json
@@ -70,7 +71,10 @@ class PokemonGoBot(object):
                 self.sio_runner = SocketIoRunner(self.config.websocket_server_url)
                 self.sio_runner.start_listening_async()
 
-            websocket_handler = SocketIoHandler(self.config.websocket_server_url)
+            websocket_handler = SocketIoHandler(
+                self,
+                self.config.websocket_server_url
+            )
             handlers.append(websocket_handler)
 
 
@@ -781,7 +785,7 @@ class PokemonGoBot(object):
                 formatted=msg,
                 data={
                     'location': location_str,
-                    'position': location
+                    'position': 'Москва'
                 }
             )
 
