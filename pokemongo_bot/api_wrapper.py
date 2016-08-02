@@ -2,7 +2,11 @@ import time
 
 from pgoapi.exceptions import (NotLoggedInException,
                                ServerBusyOrOfflineException)
-
+try:
+    from pgoapi.exceptions import ServerSideRequestThrottlingException
+    from pgoapi.pgoapi import PGoApiRequest
+except ImportError:
+    pass
 import logger
 from human_behaviour import sleep
 
@@ -11,18 +15,25 @@ class ApiWrapper(object):
     def __init__(self, api):
         self._api = api
         self.request_callers = []
-        self.reset_auth()
         self.last_api_request_time = None
         self.requests_per_seconds = 2
+        self.current_request = None
+        try:
+            self.useNewRequest = self._api.create_request is not None
+        except AttributeError:
+            self.useNewRequest = False
+        self.reset_auth()
 
     def reset_auth(self):
         self._api._auth_token = None
         self._api._auth_provider = None
-        self._api._api_endpoint = None
+        if not self.useNewRequest:
+            self._api._api_endpoint = None
 
     # wrap api methods
     def _can_call(self):
-        if not self._api._req_method_list or len(self._api._req_method_list) == 0:
+        request_holder = self.current_request if self.useNewRequest else self._api
+        if not request_holder._req_method_list or len(request_holder._req_method_list) == 0:
             raise RuntimeError('Trying to call the api without setting any request')
         if self._api._auth_provider is None or not self._api._auth_provider.is_login():
             logger.log('Not logged in!', 'red')
@@ -58,14 +69,24 @@ class ApiWrapper(object):
             return False # currently this is never ran, exceptions are raised before
 
         request_timestamp = None
-
-        api_req_method_list = self._api._req_method_list
+        request_holder = self.current_request if self.useNewRequest else self._api
+        api_req_method_list = request_holder._req_method_list
         result = None
         try_cnt = 0
         while True:
             request_timestamp = self.throttle_sleep()
-            self._api._req_method_list = [req_method for req_method in api_req_method_list] # api internally clear this field after a call
-            result = self._api.call()
+            request_holder._req_method_list = [req_method for req_method in api_req_method_list] # api internally clear this field after a call
+            if self.useNewRequest:
+                try:
+                    result = self.current_request.call()
+                except ServerSideRequestThrottlingException:
+                    logger.log('Request throttled by server. Trying again...','red')
+                    try_cnt += 1
+                    if try_cnt >= max_retry:
+                        raise ServerBusyOrOfflineException()
+                    continue
+            else:
+                result = self._api.call()
             if not self._is_response_valid(result, request_callers):
                 try_cnt += 1
                 logger.log('Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry), 'red')
@@ -75,6 +96,7 @@ class ApiWrapper(object):
                 sleep(1)
             else:
                 break
+        self.current_request = None
 
         self.last_api_request_time = request_timestamp
         return result
@@ -87,6 +109,10 @@ class ApiWrapper(object):
         DEFAULT_ATTRS = ['_position_lat', '_position_lng', '_auth_provider', '_api_endpoint', 'set_position', 'get_position']
         if func not in DEFAULT_ATTRS:
             self.request_callers.append(func)
+            if self.useNewRequest:
+                if not self.current_request:
+                    self.current_request = self._api.create_request()
+                return getattr(self.current_request, func)
         return getattr(self._api, func)
 
     def throttle_sleep(self):
