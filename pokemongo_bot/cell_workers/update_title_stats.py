@@ -107,7 +107,8 @@ class UpdateTitleStats(BaseTask):
         :rtype: None
         :raise: RuntimeError: When the given platform isn't supported.
         """
-        if platform == "linux" or platform == "linux2" or platform == "darwin":
+        if platform == "linux" or platform == "linux2"\
+                or platform == "darwin" or platform == "cygwin":
             stdout.write("\x1b]2;{}\x07".format(title))
         elif platform == "win32":
             ctypes.windll.kernel32.SetConsoleTitleA(title)
