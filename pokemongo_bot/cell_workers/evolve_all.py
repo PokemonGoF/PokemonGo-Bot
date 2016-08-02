@@ -5,6 +5,7 @@ from pokemongo_bot.cell_workers.base_task import BaseTask
 
 class EvolveAll(BaseTask):
     def initialize(self):
+        self.api = self.bot.api
         self.evolve_all = self.config.get('evolve_all', [])
         self.evolve_speed = self.config.get('evolve_speed', 3.7)
         self.order_by = self.config.get('order_by', 'cp')
@@ -21,7 +22,8 @@ class EvolveAll(BaseTask):
         if not self._should_run():
             return
 
-        response_dict = self.bot.get_inventory()
+        self.api.get_inventory()
+        response_dict = self.api.call()
         inventory_items = response_dict.get('responses', {}).get('GET_INVENTORY', {}).get('inventory_delta', {}).get(
             'inventory_items', {})
 
@@ -33,16 +35,14 @@ class EvolveAll(BaseTask):
 
         cache = {}
         candy_list = self._get_candy_list(inventory_items)
-        id_list1 = self._pokemon_ids_list()
+        evolved = 0
         for pokemon in evolve_list:
-            if self._can_evolve(pokemon, candy_list, cache):
-                self._execute_pokemon_evolve(pokemon, candy_list, cache)
+            if self._can_evolve(pokemon, candy_list, cache) \
+                    and self._execute_pokemon_evolve(pokemon, candy_list, cache):
+                evolved += 1
 
-        id_list2 = self._pokemon_ids_list()
-        release_cand_list_ids = list(set(id_list2) - set(id_list1))
-
-        if release_cand_list_ids:
-            logger.log('Evolved {} pokemon!'.format(len(release_cand_list_ids)))
+        if evolved > 0:
+            logger.log('Evolved {} pokemon!'.format(evolved))
 
     def _should_run(self):
         if not self.evolve_all or self.evolve_all[0] == 'none':
@@ -102,16 +102,11 @@ class EvolveAll(BaseTask):
         pokemons = filter(lambda x: x["id"] > 0 and x["cp"] > 0 and x["iv"] > 0 and x["candies_amount"] > 0, pokemons)
 
         if self.order_by == "cp":
-            sort_param_a = "cp"
-            sort_param_b = "iv"
-            threshold = self.evolve_cp_min
+            pokemons = filter(lambda x: x["cp"] >= self.evolve_cp_min, pokemons)
+            pokemons.sort(key=lambda x: (x['num'], x["cp"], x["iv"]), reverse=True)
         else:
-            sort_param_a = "iv"
-            sort_param_b = "cp"
-            threshold = self.evolve_iv_min
-
-        pokemons.sort(key=lambda x: (x['num'], 1, x[sort_param_a], x[sort_param_b]) if x[sort_param_a] > threshold
-        else (x['num'], 0, x[sort_param_b], x[sort_param_a]), reverse=True)
+            pokemons = filter(lambda x: x["iv"] >= self.evolve_iv_min, pokemons)
+            pokemons.sort(key=lambda x: (x['num'], x["iv"], x["cp"]), reverse=True)
 
         return pokemons
 
@@ -135,7 +130,7 @@ class EvolveAll(BaseTask):
         pokemon_iv = pokemon["iv"]
 
         if pokemon_name in cache:
-            return
+            return False
 
         self.bot.api.evolve_pokemon(pokemon_id=pokemon_id)
         response_dict = self.bot.api.call()
@@ -143,25 +138,13 @@ class EvolveAll(BaseTask):
             logger.log('Successfully evolved {} with {} CP and {} IV!'.format(pokemon_name, pokemon_cp, pokemon_iv))
             candy_list[pokemon["candies_family"]] -= pokemon["candies_amount"]
             sleep(self.evolve_speed)
+            return True
         else:
             # cache pokemons we can't evolve. Less server calls
             cache[pokemon_name] = 1
             sleep(0.7)
+            return False
 
-    def _pokemon_ids_list(self):
-        response_dict = self.bot.get_inventory()
-        id_list = []
-        inventory_items = response_dict.get('responses', {}).get('GET_INVENTORY', {}).get('inventory_delta', {}).get(
-            'inventory_items', {})
-        for item in inventory_items:
-            pokemon = item.get('inventory_item_data', {}).get('pokemon_data', {})
-            if pokemon.get('is_egg', False):
-                continue
-            id_list.append(pokemon.get('id'))
-
-        return id_list
-
-    # TODO: should also go to util and refactor in catch worker
     def _compute_iv(self, pokemon):
         total_iv = pokemon.get("individual_attack", 0) + pokemon.get("individual_stamina", 0) + pokemon.get(
             "individual_defense", 0)
