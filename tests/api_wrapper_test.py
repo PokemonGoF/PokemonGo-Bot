@@ -114,3 +114,10 @@ class TestApiWrapper(unittest.TestCase):
         with self.assertRaises(TimeoutError):
             for i in range(request.requests_per_seconds * 2):
                 request.call()
+
+    @patch('pokemongo_bot.api_wrapper.ApiRequest.is_response_valid')
+    def test_api_direct_call(self, mock_method):
+        mock_method.return_value = True
+
+        result = FakeApi().get_inventory()
+        self.assertEqual(result, 'mock return')

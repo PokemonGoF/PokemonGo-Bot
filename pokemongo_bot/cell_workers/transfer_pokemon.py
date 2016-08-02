@@ -71,8 +71,10 @@ class TransferPokemon(BaseTask):
 
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
-        self.bot.api.get_player().get_inventory()
-        inventory_req = self.bot.api.call()
+        request = self.bot.api.create_request()
+        request.get_player()
+        request.get_inventory()
+        inventory_req = request.call()
 
         if inventory_req.get('responses', False) is False:
             return pokemon_groups
@@ -182,8 +184,7 @@ class TransferPokemon(BaseTask):
         logger.log('Exchanging {} [CP {}] [Potential {}] for candy!'.format(pokemon_name,
                                                                             cp,
                                                                             iv), 'green')
-        self.bot.api.release_pokemon(pokemon_id=pokemon_id)
-        response_dict = self.bot.api.call()
+        response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon_id)
         action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
 
     def _get_release_config_for(self, pokemon):

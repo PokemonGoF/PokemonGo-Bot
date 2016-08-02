@@ -103,7 +103,7 @@ class PokemonGoBot(object):
                 wild_pokemons += cell["wild_pokemons"]
             if "catchable_pokemons" in cell and len(cell["catchable_pokemons"]):
                 catchable_pokemons += cell["catchable_pokemons"]
-        
+
         # If there are forts present in the cells sent from the server or we don't yet have any cell data, return all data retrieved
         if len(forts) > 1 or not self.cell:
             return {
@@ -138,14 +138,13 @@ class PokemonGoBot(object):
                 if 'forts' in cell:
                     for fort in cell['forts']:
                         if fort.get('type') != 1:
-                            self.api.get_gym_details(
+                            response_gym_details = self.api.get_gym_details(
                                 gym_id=fort.get('id'),
                                 player_latitude=lng,
                                 player_longitude=lat,
                                 gym_latitude=fort.get('latitude'),
                                 gym_longitude=fort.get('longitude')
                             )
-                            response_gym_details = self.api.call()
                             fort['gym_details'] = response_gym_details.get(
                                 'responses', {}
                             ).get('GET_GYM_DETAILS', None)
@@ -181,7 +180,17 @@ class PokemonGoBot(object):
     def find_close_cells(self, lat, lng):
         cellid = get_cell_ids(lat, lng)
         timestamp = [0, ] * len(cellid)
+<<<<<<< 2450ccbab106693fd3cceddc48b21c85ff39a46b
         response_dict = self.get_map_objects(lat, lng, timestamp, cellid)
+=======
+
+        response_dict = self.api.get_map_objects(
+            latitude=f2i(lat),
+            longitude=f2i(lng),
+            since_timestamp_ms=timestamp,
+            cell_id=cellid
+        )
+>>>>>>> add tests, and modify calls to api accordingly
         map_objects = response_dict.get(
             'responses', {}
         ).get('GET_MAP_OBJECTS', {})
@@ -267,7 +276,7 @@ class PokemonGoBot(object):
 
     def _setup_api(self):
         # instantiate pgoapi
-        self.api = ApiWrapper(PGoApi())
+        self.api = ApiWrapper()
 
         # provide player position on the earth
         self._set_starting_position()
@@ -286,8 +295,7 @@ class PokemonGoBot(object):
     def _print_character_info(self):
         # get player profile call
         # ----------------------
-        self.api.get_player()
-        response_dict = self.api.call()
+        response_dict = self.api.get_player()
         # print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
         currency_1 = "0"
         currency_2 = "0"
@@ -368,15 +376,11 @@ class PokemonGoBot(object):
         logger.log('')
 
     def use_lucky_egg(self):
-        self.api.use_item_xp_boost(item_id=301)
-        inventory_req = self.api.call()
-        return inventory_req
+        return self.api.use_item_xp_boost(item_id=301)
 
     def get_inventory(self):
         if self.latest_inventory is None:
-            self.api.get_inventory()
-            response = self.api.call()
-            self.latest_inventory = response
+            self.latest_inventory = self.api.get_inventory()
         return self.latest_inventory
 
     def update_inventory(self):
@@ -538,9 +542,10 @@ class PokemonGoBot(object):
         self.fort_timeouts = {id: timeout for id, timeout
                               in self.fort_timeouts.iteritems()
                               if timeout >= time.time() * 1000}
-        self.api.get_player()
-        self.api.check_awarded_badges()
-        self.api.call()
+        request = self.api.create_request()
+        request.get_player()
+        request.check_awarded_badges()
+        request.call()
         self.update_web_location()  # updates every tick
 
     def get_inventory_count(self, what):
