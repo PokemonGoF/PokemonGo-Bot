@@ -37,6 +37,8 @@ from datetime import timedelta
 from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException
 from geopy.exc import GeocoderQuotaExceeded
+import googlemaps
+import pprint
 
 from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
 from pokemongo_bot import logger
@@ -58,6 +60,7 @@ def main():
     finished = False
 
     while not finished:
+        bot = 0
         try:
             bot = PokemonGoBot(config)
             bot.start()

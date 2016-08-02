@@ -12,6 +12,7 @@ import time
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
 from pgoapi.utilities import f2i, get_cell_ids
+import googlemaps
 
 import cell_workers
 import logger
@@ -34,6 +35,7 @@ class PokemonGoBot(object):
 
     def __init__(self, config):
         self.config = config
+        self.gmap_client = googlemaps.Client(config.gmapkey)
         self.fort_timeouts = dict()
         self.pokemon_list = json.load(
             open(os.path.join('data', 'pokemon.json'))
@@ -103,7 +105,7 @@ class PokemonGoBot(object):
                 wild_pokemons += cell["wild_pokemons"]
             if "catchable_pokemons" in cell and len(cell["catchable_pokemons"]):
                 catchable_pokemons += cell["catchable_pokemons"]
-        
+
         # If there are forts present in the cells sent from the server or we don't yet have any cell data, return all data retrieved
         if len(forts) > 1 or not self.cell:
             return {
