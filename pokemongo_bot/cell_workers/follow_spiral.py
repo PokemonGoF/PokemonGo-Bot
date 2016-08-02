@@ -3,7 +3,6 @@ from __future__ import absolute_import, unicode_literals
 
 import math
 
-import pokemongo_bot.logger as logger
 from pokemongo_bot.cell_workers.utils import distance, format_dist
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.cell_workers.base_task import BaseTask

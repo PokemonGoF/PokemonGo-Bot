@@ -5,7 +5,6 @@ from pgoapi.exceptions import ServerSideRequestThrottlingException, NotLoggedInE
 from pgoapi.pgoapi import PGoApi, PGoApiRequest, RpcApi
 from pgoapi.protos.POGOProtos.Networking.Requests_pb2 import RequestType
 
-import pokemongo_bot.logger as logger
 from human_behaviour import sleep
 
 class ApiWrapper(PGoApi):
