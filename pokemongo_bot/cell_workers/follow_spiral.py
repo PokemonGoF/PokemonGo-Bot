@@ -11,12 +11,13 @@ from pokemongo_bot.cell_workers.base_task import BaseTask
 class FollowSpiral(BaseTask):
     def initialize(self):
         self.steplimit = self.config.get("diameter", 3)
+        self.step_size = self.config.get("step_size", 70)
         self.origin_lat = self.bot.position[0]
         self.origin_lon = self.bot.position[1]
 
         self.diameter_to_steps = (self.steplimit+1) ** 2
         self.points = self._generate_spiral(
-            self.origin_lat, self.origin_lon, 70, self.diameter_to_steps
+            self.origin_lat, self.origin_lon, self.step_size, self.diameter_to_steps
         )
 
         self.ptr = 0

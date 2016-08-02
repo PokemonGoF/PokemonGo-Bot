@@ -61,7 +61,8 @@
       {
         "type": "FollowSpiral",
         "config": {
-          "diameter": 4
+          "diameter": 4,
+          "step_size": 70
         }
       }
     ],
