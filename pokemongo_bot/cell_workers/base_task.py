@@ -1,6 +1,7 @@
 class BaseTask(object):
-  def __init__(self, bot, config):
+  def __init__(self, bot, config, type):
     self.bot = bot
+    self.type = type
     self.config = config
     self._validate_work_exists()
     self.initialize()

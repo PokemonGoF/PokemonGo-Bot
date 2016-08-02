@@ -7,7 +7,13 @@ from pokemongo_bot.cell_workers.utils import get_candies
 
 
 class TransferPokemon(BaseTask):
+    def initialize(self):
+        self.every_nth_tick = self.config.get('every_nth_tick', 5)
+
     def work(self):
+        if not self._should_run():
+            return
+
         pokemon_groups = self._release_pokemon_get_groups()
         candies = get_candies(self.bot)
         evolvable = 0
@@ -105,6 +111,9 @@ class TransferPokemon(BaseTask):
 
         logger.log("{} pokemon transferred total. {} evolutions ready (based on pokemons additional to the ones kept"
                    " with cp/iv criteria)".format(len(group), evolvable), "green")
+
+    def _should_run(self):
+        return self.bot.tick_count % self.every_nth_tick is 0
 
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
