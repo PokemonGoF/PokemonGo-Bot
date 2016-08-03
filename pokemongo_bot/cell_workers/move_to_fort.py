@@ -1,4 +1,5 @@
 from pokemongo_bot import logger
+from pokemongo_bot.cell_workers.recycle_items import RecycleItems
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
@@ -14,10 +15,17 @@ class MoveToFort(BaseTask):
         self.lure_max_distance = 2000 #self.config.get("lure_max_distance", 2000)
 
     def should_run(self):
-        has_space_for_loot = self.bot.has_space_for_loot()
-        if not has_space_for_loot:
-            logger.log("Not moving to any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently.", 'yellow')
-        return has_space_for_loot or self.bot.softban
+        if not self.bot.has_space_for_loot():
+            self.recycle_items()
+            if not self.bot.has_space_for_loot():
+                logger.log("Not moving to any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently.", 'yellow')
+        return self.bot.has_space_for_loot() or self.bot.softban
+
+    def recycle_items(self):
+        item_recycler = RecycleItems(self.bot, self.bot.config)
+        item_recycler.work()
+        self.bot.latest_inventory = None
+        self.bot.get_inventory()
 
     def is_attracted(self):
         return (self.lure_distance > 0)
