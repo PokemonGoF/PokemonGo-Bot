@@ -5,15 +5,14 @@ from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import normalized_reticle_size, sleep, spin_modifier
 
 
-CATCH_SUCCESS = 1
-CATCH_FAILED = 2
-CATCH_VANISHED = 3
+CATCH_STATUS_SUCCESS = 1
+CATCH_STATUS_FAILED = 2
+CATCH_STATUS_VANISHED = 3
 
 ITEM_POKEBALL = 1
 ITEM_GREATBALL = 2
 ITEM_ULTRABALL = 3
-
-RAZZ_BERRY_ID = 701
+ITEM_RAZZBERRY = 701
 
 LOGIC_TO_FUNCTION = {
     'or': lambda x, y: x or y,
@@ -235,9 +234,9 @@ class PokemonCatchWorker(object):
 
     def _do_catch(self, pokemon, encounter_id, catch_rate_by_ball, is_vip=False):
         # settings that may be exposed at some point
-        berry_id = RAZZ_BERRY_ID
+        berry_id = ITEM_RAZZBERRY
         maximum_ball = ITEM_ULTRABALL if is_vip else ITEM_GREATBALL
-        catch_rate_before_throw = 0.9 if is_vip else 0.35
+        ideal_catch_rate_before_throw = 0.9 if is_vip else 0.35
 
         berries_count = self.bot.item_inventory_count(berry_id)
         items_stock = self.bot.current_inventory()
@@ -249,7 +248,7 @@ class PokemonCatchWorker(object):
             while items_stock[current_ball] == 0 and current_ball < maximum_ball:
                 current_ball += 1
             if items_stock[current_ball] == 0:
-                logger.log('No pokeballs to use!')
+                logger.log('No balls to use!')
                 break
 
             # check future ball count
@@ -264,7 +263,7 @@ class PokemonCatchWorker(object):
 
             # use a berry if we are under our ideal rate and have berries to spare
             used_berry = False
-            if catch_rate_by_ball[current_ball] < catch_rate_before_throw and berries_to_spare:
+            if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and berries_to_spare:
                 catch_rate_by_ball = self._use_berry(berry_id, berries_count, encounter_id, catch_rate_by_ball, current_ball)
                 berries_count -= 1
                 used_berry = True
@@ -273,12 +272,12 @@ class PokemonCatchWorker(object):
             best_ball = current_ball
             while best_ball < maximum_ball:
                 best_ball += 1
-                if catch_rate_by_ball[current_ball] < catch_rate_before_throw and items_stock[best_ball] > 0:
+                if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and items_stock[best_ball] > 0:
                     # if current ball chance to catch is under our ideal rate, and player has better ball - then use it
                     current_ball = best_ball
 
             # if the rate is still low and we didn't throw a berry before, throw one
-            if catch_rate_by_ball[current_ball] < catch_rate_before_throw and berries_count > 0 and not used_berry:
+            if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and berries_count > 0 and not used_berry:
                 catch_rate_by_ball = self._use_berry(berry_id, berries_count, encounter_id, catch_rate_by_ball, current_ball)
                 berries_count -= 1
 
@@ -312,18 +311,19 @@ class PokemonCatchWorker(object):
                 break
 
             # retry failed pokemon
-            if catch_pokemon_status is CATCH_FAILED:
+            if catch_pokemon_status == CATCH_STATUS_FAILED:
                 logger.log('[-] Attempted to capture {} - failed.. trying again!'.format(pokemon.name), 'red')
                 sleep(2)
                 continue
 
             # abandon if pokemon vanished
-            if catch_pokemon_status is CATCH_VANISHED:
+            elif catch_pokemon_status == CATCH_STATUS_VANISHED:
                 logger.log('Oh no! {} vanished! :('.format(pokemon.name), 'red')
                 if self._pct(catch_rate_by_ball[current_ball]) == 100:
                     self.bot.softban = True
 
-            if catch_pokemon_status is CATCH_SUCCESS:
+            # pokemon caught!
+            elif catch_pokemon_status == CATCH_STATUS_SUCCESS:
                 self.bot.metrics.captured_pokemon(pokemon.name, pokemon.cp, pokemon.iv_display, pokemon.iv)
 
                 logger.log('Captured {}! [CP {}] [Potential {}] [{}] [+{} exp]'.format(
