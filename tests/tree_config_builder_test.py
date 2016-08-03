@@ -34,6 +34,18 @@ class TreeConfigBuilderTest(unittest.TestCase):
             "No worker named foo defined",
             builder.build)
 
+    def test_should_throw_on_wrong_evolve_task_name(self):
+        obj = convert_from_json("""[{
+                "type": "EvolveAll"
+            }]""")
+
+        builder = TreeConfigBuilder(self.bot, obj)
+
+        self.assertRaisesRegexp(
+            ConfigException,
+            "The EvolveAll task has been renamed to EvolvePokemon",
+            builder.build)
+
     def test_creating_worker(self):
         obj = convert_from_json("""[{
                 "type": "HandleSoftBan"
@@ -60,5 +72,14 @@ class TreeConfigBuilderTest(unittest.TestCase):
         self.assertIsInstance(tree[1], CatchLuredPokemon)
         self.assertIs(tree[1].bot, self.bot)
 
-if __name__ == '__main__':
-    unittest.main()
+    def test_task_with_config(self):
+        obj = convert_from_json("""[{
+                "type": "IncubateEggs",
+                "config": {
+                    "longer_eggs_first": true
+                }
+            }]""")
+
+        builder = TreeConfigBuilder(self.bot, obj)
+        tree = builder.build()
+        self.assertTrue(tree[0].config.get('longer_eggs_first', False))

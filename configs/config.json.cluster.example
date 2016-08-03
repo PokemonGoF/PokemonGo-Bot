@@ -55,21 +55,14 @@
         "type": "SpinFort"
       },
       {
-        "type": "MoveToFort",
+        "type": "FollowCluster",
         "config": {
-            "lure_attraction": true,
-            "lure_max_distance": 2000
-        }
-      },
-      {
-        "type": "FollowSpiral",
-        "config": {
-          "diameter": 4,
-          "step_size": 70
+            "radius": 50,
+            "lured": true
         }
       }
     ],
-    "map_object_cache_time": 5,
+    "max_steps": 5,
     "forts": {
       "avoid_circles": true,
       "max_circle_size": 50

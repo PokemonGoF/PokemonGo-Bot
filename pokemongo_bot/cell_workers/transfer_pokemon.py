@@ -1,18 +1,11 @@
 import json
 
-from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import action_delay
+from pokemongo_bot.cell_workers.base_task import BaseTask
 
 
-class TransferPokemon(object):
-
-    def __init__(self, bot):
-        self.bot = bot
-
+class TransferPokemon(BaseTask):
     def work(self):
-        if not self.bot.config.release_pokemon:
-            return
-
         pokemon_groups = self._release_pokemon_get_groups()
         for pokemon_id in pokemon_groups:
             group = pokemon_groups[pokemon_id]
@@ -49,18 +42,25 @@ class TransferPokemon(object):
                                 best_pokemons.append(pokemon)
 
                     if best_pokemons and all_pokemons:
-                        logger.log("Keep {} best {}, based on {}".format(len(best_pokemons),
-                                                                         pokemon_name,
-                                                                         order_criteria), "green")
-                        for best_pokemon in best_pokemons:
-                            logger.log("{} [CP {}] [Potential {}]".format(pokemon_name,
-                                                                          best_pokemon['cp'],
-                                                                          best_pokemon['iv']), 'green')
+                        self.emit_event(
+                            'keep_best_release',
+                            formatted="Keeping best {amount} {pokemon}, based on {criteria}",
+                            data={
+                                'amount': len(best_pokemons),
+                                'pokemon': pokemon_name,
+                                'criteria': order_criteria
+                            }
+                        )
 
-                        logger.log("Transferring {} pokemon".format(len(all_pokemons)), "green")
+                    transfer_pokemons = [pokemon for pokemon in all_pokemons
+                                         if self.should_release_pokemon(pokemon_name,
+                                                                        pokemon['cp'],
+                                                                        pokemon['iv'],
+                                                                        True)]
 
-                    for pokemon in all_pokemons:
-                        self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
+                    if transfer_pokemons:
+                        for pokemon in transfer_pokemons:
+                            self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
                 else:
                     group = sorted(group, key=lambda x: x['cp'], reverse=True)
                     for item in group:
@@ -72,8 +72,10 @@ class TransferPokemon(object):
 
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
-        self.bot.api.get_player().get_inventory()
-        inventory_req = self.bot.api.call()
+        request = self.bot.api.create_request()
+        request.get_player()
+        request.get_inventory()
+        inventory_req = request.call()
 
         if inventory_req.get('responses', False) is False:
             return pokemon_groups
@@ -96,6 +98,10 @@ class TransferPokemon(object):
 
             # pokemon in fort, so we cant transfer it
             if 'deployed_fort_id' in pokemon_data and pokemon_data['deployed_fort_id']:
+                continue
+
+            # favorite pokemon can't transfer in official game client
+            if pokemon_data.get('favorite', 0) is 1:
                 continue
 
             group_id = pokemon_data['pokemon_id']
@@ -123,8 +129,16 @@ class TransferPokemon(object):
                 continue
         return round((total_iv / 45.0), 2)
 
-    def should_release_pokemon(self, pokemon_name, cp, iv):
+    def should_release_pokemon(self, pokemon_name, cp, iv, keep_best_mode = False):
         release_config = self._get_release_config_for(pokemon_name)
+
+        if (keep_best_mode
+            and not release_config.has_key('never_release')
+            and not release_config.has_key('always_release')
+            and not release_config.has_key('release_below_cp')
+            and not release_config.has_key('release_below_iv')):
+            return True
+
         cp_iv_logic = release_config.get('logic')
         if not cp_iv_logic:
             cp_iv_logic = self._get_release_config_for('any').get('logic', 'and')
@@ -154,25 +168,32 @@ class TransferPokemon(object):
         }
 
         if logic_to_function[cp_iv_logic](*release_results.values()):
-            logger.log(
-                "Releasing {} with CP {} and IV {}. Matching release rule: CP < {} {} IV < {}. ".format(
-                    pokemon_name,
-                    cp,
-                    iv,
-                    release_cp,
-                    cp_iv_logic.upper(),
-                    release_iv
-                ), 'yellow'
+            self.emit_event(
+                'future_pokemon_release',
+                formatted="Releasing {pokemon} (CP {cp}/IV {iv}) based on rule: CP < {below_cp} {cp_iv_logic} IV < {below_iv}",
+                data={
+                    'pokemon': pokemon_name,
+                    'cp': cp,
+                    'iv': iv,
+                    'below_cp': release_cp,
+                    'cp_iv_logic': cp_iv_logic.upper(),
+                    'below_iv': release_iv
+                }
             )
 
         return logic_to_function[cp_iv_logic](*release_results.values())
 
     def release_pokemon(self, pokemon_name, cp, iv, pokemon_id):
-        logger.log('Exchanging {} [CP {}] [Potential {}] for candy!'.format(pokemon_name,
-                                                                            cp,
-                                                                            iv), 'green')
-        self.bot.api.release_pokemon(pokemon_id=pokemon_id)
-        response_dict = self.bot.api.call()
+        response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon_id)
+        self.emit_event(
+            'pokemon_release',
+            formatted='Exchanged {pokemon} [CP {cp}] [IV {iv}] for candy.',
+            data={
+                'pokemon': pokemon_name,
+                'cp': cp,
+                'iv': iv
+            }
+        )
         action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
 
     def _get_release_config_for(self, pokemon):
@@ -204,7 +225,6 @@ class TransferPokemon(object):
                 keep_best_iv = 0
 
             if keep_best_cp < 0 or keep_best_iv < 0:
-                logger.log("Keep best can't be < 0. Ignore it.", "red")
                 keep_best = False
 
             if keep_best_cp == 0 and keep_best_iv == 0:
