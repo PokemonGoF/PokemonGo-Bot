@@ -1,1 +1,0 @@
-from polyline_walker import PolylineWalker
