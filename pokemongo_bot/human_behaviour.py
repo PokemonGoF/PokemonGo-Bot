@@ -147,6 +147,7 @@ def spin_modifier(factor, mode='human'):
         return mode(factor)
 
 
+"""
 def _visualize():
     '''
     Visualize rng distributions.
@@ -259,8 +260,8 @@ def _precalc_lognormal_ping_param(
     with open(output_file_path, 'w') as fout:
         fout.write('\n'.join(res))
 
-
 if '__main__' == __name__:
     # _precalc_lognormal_ping_param()
     # _visualize()
     pass
+"""
