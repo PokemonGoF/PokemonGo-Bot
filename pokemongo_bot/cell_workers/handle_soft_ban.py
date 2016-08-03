@@ -1,3 +1,5 @@
+from random import randint
+
 from pgoapi.utilities import f2i
 
 from pokemongo_bot.constants import Constants
@@ -31,11 +33,12 @@ class HandleSoftBan(BaseTask):
                 del self.bot.fort_timeouts[forts[0]['id']]
             return WorkerResult.RUNNING
         else:
+            spins = randint(50,60)
             self.emit_event(
                 'softban_fix',
                 formatted='Fixing softban.'
             )
-            for i in xrange(50):
+            for i in xrange(spins):
                 self.spin_fort(forts[0])
             self.bot.softban = False
             self.emit_event(

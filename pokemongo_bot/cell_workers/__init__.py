@@ -19,3 +19,4 @@ from .base_task import BaseTask
 from .follow_cluster import FollowCluster
 from .sleep_schedule import SleepSchedule
 from .update_title_stats import UpdateTitleStats
+from .move_to_map_pokemon import MoveToMapPokemon

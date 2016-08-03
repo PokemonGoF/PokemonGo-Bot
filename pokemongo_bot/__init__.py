@@ -768,6 +768,7 @@ class PokemonGoBot(object):
             item_count = item_dict.get('count', False)
             if item_id == int(id) and item_count:
                 return item_count
+        return 0
 
     def _all_items_inventory_count(self, inventory_dict):
         item_count_dict = {}
@@ -895,7 +896,7 @@ class PokemonGoBot(object):
         # Check if the given location is already a coordinate.
         if ',' in location_name:
             possible_coordinates = re.findall(
-                "[-]?\d{1,3}[.]\d{6,7}", location_name
+                "[-]?\d{1,3}[.]\d{3,7}", location_name
             )
             if len(possible_coordinates) == 2:
                 # 2 matches, this must be a coordinate. We'll bypass the Google

@@ -136,13 +136,13 @@ class IncubateEggs(BaseTask):
                         "used": False
                     })
                 elif 'is_egg' not in pokemon and pokemon['id'] in lookup_ids:
-                    matched_pokemon.append(pokemon.update({
+                    pokemon.update({
                         "iv": [
                             pokemon.get('individual_attack', 0),
                             pokemon.get('individual_defense', 0),
                             pokemon.get('individual_stamina', 0)
-                        ]
-                    }))
+                        ]})
+                    matched_pokemon.append(pokemon)
                 continue
             if "player_stats" in inv_data:
                 self.km_walked = inv_data.get("player_stats", {}).get("km_walked", 0)
@@ -192,7 +192,6 @@ class IncubateEggs(BaseTask):
                 }
             )
             return
-
         for i in range(len(pokemon_data)):
             msg = "Egg hatched with a {pokemon} (CP {cp} - IV {iv}), {exp} exp, {stardust} stardust and {candy} candies."
             self.emit_event(

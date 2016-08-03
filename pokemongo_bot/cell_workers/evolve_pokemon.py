@@ -11,7 +11,7 @@ class EvolvePokemon(BaseTask):
     def initialize(self):
         self.api = self.bot.api
         self.evolve_all = self.config.get('evolve_all', [])
-        self.evolve_speed = self.config.get('evolve_speed', 3.7)
+        self.evolve_speed = self.config.get('evolve_speed', 2)
         self.first_evolve_by = self.config.get('first_evolve_by', 'cp')
         self.evolve_above_cp = self.config.get('evolve_above_cp', 500)
         self.evolve_above_iv = self.config.get('evolve_above_iv', 0.8)

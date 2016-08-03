@@ -8,7 +8,6 @@ from pokemongo_bot.cell_workers.base_task import BaseTask
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.tree_config_builder import ConfigException
 
-
 class UpdateTitleStats(BaseTask):
     """
     Periodically updates the terminal title to display stats about the bot.
@@ -110,8 +109,10 @@ class UpdateTitleStats(BaseTask):
         :raise: RuntimeError: When the given platform isn't supported.
         """
         if platform == "linux" or platform == "linux2"\
-                or platform == "darwin" or platform == "cygwin":
+                or platform == "cygwin":
             stdout.write("\x1b]2;{}\x07".format(title))
+        elif platform == "darwin":
+            stdout.write("\033]0;{}\007".format(title))
         elif platform == "win32":
             ctypes.windll.kernel32.SetConsoleTitleA(title)
         else:
