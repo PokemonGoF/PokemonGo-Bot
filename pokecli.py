@@ -40,6 +40,7 @@ from geopy.exc import GeocoderQuotaExceeded
 
 from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
 from pokemongo_bot import logger
+from pokemongo_bot.health_record import BotEvent
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -54,6 +55,7 @@ def main():
     if not config:
         return
     logger.log('Configuration initialized', 'yellow')
+    health_record = BotEvent(config)
 
     finished = False
 
@@ -63,6 +65,7 @@ def main():
             bot.start()
             tree = TreeConfigBuilder(bot, config.raw_tasks).build()
             bot.workers = tree
+            raise Exception('test no argv')
             bot.metrics.capture_stats()
 
             logger.log('Starting PokemonGo Bot....', 'green')
