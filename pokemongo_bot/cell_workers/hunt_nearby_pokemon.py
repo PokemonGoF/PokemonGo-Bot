@@ -65,7 +65,7 @@ class HuntNearbyPokemon(BaseTask):
                 logger.log("End search pokemon")
                 self._end_search()
         elif 'nearby_pokemons' in self.bot.cell and anyball_count >= self.start_min_anyball and free_pokemon_slot > 0 and self._should_hunt(self.bot.cell['nearby_pokemons']):
-           logger.log("start search pokemon !")
+           logger.log("Start search pokemon \o/")
            self._start_search()
            return WorkerResult.RUNNING
 
@@ -83,13 +83,6 @@ class HuntNearbyPokemon(BaseTask):
         step_walker = StepWalker(
             self.bot,
             self.bot.config.walk,
-            point['lat'],
-            point['lng']
-        )
-
-        dist = distance(
-            self.bot.api._position_lat,
-            self.bot.api._position_lng,
             point['lat'],
             point['lng']
         )
@@ -163,42 +156,6 @@ class HuntNearbyPokemon(BaseTask):
             mlat, mlon = coord2merc(lat, lng)
             current_step = current_step + (start_step * 2)
         return coords
-
-    # source from transfert_pokemon
-    def _get_captured_pokemons(self):
-        pokemon_groups = {}
-        self.bot.api.get_player().get_inventory()
-        inventory_req = self.bot.api.call()
-
-        if inventory_req.get('responses', False) is False:
-            return pokemon_groups
-
-        inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
-
-        for pokemon in inventory_dict:
-            try:
-                reduce(dict.__getitem__, [
-                    "inventory_item_data", "pokemon_data", "pokemon_id"
-                ], pokemon)
-            except KeyError:
-                continue
-
-            pokemon_data = pokemon['inventory_item_data']['pokemon_data']
-
-            group_id = pokemon_data['pokemon_id']
-            group_pokemon_cp = pokemon_data['cp']
-            group_pokemon_iv = 0
-
-            if group_id not in pokemon_groups:
-                pokemon_groups[group_id] = []
-
-            pokemon_groups[group_id].append({
-                'cp': group_pokemon_cp,
-                'iv': group_pokemon_iv,
-                'pokemon_data': pokemon_data
-            })
-
-        return pokemon_groups
 
     def check_vip_pokemon(self,pokemon):
         vip_name = self.bot.config.vips.get(pokemon)
