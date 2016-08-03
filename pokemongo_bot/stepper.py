@@ -68,7 +68,7 @@ class Stepper(object):
         steps = (dist + 0.0) / (speed + 0.0)  # may be rational number
         intSteps = int(steps)
         residuum = steps - intSteps
-        logger.log('[#] Walking from ' + str((i2f(self.api._position_lat), i2f(
+        logger.log('[#] Walking ' + str(ceil(dist)) + 'M from ' + str((i2f(self.api._position_lat), i2f(
             self.api._position_lng))) + " to " + str(str((lat, lng))) +
                    " for approx. " + str(format_time(ceil(steps))))
         if steps != 0:
