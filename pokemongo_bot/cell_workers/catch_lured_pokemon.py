@@ -1,3 +1,4 @@
+import six
 from pokemongo_bot.cell_workers.utils import fort_details
 from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 from pokemongo_bot.cell_workers.base_task import BaseTask
@@ -20,6 +21,9 @@ class CatchLuredPokemon(BaseTask):
                               latitude=fort['latitude'],
                               longitude=fort['longitude'])
         fort_name = details.get('name', 'Unknown').encode('utf8', 'replace')
+
+        if six.PY3:
+            fort_name = fort_name.decode('utf-8')
 
         encounter_id = fort.get('lure_info', {}).get('encounter_id', None)
 
