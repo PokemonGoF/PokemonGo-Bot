@@ -16,22 +16,13 @@ from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
 from pgoapi.utilities import f2i, get_cell_ids
 
-<<<<<<< HEAD
 from . import cell_workers
-from . import logger
 from .api_wrapper import ApiWrapper
 from .cell_workers.utils import distance
 from .event_manager import EventManager
 from .human_behaviour import sleep
 from .item_list import Item
 from .metrics import Metrics
-import cell_workers
-from api_wrapper import ApiWrapper
-from cell_workers.utils import distance
-from event_manager import EventManager
-from human_behaviour import sleep
-from item_list import Item
-from metrics import Metrics
 from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from .worker_result import WorkerResult
@@ -795,18 +786,13 @@ class PokemonGoBot(object):
 
         has_position = False
 
-        if self.config.test:
-            # TODO: Add unit tests
-            return
+         if self.config.test:
+             # TODO: Add unit tests
+             return
 
         if self.config.location:
-<<<<<<< HEAD
-            location_str = self.config.location.encode('utf-8') if six.PY2 \
-                           else self.config.location
-            location = (self.get_pos_by_name(location_str.replace(" ", "")))
-=======
             location_str = self.config.location
-            location = self.get_pos_by_name(location_str.replace(" ", ""))
+            location = (self.get_pos_by_name(location_str.replace(" ", "")))
             msg = "Location found: {location} {position}"
             self.event_manager.emit(
                 'location_found',
@@ -819,7 +805,6 @@ class PokemonGoBot(object):
                 }
             )
 
->>>>>>> origin/feature/event-log
             self.api.set_position(*location)
 
             self.event_manager.emit(

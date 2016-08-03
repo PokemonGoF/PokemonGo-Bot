@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
+from __future__ import print_function
+import six
 
 class EventNotRegisteredException(Exception):
     pass
@@ -27,12 +28,12 @@ class EventManager(object):
 
     def event_report(self):
         for event, parameters in self._registered_events.iteritems():
-            print '-'*80
-            print 'Event: {}'.format(event)
+            print('-'*80)
+            print('Event: {}'.format(event))
             if parameters:
-                print 'Parameters:'
+                print('Parameters:')
                 for parameter in parameters:
-                    print '* {}'.format(parameter)
+                    print('* {}'.format(parameter))
 
     def add_handler(self, event_handler):
         self._handlers.append(event_handler)
@@ -45,7 +46,7 @@ class EventManager(object):
             raise ArgumentError('Event needs a sender!')
 
         levels = ['info', 'warning', 'error', 'critical', 'debug']
-        if not level in levels:
+        if level not in levels:
             raise ArgumentError('Event level needs to be in: {}'.format(levels))
 
         if event not in self._registered_events:
@@ -54,7 +55,7 @@ class EventManager(object):
         # verify params match event
         parameters = self._registered_events[event]
         if parameters:
-            for k, v in data.iteritems():
+            for k, v in six.iteritems(data):
                 if k not in parameters:
                     raise EventMalformedException("Event %s does not require parameter %s" % (event, k))
 

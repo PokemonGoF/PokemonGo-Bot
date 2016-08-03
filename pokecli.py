@@ -44,9 +44,14 @@ from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(name)10s] [%(levelname)s] %(message)s')
+logger = logging.getLogger('cli')
+logger.setLevel(logging.INFO)
 
 def main():
-    logger.log('PokemonGO Bot v1.0', 'green')
+    logger.info('PokemonGO Bot v1.0')
     sys.stdout = codecs.getwriter('utf8')(sys.stdout)
     sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 

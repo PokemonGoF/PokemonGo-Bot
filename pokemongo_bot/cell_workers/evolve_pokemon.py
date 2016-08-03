@@ -37,8 +37,8 @@ class EvolvePokemon(BaseTask):
         cache = {}
         candy_list = self._get_candy_list(inventory_items)
         for pokemon in evolve_list:
-            if self._can_evolve(pokemon, candy_list, cache) \
-                    and self._execute_pokemon_evolve(pokemon, candy_list, cache):
+            if self._can_evolve(pokemon, candy_list, cache):
+               self._execute_pokemon_evolve(pokemon, candy_list, cache)
 
     def _should_run(self):
         if not self.evolve_all or self.evolve_all[0] == 'none':
