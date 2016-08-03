@@ -16,6 +16,8 @@ class CatchVisiblePokemon(BaseTask):
             )
 
             for pokemon in self.bot.cell['catchable_pokemons']:
+                with open(user_web_catchable, 'w') as outfile:
+                    json.dump(pokemon, outfile)
                 self.emit_event(
                     'catchable_pokemon',
                     level='debug',
