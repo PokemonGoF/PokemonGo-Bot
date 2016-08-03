@@ -1,6 +1,9 @@
 import time
 
-from pgoapi.exceptions import ServerSideRequestThrottlingException, NotLoggedInException, ServerBusyOrOfflineException, NoPlayerPositionSetException, EmptySubrequestChainException
+from pgoapi.exceptions import (ServerSideRequestThrottlingException,
+    NotLoggedInException, ServerBusyOrOfflineException,
+    NoPlayerPositionSetException, EmptySubrequestChainException,
+    UnexpectedResponseException)
 from pgoapi.pgoapi import PGoApi, PGoApiRequest, RpcApi
 from pgoapi.protos.POGOProtos.Networking.Requests_pb2 import RequestType
 
@@ -92,23 +95,36 @@ class ApiRequest(PGoApiRequest):
         result = None
         try_cnt = 0
         throttling_retry = 0
+        unexpected_response_retry = 0
         while True:
             request_timestamp = self.throttle_sleep()
             # self._call internally clear this field, so save it
             self._req_method_list = [req_method for req_method in api_req_method_list]
             try:
                 result = self._call()
-                should_retry = False
+                should_throttle_retry = False
+                should_unexpected_response_retry = False
             except ServerSideRequestThrottlingException:
-                should_retry = True
+                should_throttle_retry = True
+            except UnexpectedResponseException:
+                should_unexpected_response_retry = True
 
-            if should_retry:
+            if should_throttle_retry:
                 throttling_retry += 1
                 if throttling_retry >= max_retry:
                     raise ServerSideRequestThrottlingException('Server throttled too many times')
                 sleep(1) # huge sleep ?
                 continue # skip response checking
 
+            if should_unexpected_response_retry:
+                unexpected_reponse_retry += 1
+                if unexpected_response_retry >= 5:
+                    logger.log('Server is not responding correctly to our requests.  Waiting for 30 seconds to reconnect.', 'red')
+                    sleep(30)
+                else:
+                    sleep(2)
+                continue
+                
             if not self.is_response_valid(result, request_callers):
                 try_cnt += 1
                 if try_cnt > 3:
