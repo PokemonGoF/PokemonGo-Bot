@@ -116,10 +116,10 @@ def main():
             time.sleep(30)
         except GeocoderQuotaExceeded:
             raise "Google Maps API key over requests limit."
-        except Exception as e:
+        except Exception:
             # always report session summary and then raise exception
             report_summary(bot)
-            raise e
+            raise
 
 def report_summary(bot):
     if bot.metrics.start_time is None:

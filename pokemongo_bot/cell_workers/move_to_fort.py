@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import six
+
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
@@ -41,9 +43,6 @@ class MoveToFort(BaseTask):
         fortID = nearest_fort['id']
         details = fort_details(self.bot, fortID, lat, lng)
         fort_name = details.get('name', 'Unknown')
-
-        if six.PY3:
-            fort_name = fort_name.decode('utf8')
 
         unit = self.bot.config.distance_unit  # Unit to use when printing formatted distance
 

@@ -786,9 +786,9 @@ class PokemonGoBot(object):
 
         has_position = False
 
-         if self.config.test:
-             # TODO: Add unit tests
-             return
+        if self.config.test:
+            # TODO: Add unit tests
+            return
 
         if self.config.location:
             location_str = self.config.location
