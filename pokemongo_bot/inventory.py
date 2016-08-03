@@ -53,6 +53,10 @@ class Candy(object):
         self.type = Pokemons.name_for(family_id)
         self.quantity = quantity
 
+    def consume(self, amount):
+        if self.quantity < amount:
+            raise Exception('Tried to consume more {} candy than you have'.format(self.type))
+        self.quantity -= amount
 
     def add(self, amount):
         if amount < 0:
@@ -137,6 +141,10 @@ class Pokemons(_BaseInventoryComponent):
         except KeyError:
             return
 
+    def all(self):
+        # by default don't include eggs in all pokemon (usually just
+        # makes caller's lives more difficult)
+        return [p for p in super(Pokemons, self).all() if not isinstance(p, Egg)]
 
 class Egg(object):
     def __init__(self, data):
@@ -175,7 +183,7 @@ class Pokemon(object):
 
     @property
     def candy_quantity(self):
-        return candies().quantity_for(self.first_evolution_id)
+        return candies().get(self.pokemon_id).quantity
 
     @property
     def evolution_cost(self):
