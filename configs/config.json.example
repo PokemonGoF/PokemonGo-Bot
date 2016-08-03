@@ -36,7 +36,7 @@
       {
         "type": "RecycleItems",
         "config": {
-          "threshold": 300,
+          "min_inventory_items_to_run": 300,
           "item_filter": {
             "Pokeball":       { "keep" : 100 },
             "Potion":         { "keep" : 10 },

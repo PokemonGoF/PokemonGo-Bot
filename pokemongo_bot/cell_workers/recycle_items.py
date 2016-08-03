@@ -3,11 +3,12 @@ import os
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.tree_config_builder import ConfigException
 
+
 class RecycleItems(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def initialize(self):
-        self.threshold = self.config.get('threshold', 0)
+        self.min_inventory_items_to_run = self.config.get('min_inventory_items_to_run', 0)
         self.item_filter = self.config.get('item_filter', {})
         self._validate_item_filter()
 
@@ -22,9 +23,11 @@ class RecycleItems(BaseTask):
 
     def work(self):
         total_items_count = self.bot.get_inventory_count('item')
-        if self.threshold >= total_items_count:
-            logger.log('Skipping Recycle. Threshold of {} not crossed. {} Items in Bag.'.format(self.threshold, total_items_count),
-                       'yellow')
+        if self.min_inventory_items_to_run >= total_items_count:
+            logger.log('Skipping Recycling of Items.', 'yellow')
+            logger.log('{} Items in Bag. Set to run when over {} Items.'.format(
+                total_items_count, self.min_inventory_items_to_run),
+                'yellow')
             return
 
         self.bot.latest_inventory = None
