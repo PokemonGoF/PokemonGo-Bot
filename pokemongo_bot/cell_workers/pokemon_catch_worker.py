@@ -22,9 +22,11 @@ class PokemonCatchWorker(object):
         self.response_key = ''
         self.response_status_key = ''
 
-    def work(self):
+    def work(self, response_dict=None):
         encounter_id = self.pokemon['encounter_id']
-        response_dict = self.create_encounter_api_call()
+
+        if not response_dict:
+            response_dict = self.create_encounter_api_call()
 
         if response_dict and 'responses' in response_dict:
             if self.response_key in response_dict['responses']:
