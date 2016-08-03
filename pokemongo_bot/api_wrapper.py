@@ -120,16 +120,16 @@ class ApiRequest(PGoApiRequest):
             if should_unexpected_response_retry:
                 unexpected_reponse_retry += 1
                 if unexpected_response_retry >= 5:
-                    logger.log('Server is not responding correctly to our requests.  Waiting for 30 seconds to reconnect.', 'red')
+                    self.logger.warning('Server is not responding correctly to our requests.  Waiting for 30 seconds to reconnect.')
                     sleep(30)
                 else:
                     sleep(2)
                 continue
-                
+
             if not self.is_response_valid(result, request_callers):
                 try_cnt += 1
                 if try_cnt > 3:
-                    self.logger.warning('Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry), 'red')
+                    self.logger.warning('Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry))
                 if try_cnt >= max_retry:
                     raise ServerBusyOrOfflineException()
                 sleep(1)

@@ -785,7 +785,7 @@ class PokemonGoBot(object):
                 formatted=msg,
                 data={
                     'location': location_str,
-                    'position': 'Москва'
+                    'position': location
                 }
             )
 
