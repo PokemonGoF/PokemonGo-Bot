@@ -7,6 +7,7 @@ class RecycleItems(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def initialize(self):
+        self.threshold = self.config.get('threshold', 0)
         self.item_filter = self.config.get('item_filter', {})
         self._validate_item_filter()
 
@@ -15,9 +16,17 @@ class RecycleItems(BaseTask):
         for config_item_name, bag_count in self.item_filter.iteritems():
             if config_item_name not in item_list.viewvalues():
                 if config_item_name not in item_list:
-                    raise ConfigException("item {} does not exist, spelling mistake? (check for valid item names in data/items.json)".format(config_item_name))
+                    raise ConfigException(
+                        "item {} does not exist, spelling mistake? (check for valid item names in data/items.json)".format(
+                            config_item_name))
 
     def work(self):
+        total_items_count = self.bot.get_inventory_count('item')
+        if self.threshold >= total_items_count:
+            logger.log('Skipping Recycle. Threshold of {} not crossed. {} Items in Bag.'.format(self.threshold, total_items_count),
+                       'yellow')
+            return
+
         self.bot.latest_inventory = None
         item_count_dict = self.bot.item_inventory_count('all')
 
@@ -58,7 +67,7 @@ class RecycleItems(BaseTask):
 
     def send_recycle_item_request(self, item_id, count):
         # Example of good request response
-        #{'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
+        # {'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
         return self.bot.api.recycle_inventory_item(
             item_id=item_id,
             count=count
