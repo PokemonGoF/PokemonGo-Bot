@@ -65,7 +65,6 @@ def main():
             bot.start()
             tree = TreeConfigBuilder(bot, config.raw_tasks).build()
             bot.workers = tree
-            raise Exception('test no argv')
             bot.metrics.capture_stats()
 
             logger.log('Starting PokemonGo Bot....', 'green')
