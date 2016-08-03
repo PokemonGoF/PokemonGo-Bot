@@ -201,6 +201,10 @@ def main():
     logger.log('[x] PokemonGO Bot v1.0', 'green')
     logger.log('[x] Configuration initialized', 'yellow')
 
+    gameLoop(config, 0)
+
+
+def gameLoop(config, timeout):
     try:
         bot = PokemonGoBot(config)
         bot.start()
@@ -214,6 +218,10 @@ def main():
         logger.log('[x] Exiting PokemonGo Bot', 'red')
         # TODO Add number of pokemon catched, pokestops visited, highest CP
         # pokemon catched, etc.
+    except:
+        logger.log('[x] Reset PokemonGo Bot after unexpected Exception...', 'red')
+        time.sleep(timeout)
+        gameLoop(config, timeout + 15)
 
 
 if __name__ == '__main__':
