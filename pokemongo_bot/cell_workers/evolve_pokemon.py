@@ -1,4 +1,5 @@
 from __future__ import division
+from past.builtins import basestring
 from past.utils import old_div
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.item_list import Item
