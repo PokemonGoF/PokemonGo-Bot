@@ -22,9 +22,7 @@ class CatchVisiblePokemon(BaseTask):
                 with open(user_web_catchable, 'w') as outfile:
                     json.dump(pokemon, outfile)
 
-            while len(self.bot.cell['catchable_pokemons']):
-                self.catch_pokemon(self.bot.cell['catchable_pokemons'].pop(0))
-                time.sleep(1)
+            return self.catch_pokemon(self.bot.cell['catchable_pokemons'].pop(0))
 
         if 'wild_pokemons' in self.bot.cell and len(self.bot.cell['wild_pokemons']) > 0:
             # Sort all by distance from current pos- eventually this should
