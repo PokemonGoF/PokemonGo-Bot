@@ -131,12 +131,7 @@ class PokemonGoBot(object):
         # provide player position on the earth
         self._set_starting_position()
 
-        if not self.api.login(self.config.auth_service,
-                              str(self.config.username),
-                              str(self.config.password)):
-            logger.log('Login Error, server busy', 'red')
-            exit(0)
-
+        self.login()
         # chain subrequests (methods) into one RPC call
 
         # get player profile call
@@ -184,6 +179,13 @@ class PokemonGoBot(object):
 
         logger.log('[#]')
         self.update_inventory()
+
+    def login(self):
+        if not self.api.login(self.config.auth_service,
+                              str(self.config.username),
+                              str(self.config.password)):
+            logger.log('Login Error, server busy', 'red')
+            exit(0)
 
     def catch_pokemon(self, pokemon):
         worker = PokemonCatchWorker(pokemon, self)

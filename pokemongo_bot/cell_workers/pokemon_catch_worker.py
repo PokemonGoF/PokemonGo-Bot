@@ -76,21 +76,9 @@ class PokemonCatchWorker(object):
 
                             pokeball = 1 # default:poke ball
 
-                            if balls_stock[1] <= 0: # if poke ball are out of stock
-                                if balls_stock[2] > 0: # and player has great balls in stock...
-                                    pokeball = 2 # then use great balls
-                                elif balls_stock[3] > 0: # or if great balls are out of stock too, and player has ultra balls...
-                                    pokeball = 3 # then use ultra balls
-                                else:
-                                    pokeball = 0 # player doesn't have any of pokeballs, great balls or ultra balls
+                            pokeball = self.choose_pokeball(balls_stock, pokeball)
 
-                            while(pokeball < 3):
-                                if catch_rate[pokeball-1] < 0.35 and balls_stock[pokeball+1] > 0:
-                                    # if current ball chance to catch is under 35%, and player has better ball - then use it
-                                    pokeball = pokeball+1 # use better ball
-                                else:
-                                    break
-
+                            pokeball = self.check_for_better_pokeball(balls_stock, catch_rate, pokeball)
                             # @TODO, use the best ball in stock to catch VIP (Very Important Pokemon: Configurable)
 
                             if pokeball is 0:
@@ -171,6 +159,26 @@ class PokemonCatchWorker(object):
                                         '[x] Captured {}! [CP {}]'.format(pokemon_name, cp), 'green')
                             break
         time.sleep(5)
+
+    def check_for_better_pokeball(self, balls_stock, catch_rate, pokeball):
+        while (pokeball < 3):
+            if catch_rate[pokeball - 1] < 0.35 and balls_stock[pokeball + 1] > 0:
+                # if current ball chance to catch is under 35%, and player has better ball - then use it
+                pokeball = pokeball + 1  # use better ball
+            else:
+                break
+
+        return pokeball
+
+    def choose_pokeball(self, balls_stock, pokeball):
+        if balls_stock[1] <= 0:  # if poke ball are out of stock
+            if balls_stock[2] > 0:  # and player has great balls in stock...
+                pokeball = 2  # then use great balls
+            elif balls_stock[3] > 0:  # or if great balls are out of stock too, and player has ultra balls...
+                pokeball = 3  # then use ultra balls
+            else:
+                pokeball = 0  # player doesn't have any of pokeballs, great balls or ultra balls
+        return pokeball
 
     def _transfer_low_cp_pokemon(self, value):
         self.api.get_inventory()
