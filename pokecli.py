@@ -440,7 +440,7 @@ def init_config():
             raise
 
     if config.evolve_captured and isinstance(config.evolve_captured, str):
-        config.evolve_captured = [str(pokemon_name) for pokemon_name in config.evolve_captured.split(',')]
+        config.evolve_captured = [str(pokemon_name).strip() for pokemon_name in config.evolve_captured.split(',')]
 
     fix_nested_config(config)
     return config
