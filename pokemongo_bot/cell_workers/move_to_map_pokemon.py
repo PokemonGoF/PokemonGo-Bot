@@ -104,7 +104,7 @@ class MoveToMapPokemon(BaseTask):
         try:
             loc_json = req.json()
         except ValueError:
-            return log.logger('Map location data was not valid', 'red')
+            return logger.log('Map location data was not valid', 'red')
 
 
         dist = distance(
