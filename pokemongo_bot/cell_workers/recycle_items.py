@@ -4,6 +4,7 @@ from pokemongo_bot import logger
 from pokemongo_bot.cell_workers.base_task import BaseTask
 from pokemongo_bot.tree_config_builder import ConfigException
 
+
 class RecycleItems(BaseTask):
     def initialize(self):
         self.item_filter = self.config.get('item_filter', {})
@@ -14,7 +15,9 @@ class RecycleItems(BaseTask):
         for config_item_name, bag_count in self.item_filter.iteritems():
             if config_item_name not in item_list.viewvalues():
                 if config_item_name not in item_list:
-                    raise ConfigException("item {} does not exist, spelling mistake? (check for valid item names in data/items.json)".format(config_item_name))
+                    raise ConfigException(
+                        "item {} does not exist, spelling mistake? (check for valid item names in data/items.json)".format(
+                            config_item_name))
 
     def work(self):
         self.bot.latest_inventory = None
@@ -33,19 +36,47 @@ class RecycleItems(BaseTask):
             bag_count = self.bot.item_inventory_count(item_id)
             if (item_name in self.item_filter or str(item_id) in self.item_filter) and bag_count > id_filter_keep:
                 items_recycle_count = bag_count - id_filter_keep
-                response_dict_recycle = self.send_recycle_item_request(item_id=item_id, count=items_recycle_count)
-                result = response_dict_recycle.get('responses', {}).get('RECYCLE_INVENTORY_ITEM', {}).get('result', 0)
+                self.recycle(item_id, items_recycle_count, id_filter_keep)
 
-                if result == 1: # Request success
-                    message_template = "-- Discarded {}x {} (keeps only {} maximum) "
-                    message = message_template.format(str(items_recycle_count), item_name, str(id_filter_keep))
-                    logger.log(message, 'green')
-                else:
-                    logger.log("-- Failed to discard " + item_name, 'red')
+        # For keeping a given number of pokeballs, prioritizing better balls
+        if 'Anyball' in self.item_filter or '5' in self.item_filter:
+            anyball_object = self.item_filter.get('Anyball', 0)
+            if anyball_object is 0:
+                anyball_object = self.item_filter.get('5', 0)
+
+            pokeballs_to_keep = anyball_object.get('keep', 20)
+            self.recycle_pokeballs(pokeballs_to_keep)
+
+    def recycle_pokeballs(self, pokeballs_to_keep):
+        current_ball_count = 0
+        for ball_id in [4, 3, 2, 1]:
+            current_ball_count += self.bot.item_inventory_count(ball_id)
+            if current_ball_count > pokeballs_to_keep:
+                balls_to_drop = current_ball_count - pokeballs_to_keep
+                current_ball_count -= balls_to_drop
+                self.recycle(ball_id, balls_to_drop)
+
+    def recycle(self, item_id, recycle_count, keep_max=-1):
+        item_name = self.bot.item_list[str(item_id)]
+
+        response_dict_recycle = self.send_recycle_item_request(item_id=item_id, count=recycle_count)
+        result = response_dict_recycle.get('responses', {}).get('RECYCLE_INVENTORY_ITEM', {}).get('result', 0)
+
+        if result == 1:  # Request success
+            message = "-- Discarded {}x {}"
+            message = message.format(str(recycle_count), item_name)
+
+            if keep_max is not -1:
+                message += " (keeps only {} maximum) "
+                message = message.format(str(keep_max))
+
+            logger.log(message, 'green')
+        else:
+            logger.log("-- Failed to discard " + item_name, 'red')
 
     def send_recycle_item_request(self, item_id, count):
         # Example of good request response
-        #{'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
+        # {'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
         return self.bot.api.recycle_inventory_item(
             item_id=item_id,
             count=count
