@@ -19,7 +19,8 @@ class NicknamePokemon(BaseTask):
             if os.path.isfile(fn):
                 self.pokemon_list = json.load(open(fn))
             else:
-                raise RuntimeError('Locale {} not supported'.format(locale))
+                self.pokemon_list = self.bot.pokemon_list
+                logger.log('Locale {} not supported, fallback to en'.format(locale), 'red')
 
     def work(self):
         try:
