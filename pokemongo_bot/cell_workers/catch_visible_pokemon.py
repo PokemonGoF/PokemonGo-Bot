@@ -2,7 +2,7 @@ import json
 
 from pokemongo_bot import logger
 from pokemongo_bot.cell_workers.base_task import BaseTask
-from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
+from pokemongo_bot.pokemon_catcher import PokemonCatcher
 from utils import distance
 
 
@@ -32,7 +32,4 @@ class CatchVisiblePokemon(BaseTask):
             return self.catch_pokemon(self.bot.cell['wild_pokemons'].pop(0))
 
     def catch_pokemon(self, pokemon):
-        worker = PokemonCatchWorker(pokemon, self.bot)
-        return_value = worker.work()
-
-        return return_value
+        return PokemonCatcher(pokemon, self.bot).catch()

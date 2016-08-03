@@ -7,10 +7,10 @@ import base64
 import requests
 from pokemongo_bot import logger
 from pokemongo_bot.cell_workers.utils import distance, format_dist, format_time
+from pokemongo_bot.pokemon_catcher import PokemonCatcher
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.cell_workers.base_task import BaseTask
-from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 
 
 class MoveToMapPokemon(BaseTask):
@@ -130,8 +130,8 @@ class MoveToMapPokemon(BaseTask):
         self.bot.api.set_position(pokemon['latitude'], pokemon['longitude'], 0)
 
         logger.log('Encounter pokemon', 'green')
-        catch_worker = PokemonCatchWorker(pokemon, self.bot)
-        api_encounter_response = catch_worker.create_encounter_api_call()
+        catcher = PokemonCatcher(pokemon, self.bot).catch()
+        api_encounter_response = catcher.create_encounter_api_call()
 
         time.sleep(2)
         logger.log('Teleporting back to previous location..', 'green')
@@ -139,7 +139,7 @@ class MoveToMapPokemon(BaseTask):
         time.sleep(2)
         self.bot.heartbeat()
 
-        catch_worker.work(api_encounter_response)
+        catcher.process_response(api_encounter_response)
         self.add_caught(pokemon)
 
         return WorkerResult.SUCCESS
