@@ -16,7 +16,8 @@ class NicknamePokemon(BaseTask):
         else:
             pokemon_data = self._get_inventory_pokemon(inventory)
             for pokemon in pokemon_data:
-                self._nickname_pokemon(pokemon)
+                if not(pokemon.get('favorite', 0) is 1 and self.config.get('dont_nickname_favorite','')):
+                    self._nickname_pokemon(pokemon)
 
     def _get_inventory_pokemon(self,inventory_dict):
         pokemon_data = []
