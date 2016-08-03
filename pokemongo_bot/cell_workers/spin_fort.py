@@ -16,10 +16,7 @@ from utils import distance, format_time, fort_details
 class SpinFort(BaseTask):
     def should_run(self):
         if not self.bot.has_space_for_loot():
-            if not self.bot.has_space_for_loot:
-                self.recycle_items()
-                if not self.bot.has_space_for_loot:
-                    logger.log("Not spinning any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently.", 'yellow')
+            logger.log("Not spinning any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently.", 'yellow')
             return False
         return True
 
@@ -141,9 +138,3 @@ class SpinFort(BaseTask):
             return fort
 
         return None
-
-    def recycle_items(self):
-        item_recycler = RecycleItems(self.bot, self.bot.config)
-        item_recycler.work()
-        self.bot.latest_inventory = None
-        self.bot.get_inventory()

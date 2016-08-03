@@ -16,16 +16,8 @@ class MoveToFort(BaseTask):
 
     def should_run(self):
         if not self.bot.has_space_for_loot():
-            self.recycle_items()
-            if not self.bot.has_space_for_loot():
-                logger.log("Not moving to any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently.", 'yellow')
+            logger.log("Not moving to any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently.", 'yellow')
         return self.bot.has_space_for_loot() or self.bot.softban
-
-    def recycle_items(self):
-        item_recycler = RecycleItems(self.bot, self.bot.config)
-        item_recycler.work()
-        self.bot.latest_inventory = None
-        self.bot.get_inventory()
 
     def is_attracted(self):
         return (self.lure_distance > 0)
