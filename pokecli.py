@@ -56,6 +56,7 @@ def main():
         return
     logger.log('Configuration initialized', 'yellow')
     health_record = BotEvent(config)
+    health_record.login_success()
 
     finished = False
 
