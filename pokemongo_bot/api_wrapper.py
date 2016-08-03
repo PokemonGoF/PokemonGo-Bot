@@ -117,7 +117,7 @@ class ApiRequest(PGoApiRequest):
                 continue # skip response checking
 
             if should_unexpected_response_retry:
-                unexpected_reponse_retry += 1
+                unexpected_response_retry += 1
                 if unexpected_response_retry >= 5:
                     logger.log('Server is not responding correctly to our requests.  Waiting for 30 seconds to reconnect.', 'red')
                     sleep(30)
