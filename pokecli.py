@@ -110,6 +110,43 @@ def report_summary(bot):
         logger.log('Highest CP Pokemon: {}'.format(metrics.highest_cp['desc']), 'cyan')
     if metrics.most_perfect is not None:
         logger.log('Most Perfect Pokemon: {}'.format(metrics.most_perfect['desc']), 'cyan')
+    if bot.config.print_catches:
+        print_catches(bot)
+
+def print_catches(bot):
+    logger.log('{:>45}'.format('List of captured pokemon'), 'white')
+    table_border = '-'*66
+    logger.log(table_border, 'white')
+    inner_border = '+{}+{}+{}+{}+{}+'.format(
+        '-'*20,
+        '-'*10,
+        '-'*10,
+        '-'*10,
+        '-'*10
+    )
+    logger.log(inner_border, 'white')
+    logger.log('|{}|{}|{}|{}|{}|'.format(
+        '{:<20}'.format('Pokemon name'),
+        '{:>10}'.format('CP'),
+        '{:>10}'.format('Potential'),
+        '{:>10}'.format('IV Display'),
+        '{:>10}'.format('Earned XP')
+    ), 'white')
+    logger.log(inner_border, 'white')
+    k=0
+    for catched_pokemon in bot.metrics.catches:
+        logger.log('|{}|{}|{}|{}|{} Exp|'.format(
+            '{:<20}'.format(catched_pokemon['pokemon_name']),
+            '{:>10}'.format(catched_pokemon['cp']),
+            '{:>10}'.format(catched_pokemon['pokemon_potential']),
+            '{:>10}'.format(catched_pokemon['iv_display']),
+            '{:6}'.format(catched_pokemon['xp'])
+        ), 'white')
+        k = (k + 1) % 5
+        if k == 0:
+            logger.log(inner_border, 'white')
+    if k != 0:
+        logger.log(table_border, 'white')
 
 def init_config():
     parser = argparse.ArgumentParser()
@@ -324,6 +361,15 @@ def init_config():
         help="Amount of seconds to keep the map object in cache (bypass Niantic throttling)",
         type=float,
         default=5.0
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-print_c",
+        long_flag="--print_catches",
+        help="Print captured pokemon before exit",
+        type=bool,
+        default=False
     )
 
     # Start to parse other attrs
