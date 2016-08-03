@@ -9,8 +9,8 @@ from pokemongo_bot.worker_result import WorkerResult
 
 class HuntNearbyPokemon(BaseTask):
     def initialize(self):
-        self.detect_radius = self.config.get("detect_range", 30)
-        self.search_radius = self.config.get("search_radius", 240)
+        self.detect_radius = self.config.get("detect_radius", 50)
+        self.search_radius = self.config.get("search_radius", 200)
         self.start_count_pokemon = self.config.get("start_count_pokemon", 4)
         self.start_vip = self.config.get("start_vip", True)
         self.start_min_anyball = self.config.get("start_min_anyball", 40)
