@@ -52,8 +52,9 @@ logger.setLevel(logging.INFO)
 
 def main():
     logger.info('PokemonGO Bot v1.0')
-    sys.stdout = codecs.getwriter('utf8')(sys.stdout)
-    sys.stderr = codecs.getwriter('utf8')(sys.stderr)
+    if six.PY2:
+        sys.stdout = codecs.getwriter('utf8')(sys.stdout)
+        sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
     config = init_config()
     if not config:
@@ -115,11 +116,11 @@ def main():
             )
             time.sleep(30)
         except GeocoderQuotaExceeded:
-            raise "Google Maps API key over requests limit."
-        except Exception:
-            # always report session summary and then raise exception
+            raise Exception("Google Maps API key over requests limit.")
+        except Exception as e:
             report_summary(bot)
-            raise
+            raise e
+
 
 def report_summary(bot):
     if bot.metrics.start_time is None:

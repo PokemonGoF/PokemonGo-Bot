@@ -46,9 +46,10 @@ class SpinFort(BaseTask):
             player_latitude=f2i(self.bot.position[0]),
             player_longitude=f2i(self.bot.position[1])
         )
+
         if 'responses' in response_dict and \
                 'FORT_SEARCH' in response_dict['responses']:
-
+            
             spin_details = response_dict['responses']['FORT_SEARCH']
             spin_result = spin_details.get('result', -1)
             if spin_result == 1:
@@ -60,10 +61,8 @@ class SpinFort(BaseTask):
                     tmp_count_items = {}
                     for item in items_awarded:
                         item_id = item['item_id']
-
-                    for item_id, item_count in six.iteritems(tmp_count_items):
                         item_name = self.bot.item_list[str(item_id)]
-                        if not item_name in tmp_count_items:
+                        if item_name not in tmp_count_items:
                             tmp_count_items[item_name] = item['item_count']
                         else:
                             tmp_count_items[item_name] += item['item_count']
