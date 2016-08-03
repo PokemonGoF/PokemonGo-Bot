@@ -20,7 +20,7 @@ class IncubateEggs(BaseTask):
         self.longer_eggs_first = self.config.get("longer_eggs_first", True)
 
     def work(self, *args, **kwargs):
-        if kwargs.get('tick_count', -1) % 1:
+        if kwargs.get('tick_count', -1) % 50:
             return
 
         try:

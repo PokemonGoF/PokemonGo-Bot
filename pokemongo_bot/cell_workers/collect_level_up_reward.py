@@ -11,7 +11,7 @@ class CollectLevelUpReward(BaseTask):
         self.previous_level = 0
 
     def work(self, *args, **kwargs):
-        if kwargs.get('tick_count', -1) % 50:
+        if kwargs.get('tick_count', -1) % 100:
             return
 
         self.current_level = self._get_current_level()

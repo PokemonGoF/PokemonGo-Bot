@@ -18,7 +18,7 @@ class SpinFort(BaseTask):
 
         for fort in forts:
             self.spin_fort(fort)
-            time.sleep(2)
+            time.sleep(1)
 
         return WorkerResult.SUCCESS
 
@@ -45,8 +45,7 @@ class SpinFort(BaseTask):
             spin_result = spin_details.get('result', -1)
             if spin_result == 1:
                 self.bot.softban = False
-                experience_awarded = spin_details.get('experience_awarded',
-                                                      False)
+                experience_awarded = spin_details.get('experience_awarded', False)
                 if experience_awarded:
                     logger.log('[{:>+5d} xp] POKESTOP'.format(experience_awarded), 'green')
 
@@ -71,12 +70,6 @@ class SpinFort(BaseTask):
                 pokestop_cooldown = spin_details.get('cooldown_complete_timestamp_ms')
                 self.bot.fort_timeouts.update({ fort['id']: pokestop_cooldown })
 
-                # if pokestop_cooldown:
-                #     seconds_since_epoch = time.time()
-                #     logger.log('PokeStop on cooldown. Time left: ' + str(
-                #         format_time((pokestop_cooldown / 1000) -
-                #                     seconds_since_epoch)))
-
                 self.bot.recent_forts = self.bot.recent_forts[1:] + [fort['id']]
             elif spin_result == 2:
                 logger.log('[#] Pokestop out of range')
@@ -90,17 +83,21 @@ class SpinFort(BaseTask):
                         format_time((pokestop_cooldown / 1000) -
                                     seconds_since_epoch)))
             elif spin_result == 4:
-                logger.log('Inventory is full', 'red')
+                # Invetory Full
+                self.bot.softban = False
+                experience_awarded = spin_details.get('experience_awarded', False)
+                if experience_awarded:
+                    logger.log('[{:>+5d} xp] POKESTOP'.format(experience_awarded), 'green')
             else:
                 logger.log('Unknown spin result: ' + str(spin_result), 'red')
 
             if 'chain_hack_sequence_number' in response_dict['responses']['FORT_SEARCH']:
-                time.sleep(2)
+                time.sleep(1)
                 return response_dict['responses']['FORT_SEARCH']['chain_hack_sequence_number']
             else:
                 logger.log('Possibly searching too often - taking a short rest :)', 'yellow')
                 if spin_result == 1 and not items_awarded and not experience_awarded and not pokestop_cooldown:
-                    # self.bot.softban = True
+                    self.bot.softban = True
                     logger.log('[!] Possibly got softban too...', 'red')
                 else:
                     self.bot.fort_timeouts[fort['id']] = (time.time() + 300) * 1000  # Don't spin for 5m

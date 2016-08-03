@@ -10,9 +10,6 @@ from pokemongo_bot.worker_result import WorkerResult
 
 class HandleSoftBan(BaseTask):
     def work(self, *args, **kwargs):
-        if kwargs.get('tick_count', -1) % 20:
-            return
-
         if not self.should_run():
             return
 

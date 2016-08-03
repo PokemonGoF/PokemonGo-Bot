@@ -20,6 +20,7 @@ class MoveToFort(BaseTask):
         nearest_fort = self.get_nearest_fort()
 
         if nearest_fort is None:
+            logger.log("can't find a nearby fort to walk to", 'yellow')
             return WorkerResult.SUCCESS
 
         lat = nearest_fort['latitude']
