@@ -19,7 +19,10 @@ class IncubateEggs(BaseTask):
     def _process_config(self):
         self.longer_eggs_first = self.config.get("longer_eggs_first", True)
 
-    def work(self):
+    def work(self, *args, **kwargs):
+        if kwargs.get('tick_count', -1) % 1:
+            return
+
         try:
             self._check_inventory()
         except:
@@ -31,7 +34,7 @@ class IncubateEggs(BaseTask):
             if km_left <= 0:
                 self._hatch_eggs()
             else:
-                logger.log('[x] Current egg hatches in {:.2f} km'.format(km_left),'yellow')
+                logger.log('Current egg hatches in {:.2f} km'.format(km_left))
             IncubateEggs.last_km_walked = self.km_walked
 
         sorting = self.longer_eggs_first
@@ -138,7 +141,7 @@ class IncubateEggs(BaseTask):
         stardust = result.get('stardust_awarded', "error")
         candy = result.get('candy_awarded', "error")
         xp = result.get('experience_awarded', "error")
-        sleep(self.hatching_animation_delay)
+        # sleep(self.hatching_animation_delay)
         self.bot.latest_inventory = None
         try:
             pokemon_data = self._check_inventory(pokemon_ids)
@@ -150,17 +153,19 @@ class IncubateEggs(BaseTask):
                     pokemon['name'] = "error"
         except:
             pokemon_data = [{"name":"error","cp":"error","iv":"error"}]
-        logger.log("-"*30, log_color)
+        logger.log("-"*30)
         if not pokemon_ids or pokemon_data[0]['name'] == "error":
-            logger.log("[!] Eggs hatched, but we had trouble with the response. Please check your inventory to find your new pokemon!",'red')
+            # logger.log("[!] Eggs hatched, but we had trouble with the response. Please check your inventory to find your new pokemon!",'red')
             return
-        logger.log("[!] {} eggs hatched! Received:".format(len(pokemon_data)), log_color)
+
+        logger.log("[{:>+5d} xp] EGG - {} eggs hatched! Received:".format(xp, len(pokemon_data)), 'green')
+
         for i in range(len(pokemon_data)):
-            logger.log("-"*30,log_color)
-            logger.log("[!] Pokemon: {}".format(pokemon_data[i]['name']), log_color)
-            logger.log("[!] CP: {}".format(pokemon_data[i].get('cp',0)), log_color)
-            logger.log("[!] IV: {} ({:.2f})".format("/".join(map(str, pokemon_data[i]['iv'])),(sum(pokemon_data[i]['iv'])/self.max_iv)), log_color)
-            logger.log("[!] XP: {}".format(xp[i]), log_color)
-            logger.log("[!] Stardust: {}".format(stardust[i]), log_color)
-            logger.log("[!] Candy: {}".format(candy[i]), log_color)
-        logger.log("-"*30, log_color)
+            logger.log("-"*3)
+            logger.log("[!] Pokemon: {}".format(pokemon_data[i]['name']))
+            logger.log("[!] CP: {}".format(pokemon_data[i].get('cp',0)))
+            logger.log("[!] IV: {} ({:.2f})".format("/".join(map(str, pokemon_data[i]['iv'])),(sum(pokemon_data[i]['iv'])/self.max_iv)))
+            logger.log("[!] XP: {}".format(xp[i]))
+            logger.log("[!] Stardust: {}".format(stardust[i]))
+            logger.log("[!] Candy: {}".format(candy[i]))
+        logger.log("-"*30)

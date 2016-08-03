@@ -1,5 +1,6 @@
 import json
 import os
+import time
 from pokemongo_bot import logger
 from pokemongo_bot.cell_workers.base_task import BaseTask
 from pokemongo_bot.tree_config_builder import ConfigException
@@ -16,13 +17,17 @@ class RecycleItems(BaseTask):
                 if config_item_name not in item_list:
                     raise ConfigException("item {} does not exist, spelling mistake? (check for valid item names in data/items.json)".format(config_item_name))
 
-    def work(self):
+    def work(self, *args, **kwargs):
+        if kwargs.get('tick_count', -1) % 5:
+            return
+
         self.bot.latest_inventory = None
         item_count_dict = self.bot.item_inventory_count('all')
 
         for item_id, bag_count in item_count_dict.iteritems():
             item_name = self.bot.item_list[str(item_id)]
             id_filter = self.item_filter.get(item_name, 0)
+
             if id_filter is not 0:
                 id_filter_keep = id_filter.get('keep', 20)
             else:
@@ -31,17 +36,20 @@ class RecycleItems(BaseTask):
                     id_filter_keep = id_filter.get('keep', 20)
 
             bag_count = self.bot.item_inventory_count(item_id)
+
             if (item_name in self.item_filter or str(item_id) in self.item_filter) and bag_count > id_filter_keep:
                 items_recycle_count = bag_count - id_filter_keep
                 response_dict_recycle = self.send_recycle_item_request(item_id=item_id, count=items_recycle_count)
                 result = response_dict_recycle.get('responses', {}).get('RECYCLE_INVENTORY_ITEM', {}).get('result', 0)
 
                 if result == 1: # Request success
-                    message_template = "-- Discarded {}x {} (keeps only {} maximum) "
+                    message_template = "-{} {} (keeps only {} maximum)"
                     message = message_template.format(str(items_recycle_count), item_name, str(id_filter_keep))
-                    logger.log(message, 'green')
+                    logger.log(message)
                 else:
                     logger.log("-- Failed to discard " + item_name, 'red')
+
+                time.sleep(1.5)
 
     def send_recycle_item_request(self, item_id, count):
         self.bot.api.recycle_inventory_item(item_id=item_id, count=count)

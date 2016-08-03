@@ -3,7 +3,7 @@ from pokemongo_bot.constants import Constants
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.cell_workers.base_task import BaseTask
-from utils import distance, format_dist, fort_details
+from utils import distance, format_dist
 
 
 class MoveToFort(BaseTask):
@@ -13,19 +13,10 @@ class MoveToFort(BaseTask):
         self.lure_attraction = self.config.get("lure_attraction", True)
         self.lure_max_distance = self.config.get("lure_max_distance", 2000)
 
-    def should_run(self):
-        has_space_for_loot = self.bot.has_space_for_loot()
-        if not has_space_for_loot:
-            logger.log("Not moving to any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently.", 'yellow')
-        return has_space_for_loot or self.bot.softban
-
     def is_attracted(self):
         return (self.lure_distance > 0)
 
-    def work(self):
-        if not self.should_run():
-            return WorkerResult.SUCCESS
-
+    def work(self, *args, **kwargs):
         nearest_fort = self.get_nearest_fort()
 
         if nearest_fort is None:
@@ -34,8 +25,6 @@ class MoveToFort(BaseTask):
         lat = nearest_fort['latitude']
         lng = nearest_fort['longitude']
         fortID = nearest_fort['id']
-        details = fort_details(self.bot, fortID, lat, lng)
-        fort_name = details.get('name', 'Unknown').encode('utf8', 'replace')
 
         unit = self.bot.config.distance_unit  # Unit to use when printing formatted distance
 
@@ -52,7 +41,7 @@ class MoveToFort(BaseTask):
             else:
                 add_str = ''
 
-            logger.log('Moving towards fort {}, {} left{}'.format(fort_name, format_dist(dist, unit), add_str))
+            logger.log('Moving towards fort {}, {} left{}'.format(fortID, format_dist(dist, unit), add_str))
 
             step_walker = StepWalker(
                 self.bot,
@@ -64,7 +53,8 @@ class MoveToFort(BaseTask):
             if not step_walker.step():
                 return WorkerResult.RUNNING
 
-        logger.log('Arrived at pokestop.')
+        logger.log('Arrived at pokestop: {}'.format(fortID))
+
         return WorkerResult.SUCCESS
 
     def _get_nearest_fort_on_lure_way(self, forts):
@@ -112,6 +102,8 @@ class MoveToFort(BaseTask):
 
         # Remove stops that are still on timeout
         forts = filter(lambda x: x["id"] not in self.bot.fort_timeouts, forts)
+
+        forts = filter(lambda x: 'cooldown_complete_timestamp_ms' not in x, forts)
 
         next_attracted_pts, lure_distance = self._get_nearest_fort_on_lure_way(forts)
 

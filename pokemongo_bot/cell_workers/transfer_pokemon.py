@@ -1,11 +1,15 @@
 import json
 
+import time
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.cell_workers.base_task import BaseTask
 
 class TransferPokemon(BaseTask):
-    def work(self):
+    def work(self, *args, **kwargs):
+        if kwargs.get('tick_count', -1) % 15:
+            return
+
         pokemon_groups = self._release_pokemon_get_groups()
         for pokemon_id in pokemon_groups:
             group = pokemon_groups[pokemon_id]
@@ -48,15 +52,15 @@ class TransferPokemon(BaseTask):
                                                                         True)]
 
                     if transfer_pokemons:
-                        logger.log("Keep {} best {}, based on {}".format(len(best_pokemons),
-                                                                         pokemon_name,
-                                                                         order_criteria), "green")
-                        for best_pokemon in best_pokemons:
-                            logger.log("{} [CP {}] [Potential {}]".format(pokemon_name,
-                                                                          best_pokemon['cp'],
-                                                                          best_pokemon['iv']), 'green')
+                        # logger.log("Keep {} best {}, based on {}".format(len(best_pokemons),
+                        #                                                  pokemon_name,
+                        #                                                  order_criteria), "green")
+                        # for best_pokemon in best_pokemons:
+                            # logger.log("{} [CP {}] [Potential {}]".format(pokemon_name,
+                            #                                               best_pokemon['cp'],
+                            #                                               best_pokemon['iv']), 'green')
 
-                        logger.log("Transferring {} pokemon".format(len(transfer_pokemons)), "green")
+                        # logger.log("Transferring {} pokemon".format(len(transfer_pokemons)), "green")
 
                         for pokemon in transfer_pokemons:
                             self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
@@ -181,10 +185,10 @@ class TransferPokemon(BaseTask):
     def release_pokemon(self, pokemon_name, cp, iv, pokemon_id):
         logger.log('Exchanging {} [CP {}] [Potential {}] for candy!'.format(pokemon_name,
                                                                             cp,
-                                                                            iv), 'green')
+                                                                            iv))
         self.bot.api.release_pokemon(pokemon_id=pokemon_id)
         response_dict = self.bot.api.call()
-        action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
+        time.sleep(2)
 
     def _get_release_config_for(self, pokemon):
         release_config = self.bot.config.release.get(pokemon)

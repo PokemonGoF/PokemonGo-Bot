@@ -1,4 +1,5 @@
 import json
+import time
 
 from pokemongo_bot import logger
 from pokemongo_bot.cell_workers.base_task import BaseTask
@@ -7,9 +8,9 @@ from utils import distance
 
 
 class CatchVisiblePokemon(BaseTask):
-    def work(self):
+    def work(self, *args, **kwargs):
         if 'catchable_pokemons' in self.bot.cell and len(self.bot.cell['catchable_pokemons']) > 0:
-            logger.log('Something rustles nearby!')
+            # logger.log('Something rustles nearby!')
             # Sort all by distance from current pos- eventually this should
             # build graph & A* it
             self.bot.cell['catchable_pokemons'].sort(
@@ -21,7 +22,9 @@ class CatchVisiblePokemon(BaseTask):
                 with open(user_web_catchable, 'w') as outfile:
                     json.dump(pokemon, outfile)
 
-            return self.catch_pokemon(self.bot.cell['catchable_pokemons'].pop(0))
+            while len(self.bot.cell['catchable_pokemons']):
+                self.catch_pokemon(self.bot.cell['catchable_pokemons'].pop(0))
+                time.sleep(1)
 
         if 'wild_pokemons' in self.bot.cell and len(self.bot.cell['wild_pokemons']) > 0:
             # Sort all by distance from current pos- eventually this should

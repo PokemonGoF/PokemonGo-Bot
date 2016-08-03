@@ -22,7 +22,7 @@ class PokemonCatchWorker(object):
         self.response_key = ''
         self.response_status_key = ''
 
-    def work(self):
+    def work(self, *args, **kwargs):
         encounter_id = self.pokemon['encounter_id']
         response_dict = self.create_encounter_api_call()
 
@@ -58,13 +58,11 @@ class PokemonCatchWorker(object):
                                 pokemon_potential = self.pokemon_potential(pokemon_data)
                                 pokemon_num = int(pokemon_data['pokemon_id']) - 1
                                 pokemon_name = self.pokemon_list[int(pokemon_num)]['Name']
-                                logger.log('A Wild {} appeared! [CP {}] [Potential {}]'.format(
-                                    pokemon_name, cp, pokemon_potential), 'yellow')
+                                # logger.log('A Wild {} appeared! [CP {}] [Potential {}]'.format(
+                                    # pokemon_name, cp, pokemon_potential), 'yellow')
 
-                                logger.log('IV [Attack/Defense/Stamina] = [{}]'.format(iv_display))
+                                # logger.log('IV [Attack/Defense/Stamina] = [{}]'.format(iv_display))
                                 pokemon_data['name'] = pokemon_name
-                                # Simulate app
-                                sleep(3)
 
                         if not self.should_capture_pokemon(pokemon_name, cp, pokemon_potential, response_dict):
                             # logger.log('[x] Rule prevents capture.')
@@ -73,7 +71,7 @@ class PokemonCatchWorker(object):
                         flag_VIP = False
                         # @TODO, use the best ball in stock to catch VIP (Very Important Pokemon: Configurable)
                         if self.check_vip_pokemon(pokemon_name, cp, pokemon_potential):
-                            logger.log('[-] {} is a VIP Pokemon! [CP {}] [Potential {}] Nice! Try our best to catch it!'.format(pokemon_name, cp, pokemon_potential),'red')
+                            logger.log('[-] {} is a VIP Pokemon! [CP {}] [Potential {}] Nice! Try our best to catch it!'.format(pokemon_name, cp, pokemon_potential),'blue')
                             flag_VIP=True
 
                         items_stock = self.bot.current_inventory()
@@ -194,11 +192,11 @@ class PokemonCatchWorker(object):
 
                             items_stock[pokeball] -= 1
                             success_percentage = '{0:.2f}'.format(catch_rate[pokeball - 1] * 100)
-                            logger.log('Using {} (chance: {}%)... ({} left!)'.format(
-                                self.item_list[str(pokeball)],
-                                success_percentage,
-                                items_stock[pokeball]
-                            ))
+                            # logger.log('Using {} (chance: {}%)... ({} left!)'.format(
+                            #     self.item_list[str(pokeball)],
+                            #     success_percentage,
+                            #     items_stock[pokeball]
+                            # ))
 
                             id_list1 = self.count_pokemon_inventory()
 
@@ -221,26 +219,27 @@ class PokemonCatchWorker(object):
                                 status = response_dict['responses'][
                                     'CATCH_POKEMON']['status']
                                 if status is 2:
-                                    logger.log(
-                                        '[-] Attempted to capture {} - failed.. trying again!'.format(pokemon_name),
-                                        'red')
-                                    sleep(2)
+                                    # logger.log(
+                                        # '[-] Attempted to capture {} - failed.. trying again!'.format(pokemon_name),
+                                        # 'red')
+                                    sleep(1)
                                     continue
                                 if status is 3:
-                                    logger.log(
-                                        'Oh no! {} vanished! :('.format(pokemon_name), 'red')
+                                    logger.log('{} vanished.'.format(pokemon_name), 'red')
                                     if success_percentage == 100:
                                         self.softban = True
                                 if status is 1:
                                     self.bot.metrics.captured_pokemon(pokemon_name, cp, iv_display, pokemon_potential)
 
-                                    logger.log('Captured {}! [CP {}] [Potential {}] [{}] [+{} exp]'.format(
+                                    xp = sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
+                                    logger.log('[{:>+5d} xp] CAPTURED - {} [CP {}] [Potential {}] [{}] '.format(
+                                        xp,
                                         pokemon_name,
                                         cp,
                                         pokemon_potential,
-                                        iv_display,
-                                        sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
-                                    ), 'blue')
+                                        iv_display
+                                    ), 'green')
+
                                     self.bot.softban = False
 
                                     if (self.config.evolve_captured
@@ -258,13 +257,12 @@ class PokemonCatchWorker(object):
                                         response_dict = self.api.call()
                                         status = response_dict['responses']['EVOLVE_POKEMON']['result']
                                         if status == 1:
-                                            logger.log(
-                                                '{} has been evolved!'.format(pokemon_name), 'green')
-                                        else:
-                                            logger.log(
-                                                'Failed to evolve {}!'.format(pokemon_name))
+                                            xp = response_dict['responses']['EVOLVE_POKEMON']['experience_awarded']
+                                            logger.log('[{:>+5d} xp] EVOLVE - {} has been evolved!'.format(xp, pokemon_name), 'green')
+                                        # else:
+                                            # logger.log(
+                                                # 'Failed to evolve {}!'.format(pokemon_name))
                             break
-        time.sleep(5)
 
     def count_pokemon_inventory(self):
         # don't use cached bot.get_inventory() here
@@ -403,4 +401,3 @@ class PokemonCatchWorker(object):
             'and': lambda x, y: x and y
         }
         return logic_to_function[cp_iv_logic](*catch_results.values())
-

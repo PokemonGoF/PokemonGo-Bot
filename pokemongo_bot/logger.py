@@ -25,7 +25,7 @@ def log(string, color='white'):
         ))
     else:
         print(
-            '[{time}] \033[{color} {string} \033[0m'.format(
+            '[{time}]\033[{color} {string} \033[0m'.format(
                 time=time.strftime("%H:%M:%S"),
                 color=color_hex[color],
                 string=string.decode('utf-8')

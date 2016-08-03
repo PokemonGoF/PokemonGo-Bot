@@ -21,6 +21,10 @@ class Metrics(object):
         self.highest_cp = {'cp': 0, 'desc': ''}
         self.most_perfect = {'potential': 0, 'desc': ''}
 
+    def uptime_in_minutes(self):
+        uptime_in_minutes = round((time.time() - self.start_time) / 60)
+        return uptime_in_minutes if uptime_in_minutes > 0 else 1
+
     def runtime(self):
         return timedelta(seconds=round(time.time() - self.start_time))
 
@@ -28,7 +32,10 @@ class Metrics(object):
         return self.xp['latest'] - self.xp['start']
 
     def xp_per_hour(self):
-        return self.xp_earned()/(time.time() - self.start_time)*3600
+        return self.xp_earned()/(time.time() - self.start_time) * 3600
+
+    def xp_per_minute(self):
+        return self.xp_earned() / self.uptime_in_minutes()
 
     def distance_travelled(self):
         return self.distance['latest'] - self.distance['start']
