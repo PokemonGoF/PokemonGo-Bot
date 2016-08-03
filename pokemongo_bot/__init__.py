@@ -56,6 +56,18 @@ class PokemonGoBot(object):
         # Make our own copy of the workers for this instance
         self.workers = []
 
+        fast_moves_list = json.load(open('data/fast_moves.json'))
+        self.fast_moves_dict = {}
+        for move in fast_moves_list:
+            id = move['id']
+            self.fast_moves_dict[id] = move
+
+        charged_moves_list = json.load(open('data/charged_moves.json'))
+        self.charged_moves_dict = {}
+        for move in charged_moves_list:
+            id = move['id']
+            self.charged_moves_dict[id] = move
+
     def start(self):
         self._setup_logging()
         self._setup_api()

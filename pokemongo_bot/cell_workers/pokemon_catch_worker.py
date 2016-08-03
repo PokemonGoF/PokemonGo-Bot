@@ -21,6 +21,8 @@ class PokemonCatchWorker(object):
         self.spawn_point_guid = ''
         self.response_key = ''
         self.response_status_key = ''
+        self.fast_moves_dict = bot.fast_moves_dict
+        self.charged_moves_dict = bot.charged_moves_dict
 
     def work(self, response_dict=None):
         encounter_id = self.pokemon['encounter_id']
@@ -46,6 +48,8 @@ class PokemonCatchWorker(object):
                             if 'pokemon_data' in pokemon and 'cp' in pokemon['pokemon_data']:
                                 pokemon_data = pokemon['pokemon_data']
                                 cp = pokemon_data['cp']
+                                move_1 = pokemon_data['move_1']
+                                move_2 = pokemon_data['move_2']
 
                                 individual_attack = pokemon_data.get("individual_attack", 0)
                                 individual_stamina = pokemon_data.get("individual_stamina", 0)
@@ -60,8 +64,12 @@ class PokemonCatchWorker(object):
                                 pokemon_potential = self.pokemon_potential(pokemon_data)
                                 pokemon_num = int(pokemon_data['pokemon_id']) - 1
                                 pokemon_name = self.pokemon_list[int(pokemon_num)]['Name']
-                                logger.log('A Wild {} appeared! [CP {}] [Potential {}]'.format(
-                                    pokemon_name, cp, pokemon_potential), 'yellow')
+                                logger.log('A Wild {} appeared! [CP {}] [Potential {}] [{}({} DPS)] [{}({} DPS)]'.format(
+                                    pokemon_name, cp, pokemon_potential,
+                                    self.fast_moves_dict[move_1]['name'],
+                                    self.fast_moves_dict[move_1]['dps'],
+                                    self.charged_moves_dict[move_2]['name'],
+                                    self.charged_moves_dict[move_2]['dps']), 'yellow')
 
                                 logger.log('IV [Attack/Defense/Stamina] = [{}]'.format(iv_display))
                                 pokemon_data['name'] = pokemon_name
