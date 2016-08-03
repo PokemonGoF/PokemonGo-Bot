@@ -18,6 +18,12 @@
         }
       },
       {
+        "type":"NicknamePokemon",
+        "config":{
+        "nickname_template":"{name}"
+        }
+      },
+      {
         "type": "TransferPokemon"
       },
       {
