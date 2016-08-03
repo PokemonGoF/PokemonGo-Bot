@@ -1,4 +1,5 @@
 import time
+import logging
 
 from pgoapi.exceptions import (ServerSideRequestThrottlingException,
     NotLoggedInException, ServerBusyOrOfflineException,
@@ -7,7 +8,6 @@ from pgoapi.exceptions import (ServerSideRequestThrottlingException,
 from pgoapi.pgoapi import PGoApi, PGoApiRequest, RpcApi
 from pgoapi.protos.POGOProtos.Networking.Requests_pb2 import RequestType
 
-import pokemongo_bot.logger as logger
 from human_behaviour import sleep
 
 class ApiWrapper(PGoApi):
@@ -42,6 +42,7 @@ class ApiWrapper(PGoApi):
 class ApiRequest(PGoApiRequest):
     def __init__(self, *args):
         PGoApiRequest.__init__(self, *args)
+        self.logger = logging.getLogger(__name__)
         self.request_callers = []
         self.last_api_request_time = None
         self.requests_per_seconds = 2
@@ -119,16 +120,16 @@ class ApiRequest(PGoApiRequest):
             if should_unexpected_response_retry:
                 unexpected_response_retry += 1
                 if unexpected_response_retry >= 5:
-                    logger.log('Server is not responding correctly to our requests.  Waiting for 30 seconds to reconnect.', 'red')
+                    self.logger.warning('Server is not responding correctly to our requests.  Waiting for 30 seconds to reconnect.')
                     sleep(30)
                 else:
                     sleep(2)
                 continue
-                
+
             if not self.is_response_valid(result, request_callers):
                 try_cnt += 1
                 if try_cnt > 3:
-                    logger.log('Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry), 'red')
+                    self.logger.warning('Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry))
                 if try_cnt >= max_retry:
                     raise ServerBusyOrOfflineException()
                 sleep(1)

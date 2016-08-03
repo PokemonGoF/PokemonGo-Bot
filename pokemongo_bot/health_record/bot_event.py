@@ -1,25 +1,26 @@
 # -*- coding: utf-8 -*-
+import logging
+
 from time import sleep
 
 from UniversalAnalytics import Tracker
-
-from pokemongo_bot import logger
 
 
 class BotEvent(object):
     def __init__(self, bot):
         self.bot = bot
+        self.logger = logging.getLogger(__name__)
         # UniversalAnalytics can be reviewed here:
         # https://github.com/analytics-pros/universal-analytics-python
         # For central TensorFlow training, forbiden any personally information
         # report to server
         # Review Very Carefully for the following line, forbiden ID changed PR:
         if bot.config.health_record:
-            logger.log(
+            logger.info(
                 'Send anonymous bot health report to server, '
                 'it can be disabled by config \"health_record\":false in config file', 'red'
             )
-            logger.log('Wait for 2 seconds ', 'red')
+            logger.info('Wait for 2 seconds ', 'red')
             sleep(3)
             self.tracker = Tracker.create('UA-81469507-1', use_post=True)
 
