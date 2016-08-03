@@ -57,11 +57,11 @@
       {
         "type": "HuntNearbyPokemon",
         "config": {
-          "start_count_pokemon": 9,
+          "start_count_pokemon": 8,
           "start_vip": true,
           "start_min_anyball": 30,
           "stop_min_anyball": 10,
-          "stop_max_time": 60,
+          "stop_max_time": 40,
           "detect_radius": 40,
           "search_radius": 200,
           "show_radar": true
