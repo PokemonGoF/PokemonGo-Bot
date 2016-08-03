@@ -23,6 +23,7 @@
     "Height": "0.7 m",
     "Next Evolution Requirements": {
       "Amount": 25,
+      "Family": 1,
       "Name": "Bulbasaur candies"
     },
     "Next evolution(s)": [
@@ -66,6 +67,7 @@
     ],
     "Next Evolution Requirements": {
       "Amount": 100,
+      "Family": 1,
       "Name": "Bulbasaur candies"
     },
     "Next evolution(s)": [
@@ -128,6 +130,7 @@
     "Height": "0.6 m",
     "Next Evolution Requirements": {
       "Amount": 25,
+      "Family": 4,
       "Name": "Charmander candies"
     },
     "Next evolution(s)": [
@@ -167,6 +170,7 @@
     ],
     "Next Evolution Requirements": {
       "Amount": 100,
+      "Family": 4,
       "Name": "Charmander candies"
     },
     "Next evolution(s)": [
@@ -227,6 +231,7 @@
     "Height": "0.5 m",
     "Next Evolution Requirements": {
       "Amount": 25,
+      "Family": 7,
       "Name": "Squirtle candies"
     },
     "Next evolution(s)": [
@@ -265,6 +270,7 @@
     ],
     "Next Evolution Requirements": {
       "Amount": 100,
+      "Family": 7,
       "Name": "Squirtle candies"
     },
     "Next evolution(s)": [
@@ -322,6 +328,7 @@
     "Height": "0.3 m",
     "Next Evolution Requirements": {
       "Amount": 12,
+      "Family": 10,
       "Name": "Caterpie candies"
     },
     "Next evolution(s)": [
@@ -361,6 +368,7 @@
     ],
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 10,
       "Name": "Caterpie candies"
     },
     "Next evolution(s)": [
@@ -428,6 +436,7 @@
     "Height": "0.3 m",
     "Next Evolution Requirements": {
       "Amount": 12,
+      "Family": 13,
       "Name": "Weedle candies"
     },
     "Next evolution(s)": [
@@ -471,6 +480,7 @@
     ],
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 13,
       "Name": "Weedle candies"
     },
     "Next evolution(s)": [
@@ -540,6 +550,7 @@
     "Height": "0.3 m",
     "Next Evolution Requirements": {
       "Amount": 12,
+      "Family": 16,
       "Name": "Pidgey candies"
     },
     "Next evolution(s)": [
@@ -586,6 +597,7 @@
     ],
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 16,
       "Name": "Pidgey candies"
     },
     "Next evolution(s)": [
@@ -652,6 +664,7 @@
     "Height": "0.3 m",
     "Next Evolution Requirements": {
       "Amount": 25,
+      "Family": 19,
       "Name": "Rattata candies"
     },
     "Next evolution(s)": [
@@ -711,6 +724,7 @@
     "Height": "0.3 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 21,
       "Name": "Spearow candies"
     },
     "Next evolution(s)": [
@@ -766,6 +780,7 @@
     "Height": "2.0 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 23,
       "Name": "Ekans candies"
     },
     "Next evolution(s)": [
@@ -817,6 +832,7 @@
     "Height": "0.4 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 25,
       "Name": "Pikachu candies"
     },
     "Next evolution(s)": [
@@ -869,6 +885,7 @@
     "Height": "0.6 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 27,
       "Name": "Sandshrew candies"
     },
     "Next evolution(s)": [
@@ -922,6 +939,7 @@
     "Height": "0.4 m",
     "Next Evolution Requirements": {
       "Amount": 25,
+      "Family": 29,
       "Name": "Nidoran F candies"
     },
     "Next evolution(s)": [
@@ -960,6 +978,7 @@
     ],
     "Next Evolution Requirements": {
       "Amount": 100,
+      "Family": 29,
       "Name": "Nidoran F candies"
     },
     "Next evolution(s)": [
@@ -1021,6 +1040,7 @@
     "Height": "0.5 m",
     "Next Evolution Requirements": {
       "Amount": 25,
+      "Family": 32,
       "Name": "Nidoran M candies"
     },
     "Next evolution(s)": [
@@ -1059,6 +1079,7 @@
     ],
     "Next Evolution Requirements": {
       "Amount": 100,
+      "Family": 32,
       "Name": "Nidoran M candies"
     },
     "Next evolution(s)": [
@@ -1119,6 +1140,7 @@
     "Height": "0.6 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 35,
       "Name": "Clefairy candies"
     },
     "Next evolution(s)": [
@@ -1171,6 +1193,7 @@
     "Height": "0.6 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 37,
       "Name": "Vulpix candies"
     },
     "Next evolution(s)": [
@@ -1223,6 +1246,7 @@
     "Height": "0.5 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 39,
       "Name": "Jigglypuff candies"
     },
     "Next evolution(s)": [
@@ -1279,6 +1303,7 @@
     "Height": "0.8 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 41,
       "Name": "Zubat candies"
     },
     "Next evolution(s)": [
@@ -1341,6 +1366,7 @@
     "Height": "0.5 m",
     "Next Evolution Requirements": {
       "Amount": 25,
+      "Family": 43,
       "Name": "Oddish candies"
     },
     "Next evolution(s)": [
@@ -1384,6 +1410,7 @@
     ],
     "Next Evolution Requirements": {
       "Amount": 100,
+      "Family": 43,
       "Name": "Oddish candies"
     },
     "Next evolution(s)": [
@@ -1452,6 +1479,7 @@
     "Height": "0.3 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 46,
       "Name": "Paras candies"
     },
     "Next evolution(s)": [
@@ -1516,6 +1544,7 @@
     "Height": "1.0 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 48,
       "Name": "Venonat candies"
     },
     "Next evolution(s)": [
@@ -1574,6 +1603,7 @@
     "Height": "0.2 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 50,
       "Name": "Diglett candies"
     },
     "Next evolution(s)": [
@@ -1626,6 +1656,7 @@
     "Height": "0.4 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 52,
       "Name": "Meowth candies"
     },
     "Next evolution(s)": [
@@ -1677,6 +1708,7 @@
     "Height": "0.8 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 54,
       "Name": "Psyduck candies"
     },
     "Next evolution(s)": [
@@ -1730,6 +1762,7 @@
     "Height": "0.5 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 56,
       "Name": "Mankey candies"
     },
     "Next evolution(s)": [
@@ -1784,6 +1817,7 @@
     "Height": "0.7 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 58,
       "Name": "Growlithe candies"
     },
     "Next evolution(s)": [
@@ -1837,6 +1871,7 @@
     "Height": "0.6 m",
     "Next Evolution Requirements": {
       "Amount": 25,
+      "Family": 60,
       "Name": "Poliwag candies"
     },
     "Next evolution(s)": [
@@ -1875,6 +1910,7 @@
     ],
     "Next Evolution Requirements": {
       "Amount": 100,
+      "Family": 60,
       "Name": "Poliwag candies"
     },
     "Next evolution(s)": [
@@ -1938,6 +1974,7 @@
     "Height": "0.9 m",
     "Next Evolution Requirements": {
       "Amount": 25,
+      "Family": 63,
       "Name": "Abra candies"
     },
     "Next evolution(s)": [
@@ -1977,6 +2014,7 @@
     ],
     "Next Evolution Requirements": {
       "Amount": 100,
+      "Family": 63,
       "Name": "Abra candies"
     },
     "Next evolution(s)": [
@@ -2035,6 +2073,7 @@
     "Height": "0.8 m",
     "Next Evolution Requirements": {
       "Amount": 25,
+      "Family": 66,
       "Name": "Machop candies"
     },
     "Next evolution(s)": [
@@ -2074,6 +2113,7 @@
     ],
     "Next Evolution Requirements": {
       "Amount": 100,
+      "Family": 66,
       "Name": "Machop candies"
     },
     "Next evolution(s)": [
@@ -2136,6 +2176,7 @@
     "Height": "0.7 m",
     "Next Evolution Requirements": {
       "Amount": 25,
+      "Family": 69,
       "Name": "Bellsprout candies"
     },
     "Next evolution(s)": [
@@ -2179,6 +2220,7 @@
     ],
     "Next Evolution Requirements": {
       "Amount": 100,
+      "Family": 69,
       "Name": "Bellsprout candies"
     },
     "Next evolution(s)": [
@@ -2244,6 +2286,7 @@
     "Height": "0.9 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 72,
       "Name": "Tentacool candies"
     },
     "Next evolution(s)": [
@@ -2307,6 +2350,7 @@
     "Height": "0.4 m",
     "Next Evolution Requirements": {
       "Amount": 25,
+      "Family": 74,
       "Name": "Geodude candies"
     },
     "Next evolution(s)": [
@@ -2352,6 +2396,7 @@
     ],
     "Next Evolution Requirements": {
       "Amount": 100,
+      "Family": 74,
       "Name": "Geodude candies"
     },
     "Next evolution(s)": [
@@ -2416,6 +2461,7 @@
     "Height": "1.0 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 77,
       "Name": "Ponyta candies"
     },
     "Next evolution(s)": [
@@ -2475,6 +2521,7 @@
     "Height": "1.2 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 79,
       "Name": "Slowpoke candies"
     },
     "Next evolution(s)": [
@@ -2537,6 +2584,7 @@
     "Height": "0.3 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 81,
       "Name": "Magnemite candies"
     },
     "Next evolution(s)": [
@@ -2619,6 +2667,7 @@
     "Height": "1.4 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 84,
       "Name": "Doduo candies"
     },
     "Next evolution(s)": [
@@ -2674,6 +2723,7 @@
     "Height": "1.1 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 86,
       "Name": "Seel candies"
     },
     "Next evolution(s)": [
@@ -2731,6 +2781,7 @@
     "Height": "0.9 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 88,
       "Name": "Grimer candies"
     },
     "Next evolution(s)": [
@@ -2783,6 +2834,7 @@
     "Height": "0.3 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 90,
       "Name": "Shellder candies"
     },
     "Next evolution(s)": [
@@ -2845,6 +2897,7 @@
     "Height": "1.3 m",
     "Next Evolution Requirements": {
       "Amount": 25,
+      "Family": 92,
       "Name": "Gastly candies"
     },
     "Next evolution(s)": [
@@ -2888,6 +2941,7 @@
     ],
     "Next Evolution Requirements": {
       "Amount": 100,
+      "Family": 92,
       "Name": "Gastly candies"
     },
     "Next evolution(s)": [
@@ -2975,6 +3029,7 @@
     "Height": "1.0 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 96,
       "Name": "Drowzee candies"
     },
     "Next evolution(s)": [
@@ -3028,6 +3083,7 @@
     "Height": "0.4 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 98,
       "Name": "Krabby candies"
     },
     "Next evolution(s)": [
@@ -3079,6 +3135,7 @@
     "Height": "0.5 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 100,
       "Name": "Voltorb candies"
     },
     "Next evolution(s)": [
@@ -3138,6 +3195,7 @@
     "Height": "0.4 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 102,
       "Name": "Exeggcute candies"
     },
     "Next evolution(s)": [
@@ -3199,6 +3257,7 @@
     "Height": "0.4 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 104,
       "Name": "Cubone candies"
     },
     "Next evolution(s)": [
@@ -3319,6 +3378,7 @@
     "Height": "0.6 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 109,
       "Name": "Koffing candies"
     },
     "Next evolution(s)": [
@@ -3378,6 +3438,7 @@
     "Height": "1.0 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 111,
       "Name": "Rhyhorn candies"
     },
     "Next evolution(s)": [
@@ -3492,6 +3553,7 @@
     "Height": "0.4 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 116,
       "Name": "Horsea candies"
     },
     "Next evolution(s)": [
@@ -3544,6 +3606,7 @@
     "Height": "0.6 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 118,
       "Name": "Goldeen candies"
     },
     "Next evolution(s)": [
@@ -3596,6 +3659,7 @@
     "Height": "0.8 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 120,
       "Name": "Staryu candies"
     },
     "Next evolution(s)": [
@@ -3794,6 +3858,7 @@
     "Height": "0.9 m",
     "Next Evolution Requirements": {
       "Amount": 400,
+      "Family": 129,
       "Name": "Magikarp candies"
     },
     "Next evolution(s)": [
@@ -3890,6 +3955,7 @@
     "Height": "0.3 m",
     "Next Evolution Requirements": {
       "Amount": 25,
+      "Family": 133,
       "Name": "Eevee candies"
     },
     "Next evolution(s)": [
@@ -4020,6 +4086,7 @@
     "Height": "0.4 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 138,
       "Name": "Omanyte candies"
     },
     "Next evolution(s)": [
@@ -4082,6 +4149,7 @@
     "Height": "0.5 m",
     "Next Evolution Requirements": {
       "Amount": 50,
+      "Family": 140,
       "Name": "Kabuto candies"
     },
     "Next evolution(s)": [
@@ -4253,6 +4321,7 @@
     "Height": "1.8 m",
     "Next Evolution Requirements": {
       "Amount": 25,
+      "Family": 147,
       "Name": "Dratini candies"
     }
   },
@@ -4276,6 +4345,7 @@
     "Height": "4.0 m",
     "Next Evolution Requirements": {
       "Amount": 100,
+      "Family": 147,
       "Name": "Dratini candies"
     },
     "Next evolution(s)": [
