@@ -274,7 +274,7 @@ class PokemonCatchWorker(BaseTask):
             while items_stock[current_ball] == 0 and current_ball < maximum_ball:
                 current_ball += 1
             if items_stock[current_ball] == 0:
-                self.emit_event('no_pokeballs', ormatted='No usable pokeballs found!')
+                self.emit_event('no_pokeballs', formatted='No usable pokeballs found!')
                 break
 
             # check future ball count
@@ -301,6 +301,7 @@ class PokemonCatchWorker(BaseTask):
                 if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and items_stock[best_ball] > 0:
                     # if current ball chance to catch is under our ideal rate, and player has better ball - then use it
                     current_ball = best_ball
+
             # if the rate is still low and we didn't throw a berry before, throw one
             if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and berry_count > 0 and not used_berry:
                 catch_rate_by_ball = self._use_berry(berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball)
@@ -378,8 +379,8 @@ class PokemonCatchWorker(BaseTask):
                 # evolve pokemon if necessary
                 if self.config.evolve_captured and (self.config.evolve_captured[0] == 'all' or pokemon.name in self.config.evolve_captured):
                     pokemon_after_catch = self._get_current_pokemon_ids()
-
                     pokemon_to_evolve = list(set(pokemon_after_catch) - set(pokemon_before_catch))
+
                     if len(pokemon_to_evolve) == 0:
                         break
 
@@ -390,6 +391,7 @@ class PokemonCatchWorker(BaseTask):
     def _do_evolve(self, pokemon, new_pokemon_id):
         response_dict = self.api.evolve_pokemon(pokemon_id=new_pokemon_id)
         catch_pokemon_status = response_dict['responses']['EVOLVE_POKEMON']['result']
+
         if catch_pokemon_status == 1:
             self.emit_event(
                 'pokemon_evolved',
