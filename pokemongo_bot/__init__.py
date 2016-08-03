@@ -29,6 +29,7 @@ from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from .worker_result import WorkerResult
 from .tree_config_builder import ConfigException, TreeConfigBuilder
+from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 
 
 class PokemonGoBot(object):
@@ -80,6 +81,9 @@ class PokemonGoBot(object):
                 self.config.websocket_server_url
             )
             handlers.append(websocket_handler)
+
+            if self.config.websocket_remote_control:
+                remote_control = WebsocketRemoteControl(self).start()
 
 
         self.event_manager = EventManager(*handlers)
@@ -803,7 +807,7 @@ class PokemonGoBot(object):
                 formatted=msg,
                 data={
                     'location': location_str,
-                    'position': 'Москва'
+                    'position': location
                 }
             )
 

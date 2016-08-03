@@ -41,7 +41,7 @@ class EvolvePokemon(BaseTask):
         candy_list = self._get_candy_list(inventory_items)
         for pokemon in evolve_list:
             if self._can_evolve(pokemon, candy_list, cache):
-               self._execute_pokemon_evolve(pokemon, candy_list, cache)
+                self._execute_pokemon_evolve(pokemon, candy_list, cache)
 
     def _should_run(self):
         if not self.evolve_all or self.evolve_all[0] == 'none':
@@ -55,7 +55,6 @@ class EvolvePokemon(BaseTask):
 
         # Make sure the user has a lucky egg and skip if not
         if lucky_egg_count > 0:
-            logger.log('Using lucky egg ... you have {}'.format(lucky_egg_count))
             response_dict_lucky_egg = self.bot.use_lucky_egg()
             if response_dict_lucky_egg:
                 result = response_dict_lucky_egg.get('responses', {}).get('USE_ITEM_XP_BOOST', {}).get('result', 0)
