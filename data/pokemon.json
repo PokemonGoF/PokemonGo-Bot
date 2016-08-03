@@ -4343,6 +4343,12 @@
     ],
     "Weight": "16.5 kg",
     "Height": "4.0 m",
+    "Previous evolution(s)": [
+      {
+        "Number": "147",
+        "Name": "Dratini"
+      },
+    ],
     "Next Evolution Requirements": {
       "Amount": 100,
       "Family": 147,
@@ -4378,6 +4384,10 @@
     "Weight": "210.0 kg",
     "Height": "2.2 m",
     "Previous evolution(s)": [
+      {
+        "Number": "147",
+        "Name": "Dratini"
+      },
       {
         "Number": "148",
         "Name": "Dragonair"
