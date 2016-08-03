@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 import json
 import six
 
@@ -132,7 +134,7 @@ class TransferPokemon(BaseTask):
                 total_iv += pokemon_data[individual_stat]
             except Exception:
                 continue
-        return round((total_iv / 45.0), 2)
+        return round((old_div(total_iv, 45.0)), 2)
 
     def should_release_pokemon(self, pokemon_name, cp, iv, keep_best_mode = False):
         release_config = self._get_release_config_for(pokemon_name)

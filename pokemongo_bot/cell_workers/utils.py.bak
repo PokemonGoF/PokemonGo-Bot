@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+import six
 import struct
 from math import asin, atan, cos, exp, log, pi, sin, sqrt, tan
 
@@ -121,7 +123,10 @@ def format_dist(distance, unit):
 
 def format_time(seconds):
     # Return a string displaying the time given as seconds or minutes
-    num, duration = 0, long(round(seconds))
+    if six.PY2:
+        num, duration = 0, long(round(seconds))
+    else:
+        num, duration = 0, int(round(seconds))
     runtime = []
     for period, unit in TIME_PERIODS[::-1]:
         num, duration = divmod(duration, period)

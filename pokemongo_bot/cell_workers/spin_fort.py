@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 from __future__ import absolute_import
+from __future__ import division
+from past.utils import old_div
 import six
 import time
 
@@ -99,7 +101,7 @@ class SpinFort(BaseTask):
                     self.bot.fort_timeouts.update({fort["id"]: pokestop_cooldown})
                     seconds_since_epoch = time.time()
                     minutes_left = format_time(
-                        (pokestop_cooldown / 1000) - seconds_since_epoch
+                        (old_div(pokestop_cooldown, 1000)) - seconds_since_epoch
                     )
                     self.emit_event(
                         'pokestop_on_cooldown',

@@ -1,7 +1,8 @@
+from __future__ import absolute_import
 from math import sqrt
 
-from cell_workers.utils import distance
-from human_behaviour import random_lat_long_delta, sleep
+from .cell_workers.utils import distance
+from .human_behaviour import random_lat_long_delta, sleep
 
 
 class StepWalker(object):

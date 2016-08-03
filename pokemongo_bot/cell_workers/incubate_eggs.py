@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.cell_workers.base_task import BaseTask
 from functools import reduce
@@ -200,7 +202,7 @@ class IncubateEggs(BaseTask):
                     'cp': pokemon_data[i]['cp'],
                     'iv': "{} {}".format(
                         "/".join(map(str, pokemon_data[i]['iv'])),
-                        sum(pokemon_data[i]['iv'])/self.max_iv
+                        old_div(sum(pokemon_data[i]['iv']),self.max_iv)
                     ),
                     'exp': xp[i],
                     'stardust': stardust[i],

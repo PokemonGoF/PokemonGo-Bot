@@ -1,4 +1,6 @@
 from __future__ import absolute_import
+from __future__ import division
+from past.utils import old_div
 import time
 import logging
 
@@ -147,12 +149,12 @@ class ApiRequest(PGoApiRequest):
 
     def throttle_sleep(self):
         now_milliseconds = time.time() * 1000
-        required_delay_between_requests = 1000 / self.requests_per_seconds
+        required_delay_between_requests = old_div(1000, self.requests_per_seconds)
 
         difference = now_milliseconds - (self.last_api_request_time if self.last_api_request_time else 0)
 
         if self.last_api_request_time != None and difference < required_delay_between_requests:
             sleep_time = required_delay_between_requests - difference
-            time.sleep(sleep_time / 1000)
+            time.sleep(old_div(sleep_time, 1000))
 
         return now_milliseconds

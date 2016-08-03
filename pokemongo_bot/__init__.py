@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 from __future__ import absolute_import
+from __future__ import division
+from past.utils import old_div
 import datetime
 import json
 import logging
@@ -550,7 +552,7 @@ class PokemonGoBot(object):
                 return
 
             remaining_time = \
-                self.api._auth_provider._ticket_expire / 1000 - time.time()
+                old_div(self.api._auth_provider._ticket_expire, 1000) - time.time()
 
             if remaining_time < 60:
                 self.logger.info("Session stale, re-logging in", 'yellow')
@@ -635,7 +637,7 @@ class PokemonGoBot(object):
 
         # @@@ TODO: Convert this to d/m/Y H:M:S
         creation_date = datetime.datetime.fromtimestamp(
-            player['creation_timestamp_ms'] / 1e3)
+            old_div(player['creation_timestamp_ms'], 1e3))
         creation_date = creation_date.strftime("%Y/%m/%d %H:%M:%S")
 
         pokecoins = '0'

@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.cell_workers.base_task import BaseTask
@@ -166,4 +168,4 @@ class EvolvePokemon(BaseTask):
     def _compute_iv(self, pokemon):
         total_iv = pokemon.get("individual_attack", 0) + pokemon.get("individual_stamina", 0) + pokemon.get(
             "individual_defense", 0)
-        return round((total_iv / 45.0), 2)
+        return round((old_div(total_iv, 45.0)), 2)

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import division
+from past.utils import old_div
 import time
 from pokemongo_bot.human_behaviour import (normalized_reticle_size, sleep,
                                            spin_modifier)
@@ -420,7 +422,7 @@ class PokemonCatchWorker(BaseTask):
                 pokemon_data[individual_stat] = 0
                 continue
 
-        return round((total_iv / 45.0), 2)
+        return round((old_div(total_iv, 45.0)), 2)
 
     def should_capture_pokemon(self, pokemon_name, cp, iv, response_dict):
         catch_config = self._get_catch_config_for(pokemon_name)

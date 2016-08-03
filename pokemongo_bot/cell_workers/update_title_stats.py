@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 import ctypes
 from sys import stdout, platform as _platform
 from datetime import datetime, timedelta
@@ -150,7 +152,7 @@ class UpdateTitleStats(BaseTask):
         experience = int(player_stats.get('experience', 0))
         current_level_xp = experience - prev_level_xp
         whole_level_xp = next_level_xp - prev_level_xp
-        level_completion_percentage = int((current_level_xp * 100) / whole_level_xp)
+        level_completion_percentage = int(old_div((current_level_xp * 100), whole_level_xp))
         experience_per_hour = int(metrics.xp_per_hour())
         xp_earned = metrics.xp_earned()
         stops_visited = metrics.visits['latest'] - metrics.visits['start']

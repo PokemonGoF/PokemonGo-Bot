@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from __future__ import division
+from past.utils import old_div
 
 import math
 
@@ -42,8 +44,8 @@ class FollowSpiral(BaseTask):
         rlat = starting_lat * math.pi
         latdeg = 111132.93 - 559.82 * math.cos(2*rlat) + 1.175*math.cos(4*rlat)
         lngdeg = 111412.84 * math.cos(rlat) - 93.5 * math.cos(3*rlat)
-        step_size_lat = step_size / latdeg
-        step_size_lng = step_size / lngdeg
+        step_size_lat = old_div(step_size, latdeg)
+        step_size_lng = old_div(step_size, lngdeg)
 
         while steps < step_limit:
             while 2 * x * d < m and steps < step_limit:
