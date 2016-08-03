@@ -118,7 +118,7 @@ class MoveToMapPokemon(BaseTask):
         now = int(time.time())
         if dist > 500 and now - self.last_map_update > 2 * 60:
             requests.post('{}/next_loc?lat={}&lon={}'.format(self.config['address'], self.bot.position[0], self.bot.position[1]))
-            logger.log('Updated PokemonGo-Map position')
+            logger.log('Updated PokemonGo-Map position', 'green')
             self.last_map_update = now
 
     def snipe(self, pokemon):

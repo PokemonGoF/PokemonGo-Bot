@@ -390,6 +390,7 @@ class PokemonGoBot(object):
         self.check_session(self.position[0:2])
 
         for worker in self.workers:
+            # logger.log('[~] Worker: {}'.format(worker.__class__.__name__))
             if worker.work() == WorkerResult.RUNNING:
                 return
 
