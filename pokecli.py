@@ -35,6 +35,7 @@ import sys
 import time
 from datetime import timedelta
 from getpass import getpass
+from requests.exceptions import ChunkedEncodingError
 from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException
 from geopy.exc import GeocoderQuotaExceeded
 
@@ -74,7 +75,7 @@ def main():
             logger.log('Exiting PokemonGo Bot', 'red')
             finished = True
             report_summary(bot)
-        except (NotLoggedInException, ServerBusyOrOfflineException):
+        except (NotLoggedInException, ServerBusyOrOfflineException, ChunkedEncodingError):
             logger.log('[x] Error while connecting to the server, please wait %s minutes' % config.reconnecting_timeout, 'red')
             time.sleep(config.reconnecting_timeout * 60)
         except ServerSideRequestThrottlingException:
