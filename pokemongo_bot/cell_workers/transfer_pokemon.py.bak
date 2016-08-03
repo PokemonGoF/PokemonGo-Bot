@@ -1,10 +1,8 @@
 import json
-import six
 
 from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.cell_workers.base_task import BaseTask
-from functools import reduce
 
 class TransferPokemon(BaseTask):
     def work(self):
@@ -85,10 +83,7 @@ class TransferPokemon(BaseTask):
 
         user_web_inventory = 'web/inventory-%s.json' % (self.bot.config.username)
         with open(user_web_inventory, 'w') as outfile:
-            if six.PY2:
-                json.dump(inventory_dict, outfile)
-            else:
-                json.dump(str(inventory_dict), outfile)
+            json.dump(inventory_dict, outfile)
 
         for pokemon in inventory_dict:
             try:
@@ -137,10 +132,10 @@ class TransferPokemon(BaseTask):
         release_config = self._get_release_config_for(pokemon_name)
 
         if (keep_best_mode
-            and 'never_release' not in release_config
-            and 'always_release' not in release_config
-            and 'release_below_cp' not in release_config
-            and 'release_below_iv' not in release_config):
+            and not release_config.has_key('never_release')
+            and not release_config.has_key('always_release')
+            and not release_config.has_key('release_below_cp')
+            and not release_config.has_key('release_below_iv')):
             return True
 
         cp_iv_logic = release_config.get('logic')

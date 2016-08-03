@@ -1,5 +1,6 @@
 import json
 import os
+import six
 from pokemongo_bot import logger
 from pokemongo_bot.cell_workers.base_task import BaseTask
 from pokemongo_bot.tree_config_builder import ConfigException
@@ -11,8 +12,8 @@ class RecycleItems(BaseTask):
 
     def _validate_item_filter(self):
         item_list = json.load(open(os.path.join('data', 'items.json')))
-        for config_item_name, bag_count in self.item_filter.iteritems():
-            if config_item_name not in item_list.viewvalues():
+        for config_item_name, bag_count in six.iteritems(self.item_filter):
+            if config_item_name not in six.viewvalues(item_list):
                 if config_item_name not in item_list:
                     raise ConfigException("item {} does not exist, spelling mistake? (check for valid item names in data/items.json)".format(config_item_name))
 
@@ -20,7 +21,7 @@ class RecycleItems(BaseTask):
         self.bot.latest_inventory = None
         item_count_dict = self.bot.item_inventory_count('all')
 
-        for item_id, bag_count in item_count_dict.iteritems():
+        for item_id, bag_count in six.iteritems(item_count_dict):
             item_name = self.bot.item_list[str(item_id)]
             id_filter = self.item_filter.get(item_name, 0)
             if id_filter is not 0:

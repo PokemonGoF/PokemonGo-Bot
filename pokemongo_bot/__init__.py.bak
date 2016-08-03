@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
 import datetime
 import json
 import logging
 import os
 import random
 import re
-import six
 import sys
 import time
 
@@ -15,18 +13,18 @@ from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
 from pgoapi.utilities import f2i, get_cell_ids
 
-from . import cell_workers
-from . import logger
-from .api_wrapper import ApiWrapper
-from .cell_workers.utils import distance
-from .event_manager import EventManager
-from .human_behaviour import sleep
-from .item_list import Item
-from .metrics import Metrics
+import cell_workers
+import logger
+from api_wrapper import ApiWrapper
+from cell_workers.utils import distance
+from event_manager import EventManager
+from human_behaviour import sleep
+from item_list import Item
+from metrics import Metrics
 from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
-from .worker_result import WorkerResult
-from .tree_config_builder import ConfigException, TreeConfigBuilder
+from worker_result import WorkerResult
+from tree_config_builder import ConfigException, TreeConfigBuilder
 
 
 class PokemonGoBot(object):
@@ -157,10 +155,7 @@ class PokemonGoBot(object):
 
         user_data_cells = "data/cells-%s.json" % self.config.username
         with open(user_data_cells, 'w') as outfile:
-            if six.PY2:
-                json.dump(cells, outfile)
-            else:
-                json.dump(str(cells), outfile)
+            json.dump(cells, outfile)
 
         user_web_location = os.path.join(
             'web', 'location-%s.json' % self.config.username
@@ -168,20 +163,12 @@ class PokemonGoBot(object):
         # alt is unused atm but makes using *location easier
         try:
             with open(user_web_location, 'w') as outfile:
-                if six.PY2:
-                    json.dump({
-                        'lat': lat,
-                        'lng': lng,
-                        'alt': alt,
-                        'cells': cells
-                    }, outfile)
-                else:
-                    json.dump({
-                        'lat': str(lat),
-                        'lng': str(lng),
-                        'alt': str(alt),
-                        'cells': str(cells)
-                    }, outfile)
+                json.dump({
+                    'lat': lat,
+                    'lng': lng,
+                    'alt': alt,
+                    'cells': cells
+                }, outfile)
         except IOError as e:
             logger.log('[x] Error while opening location file: %s' % e, 'red')
 
@@ -412,10 +399,7 @@ class PokemonGoBot(object):
         user_web_inventory = 'web/inventory-%s.json' % self.config.username
 
         with open(user_web_inventory, 'w') as outfile:
-            if six.PY2:
-                json.dump(inventory_dict, outfile)
-            else:
-                json.dump(str(inventory_dict), outfile)
+            json.dump(inventory_dict, outfile)
 
         # get player items stock
         # ----------------------
@@ -472,8 +456,7 @@ class PokemonGoBot(object):
             return
 
         if self.config.location:
-            location_str = self.config.location.encode('utf-8') if six.PY2 \
-                           else self.config.location
+            location_str = self.config.location.encode('utf-8')
             location = (self.get_pos_by_name(location_str.replace(" ", "")))
             self.api.set_position(*location)
             self.start_position = self.position
@@ -554,7 +537,7 @@ class PokemonGoBot(object):
     def heartbeat(self):
         # Remove forts that we can now spin again.
         self.fort_timeouts = {id: timeout for id, timeout
-                              in six.iteritems(self.fort_timeouts)
+                              in self.fort_timeouts.iteritems()
                               if timeout >= time.time() * 1000}
         request = self.api.create_request()
         request.get_player()

@@ -115,6 +115,7 @@ configs/*
 # Virtualenv folders
 bin/
 include/
+share/
 
 # Pip check file
 pip-selfcheck.json

@@ -1,12 +1,9 @@
-from __future__ import absolute_import
-
-import six
 from pokemongo_bot import logger
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.cell_workers.base_task import BaseTask
-from .utils import distance, format_dist, fort_details
+from utils import distance, format_dist, fort_details
 
 
 class MoveToFort(BaseTask):
@@ -39,9 +36,6 @@ class MoveToFort(BaseTask):
         fortID = nearest_fort['id']
         details = fort_details(self.bot, fortID, lat, lng)
         fort_name = details.get('name', 'Unknown').encode('utf8', 'replace')
-
-        if six.PY3:
-            fort_name = fort_name.decode('utf8')
 
         unit = self.bot.config.distance_unit  # Unit to use when printing formatted distance
 
@@ -79,9 +73,6 @@ class MoveToFort(BaseTask):
             return None, 0
 
         lures = filter(lambda x: True if x.get('lure_info', None) != None else False, forts)
-
-        if six.PY3:
-            lures = list(lures)
 
         if (len(lures)):
             dist_lure_me = distance(self.bot.position[0], self.bot.position[1],

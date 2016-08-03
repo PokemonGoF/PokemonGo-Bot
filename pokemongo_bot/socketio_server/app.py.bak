@@ -1,4 +1,3 @@
-from __future__ import print_function
 import logging
 
 import socketio
@@ -32,4 +31,4 @@ def bot_broadcast(sid, env):
 
 @sio.on('disconnect')
 def disconnect(sid):
-    print(('disconnect ', sid))
+    print('disconnect ', sid)

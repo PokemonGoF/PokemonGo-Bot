@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
-import six
 import time
 
 from pgoapi.utilities import f2i
@@ -11,7 +9,7 @@ from pokemongo_bot.constants import Constants
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.cell_workers.base_task import BaseTask
-from .utils import distance, format_time, fort_details
+from utils import distance, format_time, fort_details
 
 
 class SpinFort(BaseTask):
@@ -32,10 +30,6 @@ class SpinFort(BaseTask):
 
         details = fort_details(self.bot, fort['id'], lat, lng)
         fort_name = details.get('name', 'Unknown').encode('utf8', 'replace')
-
-        if six.PY3:
-            fort_name = fort_name.decode('utf8')
-        
         logger.log('Now at Pokestop: {0}'.format(fort_name), 'cyan')
         logger.log('Spinning ...', 'cyan')
 
@@ -71,7 +65,7 @@ class SpinFort(BaseTask):
                         else:
                             tmp_count_items[item_id] += item['item_count']
 
-                    for item_id, item_count in six.iteritems(tmp_count_items):
+                    for item_id, item_count in tmp_count_items.iteritems():
                         item_name = self.bot.item_list[str(item_id)]
                         logger.log(
                             '- ' + str(item_count) + "x " + item_name +
@@ -126,9 +120,6 @@ class SpinFort(BaseTask):
         forts = self.bot.get_forts(order_by_distance=True)
 
         forts = filter(lambda x: x["id"] not in self.bot.fort_timeouts, forts)
-
-        if six.PY3:
-            forts = list(forts)
 
         if len(forts) == 0:
             return None

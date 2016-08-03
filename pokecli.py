@@ -30,6 +30,7 @@ import codecs
 import json
 import logging
 import os
+import six
 import ssl
 import sys
 import time
@@ -47,8 +48,8 @@ if sys.version_info >= (2, 7, 9):
 
 def main():
     logger.log('PokemonGO Bot v1.0', 'green')
-    sys.stdout = codecs.getwriter('utf8')(sys.stdout)
-    sys.stderr = codecs.getwriter('utf8')(sys.stderr)
+    # sys.stdout = codecs.getwriter('utf8')(sys.stdout)
+    # sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
     config = init_config()
     if not config:
@@ -428,7 +429,7 @@ def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
 def fix_nested_config(config):
     config_dict = config.__dict__
 
-    for key, value in config_dict.iteritems():
+    for key, value in six.iteritems(config_dict):
         if '.' in key:
             new_key = key.replace('.', '_')
             config_dict[new_key] = value
@@ -436,7 +437,7 @@ def fix_nested_config(config):
 
 def parse_unicode_str(string):
     try:
-        return string.decode('utf8')
+        return string.decode('utf8') if isinstance(string, bytes) else string
     except UnicodeEncodeError:
         return string
 

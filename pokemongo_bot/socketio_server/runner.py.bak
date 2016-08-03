@@ -1,11 +1,10 @@
-from __future__ import absolute_import
 import threading
 
 import eventlet
 import socketio
 from eventlet import patcher, wsgi
 
-from .app import app, sio
+from app import app, sio
 
 patcher.monkey_patch(all=True)
 

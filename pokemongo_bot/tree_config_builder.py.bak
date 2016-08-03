@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+import cell_workers
 
 class ConfigException(Exception):
     pass
@@ -10,7 +10,6 @@ class TreeConfigBuilder(object):
 
     def _get_worker_by_name(self, name):
         try:
-            from . import cell_workers  # noqa
             worker = getattr(cell_workers, name)
         except AttributeError:
             raise ConfigException('No worker named {} defined'.format(name))

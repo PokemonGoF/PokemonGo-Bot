@@ -1,11 +1,8 @@
 from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import absolute_import
-import six
 import time
 
 try:
-    from . import lcd
+    import lcd
     lcd = lcd.lcd()
     # Change this to your i2c address
     lcd.set_addr(0x23)
@@ -24,16 +21,14 @@ def log(string, color='white'):
     if color not in color_hex:
         print('[{time}] {string}'.format(
             time=time.strftime("%H:%M:%S"),
-            string=string.decode('utf-8') if six.PY2 \
-                   else string
+            string=string.decode('utf-8')
         ))
     else:
         print(
             '[{time}] \033[{color} {string} \033[0m'.format(
                 time=time.strftime("%H:%M:%S"),
                 color=color_hex[color],
-                string=string.decode('utf-8') if six.PY2 \
-                       else string
+                string=string.decode('utf-8')
             )
         )
     if lcd:

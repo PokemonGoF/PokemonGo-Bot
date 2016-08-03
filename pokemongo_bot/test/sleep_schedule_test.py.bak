@@ -21,7 +21,7 @@ class SleepScheculeTestCase(unittest.TestCase):
 
     @patch('pokemongo_bot.cell_workers.sleep_schedule.datetime')
     def test_get_next_time(self, mock_datetime):
-        mock_datetime.now.return_value = datetime(year=2016, month=8, day=0o1, hour=8, minute=0)
+        mock_datetime.now.return_value = datetime(year=2016, month=8, day=01, hour=8, minute=0)
 
         next_time = self.worker._get_next_sleep_schedule()
         from_date = datetime(year=2016, month=8, day=1, hour=12, minute=15)
@@ -35,8 +35,8 @@ class SleepScheculeTestCase(unittest.TestCase):
         mock_datetime.now.return_value = datetime(year=2016, month=8, day=1, hour=12, minute=25)
 
         next = self.worker._get_next_sleep_schedule()
-        from_date = datetime(year=2016, month=8, day=0o2, hour=12, minute=15)
-        to_date = datetime(year=2016, month=8, day=0o2, hour=12, minute=25)
+        from_date = datetime(year=2016, month=8, day=02, hour=12, minute=15)
+        to_date = datetime(year=2016, month=8, day=02, hour=12, minute=25)
 
         self.assertGreaterEqual(next, from_date)
         self.assertLessEqual(next, to_date)
@@ -46,8 +46,8 @@ class SleepScheculeTestCase(unittest.TestCase):
         mock_datetime.now.return_value = datetime(year=2016, month=8, day=1, hour=14, minute=0)
 
         next = self.worker._get_next_sleep_schedule()
-        from_date = datetime(year=2016, month=8, day=0o2, hour=12, minute=15)
-        to_date = datetime(year=2016, month=8, day=0o2, hour=12, minute=25)
+        from_date = datetime(year=2016, month=8, day=02, hour=12, minute=15)
+        to_date = datetime(year=2016, month=8, day=02, hour=12, minute=25)
 
         self.assertGreaterEqual(next, from_date)
         self.assertLessEqual(next, to_date)
