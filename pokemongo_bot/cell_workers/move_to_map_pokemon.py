@@ -46,7 +46,7 @@ class MoveToMapPokemon(BaseTask):
             try:
                 pokemon['encounter_id'] = long(base64.b64decode(pokemon['encounter_id']))
             except TypeError:
-                log.logger('base64 error: {}'.format(pokemon['encounter_id']), 'red')
+                logger.log('base64 error: {}'.format(pokemon['encounter_id']), 'red')
                 continue
             pokemon['spawn_point_id'] = pokemon['spawnpoint_id']
             pokemon['disappear_time'] = int(pokemon['disappear_time'] / 1000)
@@ -177,7 +177,7 @@ class MoveToMapPokemon(BaseTask):
         if (pokeballs + superballs) < 1 and not pokemon['is_vip']:
             return WorkerResult.SUCCESS
 
-        if self.config['snipe']:
+        if self.config['snipe'] and pokemon['priority'] >= self.config.get('snipe_min_prio', 0):
             return self.snipe(pokemon)
 
         now = int(time.time())
