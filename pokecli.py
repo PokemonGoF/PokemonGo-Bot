@@ -40,7 +40,6 @@ from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingE
 from geopy.exc import GeocoderQuotaExceeded
 
 from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
-from pokemongo_bot import logger
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -48,13 +47,13 @@ if sys.version_info >= (2, 7, 9):
 
 def main():
     logger.log('PokemonGO Bot v1.0', 'green')
-    # sys.stdout = codecs.getwriter('utf8')(sys.stdout)
-    # sys.stderr = codecs.getwriter('utf8')(sys.stderr)
+    sys.stdout = codecs.getwriter('utf8')(sys.stdout)
+    sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
     config = init_config()
     if not config:
         return
-    logger.log('Configuration initialized', 'yellow')
+    logger.info('Configuration initialized')
 
     finished = False
 
@@ -66,28 +65,56 @@ def main():
             bot.workers = tree
             bot.metrics.capture_stats()
 
-            logger.log('Starting PokemonGo Bot....', 'green')
+            bot.event_manager.emit(
+                'bot_start',
+                sender=bot,
+                level='info',
+                formatted='Starting bot...'
+            )
 
             while True:
                 bot.tick()
 
         except KeyboardInterrupt:
-            logger.log('Exiting PokemonGo Bot', 'red')
+            bot.event_manager.emit(
+                'bot_exit',
+                sender=bot,
+                level='info',
+                formatted='Exiting bot.'
+            )
             finished = True
             report_summary(bot)
-        except (NotLoggedInException, ServerBusyOrOfflineException):
-            logger.log('[x] Error while connecting to the server, please wait %s minutes' % config.reconnecting_timeout, 'red')
-            time.sleep(config.reconnecting_timeout * 60)
+
+        except NotLoggedInException:
+            wait_time = config.reconnecting_timeout * 60
+            bot.event_manager.emit(
+                'api_error',
+                sender=bot,
+                level='info',
+                formmated='Log logged in, reconnecting in {:s}'.format(wait_time)
+            )
+            time.sleep(wait_time)
+        except ServerBusyOrOfflineException:
+            bot.event_manager.emit(
+                'api_error',
+                sender=bot,
+                level='info',
+                formatted='Server busy or offline'
+            )
         except ServerSideRequestThrottlingException:
-            logger.log('Server is throttling, reconnecting in 30sec')
+            bot.event_manager.emit(
+                'api_error',
+                sender=bot,
+                level='info',
+                formatted='Server is throttling, reconnecting in 30 seconds'
+            )
             time.sleep(30)
         except GeocoderQuotaExceeded:
-            logger.log('[x] The given maps api key has gone over the requests limit.', 'red')
-            finished = True
-        except:
+            raise "Google Maps API key over requests limit."
+        except Exception as e:
             # always report session summary and then raise exception
             report_summary(bot)
-            raise
+            raise e
 
 def report_summary(bot):
     if bot.metrics.start_time is None:
@@ -95,22 +122,21 @@ def report_summary(bot):
 
     metrics = bot.metrics
     metrics.capture_stats()
-    logger.log('')
-    logger.log('Ran for {}'.format(metrics.runtime()), 'cyan')
-    logger.log('Total XP Earned: {}  Average: {:.2f}/h'.format(metrics.xp_earned(), metrics.xp_per_hour()), 'cyan')
-    logger.log('Travelled {:.2f}km'.format(metrics.distance_travelled()), 'cyan')
-    logger.log('Visited {} stops'.format(metrics.visits['latest'] - metrics.visits['start']), 'cyan')
-    logger.log('Encountered {} pokemon, {} caught, {} released, {} evolved, {} never seen before'
+    logger.info('')
+    logger.info('Ran for {}'.format(metrics.runtime()))
+    logger.info('Total XP Earned: {}  Average: {:.2f}/h'.format(metrics.xp_earned(), metrics.xp_per_hour()))
+    logger.info('Travelled {:.2f}km'.format(metrics.distance_travelled()))
+    logger.info('Visited {} stops'.format(metrics.visits['latest'] - metrics.visits['start']))
+    logger.info('Encountered {} pokemon, {} caught, {} released, {} evolved, {} never seen before'
                 .format(metrics.num_encounters(), metrics.num_captures(), metrics.releases,
-                        metrics.num_evolutions(), metrics.num_new_mons()), 'cyan')
-    logger.log('Threw {} pokeball{}'.format(metrics.num_throws(), '' if metrics.num_throws() == 1 else 's'),
-                'cyan')
-    logger.log('Earned {} Stardust'.format(metrics.earned_dust()), 'cyan')
-    logger.log('')
+                        metrics.num_evolutions(), metrics.num_new_mons()))
+    logger.info('Threw {} pokeball{}'.format(metrics.num_throws(), '' if metrics.num_throws() == 1 else 's'))
+    logger.info('Earned {} Stardust'.format(metrics.earned_dust()))
+    logger.info('')
     if metrics.highest_cp is not None:
-        logger.log('Highest CP Pokemon: {}'.format(metrics.highest_cp['desc']), 'cyan')
+        logger.info('Highest CP Pokemon: {}'.format(metrics.highest_cp['desc']))
     if metrics.most_perfect is not None:
-        logger.log('Most Perfect Pokemon: {}'.format(metrics.most_perfect['desc']), 'cyan')
+        logger.info('Most Perfect Pokemon: {}'.format(metrics.most_perfect['desc']))
 
 def init_config():
     parser = argparse.ArgumentParser()
@@ -127,11 +153,11 @@ def init_config():
         with open(config_arg) as data:
             load.update(json.load(data))
     elif os.path.isfile(config_file):
-        logger.log('No config argument specified, checking for /configs/config.json', 'yellow')
+        logger.info('No config argument specified, checking for /configs/config.json')
         with open(config_file) as data:
             load.update(json.load(data))
     else:
-        logger.log('Error: No /configs/config.json or specified config', 'red')
+        logger.info('Error: No /configs/config.json or specified config')
 
     # Read passed in Arguments
     required = lambda x: not x in load
@@ -229,7 +255,15 @@ def init_config():
         type=str,
         default=None
     )
-
+    add_config(
+        parser,
+        load,
+        short_flag="-e",
+        long_flag="--show_events",
+        help="Show events",
+        type=bool,
+        default=False
+    )
     add_config(
         parser,
         load,

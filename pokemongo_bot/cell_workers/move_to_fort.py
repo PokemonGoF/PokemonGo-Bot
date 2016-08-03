@@ -1,7 +1,6 @@
-from __future__ import absolute_import
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
-import six
-from pokemongo_bot import logger
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
@@ -19,7 +18,10 @@ class MoveToFort(BaseTask):
     def should_run(self):
         has_space_for_loot = self.bot.has_space_for_loot()
         if not has_space_for_loot:
-            logger.log("Not moving to any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently.", 'yellow')
+            self.emit_event(
+                'inventory_full',
+                formatted="Not moving to any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently."
+            )
         return has_space_for_loot or self.bot.softban
 
     def is_attracted(self):
@@ -38,7 +40,7 @@ class MoveToFort(BaseTask):
         lng = nearest_fort['longitude']
         fortID = nearest_fort['id']
         details = fort_details(self.bot, fortID, lat, lng)
-        fort_name = details.get('name', 'Unknown').encode('utf8', 'replace')
+        fort_name = details.get('name', 'Unknown')
 
         if six.PY3:
             fort_name = fort_name.decode('utf8')
@@ -53,12 +55,24 @@ class MoveToFort(BaseTask):
         )
 
         if dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
-            if self.is_attracted() > 0:
-                add_str = ' (attraction of lure {})'.format(format_dist(self.lure_distance, unit))
-            else:
-                add_str = ''
+            fort_event_data = {
+                'fort_name': u"{}".format(fort_name),
+                'distance': format_dist(dist, unit),
+            }
 
-            logger.log('Moving towards fort {}, {} left{}'.format(fort_name, format_dist(dist, unit), add_str))
+            if self.is_attracted() > 0:
+                fort_event_data.update(lure_distance=format_dist(self.lure_distance, unit))
+                self.emit_event(
+                    'moving_to_lured_fort',
+                    formatted="Moving towards pokestop {fort_name} - {distance} (attraction of lure {lure_distance})",
+                    data=fort_event_data
+                )
+            else:
+                self.emit_event(
+                    'moving_to_fort',
+                    formatted="Moving towards pokestop {fort_name} - {distance}",
+                    data=fort_event_data
+                )
 
             step_walker = StepWalker(
                 self.bot,
@@ -70,7 +84,10 @@ class MoveToFort(BaseTask):
             if not step_walker.step():
                 return WorkerResult.RUNNING
 
-        logger.log('Arrived at pokestop.')
+        self.emit_event(
+            'arrived_at_fort',
+            formatted='Arrived at fort.'
+        )
         return WorkerResult.SUCCESS
 
     def _get_nearest_fort_on_lure_way(self, forts):

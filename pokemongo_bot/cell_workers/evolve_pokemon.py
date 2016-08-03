@@ -1,9 +1,10 @@
-from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.cell_workers.base_task import BaseTask
 
+
 class EvolvePokemon(BaseTask):
+
     def initialize(self):
         self.api = self.bot.api
         self.evolve_all = self.config.get('evolve_all', [])
@@ -35,14 +36,9 @@ class EvolvePokemon(BaseTask):
 
         cache = {}
         candy_list = self._get_candy_list(inventory_items)
-        evolved = 0
         for pokemon in evolve_list:
             if self._can_evolve(pokemon, candy_list, cache) \
                     and self._execute_pokemon_evolve(pokemon, candy_list, cache):
-                evolved += 1
-
-        if evolved > 0:
-            logger.log('Evolved {} pokemon!'.format(evolved))
 
     def _should_run(self):
         if not self.evolve_all or self.evolve_all[0] == 'none':
@@ -61,14 +57,27 @@ class EvolvePokemon(BaseTask):
             if response_dict_lucky_egg:
                 result = response_dict_lucky_egg.get('responses', {}).get('USE_ITEM_XP_BOOST', {}).get('result', 0)
                 if result is 1:  # Request success
-                    logger.log('Successfully used lucky egg... ({} left!)'.format(lucky_egg_count - 1), 'green')
+                    self.emit_event(
+                        'used_lucky_egg',
+                        formmated='Used lucky egg ({amount_left} left).',
+                        data={
+                             'amount_left': lucky_egg_count - 1
+                        }
+                    )
                     return True
                 else:
-                    logger.log('Failed to use lucky egg!', 'red')
+                    self.emit_event(
+                        'lucky_egg_error',
+                        level='error',
+                        formatted='Failed to use lucky egg!'
+                    )
                     return False
         else:
             # Skipping evolve so they aren't wasted
-            logger.log('No lucky eggs... skipping evolve!', 'yellow')
+            self.emit_event(
+                'skip_evolve',
+                formatted='Skipping evolve because has no lucky egg.'
+            )
             return False
 
     def _get_candy_list(self, inventory_items):
@@ -136,7 +145,15 @@ class EvolvePokemon(BaseTask):
 
         response_dict = self.api.evolve_pokemon(pokemon_id=pokemon_id)
         if response_dict.get('responses', {}).get('EVOLVE_POKEMON', {}).get('result', 0) == 1:
-            logger.log('Successfully evolved {} with {} CP and {} IV!'.format(pokemon_name, pokemon_cp, pokemon_iv))
+            self.emit_event(
+                'pokemon_evolved',
+                formatted="Successfully evolved {pokemon} with CP {cp} and IV {iv}!",
+                data={
+                    'pokemon': pokemon_name,
+                    'iv': pokemon_iv,
+                    'cp': pokemon_cp
+                }
+            )
             candy_list[pokemon["candies_family"]] -= pokemon["candies_amount"]
             sleep(self.evolve_speed)
             return True
