@@ -54,6 +54,11 @@ class Candy(object):
         self.quantity = quantity
 
 
+    def add(self, amount):
+        if amount < 0:
+            raise Exception('Must add positive amount of candy')
+        self.quantity += amount
+
 class Candies(_BaseInventoryComponent):
     TYPE = 'candy'
     ID_FIELD = 'family_id'
@@ -63,10 +68,8 @@ class Candies(_BaseInventoryComponent):
         return Pokemons.first_evolution_id_for(pokemon_id)
 
     def get(self, pokemon_id):
-        try:
-            return self._data[self.family_id_for(pokemon_id)]
-        except KeyError:
-            return Candy(family_id, 0)
+        family_id = self.family_id_for(pokemon_id)
+        return self._data.setdefault(family_id, Candy(family_id, 0))
 
     def parse(self, item):
         candy = item['candy'] if 'candy' in item else 0
