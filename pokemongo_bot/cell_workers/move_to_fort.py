@@ -144,6 +144,9 @@ class MoveToFort(BaseTask):
         if self.bot.config.forts_avoid_circles:
             forts = filter(lambda x: x["id"] not in self.bot.recent_forts, forts)
 
+        if six.PY3:
+            forts = list(forts)
+
         self.lure_distance = lure_distance
 
         if (lure_distance > 0):
