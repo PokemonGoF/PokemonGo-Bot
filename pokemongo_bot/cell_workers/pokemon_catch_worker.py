@@ -196,9 +196,22 @@ class PokemonCatchWorker(object):
 
                                 # Add this logic to avoid Pokeball = 0, Great Ball = 0, Ultra Ball = X
                                 # And this logic saves Ultra Balls if it's a weak trash pokemon
-                                if catch_rate[pokeball-1]<0.30 and items_stock[3]>0:
-                                    pokeball = 3
-
+                                # Add the logic that if there is  no VIP config, do not save the Utralball
+                                if self.config.vip_strategy == False:
+                                    current_type=pokeball
+                                    while items_stock[current_type] is 0:
+                                        current_type += 1
+                                        if items_stock[current_type] > 0:
+                                            pokeball = current_type # use better ball
+                                else :
+                                    if catch_rate[pokeball-1]<0.30 and items_stock[3]>0:
+                                        pokeball = 3
+ 
+                            # re-check if there is no suitable pokeball
+                            if items_stock[pokeball] is 0:
+                                logger.log('Seems out of pokeballs or BOT tries to save Ultra Balls', 'red')
+                                return PokemonCatchWorker.NO_POKEBALLS
+                            
                             items_stock[pokeball] -= 1
                             success_percentage = '{0:.2f}'.format(catch_rate[pokeball - 1] * 100)
                             logger.log('Using {} (chance: {}%)... ({} left!)'.format(
