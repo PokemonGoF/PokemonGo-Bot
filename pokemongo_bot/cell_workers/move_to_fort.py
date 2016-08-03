@@ -1,5 +1,4 @@
 from pokemongo_bot import logger
-from pokemongo_bot.cell_workers.recycle_items import RecycleItems
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult

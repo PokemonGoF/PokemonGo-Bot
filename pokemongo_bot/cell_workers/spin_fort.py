@@ -5,7 +5,6 @@ import time
 from pgoapi.utilities import f2i
 
 from pokemongo_bot import logger
-from pokemongo_bot.cell_workers.recycle_items import RecycleItems
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.worker_result import WorkerResult
