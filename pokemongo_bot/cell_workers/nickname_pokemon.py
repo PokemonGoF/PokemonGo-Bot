@@ -1,3 +1,5 @@
+import os
+import json
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.base_task import BaseTask
 
@@ -8,6 +10,16 @@ class NicknamePokemon(BaseTask):
         self.template = self.config.get('nickname_template','').lower().strip()
         if self.template == "{name}":
             self.template = ""
+
+        locale = self.config.get('locale', 'en')
+        if locale == 'en':
+            self.pokemon_list = self.bot.pokemon_list
+        else:
+            fn = 'data/pokemon_{}.json'.format(locale)
+            if os.path.isfile(fn):
+                self.pokemon_list = json.load(open(fn))
+            else:
+                raise RuntimeError('Locale {} not supported'.format(locale))
 
     def work(self):
         try:
@@ -42,7 +54,7 @@ class NicknamePokemon(BaseTask):
             )
             return
         id = pokemon.get('pokemon_id',0)-1
-        name = self.bot.pokemon_list[id]['Name']
+        name = self.pokemon_list[id]['Name']
         cp = pokemon.get('cp',0)
         iv_attack = pokemon.get('individual_attack',0)
         iv_defense = pokemon.get('individual_defense',0)

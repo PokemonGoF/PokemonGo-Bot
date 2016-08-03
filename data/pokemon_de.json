@@ -1,102 +1,95 @@
 [
   {
-    "Number":"001",
-    "Name":"Bulbasaur",
+    "Name":"Bisasam",
     "Classification":"Seed Pokemon",
-    "Type I":[
-      "Grass"
-    ],
-    "Type II":[
-      "Poison"
-    ],
     "Weaknesses":[
       "Fire",
       "Ice",
       "Flying",
       "Psychic"
+    ],
+    "Number":"001",
+    "Height":"0.7 m",
+    "Weight":"6.9 kg",
+    "Next Evolution Requirements":{
+      "Amount":25,
+      "Name":"Bulbasaur candies"
+    },
+    "Type I":[
+      "Grass"
+    ],
+    "Next evolution(s)":[
+      {
+        "Number":"002",
+        "Name":"Ivysaur"
+      },
+      {
+        "Number":"003",
+        "Name":"Venusaur"
+      }
     ],
     "Fast Attack(s)":[
       "Tackle",
       "Vine Whip"
     ],
-    "Weight":"6.9 kg",
-    "Height":"0.7 m",
-    "Next Evolution Requirements":{
-      "Amount":25,
-      "Name":"Bulbasaur candies"
-    },
+    "Type II":[
+      "Poison"
+    ]
+  },
+  {
     "Next evolution(s)":[
-      {
-        "Number":"002",
-        "Name":"Ivysaur"
-      },
       {
         "Number":"003",
         "Name":"Venusaur"
       }
-    ]
-  },
-  {
-    "Number":"002",
-    "Name":"Ivysaur",
+    ],
+    "Name":"Bisaknosp",
     "Classification":"Seed Pokemon",
-    "Type I":[
-      "Grass"
-    ],
-    "Type II":[
-      "Poison"
-    ],
     "Weaknesses":[
       "Fire",
       "Ice",
       "Flying",
       "Psychic"
     ],
-    "Fast Attack(s)":[
-      "Razor Leaf",
-      "Vine Whip"
-    ],
-    "Weight":"13.0 kg",
+    "Number":"002",
     "Height":"1.0 m",
-    "Previous evolution(s)":[
-      {
-        "Number":"001",
-        "Name":"Bulbasaur"
-      }
-    ],
+    "Weight":"13.0 kg",
     "Next Evolution Requirements":{
       "Amount":100,
       "Name":"Bulbasaur candies"
     },
-    "Next evolution(s)":[
-      {
-        "Number":"003",
-        "Name":"Venusaur"
-      }
-    ]
-  },
-  {
-    "Number":"003",
-    "Name":"Venusaur",
-    "Classification":"Seed Pokemon",
     "Type I":[
       "Grass"
     ],
+    "Previous evolution(s)":[
+      {
+        "Number":"001",
+        "Name":"Bulbasaur"
+      }
+    ],
+    "Fast Attack(s)":[
+      "Razor Leaf",
+      "Vine Whip"
+    ],
     "Type II":[
       "Poison"
-    ],
+    ]
+  },
+  {
+    "Name":"Bisaflor",
+    "Classification":"Seed Pokemon",
     "Weaknesses":[
       "Fire",
       "Ice",
       "Flying",
       "Psychic"
     ],
-    "Fast Attack(s)":[
-      "Razor Leaf",
-      "Vine Whip"
-    ],
-    "Weight":"100.0 kg",
+    "Number":"003",
     "Height":"2.0 m",
+    "Weight":"100.0 kg",
+    "Type I":[
+      "Grass"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"001",
@@ -106,30 +99,33 @@
         "Number":"002",
         "Name":"Ivysaur"
       }
+    ],
+    "Fast Attack(s)":[
+      "Razor Leaf",
+      "Vine Whip"
+    ],
+    "Type II":[
+      "Poison"
     ]
   },
   {
-    "Number":"004",
-    "Name":"Charmander",
+    "Name":"Glumanda",
     "Classification":"Lizard Pokemon",
-    "Type I":[
-      "Fire"
-    ],
     "Weaknesses":[
       "Water",
       "Ground",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Ember",
-      "Scratch"
-    ],
-    "Weight":"8.5 kg",
+    "Number":"004",
     "Height":"0.6 m",
+    "Weight":"8.5 kg",
     "Next Evolution Requirements":{
       "Amount":25,
       "Name":"Charmander candies"
     },
+    "Type I":[
+      "Fire"
+    ],
     "Next evolution(s)":[
       {
         "Number":"005",
@@ -139,96 +135,96 @@
         "Number":"006",
         "Name":"Charizard"
       }
+    ],
+    "Fast Attack(s)":[
+      "Ember",
+      "Scratch"
     ]
   },
   {
-    "Number":"005",
-    "Name":"Charmeleon",
-    "Classification":"Flame Pokemon",
-    "Type I":[
-      "Fire"
+    "Next evolution(s)":[
+      {
+        "Number":"006",
+        "Name":"Charizard"
+      }
     ],
+    "Name":"Glutexo",
+    "Classification":"Flame Pokemon",
     "Weaknesses":[
       "Water",
       "Ground",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Ember",
-      ""
-    ],
-    "Weight":"19.0 kg",
+    "Number":"005",
     "Height":"1.1 m",
+    "Weight":"19.0 kg",
+    "Next Evolution Requirements":{
+      "Amount":100,
+      "Name":"Charmander candies"
+    },
+    "Type I":[
+      "Fire"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"004",
         "Name":"Charmander"
       }
     ],
-    "Next Evolution Requirements":{
-      "Amount":100,
-      "Name":"Charmander candies"
-    },
-    "Next evolution(s)":[
-      {
-        "Number":"006",
-        "Name":"Charizard"
-      }
+    "Fast Attack(s)":[
+      "Ember",
+      ""
     ]
   },
   {
-    "Number":"006",
-    "Name":"Charizard",
+    "Name":"Glurak",
     "Classification":"Flame Pokemon",
-    "Type I":[
-      "Fire"
-    ],
-    "Type II":[
-      "Flying"
-    ],
     "Weaknesses":[
       "Water",
       "Electric",
       "Rock"
+    ],
+    "Number":"006",
+    "Height":"1.7 m",
+    "Weight":"90.5 kg",
+    "Type I":[
+      "Fire"
+    ],
+    "Previous evolution(s)":[
+      {
+        "Number":"004",
+        "Name":"Charmander"
+      },
+      {
+        "Number":"005",
+        "Name":"Charmeleon"
+      }
     ],
     "Fast Attack(s)":[
       "Ember",
       "Wing Attack"
     ],
-    "Weight":"90.5 kg",
-    "Height":"1.7 m",
-    "Previous evolution(s)":[
-      {
-        "Number":"004",
-        "Name":"Charmander"
-      },
-      {
-        "Number":"005",
-        "Name":"Charmeleon"
-      }
+    "Type II":[
+      "Flying"
     ]
   },
   {
-    "Number":"007",
-    "Name":"Squirtle",
+    "Name":"Schiggy",
     "Classification":"Tiny Turtle Pokemon",
-    "Type I":[
-      "Water"
-    ],
     "Weaknesses":[
       "Electric",
       "Grass"
     ],
-    "Fast Attack(s)":[
-      "Tackle",
-      "Bubble"
-    ],
-    "Weight":"9.0 kg",
+    "Number":"007",
     "Height":"0.5 m",
+    "Weight":"9.0 kg",
     "Next Evolution Requirements":{
       "Amount":25,
       "Name":"Squirtle candies"
     },
+    "Type I":[
+      "Water"
+    ],
     "Next evolution(s)":[
       {
         "Number":"008",
@@ -238,59 +234,59 @@
         "Number":"009",
         "Name":"Blastoise"
       }
+    ],
+    "Fast Attack(s)":[
+      "Tackle",
+      "Bubble"
     ]
   },
   {
-    "Number":"008",
-    "Name":"Wartortle",
-    "Classification":"Turtle Pokemon",
-    "Type I":[
-      "Water"
+    "Next evolution(s)":[
+      {
+        "Number":"009",
+        "Name":"Blastoise"
+      }
     ],
+    "Name":"Schillok",
+    "Classification":"Turtle Pokemon",
     "Weaknesses":[
       "Electric",
       "Grass"
     ],
-    "Fast Attack(s)":[
-      "Bite",
-      "Water Gun"
-    ],
-    "Weight":"22.5 kg",
+    "Number":"008",
     "Height":"1.0 m",
-    "Previous evolution(s)":[
-      {
-        "Number":"007",
-        "Name":"Squirtle"
-      }
-    ],
+    "Weight":"22.5 kg",
     "Next Evolution Requirements":{
       "Amount":100,
       "Name":"Squirtle candies"
     },
-    "Next evolution(s)":[
-      {
-        "Number":"009",
-        "Name":"Blastoise"
-      }
-    ]
-  },
-  {
-    "Number":"009",
-    "Name":"Blastoise",
-    "Classification":"Shellfish Pokemon",
     "Type I":[
       "Water"
     ],
-    "Weaknesses":[
-      "Electric",
-      "Grass"
+    "Previous evolution(s)":[
+      {
+        "Number":"007",
+        "Name":"Squirtle"
+      }
     ],
     "Fast Attack(s)":[
       "Bite",
       "Water Gun"
+    ]
+  },
+  {
+    "Name":"Turtok",
+    "Classification":"Shellfish Pokemon",
+    "Weaknesses":[
+      "Electric",
+      "Grass"
     ],
-    "Weight":"85.5 kg",
+    "Number":"009",
     "Height":"1.6 m",
+    "Weight":"85.5 kg",
+    "Type I":[
+      "Water"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"007",
@@ -300,30 +296,30 @@
         "Number":"008",
         "Name":"Wartortle"
       }
+    ],
+    "Fast Attack(s)":[
+      "Bite",
+      "Water Gun"
     ]
   },
   {
-    "Number":"010",
-    "Name":"Caterpie",
+    "Name":"Raupy",
     "Classification":"Worm Pokemon",
-    "Type I":[
-      "Bug"
-    ],
     "Weaknesses":[
       "Fire",
       "Flying",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Bug Bite",
-      "Tackle"
-    ],
-    "Weight":"2.9 kg",
+    "Number":"010",
     "Height":"0.3 m",
+    "Weight":"2.9 kg",
     "Next Evolution Requirements":{
       "Amount":12,
       "Name":"Caterpie candies"
     },
+    "Type I":[
+      "Bug"
+    ],
     "Next evolution(s)":[
       {
         "Number":"011",
@@ -333,175 +329,172 @@
         "Number":"012",
         "Name":"Butterfree"
       }
+    ],
+    "Fast Attack(s)":[
+      "Bug Bite",
+      "Tackle"
     ]
   },
   {
-    "Number":"011",
-    "Name":"Metapod",
-    "Classification":"Cocoon Pokemon",
-    "Type I":[
-      "Bug"
+    "Next evolution(s)":[
+      {
+        "Number":"012",
+        "Name":"Butterfree"
+      }
     ],
+    "Name":"Safcon",
+    "Classification":"Cocoon Pokemon",
     "Weaknesses":[
       "Fire",
       "Flying",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Bug Bite",
-      "Tackle"
-    ],
-    "Weight":"9.9 kg",
+    "Number":"011",
     "Height":"0.7 m",
+    "Weight":"9.9 kg",
+    "Next Evolution Requirements":{
+      "Amount":50,
+      "Name":"Caterpie candies"
+    },
+    "Type I":[
+      "Bug"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"010",
         "Name":"Caterpie"
       }
     ],
-    "Next Evolution Requirements":{
-      "Amount":50,
-      "Name":"Caterpie candies"
-    },
-    "Next evolution(s)":[
-      {
-        "Number":"012",
-        "Name":"Butterfree"
-      }
+    "Fast Attack(s)":[
+      "Bug Bite",
+      "Tackle"
     ]
   },
   {
-    "Number":"012",
-    "Name":"Butterfree",
+    "Name":"Smettbo",
     "Classification":"Butterfly Pokemon",
-    "Type I":[
-      "Bug"
-    ],
-    "Type II":[
-      "Flying"
-    ],
     "Weaknesses":[
       "Fire",
       "Electric",
       "Ice",
       "Flying",
       "Rock"
+    ],
+    "Number":"012",
+    "Height":"1.1 m",
+    "Weight":"32.0 kg",
+    "Type I":[
+      "Bug"
+    ],
+    "Previous evolution(s)":[
+      {
+        "Number":"010",
+        "Name":"Caterpie"
+      },
+      {
+        "Number":"011",
+        "Name":"Metapod"
+      }
     ],
     "Fast Attack(s)":[
       "Bug Bite",
       "Confusion"
     ],
-    "Weight":"32.0 kg",
-    "Height":"1.1 m",
-    "Previous evolution(s)":[
-      {
-        "Number":"010",
-        "Name":"Caterpie"
-      },
-      {
-        "Number":"011",
-        "Name":"Metapod"
-      }
+    "Type II":[
+      "Flying"
     ]
   },
   {
-    "Number":"013",
-    "Name":"Weedle",
+    "Name":"Hornliu",
     "Classification":"Hairy Pokemon",
-    "Type I":[
-      "Bug"
-    ],
-    "Type II":[
-      "Poison"
-    ],
     "Weaknesses":[
       "Fire",
       "Flying",
       "Psychic",
       "Rock"
+    ],
+    "Number":"013",
+    "Height":"0.3 m",
+    "Weight":"3.2 kg",
+    "Next Evolution Requirements":{
+      "Amount":12,
+      "Name":"Weedle candies"
+    },
+    "Type I":[
+      "Bug"
+    ],
+    "Next evolution(s)":[
+      {
+        "Number":"014",
+        "Name":"Kakuna"
+      },
+      {
+        "Number":"015",
+        "Name":"Beedrill"
+      }
     ],
     "Fast Attack(s)":[
       "Bug Bite",
       "Poison Sting"
     ],
-    "Weight":"3.2 kg",
-    "Height":"0.3 m",
-    "Next Evolution Requirements":{
-      "Amount":12,
-      "Name":"Weedle candies"
-    },
+    "Type II":[
+      "Poison"
+    ]
+  },
+  {
     "Next evolution(s)":[
-      {
-        "Number":"014",
-        "Name":"Kakuna"
-      },
       {
         "Number":"015",
         "Name":"Beedrill"
       }
-    ]
-  },
-  {
-    "Number":"014",
-    "Name":"Kakuna",
+    ],
+    "Name":"Kokuna",
     "Classification":"Cocoon Pokemon",
-    "Type I":[
-      "Bug"
-    ],
-    "Type II":[
-      "Poison"
-    ],
     "Weaknesses":[
       "Fire",
       "Flying",
       "Psychic",
       "Rock"
+    ],
+    "Number":"014",
+    "Height":"0.6 m",
+    "Weight":"10.0 kg",
+    "Next Evolution Requirements":{
+      "Amount":50,
+      "Name":"Weedle candies"
+    },
+    "Type I":[
+      "Bug"
+    ],
+    "Previous evolution(s)":[
+      {
+        "Number":"013",
+        "Name":"Weedle"
+      }
     ],
     "Fast Attack(s)":[
       "Bug Bite",
       "Posion Sting"
     ],
-    "Weight":"10.0 kg",
-    "Height":"0.6 m",
-    "Previous evolution(s)":[
-      {
-        "Number":"013",
-        "Name":"Weedle"
-      }
-    ],
-    "Next Evolution Requirements":{
-      "Amount":50,
-      "Name":"Weedle candies"
-    },
-    "Next evolution(s)":[
-      {
-        "Number":"015",
-        "Name":"Beedrill"
-      }
+    "Type II":[
+      "Poison"
     ]
   },
   {
-    "Number":"015",
-    "Name":"Beedrill",
+    "Name":"Bibor",
     "Classification":"Poison Bee Pokemon",
-    "Type I":[
-      "Bug"
-    ],
-    "Type II":[
-      "Poison"
-    ],
     "Weaknesses":[
       "Fire",
       "Flying",
       "Psychic",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Bug Bite",
-      "Poison Jab"
-    ],
-    "Weight":"29.5 kg",
+    "Number":"015",
     "Height":"1.0 m",
+    "Weight":"29.5 kg",
+    "Type I":[
+      "Bug"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"013",
@@ -511,113 +504,113 @@
         "Number":"014",
         "Name":"Kakuna"
       }
+    ],
+    "Fast Attack(s)":[
+      "Bug Bite",
+      "Poison Jab"
+    ],
+    "Type II":[
+      "Poison"
     ]
   },
   {
-    "Number":"016",
-    "Name":"Pidgey",
+    "Name":"Taubsi",
     "Classification":"Tiny Bird Pokemon",
-    "Type I":[
-      "Normal"
-    ],
-    "Type II":[
-      "Flying"
-    ],
     "Weaknesses":[
       "Electric",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Quick Attack",
-      "Tackle"
-    ],
-    "Special Attack(s)":[
-      "Aerial Ace",
-      "Air Cutter",
-      "Twister"
-    ],
-    "Weight":"1.8 kg",
+    "Number":"016",
     "Height":"0.3 m",
+    "Weight":"1.8 kg",
     "Next Evolution Requirements":{
       "Amount":12,
       "Name":"Pidgey candies"
     },
-    "Next evolution(s)":[
-      {
-        "Number":"017",
-        "Name":"Pidgeotto"
-      },
-      {
-        "Number":"018",
-        "Name":"Pidgeot"
-      }
-    ]
-  },
-  {
-    "Number":"017",
-    "Name":"Pidgeotto",
-    "Classification":"Bird Pokemon",
     "Type I":[
       "Normal"
-    ],
-    "Type II":[
-      "Flying"
-    ],
-    "Weaknesses":[
-      "Electric",
-      "Rock"
-    ],
-    "Fast Attack(s)":[
-      "Steel Wing",
-      "Wing Attack"
     ],
     "Special Attack(s)":[
       "Aerial Ace",
       "Air Cutter",
       "Twister"
     ],
-    "Weight":"30.0 kg",
+    "Next evolution(s)":[
+      {
+        "Number":"017",
+        "Name":"Pidgeotto"
+      },
+      {
+        "Number":"018",
+        "Name":"Pidgeot"
+      }
+    ],
+    "Fast Attack(s)":[
+      "Quick Attack",
+      "Tackle"
+    ],
+    "Type II":[
+      "Flying"
+    ]
+  },
+  {
+    "Next evolution(s)":[
+      {
+        "Number":"018",
+        "Name":"Pidgeot"
+      }
+    ],
+    "Name":"Tauboga",
+    "Classification":"Bird Pokemon",
+    "Weaknesses":[
+      "Electric",
+      "Rock"
+    ],
+    "Number":"017",
     "Height":"1.1 m",
+    "Weight":"30.0 kg",
+    "Next Evolution Requirements":{
+      "Amount":50,
+      "Name":"Pidgey candies"
+    },
+    "Type I":[
+      "Normal"
+    ],
+    "Special Attack(s)":[
+      "Aerial Ace",
+      "Air Cutter",
+      "Twister"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"016",
         "Name":"Pidgey"
       }
     ],
-    "Next Evolution Requirements":{
-      "Amount":50,
-      "Name":"Pidgey candies"
-    },
-    "Next evolution(s)":[
-      {
-        "Number":"018",
-        "Name":"Pidgeot"
-      }
-    ]
-  },
-  {
-    "Number":"018",
-    "Name":"Pidgeot",
-    "Classification":"Bird Pokemon",
-    "Type I":[
-      "Normal"
-    ],
-    "Type II":[
-      "Flying"
-    ],
-    "Weaknesses":[
-      "Electric",
-      "Rock"
-    ],
     "Fast Attack(s)":[
       "Steel Wing",
       "Wing Attack"
     ],
+    "Type II":[
+      "Flying"
+    ]
+  },
+  {
+    "Name":"Tauboss",
+    "Classification":"Bird Pokemon",
+    "Weaknesses":[
+      "Electric",
+      "Rock"
+    ],
+    "Number":"018",
+    "Height":"1.5 m",
+    "Weight":"39.5 kg",
+    "Type I":[
+      "Normal"
+    ],
     "Special Attack(s)":[
       "Hurricane"
     ],
-    "Weight":"39.5 kg",
-    "Height":"1.5 m",
     "Previous evolution(s)":[
       {
         "Number":"016",
@@ -627,303 +620,306 @@
         "Number":"017",
         "Name":"Pidgeotto"
       }
+    ],
+    "Fast Attack(s)":[
+      "Steel Wing",
+      "Wing Attack"
+    ],
+    "Type II":[
+      "Flying"
     ]
   },
   {
-    "Number":"019",
-    "Name":"Rattata",
+    "Name":"Rattfratz",
     "Classification":"Mouse Pokemon",
-    "Type I":[
-      "Normal"
-    ],
     "Weaknesses":[
       "Fighting"
     ],
-    "Fast Attack(s)":[
-      "Quick Attack",
-      "Tackle"
+    "Number":"019",
+    "Height":"0.3 m",
+    "Weight":"3.5 kg",
+    "Next Evolution Requirements":{
+      "Amount":25,
+      "Name":"Rattata candies"
+    },
+    "Type I":[
+      "Normal"
     ],
     "Special Attack(s)":[
       "Body Slam",
       "Dig",
       "Hyper Fang"
     ],
-    "Weight":"3.5 kg",
-    "Height":"0.3 m",
-    "Next Evolution Requirements":{
-      "Amount":25,
-      "Name":"Rattata candies"
-    },
     "Next evolution(s)":[
       {
         "Number":"020",
         "Name":"Raticate"
       }
+    ],
+    "Fast Attack(s)":[
+      "Quick Attack",
+      "Tackle"
     ]
   },
   {
-    "Number":"020",
-    "Name":"Raticate",
+    "Name":"Rattikarl",
     "Classification":"Mouse Pokemon",
-    "Type I":[
-      "Normal"
-    ],
     "Weaknesses":[
       "Fighting"
     ],
-    "Fast Attack(s)":[
-      "Bite",
-      "Quick Attack"
+    "Number":"020",
+    "Height":"0.7 m",
+    "Weight":"18.5 kg",
+    "Type I":[
+      "Normal"
     ],
     "Special Attack(s)":[
       "Dig",
       "Hyper Beam",
       "Hyper Fang"
     ],
-    "Weight":"18.5 kg",
-    "Height":"0.7 m",
     "Previous evolution(s)":[
       {
         "Number":"019",
         "Name":"Rattata"
       }
+    ],
+    "Fast Attack(s)":[
+      "Bite",
+      "Quick Attack"
     ]
   },
   {
-    "Number":"021",
-    "Name":"Spearow",
+    "Name":"Habitak",
     "Classification":"Tiny Bird Pokemon",
-    "Type I":[
-      "Normal"
-    ],
-    "Type II":[
-      "Flying"
-    ],
     "Weaknesses":[
       "Electric",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Peck",
-      "Quick Attack"
-    ],
-    "Weight":"2.0 kg",
+    "Number":"021",
     "Height":"0.3 m",
+    "Weight":"2.0 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Spearow candies"
     },
+    "Type I":[
+      "Normal"
+    ],
     "Next evolution(s)":[
       {
         "Number":"022",
         "Name":"Fearow"
       }
-    ]
-  },
-  {
-    "Number":"022",
-    "Name":"Fearow",
-    "Classification":"Beak Pokemon",
-    "Type I":[
-      "Normal"
+    ],
+    "Fast Attack(s)":[
+      "Peck",
+      "Quick Attack"
     ],
     "Type II":[
       "Flying"
-    ],
+    ]
+  },
+  {
+    "Name":"Ibitak",
+    "Classification":"Beak Pokemon",
     "Weaknesses":[
       "Electric",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Peck",
-      "Steel Wing"
-    ],
-    "Weight":"38.0 kg",
+    "Number":"022",
     "Height":"1.2 m",
+    "Weight":"38.0 kg",
+    "Type I":[
+      "Normal"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"021",
         "Name":"Spearow"
       }
+    ],
+    "Fast Attack(s)":[
+      "Peck",
+      "Steel Wing"
+    ],
+    "Type II":[
+      "Flying"
     ]
   },
   {
-    "Number":"023",
-    "Name":"Ekans",
+    "Name":"Rettan",
     "Classification":"Snake Pokemon",
-    "Type I":[
-      "Poison"
-    ],
     "Weaknesses":[
       "Ground",
       "Psychic"
     ],
-    "Fast Attack(s)":[
-      "Acid",
-      "Poison Sting"
-    ],
-    "Weight":"6.9 kg",
+    "Number":"023",
     "Height":"2.0 m",
+    "Weight":"6.9 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Ekans candies"
     },
+    "Type I":[
+      "Poison"
+    ],
     "Next evolution(s)":[
       {
         "Number":"024",
         "Name":"Arbok"
       }
+    ],
+    "Fast Attack(s)":[
+      "Acid",
+      "Poison Sting"
     ]
   },
   {
-    "Number":"024",
     "Name":"Arbok",
     "Classification":"Cobra Pokemon",
-    "Type I":[
-      "Poison"
-    ],
     "Weaknesses":[
       "Ground",
       "Psychic"
     ],
-    "Fast Attack(s)":[
-      "Acid",
-      "Bite"
-    ],
-    "Weight":"65.0 kg",
+    "Number":"024",
     "Height":"3.5 m",
+    "Weight":"65.0 kg",
+    "Type I":[
+      "Poison"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"023",
         "Name":"Ekans"
       }
+    ],
+    "Fast Attack(s)":[
+      "Acid",
+      "Bite"
     ]
   },
   {
-    "Number":"025",
     "Name":"Pikachu",
     "Classification":"Mouse Pokemon",
-    "Type I":[
-      "Electric"
-    ],
     "Weaknesses":[
       "Ground"
     ],
-    "Fast Attack(s)":[
-      "Quick Attack",
-      "Thunder Shock"
-    ],
-    "Weight":"6.0 kg",
+    "Number":"025",
     "Height":"0.4 m",
+    "Weight":"6.0 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Pikachu candies"
     },
+    "Type I":[
+      "Electric"
+    ],
     "Next evolution(s)":[
       {
         "Number":"026",
         "Name":"Raichu"
       }
+    ],
+    "Fast Attack(s)":[
+      "Quick Attack",
+      "Thunder Shock"
     ]
   },
   {
-    "Number":"026",
     "Name":"Raichu",
     "Classification":"Mouse Pokemon",
-    "Type I":[
-      "Electric"
-    ],
     "Weaknesses":[
       "Ground"
     ],
-    "Fast Attack(s)":[
-      "Thunder Shock",
-      "Spark"
-    ],
-    "Weight":"30.0 kg",
+    "Number":"026",
     "Height":"0.8 m",
+    "Weight":"30.0 kg",
+    "Type I":[
+      "Electric"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"025",
         "Name":"Pikachu"
       }
+    ],
+    "Fast Attack(s)":[
+      "Thunder Shock",
+      "Spark"
     ]
   },
   {
-    "Number":"027",
-    "Name":"Sandshrew",
+    "Name":"Sandan",
     "Classification":"Mouse Pokemon",
-    "Type I":[
-      "Ground"
-    ],
     "Weaknesses":[
       "Water",
       "Grass",
       "Ice"
     ],
-    "Fast Attack(s)":[
-      "Mud Shot",
-      "Scratch"
-    ],
-    "Weight":"12.0 kg",
+    "Number":"027",
     "Height":"0.6 m",
+    "Weight":"12.0 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Sandshrew candies"
     },
+    "Type I":[
+      "Ground"
+    ],
     "Next evolution(s)":[
       {
         "Number":"028",
         "Name":"Sandslash"
       }
+    ],
+    "Fast Attack(s)":[
+      "Mud Shot",
+      "Scratch"
     ]
   },
   {
-    "Number":"028",
-    "Name":"Sandslash",
+    "Name":"Sandamer",
     "Classification":"Mouse Pokemon",
-    "Type I":[
-      "Ground"
-    ],
     "Weaknesses":[
       "Water",
       "Grass",
       "Ice"
     ],
-    "Fast Attack(s)":[
-      "Metal Claw",
-      "Mud Shot"
-    ],
-    "Weight":"29.5 kg",
+    "Number":"028",
     "Height":"1.0 m",
+    "Weight":"29.5 kg",
+    "Type I":[
+      "Ground"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"027",
         "Name":"Sandshrew"
       }
+    ],
+    "Fast Attack(s)":[
+      "Metal Claw",
+      "Mud Shot"
     ]
   },
   {
-    "Number":"029",
     "Name":"Nidoran F",
     "Classification":"Poison Pin Pokemon",
-    "Type I":[
-      "Poison"
-    ],
     "Weaknesses":[
       "Ground",
       "Psychic"
     ],
-    "Fast Attack(s)":[
-      "Bite",
-      "Poison Sting"
-    ],
-    "Weight":"7.0 kg",
+    "Number":"029",
     "Height":"0.4 m",
+    "Weight":"7.0 kg",
     "Next Evolution Requirements":{
       "Amount":25,
       "Name":"Nidoran F candies"
     },
+    "Type I":[
+      "Poison"
+    ],
     "Next evolution(s)":[
       {
         "Number":"030",
@@ -933,64 +929,61 @@
         "Number":"031",
         "Name":"Nidoqueen"
       }
-    ]
-  },
-  {
-    "Number":"030",
-    "Name":"Nidorina",
-    "Classification":"Poison Pin Pokemon",
-    "Type I":[
-      "Poison"
-    ],
-    "Weaknesses":[
-      "Ground",
-      "Psychic"
     ],
     "Fast Attack(s)":[
       "Bite",
       "Poison Sting"
+    ]
+  },
+  {
+    "Next evolution(s)":[
+      {
+        "Number":"031",
+        "Name":"Nidoqueen"
+      }
     ],
-    "Weight":"20.0 kg",
+    "Name":"Nidorina",
+    "Classification":"Poison Pin Pokemon",
+    "Weaknesses":[
+      "Ground",
+      "Psychic"
+    ],
+    "Number":"030",
     "Height":"0.8 m",
+    "Weight":"20.0 kg",
+    "Next Evolution Requirements":{
+      "Amount":100,
+      "Name":"Nidoran F candies"
+    },
+    "Type I":[
+      "Poison"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"029",
         "Name":"Nidoran  F"
       }
     ],
-    "Next Evolution Requirements":{
-      "Amount":100,
-      "Name":"Nidoran F candies"
-    },
-    "Next evolution(s)":[
-      {
-        "Number":"031",
-        "Name":"Nidoqueen"
-      }
+    "Fast Attack(s)":[
+      "Bite",
+      "Poison Sting"
     ]
   },
   {
-    "Number":"031",
     "Name":"Nidoqueen",
     "Classification":"Drill Pokemon",
-    "Type I":[
-      "Poison"
-    ],
-    "Type II":[
-      "Ground"
-    ],
     "Weaknesses":[
       "Water",
       "Ice",
       "Ground",
       "Psychic"
     ],
-    "Fast Attack(s)":[
-      "Bite",
-      "Poison Jab"
-    ],
-    "Weight":"60.0 kg",
+    "Number":"031",
     "Height":"1.3 m",
+    "Weight":"60.0 kg",
+    "Type I":[
+      "Poison"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"029",
@@ -1000,29 +993,32 @@
         "Number":"030",
         "Name":"Nidorina"
       }
+    ],
+    "Fast Attack(s)":[
+      "Bite",
+      "Poison Jab"
+    ],
+    "Type II":[
+      "Ground"
     ]
   },
   {
-    "Number":"032",
     "Name":"Nidoran M",
     "Classification":"Poison Pin Pokemon",
-    "Type I":[
-      "Poison"
-    ],
     "Weaknesses":[
       "Ground",
       "Psychic"
     ],
-    "Fast Attack(s)":[
-      "Peck",
-      "Poison Sting"
-    ],
-    "Weight":"9.0 kg",
+    "Number":"032",
     "Height":"0.5 m",
+    "Weight":"9.0 kg",
     "Next Evolution Requirements":{
       "Amount":25,
       "Name":"Nidoran M candies"
     },
+    "Type I":[
+      "Poison"
+    ],
     "Next evolution(s)":[
       {
         "Number":"033",
@@ -1032,64 +1028,61 @@
         "Number":"034",
         "Name":"Nidoking"
       }
+    ],
+    "Fast Attack(s)":[
+      "Peck",
+      "Poison Sting"
     ]
   },
   {
-    "Number":"033",
+    "Next evolution(s)":[
+      {
+        "Number":"034",
+        "Name":"Nidoking"
+      }
+    ],
     "Name":"Nidorino",
     "Classification":"Poison Pin Pokemon",
-    "Type I":[
-      "Poison"
-    ],
     "Weaknesses":[
       "Ground",
       "Psychic"
     ],
-    "Fast Attack(s)":[
-      "Bite",
-      "Poison Jab"
-    ],
-    "Weight":"19.5 kg",
+    "Number":"033",
     "Height":"0.9 m",
+    "Weight":"19.5 kg",
+    "Next Evolution Requirements":{
+      "Amount":100,
+      "Name":"Nidoran M candies"
+    },
+    "Type I":[
+      "Poison"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"032",
         "Name":"Nidoran M"
       }
     ],
-    "Next Evolution Requirements":{
-      "Amount":100,
-      "Name":"Nidoran M candies"
-    },
-    "Next evolution(s)":[
-      {
-        "Number":"034",
-        "Name":"Nidoking"
-      }
+    "Fast Attack(s)":[
+      "Bite",
+      "Poison Jab"
     ]
   },
   {
-    "Number":"034",
     "Name":"Nidoking",
     "Classification":"Drill Pokemon",
-    "Type I":[
-      "Poison"
-    ],
-    "Type II":[
-      "Ground"
-    ],
     "Weaknesses":[
       "Water",
       "Ice",
       "Ground",
       "Psychic"
     ],
-    "Fast Attack(s)":[
-      "Fury Cutter",
-      "Poison Jab"
-    ],
-    "Weight":"62.0 kg",
+    "Number":"034",
     "Height":"1.4 m",
+    "Weight":"62.0 kg",
+    "Type I":[
+      "Poison"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"032",
@@ -1099,250 +1092,250 @@
         "Number":"033",
         "Name":"Nidorino"
       }
+    ],
+    "Fast Attack(s)":[
+      "Fury Cutter",
+      "Poison Jab"
+    ],
+    "Type II":[
+      "Ground"
     ]
   },
   {
-    "Number":"035",
-    "Name":"Clefairy",
+    "Name":"Piepi",
     "Classification":"Fairy Pokemon",
-    "Type I":[
-      "Normal"
-    ],
     "Weaknesses":[
       "Fighting"
     ],
-    "Fast Attack(s)":[
-      "Pound",
-      "Zen Headbutt"
-    ],
-    "Weight":"7.5 kg",
+    "Number":"035",
     "Height":"0.6 m",
+    "Weight":"7.5 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Clefairy candies"
     },
+    "Type I":[
+      "Normal"
+    ],
     "Next evolution(s)":[
       {
         "Number":"036",
         "Name":"Clefable"
       }
-    ]
-  },
-  {
-    "Number":"036",
-    "Name":"Clefable",
-    "Classification":"Fairy Pokemon",
-    "Type I":[
-      "Normal"
-    ],
-    "Weaknesses":[
-      "Fighting"
     ],
     "Fast Attack(s)":[
       "Pound",
       "Zen Headbutt"
+    ]
+  },
+  {
+    "Name":"Pixi",
+    "Classification":"Fairy Pokemon",
+    "Weaknesses":[
+      "Fighting"
     ],
-    "Weight":"40.0 kg",
+    "Number":"036",
     "Height":"1.3 m",
+    "Weight":"40.0 kg",
+    "Type I":[
+      "Normal"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"035",
         "Name":"Clefairy"
       }
+    ],
+    "Fast Attack(s)":[
+      "Pound",
+      "Zen Headbutt"
     ]
   },
   {
-    "Number":"037",
     "Name":"Vulpix",
     "Classification":"Fox Pokemon",
-    "Type I":[
-      "Fire"
-    ],
     "Weaknesses":[
       "Water",
       "Ground",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Ember",
-      "Quick Attack"
-    ],
-    "Weight":"9.9 kg",
+    "Number":"037",
     "Height":"0.6 m",
+    "Weight":"9.9 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Vulpix candies"
     },
+    "Type I":[
+      "Fire"
+    ],
     "Next evolution(s)":[
       {
         "Number":"038",
         "Name":"Ninetales"
       }
+    ],
+    "Fast Attack(s)":[
+      "Ember",
+      "Quick Attack"
     ]
   },
   {
-    "Number":"038",
-    "Name":"Ninetales",
+    "Name":"Vulnona",
     "Classification":"Fox Pokemon",
-    "Type I":[
-      "Fire"
-    ],
     "Weaknesses":[
       "Water",
       "Ground",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Ember",
-      "Quick Attack"
-    ],
-    "Weight":"19.9 kg",
+    "Number":"038",
     "Height":"1.1 m",
+    "Weight":"19.9 kg",
+    "Type I":[
+      "Fire"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"037",
         "Name":"Vulpix"
       }
+    ],
+    "Fast Attack(s)":[
+      "Ember",
+      "Quick Attack"
     ]
   },
   {
-    "Number":"039",
-    "Name":"Jigglypuff",
+    "Name":"Pummeluff",
     "Classification":"Balloon Pokemon",
-    "Type I":[
-      "Normal"
-    ],
     "Weaknesses":[
       "Fighting"
     ],
-    "Fast Attack(s)":[
-      "Feint Attack",
-      "Pound"
-    ],
-    "Weight":"5.5 kg",
+    "Number":"039",
     "Height":"0.5 m",
+    "Weight":"5.5 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Jigglypuff candies"
     },
+    "Type I":[
+      "Normal"
+    ],
     "Next evolution(s)":[
       {
         "Number":"039",
         "Name":"Jigglypuff"
       }
-    ]
-  },
-  {
-    "Number":"040",
-    "Name":"Wigglytuff",
-    "Classification":"Balloon Pokemon",
-    "Type I":[
-      "Normal"
-    ],
-    "Weaknesses":[
-      "Fighting"
     ],
     "Fast Attack(s)":[
       "Feint Attack",
       "Pound"
+    ]
+  },
+  {
+    "Name":"Knuddeluff",
+    "Classification":"Balloon Pokemon",
+    "Weaknesses":[
+      "Fighting"
     ],
-    "Weight":"12.0 kg",
+    "Number":"040",
     "Height":"1.0 m",
+    "Weight":"12.0 kg",
+    "Type I":[
+      "Normal"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"040",
         "Name":"Wigglytuff"
       }
+    ],
+    "Fast Attack(s)":[
+      "Feint Attack",
+      "Pound"
     ]
   },
   {
-    "Number":"041",
     "Name":"Zubat",
     "Classification":"Bat Pokemon",
-    "Type I":[
-      "Poison"
-    ],
-    "Type II":[
-      "Flying"
-    ],
     "Weaknesses":[
       "Electric",
       "Ice",
       "Psychic",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Bite",
-      "Quick Attack"
-    ],
-    "Weight":"7.5 kg",
+    "Number":"041",
     "Height":"0.8 m",
+    "Weight":"7.5 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Zubat candies"
     },
+    "Type I":[
+      "Poison"
+    ],
     "Next evolution(s)":[
       {
         "Number":"042",
         "Name":"Golbat"
       }
-    ]
-  },
-  {
-    "Number":"042",
-    "Name":"Golbat",
-    "Classification":"Bat Pokemon",
-    "Type I":[
-      "Poison"
+    ],
+    "Fast Attack(s)":[
+      "Bite",
+      "Quick Attack"
     ],
     "Type II":[
       "Flying"
-    ],
+    ]
+  },
+  {
+    "Name":"Golbat",
+    "Classification":"Bat Pokemon",
     "Weaknesses":[
       "Electric",
       "Ice",
       "Psychic",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Bite",
-      "Wing Attack"
-    ],
-    "Weight":"55.0 kg",
+    "Number":"042",
     "Height":"1.6 m",
+    "Weight":"55.0 kg",
+    "Type I":[
+      "Poison"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"041",
         "Name":"Zubat"
       }
+    ],
+    "Fast Attack(s)":[
+      "Bite",
+      "Wing Attack"
+    ],
+    "Type II":[
+      "Flying"
     ]
   },
   {
-    "Number":"043",
-    "Name":"Oddish",
+    "Name":"Myrapla",
     "Classification":"Weed Pokemon",
-    "Type I":[
-      "Grass"
-    ],
-    "Type II":[
-      "Poison"
-    ],
     "Weaknesses":[
       "Fire",
       "Ice",
       "Flying",
       "Psychic"
     ],
-    "Fast Attack(s)":[
-      "Acid",
-      "Razor Leaf"
-    ],
-    "Weight":"5.4 kg",
+    "Number":"043",
     "Height":"0.5 m",
+    "Weight":"5.4 kg",
     "Next Evolution Requirements":{
       "Amount":25,
       "Name":"Oddish candies"
     },
+    "Type I":[
+      "Grass"
+    ],
     "Next evolution(s)":[
       {
         "Number":"044",
@@ -1352,90 +1345,90 @@
         "Number":"045",
         "Name":"Vileplume"
       }
-    ]
-  },
-  {
-    "Number":"044",
-    "Name":"Gloom",
-    "Classification":"Weed Pokemon",
-    "Type I":[
-      "Grass"
+    ],
+    "Fast Attack(s)":[
+      "Acid",
+      "Razor Leaf"
     ],
     "Type II":[
       "Poison"
+    ]
+  },
+  {
+    "Next evolution(s)":[
+      {
+        "Number":"045",
+        "Name":"Vileplume"
+      }
     ],
+    "Name":"Duflor",
+    "Classification":"Weed Pokemon",
     "Weaknesses":[
       "Fire",
       "Ice",
       "Flying",
       "Psychic"
     ],
-    "Fast Attack(s)":[
-      "Acid",
-      "Razor Leaf"
-    ],
-    "Weight":"8.6 kg",
+    "Number":"044",
     "Height":"0.8 m",
+    "Weight":"8.6 kg",
+    "Next Evolution Requirements":{
+      "Amount":100,
+      "Name":"Oddish candies"
+    },
+    "Type I":[
+      "Grass"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"043",
         "Name":"Oddish"
       }
     ],
-    "Next Evolution Requirements":{
-      "Amount":100,
-      "Name":"Oddish candies"
-    },
-    "Next evolution(s)":[
-      {
-        "Number":"045",
-        "Name":"Vileplume"
-      }
-    ]
-  },
-  {
-    "Number":"045",
-    "Name":"Vileplume",
-    "Classification":"Flower Pokemon",
-    "Type I":[
-      "Grass"
+    "Fast Attack(s)":[
+      "Acid",
+      "Razor Leaf"
     ],
     "Type II":[
       "Poison"
-    ],
+    ]
+  },
+  {
+    "Name":"Giflor",
+    "Classification":"Flower Pokemon",
     "Weaknesses":[
       "Fire",
       "Ice",
       "Flying",
       "Psychic"
+    ],
+    "Number":"045",
+    "Height":"1.2 m",
+    "Weight":"18.6 kg",
+    "Type I":[
+      "Grass"
+    ],
+    "Previous evolution(s)":[
+      {
+        "Number":"043",
+        "Name":"Oddish"
+      },
+      {
+        "Number":"044",
+        "Name":"Gloom"
+      }
     ],
     "Fast Attack(s)":[
       "Acid",
       ""
     ],
-    "Weight":"18.6 kg",
-    "Height":"1.2 m",
-    "Previous evolution(s)":[
-      {
-        "Number":"043",
-        "Name":"Oddish"
-      },
-      {
-        "Number":"044",
-        "Name":"Gloom"
-      }
+    "Type II":[
+      "Poison"
     ]
   },
   {
-    "Number":"046",
     "Name":"Paras",
     "Classification":"Mushroom Pokemon",
-    "Type I":[
-      "Bug"
-    ],
-    "Type II":[
-      "Grass"
-    ],
     "Weaknesses":[
       "Fire",
       "Ice",
@@ -1444,33 +1437,33 @@
       "Bug",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Bug Bite",
-      "Scratch"
-    ],
-    "Weight":"5.4 kg",
+    "Number":"046",
     "Height":"0.3 m",
+    "Weight":"5.4 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Paras candies"
     },
+    "Type I":[
+      "Bug"
+    ],
     "Next evolution(s)":[
       {
         "Number":"047",
         "Name":"Parasect"
       }
-    ]
-  },
-  {
-    "Number":"047",
-    "Name":"Parasect",
-    "Classification":"Mushroom Pokemon",
-    "Type I":[
-      "Bug"
+    ],
+    "Fast Attack(s)":[
+      "Bug Bite",
+      "Scratch"
     ],
     "Type II":[
       "Grass"
-    ],
+    ]
+  },
+  {
+    "Name":"Parasek",
+    "Classification":"Mushroom Pokemon",
     "Weaknesses":[
       "Fire",
       "Ice",
@@ -1479,366 +1472,369 @@
       "Bug",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Bug Bite",
-      "Fury Cutter"
-    ],
-    "Weight":"29.5 kg",
+    "Number":"047",
     "Height":"1.0 m",
+    "Weight":"29.5 kg",
+    "Type I":[
+      "Bug"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"046",
         "Name":"Paras"
       }
+    ],
+    "Fast Attack(s)":[
+      "Bug Bite",
+      "Fury Cutter"
+    ],
+    "Type II":[
+      "Grass"
     ]
   },
   {
-    "Number":"048",
-    "Name":"Venonat",
+    "Name":"Bluzuk",
     "Classification":"Insect Pokemon",
-    "Type I":[
-      "Bug"
-    ],
-    "Type II":[
-      "Poison"
-    ],
     "Weaknesses":[
       "Fire",
       "Flying",
       "Psychic",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Bug Bite",
-      "Confusion"
-    ],
-    "Weight":"30.0 kg",
+    "Number":"048",
     "Height":"1.0 m",
+    "Weight":"30.0 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Venonat candies"
     },
+    "Type I":[
+      "Bug"
+    ],
     "Next evolution(s)":[
       {
         "Number":"049",
         "Name":"Venomoth"
       }
-    ]
-  },
-  {
-    "Number":"049",
-    "Name":"Venomoth",
-    "Classification":"Poison Moth Pokemon",
-    "Type I":[
-      "Bug"
-    ],
-    "Type II":[
-      "Poison"
-    ],
-    "Weaknesses":[
-      "Fire",
-      "Flying",
-      "Psychic",
-      "Rock"
     ],
     "Fast Attack(s)":[
       "Bug Bite",
       "Confusion"
     ],
-    "Weight":"12.5 kg",
+    "Type II":[
+      "Poison"
+    ]
+  },
+  {
+    "Name":"Omot",
+    "Classification":"Poison Moth Pokemon",
+    "Weaknesses":[
+      "Fire",
+      "Flying",
+      "Psychic",
+      "Rock"
+    ],
+    "Number":"049",
     "Height":"1.5 m",
+    "Weight":"12.5 kg",
+    "Type I":[
+      "Bug"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"048",
         "Name":"Venonat"
       }
+    ],
+    "Fast Attack(s)":[
+      "Bug Bite",
+      "Confusion"
+    ],
+    "Type II":[
+      "Poison"
     ]
   },
   {
-    "Number":"050",
-    "Name":"Diglett",
+    "Name":"Digda",
     "Classification":"Mole Pokemon",
-    "Type I":[
-      "Ground"
-    ],
     "Weaknesses":[
       "Water",
       "Grass",
       "Ice"
     ],
-    "Fast Attack(s)":[
-      "Mud Shot",
-      "Scratch"
-    ],
-    "Weight":"0.8 kg",
+    "Number":"050",
     "Height":"0.2 m",
+    "Weight":"0.8 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Diglett candies"
     },
+    "Type I":[
+      "Ground"
+    ],
     "Next evolution(s)":[
       {
         "Number":"051",
         "Name":"Dugtrio"
       }
+    ],
+    "Fast Attack(s)":[
+      "Mud Shot",
+      "Scratch"
     ]
   },
   {
-    "Number":"051",
-    "Name":"Dugtrio",
+    "Name":"Digdri",
     "Classification":"Mole Pokemon",
-    "Type I":[
-      "Ground"
-    ],
     "Weaknesses":[
       "Water",
       "Grass",
       "Ice"
     ],
-    "Fast Attack(s)":[
-      "Mud Shot",
-      "Sucker Punch"
-    ],
-    "Weight":"33.3 kg",
+    "Number":"051",
     "Height":"0.7 m",
+    "Weight":"33.3 kg",
+    "Type I":[
+      "Ground"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"050",
         "Name":"Diglett"
       }
+    ],
+    "Fast Attack(s)":[
+      "Mud Shot",
+      "Sucker Punch"
     ]
   },
   {
-    "Number":"052",
-    "Name":"Meowth",
+    "Name":"Mauzi",
     "Classification":"Scratch Cat Pokemon",
-    "Type I":[
-      "Normal"
-    ],
     "Weaknesses":[
       "Fighting"
     ],
-    "Fast Attack(s)":[
-      "Bite",
-      "Scratch"
-    ],
-    "Weight":"4.2 kg",
+    "Number":"052",
     "Height":"0.4 m",
+    "Weight":"4.2 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Meowth candies"
     },
+    "Type I":[
+      "Normal"
+    ],
     "Next evolution(s)":[
       {
         "Number":"053",
         "Name":"Persian"
       }
+    ],
+    "Fast Attack(s)":[
+      "Bite",
+      "Scratch"
     ]
   },
   {
-    "Number":"053",
-    "Name":"Persian",
+    "Name":"Snobilikat",
     "Classification":"Classy Cat Pokemon",
-    "Type I":[
-      "Normal"
-    ],
     "Weaknesses":[
       "Fighting"
     ],
-    "Fast Attack(s)":[
-      "Feint Attack",
-      "Scratch"
-    ],
-    "Weight":"32.0 kg",
+    "Number":"053",
     "Height":"1.0 m",
+    "Weight":"32.0 kg",
+    "Type I":[
+      "Normal"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"052",
         "Name":"Meowth"
       }
+    ],
+    "Fast Attack(s)":[
+      "Feint Attack",
+      "Scratch"
     ]
   },
   {
-    "Number":"054",
-    "Name":"Psyduck",
+    "Name":"Enton",
     "Classification":"Duck Pokemon",
-    "Type I":[
-      "Water"
-    ],
     "Weaknesses":[
       "Electric",
       "Grass"
     ],
-    "Fast Attack(s)":[
-      "Water Gun",
-      "Zen Headbutt"
-    ],
-    "Weight":"19.6 kg",
+    "Number":"054",
     "Height":"0.8 m",
+    "Weight":"19.6 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Psyduck candies"
     },
+    "Type I":[
+      "Water"
+    ],
     "Next evolution(s)":[
       {
         "Number":"055",
         "Name":"Golduck"
       }
+    ],
+    "Fast Attack(s)":[
+      "Water Gun",
+      "Zen Headbutt"
     ]
   },
   {
-    "Number":"055",
-    "Name":"Golduck",
+    "Name":"Entoron",
     "Classification":"Duck Pokemon",
-    "Type I":[
-      "Water"
-    ],
     "Weaknesses":[
       "Electric",
       "Grass"
     ],
-    "Fast Attack(s)":[
-      "Confusion",
-      "Zen Headbutt"
-    ],
-    "Weight":"76.6 kg",
+    "Number":"055",
     "Height":"1.7 m",
+    "Weight":"76.6 kg",
+    "Type I":[
+      "Water"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"054",
         "Name":"Psyduck"
       }
+    ],
+    "Fast Attack(s)":[
+      "Confusion",
+      "Zen Headbutt"
     ]
   },
   {
-    "Number":"056",
-    "Name":"Mankey",
+    "Name":"Menki",
     "Classification":"Pig Monkey Pokemon",
-    "Type I":[
-      "Fighting"
-    ],
     "Weaknesses":[
       "Flying",
       "Psychic",
       "Fairy"
     ],
-    "Fast Attack(s)":[
-      "Karate Chop",
-      "Scratch"
-    ],
-    "Weight":"28.0 kg",
+    "Number":"056",
     "Height":"0.5 m",
+    "Weight":"28.0 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Mankey candies"
     },
+    "Type I":[
+      "Fighting"
+    ],
     "Next evolution(s)":[
       {
         "Number":"057",
         "Name":"Primeape"
       }
+    ],
+    "Fast Attack(s)":[
+      "Karate Chop",
+      "Scratch"
     ]
   },
   {
-    "Number":"057",
-    "Name":"Primeape",
+    "Name":"Rasaff",
     "Classification":"Pig Monkey Pokemon",
-    "Type I":[
-      "Fighting"
-    ],
     "Weaknesses":[
       "Flying",
       "Psychic",
       "Fairy"
     ],
-    "Fast Attack(s)":[
-      "Karate Chop",
-      "Low Kick"
-    ],
-    "Weight":"32.0 kg",
+    "Number":"057",
     "Height":"1.0 m",
+    "Weight":"32.0 kg",
+    "Type I":[
+      "Fighting"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"056",
         "Name":"Mankey"
       }
+    ],
+    "Fast Attack(s)":[
+      "Karate Chop",
+      "Low Kick"
     ]
   },
   {
-    "Number":"058",
-    "Name":"Growlithe",
+    "Name":"Fukano",
     "Classification":"Puppy Pokemon",
-    "Type I":[
-      "Fire"
-    ],
     "Weaknesses":[
       "Water",
       "Ground",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Bite",
-      "Ember"
-    ],
-    "Weight":"19.0 kg",
+    "Number":"058",
     "Height":"0.7 m",
+    "Weight":"19.0 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Growlithe candies"
     },
+    "Type I":[
+      "Fire"
+    ],
     "Next evolution(s)":[
       {
         "Number":"059",
         "Name":"Arcanine"
       }
+    ],
+    "Fast Attack(s)":[
+      "Bite",
+      "Ember"
     ]
   },
   {
-    "Number":"059",
-    "Name":"Arcanine",
+    "Name":"Arkani",
     "Classification":"Legendary Pokemon",
-    "Type I":[
-      "Fire"
-    ],
     "Weaknesses":[
       "Water",
       "Ground",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Bite",
-      "Fire Fang"
-    ],
-    "Weight":"155.0 kg",
+    "Number":"059",
     "Height":"1.9 m",
+    "Weight":"155.0 kg",
+    "Type I":[
+      "Fire"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"058",
         "Name":"Growlithe"
       }
+    ],
+    "Fast Attack(s)":[
+      "Bite",
+      "Fire Fang"
     ]
   },
   {
-    "Number":"060",
-    "Name":"Poliwag",
+    "Name":"Quapsel",
     "Classification":"Tadpole Pokemon",
-    "Type I":[
-      "Water"
-    ],
     "Weaknesses":[
       "Electric",
       "Grass"
     ],
-    "Fast Attack(s)":[
-      "Bubble",
-      "Mud Shot"
-    ],
-    "Weight":"12.4 kg",
+    "Number":"060",
     "Height":"0.6 m",
+    "Weight":"12.4 kg",
     "Next Evolution Requirements":{
       "Amount":25,
       "Name":"Poliwag candies"
     },
+    "Type I":[
+      "Water"
+    ],
     "Next evolution(s)":[
       {
         "Number":"061",
@@ -1848,52 +1844,49 @@
         "Number":"062",
         "Name":"Poliwrath"
       }
-    ]
-  },
-  {
-    "Number":"061",
-    "Name":"Poliwhirl",
-    "Classification":"Tadpole Pokemon",
-    "Type I":[
-      "Water"
-    ],
-    "Weaknesses":[
-      "Electric",
-      "Grass"
     ],
     "Fast Attack(s)":[
       "Bubble",
       "Mud Shot"
+    ]
+  },
+  {
+    "Next evolution(s)":[
+      {
+        "Number":"062",
+        "Name":"Poliwrath"
+      }
     ],
-    "Weight":"20.0 kg",
+    "Name":"Quaputzi",
+    "Classification":"Tadpole Pokemon",
+    "Weaknesses":[
+      "Electric",
+      "Grass"
+    ],
+    "Number":"061",
     "Height":"1.0 m",
+    "Weight":"20.0 kg",
+    "Next Evolution Requirements":{
+      "Amount":100,
+      "Name":"Poliwag candies"
+    },
+    "Type I":[
+      "Water"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"060",
         "Name":"Poliwag"
       }
     ],
-    "Next Evolution Requirements":{
-      "Amount":100,
-      "Name":"Poliwag candies"
-    },
-    "Next evolution(s)":[
-      {
-        "Number":"062",
-        "Name":"Poliwrath"
-      }
+    "Fast Attack(s)":[
+      "Bubble",
+      "Mud Shot"
     ]
   },
   {
-    "Number":"062",
-    "Name":"Poliwrath",
+    "Name":"Quappo",
     "Classification":"Tadpole Pokemon",
-    "Type I":[
-      "Water"
-    ],
-    "Type II":[
-      "Fighting"
-    ],
     "Weaknesses":[
       "Electric",
       "Grass",
@@ -1901,12 +1894,12 @@
       "Psychic",
       "Fairy"
     ],
-    "Fast Attack(s)":[
-      "Bubble",
-      "Mud Shot"
-    ],
-    "Weight":"54.0 kg",
+    "Number":"062",
     "Height":"1.3 m",
+    "Weight":"54.0 kg",
+    "Type I":[
+      "Water"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"060",
@@ -1916,94 +1909,97 @@
         "Number":"061",
         "Name":"Poliwhirl"
       }
+    ],
+    "Fast Attack(s)":[
+      "Bubble",
+      "Mud Shot"
+    ],
+    "Type II":[
+      "Fighting"
     ]
   },
   {
-    "Number":"063",
     "Name":"Abra",
     "Classification":"Psi Pokemon",
-    "Type I":[
-      "Psychic"
-    ],
     "Weaknesses":[
       "Bug",
       "Ghost",
       "Dark"
+    ],
+    "Number":"063",
+    "Height":"0.9 m",
+    "Weight":"19.5 kg",
+    "Next Evolution Requirements":{
+      "Amount":25,
+      "Name":"Abra candies"
+    },
+    "Type I":[
+      "Psychic"
+    ],
+    "Next evolution(s)":[
+      {
+        "Number":"064",
+        "Name":"Kadabra"
+      },
+      {
+        "Number":"065",
+        "Name":"Alakazam"
+      }
     ],
     "Fast Attack(s)":[
       "Zen Headbutt",
       ""
-    ],
-    "Weight":"19.5 kg",
-    "Height":"0.9 m",
-    "Next Evolution Requirements":{
-      "Amount":25,
-      "Name":"Abra candies"
-    },
+    ]
+  },
+  {
     "Next evolution(s)":[
-      {
-        "Number":"064",
-        "Name":"Kadabra"
-      },
       {
         "Number":"065",
         "Name":"Alakazam"
       }
-    ]
-  },
-  {
-    "Number":"064",
+    ],
     "Name":"Kadabra",
     "Classification":"Psi Pokemon",
-    "Type I":[
-      "Psychic"
-    ],
     "Weaknesses":[
       "Bug",
       "Ghost",
       "Dark"
     ],
-    "Fast Attack(s)":[
-      "Confusion",
-      "Psycho Cut"
-    ],
-    "Weight":"56.5 kg",
+    "Number":"064",
     "Height":"1.3 m",
-    "Previous evolution(s)":[
-      {
-        "Number":"063",
-        "Name":"Abra"
-      }
-    ],
+    "Weight":"56.5 kg",
     "Next Evolution Requirements":{
       "Amount":100,
       "Name":"Abra candies"
     },
-    "Next evolution(s)":[
-      {
-        "Number":"065",
-        "Name":"Alakazam"
-      }
-    ]
-  },
-  {
-    "Number":"065",
-    "Name":"Alakazam",
-    "Classification":"Psi Pokemon",
     "Type I":[
       "Psychic"
     ],
+    "Previous evolution(s)":[
+      {
+        "Number":"063",
+        "Name":"Abra"
+      }
+    ],
+    "Fast Attack(s)":[
+      "Confusion",
+      "Psycho Cut"
+    ]
+  },
+  {
+    "Name":"Simsala",
+    "Classification":"Psi Pokemon",
     "Weaknesses":[
       "Bug",
       "Ghost",
       "Dark"
     ],
-    "Fast Attack(s)":[
-      "Confusion",
-      "Psycho Cut"
-    ],
-    "Weight":"48.0 kg",
+    "Number":"065",
     "Height":"1.5 m",
+    "Weight":"48.0 kg",
+    "Type I":[
+      "Psychic"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"063",
@@ -2013,30 +2009,30 @@
         "Number":"064",
         "Name":"Kadabra"
       }
+    ],
+    "Fast Attack(s)":[
+      "Confusion",
+      "Psycho Cut"
     ]
   },
   {
-    "Number":"066",
-    "Name":"Machop",
+    "Name":"Machollo",
     "Classification":"Superpower Pokemon",
-    "Type I":[
-      "Fighting"
-    ],
     "Weaknesses":[
       "Flying",
       "Psychic",
       "Fairy"
     ],
-    "Fast Attack(s)":[
-      "Karate Chop",
-      "Low Kick"
-    ],
-    "Weight":"19.5 kg",
+    "Number":"066",
     "Height":"0.8 m",
+    "Weight":"19.5 kg",
     "Next Evolution Requirements":{
       "Amount":25,
       "Name":"Machop candies"
     },
+    "Type I":[
+      "Fighting"
+    ],
     "Next evolution(s)":[
       {
         "Number":"067",
@@ -2046,170 +2042,167 @@
         "Number":"068",
         "Name":"Machamp"
       }
+    ],
+    "Fast Attack(s)":[
+      "Karate Chop",
+      "Low Kick"
     ]
   },
   {
-    "Number":"067",
-    "Name":"Machoke",
-    "Classification":"Superpower Pokemon",
-    "Type I":[
-      "Fighting"
+    "Next evolution(s)":[
+      {
+        "Number":"068",
+        "Name":"Machamp"
+      }
     ],
+    "Name":"Maschock",
+    "Classification":"Superpower Pokemon",
     "Weaknesses":[
       "Flying",
       "Psychic",
       "Fairy"
     ],
-    "Fast Attack(s)":[
-      "Karate Chop",
-      "Low Kick"
-    ],
-    "Weight":"70.5 kg",
+    "Number":"067",
     "Height":"1.5 m",
+    "Weight":"70.5 kg",
+    "Next Evolution Requirements":{
+      "Amount":100,
+      "Name":"Machop candies"
+    },
+    "Type I":[
+      "Fighting"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"066",
         "Name":"Machop"
       }
     ],
-    "Next Evolution Requirements":{
-      "Amount":100,
-      "Name":"Machop candies"
-    },
-    "Next evolution(s)":[
-      {
-        "Number":"068",
-        "Name":"Machamp"
-      }
+    "Fast Attack(s)":[
+      "Karate Chop",
+      "Low Kick"
     ]
   },
   {
-    "Number":"068",
-    "Name":"Machamp",
+    "Name":"Machomei",
     "Classification":"Superpower Pokemon",
-    "Type I":[
-      "Fighting"
-    ],
     "Weaknesses":[
       "Flying",
       "Psychic",
       "Fairy"
+    ],
+    "Number":"068",
+    "Height":"1.6 m",
+    "Weight":"130.0 kg",
+    "Type I":[
+      "Fighting"
+    ],
+    "Previous evolution(s)":[
+      {
+        "Number":"066",
+        "Name":"Machop"
+      },
+      {
+        "Number":"067",
+        "Name":"Machoke"
+      }
     ],
     "Fast Attack(s)":[
       "Bullet Punch",
       "Karate Chop"
-    ],
-    "Weight":"130.0 kg",
-    "Height":"1.6 m",
-    "Previous evolution(s)":[
-      {
-        "Number":"066",
-        "Name":"Machop"
-      },
-      {
-        "Number":"067",
-        "Name":"Machoke"
-      }
     ]
   },
   {
-    "Number":"069",
-    "Name":"Bellsprout",
+    "Name":"Knofensa",
     "Classification":"Flower Pokemon",
-    "Type I":[
-      "Grass"
-    ],
-    "Type II":[
-      "Poison"
-    ],
     "Weaknesses":[
       "Fire",
       "Ice",
       "Flying",
       "Psychic"
+    ],
+    "Number":"069",
+    "Height":"0.7 m",
+    "Weight":"4.0 kg",
+    "Next Evolution Requirements":{
+      "Amount":25,
+      "Name":"Bellsprout candies"
+    },
+    "Type I":[
+      "Grass"
+    ],
+    "Next evolution(s)":[
+      {
+        "Number":"070",
+        "Name":"Weepinbell"
+      },
+      {
+        "Number":"071",
+        "Name":"Victreebel"
+      }
     ],
     "Fast Attack(s)":[
       "Acid",
       "Vine Whip"
     ],
-    "Weight":"4.0 kg",
-    "Height":"0.7 m",
-    "Next Evolution Requirements":{
-      "Amount":25,
-      "Name":"Bellsprout candies"
-    },
+    "Type II":[
+      "Poison"
+    ]
+  },
+  {
     "Next evolution(s)":[
-      {
-        "Number":"070",
-        "Name":"Weepinbell"
-      },
       {
         "Number":"071",
         "Name":"Victreebel"
       }
-    ]
-  },
-  {
-    "Number":"070",
-    "Name":"Weepinbell",
+    ],
+    "Name":"Ultrigaria",
     "Classification":"Flycatcher Pokemon",
-    "Type I":[
-      "Grass"
-    ],
-    "Type II":[
-      "Poison"
-    ],
     "Weaknesses":[
       "Fire",
       "Ice",
       "Flying",
       "Psychic"
     ],
-    "Fast Attack(s)":[
-      "Acid",
-      "Razor Leaf"
-    ],
-    "Weight":"6.4 kg",
+    "Number":"070",
     "Height":"1.0 m",
-    "Previous evolution(s)":[
-      {
-        "Number":"069",
-        "Name":"Bellsprout"
-      }
-    ],
+    "Weight":"6.4 kg",
     "Next Evolution Requirements":{
       "Amount":100,
       "Name":"Bellsprout candies"
     },
-    "Next evolution(s)":[
-      {
-        "Number":"071",
-        "Name":"Victreebel"
-      }
-    ]
-  },
-  {
-    "Number":"071",
-    "Name":"Victreebel",
-    "Classification":"Flycatcher Pokemon",
     "Type I":[
       "Grass"
     ],
+    "Previous evolution(s)":[
+      {
+        "Number":"069",
+        "Name":"Bellsprout"
+      }
+    ],
+    "Fast Attack(s)":[
+      "Acid",
+      "Razor Leaf"
+    ],
     "Type II":[
       "Poison"
-    ],
+    ]
+  },
+  {
+    "Name":"Sarzenia",
+    "Classification":"Flycatcher Pokemon",
     "Weaknesses":[
       "Fire",
       "Ice",
       "Flying",
       "Psychic"
     ],
-    "Fast Attack(s)":[
-      "Acid",
-      "Razor Leaf"
-    ],
-    "Weight":"15.5 kg",
+    "Number":"071",
     "Height":"1.7 m",
+    "Weight":"15.5 kg",
+    "Type I":[
+      "Grass"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"069",
@@ -2219,78 +2212,78 @@
         "Number":"070",
         "Name":"Weepinbell"
       }
-    ]
-  },
-  {
-    "Number":"072",
-    "Name":"Tentacool",
-    "Classification":"Jellyfish Pokemon",
-    "Type I":[
-      "Water"
+    ],
+    "Fast Attack(s)":[
+      "Acid",
+      "Razor Leaf"
     ],
     "Type II":[
       "Poison"
-    ],
+    ]
+  },
+  {
+    "Name":"Tentacha",
+    "Classification":"Jellyfish Pokemon",
     "Weaknesses":[
       "Electric",
       "Ground",
       "Psychic"
     ],
-    "Fast Attack(s)":[
-      "Bubble",
-      "Poison Sting"
-    ],
-    "Weight":"45.5 kg",
+    "Number":"072",
     "Height":"0.9 m",
+    "Weight":"45.5 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Tentacool candies"
     },
+    "Type I":[
+      "Water"
+    ],
     "Next evolution(s)":[
       {
         "Number":"073",
         "Name":"Tentacruel"
       }
-    ]
-  },
-  {
-    "Number":"073",
-    "Name":"Tentacruel",
-    "Classification":"Jellyfish Pokemon",
-    "Type I":[
-      "Water"
+    ],
+    "Fast Attack(s)":[
+      "Bubble",
+      "Poison Sting"
     ],
     "Type II":[
       "Poison"
-    ],
+    ]
+  },
+  {
+    "Name":"Tentoxa",
+    "Classification":"Jellyfish Pokemon",
     "Weaknesses":[
       "Electric",
       "Ground",
       "Psychic"
     ],
-    "Fast Attack(s)":[
-      "Acid",
-      "Poison Jab"
-    ],
-    "Weight":"55.0 kg",
+    "Number":"073",
     "Height":"1.6 m",
+    "Weight":"55.0 kg",
+    "Type I":[
+      "Water"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"072",
         "Name":"Tentacool"
       }
+    ],
+    "Fast Attack(s)":[
+      "Acid",
+      "Poison Jab"
+    ],
+    "Type II":[
+      "Poison"
     ]
   },
   {
-    "Number":"074",
-    "Name":"Geodude",
+    "Name":"Kleinstein",
     "Classification":"Rock Pokemon",
-    "Type I":[
-      "Rock"
-    ],
-    "Type II":[
-      "Ground"
-    ],
     "Weaknesses":[
       "Water",
       "Grass",
@@ -2298,38 +2291,44 @@
       "Fighting",
       "Ground",
       "Steel"
+    ],
+    "Number":"074",
+    "Height":"0.4 m",
+    "Weight":"20.0 kg",
+    "Next Evolution Requirements":{
+      "Amount":25,
+      "Name":"Geodude candies"
+    },
+    "Type I":[
+      "Rock"
+    ],
+    "Next evolution(s)":[
+      {
+        "Number":"075",
+        "Name":"Graveler"
+      },
+      {
+        "Number":"076",
+        "Name":"Golem"
+      }
     ],
     "Fast Attack(s)":[
       "Rock Throw",
       "Tackle"
     ],
-    "Weight":"20.0 kg",
-    "Height":"0.4 m",
-    "Next Evolution Requirements":{
-      "Amount":25,
-      "Name":"Geodude candies"
-    },
+    "Type II":[
+      "Ground"
+    ]
+  },
+  {
     "Next evolution(s)":[
-      {
-        "Number":"075",
-        "Name":"Graveler"
-      },
       {
         "Number":"076",
         "Name":"Golem"
       }
-    ]
-  },
-  {
-    "Number":"075",
-    "Name":"Graveler",
+    ],
+    "Name":"Georok",
     "Classification":"Rock Pokemon",
-    "Type I":[
-      "Rock"
-    ],
-    "Type II":[
-      "Ground"
-    ],
     "Weaknesses":[
       "Water",
       "Grass",
@@ -2338,39 +2337,33 @@
       "Ground",
       "Steel"
     ],
-    "Fast Attack(s)":[
-      "Mud Shot",
-      "Rock Throw"
-    ],
-    "Weight":"105.0 kg",
+    "Number":"075",
     "Height":"1.0 m",
-    "Previous evolution(s)":[
-      {
-        "Number":"074",
-        "Name":"Geodude"
-      }
-    ],
+    "Weight":"105.0 kg",
     "Next Evolution Requirements":{
       "Amount":100,
       "Name":"Geodude candies"
     },
-    "Next evolution(s)":[
-      {
-        "Number":"076",
-        "Name":"Golem"
-      }
-    ]
-  },
-  {
-    "Number":"076",
-    "Name":"Golem",
-    "Classification":"Megaton Pokemon",
     "Type I":[
       "Rock"
     ],
+    "Previous evolution(s)":[
+      {
+        "Number":"074",
+        "Name":"Geodude"
+      }
+    ],
+    "Fast Attack(s)":[
+      "Mud Shot",
+      "Rock Throw"
+    ],
     "Type II":[
       "Ground"
-    ],
+    ]
+  },
+  {
+    "Name":"Geowaz",
+    "Classification":"Megaton Pokemon",
     "Weaknesses":[
       "Water",
       "Grass",
@@ -2379,12 +2372,12 @@
       "Ground",
       "Steel"
     ],
-    "Fast Attack(s)":[
-      "Mud Shot",
-      "Rock Throw"
-    ],
-    "Weight":"300.0 kg",
+    "Number":"076",
     "Height":"1.4 m",
+    "Weight":"300.0 kg",
+    "Type I":[
+      "Rock"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"074",
@@ -2394,72 +2387,72 @@
         "Number":"075",
         "Name":"Graveler"
       }
+    ],
+    "Fast Attack(s)":[
+      "Mud Shot",
+      "Rock Throw"
+    ],
+    "Type II":[
+      "Ground"
     ]
   },
   {
-    "Number":"077",
-    "Name":"Ponyta",
+    "Name":"Ponita",
     "Classification":"Fire Horse Pokemon",
-    "Type I":[
-      "Fire"
-    ],
     "Weaknesses":[
       "Water",
       "Ground",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Ember",
-      "Tackle"
-    ],
-    "Weight":"30.0 kg",
+    "Number":"077",
     "Height":"1.0 m",
+    "Weight":"30.0 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Ponyta candies"
     },
+    "Type I":[
+      "Fire"
+    ],
     "Next evolution(s)":[
       {
         "Number":"078",
         "Name":"Rapidash"
       }
+    ],
+    "Fast Attack(s)":[
+      "Ember",
+      "Tackle"
     ]
   },
   {
-    "Number":"078",
-    "Name":"Rapidash",
+    "Name":"Gallopa",
     "Classification":"Fire Horse Pokemon",
-    "Type I":[
-      "Fire"
-    ],
     "Weaknesses":[
       "Water",
       "Ground",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Ember",
-      "Low Kick"
-    ],
-    "Weight":"95.0 kg",
+    "Number":"078",
     "Height":"1.7 m",
+    "Weight":"95.0 kg",
+    "Type I":[
+      "Fire"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"077",
         "Name":"Ponyta"
       }
+    ],
+    "Fast Attack(s)":[
+      "Ember",
+      "Low Kick"
     ]
   },
   {
-    "Number":"079",
-    "Name":"Slowpoke",
+    "Name":"Flegmon",
     "Classification":"Dopey Pokemon",
-    "Type I":[
-      "Water"
-    ],
-    "Type II":[
-      "Psychic"
-    ],
     "Weaknesses":[
       "Electric",
       "Grass",
@@ -2467,33 +2460,33 @@
       "Ghost",
       "Dark"
     ],
-    "Fast Attack(s)":[
-      "Confusion",
-      "Water Gun"
-    ],
-    "Weight":"36.0 kg",
+    "Number":"079",
     "Height":"1.2 m",
+    "Weight":"36.0 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Slowpoke candies"
     },
+    "Type I":[
+      "Water"
+    ],
     "Next evolution(s)":[
       {
         "Number":"080",
         "Name":"Slowbro"
       }
-    ]
-  },
-  {
-    "Number":"080",
-    "Name":"Slowbro",
-    "Classification":"Hermit Crab Pokemon",
-    "Type I":[
-      "Water"
+    ],
+    "Fast Attack(s)":[
+      "Confusion",
+      "Water Gun"
     ],
     "Type II":[
       "Psychic"
-    ],
+    ]
+  },
+  {
+    "Name":"Lahmus",
+    "Classification":"Hermit Crab Pokemon",
     "Weaknesses":[
       "Electric",
       "Grass",
@@ -2501,352 +2494,352 @@
       "Ghost",
       "Dark"
     ],
-    "Fast Attack(s)":[
-      "Confusion",
-      "Water Gun"
-    ],
-    "Weight":"78.5 kg",
+    "Number":"080",
     "Height":"1.6 m",
+    "Weight":"78.5 kg",
+    "Type I":[
+      "Water"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"079",
         "Name":"Slowpoke"
       }
+    ],
+    "Fast Attack(s)":[
+      "Confusion",
+      "Water Gun"
+    ],
+    "Type II":[
+      "Psychic"
     ]
   },
   {
-    "Number":"081",
-    "Name":"Magnemite",
+    "Name":"Magnetilo",
     "Classification":"Magnet Pokemon",
-    "Type I":[
-      "Electric"
-    ],
-    "Type II":[
-      "Steel"
-    ],
     "Weaknesses":[
       "Fire",
       "Water",
       "Ground"
     ],
-    "Fast Attack(s)":[
-      "Spark",
-      "Thunder Shock"
-    ],
-    "Weight":"6.0 kg",
+    "Number":"081",
     "Height":"0.3 m",
+    "Weight":"6.0 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Magnemite candies"
     },
+    "Type I":[
+      "Electric"
+    ],
     "Next evolution(s)":[
       {
         "Number":"082",
         "Name":"Magneton"
       }
-    ]
-  },
-  {
-    "Number":"082",
-    "Name":"Magneton",
-    "Classification":"Magnet Pokemon",
-    "Type I":[
-      "Electric"
-    ],
-    "Type II":[
-      "Steel"
-    ],
-    "Weaknesses":[
-      "Fire",
-      "Water",
-      "Ground"
     ],
     "Fast Attack(s)":[
       "Spark",
       "Thunder Shock"
     ],
-    "Weight":"60.0 kg",
+    "Type II":[
+      "Steel"
+    ]
+  },
+  {
+    "Name":"Magneton",
+    "Classification":"Magnet Pokemon",
+    "Weaknesses":[
+      "Fire",
+      "Water",
+      "Ground"
+    ],
+    "Number":"082",
     "Height":"1.0 m",
+    "Weight":"60.0 kg",
+    "Type I":[
+      "Electric"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"081",
         "Name":"Magnemite"
       }
+    ],
+    "Fast Attack(s)":[
+      "Spark",
+      "Thunder Shock"
+    ],
+    "Type II":[
+      "Steel"
     ]
   },
   {
-    "Number":"083",
-    "Name":"Farfetch'd",
+    "Name":"Porenta",
     "Classification":"Wild Duck Pokemon",
-    "Type I":[
-      "Normal"
-    ],
-    "Type II":[
-      "Flying"
-    ],
     "Weaknesses":[
       "Electric",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Unknown"
+    "Number":"083",
+    "Height":"0.8 m",
+    "Weight":"15.0 kg",
+    "Type I":[
+      "Normal"
     ],
     "Special Attack(s)":[
       "Unknown"
     ],
-    "Weight":"15.0 kg",
-    "Height":"0.8 m"
-  },
-  {
-    "Number":"084",
-    "Name":"Doduo",
-    "Classification":"Twin Bird Pokemon",
-    "Type I":[
-      "Normal"
+    "Fast Attack(s)":[
+      "Unknown"
     ],
     "Type II":[
       "Flying"
-    ],
+    ]
+  },
+  {
+    "Name":"Dodu",
+    "Classification":"Twin Bird Pokemon",
     "Weaknesses":[
       "Electric",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Peck",
-      "Quick Attack"
-    ],
-    "Weight":"39.2 kg",
+    "Number":"084",
     "Height":"1.4 m",
+    "Weight":"39.2 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Doduo candies"
     },
+    "Type I":[
+      "Normal"
+    ],
     "Next evolution(s)":[
       {
         "Number":"085",
         "Name":"Dodrio"
       }
-    ]
-  },
-  {
-    "Number":"085",
-    "Name":"Dodrio",
-    "Classification":"Triple Bird Pokemon",
-    "Type I":[
-      "Normal"
+    ],
+    "Fast Attack(s)":[
+      "Peck",
+      "Quick Attack"
     ],
     "Type II":[
       "Flying"
-    ],
+    ]
+  },
+  {
+    "Name":"Dodri",
+    "Classification":"Triple Bird Pokemon",
     "Weaknesses":[
       "Electric",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Feint Attack",
-      "Steel Wing"
-    ],
-    "Weight":"85.2 kg",
+    "Number":"085",
     "Height":"1.8 m",
+    "Weight":"85.2 kg",
+    "Type I":[
+      "Normal"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"084",
         "Name":"Doduo"
       }
+    ],
+    "Fast Attack(s)":[
+      "Feint Attack",
+      "Steel Wing"
+    ],
+    "Type II":[
+      "Flying"
     ]
   },
   {
-    "Number":"086",
-    "Name":"Seel",
+    "Name":"Jurob",
     "Classification":"Sea Lion Pokemon",
-    "Type I":[
-      "Water"
-    ],
     "Weaknesses":[
       "Electric",
       "Grass"
     ],
-    "Fast Attack(s)":[
-      "Ice Shard",
-      "Water Gun"
-    ],
-    "Weight":"90.0 kg",
+    "Number":"086",
     "Height":"1.1 m",
+    "Weight":"90.0 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Seel candies"
     },
+    "Type I":[
+      "Water"
+    ],
     "Next evolution(s)":[
       {
         "Number":"087",
         "Name":"Dewgong"
       }
+    ],
+    "Fast Attack(s)":[
+      "Ice Shard",
+      "Water Gun"
     ]
   },
   {
-    "Number":"087",
-    "Name":"Dewgong",
+    "Name":"Jugong",
     "Classification":"Sea Lion Pokemon",
-    "Type I":[
-      "Water"
-    ],
-    "Type II":[
-      "Ice"
-    ],
     "Weaknesses":[
       "Electric",
       "Grass",
       "Fighting",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Frost Breath",
-      "Ice Shard"
-    ],
-    "Weight":"120.0 kg",
+    "Number":"087",
     "Height":"1.7 m",
+    "Weight":"120.0 kg",
+    "Type I":[
+      "Water"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"086",
         "Name":"Seel"
       }
-    ]
-  },
-  {
-    "Number":"088",
-    "Name":"Grimer",
-    "Classification":"Sludge Pokemon",
-    "Type I":[
-      "Poison"
-    ],
-    "Weaknesses":[
-      "Ground",
-      "Psychic"
-    ],
-    "Fast Attack(s)":[
-      "Acid",
-      "Mud Slap"
-    ],
-    "Weight":"30.0 kg",
-    "Height":"0.9 m",
-    "Next Evolution Requirements":{
-      "Amount":50,
-      "Name":"Grimer candies"
-    },
-    "Next evolution(s)":[
-      {
-        "Number":"089",
-        "Name":"Muk"
-      }
-    ]
-  },
-  {
-    "Number":"089",
-    "Name":"Muk",
-    "Classification":"Sludge Pokemon",
-    "Type I":[
-      "Poison"
-    ],
-    "Weaknesses":[
-      "Ground",
-      "Psychic"
-    ],
-    "Fast Attack(s)":[
-      "Poison Jab",
-      ""
-    ],
-    "Weight":"30.0 kg",
-    "Height":"1.2 m",
-    "Previous evolution(s)":[
-      {
-        "Number":"088",
-        "Name":"Grimer"
-      }
-    ]
-  },
-  {
-    "Number":"090",
-    "Name":"Shellder",
-    "Classification":"Bivalve Pokemon",
-    "Type I":[
-      "Water"
-    ],
-    "Weaknesses":[
-      "Electric",
-      "Grass"
-    ],
-    "Fast Attack(s)":[
-      "Ice Shard",
-      "Tackle"
-    ],
-    "Weight":"4.0 kg",
-    "Height":"0.3 m",
-    "Next Evolution Requirements":{
-      "Amount":50,
-      "Name":"Shellder candies"
-    },
-    "Next evolution(s)":[
-      {
-        "Number":"091",
-        "Name":"Cloyster"
-      }
-    ]
-  },
-  {
-    "Number":"091",
-    "Name":"Cloyster",
-    "Classification":"Bivalve Pokemon",
-    "Type I":[
-      "Water"
-    ],
-    "Type II":[
-      "Ice"
-    ],
-    "Weaknesses":[
-      "Electric",
-      "Grass",
-      "Fighting",
-      "Rock"
     ],
     "Fast Attack(s)":[
       "Frost Breath",
       "Ice Shard"
     ],
-    "Weight":"132.5 kg",
+    "Type II":[
+      "Ice"
+    ]
+  },
+  {
+    "Name":"Sleima",
+    "Classification":"Sludge Pokemon",
+    "Weaknesses":[
+      "Ground",
+      "Psychic"
+    ],
+    "Number":"088",
+    "Height":"0.9 m",
+    "Weight":"30.0 kg",
+    "Next Evolution Requirements":{
+      "Amount":50,
+      "Name":"Grimer candies"
+    },
+    "Type I":[
+      "Poison"
+    ],
+    "Next evolution(s)":[
+      {
+        "Number":"089",
+        "Name":"Muk"
+      }
+    ],
+    "Fast Attack(s)":[
+      "Acid",
+      "Mud Slap"
+    ]
+  },
+  {
+    "Name":"Sleimok",
+    "Classification":"Sludge Pokemon",
+    "Weaknesses":[
+      "Ground",
+      "Psychic"
+    ],
+    "Number":"089",
+    "Height":"1.2 m",
+    "Weight":"30.0 kg",
+    "Type I":[
+      "Poison"
+    ],
+    "Previous evolution(s)":[
+      {
+        "Number":"088",
+        "Name":"Grimer"
+      }
+    ],
+    "Fast Attack(s)":[
+      "Poison Jab",
+      ""
+    ]
+  },
+  {
+    "Name":"Muschas",
+    "Classification":"Bivalve Pokemon",
+    "Weaknesses":[
+      "Electric",
+      "Grass"
+    ],
+    "Number":"090",
+    "Height":"0.3 m",
+    "Weight":"4.0 kg",
+    "Next Evolution Requirements":{
+      "Amount":50,
+      "Name":"Shellder candies"
+    },
+    "Type I":[
+      "Water"
+    ],
+    "Next evolution(s)":[
+      {
+        "Number":"091",
+        "Name":"Cloyster"
+      }
+    ],
+    "Fast Attack(s)":[
+      "Ice Shard",
+      "Tackle"
+    ]
+  },
+  {
+    "Name":"Austos",
+    "Classification":"Bivalve Pokemon",
+    "Weaknesses":[
+      "Electric",
+      "Grass",
+      "Fighting",
+      "Rock"
+    ],
+    "Number":"091",
     "Height":"1.5 m",
+    "Weight":"132.5 kg",
+    "Type I":[
+      "Water"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"090",
         "Name":"Shellder"
       }
+    ],
+    "Fast Attack(s)":[
+      "Frost Breath",
+      "Ice Shard"
+    ],
+    "Type II":[
+      "Ice"
     ]
   },
   {
-    "Number":"092",
-    "Name":"Gastly",
+    "Name":"Nebulak",
     "Classification":"Gas Pokemon",
-    "Type I":[
-      "Ghost"
-    ],
-    "Type II":[
-      "Poison"
-    ],
     "Weaknesses":[
       "Ground",
       "Psychic",
       "Ghost",
       "Dark"
     ],
-    "Fast Attack(s)":[
-      "Lick",
-      "Sucker Punch"
-    ],
-    "Weight":"0.1 kg",
+    "Number":"092",
     "Height":"1.3 m",
+    "Weight":"0.1 kg",
     "Next Evolution Requirements":{
       "Amount":25,
       "Name":"Gastly candies"
     },
+    "Type I":[
+      "Ghost"
+    ],
     "Next evolution(s)":[
       {
         "Number":"093",
@@ -2856,69 +2849,69 @@
         "Number":"094",
         "Name":"Gengar"
       }
-    ]
-  },
-  {
-    "Number":"093",
-    "Name":"Haunter",
-    "Classification":"Gas Pokemon",
-    "Type I":[
-      "Ghost"
+    ],
+    "Fast Attack(s)":[
+      "Lick",
+      "Sucker Punch"
     ],
     "Type II":[
       "Poison"
+    ]
+  },
+  {
+    "Next evolution(s)":[
+      {
+        "Number":"094",
+        "Name":"Gengar"
+      }
     ],
+    "Name":"Alpollo",
+    "Classification":"Gas Pokemon",
     "Weaknesses":[
       "Ground",
       "Psychic",
       "Ghost",
       "Dark"
+    ],
+    "Number":"093",
+    "Height":"1.6 m",
+    "Weight":"0.1 kg",
+    "Next Evolution Requirements":{
+      "Amount":100,
+      "Name":"Gastly candies"
+    },
+    "Type I":[
+      "Ghost"
+    ],
+    "Previous evolution(s)":[
+      {
+        "Number":"092",
+        "Name":"Gastly"
+      }
     ],
     "Fast Attack(s)":[
       "Lick",
       "Shadow Claw"
     ],
-    "Weight":"0.1 kg",
-    "Height":"1.6 m",
-    "Previous evolution(s)":[
-      {
-        "Number":"092",
-        "Name":"Gastly"
-      }
-    ],
-    "Next Evolution Requirements":{
-      "Amount":100,
-      "Name":"Gastly candies"
-    },
-    "Next evolution(s)":[
-      {
-        "Number":"094",
-        "Name":"Gengar"
-      }
+    "Type II":[
+      "Poison"
     ]
   },
   {
-    "Number":"094",
     "Name":"Gengar",
     "Classification":"Shadow Pokemon",
-    "Type I":[
-      "Ghost"
-    ],
-    "Type II":[
-      "Poison"
-    ],
     "Weaknesses":[
       "Ground",
       "Psychic",
       "Ghost",
       "Dark"
     ],
-    "Fast Attack(s)":[
-      "Shadow Claw",
-      "Sucker Punch"
-    ],
-    "Weight":"40.5 kg",
+    "Number":"094",
     "Height":"1.5 m",
+    "Weight":"40.5 kg",
+    "Type I":[
+      "Ghost"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"092",
@@ -2928,18 +2921,18 @@
         "Number":"093",
         "Name":"Haunter"
       }
+    ],
+    "Fast Attack(s)":[
+      "Shadow Claw",
+      "Sucker Punch"
+    ],
+    "Type II":[
+      "Poison"
     ]
   },
   {
-    "Number":"095",
     "Name":"Onix",
     "Classification":"Rock Snake Pokemon",
-    "Type I":[
-      "Rock"
-    ],
-    "Type II":[
-      "Ground"
-    ],
     "Weaknesses":[
       "Water",
       "Grass",
@@ -2947,180 +2940,180 @@
       "Fighting",
       "Ground",
       "Steel"
+    ],
+    "Number":"095",
+    "Height":"8.8 m",
+    "Weight":"210.0 kg",
+    "Type I":[
+      "Rock"
     ],
     "Fast Attack(s)":[
       "Rock Throw",
       "Tackle"
     ],
-    "Weight":"210.0 kg",
-    "Height":"8.8 m"
+    "Type II":[
+      "Ground"
+    ]
   },
   {
-    "Number":"096",
-    "Name":"Drowzee",
+    "Name":"Traumato",
     "Classification":"Hypnosis Pokemon",
-    "Type I":[
-      "Psychic"
-    ],
     "Weaknesses":[
       "Bug",
       "Ghost",
       "Dark"
     ],
-    "Fast Attack(s)":[
-      "Confusion",
-      "Pound"
-    ],
-    "Weight":"32.4 kg",
+    "Number":"096",
     "Height":"1.0 m",
+    "Weight":"32.4 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Drowzee candies"
     },
+    "Type I":[
+      "Psychic"
+    ],
     "Next evolution(s)":[
       {
         "Number":"097",
         "Name":"Hypno"
       }
+    ],
+    "Fast Attack(s)":[
+      "Confusion",
+      "Pound"
     ]
   },
   {
-    "Number":"097",
     "Name":"Hypno",
     "Classification":"Hypnosis Pokemon",
-    "Type I":[
-      "Psychic"
-    ],
     "Weaknesses":[
       "Bug",
       "Ghost",
       "Dark"
     ],
-    "Fast Attack(s)":[
-      "Confusion",
-      "Zen Headbutt"
-    ],
-    "Weight":"75.6 kg",
+    "Number":"097",
     "Height":"1.6 m",
+    "Weight":"75.6 kg",
+    "Type I":[
+      "Psychic"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"096",
         "Name":"Drowzee"
       }
+    ],
+    "Fast Attack(s)":[
+      "Confusion",
+      "Zen Headbutt"
     ]
   },
   {
-    "Number":"098",
     "Name":"Krabby",
     "Classification":"River Crab Pokemon",
-    "Type I":[
-      "Water"
-    ],
     "Weaknesses":[
       "Electric",
       "Grass"
     ],
-    "Fast Attack(s)":[
-      "Bubble",
-      "Mud Shot"
-    ],
-    "Weight":"6.5 kg",
+    "Number":"098",
     "Height":"0.4 m",
+    "Weight":"6.5 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Krabby candies"
     },
+    "Type I":[
+      "Water"
+    ],
     "Next evolution(s)":[
       {
         "Number":"099",
         "Name":"Kingler"
       }
+    ],
+    "Fast Attack(s)":[
+      "Bubble",
+      "Mud Shot"
     ]
   },
   {
-    "Number":"099",
     "Name":"Kingler",
     "Classification":"Pincer Pokemon",
-    "Type I":[
-      "Water"
-    ],
     "Weaknesses":[
       "Electric",
       "Grass"
     ],
-    "Fast Attack(s)":[
-      "Metal Claw",
-      "Mud Shot"
-    ],
-    "Weight":"60.0 kg",
+    "Number":"099",
     "Height":"1.3 m",
+    "Weight":"60.0 kg",
+    "Type I":[
+      "Water"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"098",
         "Name":"Krabby"
       }
+    ],
+    "Fast Attack(s)":[
+      "Metal Claw",
+      "Mud Shot"
     ]
   },
   {
-    "Number":"100",
-    "Name":"Voltorb",
+    "Name":"Voltobal",
     "Classification":"Ball Pokemon",
-    "Type I":[
-      "Electric"
-    ],
     "Weaknesses":[
       "Ground"
     ],
-    "Fast Attack(s)":[
-      "Spark",
-      "Tackle"
-    ],
-    "Weight":"10.4 kg",
+    "Number":"100",
     "Height":"0.5 m",
+    "Weight":"10.4 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Voltorb candies"
     },
+    "Type I":[
+      "Electric"
+    ],
     "Next evolution(s)":[
       {
         "Number":"101",
         "Name":"Electrode"
       }
-    ]
-  },
-  {
-    "Number":"101",
-    "Name":"Electrode",
-    "Classification":"Ball Pokemon",
-    "Type I":[
-      "Electric"
-    ],
-    "Weaknesses":[
-      "Ground"
     ],
     "Fast Attack(s)":[
       "Spark",
-      ""
+      "Tackle"
+    ]
+  },
+  {
+    "Name":"Lektrobal",
+    "Classification":"Ball Pokemon",
+    "Weaknesses":[
+      "Ground"
     ],
-    "Weight":"66.6 kg",
+    "Number":"101",
     "Height":"1.2 m",
+    "Weight":"66.6 kg",
+    "Type I":[
+      "Electric"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"100",
         "Name":"Voltorb"
       }
+    ],
+    "Fast Attack(s)":[
+      "Spark",
+      ""
     ]
   },
   {
-    "Number":"102",
-    "Name":"Exeggcute",
+    "Name":"Owei",
     "Classification":"Egg Pokemon",
-    "Type I":[
-      "Grass"
-    ],
-    "Type II":[
-      "Psychic"
-    ],
     "Weaknesses":[
       "Fire",
       "Ice",
@@ -3130,33 +3123,33 @@
       "Ghost",
       "Dark"
     ],
-    "Fast Attack(s)":[
-      "Confusion",
-      ""
-    ],
-    "Weight":"2.5 kg",
+    "Number":"102",
     "Height":"0.4 m",
+    "Weight":"2.5 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Exeggcute candies"
     },
+    "Type I":[
+      "Grass"
+    ],
     "Next evolution(s)":[
       {
         "Number":"103",
         "Name":"Exeggutor"
       }
-    ]
-  },
-  {
-    "Number":"103",
-    "Name":"Exeggutor",
-    "Classification":"Coconut Pokemon",
-    "Type I":[
-      "Grass"
+    ],
+    "Fast Attack(s)":[
+      "Confusion",
+      ""
     ],
     "Type II":[
       "Psychic"
-    ],
+    ]
+  },
+  {
+    "Name":"Kokowei",
+    "Classification":"Coconut Pokemon",
     "Weaknesses":[
       "Fire",
       "Ice",
@@ -3166,202 +3159,202 @@
       "Ghost",
       "Dark"
     ],
-    "Fast Attack(s)":[
-      "Confusion",
-      "Zen Headbutt"
-    ],
-    "Weight":"120.0 kg",
+    "Number":"103",
     "Height":"2.0 m",
+    "Weight":"120.0 kg",
+    "Type I":[
+      "Grass"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"102",
         "Name":"Exeggcute"
       }
+    ],
+    "Fast Attack(s)":[
+      "Confusion",
+      "Zen Headbutt"
+    ],
+    "Type II":[
+      "Psychic"
     ]
   },
   {
-    "Number":"104",
-    "Name":"Cubone",
+    "Name":"Tragosso",
     "Classification":"Lonely Pokemon",
-    "Type I":[
-      "Ground"
-    ],
     "Weaknesses":[
       "Water",
       "Grass",
       "Ice"
     ],
-    "Fast Attack(s)":[
-      "Mud Slap",
-      "Rock Smash"
-    ],
-    "Weight":"6.5 kg",
+    "Number":"104",
     "Height":"0.4 m",
+    "Weight":"6.5 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Cubone candies"
     },
+    "Type I":[
+      "Ground"
+    ],
     "Next evolution(s)":[
       {
         "Number":"105",
         "Name":"Marowak"
       }
+    ],
+    "Fast Attack(s)":[
+      "Mud Slap",
+      "Rock Smash"
     ]
   },
   {
-    "Number":"105",
-    "Name":"Marowak",
+    "Name":"Knogga",
     "Classification":"Bone Keeper Pokemon",
-    "Type I":[
-      "Ground"
-    ],
     "Weaknesses":[
       "Water",
       "Grass",
       "Ice"
     ],
-    "Fast Attack(s)":[
-      "Mud Slap",
-      "Rock Smash"
-    ],
-    "Weight":"45.0 kg",
+    "Number":"105",
     "Height":"1.0 m",
+    "Weight":"45.0 kg",
+    "Type I":[
+      "Ground"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"104",
         "Name":"Cubone"
       }
+    ],
+    "Fast Attack(s)":[
+      "Mud Slap",
+      "Rock Smash"
     ]
   },
   {
-    "Number":"106",
-    "Name":"Hitmonlee",
+    "Name":"Kicklee",
     "Classification":"Kicking Pokemon",
-    "Type I":[
-      "Fighting"
-    ],
     "Weaknesses":[
       "Flying",
       "Psychic",
       "Fairy"
     ],
-    "Fast Attack(s)":[
-      "Low Kick",
-      "Rock Smash"
-    ],
-    "Weight":"49.8 kg",
+    "Number":"106",
     "Height":"1.5 m",
+    "Weight":"49.8 kg",
+    "Type I":[
+      "Fighting"
+    ],
     "Next evolution(s)":[
       {
         "Number":"107",
         "Name":"Hitmonchan"
       }
+    ],
+    "Fast Attack(s)":[
+      "Low Kick",
+      "Rock Smash"
     ]
   },
   {
-    "Number":"107",
-    "Name":"Hitmonchan",
+    "Name":"Nockchan",
     "Classification":"Punching Pokemon",
-    "Type I":[
-      "Fighting"
-    ],
     "Weaknesses":[
       "Flying",
       "Psychic",
       "Fairy"
     ],
-    "Fast Attack(s)":[
-      "Bullet Punch",
-      "Rock Smash"
-    ],
-    "Weight":"50.2 kg",
+    "Number":"107",
     "Height":"1.4 m",
+    "Weight":"50.2 kg",
+    "Type I":[
+      "Fighting"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"106",
         "Name":"Hitmonlee"
       }
+    ],
+    "Fast Attack(s)":[
+      "Bullet Punch",
+      "Rock Smash"
     ]
   },
   {
-    "Number":"108",
-    "Name":"Lickitung",
+    "Name":"Schlurp",
     "Classification":"Licking Pokemon",
-    "Type I":[
-      "Normal"
-    ],
     "Weaknesses":[
       "Fighting"
+    ],
+    "Number":"108",
+    "Height":"1.2 m",
+    "Weight":"65.5 kg",
+    "Type I":[
+      "Normal"
     ],
     "Fast Attack(s)":[
       "Lick",
       "Zen Headbutt"
-    ],
-    "Weight":"65.5 kg",
-    "Height":"1.2 m"
+    ]
   },
   {
-    "Number":"109",
-    "Name":"Koffing",
+    "Name":"Smogon",
     "Classification":"Poison Gas Pokemon",
-    "Type I":[
-      "Poison"
-    ],
     "Weaknesses":[
       "Ground",
       "Psychic"
     ],
-    "Fast Attack(s)":[
-      "Acid",
-      "Tackle"
-    ],
-    "Weight":"1.0 kg",
+    "Number":"109",
     "Height":"0.6 m",
+    "Weight":"1.0 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Koffing candies"
     },
+    "Type I":[
+      "Poison"
+    ],
     "Next evolution(s)":[
       {
         "Number":"110",
         "Name":"Weezing"
       }
-    ]
-  },
-  {
-    "Number":"110",
-    "Name":"Weezing",
-    "Classification":"Poison Gas Pokemon",
-    "Type I":[
-      "Poison"
-    ],
-    "Weaknesses":[
-      "Ground",
-      "Psychic"
     ],
     "Fast Attack(s)":[
       "Acid",
       "Tackle"
+    ]
+  },
+  {
+    "Name":"Smogmog",
+    "Classification":"Poison Gas Pokemon",
+    "Weaknesses":[
+      "Ground",
+      "Psychic"
     ],
-    "Weight":"9.5 kg",
+    "Number":"110",
     "Height":"1.2 m",
+    "Weight":"9.5 kg",
+    "Type I":[
+      "Poison"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"109",
         "Name":"Koffing"
       }
+    ],
+    "Fast Attack(s)":[
+      "Acid",
+      "Tackle"
     ]
   },
   {
-    "Number":"111",
-    "Name":"Rhyhorn",
+    "Name":"Rihorn",
     "Classification":"Spikes Pokemon",
-    "Type I":[
-      "Ground"
-    ],
-    "Type II":[
-      "Rock"
-    ],
     "Weaknesses":[
       "Water",
       "Grass",
@@ -3370,33 +3363,33 @@
       "Ground",
       "Steel"
     ],
-    "Fast Attack(s)":[
-      "Mud Slap",
-      "Rock Smash"
-    ],
-    "Weight":"115.0 kg",
+    "Number":"111",
     "Height":"1.0 m",
+    "Weight":"115.0 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Rhyhorn candies"
     },
+    "Type I":[
+      "Ground"
+    ],
     "Next evolution(s)":[
       {
         "Number":"112",
         "Name":"Rhydon"
       }
-    ]
-  },
-  {
-    "Number":"112",
-    "Name":"Rhydon",
-    "Classification":"Drill Pokemon",
-    "Type I":[
-      "Ground"
+    ],
+    "Fast Attack(s)":[
+      "Mud Slap",
+      "Rock Smash"
     ],
     "Type II":[
       "Rock"
-    ],
+    ]
+  },
+  {
+    "Name":"Rizeros",
+    "Classification":"Drill Pokemon",
     "Weaknesses":[
       "Water",
       "Grass",
@@ -3405,43 +3398,46 @@
       "Ground",
       "Steel"
     ],
-    "Fast Attack(s)":[
-      "Mud Slap",
-      "Rock Smash"
-    ],
-    "Weight":"120.0 kg",
+    "Number":"112",
     "Height":"1.9 m",
+    "Weight":"120.0 kg",
+    "Type I":[
+      "Ground"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"111",
         "Name":"Rhyhorn"
       }
+    ],
+    "Fast Attack(s)":[
+      "Mud Slap",
+      "Rock Smash"
+    ],
+    "Type II":[
+      "Rock"
     ]
   },
   {
-    "Number":"113",
-    "Name":"Chansey",
+    "Name":"Chaneira",
     "Classification":"Egg Pokemon",
-    "Type I":[
-      "Normal"
-    ],
     "Weaknesses":[
       "Fighting"
+    ],
+    "Number":"113",
+    "Height":"1.1 m",
+    "Weight":"34.6 kg",
+    "Type I":[
+      "Normal"
     ],
     "Fast Attack(s)":[
       "Pound",
       "Zen Headbutt"
-    ],
-    "Weight":"34.6 kg",
-    "Height":"1.1 m"
+    ]
   },
   {
-    "Number":"114",
     "Name":"Tangela",
     "Classification":"Vine Pokemon",
-    "Type I":[
-      "Grass"
-    ],
     "Weaknesses":[
       "Fire",
       "Ice",
@@ -3449,172 +3445,169 @@
       "Flying",
       "Bug"
     ],
+    "Number":"114",
+    "Height":"1.0 m",
+    "Weight":"35.0 kg",
+    "Type I":[
+      "Grass"
+    ],
     "Fast Attack(s)":[
       "Vine Whip",
       ""
-    ],
-    "Weight":"35.0 kg",
-    "Height":"1.0 m"
+    ]
   },
   {
-    "Number":"115",
-    "Name":"Kangaskhan",
+    "Name":"Kangama",
     "Classification":"Parent Pokemon",
-    "Type I":[
-      "Normal"
-    ],
     "Weaknesses":[
       "Fighting"
+    ],
+    "Number":"115",
+    "Height":"2.2 m",
+    "Weight":"80.0 kg",
+    "Type I":[
+      "Normal"
     ],
     "Fast Attack(s)":[
       "Low Kick",
       ""
-    ],
-    "Weight":"80.0 kg",
-    "Height":"2.2 m"
+    ]
   },
   {
-    "Number":"116",
-    "Name":"Horsea",
+    "Name":"Seeper",
     "Classification":"Dragon Pokemon",
-    "Type I":[
-      "Water"
-    ],
     "Weaknesses":[
       "Electric",
       "Grass"
     ],
-    "Fast Attack(s)":[
-      "Bubble",
-      "Water Gun"
-    ],
-    "Weight":"8.0 kg",
+    "Number":"116",
     "Height":"0.4 m",
+    "Weight":"8.0 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Horsea candies"
     },
+    "Type I":[
+      "Water"
+    ],
     "Next evolution(s)":[
       {
         "Number":"117",
         "Name":"Seadra"
       }
+    ],
+    "Fast Attack(s)":[
+      "Bubble",
+      "Water Gun"
     ]
   },
   {
-    "Number":"117",
-    "Name":"Seadra",
+    "Name":"Seemon",
     "Classification":"Dragon Pokemon",
-    "Type I":[
-      "Water"
-    ],
     "Weaknesses":[
       "Electric",
       "Grass"
     ],
-    "Fast Attack(s)":[
-      "Dragon Breath",
-      "Water Gun"
-    ],
-    "Weight":"25.0 kg",
+    "Number":"117",
     "Height":"1.2 m",
+    "Weight":"25.0 kg",
+    "Type I":[
+      "Water"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"116",
         "Name":"Horsea"
       }
+    ],
+    "Fast Attack(s)":[
+      "Dragon Breath",
+      "Water Gun"
     ]
   },
   {
-    "Number":"118",
-    "Name":"Goldeen",
+    "Name":"Goldini",
     "Classification":"Goldfish Pokemon",
-    "Type I":[
-      "Water"
-    ],
     "Weaknesses":[
       "Electric",
       "Grass"
     ],
-    "Fast Attack(s)":[
-      "Peck",
-      "Mud Shot"
-    ],
-    "Weight":"15.0 kg",
+    "Number":"118",
     "Height":"0.6 m",
+    "Weight":"15.0 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Goldeen candies"
     },
+    "Type I":[
+      "Water"
+    ],
     "Next evolution(s)":[
       {
         "Number":"119",
         "Name":"Seaking"
       }
+    ],
+    "Fast Attack(s)":[
+      "Peck",
+      "Mud Shot"
     ]
   },
   {
-    "Number":"119",
-    "Name":"Seaking",
+    "Name":"Golking",
     "Classification":"Goldfish Pokemon",
-    "Type I":[
-      "Water"
-    ],
     "Weaknesses":[
       "Electric",
       "Grass"
     ],
-    "Fast Attack(s)":[
-      "Peck",
-      "Poison Jab"
-    ],
-    "Weight":"39.0 kg",
+    "Number":"119",
     "Height":"1.3 m",
+    "Weight":"39.0 kg",
+    "Type I":[
+      "Water"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"118",
         "Name":"Goldeen"
       }
+    ],
+    "Fast Attack(s)":[
+      "Peck",
+      "Poison Jab"
     ]
   },
   {
-    "Number":"120",
-    "Name":"Staryu",
+    "Name":"Sterndu",
     "Classification":"Starshape Pokemon",
-    "Type I":[
-      "Water"
-    ],
     "Weaknesses":[
       "Electric",
       "Grass"
     ],
-    "Fast Attack(s)":[
-      "Quick Attack",
-      "Water Gun"
-    ],
-    "Weight":"34.5 kg",
+    "Number":"120",
     "Height":"0.8 m",
+    "Weight":"34.5 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Staryu candies"
     },
+    "Type I":[
+      "Water"
+    ],
     "Next evolution(s)":[
       {
         "Number":"120",
         "Name":"Staryu"
       }
+    ],
+    "Fast Attack(s)":[
+      "Quick Attack",
+      "Water Gun"
     ]
   },
   {
-    "Number":"121",
     "Name":"Starmie",
     "Classification":"Mysterious Pokemon",
-    "Type I":[
-      "Water"
-    ],
-    "Type II":[
-      "Psychic"
-    ],
     "Weaknesses":[
       "Electric",
       "Grass",
@@ -3622,48 +3615,48 @@
       "Ghost",
       "Dark"
     ],
-    "Fast Attack(s)":[
-      "Quick Attack",
-      "Water Gun"
-    ],
-    "Weight":"80.0 kg",
+    "Number":"121",
     "Height":"1.1 m",
+    "Weight":"80.0 kg",
+    "Type I":[
+      "Water"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"121",
         "Name":"Starmie"
       }
+    ],
+    "Fast Attack(s)":[
+      "Quick Attack",
+      "Water Gun"
+    ],
+    "Type II":[
+      "Psychic"
     ]
   },
   {
-    "Number":"122",
-    "Name":"Mr. Mime",
+    "Name":"Pantimos",
     "Classification":"Barrier Pokemon",
-    "Type I":[
-      "Psychic"
-    ],
     "Weaknesses":[
       "Bug",
       "Ghost",
       "Dark"
     ],
+    "Number":"122",
+    "Height":"1.3 m",
+    "Weight":"54.5 kg",
+    "Type I":[
+      "Psychic"
+    ],
     "Fast Attack(s)":[
       "Confusion",
       "Zen Headbutt"
-    ],
-    "Weight":"54.5 kg",
-    "Height":"1.3 m"
+    ]
   },
   {
-    "Number":"123",
-    "Name":"Scyther",
+    "Name":"Sichlor",
     "Classification":"Mantis Pokemon",
-    "Type I":[
-      "Bug"
-    ],
-    "Type II":[
-      "Flying"
-    ],
     "Weaknesses":[
       "Fire",
       "Electric",
@@ -3671,23 +3664,23 @@
       "Flying",
       "Rock"
     ],
+    "Number":"123",
+    "Height":"1.5 m",
+    "Weight":"56.0 kg",
+    "Type I":[
+      "Bug"
+    ],
     "Fast Attack(s)":[
       "Fury Cutter",
       "Steel Wing"
     ],
-    "Weight":"56.0 kg",
-    "Height":"1.5 m"
+    "Type II":[
+      "Flying"
+    ]
   },
   {
-    "Number":"124",
-    "Name":"Jynx",
+    "Name":"Rossana",
     "Classification":"Humanshape Pokemon",
-    "Type I":[
-      "Ice"
-    ],
-    "Type II":[
-      "Psychic"
-    ],
     "Weaknesses":[
       "Fire",
       "Bug",
@@ -3696,202 +3689,205 @@
       "Dark",
       "Steel"
     ],
+    "Number":"124",
+    "Height":"1.4 m",
+    "Weight":"40.6 kg",
+    "Type I":[
+      "Ice"
+    ],
     "Fast Attack(s)":[
       "Frost Breath",
       "Pound"
     ],
-    "Weight":"40.6 kg",
-    "Height":"1.4 m"
+    "Type II":[
+      "Psychic"
+    ]
   },
   {
-    "Number":"125",
-    "Name":"Electabuzz",
+    "Name":"Elektek",
     "Classification":"Electric Pokemon",
-    "Type I":[
-      "Electric"
-    ],
     "Weaknesses":[
       "Ground"
+    ],
+    "Number":"125",
+    "Height":"1.1 m",
+    "Weight":"30.0 kg",
+    "Type I":[
+      "Electric"
     ],
     "Fast Attack(s)":[
       "Low Kick",
       "Thunder Shock"
-    ],
-    "Weight":"30.0 kg",
-    "Height":"1.1 m"
+    ]
   },
   {
-    "Number":"126",
     "Name":"Magmar",
     "Classification":"Spitfire Pokemon",
-    "Type I":[
-      "Fire"
-    ],
     "Weaknesses":[
       "Water",
       "Ground",
       "Rock"
     ],
+    "Number":"126",
+    "Height":"1.3 m",
+    "Weight":"44.5 kg",
+    "Type I":[
+      "Fire"
+    ],
     "Fast Attack(s)":[
       "Ember",
       "Karate Chop"
-    ],
-    "Weight":"44.5 kg",
-    "Height":"1.3 m"
+    ]
   },
   {
-    "Number":"127",
     "Name":"Pinsir",
     "Classification":"Stagbeetle Pokemon",
-    "Type I":[
-      "Bug"
-    ],
     "Weaknesses":[
       "Fire",
       "Flying",
       "Rock"
     ],
+    "Number":"127",
+    "Height":"1.5 m",
+    "Weight":"55.0 kg",
+    "Type I":[
+      "Bug"
+    ],
     "Fast Attack(s)":[
       "Fury Cutter",
       "Rock Smash"
-    ],
-    "Weight":"55.0 kg",
-    "Height":"1.5 m"
+    ]
   },
   {
-    "Number":"128",
     "Name":"Tauros",
     "Classification":"Wild Bull Pokemon",
-    "Type I":[
-      "Normal"
-    ],
     "Weaknesses":[
       "Fighting"
+    ],
+    "Number":"128",
+    "Height":"1.4 m",
+    "Weight":"88.4 kg",
+    "Type I":[
+      "Normal"
     ],
     "Fast Attack(s)":[
       "Tackle",
       "Zen Headbutt"
-    ],
-    "Weight":"88.4 kg",
-    "Height":"1.4 m"
+    ]
   },
   {
-    "Number":"129",
-    "Name":"Magikarp",
+    "Name":"Karpador",
     "Classification":"Fish Pokemon",
-    "Type I":[
-      "Water"
-    ],
     "Weaknesses":[
       "Electric",
       "Grass"
     ],
-    "Fast Attack(s)":[
-      "Splash",
-      ""
-    ],
-    "Weight":"10.0 kg",
+    "Number":"129",
     "Height":"0.9 m",
+    "Weight":"10.0 kg",
     "Next Evolution Requirements":{
       "Amount":400,
       "Name":"Magikarp candies"
     },
+    "Type I":[
+      "Water"
+    ],
     "Next evolution(s)":[
       {
         "Number":"130",
         "Name":"Gyarados"
       }
+    ],
+    "Fast Attack(s)":[
+      "Splash",
+      ""
     ]
   },
   {
-    "Number":"130",
-    "Name":"Gyarados",
+    "Name":"Garados",
     "Classification":"Atrocious Pokemon",
-    "Type I":[
-      "Water"
-    ],
-    "Type II":[
-      "Flying"
-    ],
     "Weaknesses":[
       "Electric",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Bite",
-      "Dragon Breath"
-    ],
-    "Weight":"235.0 kg",
+    "Number":"130",
     "Height":"6.5 m",
+    "Weight":"235.0 kg",
+    "Type I":[
+      "Water"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"129",
         "Name":"Magikarp"
       }
+    ],
+    "Fast Attack(s)":[
+      "Bite",
+      "Dragon Breath"
+    ],
+    "Type II":[
+      "Flying"
     ]
   },
   {
-    "Number":"131",
     "Name":"Lapras",
     "Classification":"Transport Pokemon",
-    "Type I":[
-      "Water"
-    ],
-    "Type II":[
-      "Ice"
-    ],
     "Weaknesses":[
       "Electric",
       "Grass",
       "Fighting",
       "Rock"
     ],
+    "Number":"131",
+    "Height":"2.5 m",
+    "Weight":"220.0 kg",
+    "Type I":[
+      "Water"
+    ],
     "Fast Attack(s)":[
       "Frost Breath",
       "Ice Shard"
     ],
-    "Weight":"220.0 kg",
-    "Height":"2.5 m"
+    "Type II":[
+      "Ice"
+    ]
   },
   {
-    "Number":"132",
     "Name":"Ditto",
     "Classification":"Transform Pokemon",
-    "Type I":[
-      "Normal"
-    ],
     "Weaknesses":[
       "Fighting"
     ],
-    "Fast Attack(s)":[
-      "Unknown"
+    "Number":"132",
+    "Height":"0.3 m",
+    "Weight":"4.0 kg",
+    "Type I":[
+      "Normal"
     ],
     "Special Attack(s)":[
       "Unknown"
     ],
-    "Weight":"4.0 kg",
-    "Height":"0.3 m"
+    "Fast Attack(s)":[
+      "Unknown"
+    ]
   },
   {
-    "Number":"133",
-    "Name":"Eevee",
+    "Name":"Evoli",
     "Classification":"Evolution Pokemon",
-    "Type I":[
-      "Normal"
-    ],
     "Weaknesses":[
       "Fighting"
     ],
-    "Fast Attack(s)":[
-      "Quick Attack",
-      "Tackle"
-    ],
-    "Weight":"6.5 kg",
+    "Number":"133",
     "Height":"0.3 m",
+    "Weight":"6.5 kg",
     "Next Evolution Requirements":{
       "Amount":25,
       "Name":"Eevee candies"
     },
+    "Type I":[
+      "Normal"
+    ],
     "Next evolution(s)":[
       {
         "Number":"134",
@@ -3905,231 +3901,228 @@
         "Number":"136",
         "Name":"Flareon"
       }
+    ],
+    "Fast Attack(s)":[
+      "Quick Attack",
+      "Tackle"
     ]
   },
   {
-    "Number":"134",
-    "Name":"Vaporeon",
+    "Name":"Aquana",
     "Classification":"Bubble Jet Pokemon",
-    "Type I":[
-      "Water"
-    ],
     "Weaknesses":[
       "Electric",
       "Grass"
     ],
-    "Fast Attack(s)":[
-      "Water Gun",
-      ""
-    ],
-    "Weight":"29.0 kg",
+    "Number":"134",
     "Height":"1.0 m",
+    "Weight":"29.0 kg",
+    "Type I":[
+      "Water"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"133",
         "Name":"Eevee"
       }
+    ],
+    "Fast Attack(s)":[
+      "Water Gun",
+      ""
     ]
   },
   {
-    "Number":"135",
-    "Name":"Jolteon",
+    "Name":"Blitza",
     "Classification":"Lightning Pokemon",
+    "Weaknesses":[
+      "Ground"
+    ],
+    "Number":"135",
+    "Height":"0.8 m",
+    "Weight":"24.5 kg",
     "Type I":[
       "Electric"
     ],
-    "Weaknesses":[
-      "Ground"
+    "Previous evolution(s)":[
+      {
+        "Number":"133",
+        "Name":"Eevee"
+      }
     ],
     "Fast Attack(s)":[
       "Thunder Shock",
       ""
-    ],
-    "Weight":"24.5 kg",
-    "Height":"0.8 m",
-    "Previous evolution(s)":[
-      {
-        "Number":"133",
-        "Name":"Eevee"
-      }
     ]
   },
   {
-    "Number":"136",
-    "Name":"Flareon",
+    "Name":"Flamara",
     "Classification":"Flame Pokemon",
-    "Type I":[
-      "Fire"
-    ],
     "Weaknesses":[
       "Water",
       "Ground",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Ember",
-      ""
-    ],
-    "Weight":"25.0 kg",
+    "Number":"136",
     "Height":"0.9 m",
+    "Weight":"25.0 kg",
+    "Type I":[
+      "Fire"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"133",
         "Name":"Eevee"
       }
+    ],
+    "Fast Attack(s)":[
+      "Ember",
+      ""
     ]
   },
   {
-    "Number":"137",
     "Name":"Porygon",
     "Classification":"Virtual Pokemon",
-    "Type I":[
-      "Normal"
-    ],
     "Weaknesses":[
       "Fighting"
+    ],
+    "Number":"137",
+    "Height":"0.8 m",
+    "Weight":"36.5 kg",
+    "Type I":[
+      "Normal"
     ],
     "Fast Attack(s)":[
       "Quick Attack",
       "Tackle"
-    ],
-    "Weight":"36.5 kg",
-    "Height":"0.8 m"
+    ]
   },
   {
-    "Number":"138",
-    "Name":"Omanyte",
+    "Name":"Amonitas",
     "Classification":"Spiral Pokemon",
-    "Type I":[
-      "Rock"
-    ],
-    "Type II":[
-      "Water"
-    ],
     "Weaknesses":[
       "Electric",
       "Grass",
       "Fighting",
       "Ground"
     ],
-    "Fast Attack(s)":[
-      "Water Gun",
-      ""
-    ],
-    "Weight":"7.5 kg",
+    "Number":"138",
     "Height":"0.4 m",
+    "Weight":"7.5 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Omanyte candies"
     },
+    "Type I":[
+      "Rock"
+    ],
     "Next evolution(s)":[
       {
         "Number":"139",
         "Name":"Omastar"
       }
-    ]
-  },
-  {
-    "Number":"139",
-    "Name":"Omastar",
-    "Classification":"Spiral Pokemon",
-    "Type I":[
-      "Rock"
+    ],
+    "Fast Attack(s)":[
+      "Water Gun",
+      ""
     ],
     "Type II":[
       "Water"
-    ],
+    ]
+  },
+  {
+    "Name":"Amoroso",
+    "Classification":"Spiral Pokemon",
     "Weaknesses":[
       "Electric",
       "Grass",
       "Fighting",
       "Ground"
     ],
-    "Fast Attack(s)":[
-      "Rock Throw",
-      "Water Gun"
-    ],
-    "Weight":"35.0 kg",
+    "Number":"139",
     "Height":"1.0 m",
+    "Weight":"35.0 kg",
+    "Type I":[
+      "Rock"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"138",
         "Name":"Omanyte"
       }
-    ]
-  },
-  {
-    "Number":"140",
-    "Name":"Kabuto",
-    "Classification":"Shellfish Pokemon",
-    "Type I":[
-      "Rock"
+    ],
+    "Fast Attack(s)":[
+      "Rock Throw",
+      "Water Gun"
     ],
     "Type II":[
       "Water"
-    ],
+    ]
+  },
+  {
+    "Name":"Kabuto",
+    "Classification":"Shellfish Pokemon",
     "Weaknesses":[
       "Electric",
       "Grass",
       "Fighting",
       "Ground"
     ],
-    "Fast Attack(s)":[
-      "Mud Shot",
-      "Scratch"
-    ],
-    "Weight":"11.5 kg",
+    "Number":"140",
     "Height":"0.5 m",
+    "Weight":"11.5 kg",
     "Next Evolution Requirements":{
       "Amount":50,
       "Name":"Kabuto candies"
     },
+    "Type I":[
+      "Rock"
+    ],
     "Next evolution(s)":[
       {
         "Number":"141",
         "Name":"Kabutops"
       }
-    ]
-  },
-  {
-    "Number":"141",
-    "Name":"Kabutops",
-    "Classification":"Shellfish Pokemon",
-    "Type I":[
-      "Rock"
+    ],
+    "Fast Attack(s)":[
+      "Mud Shot",
+      "Scratch"
     ],
     "Type II":[
       "Water"
-    ],
+    ]
+  },
+  {
+    "Name":"Kabutops",
+    "Classification":"Shellfish Pokemon",
     "Weaknesses":[
       "Electric",
       "Grass",
       "Fighting",
       "Ground"
     ],
-    "Fast Attack(s)":[
-      "Fury Cutter",
-      "Mud Shot"
-    ],
-    "Weight":"40.5 kg",
+    "Number":"141",
     "Height":"1.3 m",
+    "Weight":"40.5 kg",
+    "Type I":[
+      "Rock"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"140",
         "Name":"Kabuto"
       }
+    ],
+    "Fast Attack(s)":[
+      "Fury Cutter",
+      "Mud Shot"
+    ],
+    "Type II":[
+      "Water"
     ]
   },
   {
-    "Number":"142",
     "Name":"Aerodactyl",
     "Classification":"Fossil Pokemon",
-    "Type I":[
-      "Rock"
-    ],
-    "Type II":[
-      "Flying"
-    ],
     "Weaknesses":[
       "Water",
       "Electric",
@@ -4137,223 +4130,230 @@
       "Rock",
       "Steel"
     ],
+    "Number":"142",
+    "Height":"1.8 m",
+    "Weight":"59.0 kg",
+    "Type I":[
+      "Rock"
+    ],
     "Fast Attack(s)":[
       "Bite",
       "Steel Wing"
     ],
-    "Weight":"59.0 kg",
-    "Height":"1.8 m"
+    "Type II":[
+      "Flying"
+    ]
   },
   {
-    "Number":"143",
-    "Name":"Snorlax",
+    "Name":"Relaxo",
     "Classification":"Sleeping Pokemon",
-    "Type I":[
-      "Normal"
-    ],
     "Weaknesses":[
       "Fighting"
+    ],
+    "Number":"143",
+    "Height":"2.1 m",
+    "Weight":"460.0 kg",
+    "Type I":[
+      "Normal"
     ],
     "Fast Attack(s)":[
       "Lick",
       "Zen Headbutt"
-    ],
-    "Weight":"460.0 kg",
-    "Height":"2.1 m"
+    ]
   },
   {
-    "Number":"144",
-    "Name":"Articuno",
+    "Name":"Arktos",
     "Classification":"Freeze Pokemon",
-    "Type I":[
-      "Ice"
-    ],
-    "Type II":[
-      "Flying"
-    ],
     "Weaknesses":[
       "Fire",
       "Electric",
       "Rock",
       "Steel"
     ],
-    "Fast Attack(s)":[
-      "Unknown"
+    "Number":"144",
+    "Height":"1.7 m",
+    "Weight":"55.4 kg",
+    "Type I":[
+      "Ice"
     ],
     "Special Attack(s)":[
       "Unknown"
     ],
-    "Weight":"55.4 kg",
-    "Height":"1.7 m"
-  },
-  {
-    "Number":"145",
-    "Name":"Zapdos",
-    "Classification":"Electric Pokemon",
-    "Type I":[
-      "Electric"
+    "Fast Attack(s)":[
+      "Unknown"
     ],
     "Type II":[
       "Flying"
-    ],
+    ]
+  },
+  {
+    "Name":"Zapdos",
+    "Classification":"Electric Pokemon",
     "Weaknesses":[
       "Ice",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Unknown"
+    "Number":"145",
+    "Height":"1.6 m",
+    "Weight":"52.6 kg",
+    "Type I":[
+      "Electric"
     ],
     "Special Attack(s)":[
       "Unknown"
     ],
-    "Weight":"52.6 kg",
-    "Height":"1.6 m"
-  },
-  {
-    "Number":"146",
-    "Name":"Moltres",
-    "Classification":"Flame Pokemon",
-    "Type I":[
-      "Fire"
+    "Fast Attack(s)":[
+      "Unknown"
     ],
     "Type II":[
       "Flying"
-    ],
+    ]
+  },
+  {
+    "Name":"Lavados",
+    "Classification":"Flame Pokemon",
     "Weaknesses":[
       "Water",
       "Electric",
       "Rock"
     ],
-    "Fast Attack(s)":[
-      "Unknown"
+    "Number":"146",
+    "Height":"2.0 m",
+    "Weight":"60.0 kg",
+    "Type I":[
+      "Fire"
     ],
     "Special Attack(s)":[
       "Unknown"
     ],
-    "Weight":"60.0 kg",
-    "Height":"2.0 m"
+    "Fast Attack(s)":[
+      "Unknown"
+    ],
+    "Type II":[
+      "Flying"
+    ]
   },
   {
-    "Number":"147",
     "Name":"Dratini",
     "Classification":"Dragon Pokemon",
-    "Type I":[
-      "Dragon"
-    ],
     "Weaknesses":[
       "Ice",
       "Dragon",
       "Fairy"
     ],
-    "Fast Attack(s)":[
-      "Dragon Breath",
-      ""
-    ],
-    "Weight":"3.3 kg",
+    "Number":"147",
     "Height":"1.8 m",
+    "Weight":"3.3 kg",
     "Next Evolution Requirements":{
       "Amount":25,
       "Name":"Dratini candies"
-    }
-  },
-  {
-    "Number":"148",
-    "Name":"Dragonair",
-    "Classification":"Dragon Pokemon",
+    },
     "Type I":[
       "Dragon"
     ],
+    "Fast Attack(s)":[
+      "Dragon Breath",
+      ""
+    ]
+  },
+  {
+    "Name":"Dragonir",
+    "Classification":"Dragon Pokemon",
     "Weaknesses":[
       "Ice",
       "Dragon",
       "Fairy"
     ],
-    "Fast Attack(s)":[
-      "Dragon Breath",
-      ""
-    ],
-    "Weight":"16.5 kg",
+    "Number":"148",
     "Height":"4.0 m",
+    "Weight":"16.5 kg",
     "Next Evolution Requirements":{
       "Amount":100,
       "Name":"Dratini candies"
     },
+    "Type I":[
+      "Dragon"
+    ],
     "Next evolution(s)":[
       {
         "Number":"149",
         "Name":"Dragonite"
       }
+    ],
+    "Fast Attack(s)":[
+      "Dragon Breath",
+      ""
     ]
   },
   {
-    "Number":"149",
-    "Name":"Dragonite",
+    "Name":"Dragoran",
     "Classification":"Dragon Pokemon",
-    "Type I":[
-      "Dragon"
-    ],
-    "Type II":[
-      "Flying"
-    ],
     "Weaknesses":[
       "Ice",
       "Rock",
       "Dragon",
       "Fairy"
     ],
-    "Fast Attack(s)":[
-      "Dragon Breath",
-      "Steel Wing"
-    ],
-    "Weight":"210.0 kg",
+    "Number":"149",
     "Height":"2.2 m",
+    "Weight":"210.0 kg",
+    "Type I":[
+      "Dragon"
+    ],
     "Previous evolution(s)":[
       {
         "Number":"148",
         "Name":"Dragonair"
       }
+    ],
+    "Fast Attack(s)":[
+      "Dragon Breath",
+      "Steel Wing"
+    ],
+    "Type II":[
+      "Flying"
     ]
   },
   {
-    "Number":"150",
-    "Name":"Mewtwo",
+    "Name":"Mewtu",
     "Classification":"Genetic Pokemon",
-    "Type I":[
-      "Psychic"
-    ],
     "Weaknesses":[
       "Bug",
       "Ghost",
       "Dark"
     ],
-    "Fast Attack(s)":[
-      "Unknown"
+    "Number":"150",
+    "Height":"2.0 m",
+    "Weight":"122.0 kg",
+    "Type I":[
+      "Psychic"
     ],
     "Special Attack(s)":[
       "Unknown"
     ],
-    "Weight":"122.0 kg",
-    "Height":"2.0 m"
+    "Fast Attack(s)":[
+      "Unknown"
+    ]
   },
   {
-    "Number":"151",
     "Name":"Mew",
     "Classification":"New Species Pokemon",
-    "Type I":[
-      "Psychic"
-    ],
     "Weaknesses":[
       "Bug",
       "Ghost",
       "Dark"
     ],
-    "Fast Attack(s)":[
-      "Unknown"
+    "Number":"151",
+    "Height":"0.4 m",
+    "Weight":"4.0 kg",
+    "Type I":[
+      "Psychic"
     ],
     "Special Attack(s)":[
       "Unknown"
     ],
-    "Weight":"4.0 kg",
-    "Height":"0.4 m"
+    "Fast Attack(s)":[
+      "Unknown"
+    ]
   }
 ]
