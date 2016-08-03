@@ -33,9 +33,6 @@ import os
 import ssl
 import sys
 import time
-import multiprocessing
-import threading
-
 from datetime import timedelta
 from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException
@@ -47,88 +44,6 @@ from pokemongo_bot import logger
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
-class _Getch:
-    def __init__(self):
-        try:
-            self.impl = _GetchWindows()
-        except ImportError:
-            self.impl = _GetchUnix()
-
-    def __call__(self): return self.impl()
-
-
-class _GetchUnix:
-    def __call__(self):
-        import sys
-        import tty
-
-        tty.setcbreak(sys.stdin.fileno())
-        while 1:
-            if self.isData():
-                return sys.stdin.read(1);
-
-    def isData(self):
-        import select
-        return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
-
-class _GetchWindows:
-    def __init__(self):
-        import msvcrt
-
-    def __call__(self):
-        import msvcrt
-        return msvcrt.getch()
-
-
-def keythread_function(bot, botthread):
-    getch = _Getch()
-    try:
-        while True:
-            key = ord(getch())
-            if key == 115: # s
-                logger.log('[x] Printing stats', 'yellow')
-                report_summary(bot)
-                logger.log('[x] End of stats', 'yellow')
-
-            if key == 105: # i
-                logger.log('[x] Printing inventory', 'yellow')
-                bot._print_character_info()
-                logger.log('[x] End of inventory', 'yellow')
-
-            elif key == 3 or key == 113: # ctrl+c or q
-                botthread.terminate()
-                logger.log('Exiting PokemonGo Bot', 'red')
-                report_summary(bot)
-                break
-    except:
-        return
-
-
-def botthread_function(bot):
-    try:
-        finished = False
-
-        while not finished:
-            while True:
-                bot.tick()
-
-    except KeyboardInterrupt:
-        finished = True
-        logger.log('Exiting PokemonGo Bot', 'red')
-        report_summary(bot)
-    except (NotLoggedInException, ServerBusyOrOfflineException):
-        logger.log('[x] Error while connecting to the server, please wait %s minutes' % config.reconnecting_timeout, 'red')
-        time.sleep(config.reconnecting_timeout * 60)
-    except ServerSideRequestThrottlingException:
-        logger.log('Server is throttling, reconnecting in 30sec')
-        time.sleep(30)
-    except GeocoderQuotaExceeded:
-        logger.log('[x] The given maps api key has gone over the requests limit.', 'red')
-        finished = True
-    except:
-        # always report session summary and then raise exception
-        report_summary(bot)
-        raise
 
 def main():
     logger.log('PokemonGO Bot v1.0', 'green')
@@ -138,24 +53,40 @@ def main():
     config = init_config()
     if not config:
         return
-
     logger.log('Configuration initialized', 'yellow')
 
-    bot = PokemonGoBot(config)
-    bot.start()
-    tree = TreeConfigBuilder(bot, config.raw_tasks).build()
-    bot.workers = tree
-    bot.metrics.capture_stats()
+    finished = False
 
-    logger.log('Starting PokemonGo Bot....', 'green')
+    while not finished:
+        try:
+            bot = PokemonGoBot(config)
+            bot.start()
+            tree = TreeConfigBuilder(bot, config.raw_tasks).build()
+            bot.workers = tree
+            bot.metrics.capture_stats()
 
-    botthread = multiprocessing.Process(target = botthread_function, args=(bot,))
-    botthread.start()
+            logger.log('Starting PokemonGo Bot....', 'green')
 
-    keythread_function(bot, botthread) # cannot be ran as thread, because it needs the ioctl
-    botthread.join()
+            while True:
+                bot.tick()
 
-    logger.log('Finished PokemonGo Bot....', 'green')
+        except KeyboardInterrupt:
+            logger.log('Exiting PokemonGo Bot', 'red')
+            finished = True
+            report_summary(bot)
+        except (NotLoggedInException, ServerBusyOrOfflineException):
+            logger.log('[x] Error while connecting to the server, please wait %s minutes' % config.reconnecting_timeout, 'red')
+            time.sleep(config.reconnecting_timeout * 60)
+        except ServerSideRequestThrottlingException:
+            logger.log('Server is throttling, reconnecting in 30sec')
+            time.sleep(30)
+        except GeocoderQuotaExceeded:
+            logger.log('[x] The given maps api key has gone over the requests limit.', 'red')
+            finished = True
+        except:
+            # always report session summary and then raise exception
+            report_summary(bot)
+            raise
 
 def report_summary(bot):
     if bot.metrics.start_time is None:
