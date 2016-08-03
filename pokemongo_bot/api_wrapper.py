@@ -104,10 +104,10 @@ class ApiRequest(PGoApiRequest):
             request_timestamp = self.throttle_sleep()
             # self._call internally clear this field, so save it
             self._req_method_list = [req_method for req_method in api_req_method_list]
+            should_throttle_retry = False
+            should_unexpected_response_retry = False
             try:
                 result = self._call()
-                should_throttle_retry = False
-                should_unexpected_response_retry = False
             except ServerSideRequestThrottlingException:
                 should_throttle_retry = True
             except UnexpectedResponseException:
