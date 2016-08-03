@@ -1,9 +1,13 @@
+import logging
+
+
 class BaseTask(object):
-  
+
   def __init__(self, bot, config):
     self.bot = bot
     self.config = config
     self._validate_work_exists()
+    self.logger = logging.getLogger(type(self).__name__)
     self.initialize()
 
   def _validate_work_exists(self):
