@@ -219,8 +219,8 @@ class PokemonCatchWorker(object):
         responses = response_dict['responses']
 
         if response_dict and response_dict['status_code'] == 1 and 'item_capture_mult' in responses['USE_ITEM_CAPTURE']:
-            for i in range(len(catch_rate_by_ball)):
-                new_catch_rate_by_ball[i] = catch_rate_by_ball[i] * responses['USE_ITEM_CAPTURE']['item_capture_mult']
+            for rate in catch_rate_by_ball:
+                new_catch_rate_by_ball.append(rate * responses['USE_ITEM_CAPTURE']['item_capture_mult'])
             logger.log('Threw a berry! Catch Rate with {} has increased to {}%'.format(
                 self.item_list[str(current_ball)],
                 self._pct(catch_rate_by_ball[current_ball])
