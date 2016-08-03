@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
+from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import (normalized_reticle_size, sleep,
                                            spin_modifier)
 from pokemongo_bot.base_task import BaseTask
@@ -58,7 +59,8 @@ class PokemonCatchWorker(BaseTask):
                                 )
 
                                 pokemon_potential = self.pokemon_potential(pokemon_data)
-                                pokemon_num = int(pokemon_data['pokemon_id']) - 1
+                                pokemon_id = int(pokemon_data['pokemon_id'])
+                                pokemon_num = pokemon_id - 1
                                 pokemon_name = self.pokemon_list[int(pokemon_num)]['Name']
 
                                 msg = 'A wild {pokemon} appeared! [CP {cp}] [Potential {iv}] [S/A/D {iv_display}]'
@@ -352,6 +354,19 @@ class PokemonCatchWorker(BaseTask):
                                             'exp': sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
                                         }
                                     )
+
+                                    # We could refresh here too, but adding 3 saves a inventory request
+                                    candy = inventory.candies().get(pokemon_id)
+                                    candy.add(3)
+                                    self.emit_event(
+                                        'gained_candy',
+                                        formatted='You now have {quantity} {type} candy!',
+                                        data = {
+                                            'quantity': candy.quantity,
+                                            'type': candy.type,
+                                        },
+                                    )
+
                                     self.bot.softban = False
 
                                     if (self.config.evolve_captured
