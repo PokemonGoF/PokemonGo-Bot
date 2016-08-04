@@ -60,7 +60,8 @@ class LogFormatter(logging.Formatter):
         'white': '37m'
     }
 
-    fmt = '%(asctime)s %(message)s'
+    fmt='%(asctime)s [%(name)10s] [%(levelname)s] %(message)s'
+#    fmt = '%(asctime)s %(message)s'
     datefmt = '%H:%M:%S'
 
     def __init__(self, fmt=fmt, datefmt=datefmt):
