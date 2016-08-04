@@ -30,13 +30,13 @@ class MoveToMapPokemon(BaseTask):
         try:
             req = requests.get('{}/raw_data?gyms=false&scanned=false'.format(self.config['address']))
         except requests.exceptions.ConnectionError:
-            logger.log('Could not reach PokemonGo-Map Server', 'red')
+            logger.error('Could not reach PokemonGo-Map Server')
             return []
 
         try:
             raw_data = req.json()
         except ValueError:
-            logger.log('Map data was not valid', 'red')
+            logger.error('Map data was not valid')
             return []
 
         pokemon_list = []
@@ -98,7 +98,7 @@ class MoveToMapPokemon(BaseTask):
         try:
             req = requests.get('{}/loc'.format(self.config['address']))
         except requests.exceptions.ConnectionError:
-            logger.log('Could not reach PokemonGo-Map Server', 'red')
+            logger.error('Could not reach PokemonGo-Map Server')
             return
 
         try:
@@ -126,15 +126,15 @@ class MoveToMapPokemon(BaseTask):
 
         self.bot.heartbeat()
 
-        logger.log('Teleporting to {} ({})'.format(pokemon['name'], format_dist(pokemon['dist'], self.unit)), 'green')
+        logger.green('Teleporting to {} ({})'.format(pokemon['name'], format_dist(pokemon['dist'], self.unit)))
         self.bot.api.set_position(pokemon['latitude'], pokemon['longitude'], 0)
 
-        logger.log('Encounter pokemon', 'green')
+        logger.green('Encounter pokemon')
         catch_worker = PokemonCatchWorker(pokemon, self.bot)
         api_encounter_response = catch_worker.create_encounter_api_call()
 
         time.sleep(2)
-        logger.log('Teleporting back to previous location..', 'green')
+        logger.green('Teleporting back to previous location..')
         self.bot.api.set_position(last_position[0], last_position[1], 0)
         time.sleep(2)
         self.bot.heartbeat()

@@ -35,7 +35,7 @@ class NicknamePokemon(BaseTask):
         new_name = ""
         instance_id = pokemon.get('id',0)
         if not instance_id:
-            logger.log("Pokemon instance id returned 0. Can't rename.",'red')
+            logger.error("Pokemon instance id returned 0. Can't rename.")
             return
         id = pokemon.get('pokemon_id',0)-1
         name = self.bot.pokemon_list[id]['Name']

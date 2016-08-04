@@ -31,7 +31,7 @@ class IncubateEggs(BaseTask):
             if km_left <= 0:
                 self._hatch_eggs()
             else:
-                logger.log('[x] Current egg hatches in {:.2f} km'.format(km_left),'yellow')
+                logger.yellow('[x] Current egg hatches in {:.2f} km'.format(km_left))
             IncubateEggs.last_km_walked = self.km_walked
 
         sorting = self.longer_eggs_first
@@ -54,7 +54,7 @@ class IncubateEggs(BaseTask):
                 if ret:
                     code = ret.get("responses", {}).get("USE_ITEM_EGG_INCUBATOR", {}).get("result", 0)
                     if code == 1:
-                        logger.log('[x] Now incubating a ' + str(egg["km"]) + "km egg", 'green')
+                        logger.green('[x] Now incubating a ' + str(egg["km"]) + "km egg")
                         egg["used"] = True
                         incubator["used"] = True
                         break
@@ -152,7 +152,7 @@ class IncubateEggs(BaseTask):
         except:
             pokemon_data = [{"name":"error","cp":"error","iv":"error"}]
         if not pokemon_ids or pokemon_data[0]['name'] == "error":
-            logger.log("[!] Eggs hatched, but we had trouble with the response. Please check your inventory to find your new pokemon!",'red')
+            logger.warning("[!] Eggs hatched, but we had trouble with the response. Please check your inventory to find your new pokemon!")
             return
         logger.log("-"*30, log_color)
         logger.log("[!] {} eggs hatched! Received:".format(len(pokemon_data)), log_color)

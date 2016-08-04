@@ -19,7 +19,7 @@ class CollectLevelUpReward(BaseTask):
             self._collect_level_reward()
         # level up situation
         elif self.current_level > self.previous_level:
-            logger.log('Level up from {} to {}!'.format(self.previous_level, self.current_level), 'green')
+            logger.green('Level up from {} to {}!'.format(self.previous_level, self.current_level))
             self._collect_level_reward()
 
         self.previous_level = self.current_level
@@ -33,13 +33,13 @@ class CollectLevelUpReward(BaseTask):
                     .get('items_awarded', []))
 
             if data:
-                logger.log('Collected level up rewards:', 'green')
+                logger.green('Collected level up rewards:')
 
             for item in data:
                 if 'item_id' in item and str(item['item_id']) in self.bot.item_list:
                     got_item = self.bot.item_list[str(item['item_id'])]
                     count = 'item_count' in item and item['item_count'] or 0
-                    logger.log('{} x {}'.format(got_item, count), 'green')
+                    logger.green('{} x {}'.format(got_item, count))
 
     def _get_current_level(self):
         level = 0

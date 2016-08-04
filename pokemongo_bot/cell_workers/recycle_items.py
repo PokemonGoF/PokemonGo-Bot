@@ -41,7 +41,7 @@ class RecycleItems(BaseTask):
                     message = message_template.format(str(items_recycle_count), item_name, str(id_filter_keep))
                     logger.log(message, 'green')
                 else:
-                    logger.log("-- Failed to discard " + item_name, 'red')
+                    logger.error("-- Failed to discard " + item_name)
 
     def send_recycle_item_request(self, item_id, count):
         # Example of good request response

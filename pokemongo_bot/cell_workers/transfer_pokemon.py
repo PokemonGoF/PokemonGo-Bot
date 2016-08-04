@@ -48,15 +48,15 @@ class TransferPokemon(BaseTask):
                                                                         True)]
 
                     if transfer_pokemons:
-                        logger.log("Keep {} best {}, based on {}".format(len(best_pokemons),
+                        logger.green("Keep {} best {}, based on {}".format(len(best_pokemons),
                                                                          pokemon_name,
-                                                                         order_criteria), "green")
+                                                                         order_criteria))
                         for best_pokemon in best_pokemons:
-                            logger.log("{} [CP {}] [Potential {}]".format(pokemon_name,
+                            logger.green("{} [CP {}] [Potential {}]".format(pokemon_name,
                                                                           best_pokemon['cp'],
-                                                                          best_pokemon['iv']), 'green')
+                                                                          best_pokemon['iv']))
 
-                        logger.log("Transferring {} pokemon".format(len(transfer_pokemons)), "green")
+                        logger.green("Transferring {} pokemon".format(len(transfer_pokemons)))
 
                         for pokemon in transfer_pokemons:
                             self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
@@ -167,7 +167,7 @@ class TransferPokemon(BaseTask):
         }
 
         if logic_to_function[cp_iv_logic](*release_results.values()):
-            logger.log(
+            logger.yellow(
                 "Releasing {} with CP {} and IV {}. Matching release rule: CP < {} {} IV < {}. ".format(
                     pokemon_name,
                     cp,
@@ -175,15 +175,15 @@ class TransferPokemon(BaseTask):
                     release_cp,
                     cp_iv_logic.upper(),
                     release_iv
-                ), 'yellow'
+                )
             )
 
         return logic_to_function[cp_iv_logic](*release_results.values())
 
     def release_pokemon(self, pokemon_name, cp, iv, pokemon_id):
-        logger.log('Exchanging {} [CP {}] [Potential {}] for candy!'.format(pokemon_name,
+        logger.green('Exchanging {} [CP {}] [Potential {}] for candy!'.format(pokemon_name,
                                                                             cp,
-                                                                            iv), 'green')
+                                                                            iv))
         response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon_id)
         action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
 
@@ -216,7 +216,7 @@ class TransferPokemon(BaseTask):
                 keep_best_iv = 0
 
             if keep_best_cp < 0 or keep_best_iv < 0:
-                logger.log("Keep best can't be < 0. Ignore it.", "red")
+                logger.error("Keep best can't be < 0. Ignore it.")
                 keep_best = False
 
             if keep_best_cp == 0 and keep_best_iv == 0:

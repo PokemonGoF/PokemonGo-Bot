@@ -24,7 +24,7 @@ class CatchLuredPokemon(BaseTask):
         encounter_id = fort.get('lure_info', {}).get('encounter_id', None)
 
         if encounter_id:
-            logger.log('Lured pokemon at fort {}'.format(fort_name))
+            logger.white('Lured pokemon at fort {}'.format(fort_name))
             return {
                 'encounter_id': encounter_id,
                 'fort_id': fort['id'],

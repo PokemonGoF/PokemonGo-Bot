@@ -9,7 +9,7 @@ from utils import distance
 class CatchVisiblePokemon(BaseTask):
     def work(self):
         if 'catchable_pokemons' in self.bot.cell and len(self.bot.cell['catchable_pokemons']) > 0:
-            logger.log('Something rustles nearby!')
+            logger.white('Something rustles nearby!')
             # Sort all by distance from current pos- eventually this should
             # build graph & A* it
             self.bot.cell['catchable_pokemons'].sort(

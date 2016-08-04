@@ -42,7 +42,7 @@ class EvolvePokemon(BaseTask):
                 evolved += 1
 
         if evolved > 0:
-            logger.log('Evolved {} pokemon!'.format(evolved))
+            logger.white('Evolved {} pokemon!'.format(evolved))
 
     def _should_run(self):
         if not self.evolve_all or self.evolve_all[0] == 'none':
@@ -56,19 +56,19 @@ class EvolvePokemon(BaseTask):
 
         # Make sure the user has a lucky egg and skip if not
         if lucky_egg_count > 0:
-            logger.log('Using lucky egg ... you have {}'.format(lucky_egg_count))
+            logger.info('Using lucky egg ... you have {}'.format(lucky_egg_count))
             response_dict_lucky_egg = self.bot.use_lucky_egg()
             if response_dict_lucky_egg:
                 result = response_dict_lucky_egg.get('responses', {}).get('USE_ITEM_XP_BOOST', {}).get('result', 0)
                 if result is 1:  # Request success
-                    logger.log('Successfully used lucky egg... ({} left!)'.format(lucky_egg_count - 1), 'green')
+                    logger.green('Successfully used lucky egg... ({} left!)'.format(lucky_egg_count - 1))
                     return True
                 else:
-                    logger.log('Failed to use lucky egg!', 'red')
+                    logger.error('Failed to use lucky egg!')
                     return False
         else:
             # Skipping evolve so they aren't wasted
-            logger.log('No lucky eggs... skipping evolve!', 'yellow')
+            logger.warning('No lucky eggs... skipping evolve!')
             return False
 
     def _get_candy_list(self, inventory_items):

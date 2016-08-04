@@ -15,11 +15,11 @@ class BotEvent(object):
         # report to server
         # Review Very Carefully for the following line, forbiden ID changed PR:
         if bot.config.health_record:
-            logger.log(
+            logger.error(
                 'Send anonymous bot health report to server, '
-                'it can be disabled by config \"health_record\":false in config file', 'red'
+                'it can be disabled by config \"health_record\":false in config file'
             )
-            logger.log('Wait for 2 seconds ', 'red')
+            logger.error('Wait for 2 seconds ')
             sleep(3)
             self.tracker = Tracker.create('UA-81469507-1', use_post=True)
 

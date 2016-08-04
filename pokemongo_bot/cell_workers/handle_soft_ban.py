@@ -18,9 +18,9 @@ class HandleSoftBan(BaseTask):
         forts = self.bot.get_forts(order_by_distance=True)
 
         if len(forts) == 0:
-            logger.log('Found no forts to reset softban, skipping...', 'red')
+            logger.error('Found no forts to reset softban, skipping...')
             return
-        logger.log('Got softban, fixing...', 'yellow')
+        logger.warning('Got softban, fixing...')
 
         fort_distance = distance(
             self.bot.position[0],

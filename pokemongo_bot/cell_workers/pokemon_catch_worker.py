@@ -60,8 +60,8 @@ class PokemonCatchWorker(object):
                                 pokemon_potential = self.pokemon_potential(pokemon_data)
                                 pokemon_num = int(pokemon_data['pokemon_id']) - 1
                                 pokemon_name = self.pokemon_list[int(pokemon_num)]['Name']
-                                logger.log('A Wild {} appeared! [CP {}] [Potential {}]'.format(
-                                    pokemon_name, cp, pokemon_potential), 'yellow')
+                                logger.info('A Wild {} appeared! [CP {}] [Potential {}]'.format(
+                                    pokemon_name, cp, pokemon_potential))
 
                                 logger.log('IV [Attack/Defense/Stamina] = [{}]'.format(iv_display))
                                 pokemon_data['name'] = pokemon_name
@@ -75,7 +75,7 @@ class PokemonCatchWorker(object):
                         flag_VIP = False
                         # @TODO, use the best ball in stock to catch VIP (Very Important Pokemon: Configurable)
                         if self.check_vip_pokemon(pokemon_name, cp, pokemon_potential):
-                            logger.log('[-] {} is a VIP Pokemon! [CP {}] [Potential {}] Nice! Try our best to catch it!'.format(pokemon_name, cp, pokemon_potential),'red')
+                            logger.red('[-] {} is a VIP Pokemon! [CP {}] [Potential {}] Nice! Try our best to catch it!'.format(pokemon_name, cp, pokemon_potential))
                             flag_VIP=True
 
                         items_stock = self.bot.current_inventory()
@@ -110,9 +110,9 @@ class PokemonCatchWorker(object):
                                         logger.log('Threw a berry! Catch Rate with normal Pokeball has increased to {}%'.format(success_percentage))
                                     else:
                                         if response_dict['status_code'] is 1:
-                                            logger.log('Fail to use berry. Seem like you are softbanned.', 'red')
+                                            logger.error('Fail to use berry. Seem like you are softbanned.')
                                         else:
-                                            logger.log('Fail to use berry. Status Code: {}'.format(response_dict['status_code']),'red')
+                                            logger.error('Fail to use berry. Status Code: {}'.format(response_dict['status_code']))
 
                                 #use the best ball to catch
                                 current_type = pokeball
@@ -145,9 +145,9 @@ class PokemonCatchWorker(object):
                                         logger.log('Threw a berry! Catch Rate with normal Pokeball has increased to {}%'.format(success_percentage))
                                     else:
                                         if response_dict['status_code'] is 1:
-                                            logger.log('Fail to use berry. Seem like you are softbanned.', 'red')
+                                            logger.error('Fail to use berry. Seem like you are softbanned.')
                                         else:
-                                            logger.log('Fail to use berry. Status Code: {}'.format(response_dict['status_code']),'red')
+                                            logger.error('Fail to use berry. Status Code: {}'.format(response_dict['status_code']))
 
                                 else:
                                     #We don't have many berry to waste, pick a good ball first. Save some berry for future VIP pokemon
@@ -180,9 +180,9 @@ class PokemonCatchWorker(object):
                                         logger.log('Threw a berry! Catch Rate with normal Pokeball has increased to {}%'.format(success_percentage))
                                     else:
                                         if response_dict['status_code'] is 1:
-                                            logger.log('Fail to use berry. Seem like you are softbanned.', 'red')
+                                            logger.error('Fail to use berry. Seem like you are softbanned.')
                                         else:
-                                            logger.log('Fail to use berry. Status Code: {}'.format(response_dict['status_code']),'red')
+                                            logger.error('Fail to use berry. Status Code: {}'.format(response_dict['status_code']))
 
                                 # Re-check if berry is used, find a ball for a good capture rate
                                 current_type=pokeball
@@ -231,26 +231,25 @@ class PokemonCatchWorker(object):
                                 status = response_dict['responses'][
                                     'CATCH_POKEMON']['status']
                                 if status is 2:
-                                    logger.log(
-                                        '[-] Attempted to capture {} - failed.. trying again!'.format(pokemon_name),
-                                        'red')
+                                    logger.warning(
+                                        '[-] Attempted to capture {} - failed.. trying again!'.format(pokemon_name))
                                     sleep(2)
                                     continue
                                 if status is 3:
-                                    logger.log(
-                                        'Oh no! {} vanished! :('.format(pokemon_name), 'red')
+                                    logger.red(
+                                        'Oh no! {} vanished! :('.format(pokemon_name))
                                     if success_percentage == 100:
                                         self.softban = True
                                 if status is 1:
                                     self.bot.metrics.captured_pokemon(pokemon_name, cp, iv_display, pokemon_potential)
 
-                                    logger.log('Captured {}! [CP {}] [Potential {}] [{}] [+{} exp]'.format(
+                                    logger.blue('Captured {}! [CP {}] [Potential {}] [{}] [+{} exp]'.format(
                                         pokemon_name,
                                         cp,
                                         pokemon_potential,
                                         iv_display,
                                         sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
-                                    ), 'blue')
+                                    ))
                                     self.bot.softban = False
 
                                     if (self.config.evolve_captured
@@ -267,8 +266,8 @@ class PokemonCatchWorker(object):
                                         response_dict = self.api.evolve_pokemon(pokemon_id=pokemon_to_transfer[0])
                                         status = response_dict['responses']['EVOLVE_POKEMON']['result']
                                         if status == 1:
-                                            logger.log(
-                                                '{} has been evolved!'.format(pokemon_name), 'green')
+                                            logger.green(
+                                                '{} has been evolved!'.format(pokemon_name))
                                         else:
                                             logger.log(
                                                 'Failed to evolve {}!'.format(pokemon_name))
