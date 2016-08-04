@@ -15,20 +15,42 @@ class TransferPokemon(BaseTask):
                 keep_best, keep_best_cp, keep_best_iv = self._validate_keep_best_config(pokemon_name)
 
                 if keep_best:
-                    best_pokemon_ids = set()
+                    release_config = self._get_release_config_for(pokemon_name)
+
                     order_criteria = 'none'
+
+                    release_not_move_1 = release_config.get("release_not_move_1", 0)
+                    release_not_move_2 = release_config_get("release_not_move_2", 0)
+                    keep_best_group = []
+                    if release_not_move_1 != 0 and release_not_move_2 != 0:
+                        for pokemon in group:
+                            if pokemon['pokemon_data']['move_2'] == release_not_move_1 and pokemon['pokemon_data']['move_2'] == release_not_move_2:
+                                keep_best_group.append(pokemon)
+                                order_criteria = 'moves'
+                    else:
+                        keep_best_group = group
+
+                    best_pokemon_ids = set()
+
                     if keep_best_cp >= 1:
                         cp_limit = keep_best_cp
-                        best_cp_pokemons = sorted(group, key=lambda x: (x['cp'], x['iv']), reverse=True)[:cp_limit]
+                        best_cp_pokemons = sorted(keep_best_group, key=lambda x: (x['cp'], x['iv']), reverse=True)[:cp_limit]
                         best_pokemon_ids = set(pokemon['pokemon_data']['id'] for pokemon in best_cp_pokemons)
-                        order_criteria = 'cp'
+                        if order_criteria == 'moves':
+                            order_criteria = 'moves and cp'
+                        else:
+                            order_criteria = 'cp'
 
                     if keep_best_iv >= 1:
                         iv_limit = keep_best_iv
-                        best_iv_pokemons = sorted(group, key=lambda x: (x['iv'], x['cp']), reverse=True)[:iv_limit]
+                        best_iv_pokemons = sorted(keep_best_group, key=lambda x: (x['iv'], x['cp']), reverse=True)[:iv_limit]
                         best_pokemon_ids |= set(pokemon['pokemon_data']['id'] for pokemon in best_iv_pokemons)
                         if order_criteria == 'cp':
                             order_criteria = 'cp and iv'
+                        elif order_criteria == 'moves':
+                            order_criteria = 'moves and iv'
+                        elif order_criteria == 'moves and cp':
+                            order_criteria = 'moves, cp and iv'
                         else:
                             order_criteria = 'iv'
 
@@ -56,19 +78,23 @@ class TransferPokemon(BaseTask):
                                          if self.should_release_pokemon(pokemon_name,
                                                                         pokemon['cp'],
                                                                         pokemon['iv'],
+                                                                        pokemon['move_1'],
+                                                                        pokemon['move_2'],
                                                                         True)]
 
                     if transfer_pokemons:
                         for pokemon in transfer_pokemons:
-                            self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
+                            self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['move_1'], pokemon['move_2'], pokemon['pokemon_data']['id'])
                 else:
                     group = sorted(group, key=lambda x: x['cp'], reverse=True)
                     for item in group:
                         pokemon_cp = item['cp']
                         pokemon_potential = item['iv']
+                        pokemon_move_1 = item['move_1']
+                        pokemon_move_2 = item['move_2']
 
-                        if self.should_release_pokemon(pokemon_name, pokemon_cp, pokemon_potential):
-                            self.release_pokemon(pokemon_name, item['cp'], item['iv'], item['pokemon_data']['id'])
+                        if self.should_release_pokemon(pokemon_name, pokemon_cp, pokemon_potential, pokemon_move_1, pokemon_move_2):
+                            self.release_pokemon(pokemon_name, item['cp'], item['iv'], item['move_1'], item['move_2'], item['pokemon_data']['id'])
 
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
@@ -107,6 +133,8 @@ class TransferPokemon(BaseTask):
             group_id = pokemon_data['pokemon_id']
             group_pokemon_cp = pokemon_data['cp']
             group_pokemon_iv = self.get_pokemon_potential(pokemon_data)
+            group_pokemon_move_1 = pokemon_data['move_1']
+            group_pokemon_move_2 = pokemon_data['move_2']
 
             if group_id not in pokemon_groups:
                 pokemon_groups[group_id] = []
@@ -114,6 +142,8 @@ class TransferPokemon(BaseTask):
             pokemon_groups[group_id].append({
                 'cp': group_pokemon_cp,
                 'iv': group_pokemon_iv,
+                'move_1': group_pokemon_move_1,
+                'move_2': group_pokemon_move_2,
                 'pokemon_data': pokemon_data
             })
 
@@ -129,7 +159,7 @@ class TransferPokemon(BaseTask):
                 continue
         return round((total_iv / 45.0), 2)
 
-    def should_release_pokemon(self, pokemon_name, cp, iv, keep_best_mode = False):
+    def should_release_pokemon(self, pokemon_name, cp, iv, move_1, move_2, keep_best_mode = False):
         release_config = self._get_release_config_for(pokemon_name)
 
         if (keep_best_mode
@@ -162,6 +192,34 @@ class TransferPokemon(BaseTask):
         if iv < release_iv:
             release_results['iv'] = True
 
+        release_not_move_1 = release_config.get("release_not_move_1", 0)
+        if release_not_move_1 != 0 and move_1 != release_not_move_1:
+            self.emit_event(
+                'future_pokemon_release',
+                formatted="Releasing {pokemon} (CP {cp}/IV {iv}) based on rule: Move 1 != {release_not_move_1}",
+                data={
+                    'pokemon': pokemon_name,
+                    'cp': cp,
+                    'iv': iv,
+                    'release_not_move_1': release_not_move_1
+                }
+            )
+            return True
+
+        release_not_move_2 = release_config.get("release_not_move_2", 0)
+        if release_not_move_2 != 0 and move_2 != release_not_move_2:
+            self.emit_event(
+                'future_pokemon_release',
+                formatted="Releasing {pokemon} (CP {cp}/IV {iv}) based on rule: Move 2 != {release_not_move_2}",
+                data={
+                    'pokemon': pokemon_name,
+                    'cp': cp,
+                    'iv': iv,
+                    'release_not_move_2': release_not_move_2
+                }
+            )
+            return True
+
         logic_to_function = {
             'or': lambda x, y: x or y,
             'and': lambda x, y: x and y
@@ -183,15 +241,17 @@ class TransferPokemon(BaseTask):
 
         return logic_to_function[cp_iv_logic](*release_results.values())
 
-    def release_pokemon(self, pokemon_name, cp, iv, pokemon_id):
+    def release_pokemon(self, pokemon_name, cp, iv, move_1, move_2, pokemon_id):
         response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon_id)
         self.emit_event(
             'pokemon_release',
-            formatted='Exchanged {pokemon} [CP {cp}] [IV {iv}] for candy.',
+            formatted='Exchanged {pokemon} [CP {cp}] [IV {iv}] [Move 1 {move_1}] [Move 2 {move_2}] for candy.',
             data={
                 'pokemon': pokemon_name,
                 'cp': cp,
-                'iv': iv
+                'iv': iv,
+                'move_1': move_1,
+                'move_2': move_2
             }
         )
         action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
