@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import logging
-
 from time import sleep
 
 from raven import Client
@@ -8,6 +6,7 @@ import raven
 import os
 import uuid
 import requests
+from pokemongo_bot import logger
 
 class BotEvent(object):
     def __init__(self, config):
@@ -15,8 +14,8 @@ class BotEvent(object):
         # UniversalAnalytics can be reviewed here:
         # https://github.com/analytics-pros/universal-analytics-python
         if self.config.health_record:
-            logger.info('Health check is enabled. For more information:', 'yellow')
-            logger.info('https://github.com/PokemonGoF/PokemonGo-Bot/tree/dev#analytics', 'yellow')
+            logger.log('Health check is enabled. For more logrmation:')
+            logger.log('https://github.com/PokemonGoF/PokemonGo-Bot/tree/dev#analytics')
             self.client = Client(
                 dsn='https://8abac56480f34b998813d831de262514:196ae1d8dced41099f8253ea2c8fe8e6@app.getsentry.com/90254',
                 name='PokemonGof-Bot',
