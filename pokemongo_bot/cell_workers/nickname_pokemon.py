@@ -1,4 +1,3 @@
-from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.cell_workers.base_task import BaseTask
 
@@ -7,7 +6,7 @@ class NicknamePokemon(BaseTask):
         self.template = self.config.get('nickname_template','').lower().strip()
         if self.template == "{name}":
             self.template = ""
-    
+
     def work(self):
         try:
             inventory = reduce(dict.__getitem__, ["responses", "GET_INVENTORY", "inventory_delta", "inventory_items"], self.bot.get_inventory())
@@ -16,8 +15,8 @@ class NicknamePokemon(BaseTask):
         else:
             pokemon_data = self._get_inventory_pokemon(inventory)
             for pokemon in pokemon_data:
-                self._nickname_pokemon(pokemon) 
-            
+                self._nickname_pokemon(pokemon)
+
     def _get_inventory_pokemon(self,inventory_dict):
         pokemon_data = []
         for inv_data in inventory_dict:
@@ -29,13 +28,16 @@ class NicknamePokemon(BaseTask):
                 if not pokemon.get('is_egg',False):
                     pokemon_data.append(pokemon)
         return pokemon_data
-        
+
     def _nickname_pokemon(self,pokemon):
         """This requies a pokemon object containing all the standard fields: id, ivs, cp, etc"""
         new_name = ""
         instance_id = pokemon.get('id',0)
         if not instance_id:
-            logger.log("Pokemon instance id returned 0. Can't rename.",'red')
+            self.emit_event(
+                'api_error',
+                formatted='Failed to get pokemon name, will not rename.'
+            )
             return
         id = pokemon.get('pokemon_id',0)-1
         name = self.bot.pokemon_list[id]['Name']
@@ -59,30 +61,41 @@ class NicknamePokemon(BaseTask):
                                     iv_sum=iv_sum,
                                     iv_pct=iv_pct)[:12]
         except KeyError as bad_key:
-            logger.log("Unable to nickname {} due to bad template ({})".format(name,bad_key),log_color)
-        if pokemon.get('nickname', "") == new_name:
+            self.emit_event(
+                'config_error',
+                formatted="Unable to nickname {} due to bad template ({})".format(name,bad_key)
+            )
+        if pokemon.get('nickname', '') == new_name:
             return
-        self.bot.api.nickname_pokemon(pokemon_id=instance_id,nickname=new_name)
-        response = self.bot.api.call()
+        response = self.bot.api.nickname_pokemon(pokemon_id=instance_id,nickname=new_name)
         sleep(1.2)
-        try: 
+        try:
             result =  reduce(dict.__getitem__, ["responses", "NICKNAME_POKEMON"], response)
         except KeyError:
-            logger.log("Attempt to nickname received bad response from server.",log_color)
-            if self.bot.config.debug:
-                logger.log(response,log_color)
-            return
+            self.emit_event(
+                'api_error',
+                formatted='Attempt to nickname received bad response from server.'
+            )
         result = result['result']
-        if new_name == "":
-            new_name = name
-        output = {
-            0: 'Nickname unset',
-            1: 'Nickname set successfully! {} is now {}'.format(name,new_name),
-            2: 'Invalid nickname! ({})'.format(new_name),
-            3: 'Pokemon not found.',
-            4: 'Pokemon is egg'
-        }[result]
-        if result==1:
-            log_color='green'
+        new_name = new_name or name
+        if result == 0:
+            self.emit_event(
+                'unset_pokemon_nickname',
+                formatted="Pokemon nickname unset."
+            )
+        elif result == 1:
+            self.emit_event(
+                'rename_pokemon',
+                formatted="Pokemon {old_name} renamed to {current_name}",
+                data={
+                    'old_name': name,
+                    'current_name': new_name
+                }
+            )
             pokemon['nickname'] = new_name
-        logger.log(output,log_color)
+        elif result == 2:
+            self.emit_event(
+                'pokemon_nickname_invalid',
+                formatted="Nickname {nickname} is invalid",
+                data={'nickname': new_name}
+            )

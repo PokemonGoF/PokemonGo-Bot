@@ -23,6 +23,8 @@ class TreeConfigBuilder(object):
             task_type = task.get('type', None)
             if task_type is None:
                 raise ConfigException('No type found for given task {}'.format(task))
+            elif task_type == 'EvolveAll':
+                raise ConfigException('The EvolveAll task has been renamed to EvolvePokemon')
 
             task_config = task.get('config', {})
 

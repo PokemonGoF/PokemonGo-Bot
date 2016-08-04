@@ -21,12 +21,15 @@
         "type": "TransferPokemon"
       },
       {
-        "type": "EvolveAll",
+        "type": "EvolvePokemon",
         "config": {
-          "evolve_all": "NONE",
-          "evolve_cp_min": 300,
-          "evolve_speed": 20,
-          "use_lucky_egg": false
+            "evolve_all": "none",
+            "first_evolve_by": "cp",
+            "evolve_above_cp": 500,
+            "evolve_above_iv": 0.8,
+            "logic": "or",
+            "evolve_speed": 20,
+            "use_lucky_egg": false
         }
       },
       {
@@ -59,7 +62,6 @@
         }
       }
     ],
-    "max_steps": 5,
     "forts": {
       "avoid_circles": true,
       "max_circle_size": 50

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import time
-from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import (normalized_reticle_size, sleep,
                                            spin_modifier)
+from pokemongo_bot.cell_workers.base_task import BaseTask
 
-class PokemonCatchWorker(object):
+class PokemonCatchWorker(BaseTask):
     BAG_FULL = 'bag_full'
     NO_POKEBALLS = 'no_pokeballs'
 
@@ -22,9 +22,11 @@ class PokemonCatchWorker(object):
         self.response_key = ''
         self.response_status_key = ''
 
-    def work(self):
+    def work(self, response_dict=None):
         encounter_id = self.pokemon['encounter_id']
-        response_dict = self.create_encounter_api_call()
+
+        if not response_dict:
+            response_dict = self.create_encounter_api_call()
 
         if response_dict and 'responses' in response_dict:
             if self.response_key in response_dict['responses']:
@@ -58,22 +60,33 @@ class PokemonCatchWorker(object):
                                 pokemon_potential = self.pokemon_potential(pokemon_data)
                                 pokemon_num = int(pokemon_data['pokemon_id']) - 1
                                 pokemon_name = self.pokemon_list[int(pokemon_num)]['Name']
-                                logger.log('A Wild {} appeared! [CP {}] [Potential {}]'.format(
-                                    pokemon_name, cp, pokemon_potential), 'yellow')
 
-                                logger.log('IV [Attack/Defense/Stamina] = [{}]'.format(iv_display))
+                                msg = 'A wild {pokemon} appeared! [CP {cp}] [Potential {iv}] [S/A/D {iv_display}]'
+                                self.emit_event(
+                                    'pokemon_appeared',
+                                    formatted=msg,
+                                    data={
+                                        'pokemon': pokemon_name,
+                                        'cp': cp,
+                                        'iv': pokemon_potential,
+                                        'iv_display': iv_display,
+                                    }
+                                )
+
                                 pokemon_data['name'] = pokemon_name
                                 # Simulate app
                                 sleep(3)
 
                         if not self.should_capture_pokemon(pokemon_name, cp, pokemon_potential, response_dict):
-                            # logger.log('[x] Rule prevents capture.')
                             return False
 
                         flag_VIP = False
                         # @TODO, use the best ball in stock to catch VIP (Very Important Pokemon: Configurable)
                         if self.check_vip_pokemon(pokemon_name, cp, pokemon_potential):
-                            logger.log('[-] {} is a VIP Pokemon! [CP {}] [Potential {}] Nice! Try our best to catch it!'.format(pokemon_name, cp, pokemon_potential),'red')
+                            self.emit_event(
+                                'vip_pokemon',
+                                formatted='This is a VIP pokemon. Catch!!!'
+                            )
                             flag_VIP=True
 
                         items_stock = self.bot.current_inventory()
@@ -87,14 +100,26 @@ class PokemonCatchWorker(object):
                             if flag_VIP:
                                 if(berries_count>0 and catch_rate[pokeball-1] < 0.9):
                                     success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
-                                    logger.log('Catch Rate with normal Pokeball is low ({}%). Thinking to throw a {}... ({} left!)'.format(success_percentage,self.item_list[str(berry_id)],berries_count-1))
+                                    self.emit_event(
+                                        'pokemon_catch_rate',
+                                        level='debug',
+                                        formatted="Catch rate of {catch_rate} is low. Maybe will throw {berry_name} ({berry_count} left)",
+                                        data={
+                                            'catch_rate': success_percentage,
+                                            'berry_name': self.item_list[str(berry_id)],
+                                            'berry_count': berries_count
+                                        }
+                                    )
                                     # Out of all pokeballs! Let's don't waste berry.
                                     if items_stock[1] == 0 and items_stock[2] == 0 and items_stock[3] == 0:
                                         break
 
                                     # Use the berry to catch
-                                    self.api.use_item_capture(item_id = berry_id,encounter_id = encounter_id,spawn_point_id = self.spawn_point_guid)
-                                    response_dict = self.api.call()
+                                    response_dict = self.api.use_item_capture(
+                                        item_id=berry_id,
+                                        encounter_id=encounter_id,
+                                        spawn_point_id=self.spawn_point_guid
+                                    )
                                     if response_dict and response_dict['status_code'] is 1 and 'item_capture_mult' in response_dict['responses']['USE_ITEM_CAPTURE']:
                                         for i in range(len(catch_rate)):
                                             if 'item_capture_mult' in response_dict['responses']['USE_ITEM_CAPTURE']:
@@ -102,12 +127,29 @@ class PokemonCatchWorker(object):
                                         success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
                                         berries_count = berries_count -1
                                         berry_used = True
-                                        logger.log('Threw a berry! Catch Rate with normal Pokeball has increased to {}%'.format(success_percentage))
+                                        self.emit_event(
+                                            'threw_berry',
+                                            formatted="Threw a {berry_name}! Catch rate now: {new_catch_rate}",
+                                            data={
+                                                "berry_name": self.item_list[str(berry_id)],
+                                                "new_catch_rate": success_percentage
+                                            }
+                                        )
                                     else:
                                         if response_dict['status_code'] is 1:
-                                            logger.log('Fail to use berry. Seem like you are softbanned.', 'red')
+                                            self.emit_event(
+                                                'softban',
+                                                level='warning',
+                                                formatted='Failed to use berry. You may be softbanned.'
+                                            )
                                         else:
-                                            logger.log('Fail to use berry. Status Code: {}'.format(response_dict['status_code']),'red')
+                                            self.emit_event(
+                                                'threw_berry_failed',
+                                                formatted='Unknown response when throwing berry: {status_code}.',
+                                                data={
+                                                    'status_code': response_dict['status_code']
+                                                }
+                                            )
 
                                 #use the best ball to catch
                                 current_type = pokeball
@@ -125,9 +167,20 @@ class PokemonCatchWorker(object):
                                         break
 
                                     success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
-                                    logger.log('Catch Rate with normal Pokeball is low ({}%). Thinking to throw a {}... ({} left!)'.format(success_percentage,self.item_list[str(berry_id)],berries_count-1))
-                                    self.api.use_item_capture(item_id = berry_id,encounter_id = encounter_id,spawn_point_id = self.spawn_point_guid)
-                                    response_dict = self.api.call()
+                                    self.emit_event(
+                                        'pokemon_catch_rate',
+                                        level='debug',
+                                        formatted="Catch rate of {catch_rate} is low. Maybe will throw {berry_name} ({berry_count} left)",
+                                        data={
+                                            'catch_rate': success_percentage,
+                                            'berry_name': self.item_list[str(berry_id)],
+                                            'berry_count': berries_count-1
+                                        }
+                                    )
+                                    response_dict = self.api.use_item_capture(item_id=berry_id,
+                                        encounter_id=encounter_id,
+                                        spawn_point_id=self.spawn_point_guid
+                                    )
                                     if response_dict and response_dict['status_code'] is 1 and 'item_capture_mult' in response_dict['responses']['USE_ITEM_CAPTURE']:
                                         for i in range(len(catch_rate)):
                                             if 'item_capture_mult' in response_dict['responses']['USE_ITEM_CAPTURE']:
@@ -135,12 +188,29 @@ class PokemonCatchWorker(object):
                                         success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
                                         berries_count = berries_count -1
                                         berry_used = True
-                                        logger.log('Threw a berry! Catch Rate with normal Pokeball has increased to {}%'.format(success_percentage))
+                                        self.emit_event(
+                                            'threw_berry',
+                                            formatted="Threw a {berry_name}! Catch rate now: {new_catch_rate}",
+                                            data={
+                                                "berry_name": self.item_list[str(berry_id)],
+                                                "new_catch_rate": success_percentage
+                                            }
+                                        )
                                     else:
                                         if response_dict['status_code'] is 1:
-                                            logger.log('Fail to use berry. Seem like you are softbanned.', 'red')
+                                            self.emit_event(
+                                                'softban',
+                                                level='warning',
+                                                formatted='Failed to use berry. You may be softbanned.'
+                                            )
                                         else:
-                                            logger.log('Fail to use berry. Status Code: {}'.format(response_dict['status_code']),'red')
+                                            self.emit_event(
+                                                'threw_berry_failed',
+                                                formatted='Unknown response when throwing berry: {status_code}.',
+                                                data={
+                                                    'status_code': response_dict['status_code']
+                                                }
+                                            )
 
                                 else:
                                     #We don't have many berry to waste, pick a good ball first. Save some berry for future VIP pokemon
@@ -158,9 +228,20 @@ class PokemonCatchWorker(object):
                                         break
 
                                     success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
-                                    logger.log('Catch Rate with normal Pokeball is low ({}%). Thinking to throw a {}... ({} left!)'.format(success_percentage,self.item_list[str(berry_id)],berries_count-1))
-                                    self.api.use_item_capture(item_id = berry_id,encounter_id = encounter_id,spawn_point_id = self.spawn_point_guid)
-                                    response_dict = self.api.call()
+                                    self.emit_event(
+                                        'pokemon_catch_rate',
+                                        level='debug',
+                                        formatted="Catch rate of {catch_rate} is low. Throwing {berry_name} ({berry_count} left)",
+                                        data={
+                                            'catch_rate': success_percentage,
+                                            'berry_name': self.item_list[str(berry_id)],
+                                            'berry_count': berries_count-1
+                                        }
+                                    )
+                                    response_dict = self.api.use_item_capture(item_id=berry_id,
+                                        encounter_id=encounter_id,
+                                        spawn_point_id=self.spawn_point_guid
+                                    )
                                     if response_dict and response_dict['status_code'] is 1 and 'item_capture_mult' in response_dict['responses']['USE_ITEM_CAPTURE']:
                                         for i in range(len(catch_rate)):
                                             if 'item_capture_mult' in response_dict['responses']['USE_ITEM_CAPTURE']:
@@ -168,12 +249,29 @@ class PokemonCatchWorker(object):
                                         success_percentage = '{0:.2f}'.format(catch_rate[pokeball-1]*100)
                                         berries_count = berries_count -1
                                         berry_used = True
-                                        logger.log('Threw a berry! Catch Rate with normal Pokeball has increased to {}%'.format(success_percentage))
+                                        self.emit_event(
+                                            'threw_berry',
+                                            formatted="Threw a {berry_name}! Catch rate now: {new_catch_rate}",
+                                            data={
+                                                "berry_name": self.item_list[str(berry_id)],
+                                                "new_catch_rate": success_percentage
+                                            }
+                                        )
                                     else:
                                         if response_dict['status_code'] is 1:
-                                            logger.log('Fail to use berry. Seem like you are softbanned.', 'red')
+                                            self.emit_event(
+                                                'softban',
+                                                level='warning',
+                                                formatted='Failed to use berry. You may be softbanned.'
+                                            )
                                         else:
-                                            logger.log('Fail to use berry. Status Code: {}'.format(response_dict['status_code']),'red')
+                                            self.emit_event(
+                                                'threw_berry_failed',
+                                                formatted='Unknown response when throwing berry: {status_code}.',
+                                                data={
+                                                    'status_code': response_dict['status_code']
+                                                }
+                                            )
 
                                 # Re-check if berry is used, find a ball for a good capture rate
                                 current_type=pokeball
@@ -194,25 +292,29 @@ class PokemonCatchWorker(object):
 
                             items_stock[pokeball] -= 1
                             success_percentage = '{0:.2f}'.format(catch_rate[pokeball - 1] * 100)
-                            logger.log('Using {} (chance: {}%)... ({} left!)'.format(
-                                self.item_list[str(pokeball)],
-                                success_percentage,
-                                items_stock[pokeball]
-                            ))
-
+                            self.emit_event(
+                                'threw_pokeball',
+                                formatted='Used {pokeball}, with chance {success_percentage} ({count_left} left)',
+                                data={
+                                    'pokeball': self.item_list[str(pokeball)],
+                                    'success_percentage': success_percentage,
+                                    'count_left': items_stock[pokeball]
+                                }
+                            )
                             id_list1 = self.count_pokemon_inventory()
 
                             reticle_size_parameter = normalized_reticle_size(self.config.catch_randomize_reticle_factor)
                             spin_modifier_parameter = spin_modifier(self.config.catch_randomize_spin_factor)
 
-                            self.api.catch_pokemon(encounter_id=encounter_id,
-                                                   pokeball=pokeball,
-                                                   normalized_reticle_size=reticle_size_parameter,
-                                                   spawn_point_id=self.spawn_point_guid,
-                                                   hit_pokemon=1,
-                                                   spin_modifier=spin_modifier_parameter,
-                                                   normalized_hit_position=1)
-                            response_dict = self.api.call()
+                            response_dict = self.api.catch_pokemon(
+                                encounter_id=encounter_id,
+                                pokeball=pokeball,
+                                normalized_reticle_size=reticle_size_parameter,
+                                spawn_point_id=self.spawn_point_guid,
+                                hit_pokemon=1,
+                                spin_modifier=spin_modifier_parameter,
+                                normalized_hit_position=1
+                            )
 
                             if response_dict and \
                                             'responses' in response_dict and \
@@ -221,35 +323,49 @@ class PokemonCatchWorker(object):
                                 status = response_dict['responses'][
                                     'CATCH_POKEMON']['status']
                                 if status is 2:
-                                    logger.log(
-                                        '[-] Attempted to capture {} - failed.. trying again!'.format(pokemon_name),
-                                        'red')
+                                    self.emit_event(
+                                        'pokemon_fled',
+                                        formatted="{pokemon} fled.",
+                                        data={'pokemon': pokemon_name}
+                                    )
                                     sleep(2)
                                     continue
                                 if status is 3:
-                                    logger.log(
-                                        'Oh no! {} vanished! :('.format(pokemon_name), 'red')
-                                    if self.config.journal:
+
+                                    self.emit_event(
+                                        'pokemon_vanished',
+                                        formatted="{pokemon} vanished!",
+                                        data={'pokemon': pokemon_name}
+                                    )
+									if self.config.journal:
                                         with open(self.config.user_journal, 'a') as outfile:
                                             outfile.write('Oh no! %s vanished!\n' % pokemon_name)
+
                                     if success_percentage == 100:
                                         self.softban = True
                                 if status is 1:
                                     self.bot.metrics.captured_pokemon(pokemon_name, cp, iv_display, pokemon_potential)
 
-                                    logger.log('Captured {}! [CP {}] [Potential {}] [{}] [+{} exp]'.format(
-                                        pokemon_name,
-                                        cp,
-                                        pokemon_potential,
-                                        iv_display,
-                                        sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
-                                    ), 'blue')
-                                    if self.config.journal:
+
+                                    self.emit_event(
+                                        'pokemon_caught',
+                                        formatted='Captured {pokemon}! [CP {cp}] [Potential {iv}] [{iv_display}] [+{exp} exp]',
+                                        data={
+                                            'pokemon': pokemon_name,
+                                            'cp': cp,
+                                            'iv': pokemon_potential,
+                                            'iv_display': iv_display,
+                                            'exp': sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
+                                        }
+                                    )
+									
+									if self.config.journal:
                                         with open(self.config.user_journal, 'a') as outfile:
                                             outfile.write('Captured %s! [CP %s] [Potential %s] [%s] [+%s exp]\n' % (
                                                 pokemon_name, cp, pokemon_potential, iv_display,
                                                 sum(response_dict['responses']['CATCH_POKEMON']['capture_award'][
                                                         'xp'])))
+
                                     self.bot.softban = False
 
                                     if (self.config.evolve_captured
@@ -263,26 +379,33 @@ class PokemonCatchWorker(object):
                                         if len(pokemon_to_transfer) == 0:
                                             raise RuntimeError(
                                                 'Trying to evolve 0 pokemons!')
-                                        self.api.evolve_pokemon(pokemon_id=pokemon_to_transfer[0])
-                                        response_dict = self.api.call()
+                                        response_dict = self.api.evolve_pokemon(pokemon_id=pokemon_to_transfer[0])
                                         status = response_dict['responses']['EVOLVE_POKEMON']['result']
                                         if status == 1:
-                                            logger.log(
-                                                '{} has been evolved!'.format(pokemon_name), 'green')
+
                                             if self.config.journal:
                                                 with open(self.config.user_journal, 'a') as outfile:
                                                     outfile.write('%s has been evolved!\n' % pokemon_name)
+
+                                            self.emit_event(
+                                                'pokemon_evolved',
+                                                formatted="{pokemon} evolved!",
+                                                data={'pokemon': pokemon_name}
+                                            )
+
                                         else:
-                                            logger.log(
-                                                'Failed to evolve {}!'.format(pokemon_name))
+                                            self.emit_event(
+                                                'pokemon_evolve_fail',
+                                                formatted="Failed to evolve {pokemon}!",
+                                                data={'pokemon': pokemon_name}
+                                            )
                             break
         time.sleep(5)
 
     def count_pokemon_inventory(self):
         # don't use cached bot.get_inventory() here
         # because we need to have actual information in capture logic
-        self.api.get_inventory()
-        response_dict = self.api.call()
+        response_dict = self.api.get_inventory()
 
         id_list = []
         callback = lambda pokemon: id_list.append(pokemon['id'])
@@ -350,15 +473,6 @@ class PokemonCatchWorker(object):
             'and': lambda x, y: x and y
         }
 
-        # logger.log(
-        #    "Catch config for {}: CP {} {} IV {}".format(
-        #        pokemon_name,
-        #        catch_cp,
-        #        cp_iv_logic,
-        #        catch_iv
-        #    ), 'yellow'
-        # )
-
         return logic_to_function[cp_iv_logic](*catch_results.values())
 
     def _get_catch_config_for(self, pokemon):
@@ -372,22 +486,30 @@ class PokemonCatchWorker(object):
         player_latitude = self.pokemon['latitude']
         player_longitude = self.pokemon['longitude']
 
+        request = self.api.create_request()
         if 'spawn_point_id' in self.pokemon:
             spawn_point_id = self.pokemon['spawn_point_id']
             self.spawn_point_guid = spawn_point_id
             self.response_key = 'ENCOUNTER'
             self.response_status_key = 'status'
-            self.api.encounter(encounter_id=encounter_id, spawn_point_id=spawn_point_id,
-                               player_latitude=player_latitude, player_longitude=player_longitude)
+            request.encounter(
+                encounter_id=encounter_id,
+                spawn_point_id=spawn_point_id,
+                player_latitude=player_latitude,
+                player_longitude=player_longitude
+            )
         else:
             fort_id = self.pokemon['fort_id']
             self.spawn_point_guid = fort_id
             self.response_key = 'DISK_ENCOUNTER'
             self.response_status_key = 'result'
-            self.api.disk_encounter(encounter_id=encounter_id, fort_id=fort_id,
-                                    player_latitude=player_latitude, player_longitude=player_longitude)
-
-        return self.api.call()
+            request.disk_encounter(
+                encounter_id=encounter_id,
+                fort_id=fort_id,
+                player_latitude=player_latitude,
+                player_longitude=player_longitude
+            )
+        return request.call()
 
     def check_vip_pokemon(self,pokemon, cp, iv):
 
@@ -415,4 +537,3 @@ class PokemonCatchWorker(object):
             'and': lambda x, y: x and y
         }
         return logic_to_function[cp_iv_logic](*catch_results.values())
-

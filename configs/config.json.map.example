@@ -1,0 +1,361 @@
+{
+    "auth_service": "google",
+    "username": "YOUR_USERNAME",
+    "password": "YOUR_PASSWORD",
+    "location": "SOME_LOCATION",
+    "gmapkey": "GOOGLE_MAPS_API_KEY",
+    "tasks": [
+      {
+        "type": "HandleSoftBan"
+      },
+      {
+        "type": "CollectLevelUpReward"
+      },
+      {
+        "type": "IncubateEggs",
+        "config": {
+          "longer_eggs_first": true
+        }
+      },
+      {
+        "type": "TransferPokemon"
+      },
+      {
+        "type": "EvolvePokemon",
+        "config": {
+          "evolve_all": "NONE",
+          "evolve_cp_min": 300,
+          "evolve_speed": 20,
+          "use_lucky_egg": false
+        }
+      },
+      {
+        "type": "RecycleItems",
+        "config": {
+          "item_filter": {
+            "Pokeball":       { "keep" : 100 },
+            "Potion":         { "keep" : 10 },
+            "Super Potion":   { "keep" : 20 },
+            "Hyper Potion":   { "keep" : 30 },
+            "Revive":         { "keep" : 30 },
+            "Razz Berry":     { "keep" : 100 }
+          }
+        }
+      },
+      {
+        "type": "CatchVisiblePokemon"
+      },
+      {
+        "type": "CatchLuredPokemon"
+      },
+      {
+        "type": "SpinFort"
+      },
+      {
+        "type": "MoveToMapPokemon",
+        "config": {
+          "address": "http://localhost:5000",
+          "max_distance": 500,
+          "min_time": 60,
+          "prioritize_vips": true,
+          "snipe": false,
+          "update_map": true,
+          "mode": "priority",
+          "catch": {
+            "==========Legendaries==========": 0,
+            "Aerodactyl": 1000,
+            "Snorlax": 1000,
+            "Articuno": 1000,
+            "Zapdos": 1000,
+            "Moltres": 1000,
+            "Dratini": 1000,
+            "Dragonair": 1000,
+            "Dragonite": 1000,
+            "Mewtwo": 1000,
+            "Mew": 1000,
+
+            "==========Region Locked==========": 0,
+            "Farfetch'd": 1000,
+            "Kangaskhan": 1000,
+            "Mr. Mime": 1000,
+            "Tauros": 1000,
+
+            "==========Very Rare==========": 0,
+            "Lapras": 900,
+            "Electabuzz": 900,
+            "Magmar": 900,
+            "Ditto": 900,
+
+            "==========Starters==========": 0,
+            "Bulbasaur": 400,
+            "Ivysaur": 600,
+            "Venusaur": 1000,
+
+            "Charmander": 400,
+            "Charmeleon": 600,
+            "Charizard": 1000,
+
+            "Squirtle": 400,
+            "Wartortle": 600,
+            "Blastoise": 1000,
+
+            "Pikachu": 600,
+            "Raichu": 1000,
+
+            "==========Semi Rare==========": 0,
+            "Porygon": 200,
+            "Scyther": 200,
+            "Jynx": 200,
+
+            "==========Uncommon==========": 0,
+
+            "Omanyte": 150,
+            "Omastar": 500,
+
+            "Seel": 300,
+            "Dewgong": 500,
+
+            "Grimer": 200,
+            "Muk": 500,
+
+            "Shellder": 200,
+            "Cloyster": 500,
+
+            "Gastly": 200,
+            "Haunter": 500,
+            "Gengar": 1000,
+
+            "Onix": 600,
+
+            "Drowzee": 600,
+
+            "Hypno": 600,
+
+            "Vulpix": 200,
+            "Ninetales": 600,
+
+            "Paras": 100,
+            "Parasect": 500,
+
+            "Growlithe": 200,
+            "Arcanine": 700,
+
+            "Tentacool": 200,
+            "Tentacruel": 500,
+
+            "Mankey": 150,
+            "Primeape": 500,
+
+            "Clefairy": 150,
+            "Clefable": 500,
+
+            "Jigglypuff": 150,
+            "Wigglytuff": 500,
+
+            "Venonat": 100,
+            "Venomoth": 500,
+
+            "Diglett": 200,
+            "Dugtrio": 500,
+
+            "Meowth": 250,
+            "Persian": 500,
+
+            "Psyduck": 150,
+            "Golduck": 500,
+
+            "Geodude": 100,
+            "Graveler": 500,
+            "Golem": 800,
+
+            "Eevee": 200,
+            "Vaporeon": 800,
+            "Jolteon": 800,
+            "Flareon": 800,
+
+            "Kabuto": 150,
+            "Kabutops": 500,
+
+            "Magikarp": 150,
+            "Gyarados": 800,
+
+            "Pinsir": 150,
+
+            "Ponyta": 200,
+            "Rapidash": 500,
+
+            "Slowpoke": 200,
+            "Slowbro": 500,
+
+            "Magnemite": 250,
+            "Magneton": 500,
+
+            "Krabby": 100,
+            "Kingler": 500,
+
+            "Voltorb": 200,
+            "Electrode": 500,
+
+            "Exeggcute": 250,
+            "Exeggcutor": 500,
+
+            "Cubone": 300,
+            "Marowak": 800,
+
+            "Hitmonlee": 400,
+
+            "Hitmonchan": 400,
+
+            "Lickitung": 500,
+
+            "Koffing": 200,
+            "Weezing": 500,
+
+            "Rhyhorn": 200,
+            "Rhydon": 500,
+
+            "Chansey": 800,
+
+            "Tangela": 300,
+
+            "Horsea": 200,
+            "Seadra": 600,
+
+            "Goldeen": 150,
+            "Seaking": 500,
+
+            "Staryu": 200,
+            "Starmie": 800,
+
+
+            "==========T1 Evolvers==========": 0,
+            "Caterpie": 10,
+            "Metapod": 10,
+            "Butterfree": 500,
+
+            "Weedle": 10,
+            "Kakuna": 10,
+            "Beedrill": 500,
+
+            "Pidgey": 10,
+            "Pidgeotto": 10,
+            "Pidgeot": 300,
+
+            "==========T2 Evolvers==========": 0,
+            "Nidoran F": 10,
+            "Nidorina": 10,
+            "Nidoqueen": 10,
+
+            "Nidoran M": 10,
+            "Nidorino": 10,
+            "Nidoking": 10,
+
+            "Oddish": 100,
+            "Gloom": 200,
+            "Vileplume": 600,
+
+            "Poliwag": 200,
+            "Poliwhirl": 400,
+            "Poliwrath": 800,
+
+            "Abra": 300,
+            "Kadabra": 600,
+            "Alakazam": 800,
+
+            "Machop": 150,
+            "Machoke": 400,
+            "Machamp": 800,
+
+            "Bellsprout": 100,
+            "Weepinbell": 400,
+            "Victreebel": 800,
+
+            "==========Trash==========": 0,
+
+            "Rattata": 10,
+            "Raticate": 10,
+
+            "Spearow": 10,
+            "Fearow": 10,
+
+            "Ekans": 10,
+            "Arbok": 10,
+
+            "Sandshrew": 10,
+            "Sandslash": 10,
+
+            "Zubat": 10,
+            "Golbat": 10,
+
+            "Doduo": 10,
+            "Dodrio": 10
+          }
+        }
+      },
+      {
+        "type": "MoveToFort"
+      },
+      {
+        "type": "FollowSpiral"
+      }
+    ],
+    "map_object_cache_time": 5,
+    "forts": {
+      "avoid_circles": true,
+      "max_circle_size": 50
+    },
+    "websocket_server": false,
+    "walk": 4.16,
+    "action_wait_min": 1,
+    "action_wait_max": 4,
+    "debug": false,
+    "test": false,
+    "health_record": true,
+    "location_cache": true,
+    "distance_unit": "km",
+    "reconnecting_timeout": 15,
+    "evolve_captured": "NONE",
+    "catch_randomize_reticle_factor": 1.0,
+    "catch_randomize_spin_factor": 1.0,
+    "catch": {
+      "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
+      "// Example of always catching Rattata:": {},
+      "// Rattata": { "always_catch" : true }
+    },
+    "release": {
+      "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or"},
+      "// Example of always releasing Rattata:": {},
+      "// Rattata": {"always_release": true},
+      "// Example of keeping 3 stronger (based on CP) Pidgey:": {},
+      "// Pidgey": {"keep_best_cp": 3},
+      "// Example of keeping 2 stronger (based on IV) Zubat:": {},
+      "// Zubat": {"keep_best_iv": 2},
+      "// Also, it is working with any": {},
+      "// any": {"keep_best_iv": 3},
+      "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat:": {},
+      "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3}
+    },
+    "vips" : {
+         "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate!": {},
+        "any": {"catch_above_cp": 1200, "catch_above_iv": 0.9, "logic": "or" },
+        "Lapras": {},
+        "Moltres": {},
+        "Zapdos": {},
+        "Articuno": {},
+
+        "// S-Tier pokemons (if pokemon can be evolved into tier, list the representative)": {},
+        "Mewtwo": {},
+        "Dragonite": {},
+        "Snorlax": {},
+        "// Mew evolves to Mewtwo": {},
+        "Mew": {},
+        "Arcanine": {},
+        "Vaporeon": {},
+        "Gyarados": {},
+        "Exeggutor": {},
+        "Muk": {},
+        "Weezing": {},
+        "Flareon": {}
+
+    }
+}

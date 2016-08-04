@@ -10,7 +10,10 @@ class WebsocketRemoteControl(object):
         self.host, port_str = self.bot.config.websocket_server_url.split(':')
         self.port = int(port_str)
         self.sio = SocketIO(self.host, self.port)
-        self.sio.on('bot:process_request', self.on_remote_command)
+        self.sio.on(
+            'bot:process_request:{}'.format(self.bot.config.username),
+            self.on_remote_command
+        )
         self.thread = threading.Thread(target=self.process_messages)
 
     def start(self):
@@ -28,7 +31,8 @@ class WebsocketRemoteControl(object):
                 'bot:send_reply',
                 {
                     'response': '',
-                    'command': 'command_not_found'
+                    'command': 'command_not_found',
+                    'account': self.bot.config.username
                 }
             )
             return
@@ -42,7 +46,8 @@ class WebsocketRemoteControl(object):
         self.sio.emit(
             'bot:send_reply',
             {
-                'response': player_info,
-                'command': 'get_player_info'
+                'result': player_info,
+                'command': 'get_player_info',
+                'account': self.bot.config.username
             }
         )

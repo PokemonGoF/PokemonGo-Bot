@@ -1,6 +1,7 @@
+from random import randint
+
 from pgoapi.utilities import f2i
 
-from pokemongo_bot import logger
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.cell_workers.base_task import BaseTask
 from pokemongo_bot.cell_workers import MoveToFort
@@ -16,9 +17,7 @@ class HandleSoftBan(BaseTask):
         forts = self.bot.get_forts(order_by_distance=True)
 
         if len(forts) == 0:
-            logger.log('Found no forts to reset softban, skipping...', 'red')
             return
-        logger.log('Got softban, fixing...', 'yellow')
 
         fort_distance = distance(
             self.bot.position[0],
@@ -34,13 +33,18 @@ class HandleSoftBan(BaseTask):
                 del self.bot.fort_timeouts[forts[0]['id']]
             return WorkerResult.RUNNING
         else:
-            logger.log('Starting 50 spins...')
-            for i in xrange(50):
-                if (i + 1) % 10 == 0:
-                    logger.log('Spin #{}'.format(str(i+1)))
+            spins = randint(50,60)
+            self.emit_event(
+                'softban_fix',
+                formatted='Fixing softban.'
+            )
+            for i in xrange(spins):
                 self.spin_fort(forts[0])
             self.bot.softban = False
-            logger.log('Softban should be fixed.')
+            self.emit_event(
+                'softban_fix_done',
+                formatted='Softban should be fixed'
+            )
 
     def spin_fort(self, fort):
         self.bot.api.fort_search(
@@ -50,7 +54,16 @@ class HandleSoftBan(BaseTask):
             player_latitude=f2i(self.bot.position[0]),
             player_longitude=f2i(self.bot.position[1])
         )
-        self.bot.api.call()
+        self.bot.event_handler.emit(
+            'spun_fort',
+            level='debug',
+            formatted="Spun fort {fort_id}",
+            data={
+                'fort_id': fort_id,
+                'lat': fort['latitude'],
+                'lng': fort['longitude']
+            }
+        )
 
     def should_run(self):
         return self.bot.softban

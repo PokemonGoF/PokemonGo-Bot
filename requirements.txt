@@ -1,6 +1,6 @@
 numpy==1.11.0
 networkx==1.11
--e git+https://github.com/tejado/pgoapi.git@81e786cabf027a1c8fbd1e9a07e1c11aa3d8ee8b#egg=pgoapi
+-e git+https://github.com/tejado/pgoapi.git@0811db23d639039f968a82e06c7aa15a0a5016b6#egg=pgoapi
 geopy==1.11.0
 protobuf==3.0.0b4
 requests==2.10.0
