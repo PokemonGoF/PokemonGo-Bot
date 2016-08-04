@@ -149,7 +149,7 @@ class MoveToMapPokemon(BaseTask):
         with open(user_data_map_caught, 'w') as outfile:
             json.dump(self.caught, outfile)
 
-    def work(self):
+    def work(self, *args, **kwargs):
         # check for pokeballs (excluding masterball)
         pokeballs = self.bot.item_inventory_count(1)
         superballs = self.bot.item_inventory_count(2)

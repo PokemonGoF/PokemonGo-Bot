@@ -36,7 +36,7 @@ class SleepSchedule(BaseTask):
         self._process_config()
         self._schedule_next_sleep()
 
-    def work(self):
+    def work(self, *args, **kwargs):
         if datetime.now() >= self._next_sleep:
             self._sleep()
             self._schedule_next_sleep()

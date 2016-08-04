@@ -18,7 +18,10 @@ class IncubateEggs(BaseTask):
     def _process_config(self):
         self.longer_eggs_first = self.config.get("longer_eggs_first", True)
 
-    def work(self):
+    def work(self, *args, **kwargs):
+        if kwargs.get('tick_count', -1) % 1:
+            return
+
         try:
             self._check_inventory()
         except:

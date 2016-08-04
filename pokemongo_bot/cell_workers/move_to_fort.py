@@ -27,7 +27,7 @@ class MoveToFort(BaseTask):
     def is_attracted(self):
         return (self.lure_distance > 0)
 
-    def work(self):
+    def work(self, *args, **kwargs):
         if not self.should_run():
             return WorkerResult.SUCCESS
 
@@ -132,6 +132,7 @@ class MoveToFort(BaseTask):
 
         # Remove stops that are still on timeout
         forts = filter(lambda x: x["id"] not in self.bot.fort_timeouts, forts)
+        forts = filter(lambda x: 'cooldown_complete_timestamp_ms' not in x, forts)
 
         next_attracted_pts, lure_distance = self._get_nearest_fort_on_lure_way(forts)
 

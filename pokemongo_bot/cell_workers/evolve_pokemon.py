@@ -20,7 +20,7 @@ class EvolvePokemon(BaseTask):
         if isinstance(self.evolve_all, basestring):
             self.evolve_all = [str(pokemon_name).strip() for pokemon_name in self.evolve_all.split(',')]
 
-    def work(self):
+    def work(self, *args, **kwargs):
         if not self._should_run():
             return
 

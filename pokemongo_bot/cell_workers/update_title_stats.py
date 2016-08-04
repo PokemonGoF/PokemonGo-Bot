@@ -72,7 +72,7 @@ class UpdateTitleStats(BaseTask):
     def initialize(self):
         pass
 
-    def work(self):
+    def work(self, *args, **kwargs):
         """
         Updates the title if necessary.
         :return: Always returns WorkerResult.SUCCESS.

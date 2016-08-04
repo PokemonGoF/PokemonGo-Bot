@@ -65,7 +65,7 @@ class FollowPath(BaseTask):
 
         return points
 
-    def work(self):
+    def work(self, *args, **kwargs):
         point = self.points[self.ptr]
         lat = float(point['lat'])
         lng = float(point['lng'])

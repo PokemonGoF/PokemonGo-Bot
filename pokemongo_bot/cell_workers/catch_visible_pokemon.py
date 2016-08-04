@@ -1,4 +1,5 @@
 import json
+import time
 
 from pokemongo_bot.cell_workers.base_task import BaseTask
 from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
@@ -6,7 +7,7 @@ from utils import distance
 
 
 class CatchVisiblePokemon(BaseTask):
-    def work(self):
+    def work(self, *args, **kwargs):
         if 'catchable_pokemons' in self.bot.cell and len(self.bot.cell['catchable_pokemons']) > 0:
             # Sort all by distance from current pos- eventually this should
             # build graph & A* it

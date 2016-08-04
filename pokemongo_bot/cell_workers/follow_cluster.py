@@ -15,7 +15,7 @@ class FollowCluster(BaseTask):
         self.lured = self.config.get("lured", True)
         self.radius = self.config.get("radius", 50)
 
-    def work(self):
+    def work(self, *args, **kwargs):
         forts = self.bot.get_forts()
         log_lure_avail_str = ''
         log_lured_str = ''
