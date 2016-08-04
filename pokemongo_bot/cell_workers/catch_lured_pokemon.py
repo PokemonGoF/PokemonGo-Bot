@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import time
-
 from __future__ import unicode_literals
+
+import time
 
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.cell_workers.utils import fort_details, distance
