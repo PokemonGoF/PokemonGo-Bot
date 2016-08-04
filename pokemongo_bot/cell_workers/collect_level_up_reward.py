@@ -9,7 +9,10 @@ class CollectLevelUpReward(BaseTask):
         self.current_level = self._get_current_level()
         self.previous_level = 0
 
-    def work(self):
+    def work(self, *args, **kwargs):
+        if kwargs.get('tick_count', -1) % 50:
+            return
+
         self.current_level = self._get_current_level()
 
         # let's check level reward on bot initialization

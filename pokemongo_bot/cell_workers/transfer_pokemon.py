@@ -1,11 +1,15 @@
 import json
+import time
 
 from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.cell_workers.base_task import BaseTask
 
 
 class TransferPokemon(BaseTask):
-    def work(self):
+    def work(self, *args, **kwargs):
+        if kwargs.get('tick_count', -1) % 15:
+            return
+
         pokemon_groups = self._release_pokemon_get_groups()
         for pokemon_id in pokemon_groups:
             group = pokemon_groups[pokemon_id]
@@ -194,7 +198,7 @@ class TransferPokemon(BaseTask):
                 'iv': iv
             }
         )
-        action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
+        time.sleep(2)
 
     def _get_release_config_for(self, pokemon):
         release_config = self.bot.config.release.get(pokemon)

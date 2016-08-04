@@ -10,8 +10,8 @@ from pokemongo_bot.worker_result import WorkerResult
 
 
 class HandleSoftBan(BaseTask):
-    def work(self):
-        if not self.should_run():
+    def work(self, *args, **kwargs):
+        if kwargs.get('tick_count', -1) % 20:
             return
 
         forts = self.bot.get_forts(order_by_distance=True)

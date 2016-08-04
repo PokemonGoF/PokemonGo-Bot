@@ -384,14 +384,22 @@ class PokemonGoBot(object):
 
     def tick(self):
         self.cell = self.get_meta_cell()
-        self.tick_count += 1
 
         # Check if session token has expired
         self.check_session(self.position[0:2])
+        start_tick = time.time()
 
         for worker in self.workers:
-            if worker.work() == WorkerResult.RUNNING:
+            if worker.work(tick_count = self.tick_count) == WorkerResult.RUNNING:
                 return
+        end_tick = time.time()
+
+        if end_tick - start_tick < 5:
+            logger.log('Waiting {:.2f}...'.format(5 - (end_tick - start_tick)))
+            time.sleep(5 - (end_tick - start_tick))
+
+        self.tick_count += 1
+
 
     def get_meta_cell(self):
         location = self.position[0:2]

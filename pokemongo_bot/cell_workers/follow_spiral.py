@@ -63,7 +63,7 @@ class FollowSpiral(BaseTask):
             m += 1
         return coords
 
-    def work(self):
+    def work(self, *args, **kwargs):
         point = self.points[self.ptr]
         self.cnt += 1
 

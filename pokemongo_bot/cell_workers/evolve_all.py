@@ -166,3 +166,4 @@ class EvolvePokemon(BaseTask):
         total_iv = pokemon.get("individual_attack", 0) + pokemon.get("individual_stamina", 0) + pokemon.get(
             "individual_defense", 0)
         return round((total_iv / 45.0), 2)
+

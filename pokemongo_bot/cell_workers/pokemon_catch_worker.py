@@ -22,9 +22,10 @@ class PokemonCatchWorker(BaseTask):
         self.response_key = ''
         self.response_status_key = ''
 
-    def work(self, response_dict=None):
+    def work(self, *args, **kwargs):
         encounter_id = self.pokemon['encounter_id']
 
+        response_dict=None
         if not response_dict:
             response_dict = self.create_encounter_api_call()
 
@@ -380,7 +381,7 @@ class PokemonCatchWorker(BaseTask):
                                                 data={'pokemon': pokemon_name}
                                             )
                             break
-        time.sleep(5)
+        # time.sleep(5)
 
     def count_pokemon_inventory(self):
         # don't use cached bot.get_inventory() here

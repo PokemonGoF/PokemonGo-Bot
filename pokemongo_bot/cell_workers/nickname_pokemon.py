@@ -7,7 +7,7 @@ class NicknamePokemon(BaseTask):
         if self.template == "{name}":
             self.template = ""
 
-    def work(self):
+    def work(self, *args, **kwargs):
         try:
             inventory = reduce(dict.__getitem__, ["responses", "GET_INVENTORY", "inventory_delta", "inventory_items"], self.bot.get_inventory())
         except KeyError:

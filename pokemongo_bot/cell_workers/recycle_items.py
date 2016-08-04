@@ -1,5 +1,7 @@
 import json
 import os
+import time
+
 from pokemongo_bot.cell_workers.base_task import BaseTask
 from pokemongo_bot.tree_config_builder import ConfigException
 
@@ -15,7 +17,9 @@ class RecycleItems(BaseTask):
                 if config_item_name not in item_list:
                     raise ConfigException("item {} does not exist, spelling mistake? (check for valid item names in data/items.json)".format(config_item_name))
 
-    def work(self):
+    def work(self, *args, **kwargs):
+        if kwargs.get('tick_count', -1) % 5:
+            return
         self.bot.latest_inventory = None
         item_count_dict = self.bot.item_inventory_count('all')
 
