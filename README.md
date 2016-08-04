@@ -10,6 +10,8 @@
 
 # PokemonGo-Bot
 The Pokemon Go Bot, baking with community.
+## Niantic Changes
+Niantic have changed API responses, meaning that this bot and anything accessing the API though POGOProtos is currently broken. A number of developers from /r/pokemondev are working to address this and come up with a fix for this issue, find the [current status here](https://www.reddit.com/r/pokemongodev/comments/4w1cvr/pokemongo_current_api_status/)
 ## Help Needed on [Desktop Version](https://github.com/PokemonGoF/PokemonGo-Bot-Desktop)
 ## Help with the project [Dev Bot](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Develop-PokemonGo-Bot)
 ## Project Chat
@@ -163,6 +165,7 @@ Research Website [Nice Tool](https://thesilphroad.com/research)
  * th3w4y
  * Leaklessgfy
  * GregTampa
+ * AlexRatman
 
 -------
 ## Credits
