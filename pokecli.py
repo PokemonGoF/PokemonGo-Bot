@@ -39,6 +39,7 @@ from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingE
 from geopy.exc import GeocoderQuotaExceeded
 
 from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
+from pokemongo_bot.health_record import BotEvent
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -58,7 +59,10 @@ def main():
     config = init_config()
     if not config:
         return
+
     logger.info('Configuration initialized')
+    health_record = BotEvent(config)
+    health_record.login_success()
 
     finished = False
 
