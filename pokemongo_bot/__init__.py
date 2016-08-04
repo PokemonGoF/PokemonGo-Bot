@@ -100,16 +100,16 @@ class PokemonGoBot(object):
             'location_found',
             parameters=('position', 'location')
         )
-        self.event_manager.register_event('api_error')
-        self.event_manager.register_event('config_error')
+        self.event_manager.register_event('api_error', color='red')
+        self.event_manager.register_event('config_error', color='red')
 
-        self.event_manager.register_event('login_started')
-        self.event_manager.register_event('login_failed')
-        self.event_manager.register_event('login_successful')
+        self.event_manager.register_event('login_started', color='green')
+        self.event_manager.register_event('login_failed', color='red')
+        self.event_manager.register_event('login_successful', color='green')
 
-        self.event_manager.register_event('set_start_location')
-        self.event_manager.register_event('load_cached_location')
-        self.event_manager.register_event('location_cache_ignored')
+        self.event_manager.register_event('set_start_location', color='yellow')
+        self.event_manager.register_event('load_cached_location', color='yellow')
+        self.event_manager.register_event('location_cache_ignored', color='yellow')
         self.event_manager.register_event(
             'position_update',
             parameters=(
@@ -117,17 +117,18 @@ class PokemonGoBot(object):
                 'last_position',
                 'distance', # optional
                 'distance_unit' # optional
-            )
+            ),
+            color='cyan'
         )
-        self.event_manager.register_event('location_cache_error')
+        self.event_manager.register_event('location_cache_error', color='red')
 
-        self.event_manager.register_event('bot_start')
-        self.event_manager.register_event('bot_exit')
+        self.event_manager.register_event('bot_start', color='green')
+        self.event_manager.register_event('bot_exit', color='red')
 
         # sleep stuff
         self.event_manager.register_event(
             'next_sleep',
-            parameters=('time',)
+            parameters=('time',),
         )
         self.event_manager.register_event(
             'bot_sleep',
@@ -141,7 +142,8 @@ class PokemonGoBot(object):
                 'fort_id',
                 'latitude',
                 'longitude'
-            )
+            ),
+            color='cyan'
         )
         self.event_manager.register_event(
             'lured_pokemon_found',
@@ -151,14 +153,15 @@ class PokemonGoBot(object):
                 'encounter_id',
                 'latitude',
                 'longitude'
-            )
+            ),
+            color='blue'
         )
         self.event_manager.register_event(
             'moving_to_fort',
             parameters=(
                 'fort_name',
                 'distance'
-            )
+            ),
         )
         self.event_manager.register_event(
             'moving_to_lured_fort',
@@ -172,26 +175,31 @@ class PokemonGoBot(object):
             'spun_pokestop',
             parameters=(
                 'pokestop', 'exp', 'items'
-            )
+            ),
+            color='cyan'
         )
         self.event_manager.register_event(
             'pokestop_empty',
-            parameters=('pokestop',)
+            parameters=('pokestop',),
+            color='yellow'
         )
         self.event_manager.register_event(
             'pokestop_out_of_range',
-            parameters=('pokestop',)
+            parameters=('pokestop',),
+            color='yellow'
         )
         self.event_manager.register_event(
             'pokestop_on_cooldown',
-            parameters=('pokestop', 'minutes_left')
+            parameters=('pokestop', 'minutes_left'),
+            color='red'
         )
         self.event_manager.register_event(
             'unknown_spin_result',
-            parameters=('status_code',)
+            parameters=('status_code',),
+            color='red'
         )
-        self.event_manager.register_event('pokestop_searching_too_often')
-        self.event_manager.register_event('arrived_at_fort')
+        self.event_manager.register_event('pokestop_searching_too_often', color='red')
+        self.event_manager.register_event('arrived_at_fort', color='green')
 
         # pokemon stuff
         self.event_manager.register_event(
@@ -203,7 +211,8 @@ class PokemonGoBot(object):
                 'latitude',
                 'longitude',
                 'expiration_timestamp_ms'
-            )
+            ),
+            color='green'
         )
         self.event_manager.register_event(
             'pokemon_appeared',
@@ -212,7 +221,8 @@ class PokemonGoBot(object):
                 'cp',
                 'iv',
                 'iv_display',
-            )
+            ),
+            color='blue'
         )
         self.event_manager.register_event(
             'pokemon_catch_rate',
@@ -220,14 +230,15 @@ class PokemonGoBot(object):
                 'catch_rate',
                 'berry_name',
                 'berry_count'
-            )
+            ),
         )
         self.event_manager.register_event(
             'threw_berry',
             parameters=(
                 'berry_name',
                 'new_catch_rate'
-            )
+            ),
+            color='cyan'
         )
         self.event_manager.register_event(
             'threw_pokeball',
@@ -235,34 +246,40 @@ class PokemonGoBot(object):
                 'pokeball',
                 'success_percentage',
                 'count_left'
-            )
+            ),
+            color='cyan'
         )
         self.event_manager.register_event(
             'pokemon_fled',
-            parameters=('pokemon',)
+            parameters=('pokemon',),
+            color='red'
         )
         self.event_manager.register_event(
             'pokemon_vanished',
-            parameters=('pokemon',)
+            parameters=('pokemon',),
+            color='red'
         )
         self.event_manager.register_event(
             'pokemon_caught',
             parameters=(
                 'pokemon',
                 'cp', 'iv', 'iv_display', 'exp'
-            )
+            ),
+            color='green'
         )
         self.event_manager.register_event(
             'pokemon_evolved',
-            parameters=('pokemon', 'iv', 'cp')
+            parameters=('pokemon', 'iv', 'cp'),
+            color='green'
         )
         self.event_manager.register_event(
             'pokemon_evolve_fail',
-            parameters=('pokemon',)
+            parameters=('pokemon',),
+            color='red'
         )
         self.event_manager.register_event('skip_evolve')
-        self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
-        self.event_manager.register_event('vip_pokemon')
+        self.event_manager.register_event('threw_berry_failed', parameters=('status_code',), color='red')
+        self.event_manager.register_event('vip_pokemon', color='red')
 
 
         # level up stuff
@@ -271,24 +288,27 @@ class PokemonGoBot(object):
             parameters=(
                 'previous_level',
                 'current_level'
-            )
+            ),
+            color='cyan'
         )
         self.event_manager.register_event(
             'level_up_reward',
-            parameters=('items',)
+            parameters=('items',),
+            color='cyan'
         )
 
         # lucky egg
         self.event_manager.register_event(
             'used_lucky_egg',
-            parameters=('amount_left',)
+            parameters=('amount_left',),
+            color='cyan'
         )
-        self.event_manager.register_event('lucky_egg_error')
+        self.event_manager.register_event('lucky_egg_error', color='red')
 
         # softban
-        self.event_manager.register_event('softban')
-        self.event_manager.register_event('softban_fix')
-        self.event_manager.register_event('softban_fix_done')
+        self.event_manager.register_event('softban', color='red')
+        self.event_manager.register_event('softban_fix', color='yellow')
+        self.event_manager.register_event('softban_fix_done', color='green')
 
         # egg incubating
         self.event_manager.register_event(
@@ -306,14 +326,15 @@ class PokemonGoBot(object):
             'next_egg_incubates',
             parameters=('distance_in_km',)
         )
-        self.event_manager.register_event('incubator_already_used')
-        self.event_manager.register_event('egg_already_incubating')
+        self.event_manager.register_event('incubator_already_used', color='yellow')
+        self.event_manager.register_event('egg_already_incubating', color='yellow')
         self.event_manager.register_event(
             'egg_hatched',
             parameters=(
                 'pokemon',
                 'cp', 'iv', 'exp', 'stardust', 'candy'
-            )
+            ),
+            color='blue'
         )
 
         # discard item
@@ -321,15 +342,17 @@ class PokemonGoBot(object):
             'item_discarded',
             parameters=(
                 'amount', 'item', 'maximum'
-            )
+            ),
+            color='yellow'
         )
         self.event_manager.register_event(
             'item_discard_fail',
-            parameters=('item',)
+            parameters=('item',),
+            color='red'
         )
 
         # inventory
-        self.event_manager.register_event('inventory_full')
+        self.event_manager.register_event('inventory_full', color='yellow')
 
         # release
         self.event_manager.register_event(
@@ -531,6 +554,7 @@ class PokemonGoBot(object):
             level=log_level,
             format='%(asctime)s [%(name)10s] [%(levelname)s] %(message)s'
         )
+
     def check_session(self, position):
         # Check session expiry
         if self.api._auth_provider and self.api._auth_provider._ticket_expire:

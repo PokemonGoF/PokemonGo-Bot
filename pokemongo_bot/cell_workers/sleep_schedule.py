@@ -32,7 +32,7 @@ class SleepSchedule(BaseTask):
     SCHEDULING_MARGIN = timedelta(minutes=10)    # Skip if next sleep is RESCHEDULING_MARGIN from now
 
     def initialize(self):
-        # self.bot.event_manager.register_event('sleeper_scheduled', parameters=('datetime',))
+        # self.bot.event_manager.register_event('sleeper_scheduled', parameters=('datetime',), color='cyan')
         self._process_config()
         self._schedule_next_sleep()
 

@@ -26,9 +26,10 @@ class EventManager(object):
         self._handlers = handlers or []
 
     def event_report(self):
-        for event, parameters in self._registered_events.iteritems():
+        for event, (color, parameters) in self._registered_events.iteritems():
             print '-'*80
             print 'Event: {}'.format(event)
+            print 'Color: {}'.format(color)
             if parameters:
                 print 'Parameters:'
                 for parameter in parameters:
@@ -37,8 +38,8 @@ class EventManager(object):
     def add_handler(self, event_handler):
         self._handlers.append(event_handler)
 
-    def register_event(self, name, parameters=[]):
-        self._registered_events[name] = parameters
+    def register_event(self, name, color='white', parameters=[]):
+        self._registered_events[name] = (color, parameters)
 
     def emit(self, event, sender=None, level='info', formatted='', data={}):
         if not sender:
@@ -52,7 +53,7 @@ class EventManager(object):
             raise EventNotRegisteredException("Event %s not registered..." % event)
 
         # verify params match event
-        parameters = self._registered_events[event]
+        color, parameters = self._registered_events[event]
         if parameters:
             for k, v in data.iteritems():
                 if k not in parameters:
@@ -62,4 +63,4 @@ class EventManager(object):
 
         # send off to the handlers
         for handler in self._handlers:
-            handler.handle_event(event, sender, level, formatted_msg, data)
+            handler.handle_event(event, sender, level, formatted_msg, data, color=color)
