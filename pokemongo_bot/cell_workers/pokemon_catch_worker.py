@@ -331,15 +331,22 @@ class PokemonCatchWorker(BaseTask):
                                     sleep(2)
                                     continue
                                 if status is 3:
+
                                     self.emit_event(
                                         'pokemon_vanished',
                                         formatted="{pokemon} vanished!",
                                         data={'pokemon': pokemon_name}
                                     )
+
+                                    if self.config.journal:
+                                        with open(self.config.user_journal, 'a') as outfile:
+                                            outfile.write('Oh no! %s vanished!\n' % pokemon_name)
+
                                     if success_percentage == 100:
                                         self.softban = True
                                 if status is 1:
                                     self.bot.metrics.captured_pokemon(pokemon_name, cp, iv_display, pokemon_potential)
+
 
                                     self.emit_event(
                                         'pokemon_caught',
@@ -352,6 +359,14 @@ class PokemonCatchWorker(BaseTask):
                                             'exp': sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
                                         }
                                     )
+
+                                    if self.config.journal:
+                                        with open(self.config.user_journal, 'a') as outfile:
+                                            outfile.write('Captured %s! [CP %s] [Potential %s] [%s] [+%s exp]\n' % (
+                                                pokemon_name, cp, pokemon_potential, iv_display,
+                                                sum(response_dict['responses']['CATCH_POKEMON']['capture_award'][
+                                                        'xp'])))
+
                                     self.bot.softban = False
 
                                     if (self.config.evolve_captured
@@ -368,11 +383,17 @@ class PokemonCatchWorker(BaseTask):
                                         response_dict = self.api.evolve_pokemon(pokemon_id=pokemon_to_transfer[0])
                                         status = response_dict['responses']['EVOLVE_POKEMON']['result']
                                         if status == 1:
+
+                                            if self.config.journal:
+                                                with open(self.config.user_journal, 'a') as outfile:
+                                                    outfile.write('%s has been evolved!\n' % pokemon_name)
+
                                             self.emit_event(
                                                 'pokemon_evolved',
                                                 formatted="{pokemon} evolved!",
                                                 data={'pokemon': pokemon_name}
                                             )
+
                                         else:
                                             self.emit_event(
                                                 'pokemon_evolve_fail',

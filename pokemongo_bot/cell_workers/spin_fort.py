@@ -32,8 +32,12 @@ class SpinFort(BaseTask):
         lng = fort['longitude']
 
         details = fort_details(self.bot, fort['id'], lat, lng)
-        fort_name = details.get('name', 'Unknown')
 
+
+        fort_name = details.get('name', 'Unknown')
+        if self.bot.config.journal:
+            with open(self.bot.config.user_journal, 'a') as outfile:
+                outfile.write('Now at Pokestop: %s\n' % fort_name)
         response_dict = self.bot.api.fort_search(
             fort_id=fort['id'],
             fort_latitude=lat,
@@ -41,6 +45,7 @@ class SpinFort(BaseTask):
             player_latitude=f2i(self.bot.position[0]),
             player_longitude=f2i(self.bot.position[1])
         )
+
         if 'responses' in response_dict and \
                 'FORT_SEARCH' in response_dict['responses']:
 
@@ -48,18 +53,32 @@ class SpinFort(BaseTask):
             spin_result = spin_details.get('result', -1)
             if spin_result == 1:
                 self.bot.softban = False
+
+                
+                if self.bot.config.journal:
+                    with open(self.bot.config.user_journal, 'a') as outfile:
+                        outfile.write('Loot:\n')
                 experience_awarded = spin_details.get('experience_awarded', 0)
+                if self.bot.config.journal:
+                        with open(self.bot.config.user_journal, 'a') as outfile:
+                            outfile.write('%s xp\n' % str(experience_awarded))
                 items_awarded = spin_details.get('items_awarded', {})
+
                 if items_awarded:
                     self.bot.latest_inventory = None
                     tmp_count_items = {}
                     for item in items_awarded:
                         item_id = item['item_id']
                         item_name = self.bot.item_list[str(item_id)]
+
                         if not item_name in tmp_count_items:
                             tmp_count_items[item_name] = item['item_count']
                         else:
                             tmp_count_items[item_name] += item['item_count']
+                            
+                        if self.bot.config.journal:
+                            with open(self.bot.config.user_journal, 'a') as outfile:
+                                outfile.write('Items awarded: %s' % items)
 
                 if experience_awarded or items_awarded:
                     self.emit_event(
@@ -71,6 +90,7 @@ class SpinFort(BaseTask):
                             'items': tmp_count_items
                         }
                     )
+
                 else:
                     self.emit_event(
                         'pokestop_empty',
