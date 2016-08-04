@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import haversine
-from human_behaviour import sleep
+from pokemongo_bot.human_behaviour import sleep
 from polyline_generator import Polyline
 
 
