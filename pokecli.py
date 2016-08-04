@@ -46,9 +46,11 @@ if sys.version_info >= (2, 7, 9):
 
 def init_config():
     parser = argparse.ArgumentParser()
-    config_file = "config.json"
-    release_config_json = "release_config.json"
+
     web_dir = "web"
+    _root_dir = os.path.dirname(os.path.realpath(__file__))
+    _config_dir = os.path.join(_root_dir, "config.json")
+    _release_config_dir = os.path.join(_root_dir, "release_config.json")
 
     # If config file exists, load variables from json
     load = {}
@@ -56,11 +58,12 @@ def init_config():
     # Select a config file code
     parser.add_argument("-cf", "--config", help="Config File to use")
     config_arg = unicode(parser.parse_args().config)
+
     if os.path.isfile(config_arg):
         with open(config_arg) as data:
             load.update(json.load(data))
-    elif os.path.isfile(config_file):
-        with open(config_file) as data:
+    elif os.path.isfile(_config_dir):
+        with open(_config_dir) as data:
             load.update(json.load(data))
 
     # Read passed in Arguments
@@ -169,12 +172,13 @@ def init_config():
         config.item_filter = [str(item_id) for item_id in config.item_filter.split(',')]
 
     config.release_config = {}
-    if os.path.isfile(release_config_json):
-        with open(release_config_json) as data:
+
+    if os.path.isfile(_release_config_dir):
+        with open(_release_config_dir) as data:
             config.release_config.update(json.load(data))
 
     # create web dir if not exists
-    try: 
+    try:
         os.makedirs(web_dir)
     except OSError:
         if not os.path.isdir(web_dir):
@@ -189,7 +193,7 @@ def init_config():
 def main():
     # log settings
     # log format
-    #logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(module)10s] [%(levelname)5s] %(message)s')
+    # logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(module)10s] [%(levelname)5s] %(message)s')
 
     sys.stdout = codecs.getwriter('utf8')(sys.stdout)
     sys.stderr = codecs.getwriter('utf8')(sys.stderr)

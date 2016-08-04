@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import logging
 import googlemaps
 import json
@@ -21,10 +22,16 @@ from item_list import Item
 
 
 class PokemonGoBot(object):
+    _script_dir = os.path.dirname(os.path.realpath(__file__))
+    _root_dir = os.path.dirname(_script_dir)
+    _release_conf_dir = os.path.join(_root_dir, 'release_config.json')
+    _pokemon_dir = os.path.join(_root_dir, 'data/pokemon.json')
+    _items_dir = os.path.join(_root_dir, 'data/items.json')
+
     def __init__(self, config):
         self.config = config
-        self.pokemon_list = json.load(open('data/pokemon.json'))
-        self.item_list = json.load(open('data/items.json'))
+        self.pokemon_list = json.load(open(self._pokemon_dir))
+        self.item_list = json.load(open(self._items_dir))
 
     def start(self):
         self._setup_logging()
@@ -46,8 +53,8 @@ class PokemonGoBot(object):
         self._filter_ignored_pokemons(cell)
 
         if (self.config.mode == "all" or self.config.mode ==
-                "poke") and 'catchable_pokemons' in cell and len(cell[
-                    'catchable_pokemons']) > 0:
+            "poke") and 'catchable_pokemons' in cell and len(cell[
+                                                                 'catchable_pokemons']) > 0:
             logger.log('[#] Something rustles nearby!')
             # Sort all by distance from current pos- eventually this should
             # build graph & A* it
@@ -76,7 +83,7 @@ class PokemonGoBot(object):
                 if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
                     break
         if (self.config.mode == "all" or
-                self.config.mode == "farm") and include_fort_on_path:
+                    self.config.mode == "farm") and include_fort_on_path:
             if 'forts' in cell:
                 # Only include those with a lat/long
                 forts = [fort
@@ -87,7 +94,7 @@ class PokemonGoBot(object):
                 # Sort all by distance from current pos- eventually this should
                 # build graph & A* it
                 forts.sort(key=lambda x: distance(self.position[
-                           0], self.position[1], x['latitude'], x['longitude']))
+                                                      0], self.position[1], x['latitude'], x['longitude']))
                 for fort in forts:
                     worker = MoveToFortWorker(fort, self)
                     worker.work()
@@ -95,7 +102,7 @@ class PokemonGoBot(object):
                     worker = SeenFortWorker(fort, self)
                     hack_chain = worker.work()
                     if hack_chain > 10:
-                        #print('need a rest')
+                        # print('need a rest')
                         break
 
     def _setup_logging(self):
@@ -121,11 +128,13 @@ class PokemonGoBot(object):
 
         # check if the release_config file exists
         try:
-            with open('release_config.json') as file:
+            with open(self._release_conf_dir) as file:
                 pass
         except:
             # the file does not exist, warn the user and exit.
-            logger.log('[#] IMPORTANT: Rename and configure release_config.json.example for your Pokemon release logic first!', 'red')
+            logger.log(
+                '[#] IMPORTANT: Rename and configure release_config.json.example for your Pokemon release logic first!',
+                'red')
             exit(0)
 
         # provide player position on the earth
@@ -144,7 +153,7 @@ class PokemonGoBot(object):
         self.api.get_player()
 
         response_dict = self.api.call()
-        #print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
+        # print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
         currency_1 = "0"
         currency_2 = "0"
 
@@ -200,7 +209,7 @@ class PokemonGoBot(object):
         inventory_req = self.api.call()
 
         # Example of good request response
-        #{'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
+        # {'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
         return inventory_req
 
     def update_inventory(self):
@@ -211,21 +220,21 @@ class PokemonGoBot(object):
             if 'GET_INVENTORY' in response['responses']:
                 if 'inventory_delta' in response['responses']['GET_INVENTORY']:
                     if 'inventory_items' in response['responses'][
-                            'GET_INVENTORY']['inventory_delta']:
+                        'GET_INVENTORY']['inventory_delta']:
                         for item in response['responses']['GET_INVENTORY'][
-                                'inventory_delta']['inventory_items']:
+                            'inventory_delta']['inventory_items']:
                             if not 'inventory_item_data' in item:
                                 continue
                             if not 'item' in item['inventory_item_data']:
                                 continue
                             if not 'item_id' in item['inventory_item_data'][
-                                    'item']:
+                                'item']:
                                 continue
                             if not 'count' in item['inventory_item_data'][
-                                    'item']:
+                                'item']:
                                 continue
                             self.inventory.append(item['inventory_item_data'][
-                                'item'])
+                                                      'item'])
 
     def pokeball_inventory(self):
         self.api.get_player().get_inventory()
@@ -307,7 +316,7 @@ class PokemonGoBot(object):
                 # save location flag used to pull the last known location from
                 # the location.json
                 with open('data/last-location-%s.json' %
-                          (self.config.username)) as f:
+                                  (self.config.username)) as f:
                     location_json = json.load(f)
 
                     self.position = (location_json['lat'],
@@ -343,8 +352,8 @@ class PokemonGoBot(object):
         geolocator = GoogleV3(api_key=self.config.gmapkey)
         loc = geolocator.geocode(location_name, timeout=10)
 
-        #self.log.info('Your given location: %s', loc.address.encode('utf-8'))
-        #self.log.info('lat/long/alt: %s %s %s', loc.latitude, loc.longitude, loc.altitude)
+        # self.log.info('Your given location: %s', loc.address.encode('utf-8'))
+        # self.log.info('lat/long/alt: %s %s %s', loc.latitude, loc.longitude, loc.altitude)
 
         return (loc.latitude, loc.longitude, loc.altitude)
 
@@ -400,25 +409,25 @@ class PokemonGoBot(object):
         if 'responses' in response_dict:
             if 'GET_INVENTORY' in response_dict['responses']:
                 if 'inventory_delta' in response_dict['responses'][
-                        'GET_INVENTORY']:
+                    'GET_INVENTORY']:
                     if 'inventory_items' in response_dict['responses'][
-                            'GET_INVENTORY']['inventory_delta']:
+                        'GET_INVENTORY']['inventory_delta']:
                         pokecount = 0
                         itemcount = 1
                         for item in response_dict['responses'][
-                                'GET_INVENTORY']['inventory_delta'][
-                                    'inventory_items']:
-                            #print('item {}'.format(item))
+                            'GET_INVENTORY']['inventory_delta'][
+                            'inventory_items']:
+                            # print('item {}'.format(item))
                             if 'inventory_item_data' in item:
                                 if 'pokemon_data' in item[
-                                        'inventory_item_data']:
+                                    'inventory_item_data']:
                                     pokecount = pokecount + 1
                                 if 'item' in item['inventory_item_data']:
                                     if 'count' in item['inventory_item_data'][
-                                            'item']:
+                                        'item']:
                                         itemcount = itemcount + \
-                                            item['inventory_item_data'][
-                                                'item']['count']
+                                                    item['inventory_item_data'][
+                                                        'item']['count']
         if 'pokemon' in what:
             return pokecount
         if 'item' in what:
@@ -431,18 +440,18 @@ class PokemonGoBot(object):
         if 'responses' in response_dict:
             if 'GET_INVENTORY' in response_dict['responses']:
                 if 'inventory_delta' in response_dict['responses'][
-                        'GET_INVENTORY']:
+                    'GET_INVENTORY']:
                     if 'inventory_items' in response_dict['responses'][
-                            'GET_INVENTORY']['inventory_delta']:
+                        'GET_INVENTORY']['inventory_delta']:
                         pokecount = 0
                         itemcount = 1
                         for item in response_dict['responses'][
-                                'GET_INVENTORY']['inventory_delta'][
-                                    'inventory_items']:
-                            #print('item {}'.format(item))
+                            'GET_INVENTORY']['inventory_delta'][
+                            'inventory_items']:
+                            # print('item {}'.format(item))
                             if 'inventory_item_data' in item:
                                 if 'player_stats' in item[
-                                        'inventory_item_data']:
+                                    'inventory_item_data']:
                                     playerdata = item['inventory_item_data'][
                                         'player_stats']
 
