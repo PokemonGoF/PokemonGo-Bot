@@ -170,7 +170,7 @@ class PokemonGoBot(object):
                     'cells': cells
                 }, outfile)
         except IOError as e:
-            logger.error('[x] Error while opening location file: %s' % e)
+            logger.log('[x] Error while opening location file: %s' % e, 'red')
 
         user_data_lastlocation = os.path.join(
             'data', 'last-location-%s.json' % self.config.username
@@ -179,7 +179,7 @@ class PokemonGoBot(object):
             with open(user_data_lastlocation, 'w') as outfile:
                 json.dump({'lat': lat, 'lng': lng, 'start_position': self.start_position}, outfile)
         except IOError as e:
-            logger.error('[x] Error while opening location file: %s' % e)
+            logger.log('[x] Error while opening location file: %s' % e, 'red')
 
     def find_close_cells(self, lat, lng):
         cellid = get_cell_ids(lat, lng)
@@ -207,11 +207,6 @@ class PokemonGoBot(object):
         self.log = logging.getLogger(__name__)
         # log settings
         # log format
-        root_logger = logging.getLogger()
-        root_logger.setLevel(logging.DEBUG)
-        root_logger.addHandler(logging.StreamHandler(sys.stdout))
-        for handler in root_logger.handlers:
-            handler.setFormatter(logger.LogFormatter('[%(asctime)s] %(message)s', '%H:%M:%S'))
 
         if self.config.debug:
             logging.getLogger("requests").setLevel(logging.DEBUG)
@@ -236,14 +231,14 @@ class PokemonGoBot(object):
 
             # prevent crash if return not numeric value
             if not self.is_numeric(self.api._auth_provider._ticket_expire):
-                logger.warn("Ticket expired value is not numeric")
+                logger.log("Ticket expired value is not numeric", 'yellow')
                 return
 
             remaining_time = \
                 self.api._auth_provider._ticket_expire / 1000 - time.time()
 
             if remaining_time < 60:
-                logger.warning("Session stale, re-logging in")
+                logger.log("Session stale, re-logging in", 'yellow')
                 position = self.position
                 self.api = ApiWrapper()
                 self.position = position
@@ -258,7 +253,7 @@ class PokemonGoBot(object):
             return False
 
     def login(self):
-        logger.log('Attempting login to Pokemon Go.')
+        logger.log('Attempting login to Pokemon Go.', 'white')
         lat, lng = self.position[0:2]
         self.api.set_position(lat, lng, 0)
 
@@ -267,11 +262,11 @@ class PokemonGoBot(object):
             str(self.config.username),
             str(self.config.password)):
 
-            logger.error('[X] Login Error, server busy')
-            logger.error('[X] Waiting 10 seconds to try again')
+            logger.log('[X] Login Error, server busy', 'red')
+            logger.log('[X] Waiting 10 seconds to try again', 'red')
             time.sleep(10)
 
-        logger.green('Login to Pokemon Go successful.')
+        logger.log('Login to Pokemon Go successful.', 'green')
 
     def _setup_api(self):
         # instantiate pgoapi
@@ -303,9 +298,9 @@ class PokemonGoBot(object):
             self._player = response_dict['responses']['GET_PLAYER']['player_data']
             player = self._player
         else:
-            logger.error(
+            logger.log(
                 "The API didn't return player info, servers are unstable - "
-                "retrying."
+                "retrying.", 'red'
             )
             sleep(5)
             self._print_character_info()
@@ -324,53 +319,53 @@ class PokemonGoBot(object):
         if 'amount' in player['currencies'][1]:
             stardust = player['currencies'][1]['amount']
         logger.log('')
-        logger.info('--- {username} ---'.format(**player))
+        logger.log('--- {username} ---'.format(**player), 'cyan')
         self.get_player_info()
-        logger.info(
+        logger.log(
             'Pokemon Bag: {}/{}'.format(
                 self.get_inventory_count('pokemon'),
                 player['max_pokemon_storage']
-            )
+            ), 'cyan'
         )
-        logger.info(
+        logger.log(
             'Items: {}/{}'.format(
                 self.get_inventory_count('item'),
                 player['max_item_storage']
-            )
+            ), 'cyan'
         )
-        logger.info(
+        logger.log(
             'Stardust: {}'.format(stardust) +
-            ' | Pokecoins: {}'.format(pokecoins)
+            ' | Pokecoins: {}'.format(pokecoins), 'cyan'
         )
         # Items Output
-        logger.info(
+        logger.log(
             'PokeBalls: ' + str(items_stock[1]) +
             ' | GreatBalls: ' + str(items_stock[2]) +
-            ' | UltraBalls: ' + str(items_stock[3]))
+            ' | UltraBalls: ' + str(items_stock[3]), 'cyan')
 
-        logger.info(
+        logger.log(
             'RazzBerries: ' + str(items_stock[701]) +
             ' | BlukBerries: ' + str(items_stock[702]) +
-            ' | NanabBerries: ' + str(items_stock[703]))
+            ' | NanabBerries: ' + str(items_stock[703]), 'cyan')
 
-        logger.info(
+        logger.log(
             'LuckyEgg: ' + str(items_stock[301]) +
             ' | Incubator: ' + str(items_stock[902]) +
-            ' | TroyDisk: ' + str(items_stock[501]))
+            ' | TroyDisk: ' + str(items_stock[501]), 'cyan')
 
-        logger.info(
+        logger.log(
             'Potion: ' + str(items_stock[101]) +
             ' | SuperPotion: ' + str(items_stock[102]) +
-            ' | HyperPotion: ' + str(items_stock[103]))
+            ' | HyperPotion: ' + str(items_stock[103]), 'cyan')
 
-        logger.info(
+        logger.log(
             'Incense: ' + str(items_stock[401]) +
             ' | IncenseSpicy: ' + str(items_stock[402]) +
-            ' | IncenseCool: ' + str(items_stock[403]))
+            ' | IncenseCool: ' + str(items_stock[403]), 'cyan')
 
-        logger.info(
+        logger.log(
             'Revive: ' + str(items_stock[201]) +
-            ' | MaxRevive: ' + str(items_stock[202]))
+            ' | MaxRevive: ' + str(items_stock[202]), 'cyan')
 
         logger.log('')
 
@@ -489,7 +484,7 @@ class PokemonGoBot(object):
 
                     # Start position has to have been set on a previous run to do this check
                     if last_start_position and last_start_position != self.start_position:
-                        logger.warning('[x] Last location flag used but with a stale starting location')
+                        logger.log('[x] Last location flag used but with a stale starting location', 'yellow')
                         logger.log('[x] Using new starting location, {}'.format(self.position))
                         return
 
@@ -580,22 +575,22 @@ class PokemonGoBot(object):
                     nextlvlxp = (int(playerdata.get('next_level_xp', 0)) - int(playerdata.get('experience', 0)))
 
                     if 'level' in playerdata and 'experience' in playerdata:
-                        logger.info(
+                        logger.log(
                             'Level: {level}'.format(
                                 **playerdata) +
                             ' (Next Level: {} XP)'.format(
                                 nextlvlxp) +
                             ' (Total: {experience} XP)'
-                            ''.format(**playerdata))
+                            ''.format(**playerdata), 'cyan')
 
                     if 'pokemons_captured' in playerdata and 'poke_stop_visits' in playerdata:
-                        logger.info(
+                        logger.log(
                             'Pokemon Captured: '
                             '{pokemons_captured}'.format(
                                 **playerdata) +
                             ' | Pokestops Visited: '
                             '{poke_stop_visits}'.format(
-                                **playerdata))
+                                **playerdata), 'cyan')
 
     def has_space_for_loot(self):
         number_of_things_gained_by_stop = 5
