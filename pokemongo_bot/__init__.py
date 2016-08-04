@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import datetime
+import logging
+import googlemaps
 import json
 import logging
 import os
@@ -63,458 +64,84 @@ class PokemonGoBot(object):
         self._setup_logging()
         self._setup_api()
 
-        random.seed()
-
-    def _setup_event_system(self):
-        handlers = [LoggingHandler()]
-        if self.config.websocket_server_url:
-            if self.config.websocket_start_embedded_server:
-                self.sio_runner = SocketIoRunner(self.config.websocket_server_url)
-                self.sio_runner.start_listening_async()
-
-            websocket_handler = SocketIoHandler(
-                self,
-                self.config.websocket_server_url
-            )
-            handlers.append(websocket_handler)
-
-            if self.config.websocket_remote_control:
-                remote_control = WebsocketRemoteControl(self).start()
-
-
-        self.event_manager = EventManager(*handlers)
-        self._register_events()
-        if self.config.show_events:
-            self.event_manager.event_report()
-            sys.exit(1)
-
-        # Registering event:
-        # self.event_manager.register_event("location", parameters=['lat', 'lng'])
-        #
-        # Emitting event should be enough to add logging and send websocket
-        # message: :
-        # self.event_manager.emit('location', 'level'='info', data={'lat': 1, 'lng':1}),
-
-    def _register_events(self):
-        self.event_manager.register_event(
-            'location_found',
-            parameters=('position', 'location')
-        )
-        self.event_manager.register_event('api_error')
-        self.event_manager.register_event('config_error')
-
-        self.event_manager.register_event('login_started')
-        self.event_manager.register_event('login_failed')
-        self.event_manager.register_event('login_successful')
-
-        self.event_manager.register_event('set_start_location')
-        self.event_manager.register_event('load_cached_location')
-        self.event_manager.register_event('location_cache_ignored')
-        self.event_manager.register_event(
-            'position_update',
-            parameters=(
-                'current_position',
-                'last_position',
-                'distance', # optional
-                'distance_unit' # optional
-            )
-        )
-        self.event_manager.register_event('location_cache_error')
-
-        self.event_manager.register_event('bot_start')
-        self.event_manager.register_event('bot_exit')
-
-        # sleep stuff
-        self.event_manager.register_event(
-            'next_sleep',
-            parameters=('time',)
-        )
-        self.event_manager.register_event(
-            'bot_sleep',
-            parameters=('time_in_seconds',)
-        )
-
-        # fort stuff
-        self.event_manager.register_event(
-            'spun_fort',
-            parameters=(
-                'fort_id',
-                'latitude',
-                'longitude'
-            )
-        )
-        self.event_manager.register_event(
-            'lured_pokemon_found',
-            parameters=(
-                'fort_id',
-                'fort_name',
-                'encounter_id',
-                'latitude',
-                'longitude'
-            )
-        )
-        self.event_manager.register_event(
-            'moving_to_fort',
-            parameters=(
-                'fort_name',
-                'distance'
-            )
-        )
-        self.event_manager.register_event(
-            'moving_to_lured_fort',
-            parameters=(
-                'fort_name',
-                'distance',
-                'lure_distance'
-            )
-        )
-        self.event_manager.register_event(
-            'spun_pokestop',
-            parameters=(
-                'pokestop', 'exp', 'items'
-            )
-        )
-        self.event_manager.register_event(
-            'pokestop_empty',
-            parameters=('pokestop',)
-        )
-        self.event_manager.register_event(
-            'pokestop_out_of_range',
-            parameters=('pokestop',)
-        )
-        self.event_manager.register_event(
-            'pokestop_on_cooldown',
-            parameters=('pokestop', 'minutes_left')
-        )
-        self.event_manager.register_event(
-            'unknown_spin_result',
-            parameters=('status_code',)
-        )
-        self.event_manager.register_event('pokestop_searching_too_often')
-        self.event_manager.register_event('arrived_at_fort')
-
-        # pokemon stuff
-        self.event_manager.register_event(
-            'catchable_pokemon',
-            parameters=(
-                'pokemon_id',
-                'spawn_point_id',
-                'encounter_id',
-                'latitude',
-                'longitude',
-                'expiration_timestamp_ms'
-            )
-        )
-        self.event_manager.register_event(
-            'pokemon_appeared',
-            parameters=(
-                'pokemon',
-                'cp',
-                'iv',
-                'iv_display',
-            )
-        )
-        self.event_manager.register_event(
-            'pokemon_catch_rate',
-            parameters=(
-                'catch_rate',
-                'berry_name',
-                'berry_count'
-            )
-        )
-        self.event_manager.register_event(
-            'threw_berry',
-            parameters=(
-                'berry_name',
-                'new_catch_rate'
-            )
-        )
-        self.event_manager.register_event(
-            'threw_pokeball',
-            parameters=(
-                'pokeball',
-                'success_percentage',
-                'count_left'
-            )
-        )
-        self.event_manager.register_event(
-            'pokemon_fled',
-            parameters=('pokemon',)
-        )
-        self.event_manager.register_event(
-            'pokemon_vanished',
-            parameters=('pokemon',)
-        )
-        self.event_manager.register_event(
-            'pokemon_caught',
-            parameters=(
-                'pokemon',
-                'cp', 'iv', 'iv_display', 'exp'
-            )
-        )
-        self.event_manager.register_event(
-            'pokemon_evolved',
-            parameters=('pokemon', 'iv', 'cp')
-        )
-        self.event_manager.register_event(
-            'pokemon_evolve_fail',
-            parameters=('pokemon',)
-        )
-        self.event_manager.register_event('skip_evolve')
-        self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
-        self.event_manager.register_event('vip_pokemon')
-
-
-        # level up stuff
-        self.event_manager.register_event(
-            'level_up',
-            parameters=(
-                'previous_level',
-                'current_level'
-            )
-        )
-        self.event_manager.register_event(
-            'level_up_reward',
-            parameters=('items',)
-        )
-
-        # lucky egg
-        self.event_manager.register_event(
-            'used_lucky_egg',
-            parameters=('amount_left',)
-        )
-        self.event_manager.register_event('lucky_egg_error')
-
-        # softban
-        self.event_manager.register_event('softban')
-        self.event_manager.register_event('softban_fix')
-        self.event_manager.register_event('softban_fix_done')
-
-        # egg incubating
-        self.event_manager.register_event(
-            'incubate_try',
-            parameters=(
-                'incubator_id',
-                'egg_id'
-            )
-        )
-        self.event_manager.register_event(
-            'incubate',
-            parameters=('distance_in_km',)
-        )
-        self.event_manager.register_event(
-            'next_egg_incubates',
-            parameters=('distance_in_km',)
-        )
-        self.event_manager.register_event('incubator_already_used')
-        self.event_manager.register_event('egg_already_incubating')
-        self.event_manager.register_event(
-            'egg_hatched',
-            parameters=(
-                'pokemon',
-                'cp', 'iv', 'exp', 'stardust', 'candy'
-            )
-        )
-
-        # discard item
-        self.event_manager.register_event(
-            'item_discarded',
-            parameters=(
-                'amount', 'item', 'maximum'
-            )
-        )
-        self.event_manager.register_event(
-            'item_discard_fail',
-            parameters=('item',)
-        )
-
-        # inventory
-        self.event_manager.register_event('inventory_full')
-
-        # release
-        self.event_manager.register_event(
-            'keep_best_release',
-            parameters=(
-                'amount', 'pokemon', 'criteria'
-            )
-        )
-        self.event_manager.register_event(
-            'future_pokemon_release',
-            parameters=(
-                'pokemon', 'cp', 'iv', 'below_iv', 'below_cp', 'cp_iv_logic'
-            )
-        )
-        self.event_manager.register_event(
-            'pokemon_release',
-            parameters=('pokemon', 'cp', 'iv')
-        )
-
-        # polyline walker
-        self.event_manager.register_event(
-            'polyline_request',
-            parameters=('url',)
-        )
-
-        # cluster
-        self.event_manager.register_event(
-            'found_cluster',
-            parameters=(
-                'num_points', 'forts', 'radius', 'distance'
-            )
-        )
-        self.event_manager.register_event(
-            'arrived_at_cluster',
-            parameters=(
-                'forts', 'radius'
-            )
-        )
-
-        # rename
-        self.event_manager.register_event(
-            'rename_pokemon',
-            parameters=(
-                'old_name', 'current_name'
-            )
-        )
-        self.event_manager.register_event(
-            'pokemon_nickname_invalid',
-            parameters=('nickname',)
-        )
-        self.event_manager.register_event('unset_pokemon_nickname')
-
-    def tick(self):
-        self.cell = self.get_meta_cell()
-        self.tick_count += 1
-
-        # Check if session token has expired
-        self.check_session(self.position[0:2])
-
-        for worker in self.workers:
-            if worker.work() == WorkerResult.RUNNING:
-                return
-
-    def get_meta_cell(self):
-        location = self.position[0:2]
-        cells = self.find_close_cells(*location)
-
-        # Combine all cells into a single dict of the items we care about.
-        forts = []
-        wild_pokemons = []
-        catchable_pokemons = []
-        for cell in cells:
-            if "forts" in cell and len(cell["forts"]):
-                forts += cell["forts"]
-            if "wild_pokemons" in cell and len(cell["wild_pokemons"]):
-                wild_pokemons += cell["wild_pokemons"]
-            if "catchable_pokemons" in cell and len(cell["catchable_pokemons"]):
-                catchable_pokemons += cell["catchable_pokemons"]
-
-        # If there are forts present in the cells sent from the server or we don't yet have any cell data, return all data retrieved
-        if len(forts) > 1 or not self.cell:
-            return {
-                "forts": forts,
-                "wild_pokemons": wild_pokemons,
-                "catchable_pokemons": catchable_pokemons
-            }
-        # If there are no forts present in the data from the server, keep our existing fort data and only update the pokemon cells.
-        else:
-            return {
-                "forts": self.cell["forts"],
-                "wild_pokemons": wild_pokemons,
-                "catchable_pokemons": catchable_pokemons
-            }
-
-    def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
-        # we can call the function with no arguments and still get the position
-        # and map_cells
-        if lat is None:
-            lat = self.api._position_lat
-        if lng is None:
-            lng = self.api._position_lng
-        if alt is None:
-            alt = 0
-
-        if cells == []:
-            location = self.position[0:2]
-            cells = self.find_close_cells(*location)
-
-            # insert detail info about gym to fort
-            for cell in cells:
-                if 'forts' in cell:
-                    for fort in cell['forts']:
-                        if fort.get('type') != 1:
-                            response_gym_details = self.api.get_gym_details(
-                                gym_id=fort.get('id'),
-                                player_latitude=lng,
-                                player_longitude=lat,
-                                gym_latitude=fort.get('latitude'),
-                                gym_longitude=fort.get('longitude')
-                            )
-                            fort['gym_details'] = response_gym_details.get(
-                                'responses', {}
-                            ).get('GET_GYM_DETAILS', None)
-
-        user_data_cells = "data/cells-%s.json" % self.config.username
-        with open(user_data_cells, 'w') as outfile:
-            json.dump(cells, outfile)
-        # logger.log('Testing if the user journal is enabled', 'green')
         self.config.user_journal = os.path.join(
             'data', 'journal-%s.txt' % self.config.username
         )
-        if self.config.journal and not os.path.exists(self.config.user_journal):
-            # logger.log('journal = true', 'green')
 
-            # logger.log('Setting journal path %s' % self.config.user_journal, 'green')
+        if self.config.journal and not os.path.exists(self.config.user_journal):
             with open(self.config.user_journal, 'w') as outfile:
                 ts = time.time()
                 st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
                 outfile.write('Bot started at %s \n' % st)
+		
+        random.seed()
 
-        user_web_location = os.path.join(
-            'web', 'location-%s.json' % self.config.username
-        )
-        # alt is unused atm but makes using *location easier
-        try:
-            with open(user_web_location, 'w') as outfile:
-                json.dump({
-                    'lat': lat,
-                    'lng': lng,
-                    'alt': alt,
-                    'cells': cells
-                }, outfile)
-        except IOError as e:
-            self.logger.info('[x] Error while opening location file: %s' % e)
 
-        user_data_lastlocation = os.path.join(
-            'data', 'last-location-%s.json' % self.config.username
-        )
-        try:
-            with open(user_data_lastlocation, 'w') as outfile:
-                json.dump({'lat': lat, 'lng': lng, 'start_position': self.start_position}, outfile)
-        except IOError as e:
-            self.logger.info('[x] Error while opening location file: %s' % e)
+    def take_step(self):
+        self.stepper.take_step()
 
-    def find_close_cells(self, lat, lng):
-        cellid = get_cell_ids(lat, lng)
-        timestamp = [0, ] * len(cellid)
-        response_dict = self.get_map_objects(lat, lng, timestamp, cellid)
-        map_objects = response_dict.get(
-            'responses', {}
-        ).get('GET_MAP_OBJECTS', {})
-        status = map_objects.get('status', None)
+    def work_on_cell(self, cell, position, include_fort_on_path):
+        if self.config.evolve_all:
+            # Run evolve all once. Flip the bit.
+            print('[#] Attempting to evolve all pokemons ...')
+            worker = EvolveAllWorker(self)
+            worker.work()
+            self.config.evolve_all = []
 
-        map_cells = []
-        if status and status == 1:
-            map_cells = map_objects['map_cells']
-            position = (lat, lng, 0)
-            map_cells.sort(
-                key=lambda x: distance(
-                    lat,
-                    lng,
-                    x['forts'][0]['latitude'],
-                    x['forts'][0]['longitude']) if x.get('forts', []) else 1e6
-            )
-        return map_cells
+        self._filter_ignored_pokemons(cell)
+
+        if (self.config.mode == "all" or self.config.mode ==
+                "poke") and 'catchable_pokemons' in cell and len(cell[
+                    'catchable_pokemons']) > 0:
+            logger.log('[#] Something rustles nearby!')
+            # Sort all by distance from current pos- eventually this should
+            # build graph & A* it
+            cell['catchable_pokemons'].sort(
+                key=
+                lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
+
+            user_web_catchable = 'web/catchable-%s.json' % (self.config.username)
+            for pokemon in cell['catchable_pokemons']:
+                with open(user_web_catchable, 'w') as outfile:
+                    json.dump(pokemon, outfile)
+
+                if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
+                    break
+                with open(user_web_catchable, 'w') as outfile:
+                    json.dump({}, outfile)
+
+        if (self.config.mode == "all" or self.config.mode == "poke"
+            ) and 'wild_pokemons' in cell and len(cell['wild_pokemons']) > 0:
+            # Sort all by distance from current pos- eventually this should
+            # build graph & A* it
+            cell['wild_pokemons'].sort(
+                key=
+                lambda x: distance(self.position[0], self.position[1], x['latitude'], x['longitude']))
+            for pokemon in cell['wild_pokemons']:
+                if self.catch_pokemon(pokemon) == PokemonCatchWorker.NO_POKEBALLS:
+                    break
+        if (self.config.mode == "all" or
+                self.config.mode == "farm") and include_fort_on_path:
+            if 'forts' in cell:
+                # Only include those with a lat/long
+                forts = [fort
+                         for fort in cell['forts']
+                         if 'latitude' in fort and 'type' in fort]
+                gyms = [gym for gym in cell['forts'] if 'gym_points' in gym]
+
+                # Sort all by distance from current pos- eventually this should
+                # build graph & A* it
+                forts.sort(key=lambda x: distance(self.position[
+                           0], self.position[1], x['latitude'], x['longitude']))
+                for fort in forts:
+                    worker = MoveToFortWorker(fort, self)
+                    worker.work()
+
+                    worker = SeenFortWorker(fort, self)
+                    hack_chain = worker.work()
+                    if hack_chain > 10:
+                        #print('need a rest')
+                        break
 
     def _setup_logging(self):
         # log settings
@@ -724,7 +351,8 @@ class PokemonGoBot(object):
         inventory_dict = inventory_req['responses']['GET_INVENTORY'][
             'inventory_delta']['inventory_items']
 
-        user_web_inventory = 'web/inventory-%s.json' % self.config.username
+
+        user_web_inventory = 'web/inventory-%s.json' % (self.config.username)
 
         with open(user_web_inventory, 'w') as outfile:
             json.dump(inventory_dict, outfile)

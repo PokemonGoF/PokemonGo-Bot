@@ -145,7 +145,10 @@ def report_summary(bot):
 
 def init_config():
     parser = argparse.ArgumentParser()
-    config_file = "configs/config.json"
+
+    config_file = "config.json"
+    release_config_json = "release_config.json"
+
     web_dir = "web"
 
     # If config file exists, load variables from json
@@ -443,7 +446,8 @@ def init_config():
         return None
 
     # create web dir if not exists
-    try:
+
+    try: 
         os.makedirs(web_dir)
     except OSError:
         if not os.path.isdir(web_dir):
