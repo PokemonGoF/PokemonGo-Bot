@@ -3,7 +3,6 @@
 import gpxpy
 import gpxpy.gpx
 import json
-import pokemongo_bot.logger as logger
 from pokemongo_bot.cell_workers.base_task import BaseTask
 from pokemongo_bot.cell_workers.utils import distance, i2f, format_dist
 from pokemongo_bot.human_behaviour import sleep
@@ -34,11 +33,17 @@ class FollowPath(BaseTask):
         with open(self.path_file) as data_file:
             points=json.load(data_file)
         # Replace Verbal Location with lat&lng.
-        logger.log("Resolving Navigation Paths (GeoLocating Strings)")
         for index, point in enumerate(points):
-            if self.bot.config.debug:
-                logger.log("Resolving Point {} - {}".format(index, point))
             point_tuple = self.bot.get_pos_by_name(point['location'])
+            self.emit_event(
+                'location_found',
+                level='debug',
+                formatted="Location found: {location} {position}",
+                data={
+                    'location': point,
+                    'position': point_tuple
+                }
+            )
             points[index] = self.lat_lng_tuple_to_dict(point_tuple)
         return points
 
