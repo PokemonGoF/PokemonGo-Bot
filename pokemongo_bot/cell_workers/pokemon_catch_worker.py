@@ -337,7 +337,8 @@ class PokemonCatchWorker(BaseTask):
                                         formatted="{pokemon} vanished!",
                                         data={'pokemon': pokemon_name}
                                     )
-									if self.config.journal:
+
+                                    if self.config.journal:
                                         with open(self.config.user_journal, 'a') as outfile:
                                             outfile.write('Oh no! %s vanished!\n' % pokemon_name)
 
@@ -358,8 +359,8 @@ class PokemonCatchWorker(BaseTask):
                                             'exp': sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
                                         }
                                     )
-									
-									if self.config.journal:
+
+                                    if self.config.journal:
                                         with open(self.config.user_journal, 'a') as outfile:
                                             outfile.write('Captured %s! [CP %s] [Potential %s] [%s] [+%s exp]\n' % (
                                                 pokemon_name, cp, pokemon_potential, iv_display,
