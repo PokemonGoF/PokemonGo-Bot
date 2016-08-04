@@ -1,9 +1,10 @@
-## Niantic Changes
- Niantic have changed API responses, meaning that this bot and anything accessing the API though POGOProtos is currently broken. A number of developers from /r/pokemondev are working to address this and come up with a fix for this issue, find the [current status here](https://www.reddit.com/r/pokemongodev/comments/4w1cvr/pokemongo_current_api_status/)
 
 # PokemonGo-Bot
 PokemonGo bot is a project created by the [PokemonGoF](https://github.com/PokemonGoF) team.
 The project is currently setup in two main branches. `dev` and `master`.
+
+## Niantic Changes
+ Niantic have changed API responses, meaning that this bot and anything accessing the API though POGOProtos is currently broken. A number of developers from /r/pokemondev are working to address this and come up with a fix for this issue, find the [current status here](https://www.reddit.com/r/pokemongodev/comments/4w1cvr/pokemongo_current_api_status/)
 
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
 
