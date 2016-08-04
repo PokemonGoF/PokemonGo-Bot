@@ -1,6 +1,8 @@
 <p align="center">
   The bot is currently not working due to changes to the Pokemon Go API. Please do not create any issues involving this until the issue has been resolved.
-  
+</p>
+
+<p align="center">
   <a href="">
     <img alt="Logo" src="https://www.brooklinelibrary.org/wp-content/uploads/2016/07/2000px-Pok%C3%A9_Ball.svg_-1.png" width="100">
   </a>
