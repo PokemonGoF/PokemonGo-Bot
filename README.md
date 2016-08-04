@@ -1,6 +1,5 @@
-<p align="center">
-  The bot is currently not working due to changes to the Pokemon Go API. Please do not create any issues involving this until the issue has been resolved.
-</p>
+## Niantic Changes
+ Niantic have changed API responses, meaning that this bot and anything accessing the API though POGOProtos is currently broken. A number of developers from /r/pokemondev are working to address this and come up with a fix for this issue, find the [current status here](https://www.reddit.com/r/pokemongodev/comments/4w1cvr/pokemongo_current_api_status/)
 
 # PokemonGo-Bot
 PokemonGo bot is a project created by the [PokemonGoF](https://github.com/PokemonGoF) team.
