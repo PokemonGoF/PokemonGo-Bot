@@ -1,3 +1,7 @@
+<p align="center">
+  The bot is currently not working due to changes to the Pokemon Go API. Please do not create any issues involving this until the issue has been resolved.
+</p>
+
 # PokemonGo-Bot
 PokemonGo bot is a project created by the [PokemonGoF](https://github.com/PokemonGoF) team.
 The project is currently setup in two main branches. `dev` and `master`.
