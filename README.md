@@ -1,5 +1,5 @@
 <p align="center">
-  # The bot is currently not working due to changes to the Pokemon Go API. Please do not create any issues involving this until the issue has been resolved.
+  The bot is currently not working due to changes to the Pokemon Go API. Please do not create any issues involving this until the issue has been resolved.
 </p>
 
 <p align="center">
