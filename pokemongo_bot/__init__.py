@@ -383,6 +383,8 @@ class PokemonGoBot(object):
         self.event_manager.register_event('unset_pokemon_nickname')
 
     def tick(self):
+        start_time = time.time()
+
         self.cell = self.get_meta_cell()
         self.tick_count += 1
 
@@ -391,7 +393,11 @@ class PokemonGoBot(object):
 
         for worker in self.workers:
             if worker.work() == WorkerResult.RUNNING:
-                return
+                break
+
+        elapsed_time = time.time() - start_time
+        sleep_time = max(0, self.config.minimum_tick_time - elapsed_time)
+        time.sleep(sleep_time)
 
     def get_meta_cell(self):
         location = self.position[0:2]
