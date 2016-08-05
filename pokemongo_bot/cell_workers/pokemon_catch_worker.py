@@ -172,6 +172,9 @@ class PokemonCatchWorker(BaseTask):
         return self._pokemon_matches_config(self.config.catch, pokemon)
 
     def _is_vip_pokemon(self, pokemon):
+        # having just a name present in the list makes them vip
+        if self.config.vips.get(pokemon.name) == {}:
+            return True
         return self._pokemon_matches_config(self.config.vips, pokemon, default_logic='or')
 
     def _get_current_pokemon_ids(self):
