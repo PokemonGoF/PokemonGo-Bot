@@ -1,0 +1,20 @@
+version: '2'
+services:
+  bot1-pokego:
+    build: .
+    volumes:
+     - ./configs/config.json:/usr/src/app/configs/config.json
+    stdin_open: true
+    tty: true
+  bot1-pokegoweb:
+    image: python:2.7
+    ports:
+     - "8000:8000"
+    volumes_from:
+     - bot1-pokego
+    volumes:
+     - ./configs/userdata.js:/usr/src/app/web/config/userdata.js
+    working_dir: /usr/src/app/web
+    command: bash -c "echo 'Serving HTTP on 0.0.0.0 port 8000' && python -m SimpleHTTPServer > /dev/null 2>&1"
+    depends_on:
+     - bot1-pokego

@@ -1,0 +1,101 @@
+{
+    "auth_service": "google",
+    "username": "YOUR_USERNAME",
+    "password": "YOUR_PASSWORD",
+    "location": "SOME_LOCATION",
+    "gmapkey": "GOOGLE_MAPS_API_KEY",
+    "tasks": [
+      {
+        "type": "HandleSoftBan"
+      },
+      {
+        "type": "CollectLevelUpReward"
+      },
+      {
+        "type": "IncubateEggs",
+        "config": {
+          "longer_eggs_first": true
+        }
+      },
+      {
+        "type": "TransferPokemon"
+      },
+      {
+        "type": "EvolvePokemon",
+        "config": {
+            "evolve_all": "none",
+            "first_evolve_by": "cp",
+            "evolve_above_cp": 500,
+            "evolve_above_iv": 0.8,
+            "logic": "or",
+            "evolve_speed": 20,
+            "use_lucky_egg": false
+        }
+      },
+      {
+        "type": "RecycleItems",
+        "config": {
+          "item_filter": {
+            "Pokeball":       { "keep" : 100 },
+            "Potion":         { "keep" : 10 },
+            "Super Potion":   { "keep" : 20 },
+            "Hyper Potion":   { "keep" : 30 },
+            "Revive":         { "keep" : 30 },
+            "Razz Berry":     { "keep" : 100 }
+          }
+        }
+      },
+      {
+        "type": "CatchVisiblePokemon"
+      },
+      {
+        "type": "CatchLuredPokemon"
+      },
+      {
+        "type": "SpinFort"
+      },
+      {
+        "type": "FollowPath",
+        "config": {
+          "path_mode": "loop",
+          "path_file": "configs/path.example.json"
+        }
+      }
+    ],
+    "map_object_cache_time": 5,
+    "forts": {
+      "avoid_circles": true,
+      "max_circle_size": 50
+    },
+    "websocket_server": false,
+    "walk": 4.16,
+    "action_wait_min": 1,
+    "action_wait_max": 4,
+    "debug": false,
+    "test": false,
+    "health_record": true,
+    "location_cache": true,
+    "distance_unit": "km",
+    "reconnecting_timeout": 15,
+    "evolve_captured": "NONE",
+    "catch_randomize_reticle_factor": 1.0,
+    "catch_randomize_spin_factor": 1.0,
+    "catch": {
+      "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
+      "// Example of always catching Rattata:": {},
+      "// Rattata": { "always_catch" : true }
+    },
+    "release": {
+      "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or"},
+      "// Example of always releasing Rattata:": {},
+      "// Rattata": {"always_release": true},
+      "// Example of keeping 3 stronger (based on CP) Pidgey:": {},
+      "// Pidgey": {"keep_best_cp": 3},
+      "// Example of keeping 2 stronger (based on IV) Zubat:": {},
+      "// Zubat": {"keep_best_iv": 2},
+      "// Also, it is working with any": {},
+      "// any": {"keep_best_iv": 3},
+      "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat:": {},
+      "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3}
+    }
+}

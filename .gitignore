@@ -35,7 +35,6 @@ var/
 .pydevproject
 .settings/
 
-
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
@@ -98,19 +97,26 @@ ENV/
 .idea/
 
 # Personal load details
-config.json
 src/
-info.json
-inventory.json
-pokedex.json
-web/catchable.json
-web/catchable-*.json
-web/location-*.json
-web/inventory-*.json
-web/location.json
-web/userdata.js
+web/
 data/last-location*.json
-data/catch-ignore.yml
-release_config.json
-web/userdata.js
-location.json
+data/cells-*.json
+data/map-caught-*.json
+
+# Multiple config
+configs/*
+!configs/config.json.example
+!configs/release_config.json.example
+!configs/config.json.pokemons.example
+!configs/config.json.pokemon.example
+!configs/config.json.path.example
+!configs/config.json.map.example
+!configs/path.example.json
+!config.json.cluster.example
+
+# Virtualenv folders
+bin/
+include/
+
+# Pip check file
+pip-selfcheck.json

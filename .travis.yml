@@ -10,4 +10,6 @@ addons:
 install:
   - pip install -r requirements.txt
   - pip install pylint
-script: "python travis-pythoncheck.py"
+script:
+  - python pylint-recursive.py
+  - python -m unittest discover -v -p "*_test.py"
