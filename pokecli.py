@@ -56,11 +56,10 @@ def main():
     sys.stdout = codecs.getwriter('utf8')(sys.stdout)
     sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
-    conf = init_config()
-    if not conf:
+    config = init_config()
+    if not config:
         return
-    config = Config()
-    config = config.initialize(conf)
+    conf = Config().initialize(config) # initialize the singleton aswell
     logger.info('Configuration initialized')
 
     finished = False

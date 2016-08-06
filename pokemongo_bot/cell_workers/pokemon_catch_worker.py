@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import time
-from pokemongo_bot.human_behaviour import (normalized_reticle_size, sleep,
-                                           spin_modifier)
+from pokemongo_bot.human_behaviour import (normalized_reticle_size_rng, sleep,
+                                           spin_modifier_rng)
 from pokemongo_bot.cell_workers.base_task import BaseTask
 
 class PokemonCatchWorker(BaseTask):
@@ -303,8 +303,9 @@ class PokemonCatchWorker(BaseTask):
                             )
                             id_list1 = self.count_pokemon_inventory()
 
-                            reticle_size_parameter = normalized_reticle_size(self.config.catch_randomize_reticle_factor)
-                            spin_modifier_parameter = spin_modifier(self.config.catch_randomize_spin_factor)
+                            reticle_size_parameter = normalized_reticle_size_rng()
+
+                            spin_modifier_parameter = spin_modifier_rng()
 
                             response_dict = self.api.catch_pokemon(
                                 encounter_id=encounter_id,
