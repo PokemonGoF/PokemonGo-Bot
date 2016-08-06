@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import time
-from math import exp
-from random import random, gauss, uniform
 from collections import defaultdict
+from config import get_config
+from math import exp
 from numpy.random import lognormal
+from random import random, gauss, uniform
 
 def lognormal_model(path='data/lognormal.model'):
     '''
@@ -20,50 +21,10 @@ def lognormal_model(path='data/lognormal.model'):
     return lognormal_model.delay_range2mu_sigma
 
 
-def pareto(alpha=5.0, cap=10):
-    '''
-    somehow reflects human behaviour (Zipf's law)
-    transformed to return [alpha-1/alpha, inf) with mean of 1.0
-    capped to prevent inf
-    '''
-    alpha = float(alpha)
-    return min((alpha - 1) / alpha / ((1 - random())**(1 / alpha)), cap)
-
-
-def sleep(seconds):
-    '''
-    sleep for (given seconds + jitter + human reflex) seconds.
-    '''
-    time.sleep(seconds + jitter_rng() + human_reflex_rng())
-
-
-def jitter_rng(ping=80, ping_range=30):
-    '''
-    Simple lognormal jitter model for given ping and range.
-    Actually wider range is preferred for accurate modeling,
-    but we don't want to spend much time...
-    '''
-    ping = int(ping / 10) * 10
-    ping_range = int(ping_range / 5) * 5
-    ping = min(max(10, ping), 500)
-    ping_range = min(max(10, ping_range), 100)
-    mu_, sigma = lognormal_model()[ping][ping_range]
-    lag = lognormal(mu_, sigma)
-    lag = min(1.0, lag)
-    return lag
-
-
-def human_reflex_rng(reflex_mean=270, reflex_range=100):
-    '''
-    Simulates human reflexes.
-    '''
-    mu_, sigma = lognormal_model()[reflex_mean][reflex_range]
-    return min(1.0, lognormal(mu_, sigma))
-
-
 def random_lat_long_delta(radius=0.00025):
     '''
-    Simulates gps noise.
+    Simulates gps noise??? Sounds more like a rng for random walk.
+    Keep it here for now...
     '''
     # Return random value from [-.000025, .000025]ish 99.73% of time.
     # Since 364,000 feet is equivalent to one degree of latitude, this
@@ -77,20 +38,109 @@ def action_delay(low, high):
     # Waits for random number of seconds between low & high numbers
     longNum = uniform(low, high)
     shortNum = float("{0:.2f}".format(longNum))
-    time.sleep(shortNum)
 
 
-def ball_throw_reticle_fail_delay(success_prob=0.95):
+def sleep(seconds):
+    '''
+    General sleep with some lags.
+
+    Configs:
+    "max_sleep_time" = 60,
+
+    '''
+    # some of the actions don't need reflex replication, so removed from here.
+    wait_time = seconds + jitter_rng()
+    max_sleep = get_config('max_sleep_time', 60)
+    time.sleep(min(wait_time, max_sleep))
+
+
+def ball_throw_reticle_fail_delay():
     '''
     Chances to skip the reticle could be considered constant,
     so the wait time before throwing is as follows,
     given that the pokemon does not interrupt... <- TODO
-    '''
-    for trial in range(10):
-        if random() < success_prob:
-            break
 
-    time.sleep(1.8*(trial+random()))
+    Configs:
+    "replicate_reticle_fail_delay" = false,
+    "reticle_fail_chance = 0.05",
+    "reticle_fail_max_trial" = 10,
+    '''
+    if get_config('replicate_throw_reticle_fail_delay', false):
+        fail_prob = get_config('throw_reticle_fail_chance', 0.05)
+        for trial in range(get_config('reticle_fail_max_trial', 10)):
+            if fail_prob < random():
+                break
+
+        time.sleep(1.8*(trial+random()))
+
+
+def jitter_rng():
+    '''
+    Simulates jitter.
+
+    Configs:
+    "replicate_jitter" = false,
+    "jitter_ping" = 80,
+    "jitter_range" = 30,
+    "jitter_max_seconds" = 1.0,
+
+    '''
+    replicate_jitter = get_config('replicate_jitter', False)
+    jitter = 0
+    if replicate_jitter:
+        ping = get_config('jitter_ping', 80)
+        ping_range = get_config('jitter_range', 30)
+
+        ping = int(ping / 10) * 10
+        ping_range = int(ping_range / 5) * 5
+        ping = min(max(10, ping), 500)
+        ping_range = min(max(10, ping_range), 100)
+        mu_, sigma = lognormal_model()[ping][ping_range]
+        jitter = lognormal(mu_, sigma)
+        jitter = min(jitter, get_config('jitter_max_seconds', 1.0))
+    return jitter
+
+
+def human_reflex_rng():
+    '''
+    Simulates human reflexes.
+
+    Configs:
+    "replicate_reflex" = false,
+    "reflex_time" = 270,
+    "reflex_range" = 100,
+    "reflex_max_seconds" = 1.0,
+
+    '''
+    reflex_time = 0
+    if get_config('replicate_reflex', False):
+        reflex_mean = get_config('reflex_time', 270)
+        reflex_range = get_config('reflex_range', 100)
+        mu_, sigma = lognormal_model()[reflex_mean][reflex_range]
+        reflex_time = min(lognormal(mu_, sigma), get_config('reflex_max_seconds', 1.0))
+    return reflex_time
+
+
+def gps_noise_rng():
+    '''
+    Simulates gps noise. This may cause problem, so we need test.
+    
+    Configs:
+    "replicate_gps_noise" = false,
+    "gps_noise_radius = 0.00075"
+    
+    '''
+    radius = get_config('gps_noise_radius', 0.00075)
+    lat_noise = 0
+    lng_noise = 0
+    if get_config('replicate_gps_noise', False):
+        lat_noise = gauss(0, radius/3.0)
+        lat_noise = min(max(-radius, lat_noise), radius)
+        
+        lng_noise = gauss(0, radius/3.0)
+        lng_noise = min(max(-radius, lng_noise), radius)
+
+    return lat_noise, lng_noise
 
 
 def aim_rng(target, std=0.05):
@@ -98,6 +148,8 @@ def aim_rng(target, std=0.05):
     noise from the target point should be approximated by gaussian,
     we can wait for the missed reticles etc, which means we get
     another chance to try...
+
+    TODO: add nice conf name for this...
     
     '''
     for trial in range(10):
@@ -112,9 +164,18 @@ def aim_rng(target, std=0.05):
 
 # Humanized `normalized_reticle_size` parameter for `catch_pokemon` API.
 # 1.0 => normal, 1.950 => excellent
-def normalized_reticle_size(factor, mode='human'):
-    if 'bot' == mode:
-        return 1.950
+def normalized_reticle_size_rng():
+    '''
+    Reticle rng.
+
+    Configs:
+    "replicate_ball_throw_reticle" = "human",
+    "normalized_reticle_size" = 0.9,
+
+    '''
+    factor = get_config('normalized_reticle_size', 0.9)
+    if 'exact' == mode:
+        return factor
     elif 'uniform' == mode:
         minimum = 1.0
         maximum = 1.950
@@ -126,14 +187,22 @@ def normalized_reticle_size(factor, mode='human'):
         # mirror the bounds
         rnd = rnd%1.0
         return 1.950 * rnd
-    else:
-        return mode(factor) # strategy
+    return 1.950
 
 
 # Humanized `spin_modifier` parameter for `catch_pokemon` API.
 # 0.0 => normal ball, 1.0 => super spin curve ball
-def spin_modifier(factor, mode='human'):
-    if 'bot' == mode:
+def spin_modifier_rng():
+    '''
+    Spin rng.
+
+    Configs:
+    "replicate_ball_throw_spin" = "human",
+    "spin_modifier" = 0.9,
+
+    '''
+    factor = get_config('spin_modifier', 0.9)
+    if 'exact' == mode:
         return 1.0
     elif 'uniform' == mode:
         minimum = 0.0
@@ -143,9 +212,7 @@ def spin_modifier(factor, mode='human'):
             maximum)
     elif 'human' == mode:
         return aim_rng(factor)
-    else:
-        return mode(factor)
-
+    return 1.0
 
 """
 def _visualize():
