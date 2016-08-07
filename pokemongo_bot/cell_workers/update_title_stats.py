@@ -18,11 +18,13 @@ class UpdateTitleStats(BaseTask):
         "type": "UpdateTitleStats",
         "config": {
             "min_interval": 10,
-            "stats": ["uptime", "km_walked", "level_stats", "xp_earned", "xp_per_hour"]
+            "stats": ["login", "uptime", "km_walked", "level_stats", "xp_earned", "xp_per_hour"]
         }
     }
 
     Available stats :
+    - login : The account login (from the credentials).
+    - username : The trainer name (asked at first in-game connection).
     - uptime : The bot uptime.
     - km_walked : The kilometers walked since the bot started.
     - level : The current character's level.
@@ -107,8 +109,7 @@ class UpdateTitleStats(BaseTask):
         :rtype: None
         :raise: RuntimeError: When the given platform isn't supported.
         """
-        if platform == "linux" or platform == "linux2"\
-                or platform == "cygwin":
+        if platform == "linux" or platform == "linux2" or platform == "cygwin":
             stdout.write("\x1b]2;{}\x07".format(title))
         elif platform == "darwin":
             stdout.write("\033]0;{}\007".format(title))
@@ -145,6 +146,9 @@ class UpdateTitleStats(BaseTask):
         metrics = self.bot.metrics
         metrics.capture_stats()
         runtime = metrics.runtime()
+        login = self.bot.config.username
+        player_data = self.bot.player_data
+        username = player_data.get('username', '?')
         distance_travelled = metrics.distance_travelled()
         current_level = int(player_stats.get('level', 0))
         prev_level_xp = int(player_stats.get('prev_level_xp', 0))
@@ -172,6 +176,8 @@ class UpdateTitleStats(BaseTask):
 
         # Create stats strings.
         available_stats = {
+            'login': login,
+            'username': username,
             'uptime': 'Uptime : {}'.format(runtime),
             'km_walked': '{:,.2f}km walked'.format(distance_travelled),
             'level': 'Level {}'.format(current_level),

@@ -39,6 +39,15 @@ class PokemonGoBot(object):
     def position(self, position_tuple):
         self.api._position_lat, self.api._position_lng, self.api._position_alt = position_tuple
 
+    @property
+    def player_data(self):
+        """
+        Returns the player data as received from the API.
+        :return: The player data.
+        :rtype: dict
+        """
+        return self._player
+
     def __init__(self, config):
         self.config = config
         self.fort_timeouts = dict()
