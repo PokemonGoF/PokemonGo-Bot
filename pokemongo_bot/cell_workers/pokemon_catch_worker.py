@@ -447,7 +447,9 @@ class PokemonCatchWorker(BaseTask):
         catch_iv = catch_config.get('catch_above_iv', 0)
         if iv > catch_iv:
             catch_results['iv'] = True
-
+        if catch_iv > 1:
+            logger.log("Max catch iv {} cannot be greater than 1".format(catch_iv),'red')
+            catch_results['iv'] = True
         logic_to_function = {
             'or': lambda x, y: x or y,
             'and': lambda x, y: x and y
@@ -511,6 +513,9 @@ class PokemonCatchWorker(BaseTask):
             catch_results['cp'] = True
         catch_iv = catch_config.get('catch_above_iv', 0)
         if iv > catch_iv:
+            catch_results['iv'] = True
+        if catch_iv > 1:
+            logger.log("Max catch iv {} cannot be greater than 1".format(catch_iv),'red')
             catch_results['iv'] = True
         logic_to_function = {
             'or': lambda x, y: x or y,
