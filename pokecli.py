@@ -74,6 +74,7 @@ def main():
                 tree = TreeConfigBuilder(bot, config.raw_tasks).build()
                 bot.workers = tree
                 bot.metrics.capture_stats()
+                bot.health_record = health_record
 
                 bot.event_manager.emit(
                     'bot_start',
