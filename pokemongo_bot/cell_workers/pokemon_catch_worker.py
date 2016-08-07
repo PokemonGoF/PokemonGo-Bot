@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
-from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.human_behaviour import normalized_reticle_size, sleep, spin_modifier
 
 

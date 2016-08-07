@@ -2,7 +2,7 @@ import ctypes
 from sys import stdout, platform as _platform
 from datetime import datetime, timedelta
 
-from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.tree_config_builder import ConfigException
 
@@ -49,6 +49,7 @@ class UpdateTitleStats(BaseTask):
     stats : An array of stats to display and their display order (implicitly),
             see available stats above.
     """
+    SUPPORTED_TASK_API_VERSION = 1
 
     DEFAULT_MIN_INTERVAL = 10
     DEFAULT_DISPLAYED_STATS = []

@@ -1,9 +1,10 @@
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.item_list import Item
-from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot.base_task import BaseTask
 
 
 class EvolvePokemon(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
 
     def initialize(self):
         self.api = self.bot.api
@@ -18,7 +19,7 @@ class EvolvePokemon(BaseTask):
 
     def _validate_config(self):
         if isinstance(self.evolve_all, basestring):
-            self.evolve_all = [str(pokemon_name) for pokemon_name in self.evolve_all.split(',')]
+            self.evolve_all = [str(pokemon_name).strip() for pokemon_name in self.evolve_all.split(',')]
 
     def work(self):
         if not self._should_run():
