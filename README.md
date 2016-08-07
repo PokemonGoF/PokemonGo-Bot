@@ -1,9 +1,11 @@
 
-# PokemonGo-Bot
+# PokemonGo-Bot (Working)
 PokemonGo bot is a project created by the [PokemonGoF](https://github.com/PokemonGoF) team.
 The project is currently setup in two main branches. `dev` and `master`.
 
-## Where to get the dll/so ?
+## Please submit PR to [Dev branch](https://github.com/PokemonGoF/PokemonGo-Bot/tree/dev)
+
+## Where to get the dll/so ? A help channel is comming.
 You need grab them from internet.
 
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
