@@ -557,7 +557,7 @@ class PokemonGoBot(object):
                 self.api = ApiWrapper()
                 self.position = position
                 self.login()
-                self.api.activate_signature("encrypt.so")
+                self.api.activate_signature(self.get_encryption_lib())
 
     @staticmethod
     def is_numeric(s):
