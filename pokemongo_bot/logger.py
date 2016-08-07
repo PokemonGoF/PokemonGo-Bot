@@ -70,6 +70,8 @@ class LogFormatter(logging.Formatter):
         result = logging.Formatter.format(self, record)
         return result
 
+# In some cases, we need colorized logging without calling functions like
+# logger.error(...). The following lines add this capability
 VERBOSE_LEVELV_NUM = 5
 WHITE_LEVELV_NUM = 21
 GREEN_LEVELV_NUM = 22
@@ -115,6 +117,10 @@ logging.Logger.red = red
 logging.addLevelName(RED_LEVELV_NUM, 'red')
 logging.Logger.colorized = colorized
 
+# We need to set our formatter to the stdout/stder handlers
+# TODO: If and when we get support for logging to a file,
+# We need to ensure that the color formatter is not applied
+# to that handler.
 def init_logger():
     rootLogger = logging.getLogger()
     for handler in rootLogger.handlers:
