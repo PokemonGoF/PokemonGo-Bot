@@ -11,7 +11,7 @@ class RecycleItems(BaseTask):
     Recycle undesired items if there is less than five space in inventory.
     You can use either item's name or id. For the full list of items see ../../data/items.json
 
-    It's highly recommended to put this task before the move_to_fort task in the config file in order to be sure you can loot.
+    It's highly recommended to put this task before the move_to_fort task in the config file so you'll most likely be able to loot.
 
     Example config :
     {
@@ -64,7 +64,7 @@ class RecycleItems(BaseTask):
 
             # For each user's item in inventory recycle the item if needed
             for item_id, item_count_in_bag in item_counts_in_bag_dict.iteritems():
-                item = RecycleItems.Item(item_id, self.items_filter, self)
+                item = RecycleItems._Item(item_id, self.items_filter, self)
 
                 if item.should_be_recycled():
                     item.request_recycle()
@@ -72,7 +72,7 @@ class RecycleItems(BaseTask):
 
         return WorkerResult.SUCCESS
 
-    class Item:
+    class _Item:
         """
         An item found in user's inventory.
 
