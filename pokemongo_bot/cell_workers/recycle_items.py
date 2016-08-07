@@ -18,6 +18,10 @@ class RecycleItems(BaseTask):
                     raise ConfigException("item {} does not exist, spelling mistake? (check for valid item names in data/items.json)".format(config_item_name))
 
     def work(self):
+        if not self._time_to_run():
+            return False
+        self._update_last_ran()
+        
         self.bot.latest_inventory = None
         item_count_dict = self.bot.item_inventory_count('all')
 

@@ -380,7 +380,7 @@ class PokemonCatchWorker(BaseTask):
                                                 data={'pokemon': pokemon_name}
                                             )
                             break
-        time.sleep(5)
+        time.sleep(2)
 
     def count_pokemon_inventory(self):
         # don't use cached bot.get_inventory() here

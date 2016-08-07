@@ -8,6 +8,7 @@ import os
 import random
 import re
 import sys
+import struct
 import time
 
 from geopy.geocoders import GoogleV3
@@ -29,7 +30,9 @@ from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from worker_result import WorkerResult
 from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
 from sys import platform as _platform
-import struct
+
+
+
 class PokemonGoBot(object):
     @property
     def position(self):
@@ -391,10 +394,15 @@ class PokemonGoBot(object):
 
         # Check if session token has expired
         self.check_session(self.position[0:2])
+        start_tick = time.time()
 
         for worker in self.workers:
             if worker.work() == WorkerResult.RUNNING:
                 return
+
+        end_tick = time.time()
+        if end_tick - start_tick < 5:
+             time.sleep(5 - (end_tick - start_tick))
 
     def get_meta_cell(self):
         location = self.position[0:2]
@@ -540,14 +548,14 @@ class PokemonGoBot(object):
 
             # prevent crash if return not numeric value
             if not self.is_numeric(self.api._auth_provider._ticket_expire):
-                self.logger.info("Ticket expired value is not numeric", 'yellow')
+                self.logger.info("Ticket expired value is not numeric")
                 return
 
             remaining_time = \
                 self.api._auth_provider._ticket_expire / 1000 - time.time()
 
             if remaining_time < 60:
-                self.logger.info("Session stale, re-logging in", 'yellow')
+                self.logger.info("Session stale, re-logging in")
                 position = self.position
                 self.api = ApiWrapper()
                 self.position = position
