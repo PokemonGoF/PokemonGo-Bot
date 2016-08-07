@@ -3,6 +3,7 @@
 from catch_lured_pokemon import CatchLuredPokemon
 from catch_visible_pokemon import CatchVisiblePokemon
 from evolve_pokemon import EvolvePokemon
+from hunt_nearby_pokemon import HuntNearbyPokemon
 from incubate_eggs import IncubateEggs
 from move_to_fort import MoveToFort
 from move_to_map_pokemon import MoveToMapPokemon

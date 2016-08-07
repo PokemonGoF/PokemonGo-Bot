@@ -47,6 +47,7 @@ class PokemonGoBot(object):
         self.metrics = Metrics(self)
         self.latest_inventory = None
         self.cell = None
+        self.last_cell = None
         self.recent_forts = [None] * config.forts_max_circle_size
         self.tick_count = 0
         self.softban = False
@@ -383,6 +384,7 @@ class PokemonGoBot(object):
         self.event_manager.register_event('unset_pokemon_nickname')
 
     def tick(self):
+        self.last_cell = self.cell
         self.cell = self.get_meta_cell()
         self.tick_count += 1
 
@@ -401,6 +403,7 @@ class PokemonGoBot(object):
         forts = []
         wild_pokemons = []
         catchable_pokemons = []
+        nearby_pokemons = []
         for cell in cells:
             if "forts" in cell and len(cell["forts"]):
                 forts += cell["forts"]
@@ -408,20 +411,24 @@ class PokemonGoBot(object):
                 wild_pokemons += cell["wild_pokemons"]
             if "catchable_pokemons" in cell and len(cell["catchable_pokemons"]):
                 catchable_pokemons += cell["catchable_pokemons"]
+            if "nearby_pokemons" in cell and len(cell["nearby_pokemons"]):
+                nearby_pokemons += cell["nearby_pokemons"]
 
         # If there are forts present in the cells sent from the server or we don't yet have any cell data, return all data retrieved
         if len(forts) > 1 or not self.cell:
             return {
                 "forts": forts,
                 "wild_pokemons": wild_pokemons,
-                "catchable_pokemons": catchable_pokemons
+                "catchable_pokemons": catchable_pokemons,
+                "nearby_pokemons": nearby_pokemons
             }
         # If there are no forts present in the data from the server, keep our existing fort data and only update the pokemon cells.
         else:
             return {
                 "forts": self.cell["forts"],
                 "wild_pokemons": wild_pokemons,
-                "catchable_pokemons": catchable_pokemons
+                "catchable_pokemons": catchable_pokemons,
+                "nearby_pokemons": nearby_pokemons
             }
 
     def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
