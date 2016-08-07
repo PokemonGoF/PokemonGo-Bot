@@ -547,7 +547,7 @@ class PokemonGoBot(object):
                 self.logger.info("Session stale, re-logging in", 'yellow')
                 position = self.position
                 self.api = ApiWrapper()
-                self.position = position
+                self.api.set_position(*position)
                 self.login()
 
     @staticmethod
