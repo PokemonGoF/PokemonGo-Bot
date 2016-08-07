@@ -12,6 +12,10 @@ class CollectLevelUpReward(BaseTask):
         self.previous_level = 0
 
     def work(self):
+        if not self._time_to_run():
+            return False
+        self._update_last_ran()
+        
         self.current_level = self._get_current_level()
 
         # let's check level reward on bot initialization

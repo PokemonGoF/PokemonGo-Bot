@@ -21,6 +21,10 @@ class IncubateEggs(BaseTask):
         self.longer_eggs_first = self.config.get("longer_eggs_first", True)
 
     def work(self):
+        if not self._time_to_run():
+            return False
+        self._update_last_ran()
+
         try:
             self._check_inventory()
         except:

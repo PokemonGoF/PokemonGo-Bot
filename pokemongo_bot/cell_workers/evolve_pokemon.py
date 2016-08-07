@@ -25,6 +25,8 @@ class EvolvePokemon(BaseTask):
         if not self._should_run():
             return
 
+        self._update_last_ran()
+
         response_dict = self.api.get_inventory()
         inventory_items = response_dict.get('responses', {}).get('GET_INVENTORY', {}).get('inventory_delta', {}).get(
             'inventory_items', {})
@@ -42,6 +44,9 @@ class EvolvePokemon(BaseTask):
                 self._execute_pokemon_evolve(pokemon, candy_list, cache)
 
     def _should_run(self):
+        if not self._time_to_run():
+            return False
+
         if not self.evolve_all or self.evolve_all[0] == 'none':
             return False
 

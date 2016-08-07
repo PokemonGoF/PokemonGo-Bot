@@ -22,7 +22,7 @@ class CatchVisiblePokemon(BaseTask):
                     json.dump(pokemon, outfile)
                 self.emit_event(
                     'catchable_pokemon',
-                    level='debug',
+                    level='info',
                     data={
                         'pokemon_id': pokemon['pokemon_id'],
                         'spawn_point_id': pokemon['spawn_point_id'],
@@ -41,7 +41,21 @@ class CatchVisiblePokemon(BaseTask):
             self.bot.cell['wild_pokemons'].sort(
                 key=
                 lambda x: distance(self.bot.position[0], self.bot.position[1], x['latitude'], x['longitude']))
-            return self.catch_pokemon(self.bot.cell['wild_pokemons'].pop(0))
+
+            for pokemon in self.bot.cell['wild_pokemons']:
+                self.emit_event(
+                    'catchable_pokemon',
+                    level='info',
+                    data={
+                        'pokemon_id': pokemon['pokemon_data']['pokemon_id'],
+                        'spawn_point_id': pokemon['spawn_point_id'],
+                        'encounter_id': pokemon['encounter_id'],
+                        'latitude': pokemon['latitude'],
+                        'longitude': pokemon['longitude'],
+                        'expiration_timestamp_ms': pokemon['time_till_hidden_ms'],
+                    }
+                )
+                return self.catch_pokemon(self.bot.cell['wild_pokemons'].pop(0))
 
     def catch_pokemon(self, pokemon):
         worker = PokemonCatchWorker(pokemon, self.bot)
