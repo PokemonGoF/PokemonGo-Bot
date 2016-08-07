@@ -41,6 +41,9 @@ class EventManager(object):
         self._registered_events[name] = parameters
 
     def emit(self, event, sender=None, level='info', formatted='', data={}):
+        if not isinstance(formatted, unicode):
+            formatted = unicode(formatted)
+
         if not sender:
             raise ArgumentError('Event needs a sender!')
 
