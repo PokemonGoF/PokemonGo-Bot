@@ -1,17 +1,6 @@
 import warnings
 import logging
 
-import logging
-logger = logging.getLogger(__name__)
-
-try:
-    import lcd
-    lcd = lcd.lcd()
-    # Change this to your i2c address
-    lcd.set_addr(0x23)
-except Exception:
-    lcd = False
-
 def log(msg, color=None):
     warnings.simplefilter('always', DeprecationWarning)
     message = (
@@ -126,14 +115,7 @@ logging.Logger.red = red
 logging.addLevelName(RED_LEVELV_NUM, 'red')
 logging.Logger.colorized = colorized
 
-
-root = logging.getLogger()
-if lcd:
-    root.addHandler(logger.LcdHandler())
-
 def init_logger():
     rootLogger = logging.getLogger()
     for handler in rootLogger.handlers:
         handler.setFormatter(LogFormatter())
-
-
