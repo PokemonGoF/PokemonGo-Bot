@@ -29,6 +29,7 @@ import argparse
 import codecs
 import json
 import logging
+import coloredlogs
 import os
 import ssl
 import sys
@@ -45,11 +46,7 @@ from pokemongo_bot.plugin_loader import PluginLoader
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s [%(name)10s] [%(levelname)s] %(message)s')
 logger = logging.getLogger('cli')
-logger.setLevel(logging.INFO)
 
 def main():
     try:
@@ -128,7 +125,6 @@ def main():
         # always report session summary and then raise exception
         if bot:
             report_summary(bot)
-
         raise e
 
 def report_summary(bot):
@@ -382,6 +378,12 @@ def init_config():
         config.username = raw_input("Username: ")
     if not config.password and 'password' not in load:
         config.password = getpass("Password: ")
+
+    # Logger colors
+    config.logger = load.get('logger', {})
+    coloredlogs.DEFAULT_LEVEL_STYLES = {'info': {'color': config.logger["colors"]["info"]}, 'critical': {'color': config.logger["colors"]["error"], 'bold': True}, 'verbose': {'color': 'blue'}, 'error': {'color': config.logger["colors"]["error"]}, 'debug': {'color': 'green' }, 'warning': {'color': config.logger["colors"]["warning"]}}
+    coloredlogs.DEFAULT_LOG_FORMAT='%(asctime)s [%(name)10s] [%(levelname)s] %(message)s'
+    coloredlogs.install(level='INFO')
 
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
