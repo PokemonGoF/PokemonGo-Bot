@@ -32,6 +32,8 @@ import logging
 import os
 import ssl
 import sys
+reload(sys)
+sys.setdefaultencoding('UTF8')
 import time
 from datetime import timedelta
 from getpass import getpass
