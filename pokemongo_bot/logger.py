@@ -18,7 +18,7 @@ def log(msg, color=None):
     logger.info(msg)
     warnings.warn(message, DeprecationWarning)
 
-class LogFormatter(logging.Formatter):
+class ColorizedLogFormatter(logging.Formatter):
     RESET_SEQ = '\033[0m'
     COLOR_SEQ = '\033[1;%s'
 
@@ -41,18 +41,18 @@ class LogFormatter(logging.Formatter):
     datefmt = '%H:%M:%S'
 
     def __init__(self, fmt=fmt, datefmt=datefmt):
-        super(LogFormatter, self).__init__(fmt, datefmt)
+        super(ColorizedLogFormatter, self).__init__(fmt, datefmt)
 
     def get_color(self, record):
         # We default to white
-        color = LogFormatter.color_hex.get(getattr(record, 'color', None), None) or \
-                self.color_hex.get(record.levelname, LogFormatter.color_hex['white'])
+        color = ColorizedLogFormatter.color_hex.get(getattr(record, 'color', None), None) or \
+                self.color_hex.get(record.levelname, ColorizedLogFormatter.color_hex['white'])
         return color
 
     def format(self, record):
         level = record.levelname
         color = self.get_color(record)
-        record.msg = '{color}{message}{reset}'.format(color=LogFormatter.COLOR_SEQ % (color), message=record.msg, reset=LogFormatter.RESET_SEQ)
+        record.msg = '{color}{message}{reset}'.format(color=ColorizedLogFormatter.COLOR_SEQ % (color), message=record.msg, reset=ColorizedLogFormatter.RESET_SEQ)
 #        record.msg = '{color}{message}'.format(color='', message=record.msg)
         result = logging.Formatter.format(self, record)
         return result
@@ -106,4 +106,4 @@ logging.Logger.colorized = colorized
 def init_logger():
     rootLogger = logging.getLogger()
     for handler in rootLogger.handlers:
-        handler.setFormatter(LogFormatter())
+        handler.setFormatter(ColorizedLogFormatter())
