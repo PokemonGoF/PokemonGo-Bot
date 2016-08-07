@@ -1,8 +1,10 @@
 from pokemongo_bot.human_behaviour import sleep
-from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot.base_task import BaseTask
 
 
 class IncubateEggs(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     last_km_walked = 0
 
     def initialize(self):
