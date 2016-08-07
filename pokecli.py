@@ -56,8 +56,9 @@ logger = logging.getLogger('cli')
 logger.setLevel(logging.INFO)
 
 def main():
+    bot = False
+    
     try:
-        bot = False
         logger.info('PokemonGO Bot v1.0')
         sys.stdout = codecs.getwriter('utf8')(sys.stdout)
         sys.stderr = codecs.getwriter('utf8')(sys.stderr)
