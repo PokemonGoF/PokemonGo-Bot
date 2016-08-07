@@ -31,6 +31,8 @@ class BotEvent(object):
                 logging = False,
                 context = {}
             )
+
+        self.client_id = uuid.uuid4()
         self.heartbeat_wait = 30 # seconds
         self.last_heartbeat = time.time()
 
@@ -41,38 +43,38 @@ class BotEvent(object):
     def login_success(self):
         if self.config.health_record:
             self.last_heartbeat = time.time()
-            track_url('/loggedin')
+            self.track_url('/loggedin')
 
     def login_failed(self):
         if self.config.health_record:
-            track_url('/login')
+            self.track_url('/login')
 
     def login_retry(self):
         if self.config.health_record:
-            track_url('/relogin')
+            self.track_url('/relogin')
 
     def logout(self):
         if self.config.health_record:
-            track_url('/logout')
+            self.track_url('/logout')
 
     def heartbeat(self):
         if self.config.health_record:
             current_time = time.time()
             if current_time - self.heartbeat_wait > self.last_heartbeat:
                 self.last_heartbeat = current_time
-                track_url('/heartbeat')
+                self.track_url('/heartbeat')
 
-def track_url(path):
-    data = {
-        'v': '1',
-        'tid': 'UA-81469507-1',
-        'aip': '1', # Anonymize IPs
-        'cid': uuid.uuid4(),
-        't': 'pageview',
-        'dp': path
-    }
+    def track_url(self, path):
+        data = {
+            'v': '1',
+            'tid': 'UA-81469507-1',
+            'aip': '1', # Anonymize IPs
+            'cid': self.client_id,
+            't': 'pageview',
+            'dp': path
+        }
 
-    response = requests.post(
-        'http://www.google-analytics.com/collect', data=data)
+        response = requests.post(
+            'http://www.google-analytics.com/collect', data=data)
 
-    response.raise_for_status()
+        response.raise_for_status()
