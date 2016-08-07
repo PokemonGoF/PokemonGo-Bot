@@ -102,6 +102,7 @@ web/
 data/last-location*.json
 data/cells-*.json
 data/map-caught-*.json
+user_web_catchable
 
 # Multiple config
 configs/*
@@ -123,3 +124,4 @@ pip-selfcheck.json
 
 local/
 share/
+
