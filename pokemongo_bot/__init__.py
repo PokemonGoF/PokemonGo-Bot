@@ -28,8 +28,8 @@ from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from worker_result import WorkerResult
 from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
-
-
+from sys import platform as _platform
+import struct
 class PokemonGoBot(object):
     @property
     def position(self):
@@ -547,11 +547,17 @@ class PokemonGoBot(object):
                 self.api._auth_provider._ticket_expire / 1000 - time.time()
 
             if remaining_time < 60:
-                self.logger.info("Session stale, re-logging in", 'yellow')
+                self.event_manager.emit(
+                    'api_error',
+                    sender=self,
+                    level='info',
+                    formatted='Session stale, re-logging in.'
+                )
                 position = self.position
                 self.api = ApiWrapper()
                 self.position = position
                 self.login()
+                self.api.activate_signature(self.get_encryption_lib())
 
     @staticmethod
     def is_numeric(s):
@@ -591,6 +597,29 @@ class PokemonGoBot(object):
             formatted="Login successful."
         )
 
+    def get_encryption_lib(self):
+        file_name = ''
+        if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
+            file_name = 'encrypt.so'
+        elif _platform == "Windows" or _platform == "win32":
+            # Check if we are on 32 or 64 bit
+            if sys.maxsize > 2**32:
+                file_name = 'encrypt_64.dll'
+            else:
+                file_name = 'encrypt.dll'
+
+        path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+        full_path = path + '/'+ file_name
+
+        if not os.path.isfile(full_path):
+            self.logger.error(file_name + ' is not found! Please place it in the bots root directory.')
+            self.logger.info('Platform: '+ _platform + ' Bot root directory: '+ path)
+            sys.exit(1)
+        else:
+            self.logger.info('Found '+ file_name +'! Platform: ' + _platform + ' Bot root directory: ' + path)
+
+        return full_path
+
     def _setup_api(self):
         # instantiate pgoapi
         self.api = ApiWrapper()
@@ -602,8 +631,7 @@ class PokemonGoBot(object):
         # chain subrequests (methods) into one RPC call
 
         self._print_character_info()
-
-        self.api.activate_signature("encrypt.so")
+        self.api.activate_signature(self.get_encryption_lib())
         self.logger.info('')
         self.update_inventory()
         # send empty map_cells and then our position
