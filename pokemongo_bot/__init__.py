@@ -265,7 +265,7 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'pokemon_evolved',
-            parameters=('pokemon', 'iv', 'cp')
+            parameters=('pokemon', 'iv', 'cp', 'xp')
         )
         self.event_manager.register_event(
             'pokemon_evolve_fail',
