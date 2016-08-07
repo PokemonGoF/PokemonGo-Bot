@@ -3,7 +3,7 @@
 import gpxpy
 import gpxpy.gpx
 import json
-from pokemongo_bot.base_task import BaseTask
+from pokemongo_bot import BaseTask
 from pokemongo_bot.cell_workers.utils import distance, i2f, format_dist
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.step_walker import StepWalker

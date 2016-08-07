@@ -9,7 +9,7 @@ from pokemongo_bot import logger
 from pokemongo_bot.cell_workers.utils import distance, format_dist, format_time
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
-from pokemongo_bot.base_task import BaseTask
+from pokemongo_bot import BaseTask
 from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 
 

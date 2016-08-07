@@ -1,6 +1,6 @@
 import json
 import os
-from pokemongo_bot.base_task import BaseTask
+from pokemongo_bot import BaseTask
 from pokemongo_bot.tree_config_builder import ConfigException
 
 class RecycleItems(BaseTask):

@@ -8,7 +8,7 @@ from pgoapi.utilities import f2i
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.worker_result import WorkerResult
-from pokemongo_bot.base_task import BaseTask
+from pokemongo_bot import BaseTask
 from utils import distance, format_time, fort_details
 
 
