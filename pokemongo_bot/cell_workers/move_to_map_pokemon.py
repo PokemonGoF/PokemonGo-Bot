@@ -186,9 +186,14 @@ class MoveToMapPokemon(BaseTask):
                 '{}/next_loc?lat={}&lon={}'.format(self.config['address'], 
                                                    self.bot.position[0], 
                                                    self.bot.position[1]))
-            self.emit_event('move_to_map_pokemon_updated_map', 
-                            lat=self.bot.position[0],
-                            lon=self.bot.position[1])
+            self.emit_event(
+                'move_to_map_pokemon_updated_map',
+                formatted='Updated PokemonGo-Map to {lat}, {lon}',
+                data={
+                    'lat': self.bot.position[0],
+                    'lon': self.bot.position[1]
+                }
+            )
             self.last_map_update = now
 
     def snipe(self, pokemon):
