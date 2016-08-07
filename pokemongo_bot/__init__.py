@@ -602,8 +602,10 @@ class PokemonGoBot(object):
         # chain subrequests (methods) into one RPC call
 
         self._print_character_info()
+        # self.api.activate_signature("/home/pi/PokemonGo-Bot/encrypt.so")
 
-        self.api.activate_signature("encrypt.so")
+        cwd = os.getcwd()
+        self.api.activate_signature(cwd +'/encrypt.so')
         self.logger.info('')
         self.update_inventory()
         # send empty map_cells and then our position
