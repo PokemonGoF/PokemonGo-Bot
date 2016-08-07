@@ -13,9 +13,7 @@ class NicknamePokemon(BaseTask):
 
         self.translate = None
         locale = self.config.get('locale', 'en')
-        if locale == 'en':
-            self.pokemon_list = self.bot.pokemon_list
-        else:
+        if locale != 'en':
             fn = 'data/locales/{}.json'.format(locale)
             if os.path.isfile(fn):
                 self.translate = json.load(open(fn))
