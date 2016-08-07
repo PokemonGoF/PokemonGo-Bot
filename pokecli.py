@@ -39,8 +39,9 @@ from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingE
 from geopy.exc import GeocoderQuotaExceeded
 
 from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
-from pokemongo_bot.config import Config
+from pokemongo_bot.config import Config, get_config
 from pokemongo_bot.health_record import BotEvent
+
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -60,7 +61,7 @@ def main():
         config = init_config()
         if not config:
             return
-        Config().initialize(config) # initialize the singleton aswell
+        Config.initialize(config) # initialize the singleton aswell
 
         logger.info('Configuration initialized')
         health_record = BotEvent(config)
@@ -387,8 +388,10 @@ def init_config():
     config.action_wait_max = load.get('action_wait_max', 4)
     config.action_wait_min = load.get('action_wait_min', 1)
     config.raw_tasks = load.get('tasks', [])
+    config.replicator = load.get('replicator', {})
 
     config.vips = load.get('vips', {})
+
 
     if config.map_object_cache_time < 0.0:
         parser.error("--map_object_cache_time is out of range! (should be >= 0.0)")

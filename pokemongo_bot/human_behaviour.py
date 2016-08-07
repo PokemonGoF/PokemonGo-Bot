@@ -46,12 +46,12 @@ def sleep(seconds):
     General sleep with some lags.
 
     Configs:
-    "max_sleep" = 60,
+    "max_sleep": 60,
 
     '''
     # some of the actions don't need reflex replication, so removed from here.
     wait_time = seconds + jitter_rng()
-    max_sleep = get_config('max_sleep', 60)
+    max_sleep = get_config('replicator.max_sleep', 60)
     time.sleep(min(wait_time, max_sleep))
 
 
@@ -63,17 +63,17 @@ def ball_throw_reticle_fail_delay():
 
     Configs:
     "replicate_reticle_fail_delay" = false,
-    "reticle_fail_chance = 0.05",
-    "reticle_fail_max_trial" = 10,
-    "reticle_fail_max_sleep" = 10,
+    "reticle_fail_chance": 0.05,
+    "reticle_fail_max_trial": 10,
+    "reticle_fail_max_sleep": 10,
     '''
-    if get_config('replicate_throw_reticle_fail_delay', False):
-        fail_prob = get_config('throw_reticle_fail_chance', 0.05)
+    if get_config('replicator.replicate_throw_reticle_fail_delay', False):
+        fail_prob = get_config('replicator.throw_reticle_fail_chance', 0.05)
         for trial in range(get_config('reticle_fail_max_trial', 10)):
             if fail_prob < random():
                 break
 
-        time.sleep(1.8*(trial+random()), get_config('reticle_fail_max_sleep', 10)) # should this be sleep? or time.sleep?
+        time.sleep(1.8*(trial+random()), get_config('replicator.reticle_fail_max_sleep', 10)) # should this be sleep? or time.sleep?
 
 
 def jitter_rng():
@@ -81,17 +81,17 @@ def jitter_rng():
     Simulates jitter.
 
     Configs:
-    "replicate_jitter" = false,
-    "jitter_ping" = 80,
-    "jitter_range" = 30,
-    "jitter_max_sleep" = 1.0,
+    "replicate_jitter": false,
+    "jitter_ping": 80,
+    "jitter_range": 30,
+    "jitter_max_sleep": 1.0,
 
     '''
-    replicate_jitter = get_config('replicate_jitter', False)
+    replicate_jitter = get_config('replicator.replicate_jitter', False)
     jitter = 0
     if replicate_jitter:
-        ping = get_config('jitter_ping', 80)
-        ping_range = get_config('jitter_range', 30)
+        ping = get_config('replicator.jitter_ping', 80)
+        ping_range = get_config('replicator.jitter_range', 30)
 
         ping = int(ping / 10) * 10
         ping_range = int(ping_range / 5) * 5
@@ -99,7 +99,7 @@ def jitter_rng():
         ping_range = min(max(10, ping_range), 100)
         mu_, sigma = lognormal_model()[ping][ping_range]
         jitter = lognormal(mu_, sigma)
-        jitter = min(jitter, get_config('jitter_max_sleep', 1.0))
+        jitter = min(jitter, get_config('replicator.jitter_max_sleep', 1.0))
     return jitter
 
 
@@ -108,18 +108,18 @@ def human_reflex_rng():
     Simulates human reflexes.
 
     Configs:
-    "replicate_reflex" = false,
-    "reflex_time" = 270,
-    "reflex_range" = 100,
-    "reflex_max_sleep" = 1.0,
+    "replicate_reflex": false,
+    "reflex_time": 270,
+    "reflex_range": 100,
+    "reflex_max_sleep": 1.0,
 
     '''
     reflex_time = 0
-    if get_config('replicate_reflex', False):
-        reflex_mean = get_config('reflex_time', 270)
-        reflex_range = get_config('reflex_range', 100)
+    if get_config('replicator.replicate_reflex', False):
+        reflex_mean = get_config('replicator.reflex_time', 270)
+        reflex_range = get_config('replicator.reflex_range', 100)
         mu_, sigma = lognormal_model()[reflex_mean][reflex_range]
-        reflex_time = min(lognormal(mu_, sigma), get_config('reflex_max_sleep', 1.0))
+        reflex_time = min(lognormal(mu_, sigma), get_config('replicator.reflex_max_sleep', 1.0))
     return reflex_time
 
 
@@ -128,15 +128,15 @@ def gps_noise_rng():
     Simulates gps noise. This may cause problem, so we need test.
     
     Configs:
-    "replicate_gps_noise" = false,
-    "gps_noise_radius = 0.00075",
+    "replicate_gps_noise": false,
+    "gps_noise_radius": 0.00075,
     
     '''
-    radius = get_config('gps_noise_radius', 0.00075)
+    radius = get_config('replicator.gps_noise_radius', 0.00075)
     lat_noise = 0
     lng_noise = 0
     alt_noise = 0
-    if get_config('replicate_gps_noise', False):
+    if get_config('replicator.replicate_gps_noise', False):
         lat_noise = gauss(0, radius/3.0)
         lat_noise = min(max(-radius, lat_noise), radius)
         
@@ -174,11 +174,11 @@ def normalized_reticle_size_rng():
     Reticle rng.
 
     Configs:
-    "replicate_ball_throw_reticle" = "human",
-    "catch_randomize_reticle_factor" = 0.9,
+    "replicate_ball_throw_reticle": "human",
+    "catch_randomize_reticle_factor": 0.9,
 
     '''
-    mode = get_config('replicate_ball_throw_reticle', 'human')
+    mode = get_config('replicator.replicate_ball_throw_reticle', 'human')
     factor = get_config('catch_randomize_reticle_factor', 0.9)
 
     if 'exact' == mode:
@@ -208,7 +208,7 @@ def spin_modifier_rng():
     "catch_randomize_spin_factor" = 0.9,
 
     '''
-    mode = get_config('replicate_ball_throw_spin', 'human')
+    mode = get_config('replicator.replicate_ball_throw_spin', 'human')
     factor = get_config('catch_randomize_spin_factor', 0.9)
 
     if 'exact' == mode:
