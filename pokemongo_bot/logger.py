@@ -18,19 +18,6 @@ def log(msg, color=None):
     logger.info(msg)
     warnings.warn(message, DeprecationWarning)
 
-class LcdHandler(logging.Handler):
-    fmt='%(asctime)s [%(name)10s] [%(levelname)s] %(message)s'
-#    fmt = '%(asctime)s %(message)s'
-    datefmt = '%H:%M:%S'
-
-    def __init__(self):
-        logging.Handler.__init__(self)
-        self.formatter = logging.Formatter(fmt, datefmt)
-
-    def emit(self, record):
-        if record:
-            lcd.message(self.formatter.format(record))
-
 class LogFormatter(logging.Formatter):
     RESET_SEQ = '\033[0m'
     COLOR_SEQ = '\033[1;%s'
