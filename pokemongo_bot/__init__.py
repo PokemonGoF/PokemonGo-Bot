@@ -603,7 +603,8 @@ class PokemonGoBot(object):
 
         self._print_character_info()
 
-        self.api.activate_signature("encrypt.so")
+        encrypt_path = os.path.abspath("./encrypt.so")
+        self.api.activate_signature(encrypt_path)
         self.logger.info('')
         self.update_inventory()
         # send empty map_cells and then our position
