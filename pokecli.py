@@ -59,7 +59,7 @@ def main():
     config = init_config()
     if not config:
         return
-    conf = Config().initialize(config) # initialize the singleton aswell
+    Config().initialize(config) # initialize the singleton aswell
     logger.info('Configuration initialized')
 
     finished = False

@@ -1,5 +1,6 @@
 class Config(object):
     _instance = None
+    _initialized = False # None != config causes error for some reason...
     config = None
     def __new__(class_, *args, **kwargs):
         if not isinstance(class_._instance, class_):
@@ -12,10 +13,11 @@ class Config(object):
     @staticmethod
     def initialize(config):
         Config.config = config
+        Config._initialized = True
           
     @staticmethod
     def __getattr__(name):
-        if None != Config.config:
+        if Config._initialized:
             return getattr(Config.config, name)
         return None
 
@@ -50,7 +52,7 @@ def get_config(attr, default):
 
     '''
     attr_ar = attr.split('.')
-    if None != Config.config and hasattr(Config.config, attr_ar[0]):
+    if Config._initialized and hasattr(Config.config, attr_ar[0]):
         obj = getattr(Config.config, attr_ar[0])
         if 1 == len(attr_ar):
             return obj

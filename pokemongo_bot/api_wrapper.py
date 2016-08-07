@@ -42,8 +42,8 @@ class ApiWrapper(PGoApi):
         self.actual_lat = lat
         self.actual_lng = lng
         self.actual_alt = alt
-        lat_noise, lng_noise = gps_noise_rng()
-        PGoApi.set_position(self, lat + lat_noise, lng + lng_noise, alt)
+        lat_noise, lng_noise, alt_noise = gps_noise_rng()
+        PGoApi.set_position(self, lat + lat_noise, lng + lng_noise, alt + alt_noise)
 
     def get_position(self):
         return (self.actual_lat, self.actual_lng, self.actual_alt)

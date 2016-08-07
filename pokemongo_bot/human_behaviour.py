@@ -45,12 +45,12 @@ def sleep(seconds):
     General sleep with some lags.
 
     Configs:
-    "max_sleep_time" = 60,
+    "max_sleep" = 60,
 
     '''
     # some of the actions don't need reflex replication, so removed from here.
     wait_time = seconds + jitter_rng()
-    max_sleep = get_config('max_sleep_time', 60)
+    max_sleep = get_config('max_sleep', 60)
     time.sleep(min(wait_time, max_sleep))
 
 
@@ -64,14 +64,15 @@ def ball_throw_reticle_fail_delay():
     "replicate_reticle_fail_delay" = false,
     "reticle_fail_chance = 0.05",
     "reticle_fail_max_trial" = 10,
+    "reticle_fail_max_sleep" = 10,
     '''
-    if get_config('replicate_throw_reticle_fail_delay', false):
+    if get_config('replicate_throw_reticle_fail_delay', False):
         fail_prob = get_config('throw_reticle_fail_chance', 0.05)
         for trial in range(get_config('reticle_fail_max_trial', 10)):
             if fail_prob < random():
                 break
 
-        time.sleep(1.8*(trial+random()))
+        time.sleep(1.8*(trial+random()), get_config('reticle_fail_max_sleep', 10)) # should this be sleep? or time.sleep?
 
 
 def jitter_rng():
@@ -82,7 +83,7 @@ def jitter_rng():
     "replicate_jitter" = false,
     "jitter_ping" = 80,
     "jitter_range" = 30,
-    "jitter_max_seconds" = 1.0,
+    "jitter_max_sleep" = 1.0,
 
     '''
     replicate_jitter = get_config('replicate_jitter', False)
@@ -97,7 +98,7 @@ def jitter_rng():
         ping_range = min(max(10, ping_range), 100)
         mu_, sigma = lognormal_model()[ping][ping_range]
         jitter = lognormal(mu_, sigma)
-        jitter = min(jitter, get_config('jitter_max_seconds', 1.0))
+        jitter = min(jitter, get_config('jitter_max_sleep', 1.0))
     return jitter
 
 
@@ -109,7 +110,7 @@ def human_reflex_rng():
     "replicate_reflex" = false,
     "reflex_time" = 270,
     "reflex_range" = 100,
-    "reflex_max_seconds" = 1.0,
+    "reflex_max_sleep" = 1.0,
 
     '''
     reflex_time = 0
@@ -117,7 +118,7 @@ def human_reflex_rng():
         reflex_mean = get_config('reflex_time', 270)
         reflex_range = get_config('reflex_range', 100)
         mu_, sigma = lognormal_model()[reflex_mean][reflex_range]
-        reflex_time = min(lognormal(mu_, sigma), get_config('reflex_max_seconds', 1.0))
+        reflex_time = min(lognormal(mu_, sigma), get_config('reflex_max_sleep', 1.0))
     return reflex_time
 
 
@@ -127,12 +128,13 @@ def gps_noise_rng():
     
     Configs:
     "replicate_gps_noise" = false,
-    "gps_noise_radius = 0.00075"
+    "gps_noise_radius = 0.00075",
     
     '''
     radius = get_config('gps_noise_radius', 0.00075)
     lat_noise = 0
     lng_noise = 0
+    alt_noise = 0
     if get_config('replicate_gps_noise', False):
         lat_noise = gauss(0, radius/3.0)
         lat_noise = min(max(-radius, lat_noise), radius)
@@ -140,7 +142,9 @@ def gps_noise_rng():
         lng_noise = gauss(0, radius/3.0)
         lng_noise = min(max(-radius, lng_noise), radius)
 
-    return lat_noise, lng_noise
+        alt_noise = gauss(0, radius/3.0)
+        alt_noise = min(max(-radius, alt_noise), radius)
+    return lat_noise, lng_noise, alt_noise
 
 
 def aim_rng(target, std=0.05):
@@ -170,10 +174,12 @@ def normalized_reticle_size_rng():
 
     Configs:
     "replicate_ball_throw_reticle" = "human",
-    "normalized_reticle_size" = 0.9,
+    "catch_randomize_reticle_factor" = 0.9,
 
     '''
-    factor = get_config('normalized_reticle_size', 0.9)
+    mode = get_config('replicate_ball_throw_reticle', 'human')
+    factor = get_config('catch_randomize_reticle_factor', 0.9)
+
     if 'exact' == mode:
         return factor
     elif 'uniform' == mode:
@@ -198,10 +204,12 @@ def spin_modifier_rng():
 
     Configs:
     "replicate_ball_throw_spin" = "human",
-    "spin_modifier" = 0.9,
+    "catch_randomize_spin_factor" = 0.9,
 
     '''
-    factor = get_config('spin_modifier', 0.9)
+    mode = get_config('replicate_ball_throw_spin', 'human')
+    factor = get_config('catch_randomize_spin_factor', 0.9)
+
     if 'exact' == mode:
         return 1.0
     elif 'uniform' == mode:
