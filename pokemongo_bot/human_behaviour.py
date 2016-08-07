@@ -25,6 +25,7 @@ def random_lat_long_delta(radius=0.00025):
     '''
     Simulates gps noise??? Sounds more like a rng for random walk.
     Keep it here for now...
+    
     '''
     # Return random value from [-.000025, .000025]ish 99.73% of time.
     # Since 364,000 feet is equivalent to one degree of latitude, this
@@ -340,3 +341,4 @@ if '__main__' == __name__:
     # _visualize()
     pass
 """
+

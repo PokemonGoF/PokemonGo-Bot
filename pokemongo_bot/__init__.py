@@ -31,7 +31,8 @@ from tree_config_builder import ConfigException, TreeConfigBuilder
 class PokemonGoBot(object):
     @property
     def position(self):
-        return self.api._position_lat, self.api._position_lng, 0
+        #return self.api._position_lat, self.api._position_lng, 0
+        return self.api.actual_lat, self.api.actual_lng, self.api.actual_alt
 
     @position.setter
     def position(self, position_tuple):
