@@ -1,10 +1,12 @@
 import json
 import os
+from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.worker_result import WorkerResult
-from pokemongo_bot.cell_workers.base_task import BaseTask
 from pokemongo_bot.tree_config_builder import ConfigException
 
 class RecycleItems(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     """
     Recycle undesired items if there is less than five space in inventory.
     You can use either item's name or id. For the full list of items see ../../data/items.json

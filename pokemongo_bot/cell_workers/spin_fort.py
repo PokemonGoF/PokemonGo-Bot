@@ -8,11 +8,13 @@ from pgoapi.utilities import f2i
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.worker_result import WorkerResult
-from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot.base_task import BaseTask
 from utils import distance, format_time, fort_details
 
 
 class SpinFort(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     def should_run(self):
         if not self.bot.has_space_for_loot():
             self.emit_event(

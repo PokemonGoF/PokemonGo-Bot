@@ -15,6 +15,8 @@ from pgoapi import PGoApi
 from pgoapi.utilities import f2i, get_cell_ids
 
 import cell_workers
+from base_task import BaseTask
+from plugin_loader import PluginLoader
 from api_wrapper import ApiWrapper
 from cell_workers.utils import distance
 from event_manager import EventManager
@@ -25,7 +27,7 @@ from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from worker_result import WorkerResult
-from tree_config_builder import ConfigException, TreeConfigBuilder
+from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
 
 
 class PokemonGoBot(object):
@@ -383,6 +385,7 @@ class PokemonGoBot(object):
         self.event_manager.register_event('unset_pokemon_nickname')
 
     def tick(self):
+        self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
         self.tick_count += 1
 
@@ -600,6 +603,7 @@ class PokemonGoBot(object):
 
         self._print_character_info()
 
+        self.api.activate_signature("encrypt.so")
         self.logger.info('')
         self.update_inventory()
         # send empty map_cells and then our position
