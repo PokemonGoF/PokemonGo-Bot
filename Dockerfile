@@ -15,4 +15,6 @@ RUN cd /tmp && wget "http://pgoapi.com/pgoencrypt.tar.gz" \
 
 VOLUME ["/usr/src/app/web"]
 
+ENV LD_LIBRARY_PATH /usr/src/app
+
 ENTRYPOINT ["python", "pokecli.py"]
