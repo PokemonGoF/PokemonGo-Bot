@@ -41,6 +41,10 @@ from geopy.exc import GeocoderQuotaExceeded
 from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
 from pokemongo_bot.health_record import BotEvent
 
+reload(sys)                   
+sys.setdefaultencoding('UTF8')
+
+
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
