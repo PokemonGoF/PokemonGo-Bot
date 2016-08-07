@@ -68,4 +68,4 @@ To ensure that all updates are documented - [@eggins](https://github.com/eggins)
 - [AHAAAAAAA](https://github.com/AHAAAAAAA/PokemonGo-Map) for parts of the s2sphere stuff
 
 
-[![Analytics](https://ga-beacon.appspot.com/UA-81468120-1/welcome-page-master)](https://github.com/igrigorik/ga-beacon)
+[![Analytics](https://ga-beacon.appspot.com/UA-81468120-1/welcome-page-new-api)](https://github.com/igrigorik/ga-beacon)
