@@ -31,7 +31,7 @@ class BotEvent(object):
                 logging = False,
                 context = {}
             )
-        self.heartbeat_wait = 5 # seconds
+        self.heartbeat_wait = 30 # seconds
         self.last_heartbeat = time.time()
 
     def capture_error(self):
