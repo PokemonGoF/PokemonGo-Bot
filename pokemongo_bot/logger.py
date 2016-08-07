@@ -72,7 +72,6 @@ class LogFormatter(logging.Formatter):
 
 # In some cases, we need colorized logging without calling functions like
 # logger.error(...). The following lines add this capability
-VERBOSE_LEVELV_NUM = 5
 WHITE_LEVELV_NUM = 21
 GREEN_LEVELV_NUM = 22
 YELLOW_LEVELV_NUM = 23
@@ -82,8 +81,6 @@ RED_LEVELV_NUM = 26
 def custom_logging_level_handler(self, level, message, args, kwargs):
     if self.isEnabledFor(level):
         self._log(level, message, args, **kwargs)
-def verbose(self, message, *args, **kwargs):
-    return custom_logging_level_handler(self, VERBOSE_LEVELV_NUM, message, args, kwargs)
 def white(self, message, *args, **kwargs):
     return custom_logging_level_handler(self, WHITE_LEVELV_NUM, message, args, kwargs)
 def green(self, message, *args, **kwargs):
@@ -101,8 +98,6 @@ def colorized(self, level, message, color, *args, **kwargs):
     kwargs['extra'] = extra
     return custom_logging_level_handler(self, level, message, args, kwargs)
 
-logging.Logger.verbose = verbose
-logging.addLevelName(VERBOSE_LEVELV_NUM, 'verbose')
 logging.Logger.white = white
 logging.addLevelName(WHITE_LEVELV_NUM, 'white')
 logging.Logger.green = green
