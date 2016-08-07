@@ -1,9 +1,10 @@
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.item_list import Item
-from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot.base_task import BaseTask
 
 
 class EvolvePokemon(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
 
     def initialize(self):
         self.api = self.bot.api

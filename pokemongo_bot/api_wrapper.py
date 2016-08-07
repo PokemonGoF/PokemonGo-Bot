@@ -21,8 +21,7 @@ class ApiWrapper(PGoApi):
             RequestClass = PGoApiRequest
 
         return RequestClass(
-            self._api_endpoint,
-            self._auth_provider,
+            self,
             self._position_lat,
             self._position_lng,
             self._position_alt

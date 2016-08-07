@@ -1,9 +1,11 @@
 import json
 import os
-from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.tree_config_builder import ConfigException
 
 class RecycleItems(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     def initialize(self):
         self.item_filter = self.config.get('item_filter', {})
         self._validate_item_filter()
