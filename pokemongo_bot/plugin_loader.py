@@ -15,7 +15,7 @@ class PluginLoader(object):
 
     return correct_path
 
-  def load_path(self, path):
+  def load_plugin(self, path):
     correct_path = self._get_correct_path(path)
 
     if correct_path not in self.folder_cache:
