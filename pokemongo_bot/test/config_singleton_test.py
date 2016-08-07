@@ -1,4 +1,4 @@
-from config import Config, get_config
+from pokemongo_bot.config import Config, get_config
 import unittest
 
 
