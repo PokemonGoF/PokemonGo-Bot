@@ -59,7 +59,7 @@ class EvolvePokemon(BaseTask):
                 if result is 1:  # Request success
                     self.emit_event(
                         'used_lucky_egg',
-                        formmated='Used lucky egg ({amount_left} left).',
+                        formatted='Used lucky egg ({amount_left} left).',
                         data={
                              'amount_left': lucky_egg_count - 1
                         }
