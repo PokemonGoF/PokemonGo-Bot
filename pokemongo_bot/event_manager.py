@@ -29,7 +29,6 @@ class EventManager(object):
         for event, (color, parameters) in self._registered_events.iteritems():
             print '-'*80
             print 'Event: {}'.format(event)
-            print 'Color: {}'.format(color)
             if parameters:
                 print 'Parameters:'
                 for parameter in parameters:
