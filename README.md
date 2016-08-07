@@ -3,7 +3,8 @@
 PokemonGo bot is a project created by the [PokemonGoF](https://github.com/PokemonGoF) team.
 The project is currently setup in two main branches. `dev` and `master`.
 
-## we are currently working on the new branch [upgrade_to_the_new_api](https://github.com/PokemonGoF/PokemonGo-Bot/tree/upgrade_to_the_new_api)
+## Where to get the dll/so ?
+You need grab them from internet.
 
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
 
@@ -68,4 +69,4 @@ To ensure that all updates are documented - [@eggins](https://github.com/eggins)
 - [AHAAAAAAA](https://github.com/AHAAAAAAA/PokemonGo-Map) for parts of the s2sphere stuff
 
 
-[![Analytics](https://ga-beacon.appspot.com/UA-81468120-1/welcome-page-master)](https://github.com/igrigorik/ga-beacon)
+[![Analytics](https://ga-beacon.appspot.com/UA-81468120-1/welcome-page-new-api)](https://github.com/igrigorik/ga-beacon)
