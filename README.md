@@ -5,8 +5,8 @@ The project is currently setup in two main branches. `dev` and `master`.
 
 ## Please submit PR to [Dev branch](https://github.com/PokemonGoF/PokemonGo-Bot/tree/dev)
 
-## Where to get the dll/so ? A help channel is comming.
-You need grab them from internet.
+## Where to get the DLL/SO? A help channel is coming.
+You need to grab them from the Internet.
 
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
 
