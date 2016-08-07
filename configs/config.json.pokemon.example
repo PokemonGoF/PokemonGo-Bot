@@ -353,5 +353,12 @@
         "Weezing": {},
         "Flareon": {}
 
+    },
+    "logger": {
+        "colors": {
+            "info": "green",
+            "warning": "yellow",
+            "error": "red"
+        }
     }
 }
