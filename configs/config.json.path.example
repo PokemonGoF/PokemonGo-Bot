@@ -63,7 +63,6 @@
       }
     ],
     "map_object_cache_time": 5,
-    "max_steps": 5,
     "forts": {
       "avoid_circles": true,
       "max_circle_size": 50
