@@ -89,7 +89,7 @@ class TreeConfigBuilderTest(unittest.TestCase):
     def test_load_plugin_task(self):
         package_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'resources', 'plugin_fixture')
         plugin_loader = PluginLoader()
-        plugin_loader.load_path(package_path)
+        plugin_loader.load_plugin(package_path)
 
         obj = convert_from_json("""[{
             "type": "plugin_fixture.FakeTask"
@@ -103,7 +103,7 @@ class TreeConfigBuilderTest(unittest.TestCase):
     def setupUnsupportedBuilder(self):
         package_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'pokemongo_bot', 'test', 'resources', 'plugin_fixture')
         plugin_loader = PluginLoader()
-        plugin_loader.load_path(package_path)
+        plugin_loader.load_plugin(package_path)
 
         obj = convert_from_json("""[{
             "type": "plugin_fixture.UnsupportedApiTask"

@@ -445,7 +445,7 @@ def init_config():
 
     plugin_loader = PluginLoader()
     for plugin in config.plugins:
-        plugin_loader.load_path(plugin)
+        plugin_loader.load_plugin(plugin)
 
     # create web dir if not exists
     try:
