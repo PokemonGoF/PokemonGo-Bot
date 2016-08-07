@@ -34,7 +34,6 @@ class CatchVisiblePokemon(BaseTask):
                         'expiration_timestamp_ms': pokemon['expiration_timestamp_ms'],
                     }
                 )
-
                 self.catch_pokemon(pokemon)
 
         if 'wild_pokemons' in self.bot.cell and len(self.bot.cell['wild_pokemons']) > 0:
