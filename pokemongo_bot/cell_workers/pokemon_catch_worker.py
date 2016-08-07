@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from random import random
 import time
+from pokemongo_bot.config import get_config
 from pokemongo_bot.human_behaviour import (normalized_reticle_size_rng, sleep,
-                                           spin_modifier_rng)
+                                           spin_modifier_rng, ball_throw_reticle_fail_delay,
+                                           ball_throw_hit_success_rng)
 from pokemongo_bot.cell_workers.base_task import BaseTask
 
 class PokemonCatchWorker(BaseTask):
@@ -304,17 +307,22 @@ class PokemonCatchWorker(BaseTask):
                             id_list1 = self.count_pokemon_inventory()
 
                             reticle_size_parameter = normalized_reticle_size_rng()
-
                             spin_modifier_parameter = spin_modifier_rng()
+
+                            # aiming delay...
+                            ball_throw_reticle_fail_delay()
+
+                            # hit fail calc
+                            hit_flag = ball_throw_hit_success_rng()
 
                             response_dict = self.api.catch_pokemon(
                                 encounter_id=encounter_id,
                                 pokeball=pokeball,
                                 normalized_reticle_size=reticle_size_parameter,
                                 spawn_point_id=self.spawn_point_guid,
-                                hit_pokemon=1,
+                                hit_pokemon=hit_flag,
                                 spin_modifier=spin_modifier_parameter,
-                                normalized_hit_position=1
+                                normalized_hit_position=1 # randomnise this??? what are valid values???
                             )
 
                             if response_dict and \

@@ -31,12 +31,11 @@ from tree_config_builder import ConfigException, TreeConfigBuilder
 class PokemonGoBot(object):
     @property
     def position(self):
-        #return self.api._position_lat, self.api._position_lng, 0
         return self.api.actual_lat, self.api.actual_lng, self.api.actual_alt
 
-    @position.setter
-    def position(self, position_tuple):
-        self.api._position_lat, self.api._position_lng, self.api._position_alt = position_tuple
+    #@position.setter # these should be called through api now that gps replication is there...
+    #def position(self, position_tuple):
+    #    self.api._position_lat, self.api._position_lng, self.api._position_alt = position_tuple
 
     def __init__(self, config):
         self.config = config

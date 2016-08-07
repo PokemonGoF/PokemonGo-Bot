@@ -148,6 +148,20 @@ def gps_noise_rng():
     return lat_noise, lng_noise, alt_noise
 
 
+def ball_throw_hit_success_rng():
+    '''
+    Returns 1 if hits.
+
+    Configs:
+    "ball_throw_hit_success_chance": 1.0,
+
+    '''
+    ret = 0
+    if random() < get_config('ball_throw_hit_success_chance', 1.0):
+        ret = 1
+    return ret
+
+
 def aim_rng(target, std=0.05):
     '''
     noise from the target point should be approximated by gaussian,
