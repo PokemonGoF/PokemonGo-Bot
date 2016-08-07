@@ -622,7 +622,7 @@ class PokemonGoBot(object):
         if not os.path.isfile(full_path):
             self.logger.error(file_name + ' is not found! Please place it in the bots root directory.')
             self.logger.info('Platform: '+ _platform)
-	    self.logger.info('Bot root directory: '+ path)
+            self.logger.info('Bot root directory: '+ path)
             sys.exit(1)
         else:
             self.logger.info('Found '+ file_name +'! Platform: ' + _platform + ' Bot root directory: ' + path)
