@@ -385,6 +385,7 @@ class PokemonGoBot(object):
         self.event_manager.register_event('unset_pokemon_nickname')
 
     def tick(self):
+        self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
         self.tick_count += 1
 
