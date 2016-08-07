@@ -59,6 +59,7 @@
           "min_time": 60,
           "prioritize_vips": true,
           "snipe": false,
+          "snipe_min_prio": 100,
           "update_map": true,
           "mode": "priority",
           "catch": {
