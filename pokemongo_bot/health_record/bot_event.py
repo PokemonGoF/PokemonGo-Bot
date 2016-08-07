@@ -73,8 +73,10 @@ class BotEvent(object):
             't': 'pageview',
             'dp': path
         }
+        try:
+            response = requests.post(
+                'http://www.google-analytics.com/collect', data=data)
 
-        response = requests.post(
-            'http://www.google-analytics.com/collect', data=data)
-
-        response.raise_for_status()
+            response.raise_for_status()
+        except requests.exceptions.HTTPError:
+            pass
