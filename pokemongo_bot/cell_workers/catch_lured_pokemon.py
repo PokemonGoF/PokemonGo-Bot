@@ -7,6 +7,8 @@ from pokemongo_bot.base_task import BaseTask
 
 
 class CatchLuredPokemon(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     def work(self):
         lured_pokemon = self.get_lured_pokemon()
         if lured_pokemon:

@@ -49,6 +49,7 @@ class UpdateTitleStats(BaseTask):
     stats : An array of stats to display and their display order (implicitly),
             see available stats above.
     """
+    SUPPORTED_TASK_API_VERSION = 1
 
     DEFAULT_MIN_INTERVAL = 10
     DEFAULT_DISPLAYED_STATS = []

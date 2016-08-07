@@ -11,6 +11,8 @@ from pgoapi.utilities import f2i
 
 
 class FollowPath(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     def initialize(self):
         self.ptr = 0
         self._process_config()

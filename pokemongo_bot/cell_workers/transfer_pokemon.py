@@ -5,6 +5,8 @@ from pokemongo_bot.base_task import BaseTask
 
 
 class TransferPokemon(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     def work(self):
         pokemon_groups = self._release_pokemon_get_groups()
         for pokemon_id in pokemon_groups:
