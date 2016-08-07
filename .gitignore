@@ -120,3 +120,6 @@ include/
 
 # Pip check file
 pip-selfcheck.json
+
+# bot generated files
+user_web_catchable
