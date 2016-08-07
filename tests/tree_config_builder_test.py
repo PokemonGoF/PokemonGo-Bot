@@ -1,7 +1,9 @@
 import unittest
 import json
-from pokemongo_bot import PokemonGoBot, ConfigException, TreeConfigBuilder
+import os
+from pokemongo_bot import PokemonGoBot, ConfigException, TreeConfigBuilder, PluginLoader
 from pokemongo_bot.cell_workers import HandleSoftBan, CatchLuredPokemon
+from pokemongo_bot.test.resources.plugin_fixture import FakeTask
 
 def convert_from_json(str):
     return json.loads(str)
@@ -83,3 +85,17 @@ class TreeConfigBuilderTest(unittest.TestCase):
         builder = TreeConfigBuilder(self.bot, obj)
         tree = builder.build()
         self.assertTrue(tree[0].config.get('longer_eggs_first', False))
+
+    def test_load_plugin_task(self):
+        package_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'resources', 'plugin_fixture')
+        plugin_loader = PluginLoader()
+        plugin_loader.load_path(package_path)
+
+        obj = convert_from_json("""[{
+            "type": "plugin_fixture.FakeTask"
+        }]""")
+
+        builder = TreeConfigBuilder(self.bot, obj)
+        tree = builder.build()
+        result = tree[0].work()
+        self.assertEqual(result, 'FakeTask')

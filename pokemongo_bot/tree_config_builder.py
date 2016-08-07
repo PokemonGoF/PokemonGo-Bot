@@ -1,4 +1,5 @@
 import cell_workers
+from pokemongo_bot.plugin_loader import PluginLoader
 
 class ConfigException(Exception):
     pass
@@ -7,6 +8,7 @@ class TreeConfigBuilder(object):
     def __init__(self, bot, tasks_raw):
         self.bot = bot
         self.tasks_raw = tasks_raw
+        self.plugin_loader = PluginLoader()
 
     def _get_worker_by_name(self, name):
         try:
@@ -15,6 +17,9 @@ class TreeConfigBuilder(object):
             raise ConfigException('No worker named {} defined'.format(name))
 
         return worker
+
+    def _is_plugin_task(self, name):
+        return '.' in name
 
     def build(self):
         workers = []
@@ -28,7 +33,11 @@ class TreeConfigBuilder(object):
 
             task_config = task.get('config', {})
 
-            worker = self._get_worker_by_name(task_type)
+            if self._is_plugin_task(task_type):
+                worker = self.plugin_loader.get_class(task_type)
+            else:
+                worker = self._get_worker_by_name(task_type)
+
             instance = worker(self.bot, task_config)
             workers.append(instance)
 

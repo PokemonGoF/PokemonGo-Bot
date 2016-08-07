@@ -41,6 +41,7 @@ from geopy.exc import GeocoderQuotaExceeded
 from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
 from pokemongo_bot.config import Config, get_config
 from pokemongo_bot.health_record import BotEvent
+from pokemongo_bot.plugin_loader import PluginLoader
 
 
 if sys.version_info >= (2, 7, 9):
@@ -76,6 +77,7 @@ def main():
                 tree = TreeConfigBuilder(bot, config.raw_tasks).build()
                 bot.workers = tree
                 bot.metrics.capture_stats()
+                bot.health_record = health_record
 
                 bot.event_manager.emit(
                     'bot_start',
@@ -387,6 +389,7 @@ def init_config():
     config.release = load.get('release', {})
     config.action_wait_max = load.get('action_wait_max', 4)
     config.action_wait_min = load.get('action_wait_min', 1)
+    config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
     config.replicator = load.get('replicator', {})
 
@@ -443,6 +446,10 @@ def init_config():
     if config.catch_randomize_spin_factor < 0 or 1 < config.catch_randomize_spin_factor:
         parser.error("--catch_randomize_spin_factor is out of range! (should be 0 <= catch_randomize_spin_factor <= 1)")
         return None
+
+    plugin_loader = PluginLoader()
+    for plugin in config.plugins:
+        plugin_loader.load_path(plugin)
 
     # create web dir if not exists
     try:

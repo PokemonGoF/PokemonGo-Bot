@@ -1,7 +1,7 @@
 import json
 
 from pokemongo_bot.human_behaviour import action_delay
-from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot.base_task import BaseTask
 
 
 class TransferPokemon(BaseTask):

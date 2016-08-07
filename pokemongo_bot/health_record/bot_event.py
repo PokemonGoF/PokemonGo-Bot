@@ -7,6 +7,7 @@ import raven
 import os
 import uuid
 import requests
+import time
 
 class BotEvent(object):
     def __init__(self, config):
@@ -30,6 +31,8 @@ class BotEvent(object):
                 logging = False,
                 context = {}
             )
+        self.heartbeat_wait = 30 # seconds
+        self.last_heartbeat = time.time()
 
     def capture_error(self):
         if self.config.health_record:
@@ -37,6 +40,7 @@ class BotEvent(object):
 
     def login_success(self):
         if self.config.health_record:
+            self.last_heartbeat = time.time()
             track_url('/loggedin')
 
     def login_failed(self):
@@ -51,6 +55,12 @@ class BotEvent(object):
         if self.config.health_record:
             track_url('/logout')
 
+    def heartbeat(self):
+        if self.config.health_record:
+            current_time = time.time()
+            if current_time - self.heartbeat_wait > self.last_heartbeat:
+                self.last_heartbeat = current_time
+                track_url('/heartbeat')
 
 def track_url(path):
     data = {

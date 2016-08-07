@@ -15,6 +15,8 @@ from pgoapi import PGoApi
 from pgoapi.utilities import f2i, get_cell_ids
 
 import cell_workers
+from base_task import BaseTask
+from plugin_loader import PluginLoader
 from api_wrapper import ApiWrapper
 from cell_workers.utils import distance
 from event_manager import EventManager
@@ -383,6 +385,7 @@ class PokemonGoBot(object):
         self.event_manager.register_event('unset_pokemon_nickname')
 
     def tick(self):
+        self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
         self.tick_count += 1
 

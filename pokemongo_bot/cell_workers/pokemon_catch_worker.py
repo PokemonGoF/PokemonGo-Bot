@@ -6,7 +6,7 @@ from pokemongo_bot.config import get_config
 from pokemongo_bot.human_behaviour import (normalized_reticle_size_rng, sleep,
                                            spin_modifier_rng, ball_throw_reticle_fail_delay,
                                            ball_throw_hit_success_rng)
-from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot.base_task import BaseTask
 
 class PokemonCatchWorker(BaseTask):
     BAG_FULL = 'bag_full'
