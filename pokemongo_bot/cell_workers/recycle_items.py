@@ -24,10 +24,13 @@ class RecycleItems(BaseTask):
     def work(self):
         total_items_count = self.bot.get_inventory_count('item')
         if self.min_inventory_items_to_run >= total_items_count:
-            logger.log('Skipping Recycling of Items.', 'yellow')
-            logger.log('{} Items in Bag. Set to run when over {} Items.'.format(
-                total_items_count, self.min_inventory_items_to_run),
-                'yellow')
+            self.emit_event(
+                'item_discard_skip',
+                formatted="Skipping Recycling of Items. {total_items} Items in Bag.",
+                data={
+                    'total_items': total_items_count
+                }
+            )
             return
 
         self.bot.latest_inventory = None
