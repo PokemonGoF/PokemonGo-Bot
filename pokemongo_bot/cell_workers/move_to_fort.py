@@ -9,6 +9,7 @@ from utils import distance, format_dist, fort_details
 
 
 class MoveToFort(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
 
     def initialize(self):
         self.lure_distance = 0

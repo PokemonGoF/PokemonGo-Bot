@@ -27,7 +27,7 @@ from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from worker_result import WorkerResult
-from tree_config_builder import ConfigException, TreeConfigBuilder
+from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
 
 
 class PokemonGoBot(object):

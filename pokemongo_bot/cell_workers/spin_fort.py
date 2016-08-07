@@ -13,6 +13,8 @@ from utils import distance, format_time, fort_details
 
 
 class SpinFort(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     def should_run(self):
         if not self.bot.has_space_for_loot():
             self.emit_event(

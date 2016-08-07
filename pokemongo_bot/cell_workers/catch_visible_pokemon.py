@@ -6,6 +6,8 @@ from utils import distance
 
 
 class CatchVisiblePokemon(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     def work(self):
         if 'catchable_pokemons' in self.bot.cell and len(self.bot.cell['catchable_pokemons']) > 0:
             # Sort all by distance from current pos- eventually this should

@@ -14,6 +14,8 @@ from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 
 
 class MoveToMapPokemon(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     def initialize(self):
         self.last_map_update = 0
         self.pokemon_data = self.bot.pokemon_list

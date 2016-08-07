@@ -10,6 +10,8 @@ from pokemongo_bot.worker_result import WorkerResult
 
 
 class HandleSoftBan(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     def work(self):
         if not self.should_run():
             return
