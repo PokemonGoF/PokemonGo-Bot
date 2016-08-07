@@ -33,6 +33,7 @@ import os
 import ssl
 import sys
 import time
+import traceback
 from datetime import timedelta
 from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException
@@ -125,7 +126,10 @@ def main():
         # always report session summary and then raise exception
         if bot:
             report_summary(bot)
-
+        # Give the exact line where the error raised.
+        for frame in traceback.extract_tb(sys.exc_info()[2]):
+            fname,lineno,fn,text = frame
+            print("[Debug] Error in %s on line %d", % (fname, lineno))
         raise e
 
 def report_summary(bot):
