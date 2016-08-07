@@ -51,3 +51,5 @@
  * matheussampaio
  * Abraxas000
  * lucasfevi
+ * Moonlight-Angel
+ * mjmadsen

@@ -9,11 +9,13 @@ from pokemongo_bot import logger
 from pokemongo_bot.cell_workers.utils import distance, format_dist, format_time
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
-from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 
 
 class MoveToMapPokemon(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     def initialize(self):
         self.last_map_update = 0
         self.pokemon_data = self.bot.pokemon_list

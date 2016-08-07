@@ -1,10 +1,12 @@
 import json
 
 from pokemongo_bot.human_behaviour import action_delay
-from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot.base_task import BaseTask
 
 
 class TransferPokemon(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     def work(self):
         pokemon_groups = self._release_pokemon_get_groups()
         for pokemon_id in pokemon_groups:
@@ -185,6 +187,7 @@ class TransferPokemon(BaseTask):
 
     def release_pokemon(self, pokemon_name, cp, iv, pokemon_id):
         response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon_id)
+        self.bot.metrics.released_pokemon()
         self.emit_event(
             'pokemon_release',
             formatted='Exchanged {pokemon} [CP {cp}] [IV {iv}] for candy.',

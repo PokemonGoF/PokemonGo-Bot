@@ -1,9 +1,10 @@
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.item_list import Item
-from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot.base_task import BaseTask
 
 
 class EvolvePokemon(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
 
     def initialize(self):
         self.api = self.bot.api
@@ -58,7 +59,7 @@ class EvolvePokemon(BaseTask):
                 if result is 1:  # Request success
                     self.emit_event(
                         'used_lucky_egg',
-                        formmated='Used lucky egg ({amount_left} left).',
+                        formatted='Used lucky egg ({amount_left} left).',
                         data={
                              'amount_left': lucky_egg_count - 1
                         }

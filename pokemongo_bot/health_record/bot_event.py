@@ -7,6 +7,7 @@ import raven
 import os
 import uuid
 import requests
+import time
 
 class BotEvent(object):
     def __init__(self, config):
@@ -31,38 +32,51 @@ class BotEvent(object):
                 context = {}
             )
 
+        self.client_id = uuid.uuid4()
+        self.heartbeat_wait = 30 # seconds
+        self.last_heartbeat = time.time()
+
     def capture_error(self):
         if self.config.health_record:
             self.client.captureException()
 
     def login_success(self):
         if self.config.health_record:
-            track_url('/loggedin')
+            self.last_heartbeat = time.time()
+            self.track_url('/loggedin')
 
     def login_failed(self):
         if self.config.health_record:
-            track_url('/login')
+            self.track_url('/login')
 
     def login_retry(self):
         if self.config.health_record:
-            track_url('/relogin')
+            self.track_url('/relogin')
 
     def logout(self):
         if self.config.health_record:
-            track_url('/logout')
+            self.track_url('/logout')
 
+    def heartbeat(self):
+        if self.config.health_record:
+            current_time = time.time()
+            if current_time - self.heartbeat_wait > self.last_heartbeat:
+                self.last_heartbeat = current_time
+                self.track_url('/heartbeat')
 
-def track_url(path):
-    data = {
-        'v': '1',
-        'tid': 'UA-81469507-1',
-        'aip': '1', # Anonymize IPs
-        'cid': uuid.uuid4(),
-        't': 'pageview',
-        'dp': path
-    }
+    def track_url(self, path):
+        data = {
+            'v': '1',
+            'tid': 'UA-81469507-1',
+            'aip': '1', # Anonymize IPs
+            'cid': self.client_id,
+            't': 'pageview',
+            'dp': path
+        }
+        try:
+            response = requests.post(
+                'http://www.google-analytics.com/collect', data=data)
 
-    response = requests.post(
-        'http://www.google-analytics.com/collect', data=data)
-
-    response.raise_for_status()
+            response.raise_for_status()
+        except requests.exceptions.HTTPError:
+            pass
