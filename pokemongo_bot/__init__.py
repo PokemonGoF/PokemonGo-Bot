@@ -393,6 +393,35 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event('unset_pokemon_nickname')
 
+        # Move To map pokemon
+        self.event_manager.register_event(
+            'move_to_map_pokemon_fail',
+            parameters=('message',)
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_updated_map',
+            parameters=('lat', 'lon')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_teleport_to',
+            parameters=('poke_name', 'poke_dist', 'poke_lat', 'poke_lon',
+                        'disappears_in')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_encounter',
+            parameters=('poke_name', 'poke_dist', 'poke_lat', 'poke_lon',
+                        'disappears_in')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_move_towards',
+            parameters=('poke_name', 'poke_dist', 'poke_lat', 'poke_lon',
+                        'disappears_in')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_teleport_back',
+            parameters=('last_lat', 'last_lon')
+        )
+
     def tick(self):
         self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
