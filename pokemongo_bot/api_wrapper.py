@@ -24,8 +24,7 @@ class ApiWrapper(PGoApi):
             self._api_endpoint,
             self._auth_provider,
             self._position_lat,
-            self._position_lng,
-            self._position_alt
+            self._position_lng
         )
 
     def login(self, *args):
