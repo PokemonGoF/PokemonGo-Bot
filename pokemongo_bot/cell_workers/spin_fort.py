@@ -63,8 +63,8 @@ class SpinFort(BaseTask):
 
                 if experience_awarded or items_awarded:
                     self.emit_event(
-                        'spun_pokestop',
-                        formatted="Spun pokestop {pokestop}. Experience awarded: {exp}. Items awarded: {items}",
+                        'spin_pokestop',
+                        formatted="Spinning pokestop {pokestop}. Experience awarded: {exp}. Items awarded: {items}",
                         data={
                             'pokestop': fort_name,
                             'exp': experience_awarded,
