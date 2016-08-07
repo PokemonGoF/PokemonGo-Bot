@@ -53,9 +53,6 @@ class PokemonGoBot(object):
         self.tick_count = 0
         self.softban = False
         self.start_position = None
-        self.last_map_object = None
-        self.last_time_map_object = 0
-        self.logger = logging.getLogger(type(self).__name__)
 
         # Make our own copy of the workers for this instance
         self.workers = []
@@ -383,6 +380,35 @@ class PokemonGoBot(object):
             parameters=('nickname',)
         )
         self.event_manager.register_event('unset_pokemon_nickname')
+        
+        # Move To map pokemon
+        self.event_manager.register_event(
+            'move_to_map_pokemon_fail',
+            parameters=('message')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_updated_map',
+            parameters=('lat', 'lon')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_teleport_to',
+            parameters=('poke_name', 'poke_dist', 'poke_lat', 'poke_lon',
+                        'disappears_in')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_encounter',
+            parameters=('poke_name', 'poke_dist', 'poke_lat', 'poke_lon',
+                        'disappears_in')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_move_towards',
+            parameters=('poke_name', 'poke_dist', 'poke_lat', 'poke_lon',
+                        'disappears_in')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_teleport_back',
+            parameters=('last_lat', 'last_lon')
+        )
 
     def tick(self):
         self.health_record.heartbeat()

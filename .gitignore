@@ -35,6 +35,9 @@ var/
 .pydevproject
 .settings/
 
+# Cloud9 Users
+.c9/
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
@@ -102,6 +105,7 @@ web/
 data/last-location*.json
 data/cells-*.json
 data/map-caught-*.json
+user_web_catchable
 
 # Multiple config
 configs/*
@@ -120,3 +124,7 @@ include/
 
 # Pip check file
 pip-selfcheck.json
+
+local/
+share/
+
