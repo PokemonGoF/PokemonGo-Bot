@@ -544,9 +544,9 @@ class PokemonGoBot(object):
                 self.api._auth_provider._ticket_expire / 1000 - time.time()
 
             if remaining_time < 60:
-                bot.event_manager.emit(
-                    'session_stale',
-                    sender=bot,
+                self.event_manager.emit(
+                    'api_error',
+                    sender=self,
                     level='info',
                     formatted='Session stale, re-logging in.'
                 )                
