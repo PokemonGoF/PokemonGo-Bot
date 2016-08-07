@@ -11,16 +11,14 @@ class NicknamePokemon(BaseTask):
         if self.template == "{name}":
             self.template = ""
 
+        self.translate = None
         locale = self.config.get('locale', 'en')
         if locale == 'en':
             self.pokemon_list = self.bot.pokemon_list
         else:
-            fn = 'data/pokemon_{}.json'.format(locale)
+            fn = 'data/locales/{}.json'.format(locale)
             if os.path.isfile(fn):
-                self.pokemon_list = json.load(open(fn))
-            else:
-                # fallback to en
-                self.pokemon_list = self.bot.pokemon_list
+                self.translate = json.load(open(fn))
 
     def work(self):
         try:
@@ -31,6 +29,12 @@ class NicknamePokemon(BaseTask):
             pokemon_data = self._get_inventory_pokemon(inventory)
             for pokemon in pokemon_data:
                 self._nickname_pokemon(pokemon)
+
+    def _localize(self, string):
+        if self.translate and string in self.translate:
+            return self.translate[string]
+        else:
+            return string
 
     def _get_inventory_pokemon(self,inventory_dict):
         pokemon_data = []
@@ -55,7 +59,7 @@ class NicknamePokemon(BaseTask):
             )
             return
         id = pokemon.get('pokemon_id',0)-1
-        name = self.pokemon_list[id]['Name']
+        name = self._localize(self.bot.pokemon_list[id]['Name'])
         cp = pokemon.get('cp',0)
         iv_attack = pokemon.get('individual_attack',0)
         iv_defense = pokemon.get('individual_defense',0)
@@ -101,7 +105,7 @@ class NicknamePokemon(BaseTask):
         elif result == 1:
             self.emit_event(
                 'rename_pokemon',
-                formatted="Pokemon {old_name} renamed to {current_name}",
+                formatted=u"Pokemon {old_name} renamed to {current_name}",
                 data={
                     'old_name': name,
                     'current_name': new_name
