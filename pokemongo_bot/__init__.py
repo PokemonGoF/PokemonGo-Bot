@@ -547,11 +547,17 @@ class PokemonGoBot(object):
                 self.api._auth_provider._ticket_expire / 1000 - time.time()
 
             if remaining_time < 60:
-                self.logger.info("Session stale, re-logging in", 'yellow')
+                self.event_manager.emit(
+                    'api_error',
+                    sender=self,
+                    level='info',
+                    formatted='Session stale, re-logging in.'
+                )
                 position = self.position
                 self.api = ApiWrapper()
                 self.position = position
                 self.login()
+                self.api.activate_signature("encrypt.so")
 
     @staticmethod
     def is_numeric(s):
