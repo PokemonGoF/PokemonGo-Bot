@@ -51,37 +51,82 @@ logger = logging.getLogger('cli')
 logger.setLevel(logging.INFO)
 
 def main():
-    logger.info('PokemonGO Bot v1.0')
-    sys.stdout = codecs.getwriter('utf8')(sys.stdout)
-    sys.stderr = codecs.getwriter('utf8')(sys.stderr)
+    try:
+        logger.info('PokemonGO Bot v1.0')
+        sys.stdout = codecs.getwriter('utf8')(sys.stdout)
+        sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
-    config = init_config()
-    if not config:
-        return
+        config = init_config()
+        if not config:
+            return
 
-    logger.info('Configuration initialized')
-    health_record = BotEvent(config)
-    health_record.login_success()
+        logger.info('Configuration initialized')
+        health_record = BotEvent(config)
+        health_record.login_success()
 
-    finished = False
+        finished = False
 
-    while not finished:
-        bot = PokemonGoBot(config)
-        bot.start()
-        tree = TreeConfigBuilder(bot, config.raw_tasks).build()
-        bot.workers = tree
-        bot.metrics.capture_stats()
+        while not finished:
+            try:
+                bot = PokemonGoBot(config)
+                bot.start()
+                tree = TreeConfigBuilder(bot, config.raw_tasks).build()
+                bot.workers = tree
+                bot.metrics.capture_stats()
 
-        bot.event_manager.emit(
-            'bot_start',
-            sender=bot,
-            level='info',
-            formatted='Starting bot...'
-        )
+                bot.event_manager.emit(
+                    'bot_start',
+                    sender=bot,
+                    level='info',
+                    formatted='Starting bot...'
+                )
 
-        while True:
-            bot.tick()
+                while True:
+                    bot.tick()
 
+            except KeyboardInterrupt:
+                bot.event_manager.emit(
+                    'bot_exit',
+                    sender=bot,
+                    level='info',
+                    formatted='Exiting bot.'
+                )
+                finished = True
+                report_summary(bot)
+
+            except NotLoggedInException:
+                wait_time = config.reconnecting_timeout * 60
+                bot.event_manager.emit(
+                    'api_error',
+                    sender=bot,
+                    level='info',
+                    formmated='Log logged in, reconnecting in {:s}'.format(wait_time)
+                )
+                time.sleep(wait_time)
+            except ServerBusyOrOfflineException:
+                bot.event_manager.emit(
+                    'api_error',
+                    sender=bot,
+                    level='info',
+                    formatted='Server busy or offline'
+                )
+            except ServerSideRequestThrottlingException:
+                bot.event_manager.emit(
+                    'api_error',
+                    sender=bot,
+                    level='info',
+                    formatted='Server is throttling, reconnecting in 30 seconds'
+                )
+                time.sleep(30)
+
+    except GeocoderQuotaExceeded:
+        raise Exception("Google Maps API key over requests limit.")
+    except Exception as e:
+        # always report session summary and then raise exception
+        if bot:
+            report_summary(bot)
+
+        raise e
 
 def report_summary(bot):
     if bot.metrics.start_time is None:
