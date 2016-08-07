@@ -10,7 +10,7 @@ class TransferPokemon(BaseTask):
 
     def work(self):
         pokemon_count = self.bot.get_inventory_count('pokemon')
-        if pokemon_count < 200:
+        if pokemon_count < 150:
             return WorkerResult.SUCCESS
 
         pokemon_groups = self._release_pokemon_get_groups()
