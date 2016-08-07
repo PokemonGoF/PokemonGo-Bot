@@ -1,4 +1,4 @@
-from pokemongo_bot import BaseTask
+from pokemongo_bot.base_task import BaseTask
 
 
 class CollectLevelUpReward(BaseTask):

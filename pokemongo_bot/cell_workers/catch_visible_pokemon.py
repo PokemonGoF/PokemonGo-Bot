@@ -1,6 +1,6 @@
 import json
 
-from pokemongo_bot import BaseTask
+from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 from utils import distance
 

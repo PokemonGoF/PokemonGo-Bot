@@ -1,6 +1,6 @@
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.item_list import Item
-from pokemongo_bot import BaseTask
+from pokemongo_bot.base_task import BaseTask
 
 
 class EvolvePokemon(BaseTask):

@@ -2,7 +2,7 @@ import ctypes
 from sys import stdout, platform as _platform
 from datetime import datetime, timedelta
 
-from pokemongo_bot import BaseTask
+from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.tree_config_builder import ConfigException
 

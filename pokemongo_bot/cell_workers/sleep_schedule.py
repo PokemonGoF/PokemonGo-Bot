@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from time import sleep
 from random import uniform
-from pokemongo_bot import BaseTask
+from pokemongo_bot.base_task import BaseTask
 
 
 class SleepSchedule(BaseTask):
