@@ -147,7 +147,10 @@ class SpinFort(BaseTask):
     def get_fort_in_range(self):
         forts = self.bot.get_forts(order_by_distance=True)
 
-        forts = filter(lambda x: 'cooldown_complete_timestamp_ms' not in x, forts)
+        for fort in forts:
+            if 'cooldown_complete_timestamp_ms' in fort:
+                self.bot.fort_timeouts[fort["id"]] = fort['cooldown_complete_timestamp_ms']
+                forts.remove(fort)
 
         forts = filter(lambda x: x["id"] not in self.bot.fort_timeouts, forts)
 
