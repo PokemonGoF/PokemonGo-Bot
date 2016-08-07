@@ -33,6 +33,8 @@ import os
 import ssl
 import sys
 import time
+import traceback
+import subprocess
 from datetime import timedelta
 from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException
@@ -129,7 +131,9 @@ def main():
         if bot:
             report_summary(bot)
 
-        raise e
+        traceback.print_exc()
+        subprocess.Popen(['python', 'pokecli.py'], shell=False)
+        # raise e
 
 def report_summary(bot):
     if bot.metrics.start_time is None:

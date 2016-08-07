@@ -2,13 +2,19 @@ import json
 
 from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.base_task import BaseTask
+from pokemongo_bot.worker_result import WorkerResult
 
 
 class TransferPokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def work(self):
+        pokemon_count = self.bot.get_inventory_count('pokemon')
+        if pokemon_count < 200:
+            return WorkerResult.SUCCESS
+
         pokemon_groups = self._release_pokemon_get_groups()
+        # print pokemon_groups
         for pokemon_id in pokemon_groups:
             group = pokemon_groups[pokemon_id]
 

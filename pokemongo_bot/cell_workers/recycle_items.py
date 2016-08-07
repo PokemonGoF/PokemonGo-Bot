@@ -2,6 +2,7 @@ import json
 import os
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.tree_config_builder import ConfigException
+from pokemongo_bot.worker_result import WorkerResult
 
 class RecycleItems(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -20,6 +21,8 @@ class RecycleItems(BaseTask):
     def work(self):
         self.bot.latest_inventory = None
         item_count_dict = self.bot.item_inventory_count('all')
+        if sum(item_count_dict.values()) < 350:
+            return WorkerResult.SUCCESS
 
         for item_id, bag_count in item_count_dict.iteritems():
             item_name = self.bot.item_list[str(item_id)]
@@ -33,7 +36,7 @@ class RecycleItems(BaseTask):
 
             bag_count = self.bot.item_inventory_count(item_id)
             if (item_name in self.item_filter or str(item_id) in self.item_filter) and bag_count > id_filter_keep:
-                items_recycle_count = bag_count - id_filter_keep
+                items_recycle_count = (bag_count - id_filter_keep) + 10
                 response_dict_recycle = self.send_recycle_item_request(item_id=item_id, count=items_recycle_count)
                 result = response_dict_recycle.get('responses', {}).get('RECYCLE_INVENTORY_ITEM', {}).get('result', 0)
 
