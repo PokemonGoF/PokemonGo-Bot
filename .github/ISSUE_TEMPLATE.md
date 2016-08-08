@@ -1,3 +1,5 @@
+Please check configuration at http://jsonlint.com/ before posting an issue.
+
 ### Expected Behavior
 
 
