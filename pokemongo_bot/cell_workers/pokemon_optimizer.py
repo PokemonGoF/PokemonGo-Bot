@@ -18,7 +18,7 @@ class PokemonOptimizer(BaseTask):
         self.candies_by_family_name = {}
         self.pokemon_count = 0
 
-        self.dry_run = False
+        self.dry_run = True
 
     def work(self):
         family_changed = True
@@ -33,6 +33,9 @@ class PokemonOptimizer(BaseTask):
 
             for family_name, family in self.family_by_family_name.items():
                 family_changed |= self.optimize_family(family_name, family)
+
+            if self.dry_run:
+                break
 
             if family_changed:
                 self.bot.latest_inventory = None
