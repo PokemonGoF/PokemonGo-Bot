@@ -84,6 +84,10 @@ class PokemonCatchWorker(BaseTask):
         pokemon_data = response['wild_pokemon']['pokemon_data'] if 'wild_pokemon' in response else response['pokemon_data']
         pokemon = Pokemon(self.pokemon_list, pokemon_data)
 
+        # skip ignored pokemon
+        if not self._should_catch_pokemon(pokemon):
+            return False
+
         # log encounter
         self.emit_event(
             'pokemon_appeared',
@@ -104,9 +108,6 @@ class PokemonCatchWorker(BaseTask):
         if is_vip:
             self.emit_event('vip_pokemon', formatted='This is a VIP pokemon. Catch!!!')
 
-        # skip ignored pokemon
-        elif not self._should_catch_pokemon(pokemon):
-            return False
         # catch that pokemon!
         encounter_id = self.pokemon['encounter_id']
         catch_rate_by_ball = [0] + response['capture_probability']['capture_probability']  # offset so item ids match indces
