@@ -98,12 +98,3 @@ logging.addLevelName(CYAN_LEVELV_NUM, 'cyan')
 logging.Logger.red = red
 logging.addLevelName(RED_LEVELV_NUM, 'red')
 logging.Logger.colorized = colorized
-
-# We need to set our formatter to the stdout/stder handlers
-# TODO: If and when we get support for logging to a file,
-# We need to ensure that the color formatter is not applied
-# to that handler.
-def init_logger():
-    rootLogger = logging.getLogger()
-    for handler in rootLogger.handlers:
-        handler.setFormatter(ColorizedLogFormatter())

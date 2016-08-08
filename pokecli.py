@@ -54,9 +54,6 @@ if sys.version_info >= (2, 7, 9):
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(name)10s] [%(levelname)s] %(message)s')
-# FIXME: We need to override basicConfig. So go ahead and do that
-from pokemongo_bot import logger
-logger.init_logger()
 
 logger = logging.getLogger('cli')
 logger.setLevel(logging.INFO)
