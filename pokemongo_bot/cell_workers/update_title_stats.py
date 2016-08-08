@@ -119,7 +119,7 @@ class UpdateTitleStats(BaseTask):
                     'title': title
                 }
             )
-        else
+        else:
             if platform == "linux" or platform == "linux2" or platform == "cygwin":
                 stdout.write("\x1b]2;{}\x07".format(title))
                 stdout.flush()
