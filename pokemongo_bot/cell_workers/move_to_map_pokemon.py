@@ -230,8 +230,13 @@ class MoveToMapPokemon(BaseTask):
         pokeballs = self.bot.item_inventory_count(1)
         superballs = self.bot.item_inventory_count(2)
         ultraballs = self.bot.item_inventory_count(3)
+    
+        min_ball = 1
+        #Load the minnimum amount of ball from configuration file
+        if self.config['min_ball']:
+            min_ball = self.config['min_ball']
 
-        if (pokeballs + superballs + ultraballs) < 1:
+        if (pokeballs + superballs + ultraballs) < min_ball:
             return WorkerResult.SUCCESS
 
         self.update_map_location()
