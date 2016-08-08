@@ -11,6 +11,8 @@ from mock import patch, MagicMock
 from pokemongo_bot.plugin_loader import PluginLoader, GithubPlugin
 from pokemongo_bot.test.resources.plugin_fixture import FakeTask
 
+PLUGIN_PATH = os.path.realpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'plugins'))
+
 class PluginLoaderTest(unittest.TestCase):
     def setUp(self):
         self.plugin_loader = PluginLoader()
@@ -79,16 +81,25 @@ class GithubPluginTest(unittest.TestCase):
         self.assertFalse(GithubPlugin('foo').is_valid_plugin())
         self.assertFalse(GithubPlugin('/Users/foo/bar.zip').is_valid_plugin())
 
+    def test_get_installed_version(self):
+        github_plugin = GithubPlugin('org/repo#my-version')
+        src_fixture = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'resources', 'plugin_sha')
+        dest = github_plugin.get_plugin_folder()
+        shutil.copytree(src_fixture, dest)
+        actual = github_plugin.get_installed_version()
+        shutil.rmtree(dest)
+        self.assertEqual('my-version', actual)
+
     def test_get_plugin_folder(self):
         github_plugin = GithubPlugin('org/repo#sha')
-        expected = os.path.realpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'plugins', 'org_repo'))
+        expected = os.path.join(PLUGIN_PATH, 'org_repo')
         actual = github_plugin.get_plugin_folder()
         self.assertEqual(actual, expected)
 
     def test_get_local_destination(self):
         github_plugin = GithubPlugin('org/repo#sha')
         path = github_plugin.get_local_destination()
-        expected = os.path.realpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'plugins', 'org_repo_sha.zip'))
+        expected = os.path.join(PLUGIN_PATH, 'org_repo_sha.zip')
         self.assertEqual(path, expected)
 
     def test_get_github_download_url(self):
@@ -97,13 +108,47 @@ class GithubPluginTest(unittest.TestCase):
         expected = 'https://github.com/org/repo/archive/sha.zip'
         self.assertEqual(url, expected)
 
-    def test_is_already_installed_not_downloaded(self):
+    def test_is_already_installed_not_installed(self):
         github_plugin = GithubPlugin('org/repo#sha')
         self.assertFalse(github_plugin.is_already_installed())
 
-    def test_is_already_installed_downloaded(self):
+    def test_is_already_installed_version_mismatch(self):
         github_plugin = GithubPlugin('org/repo#sha')
-        dest = github_plugin.get_local_destination()
-        open(dest, 'a').close()
-        self.assertTrue(github_plugin.is_already_installed())
-        os.remove(dest)
+        plugin_folder = github_plugin.get_plugin_folder()
+        os.mkdir(plugin_folder)
+        with open(os.path.join(plugin_folder, '.sha'), 'w') as file:
+            file.write('sha2')
+
+        actual = github_plugin.is_already_installed()
+        shutil.rmtree(plugin_folder)
+        self.assertFalse(actual)
+
+    def test_is_already_installed_installed(self):
+        github_plugin = GithubPlugin('org/repo#sha')
+        plugin_folder = github_plugin.get_plugin_folder()
+        os.mkdir(plugin_folder)
+        with open(os.path.join(plugin_folder, '.sha'), 'w') as file:
+            file.write('sha')
+
+        actual = github_plugin.is_already_installed()
+        shutil.rmtree(plugin_folder)
+        self.assertTrue(actual)
+
+    def test_extract(self):
+        github_plugin = GithubPlugin('org/repo#mysha')
+        src = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'resources', 'plugin_fixture_test.zip')
+        zip_dest = github_plugin.get_local_destination()
+        shutil.copyfile(src, zip_dest)
+        github_plugin.extract()
+        plugin_folder = github_plugin.get_plugin_folder()
+        os.path.isdir(plugin_folder)
+        sha_file = os.path.join(github_plugin.get_plugin_folder(), '.sha')
+        os.path.isfile(sha_file)
+
+        with open(sha_file) as file:
+            content = file.read().strip()
+            self.assertEqual(content, 'mysha')
+
+        os.remove(zip_dest)
+        shutil.rmtree(plugin_folder)
+

@@ -3,6 +3,7 @@ import sys
 import importlib
 import re
 import requests
+import zipfile
 
 class PluginLoader(object):
   folder_cache = []
@@ -21,9 +22,9 @@ class PluginLoader(object):
     github_plugin = GithubPlugin(plugin)
     if github_plugin.is_valid_plugin():
       if not github_plugin.is_already_installed():
-        github_plugin.download()
+        github_plugin.install()
 
-      correct_path = github_plugin.get_local_destination()
+      correct_path = github_plugin.get_plugin_folder()
     else:
       correct_path = self._get_correct_path(plugin)
 
@@ -64,6 +65,15 @@ class GithubPlugin(object):
 
     return parts
 
+  def get_installed_version(self):
+    if not self.is_already_installed():
+      return None
+
+    filename = os.path.join(self.get_plugin_folder(), '.sha')
+    print filename
+    with open(filename) as file:
+        return file.read().strip()
+
   def get_local_destination(self):
     parts = self.plugin_parts
     if parts is None:
@@ -74,8 +84,22 @@ class GithubPlugin(object):
     return full_path
 
   def is_already_installed(self):
-    file_path = self.get_local_destination()
-    return os.path.isfile(file_path)
+    file_path = self.get_plugin_folder()
+    if not os.path.isdir(file_path):
+      return False
+
+    sha_file = os.path.join(file_path, '.sha')
+
+    if not os.path.isfile(sha_file):
+      return False
+
+    with open(sha_file) as file:
+      content = file.read().strip()
+
+      if content != self.plugin_parts['sha']:
+        return False
+
+    return True
 
   def get_plugin_folder(self):
     folder_name = '{}_{}'.format(self.plugin_parts['user'], self.plugin_parts['repo'])
@@ -90,11 +114,16 @@ class GithubPlugin(object):
     return github_url
 
   def install(self):
-    pass
+    self.download()
+    self.extract()
 
   def extract(self):
-    with zipfile.ZipFile('test.zip', "r") as z:
-      z.extractall("C:\\")
+    dest = self.get_plugin_folder()
+    with zipfile.ZipFile(self.get_local_destination(), "r") as z:
+      z.extractall(dest)
+
+    with open(os.path.join(dest, '.sha'), 'w') as file:
+      file.write(self.plugin_parts['sha'])
 
   def download(self):
     url = self.get_github_download_url()
