@@ -1,5 +1,6 @@
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.base_task import BaseTask
+from pokemongo_bot.worker_result import WorkerResult
 
 
 class NicknamePokemon(BaseTask):
@@ -12,7 +13,7 @@ class NicknamePokemon(BaseTask):
 
     def work(self):
         if not self._time_to_run():
-            return False
+            return WorkerResult.SUCCESS
         self._update_last_ran()
 
         try:
