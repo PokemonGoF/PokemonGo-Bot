@@ -1,5 +1,5 @@
 from pokemongo_bot.base_task import BaseTask
-
+from pokemongo_bot.worker_result import WorkerResult
 
 class CollectLevelUpReward(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -13,9 +13,9 @@ class CollectLevelUpReward(BaseTask):
 
     def work(self):
         if not self._time_to_run():
-            return False
+            return WorkerResult.SUCCESS
         self._update_last_ran()
-        
+
         self.current_level = self._get_current_level()
 
         # let's check level reward on bot initialization

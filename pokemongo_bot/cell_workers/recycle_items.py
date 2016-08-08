@@ -2,6 +2,8 @@ import json
 import os
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.tree_config_builder import ConfigException
+from pokemongo_bot.worker_result import WorkerResult
+
 
 class RecycleItems(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -19,9 +21,9 @@ class RecycleItems(BaseTask):
 
     def work(self):
         if not self._time_to_run():
-            return False
+            return WorkerResult.SUCCESS
         self._update_last_ran()
-        
+
         self.bot.latest_inventory = None
         item_count_dict = self.bot.item_inventory_count('all')
 
