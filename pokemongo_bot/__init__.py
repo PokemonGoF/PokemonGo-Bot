@@ -747,7 +747,8 @@ class PokemonGoBot(object):
         self.logger.info(
             'Potion: ' + str(items_stock[101]) +
             ' | SuperPotion: ' + str(items_stock[102]) +
-            ' | HyperPotion: ' + str(items_stock[103]))
+            ' | HyperPotion: ' + str(items_stock[103]) +
+            ' | MaxPotion: ' + str(items_stock[104]))
 
         self.logger.info(
             'Incense: ' + str(items_stock[401]) +
