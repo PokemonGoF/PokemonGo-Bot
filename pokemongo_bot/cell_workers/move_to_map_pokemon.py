@@ -172,19 +172,17 @@ class MoveToMapPokemon(BaseTask):
         return pokemon_list
 
     def add_caught(self, pokemon):
-        for caught_pokemon in self.caught:
-            if caught_pokemon['encounter_id'] == pokemon['encounter_id']:
-                return
         if len(self.caught) >= 200:
             self.caught.pop(0)
         self.caught.append(pokemon)
 
     def was_caught(self, pokemon):
         for caught_pokemon in self.caught:
-            if pokemon['encounter_id'] == caught_pokemon['encounter_id']:
-                return True
-            if pokemon['is_lured'] and pokemon['fort_id'] == caught_pokemon['fort_id'] and pokemon['disappear_time'] == caught_pokemon['disappear_time']:
-                return True
+            if pokemon['is_lured'] == caught_pokemon.get('is_lured', False):
+                if not pokemon['is_lured'] and pokemon['encounter_id'] == caught_pokemon['encounter_id']:
+                    return True
+                if pokemon['is_lured'] and pokemon['fort_id'] == caught_pokemon['fort_id'] and pokemon['disappear_time'] == caught_pokemon['disappear_time']:
+                    return True
         return False
 
     def update_map_location(self):
