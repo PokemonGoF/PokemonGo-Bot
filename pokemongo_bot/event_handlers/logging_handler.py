@@ -15,13 +15,14 @@ class LoggingHandler(EventHandler):
 
         root_logger = logging.getLogger()
         # We need to now essentially override basicConfig
-        # We're done with the basic **** and now turn on
-        # the oh-so-pretty color logging
         root_logger.handlers = []
 
         # We now need to set up the stream/file handler
         #XXX: Should this be hard-coded to stdout?
         stream_handler = logging.StreamHandler(sys.stdout)
+
+        # We're done with the basic **** and now turn on
+        # the oh-so-pretty color logging
         stream_handler.setFormatter(logger.ColorizedLogFormatter())
         root_logger.addHandler(stream_handler)
 
