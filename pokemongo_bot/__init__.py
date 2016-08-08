@@ -539,18 +539,19 @@ class PokemonGoBot(object):
 
             # prevent crash if return not numeric value
             if not self.is_numeric(self.api._auth_provider._ticket_expire):
-                self.logger.info("Ticket expired value is not numeric", 'yellow')
+                self.logger.info("Ticket expired value is not numeric")
                 return
 
             remaining_time = \
                 self.api._auth_provider._ticket_expire / 1000 - time.time()
 
             if remaining_time < 60:
-                self.logger.info("Session stale, re-logging in", 'yellow')
+                self.logger.info("Session stale, re-logging in")
                 position = self.position
                 self.api = ApiWrapper()
                 self.position = position
                 self.login()
+                self.api.activate_signature("encrypt.so")
 
     @staticmethod
     def is_numeric(s):
@@ -622,7 +623,7 @@ class PokemonGoBot(object):
         else:
             self.logger.info(
                 "The API didn't return player info, servers are unstable - "
-                "retrying.", 'red'
+                "retrying."
             )
             sleep(5)
             self._print_character_info()
