@@ -609,7 +609,7 @@ class PokemonGoBot(object):
         file_name = ''
         if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
             file_name = 'encrypt.so'
-        elif _platform == "Windows" or _platform == "win32":
+        elif _platform == "Windows" or _platform == "win32" or _platform == "cygwin":
             # Check if we are on 32 or 64 bit
             if sys.maxsize > 2**32:
                 file_name = 'encrypt_64.dll'
@@ -621,7 +621,8 @@ class PokemonGoBot(object):
 
         if not os.path.isfile(full_path):
             self.logger.error(file_name + ' is not found! Please place it in the bots root directory.')
-            self.logger.info('Platform: '+ _platform + ' Bot root directory: '+ path)
+            self.logger.info('Platform: '+ _platform)
+            self.logger.info('Bot root directory: '+ path)
             sys.exit(1)
         else:
             self.logger.info('Found '+ file_name +'! Platform: ' + _platform + ' Bot root directory: ' + path)
