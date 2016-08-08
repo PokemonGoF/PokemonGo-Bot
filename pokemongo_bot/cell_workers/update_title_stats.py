@@ -111,8 +111,10 @@ class UpdateTitleStats(BaseTask):
         """
         if platform == "linux" or platform == "linux2" or platform == "cygwin":
             stdout.write("\x1b]2;{}\x07".format(title))
+            stdout.flush()
         elif platform == "darwin":
             stdout.write("\033]0;{}\007".format(title))
+            stdout.flush()
         elif platform == "win32":
             ctypes.windll.kernel32.SetConsoleTitleA(title)
         else:
