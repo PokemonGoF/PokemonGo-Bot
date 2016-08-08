@@ -104,7 +104,7 @@ def main():
                     'api_error',
                     sender=bot,
                     level='info',
-                    formatted='Log logged in, reconnecting in {:s}'.format(wait_time)
+                    formatted='Log logged in, reconnecting in {:d}'.format(wait_time)
                 )
                 time.sleep(wait_time)
             except ServerBusyOrOfflineException:
