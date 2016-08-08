@@ -37,6 +37,8 @@ class RecycleItems(BaseTask):
             bag_count = self.bot.item_inventory_count(item_id)
             if (item_name in self.item_filter or str(item_id) in self.item_filter) and bag_count > id_filter_keep:
                 items_recycle_count = (bag_count - id_filter_keep) + 10
+                if items_recycle_count > bag_count:
+                    items_recycle_count = bag_count
                 response_dict_recycle = self.send_recycle_item_request(item_id=item_id, count=items_recycle_count)
                 result = response_dict_recycle.get('responses', {}).get('RECYCLE_INVENTORY_ITEM', {}).get('result', 0)
 

@@ -17,7 +17,7 @@ class MoveToFort(BaseTask):
         self.lure_max_distance = 2000 #self.config.get("lure_max_distance", 2000)
 
     def should_run(self):
-        has_space_for_loot = self.bot.has_space_for_loot()
+        has_space_for_loot = True # self.bot.has_space_for_loot()
         if not has_space_for_loot:
             self.emit_event(
                 'inventory_full',
