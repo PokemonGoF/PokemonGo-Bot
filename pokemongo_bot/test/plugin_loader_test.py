@@ -27,6 +27,7 @@ class PluginLoaderTest(unittest.TestCase):
         self.assertEqual(loaded_class({}, {}).work(), 'FakeTask')
         self.plugin_loader.remove_path(package_path)
 
+class GithubPluginTest(unittest.TestCase):
     def test_get_github_parts_for_valid_github(self):
         github_plugin = GithubPlugin('org/repo#sha')
         self.assertTrue(github_plugin.is_valid_plugin())
@@ -50,3 +51,14 @@ class PluginLoaderTest(unittest.TestCase):
         url = github_plugin.get_github_download_url()
         expected = 'https://github.com/org/repo/archive/sha.zip'
         self.assertEqual(url, expected)
+
+    def test_is_already_downloaded_not_downloaded(self):
+        github_plugin = GithubPlugin('org/repo#sha')
+        self.assertFalse(github_plugin.is_already_downloaded())
+
+    def test_is_already_downloaded_downloaded(self):
+        github_plugin = GithubPlugin('org/repo#sha')
+        dest = github_plugin.get_local_destination()
+        open(dest, 'a').close()
+        self.assertTrue(github_plugin.is_already_downloaded())
+        os.remove(dest)

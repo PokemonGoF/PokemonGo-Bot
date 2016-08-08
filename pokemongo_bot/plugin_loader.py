@@ -63,6 +63,10 @@ class GithubPlugin(object):
     full_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'plugins', file_name)
     return full_path
 
+  def is_already_downloaded(self):
+    file_path = self.get_local_destination()
+    return os.path.isfile(file_path)
+
   def get_github_download_url(self):
     parts = self.plugin_parts
     if parts is None:
