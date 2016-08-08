@@ -18,4 +18,4 @@ from collect_level_up_reward import CollectLevelUpReward
 from follow_cluster import FollowCluster
 from sleep_schedule import SleepSchedule
 from update_title_stats import UpdateTitleStats
-from pokemongo_bot.cell_workers.pokemon_optimizer import PokemonOptimizer
+from pokemon_optimizer import PokemonOptimizer

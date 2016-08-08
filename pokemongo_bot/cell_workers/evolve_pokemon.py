@@ -151,7 +151,8 @@ class EvolvePokemon(BaseTask):
                 data={
                     'pokemon': pokemon_name,
                     'iv': pokemon_iv,
-                    'cp': pokemon_cp
+                    'cp': pokemon_cp,
+                    'xp': 0
                 }
             )
             candy_list[pokemon["candies_family"]] -= pokemon["candies_amount"]

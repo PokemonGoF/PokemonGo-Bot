@@ -1,5 +1,8 @@
+import logging
+
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.human_behaviour import sleep, action_delay
+from pokemongo_bot.item_list import Item
 
 
 class PokemonOptimizer(BaseTask):
@@ -17,8 +20,13 @@ class PokemonOptimizer(BaseTask):
         self.family_by_family_name = {}
         self.candies_by_family_name = {}
         self.pokemon_count = 0
+        self.lucky_egg_count = 0
 
-        self.dry_run = True
+        self.dry_run = self.config.get("dry_run", True)
+        self.use_lucky_egg = self.config.get("use_lucky_egg", False)
+
+    def get_pokemon_slot_left(self):
+        return self.bot._player["max_pokemon_storage"] - self.pokemon_count
 
     def work(self):
         family_changed = True
@@ -31,8 +39,22 @@ class PokemonOptimizer(BaseTask):
             if self.get_pokemon_slot_left() > 5:
                 break
 
+            transfer_all_pokemons = []
+            evo_all_best_pokemons = []
+            evo_all_crap_pokemons = []
+
             for family_name, family in self.family_by_family_name.items():
-                family_changed |= self.optimize_family(family_name, family)
+                transfer_pokemons, evo_best_pokemons, evo_crap_pokemons = self.get_family_optimized(family_name, family)
+                transfer_all_pokemons += transfer_pokemons
+                evo_all_best_pokemons += evo_best_pokemons
+                evo_all_crap_pokemons += evo_crap_pokemons
+
+            evo_all_pokemons = evo_all_best_pokemons + evo_all_crap_pokemons
+
+            if (not self.use_lucky_egg) or (self.lucky_egg_count == 0) or (len(evo_all_pokemons) < 90):
+                del evo_all_pokemons[:]
+
+            family_changed = self.apply_optimization(transfer_all_pokemons, evo_all_pokemons)
 
             if self.dry_run:
                 break
@@ -40,14 +62,9 @@ class PokemonOptimizer(BaseTask):
             if family_changed:
                 self.bot.latest_inventory = None
 
-    def get_pokemon_slot_left(self):
-        return self.bot._player["max_pokemon_storage"] - self.pokemon_count
-
-    def optimize_family(self, family_name, family):
-        family_changed = False
-
+    def get_family_optimized(self, family_name, family):
         if family_name == "Eevee":
-            return False
+            return ([], [], [])
 
         candies = self.candies_by_family_name.get(family_name, 0)
         best_iv_pokemons = self.get_best_iv_in_family(family)
@@ -56,42 +73,81 @@ class PokemonOptimizer(BaseTask):
 
         best_pokemons = self.combine_pokemon_lists(best_iv_pokemons, best_relative_cp_pokemons)
 
-        need_candy_for_best = sum(p["candy_count"] for p in best_pokemons)
-        need_candy_per_xp = self.family_data_by_pokemon_name[family_name][2]
-
-        leftover_candy = candies - need_candy_for_best
-
-        if (need_candy_per_xp > 0) and (leftover_candy >= need_candy_per_xp):
-            keep_for_evo = int(leftover_candy / need_candy_per_xp)
-        else:
-            keep_for_evo = 0
-
         crap = family[:]
-        crap = [p for p in crap if p not in best_iv_pokemons]
-        crap = [p for p in crap if p not in best_relative_cp_pokemons]
+        crap = [p for p in crap if p not in best_pokemons]
         crap = [p for p in crap if p not in best_cp_pokemons]
         crap.sort(key=lambda p: p["iv"], reverse=True)
 
-        transfer_pokemons = crap[keep_for_evo:]
-        evo_pokemons = crap[:keep_for_evo]
+        evo_best_pokemons = []
+
+        for pokemon in best_pokemons:
+            next_amount = pokemon["next_amount"]
+
+            if next_amount == 0:
+                continue
+
+            if next_amount <= candies:
+                evo_best_pokemons.append(pokemon)
+                candies -= next_amount
+
+                next_name = pokemon["next_name"]
+
+                if next_name:
+                    next_family_data = self.family_data_by_pokemon_name[next_name]
+
+                    if next_family_data["next_amount"] > 0:
+                        # logging.info("Will try to multi evolve %s [IV %s] [CP %s]", pokemon["name"], pokemon["iv"], pokemon["cp"])
+
+                        next_evo = dict(pokemon)
+                        next_evo["name"] = next_name
+                        next_evo.update(next_family_data)
+
+                        best_pokemons.append(next_evo)
+            else:
+                break
+
+        junior_next_amount = self.family_data_by_pokemon_name[family_name]["next_amount"]
+
+        # leftover_candy = candies + transfer
+        # transfer + keep_for_evo = len(crap)
+        # keep_for_evo = int(leftover_candy / junior_next_amount)
+
+        if junior_next_amount > 0:
+            keep_for_evo = int((candies + len(crap)) / (junior_next_amount + 1))
+        else:
+            keep_for_evo = 0
+
+        evo_crap_pokemons = [p for p in crap if p["next_amount"] == junior_next_amount][:keep_for_evo]
+        transfer_pokemons = [p for p in crap if p not in evo_crap_pokemons]
+
+        return (transfer_pokemons, evo_best_pokemons, evo_crap_pokemons)
+
+    def apply_optimization(self, transfer_pokemons, evo_pokemons):
+        family_changed = False
 
         for pokemon in transfer_pokemons:
             self.transfer_pokemon(pokemon)
             family_changed = True
 
-        for pokemon in best_pokemons + evo_pokemons:
-            if pokemon["candy_count"] == 0:
-                continue
-
-            if self.candies_by_family_name[pokemon["family_name"]] < pokemon["candy_count"]:
-                break
-
+        for pokemon in evo_pokemons:
             if self.evolve_pokemon(pokemon):
                 family_changed = True
             else:
                 break
 
         return family_changed
+
+    def get_best_iv_in_family(self, family):
+        best_pokemon = max(family, key=lambda p: p["iv"])
+        return [p for p in family if p["iv"] == best_pokemon["iv"]]
+
+    def get_best_relative_cp_in_family(self, family):
+        best_pokemon = max(family, key=lambda p: p["relative_cp"])
+        return [p for p in family if p["relative_cp"] == best_pokemon["relative_cp"]]
+
+    def get_best_cp_in_family(self, family):
+        best_pokemon = max(family, key=lambda p: p["cp"])
+        return [p for p in family if p["cp"] == best_pokemon["cp"]]
 
     def transfer_pokemon(self, pokemon):
         if self.dry_run:
@@ -129,24 +185,11 @@ class PokemonOptimizer(BaseTask):
                                   "xp": xp})
 
             if not self.dry_run:
-                self.candies_by_family_name[pokemon["family_name"]] -= pokemon["candy_count"]
                 sleep(20)
 
             return True
         else:
             return False
-
-    def get_best_cp_in_family(self, family):
-        best_pokemon = max(family, key=lambda p: p["cp"])
-        return [p for p in family if p["cp"] == best_pokemon["cp"]]
-
-    def get_best_relative_cp_in_family(self, family):
-        best_pokemon = max(family, key=lambda p: p["relative_cp"])
-        return [p for p in family if p["relative_cp"] == best_pokemon["relative_cp"]]
-
-    def get_best_iv_in_family(self, family):
-        best_pokemon = max(family, key=lambda p: p["iv"])
-        return [p for p in family if p["iv"] == best_pokemon["iv"]]
 
     def refresh_inventory(self):
         self.family_by_family_name.clear()
@@ -161,7 +204,8 @@ class PokemonOptimizer(BaseTask):
 
         for item in inventory_items:
             pokemon_data = item.get("inventory_item_data", {}).get("pokemon_data", {})
-            candy_data = item.get('inventory_item_data', {}).get('candy', {})
+            candy_data = item.get("inventory_item_data", {}).get("candy", {})
+            item_data = item.get("inventory_item_data", {}).get("item", {})
 
             if pokemon_data:
                 self.pokemon_count += 1
@@ -181,6 +225,11 @@ class PokemonOptimizer(BaseTask):
                         continue
 
                     self.candies_by_family_name[family_name] = count
+            elif item_data:
+                item_id = item_data.get("item_id", False)
+
+                if item_id == Item.ITEM_LUCKY_EGG:
+                    self.lucky_egg_count = item_data.get("count", 0)
 
     def get_pokemon_from_data(self, pokemon_data):
         pokemon_index = pokemon_data.get("pokemon_id", 0) - 1
@@ -191,14 +240,14 @@ class PokemonOptimizer(BaseTask):
         pokemon_name = self.bot.pokemon_list[pokemon_index].get("Name")
 
         if not pokemon_name:
+            logging.error("Invalid pokemon.json data file. Missing 'Name' field for pokemon_index '%s'", pokemon_index)
             return None
 
         family_data = self.family_data_by_pokemon_name.get(pokemon_name)
 
         if not family_data:
+            logging.error("Invalid pokemon.json data file. Missing data for '%s'", pokemon_name)
             return None
-
-        family_name, family_rank, candy_count = family_data
 
         pokemon_cp = pokemon_data.get("cp", 0)
         pokemon_max_cp = self.get_pokemon_max_cp(pokemon_name)
@@ -210,9 +259,9 @@ class PokemonOptimizer(BaseTask):
 
         return {"id": pokemon_data.get("id", 0),
                 "name": pokemon_name,
-                "family_name": family_name,
-                "family_rank": family_rank,
-                "candy_count": candy_count,
+                "family_name": family_data["family_name"],
+                "next_amount": family_data["next_amount"],
+                "next_name": family_data["next_name"],
                 "cp": pokemon_cp,
                 "relative_cp": pokemon_relative_cp,
                 "iv": self.get_pokemon_iv(pokemon_data)}
@@ -303,21 +352,38 @@ class PokemonOptimizer(BaseTask):
             pokemon_name = pokemon.get("Name")
 
             if not pokemon_name:
+                logging.error("Invalid pokemon.json data file. Missing 'Name' field for '%s'", pokemon)
                 continue
 
             prev_evo = pokemon.get("Previous evolution(s)")
-            next_evo = pokemon.get("Next Evolution Requirements")
+            next_evo_req = pokemon.get("Next Evolution Requirements")
+            next_evo = pokemon.get("Next evolution(s)")
 
-            if next_evo:
-                candy_count = next_evo.get("Amount", 0)
+            if next_evo and next_evo_req:
+                next_amount = next_evo_req.get("Amount")
+                next_name = next_evo[0].get("Name")
+
+                if not next_amount:
+                    logging.error("Invalid pokemon.json data file. Missing 'Amount' field for 'Next Evolution Requirements' of '%s'", pokemon_name)
+
+                if not next_name:
+                    logging.error("Invalid pokemon.json data file. Missing 'Name' field for 'Next Evolution Requirements' of '%s'", pokemon_name)
+                else:
+                    next_name = next_name.replace("candies", "").strip()
             else:
-                candy_count = 0
+                next_amount = 0
+                next_name = None
 
             if not prev_evo:
-                self.family_data_by_pokemon_name[pokemon_name] = (pokemon_name, 0, candy_count)
+                self.family_data_by_pokemon_name[pokemon_name] = {"family_name": pokemon_name,
+                                                                  "next_amount": next_amount,
+                                                                  "next_name": next_name}
             else:
-                family_rank = len(prev_evo)
                 family_name = prev_evo[0].get("Name")
 
                 if family_name:
-                    self.family_data_by_pokemon_name[pokemon_name] = (family_name, family_rank, candy_count)
+                    self.family_data_by_pokemon_name[pokemon_name] = {"family_name": family_name,
+                                                                      "next_amount": next_amount,
+                                                                      "next_name": next_name}
+                else:
+                    logging.error("Invalid pokemon.json data file. Missing 'Name' field for 'Previous evolution(s)' of '%s'", pokemon_name)
