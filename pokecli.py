@@ -52,8 +52,9 @@ logger = logging.getLogger('cli')
 logger.setLevel(logging.INFO)
 
 def main():
+    bot = False
+    
     try:
-        bot = False
         logger.info('PokemonGO Bot v1.0')
         sys.stdout = codecs.getwriter('utf8')(sys.stdout)
         sys.stderr = codecs.getwriter('utf8')(sys.stderr)
@@ -445,7 +446,7 @@ def init_config():
 
     plugin_loader = PluginLoader()
     for plugin in config.plugins:
-        plugin_loader.load_path(plugin)
+        plugin_loader.load_plugin(plugin)
 
     # create web dir if not exists
     try:

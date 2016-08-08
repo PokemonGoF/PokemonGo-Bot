@@ -28,8 +28,11 @@ from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from worker_result import WorkerResult
 from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
+from inventory import init_inventory
 from sys import platform as _platform
 import struct
+
+
 class PokemonGoBot(object):
     @property
     def position(self):
@@ -38,6 +41,15 @@ class PokemonGoBot(object):
     @position.setter
     def position(self, position_tuple):
         self.api._position_lat, self.api._position_lng, self.api._position_alt = position_tuple
+
+    @property
+    def player_data(self):
+        """
+        Returns the player data as received from the API.
+        :return: The player data.
+        :rtype: dict
+        """
+        return self._player
 
     def __init__(self, config):
         self.config = config
@@ -265,7 +277,7 @@ class PokemonGoBot(object):
         self.event_manager.register_event('skip_evolve')
         self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
         self.event_manager.register_event('vip_pokemon')
-
+        self.event_manager.register_event('gained_candy')
 
         # level up stuff
         self.event_manager.register_event(
@@ -729,6 +741,8 @@ class PokemonGoBot(object):
         return self.latest_inventory
 
     def update_inventory(self):
+        # TODO: transition to using this inventory class everywhere
+        init_inventory(self)
         response = self.get_inventory()
         self.inventory = list()
         inventory_items = response.get('responses', {}).get('GET_INVENTORY', {}).get(
