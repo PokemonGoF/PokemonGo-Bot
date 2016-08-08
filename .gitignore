@@ -35,6 +35,9 @@ var/
 .pydevproject
 .settings/
 
+# Cloud9 Users
+.c9/
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
@@ -86,6 +89,8 @@ celerybeat-schedule
 # virtualenv
 venv/
 ENV/
+local/
+share/
 
 # Spyder project settings
 .spyderproject

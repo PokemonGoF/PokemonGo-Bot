@@ -146,4 +146,3 @@ class GithubPluginTest(unittest.TestCase):
             self.assertEqual(content, '2d54eddde33061be9b329efae0cfb9bd58842655')
 
         shutil.rmtree(plugin_folder)
-

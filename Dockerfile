@@ -11,7 +11,9 @@ RUN cd /tmp && wget "http://pgoapi.com/pgoencrypt.tar.gz" \
     && tar zxvf pgoencrypt.tar.gz \
     && cd pgoencrypt/src \
     && make \
-    && cp libencrypt.so /usr/src/app/encrypt.so
+    && cp libencrypt.so /usr/src/app/encrypt.so \
+    && cd /tmp \
+    && rm -rf /tmp/pgoencrypt*
 
 VOLUME ["/usr/src/app/web"]
 

@@ -26,6 +26,7 @@ class PluginLoader(object):
         github_plugin.install()
 
       correct_path = github_plugin.get_plugin_folder()
+
     else:
       correct_path = self._get_correct_path(plugin)
 
