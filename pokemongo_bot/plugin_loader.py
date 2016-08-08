@@ -4,6 +4,7 @@ import importlib
 import re
 import requests
 import zipfile
+import shutil
 
 class PluginLoader(object):
   folder_cache = []
@@ -122,8 +123,14 @@ class GithubPlugin(object):
     with zipfile.ZipFile(self.get_local_destination(), "r") as z:
       z.extractall(dest)
 
+    github_folder = os.path.join(dest, '{}-{}'.format(self.plugin_parts['repo'], self.plugin_parts['sha']))
+    new_folder = os.path.join(dest, '{}'.format(self.plugin_parts['repo']))
+    shutil.move(github_folder, new_folder)
+
     with open(os.path.join(dest, '.sha'), 'w') as file:
       file.write(self.plugin_parts['sha'])
+
+    os.remove(self.get_local_destination())
 
   def download(self):
     url = self.get_github_download_url()
