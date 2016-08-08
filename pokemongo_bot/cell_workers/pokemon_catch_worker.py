@@ -13,7 +13,7 @@ class PokemonCatchWorker(BaseTask):
         self.pokemon = pokemon
         self.api = bot.api
         self.bot = bot
-        self.position = bot.position
+        self.position = bot.gps_sensor.position
         self.config = bot.config
         self.pokemon_list = bot.pokemon_list
         self.item_list = bot.item_list

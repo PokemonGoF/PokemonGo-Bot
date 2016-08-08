@@ -13,8 +13,8 @@ class FollowSpiral(BaseTask):
     def initialize(self):
         self.steplimit = self.config.get("diameter", 4)
         self.step_size = self.config.get("step_size", 70)
-        self.origin_lat = self.bot.position[0]
-        self.origin_lon = self.bot.position[1]
+        self.origin_lat = self.bot.gps_sensor.position[0]
+        self.origin_lon = self.bot.gps_sensor.position[1]
 
         self.diameter_to_steps = (self.steplimit+1) ** 2
         self.points = self._generate_spiral(
@@ -89,7 +89,7 @@ class FollowSpiral(BaseTask):
                     'position_update',
                     formatted="Walking from {last_position} to {current_position} ({distance} {distance_unit})",
                     data={
-                        'last_position': self.bot.position,
+                        'last_position': self.bot.gps_sensor.position,
                         'current_position': (point['lat'], point['lng'], 0),
                         'distance': dist,
                         'distance_unit': 'm'
@@ -99,7 +99,7 @@ class FollowSpiral(BaseTask):
             if step_walker.step():
                 step_walker = None
         else:
-            self.bot.api.set_position(point['lat'], point['lng'])
+            self.bot.gps_sensor.position = [point['lat'], point['lng']]
 
         if distance(
                     self.bot.api._position_lat,

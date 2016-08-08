@@ -67,8 +67,8 @@ class MoveToMapPokemon(BaseTask):
             pokemon['priority'] = self.config['catch'].get(pokemon['name'], 0)
 
             pokemon['dist'] = distance(
-                self.bot.position[0],
-                self.bot.position[1],
+                self.bot.gps_sensor.position[0],
+                self.bot.gps_sensor.position[1],
                 pokemon['latitude'],
                 pokemon['longitude'],
             )
@@ -110,8 +110,8 @@ class MoveToMapPokemon(BaseTask):
 
 
         dist = distance(
-            self.bot.position[0],
-            self.bot.position[1],
+            self.bot.gps_sensor.position[0],
+            self.bot.gps_sensor.position[1],
             loc_json['lat'],
             loc_json['lng']
         )
@@ -119,17 +119,17 @@ class MoveToMapPokemon(BaseTask):
         # update map when 500m away from center and last update longer than 2 minutes away
         now = int(time.time())
         if dist > 500 and now - self.last_map_update > 2 * 60:
-            requests.post('{}/next_loc?lat={}&lon={}'.format(self.config['address'], self.bot.position[0], self.bot.position[1]))
+            requests.post('{}/next_loc?lat={}&lon={}'.format(self.config['address'], self.bot.gps_sensor.position[0], self.bot.gps_sensor.position[1]))
             logger.log('Updated PokemonGo-Map position')
             self.last_map_update = now
 
     def snipe(self, pokemon):
-        last_position = self.bot.position[0:2]
+        last_position = self.bot.gps_sensor.position[0:2]
 
         self.bot.heartbeat()
 
         logger.log('Teleporting to {} ({})'.format(pokemon['name'], format_dist(pokemon['dist'], self.unit)), 'green')
-        self.bot.api.set_position(pokemon['latitude'], pokemon['longitude'], 0)
+        self.bot.gps_sensor.position = [pokemon['latitude'], pokemon['longitude']]
 
         logger.log('Encounter pokemon', 'green')
         catch_worker = PokemonCatchWorker(pokemon, self.bot)
@@ -137,7 +137,7 @@ class MoveToMapPokemon(BaseTask):
 
         time.sleep(2)
         logger.log('Teleporting back to previous location..', 'green')
-        self.bot.api.set_position(last_position[0], last_position[1], 0)
+        self.bot.gps_sensor.position = [last_position[0], last_position[1]]
         time.sleep(2)
         self.bot.heartbeat()
 

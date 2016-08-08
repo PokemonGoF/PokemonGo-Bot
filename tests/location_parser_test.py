@@ -10,6 +10,8 @@ class TestLocationParser(unittest.TestCase):
 
     def setUp(self):
         self.bot = FakeBot()
+        self.bot.gps_sensor = MagicMock()
+        self.bot.gps_sensor.position = [0, 0, 0]
         config = dict(
             test=False,
             location='Paris',
@@ -22,7 +24,7 @@ class TestLocationParser(unittest.TestCase):
         position = (42, 42, 0)
         self.bot.get_pos_by_name = MagicMock(return_value=position)
         self.bot._set_starting_position()
-        self.assertEqual(self.bot.position, position)
+        self.assertEqual(self.bot.gps_sensor.position, position)
 
     def test_named_position_utf8(self):
         position = (42, 42, 0)
@@ -30,4 +32,4 @@ class TestLocationParser(unittest.TestCase):
         self.bot.get_pos_by_name = MagicMock(return_value=position)
 
         self.bot._set_starting_position()
-        self.assertEqual(self.bot.position, position)
+        self.assertEqual(self.bot.gps_sensor.position, position)

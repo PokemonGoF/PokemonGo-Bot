@@ -14,7 +14,7 @@ class CatchVisiblePokemon(BaseTask):
             # build graph & A* it
             self.bot.cell['catchable_pokemons'].sort(
                 key=
-                lambda x: distance(self.bot.position[0], self.bot.position[1], x['latitude'], x['longitude'])
+                lambda x: distance(self.bot.gps_sensor.position[0], self.bot.gps_sensor.position[1], x['latitude'], x['longitude'])
             )
             user_web_catchable = 'web/catchable-{}.json'.format(self.bot.config.username)
             for pokemon in self.bot.cell['catchable_pokemons']:
@@ -40,7 +40,7 @@ class CatchVisiblePokemon(BaseTask):
             # build graph & A* it
             self.bot.cell['wild_pokemons'].sort(
                 key=
-                lambda x: distance(self.bot.position[0], self.bot.position[1], x['latitude'], x['longitude']))
+                lambda x: distance(self.bot.gps_sensor.position[0], self.bot.gps_sensor.position[1], x['latitude'], x['longitude']))
             return self.catch_pokemon(self.bot.cell['wild_pokemons'].pop(0))
 
     def catch_pokemon(self, pokemon):

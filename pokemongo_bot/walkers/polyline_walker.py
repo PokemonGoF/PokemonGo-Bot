@@ -26,6 +26,6 @@ class PolylineWalker(StepWalker):
             sleep(1)
             self.polyline_walker.pause()
             cLat, cLng = self.polyline_walker.get_pos()[0]
-            self.api.set_position(round(cLat, 5), round(cLng, 5), 0)
+            self.bot.gps_sensor.position = [round(cLat, 5), round(cLng, 5)]
             self.bot.heartbeat()
         return True

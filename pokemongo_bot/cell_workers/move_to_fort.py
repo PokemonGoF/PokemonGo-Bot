@@ -46,8 +46,8 @@ class MoveToFort(BaseTask):
         unit = self.bot.config.distance_unit  # Unit to use when printing formatted distance
 
         dist = distance(
-            self.bot.position[0],
-            self.bot.position[1],
+            self.bot.gps_sensor.position[0],
+            self.bot.gps_sensor.position[1],
             lat,
             lng
         )
@@ -96,7 +96,7 @@ class MoveToFort(BaseTask):
         lures = filter(lambda x: True if x.get('lure_info', None) != None else False, forts)
 
         if (len(lures)):
-            dist_lure_me = distance(self.bot.position[0], self.bot.position[1],
+            dist_lure_me = distance(self.bot.gps_sensor.position[0], self.bot.gps_sensor.position[1],
                                     lures[0]['latitude'],lures[0]['longitude'])
         else:
             dist_lure_me = 0
@@ -114,8 +114,8 @@ class MoveToFort(BaseTask):
                 dist_fort_me = distance(
                     fort['latitude'],
                     fort['longitude'],
-                    self.bot.position[0],
-                    self.bot.position[1])
+                    self.bot.gps_sensor.position[0],
+                    self.bot.gps_sensor.position[1])
 
                 if dist_lure_fort < dist_lure_me and dist_lure_me > dist_fort_me:
                     return fort, dist_lure_me

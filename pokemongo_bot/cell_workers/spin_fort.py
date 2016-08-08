@@ -40,8 +40,8 @@ class SpinFort(BaseTask):
             fort_id=fort['id'],
             fort_latitude=lat,
             fort_longitude=lng,
-            player_latitude=f2i(self.bot.position[0]),
-            player_longitude=f2i(self.bot.position[1])
+            player_latitude=f2i(self.bot.gps_sensor.position[0]),
+            player_longitude=f2i(self.bot.gps_sensor.position[1])
         )
         if 'responses' in response_dict and \
                 'FORT_SEARCH' in response_dict['responses']:
@@ -147,8 +147,8 @@ class SpinFort(BaseTask):
         fort = forts[0]
 
         distance_to_fort = distance(
-            self.bot.position[0],
-            self.bot.position[1],
+            self.bot.gps_sensor.position[0],
+            self.bot.gps_sensor.position[1],
             fort['latitude'],
             fort['longitude']
         )

@@ -22,8 +22,8 @@ class HandleSoftBan(BaseTask):
             return
 
         fort_distance = distance(
-            self.bot.position[0],
-            self.bot.position[1],
+            self.bot.gps_sensor.position[0],
+            self.bot.gps_sensor.position[1],
             forts[0]['latitude'],
             forts[0]['longitude'],
         )
@@ -56,8 +56,8 @@ class HandleSoftBan(BaseTask):
             fort_id=fort_id,
             fort_latitude=latitude,
             fort_longitude=longitude,
-            player_latitude=f2i(self.bot.position[0]),
-            player_longitude=f2i(self.bot.position[1])
+            player_latitude=f2i(self.bot.gps_sensor.position[0]),
+            player_longitude=f2i(self.bot.gps_sensor.position[1])
         )
         self.emit_event(
             'spun_fort',

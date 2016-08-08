@@ -10,7 +10,7 @@ class StepWalker(object):
         self.bot = bot
         self.api = bot.api
 
-        self.initLat, self.initLng = self.bot.position[0:2]
+        self.initLat, self.initLng = self.bot.gps_sensor.position[0:2]
 
         self.dist = distance(
             self.initLat,
@@ -38,7 +38,7 @@ class StepWalker(object):
 
     def step(self):
         if (self.dLat == 0 and self.dLng == 0) or self.dist < self.speed:
-            self.api.set_position(self.destLat, self.destLng, 0)
+            self.bot.gps_sensor.position = [self.destLat, self.destLng]
             return True
 
         totalDLat = (self.destLat - self.initLat)
@@ -53,7 +53,7 @@ class StepWalker(object):
         cLat = self.initLat + scaledDLat + random_lat_long_delta()
         cLng = self.initLng + scaledDLng + random_lat_long_delta()
 
-        self.api.set_position(cLat, cLng, 0)
+        self.bot.gps_sensor.position = [cLat, cLng]
         self.bot.heartbeat()
 
         sleep(1)  # sleep one second plus a random delta

@@ -384,6 +384,8 @@ def init_config():
     if not config.password and 'password' not in load:
         config.password = getpass("Password: ")
 
+    config.gps = load.get('gps', { 'initial_altitude': 12.0 })
+
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.action_wait_max = load.get('action_wait_max', 4)
