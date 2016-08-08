@@ -20,7 +20,7 @@ class PluginLoader(object):
   def load_plugin(self, plugin):
     github_plugin = GithubPlugin(plugin)
     if github_plugin.is_valid_plugin():
-      if not github_plugin.is_already_downloaded():
+      if not github_plugin.is_already_installed():
         github_plugin.download()
 
       correct_path = github_plugin.get_local_destination()
@@ -42,6 +42,8 @@ class PluginLoader(object):
     return getattr(my_module, class_name)
 
 class GithubPlugin(object):
+  PLUGINS_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'plugins')
+
   def __init__(self, plugin_name):
     self.plugin_name = plugin_name
     self.plugin_parts = self.get_github_parts()
@@ -68,12 +70,16 @@ class GithubPlugin(object):
       raise Exception('Not a valid github plugin')
 
     file_name = '{}_{}_{}.zip'.format(parts['user'], parts['repo'], parts['sha'])
-    full_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'plugins', file_name)
+    full_path = os.path.join(self.PLUGINS_FOLDER, file_name)
     return full_path
 
-  def is_already_downloaded(self):
+  def is_already_installed(self):
     file_path = self.get_local_destination()
     return os.path.isfile(file_path)
+
+  def get_plugin_folder(self):
+    folder_name = '{}_{}'.format(self.plugin_parts['user'], self.plugin_parts['repo'])
+    return os.path.join(self.PLUGINS_FOLDER, folder_name)
 
   def get_github_download_url(self):
     parts = self.plugin_parts
@@ -82,6 +88,13 @@ class GithubPlugin(object):
 
     github_url = 'https://github.com/{}/{}/archive/{}.zip'.format(parts['user'], parts['repo'], parts['sha'])
     return github_url
+
+  def install(self):
+    pass
+
+  def extract(self):
+    with zipfile.ZipFile('test.zip', "r") as z:
+      z.extractall("C:\\")
 
   def download(self):
     url = self.get_github_download_url()
