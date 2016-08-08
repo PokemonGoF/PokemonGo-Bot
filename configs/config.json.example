@@ -15,7 +15,6 @@
       {
         "type": "UpdateTitleStats",
         "config": {
-            "events_only": true,
             "min_interval": 15,
             "stats": [
                 "stardust_earned",
