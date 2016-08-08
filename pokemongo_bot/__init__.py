@@ -256,7 +256,7 @@ class PokemonGoBot(object):
             )
         )
         self.event_manager.register_event(
-            'pokemon_fled',
+            'pokemon_escaped',
             parameters=('pokemon',)
         )
         self.event_manager.register_event(
