@@ -183,7 +183,7 @@ class MoveToMapPokemon(BaseTask):
         for caught_pokemon in self.caught:
             if pokemon['encounter_id'] == caught_pokemon['encounter_id']:
                 return True
-            if pokemon['is_lured'] and pokemon['fort_id'] == caught_pokemon['fort_id']
+            if pokemon['is_lured'] and pokemon['fort_id'] == caught_pokemon['fort_id'] and pokemon['disappear_time'] == caught_pokemon['disappear_time']:
                 return True
         return False
 
