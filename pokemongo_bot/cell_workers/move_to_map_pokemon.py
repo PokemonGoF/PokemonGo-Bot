@@ -335,7 +335,7 @@ class MoveToMapPokemon(BaseTask):
         self.emit_event(
             'move_to_map_pokemon_teleport_back',
             formatted=('Teleporting back to previous location ({last_lat}, '
-                       '{last_long})'),
+                       '{last_lon})'),
             data={'last_lat': last_position[0], 'last_lon': last_position[1]}
         )
         self.bot.api.set_position(last_position[0], last_position[1], 0)
