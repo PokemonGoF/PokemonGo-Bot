@@ -23,7 +23,7 @@ class PokemonOptimizer(BaseTask):
         self.lucky_egg_count = 0
 
         self.dry_run = self.config.get("dry_run", True)
-        self.use_lucky_egg = self.config.get("use_lucky_egg", False)
+        self.use_lucky_egg = self.config.get("use_lucky_egg", True)
 
     def get_pokemon_slot_left(self):
         return self.bot._player["max_pokemon_storage"] - self.pokemon_count
@@ -50,9 +50,6 @@ class PokemonOptimizer(BaseTask):
                 evo_all_crap_pokemons += evo_crap_pokemons
 
             evo_all_pokemons = evo_all_best_pokemons + evo_all_crap_pokemons
-
-            if (not self.use_lucky_egg) or (self.lucky_egg_count == 0) or (len(evo_all_pokemons) < 90):
-                del evo_all_pokemons[:]
 
             family_changed = self.apply_optimization(transfer_all_pokemons, evo_all_pokemons)
 
@@ -129,6 +126,12 @@ class PokemonOptimizer(BaseTask):
             self.transfer_pokemon(pokemon)
             family_changed = True
 
+        if self.use_lucky_egg:
+            if (self.lucky_egg_count == 0) or (len(evo_pokemons) < 90):
+                return family_changed
+
+            self.do_use_lucky_egg()
+
         for pokemon in evo_pokemons:
             if self.evolve_pokemon(pokemon):
                 family_changed = True
@@ -163,6 +166,31 @@ class PokemonOptimizer(BaseTask):
 
         if not self.dry_run:
             action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
+
+    def do_use_lucky_egg(self):
+        if self.dry_run:
+            response_dict = {"responses": {"USE_ITEM_XP_BOOST": {"result": 1}}}
+        else:
+            response_dict = self.bot.use_lucky_egg()
+
+        if not response_dict:
+            self.emit_event("lucky_egg_error",
+                            level='error',
+                            formatted="Failed to use lucky egg!")
+            return False
+
+        result = response_dict.get("responses", {}).get("USE_ITEM_XP_BOOST", {}).get("result", 0)
+
+        if result == 1:
+            self.emit_event("used_lucky_egg",
+                            formatted="Used lucky egg ({amount_left} left).",
+                            data={"amount_left": self.lucky_egg_count - 1})
+            return True
+        else:
+            self.emit_event("lucky_egg_error",
+                            level='error',
+                            formatted="Failed to use lucky egg!")
+            return False
 
     def evolve_pokemon(self, pokemon):
         if self.dry_run:
