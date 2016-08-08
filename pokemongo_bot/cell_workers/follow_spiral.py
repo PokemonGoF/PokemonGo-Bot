@@ -90,7 +90,7 @@ class FollowSpiral(BaseTask):
                     formatted="Walking from {last_position} to {current_position} ({distance} {distance_unit})",
                     data={
                         'last_position': self.bot.gps_sensor.position,
-                        'current_position': (point['lat'], point['lng'], 0),
+                        'current_position': (point['lat'], point['lng'], self.bot.api._position_alt),
                         'distance': dist,
                         'distance_unit': 'm'
                     }
