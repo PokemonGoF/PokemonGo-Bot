@@ -111,25 +111,23 @@ class UpdateTitleStats(BaseTask):
         :rtype: None
         :raise: RuntimeError: When the given platform isn't supported.
         """
-        if self.config.get('events_only', True):
-            self.emit_event(
-                'update_title',
-                formatted="{title}",
-                data={
-                    'title': title
-                }
-            )
+        self.emit_event(
+            'update_title',
+            formatted="{title}",
+            data={
+                'title': title
+            }
+        )
+        if platform == "linux" or platform == "linux2" or platform == "cygwin":
+            stdout.write("\x1b]2;{}\x07".format(title))
+            stdout.flush()
+        elif platform == "darwin":
+            stdout.write("\033]0;{}\007".format(title))
+            stdout.flush()
+        elif platform == "win32":
+            ctypes.windll.kernel32.SetConsoleTitleA(title)
         else:
-            if platform == "linux" or platform == "linux2" or platform == "cygwin":
-                stdout.write("\x1b]2;{}\x07".format(title))
-                stdout.flush()
-            elif platform == "darwin":
-                stdout.write("\033]0;{}\007".format(title))
-                stdout.flush()
-            elif platform == "win32":
-                ctypes.windll.kernel32.SetConsoleTitleA(title)
-            else:
-                raise RuntimeError("unsupported platform '{}'".format(platform))
+            raise RuntimeError("unsupported platform '{}'".format(platform))
 
         self.next_update = datetime.now() + timedelta(seconds=self.min_interval)
 
