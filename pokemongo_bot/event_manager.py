@@ -27,8 +27,9 @@ class EventManager(object):
     def __init__(self, *handlers):
         self._registered_events = dict()
         self._handlers = []
-        for handler in handlers:
-            self.add_handler(handler)
+        if handlers:
+            for handler in handlers:
+                self.add_handler(handler)
 
     def event_report(self):
         for event, (color, parameters) in self._registered_events.iteritems():
