@@ -7,13 +7,13 @@ Events:
         When the worker fails.
         Returns:
             message: Failure message.
-    
+
     move_to_map_pokemon_updated_map
         When worker updates the PokemonGo-Map.
         Returns:
             lat: Latitude
             lon: Longitude
-    
+
     move_to_map_pokemon_teleport_to
         When trainer is teleported to a Pokemon.
         Returns:
@@ -22,7 +22,7 @@ Events:
             poke_lat: Latitude of the Pokemon
             poke_lon: Longitude of the Pokemon
             disappears_in: Number of seconds before the Pokemon disappears
-            
+
     move_to_map_pokemon_encounter
         When a trainer encounters a Pokemon by teleporting or walking.
         Returns:
@@ -31,7 +31,7 @@ Events:
             poke_lat: Latitude of the Pokemon
             poke_lon: Longitude of the Pokemon
             disappears_in: Number of seconds before the Pokemon disappears
-    
+
     move_to_map_pokemon_move_towards
         When a trainer moves toward a Pokemon.
         Returns:
@@ -40,7 +40,7 @@ Events:
             poke_lat: Latitude of the Pokemon
             poke_lon: Longitude of the Pokemon
             disappears_in: Number of seconds before the Pokemon disappears
-    
+
     move_to_map_pokemon_teleport_back
         When a trainer teleports back to thier previous location.
         Returns:
@@ -91,9 +91,21 @@ class MoveToMapPokemon(BaseTask):
                 open(data_file)
             )
 
+    def _should_target(self, pokemon):
+        now = int(time.time())
+        if pokemon['name'] not in self.config['catch'] and not pokemon['is_vip']:
+            return False
+        if pokemon['disappear_time'] < (now + self.config['min_time']):
+            return False
+        if self.was_caught(pokemon):
+            return False
+        if pokemon['dist'] > self.config['max_distance'] and not self.config['snipe']:
+            return False
+        return True
+
     def get_pokemon_from_map(self):
         try:
-            req = requests.get('{}/raw_data?gyms=false&scanned=false'.format(self.config['address']))
+            req = requests.get('{}/raw_data?gyms=false&scanned=false&pokestops=true'.format(self.config['address']))
         except requests.exceptions.ConnectionError:
             self._emit_failure('Could not get Pokemon data from PokemonGo-Map: '
                                '{}. Is it running?'.format(
@@ -107,8 +119,8 @@ class MoveToMapPokemon(BaseTask):
             return []
 
         pokemon_list = []
-        now = int(time.time())
 
+        # wild pokemon
         for pokemon in raw_data['pokemons']:
             try:
                 pokemon['encounter_id'] = long(base64.b64decode(pokemon['encounter_id']))
@@ -119,17 +131,8 @@ class MoveToMapPokemon(BaseTask):
             pokemon['disappear_time'] = int(pokemon['disappear_time'] / 1000)
             pokemon['name'] = self.pokemon_data[pokemon['pokemon_id'] - 1]['Name']
             pokemon['is_vip'] = pokemon['name'] in self.bot.config.vips
-
-            if pokemon['name'] not in self.config['catch'] and not pokemon['is_vip']:
-                continue
-
-            if pokemon['disappear_time'] < (now + self.config['min_time']):
-                continue
-
-            if self.was_caught(pokemon):
-                continue
-
             pokemon['priority'] = self.config['catch'].get(pokemon['name'], 0)
+            pokemon['is_lured'] = False
 
             pokemon['dist'] = distance(
                 self.bot.position[0],
@@ -138,25 +141,48 @@ class MoveToMapPokemon(BaseTask):
                 pokemon['longitude'],
             )
 
-            if pokemon['dist'] > self.config['max_distance'] and not self.config['snipe']:
+            pokemon_list.append(pokemon)
+
+        # lured pokemon
+        for pokestop in raw_data['pokestops']:
+            pokemon_id = pokestop['active_pokemon_id']
+            if pokemon_id < 1:
                 continue
+
+            pokemon = {}
+            pokemon['pokemon_id'] = pokemon_id
+            pokemon['name'] = self.pokemon_data[pokemon_id - 1]['Name']
+            pokemon['latitude'] = pokestop['latitude']
+            pokemon['longitude'] = pokestop['longitude']
+            pokemon['priority'] = self.config['catch'].get(pokemon['name'], 0)
+            pokemon['disappear_time'] = pokestop['lure_expiration']
+            pokemon['is_vip'] = pokemon['name'] in self.bot.config.vips
+            pokemon['is_lured'] = True
+            pokemon['fort_id'] = pokestop['pokestop_id']
+
+            pokemon['dist'] = distance(
+                self.bot.position[0],
+                self.bot.position[1],
+                pokemon['latitude'],
+                pokemon['longitude'],
+            )
 
             pokemon_list.append(pokemon)
 
         return pokemon_list
 
     def add_caught(self, pokemon):
-        for caught_pokemon in self.caught:
-            if caught_pokemon['encounter_id'] == pokemon['encounter_id']:
-                return
         if len(self.caught) >= 200:
             self.caught.pop(0)
         self.caught.append(pokemon)
 
     def was_caught(self, pokemon):
         for caught_pokemon in self.caught:
-            if pokemon['encounter_id'] == caught_pokemon['encounter_id']:
-                return True
+            if pokemon['is_lured'] == caught_pokemon.get('is_lured', False):
+                if not pokemon['is_lured'] and pokemon['encounter_id'] == caught_pokemon['encounter_id']:
+                    return True
+                if pokemon['is_lured'] and pokemon['fort_id'] == caught_pokemon['fort_id'] and pokemon['disappear_time'] == caught_pokemon['disappear_time']:
+                    return True
         return False
 
     def update_map_location(self):
@@ -186,11 +212,11 @@ class MoveToMapPokemon(BaseTask):
 
         # update map when 500m away from center and last update longer than 2 minutes away
         now = int(time.time())
-        if (dist > UPDATE_MAP_MIN_DISTANCE_METERS and 
+        if (dist > UPDATE_MAP_MIN_DISTANCE_METERS and
             now - self.last_map_update > UPDATE_MAP_MIN_TIME_SEC):
             requests.post(
-                '{}/next_loc?lat={}&lon={}'.format(self.config['address'], 
-                                                   self.bot.position[0], 
+                '{}/next_loc?lat={}&lon={}'.format(self.config['address'],
+                                                   self.bot.position[0],
                                                    self.bot.position[1]))
             self.emit_event(
                 'move_to_map_pokemon_updated_map',
@@ -204,12 +230,34 @@ class MoveToMapPokemon(BaseTask):
 
     def snipe(self, pokemon):
         """Snipe a Pokemon by teleporting.
-        
+
         Args:
             pokemon: Pokemon to snipe.
         """
         self.bot.heartbeat()
         self._teleport_to(pokemon)
+        self.bot.heartbeat()
+
+        if pokemon['is_lured']:
+            #we need to get the encounter_id first
+            cell = self.bot.get_meta_cell()
+            for fort in cell['forts']:
+                if fort['id'] == pokemon['fort_id']:
+                    encounter_id = fort.get('lure_info', {}).get('encounter_id', None)
+                    break
+            if not encounter_id:
+                details = fort_details(self.bot, fort_id=pokemon['fort_id'],
+                              latitude=pokemon['latitude'],
+                              longitude=pokemon['longitude'])
+                fort_name = details.get('name', 'Unknown').encode('utf8', 'replace')
+                self.emit_event(
+                    'lured_pokemon_not_found',
+                    formatted='Lured pokemon at fort {fort_name} ({fort_id})',
+                    data={'fort_name': fort_name, 'fort_id': pokemon['fort_id']}
+                )
+                return
+            pokemon['encounter_id'] = encounter_id
+
         catch_worker = PokemonCatchWorker(pokemon, self.bot)
         api_encounter_response = catch_worker.create_encounter_api_call()
         time.sleep(SNIPE_SLEEP_SEC)
@@ -234,13 +282,11 @@ class MoveToMapPokemon(BaseTask):
         if (pokeballs + superballs + ultraballs) < 1:
             return WorkerResult.SUCCESS
 
-        if True and self.config['snipe']:
-            self.snipe_lured()
-
         self.update_map_location()
         self.dump_caught_pokemon()
 
         pokemon_list = self.get_pokemon_from_map()
+        pokemon_list = [p for p in pokemon_list if self._should_target(p)]
         pokemon_list.sort(key=lambda x: x['dist'])
         if self.config['mode'] == 'priority':
             pokemon_list.sort(key=lambda x: x['priority'], reverse=True)
@@ -268,34 +314,34 @@ class MoveToMapPokemon(BaseTask):
 
     def _emit_failure(self, msg):
         """Emits failure to event log.
-        
+
         Args:
             msg: Message to emit
         """
         self.emit_event(
-            'move_to_map_pokemon_fail', 
+            'move_to_map_pokemon_fail',
             formatted='Failure! {message}',
             data={'message': msg}
         )
-        
+
     def _emit_log(self, msg):
         """Emits log to event log.
-        
+
         Args:
             msg: Message to emit
         """
         self.emit_event(
-            'move_to_map_pokemon', 
+            'move_to_map_pokemon',
             formatted='{message}',
             data={'message': msg}
         )
-        
+
     def _pokemon_event_data(self, pokemon):
         """Generates parameters used for the Bot's event manager.
-        
+
         Args:
             pokemon: Pokemon object
-        
+
         Returns:
             Dictionary with Pokemon's info.
         """
@@ -303,14 +349,14 @@ class MoveToMapPokemon(BaseTask):
         return {
             'poke_name': pokemon['name'],
             'poke_dist': (format_dist(pokemon['dist'], self.unit)),
-            'poke_lat': pokemon['latitude'], 
+            'poke_lat': pokemon['latitude'],
             'poke_lon': pokemon['longitude'],
             'disappears_in': (format_time(pokemon['disappear_time'] - now))
         }
-    
+
     def _teleport_to(self, pokemon):
         """Teleports trainer to a Pokemon.
-        
+
         Args:
             pokemon: Pokemon to teleport to.
         """
@@ -321,7 +367,7 @@ class MoveToMapPokemon(BaseTask):
         )
         self.bot.api.set_position(pokemon['latitude'], pokemon['longitude'], 0)
         self._encountered(pokemon)
-        
+
     def _encountered(self, pokemon):
         """Emit event when trainer encounters a Pokemon.
 
@@ -335,7 +381,7 @@ class MoveToMapPokemon(BaseTask):
         )
 
     def _teleport_back(self):
-        """Teleports trainer back to their last position."""        
+        """Teleports trainer back to their last position."""
         last_position = self.bot.position[0:2]
         self.emit_event(
             'move_to_map_pokemon_teleport_back',
@@ -344,13 +390,13 @@ class MoveToMapPokemon(BaseTask):
             data={'last_lat': last_position[0], 'last_lon': last_position[1]}
         )
         self.bot.api.set_position(last_position[0], last_position[1], 0)
-        
+
     def _move_to(self, pokemon):
         """Moves trainer towards a Pokemon.
-        
+
         Args:
             pokemon: Pokemon to move to.
-        
+
         Returns:
             StepWalker
         """
@@ -367,110 +413,3 @@ class MoveToMapPokemon(BaseTask):
             pokemon['latitude'],
             pokemon['longitude']
         )
-    def snipe_lured(self):
-        pass
-        try:
-            req = requests.get('{}/raw_data?gyms=false&scanned=false&pokestops=true'.format(self.config['address']))
-        except requests.exceptions.ConnectionError:
-            self._emit_failure('Could not get Pokemon data from PokemonGo-Map: '
-                               '{}. Is it running?'.format(
-                                   self.config['address']))
-            return []
-        try:
-            raw_data = req.json()
-        except:
-            self._emit_failure('Map data was not valid')
-            return []
-
-        pokemon_list = []
-        for pokestops in raw_data['pokestops']:
-            pokemon_id = pokestops['active_pokemon_id']
-            if pokemon_id < 1:
-                continue
-            pokemon_name = self.pokemon_data[pokemon_id - 1]['Name']
-            prio = self.config['catch'].get(pokemon_name, 0)
-            if pokemon_name not in self.config['catch']:
-                if prio < 800:
-                    continue
-            now = int(time.time())
-            if pokestops['lure_expiration'] in self.luretimeout: #assuming no duplicates
-                continue
-            if pokestops['lure_expiration']/1000-now < 10:
-                continue
-            pokemon = {
-                'lure_expiration': pokestops['lure_expiration'],
-                'name': pokemon_name,
-                'priority': prio,
-                'latitude': pokestops['latitude'],
-                'longitude': pokestops['longitude']
-            }
-            pokemon_list.append(pokemon)
-        if len(pokemon_list) == 0:
-            return
-
-        pokemon_list.sort(key=lambda x: x['priority'], reverse=True)
-        pokemon = pokemon_list[0]
-        self.luretimeout.append(pokemon['lure_expiration'])
-
-        last_position = self.bot.position[0:2]
-        self.bot.heartbeat()
-        print 'Lure Teleporting to ' + pokemon['name'];
-        self.bot.api.set_position(pokemon['latitude'], pokemon['longitude'], 0)
-        self.position = [pokemon['latitude'],pokemon['longitude']]
-        self.cell = self.bot.get_meta_cell()
-        lured_pokemon = self.get_lured_pokemon()
-        if lured_pokemon:
-            catch_worker = PokemonCatchWorker(lured_pokemon, self.bot)
-            api_encounter_response = catch_worker.create_encounter_api_call()
-        else:
-            print 'Can\'t find lured Pokemon'
-            catch_worker = 0;
-        time.sleep(1)
-        print 'Lure Teleporting back'
-        self.bot.api.set_position(last_position[0], last_position[1], 0)
-        time.sleep(1)
-        self.bot.heartbeat()
-        if catch_worker != 0:
-            catch_worker.work(api_encounter_response)
-        return WorkerResult.SUCCESS
-
-    def get_lured_pokemon(self):
-        self.cell = self.bot.get_meta_cell()
-        forts = [fort
-             for fort in self.cell['forts']
-             if 'latitude' in fort and 'type' in fort]
-
-        forts.sort(key=lambda x: distance(
-            self.position[0],
-            self.position[1],
-            x['latitude'],
-            x['longitude']
-        ))
-
-        if len(forts) == 0:
-            return False
-
-        fort = forts[0]
-        details = fort_details(self.bot, fort_id=fort['id'],
-                              latitude=fort['latitude'],
-                              longitude=fort['longitude'])
-        fort_name = details.get('name', 'Unknown').encode('utf8', 'replace')
-        encounter_id = fort.get('lure_info', {}).get('encounter_id', None)
-
-        if encounter_id:
-            result = {
-                'encounter_id': encounter_id,
-                'fort_id': fort['id'],
-                'fort_name': fort_name,
-                'latitude': fort['latitude'],
-                'longitude': fort['longitude']
-            }
-
-            self.emit_event(
-                'lured_pokemon_found',
-                formatted='Lured pokemon at fort {fort_name} ({fort_id})',
-                data=result
-            )
-            return result
-
-        return False
