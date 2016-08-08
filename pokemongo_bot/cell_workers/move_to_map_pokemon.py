@@ -206,12 +206,14 @@ class MoveToMapPokemon(BaseTask):
         Args:
             pokemon: Pokemon to snipe.
         """
+        last_position = self.bot.position[0:2]
         self.bot.heartbeat()
         self._teleport_to(pokemon)
         catch_worker = PokemonCatchWorker(pokemon, self.bot)
         api_encounter_response = catch_worker.create_encounter_api_call()
         time.sleep(SNIPE_SLEEP_SEC)
-        self._teleport_back()
+        self._teleport_back(last_position)
+        self.bot.api.set_position(last_position[0], last_position[1], 0)
         time.sleep(SNIPE_SLEEP_SEC)
         self.bot.heartbeat()
         catch_worker.work(api_encounter_response)
@@ -329,16 +331,14 @@ class MoveToMapPokemon(BaseTask):
             data=self._pokemon_event_data(pokemon)
         )
 
-    def _teleport_back(self):
+    def _teleport_back(self, last_position):
         """Teleports trainer back to their last position."""
-        last_position = self.bot.position[0:2]
         self.emit_event(
             'move_to_map_pokemon_teleport_back',
             formatted=('Teleporting back to previous location ({last_lat}, '
                        '{last_lon})'),
             data={'last_lat': last_position[0], 'last_lon': last_position[1]}
         )
-        self.bot.api.set_position(last_position[0], last_position[1], 0)
 
     def _move_to(self, pokemon):
         """Moves trainer towards a Pokemon.
