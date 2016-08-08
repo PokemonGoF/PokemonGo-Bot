@@ -53,7 +53,7 @@ logger.setLevel(logging.INFO)
 
 def main():
     bot = False
-    
+
     try:
         logger.info('PokemonGO Bot v1.0')
         sys.stdout = codecs.getwriter('utf8')(sys.stdout)
@@ -130,7 +130,7 @@ def main():
         if bot:
             report_summary(bot)
 
-        raise e
+        raise
 
 def report_summary(bot):
     if bot.metrics.start_time is None:
