@@ -324,8 +324,8 @@ class PokemonCatchWorker(BaseTask):
                                     'CATCH_POKEMON']['status']
                                 if status is 2:
                                     self.emit_event(
-                                        'pokemon_fled',
-                                        formatted="{pokemon} fled.",
+                                        'pokemon_escaped',
+                                        formatted="{pokemon} escaped.",
                                         data={'pokemon': pokemon_name}
                                     )
                                     sleep(2)
