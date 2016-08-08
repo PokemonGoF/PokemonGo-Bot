@@ -9,7 +9,10 @@ from pokemongo_bot.event_manager import EventHandler
 
 class LoggingHandler(EventHandler):
 
-    def initialize(self):
+    def __init__(self):
+        # We call super constructor just to play it safe
+        EventHandler.__init__(self)
+
         root_logger = logging.getLogger()
         # We need to now essentially override basicConfig
         # We're done with the basic **** and now turn on

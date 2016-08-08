@@ -15,9 +15,6 @@ class EventHandler(object):
     def __init__(self):
         pass
 
-    def initialize(self):
-        pass
-
     def handle_event(self, event, kwargs):
         raise NotImplementedError("Please implement")
 
@@ -42,7 +39,6 @@ class EventManager(object):
 
     def add_handler(self, event_handler):
         self._handlers.append(event_handler)
-        event_handler.initialize()
 
     def register_event(self, name, color='white', parameters=[]):
         self._registered_events[name] = (color, parameters)
