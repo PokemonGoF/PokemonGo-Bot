@@ -191,6 +191,7 @@ class TransferPokemon(BaseTask):
 
     def release_pokemon(self, pokemon_name, cp, iv, pokemon_id):
         response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon_id)
+        self.bot.metrics.released_pokemon()
         self.emit_event(
             'pokemon_release',
             formatted='Exchanged {pokemon} [CP {cp}] [IV {iv}] for candy.',
