@@ -26,10 +26,13 @@ from metrics import Metrics
 from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
+from pokemongo_bot.base_dir import _base_dir
 from worker_result import WorkerResult
 from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
 from sys import platform as _platform
 import struct
+
+
 class PokemonGoBot(object):
     @property
     def position(self):
@@ -52,9 +55,9 @@ class PokemonGoBot(object):
         self.config = config
         self.fort_timeouts = dict()
         self.pokemon_list = json.load(
-            open(os.path.join('data', 'pokemon.json'))
+            open(os.path.join(_base_dir, 'data', 'pokemon.json'))
         )
-        self.item_list = json.load(open(os.path.join('data', 'items.json')))
+        self.item_list = json.load(open(os.path.join(_base_dir, 'data', 'items.json')))
         self.metrics = Metrics(self)
         self.latest_inventory = None
         self.cell = None
@@ -495,12 +498,12 @@ class PokemonGoBot(object):
                                 'responses', {}
                             ).get('GET_GYM_DETAILS', None)
 
-        user_data_cells = "data/cells-%s.json" % self.config.username
+        user_data_cells = os.path.join(_base_dir, 'data', 'cells-%s.json' % self.config.username)
         with open(user_data_cells, 'w') as outfile:
             json.dump(cells, outfile)
 
         user_web_location = os.path.join(
-            'web', 'location-%s.json' % self.config.username
+            _base_dir, 'web', 'location-%s.json' % self.config.username
         )
         # alt is unused atm but makes using *location easier
         try:
@@ -515,7 +518,7 @@ class PokemonGoBot(object):
             self.logger.info('[x] Error while opening location file: %s' % e)
 
         user_data_lastlocation = os.path.join(
-            'data', 'last-location-%s.json' % self.config.username
+            _base_dir, 'data', 'last-location-%s.json' % self.config.username
         )
         try:
             with open(user_data_lastlocation, 'w') as outfile:
@@ -785,7 +788,7 @@ class PokemonGoBot(object):
         inventory_dict = inventory_req['responses']['GET_INVENTORY'][
             'inventory_delta']['inventory_items']
 
-        user_web_inventory = 'web/inventory-%s.json' % self.config.username
+        user_web_inventory = os.path.join(_base_dir, 'web', 'inventory-%s.json' % self.config.username)
 
         with open(user_web_inventory, 'w') as outfile:
             json.dump(inventory_dict, outfile)
@@ -896,8 +899,8 @@ class PokemonGoBot(object):
                     level='debug',
                     formatted='Loading cached location...'
                 )
-                with open('data/last-location-%s.json' %
-                    self.config.username) as f:
+                with open(os.path.join(_base_dir, 'data', 'last-location-%s.json' %
+                    self.config.username)) as f:
                     location_json = json.load(f)
                 location = (
                     location_json['lat'],

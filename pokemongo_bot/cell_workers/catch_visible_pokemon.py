@@ -1,8 +1,10 @@
 import json
+import os
 
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 from utils import distance
+from pokemongo_bot.base_dir import _base_dir
 
 
 class CatchVisiblePokemon(BaseTask):
@@ -16,7 +18,7 @@ class CatchVisiblePokemon(BaseTask):
                 key=
                 lambda x: distance(self.bot.position[0], self.bot.position[1], x['latitude'], x['longitude'])
             )
-            user_web_catchable = 'web/catchable-{}.json'.format(self.bot.config.username)
+            user_web_catchable = os.path.join(_base_dir, 'web', 'catchable-{}.json'.format(self.bot.config.username))
             for pokemon in self.bot.cell['catchable_pokemons']:
                 with open(user_web_catchable, 'w') as outfile:
                     json.dump(pokemon, outfile)

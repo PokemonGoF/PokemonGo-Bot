@@ -1,5 +1,6 @@
 import json
 import os
+from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.tree_config_builder import ConfigException
 
@@ -11,7 +12,7 @@ class RecycleItems(BaseTask):
         self._validate_item_filter()
 
     def _validate_item_filter(self):
-        item_list = json.load(open(os.path.join('data', 'items.json')))
+        item_list = json.load(open(os.path.join(_base_dir, 'data', 'items.json')))
         for config_item_name, bag_count in self.item_filter.iteritems():
             if config_item_name not in item_list.viewvalues():
                 if config_item_name not in item_list:
