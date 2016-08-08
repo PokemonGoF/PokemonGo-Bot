@@ -384,6 +384,7 @@ def init_config():
     if not config.password and 'password' not in load:
         config.password = getpass("Password: ")
 
+    config.encrypt_location = load.get('encrypt_location','')
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.action_wait_max = load.get('action_wait_max', 4)

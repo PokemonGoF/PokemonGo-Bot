@@ -7,13 +7,13 @@ Events:
         When the worker fails.
         Returns:
             message: Failure message.
-    
+
     move_to_map_pokemon_updated_map
         When worker updates the PokemonGo-Map.
         Returns:
             lat: Latitude
             lon: Longitude
-    
+
     move_to_map_pokemon_teleport_to
         When trainer is teleported to a Pokemon.
         Returns:
@@ -22,7 +22,7 @@ Events:
             poke_lat: Latitude of the Pokemon
             poke_lon: Longitude of the Pokemon
             disappears_in: Number of seconds before the Pokemon disappears
-            
+
     move_to_map_pokemon_encounter
         When a trainer encounters a Pokemon by teleporting or walking.
         Returns:
@@ -31,7 +31,7 @@ Events:
             poke_lat: Latitude of the Pokemon
             poke_lon: Longitude of the Pokemon
             disappears_in: Number of seconds before the Pokemon disappears
-    
+
     move_to_map_pokemon_move_towards
         When a trainer moves toward a Pokemon.
         Returns:
@@ -40,7 +40,7 @@ Events:
             poke_lat: Latitude of the Pokemon
             poke_lon: Longitude of the Pokemon
             disappears_in: Number of seconds before the Pokemon disappears
-    
+
     move_to_map_pokemon_teleport_back
         When a trainer teleports back to thier previous location.
         Returns:
@@ -184,11 +184,11 @@ class MoveToMapPokemon(BaseTask):
 
         # update map when 500m away from center and last update longer than 2 minutes away
         now = int(time.time())
-        if (dist > UPDATE_MAP_MIN_DISTANCE_METERS and 
+        if (dist > UPDATE_MAP_MIN_DISTANCE_METERS and
             now - self.last_map_update > UPDATE_MAP_MIN_TIME_SEC):
             requests.post(
-                '{}/next_loc?lat={}&lon={}'.format(self.config['address'], 
-                                                   self.bot.position[0], 
+                '{}/next_loc?lat={}&lon={}'.format(self.config['address'],
+                                                   self.bot.position[0],
                                                    self.bot.position[1]))
             self.emit_event(
                 'move_to_map_pokemon_updated_map',
@@ -202,16 +202,18 @@ class MoveToMapPokemon(BaseTask):
 
     def snipe(self, pokemon):
         """Snipe a Pokemon by teleporting.
-        
+
         Args:
             pokemon: Pokemon to snipe.
         """
+        last_position = self.bot.position[0:2]
         self.bot.heartbeat()
         self._teleport_to(pokemon)
         catch_worker = PokemonCatchWorker(pokemon, self.bot)
         api_encounter_response = catch_worker.create_encounter_api_call()
         time.sleep(SNIPE_SLEEP_SEC)
-        self._teleport_back()
+        self._teleport_back(last_position)
+        self.bot.api.set_position(last_position[0], last_position[1], 0)
         time.sleep(SNIPE_SLEEP_SEC)
         self.bot.heartbeat()
         catch_worker.work(api_encounter_response)
@@ -263,34 +265,34 @@ class MoveToMapPokemon(BaseTask):
 
     def _emit_failure(self, msg):
         """Emits failure to event log.
-        
+
         Args:
             msg: Message to emit
         """
         self.emit_event(
-            'move_to_map_pokemon_fail', 
+            'move_to_map_pokemon_fail',
             formatted='Failure! {message}',
             data={'message': msg}
         )
-        
+
     def _emit_log(self, msg):
         """Emits log to event log.
-        
+
         Args:
             msg: Message to emit
         """
         self.emit_event(
-            'move_to_map_pokemon', 
+            'move_to_map_pokemon',
             formatted='{message}',
             data={'message': msg}
         )
-        
+
     def _pokemon_event_data(self, pokemon):
         """Generates parameters used for the Bot's event manager.
-        
+
         Args:
             pokemon: Pokemon object
-        
+
         Returns:
             Dictionary with Pokemon's info.
         """
@@ -298,14 +300,14 @@ class MoveToMapPokemon(BaseTask):
         return {
             'poke_name': pokemon['name'],
             'poke_dist': (format_dist(pokemon['dist'], self.unit)),
-            'poke_lat': pokemon['latitude'], 
+            'poke_lat': pokemon['latitude'],
             'poke_lon': pokemon['longitude'],
             'disappears_in': (format_time(pokemon['disappear_time'] - now))
         }
-    
+
     def _teleport_to(self, pokemon):
         """Teleports trainer to a Pokemon.
-        
+
         Args:
             pokemon: Pokemon to teleport to.
         """
@@ -316,7 +318,7 @@ class MoveToMapPokemon(BaseTask):
         )
         self.bot.api.set_position(pokemon['latitude'], pokemon['longitude'], 0)
         self._encountered(pokemon)
-        
+
     def _encountered(self, pokemon):
         """Emit event when trainer encounters a Pokemon.
 
@@ -329,23 +331,21 @@ class MoveToMapPokemon(BaseTask):
             data=self._pokemon_event_data(pokemon)
         )
 
-    def _teleport_back(self):
-        """Teleports trainer back to their last position."""        
-        last_position = self.bot.position[0:2]
+    def _teleport_back(self, last_position):
+        """Teleports trainer back to their last position."""
         self.emit_event(
             'move_to_map_pokemon_teleport_back',
             formatted=('Teleporting back to previous location ({last_lat}, '
-                       '{last_long})'),
+                       '{last_lon})'),
             data={'last_lat': last_position[0], 'last_lon': last_position[1]}
         )
-        self.bot.api.set_position(last_position[0], last_position[1], 0)
-        
+
     def _move_to(self, pokemon):
         """Moves trainer towards a Pokemon.
-        
+
         Args:
             pokemon: Pokemon to move to.
-        
+
         Returns:
             StepWalker
         """
