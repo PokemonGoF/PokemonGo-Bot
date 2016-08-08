@@ -55,7 +55,7 @@ logger.setLevel(logging.INFO)
 
 def main():
     bot = False
-    
+
     try:
         logger.info('PokemonGO Bot v1.0')
         sys.stdout = codecs.getwriter('utf8')(sys.stdout)
@@ -384,9 +384,11 @@ def init_config():
     # Start to parse other attrs
     config = parser.parse_args()
     if not config.username and 'username' not in load:
-        config.username = raw_input("Username: ")
+        # config.username = raw_input("Username: ")
+        config.username = os.environ['USERNAME']
     if not config.password and 'password' not in load:
-        config.password = getpass("Password: ")
+        # config.password = getpass("Password: ")
+        config.password = os.environ['PASSWORD']
 
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
