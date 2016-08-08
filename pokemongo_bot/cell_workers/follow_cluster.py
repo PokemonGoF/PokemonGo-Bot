@@ -1,16 +1,15 @@
-from pokemongo_bot import logger
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.cell_workers.utils import distance
 from pokemongo_bot.cell_workers.utils import find_biggest_cluster
+from pokemongo_bot.base_task import BaseTask
 
+class FollowCluster(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
 
-class FollowCluster(object):
-    def __init__(self, bot, config):
-        self.bot = bot
+    def initialize(self):
         self.is_at_destination = False
         self.announced = False
         self.dest = None
-        self.config = config
         self._process_config()
 
     def _process_config(self):
@@ -39,11 +38,21 @@ class FollowCluster(object):
             cnt = self.dest['num_points']
 
             if not self.is_at_destination:
+                msg = log_lure_avail_str + (
+                    "Move to destiny {num_points}. {forts} "
+                    "pokestops will be in range of {radius}. Walking {distance}m."
+                )
+                self.emit_event(
+                    'found_cluster',
+                    formatted=msg,
+                    data={
+                        'num_points': cnt,
+                        'forts': log_lured_str,
+                        'radius': str(self.radius),
+                        'distance': str(distance(self.bot.position[0], self.bot.position[1], lat, lng))
+                    }
+                )
 
-                log_str = log_lure_avail_str + 'Move to destiny. ' + str(cnt) + ' ' + log_lured_str + \
-                          'pokestops will be in range of ' + str(self.radius) + 'm. Arrive in ' \
-                          + str(distance(self.bot.position[0], self.bot.position[1], lat, lng)) + 'm.'
-                logger.log(log_str)
                 self.announced = False
 
                 if self.bot.config.walk > 0:
@@ -61,14 +70,17 @@ class FollowCluster(object):
                     self.bot.api.set_position(lat, lng)
 
             elif not self.announced:
-                log_str = 'Arrived at destiny. ' + str(cnt) + ' pokestops are in range of ' \
-                         + str(self.radius) + 'm.'
-                logger.log(log_str)
+                self.emit_event(
+                    'arrived_at_cluster',
+                    formatted="Arrived at cluster. {forts} are in a range of {radius}m radius.",
+                    data={
+                        'forts': str(cnt),
+                        'radius': self.radius
+                    }
+                )
                 self.announced = True
         else:
             lat = self.bot.position[0]
             lng = self.bot.position[1]
 
         return [lat, lng]
-
-

@@ -1,9 +1,10 @@
-from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import sleep
-from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot.base_task import BaseTask
 
 
 class IncubateEggs(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     last_km_walked = 0
 
     def initialize(self):
@@ -31,7 +32,13 @@ class IncubateEggs(BaseTask):
             if km_left <= 0:
                 self._hatch_eggs()
             else:
-                logger.log('[x] Current egg hatches in {:.2f} km'.format(km_left),'yellow')
+                self.emit_event(
+                    'next_egg_incubates',
+                    formatted='Next egg incubates in {distance_in_km:.2f} km',
+                    data={
+                        'distance_in_km': km_left
+                    }
+                )
             IncubateEggs.last_km_walked = self.km_walked
 
         sorting = self.longer_eggs_first
@@ -45,8 +52,15 @@ class IncubateEggs(BaseTask):
             for egg in self.eggs:
                 if egg["used"] or egg["km"] == -1:
                     continue
-                if self.bot.config.debug:
-                    logger.log('[x] Attempting to apply incubator {} to egg {}'.format(incubator['id'], egg['id']))
+                self.emit_event(
+                    'incubate_try',
+                    level='debug',
+                    formatted="Attempting to apply incubator {incubator_id} to egg {egg_id}",
+                    data={
+                        'incubator_id': incubator['id'],
+                        'egg_id': egg['id']
+                    }
+                )
                 ret = self.bot.api.use_item_egg_incubator(
                     item_id=incubator["id"],
                     pokemon_id=egg["id"]
@@ -54,18 +68,30 @@ class IncubateEggs(BaseTask):
                 if ret:
                     code = ret.get("responses", {}).get("USE_ITEM_EGG_INCUBATOR", {}).get("result", 0)
                     if code == 1:
-                        logger.log('[x] Now incubating a ' + str(egg["km"]) + "km egg", 'green')
+                        self.emit_event(
+                            'incubate',
+                            formatted='Incubating a {distance_in_km} egg.',
+                            data={
+                                'distance_in_km': str(egg['km'])
+                            }
+                        )
                         egg["used"] = True
                         incubator["used"] = True
                         break
                     elif code == 5 or code == 7:
-                        if self.bot.config.debug:
-                            logger.log('[x] Incubator already in use')
+                        self.emit_event(
+                            'incubator_already_used',
+                            level='debug',
+                            formatted='Incubator in use.',
+                        )
                         incubator["used"] = True
                         break
                     elif code == 6:
-                        if self.bot.config.debug:
-                            logger.log('[x] Egg already incubating')
+                        self.emit_event(
+                            'egg_already_incubating',
+                            level='debug',
+                            formatted='Egg already incubating',
+                        )
                         egg["used"] = True
 
     def _check_inventory(self, lookup_ids=[]):
@@ -152,16 +178,32 @@ class IncubateEggs(BaseTask):
         except:
             pokemon_data = [{"name":"error","cp":"error","iv":"error"}]
         if not pokemon_ids or pokemon_data[0]['name'] == "error":
-            logger.log("[!] Eggs hatched, but we had trouble with the response. Please check your inventory to find your new pokemon!",'red')
+            self.emit_event(
+                'egg_hatched',
+                data={
+                    'pokemon': 'error',
+                    'cp': 'error',
+                    'iv': 'error',
+                    'exp': 'error',
+                    'stardust': 'error',
+                    'candy': 'error',
+                }
+            )
             return
-        logger.log("-"*30, log_color)
-        logger.log("[!] {} eggs hatched! Received:".format(len(pokemon_data)), log_color)
         for i in range(len(pokemon_data)):
-            logger.log("-"*30,log_color)
-            logger.log("[!] Pokemon: {}".format(pokemon_data[i]['name']), log_color)
-            logger.log("[!] CP: {}".format(pokemon_data[i].get('cp',0)), log_color)
-            logger.log("[!] IV: {} ({:.2f})".format("/".join(map(str, pokemon_data[i]['iv'])),(sum(pokemon_data[i]['iv'])/self.max_iv)), log_color)
-            logger.log("[!] XP: {}".format(xp[i]), log_color)
-            logger.log("[!] Stardust: {}".format(stardust[i]), log_color)
-            logger.log("[!] Candy: {}".format(candy[i]), log_color)
-        logger.log("-"*30, log_color)
+            msg = "Egg hatched with a {pokemon} (CP {cp} - IV {iv}), {exp} exp, {stardust} stardust and {candy} candies."
+            self.emit_event(
+                'egg_hatched',
+                formatted=msg,
+                data={
+                    'pokemon': pokemon_data[i]['name'],
+                    'cp': pokemon_data[i]['cp'],
+                    'iv': "{} {}".format(
+                        "/".join(map(str, pokemon_data[i]['iv'])),
+                        sum(pokemon_data[i]['iv'])/self.max_iv
+                    ),
+                    'exp': xp[i],
+                    'stardust': stardust[i],
+                    'candy': candy[i],
+                }
+            )
