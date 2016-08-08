@@ -83,6 +83,7 @@ class MoveToMapPokemon(BaseTask):
         self.pokemon_data = self.bot.pokemon_list
         self.unit = self.bot.config.distance_unit
         self.caught = []
+        self.luretimeout = []
 
         data_file = 'data/map-caught-{}.json'.format(self.bot.config.username)
         if os.path.isfile(data_file):
@@ -392,9 +393,12 @@ class MoveToMapPokemon(BaseTask):
                 if prio < 800:
                     continue
             now = int(time.time())
+            if pokestops['lure_expiration'] in self.luretimeout: #assuming no duplicates
+                continue
             if pokestops['lure_expiration']/1000-now < 10:
                 continue
             pokemon = {
+                'lure_expiration': pokestops['lure_expiration'],
                 'name': pokemon_name,
                 'priority': prio,
                 'latitude': pokestops['latitude'],
@@ -406,6 +410,7 @@ class MoveToMapPokemon(BaseTask):
 
         pokemon_list.sort(key=lambda x: x['priority'], reverse=True)
         pokemon = pokemon_list[0]
+        self.luretimeout.append(pokemon['lure_expiration'])
 
         last_position = self.bot.position[0:2]
         self.bot.heartbeat()
