@@ -13,6 +13,18 @@
         "type": "CollectLevelUpReward"
       },
       {
+        "type": "UpdateTitleStats",
+        "config": {
+            "events_only": true,
+            "min_interval": 15,
+            "stats": [
+                "stardust_earned",
+                "xp_earned",
+                "xp_per_hour"
+            ]
+        }
+      },
+      {
         "type": "IncubateEggs",
         "config": {
           "longer_eggs_first": true
