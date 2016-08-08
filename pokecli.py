@@ -133,8 +133,8 @@ def main():
             report_summary(bot)
 
         traceback.print_exc()
-        subprocess.Popen(['python', 'pokecli.py'], shell=False)
-        # raise e
+        # subprocess.Popen(['python', 'pokecli.py'], shell=False)
+        raise e
 
 def report_summary(bot):
     if bot.metrics.start_time is None:
@@ -385,7 +385,7 @@ def init_config():
     config = parser.parse_args()
     if not config.username and 'username' not in load:
         # config.username = raw_input("Username: ")
-        config.username = os.environ['USERNAME']
+        config.username = os.environ['GOOGLEACCOUNT']
     if not config.password and 'password' not in load:
         # config.password = getpass("Password: ")
         config.password = os.environ['PASSWORD']
