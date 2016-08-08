@@ -42,6 +42,12 @@ from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
 from pokemongo_bot.health_record import BotEvent
 from pokemongo_bot.plugin_loader import PluginLoader
 
+try:
+    from demjson import jsonlint
+except ImportError:
+    # Run `pip install -r requirements.txt` to fix this
+    jsonlint = None
+
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -104,7 +110,7 @@ def main():
                     'api_error',
                     sender=bot,
                     level='info',
-                    formatted='Log logged in, reconnecting in {:s}'.format(wait_time)
+                    formatted='Log logged in, reconnecting in {:d}'.format(wait_time)
                 )
                 time.sleep(wait_time)
             except ServerBusyOrOfflineException:
@@ -162,16 +168,28 @@ def init_config():
     # If config file exists, load variables from json
     load = {}
 
+    def _json_loader(filename):
+        try:
+            with open(filename, 'rb') as data:
+                load.update(json.load(data))
+        except ValueError:
+            if jsonlint:
+                with open(filename, 'rb') as data:
+                    lint = jsonlint()
+                    rc = lint.main(['-v', filename])
+
+            logger.critical('Error with configuration file')
+            sys.exit(-1)
+
     # Select a config file code
     parser.add_argument("-cf", "--config", help="Config File to use")
     config_arg = parser.parse_known_args() and parser.parse_known_args()[0].config or None
+
     if config_arg and os.path.isfile(config_arg):
-        with open(config_arg) as data:
-            load.update(json.load(data))
+        _json_loader(config_arg)
     elif os.path.isfile(config_file):
         logger.info('No config argument specified, checking for /configs/config.json')
-        with open(config_file) as data:
-            load.update(json.load(data))
+        _json_loader(config_file)
     else:
         logger.info('Error: No /configs/config.json or specified config')
 

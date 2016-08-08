@@ -9,6 +9,8 @@ import random
 import re
 import sys
 import time
+import Queue
+import threading
 
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
@@ -68,6 +70,11 @@ class PokemonGoBot(object):
 
         # Make our own copy of the workers for this instance
         self.workers = []
+
+        # Theading setup for file writing
+        self.web_update_queue = Queue.Queue(maxsize=1)
+        self.web_update_thread = threading.Thread(target=self.update_web_location_worker)
+        self.web_update_thread.start()
 
     def start(self):
         self._setup_event_system()
@@ -225,10 +232,12 @@ class PokemonGoBot(object):
                 'iv_display',
             )
         )
+        self.event_manager.register_event('no_pokeballs')
         self.event_manager.register_event(
             'pokemon_catch_rate',
             parameters=(
                 'catch_rate',
+                'ball_name',
                 'berry_name',
                 'berry_count'
             )
@@ -237,25 +246,28 @@ class PokemonGoBot(object):
             'threw_berry',
             parameters=(
                 'berry_name',
+                'ball_name',
                 'new_catch_rate'
             )
         )
         self.event_manager.register_event(
             'threw_pokeball',
             parameters=(
-                'pokeball',
+                'ball_name',
                 'success_percentage',
                 'count_left'
             )
         )
         self.event_manager.register_event(
-            'pokemon_fled',
+            'pokemon_capture_failed',
             parameters=('pokemon',)
         )
         self.event_manager.register_event(
             'pokemon_vanished',
             parameters=('pokemon',)
         )
+        self.event_manager.register_event('pokemon_not_in_range')
+        self.event_manager.register_event('pokemon_inventory_full')
         self.event_manager.register_event(
             'pokemon_caught',
             parameters=(
@@ -976,7 +988,15 @@ class PokemonGoBot(object):
         request.get_player()
         request.check_awarded_badges()
         request.call()
-        self.update_web_location()  # updates every tick
+        try:
+            self.web_update_queue.put_nowait(True)  # do this outside of thread every tick
+        except Queue.Full:
+            pass
+
+    def update_web_location_worker(self):
+        while True:
+            self.web_update_queue.get()
+            self.update_web_location()
 
     def get_inventory_count(self, what):
         response_dict = self.get_inventory()
