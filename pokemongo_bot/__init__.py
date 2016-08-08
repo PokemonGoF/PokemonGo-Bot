@@ -266,10 +266,7 @@ class PokemonGoBot(object):
             'pokemon_vanished',
             parameters=('pokemon',)
         )
-        self.event_manager.register_event(
-            'pokemon_not_in_range',
-            parameters=('pokemon',)
-        )
+        self.event_manager.register_event('pokemon_not_in_range')
         self.event_manager.register_event('pokemon_inventory_full')
         self.event_manager.register_event(
             'pokemon_caught',

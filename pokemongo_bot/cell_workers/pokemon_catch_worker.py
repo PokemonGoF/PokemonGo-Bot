@@ -8,8 +8,10 @@ from pokemongo_bot.human_behaviour import normalized_reticle_size, sleep, spin_m
 CATCH_STATUS_SUCCESS = 1
 CATCH_STATUS_FAILED = 2
 CATCH_STATUS_VANISHED = 3
-CATCH_STATUS_NOT_IN_RANGE = 5
-CATCH_STATUS_POKEMON_INVENTORY_FULL = 7
+
+ENCOUNTER_STATUS_SUCCESS = 1
+ENCOUNTER_STATUS_NOT_IN_RANGE = 5
+ENCOUNTER_STATUS_POKEMON_INVENTORY_FULL = 7
 
 ITEM_POKEBALL = 1
 ITEM_GREATBALL = 2
@@ -69,7 +71,11 @@ class PokemonCatchWorker(BaseTask):
         try:
             responses = response_dict['responses']
             response = responses[self.response_key]
-            if response[self.response_status_key] != 1:
+            if response[self.response_status_key] != ENCOUNTER_STATUS_SUCCESS:
+                if response[self.response_status_key] == ENCOUNTER_STATUS_NOT_IN_RANGE:
+                    self.emit_event('pokemon_not_in_range', formatted='Pokemon went out of range!')
+                elif response[self.response_status_key] == ENCOUNTER_STATUS_POKEMON_INVENTORY_FULL:
+                    self.emit_event('pokemon_inventory_full', formatted='Your Pokemon inventory is full! Could not catch!')
                 return False
         except KeyError:
             return False
@@ -364,18 +370,6 @@ class PokemonCatchWorker(BaseTask):
                 )
                 if self._pct(catch_rate_by_ball[current_ball]) == 100:
                     self.bot.softban = True
-
-            # abandon if pokemon vanished
-            elif catch_pokemon_status == CATCH_STATUS_NOT_IN_RANGE:
-                self.emit_event(
-                    'pokemon_not_in_range',
-                    formatted='{pokemon} went out of range!',
-                    data={'pokemon': pokemon.name}
-                )
-
-            # abandon if pokemon vanished
-            elif catch_pokemon_status == CATCH_STATUS_POKEMON_INVENTORY_FULL:
-                self.emit_event('pokemon_inventory_full', formatted='Your Pokemon inventory is full! Could not catch!')
 
             # pokemon caught!
             elif catch_pokemon_status == CATCH_STATUS_SUCCESS:
