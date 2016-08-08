@@ -3,12 +3,13 @@ from __future__ import absolute_import, unicode_literals
 
 import math
 
-import pokemongo_bot.logger as logger
 from pokemongo_bot.cell_workers.utils import distance, format_dist
 from pokemongo_bot.step_walker import StepWalker
-from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot.base_task import BaseTask
 
 class FollowSpiral(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     def initialize(self):
         self.steplimit = self.config.get("diameter", 4)
         self.step_size = self.config.get("step_size", 70)
@@ -84,10 +85,16 @@ class FollowSpiral(BaseTask):
             )
 
             if self.cnt == 1:
-                logger.log(
-                    'Walking from ' + str((self.bot.api._position_lat,
-                    self.bot.api._position_lng)) + " to " + str([point['lat'], point['lng']]) + " " + format_dist(dist,
-                                                                                                   self.bot.config.distance_unit))
+                self.emit_event(
+                    'position_update',
+                    formatted="Walking from {last_position} to {current_position} ({distance} {distance_unit})",
+                    data={
+                        'last_position': self.bot.position,
+                        'current_position': (point['lat'], point['lng'], 0),
+                        'distance': dist,
+                        'distance_unit': 'm'
+                    }
+                )
 
             if step_walker.step():
                 step_walker = None

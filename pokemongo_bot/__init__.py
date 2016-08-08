@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
 import datetime
 import json
@@ -14,7 +15,8 @@ from pgoapi import PGoApi
 from pgoapi.utilities import f2i, get_cell_ids
 
 import cell_workers
-import logger
+from base_task import BaseTask
+from plugin_loader import PluginLoader
 from api_wrapper import ApiWrapper
 from cell_workers.utils import distance
 from event_manager import EventManager
@@ -23,10 +25,11 @@ from item_list import Item
 from metrics import Metrics
 from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
+from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from worker_result import WorkerResult
-from tree_config_builder import ConfigException, TreeConfigBuilder
-
-
+from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
+from sys import platform as _platform
+import struct
 class PokemonGoBot(object):
     @property
     def position(self):
@@ -35,6 +38,15 @@ class PokemonGoBot(object):
     @position.setter
     def position(self, position_tuple):
         self.api._position_lat, self.api._position_lng, self.api._position_alt = position_tuple
+
+    @property
+    def player_data(self):
+        """
+        Returns the player data as received from the API.
+        :return: The player data.
+        :rtype: dict
+        """
+        return self._player
 
     def __init__(self, config):
         self.config = config
@@ -52,11 +64,13 @@ class PokemonGoBot(object):
         self.start_position = None
         self.last_map_object = None
         self.last_time_map_object = 0
+        self.logger = logging.getLogger(type(self).__name__)
 
         # Make our own copy of the workers for this instance
         self.workers = []
 
     def start(self):
+        self._setup_event_system()
         self._setup_logging()
         self._setup_api()
 
@@ -64,15 +78,26 @@ class PokemonGoBot(object):
 
     def _setup_event_system(self):
         handlers = [LoggingHandler()]
-        if self.config.websocket_server:
-            websocket_handler = SocketIoHandler(self.config.websocket_server_url)
-            handlers.append(websocket_handler)
-
+        if self.config.websocket_server_url:
             if self.config.websocket_start_embedded_server:
                 self.sio_runner = SocketIoRunner(self.config.websocket_server_url)
                 self.sio_runner.start_listening_async()
 
+            websocket_handler = SocketIoHandler(
+                self,
+                self.config.websocket_server_url
+            )
+            handlers.append(websocket_handler)
+
+            if self.config.websocket_remote_control:
+                remote_control = WebsocketRemoteControl(self).start()
+
+
         self.event_manager = EventManager(*handlers)
+        self._register_events()
+        if self.config.show_events:
+            self.event_manager.event_report()
+            sys.exit(1)
 
         # Registering event:
         # self.event_manager.register_event("location", parameters=['lat', 'lng'])
@@ -81,7 +106,324 @@ class PokemonGoBot(object):
         # message: :
         # self.event_manager.emit('location', 'level'='info', data={'lat': 1, 'lng':1}),
 
+    def _register_events(self):
+        self.event_manager.register_event(
+            'location_found',
+            parameters=('position', 'location')
+        )
+        self.event_manager.register_event('api_error')
+        self.event_manager.register_event('config_error')
+
+        self.event_manager.register_event('login_started')
+        self.event_manager.register_event('login_failed')
+        self.event_manager.register_event('login_successful')
+
+        self.event_manager.register_event('set_start_location')
+        self.event_manager.register_event('load_cached_location')
+        self.event_manager.register_event('location_cache_ignored')
+        self.event_manager.register_event(
+            'position_update',
+            parameters=(
+                'current_position',
+                'last_position',
+                'distance', # optional
+                'distance_unit' # optional
+            )
+        )
+        self.event_manager.register_event('location_cache_error')
+
+        self.event_manager.register_event('bot_start')
+        self.event_manager.register_event('bot_exit')
+
+        # sleep stuff
+        self.event_manager.register_event(
+            'next_sleep',
+            parameters=('time',)
+        )
+        self.event_manager.register_event(
+            'bot_sleep',
+            parameters=('time_in_seconds',)
+        )
+
+        # fort stuff
+        self.event_manager.register_event(
+            'spun_fort',
+            parameters=(
+                'fort_id',
+                'latitude',
+                'longitude'
+            )
+        )
+        self.event_manager.register_event(
+            'lured_pokemon_found',
+            parameters=(
+                'fort_id',
+                'fort_name',
+                'encounter_id',
+                'latitude',
+                'longitude'
+            )
+        )
+        self.event_manager.register_event(
+            'moving_to_fort',
+            parameters=(
+                'fort_name',
+                'distance'
+            )
+        )
+        self.event_manager.register_event(
+            'moving_to_lured_fort',
+            parameters=(
+                'fort_name',
+                'distance',
+                'lure_distance'
+            )
+        )
+        self.event_manager.register_event(
+            'spun_pokestop',
+            parameters=(
+                'pokestop', 'exp', 'items'
+            )
+        )
+        self.event_manager.register_event(
+            'pokestop_empty',
+            parameters=('pokestop',)
+        )
+        self.event_manager.register_event(
+            'pokestop_out_of_range',
+            parameters=('pokestop',)
+        )
+        self.event_manager.register_event(
+            'pokestop_on_cooldown',
+            parameters=('pokestop', 'minutes_left')
+        )
+        self.event_manager.register_event(
+            'unknown_spin_result',
+            parameters=('status_code',)
+        )
+        self.event_manager.register_event('pokestop_searching_too_often')
+        self.event_manager.register_event('arrived_at_fort')
+
+        # pokemon stuff
+        self.event_manager.register_event(
+            'catchable_pokemon',
+            parameters=(
+                'pokemon_id',
+                'spawn_point_id',
+                'encounter_id',
+                'latitude',
+                'longitude',
+                'expiration_timestamp_ms'
+            )
+        )
+        self.event_manager.register_event(
+            'pokemon_appeared',
+            parameters=(
+                'pokemon',
+                'cp',
+                'iv',
+                'iv_display',
+            )
+        )
+        self.event_manager.register_event(
+            'pokemon_catch_rate',
+            parameters=(
+                'catch_rate',
+                'berry_name',
+                'berry_count'
+            )
+        )
+        self.event_manager.register_event(
+            'threw_berry',
+            parameters=(
+                'berry_name',
+                'new_catch_rate'
+            )
+        )
+        self.event_manager.register_event(
+            'threw_pokeball',
+            parameters=(
+                'pokeball',
+                'success_percentage',
+                'count_left'
+            )
+        )
+        self.event_manager.register_event(
+            'pokemon_fled',
+            parameters=('pokemon',)
+        )
+        self.event_manager.register_event(
+            'pokemon_vanished',
+            parameters=('pokemon',)
+        )
+        self.event_manager.register_event(
+            'pokemon_caught',
+            parameters=(
+                'pokemon',
+                'cp', 'iv', 'iv_display', 'exp'
+            )
+        )
+        self.event_manager.register_event(
+            'pokemon_evolved',
+            parameters=('pokemon', 'iv', 'cp')
+        )
+        self.event_manager.register_event(
+            'pokemon_evolve_fail',
+            parameters=('pokemon',)
+        )
+        self.event_manager.register_event('skip_evolve')
+        self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
+        self.event_manager.register_event('vip_pokemon')
+
+
+        # level up stuff
+        self.event_manager.register_event(
+            'level_up',
+            parameters=(
+                'previous_level',
+                'current_level'
+            )
+        )
+        self.event_manager.register_event(
+            'level_up_reward',
+            parameters=('items',)
+        )
+
+        # lucky egg
+        self.event_manager.register_event(
+            'used_lucky_egg',
+            parameters=('amount_left',)
+        )
+        self.event_manager.register_event('lucky_egg_error')
+
+        # softban
+        self.event_manager.register_event('softban')
+        self.event_manager.register_event('softban_fix')
+        self.event_manager.register_event('softban_fix_done')
+
+        # egg incubating
+        self.event_manager.register_event(
+            'incubate_try',
+            parameters=(
+                'incubator_id',
+                'egg_id'
+            )
+        )
+        self.event_manager.register_event(
+            'incubate',
+            parameters=('distance_in_km',)
+        )
+        self.event_manager.register_event(
+            'next_egg_incubates',
+            parameters=('distance_in_km',)
+        )
+        self.event_manager.register_event('incubator_already_used')
+        self.event_manager.register_event('egg_already_incubating')
+        self.event_manager.register_event(
+            'egg_hatched',
+            parameters=(
+                'pokemon',
+                'cp', 'iv', 'exp', 'stardust', 'candy'
+            )
+        )
+
+        # discard item
+        self.event_manager.register_event(
+            'item_discarded',
+            parameters=(
+                'amount', 'item', 'maximum'
+            )
+        )
+        self.event_manager.register_event(
+            'item_discard_fail',
+            parameters=('item',)
+        )
+
+        # inventory
+        self.event_manager.register_event('inventory_full')
+
+        # release
+        self.event_manager.register_event(
+            'keep_best_release',
+            parameters=(
+                'amount', 'pokemon', 'criteria'
+            )
+        )
+        self.event_manager.register_event(
+            'future_pokemon_release',
+            parameters=(
+                'pokemon', 'cp', 'iv', 'below_iv', 'below_cp', 'cp_iv_logic'
+            )
+        )
+        self.event_manager.register_event(
+            'pokemon_release',
+            parameters=('pokemon', 'cp', 'iv')
+        )
+
+        # polyline walker
+        self.event_manager.register_event(
+            'polyline_request',
+            parameters=('url',)
+        )
+
+        # cluster
+        self.event_manager.register_event(
+            'found_cluster',
+            parameters=(
+                'num_points', 'forts', 'radius', 'distance'
+            )
+        )
+        self.event_manager.register_event(
+            'arrived_at_cluster',
+            parameters=(
+                'forts', 'radius'
+            )
+        )
+
+        # rename
+        self.event_manager.register_event(
+            'rename_pokemon',
+            parameters=(
+                'old_name', 'current_name'
+            )
+        )
+        self.event_manager.register_event(
+            'pokemon_nickname_invalid',
+            parameters=('nickname',)
+        )
+        self.event_manager.register_event('unset_pokemon_nickname')
+
+        # Move To map pokemon
+        self.event_manager.register_event(
+            'move_to_map_pokemon_fail',
+            parameters=('message',)
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_updated_map',
+            parameters=('lat', 'lon')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_teleport_to',
+            parameters=('poke_name', 'poke_dist', 'poke_lat', 'poke_lon',
+                        'disappears_in')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_encounter',
+            parameters=('poke_name', 'poke_dist', 'poke_lat', 'poke_lon',
+                        'disappears_in')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_move_towards',
+            parameters=('poke_name', 'poke_dist', 'poke_lat', 'poke_lon',
+                        'disappears_in')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_teleport_back',
+            parameters=('last_lat', 'last_lon')
+        )
+
     def tick(self):
+        self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
         self.tick_count += 1
 
@@ -170,7 +512,7 @@ class PokemonGoBot(object):
                     'cells': cells
                 }, outfile)
         except IOError as e:
-            logger.log('[x] Error while opening location file: %s' % e, 'red')
+            self.logger.info('[x] Error while opening location file: %s' % e)
 
         user_data_lastlocation = os.path.join(
             'data', 'last-location-%s.json' % self.config.username
@@ -179,7 +521,7 @@ class PokemonGoBot(object):
             with open(user_data_lastlocation, 'w') as outfile:
                 json.dump({'lat': lat, 'lng': lng, 'start_position': self.start_position}, outfile)
         except IOError as e:
-            logger.log('[x] Error while opening location file: %s' % e, 'red')
+            self.logger.info('[x] Error while opening location file: %s' % e)
 
     def find_close_cells(self, lat, lng):
         cellid = get_cell_ids(lat, lng)
@@ -204,14 +546,11 @@ class PokemonGoBot(object):
         return map_cells
 
     def _setup_logging(self):
-        self.log = logging.getLogger(__name__)
         # log settings
         # log format
-        logging.basicConfig(
-            level=logging.DEBUG,
-            format='%(asctime)s [%(name)10s] [%(levelname)5s] %(message)s')
 
         if self.config.debug:
+            log_level = logging.DEBUG
             logging.getLogger("requests").setLevel(logging.DEBUG)
             logging.getLogger("websocket").setLevel(logging.DEBUG)
             logging.getLogger("socketio").setLevel(logging.DEBUG)
@@ -220,6 +559,7 @@ class PokemonGoBot(object):
             logging.getLogger("pgoapi").setLevel(logging.DEBUG)
             logging.getLogger("rpc_api").setLevel(logging.DEBUG)
         else:
+            log_level = logging.ERROR
             logging.getLogger("requests").setLevel(logging.ERROR)
             logging.getLogger("websocket").setLevel(logging.ERROR)
             logging.getLogger("socketio").setLevel(logging.ERROR)
@@ -228,24 +568,34 @@ class PokemonGoBot(object):
             logging.getLogger("pgoapi").setLevel(logging.ERROR)
             logging.getLogger("rpc_api").setLevel(logging.ERROR)
 
+        logging.basicConfig(
+            level=log_level,
+            format='%(asctime)s [%(name)10s] [%(levelname)s] %(message)s'
+        )
     def check_session(self, position):
         # Check session expiry
         if self.api._auth_provider and self.api._auth_provider._ticket_expire:
 
             # prevent crash if return not numeric value
             if not self.is_numeric(self.api._auth_provider._ticket_expire):
-                logger.log("Ticket expired value is not numeric", 'yellow')
+                self.logger.info("Ticket expired value is not numeric", 'yellow')
                 return
 
             remaining_time = \
                 self.api._auth_provider._ticket_expire / 1000 - time.time()
 
             if remaining_time < 60:
-                logger.log("Session stale, re-logging in", 'yellow')
+                self.event_manager.emit(
+                    'api_error',
+                    sender=self,
+                    level='info',
+                    formatted='Session stale, re-logging in.'
+                )
                 position = self.position
                 self.api = ApiWrapper()
                 self.position = position
                 self.login()
+                self.api.activate_signature(self.get_encryption_lib())
 
     @staticmethod
     def is_numeric(s):
@@ -256,7 +606,12 @@ class PokemonGoBot(object):
             return False
 
     def login(self):
-        logger.log('Attempting login to Pokemon Go.', 'white')
+        self.event_manager.emit(
+            'login_started',
+            sender=self,
+            level='info',
+            formatted="Login procedure started."
+        )
         lat, lng = self.position[0:2]
         self.api.set_position(lat, lng, 0)
 
@@ -265,11 +620,45 @@ class PokemonGoBot(object):
             str(self.config.username),
             str(self.config.password)):
 
-            logger.log('[X] Login Error, server busy', 'red')
-            logger.log('[X] Waiting 10 seconds to try again', 'red')
+            self.event_manager.emit(
+                'login_failed',
+                sender=self,
+                level='info',
+                formatted="Login error, server busy. Waiting 10 seconds to try again."
+            )
             time.sleep(10)
 
-        logger.log('Login to Pokemon Go successful.', 'green')
+        self.event_manager.emit(
+            'login_successful',
+            sender=self,
+            level='info',
+            formatted="Login successful."
+        )
+
+    def get_encryption_lib(self):
+        if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
+            file_name = 'encrypt.so'
+        elif _platform == "Windows" or _platform == "win32":
+            # Check if we are on 32 or 64 bit
+            if sys.maxsize > 2**32:
+                file_name = 'encrypt_64.dll'
+            else:
+                file_name = 'encrypt.dll'
+
+        if self.config.encrypt_location == '':
+            path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+        else:
+            path = self.config.encrypt_location
+
+        full_path = path + '/'+ file_name
+        if not os.path.isfile(full_path):
+            self.logger.error(file_name + ' is not found! Please place it in the bots root directory or set libencrypt_location in config.')
+            self.logger.info('Platform: '+ _platform + ' Encrypt.so directory: '+ path)
+            sys.exit(1)
+        else:
+            self.logger.info('Found '+ file_name +'! Platform: ' + _platform + ' Encrypt.so directory: ' + path)
+
+        return full_path
 
     def _setup_api(self):
         # instantiate pgoapi
@@ -279,12 +668,11 @@ class PokemonGoBot(object):
         self._set_starting_position()
 
         self.login()
-
         # chain subrequests (methods) into one RPC call
 
         self._print_character_info()
-
-        logger.log('')
+        self.api.activate_signature(self.get_encryption_lib())
+        self.logger.info('')
         self.update_inventory()
         # send empty map_cells and then our position
         self.update_web_location()
@@ -301,7 +689,7 @@ class PokemonGoBot(object):
             self._player = response_dict['responses']['GET_PLAYER']['player_data']
             player = self._player
         else:
-            logger.log(
+            self.logger.info(
                 "The API didn't return player info, servers are unstable - "
                 "retrying.", 'red'
             )
@@ -321,56 +709,56 @@ class PokemonGoBot(object):
             pokecoins = player['currencies'][0]['amount']
         if 'amount' in player['currencies'][1]:
             stardust = player['currencies'][1]['amount']
-        logger.log('')
-        logger.log('--- {username} ---'.format(**player), 'cyan')
+        self.logger.info('')
+        self.logger.info('--- {username} ---'.format(**player))
         self.get_player_info()
-        logger.log(
+        self.logger.info(
             'Pokemon Bag: {}/{}'.format(
                 self.get_inventory_count('pokemon'),
                 player['max_pokemon_storage']
-            ), 'cyan'
+            )
         )
-        logger.log(
+        self.logger.info(
             'Items: {}/{}'.format(
                 self.get_inventory_count('item'),
                 player['max_item_storage']
-            ), 'cyan'
+            )
         )
-        logger.log(
+        self.logger.info(
             'Stardust: {}'.format(stardust) +
-            ' | Pokecoins: {}'.format(pokecoins), 'cyan'
+            ' | Pokecoins: {}'.format(pokecoins)
         )
         # Items Output
-        logger.log(
+        self.logger.info(
             'PokeBalls: ' + str(items_stock[1]) +
             ' | GreatBalls: ' + str(items_stock[2]) +
-            ' | UltraBalls: ' + str(items_stock[3]), 'cyan')
+            ' | UltraBalls: ' + str(items_stock[3]))
 
-        logger.log(
+        self.logger.info(
             'RazzBerries: ' + str(items_stock[701]) +
             ' | BlukBerries: ' + str(items_stock[702]) +
-            ' | NanabBerries: ' + str(items_stock[703]), 'cyan')
+            ' | NanabBerries: ' + str(items_stock[703]))
 
-        logger.log(
+        self.logger.info(
             'LuckyEgg: ' + str(items_stock[301]) +
             ' | Incubator: ' + str(items_stock[902]) +
-            ' | TroyDisk: ' + str(items_stock[501]), 'cyan')
+            ' | TroyDisk: ' + str(items_stock[501]))
 
-        logger.log(
+        self.logger.info(
             'Potion: ' + str(items_stock[101]) +
             ' | SuperPotion: ' + str(items_stock[102]) +
-            ' | HyperPotion: ' + str(items_stock[103]), 'cyan')
+            ' | HyperPotion: ' + str(items_stock[103]))
 
-        logger.log(
+        self.logger.info(
             'Incense: ' + str(items_stock[401]) +
             ' | IncenseSpicy: ' + str(items_stock[402]) +
-            ' | IncenseCool: ' + str(items_stock[403]), 'cyan')
+            ' | IncenseCool: ' + str(items_stock[403]))
 
-        logger.log(
+        self.logger.info(
             'Revive: ' + str(items_stock[201]) +
-            ' | MaxRevive: ' + str(items_stock[202]), 'cyan')
+            ' | MaxRevive: ' + str(items_stock[202]))
 
-        logger.log('')
+        self.logger.info('')
 
     def use_lucky_egg(self):
         return self.api.use_item_xp_boost(item_id=301)
@@ -450,6 +838,13 @@ class PokemonGoBot(object):
 
     def _set_starting_position(self):
 
+        self.event_manager.emit(
+            'set_start_location',
+            sender=self,
+            level='info',
+            formatted='Setting start location.'
+        )
+
         has_position = False
 
         if self.config.test:
@@ -457,23 +852,51 @@ class PokemonGoBot(object):
             return
 
         if self.config.location:
-            location_str = self.config.location.encode('utf-8')
-            location = (self.get_pos_by_name(location_str.replace(" ", "")))
+            location_str = self.config.location
+            location = self.get_pos_by_name(location_str.replace(" ", ""))
+            msg = "Location found: {location} {position}"
+            self.event_manager.emit(
+                'location_found',
+                sender=self,
+                level='info',
+                formatted=msg,
+                data={
+                    'location': location_str,
+                    'position': location
+                }
+            )
+
             self.api.set_position(*location)
+
+            self.event_manager.emit(
+                'position_update',
+                sender=self,
+                level='info',
+                formatted="Now at {current_position}",
+                data={
+                    'current_position': self.position,
+                    'last_position': '',
+                    'distance': '',
+                    'distance_unit': ''
+                }
+            )
+
             self.start_position = self.position
-            logger.log('')
-            logger.log('Location Found: {}'.format(location_str))
-            logger.log('GeoPosition: {}'.format(self.position))
-            logger.log('')
+
             has_position = True
 
         if self.config.location_cache:
             try:
                 # save location flag used to pull the last known location from
                 # the location.json
-                logger.log('[x] Parsing cached location...')
+                self.event_manager.emit(
+                    'load_cached_location',
+                    sender=self,
+                    level='debug',
+                    formatted='Loading cached location...'
+                )
                 with open('data/last-location-%s.json' %
-                          self.config.username) as f:
+                    self.config.username) as f:
                     location_json = json.load(f)
                 location = (
                     location_json['lat'],
@@ -487,22 +910,28 @@ class PokemonGoBot(object):
 
                     # Start position has to have been set on a previous run to do this check
                     if last_start_position and last_start_position != self.start_position:
-                        logger.log('[x] Last location flag used but with a stale starting location', 'yellow')
-                        logger.log('[x] Using new starting location, {}'.format(self.position))
+                        msg = 'Going to a new place, ignoring cached location.'
+                        self.event_manager.emit(
+                            'location_cache_ignored',
+                            sender=self,
+                            level='debug',
+                            formatted=msg
+                        )
                         return
 
                 self.api.set_position(*location)
-
-                logger.log('')
-                logger.log(
-                    '[x] Last location flag used. Overriding passed in location'
+                self.event_manager.emit(
+                    'position_update',
+                    sender=self,
+                    level='debug',
+                    formatted='Loaded location {current_position} from cache',
+                    data={
+                        'current_position': location,
+                        'last_position': '',
+                        'distance': '',
+                        'distance_unit': ''
+                    }
                 )
-                logger.log(
-                    '[x] Last in-game location was set as: {}'.format(
-                        self.position
-                    )
-                )
-                logger.log('')
 
                 has_position = True
             except Exception:
@@ -510,9 +939,11 @@ class PokemonGoBot(object):
                     sys.exit(
                         "No cached Location. Please specify initial location."
                     )
-                logger.log(
-                    '[x] Parsing cached location failed, try to use the '
-                    'initial location...'
+                self.event_manager.emit(
+                    'location_cache_error',
+                    sender=self,
+                    level='debug',
+                    formatted='Parsing cached location failed.'
                 )
 
     def get_pos_by_name(self, location_name):
@@ -524,7 +955,7 @@ class PokemonGoBot(object):
             if len(possible_coordinates) == 2:
                 # 2 matches, this must be a coordinate. We'll bypass the Google
                 # geocode so we keep the exact location.
-                logger.log(
+                self.logger.info(
                     '[x] Coordinates found in passed in location, '
                     'not geocoding.'
                 )
@@ -578,22 +1009,22 @@ class PokemonGoBot(object):
                     nextlvlxp = (int(playerdata.get('next_level_xp', 0)) - int(playerdata.get('experience', 0)))
 
                     if 'level' in playerdata and 'experience' in playerdata:
-                        logger.log(
+                        self.logger.info(
                             'Level: {level}'.format(
                                 **playerdata) +
                             ' (Next Level: {} XP)'.format(
                                 nextlvlxp) +
                             ' (Total: {experience} XP)'
-                            ''.format(**playerdata), 'cyan')
+                            ''.format(**playerdata))
 
                     if 'pokemons_captured' in playerdata and 'poke_stop_visits' in playerdata:
-                        logger.log(
+                        self.logger.info(
                             'Pokemon Captured: '
                             '{pokemons_captured}'.format(
                                 **playerdata) +
                             ' | Pokestops Visited: '
                             '{poke_stop_visits}'.format(
-                                **playerdata), 'cyan')
+                                **playerdata))
 
     def has_space_for_loot(self):
         number_of_things_gained_by_stop = 5

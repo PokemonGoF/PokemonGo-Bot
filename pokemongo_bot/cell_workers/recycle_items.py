@@ -1,10 +1,11 @@
 import json
 import os
-from pokemongo_bot import logger
-from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.tree_config_builder import ConfigException
 
 class RecycleItems(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     def initialize(self):
         self.item_filter = self.config.get('item_filter', {})
         self._validate_item_filter()
@@ -37,11 +38,23 @@ class RecycleItems(BaseTask):
                 result = response_dict_recycle.get('responses', {}).get('RECYCLE_INVENTORY_ITEM', {}).get('result', 0)
 
                 if result == 1: # Request success
-                    message_template = "-- Discarded {}x {} (keeps only {} maximum) "
-                    message = message_template.format(str(items_recycle_count), item_name, str(id_filter_keep))
-                    logger.log(message, 'green')
+                    self.emit_event(
+                        'item_discarded',
+                        formatted='Discarded {amount}x {item} (maximum {maximum}).',
+                        data={
+                            'amount': str(items_recycle_count),
+                            'item': item_name,
+                            'maximum': str(id_filter_keep)
+                        }
+                    )
                 else:
-                    logger.log("-- Failed to discard " + item_name, 'red')
+                    self.emit_event(
+                        'item_discard_fail',
+                        formatted="Failed to discard {item}",
+                        data={
+                            'item': item_name
+                        }
+                    )
 
     def send_recycle_item_request(self, item_id, count):
         # Example of good request response

@@ -1,6 +1,6 @@
 import unittest
 import json
-from pokemongo_bot.cell_workers import BaseTask
+from pokemongo_bot.base_task import BaseTask
 
 class FakeTask(BaseTask):
     def initialize(self):
