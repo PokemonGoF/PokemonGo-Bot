@@ -127,8 +127,6 @@ class UpdateTitleStats(BaseTask):
             stdout.flush()
         elif platform == "win32":
             ctypes.windll.kernel32.SetConsoleTitleA(title)
-        else:
-            raise RuntimeError("unsupported platform '{}'".format(platform))
 
         self.next_update = datetime.now() + timedelta(seconds=self.min_interval)
 
