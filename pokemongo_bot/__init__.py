@@ -8,6 +8,7 @@ import os
 import random
 import re
 import sys
+import struct
 import time
 import Queue
 import threading
@@ -31,7 +32,9 @@ from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from worker_result import WorkerResult
 from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
 from sys import platform as _platform
-import struct
+
+
+
 class PokemonGoBot(object):
     @property
     def position(self):
@@ -441,10 +444,15 @@ class PokemonGoBot(object):
 
         # Check if session token has expired
         self.check_session(self.position[0:2])
+        start_tick = time.time()
 
         for worker in self.workers:
             if worker.work() == WorkerResult.RUNNING:
                 return
+
+        end_tick = time.time()
+        if end_tick - start_tick < 5:
+             time.sleep(5 - (end_tick - start_tick))
 
     def get_meta_cell(self):
         location = self.position[0:2]
@@ -590,7 +598,7 @@ class PokemonGoBot(object):
 
             # prevent crash if return not numeric value
             if not self.is_numeric(self.api._auth_provider._ticket_expire):
-                self.logger.info("Ticket expired value is not numeric", 'yellow')
+                self.logger.info("Ticket expired value is not numeric")
                 return
 
             remaining_time = \
@@ -650,7 +658,7 @@ class PokemonGoBot(object):
     def get_encryption_lib(self):
         if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
             file_name = 'encrypt.so'
-        elif _platform == "Windows" or _platform == "win32":
+        elif _platform == "Windows" or _platform == "win32" or _platform == "cygwin":
             # Check if we are on 32 or 64 bit
             if sys.maxsize > 2**32:
                 file_name = 'encrypt_64.dll'
@@ -664,8 +672,9 @@ class PokemonGoBot(object):
 
         full_path = path + '/'+ file_name
         if not os.path.isfile(full_path):
-            self.logger.error(file_name + ' is not found! Please place it in the bots root directory or set libencrypt_location in config.')
-            self.logger.info('Platform: '+ _platform + ' Encrypt.so directory: '+ path)
+            self.logger.error(file_name + ' is not found! Please place it in the bots root directory.')
+            self.logger.info('Platform: '+ _platform)
+            self.logger.info('Bot root directory: '+ path)
             sys.exit(1)
         else:
             self.logger.info('Found '+ file_name +'! Platform: ' + _platform + ' Encrypt.so directory: ' + path)
