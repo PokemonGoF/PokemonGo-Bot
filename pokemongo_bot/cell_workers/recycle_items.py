@@ -8,6 +8,7 @@ class RecycleItems(BaseTask):
 
     def initialize(self):
         self.item_filter = self.config.get('item_filter', {})
+        self.type_filter = self.config.get('type_filter', 0)
         self._validate_item_filter()
 
     def _validate_item_filter(self):
@@ -18,43 +19,98 @@ class RecycleItems(BaseTask):
                     raise ConfigException("item {} does not exist, spelling mistake? (check for valid item names in data/items.json)".format(config_item_name))
 
     def work(self):
-        self.bot.latest_inventory = None
-        item_count_dict = self.bot.item_inventory_count('all')
+        type_map = { 2: 'revive', 1 : 'potion', 0: 'ball', 7: 'berry' }
+        reverse_type_map = { 'revive' : 2, 'potion' : 1, 'ball' : 0, 'berry' : 7}
 
-        for item_id, bag_count in item_count_dict.iteritems():
-            item_name = self.bot.item_list[str(item_id)]
-            id_filter = self.item_filter.get(item_name, 0)
-            if id_filter is not 0:
-                id_filter_keep = id_filter.get('keep', 20)
-            else:
-                id_filter = self.item_filter.get(str(item_id), 0)
+        if self.type_filter is not 0:
+            if not self.bot.has_space_for_loot():
+                item_count_dict = self.bot.item_inventory_count('all')
+                item_type_count = {}
+
+                for item_id, bag_count in item_count_dict.iteritems():
+                    if item_id // 100 in type_map:
+                        type_id = type_map[item_id // 100]
+                        if not type_id in item_type_count:
+                            item_type_count[type_id] = 0
+                        item_type_count[type_id] += bag_count
+
+                for type_id, type_filter in self.type_filter.iteritems():
+                    item_type_count[type_id] -= type_filter.get('keep', 20)
+
+                for type_id, extra in item_type_count.iteritems():
+                    item_id = reverse_type_map[type_id] * 100 + 1
+                    while item_type_count[type_id] > 0:
+                        items_recycle_count = 0
+
+                        if item_count_dict[item_id] - item_type_count[type_id] > 0:
+                            items_recycle_count = item_type_count[type_id]
+                        else:
+                            items_recycle_count = item_count_dict[item_id]
+
+                        item_name = self.bot.item_list[str(item_id)]
+
+                        response_dict_recycle = self.send_recycle_item_request(item_id=item_id, count=items_recycle_count)
+                        result = response_dict_recycle.get('responses', {}).get('RECYCLE_INVENTORY_ITEM', {}).get('result', 0)
+
+                        if result == 1: # Request success
+                            self.emit_event(
+                                'item_discarded',
+                                formatted='Discarded {amount}x {item}.',
+                                data={
+                                    'amount': str(items_recycle_count),
+                                    'item': item_name
+                                }
+                            )
+                        else:
+                            self.emit_event(
+                                'item_discard_fail',
+                                formatted="Failed to discard {item}",
+                                data={
+                                    'item': item_name
+                                }
+                            )
+                            break
+
+                        item_id = item_id + 1
+                        item_type_count[type_id] -= items_recycle_count
+        else:
+            self.bot.latest_inventory = None
+            item_count_dict = self.bot.item_inventory_count('all')
+
+            for item_id, bag_count in item_count_dict.iteritems():
+                item_name = self.bot.item_list[str(item_id)]
+                id_filter = self.item_filter.get(item_name, 0)
                 if id_filter is not 0:
                     id_filter_keep = id_filter.get('keep', 20)
-
-            bag_count = self.bot.item_inventory_count(item_id)
-            if (item_name in self.item_filter or str(item_id) in self.item_filter) and bag_count > id_filter_keep:
-                items_recycle_count = bag_count - id_filter_keep
-                response_dict_recycle = self.send_recycle_item_request(item_id=item_id, count=items_recycle_count)
-                result = response_dict_recycle.get('responses', {}).get('RECYCLE_INVENTORY_ITEM', {}).get('result', 0)
-
-                if result == 1: # Request success
-                    self.emit_event(
-                        'item_discarded',
-                        formatted='Discarded {amount}x {item} (maximum {maximum}).',
-                        data={
-                            'amount': str(items_recycle_count),
-                            'item': item_name,
-                            'maximum': str(id_filter_keep)
-                        }
-                    )
                 else:
-                    self.emit_event(
-                        'item_discard_fail',
-                        formatted="Failed to discard {item}",
-                        data={
-                            'item': item_name
-                        }
-                    )
+                    id_filter = self.item_filter.get(str(item_id), 0)
+                    if id_filter is not 0:
+                        id_filter_keep = id_filter.get('keep', 20)
+
+                bag_count = self.bot.item_inventory_count(item_id)
+                if (item_name in self.item_filter or str(item_id) in self.item_filter) and bag_count > id_filter_keep:
+                    items_recycle_count = bag_count - id_filter_keep
+                    response_dict_recycle = self.send_recycle_item_request(item_id=item_id, count=items_recycle_count)
+                    result = response_dict_recycle.get('responses', {}).get('RECYCLE_INVENTORY_ITEM', {}).get('result', 0)
+
+                    if result == 1: # Request success
+                        self.emit_event(
+                            'item_discarded',
+                            formatted='Discarded {amount}x {item} (maximum {maximum}).',
+                            data={
+                                'amount': str(items_recycle_count),
+                                'item': item_name,
+                                'maximum': str(id_filter_keep)
+                            }
+                        )
+                    else:
+                        self.emit_event(
+                            'item_discard_fail',
+                            formatted="Failed to discard {item}",
+                            data={
+                                'item': item_name
+                            }
+                        )
 
     def send_recycle_item_request(self, item_id, count):
         # Example of good request response
