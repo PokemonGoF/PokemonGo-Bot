@@ -4,6 +4,8 @@ import pkgutil
 import importlib
 import unittest
 import os
+import shutil
+import mock
 from datetime import timedelta, datetime
 from mock import patch, MagicMock
 from pokemongo_bot.plugin_loader import PluginLoader, GithubPlugin
@@ -26,6 +28,29 @@ class PluginLoaderTest(unittest.TestCase):
         loaded_class = self.plugin_loader.get_class('plugin_fixture_test.FakeTask')
         self.assertEqual(loaded_class({}, {}).work(), 'FakeTask')
         self.plugin_loader.remove_path(package_path)
+
+    def copy_zip(self):
+        zip_fixture = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'resources', 'plugin_fixture_test.zip')
+        dest_path = os.path.realpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'plugins', 'org_repo_sha.zip'))
+        shutil.copyfile(zip_fixture, dest_path)
+        return dest_path
+
+    def test_load_github_already_downloaded(self):
+        dest_path = self.copy_zip()
+        self.plugin_loader.load_plugin('org/repo#sha')
+        loaded_class = self.plugin_loader.get_class('plugin_fixture_test.FakeTask')
+        self.assertEqual(loaded_class({}, {}).work(), 'FakeTask')
+        self.plugin_loader.remove_path(dest_path)
+        os.remove(dest_path)
+
+    @mock.patch.object(GithubPlugin, 'download', copy_zip)
+    def test_load_github_not_downloaded(self):
+        self.plugin_loader.load_plugin('org/repo#sha')
+        loaded_class = self.plugin_loader.get_class('plugin_fixture_test.FakeTask')
+        self.assertEqual(loaded_class({}, {}).work(), 'FakeTask')
+        dest_path = os.path.realpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'plugins', 'org_repo_sha.zip'))
+        self.plugin_loader.remove_path(dest_path)
+        os.remove(dest_path)
 
 class GithubPluginTest(unittest.TestCase):
     def test_get_github_parts_for_valid_github(self):
