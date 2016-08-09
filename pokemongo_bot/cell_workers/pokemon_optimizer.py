@@ -40,8 +40,8 @@ class PokemonOptimizer(BaseTask):
 
         evo_all = evo_all_best + evo_all_crap
 
-        if self.apply_optimization(transfer_all, evo_all):
-            inventory.refresh_inventory()
+        self.apply_optimization(transfer_all, evo_all)
+        inventory.refresh_inventory()
 
         return WorkerResult.SUCCESS
 
