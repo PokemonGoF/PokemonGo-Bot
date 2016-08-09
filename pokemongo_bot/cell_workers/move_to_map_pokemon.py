@@ -84,6 +84,7 @@ class MoveToMapPokemon(BaseTask):
         self.unit = self.bot.config.distance_unit
         self.caught = []
         self.min_ball = self.config.get('min_ball', 1)
+        self.map_path = self.config.get('map_path', 'raw_data')
 
         data_file = os.path.join(_base_dir, 'map-caught-{}.json'.format(self.bot.config.username))
         if os.path.isfile(data_file):
@@ -93,7 +94,7 @@ class MoveToMapPokemon(BaseTask):
 
     def get_pokemon_from_map(self):
         try:
-            req = requests.get('{}/raw_data?gyms=false&scanned=false'.format(self.config['address']))
+            req = requests.get('{}/{}?gyms=false&scanned=false'.format(self.config['address'], self.map_path))
         except requests.exceptions.ConnectionError:
             self._emit_failure('Could not get Pokemon data from PokemonGo-Map: '
                                '{}. Is it running?'.format(
