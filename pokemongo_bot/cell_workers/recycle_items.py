@@ -42,7 +42,7 @@ class RecycleItems(BaseTask):
                     while item_type_count[type_id] > 0:
                         items_recycle_count = 0
 
-                        if item_count_dict[item_id]:
+                        if item_id in item_count_dict:
                             if item_count_dict[item_id] - item_type_count[type_id] > 0:
                                 items_recycle_count = item_type_count[type_id]
                             else:
