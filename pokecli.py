@@ -39,6 +39,7 @@ from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingE
 from geopy.exc import GeocoderQuotaExceeded
 
 from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
+from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.health_record import BotEvent
 from pokemongo_bot.plugin_loader import PluginLoader
 
@@ -162,7 +163,7 @@ def report_summary(bot):
 
 def init_config():
     parser = argparse.ArgumentParser()
-    config_file = "configs/config.json"
+    config_file = os.path.join(_base_dir, 'configs', 'config.json')
     web_dir = "web"
 
     # If config file exists, load variables from json

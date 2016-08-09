@@ -23,6 +23,7 @@
         "Height": "0.7 m",
         "Next Evolution Requirements": {
             "Amount": 25,
+            "Family": 1,
             "Name": "Bulbasaur candies"
         },
         "Next evolution(s)": [
@@ -34,7 +35,17 @@
                 "Number": "003",
                 "Name": "Venusaur"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Power Whip",
+            "Seed Bomb",
+            "Sludge Bomb"
+        ],
+        "BaseAttack": 126,
+        "BaseDefense": 90,
+        "BaseStamina": 126,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.1
     },
     {
         "Number": "002",
@@ -66,6 +77,7 @@
         ],
         "Next Evolution Requirements": {
             "Amount": 100,
+            "Family": 1,
             "Name": "Bulbasaur candies"
         },
         "Next evolution(s)": [
@@ -73,7 +85,17 @@
                 "Number": "003",
                 "Name": "Venusaur"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Power Whip",
+            "Sludge Bomb",
+            "Solar Beam"
+        ],
+        "BaseAttack": 156,
+        "BaseDefense": 120,
+        "BaseStamina": 158,
+        "CaptureRate": 0.08,
+        "FleeRate": 0.07
     },
     {
         "Number": "003",
@@ -106,7 +128,17 @@
                 "Number": "002",
                 "Name": "Ivysaur"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Petal Blizzard",
+            "Sludge Bomb",
+            "Solar Beam"
+        ],
+        "BaseAttack": 198,
+        "BaseDefense": 160,
+        "BaseStamina": 200,
+        "CaptureRate": 0.04,
+        "FleeRate": 0.05
     },
     {
         "Number": "004",
@@ -128,6 +160,7 @@
         "Height": "0.6 m",
         "Next Evolution Requirements": {
             "Amount": 25,
+            "Family": 4,
             "Name": "Charmander candies"
         },
         "Next evolution(s)": [
@@ -139,7 +172,17 @@
                 "Number": "006",
                 "Name": "Charizard"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Flame Burst",
+            "Flame Charge",
+            "Flamethrower"
+        ],
+        "BaseAttack": 128,
+        "BaseDefense": 78,
+        "BaseStamina": 108,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.1
     },
     {
         "Number": "005",
@@ -155,7 +198,7 @@
         ],
         "Fast Attack(s)": [
             "Ember",
-            ""
+            "Scratch"
         ],
         "Weight": "19.0 kg",
         "Height": "1.1 m",
@@ -167,6 +210,7 @@
         ],
         "Next Evolution Requirements": {
             "Amount": 100,
+            "Family": 4,
             "Name": "Charmander candies"
         },
         "Next evolution(s)": [
@@ -174,7 +218,17 @@
                 "Number": "006",
                 "Name": "Charizard"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Fire Punch",
+            "Flame Burst",
+            "Flamethrower"
+        ],
+        "BaseAttack": 160,
+        "BaseDefense": 116,
+        "BaseStamina": 140,
+        "CaptureRate": 0.08,
+        "FleeRate": 0.07
     },
     {
         "Number": "006",
@@ -206,7 +260,17 @@
                 "Number": "005",
                 "Name": "Charmeleon"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Dragon Claw",
+            "Fire Blast",
+            "Flamethrower"
+        ],
+        "BaseAttack": 212,
+        "BaseDefense": 156,
+        "BaseStamina": 182,
+        "CaptureRate": 0.04,
+        "FleeRate": 0.05
     },
     {
         "Number": "007",
@@ -220,13 +284,14 @@
             "Grass"
         ],
         "Fast Attack(s)": [
-            "Tackle",
-            "Bubble"
+            "Bubble",
+            "Tackle"
         ],
         "Weight": "9.0 kg",
         "Height": "0.5 m",
         "Next Evolution Requirements": {
             "Amount": 25,
+            "Family": 7,
             "Name": "Squirtle candies"
         },
         "Next evolution(s)": [
@@ -238,7 +303,17 @@
                 "Number": "009",
                 "Name": "Blastoise"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Aqua Jet",
+            "Aqua Tail",
+            "Water Pulse"
+        ],
+        "BaseAttack": 112,
+        "BaseDefense": 88,
+        "BaseStamina": 142,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.1
     },
     {
         "Number": "008",
@@ -265,6 +340,7 @@
         ],
         "Next Evolution Requirements": {
             "Amount": 100,
+            "Family": 7,
             "Name": "Squirtle candies"
         },
         "Next evolution(s)": [
@@ -272,7 +348,17 @@
                 "Number": "009",
                 "Name": "Blastoise"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Aqua Jet",
+            "Hydro Pump",
+            "Ice Beam"
+        ],
+        "BaseAttack": 144,
+        "BaseDefense": 118,
+        "BaseStamina": 176,
+        "CaptureRate": 0.08,
+        "FleeRate": 0.07
     },
     {
         "Number": "009",
@@ -300,7 +386,17 @@
                 "Number": "008",
                 "Name": "Wartortle"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Flash Cannon",
+            "Hydro Pump",
+            "Ice Beam"
+        ],
+        "BaseAttack": 186,
+        "BaseDefense": 158,
+        "BaseStamina": 222,
+        "CaptureRate": 0.04,
+        "FleeRate": 0.05
     },
     {
         "Number": "010",
@@ -322,6 +418,7 @@
         "Height": "0.3 m",
         "Next Evolution Requirements": {
             "Amount": 12,
+            "Family": 10,
             "Name": "Caterpie candies"
         },
         "Next evolution(s)": [
@@ -333,7 +430,15 @@
                 "Number": "012",
                 "Name": "Butterfree"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Struggle"
+        ],
+        "BaseAttack": 62,
+        "BaseDefense": 90,
+        "BaseStamina": 66,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.2
     },
     {
         "Number": "011",
@@ -361,6 +466,7 @@
         ],
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 10,
             "Name": "Caterpie candies"
         },
         "Next evolution(s)": [
@@ -368,7 +474,15 @@
                 "Number": "012",
                 "Name": "Butterfree"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Struggle"
+        ],
+        "BaseAttack": 56,
+        "BaseDefense": 100,
+        "BaseStamina": 86,
+        "CaptureRate": 0.2,
+        "FleeRate": 0.09
     },
     {
         "Number": "012",
@@ -402,7 +516,17 @@
                 "Number": "011",
                 "Name": "Metapod"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Bug Buzz",
+            "Psychic",
+            "Signal Beam"
+        ],
+        "BaseAttack": 144,
+        "BaseDefense": 120,
+        "BaseStamina": 144,
+        "CaptureRate": 0.1,
+        "FleeRate": 0.06
     },
     {
         "Number": "013",
@@ -428,6 +552,7 @@
         "Height": "0.3 m",
         "Next Evolution Requirements": {
             "Amount": 12,
+            "Family": 13,
             "Name": "Weedle candies"
         },
         "Next evolution(s)": [
@@ -439,7 +564,15 @@
                 "Number": "015",
                 "Name": "Beedrill"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Struggle"
+        ],
+        "BaseAttack": 68,
+        "BaseDefense": 80,
+        "BaseStamina": 64,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.2
     },
     {
         "Number": "014",
@@ -459,7 +592,7 @@
         ],
         "Fast Attack(s)": [
             "Bug Bite",
-            "Posion Sting"
+            "Poison Sting"
         ],
         "Weight": "10.0 kg",
         "Height": "0.6 m",
@@ -471,6 +604,7 @@
         ],
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 13,
             "Name": "Weedle candies"
         },
         "Next evolution(s)": [
@@ -478,7 +612,15 @@
                 "Number": "015",
                 "Name": "Beedrill"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Struggle"
+        ],
+        "BaseAttack": 62,
+        "BaseDefense": 90,
+        "BaseStamina": 82,
+        "CaptureRate": 0.2,
+        "FleeRate": 0.09
     },
     {
         "Number": "015",
@@ -511,7 +653,17 @@
                 "Number": "014",
                 "Name": "Kakuna"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Aerial Ace",
+            "Sludge Bomb",
+            "X Scissor"
+        ],
+        "BaseAttack": 144,
+        "BaseDefense": 130,
+        "BaseStamina": 130,
+        "CaptureRate": 0.1,
+        "FleeRate": 0.06
     },
     {
         "Number": "016",
@@ -540,6 +692,7 @@
         "Height": "0.3 m",
         "Next Evolution Requirements": {
             "Amount": 12,
+            "Family": 16,
             "Name": "Pidgey candies"
         },
         "Next evolution(s)": [
@@ -551,7 +704,12 @@
                 "Number": "018",
                 "Name": "Pidgeot"
             }
-        ]
+        ],
+        "BaseAttack": 94,
+        "BaseDefense": 80,
+        "BaseStamina": 90,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.2
     },
     {
         "Number": "017",
@@ -586,6 +744,7 @@
         ],
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 16,
             "Name": "Pidgey candies"
         },
         "Next evolution(s)": [
@@ -593,7 +752,12 @@
                 "Number": "018",
                 "Name": "Pidgeot"
             }
-        ]
+        ],
+        "BaseAttack": 126,
+        "BaseDefense": 126,
+        "BaseStamina": 122,
+        "CaptureRate": 0.2,
+        "FleeRate": 0.09
     },
     {
         "Number": "018",
@@ -614,6 +778,8 @@
             "Wing Attack"
         ],
         "Special Attack(s)": [
+            "Aerial Ace",
+            "Air Cutter",
             "Hurricane"
         ],
         "Weight": "39.5 kg",
@@ -627,7 +793,12 @@
                 "Number": "017",
                 "Name": "Pidgeotto"
             }
-        ]
+        ],
+        "BaseAttack": 170,
+        "BaseDefense": 166,
+        "BaseStamina": 166,
+        "CaptureRate": 0.1,
+        "FleeRate": 0.06
     },
     {
         "Number": "019",
@@ -652,6 +823,7 @@
         "Height": "0.3 m",
         "Next Evolution Requirements": {
             "Amount": 25,
+            "Family": 19,
             "Name": "Rattata candies"
         },
         "Next evolution(s)": [
@@ -659,7 +831,12 @@
                 "Number": "020",
                 "Name": "Raticate"
             }
-        ]
+        ],
+        "BaseAttack": 92,
+        "BaseDefense": 60,
+        "BaseStamina": 86,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.2
     },
     {
         "Number": "020",
@@ -687,7 +864,12 @@
                 "Number": "019",
                 "Name": "Rattata"
             }
-        ]
+        ],
+        "BaseAttack": 146,
+        "BaseDefense": 110,
+        "BaseStamina": 150,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.07
     },
     {
         "Number": "021",
@@ -711,6 +893,7 @@
         "Height": "0.3 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 21,
             "Name": "Spearow candies"
         },
         "Next evolution(s)": [
@@ -718,7 +901,17 @@
                 "Number": "022",
                 "Name": "Fearow"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Aerial Ace",
+            "Drill Peck",
+            "Twister"
+        ],
+        "BaseAttack": 102,
+        "BaseDefense": 80,
+        "BaseStamina": 78,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.15
     },
     {
         "Number": "022",
@@ -745,7 +938,17 @@
                 "Number": "021",
                 "Name": "Spearow"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Aerial Ace",
+            "Drill Run",
+            "Twister"
+        ],
+        "BaseAttack": 168,
+        "BaseDefense": 130,
+        "BaseStamina": 146,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.07
     },
     {
         "Number": "023",
@@ -766,6 +969,7 @@
         "Height": "2.0 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 23,
             "Name": "Ekans candies"
         },
         "Next evolution(s)": [
@@ -773,7 +977,17 @@
                 "Number": "024",
                 "Name": "Arbok"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Gunk Shot",
+            "Sludge Bomb",
+            "Wrap"
+        ],
+        "BaseAttack": 112,
+        "BaseDefense": 70,
+        "BaseStamina": 112,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.15
     },
     {
         "Number": "024",
@@ -797,7 +1011,17 @@
                 "Number": "023",
                 "Name": "Ekans"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Dark Pulse",
+            "Gunk Shot",
+            "Sludge Wave"
+        ],
+        "BaseAttack": 166,
+        "BaseDefense": 120,
+        "BaseStamina": 166,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.07
     },
     {
         "Number": "025",
@@ -817,6 +1041,7 @@
         "Height": "0.4 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 25,
             "Name": "Pikachu candies"
         },
         "Next evolution(s)": [
@@ -824,7 +1049,17 @@
                 "Number": "026",
                 "Name": "Raichu"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Discharge",
+            "Thunder",
+            "Thunderbolt"
+        ],
+        "BaseAttack": 124,
+        "BaseDefense": 70,
+        "BaseStamina": 108,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.1
     },
     {
         "Number": "026",
@@ -837,8 +1072,8 @@
             "Ground"
         ],
         "Fast Attack(s)": [
-            "Thunder Shock",
-            "Spark"
+            "Spark",
+            "Thunder Shock"
         ],
         "Weight": "30.0 kg",
         "Height": "0.8 m",
@@ -847,7 +1082,17 @@
                 "Number": "025",
                 "Name": "Pikachu"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Brick Break",
+            "Thunder",
+            "Thunder Punch"
+        ],
+        "BaseAttack": 200,
+        "BaseDefense": 120,
+        "BaseStamina": 154,
+        "CaptureRate": 0.08,
+        "FleeRate": 0.06
     },
     {
         "Number": "027",
@@ -869,6 +1114,7 @@
         "Height": "0.6 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 27,
             "Name": "Sandshrew candies"
         },
         "Next evolution(s)": [
@@ -876,7 +1122,17 @@
                 "Number": "028",
                 "Name": "Sandslash"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Dig",
+            "Rock Slide",
+            "Rock Tomb"
+        ],
+        "BaseAttack": 90,
+        "BaseDefense": 100,
+        "BaseStamina": 114,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.1
     },
     {
         "Number": "028",
@@ -901,7 +1157,17 @@
                 "Number": "027",
                 "Name": "Sandshrew"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Bulldoze",
+            "Earthquake",
+            "Rock Tomb"
+        ],
+        "BaseAttack": 150,
+        "BaseDefense": 150,
+        "BaseStamina": 172,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.06
     },
     {
         "Number": "029",
@@ -922,6 +1188,7 @@
         "Height": "0.4 m",
         "Next Evolution Requirements": {
             "Amount": 25,
+            "Family": 29,
             "Name": "Nidoran F candies"
         },
         "Next evolution(s)": [
@@ -933,7 +1200,17 @@
                 "Number": "031",
                 "Name": "Nidoqueen"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Body Slam",
+            "Poison Fang",
+            "Sludge Bomb"
+        ],
+        "BaseAttack": 100,
+        "BaseDefense": 110,
+        "BaseStamina": 104,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.15
     },
     {
         "Number": "030",
@@ -955,11 +1232,12 @@
         "Previous evolution(s)": [
             {
                 "Number": "029",
-                "Name": "Nidoran F"
+                "Name": "Nidoran  F"
             }
         ],
         "Next Evolution Requirements": {
             "Amount": 100,
+            "Family": 29,
             "Name": "Nidoran F candies"
         },
         "Next evolution(s)": [
@@ -967,7 +1245,17 @@
                 "Number": "031",
                 "Name": "Nidoqueen"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Dig",
+            "Poison Fang",
+            "Sludge Bomb"
+        ],
+        "BaseAttack": 132,
+        "BaseDefense": 140,
+        "BaseStamina": 136,
+        "CaptureRate": 0.2,
+        "FleeRate": 0.07
     },
     {
         "Number": "031",
@@ -1000,7 +1288,17 @@
                 "Number": "030",
                 "Name": "Nidorina"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Earthquake",
+            "Sludge Wave",
+            "Stone Edge"
+        ],
+        "BaseAttack": 184,
+        "BaseDefense": 180,
+        "BaseStamina": 190,
+        "CaptureRate": 0.1,
+        "FleeRate": 0.05
     },
     {
         "Number": "032",
@@ -1021,6 +1319,7 @@
         "Height": "0.5 m",
         "Next Evolution Requirements": {
             "Amount": 25,
+            "Family": 32,
             "Name": "Nidoran M candies"
         },
         "Next evolution(s)": [
@@ -1032,7 +1331,17 @@
                 "Number": "034",
                 "Name": "Nidoking"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Body Slam",
+            "Horn Attack",
+            "Sludge Bomb"
+        ],
+        "BaseAttack": 110,
+        "BaseDefense": 92,
+        "BaseStamina": 94,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.15
     },
     {
         "Number": "033",
@@ -1046,8 +1355,8 @@
             "Psychic"
         ],
         "Fast Attack(s)": [
-            "Bite",
-            "Poison Jab"
+            "Poison Jab",
+            "Poison Sting"
         ],
         "Weight": "19.5 kg",
         "Height": "0.9 m",
@@ -1059,6 +1368,7 @@
         ],
         "Next Evolution Requirements": {
             "Amount": 100,
+            "Family": 32,
             "Name": "Nidoran M candies"
         },
         "Next evolution(s)": [
@@ -1066,7 +1376,17 @@
                 "Number": "034",
                 "Name": "Nidoking"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Dig",
+            "Horn Attack",
+            "Sludge Bomb"
+        ],
+        "BaseAttack": 142,
+        "BaseDefense": 122,
+        "BaseStamina": 128,
+        "CaptureRate": 0.2,
+        "FleeRate": 0.07
     },
     {
         "Number": "034",
@@ -1099,7 +1419,17 @@
                 "Number": "033",
                 "Name": "Nidorino"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Earthquake",
+            "Megahorn",
+            "Sludge Wave"
+        ],
+        "BaseAttack": 204,
+        "BaseDefense": 162,
+        "BaseStamina": 170,
+        "CaptureRate": 0.1,
+        "FleeRate": 0.05
     },
     {
         "Number": "035",
@@ -1119,6 +1449,7 @@
         "Height": "0.6 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 35,
             "Name": "Clefairy candies"
         },
         "Next evolution(s)": [
@@ -1126,7 +1457,17 @@
                 "Number": "036",
                 "Name": "Clefable"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Body Slam",
+            "Disarming Voice",
+            "Moonblast"
+        ],
+        "BaseAttack": 116,
+        "BaseDefense": 140,
+        "BaseStamina": 124,
+        "CaptureRate": 0.24,
+        "FleeRate": 0.1
     },
     {
         "Number": "036",
@@ -1149,7 +1490,17 @@
                 "Number": "035",
                 "Name": "Clefairy"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Dazzling Gleam",
+            "Moonblast",
+            "Psychic"
+        ],
+        "BaseAttack": 178,
+        "BaseDefense": 190,
+        "BaseStamina": 178,
+        "CaptureRate": 0.08,
+        "FleeRate": 0.06
     },
     {
         "Number": "037",
@@ -1171,6 +1522,7 @@
         "Height": "0.6 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 37,
             "Name": "Vulpix candies"
         },
         "Next evolution(s)": [
@@ -1178,7 +1530,17 @@
                 "Number": "038",
                 "Name": "Ninetales"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Body Slam",
+            "Flame Charge",
+            "Flamethrower"
+        ],
+        "BaseAttack": 106,
+        "BaseDefense": 76,
+        "BaseStamina": 118,
+        "CaptureRate": 0.24,
+        "FleeRate": 0.1
     },
     {
         "Number": "038",
@@ -1194,7 +1556,7 @@
         ],
         "Fast Attack(s)": [
             "Ember",
-            "Quick Attack"
+            "Feint Attack"
         ],
         "Weight": "19.9 kg",
         "Height": "1.1 m",
@@ -1203,7 +1565,17 @@
                 "Number": "037",
                 "Name": "Vulpix"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Fire Blast",
+            "Flamethrower",
+            "Heat Wave"
+        ],
+        "BaseAttack": 176,
+        "BaseDefense": 146,
+        "BaseStamina": 194,
+        "CaptureRate": 0.08,
+        "FleeRate": 0.06
     },
     {
         "Number": "039",
@@ -1223,14 +1595,25 @@
         "Height": "0.5 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 39,
             "Name": "Jigglypuff candies"
         },
         "Next evolution(s)": [
             {
-                "Number": "039",
-                "Name": "Jigglypuff"
+                "Number": "040",
+                "Name": "Wigglytuff"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Body Slam",
+            "Disarming Voice",
+            "Play Rough"
+        ],
+        "BaseAttack": 98,
+        "BaseDefense": 230,
+        "BaseStamina": 54,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.1
     },
     {
         "Number": "040",
@@ -1253,7 +1636,17 @@
                 "Number": "039",
                 "Name": "Jigglypuff"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Dazzling Gleam",
+            "Hyper Beam",
+            "Play Rough"
+        ],
+        "BaseAttack": 168,
+        "BaseDefense": 280,
+        "BaseStamina": 108,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.06
     },
     {
         "Number": "041",
@@ -1279,6 +1672,7 @@
         "Height": "0.8 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 41,
             "Name": "Zubat candies"
         },
         "Next evolution(s)": [
@@ -1286,7 +1680,17 @@
                 "Number": "042",
                 "Name": "Golbat"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Air Cutter",
+            "Poison Fang",
+            "Sludge Bomb"
+        ],
+        "BaseAttack": 88,
+        "BaseDefense": 80,
+        "BaseStamina": 90,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.2
     },
     {
         "Number": "042",
@@ -1315,7 +1719,17 @@
                 "Number": "041",
                 "Name": "Zubat"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Air Cutter",
+            "Ominous Wind",
+            "Poison Fang"
+        ],
+        "BaseAttack": 164,
+        "BaseDefense": 150,
+        "BaseStamina": 164,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.07
     },
     {
         "Number": "043",
@@ -1341,6 +1755,7 @@
         "Height": "0.5 m",
         "Next Evolution Requirements": {
             "Amount": 25,
+            "Family": 43,
             "Name": "Oddish candies"
         },
         "Next evolution(s)": [
@@ -1352,7 +1767,17 @@
                 "Number": "045",
                 "Name": "Vileplume"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Moonblast",
+            "Seed Bomb",
+            "Sludge Bomb"
+        ],
+        "BaseAttack": 134,
+        "BaseDefense": 90,
+        "BaseStamina": 130,
+        "CaptureRate": 0.48,
+        "FleeRate": 0.15
     },
     {
         "Number": "044",
@@ -1384,6 +1809,7 @@
         ],
         "Next Evolution Requirements": {
             "Amount": 100,
+            "Family": 43,
             "Name": "Oddish candies"
         },
         "Next evolution(s)": [
@@ -1391,7 +1817,17 @@
                 "Number": "045",
                 "Name": "Vileplume"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Moonblast",
+            "Petal Blizzard",
+            "Sludge Bomb"
+        ],
+        "BaseAttack": 162,
+        "BaseDefense": 120,
+        "BaseStamina": 158,
+        "CaptureRate": 0.24,
+        "FleeRate": 0.07
     },
     {
         "Number": "045",
@@ -1411,7 +1847,7 @@
         ],
         "Fast Attack(s)": [
             "Acid",
-            ""
+            "Razor Leaf"
         ],
         "Weight": "18.6 kg",
         "Height": "1.2 m",
@@ -1424,7 +1860,17 @@
                 "Number": "044",
                 "Name": "Gloom"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Moonblast",
+            "Petal Blizzard",
+            "Solar Beam"
+        ],
+        "BaseAttack": 202,
+        "BaseDefense": 150,
+        "BaseStamina": 190,
+        "CaptureRate": 0.12,
+        "FleeRate": 0.05
     },
     {
         "Number": "046",
@@ -1452,6 +1898,7 @@
         "Height": "0.3 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 46,
             "Name": "Paras candies"
         },
         "Next evolution(s)": [
@@ -1459,7 +1906,17 @@
                 "Number": "047",
                 "Name": "Parasect"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Cross Poison",
+            "Seed Bomb",
+            "X Scissor"
+        ],
+        "BaseAttack": 122,
+        "BaseDefense": 70,
+        "BaseStamina": 120,
+        "CaptureRate": 0.32,
+        "FleeRate": 0.15
     },
     {
         "Number": "047",
@@ -1490,7 +1947,17 @@
                 "Number": "046",
                 "Name": "Paras"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Cross Poison",
+            "Solar Beam",
+            "X Scissor"
+        ],
+        "BaseAttack": 162,
+        "BaseDefense": 120,
+        "BaseStamina": 170,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.07
     },
     {
         "Number": "048",
@@ -1516,6 +1983,7 @@
         "Height": "1.0 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 48,
             "Name": "Venonat candies"
         },
         "Next evolution(s)": [
@@ -1523,7 +1991,18 @@
                 "Number": "049",
                 "Name": "Venomoth"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Dazzling Gleam",
+            "Psybeam",
+            "Poison Fang",
+            "Shadow Ball"
+        ],
+        "BaseAttack": 108,
+        "BaseDefense": 120,
+        "BaseStamina": 118,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.15
     },
     {
         "Number": "049",
@@ -1552,7 +2031,17 @@
                 "Number": "048",
                 "Name": "Venonat"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Bug Buzz",
+            "Poison Fang",
+            "Psychic"
+        ],
+        "BaseAttack": 172,
+        "BaseDefense": 140,
+        "BaseStamina": 154,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.07
     },
     {
         "Number": "050",
@@ -1574,6 +2063,7 @@
         "Height": "0.2 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 50,
             "Name": "Diglett candies"
         },
         "Next evolution(s)": [
@@ -1581,7 +2071,17 @@
                 "Number": "051",
                 "Name": "Dugtrio"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Dig",
+            "Mud Bomb",
+            "Rock Tomb"
+        ],
+        "BaseAttack": 108,
+        "BaseDefense": 20,
+        "BaseStamina": 86,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.1
     },
     {
         "Number": "051",
@@ -1606,7 +2106,17 @@
                 "Number": "050",
                 "Name": "Diglett"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Earthquake",
+            "Mud Bomb",
+            "Stone Edge"
+        ],
+        "BaseAttack": 148,
+        "BaseDefense": 70,
+        "BaseStamina": 140,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.06
     },
     {
         "Number": "052",
@@ -1626,6 +2136,7 @@
         "Height": "0.4 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 52,
             "Name": "Meowth candies"
         },
         "Next evolution(s)": [
@@ -1633,7 +2144,17 @@
                 "Number": "053",
                 "Name": "Persian"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Body Slam",
+            "Dark Pulse",
+            "Night Slash"
+        ],
+        "BaseAttack": 104,
+        "BaseDefense": 80,
+        "BaseStamina": 94,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.15
     },
     {
         "Number": "053",
@@ -1656,7 +2177,17 @@
                 "Number": "052",
                 "Name": "Meowth"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Night Slash",
+            "Play Rough",
+            "Power Gem"
+        ],
+        "BaseAttack": 156,
+        "BaseDefense": 130,
+        "BaseStamina": 146,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.07
     },
     {
         "Number": "054",
@@ -1677,6 +2208,7 @@
         "Height": "0.8 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 54,
             "Name": "Psyduck candies"
         },
         "Next evolution(s)": [
@@ -1684,7 +2216,17 @@
                 "Number": "055",
                 "Name": "Golduck"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Aqua Tail",
+            "Cross Chop",
+            "Psybeam"
+        ],
+        "BaseAttack": 132,
+        "BaseDefense": 100,
+        "BaseStamina": 112,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.1
     },
     {
         "Number": "055",
@@ -1699,7 +2241,7 @@
         ],
         "Fast Attack(s)": [
             "Confusion",
-            "Zen Headbutt"
+            "Water Gun"
         ],
         "Weight": "76.6 kg",
         "Height": "1.7 m",
@@ -1708,7 +2250,17 @@
                 "Number": "054",
                 "Name": "Psyduck"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Hydro Pump",
+            "Ice Beam",
+            "Psychic"
+        ],
+        "BaseAttack": 194,
+        "BaseDefense": 160,
+        "BaseStamina": 176,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.06
     },
     {
         "Number": "056",
@@ -1730,6 +2282,7 @@
         "Height": "0.5 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 56,
             "Name": "Mankey candies"
         },
         "Next evolution(s)": [
@@ -1737,7 +2290,17 @@
                 "Number": "057",
                 "Name": "Primeape"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Brick Break",
+            "Cross Chop",
+            "Low Sweep"
+        ],
+        "BaseAttack": 122,
+        "BaseDefense": 80,
+        "BaseStamina": 96,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.1
     },
     {
         "Number": "057",
@@ -1762,7 +2325,17 @@
                 "Number": "056",
                 "Name": "Mankey"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Cross Chop",
+            "Low Sweep",
+            "Night Slash"
+        ],
+        "BaseAttack": 178,
+        "BaseDefense": 130,
+        "BaseStamina": 150,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.06
     },
     {
         "Number": "058",
@@ -1784,6 +2357,7 @@
         "Height": "0.7 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 58,
             "Name": "Growlithe candies"
         },
         "Next evolution(s)": [
@@ -1791,7 +2365,17 @@
                 "Number": "059",
                 "Name": "Arcanine"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Body Slam",
+            "Flame Wheel",
+            "Flamethrower"
+        ],
+        "BaseAttack": 156,
+        "BaseDefense": 110,
+        "BaseStamina": 110,
+        "CaptureRate": 0.24,
+        "FleeRate": 0.1
     },
     {
         "Number": "059",
@@ -1816,7 +2400,17 @@
                 "Number": "058",
                 "Name": "Growlithe"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Bulldoze",
+            "Fire Blast",
+            "Flamethrower"
+        ],
+        "BaseAttack": 230,
+        "BaseDefense": 180,
+        "BaseStamina": 180,
+        "CaptureRate": 0.08,
+        "FleeRate": 0.06
     },
     {
         "Number": "060",
@@ -1837,6 +2431,7 @@
         "Height": "0.6 m",
         "Next Evolution Requirements": {
             "Amount": 25,
+            "Family": 60,
             "Name": "Poliwag candies"
         },
         "Next evolution(s)": [
@@ -1848,7 +2443,17 @@
                 "Number": "062",
                 "Name": "Poliwrath"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Body Slam",
+            "Bubble Beam",
+            "Mud Bomb"
+        ],
+        "BaseAttack": 108,
+        "BaseDefense": 80,
+        "BaseStamina": 98,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.15
     },
     {
         "Number": "061",
@@ -1875,6 +2480,7 @@
         ],
         "Next Evolution Requirements": {
             "Amount": 100,
+            "Family": 60,
             "Name": "Poliwag candies"
         },
         "Next evolution(s)": [
@@ -1882,7 +2488,17 @@
                 "Number": "062",
                 "Name": "Poliwrath"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Bubble Beam",
+            "Mud Bomb",
+            "Scald"
+        ],
+        "BaseAttack": 132,
+        "BaseDefense": 130,
+        "BaseStamina": 132,
+        "CaptureRate": 0.2,
+        "FleeRate": 0.07
     },
     {
         "Number": "062",
@@ -1916,7 +2532,17 @@
                 "Number": "061",
                 "Name": "Poliwhirl"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Hydro Pump",
+            "Ice Punch",
+            "Submission"
+        ],
+        "BaseAttack": 180,
+        "BaseDefense": 180,
+        "BaseStamina": 202,
+        "CaptureRate": 0.1,
+        "FleeRate": 0.05
     },
     {
         "Number": "063",
@@ -1931,13 +2557,13 @@
             "Dark"
         ],
         "Fast Attack(s)": [
-            "Zen Headbutt",
-            ""
+            "Zen Headbutt"
         ],
         "Weight": "19.5 kg",
         "Height": "0.9 m",
         "Next Evolution Requirements": {
             "Amount": 25,
+            "Family": 63,
             "Name": "Abra candies"
         },
         "Next evolution(s)": [
@@ -1949,7 +2575,17 @@
                 "Number": "065",
                 "Name": "Alakazam"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Psyshock",
+            "Shadow Ball",
+            "Signal Beam"
+        ],
+        "BaseAttack": 110,
+        "BaseDefense": 50,
+        "BaseStamina": 76,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.99
     },
     {
         "Number": "064",
@@ -1977,6 +2613,7 @@
         ],
         "Next Evolution Requirements": {
             "Amount": 100,
+            "Family": 63,
             "Name": "Abra candies"
         },
         "Next evolution(s)": [
@@ -1984,7 +2621,17 @@
                 "Number": "065",
                 "Name": "Alakazam"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Dazzling Gleam",
+            "Psybeam",
+            "Shadow Ball"
+        ],
+        "BaseAttack": 150,
+        "BaseDefense": 80,
+        "BaseStamina": 112,
+        "CaptureRate": 0.2,
+        "FleeRate": 0.07
     },
     {
         "Number": "065",
@@ -2013,7 +2660,17 @@
                 "Number": "064",
                 "Name": "Kadabra"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Dazzling Gleam",
+            "Psychic",
+            "Shadow Ball"
+        ],
+        "BaseAttack": 186,
+        "BaseDefense": 110,
+        "BaseStamina": 152,
+        "CaptureRate": 0.1,
+        "FleeRate": 0.05
     },
     {
         "Number": "066",
@@ -2035,6 +2692,7 @@
         "Height": "0.8 m",
         "Next Evolution Requirements": {
             "Amount": 25,
+            "Family": 66,
             "Name": "Machop candies"
         },
         "Next evolution(s)": [
@@ -2046,7 +2704,17 @@
                 "Number": "068",
                 "Name": "Machamp"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Brick Break",
+            "Cross Chop",
+            "Low Sweep"
+        ],
+        "BaseAttack": 118,
+        "BaseDefense": 140,
+        "BaseStamina": 96,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.1
     },
     {
         "Number": "067",
@@ -2074,6 +2742,7 @@
         ],
         "Next Evolution Requirements": {
             "Amount": 100,
+            "Family": 66,
             "Name": "Machop candies"
         },
         "Next evolution(s)": [
@@ -2081,7 +2750,17 @@
                 "Number": "068",
                 "Name": "Machamp"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Brick Break",
+            "Cross Chop",
+            "Submission"
+        ],
+        "BaseAttack": 154,
+        "BaseDefense": 160,
+        "BaseStamina": 144,
+        "CaptureRate": 0.2,
+        "FleeRate": 0.07
     },
     {
         "Number": "068",
@@ -2110,7 +2789,17 @@
                 "Number": "067",
                 "Name": "Machoke"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Cross Chop",
+            "Stone Edge",
+            "Submission"
+        ],
+        "BaseAttack": 198,
+        "BaseDefense": 180,
+        "BaseStamina": 180,
+        "CaptureRate": 0.1,
+        "FleeRate": 0.05
     },
     {
         "Number": "069",
@@ -2136,6 +2825,7 @@
         "Height": "0.7 m",
         "Next Evolution Requirements": {
             "Amount": 25,
+            "Family": 69,
             "Name": "Bellsprout candies"
         },
         "Next evolution(s)": [
@@ -2147,7 +2837,17 @@
                 "Number": "071",
                 "Name": "Victreebel"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Power Whip",
+            "Sludge Bomb",
+            "Wrap"
+        ],
+        "BaseAttack": 158,
+        "BaseDefense": 100,
+        "BaseStamina": 78,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.15
     },
     {
         "Number": "070",
@@ -2179,6 +2879,7 @@
         ],
         "Next Evolution Requirements": {
             "Amount": 100,
+            "Family": 69,
             "Name": "Bellsprout candies"
         },
         "Next evolution(s)": [
@@ -2186,7 +2887,17 @@
                 "Number": "071",
                 "Name": "Victreebel"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Power Whip",
+            "Seed Bomb",
+            "Sludge Bomb"
+        ],
+        "BaseAttack": 190,
+        "BaseDefense": 130,
+        "BaseStamina": 110,
+        "CaptureRate": 0.2,
+        "FleeRate": 0.07
     },
     {
         "Number": "071",
@@ -2219,7 +2930,17 @@
                 "Number": "070",
                 "Name": "Weepinbell"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Leaf Blade",
+            "Sludge Bomb",
+            "Solar Beam"
+        ],
+        "BaseAttack": 222,
+        "BaseDefense": 160,
+        "BaseStamina": 152,
+        "CaptureRate": 0.1,
+        "FleeRate": 0.05
     },
     {
         "Number": "072",
@@ -2244,6 +2965,7 @@
         "Height": "0.9 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 72,
             "Name": "Tentacool candies"
         },
         "Next evolution(s)": [
@@ -2251,7 +2973,17 @@
                 "Number": "073",
                 "Name": "Tentacruel"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Bubble Beam",
+            "Water Pulse",
+            "Wrap"
+        ],
+        "BaseAttack": 106,
+        "BaseDefense": 80,
+        "BaseStamina": 136,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.15
     },
     {
         "Number": "073",
@@ -2279,7 +3011,17 @@
                 "Number": "072",
                 "Name": "Tentacool"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Blizzard",
+            "Hydro Pump",
+            "Sludge Wave"
+        ],
+        "BaseAttack": 170,
+        "BaseDefense": 160,
+        "BaseStamina": 196,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.07
     },
     {
         "Number": "074",
@@ -2307,6 +3049,7 @@
         "Height": "0.4 m",
         "Next Evolution Requirements": {
             "Amount": 25,
+            "Family": 74,
             "Name": "Geodude candies"
         },
         "Next evolution(s)": [
@@ -2318,7 +3061,17 @@
                 "Number": "076",
                 "Name": "Golem"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Dig",
+            "Rock Slide",
+            "Rock Tomb"
+        ],
+        "BaseAttack": 106,
+        "BaseDefense": 80,
+        "BaseStamina": 118,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.1
     },
     {
         "Number": "075",
@@ -2352,6 +3105,7 @@
         ],
         "Next Evolution Requirements": {
             "Amount": 100,
+            "Family": 74,
             "Name": "Geodude candies"
         },
         "Next evolution(s)": [
@@ -2359,7 +3113,17 @@
                 "Number": "076",
                 "Name": "Golem"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Dig",
+            "Rock Slide",
+            "Stone Edge"
+        ],
+        "BaseAttack": 142,
+        "BaseDefense": 110,
+        "BaseStamina": 156,
+        "CaptureRate": 0.2,
+        "FleeRate": 0.07
     },
     {
         "Number": "076",
@@ -2394,7 +3158,17 @@
                 "Number": "075",
                 "Name": "Graveler"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Ancient Power",
+            "Earthquake",
+            "Stone Edge"
+        ],
+        "BaseAttack": 176,
+        "BaseDefense": 160,
+        "BaseStamina": 198,
+        "CaptureRate": 0.1,
+        "FleeRate": 0.05
     },
     {
         "Number": "077",
@@ -2416,6 +3190,7 @@
         "Height": "1.0 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 77,
             "Name": "Ponyta candies"
         },
         "Next evolution(s)": [
@@ -2423,7 +3198,17 @@
                 "Number": "078",
                 "Name": "Rapidash"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Fire Blast",
+            "Flame Charge",
+            "Flame Wheel"
+        ],
+        "BaseAttack": 168,
+        "BaseDefense": 100,
+        "BaseStamina": 138,
+        "CaptureRate": 0.32,
+        "FleeRate": 0.1
     },
     {
         "Number": "078",
@@ -2448,7 +3233,17 @@
                 "Number": "077",
                 "Name": "Ponyta"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Drill Run",
+            "Fire Blast",
+            "Heat Wave"
+        ],
+        "BaseAttack": 200,
+        "BaseDefense": 130,
+        "BaseStamina": 170,
+        "CaptureRate": 0.12,
+        "FleeRate": 0.06
     },
     {
         "Number": "079",
@@ -2475,6 +3270,7 @@
         "Height": "1.2 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 79,
             "Name": "Slowpoke candies"
         },
         "Next evolution(s)": [
@@ -2482,7 +3278,17 @@
                 "Number": "080",
                 "Name": "Slowbro"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Psychic",
+            "Psyshock",
+            "Water Pulse"
+        ],
+        "BaseAttack": 110,
+        "BaseDefense": 180,
+        "BaseStamina": 110,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.1
     },
     {
         "Number": "080",
@@ -2512,7 +3318,17 @@
                 "Number": "079",
                 "Name": "Slowpoke"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Ice Beam",
+            "Psychic",
+            "Water Pulse"
+        ],
+        "BaseAttack": 184,
+        "BaseDefense": 190,
+        "BaseStamina": 198,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.06
     },
     {
         "Number": "081",
@@ -2537,6 +3353,7 @@
         "Height": "0.3 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 81,
             "Name": "Magnemite candies"
         },
         "Next evolution(s)": [
@@ -2544,7 +3361,17 @@
                 "Number": "082",
                 "Name": "Magneton"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Discharge",
+            "Magnet Bomb",
+            "Thunderbolt"
+        ],
+        "BaseAttack": 128,
+        "BaseDefense": 50,
+        "BaseStamina": 138,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.1
     },
     {
         "Number": "082",
@@ -2572,7 +3399,17 @@
                 "Number": "081",
                 "Name": "Magnemite"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Discharge",
+            "Flash Cannon",
+            "Magnet Bomb"
+        ],
+        "BaseAttack": 186,
+        "BaseDefense": 100,
+        "BaseStamina": 180,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.06
     },
     {
         "Number": "083",
@@ -2589,13 +3426,21 @@
             "Rock"
         ],
         "Fast Attack(s)": [
-            "Unknown"
+            "Cut",
+            "Fury Cutter"
         ],
         "Special Attack(s)": [
-            "Unknown"
+            "Aerial Ace",
+            "Air Cutter",
+            "Leaf Blade"
         ],
         "Weight": "15.0 kg",
-        "Height": "0.8 m"
+        "Height": "0.8 m",
+        "BaseAttack": 138,
+        "BaseDefense": 104,
+        "BaseStamina": 132,
+        "CaptureRate": 0.24,
+        "FleeRate": 0.09
     },
     {
         "Number": "084",
@@ -2619,6 +3464,7 @@
         "Height": "1.4 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 84,
             "Name": "Doduo candies"
         },
         "Next evolution(s)": [
@@ -2626,7 +3472,17 @@
                 "Number": "085",
                 "Name": "Dodrio"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Aerial Ace",
+            "Drill Peck",
+            "Swift"
+        ],
+        "BaseAttack": 126,
+        "BaseDefense": 70,
+        "BaseStamina": 96,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.1
     },
     {
         "Number": "085",
@@ -2653,7 +3509,17 @@
                 "Number": "084",
                 "Name": "Doduo"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Aerial Ace",
+            "Air Cutter",
+            "Drill Peck"
+        ],
+        "BaseAttack": 182,
+        "BaseDefense": 120,
+        "BaseStamina": 150,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.06
     },
     {
         "Number": "086",
@@ -2674,6 +3540,7 @@
         "Height": "1.1 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 86,
             "Name": "Seel candies"
         },
         "Next evolution(s)": [
@@ -2681,7 +3548,17 @@
                 "Number": "087",
                 "Name": "Dewgong"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Aqua Jet",
+            "Aqua Tail",
+            "Icy Wind"
+        ],
+        "BaseAttack": 104,
+        "BaseDefense": 130,
+        "BaseStamina": 138,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.09
     },
     {
         "Number": "087",
@@ -2710,7 +3587,17 @@
                 "Number": "086",
                 "Name": "Seel"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Aqua Jet",
+            "Blizzard",
+            "Icy Wind"
+        ],
+        "BaseAttack": 156,
+        "BaseDefense": 180,
+        "BaseStamina": 192,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.06
     },
     {
         "Number": "088",
@@ -2731,6 +3618,7 @@
         "Height": "0.9 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 88,
             "Name": "Grimer candies"
         },
         "Next evolution(s)": [
@@ -2738,7 +3626,17 @@
                 "Number": "089",
                 "Name": "Muk"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Mud Bomb",
+            "Sludge",
+            "Sludge Bomb"
+        ],
+        "BaseAttack": 124,
+        "BaseDefense": 160,
+        "BaseStamina": 110,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.1
     },
     {
         "Number": "089",
@@ -2752,8 +3650,8 @@
             "Psychic"
         ],
         "Fast Attack(s)": [
-            "Poison Jab",
-            ""
+            "Acid",
+            "Poison Jab"
         ],
         "Weight": "30.0 kg",
         "Height": "1.2 m",
@@ -2762,7 +3660,17 @@
                 "Number": "088",
                 "Name": "Grimer"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Dark Pulse",
+            "Gunk Shot",
+            "Sludge Wave"
+        ],
+        "BaseAttack": 180,
+        "BaseDefense": 210,
+        "BaseStamina": 188,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.06
     },
     {
         "Number": "090",
@@ -2783,6 +3691,7 @@
         "Height": "0.3 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 90,
             "Name": "Shellder candies"
         },
         "Next evolution(s)": [
@@ -2790,7 +3699,17 @@
                 "Number": "091",
                 "Name": "Cloyster"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Bubble Beam",
+            "Icy Wind",
+            "Water Pulse"
+        ],
+        "BaseAttack": 120,
+        "BaseDefense": 60,
+        "BaseStamina": 112,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.1
     },
     {
         "Number": "091",
@@ -2819,7 +3738,17 @@
                 "Number": "090",
                 "Name": "Shellder"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Blizzard",
+            "Hydro Pump",
+            "Icy Wind"
+        ],
+        "BaseAttack": 196,
+        "BaseDefense": 100,
+        "BaseStamina": 196,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.06
     },
     {
         "Number": "092",
@@ -2845,6 +3774,7 @@
         "Height": "1.3 m",
         "Next Evolution Requirements": {
             "Amount": 25,
+            "Family": 92,
             "Name": "Gastly candies"
         },
         "Next evolution(s)": [
@@ -2856,7 +3786,17 @@
                 "Number": "094",
                 "Name": "Gengar"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Dark Pulse",
+            "Ominous Wind",
+            "Sludge Bomb"
+        ],
+        "BaseAttack": 136,
+        "BaseDefense": 60,
+        "BaseStamina": 82,
+        "CaptureRate": 0.32,
+        "FleeRate": 0.1
     },
     {
         "Number": "093",
@@ -2888,6 +3828,7 @@
         ],
         "Next Evolution Requirements": {
             "Amount": 100,
+            "Family": 92,
             "Name": "Gastly candies"
         },
         "Next evolution(s)": [
@@ -2895,7 +3836,17 @@
                 "Number": "094",
                 "Name": "Gengar"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Dark Pulse",
+            "Shadow Ball",
+            "Sludge Bomb"
+        ],
+        "BaseAttack": 172,
+        "BaseDefense": 90,
+        "BaseStamina": 118,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.07
     },
     {
         "Number": "094",
@@ -2928,7 +3879,17 @@
                 "Number": "093",
                 "Name": "Haunter"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Dark Pulse",
+            "Shadow Ball",
+            "Sludge Wave"
+        ],
+        "BaseAttack": 204,
+        "BaseDefense": 120,
+        "BaseStamina": 156,
+        "CaptureRate": 0.08,
+        "FleeRate": 0.05
     },
     {
         "Number": "095",
@@ -2953,7 +3914,17 @@
             "Tackle"
         ],
         "Weight": "210.0 kg",
-        "Height": "8.8 m"
+        "Height": "8.8 m",
+        "Special Attack(s)": [
+            "Iron Head",
+            "Rock Slide",
+            "Stone Edge"
+        ],
+        "BaseAttack": 90,
+        "BaseDefense": 70,
+        "BaseStamina": 186,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.09
     },
     {
         "Number": "096",
@@ -2975,6 +3946,7 @@
         "Height": "1.0 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 96,
             "Name": "Drowzee candies"
         },
         "Next evolution(s)": [
@@ -2982,7 +3954,17 @@
                 "Number": "097",
                 "Name": "Hypno"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Psybeam",
+            "Psychic",
+            "Psyshock"
+        ],
+        "BaseAttack": 104,
+        "BaseDefense": 120,
+        "BaseStamina": 140,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.1
     },
     {
         "Number": "097",
@@ -3007,7 +3989,17 @@
                 "Number": "096",
                 "Name": "Drowzee"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Psychic",
+            "Psyshock",
+            "Shadow Ball"
+        ],
+        "BaseAttack": 162,
+        "BaseDefense": 170,
+        "BaseStamina": 196,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.06
     },
     {
         "Number": "098",
@@ -3028,6 +4020,7 @@
         "Height": "0.4 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 98,
             "Name": "Krabby candies"
         },
         "Next evolution(s)": [
@@ -3035,7 +4028,17 @@
                 "Number": "099",
                 "Name": "Kingler"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Bubble Beam",
+            "Vice Grip",
+            "Water Pulse"
+        ],
+        "BaseAttack": 116,
+        "BaseDefense": 60,
+        "BaseStamina": 110,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.15
     },
     {
         "Number": "099",
@@ -3059,7 +4062,17 @@
                 "Number": "098",
                 "Name": "Krabby"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Vice Grip",
+            "Water Pulse",
+            "X Scissor"
+        ],
+        "BaseAttack": 178,
+        "BaseDefense": 110,
+        "BaseStamina": 168,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.07
     },
     {
         "Number": "100",
@@ -3079,6 +4092,7 @@
         "Height": "0.5 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 100,
             "Name": "Voltorb candies"
         },
         "Next evolution(s)": [
@@ -3086,7 +4100,17 @@
                 "Number": "101",
                 "Name": "Electrode"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Discharge",
+            "Signal Beam",
+            "Thunderbolt"
+        ],
+        "BaseAttack": 102,
+        "BaseDefense": 80,
+        "BaseStamina": 124,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.1
     },
     {
         "Number": "101",
@@ -3100,7 +4124,7 @@
         ],
         "Fast Attack(s)": [
             "Spark",
-            ""
+            "Tackle"
         ],
         "Weight": "66.6 kg",
         "Height": "1.2 m",
@@ -3109,7 +4133,17 @@
                 "Number": "100",
                 "Name": "Voltorb"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Discharge",
+            "Hyper Beam",
+            "Thunderbolt"
+        ],
+        "BaseAttack": 150,
+        "BaseDefense": 120,
+        "BaseStamina": 174,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.06
     },
     {
         "Number": "102",
@@ -3131,13 +4165,13 @@
             "Dark"
         ],
         "Fast Attack(s)": [
-            "Confusion",
-            ""
+            "Confusion"
         ],
         "Weight": "2.5 kg",
         "Height": "0.4 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 102,
             "Name": "Exeggcute candies"
         },
         "Next evolution(s)": [
@@ -3145,7 +4179,17 @@
                 "Number": "103",
                 "Name": "Exeggutor"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Ancient Power",
+            "Psychic",
+            "Seed Bomb"
+        ],
+        "BaseAttack": 110,
+        "BaseDefense": 120,
+        "BaseStamina": 132,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.1
     },
     {
         "Number": "103",
@@ -3177,7 +4221,17 @@
                 "Number": "102",
                 "Name": "Exeggcute"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Psychic",
+            "Seed Bomb",
+            "Solar Beam"
+        ],
+        "BaseAttack": 232,
+        "BaseDefense": 190,
+        "BaseStamina": 164,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.06
     },
     {
         "Number": "104",
@@ -3199,6 +4253,7 @@
         "Height": "0.4 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 104,
             "Name": "Cubone candies"
         },
         "Next evolution(s)": [
@@ -3206,7 +4261,17 @@
                 "Number": "105",
                 "Name": "Marowak"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Bone Club",
+            "Bulldoze",
+            "Dig"
+        ],
+        "BaseAttack": 102,
+        "BaseDefense": 100,
+        "BaseStamina": 150,
+        "CaptureRate": 0.32,
+        "FleeRate": 0.1
     },
     {
         "Number": "105",
@@ -3231,7 +4296,17 @@
                 "Number": "104",
                 "Name": "Cubone"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Bone Club",
+            "Dig",
+            "Earthquake"
+        ],
+        "BaseAttack": 140,
+        "BaseDefense": 120,
+        "BaseStamina": 202,
+        "CaptureRate": 0.12,
+        "FleeRate": 0.06
     },
     {
         "Number": "106",
@@ -3256,7 +4331,17 @@
                 "Number": "107",
                 "Name": "Hitmonchan"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Low Sweep",
+            "Stomp",
+            "Stone Edge"
+        ],
+        "BaseAttack": 148,
+        "BaseDefense": 100,
+        "BaseStamina": 172,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.09
     },
     {
         "Number": "107",
@@ -3281,7 +4366,18 @@
                 "Number": "106",
                 "Name": "Hitmonlee"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Brick Break",
+            "Fire Punch",
+            "Ice Punch",
+            "Thunder Punch"
+        ],
+        "BaseAttack": 138,
+        "BaseDefense": 100,
+        "BaseStamina": 204,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.09
     },
     {
         "Number": "108",
@@ -3298,7 +4394,17 @@
             "Zen Headbutt"
         ],
         "Weight": "65.5 kg",
-        "Height": "1.2 m"
+        "Height": "1.2 m",
+        "Special Attack(s)": [
+            "Hyper Beam",
+            "Power Whip",
+            "Stomp"
+        ],
+        "BaseAttack": 126,
+        "BaseDefense": 180,
+        "BaseStamina": 160,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.09
     },
     {
         "Number": "109",
@@ -3319,6 +4425,7 @@
         "Height": "0.6 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 109,
             "Name": "Koffing candies"
         },
         "Next evolution(s)": [
@@ -3326,7 +4433,17 @@
                 "Number": "110",
                 "Name": "Weezing"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Dark Pulse",
+            "Sludge",
+            "Sludge Bomb"
+        ],
+        "BaseAttack": 136,
+        "BaseDefense": 80,
+        "BaseStamina": 142,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.1
     },
     {
         "Number": "110",
@@ -3350,7 +4467,17 @@
                 "Number": "109",
                 "Name": "Koffing"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Dark Pulse",
+            "Shadow Ball",
+            "Sludge Bomb"
+        ],
+        "BaseAttack": 190,
+        "BaseDefense": 130,
+        "BaseStamina": 198,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.06
     },
     {
         "Number": "111",
@@ -3378,6 +4505,7 @@
         "Height": "1.0 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 111,
             "Name": "Rhyhorn candies"
         },
         "Next evolution(s)": [
@@ -3385,7 +4513,17 @@
                 "Number": "112",
                 "Name": "Rhydon"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Bulldoze",
+            "Horn Attack",
+            "Stomp"
+        ],
+        "BaseAttack": 110,
+        "BaseDefense": 160,
+        "BaseStamina": 116,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.1
     },
     {
         "Number": "112",
@@ -3416,7 +4554,17 @@
                 "Number": "111",
                 "Name": "Rhyhorn"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Earthquake",
+            "Megahorn",
+            "Stone Edge"
+        ],
+        "BaseAttack": 166,
+        "BaseDefense": 210,
+        "BaseStamina": 160,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.06
     },
     {
         "Number": "113",
@@ -3433,7 +4581,17 @@
             "Zen Headbutt"
         ],
         "Weight": "34.6 kg",
-        "Height": "1.1 m"
+        "Height": "1.1 m",
+        "Special Attack(s)": [
+            "Dazzling Gleam",
+            "Psybeam",
+            "Psychic"
+        ],
+        "BaseAttack": 40,
+        "BaseDefense": 500,
+        "BaseStamina": 60,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.09
     },
     {
         "Number": "114",
@@ -3450,11 +4608,20 @@
             "Bug"
         ],
         "Fast Attack(s)": [
-            "Vine Whip",
-            ""
+            "Vine Whip"
         ],
         "Weight": "35.0 kg",
-        "Height": "1.0 m"
+        "Height": "1.0 m",
+        "Special Attack(s)": [
+            "Power Whip",
+            "Sludge Bomb",
+            "Solar Beam"
+        ],
+        "BaseAttack": 164,
+        "BaseDefense": 130,
+        "BaseStamina": 152,
+        "CaptureRate": 0.32,
+        "FleeRate": 0.09
     },
     {
         "Number": "115",
@@ -3468,10 +4635,20 @@
         ],
         "Fast Attack(s)": [
             "Low Kick",
-            ""
+            "Mud Slap"
         ],
         "Weight": "80.0 kg",
-        "Height": "2.2 m"
+        "Height": "2.2 m",
+        "Special Attack(s)": [
+            "Brick Break",
+            "Earthquake",
+            "Stomp"
+        ],
+        "BaseAttack": 142,
+        "BaseDefense": 210,
+        "BaseStamina": 178,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.09
     },
     {
         "Number": "116",
@@ -3492,6 +4669,7 @@
         "Height": "0.4 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 116,
             "Name": "Horsea candies"
         },
         "Next evolution(s)": [
@@ -3499,7 +4677,17 @@
                 "Number": "117",
                 "Name": "Seadra"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Bubble Beam",
+            "Dragon Pulse",
+            "Flash Cannon"
+        ],
+        "BaseAttack": 122,
+        "BaseDefense": 60,
+        "BaseStamina": 100,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.1
     },
     {
         "Number": "117",
@@ -3523,7 +4711,17 @@
                 "Number": "116",
                 "Name": "Horsea"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Blizzard",
+            "Dragon Pulse",
+            "Hydro Pump"
+        ],
+        "BaseAttack": 176,
+        "BaseDefense": 110,
+        "BaseStamina": 150,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.06
     },
     {
         "Number": "118",
@@ -3537,13 +4735,14 @@
             "Grass"
         ],
         "Fast Attack(s)": [
-            "Peck",
-            "Mud Shot"
+            "Mud Shot",
+            "Peck"
         ],
         "Weight": "15.0 kg",
         "Height": "0.6 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 118,
             "Name": "Goldeen candies"
         },
         "Next evolution(s)": [
@@ -3551,7 +4750,17 @@
                 "Number": "119",
                 "Name": "Seaking"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Aqua Tail",
+            "Horn Attack",
+            "Water Pulse"
+        ],
+        "BaseAttack": 112,
+        "BaseDefense": 90,
+        "BaseStamina": 126,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.15
     },
     {
         "Number": "119",
@@ -3575,7 +4784,17 @@
                 "Number": "118",
                 "Name": "Goldeen"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Drill Run",
+            "Icy Wind",
+            "Megahorn"
+        ],
+        "BaseAttack": 172,
+        "BaseDefense": 160,
+        "BaseStamina": 160,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.07
     },
     {
         "Number": "120",
@@ -3596,6 +4815,7 @@
         "Height": "0.8 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 120,
             "Name": "Staryu candies"
         },
         "Next evolution(s)": [
@@ -3603,7 +4823,17 @@
                 "Number": "121",
                 "Name": "Starmie"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Bubble Beam",
+            "Power Gem",
+            "Swift"
+        ],
+        "BaseAttack": 130,
+        "BaseDefense": 60,
+        "BaseStamina": 128,
+        "CaptureRate": 0.4,
+        "FleeRate": 0.15
     },
     {
         "Number": "121",
@@ -3633,7 +4863,17 @@
                 "Number": "120",
                 "Name": "Staryu"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Hydro Pump",
+            "Power Gem",
+            "Psybeam"
+        ],
+        "BaseAttack": 194,
+        "BaseDefense": 120,
+        "BaseStamina": 192,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.06
     },
     {
         "Number": "122",
@@ -3652,7 +4892,17 @@
             "Zen Headbutt"
         ],
         "Weight": "54.5 kg",
-        "Height": "1.3 m"
+        "Height": "1.3 m",
+        "Special Attack(s)": [
+            "Psybeam",
+            "Psychic",
+            "Shadow Ball"
+        ],
+        "BaseAttack": 154,
+        "BaseDefense": 80,
+        "BaseStamina": 196,
+        "CaptureRate": 0.24,
+        "FleeRate": 0.09
     },
     {
         "Number": "123",
@@ -3676,7 +4926,17 @@
             "Steel Wing"
         ],
         "Weight": "56.0 kg",
-        "Height": "1.5 m"
+        "Height": "1.5 m",
+        "Special Attack(s)": [
+            "Bug Buzz",
+            "Night Slash",
+            "X Scissor"
+        ],
+        "BaseAttack": 176,
+        "BaseDefense": 140,
+        "BaseStamina": 180,
+        "CaptureRate": 0.24,
+        "FleeRate": 0.09
     },
     {
         "Number": "124",
@@ -3701,7 +4961,17 @@
             "Pound"
         ],
         "Weight": "40.6 kg",
-        "Height": "1.4 m"
+        "Height": "1.4 m",
+        "Special Attack(s)": [
+            "Draining Kiss",
+            "Ice Punch",
+            "Psyshock"
+        ],
+        "BaseAttack": 172,
+        "BaseDefense": 130,
+        "BaseStamina": 134,
+        "CaptureRate": 0.24,
+        "FleeRate": 0.09
     },
     {
         "Number": "125",
@@ -3718,7 +4988,17 @@
             "Thunder Shock"
         ],
         "Weight": "30.0 kg",
-        "Height": "1.1 m"
+        "Height": "1.1 m",
+        "Special Attack(s)": [
+            "Thunder",
+            "Thunder Punch",
+            "Thunderbolt"
+        ],
+        "BaseAttack": 198,
+        "BaseDefense": 130,
+        "BaseStamina": 160,
+        "CaptureRate": 0.24,
+        "FleeRate": 0.09
     },
     {
         "Number": "126",
@@ -3737,7 +5017,17 @@
             "Karate Chop"
         ],
         "Weight": "44.5 kg",
-        "Height": "1.3 m"
+        "Height": "1.3 m",
+        "Special Attack(s)": [
+            "Fire Blast",
+            "Fire Punch",
+            "Flamethrower"
+        ],
+        "BaseAttack": 214,
+        "BaseDefense": 130,
+        "BaseStamina": 158,
+        "CaptureRate": 0.24,
+        "FleeRate": 0.09
     },
     {
         "Number": "127",
@@ -3756,7 +5046,17 @@
             "Rock Smash"
         ],
         "Weight": "55.0 kg",
-        "Height": "1.5 m"
+        "Height": "1.5 m",
+        "Special Attack(s)": [
+            "Submission",
+            "Vice Grip",
+            "X Scissor"
+        ],
+        "BaseAttack": 184,
+        "BaseDefense": 130,
+        "BaseStamina": 186,
+        "CaptureRate": 0.24,
+        "FleeRate": 0.09
     },
     {
         "Number": "128",
@@ -3773,7 +5073,17 @@
             "Zen Headbutt"
         ],
         "Weight": "88.4 kg",
-        "Height": "1.4 m"
+        "Height": "1.4 m",
+        "Special Attack(s)": [
+            "Earthquake",
+            "Horn Attack",
+            "Iron Head"
+        ],
+        "BaseAttack": 148,
+        "BaseDefense": 150,
+        "BaseStamina": 184,
+        "CaptureRate": 0.24,
+        "FleeRate": 0.09
     },
     {
         "Number": "129",
@@ -3787,13 +5097,13 @@
             "Grass"
         ],
         "Fast Attack(s)": [
-            "Splash",
-            ""
+            "Splash"
         ],
         "Weight": "10.0 kg",
         "Height": "0.9 m",
         "Next Evolution Requirements": {
             "Amount": 400,
+            "Family": 129,
             "Name": "Magikarp candies"
         },
         "Next evolution(s)": [
@@ -3801,7 +5111,15 @@
                 "Number": "130",
                 "Name": "Gyarados"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Struggle"
+        ],
+        "BaseAttack": 42,
+        "BaseDefense": 40,
+        "BaseStamina": 84,
+        "CaptureRate": 0.56,
+        "FleeRate": 0.15
     },
     {
         "Number": "130",
@@ -3828,7 +5146,17 @@
                 "Number": "129",
                 "Name": "Magikarp"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Dragon Pulse",
+            "Hydro Pump",
+            "Twister"
+        ],
+        "BaseAttack": 192,
+        "BaseDefense": 190,
+        "BaseStamina": 196,
+        "CaptureRate": 0.08,
+        "FleeRate": 0.07
     },
     {
         "Number": "131",
@@ -3851,7 +5179,17 @@
             "Ice Shard"
         ],
         "Weight": "220.0 kg",
-        "Height": "2.5 m"
+        "Height": "2.5 m",
+        "Special Attack(s)": [
+            "Blizzard",
+            "Dragon Pulse",
+            "Ice Beam"
+        ],
+        "BaseAttack": 186,
+        "BaseDefense": 260,
+        "BaseStamina": 190,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.09
     },
     {
         "Number": "132",
@@ -3864,13 +5202,18 @@
             "Fighting"
         ],
         "Fast Attack(s)": [
-            "Unknown"
+            "Pound"
         ],
         "Special Attack(s)": [
-            "Unknown"
+            "Struggle"
         ],
         "Weight": "4.0 kg",
-        "Height": "0.3 m"
+        "Height": "0.3 m",
+        "BaseAttack": 110,
+        "BaseDefense": 96,
+        "BaseStamina": 110,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.1
     },
     {
         "Number": "133",
@@ -3890,6 +5233,7 @@
         "Height": "0.3 m",
         "Next Evolution Requirements": {
             "Amount": 25,
+            "Family": 133,
             "Name": "Eevee candies"
         },
         "Next evolution(s)": [
@@ -3905,7 +5249,17 @@
                 "Number": "136",
                 "Name": "Flareon"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Body Slam",
+            "Dig",
+            "Swift"
+        ],
+        "BaseAttack": 114,
+        "BaseDefense": 110,
+        "BaseStamina": 128,
+        "CaptureRate": 0.32,
+        "FleeRate": 0.1
     },
     {
         "Number": "134",
@@ -3919,8 +5273,7 @@
             "Grass"
         ],
         "Fast Attack(s)": [
-            "Water Gun",
-            ""
+            "Water Gun"
         ],
         "Weight": "29.0 kg",
         "Height": "1.0 m",
@@ -3929,7 +5282,17 @@
                 "Number": "133",
                 "Name": "Eevee"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Aqua Tail",
+            "Hydro Pump",
+            "Water Pulse"
+        ],
+        "BaseAttack": 186,
+        "BaseDefense": 260,
+        "BaseStamina": 168,
+        "CaptureRate": 0.12,
+        "FleeRate": 0.06
     },
     {
         "Number": "135",
@@ -3942,8 +5305,7 @@
             "Ground"
         ],
         "Fast Attack(s)": [
-            "Thunder Shock",
-            ""
+            "Thunder Shock"
         ],
         "Weight": "24.5 kg",
         "Height": "0.8 m",
@@ -3952,7 +5314,17 @@
                 "Number": "133",
                 "Name": "Eevee"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Discharge",
+            "Thunder",
+            "Thunderbolt"
+        ],
+        "BaseAttack": 192,
+        "BaseDefense": 130,
+        "BaseStamina": 174,
+        "CaptureRate": 0.12,
+        "FleeRate": 0.06
     },
     {
         "Number": "136",
@@ -3967,8 +5339,7 @@
             "Rock"
         ],
         "Fast Attack(s)": [
-            "Ember",
-            ""
+            "Ember"
         ],
         "Weight": "25.0 kg",
         "Height": "0.9 m",
@@ -3977,7 +5348,17 @@
                 "Number": "133",
                 "Name": "Eevee"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Fire Blast",
+            "Flamethrower",
+            "Heat Wave"
+        ],
+        "BaseAttack": 238,
+        "BaseDefense": 130,
+        "BaseStamina": 178,
+        "CaptureRate": 0.12,
+        "FleeRate": 0.06
     },
     {
         "Number": "137",
@@ -3994,7 +5375,17 @@
             "Tackle"
         ],
         "Weight": "36.5 kg",
-        "Height": "0.8 m"
+        "Height": "0.8 m",
+        "Special Attack(s)": [
+            "Discharge",
+            "Psybeam",
+            "Signal Beam"
+        ],
+        "BaseAttack": 156,
+        "BaseDefense": 130,
+        "BaseStamina": 158,
+        "CaptureRate": 0.32,
+        "FleeRate": 0.09
     },
     {
         "Number": "138",
@@ -4013,13 +5404,14 @@
             "Ground"
         ],
         "Fast Attack(s)": [
-            "Water Gun",
-            ""
+            "Mud Shot",
+            "Water Gun"
         ],
         "Weight": "7.5 kg",
         "Height": "0.4 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 138,
             "Name": "Omanyte candies"
         },
         "Next evolution(s)": [
@@ -4027,7 +5419,17 @@
                 "Number": "139",
                 "Name": "Omastar"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Ancient Power",
+            "Brine",
+            "Rock Tomb"
+        ],
+        "BaseAttack": 132,
+        "BaseDefense": 70,
+        "BaseStamina": 160,
+        "CaptureRate": 0.32,
+        "FleeRate": 0.09
     },
     {
         "Number": "139",
@@ -4056,7 +5458,17 @@
                 "Number": "138",
                 "Name": "Omanyte"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Ancient Power",
+            "Hydro Pump",
+            "Rock Slide"
+        ],
+        "BaseAttack": 180,
+        "BaseDefense": 140,
+        "BaseStamina": 202,
+        "CaptureRate": 0.12,
+        "FleeRate": 0.05
     },
     {
         "Number": "140",
@@ -4082,6 +5494,7 @@
         "Height": "0.5 m",
         "Next Evolution Requirements": {
             "Amount": 50,
+            "Family": 140,
             "Name": "Kabuto candies"
         },
         "Next evolution(s)": [
@@ -4089,7 +5502,17 @@
                 "Number": "141",
                 "Name": "Kabutops"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Ancient Power",
+            "Aqua Jet",
+            "Rock Tomb"
+        ],
+        "BaseAttack": 148,
+        "BaseDefense": 60,
+        "BaseStamina": 142,
+        "CaptureRate": 0.32,
+        "FleeRate": 0.09
     },
     {
         "Number": "141",
@@ -4118,7 +5541,17 @@
                 "Number": "140",
                 "Name": "Kabuto"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Ancient Power",
+            "Stone Edge",
+            "Water Pulse"
+        ],
+        "BaseAttack": 190,
+        "BaseDefense": 120,
+        "BaseStamina": 190,
+        "CaptureRate": 0.12,
+        "FleeRate": 0.05
     },
     {
         "Number": "142",
@@ -4142,7 +5575,17 @@
             "Steel Wing"
         ],
         "Weight": "59.0 kg",
-        "Height": "1.8 m"
+        "Height": "1.8 m",
+        "Special Attack(s)": [
+            "Ancient Power",
+            "Hyper Beam",
+            "Iron Head"
+        ],
+        "BaseAttack": 182,
+        "BaseDefense": 160,
+        "BaseStamina": 162,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.09
     },
     {
         "Number": "143",
@@ -4159,7 +5602,17 @@
             "Zen Headbutt"
         ],
         "Weight": "460.0 kg",
-        "Height": "2.1 m"
+        "Height": "2.1 m",
+        "Special Attack(s)": [
+            "Body Slam",
+            "Earthquake",
+            "Hyper Beam"
+        ],
+        "BaseAttack": 180,
+        "BaseDefense": 320,
+        "BaseStamina": 180,
+        "CaptureRate": 0.16,
+        "FleeRate": 0.09
     },
     {
         "Number": "144",
@@ -4178,13 +5631,20 @@
             "Steel"
         ],
         "Fast Attack(s)": [
-            "Unknown"
+            "Frost Breath"
         ],
         "Special Attack(s)": [
-            "Unknown"
+            "Blizzard",
+            "Ice Beam",
+            "Icy Wind"
         ],
         "Weight": "55.4 kg",
-        "Height": "1.7 m"
+        "Height": "1.7 m",
+        "BaseAttack": 198,
+        "BaseDefense": 180,
+        "BaseStamina": 242,
+        "CaptureRate": 0.0,
+        "FleeRate": 0.1
     },
     {
         "Number": "145",
@@ -4201,13 +5661,20 @@
             "Rock"
         ],
         "Fast Attack(s)": [
-            "Unknown"
+            "Thunder Shock"
         ],
         "Special Attack(s)": [
-            "Unknown"
+            "Discharge",
+            "Thunder",
+            "Thunderbolt"
         ],
         "Weight": "52.6 kg",
-        "Height": "1.6 m"
+        "Height": "1.6 m",
+        "BaseAttack": 232,
+        "BaseDefense": 180,
+        "BaseStamina": 194,
+        "CaptureRate": 0.0,
+        "FleeRate": 0.1
     },
     {
         "Number": "146",
@@ -4225,13 +5692,20 @@
             "Rock"
         ],
         "Fast Attack(s)": [
-            "Unknown"
+            "Ember"
         ],
         "Special Attack(s)": [
-            "Unknown"
+            "Fire Blast",
+            "Flamethrower",
+            "Heat Wave"
         ],
         "Weight": "60.0 kg",
-        "Height": "2.0 m"
+        "Height": "2.0 m",
+        "BaseAttack": 242,
+        "BaseDefense": 180,
+        "BaseStamina": 194,
+        "CaptureRate": 0.0,
+        "FleeRate": 0.1
     },
     {
         "Number": "147",
@@ -4246,13 +5720,13 @@
             "Fairy"
         ],
         "Fast Attack(s)": [
-            "Dragon Breath",
-            ""
+            "Dragon Breath"
         ],
         "Weight": "3.3 kg",
         "Height": "1.8 m",
         "Next Evolution Requirements": {
             "Amount": 25,
+            "Family": 147,
             "Name": "Dratini candies"
         },
         "Next evolution(s)": [
@@ -4264,7 +5738,17 @@
                 "Number": "149",
                 "Name": "Dragonite"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Aqua Tail",
+            "Twister",
+            "Wrap"
+        ],
+        "BaseAttack": 128,
+        "BaseDefense": 82,
+        "BaseStamina": 110,
+        "CaptureRate": 0.32,
+        "FleeRate": 0.09
     },
     {
         "Number": "148",
@@ -4279,8 +5763,7 @@
             "Fairy"
         ],
         "Fast Attack(s)": [
-            "Dragon Breath",
-            ""
+            "Dragon Breath"
         ],
         "Weight": "16.5 kg",
         "Height": "4.0 m",
@@ -4292,6 +5775,7 @@
         ],
         "Next Evolution Requirements": {
             "Amount": 100,
+            "Family": 147,
             "Name": "Dratini candies"
         },
         "Next evolution(s)": [
@@ -4299,7 +5783,17 @@
                 "Number": "149",
                 "Name": "Dragonite"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Aqua Tail",
+            "Dragon Pulse",
+            "Wrap"
+        ],
+        "BaseAttack": 170,
+        "BaseDefense": 122,
+        "BaseStamina": 152,
+        "CaptureRate": 0.08,
+        "FleeRate": 0.06
     },
     {
         "Number": "149",
@@ -4332,7 +5826,17 @@
                 "Number": "148",
                 "Name": "Dragonair"
             }
-        ]
+        ],
+        "Special Attack(s)": [
+            "Dragon Claw",
+            "Dragon Pulse",
+            "Hyper Beam"
+        ],
+        "BaseAttack": 250,
+        "BaseDefense": 182,
+        "BaseStamina": 212,
+        "CaptureRate": 0.04,
+        "FleeRate": 0.05
     },
     {
         "Number": "150",
@@ -4347,13 +5851,21 @@
             "Dark"
         ],
         "Fast Attack(s)": [
-            "Unknown"
+            "Confusion",
+            "Psycho Cut"
         ],
         "Special Attack(s)": [
-            "Unknown"
+            "Hyper Beam",
+            "Psychic",
+            "Shadow Ball"
         ],
         "Weight": "122.0 kg",
-        "Height": "2.0 m"
+        "Height": "2.0 m",
+        "BaseAttack": 284,
+        "BaseDefense": 212,
+        "BaseStamina": 202,
+        "CaptureRate": 0.0,
+        "FleeRate": 0.1
     },
     {
         "Number": "151",
@@ -4368,12 +5880,25 @@
             "Dark"
         ],
         "Fast Attack(s)": [
-            "Unknown"
+            "Pound"
         ],
         "Special Attack(s)": [
-            "Unknown"
+            "Dragon Pulse",
+            "Earthquake",
+            "Fire Blast",
+            "Hurricane",
+            "Hyper Beam",
+            "Moonblast",
+            "Psychic",
+            "Solar Beam",
+            "Thunder"
         ],
         "Weight": "4.0 kg",
-        "Height": "0.4 m"
+        "Height": "0.4 m",
+        "BaseAttack": 220,
+        "BaseDefense": 200,
+        "BaseStamina": 220,
+        "CaptureRate": 0.0,
+        "FleeRate": 0.1
     }
 ]

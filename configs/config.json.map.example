@@ -66,6 +66,7 @@
           "snipe_high_prio_threshold": 400,
           "update_map": true,
           "mode": "priority",
+          "map_path": "raw_data",
           "catch": {
             "==========Legendaries==========": 0,
             "Aerodactyl": 1000,
