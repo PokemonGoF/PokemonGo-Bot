@@ -70,6 +70,8 @@ class UpdateTitleStats(BaseTask):
         self.min_interval = self.DEFAULT_MIN_INTERVAL
         self.displayed_stats = self.DEFAULT_DISPLAYED_STATS
 
+        self.bot.event_manager.register_event('update_title', parameters=('title'))
+
         self._process_config()
 
     def initialize(self):
@@ -109,6 +111,14 @@ class UpdateTitleStats(BaseTask):
         :rtype: None
         :raise: RuntimeError: When the given platform isn't supported.
         """
+        self.emit_event(
+            'update_title',
+            formatted="{title}",
+            data={
+                'title': title
+            }
+        )
+        
         if platform == "linux" or platform == "linux2" or platform == "cygwin":
             stdout.write("\x1b]2;{}\x07".format(title))
             stdout.flush()
@@ -117,8 +127,6 @@ class UpdateTitleStats(BaseTask):
             stdout.flush()
         elif platform == "win32":
             ctypes.windll.kernel32.SetConsoleTitleA(title)
-        else:
-            raise RuntimeError("unsupported platform '{}'".format(platform))
 
         self.next_update = datetime.now() + timedelta(seconds=self.min_interval)
 
