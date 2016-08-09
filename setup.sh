@@ -85,38 +85,48 @@ Pokebotupdate
 
 function Pokebothelp () {
 echo "usage:"
-echo "	-i,-install.	Install PokemonGo-Bot."
-echo "	-b,-backup.	    Backup config files."
-echo "	-c,-config. 	Easy config generator."
-echo "	-e,-encrypt. 	Make encrypt.so."
-echo "	-r,-reset.  	Force sync dev branch."
-echo "	-u,-update. 	Command git pull to update."
+echo "	-i,--install.		Install PokemonGo-Bot."
+echo "	-b,--backup.		Backup config files."
+echo "	-c,--config.		Easy config generator."
+echo "	-e,--encrypt.		Make encrypt.so."
+echo "	-r,--reset.			Force sync dev branch."
+echo "	-u,--update.		Command git pull to update."
 }
 
 case $* in
--install|-i)
+--install|-i)
 Pokebotinstall
 ;;
--encrypt|-e)
+--encrypt|-e)
 Pokebotencrypt
 ;;
--reset|-r)
+--reset|-r)
 Pokebotreset
 ;;
--update|-u)
+--update|-u)
 Pokebotupdate
 ;;
--backup|-b)
+--backup|-b)
 mkdir $backuppath
 cp -f $pokebotpath/configs/config*.json $backuppath/
 cp -f $pokebotpath/web/config/userdata.js $backuppath/
 echo "Backup complete"
 ;;
--config|-c)
+--config|-c)
 Pokebotconfig
 ;;
--help|-h)
+--help|-h)
 Pokebothelp
+;;
+*.json)
+filename=$*
+cd $pokebotpath
+if [ ! -f ./configs/"$filename" ]
+then
+echo "There's no ./configs/"$filename" file. It's better to use run.sh not this one."
+else
+Pokebotrun
+fi
 ;;
 *)
 Pokebothelp
