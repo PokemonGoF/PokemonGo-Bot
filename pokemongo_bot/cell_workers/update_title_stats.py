@@ -18,10 +18,22 @@ class UpdateTitleStats(BaseTask):
         "type": "UpdateTitleStats",
         "config": {
             "min_interval": 10,
-            "stats": ["login", "uptime", "km_walked", "level_stats", "xp_earned", "xp_per_hour"]
+            "stats": ["login", "uptime", "km_walked", "level_stats", "xp_earned", "xp_per_hour"],
         }
     }
 
+    You can set a logging on terminal mode like this:
+
+    Example logging on console (and disabling title change):
+    {
+        "type": "UpdateTitleStats",
+        "config": {
+            "min_interval": 10,
+            "stats": ["login", "uptime", "km_walked", "level_stats", "xp_earned", "xp_per_hour"],
+            "terminal_log": true,
+            "terminal_title": false
+        }
+    }
     Available stats :
     - login : The account login (from the credentials).
     - username : The trainer name (asked at first in-game connection).
@@ -53,9 +65,6 @@ class UpdateTitleStats(BaseTask):
     """
     SUPPORTED_TASK_API_VERSION = 1
 
-    DEFAULT_MIN_INTERVAL = 10
-    DEFAULT_DISPLAYED_STATS = []
-    TERMINAL = False
 
     def __init__(self, bot, config):
         """
@@ -68,13 +77,14 @@ class UpdateTitleStats(BaseTask):
         super(UpdateTitleStats, self).__init__(bot, config)
 
         self.next_update = None
-        self.min_interval = self.DEFAULT_MIN_INTERVAL
-        self.displayed_stats = self.DEFAULT_DISPLAYED_STATS
-        self.terminal = self.TERMINAL
+
+        self.min_interval = int(self.config.get('min_interval', 120))
+        self.displayed_stats = self.config.get('stats', [])
+        self.terminal_log = self.config.get('terminal_log', False)
+        self.terminal_title = self.config.get('terminal_title', True)
 
         self.bot.event_manager.register_event('update_title', parameters=('title'))
         self.bot.event_manager.register_event('log_stats',parameters=('title'))
-        self._process_config()
 
     def initialize(self):
         pass
@@ -91,8 +101,11 @@ class UpdateTitleStats(BaseTask):
         # If title is empty, it couldn't be generated.
         if not title:
             return WorkerResult.SUCCESS
-        self._update_title(title, _platform)
-        if(self.terminal is True):
+
+        if self.terminal_title is True:
+            self._update_title(title, _platform)
+
+        if self.terminal_log is True:
             self._log_on_terminal(title)
         return WorkerResult.SUCCESS
 
@@ -147,15 +160,6 @@ class UpdateTitleStats(BaseTask):
 
         self.next_update = datetime.now() + timedelta(seconds=self.min_interval)
 
-    def _process_config(self):
-        """
-        Fetches the configuration for this worker and stores the values internally.
-        :return: Nothing.
-        :rtype: None
-        """
-        self.min_interval = int(self.config.get('min_interval', self.DEFAULT_MIN_INTERVAL))
-        self.displayed_stats = self.config.get('stats', self.DEFAULT_DISPLAYED_STATS)
-        self.terminal = self.config.get('terminal', self.TERMINAL)
 
     def _get_stats_title(self, player_stats):
         """
