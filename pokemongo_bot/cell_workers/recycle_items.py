@@ -8,8 +8,7 @@ class RecycleItems(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def initialize(self):
-        self.min_inventory_items_to_run = self.config.get('min_inventory_items_to_run', None)
-        self.run_when_storage_less_than = self.config.get('run_when_storage_less_than', None)
+        self.min_empty_space = self.config.get('min_empty_space', None)
         self.item_filter = self.config.get('item_filter', {})
         self._validate_item_filter()
 
@@ -27,19 +26,8 @@ class RecycleItems(BaseTask):
         total_bag_space = self.bot.player_data['max_item_storage']
         free_bag_space = total_bag_space - items_in_bag
 
-        if self.min_inventory_items_to_run is not None:
-            if self.min_inventory_items_to_run >= items_in_bag:
-                self.emit_event(
-                    'item_discard_skipped',
-                    formatted="Skipping Recycling of Items. {items} items in bag.",
-                    data={
-                        'items': items_in_bag
-                    }
-                )
-                return
-
-        if self.run_when_storage_less_than is not None:
-            if free_bag_space >= self.run_when_storage_less_than:
+        if self.min_empty_space is not None:
+            if free_bag_space >= self.min_empty_space:
                     self.emit_event(
                         'item_discard_skipped',
                         formatted="Skipping Recycling of Items. {space} space left in bag.",

@@ -33,7 +33,7 @@
       {
         "type": "RecycleItems",
         "config": {
-          "min_inventory_items_to_run": 300,
+          "min_empty_space": 15,
           "item_filter": {
             "Pokeball":       { "keep" : 100 },
             "Potion":         { "keep" : 10 },
