@@ -99,7 +99,7 @@ class Items(_BaseInventoryComponent):
     STATIC_DATA_FILE = os.path.join('data', 'items.json')
 
     def count_for(self, item_id):
-        return self._data[item_id]['count']
+        return self._data[item_id].get('count', False)
 
 
 class Pokemons(_BaseInventoryComponent):
