@@ -4,7 +4,7 @@ import time
 from pokemongo_bot import inventory
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.human_behaviour import normalized_reticle_size, sleep, spin_modifier
-
+from pokemongo_bot.worker_result import WorkerResult
 
 CATCH_STATUS_SUCCESS = 1
 CATCH_STATUS_FAILED = 2
@@ -68,7 +68,7 @@ class PokemonCatchWorker(BaseTask):
 
         # validate response
         if not response_dict:
-            return False
+            return WorkerResult.ERROR
         try:
             responses = response_dict['responses']
             response = responses[self.response_key]
@@ -77,9 +77,9 @@ class PokemonCatchWorker(BaseTask):
                     self.emit_event('pokemon_not_in_range', formatted='Pokemon went out of range!')
                 elif response[self.response_status_key] == ENCOUNTER_STATUS_POKEMON_INVENTORY_FULL:
                     self.emit_event('pokemon_inventory_full', formatted='Your Pokemon inventory is full! Could not catch!')
-                return False
+                return WorkerResult.ERROR
         except KeyError:
-            return False
+            return WorkerResult.ERROR
 
         # get pokemon data
         pokemon_data = response['wild_pokemon']['pokemon_data'] if 'wild_pokemon' in response else response['pokemon_data']
@@ -87,7 +87,7 @@ class PokemonCatchWorker(BaseTask):
 
         # skip ignored pokemon
         if not self._should_catch_pokemon(pokemon):
-            return False
+            return WorkerResult.SUCCESS
 
         # log encounter
         self.emit_event(
