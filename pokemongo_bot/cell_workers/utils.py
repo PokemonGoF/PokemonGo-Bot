@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+from __future__ import division
+from past.utils import old_div
+import six
 import struct
 from math import asin, atan, cos, exp, log, pi, sin, sqrt, tan
 
@@ -47,7 +51,7 @@ def encode(cellid):
 
 def distance(lat1, lon1, lat2, lon2):
     p = 0.017453292519943295
-    a = 0.5 - cos((lat2 - lat1) * p) / 2 + cos(lat1 * p) * \
+    a = 0.5 - old_div(cos((lat2 - lat1) * p), 2) + cos(lat1 * p) * \
         cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2
     return 12742 * asin(sqrt(a)) * 1000
 
@@ -57,47 +61,47 @@ def convert(distance, from_unit, to_unit):  # Converts units
     # convert(100.0,"m","ft")
     conversions = {
         "mm": {"mm": 1.0,
-               "cm": 1.0 / 10.0,
-               "m": 1.0 / 1000.0,
-               "km": 1.0 / 1000000,
+               "cm": old_div(1.0, 10.0),
+               "m": old_div(1.0, 1000.0),
+               "km": old_div(1.0, 1000000),
                "ft": 0.00328084,
                "yd": 0.00109361,
-               "mi": 1.0 / 1609340.0007802},
+               "mi": old_div(1.0, 1609340.0007802)},
         "cm": {"mm": 10.0,
                "cm": 1.0,
-               "m": 1.0 / 100,
-               "km": 1.0 / 100000,
+               "m": old_div(1.0, 100),
+               "km": old_div(1.0, 100000),
                "ft": 0.0328084,
                "yd": 0.0109361,
-               "mi": 1.0 / 160934.0},
+               "mi": old_div(1.0, 160934.0)},
         "m": {"mm": 1000,
               "cm": 100.0,
               "m": 1.0,
-              "km": 1.0 / 1000.0,
+              "km": old_div(1.0, 1000.0),
               "ft": 3.28084,
               "yd": 1.09361,
-              "mi": 1.0 / 1609.34},
+              "mi": old_div(1.0, 1609.34)},
         "km": {"mm": 100000,
                "cm": 10000.0,
                "m": 1000.0,
                "km": 1.0,
                "ft": 3280.84,
                "yd": 1093.61,
-               "mi": 1.0 / 1.60934},
-        "ft": {"mm": 1.0 / 328.084,
-               "cm": 1.0 / 32.8084,
-               "m": 1.0 / 3.28084,
-               "km": 1 / 3280.84,
+               "mi": old_div(1.0, 1.60934)},
+        "ft": {"mm": old_div(1.0, 328.084),
+               "cm": old_div(1.0, 32.8084),
+               "m": old_div(1.0, 3.28084),
+               "km": old_div(1, 3280.84),
                "ft": 1.0,
-               "yd": 1.0 / 3.0,
-               "mi": 1.0 / 5280.0},
-        "yd": {"mm": 1.0 / 328.084,
-               "cm": 1.0 / 32.8084,
-               "m": 1.0 / 3.28084,
-               "km": 1 / 1093.61,
+               "yd": old_div(1.0, 3.0),
+               "mi": old_div(1.0, 5280.0)},
+        "yd": {"mm": old_div(1.0, 328.084),
+               "cm": old_div(1.0, 32.8084),
+               "m": old_div(1.0, 3.28084),
+               "km": old_div(1, 1093.61),
                "ft": 3.0,
                "yd": 1.0,
-               "mi": 1.0 / 1760.0},
+               "mi": old_div(1.0, 1760.0)},
         "mi": {"mm": 1609340.0007802,
                "cm": 160934.0,
                "m": 1609.34,
@@ -121,7 +125,10 @@ def format_dist(distance, unit):
 
 def format_time(seconds):
     # Return a string displaying the time given as seconds or minutes
-    num, duration = 0, long(round(seconds))
+    if six.PY2:
+        num, duration = 0, long(round(seconds))
+    else:
+        num, duration = 0, int(round(seconds))
     runtime = []
     for period, unit in TIME_PERIODS[::-1]:
         num, duration = divmod(duration, period)
@@ -161,7 +168,7 @@ def float_equal(f1, f2, epsilon=1e-8):
 # pseudo mercator projection
 EARTH_RADIUS_MAJ = 6378137.0
 EARTH_RADIUS_MIN = 6356752.3142
-RATIO = (EARTH_RADIUS_MIN / EARTH_RADIUS_MAJ)
+RATIO = (old_div(EARTH_RADIUS_MIN, EARTH_RADIUS_MAJ))
 ECCENT = sqrt(1.0 - RATIO**2)
 COM = 0.5 * ECCENT
 
@@ -175,14 +182,14 @@ def merc2coord(vec):
 
 
 def y2lat(y):
-    ts = exp(-y / EARTH_RADIUS_MAJ)
-    phi = pi / 2.0 - 2 * atan(ts)
+    ts = exp(old_div(-y, EARTH_RADIUS_MAJ))
+    phi = old_div(pi, 2.0) - 2 * atan(ts)
     dphi = 1.0
     for i in range(15):
         if abs(dphi) < 0.000000001:
             break
         con = ECCENT * sin(phi)
-        dphi = pi / 2.0 - 2 * atan (ts * pow((1.0 - con) / (1.0 + con), COM)) - phi
+        dphi = old_div(pi, 2.0) - 2 * atan (ts * pow(old_div((1.0 - con), (1.0 + con)), COM)) - phi
         phi += dphi
     return rad2deg(phi)
 
@@ -192,13 +199,13 @@ def lat2y(lat):
     phi = deg2rad(lat)
     sinphi = sin(phi)
     con = ECCENT * sinphi
-    con = pow((1.0 - con) / (1.0 + con), COM)
-    ts = tan(0.5 * (pi * 0.5 - phi)) / con
+    con = pow(old_div((1.0 - con), (1.0 + con)), COM)
+    ts = old_div(tan(0.5 * (pi * 0.5 - phi)), con)
     return 0 - EARTH_RADIUS_MAJ * log(ts)
 
 
 def x2lng(x):
-    return rad2deg(x) / EARTH_RADIUS_MAJ
+    return old_div(rad2deg(x), EARTH_RADIUS_MAJ)
 
 
 def lng2x(lng):

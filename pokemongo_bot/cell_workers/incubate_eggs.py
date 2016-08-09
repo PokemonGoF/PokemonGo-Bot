@@ -1,8 +1,14 @@
+from __future__ import division
+from past.builtins import basestring
+from past.utils import old_div
 from pokemongo_bot.human_behaviour import sleep
-from pokemongo_bot.cell_workers.base_task import BaseTask
+from functools import reduce
+from pokemongo_bot.base_task import BaseTask
 
 
 class IncubateEggs(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     last_km_walked = 0
 
     def initialize(self):
@@ -198,7 +204,7 @@ class IncubateEggs(BaseTask):
                     'cp': pokemon_data[i]['cp'],
                     'iv': "{} {}".format(
                         "/".join(map(str, pokemon_data[i]['iv'])),
-                        sum(pokemon_data[i]['iv'])/self.max_iv
+                        old_div(sum(pokemon_data[i]['iv']),self.max_iv)
                     ),
                     'exp': xp[i],
                     'stardust': stardust[i],

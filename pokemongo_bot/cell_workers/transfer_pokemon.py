@@ -1,10 +1,16 @@
+from __future__ import division
+from past.utils import old_div
 import json
+import six
 
 from pokemongo_bot.human_behaviour import action_delay
-from pokemongo_bot.cell_workers.base_task import BaseTask
+from functools import reduce
+from pokemongo_bot.base_task import BaseTask
 
 
 class TransferPokemon(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     def work(self):
         pokemon_groups = self._release_pokemon_get_groups()
         for pokemon_id in pokemon_groups:
@@ -84,7 +90,10 @@ class TransferPokemon(BaseTask):
 
         user_web_inventory = 'web/inventory-%s.json' % (self.bot.config.username)
         with open(user_web_inventory, 'w') as outfile:
-            json.dump(inventory_dict, outfile)
+            if six.PY2:
+                json.dump(inventory_dict, outfile)
+            else:
+                json.dump(str(inventory_dict), outfile)
 
         for pokemon in inventory_dict:
             try:
@@ -127,16 +136,16 @@ class TransferPokemon(BaseTask):
                 total_iv += pokemon_data[individual_stat]
             except Exception:
                 continue
-        return round((total_iv / 45.0), 2)
+        return round((old_div(total_iv, 45.0)), 2)
 
     def should_release_pokemon(self, pokemon_name, cp, iv, keep_best_mode = False):
         release_config = self._get_release_config_for(pokemon_name)
 
         if (keep_best_mode
-            and not release_config.has_key('never_release')
-            and not release_config.has_key('always_release')
-            and not release_config.has_key('release_below_cp')
-            and not release_config.has_key('release_below_iv')):
+            and 'never_release' not in release_config
+            and 'always_release' not in release_config
+            and 'release_below_cp' not in release_config
+            and 'release_below_iv' not in release_config):
             return True
 
         cp_iv_logic = release_config.get('logic')
@@ -185,6 +194,7 @@ class TransferPokemon(BaseTask):
 
     def release_pokemon(self, pokemon_name, cp, iv, pokemon_id):
         response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon_id)
+        self.bot.metrics.released_pokemon()
         self.emit_event(
             'pokemon_release',
             formatted='Exchanged {pokemon} [CP {cp}] [IV {iv}] for candy.',

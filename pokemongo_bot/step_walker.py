@@ -1,7 +1,10 @@
+from __future__ import absolute_import
+from __future__ import division
+from past.utils import old_div
 from math import sqrt
 
-from cell_workers.utils import distance
-from human_behaviour import random_lat_long_delta, sleep
+from .cell_workers.utils import distance
+from .human_behaviour import random_lat_long_delta, sleep
 
 
 class StepWalker(object):
@@ -25,15 +28,15 @@ class StepWalker(object):
         self.destLng = dest_lng
         self.totalDist = max(1, self.dist)
 
-        self.steps = (self.dist + 0.0) / (speed + 0.0)
+        self.steps = old_div((self.dist + 0.0), (speed + 0.0))
 
         if self.dist < speed or int(self.steps) <= 1:
             self.dLat = 0
             self.dLng = 0
             self.magnitude = 0
         else:
-            self.dLat = (dest_lat - self.initLat) / int(self.steps)
-            self.dLng = (dest_lng - self.initLng) / int(self.steps)
+            self.dLat = old_div((dest_lat - self.initLat), int(self.steps))
+            self.dLng = old_div((dest_lng - self.initLng), int(self.steps))
             self.magnitude = self._pythagorean(self.dLat, self.dLng)
 
     def step(self):
@@ -44,8 +47,8 @@ class StepWalker(object):
         totalDLat = (self.destLat - self.initLat)
         totalDLng = (self.destLng - self.initLng)
         magnitude = self._pythagorean(totalDLat, totalDLng)
-        unitLat = totalDLat / magnitude
-        unitLng = totalDLng / magnitude
+        unitLat = old_div(totalDLat, magnitude)
+        unitLng = old_div(totalDLng, magnitude)
 
         scaledDLat = unitLat * self.magnitude
         scaledDLng = unitLng * self.magnitude

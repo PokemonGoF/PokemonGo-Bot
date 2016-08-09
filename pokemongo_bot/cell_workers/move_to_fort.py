@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import six
+
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
-from pokemongo_bot.cell_workers.base_task import BaseTask
-from utils import distance, format_dist, fort_details
+from .utils import distance, format_dist, fort_details
+from pokemongo_bot.base_task import BaseTask
 
 
 class MoveToFort(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
 
     def initialize(self):
         self.lure_distance = 0
@@ -94,6 +97,9 @@ class MoveToFort(BaseTask):
 
         lures = filter(lambda x: True if x.get('lure_info', None) != None else False, forts)
 
+        if six.PY3:
+            lures = list(lures)
+
         if (len(lures)):
             dist_lure_me = distance(self.bot.position[0], self.bot.position[1],
                                     lures[0]['latitude'],lures[0]['longitude'])
@@ -138,6 +144,9 @@ class MoveToFort(BaseTask):
         # Remove all forts which were spun in the last ticks to avoid circles if set
         if self.bot.config.forts_avoid_circles:
             forts = filter(lambda x: x["id"] not in self.bot.recent_forts, forts)
+
+        if six.PY3:
+            forts = list(forts)
 
         self.lure_distance = lure_distance
 

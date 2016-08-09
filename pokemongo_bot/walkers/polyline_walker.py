@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.step_walker import StepWalker
-from polyline_generator import Polyline
+from .polyline_generator import Polyline
 
 
 class PolylineWalker(StepWalker):

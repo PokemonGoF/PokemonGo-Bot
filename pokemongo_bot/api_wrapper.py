@@ -1,3 +1,6 @@
+from __future__ import absolute_import
+from __future__ import division
+from past.utils import old_div
 import time
 import logging
 
@@ -8,7 +11,7 @@ from pgoapi.exceptions import (ServerSideRequestThrottlingException,
 from pgoapi.pgoapi import PGoApi, PGoApiRequest, RpcApi
 from pgoapi.protos.POGOProtos.Networking.Requests_pb2 import RequestType
 
-from human_behaviour import sleep
+from .human_behaviour import sleep
 
 class ApiWrapper(PGoApi):
     def __init__(self):
@@ -21,8 +24,7 @@ class ApiWrapper(PGoApi):
             RequestClass = PGoApiRequest
 
         return RequestClass(
-            self._api_endpoint,
-            self._auth_provider,
+            self,
             self._position_lat,
             self._position_lng,
             self._position_alt
@@ -101,10 +103,10 @@ class ApiRequest(PGoApiRequest):
             request_timestamp = self.throttle_sleep()
             # self._call internally clear this field, so save it
             self._req_method_list = [req_method for req_method in api_req_method_list]
+            should_throttle_retry = False
+            should_unexpected_response_retry = False
             try:
                 result = self._call()
-                should_throttle_retry = False
-                should_unexpected_response_retry = False
             except ServerSideRequestThrottlingException:
                 should_throttle_retry = True
             except UnexpectedResponseException:
@@ -118,7 +120,7 @@ class ApiRequest(PGoApiRequest):
                 continue # skip response checking
 
             if should_unexpected_response_retry:
-                unexpected_reponse_retry += 1
+                unexpected_response_retry += 1
                 if unexpected_response_retry >= 5:
                     self.logger.warning('Server is not responding correctly to our requests.  Waiting for 30 seconds to reconnect.')
                     sleep(30)
@@ -146,12 +148,12 @@ class ApiRequest(PGoApiRequest):
 
     def throttle_sleep(self):
         now_milliseconds = time.time() * 1000
-        required_delay_between_requests = 1000 / self.requests_per_seconds
+        required_delay_between_requests = old_div(1000, self.requests_per_seconds)
 
         difference = now_milliseconds - (self.last_api_request_time if self.last_api_request_time else 0)
 
         if self.last_api_request_time != None and difference < required_delay_between_requests:
             sleep_time = required_delay_between_requests - difference
-            time.sleep(sleep_time / 1000)
+            time.sleep(old_div(sleep_time, 1000))
 
         return now_milliseconds

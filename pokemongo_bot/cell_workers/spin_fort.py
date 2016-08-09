@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from __future__ import absolute_import
+from __future__ import division
+from past.utils import old_div
+import six
 import time
 
 from pgoapi.utilities import f2i
@@ -8,11 +12,13 @@ from pgoapi.utilities import f2i
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.worker_result import WorkerResult
-from pokemongo_bot.cell_workers.base_task import BaseTask
-from utils import distance, format_time, fort_details
+from .utils import distance, format_time, fort_details
+from pokemongo_bot.base_task import BaseTask
 
 
 class SpinFort(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     def should_run(self):
         if not self.bot.has_space_for_loot():
             self.emit_event(
@@ -41,9 +47,10 @@ class SpinFort(BaseTask):
             player_latitude=f2i(self.bot.position[0]),
             player_longitude=f2i(self.bot.position[1])
         )
+
         if 'responses' in response_dict and \
                 'FORT_SEARCH' in response_dict['responses']:
-
+            
             spin_details = response_dict['responses']['FORT_SEARCH']
             spin_result = spin_details.get('result', -1)
             if spin_result == 1:
@@ -56,7 +63,7 @@ class SpinFort(BaseTask):
                     for item in items_awarded:
                         item_id = item['item_id']
                         item_name = self.bot.item_list[str(item_id)]
-                        if not item_name in tmp_count_items:
+                        if item_name not in tmp_count_items:
                             tmp_count_items[item_name] = item['item_count']
                         else:
                             tmp_count_items[item_name] += item['item_count']
@@ -94,7 +101,7 @@ class SpinFort(BaseTask):
                     self.bot.fort_timeouts.update({fort["id"]: pokestop_cooldown})
                     seconds_since_epoch = time.time()
                     minutes_left = format_time(
-                        (pokestop_cooldown / 1000) - seconds_since_epoch
+                        (old_div(pokestop_cooldown, 1000)) - seconds_since_epoch
                     )
                     self.emit_event(
                         'pokestop_on_cooldown',
@@ -137,7 +144,15 @@ class SpinFort(BaseTask):
     def get_fort_in_range(self):
         forts = self.bot.get_forts(order_by_distance=True)
 
+        for fort in forts:
+            if 'cooldown_complete_timestamp_ms' in fort:
+                self.bot.fort_timeouts[fort["id"]] = fort['cooldown_complete_timestamp_ms']
+                forts.remove(fort)
+
         forts = filter(lambda x: x["id"] not in self.bot.fort_timeouts, forts)
+
+        if six.PY3:
+            forts = list(forts)
 
         if len(forts) == 0:
             return None

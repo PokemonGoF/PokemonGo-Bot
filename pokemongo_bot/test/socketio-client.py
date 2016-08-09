@@ -1,3 +1,4 @@
+from __future__ import print_function
 from socketIO_client import SocketIO
 
 
@@ -12,4 +13,4 @@ if __name__ == "__main__":
             socketio.wait(seconds=5)
 
     except (KeyboardInterrupt, SystemExit):
-        print "Exiting"
+        print("Exiting")

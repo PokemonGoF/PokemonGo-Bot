@@ -1,7 +1,10 @@
 from pokemongo_bot.human_behaviour import sleep
-from pokemongo_bot.cell_workers.base_task import BaseTask
+from functools import reduce
+from pokemongo_bot.base_task import BaseTask
 
 class NicknamePokemon(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     def initialize(self):
         self.template = self.config.get('nickname_template','').lower().strip()
         if self.template == "{name}":

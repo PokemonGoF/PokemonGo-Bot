@@ -4,6 +4,7 @@
     "password": "YOUR_PASSWORD",
     "location": "SOME_LOCATION",
     "gmapkey": "GOOGLE_MAPS_API_KEY",
+    "libencrypt_location": "",
     "tasks": [
       {
         "type": "HandleSoftBan"
@@ -21,7 +22,7 @@
         "type": "TransferPokemon"
       },
       {
-        "type": "EvolveAll",
+        "type": "EvolvePokemon",
         "config": {
           "evolve_all": "NONE",
           "evolve_cp_min": 300,
@@ -300,7 +301,6 @@
       }
     ],
     "map_object_cache_time": 5,
-    "max_steps": 5,
     "forts": {
       "avoid_circles": true,
       "max_circle_size": 50

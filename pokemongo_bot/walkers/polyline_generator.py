@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 import time
 from itertools import chain
 from math import ceil
@@ -86,7 +88,7 @@ class Polyline(object):
                     break
             step_distance = haversine.haversine(*steps_dict[walked_end_step])*1000
             if walked_end_step >= time_passed_distance:
-                percentage_walked = (time_passed_distance - (walked_end_step - step_distance)) / step_distance
+                percentage_walked = old_div((time_passed_distance - (walked_end_step - step_distance)), step_distance)
             else:
                 percentage_walked = 1.0
             return self.calculate_coord(percentage_walked, *steps_dict[walked_end_step])

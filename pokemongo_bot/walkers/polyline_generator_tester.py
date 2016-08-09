@@ -1,10 +1,12 @@
+from __future__ import print_function
+from __future__ import absolute_import
 import time
 from math import ceil
 
 import haversine
 import polyline
 
-from polyline_generator import Polyline
+from .polyline_generator import Polyline
 
 a = Polyline((47.1706378, 8.5167405), (47.1700271, 8.518072999999998), 100)
 print(a.points)

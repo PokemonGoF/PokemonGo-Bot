@@ -1,9 +1,14 @@
+from __future__ import division
+from past.builtins import basestring
+from past.utils import old_div
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.item_list import Item
-from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot.base_task import BaseTask
+
 
 
 class EvolvePokemon(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
 
     def initialize(self):
         self.api = self.bot.api
@@ -18,7 +23,7 @@ class EvolvePokemon(BaseTask):
 
     def _validate_config(self):
         if isinstance(self.evolve_all, basestring):
-            self.evolve_all = [str(pokemon_name) for pokemon_name in self.evolve_all.split(',')]
+            self.evolve_all = [str(pokemon_name).strip() for pokemon_name in self.evolve_all.split(',')]
 
     def work(self):
         if not self._should_run():
@@ -58,7 +63,7 @@ class EvolvePokemon(BaseTask):
                 if result is 1:  # Request success
                     self.emit_event(
                         'used_lucky_egg',
-                        formmated='Used lucky egg ({amount_left} left).',
+                        formatted='Used lucky egg ({amount_left} left).',
                         data={
                              'amount_left': lucky_egg_count - 1
                         }
@@ -165,4 +170,4 @@ class EvolvePokemon(BaseTask):
     def _compute_iv(self, pokemon):
         total_iv = pokemon.get("individual_attack", 0) + pokemon.get("individual_stamina", 0) + pokemon.get(
             "individual_defense", 0)
-        return round((total_iv / 45.0), 2)
+        return round((old_div(total_iv, 45.0)), 2)
