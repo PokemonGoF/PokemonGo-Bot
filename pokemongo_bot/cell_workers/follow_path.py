@@ -3,7 +3,8 @@
 import gpxpy
 import gpxpy.gpx
 import json
-from pokemongo_bot.base_task import BaseTask
+import pokemongo_bot.logger as logger
+from pokemongo_bot.cell_workers.base_task import BaseTask
 from pokemongo_bot.cell_workers.utils import distance, i2f, format_dist
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.step_walker import StepWalker
@@ -14,13 +15,19 @@ class FollowPath(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def initialize(self):
-        self.ptr = 0
         self._process_config()
         self.points = self.load_path()
+
+        if self.path_startmode == 'closest':
+            self.ptr = self.find_closest_point_idx(self.points)
+        
+        else:
+            self.ptr = 0
 
     def _process_config(self):
         self.path_file = self.config.get("path_file", None)
         self.path_mode = self.config.get("path_mode", "linear")
+        self.path_startmode = self.config.get("path_startmode", "first")
 
     def load_path(self):
         if self.path_file is None:
@@ -67,6 +74,36 @@ class FollowPath(BaseTask):
 
         return points
 
+    def find_closest_point_idx(self, points):
+        logger.log("Finding closest point in path")
+
+        return_idx = 0
+        min_distance = float("inf");
+        for index in range(len(points)):
+            point = points[index]
+            botlat = self.bot.api._position_lat
+            botlng = self.bot.api._position_lng
+            lat = float(point['lat'])
+            lng = float(point['lng'])
+
+            if self.bot.config.debug:
+                logger.log("Checking if point {}, {} is closest to {}, {}".format(lat, lng, botlat, botlng))
+            
+            dist = distance(
+                botlat,
+                botlng,
+                lat,
+                lng
+            )
+
+            if dist < min_distance:
+                min_distance = dist
+                return_idx = index
+
+        logger.log("Chose closest point in path #{}: {}, {}".format(return_idx+1, points[return_idx]['lat'], points[return_idx]['lng']))
+
+        return return_idx
+
     def work(self):
         point = self.points[self.ptr]
         lat = float(point['lat'])
@@ -101,5 +138,7 @@ class FollowPath(BaseTask):
                     self.points = list(reversed(self.points))
             else:
                 self.ptr += 1
+
+            logger.log("Moving to next point in path #{}".format(self.ptr+1))
 
         return [lat, lng]
