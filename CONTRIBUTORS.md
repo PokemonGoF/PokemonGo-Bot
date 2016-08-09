@@ -33,4 +33,25 @@
  * steffwiz
  * pulgalipe
  * BartKoppelmans
+ * phil9l
  * VictorChen
+ * AlvaroGzP
+ * fierysolid
+ * surfaace
+ * surceis
+ * SpaceWhale
+ * klingan
+ * reddivision
+ * DayBr3ak
+ * kbinani
+ * mhdasding
+ * MFizz
+ * NamPNQ
+ * z4ppy.bbc
+ * matheussampaio
+ * Abraxas000
+ * lucasfevi
+ * pokepal
+ * Moonlight-Angel
+ * mjmadsen
+ * nikofil

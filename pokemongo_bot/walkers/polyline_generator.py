@@ -7,19 +7,23 @@ import polyline
 import requests
 
 
-class PolylineWalker(object):
+class Polyline(object):
 
     def __init__(self, origin, destination, speed):
         self.DISTANCE_API_URL='https://maps.googleapis.com/maps/api/directions/json?mode=walking'
         self.origin = origin
         self.destination = destination
-        self.polyline_points = [x['polyline']['points'] for x in
-                                requests.get(self.DISTANCE_API_URL+'&origin='+
-                                             self.origin+'&destination='+
-                                             self.destination
-                                             ).json()['routes'][0]['legs'][0]['steps']]
+        self.URL = '{}&origin={}&destination={}'.format(self.DISTANCE_API_URL,
+                                                   '{},{}'.format(*self.origin),
+                                                   '{},{}'.format(*self.destination))
+        self.request_responce = requests.get(self.URL).json()
+        try:
+            self.polyline_points = [x['polyline']['points'] for x in
+                                    self.request_responce['routes'][0]['legs'][0]['steps']]
+        except IndexError:
+            self.polyline_points = self.request_responce['routes']
         self.speed = float(speed)
-        self.points = self.get_points(self.polyline_points)
+        self.points = [self.origin] + self.get_points(self.polyline_points) + [self.destination]
         self.lat, self.long = self.points[0][0], self.points[0][1]
         self.polyline = self.combine_polylines(self.points)
         self._timestamp = time.time()
@@ -59,7 +63,8 @@ class PolylineWalker(object):
             walk_steps = zip(chain([self.points[0]], self.points),
                              chain(self.points, [self.points[-1]]))
             walk_steps = filter(None, [(o, d) if o != d else None for o, d in walk_steps])
-            return walk_steps
+            # consume the filter as list https://github.com/th3w4y/PokemonGo-Bot/issues/27
+            return list(walk_steps)
         else:
             return []
 
@@ -70,26 +75,35 @@ class PolylineWalker(object):
         else:
             time_passed = self._last_paused_timestamp
         time_passed_distance = self.speed * abs(time_passed - self._timestamp - self._paused_total)
-        steps_dict = {}
-        for step in self.walk_steps():
-            walked_distance += haversine.haversine(*step)*1000
-            steps_dict[walked_distance] = step
-        for walked_end_step in sorted(steps_dict.keys()):
+        # check if there are any steps to take https://github.com/th3w4y/PokemonGo-Bot/issues/27
+        if self.walk_steps():
+            steps_dict = {}
+            for step in self.walk_steps():
+                walked_distance += haversine.haversine(*step)*1000
+                steps_dict[walked_distance] = step
+            for walked_end_step in sorted(steps_dict.keys()):
+                if walked_end_step >= time_passed_distance:
+                    break
+            step_distance = haversine.haversine(*steps_dict[walked_end_step])*1000
             if walked_end_step >= time_passed_distance:
-                break
-        step_distance = haversine.haversine(*steps_dict[walked_end_step])*1000
-        if walked_end_step >= time_passed_distance:
-            percentage_walked = (time_passed_distance - (walked_end_step - step_distance)) / step_distance
+                percentage_walked = (time_passed_distance - (walked_end_step - step_distance)) / step_distance
+            else:
+                percentage_walked = 1.0
+            return self.calculate_coord(percentage_walked, *steps_dict[walked_end_step])
         else:
-            percentage_walked = 1.0
-        return self.calculate_coord(percentage_walked, *steps_dict[walked_end_step])
+            # otherwise return the destination https://github.com/th3w4y/PokemonGo-Bot/issues/27
+            return [self.points[-1]]
 
     def calculate_coord(self, percentage, o, d):
-        lat = o[0]+ (d[0] -o[0]) * percentage
-        lon = o[1]+ (d[1] -o[1]) * percentage
-        return [(lat, lon)]
+        # If this is the destination then returning as such
+        if self.points[-1] == d:
+            return [d]
+        else:
+            # intermediary points returned with 5 decimals precision only
+            # this ensures ~3-50cm ofset from the geometrical point calculated
+            lat = o[0]+ (d[0] -o[0]) * percentage
+            lon = o[1]+ (d[1] -o[1]) * percentage
+            return [(round(lat, 5), round(lon, 5))]
 
     def get_total_distance(self):
         return ceil(sum([haversine.haversine(*x)*1000 for x in self.walk_steps()]))
-
-
