@@ -5,6 +5,7 @@ import six
 
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.step_walker import StepWalker
+from pokemongo_bot.worker_result import WorkerResult
 from .utils import distance, format_dist, fort_details
 from pokemongo_bot.base_task import BaseTask
 
