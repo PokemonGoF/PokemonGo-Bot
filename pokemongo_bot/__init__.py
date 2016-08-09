@@ -352,6 +352,10 @@ class PokemonGoBot(object):
             )
         )
         self.event_manager.register_event(
+            'item_discard_skipped',
+            parameters=('items', 'space')
+        )
+        self.event_manager.register_event(
             'item_discard_fail',
             parameters=('item',)
         )

@@ -9,7 +9,7 @@ class RecycleItems(BaseTask):
 
     def initialize(self):
         self.min_inventory_items_to_run = self.config.get('min_inventory_items_to_run', None)
-        self.run_when_storage_less_than = self.config.get('min_inventory_items_to_run', None)
+        self.run_when_storage_less_than = self.config.get('run_when_storage_less_than', None)
         self.item_filter = self.config.get('item_filter', {})
         self._validate_item_filter()
 
@@ -23,27 +23,28 @@ class RecycleItems(BaseTask):
                             config_item_name))
 
     def work(self):
-        total_items_count = self.bot.get_inventory_count('item')
-        bag_space = self.bot.player_data['max_item_storage']
+        items_in_bag = self.bot.get_inventory_count('item')
+        total_bag_space = self.bot.player_data['max_item_storage']
+        free_bag_space = total_bag_space - items_in_bag
 
         if self.min_inventory_items_to_run is not None:
-            if self.min_inventory_items_to_run >= total_items_count:
+            if self.min_inventory_items_to_run >= items_in_bag:
                 self.emit_event(
-                    'item_discard_skip',
-                    formatted="Skipping Recycling of Items. {total_items} Items in Bag.",
+                    'item_discard_skipped',
+                    formatted="Skipping Recycling of Items. {items} items in bag.",
                     data={
-                        'total_items': total_items_count
+                        'items': items_in_bag
                     }
                 )
                 return
 
         if self.run_when_storage_less_than is not None:
-            if self.run_when_storage_less_than > (bag_space - total_items_count):
+            if free_bag_space >= self.run_when_storage_less_than:
                     self.emit_event(
-                        'item_discard_skip',
-                        formatted="Skipping Recycling of Items. More than {space} space left in Bag.",
+                        'item_discard_skipped',
+                        formatted="Skipping Recycling of Items. {space} space left in bag.",
                         data={
-                            'space': self.run_when_storage_less_than
+                            'space': free_bag_space
                         }
                     )
                     return
