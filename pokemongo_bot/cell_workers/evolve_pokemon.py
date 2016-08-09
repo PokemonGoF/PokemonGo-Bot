@@ -114,7 +114,7 @@ class EvolvePokemon(BaseTask):
             return True
         else:
             # cache pokemons we can't evolve. Less server calls
-            cache[pokemon_name] = 1
+            cache[pokemon.name] = 1
             sleep(0.7)
             return False
 
