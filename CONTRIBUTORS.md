@@ -55,3 +55,6 @@
  * Moonlight-Angel
  * mjmadsen
  * nikofil
+ * bigkraig
+ * nikhil-pandey
+ * thebigjc

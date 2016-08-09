@@ -82,6 +82,7 @@ class MoveToMapPokemon(BaseTask):
         self.pokemon_data = self.bot.pokemon_list
         self.unit = self.bot.config.distance_unit
         self.caught = []
+        self.min_ball = self.config.get('min_ball', 1)
 
         data_file = 'data/map-caught-{}.json'.format(self.bot.config.username)
         if os.path.isfile(data_file):
@@ -250,11 +251,15 @@ class MoveToMapPokemon(BaseTask):
         pokemon = pokemon_list[0]
 
         # if we only have ultraballs and the target is not a vip don't snipe/walk
-        if (pokeballs + superballs) < 1 and not pokemon['is_vip']:
+        if (pokeballs + superballs) < self.min_ball and not pokemon['is_vip']:
             return WorkerResult.SUCCESS
 
         if self.config['snipe']:
-            return self.snipe(pokemon)
+            if self.config['snipe_high_prio_only']:
+                if self.config['snipe_high_prio_threshold'] < pokemon['priority'] or pokemon['is_vip']:
+                    self.snipe(pokemon)
+            else:
+                return self.snipe(pokemon)
 
         step_walker = self._move_to(pokemon)
         if not step_walker.step():
