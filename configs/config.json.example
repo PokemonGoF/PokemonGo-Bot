@@ -38,7 +38,8 @@
         "config": {
           "min_empty_space": 15,
           "item_filter": {
-            "Pokeball":       { "keep" : 100 },
+            "Pokeball":       { "keep" : 50 },
+            "GreatBalls":       { "keep" : 50 },
             "Potion":         { "keep" : 10 },
             "Super Potion":   { "keep" : 20 },
             "Hyper Potion":   { "keep" : 30 },
