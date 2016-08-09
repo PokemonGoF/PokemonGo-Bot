@@ -42,34 +42,35 @@ class RecycleItems(BaseTask):
                     while item_type_count[type_id] > 0:
                         items_recycle_count = 0
 
-                        if item_count_dict[item_id] - item_type_count[type_id] > 0:
-                            items_recycle_count = item_type_count[type_id]
-                        else:
-                            items_recycle_count = item_count_dict[item_id]
+                        if item_count_dict[item_id]:
+                            if item_count_dict[item_id] - item_type_count[type_id] > 0:
+                                items_recycle_count = item_type_count[type_id]
+                            else:
+                                items_recycle_count = item_count_dict[item_id]
 
-                        item_name = self.bot.item_list[str(item_id)]
+                            item_name = self.bot.item_list[str(item_id)]
 
-                        response_dict_recycle = self.send_recycle_item_request(item_id=item_id, count=items_recycle_count)
-                        result = response_dict_recycle.get('responses', {}).get('RECYCLE_INVENTORY_ITEM', {}).get('result', 0)
+                            response_dict_recycle = self.send_recycle_item_request(item_id=item_id, count=items_recycle_count)
+                            result = response_dict_recycle.get('responses', {}).get('RECYCLE_INVENTORY_ITEM', {}).get('result', 0)
 
-                        if result == 1: # Request success
-                            self.emit_event(
-                                'item_discarded',
-                                formatted='Discarded {amount}x {item}.',
-                                data={
-                                    'amount': str(items_recycle_count),
-                                    'item': item_name
-                                }
-                            )
-                        else:
-                            self.emit_event(
-                                'item_discard_fail',
-                                formatted="Failed to discard {item}",
-                                data={
-                                    'item': item_name
-                                }
-                            )
-                            break
+                            if result == 1: # Request success
+                                self.emit_event(
+                                    'item_discarded',
+                                    formatted='Discarded {amount}x {item}.',
+                                    data={
+                                        'amount': str(items_recycle_count),
+                                        'item': item_name
+                                    }
+                                )
+                            else:
+                                self.emit_event(
+                                    'item_discard_fail',
+                                    formatted="Failed to discard {item}",
+                                    data={
+                                        'item': item_name
+                                    }
+                                )
+                                break
 
                         item_id = item_id + 1
                         item_type_count[type_id] -= items_recycle_count
