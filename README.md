@@ -14,8 +14,6 @@ You can count on the community in #help channel.
 - [Features](#features)
 - [Wiki](#wiki)
 - [Credits](#credits)
-- [Donation](#donation)
-
 
 ## Features
 - [x] GPS Location configuration
@@ -56,6 +54,7 @@ All information on [Getting Started](https://github.com/PokemonGoF/PokemonGo-Bot
   - [Mac] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation#installation-mac)
   - [Windows] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation#installation-windows)
 - [Develop PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Develop-PokemonGo-Bot)
+- [Plugins](https://github.com/PokemonGoF/PokemonGo-Bot/tree/dev/wiki/plugins.md)
 - [Configuration-files](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Configuration-files)
 - [Front end web module - Google Maps API] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Google-Maps-API-(web-page))
 - [Docker Usage](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/FAQ#how-to-run-with-docker)
