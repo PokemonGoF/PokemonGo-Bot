@@ -4,6 +4,7 @@
     "password": "YOUR_PASSWORD",
     "location": "SOME_LOCATION",
     "gmapkey": "GOOGLE_MAPS_API_KEY",
+    "libencrypt_location": "",
     "tasks": [
       {
         "type": "HandleSoftBan"

@@ -9,6 +9,8 @@ import random
 import re
 import sys
 import time
+import Queue
+import threading
 
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
@@ -71,6 +73,11 @@ class PokemonGoBot(object):
 
         # Make our own copy of the workers for this instance
         self.workers = []
+
+        # Theading setup for file writing
+        self.web_update_queue = Queue.Queue(maxsize=1)
+        self.web_update_thread = threading.Thread(target=self.update_web_location_worker)
+        self.web_update_thread.start()
 
     def start(self):
         self._setup_event_system()
@@ -228,10 +235,12 @@ class PokemonGoBot(object):
                 'iv_display',
             )
         )
+        self.event_manager.register_event('no_pokeballs')
         self.event_manager.register_event(
             'pokemon_catch_rate',
             parameters=(
                 'catch_rate',
+                'ball_name',
                 'berry_name',
                 'berry_count'
             )
@@ -240,25 +249,28 @@ class PokemonGoBot(object):
             'threw_berry',
             parameters=(
                 'berry_name',
+                'ball_name',
                 'new_catch_rate'
             )
         )
         self.event_manager.register_event(
             'threw_pokeball',
             parameters=(
-                'pokeball',
+                'ball_name',
                 'success_percentage',
                 'count_left'
             )
         )
         self.event_manager.register_event(
-            'pokemon_fled',
+            'pokemon_capture_failed',
             parameters=('pokemon',)
         )
         self.event_manager.register_event(
             'pokemon_vanished',
             parameters=('pokemon',)
         )
+        self.event_manager.register_event('pokemon_not_in_range')
+        self.event_manager.register_event('pokemon_inventory_full')
         self.event_manager.register_event(
             'pokemon_caught',
             parameters=(
@@ -277,7 +289,7 @@ class PokemonGoBot(object):
         self.event_manager.register_event('skip_evolve')
         self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
         self.event_manager.register_event('vip_pokemon')
-        self.event_manager.register_event('gained_candy')
+        self.event_manager.register_event('gained_candy', parameters=('quantity', 'type'))
 
         # level up stuff
         self.event_manager.register_event(
@@ -396,6 +408,35 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event('unset_pokemon_nickname')
 
+        # Move To map pokemon
+        self.event_manager.register_event(
+            'move_to_map_pokemon_fail',
+            parameters=('message',)
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_updated_map',
+            parameters=('lat', 'lon')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_teleport_to',
+            parameters=('poke_name', 'poke_dist', 'poke_lat', 'poke_lon',
+                        'disappears_in')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_encounter',
+            parameters=('poke_name', 'poke_dist', 'poke_lat', 'poke_lon',
+                        'disappears_in')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_move_towards',
+            parameters=('poke_name', 'poke_dist', 'poke_lat', 'poke_lon',
+                        'disappears_in')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_teleport_back',
+            parameters=('last_lat', 'last_lon')
+        )
+
     def tick(self):
         self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
@@ -452,22 +493,6 @@ class PokemonGoBot(object):
         if cells == []:
             location = self.position[0:2]
             cells = self.find_close_cells(*location)
-
-            # insert detail info about gym to fort
-            for cell in cells:
-                if 'forts' in cell:
-                    for fort in cell['forts']:
-                        if fort.get('type') != 1:
-                            response_gym_details = self.api.get_gym_details(
-                                gym_id=fort.get('id'),
-                                player_latitude=lng,
-                                player_longitude=lat,
-                                gym_latitude=fort.get('latitude'),
-                                gym_longitude=fort.get('longitude')
-                            )
-                            fort['gym_details'] = response_gym_details.get(
-                                'responses', {}
-                            ).get('GET_GYM_DETAILS', None)
 
         user_data_cells = "data/cells-%s.json" % self.config.username
         with open(user_data_cells, 'w') as outfile:
@@ -610,7 +635,6 @@ class PokemonGoBot(object):
         )
 
     def get_encryption_lib(self):
-        file_name = ''
         if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
             file_name = 'encrypt.so'
         elif _platform == "Windows" or _platform == "win32":
@@ -620,15 +644,18 @@ class PokemonGoBot(object):
             else:
                 file_name = 'encrypt.dll'
 
-        path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-        full_path = path + '/'+ file_name
+        if self.config.encrypt_location == '':
+            path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+        else:
+            path = self.config.encrypt_location
 
+        full_path = path + '/'+ file_name
         if not os.path.isfile(full_path):
-            self.logger.error(file_name + ' is not found! Please place it in the bots root directory.')
-            self.logger.info('Platform: '+ _platform + ' Bot root directory: '+ path)
+            self.logger.error(file_name + ' is not found! Please place it in the bots root directory or set libencrypt_location in config.')
+            self.logger.info('Platform: '+ _platform + ' Encrypt.so directory: '+ path)
             sys.exit(1)
         else:
-            self.logger.info('Found '+ file_name +'! Platform: ' + _platform + ' Bot root directory: ' + path)
+            self.logger.info('Found '+ file_name +'! Platform: ' + _platform + ' Encrypt.so directory: ' + path)
 
         return full_path
 
@@ -719,7 +746,8 @@ class PokemonGoBot(object):
         self.logger.info(
             'Potion: ' + str(items_stock[101]) +
             ' | SuperPotion: ' + str(items_stock[102]) +
-            ' | HyperPotion: ' + str(items_stock[103]))
+            ' | HyperPotion: ' + str(items_stock[103]) +
+            ' | MaxPotion: ' + str(items_stock[104]))
 
         self.logger.info(
             'Incense: ' + str(items_stock[401]) +
@@ -949,7 +977,15 @@ class PokemonGoBot(object):
         request.get_player()
         request.check_awarded_badges()
         request.call()
-        self.update_web_location()  # updates every tick
+        try:
+            self.web_update_queue.put_nowait(True)  # do this outside of thread every tick
+        except Queue.Full:
+            pass
+
+    def update_web_location_worker(self):
+        while True:
+            self.web_update_queue.get()
+            self.update_web_location()
 
     def get_inventory_count(self, what):
         response_dict = self.get_inventory()

@@ -1,13 +1,14 @@
 
-# PokemonGo-Bot
+# PokemonGo-Bot (Working)
 PokemonGo bot is a project created by the [PokemonGoF](https://github.com/PokemonGoF) team.
 The project is currently setup in two main branches. `dev` and `master`.
 
+## Help Needed on [Desktop Version](https://github.com/PokemonGoF/PokemonGo-Bot-Desktop)
 
-## Where to get the dll/so ?
-You need grab them from internet.
+## Please submit PR to [Dev branch](https://github.com/PokemonGoF/PokemonGo-Bot/tree/dev)
 
 We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
+You can count on the community in #help channel.
 
 ## Table of Contents
 - [Features](#features)
@@ -64,10 +65,11 @@ To ensure that all updates are documented - [@eggins](https://github.com/eggins)
 
 ## Credits
 - [tejado](https://github.com/tejado) many thanks for the API
+- [U6 Group](http://pgoapi.com) for the U6
 - [Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets
 - [elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR
 - [AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos
 - [AHAAAAAAA](https://github.com/AHAAAAAAA/PokemonGo-Map) for parts of the s2sphere stuff
 
 
-[![Analytics](https://ga-beacon.appspot.com/UA-81468120-1/welcome-page-dev)](https://github.com/igrigorik/ga-beacon)
+[![Analytics](https://ga-beacon.appspot.com/UA-81468120-1/welcome-page-master)](https://github.com/igrigorik/ga-beacon)
