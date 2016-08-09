@@ -8,6 +8,6 @@ reqs = [str(ir.req) for ir in install_reqs]
 
 setup(name='pgoapi',
       version='1.0',
-      url='https://github.com/tejado/pgoapi',
+      url='https://github.com/leanhdaovn/pgoapi',
       packages=['pgoapi'],
       install_requires=reqs)
