@@ -26,7 +26,7 @@ def request_reply(sid, response):
 
 @sio.on('bot:broadcast')
 def bot_broadcast(sid, env):
-    event = env.pop('event')
-    account = env.pop('account')
+    event = env['event']
+    account = env['account']
     event_name = "{}:{}".format(event, account)
-    sio.emit(event_name, data=env['data'])
+    sio.emit(event_name, data=env)
