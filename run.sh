@@ -1,6 +1,6 @@
 #!/bin/bash
-pokebotpath="/root/PokemonGo-Bot"
-backuppath="/root/PokemonGo-Bot/backup"
+pokebotpath=$(pwd)
+backuppath=$(pwd)“/backup"
 
 function Pokebotupdate () {
 cd $pokebotpath
@@ -119,6 +119,7 @@ Pokebotreset
 Pokebotupdate
 ;;
 -backup|-b)
+mkdir $backuppath
 cp -f $pokebotpath/configs/config*.json $backuppath/
 cp -f $pokebotpath/web/config/userdata.js $backuppath/
 ;;
