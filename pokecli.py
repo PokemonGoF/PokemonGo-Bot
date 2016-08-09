@@ -134,7 +134,7 @@ def main():
 
         traceback.print_exc()
         # subprocess.Popen(['python', 'pokecli.py'], shell=False)
-        raise e
+        # raise e
 
 def report_summary(bot):
     if bot.metrics.start_time is None:

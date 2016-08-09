@@ -40,6 +40,7 @@
             "Potion":         { "keep" : 0 },
             "Super Potion":   { "keep" : 20 },
             "Hyper Potion":   { "keep" : 30 },
+            "Max Potion":     { "keep" : 20 },
             "Revive":         { "keep" : 10 },
             "Razz Berry":     { "keep" : 20 }
           }
@@ -86,7 +87,7 @@
       "// Rattata": { "always_catch" : true }
     },
     "release": {
-      "any": {"release_below_cp": 350, "release_below_iv": 0.5, "logic": "or"},
+      "any": {"release_below_cp": 800, "release_below_iv": 0.5, "logic": "or"},
       "// any": {"release_below_cp": 300, "release_below_iv": 0, "logic": "or"},
       "// Example of always releasing Rattata:": {},
       "// Rattata": {"always_release": true},
@@ -101,7 +102,7 @@
     },
     "vips" : {
          "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate!": {},
-        "any": {"catch_above_cp": 1200, "catch_above_iv": 0.9, "logic": "or" },
+        "any": {"catch_above_cp": 1400, "catch_above_iv": 0.9, "logic": "or" },
         "Lapras": {},
         "Moltres": {},
         "Zapdos": {},
