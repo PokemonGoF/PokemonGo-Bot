@@ -85,7 +85,6 @@ Pokebotupdate
 
 function Pokebothelp () {
 echo "usage:"
-echo "	*.json.	    	run Pokebot with *.json."
 echo "	-i,-install.	Install PokemonGo-Bot."
 echo "	-b,-backup.	    Backup config files."
 echo "	-c,-config. 	Easy config generator."
