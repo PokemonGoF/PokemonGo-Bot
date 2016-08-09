@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
+from pokemongo_bot import inventory
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.human_behaviour import normalized_reticle_size, sleep, spin_modifier
 
@@ -27,8 +28,8 @@ LOGIC_TO_FUNCTION = {
 class Pokemon(object):
 
     def __init__(self, pokemon_list, pokemon_data):
-        self.num = int(pokemon_data['pokemon_id']) - 1
-        self.name = pokemon_list[int(self.num)]['Name']
+        self.num = int(pokemon_data['pokemon_id'])
+        self.name = pokemon_list[int(self.num) - 1]['Name']
         self.cp = pokemon_data['cp']
         self.attack = pokemon_data.get('individual_attack', 0)
         self.defense = pokemon_data.get('individual_defense', 0)
@@ -388,6 +389,19 @@ class PokemonCatchWorker(BaseTask):
                         'exp': sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
                     }
                 )
+
+                # We could refresh here too, but adding 3 saves a inventory request
+                candy = inventory.candies().get(pokemon.num)
+                candy.add(3)
+                self.emit_event(
+                    'gained_candy',
+                    formatted='You now have {quantity} {type} candy!',
+                    data = {
+                        'quantity': candy.quantity,
+                        'type': candy.type,
+                    },
+                )
+
                 self.bot.softban = False
 
                 # evolve pokemon if necessary
