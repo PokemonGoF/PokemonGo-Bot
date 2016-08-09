@@ -3,7 +3,7 @@
 import time
 from pokemongo_bot.human_behaviour import (normalized_reticle_size, sleep,
                                            spin_modifier)
-from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot.base_task import BaseTask
 
 class PokemonCatchWorker(BaseTask):
     BAG_FULL = 'bag_full'
@@ -324,8 +324,8 @@ class PokemonCatchWorker(BaseTask):
                                     'CATCH_POKEMON']['status']
                                 if status is 2:
                                     self.emit_event(
-                                        'pokemon_fled',
-                                        formatted="{pokemon} fled.",
+                                        'pokemon_escaped',
+                                        formatted="{pokemon} escaped.",
                                         data={'pokemon': pokemon_name}
                                     )
                                     sleep(2)

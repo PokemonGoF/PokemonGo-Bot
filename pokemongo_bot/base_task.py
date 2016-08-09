@@ -2,6 +2,7 @@ import logging
 
 
 class BaseTask(object):
+  TASK_API_VERSION = 1
 
   def __init__(self, bot, config):
     self.bot = bot
