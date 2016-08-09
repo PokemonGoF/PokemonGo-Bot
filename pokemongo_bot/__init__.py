@@ -110,12 +110,12 @@ class PokemonGoBot(object):
             self.event_manager.event_report()
             sys.exit(1)
 
-        # Registering event:
-        # self.event_manager.register_event("location", parameters=['lat', 'lng'])
-        #
-        # Emitting event should be enough to add logging and send websocket
-        # message: :
-        # self.event_manager.emit('location', 'level'='info', data={'lat': 1, 'lng':1}),
+            # Registering event:
+            # self.event_manager.register_event("location", parameters=['lat', 'lng'])
+            #
+            # Emitting event should be enough to add logging and send websocket
+            # message: :
+            # self.event_manager.emit('location', 'level'='info', data={'lat': 1, 'lng':1}),
 
     def _register_events(self):
         self.event_manager.register_event(
@@ -499,8 +499,7 @@ class PokemonGoBot(object):
             location = self.position[0:2]
             cells = self.find_close_cells(*location)
 
-		# TODO abs file path
-        user_data_cells = "data/cells-%s.json" % self.config.username
+        user_data_cells = os.path.join(_base_dir, 'data', 'cells-%s.json' % self.config.username)
         with open(user_data_cells, 'w') as outfile:
             json.dump(cells, outfile)
 
@@ -1053,8 +1052,8 @@ class PokemonGoBot(object):
 
     def get_forts(self, order_by_distance=False):
         forts = [fort
-             for fort in self.cell['forts']
-             if 'latitude' in fort and 'type' in fort]
+                 for fort in self.cell['forts']
+                 if 'latitude' in fort and 'type' in fort]
 
         if order_by_distance:
             forts.sort(key=lambda x: distance(
