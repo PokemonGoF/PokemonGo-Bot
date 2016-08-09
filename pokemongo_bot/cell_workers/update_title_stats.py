@@ -83,8 +83,8 @@ class UpdateTitleStats(BaseTask):
         self.terminal_log = self.config.get('terminal_log', False)
         self.terminal_title = self.config.get('terminal_title', True)
 
-        self.bot.event_manager.register_event('update_title', parameters=('title'))
-        self.bot.event_manager.register_event('log_stats',parameters=('title'))
+        self.bot.event_manager.register_event('update_title', parameters=('title',))
+        self.bot.event_manager.register_event('log_stats',parameters=('title',))
 
     def initialize(self):
         pass
