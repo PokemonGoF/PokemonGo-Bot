@@ -252,6 +252,7 @@ class PokemonCatchWorker(BaseTask):
 
             # softban?
             else:
+                new_catch_rate_by_ball = catch_rate_by_ball
                 self.emit_event(
                     'softban',
                     level='warning',
@@ -260,6 +261,7 @@ class PokemonCatchWorker(BaseTask):
 
         # unknown status code
         else:
+            new_catch_rate_by_ball = catch_rate_by_ball
             self.emit_event(
                 'threw_berry_failed',
                 formatted='Unknown response when throwing berry: {status_code}.',
