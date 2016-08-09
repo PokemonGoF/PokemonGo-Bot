@@ -1,5 +1,6 @@
 import json
 import os
+from pokemongo_bot import inventory
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.tree_config_builder import ConfigException
@@ -58,17 +59,16 @@ class RecycleItems(BaseTask):
         """
         if not self.bot.has_space_for_loot():
             # Updating user's inventory
-            self.bot.latest_inventory = None
-            # Getting every item in user's inventory
-            item_counts_in_bag_dict = self.bot.item_inventory_count('all')
+            inventory.init_inventory(self.bot)
 
-            # For each user's item in inventory recycle the item if needed
-            for item_id, item_count_in_bag in item_counts_in_bag_dict.iteritems():
-                item = RecycleItems._Item(item_id, self.items_filter, self)
+            # For each user's item in inventory recycle it if needed
+            for item_in_inventory in inventory.items().all():
+                item = RecycleItems._Item(item_in_inventory['item_id'], self.items_filter, self)
 
                 if item.should_be_recycled():
                     item.request_recycle()
                     item.emit_recycle_result()
+
 
         return WorkerResult.SUCCESS
 
@@ -91,7 +91,7 @@ class RecycleItems(BaseTask):
             self.name = recycle_items.bot.item_list[str(item_id)]
             self.items_filter = items_filter
             self.amount_to_keep = self._get_amount_to_keep()
-            self.amount_in_inventory = recycle_items.bot.item_inventory_count(self.id)
+            self.amount_in_inventory = inventory.items().count_for(self.id)
             self.amount_to_recycle = 0 if self.amount_to_keep is None else self.amount_in_inventory - self.amount_to_keep
             self.recycle_item_request_result = None
 
