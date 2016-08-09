@@ -71,7 +71,7 @@ class UpdateTitleStats(BaseTask):
         self.displayed_stats = self.DEFAULT_DISPLAYED_STATS
 
         self.bot.event_manager.register_event('update_title', parameters=('title'))
-
+        self.bot.event_manager.register_event('log_stats',parameters=('title'))
         self._process_config()
 
     def initialize(self):
@@ -90,6 +90,7 @@ class UpdateTitleStats(BaseTask):
         if not title:
             return WorkerResult.SUCCESS
         self._update_title(title, _platform)
+        self._log_on_terminal(title)
         return WorkerResult.SUCCESS
 
     def _should_display(self):
@@ -99,6 +100,16 @@ class UpdateTitleStats(BaseTask):
         :rtype: bool
         """
         return self.next_update is None or datetime.now() >= self.next_update
+
+    def _log_on_terminal(self, title):
+        self.emit_event(
+            'log_stats',
+            formatted="{title}",
+            data={
+                'title': title
+            }
+        )
+        self.next_update = datetime.now() + timedelta(seconds=self.min_interval)
 
     def _update_title(self, title, platform):
         """
@@ -119,7 +130,7 @@ class UpdateTitleStats(BaseTask):
                 'title': title
             }
         )
-  
+
         if platform == "linux" or platform == "linux2" or platform == "cygwin":
             stdout.write("\x1b]2;{}\x07".format(title))
             stdout.flush()
