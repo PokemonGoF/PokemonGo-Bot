@@ -55,6 +55,7 @@ class UpdateTitleStats(BaseTask):
 
     DEFAULT_MIN_INTERVAL = 10
     DEFAULT_DISPLAYED_STATS = []
+    TERMINAL = False
 
     def __init__(self, bot, config):
         """
@@ -69,6 +70,7 @@ class UpdateTitleStats(BaseTask):
         self.next_update = None
         self.min_interval = self.DEFAULT_MIN_INTERVAL
         self.displayed_stats = self.DEFAULT_DISPLAYED_STATS
+        self.terminal = self.TERMINAL
 
         self.bot.event_manager.register_event('update_title', parameters=('title'))
         self.bot.event_manager.register_event('log_stats',parameters=('title'))
@@ -90,7 +92,8 @@ class UpdateTitleStats(BaseTask):
         if not title:
             return WorkerResult.SUCCESS
         self._update_title(title, _platform)
-        self._log_on_terminal(title)
+        if(self.terminal is True):
+            self._log_on_terminal(title)
         return WorkerResult.SUCCESS
 
     def _should_display(self):
@@ -152,6 +155,7 @@ class UpdateTitleStats(BaseTask):
         """
         self.min_interval = int(self.config.get('min_interval', self.DEFAULT_MIN_INTERVAL))
         self.displayed_stats = self.config.get('stats', self.DEFAULT_DISPLAYED_STATS)
+        self.terminal = self.config.get('terminal', self.TERMINAL)
 
     def _get_stats_title(self, player_stats):
         """
