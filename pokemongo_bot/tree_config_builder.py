@@ -1,5 +1,9 @@
 from __future__ import absolute_import
-from . import cell_workers
+import six
+if six.PY2:
+    import cell_workers
+else:
+    from . import cell_workers
 from pokemongo_bot.plugin_loader import PluginLoader
 from pokemongo_bot.base_task import BaseTask
 
