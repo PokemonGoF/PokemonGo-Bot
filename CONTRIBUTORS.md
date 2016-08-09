@@ -51,6 +51,13 @@
  * matheussampaio
  * Abraxas000
  * lucasfevi
+ * pokepal
  * Moonlight-Angel
  * mjmadsen
  * nikofil
+<<<<<<< HEAD
+=======
+ * bigkraig
+ * nikhil-pandey
+ * thebigjc
+>>>>>>> update_title_stats_on_terminal
