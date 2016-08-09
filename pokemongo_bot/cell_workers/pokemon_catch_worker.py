@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import time
+from pokemongo_bot import inventory
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.human_behaviour import normalized_reticle_size, sleep, spin_modifier
-
+from pokemongo_bot.worker_result import WorkerResult
 
 CATCH_STATUS_SUCCESS = 1
 CATCH_STATUS_FAILED = 2
@@ -27,8 +28,8 @@ LOGIC_TO_FUNCTION = {
 class Pokemon(object):
 
     def __init__(self, pokemon_list, pokemon_data):
-        self.num = int(pokemon_data['pokemon_id']) - 1
-        self.name = pokemon_list[int(self.num)]['Name']
+        self.num = int(pokemon_data['pokemon_id'])
+        self.name = pokemon_list[int(self.num) - 1]['Name']
         self.cp = pokemon_data['cp']
         self.attack = pokemon_data.get('individual_attack', 0)
         self.defense = pokemon_data.get('individual_defense', 0)
@@ -67,7 +68,7 @@ class PokemonCatchWorker(BaseTask):
 
         # validate response
         if not response_dict:
-            return False
+            return WorkerResult.ERROR
         try:
             responses = response_dict['responses']
             response = responses[self.response_key]
@@ -76,9 +77,9 @@ class PokemonCatchWorker(BaseTask):
                     self.emit_event('pokemon_not_in_range', formatted='Pokemon went out of range!')
                 elif response[self.response_status_key] == ENCOUNTER_STATUS_POKEMON_INVENTORY_FULL:
                     self.emit_event('pokemon_inventory_full', formatted='Your Pokemon inventory is full! Could not catch!')
-                return False
+                return WorkerResult.ERROR
         except KeyError:
-            return False
+            return WorkerResult.ERROR
 
         # get pokemon data
         pokemon_data = response['wild_pokemon']['pokemon_data'] if 'wild_pokemon' in response else response['pokemon_data']
@@ -86,7 +87,7 @@ class PokemonCatchWorker(BaseTask):
 
         # skip ignored pokemon
         if not self._should_catch_pokemon(pokemon):
-            return False
+            return WorkerResult.SUCCESS
 
         # log encounter
         self.emit_event(
@@ -252,6 +253,7 @@ class PokemonCatchWorker(BaseTask):
 
             # softban?
             else:
+                new_catch_rate_by_ball = catch_rate_by_ball
                 self.emit_event(
                     'softban',
                     level='warning',
@@ -260,6 +262,7 @@ class PokemonCatchWorker(BaseTask):
 
         # unknown status code
         else:
+            new_catch_rate_by_ball = catch_rate_by_ball
             self.emit_event(
                 'threw_berry_failed',
                 formatted='Unknown response when throwing berry: {status_code}.',
@@ -386,6 +389,19 @@ class PokemonCatchWorker(BaseTask):
                         'exp': sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
                     }
                 )
+
+                # We could refresh here too, but adding 3 saves a inventory request
+                candy = inventory.candies().get(pokemon.num)
+                candy.add(3)
+                self.emit_event(
+                    'gained_candy',
+                    formatted='You now have {quantity} {type} candy!',
+                    data = {
+                        'quantity': candy.quantity,
+                        'type': candy.type,
+                    },
+                )
+
                 self.bot.softban = False
 
                 # evolve pokemon if necessary
