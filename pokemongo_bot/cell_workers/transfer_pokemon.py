@@ -43,7 +43,13 @@ class TransferPokemon(BaseTask):
                                 all_pokemons.remove(pokemon)
                                 best_pokemons.append(pokemon)
 
-                    if best_pokemons and all_pokemons:
+                    transfer_pokemons = [pokemon for pokemon in all_pokemons
+                                         if self.should_release_pokemon(pokemon_name,
+                                                                        pokemon['cp'],
+                                                                        pokemon['iv'],
+                                                                        True)]
+
+                    if transfer_pokemons:
                         self.emit_event(
                             'keep_best_release',
                             formatted="Keeping best {amount} {pokemon}, based on {criteria}",
@@ -53,14 +59,6 @@ class TransferPokemon(BaseTask):
                                 'criteria': order_criteria
                             }
                         )
-
-                    transfer_pokemons = [pokemon for pokemon in all_pokemons
-                                         if self.should_release_pokemon(pokemon_name,
-                                                                        pokemon['cp'],
-                                                                        pokemon['iv'],
-                                                                        True)]
-
-                    if transfer_pokemons:
                         for pokemon in transfer_pokemons:
                             self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
                 else:
