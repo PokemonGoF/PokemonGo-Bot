@@ -255,7 +255,11 @@ class MoveToMapPokemon(BaseTask):
             return WorkerResult.SUCCESS
 
         if self.config['snipe']:
-            return self.snipe(pokemon)
+            if self.config['snipe_high_prio_only']:
+                if self.config['snipe_high_prio_threshold'] < pokemon['priority'] or pokemon['is_vip']:
+                    self.snipe(pokemon)
+            else:
+                return self.snipe(pokemon)
 
         step_walker = self._move_to(pokemon)
         if not step_walker.step():
