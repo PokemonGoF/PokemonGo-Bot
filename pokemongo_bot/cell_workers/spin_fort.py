@@ -25,11 +25,17 @@ class SpinFort(BaseTask):
         return True
 
     def work(self):
-        fort = self.get_fort_in_range()
-
-        if not self.should_run() or fort is None:
+        forts = self.get_fort_in_range()
+        if not self.should_run() or not forts:
             return WorkerResult.SUCCESS
 
+        for fort in forts:
+            self.spin_fort(fort)
+            sleep(1)
+
+        return WorkerResult.SUCCESS
+
+    def spin_fort(self, fort):
         lat = fort['latitude']
         lng = fort['longitude']
 
@@ -139,21 +145,22 @@ class SpinFort(BaseTask):
     def get_fort_in_range(self):
         forts = self.bot.get_forts(order_by_distance=True)
 
+        forts = filter(lambda x: 'cooldown_complete_timestamp_ms' not in x, forts)
+
         forts = filter(lambda x: x["id"] not in self.bot.fort_timeouts, forts)
 
-        if len(forts) == 0:
-            return None
+        forts_in_range = []
 
-        fort = forts[0]
+        for fort in forts:
 
-        distance_to_fort = distance(
-            self.bot.position[0],
-            self.bot.position[1],
-            fort['latitude'],
-            fort['longitude']
-        )
+            distance_to_fort = distance(
+                self.bot.position[0],
+                self.bot.position[1],
+                fort['latitude'],
+                fort['longitude']
+            )
 
-        if distance_to_fort <= Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
-            return fort
+            if distance_to_fort <= Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
+                forts_in_range.append(fort)
 
-        return None
+        return forts_in_range
