@@ -42,7 +42,7 @@ class WebsocketRemoteControl(object):
         command_handler()
 
     def get_player_info(self):
-        request = self.api.create_request()
+        request = self.bot.api.create_request()
         request.get_player()
         request.get_inventory()
         response_dict = request.call()
