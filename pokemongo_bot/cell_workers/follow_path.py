@@ -74,7 +74,6 @@ class FollowPath(BaseTask):
         return points
 
     def find_closest_point_idx(self, points):
-        logger.log("Finding closest point in path")
 
         return_idx = 0
         min_distance = float("inf");
@@ -84,9 +83,6 @@ class FollowPath(BaseTask):
             botlng = self.bot.api._position_lng
             lat = float(point['lat'])
             lng = float(point['lng'])
-
-            if self.bot.config.debug:
-                logger.log("Checking if point {}, {} is closest to {}, {}".format(lat, lng, botlat, botlng))
             
             dist = distance(
                 botlat,
@@ -98,8 +94,6 @@ class FollowPath(BaseTask):
             if dist < min_distance:
                 min_distance = dist
                 return_idx = index
-
-        logger.log("Chose closest point in path #{}: {}, {}".format(return_idx+1, points[return_idx]['lat'], points[return_idx]['lng']))
 
         return return_idx
 
