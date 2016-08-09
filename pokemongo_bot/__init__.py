@@ -25,6 +25,7 @@ from event_manager import EventManager
 from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
+from gym_cache import GymCache
 from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
@@ -61,6 +62,7 @@ class PokemonGoBot(object):
         )
         self.item_list = json.load(open(os.path.join('data', 'items.json')))
         self.metrics = Metrics(self)
+        self.gym_cache = GymCache(self)
         self.latest_inventory = None
         self.cell = None
         self.recent_forts = [None] * config.forts_max_circle_size
@@ -499,7 +501,7 @@ class PokemonGoBot(object):
                 if 'forts' in cell:
                     for fort in cell['forts']:
                         if fort.get('type') != 1:
-                            response_gym_details = self.api.get_gym_details(
+                            response_gym_details = self.gym_cache.get(
                                 gym_id=fort.get('id'),
                                 player_latitude=lng,
                                 player_longitude=lat,
