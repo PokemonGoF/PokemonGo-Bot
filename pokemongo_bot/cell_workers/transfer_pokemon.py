@@ -134,10 +134,12 @@ class TransferPokemon(BaseTask):
         return logic_to_function[cp_iv_logic](*release_results.values())
 
     def release_pokemon(self, pokemon):
-        response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon.id)
-
         try:
-            candy_awarded = response_dict['responses']['RELEASE_POKEMON']['candy_awarded']
+            if self.bot.config.test:
+                candy_awarded = 1
+            else:
+                response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon.id)
+                candy_awarded = response_dict['responses']['RELEASE_POKEMON']['candy_awarded']
         except KeyError:
             return
 
