@@ -27,6 +27,7 @@ class SleepSchedule(BaseTask):
     duration_random_offset: (HH:MM) random offset of duration of sleep
                         for this example the possible duration is 5:00-6:00
     """
+    SUPPORTED_TASK_API_VERSION = 1
 
     LOG_INTERVAL_SECONDS = 600
     SCHEDULING_MARGIN = timedelta(minutes=10)    # Skip if next sleep is RESCHEDULING_MARGIN from now

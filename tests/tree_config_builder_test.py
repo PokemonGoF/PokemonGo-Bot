@@ -1,9 +1,9 @@
 import unittest
 import json
 import os
-from pokemongo_bot import PokemonGoBot, ConfigException, TreeConfigBuilder, PluginLoader
+from pokemongo_bot import PokemonGoBot, ConfigException, MismatchTaskApiVersion, TreeConfigBuilder, PluginLoader, BaseTask
 from pokemongo_bot.cell_workers import HandleSoftBan, CatchLuredPokemon
-from pokemongo_bot.test.resources.plugin_fixture import FakeTask
+from pokemongo_bot.test.resources.plugin_fixture import FakeTask, UnsupportedApiTask
 
 def convert_from_json(str):
     return json.loads(str)
@@ -89,7 +89,7 @@ class TreeConfigBuilderTest(unittest.TestCase):
     def test_load_plugin_task(self):
         package_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'resources', 'plugin_fixture')
         plugin_loader = PluginLoader()
-        plugin_loader.load_path(package_path)
+        plugin_loader.load_plugin(package_path)
 
         obj = convert_from_json("""[{
             "type": "plugin_fixture.FakeTask"
@@ -99,3 +99,40 @@ class TreeConfigBuilderTest(unittest.TestCase):
         tree = builder.build()
         result = tree[0].work()
         self.assertEqual(result, 'FakeTask')
+
+    def setupUnsupportedBuilder(self):
+        package_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'pokemongo_bot', 'test', 'resources', 'plugin_fixture')
+        plugin_loader = PluginLoader()
+        plugin_loader.load_plugin(package_path)
+
+        obj = convert_from_json("""[{
+            "type": "plugin_fixture.UnsupportedApiTask"
+        }]""")
+
+        return TreeConfigBuilder(self.bot, obj)
+
+    def test_task_version_too_high(self):
+        builder = self.setupUnsupportedBuilder()
+
+        previous_version = BaseTask.TASK_API_VERSION
+        BaseTask.TASK_API_VERSION = 1
+
+        self.assertRaisesRegexp(
+            MismatchTaskApiVersion,
+            "Task plugin_fixture.UnsupportedApiTask only works with task api version 2, you are currently running version 1. Do you need to update the bot?",
+            builder.build)
+
+        BaseTask.TASK_API_VERSION = previous_version
+
+    def test_task_version_too_low(self):
+        builder = self.setupUnsupportedBuilder()
+
+        previous_version = BaseTask.TASK_API_VERSION
+        BaseTask.TASK_API_VERSION = 3
+
+        self.assertRaisesRegexp(
+            MismatchTaskApiVersion,
+            "Task plugin_fixture.UnsupportedApiTask only works with task api version 2, you are currently running version 3. Is there a new version of this task?",
+            builder.build)
+
+        BaseTask.TASK_API_VERSION = previous_version

@@ -39,6 +39,7 @@ class StepWalker(object):
     def step(self):
         if (self.dLat == 0 and self.dLng == 0) or self.dist < self.speed:
             self.api.set_position(self.destLat, self.destLng, 0)
+            self.bot.heartbeat()
             return True
 
         totalDLat = (self.destLat - self.initLat)

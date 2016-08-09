@@ -5,6 +5,8 @@ from pokemongo_bot.base_task import BaseTask
 
 
 class TransferPokemon(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     def work(self):
         pokemon_groups = self._release_pokemon_get_groups()
         for pokemon_id in pokemon_groups:
@@ -41,17 +43,6 @@ class TransferPokemon(BaseTask):
                                 all_pokemons.remove(pokemon)
                                 best_pokemons.append(pokemon)
 
-                    if best_pokemons and all_pokemons:
-                        self.emit_event(
-                            'keep_best_release',
-                            formatted="Keeping best {amount} {pokemon}, based on {criteria}",
-                            data={
-                                'amount': len(best_pokemons),
-                                'pokemon': pokemon_name,
-                                'criteria': order_criteria
-                            }
-                        )
-
                     transfer_pokemons = [pokemon for pokemon in all_pokemons
                                          if self.should_release_pokemon(pokemon_name,
                                                                         pokemon['cp'],
@@ -59,6 +50,16 @@ class TransferPokemon(BaseTask):
                                                                         True)]
 
                     if transfer_pokemons:
+                        if best_pokemons:
+                            self.emit_event(
+                                'keep_best_release',
+                                formatted="Keeping best {amount} {pokemon}, based on {criteria}",
+                                data={
+                                    'amount': len(best_pokemons),
+                                    'pokemon': pokemon_name,
+                                    'criteria': order_criteria
+                                }
+                            )
                         for pokemon in transfer_pokemons:
                             self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
                 else:
@@ -185,6 +186,7 @@ class TransferPokemon(BaseTask):
 
     def release_pokemon(self, pokemon_name, cp, iv, pokemon_id):
         response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon_id)
+        self.bot.metrics.released_pokemon()
         self.emit_event(
             'pokemon_release',
             formatted='Exchanged {pokemon} [CP {cp}] [IV {iv}] for candy.',
