@@ -9,6 +9,8 @@ import random
 import re
 import sys
 import time
+import Queue
+import threading
 
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
@@ -29,6 +31,7 @@ from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from pokemongo_bot.base_dir import _base_dir
 from worker_result import WorkerResult
 from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
+from inventory import init_inventory
 from sys import platform as _platform
 import struct
 
@@ -71,6 +74,11 @@ class PokemonGoBot(object):
 
         # Make our own copy of the workers for this instance
         self.workers = []
+
+        # Theading setup for file writing
+        self.web_update_queue = Queue.Queue(maxsize=1)
+        self.web_update_thread = threading.Thread(target=self.update_web_location_worker)
+        self.web_update_thread.start()
 
     def start(self):
         self._setup_event_system()
@@ -228,10 +236,12 @@ class PokemonGoBot(object):
                 'iv_display',
             )
         )
+        self.event_manager.register_event('no_pokeballs')
         self.event_manager.register_event(
             'pokemon_catch_rate',
             parameters=(
                 'catch_rate',
+                'ball_name',
                 'berry_name',
                 'berry_count'
             )
@@ -240,25 +250,28 @@ class PokemonGoBot(object):
             'threw_berry',
             parameters=(
                 'berry_name',
+                'ball_name',
                 'new_catch_rate'
             )
         )
         self.event_manager.register_event(
             'threw_pokeball',
             parameters=(
-                'pokeball',
+                'ball_name',
                 'success_percentage',
                 'count_left'
             )
         )
         self.event_manager.register_event(
-            'pokemon_fled',
+            'pokemon_capture_failed',
             parameters=('pokemon',)
         )
         self.event_manager.register_event(
             'pokemon_vanished',
             parameters=('pokemon',)
         )
+        self.event_manager.register_event('pokemon_not_in_range')
+        self.event_manager.register_event('pokemon_inventory_full')
         self.event_manager.register_event(
             'pokemon_caught',
             parameters=(
@@ -277,7 +290,7 @@ class PokemonGoBot(object):
         self.event_manager.register_event('skip_evolve')
         self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
         self.event_manager.register_event('vip_pokemon')
-
+        self.event_manager.register_event('gained_candy', parameters=('quantity', 'type'))
 
         # level up stuff
         self.event_manager.register_event(
@@ -336,6 +349,10 @@ class PokemonGoBot(object):
             parameters=(
                 'amount', 'item', 'maximum'
             )
+        )
+        self.event_manager.register_event(
+            'item_discard_skipped',
+            parameters=('space',)
         )
         self.event_manager.register_event(
             'item_discard_fail',
@@ -482,23 +499,8 @@ class PokemonGoBot(object):
             location = self.position[0:2]
             cells = self.find_close_cells(*location)
 
-            # insert detail info about gym to fort
-            for cell in cells:
-                if 'forts' in cell:
-                    for fort in cell['forts']:
-                        if fort.get('type') != 1:
-                            response_gym_details = self.api.get_gym_details(
-                                gym_id=fort.get('id'),
-                                player_latitude=lng,
-                                player_longitude=lat,
-                                gym_latitude=fort.get('latitude'),
-                                gym_longitude=fort.get('longitude')
-                            )
-                            fort['gym_details'] = response_gym_details.get(
-                                'responses', {}
-                            ).get('GET_GYM_DETAILS', None)
-
-        user_data_cells = os.path.join(_base_dir, 'data', 'cells-%s.json' % self.config.username)
+		# TODO abs file path
+        user_data_cells = "data/cells-%s.json" % self.config.username
         with open(user_data_cells, 'w') as outfile:
             json.dump(cells, outfile)
 
@@ -773,6 +775,8 @@ class PokemonGoBot(object):
         return self.latest_inventory
 
     def update_inventory(self):
+        # TODO: transition to using this inventory class everywhere
+        init_inventory(self)
         response = self.get_inventory()
         self.inventory = list()
         inventory_items = response.get('responses', {}).get('GET_INVENTORY', {}).get(
@@ -979,7 +983,15 @@ class PokemonGoBot(object):
         request.get_player()
         request.check_awarded_badges()
         request.call()
-        self.update_web_location()  # updates every tick
+        try:
+            self.web_update_queue.put_nowait(True)  # do this outside of thread every tick
+        except Queue.Full:
+            pass
+
+    def update_web_location_worker(self):
+        while True:
+            self.web_update_queue.get()
+            self.update_web_location()
 
     def get_inventory_count(self, what):
         response_dict = self.get_inventory()

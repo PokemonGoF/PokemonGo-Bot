@@ -15,4 +15,12 @@ else
     fi
 fi
 
+while [ true  ]
+do
+echo "###############################################"
+echo "##Exit two times with [Ctl+C] to end the loop##"
+echo "###############################################"
+sleep 1
 python pokecli.py --config ${config}
+sleep "10"
+done
