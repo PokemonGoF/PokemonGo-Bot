@@ -104,9 +104,9 @@ class EvolvePokemon(BaseTask):
                 'pokemon_evolved',
                 formatted="Successfully evolved {pokemon} with CP {cp} and IV {iv}!",
                 data={
-                    'pokemon': pokemon_name,
-                    'iv': pokemon_iv,
-                    'cp': pokemon_cp,
+                    'pokemon': pokemon.name,
+                    'iv': pokemon.iv,
+                    'cp': pokemon.cp,
                     'xp': 0
                 }
             )
