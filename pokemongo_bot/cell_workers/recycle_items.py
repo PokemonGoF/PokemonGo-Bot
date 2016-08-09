@@ -41,9 +41,9 @@ class RecycleItems(BaseTask):
             if self.run_when_storage_less_than > (bag_space - total_items_count):
                     self.emit_event(
                         'item_discard_skip',
-                        formatted="Skipping Recycling of Items. {total_items} Items in Bag.",
+                        formatted="Skipping Recycling of Items. More than {space} space left in Bag.",
                         data={
-                            'total_items': total_items_count
+                            'space': self.run_when_storage_less_than
                         }
                     )
                     return
