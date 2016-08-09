@@ -8,7 +8,8 @@ class RecycleItems(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def initialize(self):
-        self.min_inventory_items_to_run = self.config.get('min_inventory_items_to_run', 0)
+        self.min_inventory_items_to_run = self.config.get('min_inventory_items_to_run', None)
+        self.run_when_storage_less_than = self.config.get('min_inventory_items_to_run', None)
         self.item_filter = self.config.get('item_filter', {})
         self._validate_item_filter()
 
@@ -23,15 +24,29 @@ class RecycleItems(BaseTask):
 
     def work(self):
         total_items_count = self.bot.get_inventory_count('item')
-        if self.min_inventory_items_to_run >= total_items_count:
-            self.emit_event(
-                'item_discard_skip',
-                formatted="Skipping Recycling of Items. {total_items} Items in Bag.",
-                data={
-                    'total_items': total_items_count
-                }
-            )
-            return
+        bag_space = self.bot.player_data()['max_item_storage']
+
+        if self.min_inventory_items_to_run is not None:
+            if self.min_inventory_items_to_run >= total_items_count:
+                self.emit_event(
+                    'item_discard_skip',
+                    formatted="Skipping Recycling of Items. {total_items} Items in Bag.",
+                    data={
+                        'total_items': total_items_count
+                    }
+                )
+                return
+
+        if self.run_when_storage_less_than is not None:
+            if self.run_when_storage_less_than > (bag_space - total_items_count):
+                    self.emit_event(
+                        'item_discard_skip',
+                        formatted="Skipping Recycling of Items. {total_items} Items in Bag.",
+                        data={
+                            'total_items': total_items_count
+                        }
+                    )
+                    return
 
         self.bot.latest_inventory = None
         item_count_dict = self.bot.item_inventory_count('all')
