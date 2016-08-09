@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 pokebotpath=$(pwd)
-backuppath=$(pwd)“/backup"
+backuppath=$(pwd)"/backup"
 
 function Pokebotupdate () {
 cd $pokebotpath
@@ -46,26 +46,24 @@ sed -i "s/YOUR_USERNAME/$username/g" configs/config.json
 sed -i "s/YOUR_PASSWORD/$password/g" configs/config.json
 sed -i "s/SOME_LOCATION/$location/g" configs/config.json
 sed -i "s/GOOGLE_MAPS_API_KEY/$gmapkey/g" configs/config.json
-echo "edit configs/config.json to modify any other config."
+echo "Edit configs/config.json to modify any other config."
 }
 
 function Pokebotinstall () {
 cd $pokebotpath
-echo "1.Debian/Ubuntu"
-echo "2.Centos/RedHat"
-echo "3.Mac os"
-echo "4.Other"
-read M
-if [ "$M" = "1" ]
+if [ -f /etc/debian_version ]
 then
+echo "You are on Debian/Ubuntu"
 sudo apt-get update
 sudo apt-get -y install python python-pip python-dev build-essential git python-protobuf virtualenv 
-elif [ "$M" = "2" ]
+elif [ -f /etc/redhat-release ]
 then
+echo "You are on CentOS/RedHat"
 sudo yum -y install epel-release
 sudo yum -y install python-pip
-elif [ "$M" = "3" ]
+elif [ "$(uname -s)" == "Darwin" ]
 then
+echo "You are on Mac os"
 sudo brew update 
 sudo brew install --devel protobuf
 else
@@ -75,6 +73,7 @@ sudo pip install virtualenv
 Pokebotupdate
 Pokebotencrypt
 echo "Install complete."
+Pokebotconfig
 }
 
 function Pokebotreset () {
@@ -122,6 +121,7 @@ Pokebotupdate
 mkdir $backuppath
 cp -f $pokebotpath/configs/config*.json $backuppath/
 cp -f $pokebotpath/web/config/userdata.js $backuppath/
+echo "Backup complete"
 ;;
 -config|-c)
 Pokebotconfig
