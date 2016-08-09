@@ -13,7 +13,7 @@ import re
 import six
 import sys
 import time
-import Queue
+from six.moves import queue as Queue
 import threading
 
 from geopy.geocoders import GoogleV3
@@ -34,7 +34,6 @@ from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from .worker_result import WorkerResult
 from .tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
-from plugin_loader import PluginLoader
 from sys import platform as _platform
 import struct
 
@@ -238,18 +237,10 @@ class PokemonGoBot(object):
                 'iv_display',
             )
         )
-<<<<<<< HEAD
-=======
-        self.event_manager.register_event('no_pokeballs')
->>>>>>> dev
         self.event_manager.register_event(
             'pokemon_catch_rate',
             parameters=(
                 'catch_rate',
-<<<<<<< HEAD
-=======
-                'ball_name',
->>>>>>> dev
                 'berry_name',
                 'berry_count'
             )

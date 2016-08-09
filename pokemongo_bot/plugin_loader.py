@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import sys
 import importlib
@@ -72,7 +73,7 @@ class GithubPlugin(object):
       return None
 
     filename = os.path.join(self.get_plugin_folder(), '.sha')
-    print filename
+    print(filename)
     with open(filename) as file:
         return file.read().strip()
 

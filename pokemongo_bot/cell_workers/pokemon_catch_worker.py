@@ -82,7 +82,6 @@ class PokemonCatchWorker(BaseTask):
                     self.emit_event('pokemon_inventory_full', formatted='Your Pokemon inventory is full! Could not catch!')
                 return False
         except KeyError:
->>>>>>> dev
             return False
 
         # get pokemon data

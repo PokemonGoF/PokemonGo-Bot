@@ -173,7 +173,11 @@ def init_config():
     def _json_loader(filename):
         try:
             with open(filename, 'rb') as data:
-                load.update(json.load(data))
+                if six.PY3:
+                    json_reader = codecs.getreader("utf-8")
+                    load.update(json.load(json_reader(data)))
+                else:
+                    load.update(json.load(data))
         except ValueError:
             if jsonlint:
                 with open(filename, 'rb') as data:
@@ -480,6 +484,7 @@ def init_config():
         config.evolve_captured = [str(pokemon_name).strip() for pokemon_name in config.evolve_captured.split(',')]
 
     fix_nested_config(config)
+
     return config
 
 def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
