@@ -1,7 +1,6 @@
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.worker_result import WorkerResult
 
 
 class EvolvePokemon(BaseTask):
@@ -24,9 +23,7 @@ class EvolvePokemon(BaseTask):
 
     def work(self):
         if not self._should_run():
-            return WorkerResult.SUCCESS
-
-        self._update_last_ran()
+            return
 
         response_dict = self.api.get_inventory()
         inventory_items = response_dict.get('responses', {}).get('GET_INVENTORY', {}).get('inventory_delta', {}).get(
@@ -45,9 +42,6 @@ class EvolvePokemon(BaseTask):
                 self._execute_pokemon_evolve(pokemon, candy_list, cache)
 
     def _should_run(self):
-        if not self._time_to_run():
-            return False
-
         if not self.evolve_all or self.evolve_all[0] == 'none':
             return False
 

@@ -2,16 +2,12 @@ import json
 
 from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.worker_result import WorkerResult
 
 
 class TransferPokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def work(self):
-        if not self._time_to_run():
-            return WorkerResult.SUCCESS
-        self._update_last_ran()
         pokemon_groups = self._release_pokemon_get_groups()
         for pokemon_id in pokemon_groups:
             group = pokemon_groups[pokemon_id]

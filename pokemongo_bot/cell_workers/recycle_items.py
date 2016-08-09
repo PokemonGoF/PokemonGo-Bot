@@ -2,8 +2,6 @@ import json
 import os
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.tree_config_builder import ConfigException
-from pokemongo_bot.worker_result import WorkerResult
-
 
 class RecycleItems(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -20,10 +18,6 @@ class RecycleItems(BaseTask):
                     raise ConfigException("item {} does not exist, spelling mistake? (check for valid item names in data/items.json)".format(config_item_name))
 
     def work(self):
-        if not self._time_to_run():
-            return WorkerResult.SUCCESS
-        self._update_last_ran()
-
         self.bot.latest_inventory = None
         item_count_dict = self.bot.item_inventory_count('all')
 

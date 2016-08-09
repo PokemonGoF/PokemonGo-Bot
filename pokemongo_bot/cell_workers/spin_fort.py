@@ -15,29 +15,21 @@ from utils import distance, format_time, fort_details
 class SpinFort(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
-    def initialize(self):
-        self.ignore_item_count = self.config.get("ignore_item_count", False)
-
     def should_run(self):
         if not self.bot.has_space_for_loot():
             self.emit_event(
                 'inventory_full',
-                formatted="Inventory is full. You might want to change your config to recycle more items if this message appears consistently."
+                formatted="Not moving to any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently."
             )
-        return self.ignore_item_count or self.bot.has_space_for_loot()
+            return False
+        return True
 
     def work(self):
-        forts = self.get_fort_in_range()
-        if not self.should_run() or not forts:
+        fort = self.get_fort_in_range()
+
+        if not self.should_run() or fort is None:
             return WorkerResult.SUCCESS
 
-        for fort in forts:
-            self.spin_fort(fort)
-            sleep(1)
-
-        return WorkerResult.SUCCESS
-
-    def spin_fort(self, fort):
         lat = fort['latitude']
         lng = fort['longitude']
 
@@ -147,25 +139,21 @@ class SpinFort(BaseTask):
     def get_fort_in_range(self):
         forts = self.bot.get_forts(order_by_distance=True)
 
-        for fort in forts:
-            if 'cooldown_complete_timestamp_ms' in fort:
-                self.bot.fort_timeouts[fort["id"]] = fort['cooldown_complete_timestamp_ms']
-                forts.remove(fort)
-
         forts = filter(lambda x: x["id"] not in self.bot.fort_timeouts, forts)
 
-        forts_in_range = []
+        if len(forts) == 0:
+            return None
 
-        for fort in forts:
+        fort = forts[0]
 
-            distance_to_fort = distance(
-                self.bot.position[0],
-                self.bot.position[1],
-                fort['latitude'],
-                fort['longitude']
-            )
+        distance_to_fort = distance(
+            self.bot.position[0],
+            self.bot.position[1],
+            fort['latitude'],
+            fort['longitude']
+        )
 
-            if distance_to_fort <= Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
-                forts_in_range.append(fort)
+        if distance_to_fort <= Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
+            return fort
 
-        return forts_in_range
+        return None

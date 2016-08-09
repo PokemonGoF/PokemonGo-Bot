@@ -13,18 +13,17 @@ class MoveToFort(BaseTask):
 
     def initialize(self):
         self.lure_distance = 0
-        self.lure_attraction = self.config.get("lure_attraction", True)
-        self.lure_max_distance = self.config.get("lure_max_distance", 2000)
-        self.ignore_item_count = self.config.get("ignore_item_count", False)
+        self.lure_attraction = True #self.config.get("lure_attraction", True)
+        self.lure_max_distance = 2000 #self.config.get("lure_max_distance", 2000)
 
     def should_run(self):
         has_space_for_loot = self.bot.has_space_for_loot()
         if not has_space_for_loot:
             self.emit_event(
                 'inventory_full',
-                formatted="Inventory is full. You might want to change your config to recycle more items if this message appears consistently."
+                formatted="Not moving to any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently."
             )
-        return has_space_for_loot or self.ignore_item_count or self.bot.softban
+        return has_space_for_loot or self.bot.softban
 
     def is_attracted(self):
         return (self.lure_distance > 0)

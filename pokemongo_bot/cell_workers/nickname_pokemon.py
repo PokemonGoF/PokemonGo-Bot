@@ -1,7 +1,5 @@
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.worker_result import WorkerResult
-
 
 class NicknamePokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -12,10 +10,6 @@ class NicknamePokemon(BaseTask):
             self.template = ""
 
     def work(self):
-        if not self._time_to_run():
-            return WorkerResult.SUCCESS
-        self._update_last_ran()
-
         try:
             inventory = reduce(dict.__getitem__, ["responses", "GET_INVENTORY", "inventory_delta", "inventory_items"], self.bot.get_inventory())
         except KeyError:
