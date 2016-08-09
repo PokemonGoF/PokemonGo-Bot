@@ -1,5 +1,6 @@
 import json
 import os
+from pokemongo_bot.base_dir import _base_dir
 
 '''
 Helper class for updating/retrieving Inventory data
@@ -42,7 +43,7 @@ class _BaseInventoryComponent(object):
         self._data = self.retrieve_data(inventory)
 
     def get(self, id):
-        return self._data(id)
+        return self._data.get(id)
 
     def all(self):
         return list(self._data.values())
@@ -96,7 +97,7 @@ class Pokedex(_BaseInventoryComponent):
 class Items(_BaseInventoryComponent):
     TYPE = 'item'
     ID_FIELD = 'item_id'
-    STATIC_DATA_FILE = os.path.join('data', 'items.json')
+    STATIC_DATA_FILE = os.path.join(_base_dir, 'data', 'items.json')
 
     def count_for(self, item_id):
         return self._data[item_id]['count']
@@ -105,7 +106,7 @@ class Items(_BaseInventoryComponent):
 class Pokemons(_BaseInventoryComponent):
     TYPE = 'pokemon_data'
     ID_FIELD = 'id'
-    STATIC_DATA_FILE = os.path.join('data', 'pokemon.json')
+    STATIC_DATA_FILE = os.path.join(_base_dir, 'data', 'pokemon.json')
 
     def parse(self, item):
         if 'is_egg' in item:

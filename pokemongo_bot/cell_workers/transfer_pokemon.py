@@ -1,4 +1,5 @@
 import json
+import os
 
 from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import action_delay
