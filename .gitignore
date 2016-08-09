@@ -126,3 +126,6 @@ include/
 
 # Pip check file
 pip-selfcheck.json
+
+# Some love for the vim users
+.*.sw*

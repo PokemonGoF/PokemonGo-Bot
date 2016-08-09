@@ -4,6 +4,7 @@
     "password": "YOUR_PASSWORD",
     "location": "SOME_LOCATION",
     "gmapkey": "GOOGLE_MAPS_API_KEY",
+    "libencrypt_location": "",
     "tasks": [
       {
         "type": "HandleSoftBan"
@@ -35,6 +36,7 @@
       {
         "type": "RecycleItems",
         "config": {
+          "min_empty_space": 15,
           "item_filter": {
             "Pokeball":       { "keep" : 100 },
             "Potion":         { "keep" : 10 },
@@ -58,6 +60,7 @@
         "type": "FollowPath",
         "config": {
           "path_mode": "loop",
+          "path_start_mode": "first",
           "path_file": "configs/path.example.json"
         }
       }

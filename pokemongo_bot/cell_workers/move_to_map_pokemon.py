@@ -54,6 +54,7 @@ import time
 import json
 import base64
 import requests
+from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.cell_workers.utils import distance, format_dist, format_time
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
@@ -82,8 +83,10 @@ class MoveToMapPokemon(BaseTask):
         self.pokemon_data = self.bot.pokemon_list
         self.unit = self.bot.config.distance_unit
         self.caught = []
+        self.min_ball = self.config.get('min_ball', 1)
+        self.map_path = self.config.get('map_path', 'raw_data')
 
-        data_file = 'data/map-caught-{}.json'.format(self.bot.config.username)
+        data_file = os.path.join(_base_dir, 'map-caught-{}.json'.format(self.bot.config.username))
         if os.path.isfile(data_file):
             self.caught = json.load(
                 open(data_file)
@@ -91,7 +94,7 @@ class MoveToMapPokemon(BaseTask):
 
     def get_pokemon_from_map(self):
         try:
-            req = requests.get('{}/raw_data?gyms=false&scanned=false'.format(self.config['address']))
+            req = requests.get('{}/{}?gyms=false&scanned=false'.format(self.config['address'], self.map_path))
         except requests.exceptions.ConnectionError:
             self._emit_failure('Could not get Pokemon data from PokemonGo-Map: '
                                '{}. Is it running?'.format(
@@ -221,7 +224,7 @@ class MoveToMapPokemon(BaseTask):
         return WorkerResult.SUCCESS
 
     def dump_caught_pokemon(self):
-        user_data_map_caught = 'data/map-caught-{}.json'.format(self.bot.config.username)
+        user_data_map_caught = os.path.join(_base_dir, 'data', 'map-caught-{}.json'.format(self.bot.config.username))
         with open(user_data_map_caught, 'w') as outfile:
             json.dump(self.caught, outfile)
 
@@ -250,11 +253,15 @@ class MoveToMapPokemon(BaseTask):
         pokemon = pokemon_list[0]
 
         # if we only have ultraballs and the target is not a vip don't snipe/walk
-        if (pokeballs + superballs) < 1 and not pokemon['is_vip']:
+        if (pokeballs + superballs) < self.min_ball and not pokemon['is_vip']:
             return WorkerResult.SUCCESS
 
         if self.config['snipe']:
-            return self.snipe(pokemon)
+            if self.config['snipe_high_prio_only']:
+                if self.config['snipe_high_prio_threshold'] < pokemon['priority'] or pokemon['is_vip']:
+                    self.snipe(pokemon)
+            else:
+                return self.snipe(pokemon)
 
         step_walker = self._move_to(pokemon)
         if not step_walker.step():

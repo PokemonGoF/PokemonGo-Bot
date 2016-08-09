@@ -1,5 +1,7 @@
 import json
+import os
 
+from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.base_task import BaseTask
 
@@ -43,17 +45,6 @@ class TransferPokemon(BaseTask):
                                 all_pokemons.remove(pokemon)
                                 best_pokemons.append(pokemon)
 
-                    if best_pokemons and all_pokemons:
-                        self.emit_event(
-                            'keep_best_release',
-                            formatted="Keeping best {amount} {pokemon}, based on {criteria}",
-                            data={
-                                'amount': len(best_pokemons),
-                                'pokemon': pokemon_name,
-                                'criteria': order_criteria
-                            }
-                        )
-
                     transfer_pokemons = [pokemon for pokemon in all_pokemons
                                          if self.should_release_pokemon(pokemon_name,
                                                                         pokemon['cp'],
@@ -61,6 +52,16 @@ class TransferPokemon(BaseTask):
                                                                         True)]
 
                     if transfer_pokemons:
+                        if best_pokemons:
+                            self.emit_event(
+                                'keep_best_release',
+                                formatted="Keeping best {amount} {pokemon}, based on {criteria}",
+                                data={
+                                    'amount': len(best_pokemons),
+                                    'pokemon': pokemon_name,
+                                    'criteria': order_criteria
+                                }
+                            )
                         for pokemon in transfer_pokemons:
                             self.release_pokemon(pokemon_name, pokemon['cp'], pokemon['iv'], pokemon['pokemon_data']['id'])
                 else:
@@ -84,7 +85,7 @@ class TransferPokemon(BaseTask):
 
         inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
 
-        user_web_inventory = 'web/inventory-%s.json' % (self.bot.config.username)
+        user_web_inventory = os.path.join(_base_dir, 'web', 'inventory-%s.json' % (self.bot.config.username))
         with open(user_web_inventory, 'w') as outfile:
             json.dump(inventory_dict, outfile)
 

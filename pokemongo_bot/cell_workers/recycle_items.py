@@ -1,24 +1,44 @@
 import json
 import os
+from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.tree_config_builder import ConfigException
+
 
 class RecycleItems(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def initialize(self):
+        self.min_empty_space = self.config.get('min_empty_space', None)
         self.item_filter = self.config.get('item_filter', {})
         self.type_filter = self.config.get('type_filter', 0)
         self._validate_item_filter()
 
     def _validate_item_filter(self):
-        item_list = json.load(open(os.path.join('data', 'items.json')))
+        item_list = json.load(open(os.path.join(_base_dir, 'data', 'items.json')))
         for config_item_name, bag_count in self.item_filter.iteritems():
             if config_item_name not in item_list.viewvalues():
                 if config_item_name not in item_list:
-                    raise ConfigException("item {} does not exist, spelling mistake? (check for valid item names in data/items.json)".format(config_item_name))
+                    raise ConfigException(
+                        "item {} does not exist, spelling mistake? (check for valid item names in data/items.json)".format(
+                            config_item_name))
 
     def work(self):
+        items_in_bag = self.bot.get_inventory_count('item')
+        total_bag_space = self.bot.player_data['max_item_storage']
+        free_bag_space = total_bag_space - items_in_bag
+
+        if self.min_empty_space is not None:
+            if free_bag_space >= self.min_empty_space:
+                    self.emit_event(
+                        'item_discard_skipped',
+                        formatted="Skipping Recycling of Items. {space} space left in bag.",
+                        data={
+                            'space': free_bag_space
+                        }
+                    )
+                    return
+
         self.bot.latest_inventory = None
         item_count_dict = self.bot.item_inventory_count('all')
 
@@ -113,7 +133,7 @@ class RecycleItems(BaseTask):
 
     def send_recycle_item_request(self, item_id, count):
         # Example of good request response
-        #{'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
+        # {'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
         return self.bot.api.recycle_inventory_item(
             item_id=item_id,
             count=count
