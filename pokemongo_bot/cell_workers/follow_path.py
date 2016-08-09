@@ -3,8 +3,7 @@
 import gpxpy
 import gpxpy.gpx
 import json
-import pokemongo_bot.logger as logger
-from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.cell_workers.utils import distance, i2f, format_dist
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.step_walker import StepWalker
@@ -138,7 +137,5 @@ class FollowPath(BaseTask):
                     self.points = list(reversed(self.points))
             else:
                 self.ptr += 1
-
-            logger.log("Moving to next point in path #{}".format(self.ptr+1))
 
         return [lat, lng]
