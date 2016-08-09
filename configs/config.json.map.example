@@ -61,7 +61,9 @@
           "min_time": 60,
           "min_ball": 50,
           "prioritize_vips": true,
-          "snipe": false,
+          "snipe": true,
+          "snipe_high_prio_only": true,
+          "snipe_high_prio_threshold": 400,
           "update_map": true,
           "mode": "priority",
           "catch": {
