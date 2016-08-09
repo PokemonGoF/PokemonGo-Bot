@@ -1,4 +1,4 @@
-numpy==1.11.0
+numpy==1.11.*
 networkx==1.11
 -e git+https://github.com/keyphact/pgoapi.git@249d3be7fbbdabc7f9adea17cbc899d6549e47a2#egg=pgoapi
 geopy==1.11.0
