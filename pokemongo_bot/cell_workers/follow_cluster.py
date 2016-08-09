@@ -5,6 +5,8 @@ from pokemongo_bot.cell_workers.base_task import BaseTask
 
 class FollowCluster(BaseTask):
 
+    SUPPORTED_TASK_API_VERSION = 1
+
     def initialize(self):
         self.is_at_destination = False
         self.announced = False

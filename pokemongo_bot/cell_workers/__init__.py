@@ -15,7 +15,6 @@ from .handle_soft_ban import HandleSoftBan
 from .follow_path import FollowPath
 from .follow_spiral import FollowSpiral
 from .collect_level_up_reward import CollectLevelUpReward
-from .base_task import BaseTask
 from .follow_cluster import FollowCluster
 from .sleep_schedule import SleepSchedule
 from .update_title_stats import UpdateTitleStats

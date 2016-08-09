@@ -7,9 +7,11 @@ import math
 
 from pokemongo_bot.cell_workers.utils import distance, format_dist
 from pokemongo_bot.step_walker import StepWalker
-from pokemongo_bot.cell_workers.base_task import BaseTask
+from pokemongo_bot.base_task import BaseTask
 
 class FollowSpiral(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     def initialize(self):
         self.steplimit = self.config.get("diameter", 4)
         self.step_size = self.config.get("step_size", 70)

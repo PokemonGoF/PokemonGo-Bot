@@ -12,11 +12,13 @@ from pgoapi.utilities import f2i
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.worker_result import WorkerResult
-from pokemongo_bot.cell_workers.base_task import BaseTask
 from .utils import distance, format_time, fort_details
+from pokemongo_bot.base_task import BaseTask
 
 
 class SpinFort(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     def should_run(self):
         if not self.bot.has_space_for_loot():
             self.emit_event(
@@ -36,7 +38,6 @@ class SpinFort(BaseTask):
         lng = fort['longitude']
 
         details = fort_details(self.bot, fort['id'], lat, lng)
-
         fort_name = details.get('name', 'Unknown')
 
         response_dict = self.bot.api.fort_search(
@@ -142,6 +143,11 @@ class SpinFort(BaseTask):
 
     def get_fort_in_range(self):
         forts = self.bot.get_forts(order_by_distance=True)
+
+        for fort in forts:
+            if 'cooldown_complete_timestamp_ms' in fort:
+                self.bot.fort_timeouts[fort["id"]] = fort['cooldown_complete_timestamp_ms']
+                forts.remove(fort)
 
         forts = filter(lambda x: x["id"] not in self.bot.fort_timeouts, forts)
 

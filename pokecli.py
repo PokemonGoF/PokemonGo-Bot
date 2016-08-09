@@ -40,6 +40,14 @@ from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingE
 from geopy.exc import GeocoderQuotaExceeded
 
 from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
+from pokemongo_bot.health_record import BotEvent
+from pokemongo_bot.plugin_loader import PluginLoader
+
+try:
+    from demjson import jsonlint
+except ImportError:
+    # Run `pip install -r requirements.txt` to fix this
+    jsonlint = None
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -51,76 +59,86 @@ logger = logging.getLogger('cli')
 logger.setLevel(logging.INFO)
 
 def main():
-    logger.info('PokemonGO Bot v1.0')
-    if six.PY2:
-        sys.stdout = codecs.getwriter('utf8')(sys.stdout)
-        sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
-    config = init_config()
-    if not config:
-        return
-    logger.info('Configuration initialized')
 
-    finished = False
+    try:
+        logger.info('PokemonGO Bot v1.0')
+        if six.PY2:
+            sys.stdout = codecs.getwriter('utf8')(sys.stdout)
+            sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
-    while not finished:
-        try:
-            bot = PokemonGoBot(config)
-            bot.start()
-            tree = TreeConfigBuilder(bot, config.raw_tasks).build()
-            bot.workers = tree
-            bot.metrics.capture_stats()
+        config = init_config()
+        if not config:
+            return
 
-            bot.event_manager.emit(
-                'bot_start',
-                sender=bot,
-                level='info',
-                formatted='Starting bot...'
-            )
+        logger.info('Configuration initialized')
+        health_record = BotEvent(config)
+        health_record.login_success()
 
-            while True:
-                bot.tick()
+        finished = False
 
-        except KeyboardInterrupt:
-            bot.event_manager.emit(
-                'bot_exit',
-                sender=bot,
-                level='info',
-                formatted='Exiting bot.'
-            )
-            finished = True
+        while not finished:
+            try:
+                bot = PokemonGoBot(config)
+                bot.start()
+                tree = TreeConfigBuilder(bot, config.raw_tasks).build()
+                bot.workers = tree
+                bot.metrics.capture_stats()
+                bot.health_record = health_record
+
+                bot.event_manager.emit(
+                    'bot_start',
+                    sender=bot,
+                    level='info',
+                    formatted='Starting bot...'
+                )
+
+                while True:
+                    bot.tick()
+
+            except KeyboardInterrupt:
+                bot.event_manager.emit(
+                    'bot_exit',
+                    sender=bot,
+                    level='info',
+                    formatted='Exiting bot.'
+                )
+                finished = True
+                report_summary(bot)
+
+            except NotLoggedInException:
+                wait_time = config.reconnecting_timeout * 60
+                bot.event_manager.emit(
+                    'api_error',
+                    sender=bot,
+                    level='info',
+                    formatted='Log logged in, reconnecting in {:d}'.format(wait_time)
+                )
+                time.sleep(wait_time)
+            except ServerBusyOrOfflineException:
+                bot.event_manager.emit(
+                    'api_error',
+                    sender=bot,
+                    level='info',
+                    formatted='Server busy or offline'
+                )
+            except ServerSideRequestThrottlingException:
+                bot.event_manager.emit(
+                    'api_error',
+                    sender=bot,
+                    level='info',
+                    formatted='Server is throttling, reconnecting in 30 seconds'
+                )
+                time.sleep(30)
+
+    except GeocoderQuotaExceeded:
+        raise Exception("Google Maps API key over requests limit.")
+    except Exception as e:
+        # always report session summary and then raise exception
+        if bot:
             report_summary(bot)
 
-        except NotLoggedInException:
-            wait_time = config.reconnecting_timeout * 60
-            bot.event_manager.emit(
-                'api_error',
-                sender=bot,
-                level='info',
-                formmated='Log logged in, reconnecting in {:s}'.format(wait_time)
-            )
-            time.sleep(wait_time)
-        except ServerBusyOrOfflineException:
-            bot.event_manager.emit(
-                'api_error',
-                sender=bot,
-                level='info',
-                formatted='Server busy or offline'
-            )
-        except ServerSideRequestThrottlingException:
-            bot.event_manager.emit(
-                'api_error',
-                sender=bot,
-                level='info',
-                formatted='Server is throttling, reconnecting in 30 seconds'
-            )
-            time.sleep(30)
-        except GeocoderQuotaExceeded:
-            raise Exception("Google Maps API key over requests limit.")
-        except Exception as e:
-            report_summary(bot)
-            raise e
-
+        raise
 
 def report_summary(bot):
     if bot.metrics.start_time is None:
@@ -152,16 +170,28 @@ def init_config():
     # If config file exists, load variables from json
     load = {}
 
+    def _json_loader(filename):
+        try:
+            with open(filename, 'rb') as data:
+                load.update(json.load(data))
+        except ValueError:
+            if jsonlint:
+                with open(filename, 'rb') as data:
+                    lint = jsonlint()
+                    rc = lint.main(['-v', filename])
+
+            logger.critical('Error with configuration file')
+            sys.exit(-1)
+
     # Select a config file code
     parser.add_argument("-cf", "--config", help="Config File to use")
     config_arg = parser.parse_known_args() and parser.parse_known_args()[0].config or None
+
     if config_arg and os.path.isfile(config_arg):
-        with open(config_arg) as data:
-            load.update(json.load(data))
+        _json_loader(config_arg)
     elif os.path.isfile(config_file):
         logger.info('No config argument specified, checking for /configs/config.json')
-        with open(config_file) as data:
-            load.update(json.load(data))
+        _json_loader(config_file)
     else:
         logger.info('Error: No /configs/config.json or specified config')
 
@@ -374,10 +404,12 @@ def init_config():
     if not config.password and 'password' not in load:
         config.password = getpass("Password: ")
 
+    config.encrypt_location = load.get('encrypt_location','')
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.action_wait_max = load.get('action_wait_max', 4)
     config.action_wait_min = load.get('action_wait_min', 1)
+    config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
 
     config.vips = load.get('vips', {})
@@ -433,6 +465,10 @@ def init_config():
         parser.error("--catch_randomize_spin_factor is out of range! (should be 0 <= catch_randomize_spin_factor <= 1)")
         return None
 
+    plugin_loader = PluginLoader()
+    for plugin in config.plugins:
+        plugin_loader.load_plugin(plugin)
+
     # create web dir if not exists
     try:
         os.makedirs(web_dir)
@@ -441,7 +477,7 @@ def init_config():
             raise
 
     if config.evolve_captured and isinstance(config.evolve_captured, str):
-        config.evolve_captured = [str(pokemon_name) for pokemon_name in config.evolve_captured.split(',')]
+        config.evolve_captured = [str(pokemon_name).strip() for pokemon_name in config.evolve_captured.split(',')]
 
     fix_nested_config(config)
     return config

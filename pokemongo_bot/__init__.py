@@ -13,24 +13,30 @@ import re
 import six
 import sys
 import time
+import Queue
+import threading
 
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
 from pgoapi.utilities import f2i, get_cell_ids
 
-from . import cell_workers
+from .import cell_workers
 from .api_wrapper import ApiWrapper
+from .base_task import BaseTask
 from .cell_workers.utils import distance
 from .event_manager import EventManager
 from .human_behaviour import sleep
 from .item_list import Item
 from .metrics import Metrics
+from .plugin_loader import PluginLoader
 from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from .worker_result import WorkerResult
-from .tree_config_builder import ConfigException, TreeConfigBuilder
+from .tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
-
+from plugin_loader import PluginLoader
+from sys import platform as _platform
+import struct
 
 class PokemonGoBot(object):
     @property
@@ -40,6 +46,15 @@ class PokemonGoBot(object):
     @position.setter
     def position(self, position_tuple):
         self.api._position_lat, self.api._position_lng, self.api._position_alt = position_tuple
+
+    @property
+    def player_data(self):
+        """
+        Returns the player data as received from the API.
+        :return: The player data.
+        :rtype: dict
+        """
+        return self._player
 
     def __init__(self, config):
         self.config = config
@@ -61,6 +76,11 @@ class PokemonGoBot(object):
 
         # Make our own copy of the workers for this instance
         self.workers = []
+
+        # Theading setup for file writing
+        self.web_update_queue = Queue.Queue(maxsize=1)
+        self.web_update_thread = threading.Thread(target=self.update_web_location_worker)
+        self.web_update_thread.start()
 
     def start(self):
         self._setup_event_system()
@@ -218,10 +238,18 @@ class PokemonGoBot(object):
                 'iv_display',
             )
         )
+<<<<<<< HEAD
+=======
+        self.event_manager.register_event('no_pokeballs')
+>>>>>>> dev
         self.event_manager.register_event(
             'pokemon_catch_rate',
             parameters=(
                 'catch_rate',
+<<<<<<< HEAD
+=======
+                'ball_name',
+>>>>>>> dev
                 'berry_name',
                 'berry_count'
             )
@@ -230,25 +258,28 @@ class PokemonGoBot(object):
             'threw_berry',
             parameters=(
                 'berry_name',
+                'ball_name',
                 'new_catch_rate'
             )
         )
         self.event_manager.register_event(
             'threw_pokeball',
             parameters=(
-                'pokeball',
+                'ball_name',
                 'success_percentage',
                 'count_left'
             )
         )
         self.event_manager.register_event(
-            'pokemon_fled',
+            'pokemon_capture_failed',
             parameters=('pokemon',)
         )
         self.event_manager.register_event(
             'pokemon_vanished',
             parameters=('pokemon',)
         )
+        self.event_manager.register_event('pokemon_not_in_range')
+        self.event_manager.register_event('pokemon_inventory_full')
         self.event_manager.register_event(
             'pokemon_caught',
             parameters=(
@@ -386,7 +417,37 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event('unset_pokemon_nickname')
 
+        # Move To map pokemon
+        self.event_manager.register_event(
+            'move_to_map_pokemon_fail',
+            parameters=('message',)
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_updated_map',
+            parameters=('lat', 'lon')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_teleport_to',
+            parameters=('poke_name', 'poke_dist', 'poke_lat', 'poke_lon',
+                        'disappears_in')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_encounter',
+            parameters=('poke_name', 'poke_dist', 'poke_lat', 'poke_lon',
+                        'disappears_in')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_move_towards',
+            parameters=('poke_name', 'poke_dist', 'poke_lat', 'poke_lon',
+                        'disappears_in')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_teleport_back',
+            parameters=('last_lat', 'last_lon')
+        )
+
     def tick(self):
+        self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
         self.tick_count += 1
 
@@ -559,11 +620,17 @@ class PokemonGoBot(object):
                 old_div(self.api._auth_provider._ticket_expire, 1000) - time.time()
 
             if remaining_time < 60:
-                self.logger.info("Session stale, re-logging in", 'yellow')
+                self.event_manager.emit(
+                    'api_error',
+                    sender=self,
+                    level='info',
+                    formatted='Session stale, re-logging in.'
+                )
                 position = self.position
                 self.api = ApiWrapper()
                 self.position = position
                 self.login()
+                self.api.activate_signature(self.get_encryption_lib())
 
     @staticmethod
     def is_numeric(s):
@@ -603,6 +670,31 @@ class PokemonGoBot(object):
             formatted="Login successful."
         )
 
+    def get_encryption_lib(self):
+        if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
+            file_name = 'encrypt.so'
+        elif _platform == "Windows" or _platform == "win32":
+            # Check if we are on 32 or 64 bit
+            if sys.maxsize > 2**32:
+                file_name = 'encrypt_64.dll'
+            else:
+                file_name = 'encrypt.dll'
+
+        if self.config.encrypt_location == '':
+            path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+        else:
+            path = self.config.encrypt_location
+
+        full_path = path + '/'+ file_name
+        if not os.path.isfile(full_path):
+            self.logger.error(file_name + ' is not found! Please place it in the bots root directory or set libencrypt_location in config.')
+            self.logger.info('Platform: '+ _platform + ' Encrypt.so directory: '+ path)
+            sys.exit(1)
+        else:
+            self.logger.info('Found '+ file_name +'! Platform: ' + _platform + ' Encrypt.so directory: ' + path)
+
+        return full_path
+
     def _setup_api(self):
         # instantiate pgoapi
         self.api = ApiWrapper()
@@ -614,7 +706,7 @@ class PokemonGoBot(object):
         # chain subrequests (methods) into one RPC call
 
         self._print_character_info()
-
+        self.api.activate_signature(self.get_encryption_lib())
         self.logger.info('')
         self.update_inventory()
         # send empty map_cells and then our position
@@ -690,7 +782,8 @@ class PokemonGoBot(object):
         self.logger.info(
             'Potion: ' + str(items_stock[101]) +
             ' | SuperPotion: ' + str(items_stock[102]) +
-            ' | HyperPotion: ' + str(items_stock[103]))
+            ' | HyperPotion: ' + str(items_stock[103]) +
+            ' | MaxPotion: ' + str(items_stock[104]))
 
         self.logger.info(
             'Incense: ' + str(items_stock[401]) +
@@ -799,7 +892,7 @@ class PokemonGoBot(object):
 
         if self.config.location:
             location_str = self.config.location
-            location = (self.get_pos_by_name(location_str.replace(" ", "")))
+            location = self.get_pos_by_name(location_str.replace(" ", ""))
             msg = "Location found: {location} {position}"
             self.event_manager.emit(
                 'location_found',
@@ -921,7 +1014,15 @@ class PokemonGoBot(object):
         request.get_player()
         request.check_awarded_badges()
         request.call()
-        self.update_web_location()  # updates every tick
+        try:
+            self.web_update_queue.put_nowait(True)  # do this outside of thread every tick
+        except Queue.Full:
+            pass
+
+    def update_web_location_worker(self):
+        while True:
+            self.web_update_queue.get()
+            self.update_web_location()
 
     def get_inventory_count(self, what):
         response_dict = self.get_inventory()

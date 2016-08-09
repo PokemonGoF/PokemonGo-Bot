@@ -51,3 +51,7 @@
  * matheussampaio
  * Abraxas000
  * lucasfevi
+ * pokepal
+ * Moonlight-Angel
+ * mjmadsen
+ * nikofil

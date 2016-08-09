@@ -1,6 +1,7 @@
 import unittest
+from sys import platform as _platform
 from datetime import datetime, timedelta
-from mock import patch, MagicMock
+from mock import call, patch, MagicMock
 from pokemongo_bot.cell_workers.update_title_stats import UpdateTitleStats
 from tests import FakeBot
 
@@ -8,11 +9,11 @@ from tests import FakeBot
 class UpdateTitleStatsTestCase(unittest.TestCase):
     config = {
         'min_interval': 20,
-        'stats': ['pokemon_evolved', 'pokemon_encountered', 'uptime', 'pokemon_caught',
-                  'stops_visited', 'km_walked', 'level', 'stardust_earned', 'level_completion',
-                  'xp_per_hour', 'pokeballs_thrown', 'highest_cp_pokemon', 'level_stats',
-                  'xp_earned', 'pokemon_unseen', 'most_perfect_pokemon', 'pokemon_stats',
-                  'pokemon_released']
+        'stats': ['login', 'username', 'pokemon_evolved', 'pokemon_encountered', 'uptime',
+                  'pokemon_caught', 'stops_visited', 'km_walked', 'level', 'stardust_earned',
+                  'level_completion', 'xp_per_hour', 'pokeballs_thrown', 'highest_cp_pokemon',
+                  'level_stats', 'xp_earned', 'pokemon_unseen', 'most_perfect_pokemon',
+                  'pokemon_stats', 'pokemon_released']
     }
     player_stats = {
         'level': 25,
@@ -23,6 +24,8 @@ class UpdateTitleStatsTestCase(unittest.TestCase):
 
     def setUp(self):
         self.bot = FakeBot()
+        self.bot._player = {'username': 'Username'}
+        self.bot.config.username = 'Login'
         self.worker = UpdateTitleStats(self.bot, self.config)
 
     def mock_metrics(self):
@@ -87,22 +90,37 @@ class UpdateTitleStatsTestCase(unittest.TestCase):
                          now + timedelta(seconds=self.config['min_interval']))
 
     @patch('pokemongo_bot.cell_workers.update_title_stats.stdout')
-    def test_update_title_linux_osx(self, mock_stdout):
-        self.worker._update_title('', 'linux')
+    def test_update_title_linux_cygwin(self, mock_stdout):
+        self.worker._update_title('new title linux', 'linux')
 
         self.assertEqual(mock_stdout.write.call_count, 1)
+        self.assertEqual(mock_stdout.write.call_args, call('\x1b]2;new title linux\x07'))
 
-        self.worker._update_title('', 'linux2')
+        self.worker._update_title('new title linux2', 'linux2')
 
         self.assertEqual(mock_stdout.write.call_count, 2)
+        self.assertEqual(mock_stdout.write.call_args, call('\x1b]2;new title linux2\x07'))
 
-        self.worker._update_title('', 'darwin')
+        self.worker._update_title('new title cygwin', 'cygwin')
 
         self.assertEqual(mock_stdout.write.call_count, 3)
+        self.assertEqual(mock_stdout.write.call_args, call('\x1b]2;new title cygwin\x07'))
 
-    @unittest.skip("Didn't find a way to mock ctypes.windll.kernel32.SetConsoleTitleA")
-    def test_update_title_win32(self):
-        self.worker._update_title('', 'win32')
+    @patch('pokemongo_bot.cell_workers.update_title_stats.stdout')
+    def test_update_title_darwin(self, mock_stdout):
+        self.worker._update_title('new title darwin', 'darwin')
+
+        self.assertEqual(mock_stdout.write.call_count, 1)
+        self.assertEqual(mock_stdout.write.call_args, call('\033]0;new title darwin\007'))
+
+    @unittest.skipUnless(_platform.startswith("win"), "requires Windows")
+    @patch('pokemongo_bot.cell_workers.update_title_stats.ctypes')
+    def test_update_title_win32(self, mock_ctypes):
+        self.worker._update_title('new title win32', 'win32')
+
+        self.assertEqual(mock_ctypes.windll.kernel32.SetConsoleTitleA.call_count, 1)
+        self.assertEqual(mock_ctypes.windll.kernel32.SetConsoleTitleA.call_args,
+                         call('new title win32'))
 
     def test_get_stats_title_player_stats_none(self):
         title = self.worker._get_stats_title(None)
@@ -119,12 +137,13 @@ class UpdateTitleStatsTestCase(unittest.TestCase):
         self.mock_metrics()
 
         title = self.worker._get_stats_title(self.player_stats)
-        expected = 'Evolved 12 pokemon | Encountered 130 pokemon | Uptime : 15:42:13 | ' \
-                   'Caught 120 pokemon | Visited 220 stops | 42.05km walked | Level 25 | ' \
-                   'Earned 24,069 Stardust | 87,500 / 150,000 XP (58%) | 1,337 XP/h | ' \
-                   'Threw 145 pokeballs | Highest CP pokemon : highest_cp | ' \
-                   'Level 25 (87,500 / 150,000, 58%) | +424,242 XP | ' \
-                   'Encountered 3 new pokemon | Most perfect pokemon : most_perfect | ' \
+        expected = 'Login | Username | Evolved 12 pokemon | Encountered 130 pokemon | ' \
+                   'Uptime : 15:42:13 | Caught 120 pokemon | Visited 220 stops | ' \
+                   '42.05km walked | Level 25 | Earned 24,069 Stardust | ' \
+                   '87,500 / 150,000 XP (58%) | 1,337 XP/h | Threw 145 pokeballs | ' \
+                   'Highest CP pokemon : highest_cp | Level 25 (87,500 / 150,000, 58%) | ' \
+                   '+424,242 XP | Encountered 3 new pokemon | ' \
+                   'Most perfect pokemon : most_perfect | ' \
                    'Encountered 130 pokemon, 120 caught, 30 released, 12 evolved, ' \
                    '3 never seen before | Released 30 pokemon'
 
