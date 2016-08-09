@@ -378,6 +378,11 @@ class PokemonGoBot(object):
 
         # release
         self.event_manager.register_event(
+            'pokemon_transfer_skipped',
+            parameters=('space',)
+        )
+
+        self.event_manager.register_event(
             'keep_best_release',
             parameters=(
                 'amount', 'pokemon', 'criteria'
