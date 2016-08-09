@@ -5,10 +5,10 @@ if [ ! -z $1 ]; then
 filename=$1
 else
 filename="./configs/config.json"
-if [ ! -f "$filename" ]
-then
-echo "There's no "$filename" file. use setup.sh -config to creat one."
 fi
+
+if [ ! -f "$filename" ]; then
+echo "There's no "$filename" file. use setup.sh -config to creat one."
 fi
 
 while true
