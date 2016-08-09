@@ -24,7 +24,7 @@ class RecycleItems(BaseTask):
 
     def work(self):
         total_items_count = self.bot.get_inventory_count('item')
-        bag_space = self.bot.player_data()['max_item_storage']
+        bag_space = self.bot.player_data['max_item_storage']
 
         if self.min_inventory_items_to_run is not None:
             if self.min_inventory_items_to_run >= total_items_count:
