@@ -33,14 +33,9 @@ class EvolvePokemon(BaseTask):
             evolve_list = filter(lambda x: x.name in self.evolve_all, evolve_list)
 
         cache = {}
-        evolved = 0
         for pokemon in evolve_list:
             if pokemon.can_evolve_now():
-                if self._execute_pokemon_evolve(pokemon, cache):
-                    evolved += 1
-
-        if evolved > 0:
-            logger.log('Evolved {} pokemon!'.format(evolved))
+                self._execute_pokemon_evolve(pokemon, cache)
 
     def _should_run(self):
         if not self.evolve_all or self.evolve_all[0] == 'none':
@@ -119,7 +114,7 @@ class EvolvePokemon(BaseTask):
             return True
         else:
             # cache pokemons we can't evolve. Less server calls
-            cache[pokemon_name] = 1
+            cache[pokemon.name] = 1
             sleep(0.7)
             return False
 
