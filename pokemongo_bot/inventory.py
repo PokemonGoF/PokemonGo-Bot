@@ -166,7 +166,7 @@ class Pokemon(object):
         self.iv = self._compute_iv()
 
     def can_evolve_now(self):
-        return self.has_next_evolution and self.candy_quantity > self.evolution_cost
+        return self.has_next_evolution() and self.candy_quantity > self.evolution_cost
 
     def has_next_evolution(self):
         return 'Next Evolution Requirements' in self._static_data
