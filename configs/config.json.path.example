@@ -60,7 +60,7 @@
         "type": "FollowPath",
         "config": {
           "path_mode": "loop",
-          "path_startmode": "first",
+          "path_start_mode": "first",
           "path_file": "configs/path.example.json"
         }
       }

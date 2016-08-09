@@ -17,7 +17,7 @@ class FollowPath(BaseTask):
         self._process_config()
         self.points = self.load_path()
 
-        if self.path_startmode == 'closest':
+        if self.path_start_mode == 'closest':
             self.ptr = self.find_closest_point_idx(self.points)
         
         else:
@@ -26,7 +26,7 @@ class FollowPath(BaseTask):
     def _process_config(self):
         self.path_file = self.config.get("path_file", None)
         self.path_mode = self.config.get("path_mode", "linear")
-        self.path_startmode = self.config.get("path_startmode", "first")
+        self.path_start_mode = self.config.get("path_start_mode", "first")
 
     def load_path(self):
         if self.path_file is None:
