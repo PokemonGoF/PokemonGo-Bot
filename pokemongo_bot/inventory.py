@@ -223,7 +223,7 @@ class Inventory(object):
         for i in (self.pokedex, self.candy, self.items, self.pokemons):
             i.refresh(inventory)
 
-        user_web_inventory = 'web/inventory-%s.json' % (self.bot.config.username)
+        user_web_inventory = os.path.join(_base_dir, 'web', 'inventory-%s.json' % (self.bot.config.username))
         with open(user_web_inventory, 'w') as outfile:
             json.dump(inventory, outfile)
 
