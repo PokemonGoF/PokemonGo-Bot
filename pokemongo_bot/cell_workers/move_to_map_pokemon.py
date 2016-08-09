@@ -54,6 +54,7 @@ import time
 import json
 import base64
 import requests
+from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.cell_workers.utils import distance, format_dist, format_time
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
@@ -84,7 +85,7 @@ class MoveToMapPokemon(BaseTask):
         self.caught = []
         self.min_ball = self.config.get('min_ball', 1)
 
-        data_file = 'data/map-caught-{}.json'.format(self.bot.config.username)
+        data_file = os.path.join(_base_dir, 'map-caught-{}.json'.format(self.bot.config.username))
         if os.path.isfile(data_file):
             self.caught = json.load(
                 open(data_file)
@@ -222,7 +223,7 @@ class MoveToMapPokemon(BaseTask):
         return WorkerResult.SUCCESS
 
     def dump_caught_pokemon(self):
-        user_data_map_caught = 'data/map-caught-{}.json'.format(self.bot.config.username)
+        user_data_map_caught = os.path.join(_base_dir, 'data', 'map-caught-{}.json'.format(self.bot.config.username))
         with open(user_data_map_caught, 'w') as outfile:
             json.dump(self.caught, outfile)
 

@@ -1,5 +1,7 @@
 import json
+import os
 
+from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.base_task import BaseTask
 
@@ -83,7 +85,7 @@ class TransferPokemon(BaseTask):
 
         inventory_dict = inventory_req['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
 
-        user_web_inventory = 'web/inventory-%s.json' % (self.bot.config.username)
+        user_web_inventory = os.path.join(_base_dir, 'web', 'inventory-%s.json' % (self.bot.config.username))
         with open(user_web_inventory, 'w') as outfile:
             json.dump(inventory_dict, outfile)
 
