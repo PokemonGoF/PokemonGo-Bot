@@ -102,10 +102,10 @@ class UpdateTitleStats(BaseTask):
         if not title:
             return WorkerResult.SUCCESS
 
-        if self.terminal_title is True:
+        if self.terminal_title:
             self._update_title(title, _platform)
 
-        if self.terminal_log is True:
+        if self.terminal_log:
             self._log_on_terminal(title)
         return WorkerResult.SUCCESS
 
