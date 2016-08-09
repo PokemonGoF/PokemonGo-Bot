@@ -16,7 +16,7 @@ class BotEvent(object):
         # UniversalAnalytics can be reviewed here:
         # https://github.com/analytics-pros/universal-analytics-python
         if self.config.health_record:
-            self.logger.info('Health check is enabled. For more logrmation:')
+            self.logger.info('Health check is enabled. For more information:')
             self.logger.info('https://github.com/PokemonGoF/PokemonGo-Bot/tree/dev#analytics')
             self.client = Client(
                 dsn='https://8abac56480f34b998813d831de262514:196ae1d8dced41099f8253ea2c8fe8e6@app.getsentry.com/90254',

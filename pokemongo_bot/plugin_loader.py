@@ -18,7 +18,14 @@ class PluginLoader(object):
     return correct_path
 
   def load_plugin(self, plugin):
-    correct_path = self._get_correct_path(plugin)
+    github_plugin = GithubPlugin(plugin)
+    if github_plugin.is_valid_plugin():
+      if not github_plugin.is_already_downloaded():
+        github_plugin.download()
+
+      correct_path = github_plugin.get_local_destination()
+    else:
+      correct_path = self._get_correct_path(plugin)
 
     if correct_path not in self.folder_cache:
       self.folder_cache.append(correct_path)
@@ -27,6 +34,7 @@ class PluginLoader(object):
   def remove_path(self, path):
     correct_path = self._get_correct_path(path)
     sys.path.remove(correct_path)
+    self.folder_cache.remove(correct_path)
 
   def get_class(self, namespace_class):
     [namespace, class_name] = namespace_class.split('.')
@@ -62,6 +70,10 @@ class GithubPlugin(object):
     file_name = '{}_{}_{}.zip'.format(parts['user'], parts['repo'], parts['sha'])
     full_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'plugins', file_name)
     return full_path
+
+  def is_already_downloaded(self):
+    file_path = self.get_local_destination()
+    return os.path.isfile(file_path)
 
   def get_github_download_url(self):
     parts = self.plugin_parts

@@ -106,7 +106,7 @@ def main():
                     'api_error',
                     sender=bot,
                     level='info',
-                    formmated='Log logged in, reconnecting in {:s}'.format(wait_time)
+                    formatted='Log logged in, reconnecting in {:s}'.format(wait_time)
                 )
                 time.sleep(wait_time)
             except ServerBusyOrOfflineException:
@@ -390,6 +390,7 @@ def init_config():
         # config.password = getpass("Password: ")
         config.password = os.environ['PASSWORD']
 
+    config.encrypt_location = load.get('encrypt_location','')
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.action_wait_max = load.get('action_wait_max', 4)

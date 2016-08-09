@@ -393,6 +393,35 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event('unset_pokemon_nickname')
 
+        # Move To map pokemon
+        self.event_manager.register_event(
+            'move_to_map_pokemon_fail',
+            parameters=('message',)
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_updated_map',
+            parameters=('lat', 'lon')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_teleport_to',
+            parameters=('poke_name', 'poke_dist', 'poke_lat', 'poke_lon',
+                        'disappears_in')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_encounter',
+            parameters=('poke_name', 'poke_dist', 'poke_lat', 'poke_lon',
+                        'disappears_in')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_move_towards',
+            parameters=('poke_name', 'poke_dist', 'poke_lat', 'poke_lon',
+                        'disappears_in')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_teleport_back',
+            parameters=('last_lat', 'last_lon')
+        )
+
     def tick(self):
         self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
@@ -607,7 +636,6 @@ class PokemonGoBot(object):
         )
 
     def get_encryption_lib(self):
-        file_name = ''
         if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
             file_name = 'encrypt.so'
         elif _platform == "Windows" or _platform == "win32":
@@ -617,15 +645,18 @@ class PokemonGoBot(object):
             else:
                 file_name = 'encrypt.dll'
 
-        path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-        full_path = path + '/'+ file_name
+        if self.config.encrypt_location == '':
+            path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+        else:
+            path = self.config.encrypt_location
 
+        full_path = path + '/'+ file_name
         if not os.path.isfile(full_path):
-            self.logger.error(file_name + ' is not found! Please place it in the bots root directory.')
-            self.logger.info('Platform: '+ _platform + ' Bot root directory: '+ path)
+            self.logger.error(file_name + ' is not found! Please place it in the bots root directory or set libencrypt_location in config.')
+            self.logger.info('Platform: '+ _platform + ' Encrypt.so directory: '+ path)
             sys.exit(1)
         else:
-            self.logger.info('Found '+ file_name +'! Platform: ' + _platform + ' Bot root directory: ' + path)
+            self.logger.info('Found '+ file_name +'! Platform: ' + _platform + ' Encrypt.so directory: ' + path)
 
         return full_path
 
