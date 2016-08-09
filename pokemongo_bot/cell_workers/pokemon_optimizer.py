@@ -3,17 +3,16 @@ import logging
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot.item_list import Item
+from pokemongo_bot.worker_result import WorkerResult
 
 
 class PokemonOptimizer(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def initialize(self):
-        self.player_level_factor = None
         self.pokemon_max_cp = None
         self.family_data_by_pokemon_name = {}
 
-        self.init_player_level_factor()
         self.init_pokemon_max_cp()
         self.init_family_data_by_pokemon_name()
 
@@ -23,58 +22,92 @@ class PokemonOptimizer(BaseTask):
         self.lucky_egg_count = 0
 
         self.dry_run = self.config.get("dry_run", True)
-        self.use_lucky_egg = self.config.get("use_lucky_egg", True)
+        self.evolve_only_with_lucky_egg = self.config.get("evolve_only_with_lucky_egg", True)
 
     def get_pokemon_slot_left(self):
         return self.bot._player["max_pokemon_storage"] - self.pokemon_count
 
     def work(self):
-        family_changed = True
+        self.refresh_inventory()
 
-        while family_changed:
-            family_changed = False
+        if self.get_pokemon_slot_left() > 5:
+            return WorkerResult.SUCCESS
 
+        transfer_all_pokemons = []
+        evo_all_best_pokemons = []
+        evo_all_crap_pokemons = []
+
+        for family_name, family in self.family_by_family_name.items():
+            transfer_pokemons, evo_best_pokemons, evo_crap_pokemons = self.get_family_optimized(family_name, family)
+            transfer_all_pokemons += transfer_pokemons
+            evo_all_best_pokemons += evo_best_pokemons
+            evo_all_crap_pokemons += evo_crap_pokemons
+
+        evo_all_pokemons = evo_all_best_pokemons + evo_all_crap_pokemons
+
+        if self.apply_optimization(transfer_all_pokemons, evo_all_pokemons):
+            self.bot.latest_inventory = None
             self.refresh_inventory()
 
-            if self.get_pokemon_slot_left() > 5:
-                break
-
-            transfer_all_pokemons = []
-            evo_all_best_pokemons = []
-            evo_all_crap_pokemons = []
-
-            for family_name, family in self.family_by_family_name.items():
-                transfer_pokemons, evo_best_pokemons, evo_crap_pokemons = self.get_family_optimized(family_name, family)
-                transfer_all_pokemons += transfer_pokemons
-                evo_all_best_pokemons += evo_best_pokemons
-                evo_all_crap_pokemons += evo_crap_pokemons
-
-            evo_all_pokemons = evo_all_best_pokemons + evo_all_crap_pokemons
-
-            family_changed = self.apply_optimization(transfer_all_pokemons, evo_all_pokemons)
-
-            if self.dry_run:
-                break
-
-            if family_changed:
-                self.bot.latest_inventory = None
+        return WorkerResult.SUCCESS
 
     def get_family_optimized(self, family_name, family):
         if family_name == "Eevee":
-            return ([], [], [])
+            return self.get_multi_family_optimized(family_name, family, 3)
 
-        candies = self.candies_by_family_name.get(family_name, 0)
         best_iv_pokemons = self.get_best_iv_in_family(family)
         best_relative_cp_pokemons = self.get_best_relative_cp_in_family(family)
         best_cp_pokemons = self.get_best_cp_in_family(family)
 
         best_pokemons = self.combine_pokemon_lists(best_iv_pokemons, best_relative_cp_pokemons)
 
+        return self.get_crap_plan(family_name, family, best_pokemons, best_cp_pokemons)
+
+    def get_multi_family_optimized(self, family_name, family, nb_branch):
+        # Transfer each group of senior independently
+        senior_family = [p for p in family if p["next_name"] is None]
+        other_family = [p for p in family if p["next_name"] is not None]
+        senior_names = set(s["name"] for s in senior_family)
+        senior_grouped_family = {name: [p for p in senior_family if p["name"] == name] for name in senior_names}
+
+        transfer_senior_pokemons = []
+
+        for senior_name, senior_family in senior_grouped_family.items():
+            transfer_senior_pokemons += self.get_family_optimized(senior_name, senior_family)[0]
+
+        if len(senior_names) < nb_branch:
+            # We did not get every combination yet = All other Pokemons are potentially good to keep
+            best_pokemons = other_family
+            best_pokemons.sort(key=lambda p: p["iv"] * p["relative_cp"], reverse=True)
+            best_cp_pokemons = []
+        else:
+            min_iv = min([max(f, key=lambda p: p["iv"]) for f in senior_grouped_family.values()], key=lambda p: p["iv"])["iv"]
+            min_relative_cp = min([max(f, key=lambda p: p["relative_cp"]) for f in senior_grouped_family.values()], key=lambda p: p["relative_cp"])["relative_cp"]
+            min_cp = min([max(f, key=lambda p: p["cp"]) for f in senior_grouped_family.values()], key=lambda p: p["cp"])["cp"]
+
+            best_iv_pokemons = self.get_better_iv_in_family(other_family, min_iv)
+            best_relative_cp_pokemons = self.get_better_relative_cp_in_family(other_family, min_relative_cp)
+            best_cp_pokemons = self.get_better_cp_in_family(other_family, min_cp)
+
+            best_pokemons = self.combine_pokemon_lists(best_iv_pokemons, best_relative_cp_pokemons)
+
+        transfer_pokemons, evo_best_pokemons, evo_crap_pokemons = self.get_crap_plan(family_name, other_family, best_pokemons, best_cp_pokemons)
+        transfer_pokemons += transfer_senior_pokemons
+
+        return (transfer_pokemons, evo_best_pokemons, evo_crap_pokemons)
+
+    def get_crap_plan(self, family_name, family, best_pokemons, best_cp_pokemons):
+        candies = self.candies_by_family_name.get(family_name, 0)
+
+        # All the rest is crap, for now
         crap = family[:]
         crap = [p for p in crap if p not in best_pokemons]
         crap = [p for p in crap if p not in best_cp_pokemons]
         crap.sort(key=lambda p: p["iv"], reverse=True)
 
+        candies += len(crap)
+
+        # Let's see if we can evolve our best pokemons
         evo_best_pokemons = []
 
         for pokemon in best_pokemons:
@@ -83,34 +116,34 @@ class PokemonOptimizer(BaseTask):
             if next_amount == 0:
                 continue
 
-            if next_amount <= candies:
-                evo_best_pokemons.append(pokemon)
-                candies -= next_amount
+            candies -= next_amount
 
-                next_name = pokemon["next_name"]
+            if next_amount > candies:
+                continue
 
-                if next_name:
-                    next_family_data = self.family_data_by_pokemon_name[next_name]
+            evo_best_pokemons.append(pokemon)
+            next_name = pokemon["next_name"]
 
-                    if next_family_data["next_amount"] > 0:
-                        # logging.info("Will try to multi evolve %s [IV %s] [CP %s]", pokemon["name"], pokemon["iv"], pokemon["cp"])
+            if not next_name:
+                continue
 
-                        next_evo = dict(pokemon)
-                        next_evo["name"] = next_name
-                        next_evo.update(next_family_data)
+            next_evo = dict(pokemon)
+            next_evo["name"] = next_name
+            next_evo.update(self.family_data_by_pokemon_name[next_name])
+            best_pokemons.append(next_evo)
 
-                        best_pokemons.append(next_evo)
-            else:
-                break
+        # Compute how many crap we should keep if we want to batch evolve them for xp
+        junior_next_amount = self.family_data_by_pokemon_name.get(family_name, {}).get("next_amount", 0)
 
-        junior_next_amount = self.family_data_by_pokemon_name[family_name]["next_amount"]
-
-        # leftover_candy = candies + transfer
         # transfer + keep_for_evo = len(crap)
-        # keep_for_evo = int(leftover_candy / junior_next_amount)
+        # leftover_candies = candies - len(crap) + transfer * 1
+        # keep_for_evo = leftover_candies / junior_next_amount
+        #
+        # keep_for_evo = (candies - len(crap) + transfer) / junior_next_amount
+        # keep_for_evo = (candies - keep_for_evo) / junior_next_amount
 
-        if junior_next_amount > 0:
-            keep_for_evo = int((candies + len(crap)) / (junior_next_amount + 1))
+        if (candies > 0) and (junior_next_amount > 0):
+            keep_for_evo = int(candies / (junior_next_amount + 1))
         else:
             keep_for_evo = 0
 
@@ -120,37 +153,38 @@ class PokemonOptimizer(BaseTask):
         return (transfer_pokemons, evo_best_pokemons, evo_crap_pokemons)
 
     def apply_optimization(self, transfer_pokemons, evo_pokemons):
-        family_changed = False
-
         for pokemon in transfer_pokemons:
             self.transfer_pokemon(pokemon)
-            family_changed = True
 
-        if self.use_lucky_egg:
+        if self.evolve_only_with_lucky_egg:
             if (self.lucky_egg_count == 0) or (len(evo_pokemons) < 90):
-                return family_changed
+                return
 
-            self.do_use_lucky_egg()
+            self.use_lucky_egg()
 
         for pokemon in evo_pokemons:
-            if self.evolve_pokemon(pokemon):
-                family_changed = True
-            else:
-                break
-
-        return family_changed
+            self.evolve_pokemon(pokemon)
 
     def get_best_iv_in_family(self, family):
         best_pokemon = max(family, key=lambda p: p["iv"])
-        return [p for p in family if p["iv"] == best_pokemon["iv"]]
+        return sorted([p for p in family if p["iv"] == best_pokemon["iv"]], key=lambda p: p["relative_cp"], reverse=True)
+
+    def get_better_iv_in_family(self, family, iv):
+        return sorted([p for p in family if p["iv"] >= iv], key=lambda p: (p["iv"], p["relative_cp"]), reverse=True)
 
     def get_best_relative_cp_in_family(self, family):
         best_pokemon = max(family, key=lambda p: p["relative_cp"])
-        return [p for p in family if p["relative_cp"] == best_pokemon["relative_cp"]]
+        return sorted([p for p in family if p["relative_cp"] == best_pokemon["relative_cp"]], key=lambda p: p["iv"], reverse=True)
+
+    def get_better_relative_cp_in_family(self, family, relative_cp):
+        return sorted([p for p in family if p["relative_cp"] >= relative_cp], key=lambda p: (p["relative_cp"], p["iv"]), reverse=True)
 
     def get_best_cp_in_family(self, family):
         best_pokemon = max(family, key=lambda p: p["cp"])
-        return [p for p in family if p["cp"] == best_pokemon["cp"]]
+        return sorted([p for p in family if p["cp"] == best_pokemon["cp"]], key=lambda p: (p["relative_cp"], p["iv"]), reverse=True)
+
+    def get_better_cp_in_family(self, family, cp):
+        return sorted([p for p in family if p["cp"] >= cp], key=lambda p: (p["relative_cp"], p["iv"]), reverse=True)
 
     def transfer_pokemon(self, pokemon):
         if self.dry_run:
@@ -167,7 +201,7 @@ class PokemonOptimizer(BaseTask):
         if not self.dry_run:
             action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
 
-    def do_use_lucky_egg(self):
+    def use_lucky_egg(self):
         if self.dry_run:
             response_dict = {"responses": {"USE_ITEM_XP_BOOST": {"result": 1}}}
         else:
@@ -309,17 +343,6 @@ class PokemonOptimizer(BaseTask):
     def combine_pokemon_lists(self, a, b):
         seen = set()
         return [p for p in a + b if not (p["id"] in seen or seen.add(p["id"]))]
-
-    def init_player_level_factor(self):
-        self.player_level_factor = [
-            0, 0.094, 0.16639787, 0.21573247, 0.25572005, 0.29024988,
-            0.3210876, 0.34921268, 0.37523559, 0.39956728, 0.4225,
-            0.44310755, 0.46279839, 0.48168495, 0.49985844, 0.51739395,
-            0.53435433, 0.55079269, 0.56675452, 0.58227891, 0.5974,
-            0.61215729, 0.62656713, 0.64065295, 0.65443563, 0.667934,
-            0.68116492, 0.69414365, 0.70688421, 0.71939909, 0.7317,
-            0.73776948, 0.74378943, 0.74976104, 0.75568551, 0.76156384,
-            0.76739717, 0.7731865, 0.77893275, 0.784637, 0.7903]
 
     def init_pokemon_max_cp(self):
         self.pokemon_max_cp = {
