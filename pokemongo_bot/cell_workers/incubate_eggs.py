@@ -1,5 +1,6 @@
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.base_task import BaseTask
+from pokemongo_bot.worker_result import WorkerResult
 
 
 class IncubateEggs(BaseTask):
@@ -21,6 +22,10 @@ class IncubateEggs(BaseTask):
         self.longer_eggs_first = self.config.get("longer_eggs_first", True)
 
     def work(self):
+        if not self._time_to_run():
+            return WorkerResult.SUCCESS
+        self._update_last_ran()
+
         try:
             self._check_inventory()
         except:
