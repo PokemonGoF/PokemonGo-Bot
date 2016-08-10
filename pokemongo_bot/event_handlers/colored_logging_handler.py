@@ -114,7 +114,7 @@ class ColoredLoggingHandler(EventHandler):
         
         # Honour config settings if log level disabled
         for event_level in ['info', 'warning', 'error', 'critical', 'debug']:
-            if hasattr(self.bot.config, event_level) and not getattr(self.bot.config, event_level) and event_level == level:
+            if event_level == level and hasattr(self.bot.config, event_level) and not getattr(self.bot.config, event_level):
                 self._last_event = event
                 return
             
