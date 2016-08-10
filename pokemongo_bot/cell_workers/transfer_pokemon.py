@@ -120,7 +120,7 @@ class TransferPokemon(BaseTask):
         if logic_to_function[cp_iv_logic](*release_results.values()):
             self.emit_event(
                 'future_pokemon_release',
-                formatted="Releasing {pokemon} (CP {cp}/IV {iv}) based on rule: CP < {below_cp} {cp_iv_logic} IV < {below_iv}",
+                formatted="Releasing {pokemon} [CP {cp}] [IV {iv}] based on rule: CP < {below_cp} {cp_iv_logic} IV < {below_iv}",
                 data={
                     'pokemon': pokemon.name,
                     'cp': pokemon.cp,
