@@ -166,7 +166,7 @@ class ColoredLoggingHandler(EventHandler):
         if self._ioctl is None or self._TIOCGWINSZ is None:
             return None
 
-        h, w, hp, wp = struct.unpack('HHHH',
+        h, w, hp, wp = struct.unpack(str('HHHH'),
             self._ioctl(0, self._TIOCGWINSZ,
-            struct.pack('HHHH', 0, 0, 0, 0)))
+            struct.pack(str('HHHH'), 0, 0, 0, 0)))
         return w
