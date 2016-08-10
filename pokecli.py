@@ -403,6 +403,14 @@ def init_config():
         type=bool,
         default=True
     )
+    add_config(
+        parser,
+        load,
+        long_flag="--enable_social",
+        help="Enable social event exchange between bot",
+        type=bool,
+        default=True
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()
