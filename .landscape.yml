@@ -1,0 +1,18 @@
+doc-warnings: true
+test-warnings: false
+strictness: veryhigh
+max-line-length: 120
+autodetect: true
+requirements:
+  - requirements.txt
+ignore-paths:
+  - share
+  - bin
+  - lib
+  - include
+  - tests
+  - web
+  - docs
+python-targets:
+  - 2
+  - 3
