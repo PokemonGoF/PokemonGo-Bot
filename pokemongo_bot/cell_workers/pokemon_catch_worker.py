@@ -251,7 +251,7 @@ class PokemonCatchWorker(BaseTask):
                     data={
                         'berry_name': self.item_list[str(berry_id)],
                         'ball_name': self.item_list[str(current_ball)],
-                        'new_catch_rate': self._pct(catch_rate_by_ball[current_ball])
+                        'new_catch_rate': self._pct(new_catch_rate_by_ball[current_ball])
                     }
                 )
 
