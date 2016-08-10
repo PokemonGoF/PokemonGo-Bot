@@ -12,6 +12,7 @@
       {
         "type": "SleepSchedule",
         "config": {
+          "enabled": false,
           "time": "22:54",
           "duration":"7:46",
           "time_random_offset": "00:24",
@@ -30,19 +31,11 @@
       {
         "type": "UpdateLiveStats",
         "config": {
-            "min_interval": 10,
-            "stats": ["uptime", "stardust_earned", "xp_earned", "xp_per_hour", "stops_visited"],
-            "terminal_log": true,
-            "terminal_title": true
-        }
-      },
-      {
-        "type": "UpdateTitleStats",
-        "config": {
-            "min_interval": 10,
-            "stats": ["uptime", "stardust_earned", "xp_earned", "xp_per_hour", "stops_visited"],
-            "terminal_log": true,
-            "terminal_title": true
+          "enabled": false,
+          "min_interval": 10,
+          "stats": ["uptime", "stardust_earned", "xp_earned", "xp_per_hour", "stops_visited"],
+          "terminal_log": true,
+          "terminal_title": true
         }
       },
       {
