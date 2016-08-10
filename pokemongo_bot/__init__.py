@@ -25,7 +25,7 @@ from event_manager import EventManager
 from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
-from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler
+from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler, ColoredLoggingHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from pokemongo_bot.base_dir import _base_dir
@@ -88,7 +88,12 @@ class PokemonGoBot(object):
         random.seed()
 
     def _setup_event_system(self):
-        handlers = [LoggingHandler()]
+        handlers = []
+        if self.config.logging_color:
+            handlers.append(ColoredLoggingHandler())
+        else:
+            handlers.append(LoggingHandler())
+
         if self.config.websocket_server_url:
             if self.config.websocket_start_embedded_server:
                 self.sio_runner = SocketIoRunner(self.config.websocket_server_url)
@@ -102,7 +107,6 @@ class PokemonGoBot(object):
 
             if self.config.websocket_remote_control:
                 remote_control = WebsocketRemoteControl(self).start()
-
 
         self.event_manager = EventManager(*handlers)
         self._register_events()
@@ -234,6 +238,10 @@ class PokemonGoBot(object):
                 'cp',
                 'iv',
                 'iv_display',
+                'encounter_id',
+                'latitude',
+                'longitude',
+                'pokemon_id'
             )
         )
         self.event_manager.register_event('no_pokeballs')
@@ -268,7 +276,13 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'pokemon_vanished',
-            parameters=('pokemon',)
+            parameters=(
+                'pokemon',
+                'encounter_id',
+                'latitude',
+                'longitude',
+                'pokemon_id'
+            )
         )
         self.event_manager.register_event('pokemon_not_in_range')
         self.event_manager.register_event('pokemon_inventory_full')
@@ -276,7 +290,11 @@ class PokemonGoBot(object):
             'pokemon_caught',
             parameters=(
                 'pokemon',
-                'cp', 'iv', 'iv_display', 'exp'
+                'cp', 'iv', 'iv_display', 'exp',
+                'encounter_id',
+                'latitude',
+                'longitude',
+                'pokemon_id'
             )
         )
         self.event_manager.register_event(
@@ -988,9 +1006,10 @@ class PokemonGoBot(object):
             pass
 
     def update_web_location_worker(self):
-        while True:
-            self.web_update_queue.get()
-            self.update_web_location()
+        pass
+        # while True:
+        #     self.web_update_queue.get()
+        #     self.update_web_location()
 
     def get_inventory_count(self, what):
         response_dict = self.get_inventory()

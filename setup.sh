@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-pokebotpath=$(pwd)
-backuppath=$(pwd)"/backup"
+pokebotpath=$(cd "$(dirname "$0")"; pwd)
+backuppath=$pokebotpath"/backup"
 
 function Pokebotupdate () {
 cd $pokebotpath
@@ -37,7 +37,7 @@ Input location
 " location
 read -p "Input gmapkey 
 " gmapkey
-cp configs/config.json.example configs/config.json
+cp -f configs/config.json.example configs/config.json
 if [ "$auth" = "2" ]
 then
 sed -i "s/google/ptc/g" configs/config.json
@@ -46,7 +46,7 @@ sed -i "s/YOUR_USERNAME/$username/g" configs/config.json
 sed -i "s/YOUR_PASSWORD/$password/g" configs/config.json
 sed -i "s/SOME_LOCATION/$location/g" configs/config.json
 sed -i "s/GOOGLE_MAPS_API_KEY/$gmapkey/g" configs/config.json
-echo "Edit configs/config.json to modify any other config."
+echo "Edit ./configs/config.json to modify any other config."
 }
 
 function Pokebotinstall () {
@@ -67,12 +67,14 @@ echo "You are on Mac os"
 sudo brew update 
 sudo brew install --devel protobuf
 else
-echo "Nothing happend."
+echo "Please check if you have  python pip protobuf gcc make  installed on your device."
+echo "Wait 5 seconds to continue or Use ctrl+c to interrupt this shell."
+sleep 5
 fi
 sudo pip install virtualenv
 Pokebotupdate
 Pokebotencrypt
-echo "Install complete."
+echo "Install complete. Starting to generate config.json."
 Pokebotconfig
 }
 
@@ -89,7 +91,7 @@ echo "	-i,--install.		Install PokemonGo-Bot."
 echo "	-b,--backup.		Backup config files."
 echo "	-c,--config.		Easy config generator."
 echo "	-e,--encrypt.		Make encrypt.so."
-echo "	-r,--reset.			Force sync dev branch."
+echo "	-r,--reset.		Force sync dev branch."
 echo "	-u,--update.		Command git pull to update."
 }
 
@@ -120,12 +122,13 @@ Pokebothelp
 ;;
 *.json)
 filename=$*
+echo "It's better to use run.sh, not this one."
 cd $pokebotpath
 if [ ! -f ./configs/"$filename" ]
 then
-echo "There's no ./configs/"$filename" file. It's better to use run.sh not this one."
+echo "There's no ./configs/"$filename" file. It's better to use run.sh, not this one."
 else
-Pokebotrun
+./run.sh ./configs/"$filename"
 fi
 ;;
 *)
