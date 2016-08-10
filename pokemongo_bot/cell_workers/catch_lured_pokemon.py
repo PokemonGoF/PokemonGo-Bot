@@ -27,7 +27,7 @@ class CatchLuredPokemon(BaseTask):
         forts = self.bot.get_forts(order_by_distance=True)
 
         if len(forts) == 0:
-            return False
+            return []
 
         for fort in forts:
             distance_to_fort = distance(
