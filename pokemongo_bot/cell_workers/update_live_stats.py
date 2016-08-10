@@ -155,7 +155,7 @@ class UpdateLiveStats(BaseTask):
             stdout.write("\033]0;{}\007".format(title))
             stdout.flush()
         elif platform == "win32":
-            ctypes.windll.kernel32.SetConsoleTitleA(title)
+            ctypes.windll.kernel32.SetConsoleTitleA(title.encode())
         else:
             raise RuntimeError("unsupported platform '{}'".format(platform))
         self._compute_next_update()
