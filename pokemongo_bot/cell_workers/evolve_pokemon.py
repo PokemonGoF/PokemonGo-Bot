@@ -118,8 +118,3 @@ class EvolvePokemon(BaseTask):
             cache[pokemon.name] = 1
             sleep(0.7)
             return False
-
-    def _compute_iv(self, pokemon):
-        total_iv = pokemon.get("individual_attack", 0) + pokemon.get("individual_stamina", 0) + pokemon.get(
-            "individual_defense", 0)
-        return round((total_iv / 45.0), 2)

@@ -26,7 +26,7 @@ rm -rf pgoencrypt
 
 function Pokebotconfig () {
 cd $pokebotpath
-read -p "1.google 2.ptc 
+read -p "enter 1 for google or 2 for ptc 
 " auth
 read -p "Input username 
 " username
@@ -37,7 +37,7 @@ Input location
 " location
 read -p "Input gmapkey 
 " gmapkey
-cp -f configs/config.json.example configs/config.json
+cp -f configs/config.json.example configs/config.json && chmod 755
 if [ "$auth" = "2" ]
 then
 sed -i "s/google/ptc/g" configs/config.json
