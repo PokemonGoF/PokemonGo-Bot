@@ -405,8 +405,7 @@ class PokemonCatchWorker(BaseTask):
                 )
 
                 # We could refresh here too, but adding 3 saves a inventory request
-                candy = inventory.candies().get(pokemon.num)
-                candy.add(3)
+                candy = inventory.candies(True).get(pokemon.num)
                 self.emit_event(
                     'gained_candy',
                     formatted='You now have {quantity} {type} candy!',

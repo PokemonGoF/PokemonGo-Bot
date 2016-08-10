@@ -50,10 +50,10 @@ class PokemonOptimizer(BaseTask):
             return self.get_multi_family_optimized(family_id, family, 3)
 
         best_iv = self.get_best_iv_in_family(family)
-        best_relative_cp = self.get_best_relative_cp_in_family(family)
+        best_ncp = self.get_best_ncp_in_family(family)
         best_cp = self.get_best_cp_in_family(family)
 
-        best = self.combine_pokemon_lists(best_iv, best_relative_cp)
+        best = self.combine_pokemon_lists(best_iv, best_ncp)
 
         return self.get_evolution_plan(family_id, family, best, best_cp)
 
@@ -72,18 +72,18 @@ class PokemonOptimizer(BaseTask):
         if len(senior_pids) < nb_branch:
             # We did not get every combination yet = All other Pokemons are potentially good to keep
             best = other_family
-            best.sort(key=lambda p: p.iv * p.relative_cp, reverse=True)
+            best.sort(key=lambda p: p.iv * p.ncp, reverse=True)
             best_cp = []
         else:
             min_iv = min([max(f, key=lambda p: p.iv) for f in senior_grouped_family.values()], key=lambda p: p.iv).iv
-            min_relative_cp = min([max(f, key=lambda p: p.relative_cp) for f in senior_grouped_family.values()], key=lambda p: p.relative_cp).relative_cp
+            min_ncp = min([max(f, key=lambda p: p.ncp) for f in senior_grouped_family.values()], key=lambda p: p.ncp).ncp
             min_cp = min([max(f, key=lambda p: p.cp) for f in senior_grouped_family.values()], key=lambda p: p.cp).cp
 
             best_iv = self.get_better_iv_in_family(other_family, min_iv)
-            best_relative_cp = self.get_better_relative_cp_in_family(other_family, min_relative_cp)
+            best_ncp = self.get_better_ncp_in_family(other_family, min_ncp)
             best_cp = self.get_better_cp_in_family(other_family, min_cp)
 
-            best = self.combine_pokemon_lists(best_iv, best_relative_cp)
+            best = self.combine_pokemon_lists(best_iv, best_ncp)
 
         transfer, evo_best, evo_crap = self.get_evolution_plan(family_id, other_family, best, best_cp)
         transfer += transfer_senior
@@ -163,24 +163,24 @@ class PokemonOptimizer(BaseTask):
 
     def get_best_iv_in_family(self, family):
         best = max(family, key=lambda p: p.iv)
-        return sorted([p for p in family if p.iv == best.iv], key=lambda p: p.relative_cp, reverse=True)
+        return sorted([p for p in family if p.iv == best.iv], key=lambda p: p.ncp, reverse=True)
 
     def get_better_iv_in_family(self, family, iv):
-        return sorted([p for p in family if p.iv >= iv], key=lambda p: (p.iv, p.relative_cp), reverse=True)
+        return sorted([p for p in family if p.iv >= iv], key=lambda p: (p.iv, p.ncp), reverse=True)
 
-    def get_best_relative_cp_in_family(self, family):
-        best = max(family, key=lambda p: p.relative_cp)
-        return sorted([p for p in family if p.relative_cp == best.relative_cp], key=lambda p: p.iv, reverse=True)
+    def get_best_ncp_in_family(self, family):
+        best = max(family, key=lambda p: p.ncp)
+        return sorted([p for p in family if p.ncp == best.ncp], key=lambda p: p.iv, reverse=True)
 
-    def get_better_relative_cp_in_family(self, family, relative_cp):
-        return sorted([p for p in family if p.relative_cp >= relative_cp], key=lambda p: (p.relative_cp, p.iv), reverse=True)
+    def get_better_ncp_in_family(self, family, ncp):
+        return sorted([p for p in family if p.ncp >= ncp], key=lambda p: (p.ncp, p.iv), reverse=True)
 
     def get_best_cp_in_family(self, family):
         best = max(family, key=lambda p: p.cp)
-        return sorted([p for p in family if p.cp == best.cp], key=lambda p: (p.relative_cp, p.iv), reverse=True)
+        return sorted([p for p in family if p.cp == best.cp], key=lambda p: (p.ncp, p.iv), reverse=True)
 
     def get_better_cp_in_family(self, family, cp):
-        return sorted([p for p in family if p.cp >= cp], key=lambda p: (p.relative_cp, p.iv), reverse=True)
+        return sorted([p for p in family if p.cp >= cp], key=lambda p: (p.ncp, p.iv), reverse=True)
 
     def transfer_pokemon(self, pokemon):
         if self.dry_run:
@@ -260,11 +260,11 @@ class PokemonOptimizer(BaseTask):
             max_cp = self.get_pokemon_max_cp(pokemon.name)
 
             if max_cp > 0:
-                relative_cp = float(pokemon.cp) / max_cp
+                ncp = float(pokemon.cp) / max_cp
             else:
-                relative_cp = 0
+                ncp = 0
 
-            setattr(pokemon, "relative_cp", relative_cp)
+            setattr(pokemon, "ncp", ncp)
 
             self.family_by_family_id.setdefault(family_id, []).append(pokemon)
 
