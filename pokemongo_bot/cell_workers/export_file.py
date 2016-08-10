@@ -6,6 +6,16 @@ from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.base_dir import _base_dir
 
 def csv_export(payload):
+    """
+    this function (and functions for all other file types)
+     receives a payload object (see 'work') to create a st
+     ring that will be written in export file.
+
+     file-type functions should be included in 'exporters'
+     member
+
+     such functions' names should be like this <extension>_export
+    """
     out = io.BytesIO()
     writer = csv.writer(out)
     writer.writerow(['username', payload['username']])
@@ -23,7 +33,7 @@ def csv_export(payload):
     for pokemon in payload['pokemons']:
         temp = []
         for key in pokekeys:
-            temp.append(pokemon.get(key, ''));
+            temp.append(pokemon.get(key, ''))
         writer.writerow(temp)
 
     return out.getvalue()
@@ -45,7 +55,7 @@ class ExportFile(BaseTask):
 
         self.turn = -1
 
-        self.data = {};
+        self.data = {}
         self.payload = {}
         self.text = ''
         self.pokemon_keys = set()
@@ -79,8 +89,8 @@ class ExportFile(BaseTask):
             'inventory': dict(zip(map(lambda x: self.bot.item_list[str(x['item_id'])], self.data['items']), map(lambda x: x.get('count', 0), self.data['items'])))
         }
 
-        self._export();
-        self._write();
+        self._export()
+        self._write()
         self.emit_event(
             'file_exported',
             formatted='{} file exported to {}'.format(self.export_extension, self.file_path)
