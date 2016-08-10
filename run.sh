@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-pokebotpath=$(pwd)
+pokebotpath=$(cd "$(dirname "$0")"; pwd)
 filename=""
 if [ ! -z $1 ]; then
 filename=$1
