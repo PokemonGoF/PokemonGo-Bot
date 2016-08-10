@@ -276,7 +276,7 @@ class PokemonCatchWorker(BaseTask):
     def _do_catch(self, pokemon, encounter_id, catch_rate_by_ball, is_vip=False):
         # settings that may be exposed at some point
         berry_id = ITEM_RAZZBERRY
-        maximum_ball = ITEM_ULTRABALL if is_vip else ITEM_GREATBALL
+        maximum_ball = ITEM_ULTRABALL
         ideal_catch_rate_before_throw = 0.9 if is_vip else 0.35
 
         berry_count = self.bot.item_inventory_count(berry_id)
