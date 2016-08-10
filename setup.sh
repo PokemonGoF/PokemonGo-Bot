@@ -128,7 +128,7 @@ if [ ! -f ./configs/"$filename" ]
 then
 echo "There's no ./configs/"$filename" file. It's better to use run.sh, not this one."
 else
-./run ./configs/"$filename"
+./run.sh ./configs/"$filename"
 fi
 ;;
 *)

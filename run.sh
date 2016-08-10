@@ -15,7 +15,8 @@ while true
 do
 cd $pokebotpath
 python pokecli.py -cf $filename
-read -p "Press any button or wait 20 seconds." -r -s -n1 -t 20
-echo `date`"Pokebot"$*" Stopped." 
+read -p "Press any button or wait 20 seconds to continue.
+" -r -s -n1 -t 20
+echo `date`" Pokebot"$*" Stopped." 
 done
 exit 0
