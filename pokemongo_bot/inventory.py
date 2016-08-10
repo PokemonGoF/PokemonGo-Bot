@@ -110,7 +110,9 @@ class Items(_BaseInventoryComponent):
         """
         itemcount = 1
         for item in self._data:
-                itemcount += self.count_for(item)
+            current_item_count = self.count_for(item)
+            if current_item_count:
+                itemcount += current_item_count
         return itemcount
 
     def get_space_left(self):
