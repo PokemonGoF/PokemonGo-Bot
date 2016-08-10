@@ -461,10 +461,7 @@ class PokemonGoBot(object):
         )
 
         # Export File
-        self.event_manager.register_event(
-            'file_exported',
-            parameters=('file')
-        )
+        self.event_manager.register_event('file_exported')
 
     def tick(self):
         self.health_record.heartbeat()
