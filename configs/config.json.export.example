@@ -15,7 +15,8 @@
       {
         "type": "ExportFile",
         "config": {
-          "file_type": "csv"
+          "file_type": "csv",
+          "relative_path": "export.csv"
         }
       },
       {
