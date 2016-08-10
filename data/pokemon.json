@@ -4326,12 +4326,6 @@
     ],
     "Weight": "49.8 kg",
     "Height": "1.5 m",
-    "Next evolution(s)": [
-      {
-        "Number": "107",
-        "Name": "Hitmonchan"
-      }
-    ],
     "Special Attack(s)": [
       "Low Sweep",
       "Stomp",
@@ -4361,12 +4355,6 @@
     ],
     "Weight": "50.2 kg",
     "Height": "1.4 m",
-    "Previous evolution(s)": [
-      {
-        "Number": "106",
-        "Name": "Hitmonlee"
-      }
-    ],
     "Special Attack(s)": [
       "Brick Break",
       "Fire Punch",
@@ -5724,6 +5712,12 @@
     ],
     "Weight": "3.3 kg",
     "Height": "1.8 m",
+    "Next evolution(s)": [
+      {
+        "Number": "148",
+        "Name": "Dragonair"
+      }
+    ],
     "Next Evolution Requirements": {
       "Amount": 25,
       "Family": 147,
