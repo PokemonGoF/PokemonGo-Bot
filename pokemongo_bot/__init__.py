@@ -242,12 +242,6 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event('no_pokeballs')
         self.event_manager.register_event(
-            'use_ultraball',
-            parameters=(
-                'ultraball_count'
-            )
-        )
-        self.event_manager.register_event(
             'pokemon_catch_rate',
             parameters=(
                 'catch_rate',
