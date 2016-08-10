@@ -60,6 +60,18 @@ class UpdateLiveStatsTestCase(unittest.TestCase):
         self.assertTrue(self.worker._should_display())
 
     @patch('pokemongo_bot.cell_workers.update_live_stats.datetime')
+    def test_should_display_no_terminal_log_title(self, mock_datetime):
+        # _should_display should return False if both terminal_title and terminal_log are false
+        # in configuration, even if we're past next_update.
+        now = datetime.now()
+        mock_datetime.now.return_value = now + timedelta(seconds=20)
+        self.worker.next_update = now
+        self.worker.terminal_log = False
+        self.worker.terminal_title = False
+
+        self.assertFalse(self.worker._should_display())
+
+    @patch('pokemongo_bot.cell_workers.update_live_stats.datetime')
     def test_should_display_before_next_update(self, mock_datetime):
         now = datetime.now()
         mock_datetime.now.return_value = now - timedelta(seconds=20)
