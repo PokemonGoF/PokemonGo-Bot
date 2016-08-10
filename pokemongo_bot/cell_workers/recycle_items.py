@@ -1,6 +1,7 @@
 import json
 import os
 from pokemongo_bot import inventory
+from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.tree_config_builder import ConfigException
@@ -36,6 +37,8 @@ class RecycleItems(BaseTask):
 
     def initialize(self):
         self.items_filter = self.config.get('item_filter', {})
+        self.min_empty_space = self.config.get('min_empty_space', None)
+        self.item_filter = self.config.get('item_filter', {})
         self._validate_item_filter()
 
     def _validate_item_filter(self):
@@ -45,7 +48,7 @@ class RecycleItems(BaseTask):
         :rtype: None
         :raise: ConfigException: When an item doesn't exist in ../../data/items.json
         """
-        item_list = json.load(open(os.path.join('data', 'items.json')))
+        item_list = json.load(open(os.path.join(_base_dir, 'data', 'items.json')))
         for config_item_name, bag_count in self.items_filter.iteritems():
             if config_item_name not in item_list.viewvalues():
                 if config_item_name not in item_list:
@@ -60,6 +63,23 @@ class RecycleItems(BaseTask):
         if not self.bot.has_space_for_loot():
             # Updating user's inventory
             inventory.init_inventory(self.bot)
+        items_in_bag = self.bot.get_inventory_count('item')
+        total_bag_space = self.bot.player_data['max_item_storage']
+        free_bag_space = total_bag_space - items_in_bag
+
+        if self.min_empty_space is not None:
+            if free_bag_space >= self.min_empty_space:
+                    self.emit_event(
+                        'item_discard_skipped',
+                        formatted="Skipping Recycling of Items. {space} space left in bag.",
+                        data={
+                            'space': free_bag_space
+                        }
+                    )
+                    return
+
+        self.bot.latest_inventory = None
+        item_count_dict = self.bot.item_inventory_count('all')
 
             # For each user's item in inventory recycle it if needed
             for item_in_inventory in inventory.items().all():
