@@ -20,7 +20,7 @@ def remote_control(sid, command):
 @sio.on('bot:send_reply')
 def request_reply(sid, response):
     event = response.pop('command')
-    account = response.pop('account')
+    account = response['account']
     event = "{}:{}".format(event, account)
     sio.emit(event, response)
 
