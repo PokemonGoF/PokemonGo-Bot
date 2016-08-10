@@ -282,6 +282,8 @@ class PokemonCatchWorker(BaseTask):
         berry_count = self.bot.item_inventory_count(berry_id)
         items_stock = self.bot.current_inventory()
 
+        min_ultraball_to_be_kept = self.config.get('min_ultraball_to_be_kept', items_stock[ITEM_ULTRABALL])
+
         while True:
 
             # find lowest available ball
@@ -290,7 +292,11 @@ class PokemonCatchWorker(BaseTask):
                 current_ball += 1
             if items_stock[current_ball] == 0:
                 self.emit_event('no_pokeballs', formatted='No usable pokeballs found!')
-                break
+                if maximum_ball != ITEM_ULTRABALL and items_stock[ITEM_ULTRABALL] > min_ultraball_to_keep:
+                    maximum_ball = ITEM_ULTRABALL
+                    continue
+                else:
+                    break
 
             # check future ball count
             num_next_balls = 0
