@@ -73,7 +73,7 @@ class RecycleItems(BaseTask):
         :rtype: WorkerResult
         """
         # Updating inventory
-        inventory.init_inventory(self.bot)
+        inventory.refresh_inventory()
         if self.should_run():
             # For each user's item in inventory recycle it if needed
             for item_in_inventory in inventory.items().all():
@@ -82,18 +82,7 @@ class RecycleItems(BaseTask):
                 if item.should_be_recycled():
                     item.request_recycle()
                     item.emit_recycle_result()
-                    self.update_inventory(item)
         return WorkerResult.SUCCESS
-
-    def update_inventory(self, item):
-        """
-        Update inventory if the item has been recycled. Prevent an unnecessary call to the api
-        :param item: The item which has been recycled
-        :return: Nothing.
-        :rtype: None
-        """
-        if item.is_recycling_success():
-            inventory.items().remove(item.id, item.amount_to_recycle)
 
     class _Item:
         """
@@ -132,6 +121,16 @@ class RecycleItems(BaseTask):
                 if item_filter_config is not 0:
                     return item_filter_config.get('keep', 20)
 
+        def update_inventory(self):
+            """
+            Update inventory if the item has been recycled. Prevent an unnecessary call to the api
+            :return: Nothing.
+            :rtype: None
+            """
+            if self.is_recycling_success():
+                inventory.items().remove(self.id, self.amount_to_recycle)
+
+
         def should_be_recycled(self):
             """
             Returns a value indicating whether the item should be recycled.
@@ -150,6 +149,7 @@ class RecycleItems(BaseTask):
             # Example of good request response
             # {'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
             self.recycle_item_request_result = response.get('responses', {}).get('RECYCLE_INVENTORY_ITEM', {}).get('result', 0)
+            self.update_inventory()
 
         def is_recycling_success(self):
             """
