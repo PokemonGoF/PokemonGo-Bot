@@ -14,13 +14,19 @@ class FollowPath(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def initialize(self):
-        self.ptr = 0
         self._process_config()
         self.points = self.load_path()
+
+        if self.path_start_mode == 'closest':
+            self.ptr = self.find_closest_point_idx(self.points)
+        
+        else:
+            self.ptr = 0
 
     def _process_config(self):
         self.path_file = self.config.get("path_file", None)
         self.path_mode = self.config.get("path_mode", "linear")
+        self.path_start_mode = self.config.get("path_start_mode", "first")
 
     def load_path(self):
         if self.path_file is None:
@@ -66,6 +72,30 @@ class FollowPath(BaseTask):
                 points.append({"lat": point.latitude, "lng": point.longitude})
 
         return points
+
+    def find_closest_point_idx(self, points):
+
+        return_idx = 0
+        min_distance = float("inf");
+        for index in range(len(points)):
+            point = points[index]
+            botlat = self.bot.api._position_lat
+            botlng = self.bot.api._position_lng
+            lat = float(point['lat'])
+            lng = float(point['lng'])
+            
+            dist = distance(
+                botlat,
+                botlng,
+                lat,
+                lng
+            )
+
+            if dist < min_distance:
+                min_distance = dist
+                return_idx = index
+
+        return return_idx
 
     def work(self):
         point = self.points[self.ptr]

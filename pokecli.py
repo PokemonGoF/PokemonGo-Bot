@@ -39,8 +39,15 @@ from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingE
 from geopy.exc import GeocoderQuotaExceeded
 
 from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
+from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.health_record import BotEvent
 from pokemongo_bot.plugin_loader import PluginLoader
+
+try:
+    from demjson import jsonlint
+except ImportError:
+    # Run `pip install -r requirements.txt` to fix this
+    jsonlint = None
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -104,7 +111,7 @@ def main():
                     'api_error',
                     sender=bot,
                     level='info',
-                    formmated='Log logged in, reconnecting in {:s}'.format(wait_time)
+                    formatted='Log logged in, reconnecting in {:d}'.format(wait_time)
                 )
                 time.sleep(wait_time)
             except ServerBusyOrOfflineException:
@@ -156,22 +163,34 @@ def report_summary(bot):
 
 def init_config():
     parser = argparse.ArgumentParser()
-    config_file = "configs/config.json"
+    config_file = os.path.join(_base_dir, 'configs', 'config.json')
     web_dir = "web"
 
     # If config file exists, load variables from json
     load = {}
 
+    def _json_loader(filename):
+        try:
+            with open(filename, 'rb') as data:
+                load.update(json.load(data))
+        except ValueError:
+            if jsonlint:
+                with open(filename, 'rb') as data:
+                    lint = jsonlint()
+                    rc = lint.main(['-v', filename])
+
+            logger.critical('Error with configuration file')
+            sys.exit(-1)
+
     # Select a config file code
     parser.add_argument("-cf", "--config", help="Config File to use")
     config_arg = parser.parse_known_args() and parser.parse_known_args()[0].config or None
+
     if config_arg and os.path.isfile(config_arg):
-        with open(config_arg) as data:
-            load.update(json.load(data))
+        _json_loader(config_arg)
     elif os.path.isfile(config_file):
         logger.info('No config argument specified, checking for /configs/config.json')
-        with open(config_file) as data:
-            load.update(json.load(data))
+        _json_loader(config_file)
     else:
         logger.info('Error: No /configs/config.json or specified config')
 
@@ -376,6 +395,14 @@ def init_config():
         type=float,
         default=5.0
     )
+    add_config(
+        parser,
+        load,
+        long_flag="--logging_color",
+        help="If logging_color is set to true, colorized logging handler will be used",
+        type=bool,
+        default=True
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()
@@ -385,7 +412,7 @@ def init_config():
         config.password = getpass("Password: ")
 
     config.gps = load.get('gps', { 'initial_altitude': 12.0 })
-
+    config.encrypt_location = load.get('encrypt_location','')
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.action_wait_max = load.get('action_wait_max', 4)
