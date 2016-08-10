@@ -17,7 +17,6 @@ class LoggingHandler(EventHandler):
         # Honour config settings if log level disabled
         for event_level in ['info', 'warning', 'error', 'critical', 'debug']:
             if event_level == level and hasattr(self.bot.config, event_level) and not getattr(self.bot.config, event_level):
-                self._last_event = event
                 return
 
         logger = logging.getLogger(type(sender).__name__)
