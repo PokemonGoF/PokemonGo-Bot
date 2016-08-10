@@ -15,10 +15,12 @@ TIME_PERIODS = (
     (60, 'minute'),
     (3600, 'hour'),
     (86400, 'day'),
-    (86400*7, 'week')
+    (86400 * 7, 'week')
 )
 
 FORT_CACHE = {}
+
+
 def fort_details(bot, fort_id, latitude, longitude):
     """
     Lookup fort metadata and (if possible) serve from cache.
@@ -29,7 +31,10 @@ def fort_details(bot, fort_id, latitude, longitude):
         Lookup the fort details and cache the response for future use.
         """
         request = bot.api.create_request()
-        request.fort_details(fort_id=fort_id, latitude=latitude, longitude=longitude)
+        request.fort_details(
+            fort_id=fort_id,
+            latitude=latitude,
+            longitude=longitude)
         try:
             response_dict = request.call()
             FORT_CACHE[fort_id] = response_dict['responses']['FORT_DETAILS']
@@ -38,6 +43,7 @@ def fort_details(bot, fort_id, latitude, longitude):
 
     # Just to avoid KeyErrors
     return FORT_CACHE.get(fort_id, {})
+
 
 def encode(cellid):
     output = []
@@ -126,10 +132,10 @@ def format_time(seconds):
     for period, unit in TIME_PERIODS[::-1]:
         num, duration = divmod(duration, period)
         if num:
-            p = '{0}{1}'.format(unit, 's'*(num!=1))
+            p = '{0}{1}'.format(unit, 's' * (num != 1))
             runtime.append('{0} {1}'.format(num, p))
 
-    runtime.append('{0} second{1}'.format(duration, 's'*(duration!=1)))
+    runtime.append('{0} second{1}'.format(duration, 's' * (duration != 1)))
 
     return ', '.join(runtime)
 
@@ -151,11 +157,11 @@ def print_red(message):
 
 
 def float_equal(f1, f2, epsilon=1e-8):
-  if f1 > f2:
-    return f1 - f2 < epsilon
-  if f2 > f1:
-    return f2 - f1 < epsilon
-  return True
+    if f1 > f2:
+        return f1 - f2 < epsilon
+    if f2 > f1:
+        return f2 - f1 < epsilon
+    return True
 
 
 # pseudo mercator projection
@@ -182,7 +188,8 @@ def y2lat(y):
         if abs(dphi) < 0.000000001:
             break
         con = ECCENT * sin(phi)
-        dphi = pi / 2.0 - 2 * atan (ts * pow((1.0 - con) / (1.0 + con), COM)) - phi
+        dphi = pi / 2.0 - 2 * \
+            atan(ts * pow((1.0 - con) / (1.0 + con), COM)) - phi
         phi += dphi
     return rad2deg(phi)
 
@@ -202,7 +209,7 @@ def x2lng(x):
 
 
 def lng2x(lng):
-    return EARTH_RADIUS_MAJ * deg2rad(lng);
+    return EARTH_RADIUS_MAJ * deg2rad(lng)
 
 
 def deg2rad(deg):
@@ -216,21 +223,30 @@ def rad2deg(rad):
 def find_biggest_cluster(radius, points, order=None):
     graph = nx.Graph()
     for point in points:
-            if order is 'lure_info':
-                f = point['latitude'], point['longitude'], point['lure_info']['lure_expires_timestamp_ms']
-            else:
-                f = point['latitude'], point['longitude'], 0
-            graph.add_node(f)
-            for node in graph.nodes():
-                if node != f and distance(f[0], f[1], node[0], node[1]) <= radius*2:
-                    graph.add_edge(f, node)
+        if order is 'lure_info':
+            f = point['latitude'], point['longitude'], point[
+                'lure_info']['lure_expires_timestamp_ms']
+        else:
+            f = point['latitude'], point['longitude'], 0
+        graph.add_node(f)
+        for node in graph.nodes():
+            if node != f and distance(
+                    f[0], f[1], node[0], node[1]) <= radius * 2:
+                graph.add_edge(f, node)
     cliques = list(find_cliques(graph))
     if len(cliques) > 0:
-        max_clique = max(list(find_cliques(graph)), key=lambda l: (len(l), sum(x[2] for x in l)))
+        max_clique = max(
+            list(
+                find_cliques(graph)), key=lambda l: (
+                len(l), sum(
+                    x[2] for x in l)))
         merc_clique = [coord2merc(x[0], x[1]) for x in max_clique]
         clique_x, clique_y = zip(*merc_clique)
         best_point = np.mean(clique_x), np.mean(clique_y)
         best_coord = merc2coord(best_point)
-        return {'latitude': best_coord[0], 'longitude': best_coord[1], 'num_points': len(max_clique)}
+        return {
+            'latitude': best_coord[0],
+            'longitude': best_coord[1],
+            'num_points': len(max_clique)}
     else:
         return None

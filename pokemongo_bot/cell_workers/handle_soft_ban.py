@@ -35,7 +35,7 @@ class HandleSoftBan(BaseTask):
                 del self.bot.fort_timeouts[forts[0]['id']]
             return WorkerResult.RUNNING
         else:
-            spins = randint(50,60)
+            spins = randint(50, 60)
             self.emit_event(
                 'softban_fix',
                 formatted='Fixing softban.'

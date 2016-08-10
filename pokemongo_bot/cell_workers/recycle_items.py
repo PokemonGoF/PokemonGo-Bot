@@ -14,13 +14,17 @@ class RecycleItems(BaseTask):
         self._validate_item_filter()
 
     def _validate_item_filter(self):
-        item_list = json.load(open(os.path.join(_base_dir, 'data', 'items.json')))
+        item_list = json.load(
+            open(
+                os.path.join(
+                    _base_dir,
+                    'data',
+                    'items.json')))
         for config_item_name, bag_count in self.item_filter.iteritems():
             if config_item_name not in item_list.viewvalues():
                 if config_item_name not in item_list:
                     raise ConfigException(
-                        "item {} does not exist, spelling mistake? (check for valid item names in data/items.json)".format(
-                            config_item_name))
+                        "item {} does not exist, spelling mistake? (check for valid item names in data/items.json)".format(config_item_name))
 
     def work(self):
         items_in_bag = self.bot.get_inventory_count('item')
@@ -29,14 +33,12 @@ class RecycleItems(BaseTask):
 
         if self.min_empty_space is not None:
             if free_bag_space >= self.min_empty_space:
-                    self.emit_event(
-                        'item_discard_skipped',
-                        formatted="Skipping Recycling of Items. {space} space left in bag.",
-                        data={
-                            'space': free_bag_space
-                        }
-                    )
-                    return
+                self.emit_event(
+                    'item_discard_skipped',
+                    formatted="Skipping Recycling of Items. {space} space left in bag.",
+                    data={
+                        'space': free_bag_space})
+                return
 
         self.bot.latest_inventory = None
         item_count_dict = self.bot.item_inventory_count('all')
@@ -52,21 +54,27 @@ class RecycleItems(BaseTask):
                     id_filter_keep = id_filter.get('keep', 20)
 
             bag_count = self.bot.item_inventory_count(item_id)
-            if (item_name in self.item_filter or str(item_id) in self.item_filter) and bag_count > id_filter_keep:
+            if (item_name in self.item_filter or str(item_id)
+                    in self.item_filter) and bag_count > id_filter_keep:
                 items_recycle_count = bag_count - id_filter_keep
-                response_dict_recycle = self.send_recycle_item_request(item_id=item_id, count=items_recycle_count)
-                result = response_dict_recycle.get('responses', {}).get('RECYCLE_INVENTORY_ITEM', {}).get('result', 0)
+                response_dict_recycle = self.send_recycle_item_request(
+                    item_id=item_id, count=items_recycle_count)
+                result = response_dict_recycle.get(
+                    'responses',
+                    {}).get(
+                    'RECYCLE_INVENTORY_ITEM',
+                    {}).get(
+                    'result',
+                    0)
 
-                if result == 1: # Request success
+                if result == 1:  # Request success
                     self.emit_event(
                         'item_discarded',
                         formatted='Discarded {amount}x {item} (maximum {maximum}).',
                         data={
                             'amount': str(items_recycle_count),
                             'item': item_name,
-                            'maximum': str(id_filter_keep)
-                        }
-                    )
+                            'maximum': str(id_filter_keep)})
                 else:
                     self.emit_event(
                         'item_discard_fail',

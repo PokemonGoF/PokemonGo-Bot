@@ -5,10 +5,13 @@ from pokemongo_bot import PokemonGoBot, ConfigException, MismatchTaskApiVersion,
 from pokemongo_bot.cell_workers import HandleSoftBan, CatchLuredPokemon
 from pokemongo_bot.test.resources.plugin_fixture import FakeTask, UnsupportedApiTask
 
+
 def convert_from_json(str):
     return json.loads(str)
 
+
 class TreeConfigBuilderTest(unittest.TestCase):
+
     def setUp(self):
         self.bot = {}
 
@@ -106,7 +109,11 @@ class TreeConfigBuilderTest(unittest.TestCase):
         self.assertIsInstance(tree[0], CatchLuredPokemon)
 
     def test_load_plugin_task(self):
-        package_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'resources', 'plugin_fixture')
+        package_path = os.path.join(
+            os.path.abspath(
+                os.path.dirname(__file__)),
+            'resources',
+            'plugin_fixture')
         plugin_loader = PluginLoader()
         plugin_loader.load_plugin(package_path)
 
@@ -120,7 +127,14 @@ class TreeConfigBuilderTest(unittest.TestCase):
         self.assertEqual(result, 'FakeTask')
 
     def setupUnsupportedBuilder(self):
-        package_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'pokemongo_bot', 'test', 'resources', 'plugin_fixture')
+        package_path = os.path.join(
+            os.path.abspath(
+                os.path.dirname(__file__)),
+            '..',
+            'pokemongo_bot',
+            'test',
+            'resources',
+            'plugin_fixture')
         plugin_loader = PluginLoader()
         plugin_loader.load_plugin(package_path)
 

@@ -6,11 +6,12 @@ from pokemongo_bot.base_dir import _base_dir
 Helper class for updating/retrieving Inventory data
 '''
 
+
 class _BaseInventoryComponent(object):
     TYPE = None  # base key name for items of this type
     ID_FIELD = None  # identifier field for items of this type
     STATIC_DATA_FILE = None  # optionally load static data from file,
-                             # dropping the data in a static variable named STATIC_DATA
+    # dropping the data in a static variable named STATIC_DATA
 
     def __init__(self):
         self._data = {}
@@ -50,19 +51,23 @@ class _BaseInventoryComponent(object):
 
 
 class Candy(object):
+
     def __init__(self, family_id, quantity):
         self.type = Pokemons.name_for(family_id)
         self.quantity = quantity
 
     def consume(self, amount):
         if self.quantity < amount:
-            raise Exception('Tried to consume more {} candy than you have'.format(self.type))
+            raise Exception(
+                'Tried to consume more {} candy than you have'.format(
+                    self.type))
         self.quantity -= amount
 
     def add(self, amount):
         if amount < 0:
             raise Exception('Must add positive amount of candy')
         self.quantity += amount
+
 
 class Candies(_BaseInventoryComponent):
     TYPE = 'candy'
@@ -131,23 +136,32 @@ class Pokemons(_BaseInventoryComponent):
     @classmethod
     def next_evolution_id_for(cls, pokemon_id):
         try:
-            return int(cls.data_for(pokemon_id)['Next evolution(s)'][0]['Number'])
+            return int(cls.data_for(pokemon_id)[
+                       'Next evolution(s)'][0]['Number'])
         except KeyError:
             return None
 
     @classmethod
     def evolution_cost_for(cls, pokemon_id):
         try:
-            return int(cls.data_for(pokemon_id)['Next Evolution Requirements']['Amount'])
+            return int(cls.data_for(pokemon_id)[
+                       'Next Evolution Requirements']['Amount'])
         except KeyError:
             return
 
     def all(self):
         # by default don't include eggs in all pokemon (usually just
         # makes caller's lives more difficult)
-        return [p for p in super(Pokemons, self).all() if not isinstance(p, Egg)]
+        return [
+            p for p in super(
+                Pokemons,
+                self).all() if not isinstance(
+                p,
+                Egg)]
+
 
 class Egg(object):
+
     def __init__(self, data):
         self._data = data
 
@@ -156,6 +170,7 @@ class Egg(object):
 
 
 class Pokemon(object):
+
     def __init__(self, data):
         self._data = data
         self.id = data['id']
@@ -194,7 +209,10 @@ class Pokemon(object):
 
     def _compute_iv(self):
         total_IV = 0.0
-        iv_stats = ['individual_attack', 'individual_defense', 'individual_stamina']
+        iv_stats = [
+            'individual_attack',
+            'individual_defense',
+            'individual_stamina']
 
         for individual_stat in iv_stats:
             try:
@@ -207,6 +225,7 @@ class Pokemon(object):
 
 
 class Inventory(object):
+
     def __init__(self, bot):
         self.bot = bot
         self.pokedex = Pokedex()
@@ -217,18 +236,23 @@ class Inventory(object):
 
     def refresh(self):
         # TODO: it would be better if this class was used for all
-        # inventory management. For now, I'm just clearing the old inventory field
+        # inventory management. For now, I'm just clearing the old inventory
+        # field
         self.bot.latest_inventory = None
-        inventory = self.bot.get_inventory()['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+        inventory = self.bot.get_inventory()['responses']['GET_INVENTORY'][
+            'inventory_delta']['inventory_items']
         for i in (self.pokedex, self.candy, self.items, self.pokemons):
             i.refresh(inventory)
 
-        user_web_inventory = os.path.join(_base_dir, 'web', 'inventory-%s.json' % (self.bot.config.username))
+        user_web_inventory = os.path.join(
+            _base_dir, 'web', 'inventory-%s.json' %
+            (self.bot.config.username))
         with open(user_web_inventory, 'w') as outfile:
             json.dump(inventory, outfile)
 
 
 _inventory = None
+
 
 def init_inventory(bot):
     global _inventory

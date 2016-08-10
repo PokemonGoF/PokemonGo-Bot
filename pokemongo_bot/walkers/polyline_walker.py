@@ -9,8 +9,12 @@ class PolylineWalker(StepWalker):
 
     def __init__(self, bot, speed, dest_lat, dest_lng):
         super(PolylineWalker, self).__init__(bot, speed, dest_lat, dest_lng)
-        self.polyline_walker = Polyline((self.api._position_lat, self.api._position_lng),
-                                        (self.destLat, self.destLng), self.speed)
+        self.polyline_walker = Polyline(
+            (self.api._position_lat,
+             self.api._position_lng),
+            (self.destLat,
+             self.destLng),
+            self.speed)
         self.bot.event_manager.emit(
             'polyline_request',
             sender=self,

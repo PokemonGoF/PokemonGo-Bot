@@ -9,7 +9,9 @@ import uuid
 import requests
 import time
 
+
 class BotEvent(object):
+
     def __init__(self, config):
         self.config = config
         self.logger = logging.getLogger(__name__)
@@ -17,23 +19,22 @@ class BotEvent(object):
         # https://github.com/analytics-pros/universal-analytics-python
         if self.config.health_record:
             self.logger.info('Health check is enabled. For more information:')
-            self.logger.info('https://github.com/PokemonGoF/PokemonGo-Bot/tree/dev#analytics')
+            self.logger.info(
+                'https://github.com/PokemonGoF/PokemonGo-Bot/tree/dev#analytics')
             self.client = Client(
                 dsn='https://8abac56480f34b998813d831de262514:196ae1d8dced41099f8253ea2c8fe8e6@app.getsentry.com/90254',
                 name='PokemonGof-Bot',
-                processors = (
+                processors=(
                     'raven.processors.SanitizePasswordsProcessor',
-                    'raven.processors.RemoveStackLocalsProcessor'
-                ),
-                install_logging_hook = False,
-                hook_libraries = (),
-                enable_breadcrumbs = False,
-                logging = False,
-                context = {}
-            )
+                    'raven.processors.RemoveStackLocalsProcessor'),
+                install_logging_hook=False,
+                hook_libraries=(),
+                enable_breadcrumbs=False,
+                logging=False,
+                context={})
 
         self.client_id = uuid.uuid4()
-        self.heartbeat_wait = 30 # seconds
+        self.heartbeat_wait = 30  # seconds
         self.last_heartbeat = time.time()
 
     def capture_error(self):
@@ -68,7 +69,7 @@ class BotEvent(object):
         data = {
             'v': '1',
             'tid': 'UA-81469507-1',
-            'aip': '1', # Anonymize IPs
+            'aip': '1',  # Anonymize IPs
             'cid': self.client_id,
             't': 'pageview',
             'dp': path

@@ -34,14 +34,16 @@ class CollectLevelUpReward(BaseTask):
 
     def _collect_level_reward(self):
         response_dict = self.bot.api.level_up_rewards(level=self.current_level)
-        if 'status_code' in response_dict and response_dict['status_code'] == 1:
+        if 'status_code' in response_dict and response_dict[
+                'status_code'] == 1:
             data = (response_dict
                     .get('responses', {})
                     .get('LEVEL_UP_REWARDS', {})
                     .get('items_awarded', []))
 
             for item in data:
-                if 'item_id' in item and str(item['item_id']) in self.bot.item_list:
+                if 'item_id' in item and str(
+                        item['item_id']) in self.bot.item_list:
                     got_item = self.bot.item_list[str(item['item_id'])]
                     item['name'] = got_item
                     count = 'item_count' in item and item['item_count'] or 0

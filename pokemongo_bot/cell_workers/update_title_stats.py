@@ -6,6 +6,7 @@ from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.tree_config_builder import ConfigException
 
+
 class UpdateTitleStats(BaseTask):
     """
     Periodically updates the terminal title to display stats about the bot.
@@ -65,7 +66,6 @@ class UpdateTitleStats(BaseTask):
     """
     SUPPORTED_TASK_API_VERSION = 1
 
-
     def __init__(self, bot, config):
         """
         Initializes the worker.
@@ -83,8 +83,10 @@ class UpdateTitleStats(BaseTask):
         self.terminal_log = self.config.get('terminal_log', False)
         self.terminal_title = self.config.get('terminal_title', True)
 
-        self.bot.event_manager.register_event('update_title', parameters=('title',))
-        self.bot.event_manager.register_event('log_stats',parameters=('title',))
+        self.bot.event_manager.register_event(
+            'update_title', parameters=('title',))
+        self.bot.event_manager.register_event(
+            'log_stats', parameters=('title',))
 
     def initialize(self):
         pass
@@ -160,7 +162,6 @@ class UpdateTitleStats(BaseTask):
 
         self.next_update = datetime.now() + timedelta(seconds=self.min_interval)
 
-
     def _get_stats_title(self, player_stats):
         """
         Generates a stats string with the given player stats according to the configuration.
@@ -188,7 +189,8 @@ class UpdateTitleStats(BaseTask):
         experience = int(player_stats.get('experience', 0))
         current_level_xp = experience - prev_level_xp
         whole_level_xp = next_level_xp - prev_level_xp
-        level_completion_percentage = int((current_level_xp * 100) / whole_level_xp)
+        level_completion_percentage = int(
+            (current_level_xp * 100) / whole_level_xp)
         experience_per_hour = int(metrics.xp_per_hour())
         xp_earned = metrics.xp_earned()
         stops_visited = metrics.visits['latest'] - metrics.visits['start']
@@ -247,10 +249,12 @@ class UpdateTitleStats(BaseTask):
             dictionary.
             """
             if stat not in available_stats:
-                raise ConfigException("stat '{}' isn't available for displaying".format(stat))
+                raise ConfigException(
+                    "stat '{}' isn't available for displaying".format(stat))
             return available_stats[stat]
 
-        # Map stats the user wants to see to available stats and join them with pipes.
+        # Map stats the user wants to see to available stats and join them with
+        # pipes.
         title = ' | '.join(map(get_stat, self.displayed_stats))
 
         return title
@@ -266,7 +270,7 @@ class UpdateTitleStats(BaseTask):
             .get('GET_INVENTORY', {}) \
             .get('inventory_delta', {}) \
             .get('inventory_items', {})
-        return next((x["inventory_item_data"]["player_stats"]
-                     for x in inventory_items
-                     if x.get("inventory_item_data", {}).get("player_stats", {})),
-                    None)
+        return next(
+            (x["inventory_item_data"]["player_stats"] for x in inventory_items if x.get(
+                "inventory_item_data", {}).get(
+                "player_stats", {})), None)

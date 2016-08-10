@@ -2,21 +2,28 @@ import unittest
 import json
 from pokemongo_bot.base_task import BaseTask
 
+
 class FakeTask(BaseTask):
+
     def initialize(self):
         self.foo = 'foo'
 
     def work(self):
         pass
 
+
 class FakeTaskWithoutInitialize(BaseTask):
+
     def work(self):
         pass
+
 
 class FakeTaskWithoutWork(BaseTask):
     pass
 
+
 class BaseTaskTest(unittest.TestCase):
+
     def setUp(self):
         self.bot = {}
         self.config = {}

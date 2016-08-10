@@ -86,7 +86,8 @@ class MoveToMapPokemon(BaseTask):
         self.min_ball = self.config.get('min_ball', 1)
         self.map_path = self.config.get('map_path', 'raw_data')
 
-        data_file = os.path.join(_base_dir, 'map-caught-{}.json'.format(self.bot.config.username))
+        data_file = os.path.join(
+            _base_dir, 'map-caught-{}.json'.format(self.bot.config.username))
         if os.path.isfile(data_file):
             self.caught = json.load(
                 open(data_file)
@@ -94,11 +95,13 @@ class MoveToMapPokemon(BaseTask):
 
     def get_pokemon_from_map(self):
         try:
-            req = requests.get('{}/{}?gyms=false&scanned=false'.format(self.config['address'], self.map_path))
+            req = requests.get(
+                '{}/{}?gyms=false&scanned=false'.format(self.config['address'], self.map_path))
         except requests.exceptions.ConnectionError:
-            self._emit_failure('Could not get Pokemon data from PokemonGo-Map: '
-                               '{}. Is it running?'.format(
-                                   self.config['address']))
+            self._emit_failure(
+                'Could not get Pokemon data from PokemonGo-Map: '
+                '{}. Is it running?'.format(
+                    self.config['address']))
             return []
 
         try:
@@ -112,16 +115,21 @@ class MoveToMapPokemon(BaseTask):
 
         for pokemon in raw_data['pokemons']:
             try:
-                pokemon['encounter_id'] = long(base64.b64decode(pokemon['encounter_id']))
+                pokemon['encounter_id'] = long(
+                    base64.b64decode(pokemon['encounter_id']))
             except TypeError:
-                self._emit_failure('base64 error: {}'.format(pokemon['encounter_id']))
+                self._emit_failure(
+                    'base64 error: {}'.format(
+                        pokemon['encounter_id']))
                 continue
             pokemon['spawn_point_id'] = pokemon['spawnpoint_id']
             pokemon['disappear_time'] = int(pokemon['disappear_time'] / 1000)
-            pokemon['name'] = self.pokemon_data[pokemon['pokemon_id'] - 1]['Name']
+            pokemon['name'] = self.pokemon_data[
+                pokemon['pokemon_id'] - 1]['Name']
             pokemon['is_vip'] = pokemon['name'] in self.bot.config.vips
 
-            if pokemon['name'] not in self.config['catch'] and not pokemon['is_vip']:
+            if pokemon['name'] not in self.config[
+                    'catch'] and not pokemon['is_vip']:
                 continue
 
             if pokemon['disappear_time'] < (now + self.config['min_time']):
@@ -139,7 +147,8 @@ class MoveToMapPokemon(BaseTask):
                 pokemon['longitude'],
             )
 
-            if pokemon['dist'] > self.config['max_distance'] and not self.config['snipe']:
+            if pokemon['dist'] > self.config[
+                    'max_distance'] and not self.config['snipe']:
                 continue
 
             pokemon_list.append(pokemon)
@@ -185,10 +194,11 @@ class MoveToMapPokemon(BaseTask):
             loc_json['lng']
         )
 
-        # update map when 500m away from center and last update longer than 2 minutes away
+        # update map when 500m away from center and last update longer than 2
+        # minutes away
         now = int(time.time())
         if (dist > UPDATE_MAP_MIN_DISTANCE_METERS and
-            now - self.last_map_update > UPDATE_MAP_MIN_TIME_SEC):
+                now - self.last_map_update > UPDATE_MAP_MIN_TIME_SEC):
             requests.post(
                 '{}/next_loc?lat={}&lon={}'.format(self.config['address'],
                                                    self.bot.position[0],
@@ -224,7 +234,8 @@ class MoveToMapPokemon(BaseTask):
         return WorkerResult.SUCCESS
 
     def dump_caught_pokemon(self):
-        user_data_map_caught = os.path.join(_base_dir, 'data', 'map-caught-{}.json'.format(self.bot.config.username))
+        user_data_map_caught = os.path.join(
+            _base_dir, 'data', 'map-caught-{}.json'.format(self.bot.config.username))
         with open(user_data_map_caught, 'w') as outfile:
             json.dump(self.caught, outfile)
 
@@ -252,13 +263,15 @@ class MoveToMapPokemon(BaseTask):
 
         pokemon = pokemon_list[0]
 
-        # if we only have ultraballs and the target is not a vip don't snipe/walk
+        # if we only have ultraballs and the target is not a vip don't
+        # snipe/walk
         if (pokeballs + superballs) < self.min_ball and not pokemon['is_vip']:
             return WorkerResult.SUCCESS
 
         if self.config['snipe']:
             if self.config['snipe_high_prio_only']:
-                if self.config['snipe_high_prio_threshold'] < pokemon['priority'] or pokemon['is_vip']:
+                if self.config['snipe_high_prio_threshold'] < pokemon[
+                        'priority'] or pokemon['is_vip']:
                     self.snipe(pokemon)
             else:
                 return self.snipe(pokemon)

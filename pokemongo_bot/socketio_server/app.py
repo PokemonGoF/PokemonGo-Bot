@@ -8,6 +8,8 @@ sio = socketio.Server(async_mode='eventlet', logging=logging.NullHandler)
 app = Flask(__name__)
 
 # client asks for data
+
+
 @sio.on('remote:send_request')
 def remote_control(sid, command):
     if not 'account' in command:
@@ -17,12 +19,15 @@ def remote_control(sid, command):
     sio.emit(event, data=command)
 
 # sending bot response to client
+
+
 @sio.on('bot:send_reply')
 def request_reply(sid, response):
     event = response.pop('command')
     account = response['account']
     event = "{}:{}".format(event, account)
     sio.emit(event, response)
+
 
 @sio.on('bot:broadcast')
 def bot_broadcast(sid, env):

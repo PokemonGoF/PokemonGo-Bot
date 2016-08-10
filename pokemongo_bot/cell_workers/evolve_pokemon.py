@@ -20,7 +20,8 @@ class EvolvePokemon(BaseTask):
 
     def _validate_config(self):
         if isinstance(self.evolve_all, basestring):
-            self.evolve_all = [str(pokemon_name).strip() for pokemon_name in self.evolve_all.split(',')]
+            self.evolve_all = [str(pokemon_name).strip()
+                               for pokemon_name in self.evolve_all.split(',')]
 
     def work(self):
         if not self._should_run():
@@ -30,7 +31,8 @@ class EvolvePokemon(BaseTask):
 
         if self.evolve_all[0] != 'all':
             # filter out non-listed pokemons
-            evolve_list = filter(lambda x: x.name in self.evolve_all, evolve_list)
+            evolve_list = filter(
+                lambda x: x.name in self.evolve_all, evolve_list)
 
         cache = {}
         for pokemon in evolve_list:
@@ -45,19 +47,26 @@ class EvolvePokemon(BaseTask):
         if self.bot.tick_count is not 1 or not self.use_lucky_egg:
             return True
 
-        lucky_egg_count = self.bot.item_inventory_count(Item.ITEM_LUCKY_EGG.value)
+        lucky_egg_count = self.bot.item_inventory_count(
+            Item.ITEM_LUCKY_EGG.value)
 
         # Make sure the user has a lucky egg and skip if not
         if lucky_egg_count > 0:
             response_dict_lucky_egg = self.bot.use_lucky_egg()
             if response_dict_lucky_egg:
-                result = response_dict_lucky_egg.get('responses', {}).get('USE_ITEM_XP_BOOST', {}).get('result', 0)
+                result = response_dict_lucky_egg.get(
+                    'responses',
+                    {}).get(
+                    'USE_ITEM_XP_BOOST',
+                    {}).get(
+                    'result',
+                    0)
                 if result is 1:  # Request success
                     self.emit_event(
                         'used_lucky_egg',
                         formatted='Used lucky egg ({amount_left} left).',
                         data={
-                             'amount_left': lucky_egg_count - 1
+                            'amount_left': lucky_egg_count - 1
                         }
                     )
                     return True
@@ -80,17 +89,27 @@ class EvolvePokemon(BaseTask):
         pokemons = []
         logic_to_function = {
             'or': lambda pokemon: pokemon.cp >= self.evolve_above_cp or pokemon.iv >= self.evolve_above_iv,
-            'and': lambda pokemon: pokemon.cp >= self.evolve_above_cp and pokemon.iv >= self.evolve_above_iv
-        }
+            'and': lambda pokemon: pokemon.cp >= self.evolve_above_cp and pokemon.iv >= self.evolve_above_iv}
 
         for pokemon in inventory.pokemons().all():
-            if pokemon.id > 0 and pokemon.has_next_evolution() and (logic_to_function[self.cp_iv_logic](pokemon)):
+            if pokemon.id > 0 and pokemon.has_next_evolution() and (
+                    logic_to_function[self.cp_iv_logic](pokemon)):
                 pokemons.append(pokemon)
 
         if self.first_evolve_by == "cp":
-            pokemons.sort(key=lambda x: (x.pokemon_id, x.cp, x.iv), reverse=True)
+            pokemons.sort(
+                key=lambda x: (
+                    x.pokemon_id,
+                    x.cp,
+                    x.iv),
+                reverse=True)
         else:
-            pokemons.sort(key=lambda x: (x.pokemon_id, x.iv, x.cp), reverse=True)
+            pokemons.sort(
+                key=lambda x: (
+                    x.pokemon_id,
+                    x.iv,
+                    x.cp),
+                reverse=True)
 
         return pokemons
 
@@ -99,17 +118,23 @@ class EvolvePokemon(BaseTask):
             return False
 
         response_dict = self.api.evolve_pokemon(pokemon_id=pokemon.id)
-        if response_dict.get('responses', {}).get('EVOLVE_POKEMON', {}).get('result', 0) == 1:
+        if response_dict.get(
+            'responses',
+            {}).get(
+            'EVOLVE_POKEMON',
+            {}).get(
+            'result',
+                0) == 1:
             self.emit_event(
                 'pokemon_evolved',
                 formatted="Successfully evolved {pokemon} with CP {cp} and IV {iv}!",
                 data={
                     'pokemon': pokemon.name,
                     'iv': pokemon.iv,
-                    'cp': pokemon.cp
-                }
-            )
-            inventory.candies().get(pokemon.pokemon_id).consume(pokemon.evolution_cost)
+                    'cp': pokemon.cp})
+            inventory.candies().get(
+                pokemon.pokemon_id).consume(
+                pokemon.evolution_cost)
             sleep(self.evolve_speed)
             return True
         else:
@@ -119,6 +144,8 @@ class EvolvePokemon(BaseTask):
             return False
 
     def _compute_iv(self, pokemon):
-        total_iv = pokemon.get("individual_attack", 0) + pokemon.get("individual_stamina", 0) + pokemon.get(
-            "individual_defense", 0)
+        total_iv = pokemon.get("individual_attack",
+                               0) + pokemon.get("individual_stamina",
+                                                0) + pokemon.get("individual_defense",
+                                                                 0)
         return round((total_iv / 45.0), 2)

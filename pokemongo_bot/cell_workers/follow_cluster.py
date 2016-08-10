@@ -3,6 +3,7 @@ from pokemongo_bot.cell_workers.utils import distance
 from pokemongo_bot.cell_workers.utils import find_biggest_cluster
 from pokemongo_bot.base_task import BaseTask
 
+
 class FollowCluster(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
@@ -24,7 +25,8 @@ class FollowCluster(BaseTask):
             log_lured_str = 'lured '
             lured_forts = [x for x in forts if 'lure_info' in x]
             if len(lured_forts) > 0:
-                self.dest = find_biggest_cluster(self.radius, lured_forts, 'lure_info')
+                self.dest = find_biggest_cluster(
+                    self.radius, lured_forts, 'lure_info')
             else:
                 log_lure_avail_str = 'No lured pokestops in vicinity. Search for normal ones instead. '
                 self.dest = find_biggest_cluster(self.radius, forts)
@@ -40,18 +42,13 @@ class FollowCluster(BaseTask):
             if not self.is_at_destination:
                 msg = log_lure_avail_str + (
                     "Move to destiny {num_points}. {forts} "
-                    "pokestops will be in range of {radius}. Walking {distance}m."
-                )
+                    "pokestops will be in range of {radius}. Walking {distance}m.")
                 self.emit_event(
-                    'found_cluster',
-                    formatted=msg,
-                    data={
-                        'num_points': cnt,
-                        'forts': log_lured_str,
-                        'radius': str(self.radius),
-                        'distance': str(distance(self.bot.position[0], self.bot.position[1], lat, lng))
-                    }
-                )
+                    'found_cluster', formatted=msg, data={
+                        'num_points': cnt, 'forts': log_lured_str, 'radius': str(
+                            self.radius), 'distance': str(
+                            distance(
+                                self.bot.position[0], self.bot.position[1], lat, lng))})
 
                 self.announced = False
 
@@ -75,9 +72,7 @@ class FollowCluster(BaseTask):
                     formatted="Arrived at cluster. {forts} are in a range of {radius}m radius.",
                     data={
                         'forts': str(cnt),
-                        'radius': self.radius
-                    }
-                )
+                        'radius': self.radius})
                 self.announced = True
         else:
             lat = self.bot.position[0]

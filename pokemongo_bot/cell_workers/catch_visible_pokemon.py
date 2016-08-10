@@ -26,10 +26,13 @@ class CatchVisiblePokemon(BaseTask):
             # Sort all by distance from current pos- eventually this should
             # build graph & A* it
             self.bot.cell['catchable_pokemons'].sort(
-                key=
-                lambda x: distance(self.bot.position[0], self.bot.position[1], x['latitude'], x['longitude'])
-            )
-            user_web_catchable = os.path.join(_base_dir, 'web', 'catchable-{}.json'.format(self.bot.config.username))
+                key=lambda x: distance(
+                    self.bot.position[0],
+                    self.bot.position[1],
+                    x['latitude'],
+                    x['longitude']))
+            user_web_catchable = os.path.join(
+                _base_dir, 'web', 'catchable-{}.json'.format(self.bot.config.username))
             for pokemon in self.bot.cell['catchable_pokemons']:
                 with open(user_web_catchable, 'w') as outfile:
                     json.dump(pokemon, outfile)
@@ -43,8 +46,7 @@ class CatchVisiblePokemon(BaseTask):
                         'latitude': pokemon['latitude'],
                         'longitude': pokemon['longitude'],
                         'expiration_timestamp_ms': pokemon['expiration_timestamp_ms'],
-                    }
-                )
+                    })
 
             self.catch_pokemon(self.bot.cell['catchable_pokemons'].pop(0))
             if num_catchable_pokemon > 1:
@@ -56,8 +58,11 @@ class CatchVisiblePokemon(BaseTask):
             # Sort all by distance from current pos- eventually this should
             # build graph & A* it
             self.bot.cell['wild_pokemons'].sort(
-                key=
-                lambda x: distance(self.bot.position[0], self.bot.position[1], x['latitude'], x['longitude']))
+                key=lambda x: distance(
+                    self.bot.position[0],
+                    self.bot.position[1],
+                    x['latitude'],
+                    x['longitude']))
             self.catch_pokemon(self.bot.cell['wild_pokemons'].pop(0))
 
             if num_catchable_pokemon > 1:

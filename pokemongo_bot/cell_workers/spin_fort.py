@@ -60,7 +60,7 @@ class SpinFort(BaseTask):
                     for item in items_awarded:
                         item_id = item['item_id']
                         item_name = self.bot.item_list[str(item_id)]
-                        if not item_name in tmp_count_items:
+                        if item_name not in tmp_count_items:
                             tmp_count_items[item_name] = item['item_count']
                         else:
                             tmp_count_items[item_name] += item['item_count']
@@ -72,9 +72,7 @@ class SpinFort(BaseTask):
                         data={
                             'pokestop': fort_name,
                             'exp': experience_awarded,
-                            'items': tmp_count_items
-                        }
-                    )
+                            'items': tmp_count_items})
                 else:
                     self.emit_event(
                         'pokestop_empty',
@@ -84,7 +82,8 @@ class SpinFort(BaseTask):
                 pokestop_cooldown = spin_details.get(
                     'cooldown_complete_timestamp_ms')
                 self.bot.fort_timeouts.update({fort["id"]: pokestop_cooldown})
-                self.bot.recent_forts = self.bot.recent_forts[1:] + [fort['id']]
+                self.bot.recent_forts = self.bot.recent_forts[
+                    1:] + [fort['id']]
             elif spin_result == 2:
                 self.emit_event(
                     'pokestop_out_of_range',
@@ -95,7 +94,8 @@ class SpinFort(BaseTask):
                 pokestop_cooldown = spin_details.get(
                     'cooldown_complete_timestamp_ms')
                 if pokestop_cooldown:
-                    self.bot.fort_timeouts.update({fort["id"]: pokestop_cooldown})
+                    self.bot.fort_timeouts.update(
+                        {fort["id"]: pokestop_cooldown})
                     seconds_since_epoch = time.time()
                     minutes_left = format_time(
                         (pokestop_cooldown / 1000) - seconds_since_epoch
@@ -103,8 +103,9 @@ class SpinFort(BaseTask):
                     self.emit_event(
                         'pokestop_on_cooldown',
                         formatted="Pokestop {pokestop} on cooldown. Time left: {minutes_left}.",
-                        data={'pokestop': fort_name, 'minutes_left': minutes_left}
-                    )
+                        data={
+                            'pokestop': fort_name,
+                            'minutes_left': minutes_left})
             elif spin_result == 4:
                 self.emit_event(
                     'inventory_full',
@@ -133,7 +134,8 @@ class SpinFort(BaseTask):
                         formatted='Probably got softban.'
                     )
                 else:
-                    self.bot.fort_timeouts[fort["id"]] = (time.time() + 300) * 1000  # Don't spin for 5m
+                    self.bot.fort_timeouts[fort["id"]] = (
+                        time.time() + 300) * 1000  # Don't spin for 5m
                 return 11
         sleep(2)
         return 0
@@ -143,7 +145,8 @@ class SpinFort(BaseTask):
 
         for fort in forts:
             if 'cooldown_complete_timestamp_ms' in fort:
-                self.bot.fort_timeouts[fort["id"]] = fort['cooldown_complete_timestamp_ms']
+                self.bot.fort_timeouts[fort["id"]] = fort[
+                    'cooldown_complete_timestamp_ms']
                 forts.remove(fort)
 
         forts = filter(lambda x: x["id"] not in self.bot.fort_timeouts, forts)

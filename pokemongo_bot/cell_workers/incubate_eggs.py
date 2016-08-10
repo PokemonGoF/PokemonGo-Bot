@@ -1,5 +1,6 @@
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.base_task import BaseTask
+from functools import reduce
 
 
 class IncubateEggs(BaseTask):
@@ -28,7 +29,7 @@ class IncubateEggs(BaseTask):
 
         if self.used_incubators and IncubateEggs.last_km_walked != self.km_walked:
             self.used_incubators.sort(key=lambda x: x.get("km"))
-            km_left = self.used_incubators[0]['km']-self.km_walked
+            km_left = self.used_incubators[0]['km'] - self.km_walked
             if km_left <= 0:
                 self._hatch_eggs()
             else:
@@ -60,15 +61,19 @@ class IncubateEggs(BaseTask):
                     formatted="Attempting to apply incubator {incubator_id} to egg {egg_id}",
                     data={
                         'incubator_id': incubator['id'],
-                        'egg_id': egg['id']
-                    }
-                )
+                        'egg_id': egg['id']})
                 ret = self.bot.api.use_item_egg_incubator(
                     item_id=incubator["id"],
                     pokemon_id=egg["id"]
                 )
                 if ret:
-                    code = ret.get("responses", {}).get("USE_ITEM_EGG_INCUBATOR", {}).get("result", 0)
+                    code = ret.get(
+                        "responses",
+                        {}).get(
+                        "USE_ITEM_EGG_INCUBATOR",
+                        {}).get(
+                        "result",
+                        0)
                     if code == 1:
                         self.emit_event(
                             'incubate',
@@ -98,7 +103,7 @@ class IncubateEggs(BaseTask):
 
     def _check_inventory(self, lookup_ids=None):
         if lookup_ids is None:
-            lookup_ids=[]
+            lookup_ids = []
         inv = {}
         response_dict = self.bot.get_inventory()
         matched_pokemon = []
@@ -115,8 +120,11 @@ class IncubateEggs(BaseTask):
             if "egg_incubators" in inv_data:
                 temp_used_incubators = []
                 temp_ready_incubators = []
-                incubators = inv_data.get("egg_incubators", {}).get("egg_incubator",[])
-                if isinstance(incubators, basestring):  # checking for old response
+                incubators = inv_data.get(
+                    "egg_incubators", {}).get(
+                    "egg_incubator", [])
+                if isinstance(incubators,
+                              basestring):  # checking for old response
                     incubators = [incubators]
                 for incubator in incubators:
                     if 'pokemon_id' in incubator:
@@ -131,7 +139,8 @@ class IncubateEggs(BaseTask):
                 continue
             if "pokemon_data" in inv_data:
                 pokemon = inv_data.get("pokemon_data", {})
-                if pokemon.get("is_egg", False) and "egg_incubator_id" not in pokemon:
+                if pokemon.get("is_egg",
+                               False) and "egg_incubator_id" not in pokemon:
                     temp_eggs.append({
                         "id": pokemon.get("id", -1),
                         "km": pokemon.get("egg_km_walked_target", -1),
@@ -147,7 +156,9 @@ class IncubateEggs(BaseTask):
                     matched_pokemon.append(pokemon)
                 continue
             if "player_stats" in inv_data:
-                self.km_walked = inv_data.get("player_stats", {}).get("km_walked", 0)
+                self.km_walked = inv_data.get(
+                    "player_stats", {}).get(
+                    "km_walked", 0)
         if temp_used_incubators:
             self.used_incubators = temp_used_incubators
         if temp_ready_incubators:
@@ -160,7 +171,9 @@ class IncubateEggs(BaseTask):
         response_dict = self.bot.api.get_hatched_eggs()
         log_color = 'green'
         try:
-            result = reduce(dict.__getitem__, ["responses", "GET_HATCHED_EGGS"], response_dict)
+            result = reduce(
+                dict.__getitem__, [
+                    "responses", "GET_HATCHED_EGGS"], response_dict)
         except KeyError:
             return
         pokemon_ids = []
@@ -175,12 +188,13 @@ class IncubateEggs(BaseTask):
             pokemon_data = self._check_inventory(pokemon_ids)
             for pokemon in pokemon_data:
                 # pokemon ids seem to be offset by one
-                if pokemon['pokemon_id']!=-1:
-                    pokemon['name'] = self.bot.pokemon_list[(pokemon.get('pokemon_id')-1)]['Name']
+                if pokemon['pokemon_id'] != -1:
+                    pokemon['name'] = self.bot.pokemon_list[
+                        (pokemon.get('pokemon_id') - 1)]['Name']
                 else:
                     pokemon['name'] = "error"
         except:
-            pokemon_data = [{"name":"error","cp":"error","iv":"error"}]
+            pokemon_data = [{"name": "error", "cp": "error", "iv": "error"}]
         if not pokemon_ids or pokemon_data[0]['name'] == "error":
             self.emit_event(
                 'egg_hatched',
@@ -204,7 +218,7 @@ class IncubateEggs(BaseTask):
                     'cp': pokemon_data[i]['cp'],
                     'iv': "{} {}".format(
                         "/".join(map(str, pokemon_data[i]['iv'])),
-                        sum(pokemon_data[i]['iv'])/self.max_iv
+                        sum(pokemon_data[i]['iv']) / self.max_iv
                     ),
                     'exp': xp[i],
                     'stardust': stardust[i],

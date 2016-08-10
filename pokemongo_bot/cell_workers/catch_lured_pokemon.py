@@ -41,11 +41,10 @@ class CatchLuredPokemon(BaseTask):
             if distance_to_fort < Constants.MAX_DISTANCE_FORT_IS_REACHABLE and encounter_id:
                 forts_in_range.append(fort)
 
-
         for fort in forts_in_range:
             details = fort_details(self.bot, fort_id=fort['id'],
-                                  latitude=fort['latitude'],
-                                  longitude=fort['longitude'])
+                                   latitude=fort['latitude'],
+                                   longitude=fort['longitude'])
             fort_name = details.get('name', 'Unknown')
             encounter_id = fort['lure_info']['encounter_id']
 

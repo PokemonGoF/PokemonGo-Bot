@@ -19,7 +19,7 @@ class FollowPath(BaseTask):
 
         if self.path_start_mode == 'closest':
             self.ptr = self.find_closest_point_idx(self.points)
-        
+
         else:
             self.ptr = 0
 
@@ -39,7 +39,7 @@ class FollowPath(BaseTask):
 
     def load_json(self):
         with open(self.path_file) as data_file:
-            points=json.load(data_file)
+            points = json.load(data_file)
         # Replace Verbal Location with lat&lng.
         for index, point in enumerate(points):
             point_tuple = self.bot.get_pos_by_name(point['location'])
@@ -76,14 +76,14 @@ class FollowPath(BaseTask):
     def find_closest_point_idx(self, points):
 
         return_idx = 0
-        min_distance = float("inf");
+        min_distance = float("inf")
         for index in range(len(points)):
             point = points[index]
             botlat = self.bot.api._position_lat
             botlng = self.bot.api._position_lng
             lat = float(point['lat'])
             lng = float(point['lng'])
-            
+
             dist = distance(
                 botlat,
                 botlng,
