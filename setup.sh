@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-pokebotpath=$(pwd)
-backuppath=$(pwd)"/backup"
+pokebotpath=$(cd "$(dirname "$0")"; pwd)
+backuppath=$pokebotpath"/backup"
 
 function Pokebotupdate () {
 cd $pokebotpath
