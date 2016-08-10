@@ -7,35 +7,30 @@
     "libencrypt_location": "",
     "tasks": [
       {
-        "type": "HandleSoftBan",
-        "config": {
-          "enabled": true
-        }
+        "type": "HandleSoftBan"
       },
       {
-        "type": "CollectLevelUpReward",
-        "config": {
-          "enabled": true
-        }
+        "type": "CollectLevelUpReward"
       },
       {
         "type": "IncubateEggs",
         "config": {
-          "enabled": true,
           "longer_eggs_first": true
         }
       },
       {
-        "type": "TransferPokemon",
+        "type": "TransferPokemon"
+      },
+      {
+        "type": "NicknamePokemon",
         "config": {
           "enabled": true,
-          "enabled": true
+          "nickname_template": "{iv_pct}_{iv_ads}"
         }
       },
       {
         "type": "EvolvePokemon",
         "config": {
-            "enabled": true,
             "evolve_all": "none",
             "first_evolve_by": "cp",
             "evolve_above_cp": 500,
@@ -48,7 +43,6 @@
       {
         "type": "RecycleItems",
         "config": {
-          "enabled": true,
           "min_empty_space": 15,
           "item_filter": {
             "Pokeball":       { "keep" : 100 },
@@ -61,27 +55,17 @@
         }
       },
       {
-        "type": "CatchVisiblePokemon",
-        "config": {
-          "enabled": true
-        }
+        "type": "CatchVisiblePokemon"
       },
       {
-        "type": "CatchLuredPokemon",
-        "config": {
-          "enabled": true
-        }
+        "type": "CatchLuredPokemon"
       },
       {
         "type": "SpinFort",
-        "config": {
-          "enabled": true
-        }
       },
       {
         "type": "MoveToFort",
         "config": {
-            "enabled": true,
             "lure_attraction": true,
             "lure_max_distance": 2000
         }
@@ -89,7 +73,6 @@
       {
         "type": "FollowSpiral",
         "config": {
-          "enabled": true,
           "diameter": 4,
           "step_size": 70
         }
