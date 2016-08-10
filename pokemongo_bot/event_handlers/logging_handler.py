@@ -8,16 +8,15 @@ from pokemongo_bot.event_manager import EventHandler
 
 
 class LoggingHandler(EventHandler):
-    
+
     def __init__(self, bot):
         self.bot = bot
-        
+
     def handle_event(self, event, sender, level, formatted_msg, data):
 
         # Honour config settings if log level disabled
-        for event_level in ['info', 'warning', 'error', 'critical', 'debug']:
-            if event_level == level and hasattr(self.bot.config, event_level) and not getattr(self.bot.config, event_level):
-                return
+        if hasattr(self.bot.config, level) and not getattr(self.bot.config, level):
+            return
 
         logger = logging.getLogger(type(sender).__name__)
         if formatted_msg:
