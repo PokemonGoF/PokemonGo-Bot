@@ -17,7 +17,7 @@ class TransferPokemon(BaseTask):
         return self.bot._player["max_pokemon_storage"] - self.bot.get_inventory_count('pokemon')
 
     def work(self):
-        if self.min_empty_space is not None and self.get_pokemon_slot_left() >= self.min_empty_space:
+        if isinstance(self.min_empty_space, int) and self.get_pokemon_slot_left() >= self.min_empty_space:
             return
 
         pokemon_groups = self._release_pokemon_get_groups()
