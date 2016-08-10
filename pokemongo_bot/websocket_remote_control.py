@@ -46,8 +46,8 @@ class WebsocketRemoteControl(object):
         request.get_player()
         request.get_inventory()
         response_dict = request.call()
-        inventory = response_dict['responses']['GET_INVENTORY']
-        player_info = response_dict['responses']['GET_PLAYER']
+        inventory = response_dict['responses'].get('GET_INVENTORY', {})
+        player_info = response_dict['responses'].get('GET_PLAYER', {})
         self.sio.emit(
             'bot:send_reply',
             {
