@@ -164,9 +164,11 @@ class Pokemon(object):
         self._static_data = Pokemons.data_for(self.pokemon_id)
         self.name = Pokemons.name_for(self.pokemon_id)
         self.iv = self._compute_iv()
+        self.in_fort = 'deployed_fort_id' in data
+        self.is_favorite = data.get('favorite', 0) is 1
 
     def can_evolve_now(self):
-        return self.has_next_evolution() and self.candy_quantity > self.evolution_cost
+        return self.has_next_evolution() and self.candy_quantity >= self.evolution_cost
 
     def has_next_evolution(self):
         return 'Next Evolution Requirements' in self._static_data
@@ -217,10 +219,13 @@ class Inventory(object):
         # TODO: it would be better if this class was used for all
         # inventory management. For now, I'm just clearing the old inventory field
         self.bot.latest_inventory = None
-        inventory = self.bot.get_inventory()['responses']['GET_INVENTORY'][
-            'inventory_delta']['inventory_items']
+        inventory = self.bot.get_inventory()['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
         for i in (self.pokedex, self.candy, self.items, self.pokemons):
             i.refresh(inventory)
+
+        user_web_inventory = os.path.join(_base_dir, 'web', 'inventory-%s.json' % (self.bot.config.username))
+        with open(user_web_inventory, 'w') as outfile:
+            json.dump(inventory, outfile)
 
 
 _inventory = None
@@ -244,7 +249,9 @@ def candies(refresh=False):
     return _inventory.candy
 
 
-def pokemons():
+def pokemons(refresh=False):
+    if refresh:
+        refresh_inventory()
     return _inventory.pokemons
 
 
