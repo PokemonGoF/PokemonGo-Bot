@@ -90,9 +90,9 @@ class PokemonGoBot(object):
     def _setup_event_system(self):
         handlers = []
         if self.config.logging_color:
-            handlers.append(ColoredLoggingHandler())
+            handlers.append(ColoredLoggingHandler(self))
         else:
-            handlers.append(LoggingHandler())
+            handlers.append(LoggingHandler(self))
 
         if self.config.websocket_server_url:
             if self.config.websocket_start_embedded_server:

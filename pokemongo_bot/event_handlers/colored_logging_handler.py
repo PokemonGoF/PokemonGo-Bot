@@ -97,7 +97,8 @@ class ColoredLoggingHandler(EventHandler):
         'cyan':     '96'
     }
 
-    def __init__(self):
+    def __init__(self, bot):
+        self.bot = bot
         self._last_event = None
         try:
             # this `try ... except` is for ImportError on Windows
@@ -110,6 +111,13 @@ class ColoredLoggingHandler(EventHandler):
             self._TIOCGWINSZ = None
 
     def handle_event(self, event, sender, level, formatted_msg, data):
+        
+        # Honour config settings if log level disabled
+        for event_level in ['info', 'warning', 'error', 'critical', 'debug']:
+            if hasattr(self.bot.config, event_level) and not getattr(self.bot.config, event_level) and event_level == level:
+                self._last_event = event
+                return
+            
         # Prepare message string
         message = None
         if formatted_msg:
