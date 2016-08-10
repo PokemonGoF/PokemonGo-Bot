@@ -1,9 +1,12 @@
 import json
 import os
 from pokemongo_bot import inventory
+from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.tree_config_builder import ConfigException
+
+DEFAULT_MIN_EMPTY_SPACE = 6
 
 class RecycleItems(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -12,12 +15,13 @@ class RecycleItems(BaseTask):
     Recycle undesired items if there is less than five space in inventory.
     You can use either item's name or id. For the full list of items see ../../data/items.json
 
-    It's highly recommended to put this task before the move_to_fort task in the config file so you'll most likely be able to loot.
+    It's highly recommended to put this task before move_to_fort and spin_fort task in the config file so you'll most likely be able to loot.
 
     Example config :
     {
       "type": "RecycleItems",
       "config": {
+        "min_empty_space": 6,           # 6 by default
         "item_filter": {
           "Pokeball": {"keep": 20},
           "Greatball": {"keep": 50},
@@ -36,6 +40,7 @@ class RecycleItems(BaseTask):
 
     def initialize(self):
         self.items_filter = self.config.get('item_filter', {})
+        self.min_empty_space = self.config.get('min_empty_space', None)
         self._validate_item_filter()
 
     def _validate_item_filter(self):
@@ -45,11 +50,21 @@ class RecycleItems(BaseTask):
         :rtype: None
         :raise: ConfigException: When an item doesn't exist in ../../data/items.json
         """
-        item_list = json.load(open(os.path.join('data', 'items.json')))
+        item_list = json.load(open(os.path.join(_base_dir, 'data', 'items.json')))
         for config_item_name, bag_count in self.items_filter.iteritems():
             if config_item_name not in item_list.viewvalues():
                 if config_item_name not in item_list:
                     raise ConfigException("item {} does not exist, spelling mistake? (check for valid item names in data/items.json)".format(config_item_name))
+
+    def should_run(self):
+        """
+        Returns a value indicating whether the recycling process should be run.
+        :return: True if the recycling process should be run; otherwise, False.
+        :rtype: bool
+        """
+        if inventory.items().get_space_left() >= (DEFAULT_MIN_EMPTY_SPACE if self.min_empty_space is None else self.min_empty_space):
+            return False
+        return True
 
     def work(self):
         """
@@ -57,10 +72,9 @@ class RecycleItems(BaseTask):
         :return: Always returns WorkerResult.SUCCESS.
         :rtype: WorkerResult
         """
-        if not self.bot.has_space_for_loot():
-            # Updating user's inventory
-            inventory.init_inventory(self.bot)
-
+        # Updating inventory
+        inventory.init_inventory(self.bot)
+        if self.should_run():
             # For each user's item in inventory recycle it if needed
             for item_in_inventory in inventory.items().all():
                 item = RecycleItems._Item(item_in_inventory['item_id'], self.items_filter, self)
@@ -68,8 +82,8 @@ class RecycleItems(BaseTask):
                 if item.should_be_recycled():
                     item.request_recycle()
                     item.emit_recycle_result()
-
-
+            # TODO : Inventory should keep track of items beeing discarded rather than making an other api call
+            inventory.refresh_inventory()
         return WorkerResult.SUCCESS
 
     class _Item:

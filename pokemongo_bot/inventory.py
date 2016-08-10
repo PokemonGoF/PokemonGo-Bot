@@ -101,6 +101,26 @@ class Items(_BaseInventoryComponent):
     def count_for(self, item_id):
         return self._data[item_id].get('count', False)
 
+    def get_space_used(self):
+        """
+        Counts the space used in item inventory.
+        :return: The space used in item inventory.
+        :rtype: int
+        """
+        itemcount = 1
+        for item in self._data:
+                itemcount += self.count_for(item)
+        return itemcount
+
+    def get_space_left(self):
+        """
+        Compute the space  left in item inventory.
+        :return: The space left in item inventory.
+        :rtype: int
+        """
+        _inventory.retrieve_item_inventory_size()
+        return _inventory.item_inventory_size - self.get_space_used()
+
 
 class Pokemons(_BaseInventoryComponent):
     TYPE = 'pokemon_data'
@@ -211,6 +231,7 @@ class Inventory(object):
         self.items = Items()
         self.pokemons = Pokemons()
         self.refresh()
+        self.item_inventory_size = None
 
     def refresh(self):
         # TODO: it would be better if this class was used for all
@@ -221,6 +242,15 @@ class Inventory(object):
         for i in (self.pokedex, self.candy, self.items, self.pokemons):
             i.refresh(inventory)
 
+    def retrieve_item_inventory_size(self):
+        """
+        Retrieves the item inventory size
+        :return: Nothing.
+        :rtype: None
+        """
+        # TODO: Force update of _item_inventory_size if the player upgrades its size
+        if self.item_inventory_size is None:
+           self.item_inventory_size = self.bot.api.get_player()['responses']['GET_PLAYER']['player_data']['max_item_storage']
 
 _inventory = None
 
@@ -232,6 +262,9 @@ def init_inventory(bot):
 def refresh_inventory():
     _inventory.refresh()
 
+def get_item_inventory_size():
+    _inventory.retrieve_item_inventory_size()
+    return _inventory.item_inventory_size
 
 def pokedex():
     return _inventory.pokedex
