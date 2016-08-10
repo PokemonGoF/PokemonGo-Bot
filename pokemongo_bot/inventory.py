@@ -93,7 +93,7 @@ class Pokedex(_BaseInventoryComponent):
             return False
         return self._data[pokemon_id]['times_captured'] > 0
 
-# TODO: Make the item inventory uses of Item() instead of using raw data from api response
+# TODO: Make the item inventory use Item() instead of using raw data from api response
 # class Item(object):
 #     def __init__(self, item_data):
 #         self.id = item_data.get(Items.ID_FIELD, None)
