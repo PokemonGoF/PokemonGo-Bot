@@ -365,10 +365,6 @@ class PokemonGoBot(object):
             )
         )
         self.event_manager.register_event(
-            'item_discard_skipped',
-            parameters=('space',)
-        )
-        self.event_manager.register_event(
             'item_discard_fail',
             parameters=('item',)
         )
@@ -377,11 +373,6 @@ class PokemonGoBot(object):
         self.event_manager.register_event('inventory_full')
 
         # release
-        self.event_manager.register_event(
-            'pokemon_transfer_skipped',
-            parameters=('space',)
-        )
-
         self.event_manager.register_event(
             'keep_best_release',
             parameters=(
