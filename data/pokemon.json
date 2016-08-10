@@ -1232,7 +1232,7 @@
     "Previous evolution(s)": [
       {
         "Number": "029",
-        "Name": "Nidoran  F"
+        "Name": "Nidoran F"
       }
     ],
     "Next Evolution Requirements": {
@@ -4326,6 +4326,11 @@
     ],
     "Weight": "49.8 kg",
     "Height": "1.5 m",
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 106,
+      "Name": "Hitmonlee candies"
+    },
     "Next evolution(s)": [
       {
         "Number": "107",
@@ -5729,6 +5734,16 @@
       "Family": 147,
       "Name": "Dratini candies"
     },
+    "Next evolution(s)": [
+      {
+        "Number": "148",
+        "Name": "Dragonair"
+      },
+      {
+        "Number": "149",
+        "Name": "Dragonite"
+      }
+    ],
     "Special Attack(s)": [
       "Aqua Tail",
       "Twister",

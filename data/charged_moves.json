@@ -84,7 +84,6 @@
 {"id":101,"name":"Flame Charge","type":"Fire","damage":25,"duration":3100,"energy":20,"dps":8.06},
 {"id":34,"name":"Heart Stamp","type":"Psychic","damage":20,"duration":2550,"energy":25,"dps":7.84},
 {"id":75,"name":"Parabolic Charge","type":"Electric","damage":15,"duration":2100,"energy":20,"dps":7.14},
-{"id":13,"name":"Wrap","type":"Normal","damage":25,"duration":3700,"energy":20,"dps":6.75},
 {"id":111,"name":"Icy Wind","type":"Ice","damage":25,"duration":3800,"energy":20,"dps":6.57},
 {"id":84,"name":"Disarming Voice","type":"Fairy","damage":25,"duration":3900,"energy":20,"dps":6.41},
 {"id":13,"name":"Wrap","type":"Normal","damage":25,"duration":4000,"energy":20,"dps":6.25},
