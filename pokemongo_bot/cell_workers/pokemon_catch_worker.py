@@ -85,6 +85,20 @@ class PokemonCatchWorker(BaseTask):
         pokemon_data = response['wild_pokemon']['pokemon_data'] if 'wild_pokemon' in response else response['pokemon_data']
         pokemon = Pokemon(self.pokemon_list, pokemon_data)
 
+        # determine maximum ball based on pokemon vip status
+        is_vip = self._is_vip_pokemon(pokemon)
+        maximum_ball = ITEM_ULTRABALL if is_vip else ITEM_GREATBALL
+
+        # find lowest available ball
+        items_stock = self.bot.current_inventory()
+        current_ball = ITEM_POKEBALL
+        while items_stock[current_ball] == 0 and current_ball < maximum_ball:
+            current_ball += 1
+
+        #skip if no available pokeballs
+        if items_stock[current_ball] == 0:
+            return WorkerResult.SUCCESS
+
         # skip ignored pokemon
         if not self._should_catch_pokemon(pokemon):
             return WorkerResult.SUCCESS
