@@ -71,7 +71,6 @@ class ColoredLoggingHandler(EventHandler):
         'moving_to_fort':                       'white',
         'moving_to_lured_fort':                 'white',
         'pokemon_catch_rate':                   'white',
-        'pokemon_evolve_fail':                  'white',
         'pokestop_on_cooldown':                 'white',
         'pokestop_out_of_range':                'white',
         'polyline_request':                     'white',
