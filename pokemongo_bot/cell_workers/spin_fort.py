@@ -59,7 +59,7 @@ class SpinFort(BaseTask):
                     tmp_count_items = {}
                     for item in items_awarded:
                         item_id = item['item_id']
-                        item_name = self.bot.item_list[str(item_id)]
+                        item_name = str(self.bot.item_list[str(item_id)])
                         if not item_name in tmp_count_items:
                             tmp_count_items[item_name] = item['item_count']
                         else:
