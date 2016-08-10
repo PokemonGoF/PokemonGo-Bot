@@ -61,7 +61,8 @@ class TreeConfigBuilder(object):
                 )
 
             instance = worker(self.bot, task_config)
-            workers.append(instance)
+            if instance.enabled:
+                workers.append(instance)
 
         return workers
 
