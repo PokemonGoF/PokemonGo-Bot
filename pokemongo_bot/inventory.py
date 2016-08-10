@@ -177,39 +177,10 @@ class Pokemons(_BaseInventoryComponent):
 
         # Prepare movesets
         movesets = []
-        fm_number = 100  # for simplicity we use 100
         types = poke_info['types']
-        for fm in poke_info['Fast Attack(s)']:  # type: Attack
-            fm_energy = fm.energy * fm_number
-            fm_damage = fm.damage * fm_number
-            fm_secs = fm.duration * fm_number
-
-            # Defender attacks in intervals of 1 second for the
-            #   first 2 attacks, and then in intervals of 2 seconds
-            # So add 1.95 seconds to the quick move cool down for defense
-            fm_defense_secs = (fm.duration + 1.95) * fm_number
-
-            for chm in poke_info['Special Attack(s)']:  # type: ChargedAttack
-                chm_number = fm_energy / chm.energy
-                chm_damage = chm.damage * chm_number
-                chm_secs = chm.duration * chm_number
-
-                damage = fm_damage + chm_damage
-                raw_dps = damage / (fm_secs + chm_secs)
-                defense_dps = damage / (fm_defense_secs + chm_secs)
-
-                # apply STAB (Same-type attack bonus)
-                if fm.type in types:
-                    fm_damage *= 1.25
-                if chm.type in types:
-                    chm_damage *= 1.25
-
-                attack_dps = (fm_damage + chm_damage) / (fm_secs + chm_secs)
-
-                movesets.append(Moveset(
-                    pokemon_id, fm, chm, raw_dps,
-                    defense_dps, attack_dps))
-
+        for fm in poke_info['Fast Attack(s)']:
+            for chm in poke_info['Special Attack(s)']:
+                movesets.append(Moveset(fm, chm, types, pokemon_id))
         assert len(movesets) > 0
 
         # Calculate attack perfection for each moveset
@@ -262,20 +233,16 @@ class Pokemons(_BaseInventoryComponent):
 
     @classmethod
     def first_evolution_id_for(cls, pokemon_id):
-        first_id = pokemon_id
-        while True:
-            prev_id = cls.prev_evolution_id_for(first_id)
-            if prev_id != first_id and prev_id is not None:
-                first_id = prev_id
-            else:
-                break
-        return first_id
+        data = cls.data_for(pokemon_id)
+        if 'Previous evolution(s)' in data:
+            return int(data['Previous evolution(s)'][0]['Number'])
+        return pokemon_id
 
     @classmethod
     def prev_evolution_id_for(cls, pokemon_id):
         data = cls.data_for(pokemon_id)
         if 'Previous evolution(s)' in data:
-            return int(data['Previous evolution(s)'][0]['Number'])
+            return int(data['Previous evolution(s)'][-1]['Number'])
         return None
 
     @classmethod
@@ -284,39 +251,40 @@ class Pokemons(_BaseInventoryComponent):
             next_evolutions = cls.data_for(pokemon_id)['Next evolution(s)']
         except KeyError:
             return []
-        else:
-            return [int(p['Number']) for p in next_evolutions]
+        # get only next level evolutions, not all possible
+        ids = []
+        for p in next_evolutions:
+            p_id = int(p['Number'])
+            if cls.prev_evolution_id_for(p_id) == pokemon_id:
+                ids.append(p_id)
+        return ids
 
     @classmethod
     def last_evolution_ids_for(cls, pokemon_id):
-        last_evolution_ids = [pokemon_id]
-        stop = False
-        while stop:
-            evolution_ids = []
-            stop = True
-            for poke_id in last_evolution_ids:
-                next_ids = cls.next_evolution_ids_for(poke_id)
-                if len(next_ids) <= 0:
-                    evolution_ids.append(poke_id)
-                else:
-                    stop = False
-                    for next_id in next_ids:
-                        evolution_ids.append(next_id)
-            last_evolution_ids = evolution_ids
-        assert len(last_evolution_ids) > 0
-        return last_evolution_ids
+        try:
+            next_evolutions = cls.data_for(pokemon_id)['Next evolution(s)']
+        except KeyError:
+            return [pokemon_id]
+        # get only final evolutions, not all possible
+        ids = []
+        for p in next_evolutions:
+            p_id = int(p['Number'])
+            if len(cls.data_for(p_id).get('Next evolution(s)', [])) == 0:
+                ids.append(p_id)
+        assert len(ids) > 0
+        return ids
 
     @classmethod
     def has_next_evolution(cls, pokemon_id):
-        return 'Next Evolution Requirements' in cls.data_for(pokemon_id)
+        poke_info = cls.data_for(pokemon_id)
+        return 'Next Evolution Requirements' in poke_info \
+               or 'Next evolution(s)' in poke_info
 
     @classmethod
     def evolution_cost_for(cls, pokemon_id):
-        poke_info = cls.data_for(pokemon_id)
-        if 'Next Evolution Requirements' in poke_info:
-            return int(poke_info['Next Evolution Requirements']['Amount'])
-        else:
+        if not cls.has_next_evolution(pokemon_id):
             return None
+        return int(cls.data_for(pokemon_id)['Next Evolution Requirements']['Amount'])
 
     def parse(self, item):
         if 'is_egg' in item:
@@ -336,11 +304,14 @@ class LevelToCPm(_StaticInventoryComponent):
     """
     Data for the CP multipliers at different levels
     See http://pokemongo.gamepress.gg/cp-multiplier
+    See https://github.com/justinleewells/pogo-optimizer/blob/edd692d/data/game/level-to-cpm.json
     """
 
     STATIC_DATA_FILE = os.path.join(_base_dir, 'data', 'level_to_cpm.json')
     MAX_LEVEL = 40
     MAX_CPM = .0
+    # half of the lowest difference between CPMs
+    HALF_DIFF_BETWEEN_HALF_LVL = 14e-3
 
     @classmethod
     def init_static_data(cls):
@@ -349,15 +320,17 @@ class LevelToCPm(_StaticInventoryComponent):
 
     @classmethod
     def cp_multiplier_for(cls, level):
-        # type: (float) -> float
-        return cls.STATIC_DATA[str(level)]
+        # type: (Union[float, int, string]) -> float
+        level = float(level)
+        level = str(int(level) if level.is_integer() else level)
+        return cls.STATIC_DATA[level]
 
     @classmethod
     def level_from_cpm(cls, cp_multiplier):
         # type: (float) -> float
         for lvl, cpm in cls.STATIC_DATA.iteritems():
             diff = abs(cpm - cp_multiplier)
-            if diff <= 14e-3:  # half of the lowest difference between CPMs
+            if diff <= cls.HALF_DIFF_BETWEEN_HALF_LVL:
                 return float(lvl)
         raise ValueError("Unknown cp_multiplier: {}".format(cp_multiplier))
 
@@ -365,28 +338,35 @@ class LevelToCPm(_StaticInventoryComponent):
 class _Attacks(_StaticInventoryComponent):
     BY_NAME = {}  # type: Dict[string, Attack]
     BY_TYPE = {}  # type: Dict[List[Attack]]
+    BY_DPS = []  # type: List[Attack]
 
     @classmethod
     def process_static_data(cls, moves):
         ret = {}
+        by_type = {}
+        by_name = {}
         fast = cls is FastAttacks
         for attack in moves:
             attack = Attack(attack) if fast else ChargedAttack(attack)
             ret[attack.id] = attack
-            cls.BY_NAME[attack.name] = attack
+            by_name[attack.name] = attack
 
-            if attack.type not in cls.BY_TYPE:
-                cls.BY_TYPE[attack.type] = []
-            cls.BY_TYPE[attack.type].append(attack)
+            if attack.type not in by_type:
+                by_type[attack.type] = []
+            by_type[attack.type].append(attack)
 
-        for t in cls.BY_TYPE.iterkeys():
-            attacks = sorted(cls.BY_TYPE[t], key=lambda m: m.dps, reverse=True)
+        for t in by_type.iterkeys():
+            attacks = sorted(by_type[t], key=lambda m: m.dps, reverse=True)
             min_dps = attacks[-1].dps
             max_dps = attacks[0].dps - min_dps
             if max_dps > .0:
                 for attack in attacks:  # type: Attack
                     attack.rate_in_type = (attack.dps - min_dps) / max_dps
-            cls.BY_TYPE[t] = attacks
+            by_type[t] = attacks
+
+        cls.BY_NAME = by_name
+        cls.BY_TYPE = by_type
+        cls.BY_DPS = sorted(ret.values(), key=lambda m: m.dps, reverse=True)
 
         return ret
 
@@ -414,6 +394,10 @@ class _Attacks(_StaticInventoryComponent):
     @classmethod
     def all(cls):
         return cls.STATIC_DATA.values()
+
+    @classmethod
+    def all_by_dps(cls):
+        return cls.BY_DPS
 
 
 class FastAttacks(_Attacks):
@@ -462,17 +446,20 @@ class Pokemon(object):
         # Combat points value
         self.cp = data['cp']
         # Base CP multiplier, fixed at the catch time
-        self.cp_m = data['cp_multiplier']
+        self.cp_bm = data['cp_multiplier']
         # Changeable part of the CP multiplier, increasing at power up
         self.cp_am = data.get('additional_cp_multiplier', .0)
+        # Resulting CP multiplier
+        self.cp_m = self.cp_bm + self.cp_am
 
         # Current pokemon level (half of level is a normal value)
-        self.level = LevelToCPm.level_from_cpm(self.cp_m + self.cp_am)
+        self.level = LevelToCPm.level_from_cpm(self.cp_m)
 
-        # Current health points
-        self.hp = data['stamina']
         # Maximum health points
         self.hp_max = data['stamina_max']
+        # Current health points
+        self.hp = data.get('stamina', self.hp_max)
+        assert 0 <= self.hp <= self.hp_max
 
         # Individial Values of the current pokemon (different for each pokemon)
         self.iv_attack = data.get('individual_attack', 0)
@@ -482,6 +469,9 @@ class Pokemon(object):
         self._static_data = Pokemons.data_for(self.pokemon_id)
         self.name = Pokemons.name_for(self.pokemon_id)
         self.nickname = data.get('nickname', self.name)
+
+        self.in_fort = 'deployed_fort_id' in data
+        self.is_favorite = data.get('favorite', 0) is 1
 
         # Basic Values of the current pokemon (identical for all such pokemons)
         self.base_attack = self._static_data['BaseAttack']
@@ -506,8 +496,7 @@ class Pokemon(object):
         # Exact value of current CP (not rounded)
         self.cp_exact = _calc_cp(
             self.base_attack, self.base_defense, self.base_stamina,
-            self.iv_attack, self.iv_defense, self.iv_stamina,
-            self.cp_m + self.cp_am)
+            self.iv_attack, self.iv_defense, self.iv_stamina, self.cp_m)
 
         # Percent of maximum possible CP
         self.cp_percent = self.cp_exact / self.max_cp
@@ -523,7 +512,7 @@ class Pokemon(object):
 
     def can_evolve_now(self):
         return self.has_next_evolution() and \
-               self.candy_quantity > self.evolution_cost
+               self.candy_quantity >= self.evolution_cost
 
     def has_next_evolution(self):
         return Pokemons.has_next_evolution(self.pokemon_id)
@@ -533,10 +522,6 @@ class Pokemon(object):
             if pokedex().captured(pokemon_id):
                 return True
         return False
-
-    @property
-    def is_favorited(self):
-        return bool(self._data['favorite'])
 
     @property
     def family_id(self):
@@ -651,12 +636,12 @@ class Attack(object):
     @property
     def damage_with_stab(self):
         # damage with STAB (Same-type attack bonus)
-        return self.damage * 1.25
+        return self.damage * STAB_FACTOR
 
     @property
     def dps_with_stab(self):
         # DPS with STAB (Same-type attack bonus)
-        return self.dps * 1.25
+        return self.dps * STAB_FACTOR
 
     @property
     def energy_per_second(self):
@@ -688,14 +673,47 @@ class ChargedAttack(Attack):
 
 
 class Moveset(object):
-    def __init__(self, pokemon_id, fast_attack, charged_attack,
-                 dps_raw, dps_defense, dps_attack):
+    def __init__(self, fm, chm, pokemon_types=(), pokemon_id=-1):
+        # type: (Attack, ChargedAttack, List[string], int) -> None
         self.pokemon_id = pokemon_id
-        self.fast_attack = fast_attack
-        self.charged_attack = charged_attack
-        self.dps = dps_raw
-        self.dps_attack = dps_attack
-        self.dps_defense = dps_defense
+        self.fast_attack = fm
+        self.charged_attack = chm
+
+        # See Pokemons._process_movesets()
+        # See http://pokemongo.gamepress.gg/optimal-moveset-explanation
+        # See http://pokemongo.gamepress.gg/defensive-tactics
+
+        fm_number = 100  # for simplicity we use 100
+
+        fm_energy = fm.energy * fm_number
+        fm_damage = fm.damage * fm_number
+        fm_secs = fm.duration * fm_number
+
+        # Defender attacks in intervals of 1 second for the
+        #   first 2 attacks, and then in intervals of 2 seconds
+        # So add 1.95 seconds to the quick move cool down for defense
+        #   1.95 is something like an average here
+        #   TODO: Do something better?
+        fm_defense_secs = (fm.duration + 1.95) * fm_number
+
+        chm_number = fm_energy / chm.energy
+        chm_damage = chm.damage * chm_number
+        chm_secs = chm.duration * chm_number
+
+        damage_sum = fm_damage + chm_damage
+        # raw Damage-Per-Second for the moveset
+        self.dps = damage_sum / (fm_secs + chm_secs)
+        # average DPS for defense
+        self.dps_defense = damage_sum / (fm_defense_secs + chm_secs)
+
+        # apply STAB (Same-type attack bonus)
+        if fm.type in pokemon_types:
+            fm_damage *= STAB_FACTOR
+        if chm.type in pokemon_types:
+            chm_damage *= STAB_FACTOR
+
+        # DPS for attack (counting STAB)
+        self.dps_attack = (fm_damage + chm_damage) / (fm_secs + chm_secs)
 
         # Moveset perfection percent attack and for defense
         # Calculated for current pokemon, not between all pokemons
@@ -726,14 +744,19 @@ class Inventory(object):
         # TODO: it would be better if this class was used for all
         # inventory management. For now, I'm just clearing the old inventory field
         self.bot.latest_inventory = None
-        inventory = self.bot.get_inventory()['responses']['GET_INVENTORY'][
-            'inventory_delta']['inventory_items']
+        inventory = self.bot.get_inventory()['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
         for i in (self.pokedex, self.candy, self.items, self.pokemons):
             i.refresh(inventory)
 
+        user_web_inventory = os.path.join(_base_dir, 'web', 'inventory-%s.json' % (self.bot.config.username))
+        with open(user_web_inventory, 'w') as outfile:
+            json.dump(inventory, outfile)
 
 #
 # Usage helpers
+
+# STAB (Same-type attack bonus)
+STAB_FACTOR = 1.25
 
 _inventory = None
 LevelToCPm()  # init LevelToCPm
@@ -790,7 +813,9 @@ def candies(refresh=False):
     return _inventory.candy
 
 
-def pokemons():
+def pokemons(refresh=False):
+    if refresh:
+        refresh_inventory()
     return _inventory.pokemons
 
 
