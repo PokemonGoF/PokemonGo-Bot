@@ -47,6 +47,23 @@ class PokemonOptimizer(BaseTask):
 
         return WorkerResult.SUCCESS
 
+    def parse_inventory(self):
+        self.family_by_family_id.clear()
+
+        for pokemon in inventory.pokemons().all():
+            family_id = pokemon.first_evolution_id
+
+            max_cp = self.get_pokemon_max_cp(pokemon.name)
+
+            if max_cp > 0:
+                ncp = float(pokemon.cp) / max_cp
+            else:
+                ncp = 0
+
+            setattr(pokemon, "ncp", ncp)
+
+            self.family_by_family_id.setdefault(family_id, []).append(pokemon)
+
     def get_family_optimized(self, family_id, family):
         if family_id == 133:  # "Eevee"
             return self.get_multi_family_optimized(family_id, family, 3)
@@ -91,6 +108,34 @@ class PokemonOptimizer(BaseTask):
         transfer += transfer_senior
 
         return (transfer, evo_best, evo_crap)
+
+    def get_best_iv_in_family(self, family):
+        best = max(family, key=lambda p: p.iv)
+        return sorted([p for p in family if p.iv == best.iv], key=lambda p: p.ncp, reverse=True)
+
+    def get_better_iv_in_family(self, family, iv):
+        return sorted([p for p in family if p.iv >= iv], key=lambda p: (p.iv, p.ncp), reverse=True)
+
+    def get_best_ncp_in_family(self, family):
+        best = max(family, key=lambda p: p.ncp)
+        return sorted([p for p in family if p.ncp == best.ncp], key=lambda p: p.iv, reverse=True)
+
+    def get_better_ncp_in_family(self, family, ncp):
+        return sorted([p for p in family if p.ncp >= ncp], key=lambda p: (p.ncp, p.iv), reverse=True)
+
+    def get_best_cp_in_family(self, family):
+        best = max(family, key=lambda p: p.cp)
+        return sorted([p for p in family if p.cp == best.cp], key=lambda p: (p.ncp, p.iv), reverse=True)
+
+    def get_better_cp_in_family(self, family, cp):
+        return sorted([p for p in family if p.cp >= cp], key=lambda p: (p.ncp, p.iv), reverse=True)
+
+    def get_pokemon_max_cp(self, pokemon_name):
+        return int(self.pokemon_max_cp.get(pokemon_name, 0))
+
+    def combine_pokemon_lists(self, a, b):
+        seen = set()
+        return [p for p in a + b if not (p.id in seen or seen.add(p.id))]
 
     def get_evolution_plan(self, family_id, family, best, best_cp):
         candies = inventory.candies().get(family_id).quantity
@@ -163,27 +208,6 @@ class PokemonOptimizer(BaseTask):
         for pokemon in evo:
             self.evolve_pokemon(pokemon)
 
-    def get_best_iv_in_family(self, family):
-        best = max(family, key=lambda p: p.iv)
-        return sorted([p for p in family if p.iv == best.iv], key=lambda p: p.ncp, reverse=True)
-
-    def get_better_iv_in_family(self, family, iv):
-        return sorted([p for p in family if p.iv >= iv], key=lambda p: (p.iv, p.ncp), reverse=True)
-
-    def get_best_ncp_in_family(self, family):
-        best = max(family, key=lambda p: p.ncp)
-        return sorted([p for p in family if p.ncp == best.ncp], key=lambda p: p.iv, reverse=True)
-
-    def get_better_ncp_in_family(self, family, ncp):
-        return sorted([p for p in family if p.ncp >= ncp], key=lambda p: (p.ncp, p.iv), reverse=True)
-
-    def get_best_cp_in_family(self, family):
-        best = max(family, key=lambda p: p.cp)
-        return sorted([p for p in family if p.cp == best.cp], key=lambda p: (p.ncp, p.iv), reverse=True)
-
-    def get_better_cp_in_family(self, family, cp):
-        return sorted([p for p in family if p.cp >= cp], key=lambda p: (p.ncp, p.iv), reverse=True)
-
     def transfer_pokemon(self, pokemon):
         if self.config_transfer:
             self.bot.api.release_pokemon(pokemon_id=pokemon.id)
@@ -255,30 +279,6 @@ class PokemonOptimizer(BaseTask):
             return True
         else:
             return False
-
-    def parse_inventory(self):
-        self.family_by_family_id.clear()
-
-        for pokemon in inventory.pokemons().all():
-            family_id = pokemon.first_evolution_id
-
-            max_cp = self.get_pokemon_max_cp(pokemon.name)
-
-            if max_cp > 0:
-                ncp = float(pokemon.cp) / max_cp
-            else:
-                ncp = 0
-
-            setattr(pokemon, "ncp", ncp)
-
-            self.family_by_family_id.setdefault(family_id, []).append(pokemon)
-
-    def get_pokemon_max_cp(self, pokemon_name):
-        return int(self.pokemon_max_cp.get(pokemon_name, 0))
-
-    def combine_pokemon_lists(self, a, b):
-        seen = set()
-        return [p for p in a + b if not (p.id in seen or seen.add(p.id))]
 
     def init_pokemon_max_cp(self):
         self.pokemon_max_cp = {
