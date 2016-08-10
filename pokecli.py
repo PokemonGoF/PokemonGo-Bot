@@ -395,6 +395,14 @@ def init_config():
         type=float,
         default=5.0
     )
+    add_config(
+        parser,
+        load,
+        long_flag="--logging_color",
+        help="If logging_color is set to true, colorized logging handler will be used",
+        type=bool,
+        default=True
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()
