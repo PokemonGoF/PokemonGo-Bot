@@ -20,8 +20,10 @@
         {
             "type": "PokemonOptimizer",
             "config": {
-                "dry_run": false,
-                "evolve_only_with_lucky_egg": false
+                "transfer": true,
+                "evolve": true,
+                "use_lucky_egg": true,
+                "minimum_evolve_for_lucky_egg": 90
             }
         },
         {
