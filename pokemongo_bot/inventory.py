@@ -1,5 +1,6 @@
 import json
 import os
+from pokemongo_bot.base_dir import _base_dir
 
 '''
 Helper class for updating/retrieving Inventory data
@@ -42,7 +43,7 @@ class _BaseInventoryComponent(object):
         self._data = self.retrieve_data(inventory)
 
     def get(self, id):
-        return self._data(id)
+        return self._data.get(id)
 
     def all(self):
         return list(self._data.values())
@@ -96,7 +97,7 @@ class Pokedex(_BaseInventoryComponent):
 class Items(_BaseInventoryComponent):
     TYPE = 'item'
     ID_FIELD = 'item_id'
-    STATIC_DATA_FILE = os.path.join('data', 'items.json')
+    STATIC_DATA_FILE = os.path.join(_base_dir, 'data', 'items.json')
 
     def count_for(self, item_id):
         return self._data[item_id]['count']
@@ -105,7 +106,7 @@ class Items(_BaseInventoryComponent):
 class Pokemons(_BaseInventoryComponent):
     TYPE = 'pokemon_data'
     ID_FIELD = 'id'
-    STATIC_DATA_FILE = os.path.join('data', 'pokemon.json')
+    STATIC_DATA_FILE = os.path.join(_base_dir, 'data', 'pokemon.json')
 
     def parse(self, item):
         if 'is_egg' in item:
@@ -163,9 +164,11 @@ class Pokemon(object):
         self._static_data = Pokemons.data_for(self.pokemon_id)
         self.name = Pokemons.name_for(self.pokemon_id)
         self.iv = self._compute_iv()
+        self.in_fort = 'deployed_fort_id' in data
+        self.is_favorite = data.get('favorite', 0) is 1
 
     def can_evolve_now(self):
-        return self.has_next_evolution and self.candy_quantity > self.evolution_cost
+        return self.has_next_evolution() and self.candy_quantity >= self.evolution_cost
 
     def has_next_evolution(self):
         return 'Next Evolution Requirements' in self._static_data
@@ -216,10 +219,13 @@ class Inventory(object):
         # TODO: it would be better if this class was used for all
         # inventory management. For now, I'm just clearing the old inventory field
         self.bot.latest_inventory = None
-        inventory = self.bot.get_inventory()['responses']['GET_INVENTORY'][
-            'inventory_delta']['inventory_items']
+        inventory = self.bot.get_inventory()['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
         for i in (self.pokedex, self.candy, self.items, self.pokemons):
             i.refresh(inventory)
+
+        user_web_inventory = os.path.join(_base_dir, 'web', 'inventory-%s.json' % (self.bot.config.username))
+        with open(user_web_inventory, 'w') as outfile:
+            json.dump(inventory, outfile)
 
 
 _inventory = None
@@ -243,7 +249,9 @@ def candies(refresh=False):
     return _inventory.candy
 
 
-def pokemons():
+def pokemons(refresh=False):
+    if refresh:
+        refresh_inventory()
     return _inventory.pokemons
 
 
