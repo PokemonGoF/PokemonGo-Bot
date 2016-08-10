@@ -9,12 +9,27 @@ from tests import FakeBot
 class UpdateTitleStatsTestCase(unittest.TestCase):
     config = {
         'min_interval': 20,
-        'stats': ['login', 'username', 'pokemon_evolved', 'pokemon_encountered', 'uptime',
-                  'pokemon_caught', 'stops_visited', 'km_walked', 'level', 'stardust_earned',
-                  'level_completion', 'xp_per_hour', 'pokeballs_thrown', 'highest_cp_pokemon',
-                  'level_stats', 'xp_earned', 'pokemon_unseen', 'most_perfect_pokemon',
-                  'pokemon_stats', 'pokemon_released']
-    }
+        'stats': [
+            'login',
+            'username',
+            'pokemon_evolved',
+            'pokemon_encountered',
+            'uptime',
+            'pokemon_caught',
+            'stops_visited',
+            'km_walked',
+            'level',
+            'stardust_earned',
+            'level_completion',
+            'xp_per_hour',
+            'pokeballs_thrown',
+            'highest_cp_pokemon',
+            'level_stats',
+            'xp_earned',
+            'pokemon_unseen',
+            'most_perfect_pokemon',
+            'pokemon_stats',
+            'pokemon_released']}
     player_stats = {
         'level': 25,
         'prev_level_xp': 1250000,
@@ -30,7 +45,8 @@ class UpdateTitleStatsTestCase(unittest.TestCase):
 
     def mock_metrics(self):
         self.bot.metrics = MagicMock()
-        self.bot.metrics.runtime.return_value = timedelta(hours=15, minutes=42, seconds=13)
+        self.bot.metrics.runtime.return_value = timedelta(
+            hours=15, minutes=42, seconds=13)
         self.bot.metrics.distance_travelled.return_value = 42.05
         self.bot.metrics.xp_per_hour.return_value = 1337.42
         self.bot.metrics.xp_earned.return_value = 424242
@@ -94,33 +110,43 @@ class UpdateTitleStatsTestCase(unittest.TestCase):
         self.worker._update_title('new title linux', 'linux')
 
         self.assertEqual(mock_stdout.write.call_count, 1)
-        self.assertEqual(mock_stdout.write.call_args, call('\x1b]2;new title linux\x07'))
+        self.assertEqual(
+            mock_stdout.write.call_args,
+            call('\x1b]2;new title linux\x07'))
 
         self.worker._update_title('new title linux2', 'linux2')
 
         self.assertEqual(mock_stdout.write.call_count, 2)
-        self.assertEqual(mock_stdout.write.call_args, call('\x1b]2;new title linux2\x07'))
+        self.assertEqual(
+            mock_stdout.write.call_args,
+            call('\x1b]2;new title linux2\x07'))
 
         self.worker._update_title('new title cygwin', 'cygwin')
 
         self.assertEqual(mock_stdout.write.call_count, 3)
-        self.assertEqual(mock_stdout.write.call_args, call('\x1b]2;new title cygwin\x07'))
+        self.assertEqual(
+            mock_stdout.write.call_args,
+            call('\x1b]2;new title cygwin\x07'))
 
     @patch('pokemongo_bot.cell_workers.update_title_stats.stdout')
     def test_update_title_darwin(self, mock_stdout):
         self.worker._update_title('new title darwin', 'darwin')
 
         self.assertEqual(mock_stdout.write.call_count, 1)
-        self.assertEqual(mock_stdout.write.call_args, call('\033]0;new title darwin\007'))
+        self.assertEqual(
+            mock_stdout.write.call_args,
+            call('\033]0;new title darwin\007'))
 
     @unittest.skipUnless(_platform.startswith("win"), "requires Windows")
     @patch('pokemongo_bot.cell_workers.update_title_stats.ctypes')
     def test_update_title_win32(self, mock_ctypes):
         self.worker._update_title('new title win32', 'win32')
 
-        self.assertEqual(mock_ctypes.windll.kernel32.SetConsoleTitleA.call_count, 1)
-        self.assertEqual(mock_ctypes.windll.kernel32.SetConsoleTitleA.call_args,
-                         call('new title win32'))
+        self.assertEqual(
+            mock_ctypes.windll.kernel32.SetConsoleTitleA.call_count, 1)
+        self.assertEqual(
+            mock_ctypes.windll.kernel32.SetConsoleTitleA.call_args,
+            call('new title win32'))
 
     def test_get_stats_title_player_stats_none(self):
         title = self.worker._get_stats_title(None)

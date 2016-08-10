@@ -7,6 +7,7 @@ from pokemongo_bot.cell_workers.utils import distance, format_dist
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.base_task import BaseTask
 
+
 class FollowSpiral(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
@@ -16,15 +17,16 @@ class FollowSpiral(BaseTask):
         self.origin_lat = self.bot.position[0]
         self.origin_lon = self.bot.position[1]
 
-        self.diameter_to_steps = (self.steplimit+1) ** 2
+        self.diameter_to_steps = (self.steplimit + 1) ** 2
         self.points = self._generate_spiral(
-            self.origin_lat, self.origin_lon, self.step_size, self.diameter_to_steps
-        )
+            self.origin_lat,
+            self.origin_lon,
+            self.step_size,
+            self.diameter_to_steps)
 
         self.ptr = 0
         self.direction = 1
         self.cnt = 0
-
 
     @staticmethod
     def _generate_spiral(starting_lat, starting_lng, step_size, step_limit):
@@ -42,8 +44,9 @@ class FollowSpiral(BaseTask):
         steps, x, y, d, m = 1, 0, 0, 1, 1
 
         rlat = starting_lat * math.pi
-        latdeg = 111132.93 - 559.82 * math.cos(2*rlat) + 1.175*math.cos(4*rlat)
-        lngdeg = 111412.84 * math.cos(rlat) - 93.5 * math.cos(3*rlat)
+        latdeg = 111132.93 - 559.82 * \
+            math.cos(2 * rlat) + 1.175 * math.cos(4 * rlat)
+        lngdeg = 111412.84 * math.cos(rlat) - 93.5 * math.cos(3 * rlat)
         step_size_lat = step_size / latdeg
         step_size_lng = step_size / lngdeg
 
@@ -90,11 +93,12 @@ class FollowSpiral(BaseTask):
                     formatted="Walking from {last_position} to {current_position} ({distance} {distance_unit})",
                     data={
                         'last_position': self.bot.position,
-                        'current_position': (point['lat'], point['lng'], 0),
+                        'current_position': (
+                            point['lat'],
+                            point['lng'],
+                            0),
                         'distance': dist,
-                        'distance_unit': 'm'
-                    }
-                )
+                        'distance_unit': 'm'})
 
             if step_walker.step():
                 step_walker = None
@@ -102,12 +106,13 @@ class FollowSpiral(BaseTask):
             self.bot.api.set_position(point['lat'], point['lng'])
 
         if distance(
-                    self.bot.api._position_lat,
-                    self.bot.api._position_lng,
-                    point['lat'],
-                    point['lng']
-                ) <= 1 or (self.bot.config.walk > 0 and step_walker == None):
-            if self.ptr + self.direction >= len(self.points) or self.ptr + self.direction <= -1:
+            self.bot.api._position_lat,
+            self.bot.api._position_lng,
+            point['lat'],
+            point['lng']
+        ) <= 1 or (self.bot.config.walk > 0 and step_walker is None):
+            if self.ptr + \
+                    self.direction >= len(self.points) or self.ptr + self.direction <= -1:
                 self.direction *= -1
             if len(self.points) != 1:
                 self.ptr += self.direction

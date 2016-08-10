@@ -11,29 +11,52 @@ from mock import patch, MagicMock
 from pokemongo_bot.plugin_loader import PluginLoader, GithubPlugin
 from pokemongo_bot.test.resources.plugin_fixture import FakeTask
 
-PLUGIN_PATH = os.path.realpath(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'plugins'))
+PLUGIN_PATH = os.path.realpath(
+    os.path.join(
+        os.path.abspath(
+            os.path.dirname(__file__)),
+        '..',
+        'plugins'))
+
 
 class PluginLoaderTest(unittest.TestCase):
+
     def setUp(self):
         self.plugin_loader = PluginLoader()
 
     def test_load_namespace_class(self):
-        package_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'resources', 'plugin_fixture')
+        package_path = os.path.join(
+            os.path.abspath(
+                os.path.dirname(__file__)),
+            'resources',
+            'plugin_fixture')
         self.plugin_loader.load_plugin(package_path)
         loaded_class = self.plugin_loader.get_class('plugin_fixture.FakeTask')
         self.assertEqual(loaded_class({}, {}).work(), 'FakeTask')
         self.plugin_loader.remove_path(package_path)
 
     def test_load_zip(self):
-        package_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'resources', 'plugin_fixture_test.zip')
+        package_path = os.path.join(
+            os.path.abspath(
+                os.path.dirname(__file__)),
+            'resources',
+            'plugin_fixture_test.zip')
         self.plugin_loader.load_plugin(package_path)
-        loaded_class = self.plugin_loader.get_class('plugin_fixture_test.FakeTask')
+        loaded_class = self.plugin_loader.get_class(
+            'plugin_fixture_test.FakeTask')
         self.assertEqual(loaded_class({}, {}).work(), 'FakeTaskZip')
         self.plugin_loader.remove_path(package_path)
 
     def copy_plugin(self):
-        package_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'resources', 'plugin_fixture')
-        dest_path = os.path.join(PLUGIN_PATH, 'org_repo', 'plugin_fixture_tests')
+        package_path = os.path.join(
+            os.path.abspath(
+                os.path.dirname(__file__)),
+            'resources',
+            'plugin_fixture')
+        dest_path = os.path.join(
+            PLUGIN_PATH,
+            'org_repo',
+            'plugin_fixture_tests')
         shutil.copytree(package_path, os.path.join(dest_path))
         with open(os.path.join(os.path.dirname(dest_path), '.sha'), 'w') as file:
             file.write('testsha')
@@ -42,27 +65,39 @@ class PluginLoaderTest(unittest.TestCase):
     def test_load_github_already_downloaded(self):
         dest_path = self.copy_plugin()
         self.plugin_loader.load_plugin('org/repo#testsha')
-        loaded_class = self.plugin_loader.get_class('plugin_fixture_tests.FakeTask')
+        loaded_class = self.plugin_loader.get_class(
+            'plugin_fixture_tests.FakeTask')
         self.assertEqual(loaded_class({}, {}).work(), 'FakeTask')
         self.plugin_loader.remove_path(dest_path)
         shutil.rmtree(os.path.dirname(dest_path))
 
     def copy_zip(self):
         zip_name = 'test-pgo-plugin-2d54eddde33061be9b329efae0cfb9bd58842655.zip'
-        fixture_zip = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'resources', zip_name)
-        zip_dest = os.path.join(PLUGIN_PATH, 'org_test-pgo-plugin_2d54eddde33061be9b329efae0cfb9bd58842655.zip')
+        fixture_zip = os.path.join(
+            os.path.abspath(
+                os.path.dirname(__file__)),
+            'resources',
+            zip_name)
+        zip_dest = os.path.join(
+            PLUGIN_PATH,
+            'org_test-pgo-plugin_2d54eddde33061be9b329efae0cfb9bd58842655.zip')
         shutil.copyfile(fixture_zip, zip_dest)
 
     @mock.patch.object(GithubPlugin, 'download', copy_zip)
     def test_load_github_not_downloaded(self):
-        self.plugin_loader.load_plugin('org/test-pgo-plugin#2d54eddde33061be9b329efae0cfb9bd58842655')
-        loaded_class = self.plugin_loader.get_class('test-pgo-plugin.PrintText')
+        self.plugin_loader.load_plugin(
+            'org/test-pgo-plugin#2d54eddde33061be9b329efae0cfb9bd58842655')
+        loaded_class = self.plugin_loader.get_class(
+            'test-pgo-plugin.PrintText')
         self.assertEqual(loaded_class({}, {}).work(), 'PrintText')
         dest_path = os.path.join(PLUGIN_PATH, 'org_test-pgo-plugin')
-        self.plugin_loader.remove_path(os.path.join(dest_path, 'test-pgo-plugin'))
+        self.plugin_loader.remove_path(
+            os.path.join(dest_path, 'test-pgo-plugin'))
         shutil.rmtree(dest_path)
 
+
 class GithubPluginTest(unittest.TestCase):
+
     def test_get_github_parts_for_valid_github(self):
         github_plugin = GithubPlugin('org/repo#sha')
         self.assertTrue(github_plugin.is_valid_plugin())
@@ -77,7 +112,11 @@ class GithubPluginTest(unittest.TestCase):
 
     def test_get_installed_version(self):
         github_plugin = GithubPlugin('org/repo#my-version')
-        src_fixture = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'resources', 'plugin_sha')
+        src_fixture = os.path.join(
+            os.path.abspath(
+                os.path.dirname(__file__)),
+            'resources',
+            'plugin_sha')
         dest = github_plugin.get_plugin_folder()
         shutil.copytree(src_fixture, dest)
         actual = github_plugin.get_installed_version()
@@ -129,8 +168,13 @@ class GithubPluginTest(unittest.TestCase):
         self.assertTrue(actual)
 
     def test_extract(self):
-        github_plugin = GithubPlugin('org/test-pgo-plugin#2d54eddde33061be9b329efae0cfb9bd58842655')
-        src = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'resources', 'test-pgo-plugin-2d54eddde33061be9b329efae0cfb9bd58842655.zip')
+        github_plugin = GithubPlugin(
+            'org/test-pgo-plugin#2d54eddde33061be9b329efae0cfb9bd58842655')
+        src = os.path.join(
+            os.path.abspath(
+                os.path.dirname(__file__)),
+            'resources',
+            'test-pgo-plugin-2d54eddde33061be9b329efae0cfb9bd58842655.zip')
         zip_dest = github_plugin.get_local_destination()
         shutil.copyfile(src, zip_dest)
         github_plugin.extract()
@@ -143,6 +187,7 @@ class GithubPluginTest(unittest.TestCase):
 
         with open(sha_file) as file:
             content = file.read().strip()
-            self.assertEqual(content, '2d54eddde33061be9b329efae0cfb9bd58842655')
+            self.assertEqual(
+                content, '2d54eddde33061be9b329efae0cfb9bd58842655')
 
         shutil.rmtree(plugin_folder)

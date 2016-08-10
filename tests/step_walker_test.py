@@ -6,10 +6,14 @@ from pokemongo_bot.cell_workers.utils import float_equal
 
 NORMALIZED_LAT_LNG_DISTANCE_STEP = 6.3593e-6
 
+
 class TestStepWalker(unittest.TestCase):
+
     def setUp(self):
         self.patcherSleep = patch('pokemongo_bot.step_walker.sleep')
-        self.patcherRandomLat = patch('pokemongo_bot.step_walker.random_lat_long_delta', return_value=0)
+        self.patcherRandomLat = patch(
+            'pokemongo_bot.step_walker.random_lat_long_delta',
+            return_value=0)
         self.patcherSleep.start()
         self.patcherRandomLat.start()
 
@@ -36,8 +40,14 @@ class TestStepWalker(unittest.TestCase):
         stayInPlace = sw.step()
         self.assertFalse(stayInPlace)
 
-        self.assertTrue(float_equal(self.lat, NORMALIZED_LAT_LNG_DISTANCE_STEP))
-        self.assertTrue(float_equal(self.lng, NORMALIZED_LAT_LNG_DISTANCE_STEP))
+        self.assertTrue(
+            float_equal(
+                self.lat,
+                NORMALIZED_LAT_LNG_DISTANCE_STEP))
+        self.assertTrue(
+            float_equal(
+                self.lng,
+                NORMALIZED_LAT_LNG_DISTANCE_STEP))
 
     def test_normalized_distance_times_2(self):
         sw = StepWalker(self.bot, 2, 0.1, 0.1)
@@ -47,8 +57,16 @@ class TestStepWalker(unittest.TestCase):
         stayInPlace = sw.step()
         self.assertFalse(stayInPlace)
 
-        self.assertTrue(float_equal(self.lat, NORMALIZED_LAT_LNG_DISTANCE_STEP * 2))
-        self.assertTrue(float_equal(self.lng, NORMALIZED_LAT_LNG_DISTANCE_STEP * 2))
+        self.assertTrue(
+            float_equal(
+                self.lat,
+                NORMALIZED_LAT_LNG_DISTANCE_STEP *
+                2))
+        self.assertTrue(
+            float_equal(
+                self.lng,
+                NORMALIZED_LAT_LNG_DISTANCE_STEP *
+                2))
 
     def test_small_distance_same_spot(self):
         sw = StepWalker(self.bot, 1, 0, 0)
@@ -70,4 +88,4 @@ class TestStepWalker(unittest.TestCase):
         # see args below
         # with self.assertRaises(RuntimeError):
         sw = StepWalker(self.bot, 1, 10, 10)
-        sw.step() # equals True i.e act like the distance is too short for a step
+        sw.step()  # equals True i.e act like the distance is too short for a step

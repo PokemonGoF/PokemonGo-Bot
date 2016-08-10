@@ -58,6 +58,7 @@ logging.basicConfig(
 logger = logging.getLogger('cli')
 logger.setLevel(logging.INFO)
 
+
 def main():
     bot = False
 
@@ -139,6 +140,7 @@ def main():
 
         raise
 
+
 def report_summary(bot):
     if bot.metrics.start_time is None:
         return  # Bot didn't actually start, no metrics to show.
@@ -147,19 +149,37 @@ def report_summary(bot):
     metrics.capture_stats()
     logger.info('')
     logger.info('Ran for {}'.format(metrics.runtime()))
-    logger.info('Total XP Earned: {}  Average: {:.2f}/h'.format(metrics.xp_earned(), metrics.xp_per_hour()))
+    logger.info(
+        'Total XP Earned: {}  Average: {:.2f}/h'.format(
+            metrics.xp_earned(),
+            metrics.xp_per_hour()))
     logger.info('Travelled {:.2f}km'.format(metrics.distance_travelled()))
-    logger.info('Visited {} stops'.format(metrics.visits['latest'] - metrics.visits['start']))
-    logger.info('Encountered {} pokemon, {} caught, {} released, {} evolved, {} never seen before'
-                .format(metrics.num_encounters(), metrics.num_captures(), metrics.releases,
-                        metrics.num_evolutions(), metrics.num_new_mons()))
-    logger.info('Threw {} pokeball{}'.format(metrics.num_throws(), '' if metrics.num_throws() == 1 else 's'))
+    logger.info(
+        'Visited {} stops'.format(
+            metrics.visits['latest'] -
+            metrics.visits['start']))
+    logger.info(
+        'Encountered {} pokemon, {} caught, {} released, {} evolved, {} never seen before' .format(
+            metrics.num_encounters(),
+            metrics.num_captures(),
+            metrics.releases,
+            metrics.num_evolutions(),
+            metrics.num_new_mons()))
+    logger.info(
+        'Threw {} pokeball{}'.format(
+            metrics.num_throws(),
+            '' if metrics.num_throws() == 1 else 's'))
     logger.info('Earned {} Stardust'.format(metrics.earned_dust()))
     logger.info('')
     if metrics.highest_cp is not None:
-        logger.info('Highest CP Pokemon: {}'.format(metrics.highest_cp['desc']))
+        logger.info(
+            'Highest CP Pokemon: {}'.format(
+                metrics.highest_cp['desc']))
     if metrics.most_perfect is not None:
-        logger.info('Most Perfect Pokemon: {}'.format(metrics.most_perfect['desc']))
+        logger.info(
+            'Most Perfect Pokemon: {}'.format(
+                metrics.most_perfect['desc']))
+
 
 def init_config():
     parser = argparse.ArgumentParser()
@@ -184,12 +204,14 @@ def init_config():
 
     # Select a config file code
     parser.add_argument("-cf", "--config", help="Config File to use")
-    config_arg = parser.parse_known_args() and parser.parse_known_args()[0].config or None
+    config_arg = parser.parse_known_args() and parser.parse_known_args()[
+        0].config or None
 
     if config_arg and os.path.isfile(config_arg):
         _json_loader(config_arg)
     elif os.path.isfile(config_file):
-        logger.info('No config argument specified, checking for /configs/config.json')
+        logger.info(
+            'No config argument specified, checking for /configs/config.json')
         _json_loader(config_file)
     else:
         logger.info('Error: No /configs/config.json or specified config')
@@ -235,8 +257,7 @@ def init_config():
         short_flag="-wsr",
         long_flag="--websocket.remote_control",
         help="Enable remote control through websocket (requires websocekt server url)",
-        default=False
-    )
+        default=False)
     add_config(
         parser,
         load,
@@ -276,11 +297,9 @@ def init_config():
         load,
         short_flag="-w",
         long_flag="--walk",
-        help=
-        "Walk instead of teleport with given speed (meters per second, e.g. 2.5)",
+        help="Walk instead of teleport with given speed (meters per second, e.g. 2.5)",
         type=float,
-        default=2.5
-    )
+        default=2.5)
     add_config(
         parser,
         load,
@@ -324,8 +343,7 @@ def init_config():
         long_flag="--distance_unit",
         help="Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)",
         type=str,
-        default='km'
-    )
+        default='km')
     add_config(
         parser,
         load,
@@ -342,8 +360,7 @@ def init_config():
         long_flag="--reconnecting_timeout",
         help="Timeout between reconnecting if error occured (in minutes, e.g. 15)",
         type=float,
-        default=15.0
-    )
+        default=15.0)
     add_config(
         parser,
         load,
@@ -351,8 +368,7 @@ def init_config():
         long_flag="--health_record",
         help="Send anonymous bot event to GA for bot health record. Set \"health_record\":false if you need disable it.",
         type=bool,
-        default=True
-    )
+        default=True)
     add_config(
         parser,
         load,
@@ -393,16 +409,14 @@ def init_config():
         long_flag="--map_object_cache_time",
         help="Amount of seconds to keep the map object in cache (bypass Niantic throttling)",
         type=float,
-        default=5.0
-    )
+        default=5.0)
     add_config(
         parser,
         load,
         long_flag="--logging_color",
         help="If logging_color is set to true, colorized logging handler will be used",
         type=bool,
-        default=True
-    )
+        default=True)
 
     # Start to parse other attrs
     config = parser.parse_args()
@@ -411,7 +425,7 @@ def init_config():
     if not config.password and 'password' not in load:
         config.password = getpass("Password: ")
 
-    config.encrypt_location = load.get('encrypt_location','')
+    config.encrypt_location = load.get('encrypt_location', '')
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.action_wait_max = load.get('action_wait_max', 4)
@@ -422,7 +436,8 @@ def init_config():
     config.vips = load.get('vips', {})
 
     if config.map_object_cache_time < 0.0:
-        parser.error("--map_object_cache_time is out of range! (should be >= 0.0)")
+        parser.error(
+            "--map_object_cache_time is out of range! (should be >= 0.0)")
         return None
 
     if len(config.raw_tasks) == 0:
@@ -440,14 +455,37 @@ def init_config():
             Read https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Configuration-files#configuring-tasks for more information.
             """.format(flag_name))
 
-    old_flags = ['mode', 'catch_pokemon', 'spin_forts', 'forts_spin', 'hatch_eggs', 'release_pokemon', 'softban_fix',
-                'longer_eggs_first', 'evolve_speed', 'use_lucky_egg', 'item_filter', 'evolve_all', 'evolve_cp_min', 'max_steps']
+    old_flags = [
+        'mode',
+        'catch_pokemon',
+        'spin_forts',
+        'forts_spin',
+        'hatch_eggs',
+        'release_pokemon',
+        'softban_fix',
+        'longer_eggs_first',
+        'evolve_speed',
+        'use_lucky_egg',
+        'item_filter',
+        'evolve_all',
+        'evolve_cp_min',
+        'max_steps']
     for flag in old_flags:
         if flag in load:
             task_configuration_error(flag)
             return None
 
-    nested_old_flags = [('forts', 'spin'), ('forts', 'move_to_spin'), ('navigator', 'path_mode'), ('navigator', 'path_file'), ('navigator', 'type')]
+    nested_old_flags = [
+        ('forts',
+         'spin'),
+        ('forts',
+         'move_to_spin'),
+        ('navigator',
+         'path_mode'),
+        ('navigator',
+         'path_file'),
+        ('navigator',
+         'type')]
     for outer, inner in nested_old_flags:
         if load.get(outer, {}).get(inner, None):
             task_configuration_error('{}.{}'.format(outer, inner))
@@ -456,8 +494,9 @@ def init_config():
     if (config.evolve_captured
         and (not isinstance(config.evolve_captured, str)
              or str(config.evolve_captured).lower() in ["true", "false"])):
-        parser.error('"evolve_captured" should be list of pokemons: use "all" or "none" to match all ' +
-                     'or none of the pokemons, or use a comma separated list such as "Pidgey,Weedle,Caterpie"')
+        parser.error(
+            '"evolve_captured" should be list of pokemons: use "all" or "none" to match all ' +
+            'or none of the pokemons, or use a comma separated list such as "Pidgey,Weedle,Caterpie"')
         return None
 
     if not (config.location or config.location_cache):
@@ -465,11 +504,13 @@ def init_config():
         return None
 
     if config.catch_randomize_reticle_factor < 0 or 1 < config.catch_randomize_reticle_factor:
-        parser.error("--catch_randomize_reticle_factor is out of range! (should be 0 <= catch_randomize_reticle_factor <= 1)")
+        parser.error(
+            "--catch_randomize_reticle_factor is out of range! (should be 0 <= catch_randomize_reticle_factor <= 1)")
         return None
 
     if config.catch_randomize_spin_factor < 0 or 1 < config.catch_randomize_spin_factor:
-        parser.error("--catch_randomize_spin_factor is out of range! (should be 0 <= catch_randomize_spin_factor <= 1)")
+        parser.error(
+            "--catch_randomize_spin_factor is out of range! (should be 0 <= catch_randomize_spin_factor <= 1)")
         return None
 
     plugin_loader = PluginLoader()
@@ -484,10 +525,12 @@ def init_config():
             raise
 
     if config.evolve_captured and isinstance(config.evolve_captured, str):
-        config.evolve_captured = [str(pokemon_name).strip() for pokemon_name in config.evolve_captured.split(',')]
+        config.evolve_captured = [str(pokemon_name).strip(
+        ) for pokemon_name in config.evolve_captured.split(',')]
 
     fix_nested_config(config)
     return config
+
 
 def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
     if not long_flag:
@@ -496,7 +539,7 @@ def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
     full_attribute_path = long_flag.split('--')[1]
     attribute_name = full_attribute_path.split('.')[-1]
 
-    if '.' in full_attribute_path: # embedded config!
+    if '.' in full_attribute_path:  # embedded config!
         embedded_in = full_attribute_path.split('.')[0: -1]
         for level in embedded_in:
             json_config = json_config.get(level, {})
@@ -518,6 +561,7 @@ def fix_nested_config(config):
             new_key = key.replace('.', '_')
             config_dict[new_key] = value
             del config_dict[key]
+
 
 def parse_unicode_str(string):
     try:

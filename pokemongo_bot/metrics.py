@@ -28,7 +28,7 @@ class Metrics(object):
         return self.xp['latest'] - self.xp['start']
 
     def xp_per_hour(self):
-        return self.xp_earned()/(time.time() - self.start_time)*3600
+        return self.xp_earned() / (time.time() - self.start_time) * 3600
 
     def distance_travelled(self):
         return self.distance['latest'] - self.distance['start']
@@ -61,9 +61,13 @@ class Metrics(object):
                     .format(name, cp, iv_display, potential)}
 
         if potential > self.most_perfect['potential']:
-            self.most_perfect = \
-                {'potential': potential, 'desc': '{} [CP: {}] [IV: {}] Potential: {} '
-                    .format(name, cp, iv_display, potential)}
+            self.most_perfect = {
+                'potential': potential,
+                'desc': '{} [CP: {}] [IV: {}] Potential: {} ' .format(
+                    name,
+                    cp,
+                    iv_display,
+                    potential)}
         return
 
     def released_pokemon(self, count=1):
@@ -75,39 +79,63 @@ class Metrics(object):
         request.get_player()
         response_dict = request.call()
         try:
-            self.dust['latest'] = response_dict['responses']['GET_PLAYER']['player_data']['currencies'][1]['amount']
-            if self.dust['start'] is None: self.dust['start'] = self.dust['latest']
-            for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
+            self.dust['latest'] = response_dict['responses'][
+                'GET_PLAYER']['player_data']['currencies'][1]['amount']
+            if self.dust['start'] is None:
+                self.dust['start'] = self.dust['latest']
+            for item in response_dict['responses']['GET_INVENTORY'][
+                    'inventory_delta']['inventory_items']:
                 if 'inventory_item_data' in item:
                     if 'player_stats' in item['inventory_item_data']:
-                        playerdata = item['inventory_item_data']['player_stats']
+                        playerdata = item['inventory_item_data'][
+                            'player_stats']
 
                         self.xp['latest'] = playerdata.get('experience', 0)
-                        if self.xp['start'] is None: self.xp['start'] = self.xp['latest']
+                        if self.xp['start'] is None:
+                            self.xp['start'] = self.xp['latest']
 
-                        self.visits['latest'] = playerdata.get('poke_stop_visits', 0)
-                        if self.visits['start'] is None: self.visits['start'] = self.visits['latest']
+                        self.visits['latest'] = playerdata.get(
+                            'poke_stop_visits', 0)
+                        if self.visits['start'] is None:
+                            self.visits['start'] = self.visits['latest']
 
-                        self.captures['latest'] = playerdata.get('pokemons_captured', 0)
-                        if self.captures['start'] is None: self.captures['start'] = self.captures['latest']
+                        self.captures['latest'] = playerdata.get(
+                            'pokemons_captured', 0)
+                        if self.captures['start'] is None:
+                            self.captures['start'] = self.captures['latest']
 
-                        self.distance['latest'] = playerdata.get('km_walked', 0)
-                        if self.distance['start'] is None: self.distance['start'] = self.distance['latest']
+                        self.distance['latest'] = playerdata.get(
+                            'km_walked', 0)
+                        if self.distance['start'] is None:
+                            self.distance['start'] = self.distance['latest']
 
-                        self.encounters['latest'] = playerdata.get('pokemons_encountered', 0)
-                        if self.encounters['start'] is None: self.encounters['start'] = self.encounters['latest']
+                        self.encounters['latest'] = playerdata.get(
+                            'pokemons_encountered', 0)
+                        if self.encounters['start'] is None:
+                            self.encounters[
+                                'start'] = self.encounters['latest']
 
-                        self.throws['latest'] = playerdata.get('pokeballs_thrown', 0)
-                        if self.throws['start'] is None: self.throws['start'] = self.throws['latest']
+                        self.throws['latest'] = playerdata.get(
+                            'pokeballs_thrown', 0)
+                        if self.throws['start'] is None:
+                            self.throws['start'] = self.throws['latest']
 
-                        self.unique_mons['latest'] = playerdata.get('unique_pokedex_entries', 0)
-                        if self.unique_mons['start'] is None: self.unique_mons['start'] = self.unique_mons['latest']
+                        self.unique_mons['latest'] = playerdata.get(
+                            'unique_pokedex_entries', 0)
+                        if self.unique_mons['start'] is None:
+                            self.unique_mons[
+                                'start'] = self.unique_mons['latest']
 
-                        self.visits['latest'] = playerdata.get('poke_stop_visits', 0)
-                        if self.visits['start'] is None: self.visits['start'] = self.visits['latest']
+                        self.visits['latest'] = playerdata.get(
+                            'poke_stop_visits', 0)
+                        if self.visits['start'] is None:
+                            self.visits['start'] = self.visits['latest']
 
-                        self.evolutions['latest'] = playerdata.get('evolutions', 0)
-                        if self.evolutions['start'] is None: self.evolutions['start'] = self.evolutions['latest']
+                        self.evolutions['latest'] = playerdata.get(
+                            'evolutions', 0)
+                        if self.evolutions['start'] is None:
+                            self.evolutions[
+                                'start'] = self.evolutions['latest']
         except KeyError:
             # Nothing we can do if there's no player info.
             return

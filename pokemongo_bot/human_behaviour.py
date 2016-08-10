@@ -5,12 +5,12 @@ from random import random, uniform
 
 
 def sleep(seconds, delta=0.3):
-    time.sleep(jitter(seconds,delta))
+    time.sleep(jitter(seconds, delta))
 
 
 def jitter(value, delta=0.3):
     jitter = delta * value
-    return uniform(value-jitter, value+jitter)
+    return uniform(value - jitter, value + jitter)
 
 
 def action_delay(low, high):

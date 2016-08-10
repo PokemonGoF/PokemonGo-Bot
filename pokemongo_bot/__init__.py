@@ -37,6 +37,7 @@ import struct
 
 
 class PokemonGoBot(object):
+
     @property
     def position(self):
         return self.api._position_lat, self.api._position_lng, 0
@@ -60,7 +61,12 @@ class PokemonGoBot(object):
         self.pokemon_list = json.load(
             open(os.path.join(_base_dir, 'data', 'pokemon.json'))
         )
-        self.item_list = json.load(open(os.path.join(_base_dir, 'data', 'items.json')))
+        self.item_list = json.load(
+            open(
+                os.path.join(
+                    _base_dir,
+                    'data',
+                    'items.json')))
         self.metrics = Metrics(self)
         self.latest_inventory = None
         self.cell = None
@@ -77,7 +83,8 @@ class PokemonGoBot(object):
 
         # Theading setup for file writing
         self.web_update_queue = Queue.Queue(maxsize=1)
-        self.web_update_thread = threading.Thread(target=self.update_web_location_worker)
+        self.web_update_thread = threading.Thread(
+            target=self.update_web_location_worker)
         self.web_update_thread.start()
 
     def start(self):
@@ -96,7 +103,8 @@ class PokemonGoBot(object):
 
         if self.config.websocket_server_url:
             if self.config.websocket_start_embedded_server:
-                self.sio_runner = SocketIoRunner(self.config.websocket_server_url)
+                self.sio_runner = SocketIoRunner(
+                    self.config.websocket_server_url)
                 self.sio_runner.start_listening_async()
 
             websocket_handler = SocketIoHandler(
@@ -119,7 +127,8 @@ class PokemonGoBot(object):
             #
             # Emitting event should be enough to add logging and send websocket
             # message: :
-            # self.event_manager.emit('location', 'level'='info', data={'lat': 1, 'lng':1}),
+            # self.event_manager.emit('location', 'level'='info', data={'lat':
+            # 1, 'lng':1}),
 
     def _register_events(self):
         self.event_manager.register_event(
@@ -141,8 +150,8 @@ class PokemonGoBot(object):
             parameters=(
                 'current_position',
                 'last_position',
-                'distance', # optional
-                'distance_unit' # optional
+                'distance',  # optional
+                'distance_unit'  # optional
             )
         )
         self.event_manager.register_event('location_cache_error')
@@ -306,9 +315,13 @@ class PokemonGoBot(object):
             parameters=('pokemon',)
         )
         self.event_manager.register_event('skip_evolve')
-        self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
+        self.event_manager.register_event(
+            'threw_berry_failed', parameters=(
+                'status_code',))
         self.event_manager.register_event('vip_pokemon')
-        self.event_manager.register_event('gained_candy', parameters=('quantity', 'type'))
+        self.event_manager.register_event(
+            'gained_candy', parameters=(
+                'quantity', 'type'))
 
         # level up stuff
         self.event_manager.register_event(
@@ -485,17 +498,20 @@ class PokemonGoBot(object):
                 forts += cell["forts"]
             if "wild_pokemons" in cell and len(cell["wild_pokemons"]):
                 wild_pokemons += cell["wild_pokemons"]
-            if "catchable_pokemons" in cell and len(cell["catchable_pokemons"]):
+            if "catchable_pokemons" in cell and len(
+                    cell["catchable_pokemons"]):
                 catchable_pokemons += cell["catchable_pokemons"]
 
-        # If there are forts present in the cells sent from the server or we don't yet have any cell data, return all data retrieved
+        # If there are forts present in the cells sent from the server or we
+        # don't yet have any cell data, return all data retrieved
         if len(forts) > 1 or not self.cell:
             return {
                 "forts": forts,
                 "wild_pokemons": wild_pokemons,
                 "catchable_pokemons": catchable_pokemons
             }
-        # If there are no forts present in the data from the server, keep our existing fort data and only update the pokemon cells.
+        # If there are no forts present in the data from the server, keep our
+        # existing fort data and only update the pokemon cells.
         else:
             return {
                 "forts": self.cell["forts"],
@@ -503,9 +519,11 @@ class PokemonGoBot(object):
                 "catchable_pokemons": catchable_pokemons
             }
 
-    def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
+    def update_web_location(self, cells=None, lat=None, lng=None, alt=None):
         # we can call the function with no arguments and still get the position
         # and map_cells
+        if cells is None:
+            cells = []
         if lat is None:
             lat = self.api._position_lat
         if lng is None:
@@ -517,7 +535,9 @@ class PokemonGoBot(object):
             location = self.position[0:2]
             cells = self.find_close_cells(*location)
 
-        user_data_cells = os.path.join(_base_dir, 'data', 'cells-%s.json' % self.config.username)
+        user_data_cells = os.path.join(
+            _base_dir, 'data', 'cells-%s.json' %
+            self.config.username)
         with open(user_data_cells, 'w') as outfile:
             json.dump(cells, outfile)
 
@@ -541,7 +561,8 @@ class PokemonGoBot(object):
         )
         try:
             with open(user_data_lastlocation, 'w') as outfile:
-                json.dump({'lat': lat, 'lng': lng, 'start_position': self.start_position}, outfile)
+                json.dump({'lat': lat, 'lng': lng,
+                           'start_position': self.start_position}, outfile)
         except IOError as e:
             self.logger.info('[x] Error while opening location file: %s' % e)
 
@@ -594,13 +615,15 @@ class PokemonGoBot(object):
             level=log_level,
             format='%(asctime)s [%(name)10s] [%(levelname)s] %(message)s'
         )
+
     def check_session(self, position):
         # Check session expiry
         if self.api._auth_provider and self.api._auth_provider._ticket_expire:
 
             # prevent crash if return not numeric value
             if not self.is_numeric(self.api._auth_provider._ticket_expire):
-                self.logger.info("Ticket expired value is not numeric", 'yellow')
+                self.logger.info(
+                    "Ticket expired value is not numeric", 'yellow')
                 return
 
             remaining_time = \
@@ -638,16 +661,15 @@ class PokemonGoBot(object):
         self.api.set_position(lat, lng, 0)
 
         while not self.api.login(
-            self.config.auth_service,
-            str(self.config.username),
-            str(self.config.password)):
+                self.config.auth_service,
+                str(self.config.username),
+                str(self.config.password)):
 
             self.event_manager.emit(
                 'login_failed',
                 sender=self,
                 level='info',
-                formatted="Login error, server busy. Waiting 10 seconds to try again."
-            )
+                formatted="Login error, server busy. Waiting 10 seconds to try again.")
             time.sleep(10)
 
         self.event_manager.emit(
@@ -668,17 +690,32 @@ class PokemonGoBot(object):
                 file_name = 'encrypt.dll'
 
         if self.config.encrypt_location == '':
-            path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+            path = os.path.abspath(
+                os.path.join(
+                    os.path.dirname(__file__),
+                    os.pardir))
         else:
             path = self.config.encrypt_location
 
-        full_path = path + '/'+ file_name
+        full_path = path + '/' + file_name
         if not os.path.isfile(full_path):
-            self.logger.error(file_name + ' is not found! Please place it in the bots root directory or set libencrypt_location in config.')
-            self.logger.info('Platform: '+ _platform + ' Encrypt.so directory: '+ path)
+            self.logger.error(
+                file_name +
+                ' is not found! Please place it in the bots root directory or set libencrypt_location in config.')
+            self.logger.info(
+                'Platform: ' +
+                _platform +
+                ' Encrypt.so directory: ' +
+                path)
             sys.exit(1)
         else:
-            self.logger.info('Found '+ file_name +'! Platform: ' + _platform + ' Encrypt.so directory: ' + path)
+            self.logger.info(
+                'Found ' +
+                file_name +
+                '! Platform: ' +
+                _platform +
+                ' Encrypt.so directory: ' +
+                path)
 
         return full_path
 
@@ -708,7 +745,8 @@ class PokemonGoBot(object):
         currency_2 = "0"
 
         if response_dict:
-            self._player = response_dict['responses']['GET_PLAYER']['player_data']
+            self._player = response_dict['responses'][
+                'GET_PLAYER']['player_data']
             player = self._player
         else:
             self.logger.info(
@@ -796,8 +834,15 @@ class PokemonGoBot(object):
         init_inventory(self)
         response = self.get_inventory()
         self.inventory = list()
-        inventory_items = response.get('responses', {}).get('GET_INVENTORY', {}).get(
-            'inventory_delta', {}).get('inventory_items', {})
+        inventory_items = response.get(
+            'responses',
+            {}).get(
+            'GET_INVENTORY',
+            {}).get(
+            'inventory_delta',
+            {}).get(
+                'inventory_items',
+            {})
         if inventory_items:
             for item in inventory_items:
                 item_info = item.get('inventory_item_data', {}).get('item', {})
@@ -809,7 +854,9 @@ class PokemonGoBot(object):
         inventory_dict = inventory_req['responses']['GET_INVENTORY'][
             'inventory_delta']['inventory_items']
 
-        user_web_inventory = os.path.join(_base_dir, 'web', 'inventory-%s.json' % self.config.username)
+        user_web_inventory = os.path.join(
+            _base_dir, 'web', 'inventory-%s.json' %
+            self.config.username)
 
         with open(user_web_inventory, 'w') as outfile:
             json.dump(inventory_dict, outfile)
@@ -921,7 +968,7 @@ class PokemonGoBot(object):
                     formatted='Loading cached location...'
                 )
                 with open(os.path.join(_base_dir, 'data', 'last-location-%s.json' %
-                    self.config.username)) as f:
+                                       self.config.username)) as f:
                     location_json = json.load(f)
                 location = (
                     location_json['lat'],
@@ -929,11 +976,14 @@ class PokemonGoBot(object):
                     0.0
                 )
 
-                # If location has been set in config, only use cache if starting position has not differed
+                # If location has been set in config, only use cache if
+                # starting position has not differed
                 if has_position and 'start_position' in location_json:
-                    last_start_position = tuple(location_json.get('start_position', []))
+                    last_start_position = tuple(
+                        location_json.get('start_position', []))
 
-                    # Start position has to have been set on a previous run to do this check
+                    # Start position has to have been set on a previous run to
+                    # do this check
                     if last_start_position and last_start_position != self.start_position:
                         msg = 'Going to a new place, ignoring cached location.'
                         self.event_manager.emit(
@@ -984,7 +1034,9 @@ class PokemonGoBot(object):
                     '[x] Coordinates found in passed in location, '
                     'not geocoding.'
                 )
-                return float(possible_coordinates[0]), float(possible_coordinates[1]), float("0.0")
+                return float(
+                    possible_coordinates[0]), float(
+                    possible_coordinates[1]), float("0.0")
 
         geolocator = GoogleV3(api_key=self.config.gmapkey)
         loc = geolocator.geocode(location_name, timeout=10)
@@ -1001,7 +1053,8 @@ class PokemonGoBot(object):
         request.check_awarded_badges()
         request.call()
         try:
-            self.web_update_queue.put_nowait(True)  # do this outside of thread every tick
+            # do this outside of thread every tick
+            self.web_update_queue.put_nowait(True)
         except Queue.Full:
             pass
 
@@ -1013,8 +1066,15 @@ class PokemonGoBot(object):
 
     def get_inventory_count(self, what):
         response_dict = self.get_inventory()
-        inventory_items = response_dict.get('responses', {}).get('GET_INVENTORY', {}).get(
-            'inventory_delta', {}).get('inventory_items', {})
+        inventory_items = response_dict.get(
+            'responses',
+            {}).get(
+            'GET_INVENTORY',
+            {}).get(
+            'inventory_delta',
+            {}).get(
+                'inventory_items',
+            {})
         if inventory_items:
             pokecount = 0
             itemcount = 1
@@ -1022,7 +1082,8 @@ class PokemonGoBot(object):
                 if 'inventory_item_data' in item:
                     if 'pokemon_data' in item['inventory_item_data']:
                         pokecount += 1
-                    itemcount += item['inventory_item_data'].get('item', {}).get('count', 0)
+                    itemcount += item['inventory_item_data'].get(
+                        'item', {}).get('count', 0)
         if 'pokemon' in what:
             return pokecount
         if 'item' in what:
@@ -1031,16 +1092,26 @@ class PokemonGoBot(object):
 
     def get_player_info(self):
         response_dict = self.get_inventory()
-        inventory_items = response_dict.get('responses', {}).get('GET_INVENTORY', {}).get(
-            'inventory_delta', {}).get('inventory_items', {})
+        inventory_items = response_dict.get(
+            'responses',
+            {}).get(
+            'GET_INVENTORY',
+            {}).get(
+            'inventory_delta',
+            {}).get(
+                'inventory_items',
+            {})
         if inventory_items:
             pokecount = 0
             itemcount = 1
             for item in inventory_items:
                 # print('item {}'.format(item))
-                playerdata = item.get('inventory_item_data', {}).get('player_stats')
+                playerdata = item.get(
+                    'inventory_item_data',
+                    {}).get('player_stats')
                 if playerdata:
-                    nextlvlxp = (int(playerdata.get('next_level_xp', 0)) - int(playerdata.get('experience', 0)))
+                    nextlvlxp = (int(playerdata.get('next_level_xp', 0)
+                                     ) - int(playerdata.get('experience', 0)))
 
                     if 'level' in playerdata and 'experience' in playerdata:
                         self.logger.info(

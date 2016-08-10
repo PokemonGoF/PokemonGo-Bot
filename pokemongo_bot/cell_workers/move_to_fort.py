@@ -44,7 +44,8 @@ class MoveToFort(BaseTask):
         details = fort_details(self.bot, fortID, lat, lng)
         fort_name = details.get('name', 'Unknown')
 
-        unit = self.bot.config.distance_unit  # Unit to use when printing formatted distance
+        # Unit to use when printing formatted distance
+        unit = self.bot.config.distance_unit
 
         dist = distance(
             self.bot.position[0],
@@ -60,18 +61,18 @@ class MoveToFort(BaseTask):
             }
 
             if self.is_attracted() > 0:
-                fort_event_data.update(lure_distance=format_dist(self.lure_distance, unit))
+                fort_event_data.update(
+                    lure_distance=format_dist(
+                        self.lure_distance, unit))
                 self.emit_event(
                     'moving_to_lured_fort',
                     formatted="Moving towards pokestop {fort_name} - {distance} (attraction of lure {lure_distance})",
-                    data=fort_event_data
-                )
+                    data=fort_event_data)
             else:
                 self.emit_event(
                     'moving_to_fort',
                     formatted="Moving towards pokestop {fort_name} - {distance}",
-                    data=fort_event_data
-                )
+                    data=fort_event_data)
 
             step_walker = StepWalker(
                 self.bot,
@@ -94,11 +95,18 @@ class MoveToFort(BaseTask):
         if not self.lure_attraction:
             return None, 0
 
-        lures = filter(lambda x: True if x.get('lure_info', None) != None else False, forts)
+        lures = filter(
+            lambda x: True if x.get(
+                'lure_info',
+                None) is not None else False,
+            forts)
 
         if (len(lures)):
-            dist_lure_me = distance(self.bot.position[0], self.bot.position[1],
-                                    lures[0]['latitude'],lures[0]['longitude'])
+            dist_lure_me = distance(
+                self.bot.position[0],
+                self.bot.position[1],
+                lures[0]['latitude'],
+                lures[0]['longitude'])
         else:
             dist_lure_me = 0
 
@@ -135,11 +143,14 @@ class MoveToFort(BaseTask):
         # Remove stops that are still on timeout
         forts = filter(lambda x: x["id"] not in self.bot.fort_timeouts, forts)
 
-        next_attracted_pts, lure_distance = self._get_nearest_fort_on_lure_way(forts)
+        next_attracted_pts, lure_distance = self._get_nearest_fort_on_lure_way(
+            forts)
 
-        # Remove all forts which were spun in the last ticks to avoid circles if set
+        # Remove all forts which were spun in the last ticks to avoid circles
+        # if set
         if self.bot.config.forts_avoid_circles:
-            forts = filter(lambda x: x["id"] not in self.bot.recent_forts, forts)
+            forts = filter(
+                lambda x: x["id"] not in self.bot.recent_forts, forts)
 
         self.lure_distance = lure_distance
 

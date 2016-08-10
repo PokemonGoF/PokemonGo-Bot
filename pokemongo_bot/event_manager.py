@@ -27,7 +27,7 @@ class EventManager(object):
 
     def event_report(self):
         for event, parameters in self._registered_events.iteritems():
-            print '-'*80
+            print '-' * 80
             print 'Event: {}'.format(event)
             if parameters:
                 print 'Parameters:'
@@ -37,26 +37,34 @@ class EventManager(object):
     def add_handler(self, event_handler):
         self._handlers.append(event_handler)
 
-    def register_event(self, name, parameters=[]):
+    def register_event(self, name, parameters=None):
+        if parameters is None:
+            parameters = []
         self._registered_events[name] = parameters
 
-    def emit(self, event, sender=None, level='info', formatted='', data={}):
+    def emit(self, event, sender=None, level='info', formatted='', data=None):
+        if data is None:
+            data = {}
         if not sender:
             raise ArgumentError('Event needs a sender!')
 
         levels = ['info', 'warning', 'error', 'critical', 'debug']
-        if not level in levels:
-            raise ArgumentError('Event level needs to be in: {}'.format(levels))
+        if level not in levels:
+            raise ArgumentError(
+                'Event level needs to be in: {}'.format(levels))
 
         if event not in self._registered_events:
-            raise EventNotRegisteredException("Event %s not registered..." % event)
+            raise EventNotRegisteredException(
+                "Event %s not registered..." % event)
 
         # verify params match event
         parameters = self._registered_events[event]
         if parameters:
             for k, v in data.iteritems():
                 if k not in parameters:
-                    raise EventMalformedException("Event %s does not require parameter %s" % (event, k))
+                    raise EventMalformedException(
+                        "Event %s does not require parameter %s" %
+                        (event, k))
 
         formatted_msg = formatted.format(**data)
 

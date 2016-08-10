@@ -2,13 +2,17 @@ import cell_workers
 from pokemongo_bot.plugin_loader import PluginLoader
 from pokemongo_bot.base_task import BaseTask
 
+
 class ConfigException(Exception):
     pass
+
 
 class MismatchTaskApiVersion(Exception):
     pass
 
+
 class TreeConfigBuilder(object):
+
     def __init__(self, bot, tasks_raw):
         self.bot = bot
         self.tasks_raw = tasks_raw
@@ -31,9 +35,11 @@ class TreeConfigBuilder(object):
         for task in self.tasks_raw:
             task_type = task.get('type', None)
             if task_type is None:
-                raise ConfigException('No type found for given task {}'.format(task))
+                raise ConfigException(
+                    'No type found for given task {}'.format(task))
             elif task_type == 'EvolveAll':
-                raise ConfigException('The EvolveAll task has been renamed to EvolvePokemon')
+                raise ConfigException(
+                    'The EvolveAll task has been renamed to EvolvePokemon')
 
             task_config = task.get('config', {})
 
@@ -51,18 +57,11 @@ class TreeConfigBuilder(object):
 
             if error_string != '':
                 raise MismatchTaskApiVersion(
-                    'Task {} only works with task api version {}, you are currently running version {}. {}'
-                    .format(
-                        task_type,
-                        worker.SUPPORTED_TASK_API_VERSION,
-                        BaseTask.TASK_API_VERSION,
-                        error_string
-                    )
-                )
+                    'Task {} only works with task api version {}, you are currently running version {}. {}' .format(
+                        task_type, worker.SUPPORTED_TASK_API_VERSION, BaseTask.TASK_API_VERSION, error_string))
 
             instance = worker(self.bot, task_config)
             if instance.enabled:
                 workers.append(instance)
 
         return workers
-

@@ -1,0 +1,42 @@
+requirements:
+  - requirements.txt
+doc-warnings: true
+test-warnings: false
+strictness: veryhigh
+max-line-length: 120
+autodetect: true
+dodgy:
+  run: true
+mccabe:
+  run: yes 
+pyflakes:
+  run: yes
+pep8:
+  run: yes
+pylint:
+  run: yes
+pep257:
+  run: false # problematic for __all__ statements?
+
+ignore-paths:
+  - share
+  - bin
+  - lib
+  - include
+  - tests
+  - web
+  - docs
+python-targets:
+  - 2
+
+profile-validator:
+  run: yes
+
+
+# optional:
+frosted:
+  run: false
+vulture:
+  run: false
+pyroma:
+  run: false

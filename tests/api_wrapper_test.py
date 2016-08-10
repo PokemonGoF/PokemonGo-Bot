@@ -8,7 +8,9 @@ from pgoapi import PGoApi
 from pgoapi.exceptions import NotLoggedInException, ServerBusyOrOfflineException, NoPlayerPositionSetException, EmptySubrequestChainException
 from pokemongo_bot.api_wrapper import ApiWrapper
 
+
 class TestApiWrapper(unittest.TestCase):
+
     def test_raises_not_logged_in_exception(self):
         api = ApiWrapper()
         api.set_position(*(42, 42, 0))
@@ -34,11 +36,14 @@ class TestApiWrapper(unittest.TestCase):
             request.call()
 
     @patch('pokemongo_bot.api_wrapper.sleep')
-    def test_api_server_is_unreachable_raises_server_busy_or_offline_exception(self, sleep):
-        sleep.return_value = True # we don't need to really sleep
+    def test_api_server_is_unreachable_raises_server_busy_or_offline_exception(
+            self,
+            sleep):
+        sleep.return_value = True  # we don't need to really sleep
         request = FakeApi().create_request('Wrong Value')
         request.get_inventory()
-        # we expect an exception because the "server" isn't returning a valid response
+        # we expect an exception because the "server" isn't returning a valid
+        # response
         with self.assertRaises(ServerBusyOrOfflineException):
             request.call()
 
@@ -51,6 +56,7 @@ class TestApiWrapper(unittest.TestCase):
 
     def test_return_value_is_not_valid(self):
         api = FakeApi()
+
         def returnRequest(ret_value):
             request = api.create_request(ret_value)
             request.get_inventory(test='awesome')
@@ -66,31 +72,41 @@ class TestApiWrapper(unittest.TestCase):
         ]
         for wrong in wrong_return_values:
             request = returnRequest(wrong)
-            request_callers = request._pop_request_callers() # we can pop because we do no call
+            # we can pop because we do no call
+            request_callers = request._pop_request_callers()
 
             is_valid = request.is_response_valid(wrong, request_callers)
-            self.assertFalse(is_valid, 'return value {} is valid somehow ?'.format(wrong))
+            self.assertFalse(
+                is_valid, 'return value {} is valid somehow ?'.format(wrong))
 
     def test_return_value_is_valid(self):
-        request = FakeApi().create_request() # we set the return value below
+        request = FakeApi().create_request()  # we set the return value below
         request.get_inventory(test='awesome')
 
-        request_caller = request.request_callers[0] # only one request
+        request_caller = request.request_callers[0]  # only one request
         self.assertEqual(request_caller.upper(), 'GET_INVENTORY')
 
-        good_return_value = {'responses': {request_caller.upper(): {}}, 'status_code': 0}
+        good_return_value = {
+            'responses': {
+                request_caller.upper(): {}},
+            'status_code': 0}
         request._call.return_value = good_return_value
 
         result = request.call()
         self.assertEqual(result, good_return_value)
-        self.assertEqual(len(request.request_callers), 0, 'request_callers must be empty')
+        self.assertEqual(len(request.request_callers), 0,
+                         'request_callers must be empty')
 
     def test_multiple_requests(self):
         request = FakeApi().create_request()
         request.get_inventory(test='awesome')
         request.fort_details()
 
-        good_return_value = {'responses': {'GET_INVENTORY': {}, 'FORT_DETAILS': {}}, 'status_code': 0}
+        good_return_value = {
+            'responses': {
+                'GET_INVENTORY': {},
+                'FORT_DETAILS': {}},
+            'status_code': 0}
         request._call.return_value = good_return_value
 
         result = request.call()
@@ -105,7 +121,7 @@ class TestApiWrapper(unittest.TestCase):
         for i in range(request.requests_per_seconds):
             request.call()
 
-    @timeout(1) # expects a timeout
+    @timeout(1)  # expects a timeout
     def test_api_call_throttle_should_fail(self):
         request = FakeApi().create_request()
         request.is_response_valid = MagicMock(return_value=True)

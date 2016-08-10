@@ -4,7 +4,6 @@ from socketIO_client import SocketIO, BaseNamespace
 
 class WebsocketRemoteControl(object):
 
-
     def __init__(self, bot):
         self.bot = bot
         self.host, port_str = self.bot.config.websocket_server_url.split(':')
