@@ -187,30 +187,6 @@ class PokemonCatchWorker(BaseTask):
             return True
         return self._pokemon_matches_config(self.config.vips, pokemon, default_logic='or')
 
-    def _get_current_pokemon_ids(self):
-        # don't use cached bot.get_inventory() here because we need to have actual information in capture logic
-        response_dict = self.api.get_inventory()
-
-        try:
-            inventory_items = response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
-        except KeyError:
-            return []  # no items
-
-        id_list = []
-        for item in inventory_items:
-            try:
-                pokemon = item['inventory_item_data']['pokemon_data']
-            except KeyError:
-                continue
-
-            # ignore eggs
-            if pokemon.get('is_egg'):
-                continue
-
-            id_list.append(pokemon['id'])
-
-        return id_list
-
     def _pct(self, rate_by_ball):
         return '{0:.2f}'.format(rate_by_ball * 100)
 
@@ -322,9 +298,6 @@ class PokemonCatchWorker(BaseTask):
                 catch_rate_by_ball = self._use_berry(berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball)
                 berry_count -= 1
 
-            # get current pokemon list before catch
-            pokemon_before_catch = self._get_current_pokemon_ids()
-
             # try to catch pokemon!
             items_stock[current_ball] -= 1
             self.emit_event(
@@ -404,31 +377,4 @@ class PokemonCatchWorker(BaseTask):
 
                 self.bot.softban = False
 
-                # evolve pokemon if necessary
-                if self.config.evolve_captured and (self.config.evolve_captured[0] == 'all' or pokemon.name in self.config.evolve_captured):
-                    pokemon_after_catch = self._get_current_pokemon_ids()
-                    pokemon_to_evolve = list(set(pokemon_after_catch) - set(pokemon_before_catch))
-
-                    if len(pokemon_to_evolve) == 0:
-                        break
-
-                    self._do_evolve(pokemon, pokemon_to_evolve[0])
-
             break
-
-    def _do_evolve(self, pokemon, new_pokemon_id):
-        response_dict = self.api.evolve_pokemon(pokemon_id=new_pokemon_id)
-        catch_pokemon_status = response_dict['responses']['EVOLVE_POKEMON']['result']
-
-        if catch_pokemon_status == 1:
-            self.emit_event(
-                'pokemon_evolved',
-                formatted='{pokemon} evolved!',
-                data={'pokemon': pokemon.name}
-            )
-        else:
-            self.emit_event(
-                'pokemon_evolve_fail',
-                formatted='Failed to evolve {pokemon}!',
-                data={'pokemon': pokemon.name}
-            )
