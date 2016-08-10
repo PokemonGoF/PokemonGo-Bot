@@ -26,12 +26,12 @@ class UpdateLiveStats(BaseTask):
     }
 
     min_interval : The minimum interval at which the stats are displayed,
-                   in seconds (defaults to 10 seconds).
+                   in seconds (defaults to 120 seconds).
                    The update interval cannot be accurate as workers run synchronously.
     stats : An array of stats to display and their display order (implicitly),
-            see available stats below.
-    terminal_log : Logs the stats into the terminal.
-    terminal_title : Displays the stats into the terminal title.
+            see available stats below (defaults to []).
+    terminal_log : Logs the stats into the terminal (defaults to false).
+    terminal_title : Displays the stats into the terminal title (defaults to true).
 
     Available stats :
     - login : The account login (from the credentials).
