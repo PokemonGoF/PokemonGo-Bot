@@ -107,6 +107,7 @@ web/
 data/last-location*.json
 data/cells-*.json
 data/map-caught-*.json
+export.csv
 
 # Multiple config
 configs/*
@@ -114,6 +115,7 @@ configs/*
 !configs/release_config.json.example
 !configs/config.json.pokemons.example
 !configs/config.json.pokemon.example
+!configs/config.json.export.example
 !configs/config.json.path.example
 !configs/config.json.map.example
 !configs/path.example.json
