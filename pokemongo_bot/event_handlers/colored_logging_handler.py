@@ -125,7 +125,7 @@ class ColoredLoggingHandler(EventHandler):
             message = 'Something rustles nearby!'
 
         # Truncate previous line if same event continues
-        if event in ColoredLoggingHandler.CONTINUOUS_EVENT_NAMES and self._last_event == event:
+        if event in ColoredLoggingHandler.CONTINUOUS_EVENT_NAMES and self._last_event == event and sys.stdout.isatty():
             # Filling with "' ' * terminal_width" in order to completely clear last line
             terminal_width = self._terminal_width()
             if terminal_width:
