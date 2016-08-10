@@ -3,6 +3,8 @@ test-warnings: false
 strictness: veryhigh
 max-line-length: 120
 autodetect: true
+dodgy:
+  run: true
 requirements:
   - requirements.txt
 ignore-paths:
@@ -15,4 +17,3 @@ ignore-paths:
   - docs
 python-targets:
   - 2
-  - 3
