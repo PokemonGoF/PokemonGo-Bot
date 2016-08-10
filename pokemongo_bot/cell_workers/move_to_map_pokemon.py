@@ -176,7 +176,7 @@ class MoveToMapPokemon(BaseTask):
         except ValueError:
             err = 'Map location data was not valid'
             self._emit_failure(err)
-            return log.logger(err, 'red')
+            return self.logger.warning(err)
 
         dist = distance(
             self.bot.position[0],
