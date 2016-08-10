@@ -96,7 +96,9 @@ class IncubateEggs(BaseTask):
                         )
                         egg["used"] = True
 
-    def _check_inventory(self, lookup_ids=[]):
+    def _check_inventory(self, lookup_ids=None):
+        if lookup_ids is None:
+            lookup_ids=[]
         inv = {}
         response_dict = self.bot.get_inventory()
         matched_pokemon = []

@@ -37,10 +37,14 @@ class EventManager(object):
     def add_handler(self, event_handler):
         self._handlers.append(event_handler)
 
-    def register_event(self, name, parameters=[]):
+    def register_event(self, name, parameters=None):
+        if parameters is None:
+            parameters=[]
         self._registered_events[name] = parameters
 
-    def emit(self, event, sender=None, level='info', formatted='', data={}):
+    def emit(self, event, sender=None, level='info', formatted='', data=None):
+        if data is None:
+            data={}
         if not sender:
             raise ArgumentError('Event needs a sender!')
 

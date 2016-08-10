@@ -506,6 +506,8 @@ class PokemonGoBot(object):
     def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
         # we can call the function with no arguments and still get the position
         # and map_cells
+        if cells is None:
+            cells = []
         if lat is None:
             lat = self.api._position_lat
         if lng is None:

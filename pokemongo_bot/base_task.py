@@ -17,7 +17,9 @@ class BaseTask(object):
     if not method or not callable(method):
       raise NotImplementedError('Missing "work" method')
 
-  def emit_event(self, event, sender=None, level='info', formatted='', data={}):
+  def emit_event(self, event, sender=None, level='info', formatted='', data=None):
+    if data is None:
+      data={}
     if not sender:
       sender=self
     self.bot.event_manager.emit(
