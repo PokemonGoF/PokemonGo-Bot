@@ -14,7 +14,7 @@ class TransferPokemon(BaseTask):
         self.min_empty_space = self.config.get('min_empty_space', None)
 
     def get_pokemon_slot_left(self):
-        return self.bot._player["max_pokemon_storage"] - self.bot.get_inventory_count('pokemon')
+        return self.bot._player["max_pokemon_storage"] - len(inventory.pokemons.all())
 
     def work(self):
         if isinstance(self.min_empty_space, int) and self.get_pokemon_slot_left() >= self.min_empty_space:
