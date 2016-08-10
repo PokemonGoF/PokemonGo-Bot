@@ -93,14 +93,48 @@ class Pokedex(_BaseInventoryComponent):
             return False
         return self._data[pokemon_id]['times_captured'] > 0
 
+# TODO: Make the item inventory uses of Item() instead of using raw data from api response
+# class Item(object):
+#     def __init__(self, item_data):
+#         self.id = item_data.get(Items.ID_FIELD, None)
+#         self.name = Items.name_for(self.id)
+#         self.count = item_data.get('count', 0)
+#
+#     def remove(self, amount):
+#         print("Consuming {} {}".format(amount, self.name))
+#         if self.count < amount:
+#             raise Exception('Tried to remove more {} than you have'.format(self.name))
+#         self.count -= amount
+#
+#     def add(self, amount):
+#         if amount < 0:
+#             raise Exception('Must add positive amount of {}'.format(self.name))
+#         self.count += amount
 
 class Items(_BaseInventoryComponent):
     TYPE = 'item'
     ID_FIELD = 'item_id'
     STATIC_DATA_FILE = os.path.join(_base_dir, 'data', 'items.json')
 
+    # def get(self, item_id):
+    #     return Item(self._data[item_id])
+
     def count_for(self, item_id):
         return self._data[item_id].get('count', False)
+
+    @classmethod
+    def name_for(cls, item_id):
+        return cls.STATIC_DATA[str(item_id)]
+
+    def remove(self, item_id, amount_to_remove):
+        if self._data[item_id].get('count', 0) < amount_to_remove:
+            raise Exception('Tried to remove more {} than you have'.format(self.name_for(item_id)))
+        self._data[item_id]['count'] -= amount_to_remove
+
+    def add(self, item_id, amount_to_add):
+        if amount_to_add < 0:
+            raise Exception('Must add positive amount of {}'.format(self.name_for(item_id)))
+        self._data[item_id]['count'] += amount_to_add
 
     def get_space_used(self):
         """
@@ -108,12 +142,12 @@ class Items(_BaseInventoryComponent):
         :return: The space used in item inventory.
         :rtype: int
         """
-        itemcount = 1
+        space_used = 1
         for item in self._data:
             current_item_count = self.count_for(item)
             if current_item_count:
-                itemcount += current_item_count
-        return itemcount
+                space_used += current_item_count
+        return space_used
 
     def get_space_left(self):
         """

@@ -82,9 +82,18 @@ class RecycleItems(BaseTask):
                 if item.should_be_recycled():
                     item.request_recycle()
                     item.emit_recycle_result()
-            # TODO : Inventory should keep track of items beeing discarded rather than making an other api call
-            inventory.refresh_inventory()
+                    self.update_inventory(item)
         return WorkerResult.SUCCESS
+
+    def update_inventory(self, item):
+        """
+        Update inventory if the item has been recycled. Prevent an unnecessary call to the api
+        :param item: The item which has been recycled
+        :return: Nothing.
+        :rtype: None
+        """
+        if item.is_recycling_success():
+            inventory.items().remove(item.id, item.amount_to_recycle)
 
     class _Item:
         """
@@ -142,7 +151,7 @@ class RecycleItems(BaseTask):
             # {'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
             self.recycle_item_request_result = response.get('responses', {}).get('RECYCLE_INVENTORY_ITEM', {}).get('result', 0)
 
-        def _is_recycling_success(self):
+        def is_recycling_success(self):
             """
             Returns a value indicating whether the item has been successfully recycled.
             :return: True if the item has been successfully recycled; otherwise, False.
@@ -156,7 +165,7 @@ class RecycleItems(BaseTask):
             :return: Nothing.
             :rtype: None
             """
-            if self._is_recycling_success():
+            if self.is_recycling_success():
                 self.recycle_items.emit_event(
                     'item_discarded',
                     formatted='Discarded {amount}x {item} (maximum {maximum}).',
