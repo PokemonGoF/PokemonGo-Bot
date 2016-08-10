@@ -283,10 +283,11 @@ class PokemonCatchWorker(BaseTask):
         maximum_ball = ITEM_ULTRABALL if is_vip else ITEM_GREATBALL
         ideal_catch_rate_before_throw = 0.9 if is_vip else 0.35
 
-        berry_count = self.bot.item_inventory_count(berry_id)
-        items_stock = self.bot.current_inventory()
-
         while True:
+
+            self.bot.latest_inventory = None
+            berry_count = self.bot.item_inventory_count(berry_id)
+            items_stock = self.bot.current_inventory()
 
             # find lowest available ball
             current_ball = ITEM_POKEBALL
