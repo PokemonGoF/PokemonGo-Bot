@@ -61,7 +61,7 @@
         "type": "CatchLuredPokemon"
       },
       {
-        "type": "SpinFort",
+        "type": "SpinFort"
       },
       {
         "type": "MoveToFort",
