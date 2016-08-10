@@ -28,7 +28,7 @@
         }
       },
       {
-        "type": "UpdateTitleStats",
+        "type": "UpdateLiveStats",
         "config": {
             "min_interval": 10,
             "stats": ["uptime", "stardust_earned", "xp_earned", "xp_per_hour", "stops_visited"],
