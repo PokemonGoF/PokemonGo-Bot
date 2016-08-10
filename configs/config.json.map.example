@@ -66,6 +66,7 @@
           "snipe_high_prio_threshold": 400,
           "update_map": true,
           "mode": "priority",
+          "map_path": "raw_data",
           "catch": {
             "==========Legendaries==========": 0,
             "Aerodactyl": 1000,
@@ -322,6 +323,7 @@
     "evolve_captured": "NONE",
     "catch_randomize_reticle_factor": 1.0,
     "catch_randomize_spin_factor": 1.0,
+    "logging_color": true,
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},
