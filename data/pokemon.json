@@ -1600,8 +1600,8 @@
     },
     "Next evolution(s)": [
       {
-        "Number": "039",
-        "Name": "Jigglypuff"
+        "Number": "040",
+        "Name": "Wigglytuff"
       }
     ],
     "Special Attack(s)": [
@@ -1633,8 +1633,8 @@
     "Height": "1.0 m",
     "Previous evolution(s)": [
       {
-        "Number": "040",
-        "Name": "Wigglytuff"
+        "Number": "039",
+        "Name": "Jigglypuff"
       }
     ],
     "Special Attack(s)": [
@@ -4820,8 +4820,8 @@
     },
     "Next evolution(s)": [
       {
-        "Number": "120",
-        "Name": "Staryu"
+        "Number": "121",
+        "Name": "Starmie"
       }
     ],
     "Special Attack(s)": [
@@ -4860,8 +4860,8 @@
     "Height": "1.1 m",
     "Previous evolution(s)": [
       {
-        "Number": "121",
-        "Name": "Starmie"
+        "Number": "120",
+        "Name": "Staryu"
       }
     ],
     "Special Attack(s)": [

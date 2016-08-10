@@ -60,3 +60,4 @@
  * thebigjc
  * JaapMoolenaar
  * eevee-github
+ * g0vanish

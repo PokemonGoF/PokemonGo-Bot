@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-pokebotpath=$(pwd)
+pokebotpath=$(cd "$(dirname "$0")"; pwd)
 filename=""
 if [ ! -z $1 ]; then
 filename=$1
@@ -15,7 +15,8 @@ while true
 do
 cd $pokebotpath
 python pokecli.py -cf $filename
-read -p "Press any button or wait 20 seconds." -r -s -n1 -t 20
-echo `date`"Pokebot"$*" Stopped." 
+read -p "Press any button or wait 20 seconds to continue.
+" -r -s -n1 -t 20
+echo `date`" Pokebot"$*" Stopped." 
 done
 exit 0
