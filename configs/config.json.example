@@ -24,7 +24,7 @@
       {
         "type": "NicknamePokemon",
         "config": {
-          "enabled": true,
+          "enabled": false,
           "nickname_template": "{iv_pct}_{iv_ads}"
         }
       },
