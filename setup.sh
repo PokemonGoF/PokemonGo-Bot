@@ -109,8 +109,10 @@ Pokebotreset
 Pokebotupdate
 ;;
 --backup|-b)
-mkdir $backuppath
+mkdir -p $backuppath
 cp -f $pokebotpath/configs/config*.json $backuppath/
+cp -f $pokebotpath/configs/*.gpx $backuppath/
+cp -f $pokebotpath/configs/path*.json $backuppath/
 cp -f $pokebotpath/web/config/userdata.js $backuppath/
 echo "Backup complete"
 ;;
