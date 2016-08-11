@@ -42,6 +42,14 @@ class Metrics(object):
     def num_captures(self):
         return self.captures['latest'] - self.captures['start']
 
+    def captures_per_hour(self):
+        """
+        Returns an estimated number of pokemon caught per hour.
+        :return: An estimated number of pokemon caught per hour.
+        :rtype: float
+        """
+        return self.num_captures() / (time.time() - self.start_time) * 3600
+
     def num_visits(self):
         return self.visits['latest'] - self.visits['start']
 

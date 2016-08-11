@@ -37,7 +37,7 @@ Input location
 " location
 read -p "Input gmapkey 
 " gmapkey
-cp -f configs/config.json.example configs/config.json && chmod 755
+cp -f configs/config.json.example configs/config.json && chmod 755 configs/config.json
 if [ "$auth" = "2" ]
 then
 sed -i "s/google/ptc/g" configs/config.json
@@ -109,8 +109,10 @@ Pokebotreset
 Pokebotupdate
 ;;
 --backup|-b)
-mkdir $backuppath
+mkdir -p $backuppath
 cp -f $pokebotpath/configs/config*.json $backuppath/
+cp -f $pokebotpath/configs/*.gpx $backuppath/
+cp -f $pokebotpath/configs/path*.json $backuppath/
 cp -f $pokebotpath/web/config/userdata.js $backuppath/
 echo "Backup complete"
 ;;

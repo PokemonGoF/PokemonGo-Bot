@@ -10,12 +10,32 @@
         "type": "HandleSoftBan"
       },
       {
+        "type": "SleepSchedule",
+        "config": {
+          "enabled": false,
+          "time": "22:54",
+          "duration":"7:46",
+          "time_random_offset": "00:24",
+          "duration_random_offset": "00:43"
+        }
+      },
+      {
         "type": "CollectLevelUpReward"
       },
       {
         "type": "IncubateEggs",
         "config": {
           "longer_eggs_first": true
+        }
+      },
+      {
+        "type": "UpdateLiveStats",
+        "config": {
+          "enabled": false,
+          "min_interval": 10,
+          "stats": ["uptime", "stardust_earned", "xp_earned", "xp_per_hour", "stops_visited"],
+          "terminal_log": true,
+          "terminal_title": true
         }
       },
       {
@@ -78,7 +98,6 @@
     "location_cache": true,
     "distance_unit": "km",
     "reconnecting_timeout": 15,
-    "evolve_captured": "NONE",
     "catch_randomize_reticle_factor": 1.0,
     "catch_randomize_spin_factor": 1.0,
     "logging_color": true,
