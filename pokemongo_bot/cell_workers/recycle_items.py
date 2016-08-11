@@ -1,11 +1,12 @@
 import json
 import os
+
 from pokemongo_bot import inventory
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.cell_workers.item_recycle_worker import ItemRecycler
-from pokemongo_bot.worker_result import WorkerResult
+from pokemongo_bot.services.item_recycle_worker import ItemRecycler
 from pokemongo_bot.tree_config_builder import ConfigException
+from pokemongo_bot.worker_result import WorkerResult
 
 DEFAULT_MIN_EMPTY_SPACE = 6
 
