@@ -284,10 +284,12 @@ class PokemonCatchWorker(BaseTask):
             # use a berry if we are under our ideal rate and have berries to spare
             used_berry = False
             if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and berries_to_spare:
-                catch_rate_by_ball = self._use_berry(berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball)
-                berry_count -= 1
-                self.inventory.decrement_count(ITEM_RAZZBERRY)
-                used_berry = True
+                new_catch_rate_by_ball = self._use_berry(berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball)
+                if new_catch_rate_by_ball != catch_rate_by_ball:
+                    catch_rate_by_ball = new_catch_rate_by_ball
+                    berry_count -= 1
+                    self.inventory.decrement_count(ITEM_RAZZBERRY)
+                    used_berry = True
 
             # pick the best ball to catch with
             best_ball = current_ball
