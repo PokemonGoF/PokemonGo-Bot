@@ -18,8 +18,7 @@
 1. Stop the bot if it's running. (use control + c twice to stop it)
 2. Run setup.sh -r
     This will reset and makes sure you have no changes made to any code since it will overide it
-3. Run setup.sh -u
-    This will run git pull and will update to the new git update.
+3. Rerun the bot
 
 
 # Manual installation
