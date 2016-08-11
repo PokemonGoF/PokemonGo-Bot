@@ -12,10 +12,8 @@ class PokemonOptimizer(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def initialize(self):
-        self.pokemon_max_cp = {}
         self.family_by_family_id = {}
-
-        self.init_pokemon_max_cp()
+        self.logger = logging.getLogger(self.__class__.__name__)
 
         self.config_transfer = self.config.get("transfer", False)
         self.config_evolve = self.config.get("evolve", False)
@@ -57,17 +55,7 @@ class PokemonOptimizer(BaseTask):
 
         for pokemon in inventory.pokemons().all():
             family_id = pokemon.first_evolution_id
-
-            max_cp = self.get_pokemon_max_cp(pokemon.name)
-
-            if max_cp > 0:
-                ncp = float(pokemon.cp) / max_cp
-            else:
-                ncp = 0
-
-            setattr(pokemon, "ncp", ncp)
-
-            # print pokemon.name, pokemon.max_cp, max_cp
+            setattr(pokemon, "ncp", pokemon.cp_percent)
 
             self.family_by_family_id.setdefault(family_id, []).append(pokemon)
 
@@ -91,8 +79,8 @@ class PokemonOptimizer(BaseTask):
 
     def get_multi_family_optimized(self, family_id, family, nb_branch):
         # Transfer each group of senior independently
-        senior_family = [p for p in family if p.next_evolution_id is None]
-        other_family = [p for p in family if p.next_evolution_id is not None]
+        senior_family = [p for p in family if not p.has_next_evolution()]
+        other_family = [p for p in family if p.has_next_evolution()]
         senior_pids = set(p.pokemon_id for p in senior_family)
         senior_grouped_family = {pid: [p for p in senior_family if p.pokemon_id == pid] for pid in senior_pids}
 
@@ -210,19 +198,16 @@ class PokemonOptimizer(BaseTask):
             self.transfer_pokemon(pokemon)
 
         if self.config_evolve and self.config_use_lucky_egg:
-            try:
-                lucky_egg_count = inventory.items().count_for(Item.ITEM_LUCKY_EGG.value)  # @UndefinedVariable
-            except:
-                lucky_egg_count = 0
+            lucky_egg = inventory.items().get(Item.ITEM_LUCKY_EGG.value)  # @UndefinedVariable
 
-            if lucky_egg_count == 0:
+            if lucky_egg.count == 0:
                 if self.config_evolve_only_with_lucky_egg:
-                    logging.info("Skipping evolution step. No lucky egg available")
+                    self.logger.info("Skipping evolution step. No lucky egg available")
                     return
             elif len(evo) >= self.config_minimum_evolve_for_lucky_egg:
                 self.use_lucky_egg()
 
-        logging.info("Evolving %s Pokemons", len(evo))
+        self.logger.info("Evolving %s Pokemons", len(evo))
 
         for pokemon in evo:
             self.evolve_pokemon(pokemon)
@@ -244,11 +229,11 @@ class PokemonOptimizer(BaseTask):
             action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
 
     def use_lucky_egg(self):
-        lucky_egg_count = inventory.items().count_for(Item.ITEM_LUCKY_EGG.value)  # @UndefinedVariable
+        lucky_egg = inventory.items().get(Item.ITEM_LUCKY_EGG.value)  # @UndefinedVariable
 
         if self.config_evolve and self.config_use_lucky_egg:
             response_dict = self.bot.use_lucky_egg()
-            lucky_egg_count -= 1
+            lucky_egg.remove(1)
         else:
             response_dict = {"responses": {"USE_ITEM_XP_BOOST": {"result": 1}}}
 
@@ -263,7 +248,7 @@ class PokemonOptimizer(BaseTask):
         if result == 1:
             self.emit_event("used_lucky_egg",
                             formatted="Used lucky egg ({amount_left} left).",
-                            data={"amount_left": lucky_egg_count})
+                            data={"amount_left": lucky_egg.count})
             return True
         else:
             self.emit_event("lucky_egg_error",
@@ -298,37 +283,3 @@ class PokemonOptimizer(BaseTask):
             return True
         else:
             return False
-
-    def init_pokemon_max_cp(self):
-        self.pokemon_max_cp = {
-            "Bulbasaur": 1072, "Ivysaur": 1632, "Venusaur": 2580, "Charmander": 955, "Charmeleon": 1557,
-            "Charizard": 2602, "Squirtle": 1009, "Wartortle": 1583, "Blastoise": 2542, "Caterpie": 444,
-            "Metapod": 478, "Butterfree": 1455, "Weedle": 449, "Kakuna": 485, "Beedrill": 1440,
-            "Pidgey": 680, "Pidgeotto": 1224, "Pidgeot": 2091, "Rattata": 582, "Raticate": 1444,
-            "Spearow": 687, "Fearow": 1746, "Ekans": 824, "Arbok": 1767, "Pikachu": 888,
-            "Raichu": 2028, "Sandshrew": 799, "Sandslash": 1810, "Nidoran F": 876, "Nidorina": 1405,
-            "Nidoqueen": 2485, "Nidoran M": 843, "Nidorino": 1373, "Nidoking": 2475, "Clefairy": 1201,
-            "Clefable": 2398, "Vulpix": 831, "Ninetales": 2188, "Jigglypuff": 918, "Wigglytuff": 2177,
-            "Zubat": 643, "Golbat": 1921, "Oddish": 1148, "Gloom": 1689, "Vileplume": 2493,
-            "Paras": 917, "Parasect": 1747, "Venonat": 1029, "Venomoth": 1890, "Diglett": 457,
-            "Dugtrio": 1169, "Meowth": 756, "Persian": 1632, "Psyduck": 1110, "Golduck": 2387,
-            "Mankey": 879, "Primeape": 1865, "Growlithe": 1335, "Arcanine": 2984, "Poliwag": 796,
-            "Poliwhirl": 1340, "Poliwrath": 2505, "Abra": 600, "Kadabra": 1132, "Alakazam": 1814,
-            "Machop": 1090, "Machoke": 1761, "Machamp": 2594, "Bellsprout": 1117, "Weepinbell": 1724,
-            "Victreebel": 2531, "Tentacool": 905, "Tentacruel": 2220, "Geodude": 849, "Graveler": 1434,
-            "Golem": 2303, "Ponyta": 1516, "Rapidash": 2199, "Slowpoke": 1219, "Slowbro": 2597,
-            "Magnemite": 891, "Magneton": 1880, "Farfetch'd": 1264, "Doduo": 855, "Dodrio": 1836,
-            "Seel": 1107, "Dewgong": 2146, "Grimer": 1284, "Muk": 2603, "Shellder": 823,
-            "Cloyster": 2053, "Gastly": 804, "Haunter": 1380, "Gengar": 2078, "Onix": 857,
-            "Drowzee": 1075, "Hypno": 2184, "Krabby": 792, "Kingler": 1823, "Voltorb": 840,
-            "Electrode": 1646, "Exeggcute": 1100, "Exeggutor": 2955, "Cubone": 1007, "Marowak": 1657,
-            "Hitmonlee": 1493, "Hitmonchan": 1517, "Lickitung": 1627, "Koffing": 1152, "Weezing": 2250,
-            "Rhyhorn": 1182, "Rhydon": 2243, "Chansey": 675, "Tangela": 1740, "Kangaskhan": 2043,
-            "Horsea": 795, "Seadra": 1713, "Goldeen": 965, "Seaking": 2044, "Staryu": 938,
-            "Starmie": 2182, "Mr. Mime": 1494, "Scyther": 2074, "Jynx": 1717, "Electabuzz": 2119,
-            "Magmar": 2265, "Pinsir": 2122, "Tauros": 1845, "Magikarp": 263, "Gyarados": 2689,
-            "Lapras": 2981, "Ditto": 920, "Eevee": 1077, "Vaporeon": 2816, "Jolteon": 2140,
-            "Flareon": 2643, "Porygon": 1692, "Omanyte": 1120, "Omastar": 2234, "Kabuto": 1105,
-            "Kabutops": 2130, "Aerodactyl": 2165, "Snorlax": 3113, "Articuno": 2978, "Zapdos": 3114,
-            "Moltres": 3240, "Dratini": 983, "Dragonair": 1748, "Dragonite": 3500, "Mewtwo": 4145,
-            "Mew": 3299}
