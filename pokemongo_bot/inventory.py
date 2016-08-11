@@ -497,6 +497,7 @@ class Pokemon(object):
         self.cp_exact = _calc_cp(
             self.base_attack, self.base_defense, self.base_stamina,
             self.iv_attack, self.iv_defense, self.iv_stamina, self.cp_m)
+        assert max(int(self.cp_exact), 10) == self.cp
 
         # Percent of maximum possible CP
         self.cp_percent = self.cp_exact / self.max_cp

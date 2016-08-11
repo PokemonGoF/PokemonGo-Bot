@@ -42,8 +42,8 @@
       "Sludge Bomb"
     ],
     "BaseAttack": 126,
-    "BaseDefense": 90,
-    "BaseStamina": 126,
+    "BaseDefense": 126,
+    "BaseStamina": 90,
     "CaptureRate": 0.16,
     "FleeRate": 0.1
   },
@@ -92,8 +92,8 @@
       "Solar Beam"
     ],
     "BaseAttack": 156,
-    "BaseDefense": 120,
-    "BaseStamina": 158,
+    "BaseDefense": 158,
+    "BaseStamina": 120,
     "CaptureRate": 0.08,
     "FleeRate": 0.07
   },
@@ -135,8 +135,8 @@
       "Solar Beam"
     ],
     "BaseAttack": 198,
-    "BaseDefense": 160,
-    "BaseStamina": 200,
+    "BaseDefense": 200,
+    "BaseStamina": 160,
     "CaptureRate": 0.04,
     "FleeRate": 0.05
   },
@@ -179,8 +179,8 @@
       "Flamethrower"
     ],
     "BaseAttack": 128,
-    "BaseDefense": 78,
-    "BaseStamina": 108,
+    "BaseDefense": 108,
+    "BaseStamina": 78,
     "CaptureRate": 0.16,
     "FleeRate": 0.1
   },
@@ -225,8 +225,8 @@
       "Flamethrower"
     ],
     "BaseAttack": 160,
-    "BaseDefense": 116,
-    "BaseStamina": 140,
+    "BaseDefense": 140,
+    "BaseStamina": 116,
     "CaptureRate": 0.08,
     "FleeRate": 0.07
   },
@@ -267,8 +267,8 @@
       "Flamethrower"
     ],
     "BaseAttack": 212,
-    "BaseDefense": 156,
-    "BaseStamina": 182,
+    "BaseDefense": 182,
+    "BaseStamina": 156,
     "CaptureRate": 0.04,
     "FleeRate": 0.05
   },
@@ -310,8 +310,8 @@
       "Water Pulse"
     ],
     "BaseAttack": 112,
-    "BaseDefense": 88,
-    "BaseStamina": 142,
+    "BaseDefense": 142,
+    "BaseStamina": 88,
     "CaptureRate": 0.16,
     "FleeRate": 0.1
   },
@@ -355,8 +355,8 @@
       "Ice Beam"
     ],
     "BaseAttack": 144,
-    "BaseDefense": 118,
-    "BaseStamina": 176,
+    "BaseDefense": 176,
+    "BaseStamina": 118,
     "CaptureRate": 0.08,
     "FleeRate": 0.07
   },
@@ -393,8 +393,8 @@
       "Ice Beam"
     ],
     "BaseAttack": 186,
-    "BaseDefense": 158,
-    "BaseStamina": 222,
+    "BaseDefense": 222,
+    "BaseStamina": 158,
     "CaptureRate": 0.04,
     "FleeRate": 0.05
   },
@@ -435,8 +435,8 @@
       "Struggle"
     ],
     "BaseAttack": 62,
-    "BaseDefense": 90,
-    "BaseStamina": 66,
+    "BaseDefense": 66,
+    "BaseStamina": 90,
     "CaptureRate": 0.4,
     "FleeRate": 0.2
   },
@@ -479,8 +479,8 @@
       "Struggle"
     ],
     "BaseAttack": 56,
-    "BaseDefense": 100,
-    "BaseStamina": 86,
+    "BaseDefense": 86,
+    "BaseStamina": 100,
     "CaptureRate": 0.2,
     "FleeRate": 0.09
   },
@@ -523,8 +523,8 @@
       "Signal Beam"
     ],
     "BaseAttack": 144,
-    "BaseDefense": 120,
-    "BaseStamina": 144,
+    "BaseDefense": 144,
+    "BaseStamina": 120,
     "CaptureRate": 0.1,
     "FleeRate": 0.06
   },
@@ -569,8 +569,8 @@
       "Struggle"
     ],
     "BaseAttack": 68,
-    "BaseDefense": 80,
-    "BaseStamina": 64,
+    "BaseDefense": 64,
+    "BaseStamina": 80,
     "CaptureRate": 0.4,
     "FleeRate": 0.2
   },
@@ -617,8 +617,8 @@
       "Struggle"
     ],
     "BaseAttack": 62,
-    "BaseDefense": 90,
-    "BaseStamina": 82,
+    "BaseDefense": 82,
+    "BaseStamina": 90,
     "CaptureRate": 0.2,
     "FleeRate": 0.09
   },
@@ -706,8 +706,8 @@
       }
     ],
     "BaseAttack": 94,
-    "BaseDefense": 80,
-    "BaseStamina": 90,
+    "BaseDefense": 90,
+    "BaseStamina": 80,
     "CaptureRate": 0.4,
     "FleeRate": 0.2
   },
@@ -754,8 +754,8 @@
       }
     ],
     "BaseAttack": 126,
-    "BaseDefense": 126,
-    "BaseStamina": 122,
+    "BaseDefense": 122,
+    "BaseStamina": 126,
     "CaptureRate": 0.2,
     "FleeRate": 0.09
   },
@@ -833,8 +833,8 @@
       }
     ],
     "BaseAttack": 92,
-    "BaseDefense": 60,
-    "BaseStamina": 86,
+    "BaseDefense": 86,
+    "BaseStamina": 60,
     "CaptureRate": 0.4,
     "FleeRate": 0.2
   },
@@ -866,8 +866,8 @@
       }
     ],
     "BaseAttack": 146,
-    "BaseDefense": 110,
-    "BaseStamina": 150,
+    "BaseDefense": 150,
+    "BaseStamina": 110,
     "CaptureRate": 0.16,
     "FleeRate": 0.07
   },
@@ -908,8 +908,8 @@
       "Twister"
     ],
     "BaseAttack": 102,
-    "BaseDefense": 80,
-    "BaseStamina": 78,
+    "BaseDefense": 78,
+    "BaseStamina": 80,
     "CaptureRate": 0.4,
     "FleeRate": 0.15
   },
@@ -945,8 +945,8 @@
       "Twister"
     ],
     "BaseAttack": 168,
-    "BaseDefense": 130,
-    "BaseStamina": 146,
+    "BaseDefense": 146,
+    "BaseStamina": 130,
     "CaptureRate": 0.16,
     "FleeRate": 0.07
   },
@@ -984,8 +984,8 @@
       "Wrap"
     ],
     "BaseAttack": 112,
-    "BaseDefense": 70,
-    "BaseStamina": 112,
+    "BaseDefense": 112,
+    "BaseStamina": 70,
     "CaptureRate": 0.4,
     "FleeRate": 0.15
   },
@@ -1018,8 +1018,8 @@
       "Sludge Wave"
     ],
     "BaseAttack": 166,
-    "BaseDefense": 120,
-    "BaseStamina": 166,
+    "BaseDefense": 166,
+    "BaseStamina": 120,
     "CaptureRate": 0.16,
     "FleeRate": 0.07
   },
@@ -1056,8 +1056,8 @@
       "Thunderbolt"
     ],
     "BaseAttack": 124,
-    "BaseDefense": 70,
-    "BaseStamina": 108,
+    "BaseDefense": 108,
+    "BaseStamina": 70,
     "CaptureRate": 0.16,
     "FleeRate": 0.1
   },
@@ -1089,8 +1089,8 @@
       "Thunder Punch"
     ],
     "BaseAttack": 200,
-    "BaseDefense": 120,
-    "BaseStamina": 154,
+    "BaseDefense": 154,
+    "BaseStamina": 120,
     "CaptureRate": 0.08,
     "FleeRate": 0.06
   },
@@ -1129,8 +1129,8 @@
       "Rock Tomb"
     ],
     "BaseAttack": 90,
-    "BaseDefense": 100,
-    "BaseStamina": 114,
+    "BaseDefense": 114,
+    "BaseStamina": 100,
     "CaptureRate": 0.4,
     "FleeRate": 0.1
   },
@@ -1164,8 +1164,8 @@
       "Rock Tomb"
     ],
     "BaseAttack": 150,
-    "BaseDefense": 150,
-    "BaseStamina": 172,
+    "BaseDefense": 172,
+    "BaseStamina": 150,
     "CaptureRate": 0.16,
     "FleeRate": 0.06
   },
@@ -1207,8 +1207,8 @@
       "Sludge Bomb"
     ],
     "BaseAttack": 100,
-    "BaseDefense": 110,
-    "BaseStamina": 104,
+    "BaseDefense": 104,
+    "BaseStamina": 110,
     "CaptureRate": 0.4,
     "FleeRate": 0.15
   },
@@ -1252,8 +1252,8 @@
       "Sludge Bomb"
     ],
     "BaseAttack": 132,
-    "BaseDefense": 140,
-    "BaseStamina": 136,
+    "BaseDefense": 136,
+    "BaseStamina": 140,
     "CaptureRate": 0.2,
     "FleeRate": 0.07
   },
@@ -1295,8 +1295,8 @@
       "Stone Edge"
     ],
     "BaseAttack": 184,
-    "BaseDefense": 180,
-    "BaseStamina": 190,
+    "BaseDefense": 190,
+    "BaseStamina": 180,
     "CaptureRate": 0.1,
     "FleeRate": 0.05
   },
@@ -1338,8 +1338,8 @@
       "Sludge Bomb"
     ],
     "BaseAttack": 110,
-    "BaseDefense": 92,
-    "BaseStamina": 94,
+    "BaseDefense": 94,
+    "BaseStamina": 92,
     "CaptureRate": 0.4,
     "FleeRate": 0.15
   },
@@ -1383,8 +1383,8 @@
       "Sludge Bomb"
     ],
     "BaseAttack": 142,
-    "BaseDefense": 122,
-    "BaseStamina": 128,
+    "BaseDefense": 128,
+    "BaseStamina": 122,
     "CaptureRate": 0.2,
     "FleeRate": 0.07
   },
@@ -1426,8 +1426,8 @@
       "Sludge Wave"
     ],
     "BaseAttack": 204,
-    "BaseDefense": 162,
-    "BaseStamina": 170,
+    "BaseDefense": 170,
+    "BaseStamina": 162,
     "CaptureRate": 0.1,
     "FleeRate": 0.05
   },
@@ -1436,7 +1436,7 @@
     "Name": "Clefairy",
     "Classification": "Fairy Pokemon",
     "Type I": [
-      "Normal"
+      "Fairy"
     ],
     "Weaknesses": [
       "Fighting"
@@ -1464,8 +1464,8 @@
       "Moonblast"
     ],
     "BaseAttack": 116,
-    "BaseDefense": 140,
-    "BaseStamina": 124,
+    "BaseDefense": 124,
+    "BaseStamina": 140,
     "CaptureRate": 0.24,
     "FleeRate": 0.1
   },
@@ -1474,7 +1474,7 @@
     "Name": "Clefable",
     "Classification": "Fairy Pokemon",
     "Type I": [
-      "Normal"
+      "Fairy"
     ],
     "Weaknesses": [
       "Fighting"
@@ -1497,8 +1497,8 @@
       "Psychic"
     ],
     "BaseAttack": 178,
-    "BaseDefense": 190,
-    "BaseStamina": 178,
+    "BaseDefense": 178,
+    "BaseStamina": 190,
     "CaptureRate": 0.08,
     "FleeRate": 0.06
   },
@@ -1537,8 +1537,8 @@
       "Flamethrower"
     ],
     "BaseAttack": 106,
-    "BaseDefense": 76,
-    "BaseStamina": 118,
+    "BaseDefense": 118,
+    "BaseStamina": 76,
     "CaptureRate": 0.24,
     "FleeRate": 0.1
   },
@@ -1572,8 +1572,8 @@
       "Heat Wave"
     ],
     "BaseAttack": 176,
-    "BaseDefense": 146,
-    "BaseStamina": 194,
+    "BaseDefense": 194,
+    "BaseStamina": 146,
     "CaptureRate": 0.08,
     "FleeRate": 0.06
   },
@@ -1583,6 +1583,9 @@
     "Classification": "Balloon Pokemon",
     "Type I": [
       "Normal"
+    ],
+    "Type II": [
+      "Fairy"
     ],
     "Weaknesses": [
       "Fighting"
@@ -1610,8 +1613,8 @@
       "Play Rough"
     ],
     "BaseAttack": 98,
-    "BaseDefense": 230,
-    "BaseStamina": 54,
+    "BaseDefense": 54,
+    "BaseStamina": 230,
     "CaptureRate": 0.4,
     "FleeRate": 0.1
   },
@@ -1621,6 +1624,9 @@
     "Classification": "Balloon Pokemon",
     "Type I": [
       "Normal"
+    ],
+    "Type II": [
+      "Fairy"
     ],
     "Weaknesses": [
       "Fighting"
@@ -1643,8 +1649,8 @@
       "Play Rough"
     ],
     "BaseAttack": 168,
-    "BaseDefense": 280,
-    "BaseStamina": 108,
+    "BaseDefense": 108,
+    "BaseStamina": 280,
     "CaptureRate": 0.16,
     "FleeRate": 0.06
   },
@@ -1687,8 +1693,8 @@
       "Sludge Bomb"
     ],
     "BaseAttack": 88,
-    "BaseDefense": 80,
-    "BaseStamina": 90,
+    "BaseDefense": 90,
+    "BaseStamina": 80,
     "CaptureRate": 0.4,
     "FleeRate": 0.2
   },
@@ -1726,8 +1732,8 @@
       "Poison Fang"
     ],
     "BaseAttack": 164,
-    "BaseDefense": 150,
-    "BaseStamina": 164,
+    "BaseDefense": 164,
+    "BaseStamina": 150,
     "CaptureRate": 0.16,
     "FleeRate": 0.07
   },
@@ -1774,8 +1780,8 @@
       "Sludge Bomb"
     ],
     "BaseAttack": 134,
-    "BaseDefense": 90,
-    "BaseStamina": 130,
+    "BaseDefense": 130,
+    "BaseStamina": 90,
     "CaptureRate": 0.48,
     "FleeRate": 0.15
   },
@@ -1824,8 +1830,8 @@
       "Sludge Bomb"
     ],
     "BaseAttack": 162,
-    "BaseDefense": 120,
-    "BaseStamina": 158,
+    "BaseDefense": 158,
+    "BaseStamina": 120,
     "CaptureRate": 0.24,
     "FleeRate": 0.07
   },
@@ -1867,8 +1873,8 @@
       "Solar Beam"
     ],
     "BaseAttack": 202,
-    "BaseDefense": 150,
-    "BaseStamina": 190,
+    "BaseDefense": 190,
+    "BaseStamina": 150,
     "CaptureRate": 0.12,
     "FleeRate": 0.05
   },
@@ -1913,8 +1919,8 @@
       "X Scissor"
     ],
     "BaseAttack": 122,
-    "BaseDefense": 70,
-    "BaseStamina": 120,
+    "BaseDefense": 120,
+    "BaseStamina": 70,
     "CaptureRate": 0.32,
     "FleeRate": 0.15
   },
@@ -1954,8 +1960,8 @@
       "X Scissor"
     ],
     "BaseAttack": 162,
-    "BaseDefense": 120,
-    "BaseStamina": 170,
+    "BaseDefense": 170,
+    "BaseStamina": 120,
     "CaptureRate": 0.16,
     "FleeRate": 0.07
   },
@@ -1999,8 +2005,8 @@
       "Shadow Ball"
     ],
     "BaseAttack": 108,
-    "BaseDefense": 120,
-    "BaseStamina": 118,
+    "BaseDefense": 118,
+    "BaseStamina": 120,
     "CaptureRate": 0.4,
     "FleeRate": 0.15
   },
@@ -2038,8 +2044,8 @@
       "Psychic"
     ],
     "BaseAttack": 172,
-    "BaseDefense": 140,
-    "BaseStamina": 154,
+    "BaseDefense": 154,
+    "BaseStamina": 140,
     "CaptureRate": 0.16,
     "FleeRate": 0.07
   },
@@ -2078,8 +2084,8 @@
       "Rock Tomb"
     ],
     "BaseAttack": 108,
-    "BaseDefense": 20,
-    "BaseStamina": 86,
+    "BaseDefense": 86,
+    "BaseStamina": 20,
     "CaptureRate": 0.4,
     "FleeRate": 0.1
   },
@@ -2113,8 +2119,8 @@
       "Stone Edge"
     ],
     "BaseAttack": 148,
-    "BaseDefense": 70,
-    "BaseStamina": 140,
+    "BaseDefense": 140,
+    "BaseStamina": 70,
     "CaptureRate": 0.16,
     "FleeRate": 0.06
   },
@@ -2151,8 +2157,8 @@
       "Night Slash"
     ],
     "BaseAttack": 104,
-    "BaseDefense": 80,
-    "BaseStamina": 94,
+    "BaseDefense": 94,
+    "BaseStamina": 80,
     "CaptureRate": 0.4,
     "FleeRate": 0.15
   },
@@ -2184,8 +2190,8 @@
       "Power Gem"
     ],
     "BaseAttack": 156,
-    "BaseDefense": 130,
-    "BaseStamina": 146,
+    "BaseDefense": 146,
+    "BaseStamina": 130,
     "CaptureRate": 0.16,
     "FleeRate": 0.07
   },
@@ -2223,8 +2229,8 @@
       "Psybeam"
     ],
     "BaseAttack": 132,
-    "BaseDefense": 100,
-    "BaseStamina": 112,
+    "BaseDefense": 112,
+    "BaseStamina": 100,
     "CaptureRate": 0.4,
     "FleeRate": 0.1
   },
@@ -2257,8 +2263,8 @@
       "Psychic"
     ],
     "BaseAttack": 194,
-    "BaseDefense": 160,
-    "BaseStamina": 176,
+    "BaseDefense": 176,
+    "BaseStamina": 160,
     "CaptureRate": 0.16,
     "FleeRate": 0.06
   },
@@ -2297,8 +2303,8 @@
       "Low Sweep"
     ],
     "BaseAttack": 122,
-    "BaseDefense": 80,
-    "BaseStamina": 96,
+    "BaseDefense": 96,
+    "BaseStamina": 80,
     "CaptureRate": 0.4,
     "FleeRate": 0.1
   },
@@ -2332,8 +2338,8 @@
       "Night Slash"
     ],
     "BaseAttack": 178,
-    "BaseDefense": 130,
-    "BaseStamina": 150,
+    "BaseDefense": 150,
+    "BaseStamina": 130,
     "CaptureRate": 0.16,
     "FleeRate": 0.06
   },
@@ -2450,8 +2456,8 @@
       "Mud Bomb"
     ],
     "BaseAttack": 108,
-    "BaseDefense": 80,
-    "BaseStamina": 98,
+    "BaseDefense": 98,
+    "BaseStamina": 80,
     "CaptureRate": 0.4,
     "FleeRate": 0.15
   },
@@ -2495,8 +2501,8 @@
       "Scald"
     ],
     "BaseAttack": 132,
-    "BaseDefense": 130,
-    "BaseStamina": 132,
+    "BaseDefense": 132,
+    "BaseStamina": 130,
     "CaptureRate": 0.2,
     "FleeRate": 0.07
   },
@@ -2539,8 +2545,8 @@
       "Submission"
     ],
     "BaseAttack": 180,
-    "BaseDefense": 180,
-    "BaseStamina": 202,
+    "BaseDefense": 202,
+    "BaseStamina": 180,
     "CaptureRate": 0.1,
     "FleeRate": 0.05
   },
@@ -2582,8 +2588,8 @@
       "Signal Beam"
     ],
     "BaseAttack": 110,
-    "BaseDefense": 50,
-    "BaseStamina": 76,
+    "BaseDefense": 76,
+    "BaseStamina": 50,
     "CaptureRate": 0.4,
     "FleeRate": 0.99
   },
@@ -2628,8 +2634,8 @@
       "Shadow Ball"
     ],
     "BaseAttack": 150,
-    "BaseDefense": 80,
-    "BaseStamina": 112,
+    "BaseDefense": 112,
+    "BaseStamina": 80,
     "CaptureRate": 0.2,
     "FleeRate": 0.07
   },
@@ -2667,8 +2673,8 @@
       "Shadow Ball"
     ],
     "BaseAttack": 186,
-    "BaseDefense": 110,
-    "BaseStamina": 152,
+    "BaseDefense": 152,
+    "BaseStamina": 110,
     "CaptureRate": 0.1,
     "FleeRate": 0.05
   },
@@ -2711,8 +2717,8 @@
       "Low Sweep"
     ],
     "BaseAttack": 118,
-    "BaseDefense": 140,
-    "BaseStamina": 96,
+    "BaseDefense": 96,
+    "BaseStamina": 140,
     "CaptureRate": 0.4,
     "FleeRate": 0.1
   },
@@ -2757,8 +2763,8 @@
       "Submission"
     ],
     "BaseAttack": 154,
-    "BaseDefense": 160,
-    "BaseStamina": 144,
+    "BaseDefense": 144,
+    "BaseStamina": 160,
     "CaptureRate": 0.2,
     "FleeRate": 0.07
   },
@@ -2844,8 +2850,8 @@
       "Wrap"
     ],
     "BaseAttack": 158,
-    "BaseDefense": 100,
-    "BaseStamina": 78,
+    "BaseDefense": 78,
+    "BaseStamina": 100,
     "CaptureRate": 0.4,
     "FleeRate": 0.15
   },
@@ -2894,8 +2900,8 @@
       "Sludge Bomb"
     ],
     "BaseAttack": 190,
-    "BaseDefense": 130,
-    "BaseStamina": 110,
+    "BaseDefense": 110,
+    "BaseStamina": 130,
     "CaptureRate": 0.2,
     "FleeRate": 0.07
   },
@@ -2937,8 +2943,8 @@
       "Solar Beam"
     ],
     "BaseAttack": 222,
-    "BaseDefense": 160,
-    "BaseStamina": 152,
+    "BaseDefense": 152,
+    "BaseStamina": 160,
     "CaptureRate": 0.1,
     "FleeRate": 0.05
   },
@@ -2980,8 +2986,8 @@
       "Wrap"
     ],
     "BaseAttack": 106,
-    "BaseDefense": 80,
-    "BaseStamina": 136,
+    "BaseDefense": 136,
+    "BaseStamina": 80,
     "CaptureRate": 0.4,
     "FleeRate": 0.15
   },
@@ -3018,8 +3024,8 @@
       "Sludge Wave"
     ],
     "BaseAttack": 170,
-    "BaseDefense": 160,
-    "BaseStamina": 196,
+    "BaseDefense": 196,
+    "BaseStamina": 160,
     "CaptureRate": 0.16,
     "FleeRate": 0.07
   },
@@ -3068,8 +3074,8 @@
       "Rock Tomb"
     ],
     "BaseAttack": 106,
-    "BaseDefense": 80,
-    "BaseStamina": 118,
+    "BaseDefense": 118,
+    "BaseStamina": 80,
     "CaptureRate": 0.4,
     "FleeRate": 0.1
   },
@@ -3120,8 +3126,8 @@
       "Stone Edge"
     ],
     "BaseAttack": 142,
-    "BaseDefense": 110,
-    "BaseStamina": 156,
+    "BaseDefense": 156,
+    "BaseStamina": 110,
     "CaptureRate": 0.2,
     "FleeRate": 0.07
   },
@@ -3165,8 +3171,8 @@
       "Stone Edge"
     ],
     "BaseAttack": 176,
-    "BaseDefense": 160,
-    "BaseStamina": 198,
+    "BaseDefense": 198,
+    "BaseStamina": 160,
     "CaptureRate": 0.1,
     "FleeRate": 0.05
   },
@@ -3205,8 +3211,8 @@
       "Flame Wheel"
     ],
     "BaseAttack": 168,
-    "BaseDefense": 100,
-    "BaseStamina": 138,
+    "BaseDefense": 138,
+    "BaseStamina": 100,
     "CaptureRate": 0.32,
     "FleeRate": 0.1
   },
@@ -3240,8 +3246,8 @@
       "Heat Wave"
     ],
     "BaseAttack": 200,
-    "BaseDefense": 130,
-    "BaseStamina": 170,
+    "BaseDefense": 170,
+    "BaseStamina": 130,
     "CaptureRate": 0.12,
     "FleeRate": 0.06
   },
@@ -3285,8 +3291,8 @@
       "Water Pulse"
     ],
     "BaseAttack": 110,
-    "BaseDefense": 180,
-    "BaseStamina": 110,
+    "BaseDefense": 110,
+    "BaseStamina": 180,
     "CaptureRate": 0.4,
     "FleeRate": 0.1
   },
@@ -3325,8 +3331,8 @@
       "Water Pulse"
     ],
     "BaseAttack": 184,
-    "BaseDefense": 190,
-    "BaseStamina": 198,
+    "BaseDefense": 198,
+    "BaseStamina": 190,
     "CaptureRate": 0.16,
     "FleeRate": 0.06
   },
@@ -3368,8 +3374,8 @@
       "Thunderbolt"
     ],
     "BaseAttack": 128,
-    "BaseDefense": 50,
-    "BaseStamina": 138,
+    "BaseDefense": 138,
+    "BaseStamina": 50,
     "CaptureRate": 0.4,
     "FleeRate": 0.1
   },
@@ -3406,8 +3412,8 @@
       "Magnet Bomb"
     ],
     "BaseAttack": 186,
-    "BaseDefense": 100,
-    "BaseStamina": 180,
+    "BaseDefense": 180,
+    "BaseStamina": 100,
     "CaptureRate": 0.16,
     "FleeRate": 0.06
   },
@@ -3437,8 +3443,8 @@
     "Weight": "15.0 kg",
     "Height": "0.8 m",
     "BaseAttack": 138,
-    "BaseDefense": 104,
-    "BaseStamina": 132,
+    "BaseDefense": 132,
+    "BaseStamina": 104,
     "CaptureRate": 0.24,
     "FleeRate": 0.09
   },
@@ -3479,8 +3485,8 @@
       "Swift"
     ],
     "BaseAttack": 126,
-    "BaseDefense": 70,
-    "BaseStamina": 96,
+    "BaseDefense": 96,
+    "BaseStamina": 70,
     "CaptureRate": 0.4,
     "FleeRate": 0.1
   },
@@ -3516,8 +3522,8 @@
       "Drill Peck"
     ],
     "BaseAttack": 182,
-    "BaseDefense": 120,
-    "BaseStamina": 150,
+    "BaseDefense": 150,
+    "BaseStamina": 120,
     "CaptureRate": 0.16,
     "FleeRate": 0.06
   },
@@ -3555,8 +3561,8 @@
       "Icy Wind"
     ],
     "BaseAttack": 104,
-    "BaseDefense": 130,
-    "BaseStamina": 138,
+    "BaseDefense": 138,
+    "BaseStamina": 130,
     "CaptureRate": 0.4,
     "FleeRate": 0.09
   },
@@ -3594,8 +3600,8 @@
       "Icy Wind"
     ],
     "BaseAttack": 156,
-    "BaseDefense": 180,
-    "BaseStamina": 192,
+    "BaseDefense": 192,
+    "BaseStamina": 180,
     "CaptureRate": 0.16,
     "FleeRate": 0.06
   },
@@ -3633,8 +3639,8 @@
       "Sludge Bomb"
     ],
     "BaseAttack": 124,
-    "BaseDefense": 160,
-    "BaseStamina": 110,
+    "BaseDefense": 110,
+    "BaseStamina": 160,
     "CaptureRate": 0.4,
     "FleeRate": 0.1
   },
@@ -3667,8 +3673,8 @@
       "Sludge Wave"
     ],
     "BaseAttack": 180,
-    "BaseDefense": 210,
-    "BaseStamina": 188,
+    "BaseDefense": 188,
+    "BaseStamina": 210,
     "CaptureRate": 0.16,
     "FleeRate": 0.06
   },
@@ -3706,8 +3712,8 @@
       "Water Pulse"
     ],
     "BaseAttack": 120,
-    "BaseDefense": 60,
-    "BaseStamina": 112,
+    "BaseDefense": 112,
+    "BaseStamina": 60,
     "CaptureRate": 0.4,
     "FleeRate": 0.1
   },
@@ -3745,8 +3751,8 @@
       "Icy Wind"
     ],
     "BaseAttack": 196,
-    "BaseDefense": 100,
-    "BaseStamina": 196,
+    "BaseDefense": 196,
+    "BaseStamina": 100,
     "CaptureRate": 0.16,
     "FleeRate": 0.06
   },
@@ -3793,8 +3799,8 @@
       "Sludge Bomb"
     ],
     "BaseAttack": 136,
-    "BaseDefense": 60,
-    "BaseStamina": 82,
+    "BaseDefense": 82,
+    "BaseStamina": 60,
     "CaptureRate": 0.32,
     "FleeRate": 0.1
   },
@@ -3843,8 +3849,8 @@
       "Sludge Bomb"
     ],
     "BaseAttack": 172,
-    "BaseDefense": 90,
-    "BaseStamina": 118,
+    "BaseDefense": 118,
+    "BaseStamina": 90,
     "CaptureRate": 0.16,
     "FleeRate": 0.07
   },
@@ -3886,8 +3892,8 @@
       "Sludge Wave"
     ],
     "BaseAttack": 204,
-    "BaseDefense": 120,
-    "BaseStamina": 156,
+    "BaseDefense": 156,
+    "BaseStamina": 120,
     "CaptureRate": 0.08,
     "FleeRate": 0.05
   },
@@ -3921,8 +3927,8 @@
       "Stone Edge"
     ],
     "BaseAttack": 90,
-    "BaseDefense": 70,
-    "BaseStamina": 186,
+    "BaseDefense": 186,
+    "BaseStamina": 70,
     "CaptureRate": 0.16,
     "FleeRate": 0.09
   },
@@ -3961,8 +3967,8 @@
       "Psyshock"
     ],
     "BaseAttack": 104,
-    "BaseDefense": 120,
-    "BaseStamina": 140,
+    "BaseDefense": 140,
+    "BaseStamina": 120,
     "CaptureRate": 0.4,
     "FleeRate": 0.1
   },
@@ -3996,8 +4002,8 @@
       "Shadow Ball"
     ],
     "BaseAttack": 162,
-    "BaseDefense": 170,
-    "BaseStamina": 196,
+    "BaseDefense": 196,
+    "BaseStamina": 170,
     "CaptureRate": 0.16,
     "FleeRate": 0.06
   },
@@ -4035,8 +4041,8 @@
       "Water Pulse"
     ],
     "BaseAttack": 116,
-    "BaseDefense": 60,
-    "BaseStamina": 110,
+    "BaseDefense": 110,
+    "BaseStamina": 60,
     "CaptureRate": 0.4,
     "FleeRate": 0.15
   },
@@ -4069,8 +4075,8 @@
       "X Scissor"
     ],
     "BaseAttack": 178,
-    "BaseDefense": 110,
-    "BaseStamina": 168,
+    "BaseDefense": 168,
+    "BaseStamina": 110,
     "CaptureRate": 0.16,
     "FleeRate": 0.07
   },
@@ -4107,8 +4113,8 @@
       "Thunderbolt"
     ],
     "BaseAttack": 102,
-    "BaseDefense": 80,
-    "BaseStamina": 124,
+    "BaseDefense": 124,
+    "BaseStamina": 80,
     "CaptureRate": 0.4,
     "FleeRate": 0.1
   },
@@ -4140,8 +4146,8 @@
       "Thunderbolt"
     ],
     "BaseAttack": 150,
-    "BaseDefense": 120,
-    "BaseStamina": 174,
+    "BaseDefense": 174,
+    "BaseStamina": 120,
     "CaptureRate": 0.16,
     "FleeRate": 0.06
   },
@@ -4186,8 +4192,8 @@
       "Seed Bomb"
     ],
     "BaseAttack": 110,
-    "BaseDefense": 120,
-    "BaseStamina": 132,
+    "BaseDefense": 132,
+    "BaseStamina": 120,
     "CaptureRate": 0.4,
     "FleeRate": 0.1
   },
@@ -4228,8 +4234,8 @@
       "Solar Beam"
     ],
     "BaseAttack": 232,
-    "BaseDefense": 190,
-    "BaseStamina": 164,
+    "BaseDefense": 164,
+    "BaseStamina": 190,
     "CaptureRate": 0.16,
     "FleeRate": 0.06
   },
@@ -4268,8 +4274,8 @@
       "Dig"
     ],
     "BaseAttack": 102,
-    "BaseDefense": 100,
-    "BaseStamina": 150,
+    "BaseDefense": 150,
+    "BaseStamina": 100,
     "CaptureRate": 0.32,
     "FleeRate": 0.1
   },
@@ -4303,8 +4309,8 @@
       "Earthquake"
     ],
     "BaseAttack": 140,
-    "BaseDefense": 120,
-    "BaseStamina": 202,
+    "BaseDefense": 202,
+    "BaseStamina": 120,
     "CaptureRate": 0.12,
     "FleeRate": 0.06
   },
@@ -4389,8 +4395,8 @@
       "Stomp"
     ],
     "BaseAttack": 126,
-    "BaseDefense": 180,
-    "BaseStamina": 160,
+    "BaseDefense": 160,
+    "BaseStamina": 180,
     "CaptureRate": 0.16,
     "FleeRate": 0.09
   },
@@ -4428,8 +4434,8 @@
       "Sludge Bomb"
     ],
     "BaseAttack": 136,
-    "BaseDefense": 80,
-    "BaseStamina": 142,
+    "BaseDefense": 142,
+    "BaseStamina": 80,
     "CaptureRate": 0.4,
     "FleeRate": 0.1
   },
@@ -4462,8 +4468,8 @@
       "Sludge Bomb"
     ],
     "BaseAttack": 190,
-    "BaseDefense": 130,
-    "BaseStamina": 198,
+    "BaseDefense": 198,
+    "BaseStamina": 130,
     "CaptureRate": 0.16,
     "FleeRate": 0.06
   },
@@ -4508,8 +4514,8 @@
       "Stomp"
     ],
     "BaseAttack": 110,
-    "BaseDefense": 160,
-    "BaseStamina": 116,
+    "BaseDefense": 116,
+    "BaseStamina": 160,
     "CaptureRate": 0.4,
     "FleeRate": 0.1
   },
@@ -4549,8 +4555,8 @@
       "Stone Edge"
     ],
     "BaseAttack": 166,
-    "BaseDefense": 210,
-    "BaseStamina": 160,
+    "BaseDefense": 160,
+    "BaseStamina": 210,
     "CaptureRate": 0.16,
     "FleeRate": 0.06
   },
@@ -4576,8 +4582,8 @@
       "Psychic"
     ],
     "BaseAttack": 40,
-    "BaseDefense": 500,
-    "BaseStamina": 60,
+    "BaseDefense": 60,
+    "BaseStamina": 500,
     "CaptureRate": 0.16,
     "FleeRate": 0.09
   },
@@ -4606,8 +4612,8 @@
       "Solar Beam"
     ],
     "BaseAttack": 164,
-    "BaseDefense": 130,
-    "BaseStamina": 152,
+    "BaseDefense": 152,
+    "BaseStamina": 130,
     "CaptureRate": 0.32,
     "FleeRate": 0.09
   },
@@ -4633,8 +4639,8 @@
       "Stomp"
     ],
     "BaseAttack": 142,
-    "BaseDefense": 210,
-    "BaseStamina": 178,
+    "BaseDefense": 178,
+    "BaseStamina": 210,
     "CaptureRate": 0.16,
     "FleeRate": 0.09
   },
@@ -4672,8 +4678,8 @@
       "Flash Cannon"
     ],
     "BaseAttack": 122,
-    "BaseDefense": 60,
-    "BaseStamina": 100,
+    "BaseDefense": 100,
+    "BaseStamina": 60,
     "CaptureRate": 0.4,
     "FleeRate": 0.1
   },
@@ -4706,8 +4712,8 @@
       "Hydro Pump"
     ],
     "BaseAttack": 176,
-    "BaseDefense": 110,
-    "BaseStamina": 150,
+    "BaseDefense": 150,
+    "BaseStamina": 110,
     "CaptureRate": 0.16,
     "FleeRate": 0.06
   },
@@ -4745,8 +4751,8 @@
       "Water Pulse"
     ],
     "BaseAttack": 112,
-    "BaseDefense": 90,
-    "BaseStamina": 126,
+    "BaseDefense": 126,
+    "BaseStamina": 90,
     "CaptureRate": 0.4,
     "FleeRate": 0.15
   },
@@ -4818,8 +4824,8 @@
       "Swift"
     ],
     "BaseAttack": 130,
-    "BaseDefense": 60,
-    "BaseStamina": 128,
+    "BaseDefense": 128,
+    "BaseStamina": 60,
     "CaptureRate": 0.4,
     "FleeRate": 0.15
   },
@@ -4858,8 +4864,8 @@
       "Psybeam"
     ],
     "BaseAttack": 194,
-    "BaseDefense": 120,
-    "BaseStamina": 192,
+    "BaseDefense": 192,
+    "BaseStamina": 120,
     "CaptureRate": 0.16,
     "FleeRate": 0.06
   },
@@ -4869,6 +4875,9 @@
     "Classification": "Barrier Pokemon",
     "Type I": [
       "Psychic"
+    ],
+    "Type II": [
+      "Fairy"
     ],
     "Weaknesses": [
       "Bug",
@@ -4887,8 +4896,8 @@
       "Shadow Ball"
     ],
     "BaseAttack": 154,
-    "BaseDefense": 80,
-    "BaseStamina": 196,
+    "BaseDefense": 196,
+    "BaseStamina": 80,
     "CaptureRate": 0.24,
     "FleeRate": 0.09
   },
@@ -4921,8 +4930,8 @@
       "X Scissor"
     ],
     "BaseAttack": 176,
-    "BaseDefense": 140,
-    "BaseStamina": 180,
+    "BaseDefense": 180,
+    "BaseStamina": 140,
     "CaptureRate": 0.24,
     "FleeRate": 0.09
   },
@@ -4956,8 +4965,8 @@
       "Psyshock"
     ],
     "BaseAttack": 172,
-    "BaseDefense": 130,
-    "BaseStamina": 134,
+    "BaseDefense": 134,
+    "BaseStamina": 130,
     "CaptureRate": 0.24,
     "FleeRate": 0.09
   },
@@ -4983,8 +4992,8 @@
       "Thunderbolt"
     ],
     "BaseAttack": 198,
-    "BaseDefense": 130,
-    "BaseStamina": 160,
+    "BaseDefense": 160,
+    "BaseStamina": 130,
     "CaptureRate": 0.24,
     "FleeRate": 0.09
   },
@@ -5012,8 +5021,8 @@
       "Flamethrower"
     ],
     "BaseAttack": 214,
-    "BaseDefense": 130,
-    "BaseStamina": 158,
+    "BaseDefense": 158,
+    "BaseStamina": 130,
     "CaptureRate": 0.24,
     "FleeRate": 0.09
   },
@@ -5041,8 +5050,8 @@
       "X Scissor"
     ],
     "BaseAttack": 184,
-    "BaseDefense": 130,
-    "BaseStamina": 186,
+    "BaseDefense": 186,
+    "BaseStamina": 130,
     "CaptureRate": 0.24,
     "FleeRate": 0.09
   },
@@ -5068,8 +5077,8 @@
       "Iron Head"
     ],
     "BaseAttack": 148,
-    "BaseDefense": 150,
-    "BaseStamina": 184,
+    "BaseDefense": 184,
+    "BaseStamina": 150,
     "CaptureRate": 0.24,
     "FleeRate": 0.09
   },
@@ -5104,8 +5113,8 @@
       "Struggle"
     ],
     "BaseAttack": 42,
-    "BaseDefense": 40,
-    "BaseStamina": 84,
+    "BaseDefense": 84,
+    "BaseStamina": 40,
     "CaptureRate": 0.56,
     "FleeRate": 0.15
   },
@@ -5141,8 +5150,8 @@
       "Twister"
     ],
     "BaseAttack": 192,
-    "BaseDefense": 190,
-    "BaseStamina": 196,
+    "BaseDefense": 196,
+    "BaseStamina": 190,
     "CaptureRate": 0.08,
     "FleeRate": 0.07
   },
@@ -5174,8 +5183,8 @@
       "Ice Beam"
     ],
     "BaseAttack": 186,
-    "BaseDefense": 260,
-    "BaseStamina": 190,
+    "BaseDefense": 190,
+    "BaseStamina": 260,
     "CaptureRate": 0.16,
     "FleeRate": 0.09
   },
@@ -5198,8 +5207,8 @@
     "Weight": "4.0 kg",
     "Height": "0.3 m",
     "BaseAttack": 110,
-    "BaseDefense": 96,
-    "BaseStamina": 110,
+    "BaseDefense": 110,
+    "BaseStamina": 96,
     "CaptureRate": 0.16,
     "FleeRate": 0.1
   },
@@ -5244,8 +5253,8 @@
       "Swift"
     ],
     "BaseAttack": 114,
-    "BaseDefense": 110,
-    "BaseStamina": 128,
+    "BaseDefense": 128,
+    "BaseStamina": 110,
     "CaptureRate": 0.32,
     "FleeRate": 0.1
   },
@@ -5277,8 +5286,8 @@
       "Water Pulse"
     ],
     "BaseAttack": 186,
-    "BaseDefense": 260,
-    "BaseStamina": 168,
+    "BaseDefense": 168,
+    "BaseStamina": 260,
     "CaptureRate": 0.12,
     "FleeRate": 0.06
   },
@@ -5309,8 +5318,8 @@
       "Thunderbolt"
     ],
     "BaseAttack": 192,
-    "BaseDefense": 130,
-    "BaseStamina": 174,
+    "BaseDefense": 174,
+    "BaseStamina": 130,
     "CaptureRate": 0.12,
     "FleeRate": 0.06
   },
@@ -5343,8 +5352,8 @@
       "Heat Wave"
     ],
     "BaseAttack": 238,
-    "BaseDefense": 130,
-    "BaseStamina": 178,
+    "BaseDefense": 178,
+    "BaseStamina": 130,
     "CaptureRate": 0.12,
     "FleeRate": 0.06
   },
@@ -5370,8 +5379,8 @@
       "Signal Beam"
     ],
     "BaseAttack": 156,
-    "BaseDefense": 130,
-    "BaseStamina": 158,
+    "BaseDefense": 158,
+    "BaseStamina": 130,
     "CaptureRate": 0.32,
     "FleeRate": 0.09
   },
@@ -5414,8 +5423,8 @@
       "Rock Tomb"
     ],
     "BaseAttack": 132,
-    "BaseDefense": 70,
-    "BaseStamina": 160,
+    "BaseDefense": 160,
+    "BaseStamina": 70,
     "CaptureRate": 0.32,
     "FleeRate": 0.09
   },
@@ -5453,8 +5462,8 @@
       "Rock Slide"
     ],
     "BaseAttack": 180,
-    "BaseDefense": 140,
-    "BaseStamina": 202,
+    "BaseDefense": 202,
+    "BaseStamina": 140,
     "CaptureRate": 0.12,
     "FleeRate": 0.05
   },
@@ -5497,8 +5506,8 @@
       "Rock Tomb"
     ],
     "BaseAttack": 148,
-    "BaseDefense": 60,
-    "BaseStamina": 142,
+    "BaseDefense": 142,
+    "BaseStamina": 60,
     "CaptureRate": 0.32,
     "FleeRate": 0.09
   },
@@ -5536,8 +5545,8 @@
       "Water Pulse"
     ],
     "BaseAttack": 190,
-    "BaseDefense": 120,
-    "BaseStamina": 190,
+    "BaseDefense": 190,
+    "BaseStamina": 120,
     "CaptureRate": 0.12,
     "FleeRate": 0.05
   },
@@ -5570,8 +5579,8 @@
       "Iron Head"
     ],
     "BaseAttack": 182,
-    "BaseDefense": 160,
-    "BaseStamina": 162,
+    "BaseDefense": 162,
+    "BaseStamina": 160,
     "CaptureRate": 0.16,
     "FleeRate": 0.09
   },
@@ -5597,8 +5606,8 @@
       "Hyper Beam"
     ],
     "BaseAttack": 180,
-    "BaseDefense": 320,
-    "BaseStamina": 180,
+    "BaseDefense": 180,
+    "BaseStamina": 320,
     "CaptureRate": 0.16,
     "FleeRate": 0.09
   },
@@ -5629,9 +5638,9 @@
     "Weight": "55.4 kg",
     "Height": "1.7 m",
     "BaseAttack": 198,
-    "BaseDefense": 180,
-    "BaseStamina": 242,
-    "CaptureRate": 0.0,
+    "BaseDefense": 242,
+    "BaseStamina": 180,
+    "CaptureRate": 0,
     "FleeRate": 0.1
   },
   {
@@ -5659,9 +5668,9 @@
     "Weight": "52.6 kg",
     "Height": "1.6 m",
     "BaseAttack": 232,
-    "BaseDefense": 180,
-    "BaseStamina": 194,
-    "CaptureRate": 0.0,
+    "BaseDefense": 194,
+    "BaseStamina": 180,
+    "CaptureRate": 0,
     "FleeRate": 0.1
   },
   {
@@ -5690,9 +5699,9 @@
     "Weight": "60.0 kg",
     "Height": "2.0 m",
     "BaseAttack": 242,
-    "BaseDefense": 180,
-    "BaseStamina": 194,
-    "CaptureRate": 0.0,
+    "BaseDefense": 194,
+    "BaseStamina": 180,
+    "CaptureRate": 0,
     "FleeRate": 0.1
   },
   {
@@ -5733,8 +5742,8 @@
       "Wrap"
     ],
     "BaseAttack": 128,
-    "BaseDefense": 82,
-    "BaseStamina": 110,
+    "BaseDefense": 110,
+    "BaseStamina": 82,
     "CaptureRate": 0.32,
     "FleeRate": 0.09
   },
@@ -5778,8 +5787,8 @@
       "Wrap"
     ],
     "BaseAttack": 170,
-    "BaseDefense": 122,
-    "BaseStamina": 152,
+    "BaseDefense": 152,
+    "BaseStamina": 122,
     "CaptureRate": 0.08,
     "FleeRate": 0.06
   },
@@ -5821,8 +5830,8 @@
       "Hyper Beam"
     ],
     "BaseAttack": 250,
-    "BaseDefense": 182,
-    "BaseStamina": 212,
+    "BaseDefense": 212,
+    "BaseStamina": 182,
     "CaptureRate": 0.04,
     "FleeRate": 0.05
   },
@@ -5850,9 +5859,9 @@
     "Weight": "122.0 kg",
     "Height": "2.0 m",
     "BaseAttack": 284,
-    "BaseDefense": 212,
-    "BaseStamina": 202,
-    "CaptureRate": 0.0,
+    "BaseDefense": 202,
+    "BaseStamina": 212,
+    "CaptureRate": 0,
     "FleeRate": 0.1
   },
   {
@@ -5884,9 +5893,9 @@
     "Weight": "4.0 kg",
     "Height": "0.4 m",
     "BaseAttack": 220,
-    "BaseDefense": 200,
-    "BaseStamina": 220,
-    "CaptureRate": 0.0,
+    "BaseDefense": 220,
+    "BaseStamina": 200,
+    "CaptureRate": 0,
     "FleeRate": 0.1
   }
 ]

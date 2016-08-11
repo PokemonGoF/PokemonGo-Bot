@@ -20,8 +20,8 @@ class InventoryTest(unittest.TestCase):
             self.assertTrue(262 <= poke_info['max_cp'] <= 4145)
             self.assertTrue(1 <= len(poke_info['types']) <= 2)
             self.assertTrue(40 <= poke_info['BaseAttack'] <= 284)
-            self.assertTrue(20 <= poke_info['BaseDefense'] <= 500)
-            self.assertTrue(54 <= poke_info['BaseStamina'] <= 242)
+            self.assertTrue(54 <= poke_info['BaseDefense'] <= 242)
+            self.assertTrue(20 <= poke_info['BaseStamina'] <= 500)
             self.assertTrue(.0 <= poke_info['CaptureRate'] <= .56)
             self.assertTrue(.0 <= poke_info['FleeRate'] <= .99)
             self.assertTrue(1 <= len(poke_info['Weaknesses']) <= 7)
@@ -95,9 +95,9 @@ class InventoryTest(unittest.TestCase):
             "cp": 653, "nickname": "Golb", "id": 13632861873471324})
         self.assertEqual(poke.level, 12.5)
         self.assertEqual(poke.iv, 0.47)
-        self.assertAlmostEqual(poke.ivcp, 0.482845351)
+        self.assertAlmostEqual(poke.ivcp, 0.488747515)
         self.assertAlmostEqual(poke.max_cp, 1921.34561459)
-        self.assertAlmostEqual(poke.cp_percent, 0.34000973)
+        self.assertAlmostEqual(poke.cp_percent, 0.340368964)
         self.assertTrue(poke.is_favorite)
         self.assertEqual(poke.name, 'Golbat')
         self.assertEqual(poke.nickname, "Golb")
@@ -108,14 +108,14 @@ class InventoryTest(unittest.TestCase):
         self.assertAlmostEqual(poke.moveset.defense_perfection, 0.8158081497)
 
         poke = Pokemon({
-            "move_1": 221, "move_2": 129, "pokemon_id": 19, "cp": 110,
+            "move_1": 221, "move_2": 129, "pokemon_id": 19, "cp": 106,
             "individual_attack": 6, "stamina_max": 22, "individual_defense": 14,
             "cp_multiplier": 0.37523558735847473, "id": 7841053399})
         self.assertEqual(poke.level, 7.5)
         self.assertEqual(poke.iv, 0.44)
-        self.assertAlmostEqual(poke.ivcp, 0.452398293)
+        self.assertAlmostEqual(poke.ivcp, 0.3804059)
         self.assertAlmostEqual(poke.max_cp, 581.64643575)
-        self.assertAlmostEqual(poke.cp_percent, 0.189251848608)
+        self.assertAlmostEqual(poke.cp_percent, 0.183759867)
         self.assertFalse(poke.is_favorite)
         self.assertEqual(poke.name, 'Rattata')
         self.assertEqual(poke.nickname, 'Rattata')
