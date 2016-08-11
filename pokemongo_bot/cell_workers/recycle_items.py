@@ -27,7 +27,7 @@ class RecycleItems(BaseTask):
         total_bag_space = self.bot.player_data['max_item_storage']
         free_bag_space = total_bag_space - items_in_bag
 
-        if isinstance(self.min_empty_space, int) and free_bag_space >= self.min_empty_space and items_in_bag < total_bag_space:
+        if free_bag_space > 0 and isinstance(self.min_empty_space, int) and free_bag_space >= self.min_empty_space:
             return
 
         self.bot.latest_inventory = None
