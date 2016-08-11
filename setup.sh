@@ -14,7 +14,14 @@ pip install -r requirements.txt
 
 function Pokebotencrypt () {
 echo "Start to make encrypt.so"
-wget http://pgoapi.com/pgoencrypt.tar.gz
+if wget http://pgoapi.com/pgoencrypt.tar.gz
+then
+  echo 'Downloaded pgoencrypt.tar.gz'
+else
+  echo ' http://pgoapi.com/pgoencrypt.tar.gz'
+  echo 'used curl since mac and downoaded succes'
+fi
+
 tar -xf pgoencrypt.tar.gz 
 cd pgoencrypt/src/ 
 make
