@@ -9,12 +9,8 @@
 
 #Linux/Mac Automatic installation
 ### Easy installation
-1. Run setup.sh -e
-    This will create the needed encrypted.so file
-2. Run setup.sh -i
+1. Run setup.sh -i
     This will install the bot and all stuff that is needed to run it (follow the guide)
-3. Run setup.sh -c
-    This will make the config file needed, only basic stuff is changed here. If you want to edit more edit this file after: config/config.json
 4. Run run.sh
     This will run the bot and will start leveling your pokemon go account.
 
