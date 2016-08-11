@@ -1,4 +1,5 @@
 import copy
+import logging
 
 from pokemongo_bot import inventory
 from pokemongo_bot.base_task import BaseTask
@@ -21,6 +22,9 @@ class PokemonOptimizer(BaseTask):
         self.config_use_lucky_egg = self.config.get("use_lucky_egg", False)
         self.config_evolve_only_with_lucky_egg = self.config.get("evolve_only_with_lucky_egg", True)
         self.config_minimum_evolve_for_lucky_egg = self.config.get("minimum_evolve_for_lucky_egg", 90)
+        self.config_keep = self.config.get("keep", [{"top": 1, "evolve": True, "sort": ["iv"]},
+                                                    {"top": 1, "evolve": True, "sort": ["ncp"]},
+                                                    {"top": 1, "evolve": False, "sort": ["cp"]}])
 
     def get_pokemon_slot_left(self):
         return self.bot._player["max_pokemon_storage"] - len(inventory.pokemons()._data)
@@ -63,19 +67,27 @@ class PokemonOptimizer(BaseTask):
 
             setattr(pokemon, "ncp", ncp)
 
+            # print pokemon.name, pokemon.max_cp, max_cp
+
             self.family_by_family_id.setdefault(family_id, []).append(pokemon)
 
     def get_family_optimized(self, family_id, family):
         if family_id == 133:  # "Eevee"
             return self.get_multi_family_optimized(family_id, family, 3)
 
-        best_iv = self.get_best_iv_in_family(family)
-        best_ncp = self.get_best_ncp_in_family(family)
-        best_cp = self.get_best_cp_in_family(family)
+        evolve_best = []
+        keep_best = []
 
-        best = self.combine_pokemon_lists(best_iv, best_ncp)
+        for criteria in self.config_keep:
+            if criteria.get("evolve", True):
+                evolve_best += self.get_top_rank(family, criteria)
+            else:
+                keep_best += self.get_top_rank(family, criteria)
 
-        return self.get_evolution_plan(family_id, family, best, best_cp)
+        evolve_best = self.unique_pokemons(evolve_best)
+        keep_best = self.unique_pokemons(keep_best)
+
+        return self.get_evolution_plan(family_id, family, evolve_best, keep_best)
 
     def get_multi_family_optimized(self, family_id, family, nb_branch):
         # Transfer each group of senior independently
@@ -91,68 +103,70 @@ class PokemonOptimizer(BaseTask):
 
         if len(senior_pids) < nb_branch:
             # We did not get every combination yet = All other Pokemons are potentially good to keep
-            best = other_family
-            best.sort(key=lambda p: p.iv * p.ncp, reverse=True)
-            best_cp = []
+            evolve_best = other_family
+            evolve_best.sort(key=lambda p: p.iv * p.ncp, reverse=True)
+            keep_best = []
         else:
-            min_iv = min([max(f, key=lambda p: p.iv) for f in senior_grouped_family.values()], key=lambda p: p.iv).iv
-            min_ncp = min([max(f, key=lambda p: p.ncp) for f in senior_grouped_family.values()], key=lambda p: p.ncp).ncp
-            min_cp = min([max(f, key=lambda p: p.cp) for f in senior_grouped_family.values()], key=lambda p: p.cp).cp
+            evolve_best = []
+            keep_best = []
 
-            best_iv = self.get_better_iv_in_family(other_family, min_iv)
-            best_ncp = self.get_better_ncp_in_family(other_family, min_ncp)
-            best_cp = self.get_better_cp_in_family(other_family, min_cp)
+            for criteria in self.config_keep:
+                top = []
 
-            best = self.combine_pokemon_lists(best_iv, best_ncp)
+                for f in senior_grouped_family.values():
+                    top += self.get_top_rank(f, criteria)
 
-        transfer, evo_best, evo_crap = self.get_evolution_plan(family_id, other_family, best, best_cp)
+                worst = self.get_sorted_family(top, criteria)[-1]
+
+                if criteria.get("evolve", True):
+                    evolve_best += self.get_better_rank(family, criteria, worst)
+                else:
+                    keep_best += self.get_better_rank(family, criteria, worst)
+
+            evolve_best = self.unique_pokemons(evolve_best)
+            keep_best = self.unique_pokemons(keep_best)
+
+        transfer, evo_best, evo_crap = self.get_evolution_plan(family_id, other_family, evolve_best, keep_best)
         transfer += transfer_senior
 
         return (transfer, evo_best, evo_crap)
 
-    def get_best_iv_in_family(self, family):
-        best = max(family, key=lambda p: p.iv)
-        return sorted([p for p in family if p.iv == best.iv], key=lambda p: p.ncp, reverse=True)
+    def get_top_rank(self, family, criteria):
+        sorted_family = self.get_sorted_family(family, criteria)
+        worst = sorted_family[criteria.get("top", 1) - 1]
+        return [p for p in sorted_family if self.get_rank(p, criteria) >= self.get_rank(worst, criteria)]
 
-    def get_better_iv_in_family(self, family, iv):
-        return sorted([p for p in family if p.iv >= iv], key=lambda p: (p.iv, p.ncp), reverse=True)
+    def get_better_rank(self, family, criteria, worst):
+        return [p for p in self.get_sorted_family(family, criteria) if self.get_rank(p, criteria) >= self.get_rank(worst, criteria)]
 
-    def get_best_ncp_in_family(self, family):
-        best = max(family, key=lambda p: p.ncp)
-        return sorted([p for p in family if p.ncp == best.ncp], key=lambda p: p.iv, reverse=True)
+    def get_sorted_family(self, family, criteria):
+        return sorted(family, key=lambda p: self.get_rank(p, criteria), reverse=True)
 
-    def get_better_ncp_in_family(self, family, ncp):
-        return sorted([p for p in family if p.ncp >= ncp], key=lambda p: (p.ncp, p.iv), reverse=True)
-
-    def get_best_cp_in_family(self, family):
-        best = max(family, key=lambda p: p.cp)
-        return sorted([p for p in family if p.cp == best.cp], key=lambda p: (p.ncp, p.iv), reverse=True)
-
-    def get_better_cp_in_family(self, family, cp):
-        return sorted([p for p in family if p.cp >= cp], key=lambda p: (p.ncp, p.iv), reverse=True)
+    def get_rank(self, pokemon, criteria):
+        return tuple(getattr(pokemon, a, None) for a in criteria.get("sort"))
 
     def get_pokemon_max_cp(self, pokemon_name):
         return int(self.pokemon_max_cp.get(pokemon_name, 0))
 
-    def combine_pokemon_lists(self, a, b):
+    def unique_pokemons(self, l):
         seen = set()
-        return [p for p in a + b if not (p.id in seen or seen.add(p.id))]
+        return [p for p in l if not (p.id in seen or seen.add(p.id))]
 
-    def get_evolution_plan(self, family_id, family, best, best_cp):
+    def get_evolution_plan(self, family_id, family, evolve_best, keep_best):
         candies = inventory.candies().get(family_id).quantity
 
         # All the rest is crap, for now
         crap = family[:]
-        crap = [p for p in crap if p not in best]
-        crap = [p for p in crap if p not in best_cp]
+        crap = [p for p in crap if p not in evolve_best]
+        crap = [p for p in crap if p not in keep_best]
         crap.sort(key=lambda p: p.iv, reverse=True)
 
         candies += len(crap)
 
         # Let's see if we can evolve our best pokemons
-        evo_best = []
+        can_evolve_best = []
 
-        for pokemon in best:
+        for pokemon in evolve_best:
             if not pokemon.has_next_evolution():
                 continue
 
@@ -161,7 +175,7 @@ class PokemonOptimizer(BaseTask):
             if candies < 0:
                 continue
 
-            evo_best.append(pokemon)
+            can_evolve_best.append(pokemon)
 
             # Not sure if the evo keep the same id
             next_pid = pokemon.next_evolution_id
@@ -169,7 +183,7 @@ class PokemonOptimizer(BaseTask):
             next_evo.pokemon_id = next_pid
             next_evo._static_data = inventory.pokemons().data_for(next_pid)
             next_evo.name = inventory.pokemons().name_for(next_pid)
-            best.append(next_evo)
+            evolve_best.append(next_evo)
 
         # Compute how many crap we should keep if we want to batch evolve them for xp
         junior_evolution_cost = inventory.pokemons().evolution_cost_for(family_id)
@@ -189,7 +203,7 @@ class PokemonOptimizer(BaseTask):
         evo_crap = [p for p in crap if p.has_next_evolution() and p.evolution_cost == junior_evolution_cost][:keep_for_evo]
         transfer = [p for p in crap if p not in evo_crap]
 
-        return (transfer, evo_best, evo_crap)
+        return (transfer, can_evolve_best, evo_crap)
 
     def apply_optimization(self, transfer, evo):
         for pokemon in transfer:
@@ -197,15 +211,18 @@ class PokemonOptimizer(BaseTask):
 
         if self.config_evolve and self.config_use_lucky_egg:
             try:
-                lucky_egg_count = inventory.items().count_for(Item.ITEM_LUCKY_EGG)
+                lucky_egg_count = inventory.items().count_for(Item.ITEM_LUCKY_EGG.value)  # @UndefinedVariable
             except:
                 lucky_egg_count = 0
 
             if lucky_egg_count == 0:
                 if self.config_evolve_only_with_lucky_egg:
+                    logging.info("Skipping evolution step. No lucky egg available")
                     return
             elif len(evo) >= self.config_minimum_evolve_for_lucky_egg:
                 self.use_lucky_egg()
+
+        logging.info("Evolving %s Pokemons", len(evo))
 
         for pokemon in evo:
             self.evolve_pokemon(pokemon)
@@ -227,7 +244,7 @@ class PokemonOptimizer(BaseTask):
             action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
 
     def use_lucky_egg(self):
-        lucky_egg_count = inventory.items().count_for(Item.ITEM_LUCKY_EGG)
+        lucky_egg_count = inventory.items().count_for(Item.ITEM_LUCKY_EGG.value)  # @UndefinedVariable
 
         if self.config_evolve and self.config_use_lucky_egg:
             response_dict = self.bot.use_lucky_egg()

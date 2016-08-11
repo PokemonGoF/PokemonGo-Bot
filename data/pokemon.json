@@ -4326,6 +4326,11 @@
         ],
         "Weight": "49.8 kg",
         "Height": "1.5 m",
+        "Next Evolution Requirements": {
+            "Amount": 50,
+            "Family": 106,
+            "Name": "Hitmonlee candies"
+        },
         "Next evolution(s)": [
             {
                 "Number": "107",
