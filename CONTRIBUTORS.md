@@ -62,3 +62,6 @@
  * eevee-github
  * g0vanish
  * cmezh
+ * Nivong
+ * kestel
+ * joaodragao

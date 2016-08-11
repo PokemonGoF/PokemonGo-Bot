@@ -329,15 +329,6 @@ def init_config():
     add_config(
         parser,
         load,
-        short_flag="-ec",
-        long_flag="--evolve_captured",
-        help="(Ad-hoc mode) Pass \"all\" or a list of pokemon to evolve (e.g., \"Pidgey,Weedle,Caterpie\"). Bot will attempt to evolve all the pokemon captured!",
-        type=str,
-        default=[]
-    )
-    add_config(
-        parser,
-        load,
         short_flag="-rt",
         long_flag="--reconnecting_timeout",
         help="Timeout between reconnecting if error occured (in minutes, e.g. 15)",
@@ -453,12 +444,8 @@ def init_config():
             task_configuration_error('{}.{}'.format(outer, inner))
             return None
 
-    if (config.evolve_captured
-        and (not isinstance(config.evolve_captured, str)
-             or str(config.evolve_captured).lower() in ["true", "false"])):
-        parser.error('"evolve_captured" should be list of pokemons: use "all" or "none" to match all ' +
-                     'or none of the pokemons, or use a comma separated list such as "Pidgey,Weedle,Caterpie"')
-        return None
+    if "evolve_captured" in load:
+        logger.warning('The evolve_captured argument is no longer supported. Please use the EvolvePokemon task instead')
 
     if not (config.location or config.location_cache):
         parser.error("Needs either --use-location-cache or --location.")
@@ -482,9 +469,6 @@ def init_config():
     except OSError:
         if not os.path.isdir(web_dir):
             raise
-
-    if config.evolve_captured and isinstance(config.evolve_captured, str):
-        config.evolve_captured = [str(pokemon_name).strip() for pokemon_name in config.evolve_captured.split(',')]
 
     fix_nested_config(config)
     return config
