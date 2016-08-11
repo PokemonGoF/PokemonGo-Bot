@@ -38,7 +38,7 @@ Due to copywrite on the encrypt.so we are not directly hosting it. Please find a
 
 Ensure you are in the PokemonGo-Bot main folder and run:
 
-`wget http://pgoapi.com/pgoencrypt.tar.gz && tar -xf pgoencrypt.tar.gz && cd pgoencrypt/src/ && make && mv libencrypt.so ../../encrypt.so`
+`wget http://pgoapi.com/pgoencrypt.tar.gz && tar -xf pgoencrypt.tar.gz && cd pgoencrypt/src/ && make && mv libencrypt.so ../../encrypt.so && cd ../..`
 
 
 ### Note on branch
