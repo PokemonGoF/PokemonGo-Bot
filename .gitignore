@@ -100,7 +100,6 @@ share/
 
 # PyCharm IDE settings
 .idea/
-*.iml
 
 # Personal load details
 src/
