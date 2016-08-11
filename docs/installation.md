@@ -22,6 +22,7 @@
     This will reset and makes sure you have no changes made to any code since it will overide it
 3. Rerun the bot `./run.sh`
 
+note: we do not support windows at this time
 
 # Manual installation
 ### Protobuf 3 installation
@@ -73,7 +74,7 @@ $ source bin/activate
 $ pip install -r requirements.txt
 ```
 
-### Installation Windows
+### Installation Windows (we do not support this!)
 (change master to dev for the latest version)
 
 On Windows, you will need to install PyYaml through the installer and not through requirements.txt.
@@ -103,7 +104,7 @@ After this, just do:
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot
 $ cd PokemonGo-Bot
 $ virtualenv .
-$ script\activate
+$ bin\activate
 $ pip2 install -r requirements.txt
 $ git submodule init
 $ git submodule update
