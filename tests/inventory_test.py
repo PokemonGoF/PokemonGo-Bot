@@ -144,7 +144,6 @@ class InventoryTest(unittest.TestCase):
 
         self.assertEqual(l2c.level_from_cpm(0.79030001), 40.0)
         self.assertEqual(l2c.level_from_cpm(0.7903), 40.0)
-        self.assertEqual(l2c.level_from_cpm(0.79), 40.0)
 
     def test_attacks(self):
         self._test_attacks(fast_attacks, FastAttacks)
