@@ -2,7 +2,7 @@
 '''
 Author: gregorynicholas (github), modified by Jacob Henderson (jacohend, github)
 Module that runs pylint on all python scripts found in a directory tree..
-''' 
+'''
 
 import os
 #import re
@@ -19,7 +19,7 @@ def check(module):
   '''
   apply pylint to the file specified if it is a *.py file
   '''
-  module_name = module.rsplit('/', 1)[1]
+  module_name = module.rsplit(os.sep, 1)[1]
   if module[-3:] == ".py" and module_name not in IGNORED_FILES:
     print "CHECKING ", module
     pout = os.popen('pylint %s'% module, 'r')
@@ -34,10 +34,10 @@ def check(module):
         errors.append("FILE: " + module)
         errors.append("FAILED pylint inspection: " + line)
         return False
-  
+
 if __name__ == "__main__":
   try:
-    print sys.argv   
+    print sys.argv
     BASE_DIRECTORY = sys.argv[1]
   except IndexError:
     print "no directory specified, defaulting to current working directory"
