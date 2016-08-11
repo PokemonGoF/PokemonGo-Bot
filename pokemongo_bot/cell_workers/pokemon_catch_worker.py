@@ -3,9 +3,10 @@
 import time
 from pokemongo_bot import inventory
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.human_behaviour import normalized_reticle_size, sleep, spin_modifier
+from pokemongo_bot.human_behaviour import (normalized_reticle_size_rng, sleep,
+                                           spin_modifier_rng, ball_throw_reticle_fail_delay,
+                                           ball_throw_hit_success_rng)
 from pokemongo_bot.worker_result import WorkerResult
-
 CATCH_STATUS_SUCCESS = 1
 CATCH_STATUS_FAILED = 2
 CATCH_STATUS_VANISHED = 3
@@ -314,15 +315,21 @@ class PokemonCatchWorker(BaseTask):
                 }
             )
 
-            reticle_size_parameter = normalized_reticle_size(self.config.catch_randomize_reticle_factor)
-            spin_modifier_parameter = spin_modifier(self.config.catch_randomize_spin_factor)
+            reticle_size_parameter = normalized_reticle_size_rng()
+            spin_modifier_parameter = spin_modifier_rng()
+
+            # aiming delay...
+            ball_throw_reticle_fail_delay()
+
+            # hit fail calc
+            hit_flag = ball_throw_hit_success_rng()
 
             response_dict = self.api.catch_pokemon(
                 encounter_id=encounter_id,
                 pokeball=current_ball,
                 normalized_reticle_size=reticle_size_parameter,
                 spawn_point_id=self.spawn_point_guid,
-                hit_pokemon=1,
+                hit_pokemon=hit_flag,
                 spin_modifier=spin_modifier_parameter,
                 normalized_hit_position=1
             )
