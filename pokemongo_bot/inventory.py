@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 
 from pokemongo_bot.base_dir import _base_dir
@@ -482,7 +483,7 @@ class Pokemon(object):
         self.max_cp = self._static_data['max_cp']
 
         self.fast_attack = FastAttacks.data_for(data['move_1'])
-        self.charged_attack = ChargedAttacks.data_for(data['move_2'])
+        self.charged_attack = ChargedAttacks.data_for(data['move_2'])  # type: ChargedAttack
 
         # Internal values (IV) perfection percent
         self.iv = self._compute_iv_perfection()
@@ -608,8 +609,13 @@ class Pokemon(object):
                 break
 
         if current_moveset is None:
-            raise Exception("Unexpected moveset [{}, {}] for #{} {}".format(
-                move1, move2, self.pokemon_id, self.name))
+            error = "Unexpected moveset [{}, {}] for #{} {}," \
+                    " please update info in pokemon.json and create issue/PR"\
+                .format(move1, move2, self.pokemon_id, self.name)
+            # raise ValueError(error)
+            logging.getLogger(type(self).__name__).error(error)
+            current_moveset = Moveset(
+                move1, move2, self._static_data['types'], self.pokemon_id)
 
         return current_moveset
 
@@ -676,6 +682,9 @@ class ChargedAttack(Attack):
 class Moveset(object):
     def __init__(self, fm, chm, pokemon_types=(), pokemon_id=-1):
         # type: (Attack, ChargedAttack, List[string], int) -> None
+        if len(pokemon_types) <= 0 < pokemon_id:
+            pokemon_types = Pokemons.data_for(pokemon_id)['types']
+
         self.pokemon_id = pokemon_id
         self.fast_attack = fm
         self.charged_attack = chm
