@@ -6,6 +6,7 @@ from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.tree_config_builder import ConfigException
 
+RECYCLE_REQUEST_RESPONSE_SUCCESS = 1
 DEFAULT_MIN_EMPTY_SPACE = 6
 
 class RecycleItems(BaseTask):
@@ -72,38 +73,37 @@ class RecycleItems(BaseTask):
         :return: Always returns WorkerResult.SUCCESS.
         :rtype: WorkerResult
         """
+        # TODO: Use new inventory everywhere and then remove the inventory update
         # Updating inventory
         inventory.refresh_inventory()
         if self.should_run():
             # For each user's item in inventory recycle it if needed
             for item_in_inventory in inventory.items().all():
-                item = RecycleItems._Item(item_in_inventory['item_id'], self.items_filter, self)
+                item = self._ItemRecycler(item_in_inventory, self.items_filter, self)
 
                 if item.should_be_recycled():
                     item.request_recycle()
-                    item.emit_recycle_result()
+
         return WorkerResult.SUCCESS
 
-    class _Item:
+    class _ItemRecycler:
         """
-        An item found in user's inventory.
-
         This class contains details of recycling process.
         """
-        def __init__(self, item_id, items_filter, recycle_items):
+        def __init__(self, item, items_filter, recycle_items):
             """
             Initializes an item
-            :param item_id: Item's id.
+            :param item: Item from the inventory.
             :param items_filter: List of items and their maximum amount to keep.
             :param recycle_items: The recycle_items instance.
             """
-            self.recycle_items = recycle_items
+            self.recycle_items_config = recycle_items
             self.bot = recycle_items.bot
-            self.id = item_id
-            self.name = recycle_items.bot.item_list[str(item_id)]
+            self.id = item.id
+            self.name = item.name
+            self.amount_in_inventory = item.count
             self.items_filter = items_filter
             self.amount_to_keep = self._get_amount_to_keep()
-            self.amount_in_inventory = inventory.items().count_for(self.id)
             self.amount_to_recycle = 0 if self.amount_to_keep is None else self.amount_in_inventory - self.amount_to_keep
             self.recycle_item_request_result = None
 
@@ -128,7 +128,7 @@ class RecycleItems(BaseTask):
             :rtype: None
             """
             if self.is_recycling_success():
-                inventory.items().remove(self.id, self.amount_to_recycle)
+                inventory.items().get(self.id).remove(self.amount_to_recycle)
 
 
         def should_be_recycled(self):
@@ -150,6 +150,7 @@ class RecycleItems(BaseTask):
             # {'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
             self.recycle_item_request_result = response.get('responses', {}).get('RECYCLE_INVENTORY_ITEM', {}).get('result', 0)
             self.update_inventory()
+            self.emit_recycle_result()
 
         def is_recycling_success(self):
             """
@@ -157,7 +158,7 @@ class RecycleItems(BaseTask):
             :return: True if the item has been successfully recycled; otherwise, False.
             :rtype: bool
             """
-            return self.recycle_item_request_result == 1
+            return self.recycle_item_request_result == RECYCLE_REQUEST_RESPONSE_SUCCESS
 
         def emit_recycle_result(self):
             """
@@ -166,7 +167,7 @@ class RecycleItems(BaseTask):
             :rtype: None
             """
             if self.is_recycling_success():
-                self.recycle_items.emit_event(
+                self.recycle_items_config.emit_event(
                     'item_discarded',
                     formatted='Discarded {amount}x {item} (maximum {maximum}).',
                     data={
@@ -176,7 +177,7 @@ class RecycleItems(BaseTask):
                     }
                 )
             else:
-                self.recycle_items.emit_event(
+                self.recycle_items_config.emit_event(
                     'item_discard_fail',
                     formatted="Failed to discard {item}",
                     data={
