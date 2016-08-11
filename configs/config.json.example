@@ -132,7 +132,9 @@
       "// Also, it is working with any": {},
       "// any": {"keep_best_iv": 3},
       "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat:": {},
-      "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3}
+      "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3},
+      "// Example of keeping the strongest (based on CP) Weedles for later using in lucky egg:": {},
+      "// Weedle": {"keep_for_luckyegg": "cp"}
     },
     "vips" : {
          "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate!": {},
