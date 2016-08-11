@@ -1,18 +1,14 @@
-
-# PokemonGo-Bot (Working)
+# PokemonGo-Bot
 PokemonGo bot is a project created by the [PokemonGoF](https://github.com/PokemonGoF) team.
-The project is currently setup in two main branches. `dev` and `master`.
 
-## Help Needed on [Desktop Version](https://github.com/PokemonGoF/PokemonGo-Bot-Desktop)
+The project is currently setup in two main branches. `dev` also known as `beta` and `master` also known as `stable`. Submit your PR's to `dev`.
 
-## Please submit PR to [Dev branch](https://github.com/PokemonGoF/PokemonGo-Bot/tree/dev)
-
-We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
-You can count on the community in #help channel.
+If you need any help please don't create an issue here on github we have a great community on Slack, [Click here to join the chat!](https://pokemongo-bot.herokuapp.com). You can count on the community in #help channel.
 
 ## Table of Contents
+- [Installation](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/installation.md)
+- [Documentation](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/)
 - [Features](#features)
-- [Wiki](#wiki)
 - [Credits](#credits)
 
 ## Features
@@ -27,9 +23,9 @@ You can count on the community in #help channel.
 - [x] Rudimentary IV Functionality filter
 - [x] Ignore certain pokemon filter
 - [x] Adjust delay between Pokemon capture & Transfer as per configuration
-- [ ] Standalone Desktop Application
 - [x] Hatch eggs
 - [x] Incubate eggs
+- [ ] [Standalone Desktop Application] (https://github.com/PokemonGoF/PokemonGo-Bot-Desktop)
 - [ ] Use candy
 - [ ] Inventory cleaner
 
@@ -45,22 +41,8 @@ If there are any concerns with this policy or you believe we are tracking someth
 
 If you do not want any data to be gathered, you can turn off this feature by setting `health_record` to `false` in your `config.json`.
 
-## Wiki
-All information on [Getting Started](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Getting-Started) is available in the [Wiki](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/)!
-- __Installation__
-  - [Requirements] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation#requirements-click-each-one-for-install-guide)
-  - [How to run with Docker](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/How-to-run-with-Docker)
-  - [Linux] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation#installation-linux)
-  - [Mac] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation#installation-mac)
-  - [Windows] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation#installation-windows)
-- [Develop PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Develop-PokemonGo-Bot)
-- [Plugins](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/plugins.md)
-- [Configuration-files](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Configuration-files)
-- [Front end web module - Google Maps API] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Google-Maps-API-(web-page))
-- [Docker Usage](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/FAQ#how-to-run-with-docker)
-- [FAQ](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/FAQ)
+## Help Needed on [Desktop Version](https://github.com/PokemonGoF/PokemonGo-Bot-Desktop)
 
-To ensure that all updates are documented - [@eggins](https://github.com/eggins) will keep the Wiki updated with the latest information on installing, updating and configuring the bot.
 
 ## Credits
 - [tejado](https://github.com/tejado) many thanks for the API

@@ -42,11 +42,16 @@ class WebsocketRemoteControl(object):
         command_handler()
 
     def get_player_info(self):
-        player_info = self.bot.get_inventory()['responses']['GET_INVENTORY']
+        request = self.bot.api.create_request()
+        request.get_player()
+        request.get_inventory()
+        response_dict = request.call()
+        inventory = response_dict['responses'].get('GET_INVENTORY', {})
+        player_info = response_dict['responses'].get('GET_PLAYER', {})
         self.sio.emit(
             'bot:send_reply',
             {
-                'result': player_info,
+                'result': {'inventory': inventory, 'player': player_info},
                 'command': 'get_player_info',
                 'account': self.bot.config.username
             }
