@@ -109,7 +109,6 @@ data/cells-*.json
 data/map-caught-*.json
 
 # Multiple config
-configs/*
 !configs/config.json.example
 !configs/release_config.json.example
 !configs/config.json.pokemons.example
