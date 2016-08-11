@@ -444,9 +444,8 @@ def init_config():
             task_configuration_error('{}.{}'.format(outer, inner))
             return None
 
-    if config.evolve_captured:
-        parser.error('"evolve_captured" has been removed in favor of the EvolveTask')
-        return None
+    if "evolve_captured" in load:
+        logger.warning('The evolve_captured argument is no longer supported. Please use the EvolvePokemon task instead')
 
     if not (config.location or config.location_cache):
         parser.error("Needs either --use-location-cache or --location.")
