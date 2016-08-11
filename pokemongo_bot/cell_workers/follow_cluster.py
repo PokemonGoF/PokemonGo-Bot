@@ -49,7 +49,7 @@ class FollowCluster(BaseTask):
                         'num_points': cnt,
                         'forts': log_lured_str,
                         'radius': str(self.radius),
-                        'distance': str(distance(self.bot.position[0], self.bot.position[1], lat, lng))
+                        'distance': str(distance(self.bot.gps_sensor.position[0], self.bot.gps_sensor.position[1], lat, lng))
                     }
                 )
 
@@ -67,7 +67,7 @@ class FollowCluster(BaseTask):
                     if step_walker.step():
                         self.is_at_destination = True
                 else:
-                    self.bot.api.set_position(lat, lng)
+                    self.bot.gps_sensor.position = [lat, lng]
 
             elif not self.announced:
                 self.emit_event(
@@ -80,7 +80,7 @@ class FollowCluster(BaseTask):
                 )
                 self.announced = True
         else:
-            lat = self.bot.position[0]
-            lng = self.bot.position[1]
+            lat = self.bot.gps_sensor.position[0]
+            lng = self.bot.gps_sensor.position[1]
 
         return [lat, lng]

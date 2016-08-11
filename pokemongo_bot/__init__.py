@@ -16,6 +16,8 @@ from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
 from pgoapi.utilities import f2i, get_cell_ids
 
+import sensors
+
 import cell_workers
 from base_task import BaseTask
 from plugin_loader import PluginLoader
@@ -38,14 +40,6 @@ import struct
 
 class PokemonGoBot(object):
     @property
-    def position(self):
-        return self.api._position_lat, self.api._position_lng, 0
-
-    @position.setter
-    def position(self, position_tuple):
-        self.api._position_lat, self.api._position_lng, self.api._position_alt = position_tuple
-
-    @property
     def player_data(self):
         """
         Returns the player data as received from the API.
@@ -56,6 +50,7 @@ class PokemonGoBot(object):
 
     def __init__(self, config):
         self.config = config
+        self.gps_sensor = sensors.GpsSensor(self)
         self.fort_timeouts = dict()
         self.pokemon_list = json.load(
             open(os.path.join(_base_dir, 'data', 'pokemon.json'))
@@ -469,14 +464,14 @@ class PokemonGoBot(object):
         self.tick_count += 1
 
         # Check if session token has expired
-        self.check_session(self.position[0:2])
+        self.check_session(self.gps_sensor.position[0:2])
 
         for worker in self.workers:
             if worker.work() == WorkerResult.RUNNING:
                 return
 
     def get_meta_cell(self):
-        location = self.position[0:2]
+        location = self.gps_sensor.position[0:2]
         cells = self.find_close_cells(*location)
 
         # Combine all cells into a single dict of the items we care about.
@@ -514,10 +509,10 @@ class PokemonGoBot(object):
         if lng is None:
             lng = self.api._position_lng
         if alt is None:
-            alt = 0
+            alt = self.api._position_alt
 
         if cells == []:
-            location = self.position[0:2]
+            location = self.gps_sensor.position[0:2]
             cells = self.find_close_cells(*location)
 
         user_data_cells = os.path.join(_base_dir, 'data', 'cells-%s.json' % self.config.username)
@@ -544,7 +539,7 @@ class PokemonGoBot(object):
         )
         try:
             with open(user_data_lastlocation, 'w') as outfile:
-                json.dump({'lat': lat, 'lng': lng, 'start_position': self.start_position}, outfile)
+                json.dump({'lat': lat, 'lng': lng, 'alt': alt, 'start_position': self.start_position}, outfile)
         except IOError as e:
             self.logger.info('[x] Error while opening location file: %s' % e)
 
@@ -616,9 +611,9 @@ class PokemonGoBot(object):
                     level='info',
                     formatted='Session stale, re-logging in.'
                 )
-                position = self.position
+                position = self.gps_sensor.position
                 self.api = ApiWrapper()
-                self.position = position
+                self.gps_sensor.position = position
                 self.login()
                 self.api.activate_signature(self.get_encryption_lib())
 
@@ -637,8 +632,6 @@ class PokemonGoBot(object):
             level='info',
             formatted="Login procedure started."
         )
-        lat, lng = self.position[0:2]
-        self.api.set_position(lat, lng, 0)
 
         while not self.api.login(
             self.config.auth_service,
@@ -894,7 +887,7 @@ class PokemonGoBot(object):
                 }
             )
 
-            self.api.set_position(*location)
+            self.gps_sensor.position = location
 
             self.event_manager.emit(
                 'position_update',
@@ -902,14 +895,14 @@ class PokemonGoBot(object):
                 level='info',
                 formatted="Now at {current_position}",
                 data={
-                    'current_position': self.position,
+                    'current_position': self.gps_sensor.position,
                     'last_position': '',
                     'distance': '',
                     'distance_unit': ''
                 }
             )
 
-            self.start_position = self.position
+            self.start_position = self.gps_sensor.position
 
             has_position = True
 
@@ -929,7 +922,7 @@ class PokemonGoBot(object):
                 location = (
                     location_json['lat'],
                     location_json['lng'],
-                    0.0
+                    location_json['alt']
                 )
 
                 # If location has been set in config, only use cache if starting position has not differed
@@ -947,7 +940,7 @@ class PokemonGoBot(object):
                         )
                         return
 
-                self.api.set_position(*location)
+                self.gps_sensor.position = location
                 self.event_manager.emit(
                     'position_update',
                     sender=self,
@@ -987,7 +980,7 @@ class PokemonGoBot(object):
                     '[x] Coordinates found in passed in location, '
                     'not geocoding.'
                 )
-                return float(possible_coordinates[0]), float(possible_coordinates[1]), float("0.0")
+                return float(possible_coordinates[0]), float(possible_coordinates[1])
 
         geolocator = GoogleV3(api_key=self.config.gmapkey)
         loc = geolocator.geocode(location_name, timeout=10)
@@ -1079,8 +1072,8 @@ class PokemonGoBot(object):
 
         if order_by_distance:
             forts.sort(key=lambda x: distance(
-                self.position[0],
-                self.position[1],
+                self.gps_sensor.position[0],
+                self.gps_sensor.position[1],
                 x['latitude'],
                 x['longitude']
             ))

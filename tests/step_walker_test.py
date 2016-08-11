@@ -14,15 +14,8 @@ class TestStepWalker(unittest.TestCase):
         self.patcherRandomLat.start()
 
         self.bot = MagicMock()
-        self.bot.position = [0, 0, 0]
-        self.bot.api = MagicMock()
-
-        self.lat, self.lng, self.alt = 0, 0, 0
-
-        # let us get back the position set by the StepWalker
-        def api_set_position(lat, lng, alt):
-            self.lat, self.lng, self.alt = lat, lng, alt
-        self.bot.api.set_position = api_set_position
+        self.bot.gps_sensor = MagicMock()
+        self.bot.gps_sensor.position = [0, 0, 0]
 
     def tearDown(self):
         self.patcherSleep.stop()
@@ -36,8 +29,8 @@ class TestStepWalker(unittest.TestCase):
         stayInPlace = sw.step()
         self.assertFalse(stayInPlace)
 
-        self.assertTrue(float_equal(self.lat, NORMALIZED_LAT_LNG_DISTANCE_STEP))
-        self.assertTrue(float_equal(self.lng, NORMALIZED_LAT_LNG_DISTANCE_STEP))
+        self.assertTrue(float_equal(self.bot.gps_sensor.position[0], NORMALIZED_LAT_LNG_DISTANCE_STEP))
+        self.assertTrue(float_equal(self.bot.gps_sensor.position[1], NORMALIZED_LAT_LNG_DISTANCE_STEP))
 
     def test_normalized_distance_times_2(self):
         sw = StepWalker(self.bot, 2, 0.1, 0.1)
@@ -47,8 +40,8 @@ class TestStepWalker(unittest.TestCase):
         stayInPlace = sw.step()
         self.assertFalse(stayInPlace)
 
-        self.assertTrue(float_equal(self.lat, NORMALIZED_LAT_LNG_DISTANCE_STEP * 2))
-        self.assertTrue(float_equal(self.lng, NORMALIZED_LAT_LNG_DISTANCE_STEP * 2))
+        self.assertTrue(float_equal(self.bot.gps_sensor.position[0], NORMALIZED_LAT_LNG_DISTANCE_STEP * 2))
+        self.assertTrue(float_equal(self.bot.gps_sensor.position[1], NORMALIZED_LAT_LNG_DISTANCE_STEP * 2))
 
     def test_small_distance_same_spot(self):
         sw = StepWalker(self.bot, 1, 0, 0)
@@ -56,8 +49,8 @@ class TestStepWalker(unittest.TestCase):
         self.assertEqual(sw.dLng, 0, 'dLng should be 0')
 
         self.assertTrue(sw.step(), 'step should return True')
-        self.assertTrue(self.lat == self.bot.position[0])
-        self.assertTrue(self.lng == self.bot.position[1])
+        self.assertTrue(0 == self.bot.gps_sensor.position[0])
+        self.assertTrue(0 == self.bot.gps_sensor.position[1])
 
     def test_small_distance_small_step(self):
         sw = StepWalker(self.bot, 1, 1e-5, 1e-5)

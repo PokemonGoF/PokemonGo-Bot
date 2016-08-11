@@ -133,8 +133,8 @@ class MoveToMapPokemon(BaseTask):
             pokemon['priority'] = self.config['catch'].get(pokemon['name'], 0)
 
             pokemon['dist'] = distance(
-                self.bot.position[0],
-                self.bot.position[1],
+                self.bot.gps_sensor.position[0],
+                self.bot.gps_sensor.position[1],
                 pokemon['latitude'],
                 pokemon['longitude'],
             )
@@ -179,8 +179,8 @@ class MoveToMapPokemon(BaseTask):
             return log.logger(err, 'red')
 
         dist = distance(
-            self.bot.position[0],
-            self.bot.position[1],
+            self.bot.gps_sensor.position[0],
+            self.bot.gps_sensor.position[1],
             loc_json['lat'],
             loc_json['lng']
         )
@@ -191,14 +191,14 @@ class MoveToMapPokemon(BaseTask):
             now - self.last_map_update > UPDATE_MAP_MIN_TIME_SEC):
             requests.post(
                 '{}/next_loc?lat={}&lon={}'.format(self.config['address'],
-                                                   self.bot.position[0],
-                                                   self.bot.position[1]))
+                                                   self.bot.gps_sensor.position[0],
+                                                   self.bot.gps_sensor.position[1]))
             self.emit_event(
                 'move_to_map_pokemon_updated_map',
                 formatted='Updated PokemonGo-Map to {lat}, {lon}',
                 data={
-                    'lat': self.bot.position[0],
-                    'lon': self.bot.position[1]
+                    'lat': self.bot.gps_sensor.position[0],
+                    'lon': self.bot.gps_sensor.position[1]
                 }
             )
             self.last_map_update = now
@@ -209,14 +209,14 @@ class MoveToMapPokemon(BaseTask):
         Args:
             pokemon: Pokemon to snipe.
         """
-        last_position = self.bot.position[0:2]
+        last_position = self.bot.gps_sensor.position
         self.bot.heartbeat()
         self._teleport_to(pokemon)
         catch_worker = PokemonCatchWorker(pokemon, self.bot)
         api_encounter_response = catch_worker.create_encounter_api_call()
         time.sleep(SNIPE_SLEEP_SEC)
         self._teleport_back(last_position)
-        self.bot.api.set_position(last_position[0], last_position[1], 0)
+        self.bot.gps_sensor.position = last_position
         time.sleep(SNIPE_SLEEP_SEC)
         self.bot.heartbeat()
         catch_worker.work(api_encounter_response)

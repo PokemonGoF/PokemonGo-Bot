@@ -31,8 +31,8 @@ class CatchLuredPokemon(BaseTask):
 
         for fort in forts:
             distance_to_fort = distance(
-                self.bot.position[0],
-                self.bot.position[1],
+                self.bot.gps_sensor.position[0],
+                self.bot.gps_sensor.position[1],
                 fort['latitude'],
                 fort['longitude']
             )
