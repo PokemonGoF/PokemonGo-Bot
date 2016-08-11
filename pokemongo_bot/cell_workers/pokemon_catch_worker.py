@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import time
+from random import random
 from pokemongo_bot import inventory
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.human_behaviour import normalized_reticle_size, sleep, spin_modifier
+from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.worker_result import WorkerResult
 
 CATCH_STATUS_SUCCESS = 1
@@ -69,6 +70,7 @@ class PokemonCatchWorker(BaseTask):
         # validate response
         if not response_dict:
             return WorkerResult.ERROR
+
         try:
             responses = response_dict['responses']
             response = responses[self.response_key]
@@ -301,8 +303,18 @@ class PokemonCatchWorker(BaseTask):
             if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and berry_count > 0 and not used_berry:
                 catch_rate_by_ball = self._use_berry(berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball)
                 berry_count -= 1
+            
+            # Randomize the quality of the throw
+            # Default structure
+            throw_parameters = {'normalized_reticle_size': 1.950,
+                                'spin_modifier': 1.0,
+                                'normalized_hit_position': 1.0,
+                                'throw_type_label': 'Excellent'}
+            self.generate_spin_parameter(throw_parameters)
+            self.generate_throw_quality_parameters(throw_parameters)
 
             # try to catch pokemon!
+            # TODO : Log which type of throw we selected
             items_stock[current_ball] -= 1
             self.emit_event(
                 'threw_pokeball',
@@ -314,17 +326,14 @@ class PokemonCatchWorker(BaseTask):
                 }
             )
 
-            reticle_size_parameter = normalized_reticle_size(self.config.catch_randomize_reticle_factor)
-            spin_modifier_parameter = spin_modifier(self.config.catch_randomize_spin_factor)
-
             response_dict = self.api.catch_pokemon(
                 encounter_id=encounter_id,
                 pokeball=current_ball,
-                normalized_reticle_size=reticle_size_parameter,
+                normalized_reticle_size=throw_parameters['normalized_reticle_size'],
                 spawn_point_id=self.spawn_point_guid,
                 hit_pokemon=1,
-                spin_modifier=spin_modifier_parameter,
-                normalized_hit_position=1
+                spin_modifier=throw_parameters['spin_modifier'],
+                normalized_hit_position=throw_parameters['normalized_hit_position']
             )
 
             try:
@@ -392,3 +401,48 @@ class PokemonCatchWorker(BaseTask):
                 self.bot.softban = False
 
             break
+
+    def generate_spin_parameter(self, throw_parameters):
+        spin_success_rate = self.config.catch_throw_parameters_spin_success_rate
+        if random() <= spin_success_rate:
+            throw_parameters['spin_modifier'] = 0.5 + 0.5 * random()
+        else:
+            throw_parameters['spin_modifier'] = 0.499 * random()
+
+    def generate_throw_quality_parameters(self, throw_parameters):
+        throw_excellent_chance = self.config.catch_throw_parameters_excellent_rate
+        throw_great_chance = self.config.catch_throw_parameters_great_rate
+        throw_nice_chance = self.config.catch_throw_parameters_nice_rate
+        throw_normal_throw_chance = self.config.catch_throw_parameters_normal_rate
+
+        # Total every chance types, pick a random number in the range and check what type of throw we got
+        total_chances = throw_excellent_chance + throw_great_chance \
+                        + throw_nice_chance + throw_normal_throw_chance
+
+        random_throw = random() * total_chances
+
+        if random_throw <= throw_excellent_chance:
+            throw_parameters['normalized_reticle_size'] = 1.70 + 0.25 * random()
+            throw_parameters['normalized_hit_position'] = 1.0
+            throw_parameters['throw_type_label'] = 'Excellent'
+            return
+
+        random_throw -= throw_excellent_chance
+        if random_throw <= throw_great_chance:
+            throw_parameters['normalized_reticle_size'] = 1.30 + 0.399 * random()
+            throw_parameters['normalized_hit_position'] = 1.0
+            throw_parameters['throw_type_label'] = 'Great'
+            return
+
+        random_throw -= throw_great_chance
+        if random_throw <= throw_nice_chance:
+            throw_parameters['normalized_reticle_size'] = 1.00 + 0.299 * random()
+            throw_parameters['normalized_hit_position'] = 1.0
+            throw_parameters['throw_type_label'] = 'Nice'
+            return
+
+        # Not a any kind of special throw, let's throw a normal one
+        # Here the reticle size doesn't matter, we scored out of it
+        throw_parameters['normalized_reticle_size'] = 1.25 + 0.70 * random()
+        throw_parameters['normalized_hit_position'] = 0.0
+        throw_parameters['throw_type_label'] = 'Normal'
