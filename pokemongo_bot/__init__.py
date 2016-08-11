@@ -460,6 +460,9 @@ class PokemonGoBot(object):
             parameters=('last_lat', 'last_lon')
         )
 
+        # Export File
+        self.event_manager.register_event('file_exported')
+
     def tick(self):
         self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
