@@ -183,8 +183,7 @@ class PokemonGoBot(object):
             'moving_to_fort',
             parameters=(
                 'fort_name',
-                'distance',
-                'current_position'
+                'distance'
             )
         )
         self.event_manager.register_event(
@@ -192,8 +191,7 @@ class PokemonGoBot(object):
             parameters=(
                 'fort_name',
                 'distance',
-                'lure_distance',
-                'current_position'
+                'lure_distance'
             )
         )
         self.event_manager.register_event(
@@ -219,12 +217,7 @@ class PokemonGoBot(object):
             parameters=('status_code',)
         )
         self.event_manager.register_event('pokestop_searching_too_often')
-        self.event_manager.register_event(
-            'arrived_at_fort',
-            parameters=(
-                'current_position'
-            )
-        )
+        self.event_manager.register_event('arrived_at_fort')
 
         # pokemon stuff
         self.event_manager.register_event(
