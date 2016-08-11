@@ -5,6 +5,7 @@
     "location": "SOME_LOCATION",
     "gmapkey": "GOOGLE_MAPS_API_KEY",
     "libencrypt_location": "",
+    "enable_social": false,
     "tasks": [
       {
         "type": "HandleSoftBan"

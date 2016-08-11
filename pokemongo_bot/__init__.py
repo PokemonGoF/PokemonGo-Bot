@@ -25,7 +25,7 @@ from event_manager import EventManager
 from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
-from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler, ColoredLoggingHandler
+from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler, ColoredLoggingHandler, SocialHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from pokemongo_bot.base_dir import _base_dir
@@ -93,7 +93,8 @@ class PokemonGoBot(object):
             handlers.append(ColoredLoggingHandler())
         else:
             handlers.append(LoggingHandler())
-
+        if self.config.enable_social:
+            handlers.append(SocialHandler(self))
         if self.config.websocket_server_url:
             if self.config.websocket_start_embedded_server:
                 self.sio_runner = SocketIoRunner(self.config.websocket_server_url)
