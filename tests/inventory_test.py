@@ -4,6 +4,24 @@ from pokemongo_bot.inventory import *
 
 
 class InventoryTest(unittest.TestCase):
+    def test_types(self):
+        td = Types
+        self.assertIs(types_data(), td)
+        self.assertEqual(len(td.STATIC_DATA), 18)
+        self.assertEqual(len(td.all()), 18)
+
+        for name, s in td.STATIC_DATA.iteritems():
+            assert len(name) > 0
+            self.assertIs(s.name, name)
+            for t in s.attack_effective_against:
+                self.assertIn(s, t.pokemon_vulnerable_to)
+            for t in s.attack_weak_against:
+                self.assertIn(s, t.pokemon_resistant_to)
+            for t in s.pokemon_vulnerable_to:
+                self.assertIn(s, t.attack_effective_against)
+            for t in s.pokemon_resistant_to:
+                self.assertIn(s, t.attack_weak_against)
+
     def test_pokemons(self):
         # Init data
         self.assertEqual(len(Pokemons().all()), 0)  # No inventory loaded here
@@ -168,7 +186,7 @@ class InventoryTest(unittest.TestCase):
         for attack in attacks:  # type: Attack
             self.assertGreater(attack.id, 0)
             self.assertGreater(len(attack.name), 0)
-            self.assertGreater(len(attack.type), 0)
+            self.assertIsInstance(attack.type, Type)
             self.assertGreaterEqual(attack.damage, 0)
             self.assertGreater(attack.duration, .0)
             self.assertGreater(attack.energy, 0)
@@ -178,6 +196,7 @@ class InventoryTest(unittest.TestCase):
             self.assertEqual(attack.is_charged, charged)
             self.assertIs(attack, clazz.data_for(attack.id))
             self.assertIs(attack, clazz.by_name(attack.name))
-            self.assertTrue(attack in clazz.BY_TYPE[attack.type])
+            self.assertTrue(attack in clazz.list_for_type(attack.type))
+            self.assertTrue(attack in clazz.list_for_type(attack.type.name))
             self.assertIsInstance(attack, ChargedAttack if charged else Attack)
             prev_dps = attack.dps

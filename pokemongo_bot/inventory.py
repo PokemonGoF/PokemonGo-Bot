@@ -1,10 +1,16 @@
 import json
 import logging
 import os
+from collections import OrderedDict
+
 from pokemongo_bot.base_dir import _base_dir
 
 '''
 Helper class for updating/retrieving Inventory data
+
+Interesting info and formulas:
+https://drive.google.com/file/d/0B0TeYGBPiuzaenhUNE5UWnRCVlU/view
+https://www.reddit.com/r/pokemongodev/comments/4w7mdg/combat_damage_calculation_formula_exactly/
 '''
 
 
@@ -165,9 +171,9 @@ class Pokemons(_BaseInventoryComponent):
         pokemon_id = 1
         for poke_info in data:
             # prepare types
-            types = [poke_info['Type I'][0]]  # required
+            types = [Types.get(poke_info['Type I'][0])]  # required type
             for t in poke_info.get('Type II', []):
-                types.append(t)
+                types.append(Types.get(t))  # second type
             poke_info['types'] = types
 
             # prepare attacks (moves)
@@ -345,6 +351,71 @@ class Pokemons(_BaseInventoryComponent):
 #
 # Static Components
 
+class Types(_StaticInventoryComponent):
+    """
+    Types of attacks and pokemons
+
+    See more information:
+    https://i.redd.it/oy7lrixl8r9x.png
+    https://www.reddit.com/r/TheSilphRoad/comments/4t8seh/pokemon_go_type_advantage_chart/
+    https://github.com/jehy/Pokemon-Go-Weakness-calculator/blob/master/app/src/main/java/ru/jehy/pokemonweaknesscalculator/MainActivity.java#L31
+    """
+
+    STATIC_DATA_FILE = os.path.join(_base_dir, 'data', 'types.json')
+
+    @classmethod
+    def process_static_data(cls, data):
+        # create instances
+        ret = OrderedDict()
+        for t in sorted(data, key=lambda x: x["name"]):
+            name = str(t["name"])
+            ret[name] = Type(name, t["effectiveAgainst"], t["weakAgainst"])
+
+        # additional manipulations
+        size = len(ret)
+        by_effectiveness = {}
+        by_resistance = {}
+        for t in ret.itervalues():  # type: Type
+            t.attack_effective_against = [ret[name] for name in t.attack_effective_against]
+            t.attack_weak_against = [ret[name] for name in t.attack_weak_against]
+
+            # group types effective against, weak against specific types
+            for l, d in (t.attack_effective_against, by_effectiveness), \
+                        (t.attack_weak_against, by_resistance):
+                for tt in l:
+                    if tt not in d:
+                        d[tt] = set()
+                    d[tt].add(t)
+
+            # calc average factor for damage of this type relative to all types
+            t.rate = (size
+                      + ((EFFECTIVENESS_FACTOR-1) * len(t.attack_effective_against))
+                      - ((1-RESISTANCE_FACTOR) * len(t.attack_weak_against))) / size
+
+        # set pokemon type resistance/weakness info
+        for t in ret.itervalues():  # type: Type
+            t.pokemon_resistant_to = by_resistance[t]
+            t.pokemon_vulnerable_to = by_effectiveness[t]
+
+        return ret
+
+    @classmethod
+    def get(cls, type_name):
+        # type: (Union[string, Type]) -> Type
+        type_name = str(type_name)
+        if type_name not in cls.STATIC_DATA:
+            raise ValueError("Unknown type: {}".format(type_name))
+        return cls.STATIC_DATA[type_name]
+
+    @classmethod
+    def all(cls):
+        return cls.STATIC_DATA.values()
+
+    @classmethod
+    def rating(cls):
+        return sorted(cls.all(), key=lambda x: x.rate, reverse=True)
+
+
 class LevelToCPm(_StaticInventoryComponent):
     """
     Data for the CP multipliers at different levels
@@ -396,9 +467,10 @@ class _Attacks(_StaticInventoryComponent):
             ret[attack.id] = attack
             by_name[attack.name] = attack
 
-            if attack.type not in by_type:
-                by_type[attack.type] = []
-            by_type[attack.type].append(attack)
+            attack_type = str(attack.type)
+            if attack_type not in by_type:
+                by_type[attack_type] = []
+            by_type[attack_type].append(attack)
 
         for t in by_type.iterkeys():
             attacks = sorted(by_type[t], key=lambda m: m.dps, reverse=True)
@@ -430,11 +502,11 @@ class _Attacks(_StaticInventoryComponent):
 
     @classmethod
     def list_for_type(cls, type_name):
-        # type: (string) -> List[Attack]
+        # type: (Union[string, Type]) -> List[Attack]
         """
         :return: Attacks sorted by DPS in descending order
         """
-        return cls.BY_TYPE[type_name]
+        return cls.BY_TYPE[str(type_name)]
 
     @classmethod
     def all(cls):
@@ -455,6 +527,59 @@ class ChargedAttacks(_Attacks):
 
 #
 # Instances
+
+class Type(object):
+    def __init__(self, name, effective_against, weak_against):
+        # type: (string, Iterable[Type], Iterable[Type]) -> None
+
+        self.name = name
+
+        # effective way to represent type with one character
+        # for example it's very useful for nicknaming pokemon
+        #  using its attack types
+        #
+        # if first char is unique - use it, in other case
+        #  use suitable substitute
+        type_to_one_char_map = {
+            'Bug': 'B',
+            'Dark': 'K',
+            'Dragon': 'D',
+            'Electric': 'E',
+            'Fairy': 'Y',
+            'Fighting': 'T',
+            'Fire': 'F',
+            'Flying': 'L',
+            'Ghost': 'H',
+            'Grass': 'A',
+            'Ground': 'G',
+            'Ice': 'I',
+            'Normal': 'N',
+            'Poison': 'P',
+            'Psychic': 'C',
+            'Rock': 'R',
+            'Steel': 'S',
+            'Water': 'W',
+        }
+        self.as_one_char = type_to_one_char_map[name]
+
+        # attack of this type is effective against ...
+        self.attack_effective_against = set(effective_against)
+        # attack of this type is weak against ...
+        self.attack_weak_against = set(weak_against)
+        # pokemon of this type is resistant to ...
+        self.pokemon_resistant_to = set()  # type: Set[Type]
+        # pokemon of this type is vulnerable to ...
+        self.pokemon_vulnerable_to = set()  # type: Set[Type]
+
+        # average factor for damage of this type relative to all types
+        self.rate = 1.
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return self.name
+
 
 class Candy(object):
     def __init__(self, family_id, quantity):
@@ -669,7 +794,7 @@ class Attack(object):
         # self._data = data  # Not needed - all saved in fields
         self.id = data['id']
         self.name = data['name']
-        self.type = data['type']
+        self.type = Types.get(data['type'])
         self.damage = data['damage']
         self.duration = data['duration'] / 1000.0  # duration in seconds
 
@@ -693,6 +818,14 @@ class Attack(object):
     def dps_with_stab(self):
         # DPS with STAB (Same-type attack bonus)
         return self.dps * STAB_FACTOR
+
+    @property
+    def effective_against(self):
+        return self.type.attack_effective_against
+
+    @property
+    def weak_against(self):
+        return self.type.attack_weak_against
 
     @property
     def energy_per_second(self):
@@ -725,7 +858,7 @@ class ChargedAttack(Attack):
 
 class Moveset(object):
     def __init__(self, fm, chm, pokemon_types=(), pokemon_id=-1):
-        # type: (Attack, ChargedAttack, List[string], int) -> None
+        # type: (Attack, ChargedAttack, List[Type], int) -> None
         if len(pokemon_types) <= 0 < pokemon_id:
             pokemon_types = Pokemons.data_for(pokemon_id)['types']
 
@@ -817,14 +950,18 @@ class Inventory(object):
            self.item_inventory_size = self.bot.api.get_player()['responses']['GET_PLAYER']['player_data']['max_item_storage']
 
 
+
 #
 # Usage helpers
 
 # STAB (Same-type attack bonus)
 STAB_FACTOR = 1.25
+EFFECTIVENESS_FACTOR = 1.25
+RESISTANCE_FACTOR = 0.8
 
 
-_inventory = None
+_inventory = None  # type: Inventory
+Types()  # init Types
 LevelToCPm()  # init LevelToCPm
 FastAttacks()  # init FastAttacks
 ChargedAttacks()  # init ChargedAttacks
@@ -890,6 +1027,10 @@ def pokemons(refresh=False):
 
 def items():
     return _inventory.items
+
+
+def types_data():
+    return Types
 
 
 def levels_to_cpm():
