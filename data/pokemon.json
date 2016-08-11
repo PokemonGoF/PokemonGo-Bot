@@ -1232,7 +1232,7 @@
     "Previous evolution(s)": [
       {
         "Number": "029",
-        "Name": "Nidoran F"
+        "Name": "Nidoran  F"
       }
     ],
     "Next Evolution Requirements": {
@@ -4326,14 +4326,20 @@
     ],
     "Weight": "49.8 kg",
     "Height": "1.5 m",
+    "Next evolution(s)": [
+      {
+        "Number": "107",
+        "Name": "Hitmonchan"
+      }
+    ],
     "Special Attack(s)": [
       "Low Sweep",
       "Stomp",
       "Stone Edge"
     ],
     "BaseAttack": 148,
-    "BaseDefense": 172,
-    "BaseStamina": 100,
+    "BaseDefense": 100,
+    "BaseStamina": 172,
     "CaptureRate": 0.16,
     "FleeRate": 0.09
   },
@@ -4355,6 +4361,12 @@
     ],
     "Weight": "50.2 kg",
     "Height": "1.4 m",
+    "Previous evolution(s)": [
+      {
+        "Number": "106",
+        "Name": "Hitmonlee"
+      }
+    ],
     "Special Attack(s)": [
       "Brick Break",
       "Fire Punch",
@@ -4362,8 +4374,8 @@
       "Thunder Punch"
     ],
     "BaseAttack": 138,
-    "BaseDefense": 204,
-    "BaseStamina": 100,
+    "BaseDefense": 100,
+    "BaseStamina": 204,
     "CaptureRate": 0.16,
     "FleeRate": 0.09
   },
@@ -5717,16 +5729,6 @@
       "Family": 147,
       "Name": "Dratini candies"
     },
-    "Next evolution(s)": [
-      {
-        "Number": "148",
-        "Name": "Dragonair"
-      },
-      {
-        "Number": "149",
-        "Name": "Dragonite"
-      }
-    ],
     "Special Attack(s)": [
       "Aqua Tail",
       "Twister",
