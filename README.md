@@ -6,9 +6,9 @@ The project is currently setup in two main branches. `dev` also known as `beta` 
 If you need any help please don't create an issue here on github we have a great community on Slack, [Click here to join the chat!](https://pokemongo-bot.herokuapp.com). You can count on the community in #help channel.
 
 ## Table of Contents
-- [Installation] (https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/installation.md)
+- [Installation](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/installation.md)
+- [Documentation](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/)
 - [Features](#features)
-- [Wiki](https://github.com/PokemonGoF/PokemonGo-Bot/wiki)
 - [Credits](#credits)
 
 ## Features
