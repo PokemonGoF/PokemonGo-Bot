@@ -96,8 +96,9 @@ class ColoredLoggingHandler(EventHandler):
         'cyan':     '96'
     }
 
-    def __init__(self):
+    def __init__(self, debug):
         self._last_event = None
+        self.debug = debug
         try:
             # this `try ... except` is for ImportError on Windows
             import fcntl
@@ -109,6 +110,9 @@ class ColoredLoggingHandler(EventHandler):
             self._TIOCGWINSZ = None
 
     def handle_event(self, event, sender, level, formatted_msg, data):
+        if level == 'debug' and not self.debug:
+            return
+
         # Prepare message string
         message = None
         if formatted_msg:

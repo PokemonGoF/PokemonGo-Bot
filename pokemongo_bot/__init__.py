@@ -90,7 +90,7 @@ class PokemonGoBot(object):
     def _setup_event_system(self):
         handlers = []
         if self.config.logging_color:
-            handlers.append(ColoredLoggingHandler())
+            handlers.append(ColoredLoggingHandler(self.config.debug))
         else:
             handlers.append(LoggingHandler())
 
