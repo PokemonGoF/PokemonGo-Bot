@@ -63,8 +63,52 @@ class PokemonCatchWorker(BaseTask):
     # public methods
     ############################################################################
 
+    def release_pokemon_if_full(self):
+        pokemon_list = []
+        inventory = self.bot.api.get_inventory()['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+        max_pokemon = self.config.catch.get('max_pokemon', 248)
+        #run over inventory dict and extract pokemons to pokemon_list
+        for item in inventory:
+            data = item['inventory_item_data']
+            if 'pokemon_data' in data:
+                #don't know why, but pokemon_data also is a pattern for eggs
+                if not 'egg_km_walked_target' in data['pokemon_data']:
+                    pokemon_list.append(data['pokemon_data'])
+        #sort pokemon list by creation_time_ms to get lastest captured pokemon
+        pokemon_list.sort(key = lambda x: x['creation_time_ms'])
+        pokemon_count = len(pokemon_list)
+
+        #if we get this limit, release last pokemon
+        if pokemon_count == max_pokemon:
+            pokemon = pokemon_list[-1]
+            self.emit_event(
+                'future_pokemon_release',
+                formatted="Releasing last pokemon captured because bags are full ",
+                data={
+                    'cp': pokemon['cp']
+                }
+            )
+            try:
+                #release
+                self.api.release_pokemon(pokemon_id=pokemon['id'])
+            except KeyError:
+                print 'Error deleting {}'.format(pokemon['id'])
+                return
+            else:
+                self.emit_event(
+                        'pokemon_release',
+                        formatted='Exchanged last pokemon captured [CP {cp}] for candy.',
+                        data={
+                            'cp': pokemon['cp']
+                        }
+                    )
+
     def work(self, response_dict=None):
         response_dict = response_dict or self.create_encounter_api_call()
+        #get never_stop attr and if its set to true implement release_pokemon_if_full()
+        never_stop = self.config.catch.get('never_stop', False)
+        if never_stop:
+            self.release_pokemon_if_full()
 
         # validate response
         if not response_dict:
