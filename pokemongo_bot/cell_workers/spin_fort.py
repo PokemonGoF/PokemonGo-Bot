@@ -30,10 +30,12 @@ class SpinFort(BaseTask):
         return self.ignore_item_count or self.bot.has_space_for_loot()
 
     def work(self):
-        fort = self.get_fort_in_range()
+        forts = self.get_forts_in_range()
 
-        if not self.should_run() or fort is None:
+        if not self.should_run() or len(forts) == 0:
             return WorkerResult.SUCCESS
+
+        fort = forts[0]
 
         lat = fort['latitude']
         lng = fort['longitude']
@@ -138,11 +140,15 @@ class SpinFort(BaseTask):
                     )
                 else:
                     self.bot.fort_timeouts[fort["id"]] = (time.time() + 300) * 1000  # Don't spin for 5m
-                return 11
+                return WorkerResult.ERROR
         sleep(2)
-        return 0
 
-    def get_fort_in_range(self):
+        if len(forts) > 1:
+            return WorkerResult.RUNNING
+
+        return WorkerResult.SUCCESS
+
+    def get_forts_in_range(self):
         forts = self.bot.get_forts(order_by_distance=True)
 
         for fort in forts:
@@ -150,24 +156,15 @@ class SpinFort(BaseTask):
                 self.bot.fort_timeouts[fort["id"]] = fort['cooldown_complete_timestamp_ms']
                 forts.remove(fort)
 
-        forts = filter(lambda x: x["id"] not in self.bot.fort_timeouts, forts)
-
-        if len(forts) == 0:
-            return None
-
-        fort = forts[0]
-
-        distance_to_fort = distance(
+        forts = filter(lambda fort: fort["id"] not in self.bot.fort_timeouts, forts)
+        forts = filter(lambda fort: distance(
             self.bot.position[0],
             self.bot.position[1],
             fort['latitude'],
             fort['longitude']
-        )
+        ) <= Constants.MAX_DISTANCE_FORT_IS_REACHABLE, forts)
 
-        if distance_to_fort <= Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
-            return fort
-
-        return None
+        return forts
 
     def update_recent_forts(self, fort):
         self.bot.recent_forts = self.bot.recent_forts[1:] + [fort['id']]
