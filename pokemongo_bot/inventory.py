@@ -168,174 +168,57 @@ class Pokemons(_BaseInventoryComponent):
 
     @classmethod
     def process_static_data(cls, data):
-        pokemon_id = 1
-        for poke_info in data:
-            # prepare types
-            types = [Types.get(poke_info['Type I'][0])]  # required type
-            for t in poke_info.get('Type II', []):
-                types.append(Types.get(t))  # second type
-            poke_info['types'] = types
+        data = [PokemonInfo(d) for d in data]
 
-            # prepare attacks (moves)
-            cls._process_attacks(poke_info)
-            cls._process_attacks(poke_info, charged=True)
+        # process evolution info
+        for p in data:
+            next_all = p.next_evolutions_all
+            if len(next_all) <= 0:
+                continue
 
-            # prepare movesets
-            poke_info['movesets'] = cls._process_movesets(poke_info, pokemon_id)
+            # only next level evolutions, not all possible
+            p.next_evolution_ids = [idx for idx in next_all
+                                    if data[idx-1].prev_evolution_id == p.id]
 
-            # calculate maximum CP for the pokemon (best IVs, lvl 40)
-            base_attack = poke_info['BaseAttack']
-            base_defense = poke_info['BaseDefense']
-            base_stamina = poke_info['BaseStamina']
-            max_cp = _calc_cp(base_attack, base_defense, base_stamina)
-            poke_info['max_cp'] = max_cp
+            # only final evolutions
+            p.last_evolution_ids = [idx for idx in next_all
+                                    if not data[idx-1].has_next_evolution]
+            assert len(p.last_evolution_ids) > 0
 
-            pokemon_id += 1
         return data
 
     @classmethod
-    def _process_movesets(cls, poke_info, pokemon_id):
-        # type: (dict, int) -> List[Moveset]
-        """
-        The optimal moveset is the combination of two moves, one quick move
-        and one charge move, that deals the most damage over time.
-
-        Because each quick move gains a certain amount of energy (different
-        for different moves) and each charge move requires a different amount
-        of energy to use, sometimes, a quick move with lower DPS will be
-        better since it charges the charge move faster.  On the same note,
-        sometimes a charge move that has lower DPS will be more optimal since
-        it may require less energy or it may last for a longer period of time.
-
-        Attacker have STAB (Same-type attack bonus - x1.25) pokemon have the
-        same type as attack. So we add it to the "Combo DPS" of the moveset.
-
-        The defender attacks in intervals of 1 second for the first 2 attacks,
-        and then in intervals of 2 seconds for the remainder of the attacks.
-        This explains why we see two consecutive quick attacks at the beginning
-        of the match.  As a result, we add +2 seconds to the DPS calculation
-        for defender DPS output.
-
-        So to determine an optimal defensive moveset, we follow the same  method
-        as we did for optimal offensive movesets, but instead calculate  the
-        highest "Combo DPS" with an added 2 seconds to the quick move cool down.
-
-        Note: critical hits have not yet been implemented in the game
-
-        See http://pokemongo.gamepress.gg/optimal-moveset-explanation
-        See http://pokemongo.gamepress.gg/defensive-tactics
-        """
-
-        # Prepare movesets
-        movesets = []
-        types = poke_info['types']
-        for fm in poke_info['Fast Attack(s)']:
-            for chm in poke_info['Special Attack(s)']:
-                movesets.append(Moveset(fm, chm, types, pokemon_id))
-        assert len(movesets) > 0
-
-        # Calculate attack perfection for each moveset
-        movesets = sorted(movesets, key=lambda m: m.dps_attack)
-        worst_dps = movesets[0].dps_attack
-        best_dps = movesets[-1].dps_attack
-        if best_dps > worst_dps:
-            for moveset in movesets:
-                current_dps = moveset.dps_attack
-                moveset.attack_perfection = \
-                    (current_dps - worst_dps) / (best_dps - worst_dps)
-
-        # Calculate defense perfection for each moveset
-        movesets = sorted(movesets, key=lambda m: m.dps_defense)
-        worst_dps = movesets[0].dps_defense
-        best_dps = movesets[-1].dps_defense
-        if best_dps > worst_dps:
-            for moveset in movesets:
-                current_dps = moveset.dps_defense
-                moveset.defense_perfection = \
-                    (current_dps - worst_dps) / (best_dps - worst_dps)
-
-        return sorted(movesets, key=lambda m: m.dps, reverse=True)
-
-    @classmethod
-    def _process_attacks(cls, poke_info, charged=False):
-        # type: (dict, bool) -> List[Attack]
-        key = 'Fast Attack(s)' if not charged else 'Special Attack(s)'
-        moves_dict = (ChargedAttacks if charged else FastAttacks).BY_NAME
-        moves = []
-        for name in poke_info[key]:
-            if name not in moves_dict:
-                raise KeyError('Unknown {} attack: "{}"'.format(
-                    'charged' if charged else 'fast', name))
-            moves.append(moves_dict[name])
-        moves = sorted(moves, key=lambda m: m.dps, reverse=True)
-        poke_info[key] = moves
-        assert len(moves) > 0
-        return moves
-
-    @classmethod
     def data_for(cls, pokemon_id):
-        # type: (int) -> dict
+        # type: (int) -> PokemonInfo
         return cls.STATIC_DATA[pokemon_id - 1]
 
     @classmethod
     def name_for(cls, pokemon_id):
-        # type: (int) -> string
-        return cls.data_for(pokemon_id)['Name']
+        return cls.data_for(pokemon_id).name
 
     @classmethod
     def first_evolution_id_for(cls, pokemon_id):
-        data = cls.data_for(pokemon_id)
-        if 'Previous evolution(s)' in data:
-            return int(data['Previous evolution(s)'][0]['Number'])
-        return pokemon_id
+        return cls.data_for(pokemon_id).first_evolution_id
 
     @classmethod
     def prev_evolution_id_for(cls, pokemon_id):
-        data = cls.data_for(pokemon_id)
-        if 'Previous evolution(s)' in data:
-            return int(data['Previous evolution(s)'][-1]['Number'])
-        return None
+        return cls.data_for(pokemon_id).prev_evolution_id
 
     @classmethod
     def next_evolution_ids_for(cls, pokemon_id):
-        try:
-            next_evolutions = cls.data_for(pokemon_id)['Next evolution(s)']
-        except KeyError:
-            return []
-        # get only next level evolutions, not all possible
-        ids = []
-        for p in next_evolutions:
-            p_id = int(p['Number'])
-            if cls.prev_evolution_id_for(p_id) == pokemon_id:
-                ids.append(p_id)
-        return ids
+        return cls.data_for(pokemon_id).next_evolution_ids
 
     @classmethod
     def last_evolution_ids_for(cls, pokemon_id):
-        try:
-            next_evolutions = cls.data_for(pokemon_id)['Next evolution(s)']
-        except KeyError:
-            return [pokemon_id]
-        # get only final evolutions, not all possible
-        ids = []
-        for p in next_evolutions:
-            p_id = int(p['Number'])
-            if len(cls.data_for(p_id).get('Next evolution(s)', [])) == 0:
-                ids.append(p_id)
-        assert len(ids) > 0
-        return ids
+        return cls.data_for(pokemon_id).last_evolution_ids
 
     @classmethod
     def has_next_evolution(cls, pokemon_id):
-        poke_info = cls.data_for(pokemon_id)
-        return 'Next Evolution Requirements' in poke_info \
-               or 'Next evolution(s)' in poke_info
+        return cls.data_for(pokemon_id).has_next_evolution
 
     @classmethod
     def evolution_cost_for(cls, pokemon_id):
-        if not cls.has_next_evolution(pokemon_id):
-            return None
-        return int(cls.data_for(pokemon_id)['Next Evolution Requirements']['Amount'])
+        return cls.data_for(pokemon_id).evolution_cost
 
     def parse(self, item):
         if 'is_egg' in item:
@@ -605,6 +488,165 @@ class Egg(object):
         return False
 
 
+class PokemonInfo(object):
+    """
+    Static information about pokemon kind
+    """
+    def __init__(self, data):
+        self._data = data
+        self.id = int(data["Number"])
+        self.name = data['Name']  # type: string
+        self.classification = data['Classification']  # type: string
+
+        # prepare types
+        self.type1 = Types.get(data['Type I'][0])
+        self.type2 = None
+        self.types = [self.type1]  # required type
+        for t in data.get('Type II', []):
+            self.type2 = Types.get(t)
+            self.types.append(self.type2)  # second type
+            break
+
+        # base chance to capture pokemon
+        self.capture_rate = data['CaptureRate']
+        # chance of the pokemon to flee away
+        self.flee_rate = data['FleeRate']
+
+        # prepare attacks (moves)
+        self.fast_attacks = self._process_attacks()
+        self.charged_attack = self._process_attacks(charged=True)
+
+        # prepare movesets
+        self.movesets = self._process_movesets()
+
+        # Basic Values of the pokemon (identical for all pokemons of one kind)
+        self.base_attack = data['BaseAttack']
+        self.base_defense = data['BaseDefense']
+        self.base_stamina = data['BaseStamina']
+
+        # calculate maximum CP for the pokemon (best IVs, lvl 40)
+        self.max_cp = _calc_cp(self.base_attack, self.base_defense,
+                               self.base_stamina)
+
+        #
+        # evolutions info for this pokemon
+
+        # id of the very first level evolution
+        self.first_evolution_id = self.id
+        # id of the previous evolution (one level only)
+        self.prev_evolution_id = None
+        # ids of all available previous evolutions in the family
+        self.prev_evolutions_all = []
+        if 'Previous evolution(s)' in data:
+            ids = [int(e['Number']) for e in data['Previous evolution(s)']]
+            self.first_evolution_id = ids[0]
+            self.prev_evolution_id = ids[-1]
+            self.prev_evolutions_all = ids
+
+        # Number of candies for the next evolution (if possible)
+        self.evolution_cost = 0
+        # next evolution flag
+        self.has_next_evolution = 'Next evolution(s)' in data \
+                                  or 'Next Evolution Requirements' in data
+        # ids of the last level evolutions
+        self.last_evolution_ids = [self.id]
+        # ids of the next possible evolutions (one level only)
+        self.next_evolution_ids = []
+        # ids of all available next evolutions in the family
+        self.next_evolutions_all = []
+        if self.has_next_evolution:
+            ids = [int(e['Number']) for e in data['Next evolution(s)']]
+            self.next_evolutions_all = ids
+            self.evolution_cost = int(data['Next Evolution Requirements']['Amount'])
+
+    @property
+    def family_id(self):
+        return self.first_evolution_id
+
+    @property
+    def is_seen(self):
+        return pokedex().seen(self.id)
+
+    @property
+    def is_captured(self):
+        return pokedex().captured(self.id)
+
+    def _process_movesets(self):
+        # type: () -> List[Moveset]
+        """
+        The optimal moveset is the combination of two moves, one quick move
+        and one charge move, that deals the most damage over time.
+
+        Because each quick move gains a certain amount of energy (different
+        for different moves) and each charge move requires a different amount
+        of energy to use, sometimes, a quick move with lower DPS will be
+        better since it charges the charge move faster.  On the same note,
+        sometimes a charge move that has lower DPS will be more optimal since
+        it may require less energy or it may last for a longer period of time.
+
+        Attacker have STAB (Same-type attack bonus - x1.25) pokemon have the
+        same type as attack. So we add it to the "Combo DPS" of the moveset.
+
+        The defender attacks in intervals of 1 second for the first 2 attacks,
+        and then in intervals of 2 seconds for the remainder of the attacks.
+        This explains why we see two consecutive quick attacks at the beginning
+        of the match.  As a result, we add +2 seconds to the DPS calculation
+        for defender DPS output.
+
+        So to determine an optimal defensive moveset, we follow the same  method
+        as we did for optimal offensive movesets, but instead calculate  the
+        highest "Combo DPS" with an added 2 seconds to the quick move cool down.
+
+        Note: critical hits have not yet been implemented in the game
+
+        See http://pokemongo.gamepress.gg/optimal-moveset-explanation
+        See http://pokemongo.gamepress.gg/defensive-tactics
+        """
+
+        # Prepare movesets
+        movesets = []
+        for fm in self.fast_attacks:
+            for chm in self.charged_attack:
+                movesets.append(Moveset(fm, chm, self.types, self.id))
+        assert len(movesets) > 0
+
+        # Calculate attack perfection for each moveset
+        movesets = sorted(movesets, key=lambda m: m.dps_attack)
+        worst_dps = movesets[0].dps_attack
+        best_dps = movesets[-1].dps_attack
+        if best_dps > worst_dps:
+            for moveset in movesets:
+                current_dps = moveset.dps_attack
+                moveset.attack_perfection = \
+                    (current_dps - worst_dps) / (best_dps - worst_dps)
+
+        # Calculate defense perfection for each moveset
+        movesets = sorted(movesets, key=lambda m: m.dps_defense)
+        worst_dps = movesets[0].dps_defense
+        best_dps = movesets[-1].dps_defense
+        if best_dps > worst_dps:
+            for moveset in movesets:
+                current_dps = moveset.dps_defense
+                moveset.defense_perfection = \
+                    (current_dps - worst_dps) / (best_dps - worst_dps)
+
+        return sorted(movesets, key=lambda m: m.dps, reverse=True)
+
+    def _process_attacks(self, charged=False):
+        # type: (bool) -> List[Attack]
+        key = 'Fast Attack(s)' if not charged else 'Special Attack(s)'
+        moves_dict = (ChargedAttacks if charged else FastAttacks).BY_NAME
+        moves = []
+        for name in self._data[key]:
+            if name not in moves_dict:
+                raise KeyError('Unknown {} attack: "{}"'.format(
+                    'charged' if charged else 'fast', name))
+            moves.append(moves_dict[name])
+        moves = sorted(moves, key=lambda m: m.dps, reverse=True)
+        assert len(moves) > 0
+        return moves
+
+
 class Pokemon(object):
     def __init__(self, data):
         self._data = data
@@ -612,6 +654,8 @@ class Pokemon(object):
         self.id = data['id']
         # Id of the such pokemons in pokedex
         self.pokemon_id = data['pokemon_id']
+        # Static information
+        self.static = Pokemons.data_for(self.pokemon_id)
 
         # Combat points value
         self.cp = data['cp']
@@ -631,25 +675,21 @@ class Pokemon(object):
         self.hp = data.get('stamina', self.hp_max)
         assert 0 <= self.hp <= self.hp_max
 
-        # Individial Values of the current pokemon (different for each pokemon)
+        # Individial Values of the current specific pokemon (different for each)
         self.iv_attack = data.get('individual_attack', 0)
         self.iv_defense = data.get('individual_defense', 0)
         self.iv_stamina = data.get('individual_stamina', 0)
 
-        self._static_data = Pokemons.data_for(self.pokemon_id)
+        # Basic Values of the pokemon (identical for all pokemons of one kind)
+        base_attack = self.static.base_attack
+        base_defense = self.static.base_defense
+        base_stamina = self.static.base_stamina
+
         self.name = Pokemons.name_for(self.pokemon_id)
         self.nickname = data.get('nickname', self.name)
 
         self.in_fort = 'deployed_fort_id' in data
         self.is_favorite = data.get('favorite', 0) is 1
-
-        # Basic Values of the current pokemon (identical for all such pokemons)
-        self.base_attack = self._static_data['BaseAttack']
-        self.base_defense = self._static_data['BaseDefense']
-        self.base_stamina = self._static_data['BaseStamina']
-
-        # Maximum possible CP for the current pokemon
-        self.max_cp = self._static_data['max_cp']
 
         self.fast_attack = FastAttacks.data_for(data['move_1'])
         self.charged_attack = ChargedAttacks.data_for(data['move_2'])  # type: ChargedAttack
@@ -665,12 +705,12 @@ class Pokemon(object):
 
         # Exact value of current CP (not rounded)
         self.cp_exact = _calc_cp(
-            self.base_attack, self.base_defense, self.base_stamina,
+            base_attack, base_defense, base_stamina,
             self.iv_attack, self.iv_defense, self.iv_stamina, self.cp_m)
         assert max(int(self.cp_exact), 10) == self.cp
 
         # Percent of maximum possible CP
-        self.cp_percent = self.cp_exact / self.max_cp
+        self.cp_percent = self.cp_exact / self.static.max_cp
 
         # Get moveset instance with calculated DPS and perfection percents
         self.moveset = self._get_moveset()
@@ -686,7 +726,7 @@ class Pokemon(object):
                self.candy_quantity >= self.evolution_cost
 
     def has_next_evolution(self):
-        return Pokemons.has_next_evolution(self.pokemon_id)
+        return self.static.has_next_evolution
 
     def has_seen_next_evolution(self):
         for pokemon_id in self.next_evolution_ids:
@@ -696,23 +736,23 @@ class Pokemon(object):
 
     @property
     def family_id(self):
-        return self.first_evolution_id
+        return self.static.family_id
 
     @property
     def first_evolution_id(self):
-        return Pokemons.first_evolution_id_for(self.pokemon_id)
+        return self.static.first_evolution_id
 
     @property
     def prev_evolution_id(self):
-        return Pokemons.prev_evolution_id_for(self.pokemon_id)
+        return self.static.prev_evolution_id
 
     @property
     def next_evolution_ids(self):
-        return Pokemons.next_evolution_ids_for(self.pokemon_id)
+        return self.static.next_evolution_ids
 
     @property
     def last_evolution_ids(self):
-        return Pokemons.last_evolution_ids_for(self.pokemon_id)
+        return self.static.last_evolution_ids
 
     @property
     def candy_quantity(self):
@@ -720,7 +760,7 @@ class Pokemon(object):
 
     @property
     def evolution_cost(self):
-        return Pokemons.evolution_cost_for(self.pokemon_id)
+        return self.static.evolution_cost
 
     def _compute_iv_perfection(self):
         total_iv = self.iv_attack + self.iv_defense + self.iv_stamina
@@ -749,9 +789,9 @@ class Pokemon(object):
         last_evolution_ids = self.last_evolution_ids
         for pokemon_id in last_evolution_ids:
             poke_info = Pokemons.data_for(pokemon_id)
-            base_attack = poke_info['BaseAttack']
-            base_defense = poke_info['BaseDefense']
-            base_stamina = poke_info['BaseStamina']
+            base_attack = poke_info.base_attack
+            base_defense = poke_info.base_defense
+            base_stamina = poke_info.base_stamina
 
             # calculate CP variants at maximum level
             worst_cp = _calc_cp(base_attack, base_defense, base_stamina,
@@ -770,7 +810,7 @@ class Pokemon(object):
     def _get_moveset(self):
         move1 = self.fast_attack
         move2 = self.charged_attack
-        movesets = self._static_data['movesets']
+        movesets = self.static.movesets
         current_moveset = None
         for moveset in movesets:  # type: Moveset
             if moveset.fast_attack == move1 and moveset.charged_attack == move2:
@@ -779,12 +819,12 @@ class Pokemon(object):
 
         if current_moveset is None:
             error = "Unexpected moveset [{}, {}] for #{} {}," \
-                    " please update info in pokemon.json and create issue/PR"\
+                    " please update info in pokemon.json and create issue/PR" \
                 .format(move1, move2, self.pokemon_id, self.name)
             # raise ValueError(error)
             logging.getLogger(type(self).__name__).error(error)
             current_moveset = Moveset(
-                move1, move2, self._static_data['types'], self.pokemon_id)
+                move1, move2, self.static.types, self.pokemon_id)
 
         return current_moveset
 
@@ -860,7 +900,7 @@ class Moveset(object):
     def __init__(self, fm, chm, pokemon_types=(), pokemon_id=-1):
         # type: (Attack, ChargedAttack, List[Type], int) -> None
         if len(pokemon_types) <= 0 < pokemon_id:
-            pokemon_types = Pokemons.data_for(pokemon_id)['types']
+            pokemon_types = Pokemons.data_for(pokemon_id).types
 
         self.pokemon_id = pokemon_id
         self.fast_attack = fm
