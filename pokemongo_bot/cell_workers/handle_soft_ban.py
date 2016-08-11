@@ -29,7 +29,7 @@ class HandleSoftBan(BaseTask):
         )
 
         if fort_distance > Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
-            MoveToFort(self.bot, config=None).work()
+            MoveToFort(self.bot, config={}).work()
             self.bot.recent_forts = self.bot.recent_forts[0:-1]
             if forts[0]['id'] in self.bot.fort_timeouts:
                 del self.bot.fort_timeouts[forts[0]['id']]

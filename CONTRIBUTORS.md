@@ -64,3 +64,5 @@
  * cmezh
  * Nivong
  * kestel
+ * joaodragao
+ * extink
