@@ -97,6 +97,8 @@
     "catch_randomize_spin_factor": 1.0,
     "logging_color": true,
     "catch": {
+      "never_stop": true,
+      "max_pokemon": 248,
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},
       "// Rattata": { "always_catch" : true }
