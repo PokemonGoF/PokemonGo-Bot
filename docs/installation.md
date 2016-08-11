@@ -49,20 +49,14 @@ To update your project do (in the project folder): `git pull`
 
 To update python requirement packages do (in the project folder): `pip install --upgrade -r requirements.txt`
 
-### Installation Linux
-(change master to dev for the latest version)
-
-```
-$ git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot
-$ cd PokemonGo-Bot
-$ virtualenv .
-$ source bin/activate
-$ pip install -r requirements.txt
-```
-### Linux Installation Example: Ubuntu
+### Linux Installation
+####on the Example of Ubuntu
 (change dev to master for the lastest master version)
 
-(if you adapt it it should work for all Linux systems)
+if you are on a different Linux OS you maybe have to adapt things like:
+
+- package mananger (for example yum instead of apt-get)
+- package names
 
 ```bash
 ##install
@@ -120,7 +114,6 @@ cd PokemonGo-Bot
 source bin/activate
 ./run.sh configs/config.json
 ```
-[taken from http://pastebin.com/pzPjXT65]
 
 
 ### Installation Mac
