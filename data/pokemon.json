@@ -1996,7 +1996,8 @@
       "Dazzling Gleam",
       "Psybeam",
       "Poison Fang",
-      "Shadow Ball"
+      "Shadow Ball",
+      "Signal Beam"
     ],
     "BaseAttack": 108,
     "BaseDefense": 120,
