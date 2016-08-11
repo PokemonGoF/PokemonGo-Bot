@@ -76,7 +76,7 @@ services:
 
 ```
 sample multi-account userdata at  /web/config/userdata.all.js 
-`users: ["bot1name","bot2@gmail.com","bpt3name"],`
+`users: ["bot1name","bot2@gmail.com","bot3name"],`
 
 run command
 docker-compose up -d 
