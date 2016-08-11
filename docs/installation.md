@@ -6,6 +6,7 @@
 - [virtualenv](https://virtualenv.pypa.io/en/stable/installation/) (Recommended)
 - [docker](https://docs.docker.com/engine/installation/) (Optional) - [how to setup after installation](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/How-to-run-with-Docker)
 - [protobuf 3](https://github.com/google/protobuf) (OS Dependent, see below)
+- [Microsoft Visual C++ Compiler for Python 2.7](https://www.microsoft.com/en-us/download/details.aspx?id=44266) (Windows only)
 
 ### Protobuf 3 installation
 
@@ -86,7 +87,7 @@ After this, just do:
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot
 $ cd PokemonGo-Bot
 $ virtualenv .
-$ script\activate
+$ scripts\activate
 $ pip2 install -r requirements.txt
 $ git submodule init
 $ git submodule update
