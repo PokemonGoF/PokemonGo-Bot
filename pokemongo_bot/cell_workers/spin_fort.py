@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import json
+import os
 import time
 
 from pgoapi.utilities import f2i
@@ -9,6 +11,7 @@ from pokemongo_bot.constants import Constants
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
+from pokemongo_bot.base_dir import _base_dir
 from utils import distance, format_time, fort_details
 
 
@@ -84,7 +87,7 @@ class SpinFort(BaseTask):
                 pokestop_cooldown = spin_details.get(
                     'cooldown_complete_timestamp_ms')
                 self.bot.fort_timeouts.update({fort["id"]: pokestop_cooldown})
-                self.bot.recent_forts = self.bot.recent_forts[1:] + [fort['id']]
+                self.update_recent_forts(fort)
             elif spin_result == 2:
                 self.emit_event(
                     'pokestop_out_of_range',
@@ -165,3 +168,27 @@ class SpinFort(BaseTask):
             return fort
 
         return None
+
+    def update_recent_forts(self, fort):
+        self.bot.recent_forts = self.bot.recent_forts[1:] + [fort['id']]
+
+        if self.bot.config.forts_cache_recent_forts:
+            cached_forts_path = os.path.join(
+                _base_dir, 'data', 'recent-forts-%s.json' % self.bot.config.username
+            )
+            try:
+                with open(cached_forts_path, 'w') as outfile:
+                    json.dump(self.bot.recent_forts, outfile)
+                self.emit_event(
+                    'cached_fort',
+                    level='debug',
+                    formatted='Cached fort {fort_id}',
+                    data={'fort_id': fort["id"]}
+                )
+            except IOError as e:
+                self.emit_event(
+                    'error_caching_forts',
+                    level='error',
+                    formatted='Error caching forts for {path}',
+                    data={'path': cached_forts_path}
+                )

@@ -374,6 +374,15 @@ def init_config():
     add_config(
         parser,
         load,
+        short_flag="-crf",
+        long_flag="--forts.cache_recent_forts",
+        help="Caches recent forts used by max_circle_size",
+        type=bool,
+        default=True,
+    )
+    add_config(
+        parser,
+        load,
         long_flag="--catch_randomize_reticle_factor",
         help="Randomize factor for pokeball throwing accuracy (DEFAULT 1.0 means no randomize: always 'Excellent' throw. 0.0 randomizes between normal and 'Excellent' throw)",
         type=float,
