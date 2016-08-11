@@ -14,7 +14,7 @@ class TransferPokemon(BaseTask):
         pokemon_groups = self._release_pokemon_get_groups()
         for pokemon_id, group in pokemon_groups.iteritems():
             pokemon_name = Pokemons.name_for(pokemon_id)
-            keep_best, keep_best_cp, keep_best_iv = self._validate_keep_best_config(pokemon_name)
+            keep_best, keep_best_cp, keep_best_iv = self._validate_keep_best_config(pokemon_id)
 
             if keep_best:
                 best_pokemon_ids = set()
@@ -166,13 +166,33 @@ class TransferPokemon(BaseTask):
             release_config = {}
         return release_config
 
-    def _validate_keep_best_config(self, pokemon_name):
+    def _validate_keep_best_config(self, pokemon_id):
+        pokemon_name = Pokemons.name_for(pokemon_id)
+
         keep_best = False
 
         release_config = self._get_release_config_for(pokemon_name)
 
+        keep_for_luckyegg = release_config.get('keep_for_luckyegg')
+
         keep_best_cp = release_config.get('keep_best_cp', 0)
         keep_best_iv = release_config.get('keep_best_iv', 0)
+
+        if keep_for_luckyegg:
+            candy = inventory.candies().get(pokemon_id).quantity
+            cost = Pokemons.evolution_cost_for(pokemon_id)
+            keep = 0
+            if cost > 0:
+                evolve = int(candy / cost);
+                # earn 1 candy for each evolve
+                after_evolve = int(evolve/cost)
+                keep = evolve + after_evolve
+                if keep == 0:
+                    keep = 1
+            if keep_for_luckyegg == 'cp' and keep > keep_best_cp:
+                keep_best_cp = keep
+            if keep_for_luckyegg == 'iv' and keep > keep_best_iv:
+                keep_best_iv = keep
 
         if keep_best_cp or keep_best_iv:
             keep_best = True
