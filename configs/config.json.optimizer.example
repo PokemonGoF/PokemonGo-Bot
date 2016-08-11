@@ -23,6 +23,7 @@
                 "transfer": true,
                 "evolve": true,
                 "use_lucky_egg": true,
+                "evolve_only_with_lucky_egg": true,
                 "minimum_evolve_for_lucky_egg": 90
             }
         },

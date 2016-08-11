@@ -18,7 +18,8 @@ class PokemonOptimizer(BaseTask):
 
         self.config_transfer = self.config.get("transfer", False)
         self.config_evolve = self.config.get("evolve", False)
-        self.config_use_lucky_egg = self.config.get("use_lucky_egg", True)
+        self.config_use_lucky_egg = self.config.get("use_lucky_egg", False)
+        self.config_evolve_only_with_lucky_egg = self.config.get("evolve_only_with_lucky_egg", True)
         self.config_minimum_evolve_for_lucky_egg = self.config.get("minimum_evolve_for_lucky_egg", 90)
 
     def get_pokemon_slot_left(self):
@@ -200,10 +201,11 @@ class PokemonOptimizer(BaseTask):
             except:
                 lucky_egg_count = 0
 
-            if (lucky_egg_count == 0) or (len(evo) < self.config_minimum_evolve_for_lucky_egg):
-                return
-
-            self.use_lucky_egg()
+            if lucky_egg_count == 0:
+                if self.config_evolve_only_with_lucky_egg:
+                    return
+            elif len(evo) >= self.config_minimum_evolve_for_lucky_egg:
+                self.use_lucky_egg()
 
         for pokemon in evo:
             self.evolve_pokemon(pokemon)
