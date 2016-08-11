@@ -28,7 +28,7 @@ class RecycleItems(BaseTask):
         free_bag_space = total_bag_space - items_in_bag
 
         if self.min_empty_space is not None:
-            if free_bag_space >= self.min_empty_space:
+            if free_bag_space >= self.min_empty_space and items_in_bag < total_bag_space:
                     self.emit_event(
                         'item_discard_skipped',
                         formatted="Skipping Recycling of Items. {space} space left in bag.",

@@ -19,7 +19,7 @@ class SpinFort(BaseTask):
         self.ignore_item_count = self.config.get("ignore_item_count", False)
 
     def should_run(self):
-        if not self.bot.has_space_for_loot():
+        if not self.bot.has_space_for_loot() and not self.ignore_item_count:
             self.emit_event(
                 'inventory_full',
                 formatted="Inventory is full. You might want to change your config to recycle more items if this message appears consistently."
@@ -106,10 +106,11 @@ class SpinFort(BaseTask):
                         data={'pokestop': fort_name, 'minutes_left': minutes_left}
                     )
             elif spin_result == 4:
-                self.emit_event(
-                    'inventory_full',
-                    formatted="Inventory is full!"
-                )
+                if not self.ignore_item_count:
+                    self.emit_event(
+                        'inventory_full',
+                        formatted="Inventory is full!"
+                    )
             else:
                 self.emit_event(
                     'unknown_spin_result',

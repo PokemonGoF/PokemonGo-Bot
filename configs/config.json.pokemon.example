@@ -86,7 +86,6 @@
     "location_cache": true,
     "distance_unit": "km",
     "reconnecting_timeout": 15,
-    "evolve_captured": "NONE",
     "replicator": {
         "max_sleep" : 60,
         "replicate_reticle_fail_delay": false,

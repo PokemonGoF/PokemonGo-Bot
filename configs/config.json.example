@@ -22,6 +22,13 @@
         "type": "TransferPokemon"
       },
       {
+        "type": "NicknamePokemon",
+        "config": {
+          "enabled": false,
+          "nickname_template": "{iv_pct}_{iv_ads}"
+        }
+      },
+      {
         "type": "EvolvePokemon",
         "config": {
             "evolve_all": "none",
@@ -86,7 +93,6 @@
     "location_cache": true,
     "distance_unit": "km",
     "reconnecting_timeout": 15,
-    "evolve_captured": "NONE",
     "replicator": {
         "max_sleep" : 60,
         "replicate_reticle_fail_delay": false,
