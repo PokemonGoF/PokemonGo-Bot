@@ -14,7 +14,12 @@ pip install -r requirements.txt
 
 function Pokebotencrypt () {
 echo "Start to make encrypt.so"
+if [ "$(uname -s)" == "Darwin" ]
+then
+curl -O http://pgoapi.com/pgoencrypt.tar.gz
+else
 wget http://pgoapi.com/pgoencrypt.tar.gz
+fi
 tar -xf pgoencrypt.tar.gz 
 cd pgoencrypt/src/ 
 make
