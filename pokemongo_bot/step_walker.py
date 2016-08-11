@@ -59,6 +59,7 @@ class StepWalker(object):
             'position_update',
             sender=self,
             level='debug',
+            formatted='To {current_position} from {last_position}',
             data={
                 'current_position': (cLat, cLng),
                 'last_position': (self.initLat, self.initLng),
