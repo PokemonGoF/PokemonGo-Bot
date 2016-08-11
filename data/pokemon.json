@@ -4326,25 +4326,14 @@
     ],
     "Weight": "49.8 kg",
     "Height": "1.5 m",
-    "Next Evolution Requirements": {
-      "Amount": 50,
-      "Family": 106,
-      "Name": "Hitmonlee candies"
-    },
-    "Next evolution(s)": [
-      {
-        "Number": "107",
-        "Name": "Hitmonchan"
-      }
-    ],
     "Special Attack(s)": [
       "Low Sweep",
       "Stomp",
       "Stone Edge"
     ],
     "BaseAttack": 148,
-    "BaseDefense": 100,
-    "BaseStamina": 172,
+    "BaseDefense": 172,
+    "BaseStamina": 100,
     "CaptureRate": 0.16,
     "FleeRate": 0.09
   },
@@ -4366,12 +4355,6 @@
     ],
     "Weight": "50.2 kg",
     "Height": "1.4 m",
-    "Previous evolution(s)": [
-      {
-        "Number": "106",
-        "Name": "Hitmonlee"
-      }
-    ],
     "Special Attack(s)": [
       "Brick Break",
       "Fire Punch",
@@ -4379,8 +4362,8 @@
       "Thunder Punch"
     ],
     "BaseAttack": 138,
-    "BaseDefense": 100,
-    "BaseStamina": 204,
+    "BaseDefense": 204,
+    "BaseStamina": 100,
     "CaptureRate": 0.16,
     "FleeRate": 0.09
   },
