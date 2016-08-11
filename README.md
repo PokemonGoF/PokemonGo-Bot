@@ -2,7 +2,7 @@
 PokemonGo bot is a project created by the [PokemonGoF](https://github.com/PokemonGoF) team.
 The project is currently setup in two main branches. `dev` and `master`. Submit your PR's to `dev`.
 
-If you need any help please don't create an issue here on github we have a great community on [Slack](https://slack.com) [Click here to join the chat!](https://pokemongo-bot.herokuapp.com). You can count on the community in #help channel.
+If you need any help please don't create an issue here on github we have a great community on Slack, [Click here to join the chat!](https://pokemongo-bot.herokuapp.com). You can count on the community in #help channel.
 
 ## Table of Contents
 - [Installation] (https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/installation.md)
