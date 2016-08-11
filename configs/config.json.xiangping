@@ -1,0 +1,469 @@
+{
+    "auth_service": "google",
+    "username": "xiangpinggao1@gmail.com",
+    "password": "",
+    "location": "40.764895,-73.972749",
+    "gmapkey": "AIzaSyDiRRLokq7nvP-4kw20qEzPPXNYKVSN2Ng",
+    "tasks": [
+     {
+        "type": "NicknamePokemon",
+        "config": {
+          "nickname_template": "{name}_{iv_pct}"
+        }
+      },
+
+      {
+        "type": "HandleSoftBan"
+      },
+      {
+        "type": "CollectLevelUpReward"
+      },
+      {
+        "type": "IncubateEggs",
+        "config": {
+          "longer_eggs_first": true
+        }
+      },
+      
+      {
+        "type": "EvolvePokemon",
+        "config": {
+            "evolve_all": "Pidgey,Weedle,Caterpie,Rattata,Spearow,Horsea,Goldeen,Staryu,Krabby,Doduo,Poliwag,Zubat,Nidoran,Magnemite,Bellsprout,Meowth,Ekans,Pikachu,Vulpix,Venomoth,Diglett,Paras,Mankey,Geodude,Tentacruel,Voltorb,Nidoran F,Nidoran M,Oddish,Nidoran,Venonat,Sandslash,Sandshrew,Goldeen,Psyduck,Ponyta,Shellder,Abra",
+            "first_evolve_by": "cp",
+            "evolve_above_cp": 0,
+            "evolve_above_iv": 0,
+            "logic": "or",
+            "evolve_speed": 20,
+            "use_lucky_egg": false
+        }
+      },
+      {
+        "type": "TransferPokemon"
+      },
+      {
+        "type": "RecycleItems",
+        "config": {
+          "item_filter": {
+            "Pokeball":       { "keep" : 80 },
+            "Ultraball":      { "keep" : 60 },
+            "Greatball":      { "keep" : 50 },
+            "Potion":         { "keep" : 0 },
+            "Super Potion":   { "keep" : 0 },
+            "Hyper Potion":   { "keep" : 0 },
+            "Max Potion":   { "keep" : 80 },
+            "Revive":         { "keep" : 0 },
+            "Max Revive":     { "keep" : 30 },
+            "Razz Berry":     { "keep" : 50 }
+          }
+        }
+      },
+      {
+        "type": "CatchVisiblePokemon"
+      },
+      {
+        "type": "CatchLuredPokemon"
+      },
+      {
+        "type": "SpinFort"
+      },
+      {
+        "type": "MoveToMapPokemon",
+        "config": {
+          "address": "http://localhost:5000",
+          "max_distance": 500,
+          "min_time": 60,
+          "min_ball": 50,
+          "prioritize_vips": true,
+          "snipe": true,
+          "snipe_high_prio_only": true,
+          "snipe_high_prio_threshold": 400,
+          "update_map": true,
+          "mode": "priority",
+          "catch": {
+            "==========Legendaries==========": 0,
+            "Aerodactyl": 1000,
+            "Snorlax": 1000,
+            "Articuno": 1000,
+            "Zapdos": 1000,
+            "Moltres": 1000,
+            "Dratini": 1000,
+            "Dragonair": 1000,
+            "Dragonite": 1000,
+            "Mewtwo": 1000,
+            "Mew": 1000,
+
+            "==========Region Locked==========": 0,
+            "Farfetch'd": 10,
+            "Kangaskhan": 10,
+            "Mr. Mime": 10,
+            "Tauros": 10,
+
+            "==========Very Rare==========": 0,
+            "Lapras": 1000,
+            "Electabuzz": 900,
+            "Magmar": 900,
+            "Ditto": 900,
+
+            "==========Starters==========": 0,
+            "Bulbasaur": 400,
+            "Ivysaur": 600,
+            "Venusaur": 700,
+
+            "Charmander": 400,
+            "Charmeleon": 600,
+            "Charizard": 700,
+
+            "Squirtle": 400,
+            "Wartortle": 600,
+            "Blastoise": 700,
+
+            "Pikachu": 10,
+            "Raichu": 10,
+
+            "==========Semi Rare==========": 0,
+            "Porygon": 20,
+            "Scyther": 20,
+            "Jynx": 20,
+
+            "==========Uncommon==========": 0,
+
+            "Omanyte": 15,
+            "Omastar": 50,
+
+            "Seel": 30,
+            "Dewgong": 50,
+
+            "Grimer": 800,
+            "Muk": 800,
+
+            "Shellder": 20,
+            "Cloyster": 50,
+
+            "Gastly": 20,
+            "Haunter": 50,
+            "Gengar": 10,
+
+            "Onix": 60,
+
+            "Drowzee": 60,
+
+            "Hypno": 60,
+
+            "Vulpix": 20,
+            "Ninetales": 60,
+
+            "Paras": 10,
+            "Parasect": 50,
+
+            "Growlithe": 600,
+            "Arcanine": 700,
+
+            "Tentacool": 20,
+            "Tentacruel": 50,
+
+            "Mankey": 15,
+            "Primeape": 50,
+
+            "Clefairy": 150,
+            "Clefable": 500,
+
+            "Jigglypuff": 150,
+            "Wigglytuff": 500,
+
+            "Venonat": 10,
+            "Venomoth": 50,
+
+            "Diglett": 20,
+            "Dugtrio": 50,
+
+            "Meowth": 25,
+            "Persian": 50,
+
+            "Psyduck": 10,
+            "Golduck": 50,
+
+            "Geodude": 100,
+            "Graveler": 500,
+            "Golem": 800,
+
+            "Eevee": 800,
+            "Vaporeon": 800,
+            "Jolteon": 800,
+            "Flareon": 800,
+
+            "Kabuto": 15,
+            "Kabutops": 50,
+
+            "Magikarp": 150,
+            "Gyarados": 800,
+
+            "Pinsir": 15,
+
+            "Ponyta": 20,
+            "Rapidash": 50,
+
+            "Slowpoke": 20,
+            "Slowbro": 50,
+
+            "Magnemite": 25,
+            "Magneton": 50,
+
+            "Krabby": 10,
+            "Kingler": 50,
+
+            "Voltorb": 20,
+            "Electrode": 50,
+
+            "Exeggute": 25,
+            "Exeggutor": 50,
+
+            "Cubone": 30,
+            "Marowak": 80,
+
+            "Hitmonlee": 400,
+
+            "Hitmonchan": 400,
+
+            "Lickitung": 50,
+
+            "Koffing": 20,
+            "Weezing": 50,
+
+            "Rhyhorn": 200,
+            "Rhydon": 500,
+
+            "Chansey": 800,
+
+            "Tangela": 30,
+
+            "Horsea": 20,
+            "Seadra": 60,
+
+            "Goldeen": 10,
+            "Seaking": 50,
+
+            "Staryu": 20,
+            "Starmie": 80,
+
+
+            "==========T1 Evolvers==========": 0,
+            "Caterpie": 10,
+            "Metapod": 10,
+            "Butterfree": 50,
+
+            "Weedle": 10,
+            "Kakuna": 10,
+            "Beedrill": 50,
+
+            "Pidgey": 10,
+            "Pidgeotto": 10,
+            "Pidgeot": 30,
+
+            "==========T2 Evolvers==========": 0,
+            "Nidoran F": 10,
+            "Nidorina": 10,
+            "Nidoqueen": 10,
+
+            "Nidoran M": 10,
+            "Nidorino": 10,
+            "Nidoking": 10,
+
+            "Oddish": 10,
+            "Gloom": 20,
+            "Vileplume": 60,
+
+            "Poliwag": 20,
+            "Poliwhirl": 40,
+            "Poliwrath": 80,
+
+            "Abra": 30,
+            "Kadabra": 60,
+            "Alakazam": 80,
+
+            "Machop": 150,
+            "Machoke": 400,
+            "Machamp": 800,
+
+            "Bellsprout": 10,
+            "Weepinbell": 40,
+            "Victreebel": 80,
+
+            "==========Trash==========": 0,
+
+            "Rattata": 10,
+            "Raticate": 10,
+
+            "Spearow": 10,
+            "Fearow": 10,
+
+            "Ekans": 10,
+            "Arbok": 10,
+
+            "Sandshrew": 10,
+            "Sandslash": 10,
+
+            "Zubat": 10,
+            "Golbat": 10,
+
+            "Doduo": 10,
+            "Dodrio": 10
+          }
+        }
+      },
+      {
+        "type": "MoveToFort",
+        "config": {
+            "lure_attraction": true,
+            "lure_max_distance": 2000
+        }
+      },
+      {
+        "type": "FollowSpiral",
+        "config": {
+          "diameter": 4,
+          "step_size": 10
+        }
+      }
+    ],
+    "map_object_cache_time": 5,
+    "forts": {
+      "avoid_circles": true,
+      "max_circle_size": 500
+    },
+    "websocket_server": false,
+    "walk": 10.16,
+    "action_wait_min": 0,
+    "action_wait_max": 1,
+    "debug": false,
+    "test": false,
+    "health_record": true,
+    "location_cache": false,
+    "distance_unit": "km",
+    "reconnecting_timeout": 15,
+    "evolve_captured": "Pidgey,Weedle,Caterpie,Rattata,Spearow,Horsea,Goldeen,Staryu,Krabby,Doduo,Poliwag,Zubat,Nidoran F, Nidoran M,Magnemite,Bellsprout,Meowth,Ekans,Pikachu,Vulpix,Venomoth,Diglett,Paras,Mankey,Geodude,Tentacool,Voltorb",
+    "catch_randomize_reticle_factor": 1.0,
+    "catch_randomize_spin_factor": 1.0,
+    "catch": {
+      "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
+      "Pidgey": { "always_catch" : true },
+      "Eevee": { "always_catch" : true },
+      "Weedle": { "always_catch" : true },
+      "Caterpie": { "always_catch" : true },
+      "Dragtini": { "always_catch" : true }
+    },
+
+    "release": {
+      "any": {"release_below_cp": 1000, "release_below_iv": 0.8, "logic": "and"},
+      "// Example of always releasing Rattata:": {},
+      "Pidgeotto": {"always_release": true},
+      "Alakazam": {"always_release": true},
+      "Persian": {"always_release": true},
+      "Tentacruel": {"always_release": true},
+      "Abra": {"always_release": true},
+      "Doduo": {"always_release": true},
+      "Dodrio": {"always_release": true},
+      "Parasect": {"always_release": true},
+      "Starmie": {"always_release": true},
+      "Shellder": {"always_release": true},
+      "Pinsir": {"always_release": true},
+      "Golbat": {"always_release": true},
+      "Diglett": {"always_release": true},
+      "Dugtrio": {"always_release": true},
+      "Pikachu": {"always_release": true},
+      "Mankey": {"always_release": true},
+      "Paras": {"always_release": true},
+      "Electrode": {"always_release": true},
+      "Pidgey": {"always_release": true},
+      "Spearow": {"always_release": true},
+      "Zubat": {"always_release": true},
+      "Clefairy": {"always_release": true, "keep_best_cp": 2},
+      "Jigglypuff": {"always_release": true, "keep_best_cp": 2},
+      "Kakuna": {"always_release": true},
+      "Magneton": {"always_release": true},
+      "Magnemite": {"always_release": true},
+      "Arbok": {"always_release": true},
+      "Poliwag": {"always_release": true},
+      "Magikarp": {"always_release": true, "keep_best_cp": 2},
+      "Metapod": {"always_release": true},
+      "Voltorb": {"always_release": true},
+      "Venonat": {"always_release": true},
+      "Venomoth": {"always_release": true},
+      "Caterpie": {"always_release": true},
+      "Bellsprout": {"always_release": true},
+      "Staryu": {"always_release": true},
+      "Seel": {"always_release": true},
+      "Cubone": {"always_release": true},
+      "Ekans": {"always_release": true},
+      "Meowth": {"always_release": true},
+      "Weedle": {"always_release": true},
+      "Rattata": {"always_release": 5},
+      "Raticate": {"always_release": true},
+      "Nidoran F": {"always_release": true},
+      "Ponyta": {"always_release": true},
+      "Psyduck": {"always_release": true},
+      "Nidoran M": {"always_release": true},
+      "Nidorina": {"always_release": true},
+      "Nidorino": {"always_release": true},
+      "Poliwhirl": {"always_release": true},
+      "Horsea": {"always_release": true},
+      "Seadra": {"always_release": true},
+      "Krabby": {"always_release": true},
+      "Tangela": {"always_release": true},
+      "Tentacool": {"always_release": true},
+      "Kingler": {"always_release": true},
+      "Sandshrew": {"always_release": true},
+      "Sandslash": {"always_release": true},
+      "Goldeen": {"always_release": true},
+      "Seaking": {"always_release": true},
+      "Oddish": {"always_release": true},
+      "Drowzee": {"always_release": true},
+      "Geodude": {"always_release": true},
+      "Vulpix": {"always_release": true},
+      "Koffing": {"always_release": true},
+
+      "Squirtle": {"keep_best_cp": 1},
+      "Bulbasaur": {"keep_best_cp": 1},
+      "Charmander": {"keep_best_cp": 1},
+      "Eevee": {"keep_best_cp": 5},
+      "Slowpoke": {"keep_best_cp": 1},
+      "Magikarp": {"keep_best_cp": 2},
+
+      "any": {"keep_best_cp": 3},
+      "Gyarados": {"keep_best_cp": 5},
+      "Dragonite": {"keep_best_cp": 5},
+      "Arcanine": {"keep_best_cp": 5},
+      "Vaporeon": {"keep_best_cp": 5},
+      "Flareon": {"keep_best_cp": 5},
+      "Jolteon": {"keep_best_cp": 5},
+      "Lapras": {"keep_best_cp": 5},
+      "Exeggutor": {"keep_best_cp": 5},
+      "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat:": {},
+      "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3}
+    },
+    "vips" : {
+         "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate!": {},
+        "any": {"catch_above_cp": 1500, "catch_above_iv": 0.9, "logic": "or" },
+        "Lapras": {},
+        "Moltres": {},
+        "Zapdos": {},
+        "Articuno": {},
+        "Dragonair": {},
+        "Dragtini": {},
+        "Eevee": {},
+
+        "// S-Tier pokemons (if pokemon can be evolved into tier, list the representative)": {},
+        "Mewtwo": {},
+        "Dragonite": {},
+        "Snorlax": {},
+        "// Mew evolves to Mewtwo": {},
+        "Mew": {},
+        "Arcanine": {},
+        "Vaporeon": {},
+        "Gyarados": {},
+        "Exeggutor": {},
+        "Muk": {},
+        "Weezing": {},
+        "Flareon": {}
+
+    }
+}

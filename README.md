@@ -1,3 +1,4 @@
+https://help.github.com/articles/syncing-a-fork/
 
 # PokemonGo-Bot (Working)
 PokemonGo bot is a project created by the [PokemonGoF](https://github.com/PokemonGoF) team.
