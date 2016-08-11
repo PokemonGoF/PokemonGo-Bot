@@ -468,7 +468,7 @@ class PokemonGoBot(object):
             parameters=('fort_id', )
         )
         self.event_manager.register_event(
-            'no_forts_cache',
+            'no_cached_forts',
             parameters=('path', )
         )
         self.event_manager.register_event(
