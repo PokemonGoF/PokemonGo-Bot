@@ -68,6 +68,8 @@
           "mode": "priority",
           "map_path": "raw_data",
           "catch": {
+            "never_stop": true,
+            "max_pokemon": 248,
             "==========Legendaries==========": 0,
             "Aerodactyl": 1000,
             "Snorlax": 1000,
