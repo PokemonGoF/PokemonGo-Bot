@@ -1137,14 +1137,14 @@ class PokemonGoBot(object):
             self.event_manager.emit(
                 'loaded_cached_forts',
                 sender=self,
-                level='info',
+                level='debug',
                 formatted='Loaded cached forts...'
             )
         except IOError:
             self.event_manager.emit(
                 'no_cached_forts',
                 sender=self,
-                level='info',
+                level='debug',
                 formatted='Starting new cached forts for {path}',
                 data={'path': cached_forts_path}
             )

@@ -185,7 +185,7 @@ class SpinFort(BaseTask):
             except IOError as e:
                 self.emit_event(
                     'error_caching_forts',
-                    level='error',
+                    level='debug',
                     formatted='Error caching forts for {path}',
                     data={'path': cached_forts_path}
                 )
