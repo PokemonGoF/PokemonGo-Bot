@@ -453,6 +453,7 @@ def init_config():
             task_configuration_error('{}.{}'.format(outer, inner))
             return None
 
+
     if (config.evolve_captured
         and (not isinstance(config.evolve_captured, str)
              or str(config.evolve_captured).lower() in ["true", "false"])):
