@@ -24,7 +24,24 @@
                 "evolve": true,
                 "use_lucky_egg": true,
                 "evolve_only_with_lucky_egg": true,
-                "minimum_evolve_for_lucky_egg": 90
+                "minimum_evolve_for_lucky_egg": 90,
+                "keep": [
+                    {
+                        "top": 1,
+                        "evolve": true,
+                        "sort": ["iv"]
+                    },
+                    {
+                        "top": 1,
+                        "evolve": true,
+                        "sort": ["ncp"]
+                    },
+                    {
+                        "top": 1,
+                        "evolve": false,
+                        "sort": ["cp"]
+                    }
+                ]
             }
         },
         {
