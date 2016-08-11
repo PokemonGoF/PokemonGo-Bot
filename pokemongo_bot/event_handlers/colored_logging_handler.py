@@ -90,12 +90,15 @@ class ColoredLoggingHandler(EventHandler):
         'spun_fort'
     ]
     COLOR_CODE = {
-        'red':    '\033[91m',
-        'green':  '\033[92m',
-        'yellow': '\033[93m',
-        'blue':   '\033[94m',
-        'cyan':   '\033[96m',
-        'white':  '\033[0m'
+        'gray':    '\033[90m',
+        'red':     '\033[91m',
+        'green':   '\033[92m',
+        'yellow':  '\033[93m',
+        'blue':    '\033[94m',
+        'magenta': '\033[95m',
+        'cyan':    '\033[96m',
+        'white':   '\033[97m',
+        'reset':   '\033[0m'
     }
 
     def handle_event(self, event, sender, level, formatted_msg, data):
@@ -106,7 +109,7 @@ class ColoredLoggingHandler(EventHandler):
             color = self.COLOR_CODE[self.EVENT_COLOR_MAP[event]]
         if event == 'egg_hatched' and data.get('pokemon', 'error') == 'error':
             color = self.COLOR_CODE['red']
-        formatted_msg = '{}{}{}'.format(color, formatted_msg, self.COLOR_CODE['white'])
+        formatted_msg = '{}{}{}'.format(color, formatted_msg, self.COLOR_CODE['reset'])
 
         if formatted_msg:
             message = "[{}] {}".format(event, formatted_msg)
