@@ -9,7 +9,7 @@ class RecycleItems(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def initialize(self):
-        self.min_empty_space = self.config.get('min_empty_space', None)
+        self.min_empty_space = int(self.config.get('min_empty_space', 0))
         self.item_filter = self.config.get('item_filter', {})
         self._validate_item_filter()
 
@@ -27,7 +27,7 @@ class RecycleItems(BaseTask):
         total_bag_space = self.bot.player_data['max_item_storage']
         free_bag_space = total_bag_space - items_in_bag
 
-        if free_bag_space > 0 and isinstance(self.min_empty_space, int) and free_bag_space >= self.min_empty_space:
+        if free_bag_space >= self.min_empty_space:
             return
 
         self.bot.latest_inventory = None
