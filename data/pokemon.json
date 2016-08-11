@@ -1999,10 +1999,9 @@
       }
     ],
     "Special Attack(s)": [
-      "Dazzling Gleam",
-      "Psybeam",
       "Poison Fang",
-      "Shadow Ball"
+      "Psybeam",
+      "Signal Beam"
     ],
     "BaseAttack": 108,
     "BaseDefense": 118,
