@@ -1,8 +1,13 @@
 build: false
 
 environment:
-  matrix:
-    - PYTHON_VERSION: 2.7
+  - PYTHON: "C:\\Python27"
+    PYTHON_VERSION: "2.7.x" # currently 2.7.9
+    PYTHON_ARCH: "32"
+
+  - PYTHON: "C:\\Python27-x64"
+    PYTHON_VERSION: "2.7.x" # currently 2.7.9
+    PYTHON_ARCH: "64"
 
 install:
   - pip install -r requirements.txt
