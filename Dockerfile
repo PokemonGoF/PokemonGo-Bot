@@ -1,4 +1,7 @@
-FROM python:2.7-onbuild
+FROM python:2.7
+
+WORKDIR /usr/src/app
+VOLUME ["/usr/app/configs", "/usr/src/app/web"]
 
 ARG timezone=Etc/UTC
 RUN echo $timezone > /etc/timezone \
@@ -15,8 +18,11 @@ RUN cd /tmp && wget "http://pgoapi.com/pgoencrypt.tar.gz" \
     && cd /tmp \
     && rm -rf /tmp/pgoencrypt*
 
-VOLUME ["/usr/src/app/web"]
-
 ENV LD_LIBRARY_PATH /usr/src/app
+
+COPY requirements.txt /usr/src/app/
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . /usr/src/app
 
 ENTRYPOINT ["python", "pokecli.py"]

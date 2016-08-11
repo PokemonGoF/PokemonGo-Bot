@@ -60,4 +60,11 @@
  * thebigjc
  * JaapMoolenaar
  * eevee-github
+<<<<<<< HEAD
+=======
+ * g0vanish
+ * cmezh
+ * Nivong
+ * kestel
+>>>>>>> PokemonGoF/dev
  * joaodragao

@@ -71,7 +71,6 @@ class ColoredLoggingHandler(EventHandler):
         'moving_to_fort':                       'white',
         'moving_to_lured_fort':                 'white',
         'pokemon_catch_rate':                   'white',
-        'pokemon_evolve_fail':                  'white',
         'pokestop_on_cooldown':                 'white',
         'pokestop_out_of_range':                'white',
         'polyline_request':                     'white',
@@ -125,7 +124,7 @@ class ColoredLoggingHandler(EventHandler):
             message = 'Something rustles nearby!'
 
         # Truncate previous line if same event continues
-        if event in ColoredLoggingHandler.CONTINUOUS_EVENT_NAMES and self._last_event == event:
+        if event in ColoredLoggingHandler.CONTINUOUS_EVENT_NAMES and self._last_event == event and sys.stdout.isatty():
             # Filling with "' ' * terminal_width" in order to completely clear last line
             terminal_width = self._terminal_width()
             if terminal_width:
@@ -166,7 +165,7 @@ class ColoredLoggingHandler(EventHandler):
         if self._ioctl is None or self._TIOCGWINSZ is None:
             return None
 
-        h, w, hp, wp = struct.unpack('HHHH',
+        h, w, hp, wp = struct.unpack(str('HHHH'),
             self._ioctl(0, self._TIOCGWINSZ,
-            struct.pack('HHHH', 0, 0, 0, 0)))
+            struct.pack(str('HHHH'), 0, 0, 0, 0)))
         return w

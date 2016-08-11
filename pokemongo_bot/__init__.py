@@ -183,7 +183,8 @@ class PokemonGoBot(object):
             'moving_to_fort',
             parameters=(
                 'fort_name',
-                'distance'
+                'distance',
+                'current_position'
             )
         )
         self.event_manager.register_event(
@@ -191,7 +192,8 @@ class PokemonGoBot(object):
             parameters=(
                 'fort_name',
                 'distance',
-                'lure_distance'
+                'lure_distance',
+                'current_position'
             )
         )
         self.event_manager.register_event(
@@ -217,7 +219,12 @@ class PokemonGoBot(object):
             parameters=('status_code',)
         )
         self.event_manager.register_event('pokestop_searching_too_often')
-        self.event_manager.register_event('arrived_at_fort')
+        self.event_manager.register_event(
+            'arrived_at_fort',
+            parameters=(
+                'current_position'
+            )
+        )
 
         # pokemon stuff
         self.event_manager.register_event(
@@ -238,6 +245,10 @@ class PokemonGoBot(object):
                 'cp',
                 'iv',
                 'iv_display',
+                'encounter_id',
+                'latitude',
+                'longitude',
+                'pokemon_id'
             )
         )
         self.event_manager.register_event('no_pokeballs')
@@ -272,7 +283,13 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'pokemon_vanished',
-            parameters=('pokemon',)
+            parameters=(
+                'pokemon',
+                'encounter_id',
+                'latitude',
+                'longitude',
+                'pokemon_id'
+            )
         )
         self.event_manager.register_event('pokemon_not_in_range')
         self.event_manager.register_event('pokemon_inventory_full')
@@ -280,16 +297,16 @@ class PokemonGoBot(object):
             'pokemon_caught',
             parameters=(
                 'pokemon',
-                'cp', 'iv', 'iv_display', 'exp'
+                'cp', 'iv', 'iv_display', 'exp',
+                'encounter_id',
+                'latitude',
+                'longitude',
+                'pokemon_id'
             )
         )
         self.event_manager.register_event(
             'pokemon_evolved',
             parameters=('pokemon', 'iv', 'cp')
-        )
-        self.event_manager.register_event(
-            'pokemon_evolve_fail',
-            parameters=('pokemon',)
         )
         self.event_manager.register_event('skip_evolve')
         self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
@@ -992,9 +1009,10 @@ class PokemonGoBot(object):
             pass
 
     def update_web_location_worker(self):
-        while True:
-            self.web_update_queue.get()
-            self.update_web_location()
+        pass
+        # while True:
+        #     self.web_update_queue.get()
+        #     self.update_web_location()
 
     def get_inventory_count(self, what):
         response_dict = self.get_inventory()
