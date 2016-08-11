@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from pokemongo_bot.event_manager import EventHandler
 import thread
 import paho.mqtt.client as mqtt
@@ -25,11 +23,12 @@ class MyMQTTClass:
         self._mqttc.publish(channel, message)
     def connect_to_mqtt(self):
         self._mqttc.connect("test.mosca.io", 1883, 60)
-        self._mqttc.subscribe("$GOF/Social/#", 0)
+        self._mqttc.subscribe("$GOF/All/#", 0)
     def run(self):
         self._mqttc.loop_forever()
 class SocialHandler(EventHandler):
-    def __init__(self):
+    def __init__(self, bot):
+        self.bot = bot
         self.mqttc = MyMQTTClass()
         self.mqttc.connect_to_mqtt()
         thread.start_new_thread(self.mqttc.run)
@@ -40,6 +39,9 @@ class SocialHandler(EventHandler):
         else:
             message = '{}: {}'.format(event, str(data))
         if event == 'catchable_pokemon':
-            self.mqttc.publish("$GOF/Social/Catchable", message)
+            self.mqttc.publish("$GOF/All/Catchable", str(data))
+            print data
+            if data['pokemon_id']:
+                self.mqttc.publish("$GOF/PokeID/"+str(data['pokemon_id']), str(data))
             #print 'have catchable_pokemon'
-            #print message
+            print message
