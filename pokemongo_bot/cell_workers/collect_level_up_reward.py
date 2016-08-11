@@ -40,18 +40,17 @@ class CollectLevelUpReward(BaseTask):
                     .get('LEVEL_UP_REWARDS', {})
                     .get('items_awarded', []))
 
+            self.emit_event('level_up_reward', formatted='Received level up reward:' )
+
             for item in data:
                 if 'item_id' in item and str(item['item_id']) in self.bot.item_list:
                     got_item = self.bot.item_list[str(item['item_id'])]
-                    item['name'] = got_item
                     count = 'item_count' in item and item['item_count'] or 0
 
-            self.emit_event(
-                'level_up_reward',
-                formatted='Received level up reward: {items}',
-                data={
-                    'items': data
-                }
+                    self.emit_event(
+                        'level_up_reward',
+                        formatted="- {items} x " + str(count),
+                        data={'items': got_item}
             )
 
     def _get_current_level(self):
