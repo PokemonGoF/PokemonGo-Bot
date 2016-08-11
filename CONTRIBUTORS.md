@@ -51,5 +51,18 @@
  * matheussampaio
  * Abraxas000
  * lucasfevi
+ * pokepal
  * Moonlight-Angel
  * mjmadsen
+ * nikofil
+ * bigkraig
+ * nikhil-pandey
+ * thebigjc
+ * JaapMoolenaar
+ * eevee-github
+ * g0vanish
+ * cmezh
+ * Nivong
+ * kestel
+ * joaodragao
+ * extink

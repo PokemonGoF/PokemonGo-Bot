@@ -1,19 +1,64 @@
 #!/usr/bin/env bash
-
-# Setup Python virtualenv
-echo "Setting up Python virtualenv..."
-eval "virtualenv ."
-eval "source bin/activate"
-echo "Python virtualenv setup successfully."
-
-# Install pip requirements
-echo "Installing pip requirements..."
-eval "pip install -r requirements.txt"
-echo "Installed pip requirements."
-echo "Installing and updating git submodules..."
-
-# Install git submodules
-eval "cd ./web && git submodule init && cd .."
-eval "git submodule update"
-echo "Done."
-echo "Please create and setup configs/config.json. Then, run 'python pokecli.py --config ./configs/config.json' or './run.sh' on Mac/Linux"
+pokebotpath=$(cd "$(dirname "$0")"; pwd)
+cd $pokebotpath
+if [ -f /etc/debian_version ]
+then
+echo "You are on Debian/Ubuntu"
+sudo apt-get update
+sudo apt-get -y install python python-pip python-dev build-essential git python-protobuf virtualenv 
+elif [ -f /etc/redhat-release ]
+then
+echo "You are on CentOS/RedHat"
+sudo yum -y install epel-release
+sudo yum -y install python-pip
+elif [ "$(uname -s)" == "Darwin" ]
+then
+echo "You are on Mac os"
+sudo brew update 
+sudo brew install --devel protobuf
+else
+echo "Please check if you have  python pip protobuf gcc make  installed on your device."
+echo "Wait 5 seconds to continue or Use ctrl+c to interrupt this shell."
+sleep 5
+fi
+pip install virtualenv
+cd $pokebotpath
+git pull
+git submodule init
+git submodule foreach git pull origin master
+virtualenv .
+source bin/activate
+pip install -r requirements.txt
+echo "Start to make encrypt.so"
+wget http://pgoapi.com/pgoencrypt.tar.gz
+tar -xf pgoencrypt.tar.gz 
+cd pgoencrypt/src/ 
+make
+mv libencrypt.so $pokebotpath/encrypt.so
+cd ../..
+rm -rf pgoencrypt.tar.gz
+rm -rf pgoencrypt
+echo "Install complete. Starting to generate config.json."
+cd $pokebotpath
+read -p "1.google 2.ptc 
+" auth
+read -p "Input username 
+" username
+read -p "Input password 
+" -s password
+read -p "
+Input location 
+" location
+read -p "Input gmapkey 
+" gmapkey
+cp configs/config.json.example configs/config.json
+if [ "$auth" = "2" ]
+then
+sed -i "s/google/ptc/g" configs/config.json
+fi
+sed -i "s/YOUR_USERNAME/$username/g" configs/config.json
+sed -i "s/YOUR_PASSWORD/$password/g" configs/config.json
+sed -i "s/SOME_LOCATION/$location/g" configs/config.json
+sed -i "s/GOOGLE_MAPS_API_KEY/$gmapkey/g" configs/config.json
+echo "Edit configs/config.json to modify any other config. Use run.sh ./configs/config.json to run."
+exit 0

@@ -6,21 +6,32 @@ from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.tree_config_builder import ConfigException
 
-class UpdateTitleStats(BaseTask):
+
+class UpdateLiveStats(BaseTask):
     """
-    Periodically updates the terminal title to display stats about the bot.
+    Periodically displays stats about the bot in the terminal and/or in its title.
 
     Fetching some stats requires making API calls. If you're concerned about the amount of calls
     your bot is making, don't enable this worker.
 
     Example config :
     {
-        "type": "UpdateTitleStats",
+        "type": "UpdateLiveStats",
         "config": {
             "min_interval": 10,
-            "stats": ["login", "uptime", "km_walked", "level_stats", "xp_earned", "xp_per_hour"]
+            "stats": ["login", "uptime", "km_walked", "level_stats", "xp_earned", "xp_per_hour"],
+            "terminal_log": true,
+            "terminal_title": false
         }
     }
+
+    min_interval : The minimum interval at which the stats are displayed,
+                   in seconds (defaults to 120 seconds).
+                   The update interval cannot be accurate as workers run synchronously.
+    stats : An array of stats to display and their display order (implicitly),
+            see available stats below (defaults to []).
+    terminal_log : Logs the stats into the terminal (defaults to false).
+    terminal_title : Displays the stats into the terminal title (defaults to true).
 
     Available stats :
     - login : The account login (from the credentials).
@@ -36,6 +47,7 @@ class UpdateTitleStats(BaseTask):
     - stops_visited : The number of visited stops.
     - pokemon_encountered : The number of encountered pokemon.
     - pokemon_caught : The number of caught pokemon.
+    - captures_per_hour : The estimated number of pokemon captured per hour.
     - pokemon_released : The number of released pokemon.
     - pokemon_evolved : The number of evolved pokemon.
     - pokemon_unseen : The number of pokemon never seen before.
@@ -44,17 +56,8 @@ class UpdateTitleStats(BaseTask):
     - stardust_earned : The number of earned stardust since the bot started.
     - highest_cp_pokemon : The caught pokemon with the highest CP since the bot started.
     - most_perfect_pokemon : The most perfect caught pokemon since the bot started.
-
-    min_interval : The minimum interval at which the title is updated,
-                   in seconds (defaults to 10 seconds).
-                   The update interval cannot be accurate as workers run synchronously.
-    stats : An array of stats to display and their display order (implicitly),
-            see available stats above.
     """
     SUPPORTED_TASK_API_VERSION = 1
-
-    DEFAULT_MIN_INTERVAL = 10
-    DEFAULT_DISPLAYED_STATS = []
 
     def __init__(self, bot, config):
         """
@@ -64,43 +67,78 @@ class UpdateTitleStats(BaseTask):
         :param config: The task configuration.
         :type config: dict
         """
-        super(UpdateTitleStats, self).__init__(bot, config)
+        super(UpdateLiveStats, self).__init__(bot, config)
 
         self.next_update = None
-        self.min_interval = self.DEFAULT_MIN_INTERVAL
-        self.displayed_stats = self.DEFAULT_DISPLAYED_STATS
 
-        self._process_config()
+        self.min_interval = int(self.config.get('min_interval', 120))
+        self.displayed_stats = self.config.get('stats', [])
+        self.terminal_log = bool(self.config.get('terminal_log', False))
+        self.terminal_title = bool(self.config.get('terminal_title', True))
+
+        self.bot.event_manager.register_event('log_stats', parameters=('stats',))
 
     def initialize(self):
         pass
 
     def work(self):
         """
-        Updates the title if necessary.
+        Displays the stats if necessary.
         :return: Always returns WorkerResult.SUCCESS.
         :rtype: WorkerResult
         """
         if not self._should_display():
             return WorkerResult.SUCCESS
-        title = self._get_stats_title(self._get_player_stats())
-        # If title is empty, it couldn't be generated.
-        if not title:
+        line = self._get_stats_line(self._get_player_stats())
+        # If line is empty, it couldn't be generated.
+        if not line:
             return WorkerResult.SUCCESS
-        self._update_title(title, _platform)
+
+        if self.terminal_title:
+            self._update_title(line, _platform)
+
+        if self.terminal_log:
+            self._log_on_terminal(line)
         return WorkerResult.SUCCESS
 
     def _should_display(self):
         """
-        Returns a value indicating whether the title should be updated.
-        :return: True if the title should be updated; otherwise, False.
+        Returns a value indicating whether the stats should be displayed.
+        :return: True if the stats should be displayed; otherwise, False.
         :rtype: bool
         """
+        if not self.terminal_title and not self.terminal_log:
+            return False
         return self.next_update is None or datetime.now() >= self.next_update
+
+    def _compute_next_update(self):
+        """
+        Computes the next update datetime based on the minimum update interval.
+        :return: Nothing.
+        :rtype: None
+        """
+        self.next_update = datetime.now() + timedelta(seconds=self.min_interval)
+
+    def _log_on_terminal(self, stats):
+        """
+        Logs the stats into the terminal using an event.
+        :param stats: The stats to display.
+        :type stats: string
+        :return: Nothing.
+        :rtype: None
+        """
+        self.emit_event(
+            'log_stats',
+            formatted="{stats}",
+            data={
+                'stats': stats
+            }
+        )
+        self._compute_next_update()
 
     def _update_title(self, title, platform):
         """
-        Updates the window title using different methods, according to the given platform
+        Updates the window title using different methods, according to the given platform.
         :param title: The new window title.
         :type title: string
         :param platform: The platform string.
@@ -109,6 +147,7 @@ class UpdateTitleStats(BaseTask):
         :rtype: None
         :raise: RuntimeError: When the given platform isn't supported.
         """
+
         if platform == "linux" or platform == "linux2" or platform == "cygwin":
             stdout.write("\x1b]2;{}\x07".format(title))
             stdout.flush()
@@ -116,22 +155,12 @@ class UpdateTitleStats(BaseTask):
             stdout.write("\033]0;{}\007".format(title))
             stdout.flush()
         elif platform == "win32":
-            ctypes.windll.kernel32.SetConsoleTitleA(title)
+            ctypes.windll.kernel32.SetConsoleTitleA(title.encode())
         else:
             raise RuntimeError("unsupported platform '{}'".format(platform))
+        self._compute_next_update()
 
-        self.next_update = datetime.now() + timedelta(seconds=self.min_interval)
-
-    def _process_config(self):
-        """
-        Fetches the configuration for this worker and stores the values internally.
-        :return: Nothing.
-        :rtype: None
-        """
-        self.min_interval = int(self.config.get('min_interval', self.DEFAULT_MIN_INTERVAL))
-        self.displayed_stats = self.config.get('stats', self.DEFAULT_DISPLAYED_STATS)
-
-    def _get_stats_title(self, player_stats):
+    def _get_stats_line(self, player_stats):
         """
         Generates a stats string with the given player stats according to the configuration.
         :return: A string containing human-readable stats, ready to be displayed.
@@ -164,6 +193,7 @@ class UpdateTitleStats(BaseTask):
         stops_visited = metrics.visits['latest'] - metrics.visits['start']
         pokemon_encountered = metrics.num_encounters()
         pokemon_caught = metrics.num_captures()
+        captures_per_hour = int(metrics.captures_per_hour())
         pokemon_released = metrics.releases
         pokemon_evolved = metrics.num_evolutions()
         pokemon_unseen = metrics.num_new_mons()
@@ -193,6 +223,7 @@ class UpdateTitleStats(BaseTask):
             'stops_visited': 'Visited {:,} stops'.format(stops_visited),
             'pokemon_encountered': 'Encountered {:,} pokemon'.format(pokemon_encountered),
             'pokemon_caught': 'Caught {:,} pokemon'.format(pokemon_caught),
+            'captures_per_hour': '{:,} pokemon/h'.format(captures_per_hour),
             'pokemon_released': 'Released {:,} pokemon'.format(pokemon_released),
             'pokemon_evolved': 'Evolved {:,} pokemon'.format(pokemon_evolved),
             'pokemon_unseen': 'Encountered {} new pokemon'.format(pokemon_unseen),
@@ -221,9 +252,9 @@ class UpdateTitleStats(BaseTask):
             return available_stats[stat]
 
         # Map stats the user wants to see to available stats and join them with pipes.
-        title = ' | '.join(map(get_stat, self.displayed_stats))
+        line = ' | '.join(map(get_stat, self.displayed_stats))
 
-        return title
+        return line
 
     def _get_player_stats(self):
         """

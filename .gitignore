@@ -100,6 +100,7 @@ share/
 
 # PyCharm IDE settings
 .idea/
+*.iml
 
 # Personal load details
 src/
@@ -127,3 +128,5 @@ include/
 # Pip check file
 pip-selfcheck.json
 user_web_catchable
+# Some love for the vim users
+.*.sw*

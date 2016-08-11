@@ -17,4 +17,4 @@ from follow_spiral import FollowSpiral
 from collect_level_up_reward import CollectLevelUpReward
 from follow_cluster import FollowCluster
 from sleep_schedule import SleepSchedule
-from update_title_stats import UpdateTitleStats
+from update_live_stats import UpdateLiveStats

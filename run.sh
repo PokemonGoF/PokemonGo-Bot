@@ -1,18 +1,22 @@
 #!/usr/bin/env bash
-
-# Starts PokemonGo-Bot
-config=""
-
+pokebotpath=$(cd "$(dirname "$0")"; pwd)
+filename=""
 if [ ! -z $1 ]; then
-    config=$1
+filename=$1
 else
-    config="./configs/config.json"
-    if [ ! -f ${config} ]; then
-        echo -e "There's no ./configs/config.json file"
-        echo -e "Please create one or use another config file"
-        echo -e "./run.sh [path/to/config/file]"
-        exit 1
-    fi
+filename="./configs/config.json"
 fi
 
-python pokecli.py --config ${config}
+if [ ! -f "$filename" ]; then
+echo "There's no "$filename" file. use setup.sh -config to creat one."
+fi
+
+while true
+do
+cd $pokebotpath
+python pokecli.py -cf $filename
+echo `date`" Pokebot "$*" Stopped." 
+read -p "Press any button or wait 20 seconds to continue.
+" -r -s -n1 -t 20
+done
+exit 0

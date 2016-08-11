@@ -41,8 +41,15 @@ from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingE
 from geopy.exc import GeocoderQuotaExceeded
 
 from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
+from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.health_record import BotEvent
 from pokemongo_bot.plugin_loader import PluginLoader
+
+try:
+    from demjson import jsonlint
+except ImportError:
+    # Run `pip install -r requirements.txt` to fix this
+    jsonlint = None
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -106,7 +113,7 @@ def main():
                     'api_error',
                     sender=bot,
                     level='info',
-                    formatted='Log logged in, reconnecting in {:s}'.format(wait_time)
+                    formatted='Log logged in, reconnecting in {:d}'.format(wait_time)
                 )
                 time.sleep(wait_time)
             except ServerBusyOrOfflineException:
@@ -160,22 +167,34 @@ def report_summary(bot):
 
 def init_config():
     parser = argparse.ArgumentParser()
-    config_file = "configs/config.json"
+    config_file = os.path.join(_base_dir, 'configs', 'config.json')
     web_dir = "web"
 
     # If config file exists, load variables from json
     load = {}
 
+    def _json_loader(filename):
+        try:
+            with open(filename, 'rb') as data:
+                load.update(json.load(data))
+        except ValueError:
+            if jsonlint:
+                with open(filename, 'rb') as data:
+                    lint = jsonlint()
+                    rc = lint.main(['-v', filename])
+
+            logger.critical('Error with configuration file')
+            sys.exit(-1)
+
     # Select a config file code
     parser.add_argument("-cf", "--config", help="Config File to use")
     config_arg = parser.parse_known_args() and parser.parse_known_args()[0].config or None
+
     if config_arg and os.path.isfile(config_arg):
-        with open(config_arg) as data:
-            load.update(json.load(data))
+        _json_loader(config_arg)
     elif os.path.isfile(config_file):
         logger.info('No config argument specified, checking for /configs/config.json')
-        with open(config_file) as data:
-            load.update(json.load(data))
+        _json_loader(config_file)
     else:
         logger.info('Error: No /configs/config.json or specified config')
 
@@ -314,15 +333,6 @@ def init_config():
     add_config(
         parser,
         load,
-        short_flag="-ec",
-        long_flag="--evolve_captured",
-        help="(Ad-hoc mode) Pass \"all\" or a list of pokemon to evolve (e.g., \"Pidgey,Weedle,Caterpie\"). Bot will attempt to evolve all the pokemon captured!",
-        type=str,
-        default=[]
-    )
-    add_config(
-        parser,
-        load,
         short_flag="-rt",
         long_flag="--reconnecting_timeout",
         help="Timeout between reconnecting if error occured (in minutes, e.g. 15)",
@@ -380,6 +390,59 @@ def init_config():
         type=float,
         default=5.0
     )
+    add_config(
+        parser,
+        load,
+        long_flag="--logging_color",
+        help="If logging_color is set to true, colorized logging handler will be used",
+        type=bool,
+        default=True
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-cte",
+        long_flag="--catch_throw_parameters.excellent_rate",
+        help="Define the odd of performing an excellent throw",
+        type=float,
+        default=1
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-ctg",
+        long_flag="--catch_throw_parameters.great_rate",
+        help="Define the odd of performing a great throw",
+        type=float,
+        default=0
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-ctn",
+        long_flag="--catch_throw_parameters.nice_rate",
+        help="Define the odd of performing a nice throw",
+        type=float,
+        default=0
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-ctm",
+        long_flag="--catch_throw_parameters.normal_rate",
+        help="Define the odd of performing a normal throw",
+        type=float,
+        default=0
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-cts",
+        long_flag="--catch_throw_parameters.spin_success_rate",
+        help="Define the odds of performing a spin throw (Value between 0 (never) and 1 (always))",
+        type=float,
+        default=1
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()
@@ -432,12 +495,8 @@ def init_config():
             task_configuration_error('{}.{}'.format(outer, inner))
             return None
 
-    if (config.evolve_captured
-        and (not isinstance(config.evolve_captured, str)
-             or str(config.evolve_captured).lower() in ["true", "false"])):
-        parser.error('"evolve_captured" should be list of pokemons: use "all" or "none" to match all ' +
-                     'or none of the pokemons, or use a comma separated list such as "Pidgey,Weedle,Caterpie"')
-        return None
+    if "evolve_captured" in load:
+        logger.warning('The evolve_captured argument is no longer supported. Please use the EvolvePokemon task instead')
 
     if not (config.location or config.location_cache):
         parser.error("Needs either --use-location-cache or --location.")
@@ -461,9 +520,6 @@ def init_config():
     except OSError:
         if not os.path.isdir(web_dir):
             raise
-
-    if config.evolve_captured and isinstance(config.evolve_captured, str):
-        config.evolve_captured = [str(pokemon_name).strip() for pokemon_name in config.evolve_captured.split(',')]
 
     fix_nested_config(config)
     return config

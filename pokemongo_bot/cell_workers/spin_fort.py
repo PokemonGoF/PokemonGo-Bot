@@ -15,20 +15,24 @@ from utils import distance, format_time, fort_details
 class SpinFort(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
+    def initialize(self):
+        self.ignore_item_count = self.config.get("ignore_item_count", False)
+
     def should_run(self):
-        if not self.bot.has_space_for_loot():
+        if not self.bot.has_space_for_loot() and not self.ignore_item_count:
             self.emit_event(
                 'inventory_full',
-                formatted="Not moving to any forts as there aren't enough space. You might want to change your config to recycle more items if this message appears consistently."
+                formatted="Inventory is full. You might want to change your config to recycle more items if this message appears consistently."
             )
-            return False
-        return True
+        return self.ignore_item_count or self.bot.has_space_for_loot()
 
     def work(self):
-        fort = self.get_fort_in_range()
+        forts = self.get_forts_in_range()
 
-        if not self.should_run() or fort is None:
+        if not self.should_run() or len(forts) == 0:
             return WorkerResult.SUCCESS
+
+        fort = forts[0]
 
         lat = fort['latitude']
         lng = fort['longitude']
@@ -104,10 +108,11 @@ class SpinFort(BaseTask):
                         data={'pokestop': fort_name, 'minutes_left': minutes_left}
                     )
             elif spin_result == 4:
-                self.emit_event(
-                    'inventory_full',
-                    formatted="Inventory is full!"
-                )
+                if not self.ignore_item_count:
+                    self.emit_event(
+                        'inventory_full',
+                        formatted="Inventory is full!"
+                    )
             else:
                 self.emit_event(
                     'unknown_spin_result',
@@ -132,28 +137,28 @@ class SpinFort(BaseTask):
                     )
                 else:
                     self.bot.fort_timeouts[fort["id"]] = (time.time() + 300) * 1000  # Don't spin for 5m
-                return 11
+                return WorkerResult.ERROR
         sleep(2)
-        return 0
 
-    def get_fort_in_range(self):
+        if len(forts) > 1:
+            return WorkerResult.RUNNING
+
+        return WorkerResult.SUCCESS
+
+    def get_forts_in_range(self):
         forts = self.bot.get_forts(order_by_distance=True)
 
-        forts = filter(lambda x: x["id"] not in self.bot.fort_timeouts, forts)
+        for fort in forts:
+            if 'cooldown_complete_timestamp_ms' in fort:
+                self.bot.fort_timeouts[fort["id"]] = fort['cooldown_complete_timestamp_ms']
+                forts.remove(fort)
 
-        if len(forts) == 0:
-            return None
-
-        fort = forts[0]
-
-        distance_to_fort = distance(
+        forts = filter(lambda fort: fort["id"] not in self.bot.fort_timeouts, forts)
+        forts = filter(lambda fort: distance(
             self.bot.position[0],
             self.bot.position[1],
             fort['latitude'],
             fort['longitude']
-        )
+        ) <= Constants.MAX_DISTANCE_FORT_IS_REACHABLE, forts)
 
-        if distance_to_fort <= Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
-            return fort
-
-        return None
+        return forts
