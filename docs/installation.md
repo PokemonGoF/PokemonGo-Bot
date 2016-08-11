@@ -7,6 +7,18 @@
 - [docker](https://docs.docker.com/engine/installation/) (Optional) - [how to setup after installation](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/How-to-run-with-Docker)
 - [protobuf 3](https://github.com/google/protobuf) (OS Dependent, see below)
 
+#Linux/Mac Automatic installation
+### Easy installation (automatic, linux only)
+1. Run setup.sh -e
+2. Run setup.sh -i
+3. Run setup.sh -c
+
+### To update
+1. Run setup.sh -r
+2. Run setup.sh -u
+
+
+# Manual installation
 ### Protobuf 3 installation
 
 - OS X:  `brew update && brew install --devel protobuf`
