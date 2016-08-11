@@ -15,25 +15,17 @@ pip install -r requirements.txt
 function Pokebotencrypt () {
 echo "Start to make encrypt.so"
 if [ "$(uname)" == "Darwin" ]; then #Mac platform
-    curl -O http://pgoapi.com/pgoencrypt.tar.gz  
-    tar -xf pgoencrypt.tar.gz 
-    cd pgoencrypt/src/ 
-    make
-    mv libencrypt.so $pokebotpath/encrypt.so
-    cd ../..
-    rm -rf pgoencrypt.tar.gz
-    rm -rf pgoencrypt
+    curl -O http://pgoapi.com/pgoencrypt.tar.gz
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then #GNU/Linux platform
     wget http://pgoapi.com/pgoencrypt.tar.gz
-    tar -xf pgoencrypt.tar.gz 
-    cd pgoencrypt/src/ 
-    make
-    mv libencrypt.so $pokebotpath/encrypt.so
-    cd ../..
-    rm -rf pgoencrypt.tar.gz
-    rm -rf pgoencrypt
 fi
-
+tar -xf pgoencrypt.tar.gz 
+cd pgoencrypt/src/ 
+make
+mv libencrypt.so $pokebotpath/encrypt.so
+cd ../..
+rm -rf pgoencrypt.tar.gz
+rm -rf pgoencrypt
 }
 
 function Pokebotconfig () {
