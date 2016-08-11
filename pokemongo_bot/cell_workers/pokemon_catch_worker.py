@@ -98,6 +98,10 @@ class PokemonCatchWorker(BaseTask):
                 'cp': pokemon.cp,
                 'iv': pokemon.iv,
                 'iv_display': pokemon.iv_display,
+                'encounter_id': self.pokemon['encounter_id'],
+                'latitude': self.pokemon['latitude'],
+                'longitude': self.pokemon['longitude'],
+                'pokemon_id': pokemon.num
             }
         )
 
@@ -247,7 +251,7 @@ class PokemonCatchWorker(BaseTask):
                     data={
                         'berry_name': self.item_list[str(berry_id)],
                         'ball_name': self.item_list[str(current_ball)],
-                        'new_catch_rate': self._pct(catch_rate_by_ball[current_ball])
+                        'new_catch_rate': self._pct(new_catch_rate_by_ball[current_ball])
                     }
                 )
 
@@ -370,7 +374,13 @@ class PokemonCatchWorker(BaseTask):
                 self.emit_event(
                     'pokemon_vanished',
                     formatted='{pokemon} vanished!',
-                    data={'pokemon': pokemon.name}
+                    data={
+                        'pokemon': pokemon.name,
+                        'encounter_id': self.pokemon['encounter_id'],
+                        'latitude': self.pokemon['latitude'],
+                        'longitude': self.pokemon['longitude'],
+                        'pokemon_id': pokemon.num
+                    }
                 )
                 if self._pct(catch_rate_by_ball[current_ball]) == 100:
                     self.bot.softban = True
@@ -386,7 +396,11 @@ class PokemonCatchWorker(BaseTask):
                         'cp': pokemon.cp,
                         'iv': pokemon.iv,
                         'iv_display': pokemon.iv_display,
-                        'exp': sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
+                        'exp': sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp']),
+                        'encounter_id': self.pokemon['encounter_id'],
+                        'latitude': self.pokemon['latitude'],
+                        'longitude': self.pokemon['longitude'],
+                        'pokemon_id': pokemon.num
                     }
                 )
 

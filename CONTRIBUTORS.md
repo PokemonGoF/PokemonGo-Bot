@@ -59,3 +59,6 @@
  * nikhil-pandey
  * thebigjc
  * JaapMoolenaar
+ * eevee-github
+ * g0vanish
+ * cmezh
