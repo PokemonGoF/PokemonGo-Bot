@@ -105,8 +105,8 @@ class PokemonCatchWorker(BaseTask):
             }
         )
 
-        # simulate app
-        sleep(3)
+        if self.bot.config.enable_app_emulation_delay:
+            sleep(3)
 
         # check for VIP pokemon
         is_vip = self._is_vip_pokemon(pokemon)
@@ -118,8 +118,8 @@ class PokemonCatchWorker(BaseTask):
         catch_rate_by_ball = [0] + response['capture_probability']['capture_probability']  # offset so item ids match indces
         self._do_catch(pokemon, encounter_id, catch_rate_by_ball, is_vip=is_vip)
 
-        # simulate app
-        time.sleep(5)
+        if self.bot.config.enable_app_emulation_delay:
+            time.sleep(5)
 
     def create_encounter_api_call(self):
         encounter_id = self.pokemon['encounter_id']

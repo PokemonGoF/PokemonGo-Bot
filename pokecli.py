@@ -404,6 +404,15 @@ def init_config():
         default=True
     )
 
+    add_config(
+        parser,
+        load,
+        long_flag="--enable_app_emulation_delay",
+        help="If enable_app_emulation_delay is set to true, the bot will sleep between actions as if you were using the real app",
+        type=bool,
+        default=False
+    )
+
     # Start to parse other attrs
     config = parser.parse_args()
     if not config.username and 'username' not in load:
