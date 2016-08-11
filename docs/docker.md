@@ -1,4 +1,12 @@
-Start by downloading for your platform: [Mac](https://www.docker.com/products/docker#/mac), [Windows](https://www.docker.com/products/docker#/windows), or [Linux](https://www.docker.com/products/docker#/linux). Once you have Docker installed, simply create the various config.json files for your different accounts (e.g. `configs/config-account1.json`) and then create a Docker image for PokemonGo-Bot using the Dockerfile in this repo.
+Start by downloading for your platform: [Mac](https://www.docker.com/products/docker#/mac), [Windows](https://www.docker.com/products/docker#/windows), or [Linux](https://www.docker.com/products/docker#/linux). Once you have Docker installed, simply create the various config.json files for your different accounts (e.g. `configs/config-account1.json`) and then create a Docker image for PokemonGo-Bot using the Dockerfile in this [repo](https://hub.docker.com/r/svlentink/pokemongo-bot/).
+
+#Automatic setup
+Use this docker hub url: https://hub.docker.com/r/svlentink/pokemongo-bot/
+```
+docker pull svlentink/pokemongo-bot
+```
+
+#Manual setup
 ```
 cd PokemonGo-Bot
 docker build -t pokemongo-bot .
