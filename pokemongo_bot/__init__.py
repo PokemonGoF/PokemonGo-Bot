@@ -455,6 +455,7 @@ class PokemonGoBot(object):
             'move_to_map_pokemon_teleport_back',
             parameters=('last_lat', 'last_lon')
         )
+        self.event_manager.register_event('use_incense')        
 
     def tick(self):
         self.health_record.heartbeat()
@@ -1002,10 +1003,9 @@ class PokemonGoBot(object):
             pass
 
     def update_web_location_worker(self):
-        pass
-        # while True:
-        #     self.web_update_queue.get()
-        #     self.update_web_location()
+        while True:
+            self.web_update_queue.get()
+            self.update_web_location()
 
     def get_inventory_count(self, what):
         response_dict = self.get_inventory()
