@@ -31,7 +31,7 @@ from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from pokemongo_bot.base_dir import _base_dir
 from worker_result import WorkerResult
 from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
-from inventory import init_inventory
+from inventory import init_inventory,refresh_inventory
 from sys import platform as _platform
 import struct
 
@@ -780,6 +780,7 @@ class PokemonGoBot(object):
         self.logger.info('')
 
     def use_lucky_egg(self):
+        inventory.refresh_inventory()
         return self.api.use_item_xp_boost(item_id=301)
 
     def get_inventory(self):

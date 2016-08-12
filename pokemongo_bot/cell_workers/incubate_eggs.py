@@ -1,6 +1,6 @@
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.base_task import BaseTask
-
+from pokemongo_bot import inventory
 
 class IncubateEggs(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -169,6 +169,7 @@ class IncubateEggs(BaseTask):
         xp = result.get('experience_awarded', "error")
         sleep(self.hatching_animation_delay)
         self.bot.latest_inventory = None
+        inventory.refresh_inventory()
         try:
             pokemon_data = self._check_inventory(pokemon_ids)
             for pokemon in pokemon_data:
