@@ -55,7 +55,7 @@ if [ -f /etc/debian_version ]
 then
 echo "You are on Debian/Ubuntu"
 sudo apt-get update
-sudo apt-get -y install python python-pip python-dev build-essential git python-protobuf virtualenv 
+sudo apt-get -y install python python-pip python-dev build-essential git virtualenv 
 elif [ -f /etc/redhat-release ]
 then
 echo "You are on CentOS/RedHat"
