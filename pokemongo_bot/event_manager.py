@@ -23,7 +23,7 @@ class EventManager(object):
 
     def __init__(self, *handlers):
         self._registered_events = dict()
-        self._handlers = handlers or []
+        self._handlers = list(handlers) or []
 
     def event_report(self):
         for event, parameters in self._registered_events.iteritems():
