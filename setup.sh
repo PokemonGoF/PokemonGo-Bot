@@ -10,7 +10,7 @@ git submodule update --init --recursive
 git submodule foreach git pull origin master
 virtualenv .
 source bin/activate
-pip install -r requirements.txt
+pip2 install -r requirements.txt
 }
 
 function Pokebotencrypt () {
@@ -76,7 +76,7 @@ echo "Please check if you have  python pip protobuf gcc make  installed on your 
 echo "Wait 5 seconds to continue or Use ctrl+c to interrupt this shell."
 sleep 5
 fi
-sudo pip install virtualenv
+sudo -H pip2 install virtualenv
 Pokebotupdate
 Pokebotencrypt
 echo "Install complete. Starting to generate config.json."
