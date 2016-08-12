@@ -42,9 +42,9 @@ We do recommend Windows users to use [Docker](#docker) this will work much easie
 1. Download `PokemonGo-Bot-install.bat` file from [HERE](https://raw.githubusercontent.com/nivong/PokemonGo-Bot/dev/windows%20bat/PokemonGo-Bot-Install.bat)
 2. Run `PokemonGo-Bot-install.bat`
 After that has done the bot will be installed
-4. Run `PokemonGo-Bot-StartBot.bat`
+3. Run `PokemonGo-Bot-StartBot.bat`
 This will start the bot itself
-OPTIONAL: 5. Run `PokemonGo-Bot-StartServer.bat`
+4. Run `PokemonGo-Bot-StartServer.bat`
 This will start the web interface and is optional stap
 
 ### To update the bot
