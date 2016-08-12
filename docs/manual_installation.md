@@ -19,7 +19,7 @@ sudo apt-get install build-essential autoconf libtool pkg-config make python-dev
 brew install --devel protobuf
 brew install  autoconf libtool pkg-config wget git
 ```
-####Mac + Linux install
+####Mac + Linux installation
 make shure you installed everything above
 
 - get pip for pyton2.7
