@@ -22,27 +22,27 @@ brew install  autoconf libtool pkg-config wget git
 ####Mac + Linux installation
 make shure you installed everything above
 
-- get pip for pyton2.7
+-get pip for pyton2.7
 ```bash
 wget https://bootstrap.pypa.io/get-pip.py
 python2.7 get-pip.py
 rm -f get-pip.py
 ```
-- switch to the location where you want to install it
-- get git Repository and switch into the downloaded Folder
-- 
+-switch to the location where you want to install it
+-get git Repository and switch into the downloaded Folder
+
 (Please keep in mind that master is not always up-to-date whereas 'dev' is. In the installation note below change `master` to `dev` if you want to get and use the latest version.)
 ```bash
 git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot  
 cd PokemonGo-Bot
 ```
-- install virtualenv and activate it
+-install virtualenv and activate it
 ```bash
 pip install virtualenv
 virtualenv .
 ```
-- install the requirements and get the needen encryption.so
-- 
+-install the requirements and get the needen encryption.so
+
 (we move `encrypt.so` to the root folder of the Bot so no need to edit the config regarding that)
 ```bash
 pip install -r requirements.txt
@@ -53,23 +53,23 @@ make
 cd ../../
 mv pgoencrypt/src/libencrypt.so encrypt.so
 ```
-- copy and edit the config
+-copy and edit the config
 (after copying it you can use any editor you like if you don't like `vi`) 
 ```bash
 cp configs/config.json.example configs/config.json
 vi configs/config.json
 ```
-- make shure your git repo is up to date
+-make shure your git repo is up to date
 (make shure you are in the bot folder and activated virtualenv)
 ```bash
 git pull
 pip install -r requirements.txt
 ```
-- finaly start the bot
+-finaly start the bot
 ```bash
 ./run.sh configs/config.json
 ```
-- after reboot or closing the terminal at every new start go into the folder of the PokemonGo-Bot by going into the folder where you startet installing it an then
+-after reboot or closing the terminal at every new start go into the folder of the PokemonGo-Bot by going into the folder where you startet installing it an then
 ```bash
 cd PokemonGo-Bot
 #activate virtualenv and start
@@ -78,8 +78,8 @@ source bin/activate
 ```
 if you are on a different Linux OS you maybe have to adapt things like:
 
-- package mananger (for example yum instead of apt-get)
-- package names
+-package mananger (for example yum instead of apt-get)
+-package names
 
 
 ### Windows
