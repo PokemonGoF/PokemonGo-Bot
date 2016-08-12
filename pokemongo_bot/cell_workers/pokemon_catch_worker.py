@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import json
 import time
 from random import random
 from pokemongo_bot import inventory
@@ -210,7 +210,6 @@ class PokemonCatchWorker(BaseTask):
                 'berry_count': berry_count
             }
         )
-
         response_dict = self.request_use_item_capture(berry_id, encounter_id)
 
         responses = response_dict['responses']
@@ -259,7 +258,7 @@ class PokemonCatchWorker(BaseTask):
                 encounter_id=encounter_id,
                 spawn_point_id=self.spawn_point_guid
         )
-        if response_dict and response_dict['responses']['status_code'] == USE_ITEM_CAPTURE_STATUS_SUCCESS:
+        if response_dict and response_dict['status_code'] == USE_ITEM_CAPTURE_STATUS_SUCCESS:
             inventory.items().get(berry_id).remove(1)
         return response_dict
 
@@ -271,7 +270,6 @@ class PokemonCatchWorker(BaseTask):
 
         item_inventory = inventory.items()
         berry_count = item_inventory.get(berry_id).count
-
         while True:
 
             # find lowest available ball
