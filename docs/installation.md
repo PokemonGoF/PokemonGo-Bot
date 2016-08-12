@@ -69,7 +69,7 @@ wget https://bootstrap.pypa.io/get-pip.py
 python2.7 get-pip.py
 rm -f get-pip.py
 #get git repo
-git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot  
+git clone --recursive -b dev https://github.com/PokemonGoF/PokemonGo-Bot  
 cd PokemonGo-Bot
 #install and enable virtualenv
 #You need to make shure your python version and virtualenv verison work together
@@ -129,7 +129,7 @@ wget https://bootstrap.pypa.io/get-pip.py
 python2.7 get-pip.py
 rm -f get-pip.py
 #get git repo
-git clone --recursive -b dev https://github.com/PokemonGoF/PokemonGo-Bot  
+git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot  
 cd PokemonGo-Bot
 #install and enable virtualenv
 #You need to make shure your python version and virtualenv verison work together
