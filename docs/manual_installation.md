@@ -1,8 +1,7 @@
 # Manual installation
 
 ## Table of Contents
-- [Linux Installation](#linux)
-- [Mac Installation](#mac)
+- [Linux and Mac Installation](#linux-and-mac)
 - [Windows](#windows)
 
 ### Linux and Mac
@@ -34,7 +33,7 @@ wget https://bootstrap.pypa.io/get-pip.py
 python2.7 get-pip.py
 rm -f get-pip.py
 ```
-####
+
 - switch to the location where you want to install it
 - get git Repository and switch into the downloaded Folder
 
@@ -92,12 +91,7 @@ source bin/activate
 
 
 ### Windows
-WIP
-
-##### Protobuf 3
-Download protobuf 3.0: [here](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip) and unzip `bin/protoc.exe` into a folder in your PATH.
-
-##### Windows vista, 7, 8:
+#### Windows vista, 7, 8:
 Go to : http://pyyaml.org/wiki/PyYAML , download the right version for your pc and install it
 
 ##### Windows 10:
