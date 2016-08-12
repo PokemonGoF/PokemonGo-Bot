@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 import json
+import json
+import os
 import time
 
 from pgoapi.utilities import f2i
@@ -11,6 +13,7 @@ from pokemongo_bot.constants import Constants
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
+from pokemongo_bot.base_dir import _base_dir
 from utils import distance, format_time, fort_details
 
 SPIN_REQUEST_RESULT_SUCCESS = 1
@@ -26,7 +29,7 @@ class SpinFort(BaseTask):
         self.ignore_item_count = self.config.get("ignore_item_count", False)
 
     def should_run(self):
-        has_space_for_loot = inventory.items().has_space_for_loot()
+        has_space_for_loot = inventory.Items.has_space_for_loot()
         if not has_space_for_loot and not self.ignore_item_count:
             self.emit_event(
                 'inventory_full',

@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-import json
+
 import time
 from random import random
 from pokemongo_bot import inventory
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot.inventory import Pokemon
 from pokemongo_bot.worker_result import WorkerResult
-
-USE_ITEM_CAPTURE_STATUS_SUCCESS = 1
 
 CATCH_STATUS_SUCCESS = 1
 CATCH_STATUS_FAILED = 2
@@ -28,25 +27,6 @@ LOGIC_TO_FUNCTION = {
 }
 
 
-class Pokemon(object):
-
-    def __init__(self, pokemon_list, pokemon_data):
-        self.num = int(pokemon_data['pokemon_id'])
-        self.name = pokemon_list[int(self.num) - 1]['Name']
-        self.cp = pokemon_data['cp']
-        self.attack = pokemon_data.get('individual_attack', 0)
-        self.defense = pokemon_data.get('individual_defense', 0)
-        self.stamina = pokemon_data.get('individual_stamina', 0)
-
-    @property
-    def iv(self):
-        return round((self.attack + self.defense + self.stamina) / 45.0, 2)
-
-    @property
-    def iv_display(self):
-        return '{}/{}/{}'.format(self.attack, self.defense, self.stamina)
-
-
 class PokemonCatchWorker(BaseTask):
 
     def __init__(self, pokemon, bot):
@@ -56,7 +36,7 @@ class PokemonCatchWorker(BaseTask):
         self.position = bot.position
         self.config = bot.config
         self.pokemon_list = bot.pokemon_list
-        self.item_list = bot.item_list
+        self.inventory = inventory.items()
         self.spawn_point_guid = ''
         self.response_key = ''
         self.response_status_key = ''
@@ -86,7 +66,7 @@ class PokemonCatchWorker(BaseTask):
 
         # get pokemon data
         pokemon_data = response['wild_pokemon']['pokemon_data'] if 'wild_pokemon' in response else response['pokemon_data']
-        pokemon = Pokemon(self.pokemon_list, pokemon_data)
+        pokemon = Pokemon(pokemon_data)
 
         # skip ignored pokemon
         if not self._should_catch_pokemon(pokemon):
@@ -104,7 +84,7 @@ class PokemonCatchWorker(BaseTask):
                 'encounter_id': self.pokemon['encounter_id'],
                 'latitude': self.pokemon['latitude'],
                 'longitude': self.pokemon['longitude'],
-                'pokemon_id': pokemon.num
+                'pokemon_id': pokemon.pokemon_id
             }
         )
 
@@ -205,13 +185,17 @@ class PokemonCatchWorker(BaseTask):
             formatted='Catch rate of {catch_rate} with {ball_name} is low. Throwing {berry_name} (have {berry_count})',
             data={
                 'catch_rate': self._pct(catch_rate_by_ball[current_ball]),
-                'ball_name': self.item_list[str(current_ball)],
-                'berry_name': self.item_list[str(berry_id)],
+                'ball_name': self.inventory.get(current_ball).name,
+                'berry_name': self.inventory.get(berry_id).name,
                 'berry_count': berry_count
             }
         )
-        response_dict = self.request_use_item_capture(berry_id, encounter_id)
 
+        response_dict = self.api.use_item_capture(
+            item_id=berry_id,
+            encounter_id=encounter_id,
+            spawn_point_id=self.spawn_point_guid
+        )
         responses = response_dict['responses']
 
         if response_dict and response_dict['status_code'] == 1:
@@ -224,8 +208,8 @@ class PokemonCatchWorker(BaseTask):
                     'threw_berry',
                     formatted="Threw a {berry_name}! Catch rate with {ball_name} is now: {new_catch_rate}",
                     data={
-                        'berry_name': self.item_list[str(berry_id)],
-                        'ball_name': self.item_list[str(current_ball)],
+                        'berry_name': self.inventory.get(berry_id).name,
+                        'ball_name': self.inventory.get(current_ball).name,
                         'new_catch_rate': self._pct(new_catch_rate_by_ball[current_ball])
                     }
                 )
@@ -252,64 +236,79 @@ class PokemonCatchWorker(BaseTask):
 
         return new_catch_rate_by_ball
 
-    def request_use_item_capture(self, berry_id, encounter_id):
-        response_dict = self.api.use_item_capture(
-                item_id=berry_id,
-                encounter_id=encounter_id,
-                spawn_point_id=self.spawn_point_guid
-        )
-        if response_dict and response_dict['status_code'] == USE_ITEM_CAPTURE_STATUS_SUCCESS:
-            inventory.items().get(berry_id).remove(1)
-        return response_dict
-
     def _do_catch(self, pokemon, encounter_id, catch_rate_by_ball, is_vip=False):
         # settings that may be exposed at some point
+        """
+
+        :type pokemon: Pokemon
+        """
         berry_id = ITEM_RAZZBERRY
-        maximum_ball_id = ITEM_ULTRABALL if is_vip else ITEM_GREATBALL
+        maximum_ball = ITEM_ULTRABALL if is_vip else ITEM_GREATBALL
         ideal_catch_rate_before_throw = 0.9 if is_vip else 0.35
 
-        item_inventory = inventory.items()
-        berry_count = item_inventory.get(berry_id).count
+        berry_count = self.inventory.get(ITEM_RAZZBERRY).count
+        ball_count = {}
+        for ball_id in [ITEM_POKEBALL, ITEM_GREATBALL, ITEM_ULTRABALL]:
+            ball_count[ball_id] = self.inventory.get(ball_id).count
+
+        # use `min_ultraball_to_keep` from config if is not None
+        min_ultraball_to_keep = ball_count[ITEM_ULTRABALL]
+        if self.config.min_ultraball_to_keep is not None:
+            if self.config.min_ultraball_to_keep >= 0 and self.config.min_ultraball_to_keep < min_ultraball_to_keep:
+                min_ultraball_to_keep = self.config.min_ultraball_to_keep
+
         while True:
 
             # find lowest available ball
-            current_ball_id = ITEM_POKEBALL
-            while item_inventory.get(current_ball_id).count == 0 and current_ball_id < maximum_ball_id:
-                current_ball_id += 1
-            if item_inventory.get(current_ball_id).count == 0:
+            current_ball = ITEM_POKEBALL
+            while ball_count[current_ball] == 0 and current_ball < maximum_ball:
+                current_ball += 1
+            if ball_count[current_ball] == 0:
                 self.emit_event('no_pokeballs', formatted='No usable pokeballs found!')
-                break
+
+                # use untraball if there is no other balls with constraint to `min_ultraball_to_keep`
+                if maximum_ball != ITEM_ULTRABALL and ball_count[ITEM_ULTRABALL] > min_ultraball_to_keep:
+                    maximum_ball = ITEM_ULTRABALL
+                    continue
+                else:
+                    break
 
             # check future ball count
             num_next_balls = 0
-            next_ball_id = current_ball_id
-            while next_ball_id < maximum_ball_id:
-                next_ball_id += 1
-                num_next_balls += item_inventory.get(next_ball_id).count
+            next_ball = current_ball
+            while next_ball < maximum_ball:
+                next_ball += 1
+                num_next_balls += ball_count[next_ball]
 
             # check if we've got berries to spare
             berries_to_spare = berry_count > 0 if is_vip else berry_count > num_next_balls + 30
 
             # use a berry if we are under our ideal rate and have berries to spare
             used_berry = False
-            if catch_rate_by_ball[current_ball_id] < ideal_catch_rate_before_throw and berries_to_spare:
-                catch_rate_by_ball = self._use_berry(berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball_id)
-                berry_count -= 1
-                used_berry = True
+            if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and berries_to_spare:
+                new_catch_rate_by_ball = self._use_berry(berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball)
+                if new_catch_rate_by_ball != catch_rate_by_ball:
+                    catch_rate_by_ball = new_catch_rate_by_ball
+                    self.inventory.get(ITEM_RAZZBERRY).remove(1)
+                    berry_count -= 1
+                    used_berry = True
 
             # pick the best ball to catch with
-            best_ball_id = current_ball_id
-            while best_ball_id < maximum_ball_id:
-                best_ball_id += 1
-                if catch_rate_by_ball[current_ball_id] < ideal_catch_rate_before_throw and item_inventory.get(best_ball_id).count > 0:
+            best_ball = current_ball
+            while best_ball < maximum_ball:
+                best_ball += 1
+                if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and ball_count[best_ball] > 0:
                     # if current ball chance to catch is under our ideal rate, and player has better ball - then use it
-                    current_ball_id = best_ball_id
+                    current_ball = best_ball
 
             # if the rate is still low and we didn't throw a berry before, throw one
-            if catch_rate_by_ball[current_ball_id] < ideal_catch_rate_before_throw and berry_count > 0 and not used_berry:
-                catch_rate_by_ball = self._use_berry(berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball_id)
-                berry_count -= 1
-            
+            if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and berry_count > 0 and not used_berry:
+                new_catch_rate_by_ball = self._use_berry(berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball)
+                if new_catch_rate_by_ball != catch_rate_by_ball:
+                    catch_rate_by_ball = new_catch_rate_by_ball
+                    self.inventory.get(ITEM_RAZZBERRY).remove(1)
+                    berry_count -= 1
+
             # Randomize the quality of the throw
             # Default structure
             throw_parameters = {'normalized_reticle_size': 1.950,
@@ -321,17 +320,27 @@ class PokemonCatchWorker(BaseTask):
 
             # try to catch pokemon!
             # TODO : Log which type of throw we selected
+            ball_count[current_ball] -= 1
+            self.inventory.get(current_ball).remove(1)
             self.emit_event(
                 'threw_pokeball',
                 formatted='Used {ball_name}, with chance {success_percentage} ({count_left} left)',
                 data={
-                    'ball_name': self.item_list[str(current_ball_id)],
-                    'success_percentage': self._pct(catch_rate_by_ball[current_ball_id]),
-                    'count_left': item_inventory.get(current_ball_id).count
+                    'ball_name': self.inventory.get(current_ball).name,
+                    'success_percentage': self._pct(catch_rate_by_ball[current_ball]),
+                    'count_left': ball_count[current_ball]
                 }
             )
 
-            response_dict = self.request_throw_ball(current_ball_id, encounter_id, throw_parameters)
+            response_dict = self.api.catch_pokemon(
+                encounter_id=encounter_id,
+                pokeball=current_ball,
+                normalized_reticle_size=throw_parameters['normalized_reticle_size'],
+                spawn_point_id=self.spawn_point_guid,
+                hit_pokemon=1,
+                spin_modifier=throw_parameters['spin_modifier'],
+                normalized_hit_position=throw_parameters['normalized_hit_position']
+            )
 
             try:
                 catch_pokemon_status = response_dict['responses']['CATCH_POKEMON']['status']
@@ -361,12 +370,14 @@ class PokemonCatchWorker(BaseTask):
                         'pokemon_id': pokemon.num
                     }
                 )
-                if self._pct(catch_rate_by_ball[current_ball_id]) == 100:
+                if self._pct(catch_rate_by_ball[current_ball]) == 100:
                     self.bot.softban = True
 
             # pokemon caught!
             elif catch_pokemon_status == CATCH_STATUS_SUCCESS:
+                pokemon.id = response_dict['responses']['CATCH_POKEMON']['captured_pokemon_id']
                 self.bot.metrics.captured_pokemon(pokemon.name, pokemon.cp, pokemon.iv_display, pokemon.iv)
+                inventory.pokemons().add(pokemon)
                 self.emit_event(
                     'pokemon_caught',
                     formatted='Captured {pokemon}! [CP {cp}] [Potential {iv}] [{iv_display}] [+{exp} exp]',
@@ -379,12 +390,12 @@ class PokemonCatchWorker(BaseTask):
                         'encounter_id': self.pokemon['encounter_id'],
                         'latitude': self.pokemon['latitude'],
                         'longitude': self.pokemon['longitude'],
-                        'pokemon_id': pokemon.num
+                        'pokemon_id': pokemon.pokemon_id
                     }
                 )
 
                 # We could refresh here too, but adding 3 saves a inventory request
-                candy = inventory.candies(True).get(pokemon.num)
+                candy = inventory.candies(True).get(pokemon.pokemon_id)
                 self.emit_event(
                     'gained_candy',
                     formatted='You now have {quantity} {type} candy!',
@@ -397,24 +408,6 @@ class PokemonCatchWorker(BaseTask):
                 self.bot.softban = False
 
             break
-
-    def request_throw_ball(self, ball_id, encounter_id, throw_parameters):
-        response_dict = self.api.catch_pokemon(
-                encounter_id=encounter_id,
-                pokeball=ball_id,
-                normalized_reticle_size=throw_parameters['normalized_reticle_size'],
-                spawn_point_id=self.spawn_point_guid,
-                hit_pokemon=1,
-                spin_modifier=throw_parameters['spin_modifier'],
-                normalized_hit_position=throw_parameters['normalized_hit_position']
-        )
-        if response_dict:
-            inventory.items().get(ball_id).remove(1)
-        else:
-            # Not having a response from the server isn’t normal.
-            # Refreshing inventory since we can’t be sure whether or not the ball has been thrown
-            inventory.refresh_inventory()
-        return response_dict
 
     def generate_spin_parameter(self, throw_parameters):
         spin_success_rate = self.config.catch_throw_parameters_spin_success_rate

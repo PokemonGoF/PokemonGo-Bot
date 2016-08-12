@@ -23,7 +23,7 @@ class MoveToFort(BaseTask):
             self.ignore_item_count = True
 
     def should_run(self):
-        has_space_for_loot = inventory.items().has_space_for_loot()
+        has_space_for_loot = inventory.Items.has_space_for_loot()
         if not has_space_for_loot and not self.ignore_item_count:
             self.emit_event(
                 'inventory_full',
