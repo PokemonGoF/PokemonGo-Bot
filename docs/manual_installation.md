@@ -14,6 +14,12 @@ Ubuntu will be used for the Linux Example
 ```bash
 sudo apt-get install build-essential autoconf libtool pkg-config make python-dev python-protobuf python2.7 wget git
 ```
+####
+if you are on a different Linux OS you maybe have to adapt things like:
+
+- package mananger (for example yum instead of apt-get)
+- package names
+
 #####Mac
 ```bash
 brew install --devel protobuf
@@ -83,11 +89,6 @@ cd PokemonGo-Bot
 source bin/activate
 ./run.sh configs/config.json
 ```
-####
-if you are on a different Linux OS you maybe have to adapt things like:
-
-- package mananger (for example yum instead of apt-get)
-- package names
 
 
 ### Windows
