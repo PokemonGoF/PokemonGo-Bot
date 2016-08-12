@@ -1,7 +1,12 @@
 ### How do I start the application?
-After customizing your config.json files, cd to the PokemonGo-Bot folder and enter:
+After [installing] (https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/installation.md), in the root folder run the following command:
+### Linux
 ```
-$ python pokecli.py
+run.sh
+```
+### Windows
+```
+run.bat
 ```
 This will start the application.
 
