@@ -40,6 +40,8 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 * [MoveToMapPokemon](#sniping-movetolocation)
 * NicknamePokemon
   * `nickname_template`: Default `""` | See the [Pokemon Nicknaming](#pokemon-nicknaming) section for more details
+  * `dont_nickname_favorite`: Default `false` | Prevents renaming of favorited pokemons
+  * `good_attack_threshold`: Default `0.7` | Threshold for perfection of the attack in it's type *(0.0-1.0)* after which attack will be treated as good.<br>Used for `{fast_attack_char}`, `{charged_attack_char}`, `{attack_code}`  templates
 * RecycleItems
   * `item_filter`: Pass a list of unwanted [items (using their JSON codes)](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Item-ID's) to recycle when collected at a Pokestop
 * SpinFort
