@@ -94,7 +94,7 @@ source bin/activate
 ### Windows
 WIP
 
-##### Protobuf 3 installation Windows
+##### Protobuf 3
 Download protobuf 3.0: [here](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip) and unzip `bin/protoc.exe` into a folder in your PATH.
 
 ##### Windows vista, 7, 8:
