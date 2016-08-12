@@ -1,19 +1,12 @@
 # Manual installation
 
 ## Table of Contents
-- [Linux Installation](#Linux Installation)
+- [Linux Installation](#linux)
 - [Mac Installation](#mac)
 - [Windows](#windows)
 
-### Linux Installation
-####on the Example of Ubuntu
-(change dev to master for the lastest master version)
-
-if you are on a different Linux OS you maybe have to adapt things like:
-
-- package mananger (for example yum instead of apt-get)
-- package names
-
+### Linux
+####We use Ubuntu for the example
 ```bash
 ##install
 #change to root
@@ -71,8 +64,13 @@ source bin/activate
 ./run.sh configs/config.json
 ```
 
+if you are on a different Linux OS you maybe have to adapt things like:
 
-### Installation Mac
+- package mananger (for example yum instead of apt-get)
+- package names
+
+
+### Mac
 (change master to dev for the latest version)
 
 ```bash
