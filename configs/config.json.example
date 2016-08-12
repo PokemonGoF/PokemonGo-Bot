@@ -39,7 +39,10 @@
         }
       },
       {
-        "type": "TransferPokemon"
+        "type": "TransferPokemon",
+        "config": {
+          "min_empty_space": 15
+        }
       },
       {
         "type": "NicknamePokemon",

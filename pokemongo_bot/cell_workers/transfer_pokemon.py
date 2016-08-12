@@ -10,7 +10,16 @@ from pokemongo_bot.inventory import Pokemons
 class TransferPokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
+    def initialize(self):
+        self.min_empty_space = int(self.config.get('min_empty_space', 0))
+
+    def get_pokemon_slot_left(self):
+        return self.bot._player["max_pokemon_storage"] - (len(inventory.pokemons().all()) + len(inventory.pokemons().all_eggs()))
+
     def work(self):
+        if self.min_empty_space and self.get_pokemon_slot_left() >= self.min_empty_space:
+            return
+
         pokemon_groups = self._release_pokemon_get_groups()
         for pokemon_id, group in pokemon_groups.iteritems():
             pokemon_name = Pokemons.name_for(pokemon_id)
