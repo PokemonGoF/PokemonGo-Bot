@@ -305,7 +305,7 @@ class PokemonCatchWorker(BaseTask):
 
             # try to catch pokemon!
             ball_count = self.inventory.count_for(current_ball) - 1
-            self.inventory.decrement_count(current_ball)
+            self.inventory.update_local_count(current_ball, ball_count)
             self.emit_event(
                 'threw_pokeball',
                 formatted='Used {ball_name}, with chance {success_percentage} ({count_left} left)',
