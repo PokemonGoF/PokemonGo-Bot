@@ -22,5 +22,7 @@
     This will reset and makes sure you have no changes made to any code since it will overide it
 3. Rerun the bot `./run.sh`
 
+for manual installation please refer to [here](https://github.com/nivong/PokemonGo-Bot/blob/dev/docs/manual_installation.md)
+
 #Windows Automatic installation
 ###TBA
