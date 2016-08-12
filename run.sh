@@ -6,14 +6,13 @@ filename=$1
 else
 filename="./configs/config.json"
 fi
-
+cd $pokebotpath
+source bin/activate
 if [ ! -f "$filename" ]; then
-echo "There's no "$filename" file. use setup.sh -config to creat one."
+echo "There's no "$filename" file. Please use ./setup.sh -c to creat one."
 fi
-
 while true
 do
-cd $pokebotpath
 python pokecli.py -cf $filename
 echo `date`" Pokebot "$*" Stopped." 
 read -p "Press any button or wait 20 seconds to continue.
