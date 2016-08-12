@@ -386,8 +386,11 @@ class PokemonCatchWorker(BaseTask):
                     }
                 )
 
-                # We could refresh here too, but adding 3 saves a inventory request
-                candy = inventory.candies(True).get(pokemon.num)
+                # Need to refresh inventory to update our pokemons and candies
+                inventory.refresh_inventory()
+
+                candy = inventory.candies().get(pokemon.num)
+
                 self.emit_event(
                     'gained_candy',
                     formatted='You now have {quantity} {type} candy!',

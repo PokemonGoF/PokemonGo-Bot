@@ -341,6 +341,8 @@ class Pokemons(_BaseInventoryComponent):
         # makes caller's lives more difficult)
         return [p for p in super(Pokemons, self).all() if not isinstance(p, Egg)]
 
+    def all_eggs(self):
+        return [e for e in super(Pokemons, self).all() if isinstance(e, Egg)]
 
 #
 # Static Components
