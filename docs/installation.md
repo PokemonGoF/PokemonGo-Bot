@@ -39,12 +39,12 @@ We do recommend Windows users to use [Docker](#docker) this will work much easie
 - [Microsoft Visual C++ Compiler for Python 2.7](http://www.microsoft.com/en-us/download/details.aspx?id=44266)
 
 ###Easy Installation
-1. Go into the folder/dir named: Windows bot
+1. Download `PokemonGo-Bot-install.bat` file from [HERE](https://raw.githubusercontent.com/nivong/PokemonGo-Bot/dev/windows%20bat/PokemonGo-Bot-Install.bat)
 2. Run `PokemonGo-Bot-install.bat`
 After that has done the bot will be installed
-3. Run `PokemonGo-Bot-StartBot.bat`
+4. Run `PokemonGo-Bot-StartBot.bat`
 This will start the bot itself
-OPTIONAL: 4. Run `PokemonGo-Bot-StartServer.bat`
+OPTIONAL: 5. Run `PokemonGo-Bot-StartServer.bat`
 This will start the web interface and is optional stap
 
 ### To update the bot
