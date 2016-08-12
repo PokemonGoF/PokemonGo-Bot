@@ -1002,10 +1002,10 @@ class PokemonGoBot(object):
             pass
 
     def update_web_location_worker(self):
-        pass
-        # while True:
-        #     self.web_update_queue.get()
-        #     self.update_web_location()
+        #pass
+        while True:
+            self.web_update_queue.get()
+            self.update_web_location()
 
     def get_inventory_count(self, what):
         response_dict = self.get_inventory()
