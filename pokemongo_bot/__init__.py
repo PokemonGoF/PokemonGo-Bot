@@ -84,6 +84,7 @@ class PokemonGoBot(object):
         self._setup_event_system()
         self._setup_logging()
         self._setup_api()
+        self._load_recent_forts()
 
         random.seed()
 
@@ -417,15 +418,16 @@ class PokemonGoBot(object):
         # rename
         self.event_manager.register_event(
             'rename_pokemon',
-            parameters=(
-                'old_name', 'current_name'
-            )
+            parameters=('old_name', 'current_name',)
         )
         self.event_manager.register_event(
             'pokemon_nickname_invalid',
             parameters=('nickname',)
         )
-        self.event_manager.register_event('unset_pokemon_nickname')
+        self.event_manager.register_event(
+            'unset_pokemon_nickname',
+            parameters=('old_name',)
+        )
 
         # Move To map pokemon
         self.event_manager.register_event(
@@ -454,6 +456,18 @@ class PokemonGoBot(object):
         self.event_manager.register_event(
             'move_to_map_pokemon_teleport_back',
             parameters=('last_lat', 'last_lon')
+        )
+
+        # cached recent_forts
+        self.event_manager.register_event('loaded_cached_forts')
+        self.event_manager.register_event('cached_fort')
+        self.event_manager.register_event(
+            'no_cached_forts',
+            parameters=('path', )
+        )
+        self.event_manager.register_event(
+            'error_caching_forts',
+            parameters=('path', )
         )
 
     def tick(self):
@@ -750,7 +764,8 @@ class PokemonGoBot(object):
         self.logger.info(
             'PokeBalls: ' + str(items_stock[1]) +
             ' | GreatBalls: ' + str(items_stock[2]) +
-            ' | UltraBalls: ' + str(items_stock[3]))
+            ' | UltraBalls: ' + str(items_stock[3]) +
+            ' | MasterBalls: ' + str(items_stock[4]))
 
         self.logger.info(
             'RazzBerries: ' + str(items_stock[701]) +
@@ -1002,10 +1017,9 @@ class PokemonGoBot(object):
             pass
 
     def update_web_location_worker(self):
-        pass
-        # while True:
-        #     self.web_update_queue.get()
-        #     self.update_web_location()
+        while True:
+            self.web_update_queue.get()
+            self.update_web_location()
 
     def get_inventory_count(self, what):
         response_dict = self.get_inventory()
@@ -1093,3 +1107,42 @@ class PokemonGoBot(object):
         self.last_time_map_object = time.time()
 
         return self.last_map_object
+
+    def _load_recent_forts(self):
+        if not self.config.forts_cache_recent_forts:
+            return
+
+
+        cached_forts_path = os.path.join(_base_dir, 'data', 'recent-forts-%s.json' % self.config.username)
+        try:
+            # load the cached recent forts
+            with open(cached_forts_path) as f:
+                cached_recent_forts = json.load(f)
+
+            num_cached_recent_forts = len(cached_recent_forts)
+            num_recent_forts = len(self.recent_forts)
+
+            # Handles changes in max_circle_size
+            if not num_recent_forts:
+                self.recent_forts = []
+            elif num_recent_forts > num_cached_recent_forts:
+                self.recent_forts[-num_cached_recent_forts:] = cached_recent_forts
+            elif num_recent_forts < num_cached_recent_forts:
+                self.recent_forts = cached_recent_forts[-num_recent_forts:]
+            else:
+                self.recent_forts = cached_recent_forts
+
+            self.event_manager.emit(
+                'loaded_cached_forts',
+                sender=self,
+                level='debug',
+                formatted='Loaded cached forts...'
+            )
+        except IOError:
+            self.event_manager.emit(
+                'no_cached_forts',
+                sender=self,
+                level='debug',
+                formatted='Starting new cached forts for {path}',
+                data={'path': cached_forts_path}
+            )
