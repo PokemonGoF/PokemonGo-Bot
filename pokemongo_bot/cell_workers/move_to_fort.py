@@ -14,13 +14,9 @@ class MoveToFort(BaseTask):
 
     def initialize(self):
         self.lure_distance = 0
-        if self.config:
-            self.lure_attraction = self.config.get("lure_attraction", True)
-            self.lure_max_distance = self.config.get("lure_max_distance", 2000)
-            self.ignore_item_count = self.config.get("ignore_item_count", False)
-        else:
-            self.lure_attraction = None
-            self.ignore_item_count = True
+        self.lure_attraction = self.config.get("lure_attraction", True)
+        self.lure_max_distance = self.config.get("lure_max_distance", 2000)
+        self.ignore_item_count = self.config.get("ignore_item_count", False)
 
     def should_run(self):
         has_space_for_loot = inventory.Items.has_space_for_loot()
