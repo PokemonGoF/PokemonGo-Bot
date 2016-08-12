@@ -5,6 +5,7 @@ from random import random
 from pokemongo_bot import inventory
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot.inventory import Pokemon
 from pokemongo_bot.worker_result import WorkerResult
 
 CATCH_STATUS_SUCCESS = 1
@@ -24,25 +25,6 @@ LOGIC_TO_FUNCTION = {
     'or': lambda x, y: x or y,
     'and': lambda x, y: x and y
 }
-
-
-class Pokemon(object):
-
-    def __init__(self, pokemon_list, pokemon_data):
-        self.num = int(pokemon_data['pokemon_id'])
-        self.name = pokemon_list[int(self.num) - 1]['Name']
-        self.cp = pokemon_data['cp']
-        self.attack = pokemon_data.get('individual_attack', 0)
-        self.defense = pokemon_data.get('individual_defense', 0)
-        self.stamina = pokemon_data.get('individual_stamina', 0)
-
-    @property
-    def iv(self):
-        return round((self.attack + self.defense + self.stamina) / 45.0, 2)
-
-    @property
-    def iv_display(self):
-        return '{}/{}/{}'.format(self.attack, self.defense, self.stamina)
 
 
 class PokemonCatchWorker(BaseTask):
@@ -85,7 +67,7 @@ class PokemonCatchWorker(BaseTask):
 
         # get pokemon data
         pokemon_data = response['wild_pokemon']['pokemon_data'] if 'wild_pokemon' in response else response['pokemon_data']
-        pokemon = Pokemon(self.pokemon_list, pokemon_data)
+        pokemon = Pokemon(pokemon_data)
 
         # skip ignored pokemon
         if not self._should_catch_pokemon(pokemon):
@@ -103,7 +85,7 @@ class PokemonCatchWorker(BaseTask):
                 'encounter_id': self.pokemon['encounter_id'],
                 'latitude': self.pokemon['latitude'],
                 'longitude': self.pokemon['longitude'],
-                'pokemon_id': pokemon.num
+                'pokemon_id': pokemon.pokemon_id
             }
         )
 
@@ -257,6 +239,10 @@ class PokemonCatchWorker(BaseTask):
 
     def _do_catch(self, pokemon, encounter_id, catch_rate_by_ball, is_vip=False):
         # settings that may be exposed at some point
+        """
+
+        :type pokemon: Pokemon
+        """
         berry_id = ITEM_RAZZBERRY
         maximum_ball = ITEM_ULTRABALL if is_vip else ITEM_GREATBALL
         ideal_catch_rate_before_throw = 0.9 if is_vip else 0.35
@@ -369,7 +355,9 @@ class PokemonCatchWorker(BaseTask):
 
             # pokemon caught!
             elif catch_pokemon_status == CATCH_STATUS_SUCCESS:
+                pokemon.id = response_dict['responses']['CATCH_POKEMON']['captured_pokemon_id']
                 self.bot.metrics.captured_pokemon(pokemon.name, pokemon.cp, pokemon.iv_display, pokemon.iv)
+                inventory.pokemons().add(pokemon)
                 self.emit_event(
                     'pokemon_caught',
                     formatted='Captured {pokemon}! [CP {cp}] [Potential {iv}] [{iv_display}] [+{exp} exp]',
@@ -382,12 +370,12 @@ class PokemonCatchWorker(BaseTask):
                         'encounter_id': self.pokemon['encounter_id'],
                         'latitude': self.pokemon['latitude'],
                         'longitude': self.pokemon['longitude'],
-                        'pokemon_id': pokemon.num
+                        'pokemon_id': pokemon.pokemon_id
                     }
                 )
 
                 # We could refresh here too, but adding 3 saves a inventory request
-                candy = inventory.candies(True).get(pokemon.num)
+                candy = inventory.candies(True).get(pokemon.pokemon_id)
                 self.emit_event(
                     'gained_candy',
                     formatted='You now have {quantity} {type} candy!',
