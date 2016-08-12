@@ -24,6 +24,7 @@
 
 note: we do not support windows at this time
 
+
 # Manual installation
 ### Protobuf 3 installation
 
@@ -47,20 +48,71 @@ To update your project do (in the project folder): `git pull`
 
 To update python requirement packages do (in the project folder): `pip install --upgrade -r requirements.txt`
 
-### Installation Linux
-(change master to dev for the latest version)
-
-```
-$ git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot
-$ cd PokemonGo-Bot
-$ virtualenv .
-$ source bin/activate
-$ pip install -r requirements.txt
-```
-#### Example Installation for Ubuntu
+### Linux Installation
+####on the Example of Ubuntu
 (change dev to master for the lastest master version)
 
-http://pastebin.com/pzPjXT65
+if you are on a different Linux OS you maybe have to adapt things like:
+
+- package mananger (for example yum instead of apt-get)
+- package names
+
+```bash
+##install
+#change to root
+sudo -i
+#go to your home directory with the console
+apt-get install build-essential autoconf libtool pkg-config make python-dev python-protobuf python2.7 wget git
+#install pip
+wget https://bootstrap.pypa.io/get-pip.py
+python2.7 get-pip.py
+rm -f get-pip.py
+#get git repo
+git clone --recursive -b dev https://github.com/PokemonGoF/PokemonGo-Bot  
+cd PokemonGo-Bot
+#install and enable virtualenv
+#You need to make shure your python version and virtualenv verison work together
+#install virtualenv and activate it
+pip install virtualenv
+virtualenv .
+source bin/activate
+#then install the requierements
+pip install -r requirements.txt
+ 
+##get the encryption.so and move to right folder
+wget http://pgoapi.com/pgoencrypt.tar.gz
+tar -xzvf pgoencrypt.tar.gz
+cd pgoencrypt/src/
+make
+cd ../../
+#make the encrypt able to load
+mv pgoencrypt/src/libencrypt.so encrypt.so
+ 
+##edit the configuration file
+cp configs/config.json.example configs/config.json
+vi configs/config.json
+# gedit is possible too with 'gedit configs/config.json'
+#edit "google" to "ptc" if you have a pokemon trainer account
+#edit all settings
+ 
+ 
+##update to newest
+#if you need to do more i'll update this file
+#make shure virtualenv is enabled and you are in the correct folder
+git pull
+pip install -r requirements.txt
+ 
+##start the bot
+./run.sh configs/config.json
+ 
+##after reboot or closing the terminal
+#at every new start go into the folder of the PokemonGo-Bot by
+#going into the folder where you startet installing it an then
+cd PokemonGo-Bot
+#activate virtualenv and start
+source bin/activate
+./run.sh configs/config.json
+```
 
 
 ### Installation Mac
@@ -74,7 +126,7 @@ $ source bin/activate
 $ pip install -r requirements.txt
 ```
 
-### Installation Windows (we do not support this!)
+### Installation Windows
 (change master to dev for the latest version)
 
 On Windows, you will need to install PyYaml through the installer and not through requirements.txt.
@@ -104,7 +156,7 @@ After this, just do:
 $ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot
 $ cd PokemonGo-Bot
 $ virtualenv .
-$ bin\activate
+$ script\activate
 $ pip2 install -r requirements.txt
 $ git submodule init
 $ git submodule update
