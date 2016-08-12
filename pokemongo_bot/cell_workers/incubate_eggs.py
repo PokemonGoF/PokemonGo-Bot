@@ -67,7 +67,6 @@ class IncubateEggs(BaseTask):
                     item_id=incubator["id"],
                     pokemon_id=egg["id"]
                 )
-                inventory.refresh_inventory()
                 if ret:
                     code = ret.get("responses", {}).get("USE_ITEM_EGG_INCUBATOR", {}).get("result", 0)
                     if code == 1:
@@ -170,6 +169,7 @@ class IncubateEggs(BaseTask):
         xp = result.get('experience_awarded', "error")
         sleep(self.hatching_animation_delay)
         self.bot.latest_inventory = None
+        inventory.refresh_inventory()
         try:
             pokemon_data = self._check_inventory(pokemon_ids)
             for pokemon in pokemon_data:
