@@ -58,8 +58,6 @@ This will start the web interface and is optional stap
 3. Rerun the bot by using `PokemonGo-Bot-StartBot.bat`
 
 #Docker
-##Requirements
-- [docker](https://docs.docker.com/engine/installation/) (Optional) - [how to setup after installation](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/How-to-run-with-Docker)
 
 ###Easy installation
 Start by downloading for your platform:
