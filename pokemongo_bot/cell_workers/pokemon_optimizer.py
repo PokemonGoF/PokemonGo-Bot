@@ -57,6 +57,9 @@ class PokemonOptimizer(BaseTask):
         for pokemon in inventory.pokemons().all():
             family_id = pokemon.first_evolution_id
             setattr(pokemon, "ncp", pokemon.cp_percent)
+            setattr(pokemon, "dps", pokemon.moveset.dps)
+            setattr(pokemon, "dps_attack", pokemon.moveset.dps_attack)
+            setattr(pokemon, "dps_defense", pokemon.moveset.dps_defense)
 
             self.family_by_family_id.setdefault(family_id, []).append(pokemon)
 
@@ -239,10 +242,12 @@ class PokemonOptimizer(BaseTask):
             pass
 
         self.emit_event("pokemon_release",
-                        formatted="Exchanged {pokemon} [IV {iv}] [CP {cp}]",
+                        formatted="Exchanged {pokemon} [IV {iv}] [CP {cp}] [NCP {ncp}] [DPS {dps}]",
                         data={"pokemon": pokemon.name,
                               "iv": pokemon.iv,
-                              "cp": pokemon.cp})
+                              "cp": pokemon.cp,
+                              "ncp": round(pokemon.ncp, 2),
+                              "dps": round(pokemon.dps, 2)})
 
         if self.config_transfer:
             inventory.candies().get(pokemon.pokemon_id).add(1)
@@ -291,10 +296,12 @@ class PokemonOptimizer(BaseTask):
 
         if result == 1:
             self.emit_event("pokemon_evolved",
-                            formatted="Evolved {pokemon} [IV {iv}] [CP {cp}] [+{xp} xp]",
+                            formatted="Evolved {pokemon} [IV {iv}] [CP {cp}] [NCP {ncp}] [DPS {dps}] [+{xp} xp]",
                             data={"pokemon": pokemon.name,
                                   "iv": pokemon.iv,
                                   "cp": pokemon.cp,
+                                  "ncp": round(pokemon.ncp, 2),
+                                  "dps": round(pokemon.dps, 2),
                                   "xp": xp})
 
             if self.config_evolve:
