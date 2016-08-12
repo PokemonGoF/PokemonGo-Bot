@@ -341,6 +341,18 @@ class Pokemons(_BaseInventoryComponent):
         # makes caller's lives more difficult)
         return [p for p in super(Pokemons, self).all() if not isinstance(p, Egg)]
 
+    def add(self, pokemon):
+        if pokemon.id <= 0:
+            raise ValueError("Can't add a pokemin whitout id")
+        if pokemon.id in self._data:
+            raise ValueError("Pokemon already present in the inventory")
+        self._data[pokemon.id] = pokemon
+
+    def remove(self, pokemon_id):
+        if pokemon_id not in self._data:
+            raise ValueError("Pokemon not present in the inventory")
+        self._data.pop(pokemon_id)
+
 
 #
 # Static Components
@@ -484,7 +496,7 @@ class Pokemon(object):
     def __init__(self, data):
         self._data = data
         # Unique ID for this particular Pokemon
-        self.id = data['id']
+        self.id = data.get('id', 0)
         # Id of the such pokemons in pokedex
         self.pokemon_id = data['pokemon_id']
 
@@ -596,6 +608,10 @@ class Pokemon(object):
     @property
     def evolution_cost(self):
         return Pokemons.evolution_cost_for(self.pokemon_id)
+
+    @property
+    def iv_display(self):
+        return '{}/{}/{}'.format(self.iv_attack, self.iv_defense, self.iv_stamina)
 
     def _compute_iv_perfection(self):
         total_iv = self.iv_attack + self.iv_defense + self.iv_stamina
