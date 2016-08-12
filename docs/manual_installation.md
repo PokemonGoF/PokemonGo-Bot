@@ -78,7 +78,7 @@ if you are on a different Linux OS you maybe have to adapt things like:
 brew install --devel protobuf
 brew install  autoconf libtool pkg-config wget git
 #install pip
-wget https://bootstrap.pypa.io/get-pip.py
+curl -o https://bootstrap.pypa.io/get-pip.py
 python2.7 get-pip.py
 rm -f get-pip.py
 #get git repo
@@ -94,7 +94,7 @@ source bin/activate
 pip install -r requirements.txt
 
 ##get the encryption.so and move to right folder
-wget http://pgoapi.com/pgoencrypt.tar.gz
+curl -o http://pgoapi.com/pgoencrypt.tar.gz
 tar -xzvf pgoencrypt.tar.gz
 cd pgoencrypt/src/
 make
