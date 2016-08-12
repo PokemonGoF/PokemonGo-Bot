@@ -67,9 +67,7 @@ pip install -r requirements.txt
 ```bash
 ./run.sh configs/config.json
 ```
-after reboot or closing the terminal
-at every new start go into the folder of the PokemonGo-Bot by
-going into the folder where you startet installing it an then
+- after reboot or closing the terminal at every new start go into the folder of the PokemonGo-Bot by going into the folder where you startet installing it an then
 ```bash
 cd PokemonGo-Bot
 #activate virtualenv and start
