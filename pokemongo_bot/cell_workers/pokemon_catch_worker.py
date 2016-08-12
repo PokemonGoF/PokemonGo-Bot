@@ -293,7 +293,7 @@ class PokemonCatchWorker(BaseTask):
             best_ball = current_ball
             while best_ball < maximum_ball:
                 best_ball += 1
-                if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and self.inventory.count_for(best_ball) > 0:
+                if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and items_stock[best_ball] > 0:
                     # if current ball chance to catch is under our ideal rate, and player has better ball - then use it
                     current_ball = best_ball
 
