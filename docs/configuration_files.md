@@ -238,7 +238,9 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
 * `update_map` - disable/enable if the map location should be automatically updated to the bots current location
 * `catch` - A dictionary of pokemon to catch with an assigned priority (higher => better)
 * `snipe_high_prio_only` - Whether to snipe pokemon above a certain threshold.
-* `snipe_high_prio_threshold` - The threshold number corresponding with the `catch` dictionary. Any pokemon above this threshold will be caught. Other will be igonored.
+* `snipe_high_prio_threshold` - The threshold number corresponding with the `catch` dictionary. 
+*   - Any pokemon above this threshold value will be caught by teleporting to its location, and getting back to original location if `snipe` is `True`.
+*   - Any pokemon under this threshold value will make the bot walk to the Pokemon target wether `snipe` is `True` or `False`.
 
 #### Example
 ```
