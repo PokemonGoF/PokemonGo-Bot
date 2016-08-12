@@ -50,7 +50,7 @@ class NicknamePokemon(BaseTask):
         iv_list = [iv_attack,iv_defense,iv_stamina]
         iv_ads = "/".join(map(str,iv_list))
         iv_sum = sum(iv_list)
-        iv_pct = "{:0.0f}".format(100*iv_sum/45.0)
+        iv_pct = "{:03.0f}".format(100*iv_sum/45.0)
         log_color = 'red'
         try:
             new_name = self.template.format(name=name,

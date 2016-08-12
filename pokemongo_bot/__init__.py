@@ -183,8 +183,7 @@ class PokemonGoBot(object):
             'moving_to_fort',
             parameters=(
                 'fort_name',
-                'distance',
-                'current_position'
+                'distance'
             )
         )
         self.event_manager.register_event(
@@ -192,8 +191,7 @@ class PokemonGoBot(object):
             parameters=(
                 'fort_name',
                 'distance',
-                'lure_distance',
-                'current_position'
+                'lure_distance'
             )
         )
         self.event_manager.register_event(
@@ -219,12 +217,7 @@ class PokemonGoBot(object):
             parameters=('status_code',)
         )
         self.event_manager.register_event('pokestop_searching_too_often')
-        self.event_manager.register_event(
-            'arrived_at_fort',
-            parameters=(
-                'current_position'
-            )
-        )
+        self.event_manager.register_event('arrived_at_fort')
 
         # pokemon stuff
         self.event_manager.register_event(
@@ -306,7 +299,7 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'pokemon_evolved',
-            parameters=('pokemon', 'iv', 'cp')
+            parameters=('pokemon', 'iv', 'cp', 'xp')
         )
         self.event_manager.register_event('skip_evolve')
         self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
@@ -677,7 +670,7 @@ class PokemonGoBot(object):
 
         full_path = path + '/'+ file_name
         if not os.path.isfile(full_path):
-            self.logger.error(file_name + ' is not found! Please place it in the bots root directory or set libencrypt_location in config.')
+            self.logger.error(file_name + ' is not found! Please place it in the bots root directory or set encrypt_location in config.')
             self.logger.info('Platform: '+ _platform + ' Encrypt.so directory: '+ path)
             sys.exit(1)
         else:

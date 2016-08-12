@@ -61,7 +61,6 @@ class MoveToFort(BaseTask):
             fort_event_data = {
                 'fort_name': u"{}".format(fort_name),
                 'distance': format_dist(dist, unit),
-                'current_position': self.bot.position
             }
 
             if self.is_attracted() > 0:
@@ -88,13 +87,9 @@ class MoveToFort(BaseTask):
             if not step_walker.step():
                 return WorkerResult.RUNNING
 
-        arrived_at_fort_data = {
-            'current_position': self.bot.position
-        }
         self.emit_event(
             'arrived_at_fort',
-            formatted='Arrived at fort.',
-            data=arrived_at_fort_data
+            formatted='Arrived at fort.'
         )
         return WorkerResult.SUCCESS
 
