@@ -1,6 +1,6 @@
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.base_task import BaseTask
-
+from pokemongo_bot import inventory
 
 class IncubateEggs(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -67,6 +67,7 @@ class IncubateEggs(BaseTask):
                     item_id=incubator["id"],
                     pokemon_id=egg["id"]
                 )
+                inventory.refresh_inventory()
                 if ret:
                     code = ret.get("responses", {}).get("USE_ITEM_EGG_INCUBATOR", {}).get("result", 0)
                     if code == 1:
