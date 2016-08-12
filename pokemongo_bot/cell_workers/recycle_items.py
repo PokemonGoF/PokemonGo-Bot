@@ -77,9 +77,8 @@ class RecycleItems(BaseTask):
         :rtype: WorkerResult
         """
         # TODO: Use new inventory everywhere and then remove the inventory update
-        # Updating inventory
-        inventory.refresh_inventory()
         worker_result = WorkerResult.SUCCESS
+        should_update_inventory=False
         if self.should_run():
 
             # For each user's item in inventory recycle it if needed
@@ -89,6 +88,10 @@ class RecycleItems(BaseTask):
                 if self.item_should_be_recycled(item_in_inventory, amount_to_recycle):
                     if ItemRecycler(self.bot, item_in_inventory, amount_to_recycle).work() == WorkerResult.ERROR:
                         worker_result = WorkerResult.ERROR
+                    else:
+                        should_update_inventory=True
+        if should_update_inventory==True:
+            inventory.refresh_inventory()
 
         return worker_result
 
