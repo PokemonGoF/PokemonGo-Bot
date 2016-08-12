@@ -31,13 +31,10 @@ for manual installation please refer to [here](https://github.com/nivong/Pokemon
 #Windows
 ##Requirements
 
-[Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/)
-
-[git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-
-[Protoc](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip)
-
-[Microsoft Visual C++ Compiler for Python 2.7](http://www.microsoft.com/en-us/download/details.aspx?id=44266)
+- [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/)
+- [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+- [Protoc](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip)
+- [Microsoft Visual C++ Compiler for Python 2.7](http://www.microsoft.com/en-us/download/details.aspx?id=44266)
 
 ###Easy Installation
 1. Go into the folder/dir named: Windows bot
@@ -64,9 +61,9 @@ This will start the web interface and is optional stap
 
 ###Easy installation
 Start by downloading for your platform:
--[Mac](https://www.docker.com/products/docker#/mac)
--[Windows](https://www.docker.com/products/docker#/windows)
--[Linux](https://www.docker.com/products/docker#/linux). 
+- [Mac](https://www.docker.com/products/docker#/mac)
+- [Windows](https://www.docker.com/products/docker#/windows)
+- [Linux](https://www.docker.com/products/docker#/linux). 
 
 Once you have Docker installed, simply create the various config files for your different accounts (e.g. `configs/config.json`, `configs/userdata.js`) and then create a Docker image for PokemonGo-Bot using the Dockerfile in this repo.
 
