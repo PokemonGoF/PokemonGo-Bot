@@ -116,6 +116,9 @@ class Item(object):
             raise Exception('Must add positive amount of {}'.format(self.name))
         self.count += amount
 
+    def __str__(self):
+        return self.name + " : " + str(self.count)
+
 
 class Items(_BaseInventoryComponent):
     TYPE = 'item'
@@ -134,6 +137,13 @@ class Items(_BaseInventoryComponent):
     def name_for(cls, item_id):
         return cls.STATIC_DATA[str(item_id)]
 
+    @classmethod
+    def id_for(cls, item_name):
+        for item_data in cls.STATIC_DATA:
+            if item_data == item_name:
+                return item_data
+        return None
+
     def get_space_used(self):
         """
         Counts the space used in item inventory.
@@ -148,11 +158,22 @@ class Items(_BaseInventoryComponent):
     def get_space_left(self):
         """
         Compute the space  left in item inventory.
-        :return: The space left in item inventory.
+        :return: The space left in item inventory. 0 if the player has more item than his item inventory can carry.
         :rtype: int
         """
         _inventory.retrieve_item_inventory_size()
-        return _inventory.item_inventory_size - self.get_space_used()
+        space_left = _inventory.item_inventory_size - self.get_space_used()
+        # Space left should never be negative. Returning 0 if the computed value is negative.
+        return space_left if space_left >= 0 else 0
+
+    def has_space_for_loot(self):
+        """
+        Returns a value indicating whether or not the item inventory has enough space to loot a fort
+        :return: True if the item inventory has enough space; otherwise, False.
+        :rtype: bool
+        """
+        max_number_of_items_looted_at_stop = 5
+        return self.get_space_left() >= max_number_of_items_looted_at_stop
 
 
 class Pokemons(_BaseInventoryComponent):
@@ -806,6 +827,7 @@ class Inventory(object):
         user_web_inventory = os.path.join(_base_dir, 'web', 'inventory-%s.json' % (self.bot.config.username))
         with open(user_web_inventory, 'w') as outfile:
             json.dump(inventory, outfile)
+
     def retrieve_item_inventory_size(self):
         """
         Retrieves the item inventory size
@@ -889,6 +911,11 @@ def pokemons(refresh=False):
 
 
 def items():
+    """
+    Access to the cached item inventory
+    :return: Instance of the cached item inventory
+    :rtype: Items
+    """
     return _inventory.items
 
 
