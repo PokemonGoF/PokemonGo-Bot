@@ -266,13 +266,7 @@ class PokemonCatchWorker(BaseTask):
             ball_count[ball_id] = self.inventory.get(ball_id).count
 
         # use `min_ultraball_to_keep` from config if is not None
-        min_ultraball_to_keep = items_stock[ITEM_ULTRABALL]
-        if self.config.min_ultraball_to_keep is not None:
-            if self.config.min_ultraball_to_keep >= 0 and self.config.min_ultraball_to_keep < min_ultraball_to_keep:
-                min_ultraball_to_keep = self.config.min_ultraball_to_keep
-
-        # use `min_ultraball_to_keep` from config if is not None
-        min_ultraball_to_keep = items_stock[ITEM_ULTRABALL]
+        min_ultraball_to_keep = ball_count[ITEM_ULTRABALL]
         if self.config.min_ultraball_to_keep is not None:
             if self.config.min_ultraball_to_keep >= 0 and self.config.min_ultraball_to_keep < min_ultraball_to_keep:
                 min_ultraball_to_keep = self.config.min_ultraball_to_keep
@@ -287,7 +281,7 @@ class PokemonCatchWorker(BaseTask):
                 self.emit_event('no_pokeballs', formatted='No usable pokeballs found!')
 
                 # use untraball if there is no other balls with constraint to `min_ultraball_to_keep`
-                if maximum_ball != ITEM_ULTRABALL and items_stock[ITEM_ULTRABALL] > min_ultraball_to_keep:
+                if maximum_ball != ITEM_ULTRABALL and ball_count[ITEM_ULTRABALL] > min_ultraball_to_keep:
                     maximum_ball = ITEM_ULTRABALL
                     continue
                 else:
