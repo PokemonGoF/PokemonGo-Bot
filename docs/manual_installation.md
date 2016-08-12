@@ -102,10 +102,10 @@ Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and downloa
 (If running 64-bit python or if you get a 'not a supported wheel on this platform' error,
 download the 64 bit version instead: PyYAML-3.11-cp27-cp27m-win_amd64.whl )
 
-*(Run the following commands from Git Bash.)*
-
 ##### Protobuf 3 installation Windows
 Download protobuf 3.0: [here](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip) and unzip `bin/protoc.exe` into a folder in your PATH.
+
+*(Run the following commands from Git Bash.)*
 
 ```
 // switch to the directory where you downloaded PyYAML
