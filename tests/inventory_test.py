@@ -4,6 +4,24 @@ from pokemongo_bot.inventory import *
 
 
 class InventoryTest(unittest.TestCase):
+    def test_types(self):
+        td = Types
+        self.assertIs(types_data(), td)
+        self.assertEqual(len(td.STATIC_DATA), 18)
+        self.assertEqual(len(td.all()), 18)
+
+        for name, s in td.STATIC_DATA.iteritems():
+            assert len(name) > 0
+            self.assertIs(s.name, name)
+            for t in s.attack_effective_against:
+                self.assertIn(s, t.pokemon_vulnerable_to)
+            for t in s.attack_weak_against:
+                self.assertIn(s, t.pokemon_resistant_to)
+            for t in s.pokemon_vulnerable_to:
+                self.assertIn(s, t.attack_effective_against)
+            for t in s.pokemon_resistant_to:
+                self.assertIn(s, t.attack_weak_against)
+
     def test_pokemons(self):
         # Init data
         self.assertEqual(len(Pokemons().all()), 0)  # No inventory loaded here
@@ -11,53 +29,64 @@ class InventoryTest(unittest.TestCase):
         obj = Pokemons
         self.assertEqual(len(obj.STATIC_DATA), 151)
 
-        for poke_info in obj.STATIC_DATA:
-            name = poke_info['Name']
-            pokemon_id = int(poke_info['Number'])
-            self.assertTrue(1 <= pokemon_id <= 151)
+        for idx in xrange(len(obj.STATIC_DATA)):
+            pokemon = obj.STATIC_DATA[idx]  # type: PokemonInfo
+            name = pokemon.name
+            pokemon_id = pokemon.id
+            self.assertEqual(pokemon.id, idx+1)
+            assert (1 <= pokemon_id <= 151)
 
-            self.assertGreaterEqual(len(poke_info['movesets']), 1)
-            self.assertTrue(262 <= poke_info['max_cp'] <= 4145)
-            self.assertTrue(1 <= len(poke_info['types']) <= 2)
-            self.assertTrue(40 <= poke_info['BaseAttack'] <= 284)
-            self.assertTrue(54 <= poke_info['BaseDefense'] <= 242)
-            self.assertTrue(20 <= poke_info['BaseStamina'] <= 500)
-            self.assertTrue(.0 <= poke_info['CaptureRate'] <= .56)
-            self.assertTrue(.0 <= poke_info['FleeRate'] <= .99)
-            self.assertTrue(1 <= len(poke_info['Weaknesses']) <= 7)
-            self.assertTrue(3 <= len(name) <= 10)
+            self.assertGreaterEqual(len(pokemon.movesets), 1)
+            self.assertIsInstance(pokemon.movesets[0], Moveset)
+            assert 262 <= pokemon.max_cp <= 4145
+            assert 1 <= len(pokemon.types) <= 2
+            assert 40 <= pokemon.base_attack <= 284
+            assert 54 <= pokemon.base_defense <= 242
+            assert 20 <= pokemon.base_stamina <= 500
+            assert .0 <= pokemon.capture_rate <= .56
+            assert .0 <= pokemon.flee_rate <= .99
+            assert 1 <= len(pokemon._data['Weaknesses']) <= 7
+            assert 3 <= len(name) <= 10
 
-            self.assertGreaterEqual(len(poke_info['Classification']), 11)
-            self.assertGreaterEqual(len(poke_info['Fast Attack(s)']), 1)
-            self.assertGreaterEqual(len(poke_info['Special Attack(s)']), 1)
+            self.assertGreaterEqual(len(pokemon.classification), 11)
+            self.assertGreaterEqual(len(pokemon.fast_attacks), 1)
+            self.assertGreaterEqual(len(pokemon.charged_attack), 1)
 
-            self.assertIs(obj.data_for(pokemon_id), poke_info)
+            self.assertIs(obj.data_for(pokemon_id), pokemon)
             self.assertIs(obj.name_for(pokemon_id), name)
 
             first_evolution_id = obj.first_evolution_id_for(pokemon_id)
+            self.assertIs(first_evolution_id, pokemon.first_evolution_id)
+            self.assertIs(pokemon.family_id, first_evolution_id)
             self.assertGreaterEqual(first_evolution_id, 1)
             next_evolution_ids = obj.next_evolution_ids_for(pokemon_id)
+            self.assertIs(next_evolution_ids, pokemon.next_evolution_ids)
             last_evolution_ids = obj.last_evolution_ids_for(pokemon_id)
+            self.assertIs(last_evolution_ids, pokemon.last_evolution_ids)
             candies_cost = obj.evolution_cost_for(pokemon_id)
-            obj.prev_evolution_id_for(pokemon_id)  # just call test
+            self.assertIs(candies_cost, pokemon.evolution_cost)
+            self.assertIs(obj.prev_evolution_id_for(pokemon_id), pokemon.prev_evolution_id)
             self.assertGreaterEqual(len(last_evolution_ids), 1)
 
             if not obj.has_next_evolution(pokemon_id):
-                assert 'Next evolution(s)' not in poke_info
-                assert 'Next Evolution Requirements' not in poke_info
+                assert not pokemon.has_next_evolution
+                self.assertEqual(pokemon.evolution_cost, 0)
+                self.assertEqual(pokemon.next_evolution_ids, [])
+                self.assertEqual(pokemon.next_evolutions_all, [])
+                self.assertEqual(pokemon.last_evolution_ids, [pokemon_id])
             else:
+                self.assertGreater(candies_cost, 0)
                 self.assertGreaterEqual(len(next_evolution_ids), 1)
                 self.assertLessEqual(len(next_evolution_ids), len(last_evolution_ids))
 
-                reqs = poke_info['Next Evolution Requirements']
+                reqs = pokemon._data['Next Evolution Requirements']
                 self.assertEqual(reqs["Family"], first_evolution_id)
                 candies_name = obj.name_for(first_evolution_id) + ' candies'
                 self.assertEqual(reqs["Name"], candies_name)
-                self.assertIsNotNone(candies_cost)
-                self.assertTrue(12 <= candies_cost <= 400)
+                assert 12 <= candies_cost <= 400
                 self.assertEqual(reqs["Amount"], candies_cost)
 
-                evolutions = poke_info["Next evolution(s)"]
+                evolutions = pokemon._data["Next evolution(s)"]
                 self.assertGreaterEqual(len(evolutions), len(next_evolution_ids))
 
                 for p in evolutions:
@@ -67,7 +96,7 @@ class InventoryTest(unittest.TestCase):
 
                 for p_id in next_evolution_ids:
                     self.assertEqual(obj.prev_evolution_id_for(p_id), pokemon_id)
-                    prev_evs = obj.data_for(p_id)["Previous evolution(s)"]
+                    prev_evs = obj.data_for(p_id)._data["Previous evolution(s)"]
                     self.assertGreaterEqual(len(prev_evs), 1)
                     self.assertEqual(int(prev_evs[-1]["Number"]), pokemon_id)
                     self.assertEqual(prev_evs[-1]["Name"], name)
@@ -76,8 +105,8 @@ class InventoryTest(unittest.TestCase):
                 self.assertEqual(len(next_evolution_ids),
                                  1 if pokemon_id != 133 else 3)
 
-            if "Previous evolution(s)" in poke_info:
-                for p in poke_info["Previous evolution(s)"]:
+            if "Previous evolution(s)" in pokemon._data:
+                for p in pokemon._data["Previous evolution(s)"]:
                     p_id = int(p["Number"])
                     self.assertNotEqual(p_id, pokemon_id)
                     self.assertEqual(p["Name"], obj.name_for(p_id))
@@ -96,11 +125,12 @@ class InventoryTest(unittest.TestCase):
         self.assertEqual(poke.level, 12.5)
         self.assertEqual(poke.iv, 0.47)
         self.assertAlmostEqual(poke.ivcp, 0.488747515)
-        self.assertAlmostEqual(poke.max_cp, 1921.34561459)
+        self.assertAlmostEqual(poke.static.max_cp, 1921.34561459)
         self.assertAlmostEqual(poke.cp_percent, 0.340368964)
-        self.assertTrue(poke.is_favorite)
+        assert poke.is_favorite
         self.assertEqual(poke.name, 'Golbat')
         self.assertEqual(poke.nickname, "Golb")
+        self.assertEqual(poke.nickname_raw, poke.nickname)
         self.assertAlmostEqual(poke.moveset.dps, 10.7540173053)
         self.assertAlmostEqual(poke.moveset.dps_attack, 12.14462299)
         self.assertAlmostEqual(poke.moveset.dps_defense, 4.876681614)
@@ -114,11 +144,12 @@ class InventoryTest(unittest.TestCase):
         self.assertEqual(poke.level, 7.5)
         self.assertEqual(poke.iv, 0.44)
         self.assertAlmostEqual(poke.ivcp, 0.3804059)
-        self.assertAlmostEqual(poke.max_cp, 581.64643575)
+        self.assertAlmostEqual(poke.static.max_cp, 581.64643575)
         self.assertAlmostEqual(poke.cp_percent, 0.183759867)
         self.assertFalse(poke.is_favorite)
         self.assertEqual(poke.name, 'Rattata')
-        self.assertEqual(poke.nickname, 'Rattata')
+        self.assertEqual(poke.nickname, poke.name)
+        self.assertEqual(poke.nickname_raw, '')
         self.assertAlmostEqual(poke.moveset.dps, 12.5567813108)
         self.assertAlmostEqual(poke.moveset.dps_attack, 15.6959766385)
         self.assertAlmostEqual(poke.moveset.dps_defense, 5.54282440561)
@@ -156,7 +187,7 @@ class InventoryTest(unittest.TestCase):
         # check consistency
         attacks = clazz.all_by_dps()
         number = len(attacks)
-        self.assertTrue(number > 0)
+        assert (number > 0)
         self.assertGreaterEqual(len(clazz.BY_TYPE), 17)
         self.assertEqual(number, len(clazz.all()))
         self.assertEqual(number, len(clazz.STATIC_DATA))
@@ -168,16 +199,17 @@ class InventoryTest(unittest.TestCase):
         for attack in attacks:  # type: Attack
             self.assertGreater(attack.id, 0)
             self.assertGreater(len(attack.name), 0)
-            self.assertGreater(len(attack.type), 0)
+            self.assertIsInstance(attack.type, Type)
             self.assertGreaterEqual(attack.damage, 0)
             self.assertGreater(attack.duration, .0)
             self.assertGreater(attack.energy, 0)
             self.assertGreaterEqual(attack.dps, 0)
-            self.assertTrue(.0 <= attack.rate_in_type <= 1.0)
+            assert (.0 <= attack.rate_in_type <= 1.0)
             self.assertLessEqual(attack.dps, prev_dps)
             self.assertEqual(attack.is_charged, charged)
             self.assertIs(attack, clazz.data_for(attack.id))
             self.assertIs(attack, clazz.by_name(attack.name))
-            self.assertTrue(attack in clazz.BY_TYPE[attack.type])
+            assert (attack in clazz.list_for_type(attack.type))
+            assert (attack in clazz.list_for_type(attack.type.name))
             self.assertIsInstance(attack, ChargedAttack if charged else Attack)
             prev_dps = attack.dps
