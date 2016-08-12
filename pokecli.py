@@ -436,6 +436,51 @@ def init_config():
         type=bool,
         default=True
     )
+    add_config(
+        parser,
+        load,
+        short_flag="-cte",
+        long_flag="--catch_throw_parameters.excellent_rate",
+        help="Define the odd of performing an excellent throw",
+        type=float,
+        default=1
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-ctg",
+        long_flag="--catch_throw_parameters.great_rate",
+        help="Define the odd of performing a great throw",
+        type=float,
+        default=0
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-ctn",
+        long_flag="--catch_throw_parameters.nice_rate",
+        help="Define the odd of performing a nice throw",
+        type=float,
+        default=0
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-ctm",
+        long_flag="--catch_throw_parameters.normal_rate",
+        help="Define the odd of performing a normal throw",
+        type=float,
+        default=0
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-cts",
+        long_flag="--catch_throw_parameters.spin_success_rate",
+        help="Define the odds of performing a spin throw (Value between 0 (never) and 1 (always))",
+        type=float,
+        default=1
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()

@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-
 from pokemongo_bot.base_dir import _base_dir
 
 '''
@@ -101,14 +100,59 @@ class Pokedex(_BaseInventoryComponent):
             return False
         return self._data[pokemon_id]['times_captured'] > 0
 
+class Item(object):
+    def __init__(self, item_id, item_count):
+        self.id = item_id
+        self.name = Items.name_for(self.id)
+        self.count = item_count
+
+    def remove(self, amount):
+        if self.count < amount:
+            raise Exception('Tried to remove more {} than you have'.format(self.name))
+        self.count -= amount
+
+    def add(self, amount):
+        if amount < 0:
+            raise Exception('Must add positive amount of {}'.format(self.name))
+        self.count += amount
+
 
 class Items(_BaseInventoryComponent):
     TYPE = 'item'
     ID_FIELD = 'item_id'
     STATIC_DATA_FILE = os.path.join(_base_dir, 'data', 'items.json')
 
-    def count_for(self, item_id):
-        return self._data[item_id]['count']
+    def parse(self, item_data):
+        item_id = item_data.get(Items.ID_FIELD, None)
+        item_count = item_data['count'] if 'count' in item_data else 0
+        return Item(item_id, item_count)
+
+    def get(self, item_id):
+        return self._data.setdefault(item_id, Item(item_id, 0))
+
+    @classmethod
+    def name_for(cls, item_id):
+        return cls.STATIC_DATA[str(item_id)]
+
+    def get_space_used(self):
+        """
+        Counts the space used in item inventory.
+        :return: The space used in item inventory.
+        :rtype: int
+        """
+        space_used = 1
+        for item_in_inventory in _inventory.items.all():
+            space_used += item_in_inventory.count
+        return space_used
+
+    def get_space_left(self):
+        """
+        Compute the space  left in item inventory.
+        :return: The space left in item inventory.
+        :rtype: int
+        """
+        _inventory.retrieve_item_inventory_size()
+        return _inventory.item_inventory_size - self.get_space_used()
 
 
 class Pokemons(_BaseInventoryComponent):
@@ -749,6 +793,7 @@ class Inventory(object):
         self.items = Items()
         self.pokemons = Pokemons()
         self.refresh()
+        self.item_inventory_size = None
 
     def refresh(self):
         # TODO: it would be better if this class was used for all
@@ -761,12 +806,23 @@ class Inventory(object):
         user_web_inventory = os.path.join(_base_dir, 'web', 'inventory-%s.json' % (self.bot.config.username))
         with open(user_web_inventory, 'w') as outfile:
             json.dump(inventory, outfile)
+    def retrieve_item_inventory_size(self):
+        """
+        Retrieves the item inventory size
+        :return: Nothing.
+        :rtype: None
+        """
+        # TODO: Force update of _item_inventory_size if the player upgrades its size
+        if self.item_inventory_size is None:
+           self.item_inventory_size = self.bot.api.get_player()['responses']['GET_PLAYER']['player_data']['max_item_storage']
+
 
 #
 # Usage helpers
 
 # STAB (Same-type attack bonus)
 STAB_FACTOR = 1.25
+
 
 _inventory = None
 LevelToCPm()  # init LevelToCPm
@@ -812,6 +868,9 @@ def init_inventory(bot):
 def refresh_inventory():
     _inventory.refresh()
 
+def get_item_inventory_size():
+    _inventory.retrieve_item_inventory_size()
+    return _inventory.item_inventory_size
 
 def pokedex():
     return _inventory.pokedex

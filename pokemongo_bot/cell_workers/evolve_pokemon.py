@@ -106,7 +106,8 @@ class EvolvePokemon(BaseTask):
                 data={
                     'pokemon': pokemon.name,
                     'iv': pokemon.iv,
-                    'cp': pokemon.cp
+                    'cp': pokemon.cp,
+                    'xp': 0
                 }
             )
             inventory.candies().get(pokemon.pokemon_id).consume(pokemon.evolution_cost)
