@@ -31,14 +31,25 @@ class NicknamePokemon(BaseTask):
     nickname_template (default: '{name}')
         Template for nickname generation.
         Empty template or any resulting in the simple pokemon name
-         (e.g. '', '{name}', ...) is treated as unsetting nickname,
-         so the original pokemon name will be shown in the game
+         (e.g. '', '{name}', ...) will revert all pokemon to their original
+         names (as if they had no nickname).
 
-        Any nickname will be truncated to 12 characters length.
-         It's a maximum allowed length for the nickname in the game.
+        Niantic imposes a 12-character limit on all pokemon nicknames, so
+         any new nickname will be truncated to 12 characters if over that limit.
+        Thus, it is up to the user to exercise judgment on what template will
+         best suit their need with this constraint in mind.
 
-        Uses python "string formatting" so all its features can be used:
-         https://docs.python.org/2/library/string.html#format-string-syntax
+        You can use full force of the Python [Format String syntax](https://docs.python.org/2.7/library/string.html#formatstrings)
+        For example, using `{name:.8s}` causes the Pokemon name to never take up
+         more than 8 characters in the nickname. This would help guarantee that
+         a template like `{name:.8s}_{iv_pct}` never goes over the 12-character
+         limit.
+
+
+    **NOTE:** If you experience frequent `Pokemon not found` error messages,
+     this is because the inventory cache has not been updated after a pokemon
+     was released. This can be remedied by placing the `NicknamePokemon` task
+     above the `TransferPokemon` task in your `config.json` file.
 
 
     EXAMPLE CONFIG:
