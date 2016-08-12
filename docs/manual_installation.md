@@ -40,6 +40,7 @@ pip install virtualenv
 virtualenv .
 ```
 - install the requirements and get the needen encryption.so
+- 
 (we move `encrypt.so` to the root folder of the Bot so no need to edit the config regarding that)
 ```bash
 pip install -r requirements.txt
