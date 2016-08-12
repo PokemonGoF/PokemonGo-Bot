@@ -108,10 +108,7 @@ class Items(_BaseInventoryComponent):
     STATIC_DATA_FILE = os.path.join(_base_dir, 'data', 'items.json')
 
     def count_for(self, item_id):
-        try:
-            return self._data[item_id]['count']
-        except KeyError:
-            return 0
+        return self._data[item_id]['count']
 
     def decrement_count(self, item_id):
         self._data[item_id]["count"] -= 1
