@@ -84,18 +84,6 @@ class PokemonCatchWorker(BaseTask):
         # get pokemon data
         pokemon_data = response['wild_pokemon']['pokemon_data'] if 'wild_pokemon' in response else response['pokemon_data']
         pokemon = Pokemon(self.pokemon_list, pokemon_data)
-        
-        # get all available pokeballs
-        items_stock = self.bot.current_inventory()
-        current_ball = ITEM_POKEBALL
-        num_ball = 0
-        while current_ball < ITEM_ULTRABALL:
-            num_ball += items_stock[current_ball]
-            current_ball += 1
-
-        # skip if no available pokeballs
-        if num_ball <= 0:
-            return WorkerResult.SUCCESS
 
         # skip ignored pokemon
         if not self._should_catch_pokemon(pokemon):
