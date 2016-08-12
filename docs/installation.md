@@ -29,6 +29,8 @@
 for manual installation please refer to [here](https://github.com/nivong/PokemonGo-Bot/blob/dev/docs/manual_installation.md)
 
 #Windows
+We do recommend Windows users to use [Docker](#docker) this will work much easier and smoother (also saver)
+
 ##Requirements
 
 - [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/)
