@@ -110,9 +110,6 @@ class Items(_BaseInventoryComponent):
     def count_for(self, item_id):
         return self._data[item_id]['count']
 
-    def decrement_count(self, item_id):
-        self._data[item_id]["count"] -= 1
-
 
 class Pokemons(_BaseInventoryComponent):
     TYPE = 'pokemon_data'
