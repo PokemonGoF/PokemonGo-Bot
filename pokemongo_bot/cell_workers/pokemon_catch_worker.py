@@ -54,8 +54,7 @@ class PokemonCatchWorker(BaseTask):
         self.position = bot.position
         self.config = bot.config
         self.pokemon_list = bot.pokemon_list
-        self.item_list = bot.item_list
-        self.inventory = bot.inventory
+        self.inventory = inventory.items()
         self.spawn_point_guid = ''
         self.response_key = ''
         self.response_status_key = ''
@@ -204,8 +203,8 @@ class PokemonCatchWorker(BaseTask):
             formatted='Catch rate of {catch_rate} with {ball_name} is low. Throwing {berry_name} (have {berry_count})',
             data={
                 'catch_rate': self._pct(catch_rate_by_ball[current_ball]),
-                'ball_name': self.item_list[str(current_ball)],
-                'berry_name': self.item_list[str(berry_id)],
+                'ball_name': self.inventory.get(current_ball).name,
+                'berry_name': self.inventory.get(berry_id).name,
                 'berry_count': berry_count
             }
         )
@@ -227,8 +226,8 @@ class PokemonCatchWorker(BaseTask):
                     'threw_berry',
                     formatted="Threw a {berry_name}! Catch rate with {ball_name} is now: {new_catch_rate}",
                     data={
-                        'berry_name': self.item_list[str(berry_id)],
-                        'ball_name': self.item_list[str(current_ball)],
+                        'berry_name': self.inventory.get(berry_id).name,
+                        'ball_name': self.inventory.get(current_ball).name,
                         'new_catch_rate': self._pct(new_catch_rate_by_ball[current_ball])
                     }
                 )
@@ -261,8 +260,16 @@ class PokemonCatchWorker(BaseTask):
         maximum_ball = ITEM_ULTRABALL if is_vip else ITEM_GREATBALL
         ideal_catch_rate_before_throw = 0.9 if is_vip else 0.35
 
-        berry_count = self.bot.item_inventory_count(berry_id)
-        items_stock = self.bot.current_inventory()
+        berry_count = self.inventory.get(ITEM_RAZZBERRY).count
+        ball_count = {}
+        for ball_id in [ITEM_POKEBALL, ITEM_GREATBALL, ITEM_ULTRABALL]:
+            ball_count[ball_id] = self.inventory.get(ball_id).count
+
+        # use `min_ultraball_to_keep` from config if is not None
+        min_ultraball_to_keep = items_stock[ITEM_ULTRABALL]
+        if self.config.min_ultraball_to_keep is not None:
+            if self.config.min_ultraball_to_keep >= 0 and self.config.min_ultraball_to_keep < min_ultraball_to_keep:
+                min_ultraball_to_keep = self.config.min_ultraball_to_keep
 
         # use `min_ultraball_to_keep` from config if is not None
         min_ultraball_to_keep = items_stock[ITEM_ULTRABALL]
@@ -274,9 +281,9 @@ class PokemonCatchWorker(BaseTask):
 
             # find lowest available ball
             current_ball = ITEM_POKEBALL
-            while items_stock[current_ball] == 0 and current_ball < maximum_ball:
+            while ball_count[current_ball] == 0 and current_ball < maximum_ball:
                 current_ball += 1
-            if items_stock[current_ball] == 0:
+            if ball_count[current_ball] == 0:
                 self.emit_event('no_pokeballs', formatted='No usable pokeballs found!')
 
                 # use untraball if there is no other balls with constraint to `min_ultraball_to_keep`
@@ -291,7 +298,7 @@ class PokemonCatchWorker(BaseTask):
             next_ball = current_ball
             while next_ball < maximum_ball:
                 next_ball += 1
-                num_next_balls += items_stock[next_ball]
+                num_next_balls += ball_count[next_ball]
 
             # check if we've got berries to spare
             berries_to_spare = berry_count > 0 if is_vip else berry_count > num_next_balls + 30
@@ -299,23 +306,29 @@ class PokemonCatchWorker(BaseTask):
             # use a berry if we are under our ideal rate and have berries to spare
             used_berry = False
             if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and berries_to_spare:
-                catch_rate_by_ball = self._use_berry(berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball)
-                berry_count -= 1
-                used_berry = True
+                new_catch_rate_by_ball = self._use_berry(berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball)
+                if new_catch_rate_by_ball != catch_rate_by_ball:
+                    catch_rate_by_ball = new_catch_rate_by_ball
+                    self.inventory.get(ITEM_RAZZBERRY).remove(1)
+                    berry_count -= 1
+                    used_berry = True
 
             # pick the best ball to catch with
             best_ball = current_ball
             while best_ball < maximum_ball:
                 best_ball += 1
-                if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and items_stock[best_ball] > 0:
+                if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and ball_count[best_ball] > 0:
                     # if current ball chance to catch is under our ideal rate, and player has better ball - then use it
                     current_ball = best_ball
 
             # if the rate is still low and we didn't throw a berry before, throw one
             if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and berry_count > 0 and not used_berry:
-                catch_rate_by_ball = self._use_berry(berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball)
-                berry_count -= 1
-            
+                new_catch_rate_by_ball = self._use_berry(berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball)
+                if new_catch_rate_by_ball != catch_rate_by_ball:
+                    catch_rate_by_ball = new_catch_rate_by_ball
+                    self.inventory.get(ITEM_RAZZBERRY).remove(1)
+                    berry_count -= 1
+
             # Randomize the quality of the throw
             # Default structure
             throw_parameters = {'normalized_reticle_size': 1.950,
@@ -327,14 +340,15 @@ class PokemonCatchWorker(BaseTask):
 
             # try to catch pokemon!
             # TODO : Log which type of throw we selected
-            items_stock[current_ball] -= 1
+            ball_count[current_ball] -= 1
+            self.inventory.get(current_ball).remove(1)
             self.emit_event(
                 'threw_pokeball',
                 formatted='Used {ball_name}, with chance {success_percentage} ({count_left} left)',
                 data={
-                    'ball_name': self.item_list[str(current_ball)],
+                    'ball_name': self.inventory.get(current_ball).name,
                     'success_percentage': self._pct(catch_rate_by_ball[current_ball]),
-                    'count_left': items_stock[current_ball]
+                    'count_left': ball_count[current_ball]
                 }
             )
 
