@@ -454,6 +454,7 @@ def init_config():
     config.action_wait_min = load.get('action_wait_min', 1)
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
+    config.min_ultraball_to_keep = load.get('min_ultraball_to_keep', None)
 
     config.vips = load.get('vips', {})
 
