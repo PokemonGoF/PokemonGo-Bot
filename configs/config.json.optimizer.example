@@ -1,0 +1,105 @@
+{
+    "auth_service": "google",
+    "username": "YOUR_USERNAME",
+    "password": "YOUR_PASSWORD",
+    "location": "SOME_LOCATION",
+    "gmapkey": "GOOGLE_MAPS_API_KEY",
+    "tasks": [
+        {
+            "type": "HandleSoftBan"
+        },
+        {
+            "type": "CollectLevelUpReward"
+        },
+        {
+            "type": "IncubateEggs",
+            "config": {
+                "longer_eggs_first": true
+            }
+        },
+        {
+            "type": "PokemonOptimizer",
+            "config": {
+                "transfer": true,
+                "evolve": true,
+                "use_lucky_egg": true,
+                "evolve_only_with_lucky_egg": true,
+                "minimum_evolve_for_lucky_egg": 90,
+                "keep": [
+                    {
+                        "top": 1,
+                        "evolve": true,
+                        "// Available sorting keys are:": true,
+                        "// iv, cp, ncp, ivcp, max_cp, iv_attack, iv_defense, iv_stamina, hp_max, level": true,
+                        "sort": ["iv"]
+                    },
+                    {
+                        "top": 1,
+                        "evolve": true,
+                        "sort": ["ncp"]
+                    },
+                    {
+                        "top": 1,
+                        "evolve": false,
+                        "sort": ["cp"]
+                    }
+                ]
+            }
+        },
+        {
+            "type": "RecycleItems",
+            "config": {
+                "min_empty_space": 15,
+                "item_filter": {
+                    "Pokeball": { "keep": 100 },
+                    "Potion": { "keep": 10 },
+                    "Super Potion": { "keep": 20 },
+                    "Hyper Potion": { "keep": 30 },
+                    "Revive": { "keep": 30 },
+                    "Razz Berry": { "keep": 100 }
+                }
+            }
+        },
+        {
+            "type": "CatchVisiblePokemon"
+        },
+        {
+            "type": "CatchLuredPokemon"
+        },
+        {
+            "type": "SpinFort",
+            "config": {
+                "ignore_item_count": true
+            }
+        },
+        {
+            "type": "MoveToFort",
+            "config": {
+                "lure_attraction": false,
+                "lure_max_distance": 2000,
+                "ignore_item_count": true
+            }
+        }
+    ],
+    "map_object_cache_time": 5,
+    "forts": {
+        "avoid_circles": true,
+        "max_circle_size": 50
+    },
+    "websocket_server": true,
+    "walk": 4.16,
+    "action_wait_min": 1,
+    "action_wait_max": 4,
+    "debug": false,
+    "test": false,
+    "health_record": false,
+    "location_cache": true,
+    "distance_unit": "km",
+    "reconnecting_timeout": 15,
+    "logging_color": true,
+    "catch": {
+        "any": {
+            "always_catch": true
+        }
+    }
+}
