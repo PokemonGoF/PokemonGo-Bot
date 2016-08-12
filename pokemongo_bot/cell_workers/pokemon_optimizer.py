@@ -17,6 +17,7 @@ class PokemonOptimizer(BaseTask):
 
         self.config_transfer = self.config.get("transfer", False)
         self.config_evolve = self.config.get("evolve", False)
+        self.config_use_candies_for_xp = self.config.get("use_candies_for_xp", True)
         self.config_use_lucky_egg = self.config.get("use_lucky_egg", False)
         self.config_evolve_only_with_lucky_egg = self.config.get("evolve_only_with_lucky_egg", True)
         self.config_minimum_evolve_for_lucky_egg = self.config.get("minimum_evolve_for_lucky_egg", 90)
@@ -173,23 +174,27 @@ class PokemonOptimizer(BaseTask):
             next_evo.name = inventory.pokemons().name_for(next_pid)
             evolve_best.append(next_evo)
 
-        # Compute how many crap we should keep if we want to batch evolve them for xp
-        junior_evolution_cost = inventory.pokemons().evolution_cost_for(family_id)
+        if self.config_use_candies_for_xp:
+            # Compute how many crap we should keep if we want to batch evolve them for xp
+            junior_evolution_cost = inventory.pokemons().evolution_cost_for(family_id)
 
-        # transfer + keep_for_evo = len(crap)
-        # leftover_candies = candies - len(crap) + transfer * 1
-        # keep_for_evo = leftover_candies / junior_evolution_cost
-        #
-        # keep_for_evo = (candies - len(crap) + transfer) / junior_evolution_cost
-        # keep_for_evo = (candies - keep_for_evo) / junior_evolution_cost
+            # transfer + keep_for_evo = len(crap)
+            # leftover_candies = candies - len(crap) + transfer * 1
+            # keep_for_evo = leftover_candies / junior_evolution_cost
+            #
+            # keep_for_evo = (candies - len(crap) + transfer) / junior_evolution_cost
+            # keep_for_evo = (candies - keep_for_evo) / junior_evolution_cost
 
-        if (candies > 0) and junior_evolution_cost:
-            keep_for_evo = int(candies / (junior_evolution_cost + 1))
+            if (candies > 0) and junior_evolution_cost:
+                keep_for_evo = int(candies / (junior_evolution_cost + 1))
+            else:
+                keep_for_evo = 0
+
+            evo_crap = [p for p in crap if p.has_next_evolution() and p.evolution_cost == junior_evolution_cost][:keep_for_evo]
+            transfer = [p for p in crap if p not in evo_crap]
         else:
-            keep_for_evo = 0
-
-        evo_crap = [p for p in crap if p.has_next_evolution() and p.evolution_cost == junior_evolution_cost][:keep_for_evo]
-        transfer = [p for p in crap if p not in evo_crap]
+            evo_crap = []
+            transfer = crap
 
         return (transfer, can_evolve_best, evo_crap)
 
@@ -197,15 +202,30 @@ class PokemonOptimizer(BaseTask):
         for pokemon in transfer:
             self.transfer_pokemon(pokemon)
 
+        if self.config_evolve:
+            if len(evo) < self.config_minimum_evolve_for_lucky_egg:
+                self.logger.info("Skipping evolution step. Not enough Pokemons to evolve")
+                return
+
+        if self.config_evolve and (len(evo) < self.config_minimum_evolve_for_lucky_egg):
+            self.logger.info("Skipping evolution step. Not enough Pokemons to evolve")
+            return
+
         if self.config_evolve and self.config_use_lucky_egg:
+            if len(evo) == 0:
+                return
+
             lucky_egg = inventory.items().get(Item.ITEM_LUCKY_EGG.value)  # @UndefinedVariable
 
-            if lucky_egg.count == 0:
-                if self.config_evolve_only_with_lucky_egg:
-                    self.logger.info("Skipping evolution step. No lucky egg available")
-                    return
-            elif len(evo) >= self.config_minimum_evolve_for_lucky_egg:
-                self.use_lucky_egg()
+            if self.config_evolve_only_with_lucky_egg and (lucky_egg.count == 0):
+                self.logger.info("Skipping evolution step. No lucky egg available")
+                return
+
+            if len(evo) < self.config_minimum_evolve_for_lucky_egg:
+                self.logger.info("Skipping evolution step. Not enough Pokemons (%s) to evolve", len(evo))
+                return
+
+            self.use_lucky_egg()
 
         self.logger.info("Evolving %s Pokemons", len(evo))
 
@@ -231,30 +251,31 @@ class PokemonOptimizer(BaseTask):
     def use_lucky_egg(self):
         lucky_egg = inventory.items().get(Item.ITEM_LUCKY_EGG.value)  # @UndefinedVariable
 
-        if self.config_evolve and self.config_use_lucky_egg:
-            response_dict = self.bot.use_lucky_egg()
-            lucky_egg.remove(1)
-        else:
-            response_dict = {"responses": {"USE_ITEM_XP_BOOST": {"result": 1}}}
+        if lucky_egg.count == 0:
+            return
+
+        response_dict = self.bot.use_lucky_egg()
 
         if not response_dict:
             self.emit_event("lucky_egg_error",
                             level='error',
                             formatted="Failed to use lucky egg!")
-            return False
+            return
 
         result = response_dict.get("responses", {}).get("USE_ITEM_XP_BOOST", {}).get("result", 0)
 
         if result == 1:
+            lucky_egg.remove(1)
+
             self.emit_event("used_lucky_egg",
                             formatted="Used lucky egg ({amount_left} left).",
                             data={"amount_left": lucky_egg.count})
-            return True
+            return
         else:
             self.emit_event("lucky_egg_error",
                             level='error',
                             formatted="Failed to use lucky egg!")
-            return False
+            return
 
     def evolve_pokemon(self, pokemon):
         if self.config_evolve:
