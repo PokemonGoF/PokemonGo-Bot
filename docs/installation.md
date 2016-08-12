@@ -1,6 +1,6 @@
 #Install the bot
 ## Table of Contents
-- [Linux or Mac Automatic Installation](#Linux/Mac)
+- [Linux or Mac Automatic Installation](#linuxmac)
 - [Windows Automatic Installation](#windows)
 - [Docker Automatic Installation](#docker)
 
