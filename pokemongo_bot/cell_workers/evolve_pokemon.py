@@ -83,7 +83,7 @@ class EvolvePokemon(BaseTask):
             'and': lambda pokemon: pokemon.cp >= self.evolve_above_cp and pokemon.iv >= self.evolve_above_iv
         }
 
-        for pokemon in inventory.pokemons().all():
+        for pokemon in inventory.pokemons(True).all():
             if pokemon.id > 0 and pokemon.has_next_evolution() and (logic_to_function[self.cp_iv_logic](pokemon)):
                 pokemons.append(pokemon)
 
