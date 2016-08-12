@@ -115,6 +115,7 @@ class EvolvePokemon(BaseTask):
             inventory.candies().get(pokemon.pokemon_id).consume(pokemon.evolution_cost - awarded_candies)
             inventory.pokemons().remove(pokemon.id)
             pokemon = Pokemon(response_dict.get('responses', {}).get('EVOLVE_POKEMON', {}).get('evolved_pokemon_data', {}))
+            inventory.pokemons().add(pokemon)
             sleep(self.evolve_speed)
             return True
         else:
