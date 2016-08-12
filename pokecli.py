@@ -329,15 +329,6 @@ def init_config():
     add_config(
         parser,
         load,
-        short_flag="-ec",
-        long_flag="--evolve_captured",
-        help="(Ad-hoc mode) Pass \"all\" or a list of pokemon to evolve (e.g., \"Pidgey,Weedle,Caterpie\"). Bot will attempt to evolve all the pokemon captured!",
-        type=str,
-        default=[]
-    )
-    add_config(
-        parser,
-        load,
         short_flag="-rt",
         long_flag="--reconnecting_timeout",
         help="Timeout between reconnecting if error occured (in minutes, e.g. 15)",
@@ -403,6 +394,51 @@ def init_config():
         type=bool,
         default=True
     )
+    add_config(
+        parser,
+        load,
+        short_flag="-cte",
+        long_flag="--catch_throw_parameters.excellent_rate",
+        help="Define the odd of performing an excellent throw",
+        type=float,
+        default=1
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-ctg",
+        long_flag="--catch_throw_parameters.great_rate",
+        help="Define the odd of performing a great throw",
+        type=float,
+        default=0
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-ctn",
+        long_flag="--catch_throw_parameters.nice_rate",
+        help="Define the odd of performing a nice throw",
+        type=float,
+        default=0
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-ctm",
+        long_flag="--catch_throw_parameters.normal_rate",
+        help="Define the odd of performing a normal throw",
+        type=float,
+        default=0
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-cts",
+        long_flag="--catch_throw_parameters.spin_success_rate",
+        help="Define the odds of performing a spin throw (Value between 0 (never) and 1 (always))",
+        type=float,
+        default=1
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()
@@ -453,12 +489,8 @@ def init_config():
             task_configuration_error('{}.{}'.format(outer, inner))
             return None
 
-    if (config.evolve_captured
-        and (not isinstance(config.evolve_captured, str)
-             or str(config.evolve_captured).lower() in ["true", "false"])):
-        parser.error('"evolve_captured" should be list of pokemons: use "all" or "none" to match all ' +
-                     'or none of the pokemons, or use a comma separated list such as "Pidgey,Weedle,Caterpie"')
-        return None
+    if "evolve_captured" in load:
+        logger.warning('The evolve_captured argument is no longer supported. Please use the EvolvePokemon task instead')
 
     if not (config.location or config.location_cache):
         parser.error("Needs either --use-location-cache or --location.")
@@ -482,9 +514,6 @@ def init_config():
     except OSError:
         if not os.path.isdir(web_dir):
             raise
-
-    if config.evolve_captured and isinstance(config.evolve_captured, str):
-        config.evolve_captured = [str(pokemon_name).strip() for pokemon_name in config.evolve_captured.split(',')]
 
     fix_nested_config(config)
     return config
