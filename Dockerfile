@@ -1,7 +1,7 @@
 FROM python:2.7
 
 WORKDIR /usr/src/app
-VOLUME ["/usr/app/configs", "/usr/src/app/web"]
+VOLUME ["/usr/src/app/configs", "/usr/src/app/web"]
 
 ARG timezone=Etc/UTC
 RUN echo $timezone > /etc/timezone \
