@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+#encoding=utf8  
 pokebotpath=$(cd "$(dirname "$0")"; pwd)
 backuppath=$pokebotpath"/backup"
 
