@@ -417,15 +417,16 @@ class PokemonGoBot(object):
         # rename
         self.event_manager.register_event(
             'rename_pokemon',
-            parameters=(
-                'old_name', 'current_name'
-            )
+            parameters=('old_name', 'current_name',)
         )
         self.event_manager.register_event(
             'pokemon_nickname_invalid',
             parameters=('nickname',)
         )
-        self.event_manager.register_event('unset_pokemon_nickname')
+        self.event_manager.register_event(
+            'unset_pokemon_nickname',
+            parameters=('old_name',)
+        )
 
         # Move To map pokemon
         self.event_manager.register_event(
@@ -750,7 +751,8 @@ class PokemonGoBot(object):
         self.logger.info(
             'PokeBalls: ' + str(items_stock[1]) +
             ' | GreatBalls: ' + str(items_stock[2]) +
-            ' | UltraBalls: ' + str(items_stock[3]))
+            ' | UltraBalls: ' + str(items_stock[3]) +
+            ' | MasterBalls: ' + str(items_stock[4]))
 
         self.logger.info(
             'RazzBerries: ' + str(items_stock[701]) +

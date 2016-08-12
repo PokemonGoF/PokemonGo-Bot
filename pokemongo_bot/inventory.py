@@ -302,6 +302,7 @@ class LevelToCPm(_StaticInventoryComponent):
     def init_static_data(cls):
         super(LevelToCPm, cls).init_static_data()
         cls.MAX_CPM = cls.cp_multiplier_for(cls.MAX_LEVEL)
+        assert cls.MAX_CPM > .0
 
     @classmethod
     def cp_multiplier_for(cls, level):
@@ -688,8 +689,9 @@ class Pokemon(object):
         base_defense = self.static.base_defense
         base_stamina = self.static.base_stamina
 
-        self.name = Pokemons.name_for(self.pokemon_id)
-        self.nickname = data.get('nickname', self.name)
+        self.name = self.static.name
+        self.nickname_raw = data.get('nickname', '')
+        self.nickname = self.nickname_raw or self.name
 
         self.in_fort = 'deployed_fort_id' in data
         self.is_favorite = data.get('favorite', 0) is 1
@@ -697,7 +699,7 @@ class Pokemon(object):
         self.fast_attack = FastAttacks.data_for(data['move_1'])
         self.charged_attack = ChargedAttacks.data_for(data['move_2'])  # type: ChargedAttack
 
-        # Internal values (IV) perfection percent
+        # Individial values (IV) perfection percent
         self.iv = self._compute_iv_perfection()
 
         # IV CP perfection - kind of IV perfection percent but calculated
@@ -723,6 +725,10 @@ class Pokemon(object):
 
     def __repr__(self):
         return self.name
+
+    def update_nickname(self, new_nickname):
+        self.nickname_raw = new_nickname
+        self.nickname = self.nickname_raw or self.name
 
     def can_evolve_now(self):
         return self.has_next_evolution() and \
@@ -945,8 +951,8 @@ class Moveset(object):
         # DPS for attack (counting STAB)
         self.dps_attack = (fm_damage + chm_damage) / (fm_secs + chm_secs)
 
-        # Moveset perfection percent attack and for defense
-        # Calculated for current pokemon, not between all pokemons
+        # Moveset perfection percent for attack and for defense
+        # Calculated for current pokemon kind only, not between all pokemons
         # So 100% perfect moveset can be weak if pokemon is weak (e.g. Caterpie)
         self.attack_perfection = .0
         self.defense_perfection = .0
@@ -982,7 +988,6 @@ class Inventory(object):
         user_web_inventory = os.path.join(_base_dir, 'web', 'inventory-%s.json' % (self.bot.config.username))
         with open(user_web_inventory, 'w') as outfile:
             json.dump(inventory, outfile)
-
     def retrieve_item_inventory_size(self):
         """
         Retrieves the item inventory size
@@ -994,26 +999,24 @@ class Inventory(object):
            self.item_inventory_size = self.bot.api.get_player()['responses']['GET_PLAYER']['player_data']['max_item_storage']
 
 
-
 #
-# Usage helpers
+# Other
 
 # STAB (Same-type attack bonus)
+# Factor applied to attack of the same type as pokemon
 STAB_FACTOR = 1.25
+# Factor applied to attack when it's effective against defending pokemon type
 EFFECTIVENESS_FACTOR = 1.25
+# Factor applied to attack when it's weak against defending pokemon type
 RESISTANCE_FACTOR = 0.8
 
 
 _inventory = None  # type: Inventory
-Types()  # init Types
-LevelToCPm()  # init LevelToCPm
-FastAttacks()  # init FastAttacks
-ChargedAttacks()  # init ChargedAttacks
 
 
 def _calc_cp(base_attack, base_defense, base_stamina,
              iv_attack=15, iv_defense=15, iv_stamina=15,
-             cp_multiplier=LevelToCPm.MAX_CPM):
+             cp_multiplier=.0):
     """
     CP calculation
 
@@ -1035,11 +1038,30 @@ def _calc_cp(base_attack, base_defense, base_stamina,
     :param cp_multiplier: CP Multiplier (0.79030001 is max - value for level 40)
     :return: CP as float
     """
+    assert base_attack > 0
+    assert base_defense > 0
+    assert base_stamina > 0
+
+    if cp_multiplier <= .0:
+        cp_multiplier = LevelToCPm.MAX_CPM
+        assert cp_multiplier > .0
+
     return (base_attack + iv_attack) \
         * ((base_defense + iv_defense)**0.5) \
         * ((base_stamina + iv_stamina)**0.5) \
         * (cp_multiplier ** 2) / 10
 
+
+# Initialize static data in the right order
+Types()  # init Types
+LevelToCPm()  # init LevelToCPm
+FastAttacks()  # init FastAttacks
+ChargedAttacks()  # init ChargedAttacks
+Pokemons()  # init Pokemons
+
+
+#
+# Usage helpers
 
 def init_inventory(bot):
     global _inventory

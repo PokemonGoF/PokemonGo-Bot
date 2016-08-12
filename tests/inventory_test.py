@@ -130,6 +130,7 @@ class InventoryTest(unittest.TestCase):
         assert poke.is_favorite
         self.assertEqual(poke.name, 'Golbat')
         self.assertEqual(poke.nickname, "Golb")
+        self.assertEqual(poke.nickname_raw, poke.nickname)
         self.assertAlmostEqual(poke.moveset.dps, 10.7540173053)
         self.assertAlmostEqual(poke.moveset.dps_attack, 12.14462299)
         self.assertAlmostEqual(poke.moveset.dps_defense, 4.876681614)
@@ -147,7 +148,8 @@ class InventoryTest(unittest.TestCase):
         self.assertAlmostEqual(poke.cp_percent, 0.183759867)
         self.assertFalse(poke.is_favorite)
         self.assertEqual(poke.name, 'Rattata')
-        self.assertEqual(poke.nickname, 'Rattata')
+        self.assertEqual(poke.nickname, poke.name)
+        self.assertEqual(poke.nickname_raw, '')
         self.assertAlmostEqual(poke.moveset.dps, 12.5567813108)
         self.assertAlmostEqual(poke.moveset.dps_attack, 15.6959766385)
         self.assertAlmostEqual(poke.moveset.dps_defense, 5.54282440561)
