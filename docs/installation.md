@@ -33,12 +33,11 @@ note: we do not support windows at this time
 - Linux: `apt-get install python-protobuf`
 
 ### Get encrypt.so (Windows part writing need fine tune)
-We don't have the copyright of encrypt.so, please grab from internet and build your self.Take the risk as your own.
-Example build sequence:
-Create a new separate folder some here
+Due to copywrite on the encrypt.so we are not directly hosting it. Please find a copy elsewhere on the internet and compile it yourself. We accept no responsibility should you encounter any problems with files you download elsewhere.
 
-wget http://pgoapi.com/pgoencrypt.tar.gz && tar -xf pgoencrypt.tar.gz && cd pgoencrypt/src/ && make
-Then copy libencrypt.so to the gofbot folder and rename to encrypt.so
+Ensure you are in the PokemonGo-Bot main folder and run:
+
+`wget http://pgoapi.com/pgoencrypt.tar.gz && tar -xf pgoencrypt.tar.gz && cd pgoencrypt/src/ && make && mv libencrypt.so ../../encrypt.so && cd ../..`
 
 ### Note on branch
 Please keep in mind that master is not always up-to-date whereas 'dev' is. In the installation note below change `master` to `dev` if you want to get and use the latest version.
