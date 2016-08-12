@@ -6,7 +6,7 @@
 - [Windows](#windows)
 
 ### Linux
-####We use Ubuntu for the example
+We use Ubuntu for this example
 ```bash
 ##install
 #change to root
@@ -71,7 +71,6 @@ if you are on a different Linux OS you maybe have to adapt things like:
 
 
 ### Mac
-(change master to dev for the latest version)
 
 ```bash
 ##install
@@ -129,10 +128,8 @@ source bin/activate
 ./run.sh configs/config.json
 ```
 
-### Installation Windows
-(change master to dev for the latest version)
-
-On Windows, you will need to install PyYaml through the installer and not through requirements.txt.
+### Windows
+WIP
 
 ##### Windows vista, 7, 8:
 Go to : http://pyyaml.org/wiki/PyYAML , download the right version for your pc and install it
