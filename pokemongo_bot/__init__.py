@@ -459,10 +459,7 @@ class PokemonGoBot(object):
 
         # cached recent_forts
         self.event_manager.register_event('loaded_cached_forts')
-        self.event_manager.register_event(
-            'cached_fort',
-            parameters=('fort_id', )
-        )
+        self.event_manager.register_event('cached_fort')
         self.event_manager.register_event(
             'no_cached_forts',
             parameters=('path', )

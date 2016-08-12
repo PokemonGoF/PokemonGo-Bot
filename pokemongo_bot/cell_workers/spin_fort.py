@@ -89,7 +89,7 @@ class SpinFort(BaseTask):
                 pokestop_cooldown = spin_details.get(
                     'cooldown_complete_timestamp_ms')
                 self.bot.fort_timeouts.update({fort["id"]: pokestop_cooldown})
-                self.update_recent_forts(fort)
+                self.bot.recent_forts = self.bot.recent_forts[1:] + [fort['id']]
             elif spin_result == 2:
                 self.emit_event(
                     'pokestop_out_of_range',
@@ -165,27 +165,3 @@ class SpinFort(BaseTask):
         ) <= Constants.MAX_DISTANCE_FORT_IS_REACHABLE, forts)
 
         return forts
-
-    def update_recent_forts(self, fort):
-        self.bot.recent_forts = self.bot.recent_forts[1:] + [fort['id']]
-
-        if self.bot.config.forts_cache_recent_forts:
-            cached_forts_path = os.path.join(
-                _base_dir, 'data', 'recent-forts-%s.json' % self.bot.config.username
-            )
-            try:
-                with open(cached_forts_path, 'w') as outfile:
-                    json.dump(self.bot.recent_forts, outfile)
-                self.emit_event(
-                    'cached_fort',
-                    level='debug',
-                    formatted='Cached fort {fort_id}',
-                    data={'fort_id': fort["id"]}
-                )
-            except IOError as e:
-                self.emit_event(
-                    'error_caching_forts',
-                    level='debug',
-                    formatted='Error caching forts for {path}',
-                    data={'path': cached_forts_path}
-                )

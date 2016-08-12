@@ -33,6 +33,7 @@ import os
 import ssl
 import sys
 import time
+import signal
 from datetime import timedelta
 from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException
@@ -58,10 +59,16 @@ logging.basicConfig(
 logger = logging.getLogger('cli')
 logger.setLevel(logging.INFO)
 
+class SIGINTRecieved(Exception): pass
+
 def main():
     bot = False
 
     try:
+        def handle_sigint(*args):
+            raise SIGINTRecieved
+        signal.signal(signal.SIGINT, handle_sigint)
+
         logger.info('PokemonGO Bot v1.0')
         sys.stdout = codecs.getwriter('utf8')(sys.stdout)
         sys.stderr = codecs.getwriter('utf8')(sys.stderr)
@@ -95,7 +102,7 @@ def main():
                 while True:
                     bot.tick()
 
-            except KeyboardInterrupt:
+            except (KeyboardInterrupt, SIGINTRecieved):
                 bot.event_manager.emit(
                     'bot_exit',
                     sender=bot,
@@ -138,6 +145,32 @@ def main():
             report_summary(bot)
 
         raise
+    finally:
+        # Cache here on SIGTERM, or Exception.  Check data is available and worth caching.
+        if bot:
+            if bot.recent_forts[-1] is not None and bot.config.forts_cache_recent_forts:
+                cached_forts_path = os.path.join(
+                    _base_dir, 'data', 'recent-forts-%s.json' % bot.config.username
+                )
+                try:
+                    with open(cached_forts_path, 'w') as outfile:
+                        json.dump(bot.recent_forts, outfile)
+                    bot.event_manager.emit(
+                        'cached_fort',
+                        sender=bot,
+                        level='debug',
+                        formatted='Forts cached.',
+                    )
+                except IOError as e:
+                    bot.event_manager.emit(
+                        'error_caching_forts',
+                        sender=bot,
+                        level='debug',
+                        formatted='Error caching forts for {path}',
+                        data={'path': cached_forts_path}
+                        )
+
+
 
 def report_summary(bot):
     if bot.metrics.start_time is None:
