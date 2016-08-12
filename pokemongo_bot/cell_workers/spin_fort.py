@@ -10,6 +10,7 @@ from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
 from utils import distance, format_time, fort_details
+from pokemongo_bot import inventory
 
 
 class SpinFort(BaseTask):
@@ -58,6 +59,8 @@ class SpinFort(BaseTask):
                 items_awarded = spin_details.get('items_awarded', {})
                 if items_awarded:
                     self.bot.latest_inventory = None
+                    inventory.refresh_inventory()
+
                     tmp_count_items = {}
                     for item in items_awarded:
                         item_id = item['item_id']
