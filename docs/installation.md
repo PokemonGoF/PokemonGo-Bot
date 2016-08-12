@@ -30,7 +30,6 @@ note: we do not support windows at this time
 
 - OS X:  `brew update && brew install --devel protobuf`
 - Windows: Download protobuf 3.0: [here](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip) and unzip `bin/protoc.exe` into a folder in your PATH.
-- Linux: `apt-get install python-protobuf`
 
 ### Get encrypt.so (Windows part writing need fine tune)
 Due to copywrite on the encrypt.so we are not directly hosting it. Please find a copy elsewhere on the internet and compile it yourself. We accept no responsibility should you encounter any problems with files you download elsewhere.
