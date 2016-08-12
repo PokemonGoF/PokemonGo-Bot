@@ -215,6 +215,7 @@ class PokemonCatchWorker(BaseTask):
             encounter_id=encounter_id,
             spawn_point_id=self.spawn_point_guid
         )
+	inventory.refresh_inventory()
         responses = response_dict['responses']
 
         if response_dict and response_dict['status_code'] == 1:
