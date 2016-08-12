@@ -6,7 +6,6 @@
 
 
 #Linux/Mac
-
 ### Requirements (click each one for install guide)
 - [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/)
 - [pip](https://pip.pypa.io/en/stable/installing/)
