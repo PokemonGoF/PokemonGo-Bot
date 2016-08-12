@@ -1,42 +1,48 @@
-Start by downloading for your platform: [Mac](https://www.docker.com/products/docker#/mac), [Windows](https://www.docker.com/products/docker#/windows), or [Linux](https://www.docker.com/products/docker#/linux). Once you have Docker installed, simply create the various config.json files for your different accounts (e.g. `configs/config-account1.json`) and then create a Docker image for PokemonGo-Bot using the Dockerfile in this [repo](https://hub.docker.com/r/svlentink/pokemongo-bot/).
+Start by downloading for your platform: [Mac](https://www.docker.com/products/docker#/mac), [Windows](https://www.docker.com/products/docker#/windows), or [Linux](https://www.docker.com/products/docker#/linux). 
 
-#Setup
-##Automatic setup
-Use this docker hub url: https://hub.docker.com/r/svlentink/pokemongo-bot/
-```
-docker pull svlentink/pokemongo-bot
-```
+Once you have Docker installed, simply create the various config files for your different accounts (e.g. `configs/config.json`, `configs/userdata.js`) and then create a Docker image for PokemonGo-Bot using the Dockerfile in this repo.
 
-##Manual setup
 ```
 cd PokemonGo-Bot
-docker build -t pokemongo-bot .
+docker build --build-arg timezone=Europe/London -t pokemongo-bot .
 ```
 
-#Run
+Optionally you can set your timezone with the --build-arg option (default is Etc/UTC) 
 
-You can verify that the image was created with:
+After build process you can verify that the image was created with:
+
 ```
 docker images
 ```
-- In case of automatic setup, you'll see an image called: `svlentink/pokemongo-bot`
-- In case of manual setup, you'll see an image called: `pokemongo-bot`
 
-To run PokemonGo-Bot Docker image you've created, simple run:
+To run PokemonGo-Bot Docker image you've created:
+
 ```
-docker run --name=pokego-bot1 --rm -it -v $(pwd)/configs/config-account1.json:/usr/src/app/configs/config.json -v $(pwd)/data:/usr/src/app/data pokemongo-bot
+docker run --name=bot1-pokego --rm -it -v $(pwd)/configs/config.json:/usr/src/app/configs/config.json pokemongo-bot
 ```
 
-Replace `pokemongo-bot` with `svlentink/pokemongo-bot` in case you followed automatic setup.
+Run a second container provided with the OpenPoGoBotWeb view:
 
-_Check the logs in real-time `docker logs -f pgobot`_
+```
+docker run --name=bot1-pokegoweb --rm -it --volumes-from bot1-pokego -p 8000:8000 -v $(pwd)/configs/userdata.js:/usr/src/app/web/userdata.js -w /usr/src/app/web python:2.7 python -m SimpleHTTPServer
+```
+The OpenPoGoWeb will be served on `http://<your host>:8000`
 
-If you want to run multiple accounts with the same Docker image, simply specify different config.json and names in the Docker run command.
+if docker-compose [installed](https://docs.docker.com/compose/install/) you can alternatively run the PokemonGo-Bot ecosystem with one simple command:  
+(by using the docker-compose.yml configuration in this repo)
+
+```
+docker-compose up
+```
+
+Also run one single service from the compose configuration is possible:
+
+```
+docker-compose run --rm bot1-pokego
+```
+
+command for remove all stopped containers: `docker-compose rm`
+
+TODO: Add infos / configuration for running multiple bot instances.
+
 Do not push your image to a registry with your config.json and account details in it!
-
-Share web folder with host:
-```
-docker run -it -v $(pwd)/web/:/usr/src/app/web --rm --name=pgo-bot-acct1 pokemongo-bot --config config.json
-```
-
-TODO: Add configuration for running multiple Docker containers from the same image for every bot instance, and a single container for the web UI.

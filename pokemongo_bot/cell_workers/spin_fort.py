@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import json
+import os
 import time
 
 from pgoapi.utilities import f2i
@@ -9,6 +11,7 @@ from pokemongo_bot.constants import Constants
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
+from pokemongo_bot.base_dir import _base_dir
 from utils import distance, format_time, fort_details
 
 
