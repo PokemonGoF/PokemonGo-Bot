@@ -166,7 +166,7 @@ class PokemonOptimizer(BaseTask):
             can_evolve_best.append(pokemon)
 
             # Not sure if the evo keep the same id
-            next_pid = pokemon.next_evolution_id
+            next_pid = pokemon.next_evolution_ids[0]
             next_evo = copy.copy(pokemon)
             next_evo.pokemon_id = next_pid
             next_evo._static_data = inventory.pokemons().data_for(next_pid)
