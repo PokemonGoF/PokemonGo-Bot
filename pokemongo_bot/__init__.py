@@ -670,7 +670,7 @@ class PokemonGoBot(object):
 
         full_path = path + '/'+ file_name
         if not os.path.isfile(full_path):
-            self.logger.error(file_name + ' is not found! Please place it in the bots root directory or set libencrypt_location in config.')
+            self.logger.error(file_name + ' is not found! Please place it in the bots root directory or set encrypt_location in config.')
             self.logger.info('Platform: '+ _platform + ' Encrypt.so directory: '+ path)
             sys.exit(1)
         else:
