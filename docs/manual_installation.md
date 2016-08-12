@@ -30,8 +30,10 @@ rm -f get-pip.py
 ```
 - switch to the location where you want to install it
 - get git Repository and switch into the downloaded Folder
+- 
+(Please keep in mind that master is not always up-to-date whereas 'dev' is. In the installation note below change `master` to `dev` if you want to get and use the latest version.)
 ```bash
-git clone --recursive -b dev https://github.com/PokemonGoF/PokemonGo-Bot  
+git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot  
 cd PokemonGo-Bot
 ```
 - install virtualenv and activate it
@@ -116,10 +118,8 @@ $ git submodule update
 
 
 
-### Protobuf 3 installation
-
-- OS X:  `brew update && brew install --devel protobuf`
-- Windows: Download protobuf 3.0: [here](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip) and unzip `bin/protoc.exe` into a folder in your PATH.
+### Protobuf 3 installation Windows
+Download protobuf 3.0: [here](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip) and unzip `bin/protoc.exe` into a folder in your PATH.
 
 ### Get encrypt.so (Windows part writing need fine tune)
 Due to copywrite on the encrypt.so we are not directly hosting it. Please find a copy elsewhere on the internet and compile it yourself. We accept no responsibility should you encounter any problems with files you download elsewhere.
@@ -128,11 +128,7 @@ Ensure you are in the PokemonGo-Bot main folder and run:
 
 `wget http://pgoapi.com/pgoencrypt.tar.gz && tar -xf pgoencrypt.tar.gz && cd pgoencrypt/src/ && make && mv libencrypt.so ../../encrypt.so && cd ../..`
 
-### Note on branch
-Please keep in mind that master is not always up-to-date whereas 'dev' is. In the installation note below change `master` to `dev` if you want to get and use the latest version.
-
 ## Update
 To update your project do (in the project folder): `git pull`
 
 To update python requirement packages do (in the project folder): `pip install --upgrade -r requirements.txt`
-
