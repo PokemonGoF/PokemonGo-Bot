@@ -9,8 +9,10 @@ from pokemongo_bot.inventory import Pokemons
 
 class TransferPokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
-
+    def initialize(self):
+	self.should_update_inventory=False
     def work(self):
+	self.should_update_inventory=False
         pokemon_groups = self._release_pokemon_get_groups()
         for pokemon_id, group in pokemon_groups.iteritems():
             pokemon_name = Pokemons.name_for(pokemon_id)
@@ -57,16 +59,19 @@ class TransferPokemon(BaseTask):
                             }
                         )
                     for pokemon in transfer_pokemons:
-                        self.release_pokemon(pokemon)
+                        self.release_pokemon(pokemon)   
+			
             else:
                 group = sorted(group, key=lambda x: x.cp, reverse=True)
                 for pokemon in group:
                     if self.should_release_pokemon(pokemon):
                         self.release_pokemon(pokemon)
-
+        
+        if self.should_update_inventory==True:
+                inventory.refresh_inventory()
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
-        for pokemon in inventory.pokemons(True).all():
+        for pokemon in inventory.pokemons(False).all():
             if pokemon.in_fort or pokemon.is_favorite:
                 continue
 
@@ -139,6 +144,7 @@ class TransferPokemon(BaseTask):
                 candy_awarded = 1
             else:
                 response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon.id)
+                self.should_update_inventory=True
                 candy_awarded = response_dict['responses']['RELEASE_POKEMON']['candy_awarded']
         except KeyError:
             return
