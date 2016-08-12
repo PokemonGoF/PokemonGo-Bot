@@ -1,5 +1,6 @@
 from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot.inventory import Pokemon
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.base_task import BaseTask
 
@@ -110,7 +111,10 @@ class EvolvePokemon(BaseTask):
                     'xp': 0
                 }
             )
-            inventory.candies().get(pokemon.pokemon_id).consume(pokemon.evolution_cost)
+            awarded_candies = response_dict.get('responses', {}).get('EVOLVE_POKEMON', {}).get('candy_awarded', 0)
+            inventory.candies().get(pokemon.pokemon_id).consume(pokemon.evolution_cost - awarded_candies)
+            inventory.pokemons().remove(pokemon.id)
+            pokemon = Pokemon(response_dict.get('responses', {}).get('EVOLVE_POKEMON', {}).get('evolved_pokemon_data', {}))
             sleep(self.evolve_speed)
             return True
         else:
