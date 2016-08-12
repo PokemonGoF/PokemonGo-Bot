@@ -53,6 +53,7 @@ class ColoredLoggingHandler(EventHandler):
         'unknown_spin_result':               'red',
         'unset_pokemon_nickname':            'red',
         'vip_pokemon':                       'red',
+        'use_incense':                       'blue',
 
         # event names for 'white' still here to remember that these events are already determined its color.
         'arrived_at_cluster':                'white',

@@ -23,6 +23,19 @@
         "type": "CollectLevelUpReward"
       },
       {
+        "type": "UseIncense",
+        "config": {
+          "use_incense": false,
+          "use_order": [
+            "ordinary",
+            "spicy",
+            "cool",
+            "floral"
+                 
+          ]
+        }
+      },      
+      {
         "type": "IncubateEggs",
         "config": {
           "longer_eggs_first": true

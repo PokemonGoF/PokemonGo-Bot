@@ -19,3 +19,4 @@ from collect_level_up_reward import CollectLevelUpReward
 from follow_cluster import FollowCluster
 from sleep_schedule import SleepSchedule
 from update_live_stats import UpdateLiveStats
+from use_incense import UseIncense

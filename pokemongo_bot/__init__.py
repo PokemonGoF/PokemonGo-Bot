@@ -457,6 +457,7 @@ class PokemonGoBot(object):
             'move_to_map_pokemon_teleport_back',
             parameters=('last_lat', 'last_lon')
         )
+        self.event_manager.register_event('use_incense')        
 
         # cached recent_forts
         self.event_manager.register_event('loaded_cached_forts')
