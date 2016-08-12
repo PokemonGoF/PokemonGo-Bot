@@ -8,8 +8,6 @@ RUN echo $timezone > /etc/timezone \
     && ln -sfn /usr/share/zoneinfo/$timezone /etc/localtime \
     && dpkg-reconfigure -f noninteractive tzdata
 
-RUN apt-get update \
-    && apt-get install -y python-protobuf
 RUN cd /tmp && wget "http://pgoapi.com/pgoencrypt.tar.gz" \
     && tar zxvf pgoencrypt.tar.gz \
     && cd pgoencrypt/src \
