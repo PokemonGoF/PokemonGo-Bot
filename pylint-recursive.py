@@ -53,7 +53,7 @@ if __name__ == "__main__":
   print "Passed: " + str(passed) + " Failed: " + str(failed)
   print "\n"
   print "Showing errors:"
-  if (str(failed)):
+  if failed > 0:
     for err in errors:
       print err
 
