@@ -367,7 +367,7 @@ class PokemonCatchWorker(BaseTask):
                         'encounter_id': self.pokemon['encounter_id'],
                         'latitude': self.pokemon['latitude'],
                         'longitude': self.pokemon['longitude'],
-                        'pokemon_id': pokemon.num
+                        'pokemon_id': pokemon.id
                     }
                 )
                 if self._pct(catch_rate_by_ball[current_ball]) == 100:
