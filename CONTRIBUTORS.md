@@ -42,4 +42,30 @@
  * SpaceWhale
  * klingan
  * reddivision
+ * DayBr3ak
  * kbinani
+ * mhdasding
+ * MFizz
+ * NamPNQ
+ * z4ppy.bbc
+ * matheussampaio
+ * Abraxas000
+ * lucasfevi
+ * pokepal
+ * Moonlight-Angel
+ * mjmadsen
+ * nikofil
+ * bigkraig
+ * nikhil-pandey
+ * thebigjc
+ * JaapMoolenaar
+ * eevee-github
+ * g0vanish
+ * cmezh
+ * Nivong
+ * kestel
+ * simonsmh
+ * joaodragao
+ * extink
+ * Quantra
+ * pmquan

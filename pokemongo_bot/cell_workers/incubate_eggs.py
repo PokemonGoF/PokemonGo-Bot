@@ -1,12 +1,13 @@
-from pokemongo_bot import logger
 from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot.base_task import BaseTask
 
 
-class IncubateEggs(object):
+class IncubateEggs(BaseTask):
+    SUPPORTED_TASK_API_VERSION = 1
+
     last_km_walked = 0
 
-    def __init__(self, bot):
-        self.bot = bot
+    def initialize(self):
         self.ready_incubators = []
         self.used_incubators = []
         self.eggs = []
@@ -14,10 +15,12 @@ class IncubateEggs(object):
         self.hatching_animation_delay = 4.20
         self.max_iv = 45.0
 
-    def work(self):
-        if not self.bot.config.hatch_eggs:
-            return
+        self._process_config()
 
+    def _process_config(self):
+        self.longer_eggs_first = self.config.get("longer_eggs_first", True)
+
+    def work(self):
         try:
             self._check_inventory()
         except:
@@ -29,10 +32,16 @@ class IncubateEggs(object):
             if km_left <= 0:
                 self._hatch_eggs()
             else:
-                logger.log('[x] Next egg incubates in {:.2f} km'.format(km_left),'yellow')
+                self.emit_event(
+                    'next_egg_incubates',
+                    formatted='Next egg incubates in {distance_in_km:.2f} km',
+                    data={
+                        'distance_in_km': km_left
+                    }
+                )
             IncubateEggs.last_km_walked = self.km_walked
 
-        sorting = self.bot.config.longer_eggs_first
+        sorting = self.longer_eggs_first
         self.eggs.sort(key=lambda x: x.get("km"), reverse=sorting)
 
         if self.ready_incubators:
@@ -40,28 +49,51 @@ class IncubateEggs(object):
 
     def _apply_incubators(self):
         for incubator in self.ready_incubators:
+            if incubator.get('used', False):
+                continue
             for egg in self.eggs:
                 if egg["used"] or egg["km"] == -1:
                     continue
-                if self.bot.config.debug:
-                    logger.log('[x] Attempting to apply incubator {} to egg {}'.format(incubator['id'], egg['id']))
-                self.bot.api.use_item_egg_incubator(item_id=incubator["id"], pokemon_id=egg["id"])
-                ret = self.bot.api.call()
+                self.emit_event(
+                    'incubate_try',
+                    level='debug',
+                    formatted="Attempting to apply incubator {incubator_id} to egg {egg_id}",
+                    data={
+                        'incubator_id': incubator['id'],
+                        'egg_id': egg['id']
+                    }
+                )
+                ret = self.bot.api.use_item_egg_incubator(
+                    item_id=incubator["id"],
+                    pokemon_id=egg["id"]
+                )
                 if ret:
                     code = ret.get("responses", {}).get("USE_ITEM_EGG_INCUBATOR", {}).get("result", 0)
                     if code == 1:
-                        logger.log('[x] Now incubating a ' + str(egg["km"]) + "km egg", 'green')
+                        self.emit_event(
+                            'incubate',
+                            formatted='Incubating a {distance_in_km} egg.',
+                            data={
+                                'distance_in_km': str(egg['km'])
+                            }
+                        )
                         egg["used"] = True
                         incubator["used"] = True
                         break
                     elif code == 5 or code == 7:
-                        if self.bot.config.debug:
-                            logger.log('[x] Incubator already in use')
+                        self.emit_event(
+                            'incubator_already_used',
+                            level='debug',
+                            formatted='Incubator in use.',
+                        )
                         incubator["used"] = True
                         break
                     elif code == 6:
-                        if self.bot.config.debug:
-                            logger.log('[x] Egg already incubating')
+                        self.emit_event(
+                            'egg_already_incubating',
+                            level='debug',
+                            formatted='Egg already incubating',
+                        )
                         egg["used"] = True
 
     def _check_inventory(self, lookup_ids=[]):
@@ -104,15 +136,13 @@ class IncubateEggs(object):
                         "used": False
                     })
                 elif 'is_egg' not in pokemon and pokemon['id'] in lookup_ids:
-                    matched_pokemon.append({
-                        "pokemon_id": pokemon.get('pokemon_id', -1),
-                        "cp": pokemon.get('cp', 0),
+                    pokemon.update({
                         "iv": [
                             pokemon.get('individual_attack', 0),
                             pokemon.get('individual_defense', 0),
                             pokemon.get('individual_stamina', 0)
-                        ]
-                    })
+                        ]})
+                    matched_pokemon.append(pokemon)
                 continue
             if "player_stats" in inv_data:
                 self.km_walked = inv_data.get("player_stats", {}).get("km_walked", 0)
@@ -125,8 +155,7 @@ class IncubateEggs(object):
         return matched_pokemon
 
     def _hatch_eggs(self):
-        self.bot.api.get_hatched_eggs()
-        response_dict = self.bot.api.call()
+        response_dict = self.bot.api.get_hatched_eggs()
         log_color = 'green'
         try:
             result = reduce(dict.__getitem__, ["responses", "GET_HATCHED_EGGS"], response_dict)
@@ -145,22 +174,38 @@ class IncubateEggs(object):
             for pokemon in pokemon_data:
                 # pokemon ids seem to be offset by one
                 if pokemon['pokemon_id']!=-1:
-                    pokemon['name'] = self.bot.pokemon_list[(pokemon['pokemon_id']-1)]['Name']
+                    pokemon['name'] = self.bot.pokemon_list[(pokemon.get('pokemon_id')-1)]['Name']
                 else:
                     pokemon['name'] = "error"
         except:
             pokemon_data = [{"name":"error","cp":"error","iv":"error"}]
-        logger.log("-"*30, log_color)
         if not pokemon_ids or pokemon_data[0]['name'] == "error":
-            logger.log("[!] Eggs hatched, but we had trouble with the response. Please check your inventory to find your new pokemon!",'red')
+            self.emit_event(
+                'egg_hatched',
+                data={
+                    'pokemon': 'error',
+                    'cp': 'error',
+                    'iv': 'error',
+                    'exp': 'error',
+                    'stardust': 'error',
+                    'candy': 'error',
+                }
+            )
             return
-        logger.log("[!] {} eggs hatched! Received:".format(len(pokemon_data)), log_color)
         for i in range(len(pokemon_data)):
-            logger.log("-"*30,log_color)
-            logger.log("[!] Pokemon: {}".format(pokemon_data[i]['name']), log_color)
-            logger.log("[!] CP: {}".format(pokemon_data[i]['cp']), log_color)
-            logger.log("[!] IV: {} ({:.2f})".format("/".join(map(str, pokemon_data[i]['iv'])),(sum(pokemon_data[i]['iv'])/self.max_iv)), log_color)
-            logger.log("[!] XP: {}".format(xp[i]), log_color)
-            logger.log("[!] Stardust: {}".format(stardust[i]), log_color)
-            logger.log("[!] Candy: {}".format(candy[i]), log_color)
-        logger.log("-"*30, log_color)
+            msg = "Egg hatched with a {pokemon} (CP {cp} - IV {iv}), {exp} exp, {stardust} stardust and {candy} candies."
+            self.emit_event(
+                'egg_hatched',
+                formatted=msg,
+                data={
+                    'pokemon': pokemon_data[i]['name'],
+                    'cp': pokemon_data[i]['cp'],
+                    'iv': "{} {}".format(
+                        "/".join(map(str, pokemon_data[i]['iv'])),
+                        sum(pokemon_data[i]['iv'])/self.max_iv
+                    ),
+                    'exp': xp[i],
+                    'stardust': stardust[i],
+                    'candy': candy[i],
+                }
+            )

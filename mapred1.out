@@ -1,0 +1,26 @@
+2016-08-10 22:01:26,235 [       cli] [INFO] PokemonGO Bot v1.0
+2016-08-10 22:01:26,247 [       cli] [INFO] Configuration initialized
+
+[22:01:26] Setting start location.2016-08-10 22:01:26,311 [PokemonGoBot] [INFO] [x] Coordinates found in passed in location, not geocoding.
+
+[22:01:26] Location found: 35.712184, 139.771349 (35.712184, 139.771349, 0.0)
+[22:01:26] Now at (35.712184, 139.771349, 0.0)
+[22:01:26] Loading cached location...
+[22:01:26] Going to a new place, ignoring cached location.
+[22:01:26] Login procedure started.
+[22:01:28] Login successful.2016-08-10 22:01:28,575 [PokemonGoBot] [INFO] 
+2016-08-10 22:01:28,576 [PokemonGoBot] [INFO] --- l3loodyMary ---
+2016-08-10 22:01:28,576 [PokemonGoBot] [INFO] Level: 26 (Next Level: 152245 XP) (Total: 947755 XP)
+2016-08-10 22:01:28,576 [PokemonGoBot] [INFO] Pokemon Captured: 3669 | Pokestops Visited: 4074
+2016-08-10 22:01:28,577 [PokemonGoBot] [INFO] Pokemon Bag: 138/250
+2016-08-10 22:01:28,577 [PokemonGoBot] [INFO] Items: 193/350
+2016-08-10 22:01:28,577 [PokemonGoBot] [INFO] Stardust: 434092 | Pokecoins: 0
+2016-08-10 22:01:28,577 [PokemonGoBot] [INFO] PokeBalls: 20 | GreatBalls: 30 | UltraBalls: 60
+2016-08-10 22:01:28,577 [PokemonGoBot] [INFO] RazzBerries: 30 | BlukBerries: 0 | NanabBerries: 0
+2016-08-10 22:01:28,578 [PokemonGoBot] [INFO] LuckyEgg: 6 | Incubator: 0 | TroyDisk: 6
+2016-08-10 22:01:28,578 [PokemonGoBot] [INFO] Potion: 0 | SuperPotion: 0 | HyperPotion: 0 | MaxPotion: 30
+2016-08-10 22:01:28,578 [PokemonGoBot] [INFO] Incense: 9 | IncenseSpicy: 0 | IncenseCool: 0
+2016-08-10 22:01:28,578 [PokemonGoBot] [INFO] Revive: 0 | MaxRevive: 0
+2016-08-10 22:01:28,578 [PokemonGoBot] [INFO] 
+2016-08-10 22:01:28,578 [PokemonGoBot] [ERROR] encrypt.so is not found! Please place it in the bots root directory or set libencrypt_location in config.
+2016-08-10 22:01:28,578 [PokemonGoBot] [INFO] Platform: linux2 Encrypt.so directory: ./

@@ -42,6 +42,14 @@ class Metrics(object):
     def num_captures(self):
         return self.captures['latest'] - self.captures['start']
 
+    def captures_per_hour(self):
+        """
+        Returns an estimated number of pokemon caught per hour.
+        :return: An estimated number of pokemon caught per hour.
+        :rtype: float
+        """
+        return self.num_captures() / (time.time() - self.start_time) * 3600
+
     def num_visits(self):
         return self.visits['latest'] - self.visits['start']
 
@@ -70,9 +78,10 @@ class Metrics(object):
         self.releases += count
 
     def capture_stats(self):
-        self.bot.api.get_inventory()
-        self.bot.api.get_player()
-        response_dict = self.bot.api.call()
+        request = self.bot.api.create_request()
+        request.get_inventory()
+        request.get_player()
+        response_dict = request.call()
         try:
             self.dust['latest'] = response_dict['responses']['GET_PLAYER']['player_data']['currencies'][1]['amount']
             if self.dust['start'] is None: self.dust['start'] = self.dust['latest']

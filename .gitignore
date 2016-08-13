@@ -35,6 +35,9 @@ var/
 .pydevproject
 .settings/
 
+# Cloud9 Users
+.c9/
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
@@ -86,6 +89,8 @@ celerybeat-schedule
 # virtualenv
 venv/
 ENV/
+local/
+share/
 
 # Spyder project settings
 .spyderproject
@@ -95,12 +100,14 @@ ENV/
 
 # PyCharm IDE settings
 .idea/
+*.iml
 
 # Personal load details
 src/
 web/
 data/last-location*.json
 data/cells-*.json
+data/map-caught-*.json
 
 # Multiple config
 configs/*
@@ -109,7 +116,10 @@ configs/*
 !configs/config.json.pokemons.example
 !configs/config.json.pokemon.example
 !configs/config.json.path.example
+!configs/config.json.map.example
 !configs/path.example.json
+!config.json.cluster.example
+!config.json.optimizer.example
 
 # Virtualenv folders
 bin/
@@ -117,3 +127,6 @@ include/
 
 # Pip check file
 pip-selfcheck.json
+
+# Some love for the vim users
+.*.sw*
