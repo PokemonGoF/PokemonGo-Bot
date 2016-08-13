@@ -106,6 +106,25 @@ class Pokedex(_BaseInventoryComponent):
             return False
         return self._data[pokemon_id]['times_captured'] > 0
 
+class Item(object):
+    def __init__(self, item_id, item_count):
+        self.id = item_id
+        self.name = Items.name_for(self.id)
+        self.count = item_count
+
+    def remove(self, amount):
+        if self.count < amount:
+            raise Exception('Tried to remove more {} than you have'.format(self.name))
+        self.count -= amount
+
+    def add(self, amount):
+        if amount < 0:
+            raise Exception('Must add positive amount of {}'.format(self.name))
+        self.count += amount
+
+    def __str__(self):
+        return self.name + " : " + str(self.count)
+
 
 class Items(_BaseInventoryComponent):
     TYPE = 'item'
@@ -140,11 +159,23 @@ class Items(_BaseInventoryComponent):
     def get_space_left(cls):
         """
         Compute the space  left in item inventory.
-        :return: The space left in item inventory.
+        :return: The space left in item inventory. 0 if the player has more item than his item inventory can carry.
         :rtype: int
         """
         _inventory.retrieve_item_inventory_size()
-        return _inventory.item_inventory_size - cls.get_space_used()
+        space_left = _inventory.item_inventory_size - cls.get_space_used()
+        # Space left should never be negative. Returning 0 if the computed value is negative.
+        return space_left if space_left >= 0 else 0
+
+    @classmethod
+    def has_space_for_loot(cls):
+        """
+        Returns a value indicating whether or not the item inventory has enough space to loot a fort
+        :return: True if the item inventory has enough space; otherwise, False.
+        :rtype: bool
+        """
+        max_number_of_items_looted_at_stop = 5
+        return cls.get_space_left() >= max_number_of_items_looted_at_stop
 
 
 class Pokemons(_BaseInventoryComponent):
@@ -477,23 +508,6 @@ class Candy(object):
         if amount < 0:
             raise Exception('Must add positive amount of candy')
         self.quantity += amount
-
-
-class Item(object):
-    def __init__(self, item_id, item_count):
-        self.id = item_id
-        self.name = Items.name_for(self.id)
-        self.count = item_count
-
-    def remove(self, amount):
-        if self.count < amount:
-            raise Exception('Tried to remove more {} than you have'.format(self.name))
-        self.count -= amount
-
-    def add(self, amount):
-        if amount < 0:
-            raise Exception('Must add positive amount of {}'.format(self.name))
-        self.count += amount
 
 
 class Egg(object):
@@ -1004,6 +1018,7 @@ class Inventory(object):
         user_web_inventory = os.path.join(_base_dir, 'web', 'inventory-%s.json' % (self.bot.config.username))
         with open(user_web_inventory, 'w') as outfile:
             json.dump(inventory, outfile)
+
     def retrieve_item_inventory_size(self):
         """
         Retrieves the item inventory size
@@ -1087,11 +1102,9 @@ def init_inventory(bot):
 def refresh_inventory():
     _inventory.refresh()
 
-
 def get_item_inventory_size():
     _inventory.retrieve_item_inventory_size()
     return _inventory.item_inventory_size
-
 
 def pokedex():
     return _inventory.pokedex
@@ -1110,6 +1123,11 @@ def pokemons(refresh=False):
 
 
 def items():
+    """
+    Access to the cached item inventory
+    :return: Instance of the cached item inventory
+    :rtype: Items
+    """
     return _inventory.items
 
 

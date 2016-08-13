@@ -67,7 +67,7 @@ class RecycleItems(BaseTask):
         :return: True if the recycling process should be run; otherwise, False.
         :rtype: bool
         """
-        if inventory.items().get_space_left() < (DEFAULT_MIN_EMPTY_SPACE if self.min_empty_space is None else self.min_empty_space):
+        if inventory.Items.get_space_left() < (DEFAULT_MIN_EMPTY_SPACE if self.min_empty_space is None else self.min_empty_space):
             return True
         return False
 
