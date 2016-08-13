@@ -178,6 +178,8 @@ class PokemonCatchWorker(BaseTask):
         return '{0:.2f}'.format(rate_by_ball * 100)
 
     def _use_berry(self, berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball):
+        # Delay to simulate selecting berry
+        action_delay(self.config.action_wait_min, self.config.action_wait_max)
         new_catch_rate_by_ball = []
         self.emit_event(
             'pokemon_catch_rate',
@@ -312,9 +314,7 @@ class PokemonCatchWorker(BaseTask):
                     berry_count -= 1
                     used_berry = True
 
-            # If we use a berry or change ball then wait to simulate user selecting them
-            if used_berry:
-                action_delay(self.config.action_wait_min, self.config.action_wait_max)
+            # If we change ball then wait to simulate user selecting it
             if changed_ball:
                 action_delay(self.config.action_wait_min, self.config.action_wait_max)
 
