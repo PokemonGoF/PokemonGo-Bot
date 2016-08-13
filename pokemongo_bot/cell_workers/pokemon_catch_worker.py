@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
-from random import random
+from random import random, choice
 from pokemongo_bot import inventory
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.human_behaviour import sleep
@@ -354,7 +354,7 @@ class PokemonCatchWorker(BaseTask):
                     formatted='{pokemon} capture failed.. trying again!',
                     data={'pokemon': pokemon.name}
                 )
-                sleep(2)
+                sleep(choice([2, 4, 6]))
                 continue
 
             # abandon if pokemon vanished

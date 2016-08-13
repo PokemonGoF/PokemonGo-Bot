@@ -130,6 +130,7 @@
       "normal_rate": 0.1,
       "spin_success_rate" : 0.6
     },
+    "randomize_flee_duration": true,
     "release": {
       "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or"},
       "// Example of always releasing Rattata:": {},
