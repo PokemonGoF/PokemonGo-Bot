@@ -64,7 +64,7 @@
                             "// the 'sort' parameter define how you want to rank your pokemons": {},
                             "// Critera are sorted fro, the most important to the least important.": {},
                             "// Available criteria are:": {},
-                            "// 'iv' = individual value": [},
+                            "// 'iv' = individual value": {},
                             "// 'ivcp' = iv weigted so that for equal iv, attack > defense > stamina": {},
                             "// 'cp' = combat power (can be increased with candies)": {},
                             "// 'cp_exact' = combar power (not rounded)": {},
@@ -125,7 +125,7 @@
         {
             "type": "MoveToFort",
             "config": {
-                "lure_attraction": false,
+                "lure_attraction": true,
                 "lure_max_distance": 2000,
                 "ignore_item_count": true
             }
@@ -146,6 +146,7 @@
     "location_cache": true,
     "distance_unit": "km",
     "reconnecting_timeout": 15,
+    "min_ultraball_to_keep": 10,
     "logging_color": true,
     "catch": {
         "any": {
