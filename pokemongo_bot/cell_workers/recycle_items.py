@@ -4,6 +4,7 @@ import os
 from pokemongo_bot import inventory
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.base_task import BaseTask
+from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.services.item_recycle_worker import ItemRecycler
 from pokemongo_bot.tree_config_builder import ConfigException
 from pokemongo_bot.worker_result import WorkerResult
@@ -87,6 +88,7 @@ class RecycleItems(BaseTask):
                 amount_to_recycle = self.get_amount_to_recycle(item_in_inventory)
 
                 if self.item_should_be_recycled(item_in_inventory, amount_to_recycle):
+                    action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
                     if ItemRecycler(self.bot, item_in_inventory, amount_to_recycle).work() == WorkerResult.ERROR:
                         worker_result = WorkerResult.ERROR
 
