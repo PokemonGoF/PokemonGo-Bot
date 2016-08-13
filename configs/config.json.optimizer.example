@@ -152,5 +152,12 @@
         "any": {
             "always_catch": true
         }
+    },
+    "catch_throw_parameters": {
+      "excellent_rate": 0.1,
+      "great_rate": 0.5,
+      "nice_rate": 0.3,
+      "normal_rate": 0.1,
+      "spin_success_rate" : 0.6
     }
 }
