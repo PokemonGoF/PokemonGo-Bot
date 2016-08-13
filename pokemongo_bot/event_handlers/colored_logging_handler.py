@@ -9,6 +9,7 @@ from pokemongo_bot.event_manager import EventHandler
 class ColoredLoggingHandler(EventHandler):
     EVENT_COLOR_MAP = {
         'api_error':                         'red',
+        'badges':                            'blue',
         'bot_exit':                          'red',
         'bot_start':                         'green',
         'catch_limit':                       'red',
@@ -33,6 +34,7 @@ class ColoredLoggingHandler(EventHandler):
         'login_failed':                      'red',
         'login_log':                         'magenta',
         'login_successful':                  'green',
+        'log_stats':                         'magenta',
         'lucky_egg_error':                   'red',
         'move_to_map_pokemon_encounter':     'green',
         'move_to_map_pokemon_fail':          'red',
@@ -41,6 +43,7 @@ class ColoredLoggingHandler(EventHandler):
         'next_random_pause':                 'green',
         'next_random_alive_pause':           'green',
         'no_pokeballs':                      'red',
+        'path_lap_end':                      'green',
         'pokemon_appeared':                  'yellow',
         'pokemon_capture_failed':            'red',
         'pokemon_caught':                    'blue',
@@ -52,63 +55,53 @@ class ColoredLoggingHandler(EventHandler):
         'pokemon_release':                   'green',
         'pokemon_vanished':                  'red',
         'pokestop_empty':                    'yellow',
-        'pokestop_log':                      'magento',
+        'pokestop_log':                      'magenta',
         'pokestop_searching_too_often':      'yellow',
         'rename_pokemon':                    'green',
+        'show_best_pokemon':                 'magenta',
+        'show_inventory':                    'magenta',
         'skip_evolve':                       'yellow',
         'softban':                           'red',
+        'softban_log':                       'magenta',
         'spun_pokestop':                     'cyan',
         'threw_berry_failed':                'red',
         'transfer_log':                      'magenta',
         'unknown_spin_result':               'red',
         'unset_pokemon_nickname':            'red',
         'vip_pokemon':                       'red',
-        'path_lap_end':                      'green',
-        'log_stats':                         'magenta',
-        'show_inventory':                    'magenta',
-        'show_best_pokemon':                'magenta',
-        'badges':                            'blue',
 
-        # event names for 'white' still here to remember that these events are already determined its color.
-        'arrived_at_cluster':                'white',
-        'arrived_at_fort':                   'white',
-        'bot_sleep':                         'white',
-        'bot_random_pause':                  'white',
-        'bot_random_alive_pause':            'white',
-        'catchable_pokemon':                 'white',
-        'found_cluster':                     'white',
-        'incubate_try':                      'white',
-        'load_cached_location':              'white',
-        'location_found':                    'white',
-        'login_started':                     'white',
-        'lured_pokemon_found':               'white',
-        'move_to_map_pokemon_move_towards':  'white',
-        'move_to_map_pokemon_teleport_back': 'white',
-        'move_to_map_pokemon_updated_map':   'white',
-        'moving_to_fort':                    'white',
-        'moving_to_lured_fort':              'white',
-        'pokemon_catch_rate':                'white',
-        'pokemon_evolve_fail':               'white',
-        'pokestop_on_cooldown':              'white',
-        'pokestop_out_of_range':             'white',
-        'polyline_request':                  'white',
-        'position_update':                   'white',
-        'path_lap_update':                   'white',
-        'set_start_location':                'white',
-        'softban_fix':                       'white',
-        'softban_log':                       'magenta',
-        'softban_fix_done':                  'white',
-        'spun_fort':                         'white',
-        'threw_berry':                       'white',
-        'threw_pokeball':                    'white',
-        'used_lucky_egg':                    'white',
-        'player_data':                       'white'
+        'arrived_at_cluster':                'none',
+        'arrived_at_fort':                   'none',
+        'bot_sleep':                         'none',
+        'bot_random_pause':                  'none',
+        'bot_random_alive_pause':            'none',
+        'catchable_pokemon':                 'none',
+        'found_cluster':                     'none',
+        'incubate_try':                      'none',
+        'load_cached_location':              'none',
+        'location_found':                    'none',
+        'login_started':                     'none',
+        'lured_pokemon_found':               'none',
+        'move_to_map_pokemon_move_towards':  'none',
+        'move_to_map_pokemon_teleport_back': 'none',
+        'move_to_map_pokemon_updated_map':   'none',
+        'moving_to_fort':                    'none',
+        'moving_to_lured_fort':              'none',
+        'pokemon_catch_rate':                'none',
+        'pokemon_evolve_fail':               'none',
+        'pokestop_on_cooldown':              'none',
+        'pokestop_out_of_range':             'none',
+        'polyline_request':                  'none',
+        'position_update':                   'none',
+        'path_lap_update':                   'none',
+        'set_start_location':                'none',
+        'softban_fix':                       'none',
+        'softban_fix_done':                  'none',
+        'spun_fort':                         'none',
+        'threw_berry':                       'none',
+        'threw_pokeball':                    'none',
+        'used_lucky_egg':                    'none'
     }
-    CONTINUOUS_EVENT_NAMES = [
-        'catchable_pokemon',
-        'moving_to_lured_fort',
-        'spun_fort'
-    ]
     COLOR_CODE = {
         'gray':    '\033[90m',
         'red':     '\033[91m',
@@ -118,21 +111,24 @@ class ColoredLoggingHandler(EventHandler):
         'magenta': '\033[95m',
         'cyan':    '\033[96m',
         'white':   '\033[97m',
-        'reset':   '\033[0m'
+        'none':    '\033[0m'
     }
 
-    def handle_event(self, event, sender, level, formatted_msg, data):
-        logger = logging.getLogger(type(sender).__name__)
+    def __init__(self, bot):
+        self.bot = bot
 
-        color = self.COLOR_CODE['white']
+    def handle_event(self, event, sender, level, formatted_msg, data):
+        if not formatted_msg:
+            formatted_msg = str(data)
+
         if event in self.EVENT_COLOR_MAP:
             color = self.COLOR_CODE[self.EVENT_COLOR_MAP[event]]
-        if event == 'egg_hatched' and data.get('pokemon', 'error') == 'error':
-            color = self.COLOR_CODE['red']
-        formatted_msg = '{}{}{}'.format(color, formatted_msg, self.COLOR_CODE['reset'])
+            if event == 'egg_hatched' and data.get('pokemon', 'error') == 'error':
+                color = self.COLOR_CODE['red']
+            formatted_msg = '{}{}{}'.format(color, formatted_msg, self.COLOR_CODE['none'])
 
-        if formatted_msg:
-            message = "[{}] {}".format(event, formatted_msg)
-        else:
-            message = '{}: {}'.format(event, str(data))
-        getattr(logger, level)(message)
+        if self.bot.config.debug or not self.bot.config.logging_clean:
+            formatted_msg = '[{}] {}'.format(event, formatted_msg)
+
+        logger = logging.getLogger(type(sender).__name__)
+        getattr(logger, level)(formatted_msg)

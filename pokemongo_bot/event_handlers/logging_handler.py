@@ -9,10 +9,14 @@ from pokemongo_bot.event_manager import EventHandler
 
 class LoggingHandler(EventHandler):
 
+    def __init__(self, bot):
+        self.bot = bot
+
     def handle_event(self, event, sender, level, formatted_msg, data):
+        if not formatted_msg:
+            formatted_msg = str(data)
+        if self.bot.config.debug or not self.bot.config.logging_clean:
+            formatted_msg = '[{}] {}'.format(event, formatted_msg)
+
         logger = logging.getLogger(type(sender).__name__)
-        if formatted_msg:
-            message = "[{}] {}".format(event, formatted_msg)
-        else:
-            message = '{}: {}'.format(event, str(data))
-        getattr(logger, level)(message)
+        getattr(logger, level)(formatted_msg)
