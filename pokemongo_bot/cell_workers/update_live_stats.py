@@ -317,8 +317,8 @@ class UpdateLiveStats(BaseTask):
         stat_type = stat.get('type', '')
         if stat_type not in available_stats:
             raise ConfigException("stat '{}' isn't available for displaying".format(stat_type))
-        stat_config = stat.get('config', [])
-        if stat_config is None:
+        stat_config = stat.get('config', None)
+        if not stat_config:
             return available_stats[stat_type]
         stat_items = available_stats[stat_type]
         if stat_items is None or type(stat_items) is not dict:
@@ -327,10 +327,13 @@ class UpdateLiveStats(BaseTask):
         # TODO: Generalize
         # this is the case for items only!
         content = ''
-        if stat_type == 'items':
-            for item in stat_config:
-                content += '{} x {}, '.format(item, stat_items[item][1])
-        elif stat_type == 'items_short':
-            for item in stat_config:
-                content += '{}x{}, '.format(stat_items[item][0], stat_items[item][1])
-        return content[:-2]
+        try:
+            if stat_type == 'items':
+                for item in stat_config:
+                    content += '{} x {}, '.format(item, stat_items[item][1])
+            elif stat_type == 'items_short':
+                for item in stat_config:
+                    content += '{}x{}, '.format(stat_items[item][0], stat_items[item][1])
+            return content[:-2]
+        except KeyError as e:
+            raise ConfigException("stat '{}' isn't available for displaying. {}".format(stat_type, e))
