@@ -7,11 +7,11 @@ from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
 from utils import distance, format_dist, fort_details
 
+
 class MoveToFort(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def initialize(self):
-        self.last_nearest_fort = None
         self.lure_distance = 0
         self.lure_attraction = self.config.get("lure_attraction", True)
         self.lure_max_distance = self.config.get("lure_max_distance", 2000)
@@ -96,10 +96,11 @@ class MoveToFort(BaseTask):
 
         lures = filter(lambda x: True if x.get('lure_info', None) != None else False, forts)
 
-        dist_lure_me = 0
-
         if (len(lures)):
-            dist_lure_me = self.get_distance_from_bot(lures[0])
+            dist_lure_me = distance(self.bot.position[0], self.bot.position[1],
+                                    lures[0]['latitude'],lures[0]['longitude'])
+        else:
+            dist_lure_me = 0
 
         if dist_lure_me > 0 and dist_lure_me < self.lure_max_distance:
 
@@ -111,7 +112,11 @@ class MoveToFort(BaseTask):
                     fort['longitude'],
                     lures[0]['latitude'],
                     lures[0]['longitude'])
-                dist_fort_me = self.get_distance_from_bot(fort)
+                dist_fort_me = distance(
+                    fort['latitude'],
+                    fort['longitude'],
+                    self.bot.position[0],
+                    self.bot.position[1])
 
                 if dist_lure_fort < dist_lure_me and dist_lure_me > dist_fort_me:
                     return fort, dist_lure_me
@@ -123,9 +128,6 @@ class MoveToFort(BaseTask):
 
         else:
             return None, 0
-
-    def get_distance_from_bot(self, fort):
-        return distance(self.bot.position[0], self.bot.position[1], fort['latitude'], fort['longitude'])
 
     def get_nearest_fort(self):
         forts = self.bot.get_forts(order_by_distance=True)
@@ -144,16 +146,7 @@ class MoveToFort(BaseTask):
         if (lure_distance > 0):
             return next_attracted_pts
 
-        if len(forts) <= 0:
+        if len(forts) > 0:
+            return forts[0]
+        else:
             return None
-
-        nearest_fort = forts[0]
-
-        # If last fort moved to and nearest fort are equidistant keep walking
-        # toward the last fort to avoid looping
-        if self.last_nearest_fort is not None and self.get_distance_from_bot(self.last_nearest_fort) == self.get_distance_from_bot(nearest_fort):
-            nearest_fort = self.last_nearest_fort
-
-        self.last_nearest_fort = nearest_fort
-
-        return nearest_fort
