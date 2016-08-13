@@ -13,6 +13,7 @@ class PokemonOptimizer(BaseTask):
 
     def initialize(self):
         self.family_by_family_id = {}
+        self.last_pokemon_count = 0
         self.logger = logging.getLogger(self.__class__.__name__)
 
         self.config_transfer = self.config.get("transfer", False)
@@ -26,7 +27,13 @@ class PokemonOptimizer(BaseTask):
                                                     {"top": 1, "evolve": False, "sort": ["cp"]}])
 
     def get_pokemon_slot_left(self):
-        return self.bot._player["max_pokemon_storage"] - len(inventory.pokemons()._data)
+        pokemon_count = len(inventory.pokemons()._data)
+        
+        if pokemon_count != self.last_pokemon_count:
+            self.last_pokemon_count = pokemon_count
+            self.logger.info("Pokemon Bag: %s/%s", pokemon_count, self.bot._player["max_pokemon_storage"])
+        
+        return self.bot._player["max_pokemon_storage"] - pokemon_count
 
     def work(self):
         if self.get_pokemon_slot_left() > 5:
