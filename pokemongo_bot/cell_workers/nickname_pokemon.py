@@ -276,8 +276,7 @@ class NicknamePokemon(BaseTask):
         """
 
         # Filter template
-        #template = template.lower().strip()
-        template = template.strip()
+        template = template.lower().strip()
 
         # Individial Values of the current specific pokemon (different for each)
         iv_attack = pokemon.iv_attack
