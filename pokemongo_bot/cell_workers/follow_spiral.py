@@ -66,20 +66,23 @@ class FollowSpiral(BaseTask):
         return coords
 
     def work(self):
+        last_lat = self.bot.api._position_lat
+        last_lng = self.bot.api._position_lng
+
         point = self.points[self.ptr]
         self.cnt += 1
+
+        dist = distance(
+            self.bot.api._position_lat,
+            self.bot.api._position_lng,
+            point['lat'],
+            point['lng']
+        )
 
         if self.bot.config.walk > 0:
             step_walker = StepWalker(
                 self.bot,
                 self.bot.config.walk,
-                point['lat'],
-                point['lng']
-            )
-
-            dist = distance(
-                self.bot.api._position_lat,
-                self.bot.api._position_lng,
                 point['lat'],
                 point['lng']
             )
@@ -99,7 +102,18 @@ class FollowSpiral(BaseTask):
             if step_walker.step():
                 step_walker = None
         else:
-            self.bot.api.set_position(point['lat'], point['lng'])
+            self.bot.api.set_position(point['lat'], point['lng'], 0)
+
+            self.emit_event(
+                'position_update',
+                formatted="Teleported from {last_position} to {current_position} ({distance} {distance_unit})",
+                data={
+                    'last_position': (last_lat, last_lng, 0),
+                    'current_position': (point['lat'], point['lng'], 0),
+                    'distance': dist,
+                    'distance_unit': 'm'
+                }
+            )
 
         if distance(
                     self.bot.api._position_lat,
