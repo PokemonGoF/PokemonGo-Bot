@@ -108,7 +108,9 @@ class EvolvePokemon(BaseTask):
                     'pokemon': pokemon.name,
                     'iv': pokemon.iv,
                     'cp': pokemon.cp,
-                    'xp': 0
+                    'ncp': '?',
+                    'dps': '?',
+                    'xp': '?'
                 }
             )
             awarded_candies = response_dict.get('responses', {}).get('EVOLVE_POKEMON', {}).get('candy_awarded', 0)
