@@ -33,14 +33,22 @@ import os
 import ssl
 import sys
 import time
+import signal
 from datetime import timedelta
 from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException
 from geopy.exc import GeocoderQuotaExceeded
 
 from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
+from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.health_record import BotEvent
 from pokemongo_bot.plugin_loader import PluginLoader
+
+try:
+    from demjson import jsonlint
+except ImportError:
+    # Run `pip install -r requirements.txt` to fix this
+    jsonlint = None
 
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -51,9 +59,16 @@ logging.basicConfig(
 logger = logging.getLogger('cli')
 logger.setLevel(logging.INFO)
 
+class SIGINTRecieved(Exception): pass
+
 def main():
+    bot = False
+
     try:
-        bot = False
+        def handle_sigint(*args):
+            raise SIGINTRecieved
+        signal.signal(signal.SIGINT, handle_sigint)
+
         logger.info('PokemonGO Bot v1.0')
         sys.stdout = codecs.getwriter('utf8')(sys.stdout)
         sys.stderr = codecs.getwriter('utf8')(sys.stderr)
@@ -87,7 +102,7 @@ def main():
                 while True:
                     bot.tick()
 
-            except KeyboardInterrupt:
+            except (KeyboardInterrupt, SIGINTRecieved):
                 bot.event_manager.emit(
                     'bot_exit',
                     sender=bot,
@@ -103,7 +118,7 @@ def main():
                     'api_error',
                     sender=bot,
                     level='info',
-                    formmated='Log logged in, reconnecting in {:s}'.format(wait_time)
+                    formatted='Log logged in, reconnecting in {:d}'.format(wait_time)
                 )
                 time.sleep(wait_time)
             except ServerBusyOrOfflineException:
@@ -129,7 +144,33 @@ def main():
         if bot:
             report_summary(bot)
 
-        raise e
+        raise
+    finally:
+        # Cache here on SIGTERM, or Exception.  Check data is available and worth caching.
+        if bot:
+            if bot.recent_forts[-1] is not None and bot.config.forts_cache_recent_forts:
+                cached_forts_path = os.path.join(
+                    _base_dir, 'data', 'recent-forts-%s.json' % bot.config.username
+                )
+                try:
+                    with open(cached_forts_path, 'w') as outfile:
+                        json.dump(bot.recent_forts, outfile)
+                    bot.event_manager.emit(
+                        'cached_fort',
+                        sender=bot,
+                        level='debug',
+                        formatted='Forts cached.',
+                    )
+                except IOError as e:
+                    bot.event_manager.emit(
+                        'error_caching_forts',
+                        sender=bot,
+                        level='debug',
+                        formatted='Error caching forts for {path}',
+                        data={'path': cached_forts_path}
+                        )
+
+
 
 def report_summary(bot):
     if bot.metrics.start_time is None:
@@ -155,22 +196,34 @@ def report_summary(bot):
 
 def init_config():
     parser = argparse.ArgumentParser()
-    config_file = "configs/config.json"
+    config_file = os.path.join(_base_dir, 'configs', 'config.json')
     web_dir = "web"
 
     # If config file exists, load variables from json
     load = {}
 
+    def _json_loader(filename):
+        try:
+            with open(filename, 'rb') as data:
+                load.update(json.load(data))
+        except ValueError:
+            if jsonlint:
+                with open(filename, 'rb') as data:
+                    lint = jsonlint()
+                    rc = lint.main(['-v', filename])
+
+            logger.critical('Error with configuration file')
+            sys.exit(-1)
+
     # Select a config file code
     parser.add_argument("-cf", "--config", help="Config File to use")
     config_arg = parser.parse_known_args() and parser.parse_known_args()[0].config or None
+
     if config_arg and os.path.isfile(config_arg):
-        with open(config_arg) as data:
-            load.update(json.load(data))
+        _json_loader(config_arg)
     elif os.path.isfile(config_file):
         logger.info('No config argument specified, checking for /configs/config.json')
-        with open(config_file) as data:
-            load.update(json.load(data))
+        _json_loader(config_file)
     else:
         logger.info('Error: No /configs/config.json or specified config')
 
@@ -309,15 +362,6 @@ def init_config():
     add_config(
         parser,
         load,
-        short_flag="-ec",
-        long_flag="--evolve_captured",
-        help="(Ad-hoc mode) Pass \"all\" or a list of pokemon to evolve (e.g., \"Pidgey,Weedle,Caterpie\"). Bot will attempt to evolve all the pokemon captured!",
-        type=str,
-        default=[]
-    )
-    add_config(
-        parser,
-        load,
         short_flag="-rt",
         long_flag="--reconnecting_timeout",
         help="Timeout between reconnecting if error occured (in minutes, e.g. 15)",
@@ -354,18 +398,11 @@ def init_config():
     add_config(
         parser,
         load,
-        long_flag="--catch_randomize_reticle_factor",
-        help="Randomize factor for pokeball throwing accuracy (DEFAULT 1.0 means no randomize: always 'Excellent' throw. 0.0 randomizes between normal and 'Excellent' throw)",
-        type=float,
-        default=1.0
-    )
-    add_config(
-        parser,
-        load,
-        long_flag="--catch_randomize_spin_factor",
-        help="Randomize factor for pokeball curve throwing (DEFAULT 1.0 means no randomize: always perfect 'Super Spin' curve ball. 0.0 randomizes between normal and 'Super Spin' curve ball)",
-        type=float,
-        default=1.0
+        short_flag="-crf",
+        long_flag="--forts.cache_recent_forts",
+        help="Caches recent forts used by max_circle_size",
+        type=bool,
+        default=True,
     )
     add_config(
         parser,
@@ -375,6 +412,59 @@ def init_config():
         type=float,
         default=5.0
     )
+    add_config(
+        parser,
+        load,
+        long_flag="--logging_color",
+        help="If logging_color is set to true, colorized logging handler will be used",
+        type=bool,
+        default=True
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-cte",
+        long_flag="--catch_throw_parameters.excellent_rate",
+        help="Define the odd of performing an excellent throw",
+        type=float,
+        default=1
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-ctg",
+        long_flag="--catch_throw_parameters.great_rate",
+        help="Define the odd of performing a great throw",
+        type=float,
+        default=0
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-ctn",
+        long_flag="--catch_throw_parameters.nice_rate",
+        help="Define the odd of performing a nice throw",
+        type=float,
+        default=0
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-ctm",
+        long_flag="--catch_throw_parameters.normal_rate",
+        help="Define the odd of performing a normal throw",
+        type=float,
+        default=0
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-cts",
+        long_flag="--catch_throw_parameters.spin_success_rate",
+        help="Define the odds of performing a spin throw (Value between 0 (never) and 1 (always))",
+        type=float,
+        default=1
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()
@@ -383,12 +473,14 @@ def init_config():
     if not config.password and 'password' not in load:
         config.password = getpass("Password: ")
 
+    config.encrypt_location = load.get('encrypt_location','')
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.action_wait_max = load.get('action_wait_max', 4)
     config.action_wait_min = load.get('action_wait_min', 1)
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
+    config.min_ultraball_to_keep = load.get('min_ultraball_to_keep', None)
 
     config.vips = load.get('vips', {})
 
@@ -424,28 +516,16 @@ def init_config():
             task_configuration_error('{}.{}'.format(outer, inner))
             return None
 
-    if (config.evolve_captured
-        and (not isinstance(config.evolve_captured, str)
-             or str(config.evolve_captured).lower() in ["true", "false"])):
-        parser.error('"evolve_captured" should be list of pokemons: use "all" or "none" to match all ' +
-                     'or none of the pokemons, or use a comma separated list such as "Pidgey,Weedle,Caterpie"')
-        return None
+    if "evolve_captured" in load:
+        logger.warning('The evolve_captured argument is no longer supported. Please use the EvolvePokemon task instead')
 
     if not (config.location or config.location_cache):
         parser.error("Needs either --use-location-cache or --location.")
         return None
 
-    if config.catch_randomize_reticle_factor < 0 or 1 < config.catch_randomize_reticle_factor:
-        parser.error("--catch_randomize_reticle_factor is out of range! (should be 0 <= catch_randomize_reticle_factor <= 1)")
-        return None
-
-    if config.catch_randomize_spin_factor < 0 or 1 < config.catch_randomize_spin_factor:
-        parser.error("--catch_randomize_spin_factor is out of range! (should be 0 <= catch_randomize_spin_factor <= 1)")
-        return None
-
     plugin_loader = PluginLoader()
     for plugin in config.plugins:
-        plugin_loader.load_path(plugin)
+        plugin_loader.load_plugin(plugin)
 
     # create web dir if not exists
     try:
@@ -453,9 +533,6 @@ def init_config():
     except OSError:
         if not os.path.isdir(web_dir):
             raise
-
-    if config.evolve_captured and isinstance(config.evolve_captured, str):
-        config.evolve_captured = [str(pokemon_name).strip() for pokemon_name in config.evolve_captured.split(',')]
 
     fix_nested_config(config)
     return config

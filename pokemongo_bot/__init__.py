@@ -9,6 +9,8 @@ import random
 import re
 import sys
 import time
+import Queue
+import threading
 
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
@@ -23,13 +25,17 @@ from event_manager import EventManager
 from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
-from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler
+from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler, ColoredLoggingHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
+from pokemongo_bot.base_dir import _base_dir
 from worker_result import WorkerResult
 from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
+from inventory import init_inventory
 from sys import platform as _platform
 import struct
+
+
 class PokemonGoBot(object):
     @property
     def position(self):
@@ -52,9 +58,9 @@ class PokemonGoBot(object):
         self.config = config
         self.fort_timeouts = dict()
         self.pokemon_list = json.load(
-            open(os.path.join('data', 'pokemon.json'))
+            open(os.path.join(_base_dir, 'data', 'pokemon.json'))
         )
-        self.item_list = json.load(open(os.path.join('data', 'items.json')))
+        self.item_list = json.load(open(os.path.join(_base_dir, 'data', 'items.json')))
         self.metrics = Metrics(self)
         self.latest_inventory = None
         self.cell = None
@@ -69,15 +75,26 @@ class PokemonGoBot(object):
         # Make our own copy of the workers for this instance
         self.workers = []
 
+        # Theading setup for file writing
+        self.web_update_queue = Queue.Queue(maxsize=1)
+        self.web_update_thread = threading.Thread(target=self.update_web_location_worker)
+        self.web_update_thread.start()
+
     def start(self):
         self._setup_event_system()
         self._setup_logging()
         self._setup_api()
+        self._load_recent_forts()
 
         random.seed()
 
     def _setup_event_system(self):
-        handlers = [LoggingHandler()]
+        handlers = []
+        if self.config.logging_color:
+            handlers.append(ColoredLoggingHandler())
+        else:
+            handlers.append(LoggingHandler())
+
         if self.config.websocket_server_url:
             if self.config.websocket_start_embedded_server:
                 self.sio_runner = SocketIoRunner(self.config.websocket_server_url)
@@ -92,19 +109,18 @@ class PokemonGoBot(object):
             if self.config.websocket_remote_control:
                 remote_control = WebsocketRemoteControl(self).start()
 
-
         self.event_manager = EventManager(*handlers)
         self._register_events()
         if self.config.show_events:
             self.event_manager.event_report()
             sys.exit(1)
 
-        # Registering event:
-        # self.event_manager.register_event("location", parameters=['lat', 'lng'])
-        #
-        # Emitting event should be enough to add logging and send websocket
-        # message: :
-        # self.event_manager.emit('location', 'level'='info', data={'lat': 1, 'lng':1}),
+            # Registering event:
+            # self.event_manager.register_event("location", parameters=['lat', 'lng'])
+            #
+            # Emitting event should be enough to add logging and send websocket
+            # message: :
+            # self.event_manager.emit('location', 'level'='info', data={'lat': 1, 'lng':1}),
 
     def _register_events(self):
         self.event_manager.register_event(
@@ -223,12 +239,18 @@ class PokemonGoBot(object):
                 'cp',
                 'iv',
                 'iv_display',
+                'encounter_id',
+                'latitude',
+                'longitude',
+                'pokemon_id'
             )
         )
+        self.event_manager.register_event('no_pokeballs')
         self.event_manager.register_event(
             'pokemon_catch_rate',
             parameters=(
                 'catch_rate',
+                'ball_name',
                 'berry_name',
                 'berry_count'
             )
@@ -237,44 +259,53 @@ class PokemonGoBot(object):
             'threw_berry',
             parameters=(
                 'berry_name',
+                'ball_name',
                 'new_catch_rate'
             )
         )
         self.event_manager.register_event(
             'threw_pokeball',
             parameters=(
-                'pokeball',
+                'ball_name',
                 'success_percentage',
                 'count_left'
             )
         )
         self.event_manager.register_event(
-            'pokemon_fled',
+            'pokemon_capture_failed',
             parameters=('pokemon',)
         )
         self.event_manager.register_event(
             'pokemon_vanished',
-            parameters=('pokemon',)
+            parameters=(
+                'pokemon',
+                'encounter_id',
+                'latitude',
+                'longitude',
+                'pokemon_id'
+            )
         )
+        self.event_manager.register_event('pokemon_not_in_range')
+        self.event_manager.register_event('pokemon_inventory_full')
         self.event_manager.register_event(
             'pokemon_caught',
             parameters=(
                 'pokemon',
-                'cp', 'iv', 'iv_display', 'exp'
+                'cp', 'iv', 'iv_display', 'exp',
+                'encounter_id',
+                'latitude',
+                'longitude',
+                'pokemon_id'
             )
         )
         self.event_manager.register_event(
             'pokemon_evolved',
-            parameters=('pokemon', 'iv', 'cp')
-        )
-        self.event_manager.register_event(
-            'pokemon_evolve_fail',
-            parameters=('pokemon',)
+            parameters=('pokemon', 'iv', 'cp', 'ncp', 'dps', 'xp')
         )
         self.event_manager.register_event('skip_evolve')
         self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
         self.event_manager.register_event('vip_pokemon')
-
+        self.event_manager.register_event('gained_candy', parameters=('quantity', 'type'))
 
         # level up stuff
         self.event_manager.register_event(
@@ -335,6 +366,10 @@ class PokemonGoBot(object):
             )
         )
         self.event_manager.register_event(
+            'item_discard_skipped',
+            parameters=('space',)
+        )
+        self.event_manager.register_event(
             'item_discard_fail',
             parameters=('item',)
         )
@@ -357,7 +392,7 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'pokemon_release',
-            parameters=('pokemon', 'cp', 'iv')
+            parameters=('pokemon', 'iv', 'cp', 'ncp', 'dps')
         )
 
         # polyline walker
@@ -383,15 +418,57 @@ class PokemonGoBot(object):
         # rename
         self.event_manager.register_event(
             'rename_pokemon',
-            parameters=(
-                'old_name', 'current_name'
-            )
+            parameters=('old_name', 'current_name',)
         )
         self.event_manager.register_event(
             'pokemon_nickname_invalid',
             parameters=('nickname',)
         )
-        self.event_manager.register_event('unset_pokemon_nickname')
+        self.event_manager.register_event(
+            'unset_pokemon_nickname',
+            parameters=('old_name',)
+        )
+
+        # Move To map pokemon
+        self.event_manager.register_event(
+            'move_to_map_pokemon_fail',
+            parameters=('message',)
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_updated_map',
+            parameters=('lat', 'lon')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_teleport_to',
+            parameters=('poke_name', 'poke_dist', 'poke_lat', 'poke_lon',
+                        'disappears_in')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_encounter',
+            parameters=('poke_name', 'poke_dist', 'poke_lat', 'poke_lon',
+                        'disappears_in')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_move_towards',
+            parameters=('poke_name', 'poke_dist', 'poke_lat', 'poke_lon',
+                        'disappears_in')
+        )
+        self.event_manager.register_event(
+            'move_to_map_pokemon_teleport_back',
+            parameters=('last_lat', 'last_lon')
+        )
+
+        # cached recent_forts
+        self.event_manager.register_event('loaded_cached_forts')
+        self.event_manager.register_event('cached_fort')
+        self.event_manager.register_event(
+            'no_cached_forts',
+            parameters=('path', )
+        )
+        self.event_manager.register_event(
+            'error_caching_forts',
+            parameters=('path', )
+        )
 
     def tick(self):
         self.health_record.heartbeat()
@@ -450,28 +527,12 @@ class PokemonGoBot(object):
             location = self.position[0:2]
             cells = self.find_close_cells(*location)
 
-            # insert detail info about gym to fort
-            for cell in cells:
-                if 'forts' in cell:
-                    for fort in cell['forts']:
-                        if fort.get('type') != 1:
-                            response_gym_details = self.api.get_gym_details(
-                                gym_id=fort.get('id'),
-                                player_latitude=lng,
-                                player_longitude=lat,
-                                gym_latitude=fort.get('latitude'),
-                                gym_longitude=fort.get('longitude')
-                            )
-                            fort['gym_details'] = response_gym_details.get(
-                                'responses', {}
-                            ).get('GET_GYM_DETAILS', None)
-
-        user_data_cells = "data/cells-%s.json" % self.config.username
+        user_data_cells = os.path.join(_base_dir, 'data', 'cells-%s.json' % self.config.username)
         with open(user_data_cells, 'w') as outfile:
             json.dump(cells, outfile)
 
         user_web_location = os.path.join(
-            'web', 'location-%s.json' % self.config.username
+            _base_dir, 'web', 'location-%s.json' % self.config.username
         )
         # alt is unused atm but makes using *location easier
         try:
@@ -486,7 +547,7 @@ class PokemonGoBot(object):
             self.logger.info('[x] Error while opening location file: %s' % e)
 
         user_data_lastlocation = os.path.join(
-            'data', 'last-location-%s.json' % self.config.username
+            _base_dir, 'data', 'last-location-%s.json' % self.config.username
         )
         try:
             with open(user_data_lastlocation, 'w') as outfile:
@@ -607,7 +668,6 @@ class PokemonGoBot(object):
         )
 
     def get_encryption_lib(self):
-        file_name = ''
         if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
             file_name = 'encrypt.so'
         elif _platform == "Windows" or _platform == "win32":
@@ -617,15 +677,18 @@ class PokemonGoBot(object):
             else:
                 file_name = 'encrypt.dll'
 
-        path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-        full_path = path + '/'+ file_name
+        if self.config.encrypt_location == '':
+            path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+        else:
+            path = self.config.encrypt_location
 
+        full_path = path + '/'+ file_name
         if not os.path.isfile(full_path):
-            self.logger.error(file_name + ' is not found! Please place it in the bots root directory.')
-            self.logger.info('Platform: '+ _platform + ' Bot root directory: '+ path)
+            self.logger.error(file_name + ' is not found! Please place it in the bots root directory or set encrypt_location in config.')
+            self.logger.info('Platform: '+ _platform + ' Encrypt.so directory: '+ path)
             sys.exit(1)
         else:
-            self.logger.info('Found '+ file_name +'! Platform: ' + _platform + ' Bot root directory: ' + path)
+            self.logger.info('Found '+ file_name +'! Platform: ' + _platform + ' Encrypt.so directory: ' + path)
 
         return full_path
 
@@ -701,7 +764,8 @@ class PokemonGoBot(object):
         self.logger.info(
             'PokeBalls: ' + str(items_stock[1]) +
             ' | GreatBalls: ' + str(items_stock[2]) +
-            ' | UltraBalls: ' + str(items_stock[3]))
+            ' | UltraBalls: ' + str(items_stock[3]) +
+            ' | MasterBalls: ' + str(items_stock[4]))
 
         self.logger.info(
             'RazzBerries: ' + str(items_stock[701]) +
@@ -716,7 +780,8 @@ class PokemonGoBot(object):
         self.logger.info(
             'Potion: ' + str(items_stock[101]) +
             ' | SuperPotion: ' + str(items_stock[102]) +
-            ' | HyperPotion: ' + str(items_stock[103]))
+            ' | HyperPotion: ' + str(items_stock[103]) +
+            ' | MaxPotion: ' + str(items_stock[104]))
 
         self.logger.info(
             'Incense: ' + str(items_stock[401]) +
@@ -738,6 +803,8 @@ class PokemonGoBot(object):
         return self.latest_inventory
 
     def update_inventory(self):
+        # TODO: transition to using this inventory class everywhere
+        init_inventory(self)
         response = self.get_inventory()
         self.inventory = list()
         inventory_items = response.get('responses', {}).get('GET_INVENTORY', {}).get(
@@ -753,7 +820,7 @@ class PokemonGoBot(object):
         inventory_dict = inventory_req['responses']['GET_INVENTORY'][
             'inventory_delta']['inventory_items']
 
-        user_web_inventory = 'web/inventory-%s.json' % self.config.username
+        user_web_inventory = os.path.join(_base_dir, 'web', 'inventory-%s.json' % self.config.username)
 
         with open(user_web_inventory, 'w') as outfile:
             json.dump(inventory_dict, outfile)
@@ -864,8 +931,8 @@ class PokemonGoBot(object):
                     level='debug',
                     formatted='Loading cached location...'
                 )
-                with open('data/last-location-%s.json' %
-                    self.config.username) as f:
+                with open(os.path.join(_base_dir, 'data', 'last-location-%s.json' %
+                    self.config.username)) as f:
                     location_json = json.load(f)
                 location = (
                     location_json['lat'],
@@ -944,7 +1011,15 @@ class PokemonGoBot(object):
         request.get_player()
         request.check_awarded_badges()
         request.call()
-        self.update_web_location()  # updates every tick
+        try:
+            self.web_update_queue.put_nowait(True)  # do this outside of thread every tick
+        except Queue.Full:
+            pass
+
+    def update_web_location_worker(self):
+        while True:
+            self.web_update_queue.get()
+            self.update_web_location()
 
     def get_inventory_count(self, what):
         response_dict = self.get_inventory()
@@ -1006,8 +1081,8 @@ class PokemonGoBot(object):
 
     def get_forts(self, order_by_distance=False):
         forts = [fort
-             for fort in self.cell['forts']
-             if 'latitude' in fort and 'type' in fort]
+                 for fort in self.cell['forts']
+                 if 'latitude' in fort and 'type' in fort]
 
         if order_by_distance:
             forts.sort(key=lambda x: distance(
@@ -1032,3 +1107,42 @@ class PokemonGoBot(object):
         self.last_time_map_object = time.time()
 
         return self.last_map_object
+
+    def _load_recent_forts(self):
+        if not self.config.forts_cache_recent_forts:
+            return
+
+
+        cached_forts_path = os.path.join(_base_dir, 'data', 'recent-forts-%s.json' % self.config.username)
+        try:
+            # load the cached recent forts
+            with open(cached_forts_path) as f:
+                cached_recent_forts = json.load(f)
+
+            num_cached_recent_forts = len(cached_recent_forts)
+            num_recent_forts = len(self.recent_forts)
+
+            # Handles changes in max_circle_size
+            if not num_recent_forts:
+                self.recent_forts = []
+            elif num_recent_forts > num_cached_recent_forts:
+                self.recent_forts[-num_cached_recent_forts:] = cached_recent_forts
+            elif num_recent_forts < num_cached_recent_forts:
+                self.recent_forts = cached_recent_forts[-num_recent_forts:]
+            else:
+                self.recent_forts = cached_recent_forts
+
+            self.event_manager.emit(
+                'loaded_cached_forts',
+                sender=self,
+                level='debug',
+                formatted='Loaded cached forts...'
+            )
+        except IOError:
+            self.event_manager.emit(
+                'no_cached_forts',
+                sender=self,
+                level='debug',
+                formatted='Starting new cached forts for {path}',
+                data={'path': cached_forts_path}
+            )

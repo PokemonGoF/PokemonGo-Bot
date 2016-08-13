@@ -86,10 +86,29 @@ class TreeConfigBuilderTest(unittest.TestCase):
         tree = builder.build()
         self.assertTrue(tree[0].config.get('longer_eggs_first', False))
 
+    def test_disabling_task(self):
+        obj = convert_from_json("""[{
+                "type": "HandleSoftBan",
+                "config": {
+                    "enabled": false
+                }
+            }, {
+                "type": "CatchLuredPokemon",
+                "config": {
+                    "enabled": true
+                }
+            }]""")
+
+        builder = TreeConfigBuilder(self.bot, obj)
+        tree = builder.build()
+
+        self.assertTrue(len(tree) == 1)
+        self.assertIsInstance(tree[0], CatchLuredPokemon)
+
     def test_load_plugin_task(self):
         package_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'resources', 'plugin_fixture')
         plugin_loader = PluginLoader()
-        plugin_loader.load_path(package_path)
+        plugin_loader.load_plugin(package_path)
 
         obj = convert_from_json("""[{
             "type": "plugin_fixture.FakeTask"
@@ -103,7 +122,7 @@ class TreeConfigBuilderTest(unittest.TestCase):
     def setupUnsupportedBuilder(self):
         package_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'pokemongo_bot', 'test', 'resources', 'plugin_fixture')
         plugin_loader = PluginLoader()
-        plugin_loader.load_path(package_path)
+        plugin_loader.load_plugin(package_path)
 
         obj = convert_from_json("""[{
             "type": "plugin_fixture.UnsupportedApiTask"
