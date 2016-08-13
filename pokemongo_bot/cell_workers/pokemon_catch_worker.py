@@ -479,7 +479,7 @@ class PokemonCatchWorker(BaseTask):
                         'location': str(self.pokemon['latitude'])+','+str(self.pokemon['longitude'])
                     }
                 )
-            except:
+            except Exception:
                 self.emit_event(
                     'save_spawn',
                     formatted='Error when saving spawn : spawn not saved!',
