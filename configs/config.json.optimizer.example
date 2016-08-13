@@ -142,6 +142,7 @@
     "action_wait_max": 4,
     "catch_wait_min": 1,
     "catch_wait_max": 4,
+    "randomize_flee_duration": true,
     "debug": false,
     "test": false,
     "health_record": false,
