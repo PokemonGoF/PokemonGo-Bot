@@ -5,10 +5,50 @@ from math import ceil
 import haversine
 import polyline
 import requests
+from pokemongo_bot.config import get_config
+
+class PolylineObjectHandler:
+    '''
+    Does this need to be a class?
+    More like a namespace...
+    '''
+    _cache = {}
+    _kill_these = set()
+
+    @staticmethod
+    def cached_polyline(bot, origin, destination, speed, parent_cls):
+        '''
+        Google API has limits, so we can't generate new Polyline at every tick...
+        '''
+        for key in list(PolylineObjectHandler._kill_these):
+            PolylineObjectHandler._cache.pop(key)
+            PolylineObjectHandler._kill_these.remove(key)
+
+        key = parent_cls
+        if key not in PolylineObjectHandler._cache:
+            polyline = Polyline(origin, destination, speed)
+            polyline.key = key
+            polyline.destination = destination
+
+            PolylineObjectHandler._cache[key] = polyline
+        elif key in PolylineObjectHandler._cache and PolylineObjectHandler._cache[key].destination != destination:
+            # The case bot changes mind to catch Mew instead of following Doduo...
+            # Merge with upper code? Without comment, it would be quite puzzling...
+            polyline = Polyline(origin, destination, speed)
+            polyline.key = key
+            polyline.destination = destination
+
+            PolylineObjectHandler._cache[key] = polyline
+        else:
+            polyline = PolylineObjectHandler._cache[key]
+        return polyline
+
+    @staticmethod
+    def delete_cache(polyline):
+        PolylineObjectHandler._cache.pop(polyline.key)
 
 
 class Polyline(object):
-
     def __init__(self, origin, destination, speed):
         self.DISTANCE_API_URL='https://maps.googleapis.com/maps/api/directions/json?mode=walking'
         self.origin = origin
@@ -18,12 +58,16 @@ class Polyline(object):
                                                    '{},{}'.format(*self.destination))
         self.request_responce = requests.get(self.URL).json()
         try:
+        # Polyline walker starts teleporting after reaching api query limit.
+        # throw error here atm, catch it at factory and return StepWalker
+        # TODO Check what is happening...
             self.polyline_points = [x['polyline']['points'] for x in
-                                    self.request_responce['routes'][0]['legs'][0]['steps']]
+                                self.request_responce['routes'][0]['legs'][0]['steps']]
         except IndexError:
             self.polyline_points = self.request_responce['routes']
-        self.speed = float(speed)
+            raise # catch at factory atm...
         self.points = [self.origin] + self.get_points(self.polyline_points) + [self.destination]
+        self.speed = float(speed)
         self.lat, self.long = self.points[0][0], self.points[0][1]
         self.polyline = self.combine_polylines(self.points)
         self._timestamp = time.time()

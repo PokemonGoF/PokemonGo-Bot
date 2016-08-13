@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from pokemongo_bot.constants import Constants
-from pokemongo_bot.step_walker import StepWalker
+from pokemongo_bot.walkers.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
 from utils import distance, format_dist, fort_details
