@@ -148,6 +148,13 @@
     "reconnecting_timeout": 15,
     "min_ultraball_to_keep": 10,
     "logging_color": true,
+    "catch_throw_parameters": {
+      "excellent_rate": 0.1,
+      "great_rate": 0.5,
+      "nice_rate": 0.3,
+      "normal_rate": 0.1,
+      "spin_success_rate" : 0.6
+    },
     "catch": {
         "any": {
             "always_catch": true
