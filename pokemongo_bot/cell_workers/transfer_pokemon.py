@@ -159,7 +159,9 @@ class TransferPokemon(BaseTask):
             data={
                 'pokemon': pokemon.name,
                 'cp': pokemon.cp,
-                'iv': pokemon.iv
+                'iv': pokemon.iv,
+                'ncp': pokemon.cp_percent,
+                'dps': pokemon.moveset.dps
             }
         )
         action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
