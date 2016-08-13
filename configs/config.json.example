@@ -31,6 +31,7 @@
       {
         "type": "UpdateLiveStats",
         "config": {
+          "username",
           "enabled": false,
           "min_interval": 10,
           "stats": ["uptime", "stardust_earned", "xp_earned", "xp_per_hour", "stops_visited"],
