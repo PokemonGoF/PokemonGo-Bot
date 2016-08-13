@@ -33,7 +33,22 @@
         "config": {
           "enabled": false,
           "min_interval": 10,
-          "stats": ["uptime", "stardust_earned", "xp_earned", "xp_per_hour", "stops_visited"],
+          "stats": [
+            "uptime",
+            "stardust_earned",
+            "xp_earned",
+            "xp_per_hour",
+            "stops_visited"
+            {
+              "type": "items_short",
+              "config": [
+                "Pokeball",
+                "Greatball",
+                "Ultraball",
+                "Razz Berry"
+              ]
+            }
+          ],
           "terminal_log": true,
           "terminal_title": true
         }
