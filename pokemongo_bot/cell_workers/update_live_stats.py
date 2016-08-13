@@ -5,6 +5,8 @@ from datetime import datetime, timedelta
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.tree_config_builder import ConfigException
+from pokemongo_bot import inventory
+from pokemongo_bot.item_list import Item
 
 
 class UpdateLiveStats(BaseTask):
@@ -56,6 +58,26 @@ class UpdateLiveStats(BaseTask):
     - stardust_earned : The number of earned stardust since the bot started.
     - highest_cp_pokemon : The caught pokemon with the highest CP since the bot started.
     - most_perfect_pokemon : The most perfect caught pokemon since the bot started.
+    - items : The number of items in bag storage.
+      available items:
+      * Pokeball, Greatball, Ultraball, Masterball
+      * Razz Berry
+      * Potion, Super Potion, Hyper Potion, Max Potion
+      * Revive, Max Revive
+      example:
+      "stats": [
+          ...
+          {
+            "type": "items",
+            "config": [
+                "Pokeball",
+                "Greatball",
+                "Ultraball",
+                "Razz Berry"
+            ]
+          }
+      ],
+    - items_short : The number of items in bag storage (abbreviation).
     """
     SUPPORTED_TASK_API_VERSION = 1
 
@@ -206,6 +228,21 @@ class UpdateLiveStats(BaseTask):
         if not most_perfect_pokemon:
             most_perfect_pokemon = "None"
 
+        items = inventory.items()
+        all_items = {
+            'Pokeball'     : ('P',  items.get(Item.ITEM_POKE_BALL.value).count),
+            'Greatball'    : ('G',  items.get(Item.ITEM_GREAT_BALL.value).count),
+            'Ultraball'    : ('U',  items.get(Item.ITEM_ULTRA_BALL.value).count),
+            'Masterball'   : ('M',  items.get(Item.ITEM_ULTRA_BALL.value).count),
+            'Razz Berry'   : ('B',  items.get(Item.ITEM_RAZZ_BERRY.value).count),
+            'Potion'       : ('PO', items.get(Item.ITEM_POTION.value).count),
+            'Super Potion' : ('PS', items.get(Item.ITEM_SUPER_POTION.value).count),
+            'Hyper Potion' : ('PH', items.get(Item.ITEM_HYPER_POTION.value).count),
+            'Max Potion'   : ('PM', items.get(Item.ITEM_MAX_POTION.value).count),
+            'Revive'       : ('RE', items.get(Item.ITEM_REVIVE.value).count),
+            'Max Revive'   : ('RM', items.get(Item.ITEM_MAX_REVIVE.value).count)
+        }
+
         # Create stats strings.
         available_stats = {
             'login': login,
@@ -235,6 +272,8 @@ class UpdateLiveStats(BaseTask):
             'stardust_earned': 'Earned {:,} Stardust'.format(stardust_earned),
             'highest_cp_pokemon': 'Highest CP pokemon : {}'.format(highest_cp_pokemon),
             'most_perfect_pokemon': 'Most perfect pokemon : {}'.format(most_perfect_pokemon),
+            'items': all_items,
+            'items_short': all_items,
         }
 
         def get_stat(stat):
@@ -247,6 +286,8 @@ class UpdateLiveStats(BaseTask):
             :raise: ConfigException: When the provided stat string isn't in the available stats
             dictionary.
             """
+            if type(stat) is dict:
+                return self._get_items_stats(stat, available_stats)
             if stat not in available_stats:
                 raise ConfigException("stat '{}' isn't available for displaying".format(stat))
             return available_stats[stat]
@@ -271,3 +312,25 @@ class UpdateLiveStats(BaseTask):
                      for x in inventory_items
                      if x.get("inventory_item_data", {}).get("player_stats", {})),
                     None)
+
+    def _get_items_stats(self, stat, available_stats):
+        stat_type = stat.get('type', '')
+        if stat_type not in available_stats:
+            raise ConfigException("stat '{}' isn't available for displaying".format(stat_type))
+        stat_config = stat.get('config', [])
+        if stat_config is None:
+            return available_stats[stat_type]
+        stat_items = available_stats[stat_type]
+        if stat_items is None or type(stat_items) is not dict:
+            raise ConfigException("stat '{}' isn't available for displaying".format(stat_type))
+
+        # TODO: Generalize
+        # this is the case for items only!
+        content = ''
+        if stat_type == 'items':
+            for item in stat_config:
+                content += '{} x {}, '.format(item, stat_items[item][1])
+        elif stat_type == 'items_short':
+            for item in stat_config:
+                content += '{}x{}, '.format(stat_items[item][0], stat_items[item][1])
+        return content[:-2]
