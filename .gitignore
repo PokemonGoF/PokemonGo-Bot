@@ -109,6 +109,7 @@ web/
 data/last-location*.json
 data/cells-*.json
 data/map-caught-*.json
+data/pokemon_spawns-*.json
 
 # Multiple config
 configs/*
