@@ -4,7 +4,7 @@ import time
 from random import random
 from pokemongo_bot import inventory
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot.inventory import Pokemon
 from pokemongo_bot.worker_result import WorkerResult
 
@@ -354,7 +354,7 @@ class PokemonCatchWorker(BaseTask):
                     formatted='{pokemon} capture failed.. trying again!',
                     data={'pokemon': pokemon.name}
                 )
-                sleep(2)
+                action_delay(max(self.bot.config.action_wait_min, 2), self.bot.config.action_wait_max)
                 continue
 
             # abandon if pokemon vanished
