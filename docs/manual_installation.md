@@ -11,7 +11,7 @@ Ubuntu will be used for the Linux Example
 
 #####Linux
 ```bash
-sudo apt-get install build-essential autoconf libtool pkg-config make python-dev python-protobuf python2.7 wget git
+sudo apt-get install build-essential autoconf libtool pkg-config make python2.7-dev wget git
 ```
 ####
 if you are on a different Linux OS you maybe have to adapt things like:
