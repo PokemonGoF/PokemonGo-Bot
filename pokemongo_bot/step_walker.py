@@ -19,7 +19,7 @@ class StepWalker(object):
             dest_lng
         )
 
-        self.speed = speed
+        self.speed = speed - random() * (speed / 10)
 
         self.destLat = dest_lat
         self.destLng = dest_lng
@@ -38,7 +38,7 @@ class StepWalker(object):
 
     def step(self):
         if (self.dLat == 0 and self.dLng == 0) or self.dist < self.speed:
-            self.api.set_position(self.destLat, self.destLng, 0)
+            self.api.set_position(self.destLat + random_lat_long_delta(), self.destLng + random_lat_long_delta(), 0)
             self.bot.event_manager.emit(
                 'position_update',
                 sender=self,
