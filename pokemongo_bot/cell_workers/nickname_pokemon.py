@@ -80,6 +80,7 @@ class NicknamePokemon(BaseTask):
     {iv_pct2}    IV perfection (in 00-99 format - 2 chars)
                     So 99 is best (it's a 100% perfection)
     {iv_pct1}    IV perfection (in 0-9 format - 1 char)
+    {iv_ads_hex} Joined IV values in HEX (e.g. 4C9)
 
     # Basic Values of the pokemon (identical for all of one kind)
     {base_attack}   Basic Attack (40-284) of the current pokemon kind
@@ -324,6 +325,8 @@ class NicknamePokemon(BaseTask):
             iv_stamina=iv_stamina,
             # Joined IV values like: 4/12/9
             iv_ads='/'.join(map(str, iv_list)),
+            # Joined IV values in HEX like: 4C9
+            iv_ads_hex = ''.join(map(lambda x: format(x, 'X'), iv_list)),
             # Sum of the Individial Values
             iv_sum=iv_sum,
             # IV perfection (in 000-100 format - 3 chars)
