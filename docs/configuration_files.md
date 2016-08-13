@@ -251,8 +251,8 @@ Key | Info
 > **NOTE:** Use a blank template (`""`) to revert all pokemon to their original names (as if they had no nickname).
 
 Sample usages:
-- `"{name}_{iv_pct}"` => `Mankey_69`
-- `"{iv_pct}_{iv_ads}"` => `91_15/11/15`
+- `"{name}_{iv_pct}"` => `Mankey_069`
+- `"{iv_pct}_{iv_ads}"` => `091_15/11/15`
 - `""` -> `Mankey`
 - `"{attack_code}{attack_pct1}{defense_pct1}{ivcp_pct1}{name}"` => `Lh474Golbat`
 ![sample](https://cloud.githubusercontent.com/assets/8896778/17285954/0fa44a88-577b-11e6-8204-b1302f4294bd.png)
