@@ -1,4 +1,5 @@
-@echo off
+TITLE PokemonGo-Bot Repair
+@ECHO OFF
 CLS
 
 :init
@@ -29,23 +30,25 @@ exit /B
 setlocal & pushd .
 cd /d %~dp0
 if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul  &  shift /1)
-
-::::::::::::::::::::::::::::
-::START
-::::::::::::::::::::::::::::
 @ECHO ON
 @ECHO.
-@ECHO Created by danielsdian based on information gathered from the wiki
+@ECHO.
 @ECHO.
 @ECHO --------------------Creating Backup--------------------
-ECHO.
+@ECHO.
+@ECHO.
+@ECHO.
 RMDIR C:\Python27\Backup /s /q
 MKDIR C:\Python27\Backup
 COPY C:\Python27\PokemonGo-Bot\encrypt*.* C:\Python27\Backup
 COPY C:\Python27\PokemonGo-Bot\configs\config.json C:\Python27\Backup
 COPY C:\Python27\PokemonGo-Bot\web\config\userdata.js C:\Python27\Backup
 @ECHO.
+@ECHO.
+@ECHO.
 @ECHO --------------------Downloading PokemonGo-Bot--------------------
+@ECHO.
+@ECHO.
 @ECHO.
 RMDIR C:\Python27\PokemonGo-Bot /s /q
 cd C:\Python27\
@@ -53,65 +56,24 @@ pip2 install --upgrade pip
 pip2 install --upgrade virtualenv
 pip2 install --upgrade "%~dp0\PyYAML-3.11-cp27-cp27m-win32.whl"
 pip2 install --upgrade "%~dp0\PyYAML-3.11-cp27-cp27m-win_amd64.whl"
-cd C:\Python27\
-git clone --recursive -b dev https://github.com/PokemonGoF/PokemonGo-Bot
-cd C:\Python27\PokemonGo-Bot
-pip2 install --upgrade -r requirements.txt
-git submodule init
-git submodule update
+git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot
+pip2 install --upgrade -r C:/Python27/PokemonGo-Bot/requirements.txt
+cd C:/Python27/PokemonGo-Bot/
 virtualenv .
-pip2 install --upgrade -r requirements.txt
-@ECHO OFF
-set "VIRTUAL_ENV=C:\Python27\PokemonGo-Bot"
-
-if defined _OLD_VIRTUAL_PROMPT (
-    set "PROMPT=%_OLD_VIRTUAL_PROMPT%"
-) else (
-    if not defined PROMPT (
-        set "PROMPT=$P$G"
-    )
-    set "_OLD_VIRTUAL_PROMPT=%PROMPT%"
-)
-set "PROMPT=(PokemonGo-Bot) %PROMPT%"
-
-REM Don't use () to avoid problems with them in %PATH%
-if defined _OLD_VIRTUAL_PYTHONHOME goto ENDIFVHOME
-    set "_OLD_VIRTUAL_PYTHONHOME=%PYTHONHOME%"
-:ENDIFVHOME
-
-set PYTHONHOME=
-
-REM if defined _OLD_VIRTUAL_PATH (
-if not defined _OLD_VIRTUAL_PATH goto ENDIFVPATH1
-    set "PATH=%_OLD_VIRTUAL_PATH%"
-:ENDIFVPATH1
-REM ) else (
-if defined _OLD_VIRTUAL_PATH goto ENDIFVPATH2
-    set "_OLD_VIRTUAL_PATH=%PATH%"
-:ENDIFVPATH2
-
-set "PATH=%VIRTUAL_ENV%\Scripts;%PATH%"
-@ECHO ON
+call C:\Python27\PokemonGo-Bot\Scripts\activate.bat
+pip2 install --upgrade -r C:/Python27/PokemonGo-Bot/requirements.txt
 @ECHO.
-@ECHO --------------------Copying additional files--------------------
 @ECHO.
-COPY "%~dp0\encrypt*.*" C:\Python27\PokemonGo-Bot\
 @ECHO.
 @ECHO --------------------Restoring Backup--------------------
 @ECHO.
+@ECHO.
+@ECHO.
 COPY C:\Python27\Backup\encrypt*.* C:\Python27\PokemonGo-Bot\
 COPY C:\Python27\Backup\config.json C:\Python27\PokemonGo-Bot\configs\
-COPY C:\Python27\Backup\userdata.js C:\Python27\PokemonGo-Bot\web\config\ 
+COPY C:\Python27\Backup\userdata.js C:\Python27\PokemonGo-Bot\web\config\
+RMDIR C:\Python27\Backup /s /q
 @ECHO.
-@ECHO --------------------File customization--------------------
 @ECHO.
-@ECHO Remember to configure both config.json and userdata.js!
-@ECHO.
-@ECHO "C:/Python27/PokemonGo-Bot/configs/config.json"
-@ECHO.
-@ECHO "C:/Python27/PokemonGo-Bot/web/config/userdata.js"
-@ECHO.
-@ECHO To get an Google Map API Key:
-@ECHO https://developers.google.com/maps/documentation/javascript/get-api-key
 @ECHO.
 @PAUSE

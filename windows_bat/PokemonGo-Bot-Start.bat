@@ -1,4 +1,5 @@
-@echo off
+TITLE PokemonGo-Bot
+@ECHO OFF
 CLS
 
 :init
@@ -29,18 +30,56 @@ exit /B
 setlocal & pushd .
 cd /d %~dp0
 if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul  &  shift /1)
-
-::::::::::::::::::::::::::::
-::START
-::::::::::::::::::::::::::::
 @ECHO ON
 @ECHO.
-@ECHO Created by danielsdian based on information gathered from the wiki
 @ECHO.
-@ECHO First run PokemonGo-Bot-StartServer
+@ECHO.
+@ECHO --------------------Verifying PokemonGo-Bot version--------------------
+@ECHO.
+@ECHO.
+@ECHO.
+cd C:/Python27/PokemonGo-Bot/
+git pull
+git submodule update --init --recursive
+git submodule foreach git pull origin master
+@ECHO.
+@ECHO.
+@ECHO.
+@ECHO WARNING: Verify if the Config.json file got updated. If Yes, check if your modifications are still valid before proceeding.
+@ECHO.
+@ECHO.
 @ECHO.
 @pause
+@ECHO.
+@ECHO.
+@ECHO.
+@ECHO --------------------Initializing environment--------------------
+@ECHO.
+@ECHO.
+@ECHO.
+cd C:/Python27/PokemonGo-Bot/
+virtualenv .
+call C:\Python27\PokemonGo-Bot\Scripts\activate.bat
+pip2 install --upgrade -r C:/Python27/PokemonGo-Bot/requirements.txt
+@ECHO.
+@ECHO.
+@ECHO.
+@ECHO --------------------Initializing web server--------------------
+@ECHO.
+@ECHO.
+@ECHO.
+start cmd.exe /k "cd C:/Python27/PokemonGo-Bot/web&python -m SimpleHTTPServer"
+@ECHO.
+@ECHO.
+@ECHO.
+@ECHO --------------------Starting bot--------------------
+@ECHO.
+@ECHO.
+@ECHO.
 python C:/Python27/PokemonGo-Bot/pokecli.py
+
+
+
 
 
 
