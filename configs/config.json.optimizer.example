@@ -140,6 +140,8 @@
     "walk": 4.16,
     "action_wait_min": 1,
     "action_wait_max": 4,
+    "catch_wait_min": 1,
+    "catch_wait_max": 4,
     "debug": false,
     "test": false,
     "health_record": false,
