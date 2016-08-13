@@ -5,7 +5,6 @@ from math import ceil
 import haversine
 import polyline
 import requests
-from pokemongo_bot.config import get_config
 
 class PolylineObjectHandler:
     '''
