@@ -73,8 +73,8 @@ class FollowSpiral(BaseTask):
         self.cnt += 1
 
         dist = distance(
-            self.bot.api._position_lat,
-            self.bot.api._position_lng,
+            last_lat,
+            last_lng,
             point['lat'],
             point['lng']
         )
@@ -92,7 +92,7 @@ class FollowSpiral(BaseTask):
                     'position_update',
                     formatted="Walking from {last_position} to {current_position} ({distance} {distance_unit})",
                     data={
-                        'last_position': self.bot.position,
+                        'last_position': (last_lat, last_lng, 0),
                         'current_position': (point['lat'], point['lng'], 0),
                         'distance': dist,
                         'distance_unit': 'm'
@@ -115,12 +115,7 @@ class FollowSpiral(BaseTask):
                 }
             )
 
-        if distance(
-                    self.bot.api._position_lat,
-                    self.bot.api._position_lng,
-                    point['lat'],
-                    point['lng']
-                ) <= 1 or (self.bot.config.walk > 0 and step_walker == None):
+        if dist <= 1 or (self.bot.config.walk > 0 and step_walker == None):
             if self.ptr + self.direction >= len(self.points) or self.ptr + self.direction <= -1:
                 self.direction *= -1
             if len(self.points) != 1:
