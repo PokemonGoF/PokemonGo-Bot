@@ -45,7 +45,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 * RecycleItems
 
   > **NOTE:** It's highly recommended to put this task before MoveToFort and SpinFort tasks. This way you'll most likely be able to loot.
-  * `item_filter`: Pass a list of unwanted [items (using their JSON codes or names)](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Item-ID's) to recycle when collected at a Pokestop
+  * `item_filter`: Pass a list of unwanted [items (using their JSON codes or names)](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Item-ID's) to recycle.
   * `min_empty_space`: Default `6` | Minimum empty space to keep in inventory. Once the inventory has less empty space than that amount, the recycling process is triggered. Set it to the inventory size to trigger it at every tick.
 * SpinFort
 * TransferPokemon
