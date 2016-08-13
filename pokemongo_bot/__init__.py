@@ -300,7 +300,7 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'pokemon_evolved',
-            parameters=('pokemon', 'iv', 'cp', 'xp')
+            parameters=('pokemon', 'iv', 'cp', 'ncp', 'dps', 'xp')
         )
         self.event_manager.register_event('skip_evolve')
         self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
@@ -392,7 +392,7 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'pokemon_release',
-            parameters=('pokemon', 'cp', 'iv')
+            parameters=('pokemon', 'iv', 'cp', 'ncp', 'dps')
         )
 
         # polyline walker
