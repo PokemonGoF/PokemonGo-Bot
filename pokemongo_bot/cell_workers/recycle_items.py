@@ -89,7 +89,8 @@ class RecycleItems(BaseTask):
 
                 if self.item_should_be_recycled(item_in_inventory, amount_to_recycle):
                     action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
-                    if ItemRecycler(self.bot, item_in_inventory, amount_to_recycle).work() == WorkerResult.ERROR:
+                    # If at any recycling process call we got an error consider that the result of this task is error too.
+                    if item_in_inventory.recycle(amount_to_recycle) == WorkerResult.ERROR:
                         worker_result = WorkerResult.ERROR
 
         return worker_result
