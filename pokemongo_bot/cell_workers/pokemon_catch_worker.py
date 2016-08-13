@@ -465,26 +465,26 @@ class PokemonCatchWorker(BaseTask):
             saved_pokemon_spawn_path = os.path.join(
                 _base_dir, 'data', file_name
             )
-            #try:
-            spawn_location = str(self.pokemon['latitude'])+','+str(self.pokemon['longitude'])
+            try:
+                spawn_location = str(self.pokemon['latitude'])+','+str(self.pokemon['longitude'])
 
-            with open(saved_pokemon_spawn_path, 'a') as outfile:
-                json.dump({'location': spawn_location, 'pokemon': pokemon.name}, outfile)
+                with open(saved_pokemon_spawn_path, 'a') as outfile:
+                    json.dump({'location': spawn_location, 'pokemon': pokemon.name}, outfile)
 
-            self.emit_event(
-                'save_spawn',
-                formatted='Spawn at {location} saved in '+ file_name +' (Encountered {pokemon})',
-                data={
-                    'pokemon': pokemon.name,
-                    'location': str(self.pokemon['latitude'])+','+str(self.pokemon['longitude'])
-                }
-            )
-            #except:
-            #    self.emit_event(
-            #        'save_spawn',
-            #        formatted='Error when saving spawn : spawn not saved!',
-            #        data={
-            #            'pokemon': pokemon.name,
-            #            'location': str(self.pokemon['latitude'])+','+str(self.pokemon['longitude'])
-            #        }
-            #    )
+                self.emit_event(
+                    'save_spawn',
+                    formatted='Spawn at {location} saved in '+ file_name +' (Encountered {pokemon})',
+                    data={
+                        'pokemon': pokemon.name,
+                        'location': str(self.pokemon['latitude'])+','+str(self.pokemon['longitude'])
+                    }
+                )
+            except:
+                self.emit_event(
+                    'save_spawn',
+                    formatted='Error when saving spawn : spawn not saved!',
+                    data={
+                        'pokemon': pokemon.name,
+                        'location': str(self.pokemon['latitude'])+','+str(self.pokemon['longitude'])
+                    }
+                )
