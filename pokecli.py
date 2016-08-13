@@ -465,6 +465,15 @@ def init_config():
         type=float,
         default=1
     )
+    add_config(
+        parser,
+        load,
+        short_flag="-rfd",
+        long_flag="--randomize_flee_duration",
+        help="Randomly chooses 2, 4 or 6 seconds between failed throw and next throw",
+        type=bool,
+        default=True
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()

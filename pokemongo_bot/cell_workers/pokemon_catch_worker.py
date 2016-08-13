@@ -354,7 +354,12 @@ class PokemonCatchWorker(BaseTask):
                     formatted='{pokemon} capture failed.. trying again!',
                     data={'pokemon': pokemon.name}
                 )
-                sleep(choice([2, 4, 6]))
+
+                sleep_for = 2
+                if self.config.randomize_flee_duration:
+                    sleep_for = choice([2, 4, 6])
+                sleep(sleep_for)
+
                 continue
 
             # abandon if pokemon vanished
