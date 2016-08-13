@@ -2,6 +2,8 @@ from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.inventory import pokemons, Pokemon, Attack
 
+import re
+
 
 DEFAULT_IGNORE_FAVORITES = False
 DEFAULT_GOOD_ATTACK_THRESHOLD = 0.7
@@ -277,7 +279,8 @@ class NicknamePokemon(BaseTask):
         """
 
         # Filter template
-        template = template.lower().strip()
+        # only convert the keys to lowercase, leaving the format specifier alone
+        template = re.sub(r"{[\w_\d]*", lambda x:x.group(0).lower(), template).strip()
 
         # Individial Values of the current specific pokemon (different for each)
         iv_attack = pokemon.iv_attack
