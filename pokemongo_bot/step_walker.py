@@ -1,12 +1,13 @@
 from math import sqrt
 
+from random import random
 from cell_workers.utils import distance
 from human_behaviour import random_lat_long_delta, sleep
 
 
 class StepWalker(object):
 
-    def __init__(self, bot, speed, dest_lat, dest_lng):
+    def __init__(self, bot, dest_lat, dest_lng):
         self.bot = bot
         self.api = bot.api
 
@@ -19,7 +20,7 @@ class StepWalker(object):
             dest_lng
         )
 
-        self.speed = speed
+        self.speed = self.bot.config.walk_min - random() * (self.bot.config.walk_max - self.bot.config.walk_min)
 
         self.destLat = dest_lat
         self.destLng = dest_lng
@@ -41,7 +42,7 @@ class StepWalker(object):
 
     def step(self):
         if (self.dLat == 0 and self.dLng == 0) or self.dist < self.speed:
-            self.api.set_position(self.destLat, self.destLng, 0)
+            self.api.set_position(self.destLat + random_lat_long_delta(), self.destLng + random_lat_long_delta(), 0)
             self.bot.event_manager.emit(
                 'position_update',
                 sender=self,
