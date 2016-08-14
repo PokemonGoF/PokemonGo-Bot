@@ -40,11 +40,10 @@ We do recommend Windows users to use [Docker](#docker) this will work much easie
 
 ###Easy Installation
 1. Download [PokemonGo-Bot-Install.bat](https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/windows_bat/PokemonGo-Bot-Install.bat)
-2. Download both [PyYAML-3.11-cp27-cp27m-win32.whl](https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/windows_bat/PyYAML-3.11-cp27-cp27m-win32.whl) and  [PyYAML-3.11-cp27-cp27m-win_amd64.whl](https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/windows_bat/PyYAML-3.11-cp27-cp27m-win_amd64.whl).
-3. Download `encrypt.dll`, `encrypt.so` and `encrypt_64.dll`.
-4. Run `PokemonGo-Bot-install.bat`.
-After that has done the bot will be installed.
-5. Run `PokemonGo-Bot-Start.bat`.
+2. Download `encrypt.so` and `encrypt.dll` or `encrypt_64.dll` to the same folder of the `PokemonGo-Bot-Install.bat`.
+3. Run `PokemonGo-Bot-install.bat`.
+After that has been done the bot will be installed.
+4. Run `PokemonGo-Bot-Start.bat`.
 This will start the bot and the web interface.
 
 ### To update the bot
