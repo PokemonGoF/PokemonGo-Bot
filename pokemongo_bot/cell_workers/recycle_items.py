@@ -12,8 +12,6 @@ from pokemongo_bot.worker_result import WorkerResult
 DEFAULT_MIN_EMPTY_SPACE = 6
 
 class RecycleItems(BaseTask):
-    SUPPORTED_TASK_API_VERSION = 1
-
     """
     Recycle undesired items if there is less than five space in inventory.
     You can use either item's name or id. For the full list of items see ../../data/items.json
@@ -44,6 +42,8 @@ class RecycleItems(BaseTask):
       }
     }
     """
+    SUPPORTED_TASK_API_VERSION = 1
+
 
     def initialize(self):
         self.items_filter = self.config.get('item_filter', {})
@@ -82,13 +82,15 @@ class RecycleItems(BaseTask):
 
     def work(self):
         """
-        Discard items if necessary.
-        :return: Returns wether or not the task went well
+        Start the process of recycling items if necessary.
+        :return: Returns whether or not the task went well
         :rtype: WorkerResult
         """
+        
         # TODO: Use new inventory everywhere and then remove the inventory update
         # Updating inventory
         inventory.refresh_inventory()
+        
         worker_result = WorkerResult.SUCCESS
 
         if self.should_run():
@@ -102,13 +104,12 @@ class RecycleItems(BaseTask):
             if not (self.max_revives_keep is None):
                 self.recycle_excess_category_max(self.max_potions_keep, [201,202])
 
-            # For each user's item in inventory recycle it if needed
             for item_in_inventory in inventory.items().all():
                 amount_to_recycle = self.get_amount_to_recycle(item_in_inventory)
 
-                if self.item_should_be_recycled(item_in_inventory, amount_to_recycle):
+                if self.item_should_be_recycled(item_in_inventory):
                     action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
-                    if ItemRecycler(self.bot, item_in_inventory, amount_to_recycle).work() == WorkerResult.ERROR:
+                    if ItemRecycler(self.bot, item_in_inventory, self.get_amount_to_recycle(item_in_inventory)).work() == WorkerResult.ERROR:
                         worker_result = WorkerResult.ERROR
 
         return worker_result
@@ -177,22 +178,20 @@ class RecycleItems(BaseTask):
                 x = x + 1
         return items_to_recycle
 
-    def item_should_be_recycled(self, item, amount_to_recycle):
+    def item_should_be_recycled(self, item):
         """
         Returns a value indicating whether the item should be recycled.
-        :param amount_to_recycle:
-        :param item:
+        :param item: The Item to test
         :return: True if the title should be recycled; otherwise, False.
         :rtype: bool
         """
-        return (item.name in self.items_filter or str(
-            item.id) in self.items_filter) and amount_to_recycle > 0
+        return (item.name in self.items_filter or str(item.id) in self.items_filter) and self.get_amount_to_recycle(item) > 0
 
     def get_amount_to_recycle(self, item):
         """
         Determine the amount to recycle accordingly to user config
         :param item: Item to determine the amount to recycle
-        :return: The amount to recycle
+        :return: The amount to recycle.
         :rtype: int
         """
         amount_to_keep = self.get_amount_to_keep(item)
