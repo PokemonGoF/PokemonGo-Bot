@@ -145,7 +145,7 @@ def main():
                 'bot_interrupted',
                 sender=bot,
                 level='info',
-                formatted='Bot got SIGTERM. Shutting down.'
+                formatted='Bot caught SIGINT. Shutting down.'
             )
             report_summary(bot)
     except Exception as e:
