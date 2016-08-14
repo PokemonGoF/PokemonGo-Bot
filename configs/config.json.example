@@ -5,6 +5,7 @@
     "location": "SOME_LOCATION",
     "gmapkey": "GOOGLE_MAPS_API_KEY",
     "encrypt_location": "",
+    "websocket_server": false,
     "tasks": [
       {
         "type": "HandleSoftBan"
@@ -104,9 +105,11 @@
       "max_circle_size": 50,
       "cache_recent_forts": true
     },
-    "websocket_server": false,
+    
+    "// walk_max and walk_min are set as km/hr. Max for eggs is 14km/hr. ": 0,
     "walk_max": 4.16,
     "walk_min": 2.16,
+    
     "action_wait_min": 1,
     "action_wait_max": 4,
     "debug": false,
