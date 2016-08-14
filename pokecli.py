@@ -150,7 +150,7 @@ def main():
         if bot:
             if bot.recent_forts[-1] is not None and bot.config.forts_cache_recent_forts:
                 cached_forts_path = os.path.join(
-                    _base_dir, 'data', 'recent-forts-%s.json' % bot.config.username
+                    _base_dir, 'web', 'recent-forts-%s.json' % bot.config.username
                 )
                 try:
                     with open(cached_forts_path, 'w') as outfile:

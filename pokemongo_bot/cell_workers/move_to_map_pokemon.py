@@ -224,7 +224,7 @@ class MoveToMapPokemon(BaseTask):
         return WorkerResult.SUCCESS
 
     def dump_caught_pokemon(self):
-        user_data_map_caught = os.path.join(_base_dir, 'data', 'map-caught-{}.json'.format(self.bot.config.username))
+        user_data_map_caught = os.path.join(_base_dir, 'web', 'map-caught-{}.json'.format(self.bot.config.username))
         with open(user_data_map_caught, 'w') as outfile:
             json.dump(self.caught, outfile)
 
