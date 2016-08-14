@@ -137,7 +137,7 @@ class FollowPath(BaseTask):
 
         self.emit_event(
             'position_update',
-            formatted="Teleported from {last_position} to {current_position} ({distance} {distance_unit})",
+            formatted="Walk from {last_position} to {current_position} ({distance} {distance_unit})",
             data={
                 'last_position': (last_lat, last_lng, 0),
                 'current_position': (lat, lng, 0),
