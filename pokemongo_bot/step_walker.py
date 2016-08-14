@@ -20,7 +20,7 @@ class StepWalker(object):
             dest_lng
         )
 
-        self.speed = speed - random() * (speed / self.bot.config.walk_variance)
+        self.speed = speed - random() * speed * self.bot.config.walk_variance
 
         self.destLat = dest_lat
         self.destLng = dest_lng
