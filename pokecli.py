@@ -465,15 +465,6 @@ def init_config():
         type=float,
         default=1
     )
-    add_config(
-        parser,
-        load,
-        short_flag="-rfd",
-        long_flag="--randomize_flee_duration",
-        help="Randomly chooses 2, 4 or 6 seconds between failed throw and next throw",
-        type=bool,
-        default=True
-    )
 
     # Start to parse other attrs
     config = parser.parse_args()
@@ -487,11 +478,19 @@ def init_config():
     config.release = load.get('release', {})
     config.action_wait_max = load.get('action_wait_max', 4)
     config.action_wait_min = load.get('action_wait_min', 1)
-    config.catch_wait_max = load.get('catch_wait_max', 4)
-    config.catch_wait_min = load.get('catch_wait_min', 1)
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
     config.min_ultraball_to_keep = load.get('min_ultraball_to_keep', None)
+
+    catchsim_config = load.get('catch_simulation', {})
+    config.catchsim_catch_wait_min = catchsim_config.get('catch_wait_min', 2)
+    config.catchsim_catch_wait_max = catchsim_config.get('catch_wait_max', 6)
+    config.catchsim_flee_count = int(catchsim_config.get('flee_count', 3))
+    config.catchsim_flee_duration = catchsim_config.get('flee_duration', 2)
+    config.catchsim_berry_wait_min = catchsim_config.get('berry_wait_min', 2)
+    config.catchsim_berry_wait_max = catchsim_config.get('berry_wait_max', 3)
+    config.catchsim_changeball_wait_min = catchsim_config.get('changeball_wait_min', 2)
+    config.catchsim_changeball_wait_max = catchsim_config.get('changeball_wait_max', 3)
 
     config.vips = load.get('vips', {})
 

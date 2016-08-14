@@ -179,7 +179,7 @@ class PokemonCatchWorker(BaseTask):
 
     def _use_berry(self, berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball):
         # Delay to simulate selecting berry
-        action_delay(self.config.action_wait_min, self.config.action_wait_max)
+        action_delay(self.config.catchsim_berry_wait_min, self.config.catchsim_berry_wait_max)
         new_catch_rate_by_ball = []
         self.emit_event(
             'pokemon_catch_rate',
@@ -316,7 +316,7 @@ class PokemonCatchWorker(BaseTask):
 
             # If we change ball then wait to simulate user selecting it
             if changed_ball:
-                action_delay(self.config.action_wait_min, self.config.action_wait_max)
+                action_delay(self.config.catchsim_changeball_wait_min, self.config.catchsim_changeball_wait_max)
 
             # Randomize the quality of the throw
             # Default structure
@@ -332,7 +332,7 @@ class PokemonCatchWorker(BaseTask):
             ball_count[current_ball] -= 1
             self.inventory.get(current_ball).remove(1)
             # Take some time to throw the ball from config options
-            action_delay(self.config.catch_wait_min, self.config.catch_wait_max)
+            action_delay(self.config.catchsim_catch_wait_min, self.config.catchsim_catch_wait_max)
             self.emit_event(
                 'threw_pokeball',
                 formatted='Used {ball_name}, with chance {success_percentage} ({count_left} left)',
@@ -366,10 +366,8 @@ class PokemonCatchWorker(BaseTask):
                     data={'pokemon': pokemon.name}
                 )
 
-                sleep_for = 2
-                if self.config.randomize_flee_duration:
-                    sleep_for = choice([2, 4, 6])
-                sleep(sleep_for)
+                # sleep according to flee_count and flee_duration config settings
+                sleep(choice([(x+1)*self.config.catchsim_flee_duration for x in range(self.config.catchsim_flee_count)]))
 
                 continue
 
