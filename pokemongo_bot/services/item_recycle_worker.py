@@ -5,16 +5,16 @@ from pokemongo_bot.tree_config_builder import ConfigException
 
 RECYCLE_REQUEST_RESPONSE_SUCCESS = 1
 class ItemRecycler(BaseTask):
-    SUPPORTED_TASK_API_VERSION = 1
     """
     This class contains details of recycling process.
     """
+    SUPPORTED_TASK_API_VERSION = 1
     def __init__(self, bot, item_to_recycle, amount_to_recycle):
         """
         Initialise an instance of ItemRecycler
         :param bot: The instance of the Bot
         :param item_to_recycle: The item to recycle
-        :type item_to_recycle: Item
+        :type item_to_recycle: inventory.Item
         :param amount_to_recycle: The amount to recycle
         :type amount_to_recycle: int
         :return: Nothing.
@@ -27,8 +27,8 @@ class ItemRecycler(BaseTask):
 
     def work(self):
         """
-        Recycle an item
-        :return: Returns wether or not the task went well
+        Start the recycling process
+        :return: Returns whether or not the task went well
         :rtype: WorkerResult
         """
         if self.should_run():
@@ -43,7 +43,7 @@ class ItemRecycler(BaseTask):
 
     def should_run(self):
         """
-        Returns a value indicating whether or mot the recycler should be run.
+        Returns a value indicating whether or not the recycler should be run.
         :return: True if the recycler should be run; otherwise, False.
         :rtype: bool
         """

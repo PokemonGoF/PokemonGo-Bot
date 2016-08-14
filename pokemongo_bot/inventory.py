@@ -128,7 +128,7 @@ class Item(object):
     def remove(self, amount):
         """
         Remove a specified amount of an item from the cached inventory.
-        Note that it does **NOT** removes it in the server, it only removes it in cached inventory.
+        Note that it does **NOT** removes it in the server, it only removes it from the local cached inventory.
         :param amount: Amount to remove
         :type amount: int
         :return: Nothing
@@ -140,7 +140,7 @@ class Item(object):
 
     def add(self, amount):
         """
-        Add a specified amount of the item to the cached inventory
+        Add a specified amount of the item to the local cached inventory
         :param amount: Amount to add
         :type amount: int
         :return: Nothing.
