@@ -53,8 +53,7 @@ if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul  &  shift /1)
 @ECHO ---- encrypt.so / encrypt.dll /encrypt_64.dll (Copy to the same folder as this batch file)
 @ECHO      Get them from our Slack chat! "https://pokemongo-bot.herokuapp.com/"
 @ECHO.
-@ECHO ---- PyYAML-3.11-cp27-cp27m-win32.whl and PyYAML-3.11-cp27-cp27m-win_amd64.whl (Copy to the same folder as this batch file)
-@ECHO      Get them from our Slack chat! "https://pokemongo-bot.herokuapp.com/"
+@ECHO.
 @ECHO.
 @ECHO ---- If you already have a config.json and a userdata.js, copy to the same folder as this batch file.
 @ECHO.
@@ -83,9 +82,9 @@ RMDIR C:\Python27\PokemonGo-Bot /s /q
 cd C:\Python27\
 pip2 install --upgrade pip
 pip2 install --upgrade virtualenv
-pip2 install --upgrade "%~dp0\PyYAML-3.11-cp27-cp27m-win32.whl"
-pip2 install --upgrade "%~dp0\PyYAML-3.11-cp27-cp27m-win_amd64.whl"
 git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot
+pip2 install --upgrade "C:\Python27\PokemonGo-Bot\windows_bat\PyYAML-3.11-cp27-cp27m-win32.whl"
+pip2 install --upgrade "C:\Python27\PokemonGo-Bot\windows_bat\PyYAML-3.11-cp27-cp27m-win_amd64.whl"
 pip2 install --upgrade -r C:/Python27/PokemonGo-Bot/requirements.txt
 cd C:/Python27/PokemonGo-Bot/
 virtualenv .
