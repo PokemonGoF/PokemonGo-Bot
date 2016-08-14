@@ -58,7 +58,6 @@ class FollowCluster(BaseTask):
                 if self.bot.config.walk > 0:
                     step_walker = StepWalker(
                         self.bot,
-                        self.bot.config.walk,
                         lat,
                         lng
                     )
