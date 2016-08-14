@@ -108,9 +108,12 @@ class Pokedex(_BaseInventoryComponent):
 
 
 class Item(object):
+    """
+    Representation of an item.
+    """
     def __init__(self, item_id, item_count):
         """
-        Representation of an item
+        Initialise an instance of an item
         :param item_id: ID of the item
         :type item_id: int
         :param item_count: Quantity of the item
