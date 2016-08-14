@@ -1077,7 +1077,7 @@ class PokemonGoBot(object):
             self._player['max_item_storage'] - number_of_things_gained_by_stop
         )
 
-        return enough_space
+        return True #enough_space
 
     def get_forts(self, order_by_distance=False):
         forts = [fort
