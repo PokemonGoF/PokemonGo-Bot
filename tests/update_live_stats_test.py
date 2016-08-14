@@ -175,8 +175,8 @@ class UpdateLiveStatsTestCase(unittest.TestCase):
         expected = 'Login | Username | Evolved 12 pokemon | Encountered 130 pokemon | ' \
                    'Uptime : 15:42:13 | Caught 120 pokemon | Visited 220 stops | ' \
                    '42.05km walked | Level 25 | Earned 24,069 Stardust | ' \
-                   '45,000 / 190,000 XP (24%) | 1,337 XP/h | Threw 145 pokeballs | ' \
-                   'Highest CP pokemon : highest_cp | Level 25 (45,000 / 190,000, 24%) | ' \
+                   '45,000 / 190,000 XP (23%) | 1,337 XP/h | Threw 145 pokeballs | ' \
+                   'Highest CP pokemon : highest_cp | Level 25 (45,000 / 190,000, 23%) | ' \
                    '+424,242 XP | Encountered 3 new pokemon | ' \
                    'Most perfect pokemon : most_perfect | ' \
                    'Encountered 130 pokemon, 120 caught, 30 released, 12 evolved, ' \
