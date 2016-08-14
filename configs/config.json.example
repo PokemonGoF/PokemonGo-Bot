@@ -64,6 +64,10 @@
         "type": "RecycleItems",
         "config": {
           "min_empty_space": 15,
+          "max_balls_keep": 150,
+          "max_potions_keep": 50,
+          "max_berries_keep": 70,
+          "max_revives_keep": 70,
           "item_filter": {
             "Pokeball":       { "keep" : 100 },
             "Potion":         { "keep" : 10 },
@@ -164,6 +168,5 @@
         "Muk": {},
         "Weezing": {},
         "Flareon": {}
-
     }
 }
