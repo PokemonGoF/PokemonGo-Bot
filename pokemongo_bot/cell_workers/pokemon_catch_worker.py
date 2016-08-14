@@ -469,7 +469,7 @@ class PokemonCatchWorker(BaseTask):
                 spawn_location = str(self.pokemon['latitude'])+','+str(self.pokemon['longitude'])
 
                 with open(saved_pokemon_spawn_path, 'a') as outfile:
-                    json.dump({'location': spawn_location, 'pokemon': pokemon.name}, outfile)
+                    json.dump({'location': spawn_location, 'pokemon': pokemon.name, 'time': time.strftime('%X')}, outfile)
 
                 self.emit_event(
                     'save_spawn',
