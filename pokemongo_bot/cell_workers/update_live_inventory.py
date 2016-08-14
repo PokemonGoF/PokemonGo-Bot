@@ -142,3 +142,4 @@ class UpdateLiveInventory(BaseTask):
            )
 
         self.compute_next_update()
+        
