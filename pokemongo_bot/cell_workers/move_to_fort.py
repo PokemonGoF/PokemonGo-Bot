@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from pokemongo_bot import inventory
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
@@ -19,7 +18,7 @@ class MoveToFort(BaseTask):
         self.ignore_item_count = self.config.get("ignore_item_count", False)
 
     def should_run(self):
-        has_space_for_loot = inventory.Items.has_space_for_loot()
+        has_space_for_loot = self.bot.has_space_for_loot()
         if not has_space_for_loot and not self.ignore_item_count:
             self.emit_event(
                 'inventory_full',
