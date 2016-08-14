@@ -481,7 +481,7 @@ def init_config():
         long_flag="--gps_noise_range",
         help="Intensity of gps noise, high values may cause issues (default=0.00025)",
         type=float,
-        default=True
+        default=0.00025
     )
 
     # Start to parse other attrs

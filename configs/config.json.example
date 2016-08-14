@@ -106,6 +106,8 @@
     },
     "websocket_server": false,
     "walk": 4.16,
+    "replicate_gps_noise": False,
+    "gps_noise_range": 0.00025,
     "action_wait_min": 1,
     "action_wait_max": 4,
     "debug": false,
