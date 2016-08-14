@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
-from random import random, choice
+from random import random, choice, randrange
 from pokemongo_bot import inventory
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.human_behaviour import sleep, action_delay
@@ -367,7 +367,10 @@ class PokemonCatchWorker(BaseTask):
                 )
 
                 # sleep according to flee_count and flee_duration config settings
-                sleep(choice([(x+1)*self.config.catchsim_flee_duration for x in range(self.config.catchsim_flee_count)]))
+                # randomly chooses a number of times to 'show' wobble animation between 1 and flee_count
+                # multiplies this by flee_duration to get total sleep
+                if self.config.catchsim_flee_count:
+                    sleep((randrange(self.config.catchsim_flee_count)+1) * self.config.catchsim_flee_duration)
 
                 continue
 
