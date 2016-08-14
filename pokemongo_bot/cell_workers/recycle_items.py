@@ -124,6 +124,7 @@ class RecycleItems(BaseTask):
         :return: none:
         :rtype: None
         """
+        worker_result = WorkerResult.SUCCESS
         category_inventory = self.get_category_inventory_list(category_items_list)
         category_count = 0
         for i in category_inventory:
@@ -132,8 +133,8 @@ class RecycleItems(BaseTask):
         for item in items_to_recycle:
             action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
             if ItemRecycler(self.bot, inventory.items().get(item[0]), item[1]).work() == WorkerResult.ERROR:
-                return WorkerResult.ERROR
-        return WorkerResult.SUCCESS
+                worker_result = WorkerResult.ERROR
+        return worker_result
 
     def get_category_inventory_list(self, category_inventory):
         """
