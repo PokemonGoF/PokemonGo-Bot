@@ -1,6 +1,6 @@
 numpy==1.11.0
 networkx==1.11
--e git+https://github.com/keyphact/pgoapi.git@249d3be7fbbdabc7f9adea17cbc899d6549e47a2#egg=pgoapi
+-e git+https://github.com/keyphact/pgoapi.git@a2755eb42dfe49e359798d2f4defefc97fb8163d#egg=pgoapi
 geopy==1.11.0
 protobuf==3.0.0b4
 requests==2.10.0
@@ -21,3 +21,4 @@ gpxpy==1.1.1
 mock==2.0.0
 timeout-decorator==0.3.2
 raven==5.23.0
+demjson==2.2.4

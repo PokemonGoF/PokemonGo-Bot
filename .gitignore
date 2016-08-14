@@ -100,6 +100,8 @@ share/
 
 # PyCharm IDE settings
 .idea/
+*.iml
+out/
 
 # Personal load details
 src/
@@ -107,6 +109,8 @@ web/
 data/last-location*.json
 data/cells-*.json
 data/map-caught-*.json
+data/recent-forts-*.json
+user_web_catchable
 
 # Multiple config
 configs/*
@@ -118,6 +122,7 @@ configs/*
 !configs/config.json.map.example
 !configs/path.example.json
 !config.json.cluster.example
+!config.json.optimizer.example
 
 # Virtualenv folders
 bin/
@@ -125,3 +130,6 @@ include/
 
 # Pip check file
 pip-selfcheck.json
+
+# Some love for the vim users
+.*.sw*

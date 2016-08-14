@@ -1,20 +1,22 @@
-
 # PokemonGo-Bot
 PokemonGo bot is a project created by the [PokemonGoF](https://github.com/PokemonGoF) team.
-The project is currently setup in two main branches. `dev` and `master`.
 
+The project is currently setup in two main branches. `dev` also known as `beta` and `master` also known as `stable`. Make sure to submit your PR's to `dev`.
 
-## Where to get the dll/so ?
-You need grab them from internet.
+## Support
+Configuration issues/help - If you need any help please don't create an issue as we have a great community on Slack. You can count on the community in #help channel.
+ - [Click here to signup (first time only)](https://pokemongo-bot.herokuapp.com) 
+ - [Join if you're already a member](https://pokemongo-bot.slack.com/messages/general/). 
 
-We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
+[Bugs / Issues](https://github.com/PokemonGoF/PokemonGo-Bot/issues?q=is%3Aissue+sort%3Aupdated-desc) - If you discover a bug in the bot, please [search our issue tracker first](https://github.com/PokemonGoF/PokemonGo-Bot/issues?q=is%3Aissue+sort%3Aupdated-desc). If it hasn't been reported, please [create a new issue](https://github.com/PokemonGoF/PokemonGo-Bot/issues/new) and ensure you follow the template so that our team can assist you as quickly as possible
+
+[Feature Requests](http://feathub.com/PokemonGoF/PokemonGo-Bot) - If you have a great idea to improve the bot don't create an issue, use our [feature hub](http://feathub.com/PokemonGoF/PokemonGo-Bot). While you're there vote on other features to let the devs know what is most important to you
 
 ## Table of Contents
+- [Installation](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/installation.md)
+- [Documentation](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/)
 - [Features](#features)
-- [Wiki](#wiki)
 - [Credits](#credits)
-- [Donation](#donation)
-
 
 ## Features
 - [x] GPS Location configuration
@@ -28,9 +30,9 @@ We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](
 - [x] Rudimentary IV Functionality filter
 - [x] Ignore certain pokemon filter
 - [x] Adjust delay between Pokemon capture & Transfer as per configuration
-- [ ] Standalone Desktop Application
 - [x] Hatch eggs
 - [x] Incubate eggs
+- [ ] [Standalone Desktop Application] (https://github.com/PokemonGoF/PokemonGo-Bot-Desktop)
 - [ ] Use candy
 - [ ] Inventory cleaner
 
@@ -46,28 +48,16 @@ If there are any concerns with this policy or you believe we are tracking someth
 
 If you do not want any data to be gathered, you can turn off this feature by setting `health_record` to `false` in your `config.json`.
 
-## Wiki
-All information on [Getting Started](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Getting-Started) is available in the [Wiki](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/)!
-- __Installation__
-  - [Requirements] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation#requirements-click-each-one-for-install-guide)
-  - [How to run with Docker](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/How-to-run-with-Docker)
-  - [Linux] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation#installation-linux)
-  - [Mac] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation#installation-mac)
-  - [Windows] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Installation#installation-windows)
-- [Develop PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Develop-PokemonGo-Bot)
-- [Configuration-files](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Configuration-files)
-- [Front end web module - Google Maps API] (https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Google-Maps-API-(web-page))
-- [Docker Usage](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/FAQ#how-to-run-with-docker)
-- [FAQ](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/FAQ)
+## Help Needed on [Desktop Version](https://github.com/PokemonGoF/PokemonGo-Bot-Desktop)
 
-To ensure that all updates are documented - [@eggins](https://github.com/eggins) will keep the Wiki updated with the latest information on installing, updating and configuring the bot.
 
 ## Credits
 - [tejado](https://github.com/tejado) many thanks for the API
+- [U6 Group](http://pgoapi.com) for the U6
 - [Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets
 - [elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR
 - [AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos
 - [AHAAAAAAA](https://github.com/AHAAAAAAA/PokemonGo-Map) for parts of the s2sphere stuff
 
 
-[![Analytics](https://ga-beacon.appspot.com/UA-81468120-1/welcome-page-dev)](https://github.com/igrigorik/ga-beacon)
+[![Analytics](https://ga-beacon.appspot.com/UA-81468120-1/welcome-page-master)](https://github.com/igrigorik/ga-beacon)

@@ -10,6 +10,9 @@ from pgoapi.protos.POGOProtos.Networking.Requests_pb2 import RequestType
 
 from human_behaviour import sleep
 
+class PermaBannedException(Exception):
+    pass
+
 class ApiWrapper(PGoApi):
     def __init__(self):
         PGoApi.__init__(self)
@@ -75,6 +78,14 @@ class ApiRequest(PGoApiRequest):
             return False
 
         if not isinstance(result['responses'], dict):
+            return False
+
+        try:
+            # Permaban symptom is empty response to GET_INVENTORY and status_code = 3
+            if result['status_code'] == 3 and 'GET_INVENTORY' in request_callers and not result['responses']['GET_INVENTORY']:
+                raise PermaBannedException
+        except KeyError:
+            # Still wrong
             return False
 
         # the response can still programatically be valid at this point

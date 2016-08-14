@@ -49,6 +49,8 @@ class IncubateEggs(BaseTask):
 
     def _apply_incubators(self):
         for incubator in self.ready_incubators:
+            if incubator.get('used', False):
+                continue
             for egg in self.eggs:
                 if egg["used"] or egg["km"] == -1:
                     continue
