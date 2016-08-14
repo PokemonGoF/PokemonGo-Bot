@@ -40,8 +40,13 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 * [MoveToMapPokemon](#sniping-movetolocation)
 * NicknamePokemon
   * `nickname_template`: Default `""` | See the [Pokemon Nicknaming](#pokemon-nicknaming) section for more details
+  * `dont_nickname_favorite`: Default `false` | Prevents renaming of favorited pokemons
+  * `good_attack_threshold`: Default `0.7` | Threshold for perfection of the attack in it's type *(0.0-1.0)* after which attack will be treated as good.<br>Used for `{fast_attack_char}`, `{charged_attack_char}`, `{attack_code}`  templates
 * RecycleItems
-  * `item_filter`: Pass a list of unwanted [items (using their JSON codes)](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Item-ID's) to recycle when collected at a Pokestop
+
+  > **NOTE:** It's highly recommended to put this task before MoveToFort and SpinFort tasks. This way you'll most likely be able to loot.
+  * `item_filter`: Pass a list of unwanted [items (using their JSON codes or names)](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Item-ID's) to recycle.
+  * `min_empty_space`: Default `6` | Minimum empty space to keep in inventory. Once the inventory has less empty space than that amount, the recycling process is triggered. Set it to the inventory size to trigger it at every tick.
 * SpinFort
 * TransferPokemon
 
@@ -201,26 +206,86 @@ Niantic imposes a 12-character limit on all pokemon nicknames, so any new nickna
 
 Because some pokemon have very long names, you can use the [Format String syntax](https://docs.python.org/2.7/library/string.html#formatstrings) to ensure that your names do not cause your templates to truncate. For example, using `{name:.8s}` causes the Pokemon name to never take up more than 8 characters in the nickname. This would help guarantee that a template like `{name:.8s}_{iv_pct}` never goes over the 12-character limit.
 
-Valid names in templates are:
-- `name` = pokemon name
-- `id` = pokemon type id (e.g. 1 for Bulbasaurs)
-- `cp` = pokemon's CP
-- `iv_attack` = pokemon's attack IV
-- `iv_defense` = pokemon's defense IV
-- `iv_stamina` = pokemon's stamina IV
-- `iv_ads` = pokemon's IVs in `(attack)/(defense)/(stamina)` format (matches web UI format -- A/D/S)
-- `iv_sum` = pokemon's IVs as a sum (e.g. 45 when 3 perfect 15 IVs)
-- `iv_pct` = pokemon's IVs as a percentage (0-100)
+### Config options
+
+* `enable` (default: `true`): To enable or disable this task.
+* `nickname_template` (default: `{name}`): The template to rename the pokemon.
+* `dont_nickname_favorite` (default: `false`): Prevents renaming of favorited pokemons.
+* `good_attack_threshold` (default: `0.7`): Threshold for perfection of the attack in it's type (0.0-1.0) after which attack will be treated as good. Used for {fast_attack_char}, {charged_attack_char}, {attack_code} templates.
+* `locale` (default: `en`): The locale to use for the pokemon name.
+
+### Valid names in templates
+
+Key | Info
+---- | ----
+**{name}** |  Pokemon name     *(e.g. Articuno)*
+**{id}**  |  Pokemon ID/Number *(1-151, e.g. 1 for Bulbasaurs)*
+**{cp}**  |  Pokemon's Combat Points (CP)    *(10-4145)*
+ | **Individial Values (IV)**
+**{iv_attack}**  |  Individial Attack *(0-15)* of the current specific pokemon
+**{iv_defense}** |  Individial Defense *(0-15)* of the current specific pokemon
+**{iv_stamina}** |  Individial Stamina *(0-15)* of the current specific pokemon
+**{iv_ads}**     |  Joined IV values in `(attack)/(defense)/(stamina)` format (*e.g. 4/12/9*, matches web UI format -- A/D/S)
+**{iv_sum}**     |  Sum of the Individial Values *(0-45, e.g. 45 when 3 perfect 15 IVs)*
+ |  **Basic Values of the pokemon (identical for all of one kind)**
+**{base_attack}**   |  Basic Attack *(40-284)* of the current pokemon kind
+**{base_defense}**  |  Basic Defense *(54-242)* of the current pokemon kind
+**{base_stamina}**  |  Basic Stamina *(20-500)* of the current pokemon kind
+**{base_ads}**      |  Joined Basic Values *(e.g. 125/93/314)*
+ |  **Final Values of the pokemon (Base Values + Individial Values)**
+**{attack}**        |  Basic Attack + Individial Attack
+**{defense}**       |  Basic Defense + Individial Defense
+**{stamina}**       |  Basic Stamina + Individial Stamina
+**{sum_ads}**       |  Joined Final Values *(e.g. 129/97/321)*
+ |  **Individial Values perfection percent**
+**{iv_pct}**     |  IV perfection *(in 000-100 format - 3 chars)*
+**{iv_pct2}**    |  IV perfection *(in 00-99 format - 2 chars).* So 99 is best (it's a 100% perfection)
+**{iv_pct1}**    |  IV perfection *(in 0-9 format - 1 char)*
+ |  **IV CP perfection - kind of IV perfection percent but calculated using weight of each IV in its contribution to CP of the best evolution of current pokemon.**<br> It tends to be more accurate than simple IV perfection.
+**{ivcp_pct}**      |  IV CP perfection *(in 000-100 format - 3 chars)*
+**{ivcp_pct2}**     |  IV CP perfection *(in 00-99 format - 2 chars).* So 99 is best (it's a 100% perfection)
+**{ivcp_pct1}**     |  IV CP perfection *(in 0-9 format - 1 char)*
+ |  **Moveset perfection percents for attack and for defense.**<br> Calculated for current pokemon only, not between all pokemons. So perfect moveset can be weak if pokemon is weak (e.g. Caterpie)
+**{attack_pct}**   |  Moveset perfection for attack *(in 000-100 format - 3 chars)*
+**{attack_pct2}**  |  Moveset perfection for attack *(in 00-99 format - 2 chars)*
+**{attack_pct1}**  |  Moveset perfection for attack *(in 0-9 format - 1 char)*
+**{defense_pct}**  |  Moveset perfection for defense *(in 000-100 format - 3 chars)*
+**{defense_pct2}** |  Moveset perfection for defense *(in 00-99 format - 2 chars)*
+**{defense_pct1}** |  Moveset perfection for defense *(in 0-9 format - 1 char)*
+ |  **Character codes for fast/charged attack types.**<br> If attack is good character is uppecased, otherwise lowercased.<br>Use `'good_attack_threshold'` option for customization.<br><br> It's an effective way to represent type with one character.<br> If first char of the type name is unique - it's used, in other case suitable substitute used.<br><br> Type codes:<br> &nbsp;&nbsp;`Bug: 'B'`<br> &nbsp;&nbsp;`Dark: 'K'`<br> &nbsp;&nbsp;`Dragon: 'D'`<br> &nbsp;&nbsp;`Electric: 'E'`<br> &nbsp;&nbsp;`Fairy: 'Y'`<br> &nbsp;&nbsp;`Fighting: 'T'`<br> &nbsp;&nbsp;`Fire: 'F'`<br> &nbsp;&nbsp;`Flying: 'L'`<br> &nbsp;&nbsp;`Ghost: 'H'`<br> &nbsp;&nbsp;`Grass: 'A'`<br> &nbsp;&nbsp;`Ground: 'G'`<br> &nbsp;&nbsp;`Ice: 'I'`<br> &nbsp;&nbsp;`Normal: 'N'`<br> &nbsp;&nbsp;`Poison: 'P'`<br> &nbsp;&nbsp;`Psychic: 'C'`<br> &nbsp;&nbsp;`Rock: 'R'`<br> &nbsp;&nbsp;`Steel: 'S'`<br> &nbsp;&nbsp;`Water: 'W'`
+**{fast_attack_char}**   |  One character code for fast attack type (e.g. 'F' for good Fire or 's' for bad Steel attack)
+**{charged_attack_char}**   |  One character code for charged attack type (e.g. 'n' for bad Normal or 'I' for good Ice attack)
+**{attack_code}**           |  Joined 2 character code for both attacks (e.g. 'Lh' for pokemon with strong Flying and weak Ghost attacks)
+ |  **Special case: pokemon object**<br> You can access any available pokemon info via it.<br>Examples:<br> &nbsp;&nbsp;`'{pokemon.ivcp:.2%}'             ->  '47.00%'`<br> &nbsp;&nbsp;`'{pokemon.fast_attack}'          ->  'Wing Attack'`<br> &nbsp;&nbsp;`'{pokemon.fast_attack.type}'     ->  'Flying'`<br> &nbsp;&nbsp;`'{pokemon.fast_attack.dps:.2f}'  ->  '10.91'`<br> &nbsp;&nbsp;`'{pokemon.fast_attack.dps:.0f}'  ->  '11'`<br> &nbsp;&nbsp;`'{pokemon.charged_attack}'       ->  'Ominous Wind'`
+**{pokemon}**   |  Pokemon instance (see inventory.py for class sources)
 
 > **NOTE:** Use a blank template (`""`) to revert all pokemon to their original names (as if they had no nickname).
 
-Sample usages:
-- `"{name}_{iv_pct}"` => `Mankey_69`
-- `"{iv_pct}_{iv_ads}"` => `91_15/11/15`
+#### Sample usages
+
+- `"{name}_{iv_pct}"` => `Mankey_069`
+- `"{iv_pct}_{iv_ads}"` => `091_15/11/15`
 - `""` -> `Mankey`
+- `"{attack_code}{attack_pct1}{defense_pct1}{ivcp_pct1}{name}"` => `Lh474Golbat`
 ![sample](https://cloud.githubusercontent.com/assets/8896778/17285954/0fa44a88-577b-11e6-8204-b1302f4294bd.png)
 
+### Sample configuration
+
+```json
+{
+  "type": "NicknamePokemon",
+  "config": {
+    "enabled": true,
+    "dont_nickname_favorite": false,
+    "good_attack_threshold": 0.7,
+    "nickname_template": "{iv_pct}_{iv_ads}"
+    "locale": "en"
+  }
+}
+```
+
 ## Sniping _(MoveToLocation)_
+
 ### Description
 This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map instance. For information on how to properly setup PokemonGo-Map have a look at the Github page of the project [here](https://github.com/AHAAAAAAA/PokemonGo-Map/). There is an example config in `config/config.json.map.example`
 
@@ -238,7 +303,9 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
 * `update_map` - disable/enable if the map location should be automatically updated to the bots current location
 * `catch` - A dictionary of pokemon to catch with an assigned priority (higher => better)
 * `snipe_high_prio_only` - Whether to snipe pokemon above a certain threshold.
-* `snipe_high_prio_threshold` - The threshold number corresponding with the `catch` dictionary. Any pokemon above this threshold will be caught. Other will be igonored.
+* `snipe_high_prio_threshold` - The threshold number corresponding with the `catch` dictionary. 
+*   - Any pokemon above this threshold value will be caught by teleporting to its location, and getting back to original location if `snipe` is `True`.
+*   - Any pokemon under this threshold value will make the bot walk to the Pokemon target wether `snipe` is `True` or `False`.
 
 #### Example
 ```

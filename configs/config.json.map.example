@@ -4,7 +4,7 @@
     "password": "YOUR_PASSWORD",
     "location": "SOME_LOCATION",
     "gmapkey": "GOOGLE_MAPS_API_KEY",
-    "libencrypt_location": "",
+    "encrypt_location": "",
     "tasks": [
       {
         "type": "HandleSoftBan"
@@ -342,6 +342,7 @@
     "reconnecting_timeout": 15,
     "catch_randomize_reticle_factor": 1.0,
     "catch_randomize_spin_factor": 1.0,
+    "min_ultraball_to_keep": 10,
     "logging_color": true,
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},

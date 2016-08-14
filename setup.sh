@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
+#encoding=utf8  
 pokebotpath=$(cd "$(dirname "$0")"; pwd)
 backuppath=$pokebotpath"/backup"
 
 function Pokebotupdate () {
 cd $pokebotpath
 git pull
-git submodule init
+git submodule update --init --recursive
 git submodule foreach git pull origin master
 virtualenv .
 source bin/activate
@@ -14,7 +15,11 @@ pip install -r requirements.txt
 
 function Pokebotencrypt () {
 echo "Start to make encrypt.so"
-wget http://pgoapi.com/pgoencrypt.tar.gz
+if [ "$(uname -s)" == "Darwin" ]; then #Mac platform
+    curl -O http://pgoapi.com/pgoencrypt.tar.gz
+elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then #GNU/Linux platform
+    wget http://pgoapi.com/pgoencrypt.tar.gz
+fi
 tar -xf pgoencrypt.tar.gz 
 cd pgoencrypt/src/ 
 make
@@ -55,7 +60,7 @@ if [ -f /etc/debian_version ]
 then
 echo "You are on Debian/Ubuntu"
 sudo apt-get update
-sudo apt-get -y install python python-pip python-dev build-essential git python-protobuf virtualenv 
+sudo apt-get -y install python python-pip python-dev build-essential git virtualenv 
 elif [ -f /etc/redhat-release ]
 then
 echo "You are on CentOS/RedHat"

@@ -39,6 +39,17 @@ class StepWalker(object):
     def step(self):
         if (self.dLat == 0 and self.dLng == 0) or self.dist < self.speed:
             self.api.set_position(self.destLat, self.destLng, 0)
+            self.bot.event_manager.emit(
+                'position_update',
+                sender=self,
+                level='debug',
+                data={
+                    'current_position': (self.destLat, self.destLng),
+                    'last_position': (self.initLat, self.initLng),
+                    'distance': '',
+                    'distance_unit': ''
+                }
+            )
             self.bot.heartbeat()
             return True
 

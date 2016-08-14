@@ -101,6 +101,7 @@ share/
 # PyCharm IDE settings
 .idea/
 *.iml
+out/
 
 # Personal load details
 src/
@@ -119,6 +120,7 @@ configs/*
 !configs/config.json.map.example
 !configs/path.example.json
 !config.json.cluster.example
+!config.json.optimizer.example
 
 # Virtualenv folders
 bin/

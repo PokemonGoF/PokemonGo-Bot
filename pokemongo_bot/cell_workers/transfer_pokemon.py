@@ -4,7 +4,7 @@ import os
 from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.inventory import Pokemons
+from pokemongo_bot.inventory import Pokemons, Pokemon
 
 
 class TransferPokemon(BaseTask):
@@ -66,6 +66,7 @@ class TransferPokemon(BaseTask):
 
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
+        # TODO: Use new inventory everywhere and then remove the inventory update
         for pokemon in inventory.pokemons(True).all():
             if pokemon.in_fort or pokemon.is_favorite:
                 continue
@@ -134,6 +135,10 @@ class TransferPokemon(BaseTask):
         return logic_to_function[cp_iv_logic](*release_results.values())
 
     def release_pokemon(self, pokemon):
+        """
+
+        :type pokemon: Pokemon
+        """
         try:
             if self.bot.config.test:
                 candy_awarded = 1
@@ -146,6 +151,7 @@ class TransferPokemon(BaseTask):
         # We could refresh here too, but adding 1 saves a inventory request
         candy = inventory.candies().get(pokemon.pokemon_id)
         candy.add(candy_awarded)
+        inventory.pokemons().remove(pokemon.id)
         self.bot.metrics.released_pokemon()
         self.emit_event(
             'pokemon_release',
@@ -153,7 +159,9 @@ class TransferPokemon(BaseTask):
             data={
                 'pokemon': pokemon.name,
                 'cp': pokemon.cp,
-                'iv': pokemon.iv
+                'iv': pokemon.iv,
+                'ncp': pokemon.cp_percent,
+                'dps': pokemon.moveset.dps
             }
         )
         action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from pokemongo_bot import inventory
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.step_walker import StepWalker
 from pokemongo_bot.worker_result import WorkerResult
@@ -13,16 +14,12 @@ class MoveToFort(BaseTask):
 
     def initialize(self):
         self.lure_distance = 0
-        if self.config:
-            self.lure_attraction = self.config.get("lure_attraction", True)
-            self.lure_max_distance = self.config.get("lure_max_distance", 2000)
-            self.ignore_item_count = self.config.get("ignore_item_count", False)
-        else:
-            self.lure_attraction = None
-            self.ignore_item_count = True
+        self.lure_attraction = self.config.get("lure_attraction", True)
+        self.lure_max_distance = self.config.get("lure_max_distance", 2000)
+        self.ignore_item_count = self.config.get("ignore_item_count", False)
 
     def should_run(self):
-        has_space_for_loot = self.bot.has_space_for_loot()
+        has_space_for_loot = inventory.Items.has_space_for_loot()
         if not has_space_for_loot and not self.ignore_item_count:
             self.emit_event(
                 'inventory_full',
@@ -61,7 +58,6 @@ class MoveToFort(BaseTask):
             fort_event_data = {
                 'fort_name': u"{}".format(fort_name),
                 'distance': format_dist(dist, unit),
-                'current_position': self.bot.position
             }
 
             if self.is_attracted() > 0:
@@ -88,13 +84,9 @@ class MoveToFort(BaseTask):
             if not step_walker.step():
                 return WorkerResult.RUNNING
 
-        arrived_at_fort_data = {
-            'current_position': self.bot.position
-        }
         self.emit_event(
             'arrived_at_fort',
-            formatted='Arrived at fort.',
-            data=arrived_at_fort_data
+            formatted='Arrived at fort.'
         )
         return WorkerResult.SUCCESS
 
