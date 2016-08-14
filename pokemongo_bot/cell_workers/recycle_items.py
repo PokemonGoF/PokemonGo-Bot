@@ -89,9 +89,6 @@ class RecycleItems(BaseTask):
 
         worker_result = WorkerResult.SUCCESS
         if self.should_run():
-            print("Inventory BEFORE item recycling : ")
-            self.bot._print_character_info()
-
             for item_in_inventory in inventory.items().all():
 
                 if self.item_should_be_recycled(item_in_inventory):
@@ -100,8 +97,6 @@ class RecycleItems(BaseTask):
                     # If at any recycling process call we got an error, we consider that the result of this task is error too.
                     if ItemRecycler(self.bot, item_in_inventory, self.get_amount_to_recycle(item_in_inventory)).work() == WorkerResult.ERROR:
                         worker_result = WorkerResult.ERROR
-            print("Inventory AFTER item recycling : ")
-            self.bot._print_character_info()
         return worker_result
 
     def item_should_be_recycled(self, item):
