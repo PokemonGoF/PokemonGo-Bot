@@ -17,6 +17,9 @@ echo "Checking for updates...."
 git pull
 git submodule update --init --recursive
 git submodule foreach git pull origin master
+source bin/activate
+pip install -r requirements.txt --upgrade
+pip install -r requirements.txt
 read -p "WARNING: Verify if the Config.json file got updated. If Yes, check if your modifications are still valid before proceeding. Waiting 20 seconds so you can verify and stop the bot.
 " -r -s -n1 -t 20
 python pokecli.py -cf $filename
