@@ -26,7 +26,7 @@ class StepWalker(object):
         self.destLng = dest_lng
         self.totalDist = max(1, self.dist)
 
-        if speed == 0:
+        if self.speed == 0:
             self.steps = 1
         else:
             self.steps = (self.dist + 0.0) / (speed + 0.0)
