@@ -11,7 +11,7 @@ from pgoapi.protos.POGOProtos.Networking.Requests_pb2 import RequestType
 from human_behaviour import sleep, gps_noise_rng
 
 class ApiWrapper(PGoApi):
-    def __init__(self, replicate_gps_noise, gps_noise_range):
+    def __init__(self, replicate_gps_noise=False, gps_noise_range=0.00025):
         PGoApi.__init__(self)
         self.useVanillaRequest = False
 
