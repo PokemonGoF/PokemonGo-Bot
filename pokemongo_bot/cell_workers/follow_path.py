@@ -19,7 +19,7 @@ class FollowPath(BaseTask):
 
         if self.path_start_mode == 'closest':
             self.ptr = self.find_closest_point_idx(self.points)
-        
+
         else:
             self.ptr = 0
 
@@ -83,7 +83,7 @@ class FollowPath(BaseTask):
             botlng = self.bot.api._position_lng
             lat = float(point['lat'])
             lng = float(point['lng'])
-            
+
             dist = distance(
                 botlat,
                 botlng,
@@ -98,6 +98,9 @@ class FollowPath(BaseTask):
         return return_idx
 
     def work(self):
+        last_lat = self.bot.api._position_lat
+        last_lng = self.bot.api._position_lng
+
         point = self.points[self.ptr]
         lat = float(point['lat'])
         lng = float(point['lng'])
@@ -115,11 +118,11 @@ class FollowPath(BaseTask):
                 is_at_destination = True
 
         else:
-            self.bot.api.set_position(lat, lng)
+            self.bot.api.set_position(lat, lng, 0)
 
         dist = distance(
-            self.bot.api._position_lat,
-            self.bot.api._position_lng,
+            last_lat,
+            last_lng,
             lat,
             lng
         )
@@ -132,4 +135,14 @@ class FollowPath(BaseTask):
             else:
                 self.ptr += 1
 
+        self.emit_event(
+            'position_update',
+            formatted="Walk from {last_position} to {current_position} ({distance} {distance_unit})",
+            data={
+                'last_position': (last_lat, last_lng, 0),
+                'current_position': (lat, lng, 0),
+                'distance': dist,
+                'distance_unit': 'm'
+            }
+        )
         return [lat, lng]

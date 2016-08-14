@@ -1,0 +1,156 @@
+{
+    "auth_service": "google",
+    "username": "trickykenvn@gmail.com",
+    "password": "jsredbfyaklqygkg",
+    "location": "10.773868, 106.692642",
+    "gmapkey": "AIzaSyAow9qxn9-bIlmAEuYz2UY-OIXEZ2XhEoE",
+    "tasks": [
+      {
+        "type": "HandleSoftBan"
+      },
+      {
+        "type": "CollectLevelUpReward"
+      },
+      {
+        "type": "IncubateEggs",
+        "config": {
+          "longer_eggs_first": true
+        }
+      },
+      {
+        "type": "UpdateLiveStats",
+        "config": {
+          "enabled": true,
+          "min_interval": 10,
+          "stats": ["uptime", "stardust_earned", "xp_earned", "xp_per_hour", "stops_visited"],
+          "terminal_log": true,
+          "terminal_title": true
+        }
+      },
+      {
+        "type": "TransferPokemon"
+      },
+      {
+        "type": "NicknamePokemon",
+        "config": {
+          "enabled": true,
+          "nickname_template": "{name:.8s}_{iv_pct}"
+        }
+      },
+      {
+        "type": "EvolvePokemon",
+        "config": {
+            "evolve_all": "none",
+            "first_evolve_by": "cp",
+            "evolve_above_cp": 2000,
+            "evolve_above_iv": 0.8,
+            "logic": "or",
+            "evolve_speed": 20,
+            "use_lucky_egg": false
+        }
+      },
+      {
+        "type": "RecycleItems",
+        "config": {
+          "min_empty_space": 15,
+          "item_filter": {
+            "Pokeball":       { "keep" : 60 },
+            "Greatball":      { "keep" : 40 },
+            "Ultraball":      { "keep" : 40 },
+            "Potion":         { "keep" : 0 },
+            "Super Potion":   { "keep" : 0 },
+            "Hyper Potion":   { "keep" : 30 },
+            "Max Potion":     { "keep" : 30 },
+            "Revive":         { "keep" : 10 },
+            "Max Revive":     { "keep" : 20 },
+            "Razz Berry":     { "keep" : 30 }
+          }
+        }
+      },
+      {
+        "type": "CatchVisiblePokemon"
+      },
+      {
+        "type": "CatchLuredPokemon"
+      },
+      {
+        "type": "SpinFort"
+      },
+      {
+        "type": "MoveToFort",
+        "config": {
+            "lure_attraction": true,
+            "lure_max_distance": 2000
+        }
+      }
+    ],
+    "map_object_cache_time": 5,
+    "forts": {
+      "avoid_circles": false,
+      "max_circle_size": 50,
+      "cache_recent_forts": true
+    },
+    "websocket_server": false,
+    "walk": 20,
+    "action_wait_min": 1,
+    "action_wait_max": 4,
+    "debug": false,
+    "test": false,
+    "health_record": false,
+    "location_cache": true,
+    "distance_unit": "km",
+    "reconnecting_timeout": 15,
+    "catch_randomize_reticle_factor": 1.0,
+    "catch_randomize_spin_factor": 1.0,
+    "min_ultraball_to_keep": 10,
+    "logging_color": true,
+    "catch": {
+      "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
+      "// Example of always catching Rattata:": {},
+      "// Rattata": { "always_catch" : true }
+    },
+    "catch_throw_parameters": {
+      "excellent_rate": 0.1,
+      "great_rate": 0.5,
+      "nice_rate": 0.3,
+      "normal_rate": 0.1,
+      "spin_success_rate" : 0.6
+    },
+    "release": {
+      "any": {"release_below_cp": 600, "release_below_iv": 0.7, "logic": "or"},
+      "// any": {"release_below_cp": 300, "release_below_iv": 0, "logic": "or"},
+      "// Example of always releasing Rattata:": {},
+      "// Rattata": {"always_release": true},
+      "// Example of keeping 3 stronger (based on CP) Pidgey:": {},
+      "Pinsir": {"keep_best_cp": 5},
+      "// Example of keeping 2 stronger (based on IV) Zubat:": {},
+      "// Zubat": {"keep_best_iv": 2},
+      "// Also, it is working with any": {},
+      "// any": {"keep_best_iv": 3},
+      "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat:": {},
+      "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3}
+    },
+    "vips" : {
+         "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate!": {},
+        "any": {"catch_above_cp": 1200, "catch_above_iv": 0.9, "logic": "or" },
+        "Lapras": {},
+        "Moltres": {},
+        "Zapdos": {},
+        "Articuno": {},
+
+        "// S-Tier pokemons (if pokemon can be evolved into tier, list the representative)": {},
+        "Mewtwo": {},
+        "Dragonite": {},
+        "Snorlax": {},
+        "// Mew evolves to Mewtwo": {},
+        "Mew": {},
+        "Arcanine": {},
+        "Vaporeon": {},
+        "Gyarados": {},
+        "Exeggutor": {},
+        "Muk": {},
+        "Weezing": {},
+        "Flareon": {}
+
+    }
+}
