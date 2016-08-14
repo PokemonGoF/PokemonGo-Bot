@@ -216,7 +216,7 @@ class Items(_BaseInventoryComponent):
         :return: The space left in item inventory. 0 if the player has more item than his item inventory can carry.
         :rtype: int
         """
-        _inventory.retrieve_item_inventory_size()
+        _inventory.retrieve_inventories_size()
         space_left = _inventory.item_inventory_size - cls.get_space_used()
         # Space left should never be negative. Returning 0 if the computed value is negative.
         return space_left if space_left >= 0 else 0
@@ -258,6 +258,26 @@ class Pokemons(_BaseInventoryComponent):
             assert len(p.last_evolution_ids) > 0
 
         return data
+
+    @classmethod
+    def get_space_used(cls):
+        """
+        Counts the space used in pokemon inventory.
+        :return: The space used in pokemon inventory.
+        :rtype: int
+        """
+        return len(_inventory.pokemons.all())
+
+    @classmethod
+    def get_space_left(cls):
+        """
+        Compute the space  left in pokemon inventory.
+        :return: The space left in pokemon inventory.
+        :rtype: int
+        """
+        _inventory.retrieve_inventories_size()
+        space_left = _inventory.pokemon_inventory_size - cls.get_space_used()
+        return space_left
 
     @classmethod
     def data_for(cls, pokemon_id):
@@ -304,7 +324,7 @@ class Pokemons(_BaseInventoryComponent):
 
     def add(self, pokemon):
         if pokemon.id <= 0:
-            raise ValueError("Can't add a pokemin whitout id")
+            raise ValueError("Can't add a pokemon whitout id")
         if pokemon.id in self._data:
             raise ValueError("Pokemon already present in the inventory")
         self._data[pokemon.id] = pokemon
@@ -1059,14 +1079,21 @@ class Inventory(object):
         self.candy = Candies()
         self.items = Items()
         self.pokemons = Pokemons()
+        self.refresh_count = 0
         self.refresh()
         self.item_inventory_size = None
+        self.pokemon_inventory_size = None
 
     def refresh(self):
-        # TODO: it would be better if this class was used for all
-        # inventory management. For now, I'm just clearing the old inventory field
-        self.bot.latest_inventory = None
-        inventory = self.bot.get_inventory()['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+        self.refresh_count += 1
+        print("##############################")
+        print("#                            #")
+        print("# Refreshing the inventory   #")
+        print("#          Nr : {}            #".format(self.refresh_count))
+        print("#                            #")
+        print("##############################")
+        inventory = self.bot.api.get_inventory()
+        inventory = inventory['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
         for i in (self.pokedex, self.candy, self.items, self.pokemons):
             i.refresh(inventory)
 
@@ -1074,15 +1101,17 @@ class Inventory(object):
         with open(user_web_inventory, 'w') as outfile:
             json.dump(inventory, outfile)
 
-    def retrieve_item_inventory_size(self):
+    def retrieve_inventories_size(self):
         """
         Retrieves the item inventory size
         :return: Nothing.
         :rtype: None
         """
-        # TODO: Force update of _item_inventory_size if the player upgrades its size
-        if self.item_inventory_size is None:
-           self.item_inventory_size = self.bot.api.get_player()['responses']['GET_PLAYER']['player_data']['max_item_storage']
+        # TODO: Force update of it if the player upgrades its size
+        if self.item_inventory_size is None or self.pokemon_inventory_size is None:
+           player_data = self.bot.api.get_player()['responses']['GET_PLAYER']['player_data']
+           self.item_inventory_size = player_data['max_item_storage']
+           self.pokemon_inventory_size = player_data['max_pokemon_storage']
 
 
 #
@@ -1177,8 +1206,17 @@ def get_item_inventory_size():
     :return: Item inventory size.
     :rtype: int
     """
-    _inventory.retrieve_item_inventory_size()
+    _inventory.retrieve_inventories_size()
     return _inventory.item_inventory_size
+
+def get_pokemon_inventory_size():
+    """
+    Access to the Item inventory size.
+    :return: Item inventory size.
+    :rtype: int
+    """
+    _inventory.retrieve_inventories_size()
+    return _inventory.pokemon_inventory_size
 
 def pokedex():
     """
@@ -1186,30 +1224,25 @@ def pokedex():
     :return:
     :rtype: Pokedex
     """
+    # Are new pokemons added to the pokedex ?
     return _inventory.pokedex
 
 
-def candies(refresh=False):
+def candies():
     """
 
-    :param refresh:
     :return:
     :rtype: Candies
     """
-    if refresh:
-        refresh_inventory()
     return _inventory.candy
 
 
-def pokemons(refresh=False):
+def pokemons():
     """
 
-    :param refresh:
     :return:
     :rtype: Pokemons
     """
-    if refresh:
-        refresh_inventory()
     return _inventory.pokemons
 
 

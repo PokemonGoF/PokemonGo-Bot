@@ -40,6 +40,15 @@ class RecycleItems(BaseTask):
     """
     SUPPORTED_TASK_API_VERSION = 1
 
+    def __init__(self, bot, config):
+        """
+
+        :param bot:
+        :type bot: pokemongo_bot.PokemonGoBot
+        :param config:
+        :return:
+        """
+        super(RecycleItems, self).__init__(bot, config)
 
     def initialize(self):
         self.items_filter = self.config.get('item_filter', {})
@@ -78,11 +87,10 @@ class RecycleItems(BaseTask):
         :rtype: WorkerResult
         """
 
-        # TODO: Use new inventory everywhere and then remove this inventory update
-        inventory.refresh_inventory()
-
         worker_result = WorkerResult.SUCCESS
         if self.should_run():
+            print("Inventory BEFORE item recycling : ")
+            self.bot._print_character_info()
 
             for item_in_inventory in inventory.items().all():
 
@@ -92,7 +100,8 @@ class RecycleItems(BaseTask):
                     # If at any recycling process call we got an error, we consider that the result of this task is error too.
                     if ItemRecycler(self.bot, item_in_inventory, self.get_amount_to_recycle(item_in_inventory)).work() == WorkerResult.ERROR:
                         worker_result = WorkerResult.ERROR
-
+            print("Inventory AFTER item recycling : ")
+            self.bot._print_character_info()
         return worker_result
 
     def item_should_be_recycled(self, item):

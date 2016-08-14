@@ -85,6 +85,8 @@ class PokemonGoBot(object):
         self._setup_logging()
         self._setup_api()
         self._load_recent_forts()
+        init_inventory(self)
+        self._print_character_info()
 
         random.seed()
 
@@ -702,10 +704,9 @@ class PokemonGoBot(object):
         self.login()
         # chain subrequests (methods) into one RPC call
 
-        self._print_character_info()
         self.api.activate_signature(self.get_encryption_lib())
         self.logger.info('')
-        self.update_inventory()
+        #self.update_inventory()
         # send empty map_cells and then our position
         self.update_web_location()
 
@@ -735,7 +736,7 @@ class PokemonGoBot(object):
 
         pokecoins = '0'
         stardust = '0'
-        items_stock = self.current_inventory()
+        items_inventory = inventory.items()
 
         if 'amount' in player['currencies'][0]:
             pokecoins = player['currencies'][0]['amount']
@@ -743,17 +744,17 @@ class PokemonGoBot(object):
             stardust = player['currencies'][1]['amount']
         self.logger.info('')
         self.logger.info('--- {username} ---'.format(**player))
-        self.get_player_info()
+        #self.get_player_info()
         self.logger.info(
             'Pokemon Bag: {}/{}'.format(
-                self.get_inventory_count('pokemon'),
-                player['max_pokemon_storage']
+                inventory.Pokemons.get_space_used(),
+                inventory.get_pokemon_inventory_size()
             )
         )
         self.logger.info(
             'Items: {}/{}'.format(
-                self.get_inventory_count('item'),
-                player['max_item_storage']
+                inventory.Items.get_space_used(),
+                inventory.get_item_inventory_size()
             )
         )
         self.logger.info(
@@ -762,115 +763,40 @@ class PokemonGoBot(object):
         )
         # Items Output
         self.logger.info(
-            'PokeBalls: ' + str(items_stock[1]) +
-            ' | GreatBalls: ' + str(items_stock[2]) +
-            ' | UltraBalls: ' + str(items_stock[3]) +
-            ' | MasterBalls: ' + str(items_stock[4]))
+            'PokeBalls: ' + str(items_inventory.get(1).count) +
+            ' | GreatBalls: ' + str(items_inventory.get(2).count) +
+            ' | UltraBalls: ' + str(items_inventory.get(3).count) +
+            ' | MasterBalls: ' + str(items_inventory.get(4).count))
 
         self.logger.info(
-            'RazzBerries: ' + str(items_stock[701]) +
-            ' | BlukBerries: ' + str(items_stock[702]) +
-            ' | NanabBerries: ' + str(items_stock[703]))
+            'RazzBerries: ' + str(items_inventory.get(701).count) +
+            ' | BlukBerries: ' + str(items_inventory.get(702).count) +
+            ' | NanabBerries: ' + str(items_inventory.get(703).count))
 
         self.logger.info(
-            'LuckyEgg: ' + str(items_stock[301]) +
-            ' | Incubator: ' + str(items_stock[902]) +
-            ' | TroyDisk: ' + str(items_stock[501]))
+            'LuckyEgg: ' + str(items_inventory.get(301).count) +
+            ' | Incubator: ' + str(items_inventory.get(902).count) +
+            ' | TroyDisk: ' + str(items_inventory.get(501).count))
 
         self.logger.info(
-            'Potion: ' + str(items_stock[101]) +
-            ' | SuperPotion: ' + str(items_stock[102]) +
-            ' | HyperPotion: ' + str(items_stock[103]) +
-            ' | MaxPotion: ' + str(items_stock[104]))
+            'Potion: ' + str(items_inventory.get(101).count) +
+            ' | SuperPotion: ' + str(items_inventory.get(102).count) +
+            ' | HyperPotion: ' + str(items_inventory.get(103).count) +
+            ' | MaxPotion: ' + str(items_inventory.get(104).count))
 
         self.logger.info(
-            'Incense: ' + str(items_stock[401]) +
-            ' | IncenseSpicy: ' + str(items_stock[402]) +
-            ' | IncenseCool: ' + str(items_stock[403]))
+            'Incense: ' + str(items_inventory.get(401).count) +
+            ' | IncenseSpicy: ' + str(items_inventory.get(402).count) +
+            ' | IncenseCool: ' + str(items_inventory.get(403).count))
 
         self.logger.info(
-            'Revive: ' + str(items_stock[201]) +
-            ' | MaxRevive: ' + str(items_stock[202]))
+            'Revive: ' + str(items_inventory.get(201).count) +
+            ' | MaxRevive: ' + str(items_inventory.get(202).count))
 
         self.logger.info('')
 
     def use_lucky_egg(self):
         return self.api.use_item_xp_boost(item_id=301)
-
-    def get_inventory(self):
-        if self.latest_inventory is None:
-            self.latest_inventory = self.api.get_inventory()
-        return self.latest_inventory
-
-    def update_inventory(self):
-        # TODO: transition to using this inventory class everywhere
-        init_inventory(self)
-        response = self.get_inventory()
-        self.inventory = list()
-        inventory_items = response.get('responses', {}).get('GET_INVENTORY', {}).get(
-            'inventory_delta', {}).get('inventory_items', {})
-        if inventory_items:
-            for item in inventory_items:
-                item_info = item.get('inventory_item_data', {}).get('item', {})
-                if {"item_id", "count"}.issubset(set(item_info.keys())):
-                    self.inventory.append(item['inventory_item_data']['item'])
-
-    def current_inventory(self):
-        inventory_req = self.get_inventory()
-        inventory_dict = inventory_req['responses']['GET_INVENTORY'][
-            'inventory_delta']['inventory_items']
-
-        user_web_inventory = os.path.join(_base_dir, 'web', 'inventory-%s.json' % self.config.username)
-
-        with open(user_web_inventory, 'w') as outfile:
-            json.dump(inventory_dict, outfile)
-
-        # get player items stock
-        # ----------------------
-        items_stock = {x.value: 0 for x in list(Item)}
-
-        for item in inventory_dict:
-            item_dict = item.get('inventory_item_data', {}).get('item', {})
-            item_count = item_dict.get('count')
-            item_id = item_dict.get('item_id')
-
-            if item_count and item_id:
-                if item_id in items_stock:
-                    items_stock[item_id] = item_count
-        return items_stock
-
-    def item_inventory_count(self, id):
-        inventory_req = self.get_inventory()
-        inventory_dict = inventory_req['responses'][
-            'GET_INVENTORY']['inventory_delta']['inventory_items']
-
-        if id == 'all':
-            return self._all_items_inventory_count(inventory_dict)
-        else:
-            return self._item_inventory_count_per_id(id, inventory_dict)
-
-    def _item_inventory_count_per_id(self, id, inventory_dict):
-        item_count = 0
-
-        for item in inventory_dict:
-            item_dict = item.get('inventory_item_data', {}).get('item', {})
-            item_id = item_dict.get('item_id', False)
-            item_count = item_dict.get('count', False)
-            if item_id == int(id) and item_count:
-                return item_count
-        return 0
-
-    def _all_items_inventory_count(self, inventory_dict):
-        item_count_dict = {}
-
-        for item in inventory_dict:
-            item_dict = item.get('inventory_item_data', {}).get('item', {})
-            item_id = item_dict.get('item_id', False)
-            item_count = item_dict.get('count', False)
-            if item_id and item_count:
-                item_count_dict[item_id] = item_count
-
-        return item_count_dict
 
     def _set_starting_position(self):
 
@@ -1021,63 +947,32 @@ class PokemonGoBot(object):
             self.web_update_queue.get()
             self.update_web_location()
 
-    def get_inventory_count(self, what):
-        response_dict = self.get_inventory()
-        inventory_items = response_dict.get('responses', {}).get('GET_INVENTORY', {}).get(
-            'inventory_delta', {}).get('inventory_items', {})
-        if inventory_items:
-            pokecount = 0
-            itemcount = 1
-            for item in inventory_items:
-                if 'inventory_item_data' in item:
-                    if 'pokemon_data' in item['inventory_item_data']:
-                        pokecount += 1
-                    itemcount += item['inventory_item_data'].get('item', {}).get('count', 0)
-        if 'pokemon' in what:
-            return pokecount
-        if 'item' in what:
-            return itemcount
-        return '0'
-
-    def get_player_info(self):
-        response_dict = self.get_inventory()
-        inventory_items = response_dict.get('responses', {}).get('GET_INVENTORY', {}).get(
-            'inventory_delta', {}).get('inventory_items', {})
-        if inventory_items:
-            pokecount = 0
-            itemcount = 1
-            for item in inventory_items:
-                # print('item {}'.format(item))
-                playerdata = item.get('inventory_item_data', {}).get('player_stats')
-                if playerdata:
-                    nextlvlxp = (int(playerdata.get('next_level_xp', 0)) - int(playerdata.get('experience', 0)))
-
-                    if 'level' in playerdata and 'experience' in playerdata:
-                        self.logger.info(
-                            'Level: {level}'.format(
-                                **playerdata) +
-                            ' (Next Level: {} XP)'.format(
-                                nextlvlxp) +
-                            ' (Total: {experience} XP)'
-                            ''.format(**playerdata))
-
-                    if 'pokemons_captured' in playerdata and 'poke_stop_visits' in playerdata:
-                        self.logger.info(
-                            'Pokemon Captured: '
-                            '{pokemons_captured}'.format(
-                                **playerdata) +
-                            ' | Pokestops Visited: '
-                            '{poke_stop_visits}'.format(
-                                **playerdata))
-
-    def has_space_for_loot(self):
-        number_of_things_gained_by_stop = 5
-        enough_space = (
-            self.get_inventory_count('item') <
-            self._player['max_item_storage'] - number_of_things_gained_by_stop
-        )
-
-        return enough_space
+    # def get_player_info(self):
+    #         pokecount = 0
+    #         itemcount = 1
+    #         for item in inventory.items().all():
+    #             # print('item {}'.format(item))
+    #             playerdata = item.get('inventory_item_data', {}).get('player_stats')
+    #             if playerdata:
+    #                 nextlvlxp = (int(playerdata.get('next_level_xp', 0)) - int(playerdata.get('experience', 0)))
+    #
+    #                 if 'level' in playerdata and 'experience' in playerdata:
+    #                     self.logger.info(
+    #                         'Level: {level}'.format(
+    #                             **playerdata) +
+    #                         ' (Next Level: {} XP)'.format(
+    #                             nextlvlxp) +
+    #                         ' (Total: {experience} XP)'
+    #                         ''.format(**playerdata))
+    #
+    #                 if 'pokemons_captured' in playerdata and 'poke_stop_visits' in playerdata:
+    #                     self.logger.info(
+    #                         'Pokemon Captured: '
+    #                         '{pokemons_captured}'.format(
+    #                             **playerdata) +
+    #                         ' | Pokestops Visited: '
+    #                         '{poke_stop_visits}'.format(
+    #                             **playerdata))
 
     def get_forts(self, order_by_distance=False):
         forts = [fort

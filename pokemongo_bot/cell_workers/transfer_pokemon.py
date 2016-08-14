@@ -66,8 +66,7 @@ class TransferPokemon(BaseTask):
 
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
-        # TODO: Use new inventory everywhere and then remove the inventory update
-        for pokemon in inventory.pokemons(True).all():
+        for pokemon in inventory.pokemons().all():
             if pokemon.in_fort or pokemon.is_favorite:
                 continue
 
