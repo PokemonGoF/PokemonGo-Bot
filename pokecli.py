@@ -465,6 +465,24 @@ def init_config():
         type=float,
         default=1
     )
+    add_config(
+        parser,
+        load,
+        short_flag="-rgn",
+        long_flag="--replicate_gps_noise",
+        help="Add noise to current position",
+        type=bool,
+        default=False
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-gpr",
+        long_flag="--gps_noise_range",
+        help="Intensity of gps noise, high values may cause issues (default=0.00025)",
+        type=float,
+        default=True
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()

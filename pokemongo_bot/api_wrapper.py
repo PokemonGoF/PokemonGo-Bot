@@ -8,12 +8,17 @@ from pgoapi.exceptions import (ServerSideRequestThrottlingException,
 from pgoapi.pgoapi import PGoApi, PGoApiRequest, RpcApi
 from pgoapi.protos.POGOProtos.Networking.Requests_pb2 import RequestType
 
-from human_behaviour import sleep
+from human_behaviour import sleep, gps_noise_rng
 
 class ApiWrapper(PGoApi):
-    def __init__(self):
+    def __init__(self, replicate_gps_noise, gps_noise_range):
         PGoApi.__init__(self)
         self.useVanillaRequest = False
+
+        if replicate_gps_noise:
+            self.gps_noise_range = gps_noise_range
+        else:
+            self.gps_noise_range = 0.0
 
     def create_request(self):
         RequestClass = ApiRequest
@@ -36,6 +41,19 @@ class ApiWrapper(PGoApi):
             # cleanup code
             self.useVanillaRequest = False
         return ret_value
+
+    def set_position(self, lat, lng, alt=None):
+        self.actual_lat = lat
+        self.actual_lng = lng
+        if None != alt:
+            self.actual_alt = alt
+        else:
+            alt = self.actual_alt
+        lat_noise, lng_noise, alt_noise = gps_noise_rng(self.gps_noise_range)
+        PGoApi.set_position(self, lat + lat_noise, lng + lng_noise, alt + alt_noise)
+
+    def get_position(self):
+        return (self.actual_lat, self.actual_lng, self.actual_alt)
 
 
 class ApiRequest(PGoApiRequest):

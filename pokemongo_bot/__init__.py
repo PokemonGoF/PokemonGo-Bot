@@ -39,11 +39,11 @@ import struct
 class PokemonGoBot(object):
     @property
     def position(self):
-        return self.api._position_lat, self.api._position_lng, 0
+        return self.api.actual_lat, self.api.actual_lng, self.api.actual_alt
 
-    @position.setter
-    def position(self, position_tuple):
-        self.api._position_lat, self.api._position_lng, self.api._position_alt = position_tuple
+    #@position.setter # these should be called through api now that gps replication is there...
+    #def position(self, position_tuple):
+    #    self.api._position_lat, self.api._position_lng, self.api._position_alt = position_tuple
 
     @property
     def player_data(self):
@@ -625,7 +625,7 @@ class PokemonGoBot(object):
                 )
                 position = self.position
                 self.api = ApiWrapper()
-                self.position = position
+                self.api.set_position(*position) 
                 self.login()
                 self.api.activate_signature(self.get_encryption_lib())
 
@@ -694,7 +694,7 @@ class PokemonGoBot(object):
 
     def _setup_api(self):
         # instantiate pgoapi
-        self.api = ApiWrapper()
+        self.api = ApiWrapper(self.config.replicate_gps_noise, self.config.gps_noise_range)
 
         # provide player position on the earth
         self._set_starting_position()
