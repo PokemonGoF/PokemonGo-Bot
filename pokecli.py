@@ -469,11 +469,9 @@ def init_config():
     # Start to parse other attrs
     config = parser.parse_args()
     if not config.username and 'username' not in load:
-        # config.username = raw_input("Username: ")
-        config.username = os.environ['GOOGLEACCOUNT']
+        config.username = raw_input("Username: ")
     if not config.password and 'password' not in load:
-        # config.password = getpass("Password: ")
-        config.password = os.environ['PASSWORD']
+        config.password = getpass("Password: ")
 
     config.encrypt_location = load.get('encrypt_location','')
     config.catch = load.get('catch', {})

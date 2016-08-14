@@ -123,7 +123,6 @@ configs/*
 !configs/path.example.json
 !config.json.cluster.example
 !config.json.optimizer.example
-!configs/config-default.json
 
 # Virtualenv folders
 bin/
@@ -131,6 +130,5 @@ include/
 
 # Pip check file
 pip-selfcheck.json
-user_web_catchable
 # Some love for the vim users
 .*.sw*

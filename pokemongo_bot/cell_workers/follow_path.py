@@ -3,7 +3,6 @@
 import gpxpy
 import gpxpy.gpx
 import json
-import time
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.cell_workers.utils import distance, i2f, format_dist
 from pokemongo_bot.human_behaviour import sleep
@@ -20,7 +19,7 @@ class FollowPath(BaseTask):
 
         if self.path_start_mode == 'closest':
             self.ptr = self.find_closest_point_idx(self.points)
-        
+
         else:
             self.ptr = 0
 
@@ -84,7 +83,7 @@ class FollowPath(BaseTask):
             botlng = self.bot.api._position_lng
             lat = float(point['lat'])
             lng = float(point['lng'])
-            
+
             dist = distance(
                 botlat,
                 botlng,
