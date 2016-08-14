@@ -41,7 +41,6 @@ if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul  &  shift /1)
 cd C:/Python27/PokemonGo-Bot/
 git pull
 git submodule update --init --recursive
-git submodule foreach git pull origin master
 @ECHO.
 @ECHO.
 @ECHO.
