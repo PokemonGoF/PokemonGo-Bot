@@ -31,7 +31,7 @@ class StepWalker(object):
         else:
             self.steps = (self.dist + 0.0) / (self.speed + 0.0)
 
-        if self.dist < speed or int(self.steps) <= 1:
+        if self.dist < self.speed or int(self.steps) <= 1:
             self.dLat = 0
             self.dLng = 0
             self.magnitude = 0
