@@ -322,7 +322,7 @@ def init_config():
         help=
         "Variance to walking speed",
         type=float,
-        default=0.1
+        default=0.25
     )
     add_config(
         parser,
