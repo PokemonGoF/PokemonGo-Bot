@@ -98,7 +98,6 @@ source bin/activate
 - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 - [Protoc](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip)
 - [Microsoft Visual C++ Compiler for Python 2.7](http://www.microsoft.com/en-us/download/details.aspx?id=44266)
-- Download both [PyYAML-3.11-cp27-cp27m-win32.whl](https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/windows_bat/PyYAML-3.11-cp27-cp27m-win32.whl) and  [PyYAML-3.11-cp27-cp27m-win_amd64.whl](https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/windows_bat/PyYAML-3.11-cp27-cp27m-win_amd64.whl) to your `C:/Python27/` folder.
 
 
 *Run the following commands in the Command Prompt with Administrator Privileges*
@@ -107,9 +106,9 @@ source bin/activate
 cd C:\Python27\
 pip2 install --upgrade pip
 pip2 install --upgrade virtualenv
-pip2 install --upgrade PyYAML-3.11-cp27-cp27m-win32.whl
-pip2 install --upgrade PyYAML-3.11-cp27-cp27m-win_amd64.whl
 git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot
+pip2 install --upgrade "C:\Python27\PokemonGo-Bot\windows_bat\PyYAML-3.11-cp27-cp27m-win32.whl"
+pip2 install --upgrade "C:\Python27\PokemonGo-Bot\windows_bat\PyYAML-3.11-cp27-cp27m-win_amd64.whl"
 pip2 install --upgrade -r C:/Python27/PokemonGo-Bot/requirements.txt
 cd C:/Python27/PokemonGo-Bot/
 virtualenv .
@@ -117,7 +116,7 @@ call C:\Python27\PokemonGo-Bot\Scripts\activate.bat
 pip2 install --upgrade -r C:/Python27/PokemonGo-Bot/requirements.txt
 ```
 
-##### Get encrypt.so, encrypt.dll and encrypt_64.dll
+##### Get encrypt.so and encrypt.dll or encrypt_64.dll
 Due to copywrite on the encrypt.so, encrypt.dll and encrypt_64.dll we are not directly hosting it. Please find a copy elsewhere on the internet and compile it yourself. We accept no responsibility should you encounter any problems with files you download elsewhere.
 Try asking around our Slack chat!
 
