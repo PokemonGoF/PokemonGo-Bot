@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
-from random import random, choice, randrange
+from random import random, randrange
 from pokemongo_bot import inventory
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.human_behaviour import sleep, action_delay
