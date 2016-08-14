@@ -39,6 +39,13 @@
         }
       },
       {
+        "type": "UpdateLiveInventory",
+        "config": {
+          "enabled": false,
+          "min_interval": 120
+        }
+      },
+      {
         "type": "TransferPokemon"
       },
       {
