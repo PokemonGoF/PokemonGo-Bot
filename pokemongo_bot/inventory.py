@@ -1086,12 +1086,6 @@ class Inventory(object):
 
     def refresh(self):
         self.refresh_count += 1
-        print("##############################")
-        print("#                            #")
-        print("# Refreshing the inventory   #")
-        print("#          Nr : {}            #".format(self.refresh_count))
-        print("#                            #")
-        print("##############################")
         inventory = self.bot.api.get_inventory()
         inventory = inventory['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
         for i in (self.pokedex, self.candy, self.items, self.pokemons):

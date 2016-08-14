@@ -189,12 +189,6 @@ def report_summary(bot):
                         metrics.num_evolutions(), metrics.num_new_mons()))
     logger.info('Threw {} pokeball{}'.format(metrics.num_throws(), '' if metrics.num_throws() == 1 else 's'))
     logger.info('Earned {} Stardust'.format(metrics.earned_dust()))
-    print("##############################")
-    print("#                            #")
-    print("#  Refreshed the inventory   #")
-    print("#         {} times            #".format(inventory._inventory.refresh_count))
-    print("#                            #")
-    print("##############################")
     logger.info('')
     if metrics.highest_cp is not None:
         logger.info('Highest CP Pokemon: {}'.format(metrics.highest_cp['desc']))
