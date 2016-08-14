@@ -96,13 +96,13 @@ class RecycleItems(BaseTask):
         if self.should_run():
 
             if not (self.max_balls_keep is None):
-                self.recycle_excess_category_max(self.max_balls_keep, [1,2,3,4])
+                worker_result = self.recycle_excess_category_max(self.max_balls_keep, [1,2,3,4])
             if not (self.max_potions_keep is None):
-                self.recycle_excess_category_max(self.max_potions_keep, [101,102,103,104])
+                worker_result = self.recycle_excess_category_max(self.max_potions_keep, [101,102,103,104])
             if not (self.max_berries_keep is None):
-                self.recycle_excess_category_max(self.max_berries_keep, [701,702,703,704,705])
+                worker_result = self.recycle_excess_category_max(self.max_berries_keep, [701,702,703,704,705])
             if not (self.max_revives_keep is None):
-                self.recycle_excess_category_max(self.max_revives_keep, [201,202])
+                worker_result = self.recycle_excess_category_max(self.max_revives_keep, [201,202])
 
             inventory.refresh_inventory()
             
@@ -124,7 +124,7 @@ class RecycleItems(BaseTask):
         :return: none:
         :rtype: None
         """
-        category_inventory = self.get_category_inventory_list(inventory, category_items_list)
+        category_inventory = self.get_category_inventory_list(category_items_list)
         category_count = 0
         for i in category_inventory:
            category_count = category_count + i[1]
@@ -132,12 +132,12 @@ class RecycleItems(BaseTask):
         for item in items_to_recycle:
             action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
             if ItemRecycler(self.bot, inventory.items().get(item[0]), item[1]).work() == WorkerResult.ERROR:
-                worker_result = WorkerResult.ERROR 
+                return WorkerResult.ERROR
+        return WorkerResult.SUCCESS
 
-    def get_category_inventory_list(self, inventory, category_inventory):
+    def get_category_inventory_list(self, category_inventory):
         """
         Returns an array of items with the item id and item count.
-        :param inventory:
         :param category_inventory:
         :return: array of items within a category:
         :rtype: array
