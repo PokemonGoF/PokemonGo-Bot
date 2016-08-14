@@ -39,25 +39,35 @@ if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul  &  shift /1)
 @ECHO Before proceeding, please install the following software:
 @ECHO. 
 @ECHO ---- Python 2.7.x
-@ECHO      http://docs.python-guide.org/en/latest/starting/installation/
+@ECHO      "http://docs.python-guide.org/en/latest/starting/installation/"
 @ECHO.
 @ECHO ---- git
-@ECHO      https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
+@ECHO      "https://git-scm.com/book/en/v2/Getting-Started-Installing-Git"
 @ECHO.
 @ECHO ---- Protoc
-@ECHO      https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip
+@ECHO      "https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip"
 @ECHO.
 @ECHO ---- Microsoft Visual C++ Compiler for Python 2.7
-@ECHO      http://www.microsoft.com/en-us/download/details.aspx?id=44266
+@ECHO      "http://www.microsoft.com/en-us/download/details.aspx?id=44266"
 @ECHO.
 @ECHO ---- encrypt.so / encrypt.dll /encrypt_64.dll (Copy to the same folder as this batch file)
-@ECHO      Get them from our Slack chat! https://pokemongo-bot.herokuapp.com/
+@ECHO      Get them from our Slack chat! "https://pokemongo-bot.herokuapp.com/"
 @ECHO.
 @ECHO ---- If you already have a config.json and a userdata.js, copy to the same folder as this batch file.
 @ECHO.
 @ECHO.
 @ECHO.
 @PAUSE
+@ECHO.
+@ECHO.
+@ECHO.
+@ECHO --------------------Creating Backup--------------------
+@ECHO.
+@ECHO.
+@ECHO.
+COPY C:\Python27\PokemonGo-Bot\encrypt*.* "%~dp0\"
+COPY C:\Python27\PokemonGo-Bot\configs\config.json "%~dp0\"
+COPY C:\Python27\PokemonGo-Bot\web\config\userdata.js "%~dp0\"
 @ECHO.
 @ECHO.
 @ECHO.
