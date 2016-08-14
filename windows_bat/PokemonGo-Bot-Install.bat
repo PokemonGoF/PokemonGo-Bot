@@ -50,7 +50,7 @@ if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul  &  shift /1)
 @ECHO ---- Microsoft Visual C++ Compiler for Python 2.7
 @ECHO      "http://www.microsoft.com/en-us/download/details.aspx?id=44266"
 @ECHO.
-@ECHO ---- encrypt.so / encrypt.dll /encrypt_64.dll (Copy to the same folder as this batch file)
+@ECHO ---- encrypt.so and encrypt.dll or encrypt_64.dll (Copy to the same folder as this batch file)
 @ECHO      Get them from our Slack chat! "https://pokemongo-bot.herokuapp.com/"
 @ECHO.
 @ECHO.
