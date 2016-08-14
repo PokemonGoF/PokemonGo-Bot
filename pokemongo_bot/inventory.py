@@ -4,6 +4,7 @@ import os
 from collections import OrderedDict
 
 from pokemongo_bot.base_dir import _base_dir
+from pokemongo_bot.services.item_recycle_worker import ItemRecycler
 
 '''
 Helper class for updating/retrieving Inventory data
@@ -108,16 +109,59 @@ class Pokedex(_BaseInventoryComponent):
 
 class Item(object):
     def __init__(self, item_id, item_count):
+        """
+        Representation of an item
+        :param item_id: ID of the item
+        :type item_id: int
+        :param item_count: Quantity of the item
+        :type item_count: int
+        :return: An item
+        :rtype: Item
+        """
         self.id = item_id
         self.name = Items.name_for(self.id)
         self.count = item_count
 
     def remove(self, amount):
+        """
+        Remove a specified amount of an item from the cached inventory.
+        Note that it does **NOT** removes it in the server, it only removes it in cached inventory.
+        :param amount: Amount to remove
+        :type amount: int
+        :return: Nothing
+        :rtype: None
+        """
         if self.count < amount:
             raise Exception('Tried to remove more {} than you have'.format(self.name))
         self.count -= amount
 
+    def recycle(self, amount_to_recycle):
+        """
+        Recycle (discard) the specified amount of item from the item inventory.
+        It is making a call to the server to request a recycling as well as updating the cached inventory.
+        :param amount_to_recycle: The amount to recycle.
+        :type amount_to_recycle: int
+        :return: Returns wether or not the task went well
+        :rtype: worker_result.WorkerResult
+        """
+        if self.count < amount_to_recycle:
+            raise Exception('Tried to remove more {} than you have'.format(self.name))
+
+        item_recycler = ItemRecycler(_inventory.bot, self, amount_to_recycle)
+        item_recycler_work_result = item_recycler.work()
+
+        if item_recycler.is_recycling_success():
+            self.remove(amount_to_recycle)
+        return item_recycler_work_result
+
     def add(self, amount):
+        """
+        Add a specified amount of the item to the cached inventory
+        :param amount: Amount to add
+        :type amount: int
+        :return: Nothing.
+        :rtype: None
+        """
         if amount < 0:
             raise Exception('Must add positive amount of {}'.format(self.name))
         self.count += amount
@@ -132,15 +176,41 @@ class Items(_BaseInventoryComponent):
     STATIC_DATA_FILE = os.path.join(_base_dir, 'data', 'items.json')
 
     def parse(self, item_data):
+        """
+        Make an instance of an Item from raw item data.
+        :param item_data: Item data to make an item from
+        :return: Instance of the Item.
+        :rtype: Item
+        """
         item_id = item_data.get(Items.ID_FIELD, None)
         item_count = item_data['count'] if 'count' in item_data else 0
         return Item(item_id, item_count)
 
+    def all(self):
+        """
+        Get EVERY Item from the cached inventory.
+        :return: List of evey item in the cached inventory
+        :rtype: list of Item
+        """
+        return list(self._data.values())
+
     def get(self, item_id):
+        """
+        Get ONE Item from the cached inventory.
+        :param item_id: Item's ID to search for.
+        :return: Instance of the item from the cached inventory
+        :rtype: Item
+        """
         return self._data.setdefault(item_id, Item(item_id, 0))
 
     @classmethod
     def name_for(cls, item_id):
+        """
+        Search the name for an item from its ID.
+        :param item_id: Item's ID to search for.
+        :return: Item's name.
+        :rtype: str
+        """
         return cls.STATIC_DATA[str(item_id)]
 
     @classmethod
@@ -1094,6 +1164,9 @@ Pokemons()  # init Pokemons
 #
 # Usage helpers
 
+# TODO : Complete the doc
+# Only type return have been filled for now. It helps the IDE to suggest methods of the class.
+
 def init_inventory(bot):
     global _inventory
     _inventory = Inventory(bot)
@@ -1103,20 +1176,42 @@ def refresh_inventory():
     _inventory.refresh()
 
 def get_item_inventory_size():
+    """
+
+    :return: Item inventory size
+    :rtype: int
+    """
     _inventory.retrieve_item_inventory_size()
     return _inventory.item_inventory_size
 
 def pokedex():
+    """
+
+    :return:
+    :rtype: Pokedex
+    """
     return _inventory.pokedex
 
 
 def candies(refresh=False):
+    """
+
+    :param refresh:
+    :return:
+    :rtype: Candies
+    """
     if refresh:
         refresh_inventory()
     return _inventory.candy
 
 
 def pokemons(refresh=False):
+    """
+
+    :param refresh:
+    :return:
+    :rtype: Pokemons
+    """
     if refresh:
         refresh_inventory()
     return _inventory.pokemons
@@ -1132,16 +1227,36 @@ def items():
 
 
 def types_data():
+    """
+
+    :return:
+    :rtype: Types
+    """
     return Types
 
 
 def levels_to_cpm():
+    """
+
+    :return:
+    :rtype: LevelToCPm
+    """
     return LevelToCPm
 
 
 def fast_attacks():
+    """
+
+    :return:
+    :rtype: FastAttacks
+    """
     return FastAttacks
 
 
 def charged_attacks():
+    """
+
+    :return:
+    :rtype: ChargedAttack
+    """
     return ChargedAttacks
