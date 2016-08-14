@@ -100,10 +100,12 @@ class RecycleItems(BaseTask):
             if not (self.max_potions_keep is None):
                 self.recycle_excess_category_max(self.max_potions_keep, [101,102,103,104])
             if not (self.max_berries_keep is None):
-                self.recycle_excess_category_max(self.max_potions_keep, [701,702,703,704])
+                self.recycle_excess_category_max(self.max_berries_keep, [701,702,703,704,705])
             if not (self.max_revives_keep is None):
-                self.recycle_excess_category_max(self.max_potions_keep, [201,202])
+                self.recycle_excess_category_max(self.max_revives_keep, [201,202])
 
+            inventory.refresh_inventory()
+            
             for item_in_inventory in inventory.items().all():
                 amount_to_recycle = self.get_amount_to_recycle(item_in_inventory)
 
