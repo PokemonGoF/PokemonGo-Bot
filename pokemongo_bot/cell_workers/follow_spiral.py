@@ -69,7 +69,7 @@ class FollowSpiral(BaseTask):
         point = self.points[self.ptr]
         self.cnt += 1
 
-        if self.bot.config.walk > 0:
+        if self.bot.config.walk_max > 0:
             step_walker = StepWalker(
                 self.bot,
                 point['lat'],
