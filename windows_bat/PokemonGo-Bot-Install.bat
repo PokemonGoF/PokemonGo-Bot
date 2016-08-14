@@ -53,6 +53,9 @@ if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul  &  shift /1)
 @ECHO ---- encrypt.so / encrypt.dll /encrypt_64.dll (Copy to the same folder as this batch file)
 @ECHO      Get them from our Slack chat! "https://pokemongo-bot.herokuapp.com/"
 @ECHO.
+@ECHO ---- PyYAML-3.11-cp27-cp27m-win32.whl and PyYAML-3.11-cp27-cp27m-win_amd64.whl (Copy to the same folder as this batch file)
+@ECHO      Get them from our Slack chat! "https://pokemongo-bot.herokuapp.com/"
+@ECHO.
 @ECHO ---- If you already have a config.json and a userdata.js, copy to the same folder as this batch file.
 @ECHO.
 @ECHO.
@@ -107,12 +110,18 @@ COPY "%~dp0\userdata.js" C:\Python27\PokemonGo-Bot\web\config\
 @ECHO.
 @ECHO Remember to configure both config.json and userdata.js!
 @ECHO.
+@ECHO.
+@ECHO.
 @ECHO "C:/Python27/PokemonGo-Bot/configs/config.json"
+@ECHO INSTRUCTIONS:
+@ECHO "https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/docs/configuration_files.md"
 @ECHO.
 @ECHO "C:/Python27/PokemonGo-Bot/web/config/userdata.js"
+@ECHO INSTRUCTIONS:
+@ECHO "https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/docs/google_map.md"
 @ECHO.
 @ECHO To get an Google Map API Key:
-@ECHO https://developers.google.com/maps/documentation/javascript/get-api-key
+@ECHO "https://developers.google.com/maps/documentation/javascript/get-api-key"
 @ECHO.
 @ECHO.
 @ECHO.
