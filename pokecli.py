@@ -307,8 +307,8 @@ def init_config():
     add_config(
         parser,
         load,
-        short_flag="-w",
-        long_flag="--walk",
+        short_flag="-wmax",
+        long_flag="--walk_max",
         help=
         "Walk instead of teleport with given speed (meters per second, e.g. 2.5)",
         type=float,
@@ -317,12 +317,12 @@ def init_config():
     add_config(
         parser,
         load,
-        short_flag="-wv",
-        long_flag="--walk_variance",
+        short_flag="-wmin",
+        long_flag="--walk_min",
         help=
-        "Variance to walking speed",
+        "Walk instead of teleport with given speed (meters per second, e.g. 2.5)",
         type=float,
-        default=0.25
+        default=2.5
     )
     add_config(
         parser,
