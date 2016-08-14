@@ -44,13 +44,13 @@
       {
         "type": "EvolvePokemon",
         "config": {
-            "evolve_all": "none",
-            "first_evolve_by": "cp",
-            "evolve_above_cp": 500,
-            "evolve_above_iv": 0.8,
-            "logic": "or",
-            "evolve_speed": 20,
-            "use_lucky_egg": false
+          "evolve_all": "none",
+          "first_evolve_by": "cp",
+          "evolve_above_cp": 500,
+          "evolve_above_iv": 0.8,
+          "logic": "or",
+          "evolve_speed": 20,
+          "use_lucky_egg": false
         }
       },
       {
@@ -102,12 +102,10 @@
     "action_wait_max": 4,
     "debug": false,
     "test": false,
-    "health_record": true,
+    "health_record": false,
     "location_cache": true,
     "distance_unit": "km",
     "reconnecting_timeout": 15,
-    "catch_randomize_reticle_factor": 1.0,
-    "catch_randomize_spin_factor": 1.0,
     "min_ultraball_to_keep": 10,
     "logging_color": true,
     "catch": {
@@ -184,6 +182,13 @@
       "Rhydon": { "always_catch": true },
       "Seaking": { "always_catch": true },
       "Kangaskhan": { "always_catch": true }
+    },
+    "catch_throw_parameters": {
+      "excellent_rate": 0.1,
+      "great_rate": 0.5,
+      "nice_rate": 0.3,
+      "normal_rate": 0.1,
+      "spin_success_rate" : 0.6
     },
     "release": {
       "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or" },
@@ -355,26 +360,25 @@
       "Mr. Mime": { "release_below_cp": 650, "release_below_iv": 0.8, "logic": "and" }
     },
     "vips" : {
-         "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate!": {},
-        "any": {"catch_above_cp": 1200, "catch_above_iv": 0.9, "logic": "or" },
-        "Lapras": {},
-        "Moltres": {},
-        "Zapdos": {},
-        "Articuno": {},
+      "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate!": {},
+      "any": {"catch_above_cp": 1200, "catch_above_iv": 0.9, "logic": "or" },
+      "Lapras": {},
+      "Moltres": {},
+      "Zapdos": {},
+      "Articuno": {},
 
-        "// S-Tier pokemons (if pokemon can be evolved into tier, list the representative)": {},
-        "Mewtwo": {},
-        "Dragonite": {},
-        "Snorlax": {},
-        "// Mew evolves to Mewtwo": {},
-        "Mew": {},
-        "Arcanine": {},
-        "Vaporeon": {},
-        "Gyarados": {},
-        "Exeggutor": {},
-        "Muk": {},
-        "Weezing": {},
-        "Flareon": {}
-
+      "// S-Tier pokemons (if pokemon can be evolved into tier, list the representative)": {},
+      "Mewtwo": {},
+      "Dragonite": {},
+      "Snorlax": {},
+      "// Mew evolves to Mewtwo": {},
+      "Mew": {},
+      "Arcanine": {},
+      "Vaporeon": {},
+      "Gyarados": {},
+      "Exeggutor": {},
+      "Muk": {},
+      "Weezing": {},
+      "Flareon": {}
     }
 }
