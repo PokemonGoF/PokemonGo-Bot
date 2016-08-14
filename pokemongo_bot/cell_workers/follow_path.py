@@ -102,7 +102,7 @@ class FollowPath(BaseTask):
         lat = float(point['lat'])
         lng = float(point['lng'])
 
-        if self.bot.config.walk > 0:
+        if self.bot.config.walk_max > 0:
             step_walker = StepWalker(
                 self.bot,
                 lat,
