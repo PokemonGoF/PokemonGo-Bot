@@ -161,7 +161,7 @@ def main():
                         level='debug',
                         formatted='Forts cached.',
                     )
-                except IOError as e:
+                except IOError:
                     bot.event_manager.emit(
                         'error_caching_forts',
                         sender=bot,
@@ -169,7 +169,25 @@ def main():
                         formatted='Error caching forts for {path}',
                         data={'path': cached_forts_path}
                         )
-
+            if bot.fort_timeouts and bot.config.forts_cache_fort_timeouts:
+                fort_timeouts_path = os.path.join(_base_dir, 'data', 'fort-timeouts-%s.json' % bot.config.username)
+                try:
+                    with open(fort_timeouts_path, 'w') as outfile:
+                        json.dump(bot.fort_timeouts, outfile)
+                        bot.event_manager.emit(
+                            'cached_fort',
+                            sender=bot,
+                            level='debug',
+                            formatted='Fort timeouts cached.',
+                        )
+                except IOError:
+                    bot.event_manager.emit(
+                        'error_caching_forts',
+                        sender=bot,
+                        level='debug',
+                        formatted='Error caching fort timeouts for {path}',
+                        data={'path': fort_timeouts_path}
+                        )
 
 
 def report_summary(bot):
@@ -401,6 +419,15 @@ def init_config():
         short_flag="-crf",
         long_flag="--forts.cache_recent_forts",
         help="Caches recent forts used by max_circle_size",
+        type=bool,
+        default=True,
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-cft",
+        long_flag="--forts.cache_fort_timeouts",
+        help="Caches fort timeouts",
         type=bool,
         default=True,
     )

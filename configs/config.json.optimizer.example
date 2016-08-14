@@ -134,7 +134,9 @@
     "map_object_cache_time": 5,
     "forts": {
         "avoid_circles": true,
-        "max_circle_size": 50
+        "max_circle_size": 50,
+      "cache_recent_forts": true,
+      "cache_fort_timeouts": true
     },
     "websocket_server": true,
     "walk": 4.16,

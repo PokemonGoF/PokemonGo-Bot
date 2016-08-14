@@ -85,6 +85,7 @@ class PokemonGoBot(object):
         self._setup_logging()
         self._setup_api()
         self._load_recent_forts()
+        self._load_fort_timeouts()
 
         random.seed()
 
@@ -1112,7 +1113,6 @@ class PokemonGoBot(object):
         if not self.config.forts_cache_recent_forts:
             return
 
-
         cached_forts_path = os.path.join(_base_dir, 'data', 'recent-forts-%s.json' % self.config.username)
         try:
             # load the cached recent forts
@@ -1136,13 +1136,38 @@ class PokemonGoBot(object):
                 'loaded_cached_forts',
                 sender=self,
                 level='debug',
-                formatted='Loaded cached forts...'
+                formatted='Loaded recent forts...'
             )
         except IOError:
             self.event_manager.emit(
                 'no_cached_forts',
                 sender=self,
                 level='debug',
-                formatted='Starting new cached forts for {path}',
+                formatted='Starting new recent forts for {path}',
                 data={'path': cached_forts_path}
             )
+
+    def _load_fort_timeouts(self):
+        if not self.config.forts_cache_fort_timeouts:
+            return
+
+        fort_timeouts_path = os.path.join(_base_dir, 'data', 'fort-timeouts-%s.json' % self.config.username)
+        try:
+            with open(fort_timeouts_path) as f:
+                self.fort_timeouts = json.load(f)
+
+            self.event_manager.emit(
+                'loaded_cached_forts',
+                sender=self,
+                level='debug',
+                formatted='Loaded fort timeouts...'
+            )
+        except IOError:
+            self.event_manager.emit(
+                'no_cached_forts',
+                sender=self,
+                level='debug',
+                formatted='Starting new fort timeouts for {path}',
+                data={'path': fort_timeouts_path}
+            )
+
