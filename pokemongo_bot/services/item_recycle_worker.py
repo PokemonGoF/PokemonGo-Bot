@@ -87,7 +87,7 @@ class ItemRecycler(BaseTask):
         """
         self.emit_event(
                 'item_discarded',
-                formatted='Discarded {amount}x {item}).',
+                formatted='Discarded {amount}x {item}.',
                 data={
                     'amount': str(self.amount_to_recycle),
                     'item': self.item_to_recycle.name,
