@@ -150,6 +150,7 @@ class PokemonGoBot(object):
 
         self.event_manager.register_event('bot_start')
         self.event_manager.register_event('bot_exit')
+        self.event_manager.register_event('bot_interrupted')
 
         # sleep stuff
         self.event_manager.register_event(
