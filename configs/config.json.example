@@ -42,7 +42,8 @@
         "type": "UpdateLiveInventory",
         "config": {
           "enabled": false,
-          "min_interval": 120
+          "min_interval": 120,
+          "items": ["space_info", "pokeballs", "greatballs", "ultraballs", "razzberries", "luckyegg"]
         }
       },
       {
