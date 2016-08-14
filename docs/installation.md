@@ -39,20 +39,17 @@ We do recommend Windows users to use [Docker](#docker) this will work much easie
 - [Microsoft Visual C++ Compiler for Python 2.7](http://www.microsoft.com/en-us/download/details.aspx?id=44266)
 
 ###Easy Installation
-1. Download `PokemonGo-Bot-Install.bat` file from [HERE](https://raw.githubusercontent.com/nivong/PokemonGo-Bot/dev/windows_bat/PokemonGo-Bot-Install.bat)
-2. Run `PokemonGo-Bot-install.bat`
-After that has done the bot will be installed
-3. Run `PokemonGo-Bot-Start.bat`
-This will start the bot and the web interface
+1. Download [PokemonGo-Bot-Install.bat](https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/windows_bat/PokemonGo-Bot-Install.bat)
+2. Download both [PyYAML-3.11-cp27-cp27m-win32.whl](https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/windows_bat/PyYAML-3.11-cp27-cp27m-win32.whl) and  [PyYAML-3.11-cp27-cp27m-win_amd64.whl](https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/windows_bat/PyYAML-3.11-cp27-cp27m-win_amd64.whl).
+3. Download `encrypt.dll`, `encrypt.so` and `encrypt_64.dll`.
+4. Run `PokemonGo-Bot-install.bat`.
+After that has done the bot will be installed.
+5. Run `PokemonGo-Bot-Start.bat`.
+This will start the bot and the web interface.
 
 ### To update the bot
 3. Run `PokemonGo-Bot-Start.bat`
 This will check for an update and will start the bot afterwards.
-
-### To repair the bot if it isn't working for some reason
-1. Stop the bot by closing everything
-2. Run `PokemonGo-Bot-Repair.bat`
-3. Rerun the bot by using `PokemonGo-Bot-StartBot.bat`
 
 #Docker
 
