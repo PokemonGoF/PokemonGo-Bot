@@ -22,5 +22,5 @@ mock==2.0.0
 timeout-decorator==0.3.2
 raven==5.23.0
 demjson==2.2.4
-hjson==2.0.0
 greenlet==0.4.9
+hjson==2.0.0
