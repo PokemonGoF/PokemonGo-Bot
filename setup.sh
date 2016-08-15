@@ -62,6 +62,17 @@ then
 echo "You are on Mac os"
 sudo brew update 
 sudo brew install --devel protobuf
+elif [ $(uname -s) == CYGWIN* ]
+then
+echo "You are on Cygwin"
+if [ !-x "$(command -v apt-cyg)" ]
+then
+wget http://apt-cyg.googlecode.com/svn/trunk/apt-cyg
+chmod +x apt-cyg
+mv apt-cyg /usr/local/bin/
+fi
+apt-cyg install gcc-core make
+easy_install pip
 elif [ -x "$(command -v apt-get)" ]
 then
 echo "You are on Debian/Ubuntu"
@@ -91,7 +102,7 @@ echo "Please check if you have  python pip gcc make  installed on your device."
 echo "Wait 5 seconds to continue or Use ctrl+c to interrupt this shell."
 sleep 5
 fi
-sudo pip install virtualenv
+easy_install virtualenv
 Pokebotreset
 Pokebotupdate
 Pokebotencrypt
