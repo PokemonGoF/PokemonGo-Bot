@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+import os
+import json
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.inventory import pokemons, Pokemon, Attack
@@ -189,6 +194,13 @@ class NicknamePokemon(BaseTask):
         self.template = self.config.get(
             'nickname_template', DEFAULT_TEMPLATE)
 
+        self.translate = None
+        locale = self.config.get('locale', 'en')
+        if locale != 'en':
+            fn = 'data/locales/{}.json'.format(locale)
+            if os.path.isfile(fn):
+                self.translate = json.load(open(fn))
+
     def work(self):
         """
         Iterate over all user pokemons and nickname if needed
@@ -196,6 +208,12 @@ class NicknamePokemon(BaseTask):
         for pokemon in pokemons().all():  # type: Pokemon
             if not pokemon.is_favorite or not self.ignore_favorites:
                 self._nickname_pokemon(pokemon)
+
+    def _localize(self, string):
+        if self.translate and string in self.translate:
+            return self.translate[string]
+        else:
+            return string
 
     def _nickname_pokemon(self, pokemon):
         # type: (Pokemon) -> None
@@ -308,6 +326,8 @@ class NicknamePokemon(BaseTask):
         attack_code = fast_attack_char + charged_attack_char
 
         moveset = pokemon.moveset
+
+        pokemon.name = self._localize(pokemon.name)
 
         #
         # Generate new nickname

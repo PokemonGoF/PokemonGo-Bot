@@ -6,6 +6,7 @@ import os
 import time
 
 from pgoapi.utilities import f2i
+from pokemongo_bot import inventory
 
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.human_behaviour import sleep
@@ -13,6 +14,11 @@ from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.base_dir import _base_dir
 from utils import distance, format_time, fort_details
+
+SPIN_REQUEST_RESULT_SUCCESS = 1
+SPIN_REQUEST_RESULT_OUT_OF_RANGE = 2
+SPIN_REQUEST_RESULT_IN_COOLDOWN_PERIOD = 3
+SPIN_REQUEST_RESULT_INVENTORY_FULL = 4
 
 
 class SpinFort(BaseTask):
@@ -22,12 +28,13 @@ class SpinFort(BaseTask):
         self.ignore_item_count = self.config.get("ignore_item_count", False)
 
     def should_run(self):
-        if not self.bot.has_space_for_loot() and not self.ignore_item_count:
+        has_space_for_loot = inventory.Items.has_space_for_loot()
+        if not has_space_for_loot and not self.ignore_item_count:
             self.emit_event(
                 'inventory_full',
                 formatted="Inventory is full. You might want to change your config to recycle more items if this message appears consistently."
             )
-        return self.ignore_item_count or self.bot.has_space_for_loot()
+        return self.ignore_item_count or has_space_for_loot
 
     def work(self):
         forts = self.get_forts_in_range()
@@ -50,25 +57,16 @@ class SpinFort(BaseTask):
             player_latitude=f2i(self.bot.position[0]),
             player_longitude=f2i(self.bot.position[1])
         )
-        if 'responses' in response_dict and \
-                'FORT_SEARCH' in response_dict['responses']:
+        if 'responses' in response_dict and 'FORT_SEARCH' in response_dict['responses']:
 
             spin_details = response_dict['responses']['FORT_SEARCH']
             spin_result = spin_details.get('result', -1)
-            if spin_result == 1:
+            if spin_result == SPIN_REQUEST_RESULT_SUCCESS:
                 self.bot.softban = False
                 experience_awarded = spin_details.get('experience_awarded', 0)
-                items_awarded = spin_details.get('items_awarded', {})
-                if items_awarded:
-                    self.bot.latest_inventory = None
-                    tmp_count_items = {}
-                    for item in items_awarded:
-                        item_id = item['item_id']
-                        item_name = self.bot.item_list[str(item_id)]
-                        if not item_name in tmp_count_items:
-                            tmp_count_items[item_name] = item['item_count']
-                        else:
-                            tmp_count_items[item_name] += item['item_count']
+
+
+                items_awarded = self.get_items_awarded_from_fort_spinned(response_dict)
 
                 if experience_awarded or items_awarded:
                     self.emit_event(
@@ -77,7 +75,7 @@ class SpinFort(BaseTask):
                         data={
                             'pokestop': fort_name,
                             'exp': experience_awarded,
-                            'items': tmp_count_items
+                            'items': items_awarded
                         }
                     )
                 else:
@@ -90,13 +88,13 @@ class SpinFort(BaseTask):
                     'cooldown_complete_timestamp_ms')
                 self.bot.fort_timeouts.update({fort["id"]: pokestop_cooldown})
                 self.bot.recent_forts = self.bot.recent_forts[1:] + [fort['id']]
-            elif spin_result == 2:
+            elif spin_result == SPIN_REQUEST_RESULT_OUT_OF_RANGE:
                 self.emit_event(
                     'pokestop_out_of_range',
                     formatted="Pokestop {pokestop} out of range.",
                     data={'pokestop': fort_name}
                 )
-            elif spin_result == 3:
+            elif spin_result == SPIN_REQUEST_RESULT_IN_COOLDOWN_PERIOD:
                 pokestop_cooldown = spin_details.get(
                     'cooldown_complete_timestamp_ms')
                 if pokestop_cooldown:
@@ -110,7 +108,7 @@ class SpinFort(BaseTask):
                         formatted="Pokestop {pokestop} on cooldown. Time left: {minutes_left}.",
                         data={'pokestop': fort_name, 'minutes_left': minutes_left}
                     )
-            elif spin_result == 4:
+            elif spin_result == SPIN_REQUEST_RESULT_INVENTORY_FULL:
                 if not self.ignore_item_count:
                     self.emit_event(
                         'inventory_full',
@@ -151,7 +149,7 @@ class SpinFort(BaseTask):
     def get_forts_in_range(self):
         forts = self.bot.get_forts(order_by_distance=True)
 
-        for fort in forts:
+        for fort in reversed(forts):
             if 'cooldown_complete_timestamp_ms' in fort:
                 self.bot.fort_timeouts[fort["id"]] = fort['cooldown_complete_timestamp_ms']
                 forts.remove(fort)
@@ -165,3 +163,27 @@ class SpinFort(BaseTask):
         ) <= Constants.MAX_DISTANCE_FORT_IS_REACHABLE, forts)
 
         return forts
+
+    def get_items_awarded_from_fort_spinned(self, response_dict):
+        items_awarded = response_dict['responses']['FORT_SEARCH'].get('items_awarded', {})
+        if items_awarded:
+            tmp_count_items = {}
+            for item_awarded in items_awarded:
+
+                item_awarded_id = item_awarded['item_id']
+                item_awarded_name = inventory.Items.name_for(item_awarded_id)
+                item_awarded_count = item_awarded['item_count']
+
+                if not item_awarded_name in tmp_count_items:
+                    tmp_count_items[item_awarded_name] = item_awarded_count
+                else:
+                    tmp_count_items[item_awarded_name] += item_awarded_count
+
+                self._update_inventory(item_awarded)
+
+            return tmp_count_items
+
+    # TODO : Refactor this class, hide the inventory update right after the api call
+    def _update_inventory(self, item_awarded):
+        inventory.items().get(item_awarded['item_id']).add(item_awarded['item_count'])
+
