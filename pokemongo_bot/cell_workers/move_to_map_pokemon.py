@@ -141,7 +141,7 @@ class MoveToMapPokemon(BaseTask):
 
             # pokemon not reachable with mean walking speed (by config)
             mean_walk_speed = (self.bot.config.walk_max + self.bot.config.walk_min) / 2
-            if pokemon['dist'] > ((pokemon['expire'] - now) * mean_walk_speed):
+            if pokemon['dist'] > ((pokemon['expire'] - now) * mean_walk_speed) and not self.config['snipe']:
                 continue
 
             pokemon_list.append(pokemon)
@@ -259,8 +259,8 @@ class MoveToMapPokemon(BaseTask):
             return WorkerResult.SUCCESS
 
         if self.config['snipe']:
-            if self.config['snipe_high_prio_only']:
-                if self.config['snipe_high_prio_threshold'] < pokemon['priority'] or pokemon['is_vip']:
+            if self.config.get('snipe_high_prio_only', False):
+                if self.config.get('snipe_high_prio_threshold', 400) < pokemon['priority'] or pokemon['is_vip']:
                     self.snipe(pokemon)
             else:
                 return self.snipe(pokemon)
