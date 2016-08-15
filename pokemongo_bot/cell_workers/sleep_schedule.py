@@ -36,9 +36,10 @@ class SleepSchedule(BaseTask):
         # self.bot.event_manager.register_event('sleeper_scheduled', parameters=('datetime',))
         self._process_config()
         self._schedule_next_sleep()
+        self._calculate_current_sleep()
 
     def work(self):
-        if _should_sleep_now:
+        if self._should_sleep_now():
             self._sleep()
             self._schedule_next_sleep()
             self.bot.login()
@@ -60,6 +61,8 @@ class SleepSchedule(BaseTask):
             timedelta(
                 hours=duration_random_offset.hour, minutes=duration_random_offset.minute).total_seconds())
 
+        self.skip_current_sleep_cycle = self.config.get('skip_current_sleep_cycle', True)
+
     def _schedule_next_sleep(self):
         self._next_sleep = self._get_next_sleep_schedule()
         self._next_duration = self._get_next_duration()
@@ -70,6 +73,20 @@ class SleepSchedule(BaseTask):
                 'time': str(self._next_sleep)
             }
         )
+
+    def _calculate_current_sleep(self):
+        current_sleep = self._next_sleep - timedelta(days=1)
+        current_duration = self._get_next_duration()
+        self._current_end = current_sleep + timedelta(seconds = current_duration)
+
+    def _should_sleep_now(self):
+        if datetime.now() >= self._next_sleep:
+            return True
+        if not self.skip_current_sleep_cycle and datetime.now() <= self._current_end:
+            self._next_duration = (self._current_end - datetime.now()).total_seconds()
+            return True
+
+        return False
 
     def _get_next_sleep_schedule(self):
         now = datetime.now() + self.SCHEDULING_MARGIN
@@ -91,21 +108,11 @@ class SleepSchedule(BaseTask):
         offset = uniform(-max_offset, max_offset)
         return int(offset)
 
-    def _should_sleep_now(self):
-        current_sleep = self._next_sleep -= timedelta(days=1)
-        current_duration = self._get_next_duration()
-        current_end = current_sleep += timedelta(hours = current_duration.hour, minutes = current_duration.minute)
-
-        if datetime.now() >= self._next_sleep:
-            return true
-        if datetime.now() <= current_end:
-            self._next_duration = (current_end - datetime.now()).total_seconds()
-
     def _sleep(self):
         sleep_to_go = self._next_duration
         self.emit_event(
             'bot_sleep',
-            formatted="Sleeping for {time_in_seconds}",
+            formatted="Sleeping for {time_in_seconds} seconds...",
             data={
                 'time_in_seconds': sleep_to_go
             }
