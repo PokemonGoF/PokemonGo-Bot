@@ -327,16 +327,6 @@ def init_config():
     add_config(
         parser,
         load,
-        short_flag="-w",
-        long_flag="--walk",
-        help=
-        "Walk instead of teleport with given speed",
-        type=float,
-        default=0
-    )
-    add_config(
-        parser,
-        load,
         short_flag="-k",
         long_flag="--gmapkey",
         help="Set Google Maps API KEY",
