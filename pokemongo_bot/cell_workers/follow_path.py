@@ -126,7 +126,7 @@ class FollowPath(BaseTask):
             lng
         )
 
-        if dist <= 1 or (self.bot.config.walk > 0 and is_at_destination):
+        if dist <= 1 or (self.bot.config.walk_max > 0 and is_at_destination):
             if (self.ptr + 1) == len(self.points):
                 self.ptr = 0
                 if self.path_mode == 'linear':
