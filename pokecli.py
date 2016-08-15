@@ -310,7 +310,7 @@ def init_config():
         short_flag="-wmax",
         long_flag="--walk_max",
         help=
-        "Walk instead of teleport with given speed (meters per second, e.g. 2.5)",
+        "Walk instead of teleport with given speed",
         type=float,
         default=2.5
     )
@@ -320,7 +320,17 @@ def init_config():
         short_flag="-wmin",
         long_flag="--walk_min",
         help=
-        "Walk instead of teleport with given speed (meters per second, e.g. 2.5)",
+        "Walk instead of teleport with given speed",
+        type=float,
+        default=2.5
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-w",
+        long_flag="--walk",
+        help=
+        "Walk instead of teleport with given speed",
         type=float,
         default=2.5
     )
