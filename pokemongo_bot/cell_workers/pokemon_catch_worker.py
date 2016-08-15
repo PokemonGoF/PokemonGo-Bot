@@ -375,7 +375,7 @@ class PokemonCatchWorker(BaseTask):
 
             # pokemon caught!
             elif catch_pokemon_status == CATCH_STATUS_SUCCESS:
-                pokemon.id = response_dict['responses']['CATCH_POKEMON']['captured_pokemon_id']
+                pokemon.unique_id = response_dict['responses']['CATCH_POKEMON']['captured_pokemon_id']
                 self.bot.metrics.captured_pokemon(pokemon.name, pokemon.cp, pokemon.iv_display, pokemon.iv)
                 inventory.pokemons().add(pokemon)
                 self.emit_event(

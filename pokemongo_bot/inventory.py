@@ -756,7 +756,7 @@ class Pokemon(object):
     def __init__(self, data):
         self._data = data
         # Unique ID for this particular Pokemon
-        self.id = data.get('id', 0)
+        self.unique_id = data.get('id', 0)
         # Id of the such pokemons in pokedex
         self.pokemon_id = data['pokemon_id']
         # Static information

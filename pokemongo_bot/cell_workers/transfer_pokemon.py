@@ -142,7 +142,7 @@ class TransferPokemon(BaseTask):
             if self.bot.config.test:
                 candy_awarded = 1
             else:
-                response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon.id)
+                response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon.unique_id)
                 candy_awarded = response_dict['responses']['RELEASE_POKEMON']['candy_awarded']
         except KeyError:
             return
@@ -150,7 +150,7 @@ class TransferPokemon(BaseTask):
         # We could refresh here too, but adding 1 saves a inventory request
         candy = inventory.candies().get(pokemon.pokemon_id)
         candy.add(candy_awarded)
-        inventory.pokemons().remove(pokemon.id)
+        inventory.pokemons().remove(pokemon.unique_id)
         self.bot.metrics.released_pokemon()
         self.emit_event(
             'pokemon_release',
