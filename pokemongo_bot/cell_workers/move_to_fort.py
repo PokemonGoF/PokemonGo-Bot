@@ -39,6 +39,21 @@ class MoveToFort(BaseTask):
         if nearest_fort is None:
             return WorkerResult.SUCCESS
 
+        distance_from_last_nearest_fort = self._get_distance_from_bot(
+            self.last_nearest_fort['latitude'],
+            self.last_nearest_fort['longitude']
+        )
+        distance_from_current_nearest_fort = self._get_distance_from_bot(
+            nearest_fort['latitude'],
+            nearest_fort['longitude']
+        )
+
+        if self.last_nearest_fort is not None:
+            if distance_from_last_nearest_fort == distance_from_current_nearest_fort:
+                nearest_fort = self.last_nearest_fort
+        else:
+            self.last_nearest_fort = nearest_fort
+
         lat = nearest_fort['latitude']
         lng = nearest_fort['longitude']
         fortID = nearest_fort['id']
@@ -90,6 +105,9 @@ class MoveToFort(BaseTask):
         )
         return WorkerResult.SUCCESS
 
+    def _get_distance_from_bot(self, lat, lon):
+        return distance(self.bot.position[0], self.bot.position[1], lat, lng)
+
     def _get_nearest_fort_on_lure_way(self, forts):
 
         if not self.lure_attraction:
@@ -125,9 +143,6 @@ class MoveToFort(BaseTask):
         else:
             return None, 0
 
-    def get_distance_from_bot(self, fort):
-        return distance(self.bot.position[0], self.bot.position[1], fort['latitude'], fort['longitude'])
-
     def get_nearest_fort(self):
         forts = self.bot.get_forts(order_by_distance=True)
 
@@ -148,13 +163,4 @@ class MoveToFort(BaseTask):
         if len(forts) <= 0:
             return None
 
-        nearest_fort = forts[0]
-
-        # If last fort moved to and nearest fort are equidistant keep walking
-        # toward the last fort to avoid looping
-        if self.last_nearest_fort is not None and self.get_distance_from_bot(self.last_nearest_fort) == self.get_distance_from_bot(nearest_fort):
-            nearest_fort = self.last_nearest_fort
-
-        self.last_nearest_fort = nearest_fort
-
-        return nearest_fort
+        return forts[0] if len(forts) > 0 else None
