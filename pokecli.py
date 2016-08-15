@@ -495,6 +495,7 @@ def init_config():
     config.release = load.get('release', {})
     config.action_wait_max = load.get('action_wait_max', 4)
     config.action_wait_min = load.get('action_wait_min', 1)
+    config.walk_random = load.get('walk_offset_percent_max', 0.3)
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
     config.min_ultraball_to_keep = load.get('min_ultraball_to_keep', None)
