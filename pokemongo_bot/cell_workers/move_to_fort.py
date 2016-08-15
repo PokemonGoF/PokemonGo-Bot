@@ -160,7 +160,4 @@ class MoveToFort(BaseTask):
         if (lure_distance > 0):
             return next_attracted_pts
 
-        if len(forts) <= 0:
-            return None
-
         return forts[0] if len(forts) > 0 else None
