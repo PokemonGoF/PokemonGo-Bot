@@ -124,9 +124,6 @@ class MoveToMapPokemon(BaseTask):
             if pokemon['name'] not in self.config['catch'] and not pokemon['is_vip']:
                 continue
 
-            if pokemon['disappear_time'] < (now + self.config['min_time']):
-                continue
-
             if self.was_caught(pokemon):
                 continue
 
@@ -140,6 +137,11 @@ class MoveToMapPokemon(BaseTask):
             )
 
             if pokemon['dist'] > self.config['max_distance'] and not self.config['snipe']:
+                continue
+
+            # pokemon not reachable with mean walking speed (by config)
+            mean_walk_speed = (self.bot.config.walk_max + self.bot.config.walk_min) / 2
+            if pokemon['dist'] > ((pokemon['expire'] - now) * mean_walk_speed):
                 continue
 
             pokemon_list.append(pokemon)
