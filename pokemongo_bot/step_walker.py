@@ -19,7 +19,7 @@ class StepWalker(object):
             dest_lng
         )
 
-        if self.bot.config.walk_random == true:
+        if self.bot.config.walk_random == True:
             self.speed = speed * random.uniform(0.01, self.bot.config.walk_offset_percent_max)
         else:
             self.speed = speed
