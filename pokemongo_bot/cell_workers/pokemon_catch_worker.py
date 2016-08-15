@@ -221,6 +221,7 @@ class PokemonCatchWorker(BaseTask):
             # softban?
             else:
                 new_catch_rate_by_ball = catch_rate_by_ball
+                self.bot.softban = True
                 self.emit_event(
                     'softban',
                     level='warning',
