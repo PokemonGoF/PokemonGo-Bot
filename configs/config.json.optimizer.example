@@ -137,7 +137,8 @@
         "max_circle_size": 50
     },
     "websocket_server": true,
-    "walk": 4.16,
+    "walk_max": 4.16,
+    "walk_min": 2.16,
     "action_wait_min": 1,
     "action_wait_max": 4,
     "debug": false,
