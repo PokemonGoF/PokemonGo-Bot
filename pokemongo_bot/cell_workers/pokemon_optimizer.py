@@ -13,10 +13,12 @@ class PokemonOptimizer(BaseTask):
 
     def initialize(self):
         self.family_by_family_id = {}
+        self.last_pokemon_count = 0
         self.logger = logging.getLogger(self.__class__.__name__)
 
         self.config_transfer = self.config.get("transfer", False)
         self.config_evolve = self.config.get("evolve", False)
+        self.config_use_candies_for_xp = self.config.get("use_candies_for_xp", True)
         self.config_use_lucky_egg = self.config.get("use_lucky_egg", False)
         self.config_evolve_only_with_lucky_egg = self.config.get("evolve_only_with_lucky_egg", True)
         self.config_minimum_evolve_for_lucky_egg = self.config.get("minimum_evolve_for_lucky_egg", 90)
@@ -25,7 +27,13 @@ class PokemonOptimizer(BaseTask):
                                                     {"top": 1, "evolve": False, "sort": ["cp"]}])
 
     def get_pokemon_slot_left(self):
-        return self.bot._player["max_pokemon_storage"] - len(inventory.pokemons()._data)
+        pokemon_count = len(inventory.pokemons()._data)
+        
+        if pokemon_count != self.last_pokemon_count:
+            self.last_pokemon_count = pokemon_count
+            self.logger.info("Pokemon Bag: %s/%s", pokemon_count, self.bot._player["max_pokemon_storage"])
+        
+        return self.bot._player["max_pokemon_storage"] - pokemon_count
 
     def work(self):
         if self.get_pokemon_slot_left() > 5:
@@ -56,6 +64,9 @@ class PokemonOptimizer(BaseTask):
         for pokemon in inventory.pokemons().all():
             family_id = pokemon.first_evolution_id
             setattr(pokemon, "ncp", pokemon.cp_percent)
+            setattr(pokemon, "dps", pokemon.moveset.dps)
+            setattr(pokemon, "dps_attack", pokemon.moveset.dps_attack)
+            setattr(pokemon, "dps_defense", pokemon.moveset.dps_defense)
 
             self.family_by_family_id.setdefault(family_id, []).append(pokemon)
 
@@ -173,23 +184,27 @@ class PokemonOptimizer(BaseTask):
             next_evo.name = inventory.pokemons().name_for(next_pid)
             evolve_best.append(next_evo)
 
-        # Compute how many crap we should keep if we want to batch evolve them for xp
-        junior_evolution_cost = inventory.pokemons().evolution_cost_for(family_id)
+        if self.config_use_candies_for_xp:
+            # Compute how many crap we should keep if we want to batch evolve them for xp
+            junior_evolution_cost = inventory.pokemons().evolution_cost_for(family_id)
 
-        # transfer + keep_for_evo = len(crap)
-        # leftover_candies = candies - len(crap) + transfer * 1
-        # keep_for_evo = leftover_candies / junior_evolution_cost
-        #
-        # keep_for_evo = (candies - len(crap) + transfer) / junior_evolution_cost
-        # keep_for_evo = (candies - keep_for_evo) / junior_evolution_cost
+            # transfer + keep_for_evo = len(crap)
+            # leftover_candies = candies - len(crap) + transfer * 1
+            # keep_for_evo = leftover_candies / junior_evolution_cost
+            #
+            # keep_for_evo = (candies - len(crap) + transfer) / junior_evolution_cost
+            # keep_for_evo = (candies - keep_for_evo) / junior_evolution_cost
 
-        if (candies > 0) and junior_evolution_cost:
-            keep_for_evo = int(candies / (junior_evolution_cost + 1))
+            if (candies > 0) and junior_evolution_cost:
+                keep_for_evo = int(candies / (junior_evolution_cost + 1))
+            else:
+                keep_for_evo = 0
+
+            evo_crap = [p for p in crap if p.has_next_evolution() and p.evolution_cost == junior_evolution_cost][:keep_for_evo]
+            transfer = [p for p in crap if p not in evo_crap]
         else:
-            keep_for_evo = 0
-
-        evo_crap = [p for p in crap if p.has_next_evolution() and p.evolution_cost == junior_evolution_cost][:keep_for_evo]
-        transfer = [p for p in crap if p not in evo_crap]
+            evo_crap = []
+            transfer = crap
 
         return (transfer, can_evolve_best, evo_crap)
 
@@ -197,15 +212,21 @@ class PokemonOptimizer(BaseTask):
         for pokemon in transfer:
             self.transfer_pokemon(pokemon)
 
-        if self.config_evolve and self.config_use_lucky_egg:
+        if len(evo) == 0:
+            return
+
+        if self.config_evolve and self.config_use_lucky_egg and (not self.bot.config.test):
             lucky_egg = inventory.items().get(Item.ITEM_LUCKY_EGG.value)  # @UndefinedVariable
 
-            if lucky_egg.count == 0:
-                if self.config_evolve_only_with_lucky_egg:
-                    self.logger.info("Skipping evolution step. No lucky egg available")
-                    return
-            elif len(evo) >= self.config_minimum_evolve_for_lucky_egg:
-                self.use_lucky_egg()
+            if self.config_evolve_only_with_lucky_egg and (lucky_egg.count == 0):
+                self.logger.info("Skipping evolution step. No lucky egg available")
+                return
+
+            if len(evo) < self.config_minimum_evolve_for_lucky_egg:
+                self.logger.info("Skipping evolution step. Not enough Pokemons (%s) to evolve", len(evo))
+                return
+
+            self.use_lucky_egg()
 
         self.logger.info("Evolving %s Pokemons", len(evo))
 
@@ -213,29 +234,39 @@ class PokemonOptimizer(BaseTask):
             self.evolve_pokemon(pokemon)
 
     def transfer_pokemon(self, pokemon):
-        if self.config_transfer:
-            self.bot.api.release_pokemon(pokemon_id=pokemon.id)
+        if self.config_transfer and (not self.bot.config.test):
+            response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon.id)
         else:
-            pass
+            response_dict = {"responses": {"RELEASE_POKEMON": {"candy_awarded": 0}}}
+
+        if not response_dict:
+            return False
 
         self.emit_event("pokemon_release",
-                        formatted="Exchanged {pokemon} [IV {iv}] [CP {cp}]",
+                        formatted="Exchanged {pokemon} [IV {iv}] [CP {cp}] [NCP {ncp}] [DPS {dps}]",
                         data={"pokemon": pokemon.name,
                               "iv": pokemon.iv,
-                              "cp": pokemon.cp})
+                              "cp": pokemon.cp,
+                              "ncp": round(pokemon.ncp, 2),
+                              "dps": round(pokemon.dps, 2)})
 
-        if self.config_transfer:
-            inventory.candies().get(pokemon.pokemon_id).add(1)
+        if self.config_transfer and (not self.bot.config.test):
+            candy = response_dict.get("responses", {}).get("RELEASE_POKEMON", {}).get("candy_awarded", 0)
+
+            inventory.candies().get(pokemon.pokemon_id).add(candy)
+            inventory.pokemons().remove(pokemon.id)
+
             action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
+
+        return True
 
     def use_lucky_egg(self):
         lucky_egg = inventory.items().get(Item.ITEM_LUCKY_EGG.value)  # @UndefinedVariable
 
-        if self.config_evolve and self.config_use_lucky_egg:
-            response_dict = self.bot.use_lucky_egg()
-            lucky_egg.remove(1)
-        else:
-            response_dict = {"responses": {"USE_ITEM_XP_BOOST": {"result": 1}}}
+        if lucky_egg.count == 0:
+            return False
+
+        response_dict = self.bot.use_lucky_egg()
 
         if not response_dict:
             self.emit_event("lucky_egg_error",
@@ -246,6 +277,8 @@ class PokemonOptimizer(BaseTask):
         result = response_dict.get("responses", {}).get("USE_ITEM_XP_BOOST", {}).get("result", 0)
 
         if result == 1:
+            lucky_egg.remove(1)
+
             self.emit_event("used_lucky_egg",
                             formatted="Used lucky egg ({amount_left} left).",
                             data={"amount_left": lucky_egg.count})
@@ -257,7 +290,7 @@ class PokemonOptimizer(BaseTask):
             return False
 
     def evolve_pokemon(self, pokemon):
-        if self.config_evolve:
+        if self.config_evolve and (not self.bot.config.test):
             response_dict = self.bot.api.evolve_pokemon(pokemon_id=pokemon.id)
         else:
             response_dict = {"responses": {"EVOLVE_POKEMON": {"result": 1}}}
@@ -266,20 +299,30 @@ class PokemonOptimizer(BaseTask):
             return False
 
         result = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("result", 0)
-        xp = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("experience_awarded", 0)
 
-        if result == 1:
-            self.emit_event("pokemon_evolved",
-                            formatted="Evolved {pokemon} [IV {iv}] [CP {cp}] [+{xp} xp]",
-                            data={"pokemon": pokemon.name,
-                                  "iv": pokemon.iv,
-                                  "cp": pokemon.cp,
-                                  "xp": xp})
-
-            if self.config_evolve:
-                inventory.candies().get(pokemon.pokemon_id).consume(pokemon.evolution_cost)
-                sleep(20)
-
-            return True
-        else:
+        if result != 1:
             return False
+
+        xp = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("experience_awarded", 0)
+        candy = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("candy_awarded", 0)
+        evolution = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("evolved_pokemon_data", {})
+
+        self.emit_event("pokemon_evolved",
+                        formatted="Evolved {pokemon} [IV {iv}] [CP {cp}] [NCP {ncp}] [DPS {dps}] [+{xp} xp]",
+                        data={"pokemon": pokemon.name,
+                              "iv": pokemon.iv,
+                              "cp": pokemon.cp,
+                              "ncp": round(pokemon.ncp, 2),
+                              "dps": round(pokemon.dps, 2),
+                              "xp": xp})
+
+        if self.config_evolve and (not self.bot.config.test):
+            inventory.candies().get(pokemon.pokemon_id).consume(pokemon.evolution_cost - candy)
+            inventory.pokemons().remove(pokemon.id)
+
+            new_pokemon = inventory.Pokemon(evolution)
+            inventory.pokemons().add(new_pokemon)
+
+            sleep(20)
+
+        return True

@@ -21,25 +21,74 @@
         {
             "type": "PokemonOptimizer",
             "config": {
+                    "// the 'transfer' parameter activate or deactivate the transfer of pokemons": {},
+                    "// at false, no pokemon is going to be transfered, ever": {},
+                    "// at false, you will still get the log information of what the optimizer": {},
+                    "// would have transfered if the parameter was true": {},
                 "transfer": true,
+                    "// the 'evolve' parameter activate or deactivate the evolution of pokemons": {},
+                    "// at false, no pokemon is going to be evolved, ever": {},
+                    "// at false, you will still get the log information of what the": {},
+                    "// optimizer would have evolved if the parameter was true": {},
                 "evolve": true,
+                    "// the 'use_candies_for_xp' parameter let you choose if you want the optimizer": {},
+                    "// to use your candies to evolve low quality pokemons in order to maximize your xp": {},
+                    "// at false, the optimizer will still use candies to evolve your best Pokemons": {},
+                "use_candies_for_xp": true,
+                    "// the 'use_lucky_egg' parameter let you choose if you want the optimizer": {},
+                    "// to use a lucky egg right before evolving Pokemons. At false; the optimizer": {},
+                    "// is free to evolve Pokemons even if you do not have any lucky egg.": {},
                 "use_lucky_egg": true,
+                    "// the 'evolve_only_with_lucky_egg' parameter let you choose if you want the optimizer": {},
+                    "// to only Evolve Pokemons when a lucky egg is available": {},
                 "evolve_only_with_lucky_egg": true,
+                    "// the 'minimum_evolve_for_lucky_egg' parameter let you define the minimum": {},
+                    "// number of Pokemons that must evolve before using a lucky egg": {},
+                    "// If that number is not reached, and evolve_only_with_lucky_egg is true, evolution will be skipped": {},
+                    "// If that number is not reached, and evolve_only_with_lucky_egg is false,": {},
+                    "// evolution will be performed without using a lucky egg": {},
                 "minimum_evolve_for_lucky_egg": 90,
+                    "// the 'keep' parameter let you define what pokemons you consider are the 'best'. These Pokemons": {},
+                    "// will be keep and evolved. Note that Pokemons are evaluated inside their whole family": {},
+                    "// Multiple way of ranking can be defined. Following configuration let you keep the best iv,": {},
+                    "// the best ncp and the best cp": {},
                 "keep": [
                     {
+                            "// Following setting let you keep the best iv of the family": {},
+                            "// the 'top' parameter allow you to define how many Pokemons you want to keep": {},
+                            "// at the top of your ranking. If several Pokemons get the same score, they are": {},
+                            "// considered equal. Thus, top=1 might result in keeping more than 1 Pokemon.": {},
                         "top": 1,
+                            "// the 'evolve' parameter let you choose if you want to evolve the Pokemons you keep": {},
                         "evolve": true,
-                        "// Available sorting keys are:": true,
-                        "// iv, cp, ncp, ivcp, max_cp, iv_attack, iv_defense, iv_stamina, hp_max, level": true,
+                            "// the 'sort' parameter define how you want to rank your pokemons": {},
+                            "// Critera are sorted fro, the most important to the least important.": {},
+                            "// Available criteria are:": {},
+                            "// 'iv' = individual value": {},
+                            "// 'ivcp' = iv weigted so that for equal iv, attack > defense > stamina": {},
+                            "// 'cp' = combat power (can be increased with candies)": {},
+                            "// 'cp_exact' = combar power (not rounded)": {},
+                            "// 'ncp' (normalized cp) or 'cp_percent' = ratio cp / max_cp": {},
+                            "// iv_attack = attach component of iv": {},
+                            "// iv_defense = defense component of iv": {},
+                            "// iv_stamina = stamina component of iv": {},
+                            "// dps = raw dps based on the moves of the pokemon": {},
+                            "// dps_attack = average dps when attacking": {},
+                            "// dps_defense = average dps when defending": {},
+                            "// Note that the more criteria you add to this list, the less likely Pokemons": {},
+                            "// will be equals": {},
                         "sort": ["iv"]
                     },
                     {
+                        "// Following setting let you keep keep the best normalized cp of the family": {},
+                        "// That is the Pokemon with higher CP once fully evolved": {},
                         "top": 1,
                         "evolve": true,
                         "sort": ["ncp"]
                     },
                     {
+                        "// Following setting let you keep keep the best cp of the family.": {},
+                        "// But will not evolve it further (in favor of the best ncp)": {},
                         "top": 1,
                         "evolve": false,
                         "sort": ["cp"]
@@ -76,7 +125,7 @@
         {
             "type": "MoveToFort",
             "config": {
-                "lure_attraction": false,
+                "lure_attraction": true,
                 "lure_max_distance": 2000,
                 "ignore_item_count": true
             }
@@ -97,6 +146,7 @@
     "location_cache": true,
     "distance_unit": "km",
     "reconnecting_timeout": 15,
+    "min_ultraball_to_keep": 10,
     "logging_color": true,
     "catch": {
         "any": {

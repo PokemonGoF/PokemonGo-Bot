@@ -150,6 +150,7 @@ class PokemonGoBot(object):
 
         self.event_manager.register_event('bot_start')
         self.event_manager.register_event('bot_exit')
+        self.event_manager.register_event('bot_interrupted')
 
         # sleep stuff
         self.event_manager.register_event(
@@ -300,7 +301,7 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'pokemon_evolved',
-            parameters=('pokemon', 'iv', 'cp', 'xp')
+            parameters=('pokemon', 'iv', 'cp', 'ncp', 'dps', 'xp')
         )
         self.event_manager.register_event('skip_evolve')
         self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
@@ -392,7 +393,7 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'pokemon_release',
-            parameters=('pokemon', 'cp', 'iv')
+            parameters=('pokemon', 'iv', 'cp', 'ncp', 'dps')
         )
 
         # polyline walker
@@ -668,7 +669,7 @@ class PokemonGoBot(object):
         )
 
     def get_encryption_lib(self):
-        if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
+        if _platform == "linux" or _platform == "linux2" or _platform == "darwin" or _platform == "freebsd10":
             file_name = 'encrypt.so'
         elif _platform == "Windows" or _platform == "win32":
             # Check if we are on 32 or 64 bit
