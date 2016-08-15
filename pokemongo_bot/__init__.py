@@ -706,7 +706,6 @@ class PokemonGoBot(object):
 
         self.api.activate_signature(self.get_encryption_lib())
         self.logger.info('')
-        #self.update_inventory()
         # send empty map_cells and then our position
         self.update_web_location()
 
