@@ -39,16 +39,16 @@ class MoveToFort(BaseTask):
         if nearest_fort is None:
             return WorkerResult.SUCCESS
 
-        distance_from_last_nearest_fort = self._get_distance_from_bot(
-            self.last_nearest_fort['latitude'],
-            self.last_nearest_fort['longitude']
-        )
         distance_from_current_nearest_fort = self._get_distance_from_bot(
             nearest_fort['latitude'],
             nearest_fort['longitude']
         )
 
         if self.last_nearest_fort is not None:
+            distance_from_last_nearest_fort = self._get_distance_from_bot(
+                self.last_nearest_fort['latitude'],
+                self.last_nearest_fort['longitude']
+            )
             if distance_from_last_nearest_fort == distance_from_current_nearest_fort:
                 nearest_fort = self.last_nearest_fort
         else:
@@ -106,7 +106,7 @@ class MoveToFort(BaseTask):
         return WorkerResult.SUCCESS
 
     def _get_distance_from_bot(self, lat, lon):
-        return distance(self.bot.position[0], self.bot.position[1], lat, lng)
+        return distance(self.bot.position[0], self.bot.position[1], lat, lon)
 
     def _get_nearest_fort_on_lure_way(self, forts):
 
