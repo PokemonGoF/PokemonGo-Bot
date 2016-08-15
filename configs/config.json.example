@@ -33,7 +33,7 @@
         "config": {
           "enabled": false,
           "min_interval": 10,
-          "stats": ["uptime", "stardust_earned", "xp_earned", "xp_per_hour", "stops_visited"],
+          "stats": ["username", "uptime", "stardust_earned", "xp_earned", "xp_per_hour", "stops_visited"],
           "terminal_log": true,
           "terminal_title": true
         }
@@ -43,6 +43,7 @@
         "config": {
           "enabled": false,
           "min_interval": 120,
+          "show_all_multiple_lines": false,
           "items": ["space_info", "pokeballs", "greatballs", "ultraballs", "razzberries", "luckyegg"]
         }
       },

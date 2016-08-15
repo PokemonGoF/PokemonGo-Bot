@@ -19,6 +19,15 @@
             }
         },
         {
+            "type": "UpdateLiveInventory",
+            "config": {
+                "enabled": false,
+                "min_interval": 120,
+                "show_all_multiple_lines": false,
+                "items": ["space_info", "pokeballs", "greatballs", "ultraballs", "razzberries", "luckyegg"]
+            }
+        },
+        {
             "type": "PokemonOptimizer",
             "config": {
                     "// the 'transfer' parameter activate or deactivate the transfer of pokemons": {},
