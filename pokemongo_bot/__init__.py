@@ -528,7 +528,7 @@ class PokemonGoBot(object):
             location = self.position[0:2]
             cells = self.find_close_cells(*location)
 
-        user_data_cells = os.path.join(_base_dir, 'data', 'cells-%s.json' % self.config.username)
+        user_data_cells = os.path.join(_base_dir, 'web', 'cells-%s.json' % self.config.username)
         with open(user_data_cells, 'w') as outfile:
             json.dump(cells, outfile)
 
@@ -548,7 +548,7 @@ class PokemonGoBot(object):
             self.logger.info('[x] Error while opening location file: %s' % e)
 
         user_data_lastlocation = os.path.join(
-            _base_dir, 'data', 'last-location-%s.json' % self.config.username
+            _base_dir, 'web', 'last-location-%s.json' % self.config.username
         )
         try:
             with open(user_data_lastlocation, 'w') as outfile:
@@ -932,7 +932,7 @@ class PokemonGoBot(object):
                     level='debug',
                     formatted='Loading cached location...'
                 )
-                with open(os.path.join(_base_dir, 'data', 'last-location-%s.json' %
+                with open(os.path.join(_base_dir, 'web', 'last-location-%s.json' %
                     self.config.username)) as f:
                     location_json = json.load(f)
                 location = (
@@ -1114,7 +1114,7 @@ class PokemonGoBot(object):
             return
 
 
-        cached_forts_path = os.path.join(_base_dir, 'data', 'recent-forts-%s.json' % self.config.username)
+        cached_forts_path = os.path.join(_base_dir, 'web', 'recent-forts-%s.json' % self.config.username)
         try:
             # load the cached recent forts
             with open(cached_forts_path) as f:
