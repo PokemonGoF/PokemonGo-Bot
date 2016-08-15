@@ -76,6 +76,7 @@ start cmd.exe /k "cd C:/Python27/PokemonGo-Bot/web&python -m SimpleHTTPServer"
 @ECHO.
 @ECHO.
 python C:/Python27/PokemonGo-Bot/pokecli.py
+pause.
 
 
 
