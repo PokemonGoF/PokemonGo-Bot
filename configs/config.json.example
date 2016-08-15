@@ -17,7 +17,8 @@
           "time": "22:54",
           "duration":"7:46",
           "time_random_offset": "00:24",
-          "duration_random_offset": "00:43"
+          "duration_random_offset": "00:43",
+          "skip_current_sleep_cycle": true
         }
       },
       {
