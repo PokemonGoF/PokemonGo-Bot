@@ -44,6 +44,7 @@ from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.health_record import BotEvent
 from pokemongo_bot.plugin_loader import PluginLoader
+from pokemongo_bot.api_wrapper import PermaBannedException
 
 try:
     from demjson import jsonlint
@@ -65,11 +66,11 @@ class SIGINTRecieved(Exception): pass
 def main():
     bot = False
 
-    try:
-        def handle_sigint(*args):
-            raise SIGINTRecieved
-        signal.signal(signal.SIGINT, handle_sigint)
+    def handle_sigint(*args):
+        raise SIGINTRecieved
+    signal.signal(signal.SIGINT, handle_sigint)
 
+    try:
         logger.info('PokemonGO Bot v1.0')
         sys.stdout = codecs.getwriter('utf8')(sys.stdout)
         sys.stderr = codecs.getwriter('utf8')(sys.stderr)
@@ -103,7 +104,7 @@ def main():
                 while True:
                     bot.tick()
 
-            except (KeyboardInterrupt, SIGINTRecieved):
+            except KeyboardInterrupt:
                 bot.event_manager.emit(
                     'bot_exit',
                     sender=bot,
@@ -138,8 +139,24 @@ def main():
                 )
                 time.sleep(30)
 
+    except PermaBannedException:
+         bot.event_manager.emit(
+            'api_error',
+            sender=bot,
+            level='info',
+            formatted='Probably permabanned, Game Over ! Play again at https://club.pokemon.com/us/pokemon-trainer-club/sign-up/'
+         )
     except GeocoderQuotaExceeded:
         raise Exception("Google Maps API key over requests limit.")
+    except SIGINTRecieved:
+        if bot:
+            bot.event_manager.emit(
+                'bot_interrupted',
+                sender=bot,
+                level='info',
+                formatted='Bot caught SIGINT. Shutting down.'
+            )
+            report_summary(bot)
     except Exception as e:
         # always report session summary and then raise exception
         if bot:
