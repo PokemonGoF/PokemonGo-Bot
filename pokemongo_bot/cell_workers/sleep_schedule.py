@@ -38,7 +38,7 @@ class SleepSchedule(BaseTask):
         self._schedule_next_sleep()
 
     def work(self):
-        if datetime.now() >= self._next_sleep:
+        if _should_sleep_now:
             self._sleep()
             self._schedule_next_sleep()
             self.bot.login()
@@ -90,6 +90,16 @@ class SleepSchedule(BaseTask):
     def _get_random_offset(self, max_offset):
         offset = uniform(-max_offset, max_offset)
         return int(offset)
+
+    def _should_sleep_now(self):
+        current_sleep = self._next_sleep -= timedelta(days=1)
+        current_duration = self._get_next_duration()
+        current_end = current_sleep += timedelta(hours = current_duration.hour, minutes = current_duration.minute)
+
+        if datetime.now() >= self._next_sleep:
+            return true
+        if datetime.now() <= current_end:
+            self._next_duration = (current_end - datetime.now()).total_seconds()
 
     def _sleep(self):
         sleep_to_go = self._next_duration
