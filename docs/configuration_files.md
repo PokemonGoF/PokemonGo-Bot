@@ -10,7 +10,10 @@
 | `max_steps`        | 5       | The steps around your initial location (DEFAULT 5 mean 25 cells around your location) that will be explored
 | `forts.avoid_circles`             | False     | Set whether the bot should avoid circles |
 | `forts.max_circle_size`             | 10     | How many forts to keep in ignore list |
-| `walk`             | 4.16    | Set the walking speed in kilometers per hour. (14 km/h is the maximum speed for egg hatching)                                                                                               |
+| `walk`             | 4.16    | Set the walking speed in kilometers per hour. (14 km/h is the maximum speed for egg hatching) 
+| `walk_random`             | true   | Enable/Disable randomized walk speed (based on walk_offset_percent_max)
+| `walk_offset_percent_max`             | 0.3    | 0.3 = 30%, walk speed will randomly fluctuate between 1 and 30% if above set to true
+| `walk`             | 4.16    | Set the walking speed in kilometers per hour. (14 km/h is the maximum speed for egg hatching) |
 | `action_wait_min`   | 1       | Set the minimum time setting for anti-ban time randomizer
 | `action_wait_max`   | 4       | Set the maximum time setting for anti-ban time randomizer
 | `debug`            | false   | Let the default value here except if you are developer                                                                                                                                      |

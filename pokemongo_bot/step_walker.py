@@ -2,7 +2,7 @@ from math import sqrt
 
 from cell_workers.utils import distance
 from human_behaviour import random_lat_long_delta, sleep
-
+import random
 
 class StepWalker(object):
 
@@ -19,7 +19,10 @@ class StepWalker(object):
             dest_lng
         )
 
-        self.speed = speed
+        if self.bot.config.walk_random == True:
+            self.speed = speed * random.uniform(0.01, self.bot.config.walk_offset_percent_max)
+        else:
+            self.speed = speed
 
         self.destLat = dest_lat
         self.destLng = dest_lng
