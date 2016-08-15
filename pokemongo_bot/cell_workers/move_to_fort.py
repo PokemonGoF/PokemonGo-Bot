@@ -91,7 +91,6 @@ class MoveToFort(BaseTask):
 
             step_walker = StepWalker(
                 self.bot,
-                self.bot.config.walk,
                 lat,
                 lng
             )

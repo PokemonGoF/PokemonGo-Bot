@@ -368,7 +368,6 @@ class MoveToMapPokemon(BaseTask):
         )
         return StepWalker(
             self.bot,
-            self.bot.config.walk,
             pokemon['latitude'],
             pokemon['longitude']
         )
