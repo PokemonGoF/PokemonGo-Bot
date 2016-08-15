@@ -1,4 +1,7 @@
 # Please Note (you may remove this section before opening your PR):
+
+If you simply want to request a feature, fix, enhancement, etc. go here! http://feathub.com/PokemonGoF/PokemonGo-Bot
+
 We receive lots of PRs and it is hard to give proper review to PRs. Please make it easy on us by following these guidelines:
 
 1. We do not accept changes to `master`. Please make sure your pull request is aimed at `dev`.
