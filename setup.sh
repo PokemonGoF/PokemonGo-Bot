@@ -101,14 +101,14 @@ Pokebotconfig
 
 function Pokebotreset () {
 cd $pokebotpath
-git fetch --all 
+git fetch -a
 if [ "1" == $(git branch -vv |grep -c "* dev") ]
 then
-echo "on dev"
+echo "Branch dev resetting."
 git reset --hard origin/dev
 elif [ "1" == $(git branch -vv |grep -c "* master") ]
 then 
-echo "on master"
+echo "Branch master resetting"
 git reset --hard origin/master
 fi
 if [ -x "$(command -v python2)" ]
@@ -126,7 +126,7 @@ echo "	-i,--install.		Install PokemonGo-Bot."
 echo "	-b,--backup.		Backup config files."
 echo "	-c,--config.		Easy config generator."
 echo "	-e,--encrypt.		Make encrypt.so."
-echo "	-r,--reset.		Force sync dev branch."
+echo "	-r,--reset.		Force sync origin branch."
 echo "	-u,--update.		Command git pull to update."
 }
 
