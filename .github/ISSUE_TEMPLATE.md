@@ -41,11 +41,16 @@ Before you create an Issue, please check the following:
 
 
 ### Other Information
-OS: <!-- Tell us what Operating system you're using --> 
-Branch: <!-- dev or master --> 
-Git Commit: <!-- run 'git log -n 1 --pretty=format:"%H"' --> 
-Python Version: <!-- run 'python -V' and paste it here) --> 
-Any other relevant files/configs (eg: path files) <!-- Anything else which may be of relevance -->
+OS: 
+<!-- Tell us what Operating system you're using --> 
+Branch: 
+<!-- dev or master --> 
+Git Commit: 
+<!-- run 'git log -n 1 --pretty=format:"%H"' --> 
+Python Version: 
+<!-- run 'python -V' and paste it here) --> 
+Any other relevant files/configs (eg: path files) 
+<!-- Anything else which may be of relevance -->
 
 <!-- ===============END OF ISSUE SECTION=============== -->
 <!-- Note: Delete these lines and everything BELOW if creating an Issue -->
