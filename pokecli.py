@@ -332,7 +332,7 @@ def init_config():
         help=
         "Walk instead of teleport with given speed",
         type=float,
-        default=2.5
+        default=0
     )
     add_config(
         parser,
