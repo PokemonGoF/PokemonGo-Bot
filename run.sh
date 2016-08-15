@@ -16,6 +16,7 @@ elif [ "1" == $(git branch -vv |grep -c "* master") ] && [ $(git log --pretty=fo
 then 
 echo "Branch master hav an update. Run ./setup.sh -u to update."
 fi
+sleep 2
 if [ ! -f "$filename" ]; then
 echo "There's no "$filename" file. Please use ./setup.sh -c to creat one."
 fi
