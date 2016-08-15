@@ -112,7 +112,7 @@ Pokebotconfig
 
 function Pokebotreset () {
 cd $pokebotpath
-git fetch --all 
+git fetch -a
 if [ "1" == $(git branch -vv |grep -c "* dev") ]
 then
 echo "Branch dev resetting."
