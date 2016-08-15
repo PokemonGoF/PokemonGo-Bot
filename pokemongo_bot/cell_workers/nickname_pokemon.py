@@ -1,8 +1,13 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 import os
 import json
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.inventory import pokemons, Pokemon, Attack
+
+import re
 
 
 DEFAULT_IGNORE_FAVORITES = False
@@ -82,6 +87,7 @@ class NicknamePokemon(BaseTask):
     {iv_pct2}    IV perfection (in 00-99 format - 2 chars)
                     So 99 is best (it's a 100% perfection)
     {iv_pct1}    IV perfection (in 0-9 format - 1 char)
+    {iv_ads_hex} Joined IV values in HEX (e.g. 4C9)
 
     # Basic Values of the pokemon (identical for all of one kind)
     {base_attack}   Basic Attack (40-284) of the current pokemon kind
@@ -291,7 +297,8 @@ class NicknamePokemon(BaseTask):
         """
 
         # Filter template
-        template = template.lower().strip()
+        # only convert the keys to lowercase, leaving the format specifier alone
+        template = re.sub(r"{[\w_\d]*", lambda x:x.group(0).lower(), template).strip()
 
         # Individial Values of the current specific pokemon (different for each)
         iv_attack = pokemon.iv_attack
@@ -341,6 +348,8 @@ class NicknamePokemon(BaseTask):
             iv_stamina=iv_stamina,
             # Joined IV values like: 4/12/9
             iv_ads='/'.join(map(str, iv_list)),
+            # Joined IV values in HEX like: 4C9
+            iv_ads_hex = ''.join(map(lambda x: format(x, 'X'), iv_list)),
             # Sum of the Individial Values
             iv_sum=iv_sum,
             # IV perfection (in 000-100 format - 3 chars)

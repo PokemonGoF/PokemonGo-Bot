@@ -1,9 +1,16 @@
 # PokemonGo-Bot
 PokemonGo bot is a project created by the [PokemonGoF](https://github.com/PokemonGoF) team.
 
-The project is currently setup in two main branches. `dev` also known as `beta` and `master` also known as `stable`. Submit your PR's to `dev`.
+The project is currently setup in two main branches. `dev` also known as `beta` and `master` also known as `stable`. Make sure to submit your PR's to `dev`.
 
-If you need any help please don't create an issue here on github we have a great community on Slack, [Click here to join the chat!](https://pokemongo-bot.herokuapp.com). You can count on the community in #help channel.
+## Support
+Configuration issues/help - If you need any help please don't create an issue as we have a great community on Slack. You can count on the community in #help channel.
+ - [Click here to signup (first time only)](https://pokemongo-bot.herokuapp.com) 
+ - [Join if you're already a member](https://pokemongo-bot.slack.com/messages/general/). 
+
+[Bugs / Issues](https://github.com/PokemonGoF/PokemonGo-Bot/issues?q=is%3Aissue+sort%3Aupdated-desc) - If you discover a bug in the bot, please [search our issue tracker first](https://github.com/PokemonGoF/PokemonGo-Bot/issues?q=is%3Aissue+sort%3Aupdated-desc). If it hasn't been reported, please [create a new issue](https://github.com/PokemonGoF/PokemonGo-Bot/issues/new) and ensure you follow the template so that our team can assist you as quickly as possible
+
+[Feature Requests](http://feathub.com/PokemonGoF/PokemonGo-Bot) - If you have a great idea to improve the bot don't create an issue, use our [feature hub](http://feathub.com/PokemonGoF/PokemonGo-Bot). While you're there vote on other features to let the devs know what is most important to you
 
 ## Table of Contents
 - [Installation](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/installation.md)
