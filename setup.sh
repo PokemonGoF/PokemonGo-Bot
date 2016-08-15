@@ -102,7 +102,15 @@ Pokebotconfig
 function Pokebotreset () {
 cd $pokebotpath
 git fetch --all 
+if [ "1" == $(git branch -vv |grep -c "* dev") ]
+then
+echo "on dev"
 git reset --hard origin/dev
+elif [ "1" == $(git branch -vv |grep -c "* master") ]
+then 
+echo "on master"
+git reset --hard origin/master
+fi
 if [ -x "$(command -v python2)" ]
 then
 virtualenv -p python2 .
