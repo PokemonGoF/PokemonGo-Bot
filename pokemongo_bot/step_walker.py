@@ -30,6 +30,7 @@ class StepWalker(object):
         self.totalDist = max(1, self.dist)
 
         if self.speed == 0:
+            self.speed = random.uniform(3,5)
             self.steps = 1
         else:
             self.steps = (self.dist + 0.0) / (self.speed + 0.0)
