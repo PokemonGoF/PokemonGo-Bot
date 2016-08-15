@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import json
 import time
 from random import random
 from pokemongo_bot import inventory
@@ -394,8 +394,9 @@ class PokemonCatchWorker(BaseTask):
                     }
                 )
 
-                # We could refresh here too, but adding 3 saves a inventory request
-                candy = inventory.candies().get(pokemon.pokemon_id).add(3)
+                candy = inventory.candies().get(pokemon.pokemon_id)
+                candy.add(self.get_candy_gained_count(response_dict))
+
                 self.emit_event(
                     'gained_candy',
                     formatted='You now have {quantity} {type} candy!',
@@ -408,6 +409,12 @@ class PokemonCatchWorker(BaseTask):
                 self.bot.softban = False
 
             break
+
+    def get_candy_gained_count(self, response_dict):
+        total_candy_gained = 0
+        for candy_gained in response_dict['responses']['CATCH_POKEMON']['capture_award']['candy']:
+            total_candy_gained += candy_gained
+        return total_candy_gained
 
     def generate_spin_parameter(self, throw_parameters):
         spin_success_rate = self.config.catch_throw_parameters_spin_success_rate
