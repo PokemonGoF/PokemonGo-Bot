@@ -43,6 +43,7 @@ from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.health_record import BotEvent
 from pokemongo_bot.plugin_loader import PluginLoader
+from pokemongo_bot.api_wrapper import PermaBannedException
 
 try:
     from demjson import jsonlint
@@ -137,6 +138,13 @@ def main():
                 )
                 time.sleep(30)
 
+    except PermaBannedException:
+         bot.event_manager.emit(
+            'api_error',
+            sender=bot,
+            level='info',
+            formatted='Probably permabanned, Game Over ! Play again at https://club.pokemon.com/us/pokemon-trainer-club/sign-up/'
+         )
     except GeocoderQuotaExceeded:
         raise Exception("Google Maps API key over requests limit.")
     except Exception as e:

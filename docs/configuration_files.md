@@ -43,7 +43,10 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `dont_nickname_favorite`: Default `false` | Prevents renaming of favorited pokemons
   * `good_attack_threshold`: Default `0.7` | Threshold for perfection of the attack in it's type *(0.0-1.0)* after which attack will be treated as good.<br>Used for `{fast_attack_char}`, `{charged_attack_char}`, `{attack_code}`  templates
 * RecycleItems
-  * `item_filter`: Pass a list of unwanted [items (using their JSON codes)](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Item-ID's) to recycle when collected at a Pokestop
+
+  > **NOTE:** It's highly recommended to put this task before MoveToFort and SpinFort tasks. This way you'll most likely be able to loot.
+  * `item_filter`: Pass a list of unwanted [items (using their JSON codes or names)](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Item-ID's) to recycle.
+  * `min_empty_space`: Default `6` | Minimum empty space to keep in inventory. Once the inventory has less empty space than that amount, the recycling process is triggered. Set it to the inventory size to trigger it at every tick.
 * SpinFort
 * TransferPokemon
 
@@ -203,7 +206,15 @@ Niantic imposes a 12-character limit on all pokemon nicknames, so any new nickna
 
 Because some pokemon have very long names, you can use the [Format String syntax](https://docs.python.org/2.7/library/string.html#formatstrings) to ensure that your names do not cause your templates to truncate. For example, using `{name:.8s}` causes the Pokemon name to never take up more than 8 characters in the nickname. This would help guarantee that a template like `{name:.8s}_{iv_pct}` never goes over the 12-character limit.
 
-Valid names in templates are:
+### Config options
+
+* `enable` (default: `true`): To enable or disable this task.
+* `nickname_template` (default: `{name}`): The template to rename the pokemon.
+* `dont_nickname_favorite` (default: `false`): Prevents renaming of favorited pokemons.
+* `good_attack_threshold` (default: `0.7`): Threshold for perfection of the attack in it's type (0.0-1.0) after which attack will be treated as good. Used for {fast_attack_char}, {charged_attack_char}, {attack_code} templates.
+* `locale` (default: `en`): The locale to use for the pokemon name.
+
+### Valid names in templates
 
 Key | Info
 ---- | ----
@@ -215,6 +226,7 @@ Key | Info
 **{iv_defense}** |  Individial Defense *(0-15)* of the current specific pokemon
 **{iv_stamina}** |  Individial Stamina *(0-15)* of the current specific pokemon
 **{iv_ads}**     |  Joined IV values in `(attack)/(defense)/(stamina)` format (*e.g. 4/12/9*, matches web UI format -- A/D/S)
+**{iv_ads_hex}** |  Joined IV values of `(attack)(defense)(stamina)` in HEX (*e.g. 4C9* for A/D/S = 4/12/9)
 **{iv_sum}**     |  Sum of the Individial Values *(0-45, e.g. 45 when 3 perfect 15 IVs)*
  |  **Basic Values of the pokemon (identical for all of one kind)**
 **{base_attack}**   |  Basic Attack *(40-284)* of the current pokemon kind
@@ -250,14 +262,31 @@ Key | Info
 
 > **NOTE:** Use a blank template (`""`) to revert all pokemon to their original names (as if they had no nickname).
 
-Sample usages:
+#### Sample usages
+
 - `"{name}_{iv_pct}"` => `Mankey_069`
 - `"{iv_pct}_{iv_ads}"` => `091_15/11/15`
 - `""` -> `Mankey`
 - `"{attack_code}{attack_pct1}{defense_pct1}{ivcp_pct1}{name}"` => `Lh474Golbat`
 ![sample](https://cloud.githubusercontent.com/assets/8896778/17285954/0fa44a88-577b-11e6-8204-b1302f4294bd.png)
 
+### Sample configuration
+
+```json
+{
+  "type": "NicknamePokemon",
+  "config": {
+    "enabled": true,
+    "dont_nickname_favorite": false,
+    "good_attack_threshold": 0.7,
+    "nickname_template": "{iv_pct}_{iv_ads}"
+    "locale": "en"
+  }
+}
+```
+
 ## Sniping _(MoveToLocation)_
+
 ### Description
 This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map instance. For information on how to properly setup PokemonGo-Map have a look at the Github page of the project [here](https://github.com/AHAAAAAAA/PokemonGo-Map/). There is an example config in `config/config.json.map.example`
 
