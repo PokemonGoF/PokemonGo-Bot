@@ -161,7 +161,7 @@ class RecycleItems(BaseTask):
         """
         x = 0
         items_to_recycle = []
-        if category_count > self.max_balls_keep:
+        if category_count > category_max:
             items_to_be_recycled = category_count - category_max
 
             for item in category_inventory:
