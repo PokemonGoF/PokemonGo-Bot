@@ -2,7 +2,7 @@ from math import sqrt
 
 from cell_workers.utils import distance
 from human_behaviour import random_lat_long_delta, sleep
-
+from random import random
 
 class StepWalker(object):
 
