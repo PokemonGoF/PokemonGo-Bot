@@ -26,8 +26,8 @@ class SpinFort(BaseTask):
 
     def initialize(self):
         self.ignore_item_count = self.config.get("ignore_item_count", False)
-        self.spin_wait_min = self.config.get('spin_wait_min', 2)
-        self.spin_wait_max = self.config.get('spin_wait_max', 2)
+        self.spin_wait_min = self.config.get("spin_wait_min", 2)
+        self.spin_wait_max = self.config.get("spin_wait_max", 3)
 
     def should_run(self):
         has_space_for_loot = inventory.Items.has_space_for_loot()
@@ -124,7 +124,7 @@ class SpinFort(BaseTask):
                 )
             if 'chain_hack_sequence_number' in response_dict['responses'][
                     'FORT_SEARCH']:
-                time.sleep(2)
+                action_delay(self.spin_wait_min, self.spin_wait_max)
                 return response_dict['responses']['FORT_SEARCH'][
                     'chain_hack_sequence_number']
             else:
