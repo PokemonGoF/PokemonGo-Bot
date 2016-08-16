@@ -35,7 +35,6 @@ We do recommend Windows users to use [Docker](#docker) this will work much easie
 
 - [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/)
 - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-- [Protoc](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip)
 - [Microsoft Visual C++ Compiler for Python 2.7](http://www.microsoft.com/en-us/download/details.aspx?id=44266)
 
 ###Easy Installation
