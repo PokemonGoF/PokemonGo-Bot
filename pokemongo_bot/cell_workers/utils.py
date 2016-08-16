@@ -216,8 +216,10 @@ def rad2deg(rad):
 def find_biggest_cluster(radius, points, order=None):
     graph = nx.Graph()
     for point in points:
-            if order is 'lure_info':
-                f = point['latitude'], point['longitude'], point['lure_info']['lure_expires_timestamp_ms']
+            if order is '9QM=':
+                #is a lure module - 9QM=
+                remaining = now = int(time.time()) - point['last_modified_timestamp_ms']
+                f = point['latitude'], point['longitude'], remaining
             else:
                 f = point['latitude'], point['longitude'], 0
             graph.add_node(f)
