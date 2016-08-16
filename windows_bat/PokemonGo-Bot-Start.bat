@@ -1,6 +1,6 @@
 TITLE PokemonGo-Bot
 CLS
-@ECHO OFF
+@ECHO ON
 
 
 
@@ -53,6 +53,7 @@ git submodule update --init --recursive
 @ECHO WARNING: Verify if the Config.json file got updated. If Yes, check if your modifications are still valid before proceeding.
 @ECHO.
 @timeout /t 10
+pause
 CLS
 @ECHO --------------------Initializing environment--------------------
 @ECHO.
@@ -61,12 +62,12 @@ CD Scripts
 call activate.bat
 CD..
 pip2 install --upgrade -r requirements.txt
-@timeout /t 10
+pause
 CLS
 @ECHO --------------------Initializing web server--------------------
 @ECHO.
 set BatchPath="%~dp0"
-start cmd.exe /k "cd %BatchPath%&CD..&python -m SimpleHTTPServer"
+start cmd.exe /k "CD %BatchPath%&CD..&CD web&python -m SimpleHTTPServer"
 @ECHO.
 CLS
 @ECHO --------------------Starting bot--------------------
