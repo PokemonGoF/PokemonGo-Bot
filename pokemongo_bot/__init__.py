@@ -474,6 +474,15 @@ class PokemonGoBot(object):
     def tick(self):
         self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
+
+        now = time.time() * 1000
+
+        for fort in self.cell["forts"]:
+            timeout = fort.get("cooldown_complete_timestamp_ms", 0)
+
+            if timeout >= now:
+                self.fort_timeouts[fort["id"]] = timeout
+
         self.tick_count += 1
 
         # Check if session token has expired
