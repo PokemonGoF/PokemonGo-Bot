@@ -324,10 +324,20 @@ def init_config():
     add_config(
         parser,
         load,
-        short_flag="-w",
-        long_flag="--walk",
+        short_flag="-wmax",
+        long_flag="--walk_max",
         help=
-        "Walk instead of teleport with given speed (meters per second, e.g. 2.5)",
+        "Walk instead of teleport with given speed",
+        type=float,
+        default=2.5
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-wmin",
+        long_flag="--walk_min",
+        help=
+        "Walk instead of teleport with given speed",
         type=float,
         default=2.5
     )
@@ -492,6 +502,9 @@ def init_config():
 
     if "evolve_captured" in load:
         logger.warning('The evolve_captured argument is no longer supported. Please use the EvolvePokemon task instead')
+
+    if "walk" in load:
+        logger.warning('The walk argument is no longer supported. Please use the walk_max and walk_min variables instead')
 
     if not (config.location or config.location_cache):
         parser.error("Needs either --use-location-cache or --location.")

@@ -10,7 +10,8 @@
 | `max_steps`        | 5       | The steps around your initial location (DEFAULT 5 mean 25 cells around your location) that will be explored
 | `forts.avoid_circles`             | False     | Set whether the bot should avoid circles |
 | `forts.max_circle_size`             | 10     | How many forts to keep in ignore list |
-| `walk`             | 4.16    | Set the walking speed in kilometers per hour. (14 km/h is the maximum speed for egg hatching)                                                                                               |
+| `walk_max`             | 4.16    | Set the maximum walking speed (1 is about 1.5km/hr)
+| `walk_min`             | 2.16    | Set the minimum walking speed (1 is about 1.5km/hr)
 | `action_wait_min`   | 1       | Set the minimum time setting for anti-ban time randomizer
 | `action_wait_max`   | 4       | Set the maximum time setting for anti-ban time randomizer
 | `debug`            | false   | Let the default value here except if you are developer                                                                                                                                      |
@@ -45,8 +46,12 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 * RecycleItems
 
   > **NOTE:** It's highly recommended to put this task before MoveToFort and SpinFort tasks. This way you'll most likely be able to loot.
-  * `item_filter`: Pass a list of unwanted [items (using their JSON codes or names)](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Item-ID's) to recycle.
   * `min_empty_space`: Default `6` | Minimum empty space to keep in inventory. Once the inventory has less empty space than that amount, the recycling process is triggered. Set it to the inventory size to trigger it at every tick.
+  * `item_filter`: Pass a list of unwanted [items (using their JSON codes or names)](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/Item-ID's) to recycle.
+  * `max_balls_keep`: Default `None` | Maximum amount of balls to keep in inventory
+  * `max_potions_keep`: Default `None` | Maximum amount of potions to keep in inventory
+  * `max_berries_keep`: Default `None` | Maximum amount of berries to keep in inventory
+  * `max_revives_keep`: Default `None` | Maximum amount of revives to keep in inventory
 * SpinFort
 * TransferPokemon
 
