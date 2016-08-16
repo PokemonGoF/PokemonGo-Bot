@@ -85,6 +85,9 @@ class MoveToMapPokemon(BaseTask):
         self.caught = []
         self.min_ball = self.config.get('min_ball', 1)
         self.map_path = self.config.get('map_path', 'raw_data')
+        self.snipe_high_prio_only = self.config.get('snipe_high_prio_only', False)
+        self.snipe_high_prio_threshold = self.config.get('snipe_high_prio_threshold', 400)
+
 
         data_file = os.path.join(_base_dir, 'map-caught-{}.json'.format(self.bot.config.username))
         if os.path.isfile(data_file):
@@ -259,8 +262,8 @@ class MoveToMapPokemon(BaseTask):
             return WorkerResult.SUCCESS
 
         if self.config['snipe']:
-            if self.config.get('snipe_high_prio_only', False):
-                if self.config.get('snipe_high_prio_threshold', 400) < pokemon['priority'] or pokemon['is_vip']:
+            if self.snipe_high_prio_only:
+                if self.snipe_high_prio_threshold < pokemon['priority'] or pokemon['is_vip']:
                     self.snipe(pokemon)
             else:
                 return self.snipe(pokemon)
