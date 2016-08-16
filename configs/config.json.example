@@ -41,6 +41,10 @@
       },
       {
         "type": "TransferPokemon"
+        "config": {
+	        "transfer_wait_min": 1,
+	        "transfer_wait_max": 4
+        }
       },
       {
         "type": "NicknamePokemon",
