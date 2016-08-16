@@ -42,7 +42,7 @@ class PokemonCatchWorker(BaseTask):
         
         #Config
         self.config = config
-        self.min_ultraball_to_keep = config.get('min_ultraball_to_keep', None)
+        self.min_ultraball_to_keep = config.get('min_ultraball_to_keep', 10)
         self.catch_throw_parameters = config.get('catch_throw_parameters', {})
         self.catch_throw_parameters_spin_success_rate = self.catch_throw_parameters.get('spin_success_rate', 0.6)
         self.catch_throw_parameters_excellent_rate = self.catch_throw_parameters.get('excellent_rate', 0.1)
