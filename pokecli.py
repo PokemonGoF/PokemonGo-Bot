@@ -437,51 +437,6 @@ def init_config():
         type=bool,
         default=True
     )
-    add_config(
-        parser,
-        load,
-        short_flag="-cte",
-        long_flag="--catch_throw_parameters.excellent_rate",
-        help="Define the odd of performing an excellent throw",
-        type=float,
-        default=1
-    )
-    add_config(
-        parser,
-        load,
-        short_flag="-ctg",
-        long_flag="--catch_throw_parameters.great_rate",
-        help="Define the odd of performing a great throw",
-        type=float,
-        default=0
-    )
-    add_config(
-        parser,
-        load,
-        short_flag="-ctn",
-        long_flag="--catch_throw_parameters.nice_rate",
-        help="Define the odd of performing a nice throw",
-        type=float,
-        default=0
-    )
-    add_config(
-        parser,
-        load,
-        short_flag="-ctm",
-        long_flag="--catch_throw_parameters.normal_rate",
-        help="Define the odd of performing a normal throw",
-        type=float,
-        default=0
-    )
-    add_config(
-        parser,
-        load,
-        short_flag="-cts",
-        long_flag="--catch_throw_parameters.spin_success_rate",
-        help="Define the odds of performing a spin throw (Value between 0 (never) and 1 (always))",
-        type=float,
-        default=1
-    )
 
     # Start to parse other attrs
     config = parser.parse_args()
@@ -490,14 +445,13 @@ def init_config():
     if not config.password and 'password' not in load:
         config.password = getpass("Password: ")
 
-    config.encrypt_location = load.get('encrypt_location','')
+    config.encrypt_location = load.get('encrypt_location', '')
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.action_wait_max = load.get('action_wait_max', 4)
     config.action_wait_min = load.get('action_wait_min', 1)
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
-    config.min_ultraball_to_keep = load.get('min_ultraball_to_keep', None)
 
     config.vips = load.get('vips', {})
 
@@ -521,7 +475,10 @@ def init_config():
             """.format(flag_name))
 
     old_flags = ['mode', 'catch_pokemon', 'spin_forts', 'forts_spin', 'hatch_eggs', 'release_pokemon', 'softban_fix',
-                'longer_eggs_first', 'evolve_speed', 'use_lucky_egg', 'item_filter', 'evolve_all', 'evolve_cp_min', 'max_steps']
+                 'longer_eggs_first', 'evolve_speed', 'use_lucky_egg', 'item_filter', 'evolve_all', 'evolve_cp_min',
+                 'max_steps', 'catch_throw_parameters.excellent_rate', 'catch_throw_parameters.great_rate',
+                 'catch_throw_parameters.nice_rate', 'catch_throw_parameters.normal_rate',
+                 'catch_throw_parameters.spin_success_rate']
     for flag in old_flags:
         if flag in load:
             task_configuration_error(flag)
