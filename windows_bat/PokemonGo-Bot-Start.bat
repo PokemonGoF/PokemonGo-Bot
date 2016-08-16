@@ -53,7 +53,6 @@ git submodule update --init --recursive
 @ECHO WARNING: Verify if the Config.json file got updated. If Yes, check if your modifications are still valid before proceeding.
 @ECHO.
 @timeout /t 10
-pause
 CLS
 @ECHO --------------------Initializing environment--------------------
 @ECHO.
@@ -62,7 +61,6 @@ CD Scripts
 call activate.bat
 CD..
 pip2 install --upgrade -r requirements.txt
-pause
 CLS
 @ECHO --------------------Initializing web server--------------------
 @ECHO.
