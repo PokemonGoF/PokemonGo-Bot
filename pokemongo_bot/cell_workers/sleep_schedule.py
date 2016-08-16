@@ -93,11 +93,20 @@ class SleepSchedule(BaseTask):
 
     def _sleep(self):
         sleep_to_go = self._next_duration
+
+        sleep_m, sleep_s = divmod(sleep_to_go, 60)
+        sleep_h, sleep_m = divmod(sleep_m, 60)
+        sleep_hms = '%02d:%02d:%02d' % (sleep_h, sleep_m, sleep_s)
+
+        now = datetime.now()
+        wake = str(now + timedelta(seconds=sleep_to_go))
+
         self.emit_event(
             'bot_sleep',
-            formatted="Sleeping for {time_in_seconds}",
+            formatted="Sleeping for {time_hms}, wake at {wake}",
             data={
-                'time_in_seconds': sleep_to_go
+                'time_hms': sleep_hms,
+                'wake': wake
             }
         )
         while sleep_to_go > 0:
