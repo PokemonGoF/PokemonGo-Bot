@@ -61,8 +61,6 @@ class SleepSchedule(BaseTask):
             timedelta(
                 hours=duration_random_offset.hour, minutes=duration_random_offset.minute).total_seconds())
 
-        self.skip_current_sleep_cycle = self.config.get('skip_current_sleep_cycle', True)
-
     def _schedule_next_sleep(self):
         self._next_sleep = self._get_next_sleep_schedule()
         self._next_duration = self._get_next_duration()
@@ -82,7 +80,7 @@ class SleepSchedule(BaseTask):
     def _should_sleep_now(self):
         if datetime.now() >= self._next_sleep:
             return True
-        if not self.skip_current_sleep_cycle and datetime.now() <= self._current_end:
+        if datetime.now() < self._current_end:
             self._next_duration = (self._current_end - datetime.now()).total_seconds()
             return True
 
