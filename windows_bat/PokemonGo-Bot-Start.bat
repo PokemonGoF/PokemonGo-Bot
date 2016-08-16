@@ -41,6 +41,7 @@ cd /d %~dp0
 if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul & shift /1)
 
 
+
 :startBot
 CLS
 @ECHO --------------------Verifying PokemonGo-Bot version--------------------
