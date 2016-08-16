@@ -101,10 +101,15 @@
     "location_cache": true,
     "distance_unit": "km",
     "reconnecting_timeout": 15,
-    "catch_randomize_reticle_factor": 1.0,
-    "catch_randomize_spin_factor": 1.0,
     "min_ultraball_to_keep": 10,
     "logging_color": true,
+    "catch_throw_parameters": {
+      "excellent_rate": 0.1,
+      "great_rate": 0.5,
+      "nice_rate": 0.3,
+      "normal_rate": 0.1,
+      "spin_success_rate" : 0.6
+    },
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},
