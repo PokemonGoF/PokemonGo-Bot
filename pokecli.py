@@ -486,6 +486,15 @@ def init_config():
     add_config(
         parser,
         load,
+        short_flag="-cth",
+        long_flag="--catch_throw_parameters.hit_rate",
+        help="Define the odd of performing a normal throw",
+        type=float,
+        default=0.75
+    )
+    add_config(
+        parser,
+        load,
         short_flag="-cts",
         long_flag="--catch_throw_parameters.spin_success_rate",
         help="Define the odds of performing a spin throw (Value between 0 (never) and 1 (always))",
