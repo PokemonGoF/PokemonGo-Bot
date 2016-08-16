@@ -323,16 +323,16 @@ class Pokemons(_BaseInventoryComponent):
         return [p for p in super(Pokemons, self).all() if not isinstance(p, Egg)]
 
     def add(self, pokemon):
-        if pokemon.id <= 0:
+        if pokemon.unique_id <= 0:
             raise ValueError("Can't add a pokemon without id")
-        if pokemon.id in self._data:
+        if pokemon.unique_id in self._data:
             raise ValueError("Pokemon already present in the inventory")
-        self._data[pokemon.id] = pokemon
+        self._data[pokemon.unique_id] = pokemon
 
-    def remove(self, pokemon_id):
-        if pokemon_id not in self._data:
+    def remove(self, pokemon_unique_id):
+        if pokemon_unique_id not in self._data:
             raise ValueError("Pokemon not present in the inventory")
-        self._data.pop(pokemon_id)
+        self._data.pop(pokemon_unique_id)
 
 
 #
