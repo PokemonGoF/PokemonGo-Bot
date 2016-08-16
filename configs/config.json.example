@@ -6,6 +6,7 @@
     "gmapkey": "GOOGLE_MAPS_API_KEY",
     "encrypt_location": "",
     "websocket_server": false,
+    "heartbeat_threshold": 10,
     "tasks": [
       {
         "type": "HandleSoftBan"
