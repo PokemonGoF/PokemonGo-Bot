@@ -34,7 +34,7 @@ import ssl
 import sys
 import time
 import signal
-from datetime import timedelta
+from datetime import timedelta, datetime
 from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException
 from geopy.exc import GeocoderQuotaExceeded
@@ -54,16 +54,15 @@ except ImportError:
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s [%(name)10s] [%(levelname)s] %(message)s')
-logger = logging.getLogger('cli')
-logger.setLevel(logging.INFO)
+logger = None
 
 class SIGINTRecieved(Exception): pass
 
 def main():
     bot = False
+
+    init_logger()
+    logger = logging.getLogger('cli')
 
     def handle_sigint(*args):
         raise SIGINTRecieved
@@ -77,6 +76,8 @@ def main():
         config = init_config()
         if not config:
             return
+
+        init_file_logger_for_user(config.username)
 
         logger.info('Configuration initialized')
         health_record = BotEvent(config)
@@ -611,6 +612,32 @@ def parse_unicode_str(string):
     except UnicodeEncodeError:
         return string
 
+def init_logger():
+    # set log Formatter
+    formatter = logging.Formatter('%(asctime)s [%(levelname)8s] [%(name)10s] %(message)s')
+    # set up console hanlder
+    console = logging.StreamHandler()
+    console.setFormatter(formatter)
+    # add handler to the root logger
+    logging.getLogger('').setLevel(logging.INFO)
+    logging.getLogger('').addHandler(console)
+
+def init_file_logger_for_user(username):
+    log_dir = os.path.join(_base_dir, 'logs')
+    # create logs dir if not exists
+    try:
+        os.makedirs(log_dir)
+    except OSError:
+        if not os.path.isdir(log_dir):
+            raise
+
+    # get formatter from console handler
+    formatter = logging.getLogger('').handlers[0].formatter
+    # set up file hanlder
+    fh = logging.FileHandler( datetime.now().strftime(os.path.join(log_dir, username) + '_%Y%m%d.log') )
+    fh.setFormatter(formatter)
+    # add handlers to the root logger
+    logging.getLogger('').addHandler(fh)
 
 if __name__ == '__main__':
     main()

@@ -106,6 +106,7 @@ out/
 # Personal load details
 src/
 web/
+logs/
 data/last-location*.json
 data/cells-*.json
 data/map-caught-*.json
