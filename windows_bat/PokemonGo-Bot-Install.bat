@@ -63,6 +63,7 @@ if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul  &  shift /1)
 if "%~dp0"=="C:\Python27\PokemonGo-Bot\windows_bat\" (
 COPY "C:\Python27\PokemonGo-Bot\windows_bat\PokemonGo-Bot-Install.bat" "C:\Python27\"
 CALL "C:\Python27\PokemonGo-Bot-Install.bat"
+end.
 ) ELSE (
 @ECHO Installation Path OK! Proceeding!
 )
