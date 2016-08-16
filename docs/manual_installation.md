@@ -96,7 +96,6 @@ source bin/activate
 
 - [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/)
 - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-- [Protoc](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip)
 - [Microsoft Visual C++ Compiler for Python 2.7](http://www.microsoft.com/en-us/download/details.aspx?id=44266)
 
 
@@ -106,7 +105,8 @@ source bin/activate
 cd C:\Python27\
 pip2 install --upgrade pip
 pip2 install --upgrade virtualenv
-git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot
+pip2 install --upgrade protobuf==3.0.0b4
+git clone --recursive -b dev https://github.com/PokemonGoF/PokemonGo-Bot
 pip2 install --upgrade "C:\Python27\PokemonGo-Bot\windows_bat\PyYAML-3.11-cp27-cp27m-win32.whl"
 pip2 install --upgrade "C:\Python27\PokemonGo-Bot\windows_bat\PyYAML-3.11-cp27-cp27m-win_amd64.whl"
 pip2 install --upgrade -r C:/Python27/PokemonGo-Bot/requirements.txt
