@@ -5,6 +5,8 @@
     "location": "SOME_LOCATION",
     "gmapkey": "GOOGLE_MAPS_API_KEY",
     "encrypt_location": "",
+    "websocket_server": false,
+    "heartbeat_threshold": 10,
     "tasks": [
       {
         "type": "HandleSoftBan"
@@ -33,7 +35,7 @@
         "config": {
           "enabled": false,
           "min_interval": 10,
-          "stats": ["uptime", "stardust_earned", "xp_earned", "xp_per_hour", "stops_visited"],
+          "stats": ["username", "uptime", "stardust_earned", "xp_earned", "xp_per_hour", "stops_visited"],
           "terminal_log": true,
           "terminal_title": true
         }
@@ -64,6 +66,10 @@
         "type": "RecycleItems",
         "config": {
           "min_empty_space": 15,
+          "max_balls_keep": 150,
+          "max_potions_keep": 50,
+          "max_berries_keep": 70,
+          "max_revives_keep": 70,
           "item_filter": {
             "Pokeball":       { "keep" : 100 },
             "Potion":         { "keep" : 10 },
@@ -104,8 +110,8 @@
       "max_circle_size": 50,
       "cache_recent_forts": true
     },
-    "websocket_server": false,
-    "walk": 4.16,
+    "walk_max": 4.16,
+    "walk_min": 2.16,
     "action_wait_min": 1,
     "action_wait_max": 4,
     "debug": false,

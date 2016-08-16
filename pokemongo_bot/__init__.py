@@ -80,6 +80,12 @@ class PokemonGoBot(object):
         self.web_update_thread = threading.Thread(target=self.update_web_location_worker)
         self.web_update_thread.start()
 
+        # Heartbeat limiting
+        self.heartbeat_threshold = self.config.heartbeat_threshold
+        self.heartbeat_counter = 0
+        self.last_heartbeat = time.time()
+
+
     def start(self):
         self._setup_event_system()
         self._setup_logging()
@@ -150,6 +156,7 @@ class PokemonGoBot(object):
 
         self.event_manager.register_event('bot_start')
         self.event_manager.register_event('bot_exit')
+        self.event_manager.register_event('bot_interrupted')
 
         # sleep stuff
         self.event_manager.register_event(
@@ -473,6 +480,15 @@ class PokemonGoBot(object):
     def tick(self):
         self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
+
+        now = time.time() * 1000
+
+        for fort in self.cell["forts"]:
+            timeout = fort.get("cooldown_complete_timestamp_ms", 0)
+
+            if timeout >= now:
+                self.fort_timeouts[fort["id"]] = timeout
+
         self.tick_count += 1
 
         # Check if session token has expired
@@ -668,14 +684,14 @@ class PokemonGoBot(object):
         )
 
     def get_encryption_lib(self):
-        if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
-            file_name = 'encrypt.so'
-        elif _platform == "Windows" or _platform == "win32":
+        if _platform == "Windows" or _platform == "win32":
             # Check if we are on 32 or 64 bit
             if sys.maxsize > 2**32:
                 file_name = 'encrypt_64.dll'
             else:
                 file_name = 'encrypt.dll'
+        else:
+            file_name = 'encrypt.so'
 
         if self.config.encrypt_location == '':
             path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
@@ -1004,13 +1020,17 @@ class PokemonGoBot(object):
 
     def heartbeat(self):
         # Remove forts that we can now spin again.
+        now = time.time()
         self.fort_timeouts = {id: timeout for id, timeout
                               in self.fort_timeouts.iteritems()
-                              if timeout >= time.time() * 1000}
-        request = self.api.create_request()
-        request.get_player()
-        request.check_awarded_badges()
-        request.call()
+                              if timeout >= now * 1000}
+
+        if now - self.last_heartbeat >= self.heartbeat_threshold:
+            self.last_heartbeat = now
+            request = self.api.create_request()
+            request.get_player()
+            request.check_awarded_badges()
+            request.call()
         try:
             self.web_update_queue.put_nowait(True)  # do this outside of thread every tick
         except Queue.Full:
