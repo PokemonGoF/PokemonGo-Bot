@@ -136,10 +136,10 @@ class FollowPath(BaseTask):
 
         self.emit_event(
             'position_update',
-            formatted="Walking from {last_position} to {current_position} ({distance} {distance_unit})",
+            formatted="Walk to {last_position} now at {current_position}, distance left: ({distance} {distance_unit}) ..",
             data={
-                'last_position': (last_lat, last_lng, 0),
-                'current_position': (lat, lng, 0),
+                'last_position': (lat, lng, 0),
+                'current_position': (last_lat, last_lng, 0),
                 'distance': dist,
                 'distance_unit': 'm'
             }
