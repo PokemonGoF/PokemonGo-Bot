@@ -134,7 +134,8 @@
       "great_rate": 0.5,
       "nice_rate": 0.3,
       "normal_rate": 0.1,
-      "spin_success_rate" : 0.6
+      "spin_success_rate" : 0.6,
+      "hit_rate": 0.75
     },
     "release": {
       "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or"},

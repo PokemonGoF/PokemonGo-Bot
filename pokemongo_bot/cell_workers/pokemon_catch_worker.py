@@ -247,6 +247,7 @@ class PokemonCatchWorker(BaseTask):
         berry_id = ITEM_RAZZBERRY
         maximum_ball = ITEM_ULTRABALL if is_vip else ITEM_GREATBALL
         ideal_catch_rate_before_throw = 0.9 if is_vip else 0.35
+        hit_rate = self.config.catch_throw_parameters_hit_rate
 
         berry_count = self.inventory.get(ITEM_RAZZBERRY).count
         ball_count = {}
@@ -335,7 +336,7 @@ class PokemonCatchWorker(BaseTask):
             )
 
             hit_pokemon = 1
-            if random() <= float(self.config.catch_throw_parameters_hit_rate):
+            if random() <= hit_rate:
                 hit_pokemon = 0
 
             response_dict = self.api.catch_pokemon(
@@ -416,7 +417,7 @@ class PokemonCatchWorker(BaseTask):
             elif catch_pokemon_status == CATCH_STATUS_MISSED:
                 self.emit_event(
                     'pokemon_capture_failed',
-                    formatted='{pokemon} pokeball missed.. trying again!',
+                    formatted='Pokeball thrown to {pokemon} missed.. trying again!',
                     data={'pokemon': pokemon.name}
                 )
                 sleep(self.generate_random_sleep_time(3))
