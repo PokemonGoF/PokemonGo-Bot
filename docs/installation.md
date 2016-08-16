@@ -33,10 +33,6 @@ We do recommend Windows users to use [Docker](#docker) this will work much easie
 
 ##Requirements
 
-- [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/)
-- [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-- [Microsoft Visual C++ Compiler for Python 2.7](http://www.microsoft.com/en-us/download/details.aspx?id=44266)
-
 ###Easy Installation
 1. Download [PokemonGo-Bot-Install.bat](https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/windows_bat/PokemonGo-Bot-Install.bat)
 2. Download `encrypt.so` and `encrypt.dll` or `encrypt_64.dll` to the same folder of the `PokemonGo-Bot-Install.bat`.
