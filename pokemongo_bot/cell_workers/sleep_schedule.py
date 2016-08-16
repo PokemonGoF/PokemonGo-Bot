@@ -73,14 +73,14 @@ class SleepSchedule(BaseTask):
         )
 
     def _calculate_current_sleep(self):
-        current_sleep = self._next_sleep - timedelta(days=1)
+        self._current_sleep = self._next_sleep - timedelta(days=1)
         current_duration = self._get_next_duration()
-        self._current_end = current_sleep + timedelta(seconds = current_duration)
+        self._current_end = self._current_sleep + timedelta(seconds = current_duration)
 
     def _should_sleep_now(self):
         if datetime.now() >= self._next_sleep:
             return True
-        if datetime.now() < self._current_end:
+        if datetime.now() >= self._current_sleep and datetime.now() < self._current_end:
             self._next_duration = (self._current_end - datetime.now()).total_seconds()
             return True
 
@@ -110,7 +110,7 @@ class SleepSchedule(BaseTask):
         sleep_to_go = self._next_duration
         self.emit_event(
             'bot_sleep',
-            formatted="Sleeping for {time_in_seconds} seconds...",
+            formatted="Sleeping for {time_in_seconds}",
             data={
                 'time_in_seconds': sleep_to_go
             }
