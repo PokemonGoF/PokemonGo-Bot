@@ -27,6 +27,7 @@ class TreeConfigBuilder(object):
 
     def build(self):
         workers = []
+        deprecated_pokemon_task = False
 
         for task in self.tasks_raw:
             task_type = task.get('type', None)
@@ -36,6 +37,15 @@ class TreeConfigBuilder(object):
                 raise ConfigException('The EvolveAll task has been renamed to EvolvePokemon')
 
             task_config = task.get('config', {})
+
+            if task_type in ['CatchVisiblePokemon', 'CatchLuredPokemon']:
+                if deprecated_pokemon_task:
+                    continue
+                else:
+                    deprecated_pokemon_task = True
+                    task_type = 'CatchPokemon'
+                    task_config = {}
+                    # Best way to show deprecation message?
 
             if self._is_plugin_task(task_type):
                 worker = self.plugin_loader.get_class(task_type)
@@ -65,4 +75,3 @@ class TreeConfigBuilder(object):
                 workers.append(instance)
 
         return workers
-
