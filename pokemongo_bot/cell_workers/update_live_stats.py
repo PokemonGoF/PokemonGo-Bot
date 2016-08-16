@@ -7,6 +7,13 @@ from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.tree_config_builder import ConfigException
 
 
+LEVEL_XP = [
+    0,1000,3000,6000,10000,15000,21000,28000,36000,45000,55000,65000,75000,
+    85000,100000,120000,140000,160000,185000,210000,260000,335000,435000,
+    560000,710000,900000,1100000,1350000,1650000,2000000,2500000,3000000,
+    3750000,4750000,6000000,7500000,9500000,12000000,15000000,20000000
+]
+
 class UpdateLiveStats(BaseTask):
     """
     Periodically displays stats about the bot in the terminal and/or in its title.
@@ -182,12 +189,12 @@ class UpdateLiveStats(BaseTask):
         username = player_data.get('username', '?')
         distance_travelled = metrics.distance_travelled()
         current_level = int(player_stats.get('level', 0))
-        prev_level_xp = int(player_stats.get('prev_level_xp', 0))
+        current_level_xp = LEVEL_XP[current_level - 1]
         next_level_xp = int(player_stats.get('next_level_xp', 0))
         experience = int(player_stats.get('experience', 0))
-        current_level_xp = experience - prev_level_xp
-        whole_level_xp = next_level_xp - prev_level_xp
-        level_completion_percentage = int((current_level_xp * 100) / whole_level_xp)
+        current_level_earned_xp = experience - current_level_xp
+        whole_level_need_xp = next_level_xp - current_level_xp
+        level_completion_percentage = int((current_level_earned_xp * 100) / whole_level_need_xp)
         experience_per_hour = int(metrics.xp_per_hour())
         xp_earned = metrics.xp_earned()
         stops_visited = metrics.visits['latest'] - metrics.visits['start']
@@ -213,10 +220,10 @@ class UpdateLiveStats(BaseTask):
             'uptime': 'Uptime : {}'.format(runtime),
             'km_walked': '{:,.2f}km walked'.format(distance_travelled),
             'level': 'Level {}'.format(current_level),
-            'level_completion': '{:,} / {:,} XP ({}%)'.format(current_level_xp, whole_level_xp,
+            'level_completion': '{:,} / {:,} XP ({}%)'.format(current_level_earned_xp, whole_level_need_xp,
                                                               level_completion_percentage),
-            'level_stats': 'Level {} ({:,} / {:,}, {}%)'.format(current_level, current_level_xp,
-                                                                whole_level_xp,
+            'level_stats': 'Level {} ({:,} / {:,}, {}%)'.format(current_level, current_level_earned_xp,
+                                                                whole_level_need_xp,
                                                                 level_completion_percentage),
             'xp_per_hour': '{:,} XP/h'.format(experience_per_hour),
             'xp_earned': '+{:,} XP'.format(xp_earned),
