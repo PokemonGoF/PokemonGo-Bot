@@ -21,9 +21,9 @@ class FollowCluster(BaseTask):
         log_lure_avail_str = ''
         log_lured_str = ''
         if self.lured:
-            log_lured_str = 'lured '
             lured_forts = [x for x in forts if 'active_fort_modifier' in x]
             if len(lured_forts) > 0:
+                log_lured_str = 'lured '
                 self.dest = find_biggest_cluster(self.radius, lured_forts, '9QM=')
             else:
                 log_lure_avail_str = 'No lured pokestops in vicinity. Search for normal ones instead. '
