@@ -61,9 +61,6 @@ class SIGINTRecieved(Exception): pass
 def main():
     bot = False
 
-    init_logger()
-    logger = logging.getLogger('cli')
-
     def handle_sigint(*args):
         raise SIGINTRecieved
     signal.signal(signal.SIGINT, handle_sigint)
@@ -638,6 +635,9 @@ def init_file_logger_for_user(username):
     fh.setFormatter(formatter)
     # add handlers to the root logger
     logging.getLogger('').addHandler(fh)
+
+init_logger()
+logger = logging.getLogger('cli')
 
 if __name__ == '__main__':
     main()
