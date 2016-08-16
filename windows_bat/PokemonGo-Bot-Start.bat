@@ -1,6 +1,6 @@
 TITLE PokemonGo-Bot
 CLS
-@ECHO ON
+@ECHO OFF
 
 
 
