@@ -7,15 +7,15 @@ class Metrics(object):
     def __init__(self, bot):
         self.bot = bot
         self.start_time = time.time()
-        self.dust = {'start': None, 'latest': None}
-        self.xp = {'start': None, 'latest': None}
-        self.distance = {'start': None, 'latest': None}
-        self.encounters = {'start': None, 'latest': None}
-        self.throws = {'start': None, 'latest': None}
-        self.captures = {'start': None, 'latest': None}
-        self.visits = {'start': None, 'latest': None}
-        self.unique_mons = {'start': None, 'latest': None}
-        self.evolutions = {'start': None, 'latest': None}
+        self.dust = {'start': 0, 'latest': 0}
+        self.xp = {'start': 0, 'latest': 0}
+        self.distance = {'start': 0, 'latest': 0}
+        self.encounters = {'start': 0, 'latest': 0}
+        self.throws = {'start': 0, 'latest': 0}
+        self.captures = {'start': 0, 'latest': 0}
+        self.visits = {'start': 0, 'latest': 0}
+        self.unique_mons = {'start': 0, 'latest': 0}
+        self.evolutions = {'start': 0, 'latest': 0}
 
         self.releases = 0
         self.highest_cp = {'cp': 0, 'desc': ''}

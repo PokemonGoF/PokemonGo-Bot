@@ -492,7 +492,14 @@ def init_config():
         type=float,
         default=1
     )
-
+    add_config(
+        parser,
+        load,
+        long_flag="--heartbeat_threshold",
+        help="A threshold between each heartbeat sending to server",
+        type=int,
+        default=10
+    )
     # Start to parse other attrs
     config = parser.parse_args()
     if not config.username and 'username' not in load:
@@ -508,6 +515,16 @@ def init_config():
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
     config.min_ultraball_to_keep = load.get('min_ultraball_to_keep', None)
+
+    catchsim_config = load.get('catch_simulation', {})
+    config.catchsim_catch_wait_min = catchsim_config.get('catch_wait_min', 2)
+    config.catchsim_catch_wait_max = catchsim_config.get('catch_wait_max', 6)
+    config.catchsim_flee_count = int(catchsim_config.get('flee_count', 3))
+    config.catchsim_flee_duration = catchsim_config.get('flee_duration', 2)
+    config.catchsim_berry_wait_min = catchsim_config.get('berry_wait_min', 2)
+    config.catchsim_berry_wait_max = catchsim_config.get('berry_wait_max', 3)
+    config.catchsim_changeball_wait_min = catchsim_config.get('changeball_wait_min', 2)
+    config.catchsim_changeball_wait_max = catchsim_config.get('changeball_wait_max', 3)
 
     config.vips = load.get('vips', {})
 
