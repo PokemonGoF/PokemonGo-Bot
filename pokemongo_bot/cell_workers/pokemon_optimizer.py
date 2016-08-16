@@ -26,6 +26,9 @@ class PokemonOptimizer(BaseTask):
                                                     {"top": 1, "evolve": True, "sort": ["ncp"]},
                                                     {"top": 1, "evolve": False, "sort": ["cp"]}])
 
+        self.transfer_wait_min = self.config.get('transfer_wait_min', 1)
+        self.transfer_wait_max = self.config.get('transfer_wait_max', 4)
+
     def get_pokemon_slot_left(self):
         pokemon_count = len(inventory.pokemons()._data)
         
@@ -256,7 +259,7 @@ class PokemonOptimizer(BaseTask):
             inventory.candies().get(pokemon.pokemon_id).add(candy)
             inventory.pokemons().remove(pokemon.id)
 
-            action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
+            action_delay(self.transfer_wait_min, self.transfer_wait_max)
 
         return True
 
