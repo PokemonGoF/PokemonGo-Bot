@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 import datetime
-import json
+import hjson as json
 import logging
 import os
 import random
@@ -489,6 +489,7 @@ class PokemonGoBot(object):
         self.check_session(self.position[0:2])
 
         for worker in self.workers:
+            print (worker)
             if worker.work() == WorkerResult.RUNNING:
                 return
 

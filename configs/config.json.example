@@ -125,8 +125,8 @@
     "logging_color": true,
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
-      "// Example of always catching Rattata:": {},
-      "// Rattata": { "always_catch" : true }
+      // Example of always catching Rattata
+      // Rattata": { "always_catch" : true }
     },
     "catch_throw_parameters": {
       "excellent_rate": 0.1,
@@ -137,30 +137,30 @@
     },
     "release": {
       "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or"},
-      "// Example of always releasing Rattata:": {},
-      "// Rattata": {"always_release": true},
-      "// Example of keeping 3 stronger (based on CP) Pidgey:": {},
-      "// Pidgey": {"keep_best_cp": 3},
-      "// Example of keeping 2 stronger (based on IV) Zubat:": {},
-      "// Zubat": {"keep_best_iv": 2},
-      "// Also, it is working with any": {},
-      "// any": {"keep_best_iv": 3},
-      "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat:": {},
-      "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3}
+      // Example of always releasing Rattata
+      // "Rattata": {"always_release": true},
+      // Example of keeping 3 stronger (based on CP) Pidgey
+      // "Pidgey": {"keep_best_cp": 3},
+      // Example of keeping 2 stronger (based on IV) Zubat:
+      // "Zubat": {"keep_best_iv": 2},
+      // Also, it is working with any
+      // "any": {"keep_best_iv": 3},
+      // Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat
+      // "Zubat": {"keep_best_cp": 2, "keep_best_iv": 3}
     },
     "vips" : {
-         "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate!": {},
+        // Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate!
         "any": {"catch_above_cp": 1200, "catch_above_iv": 0.9, "logic": "or" },
         "Lapras": {},
         "Moltres": {},
         "Zapdos": {},
         "Articuno": {},
 
-        "// S-Tier pokemons (if pokemon can be evolved into tier, list the representative)": {},
+        // S-Tier pokemons (if pokemon can be evolved into tier, list the representative)"
         "Mewtwo": {},
         "Dragonite": {},
         "Snorlax": {},
-        "// Mew evolves to Mewtwo": {},
+        // Mew evolves to Mewtwo
         "Mew": {},
         "Arcanine": {},
         "Vaporeon": {},
