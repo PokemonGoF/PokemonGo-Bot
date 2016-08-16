@@ -9,9 +9,9 @@ class CatchPokemon(BaseTask):
 
     def initialize(self):
         self.catch_workers = []
-        if self.config['catch_visible_pokemon']:
+        if self.config.get('catch_visible_pokemon', True):
             self.catch_workers.append(CatchVisiblePokemon(self.bot, self.config))
-        if self.config['catch_lured_pokemon']:
+        if self.config.get('catch_lured_pokemon', True):
             self.catch_workers.append(CatchLuredPokemon(self.bot, self.config))
 
     def work(self):
