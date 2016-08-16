@@ -219,7 +219,7 @@ class Items(_BaseInventoryComponent):
         _inventory.retrieve_item_inventory_size()
         space_left = _inventory.item_inventory_size - cls.get_space_used()
         # Space left should never be negative. Returning 0 if the computed value is negative.
-        return space_left if space_left >= 0 else -1
+        return space_left if space_left >= 0 else 0
 
     @classmethod
     def has_space_for_loot(cls):
