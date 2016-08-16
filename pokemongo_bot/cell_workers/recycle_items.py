@@ -109,7 +109,7 @@ class RecycleItems(BaseTask):
 
                 if self.item_should_be_recycled(item_in_inventory):
                     # Make the bot appears more human
-                    action_delay(self.recycle_wait_min, self.bot.recycle_wait_max)
+                    action_delay(self.recycle_wait_min, self.recycle_wait_max)
                     # If at any recycling process call we got an error, we consider that the result of this task is error too.
                     if ItemRecycler(self.bot, item_in_inventory, self.get_amount_to_recycle(item_in_inventory)).work() == WorkerResult.ERROR:
                         worker_result = WorkerResult.ERROR
