@@ -79,7 +79,6 @@
         "config": {
           "address": "http://localhost:5000",
           "max_distance": 500,
-          "min_time": 60,
           "min_ball": 50,
           "prioritize_vips": true,
           "snipe": true,
