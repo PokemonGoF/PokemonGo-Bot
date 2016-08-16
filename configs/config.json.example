@@ -136,6 +136,16 @@
       "normal_rate": 0.1,
       "spin_success_rate" : 0.6
     },
+	  "catch_simulation": {
+	    "flee_count": 3,
+	    "flee_duration": 2,
+	    "catch_wait_min": 2,
+	    "catch_wait_max": 6,
+	    "berry_wait_min": 2,
+	    "berry_wait_max": 3,
+	    "changeball_wait_min": 2,
+	    "changeball_wait_max": 3
+	  },
     "release": {
       "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or"},
       "// Example of always releasing Rattata:": {},

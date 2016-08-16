@@ -143,6 +143,16 @@
     "walk_min": 2.16,
     "action_wait_min": 1,
     "action_wait_max": 4,
+	  "catch_simulation": {
+	    "flee_count": 3,
+	    "flee_duration": 2,
+	    "catch_wait_min": 2,
+	    "catch_wait_max": 6,
+	    "berry_wait_min": 2,
+	    "berry_wait_max": 3,
+	    "changeball_wait_min": 2,
+	    "changeball_wait_max": 3
+	  },
     "debug": false,
     "test": false,
     "health_record": false,
