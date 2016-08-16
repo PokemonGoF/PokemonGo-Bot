@@ -102,6 +102,8 @@
     "walk_min": 2.16,
     "action_wait_min": 1,
     "action_wait_max": 4,
+    "catch_wait_min": 1,
+    "catch_wait_max": 4,
     "debug": false,
     "test": false,
     "health_record": true,
@@ -110,6 +112,7 @@
     "reconnecting_timeout": 15,
     "catch_randomize_reticle_factor": 1.0,
     "catch_randomize_spin_factor": 1.0,
+    "randomize_flee_duration": true,
     "min_ultraball_to_keep": 10,
     "logging_color": true,
     "catch": {
