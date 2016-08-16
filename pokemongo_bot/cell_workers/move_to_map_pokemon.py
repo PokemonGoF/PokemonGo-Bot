@@ -85,6 +85,9 @@ class MoveToMapPokemon(BaseTask):
         self.caught = []
         self.min_ball = self.config.get('min_ball', 1)
         self.map_path = self.config.get('map_path', 'raw_data')
+        self.snipe_high_prio_only = self.config.get('snipe_high_prio_only', False)
+        self.snipe_high_prio_threshold = self.config.get('snipe_high_prio_threshold', 400)
+
 
         data_file = os.path.join(_base_dir, 'map-caught-{}.json'.format(self.bot.config.username))
         if os.path.isfile(data_file):
@@ -124,9 +127,6 @@ class MoveToMapPokemon(BaseTask):
             if pokemon['name'] not in self.config['catch'] and not pokemon['is_vip']:
                 continue
 
-            if pokemon['disappear_time'] < (now + self.config['min_time']):
-                continue
-
             if self.was_caught(pokemon):
                 continue
 
@@ -140,6 +140,11 @@ class MoveToMapPokemon(BaseTask):
             )
 
             if pokemon['dist'] > self.config['max_distance'] and not self.config['snipe']:
+                continue
+
+            # pokemon not reachable with mean walking speed (by config)
+            mean_walk_speed = (self.bot.config.walk_max + self.bot.config.walk_min) / 2
+            if pokemon['dist'] > ((pokemon['expire'] - now) * mean_walk_speed) and not self.config['snipe']:
                 continue
 
             pokemon_list.append(pokemon)
@@ -257,8 +262,8 @@ class MoveToMapPokemon(BaseTask):
             return WorkerResult.SUCCESS
 
         if self.config['snipe']:
-            if self.config['snipe_high_prio_only']:
-                if self.config['snipe_high_prio_threshold'] < pokemon['priority'] or pokemon['is_vip']:
+            if self.snipe_high_prio_only:
+                if self.snipe_high_prio_threshold < pokemon['priority'] or pokemon['is_vip']:
                     self.snipe(pokemon)
             else:
                 return self.snipe(pokemon)

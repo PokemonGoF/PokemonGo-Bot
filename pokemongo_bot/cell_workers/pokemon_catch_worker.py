@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import time
-from random import random
+from random import random, randrange
 from pokemongo_bot import inventory
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot.inventory import Pokemon
 from pokemongo_bot.worker_result import WorkerResult
 
@@ -188,6 +188,8 @@ class PokemonCatchWorker(BaseTask):
         return '{0:.2f}'.format(rate_by_ball * 100)
 
     def _use_berry(self, berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball):
+        # Delay to simulate selecting berry
+        action_delay(self.config.catchsim_berry_wait_min, self.config.catchsim_berry_wait_max)
         new_catch_rate_by_ball = []
         self.emit_event(
             'pokemon_catch_rate',
@@ -296,6 +298,7 @@ class PokemonCatchWorker(BaseTask):
 
             # use a berry if we are under our ideal rate and have berries to spare
             used_berry = False
+            changed_ball = False
             if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and berries_to_spare:
                 new_catch_rate_by_ball = self._use_berry(berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball)
                 if new_catch_rate_by_ball != catch_rate_by_ball:
@@ -311,6 +314,7 @@ class PokemonCatchWorker(BaseTask):
                 if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and ball_count[best_ball] > 0:
                     # if current ball chance to catch is under our ideal rate, and player has better ball - then use it
                     current_ball = best_ball
+                    changed_ball = True
 
             # if the rate is still low and we didn't throw a berry before, throw one
             if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and berry_count > 0 and not used_berry:
@@ -319,6 +323,11 @@ class PokemonCatchWorker(BaseTask):
                     catch_rate_by_ball = new_catch_rate_by_ball
                     self.inventory.get(ITEM_RAZZBERRY).remove(1)
                     berry_count -= 1
+                    used_berry = True
+
+            # If we change ball then wait to simulate user selecting it
+            if changed_ball:
+                action_delay(self.config.catchsim_changeball_wait_min, self.config.catchsim_changeball_wait_max)
 
             # Randomize the quality of the throw
             # Default structure
@@ -333,6 +342,8 @@ class PokemonCatchWorker(BaseTask):
             # TODO : Log which type of throw we selected
             ball_count[current_ball] -= 1
             self.inventory.get(current_ball).remove(1)
+            # Take some time to throw the ball from config options
+            action_delay(self.config.catchsim_catch_wait_min, self.config.catchsim_catch_wait_max)
             self.emit_event(
                 'threw_pokeball',
                 formatted='Used {ball_name}, with chance {success_percentage} ({count_left} left)',
@@ -365,7 +376,13 @@ class PokemonCatchWorker(BaseTask):
                     formatted='{pokemon} capture failed.. trying again!',
                     data={'pokemon': pokemon.name}
                 )
-                sleep(2)
+
+                # sleep according to flee_count and flee_duration config settings
+                # randomly chooses a number of times to 'show' wobble animation between 1 and flee_count
+                # multiplies this by flee_duration to get total sleep
+                if self.config.catchsim_flee_count:
+                    sleep((randrange(self.config.catchsim_flee_count)+1) * self.config.catchsim_flee_duration)
+
                 continue
 
             # abandon if pokemon vanished
