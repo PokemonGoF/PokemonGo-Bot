@@ -492,7 +492,14 @@ def init_config():
         type=float,
         default=1
     )
-
+    add_config(
+        parser,
+        load,
+        long_flag="--heartbeat_threshold",
+        help="A threshold between each heartbeat sending to server",
+        type=int,
+        default=10
+    )
     # Start to parse other attrs
     config = parser.parse_args()
     if not config.username and 'username' not in load:
