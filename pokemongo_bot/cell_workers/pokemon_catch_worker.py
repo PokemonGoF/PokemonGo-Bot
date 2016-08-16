@@ -347,7 +347,7 @@ class PokemonCatchWorker(BaseTask):
             )
 
             hit_pokemon = 1
-            if random() <= hit_rate:
+            if random() >= hit_rate:
                 hit_pokemon = 0
 
             response_dict = self.api.catch_pokemon(
