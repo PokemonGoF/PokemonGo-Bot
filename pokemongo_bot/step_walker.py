@@ -1,6 +1,6 @@
 from math import sqrt
 
-from random import random
+from random import random, uniform
 from cell_workers.utils import distance
 from human_behaviour import random_lat_long_delta, sleep
 
@@ -30,7 +30,7 @@ class StepWalker(object):
         self.totalDist = max(1, self.dist)
 
         if self.speed == 0:
-            self.speed = random.uniform(3,5)
+            self.speed = uniform(3,5)
             self.steps = 1
         else:
             self.steps = (self.dist + 0.0) / (self.speed + 0.0)
