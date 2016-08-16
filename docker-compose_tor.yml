@@ -11,6 +11,7 @@ services:
       - torproxy
     expose:
       - "8118"
+    restart: "always"
   bot1-pokego:
     build: .
     links: 
