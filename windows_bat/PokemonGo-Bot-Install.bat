@@ -44,16 +44,11 @@ if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul  &  shift /1)
 @ECHO ---- git
 @ECHO      "https://git-scm.com/book/en/v2/Getting-Started-Installing-Git"
 @ECHO.
-@ECHO ---- Protoc
-@ECHO      "https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip"
-@ECHO.
 @ECHO ---- Microsoft Visual C++ Compiler for Python 2.7
 @ECHO      "http://www.microsoft.com/en-us/download/details.aspx?id=44266"
 @ECHO.
-@ECHO ---- encrypt.so and encrypt.dll or encrypt_64.dll (Copy to the same folder as this batch file)
+@ECHO ---- encrypt.so / encrypt.dll or encrypt_64.dll (Copy to the same folder as this batch file)
 @ECHO      Get them from our Slack chat! "https://pokemongo-bot.herokuapp.com/"
-@ECHO.
-@ECHO.
 @ECHO.
 @ECHO ---- If you already have a config.json and a userdata.js, copy to the same folder as this batch file.
 @ECHO.
@@ -62,6 +57,15 @@ if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul  &  shift /1)
 @PAUSE
 @ECHO.
 @ECHO.
+@ECHO.
+@ECHO --------------------Checking Installation Path--------------------
+@ECHO.
+if "%~dp0"=="C:\Python27\PokemonGo-Bot\windows_bat\" (
+COPY "C:\Python27\PokemonGo-Bot\windows_bat\PokemonGo-Bot-Install.bat" "C:\Python27\"
+CALL "C:\Python27\PokemonGo-Bot-Install.bat"
+) ELSE (
+@ECHO Installation Path OK! Proceeding!
+)
 @ECHO.
 @ECHO --------------------Creating Backup--------------------
 @ECHO.
@@ -82,6 +86,7 @@ RMDIR C:\Python27\PokemonGo-Bot /s /q
 cd C:\Python27\
 pip2 install --upgrade pip
 pip2 install --upgrade virtualenv
+pip2 install --upgrade protobuf==3.0.0b4
 git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot
 pip2 install --upgrade "C:\Python27\PokemonGo-Bot\windows_bat\PyYAML-3.11-cp27-cp27m-win32.whl"
 pip2 install --upgrade "C:\Python27\PokemonGo-Bot\windows_bat\PyYAML-3.11-cp27-cp27m-win_amd64.whl"
@@ -108,8 +113,6 @@ COPY "%~dp0\userdata.js" C:\Python27\PokemonGo-Bot\web\config\
 @ECHO.
 @ECHO.
 @ECHO Remember to configure both config.json and userdata.js!
-@ECHO.
-@ECHO.
 @ECHO.
 @ECHO "C:/Python27/PokemonGo-Bot/configs/config.json"
 @ECHO INSTRUCTIONS:
