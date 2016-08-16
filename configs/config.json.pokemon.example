@@ -5,6 +5,7 @@
     "location": "SOME_LOCATION",
     "gmapkey": "GOOGLE_MAPS_API_KEY",
     "encrypt_location": "",
+    "heartbeat_threshold": 10,
     "tasks": [
       {
         "type": "HandleSoftBan"

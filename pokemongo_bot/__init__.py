@@ -79,7 +79,8 @@ class PokemonGoBot(object):
         self.web_update_queue = Queue.Queue(maxsize=1)
         self.web_update_thread = threading.Thread(target=self.update_web_location_worker)
         self.web_update_thread.start()
-
+        self.heartbeat_threshold = self.config.heartbeat_threshold
+        self.heartbeat_counter = 0
     def start(self):
         self._setup_event_system()
         self._setup_logging()
@@ -1017,10 +1018,13 @@ class PokemonGoBot(object):
         self.fort_timeouts = {id: timeout for id, timeout
                               in self.fort_timeouts.iteritems()
                               if timeout >= time.time() * 1000}
-        request = self.api.create_request()
-        request.get_player()
-        request.check_awarded_badges()
-        request.call()
+        self.heartbeat_counter = self.heartbeat_counter + 1
+        if self.heartbeat_counter >= self.heartbeat_threshold:
+            self.heartbeat_counter = 0
+            request = self.api.create_request()
+            request.get_player()
+            request.check_awarded_badges()
+            request.call()
         try:
             self.web_update_queue.put_nowait(True)  # do this outside of thread every tick
         except Queue.Full:
