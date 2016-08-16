@@ -83,7 +83,7 @@ class PokemonGoBot(object):
         # Heartbeat limiting
         self.heartbeat_threshold = self.config.heartbeat_threshold
         self.heartbeat_counter = self.heartbeat_threshold
-        self.last_heartbeat = time.time()
+        self.last_tick = time.time()
 
 
     def start(self):
@@ -1024,8 +1024,8 @@ class PokemonGoBot(object):
         self.fort_timeouts = {id: timeout for id, timeout
                               in self.fort_timeouts.iteritems()
                               if timeout >= now * 1000}
-        self.heartbeat_counter += now - self.last_heartbeat
-        self.last_heartbeat = now
+        self.heartbeat_counter += now - self.last_tick
+        self.last_tick = now
         if self.heartbeat_counter >= self.heartbeat_threshold:
             self.heartbeat_counter = 0
             request = self.api.create_request()
