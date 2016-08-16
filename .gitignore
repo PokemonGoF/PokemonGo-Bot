@@ -109,6 +109,7 @@ web/
 data/last-location*.json
 data/cells-*.json
 data/map-caught-*.json
+data/pokemon_spawns-*.json
 data/recent-forts-*.json
 user_web_catchable
 

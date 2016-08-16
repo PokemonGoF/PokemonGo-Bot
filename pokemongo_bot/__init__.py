@@ -476,6 +476,10 @@ class PokemonGoBot(object):
             'error_caching_forts',
             parameters=('path', )
         )
+        self.event_manager.register_event(
+            'save_spawn',
+            parameters=('pokemon','location')
+        )
 
     def tick(self):
         self.health_record.heartbeat()

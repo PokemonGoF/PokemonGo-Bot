@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import time
+import os
+import json
 from random import random
 from pokemongo_bot import inventory
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.inventory import Pokemon
 from pokemongo_bot.worker_result import WorkerResult
+from pokemongo_bot.base_dir import _base_dir
 
 CATCH_STATUS_SUCCESS = 1
 CATCH_STATUS_FAILED = 2
@@ -87,6 +90,7 @@ class PokemonCatchWorker(BaseTask):
                 'pokemon_id': pokemon.pokemon_id
             }
         )
+        self.dump_pokemon_spawn(pokemon)
 
         # simulate app
         sleep(3)
@@ -454,3 +458,34 @@ class PokemonCatchWorker(BaseTask):
         throw_parameters['normalized_reticle_size'] = 1.25 + 0.70 * random()
         throw_parameters['normalized_hit_position'] = 0.0
         throw_parameters['throw_type_label'] = 'Normal'
+
+    def dump_pokemon_spawn(self, pokemon):
+        save_pokemon_spawn = self.config.save_pokemon_spawn
+        if save_pokemon_spawn:
+            file_name = 'pokemon_spawns-%s.json' % self.config.username
+            saved_pokemon_spawn_path = os.path.join(
+                _base_dir, 'data', file_name
+            )
+            try:
+                spawn_location = str(self.pokemon['latitude'])+','+str(self.pokemon['longitude'])
+
+                with open(saved_pokemon_spawn_path, 'a') as outfile:
+                    json.dump({'location': spawn_location, 'pokemon': pokemon.name, 'time': time.strftime('%X')}, outfile)
+
+                self.emit_event(
+                    'save_spawn',
+                    formatted='Spawn at {location} saved in '+ file_name +' (Encountered {pokemon})',
+                    data={
+                        'pokemon': pokemon.name,
+                        'location': str(self.pokemon['latitude'])+','+str(self.pokemon['longitude'])
+                    }
+                )
+            except Exception:
+                self.emit_event(
+                    'save_spawn',
+                    formatted='Error when saving spawn : spawn not saved!',
+                    data={
+                        'pokemon': pokemon.name,
+                        'location': str(self.pokemon['latitude'])+','+str(self.pokemon['longitude'])
+                    }
+                )

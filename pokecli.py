@@ -515,6 +515,7 @@ def init_config():
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
     config.min_ultraball_to_keep = load.get('min_ultraball_to_keep', None)
+    config.save_pokemon_spawn = load.get('save_pokemon_spawn', False)
 
     config.vips = load.get('vips', {})
 

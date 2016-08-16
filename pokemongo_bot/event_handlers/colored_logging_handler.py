@@ -82,7 +82,8 @@ class ColoredLoggingHandler(EventHandler):
         'spun_fort':                         'white',
         'threw_berry':                       'white',
         'threw_pokeball':                    'white',
-        'used_lucky_egg':                    'white'
+        'used_lucky_egg':                    'white',
+        'save_spawn':                        'white'
     }
     CONTINUOUS_EVENT_NAMES = [
         'catchable_pokemon',
