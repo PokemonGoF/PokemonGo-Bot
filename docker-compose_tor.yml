@@ -13,6 +13,8 @@ services:
       - "8118"
   bot1-pokego:
     build: .
+    links: 
+      - privoxy
     environment:
       - HTTPS_PROXY=privoxy:8118
       - HTTP_PROXY=privoxy:8118
