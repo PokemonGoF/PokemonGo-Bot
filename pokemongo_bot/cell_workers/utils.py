@@ -218,7 +218,8 @@ def find_biggest_cluster(radius, points, order=None):
     for point in points:
             if order is '9QM=':
                 #is a lure module - 9QM=
-                remaining = now = int(time.time()) - point['last_modified_timestamp_ms']
+                now = int(time.time())
+                remaining = now - point['last_modified_timestamp_ms']
                 f = point['latitude'], point['longitude'], remaining
             else:
                 f = point['latitude'], point['longitude'], 0
