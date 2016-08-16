@@ -77,6 +77,8 @@
             "Revive":         { "keep" : 30 },
             "Razz Berry":     { "keep" : 100 }
           }
+          "recycle_wait_min": 1,
+          "recycle_wait_max": 4
         }
       },
       {
