@@ -241,7 +241,7 @@ class MoveToMapPokemon(BaseTask):
 
         if (pokeballs + superballs + ultraballs) < 1:
             return WorkerResult.SUCCESS
-        
+
         self.update_map_location()
         self.dump_caught_pokemon()
 
