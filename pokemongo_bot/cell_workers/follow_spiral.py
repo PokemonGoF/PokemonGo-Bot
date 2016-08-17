@@ -101,7 +101,7 @@ class FollowSpiral(BaseTask):
             if step_walker.step():
                 step_walker = None
         else:
-            self.bot.api.set_position(point['lat'], point['lng'], 0)
+            self.bot.set_position(point['lat'], point['lng'])
 
             self.emit_event(
                 'position_update',
