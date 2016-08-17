@@ -87,7 +87,7 @@ CLS
 @ECHO.
 @ECHO.
 if "%OS%" == "32-BIT" (
-@ECHO. 1 Install 32-Bit software
+@ECHO. 1 - Install 32-Bit software
 ) ELSE (
 @ECHO. 1 - Install 64-Bit software
 )
@@ -204,7 +204,7 @@ if exist %PGBotPath% rmdir %PGBotPath% /s /q
 if not exist %PGBotPath% md %PGBotPath%
 cd C:\Python27\
 pip2 install --upgrade virtualenv
-git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot %PGBotPath%
+git clone --recursive -b dev https://github.com/PokemonGoF/PokemonGo-Bot %PGBotPath%
 if "%OS%" == "32-BIT" pip2 install --upgrade %PGBotPath%\windows_bat\PyYAML-3.11-cp27-cp27m-win32.whl
 if "%OS%" == "64-BIT" pip2 install --upgrade %PGBotPath%\windows_bat\PyYAML-3.11-cp27-cp27m-win_amd64.whl
 cd %PGBotPath%
