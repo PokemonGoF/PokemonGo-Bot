@@ -52,6 +52,8 @@ class RecycleItems(BaseTask):
         self.max_potions_keep = self.config.get('max_potions_keep', None)
         self.max_berries_keep = self.config.get('max_berries_keep', None)
         self.max_revives_keep = self.config.get('max_revives_keep', None)
+        self.recycle_wait_min = self.config.get('recycle_wait_min', 1)
+        self.recycle_wait_max = self.config.get('recycle_wait_max', 4)
         self._validate_item_filter()
 
     def _validate_item_filter(self):
@@ -75,7 +77,7 @@ class RecycleItems(BaseTask):
         :return: True if the recycling process should be run; otherwise, False.
         :rtype: bool
         """
-        if inventory.Items.get_space_left() < (DEFAULT_MIN_EMPTY_SPACE if self.min_empty_space is None else self.min_empty_space):
+        if inventory.Items.get_space_left() <= (DEFAULT_MIN_EMPTY_SPACE if self.min_empty_space is None else self.min_empty_space):
             return True
         return False
 
@@ -104,7 +106,7 @@ class RecycleItems(BaseTask):
 
                 if self.item_should_be_recycled(item_in_inventory):
                     # Make the bot appears more human
-                    action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
+                    action_delay(self.recycle_wait_min, self.recycle_wait_max)
                     # If at any recycling process call we got an error, we consider that the result of this task is error too.
                     if ItemRecycler(self.bot, item_in_inventory, self.get_amount_to_recycle(item_in_inventory)).work() == WorkerResult.ERROR:
                         worker_result = WorkerResult.ERROR
@@ -125,7 +127,7 @@ class RecycleItems(BaseTask):
            category_count = category_count + i[1]
         items_to_recycle = self.get_category_items_to_recycle(category_inventory, category_count, category_max)
         for item in items_to_recycle:
-            action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
+            action_delay(self.recycle_wait_min, self.recycle_wait_max)
             if ItemRecycler(self.bot, inventory.items().get(item[0]), item[1]).work() == WorkerResult.ERROR:
                 worker_result = WorkerResult.ERROR
         return worker_result

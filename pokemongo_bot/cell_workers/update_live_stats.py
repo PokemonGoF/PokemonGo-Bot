@@ -148,16 +148,25 @@ class UpdateLiveStats(BaseTask):
         :raise: RuntimeError: When the given platform isn't supported.
         """
 
-        if platform == "linux" or platform == "linux2" or platform == "cygwin":
-            stdout.write("\x1b]2;{}\x07".format(title))
-            stdout.flush()
-        elif platform == "darwin":
-            stdout.write("\033]0;{}\007".format(title))
-            stdout.flush()
-        elif platform == "win32":
-            ctypes.windll.kernel32.SetConsoleTitleA(title.encode())
-        else:
-            raise RuntimeError("unsupported platform '{}'".format(platform))
+        try:
+            if platform == "linux" or platform == "linux2" or platform == "cygwin":
+                stdout.write("\x1b]2;{}\x07".format(title))
+                stdout.flush()
+            elif platform == "darwin":
+                stdout.write("\033]0;{}\007".format(title))
+                stdout.flush()
+            elif platform == "win32":
+                ctypes.windll.kernel32.SetConsoleTitleA(title.encode())
+            else:
+                raise RuntimeError("unsupported platform '{}'".format(platform))
+        except AttributeError:
+            self.emit_event(
+                'log_stats',
+                level = 'error',
+                formatted = "Unable to write window title"              
+            )
+            self.terminal_title = False
+            
         self._compute_next_update()
 
     def _get_stats_line(self, player_stats):
