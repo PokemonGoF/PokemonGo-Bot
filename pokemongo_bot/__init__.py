@@ -168,7 +168,7 @@ class PokemonGoBot(object):
             parameters=(
                 'time_hms',
                 'wake'
-             )
+            )
         )
 
         # fort stuff
