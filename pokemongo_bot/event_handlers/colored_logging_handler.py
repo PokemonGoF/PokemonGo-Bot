@@ -11,6 +11,7 @@ class ColoredLoggingHandler(EventHandler):
         'api_error':                         'red',
         'bot_exit':                          'red',
         'bot_start':                         'green',
+        'catch_limit':                       'red',
         'config_error':                      'red',
         'egg_already_incubating':            'yellow',
         'egg_hatched':                       'green',
