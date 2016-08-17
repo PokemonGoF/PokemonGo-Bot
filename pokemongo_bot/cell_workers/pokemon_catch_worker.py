@@ -22,8 +22,10 @@ ITEM_ULTRABALL = 3
 ITEM_RAZZBERRY = 701
 
 LOGIC_TO_FUNCTION = {
-    'or': lambda x, y: x or y,
-    'and': lambda x, y: x and y
+    'or': lambda x, y, z: x or y or z,
+    'and': lambda x, y, z: x and y and z,
+    'orand': lambda x, y, z: x or y and z,
+    'andor': lambda x, y, z: x and y or z
 }
 
 
@@ -39,11 +41,11 @@ class PokemonCatchWorker(BaseTask):
         self.spawn_point_guid = ''
         self.response_key = ''
         self.response_status_key = ''
-        
+
         #Config
         self.config = config
         self.min_ultraball_to_keep = config.get('min_ultraball_to_keep', 10)
-        
+
         self.catch_throw_parameters = config.get('catch_throw_parameters', {})
         self.catch_throw_parameters_spin_success_rate = self.catch_throw_parameters.get('spin_success_rate', 0.6)
         self.catch_throw_parameters_excellent_rate = self.catch_throw_parameters.get('excellent_rate', 0.1)
@@ -60,7 +62,7 @@ class PokemonCatchWorker(BaseTask):
         self.catchsim_berry_wait_max = self.catchsim_config.get('berry_wait_max', 3)
         self.catchsim_changeball_wait_min = self.catchsim_config.get('changeball_wait_min', 2)
         self.catchsim_changeball_wait_max = self.catchsim_config.get('changeball_wait_max', 3)
-        
+
 
     ############################################################################
     # public methods
@@ -96,9 +98,10 @@ class PokemonCatchWorker(BaseTask):
         # log encounter
         self.emit_event(
             'pokemon_appeared',
-            formatted='A wild {pokemon} appeared! [CP {cp}] [Potential {iv}] [A/D/S {iv_display}]',
+            formatted='A wild {pokemon} appeared! [NCP {ncp}] [CP {cp}] [Potential {iv}] [A/D/S {iv_display}]',
             data={
                 'pokemon': pokemon.name,
+                'ncp': round(pokemon.cp_percent, 2),
                 'cp': pokemon.cp,
                 'iv': pokemon.iv,
                 'iv_display': pokemon.iv_display,
@@ -166,6 +169,7 @@ class PokemonCatchWorker(BaseTask):
             return False
 
         catch_results = {
+            'ncp': False,
             'cp': False,
             'iv': False,
         }
@@ -175,6 +179,10 @@ class PokemonCatchWorker(BaseTask):
 
         if pokemon_config.get('always_catch', False):
             return True
+
+        catch_ncp = pokemon_config.get('catch_above_ncp', 0)
+        if pokemon.cp_percent > catch_ncp:
+            catch_results['ncp'] = True
 
         catch_cp = pokemon_config.get('catch_above_cp', 0)
         if pokemon.cp > catch_cp:
@@ -419,9 +427,10 @@ class PokemonCatchWorker(BaseTask):
                 inventory.pokemons().add(pokemon)
                 self.emit_event(
                     'pokemon_caught',
-                    formatted='Captured {pokemon}! [CP {cp}] [Potential {iv}] [{iv_display}] [+{exp} exp]',
+                    formatted='Captured {pokemon}! [NCP {ncp}] [CP {cp}] [Potential {iv}] [{iv_display}] [+{exp} exp]',
                     data={
                         'pokemon': pokemon.name,
+                        'ncp': round(pokemon.cp_percent, 2),
                         'cp': pokemon.cp,
                         'iv': pokemon.iv,
                         'iv_display': pokemon.iv_display,

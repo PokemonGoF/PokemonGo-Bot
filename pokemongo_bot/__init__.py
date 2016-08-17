@@ -250,9 +250,7 @@ class PokemonGoBot(Datastore):
             'pokemon_appeared',
             parameters=(
                 'pokemon',
-                'cp',
-                'iv',
-                'iv_display',
+                'ncp', 'cp', 'iv', 'iv_display',
                 'encounter_id',
                 'latitude',
                 'longitude',
@@ -305,7 +303,7 @@ class PokemonGoBot(Datastore):
             'pokemon_caught',
             parameters=(
                 'pokemon',
-                'cp', 'iv', 'iv_display', 'exp',
+                'ncp', 'cp', 'iv', 'iv_display', 'exp',
                 'encounter_id',
                 'latitude',
                 'longitude',
