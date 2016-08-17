@@ -452,7 +452,6 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
          # pokemon caught!
             elif catch_pokemon_status == CATCH_STATUS_SUCCESS:
-                self.logger = logging.getLogger(type(self).__name__)
                 pokemon.id = response_dict['responses']['CATCH_POKEMON']['captured_pokemon_id']
                 self.bot.metrics.captured_pokemon(pokemon.name, pokemon.cp, pokemon.iv_display, pokemon.iv)
                 
@@ -473,11 +472,11 @@ class PokemonCatchWorker(Datastore, BaseTask):
                     }
                
                 )
-                catches = [
-                    (pokemon.name, pokemon.cp, pokemon.iv, str(self.pokemon['encounter_id']), pokemon.pokemon_id)
-                ]
+                #catches = [
+                 #   (pokemon.name, pokemon.cp, pokemon.iv, str(self.pokemon['encounter_id']), pokemon.pokemon_id)
+                #]
                 with self.bot.database as conn:
-                    conn.executemany('''INSERT INTO catch_log (pokemon, cp, iv, encounter_id, pokemon_id) VALUES (?, ?, ?, ?, ?)''',  catches)
+                    conn.execute('''INSERT INTO catch_log (pokemon, cp, iv, encounter_id, pokemon_id) VALUES (?, ?, ?, ?, ?)''', (pokemon.name, pokemon.cp, pokemon.iv, str(encounter_id), pokemon.pokemon_id))
                 #conn.commit()
                 user_data_caught = os.path.join(_base_dir, 'data', 'caught-%s.json' % self.bot.config.username)
                 with open(user_data_caught, 'ab') as outfile:
