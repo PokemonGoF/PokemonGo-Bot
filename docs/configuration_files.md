@@ -24,8 +24,7 @@
 The behaviors of the bot are configured via the `tasks` key in the `config.json`. This enables you to list what you want the bot to do and change the priority of those tasks by reordering them in the list. This list of tasks is run repeatedly and in order. For more information on why we are moving config to this format, check out the [original proposal](https://github.com/PokemonGoF/PokemonGo-Bot/issues/142).
 
 ### Task Options:
-* CatchLuredPokemon
-* CatchVisiblePokemon
+* CatchPokemon
 * EvolvePokemon
   * `evolve_all`: Default `NONE` | Set to `"all"` to evolve Pokémon if possible when the bot starts. Can also be set to individual Pokémon as well as multiple separated by a comma. e.g "Pidgey,Rattata,Weedle,Zubat"
   * `evolve_speed`: Default `20`
@@ -69,10 +68,7 @@ The following configuration tells the bot to transfer all the Pokemon that match
       "type": "RecycleItems"
     },
     {
-      "type": "CatchVisiblePokemon"
-    },
-    {
-      "type": "CatchLuredPokemon"
+      "type": "CatchPokemon"
     },
     {
       "type": "SpinFort"
@@ -287,6 +283,58 @@ Key | Info
     "nickname_template": "{iv_pct}_{iv_ads}"
     "locale": "en"
   }
+}
+```
+
+## CatchPokemon `catch_simulation` Settings
+
+These settings determine how the bot will simulate the app by adding pauses to throw the ball and navigate menus.  All times are in seconds.  To configure these settings add them to the config in the CatchPokemon task.
+
+### Default Settings
+The default settings are 'safe' settings intended to simulate human and app behaviour.
+
+```
+"catch_simulation": {
+    "flee_count": 3,
+    "flee_duration": 2,
+    "catch_wait_min": 2,
+    "catch_wait_max": 6,
+    "berry_wait_min": 2,
+    "berry_wait_max": 3,
+    "changeball_wait_min": 2,
+    "changeball_wait_max": 3
+}
+```
+
+### Settings Description
+
+Setting | Description
+---- | ----
+`flee_count` | The maximum number of times catching animation will play before the pokemon breaks free
+`flee_duration` | The length of time for each animation
+`catch_wait_min`| The minimum amount of time to throw the ball
+`catch_wait_max`| The maximum amount of time to throw the ball
+`berry_wait_min`| The minimum amount of time to use a berry
+`berry_wait_max`| The maximum amount of time to use a berry
+`changeball_wait_min`| The minimum amount of time to change ball
+`changeball_wait_max`| The maximum amount of time to change ball
+
+### `flee_count` and `flee_duration`
+This part is app simulation and the default settings are advised.  When we hit a pokemon in the app the animation will play randomly 1, 2 or 3 times for roughly 2 seconds each time.  So we pause for a random number of animations up to `flee_count` of duration `flee_duration`
+
+### Previous Behaviour
+If you want to make your bot behave as it did prior to this update please use the following settings.
+
+```
+"catch_simulation": {
+    "flee_count": 1,
+    "flee_duration": 2,
+    "catch_wait_min": 0,
+    "catch_wait_max": 0,
+    "berry_wait_min": 0,
+    "berry_wait_max": 0,
+    "changeball_wait_min": 0,
+    "changeball_wait_max": 0
 }
 ```
 
