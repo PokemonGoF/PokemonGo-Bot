@@ -90,7 +90,7 @@ class PokemonCatchWorker(BaseTask):
         )
 
         # simulate app
-        sleep(self.generate_random_sleep_time(3))
+        action_delay(self.config.catchsim_catch_wait_min, self.config.catchsim_catch_wait_max)
 
         # check for VIP pokemon
         is_vip = self._is_vip_pokemon(pokemon)
@@ -103,7 +103,7 @@ class PokemonCatchWorker(BaseTask):
         self._do_catch(pokemon, encounter_id, catch_rate_by_ball, is_vip=is_vip)
 
         # simulate app
-        time.sleep(self.generate_random_sleep_time(5))
+        action_delay(self.config.catchsim_catch_wait_min, self.config.catchsim_catch_wait_max)
 
     def create_encounter_api_call(self):
         encounter_id = self.pokemon['encounter_id']
@@ -437,13 +437,11 @@ class PokemonCatchWorker(BaseTask):
                     formatted='Pokeball thrown to {pokemon} missed.. trying again!',
                     data={'pokemon': pokemon.name}
                 )
-                sleep(self.generate_random_sleep_time(3))
+                # Take some time to throw the ball from config options
+                action_delay(self.config.catchsim_catch_wait_min, self.config.catchsim_catch_wait_max)
                 continue
 
             break
-
-    def generate_random_sleep_time(self, time):
-        return int(time * random() + 0.3)
 
     def generate_spin_parameter(self, throw_parameters):
         spin_success_rate = self.config.catch_throw_parameters_spin_success_rate
