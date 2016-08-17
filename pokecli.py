@@ -500,6 +500,14 @@ def init_config():
         type=int,
         default=10
     )
+    add_config(
+        parser,
+        load,
+        long_flag="--list_pokemon_at_start",
+        help="Logs all pokemon in the bag at bot start",
+        type=bool,
+        default=False
+    )
     # Start to parse other attrs
     config = parser.parse_args()
     if not config.username and 'username' not in load:

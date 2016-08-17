@@ -32,6 +32,8 @@ from pokemongo_bot.base_dir import _base_dir
 from worker_result import WorkerResult
 from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
 from inventory import init_inventory
+from inventory import Pokemons
+from inventory import Pokemon
 from sys import platform as _platform
 import struct
 
@@ -719,6 +721,8 @@ class PokemonGoBot(object):
         # chain subrequests (methods) into one RPC call
 
         self._print_character_info()
+        if self.config.list_pokemon_at_start:
+            self._print_list_pokemon()
         self.api.activate_signature(self.get_encryption_lib())
         self.logger.info('')
         self.update_inventory()
@@ -807,6 +811,43 @@ class PokemonGoBot(object):
         self.logger.info(
             'Revive: ' + str(items_stock[201]) +
             ' | MaxRevive: ' + str(items_stock[202]))
+
+        self.logger.info('')
+
+    def _print_list_pokemon(self):
+        inventory_req = self.get_inventory()
+        inventory_dict = inventory_req['responses']['GET_INVENTORY'][
+            'inventory_delta']['inventory_items']
+
+        self.logger.info('Pokemon Bag:')
+
+        temp_list = []
+        for poke in inventory_dict:
+            poke_data = poke.get('inventory_item_data', {}).get('pokemon_data', {})
+            if not poke_data or poke_data.get('is_egg', False):
+                continue
+            poke_obj = Pokemon(poke_data)
+            poke_dict = {
+                'id': poke_obj.pokemon_id,
+                'name': poke_obj.name,
+                'cp': poke_obj.cp,
+                'iv_pct': poke_obj.iv,
+                'iv_ads': '{}/{}/{}'.format(poke_obj.iv_attack, poke_obj.iv_defense, poke_obj.iv_stamina)
+            }
+            temp_list.append(poke_dict)
+
+        pokemon_list = sorted(temp_list, key=lambda k: k['id'])
+
+        last_id = -1
+        line_p = str()
+        for poke in pokemon_list:
+            if last_id != -1 and last_id != poke['id']:
+                self.logger.info(line_p)
+                last_id = -1
+            if last_id == -1:
+                line_p = '#{} {}: '.format(poke['id'], poke['name'])
+                last_id = poke['id']
+            line_p += '[CP {}, Potential {}, A/D/S {}]'.format(poke['cp'], poke['iv_pct'], poke['iv_ads'])
 
         self.logger.info('')
 
