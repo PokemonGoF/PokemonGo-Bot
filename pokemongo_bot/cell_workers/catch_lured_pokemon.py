@@ -60,13 +60,14 @@ class CatchLuredPokemon(BaseTask):
 
             self.emit_event(
                 'lured_pokemon_found',
+                level='info',
                 formatted='Lured pokemon at fort {fort_name} ({fort_id})',
                 data=result
             )
         return pokemon_to_catch
 
     def catch_pokemon(self, pokemon):
-        worker = PokemonCatchWorker(pokemon, self.bot)
+        worker = PokemonCatchWorker(pokemon, self.bot, self.config)
         return_value = worker.work()
 
         return return_value

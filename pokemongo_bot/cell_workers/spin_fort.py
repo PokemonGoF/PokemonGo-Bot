@@ -9,7 +9,7 @@ from pgoapi.utilities import f2i
 from pokemongo_bot import inventory
 
 from pokemongo_bot.constants import Constants
-from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.base_dir import _base_dir
@@ -26,6 +26,8 @@ class SpinFort(BaseTask):
 
     def initialize(self):
         self.ignore_item_count = self.config.get("ignore_item_count", False)
+        self.spin_wait_min = self.config.get("spin_wait_min", 2)
+        self.spin_wait_max = self.config.get("spin_wait_max", 3)
 
     def should_run(self):
         has_space_for_loot = inventory.Items.has_space_for_loot()
@@ -115,7 +117,7 @@ class SpinFort(BaseTask):
                 )
             if 'chain_hack_sequence_number' in response_dict['responses'][
                     'FORT_SEARCH']:
-                time.sleep(2)
+                action_delay(self.spin_wait_min, self.spin_wait_max)
                 return response_dict['responses']['FORT_SEARCH'][
                     'chain_hack_sequence_number']
             else:
@@ -132,7 +134,7 @@ class SpinFort(BaseTask):
                 else:
                     self.bot.fort_timeouts[fort["id"]] = (time.time() + 300) * 1000  # Don't spin for 5m
                 return WorkerResult.ERROR
-        sleep(2)
+        action_delay(self.spin_wait_min, self.spin_wait_max)
 
         if len(forts) > 1:
             return WorkerResult.RUNNING

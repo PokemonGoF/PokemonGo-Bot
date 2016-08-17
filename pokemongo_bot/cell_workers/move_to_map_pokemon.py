@@ -144,7 +144,7 @@ class MoveToMapPokemon(BaseTask):
 
             # pokemon not reachable with mean walking speed (by config)
             mean_walk_speed = (self.bot.config.walk_max + self.bot.config.walk_min) / 2
-            if pokemon['dist'] > ((pokemon['expire'] - now) * mean_walk_speed) and not self.config['snipe']:
+            if pokemon['dist'] > ((pokemon['disappear_time'] - now) * mean_walk_speed) and not self.config['snipe']:
                 continue
 
             pokemon_list.append(pokemon)
