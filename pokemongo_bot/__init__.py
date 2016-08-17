@@ -680,7 +680,7 @@ class PokemonGoBot(Datastore):
             )
             time.sleep(10)
 
-        with self.database.connection as conn:
+        with self.database.backend.connection as conn:
             conn.execute('''INSERT INTO login (timestamp, message) VALUES (?, ?)''', (time.time(), 'LOGIN_SUCCESS'))
 
         self.event_manager.emit(
