@@ -5,6 +5,7 @@
     "location": "SOME_LOCATION",
     "gmapkey": "GOOGLE_MAPS_API_KEY",
     "encrypt_location": "",
+    "websocket_server": false,
     "heartbeat_threshold": 10,
     "tasks": [
       {
@@ -40,21 +41,39 @@
         }
       },
       {
-        "type": "TransferPokemon"
+        "type": "TransferPokemon",
+        "config": {
+          "transfer_wait_min": 1,
+          "transfer_wait_max": 4
+        }
+      },
+      {
+        "type": "NicknamePokemon",
+        "config": {
+          "enabled": false,
+          "nickname_template": "{iv_pct}_{iv_ads}"
+        }
       },
       {
         "type": "EvolvePokemon",
         "config": {
-          "evolve_all": "NONE",
-          "evolve_cp_min": 300,
-          "evolve_speed": 20,
-          "use_lucky_egg": false
+            "evolve_all": "none",
+            "first_evolve_by": "cp",
+            "evolve_above_cp": 500,
+            "evolve_above_iv": 0.8,
+            "logic": "or",
+            "evolve_speed": 20,
+            "use_lucky_egg": false
         }
       },
       {
         "type": "RecycleItems",
         "config": {
           "min_empty_space": 15,
+          "max_balls_keep": 150,
+          "max_potions_keep": 50,
+          "max_berries_keep": 70,
+          "max_revives_keep": 70,
           "item_filter": {
             "Pokeball":       { "keep" : 100 },
             "Potion":         { "keep" : 10 },
@@ -62,17 +81,42 @@
             "Hyper Potion":   { "keep" : 30 },
             "Revive":         { "keep" : 30 },
             "Razz Berry":     { "keep" : 100 }
-          }
+          },
+          "recycle_wait_min": 1,
+          "recycle_wait_max": 4
         }
       },
+	    {
+	      "type": "CatchPokemon",
+	      "config": {
+	        "catch_visible_pokemon": true,
+	        "catch_lured_pokemon": true,
+	        "min_ultraball_to_keep": 5,
+	        "catch_throw_parameters": {
+	          "excellent_rate": 0.1,
+	          "great_rate": 0.5,
+	          "nice_rate": 0.3,
+	          "normal_rate": 0.1,
+	          "spin_success_rate" : 0.6
+	        },
+				  "catch_simulation": {
+				    "flee_count": 3,
+				    "flee_duration": 2,
+				    "catch_wait_min": 2,
+				    "catch_wait_max": 6,
+				    "berry_wait_min": 2,
+				    "berry_wait_max": 3,
+				    "changeball_wait_min": 2,
+				    "changeball_wait_max": 3
+				  },
+	      }
+	    },
       {
-        "type": "CatchVisiblePokemon"
-      },
-      {
-        "type": "CatchLuredPokemon"
-      },
-      {
-        "type": "SpinFort"
+        "type": "SpinFort",
+        "config": {
+          "spin_wait_min": 2,
+          "spin_wait_max": 3
+        }
       },
       {
         "type": "MoveToMapPokemon",
@@ -319,41 +363,34 @@
         }
       },
       {
-        "type": "MoveToFort"
+        "type": "MoveToFort",
+        "config": {
+            "lure_attraction": true,
+            "lure_max_distance": 2000
+        }
       },
       {
-        "type": "FollowSpiral"
+        "type": "FollowSpiral",
+        "config": {
+          "diameter": 4,
+          "step_size": 70
+        }
       }
     ],
     "map_object_cache_time": 5,
     "forts": {
       "avoid_circles": true,
-      "max_circle_size": 50
+      "max_circle_size": 50,
+      "cache_recent_forts": true
     },
-    "websocket_server": false,
     "walk_max": 4.16,
     "walk_min": 2.16,
-    "action_wait_min": 1,
-    "action_wait_max": 4,
     "debug": false,
     "test": false,
     "health_record": true,
     "location_cache": true,
     "distance_unit": "km",
     "reconnecting_timeout": 15,
-    "catch_randomize_reticle_factor": 1.0,
-    "catch_randomize_spin_factor": 1.0,
-    "min_ultraball_to_keep": 10,
-	  "catch_simulation": {
-	    "flee_count": 3,
-	    "flee_duration": 2,
-	    "catch_wait_min": 2,
-	    "catch_wait_max": 6,
-	    "berry_wait_min": 2,
-	    "berry_wait_max": 3,
-	    "changeball_wait_min": 2,
-	    "changeball_wait_max": 3
-	  },
     "logging_color": true,
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},

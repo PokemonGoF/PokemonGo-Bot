@@ -5,19 +5,41 @@
     "location": "SOME_LOCATION",
     "gmapkey": "GOOGLE_MAPS_API_KEY",
     "encrypt_location": "",
+    "websocket_server": false,
+    "heartbeat_threshold": 10,
     "tasks": [
-        {
-            "type": "HandleSoftBan"
-        },
-        {
-            "type": "CollectLevelUpReward"
-        },
-        {
-            "type": "IncubateEggs",
-            "config": {
-                "longer_eggs_first": true
-            }
-        },
+      {
+        "type": "HandleSoftBan"
+      },
+      {
+        "type": "SleepSchedule",
+        "config": {
+          "enabled": false,
+          "time": "22:54",
+          "duration":"7:46",
+          "time_random_offset": "00:24",
+          "duration_random_offset": "00:43"
+        }
+      },
+      {
+        "type": "CollectLevelUpReward"
+      },
+      {
+        "type": "IncubateEggs",
+        "config": {
+          "longer_eggs_first": true
+        }
+      },
+      {
+        "type": "UpdateLiveStats",
+        "config": {
+          "enabled": false,
+          "min_interval": 10,
+          "stats": ["username", "uptime", "stardust_earned", "xp_earned", "xp_per_hour", "stops_visited"],
+          "terminal_log": true,
+          "terminal_title": true
+        }
+      },
         {
             "type": "PokemonOptimizer",
             "config": {
@@ -26,6 +48,10 @@
                     "// at false, you will still get the log information of what the optimizer": {},
                     "// would have transfered if the parameter was true": {},
                 "transfer": true,
+                    "// 'transfer_wait_min' and 'transfer_wait_max' are the minimum and maximum": {},
+                    "// "time to wait when transferring a pokemon": {},
+                "transfer_wait_min": 1,
+                "transfer_wait_max": 4,
                     "// the 'evolve' parameter activate or deactivate the evolution of pokemons": {},
                     "// at false, no pokemon is going to be evolved, ever": {},
                     "// at false, you will still get the log information of what the": {},
@@ -97,69 +123,88 @@
                     }
                 ]
             }
-        },
-        {
-            "type": "RecycleItems",
-            "config": {
-                "min_empty_space": 15,
-                "item_filter": {
-                    "Pokeball": { "keep": 100 },
-                    "Potion": { "keep": 10 },
-                    "Super Potion": { "keep": 20 },
-                    "Hyper Potion": { "keep": 30 },
-                    "Revive": { "keep": 30 },
-                    "Razz Berry": { "keep": 100 }
-                }
-            }
-        },
-        {
-            "type": "CatchVisiblePokemon"
-        },
-        {
-            "type": "CatchLuredPokemon"
-        },
-        {
-            "type": "SpinFort",
-            "config": {
-                "ignore_item_count": true
-            }
-        },
-        {
-            "type": "MoveToFort",
-            "config": {
-                "lure_attraction": true,
-                "lure_max_distance": 2000,
-                "ignore_item_count": true
-            }
+      },
+      {
+        "type": "RecycleItems",
+        "config": {
+          "min_empty_space": 15,
+          "max_balls_keep": 150,
+          "max_potions_keep": 50,
+          "max_berries_keep": 70,
+          "max_revives_keep": 70,
+          "item_filter": {
+            "Pokeball":       { "keep" : 100 },
+            "Potion":         { "keep" : 10 },
+            "Super Potion":   { "keep" : 20 },
+            "Hyper Potion":   { "keep" : 30 },
+            "Revive":         { "keep" : 30 },
+            "Razz Berry":     { "keep" : 100 }
+          },
+          "recycle_wait_min": 1,
+          "recycle_wait_max": 4
         }
+      },
+        {
+          "type": "CatchPokemon",
+          "config": {
+            "catch_visible_pokemon": true,
+            "catch_lured_pokemon": true,
+            "min_ultraball_to_keep": 5,
+            "catch_throw_parameters": {
+              "excellent_rate": 0.1,
+              "great_rate": 0.5,
+              "nice_rate": 0.3,
+              "normal_rate": 0.1,
+              "spin_success_rate" : 0.6
+            },
+                  "catch_simulation": {
+                    "flee_count": 3,
+                    "flee_duration": 2,
+                    "catch_wait_min": 2,
+                    "catch_wait_max": 6,
+                    "berry_wait_min": 2,
+                    "berry_wait_max": 3,
+                    "changeball_wait_min": 2,
+                    "changeball_wait_max": 3
+                  },
+          }
+        },
+      {
+        "type": "SpinFort",
+        "config": {
+          "spin_wait_min": 2,
+          "spin_wait_max": 3
+        }
+      },
+      {
+        "type": "MoveToFort",
+        "config": {
+            "lure_attraction": true,
+            "lure_max_distance": 2000
+        }
+      },
+      {
+        "type": "FollowSpiral",
+        "config": {
+          "diameter": 4,
+          "step_size": 70
+        }
+      }
     ],
     "map_object_cache_time": 5,
     "forts": {
-        "avoid_circles": true,
-        "max_circle_size": 50
+      "avoid_circles": true,
+      "max_circle_size": 50,
+      "cache_recent_forts": true
     },
-    "websocket_server": true,
     "walk_max": 4.16,
     "walk_min": 2.16,
-    "action_wait_min": 1,
-    "action_wait_max": 4,
-	  "catch_simulation": {
-	    "flee_count": 3,
-	    "flee_duration": 2,
-	    "catch_wait_min": 2,
-	    "catch_wait_max": 6,
-	    "berry_wait_min": 2,
-	    "berry_wait_max": 3,
-	    "changeball_wait_min": 2,
-	    "changeball_wait_max": 3
-	  },
     "debug": false,
     "test": false,
-    "health_record": false,
+    "health_record": true,
     "location_cache": true,
     "distance_unit": "km",
     "reconnecting_timeout": 15,
-    "min_ultraball_to_keep": 10,
     "logging_color": true,
     "catch": {
         "any": {
