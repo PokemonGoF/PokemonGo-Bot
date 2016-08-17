@@ -29,6 +29,7 @@ from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler, Colore
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from pokemongo_bot.base_dir import _base_dir
+from pokemongo_bot.datastore import DatabaseManager, Datastore
 from worker_result import WorkerResult
 from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
 from inventory import init_inventory
@@ -36,7 +37,7 @@ from sys import platform as _platform
 import struct
 
 
-class PokemonGoBot(object):
+class PokemonGoBot(Datastore):
     @property
     def position(self):
         return self.api._position_lat, self.api._position_lng, 0
@@ -56,6 +57,9 @@ class PokemonGoBot(object):
 
     def __init__(self, config):
         self.config = config
+        self.database = DatabaseManager(self)
+        super(PokemonGoBot, self).__init__()
+
         self.fort_timeouts = dict()
         self.pokemon_list = json.load(
             open(os.path.join(_base_dir, 'data', 'pokemon.json'))
@@ -675,6 +679,9 @@ class PokemonGoBot(object):
                 formatted="Login error, server busy. Waiting 10 seconds to try again."
             )
             time.sleep(10)
+
+        with self.database.connection as conn:
+            conn.execute('''INSERT INTO login (timestamp, message) VALUES (?, ?)''', (time.time(), 'LOGIN_SUCCESS'))
 
         self.event_manager.emit(
             'login_successful',
