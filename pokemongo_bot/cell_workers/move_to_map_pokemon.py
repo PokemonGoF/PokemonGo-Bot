@@ -212,7 +212,7 @@ class MoveToMapPokemon(BaseTask):
         last_position = self.bot.position[0:2]
         self.bot.heartbeat()
         self._teleport_to(pokemon)
-        catch_worker = PokemonCatchWorker(pokemon, self.bot)
+        catch_worker = PokemonCatchWorker(pokemon, self.bot, self.config)
         api_encounter_response = catch_worker.create_encounter_api_call()
         time.sleep(SNIPE_SLEEP_SEC)
         self._teleport_back(last_position)
