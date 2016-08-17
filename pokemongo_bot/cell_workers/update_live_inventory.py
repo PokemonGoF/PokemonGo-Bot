@@ -84,11 +84,11 @@ class UpdateLiveInventory(BaseTask):
             self.print_inv(self.get_inventory_line(True),  True)
             return WorkerResult.SUCCESS
 
-        line = self.get_inventory_line(False)
+        line = self.get_inventory_line()
         if not line:
             return WorkerResult.SUCCESS
 
-        self.print_inv(line, False)
+        self.print_inv(line)
         return WorkerResult.SUCCESS
 
     def should_print(self):
@@ -107,7 +107,7 @@ class UpdateLiveInventory(BaseTask):
         """
         self.next_update = datetime.now() + timedelta(seconds=self.min_interval)
 
-    def print_inv(self, items, is_debug):
+    def print_inv(self, items, is_debug=False):
         """
         Logs the items into the terminal using an event.
         :param items: The items to display.
@@ -139,7 +139,7 @@ class UpdateLiveInventory(BaseTask):
         self.compute_next_update()
 
 
-    def get_inventory_line(self, is_debug):
+    def get_inventory_line(self, is_debug=False):
         """
         Generates a items string according to the configuration.
         :param is_debug: If True returns a string with all items.
