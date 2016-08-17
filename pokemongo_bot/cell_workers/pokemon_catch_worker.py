@@ -68,6 +68,10 @@ class PokemonCatchWorker(BaseTask):
     ############################################################################
 
     def work(self, response_dict=None):
+        pokeballs = self.bot.item_inventory_count(1)
+        superballs = self.bot.item_inventory_count(2)
+        ultraballs = self.bot.item_inventory_count(3)
+
         response_dict = response_dict or self.create_encounter_api_call()
 
         # validate response
@@ -94,6 +98,14 @@ class PokemonCatchWorker(BaseTask):
         if not self._should_catch_pokemon(pokemon):
             return WorkerResult.SUCCESS
 
+        is_vip = self._is_vip_pokemon(pokemon)
+        if pokeballs < 1:
+            if superballs < 1:
+                if ultraballs < 1:
+                    return WorkerResult.SUCCESS
+                if not is_vip:
+                    return WorkerResult.SUCCESS
+        
         # log encounter
         self.emit_event(
             'pokemon_appeared',
@@ -114,7 +126,6 @@ class PokemonCatchWorker(BaseTask):
         action_delay(self.config.catchsim_catch_wait_min, self.config.catchsim_catch_wait_max)
 
         # check for VIP pokemon
-        is_vip = self._is_vip_pokemon(pokemon)
         if is_vip:
             self.emit_event('vip_pokemon', formatted='This is a VIP pokemon. Catch!!!')
 
