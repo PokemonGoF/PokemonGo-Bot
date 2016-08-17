@@ -5,6 +5,7 @@
     "location": "SOME_LOCATION",
     "gmapkey": "GOOGLE_MAPS_API_KEY",
     "encrypt_location": "",
+    "heartbeat_threshold": 10,
     "tasks": [
       {
         "type": "HandleSoftBan"
@@ -331,7 +332,8 @@
       "max_circle_size": 50
     },
     "websocket_server": false,
-    "walk": 4.16,
+    "walk_max": 4.16,
+    "walk_min": 2.16,
     "action_wait_min": 1,
     "action_wait_max": 4,
     "debug": false,

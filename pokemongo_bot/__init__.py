@@ -79,7 +79,8 @@ class PokemonGoBot(object):
         self.web_update_queue = Queue.Queue(maxsize=1)
         self.web_update_thread = threading.Thread(target=self.update_web_location_worker)
         self.web_update_thread.start()
-
+        self.heartbeat_threshold = self.config.heartbeat_threshold
+        self.heartbeat_counter = 0
     def start(self):
         self._setup_event_system()
         self._setup_logging()
@@ -150,6 +151,7 @@ class PokemonGoBot(object):
 
         self.event_manager.register_event('bot_start')
         self.event_manager.register_event('bot_exit')
+        self.event_manager.register_event('bot_interrupted')
 
         # sleep stuff
         self.event_manager.register_event(
@@ -473,6 +475,15 @@ class PokemonGoBot(object):
     def tick(self):
         self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
+
+        now = time.time() * 1000
+
+        for fort in self.cell["forts"]:
+            timeout = fort.get("cooldown_complete_timestamp_ms", 0)
+
+            if timeout >= now:
+                self.fort_timeouts[fort["id"]] = timeout
+
         self.tick_count += 1
 
         # Check if session token has expired
@@ -668,7 +679,7 @@ class PokemonGoBot(object):
         )
 
     def get_encryption_lib(self):
-        if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
+        if _platform == "linux" or _platform == "linux2" or _platform == "darwin" or _platform == "freebsd10":
             file_name = 'encrypt.so'
         elif _platform == "Windows" or _platform == "win32":
             # Check if we are on 32 or 64 bit
@@ -1007,10 +1018,13 @@ class PokemonGoBot(object):
         self.fort_timeouts = {id: timeout for id, timeout
                               in self.fort_timeouts.iteritems()
                               if timeout >= time.time() * 1000}
-        request = self.api.create_request()
-        request.get_player()
-        request.check_awarded_badges()
-        request.call()
+        self.heartbeat_counter = self.heartbeat_counter + 1
+        if self.heartbeat_counter >= self.heartbeat_threshold:
+            self.heartbeat_counter = 0
+            request = self.api.create_request()
+            request.get_player()
+            request.check_awarded_badges()
+            request.call()
         try:
             self.web_update_queue.put_nowait(True)  # do this outside of thread every tick
         except Queue.Full:

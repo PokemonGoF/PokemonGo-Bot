@@ -8,6 +8,15 @@ filename="./configs/config.json"
 fi
 cd $pokebotpath
 source bin/activate
+git fetch -a
+if [ "1" == $(git branch -vv |grep -c "* dev") ] && [ $(git log --pretty=format:"%h" -1) != $(git log --pretty=format:"%h" -1 origin/dev) ]
+then
+echo "Branch dev hav an update. Run ./setup.sh -u to update."
+elif [ "1" == $(git branch -vv |grep -c "* master") ] && [ $(git log --pretty=format:"%h" -1) != $(git log --pretty=format:"%h" -1 origin/master) ]
+then 
+echo "Branch master hav an update. Run ./setup.sh -u to update."
+fi
+sleep 2
 if [ ! -f "$filename" ]; then
 echo "There's no "$filename" file. Please use ./setup.sh -c to creat one."
 fi
