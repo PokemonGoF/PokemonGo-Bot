@@ -851,7 +851,7 @@ class PokemonGoBot(Datastore):
                 raise ConfigException("info '{}' isn't available for displaying".format(info))
             return poke_info[info]
 
-        self.logger.info('Pokemons:')
+        self.logger.info('Pokemon:')
 
         last_id = -1
         line_start = str()
