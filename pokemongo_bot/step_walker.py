@@ -23,7 +23,7 @@ class StepWalker(object):
         if self.bot.config.walk_min > self.bot.config.walk_max:
             self.bot.config.walk_min, self.bot.config.walk_max = self.bot.config.walk_max, self.bot.config.walk_min
             
-        self.speed = self.bot.config.walk_max - random() * (self.bot.config.walk_max - self.bot.config.walk_min)
+        self.speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
 
         self.destLat = dest_lat
         self.destLng = dest_lng
@@ -31,9 +31,8 @@ class StepWalker(object):
 
         if self.speed == 0:
             self.speed = uniform(3,5)
-            self.steps = 1
-        else:
-            self.steps = (self.dist + 0.0) / (self.speed + 0.0)
+        
+        self.steps = (self.dist + 0.0) / (self.speed + 0.0)
 
         if self.dist < self.speed or int(self.steps) <= 1:
             self.dLat = 0
