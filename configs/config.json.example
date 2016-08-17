@@ -42,6 +42,10 @@
       },
       {
         "type": "TransferPokemon"
+        "config": {
+	        "transfer_wait_min": 1,
+	        "transfer_wait_max": 4
+        }
       },
       {
         "type": "NicknamePokemon",
@@ -78,6 +82,8 @@
             "Revive":         { "keep" : 30 },
             "Razz Berry":     { "keep" : 100 }
           }
+          "recycle_wait_min": 1,
+          "recycle_wait_max": 4
         }
       },
 	    {
@@ -135,8 +141,6 @@
     },
     "walk_max": 4.16,
     "walk_min": 2.16,
-    "action_wait_min": 1,
-    "action_wait_max": 4,
     "debug": false,
     "test": false,
     "health_record": true,

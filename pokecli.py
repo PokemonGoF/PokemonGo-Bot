@@ -465,8 +465,6 @@ def init_config():
     config.encrypt_location = load.get('encrypt_location', '')
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
-    config.action_wait_max = load.get('action_wait_max', 4)
-    config.action_wait_min = load.get('action_wait_min', 1)
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
 
