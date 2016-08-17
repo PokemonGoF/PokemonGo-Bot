@@ -86,6 +86,7 @@ class PokemonGoBot(object):
         self._setup_api()
         self._load_recent_forts()
         init_inventory(self)
+        self.display_player_info()
         self._print_character_info()
 
         random.seed()
@@ -956,32 +957,35 @@ class PokemonGoBot(object):
             self.web_update_queue.get()
             self.update_web_location()
 
-    # def get_player_info(self):
-    #         pokecount = 0
-    #         itemcount = 1
-    #         for item in inventory.items().all():
-    #             # print('item {}'.format(item))
-    #             playerdata = item.get('inventory_item_data', {}).get('player_stats')
-    #             if playerdata:
-    #                 nextlvlxp = (int(playerdata.get('next_level_xp', 0)) - int(playerdata.get('experience', 0)))
-    #
-    #                 if 'level' in playerdata and 'experience' in playerdata:
-    #                     self.logger.info(
-    #                         'Level: {level}'.format(
-    #                             **playerdata) +
-    #                         ' (Next Level: {} XP)'.format(
-    #                             nextlvlxp) +
-    #                         ' (Total: {experience} XP)'
-    #                         ''.format(**playerdata))
-    #
-    #                 if 'pokemons_captured' in playerdata and 'poke_stop_visits' in playerdata:
-    #                     self.logger.info(
-    #                         'Pokemon Captured: '
-    #                         '{pokemons_captured}'.format(
-    #                             **playerdata) +
-    #                         ' | Pokestops Visited: '
-    #                         '{poke_stop_visits}'.format(
-    #                             **playerdata))
+    def display_player_info(self):
+            inventory_items = self.api.get_inventory()
+            inventory_items = inventory_items['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+            player_stats = next((x["inventory_item_data"]["player_stats"]
+                     for x in inventory_items
+                     if x.get("inventory_item_data", {}).get("player_stats", {})),
+                    None)
+
+            if player_stats:
+
+                nextlvlxp = (int(player_stats.get('next_level_xp', 0)) - int(player_stats.get('experience', 0)))
+
+                if 'level' in player_stats and 'experience' in player_stats:
+                    self.logger.info(
+                        'Level: {level}'.format(
+                            **player_stats) +
+                        ' (Next Level: {} XP)'.format(
+                            nextlvlxp) +
+                        ' (Total: {experience} XP)'
+                        ''.format(**player_stats))
+
+                if 'pokemons_captured' in player_stats and 'poke_stop_visits' in player_stats:
+                    self.logger.info(
+                        'Pokemon Captured: '
+                        '{pokemons_captured}'.format(
+                            **player_stats) +
+                        ' | Pokestops Visited: '
+                        '{poke_stop_visits}'.format(
+                            **player_stats))
 
     def get_forts(self, order_by_distance=False):
         forts = [fort
