@@ -14,26 +14,39 @@ class TransferPokemon(BaseTask):
         pokemon_groups = self._release_pokemon_get_groups()
         for pokemon_id, group in pokemon_groups.iteritems():
             pokemon_name = Pokemons.name_for(pokemon_id)
-            keep_best, keep_best_cp, keep_best_iv = self._validate_keep_best_config(pokemon_name)
+            keep_best, keep_best_cp, keep_best_iv, keep_best_hp_max = self._validate_keep_best_config(pokemon_name)
 
             if keep_best:
                 best_pokemon_ids = set()
                 order_criteria = 'none'
                 if keep_best_cp >= 1:
                     cp_limit = keep_best_cp
-                    best_cp_pokemons = sorted(group, key=lambda x: (x.cp, x.iv), reverse=True)[:cp_limit]
+                    best_cp_pokemons = sorted(group, key=lambda x: (x.cp, x.iv, x.hp_max), reverse=True)[:cp_limit]
                     best_pokemon_ids = set(pokemon.id for pokemon in best_cp_pokemons)
                     order_criteria = 'cp'
 
                 if keep_best_iv >= 1:
                     iv_limit = keep_best_iv
-                    best_iv_pokemons = sorted(group, key=lambda x: (x.iv, x.cp), reverse=True)[:iv_limit]
+                    best_iv_pokemons = sorted(group, key=lambda x: (x.iv, x.cp, x.hp_max), reverse=True)[:iv_limit]
                     best_pokemon_ids |= set(pokemon.id for pokemon in best_iv_pokemons)
                     if order_criteria == 'cp':
                         order_criteria = 'cp and iv'
                     else:
                         order_criteria = 'iv'
 
+                if keep_best_hp_max >= 1:
+                    hp_max_limit = keep_best_hp_max
+                    best_hp_max_pokemons = sorted(group, key=lambda x: (x.hp_max, x.iv, x.cp), reverse=True)[:hp_max_limit]
+                    best_pokemon_ids |= set(pokemon.id for pokemon in best_hp_max_pokemons)
+                    if order_criteria == 'cp' and keep_best_iv >= 1:
+                        order_criteria = 'cp and iv and hp_max'
+                    elif order_criteria == 'cp':
+                        order_criteria = 'cp and hp_max'
+                    elif order_criteria == 'iv':
+                        order_criteria = 'iv and hp_max'
+                    else:
+                        order_criteria = 'hp_max'
+                        
                 # remove best pokemons from all pokemons array
                 all_pokemons = group
                 best_pokemons = []
@@ -181,8 +194,9 @@ class TransferPokemon(BaseTask):
 
         keep_best_cp = release_config.get('keep_best_cp', 0)
         keep_best_iv = release_config.get('keep_best_iv', 0)
-
-        if keep_best_cp or keep_best_iv:
+        keep_best_hp_max = release_config.get('keep_best_hp_max', 0)
+        
+        if keep_best_cp or keep_best_iv or keep_best_hp_max:
             keep_best = True
             try:
                 keep_best_cp = int(keep_best_cp)
@@ -194,10 +208,15 @@ class TransferPokemon(BaseTask):
             except ValueError:
                 keep_best_iv = 0
 
-            if keep_best_cp < 0 or keep_best_iv < 0:
+            try:
+                keep_best_hp_max = int(keep_best_hp_max)
+            except ValueError:
+                keep_best_hp_max = 0
+                
+            if keep_best_cp < 0 or keep_best_iv < 0 or keep_best_hp_max < 0:
                 keep_best = False
 
-            if keep_best_cp == 0 and keep_best_iv == 0:
+            if keep_best_cp == 0 and keep_best_iv == 0 and keep_best_hp_max == 0:
                 keep_best = False
 
-        return keep_best, keep_best_cp, keep_best_iv
+        return keep_best, keep_best_cp, keep_best_iv, keep_best_hp_max
