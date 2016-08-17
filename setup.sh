@@ -60,8 +60,8 @@ cd $pokebotpath
 if [ "$(uname -s)" == "Darwin" ]
 then
 echo "You are on Mac os"
-sudo brew update 
-sudo brew install --devel protobuf
+brew update 
+brew install --devel protobuf
 elif [ $(uname -s) == CYGWIN* ]
 then
 echo "You are on Cygwin"

@@ -29,6 +29,7 @@ from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler, Colore
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from pokemongo_bot.base_dir import _base_dir
+from pokemongo_bot.datastore import DatabaseManager, Datastore
 from worker_result import WorkerResult
 from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
 from inventory import init_inventory
@@ -36,7 +37,7 @@ from sys import platform as _platform
 import struct
 
 
-class PokemonGoBot(object):
+class PokemonGoBot(Datastore):
     @property
     def position(self):
         return self.api._position_lat, self.api._position_lng, 0
@@ -56,6 +57,9 @@ class PokemonGoBot(object):
 
     def __init__(self, config):
         self.config = config
+        self.database = DatabaseManager(self)
+        super(PokemonGoBot, self).__init__()
+
         self.fort_timeouts = dict()
         self.pokemon_list = json.load(
             open(os.path.join(_base_dir, 'data', 'pokemon.json'))
@@ -79,8 +83,13 @@ class PokemonGoBot(object):
         self.web_update_queue = Queue.Queue(maxsize=1)
         self.web_update_thread = threading.Thread(target=self.update_web_location_worker)
         self.web_update_thread.start()
+
+        # Heartbeat limiting
         self.heartbeat_threshold = self.config.heartbeat_threshold
         self.heartbeat_counter = 0
+        self.last_heartbeat = time.time()
+
+
     def start(self):
         self._setup_event_system()
         self._setup_logging()
@@ -160,7 +169,10 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'bot_sleep',
-            parameters=('time_in_seconds',)
+            parameters=(
+                'time_hms',
+                'wake'
+            )
         )
 
         # fort stuff
@@ -413,7 +425,7 @@ class PokemonGoBot(object):
         self.event_manager.register_event(
             'arrived_at_cluster',
             parameters=(
-                'forts', 'radius'
+                'num_points', 'forts', 'radius'
             )
         )
 
@@ -671,6 +683,9 @@ class PokemonGoBot(object):
             )
             time.sleep(10)
 
+        with self.database.backend.connection as conn:
+            conn.execute('''INSERT INTO login (timestamp, message) VALUES (?, ?)''', (time.time(), 'LOGIN_SUCCESS'))
+
         self.event_manager.emit(
             'login_successful',
             sender=self,
@@ -679,14 +694,14 @@ class PokemonGoBot(object):
         )
 
     def get_encryption_lib(self):
-        if _platform == "linux" or _platform == "linux2" or _platform == "darwin" or _platform == "freebsd10":
-            file_name = 'encrypt.so'
-        elif _platform == "Windows" or _platform == "win32":
+        if _platform == "Windows" or _platform == "win32":
             # Check if we are on 32 or 64 bit
             if sys.maxsize > 2**32:
                 file_name = 'encrypt_64.dll'
             else:
                 file_name = 'encrypt.dll'
+        else:
+            file_name = 'encrypt.so'
 
         if self.config.encrypt_location == '':
             path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
@@ -1015,12 +1030,13 @@ class PokemonGoBot(object):
 
     def heartbeat(self):
         # Remove forts that we can now spin again.
+        now = time.time()
         self.fort_timeouts = {id: timeout for id, timeout
                               in self.fort_timeouts.iteritems()
-                              if timeout >= time.time() * 1000}
-        self.heartbeat_counter = self.heartbeat_counter + 1
-        if self.heartbeat_counter >= self.heartbeat_threshold:
-            self.heartbeat_counter = 0
+                              if timeout >= now * 1000}
+
+        if now - self.last_heartbeat >= self.heartbeat_threshold:
+            self.last_heartbeat = now
             request = self.api.create_request()
             request.get_player()
             request.check_awarded_badges()
