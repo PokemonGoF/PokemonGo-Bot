@@ -140,7 +140,9 @@
         {
             "type": "SpinFort",
             "config": {
-                "ignore_item_count": true
+                "ignore_item_count": true,
+			          "spin_wait_min": 2,
+			          "spin_wait_max": 3
             }
         },
         {
