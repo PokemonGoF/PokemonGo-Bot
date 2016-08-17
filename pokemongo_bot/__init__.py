@@ -165,10 +165,7 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'bot_sleep',
-            parameters=(
-                'time_hms',
-                'wake'
-            )
+            parameters=('time_in_seconds',)
         )
 
         # fort stuff
@@ -246,9 +243,7 @@ class PokemonGoBot(object):
             'pokemon_appeared',
             parameters=(
                 'pokemon',
-                'cp',
-                'iv',
-                'iv_display',
+                'ncp', 'cp', 'iv', 'iv_display',
                 'encounter_id',
                 'latitude',
                 'longitude',
@@ -301,7 +296,7 @@ class PokemonGoBot(object):
             'pokemon_caught',
             parameters=(
                 'pokemon',
-                'cp', 'iv', 'iv_display', 'exp',
+                'ncp', 'cp', 'iv', 'iv_display', 'exp',
                 'encounter_id',
                 'latitude',
                 'longitude',
@@ -421,7 +416,7 @@ class PokemonGoBot(object):
         self.event_manager.register_event(
             'arrived_at_cluster',
             parameters=(
-                'num_points', 'forts', 'radius'
+                'forts', 'radius'
             )
         )
 
