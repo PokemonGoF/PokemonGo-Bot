@@ -22,7 +22,15 @@
         }
       },
       {
-        "type": "CollectLevelUpReward"
+        "type": "CompleteTutorial",
+        "config": {
+          "enabled": false,
+          "// set a name": "",
+          "nickname": ""
+        }
+      },
+      {
+         "type": "CollectLevelUpReward"
       },
       {
         "type": "IncubateEggs",
@@ -41,10 +49,10 @@
         }
       },
       {
-        "type": "TransferPokemon"
+        "type": "TransferPokemon",
         "config": {
-	        "transfer_wait_min": 1,
-	        "transfer_wait_max": 4
+          "transfer_wait_min": 1,
+          "transfer_wait_max": 4
         }
       },
       {
@@ -57,13 +65,13 @@
       {
         "type": "EvolvePokemon",
         "config": {
-            "evolve_all": "none",
-            "first_evolve_by": "cp",
-            "evolve_above_cp": 500,
-            "evolve_above_iv": 0.8,
-            "logic": "or",
-            "evolve_speed": 20,
-            "use_lucky_egg": false
+          "evolve_all": "none",
+          "first_evolve_by": "cp",
+          "evolve_above_cp": 500,
+          "evolve_above_iv": 0.8,
+          "logic": "or",
+          "evolve_speed": 20,
+          "use_lucky_egg": false
         }
       },
       {
@@ -81,38 +89,38 @@
             "Hyper Potion":   { "keep" : 30 },
             "Revive":         { "keep" : 30 },
             "Razz Berry":     { "keep" : 100 }
-          }
+          },
           "recycle_wait_min": 1,
           "recycle_wait_max": 4
         }
       },
-	    {
-	      "type": "CatchPokemon",
-	      "config": {
-	        "catch_visible_pokemon": true,
-	        "catch_lured_pokemon": true,
-	        "min_ultraball_to_keep": 5,
-	        "catch_throw_parameters": {
-	          "excellent_rate": 0.1,
-	          "great_rate": 0.5,
-	          "nice_rate": 0.3,
-	          "normal_rate": 0.1,
-	          "spin_success_rate" : 0.6
-	        },
-				  "catch_simulation": {
-				    "flee_count": 3,
-				    "flee_duration": 2,
-				    "catch_wait_min": 2,
-				    "catch_wait_max": 6,
-				    "berry_wait_min": 2,
-				    "berry_wait_max": 3,
-				    "changeball_wait_min": 2,
-				    "changeball_wait_max": 3
-				  },
-	      }
-	    },
       {
-        "type": "SpinFort"
+        "type": "CatchPokemon",
+        "config": {
+          "catch_visible_pokemon": true,
+          "catch_lured_pokemon": true,
+          "min_ultraball_to_keep": 5,
+          "catch_throw_parameters": {
+            "excellent_rate": 0.1,
+            "great_rate": 0.5,
+            "nice_rate": 0.3,
+            "normal_rate": 0.1,
+            "spin_success_rate" : 0.6
+          },
+          "catch_simulation": {
+            "flee_count": 3,
+            "flee_duration": 2,
+            "catch_wait_min": 2,
+            "catch_wait_max": 6,
+            "berry_wait_min": 2,
+            "berry_wait_max": 3,
+            "changeball_wait_min": 2,
+            "changeball_wait_max": 3
+          }
+        }
+      },
+      {
+        "type": "SpinFort",
         "config": {
           "spin_wait_min": 2,
           "spin_wait_max": 3
@@ -121,8 +129,8 @@
       {
         "type": "MoveToFort",
         "config": {
-            "lure_attraction": true,
-            "lure_max_distance": 2000
+          "lure_attraction": true,
+          "lure_max_distance": 2000
         }
       },
       {
@@ -169,7 +177,7 @@
       "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3}
     },
     "vips" : {
-         "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate!": {},
+        "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate!": {},
         "any": {"catch_above_cp": 1200, "catch_above_iv": 0.9, "logic": "or" },
         "Lapras": {},
         "Moltres": {},
@@ -189,6 +197,5 @@
         "Muk": {},
         "Weezing": {},
         "Flareon": {}
-
     }
 }
