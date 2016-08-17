@@ -7,6 +7,7 @@ from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot.inventory import Pokemon
 from pokemongo_bot.worker_result import WorkerResult
+from pokemongo_bot.datastore import Datastore
 
 CATCH_STATUS_SUCCESS = 1
 CATCH_STATUS_FAILED = 2
@@ -27,31 +28,32 @@ LOGIC_TO_FUNCTION = {
 }
 
 
-class PokemonCatchWorker(BaseTask):
+class PokemonCatchWorker(Datastore, BaseTask):
 
     def __init__(self, pokemon, bot, config):
         self.pokemon = pokemon
-        self.api = bot.api
-        self.bot = bot
-        self.position = bot.position
-        self.pokemon_list = bot.pokemon_list
+        super(PokemonCatchWorker, self).__init__(bot, config)
+
+    def initialize(self):
+        self.api = self.bot.api
+        self.position = self.bot.position
+        self.pokemon_list = self.bot.pokemon_list
         self.inventory = inventory.items()
         self.spawn_point_guid = ''
         self.response_key = ''
         self.response_status_key = ''
         
         #Config
-        self.config = config
-        self.min_ultraball_to_keep = config.get('min_ultraball_to_keep', 10)
+        self.min_ultraball_to_keep = self.config.get('min_ultraball_to_keep', 10)
         
-        self.catch_throw_parameters = config.get('catch_throw_parameters', {})
+        self.catch_throw_parameters = self.config.get('catch_throw_parameters', {})
         self.catch_throw_parameters_spin_success_rate = self.catch_throw_parameters.get('spin_success_rate', 0.6)
         self.catch_throw_parameters_excellent_rate = self.catch_throw_parameters.get('excellent_rate', 0.1)
         self.catch_throw_parameters_great_rate = self.catch_throw_parameters.get('great_rate', 0.5)
         self.catch_throw_parameters_nice_rate = self.catch_throw_parameters.get('nice_rate', 0.3)
         self.catch_throw_parameters_normal_rate = self.catch_throw_parameters.get('normal_rate', 0.1)
 
-        self.catchsim_config = config.get('catch_simulation', {})
+        self.catchsim_config = self.config.get('catch_simulation', {})
         self.catchsim_catch_wait_min = self.catchsim_config.get('catch_wait_min', 2)
         self.catchsim_catch_wait_max = self.catchsim_config.get('catch_wait_max', 6)
         self.catchsim_flee_count = int(self.catchsim_config.get('flee_count', 3))
