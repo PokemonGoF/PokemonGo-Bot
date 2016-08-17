@@ -41,7 +41,7 @@
         }
       },
       {
-        "type": "TransferPokemon"
+        "type": "TransferPokemon",
         "config": {
 	        "transfer_wait_min": 1,
 	        "transfer_wait_max": 4
@@ -81,7 +81,7 @@
             "Hyper Potion":   { "keep" : 30 },
             "Revive":         { "keep" : 30 },
             "Razz Berry":     { "keep" : 100 }
-          }
+          },
           "recycle_wait_min": 1,
           "recycle_wait_max": 4
         }
@@ -112,7 +112,7 @@
 	      }
 	    },
       {
-        "type": "SpinFort"
+        "type": "SpinFort",
         "config": {
           "spin_wait_min": 2,
           "spin_wait_max": 3
