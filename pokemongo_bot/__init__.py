@@ -11,6 +11,7 @@ import sys
 import time
 import Queue
 import threading
+import geocoder
 
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
@@ -1176,3 +1177,8 @@ class PokemonGoBot(Datastore):
                 formatted='Starting new cached forts for {path}',
                 data={'path': cached_forts_path}
             )
+    
+    def set_location (self, lng, lat):
+        g = geocoder.google([lng, lat], method='elevation')
+        alt = g.meters
+        self.bot.api.set_position (lng, lat, alt)
