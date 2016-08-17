@@ -467,7 +467,7 @@ def init_config():
     config.release = load.get('release', {})
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
-
+    config.daily_catch_limit = load.get('daily_catch_limit', 800)
     config.vips = load.get('vips', {})
 
     if config.map_object_cache_time < 0.0:
