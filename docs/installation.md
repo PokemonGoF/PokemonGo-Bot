@@ -133,13 +133,21 @@ if docker-compose [installed](https://docs.docker.com/compose/install/) you can 
 docker-compose up
 ```
 
+An example of routing the bot's traffic through a tor proxy can be found within the docker-compose_tor.yml file. To use a different file, supply the file name to docker-compose. The d flag is used to run this in detached mode as the tor logs overwhelm any bot logs you might wish to view. The bot logs can still be seen through `docker logs` command.
+
+```
+docker-compose -f docker-compose_tor.yml up -d 
+```
+
 Also run one single service from the compose configuration is possible:
 
 ```
 docker-compose run --rm bot1-pokego
 ```
 
-command for remove all stopped containers: `docker-compose rm`
+
+
+command to stop and remove all stopped containers: `docker-compose down`
 
 TODO: Add infos / configuration for running multiple bot instances.
 
