@@ -27,7 +27,7 @@
                     "// would have transfered if the parameter was true": {},
                 "transfer": true,
                     "// 'transfer_wait_min' and 'transfer_wait_max' are the minimum and maximum": {},
-                    "// "time to wait when transferring a pokemon": {},
+                    "// time to wait when transferring a pokemon": {},
                 "transfer_wait_min": 1,
                 "transfer_wait_max": 4,
                     "// the 'evolve' parameter activate or deactivate the evolution of pokemons": {},
@@ -138,7 +138,7 @@
 							"berry_wait_max": 3,
 							"changeball_wait_min": 2,
 							"changeball_wait_max": 3
-						},
+						}
 					}
 				},
         {
