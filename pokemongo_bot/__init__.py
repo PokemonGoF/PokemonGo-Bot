@@ -419,7 +419,7 @@ class PokemonGoBot(object):
         self.event_manager.register_event(
             'arrived_at_cluster',
             parameters=(
-                'forts', 'radius'
+                'num_points', 'forts', 'radius'
             )
         )
 
