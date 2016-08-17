@@ -43,6 +43,7 @@ class PokemonCatchWorker(BaseTask):
         #Config
         self.config = config
         self.min_ultraball_to_keep = config.get('min_ultraball_to_keep', 10)
+        
         self.catch_throw_parameters = config.get('catch_throw_parameters', {})
         self.catch_throw_parameters_spin_success_rate = self.catch_throw_parameters.get('spin_success_rate', 0.6)
         self.catch_throw_parameters_excellent_rate = self.catch_throw_parameters.get('excellent_rate', 0.1)
@@ -50,6 +51,16 @@ class PokemonCatchWorker(BaseTask):
         self.catch_throw_parameters_nice_rate = self.catch_throw_parameters.get('nice_rate', 0.3)
         self.catch_throw_parameters_normal_rate = self.catch_throw_parameters.get('normal_rate', 0.1)
 
+        self.catchsim_config = config.get('catch_simulation', {})
+        self.catchsim_catch_wait_min = self.catchsim_config.get('catch_wait_min', 2)
+        self.catchsim_catch_wait_max = self.catchsim_config.get('catch_wait_max', 6)
+        self.catchsim_flee_count = int(self.catchsim_config.get('flee_count', 3))
+        self.catchsim_flee_duration = self.catchsim_config.get('flee_duration', 2)
+        self.catchsim_berry_wait_min = self.catchsim_config.get('berry_wait_min', 2)
+        self.catchsim_berry_wait_max = self.catchsim_config.get('berry_wait_max', 3)
+        self.catchsim_changeball_wait_min = self.catchsim_config.get('changeball_wait_min', 2)
+        self.catchsim_changeball_wait_max = self.catchsim_config.get('changeball_wait_max', 3)
+        
 
     ############################################################################
     # public methods
@@ -189,7 +200,7 @@ class PokemonCatchWorker(BaseTask):
 
     def _use_berry(self, berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball):
         # Delay to simulate selecting berry
-        action_delay(self.config.catchsim_berry_wait_min, self.config.catchsim_berry_wait_max)
+        action_delay(self.catchsim_berry_wait_min, self.catchsim_berry_wait_max)
         new_catch_rate_by_ball = []
         self.emit_event(
             'pokemon_catch_rate',
@@ -327,7 +338,7 @@ class PokemonCatchWorker(BaseTask):
 
             # If we change ball then wait to simulate user selecting it
             if changed_ball:
-                action_delay(self.config.catchsim_changeball_wait_min, self.config.catchsim_changeball_wait_max)
+                action_delay(self.catchsim_changeball_wait_min, self.catchsim_changeball_wait_max)
 
             # Randomize the quality of the throw
             # Default structure
@@ -343,7 +354,7 @@ class PokemonCatchWorker(BaseTask):
             ball_count[current_ball] -= 1
             self.inventory.get(current_ball).remove(1)
             # Take some time to throw the ball from config options
-            action_delay(self.config.catchsim_catch_wait_min, self.config.catchsim_catch_wait_max)
+            action_delay(self.catchsim_catch_wait_min, self.catchsim_catch_wait_max)
             self.emit_event(
                 'threw_pokeball',
                 formatted='Used {ball_name}, with chance {success_percentage} ({count_left} left)',
@@ -380,8 +391,8 @@ class PokemonCatchWorker(BaseTask):
                 # sleep according to flee_count and flee_duration config settings
                 # randomly chooses a number of times to 'show' wobble animation between 1 and flee_count
                 # multiplies this by flee_duration to get total sleep
-                if self.config.catchsim_flee_count:
-                    sleep((randrange(self.config.catchsim_flee_count)+1) * self.config.catchsim_flee_duration)
+                if self.catchsim_flee_count:
+                    sleep((randrange(self.catchsim_flee_count)+1) * self.catchsim_flee_duration)
 
                 continue
 

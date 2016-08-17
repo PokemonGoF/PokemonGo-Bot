@@ -470,16 +470,6 @@ def init_config():
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
 
-    catchsim_config = load.get('catch_simulation', {})
-    config.catchsim_catch_wait_min = catchsim_config.get('catch_wait_min', 2)
-    config.catchsim_catch_wait_max = catchsim_config.get('catch_wait_max', 6)
-    config.catchsim_flee_count = int(catchsim_config.get('flee_count', 3))
-    config.catchsim_flee_duration = catchsim_config.get('flee_duration', 2)
-    config.catchsim_berry_wait_min = catchsim_config.get('berry_wait_min', 2)
-    config.catchsim_berry_wait_max = catchsim_config.get('berry_wait_max', 3)
-    config.catchsim_changeball_wait_min = catchsim_config.get('changeball_wait_min', 2)
-    config.catchsim_changeball_wait_max = catchsim_config.get('changeball_wait_max', 3)
-
     config.vips = load.get('vips', {})
 
     if config.map_object_cache_time < 0.0:
