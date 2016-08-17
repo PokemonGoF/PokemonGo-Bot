@@ -323,6 +323,7 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
         self.event_manager.register_event('vip_pokemon')
         self.event_manager.register_event('gained_candy', parameters=('quantity', 'type'))
+        self.event_manager.register_event('catch_limit')
 
         # level up stuff
         self.event_manager.register_event(
