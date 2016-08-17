@@ -33,8 +33,6 @@ from pokemongo_bot.datastore import _init_database, Datastore
 from worker_result import WorkerResult
 from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
 from inventory import init_inventory
-from inventory import Pokemons
-from inventory import Pokemon
 from sys import platform as _platform
 import struct
 
@@ -734,7 +732,7 @@ class PokemonGoBot(Datastore):
         # chain subrequests (methods) into one RPC call
 
         self._print_character_info()
-        if self.config.list_pokemon_at_start:
+        if self.config.pokemon_bag_show_at_start and self.config.pokemon_bag_pokemon_info:
             self._print_list_pokemon()
         self.api.activate_signature(self.get_encryption_lib())
         self.logger.info('')
@@ -828,49 +826,50 @@ class PokemonGoBot(Datastore):
         self.logger.info('')
 
     def _print_list_pokemon(self):
-        # get all info needed
-        inventory_req = self.get_inventory()
-        inventory_dict = inventory_req['responses']['GET_INVENTORY'][
-            'inventory_delta']['inventory_items']
+        init_inventory(self)
 
-        temp_list = []
-        for poke in inventory_dict:
-            poke_data = poke.get('inventory_item_data', {}).get('pokemon_data', {})
-            if not poke_data or poke_data.get('is_egg', False):
-                continue
-            poke_obj = Pokemon(poke_data)
-            temp_list.append(poke_obj)
+        # get pokemon list
+        pokemon_list = inventory.pokemons().all()
+        pokemon_list = sorted(pokemon_list, key=lambda k: k.pokemon_id)
 
-        pokemon_list = sorted(temp_list, key=lambda k: k.pokemon_id)
-
-        poke_info_displayed = ['cp', 'iv_ads', 'iv_pct']
+        show_count = self.config.pokemon_bag_show_count
+        poke_info_displayed = self.config.pokemon_bag_pokemon_info
 
         def get_poke_info(info, pokemon):
             poke_info = {
-                'id': pokemon.pokemon_id,
-                'name': pokemon.name,
-                'cp': 'CP: {}'.format(pokemon.cp),
-                'iv_ads': 'IV: {}/{}/{}'.format(pokemon.iv_attack, pokemon.iv_defense, pokemon.iv_stamina),
-                'iv_pct': 'Potential: {}'.format(pokemon.iv)
+                'cp': 'CP {}'.format(pokemon.cp),
+                'iv_ads': 'A/D/S {}/{}/{}'.format(pokemon.iv_attack, pokemon.iv_defense, pokemon.iv_stamina),
+                'iv_pct': 'IV {}'.format(pokemon.iv),
+                'ivcp': 'IVCP {}'.format(round(pokemon.ivcp,2)),
+                'ncp': 'NCP {}'.format(round(pokemon.cp_percent,2)),
+                'level': "Level {}".format(pokemon.level),
+                'hp': 'HP {}/{}'.format(pokemon.hp, pokemon.hp_max),
+                'moveset': 'Moves: {}'.format(pokemon.moveset),
+                'dps': 'DPS {}'.format(round(pokemon.moveset.dps, 2))
             }
             if info not in poke_info:
                 raise ConfigException("info '{}' isn't available for displaying".format(info))
             return poke_info[info]
 
-        self.logger.info('Pokemon Bag:')
+        self.logger.info('Pokemons:')
 
         last_id = -1
         line_start = str()
         line_p = []
+        count = 0
         for poke in pokemon_list:
-            if last_id != -1 and last_id != get_poke_info('id', poke):
-                self.logger.info(line_start + ' | '.join(line_p))
+            if last_id != -1 and last_id != poke.pokemon_id:
+                if show_count:
+                    line_start += '[{}]'.format(count)
+                self.logger.info(line_start + ': ' + ' | '.join(line_p))
                 line_p = []
                 last_id = -1
+                count = 0
             if last_id == -1:
-                line_start = '#{} {}: '.format(get_poke_info('id', poke), get_poke_info('name', poke))
-                last_id = get_poke_info('id', poke)
-            line_p.append('({}, {}, {})'.format(get_poke_info('cp', poke), get_poke_info('iv_ads', poke), get_poke_info('iv_pct', poke)))
+                last_id = poke.pokemon_id
+                line_start = '#{} {}'.format(last_id, poke.name)
+            line_p.append('({})'.format(', '.join([get_poke_info(x, poke) for x in poke_info_displayed])))
+            count += 1
 
         self.logger.info('')
 
