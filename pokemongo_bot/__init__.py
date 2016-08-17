@@ -166,8 +166,8 @@ class PokemonGoBot(object):
         self.event_manager.register_event(
             'bot_sleep',
             parameters=(
-                 'time_hms',
-                 'wake'
+                'time_hms',
+                'wake'
              )
         )
 
