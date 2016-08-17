@@ -472,9 +472,6 @@ class PokemonCatchWorker(Datastore, BaseTask):
                     }
                
                 )
-                #catches = [
-                 #   (pokemon.name, pokemon.cp, pokemon.iv, str(self.pokemon['encounter_id']), pokemon.pokemon_id)
-                #]
                 with self.bot.database as conn:
                     conn.execute('''INSERT INTO catch_log (pokemon, cp, iv, encounter_id, pokemon_id) VALUES (?, ?, ?, ?, ?)''', (pokemon.name, pokemon.cp, pokemon.iv, str(encounter_id), pokemon.pokemon_id))
                 #conn.commit()
