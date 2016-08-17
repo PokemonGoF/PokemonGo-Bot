@@ -87,11 +87,11 @@
 				    "berry_wait_max": 3,
 				    "changeball_wait_min": 2,
 				    "changeball_wait_max": 3
-				  },
+				  }
 	      }
 	    },
       {
-        "type": "SpinFort"
+        "type": "SpinFort",
         "config": {
           "spin_wait_min": 2,
           "spin_wait_max": 3
