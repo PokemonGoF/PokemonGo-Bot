@@ -66,7 +66,7 @@ class FollowCluster(BaseTask):
                     if step_walker.step():
                         self.is_at_destination = True
                 else:
-                    self.bot.api.set_position(lat, lng)
+                    self.bot.set_position(lat, lng)
 
             elif not self.announced:
                 self.emit_event(
