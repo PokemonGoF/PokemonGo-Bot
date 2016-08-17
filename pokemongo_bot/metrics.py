@@ -7,15 +7,15 @@ class Metrics(object):
     def __init__(self, bot):
         self.bot = bot
         self.start_time = time.time()
-        self.dust = {'start': 0, 'latest': 0}
-        self.xp = {'start': 0, 'latest': 0}
-        self.distance = {'start': 0, 'latest': 0}
-        self.encounters = {'start': 0, 'latest': 0}
-        self.throws = {'start': 0, 'latest': 0}
-        self.captures = {'start': 0, 'latest': 0}
-        self.visits = {'start': 0, 'latest': 0}
-        self.unique_mons = {'start': 0, 'latest': 0}
-        self.evolutions = {'start': 0, 'latest': 0}
+        self.dust = {'start': -1, 'latest': -1}
+        self.xp = {'start': -1, 'latest': -1}
+        self.distance = {'start': -1, 'latest': -1}
+        self.encounters = {'start': -1, 'latest': -1}
+        self.throws = {'start': -1, 'latest': -1}
+        self.captures = {'start': -1, 'latest': -1}
+        self.visits = {'start': -1, 'latest': -1}
+        self.unique_mons = {'start': -1, 'latest': -1}
+        self.evolutions = {'start': -1, 'latest': -1}
 
         self.releases = 0
         self.highest_cp = {'cp': 0, 'desc': ''}
@@ -84,38 +84,38 @@ class Metrics(object):
         response_dict = request.call()
         try:
             self.dust['latest'] = response_dict['responses']['GET_PLAYER']['player_data']['currencies'][1]['amount']
-            if self.dust['start'] is None: self.dust['start'] = self.dust['latest']
+            if self.dust['start'] < 0: self.dust['start'] = self.dust['latest']
             for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
                 if 'inventory_item_data' in item:
                     if 'player_stats' in item['inventory_item_data']:
                         playerdata = item['inventory_item_data']['player_stats']
 
                         self.xp['latest'] = playerdata.get('experience', 0)
-                        if self.xp['start'] is None: self.xp['start'] = self.xp['latest']
+                        if self.xp['start'] < 0: self.xp['start'] = self.xp['latest']
 
                         self.visits['latest'] = playerdata.get('poke_stop_visits', 0)
-                        if self.visits['start'] is None: self.visits['start'] = self.visits['latest']
+                        if self.visits['start'] < 0: self.visits['start'] = self.visits['latest']
 
                         self.captures['latest'] = playerdata.get('pokemons_captured', 0)
-                        if self.captures['start'] is None: self.captures['start'] = self.captures['latest']
+                        if self.captures['start'] < 0: self.captures['start'] = self.captures['latest']
 
                         self.distance['latest'] = playerdata.get('km_walked', 0)
-                        if self.distance['start'] is None: self.distance['start'] = self.distance['latest']
+                        if self.distance['start'] < 0: self.distance['start'] = self.distance['latest']
 
                         self.encounters['latest'] = playerdata.get('pokemons_encountered', 0)
-                        if self.encounters['start'] is None: self.encounters['start'] = self.encounters['latest']
+                        if self.encounters['start'] < 0: self.encounters['start'] = self.encounters['latest']
 
                         self.throws['latest'] = playerdata.get('pokeballs_thrown', 0)
-                        if self.throws['start'] is None: self.throws['start'] = self.throws['latest']
+                        if self.throws['start'] < 0: self.throws['start'] = self.throws['latest']
 
                         self.unique_mons['latest'] = playerdata.get('unique_pokedex_entries', 0)
-                        if self.unique_mons['start'] is None: self.unique_mons['start'] = self.unique_mons['latest']
+                        if self.unique_mons['start'] < 0: self.unique_mons['start'] = self.unique_mons['latest']
 
                         self.visits['latest'] = playerdata.get('poke_stop_visits', 0)
-                        if self.visits['start'] is None: self.visits['start'] = self.visits['latest']
+                        if self.visits['start'] < 0: self.visits['start'] = self.visits['latest']
 
                         self.evolutions['latest'] = playerdata.get('evolutions', 0)
-                        if self.evolutions['start'] is None: self.evolutions['start'] = self.evolutions['latest']
+                        if self.evolutions['start'] < 0: self.evolutions['start'] = self.evolutions['latest']
         except KeyError:
             # Nothing we can do if there's no player info.
             return
