@@ -54,6 +54,12 @@ class Datastore(object):
         elif not os.path.isdir(str(path)):
             raise RuntimeError('The migrations directory does not exist')
 
-        with DATABASE as conn:
+        try:
             migrations = read_migrations(path)
             BACKEND.apply_migrations(BACKEND.to_apply(migrations))
+        except (IOError, OSError):
+            """
+            If `migrations` directory is not present, then whatever is subclassing
+            us will not have any DB schemas to load.
+            """
+            pass
