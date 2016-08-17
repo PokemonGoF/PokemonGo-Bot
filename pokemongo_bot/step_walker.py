@@ -19,9 +19,6 @@ class StepWalker(object):
             dest_lat,
             dest_lng
         )
-
-        if self.bot.config.walk_min > self.bot.config.walk_max:
-            self.bot.config.walk_min, self.bot.config.walk_max = self.bot.config.walk_max, self.bot.config.walk_min
             
         self.speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
 
