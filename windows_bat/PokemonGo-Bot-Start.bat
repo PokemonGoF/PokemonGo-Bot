@@ -1,87 +1,103 @@
 TITLE PokemonGo-Bot
-@ECHO OFF
 CLS
+@ECHO OFF
+
+
 
 :init
 setlocal DisableDelayedExpansion
+path c:\Program Files\Git\cmd;%PATH%
+path C:\Python27;%PATH%
+path C:\Python27\Scripts;%PATH%
 set "batchPath=%~0"
 for %%k in (%0) do set batchName=%%~nk
 set "vbsGetPrivileges=%temp%\OEgetPriv_%batchName%.vbs"
 setlocal EnableDelayedExpansion
 
+
+
 :checkPrivileges
 NET FILE 1>NUL 2>NUL
 if '%errorlevel%' == '0' ( goto gotPrivileges ) else ( goto getPrivileges )
 
+
+
 :getPrivileges
 if '%1'=='ELEV' (echo ELEV & shift /1 & goto gotPrivileges)
-ECHO.
-
-ECHO Set UAC = CreateObject^("Shell.Application"^) > "%vbsGetPrivileges%"
-ECHO args = "ELEV " >> "%vbsGetPrivileges%"
-ECHO For Each strArg in WScript.Arguments >> "%vbsGetPrivileges%"
-ECHO args = args ^& strArg ^& " "  >> "%vbsGetPrivileges%"
-ECHO Next >> "%vbsGetPrivileges%"
-ECHO UAC.ShellExecute "!batchPath!", args, "", "runas", 1 >> "%vbsGetPrivileges%"
+@ECHO Set UAC = CreateObject^("Shell.Application"^) > "%vbsGetPrivileges%"
+@ECHO args = "ELEV " >> "%vbsGetPrivileges%"
+@ECHO For Each strArg in WScript.Arguments >> "%vbsGetPrivileges%"
+@ECHO args = args ^& strArg ^& " " >> "%vbsGetPrivileges%"
+@ECHO Next >> "%vbsGetPrivileges%"
+@ECHO UAC.ShellExecute "!batchPath!", args, "", "runas", 1 >> "%vbsGetPrivileges%"
 "%SystemRoot%\System32\WScript.exe" "%vbsGetPrivileges%" %*
 exit /B
+
+
 
 :gotPrivileges
 setlocal & pushd .
 cd /d %~dp0
-if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul  &  shift /1)
-@ECHO ON
-@ECHO.
-@ECHO.
-@ECHO.
+if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul & shift /1)
+
+
+
+:startBot
+CLS
 @ECHO --------------------Verifying PokemonGo-Bot version--------------------
 @ECHO.
-@ECHO.
-@ECHO.
-cd C:/Python27/PokemonGo-Bot/
+CD..
 git pull
 git submodule update --init --recursive
-git submodule foreach git pull origin master
-@ECHO.
-@ECHO.
 @ECHO.
 @ECHO WARNING: Verify if the Config.json file got updated. If Yes, check if your modifications are still valid before proceeding.
 @ECHO.
-@ECHO.
-@ECHO.
-@pause
-@ECHO.
-@ECHO.
-@ECHO.
+@timeout /t 10
+CLS
 @ECHO --------------------Initializing environment--------------------
 @ECHO.
-@ECHO.
-@ECHO.
-cd C:/Python27/PokemonGo-Bot/
 virtualenv .
-call C:\Python27\PokemonGo-Bot\Scripts\activate.bat
-pip2 install --upgrade -r C:/Python27/PokemonGo-Bot/requirements.txt
-@ECHO.
-@ECHO.
-@ECHO.
+CD Scripts
+call activate.bat
+CD..
+pip2 install --upgrade -r requirements.txt
+CLS
 @ECHO --------------------Initializing web server--------------------
 @ECHO.
+set BatchPath="%~dp0"
+start cmd.exe /k "CD %BatchPath%&CD..&CD web&python -m SimpleHTTPServer"
 @ECHO.
-@ECHO.
-start cmd.exe /k "cd C:/Python27/PokemonGo-Bot/web&python -m SimpleHTTPServer"
-@ECHO.
-@ECHO.
-@ECHO.
+CLS
 @ECHO --------------------Starting bot--------------------
 @ECHO.
+
+
+
+:loop
+TITLE=PokemonGo-Bot
+CD %BatchPath%
+CD ..
+python pokecli.py
+if errorlevel 1 goto restart
+if errorlevel 0 goto eof
+
+
+
+:restart
+call:problem
+timeout /t 60
+goto loop
+goto:eof
+
+
+
+:problem
 @ECHO.
+@ECHO. Something went wrong and the bot needed to be restarted. Please investigate the cause.
 @ECHO.
-python C:/Python27/PokemonGo-Bot/pokecli.py
+goto:eof
 
 
 
-
-
-
-
-
+:eof
+exit

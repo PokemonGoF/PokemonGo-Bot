@@ -66,7 +66,7 @@ class CatchVisiblePokemon(BaseTask):
                 return WorkerResult.SUCCESS
 
     def catch_pokemon(self, pokemon):
-        worker = PokemonCatchWorker(pokemon, self.bot)
+        worker = PokemonCatchWorker(pokemon, self.bot, self.config)
         return_value = worker.work()
 
         return return_value
