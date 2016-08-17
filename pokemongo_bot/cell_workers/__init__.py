@@ -21,3 +21,4 @@ from sleep_schedule import SleepSchedule
 from update_live_stats import UpdateLiveStats
 from catch_pokemon import CatchPokemon
 from complete_tutorial import CompleteTutorial
+from bot_threshold import BotThreshold
