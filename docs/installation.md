@@ -69,7 +69,7 @@ cd PokemonGo-Bot
 docker build --build-arg timezone=Europe/London -t pokemongo-bot .
 ```
 
-Optionally you can set your timezone with the --build-arg option (default is Etc/UTC) 
+Optionally you can set your timezone with the --build-arg option (default is Etc/UTC). You can find an exhaustive list of timezone here: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
 After build process you can verify that the image was created with:
 
@@ -77,7 +77,7 @@ After build process you can verify that the image was created with:
 docker images
 ```
 
-To run PokemonGo-Bot Docker image you've created:
+To run the bot container with the PokemonGo-Bot Docker image you've created:
 
 ```
 docker run --name=bot1-pokego --rm -it -v $(pwd)/configs/config.json:/usr/src/app/configs/config.json pokemongo-bot
@@ -89,6 +89,51 @@ Run a second container provided with the OpenPoGoBotWeb view:
 docker run --name=bot1-pokegoweb --rm -it --volumes-from bot1-pokego -p 8000:8000 -v $(pwd)/configs/userdata.js:/usr/src/app/web/userdata.js -w /usr/src/app/web python:2.7 python -m SimpleHTTPServer
 ```
 The OpenPoGoWeb will be served on `http://<your host>:8000`
+
+###Remarks for Windows
+
+Even if the previous command are valid, you will not be able to visualize the web view under Windows. 
+To visualize the web view, execute instead the following commands (*make sure you are in the root folder and that your docker images is built*):
+
+- Run the bot container:
+
+```
+docker run --name=bot1-pokego --rm -it -v $(pwd)/configs/config.json:/usr/src/app/configs/config.json -v $(pwd)/web/:/usr/src/app/web/ pokemongo-bot
+```
+
+- Run the web container:
+
+```
+docker run --name=bot1-pokegoweb --rm -it --volumes-from bot1-pokego -p 8000:8000 -v $(pwd)/configs/userdata.js:/usr/src/app/web/userdata.js -w /usr/src/app/web python:2.7 python -m SimpleHTTPServer
+```
+
+- Retrieve your host address:
+
+```
+  docker-machine ip default
+```
+
+Then, with your containers running and your host address, you can access the web view in your browser:
+
+`http://<your host address>:8000 (eg http://192.168.99.100:8000)`
+ 
+ 
+####Errors
+
+- An error occurred trying to connect:
+
+Make sure your virtual machine is started, and your environment variables are set in your shell:
+
+```
+docker-machine start default
+docker-machine env default
+```
+
+- Unable to find image 'pokemongo-bot:latest' locally:
+
+Make sure that the name of the image is correct.
+
+ ###Using Docker compose
 
 if docker-compose [installed](https://docs.docker.com/compose/install/) you can alternatively run the PokemonGo-Bot ecosystem with one simple command:  
 (by using the docker-compose.yml configuration in this repo)
