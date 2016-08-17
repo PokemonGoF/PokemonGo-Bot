@@ -1071,8 +1071,11 @@ class Inventory(object):
             i.refresh(inventory)
 
         user_web_inventory = os.path.join(_base_dir, 'web', 'inventory-%s.json' % (self.bot.config.username))
-        with open(user_web_inventory, 'w') as outfile:
-            json.dump(inventory, outfile)
+        try:
+            with open(user_web_inventory, 'w') as outfile:
+                json.dump(inventory, outfile)
+        except IOError as e:
+            errmsg = '[x] Error while opening location file: user_web_inventory'
 
     def retrieve_item_inventory_size(self):
         """
