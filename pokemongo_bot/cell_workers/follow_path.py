@@ -117,7 +117,7 @@ class FollowPath(BaseTask):
                 is_at_destination = True
 
         else:
-            self.bot.api.set_position(lat, lng, 0)
+            self.bot.set_position(lat, lng)
 
         dist = distance(
             last_lat,
