@@ -49,7 +49,6 @@ CLS
 CD..
 git pull
 git submodule update --init --recursive
-git submodule foreach git pull origin master
 @ECHO.
 @ECHO WARNING: Verify if the Config.json file got updated. If Yes, check if your modifications are still valid before proceeding.
 @ECHO.

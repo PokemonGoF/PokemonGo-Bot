@@ -96,7 +96,6 @@ if "%OS%" == "32-BIT" (
 @ECHO.
 @ECHO.
 @ECHO.
-<<<<<<< HEAD
 
 
 
@@ -126,9 +125,6 @@ if exist %DownPath%\%GitFName86% call:installit %GitFName86% /SILENT
 if exist %DownPath%\%PythonFName86% call:installit %PythonFName86% /quiet
 @ECHO Installing Visual C++ for Python...
 if exist %DownPath%\%VisualFName% call:installit %VisualFName% /quiet
-=======
-@ECHO ---- If you already have a config.json and a userdata.js, copy to the same folder as this batch file.
->>>>>>> parent of 9db2798... Update PokemonGo-Bot-Install.bat
 @ECHO.
 @ECHO.
 @ECHO.
@@ -208,7 +204,7 @@ if exist %PGBotPath% rmdir %PGBotPath% /s /q
 if not exist %PGBotPath% md %PGBotPath%
 cd C:\Python27\
 pip2 install --upgrade virtualenv
-git clone --recursive -b dev https://github.com/PokemonGoF/PokemonGo-Bot %PGBotPath%
+git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot %PGBotPath%
 if "%OS%" == "32-BIT" pip2 install --upgrade %PGBotPath%\windows_bat\PyYAML-3.11-cp27-cp27m-win32.whl
 if "%OS%" == "64-BIT" pip2 install --upgrade %PGBotPath%\windows_bat\PyYAML-3.11-cp27-cp27m-win_amd64.whl
 cd %PGBotPath%
@@ -249,7 +245,6 @@ CLS
 @ECHO.
 @ECHO Remember to configure both config.json and userdata.js!
 @ECHO.
-<<<<<<< HEAD
 @ECHO.
 @ECHO.
 @ECHO "%PGBotPath%/configs/config.json"
@@ -259,14 +254,9 @@ CLS
 @ECHO "%PGBotPath%/web/config/userdata.js"
 @ECHO INSTRUCTIONS:
 @ECHO "https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/docs/google_map.md"
-=======
-@ECHO "C:/Python27/PokemonGo-Bot/configs/config.json"
-@ECHO.
-@ECHO "C:/Python27/PokemonGo-Bot/web/config/userdata.js"
->>>>>>> parent of 9db2798... Update PokemonGo-Bot-Install.bat
 @ECHO.
 @ECHO To get an Google Map API Key:
-@ECHO https://developers.google.com/maps/documentation/javascript/get-api-key
+@ECHO "https://developers.google.com/maps/documentation/javascript/get-api-key"
 @ECHO.
 @ECHO.
 @ECHO.
