@@ -45,7 +45,8 @@ class TreeConfigBuilder(object):
                     deprecated_pokemon_task = True
                     task_type = 'CatchPokemon'
                     task_config = {}
-                    # Best way to show deprecation message?
+                    self.bot.logger.warning('The CatchVisiblePokemon & CatchLuredPokemon tasks have been replaced with '
+                                            'CatchPokemon.  CatchPokemon has been enabled with default settings.')
 
             if self._is_plugin_task(task_type):
                 worker = self.plugin_loader.get_class(task_type)
