@@ -257,9 +257,12 @@ class MoveToMapPokemon(BaseTask):
 
         pokemon = pokemon_list[0]
 
-        # if we only have ultraballs and the target is not a vip don't snipe/walk
-        if (pokeballs + superballs) < self.min_ball and not pokemon['is_vip']:
-            return WorkerResult.SUCCESS
+        if pokeballs < 1:
+            if superballs < 1:
+                if ultraballs < 1:
+                    return WorkerResult.SUCCESS
+                if not pokemon['is_vip']:
+                    return WorkerResult.SUCCESS
 
         if self.config['snipe']:
             if self.snipe_high_prio_only:
