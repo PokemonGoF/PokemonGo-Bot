@@ -24,8 +24,7 @@
 The behaviors of the bot are configured via the `tasks` key in the `config.json`. This enables you to list what you want the bot to do and change the priority of those tasks by reordering them in the list. This list of tasks is run repeatedly and in order. For more information on why we are moving config to this format, check out the [original proposal](https://github.com/PokemonGoF/PokemonGo-Bot/issues/142).
 
 ### Task Options:
-* CatchLuredPokemon
-* CatchVisiblePokemon
+* CatchPokemon
 * EvolvePokemon
   * `evolve_all`: Default `NONE` | Set to `"all"` to evolve Pokémon if possible when the bot starts. Can also be set to individual Pokémon as well as multiple separated by a comma. e.g "Pidgey,Rattata,Weedle,Zubat"
   * `evolve_speed`: Default `20`
@@ -69,10 +68,7 @@ The following configuration tells the bot to transfer all the Pokemon that match
       "type": "RecycleItems"
     },
     {
-      "type": "CatchVisiblePokemon"
-    },
-    {
-      "type": "CatchLuredPokemon"
+      "type": "CatchPokemon"
     },
     {
       "type": "SpinFort"
@@ -290,9 +286,9 @@ Key | Info
 }
 ```
 
-## `catch_simulation` Settings
+## CatchPokemon `catch_simulation` Settings
 
-These settings determine how the bot will simulate the app by adding pauses to throw the ball and navigate menus.  All times are in seconds.
+These settings determine how the bot will simulate the app by adding pauses to throw the ball and navigate menus.  All times are in seconds.  To configure these settings add them to the config in the CatchPokemon task.
 
 ### Default Settings
 The default settings are 'safe' settings intended to simulate human and app behaviour.
