@@ -1,13 +1,17 @@
-### Requirements (click each one for install guide)
+#Install the bot
+## Table of Contents
+- [Linux or Mac Automatic Installation](#linuxmac)
+- [Windows Automatic Installation](#windows)
+- [Docker Automatic Installation](#docker)
 
+
+#Linux/Mac
+### Requirements (click each one for install guide)
 - [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/)
 - [pip](https://pip.pypa.io/en/stable/installing/)
 - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 - [virtualenv](https://virtualenv.pypa.io/en/stable/installation/) (Recommended)
-- [docker](https://docs.docker.com/engine/installation/) (Optional) - [how to setup after installation](https://github.com/PokemonGoF/PokemonGo-Bot/wiki/How-to-run-with-Docker)
-- [protobuf 3](https://github.com/google/protobuf) (OS Dependent, see below)
 
-#Linux/Mac Automatic installation
 ### Easy installation
 1. Clone the git: `git clone https://github.com/PokemonGoF/PokemonGo-Bot`
 2. Go into the new directory: `cd PokemonGo-Bot`
@@ -16,194 +20,127 @@
 4. Run `./run.sh`  
     After you are done following it this will start your bot.
 
-### To update
+### To update the bot
 1. Stop the bot if it's running. (use control + c twice to stop it)
 2. Run `./setup.sh -r`  
     This will reset and makes sure you have no changes made to any code since it will overide it
 3. Rerun the bot `./run.sh`
 
-note: we do not support windows at this time
+for manual installation please refer to [here](https://github.com/nivong/PokemonGo-Bot/blob/dev/docs/manual_installation.md)
 
+#Windows
+We do recommend Windows users to use [Docker](#docker) this will work much easier and smoother (also saver)
 
-# Manual installation
-### Protobuf 3 installation
+##Requirements
 
-- OS X:  `brew update && brew install --devel protobuf`
-- Windows: Download protobuf 3.0: [here](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip) and unzip `bin/protoc.exe` into a folder in your PATH.
+###Easy Installation
+1. Download [PokemonGo-Bot-Install.bat](https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/windows_bat/PokemonGo-Bot-Install.bat)
+2. Download `encrypt.so` and `encrypt.dll` or `encrypt_64.dll` to the same folder of the `PokemonGo-Bot-Install.bat`.
+3. Run `PokemonGo-Bot-install.bat`.
+After that has been done the bot will be installed.
+4. Run `PokemonGo-Bot-Start.bat`.
+This will start the bot and the web interface.
 
-### Get encrypt.so (Windows part writing need fine tune)
-Due to copywrite on the encrypt.so we are not directly hosting it. Please find a copy elsewhere on the internet and compile it yourself. We accept no responsibility should you encounter any problems with files you download elsewhere.
+### To update the bot
+3. Run `PokemonGo-Bot-Start.bat`
+This will check for an update and will start the bot afterwards.
 
-Ensure you are in the PokemonGo-Bot main folder and run:
+#Docker
 
-`wget http://pgoapi.com/pgoencrypt.tar.gz && tar -xf pgoencrypt.tar.gz && cd pgoencrypt/src/ && make && mv libencrypt.so ../../encrypt.so && cd ../..`
+###Easy installation
+Start by downloading for your platform:
+- [Mac](https://www.docker.com/products/docker#/mac)
+- [Windows](https://www.docker.com/products/docker#/windows)
+- [Linux](https://www.docker.com/products/docker#/linux)
 
-### Note on branch
-Please keep in mind that master is not always up-to-date whereas 'dev' is. In the installation note below change `master` to `dev` if you want to get and use the latest version.
+Once you have Docker installed, simply create the various config files for your different accounts (e.g. `configs/config.json`, `configs/userdata.js`) and then create a Docker image for PokemonGo-Bot using the Dockerfile in this repo.
 
-## Update
-To update your project do (in the project folder): `git pull`
-
-To update python requirement packages do (in the project folder): `pip install --upgrade -r requirements.txt`
-
-### Linux Installation
-####on the Example of Ubuntu
-(change dev to master for the lastest master version)
-
-if you are on a different Linux OS you maybe have to adapt things like:
-
-- package mananger (for example yum instead of apt-get)
-- package names
-
-```bash
-##install
-#change to root
-sudo -i
-#go to your home directory with the console
-apt-get install build-essential autoconf libtool pkg-config make python-dev python-protobuf python2.7 wget git
-#install pip
-wget https://bootstrap.pypa.io/get-pip.py
-python2.7 get-pip.py
-rm -f get-pip.py
-#get git repo
-git clone --recursive -b dev https://github.com/PokemonGoF/PokemonGo-Bot  
+```
 cd PokemonGo-Bot
-#install and enable virtualenv
-#You need to make shure your python version and virtualenv verison work together
-#install virtualenv and activate it
-pip install virtualenv
-virtualenv .
-source bin/activate
-#then install the requierements
-pip install -r requirements.txt
- 
-##get the encryption.so and move to right folder
-wget http://pgoapi.com/pgoencrypt.tar.gz
-tar -xzvf pgoencrypt.tar.gz
-cd pgoencrypt/src/
-make
-cd ../../
-#make the encrypt able to load
-mv pgoencrypt/src/libencrypt.so encrypt.so
- 
-##edit the configuration file
-cp configs/config.json.example configs/config.json
-vi configs/config.json
-# gedit is possible too with 'gedit configs/config.json'
-#edit "google" to "ptc" if you have a pokemon trainer account
-#edit all settings
- 
- 
-##update to newest
-#if you need to do more i'll update this file
-#make shure virtualenv is enabled and you are in the correct folder
-git pull
-pip install -r requirements.txt
- 
-##start the bot
-./run.sh configs/config.json
- 
-##after reboot or closing the terminal
-#at every new start go into the folder of the PokemonGo-Bot by
-#going into the folder where you startet installing it an then
-cd PokemonGo-Bot
-#activate virtualenv and start
-source bin/activate
-./run.sh configs/config.json
+docker build --build-arg timezone=Europe/London -t pokemongo-bot .
 ```
 
+Optionally you can set your timezone with the --build-arg option (default is Etc/UTC). You can find an exhaustive list of timezone here: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
-### Installation Mac
-(change master to dev for the latest version)
-
-```bash
-##install
-#go to your home directory with the console
-brew install --devel protobuf
-brew install  autoconf libtool pkg-config wget git
-#install pip
-wget https://bootstrap.pypa.io/get-pip.py
-python2.7 get-pip.py
-rm -f get-pip.py
-#get git repo
-git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot  
-cd PokemonGo-Bot
-#install and enable virtualenv
-#You need to make shure your python version and virtualenv verison work together
-#install virtualenv and activate it
-pip install virtualenv
-virtualenv .
-source bin/activate
-#then install the requierements
-pip install -r requirements.txt
-
-##get the encryption.so and move to right folder
-wget http://pgoapi.com/pgoencrypt.tar.gz
-tar -xzvf pgoencrypt.tar.gz
-cd pgoencrypt/src/
-make
-cd ../../
-#make the encrypt able to load
-mv pgoencrypt/src/libencrypt.so encrypt.so
-
-##edit the configuration file
-cp configs/config.json.example configs/config.json
-vi configs/config.json
-# gedit is possible too with 'gedit configs/config.json'
-#edit "google" to "ptc" if you have a pokemon trainer account
-#edit all settings
-
-
-##update to newest
-#if you need to do more i'll update this file
-#make shure virtualenv is enabled and you are in the correct folder
-git pull
-pip install -r requirements.txt
-
-##start the bot
-./run.sh configs/config.json
-
-##after reboot or closing the terminal
-#at every new start go into the folder of the PokemonGo-Bot by
-#going into the folder where you startet installing it an then
-cd PokemonGo-Bot
-#activate virtualenv and start
-source bin/activate
-./run.sh configs/config.json
-```
-
-### Installation Windows
-(change master to dev for the latest version)
-
-On Windows, you will need to install PyYaml through the installer and not through requirements.txt.
-
-##### Windows vista, 7, 8:
-Go to : http://pyyaml.org/wiki/PyYAML , download the right version for your pc and install it
-
-##### Windows 10:
-Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl
-(If running 64-bit python or if you get a 'not a supported wheel on this platform' error,
-download the 64 bit version instead: PyYAML-3.11-cp27-cp27m-win_amd64.whl )
-
-*(Run the following commands from Git Bash.)*
+After build process you can verify that the image was created with:
 
 ```
-// switch to the directory where you downloaded PyYAML
-$ cd download-directory
-// install 32-bit version
-$ pip2 install PyYAML-3.11-cp27-cp27m-win32.whl
-// if you need to install the 64-bit version, do this instead:
-// pip2 install PyYAML-3.11-cp27-cp27m-win_amd64.whl
+docker images
 ```
 
-After this, just do:
+To run the bot container with the PokemonGo-Bot Docker image you've created:
 
 ```
-$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot
-$ cd PokemonGo-Bot
-$ virtualenv .
-$ script\activate
-$ pip2 install -r requirements.txt
-$ git submodule init
-$ git submodule update
+docker run --name=bot1-pokego --rm -it -v $(pwd)/configs/config.json:/usr/src/app/configs/config.json pokemongo-bot
 ```
+
+Run a second container provided with the OpenPoGoBotWeb view:
+
+```
+docker run --name=bot1-pokegoweb --rm -it --volumes-from bot1-pokego -p 8000:8000 -v $(pwd)/configs/userdata.js:/usr/src/app/web/userdata.js -w /usr/src/app/web python:2.7 python -m SimpleHTTPServer
+```
+The OpenPoGoWeb will be served on `http://<your host>:8000`
+
+###Remarks for Windows
+
+Even if the previous command are valid, you will not be able to visualize the web view under Windows. 
+To visualize the web view, execute instead the following commands (*make sure you are in the root folder and that your docker images is built*):
+
+- Run the bot container:
+
+```
+docker run --name=bot1-pokego --rm -it -v $(pwd)/configs/config.json:/usr/src/app/configs/config.json -v $(pwd)/web/:/usr/src/app/web/ pokemongo-bot
+```
+
+- Run the web container:
+
+```
+docker run --name=bot1-pokegoweb --rm -it --volumes-from bot1-pokego -p 8000:8000 -v $(pwd)/configs/userdata.js:/usr/src/app/web/userdata.js -w /usr/src/app/web python:2.7 python -m SimpleHTTPServer
+```
+
+- Retrieve your host address:
+
+```
+  docker-machine ip default
+```
+
+Then, with your containers running and your host address, you can access the web view in your browser:
+
+`http://<your host address>:8000 (eg http://192.168.99.100:8000)`
+ 
+ 
+####Errors
+
+- An error occurred trying to connect:
+
+Make sure your virtual machine is started, and your environment variables are set in your shell:
+
+```
+docker-machine start default
+docker-machine env default
+```
+
+- Unable to find image 'pokemongo-bot:latest' locally:
+
+Make sure that the name of the image is correct.
+
+ ###Using Docker compose
+
+if docker-compose [installed](https://docs.docker.com/compose/install/) you can alternatively run the PokemonGo-Bot ecosystem with one simple command:  
+(by using the docker-compose.yml configuration in this repo)
+
+```
+docker-compose up
+```
+
+Also run one single service from the compose configuration is possible:
+
+```
+docker-compose run --rm bot1-pokego
+```
+
+command for remove all stopped containers: `docker-compose rm`
+
+TODO: Add infos / configuration for running multiple bot instances.
+
+Do not push your image to a registry with your config.json and account details in it!

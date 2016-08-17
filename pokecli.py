@@ -43,6 +43,7 @@ from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.health_record import BotEvent
 from pokemongo_bot.plugin_loader import PluginLoader
+from pokemongo_bot.api_wrapper import PermaBannedException
 
 try:
     from demjson import jsonlint
@@ -64,11 +65,11 @@ class SIGINTRecieved(Exception): pass
 def main():
     bot = False
 
-    try:
-        def handle_sigint(*args):
-            raise SIGINTRecieved
-        signal.signal(signal.SIGINT, handle_sigint)
+    def handle_sigint(*args):
+        raise SIGINTRecieved
+    signal.signal(signal.SIGINT, handle_sigint)
 
+    try:
         logger.info('PokemonGO Bot v1.0')
         sys.stdout = codecs.getwriter('utf8')(sys.stdout)
         sys.stderr = codecs.getwriter('utf8')(sys.stderr)
@@ -102,7 +103,7 @@ def main():
                 while True:
                     bot.tick()
 
-            except (KeyboardInterrupt, SIGINTRecieved):
+            except KeyboardInterrupt:
                 bot.event_manager.emit(
                     'bot_exit',
                     sender=bot,
@@ -137,8 +138,24 @@ def main():
                 )
                 time.sleep(30)
 
+    except PermaBannedException:
+         bot.event_manager.emit(
+            'api_error',
+            sender=bot,
+            level='info',
+            formatted='Probably permabanned, Game Over ! Play again at https://club.pokemon.com/us/pokemon-trainer-club/sign-up/'
+         )
     except GeocoderQuotaExceeded:
         raise Exception("Google Maps API key over requests limit.")
+    except SIGINTRecieved:
+        if bot:
+            bot.event_manager.emit(
+                'bot_interrupted',
+                sender=bot,
+                level='info',
+                formatted='Bot caught SIGINT. Shutting down.'
+            )
+            report_summary(bot)
     except Exception as e:
         # always report session summary and then raise exception
         if bot:
@@ -307,10 +324,20 @@ def init_config():
     add_config(
         parser,
         load,
-        short_flag="-w",
-        long_flag="--walk",
+        short_flag="-wmax",
+        long_flag="--walk_max",
         help=
-        "Walk instead of teleport with given speed (meters per second, e.g. 2.5)",
+        "Walk instead of teleport with given speed",
+        type=float,
+        default=2.5
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-wmin",
+        long_flag="--walk_min",
+        help=
+        "Walk instead of teleport with given speed",
         type=float,
         default=2.5
     )
@@ -423,49 +450,11 @@ def init_config():
     add_config(
         parser,
         load,
-        short_flag="-cte",
-        long_flag="--catch_throw_parameters.excellent_rate",
-        help="Define the odd of performing an excellent throw",
-        type=float,
-        default=1
+        long_flag="--heartbeat_threshold",
+        help="A threshold between each heartbeat sending to server",
+        type=int,
+        default=10
     )
-    add_config(
-        parser,
-        load,
-        short_flag="-ctg",
-        long_flag="--catch_throw_parameters.great_rate",
-        help="Define the odd of performing a great throw",
-        type=float,
-        default=0
-    )
-    add_config(
-        parser,
-        load,
-        short_flag="-ctn",
-        long_flag="--catch_throw_parameters.nice_rate",
-        help="Define the odd of performing a nice throw",
-        type=float,
-        default=0
-    )
-    add_config(
-        parser,
-        load,
-        short_flag="-ctm",
-        long_flag="--catch_throw_parameters.normal_rate",
-        help="Define the odd of performing a normal throw",
-        type=float,
-        default=0
-    )
-    add_config(
-        parser,
-        load,
-        short_flag="-cts",
-        long_flag="--catch_throw_parameters.spin_success_rate",
-        help="Define the odds of performing a spin throw (Value between 0 (never) and 1 (always))",
-        type=float,
-        default=1
-    )
-
     # Start to parse other attrs
     config = parser.parse_args()
     if not config.username and 'username' not in load:
@@ -473,14 +462,11 @@ def init_config():
     if not config.password and 'password' not in load:
         config.password = getpass("Password: ")
 
-    config.encrypt_location = load.get('encrypt_location','')
+    config.encrypt_location = load.get('encrypt_location', '')
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
-    config.action_wait_max = load.get('action_wait_max', 4)
-    config.action_wait_min = load.get('action_wait_min', 1)
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
-    config.min_ultraball_to_keep = load.get('min_ultraball_to_keep', None)
 
     config.vips = load.get('vips', {})
 
@@ -504,7 +490,10 @@ def init_config():
             """.format(flag_name))
 
     old_flags = ['mode', 'catch_pokemon', 'spin_forts', 'forts_spin', 'hatch_eggs', 'release_pokemon', 'softban_fix',
-                'longer_eggs_first', 'evolve_speed', 'use_lucky_egg', 'item_filter', 'evolve_all', 'evolve_cp_min', 'max_steps']
+                 'longer_eggs_first', 'evolve_speed', 'use_lucky_egg', 'item_filter', 'evolve_all', 'evolve_cp_min',
+                 'max_steps', 'catch_throw_parameters.excellent_rate', 'catch_throw_parameters.great_rate',
+                 'catch_throw_parameters.nice_rate', 'catch_throw_parameters.normal_rate',
+                 'catch_throw_parameters.spin_success_rate']
     for flag in old_flags:
         if flag in load:
             task_configuration_error(flag)
@@ -518,6 +507,9 @@ def init_config():
 
     if "evolve_captured" in load:
         logger.warning('The evolve_captured argument is no longer supported. Please use the EvolvePokemon task instead')
+
+    if "walk" in load:
+        logger.warning('The walk argument is no longer supported. Please use the walk_max and walk_min variables instead')
 
     if not (config.location or config.location_cache):
         parser.error("Needs either --use-location-cache or --location.")
