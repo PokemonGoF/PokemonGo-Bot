@@ -180,6 +180,7 @@ class PokemonCatchWorker(BaseTask):
             return False
 
         catch_results = {
+            'ncp': False,
             'cp': False,
             'iv': False,
         }
