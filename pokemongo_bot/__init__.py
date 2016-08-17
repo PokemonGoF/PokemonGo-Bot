@@ -815,11 +815,10 @@ class PokemonGoBot(object):
         self.logger.info('')
 
     def _print_list_pokemon(self):
+        # get all info needed
         inventory_req = self.get_inventory()
         inventory_dict = inventory_req['responses']['GET_INVENTORY'][
             'inventory_delta']['inventory_items']
-
-        self.logger.info('Pokemon Bag:')
 
         temp_list = []
         for poke in inventory_dict:
@@ -827,27 +826,38 @@ class PokemonGoBot(object):
             if not poke_data or poke_data.get('is_egg', False):
                 continue
             poke_obj = Pokemon(poke_data)
-            poke_dict = {
-                'id': poke_obj.pokemon_id,
-                'name': poke_obj.name,
-                'cp': poke_obj.cp,
-                'iv_pct': poke_obj.iv,
-                'iv_ads': '{}/{}/{}'.format(poke_obj.iv_attack, poke_obj.iv_defense, poke_obj.iv_stamina)
-            }
-            temp_list.append(poke_dict)
+            temp_list.append(poke_obj)
 
-        pokemon_list = sorted(temp_list, key=lambda k: k['id'])
+        pokemon_list = sorted(temp_list, key=lambda k: k.pokemon_id)
+
+        poke_info_displayed = ['cp', 'iv_ads', 'iv_pct']
+
+        def get_poke_info(info, pokemon):
+            poke_info = {
+                'id': pokemon.pokemon_id,
+                'name': pokemon.name,
+                'cp': 'CP: {}'.format(pokemon.cp),
+                'iv_ads': 'IV: {}/{}/{}'.format(pokemon.iv_attack, pokemon.iv_defense, pokemon.iv_stamina),
+                'iv_pct': 'Potential: {}'.format(pokemon.iv)
+            }
+            if info not in poke_info:
+                raise ConfigException("info '{}' isn't available for displaying".format(info))
+            return poke_info[info]
+
+        self.logger.info('Pokemon Bag:')
 
         last_id = -1
-        line_p = str()
+        line_start = str()
+        line_p = []
         for poke in pokemon_list:
-            if last_id != -1 and last_id != poke['id']:
-                self.logger.info(line_p)
+            if last_id != -1 and last_id != get_poke_info('id', poke):
+                self.logger.info(line_start + ' | '.join(line_p))
+                line_p = []
                 last_id = -1
             if last_id == -1:
-                line_p = '#{} {}: '.format(poke['id'], poke['name'])
-                last_id = poke['id']
-            line_p += '[CP {}, Potential {}, A/D/S {}]'.format(poke['cp'], poke['iv_pct'], poke['iv_ads'])
+                line_start = '#{} {}: '.format(get_poke_info('id', poke), get_poke_info('name', poke))
+                last_id = get_poke_info('id', poke)
+            line_p.append('({}, {}, {})'.format(get_poke_info('cp', poke), get_poke_info('iv_ads', poke), get_poke_info('iv_pct', poke)))
 
         self.logger.info('')
 
