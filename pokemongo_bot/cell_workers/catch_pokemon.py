@@ -2,11 +2,8 @@
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.cell_workers import CatchVisiblePokemon, CatchLuredPokemon
+from pokemongo_bot.item_list import Item
 from pokemongo_bot import inventory
-
-ITEM_POKEBALL = 1
-ITEM_GREATBALL = 2
-ITEM_ULTRABALL = 3
 
 
 class CatchPokemon(BaseTask):
@@ -21,9 +18,8 @@ class CatchPokemon(BaseTask):
 
     def work(self):
 
-        if sum([inventory.items().get(ball_id).count for ball_id in 
-            [ITEM_POKEBALL, ITEM_GREATBALL, ITEM_ULTRABALL]]) <= 0:
-            self.emit_event('no_pokeballs', formatted='No usable pokeballs found!')
+        if sum([inventory.items().get(ball.value).count for ball in 
+            [Item.ITEM_POKE_BALL, Item.ITEM_GREAT_BALL, Item.ITEM_ULTRA_BALL]]) <= 0:
             return WorkerResult.ERROR
 
         for cw in self.catch_workers:
