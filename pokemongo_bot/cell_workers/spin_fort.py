@@ -9,7 +9,7 @@ from pgoapi.utilities import f2i
 from pokemongo_bot import inventory
 
 from pokemongo_bot.constants import Constants
-from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.base_dir import _base_dir
@@ -26,6 +26,8 @@ class SpinFort(BaseTask):
 
     def initialize(self):
         self.ignore_item_count = self.config.get("ignore_item_count", False)
+        self.spin_wait_min = self.config.get("spin_wait_min", 2)
+        self.spin_wait_max = self.config.get("spin_wait_max", 3)
 
     def should_run(self):
         has_space_for_loot = inventory.Items.has_space_for_loot()
@@ -57,15 +59,14 @@ class SpinFort(BaseTask):
             player_latitude=f2i(self.bot.position[0]),
             player_longitude=f2i(self.bot.position[1])
         )
-        if 'responses' in response_dict and 'FORT_SEARCH' in response_dict['responses']:
 
+        if ('responses' in response_dict) and ('FORT_SEARCH' in response_dict['responses']):
             spin_details = response_dict['responses']['FORT_SEARCH']
             spin_result = spin_details.get('result', -1)
-            if spin_result == SPIN_REQUEST_RESULT_SUCCESS:
+
+            if (spin_result == SPIN_REQUEST_RESULT_SUCCESS) or (spin_result == SPIN_REQUEST_RESULT_INVENTORY_FULL):
                 self.bot.softban = False
                 experience_awarded = spin_details.get('experience_awarded', 0)
-
-
                 items_awarded = self.get_items_awarded_from_fort_spinned(response_dict)
 
                 if experience_awarded or items_awarded:
@@ -108,12 +109,6 @@ class SpinFort(BaseTask):
                         formatted="Pokestop {pokestop} on cooldown. Time left: {minutes_left}.",
                         data={'pokestop': fort_name, 'minutes_left': minutes_left}
                     )
-            elif spin_result == SPIN_REQUEST_RESULT_INVENTORY_FULL:
-                if not self.ignore_item_count:
-                    self.emit_event(
-                        'inventory_full',
-                        formatted="Inventory is full!"
-                    )
             else:
                 self.emit_event(
                     'unknown_spin_result',
@@ -122,7 +117,7 @@ class SpinFort(BaseTask):
                 )
             if 'chain_hack_sequence_number' in response_dict['responses'][
                     'FORT_SEARCH']:
-                time.sleep(2)
+                action_delay(self.spin_wait_min, self.spin_wait_max)
                 return response_dict['responses']['FORT_SEARCH'][
                     'chain_hack_sequence_number']
             else:
@@ -139,7 +134,7 @@ class SpinFort(BaseTask):
                 else:
                     self.bot.fort_timeouts[fort["id"]] = (time.time() + 300) * 1000  # Don't spin for 5m
                 return WorkerResult.ERROR
-        sleep(2)
+        action_delay(self.spin_wait_min, self.spin_wait_max)
 
         if len(forts) > 1:
             return WorkerResult.RUNNING
@@ -148,12 +143,6 @@ class SpinFort(BaseTask):
 
     def get_forts_in_range(self):
         forts = self.bot.get_forts(order_by_distance=True)
-
-        for fort in reversed(forts):
-            if 'cooldown_complete_timestamp_ms' in fort:
-                self.bot.fort_timeouts[fort["id"]] = fort['cooldown_complete_timestamp_ms']
-                forts.remove(fort)
-
         forts = filter(lambda fort: fort["id"] not in self.bot.fort_timeouts, forts)
         forts = filter(lambda fort: distance(
             self.bot.position[0],
@@ -186,4 +175,3 @@ class SpinFort(BaseTask):
     # TODO : Refactor this class, hide the inventory update right after the api call
     def _update_inventory(self, item_awarded):
         inventory.items().get(item_awarded['item_id']).add(item_awarded['item_count'])
-

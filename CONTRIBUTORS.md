@@ -70,3 +70,4 @@
  * Quantra
  * pmquan
  * net8q
+ * SyncX

@@ -29,7 +29,13 @@ class TestStepWalker(unittest.TestCase):
         self.patcherRandomLat.stop()
 
     def test_normalized_distance(self):
-        sw = StepWalker(self.bot, 1, 0.1, 0.1)
+        walk_max = self.bot.config.walk_max
+        walk_min = self.bot.config.walk_min
+
+        self.bot.config.walk_max = 1
+        self.bot.config.walk_min = 1
+
+        sw = StepWalker(self.bot, 0.1, 0.1)
         self.assertGreater(sw.dLat, 0)
         self.assertGreater(sw.dLng, 0)
 
@@ -39,8 +45,17 @@ class TestStepWalker(unittest.TestCase):
         self.assertTrue(float_equal(self.lat, NORMALIZED_LAT_LNG_DISTANCE_STEP))
         self.assertTrue(float_equal(self.lng, NORMALIZED_LAT_LNG_DISTANCE_STEP))
 
+        self.bot.config.walk_max = walk_max
+        self.bot.config.walk_min = walk_min
+
     def test_normalized_distance_times_2(self):
-        sw = StepWalker(self.bot, 2, 0.1, 0.1)
+        walk_max = self.bot.config.walk_max
+        walk_min = self.bot.config.walk_min
+
+        self.bot.config.walk_max = 2
+        self.bot.config.walk_min = 2
+
+        sw = StepWalker(self.bot, 0.1, 0.1)
         self.assertTrue(sw.dLat > 0)
         self.assertTrue(sw.dLng > 0)
 
@@ -50,8 +65,17 @@ class TestStepWalker(unittest.TestCase):
         self.assertTrue(float_equal(self.lat, NORMALIZED_LAT_LNG_DISTANCE_STEP * 2))
         self.assertTrue(float_equal(self.lng, NORMALIZED_LAT_LNG_DISTANCE_STEP * 2))
 
+        self.bot.config.walk_max = walk_max
+        self.bot.config.walk_min = walk_min
+
     def test_small_distance_same_spot(self):
-        sw = StepWalker(self.bot, 1, 0, 0)
+        walk_max = self.bot.config.walk_max
+        walk_min = self.bot.config.walk_min
+
+        self.bot.config.walk_max = 1
+        self.bot.config.walk_min = 1
+
+        sw = StepWalker(self.bot, 0, 0)
         self.assertEqual(sw.dLat, 0, 'dLat should be 0')
         self.assertEqual(sw.dLng, 0, 'dLng should be 0')
 
@@ -59,15 +83,27 @@ class TestStepWalker(unittest.TestCase):
         self.assertTrue(self.lat == self.bot.position[0])
         self.assertTrue(self.lng == self.bot.position[1])
 
+        self.bot.config.walk_max = walk_max
+        self.bot.config.walk_min = walk_min
+
     def test_small_distance_small_step(self):
-        sw = StepWalker(self.bot, 1, 1e-5, 1e-5)
+        walk_max = self.bot.config.walk_max
+        walk_min = self.bot.config.walk_min
+
+        self.bot.config.walk_max = 1
+        self.bot.config.walk_min = 1
+
+        sw = StepWalker(self.bot, 1e-5, 1e-5)
         self.assertEqual(sw.dLat, 0)
         self.assertEqual(sw.dLng, 0)
+
+        self.bot.config.walk_max = walk_max
+        self.bot.config.walk_min = walk_min
 
     @unittest.skip('This behavior is To Be Defined')
     def test_big_distances(self):
         # FIXME currently the StepWalker acts like it won't move if big distances gives as input
         # see args below
         # with self.assertRaises(RuntimeError):
-        sw = StepWalker(self.bot, 1, 10, 10)
+        sw = StepWalker(self.bot, 10, 10)
         sw.step() # equals True i.e act like the distance is too short for a step

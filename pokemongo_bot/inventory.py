@@ -304,7 +304,7 @@ class Pokemons(_BaseInventoryComponent):
 
     def add(self, pokemon):
         if pokemon.id <= 0:
-            raise ValueError("Can't add a pokemin whitout id")
+            raise ValueError("Can't add a pokemon without id")
         if pokemon.id in self._data:
             raise ValueError("Pokemon already present in the inventory")
         self._data[pokemon.id] = pokemon

@@ -105,10 +105,9 @@ class FollowPath(BaseTask):
         lat = float(point['lat'])
         lng = float(point['lng'])
 
-        if self.bot.config.walk > 0:
+        if self.bot.config.walk_max > 0:
             step_walker = StepWalker(
                 self.bot,
-                self.bot.config.walk,
                 lat,
                 lng
             )
@@ -127,7 +126,7 @@ class FollowPath(BaseTask):
             lng
         )
 
-        if dist <= 1 or (self.bot.config.walk > 0 and is_at_destination):
+        if dist <= 1 or (self.bot.config.walk_min > 0 and is_at_destination):
             if (self.ptr + 1) == len(self.points):
                 self.ptr = 0
                 if self.path_mode == 'linear':
@@ -137,10 +136,10 @@ class FollowPath(BaseTask):
 
         self.emit_event(
             'position_update',
-            formatted="Walking from {last_position} to {current_position} ({distance} {distance_unit})",
+            formatted="Walk to {last_position} now at {current_position}, distance left: ({distance} {distance_unit}) ..",
             data={
-                'last_position': (last_lat, last_lng, 0),
-                'current_position': (lat, lng, 0),
+                'last_position': (lat, lng, 0),
+                'current_position': (last_lat, last_lng, 0),
                 'distance': dist,
                 'distance_unit': 'm'
             }
