@@ -75,7 +75,7 @@ class RecycleItems(BaseTask):
         :return: True if the recycling process should be run; otherwise, False.
         :rtype: bool
         """
-        if inventory.Items.get_space_left() < (DEFAULT_MIN_EMPTY_SPACE if self.min_empty_space is None else self.min_empty_space):
+        if inventory.Items.get_space_left() <= (DEFAULT_MIN_EMPTY_SPACE if self.min_empty_space is None else self.min_empty_space):
             return True
         return False
 
@@ -165,7 +165,7 @@ class RecycleItems(BaseTask):
             items_to_be_recycled = category_count - category_max
 
             for item in category_inventory:
-                if items_to_be_recycled == 0: 
+                if items_to_be_recycled == 0:
                     break
                 if items_to_be_recycled >= item[1]:
                     items_to_recycle.append([])
@@ -175,7 +175,7 @@ class RecycleItems(BaseTask):
                     items_to_recycle.append([])
                     items_to_recycle[x].append(item[0])
                     items_to_recycle[x].append(items_to_be_recycled)
-                items_to_be_recycled = items_to_be_recycled - items_to_recycle[x][1]      
+                items_to_be_recycled = items_to_be_recycled - items_to_recycle[x][1]
                 x = x + 1
         return items_to_recycle
 
