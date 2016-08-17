@@ -31,8 +31,6 @@ def check(filename):
   return False
   
 if __name__ == "__main__":
-  files = sys.argv[1:]
-
   for filename in sys.argv[1:]:
     check(filename)
 
