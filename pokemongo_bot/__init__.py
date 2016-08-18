@@ -283,6 +283,7 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event(
             'threw_pokeball',
             parameters=(
+                'throw_type',
                 'ball_name',
                 'success_percentage',
                 'count_left'
