@@ -56,6 +56,7 @@ class UpdateLiveStats(BaseTask):
     - stardust_earned : The number of earned stardust since the bot started.
     - highest_cp_pokemon : The caught pokemon with the highest CP since the bot started.
     - most_perfect_pokemon : The most perfect caught pokemon since the bot started.
+    - location : The location where the player is located.
     """
     SUPPORTED_TASK_API_VERSION = 1
 
@@ -244,6 +245,7 @@ class UpdateLiveStats(BaseTask):
             'stardust_earned': 'Earned {:,} Stardust'.format(stardust_earned),
             'highest_cp_pokemon': 'Highest CP pokemon : {}'.format(highest_cp_pokemon),
             'most_perfect_pokemon': 'Most perfect pokemon : {}'.format(most_perfect_pokemon),
+            'location': 'Location : ({}, {})'.format(self.bot.position[0], self.bot.position[1]),
         }
 
         def get_stat(stat):
