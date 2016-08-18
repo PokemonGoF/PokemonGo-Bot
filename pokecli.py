@@ -39,6 +39,7 @@ from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException
 from geopy.exc import GeocoderQuotaExceeded
 
+from pokemongo_bot import inventory
 from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.health_record import BotEvent
@@ -455,6 +456,30 @@ def init_config():
         type=int,
         default=10
     )
+    add_config(
+        parser,
+        load,
+        long_flag="--pokemon_bag.show_at_start",
+        help="Logs all pokemon in the bag at bot start",
+        type=bool,
+        default=False
+    )
+    add_config(
+        parser,
+        load,
+        long_flag="--pokemon_bag.show_count",
+        help="Shows the amount of which pokemon (minimum 1)",
+        type=bool,
+        default=False
+    )
+    add_config(
+        parser,
+        load,
+        long_flag="--pokemon_bag.pokemon_info",
+        help="List with the info to show for each pokemon",
+        type=bool,
+        default=[]
+    )
     # Start to parse other attrs
     config = parser.parse_args()
     if not config.username and 'username' not in load:
@@ -467,7 +492,7 @@ def init_config():
     config.release = load.get('release', {})
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
-
+    config.daily_catch_limit = load.get('daily_catch_limit', 800)
     config.vips = load.get('vips', {})
 
     if config.map_object_cache_time < 0.0:

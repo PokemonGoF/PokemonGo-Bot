@@ -222,7 +222,7 @@ class NicknamePokemon(BaseTask):
         """
 
         # We need id of the specific pokemon unstance to be able to rename it
-        instance_id = pokemon.id
+        instance_id = pokemon.unique_id
         if not instance_id:
             self.emit_event(
                 'api_error',

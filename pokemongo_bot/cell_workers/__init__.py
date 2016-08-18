@@ -19,5 +19,7 @@ from collect_level_up_reward import CollectLevelUpReward
 from follow_cluster import FollowCluster
 from sleep_schedule import SleepSchedule
 from update_live_stats import UpdateLiveStats
+from update_live_inventory import UpdateLiveInventory
 from catch_pokemon import CatchPokemon
 from complete_tutorial import CompleteTutorial
+from random_pause import RandomPause

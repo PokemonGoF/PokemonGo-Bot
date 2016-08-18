@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import os
+import time
+import json
+import logging
 import time
 from random import random, randrange
 from pokemongo_bot import inventory
@@ -8,6 +12,8 @@ from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot.inventory import Pokemon
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.datastore import Datastore
+from pokemongo_bot.base_dir import _base_dir
+from datetime import datetime, timedelta
 
 CATCH_STATUS_SUCCESS = 1
 CATCH_STATUS_FAILED = 2
@@ -43,10 +49,10 @@ class PokemonCatchWorker(Datastore, BaseTask):
         self.spawn_point_guid = ''
         self.response_key = ''
         self.response_status_key = ''
-        
+
         #Config
         self.min_ultraball_to_keep = self.config.get('min_ultraball_to_keep', 10)
-        
+
         self.catch_throw_parameters = self.config.get('catch_throw_parameters', {})
         self.catch_throw_parameters_spin_success_rate = self.catch_throw_parameters.get('spin_success_rate', 0.6)
         self.catch_throw_parameters_excellent_rate = self.catch_throw_parameters.get('excellent_rate', 0.1)
@@ -64,17 +70,13 @@ class PokemonCatchWorker(Datastore, BaseTask):
         self.catchsim_berry_wait_max = self.catchsim_config.get('berry_wait_max', 3)
         self.catchsim_changeball_wait_min = self.catchsim_config.get('changeball_wait_min', 2)
         self.catchsim_changeball_wait_max = self.catchsim_config.get('changeball_wait_max', 3)
-        
+
 
     ############################################################################
     # public methods
     ############################################################################
 
     def work(self, response_dict=None):
-        pokeballs = self.bot.item_inventory_count(1)
-        superballs = self.bot.item_inventory_count(2)
-        ultraballs = self.bot.item_inventory_count(3)
-
         response_dict = response_dict or self.create_encounter_api_call()
 
         # validate response
@@ -102,13 +104,11 @@ class PokemonCatchWorker(Datastore, BaseTask):
             return WorkerResult.SUCCESS
 
         is_vip = self._is_vip_pokemon(pokemon)
-        if pokeballs < 1:
-            if superballs < 1:
-                if ultraballs < 1:
+        if inventory.items().get(ITEM_POKEBALL).count < 1:
+            if inventory.items().get(ITEM_GREATBALL).count < 1:
+                if inventory.items().get(ITEM_ULTRABALL).count < 1:
                     return WorkerResult.SUCCESS
-                if not is_vip:
-                    return WorkerResult.SUCCESS
-        
+
         # log encounter
         self.emit_event(
             'pokemon_appeared',
@@ -132,10 +132,24 @@ class PokemonCatchWorker(Datastore, BaseTask):
         if is_vip:
             self.emit_event('vip_pokemon', formatted='This is a VIP pokemon. Catch!!!')
 
-        # catch that pokemon!
-        encounter_id = self.pokemon['encounter_id']
-        catch_rate_by_ball = [0] + response['capture_probability']['capture_probability']  # offset so item ids match indces
-        self._do_catch(pokemon, encounter_id, catch_rate_by_ball, is_vip=is_vip)
+        # check catch limits before catch
+        with self.bot.database as conn:
+            c = conn.cursor()
+            c.execute("SELECT DISTINCT COUNT(encounter_id) FROM catch_log WHERE dated >= datetime('now','-1 day')")
+
+        result = c.fetchone()
+
+        while True:
+            max_catch = self.bot.config.daily_catch_limit
+            if result[0] < max_catch:
+            # catch that pokemon!
+                encounter_id = self.pokemon['encounter_id']
+                catch_rate_by_ball = [0] + response['capture_probability']['capture_probability']  # offset so item ids match indces
+                self._do_catch(pokemon, encounter_id, catch_rate_by_ball, is_vip=is_vip)
+                break
+            else:
+                self.emit_event('catch_limit', formatted='WARNING! You have reached your daily catch limit')
+                break
 
         # simulate app
         time.sleep(5)
@@ -365,15 +379,16 @@ class PokemonCatchWorker(Datastore, BaseTask):
             self.generate_throw_quality_parameters(throw_parameters)
 
             # try to catch pokemon!
-            # TODO : Log which type of throw we selected
             ball_count[current_ball] -= 1
             self.inventory.get(current_ball).remove(1)
             # Take some time to throw the ball from config options
             action_delay(self.catchsim_catch_wait_min, self.catchsim_catch_wait_max)
             self.emit_event(
                 'threw_pokeball',
-                formatted='Used {ball_name}, with chance {success_percentage} ({count_left} left)',
+                formatted='{throw_type}{spin_label} throw! Used {ball_name}, with chance {success_percentage} ({count_left} left)',
                 data={
+                    'throw_type': throw_parameters['throw_type_label'],
+                    'spin_label': throw_parameters['spin_label'],
                     'ball_name': self.inventory.get(current_ball).name,
                     'success_percentage': self._pct(catch_rate_by_ball[current_ball]),
                     'count_left': ball_count[current_ball]
@@ -433,27 +448,47 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
             # pokemon caught!
             elif catch_pokemon_status == CATCH_STATUS_SUCCESS:
-                pokemon.id = response_dict['responses']['CATCH_POKEMON']['captured_pokemon_id']
+                pokemon.unique_id = response_dict['responses']['CATCH_POKEMON']['captured_pokemon_id']
                 self.bot.metrics.captured_pokemon(pokemon.name, pokemon.cp, pokemon.iv_display, pokemon.iv)
-                inventory.pokemons().add(pokemon)
-                self.emit_event(
-                    'pokemon_caught',
-                    formatted='Captured {pokemon}! [CP {cp}] [Potential {iv}] [{iv_display}] [+{exp} exp]',
-                    data={
-                        'pokemon': pokemon.name,
-                        'cp': pokemon.cp,
-                        'iv': pokemon.iv,
-                        'iv_display': pokemon.iv_display,
-                        'exp': sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp']),
-                        'encounter_id': self.pokemon['encounter_id'],
-                        'latitude': self.pokemon['latitude'],
-                        'longitude': self.pokemon['longitude'],
-                        'pokemon_id': pokemon.pokemon_id
-                    }
-                )
 
-                # We could refresh here too, but adding 3 saves a inventory request
-                candy = inventory.candies(True).get(pokemon.pokemon_id)
+                try:
+                    self.emit_event(
+                        'pokemon_caught',
+                        formatted='Captured {pokemon}! [CP {cp}] [Potential {iv}] [{iv_display}] [+{exp} exp]',
+                        data={
+                            'pokemon': pokemon.name,
+                            'cp': pokemon.cp,
+                            'iv': pokemon.iv,
+                            'iv_display': pokemon.iv_display,
+                            'exp': sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp']),
+                            'encounter_id': self.pokemon['encounter_id'],
+                            'latitude': self.pokemon['latitude'],
+                            'longitude': self.pokemon['longitude'],
+                            'pokemon_id': pokemon.pokemon_id
+                        }
+
+                    )
+                    with self.bot.database as conn:
+                        conn.execute('''INSERT INTO catch_log (pokemon, cp, iv, encounter_id, pokemon_id) VALUES (?, ?, ?, ?, ?)''', (pokemon.name, pokemon.cp, pokemon.iv, str(encounter_id), pokemon.pokemon_id))
+                    #conn.commit()
+                    user_data_caught = os.path.join(_base_dir, 'data', 'caught-%s.json' % self.bot.config.username)
+                    with open(user_data_caught, 'ab') as outfile:
+                        outfile.write(str(datetime.now()))
+                        json.dump({
+                            'pokemon': pokemon.name,
+                            'cp': pokemon.cp,
+                            'iv': pokemon.iv,
+                            'encounter_id': self.pokemon['encounter_id'],
+                            'pokemon_id': pokemon.pokemon_id
+                        }, outfile)
+                        outfile.write('\n')
+
+                except IOError as e:
+                    self.logger.info('[x] Error while opening location file: %s' % e)
+
+                candy = inventory.candies().get(pokemon.pokemon_id)
+                candy.add(self.get_candy_gained_count(response_dict))
+
                 self.emit_event(
                     'gained_candy',
                     formatted='You now have {quantity} {type} candy!',
@@ -477,12 +512,20 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
             break
 
+    def get_candy_gained_count(self, response_dict):
+        total_candy_gained = 0
+        for candy_gained in response_dict['responses']['CATCH_POKEMON']['capture_award']['candy']:
+            total_candy_gained += candy_gained
+        return total_candy_gained
+
     def generate_spin_parameter(self, throw_parameters):
         spin_success_rate = self.catch_throw_parameters_spin_success_rate
         if random() <= spin_success_rate:
             throw_parameters['spin_modifier'] = 0.5 + 0.5 * random()
+            throw_parameters['spin_label'] = ' Curveball'
         else:
             throw_parameters['spin_modifier'] = 0.499 * random()
+            throw_parameters['spin_label'] = ''
 
     def generate_throw_quality_parameters(self, throw_parameters):
         throw_excellent_chance = self.catch_throw_parameters_excellent_rate
@@ -520,4 +563,5 @@ class PokemonCatchWorker(Datastore, BaseTask):
         # Here the reticle size doesn't matter, we scored out of it
         throw_parameters['normalized_reticle_size'] = 1.25 + 0.70 * random()
         throw_parameters['normalized_hit_position'] = 0.0
-        throw_parameters['throw_type_label'] = 'Normal'
+        throw_parameters['throw_type_label'] = 'OK'
+

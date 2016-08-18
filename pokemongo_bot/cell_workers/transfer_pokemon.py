@@ -4,8 +4,7 @@ import os
 from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.inventory import Pokemons, Pokemon
-
+from pokemongo_bot.inventory import Pokemons, Pokemon, Attack
 
 class TransferPokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -19,31 +18,40 @@ class TransferPokemon(BaseTask):
         for pokemon_id, group in pokemon_groups.iteritems():
             pokemon_name = Pokemons.name_for(pokemon_id)
             keep_best, keep_best_cp, keep_best_iv = self._validate_keep_best_config(pokemon_name)
-
+            #TODO continue list possible criteria
+            keep_best_possible_criteria = ['cp','iv', 'iv_attack', 'iv_defense', 'iv_stamina', 'moveset.attack_perfection','moveset.defense_perfection','hp','hp_max']
+            keep_best_custom, keep_best_criteria, keep_amount = self._validate_keep_best_config_custom(pokemon_name, keep_best_possible_criteria)
+            
+            best_pokemon_ids = set()
+            order_criteria = 'none'
             if keep_best:
-                best_pokemon_ids = set()
-                order_criteria = 'none'
                 if keep_best_cp >= 1:
                     cp_limit = keep_best_cp
                     best_cp_pokemons = sorted(group, key=lambda x: (x.cp, x.iv), reverse=True)[:cp_limit]
-                    best_pokemon_ids = set(pokemon.id for pokemon in best_cp_pokemons)
+                    best_pokemon_ids = set(pokemon.unique_id for pokemon in best_cp_pokemons)
                     order_criteria = 'cp'
 
                 if keep_best_iv >= 1:
                     iv_limit = keep_best_iv
                     best_iv_pokemons = sorted(group, key=lambda x: (x.iv, x.cp), reverse=True)[:iv_limit]
-                    best_pokemon_ids |= set(pokemon.id for pokemon in best_iv_pokemons)
+                    best_pokemon_ids |= set(pokemon.unique_id for pokemon in best_iv_pokemons)
                     if order_criteria == 'cp':
                         order_criteria = 'cp and iv'
                     else:
-                        order_criteria = 'iv'
-
+                        order_criteria = 'iv'      
+            elif keep_best_custom:
+                limit = keep_amount
+                best_pokemons = sorted(group, key=lambda x: keep_best_criteria, reverse=True)[:limit]
+                best_pokemon_ids = set(pokemon.id for pokemon in best_pokemons)
+                order_criteria = ' and '.join(keep_best_criteria)
+                
+            if keep_best or keep_best_custom:
                 # remove best pokemons from all pokemons array
                 all_pokemons = group
                 best_pokemons = []
                 for best_pokemon_id in best_pokemon_ids:
                     for pokemon in all_pokemons:
-                        if best_pokemon_id == pokemon.id:
+                        if best_pokemon_id == pokemon.unique_id:
                             all_pokemons.remove(pokemon)
                             best_pokemons.append(pokemon)
 
@@ -70,13 +78,12 @@ class TransferPokemon(BaseTask):
 
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
-        # TODO: Use new inventory everywhere and then remove the inventory update
-        for pokemon in inventory.pokemons(True).all():
+        for pokemon in inventory.pokemons().all():
             if pokemon.in_fort or pokemon.is_favorite:
                 continue
 
             group_id = pokemon.pokemon_id
-
+            
             if group_id not in pokemon_groups:
                 pokemon_groups[group_id] = []
 
@@ -147,7 +154,7 @@ class TransferPokemon(BaseTask):
             if self.bot.config.test:
                 candy_awarded = 1
             else:
-                response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon.id)
+                response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon.unique_id)
                 candy_awarded = response_dict['responses']['RELEASE_POKEMON']['candy_awarded']
         except KeyError:
             return
@@ -155,7 +162,7 @@ class TransferPokemon(BaseTask):
         # We could refresh here too, but adding 1 saves a inventory request
         candy = inventory.candies().get(pokemon.pokemon_id)
         candy.add(candy_awarded)
-        inventory.pokemons().remove(pokemon.id)
+        inventory.pokemons().remove(pokemon.unique_id)
         self.bot.metrics.released_pokemon()
         self.emit_event(
             'pokemon_release',
@@ -178,6 +185,32 @@ class TransferPokemon(BaseTask):
             release_config = {}
         return release_config
 
+    def _validate_keep_best_config_custom(self, pokemon_name, keep_best_possible_custom):
+        keep_best = False
+
+        release_config = self._get_release_config_for(pokemon_name)    
+        keep_best_custom = release_config.get('keep_best_custom', '')
+        keep_amount = release_config.get('amount', 0)
+
+        if keep_best_custom and keep_amount:
+            keep_best = True
+            
+            keep_best_custom = keep_best_custom.split(',')
+            for _str in keep_best_custom:
+                if _str not in keep_best_possible_custom:
+                    keep_best = False
+                    break
+
+            try:
+                keep_amount = int(keep_amount)
+            except ValueError:
+                keep_best = False
+              
+            if keep_amount < 0:
+                keep_best = False
+                
+        return keep_best, keep_best_custom, keep_amount
+        
     def _validate_keep_best_config(self, pokemon_name):
         keep_best = False
 
@@ -185,7 +218,7 @@ class TransferPokemon(BaseTask):
 
         keep_best_cp = release_config.get('keep_best_cp', 0)
         keep_best_iv = release_config.get('keep_best_iv', 0)
-
+        
         if keep_best_cp or keep_best_iv:
             keep_best = True
             try:
@@ -197,7 +230,7 @@ class TransferPokemon(BaseTask):
                 keep_best_iv = int(keep_best_iv)
             except ValueError:
                 keep_best_iv = 0
-
+                
             if keep_best_cp < 0 or keep_best_iv < 0:
                 keep_best = False
 
