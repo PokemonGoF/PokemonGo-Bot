@@ -381,7 +381,7 @@ class PokemonGoBot(Datastore):
         )
         self.event_manager.register_event(
             'next_egg_incubates',
-            parameters=('distance_in_km',)
+            parameters=('km_needed', 'distance_in_km',)
         )
         self.event_manager.register_event('incubator_already_used')
         self.event_manager.register_event('egg_already_incubating')
