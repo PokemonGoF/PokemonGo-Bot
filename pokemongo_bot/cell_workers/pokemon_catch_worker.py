@@ -102,11 +102,9 @@ class PokemonCatchWorker(Datastore, BaseTask):
             return WorkerResult.SUCCESS
 
         is_vip = self._is_vip_pokemon(pokemon)
-        if pokeballs < 1:
-            if superballs < 1:
-                if ultraballs < 1:
-                    return WorkerResult.SUCCESS
-                if not is_vip:
+        if inventory.items().get(ITEM_POKEBALL).count < 1:
+            if inventory.items().get(ITEM_GREATBALL).count < 1:
+                if inventory.items().get(ITEM_ULTRABALL).count < 1:
                     return WorkerResult.SUCCESS
 
         # log encounter
@@ -129,11 +127,6 @@ class PokemonCatchWorker(Datastore, BaseTask):
         sleep(3)
 
         # check for VIP pokemon
-        if is_vip:
-            self.emit_event('vip_pokemon', formatted='This is a VIP pokemon. Catch!!!')
-
-        # check for VIP pokemon
-        is_vip = self._is_vip_pokemon(pokemon)
         if is_vip:
             self.emit_event('vip_pokemon', formatted='This is a VIP pokemon. Catch!!!')
 
@@ -498,8 +491,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
                     },
                 )
 
-                    self.bot.softban = False
-
+                self.bot.softban = False
             break
 
     def get_candy_gained_count(self, response_dict):
@@ -552,3 +544,4 @@ class PokemonCatchWorker(Datastore, BaseTask):
         throw_parameters['normalized_reticle_size'] = 1.25 + 0.70 * random()
         throw_parameters['normalized_hit_position'] = 0.0
         throw_parameters['throw_type_label'] = 'OK'
+
