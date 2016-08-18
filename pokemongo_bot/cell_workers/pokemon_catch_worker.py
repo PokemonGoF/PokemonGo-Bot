@@ -388,15 +388,15 @@ class PokemonCatchWorker(Datastore, BaseTask):
             self.generate_throw_quality_parameters(throw_parameters)
 
             # try to catch pokemon!
-            # TODO : Log which type of throw we selected
             ball_count[current_ball] -= 1
             self.inventory.get(current_ball).remove(1)
             # Take some time to throw the ball from config options
             action_delay(self.catchsim_catch_wait_min, self.catchsim_catch_wait_max)
             self.emit_event(
                 'threw_pokeball',
-                formatted='Used {ball_name}, with chance {success_percentage} ({count_left} left)',
+                formatted='{throw_type}! Used {ball_name}, with chance {success_percentage} ({count_left} left)',
                 data={
+                    'throw_type': throw_parameters['throw_type_label'],
                     'ball_name': self.inventory.get(current_ball).name,
                     'success_percentage': self._pct(catch_rate_by_ball[current_ball]),
                     'count_left': ball_count[current_ball]
@@ -548,4 +548,4 @@ class PokemonCatchWorker(Datastore, BaseTask):
         # Here the reticle size doesn't matter, we scored out of it
         throw_parameters['normalized_reticle_size'] = 1.25 + 0.70 * random()
         throw_parameters['normalized_hit_position'] = 0.0
-        throw_parameters['throw_type_label'] = 'Normal'
+        throw_parameters['throw_type_label'] = 'OK'
