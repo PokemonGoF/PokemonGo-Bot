@@ -383,9 +383,10 @@ class PokemonCatchWorker(Datastore, BaseTask):
             action_delay(self.catchsim_catch_wait_min, self.catchsim_catch_wait_max)
             self.emit_event(
                 'threw_pokeball',
-                formatted='{throw_type}! Used {ball_name}, with chance {success_percentage} ({count_left} left)',
+                formatted='{throw_type}{spin_label} throw! Used {ball_name}, with chance {success_percentage} ({count_left} left)',
                 data={
                     'throw_type': throw_parameters['throw_type_label'],
+                    'spin_label': throw_parameters['spin_label'],
                     'ball_name': self.inventory.get(current_ball).name,
                     'success_percentage': self._pct(catch_rate_by_ball[current_ball]),
                     'count_left': ball_count[current_ball]
@@ -504,8 +505,10 @@ class PokemonCatchWorker(Datastore, BaseTask):
         spin_success_rate = self.catch_throw_parameters_spin_success_rate
         if random() <= spin_success_rate:
             throw_parameters['spin_modifier'] = 0.5 + 0.5 * random()
+            throw_parameters['spin_label'] = ' Curveball'
         else:
             throw_parameters['spin_modifier'] = 0.499 * random()
+            throw_parameters['spin_label'] = ''
 
     def generate_throw_quality_parameters(self, throw_parameters):
         throw_excellent_chance = self.catch_throw_parameters_excellent_rate
