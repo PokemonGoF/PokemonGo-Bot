@@ -4,8 +4,7 @@ import os
 from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.inventory import Pokemons, Pokemon
-
+from pokemongo_bot.inventory import Pokemons, Pokemon, Attack
 
 class TransferPokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -20,7 +19,7 @@ class TransferPokemon(BaseTask):
             pokemon_name = Pokemons.name_for(pokemon_id)
             keep_best, keep_best_cp, keep_best_iv = self._validate_keep_best_config(pokemon_name)
             #TODO continue list possible criteria
-            keep_best_possible_criteria = ['cp','iv', 'iv_attack', 'iv_defense', 'iv_stamina', 'fast_attack_dps','charge_attack_dps','hp','hp_max']
+            keep_best_possible_criteria = ['cp','iv', 'iv_attack', 'iv_defense', 'iv_stamina', 'moveset.attack_perfection','moveset.defense_perfection','hp','hp_max']
             keep_best_custom, keep_best_criteria, keep_amount = self._validate_keep_best_config_custom(pokemon_name, keep_best_possible_criteria)
             
             best_pokemon_ids = set()
@@ -45,7 +44,7 @@ class TransferPokemon(BaseTask):
                 best_pokemons = sorted(group, key=lambda x: keep_best_criteria, reverse=True)[:limit]
                 best_pokemon_ids = set(pokemon.id for pokemon in best_pokemons)
                 order_criteria = ' and '.join(keep_best_criteria)
-            
+                
             if keep_best or keep_best_custom:
                 # remove best pokemons from all pokemons array
                 all_pokemons = group
@@ -85,7 +84,7 @@ class TransferPokemon(BaseTask):
                 continue
 
             group_id = pokemon.pokemon_id
-
+            
             if group_id not in pokemon_groups:
                 pokemon_groups[group_id] = []
 
