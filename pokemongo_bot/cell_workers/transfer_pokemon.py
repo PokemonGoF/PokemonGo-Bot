@@ -9,6 +9,7 @@ from pokemongo_bot.datastore import Datastore
 
 class TransferPokemon(Datastore, BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
+    
     def __init__(self, bot, config):
         super(TransferPokemon, self).__init__(bot, config)
     def initialize(self):
