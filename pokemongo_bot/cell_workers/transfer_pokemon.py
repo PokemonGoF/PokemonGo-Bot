@@ -186,12 +186,6 @@ class TransferPokemon(BaseTask):
             release_config = {}
         return release_config
 
-
-#"Charmander": { 
-#    "keep_best_custom": "dps_attack,iv,cp", 
-#    "amount": 2
-#}
-
     def _validate_keep_best_config_custom(self, pokemon_name, keep_best_possible_custom):
         keep_best = False
 
