@@ -489,6 +489,24 @@ class PokemonGoBot(Datastore):
             parameters=('path', )
         )
 
+        # bot threshold
+        self.event_manager.register_event(
+            'next_rest',
+            parameters=(
+                'pokemon_threshold',
+                'pokestop_threshold'
+            )
+        )
+        self.event_manager.register_event(
+            'bot_rest',
+            parameters=(
+                'captured_pokemon',
+                'visited_pokestop',
+                'time_hms',
+                'resume'
+            )
+        )
+
     def tick(self):
         self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
