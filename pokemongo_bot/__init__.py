@@ -754,6 +754,8 @@ class PokemonGoBot(Datastore):
         # chain subrequests (methods) into one RPC call
 
         self._print_character_info()
+        if self.config.pokemon_bag_show_at_start and self.config.pokemon_bag_pokemon_info:
+            self._print_list_pokemon()
         self.api.activate_signature(self.get_encryption_lib())
         self.logger.info('')
         self.update_inventory()
@@ -842,6 +844,54 @@ class PokemonGoBot(Datastore):
         self.logger.info(
             'Revive: ' + str(items_stock[201]) +
             ' | MaxRevive: ' + str(items_stock[202]))
+
+        self.logger.info('')
+
+    def _print_list_pokemon(self):
+        init_inventory(self)
+
+        # get pokemon list
+        pokemon_list = inventory.pokemons().all()
+        pokemon_list = sorted(pokemon_list, key=lambda k: k.pokemon_id)
+
+        show_count = self.config.pokemon_bag_show_count
+        poke_info_displayed = self.config.pokemon_bag_pokemon_info
+
+        def get_poke_info(info, pokemon):
+            poke_info = {
+                'cp': 'CP {}'.format(pokemon.cp),
+                'iv_ads': 'A/D/S {}/{}/{}'.format(pokemon.iv_attack, pokemon.iv_defense, pokemon.iv_stamina),
+                'iv_pct': 'IV {}'.format(pokemon.iv),
+                'ivcp': 'IVCP {}'.format(round(pokemon.ivcp,2)),
+                'ncp': 'NCP {}'.format(round(pokemon.cp_percent,2)),
+                'level': "Level {}".format(pokemon.level),
+                'hp': 'HP {}/{}'.format(pokemon.hp, pokemon.hp_max),
+                'moveset': 'Moves: {}'.format(pokemon.moveset),
+                'dps': 'DPS {}'.format(round(pokemon.moveset.dps, 2))
+            }
+            if info not in poke_info:
+                raise ConfigException("info '{}' isn't available for displaying".format(info))
+            return poke_info[info]
+
+        self.logger.info('Pokemon:')
+
+        last_id = -1
+        line_start = str()
+        line_p = []
+        count = 0
+        for poke in pokemon_list:
+            if last_id != -1 and last_id != poke.pokemon_id:
+                if show_count:
+                    line_start += '[{}]'.format(count)
+                self.logger.info(line_start + ': ' + ' | '.join(line_p))
+                line_p = []
+                last_id = -1
+                count = 0
+            if last_id == -1:
+                last_id = poke.pokemon_id
+                line_start = '#{} {}'.format(last_id, poke.name)
+            line_p.append('({})'.format(', '.join([get_poke_info(x, poke) for x in poke_info_displayed])))
+            count += 1
 
         self.logger.info('')
 
