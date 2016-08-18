@@ -22,7 +22,15 @@
         }
       },
       {
-        "type": "CollectLevelUpReward"
+        "type": "CompleteTutorial",
+        "config": {
+          "enabled": false,
+          "// set a name": "",
+          "nickname": ""
+        }
+      },
+      {
+         "type": "CollectLevelUpReward"
       },
       {
         "type": "IncubateEggs",
