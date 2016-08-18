@@ -64,9 +64,9 @@ class RandomPause(BaseTask):
         self.maxInterval = self.getSeconds(self.config.get('max_interval', '01:10:00'))
         
         if self.minDuration > self.maxDuration:
-            raise ValueError('random pause min_duration is bigger than random pause max_duration')
+            raise ValueError('random pause min_duration is bigger than random pause max_duration') #TODO there must be a more elegant way to do it...
         if self.minInterval > self.maxInterval:
-            raise ValueError('random pause min_interval is bigger than random pause max_interval')
+            raise ValueError('random pause min_interval is bigger than random pause max_interval') #TODO there must be a more elegant way to do it...
         
     def _schedule_next_pause(self):
         '''
