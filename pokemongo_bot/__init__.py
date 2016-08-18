@@ -300,6 +300,7 @@ class PokemonGoBot(Datastore):
             'threw_pokeball',
             parameters=(
                 'throw_type',
+                'spin_label',
                 'ball_name',
                 'success_percentage',
                 'count_left'
