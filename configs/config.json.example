@@ -21,6 +21,16 @@
           "duration_random_offset": "00:43"
         }
       },
+	  {
+		"type": "RandomPause",
+        "config": {
+		  "enabled": false,
+		  "min_duration": "00:00:10",
+		  "max_duration": "00:10:00",
+		  "min_interval": "00:10:00",
+		  "max_interval": "02:00:00"
+        }
+	  },
       {
         "type": "CompleteTutorial",
         "config": {
@@ -156,6 +166,7 @@
     "distance_unit": "km",
     "reconnecting_timeout": 15,
     "logging_color": true,
+    "daily_catch_limit": 800,
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},
@@ -167,12 +178,14 @@
       "// Rattata": {"always_release": true},
       "// Example of keeping 3 stronger (based on CP) Pidgey:": {},
       "// Pidgey": {"keep_best_cp": 3},
-      "// Example of keeping 2 stronger (based on IV) Zubat:": {},
+      "// Example of keeping 2 best (based on IV) Zubat:": {},
       "// Zubat": {"keep_best_iv": 2},
       "// Also, it is working with any": {},
       "// any": {"keep_best_iv": 3},
       "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat:": {},
-      "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3}
+      "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3},
+	  "// Example of custom order of static criterion": {},
+	  "// Zubat": {"keep_best_custom": "moveset.defense_perfection, hp_max", "amount":2}
     },
     "vips" : {
         "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate!": {},

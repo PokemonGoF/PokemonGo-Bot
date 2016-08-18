@@ -177,6 +177,22 @@ class PokemonGoBot(Datastore):
                 'wake'
             )
         )
+        
+        # random pause
+        self.event_manager.register_event(
+            'next_random_pause',
+            parameters=(
+                'time',
+                'duration'
+            )
+        )
+        self.event_manager.register_event(
+            'bot_random_pause',
+            parameters=(
+                'time_hms',
+                'resume'
+            )
+        )
 
         # fort stuff
         self.event_manager.register_event(
@@ -284,6 +300,7 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event(
             'threw_pokeball',
             parameters=(
+                'throw_type',
                 'ball_name',
                 'success_percentage',
                 'count_left'
@@ -324,6 +341,7 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
         self.event_manager.register_event('vip_pokemon')
         self.event_manager.register_event('gained_candy', parameters=('quantity', 'type'))
+        self.event_manager.register_event('catch_limit')
 
         # level up stuff
         self.event_manager.register_event(
@@ -555,8 +573,11 @@ class PokemonGoBot(Datastore):
             cells = self.find_close_cells(*location)
 
         user_data_cells = os.path.join(_base_dir, 'data', 'cells-%s.json' % self.config.username)
-        with open(user_data_cells, 'w') as outfile:
-            json.dump(cells, outfile)
+        try:
+            with open(user_data_cells, 'w') as outfile:
+                json.dump(cells, outfile)
+        except IOError as e:
+            self.logger.info('[x] Error while opening location file: %s' % e)
 
         user_web_location = os.path.join(
             _base_dir, 'web', 'location-%s.json' % self.config.username
@@ -715,10 +736,10 @@ class PokemonGoBot(Datastore):
         full_path = path + '/'+ file_name
         if not os.path.isfile(full_path):
             self.logger.error(file_name + ' is not found! Please place it in the bots root directory or set encrypt_location in config.')
-            self.logger.info('Platform: '+ _platform + ' Encrypt.so directory: '+ path)
+            self.logger.info('Platform: '+ _platform + ' ' + file_name + ' directory: '+ path)
             sys.exit(1)
         else:
-            self.logger.info('Found '+ file_name +'! Platform: ' + _platform + ' Encrypt.so directory: ' + path)
+            self.logger.info('Found '+ file_name +'! Platform: ' + _platform + ' ' + file_name + ' directory: ' + path)
 
         return full_path
 
@@ -852,8 +873,11 @@ class PokemonGoBot(Datastore):
 
         user_web_inventory = os.path.join(_base_dir, 'web', 'inventory-%s.json' % self.config.username)
 
-        with open(user_web_inventory, 'w') as outfile:
-            json.dump(inventory_dict, outfile)
+        try:
+            with open(user_web_inventory, 'w') as outfile:
+                json.dump(inventory_dict, outfile)
+        except IOError as e:
+            self.logger.info('[x] Error while opening location file: %s' % e)
 
         # get player items stock
         # ----------------------
