@@ -3,11 +3,13 @@ from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.inventory import Pokemon
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.base_task import BaseTask
+from pokemongo_bot.datastore import Datastore
 
-
-class EvolvePokemon(BaseTask):
+class EvolvePokemon(Datastore, BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
-
+    def __init__(self, bot, config):
+        super(EvolvePokemon, self).__init__(bot, config)
+   
     def initialize(self):
         self.api = self.bot.api
         self.evolve_all = self.config.get('evolve_all', [])
@@ -113,6 +115,8 @@ class EvolvePokemon(BaseTask):
                     'xp': '?'
                 }
             )
+            with self.bot.database as conn:
+                conn.execute('''INSERT INTO evolve_log (pokemon, iv, cp) VALUES (?, ?, ?)''', (pokemon.name, pokemon.iv, pokemon.cp))
             awarded_candies = response_dict.get('responses', {}).get('EVOLVE_POKEMON', {}).get('candy_awarded', 0)
             inventory.candies().get(pokemon.pokemon_id).consume(pokemon.evolution_cost - awarded_candies)
             inventory.pokemons().remove(pokemon.unique_id)
