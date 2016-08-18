@@ -34,7 +34,7 @@ class TransferPokemon(BaseTask):
                 if keep_best_iv >= 1:
                     iv_limit = keep_best_iv
                     best_iv_pokemons = sorted(group, key=lambda x: (x.iv, x.cp), reverse=True)[:iv_limit]
-                    best_pokemon_ids = set(pokemon.id for pokemon in best_iv_pokemons)
+                    best_pokemon_ids |= set(pokemon.id for pokemon in best_iv_pokemons)
                     if order_criteria == 'cp':
                         order_criteria = 'cp and iv'
                     else:
