@@ -48,10 +48,10 @@ class PokemonCatchWorker(Datastore, BaseTask):
         self.spawn_point_guid = ''
         self.response_key = ''
         self.response_status_key = ''
-        
+
         #Config
         self.min_ultraball_to_keep = self.config.get('min_ultraball_to_keep', 10)
-        
+
         self.catch_throw_parameters = self.config.get('catch_throw_parameters', {})
         self.catch_throw_parameters_spin_success_rate = self.catch_throw_parameters.get('spin_success_rate', 0.6)
         self.catch_throw_parameters_excellent_rate = self.catch_throw_parameters.get('excellent_rate', 0.1)
@@ -68,7 +68,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
         self.catchsim_berry_wait_max = self.catchsim_config.get('berry_wait_max', 3)
         self.catchsim_changeball_wait_min = self.catchsim_config.get('changeball_wait_min', 2)
         self.catchsim_changeball_wait_max = self.catchsim_config.get('changeball_wait_max', 3)
-        
+
 
     ############################################################################
     # public methods
@@ -112,7 +112,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
                     return WorkerResult.SUCCESS
                 if not is_vip:
                     return WorkerResult.SUCCESS
-        
+
         # log encounter
         self.emit_event(
             'pokemon_appeared',
@@ -142,12 +142,12 @@ class PokemonCatchWorker(Datastore, BaseTask):
             self.emit_event('vip_pokemon', formatted='This is a VIP pokemon. Catch!!!')
 
         # check catch limits before catch
-        with self.bot.database as conn:      
+        with self.bot.database as conn:
             c = conn.cursor()
             c.execute("SELECT DISTINCT COUNT(encounter_id) FROM catch_log WHERE dated >= datetime('now','-1 day')")
-            
+
         result = c.fetchone()
-        
+
         while True:
             max_catch = self.bot.config.daily_catch_limit
             if result[0] < max_catch:
@@ -454,54 +454,54 @@ class PokemonCatchWorker(Datastore, BaseTask):
             elif catch_pokemon_status == CATCH_STATUS_SUCCESS:
                 pokemon.id = response_dict['responses']['CATCH_POKEMON']['captured_pokemon_id']
                 self.bot.metrics.captured_pokemon(pokemon.name, pokemon.cp, pokemon.iv_display, pokemon.iv)
-                
-            try:
-                self.emit_event(
-                    'pokemon_caught',
-                    formatted='Captured {pokemon}! [CP {cp}] [Potential {iv}] [{iv_display}] [+{exp} exp]',
-                    data={
-                        'pokemon': pokemon.name,
-                        'cp': pokemon.cp,
-                        'iv': pokemon.iv,
-                        'iv_display': pokemon.iv_display,
-                        'exp': sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp']),
-                        'encounter_id': self.pokemon['encounter_id'],
-                        'latitude': self.pokemon['latitude'],
-                        'longitude': self.pokemon['longitude'],
-                        'pokemon_id': pokemon.pokemon_id
-                    }
-               
-                )
-                with self.bot.database as conn:
-                    conn.execute('''INSERT INTO catch_log (pokemon, cp, iv, encounter_id, pokemon_id) VALUES (?, ?, ?, ?, ?)''', (pokemon.name, pokemon.cp, pokemon.iv, str(encounter_id), pokemon.pokemon_id))
-                #conn.commit()
-                user_data_caught = os.path.join(_base_dir, 'data', 'caught-%s.json' % self.bot.config.username)
-                with open(user_data_caught, 'ab') as outfile:
-                    outfile.write(str(datetime.now()))
-                    json.dump({
-                    'pokemon': pokemon.name,
-                    'cp': pokemon.cp,
-                    'iv': pokemon.iv,
-                    'encounter_id': self.pokemon['encounter_id'],
-                    'pokemon_id': pokemon.pokemon_id 
-                     }, outfile)
-                    outfile.write('\n')
-                   
-            except IOError as e:
-                self.logger.info('[x] Error while opening location file: %s' % e)
 
-                # We could refresh here too, but adding 3 saves a inventory request
-                candy = inventory.candies(True).get(pokemon.pokemon_id)
-                self.emit_event(
-                    'gained_candy',
-                    formatted='You now have {quantity} {type} candy!',
-                    data = {
-                        'quantity': candy.quantity,
-                        'type': candy.type,
-                    },
-                )
+                try:
+                    self.emit_event(
+                        'pokemon_caught',
+                        formatted='Captured {pokemon}! [CP {cp}] [Potential {iv}] [{iv_display}] [+{exp} exp]',
+                        data={
+                            'pokemon': pokemon.name,
+                            'cp': pokemon.cp,
+                            'iv': pokemon.iv,
+                            'iv_display': pokemon.iv_display,
+                            'exp': sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp']),
+                            'encounter_id': self.pokemon['encounter_id'],
+                            'latitude': self.pokemon['latitude'],
+                            'longitude': self.pokemon['longitude'],
+                            'pokemon_id': pokemon.pokemon_id
+                        }
 
-                self.bot.softban = False
+                    )
+                    with self.bot.database as conn:
+                        conn.execute('''INSERT INTO catch_log (pokemon, cp, iv, encounter_id, pokemon_id) VALUES (?, ?, ?, ?, ?)''', (pokemon.name, pokemon.cp, pokemon.iv, str(encounter_id), pokemon.pokemon_id))
+                    #conn.commit()
+                    user_data_caught = os.path.join(_base_dir, 'data', 'caught-%s.json' % self.bot.config.username)
+                    with open(user_data_caught, 'ab') as outfile:
+                        outfile.write(str(datetime.now()))
+                        json.dump({
+                            'pokemon': pokemon.name,
+                            'cp': pokemon.cp,
+                            'iv': pokemon.iv,
+                            'encounter_id': self.pokemon['encounter_id'],
+                            'pokemon_id': pokemon.pokemon_id
+                        }, outfile)
+                        outfile.write('\n')
+
+                except IOError as e:
+                    self.logger.info('[x] Error while opening location file: %s' % e)
+
+                    # We could refresh here too, but adding 3 saves a inventory request
+                    candy = inventory.candies(True).get(pokemon.pokemon_id)
+                    self.emit_event(
+                        'gained_candy',
+                        formatted='You now have {quantity} {type} candy!',
+                        data = {
+                            'quantity': candy.quantity,
+                            'type': candy.type,
+                        },
+                    )
+
+                    self.bot.softban = False
 
             break
 
