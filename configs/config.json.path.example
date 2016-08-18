@@ -22,7 +22,15 @@
         }
       },
       {
-        "type": "CollectLevelUpReward"
+        "type": "CompleteTutorial",
+        "config": {
+          "enabled": false,
+          "// set a name": "",
+          "nickname": ""
+        }
+      },
+      {
+         "type": "CollectLevelUpReward"
       },
       {
         "type": "IncubateEggs",
@@ -108,7 +116,7 @@
             "berry_wait_max": 3,
             "changeball_wait_min": 2,
             "changeball_wait_max": 3
-          },
+          }
         }
       },
       {
@@ -141,6 +149,7 @@
     "distance_unit": "km",
     "reconnecting_timeout": 15,
     "logging_color": true,
+    "daily_catch_limit": 800,
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},

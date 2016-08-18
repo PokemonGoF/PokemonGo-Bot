@@ -19,6 +19,7 @@
 | `location_cache`   | true    | Bot will start at last known location if you do not have location set in the config                                                                                                         |
 | `distance_unit`    | km      | Set the unit to display distance in (km for kilometers, mi for miles, ft for feet)                                                                                                          |
 | `evolve_cp_min`           | 300   |                   Min. CP for evolve_all function
+|`daily_catch_llimit`    | 800   |                   Limit the amount of pokemon caught in a 24 hour period.
 
 ## Configuring Tasks
 The behaviors of the bot are configured via the `tasks` key in the `config.json`. This enables you to list what you want the bot to do and change the priority of those tasks by reordering them in the list. This list of tasks is run repeatedly and in order. For more information on why we are moving config to this format, check out the [original proposal](https://github.com/PokemonGoF/PokemonGo-Bot/issues/142).
@@ -161,6 +162,21 @@ If you don't have it, it will keep it (no matter was it strong or weak Pokémon)
 If you already have it, it will keep a stronger version and will transfer the a weaker one.
 
 ```"release": {"any": {"keep_best_cp": 2}}```, ```"release": {"any": {"keep_best_cp": 10}}``` - can be any number.
+
+### Keep the best custom pokemon configuration (dev branch)
+
+Define a list of criteria to keep the best Pokemons according to those criteria. 
+
+The list of criteria is the following:```'cp','iv', 'iv_attack', 'iv_defense', 'iv_stamina', 'moveset.attack_perfection', 'moveset.defense_perfection', 'hp', 'hp_max'```
+
+####Examples:
+
+- Keep the top 25 Zubat with the best hp_max:
+
+```"release": {"Zubat": {"keep_best_custom": "hp_max", "amount":25}}```
+- Keep the top 10 Zubat with the best hp_max and, if there are Zubat with the same hp_max, to keep the one with the highest hp:
+
+```"release": {"Zubat": {"keep_best_custom": "hp_max,hp", "amount":10}}````
 
 ## Evolve All Configuration
 

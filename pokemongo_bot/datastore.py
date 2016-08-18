@@ -20,22 +20,31 @@ except ImportError:
 
 _DEFAULT = object()
 
-class DatabaseManager(object):
-    def __init__(self, bot):
-        self.bot = bot
+BACKEND = _DEFAULT
+DATABASE = _DEFAULT
 
-    @property
-    def backend(self):
-        return get_backend('sqlite:///data/{}.db'.format(self.bot.config.username))
+def _init_database(connection_string=':memory:', driver='sqlite'):
+    global BACKEND, DATABASE
 
+    if DATABASE is _DEFAULT:
+        BACKEND = get_backend('{driver}://{conn}'.format(driver=driver, conn=connection_string))
+        DATABASE = BACKEND.connection
+
+    return DATABASE
 
 class Datastore(object):
     MIGRATIONS_PATH = _DEFAULT
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """
         When a subclass is initiated, the migrations should automatically be run.
         """
+        if _DEFAULT in (BACKEND, DATABASE):
+            raise RuntimeError('Migration database connection not setup. Need to run `_init_database`')
+
+        # Init parents with additional params we may have received
+        super(Datastore, self).__init__(*args, **kwargs)
+
         path = self.MIGRATIONS_PATH
 
         if path is _DEFAULT:
@@ -45,7 +54,12 @@ class Datastore(object):
         elif not os.path.isdir(str(path)):
             raise RuntimeError('The migrations directory does not exist')
 
-        backend = self.database.backend
-        with backend.connection as conn:
+        try:
             migrations = read_migrations(path)
-            backend.apply_migrations(backend.to_apply(migrations))
+            BACKEND.apply_migrations(BACKEND.to_apply(migrations))
+        except (IOError, OSError):
+            """
+            If `migrations` directory is not present, then whatever is subclassing
+            us will not have any DB schemas to load.
+            """
+            pass
