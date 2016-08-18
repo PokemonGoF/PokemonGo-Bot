@@ -4,21 +4,27 @@ import os
 from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.inventory import Pokemons, Pokemon
-
+from pokemongo_bot.inventory import Pokemons, Pokemon, Attack
 
 class TransferPokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
+
+    def initialize(self):
+        self.transfer_wait_min = self.config.get('transfer_wait_min', 1)
+        self.transfer_wait_max = self.config.get('transfer_wait_max', 4)
 
     def work(self):
         pokemon_groups = self._release_pokemon_get_groups()
         for pokemon_id, group in pokemon_groups.iteritems():
             pokemon_name = Pokemons.name_for(pokemon_id)
             keep_best, keep_best_cp, keep_best_iv = self._validate_keep_best_config(pokemon_name)
-
+            #TODO continue list possible criteria
+            keep_best_possible_criteria = ['cp','iv', 'iv_attack', 'iv_defense', 'iv_stamina', 'moveset.attack_perfection','moveset.defense_perfection','hp','hp_max']
+            keep_best_custom, keep_best_criteria, keep_amount = self._validate_keep_best_config_custom(pokemon_name, keep_best_possible_criteria)
+            
+            best_pokemon_ids = set()
+            order_criteria = 'none'
             if keep_best:
-                best_pokemon_ids = set()
-                order_criteria = 'none'
                 if keep_best_cp >= 1:
                     cp_limit = keep_best_cp
                     best_cp_pokemons = sorted(group, key=lambda x: (x.cp, x.iv), reverse=True)[:cp_limit]
@@ -32,8 +38,14 @@ class TransferPokemon(BaseTask):
                     if order_criteria == 'cp':
                         order_criteria = 'cp and iv'
                     else:
-                        order_criteria = 'iv'
-
+                        order_criteria = 'iv'      
+            elif keep_best_custom:
+                limit = keep_amount
+                best_pokemons = sorted(group, key=lambda x: keep_best_criteria, reverse=True)[:limit]
+                best_pokemon_ids = set(pokemon.id for pokemon in best_pokemons)
+                order_criteria = ' and '.join(keep_best_criteria)
+                
+            if keep_best or keep_best_custom:
                 # remove best pokemons from all pokemons array
                 all_pokemons = group
                 best_pokemons = []
@@ -72,7 +84,7 @@ class TransferPokemon(BaseTask):
                 continue
 
             group_id = pokemon.pokemon_id
-
+            
             if group_id not in pokemon_groups:
                 pokemon_groups[group_id] = []
 
@@ -164,7 +176,7 @@ class TransferPokemon(BaseTask):
                 'dps': pokemon.moveset.dps
             }
         )
-        action_delay(self.bot.config.action_wait_min, self.bot.config.action_wait_max)
+        action_delay(self.transfer_wait_min, self.transfer_wait_max)
 
     def _get_release_config_for(self, pokemon):
         release_config = self.bot.config.release.get(pokemon)
@@ -174,6 +186,32 @@ class TransferPokemon(BaseTask):
             release_config = {}
         return release_config
 
+    def _validate_keep_best_config_custom(self, pokemon_name, keep_best_possible_custom):
+        keep_best = False
+
+        release_config = self._get_release_config_for(pokemon_name)    
+        keep_best_custom = release_config.get('keep_best_custom', '')
+        keep_amount = release_config.get('amount', 0)
+
+        if keep_best_custom and keep_amount:
+            keep_best = True
+            
+            keep_best_custom = keep_best_custom.split(',')
+            for _str in keep_best_custom:
+                if _str not in keep_best_possible_custom:
+                    keep_best = False
+                    break
+
+            try:
+                keep_amount = int(keep_amount)
+            except ValueError:
+                keep_best = False
+              
+            if keep_amount < 0:
+                keep_best = False
+                
+        return keep_best, keep_best_custom, keep_amount
+        
     def _validate_keep_best_config(self, pokemon_name):
         keep_best = False
 
@@ -181,7 +219,7 @@ class TransferPokemon(BaseTask):
 
         keep_best_cp = release_config.get('keep_best_cp', 0)
         keep_best_iv = release_config.get('keep_best_iv', 0)
-
+        
         if keep_best_cp or keep_best_iv:
             keep_best = True
             try:
@@ -193,7 +231,7 @@ class TransferPokemon(BaseTask):
                 keep_best_iv = int(keep_best_iv)
             except ValueError:
                 keep_best_iv = 0
-
+                
             if keep_best_cp < 0 or keep_best_iv < 0:
                 keep_best = False
 

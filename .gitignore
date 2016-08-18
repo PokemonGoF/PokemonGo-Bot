@@ -107,6 +107,7 @@ out/
 src/
 web/
 logs/
+data/*.db
 data/last-location*.json
 data/cells-*.json
 data/map-caught-*.json
