@@ -202,6 +202,7 @@ if exist %PGBotPath% rmdir %PGBotPath% /s /q
 if not exist %PGBotPath% md %PGBotPath%
 cd C:\Python27\
 pip2 install --upgrade pip
+pip2 install --upgrade virtualenv
 git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot %PGBotPath%
 pip2 install -r %PGBotPath%\requirements.txt
 @ECHO.
