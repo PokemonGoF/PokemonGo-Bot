@@ -101,6 +101,8 @@ class PokemonGoBot(Datastore):
         init_inventory(self)
         self.display_player_info()
         self._print_character_info()
+        if self.config.pokemon_bag_show_at_start and self.config.pokemon_bag_pokemon_info:
+            self._print_list_pokemon()
 
         random.seed()
 
@@ -756,9 +758,6 @@ class PokemonGoBot(Datastore):
         self.login()
         # chain subrequests (methods) into one RPC call
 
-        self._print_character_info()
-        if self.config.pokemon_bag_show_at_start and self.config.pokemon_bag_pokemon_info:
-            self._print_list_pokemon()
         self.api.activate_signature(self.get_encryption_lib())
         self.logger.info('')
         # send empty map_cells and then our position
@@ -850,8 +849,6 @@ class PokemonGoBot(Datastore):
         self.logger.info('')
 
     def _print_list_pokemon(self):
-        init_inventory(self)
-
         # get pokemon list
         pokemon_list = inventory.pokemons().all()
         pokemon_list = sorted(pokemon_list, key=lambda k: k.pokemon_id)

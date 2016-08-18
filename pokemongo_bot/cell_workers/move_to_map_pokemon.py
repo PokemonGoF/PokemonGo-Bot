@@ -54,6 +54,8 @@ import time
 import json
 import base64
 import requests
+
+from pokemongo_bot import inventory
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.cell_workers.utils import distance, format_dist, format_time
 from pokemongo_bot.step_walker import StepWalker
@@ -64,6 +66,9 @@ from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 
 # Update the map if more than N meters away from the center. (AND'd with
 # UPDATE_MAP_MIN_TIME_MINUTES)
+ULTRABALL_ID = 3
+GREATBALL_ID = 2
+POKEBALL_ID = 1
 UPDATE_MAP_MIN_DISTANCE_METERS = 500
 
 # Update the map if it hasn't been updated in n seconds. (AND'd with
@@ -181,7 +186,7 @@ class MoveToMapPokemon(BaseTask):
         except ValueError:
             err = 'Map location data was not valid'
             self._emit_failure(err)
-            return log.logger(err, 'red')
+            return
 
         dist = distance(
             self.bot.position[0],
@@ -235,11 +240,11 @@ class MoveToMapPokemon(BaseTask):
 
     def work(self):
         # check for pokeballs (excluding masterball)
-        pokeballs = self.bot.item_inventory_count(1)
-        superballs = self.bot.item_inventory_count(2)
-        ultraballs = self.bot.item_inventory_count(3)
+        pokeballs_quantity = inventory.items().get(POKEBALL_ID).count
+        superballs_quantity = inventory.items().get(GREATBALL_ID).count
+        ultraballs_quantity = inventory.items().get(ULTRABALL_ID).count
 
-        if (pokeballs + superballs + ultraballs) < 1:
+        if (pokeballs_quantity + superballs_quantity + ultraballs_quantity) < 1:
             return WorkerResult.SUCCESS
 
         self.update_map_location()
@@ -257,11 +262,9 @@ class MoveToMapPokemon(BaseTask):
 
         pokemon = pokemon_list[0]
 
-        if pokeballs < 1:
-            if superballs < 1:
-                if ultraballs < 1:
-                    return WorkerResult.SUCCESS
-                if not pokemon['is_vip']:
+        if pokeballs_quantity < 1:
+            if superballs_quantity < 1:
+                if ultraballs_quantity < 1:
                     return WorkerResult.SUCCESS
 
         if self.config['snipe']:
