@@ -88,9 +88,6 @@ class RecycleItems(BaseTask):
         :rtype: WorkerResult
         """
 
-        # TODO: Use new inventory everywhere and then remove this inventory update
-        inventory.refresh_inventory()
-
         worker_result = WorkerResult.SUCCESS
         if self.should_run():
 
@@ -113,7 +110,6 @@ class RecycleItems(BaseTask):
                     # If at any recycling process call we got an error, we consider that the result of this task is error too.
                     if ItemRecycler(self.bot, item_in_inventory, self.get_amount_to_recycle(item_in_inventory)).work() == WorkerResult.ERROR:
                         worker_result = WorkerResult.ERROR
-
         return worker_result
 
     def recycle_excess_category_max(self, category_max, category_items_list):

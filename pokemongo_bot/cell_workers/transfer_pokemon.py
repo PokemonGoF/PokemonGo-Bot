@@ -28,13 +28,13 @@ class TransferPokemon(BaseTask):
                 if keep_best_cp >= 1:
                     cp_limit = keep_best_cp
                     best_cp_pokemons = sorted(group, key=lambda x: (x.cp, x.iv), reverse=True)[:cp_limit]
-                    best_pokemon_ids = set(pokemon.id for pokemon in best_cp_pokemons)
+                    best_pokemon_ids = set(pokemon.unique_id for pokemon in best_cp_pokemons)
                     order_criteria = 'cp'
 
                 if keep_best_iv >= 1:
                     iv_limit = keep_best_iv
                     best_iv_pokemons = sorted(group, key=lambda x: (x.iv, x.cp), reverse=True)[:iv_limit]
-                    best_pokemon_ids |= set(pokemon.id for pokemon in best_iv_pokemons)
+                    best_pokemon_ids |= set(pokemon.unique_id for pokemon in best_iv_pokemons)
                     if order_criteria == 'cp':
                         order_criteria = 'cp and iv'
                     else:
@@ -51,7 +51,7 @@ class TransferPokemon(BaseTask):
                 best_pokemons = []
                 for best_pokemon_id in best_pokemon_ids:
                     for pokemon in all_pokemons:
-                        if best_pokemon_id == pokemon.id:
+                        if best_pokemon_id == pokemon.unique_id:
                             all_pokemons.remove(pokemon)
                             best_pokemons.append(pokemon)
 
@@ -78,8 +78,7 @@ class TransferPokemon(BaseTask):
 
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
-        # TODO: Use new inventory everywhere and then remove the inventory update
-        for pokemon in inventory.pokemons(True).all():
+        for pokemon in inventory.pokemons().all():
             if pokemon.in_fort or pokemon.is_favorite:
                 continue
 
@@ -155,7 +154,7 @@ class TransferPokemon(BaseTask):
             if self.bot.config.test:
                 candy_awarded = 1
             else:
-                response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon.id)
+                response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon.unique_id)
                 candy_awarded = response_dict['responses']['RELEASE_POKEMON']['candy_awarded']
         except KeyError:
             return
@@ -163,7 +162,7 @@ class TransferPokemon(BaseTask):
         # We could refresh here too, but adding 1 saves a inventory request
         candy = inventory.candies().get(pokemon.pokemon_id)
         candy.add(candy_awarded)
-        inventory.pokemons().remove(pokemon.id)
+        inventory.pokemons().remove(pokemon.unique_id)
         self.bot.metrics.released_pokemon()
         self.emit_event(
             'pokemon_release',

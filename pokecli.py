@@ -39,6 +39,7 @@ from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException
 from geopy.exc import GeocoderQuotaExceeded
 
+from pokemongo_bot import inventory
 from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.health_record import BotEvent
