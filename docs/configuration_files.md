@@ -162,6 +162,21 @@ If you already have it, it will keep a stronger version and will transfer the a 
 
 ```"release": {"any": {"keep_best_cp": 2}}```, ```"release": {"any": {"keep_best_cp": 10}}``` - can be any number.
 
+### Keep the best custom pokemon configuration (dev branch)
+
+Define a list of criteria to keep the best Pokemons according to those criteria. 
+
+The list of criteria is the following:```'cp','iv', 'iv_attack', 'iv_defense', 'iv_stamina', 'moveset.attack_perfection', 'moveset.defense_perfection', 'hp', 'hp_max'```
+
+####Examples:
+
+- Keep the top 25 Zubat with the best hp_max:
+
+```"release": {"Zubat": {"keep_best_custom": "hp_max", "amount":25}}```
+- Keep the top 10 Zubat with the best hp_max and, if there are Zubat with the same hp_max, to keep the one with the highest hp:
+
+```"release": {"Zubat": {"keep_best_custom": "hp_max,hp", "amount":10}}````
+
 ## Evolve All Configuration
 
 By setting the `evolve_all` attribute in config.json, you can instruct the bot to automatically
