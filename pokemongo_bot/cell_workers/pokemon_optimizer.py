@@ -79,7 +79,7 @@ class PokemonOptimizer(BaseTask):
     def open_inventory(self):
         self.family_by_family_id.clear()
 
-        for pokemon in inventory.pokemons(True).all():
+        for pokemon in inventory.pokemons().all():
             family_id = pokemon.first_evolution_id
             setattr(pokemon, "ncp", pokemon.cp_percent)
             setattr(pokemon, "dps", pokemon.moveset.dps)
