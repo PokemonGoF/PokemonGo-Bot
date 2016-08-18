@@ -53,6 +53,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
         self.catch_throw_parameters_great_rate = self.catch_throw_parameters.get('great_rate', 0.5)
         self.catch_throw_parameters_nice_rate = self.catch_throw_parameters.get('nice_rate', 0.3)
         self.catch_throw_parameters_normal_rate = self.catch_throw_parameters.get('normal_rate', 0.1)
+        self.catch_throw_parameters_hit_rate = self.catch_throw_parameters.get('hit_rate', 0.8)
 
         self.catchsim_config = self.config.get('catch_simulation', {})
         self.catchsim_catch_wait_min = self.catchsim_config.get('catch_wait_min', 2)
@@ -283,7 +284,6 @@ class PokemonCatchWorker(Datastore, BaseTask):
         berry_id = ITEM_RAZZBERRY
         maximum_ball = ITEM_ULTRABALL if is_vip else ITEM_GREATBALL
         ideal_catch_rate_before_throw = 0.9 if is_vip else 0.35
-        hit_rate = self.config.catch_throw_parameters_hit_rate
 
         berry_count = self.inventory.get(ITEM_RAZZBERRY).count
         ball_count = {}
@@ -381,7 +381,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
             )
 
             hit_pokemon = 1
-            if random() >= hit_rate:
+            if random() >= self.catch_throw_parameters_hit_rate:
                 hit_pokemon = 0
 
             response_dict = self.api.catch_pokemon(
@@ -472,7 +472,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
                     data={'pokemon': pokemon.name}
                 )
                 # Take some time to throw the ball from config options
-                action_delay(self.config.catchsim_catch_wait_min, self.config.catchsim_catch_wait_max)
+                action_delay(self.catchsim_catch_wait_min, self.catchsim_catch_wait_max)
                 continue
 
             break
