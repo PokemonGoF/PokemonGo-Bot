@@ -34,16 +34,18 @@ We do recommend Windows users to use [Docker](#docker) this will work much easie
 ##Requirements
 
 ###Easy Installation
+-This enables the user to run a single bot. For multiple bots, do a manual installation.
 1. Download [PokemonGo-Bot-Install.bat](https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/windows_bat/PokemonGo-Bot-Install.bat)
-2. Download `encrypt.so` and `encrypt.dll` or `encrypt_64.dll` to the same folder of the `PokemonGo-Bot-Install.bat`.
+2. Download `encrypt.so` and `encrypt.dll` or `encrypt_64.dll` to the same folder of the `PokemonGo-Bot-Install.bat`. (Get them from somebody at Slack!)
 3. Run `PokemonGo-Bot-install.bat`.
 After that has been done the bot will be installed.
 4. Run `PokemonGo-Bot-Start.bat`.
 This will start the bot and the web interface.
 
+
 ### To update the bot
 3. Run `PokemonGo-Bot-Start.bat`
-This will check for an update and will start the bot afterwards.
+This will check for updates and will start the bot afterwards.
 
 #Docker
 
