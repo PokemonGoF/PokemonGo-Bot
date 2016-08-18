@@ -49,6 +49,15 @@
         }
       },
       {
+        "type": "UpdateLiveInventory",
+        "config": {
+          "enabled": false,
+          "min_interval": 120,
+          "show_all_multiple_lines": false,
+          "items": ["space_info", "pokeballs", "greatballs", "ultraballs", "razzberries", "luckyegg"]
+        }
+      },
+      {
         "type": "TransferPokemon",
         "config": {
           "transfer_wait_min": 1,
@@ -138,6 +147,16 @@
       "avoid_circles": true,
       "max_circle_size": 50,
       "cache_recent_forts": true
+    },
+    "pokemon_bag": {
+      "// if 'show_at_start' is true, it will log all the pokemons in the bag (not eggs) at bot start": {},
+      "show_at_start": true,
+      "// if 'show_count' is true, it will show the amount of each pokemon (minimum 1)": {},
+      "show_count": false,
+      "// 'pokemon_info' parameter define which info to show for each pokemon": {},
+      "// the available options are": {},
+      "// ['cp', 'iv_ads', 'iv_pct', 'ivcp', 'ncp', 'level', 'hp', 'moveset', 'dps']": {},
+      "pokemon_info": ["cp", "iv_pct"]
     },
     "walk_max": 4.16,
     "walk_min": 2.16,
