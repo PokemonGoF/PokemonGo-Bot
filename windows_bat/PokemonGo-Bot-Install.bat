@@ -5,7 +5,7 @@ CLS
 
 
 :init
-setlocal DisableDelayedExpansion
+setlocal EnableDelayedExpansion
 path c:\Program Files\Git\cmd;%PATH%
 path C:\Python27;%PATH%
 path C:\Python27\Scripts;%PATH%
@@ -20,7 +20,6 @@ set GitFName64=Git-2.9.3-64-bit.exe
 set "batchPath=%~0"
 for %%k in (%0) do set batchName=%%~nk
 set "vbsGetPrivileges=%temp%\OEgetPriv_%batchName%.vbs"
-setlocal EnableDelayedExpansion
 
 
 
@@ -63,7 +62,6 @@ CLS
 @ECHO.
 set InstallPath=
 set /p InstallPath= "Choose an installation folder or press Enter to close:" ||goto:eof
-FOR /F "tokens=1-4 delims=/-. " %%G IN ("%InstallPath%") DO (set InstallPath=%%G\%%H\%%I\%%J)
 set PGBotPath=%InstallPath%\PokemonGo-Bot
 set DownPath=%InstallPath%\Install-Files
 if not exist %DownPath% md %DownPath%
@@ -203,14 +201,9 @@ if exist %PGBotPath%\encrypt. copy %PGBotPath%\encrypt. %DownPath%
 if exist %PGBotPath% rmdir %PGBotPath% /s /q
 if not exist %PGBotPath% md %PGBotPath%
 cd C:\Python27\
-pip2 install --upgrade virtualenv
+pip2 install --upgrade pip
 git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot %PGBotPath%
-if "%OS%" == "32-BIT" pip2 install --upgrade %PGBotPath%\windows_bat\PyYAML-3.11-cp27-cp27m-win32.whl
-if "%OS%" == "64-BIT" pip2 install --upgrade %PGBotPath%\windows_bat\PyYAML-3.11-cp27-cp27m-win_amd64.whl
-cd %PGBotPath%
-virtualenv .
-call "%PGBotPath%\Scripts\activate.bat"
-pip2 install --upgrade -r %PGBotPath%\requirements.txt
+pip2 install -r %PGBotPath%\requirements.txt
 @ECHO.
 @ECHO.
 @ECHO.
