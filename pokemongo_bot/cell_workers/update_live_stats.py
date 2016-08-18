@@ -273,8 +273,7 @@ class UpdateLiveStats(BaseTask):
         :return: The player stats object.
         :rtype: dict
         """
-        # TODO : find a better solution than calling the api
-        inventory_items = self.bot.api.get_inventory() \
+        inventory_items = self.bot.get_inventory() \
             .get('responses', {}) \
             .get('GET_INVENTORY', {}) \
             .get('inventory_delta', {}) \

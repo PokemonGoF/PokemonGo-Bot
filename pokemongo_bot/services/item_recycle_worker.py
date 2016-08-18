@@ -13,7 +13,6 @@ class ItemRecycler(BaseTask):
         """
         Initialise an instance of ItemRecycler
         :param bot: The instance of the Bot
-        :type bot: pokemongo_bot.PokemonGoBot
         :param item_to_recycle: The item to recycle
         :type item_to_recycle: inventory.Item
         :param amount_to_recycle: The amount to recycle
