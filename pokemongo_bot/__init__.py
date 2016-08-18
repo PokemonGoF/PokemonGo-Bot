@@ -177,6 +177,22 @@ class PokemonGoBot(Datastore):
                 'wake'
             )
         )
+        
+        # random pause
+        self.event_manager.register_event(
+            'next_random_pause',
+            parameters=(
+                'time',
+                'duration'
+            )
+        )
+        self.event_manager.register_event(
+            'bot_random_pause',
+            parameters=(
+                'time_hms',
+                'resume'
+            )
+        )
 
         # fort stuff
         self.event_manager.register_event(
