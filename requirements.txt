@@ -1,6 +1,6 @@
 numpy==1.11.0
 networkx==1.11
--e git+https://github.com/keyphact/pgoapi.git@8c1c17637be0aa679d92e582e6c4dd1370a3ac00#egg=pgoapi
+-e git+https://github.com/keyphact/pgoapi.git@12b2028cbf19342efd971020033027802b569769#egg=pgoapi
 geopy==1.11.0
 protobuf==3.0.0b4
 requests==2.10.0
