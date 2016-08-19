@@ -236,6 +236,7 @@
     "reconnecting_timeout": 15,
     "logging_color": true,
     "daily_catch_limit": 800,
+    "hash_salt": "xRpgobot",
     "catch": {
         "any": {
             "always_catch": true
