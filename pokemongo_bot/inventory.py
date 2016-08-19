@@ -1079,13 +1079,11 @@ class Inventory(object):
         self.candy = Candies()
         self.items = Items()
         self.pokemons = Pokemons()
-        self.refresh_count = 0
         self.refresh()
         self.item_inventory_size = None
         self.pokemon_inventory_size = None
 
     def refresh(self):
-        self.refresh_count += 1
         inventory = self.bot.api.get_inventory()
         inventory = inventory['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
         for i in (self.pokedex, self.candy, self.items, self.pokemons):
@@ -1109,7 +1107,6 @@ class Inventory(object):
            player_data = self.bot.api.get_player()['responses']['GET_PLAYER']['player_data']
            self.item_inventory_size = player_data['max_item_storage']
            self.pokemon_inventory_size = player_data['max_pokemon_storage']
-
 
 #
 # Other
