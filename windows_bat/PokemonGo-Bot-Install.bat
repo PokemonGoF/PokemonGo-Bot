@@ -63,6 +63,7 @@ CLS
 set InstallPath=
 set /p InstallPath= "Choose an installation folder or press Enter to close:" ||goto:eof
 set PGBotPath=%InstallPath%\PokemonGo-Bot
+FOR /F "tokens=1-4 delims=/-. " %%G IN ("%InstallPath%") DO (set InstallPath=%%G\%%H\%%I)
 set DownPath=%InstallPath%\Install-Files
 if not exist %DownPath% md %DownPath%
 if "%~dp0"=="%PGBotPath%\windows_bat\" (
