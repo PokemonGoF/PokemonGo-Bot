@@ -7,6 +7,7 @@ from pgoapi.exceptions import (ServerSideRequestThrottlingException,
     UnexpectedResponseException)
 from pgoapi.pgoapi import PGoApi, PGoApiRequest, RpcApi
 from pgoapi.protos.POGOProtos.Networking.Requests.RequestType_pb2 import RequestType
+from pgoapi.protos.POGOProtos.Networking.Envelopes.Signature_pb2 import Signature
 
 from human_behaviour import sleep
 
@@ -63,7 +64,8 @@ class ApiRequest(PGoApiRequest):
         return True
 
     def _call(self):
-        return PGoApiRequest.call(self)
+        signature = Signature()
+        return PGoApiRequest.call(self, signature)
 
     def _pop_request_callers(self):
         r = self.request_callers
