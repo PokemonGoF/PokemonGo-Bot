@@ -2,8 +2,6 @@ import time
 import logging
 import random, base64, struct
 import hashlib
-import os
-import json
 from pgoapi.exceptions import (ServerSideRequestThrottlingException,
                                NotLoggedInException, ServerBusyOrOfflineException,
                                NoPlayerPositionSetException, EmptySubrequestChainException,
