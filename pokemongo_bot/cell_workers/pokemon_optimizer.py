@@ -88,8 +88,7 @@ class PokemonOptimizer(BaseTask):
             self.family_by_family_id.setdefault(family_id, []).append(pokemon)
 
     def save_web_inventory(self):
-        # Could make a bug
-        inventory_items = inventory.items().all()
+        inventory_items = self.bot.get_inventory()["responses"]["GET_INVENTORY"]["inventory_delta"]["inventory_items"]
         web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
 
         with open(web_inventory, "w") as outfile:
