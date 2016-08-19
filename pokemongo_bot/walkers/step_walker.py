@@ -1,8 +1,8 @@
 from math import sqrt
 
-from random import random
-from cell_workers.utils import distance
-from human_behaviour import random_lat_long_delta, sleep
+from random import random, uniform
+from pokemongo_bot.cell_workers.utils import distance
+from pokemongo_bot.human_behaviour import random_lat_long_delta, sleep
 
 
 class StepWalker(object):
@@ -20,7 +20,8 @@ class StepWalker(object):
             dest_lng
         )
 
-        self.speed = self.bot.config.walk_max - random() * (self.bot.config.walk_max - self.bot.config.walk_min)
+        self.alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
+        self.speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
 
         self.destLat = dest_lat
         self.destLng = dest_lng
@@ -42,7 +43,7 @@ class StepWalker(object):
 
     def step(self):
         if (self.dLat == 0 and self.dLng == 0) or self.dist < self.speed:
-            self.api.set_position(self.destLat + random_lat_long_delta(), self.destLng + random_lat_long_delta(), 0)
+            self.api.set_position(self.destLat + random_lat_long_delta(), self.destLng + random_lat_long_delta(), self.alt)
             self.bot.event_manager.emit(
                 'position_update',
                 sender=self,
@@ -69,7 +70,7 @@ class StepWalker(object):
         cLat = self.initLat + scaledDLat + random_lat_long_delta()
         cLng = self.initLng + scaledDLng + random_lat_long_delta()
 
-        self.api.set_position(cLat, cLng, 0)
+        self.api.set_position(cLat, cLng, self.alt)
         self.bot.event_manager.emit(
             'position_update',
             sender=self,

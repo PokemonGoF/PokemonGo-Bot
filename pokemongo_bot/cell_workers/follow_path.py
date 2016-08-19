@@ -6,8 +6,9 @@ import json
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.cell_workers.utils import distance, i2f, format_dist
 from pokemongo_bot.human_behaviour import sleep
-from pokemongo_bot.step_walker import StepWalker
+from pokemongo_bot.walkers.step_walker import StepWalker
 from pgoapi.utilities import f2i
+from random import uniform
 
 
 class FollowPath(BaseTask):
@@ -117,7 +118,8 @@ class FollowPath(BaseTask):
                 is_at_destination = True
 
         else:
-            self.bot.api.set_position(lat, lng, 0)
+            alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
+            self.bot.api.set_position(lat, lng, alt)
 
         dist = distance(
             last_lat,

@@ -124,7 +124,8 @@
             "great_rate": 0.5,
             "nice_rate": 0.3,
             "normal_rate": 0.1,
-            "spin_success_rate" : 0.6
+            "spin_success_rate" : 0.6,
+            "hit_rate": 0.75
           },
           "catch_simulation": {
             "flee_count": 3,
@@ -178,6 +179,8 @@
     },
     "walk_max": 4.16,
     "walk_min": 2.16,
+    "alt_min": 0.75,
+    "alt_max": 2.5,
     "debug": false,
     "test": false,
     "health_record": true,

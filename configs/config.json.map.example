@@ -148,6 +148,7 @@
           "update_map": true,
           "mode": "priority",
           "map_path": "raw_data",
+          "walker": "StepWalker",
           "catch": {
             "==========Legendaries==========": 0,
             "Aerodactyl": 1000,
@@ -412,6 +413,8 @@
     },
     "walk_max": 4.16,
     "walk_min": 2.16,
+    "alt_min": 0.75,
+    "alt_max": 2.5,
     "debug": false,
     "test": false,
     "health_record": true,
