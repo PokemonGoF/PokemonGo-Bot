@@ -79,7 +79,17 @@ class ApiRequest(PGoApiRequest):
 
     def _call(self):
         # Need fill in the location_fix
-        location_fix = Signature.LocationFix()
+        location_fix = [Signature.LocationFix(
+            provider='fused',
+            timestamp_snapshot=(get_time(ms=True) - RpcApi.START_TIME) - random.randint(100, 300),
+            latitude=self._position_lat,
+            longitude=self._position_lng,
+            horizontal_accuracy=round(random.uniform(50, 250), 7),
+            altitude=self._position_alt,
+            vertical_accuracy=random.randint(2, 5),
+            provider_status=3,
+            location_type=1
+        )]
 
         sensor_info = Signature.SensorInfo(
             timestamp_snapshot=(get_time(ms=True) - RpcApi.START_TIME) - random.randint(200, 400),
@@ -117,7 +127,7 @@ class ApiRequest(PGoApiRequest):
             # tilting=True
         )
         signature = Signature(
-            # location_fix=location_fix,
+            location_fix=location_fix,
             sensor_info=sensor_info,
             device_info=device_info,
             activity_status=activity_status
@@ -141,8 +151,7 @@ class ApiRequest(PGoApiRequest):
 
         try:
             # Permaban symptom is empty response to GET_INVENTORY and status_code = 3
-            if result['status_code'] == 3 and 'GET_INVENTORY' in request_callers and not result['responses'][
-                'GET_INVENTORY']:
+            if result['status_code'] == 3 and 'GET_INVENTORY' in request_callers and not result['responses']['GET_INVENTORY']:
                 raise PermaBannedException
         except KeyError:
             # Still wrong
