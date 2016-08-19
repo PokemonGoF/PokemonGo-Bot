@@ -21,7 +21,7 @@ class StepWalker(object):
         )
 
         self.alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
-        self.speed = self.bot.config.walk_max - random() * (self.bot.config.walk_max - self.bot.config.walk_min)
+        self.speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
 
         self.destLat = dest_lat
         self.destLng = dest_lng
