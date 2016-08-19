@@ -34,6 +34,7 @@ import ssl
 import sys
 import time
 import signal
+import subprocess
 from datetime import timedelta
 from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException
@@ -70,8 +71,12 @@ def main():
         raise SIGINTRecieved
     signal.signal(signal.SIGINT, handle_sigint)
 
+    def get_commit_hash():
+        return subprocess.check_output(['git', 'rev-parse', 'HEAD'])
+
     try:
         logger.info('PokemonGO Bot v1.0')
+        logger.info('commit: ' + get_commit_hash())
         sys.stdout = codecs.getwriter('utf8')(sys.stdout)
         sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
