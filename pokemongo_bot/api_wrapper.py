@@ -37,10 +37,13 @@ class ApiWrapper(Datastore, PGoApi):
             ApiWrapper.DEVICE_ID = hashlib.md5(key_string + salt).hexdigest()
             with open(did_path, "w") as text_file:
                 text_file.write("{0}".format(salt))
-        else:
+        elif self.config is not None and os.path.exists(did_path) == True:
                 saltfromfile = open(did_path, 'r').read()
                 key_string = self.config.username
                 ApiWrapper.DEVICE_ID = hashlib.md5(key_string + saltfromfile).hexdigest()
+        elif self.config is None and os.path.exists(did_path) == True:
+            saltfromfile = open(did_path, 'r').read()
+            ApiWrapper.DEVICE_ID = hashlib.md5(saltfromfile).hexdigest()
         if ApiWrapper.DEVICE_ID is None:
             # Set to a realistic default
             ApiWrapper.DEVICE_ID = "3d65919ca1c2fc3a8e2bd7cc3f974c34"
