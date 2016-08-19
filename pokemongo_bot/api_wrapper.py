@@ -64,7 +64,50 @@ class ApiRequest(PGoApiRequest):
         return True
 
     def _call(self):
-        signature = Signature()
+        # Need fill in the location_fix
+        location_fix = Signature.LocationFix()
+
+        sensor_info = Signature.SensorInfo(
+            timestamp_snapshot=20111,
+            magnetometer_x=-0.04073212668299675,
+            magnetometer_y=0.02653736248612404,
+            magnetometer_z=-0.10395454615354538,
+            angle_normalized_x=26.402721405029297,
+            angle_normalized_y=-35.71720886230469,
+            angle_normalized_z=-29.149093627929688,
+            accel_raw_x=0.43482502851815374,
+            accel_raw_y=0.8037761094798027,
+            accel_raw_z=0.08975112865596838,
+            gyroscope_raw_x=0.5030811429023743,
+            gyroscope_raw_y=0.33783626556396484,
+            gyroscope_raw_z=-0.2886628210544586,
+            accel_normalized_x=0.08128999173641205,
+            accel_normalized_y=-0.42125171422958374,
+            accel_normalized_z=-0.9032933712005615,
+            accelerometer_axes=3
+        )
+        device_info = Signature.DeviceInfo(
+            device_id='HASHVALUE',
+            device_brand='Apple',
+            device_model='iPhone',
+            device_model_boot='iPhone8,2',
+            hardware_manufacturer='Apple',
+            hardware_model='N66AP',
+            firmware_brand='iPhone OS',
+            firmware_type='9.3.3'
+        )
+        activity_status = Signature.ActivityStatus(
+            walking=True,
+            stationary=True,
+            automotive=True,
+            tilting=True
+        )
+        signature = Signature(
+            #location_fix=location_fix,
+            sensor_info=sensor_info,
+            device_info=device_info,
+            activity_status=activity_status
+        )
         return PGoApiRequest.call(self, signature)
 
     def _pop_request_callers(self):
