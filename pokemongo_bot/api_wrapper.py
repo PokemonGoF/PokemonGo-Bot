@@ -99,10 +99,10 @@ class ApiRequest(PGoApiRequest):
             firmware_type='9.3.3'
         )
         activity_status = Signature.ActivityStatus(
-            walking=True,
-            stationary=True,
-            automotive=True,
-            tilting=True
+            # walking=True,
+            # stationary=True,
+            # automotive=True,
+            # tilting=True
         )
         signature = Signature(
             #location_fix=location_fix,
