@@ -563,6 +563,14 @@ def init_config():
     if "walk" in load:
         logger.warning('The walk argument is no longer supported. Please use the walk_max and walk_min variables instead')
 
+    if config.walk_min < 1:
+        parser.error("--walk_min is out of range! (should be >= 1.0)")
+        return None
+
+    if config.alt_min < 0:
+        parser.error("--alt_min is out of range! (should be >= 0.0)")
+        return None
+
     if not (config.location or config.location_cache):
         parser.error("Needs either --use-location-cache or --location.")
         return None
