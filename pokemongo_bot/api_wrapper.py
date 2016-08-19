@@ -1,5 +1,6 @@
 import time
 import logging
+import random
 
 from pgoapi.exceptions import (ServerSideRequestThrottlingException,
     NotLoggedInException, ServerBusyOrOfflineException,
@@ -7,6 +8,8 @@ from pgoapi.exceptions import (ServerSideRequestThrottlingException,
     UnexpectedResponseException)
 from pgoapi.pgoapi import PGoApi, PGoApiRequest, RpcApi
 from pgoapi.protos.POGOProtos.Networking.Requests.RequestType_pb2 import RequestType
+from pgoapi.protos.POGOProtos.Networking.Envelopes.Signature_pb2 import Signature
+from pgoapi.utilities import get_time
 
 from human_behaviour import sleep
 
@@ -63,7 +66,51 @@ class ApiRequest(PGoApiRequest):
         return True
 
     def _call(self):
-        return PGoApiRequest.call(self)
+        # Need fill in the location_fix
+        location_fix = Signature.LocationFix()
+
+        sensor_info = Signature.SensorInfo(
+            timestamp_snapshot=(get_time(ms=True) - RpcApi.START_TIME) - random.randint(200, 400),
+            magnetometer_x=random.uniform(-0.139084026217, 0.138112977147),
+            magnetometer_y=random.uniform(-0.2, 0.19),
+            magnetometer_z=random.uniform(-0.2, 0.4),
+            angle_normalized_x=random.uniform(-47.149471283, 61.8397789001),
+            angle_normalized_y=random.uniform(-47.149471283, 61.8397789001),
+            angle_normalized_z=random.uniform(-47.149471283, 5),
+            accel_raw_x=random.uniform(0.0729667818829, 0.0729667818829),
+            accel_raw_y=random.uniform(-2.788630499244109, 3.0586791383810468),
+            accel_raw_z=random.uniform(-0.34825887123552773, 0.19347580173737935),
+            gyroscope_raw_x=random.uniform(-0.9703824520111084, 0.8556089401245117),
+            gyroscope_raw_y=random.uniform(-1.7470258474349976, 1.4218578338623047),
+            gyroscope_raw_z=random.uniform(-0.9681901931762695, 0.8396636843681335),
+            accel_normalized_x=random.uniform(-0.31110161542892456, 0.1681540310382843),
+            accel_normalized_y=random.uniform(-0.6574847102165222, -0.07290205359458923),
+            accel_normalized_z=random.uniform(-0.9943905472755432, -0.7463029026985168),
+            accelerometer_axes=3
+        )
+        device_info = Signature.DeviceInfo(
+            device_id='HASHVALUE',
+            device_brand='Apple',
+            device_model='iPhone',
+            device_model_boot='iPhone8,2',
+            hardware_manufacturer='Apple',
+            hardware_model='N66AP',
+            firmware_brand='iPhone OS',
+            firmware_type='9.3.3'
+        )
+        activity_status = Signature.ActivityStatus(
+            # walking=True,
+            # stationary=True,
+            # automotive=True,
+            # tilting=True
+        )
+        signature = Signature(
+            #location_fix=location_fix,
+            sensor_info=sensor_info,
+            device_info=device_info,
+            activity_status=activity_status
+        )
+        return PGoApiRequest.call(self, signature)
 
     def _pop_request_callers(self):
         r = self.request_callers
