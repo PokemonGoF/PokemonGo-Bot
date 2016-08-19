@@ -34,6 +34,7 @@ from worker_result import WorkerResult
 from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
 from inventory import init_inventory
 from sys import platform as _platform
+from random import uniform
 import struct
 
 
