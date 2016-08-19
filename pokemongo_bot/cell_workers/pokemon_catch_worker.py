@@ -469,8 +469,22 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
                     )
                     with self.bot.database as conn:
-                        conn.execute('''INSERT INTO catch_log (pokemon, cp, iv, encounter_id, pokemon_id) VALUES (?, ?, ?, ?, ?)''', (pokemon.name, pokemon.cp, pokemon.iv, str(encounter_id), pokemon.pokemon_id))
-                    #conn.commit()
+                        c = conn.cursor()
+                        c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='catch_log'")
+                    result = c.fetchone()        
+
+                    while True:
+                        if result[0] == 1:
+                            conn.execute('''INSERT INTO catch_log (pokemon, cp, iv, encounter_id, pokemon_id) VALUES (?, ?, ?, ?, ?)''', (pokemon.name, pokemon.cp, pokemon.iv, str(encounter_id), pokemon.pokemon_id))
+                        break
+                    else:
+                        self.emit_event(
+                            'catch_log',
+                            sender=self,
+                            level='info',
+                            formatted="catch_log table not found, skipping log"
+                        )
+                        break
                     user_data_caught = os.path.join(_base_dir, 'data', 'caught-%s.json' % self.bot.config.username)
                     with open(user_data_caught, 'ab') as outfile:
                         outfile.write(str(datetime.now()))
@@ -564,4 +578,3 @@ class PokemonCatchWorker(Datastore, BaseTask):
         throw_parameters['normalized_reticle_size'] = 1.25 + 0.70 * random()
         throw_parameters['normalized_hit_position'] = 0.0
         throw_parameters['throw_type_label'] = 'OK'
-
