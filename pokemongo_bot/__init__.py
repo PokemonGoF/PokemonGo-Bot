@@ -715,7 +715,23 @@ class PokemonGoBot(Datastore):
             time.sleep(10)
 
         with self.database as conn:
-            conn.execute('''INSERT INTO login (timestamp, message) VALUES (?, ?)''', (time.time(), 'LOGIN_SUCCESS'))
+            c = conn.cursor()
+            c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='login'")
+
+        result = c.fetchone()        
+
+        while True:
+            if result[0] == 1:
+                conn.execute('''INSERT INTO login (timestamp, message) VALUES (?, ?)''', (time.time(), 'LOGIN_SUCCESS'))
+                break
+            else:
+                self.event_manager.emit(
+                    'login_failed',
+                    sender=self,
+                    level='info',
+                    formatted="Login table not founded, skipping log"
+                )
+                break
 
         self.event_manager.emit(
             'login_successful',
