@@ -28,7 +28,7 @@ class ApiWrapper(Datastore, PGoApi):
         self.useVanillaRequest = False
         self.config = config
         did_path = os.path.join(_base_dir, 'data', 'deviceid-%s.txt' % self.config.username)
-        if self.config is not None:
+        if self.config is not None and os.path.exists(did_path) == False:
             key_string = self.config.username
             rand_float = random.SystemRandom().random()
             salt = base64.b64encode((struct.pack('!d', rand_float)))
