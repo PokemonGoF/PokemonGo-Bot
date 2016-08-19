@@ -571,7 +571,7 @@ class PokemonGoBot(Datastore):
         if lng is None:
             lng = self.api._position_lng
         if alt is None:
-            alt = 0
+            alt = self.api._position_alt
 
         if cells == []:
             location = self.position[0:2]
