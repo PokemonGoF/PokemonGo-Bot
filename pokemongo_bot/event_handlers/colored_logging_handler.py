@@ -49,6 +49,7 @@ class ColoredLoggingHandler(EventHandler):
         'pokemon_release':                   'green',
         'pokemon_vanished':                  'red',
         'pokestop_empty':                    'yellow',
+        'pokestop_log':                      'magento',
         'pokestop_searching_too_often':      'yellow',
         'rename_pokemon':                    'green',
         'skip_evolve':                       'yellow',
