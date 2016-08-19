@@ -452,6 +452,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
                 self.bot.metrics.captured_pokemon(pokemon.name, pokemon.cp, pokemon.iv_display, pokemon.iv)
 
                 try:
+                    inventory.pokemons().add(pokemon)
                     self.emit_event(
                         'pokemon_caught',
                         formatted='Captured {pokemon}! [CP {cp}] [Potential {iv}] [{iv_display}] [+{exp} exp]',
