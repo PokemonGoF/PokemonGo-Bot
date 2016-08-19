@@ -199,10 +199,9 @@ if exist %PGBotPath%\encrypt. copy %PGBotPath%\encrypt. %DownPath%
 @ECHO.
 @ECHO.
 if exist %PGBotPath% rmdir %PGBotPath% /s /q
-if not exist %PGBotPath% md %PGBotPath%
 cd C:\Python27\
 pip2 install --upgrade pip
-pip2 install --upgrade virtualenv 
+pip2 install --upgrade virtualenv
 git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot %PGBotPath%
 pip2 install -r %PGBotPath%\requirements.txt
 @ECHO.
@@ -212,6 +211,9 @@ pip2 install -r %PGBotPath%\requirements.txt
 @ECHO.
 @ECHO.
 @ECHO.
+if exist %~dp0\encrypt. COPY %~dp0\encrypt. %PGBotPath%
+if exist %~dp0\config.json COPY %~dp0\config.json %PGBotPath%\configs\
+if exist %~dp0\userdata.js COPY %~dp0\userdata.js %PGBotPath%\web\config\
 if exist %DownPath%\encrypt. COPY %DownPath%\encrypt. %PGBotPath%
 if exist %DownPath%\config.json COPY %DownPath%\config.json %PGBotPath%\configs\
 if exist %DownPath%\userdata.js COPY %DownPath%\userdata.js %PGBotPath%\web\config\
@@ -251,6 +253,10 @@ CLS
 @ECHO.
 @ECHO To get an Google Maps API Key:
 @ECHO "https://developers.google.com/maps/documentation/javascript/get-api-key"
+@ECHO.
+@ECHO.
+@ECHO.
+@PAUSE
 
 
 
