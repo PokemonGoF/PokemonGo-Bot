@@ -167,6 +167,8 @@
             "catch_visible_pokemon": true,
             "catch_lured_pokemon": true,
             "min_ultraball_to_keep": 5,
+            "berry_threshold": 0.35,
+            "vip_berry_threshold": 0.9,
             "catch_throw_parameters": {
               "excellent_rate": 0.1,
               "great_rate": 0.5,
