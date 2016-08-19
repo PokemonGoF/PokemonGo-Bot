@@ -290,10 +290,7 @@ class PokemonOptimizer(BaseTask):
         return True
 
     def get_candy_gained_count(self, response_dict):
-        total_candy_gained = 0
-        for candy_gained in response_dict['responses']['CATCH_POKEMON']['capture_award']['candy']:
-            total_candy_gained += candy_gained
-        return total_candy_gained
+        return response_dict['responses']['RELEASE_POKEMON']['candy_awarded']
 
     def use_lucky_egg(self):
         lucky_egg = inventory.items().get(Item.ITEM_LUCKY_EGG.value)  # @UndefinedVariable
