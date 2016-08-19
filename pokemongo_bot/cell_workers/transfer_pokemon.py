@@ -5,6 +5,7 @@ from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.inventory import Pokemons, Pokemon, Attack
+from operator import attrgetter
 
 class TransferPokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -41,9 +42,10 @@ class TransferPokemon(BaseTask):
                         order_criteria = 'iv'      
             elif keep_best_custom:
                 limit = keep_amount
-                best_pokemons = sorted(group, key=lambda x: keep_best_criteria, reverse=True)[:limit]
-                best_pokemon_ids = set(pokemon.id for pokemon in best_pokemons)
-                order_criteria = ' and '.join(keep_best_criteria)
+                keep_best_criteria = [str(keep_best_criteria[x]) for x in range(len(keep_best_criteria))] # not sure if the u of unicode will stay, so make it go away
+                best_pokemons = sorted(group, key=attrgetter(*keep_best_criteria), reverse=True)[:limit]
+                best_pokemon_ids = set(pokemon.unique_id for pokemon in best_pokemons)
+                order_criteria = ' then '.join(keep_best_criteria)
                 
             if keep_best or keep_best_custom:
                 # remove best pokemons from all pokemons array
