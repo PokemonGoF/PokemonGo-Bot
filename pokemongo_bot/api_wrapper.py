@@ -1,5 +1,6 @@
 import time
 import logging
+import random
 
 from pgoapi.exceptions import (ServerSideRequestThrottlingException,
     NotLoggedInException, ServerBusyOrOfflineException,
@@ -8,6 +9,7 @@ from pgoapi.exceptions import (ServerSideRequestThrottlingException,
 from pgoapi.pgoapi import PGoApi, PGoApiRequest, RpcApi
 from pgoapi.protos.POGOProtos.Networking.Requests.RequestType_pb2 import RequestType
 from pgoapi.protos.POGOProtos.Networking.Envelopes.Signature_pb2 import Signature
+from pgoapi.utilities import get_time
 
 from human_behaviour import sleep
 
@@ -68,22 +70,22 @@ class ApiRequest(PGoApiRequest):
         location_fix = Signature.LocationFix()
 
         sensor_info = Signature.SensorInfo(
-            timestamp_snapshot=20111,
-            magnetometer_x=-0.04073212668299675,
-            magnetometer_y=0.02653736248612404,
-            magnetometer_z=-0.10395454615354538,
-            angle_normalized_x=26.402721405029297,
-            angle_normalized_y=-35.71720886230469,
-            angle_normalized_z=-29.149093627929688,
-            accel_raw_x=0.43482502851815374,
-            accel_raw_y=0.8037761094798027,
-            accel_raw_z=0.08975112865596838,
-            gyroscope_raw_x=0.5030811429023743,
-            gyroscope_raw_y=0.33783626556396484,
-            gyroscope_raw_z=-0.2886628210544586,
-            accel_normalized_x=0.08128999173641205,
-            accel_normalized_y=-0.42125171422958374,
-            accel_normalized_z=-0.9032933712005615,
+            timestamp_snapshot=(get_time(ms=True) - RpcApi.START_TIME) - random.randint(200, 400),
+            magnetometer_x=random.uniform(-0.139084026217, 0.138112977147),
+            magnetometer_y=random.uniform(-0.2, 0.19),
+            magnetometer_z=random.uniform(-0.2, 0.4),
+            angle_normalized_x=random.uniform(-47.149471283, 61.8397789001),
+            angle_normalized_y=random.uniform(-47.149471283, 61.8397789001),
+            angle_normalized_z=random.uniform(-47.149471283, 5),
+            accel_raw_x=random.uniform(0.0729667818829, 0.0729667818829),
+            accel_raw_y=random.uniform(-2.788630499244109, 3.0586791383810468),
+            accel_raw_z=random.uniform(-0.34825887123552773, 0.19347580173737935),
+            gyroscope_raw_x=random.uniform(-0.9703824520111084, 0.8556089401245117),
+            gyroscope_raw_y=random.uniform(-1.7470258474349976, 1.4218578338623047),
+            gyroscope_raw_z=random.uniform(-0.9681901931762695, 0.8396636843681335),
+            accel_normalized_x=random.uniform(-0.31110161542892456, 0.1681540310382843),
+            accel_normalized_y=random.uniform(-0.6574847102165222, -0.07290205359458923),
+            accel_normalized_z=random.uniform(-0.9943905472755432, -0.7463029026985168),
             accelerometer_axes=3
         )
         device_info = Signature.DeviceInfo(
