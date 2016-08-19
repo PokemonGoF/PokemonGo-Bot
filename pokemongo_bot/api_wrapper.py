@@ -27,8 +27,10 @@ class ApiWrapper(PGoApi):
         self.useVanillaRequest = False
         self.config = config
         if self.config is not None:
+            key_string = self.config.username
+            salt = self.config.hash_salt
             # Unique device id per account in the same format as ios client
-            ApiWrapper.DEVICE_ID = hashlib.md5(self.config.username).hexdigest()
+            ApiWrapper.DEVICE_ID = hashlib.md5(key_string + salt).hexdigest()
         if ApiWrapper.DEVICE_ID is None:
             # Set to a realistic default
             ApiWrapper.DEVICE_ID = "3d65919ca1c2fc3a8e2bd7cc3f974c34"
