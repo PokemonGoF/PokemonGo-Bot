@@ -241,20 +241,16 @@ CLS
 @ECHO.
 @ECHO.
 @ECHO.
-@ECHO "%PGBotPath%/configs/config.json"
+@ECHO "%PGBotPath%\configs\config.json"
 @ECHO INSTRUCTIONS:
 @ECHO "https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/docs/configuration_files.md"
 @ECHO.
-@ECHO "%PGBotPath%/web/config/userdata.js"
+@ECHO "%PGBotPath%\web\config\userdata.js"
 @ECHO INSTRUCTIONS:
 @ECHO "https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/docs/google_map.md"
 @ECHO.
-@ECHO To get an Google Map API Key:
+@ECHO To get an Google Maps API Key:
 @ECHO "https://developers.google.com/maps/documentation/javascript/get-api-key"
-@ECHO.
-@ECHO.
-@ECHO.
-@PAUSE
 
 
 
