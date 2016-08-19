@@ -34,7 +34,6 @@ from worker_result import WorkerResult
 from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
 from inventory import init_inventory
 from sys import platform as _platform
-from random import uniform
 import struct
 
 
@@ -79,7 +78,7 @@ class PokemonGoBot(Datastore):
         self.last_map_object = None
         self.last_time_map_object = 0
         self.logger = logging.getLogger(type(self).__name__)
-        self.alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
+        self.alt = 1
 
         # Make our own copy of the workers for this instance
         self.workers = []
