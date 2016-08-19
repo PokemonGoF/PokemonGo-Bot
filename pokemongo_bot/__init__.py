@@ -40,7 +40,7 @@ import struct
 class PokemonGoBot(Datastore):
     @property
     def position(self):
-        return self.api._position_lat, self.api._position_lng, 0
+        return self.api._position_lat, self.api._position_lng, self.api._position_alt
 
     @position.setter
     def position(self, position_tuple):
