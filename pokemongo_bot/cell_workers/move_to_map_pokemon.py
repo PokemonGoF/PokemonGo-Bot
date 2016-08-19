@@ -58,7 +58,7 @@ import requests
 from pokemongo_bot import inventory
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.cell_workers.utils import distance, format_dist, format_time
-from pokemongo_bot.step_walker import StepWalker
+from pokemongo_bot.walkers.walker_factory import walker_factory
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
@@ -90,9 +90,9 @@ class MoveToMapPokemon(BaseTask):
         self.caught = []
         self.min_ball = self.config.get('min_ball', 1)
         self.map_path = self.config.get('map_path', 'raw_data')
+        self.walker = self.config.get('walker', 'StepWalker')
         self.snipe_high_prio_only = self.config.get('snipe_high_prio_only', False)
         self.snipe_high_prio_threshold = self.config.get('snipe_high_prio_threshold', 400)
-
 
         data_file = os.path.join(_base_dir, 'map-caught-{}.json'.format(self.bot.config.username))
         if os.path.isfile(data_file):
@@ -365,7 +365,7 @@ class MoveToMapPokemon(BaseTask):
             pokemon: Pokemon to move to.
 
         Returns:
-            StepWalker
+            Walker
         """
         now = int(time.time())
         self.emit_event(
@@ -374,8 +374,9 @@ class MoveToMapPokemon(BaseTask):
                        '{disappears_in})'),
             data=self._pokemon_event_data(pokemon)
         )
-        return StepWalker(
+        return walker_factory(self.walker,
             self.bot,
             pokemon['latitude'],
-            pokemon['longitude']
+            pokemon['longitude'],
+            **{'parent': MoveToMapPokemon}
         )
