@@ -79,12 +79,16 @@ class SpinFort(BaseTask):
                             'items': items_awarded
                         }
                     )
+                    with self.bot.database as conn:
+                        conn.execute('''INSERT INTO pokestop_log (pokestop, exp, items) VALUES (?, ?, ?)''', (fort_name, str(experience_awarded), str(items_awarded)))                    
                 else:
                     self.emit_event(
                         'pokestop_empty',
                         formatted='Found nothing in pokestop {pokestop}.',
                         data={'pokestop': fort_name}
                     )
+                    with self.bot.database as conn:
+                        conn.execute('''INSERT INTO pokestop_log (pokestop) VALUES (?)''', (fort_name)) 
                 pokestop_cooldown = spin_details.get(
                     'cooldown_complete_timestamp_ms')
                 self.bot.fort_timeouts.update({fort["id"]: pokestop_cooldown})
