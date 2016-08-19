@@ -480,6 +480,22 @@ def init_config():
         type=bool,
         default=[]
     )
+    add_config(
+        parser,
+        load,
+        long_flag="--alt_min",
+        help="Minimum random altitude",
+        type=float,
+        default=0.75
+    )
+    add_config(
+        parser,
+        load,
+        long_flag="--alt_max",
+        help="Maximum random altitude",
+        type=float,
+        default=2.5
+    )
     # Start to parse other attrs
     config = parser.parse_args()
     if not config.username and 'username' not in load:
