@@ -34,6 +34,7 @@ import ssl
 import sys
 import time
 import signal
+import string
 import subprocess
 from datetime import timedelta
 from getpass import getpass
@@ -72,7 +73,12 @@ def main():
     signal.signal(signal.SIGINT, handle_sigint)
 
     def get_commit_hash():
-        return subprocess.check_output(['git', 'rev-parse', 'HEAD'])
+        try:
+            hash = subprocess.check_output(['git', 'rev-parse', 'HEAD'], stderr=subprocess.STDOUT)[:-1] 
+
+            return hash if all(c in string.hexdigits for c in hash) else "not found"
+        except:
+            return "not found"
 
     try:
         logger.info('PokemonGO Bot v1.0')
