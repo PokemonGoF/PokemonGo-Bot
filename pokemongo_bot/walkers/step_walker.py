@@ -1,6 +1,6 @@
 from math import sqrt
 
-from random import random, uniform
+from random import uniform
 from pokemongo_bot.cell_workers.utils import distance
 from pokemongo_bot.human_behaviour import random_lat_long_delta, sleep
 
@@ -28,7 +28,7 @@ class StepWalker(object):
         self.totalDist = max(1, self.dist)
 
         if self.speed == 0:
-            self.steps = 1
+            raise Exception("Walking speed cannot be 0, change your walking speed higher than 1!")
         else:
             self.steps = (self.dist + 0.0) / (self.speed + 0.0)
 
