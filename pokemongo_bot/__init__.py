@@ -611,7 +611,7 @@ class PokemonGoBot(Datastore):
         )
         try:
             with open(user_data_lastlocation, 'w') as outfile:
-                json.dump({'lat': lat, 'lng': lng, 'start_position': self.start_position}, outfile)
+                json.dump({'lat': lat, 'lng': lng, 'alt': alt, 'start_position': self.start_position}, outfile)
         except IOError as e:
             self.logger.info('[x] Error while opening location file: %s' % e)
 
@@ -985,7 +985,7 @@ class PokemonGoBot(Datastore):
                 location = (
                     location_json['lat'],
                     location_json['lng'],
-                    0.0
+                    location_json['alt'],
                 )
 
                 # If location has been set in config, only use cache if starting position has not differed
