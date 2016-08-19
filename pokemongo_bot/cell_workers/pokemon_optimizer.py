@@ -282,14 +282,19 @@ class PokemonOptimizer(BaseTask):
                               "dps": round(pokemon.dps, 2)})
 
         if self.config_transfer and (not self.bot.config.test):
-            candy = response_dict.get("responses", {}).get("RELEASE_POKEMON", {}).get("candy_awarded", 0)
 
-            inventory.candies().get(pokemon.pokemon_id).add(candy)
+            inventory.candies().get(pokemon.pokemon_id).add(self.get_candy_gained_count(response_dict))
             inventory.pokemons().remove(pokemon.unique_id)
 
             action_delay(self.transfer_wait_min, self.transfer_wait_max)
 
         return True
+
+    def get_candy_gained_count(self, response_dict):
+        total_candy_gained = 0
+        for candy_gained in response_dict['responses']['CATCH_POKEMON']['capture_award']['candy']:
+            total_candy_gained += candy_gained
+        return total_candy_gained
 
     def use_lucky_egg(self):
         lucky_egg = inventory.items().get(Item.ITEM_LUCKY_EGG.value)  # @UndefinedVariable
