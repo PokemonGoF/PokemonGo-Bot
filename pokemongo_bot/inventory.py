@@ -324,7 +324,7 @@ class Pokemons(_BaseInventoryComponent):
 
     def all_with_eggs(self):
         # count pokemon AND eggs, since eggs are counted as bag space
-        return [p for p in super(Pokemons, self).all()]
+        return super(Pokemons, self).all()
 
     def add(self, pokemon):
         if pokemon.unique_id <= 0:
