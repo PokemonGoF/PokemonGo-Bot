@@ -22,7 +22,7 @@ class PokemonOptimizer(BaseTask):
 
     def initialize(self):
         self.family_by_family_id = {}
-        self.max_pokemon_storage = 0
+        self.max_pokemon_storage = inventory.get_pokemon_inventory_size()
         self.last_pokemon_count = 0
 
         self.config_transfer = self.config.get("transfer", False)
@@ -40,14 +40,13 @@ class PokemonOptimizer(BaseTask):
         self.transfer_wait_max = self.config.get('transfer_wait_max', 4)
 
     def get_pokemon_slot_left(self):
-        pokemon_count = len(inventory.pokemons()._data)
-        self.max_pokemon_storage = self.bot.player_data["max_pokemon_storage"]
+        pokemon_count = inventory.Pokemons.get_space_used()
 
         if pokemon_count != self.last_pokemon_count:
             self.last_pokemon_count = pokemon_count
             self.logger.info("Pokemon Bag: %s/%s", pokemon_count, self.max_pokemon_storage)
 
-        return self.max_pokemon_storage - pokemon_count
+        return inventory.Pokemons.get_space_left()
 
     def work(self):
         if (not self.enabled) or (self.get_pokemon_slot_left() > 5):
@@ -79,7 +78,7 @@ class PokemonOptimizer(BaseTask):
     def open_inventory(self):
         self.family_by_family_id.clear()
 
-        for pokemon in inventory.pokemons(True).all():
+        for pokemon in inventory.pokemons().all():
             family_id = pokemon.first_evolution_id
             setattr(pokemon, "ncp", pokemon.cp_percent)
             setattr(pokemon, "dps", pokemon.moveset.dps)
@@ -89,7 +88,7 @@ class PokemonOptimizer(BaseTask):
             self.family_by_family_id.setdefault(family_id, []).append(pokemon)
 
     def save_web_inventory(self):
-        inventory_items = self.bot.get_inventory()["responses"]["GET_INVENTORY"]["inventory_delta"]["inventory_items"]
+        inventory_items = self.bot.api.get_inventory()["responses"]["GET_INVENTORY"]["inventory_delta"]["inventory_items"]
         web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
 
         with open(web_inventory, "w") as outfile:
@@ -173,7 +172,7 @@ class PokemonOptimizer(BaseTask):
 
     def unique_pokemons(self, l):
         seen = set()
-        return [p for p in l if not (p.id in seen or seen.add(p.id))]
+        return [p for p in l if not (p.unique_id in seen or seen.add(p.unique_id))]
 
     def get_evolution_plan(self, family_id, family, evolve_best, keep_best):
         candies = inventory.candies().get(family_id).quantity
@@ -266,7 +265,7 @@ class PokemonOptimizer(BaseTask):
 
     def transfer_pokemon(self, pokemon):
         if self.config_transfer and (not self.bot.config.test):
-            response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon.id)
+            response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon.unique_id)
         else:
             response_dict = {"responses": {"RELEASE_POKEMON": {"candy_awarded": 0}}}
 
@@ -282,14 +281,19 @@ class PokemonOptimizer(BaseTask):
                               "dps": round(pokemon.dps, 2)})
 
         if self.config_transfer and (not self.bot.config.test):
-            candy = response_dict.get("responses", {}).get("RELEASE_POKEMON", {}).get("candy_awarded", 0)
 
-            inventory.candies().get(pokemon.pokemon_id).add(candy)
-            inventory.pokemons().remove(pokemon.id)
+            inventory.candies().get(pokemon.pokemon_id).add(self.get_candy_gained_count(response_dict))
+            inventory.pokemons().remove(pokemon.unique_id)
 
             action_delay(self.transfer_wait_min, self.transfer_wait_max)
 
         return True
+
+    def get_candy_gained_count(self, response_dict):
+        total_candy_gained = 0
+        for candy_gained in response_dict['responses']['CATCH_POKEMON']['capture_award']['candy']:
+            total_candy_gained += candy_gained
+        return total_candy_gained
 
     def use_lucky_egg(self):
         lucky_egg = inventory.items().get(Item.ITEM_LUCKY_EGG.value)  # @UndefinedVariable
@@ -327,7 +331,7 @@ class PokemonOptimizer(BaseTask):
 
     def evolve_pokemon(self, pokemon):
         if self.config_evolve and (not self.bot.config.test):
-            response_dict = self.bot.api.evolve_pokemon(pokemon_id=pokemon.id)
+            response_dict = self.bot.api.evolve_pokemon(pokemon_id=pokemon.unique_id)
         else:
             response_dict = {"responses": {"EVOLVE_POKEMON": {"result": 1}}}
 
@@ -354,7 +358,7 @@ class PokemonOptimizer(BaseTask):
 
         if self.config_evolve and (not self.bot.config.test):
             inventory.candies().get(pokemon.pokemon_id).consume(pokemon.evolution_cost - candy)
-            inventory.pokemons().remove(pokemon.id)
+            inventory.pokemons().remove(pokemon.unique_id)
 
             new_pokemon = inventory.Pokemon(evolution)
             inventory.pokemons().add(new_pokemon)

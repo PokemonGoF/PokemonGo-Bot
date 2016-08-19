@@ -46,19 +46,20 @@ class EvolvePokemon(BaseTask):
         if self.bot.tick_count is not 1 or not self.use_lucky_egg:
             return True
 
-        lucky_egg_count = self.bot.item_inventory_count(Item.ITEM_LUCKY_EGG.value)
+        lucky_egg = inventory.items().get(Item.ITEM_LUCKY_EGG.value)
 
         # Make sure the user has a lucky egg and skip if not
-        if lucky_egg_count > 0:
+        if lucky_egg.count > 0:
             response_dict_lucky_egg = self.bot.use_lucky_egg()
             if response_dict_lucky_egg:
                 result = response_dict_lucky_egg.get('responses', {}).get('USE_ITEM_XP_BOOST', {}).get('result', 0)
                 if result is 1:  # Request success
+                    lucky_egg.remove(1)
                     self.emit_event(
                         'used_lucky_egg',
                         formatted='Used lucky egg ({amount_left} left).',
                         data={
-                             'amount_left': lucky_egg_count - 1
+                             'amount_left': lucky_egg.count
                         }
                     )
                     return True
