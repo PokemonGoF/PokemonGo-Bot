@@ -67,12 +67,20 @@ logger.setLevel(logging.INFO)
 
 class SIGINTRecieved(Exception): pass
 
+
 def main():
     bot = False
 
     def handle_sigint(*args):
         raise SIGINTRecieved
     signal.signal(signal.SIGINT, handle_sigint)
+
+    def initialize(bot, config):
+        tree = TreeConfigBuilder(bot, config.raw_tasks).build()
+        bot.workers = tree
+        bot.metrics.capture_stats()
+        bot.health_record = BotEvent(config)
+        bot.config_file = config_file
 
     def get_commit_hash():
         try:
@@ -88,7 +96,7 @@ def main():
         sys.stdout = codecs.getwriter('utf8')(sys.stdout)
         sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
-        config = init_config()
+        config, config_file = init_config()
         if not config:
             return
 
@@ -102,10 +110,8 @@ def main():
             try:
                 bot = PokemonGoBot(config)
                 bot.start()
-                tree = TreeConfigBuilder(bot, config.raw_tasks).build()
-                bot.workers = tree
-                bot.metrics.capture_stats()
-                bot.health_record = health_record
+                initialize(bot, config)
+                config_changed = check_config_modification(config_file)
 
                 bot.event_manager.emit(
                     'bot_start',
@@ -113,9 +119,16 @@ def main():
                     level='info',
                     formatted='Starting bot...'
                 )
-
                 while True:
                     bot.tick()
+                    if config_changed():
+                        logger.info('Config changed! Re-apply configuration.')
+                        config, _ = init_config()
+
+                        if config:
+                            initialize(bot, config)
+                        else:
+                            logger.info('Check your configration!')
 
             except KeyboardInterrupt:
                 bot.event_manager.emit(
@@ -202,6 +215,20 @@ def main():
                         )
 
 
+def check_config_modification(config_file):
+    mtime = [os.stat(config_file).st_mtime]
+    config_file = config_file
+
+    def check_cfg():
+        mdate = os.stat(config_file).st_mtime
+        if mtime[0] == mdate:  # mtime didnt change
+            return False
+        else:
+            mtime[0] = mdate
+            return True
+
+    return check_cfg
+
 
 def report_summary(bot):
     if bot.metrics.start_time is None:
@@ -254,7 +281,8 @@ def init_config():
     config_arg = parser.parse_known_args() and parser.parse_known_args()[0].config or None
 
     if config_arg and os.path.isfile(config_arg):
-        _json_loader(config_arg)
+        config_file = config_arg
+        _json_loader(config_file)
     elif os.path.isfile(config_file):
         logger.info('No config argument specified, checking for /configs/config.json')
         _json_loader(config_file)
@@ -634,7 +662,7 @@ def init_config():
             raise
 
     fix_nested_config(config)
-    return config
+    return config, config_file
 
 def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
     if not long_flag:
