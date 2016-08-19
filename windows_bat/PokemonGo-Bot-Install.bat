@@ -188,9 +188,11 @@ CLS
 @ECHO.
 @ECHO.
 @ECHO.
-if exist %PGBotPath%\configs\config.json copy %PGBotPath%\configs\config.json %DownPath%
-if exist %PGBotPath%\web\config\userdata.js copy %PGBotPath%\web\config\userdata.js %DownPath%
-if exist %PGBotPath%\encrypt. copy %PGBotPath%\encrypt. %DownPath%
+if exist %PGBotPath%\encrypt.so COPY %PGBotPath%\encrypt.so %DownPath%
+if exist %PGBotPath%\encrypt.dll COPY %PGBotPath%\encrypt.dll %DownPath%
+if exist %PGBotPath%\encrypt_64.dll COPY %PGBotPath%\encrypt_64.dll %DownPath%
+if exist %PGBotPath%\configs\config.json COPY %PGBotPath%\configs\config.json %DownPath%
+if exist %PGBotPath%\web\config\userdata.js COPY %PGBotPath%\web\config\userdata.js %DownPath%
 @ECHO.
 @ECHO.
 @ECHO.
@@ -211,10 +213,14 @@ pip2 install -r %PGBotPath%\requirements.txt
 @ECHO.
 @ECHO.
 @ECHO.
-if exist %~dp0\encrypt. COPY %~dp0\encrypt. %PGBotPath%
+if exist %~dp0\encrypt.so COPY %~dp0\encrypt.so %PGBotPath%
+if exist %~dp0\encrypt.dll COPY %~dp0\encrypt.dll %PGBotPath%
+if exist %~dp0\encrypt_64.dll COPY %~dp0\encrypt_64.dll %PGBotPath%
 if exist %~dp0\config.json COPY %~dp0\config.json %PGBotPath%\configs\
 if exist %~dp0\userdata.js COPY %~dp0\userdata.js %PGBotPath%\web\config\
-if exist %DownPath%\encrypt. COPY %DownPath%\encrypt. %PGBotPath%
+if exist %DownPath%\encrypt.so COPY %DownPath%\encrypt.so %PGBotPath%
+if exist %DownPath%\encrypt.dll COPY %DownPath%\encrypt.dll %PGBotPath%
+if exist %DownPath%\encrypt_64.dll COPY %DownPath%\encrypt_64.dll %PGBotPath%
 if exist %DownPath%\config.json COPY %DownPath%\config.json %PGBotPath%\configs\
 if exist %DownPath%\userdata.js COPY %DownPath%\userdata.js %PGBotPath%\web\config\
 @ECHO.
