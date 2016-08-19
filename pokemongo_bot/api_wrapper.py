@@ -130,7 +130,8 @@ class ApiRequest(PGoApiRequest):
             location_fix=location_fix,
             sensor_info=sensor_info,
             device_info=device_info,
-            activity_status=activity_status
+            activity_status=activity_status,
+            unknown25=-8537042734809897855
         )
         return PGoApiRequest.call(self, signature)
 
