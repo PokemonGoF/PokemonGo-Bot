@@ -5,13 +5,10 @@ from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.inventory import Pokemons, Pokemon, Attack
-from pokemongo_bot.datastore import Datastore
 
-class TransferPokemon(Datastore, BaseTask):
+class TransferPokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
-    
-    def __init__(self, bot, config):
-        super(TransferPokemon, self).__init__(bot, config)
+
     def initialize(self):
         self.transfer_wait_min = self.config.get('transfer_wait_min', 1)
         self.transfer_wait_max = self.config.get('transfer_wait_max', 4)
@@ -178,8 +175,6 @@ class TransferPokemon(Datastore, BaseTask):
                 'dps': pokemon.moveset.dps
             }
         )
-        with self.bot.database as conn:
-            conn.execute('''INSERT INTO transfer_log (pokemon, iv, cp) VALUES (?, ?, ?)''', (pokemon.name, pokemon.iv, pokemon.cp))       
         action_delay(self.transfer_wait_min, self.transfer_wait_max)
 
     def _get_release_config_for(self, pokemon):
