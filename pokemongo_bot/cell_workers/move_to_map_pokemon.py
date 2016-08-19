@@ -62,6 +62,7 @@ from pokemongo_bot.walkers.walker_factory import walker_factory
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
+from random import uniform
 
 
 # Update the map if more than N meters away from the center. (AND'd with
