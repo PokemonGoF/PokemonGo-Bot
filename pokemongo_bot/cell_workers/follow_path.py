@@ -8,6 +8,7 @@ from pokemongo_bot.cell_workers.utils import distance, i2f, format_dist
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.walkers.step_walker import StepWalker
 from pgoapi.utilities import f2i
+from random import uniform
 
 
 class FollowPath(BaseTask):
