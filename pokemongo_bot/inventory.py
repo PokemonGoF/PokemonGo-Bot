@@ -1102,7 +1102,7 @@ class Inventory(object):
         :return: Nothing.
         :rtype: None
         """
-        # TODO: Force update of it if the player upgrades its size
+        # TODO: Force to update it if the player upgrades its size
         if self.item_inventory_size is None or self.pokemon_inventory_size is None:
            player_data = self.bot.api.get_player()['responses']['GET_PLAYER']['player_data']
            self.item_inventory_size = player_data['max_item_storage']
