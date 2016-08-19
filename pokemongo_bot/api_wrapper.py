@@ -1,6 +1,6 @@
 import time
 import logging
-import random
+import random, base64, struct
 import hashlib
 
 from pgoapi.exceptions import (ServerSideRequestThrottlingException,
@@ -11,7 +11,7 @@ from pgoapi.pgoapi import PGoApi, PGoApiRequest, RpcApi
 from pgoapi.protos.POGOProtos.Networking.Requests.RequestType_pb2 import RequestType
 from pgoapi.protos.POGOProtos.Networking.Envelopes.Signature_pb2 import Signature
 from pgoapi.utilities import get_time
-
+from pokemongo_bot.datastore import Datastore
 from human_behaviour import sleep
 
 
@@ -19,7 +19,7 @@ class PermaBannedException(Exception):
     pass
 
 
-class ApiWrapper(PGoApi):
+class ApiWrapper(Datastore, PGoApi):
     DEVICE_ID = None
 
     def __init__(self, config=None):
@@ -28,7 +28,8 @@ class ApiWrapper(PGoApi):
         self.config = config
         if self.config is not None:
             key_string = self.config.username
-            salt = self.config.hash_salt
+            rand_float = random.SystemRandom().random()
+            salt = base64.b64encode((struct.pack('!d', rand_float)))
             # Unique device id per account in the same format as ios client
             ApiWrapper.DEVICE_ID = hashlib.md5(key_string + salt).hexdigest()
         if ApiWrapper.DEVICE_ID is None:
