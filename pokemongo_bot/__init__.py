@@ -78,6 +78,7 @@ class PokemonGoBot(Datastore):
         self.last_map_object = None
         self.last_time_map_object = 0
         self.logger = logging.getLogger(type(self).__name__)
+        self.alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
 
         # Make our own copy of the workers for this instance
         self.workers = []
