@@ -1,8 +1,7 @@
 import time
 import logging
-import random
+import random, base64, struct
 import hashlib
-
 from pgoapi.exceptions import (ServerSideRequestThrottlingException,
                                NotLoggedInException, ServerBusyOrOfflineException,
                                NoPlayerPositionSetException, EmptySubrequestChainException,
@@ -11,7 +10,7 @@ from pgoapi.pgoapi import PGoApi, PGoApiRequest, RpcApi
 from pgoapi.protos.POGOProtos.Networking.Requests.RequestType_pb2 import RequestType
 from pgoapi.protos.POGOProtos.Networking.Envelopes.Signature_pb2 import Signature
 from pgoapi.utilities import get_time
-
+from pokemongo_bot.datastore import Datastore
 from human_behaviour import sleep
 
 
@@ -19,7 +18,7 @@ class PermaBannedException(Exception):
     pass
 
 
-class ApiWrapper(PGoApi):
+class ApiWrapper(Datastore, PGoApi):
     DEVICE_ID = None
 
     def __init__(self, config=None):
@@ -27,8 +26,13 @@ class ApiWrapper(PGoApi):
         self.useVanillaRequest = False
         self.config = config
         if self.config is not None:
+            key_string = self.config.username
+            rand_float = random.SystemRandom().random()
+            salt = base64.b64encode((struct.pack('!d', rand_float)))
             # Unique device id per account in the same format as ios client
-            ApiWrapper.DEVICE_ID = hashlib.md5(self.config.username).hexdigest()
+            ApiWrapper.DEVICE_ID = hashlib.md5(key_string + salt).hexdigest()
+            with open("DeviceID.txt", "w") as text_file:
+                text_file.write("Device ID: {0}".format(ApiWrapper.DEVICE_ID))
         if ApiWrapper.DEVICE_ID is None:
             # Set to a realistic default
             ApiWrapper.DEVICE_ID = "3d65919ca1c2fc3a8e2bd7cc3f974c34"
