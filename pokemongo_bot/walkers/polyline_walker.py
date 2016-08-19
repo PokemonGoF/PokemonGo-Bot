@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from random import uniform
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.walkers.step_walker import StepWalker
 from polyline_generator import PolylineObjectHandler
@@ -33,7 +34,7 @@ class PolylineWalker(StepWalker):
         sleep(1)
         self.polyline_walker.pause()
         cLat, cLng = self.polyline_walker.get_pos()[0]
-        _, _, alt = self.api.get_position()
+        alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
         self.api.set_position(cLat, cLng, alt)
         self.bot.heartbeat()
         return False
