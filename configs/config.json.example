@@ -204,7 +204,7 @@
       "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat:": {},
       "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3},
 	  "// Example of custom order of static criterion": {},
-	  "// Zubat": {"keep_best_custom": "moveset.defense_perfection, hp_max", "amount":2}
+	  "// Zubat": {"keep_best_custom": "iv, cp, hp_max", "amount":2}
     },
     "vips" : {
         "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate!": {},
