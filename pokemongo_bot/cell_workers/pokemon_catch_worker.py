@@ -77,10 +77,6 @@ class PokemonCatchWorker(Datastore, BaseTask):
     ############################################################################
 
     def work(self, response_dict=None):
-        pokeballs = self.bot.item_inventory_count(1)
-        superballs = self.bot.item_inventory_count(2)
-        ultraballs = self.bot.item_inventory_count(3)
-
         response_dict = response_dict or self.create_encounter_api_call()
 
         # validate response
@@ -108,11 +104,9 @@ class PokemonCatchWorker(Datastore, BaseTask):
             return WorkerResult.SUCCESS
 
         is_vip = self._is_vip_pokemon(pokemon)
-        if pokeballs < 1:
-            if superballs < 1:
-                if ultraballs < 1:
-                    return WorkerResult.SUCCESS
-                if not is_vip:
+        if inventory.items().get(ITEM_POKEBALL).count < 1:
+            if inventory.items().get(ITEM_GREATBALL).count < 1:
+                if inventory.items().get(ITEM_ULTRABALL).count < 1:
                     return WorkerResult.SUCCESS
 
         # log encounter
@@ -136,11 +130,6 @@ class PokemonCatchWorker(Datastore, BaseTask):
         sleep(3)
 
         # check for VIP pokemon
-        if is_vip:
-            self.emit_event('vip_pokemon', formatted='This is a VIP pokemon. Catch!!!')
-
-        # check for VIP pokemon
-        is_vip = self._is_vip_pokemon(pokemon)
         if is_vip:
             self.emit_event('vip_pokemon', formatted='This is a VIP pokemon. Catch!!!')
 
@@ -459,9 +448,9 @@ class PokemonCatchWorker(Datastore, BaseTask):
                 if self._pct(catch_rate_by_ball[current_ball]) == 100:
                     self.bot.softban = True
 
-         # pokemon caught!
+            # pokemon caught!
             elif catch_pokemon_status == CATCH_STATUS_SUCCESS:
-                pokemon.id = response_dict['responses']['CATCH_POKEMON']['captured_pokemon_id']
+                pokemon.unique_id = response_dict['responses']['CATCH_POKEMON']['captured_pokemon_id']
                 self.bot.metrics.captured_pokemon(pokemon.name, pokemon.cp, pokemon.iv_display, pokemon.iv)
 
                 try:
@@ -500,20 +489,26 @@ class PokemonCatchWorker(Datastore, BaseTask):
                 except IOError as e:
                     self.logger.info('[x] Error while opening location file: %s' % e)
 
-                    # We could refresh here too, but adding 3 saves a inventory request
-                    candy = inventory.candies(True).get(pokemon.pokemon_id)
-                    self.emit_event(
-                        'gained_candy',
-                        formatted='You now have {quantity} {type} candy!',
-                        data = {
-                            'quantity': candy.quantity,
-                            'type': candy.type,
-                        },
-                    )
+                candy = inventory.candies().get(pokemon.pokemon_id)
+                candy.add(self.get_candy_gained_count(response_dict))
 
-                    self.bot.softban = False
+                self.emit_event(
+                    'gained_candy',
+                    formatted='You now have {quantity} {type} candy!',
+                    data = {
+                        'quantity': candy.quantity,
+                        'type': candy.type,
+                    },
+                )
 
+                self.bot.softban = False
             break
+
+    def get_candy_gained_count(self, response_dict):
+        total_candy_gained = 0
+        for candy_gained in response_dict['responses']['CATCH_POKEMON']['capture_award']['candy']:
+            total_candy_gained += candy_gained
+        return total_candy_gained
 
     def generate_spin_parameter(self, throw_parameters):
         spin_success_rate = self.catch_throw_parameters_spin_success_rate
@@ -561,3 +556,4 @@ class PokemonCatchWorker(Datastore, BaseTask):
         throw_parameters['normalized_reticle_size'] = 1.25 + 0.70 * random()
         throw_parameters['normalized_hit_position'] = 0.0
         throw_parameters['throw_type_label'] = 'OK'
+

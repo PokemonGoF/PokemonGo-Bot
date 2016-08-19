@@ -56,7 +56,7 @@ class CollectLevelUpReward(BaseTask):
 
     def _get_current_level(self):
         level = 0
-        response_dict = self.bot.get_inventory()
+        response_dict = self.bot.api.get_inventory()
         data = (response_dict
                 .get('responses', {})
                 .get('GET_INVENTORY', {})

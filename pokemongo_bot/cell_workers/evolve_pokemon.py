@@ -85,7 +85,7 @@ class EvolvePokemon(BaseTask):
         }
 
         for pokemon in inventory.pokemons().all():
-            if pokemon.id > 0 and pokemon.has_next_evolution() and (logic_to_function[self.cp_iv_logic](pokemon)):
+            if pokemon.unique_id > 0 and pokemon.has_next_evolution() and (logic_to_function[self.cp_iv_logic](pokemon)):
                 pokemons.append(pokemon)
 
         if self.first_evolve_by == "cp":
@@ -99,7 +99,7 @@ class EvolvePokemon(BaseTask):
         if pokemon.name in cache:
             return False
 
-        response_dict = self.api.evolve_pokemon(pokemon_id=pokemon.id)
+        response_dict = self.api.evolve_pokemon(pokemon_id=pokemon.unique_id)
         if response_dict.get('responses', {}).get('EVOLVE_POKEMON', {}).get('result', 0) == 1:
             self.emit_event(
                 'pokemon_evolved',
@@ -115,7 +115,7 @@ class EvolvePokemon(BaseTask):
             )
             awarded_candies = response_dict.get('responses', {}).get('EVOLVE_POKEMON', {}).get('candy_awarded', 0)
             inventory.candies().get(pokemon.pokemon_id).consume(pokemon.evolution_cost - awarded_candies)
-            inventory.pokemons().remove(pokemon.id)
+            inventory.pokemons().remove(pokemon.unique_id)
             pokemon = Pokemon(response_dict.get('responses', {}).get('EVOLVE_POKEMON', {}).get('evolved_pokemon_data', {}))
             inventory.pokemons().add(pokemon)
             sleep(self.evolve_speed)
