@@ -170,7 +170,6 @@
     "reconnecting_timeout": 15,
     "logging_color": true,
     "daily_catch_limit": 800,
-    "hash_salt": "xRpgobot",
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},
