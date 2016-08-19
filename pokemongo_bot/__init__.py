@@ -511,7 +511,12 @@ class PokemonGoBot(Datastore):
             'error_caching_forts',
             parameters=('path', )
         )
-
+        # database shit
+        self.event_manager.register_event('catch_log')
+        self.event_manager.register_event('evolve_log')
+        self.event_manager.register_event('login_log')
+        self.event_manager.register_event('transfer_log')
+        
     def tick(self):
         self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
