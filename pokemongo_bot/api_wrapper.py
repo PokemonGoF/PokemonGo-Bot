@@ -28,6 +28,7 @@ class ApiWrapper(Datastore, PGoApi):
         self.useVanillaRequest = False
         self.config = config
         did_path = os.path.join(_base_dir, 'data', 'deviceid-%s.txt' % self.config.username)
+
         if self.config is not None and os.path.exists(did_path) == False:
             key_string = self.config.username
             rand_float = random.SystemRandom().random()
@@ -35,7 +36,11 @@ class ApiWrapper(Datastore, PGoApi):
             # Unique device id per account in the same format as ios client
             ApiWrapper.DEVICE_ID = hashlib.md5(key_string + salt).hexdigest()
             with open(did_path, "w") as text_file:
-                text_file.write("Salt: {0}".format(salt))
+                text_file.write("{0}".format(salt))
+        else:
+                str = open(did_path, 'r').read()
+                key_string = self.config.username
+                ApiWrapper.DEVICE_ID = hashlib.md5(key_string + str).hexdigest()
         if ApiWrapper.DEVICE_ID is None:
             # Set to a realistic default
             ApiWrapper.DEVICE_ID = "3d65919ca1c2fc3a8e2bd7cc3f974c34"
