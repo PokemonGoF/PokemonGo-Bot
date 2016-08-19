@@ -112,7 +112,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
         # log encounter
         self.emit_event(
             'pokemon_appeared',
-            formatted='A wild {pokemon} appeared! [NCP {ncp}] [CP {cp}] [Potential {iv}] [A/D/S {iv_display}]',
+            formatted='A wild {pokemon} appeared! [CP {cp}] [NCP {ncp}] [Potential {iv}] [A/D/S {iv_display}]',
             data={
                 'pokemon': pokemon.name,
                 'ncp': round(pokemon.cp_percent, 2),
