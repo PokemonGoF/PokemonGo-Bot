@@ -323,16 +323,16 @@ class Pokemons(_BaseInventoryComponent):
         return [p for p in super(Pokemons, self).all() if not isinstance(p, Egg)]
 
     def add(self, pokemon):
-        if pokemon.id <= 0:
+        if pokemon.unique_id <= 0:
             raise ValueError("Can't add a pokemon without id")
-        if pokemon.id in self._data:
+        if pokemon.unique_id in self._data:
             raise ValueError("Pokemon already present in the inventory")
-        self._data[pokemon.id] = pokemon
+        self._data[pokemon.unique_id] = pokemon
 
-    def remove(self, pokemon_id):
-        if pokemon_id not in self._data:
+    def remove(self, pokemon_unique_id):
+        if pokemon_unique_id not in self._data:
             raise ValueError("Pokemon not present in the inventory")
-        self._data.pop(pokemon_id)
+        self._data.pop(pokemon_unique_id)
 
 
 #
@@ -756,7 +756,7 @@ class Pokemon(object):
     def __init__(self, data):
         self._data = data
         # Unique ID for this particular Pokemon
-        self.id = data.get('id', 0)
+        self.unique_id = data.get('id', 0)
         # Id of the such pokemons in pokedex
         self.pokemon_id = data['pokemon_id']
         # Static information
@@ -1079,21 +1079,24 @@ class Inventory(object):
         self.candy = Candies()
         self.items = Items()
         self.pokemons = Pokemons()
+        self.refresh_count = 0
         self.refresh()
         self.item_inventory_size = None
         self.pokemon_inventory_size = None
 
     def refresh(self):
-        # TODO: it would be better if this class was used for all
-        # inventory management. For now, I'm just clearing the old inventory field
-        self.bot.latest_inventory = None
-        inventory = self.bot.get_inventory()['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+        self.refresh_count += 1
+        inventory = self.bot.api.get_inventory()
+        inventory = inventory['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
         for i in (self.pokedex, self.candy, self.items, self.pokemons):
             i.refresh(inventory)
 
         user_web_inventory = os.path.join(_base_dir, 'web', 'inventory-%s.json' % (self.bot.config.username))
-        with open(user_web_inventory, 'w') as outfile:
-            json.dump(inventory, outfile)
+        try:
+            with open(user_web_inventory, 'w') as outfile:
+                json.dump(inventory, outfile)
+        except IOError as e:
+            errmsg = '[x] Error while opening location file: user_web_inventory'
 
     def retrieve_inventories_size(self):
         """
@@ -1106,6 +1109,7 @@ class Inventory(object):
            player_data = self.bot.api.get_player()['responses']['GET_PLAYER']['player_data']
            self.item_inventory_size = player_data['max_item_storage']
            self.pokemon_inventory_size = player_data['max_pokemon_storage']
+
 
 #
 # Other
@@ -1204,8 +1208,8 @@ def get_item_inventory_size():
 
 def get_pokemon_inventory_size():
     """
-    Access to the Pokemon inventory size.
-    :return: Pokemon inventory size.
+    Access to the Item inventory size.
+    :return: Item inventory size.
     :rtype: int
     """
     _inventory.retrieve_inventories_size()
@@ -1217,30 +1221,25 @@ def pokedex():
     :return:
     :rtype: Pokedex
     """
+    # Are new pokemons added to the pokedex ?
     return _inventory.pokedex
 
 
-def candies(refresh=False):
+def candies():
     """
 
-    :param refresh:
     :return:
     :rtype: Candies
     """
-    if refresh:
-        refresh_inventory()
     return _inventory.candy
 
 
-def pokemons(refresh=False):
+def pokemons():
     """
 
-    :param refresh:
     :return:
     :rtype: Pokemons
     """
-    if refresh:
-        refresh_inventory()
     return _inventory.pokemons
 
 

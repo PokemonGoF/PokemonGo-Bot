@@ -6,7 +6,7 @@ from pgoapi.exceptions import (ServerSideRequestThrottlingException,
     NoPlayerPositionSetException, EmptySubrequestChainException,
     UnexpectedResponseException)
 from pgoapi.pgoapi import PGoApi, PGoApiRequest, RpcApi
-from pgoapi.protos.POGOProtos.Networking.Requests_pb2 import RequestType
+from pgoapi.protos.POGOProtos.Networking.Requests.RequestType_pb2 import RequestType
 
 from human_behaviour import sleep
 
