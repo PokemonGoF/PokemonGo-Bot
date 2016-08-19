@@ -1,11 +1,12 @@
 import time
 import logging
 import random
+import hashlib
 
 from pgoapi.exceptions import (ServerSideRequestThrottlingException,
-    NotLoggedInException, ServerBusyOrOfflineException,
-    NoPlayerPositionSetException, EmptySubrequestChainException,
-    UnexpectedResponseException)
+                               NotLoggedInException, ServerBusyOrOfflineException,
+                               NoPlayerPositionSetException, EmptySubrequestChainException,
+                               UnexpectedResponseException)
 from pgoapi.pgoapi import PGoApi, PGoApiRequest, RpcApi
 from pgoapi.protos.POGOProtos.Networking.Requests.RequestType_pb2 import RequestType
 from pgoapi.protos.POGOProtos.Networking.Envelopes.Signature_pb2 import Signature
@@ -13,13 +14,24 @@ from pgoapi.utilities import get_time
 
 from human_behaviour import sleep
 
+
 class PermaBannedException(Exception):
     pass
 
+
 class ApiWrapper(PGoApi):
-    def __init__(self):
+    DEVICE_ID = None
+
+    def __init__(self, config=None):
         PGoApi.__init__(self)
         self.useVanillaRequest = False
+        self.config = config
+        if self.config is not None:
+            # Unique device id per account in the same format as ios client
+            ApiWrapper.DEVICE_ID = hashlib.md5(self.config.username).hexdigest()
+        if ApiWrapper.DEVICE_ID is None:
+            # Set to a realistic default
+            ApiWrapper.DEVICE_ID = "3d65919ca1c2fc3a8e2bd7cc3f974c34"
 
     def create_request(self):
         RequestClass = ApiRequest
@@ -89,7 +101,7 @@ class ApiRequest(PGoApiRequest):
             accelerometer_axes=3
         )
         device_info = Signature.DeviceInfo(
-            device_id='HASHVALUE',
+            device_id=ApiWrapper.DEVICE_ID,
             device_brand='Apple',
             device_model='iPhone',
             device_model_boot='iPhone8,2',
@@ -105,7 +117,7 @@ class ApiRequest(PGoApiRequest):
             # tilting=True
         )
         signature = Signature(
-            #location_fix=location_fix,
+            # location_fix=location_fix,
             sensor_info=sensor_info,
             device_info=device_info,
             activity_status=activity_status
@@ -129,7 +141,8 @@ class ApiRequest(PGoApiRequest):
 
         try:
             # Permaban symptom is empty response to GET_INVENTORY and status_code = 3
-            if result['status_code'] == 3 and 'GET_INVENTORY' in request_callers and not result['responses']['GET_INVENTORY']:
+            if result['status_code'] == 3 and 'GET_INVENTORY' in request_callers and not result['responses'][
+                'GET_INVENTORY']:
                 raise PermaBannedException
         except KeyError:
             # Still wrong
@@ -146,7 +159,7 @@ class ApiRequest(PGoApiRequest):
     def call(self, max_retry=15):
         request_callers = self._pop_request_callers()
         if not self.can_call():
-            return False # currently this is never ran, exceptions are raised before
+            return False  # currently this is never ran, exceptions are raised before
 
         request_timestamp = None
         api_req_method_list = self._req_method_list
@@ -171,13 +184,14 @@ class ApiRequest(PGoApiRequest):
                 throttling_retry += 1
                 if throttling_retry >= max_retry:
                     raise ServerSideRequestThrottlingException('Server throttled too many times')
-                sleep(1) # huge sleep ?
-                continue # skip response checking
+                sleep(1)  # huge sleep ?
+                continue  # skip response checking
 
             if should_unexpected_response_retry:
                 unexpected_response_retry += 1
                 if unexpected_response_retry >= 5:
-                    self.logger.warning('Server is not responding correctly to our requests.  Waiting for 30 seconds to reconnect.')
+                    self.logger.warning(
+                        'Server is not responding correctly to our requests.  Waiting for 30 seconds to reconnect.')
                     sleep(30)
                 else:
                     sleep(2)
@@ -186,7 +200,8 @@ class ApiRequest(PGoApiRequest):
             if not self.is_response_valid(result, request_callers):
                 try_cnt += 1
                 if try_cnt > 3:
-                    self.logger.warning('Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry))
+                    self.logger.warning(
+                        'Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry))
                 if try_cnt >= max_retry:
                     raise ServerBusyOrOfflineException()
                 sleep(1)
@@ -197,7 +212,7 @@ class ApiRequest(PGoApiRequest):
         return result
 
     def __getattr__(self, func):
-        if func.upper() in  RequestType.keys():
+        if func.upper() in RequestType.keys():
             self.request_callers.append(func)
         return PGoApiRequest.__getattr__(self, func)
 

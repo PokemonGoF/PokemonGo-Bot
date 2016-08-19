@@ -678,7 +678,7 @@ class PokemonGoBot(Datastore):
                     formatted='Session stale, re-logging in.'
                 )
                 position = self.position
-                self.api = ApiWrapper()
+                self.api = ApiWrapper(config=self.config)
                 self.position = position
                 self.login()
                 self.api.activate_signature(self.get_encryption_lib())
@@ -751,7 +751,7 @@ class PokemonGoBot(Datastore):
 
     def _setup_api(self):
         # instantiate pgoapi
-        self.api = ApiWrapper()
+        self.api = ApiWrapper(config=self.config)
 
         # provide player position on the earth
         self._set_starting_position()
