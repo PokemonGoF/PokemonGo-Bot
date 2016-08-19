@@ -276,6 +276,9 @@ class MoveToMapPokemon(BaseTask):
             else:
                 return self.snipe(pokemon)
 
+        if pokeballs_quantity + superballs_quantity + ultraballs_quantity < self.min_ball:
+            return WorkerResult.SUCCESS
+
         step_walker = self._move_to(pokemon)
         if not step_walker.step():
             return WorkerResult.RUNNING
