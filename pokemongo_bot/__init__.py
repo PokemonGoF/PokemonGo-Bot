@@ -40,7 +40,7 @@ import struct
 class PokemonGoBot(Datastore):
     @property
     def position(self):
-        return self.api._position_lat, self.api._position_lng, 0
+        return self.api._position_lat, self.api._position_lng, self.api._position_alt
 
     @position.setter
     def position(self, position_tuple):
@@ -571,7 +571,7 @@ class PokemonGoBot(Datastore):
         if lng is None:
             lng = self.api._position_lng
         if alt is None:
-            alt = 0
+            alt = self.api._position_alt
 
         if cells == []:
             location = self.position[0:2]
