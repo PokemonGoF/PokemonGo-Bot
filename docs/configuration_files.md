@@ -20,6 +20,9 @@
 | `distance_unit`    | km      | Set the unit to display distance in (km for kilometers, mi for miles, ft for feet)                                                                                                          |
 | `evolve_cp_min`           | 300   |                   Min. CP for evolve_all function
 |`daily_catch_llimit`    | 800   |                   Limit the amount of pokemon caught in a 24 hour period.
+|`pokemon_bag.show_at_start`    | false   |                   At start, bot will show all pokemon in the bag.
+|`pokemon_bag.show_count`    | false   |                   Show amount of each pokemon.
+|`pokemon_bag.pokemon_info`    | []   |                   Check any config example file to see available settings.
 
 ## Configuring Tasks
 The behaviors of the bot are configured via the `tasks` key in the `config.json`. This enables you to list what you want the bot to do and change the priority of those tasks by reordering them in the list. This list of tasks is run repeatedly and in order. For more information on why we are moving config to this format, check out the [original proposal](https://github.com/PokemonGoF/PokemonGo-Bot/issues/142).
@@ -55,6 +58,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 * SpinFort
 * TransferPokemon
   * `min_free_slot`: Default `5` | Once the pokebag has less empty slots than this amount, the transfer process is triggered. | Big values (i.e 9999) will trigger the transfer process after each catch.
+* UpdateLiveInventory
 
 ### Example configuration:
 The following configuration tells the bot to transfer all the Pokemon that match the transfer configuration rules, then recycle the items that match its configuration, then catch the pokemon that it can, so on, so forth. Note the last two tasks, MoveToFort and FollowSpiral. When a task is still in progress, it won't run the next things in the list. So it will move towards the fort, on each step running through the list of tasks again. Only when it arrives at the fort and there are no other stops available for it to move towards will it continue to the next step and follow the spiral.
@@ -406,4 +410,57 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
   }
   \\ ...
 }
+```
+
+
+## UpdateLiveInventory Settings
+### Description
+Periodically displays the user inventory in the terminal.
+
+### Options
+ * `min_interval` : The minimum interval at which the stats are displayed, in seconds (defaults to 120 seconds). The update interval cannot be accurate as workers run synchronously.
+ * `show_all_multiple_lines` : Logs all items on inventory using multiple lines. Ignores configuration of 'items' 
+ * `items` : An array of items to display and their display order (implicitly), see available items below (defaults to []).
+
+Available `items` :
+```
+- 'pokemon_bag' : pokemon in inventory (i.e. 'Pokemon Bag: 100/250')
+- 'space_info': not an item but shows inventory bag space (i.e. 'Items: 140/350')
+- 'pokeballs'
+- 'greatballs'
+- 'ultraballs'
+- 'masterballs'
+- 'razzberries'
+- 'blukberries'
+- 'nanabberries'
+- 'luckyegg'
+- 'incubator'
+- 'troydisk'
+- 'potion'
+- 'superpotion'
+- 'hyperpotion'
+- 'maxpotion'
+- 'incense'
+- 'incensespicy'
+- 'incensecool'
+- 'revive'
+- 'maxrevive'
+```
+
+### Sample configuration
+```json
+{
+    "type": "UpdateLiveInventory",
+    "config": {
+      "enabled": true,
+      "min_interval": 120,
+      "show_all_multiple_lines": false,
+      "items": ["space_info", "pokeballs", "greatballs", "ultraballs", "razzberries", "luckyegg"]
+    }
+}
+```
+
+### Example console output
+```
+2016-08-20 18:56:22,754 [UpdateLiveInventory] [INFO] [show_inventory] Items: 335/350 | Pokeballs: 8 | GreatBalls: 186 | UltraBalls: 0 | RazzBerries: 51 | LuckyEggs: 3
 ```
