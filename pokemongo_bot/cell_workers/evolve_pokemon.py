@@ -112,8 +112,6 @@ class EvolvePokemon(Datastore, BaseTask):
                     'pokemon': pokemon.name,
                     'iv': pokemon.iv,
                     'cp': pokemon.cp,
-                    'ncp': '?',
-                    'dps': '?',
                     'xp': '?'
                 }
             )
