@@ -38,7 +38,7 @@ class IncubateEggs(BaseTask):
                     data={
                         'km_needed': self.used_incubators[0]['km_needed'],
                         'distance_in_km': km_left,
-                        'eggs': len(self.eggs),
+                        'eggs': len(self.eggs) + len(self.used_incubators),
                         'eggs_inc': len(self.used_incubators)
                     }
                 )
