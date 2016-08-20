@@ -76,7 +76,7 @@ def main():
 
     def get_commit_hash():
         try:
-            hash = subprocess.check_output(['git', 'rev-parse', 'HEAD'], stderr=subprocess.STDOUT)[:-1] 
+            hash = subprocess.check_output(['git', 'rev-parse', 'HEAD'], stderr=subprocess.STDOUT)[:-1]
 
             return hash if all(c in string.hexdigits for c in hash) else "not found"
         except:
@@ -219,6 +219,9 @@ def report_summary(bot):
                         metrics.num_evolutions(), metrics.num_new_mons()))
     logger.info('Threw {} pokeball{}'.format(metrics.num_throws(), '' if metrics.num_throws() == 1 else 's'))
     logger.info('Earned {} Stardust'.format(metrics.earned_dust()))
+    logger.info('Hatched eggs {}'.format(metrics.hatched_eggs(0)))
+    if (metrics.next_hatching_km(0)):
+        logger.info('Next egg hatches in {:.2f} km'.format(metrics.next_hatching_km(0)))
     logger.info('')
     if metrics.highest_cp is not None:
         logger.info('Highest CP Pokemon: {}'.format(metrics.highest_cp['desc']))

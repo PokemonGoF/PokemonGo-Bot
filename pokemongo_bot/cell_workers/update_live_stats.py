@@ -57,6 +57,8 @@ class UpdateLiveStats(BaseTask):
     - highest_cp_pokemon : The caught pokemon with the highest CP since the bot started.
     - most_perfect_pokemon : The most perfect caught pokemon since the bot started.
     - location : The location where the player is located.
+    - next_egg_hatching : The remaining distance to the next egg hatching (km).
+    - hatched_eggs : The number of hatched eggs since the bot started.
     """
     SUPPORTED_TASK_API_VERSION = 1
 
@@ -164,10 +166,10 @@ class UpdateLiveStats(BaseTask):
             self.emit_event(
                 'log_stats',
                 level = 'error',
-                formatted = "Unable to write window title"              
+                formatted = "Unable to write window title"
             )
             self.terminal_title = False
-            
+
         self._compute_next_update()
 
     def _get_stats_line(self, player_stats):
@@ -215,6 +217,8 @@ class UpdateLiveStats(BaseTask):
         most_perfect_pokemon = metrics.most_perfect['desc']
         if not most_perfect_pokemon:
             most_perfect_pokemon = "None"
+        next_egg_hatching = metrics.next_hatching_km(0)
+        hatched_eggs = metrics.hatched_eggs(0)
 
         # Create stats strings.
         available_stats = {
@@ -246,6 +250,8 @@ class UpdateLiveStats(BaseTask):
             'highest_cp_pokemon': 'Highest CP pokemon : {}'.format(highest_cp_pokemon),
             'most_perfect_pokemon': 'Most perfect pokemon : {}'.format(most_perfect_pokemon),
             'location': 'Location : ({}, {})'.format(self.bot.position[0], self.bot.position[1]),
+            'next_egg_hatching': 'Next egg hatches in : {:.2f} km'.format(next_egg_hatching),
+            'hatched_eggs': 'Hatched {} eggs.'.format(hatched_eggs)
         }
 
         def get_stat(stat):
