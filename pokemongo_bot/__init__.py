@@ -517,6 +517,7 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event('login_log')
         self.event_manager.register_event('transfer_log')
         self.event_manager.register_event('pokestop_log')
+        self.event_manager.register_event('softban_log')
         
     def tick(self):
         self.health_record.heartbeat()

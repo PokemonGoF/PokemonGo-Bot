@@ -277,6 +277,24 @@ class PokemonCatchWorker(Datastore, BaseTask):
                     level='warning',
                     formatted='Failed to use berry. You may be softbanned.'
                 )
+                with self.bot.database as conn:
+                    c = conn.cursor()
+                    c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='softban_log'")
+                result = c.fetchone()        
+
+                while True:
+                    if result[0] == 1:
+                        source = str("PokemonCatchWorker")
+                        status = str("Possible Softban")
+                        conn.execute('''INSERT INTO softban_log (status, source) VALUES (?, ?)''', (status, source))
+                    break
+                else:
+                    self.emit_event(
+                        'softban_log',
+                        sender=self,
+                        level='info',
+                        formatted="softban_log table not found, skipping log"
+                    )
 
         # unknown status code
         else:

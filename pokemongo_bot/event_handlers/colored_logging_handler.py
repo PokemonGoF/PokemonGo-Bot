@@ -88,6 +88,7 @@ class ColoredLoggingHandler(EventHandler):
         'position_update':                   'white',
         'set_start_location':                'white',
         'softban_fix':                       'white',
+        'softban_log':                       'magenta',
         'softban_fix_done':                  'white',
         'spun_fort':                         'white',
         'threw_berry':                       'white',
