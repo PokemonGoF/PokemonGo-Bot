@@ -382,6 +382,5 @@ class MoveToMapPokemon(BaseTask):
         return walker_factory(self.walker,
             self.bot,
             pokemon['latitude'],
-            pokemon['longitude'],
-            **{'parent': MoveToMapPokemon}
+            pokemon['longitude']
         )

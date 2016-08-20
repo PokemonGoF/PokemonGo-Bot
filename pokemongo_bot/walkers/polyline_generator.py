@@ -14,13 +14,13 @@ class PolylineObjectHandler:
     _cache = None
 
     @staticmethod
-    def cached_polyline(bot, origin, destination, speed, parent_cls):
+    def cached_polyline(origin, destination, speed):
         '''
         Google API has limits, so we can't generate new Polyline at every tick...
         '''
 
         # _cache might be None...
-        is_old_cache = lambda : tuple(bot.api.get_position()[:2]) != PolylineObjectHandler._cache.get_last_pos()
+        is_old_cache = lambda : tuple(origin) != PolylineObjectHandler._cache.get_last_pos()
         new_dest_set = lambda : tuple(destination) != PolylineObjectHandler._cache.destination
 
         if None == PolylineObjectHandler._cache or is_old_cache() or new_dest_set():
