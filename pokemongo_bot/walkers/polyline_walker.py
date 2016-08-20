@@ -12,10 +12,11 @@ class PolylineWalker(StepWalker):
     Heavy multi-botting can cause issue, since the directions API has limits.
     '''
 
-    def __init__(self, bot, speed, dest_lat, dest_lng, parent):
-        super(PolylineWalker, self).__init__(bot, speed, dest_lat, dest_lng)
+    def __init__(self, bot, dest_lat, dest_lng, parent):
+        super(PolylineWalker, self).__init__(bot, dest_lat, dest_lng)
         self.polyline_walker = PolylineObjectHandler.cached_polyline(bot, (self.api._position_lat, self.api._position_lng),
                                         (self.destLat, self.destLng), self.speed, parent)
+
         self.dist = distance(
             self.bot.position[0],
             self.bot.position[1],
