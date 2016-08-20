@@ -7,7 +7,6 @@
     "encrypt_location": "",
     "websocket_server": false,
     "heartbeat_threshold": 10,
-    "slackname": "",
     "tasks": [
       {
         "type": "HandleSoftBan"
