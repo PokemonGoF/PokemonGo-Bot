@@ -121,8 +121,9 @@ class FollowPath(BaseTask):
             }
         )
         
-        sleep(duration)
         self.number_lap = 0 # at the end of the break, start again
+        sleep(duration)
+        self.bot.login()
 
     def work(self):
         last_lat = self.bot.api._position_lat
