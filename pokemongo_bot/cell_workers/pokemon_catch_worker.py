@@ -52,8 +52,6 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
         #Config
         self.min_ultraball_to_keep = self.config.get('min_ultraball_to_keep', 10)
-        self.berry_threshold = self.config.get('berry_threshold', 0.35)
-        self.vip_berry_threshold = self.config.get('vip_berry_threshold', 0.9)
 
         self.catch_throw_parameters = self.config.get('catch_throw_parameters', {})
         self.catch_throw_parameters_spin_success_rate = self.catch_throw_parameters.get('spin_success_rate', 0.6)
@@ -277,6 +275,24 @@ class PokemonCatchWorker(Datastore, BaseTask):
                     level='warning',
                     formatted='Failed to use berry. You may be softbanned.'
                 )
+                with self.bot.database as conn:
+                    c = conn.cursor()
+                    c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='softban_log'")
+                result = c.fetchone()        
+
+                while True:
+                    if result[0] == 1:
+                        source = str("PokemonCatchWorker")
+                        status = str("Possible Softban")
+                        conn.execute('''INSERT INTO softban_log (status, source) VALUES (?, ?)''', (status, source))
+                    break
+                else:
+                    self.emit_event(
+                        'softban_log',
+                        sender=self,
+                        level='info',
+                        formatted="softban_log table not found, skipping log"
+                    )
 
         # unknown status code
         else:
@@ -299,7 +315,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
         """
         berry_id = ITEM_RAZZBERRY
         maximum_ball = ITEM_ULTRABALL if is_vip else ITEM_GREATBALL
-        ideal_catch_rate_before_throw = self.vip_berry_threshold if is_vip else self.berry_threshold
+        ideal_catch_rate_before_throw = 0.9 if is_vip else 0.35
 
         berry_count = self.inventory.get(ITEM_RAZZBERRY).count
         ball_count = {}
