@@ -28,7 +28,9 @@ class FollowPath(BaseTask):
         self.path_file = self.config.get("path_file", None)
         self.path_mode = self.config.get("path_mode", "linear")
         self.path_start_mode = self.config.get("path_start_mode", "first")
-
+        self.number_passage_max = self.config.get("number_passage", -1) # if < 0, then the number is inf.
+        self.number_passage = 0
+        
     def load_path(self):
         if self.path_file is None:
             raise RuntimeError('You need to specify a path file (json or gpx)')
@@ -98,6 +100,9 @@ class FollowPath(BaseTask):
 
         return return_idx
 
+    def endPassage(self):
+        print("")
+
     def work(self):
         last_lat = self.bot.api._position_lat
         last_lng = self.bot.api._position_lng
@@ -133,6 +138,18 @@ class FollowPath(BaseTask):
                 self.ptr = 0
                 if self.path_mode == 'linear':
                     self.points = list(reversed(self.points))
+                if self.number_passage_max >= 0:
+                    self.number_passage+=1
+                    self.emit_event(
+                        'path_passage_update',
+                        formatted="number passage : { number_passage} / { number_passage_max}",
+                        data={
+                            'number_passage': self.number_passage,
+                            'number_passage_max': self.number_passage_max
+                        }
+                    )
+                    if self.number_passage >= self.number_passage_max:
+                        self.endPassage()
             else:
                 self.ptr += 1
 
