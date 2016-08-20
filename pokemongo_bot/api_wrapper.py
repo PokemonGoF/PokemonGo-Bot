@@ -27,23 +27,30 @@ class ApiWrapper(Datastore, PGoApi):
         PGoApi.__init__(self)
         self.useVanillaRequest = False
         self.config = config
-        did_path = os.path.join(_base_dir, 'data', 'deviceid-%s.txt' % self.config.username)
 
-        if self.config is not None and os.path.exists(did_path) == False:
+        file_salt = None
+        did_path = os.path.join(_base_dir, 'data', 'deviceid-%s.txt' % self.config.username)
+        if os.path.exists(did_path):
+            file_salt = open(did_path, 'r').read()
+        if self.config is not None:
             key_string = self.config.username
-            rand_float = random.SystemRandom().random()
-            salt = base64.b64encode((struct.pack('!d', rand_float)))
-            # Unique device id per account in the same format as ios client
-            ApiWrapper.DEVICE_ID = hashlib.md5(key_string + salt).hexdigest()
-            with open(did_path, "w") as text_file:
-                text_file.write("{0}".format(salt))
+            if file_salt is not None:
+                # Config and file are set, so use those.
+                ApiWrapper.DEVICE_ID = hashlib.md5(key_string + file_salt).hexdigest()
+            else:
+                # Config is set, but file isn't, so make it.
+                rand_float = random.SystemRandom().random()
+                salt = base64.b64encode((struct.pack('!d', rand_float)))
+                ApiWrapper.DEVICE_ID = hashlib.md5(key_string + salt).hexdigest()
+                with open(did_path, "w") as text_file:
+                    text_file.write("{0}".format(salt))
         else:
-                saltfromfile = open(did_path, 'r').read()
-                key_string = self.config.username
-                ApiWrapper.DEVICE_ID = hashlib.md5(key_string + saltfromfile).hexdigest()
-        if ApiWrapper.DEVICE_ID is None:
-            # Set to a realistic default
-            ApiWrapper.DEVICE_ID = "3d65919ca1c2fc3a8e2bd7cc3f974c34"
+            if file_salt is not None:
+                # No config, but there's a file, use it.
+                ApiWrapper.DEVICE_ID = hashlib.md5(file_salt).hexdigest()
+            else:
+                # No config or file, so make up a reasonable default.
+                ApiWrapper.DEVICE_ID = "3d65919ca1c2fc3a8e2bd7cc3f974c34"
 
     def create_request(self):
         RequestClass = ApiRequest
