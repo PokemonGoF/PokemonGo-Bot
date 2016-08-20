@@ -1609,6 +1609,7 @@
     ],
     "Special Attack(s)": [
       "Body Slam",
+      "Dazzling Gleam",
       "Disarming Voice",
       "Play Rough",
       "Dazzling Gleam"
@@ -3540,8 +3541,8 @@
       "Grass"
     ],
     "Fast Attack(s)": [
-      "Lick",
       "Ice Shard",
+      "Lick",
       "Water Gun"
     ],
     "Weight": "90.0 kg",
@@ -4805,8 +4806,8 @@
       "Grass"
     ],
     "Fast Attack(s)": [
-      "Tackle",
       "Quick Attack",
+      "Tackle",
       "Water Gun"
     ],
     "Weight": "34.5 kg",
@@ -4865,7 +4866,8 @@
     "Special Attack(s)": [
       "Hydro Pump",
       "Power Gem",
-      "Psybeam"
+      "Psybeam",
+      "Psychic"
     ],
     "BaseAttack": 194,
     "BaseDefense": 192,
