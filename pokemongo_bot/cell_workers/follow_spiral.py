@@ -79,6 +79,7 @@ class FollowSpiral(BaseTask):
             point['lng']
         )
 
+        alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
         if self.bot.config.walk_max > 0:
             step_walker = StepWalker(
                 self.bot,
@@ -91,8 +92,8 @@ class FollowSpiral(BaseTask):
                     'position_update',
                     formatted="Walking from {last_position} to {current_position} ({distance} {distance_unit})",
                     data={
-                        'last_position': (last_lat, last_lng, 0),
-                        'current_position': (point['lat'], point['lng'], 0),
+                        'last_position': (last_lat, last_lng, last_alt),
+                        'current_position': (point['lat'], point['lng'], alt),
                         'distance': dist,
                         'distance_unit': 'm'
                     }
@@ -101,15 +102,13 @@ class FollowSpiral(BaseTask):
             if step_walker.step():
                 step_walker = None
         else:
-            alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
             self.bot.api.set_position(point['lat'], point['lng'], alt)
-
             self.emit_event(
                 'position_update',
                 formatted="Teleported from {last_position} to {current_position} ({distance} {distance_unit})",
                 data={
-                    'last_position': (last_lat, last_lng, last_alt),
-                    'current_position': (point['lat'], point['lng'], alt),
+                    'last_position': (point['lat'], point['lng'], alt),
+                    'current_position': (last_lat, last_lng, last_alt),
                     'distance': dist,
                     'distance_unit': 'm'
                 }
