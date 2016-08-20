@@ -34,10 +34,12 @@ class IncubateEggs(BaseTask):
             else:
                 self.emit_event(
                     'next_egg_incubates',
-                    formatted='Next egg ({km_needed} km) incubates in {distance_in_km:.2f} km',
+                    formatted='Next egg ({km_needed} km) incubates in {distance_in_km:.2f} km (Total eggs: {eggs}, Incubating: {eggs_inc})',
                     data={
                         'km_needed': self.used_incubators[0]['km_needed'],
-                        'distance_in_km': km_left
+                        'distance_in_km': km_left,
+                        'eggs': len(self.eggs),
+                        'eggs_inc': len(self.used_incubators)
                     }
                 )
             IncubateEggs.last_km_walked = self.km_walked

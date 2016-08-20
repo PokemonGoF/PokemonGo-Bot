@@ -15,14 +15,18 @@ class CompleteTutorial(BaseTask):
         self.api = self.bot.api
         self.nickname = self.config.get('nickname','')
         self.team = self.config.get('team',0)
+        self.may_run = True
 
     def should_run(self):
-        return True
+        return self.may_run
 
     def work(self):
 
         if not self.should_run():
             return WorkerResult.SUCCESS
+
+        # Only execute the worker once to avoid error loop
+        self.may_run = False
 
         if self._check_tutorial_state():
             return WorkerResult.SUCCESS

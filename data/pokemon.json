@@ -1609,8 +1609,10 @@
     ],
     "Special Attack(s)": [
       "Body Slam",
+      "Dazzling Gleam",
       "Disarming Voice",
-      "Play Rough"
+      "Play Rough",
+      "Dazzling Gleam"
     ],
     "BaseAttack": 98,
     "BaseDefense": 54,
@@ -3098,6 +3100,7 @@
     ],
     "Fast Attack(s)": [
       "Mud Shot",
+      "Mud Slap",
       "Rock Throw"
     ],
     "Weight": "105.0 kg",
@@ -3539,6 +3542,7 @@
     ],
     "Fast Attack(s)": [
       "Ice Shard",
+      "Lick",
       "Water Gun"
     ],
     "Weight": "90.0 kg",
@@ -3617,7 +3621,8 @@
     ],
     "Fast Attack(s)": [
       "Acid",
-      "Mud Slap"
+      "Mud Slap",
+      "Poison Jab"
     ],
     "Weight": "30.0 kg",
     "Height": "0.9 m",
@@ -4802,6 +4807,7 @@
     ],
     "Fast Attack(s)": [
       "Quick Attack",
+      "Tackle",
       "Water Gun"
     ],
     "Weight": "34.5 kg",
@@ -4860,7 +4866,8 @@
     "Special Attack(s)": [
       "Hydro Pump",
       "Power Gem",
-      "Psybeam"
+      "Psybeam",
+      "Psychic"
     ],
     "BaseAttack": 194,
     "BaseDefense": 192,
