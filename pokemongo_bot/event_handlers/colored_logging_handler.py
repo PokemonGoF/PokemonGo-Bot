@@ -79,6 +79,7 @@ class ColoredLoggingHandler(EventHandler):
         'pokestop_out_of_range':             'white',
         'polyline_request':                  'white',
         'position_update':                   'white',
+        'path_lap_update':                   'white',
         'set_start_location':                'white',
         'softban_fix':                       'white',
         'softban_fix_done':                  'white',

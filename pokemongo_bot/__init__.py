@@ -164,6 +164,14 @@ class PokemonGoBot(Datastore):
                 'distance_unit' # optional
             )
         )
+        self.event_manager.register_event(
+            'path_lap_update',
+            parameters=(
+                'number_lap',
+                'number_lap_max'
+            )
+        )
+        
         self.event_manager.register_event('location_cache_error')
 
         self.event_manager.register_event('bot_start')

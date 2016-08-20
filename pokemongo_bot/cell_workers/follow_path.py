@@ -28,8 +28,8 @@ class FollowPath(BaseTask):
         self.path_file = self.config.get("path_file", None)
         self.path_mode = self.config.get("path_mode", "linear")
         self.path_start_mode = self.config.get("path_start_mode", "first")
-        self.number_passage_max = self.config.get("number_passage", -1) # if < 0, then the number is inf.
-        self.number_passage = 0
+        self.number_lap_max = self.config.get("number_lap", -1) # if < 0, then the number is inf.
+        self.number_lap = 0
         
     def load_path(self):
         if self.path_file is None:
@@ -100,7 +100,7 @@ class FollowPath(BaseTask):
 
         return return_idx
 
-    def endPassage(self):
+    def endLaps(self):
         print("")
 
     def work(self):
@@ -138,18 +138,18 @@ class FollowPath(BaseTask):
                 self.ptr = 0
                 if self.path_mode == 'linear':
                     self.points = list(reversed(self.points))
-                if self.number_passage_max >= 0:
-                    self.number_passage+=1
+                if self.number_lap_max >= 0:
+                    self.number_lap+=1
                     self.emit_event(
-                        'path_passage_update',
-                        formatted="number passage : { number_passage} / { number_passage_max}",
+                        'path_lap_update',
+                        formatted="number lap : { number_lap} / { number_lap_max}",
                         data={
-                            'number_passage': self.number_passage,
-                            'number_passage_max': self.number_passage_max
+                            'number_lap': self.number_lap,
+                            'number_lap_max': self.number_lap_max
                         }
                     )
-                    if self.number_passage >= self.number_passage_max:
-                        self.endPassage()
+                    if self.number_lap >= self.number_lap_max:
+                        self.endlaps()
             else:
                 self.ptr += 1
 
