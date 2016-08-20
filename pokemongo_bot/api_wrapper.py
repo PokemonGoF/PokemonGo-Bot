@@ -13,7 +13,7 @@ from pgoapi.protos.POGOProtos.Networking.Requests.RequestType_pb2 import Request
 from pgoapi.protos.POGOProtos.Networking.Envelopes.Signature_pb2 import Signature
 from pgoapi.utilities import get_time
 from pokemongo_bot.datastore import Datastore
-from human_behaviour import sleep
+from human_behaviour import sleep, gps_noise_rng
 from pokemongo_bot.base_dir import _base_dir
 
 class PermaBannedException(Exception):
@@ -25,6 +25,9 @@ class ApiWrapper(Datastore, PGoApi):
 
     def __init__(self, config=None):
         PGoApi.__init__(self)
+        # Set to default, just for CI...
+        self.actual_lat, self.actual_lng, self.actual_alt = PGoApi.get_position(self)
+
         self.useVanillaRequest = False
         self.config = config
 
@@ -76,6 +79,27 @@ class ApiWrapper(Datastore, PGoApi):
             # cleanup code
             self.useVanillaRequest = False
         return ret_value
+
+    def set_position(self, lat, lng, alt=None):
+        self.actual_lat = lat
+        self.actual_lng = lng
+        if None != alt:
+            self.actual_alt = alt
+        else:
+            alt = self.actual_alt
+        
+        if self.config.replicate_gps_xy_noise:
+            lat_noise = gps_noise_rng(self.config.gps_xy_noise_range)
+            lng_noise = gps_noise_rng(self.config.gps_xy_noise_range)
+            lat = lat + lat_noise
+            lng = lng + lng_noise
+        if self.config.replicate_gps_z_noise:
+            alt_noise = gps_noise_rng(self.config.gps_z_noise_range)
+            alt = alt + alt_noise
+        PGoApi.set_position(self, lat, lng, alt)
+
+    def get_position(self):
+        return (self.actual_lat, self.actual_lng, self.actual_alt)
 
 
 class ApiRequest(PGoApiRequest):
