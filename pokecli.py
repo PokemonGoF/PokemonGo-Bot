@@ -527,9 +527,9 @@ def init_config():
         parser,
         load,
         long_flag="--gps_xy_noise_range",
-        help="Intensity of gps noise (unit is lat and lng,) high values may cause issues (default=0.00025)",
+        help="Intensity of gps noise (unit is lat and lng,) high values may cause issues (default=0.000125)",
         type=float,
-        default=0.00025
+        default=0.000125
     )
     add_config(
         parser,
