@@ -137,6 +137,8 @@
           "spin_wait_min": 2,
           "spin_wait_max": 3
         }
+      },
+      {
         "type": "MoveToMapPokemon",
         "config": {
           "address": "http://localhost:5000",
