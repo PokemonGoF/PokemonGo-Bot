@@ -64,12 +64,13 @@
           "enabled": false,
           "min_interval": 120,
           "show_all_multiple_lines": false,
-          "items": ["space_info", "pokeballs", "greatballs", "ultraballs", "razzberries", "luckyegg"]
+          "items": ["pokemon_bag", "space_info", "pokeballs", "greatballs", "ultraballs", "razzberries", "luckyegg"]
         }
       },
       {
         "type": "TransferPokemon",
         "config": {
+          "min_free_slot": 5,
           "transfer_wait_min": 1,
           "transfer_wait_max": 4
         }
@@ -152,7 +153,8 @@
         "type": "MoveToFort",
         "config": {
           "lure_attraction": true,
-          "lure_max_distance": 2000
+          "lure_max_distance": 2000,
+          "walker": "StepWalker"
         }
       },
       {
@@ -183,6 +185,11 @@
     "walk_min": 2.16,
     "alt_min": 500,
     "alt_max": 1000,
+    "gps_default_altitude": 8.0,
+    "replicate_gps_xy_noise": false,
+    "replicate_gps_z_noise": false,
+    "gps_xy_noise_range": 0.000125,
+    "gps_z_noise_range": 12.5,
     "debug": false,
     "test": false,
     "health_record": true,

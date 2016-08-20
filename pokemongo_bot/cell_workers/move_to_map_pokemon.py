@@ -123,7 +123,7 @@ class MoveToMapPokemon(BaseTask):
         for pokemon in raw_data['pokemons']:
             try:
                 pokemon['encounter_id'] = long(base64.b64decode(pokemon['encounter_id']))
-            except TypeError:
+            except:
                 self._emit_failure('base64 error: {}'.format(pokemon['encounter_id']))
                 continue
             pokemon['spawn_point_id'] = pokemon['spawnpoint_id']
@@ -382,6 +382,5 @@ class MoveToMapPokemon(BaseTask):
         return walker_factory(self.walker,
             self.bot,
             pokemon['latitude'],
-            pokemon['longitude'],
-            **{'parent': MoveToMapPokemon}
+            pokemon['longitude']
         )

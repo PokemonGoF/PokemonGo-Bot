@@ -32,6 +32,8 @@ import logging
 import os
 import ssl
 import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 import time
 import signal
 import string
@@ -507,6 +509,48 @@ def init_config():
         type=float,
         default=1000
     )
+    add_config(
+        parser,
+        load,
+        long_flag="--replicate_gps_xy_noise",
+        help="Add noise to current position",
+        type=bool,
+        default=False
+    )
+    add_config(
+        parser,
+        load,
+        long_flag="--replicate_gps_z_noise",
+        help="Add noise to current position",
+        type=bool,
+        default=False
+    )
+    add_config(
+        parser,
+        load,
+        long_flag="--gps_xy_noise_range",
+        help="Intensity of gps noise (unit is lat and lng,) high values may cause issues (default=0.000125)",
+        type=float,
+        default=0.000125
+    )
+    add_config(
+        parser,
+        load,
+        long_flag="--gps_z_noise_range",
+        help="Intensity of gps noise (unit is in meter, default=12.5)",
+        type=float,
+        default=12.5
+    )
+    add_config(
+        parser,
+        load,
+        long_flag="--gps_default_altitude",
+        help="Initial altitude (default=8.0)",
+        type=float,
+        default=8.0
+    )
+
+
     # Start to parse other attrs
     config = parser.parse_args()
     if not config.username and 'username' not in load:

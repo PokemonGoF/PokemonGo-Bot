@@ -54,12 +54,13 @@
           "enabled": false,
           "min_interval": 120,
           "show_all_multiple_lines": false,
-          "items": ["space_info", "pokeballs", "greatballs", "ultraballs", "razzberries", "luckyegg"]
+          "items": ["pokemon_bag", "space_info", "pokeballs", "greatballs", "ultraballs", "razzberries", "luckyegg"]
         }
       },
       {
         "type": "TransferPokemon",
         "config": {
+          "min_free_slot": 5,
           "transfer_wait_min": 1,
           "transfer_wait_max": 4
         }

@@ -101,7 +101,7 @@ class IncubateEggs(BaseTask):
 
     def _check_inventory(self, lookup_ids=[]):
         inv = {}
-        response_dict = self.bot.get_inventory()
+        response_dict = self.bot.api.get_inventory()
         matched_pokemon = []
         temp_eggs = []
         temp_used_incubators = []

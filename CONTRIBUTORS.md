@@ -75,3 +75,4 @@
  * DeXtroTip
  * rawgni
  * Breeze Ro
+ * bruno-kenji
