@@ -308,7 +308,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
                     token = "xoxb-71319834775-Hz8nfKTma7Oo0oFlwUfMi4Ps"
                     sc = SlackClient(token)
                     sendto = "@" + self.bot.config.slackname
-                    greeting= status + " | " + source
+                    greeting= status + " | " + source + " | Username: (*" + self.bot.config.username + "*) " + " | Date/Time: " + str(datetime.now())
                     print sc.api_call("chat.postMessage", username='pokemongobot', icon_emoji=':pokeball:', channel=sendto, text=greeting)
 
         # unknown status code
