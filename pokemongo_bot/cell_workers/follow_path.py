@@ -70,7 +70,7 @@ class FollowPath(BaseTask):
         track = gpx.tracks[0]
         for segment in track.segments:
             for point in segment.points:
-                points.append({"lat": point.latitude, "lng": point.longitude})
+                points.append({"lat": point.latitude, "lng": point.longitude, "alt": point.elevation})
 
         return points
 
@@ -82,8 +82,10 @@ class FollowPath(BaseTask):
             point = points[index]
             botlat = self.bot.api._position_lat
             botlng = self.bot.api._position_lng
+            botalt = self.bot.api._position_alt
             lat = float(point['lat'])
             lng = float(point['lng'])
+            alt = float(point['alt'])
 
             dist = distance(
                 botlat,
@@ -99,12 +101,14 @@ class FollowPath(BaseTask):
         return return_idx
 
     def work(self):
-    	last_lat = self.bot.api._position_lat
+        last_lat = self.bot.api._position_lat
         last_lng = self.bot.api._position_lng
-          
+        last_alt = self.bot.api._position_alt
+
         point = self.points[self.ptr]
         lat = float(point['lat'])
         lng = float(point['lng'])
+        alt = float(point['alt'])
 
         if self.bot.config.walk_max > 0:
             step_walker = StepWalker(
@@ -138,10 +142,10 @@ class FollowPath(BaseTask):
 
         self.emit_event(
             'position_update',
-            formatted="Walking from {last_position} to {current_position}, distance left: ({distance} {distance_unit}) ..",
+            formatted="Walk to {last_position} now at {current_position}, distance left: ({distance} {distance_unit}) ..",
             data={
-                'last_position': (last_lat, last_lng, 0),
-                'current_position': (lat, lng, 0),
+                'last_position': (last_lat, last_lng, last_alt),
+                'current_position': (lat, lng, alt),
                 'distance': dist,
                 'distance_unit': 'm'
             }
