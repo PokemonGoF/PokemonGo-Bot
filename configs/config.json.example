@@ -186,7 +186,7 @@
     "gps_default_altitude": 8.0,
     "replicate_gps_xy_noise": false,
     "replicate_gps_z_noise": false,
-    "gps_xy_noise_range": 0.00025,
+    "gps_xy_noise_range": 0.000125,
     "gps_z_noise_range": 12.5,
     "debug": false,
     "test": false,
