@@ -99,8 +99,9 @@ class FollowPath(BaseTask):
         return return_idx
 
     def work(self):
-        last_lat, last_lng, last_alt = self.bot.api.get_position()
-
+    	last_lat = self.bot.api._position_lat
+        last_lng = self.bot.api._position_lng
+          
         point = self.points[self.ptr]
         lat = float(point['lat'])
         lng = float(point['lng'])
@@ -139,8 +140,8 @@ class FollowPath(BaseTask):
             'position_update',
             formatted="Walking from {last_position} to {current_position}, distance left: ({distance} {distance_unit}) ..",
             data={
-                'last_position': (last_lat, last_lng, last_alt),
-                'current_position': (lat, lng, alt),
+                'last_position': (last_lat, last_lng, 0),
+                'current_position': (lat, lng, 0),
                 'distance': dist,
                 'distance_unit': 'm'
             }
