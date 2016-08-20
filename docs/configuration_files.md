@@ -20,6 +20,7 @@
 | `distance_unit`    | km      | Set the unit to display distance in (km for kilometers, mi for miles, ft for feet)                                                                                                          |
 | `evolve_cp_min`           | 300   |                   Min. CP for evolve_all function
 |`daily_catch_llimit`    | 800   |                   Limit the amount of pokemon caught in a 24 hour period.
+|`slackname`    | ""   |                   If set (with slack username), you will receive slack notifcations on bot activity
 
 ## Configuring Tasks
 The behaviors of the bot are configured via the `tasks` key in the `config.json`. This enables you to list what you want the bot to do and change the priority of those tasks by reordering them in the list. This list of tasks is run repeatedly and in order. For more information on why we are moving config to this format, check out the [original proposal](https://github.com/PokemonGoF/PokemonGo-Bot/issues/142).

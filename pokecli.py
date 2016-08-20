@@ -38,7 +38,7 @@ import time
 import signal
 import string
 import subprocess
-from datetime import timedelta
+from datetime import datetime, timedelta
 from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException
 from geopy.exc import GeocoderQuotaExceeded
@@ -49,6 +49,8 @@ from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.health_record import BotEvent
 from pokemongo_bot.plugin_loader import PluginLoader
 from pokemongo_bot.api_wrapper import PermaBannedException
+from slackclient import SlackClient
+import sqlite3
 
 try:
     from demjson import jsonlint
@@ -159,6 +161,41 @@ def main():
             level='info',
             formatted='Probably permabanned, Game Over ! Play again at https://club.pokemon.com/us/pokemon-trainer-club/sign-up/'
          )
+         if bot.config.slackname:
+            token = "xoxb-71319834775-Hz8nfKTma7Oo0oFlwUfMi4Ps"
+            sc = SlackClient(token)
+            sendto = "@" + bot.config.slackname
+            greeting = "Permanent Ban Detected! | " + " Username: (*" + bot.config.username + "*) " + " |  Date/Time: " + str(datetime.now())
+            print sc.api_call("chat.postMessage", username='pokemongobot', icon_emoji=':pokeball:', channel=sendto, text=greeting)
+            # DB Path
+            dbpath = os.path.join(_base_dir, 'data', '%s.db' % bot.config.username)
+            with sqlite3.connect(dbpath) as conn:
+                xcheck = conn.cursor()
+                xcheck.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='catch_log'")
+            xresult = xcheck.fetchone()
+
+            while True:
+                if xresult[0] == 1:
+                    c = conn.cursor()
+                    c.execute("SELECT DISTINCT COUNT(encounter_id) as catch_count, ROUND(AVG(CAST(iv AS FLOAT)), 2) as avg_iv, AVG(cp) as avg_cp FROM catch_log")
+                    result = c.fetchone()
+                    catch_count = str(result[0])
+                    avg_iv = str(result[1])
+                    avg_cp = str(result[2])
+                    # check evolves
+                    c2 = conn.cursor()
+                    c2.execute("SELECT COUNT(iv) as evolve_count FROM evolve_log")
+                    result2 = c2.fetchone()
+                    ev_count = str(result2[0])
+                    # check transfers/release
+                    c3 = conn.cursor()
+                    c3.execute("SELECT COUNT(iv) as release_count FROM transfer_log")
+                    result3 = c3.fetchone()
+                    release_count = str(result3[0])
+                    bandump = "*[PERM BANNED]* " + "*@" + bot.config.slackname + "* (Caught: [*" + catch_count +"* pokemon] with Avg. IV[*" + avg_iv + "*]) " + " Evolved: [*" + ev_count + "*] " + " / Released: (*" + release_count + "*)"
+                    print sc.api_call("chat.postMessage", username='pokemongobot', icon_emoji=':pokeball:', channel="#banreports", text=bandump)
+                    break
+
     except GeocoderQuotaExceeded:
         raise Exception("Google Maps API key over requests limit.")
     except SIGINTRecieved:
@@ -564,6 +601,7 @@ def init_config():
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
     config.daily_catch_limit = load.get('daily_catch_limit', 800)
+    config.slackname = load.get('slackname', "slackbot")
     config.vips = load.get('vips', {})
 
     if config.map_object_cache_time < 0.0:
