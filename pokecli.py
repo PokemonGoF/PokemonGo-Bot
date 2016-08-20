@@ -32,18 +32,18 @@ import logging
 import os
 import ssl
 import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
 import time
 import signal
 import string
 import subprocess
-from datetime import timedelta
+
+reload(sys)
+sys.setdefaultencoding('utf8')
+
 from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException
 from geopy.exc import GeocoderQuotaExceeded
 
-from pokemongo_bot import inventory
 from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.health_record import BotEvent
@@ -65,7 +65,9 @@ logging.basicConfig(
 logger = logging.getLogger('cli')
 logger.setLevel(logging.INFO)
 
-class SIGINTRecieved(Exception): pass
+
+class SIGINTRecieved(Exception):
+    pass
 
 
 def main():
@@ -84,9 +86,9 @@ def main():
 
     def get_commit_hash():
         try:
-            hash = subprocess.check_output(['git', 'rev-parse', 'HEAD'], stderr=subprocess.STDOUT)[:-1]
+            git_hash = subprocess.check_output(['git', 'rev-parse', 'HEAD'], stderr=subprocess.STDOUT)[:-1]
 
-            return hash if all(c in string.hexdigits for c in hash) else "not found"
+            return git_hash if all(c in string.hexdigits for c in git_hash) else "not found"
         except:
             return "not found"
 
@@ -166,12 +168,12 @@ def main():
                 time.sleep(30)
 
     except PermaBannedException:
-         bot.event_manager.emit(
+        bot.event_manager.emit(
             'api_error',
             sender=bot,
             level='info',
             formatted='Probably permabanned, Game Over ! Play again at https://club.pokemon.com/us/pokemon-trainer-club/sign-up/'
-         )
+        )
     except GeocoderQuotaExceeded:
         raise Exception("Google Maps API key over requests limit.")
     except SIGINTRecieved:
@@ -183,7 +185,7 @@ def main():
                 formatted='Bot caught SIGINT. Shutting down.'
             )
             report_summary(bot)
-    except Exception as e:
+    except Exception:
         # always report session summary and then raise exception
         if bot:
             report_summary(bot)
@@ -191,28 +193,27 @@ def main():
         raise
     finally:
         # Cache here on SIGTERM, or Exception.  Check data is available and worth caching.
-        if bot:
-            if bot.recent_forts[-1] is not None and bot.config.forts_cache_recent_forts:
-                cached_forts_path = os.path.join(
-                    _base_dir, 'data', 'recent-forts-%s.json' % bot.config.username
+        if bot and bot.recent_forts[-1] is not None and bot.config.forts_cache_recent_forts:
+            cached_forts_path = os.path.join(
+                _base_dir, 'data', 'recent-forts-%s.json' % bot.config.username
+            )
+            try:
+                with open(cached_forts_path, 'w') as outfile:
+                    json.dump(bot.recent_forts, outfile)
+                bot.event_manager.emit(
+                    'cached_fort',
+                    sender=bot,
+                    level='debug',
+                    formatted='Forts cached.',
                 )
-                try:
-                    with open(cached_forts_path, 'w') as outfile:
-                        json.dump(bot.recent_forts, outfile)
-                    bot.event_manager.emit(
-                        'cached_fort',
-                        sender=bot,
-                        level='debug',
-                        formatted='Forts cached.',
-                    )
-                except IOError as e:
-                    bot.event_manager.emit(
-                        'error_caching_forts',
-                        sender=bot,
-                        level='debug',
-                        formatted='Error caching forts for {path}',
-                        data={'path': cached_forts_path}
-                        )
+            except IOError:
+                bot.event_manager.emit(
+                    'error_caching_forts',
+                    sender=bot,
+                    level='debug',
+                    formatted='Error caching forts for {path}',
+                    data={'path': cached_forts_path}
+                )
 
 
 def check_config_modification(config_file):
@@ -255,6 +256,7 @@ def report_summary(bot):
     if metrics.most_perfect is not None:
         logger.info('Most Perfect Pokemon: {}'.format(metrics.most_perfect['desc']))
 
+
 def init_config():
     parser = argparse.ArgumentParser()
     config_file = os.path.join(_base_dir, 'configs', 'config.json')
@@ -290,7 +292,7 @@ def init_config():
         logger.info('Error: No /configs/config.json or specified config')
 
     # Read passed in Arguments
-    required = lambda x: not x in load
+    required = lambda x: x not in load
     add_config(
         parser,
         load,
@@ -371,8 +373,7 @@ def init_config():
         load,
         short_flag="-wmax",
         long_flag="--walk_max",
-        help=
-        "Walk instead of teleport with given speed",
+        help="Walk instead of teleport with given speed",
         type=float,
         default=2.5
     )
@@ -381,8 +382,7 @@ def init_config():
         load,
         short_flag="-wmin",
         long_flag="--walk_min",
-        help=
-        "Walk instead of teleport with given speed",
+        help="Walk instead of teleport with given speed",
         type=float,
         default=2.5
     )
@@ -581,7 +581,6 @@ def init_config():
         default=8.0
     )
 
-
     # Start to parse other attrs
     config = parser.parse_args()
     if not config.username and 'username' not in load:
@@ -626,7 +625,10 @@ def init_config():
             task_configuration_error(flag)
             return None
 
-    nested_old_flags = [('forts', 'spin'), ('forts', 'move_to_spin'), ('navigator', 'path_mode'), ('navigator', 'path_file'), ('navigator', 'type')]
+    nested_old_flags = [
+        ('forts', 'spin'), ('forts', 'move_to_spin'),
+        ('navigator', 'path_mode'), ('navigator', 'path_file'), ('navigator', 'type')]
+
     for outer, inner in nested_old_flags:
         if load.get(outer, {}).get(inner, None):
             task_configuration_error('{}.{}'.format(outer, inner))
@@ -664,6 +666,7 @@ def init_config():
     fix_nested_config(config)
     return config, config_file
 
+
 def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
     if not long_flag:
         raise Exception('add_config calls requires long_flag parameter!')
@@ -671,7 +674,7 @@ def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
     full_attribute_path = long_flag.split('--')[1]
     attribute_name = full_attribute_path.split('.')[-1]
 
-    if '.' in full_attribute_path: # embedded config!
+    if '.' in full_attribute_path:  # embedded config!
         embedded_in = full_attribute_path.split('.')[0: -1]
         for level in embedded_in:
             json_config = json_config.get(level, {})
@@ -693,6 +696,7 @@ def fix_nested_config(config):
             new_key = key.replace('.', '_')
             config_dict[new_key] = value
             del config_dict[key]
+
 
 def parse_unicode_str(string):
     try:
