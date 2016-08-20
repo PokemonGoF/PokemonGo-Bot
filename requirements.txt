@@ -1,4 +1,6 @@
-pip install -e git://github.com/tejado/pgoapi.git@1f25e907f3e5f1b603330e71041e1ad7bee7580f#egg=pgoapi
+numpy==1.11.0
+networkx==1.11
+-e git+https://github.com/joelgreen/pgoapi.git/@b2927c5940a8d0febd41f006921d1c093542ddf8#egg=pgoapi
 geopy==1.11.0
 protobuf==3.0.0b4
 requests==2.10.0
@@ -9,3 +11,16 @@ googlemaps==2.4.4
 colorama==0.3.7
 enum34==1.1.6
 pyyaml==3.11
+haversine==0.4.5
+polyline==1.3.1
+python-socketio==1.4.2
+flask==0.11.1
+socketIO_client==0.7.0
+eventlet==0.19.0
+gpxpy==1.1.1
+mock==2.0.0
+timeout-decorator==0.3.2
+raven==5.23.0
+demjson==2.2.4
+greenlet==0.4.9
+yoyo-migrations==5.0.3

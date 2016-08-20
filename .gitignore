@@ -30,6 +30,14 @@ var/
 *.manifest
 *.spec
 
+# Eclipse Users
+.project
+.pydevproject
+.settings/
+
+# Cloud9 Users
+.c9/
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
@@ -81,6 +89,8 @@ celerybeat-schedule
 # virtualenv
 venv/
 ENV/
+local/
+share/
 
 # Spyder project settings
 .spyderproject
@@ -88,18 +98,39 @@ ENV/
 # Rope project settings
 .ropeproject
 
+# PyCharm IDE settings
+.idea/
+*.iml
+out/
+
 # Personal load details
-config.json
-location.json
 src/
-info.json
-inventory.json
-pokedex.json
-web/catchable.json
-data/catch-ignore.yml
+web/
+data/*.db
+data/last-location*.json
+data/cells-*.json
+data/map-caught-*.json
+data/recent-forts-*.json
+user_web_catchable
 
-# ignore Pycharm config
-.idea
+# Multiple config
+configs/*
+!configs/config.json.example
+!configs/release_config.json.example
+!configs/config.json.pokemons.example
+!configs/config.json.pokemon.example
+!configs/config.json.path.example
+!configs/config.json.map.example
+!configs/path.example.json
+!config.json.cluster.example
+!config.json.optimizer.example
 
-# personal docker-compose
-docker-compose.yml
+# Virtualenv folders
+bin/
+include/
+
+# Pip check file
+pip-selfcheck.json
+
+# Some love for the vim users
+.*.sw*

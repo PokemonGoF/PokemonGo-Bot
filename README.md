@@ -1,217 +1,80 @@
-# PokemonGo-Bot - a pokemon script that can catch pokemons and spin the pokestops.
+# Disclaimer
+©2016 Niantic, Inc. ©2016 Pokémon. ©1995–2016 Nintendo / Creatures Inc. / GAME FREAK inc. © 2016 Pokémon/Nintendo Pokémon and Pokémon character names are trademarks of Nintendo. The Google Maps Pin is a trademark of Google Inc. and the trade dress in the product design is a trademark of Google Inc. under license to The Pokémon Company. Other trademarks are the property of their respective owners.
+[Privacy Policy](http://www.pokemon.com/us/privacy-policy/)
 
-## Project chat
+[PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot) is intended for academic purposes and should not be used to play the game *PokemonGo* as it violates the TOS and is unfair to the community. Use the bot **at your own risk**.
 
-[![Slack Status](https://pokemongo-bot.herokuapp.com/badge.svg)](https://pokemongo-bot.herokuapp.com)
+[PokemonGoF](https://github.com/PokemonGoF) does not support the use of 3rd party apps or apps that violate the TOS.
 
-We use [Slack](https://slack.com) as a web chat. [Click here to join the chat!](https://pokemongo-bot.herokuapp.com)
+# PokemonGo-Bot
+PokemonGo bot is a project created by the [PokemonGoF](https://github.com/PokemonGoF) team.
 
-## Features:
- * Search Fort(Spin Pokestop)
- * Catch Pokemon
- * Release low cp pokemon
- * Walking as you
- * Use the ball you have to catch, don't if you don't have
- * Rudimentary IV Functionality filter
- * Auto switch mode(Full of item then catch, no ball useable then farm)
- * Ignore certain pokemon filter
+The project is currently setup in two main branches. 
+- `dev` also known as `beta` - This is where the latest features are, but you may also experience some issues with stability/crashes
+- `master` also known as `stable` - The bot 'should' be stable on this branch, and is generally well tested
 
-## To-Do:
-- [ ] Standalone Desktop APP
-- [x] Google Map API key setup (Readme update needed)
-- [ ] Show all objects on map
+## Support
+###Configuration issues/help
+If you need any help please don't create an issue as we have a great community on Slack. You can count on the community in [#help](https://pokemongo-bot.slack.com/messages/help/) channel.
+ - [Click here to signup (first time only)](https://pokemongo-bot.herokuapp.com) 
+ - [Join if you're already a member](https://pokemongo-bot.slack.com/messages/general/). 
+
+###[Bugs / Issues](https://github.com/PokemonGoF/PokemonGo-Bot/issues?q=is%3Aissue+sort%3Aupdated-desc)
+If you discover a bug in the bot, please [search our issue tracker](https://github.com/PokemonGoF/PokemonGo-Bot/issues?q=is%3Aissue+sort%3Aupdated-desc) first. If it hasn't been reported, please [create a new issue](https://github.com/PokemonGoF/PokemonGo-Bot/issues/new) and ensure you follow the template guide so that our team can assist you as quickly as possible.
+
+###[Feature Requests](https://github.com/PokemonGoF/PokemonGo-Bot/labels/Feature%20Request)
+If you have a great idea to improve the bot, please [search our feature tracker](https://github.com/PokemonGoF/PokemonGo-Bot/labels/Feature%20Request) first to ensure someone else hasn't already come up with the same great idea.  If it hasn't been requested, please [create a new request](https://github.com/PokemonGoF/PokemonGo-Bot/issues/new) and ensure you follow the template guide so that it doesnt get lost with the bug reports. 
+While you're there vote on other feature requests to let the devs know what is most important to you.
+
+###[Pull Requests](https://github.com/PokemonGoF/PokemonGo-Bot/pulls)
+If you'd like to make your own changes, make sure you follow the pull request template, and ensure your PR is made against the 'dev' branch
+
+## Table of Contents
+- [Installation](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/installation.md)
+- [Documentation](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/)
+- [Features](#features)
+- [Credits](#credits)
+
+## Features
+- [x] GPS Location configuration
+- [x] Search Pokestops
+- [x] Catch Pokemon
+- [x] Determine which pokeball to use (uses Razz Berry if the catch percentage is low!)
+- [x] Exchange Pokemon as per configuration
+- [x] Evolve Pokemon as per configuration
+- [x] Auto switch mode (Inventory Checks - switches between catch/farming items)
 - [x] Limit the step to farm specific area for pokestops
-- [ ] Pokemon transfer filter
-- [ ] Drop items when bag is full
-- [x] Pokemon catch filter
-- [ ] Hatch eggs
-- [ ] Incubate eggs
-- [ ] Evolve pokemons
+- [x] Rudimentary IV Functionality filter
+- [x] Ignore certain pokemon filter
+- [x] Adjust delay between Pokemon capture & Transfer as per configuration
+- [x] Hatch eggs
+- [x] Incubate eggs
+- [ ] [Standalone Desktop Application] (https://github.com/PokemonGoF/PokemonGo-Bot-Desktop)
 - [ ] Use candy
-- [x] Code refactor
+- [ ] Inventory cleaner
 
-## Installation
+## Gym Battles
+This bot takes a strong stance against automating gym battles. Botting gyms will have a negative effect on most players and thus the game as a whole. We will thus never accept contributions or changes containing code specific for gym battles.
 
-### Requirements (click each one for install guide)
+## Analytics
+This bot is very popular and has a vibrant community. Because of that, it has become very difficult for us to know how the bot is used and what errors people hit. By capturing small amounts of data, we can prioritize our work better such as fixing errors that happen to a large percentage of our user base, not just a vocal minority.
 
-- [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/)
-- [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-- [virtualenv](https://virtualenv.pypa.io/en/stable/installation/)
-- [protobuf 3](https://github.com/google/protobuf)  (OS Dependent, see below)
+Our goal is to help inform our decisions by capturing data that helps us get aggregate usage and error reports, not personal information. To view the code that handles analytics in our master branch, you can use this [search link](https://github.com/PokemonGoF/PokemonGo-Bot/search?utf8=%E2%9C%93&q=BotEvent).
 
-### Protobuf 3 installation
+If there are any concerns with this policy or you believe we are tracking something we shouldn't, please open a ticket in the tracker. The contributors always intend to do the right thing for our users, and we want to make sure we are held to that path.
 
-- OS X:  `brew update && brew install --devel protobuf`
-- Windows: Download protobuf 3.0: [here](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip) and unzip `bin/protoc.exe` into a folder in your PATH.
-- Linux: `apt-get install python-protobuf`
+If you do not want any data to be gathered, you can turn off this feature by setting `health_record` to `false` in your `config.json`.
 
-### Installation
+## Help Needed on [Desktop Version](https://github.com/PokemonGoF/PokemonGo-Bot-Desktop)
 
-$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
-$ cd PokemonGo-Bot  
-$ virtualenv .  
-$ source bin/activate  
-$ pip install -r requirements.txt  
-
-###### Windows Note
-On Windows, you will need to install PyYaml through the  [installer](http://pyyaml.org/wiki/PyYAML) and not through requirements.txt. 
-
-Windows 10:
-    Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl 
-    (If running 64-bit python or if you get a 'not a supported wheel on this platform' error, download the 64 bit version instead: PyYAML-3.11-cp27-cp27m-win_amd64.whl )
-    $ cd download-directory
-    $ pip install PyYAML-3.11-cp27-cp27m-win32.whl
-    (replace PyYAML-3.11-cp27-cp27m-win32.whl with PyYAML-3.11-cp27-cp27m-win_amd64.whl if you needed to download the 64-bit version)
-
-### Develop PokemonGo-Bot
-
-$ git clone -b dev https://github.com/PokemonGoF/PokemonGo-Bot  
-$ cd PokemonGo-Bot  
-$ virtualenv .  
-$ source bin/activate  
-$ pip install -r requirements.txt  
-
-### Google Maps API (In Development)
-
-Google Maps API: a brief guide to your own key
-
-This project uses Google Maps. There's one map coupled with the project, but as it gets more popular we'll definitely hit the rate-limit making the map unusable. That said, here's how you can get your own and replace ours:
-
-1. Navigate to this [page](https://console.developers.google.com/flows/enableapi?apiid=maps_backend,geocoding_backend,directions_backend,distance_matrix_backend,elevation_backend,places_backend&keyType=CLIENT_SIDE&reusekey=true)
-2. Select 'Create a project' in the dropdown menu.
-3. Wait an eternity.
-4. Click 'Create' on the next page (optionally, fill out the info)
-5. Copy the API key that appears.
-6. After the code done, will update here how to replace.
-
-## Usage
-    usage: pokecli.py [-h] -a AUTH_SERVICE -u USERNAME -p PASSWORD -l LOCATION [-lc] [-c] [-m] [-w] [--distance_unit] [--initial-transfer] [--maxsteps] [-iv] [-d] [-t] 
-
-    optional arguments:
-      -h, --help                                    show this help message and exit
-      -a AUTH_SERVICE, --auth_service AUTH_SERVICE  Auth Service ('ptc' or 'google')
-      -u USERNAME, --username USERNAME              Username
-      -p PASSWORD, --password PASSWORD              Password
-      -l LOCATION, --location LOCATION              Location (Address or 'xx.yyyy,zz.ttttt')
-      -lc, --use-location-cache                     Bot will start at last known location
-      -c CP, --cp                                   Set the CP to transfer or lower (eg. 100 will transfer CP0-99)
-      -m MODE, --mode MODE                          Set farming Mode for the bot ('all', 'poke', 'farm')
-      -w SPEED,  --walk SPEED                       Walk instead of teleport with given speed (meters per second max 4.16 because of walking end on 15km/h)
-      --distance_unit UNIT                          Set the unit to display distance in (e.g, km for kilometers, mi for miles, ft for feet)
-      --initial-transfer                            Start the bot with a pokemon clean up, keeping only the higher CP of each pokemon. It respects -c as upper limit to release.
-      --maxsteps MAX_STEP                           Set the steps around your initial location (DEFAULT 5 mean 25 cells around your location)
-      -iv IV, --pokemon_potential                   Set the ratio for the IV values to transfer (eg. 0.8 will transfer a pokemon with IV 0.5)
-      -d, --debug                                   Debug Mode
-      -t, --test                                    Only parse the specified location
-
-
-### Command Line Example
-    Pokemon Trainer Club (PTC) account:
-    $ python2 pokecli.py -a ptc -u tejado -p 1234 --location "New York, Washington Square"
-    Google Account:
-    $ python2 pokecli.py -a google -u tejado -p 1234 --location "New York, Washington Square"
-
-
-## How to add/discover new API
-  The example is [here](https://github.com/PokemonGoF/PokemonGo-Bot/commit/46e2352ce9f349cc127a408959679282f9999585)  
-    1. Check the type of your API request in   [POGOProtos](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/RequestType.proto) For example: RECYCLE_INVENTORY_ITEM  
-    2. Convert to the api call in pokemongo_bot/__init__.py,  RECYCLE_INVENTORY_ITEM change to self.api.recycle_inventory_item
-        ```
-        def drop_item(self,item_id,count):
-            self.api.recycle_inventory_item(...............)
-        ```
-    3. Where is the param list?  
-        You need check this [Requests/Messages/RecycleInventoryItemMessage.proto](https://github.com/AeonLucid/POGOProtos/blob/eeccbb121b126aa51fc4eebae8d2f23d013e1cb8/src/POGOProtos/Networking/Requests/Messages/RecycleInventoryItemMessage.proto)
-    4. Then our final api call is  
-        ```
-        def drop_item(self,item_id,count):
-            self.api.recycle_inventory_item(item_id=item_id,count=count)
-            inventory_req = self.api.call()
-            print(inventory_req)
-        ```  
-    5. You can now debug on the log to see if get what you need  
-
-## FAQ
-
-### What's IV ?
-Here's the [introduction](http://bulbapedia.bulbagarden.net/wiki/Individual_values) 
-### Losing Starter Pokemon and others
-You can use -c 1 to protect your first stage low CP pokemon. 
-### Does it run automatally?
-Not yet, still need a trainer to train the script param. But we are very close to. 
-### Set GEO Location
-It works, use -l "xx.yyyy,zz.ttttt" to set lat long for location. -- diordache
-### FLEE
-The status code "3" corresponds to "Flee" - meaning your Pokemon has ran away. 
-   {"responses": { "CATCH_POKEMON": { "status": 3 } } 
-### My pokemon are not showing up in my Pokedex?
-Finish the tutorial on a smartphone. This will then allow everything to be visible.
-### How can I maximise my XP per hour?
-Quick Tip: When using this script, use a Lucky egg to double the XP for 30 mins. You will level up much faster. A Lucky egg is obtained on level 9 and further on whilst leveling up. (from VipsForever via /r/pokemongodev)
-### How can I not collect certain pokemon
-You don't want to collect common pokemon once you hit a certain level. It will
-slow down leveling but you won't fill up either.
-
-Create the following filter
-
-```
-./data/catch-ignore.yml
-```
-
-Its a yaml file with a list of names so make it look like
-
-```
-ignore:
-  - Pidgey
-  - Rattata
-  - Pidgeotto
-  - Spearow
-  - Ekans
-  - Zubat
-```
-
-
-## Requirements
- * Python 2
- * requests
- * protobuf
- * gpsoauth
- * geopy
- * s2sphere
- * googlemaps
- * pgoapi
-
-To install the pgoapi use `pip install -e git://github.com/tejado/pgoapi.git#egg=pgoapi`
-
-
-## Contributors (Don't forget add yours here when you create PR:)
- * eggins -- The first pull request :)
- * crack00r
- * ethervoid
- * Bashin
- * tstumm
- * TheGoldenXY
- * Reaver01
- * rarshonsky
- * earthchie
- * haykuro
- * 05-032
- * sinistance
- * CapCap
- * mzupan
- * namlehong
 
 ## Credits
-### The works are based on the Pokemon Go API
-[tejado](https://github.com/tejado) many thanks for the API
-[Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets
-[elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR
-[AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos
-[AHAAAAAAA](https://github.com/AHAAAAAAA/PokemonGo-Map) for parts of the s2sphere stuff
+- [tejado](https://github.com/tejado) many thanks for the API
+- [U6 Group](http://pgoapi.com) for the U6
+- [Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets
+- [elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR
+- [AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos
+- [AHAAAAAAA](https://github.com/AHAAAAAAA/PokemonGo-Map) for parts of the s2sphere stuff
 
 
-## Donation
-
-Bitcoin Address:  1PJMCx9NNQRasQYaa4MMff9yyNFffhHgLu
-
-[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WQUXDC54W6EVY)
+[![Analytics](https://ga-beacon.appspot.com/UA-81468120-1/welcome-page-master)](https://github.com/igrigorik/ga-beacon)
