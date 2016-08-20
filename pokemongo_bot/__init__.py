@@ -40,11 +40,11 @@ import struct
 class PokemonGoBot(Datastore):
     @property
     def position(self):
-        return self.api._position_lat, self.api._position_lng, self.api._position_alt
+        return self.api.actual_lat, self.api.actual_lng, self.api.actual_alt
 
-    @position.setter
-    def position(self, position_tuple):
-        self.api._position_lat, self.api._position_lng, self.api._position_alt = position_tuple
+    #@position.setter # these should be called through api now that gps replication is there...
+    #def position(self, position_tuple):
+    #    self.api._position_lat, self.api._position_lng, self.api._position_alt = position_tuple
 
     @property
     def player_data(self):
@@ -78,7 +78,7 @@ class PokemonGoBot(Datastore):
         self.last_map_object = None
         self.last_time_map_object = 0
         self.logger = logging.getLogger(type(self).__name__)
-        self.alt = 1
+        self.alt = self.config.gps_default_altitude
 
         # Make our own copy of the workers for this instance
         self.workers = []
@@ -389,7 +389,7 @@ class PokemonGoBot(Datastore):
         )
         self.event_manager.register_event(
             'next_egg_incubates',
-            parameters=('km_needed', 'distance_in_km',)
+            parameters=('km_needed', 'distance_in_km', 'eggs', 'eggs_inc')
         )
         self.event_manager.register_event('incubator_already_used')
         self.event_manager.register_event('egg_already_incubating')
@@ -685,9 +685,8 @@ class PokemonGoBot(Datastore):
                     level='info',
                     formatted='Session stale, re-logging in.'
                 )
-                position = self.position
                 self.api = ApiWrapper(config=self.config)
-                self.position = position
+                self.api.set_position(*self.position) 
                 self.login()
                 self.api.activate_signature(self.get_encryption_lib())
 
@@ -707,7 +706,7 @@ class PokemonGoBot(Datastore):
             formatted="Login procedure started."
         )
         lat, lng = self.position[0:2]
-        self.api.set_position(lat, lng, 0)
+        self.api.set_position(lat, lng, self.alt) # or should the alt kept to zero?
 
         while not self.api.login(
             self.config.auth_service,
@@ -1045,7 +1044,7 @@ class PokemonGoBot(Datastore):
                     '[x] Coordinates found in passed in location, '
                     'not geocoding.'
                 )
-                return float(possible_coordinates[0]), float(possible_coordinates[1]), float("0.0")
+                return float(possible_coordinates[0]), float(possible_coordinates[1]), self.alt
 
         geolocator = GoogleV3(api_key=self.config.gmapkey)
         loc = geolocator.geocode(location_name, timeout=10)
