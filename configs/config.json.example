@@ -70,6 +70,7 @@
       {
         "type": "TransferPokemon",
         "config": {
+          "min_free_slot": 5,
           "transfer_wait_min": 1,
           "transfer_wait_max": 4
         }
