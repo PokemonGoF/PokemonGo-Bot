@@ -52,6 +52,8 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
         #Config
         self.min_ultraball_to_keep = self.config.get('min_ultraball_to_keep', 10)
+        self.berry_threshold = self.config.get('berry_threshold', 0.35)
+        self.vip_berry_threshold = self.config.get('vip_berry_threshold', 0.9)
 
         self.catch_throw_parameters = self.config.get('catch_throw_parameters', {})
         self.catch_throw_parameters_spin_success_rate = self.catch_throw_parameters.get('spin_success_rate', 0.6)
@@ -315,7 +317,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
         """
         berry_id = ITEM_RAZZBERRY
         maximum_ball = ITEM_ULTRABALL if is_vip else ITEM_GREATBALL
-        ideal_catch_rate_before_throw = 0.9 if is_vip else 0.35
+        ideal_catch_rate_before_throw = self.vip_berry_threshold if is_vip else self.berry_threshold
 
         berry_count = self.inventory.get(ITEM_RAZZBERRY).count
         ball_count = {}
