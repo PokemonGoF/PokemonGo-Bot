@@ -107,8 +107,8 @@ class FollowSpiral(BaseTask):
                 'position_update',
                 formatted="Teleported from {last_position} to {current_position} ({distance} {distance_unit})",
                 data={
-                    'last_position': (point['lat'], point['lng'], alt),
-                    'current_position': (last_lat, last_lng, last_alt),
+                    'last_position': (last_lat, last_lng, last_alt),
+                    'current_position': (point['lat'], point['lng'], alt),
                     'distance': dist,
                     'distance_unit': 'm'
                 }
