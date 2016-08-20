@@ -342,7 +342,7 @@ class PokemonGoBot(Datastore):
         )
         self.event_manager.register_event(
             'pokemon_evolved',
-            parameters=('pokemon', 'iv', 'cp', 'ncp', 'dps', 'xp')
+            parameters=('pokemon', 'iv', 'cp', 'xp')
         )
         self.event_manager.register_event('skip_evolve')
         self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
@@ -435,7 +435,7 @@ class PokemonGoBot(Datastore):
         )
         self.event_manager.register_event(
             'pokemon_release',
-            parameters=('pokemon', 'iv', 'cp', 'ncp', 'dps')
+            parameters=('pokemon', 'iv', 'cp', 'candy')
         )
 
         # polyline walker

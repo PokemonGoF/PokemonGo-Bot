@@ -171,13 +171,12 @@ class TransferPokemon(Datastore, BaseTask):
         self.bot.metrics.released_pokemon()
         self.emit_event(
             'pokemon_release',
-            formatted='Exchanged {pokemon} [CP {cp}] [IV {iv}] for candy.',
+            formatted='Exchanged {pokemon} [IV {iv}] [CP {cp}] [{candy} candies]',
             data={
                 'pokemon': pokemon.name,
-                'cp': pokemon.cp,
                 'iv': pokemon.iv,
-                'ncp': pokemon.cp_percent,
-                'dps': pokemon.moveset.dps
+                'cp': pokemon.cp,
+                'candy': candy.quantity
             }
         )
         with self.bot.database as conn:
