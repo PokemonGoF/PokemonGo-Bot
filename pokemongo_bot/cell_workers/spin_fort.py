@@ -15,6 +15,7 @@ from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.base_dir import _base_dir
 from utils import distance, format_time, fort_details
 from pokemongo_bot.datastore import Datastore
+from datetime import datetime, timedelta
 from slackclient import SlackClient
 
 SPIN_REQUEST_RESULT_SUCCESS = 1
@@ -155,7 +156,7 @@ class SpinFort(Datastore, BaseTask):
                         token = "xoxb-71319834775-Hz8nfKTma7Oo0oFlwUfMi4Ps"
                         sc = SlackClient(token)
                         sendto = "@" + self.bot.config.slackname
-                        greeting= status + " | " + source
+                        greeting= status + " | " + source + " | Username: (*" + self.bot.config.username + "*) " + " | Date/Time: " + str(datetime.now())
                         print sc.api_call("chat.postMessage", username='pokemongobot', icon_emoji=':pokeball:', channel=sendto, text=greeting)
                 with self.bot.database as conn:
                     c = conn.cursor()
