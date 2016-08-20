@@ -140,37 +140,12 @@
       {
         "type": "FollowPath",
         "config": {
-			"home_to_park":
-			{
-				"path_mode": "loop",
-				"path_start_mode": "first",
-				"path_file": "configs/path.example.json"
-				"number_passage": 1
-			}
-			"park_near_house":
-			{
-				"path_mode": "loop",
-				"path_start_mode": "first",
-				"path_file": "configs/path.example.json"
-				"number_passage": 5
-				"at_end":
-				{
-					go_to:"house"
-					fire:"break"
-				}
-			}
-			"home_to_park":
-			{
-				"path_mode": "loop",
-				"path_start_mode": "last",
-				"path_file": "configs/path.example.json"
-				"number_passage": 1
-				"at_end":
-				{
-					go_to:""
-					fire:"sleepNow"
-				}
-			}
+          "path_mode": "loop",
+          "path_start_mode": "first",
+          "path_file": "configs/path.example.json"
+		  "number_lap": 10,
+		  "timer_restart_min": "00:10:00",
+		  "timer_restart_max": "00:20:00"
         }
       }
     ],
