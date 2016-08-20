@@ -392,7 +392,6 @@ class PokemonOptimizer(Datastore, BaseTask):
                         data={"pokemon": pokemon.name,
                               "iv": pokemon.iv,
                               "cp": pokemon.cp,
-                              "candy": candy.quantity,
                               "xp": xp})
 
         if self.config_evolve and (not self.bot.config.test):
