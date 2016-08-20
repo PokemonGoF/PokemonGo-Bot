@@ -302,18 +302,20 @@ class PokemonOptimizer(Datastore, BaseTask):
         if not response_dict:
             return False
 
+        candy_awarded = response_dict.get("responses", {}).get("RELEASE_POKEMON", {}).get("candy_awarded", 0)
+        candy = inventory.candies().get(pokemon.pokemon_id)
+
+        if self.config_transfer and (not self.bot.config.test):
+            candy.add(candy_awarded)
+
         self.emit_event("pokemon_release",
-                        formatted="Exchanged {pokemon} [IV {iv}] [CP {cp}] [NCP {ncp}] [DPS {dps}]",
+                        formatted="Exchanged {pokemon} [IV {iv}] [CP {cp}] [{candy} candies]",
                         data={"pokemon": pokemon.name,
                               "iv": pokemon.iv,
                               "cp": pokemon.cp,
-                              "ncp": round(pokemon.ncp, 2),
-                              "dps": round(pokemon.dps, 2)})
+                              "candy": candy.quantity})
 
         if self.config_transfer and (not self.bot.config.test):
-            candy = response_dict.get("responses", {}).get("RELEASE_POKEMON", {}).get("candy_awarded", 0)
-
-            inventory.candies().get(pokemon.pokemon_id).add(candy)
             inventory.pokemons().remove(pokemon.unique_id)
 
             with self.bot.database as db:
@@ -378,20 +380,22 @@ class PokemonOptimizer(Datastore, BaseTask):
             return False
 
         xp = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("experience_awarded", 0)
-        candy = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("candy_awarded", 0)
+        candy_awarded = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("candy_awarded", 0)
+        candy = inventory.candies().get(pokemon.pokemon_id)
         evolution = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("evolved_pokemon_data", {})
 
+        if self.config_evolve and (not self.bot.config.test):
+            candy.consume(pokemon.evolution_cost - candy_awarded)
+
         self.emit_event("pokemon_evolved",
-                        formatted="Evolved {pokemon} [IV {iv}] [CP {cp}] [NCP {ncp}] [DPS {dps}] [+{xp} xp]",
+                        formatted="Evolved {pokemon} [IV {iv}] [CP {cp}] [{candy} candies] [+{xp} xp]",
                         data={"pokemon": pokemon.name,
                               "iv": pokemon.iv,
                               "cp": pokemon.cp,
-                              "ncp": round(pokemon.ncp, 2),
-                              "dps": round(pokemon.dps, 2),
+                              "candy": candy.quantity,
                               "xp": xp})
 
         if self.config_evolve and (not self.bot.config.test):
-            inventory.candies().get(pokemon.pokemon_id).consume(pokemon.evolution_cost - candy)
             inventory.pokemons().remove(pokemon.unique_id)
 
             new_pokemon = inventory.Pokemon(evolution)
