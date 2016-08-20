@@ -59,7 +59,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 * TransferPokemon
   * `min_free_slot`: Default `5` | Once the pokebag has less empty slots than this amount, the transfer process is triggered. | Big values (i.e 9999) will trigger the transfer process after each catch.
 * UpdateLiveStats
-* [UpdateLiveInventory](#UpdateLiveInventory_Settings)
+* [UpdateLiveInventory](#UpdateLiveInventory)
 
 ### Example configuration:
 The following configuration tells the bot to transfer all the Pokemon that match the transfer configuration rules, then recycle the items that match its configuration, then catch the pokemon that it can, so on, so forth. Note the last two tasks, MoveToFort and FollowSpiral. When a task is still in progress, it won't run the next things in the list. So it will move towards the fort, on each step running through the list of tasks again. Only when it arrives at the fort and there are no other stops available for it to move towards will it continue to the next step and follow the spiral.
