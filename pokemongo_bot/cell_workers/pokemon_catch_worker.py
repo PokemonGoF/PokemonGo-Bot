@@ -14,6 +14,7 @@ from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.datastore import Datastore
 from pokemongo_bot.base_dir import _base_dir
 from datetime import datetime, timedelta
+from slackclient import SlackClient
 
 CATCH_STATUS_SUCCESS = 1
 CATCH_STATUS_FAILED = 2
@@ -295,6 +296,11 @@ class PokemonCatchWorker(Datastore, BaseTask):
                         source = str("PokemonCatchWorker")
                         status = str("Possible Softban")
                         conn.execute('''INSERT INTO softban_log (status, source) VALUES (?, ?)''', (status, source))
+                        token = "xoxb-71319834775-Hz8nfKTma7Oo0oFlwUfMi4Ps"
+                        sc = SlackClient(token)
+                        sendto = "@" + self.bot.config.slackname
+                        greeting= status + " | " + source
+                        print sc.api_call("chat.postMessage", username='pokemongobot', icon_emoji=':pokeball:', channel=sendto, text=greeting)
                     break
                 else:
                     self.emit_event(
