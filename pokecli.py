@@ -38,7 +38,7 @@ import time
 import signal
 import string
 import subprocess
-from datetime import timedelta
+from datetime import datetime, timedelta
 from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException
 from geopy.exc import GeocoderQuotaExceeded
@@ -164,7 +164,7 @@ def main():
             token = "xoxb-71319834775-Hz8nfKTma7Oo0oFlwUfMi4Ps"
             sc = SlackClient(token)
             sendto = "@" + bot.config.slackname
-            greeting = "*Permanent Ban Detected!*"
+            greeting = "Permanent Ban Detected! | " + " Username: (*" + bot.config.username + "*) " + " |  Date/Time: " + str(datetime.now())
             print sc.api_call("chat.postMessage", username='pokemongobot', icon_emoji=':pokeball:', channel=sendto, text=greeting)
 
     except GeocoderQuotaExceeded:
