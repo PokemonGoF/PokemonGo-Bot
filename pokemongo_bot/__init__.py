@@ -175,6 +175,8 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event(
             'path_lap_end',
             parameters=(
+                'duration',
+                'resume'
             )
         )  
         

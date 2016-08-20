@@ -9,7 +9,8 @@ from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.walkers.step_walker import StepWalker
 from pgoapi.utilities import f2i
 from random import uniform
-
+from utils import getSeconds
+from datetime import datetime as dt, timedelta
 
 class FollowPath(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -29,8 +30,14 @@ class FollowPath(BaseTask):
         self.path_mode = self.config.get("path_mode", "linear")
         self.path_start_mode = self.config.get("path_start_mode", "first")
         self.number_lap_max = self.config.get("number_lap", -1) # if < 0, then the number is inf.
+        self.timer_restart_min = getSeconds(self.config.get("timer_restart_min", "00:20:00"))
+        self.timer_restart_max = getSeconds(self.config.get("timer_restart_max", "02:00:00"))
+
+        if self.timer_restart_min > self.timer_restart_max:
+            raise ValueError('path timer_restart_min is bigger than path timer_restart_max') #TODO there must be a more elegant way to do it...
+        
+        #var not related to configs
         self.number_lap = 0
-        self.lapEnd = False
         
     def load_path(self):
         if self.path_file is None:
@@ -102,20 +109,22 @@ class FollowPath(BaseTask):
         return return_idx
 
     def endLaps(self):
+        duration = int(uniform(self.timer_restart_min, self.timer_restart_max))
+        resume = dt.now() + timedelta(seconds=duration)
+        
         self.emit_event(
             'path_lap_end',
-            formatted="bot finished its path. Great job bot, lot of calories burned! Will sleep now.",
+            formatted="Great job, lot of calories burned! Taking a break now for {duration}, will resume at {resume}.",
             data={
+                'duration': str(timedelta(seconds=duration)),
+                'resume': resume.strftime("%H:%M:%S")
             }
         )
-        self.lapEnd = True
-        while True:
-            sleep()
+        
+        sleep(duration)
+        self.number_lap = 0 # at the end of the break, start again
 
     def work(self):
-        if self.lapEnd == True:
-            pass
-        
         last_lat = self.bot.api._position_lat
         last_lng = self.bot.api._position_lng
 
@@ -145,26 +154,6 @@ class FollowPath(BaseTask):
             lng
         )
 
-        if dist <= 1 or (self.bot.config.walk_min > 0 and is_at_destination):
-            if (self.ptr + 1) == len(self.points):
-                self.ptr = 0
-                if self.path_mode == 'linear':
-                    self.points = list(reversed(self.points))
-                if self.number_lap_max >= 0:
-                    self.number_lap+=1
-                    self.emit_event(
-                        'path_lap_update',
-                        formatted="number lap : { number_lap} / { number_lap_max}",
-                        data={
-                            'number_lap': self.number_lap,
-                            'number_lap_max': self.number_lap_max
-                        }
-                    )
-                    if self.number_lap >= self.number_lap_max:
-                        self.endlaps()
-            else:
-                self.ptr += 1
-
         self.emit_event(
             'position_update',
             formatted="Walk to {last_position} now at {current_position}, distance left: ({distance} {distance_unit}) ..",
@@ -175,4 +164,25 @@ class FollowPath(BaseTask):
                 'distance_unit': 'm'
             }
         )
+        
+        if dist <= 1 or (self.bot.config.walk_min > 0 and is_at_destination):
+            if (self.ptr + 1) == len(self.points):
+                self.ptr = 0
+                if self.path_mode == 'linear':
+                    self.points = list(reversed(self.points))
+                if self.number_lap_max >= 0:
+                    self.number_lap+=1
+                    self.emit_event(
+                        'path_lap_update',
+                        formatted="number lap : {number_lap} / {number_lap_max}",
+                        data={
+                            'number_lap': str(self.number_lap),
+                            'number_lap_max': str(self.number_lap_max)
+                        }
+                    )
+                if self.number_lap >= self.number_lap_max:
+                    self.endLaps()
+            else:
+                self.ptr += 1
+        
         return [lat, lng]
