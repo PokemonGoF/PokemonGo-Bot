@@ -54,7 +54,7 @@
                 "enabled": false,
                 "min_interval": 120,
                 "show_all_multiple_lines": false,
-                "items": ["space_info", "pokeballs", "greatballs", "ultraballs", "razzberries", "luckyegg"]
+                "items": ["pokemon_bag", "space_info", "pokeballs", "greatballs", "ultraballs", "razzberries", "luckyegg"]
             }
         },
         {

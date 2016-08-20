@@ -535,7 +535,7 @@ class PokemonGoBot(Datastore):
         self.tick_count += 1
 
         # Check if session token has expired
-        self.check_session(self.position[0:2])
+        self.check_session(self.position)
 
         for worker in self.workers:
             if worker.work() == WorkerResult.RUNNING:
@@ -667,6 +667,7 @@ class PokemonGoBot(Datastore):
             format='%(asctime)s [%(name)10s] [%(levelname)s] %(message)s'
         )
     def check_session(self, position):
+
         # Check session expiry
         if self.api._auth_provider and self.api._auth_provider._ticket_expire:
 
@@ -686,7 +687,7 @@ class PokemonGoBot(Datastore):
                     formatted='Session stale, re-logging in.'
                 )
                 self.api = ApiWrapper(config=self.config)
-                self.api.set_position(*self.position) 
+                self.api.set_position(*position)
                 self.login()
                 self.api.activate_signature(self.get_encryption_lib())
 

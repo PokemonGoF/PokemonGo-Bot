@@ -32,6 +32,7 @@ class UpdateLiveInventory(BaseTask):
             see available items below (defaults to []).
 
     Available items :
+		'pokemon_bag' : pokemon in inventory (i.e. 'Pokemon Bag: 100/250')
         'space_info': not an item but shows inventory bag space (i.e. 'Items: 140/350')
         'pokeballs'
         'greatballs'
@@ -148,6 +149,7 @@ class UpdateLiveInventory(BaseTask):
         :rtype: string
         """
         available_items = {
+			'pokemon_bag': 'Pokemon: {:,}/{:,}'.format(inventory.Pokemons.get_space_used(), inventory.get_pokemon_inventory_size()),
             'space_info': 'Items: {:,}/{:,}'.format(self.inventory.get_space_used(),
                                                     self.inventory.get_space_used() + self.inventory.get_space_left()),
             'pokeballs': 'Pokeballs: {:,}'.format(self.inventory.get(1).count),
@@ -201,6 +203,13 @@ class UpdateLiveInventory(BaseTask):
         :return: Nothing.
         :rtype: None
         """
+        self.logger.info(
+            'Pokemon Bag: {}/{}'.format(
+                inventory.Pokemons.get_space_used(),
+                inventory.get_pokemon_inventory_size()
+            )
+        )
+		
         self.logger.info(
             'Items: {}/{}'.format(
                 self.inventory.get_space_used(),

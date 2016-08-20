@@ -14,10 +14,15 @@ class TransferPokemon(Datastore, BaseTask):
     def __init__(self, bot, config):
         super(TransferPokemon, self).__init__(bot, config)
     def initialize(self):
+        self.min_free_slot = self.config.get('min_free_slot', 5)
         self.transfer_wait_min = self.config.get('transfer_wait_min', 1)
         self.transfer_wait_max = self.config.get('transfer_wait_max', 4)
 
     def work(self):
+
+        if not self._should_work():
+            return
+
         pokemon_groups = self._release_pokemon_get_groups()
         for pokemon_id, group in pokemon_groups.iteritems():
             pokemon_name = Pokemons.name_for(pokemon_id)
@@ -25,7 +30,7 @@ class TransferPokemon(Datastore, BaseTask):
             #TODO continue list possible criteria
             keep_best_possible_criteria = ['cp','iv', 'iv_attack', 'iv_defense', 'iv_stamina', 'moveset.attack_perfection','moveset.defense_perfection','hp','hp_max']
             keep_best_custom, keep_best_criteria, keep_amount = self._validate_keep_best_config_custom(pokemon_name, keep_best_possible_criteria)
-            
+
             best_pokemon_ids = set()
             order_criteria = 'none'
             if keep_best:
@@ -42,14 +47,14 @@ class TransferPokemon(Datastore, BaseTask):
                     if order_criteria == 'cp':
                         order_criteria = 'cp and iv'
                     else:
-                        order_criteria = 'iv'      
+                        order_criteria = 'iv'
             elif keep_best_custom:
                 limit = keep_amount
                 keep_best_criteria = [str(keep_best_criteria[x]) for x in range(len(keep_best_criteria))] # not sure if the u of unicode will stay, so make it go away
                 best_pokemons = sorted(group, key=attrgetter(*keep_best_criteria), reverse=True)[:limit]
                 best_pokemon_ids = set(pokemon.unique_id for pokemon in best_pokemons)
                 order_criteria = ' then '.join(keep_best_criteria)
-                
+
             if keep_best or keep_best_custom:
                 # remove best pokemons from all pokemons array
                 all_pokemons = group
@@ -81,6 +86,9 @@ class TransferPokemon(Datastore, BaseTask):
                     if self.should_release_pokemon(pokemon):
                         self.release_pokemon(pokemon)
 
+    def _should_work(self):
+        return inventory.Pokemons.get_space_left() <= self.min_free_slot
+
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
         for pokemon in inventory.pokemons().all():
@@ -88,7 +96,7 @@ class TransferPokemon(Datastore, BaseTask):
                 continue
 
             group_id = pokemon.pokemon_id
-            
+
             if group_id not in pokemon_groups:
                 pokemon_groups[group_id] = []
 
@@ -184,7 +192,7 @@ class TransferPokemon(Datastore, BaseTask):
             c = conn.cursor()
             c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='transfer_log'")
 
-        result = c.fetchone()        
+        result = c.fetchone()
 
         while True:
             if result[0] == 1:
@@ -211,13 +219,13 @@ class TransferPokemon(Datastore, BaseTask):
     def _validate_keep_best_config_custom(self, pokemon_name, keep_best_possible_custom):
         keep_best = False
 
-        release_config = self._get_release_config_for(pokemon_name)    
+        release_config = self._get_release_config_for(pokemon_name)
         keep_best_custom = release_config.get('keep_best_custom', '')
         keep_amount = release_config.get('amount', 0)
 
         if keep_best_custom and keep_amount:
             keep_best = True
-            
+
             keep_best_custom = keep_best_custom.split(',')
             for _str in keep_best_custom:
                 if _str not in keep_best_possible_custom:
@@ -228,12 +236,12 @@ class TransferPokemon(Datastore, BaseTask):
                 keep_amount = int(keep_amount)
             except ValueError:
                 keep_best = False
-              
+
             if keep_amount < 0:
                 keep_best = False
-                
+
         return keep_best, keep_best_custom, keep_amount
-        
+
     def _validate_keep_best_config(self, pokemon_name):
         keep_best = False
 
@@ -241,7 +249,7 @@ class TransferPokemon(Datastore, BaseTask):
 
         keep_best_cp = release_config.get('keep_best_cp', 0)
         keep_best_iv = release_config.get('keep_best_iv', 0)
-        
+
         if keep_best_cp or keep_best_iv:
             keep_best = True
             try:
@@ -253,7 +261,7 @@ class TransferPokemon(Datastore, BaseTask):
                 keep_best_iv = int(keep_best_iv)
             except ValueError:
                 keep_best_iv = 0
-                
+
             if keep_best_cp < 0 or keep_best_iv < 0:
                 keep_best = False
 

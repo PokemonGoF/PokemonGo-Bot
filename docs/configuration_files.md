@@ -54,6 +54,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `max_revives_keep`: Default `None` | Maximum amount of revives to keep in inventory
 * SpinFort
 * TransferPokemon
+  * `min_free_slot`: Default `5` | Once the pokebag has less empty slots than this amount, the transfer process is triggered. | Big values (i.e 9999) will trigger the transfer process after each catch.
 
 ### Example configuration:
 The following configuration tells the bot to transfer all the Pokemon that match the transfer configuration rules, then recycle the items that match its configuration, then catch the pokemon that it can, so on, so forth. Note the last two tasks, MoveToFort and FollowSpiral. When a task is still in progress, it won't run the next things in the list. So it will move towards the fort, on each step running through the list of tasks again. Only when it arrives at the fort and there are no other stops available for it to move towards will it continue to the next step and follow the spiral.
@@ -165,7 +166,7 @@ If you already have it, it will keep a stronger version and will transfer the a 
 
 ### Keep the best custom pokemon configuration (dev branch)
 
-Define a list of criteria to keep the best Pokemons according to those criteria. 
+Define a list of criteria to keep the best Pokemons according to those criteria.
 
 The list of criteria is the following:```'cp','iv', 'iv_attack', 'iv_defense', 'iv_stamina', 'moveset.attack_perfection', 'moveset.defense_perfection', 'hp', 'hp_max'```
 
@@ -373,7 +374,7 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
 * `update_map` - disable/enable if the map location should be automatically updated to the bots current location
 * `catch` - A dictionary of pokemon to catch with an assigned priority (higher => better)
 * `snipe_high_prio_only` - Whether to snipe pokemon above a certain threshold.
-* `snipe_high_prio_threshold` - The threshold number corresponding with the `catch` dictionary. 
+* `snipe_high_prio_threshold` - The threshold number corresponding with the `catch` dictionary.
 *   - Any pokemon above this threshold value will be caught by teleporting to its location, and getting back to original location if `snipe` is `True`.
 *   - Any pokemon under this threshold value will make the bot walk to the Pokemon target wether `snipe` is `True` or `False`.
 
