@@ -28,6 +28,9 @@ class ApiWrapper(Datastore, PGoApi):
         self.useVanillaRequest = False
         self.config = config
 
+        if self.config is None or self.config.username is None:
+            ApiWrapper.DEVICE_ID = "3d65919ca1c2fc3a8e2bd7cc3f974c34"
+            return
         file_salt = None
         did_path = os.path.join(_base_dir, 'data', 'deviceid-%s.txt' % self.config.username)
         if os.path.exists(did_path):
