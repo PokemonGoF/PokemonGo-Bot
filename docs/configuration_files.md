@@ -55,6 +55,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 * SpinFort
 * TransferPokemon
   * `min_free_slot`: Default `5` | Once the pokebag has less empty slots than this amount, the transfer process is triggered. | Big values (i.e 9999) will trigger the transfer process after each catch.
+* UpdateLiveStats
 
 ### Example configuration:
 The following configuration tells the bot to transfer all the Pokemon that match the transfer configuration rules, then recycle the items that match its configuration, then catch the pokemon that it can, so on, so forth. Note the last two tasks, MoveToFort and FollowSpiral. When a task is still in progress, it won't run the next things in the list. So it will move towards the fort, on each step running through the list of tasks again. Only when it arrives at the fort and there are no other stops available for it to move towards will it continue to the next step and follow the spiral.
@@ -406,4 +407,110 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
   }
   \\ ...
 }
+```
+
+## FollowPath Settings
+### Description
+Walk to the specified locations loaded from .gpx or .json file. It is highly recommended to use website such as [GPSies](http://www.gpsies.com) which allow you to export your created track in JSON file. Note that you'll have to first convert its JSON file into the format that the bot can understand. See [Example of pier39.json] below for the content. I had created a simple python script to do the conversion. 
+
+### Options
+* `path_mode` - linear, loop
+  - `loop` - The bot will walk along all specified waypoints and then move directly to the first waypoint again. 
+  - `linear` - The bot will turn around at the last waypoint and along the given waypoints in reverse order.
+* `path_start_mode` - first
+* `path_file` - "/path/to/your/path.json"
+
+
+### Sample Configuration
+```
+{
+	"type": "FollowPath",
+    "config": {
+    	"path_mode": "linear",
+	  	"path_start_mode": "first",
+      "path_file": "/home/gary/bot/PokemonGo-Bot/configs/path/pier39.json"
+    }
+}
+```
+
+Example of pier39.json
+```
+[{"location": "37.8103848,-122.410325"}, 
+{"location": "37.8103306,-122.410435"}, 
+{"location": "37.8104662,-122.41051"}, 
+{"location": "37.8106146,-122.41059"}, 
+{"location": "37.8105934,-122.410719"}
+]
+```
+
+You would then see the [FollowPath] [INFO] console log as the bot walks to each location in the path.json file.
+```
+2016-08-21 00:09:36,521 [FollowPath] [INFO] [position_update] Walk to (37.8093976, -122.4103554, 0) now at (37.80934873280548, -122.40986165166986, 0), distance left: (43.7148620033 m) ..
+2016-08-21 00:09:38,392 [FollowPath] [INFO] [position_update] Walk to (37.8093976, -122.4103554, 0) now at (37.809335215749876, -122.40987810257064, 0), distance left: (42.5005577777 m) ..
+2016-08-21 00:09:39,899 [FollowPath] [INFO] [position_update] Walk to (37.8093976, -122.4103554, 0) now at (37.809331611049714, -122.40991111241473, 0), distance left: (39.7144254183 m) ..
+2016-08-21 00:09:42,038 [FollowPath] [INFO] [position_update] Walk to (37.8093976, -122.4103554, 0) now at (37.80935188969784, -122.4099397940133, 0), distance left: (36.8630805218 m) ..
+2016-08-21 00:09:43,791 [FollowPath] [INFO] [position_update] Walk to (37.8093976, -122.4103554, 0) now at (37.80936378035156, -122.40998419490474, 0), distance left: (32.8264884039 m) ..
+2016-08-21 00:09:45,766 [FollowPath] [INFO] [position_update] Walk to (37.8093976, -122.4103554, 0) now at (37.80935021728436, -122.40999180104075, 0), distance left: (32.3738347114 m) ..
+```
+
+## UpdateLiveStats Settings
+Periodically displays stats about the bot in the terminal and/or in its title.
+
+Fetching some stats requires making API calls. If you're concerned about the amount of calls your bot is making, don't enable this worker.
+
+### Options
+```
+min_interval : The minimum interval at which the stats are displayed,
+               in seconds (defaults to 120 seconds).
+               The update interval cannot be accurate as workers run synchronously.
+stats : An array of stats to display and their display order (implicitly),
+        see available stats below (defaults to []).
+terminal_log : Logs the stats into the terminal (defaults to false).
+terminal_title : Displays the stats into the terminal title (defaults to true).
+```
+
+Available `stats` parameters:
+```
+- login : The account login (from the credentials).
+- username : The trainer name (asked at first in-game connection).
+- uptime : The bot uptime.
+- km_walked : The kilometers walked since the bot started.
+- level : The current character's level.
+- level_completion : The current level experience, the next level experience and the completion
+                     percentage.
+- level_stats : Puts together the current character's level and its completion.
+- xp_per_hour : The estimated gain of experience per hour.
+- xp_earned : The experience earned since the bot started.
+- stops_visited : The number of visited stops.
+- pokemon_encountered : The number of encountered pokemon.
+- pokemon_caught : The number of caught pokemon.
+- captures_per_hour : The estimated number of pokemon captured per hour.
+- pokemon_released : The number of released pokemon.
+- pokemon_evolved : The number of evolved pokemon.
+- pokemon_unseen : The number of pokemon never seen before.
+- pokemon_stats : Puts together the pokemon encountered, caught, released, evolved and unseen.
+- pokeballs_thrown : The number of thrown pokeballs.
+- stardust_earned : The number of earned stardust since the bot started.
+- highest_cp_pokemon : The caught pokemon with the highest CP since the bot started.
+- most_perfect_pokemon : The most perfect caught pokemon since the bot started.
+```
+
+### Sample Configuration
+Following task will shows the information on the console every 10 seconds.
+```
+{
+  "type": "UpdateLiveStats",
+  "config": {
+    "enabled": true,
+    "min_interval": 10,
+    "stats": ["username", "uptime", "level_completion", "stardust_earned", "xp_earned", "xp_per_hour", "stops_visited", "km_walked", "pokemon_encountered", "pokemon_caught", "pokemon_released", "pokemon_unseen", "pokeballs_thrown", "highest_cp_pokemon", "most_perfect_pokemon"],
+    "terminal_log": true,
+    "terminal_title": true
+  }
+}
+```
+
+Example console output
+```
+2016-08-20 23:55:48,513 [UpdateLiveStats] [INFO] [log_stats] USERNAME | Uptime : 0:17:17 | Level 26 (192,995 / 390,000, 49%) | Earned 900 Stardust | +2,810 XP | 9,753 XP/h | Visited 23 stops | 0.80km walked | Caught 9 pokemon
 ```
