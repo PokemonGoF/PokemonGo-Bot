@@ -137,8 +137,6 @@
           "spin_wait_min": 2,
           "spin_wait_max": 3
         }
-      },
-      {
         "type": "MoveToMapPokemon",
         "config": {
           "address": "http://localhost:5000",
@@ -152,6 +150,7 @@
           "mode": "priority",
           "map_path": "raw_data",
           "walker": "StepWalker",
+          "max_extra_dist_fort": 10,
           "catch": {
             "==========Legendaries==========": 0,
             "Aerodactyl": 1000,
