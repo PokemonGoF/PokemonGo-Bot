@@ -67,8 +67,7 @@ class FollowSpiral(BaseTask):
         return coords
 
     def work(self):
-        last_lat = self.bot.api._position_lat
-        last_lng = self.bot.api._position_lng
+        last_lat, last_lng, last_alt = self.bot.api.get_position()
 
         point = self.points[self.ptr]
         self.cnt += 1
@@ -109,8 +108,8 @@ class FollowSpiral(BaseTask):
                 'position_update',
                 formatted="Teleported from {last_position} to {current_position} ({distance} {distance_unit})",
                 data={
-                    'last_position': (last_lat, last_lng, 0),
-                    'current_position': (point['lat'], point['lng'], 0),
+                    'last_position': (last_lat, last_lng, last_alt),
+                    'current_position': (point['lat'], point['lng'], alt),
                     'distance': dist,
                     'distance_unit': 'm'
                 }
