@@ -564,6 +564,7 @@ def init_config():
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
     config.daily_catch_limit = load.get('daily_catch_limit', 800)
+    config.slackname = load.get('slackname', "")
     config.vips = load.get('vips', {})
 
     if config.map_object_cache_time < 0.0:
