@@ -148,6 +148,7 @@ class UpdateLiveInventory(BaseTask):
         :rtype: string
         """
         available_items = {
+			'pokemon_bag': 'Pokemon: {:,}/{:,}'.format(inventory.Pokemons.get_space_used(), inventory.get_pokemon_inventory_size()),
             'space_info': 'Items: {:,}/{:,}'.format(self.inventory.get_space_used(),
                                                     self.inventory.get_space_used() + self.inventory.get_space_left()),
             'pokeballs': 'Pokeballs: {:,}'.format(self.inventory.get(1).count),
@@ -201,6 +202,13 @@ class UpdateLiveInventory(BaseTask):
         :return: Nothing.
         :rtype: None
         """
+        self.logger.info(
+            'Pokemon Bag: {}/{}'.format(
+                inventory.Pokemons.get_space_used(),
+                inventory.get_pokemon_inventory_size()
+            )
+        )
+		
         self.logger.info(
             'Items: {}/{}'.format(
                 self.inventory.get_space_used(),
