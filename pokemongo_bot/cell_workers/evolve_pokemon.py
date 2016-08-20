@@ -105,21 +105,42 @@ class EvolvePokemon(Datastore, BaseTask):
 
         response_dict = self.api.evolve_pokemon(pokemon_id=pokemon.unique_id)
         if response_dict.get('responses', {}).get('EVOLVE_POKEMON', {}).get('result', 0) == 1:
+            xp = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("experience_awarded", 0)
+            evolution = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("evolved_pokemon_data", {})
+            awarded_candies = response_dict.get('responses', {}).get('EVOLVE_POKEMON', {}).get('candy_awarded', 0)
+            candy = inventory.candies().get(pokemon.pokemon_id)
+
+            candy.consume(pokemon.evolution_cost - awarded_candies)
+
             self.emit_event(
                 'pokemon_evolved',
-                formatted="Successfully evolved {pokemon} with CP {cp} and IV {iv}!",
+                formatted="Evolved {pokemon} [IV {iv}] [CP {cp}] [{candy} candies] [+{xp} xp]",
                 data={
                     'pokemon': pokemon.name,
                     'iv': pokemon.iv,
                     'cp': pokemon.cp,
-                    'xp': '?'
+                    'candy': candy.quantity,
+                    'xp': xp,
                 }
             )
+
+            inventory.pokemons().remove(pokemon.unique_id)
+            new_pokemon = inventory.Pokemon(evolution)
+            inventory.pokemons().add(new_pokemon)
+
+            sleep(self.evolve_speed)
+            evolve_result = True
+        else:
+            # cache pokemons we can't evolve. Less server calls
+            cache[pokemon.name] = 1
+            sleep(0.7)
+            evolve_result = False
+
         with self.bot.database as conn:
             c = conn.cursor()
             c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='evolve_log'")
 
-        result = c.fetchone()        
+        result = c.fetchone()
 
         while True:
             if result[0] == 1:
@@ -133,15 +154,5 @@ class EvolvePokemon(Datastore, BaseTask):
                     formatted="evolve_log table not found, skipping log"
                 )
                 break
-            awarded_candies = response_dict.get('responses', {}).get('EVOLVE_POKEMON', {}).get('candy_awarded', 0)
-            inventory.candies().get(pokemon.pokemon_id).consume(pokemon.evolution_cost - awarded_candies)
-            inventory.pokemons().remove(pokemon.unique_id)
-            pokemon = Pokemon(response_dict.get('responses', {}).get('EVOLVE_POKEMON', {}).get('evolved_pokemon_data', {}))
-            inventory.pokemons().add(pokemon)
-            sleep(self.evolve_speed)
-            return True
-        else:
-            # cache pokemons we can't evolve. Less server calls
-            cache[pokemon.name] = 1
-            sleep(0.7)
-            return False
+
+        return evolve_result
