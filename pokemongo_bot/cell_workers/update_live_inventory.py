@@ -32,6 +32,7 @@ class UpdateLiveInventory(BaseTask):
             see available items below (defaults to []).
 
     Available items :
+		'pokemon_bag' : pokemon in inventory (i.e. 'Pokemon Bag: 100/250')
         'space_info': not an item but shows inventory bag space (i.e. 'Items: 140/350')
         'pokeballs'
         'greatballs'
