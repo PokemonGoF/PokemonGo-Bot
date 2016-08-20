@@ -27,15 +27,9 @@ def random_lat_long_delta():
 
 def gps_noise_rng(radius):
     '''
-    Simulates gps noise. This may cause problem, so we need test.
+    Simulates gps noise.
     '''
-    lat_noise = gauss(0, radius/3.0)
-    lat_noise = min(max(-radius, lat_noise), radius)
-    
-    lng_noise = gauss(0, radius/3.0)
-    lng_noise = min(max(-radius, lng_noise), radius)
-
-    alt_noise = gauss(0, radius/3.0)
-    alt_noise = min(max(-radius, alt_noise), radius)
-    return lat_noise, lng_noise, alt_noise
+    noise = gauss(0, radius/3.0)
+    noise = min(max(-radius, noise), radius)
+    return noise
 

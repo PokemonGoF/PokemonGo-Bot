@@ -43,15 +43,10 @@ Input location
 " location
 read -p "Input gmapkey 
 " gmapkey
-cp -f configs/config.json.example configs/config.json && chmod 755 configs/config.json
-if [ "$auth" = "2" ] || [ "$auth" = "ptc" ]
-then
-sed -i "s/google/ptc/g" configs/config.json
-fi
-sed -i "s/YOUR_USERNAME/$username/g" configs/config.json
-sed -i "s/YOUR_PASSWORD/$password/g" configs/config.json
-sed -i "s/SOME_LOCATION/$location/g" configs/config.json
-sed -i "s/GOOGLE_MAPS_API_KEY/$gmapkey/g" configs/config.json
+[[ $auth = "2" || $auth = "ptc" ]] && auth="ptc" || auth="google"
+sed -e "s/YOUR_USERNAME/$username/g" -e "s/YOUR_PASSWORD/$password/g" \
+  -e "s/SOME_LOCATION/$location/g" -e "s/GOOGLE_MAPS_API_KEY/$gmapkey/g" \
+  -e "s/google/$auth/g" configs/config.json.example > configs/config.json
 echo "Edit ./configs/config.json to modify any other config."
 }
 
@@ -60,8 +55,19 @@ cd $pokebotpath
 if [ "$(uname -s)" == "Darwin" ]
 then
 echo "You are on Mac os"
-sudo brew update 
-sudo brew install --devel protobuf
+brew update 
+brew install --devel protobuf
+elif [ $(uname -s) == CYGWIN* ]
+then
+echo "You are on Cygwin"
+if [ !-x "$(command -v apt-cyg)" ]
+then
+wget http://apt-cyg.googlecode.com/svn/trunk/apt-cyg
+chmod +x apt-cyg
+mv apt-cyg /usr/local/bin/
+fi
+apt-cyg install gcc-core make
+easy_install pip
 elif [ -x "$(command -v apt-get)" ]
 then
 echo "You are on Debian/Ubuntu"
@@ -91,7 +97,7 @@ echo "Please check if you have  python pip gcc make  installed on your device."
 echo "Wait 5 seconds to continue or Use ctrl+c to interrupt this shell."
 sleep 5
 fi
-sudo pip install virtualenv
+easy_install virtualenv
 Pokebotreset
 Pokebotupdate
 Pokebotencrypt
@@ -101,8 +107,16 @@ Pokebotconfig
 
 function Pokebotreset () {
 cd $pokebotpath
-git fetch --all 
+git fetch -a
+if [ "1" == $(git branch -vv |grep -c "* dev") ]
+then
+echo "Branch dev resetting."
 git reset --hard origin/dev
+elif [ "1" == $(git branch -vv |grep -c "* master") ]
+then 
+echo "Branch master resetting."
+git reset --hard origin/master
+fi
 if [ -x "$(command -v python2)" ]
 then
 virtualenv -p python2 .
@@ -118,7 +132,7 @@ echo "	-i,--install.		Install PokemonGo-Bot."
 echo "	-b,--backup.		Backup config files."
 echo "	-c,--config.		Easy config generator."
 echo "	-e,--encrypt.		Make encrypt.so."
-echo "	-r,--reset.		Force sync dev branch."
+echo "	-r,--reset.		Force sync source branch."
 echo "	-u,--update.		Command git pull to update."
 }
 

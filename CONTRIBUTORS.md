@@ -69,3 +69,9 @@
  * extink
  * Quantra
  * pmquan
+ * net8q
+ * SyncX
+ * umbreon222
+ * DeXtroTip
+ * rawgni
+ * Breeze Ro

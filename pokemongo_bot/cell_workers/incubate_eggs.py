@@ -34,9 +34,12 @@ class IncubateEggs(BaseTask):
             else:
                 self.emit_event(
                     'next_egg_incubates',
-                    formatted='Next egg incubates in {distance_in_km:.2f} km',
+                    formatted='Next egg ({km_needed} km) incubates in {distance_in_km:.2f} km (Total eggs: {eggs}, Incubating: {eggs_inc})',
                     data={
-                        'distance_in_km': km_left
+                        'km_needed': self.used_incubators[0]['km_needed'],
+                        'distance_in_km': km_left,
+                        'eggs': len(self.eggs),
+                        'eggs_inc': len(self.used_incubators)
                     }
                 )
             IncubateEggs.last_km_walked = self.km_walked
@@ -118,9 +121,12 @@ class IncubateEggs(BaseTask):
                     incubators = [incubators]
                 for incubator in incubators:
                     if 'pokemon_id' in incubator:
+                        start_km = incubator.get('start_km_walked', 9001)
+                        km_walked = incubator.get('target_km_walked', 9001)
                         temp_used_incubators.append({
                             "id": incubator.get('id', -1),
-                            "km": incubator.get('target_km_walked', 9001)
+                            "km": km_walked,
+                            "km_needed": (km_walked - start_km)
                         })
                     else:
                         temp_ready_incubators.append({

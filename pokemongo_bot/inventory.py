@@ -106,18 +106,46 @@ class Pokedex(_BaseInventoryComponent):
             return False
         return self._data[pokemon_id]['times_captured'] > 0
 
+
 class Item(object):
+    """
+    Representation of an item.
+    """
     def __init__(self, item_id, item_count):
+        """
+        Initialise an instance of an item
+        :param item_id: ID of the item
+        :type item_id: int
+        :param item_count: Quantity of the item
+        :type item_count: int
+        :return: An item
+        :rtype: Item
+        """
         self.id = item_id
         self.name = Items.name_for(self.id)
         self.count = item_count
 
     def remove(self, amount):
+        """
+        Remove a specified amount of an item from the cached inventory.
+        Note that it does **NOT** removes it in the server, it only removes it from the local cached inventory.
+        :param amount: Amount to remove
+        :type amount: int
+        :return: Nothing
+        :rtype: None
+        """
         if self.count < amount:
             raise Exception('Tried to remove more {} than you have'.format(self.name))
         self.count -= amount
 
     def add(self, amount):
+        """
+        Add a specified amount of the item to the local cached inventory
+        :param amount: Amount to add
+        :type amount: int
+        :return: Nothing.
+        :rtype: None
+        """
         if amount < 0:
             raise Exception('Must add positive amount of {}'.format(self.name))
         self.count += amount
@@ -132,15 +160,41 @@ class Items(_BaseInventoryComponent):
     STATIC_DATA_FILE = os.path.join(_base_dir, 'data', 'items.json')
 
     def parse(self, item_data):
+        """
+        Make an instance of an Item from raw item data.
+        :param item_data: Item data to make an item from
+        :return: Instance of the Item.
+        :rtype: Item
+        """
         item_id = item_data.get(Items.ID_FIELD, None)
         item_count = item_data['count'] if 'count' in item_data else 0
         return Item(item_id, item_count)
 
+    def all(self):
+        """
+        Get EVERY Item from the cached inventory.
+        :return: List of evey item in the cached inventory
+        :rtype: list of Item
+        """
+        return list(self._data.values())
+
     def get(self, item_id):
+        """
+        Get ONE Item from the cached inventory.
+        :param item_id: Item's ID to search for.
+        :return: Instance of the item from the cached inventory
+        :rtype: Item
+        """
         return self._data.setdefault(item_id, Item(item_id, 0))
 
     @classmethod
     def name_for(cls, item_id):
+        """
+        Search the name for an item from its ID.
+        :param item_id: Item's ID to search for.
+        :return: Item's name.
+        :rtype: str
+        """
         return cls.STATIC_DATA[str(item_id)]
 
     @classmethod
@@ -162,7 +216,7 @@ class Items(_BaseInventoryComponent):
         :return: The space left in item inventory. 0 if the player has more item than his item inventory can carry.
         :rtype: int
         """
-        _inventory.retrieve_item_inventory_size()
+        _inventory.retrieve_inventories_size()
         space_left = _inventory.item_inventory_size - cls.get_space_used()
         # Space left should never be negative. Returning 0 if the computed value is negative.
         return space_left if space_left >= 0 else 0
@@ -176,6 +230,7 @@ class Items(_BaseInventoryComponent):
         """
         max_number_of_items_looted_at_stop = 5
         return cls.get_space_left() >= max_number_of_items_looted_at_stop
+
 
 
 class Pokemons(_BaseInventoryComponent):
@@ -203,6 +258,26 @@ class Pokemons(_BaseInventoryComponent):
             assert len(p.last_evolution_ids) > 0
 
         return data
+
+    @classmethod
+    def get_space_used(cls):
+        """
+        Counts the space used in pokemon inventory.
+        :return: The space used in pokemon inventory.
+        :rtype: int
+        """
+        return len(_inventory.pokemons.all_with_eggs())
+
+    @classmethod
+    def get_space_left(cls):
+        """
+        Compute the space  left in pokemon inventory.
+        :return: The space left in pokemon inventory.
+        :rtype: int
+        """
+        _inventory.retrieve_inventories_size()
+        space_left = _inventory.pokemon_inventory_size - cls.get_space_used()
+        return space_left
 
     @classmethod
     def data_for(cls, pokemon_id):
@@ -247,17 +322,21 @@ class Pokemons(_BaseInventoryComponent):
         # makes caller's lives more difficult)
         return [p for p in super(Pokemons, self).all() if not isinstance(p, Egg)]
 
-    def add(self, pokemon):
-        if pokemon.id <= 0:
-            raise ValueError("Can't add a pokemin whitout id")
-        if pokemon.id in self._data:
-            raise ValueError("Pokemon already present in the inventory")
-        self._data[pokemon.id] = pokemon
+    def all_with_eggs(self):
+        # count pokemon AND eggs, since eggs are counted as bag space
+        return super(Pokemons, self).all()
 
-    def remove(self, pokemon_id):
-        if pokemon_id not in self._data:
+    def add(self, pokemon):
+        if pokemon.unique_id <= 0:
+            raise ValueError("Can't add a pokemon without id")
+        if pokemon.unique_id in self._data:
+            raise ValueError("Pokemon already present in the inventory")
+        self._data[pokemon.unique_id] = pokemon
+
+    def remove(self, pokemon_unique_id):
+        if pokemon_unique_id not in self._data:
             raise ValueError("Pokemon not present in the inventory")
-        self._data.pop(pokemon_id)
+        self._data.pop(pokemon_unique_id)
 
 
 #
@@ -681,7 +760,7 @@ class Pokemon(object):
     def __init__(self, data):
         self._data = data
         # Unique ID for this particular Pokemon
-        self.id = data.get('id', 0)
+        self.unique_id = data.get('id', 0)
         # Id of the such pokemons in pokedex
         self.pokemon_id = data['pokemon_id']
         # Static information
@@ -1006,29 +1085,32 @@ class Inventory(object):
         self.pokemons = Pokemons()
         self.refresh()
         self.item_inventory_size = None
+        self.pokemon_inventory_size = None
 
     def refresh(self):
-        # TODO: it would be better if this class was used for all
-        # inventory management. For now, I'm just clearing the old inventory field
-        self.bot.latest_inventory = None
-        inventory = self.bot.get_inventory()['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+        inventory = self.bot.api.get_inventory()
+        inventory = inventory['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
         for i in (self.pokedex, self.candy, self.items, self.pokemons):
             i.refresh(inventory)
 
         user_web_inventory = os.path.join(_base_dir, 'web', 'inventory-%s.json' % (self.bot.config.username))
-        with open(user_web_inventory, 'w') as outfile:
-            json.dump(inventory, outfile)
+        try:
+            with open(user_web_inventory, 'w') as outfile:
+                json.dump(inventory, outfile)
+        except IOError as e:
+            errmsg = '[x] Error while opening location file: user_web_inventory'
 
-    def retrieve_item_inventory_size(self):
+    def retrieve_inventories_size(self):
         """
         Retrieves the item inventory size
         :return: Nothing.
         :rtype: None
         """
-        # TODO: Force update of _item_inventory_size if the player upgrades its size
-        if self.item_inventory_size is None:
-           self.item_inventory_size = self.bot.api.get_player()['responses']['GET_PLAYER']['player_data']['max_item_storage']
-
+        # TODO: Force to update it if the player upgrades its size
+        if self.item_inventory_size is None or self.pokemon_inventory_size is None:
+           player_data = self.bot.api.get_player()['responses']['GET_PLAYER']['player_data']
+           self.item_inventory_size = player_data['max_item_storage']
+           self.pokemon_inventory_size = player_data['max_pokemon_storage']
 
 #
 # Other
@@ -1093,55 +1175,115 @@ Pokemons()  # init Pokemons
 
 #
 # Usage helpers
+# TODO : Complete the doc
+# Only type return have been filled for now. It helps the IDE to suggest methods of the class.
 
 def init_inventory(bot):
+    """
+    Initialises the cached inventory, retrieves data from the server.
+    :param bot: Instance of the bot.
+    :type bot: pokemongo_bot.PokemonGoBot
+    :return: Nothing.
+    :rtype: None
+    """
     global _inventory
     _inventory = Inventory(bot)
 
 
 def refresh_inventory():
+    """
+    Refreshes the cached inventory, retrieves data from the server.
+    :return: Nothing.
+    :rtype: None
+    """
     _inventory.refresh()
 
 def get_item_inventory_size():
-    _inventory.retrieve_item_inventory_size()
+    """
+    Access to the Item inventory size.
+    :return: Item inventory size.
+    :rtype: int
+    """
+    _inventory.retrieve_inventories_size()
     return _inventory.item_inventory_size
 
+def get_pokemon_inventory_size():
+    """
+    Access to the Item inventory size.
+    :return: Item inventory size.
+    :rtype: int
+    """
+    _inventory.retrieve_inventories_size()
+    return _inventory.pokemon_inventory_size
+
 def pokedex():
+    """
+
+    :return:
+    :rtype: Pokedex
+    """
+    # Are new pokemons added to the pokedex ?
     return _inventory.pokedex
 
 
-def candies(refresh=False):
-    if refresh:
-        refresh_inventory()
+def candies():
+    """
+
+    :return:
+    :rtype: Candies
+    """
     return _inventory.candy
 
 
-def pokemons(refresh=False):
-    if refresh:
-        refresh_inventory()
+def pokemons():
+    """
+
+    :return:
+    :rtype: Pokemons
+    """
     return _inventory.pokemons
 
 
 def items():
     """
-    Access to the cached item inventory
-    :return: Instance of the cached item inventory
+    Access to the cached item inventory.
+    :return: Instance of the cached item inventory.
     :rtype: Items
     """
     return _inventory.items
 
 
 def types_data():
+    """
+
+    :return:
+    :rtype: Types
+    """
     return Types
 
 
 def levels_to_cpm():
+    """
+
+    :return:
+    :rtype: LevelToCPm
+    """
     return LevelToCPm
 
 
 def fast_attacks():
+    """
+
+    :return:
+    :rtype: FastAttacks
+    """
     return FastAttacks
 
 
 def charged_attacks():
+    """
+
+    :return:
+    :rtype: ChargedAttack
+    """
     return ChargedAttacks

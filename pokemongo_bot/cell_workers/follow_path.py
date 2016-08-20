@@ -6,8 +6,9 @@ import json
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.cell_workers.utils import distance, i2f, format_dist
 from pokemongo_bot.human_behaviour import sleep
-from pokemongo_bot.step_walker import StepWalker
+from pokemongo_bot.walkers.step_walker import StepWalker
 from pgoapi.utilities import f2i
+from random import uniform
 
 
 class FollowPath(BaseTask):
@@ -19,7 +20,7 @@ class FollowPath(BaseTask):
 
         if self.path_start_mode == 'closest':
             self.ptr = self.find_closest_point_idx(self.points)
-        
+
         else:
             self.ptr = 0
 
@@ -83,7 +84,7 @@ class FollowPath(BaseTask):
             botlng = self.bot.api._position_lng
             lat = float(point['lat'])
             lng = float(point['lng'])
-            
+
             dist = distance(
                 botlat,
                 botlng,
@@ -105,10 +106,9 @@ class FollowPath(BaseTask):
         lat = float(point['lat'])
         lng = float(point['lng'])
 
-        if self.bot.config.walk > 0:
+        if self.bot.config.walk_max > 0:
             step_walker = StepWalker(
                 self.bot,
-                self.bot.config.walk,
                 lat,
                 lng
             )
@@ -118,7 +118,8 @@ class FollowPath(BaseTask):
                 is_at_destination = True
 
         else:
-            self.bot.api.set_position(lat, lng, 0)
+            alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
+            self.bot.api.set_position(lat, lng, alt)
 
         dist = distance(
             last_lat,
@@ -127,7 +128,7 @@ class FollowPath(BaseTask):
             lng
         )
 
-        if dist <= 1 or (self.bot.config.walk > 0 and is_at_destination):
+        if dist <= 1 or (self.bot.config.walk_min > 0 and is_at_destination):
             if (self.ptr + 1) == len(self.points):
                 self.ptr = 0
                 if self.path_mode == 'linear':
@@ -137,10 +138,10 @@ class FollowPath(BaseTask):
 
         self.emit_event(
             'position_update',
-            formatted="Teleported from {last_position} to {current_position} ({distance} {distance_unit})",
+            formatted="Walk to {last_position} now at {current_position}, distance left: ({distance} {distance_unit}) ..",
             data={
-                'last_position': (last_lat, last_lng, 0),
-                'current_position': (lat, lng, 0),
+                'last_position': (lat, lng, 0),
+                'current_position': (last_lat, last_lng, 0),
                 'distance': dist,
                 'distance_unit': 'm'
             }

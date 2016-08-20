@@ -56,6 +56,7 @@ class UpdateLiveStats(BaseTask):
     - stardust_earned : The number of earned stardust since the bot started.
     - highest_cp_pokemon : The caught pokemon with the highest CP since the bot started.
     - most_perfect_pokemon : The most perfect caught pokemon since the bot started.
+    - location : The location where the player is located.
     """
     SUPPORTED_TASK_API_VERSION = 1
 
@@ -148,16 +149,25 @@ class UpdateLiveStats(BaseTask):
         :raise: RuntimeError: When the given platform isn't supported.
         """
 
-        if platform == "linux" or platform == "linux2" or platform == "cygwin":
-            stdout.write("\x1b]2;{}\x07".format(title))
-            stdout.flush()
-        elif platform == "darwin":
-            stdout.write("\033]0;{}\007".format(title))
-            stdout.flush()
-        elif platform == "win32":
-            ctypes.windll.kernel32.SetConsoleTitleA(title.encode())
-        else:
-            raise RuntimeError("unsupported platform '{}'".format(platform))
+        try:
+            if platform == "linux" or platform == "linux2" or platform == "cygwin":
+                stdout.write("\x1b]2;{}\x07".format(title))
+                stdout.flush()
+            elif platform == "darwin":
+                stdout.write("\033]0;{}\007".format(title))
+                stdout.flush()
+            elif platform == "win32":
+                ctypes.windll.kernel32.SetConsoleTitleA(title.encode())
+            else:
+                raise RuntimeError("unsupported platform '{}'".format(platform))
+        except AttributeError:
+            self.emit_event(
+                'log_stats',
+                level = 'error',
+                formatted = "Unable to write window title"              
+            )
+            self.terminal_title = False
+            
         self._compute_next_update()
 
     def _get_stats_line(self, player_stats):
@@ -235,6 +245,7 @@ class UpdateLiveStats(BaseTask):
             'stardust_earned': 'Earned {:,} Stardust'.format(stardust_earned),
             'highest_cp_pokemon': 'Highest CP pokemon : {}'.format(highest_cp_pokemon),
             'most_perfect_pokemon': 'Most perfect pokemon : {}'.format(most_perfect_pokemon),
+            'location': 'Location : ({}, {})'.format(self.bot.position[0], self.bot.position[1]),
         }
 
         def get_stat(stat):
@@ -262,7 +273,8 @@ class UpdateLiveStats(BaseTask):
         :return: The player stats object.
         :rtype: dict
         """
-        inventory_items = self.bot.get_inventory() \
+        # TODO : find a better solution than calling the api
+        inventory_items = self.bot.api.get_inventory() \
             .get('responses', {}) \
             .get('GET_INVENTORY', {}) \
             .get('inventory_delta', {}) \

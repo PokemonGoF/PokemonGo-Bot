@@ -18,6 +18,7 @@ class NicknamePokemonTest(unittest.TestCase):
         self.assertNicks('{iv_defense}', ['4', '14'])
         self.assertNicks('{iv_stamina}', ['8', '0'])
         self.assertNicks('{iv_ads}', ['9/4/8', '6/14/0'])
+        self.assertNicks('{iv_ads_hex}', ['948', '6E0'])
         self.assertNicks('{iv_sum}', ['21', '20'])
         self.assertNicks('{iv_pct}', ['047', '044'])
         self.assertNicks('{iv_pct2}', ['46', '44'])
@@ -52,9 +53,13 @@ class NicknamePokemonTest(unittest.TestCase):
         self.assertNicks('{pokemon.fast_attack.dps:.2f}', ['12.00', '10.91'])
         self.assertNicks('{pokemon.fast_attack.dps:.0f}', ['12', '11'])
         self.assertNicks('{iv_pct}_{iv_ads}', ['047_9/4/8', '044_6/14/0'])
+        self.assertNicks('{iv_pct}_{iv_ads_hex}', ['047_948', '044_6E0'])
         self.assertNicks(
             '{ivcp_pct2}_{iv_pct2}_{iv_ads}',
             ['48_46_9/4/8', '38_44_6/14/0'])
+        self.assertNicks(
+            '{ivcp_pct2}_{iv_pct2}_{iv_ads_hex}',
+            ['48_46_948', '38_44_6E0'])
         self.assertNicks(
             '{attack_code}{attack_pct1}{defense_pct1}{ivcp_pct1}{name}',
             ['Lh474Golbat', 'nn853Rattata'])

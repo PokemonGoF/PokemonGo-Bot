@@ -4,8 +4,9 @@ from __future__ import absolute_import, unicode_literals
 import math
 
 from pokemongo_bot.cell_workers.utils import distance, format_dist
-from pokemongo_bot.step_walker import StepWalker
+from pokemongo_bot.walkers.step_walker import StepWalker
 from pokemongo_bot.base_task import BaseTask
+from random import uniform
 
 class FollowSpiral(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -79,10 +80,9 @@ class FollowSpiral(BaseTask):
             point['lng']
         )
 
-        if self.bot.config.walk > 0:
+        if self.bot.config.walk_max > 0:
             step_walker = StepWalker(
                 self.bot,
-                self.bot.config.walk,
                 point['lat'],
                 point['lng']
             )
@@ -102,7 +102,8 @@ class FollowSpiral(BaseTask):
             if step_walker.step():
                 step_walker = None
         else:
-            self.bot.api.set_position(point['lat'], point['lng'], 0)
+            alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
+            self.bot.api.set_position(point['lat'], point['lng'], alt)
 
             self.emit_event(
                 'position_update',
@@ -115,7 +116,7 @@ class FollowSpiral(BaseTask):
                 }
             )
 
-        if dist <= 1 or (self.bot.config.walk > 0 and step_walker == None):
+        if dist <= 1 or (self.bot.config.walk_min > 0 and step_walker == None):
             if self.ptr + self.direction >= len(self.points) or self.ptr + self.direction <= -1:
                 self.direction *= -1
             if len(self.points) != 1:
