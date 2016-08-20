@@ -11,50 +11,36 @@ class PolylineObjectHandler:
     Does this need to be a class?
     More like a namespace...
     '''
-    _cache = {}
-    _kill_these = set()
+    _cache = None
 
     @staticmethod
-    def cached_polyline(bot, origin, destination, speed, parent_cls):
+    def cached_polyline(origin, destination, speed):
         '''
         Google API has limits, so we can't generate new Polyline at every tick...
         '''
-        for key in list(PolylineObjectHandler._kill_these):
-            PolylineObjectHandler._cache.pop(key)
-            PolylineObjectHandler._kill_these.remove(key)
 
-        key = parent_cls
-        if key not in PolylineObjectHandler._cache:
-            polyline = Polyline(origin, destination, speed)
-            polyline.key = key
-            polyline.destination = destination
+        # _cache might be None...
+        is_old_cache = lambda : tuple(origin) != PolylineObjectHandler._cache.get_last_pos()
+        new_dest_set = lambda : tuple(destination) != PolylineObjectHandler._cache.destination
 
-            PolylineObjectHandler._cache[key] = polyline
-        elif key in PolylineObjectHandler._cache and PolylineObjectHandler._cache[key].destination != destination:
-            # The case bot changes mind to catch Mew instead of following Doduo...
-            # Merge with upper code? Without comment, it would be quite puzzling...
-            polyline = Polyline(origin, destination, speed)
-            polyline.key = key
-            polyline.destination = destination
-
-            PolylineObjectHandler._cache[key] = polyline
+        if None == PolylineObjectHandler._cache or is_old_cache() or new_dest_set():
+            PolylineObjectHandler._cache = Polyline(origin, destination, speed)
         else:
-            polyline = PolylineObjectHandler._cache[key]
-        return polyline
+            # valid cache found
+            pass
 
-    @staticmethod
-    def delete_cache(polyline):
-        PolylineObjectHandler._cache.pop(polyline.key)
+        return PolylineObjectHandler._cache
 
 
 class Polyline(object):
     def __init__(self, origin, destination, speed):
         self.DISTANCE_API_URL='https://maps.googleapis.com/maps/api/directions/json?mode=walking'
         self.origin = origin
-        self.destination = destination
+        self.destination = tuple(destination)
         self.URL = '{}&origin={}&destination={}'.format(self.DISTANCE_API_URL,
-                                                   '{},{}'.format(*self.origin),
-                                                   '{},{}'.format(*self.destination))
+                '{},{}'.format(*self.origin),
+                '{},{}'.format(*self.destination))
+        
         self.request_responce = requests.get(self.URL).json()
         try:
         # Polyline walker starts teleporting after reaching api query limit.
@@ -73,6 +59,7 @@ class Polyline(object):
         self.is_paused = False
         self._last_paused_timestamp = None
         self._paused_total = 0.0
+        self._last_pos = (None, None)
 
     def reset_timestamps(self):
         self._timestamp = time.time()
@@ -132,10 +119,16 @@ class Polyline(object):
                 percentage_walked = (time_passed_distance - (walked_end_step - step_distance)) / step_distance
             else:
                 percentage_walked = 1.0
-            return self.calculate_coord(percentage_walked, *steps_dict[walked_end_step])
+            result = self.calculate_coord(percentage_walked, *steps_dict[walked_end_step])
+            self._last_pos = tuple(result[0])
+            return self._last_pos
         else:
             # otherwise return the destination https://github.com/th3w4y/PokemonGo-Bot/issues/27
-            return [self.points[-1]]
+            self._last_pos = tuple(self.points[-1])
+            return self._last_pos
+
+    def get_last_pos(self):
+        return self._last_pos
 
     def calculate_coord(self, percentage, o, d):
         # If this is the destination then returning as such
