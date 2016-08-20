@@ -54,16 +54,22 @@ import time
 import json
 import base64
 import requests
+
+from pokemongo_bot import inventory
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.cell_workers.utils import distance, format_dist, format_time
-from pokemongo_bot.step_walker import StepWalker
+from pokemongo_bot.walkers.walker_factory import walker_factory
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
+from random import uniform
 
 
 # Update the map if more than N meters away from the center. (AND'd with
 # UPDATE_MAP_MIN_TIME_MINUTES)
+ULTRABALL_ID = 3
+GREATBALL_ID = 2
+POKEBALL_ID = 1
 UPDATE_MAP_MIN_DISTANCE_METERS = 500
 
 # Update the map if it hasn't been updated in n seconds. (AND'd with
@@ -85,15 +91,16 @@ class MoveToMapPokemon(BaseTask):
         self.caught = []
         self.min_ball = self.config.get('min_ball', 1)
         self.map_path = self.config.get('map_path', 'raw_data')
+        self.walker = self.config.get('walker', 'StepWalker')
         self.snipe_high_prio_only = self.config.get('snipe_high_prio_only', False)
         self.snipe_high_prio_threshold = self.config.get('snipe_high_prio_threshold', 400)
-
 
         data_file = os.path.join(_base_dir, 'map-caught-{}.json'.format(self.bot.config.username))
         if os.path.isfile(data_file):
             self.caught = json.load(
                 open(data_file)
             )
+        self.alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
 
     def get_pokemon_from_map(self):
         try:
@@ -181,7 +188,7 @@ class MoveToMapPokemon(BaseTask):
         except ValueError:
             err = 'Map location data was not valid'
             self._emit_failure(err)
-            return log.logger(err, 'red')
+            return
 
         dist = distance(
             self.bot.position[0],
@@ -221,7 +228,7 @@ class MoveToMapPokemon(BaseTask):
         api_encounter_response = catch_worker.create_encounter_api_call()
         time.sleep(SNIPE_SLEEP_SEC)
         self._teleport_back(last_position)
-        self.bot.api.set_position(last_position[0], last_position[1], 0)
+        self.bot.api.set_position(last_position[0], last_position[1], self.alt)
         time.sleep(SNIPE_SLEEP_SEC)
         self.bot.heartbeat()
         catch_worker.work(api_encounter_response)
@@ -235,11 +242,11 @@ class MoveToMapPokemon(BaseTask):
 
     def work(self):
         # check for pokeballs (excluding masterball)
-        pokeballs = self.bot.item_inventory_count(1)
-        superballs = self.bot.item_inventory_count(2)
-        ultraballs = self.bot.item_inventory_count(3)
+        pokeballs_quantity = inventory.items().get(POKEBALL_ID).count
+        superballs_quantity = inventory.items().get(GREATBALL_ID).count
+        ultraballs_quantity = inventory.items().get(ULTRABALL_ID).count
 
-        if (pokeballs + superballs + ultraballs) < 1:
+        if (pokeballs_quantity + superballs_quantity + ultraballs_quantity) < 1:
             return WorkerResult.SUCCESS
 
         self.update_map_location()
@@ -257,11 +264,9 @@ class MoveToMapPokemon(BaseTask):
 
         pokemon = pokemon_list[0]
 
-        if pokeballs < 1:
-            if superballs < 1:
-                if ultraballs < 1:
-                    return WorkerResult.SUCCESS
-                if not pokemon['is_vip']:
+        if pokeballs_quantity < 1:
+            if superballs_quantity < 1:
+                if ultraballs_quantity < 1:
                     return WorkerResult.SUCCESS
 
         if self.config['snipe']:
@@ -270,6 +275,9 @@ class MoveToMapPokemon(BaseTask):
                     self.snipe(pokemon)
             else:
                 return self.snipe(pokemon)
+
+        if pokeballs_quantity + superballs_quantity + ultraballs_quantity < self.min_ball:
+            return WorkerResult.SUCCESS
 
         step_walker = self._move_to(pokemon)
         if not step_walker.step():
@@ -331,7 +339,7 @@ class MoveToMapPokemon(BaseTask):
             formatted='Teleporting to {poke_name}. ({poke_dist})',
             data=self._pokemon_event_data(pokemon)
         )
-        self.bot.api.set_position(pokemon['latitude'], pokemon['longitude'], 0)
+        self.bot.api.set_position(pokemon['latitude'], pokemon['longitude'], self.alt)
         self._encountered(pokemon)
 
     def _encountered(self, pokemon):
@@ -362,7 +370,7 @@ class MoveToMapPokemon(BaseTask):
             pokemon: Pokemon to move to.
 
         Returns:
-            StepWalker
+            Walker
         """
         now = int(time.time())
         self.emit_event(
@@ -371,8 +379,9 @@ class MoveToMapPokemon(BaseTask):
                        '{disappears_in})'),
             data=self._pokemon_event_data(pokemon)
         )
-        return StepWalker(
+        return walker_factory(self.walker,
             self.bot,
             pokemon['latitude'],
-            pokemon['longitude']
+            pokemon['longitude'],
+            **{'parent': MoveToMapPokemon}
         )

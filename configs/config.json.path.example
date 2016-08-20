@@ -22,7 +22,15 @@
         }
       },
       {
-        "type": "CollectLevelUpReward"
+        "type": "CompleteTutorial",
+        "config": {
+          "enabled": false,
+          "// set a name": "",
+          "nickname": ""
+        }
+      },
+      {
+         "type": "CollectLevelUpReward"
       },
       {
         "type": "IncubateEggs",
@@ -38,6 +46,15 @@
           "stats": ["username", "uptime", "stardust_earned", "xp_earned", "xp_per_hour", "stops_visited"],
           "terminal_log": true,
           "terminal_title": true
+        }
+      },
+      {
+        "type": "UpdateLiveInventory",
+        "config": {
+          "enabled": false,
+          "min_interval": 120,
+          "show_all_multiple_lines": false,
+          "items": ["space_info", "pokeballs", "greatballs", "ultraballs", "razzberries", "luckyegg"]
         }
       },
       {
@@ -92,6 +109,8 @@
           "catch_visible_pokemon": true,
           "catch_lured_pokemon": true,
           "min_ultraball_to_keep": 5,
+          "berry_threshold": 0.35,
+          "vip_berry_threshold": 0.9,
           "catch_throw_parameters": {
             "excellent_rate": 0.1,
             "great_rate": 0.5,
@@ -132,8 +151,20 @@
       "avoid_circles": true,
       "max_circle_size": 50
     },
+    "pokemon_bag": {
+      "// if 'show_at_start' is true, it will log all the pokemons in the bag (not eggs) at bot start": {},
+      "show_at_start": true,
+      "// if 'show_count' is true, it will show the amount of each pokemon (minimum 1)": {},
+      "show_count": false,
+      "// 'pokemon_info' parameter define which info to show for each pokemon": {},
+      "// the available options are": {},
+      "// ['cp', 'iv_ads', 'iv_pct', 'ivcp', 'ncp', 'level', 'hp', 'moveset', 'dps']": {},
+      "pokemon_info": ["cp", "iv_pct"]
+    },
     "walk_max": 4.16,
     "walk_min": 2.16,
+    "alt_min": 500,
+    "alt_max": 1000,
     "debug": false,
     "test": false,
     "health_record": true,
@@ -141,6 +172,7 @@
     "distance_unit": "km",
     "reconnecting_timeout": 15,
     "logging_color": true,
+    "daily_catch_limit": 800,
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},

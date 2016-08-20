@@ -43,15 +43,10 @@ Input location
 " location
 read -p "Input gmapkey 
 " gmapkey
-cp -f configs/config.json.example configs/config.json && chmod 755 configs/config.json
-if [ "$auth" = "2" ] || [ "$auth" = "ptc" ]
-then
-sed -i "s/google/ptc/g" configs/config.json
-fi
-sed -i "s/YOUR_USERNAME/$username/g" configs/config.json
-sed -i "s/YOUR_PASSWORD/$password/g" configs/config.json
-sed -i "s/SOME_LOCATION/$location/g" configs/config.json
-sed -i "s/GOOGLE_MAPS_API_KEY/$gmapkey/g" configs/config.json
+[[ $auth = "2" || $auth = "ptc" ]] && auth="ptc" || auth="google"
+sed -e "s/YOUR_USERNAME/$username/g" -e "s/YOUR_PASSWORD/$password/g" \
+  -e "s/SOME_LOCATION/$location/g" -e "s/GOOGLE_MAPS_API_KEY/$gmapkey/g" \
+  -e "s/google/$auth/g" configs/config.json.example > configs/config.json
 echo "Edit ./configs/config.json to modify any other config."
 }
 

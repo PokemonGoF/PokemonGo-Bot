@@ -6,6 +6,7 @@ import os
 from pokemongo_bot import inventory
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.base_task import BaseTask
+from pokemongo_bot.datastore import Datastore
 from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.worker_result import WorkerResult
@@ -17,12 +18,15 @@ ERROR_NO_ITEMS_REMAINING = 4
 ERROR_LOCATION_UNSET = 5
 
 
-class PokemonOptimizer(BaseTask):
+class PokemonOptimizer(Datastore, BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
+
+    def __init__(self, bot, config):
+        super(PokemonOptimizer, self).__init__(bot, config)
 
     def initialize(self):
         self.family_by_family_id = {}
-        self.max_pokemon_storage = 0
+        self.max_pokemon_storage = inventory.get_pokemon_inventory_size()
         self.last_pokemon_count = 0
 
         self.config_transfer = self.config.get("transfer", False)
@@ -36,18 +40,17 @@ class PokemonOptimizer(BaseTask):
                                                     {"top": 1, "evolve": True, "sort": ["ncp"]},
                                                     {"top": 1, "evolve": False, "sort": ["cp"]}])
 
-        self.transfer_wait_min = self.config.get('transfer_wait_min', 1)
-        self.transfer_wait_max = self.config.get('transfer_wait_max', 4)
+        self.config_transfer_wait_min = self.config.get("transfer_wait_min", 1)
+        self.config_transfer_wait_max = self.config.get("transfer_wait_max", 4)
 
     def get_pokemon_slot_left(self):
-        pokemon_count = len(inventory.pokemons()._data)
-        self.max_pokemon_storage = self.bot.player_data["max_pokemon_storage"]
+        pokemon_count = inventory.Pokemons.get_space_used()
 
         if pokemon_count != self.last_pokemon_count:
             self.last_pokemon_count = pokemon_count
             self.logger.info("Pokemon Bag: %s/%s", pokemon_count, self.max_pokemon_storage)
 
-        return self.max_pokemon_storage - pokemon_count
+        return inventory.Pokemons.get_space_left()
 
     def work(self):
         if (not self.enabled) or (self.get_pokemon_slot_left() > 5):
@@ -79,7 +82,7 @@ class PokemonOptimizer(BaseTask):
     def open_inventory(self):
         self.family_by_family_id.clear()
 
-        for pokemon in inventory.pokemons(True).all():
+        for pokemon in inventory.pokemons().all():
             family_id = pokemon.first_evolution_id
             setattr(pokemon, "ncp", pokemon.cp_percent)
             setattr(pokemon, "dps", pokemon.moveset.dps)
@@ -89,7 +92,7 @@ class PokemonOptimizer(BaseTask):
             self.family_by_family_id.setdefault(family_id, []).append(pokemon)
 
     def save_web_inventory(self):
-        inventory_items = self.bot.get_inventory()["responses"]["GET_INVENTORY"]["inventory_delta"]["inventory_items"]
+        inventory_items = self.bot.api.get_inventory()["responses"]["GET_INVENTORY"]["inventory_delta"]["inventory_items"]
         web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
 
         with open(web_inventory, "w") as outfile:
@@ -98,15 +101,21 @@ class PokemonOptimizer(BaseTask):
     def get_family_optimized(self, family_id, family):
         evolve_best = []
         keep_best = []
+        family_names = self.get_family_names(family_id)
 
         for criteria in self.config_keep:
+            names = criteria.get("names", [])
+
+            if names and not any(n in family_names for n in names):
+                continue
+
             if criteria.get("evolve", True):
                 evolve_best += self.get_top_rank(family, criteria)
             else:
                 keep_best += self.get_top_rank(family, criteria)
 
-        evolve_best = self.unique_pokemons(evolve_best)
-        keep_best = self.unique_pokemons(keep_best)
+        evolve_best = self.unique_pokemon(evolve_best)
+        keep_best = self.unique_pokemon(keep_best)
 
         return self.get_evolution_plan(family_id, family, evolve_best, keep_best)
 
@@ -120,14 +129,20 @@ class PokemonOptimizer(BaseTask):
         if not self.config_evolve:
             transfer, evo_best, evo_crap = self.get_family_optimized(family_id, other_family)
         elif len(senior_pids) < nb_branch:
-            # We did not get every combination yet = All other Pokemons are potentially good to keep
+            # We did not get every combination yet = All other Pokemon are potentially good to keep
             transfer, evo_best, evo_crap = self.get_evolution_plan(family_id, [], other_family, [])
             evo_best.sort(key=lambda p: p.iv * p.ncp, reverse=True)
         else:
             evolve_best = []
             keep_best = []
+            names = self.get_family_names(family_id)
 
             for criteria in self.config_keep:
+                family_names = criteria.get("names", [])
+
+                if names and not any(n in family_names for n in names):
+                    continue
+
                 top = []
 
                 for f in senior_grouped_family.values():
@@ -140,14 +155,20 @@ class PokemonOptimizer(BaseTask):
                 else:
                     keep_best += self.get_better_rank(family, criteria, worst)
 
-            evolve_best = self.unique_pokemons(evolve_best)
-            keep_best = self.unique_pokemons(keep_best)
+            evolve_best = self.unique_pokemon(evolve_best)
+            keep_best = self.unique_pokemon(keep_best)
             transfer, evo_best, evo_crap = self.get_evolution_plan(family_id, other_family, evolve_best, keep_best)
 
         for senior_pid, senior_family in senior_grouped_family.items():
             transfer += self.get_family_optimized(senior_pid, senior_family)[0]
 
         return (transfer, evo_best, evo_crap)
+
+    def get_family_names(self, family_id):
+        ids = [family_id]
+        ids += inventory.Pokemons.data_for(family_id).next_evolutions_all[:]
+        datas = [inventory.Pokemons.data_for(x) for x in ids]
+        return [x.name for x in datas]
 
     def get_top_rank(self, family, criteria):
         sorted_family = self.get_sorted_family(family, criteria)
@@ -171,9 +192,9 @@ class PokemonOptimizer(BaseTask):
     def get_pokemon_max_cp(self, pokemon_name):
         return int(self.pokemon_max_cp.get(pokemon_name, 0))
 
-    def unique_pokemons(self, l):
+    def unique_pokemon(self, l):
         seen = set()
-        return [p for p in l if not (p.id in seen or seen.add(p.id))]
+        return [p for p in l if not (p.unique_id in seen or seen.add(p.unique_id))]
 
     def get_evolution_plan(self, family_id, family, evolve_best, keep_best):
         candies = inventory.candies().get(family_id).quantity
@@ -182,11 +203,12 @@ class PokemonOptimizer(BaseTask):
         crap = family[:]
         crap = [p for p in crap if p not in evolve_best]
         crap = [p for p in crap if p not in keep_best]
+        crap = [p for p in crap if not p.in_fort and not p.is_favorite]
         crap.sort(key=lambda p: p.iv * p.ncp, reverse=True)
 
         candies += len(crap)
 
-        # Let's see if we can evolve our best pokemons
+        # Let's see if we can evolve our best Pokemon
         can_evolve_best = []
 
         for pokemon in evolve_best:
@@ -238,7 +260,7 @@ class PokemonOptimizer(BaseTask):
         return (transfer, can_evolve_best, evo_crap)
 
     def apply_optimization(self, transfer, evo):
-        self.logger.info("Transferring %s Pokemons", len(transfer))
+        self.logger.info("Transferring %s Pokemon", len(transfer))
 
         for pokemon in transfer:
             self.transfer_pokemon(pokemon)
@@ -247,26 +269,33 @@ class PokemonOptimizer(BaseTask):
             return
 
         if self.config_evolve and self.config_may_use_lucky_egg and (not self.bot.config.test):
-            if len(evo) >= self.config_evolve_count_for_lucky_egg:
-                lucky_egg = inventory.items().get(Item.ITEM_LUCKY_EGG.value)  # @UndefinedVariable
+            lucky_egg = inventory.items().get(Item.ITEM_LUCKY_EGG.value)  # @UndefinedVariable
 
-                if lucky_egg.count > 0:
-                    self.use_lucky_egg()
-                elif self.config_evolve_only_with_lucky_egg:
-                    self.logger.info("Skipping evolution step. No lucky egg available")
+            if lucky_egg.count == 0:
+                if self.config_evolve_only_with_lucky_egg:
+                    self.emit_event("skip_evolve",
+                                    formatted="Skipping evolution step. No lucky egg available")
                     return
-            elif self.config_evolve_only_with_lucky_egg:
-                self.logger.info("Skipping evolution step. Not enough Pokemons (%s) to evolve with lucky egg", len(evo))
-                return
+            elif len(evo) < self.config_evolve_count_for_lucky_egg:
+                if self.config_evolve_only_with_lucky_egg:
+                    self.emit_event("skip_evolve",
+                                    formatted="Skipping evolution step. Not enough Pokemon to evolve with lucky egg: %s/%s" % (len(evo), self.config_evolve_count_for_lucky_egg))
+                    return
+                elif self.get_pokemon_slot_left() > 5:
+                    self.emit_event("skip_evolve",
+                                    formatted="Waiting for more Pokemon to evolve with lucky egg: %s/%s" % (len(evo), self.config_evolve_count_for_lucky_egg))
+                    return
+            else:
+                self.use_lucky_egg()
 
-        self.logger.info("Evolving %s Pokemons", len(evo))
+        self.logger.info("Evolving %s Pokemon", len(evo))
 
         for pokemon in evo:
             self.evolve_pokemon(pokemon)
 
     def transfer_pokemon(self, pokemon):
         if self.config_transfer and (not self.bot.config.test):
-            response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon.id)
+            response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon.unique_id)
         else:
             response_dict = {"responses": {"RELEASE_POKEMON": {"candy_awarded": 0}}}
 
@@ -285,9 +314,18 @@ class PokemonOptimizer(BaseTask):
             candy = response_dict.get("responses", {}).get("RELEASE_POKEMON", {}).get("candy_awarded", 0)
 
             inventory.candies().get(pokemon.pokemon_id).add(candy)
-            inventory.pokemons().remove(pokemon.id)
+            inventory.pokemons().remove(pokemon.unique_id)
 
-            action_delay(self.transfer_wait_min, self.transfer_wait_max)
+            with self.bot.database as db:
+                cursor = db.cursor()
+                cursor.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='transfer_log'")
+
+                db_result = cursor.fetchone()
+
+                if db_result[0] == 1:
+                    db.execute("INSERT INTO transfer_log (pokemon, iv, cp) VALUES (?, ?, ?)", (pokemon.name, pokemon.iv, pokemon.cp))
+
+            action_delay(self.config_transfer_wait_min, self.config_transfer_wait_max)
 
         return True
 
@@ -327,7 +365,7 @@ class PokemonOptimizer(BaseTask):
 
     def evolve_pokemon(self, pokemon):
         if self.config_evolve and (not self.bot.config.test):
-            response_dict = self.bot.api.evolve_pokemon(pokemon_id=pokemon.id)
+            response_dict = self.bot.api.evolve_pokemon(pokemon_id=pokemon.unique_id)
         else:
             response_dict = {"responses": {"EVOLVE_POKEMON": {"result": 1}}}
 
@@ -354,10 +392,19 @@ class PokemonOptimizer(BaseTask):
 
         if self.config_evolve and (not self.bot.config.test):
             inventory.candies().get(pokemon.pokemon_id).consume(pokemon.evolution_cost - candy)
-            inventory.pokemons().remove(pokemon.id)
+            inventory.pokemons().remove(pokemon.unique_id)
 
             new_pokemon = inventory.Pokemon(evolution)
             inventory.pokemons().add(new_pokemon)
+
+            with self.bot.database as db:
+                cursor = db.cursor()
+                cursor.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='evolve_log'")
+
+                db_result = cursor.fetchone()
+
+                if db_result[0] == 1:
+                    db.execute("INSERT INTO evolve_log (pokemon, iv, cp) VALUES (?, ?, ?)", (pokemon.name, pokemon.iv, pokemon.cp))
 
             sleep(self.config_evolve_time)
 

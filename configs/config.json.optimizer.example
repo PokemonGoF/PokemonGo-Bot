@@ -22,7 +22,15 @@
         }
       },
       {
-        "type": "CollectLevelUpReward"
+        "type": "CompleteTutorial",
+        "config": {
+          "enabled": false,
+          "// set a name": "",
+          "nickname": ""
+        }
+      },
+      {
+         "type": "CollectLevelUpReward"
       },
       {
         "type": "IncubateEggs",
@@ -41,8 +49,18 @@
         }
       },
         {
+            "type": "UpdateLiveInventory",
+            "config": {
+                "enabled": false,
+                "min_interval": 120,
+                "show_all_multiple_lines": false,
+                "items": ["space_info", "pokeballs", "greatballs", "ultraballs", "razzberries", "luckyegg"]
+            }
+        },
+        {
             "type": "PokemonOptimizer",
             "config": {
+                "enabled": true,
                     "// the 'transfer' parameter activate or deactivate the transfer of pokemons": {},
                     "// at false, no pokemon is going to be transfered, ever": {},
                     "// at false, you will still get the log information of what the optimizer": {},
@@ -97,12 +115,16 @@
                             "// 'cp' = combat power (can be increased with candies)": {},
                             "// 'cp_exact' = combar power (not rounded)": {},
                             "// 'ncp' (normalized cp) or 'cp_percent' = ratio cp / max_cp": {},
-                            "// iv_attack = attach component of iv": {},
-                            "// iv_defense = defense component of iv": {},
-                            "// iv_stamina = stamina component of iv": {},
-                            "// dps = raw dps based on the moves of the pokemon": {},
-                            "// dps_attack = average dps when attacking": {},
-                            "// dps_defense = average dps when defending": {},
+                            "// 'iv_attack' = attach component of iv": {},
+                            "// 'iv_defense' = defense component of iv": {},
+                            "// 'iv_stamina' = stamina component of iv": {},
+                            "// 'dps' = raw dps based on the moves of the pokemon": {},
+                            "// 'dps_attack' = average dps when attacking": {},
+                            "// 'attack_perfection' = ratio dps_attack / best_dps_attack. Return same order as 'dps_attack'": {},
+                            "// 'dps_defense' = average dps when defending": {},
+                            "// 'defense_perfection' = ratio dps_defense / best_dps_defense. Return same order as 'dps_defense'": {},
+                            "// 'hp' = current health points": {},
+                            "// 'hp_max' = max health points": {},
                             "// Note that the more criteria you add to this list, the less likely Pokemons": {},
                             "// will be equals": {},
                         "sort": ["iv"]
@@ -117,6 +139,9 @@
                     {
                         "// Following setting let you keep keep the best cp of the family.": {},
                         "// But will not evolve it further (in favor of the best ncp)": {},
+                        "// It will only applies to the family of 'Dragonite', 'Arcanine' and 'Muk'": {},
+                        "// Other families are not following this setting": {},
+                        "names": ["Dragonite", "Arcanine", "Muk"],
                         "top": 1,
                         "evolve": false,
                         "sort": ["cp"]
@@ -150,6 +175,8 @@
             "catch_visible_pokemon": true,
             "catch_lured_pokemon": true,
             "min_ultraball_to_keep": 5,
+            "berry_threshold": 0.35,
+            "vip_berry_threshold": 0.9,
             "catch_throw_parameters": {
               "excellent_rate": 0.1,
               "great_rate": 0.5,
@@ -197,8 +224,20 @@
       "max_circle_size": 50,
       "cache_recent_forts": true
     },
+    "pokemon_bag": {
+      "// if 'show_at_start' is true, it will log all the pokemons in the bag (not eggs) at bot start": {},
+      "show_at_start": true,
+      "// if 'show_count' is true, it will show the amount of each pokemon (minimum 1)": {},
+      "show_count": false,
+      "// 'pokemon_info' parameter define which info to show for each pokemon": {},
+      "// the available options are": {},
+      "// ['cp', 'iv_ads', 'iv_pct', 'ivcp', 'ncp', 'level', 'hp', 'moveset', 'dps']": {},
+      "pokemon_info": ["cp", "iv_pct"]
+    },
     "walk_max": 4.16,
     "walk_min": 2.16,
+    "alt_min": 500,
+    "alt_max": 1000,
     "debug": false,
     "test": false,
     "health_record": true,
@@ -206,6 +245,7 @@
     "distance_unit": "km",
     "reconnecting_timeout": 15,
     "logging_color": true,
+    "daily_catch_limit": 800,
     "catch": {
         "any": {
             "always_catch": true
