@@ -139,8 +139,8 @@ class FollowPath(BaseTask):
             'position_update',
             formatted="Walk to {last_position} now at {current_position}, distance left: ({distance} {distance_unit}) ..",
             data={
-                'last_position': (lat, lng, alt),
-                'current_position': (last_lat, last_lng, last_alt),
+                'last_position': (last_lat, last_lng, last_alt),
+                'current_position': (lat, lng, alt),
                 'distance': dist,
                 'distance_unit': 'm'
             }
