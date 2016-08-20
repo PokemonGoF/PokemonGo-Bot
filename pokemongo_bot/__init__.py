@@ -183,7 +183,7 @@ class PokemonGoBot(Datastore):
                 'wake'
             )
         )
-        
+
         # random pause
         self.event_manager.register_event(
             'next_random_pause',
@@ -275,6 +275,7 @@ class PokemonGoBot(Datastore):
             'pokemon_appeared',
             parameters=(
                 'pokemon',
+                'ncp',
                 'cp',
                 'iv',
                 'iv_display',
@@ -332,7 +333,7 @@ class PokemonGoBot(Datastore):
             'pokemon_caught',
             parameters=(
                 'pokemon',
-                'cp', 'iv', 'iv_display', 'exp',
+                'ncp', 'cp', 'iv', 'iv_display', 'exp',
                 'encounter_id',
                 'latitude',
                 'longitude',

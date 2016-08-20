@@ -30,8 +30,10 @@ ITEM_ULTRABALL = 3
 ITEM_RAZZBERRY = 701
 
 LOGIC_TO_FUNCTION = {
-    'or': lambda x, y: x or y,
-    'and': lambda x, y: x and y
+    'or': lambda x, y, z: x or y or z,
+    'and': lambda x, y, z: x and y and z,
+    'orand': lambda x, y, z: x or y and z,
+    'andor': lambda x, y, z: x and y or z
 }
 
 
@@ -114,9 +116,10 @@ class PokemonCatchWorker(Datastore, BaseTask):
         # log encounter
         self.emit_event(
             'pokemon_appeared',
-            formatted='A wild {pokemon} appeared! [CP {cp}] [Potential {iv}] [A/D/S {iv_display}]',
+            formatted='A wild {pokemon} appeared! [CP {cp}] [NCP {ncp}] [Potential {iv}] [A/D/S {iv_display}]',
             data={
                 'pokemon': pokemon.name,
+                'ncp': round(pokemon.cp_percent, 2),
                 'cp': pokemon.cp,
                 'iv': pokemon.iv,
                 'iv_display': pokemon.iv_display,
@@ -197,6 +200,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
             return False
 
         catch_results = {
+            'ncp': False,
             'cp': False,
             'iv': False,
         }
@@ -206,6 +210,10 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
         if pokemon_config.get('always_catch', False):
             return True
+
+        catch_ncp = pokemon_config.get('catch_above_ncp', 0)
+        if pokemon.cp_percent > catch_ncp:
+            catch_results['ncp'] = True
 
         catch_cp = pokemon_config.get('catch_above_cp', 0)
         if pokemon.cp > catch_cp:
@@ -475,9 +483,10 @@ class PokemonCatchWorker(Datastore, BaseTask):
                     inventory.pokemons().add(pokemon)
                     self.emit_event(
                         'pokemon_caught',
-                        formatted='Captured {pokemon}! [CP {cp}] [Potential {iv}] [{iv_display}] [+{exp} exp]',
+                        formatted='Captured {pokemon}! [CP {cp}] [NCP {ncp}] [Potential {iv}] [{iv_display}] [+{exp} exp]',
                         data={
                             'pokemon': pokemon.name,
+                            'ncp': round(pokemon.cp_percent, 2),
                             'cp': pokemon.cp,
                             'iv': pokemon.iv,
                             'iv_display': pokemon.iv_display,
