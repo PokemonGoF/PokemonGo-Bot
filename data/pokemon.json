@@ -3154,8 +3154,8 @@
     ],
     "Fast Attack(s)": [
       "Mud Shot",
-      "Rock Throw",
-      "Mud Slap"
+      "Mud Slap",
+      "Rock Throw"
     ],
     "Weight": "300.0 kg",
     "Height": "1.4 m",
@@ -4855,8 +4855,8 @@
     ],
     "Fast Attack(s)": [
       "Quick Attack",
-      "Water Gun",
-      "Tackle"
+      "Tackle",
+      "Water Gun"
     ],
     "Weight": "80.0 kg",
     "Height": "1.1 m",
