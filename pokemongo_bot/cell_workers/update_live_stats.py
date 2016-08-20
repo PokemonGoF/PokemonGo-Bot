@@ -250,7 +250,7 @@ class UpdateLiveStats(BaseTask):
             'highest_cp_pokemon': 'Highest CP pokemon : {}'.format(highest_cp_pokemon),
             'most_perfect_pokemon': 'Most perfect pokemon : {}'.format(most_perfect_pokemon),
             'location': 'Location : ({}, {})'.format(self.bot.position[0], self.bot.position[1]),
-            'next_egg_hatching': 'Next egg hatches in : {:.2f} km'.format(next_egg_hatching),
+            'next_egg_hatching': 'Next egg hatches in : {:.2f} km'.format(float(next_egg_hatching)),
             'hatched_eggs': 'Hatched {} eggs.'.format(hatched_eggs)
         }
 
