@@ -243,7 +243,7 @@ Key | Info
 ---- | ----
 **{name}** |  Pokemon name     *(e.g. Articuno)*
 **{id}**  |  Pokemon ID/Number *(1-151, e.g. 1 for Bulbasaurs)*
-**{cçp}**  |  Pokemon's Combat Points (CP)    *(10-4145)*
+**{cp}**  |  Pokemon's Combat Points (CP)    *(10-4145)*
  | **Individial Values (IV)**
 **{iv_attack}**  |  Individial Attack *(0-15)* of the current specific pokemon
 **{iv_defense}** |  Individial Defense *(0-15)* of the current specific pokemon
