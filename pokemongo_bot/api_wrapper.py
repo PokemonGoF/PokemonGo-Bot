@@ -25,6 +25,9 @@ class ApiWrapper(Datastore, PGoApi):
 
     def __init__(self, config=None):
         PGoApi.__init__(self)
+        # Set to default, just for CI...
+        self.actual_lat, self.actual_lng, self.actual_alt = PGoApi.get_position(self)
+
         self.useVanillaRequest = False
         self.config = config
         did_path = os.path.join(_base_dir, 'data', 'deviceid-%s.txt' % self.config.username)

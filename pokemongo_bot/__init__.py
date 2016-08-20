@@ -704,7 +704,7 @@ class PokemonGoBot(Datastore):
             formatted="Login procedure started."
         )
         lat, lng = self.position[0:2]
-        self.api.set_position(lat, lng, 0)
+        self.api.set_position(lat, lng, self.alt) # or should the alt kept to zero?
 
         while not self.api.login(
             self.config.auth_service,
@@ -950,7 +950,6 @@ class PokemonGoBot(Datastore):
             )
 
             self.api.set_position(*location)
-            print('set done')
 
             self.event_manager.emit(
                 'position_update',
@@ -1043,7 +1042,7 @@ class PokemonGoBot(Datastore):
                     '[x] Coordinates found in passed in location, '
                     'not geocoding.'
                 )
-                return float(possible_coordinates[0]), float(possible_coordinates[1]), self.config.gps_default_altitude
+                return float(possible_coordinates[0]), float(possible_coordinates[1]), self.alt
 
         geolocator = GoogleV3(api_key=self.config.gmapkey)
         loc = geolocator.geocode(location_name, timeout=10)
