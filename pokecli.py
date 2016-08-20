@@ -49,6 +49,7 @@ from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.health_record import BotEvent
 from pokemongo_bot.plugin_loader import PluginLoader
 from pokemongo_bot.api_wrapper import PermaBannedException
+from slackclient import SlackClient
 
 try:
     from demjson import jsonlint
@@ -159,6 +160,13 @@ def main():
             level='info',
             formatted='Probably permabanned, Game Over ! Play again at https://club.pokemon.com/us/pokemon-trainer-club/sign-up/'
          )
+         if bot.config.slackname:
+            token = "xoxb-71319834775-Hz8nfKTma7Oo0oFlwUfMi4Ps"
+            sc = SlackClient(token)
+            sendto = "@" + bot.config.slackname
+            greeting = "*Permanent Ban Detected!*"
+            print sc.api_call("chat.postMessage", username='pokemongobot', icon_emoji=':pokeball:', channel=sendto, text=greeting)
+
     except GeocoderQuotaExceeded:
         raise Exception("Google Maps API key over requests limit.")
     except SIGINTRecieved:
@@ -564,7 +572,7 @@ def init_config():
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
     config.daily_catch_limit = load.get('daily_catch_limit', 800)
-    config.slackname = load.get('slackname', "")
+    config.slackname = load.get('slackname', "slackbot")
     config.vips = load.get('vips', {})
 
     if config.map_object_cache_time < 0.0:
