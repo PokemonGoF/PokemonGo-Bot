@@ -213,7 +213,7 @@ class UpdateLiveInventory(BaseTask):
         self.logger.info(
             'Items: {}/{}'.format(
                 self.inventory.get_space_used(),
-                self.inventory.get_space_used() + self.inventory.get_space_left()
+                inventory.get_item_inventory_size()
                 )
             )
 
