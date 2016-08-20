@@ -171,6 +171,12 @@ class PokemonGoBot(Datastore):
                 'number_lap_max'
             )
         )
+        self.event_manager.register_event(
+            'path_lap_end',
+            parameters=(
+            )
+        )  
+        
         
         self.event_manager.register_event('location_cache_error')
 

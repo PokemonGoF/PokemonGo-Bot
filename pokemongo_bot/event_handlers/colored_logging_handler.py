@@ -55,6 +55,7 @@ class ColoredLoggingHandler(EventHandler):
         'unknown_spin_result':               'red',
         'unset_pokemon_nickname':            'red',
         'vip_pokemon':                       'red',
+        'path_lap_end':                      'green',
 
         # event names for 'white' still here to remember that these events are already determined its color.
         'arrived_at_cluster':                'white',

@@ -30,6 +30,7 @@ class FollowPath(BaseTask):
         self.path_start_mode = self.config.get("path_start_mode", "first")
         self.number_lap_max = self.config.get("number_lap", -1) # if < 0, then the number is inf.
         self.number_lap = 0
+        self.lapEnd = False
         
     def load_path(self):
         if self.path_file is None:
@@ -101,9 +102,20 @@ class FollowPath(BaseTask):
         return return_idx
 
     def endLaps(self):
-        print("")
+        self.emit_event(
+            'path_lap_end',
+            formatted="bot finished its path. Great job bot, lot of calories burned! Will sleep now.",
+            data={
+            }
+        )
+        self.lapEnd = True
+        while True:
+            sleep()
 
     def work(self):
+        if self.lapEnd == True:
+            pass
+        
         last_lat = self.bot.api._position_lat
         last_lng = self.bot.api._position_lng
 
