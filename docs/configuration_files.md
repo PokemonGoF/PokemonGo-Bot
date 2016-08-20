@@ -243,13 +243,13 @@ Key | Info
 ---- | ----
 **{name}** |  Pokemon name     *(e.g. Articuno)*
 **{id}**  |  Pokemon ID/Number *(1-151, e.g. 1 for Bulbasaurs)*
-**{cp}**  |  Pokemon's Combat Points (CP)    *(10-4145)*
+**{cçp}**  |  Pokemon's Combat Points (CP)    *(10-4145)*
  | **Individial Values (IV)**
 **{iv_attack}**  |  Individial Attack *(0-15)* of the current specific pokemon
 **{iv_defense}** |  Individial Defense *(0-15)* of the current specific pokemon
 **{iv_stamina}** |  Individial Stamina *(0-15)* of the current specific pokemon
 **{iv_ads}**     |  Joined IV values in `(attack)/(defense)/(stamina)` format (*e.g. 4/12/9*, matches web UI format -- A/D/S)
-**{iv_ads_hex}** |  Joined IV values of `(attack)(defense)(stamina)` in HEX (*e.g. 4C9* for A/D/S \ 4/12/9)
+**{iv_ads_hex}** |  Joined IV values of `(attack)(defense)(stamina)` in HEX (*e.g. 4C9* for A/D/S = 4/12/9)
 **{iv_sum}**     |  Sum of the Individial Values *(0-45, e.g. 45 when 3 perfect 15 IVs)*
  |  **Basic Values of the pokemon (identical for all of one kind)**
 **{base_attack}**   |  Basic Attack *(40-284)* of the current pokemon kind
