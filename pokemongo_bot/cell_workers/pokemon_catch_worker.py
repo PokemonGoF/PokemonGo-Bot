@@ -296,11 +296,6 @@ class PokemonCatchWorker(Datastore, BaseTask):
                         source = str("PokemonCatchWorker")
                         status = str("Possible Softban")
                         conn.execute('''INSERT INTO softban_log (status, source) VALUES (?, ?)''', (status, source))
-                        token = "xoxb-71319834775-Hz8nfKTma7Oo0oFlwUfMi4Ps"
-                        sc = SlackClient(token)
-                        sendto = "@" + self.bot.config.slackname
-                        greeting= status + " | " + source
-                        print sc.api_call("chat.postMessage", username='pokemongobot', icon_emoji=':pokeball:', channel=sendto, text=greeting)
                     break
                 else:
                     self.emit_event(
@@ -309,6 +304,12 @@ class PokemonCatchWorker(Datastore, BaseTask):
                         level='info',
                         formatted="softban_log table not found, skipping log"
                     )
+                if self.bot.config.slackname:
+                    token = "xoxb-71319834775-Hz8nfKTma7Oo0oFlwUfMi4Ps"
+                    sc = SlackClient(token)
+                    sendto = "@" + self.bot.config.slackname
+                    greeting= status + " | " + source
+                    print sc.api_call("chat.postMessage", username='pokemongobot', icon_emoji=':pokeball:', channel=sendto, text=greeting)
 
         # unknown status code
         else:
