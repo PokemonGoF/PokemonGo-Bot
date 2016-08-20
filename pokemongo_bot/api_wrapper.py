@@ -27,9 +27,11 @@ class ApiWrapper(Datastore, PGoApi):
         PGoApi.__init__(self)
         self.useVanillaRequest = False
         self.config = config
+        # build path to deviceid file with username and correct os slash
         did_path = os.path.join(_base_dir, 'data', 'deviceid-%s.txt' % self.config.username)
 
         if self.config is not None and os.path.exists(did_path) == False:
+            # if config is available and no device_id salt file doesn't exists, create one
             key_string = self.config.username
             rand_float = random.SystemRandom().random()
             salt = base64.b64encode((struct.pack('!d', rand_float)))
@@ -37,11 +39,15 @@ class ApiWrapper(Datastore, PGoApi):
             ApiWrapper.DEVICE_ID = hashlib.md5(key_string + salt).hexdigest()
             with open(did_path, "w") as text_file:
                 text_file.write("{0}".format(salt))
+        
         elif self.config is not None and os.path.exists(did_path) == True:
+            # if config is available and device_id salt file exists, load previous salt (to prevent generating new device_id over and over)
                 saltfromfile = open(did_path, 'r').read()
                 key_string = self.config.username
                 ApiWrapper.DEVICE_ID = hashlib.md5(key_string + saltfromfile).hexdigest()
+        
         elif self.config is None and os.path.exists(did_path) == True:
+            # if config not available but the device_id salt file exists, hash the salt and set as device_id
             saltfromfile = open(did_path, 'r').read()
             ApiWrapper.DEVICE_ID = hashlib.md5(saltfromfile).hexdigest()
         if ApiWrapper.DEVICE_ID is None:
