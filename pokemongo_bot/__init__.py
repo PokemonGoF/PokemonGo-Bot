@@ -342,7 +342,7 @@ class PokemonGoBot(Datastore):
         )
         self.event_manager.register_event(
             'pokemon_evolved',
-            parameters=('pokemon', 'iv', 'cp', 'xp')
+            parameters=('pokemon', 'iv', 'cp', 'xp', 'candy')
         )
         self.event_manager.register_event('skip_evolve')
         self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
@@ -519,7 +519,7 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event('transfer_log')
         self.event_manager.register_event('pokestop_log')
         self.event_manager.register_event('softban_log')
-        
+
     def tick(self):
         self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
@@ -726,7 +726,7 @@ class PokemonGoBot(Datastore):
             c = conn.cursor()
             c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='login'")
 
-        result = c.fetchone()        
+        result = c.fetchone()
 
         while True:
             if result[0] == 1:
@@ -875,8 +875,10 @@ class PokemonGoBot(Datastore):
 
     def _print_list_pokemon(self):
         # get pokemon list
-        pokemon_list = inventory.pokemons().all()
-        pokemon_list = sorted(pokemon_list, key=lambda k: k.pokemon_id)
+        bag = inventory.pokemons().all()
+        id_list =list(set(map(lambda x: x.pokemon_id, bag)))
+        id_list.sort()
+        pokemon_list = [filter(lambda x: x.pokemon_id == y, bag) for y in id_list]
 
         show_count = self.config.pokemon_bag_show_count
         poke_info_displayed = self.config.pokemon_bag_pokemon_info
@@ -899,23 +901,14 @@ class PokemonGoBot(Datastore):
 
         self.logger.info('Pokemon:')
 
-        last_id = -1
-        line_start = str()
-        line_p = []
-        count = 0
-        for poke in pokemon_list:
-            if last_id != -1 and last_id != poke.pokemon_id:
-                if show_count:
-                    line_start += '[{}]'.format(count)
-                self.logger.info(line_start + ': ' + ' | '.join(line_p))
-                line_p = []
-                last_id = -1
-                count = 0
-            if last_id == -1:
-                last_id = poke.pokemon_id
-                line_start = '#{} {}'.format(last_id, poke.name)
-            line_p.append('({})'.format(', '.join([get_poke_info(x, poke) for x in poke_info_displayed])))
-            count += 1
+        for pokes in pokemon_list:
+            line_p = '#{} {}'.format(pokes[0].pokemon_id, pokes[0].name)
+            if show_count:
+                line_p += '[{}]'.format(len(pokes))
+            line_p += ': '
+            
+            poke_info = ['({})'.format(', '.join([get_poke_info(x, p) for x in poke_info_displayed])) for p in pokes]
+            self.logger.info(line_p + ' | '.join(poke_info))
 
         self.logger.info('')
 
