@@ -64,7 +64,7 @@ class FollowPath(BaseTask):
         gpx = gpxpy.parse(gpx_file)
 
         if len(gpx.tracks) == 0:
-            raise RuntimeError('GPX file does not cotain a track')
+            raise RuntimeError('GPX file does not contain a track')
 
         points = []
         track = gpx.tracks[0]
