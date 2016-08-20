@@ -40,11 +40,11 @@ import struct
 class PokemonGoBot(Datastore):
     @property
     def position(self):
-        return self.api._position_lat, self.api._position_lng, 0
+        return self.api.actual_lat, self.api.actual_lng, self.api.actual_alt
 
-    @position.setter
-    def position(self, position_tuple):
-        self.api._position_lat, self.api._position_lng, self.api._position_alt = position_tuple
+    #@position.setter # these should be called through api now that gps replication is there...
+    #def position(self, position_tuple):
+    #    self.api._position_lat, self.api._position_lng, self.api._position_alt = position_tuple
 
     @property
     def player_data(self):
@@ -78,6 +78,7 @@ class PokemonGoBot(Datastore):
         self.last_map_object = None
         self.last_time_map_object = 0
         self.logger = logging.getLogger(type(self).__name__)
+        self.alt = self.config.gps_default_altitude
 
         # Make our own copy of the workers for this instance
         self.workers = []
@@ -182,7 +183,7 @@ class PokemonGoBot(Datastore):
                 'wake'
             )
         )
-        
+
         # random pause
         self.event_manager.register_event(
             'next_random_pause',
@@ -274,6 +275,7 @@ class PokemonGoBot(Datastore):
             'pokemon_appeared',
             parameters=(
                 'pokemon',
+                'ncp',
                 'cp',
                 'iv',
                 'iv_display',
@@ -331,7 +333,7 @@ class PokemonGoBot(Datastore):
             'pokemon_caught',
             parameters=(
                 'pokemon',
-                'cp', 'iv', 'iv_display', 'exp',
+                'ncp', 'cp', 'iv', 'iv_display', 'exp',
                 'encounter_id',
                 'latitude',
                 'longitude',
@@ -387,7 +389,7 @@ class PokemonGoBot(Datastore):
         )
         self.event_manager.register_event(
             'next_egg_incubates',
-            parameters=('km_needed', 'distance_in_km',)
+            parameters=('km_needed', 'distance_in_km', 'eggs', 'eggs_inc')
         )
         self.event_manager.register_event('incubator_already_used')
         self.event_manager.register_event('egg_already_incubating')
@@ -510,7 +512,14 @@ class PokemonGoBot(Datastore):
             'error_caching_forts',
             parameters=('path', )
         )
-
+        # database shit
+        self.event_manager.register_event('catch_log')
+        self.event_manager.register_event('evolve_log')
+        self.event_manager.register_event('login_log')
+        self.event_manager.register_event('transfer_log')
+        self.event_manager.register_event('pokestop_log')
+        self.event_manager.register_event('softban_log')
+        
     def tick(self):
         self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
@@ -571,7 +580,7 @@ class PokemonGoBot(Datastore):
         if lng is None:
             lng = self.api._position_lng
         if alt is None:
-            alt = 0
+            alt = self.api._position_alt
 
         if cells == []:
             location = self.position[0:2]
@@ -604,7 +613,7 @@ class PokemonGoBot(Datastore):
         )
         try:
             with open(user_data_lastlocation, 'w') as outfile:
-                json.dump({'lat': lat, 'lng': lng, 'start_position': self.start_position}, outfile)
+                json.dump({'lat': lat, 'lng': lng, 'alt': alt, 'start_position': self.start_position}, outfile)
         except IOError as e:
             self.logger.info('[x] Error while opening location file: %s' % e)
 
@@ -676,9 +685,8 @@ class PokemonGoBot(Datastore):
                     level='info',
                     formatted='Session stale, re-logging in.'
                 )
-                position = self.position
-                self.api = ApiWrapper()
-                self.position = position
+                self.api = ApiWrapper(config=self.config)
+                self.api.set_position(*self.position) 
                 self.login()
                 self.api.activate_signature(self.get_encryption_lib())
 
@@ -698,7 +706,7 @@ class PokemonGoBot(Datastore):
             formatted="Login procedure started."
         )
         lat, lng = self.position[0:2]
-        self.api.set_position(lat, lng, 0)
+        self.api.set_position(lat, lng, self.alt) # or should the alt kept to zero?
 
         while not self.api.login(
             self.config.auth_service,
@@ -714,7 +722,23 @@ class PokemonGoBot(Datastore):
             time.sleep(10)
 
         with self.database as conn:
-            conn.execute('''INSERT INTO login (timestamp, message) VALUES (?, ?)''', (time.time(), 'LOGIN_SUCCESS'))
+            c = conn.cursor()
+            c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='login'")
+
+        result = c.fetchone()        
+
+        while True:
+            if result[0] == 1:
+                conn.execute('''INSERT INTO login (timestamp, message) VALUES (?, ?)''', (time.time(), 'LOGIN_SUCCESS'))
+                break
+            else:
+                self.event_manager.emit(
+                    'login_failed',
+                    sender=self,
+                    level='info',
+                    formatted="Login table not founded, skipping log"
+                )
+                break
 
         self.event_manager.emit(
             'login_successful',
@@ -750,7 +774,7 @@ class PokemonGoBot(Datastore):
 
     def _setup_api(self):
         # instantiate pgoapi
-        self.api = ApiWrapper()
+        self.api = ApiWrapper(config=self.config)
 
         # provide player position on the earth
         self._set_starting_position()
@@ -962,7 +986,7 @@ class PokemonGoBot(Datastore):
                 location = (
                     location_json['lat'],
                     location_json['lng'],
-                    0.0
+                    location_json['alt'],
                 )
 
                 # If location has been set in config, only use cache if starting position has not differed
@@ -1020,7 +1044,7 @@ class PokemonGoBot(Datastore):
                     '[x] Coordinates found in passed in location, '
                     'not geocoding.'
                 )
-                return float(possible_coordinates[0]), float(possible_coordinates[1]), float("0.0")
+                return float(possible_coordinates[0]), float(possible_coordinates[1]), self.alt
 
         geolocator = GoogleV3(api_key=self.config.gmapkey)
         loc = geolocator.geocode(location_name, timeout=10)

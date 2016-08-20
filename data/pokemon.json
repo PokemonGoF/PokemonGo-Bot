@@ -1609,6 +1609,7 @@
     ],
     "Special Attack(s)": [
       "Body Slam",
+      "Dazzling Gleam",
       "Disarming Voice",
       "Play Rough"
     ],
@@ -2062,6 +2063,7 @@
     ],
     "Fast Attack(s)": [
       "Mud Shot",
+      "Mud Slap",
       "Scratch"
     ],
     "Weight": "0.8 kg",
@@ -2102,6 +2104,7 @@
     ],
     "Fast Attack(s)": [
       "Mud Shot",
+      "Mud Slap",
       "Sucker Punch"
     ],
     "Weight": "33.3 kg",
@@ -3098,6 +3101,7 @@
     ],
     "Fast Attack(s)": [
       "Mud Shot",
+      "Mud Slap",
       "Rock Throw"
     ],
     "Weight": "105.0 kg",
@@ -3150,6 +3154,7 @@
     ],
     "Fast Attack(s)": [
       "Mud Shot",
+      "Mud Slap",
       "Rock Throw"
     ],
     "Weight": "300.0 kg",
@@ -3539,6 +3544,7 @@
     ],
     "Fast Attack(s)": [
       "Ice Shard",
+      "Lick",
       "Water Gun"
     ],
     "Weight": "90.0 kg",
@@ -3617,7 +3623,8 @@
     ],
     "Fast Attack(s)": [
       "Acid",
-      "Mud Slap"
+      "Mud Slap",
+      "Poison Jab"
     ],
     "Weight": "30.0 kg",
     "Height": "0.9 m",
@@ -3656,6 +3663,7 @@
     ],
     "Fast Attack(s)": [
       "Acid",
+      "Lick",
       "Poison Jab"
     ],
     "Weight": "30.0 kg",
@@ -3888,6 +3896,7 @@
     "Special Attack(s)": [
       "Dark Pulse",
       "Shadow Ball",
+      "Sludge Bomb",
       "Sludge Wave"
     ],
     "BaseAttack": 204,
@@ -4332,6 +4341,7 @@
     "Weight": "49.8 kg",
     "Height": "1.5 m",
     "Special Attack(s)": [
+      "Brick Break",
       "Low Sweep",
       "Stomp",
       "Stone Edge"
@@ -4577,6 +4587,7 @@
     "Height": "1.1 m",
     "Special Attack(s)": [
       "Dazzling Gleam",
+      "Hyper Beam",
       "Psybeam",
       "Psychic"
     ],
@@ -4802,6 +4813,7 @@
     ],
     "Fast Attack(s)": [
       "Quick Attack",
+      "Tackle",
       "Water Gun"
     ],
     "Weight": "34.5 kg",
@@ -4847,6 +4859,7 @@
     ],
     "Fast Attack(s)": [
       "Quick Attack",
+      "Tackle",
       "Water Gun"
     ],
     "Weight": "80.0 kg",
@@ -4860,7 +4873,8 @@
     "Special Attack(s)": [
       "Hydro Pump",
       "Power Gem",
-      "Psybeam"
+      "Psybeam",
+      "Psychic"
     ],
     "BaseAttack": 194,
     "BaseDefense": 192,
@@ -5368,7 +5382,8 @@
     ],
     "Fast Attack(s)": [
       "Quick Attack",
-      "Tackle"
+      "Tackle",
+      "Zen Headbutt"
     ],
     "Weight": "36.5 kg",
     "Height": "0.8 m",
@@ -5444,6 +5459,7 @@
       "Ground"
     ],
     "Fast Attack(s)": [
+      "Mud Shot",
       "Rock Throw",
       "Water Gun"
     ],
@@ -5879,6 +5895,7 @@
       "Pound"
     ],
     "Special Attack(s)": [
+      "Blizzard",
       "Dragon Pulse",
       "Earthquake",
       "Fire Blast",

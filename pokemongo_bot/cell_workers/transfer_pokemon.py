@@ -5,10 +5,14 @@ from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.inventory import Pokemons, Pokemon, Attack
+from pokemongo_bot.datastore import Datastore
+from operator import attrgetter
 
-class TransferPokemon(BaseTask):
+class TransferPokemon(Datastore, BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
+    def __init__(self, bot, config):
+        super(TransferPokemon, self).__init__(bot, config)
     def initialize(self):
         self.transfer_wait_min = self.config.get('transfer_wait_min', 1)
         self.transfer_wait_max = self.config.get('transfer_wait_max', 4)
@@ -41,9 +45,10 @@ class TransferPokemon(BaseTask):
                         order_criteria = 'iv'      
             elif keep_best_custom:
                 limit = keep_amount
-                best_pokemons = sorted(group, key=lambda x: keep_best_criteria, reverse=True)[:limit]
-                best_pokemon_ids = set(pokemon.id for pokemon in best_pokemons)
-                order_criteria = ' and '.join(keep_best_criteria)
+                keep_best_criteria = [str(keep_best_criteria[x]) for x in range(len(keep_best_criteria))] # not sure if the u of unicode will stay, so make it go away
+                best_pokemons = sorted(group, key=attrgetter(*keep_best_criteria), reverse=True)[:limit]
+                best_pokemon_ids = set(pokemon.unique_id for pokemon in best_pokemons)
+                order_criteria = ' then '.join(keep_best_criteria)
                 
             if keep_best or keep_best_custom:
                 # remove best pokemons from all pokemons array
@@ -175,6 +180,24 @@ class TransferPokemon(BaseTask):
                 'dps': pokemon.moveset.dps
             }
         )
+        with self.bot.database as conn:
+            c = conn.cursor()
+            c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='transfer_log'")
+
+        result = c.fetchone()        
+
+        while True:
+            if result[0] == 1:
+                conn.execute('''INSERT INTO transfer_log (pokemon, iv, cp) VALUES (?, ?, ?)''', (pokemon.name, pokemon.iv, pokemon.cp))
+                break
+            else:
+                self.emit_event(
+                    'transfer_log',
+                    sender=self,
+                    level='info',
+                    formatted="transfer_log table not found, skipping log"
+                )
+                break
         action_delay(self.transfer_wait_min, self.transfer_wait_max)
 
     def _get_release_config_for(self, pokemon):

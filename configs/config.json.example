@@ -119,6 +119,8 @@
           "catch_visible_pokemon": true,
           "catch_lured_pokemon": true,
           "min_ultraball_to_keep": 5,
+          "berry_threshold": 0.35,
+          "vip_berry_threshold": 0.9,
           "catch_throw_parameters": {
             "excellent_rate": 0.1,
             "great_rate": 0.5,
@@ -179,8 +181,13 @@
     },
     "walk_max": 4.16,
     "walk_min": 2.16,
-    "alt_min": 0.75,
-    "alt_max": 2.5,
+    "alt_min": 500,
+    "alt_max": 1000,
+    "gps_default_altitude": 8.0,
+    "replicate_gps_xy_noise": false,
+    "replicate_gps_z_noise": false,
+    "gps_xy_noise_range": 0.00025,
+    "gps_z_noise_range": 12.5,
     "debug": false,
     "test": false,
     "health_record": true,
@@ -207,7 +214,7 @@
       "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat:": {},
       "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3},
 	  "// Example of custom order of static criterion": {},
-	  "// Zubat": {"keep_best_custom": "moveset.defense_perfection, hp_max", "amount":2}
+	  "// Zubat": {"keep_best_custom": "iv, cp, hp_max", "amount":2}
     },
     "vips" : {
         "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate!": {},

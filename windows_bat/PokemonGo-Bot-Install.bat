@@ -5,7 +5,7 @@ CLS
 
 
 :init
-setlocal DisableDelayedExpansion
+setlocal EnableDelayedExpansion
 path c:\Program Files\Git\cmd;%PATH%
 path C:\Python27;%PATH%
 path C:\Python27\Scripts;%PATH%
@@ -20,7 +20,6 @@ set GitFName64=Git-2.9.3-64-bit.exe
 set "batchPath=%~0"
 for %%k in (%0) do set batchName=%%~nk
 set "vbsGetPrivileges=%temp%\OEgetPriv_%batchName%.vbs"
-setlocal EnableDelayedExpansion
 
 
 
@@ -63,7 +62,7 @@ CLS
 @ECHO.
 set InstallPath=
 set /p InstallPath= "Choose an installation folder or press Enter to close:" ||goto:eof
-FOR /F "tokens=1-4 delims=/-. " %%G IN ("%InstallPath%") DO (set InstallPath=%%G\%%H\%%I\%%J)
+FOR /F "tokens=1-4 delims=/-. " %%G IN ("%InstallPath%") DO (set InstallPath=%%G\%%H\%%I) 
 set PGBotPath=%InstallPath%\PokemonGo-Bot
 set DownPath=%InstallPath%\Install-Files
 if not exist %DownPath% md %DownPath%
@@ -190,9 +189,11 @@ CLS
 @ECHO.
 @ECHO.
 @ECHO.
-if exist %PGBotPath%\configs\config.json copy %PGBotPath%\configs\config.json %DownPath%
-if exist %PGBotPath%\web\config\userdata.js copy %PGBotPath%\web\config\userdata.js %DownPath%
-if exist %PGBotPath%\encrypt. copy %PGBotPath%\encrypt. %DownPath%
+if exist %PGBotPath%\encrypt.so COPY %PGBotPath%\encrypt.so %DownPath%
+if exist %PGBotPath%\encrypt.dll COPY %PGBotPath%\encrypt.dll %DownPath%
+if exist %PGBotPath%\encrypt_64.dll COPY %PGBotPath%\encrypt_64.dll %DownPath%
+if exist %PGBotPath%\configs\config.json COPY %PGBotPath%\configs\config.json %DownPath%
+if exist %PGBotPath%\web\config\userdata.js COPY %PGBotPath%\web\config\userdata.js %DownPath%
 @ECHO.
 @ECHO.
 @ECHO.
@@ -201,16 +202,11 @@ if exist %PGBotPath%\encrypt. copy %PGBotPath%\encrypt. %DownPath%
 @ECHO.
 @ECHO.
 if exist %PGBotPath% rmdir %PGBotPath% /s /q
-if not exist %PGBotPath% md %PGBotPath%
 cd C:\Python27\
+pip2 install --upgrade pip
 pip2 install --upgrade virtualenv
 git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot %PGBotPath%
-if "%OS%" == "32-BIT" pip2 install --upgrade %PGBotPath%\windows_bat\PyYAML-3.11-cp27-cp27m-win32.whl
-if "%OS%" == "64-BIT" pip2 install --upgrade %PGBotPath%\windows_bat\PyYAML-3.11-cp27-cp27m-win_amd64.whl
-cd %PGBotPath%
-virtualenv .
-call "%PGBotPath%\Scripts\activate.bat"
-pip2 install --upgrade -r %PGBotPath%\requirements.txt
+pip2 install -r %PGBotPath%\requirements.txt
 @ECHO.
 @ECHO.
 @ECHO.
@@ -218,7 +214,14 @@ pip2 install --upgrade -r %PGBotPath%\requirements.txt
 @ECHO.
 @ECHO.
 @ECHO.
-if exist %DownPath%\encrypt. COPY %DownPath%\encrypt. %PGBotPath%
+if exist %~dp0\encrypt.so COPY %~dp0\encrypt.so %PGBotPath%
+if exist %~dp0\encrypt.dll COPY %~dp0\encrypt.dll %PGBotPath%
+if exist %~dp0\encrypt_64.dll COPY %~dp0\encrypt_64.dll %PGBotPath%
+if exist %~dp0\config.json COPY %~dp0\config.json %PGBotPath%\configs\
+if exist %~dp0\userdata.js COPY %~dp0\userdata.js %PGBotPath%\web\config\
+if exist %DownPath%\encrypt.so COPY %DownPath%\encrypt.so %PGBotPath%
+if exist %DownPath%\encrypt.dll COPY %DownPath%\encrypt.dll %PGBotPath%
+if exist %DownPath%\encrypt_64.dll COPY %DownPath%\encrypt_64.dll %PGBotPath%
 if exist %DownPath%\config.json COPY %DownPath%\config.json %PGBotPath%\configs\
 if exist %DownPath%\userdata.js COPY %DownPath%\userdata.js %PGBotPath%\web\config\
 @ECHO.
@@ -247,15 +250,15 @@ CLS
 @ECHO.
 @ECHO.
 @ECHO.
-@ECHO "%PGBotPath%/configs/config.json"
+@ECHO "%PGBotPath%\configs\config.json"
 @ECHO INSTRUCTIONS:
 @ECHO "https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/docs/configuration_files.md"
 @ECHO.
-@ECHO "%PGBotPath%/web/config/userdata.js"
+@ECHO "%PGBotPath%\web\config\userdata.js"
 @ECHO INSTRUCTIONS:
 @ECHO "https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/docs/google_map.md"
 @ECHO.
-@ECHO To get an Google Map API Key:
+@ECHO To get an Google Maps API Key:
 @ECHO "https://developers.google.com/maps/documentation/javascript/get-api-key"
 @ECHO.
 @ECHO.

@@ -14,6 +14,7 @@ from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.base_dir import _base_dir
 from utils import distance, format_time, fort_details
+from pokemongo_bot.datastore import Datastore
 
 SPIN_REQUEST_RESULT_SUCCESS = 1
 SPIN_REQUEST_RESULT_OUT_OF_RANGE = 2
@@ -21,9 +22,11 @@ SPIN_REQUEST_RESULT_IN_COOLDOWN_PERIOD = 3
 SPIN_REQUEST_RESULT_INVENTORY_FULL = 4
 
 
-class SpinFort(BaseTask):
+class SpinFort(Datastore, BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
+    def __init__(self, bot, config):
+        super(SpinFort, self).__init__(bot, config)
     def initialize(self):
         self.ignore_item_count = self.config.get("ignore_item_count", False)
         self.spin_wait_min = self.config.get("spin_wait_min", 2)
@@ -85,6 +88,22 @@ class SpinFort(BaseTask):
                         formatted='Found nothing in pokestop {pokestop}.',
                         data={'pokestop': fort_name}
                     )
+                with self.bot.database as conn:
+                    c = conn.cursor()
+                    c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='pokestop_log'")
+                result = c.fetchone()        
+                while True:
+                    if result[0] == 1:
+                        conn.execute('''INSERT INTO pokestop_log (pokestop, exp, items) VALUES (?, ?, ?)''', (fort_name, str(experience_awarded), str(items_awarded)))
+                        break
+                    else:
+                        self.emit_event(
+                        'pokestop_log',
+                        sender=self,
+                        level='info',
+                        formatted="pokestop_log table not found, skipping log"
+                        )
+                        break
                 pokestop_cooldown = spin_details.get(
                     'cooldown_complete_timestamp_ms')
                 self.bot.fort_timeouts.update({fort["id"]: pokestop_cooldown})
@@ -131,6 +150,25 @@ class SpinFort(BaseTask):
                         'softban',
                         formatted='Probably got softban.'
                     )
+                with self.bot.database as conn:
+                    c = conn.cursor()
+                    c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='softban_log'")
+                result = c.fetchone()        
+
+                while True:
+                    if result[0] == 1:
+                        source = str("PokemonCatchWorker")
+                        status = str("Possible Softban")
+                        conn.execute('''INSERT INTO softban_log (status, source) VALUES (?, ?)''', (status, source))
+                        break
+                    else:
+                        self.emit_event(
+                        'softban_log',
+                        sender=self,
+                        level='info',
+                        formatted="softban_log table not found, skipping log"
+                        )
+                        break
                 else:
                     self.bot.fort_timeouts[fort["id"]] = (time.time() + 300) * 1000  # Don't spin for 5m
                 return WorkerResult.ERROR

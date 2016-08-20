@@ -228,7 +228,7 @@ class MoveToMapPokemon(BaseTask):
         api_encounter_response = catch_worker.create_encounter_api_call()
         time.sleep(SNIPE_SLEEP_SEC)
         self._teleport_back(last_position)
-        self.bot.api.set_position(last_position[0], last_position[1], alt)
+        self.bot.api.set_position(last_position[0], last_position[1], self.alt)
         time.sleep(SNIPE_SLEEP_SEC)
         self.bot.heartbeat()
         catch_worker.work(api_encounter_response)
@@ -275,6 +275,9 @@ class MoveToMapPokemon(BaseTask):
                     self.snipe(pokemon)
             else:
                 return self.snipe(pokemon)
+
+        if pokeballs_quantity + superballs_quantity + ultraballs_quantity < self.min_ball:
+            return WorkerResult.SUCCESS
 
         step_walker = self._move_to(pokemon)
         if not step_walker.step():
@@ -336,7 +339,7 @@ class MoveToMapPokemon(BaseTask):
             formatted='Teleporting to {poke_name}. ({poke_dist})',
             data=self._pokemon_event_data(pokemon)
         )
-        self.bot.api.set_position(pokemon['latitude'], pokemon['longitude'], alt)
+        self.bot.api.set_position(pokemon['latitude'], pokemon['longitude'], self.alt)
         self._encountered(pokemon)
 
     def _encountered(self, pokemon):
