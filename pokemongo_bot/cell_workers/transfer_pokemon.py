@@ -7,6 +7,7 @@ from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.inventory import Pokemons, Pokemon, Attack
 from pokemongo_bot.datastore import Datastore
 from operator import attrgetter
+from random import randrange
 
 class TransferPokemon(Datastore, BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -87,7 +88,8 @@ class TransferPokemon(Datastore, BaseTask):
                         self.release_pokemon(pokemon)
 
     def _should_work(self):
-        return inventory.Pokemons.get_space_left() <= self.min_free_slot
+        random_number = randrange (0,20,1) 
+        return inventory.Pokemons.get_space_left() <= self.min_free_slot - random_number
 
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
