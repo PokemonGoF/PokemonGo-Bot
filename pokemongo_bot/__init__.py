@@ -40,11 +40,11 @@ import struct
 class PokemonGoBot(Datastore):
     @property
     def position(self):
-        return self.api._position_lat, self.api._position_lng, self.api._position_alt
+        return self.api.actual_lat, self.api.actual_lng, self.api.actual_alt
 
-    @position.setter
-    def position(self, position_tuple):
-        self.api._position_lat, self.api._position_lng, self.api._position_alt = position_tuple
+    #@position.setter # these should be called through api now that gps replication is there...
+    #def position(self, position_tuple):
+    #    self.api._position_lat, self.api._position_lng, self.api._position_alt = position_tuple
 
     @property
     def player_data(self):
@@ -78,7 +78,7 @@ class PokemonGoBot(Datastore):
         self.last_map_object = None
         self.last_time_map_object = 0
         self.logger = logging.getLogger(type(self).__name__)
-        self.alt = 1
+        self.alt = self.config.gps_default_altitude
 
         # Make our own copy of the workers for this instance
         self.workers = []
@@ -342,7 +342,7 @@ class PokemonGoBot(Datastore):
         )
         self.event_manager.register_event(
             'pokemon_evolved',
-            parameters=('pokemon', 'iv', 'cp', 'ncp', 'dps', 'xp')
+            parameters=('pokemon', 'iv', 'cp', 'xp', 'candy')
         )
         self.event_manager.register_event('skip_evolve')
         self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
@@ -435,7 +435,7 @@ class PokemonGoBot(Datastore):
         )
         self.event_manager.register_event(
             'pokemon_release',
-            parameters=('pokemon', 'iv', 'cp', 'ncp', 'dps')
+            parameters=('pokemon', 'iv', 'cp', 'candy')
         )
 
         # polyline walker
@@ -519,7 +519,7 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event('transfer_log')
         self.event_manager.register_event('pokestop_log')
         self.event_manager.register_event('softban_log')
-        
+
     def tick(self):
         self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
@@ -535,7 +535,7 @@ class PokemonGoBot(Datastore):
         self.tick_count += 1
 
         # Check if session token has expired
-        self.check_session(self.position[0:2])
+        self.check_session(self.position)
 
         for worker in self.workers:
             if worker.work() == WorkerResult.RUNNING:
@@ -667,6 +667,7 @@ class PokemonGoBot(Datastore):
             format='%(asctime)s [%(name)10s] [%(levelname)s] %(message)s'
         )
     def check_session(self, position):
+
         # Check session expiry
         if self.api._auth_provider and self.api._auth_provider._ticket_expire:
 
@@ -685,9 +686,8 @@ class PokemonGoBot(Datastore):
                     level='info',
                     formatted='Session stale, re-logging in.'
                 )
-                position = self.position
                 self.api = ApiWrapper(config=self.config)
-                self.position = position
+                self.api.set_position(*position)
                 self.login()
                 self.api.activate_signature(self.get_encryption_lib())
 
@@ -707,7 +707,7 @@ class PokemonGoBot(Datastore):
             formatted="Login procedure started."
         )
         lat, lng = self.position[0:2]
-        self.api.set_position(lat, lng, 0)
+        self.api.set_position(lat, lng, self.alt) # or should the alt kept to zero?
 
         while not self.api.login(
             self.config.auth_service,
@@ -726,7 +726,7 @@ class PokemonGoBot(Datastore):
             c = conn.cursor()
             c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='login'")
 
-        result = c.fetchone()        
+        result = c.fetchone()
 
         while True:
             if result[0] == 1:
@@ -875,8 +875,10 @@ class PokemonGoBot(Datastore):
 
     def _print_list_pokemon(self):
         # get pokemon list
-        pokemon_list = inventory.pokemons().all()
-        pokemon_list = sorted(pokemon_list, key=lambda k: k.pokemon_id)
+        bag = inventory.pokemons().all()
+        id_list =list(set(map(lambda x: x.pokemon_id, bag)))
+        id_list.sort()
+        pokemon_list = [filter(lambda x: x.pokemon_id == y, bag) for y in id_list]
 
         show_count = self.config.pokemon_bag_show_count
         poke_info_displayed = self.config.pokemon_bag_pokemon_info
@@ -899,23 +901,14 @@ class PokemonGoBot(Datastore):
 
         self.logger.info('Pokemon:')
 
-        last_id = -1
-        line_start = str()
-        line_p = []
-        count = 0
-        for poke in pokemon_list:
-            if last_id != -1 and last_id != poke.pokemon_id:
-                if show_count:
-                    line_start += '[{}]'.format(count)
-                self.logger.info(line_start + ': ' + ' | '.join(line_p))
-                line_p = []
-                last_id = -1
-                count = 0
-            if last_id == -1:
-                last_id = poke.pokemon_id
-                line_start = '#{} {}'.format(last_id, poke.name)
-            line_p.append('({})'.format(', '.join([get_poke_info(x, poke) for x in poke_info_displayed])))
-            count += 1
+        for pokes in pokemon_list:
+            line_p = '#{} {}'.format(pokes[0].pokemon_id, pokes[0].name)
+            if show_count:
+                line_p += '[{}]'.format(len(pokes))
+            line_p += ': '
+            
+            poke_info = ['({})'.format(', '.join([get_poke_info(x, p) for x in poke_info_displayed])) for p in pokes]
+            self.logger.info(line_p + ' | '.join(poke_info))
 
         self.logger.info('')
 
@@ -1045,7 +1038,7 @@ class PokemonGoBot(Datastore):
                     '[x] Coordinates found in passed in location, '
                     'not geocoding.'
                 )
-                return float(possible_coordinates[0]), float(possible_coordinates[1]), float("0.0")
+                return float(possible_coordinates[0]), float(possible_coordinates[1]), self.alt
 
         geolocator = GoogleV3(api_key=self.config.gmapkey)
         loc = geolocator.geocode(location_name, timeout=10)

@@ -34,7 +34,7 @@ class IncubateEggs(BaseTask):
             else:
                 self.emit_event(
                     'next_egg_incubates',
-                    formatted='Next egg ({km_needed} km) incubates in {distance_in_km:.2f} km (Total eggs: {eggs}, Incubating: {eggs_inc})',
+                    formatted='Next egg ({km_needed} km) incubates in {distance_in_km:.2f} km (Eggs left: {eggs}, Incubating: {eggs_inc})',
                     data={
                         'km_needed': self.used_incubators[0]['km_needed'],
                         'distance_in_km': km_left,
@@ -101,7 +101,7 @@ class IncubateEggs(BaseTask):
 
     def _check_inventory(self, lookup_ids=[]):
         inv = {}
-        response_dict = self.bot.get_inventory()
+        response_dict = self.bot.api.get_inventory()
         matched_pokemon = []
         temp_eggs = []
         temp_used_incubators = []

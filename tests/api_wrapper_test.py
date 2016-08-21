@@ -2,7 +2,7 @@ import unittest
 from mock import MagicMock, patch
 from timeout_decorator import timeout, TimeoutError
 
-from tests import FakeApi
+from tests import FakeApi, get_fake_conf
 
 from pgoapi import PGoApi
 from pgoapi.exceptions import NotLoggedInException, ServerBusyOrOfflineException, NoPlayerPositionSetException, EmptySubrequestChainException
@@ -10,7 +10,7 @@ from pokemongo_bot.api_wrapper import ApiWrapper
 
 class TestApiWrapper(unittest.TestCase):
     def test_raises_not_logged_in_exception(self):
-        api = ApiWrapper()
+        api = ApiWrapper(get_fake_conf())
         api.set_position(*(42, 42, 0))
         request = api.create_request()
         request.get_inventory(test='awesome')
@@ -18,17 +18,17 @@ class TestApiWrapper(unittest.TestCase):
             request.call()
 
     def test_api_call_with_no_requests_set(self):
-        request = ApiWrapper().create_request()
+        request = ApiWrapper(get_fake_conf()).create_request()
         with self.assertRaises(EmptySubrequestChainException):
             request.call()
 
     def test_api_wrong_request(self):
-        request = ApiWrapper().create_request()
+        request = ApiWrapper(get_fake_conf()).create_request()
         with self.assertRaises(AttributeError):
             request.wrong_request()
 
     def test_raises_no_player_position_set_exception(self):
-        request = ApiWrapper().create_request()
+        request = ApiWrapper(get_fake_conf()).create_request()
         request.get_inventory(test='awesome')
         with self.assertRaises(NoPlayerPositionSetException):
             request.call()
