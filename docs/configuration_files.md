@@ -41,6 +41,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 * IncubateEggs
   * `longer_eggs_first`: Default `True`
 * MoveToFort
+  *  walker: Default `StepWalker` other options: `PolylineWalker`
 * [MoveToMapPokemon](#sniping-movetolocation)
 * NicknamePokemon
   * `nickname_template`: Default `""` | See the [Pokemon Nicknaming](#pokemon-nicknaming) section for more details
