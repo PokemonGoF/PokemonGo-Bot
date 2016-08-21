@@ -133,7 +133,7 @@ class Polyline(object):
             time_passed = self._last_paused_timestamp
         seconds_passed = abs(time_passed - self._timestamp - self._paused_total)
         elevation_index = int(seconds_passed*conversion_factor)
-        return self.polyline_elevations[elevation_index]
+        return rountd(self.polyline_elevations[elevation_index], 2)
 
     def get_pos(self):
         walked_distance = 0.0
