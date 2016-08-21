@@ -184,8 +184,8 @@ class FollowPath(BaseTask):
                             'number_lap_max': str(self.number_lap_max)
                         }
                     )
-                if self.number_lap >= self.number_lap_max:
-                    self.endLaps()
+                    if self.number_lap >= self.number_lap_max:
+                        self.endLaps()
             else:
                 self.ptr += 1
         
