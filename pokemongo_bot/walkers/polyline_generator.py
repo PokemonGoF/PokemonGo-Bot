@@ -25,7 +25,7 @@ class PolylineObjectHandler:
         is_old_cache = lambda : tuple(origin) != PolylineObjectHandler._cache.get_last_pos()
         new_dest_set = lambda : tuple(destination) != PolylineObjectHandler._cache.destination
 
-        if PolylineObjectHandler._run:
+        if PolylineObjectHandler._run and (not is_old_cache()):
             # bot used to have struggle with making a decision.
             PolylineObjectHandler._instability -= 1
             if PolylineObjectHandler._instability <= 0:
