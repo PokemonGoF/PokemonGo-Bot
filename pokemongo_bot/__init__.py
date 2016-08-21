@@ -516,6 +516,10 @@ class PokemonGoBot(Datastore):
             'move_to_map_pokemon_teleport_back',
             parameters=('last_lat', 'last_lon')
         )
+        self.event_manager.register_event(
+            'moving_to_pokemon_throught_fort',
+            parameters=('fort_name', 'distance','poke_name','poke_dist')
+        )
 
         # cached recent_forts
         self.event_manager.register_event('loaded_cached_forts')

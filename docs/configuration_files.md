@@ -493,6 +493,7 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
 * `snipe_high_prio_threshold` - The threshold number corresponding with the `catch` dictionary.
 *   - Any pokemon above this threshold value will be caught by teleporting to its location, and getting back to original location if `snipe` is `True`.
 *   - Any pokemon under this threshold value will make the bot walk to the Pokemon target wether `snipe` is `True` or `False`.
+*   `max_extra_dist_fort` : Percentage of extra distance allowed to move to a fort on the way to the targeted Pokemon
 
 #### Example
 [[back to top](#table-of-contents)]
@@ -513,6 +514,7 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
       "snipe_high_prio_threshold": 400,
       "update_map": true,
       "mode": "priority",
+      "max_extra_dist_fort": 10,   
       "catch": {
         "Aerodactyl": 1000,
         "Ditto": 900,
