@@ -89,7 +89,7 @@
                     "// If that number is not reached, and evolve_only_with_lucky_egg is true, evolution will be skipped": {},
                     "// If that number is not reached, and evolve_only_with_lucky_egg is false,": {},
                     "// evolution will be performed without using a lucky egg": {},
-                "evolve_count_for_lucky_egg": 90,
+                "evolve_count_for_lucky_egg": 92,
                     "// the 'may_use_lucky_egg' parameter let you choose if you want the optimizer": {},
                     "// to use a lucky egg right before evolving Pokemons. At false; the optimizer": {},
                     "// is free to evolve Pokemons even if you do not have any lucky egg.": {},
