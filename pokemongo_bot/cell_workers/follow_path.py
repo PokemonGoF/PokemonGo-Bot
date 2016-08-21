@@ -92,10 +92,8 @@ class FollowPath(BaseTask):
             point = points[index]
             botlat = self.bot.api._position_lat
             botlng = self.bot.api._position_lng
-            botalt = self.bot.api._position_alt
             lat = float(point['lat'])
             lng = float(point['lng'])
-            alt = float(point['alt'])
 
             dist = distance(
                 botlat,
@@ -135,7 +133,9 @@ class FollowPath(BaseTask):
         point = self.points[self.ptr]
         lat = float(point['lat'])
         lng = float(point['lng'])
-        alt = float(point['alt'])
+        alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
+        if 'alt' in point:
+            alt = float(point['alt'])
 
         if self.bot.config.walk_max > 0:
             step_walker = StepWalker(
@@ -149,7 +149,6 @@ class FollowPath(BaseTask):
                 is_at_destination = True
 
         else:
-            alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
             self.bot.api.set_position(lat, lng, alt)
 
         dist = distance(
