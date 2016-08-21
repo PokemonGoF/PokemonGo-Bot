@@ -116,6 +116,7 @@ def main():
 
                 while True:
                     bot.tick()
+                    inventory.refresh_inventory()
 
             except KeyboardInterrupt:
                 bot.event_manager.emit(
