@@ -45,7 +45,6 @@ class PolylineObjectHandler:
             PolylineObjectHandler._instability -= 1
             PolylineObjectHandler._instability = max(PolylineObjectHandler._instability, 0)
             pass # use current cache
-        print origin, destination
         return PolylineObjectHandler._cache
 
 
