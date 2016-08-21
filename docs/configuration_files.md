@@ -217,6 +217,20 @@ Setting the `navigator.type` setting to `path` allows you to specify waypoints w
 
 An example for a JSON file can be found in `configs/path.example.json`. GPX files can be exported from many online tools, such as gpsies.com.The bot loads the first segment of the first track.
 
+#### Number of Laps
+
+In the path navigator configuration task, add a maximum of passage above which the bot stop for a time before starting again. *Note that others tasks (such as SleepSchedule or RandomPause) can stop the bot before.*
+
+- number_lap set-up the number of passage. **To allow for an infinity number of laps, set-up the number at -1**.
+
+`"number_lap": 10` (will do 10 passages before stopping)
+- timer_restart_min is the minimum time the bot stop before starting again (format Hours:Minutes:Seconds).
+
+`"timer_restart_min": "00:10:00"` (will stop for a minimum of 10 minutes)
+- timer_restart_max is the maximum time the bot stop before starting again (format Hours:Minutes:Seconds).
+
+`"timer_restart_max": "00:20:00"` (will stop for a maximum of 10 minutes)
+
 ## Pokemon Nicknaming
 
 A `nickname_template` can be specified for the `NicknamePokemon` task to allow a nickname template to be applied to all pokemon in the user's inventory. For example, a user wanting all their pokemon to have their IV values as their nickname could use a template `{iv_ads}`, which will cause their pokemon to be named something like `13/7/12` (depending on the pokemon's actual IVs).
