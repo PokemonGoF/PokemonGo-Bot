@@ -28,13 +28,14 @@ class PolylineObjectHandler:
         if PolylineObjectHandler._run:
             # bot used to have struggle with making a decision.
             PolylineObjectHandler._instability -= 1
-            if 0 == PolylineObjectHandler._instability:
+            if PolylineObjectHandler._instability <= 0:
+                PolylineObjectHandler._instability = 0
                 PolylineObjectHandler._run = False
             pass # use current cache
         elif None == PolylineObjectHandler._cache or is_old_cache() or new_dest_set():
             # no cache, old cache or new destination set by bot, so make new polyline
             PolylineObjectHandler._instability += 2
-            if 10 == PolylineObjectHandler._instability:
+            if 10 <= PolylineObjectHandler._instability:
                 PolylineObjectHandler._run = True
                 PolylineObjectHandler._instability = 20 # next N moves use same cache
 
