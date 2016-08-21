@@ -69,6 +69,7 @@
         "type": "NicknamePokemon",
         "config": {
           "enabled": false,
+          "nickname_above_iv": 0.9,
           "nickname_template": "{iv_pct}_{iv_ads}"
         }
       },

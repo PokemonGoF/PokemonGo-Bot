@@ -105,6 +105,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 * [MoveToMapPokemon](#sniping-movetolocation)
 * NicknamePokemon
   * `nickname_template`: Default `""` | See the [Pokemon Nicknaming](#pokemon-nicknaming) section for more details
+  * `nickname_above_iv`: Default `0` | Rename pokemon which iv is highter than the value
   * `dont_nickname_favorite`: Default `false` | Prevents renaming of favorited pokemons
   * `good_attack_threshold`: Default `0.7` | Threshold for perfection of the attack in it's type *(0.0-1.0)* after which attack will be treated as good.<br>Used for `{fast_attack_char}`, `{charged_attack_char}`, `{attack_code}`  templates
 * RecycleItems
