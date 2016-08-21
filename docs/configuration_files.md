@@ -19,6 +19,10 @@
 | `location_cache`   | true    | Bot will start at last known location if you do not have location set in the config                                                                                                         |
 | `distance_unit`    | km      | Set the unit to display distance in (km for kilometers, mi for miles, ft for feet)                                                                                                          |
 | `evolve_cp_min`           | 300   |                   Min. CP for evolve_all function
+|`daily_catch_llimit`    | 800   |                   Limit the amount of pokemon caught in a 24 hour period.
+|`pokemon_bag.show_at_start`    | false   |                   At start, bot will show all pokemon in the bag.
+|`pokemon_bag.show_count`    | false   |                   Show amount of each pokemon.
+|`pokemon_bag.pokemon_info`    | []   |                   Check any config example file to see available settings.
 
 ## Configuring Tasks
 The behaviors of the bot are configured via the `tasks` key in the `config.json`. This enables you to list what you want the bot to do and change the priority of those tasks by reordering them in the list. This list of tasks is run repeatedly and in order. For more information on why we are moving config to this format, check out the [original proposal](https://github.com/PokemonGoF/PokemonGo-Bot/issues/142).
@@ -53,6 +57,9 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `max_revives_keep`: Default `None` | Maximum amount of revives to keep in inventory
 * SpinFort
 * TransferPokemon
+  * `min_free_slot`: Default `5` | Once the pokebag has less empty slots than this amount, the transfer process is triggered. | Big values (i.e 9999) will trigger the transfer process after each catch.
+* UpdateLiveStats
+* [UpdateLiveInventory](#updateliveinventory-settings)
 
 ### Example configuration:
 The following configuration tells the bot to transfer all the Pokemon that match the transfer configuration rules, then recycle the items that match its configuration, then catch the pokemon that it can, so on, so forth. Note the last two tasks, MoveToFort and FollowSpiral. When a task is still in progress, it won't run the next things in the list. So it will move towards the fort, on each step running through the list of tasks again. Only when it arrives at the fort and there are no other stops available for it to move towards will it continue to the next step and follow the spiral.
@@ -161,6 +168,21 @@ If you don't have it, it will keep it (no matter was it strong or weak Pokémon)
 If you already have it, it will keep a stronger version and will transfer the a weaker one.
 
 ```"release": {"any": {"keep_best_cp": 2}}```, ```"release": {"any": {"keep_best_cp": 10}}``` - can be any number.
+
+### Keep the best custom pokemon configuration (dev branch)
+
+Define a list of criteria to keep the best Pokemons according to those criteria.
+
+The list of criteria is the following:```'cp','iv', 'iv_attack', 'iv_defense', 'iv_stamina', 'moveset.attack_perfection', 'moveset.defense_perfection', 'hp', 'hp_max'```
+
+####Examples:
+
+- Keep the top 25 Zubat with the best hp_max:
+
+```"release": {"Zubat": {"keep_best_custom": "hp_max", "amount":25}}```
+- Keep the top 10 Zubat with the best hp_max and, if there are Zubat with the same hp_max, to keep the one with the highest hp:
+
+```"release": {"Zubat": {"keep_best_custom": "hp_max,hp", "amount":10}}````
 
 ## Evolve All Configuration
 
@@ -357,7 +379,7 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
 * `update_map` - disable/enable if the map location should be automatically updated to the bots current location
 * `catch` - A dictionary of pokemon to catch with an assigned priority (higher => better)
 * `snipe_high_prio_only` - Whether to snipe pokemon above a certain threshold.
-* `snipe_high_prio_threshold` - The threshold number corresponding with the `catch` dictionary. 
+* `snipe_high_prio_threshold` - The threshold number corresponding with the `catch` dictionary.
 *   - Any pokemon above this threshold value will be caught by teleporting to its location, and getting back to original location if `snipe` is `True`.
 *   - Any pokemon under this threshold value will make the bot walk to the Pokemon target wether `snipe` is `True` or `False`.
 
@@ -389,4 +411,160 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
   }
   \\ ...
 }
+```
+
+## FollowPath Settings
+### Description
+Walk to the specified locations loaded from .gpx or .json file. It is highly recommended to use website such as [GPSies](http://www.gpsies.com) which allow you to export your created track in JSON file. Note that you'll have to first convert its JSON file into the format that the bot can understand. See [Example of pier39.json] below for the content. I had created a simple python script to do the conversion. 
+
+### Options
+* `path_mode` - linear, loop
+  - `loop` - The bot will walk along all specified waypoints and then move directly to the first waypoint again. 
+  - `linear` - The bot will turn around at the last waypoint and along the given waypoints in reverse order.
+* `path_start_mode` - first
+* `path_file` - "/path/to/your/path.json"
+
+
+### Sample Configuration
+```
+{
+	"type": "FollowPath",
+    "config": {
+    	"path_mode": "linear",
+	  	"path_start_mode": "first",
+      "path_file": "/home/gary/bot/PokemonGo-Bot/configs/path/pier39.json"
+    }
+}
+```
+
+Example of pier39.json
+```
+[{"location": "37.8103848,-122.410325"}, 
+{"location": "37.8103306,-122.410435"}, 
+{"location": "37.8104662,-122.41051"}, 
+{"location": "37.8106146,-122.41059"}, 
+{"location": "37.8105934,-122.410719"}
+]
+```
+
+You would then see the [FollowPath] [INFO] console log as the bot walks to each location in the path.json file.
+```
+2016-08-21 00:09:36,521 [FollowPath] [INFO] [position_update] Walk to (37.8093976, -122.4103554, 0) now at (37.80934873280548, -122.40986165166986, 0), distance left: (43.7148620033 m) ..
+2016-08-21 00:09:38,392 [FollowPath] [INFO] [position_update] Walk to (37.8093976, -122.4103554, 0) now at (37.809335215749876, -122.40987810257064, 0), distance left: (42.5005577777 m) ..
+2016-08-21 00:09:39,899 [FollowPath] [INFO] [position_update] Walk to (37.8093976, -122.4103554, 0) now at (37.809331611049714, -122.40991111241473, 0), distance left: (39.7144254183 m) ..
+2016-08-21 00:09:42,038 [FollowPath] [INFO] [position_update] Walk to (37.8093976, -122.4103554, 0) now at (37.80935188969784, -122.4099397940133, 0), distance left: (36.8630805218 m) ..
+2016-08-21 00:09:43,791 [FollowPath] [INFO] [position_update] Walk to (37.8093976, -122.4103554, 0) now at (37.80936378035156, -122.40998419490474, 0), distance left: (32.8264884039 m) ..
+2016-08-21 00:09:45,766 [FollowPath] [INFO] [position_update] Walk to (37.8093976, -122.4103554, 0) now at (37.80935021728436, -122.40999180104075, 0), distance left: (32.3738347114 m) ..
+```
+
+## UpdateLiveStats Settings
+Periodically displays stats about the bot in the terminal and/or in its title.
+
+Fetching some stats requires making API calls. If you're concerned about the amount of calls your bot is making, don't enable this worker.
+
+### Options
+```
+min_interval : The minimum interval at which the stats are displayed,
+               in seconds (defaults to 120 seconds).
+               The update interval cannot be accurate as workers run synchronously.
+stats : An array of stats to display and their display order (implicitly),
+        see available stats below (defaults to []).
+terminal_log : Logs the stats into the terminal (defaults to false).
+terminal_title : Displays the stats into the terminal title (defaults to true).
+```
+
+Available `stats` parameters:
+```
+- login : The account login (from the credentials).
+- username : The trainer name (asked at first in-game connection).
+- uptime : The bot uptime.
+- km_walked : The kilometers walked since the bot started.
+- level : The current character's level.
+- level_completion : The current level experience, the next level experience and the completion
+                     percentage.
+- level_stats : Puts together the current character's level and its completion.
+- xp_per_hour : The estimated gain of experience per hour.
+- xp_earned : The experience earned since the bot started.
+- stops_visited : The number of visited stops.
+- pokemon_encountered : The number of encountered pokemon.
+- pokemon_caught : The number of caught pokemon.
+- captures_per_hour : The estimated number of pokemon captured per hour.
+- pokemon_released : The number of released pokemon.
+- pokemon_evolved : The number of evolved pokemon.
+- pokemon_unseen : The number of pokemon never seen before.
+- pokemon_stats : Puts together the pokemon encountered, caught, released, evolved and unseen.
+- pokeballs_thrown : The number of thrown pokeballs.
+- stardust_earned : The number of earned stardust since the bot started.
+- highest_cp_pokemon : The caught pokemon with the highest CP since the bot started.
+- most_perfect_pokemon : The most perfect caught pokemon since the bot started.
+```
+
+### Sample Configuration
+Following task will shows the information on the console every 10 seconds.
+```
+{
+  "type": "UpdateLiveStats",
+  "config": {
+    "enabled": true,
+    "min_interval": 10,
+    "stats": ["username", "uptime", "level_completion", "stardust_earned", "xp_earned", "xp_per_hour", "stops_visited", "km_walked", "pokemon_encountered", "pokemon_caught", "pokemon_released", "pokemon_unseen", "pokeballs_thrown", "highest_cp_pokemon", "most_perfect_pokemon"],
+    "terminal_log": true,
+    "terminal_title": true
+  }
+}
+```
+
+Example console output
+```
+2016-08-20 23:55:48,513 [UpdateLiveStats] [INFO] [log_stats] USERNAME | Uptime : 0:17:17 | Level 26 (192,995 / 390,000, 49%) | Earned 900 Stardust | +2,810 XP | 9,753 XP/h | Visited 23 stops | 0.80km walked | Caught 9 pokemon
+```
+
+## UpdateLiveInventory Settings
+### Description
+Periodically displays the user inventory in the terminal.
+
+### Options
+ * `min_interval` : The minimum interval at which the stats are displayed, in seconds (defaults to 120 seconds). The update interval cannot be accurate as workers run synchronously.
+ * `show_all_multiple_lines` : Logs all items on inventory using multiple lines. Ignores configuration of 'items' 
+ * `items` : An array of items to display and their display order (implicitly), see available items below (defaults to []).
+
+Available `items` :
+```
+- 'pokemon_bag' : pokemon in inventory (i.e. 'Pokemon Bag: 100/250')
+- 'space_info': not an item but shows inventory bag space (i.e. 'Items: 140/350')
+- 'pokeballs'
+- 'greatballs'
+- 'ultraballs'
+- 'masterballs'
+- 'razzberries'
+- 'blukberries'
+- 'nanabberries'
+- 'luckyegg'
+- 'incubator'
+- 'troydisk'
+- 'potion'
+- 'superpotion'
+- 'hyperpotion'
+- 'maxpotion'
+- 'incense'
+- 'incensespicy'
+- 'incensecool'
+- 'revive'
+- 'maxrevive'
+```
+
+### Sample configuration
+```json
+{
+    "type": "UpdateLiveInventory",
+    "config": {
+      "enabled": true,
+      "min_interval": 120,
+      "show_all_multiple_lines": false,
+      "items": ["space_info", "pokeballs", "greatballs", "ultraballs", "razzberries", "luckyegg"]
+```
+
+### Example console output
+```
+2016-08-20 18:56:22,754 [UpdateLiveInventory] [INFO] [show_inventory] Items: 335/350 | Pokeballs: 8 | GreatBalls: 186 | UltraBalls: 0 | RazzBerries: 51 | LuckyEggs: 3
 ```

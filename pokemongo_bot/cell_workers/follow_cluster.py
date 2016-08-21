@@ -1,7 +1,8 @@
-from pokemongo_bot.step_walker import StepWalker
+from pokemongo_bot.walkers.step_walker import StepWalker
 from pokemongo_bot.cell_workers.utils import distance
 from pokemongo_bot.cell_workers.utils import find_biggest_cluster
 from pokemongo_bot.base_task import BaseTask
+from random import uniform
 
 class FollowCluster(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -66,7 +67,8 @@ class FollowCluster(BaseTask):
                     if step_walker.step():
                         self.is_at_destination = True
                 else:
-                    self.bot.api.set_position(lat, lng)
+                    alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
+                    self.bot.api.set_position(lat, lng, alt)
 
             elif not self.announced:
                 self.emit_event(
