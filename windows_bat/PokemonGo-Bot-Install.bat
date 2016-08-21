@@ -21,7 +21,7 @@ SET "batchPath=%~0"
 FOR %%k in (%0) do SET batchName=%%~nk
 SET log=%~dp0%batchname%.log 2>&1
 SET "vbsGetPrivileges=%temp%\OEgetPriv_%batchName%.vbs"
-
+SETlocal EnableDelayedExpansion
 
 
 :checkPrivileges
