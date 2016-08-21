@@ -79,7 +79,7 @@ class UpdateLiveStats(BaseTask):
         self.terminal_log = bool(self.config.get('terminal_log', False))
         self.terminal_title = bool(self.config.get('terminal_title', True))
 
-        self.bot.event_manager.register_event('log_stats', parameters=('msg_formatted', 'stats'))
+        self.bot.event_manager.register_event('log_stats', parameters=('stats', 'stats_raw'))
 
     def initialize(self):
         pass
