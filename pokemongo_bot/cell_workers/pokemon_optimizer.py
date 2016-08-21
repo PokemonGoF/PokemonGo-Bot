@@ -35,7 +35,7 @@ class PokemonOptimizer(Datastore, BaseTask):
         self.config_evolve_for_xp = self.config.get("evolve_for_xp", True)
         self.config_evolve_only_with_lucky_egg = self.config.get("evolve_only_with_lucky_egg", False)
         self.config_evolve_count_for_lucky_egg = self.config.get("evolve_count_for_lucky_egg", 92)
-        self.config_may_use_lucky_egg = self.config.get("may_use_lucky_egg", True)
+        self.config_may_use_lucky_egg = self.config.get("may_use_lucky_egg", False)
         self.config_keep = self.config.get("keep", [{"top": 1, "evolve": True, "sort": ["iv"]},
                                                     {"top": 1, "evolve": True, "sort": ["ncp"]},
                                                     {"top": 1, "evolve": False, "sort": ["cp"]}])
