@@ -42,6 +42,10 @@ class PokemonGoBot(Datastore):
     def position(self):
         return self.api.actual_lat, self.api.actual_lng, self.api.actual_alt
 
+    @property
+    def noised_position(self):
+        return self.api.noised_lat, self.api.noised_lng, self.api.noised_alt
+
     #@position.setter # these should be called through api now that gps replication is there...
     #def position(self, position_tuple):
     #    self.api._position_lat, self.api._position_lng, self.api._position_alt = position_tuple
