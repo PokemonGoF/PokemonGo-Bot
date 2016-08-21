@@ -5,7 +5,7 @@ cls
 
 
 :init
-SETlocal EnableDelayedExpansion
+SETlocal DisableDelayedExpansion
 path c:\Program Files\Git\cmd;%PATH%
 path C:\Python27;%PATH%
 path C:\Python27\Scripts;%PATH%
