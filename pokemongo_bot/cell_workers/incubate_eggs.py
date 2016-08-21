@@ -32,11 +32,15 @@ class IncubateEggs(BaseTask):
             if km_left <= 0:
                 self._hatch_eggs()
             else:
+                self.bot.metrics.next_hatching_km(km_left)
                 self.emit_event(
                     'next_egg_incubates',
-                    formatted='Next egg incubates in {distance_in_km:.2f} km',
+                    formatted='Next egg ({km_needed} km) incubates in {distance_in_km:.2f} km (Eggs left: {eggs}, Incubating: {eggs_inc})',
                     data={
-                        'distance_in_km': km_left
+                        'km_needed': self.used_incubators[0]['km_needed'],
+                        'distance_in_km': km_left,
+                        'eggs': len(self.eggs),
+                        'eggs_inc': len(self.used_incubators)
                     }
                 )
             IncubateEggs.last_km_walked = self.km_walked
@@ -98,7 +102,7 @@ class IncubateEggs(BaseTask):
 
     def _check_inventory(self, lookup_ids=[]):
         inv = {}
-        response_dict = self.bot.get_inventory()
+        response_dict = self.bot.api.get_inventory()
         matched_pokemon = []
         temp_eggs = []
         temp_used_incubators = []
@@ -118,9 +122,12 @@ class IncubateEggs(BaseTask):
                     incubators = [incubators]
                 for incubator in incubators:
                     if 'pokemon_id' in incubator:
+                        start_km = incubator.get('start_km_walked', 9001)
+                        km_walked = incubator.get('target_km_walked', 9001)
                         temp_used_incubators.append({
                             "id": incubator.get('id', -1),
-                            "km": incubator.get('target_km_walked', 9001)
+                            "km": km_walked,
+                            "km_needed": (km_walked - start_km)
                         })
                     else:
                         temp_ready_incubators.append({
@@ -194,6 +201,7 @@ class IncubateEggs(BaseTask):
             return
         for i in range(len(pokemon_data)):
             msg = "Egg hatched with a {pokemon} (CP {cp} - IV {iv}), {exp} exp, {stardust} stardust and {candy} candies."
+            self.bot.metrics.hatched_eggs(1)
             self.emit_event(
                 'egg_hatched',
                 formatted=msg,

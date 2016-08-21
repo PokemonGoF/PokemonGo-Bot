@@ -1,12 +1,13 @@
 from math import sqrt
 
-from cell_workers.utils import distance
-from human_behaviour import random_lat_long_delta, sleep
+from random import uniform
+from pokemongo_bot.cell_workers.utils import distance
+from pokemongo_bot.human_behaviour import random_lat_long_delta, sleep
 
 
 class StepWalker(object):
 
-    def __init__(self, bot, speed, dest_lat, dest_lng):
+    def __init__(self, bot, dest_lat, dest_lng):
         self.bot = bot
         self.api = bot.api
 
@@ -19,18 +20,19 @@ class StepWalker(object):
             dest_lng
         )
 
-        self.speed = speed
+        self.alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
+        self.speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
 
         self.destLat = dest_lat
         self.destLng = dest_lng
         self.totalDist = max(1, self.dist)
 
-        if speed == 0:
-            self.steps = 1
+        if self.speed == 0:
+            raise Exception("Walking speed cannot be 0, change your walking speed higher than 1!")
         else:
-            self.steps = (self.dist + 0.0) / (speed + 0.0)
+            self.steps = (self.dist + 0.0) / (self.speed + 0.0)
 
-        if self.dist < speed or int(self.steps) <= 1:
+        if self.dist < self.speed or int(self.steps) <= 1:
             self.dLat = 0
             self.dLng = 0
             self.magnitude = 0
@@ -41,7 +43,7 @@ class StepWalker(object):
 
     def step(self):
         if (self.dLat == 0 and self.dLng == 0) or self.dist < self.speed:
-            self.api.set_position(self.destLat, self.destLng, 0)
+            self.api.set_position(self.destLat + random_lat_long_delta(), self.destLng + random_lat_long_delta(), self.alt)
             self.bot.event_manager.emit(
                 'position_update',
                 sender=self,
@@ -68,7 +70,7 @@ class StepWalker(object):
         cLat = self.initLat + scaledDLat + random_lat_long_delta()
         cLng = self.initLng + scaledDLng + random_lat_long_delta()
 
-        self.api.set_position(cLat, cLng, 0)
+        self.api.set_position(cLat, cLng, self.alt)
         self.bot.event_manager.emit(
             'position_update',
             sender=self,
