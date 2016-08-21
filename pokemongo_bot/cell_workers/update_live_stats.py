@@ -132,10 +132,10 @@ class UpdateLiveStats(BaseTask):
         """
         self.emit_event(
             'log_stats',
-            formatted="{msg_formatted}",
+            formatted="{stats}",
             data={
-                'msg_formatted': stats,
-                'stats': self._get_stats(self._get_player_stats())
+                'stats': stats,
+                'stats_raw': self._get_stats(self._get_player_stats())
             }
         )
         self._compute_next_update()
