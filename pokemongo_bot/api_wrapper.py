@@ -27,6 +27,7 @@ class ApiWrapper(Datastore, PGoApi):
         PGoApi.__init__(self)
         # Set to default, just for CI...
         self.actual_lat, self.actual_lng, self.actual_alt = PGoApi.get_position(self)
+        self.noised_lat, self.noised_lng, self.noised_alt = self.actual_lat, self.actual_lng, self.actual_alt
 
         self.useVanillaRequest = False
         self.config = config
