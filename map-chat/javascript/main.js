@@ -8,11 +8,12 @@ var topic = urlHashTopic ? urlHashTopic : "main";
 
 function initialiseEventBus(){
   window.client = mqtt.connect('ws://test.mosca.io'); // you add a ws:// url here
-  client.subscribe("mqtt/demo");
+  client.subscribe("pgomapcatch/#");
 
   client.on("message", function(topic, payload) {
     //alert([topic, payload].join(": "));
     //client.end();
+    Materialize.toast(payload, 2000);
     displayMessageOnMap(payload);
   });
 
