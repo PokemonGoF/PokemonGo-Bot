@@ -64,13 +64,13 @@ class FollowPath(BaseTask):
         gpx = gpxpy.parse(gpx_file)
 
         if len(gpx.tracks) == 0:
-            raise RuntimeError('GPX file does not cotain a track')
+            raise RuntimeError('GPX file does not contain a track')
 
         points = []
         track = gpx.tracks[0]
         for segment in track.segments:
             for point in segment.points:
-                points.append({"lat": point.latitude, "lng": point.longitude})
+                points.append({"lat": point.latitude, "lng": point.longitude, "alt": point.elevation})
 
         return points
 
@@ -82,8 +82,10 @@ class FollowPath(BaseTask):
             point = points[index]
             botlat = self.bot.api._position_lat
             botlng = self.bot.api._position_lng
+            botalt = self.bot.api._position_alt
             lat = float(point['lat'])
             lng = float(point['lng'])
+            alt = float(point['alt'])
 
             dist = distance(
                 botlat,
@@ -99,11 +101,14 @@ class FollowPath(BaseTask):
         return return_idx
 
     def work(self):
-        last_lat, last_lng, last_alt = self.bot.api.get_position()
+        last_lat = self.bot.api._position_lat
+        last_lng = self.bot.api._position_lng
+        last_alt = self.bot.api._position_alt
 
         point = self.points[self.ptr]
         lat = float(point['lat'])
         lng = float(point['lng'])
+        alt = float(point['alt'])
 
         if self.bot.config.walk_max > 0:
             step_walker = StepWalker(
