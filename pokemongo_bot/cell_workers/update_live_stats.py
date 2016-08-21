@@ -215,6 +215,7 @@ class UpdateLiveStats(BaseTask):
             'uptime': '{}'.format(runtime),
             'km_walked': distance_travelled,
             'level': current_level,
+            'experience': experience,
             'current_level_xp': whole_level_xp,
             'whole_level_xp': whole_level_xp,
             'level_completion_percentage': level_completion_percentage,
