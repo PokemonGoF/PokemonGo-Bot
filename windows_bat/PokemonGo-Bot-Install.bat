@@ -399,12 +399,14 @@ cls
 @ECHO.
 IF NOT EXIST %PGBotPath%\encrypt*.* (
 @ECHO.---- encrypt.so / encrypt.dll or encrypt_64.dll
+@ECHO.     Get them from our Slack chat^^! 
 @ECHO.     "https://pokemongo-bot.herokuapp.com/"
 ) else (
 ECHO.
 )
 @ECHO.
 @ECHO.
+@ECHO.Remember to configure both config.json and userdata.js^^!
 @ECHO.
 @ECHO.
 @ECHO.
