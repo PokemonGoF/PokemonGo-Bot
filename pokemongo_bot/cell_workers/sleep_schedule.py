@@ -44,7 +44,8 @@ class SleepSchedule(BaseTask):
         if self._should_sleep_now():
             self._sleep()
             self._schedule_next_sleep()
-            if self.wake_up_at_location != False:
+            wake_up_at_location = self.config.get("wake_up_at_location", "")
+            if wake_up_at_location:
                 self.bot.api.set_position(self.wake_up_at_location[0],self.wake_up_at_location[1],self.wake_up_at_location[2])
             self.bot.login()
 
@@ -65,7 +66,6 @@ class SleepSchedule(BaseTask):
             timedelta(
                 hours=duration_random_offset.hour, minutes=duration_random_offset.minute).total_seconds())
         
-        self.wake_up_at_location = False
         wake_up_at_location = self.config.get("wake_up_at_location", "")
         if wake_up_at_location:
             try:
