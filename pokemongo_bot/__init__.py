@@ -927,7 +927,7 @@ class PokemonGoBot(Datastore):
             if show_count:
                 line_p += '[{}]'.format(len(pokes))
             if show_candies:
-                line_p += '[{}]'.format(pokes[0].candy_quantity())
+                line_p += '[{} candies]'.format(pokes[0].candy_quantity)
             line_p += ': '
             
             poke_info = ['({})'.format(', '.join([get_poke_info(x, p) for x in poke_info_displayed])) for p in pokes]
