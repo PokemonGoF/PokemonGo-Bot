@@ -173,7 +173,6 @@ class UpdateLiveStats(BaseTask):
 
         self._compute_next_update()
 
-
     def _get_stats(self, player_stats):
         metrics = self.bot.metrics
         metrics.capture_stats()
