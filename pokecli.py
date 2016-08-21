@@ -491,6 +491,14 @@ def init_config():
     add_config(
         parser,
         load,
+        long_flag="--pokemon_bag.show_candies",
+        help="Shows the amount of candies for each pokemon",
+        type=bool,
+        default=False
+    )
+    add_config(
+        parser,
+        load,
         long_flag="--pokemon_bag.pokemon_info",
         help="List with the info to show for each pokemon",
         type=bool,
