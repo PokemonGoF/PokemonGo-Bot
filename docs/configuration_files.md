@@ -593,3 +593,26 @@ Simulates the user going to sleep every day for some time, the sleep time and th
     }
 }
 ```
+## Random Pause
+
+Pause the execution of the bot at a random time for a random time.
+
+Simulates the random pause of the day (speaking to someone, getting into a store, ...) where the user stops the app. The interval between pauses and the duration of pause are configurable.
+
+- `min_duration`: (HH:MM:SS) the minimum duration of each pause
+- `max_duration`: (HH:MM:SS) the maximum duration of each pause
+- `min_interval`: (HH:MM:SS) the minimum interval between each pause
+- `max_interval`: (HH:MM:SS) the maximum interval between each pause
+
+###Example Config
+```
+{
+	"type": "RandomPause",
+    "config": {
+	  "min_duration": "00:00:10",
+	  "max_duration": "00:10:00",
+	  "min_interval": "00:10:00",
+	  "max_interval": "02:00:00"
+    }
+}
+```
