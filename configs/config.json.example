@@ -19,19 +19,19 @@
           "duration":"7:46",
           "time_random_offset": "00:24",
           "duration_random_offset": "00:43",
-		  "wake_up_at_location": ""
+          "wake_up_at_location": ""
         }
       },
-	  {
-		"type": "RandomPause",
+      {
+        "type": "RandomPause",
         "config": {
-		  "enabled": false,
-		  "min_duration": "00:00:10",
-		  "max_duration": "00:10:00",
-		  "min_interval": "00:10:00",
-		  "max_interval": "02:00:00"
+          "enabled": false,
+          "min_duration": "00:00:10",
+          "max_duration": "00:10:00",
+          "min_interval": "00:10:00",
+          "max_interval": "02:00:00"
         }
-	  },
+      },
       {
         "type": "CompleteTutorial",
         "config": {
