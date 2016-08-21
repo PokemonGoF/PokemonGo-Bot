@@ -48,22 +48,22 @@ class MoveToFort(BaseTask):
 
         unit = self.bot.config.distance_unit  # Unit to use when printing formatted distance
 
-        if self.bot.config.replicate_gps_xy_noise:
-            dist = distance(
-                self.bot.noised_position[0],
-                self.bot.noised_position[1],
-                lat,
-                lng
-            )
-        else:
-            dist = distance(
-                self.bot.position[0],
-                self.bot.position[1],
-                lat,
-                lng
-            )
+        dist = distance(
+            self.bot.position[0],
+            self.bot.position[1],
+            lat,
+            lng
+        )
+        noised_dist = distance(
+            self.bot.noised_position[0],
+            self.bot.noised_position[1],
+            lat,
+            lng
+        )
 
-        if dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
+        moving = noised_dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE if self.bot.config.replicate_gps_xy_noise else dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE
+
+        if moving:
             fort_event_data = {
                 'fort_name': u"{}".format(fort_name),
                 'distance': format_dist(dist, unit),
