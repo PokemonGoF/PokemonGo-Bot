@@ -49,7 +49,6 @@
 
 Document the configuration options of PokemonGo-Bot.
 
-<a class="mk-toclify" id="usage"></a>
 ## Usage 
 [[back to top](#table-of-contents)]
 
@@ -57,7 +56,7 @@ Document the configuration options of PokemonGo-Bot.
 2. Edit `config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (other keys are optional, check `Advance Configuration` below)
 3. Simply launch the script with : `./run.sh` or `./pokecli.py` or `python pokecli.py -cf ./configs/config.json` if you want to specify a config file
 
-<a class="mk-toclify" id="advanced-configuration"></a>
+
 ## Advanced Configuration
 [[back to top](#table-of-contents)]
 |      Parameter     | Default |                                                                                         Description                                                                                         |
@@ -80,12 +79,12 @@ Document the configuration options of PokemonGo-Bot.
 |`pokemon_bag.show_count`    | false   |                   Show amount of each pokemon.
 |`pokemon_bag.pokemon_info`    | []   |                   Check any config example file to see available settings.
 
-<a class="mk-toclify" id="configuring-tasks"></a>
+
 ## Configuring Tasks
 [[back to top](#table-of-contents)]
 The behaviors of the bot are configured via the `tasks` key in the `config.json`. This enables you to list what you want the bot to do and change the priority of those tasks by reordering them in the list. This list of tasks is run repeatedly and in order. For more information on why we are moving config to this format, check out the [original proposal](https://github.com/PokemonGoF/PokemonGo-Bot/issues/142).
 
-<a class="mk-toclify" id="task-options"></a>
+
 ### Task Options:
 [[back to top](#table-of-contents)]
 * CatchPokemon
@@ -153,7 +152,6 @@ The following configuration tells the bot to transfer all the Pokemon that match
 }
 ```
 
-<a class="mk-toclify" id="specifying-configuration-for-tasks"></a>
 ### Specifying configuration for tasks
 [[back to top](#table-of-contents)]
 If you want to configure a given task, you can pass values like this:
@@ -173,7 +171,6 @@ If you want to configure a given task, you can pass values like this:
 }
 ```
 
-<a class="mk-toclify" id="an-example-task-configuration-if-you-only-wanted-to-collect-items-from-forts"></a>
 ### An example task configuration if you only wanted to collect items from forts:
 [[back to top](#table-of-contents)]
 ```
@@ -194,7 +191,6 @@ If you want to configure a given task, you can pass values like this:
 }
 ```
 
-<a class="mk-toclify" id="catch-configuration"></a>
 ## Catch Configuration
 [[back to top](#table-of-contents)]
 Default configuration will capture all Pokémon.
@@ -209,11 +205,9 @@ Additionally, you can specify always_capture and never_capture flags.
 
 For example: ```"Pidgey": {"never_capture": true}``` will stop catching Pidgey entirely.
 
-<a class="mk-toclify" id="release-configuration"></a>
 ## Release Configuration
 [[back to top](#table-of-contents)]
 
-<a class="mk-toclify" id="common-configuration"></a>
 ### Common configuration
 [[back to top](#table-of-contents)]
 
@@ -229,7 +223,6 @@ Additionally, you can specify always_release and never_release flags. For exampl
 
 ```"release": {"Pidgey": {"always_release": true}}``` will release all Pidgey caught.
 
-<a class="mk-toclify" id="keep-the-strongest-pokemon-configuration-dev-branch"></a>
 ### Keep the strongest pokemon configuration (dev branch)
 [[back to top](#table-of-contents)]
 
@@ -243,7 +236,6 @@ If you already have it, it will keep a stronger version and will transfer the a 
 
 ```"release": {"any": {"keep_best_cp": 2}}```, ```"release": {"any": {"keep_best_cp": 10}}``` - can be any number.
 
-<a class="mk-toclify" id="keep-the-best-custom-pokemon-configuration-dev-branch"></a>
 ### Keep the best custom pokemon configuration (dev branch)
 [[back to top](#table-of-contents)]
 
@@ -260,7 +252,6 @@ The list of criteria is the following:```'cp','iv', 'iv_attack', 'iv_defense', '
 
 ```"release": {"Zubat": {"keep_best_custom": "hp_max,hp", "amount":10}}````
 
-<a class="mk-toclify" id="evolve-all-configuration"></a>
 ## Evolve All Configuration
 [[back to top](#table-of-contents)]
 
@@ -289,7 +280,6 @@ If you wish to change the default threshold of 300 CP, simply add the following 
 "evolve_cp_min":  <number>
 ```
 
-<a class="mk-toclify" id="path-navigator-configuration"></a>
 ## Path Navigator Configuration
 [[back to top](#table-of-contents)]
 
@@ -314,7 +304,6 @@ In the path navigator configuration task, add a maximum of passage above which t
 `"timer_restart_max": "00:20:00"` (will stop for a maximum of 10 minutes)
 
 
-<a class="mk-toclify" id="pokemon-nicknaming"></a>
 ## Pokemon Nicknaming
 [[back to top](#table-of-contents)]
 
@@ -328,7 +317,6 @@ Niantic imposes a 12-character limit on all pokemon nicknames, so any new nickna
 
 Because some pokemon have very long names, you can use the [Format String syntax](https://docs.python.org/2.7/library/string.html#formatstrings) to ensure that your names do not cause your templates to truncate. For example, using `{name:.8s}` causes the Pokemon name to never take up more than 8 characters in the nickname. This would help guarantee that a template like `{name:.8s}_{iv_pct}` never goes over the 12-character limit.
 
-<a class="mk-toclify" id="config-options"></a>
 ### Config options
 [[back to top](#table-of-contents)]
 
@@ -338,7 +326,6 @@ Because some pokemon have very long names, you can use the [Format String syntax
 * `good_attack_threshold` (default: `0.7`): Threshold for perfection of the attack in it's type (0.0-1.0) after which attack will be treated as good. Used for {fast_attack_char}, {charged_attack_char}, {attack_code} templates.
 * `locale` (default: `en`): The locale to use for the pokemon name.
 
-<a class="mk-toclify" id="valid-names-in-templates"></a>
 ### Valid names in templates
 [[back to top](#table-of-contents)]
 
@@ -398,7 +385,6 @@ Key | Info
 - `"{attack_code}{attack_pct1}{defense_pct1}{ivcp_pct1}{name}"` => `Lh474Golbat`
 ![sample](https://cloud.githubusercontent.com/assets/8896778/17285954/0fa44a88-577b-11e6-8204-b1302f4294bd.png)
 
-<a class="mk-toclify" id="sample-configuration"></a>
 ### Sample configuration
 [[back to top](#table-of-contents)]
 
@@ -415,7 +401,6 @@ Key | Info
 }
 ```
 
-<a class="mk-toclify" id="catchpokemon-catch_simulation-settings"></a>
 ## CatchPokemon `catch_simulation` Settings
 [[back to top](#table-of-contents)]
 
@@ -439,7 +424,6 @@ The default settings are 'safe' settings intended to simulate human and app beha
 }
 ```
 
-<a class="mk-toclify" id="settings-description"></a>
 ### Settings Description
 [[back to top](#table-of-contents)]
 
@@ -454,12 +438,10 @@ Setting | Description
 `changeball_wait_min`| The minimum amount of time to change ball
 `changeball_wait_max`| The maximum amount of time to change ball
 
-<a class="mk-toclify" id="flee_count-and-flee_duration"></a>
 ### `flee_count` and `flee_duration`
 [[back to top](#table-of-contents)]
 This part is app simulation and the default settings are advised.  When we hit a pokemon in the app the animation will play randomly 1, 2 or 3 times for roughly 2 seconds each time.  So we pause for a random number of animations up to `flee_count` of duration `flee_duration`
 
-<a class="mk-toclify" id="previous-behaviour"></a>
 ### Previous Behaviour
 [[back to top](#table-of-contents)]
 If you want to make your bot behave as it did prior to this update please use the following settings.
@@ -477,16 +459,13 @@ If you want to make your bot behave as it did prior to this update please use th
 }
 ```
 
-<a class="mk-toclify" id="sniping-_-movetolocation-_"></a>
 ## Sniping _(MoveToLocation)_
 [[back to top](#table-of-contents)]
 
-<a class="mk-toclify" id="description"></a>
 ### Description
 [[back to top](#table-of-contents)]
 This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map instance. For information on how to properly setup PokemonGo-Map have a look at the Github page of the project [here](https://github.com/AHAAAAAAA/PokemonGo-Map/). There is an example config in `config/config.json.map.example`
 
-<a class="mk-toclify" id="options"></a>
 ### Options
 [[back to top](#table-of-contents)]
 * `Address` - Address of the webserver of PokemonGo-Map. ex: `http://localhost:5000`
@@ -506,7 +485,6 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
 *   - Any pokemon above this threshold value will be caught by teleporting to its location, and getting back to original location if `snipe` is `True`.
 *   - Any pokemon under this threshold value will make the bot walk to the Pokemon target wether `snipe` is `True` or `False`.
 
-<a class="mk-toclify" id="example"></a>
 #### Example
 [[back to top](#table-of-contents)]
 ```
@@ -538,15 +516,13 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
 }
 ```
 
-<a class="mk-toclify" id="followpath-settings"></a>
 ## FollowPath Settings
 [[back to top](#table-of-contents)]
-<a class="mk-toclify" id="description"></a>
+
 ### Description
 [[back to top](#table-of-contents)]
 Walk to the specified locations loaded from .gpx or .json file. It is highly recommended to use website such as [GPSies](http://www.gpsies.com) which allow you to export your created track in JSON file. Note that you'll have to first convert its JSON file into the format that the bot can understand. See [Example of pier39.json] below for the content. I had created a simple python script to do the conversion. 
 
-<a class="mk-toclify" id="options"></a>
 ### Options
 [[back to top](#table-of-contents)]
 * `path_mode` - linear, loop
@@ -556,7 +532,6 @@ Walk to the specified locations loaded from .gpx or .json file. It is highly rec
 * `path_file` - "/path/to/your/path.json"
 
 
-<a class="mk-toclify" id="sample-configuration"></a>
 ### Sample Configuration
 [[back to top](#table-of-contents)]
 ```
@@ -590,14 +565,12 @@ You would then see the [FollowPath] [INFO] console log as the bot walks to each 
 2016-08-21 00:09:45,766 [FollowPath] [INFO] [position_update] Walk to (37.8093976, -122.4103554, 0) now at (37.80935021728436, -122.40999180104075, 0), distance left: (32.3738347114 m) ..
 ```
 
-<a class="mk-toclify" id="updatelivestats-settings"></a>
 ## UpdateLiveStats Settings
 [[back to top](#table-of-contents)]
 Periodically displays stats about the bot in the terminal and/or in its title.
 
 Fetching some stats requires making API calls. If you're concerned about the amount of calls your bot is making, don't enable this worker.
 
-<a class="mk-toclify" id="options"></a>
 ### Options
 [[back to top](#table-of-contents)]
 ```
@@ -636,7 +609,6 @@ percentage.
 - most_perfect_pokemon : The most perfect caught pokemon since the bot started.
 ```
 
-<a class="mk-toclify" id="sample-configuration"></a>
 ### Sample Configuration
 [[back to top](#table-of-contents)]
 Following task will shows the information on the console every 10 seconds.
@@ -658,15 +630,13 @@ Example console output
 2016-08-20 23:55:48,513 [UpdateLiveStats] [INFO] [log_stats] USERNAME | Uptime : 0:17:17 | Level 26 (192,995 / 390,000, 49%) | Earned 900 Stardust | +2,810 XP | 9,753 XP/h | Visited 23 stops | 0.80km walked | Caught 9 pokemon
 ```
 
-<a class="mk-toclify" id="updateliveinventory-settings"></a>
 ## UpdateLiveInventory Settings
 [[back to top](#table-of-contents)]
-<a class="mk-toclify" id="description"></a>
+
 ### Description
 [[back to top](#table-of-contents)]
 Periodically displays the user inventory in the terminal.
 
-<a class="mk-toclify" id="options"></a>
 ### Options
 [[back to top](#table-of-contents)]
 * `min_interval` : The minimum interval at which the stats are displayed, in seconds (defaults to 120 seconds). The update interval cannot be accurate as workers run synchronously.
@@ -698,7 +668,6 @@ Available `items` :
 - 'maxrevive'
 ```
 
-<a class="mk-toclify" id="sample-configuration"></a>
 ### Sample configuration
 [[back to top](#table-of-contents)]
 ```json
@@ -711,13 +680,12 @@ Available `items` :
 "items": ["space_info", "pokeballs", "greatballs", "ultraballs", "razzberries", "luckyegg"]
 ```
 
-<a class="mk-toclify" id="example-console-output"></a>
 ### Example console output
 [[back to top](#table-of-contents)]
 ```
 2016-08-20 18:56:22,754 [UpdateLiveInventory] [INFO] [show_inventory] Items: 335/350 | Pokeballs: 8 | GreatBalls: 186 | UltraBalls: 0 | RazzBerries: 51 | LuckyEggs: 3
 ```
-<a class="mk-toclify" id="sleep-schedule-task"></a>
+
 ## Sleep Schedule Task
 [[back to top](#table-of-contents)]
 
@@ -744,7 +712,7 @@ Simulates the user going to sleep every day for some time, the sleep time and th
 }
 }
 ```
-<a class="mk-toclify" id="random-pause"></a>
+
 ## Random Pause
 [[back to top](#table-of-contents)]
 
