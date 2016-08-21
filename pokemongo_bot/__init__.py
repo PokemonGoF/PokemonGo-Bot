@@ -901,6 +901,7 @@ class PokemonGoBot(Datastore):
         pokemon_list = [filter(lambda x: x.pokemon_id == y, bag) for y in id_list]
 
         show_count = self.config.pokemon_bag_show_count
+        show_candies = self.config.pokemon_bag_show_candies
         poke_info_displayed = self.config.pokemon_bag_pokemon_info
 
         def get_poke_info(info, pokemon):
@@ -925,6 +926,8 @@ class PokemonGoBot(Datastore):
             line_p = '#{} {}'.format(pokes[0].pokemon_id, pokes[0].name)
             if show_count:
                 line_p += '[{}]'.format(len(pokes))
+            if show_candies:
+                line_p += '[{}]'.format(pokes[0].candy_quantity())
             line_p += ': '
             
             poke_info = ['({})'.format(', '.join([get_poke_info(x, p) for x in poke_info_displayed])) for p in pokes]
