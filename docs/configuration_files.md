@@ -589,7 +589,7 @@ Simulates the user going to sleep every day for some time, the sleep time and th
       "duration":"5:30",
       "time_random_offset": "00:30",
       "duration_random_offset": "00:30"
-      "wake_up_at_location": "39.408692,149.595838"
+      "wake_up_at_location": "39.408692,149.595838,590.8"
     }
 }
 ```
