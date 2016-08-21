@@ -32,6 +32,8 @@ import logging
 import os
 import ssl
 import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 import time
 import signal
 import string
