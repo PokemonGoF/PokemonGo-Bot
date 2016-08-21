@@ -79,7 +79,7 @@ class UpdateLiveStats(BaseTask):
         self.terminal_log = bool(self.config.get('terminal_log', False))
         self.terminal_title = bool(self.config.get('terminal_title', True))
 
-        self.bot.event_manager.register_event('log_stats', parameters=('stats',))
+        self.bot.event_manager.register_event('log_stats', parameters=('msg_formatted', 'stats'))
 
     def initialize(self):
         pass
@@ -134,7 +134,8 @@ class UpdateLiveStats(BaseTask):
             'log_stats',
             formatted="{stats}",
             data={
-                'stats': stats
+                'stats': stats,
+                'stats_raw': self._get_stats(self._get_player_stats())
             }
         )
         self._compute_next_update()
@@ -165,12 +166,77 @@ class UpdateLiveStats(BaseTask):
         except AttributeError:
             self.emit_event(
                 'log_stats',
-                level = 'error',
-                formatted = "Unable to write window title"
+                level='error',
+                formatted="Unable to write window title"
             )
             self.terminal_title = False
 
         self._compute_next_update()
+
+    def _get_stats(self, player_stats):
+        metrics = self.bot.metrics
+        metrics.capture_stats()
+        runtime = metrics.runtime()
+        login = self.bot.config.username
+        player_data = self.bot.player_data
+        username = player_data.get('username', '?')
+        distance_travelled = metrics.distance_travelled()
+        current_level = int(player_stats.get('level', 0))
+        prev_level_xp = int(player_stats.get('prev_level_xp', 0))
+        next_level_xp = int(player_stats.get('next_level_xp', 0))
+        experience = int(player_stats.get('experience', 0))
+        current_level_xp = experience - prev_level_xp
+        whole_level_xp = next_level_xp - prev_level_xp
+        level_completion_percentage = int((current_level_xp * 100) / whole_level_xp)
+        experience_per_hour = int(metrics.xp_per_hour())
+        xp_earned = metrics.xp_earned()
+        stops_visited = metrics.visits['latest'] - metrics.visits['start']
+        pokemon_encountered = metrics.num_encounters()
+        pokemon_caught = metrics.num_captures()
+        captures_per_hour = int(metrics.captures_per_hour())
+        pokemon_released = metrics.releases
+        pokemon_evolved = metrics.num_evolutions()
+        pokemon_unseen = metrics.num_new_mons()
+        pokeballs_thrown = metrics.num_throws()
+        stardust_earned = metrics.earned_dust()
+        highest_cp_pokemon = metrics.highest_cp['desc']
+        if not highest_cp_pokemon:
+            highest_cp_pokemon = "None"
+        most_perfect_pokemon = metrics.most_perfect['desc']
+        if not most_perfect_pokemon:
+            most_perfect_pokemon = "None"
+        next_egg_hatching = metrics.next_hatching_km(0)
+        hatched_eggs = metrics.hatched_eggs(0)
+
+        # Create stats strings.
+        available_stats = {
+            'login': login,
+            'username': username,
+            'uptime': '{}'.format(runtime),
+            'km_walked': distance_travelled,
+            'level': current_level,
+            'current_level_xp': whole_level_xp,
+            'whole_level_xp': whole_level_xp,
+            'level_completion_percentage': level_completion_percentage,
+            'xp_per_hour': experience_per_hour,
+            'xp_earned': xp_earned,
+            'stops_visited': stops_visited,
+            'pokemon_encountered': pokemon_encountered,
+            'pokemon_caught': pokemon_caught,
+            'captures_per_hour': captures_per_hour,
+            'pokemon_released': pokemon_released,
+            'pokemon_evolved': pokemon_evolved,
+            'pokemon_unseen': pokemon_unseen,
+            'pokeballs_thrown': pokeballs_thrown,
+            'stardust_earned': stardust_earned,
+            'highest_cp_pokemon': highest_cp_pokemon,
+            'most_perfect_pokemon': most_perfect_pokemon,
+            'location': [self.bot.position[0], self.bot.position[1]],
+            'next_egg_hatching': float(next_egg_hatching),
+            'hatched_eggs': hatched_eggs
+        }
+
+        return available_stats
 
     def _get_stats_line(self, player_stats):
         """
