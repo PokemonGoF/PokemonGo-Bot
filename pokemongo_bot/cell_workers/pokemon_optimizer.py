@@ -43,6 +43,9 @@ class PokemonOptimizer(Datastore, BaseTask):
         self.config_transfer_wait_min = self.config.get("transfer_wait_min", 1)
         self.config_transfer_wait_max = self.config.get("transfer_wait_max", 4)
 
+        if (not self.config_may_use_lucky_egg) and self.config_evolve_only_with_lucky_egg:
+            self.config_evolve = False
+
     def get_pokemon_slot_left(self):
         pokemon_count = inventory.Pokemons.get_space_used()
 
