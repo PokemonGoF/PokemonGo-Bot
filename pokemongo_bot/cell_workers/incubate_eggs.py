@@ -218,6 +218,11 @@ class IncubateEggs(BaseTask):
             )
 
     def _print_eggs(self):
+        if not self.used_incubators:
+            return
+
+        self.used_incubators.sort(key=lambda x: x.get("km"))
+        
         eggs = ['{:.2f}/{} km'.format(e['km_needed']-e['km']+self.km_walked, e['km_needed']) for e in self.used_incubators]
 
         self.emit_event(
