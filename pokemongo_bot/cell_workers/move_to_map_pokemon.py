@@ -280,11 +280,11 @@ class MoveToMapPokemon(BaseTask):
             return WorkerResult.SUCCESS
 
         nearest_fort = self.get_nearest_fort_on_the_way(pokemon)
-        
+
         if nearest_fort is None :
             step_walker = self._move_to(pokemon)
             if not step_walker.step():
-                
+
                 if pokemon['dist'] < Constants.MAX_DISTANCE_POKEMON_IS_REACHABLE:
                     self._encountered(pokemon)
                     self.add_caught(pokemon)
@@ -294,7 +294,7 @@ class MoveToMapPokemon(BaseTask):
 
         else :
             step_walker = self._move_to_pokemon_througt_fort(nearest_fort, pokemon)
-            if not step_walker.step():
+            if not step_walker or not step_walker.step():
                 return WorkerResult.RUNNING
 
     def _emit_failure(self, msg):
@@ -404,7 +404,7 @@ class MoveToMapPokemon(BaseTask):
         Returns:
             StepWalker
         """
-        
+
         nearest_fort = fort
 
         lat = nearest_fort['latitude']
@@ -448,17 +448,17 @@ class MoveToMapPokemon(BaseTask):
             'arrived_at_fort',
             formatted='Arrived at fort.'
         )
-      
-    
-    
+
+
+
     def get_nearest_fort_on_the_way(self, pokemon):
         forts = self.bot.get_forts(order_by_distance=True)
-        
+
         # Remove stops that are still on timeout
         forts = filter(lambda x: x["id"] not in self.bot.fort_timeouts, forts)
         i=0
         while i < len(forts) :
-            ratio = float(self.config.get('max_extra_dist_fort'))
+            ratio = float(self.config.get('max_extra_dist_fort', 20))
             dist_self_to_fort = distance (self.bot.position[0], self.bot.position[1], forts[i]['latitude'], forts [i]['longitude'])
             dist_fort_to_pokemon = distance (pokemon['latitude'], pokemon['longitude'], forts[i]['latitude'], forts [i]['longitude'])
             total_dist = dist_self_to_fort + dist_fort_to_pokemon
@@ -472,4 +472,3 @@ class MoveToMapPokemon(BaseTask):
             return forts[0]
         else :
             return None
-        
