@@ -27,15 +27,14 @@ class SleepSchedule(BaseTask):
                         for this example the possible start time is 11:30-12:30
     duration_random_offset: (HH:MM) random offset of duration of sleep
                         for this example the possible duration is 5:00-6:00
-    wake_up_at_location: (lat,long | empty string) empty string will not change the location.
-    """
+    wake_up_at_location: (lat, long | lat, long, alt | "") the location at which the bot wake up 
+    *Note that an empty string ("") will not change the location*.    """
     SUPPORTED_TASK_API_VERSION = 1
 
     LOG_INTERVAL_SECONDS = 600
     SCHEDULING_MARGIN = timedelta(minutes=10)    # Skip if next sleep is RESCHEDULING_MARGIN from now
 
     def initialize(self):
-        print("start position" + str(self.bot.position))
         # self.bot.event_manager.register_event('sleeper_scheduled', parameters=('datetime',))
         self._process_config()
         self._schedule_next_sleep()

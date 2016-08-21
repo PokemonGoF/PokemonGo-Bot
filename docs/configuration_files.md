@@ -574,14 +574,14 @@ Pauses the execution of the bot every day for some time
 
 Simulates the user going to sleep every day for some time, the sleep time and the duration is changed every day by a random offset defined in the config file.
 
-time: (HH:MM) local time that the bot should sleep
-duration: (HH:MM) the duration of sleep
-time_random_offset: (HH:MM) random offset of time that the sleep will start for this example the possible start time is 11:30-12:30
-duration_random_offset: (HH:MM) random offset of duration of sleep for this example the possible duration is 5:00-6:00
-wake_up_at_location: (lat, long | lat, long, alt | "") the location at which the bot wake up *Note that an empty string ("") will not change the location*.
+- `time`: (HH:MM) local time that the bot should sleep
+- `duration`: (HH:MM) the duration of sleep
+- `time_random_offset`: (HH:MM) random offset of time that the sleep will start for this example the possible start time is 11:30-12:30
+- `duration_random_offset`: (HH:MM) random offset of duration of sleep for this example the possible duration is 5:00-6:00
+- `wake_up_at_location`: (lat, long | lat, long, alt | "") the location at which the bot wake up *Note that an empty string ("") will not change the location*.
  
 ###Example Config
-  
+```
 {
     "type": "SleepSchedule",
     "config": {
@@ -592,3 +592,4 @@ wake_up_at_location: (lat, long | lat, long, alt | "") the location at which the
       "wake_up_at_location": "39.408692,149.595838"
     }
 }
+```
