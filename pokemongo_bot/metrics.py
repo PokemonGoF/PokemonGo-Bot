@@ -21,6 +21,8 @@ class Metrics(object):
         self.highest_cp = {'cp': 0, 'desc': ''}
         self.most_perfect = {'potential': 0, 'desc': ''}
 
+        self.eggs = {'hatched': 0, 'next_hatching_km': 0}
+
     def runtime(self):
         return timedelta(seconds=round(time.time() - self.start_time))
 
@@ -61,6 +63,16 @@ class Metrics(object):
 
     def earned_dust(self):
         return self.dust['latest'] - self.dust['start']
+
+    def hatched_eggs(self, update):
+        if (update):
+            self.eggs['hatched'] += update
+        return self.eggs['hatched']
+
+    def next_hatching_km(self, update):
+        if (update):
+            self.eggs['next_hatching_km'] = update
+        return self.eggs['next_hatching_km']
 
     def captured_pokemon(self, name, cp, iv_display, potential):
         if cp > self.highest_cp['cp']:

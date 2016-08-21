@@ -112,6 +112,8 @@ class PokemonCatchWorker(Datastore, BaseTask):
             if inventory.items().get(ITEM_GREATBALL).count < 1:
                 if inventory.items().get(ITEM_ULTRABALL).count < 1:
                     return WorkerResult.SUCCESS
+                elif (not is_vip) and inventory.items().get(ITEM_ULTRABALL).count <= self.min_ultraball_to_keep:
+                    return WorkerResult.SUCCESS
 
         # log encounter
         self.emit_event(

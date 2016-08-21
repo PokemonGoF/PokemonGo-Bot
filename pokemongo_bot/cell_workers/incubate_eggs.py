@@ -35,6 +35,8 @@ class IncubateEggs(BaseTask):
             km_left = self.used_incubators[0]['km']-self.km_walked
             if km_left <= 0:
                 self._hatch_eggs()
+            else:
+                self.bot.metrics.next_hatching_km(km_left)
 
         if self._should_print():
             self._print_eggs()
@@ -198,6 +200,7 @@ class IncubateEggs(BaseTask):
             return
         for i in range(len(pokemon_data)):
             msg = "Egg hatched with a {pokemon} (CP {cp} - IV {iv}), {exp} exp, {stardust} stardust and {candy} candies."
+            self.bot.metrics.hatched_eggs(1)
             self.emit_event(
                 'egg_hatched',
                 formatted=msg,
