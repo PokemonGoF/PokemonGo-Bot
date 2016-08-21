@@ -153,8 +153,8 @@ class UpdateLiveStatsTestCase(unittest.TestCase):
         #self.worker._log_on_terminal('stats')
 
         self.assertEqual(mock_emit_event.call_count, 0)
-        self.assertEqual(mock_emit_event.call_args,
-                         call('log_stats', data={'stats': 'stats', 'stats_raw':'stats_raw'}, formatted='{stats},{stats_raw}'))
+        #self.assertEqual(mock_emit_event.call_args,
+        #                 call('log_stats', data={'stats': 'stats', 'stats_raw':'stats_raw'}, formatted='{stats},{stats_raw}'))
         self.assertEqual(mock_compute_next_update.call_count, 1)
 
     def test_get_stats_line_player_stats_none(self):
