@@ -568,3 +568,51 @@ Available `items` :
 ```
 2016-08-20 18:56:22,754 [UpdateLiveInventory] [INFO] [show_inventory] Items: 335/350 | Pokeballs: 8 | GreatBalls: 186 | UltraBalls: 0 | RazzBerries: 51 | LuckyEggs: 3
 ```
+## Sleep Schedule Task
+
+Pauses the execution of the bot every day for some time
+
+Simulates the user going to sleep every day for some time, the sleep time and the duration is changed every day by a random offset defined in the config file.
+
+- `time`: (HH:MM) local time that the bot should sleep
+- `duration`: (HH:MM) the duration of sleep
+- `time_random_offset`: (HH:MM) random offset of time that the sleep will start for this example the possible start time is 11:30-12:30
+- `duration_random_offset`: (HH:MM) random offset of duration of sleep for this example the possible duration is 5:00-6:00
+- `wake_up_at_location`: (lat, long | lat, long, alt | "") the location at which the bot wake up *Note that an empty string ("") will not change the location*.
+ 
+###Example Config
+```
+{
+    "type": "SleepSchedule",
+    "config": {
+      "time": "12:00",
+      "duration":"5:30",
+      "time_random_offset": "00:30",
+      "duration_random_offset": "00:30"
+      "wake_up_at_location": "39.408692,149.595838,590.8"
+    }
+}
+```
+## Random Pause
+
+Pause the execution of the bot at a random time for a random time.
+
+Simulates the random pause of the day (speaking to someone, getting into a store, ...) where the user stops the app. The interval between pauses and the duration of pause are configurable.
+
+- `min_duration`: (HH:MM:SS) the minimum duration of each pause
+- `max_duration`: (HH:MM:SS) the maximum duration of each pause
+- `min_interval`: (HH:MM:SS) the minimum interval between each pause
+- `max_interval`: (HH:MM:SS) the maximum interval between each pause
+
+###Example Config
+```
+{
+	"type": "RandomPause",
+    "config": {
+	  "min_duration": "00:00:10",
+	  "max_duration": "00:10:00",
+	  "min_interval": "00:10:00",
+	  "max_interval": "02:00:00"
+    }
+}
+```
