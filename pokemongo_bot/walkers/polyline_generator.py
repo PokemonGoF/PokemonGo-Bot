@@ -12,6 +12,8 @@ class PolylineObjectHandler:
     More like a namespace...
     '''
     _cache = None
+    _instability = 0
+    _run = False
 
     @staticmethod
     def cached_polyline(origin, destination, speed):
@@ -23,12 +25,26 @@ class PolylineObjectHandler:
         is_old_cache = lambda : tuple(origin) != PolylineObjectHandler._cache.get_last_pos()
         new_dest_set = lambda : tuple(destination) != PolylineObjectHandler._cache.destination
 
-        if None == PolylineObjectHandler._cache or is_old_cache() or new_dest_set():
+        if PolylineObjectHandler._run:
+            # bot used to have struggle with making a decision.
+            PolylineObjectHandler._instability -= 1
+            if 0 == PolylineObjectHandler._instability:
+                PolylineObjectHandler._run = False
+            pass # use current cache
+        elif None == PolylineObjectHandler._cache or is_old_cache() or new_dest_set():
+            # no cache, old cache or new destination set by bot, so make new polyline
+            PolylineObjectHandler._instability += 2
+            if 10 == PolylineObjectHandler._instability:
+                PolylineObjectHandler._run = True
+                PolylineObjectHandler._instability = 20 # next N moves use same cache
+
             PolylineObjectHandler._cache = Polyline(origin, destination, speed)
         else:
             # valid cache found
-            pass
-
+            PolylineObjectHandler._instability -= 1
+            PolylineObjectHandler._instability = max(PolylineObjectHandler._instability, 0)
+            pass # use current cache
+        print origin, destination
         return PolylineObjectHandler._cache
 
 
