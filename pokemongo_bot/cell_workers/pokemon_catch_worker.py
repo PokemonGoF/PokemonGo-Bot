@@ -352,7 +352,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
                     maximum_ball = ITEM_ULTRABALL
                     continue
                 else:
-                    break
+                    return WorkerResult.ERROR
 
             # check future ball count
             num_next_balls = 0
