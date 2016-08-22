@@ -10,7 +10,7 @@ class StepWalker(object):
         self.bot = bot
         self.api = bot.api
 
-        self.initLat, self.initLng, self.initAlt = self.bot.position[0:3]
+        self.initLat, self.initLng = self.bot.position[0:2]
 
         self.dist = distance(
             self.initLat,
@@ -23,6 +23,11 @@ class StepWalker(object):
         else:
             self.alt = dest_alt
         self.speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
+
+        if len(self.bot.position) == 3:
+            self.initAlt = self.bot.position[2]
+        else:
+            self.initAlt = self.alt;
 
         self.destLat = dest_lat
         self.destLng = dest_lng
