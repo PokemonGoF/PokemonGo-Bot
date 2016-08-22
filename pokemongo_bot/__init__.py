@@ -117,7 +117,8 @@ class PokemonGoBot(Datastore):
             handlers.append(ColoredLoggingHandler())
         else:
             handlers.append(LoggingHandler())
-
+        if self.config.enable_social:
+            handlers.append(SocialHandler(self))
         if self.config.websocket_server_url:
             if self.config.websocket_start_embedded_server:
                 self.sio_runner = SocketIoRunner(self.config.websocket_server_url)
