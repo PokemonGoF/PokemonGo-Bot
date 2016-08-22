@@ -30,6 +30,10 @@ rm -rf pgoencrypt.tar.gz
 rm -rf pgoencrypt
 }
 
+function Pokebotescapestring () {
+echo "$1" | sed 's/\//\\\//g' | sed 's/"/\\"/g' # escape slash and double quotes
+}
+
 function Pokebotconfig () {
 cd $pokebotpath
 read -p "enter 1 for google or 2 for ptc 
@@ -38,6 +42,7 @@ read -p "Input username
 " username
 read -p "Input password 
 " -s password
+password=$(Pokebotescapestring $password)
 read -p "
 Input location 
 " location
