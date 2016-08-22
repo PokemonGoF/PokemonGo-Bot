@@ -150,17 +150,15 @@ class SpinFort(Datastore, BaseTask):
                         'softban',
                         formatted='Probably got softban.'
                     )
-                with self.bot.database as conn:
-                    c = conn.cursor()
-                    c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='softban_log'")
-                result = c.fetchone()        
-
-                while True:
+                    with self.bot.database as conn:
+                        c = conn.cursor()
+                        c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='softban_log'")
+                    result = c.fetchone()        
+                    
                     if result[0] == 1:
                         source = str("PokemonCatchWorker")
                         status = str("Possible Softban")
                         conn.execute('''INSERT INTO softban_log (status, source) VALUES (?, ?)''', (status, source))
-                        break
                     else:
                         self.emit_event(
                         'softban_log',
@@ -168,9 +166,9 @@ class SpinFort(Datastore, BaseTask):
                         level='info',
                         formatted="softban_log table not found, skipping log"
                         )
-                        break
-                else:
-                    self.bot.fort_timeouts[fort["id"]] = (time.time() + 300) * 1000  # Don't spin for 5m
+                        
+                self.bot.fort_timeouts[fort["id"]] = (time.time() + 300) * 1000  # Don't spin for 5m
+                    
                 return WorkerResult.ERROR
         action_delay(self.spin_wait_min, self.spin_wait_max)
 
@@ -182,12 +180,20 @@ class SpinFort(Datastore, BaseTask):
     def get_forts_in_range(self):
         forts = self.bot.get_forts(order_by_distance=True)
         forts = filter(lambda fort: fort["id"] not in self.bot.fort_timeouts, forts)
-        forts = filter(lambda fort: distance(
-            self.bot.position[0],
-            self.bot.position[1],
-            fort['latitude'],
-            fort['longitude']
-        ) <= Constants.MAX_DISTANCE_FORT_IS_REACHABLE, forts)
+        if self.bot.config.replicate_gps_xy_noise:
+            forts = filter(lambda fort: distance(
+                self.bot.noised_position[0],
+                self.bot.noised_position[1],
+                fort['latitude'],
+                fort['longitude']
+            ) <= Constants.MAX_DISTANCE_FORT_IS_REACHABLE, forts)
+        else:
+            forts = filter(lambda fort: distance(
+                self.bot.position[0],
+                self.bot.position[1],
+                fort['latitude'],
+                fort['longitude']
+            ) <= Constants.MAX_DISTANCE_FORT_IS_REACHABLE, forts)
 
         return forts
 
