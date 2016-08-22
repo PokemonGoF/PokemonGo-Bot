@@ -34,7 +34,7 @@ class PokemonOptimizer(Datastore, BaseTask):
         self.config_evolve_time = self.config.get("evolve_time", 20)
         self.config_evolve_for_xp = self.config.get("evolve_for_xp", True)
         self.config_evolve_only_with_lucky_egg = self.config.get("evolve_only_with_lucky_egg", False)
-        self.config_evolve_count_for_lucky_egg = self.config.get("evolve_count_for_lucky_egg", 90)
+        self.config_evolve_count_for_lucky_egg = self.config.get("evolve_count_for_lucky_egg", 92)
         self.config_may_use_lucky_egg = self.config.get("may_use_lucky_egg", False)
         self.config_keep = self.config.get("keep", [{"top": 1, "evolve": True, "sort": ["iv"]},
                                                     {"top": 1, "evolve": True, "sort": ["ncp"]},
@@ -43,12 +43,16 @@ class PokemonOptimizer(Datastore, BaseTask):
         self.config_transfer_wait_min = self.config.get("transfer_wait_min", 1)
         self.config_transfer_wait_max = self.config.get("transfer_wait_max", 4)
 
+        if (not self.config_may_use_lucky_egg) and self.config_evolve_only_with_lucky_egg:
+            self.config_evolve = False
+
     def get_pokemon_slot_left(self):
         pokemon_count = inventory.Pokemons.get_space_used()
 
         if pokemon_count != self.last_pokemon_count:
             self.last_pokemon_count = pokemon_count
             self.logger.info("Pokemon Bag: %s/%s", pokemon_count, self.max_pokemon_storage)
+            self.save_web_inventory()
 
         return inventory.Pokemons.get_space_left()
 
@@ -57,7 +61,6 @@ class PokemonOptimizer(Datastore, BaseTask):
             return WorkerResult.SUCCESS
 
         self.open_inventory()
-        self.save_web_inventory()
 
         transfer_all = []
         evo_all_best = []
@@ -76,6 +79,7 @@ class PokemonOptimizer(Datastore, BaseTask):
         evo_all = evo_all_best + evo_all_crap
 
         self.apply_optimization(transfer_all, evo_all)
+        self.save_web_inventory()
 
         return WorkerResult.SUCCESS
 
@@ -92,11 +96,30 @@ class PokemonOptimizer(Datastore, BaseTask):
             self.family_by_family_id.setdefault(family_id, []).append(pokemon)
 
     def save_web_inventory(self):
-        inventory_items = self.bot.api.get_inventory()["responses"]["GET_INVENTORY"]["inventory_delta"]["inventory_items"]
         web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
 
+        with open(web_inventory, "r") as infile:
+            ii = json.load(infile)
+
+        ii = [x for x in ii if not x.get("inventory_item_data", {}).get("pokedex_entry", None)]
+        ii = [x for x in ii if not x.get("inventory_item_data", {}).get("candy", None)]
+        ii = [x for x in ii if not x.get("inventory_item_data", {}).get("item", None)]
+        ii = [x for x in ii if not x.get("inventory_item_data", {}).get("pokemon_data", None)]
+
+        for pokedex in inventory.pokedex().all():
+            ii.append({"inventory_item_data": {"pokedex_entry": pokedex}})
+
+        for family_id, candy in inventory.candies()._data.items():
+            ii.append({"inventory_item_data": {"candy": {"family_id": family_id, "candy": candy.quantity}}})
+
+        for item_id, item in inventory.items()._data.items():
+            ii.append({"inventory_item_data": {"item": {"item_id": item_id, "count": item.count}}})
+
+        for pokemon in inventory.pokemons().all():
+            ii.append({"inventory_item_data": {"pokemon_data": pokemon._data}})
+
         with open(web_inventory, "w") as outfile:
-            json.dump(inventory_items, outfile)
+            json.dump(ii, outfile)
 
     def get_family_optimized(self, family_id, family):
         evolve_best = []
@@ -206,6 +229,7 @@ class PokemonOptimizer(Datastore, BaseTask):
         crap = [p for p in crap if not p.in_fort and not p.is_favorite]
         crap.sort(key=lambda p: p.iv * p.ncp, reverse=True)
 
+        # We will gain a candy whether we choose to transfer or evolve these Pokemon
         candies += len(crap)
 
         # Let's see if we can evolve our best Pokemon
@@ -218,8 +242,9 @@ class PokemonOptimizer(Datastore, BaseTask):
             candies -= pokemon.evolution_cost
 
             if candies < 0:
-                continue
+                break
 
+            candies += 1
             can_evolve_best.append(pokemon)
 
             # Not sure if the evo keep the same id
@@ -236,13 +261,12 @@ class PokemonOptimizer(Datastore, BaseTask):
 
             # transfer + keep_for_evo = len(crap)
             # leftover_candies = candies - len(crap) + transfer * 1
-            # keep_for_evo = leftover_candies / junior_evolution_cost
-            #
-            # keep_for_evo = (candies - len(crap) + transfer) / junior_evolution_cost
-            # keep_for_evo = (candies - keep_for_evo) / junior_evolution_cost
+            # keep_for_evo = (leftover_candies - 1) / (junior_evolution_cost - 1)
+            # keep_for_evo = (candies - len(crap) + transfer - 1) / (junior_evolution_cost - 1)
+            # keep_for_evo = (candies - keep_for_evo - 1) / (junior_evolution_cost - 1)
 
             if (candies > 0) and junior_evolution_cost:
-                keep_for_evo = int(candies / (junior_evolution_cost + 1))
+                keep_for_evo = int((candies - 1) / junior_evolution_cost)
             else:
                 keep_for_evo = 0
 

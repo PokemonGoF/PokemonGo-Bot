@@ -26,7 +26,7 @@
     This will reset and makes sure you have no changes made to any code since it will overide it
 3. Rerun the bot `./run.sh`
 
-for manual installation please refer to [here](https://github.com/nivong/PokemonGo-Bot/blob/dev/docs/manual_installation.md)
+for manual installation please refer to [here](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/manual_installation.md)
 
 #Windows
 We do recommend Windows users to use [Docker](#docker) this will work much easier and smoother (also saver)
