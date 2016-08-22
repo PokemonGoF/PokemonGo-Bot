@@ -174,9 +174,12 @@ class UpdateLiveStats(BaseTask):
         self._compute_next_update()
     
     # hard coded values to supplement unknown current_level_xp
+    global xp_per_level
     xp_per_level = [[0, 0], [1000, 1000], [2000, 3000], [3000, 6000], [4000, 10000], [5000, 15000], [6000, 21000], [7000, 28000], [8000, 36000], [9000, 45000], [10000, 55000], [10000, 65000], [10000, 75000], [10000, 85000], [15000, 100000], [20000, 120000], [20000, 140000], [20000, 160000], [25000, 185000], [25000, 210000], [50000, 260000], [75000, 335000], [100000, 435000], [125000, 560000], [150000, 710000], [190000, 900000], [200000, 1100000], [250000, 1350000], [300000, 1650000], [350000, 2000000], [500000, 2500000], [500000, 3000000], [750000, 3750000], [1000000, 4750000], [1250000, 6000000], [1500000, 7500000], [2000000, 9500000], [2500000, 12000000], [3000000, 15000000], [5000000, 20000000]]
         
     def _get_stats(self, player_stats):
+        global xp_per_level
+        
         metrics = self.bot.metrics
         metrics.capture_stats()
         runtime = metrics.runtime()
@@ -254,6 +257,8 @@ class UpdateLiveStats(BaseTask):
         # No stats to display, avoid any useless overhead.
         if not self.displayed_stats:
             return ''
+
+        global xp_per_level
 
         # Gather stats values.
         metrics = self.bot.metrics
