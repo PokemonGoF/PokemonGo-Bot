@@ -34,8 +34,7 @@ class CatchPokemon(BaseTask):
             
             if self.catch_pokemon(pokemon[0]) == WorkerResult.ERROR:
                 return WorkerResult.ERROR
-            
-            if num_pokemon > 1:
+            elif num_pokemon > 1:
                 return WorkerResult.RUNNING
 
         return WorkerResult.SUCCESS
