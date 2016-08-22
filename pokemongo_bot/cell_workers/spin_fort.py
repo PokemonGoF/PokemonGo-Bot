@@ -154,21 +154,18 @@ class SpinFort(Datastore, BaseTask):
                         c = conn.cursor()
                         c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='softban_log'")
                     result = c.fetchone()        
-    
-                    while True:
-                        if result[0] == 1:
-                            source = str("PokemonCatchWorker")
-                            status = str("Possible Softban")
-                            conn.execute('''INSERT INTO softban_log (status, source) VALUES (?, ?)''', (status, source))
-                            break
-                        else:
-                            self.emit_event(
-                            'softban_log',
-                            sender=self,
-                            level='info',
-                            formatted="softban_log table not found, skipping log"
-                            )
-                            break
+                    
+                    if result[0] == 1:
+                        source = str("PokemonCatchWorker")
+                        status = str("Possible Softban")
+                        conn.execute('''INSERT INTO softban_log (status, source) VALUES (?, ?)''', (status, source))
+                    else:
+                        self.emit_event(
+                        'softban_log',
+                        sender=self,
+                        level='info',
+                        formatted="softban_log table not found, skipping log"
+                        )
                         
                 self.bot.fort_timeouts[fort["id"]] = (time.time() + 300) * 1000  # Don't spin for 5m
                     
