@@ -348,14 +348,13 @@ class PokemonCatchWorker(Datastore, BaseTask):
             while ball_count[current_ball] == 0 and current_ball < maximum_ball:
                 current_ball += 1
             if ball_count[current_ball] == 0:
-                self.emit_event('no_pokeballs', formatted='No usable (non-ultra)pokeballs found!')
-
                 # use untraball if there is no other balls with constraint to `min_ultraball_to_keep`
                 if maximum_ball != ITEM_ULTRABALL and ball_count[ITEM_ULTRABALL] > min_ultraball_to_keep:
                     maximum_ball = ITEM_ULTRABALL
-                    self.emit_event('trying_ultraball', formatted='More ultraballs than minimum. Trying...')
+                    self.emit_event('enough_ultraballs', formatted='No regular balls left! Trying ultraball.')
                     continue
                 else:
+                    self.emit_event('no_pokeballs', formatted='No pokeballs left!')
                     return WorkerResult.ERROR
 
             # check future ball count
