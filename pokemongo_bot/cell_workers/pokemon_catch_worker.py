@@ -105,6 +105,16 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
         # skip ignored pokemon
         if not self._should_catch_pokemon(pokemon):
+            self.emit_event(
+                'pokemon_appeared',
+                formatted='Skip ignored {pokemon}! [CP {cp}] [Potential {iv}] [A/D/S {iv_display}]',
+                data={
+                    'pokemon': pokemon.name,
+                    'cp': pokemon.cp,
+                    'iv': pokemon.iv,
+                    'iv_display': pokemon.iv_display,
+                }
+            )
             return WorkerResult.SUCCESS
 
         is_vip = self._is_vip_pokemon(pokemon)
