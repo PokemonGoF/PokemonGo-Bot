@@ -445,7 +445,7 @@ class MoveToMapPokemon(BaseTask):
             self.bot,
             lat,
             lng
-            )
+        )
 
     def get_nearest_fort_on_the_way(self, pokemon):
         forts = self.bot.get_forts(order_by_distance=True)
