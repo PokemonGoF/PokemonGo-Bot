@@ -21,7 +21,7 @@ function initialiseEventBus(){
 	var pLoadR2 = pLoadR.split(",");
 	var olat = pLoadR2[0]
 	var olong = pLoadR2[1]
-    var sessid = pLoadR2[2]
+    	var sessid = pLoadR2[2]
 	
     displayMessageOnMap(payload, olat, olong, sessid);
     //client.end();
