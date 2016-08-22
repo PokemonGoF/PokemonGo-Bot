@@ -48,12 +48,15 @@ class CompleteTutorial(BaseTask):
 
         # AVATAR_SELECTION = 1
         if not 1 in tutorial_state:
-            # TODO : choose avatar ?
-            sleep(3)
-            if self._set_tutorial_state(1):
-                self.logger.info('Completed avatar selection')
-                tutorial_state = self._player.get('tutorial_state', [])
+            sleep(7)
+            if self._set_avatar():
+                if self._set_tutorial_state(1):
+                    self.logger.info('Completed avatar selection')
+                    tutorial_state = self._player.get('tutorial_state', [])
+                else:
+                    return False
             else:
+                self.logger.error('Error during avatar selection')
                 return False
 
         # POKEMON_CAPTURE = 3
@@ -103,6 +106,44 @@ class CompleteTutorial(BaseTask):
                 return False
         except KeyError:
             self.logger.error("KeyError during encouter tutorial")
+            return False
+
+    def _random_avatar(self):
+        avatar= {}
+        # 0 = Male, 1 = Female
+        avatar['gender']=random.randint(0,1)
+        # What is the max value of each parameter ?
+        # Default is 0, anyway human player will stop
+        # at the first choices in general, so fully
+        # random on the whole avatar space is not the way to go either
+        avatar['skin']=random.randint(0,3)
+        avatar['hair']=random.randint(0,3)
+        avatar['shirt']=random.randint(0,3)
+        avatar['pants']=random.randint(0,3)
+        avatar['hat']=random.randint(0,3)
+        avatar['shoes']=random.randint(0,3)
+        avatar['eyes']=random.randint(0,3)
+        avatar['backpack']=random.randint(0,3)
+        return avatar
+
+    def _set_avatar(self):
+        avatar = self._random_avatar()
+        response_dict = self.api.set_avatar(player_avatar=avatar)
+        status = response_dict['responses']['SET_AVATAR']['status']
+        try:
+            if status == 1:
+                return True
+            else:
+                error_codes = {
+                    0: 'UNSET',
+                    1: 'SUCCESS',
+                    2: 'AVATAR_ALREADY_SET',
+                    3: 'FAILURE',
+                }
+                self.logger.error("Error during avatar selection : {}".format(error_codes[status]))
+                return False
+        except KeyError:
+            self.logger.error("KeyError during avatar selection")
             return False
 
     def _set_nickname(self, nickname):
