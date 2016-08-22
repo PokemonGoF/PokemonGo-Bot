@@ -21,11 +21,11 @@
     - [Valid names in templates](#valid-names-in-templates)
         - [Sample usages](#sample-usages)
     - [Sample configuration](#sample-configuration)
-- [CatchPokemon Settings](#catchpokemon-settings)
+- [CatchPokemon `catch_simulation` Settings](#catchpokemon-catch_simulation-settings)
     - [Default Settings](#default-settings)
     - [Settings Description](#settings-description)
     - [`flee_count` and `flee_duration`](#flee_count-and-flee_duration)
-    - [Previous `catch_simulation` Behaviour](#previous-catch_simulation-behaviour)
+    - [Previous Behaviour](#previous-behaviour)
 - [Sniping _(MoveToLocation)_](#sniping-_-movetolocation-_)
     - [Description](#description)
     - [Options](#options)
@@ -408,10 +408,10 @@ Key | Info
 }
 ```
 
-## CatchPokemon Settings
+## CatchPokemon `catch_simulation` Settings
 [[back to top](#table-of-contents)]
 
-These settings determine how the bot will catch pokemon. `catch_simulate` simulates the app by adding pauses to throw the ball and navigate menus.  All times in `catch_simulation` are in seconds.
+These settings determine how the bot will simulate the app by adding pauses to throw the ball and navigate menus.  All times are in seconds.  To configure these settings add them to the config in the CatchPokemon task.
 
 ### Default Settings
 [[back to top](#table-of-contents)]
@@ -419,28 +419,15 @@ These settings determine how the bot will catch pokemon. `catch_simulate` simula
 The default settings are 'safe' settings intended to simulate human and app behaviour.
 
 ```
-"catch_visible_pokemon": true,
-"catch_lured_pokemon": true,
-"min_ultraball_to_keep": 5,
-"berry_threshold": 0.35,
-"vip_berry_threshold": 0.9,
-"catch_throw_parameters": {
-  "excellent_rate": 0.1,
-  "great_rate": 0.5,
-  "nice_rate": 0.3,
-  "normal_rate": 0.1,
-  "spin_success_rate" : 0.6,
-  "hit_rate": 0.75
-},
 "catch_simulation": {
-  "flee_count": 3,
-  "flee_duration": 2,
-  "catch_wait_min": 2,
-  "catch_wait_max": 6,
-  "berry_wait_min": 2,
-  "berry_wait_max": 3,
-  "changeball_wait_min": 2,
-  "changeball_wait_max": 3
+    "flee_count": 3,
+    "flee_duration": 2,
+    "catch_wait_min": 2,
+    "catch_wait_max": 6,
+    "berry_wait_min": 2,
+    "berry_wait_max": 3,
+    "changeball_wait_min": 2,
+    "changeball_wait_max": 3
 }
 ```
 
@@ -449,9 +436,6 @@ The default settings are 'safe' settings intended to simulate human and app beha
 
 Setting | Description
 ---- | ----
-`min_ultraball_to_keep` | Allows the bot to use ultraballs on non-VIP pokemon as long as number of ultraballs is above this setting
-`berry_threshold` | The ideal catch rate threshold before using a razz berry on normal pokemon (higher threshold means using razz berries more frequently, for example if we raise `berry_threshold` to 0.5, any pokemon that has an initial catch rate between 0 to 0.5 will initiate a berry throw)
-`vip_berry_threshold` | The ideal catch rate threshold before using a razz berry on VIP pokemon
 `flee_count` | The maximum number of times catching animation will play before the pokemon breaks free
 `flee_duration` | The length of time for each animation
 `catch_wait_min`| The minimum amount of time to throw the ball
@@ -466,10 +450,10 @@ Setting | Description
 
 This part is app simulation and the default settings are advised.  When we hit a pokemon in the app the animation will play randomly 1, 2 or 3 times for roughly 2 seconds each time.  So we pause for a random number of animations up to `flee_count` of duration `flee_duration`
 
-### Previous `catch_simulation` Behaviour
+### Previous Behaviour
 [[back to top](#table-of-contents)]
 
-If you want to make your bot behave as it did prior to the catch_simulation update please use the following settings.
+If you want to make your bot behave as it did prior to this update please use the following settings.
 
 ```
 "catch_simulation": {
