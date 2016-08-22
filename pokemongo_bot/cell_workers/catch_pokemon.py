@@ -15,7 +15,6 @@ class CatchPokemon(BaseTask):
             return WorkerResult.ERROR
 
         pokemon = []
-
         if self.config.get('catch_visible_pokemon', True):
             pokemon = get_visible_pokemon()
         if self.config.get('catch_lured_pokemon', True):
@@ -23,6 +22,7 @@ class CatchPokemon(BaseTask):
 
         num_pokemon = len(pokemon)
         if num_pokemon > 0:
+            pokemon = sort_pokemon(pokemon)
             self.catch_pokemon(pokemon[0])
             if num_pokemon > 1:
                 return WorkerResult.RUNNING
@@ -31,7 +31,6 @@ class CatchPokemon(BaseTask):
 
     def get_visible_pokemon(self):
         pokemon_to_catch = []
-
         if 'catchable_pokemons' in self.bot.cell:
             pokemon_to_catch = self.bot.cell['catchable_pokemons']
 
@@ -39,13 +38,6 @@ class CatchPokemon(BaseTask):
             pokemon_to_catch += self.bot.cell['wild_pokemons']
 
         if len(pokemon_to_catch) > 0:
-            # Sort all by distance from current pos- eventually this should
-            # build graph & A* it
-            pokemon_to_catch.sort(
-                key=
-                lambda x: distance(self.bot.position[0], self.bot.position[1], x['latitude'], x['longitude'])
-            )
-
             # Update web UI
             user_web_catchable = os.path.join(_base_dir, 'web', 'catchable-{}.json'.format(self.bot.config.username))
             for pokemon in self.bot.cell['catchable_pokemons']:
@@ -116,3 +108,14 @@ class CatchPokemon(BaseTask):
         return_value = worker.work()
 
         return return_value
+        
+    def sort_pokemon(self, pokemon_list):
+        # Sort all by distance from current pos- eventually this should
+        # build graph & A* it
+        pokemon_list.sort(
+            key=
+            lambda x: distance(self.bot.position[0], self.bot.position[1], x['latitude'], x['longitude'])
+        )
+        
+        return pokemon_list
+        
