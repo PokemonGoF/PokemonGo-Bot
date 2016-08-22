@@ -200,6 +200,15 @@ class PokemonGoBot(Datastore):
             )
         )
 
+        # recycle stuff
+        self.event_manager.register_event(
+            'next_force_recycle',
+            parameters=(
+                'time'
+            )
+        )
+        self.event_manager.register_event('force_recycle')
+
         # fort stuff
         self.event_manager.register_event(
             'spun_fort',
@@ -523,6 +532,7 @@ class PokemonGoBot(Datastore):
     def tick(self):
         self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
+        inventory.refresh_inventory()
 
         now = time.time() * 1000
 
