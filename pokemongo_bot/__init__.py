@@ -1059,14 +1059,14 @@ class PokemonGoBot(Datastore):
             possible_coordinates = re.findall(
                 "[-]?\d{1,3}[.]\d{3,7}", location_name
             )
-            if len(possible_coordinates) == 2:
+            if len(possible_coordinates) >= 2:
                 # 2 matches, this must be a coordinate. We'll bypass the Google
                 # geocode so we keep the exact location.
                 self.logger.info(
                     '[x] Coordinates found in passed in location, '
                     'not geocoding.'
                 )
-                return float(possible_coordinates[0]), float(possible_coordinates[1]), self.alt
+                return float(possible_coordinates[0]), float(possible_coordinates[1]), (float(possible_coordinates[2]) if len(possible_coordinates) == 3 else self.alt)
 
         geolocator = GoogleV3(api_key=self.config.gmapkey)
         loc = geolocator.geocode(location_name, timeout=10)
