@@ -416,7 +416,7 @@ class MoveToMapPokemon(BaseTask):
         unit = self.bot.config.distance_unit  # Unit to use when printing formatted distance
 
         dist = distance(
-	    self.bot.position[0],
+            self.bot.position[0],
             self.bot.position[1],
             lat,
             lng
