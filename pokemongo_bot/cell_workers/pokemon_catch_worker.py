@@ -354,7 +354,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
                     self.emit_event('enough_ultraballs', formatted='No regular balls left! Trying ultraball.')
                     continue
                 else:
-                    self.emit_event('no_pokeballs', formatted='No pokeballs left!')
+                    self.emit_event('no_pokeballs', formatted='No pokeballs left! Fleeing...')
                     return WorkerResult.ERROR
 
             # check future ball count
