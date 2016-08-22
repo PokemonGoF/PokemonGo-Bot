@@ -271,7 +271,7 @@ class MoveToMapPokemon(BaseTask):
 
         if self.config['snipe']:
             if self.snipe_high_prio_only:
-                if self.snipe_high_prio_threshold < pokemon['priority'] or pokemon['is_vip']:
+                if self.snipe_high_prio_threshold < pokemon['priority']:
                     self.snipe(pokemon)
             else:
                 return self.snipe(pokemon)
