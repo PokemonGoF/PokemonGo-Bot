@@ -48,6 +48,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
         self.position = self.bot.position
         self.pokemon_list = self.bot.pokemon_list
         self.inventory = inventory.items()
+        self.pokedex = inventory.pokedex()
         self.spawn_point_guid = ''
         self.response_key = ''
         self.response_status_key = ''
@@ -242,7 +243,8 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
     def _is_vip_pokemon(self, pokemon):
         # having just a name present in the list makes them vip
-        if self.bot.config.vips.get(pokemon.name) == {}:
+        # Not seen pokemons also will become vip
+        if self.bot.config.vips.get(pokemon.name) == {} or not self.pokedex.seen(pokemon.pokemon_id):
             return True
         return self._pokemon_matches_config(self.bot.config.vips, pokemon, default_logic='or')
 
