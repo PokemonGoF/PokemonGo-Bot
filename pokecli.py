@@ -151,12 +151,12 @@ def main():
                     formatted='Server is throttling, reconnecting in 30 seconds'
                 )
             except PermaBannedException:
-                 bot.event_manager.emit(
+                bot.event_manager.emit(
                     'api_error',
                     sender=bot,
                     level='info',
                     formatted='Probably permabanned, Game Over ! Play again at https://club.pokemon.com/us/pokemon-trainer-club/sign-up/'
-                 )
+                )
                 time.sleep(30)
 
     except GeocoderQuotaExceeded:
