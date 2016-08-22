@@ -556,7 +556,7 @@ class PokemonGoBot(Datastore):
     def tick(self):
         self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
-        inventory.refresh_inventory()
+        inventory.update_web_inventory()
 
         now = time.time() * 1000
 

@@ -1092,13 +1092,28 @@ class Inventory(object):
         inventory = inventory['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
         for i in (self.pokedex, self.candy, self.items, self.pokemons):
             i.refresh(inventory)
+            
+        self.update_web_inventory()
 
-        user_web_inventory = os.path.join(_base_dir, 'web', 'inventory-%s.json' % (self.bot.config.username))
-        try:
-            with open(user_web_inventory, 'w') as outfile:
-                json.dump(inventory, outfile)
-        except IOError as e:
-            errmsg = '[x] Error while opening location file: user_web_inventory'
+   
+    def update_web_inventory(self):
+        web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
+        json_inventory = []
+        
+        for pokedex in self.pokedex.all():
+            json_inventory.append({"inventory_item_data": {"pokedex_entry": pokedex}})
+
+        for family_id, candy in self.candy._data.items():
+            json_inventory.append({"inventory_item_data": {"candy": {"family_id": family_id, "candy": candy.quantity}}})
+
+        for item_id, item in self.items._data.items():
+            json_inventory.append({"inventory_item_data": {"item": {"item_id": item_id, "count": item.count}}})
+
+        for pokemon in self.pokemons.all():
+            json_inventory.append({"inventory_item_data": {"pokemon_data": pokemon._data}})
+
+        with open(web_inventory, "w") as outfile:
+            json.dump(json_inventory, outfile)
 
     def retrieve_inventories_size(self):
         """
@@ -1197,6 +1212,9 @@ def refresh_inventory():
     :rtype: None
     """
     _inventory.refresh()
+    
+def update_web_inventory():
+    _inventory.update_web_inventory()
 
 def get_item_inventory_size():
     """
