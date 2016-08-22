@@ -306,6 +306,7 @@ class PokemonGoBot(Datastore):
             )
         )
         self.event_manager.register_event('no_pokeballs')
+        self.event_manager.register_event('enough_ultraballs')
         self.event_manager.register_event(
             'pokemon_catch_rate',
             parameters=(
