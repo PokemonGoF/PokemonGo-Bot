@@ -4,7 +4,7 @@ var retryCount = 10;
 
 // Support dynamic topic registration by #word
 var urlHashTopic = location.hash ? location.hash.substring(1).toLowerCase() : null;
-var topic = urlHashTopic ? urlHashTopic : "main";
+var topic = urlHashTopic ? urlHashTopic : "pgomapcatch";
 
 function initialiseEventBus(){
   window.client = mqtt.connect('ws://test.mosca.io'); // you add a ws:// url here
@@ -13,11 +13,19 @@ function initialiseEventBus(){
   client.on("message", function(topic, payload) {
     //alert([topic, payload].join(": "));
     //client.end();
+
     Materialize.toast(payload, 2000);
-    displayMessageOnMap(payload);
+	
+	//@ro: let's grab the message and split that shit. (simple for now, maybe we could just parse the json instead)
+	var pLoadR = payload.toString();
+	var pLoadR2 = pLoadR.split(",");
+	var olat = pLoadR2[0]
+	var olong = pLoadR2[1]
+	
+    displayMessageOnMap(payload, olat, olong);
   });
 
-  client.publish("mqtt/demo", "hello world!");
+  client.publish("pgomapcatch", "I just connected to the map!");
     /*eb = new vertx.EventBus("http://localhost:8080/chat");
 
     eb.onopen = function () {
