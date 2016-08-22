@@ -62,12 +62,12 @@ class IncubateEggs(BaseTask):
                     continue
                 
                 if self.breakable_incubator:
-                    if incubator.get('uses_remaining') is not None:
+                    if incubator.get('uses_remaining') is not None: # test if the incubator is of type breakable
                         if egg["km"] not in self.breakable_incubator:
                             continue
                     
                 if self.infinite_incubator:
-                    if incubator.get('uses_remaining') is None: 
+                    if incubator.get('uses_remaining') is None: # test if the incubator is of type infinite
                         if egg["km"] not in self.infinite_incubator:
                             continue
                 
