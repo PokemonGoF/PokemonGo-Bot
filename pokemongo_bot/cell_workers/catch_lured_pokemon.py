@@ -7,12 +7,26 @@ from pokemongo_bot.constants import Constants
 from pokemongo_bot.cell_workers.utils import fort_details, distance
 from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 
+ENOUGH_POKEBALL_FOR_ALL = 1
+ENOUGH_POKEBALL_FOR_VIP = 2
+NOT_ENOUGH_POKEBALL = 3
 
 class CatchLuredPokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def work(self):
         lured_pokemon = self.get_lured_pokemon()
+
+        enough_pokeball_for = self._check_enough_pokeball()
+        if enough_pokeball_for == NOT_ENOUGH_POKEBALL:
+            return WorkerResult.SUCCESS
+        elif enough_pokeball_for == ENOUGH_POKEBALL_FOR_VIP:
+            lured_vip_pokemon = []
+            for pokemon in lured_pokemon:
+                if(self._is_vip_pokemon(pokemon)):
+                    lured_vip_pokemon.append(pokemon)
+            lured_pokemon = lured_vip_pokemon
+
         if len(lured_pokemon) > 0:
             self.catch_pokemon(lured_pokemon[0])
 
