@@ -9,7 +9,7 @@ from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.item_list import Item
 from pokemongo_bot import inventory
-from utils import distance
+from utils import fort_details, distance
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.constants import Constants
 
@@ -31,8 +31,10 @@ class CatchPokemon(BaseTask):
         num_pokemon = len(pokemon)
         if num_pokemon > 0:
             pokemon = self.sort_pokemon(pokemon)
-            self.catch_pokemon(pokemon[0])
-            if num_pokemon > 1:
+            
+            if self.catch_pokemon(pokemon[0]) == WorkerResult.ERROR:
+                return WorkerResult.ERROR
+            elif num_pokemon > 1:
                 return WorkerResult.RUNNING
 
         return WorkerResult.SUCCESS
