@@ -18,6 +18,9 @@ class RecycleItems(BaseTask):
     """
     Recycle undesired items if there is less than five space in inventory.
     You can use either item's name or id. For the full list of items see ../../data/items.json
+    
+    Can also force a recycle to occur at a pseudo-random time between recycle_force_min and 
+    recycle_force_max minutes.
 
     It's highly recommended to put this task before move_to_fort and spin_fort task in the config file so you'll most likely be able to loot.
 
@@ -41,8 +44,14 @@ class RecycleItems(BaseTask):
           "Revive": {"keep": 0},
           "Max Revive": {"keep": 20},
           "Razz Berry": {"keep": 20}
-        }
+        },
+        "recycle_wait_min": 1,
+        "recycle_wait_max": 4,
+        "recycle_force": true,
+        "recycle_force_min": "00:00:00",
+        "recycle_force_max": "00:01:00"
       }
+      
     }
     """
     SUPPORTED_TASK_API_VERSION = 1
@@ -152,14 +161,6 @@ class RecycleItems(BaseTask):
         worker_result = WorkerResult.SUCCESS
         if self.should_run():
 
-            for item_in_inventory in inventory.items().all():
-                if self.item_should_be_recycled(item_in_inventory):
-                    # Make the bot appears more human
-                    action_delay(self.recycle_wait_min, self.recycle_wait_max)
-                    # If at any recycling process call we got an error, we consider that the result of this task is error too.
-                    if ItemRecycler(self.bot, item_in_inventory, self.get_amount_to_recycle(item_in_inventory)).work() == WorkerResult.ERROR:
-                        worker_result = WorkerResult.ERROR
-
             if not (self.max_balls_keep is None):
                 this_worker_result = self.recycle_excess_category_max(self.max_balls_keep, [1,2,3,4])
                 if this_worker_result <> WorkerResult.SUCCESS:
@@ -179,6 +180,14 @@ class RecycleItems(BaseTask):
                 this_worker_result = self.recycle_excess_category_max(self.max_revives_keep, [201,202])
                 if this_worker_result <> WorkerResult.SUCCESS:
                     worker_result = this_worker_result
+                    
+            for item_in_inventory in inventory.items().all():
+                if self.item_should_be_recycled(item_in_inventory):
+                    # Make the bot appears more human
+                    action_delay(self.recycle_wait_min, self.recycle_wait_max)
+                    # If at any recycling process call we got an error, we consider that the result of this task is error too.
+                    if ItemRecycler(self.bot, item_in_inventory, self.get_amount_to_recycle(item_in_inventory)).work() == WorkerResult.ERROR:
+                        worker_result = WorkerResult.ERROR            
            
         return worker_result
 
