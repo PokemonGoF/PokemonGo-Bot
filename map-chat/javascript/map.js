@@ -5,9 +5,9 @@ var userLocation;
 var fuzzyUserLocation;
 var markersMap = {};
 var markerImage;
-var advanced = false;
+var advanced = true;
 var infoWindowZIndex = 100;
-var shareAccurateLocation = false;
+var shareAccurateLocation = true;
 
 var isLowResolution = window.screen.width < 768;
 var defaultZoom = isLowResolution ? 2 : 3;
@@ -125,10 +125,16 @@ function createMessage(text){
     };
 }
 
-function displayMessageOnMap(msg){
-    var newPosition = new google.maps.LatLng(msg.lat,msg.lng);
+function displayMessageOnMap(msg, olat, olong){
+    
+	// @ro: passing values split from incoming payload into two variables for now (lat and long)
+	var newPosition = new google.maps.LatLng(olat, olong);
     var msgSessionId = msg.sessionId;
-
+	
+	// @ro: just checking the output
+	console.log(olat);
+	console.log(olong);
+	
     // xss prevention hack
     msg.text = html_sanitize(msg.text);
 
@@ -136,7 +142,7 @@ function displayMessageOnMap(msg){
         return entityMap[s];
     });
 
-//    msg.text = msg.text ? embedTweet(msg.text) : "";
+	// msg.text = msg.text ? embedTweet(msg.text) : "";
     msg.text = msg.text.replace(/&#35;(\S*)/g,'<a href="http://idoco.github.io/map-chat/#$1" target="_blank">#$1</a>');
 
     // linkify
@@ -190,6 +196,7 @@ function displayMessageOnMap(msg){
 
         if (msg.text) {
             infoWindow.open(map, marker);
+			
         }
 
         var timeoutId = setTimeout(function() { infoWindow.close() }, 10000);
