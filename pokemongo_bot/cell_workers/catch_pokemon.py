@@ -9,7 +9,7 @@ from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.item_list import Item
 from pokemongo_bot import inventory
-from utils import distance
+from utils import fort_details, distance
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.constants import Constants
 
