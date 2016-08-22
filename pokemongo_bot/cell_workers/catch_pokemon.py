@@ -25,12 +25,12 @@ class CatchPokemon(BaseTask):
         pokemon = []
         if self.config.get('catch_visible_pokemon', True):
             pokemon = self.get_visible_pokemon()
+            pokemon = self.sort_pokemon(pokemon)
         if self.config.get('catch_lured_pokemon', True):
             pokemon += self.get_lured_pokemon()
 
         num_pokemon = len(pokemon)
         if num_pokemon > 0:
-            pokemon = self.sort_pokemon(pokemon)
             self.catch_pokemon(pokemon[0])
             if num_pokemon > 1:
                 return WorkerResult.RUNNING
