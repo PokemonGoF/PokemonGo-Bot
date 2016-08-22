@@ -12,17 +12,19 @@ function initialiseEventBus(){
 
   client.on("message", function(topic, payload) {
     //alert([topic, payload].join(": "));
-    //client.end();
+    
 
-    Materialize.toast(payload, 2000);
+    Materialize.toast(payload, 4000);
 	
 	//@ro: let's grab the message and split that shit. (simple for now, maybe we could just parse the json instead)
 	var pLoadR = payload.toString();
 	var pLoadR2 = pLoadR.split(",");
 	var olat = pLoadR2[0]
 	var olong = pLoadR2[1]
+    var sessid = pLoadR2[2]
 	
-    displayMessageOnMap(payload, olat, olong);
+    displayMessageOnMap(payload, olat, olong, sessid);
+    //client.end();
   });
 
   client.publish("pgomapcatch", "I just connected to the map!");
