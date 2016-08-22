@@ -430,26 +430,22 @@ class MoveToMapPokemon(BaseTask):
                 'poke_dist': (format_dist(pokemon['dist'], self.unit))
             }
 
-
             self.emit_event(
                 'moving_to_pokemon_throught_fort',
                 formatted="Moving towards {poke_name} - {poke_dist}  through pokestop  {fort_name} - {distance}",
                 data= pokemon_throught_fort_event_data
             )
+        else:
+            self.emit_event(
+                'arrived_at_fort',
+                formatted='Arrived at fort.'
+            )	
 
-            return walker_factory(self.walker,
-                self.bot,
-                lat,
-                lng
-                )
-
-
-        self.emit_event(
-            'arrived_at_fort',
-            formatted='Arrived at fort.'
+	return walker_factory(self.walker,
+            self.bot,
+            lat,
+            lng
         )
-
-
 
     def get_nearest_fort_on_the_way(self, pokemon):
         forts = self.bot.get_forts(order_by_distance=True)
