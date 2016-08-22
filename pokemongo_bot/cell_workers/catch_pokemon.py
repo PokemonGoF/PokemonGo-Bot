@@ -1,9 +1,17 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+import json
+import os
+
 from pokemongo_bot.base_task import BaseTask
+from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 from pokemongo_bot.worker_result import WorkerResult
-from pokemongo_bot.cell_workers import CatchVisiblePokemon, CatchLuredPokemon
 from pokemongo_bot.item_list import Item
 from pokemongo_bot import inventory
+from utils import distance
+from pokemongo_bot.base_dir import _base_dir
+from pokemongo_bot.constants import Constants
 
 
 class CatchPokemon(BaseTask):
@@ -16,13 +24,13 @@ class CatchPokemon(BaseTask):
 
         pokemon = []
         if self.config.get('catch_visible_pokemon', True):
-            pokemon = get_visible_pokemon()
+            pokemon = self.get_visible_pokemon()
         if self.config.get('catch_lured_pokemon', True):
-            pokemon += get_lured_pokemon()
+            pokemon += self.get_lured_pokemon()
 
         num_pokemon = len(pokemon)
         if num_pokemon > 0:
-            pokemon = sort_pokemon(pokemon)
+            pokemon = self.sort_pokemon(pokemon)
             self.catch_pokemon(pokemon[0])
             if num_pokemon > 1:
                 return WorkerResult.RUNNING
@@ -34,27 +42,27 @@ class CatchPokemon(BaseTask):
         if 'catchable_pokemons' in self.bot.cell:
             pokemon_to_catch = self.bot.cell['catchable_pokemons']
 
+            if len(pokemon_to_catch) > 0:
+    		    # Update web UI
+    		    user_web_catchable = os.path.join(_base_dir, 'web', 'catchable-{}.json'.format(self.bot.config.username))
+    		    for pokemon in pokemon_to_catch:
+    		        with open(user_web_catchable, 'w') as outfile:
+    		            json.dump(pokemon, outfile)
+    		        self.emit_event(
+    		            'catchable_pokemon',
+    		            level='debug',
+    		            data={
+    		                'pokemon_id': pokemon['pokemon_id'],
+    		                'spawn_point_id': pokemon['spawn_point_id'],
+    		                'encounter_id': pokemon['encounter_id'],
+    		                'latitude': pokemon['latitude'],
+    		                'longitude': pokemon['longitude'],
+    		                'expiration_timestamp_ms': pokemon['expiration_timestamp_ms'],
+    		            }
+    		        )
+
         if 'wild_pokemons' in self.bot.cell:
             pokemon_to_catch += self.bot.cell['wild_pokemons']
-
-        if len(pokemon_to_catch) > 0:
-            # Update web UI
-            user_web_catchable = os.path.join(_base_dir, 'web', 'catchable-{}.json'.format(self.bot.config.username))
-            for pokemon in self.bot.cell['catchable_pokemons']:
-                with open(user_web_catchable, 'w') as outfile:
-                    json.dump(pokemon, outfile)
-                self.emit_event(
-                    'catchable_pokemon',
-                    level='debug',
-                    data={
-                        'pokemon_id': pokemon['pokemon_id'],
-                        'spawn_point_id': pokemon['spawn_point_id'],
-                        'encounter_id': pokemon['encounter_id'],
-                        'latitude': pokemon['latitude'],
-                        'longitude': pokemon['longitude'],
-                        'expiration_timestamp_ms': pokemon['expiration_timestamp_ms'],
-                    }
-                )
 
         return pokemon_to_catch
 
@@ -118,4 +126,3 @@ class CatchPokemon(BaseTask):
         )
         
         return pokemon_list
-        
