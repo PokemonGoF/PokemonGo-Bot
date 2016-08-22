@@ -97,6 +97,8 @@ class PokemonGoBot(Datastore):
         self.heartbeat_counter = 0
         self.last_heartbeat = time.time()
 
+        self.health_record = None
+        self.config_file = None
 
     def start(self):
         self._setup_event_system()
