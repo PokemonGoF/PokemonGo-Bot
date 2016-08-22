@@ -125,11 +125,11 @@ function createMessage(text){
     };
 }
 
-function displayMessageOnMap(msg, olat, olong, sessid){
+function displayMessageOnMap(msg, olat, olong){
     
 	// @ro: passing values split from incoming payload into two variables for now (lat and long)
 	var newPosition = new google.maps.LatLng(olat, olong);
-    var msgSessionId = sessid;
+    var msgSessionId = msg.sessionId;
 	
 	// @ro: just checking the output
 	console.log(olat);
@@ -150,32 +150,22 @@ function displayMessageOnMap(msg, olat, olong, sessid){
         "<a target='_blank' href='$1'>$1</a>");
     
     if(markersMap[msgSessionId]){ // update existing marker
-        var infoWindow = new google.maps.InfoWindow({
-            content: msg.text,
-            maxWidth: 400,
-            disableAutoPan: true,
-            zIndex: infoWindowZIndex
-        });
+        var existingMarker = markersMap[msgSessionId].marker;
+        var existingInfoWindow = markersMap[msgSessionId].infoWindow;
+        var existingTimeoutId = markersMap[msgSessionId].timeoutId;
+
+        existingMarker.setPosition(newPosition);
+        existingInfoWindow.setContent(msg.text);
+        existingInfoWindow.setZIndex(infoWindowZIndex);
         infoWindowZIndex++;
-
-        var marker = new google.maps.Marker({
-            position: newPosition,
-            map: map,
-            draggable: false,
-            icon: markerImage,
-            title: "Click to mute/un-mute User "+msgSessionId
-        });
-
-        marker.addListener('click',function() {
-            if (markersMap[msgSessionId].disabled) {
-                markersMap[msgSessionId].disabled = false;
-                marker.setIcon(markerImage);
-            } else{
-                markersMap[msgSessionId].disabled = true;
-                marker.setIcon(disabledMarkerImage);
-                infoWindow.close();
+        if (msg.text && !markersMap[msgSessionId].disabled) {
+            if (existingTimeoutId){
+                clearTimeout(existingTimeoutId);
             }
-        });
+            markersMap[msgSessionId].timeoutId =
+                setTimeout(function() { existingInfoWindow.close() }, 10000);
+            existingInfoWindow.open(map, existingMarker);
+        }
     } else { // new marker
         var infoWindow = new google.maps.InfoWindow({
             content: msg.text,
