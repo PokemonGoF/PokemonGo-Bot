@@ -24,8 +24,8 @@ class IncubateEggs(BaseTask):
         self.longer_eggs_first = self.config.get("longer_eggs_first", True)
         self.min_interval = self.config.get('min_interval', 120)
         
-        self.breakable_incubator = self.config.get("breakable", [])
-        self.infinite_incubator = self.config.get("infinite", [])
+        self.breakable_incubator = self.config.get("breakable", [2,5,10])
+        self.infinite_incubator = self.config.get("infinite", [2,5,10])
     
     def work(self):
         try:
