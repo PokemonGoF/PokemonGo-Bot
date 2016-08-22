@@ -426,7 +426,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
             )
 
             hit_pokemon = 1
-            if random() >= self.catch_throw_parameters_hit_rate:
+            if random() >= self.catch_throw_parameters_hit_rate and not is_vip:
                 hit_pokemon = 0
 
             response_dict = self.api.catch_pokemon(
