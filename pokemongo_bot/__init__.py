@@ -42,6 +42,10 @@ class PokemonGoBot(Datastore):
     def position(self):
         return self.api.actual_lat, self.api.actual_lng, self.api.actual_alt
 
+    @property
+    def noised_position(self):
+        return self.api.noised_lat, self.api.noised_lng, self.api.noised_alt
+
     #@position.setter # these should be called through api now that gps replication is there...
     #def position(self, position_tuple):
     #    self.api._position_lat, self.api._position_lng, self.api._position_alt = position_tuple
@@ -165,6 +169,22 @@ class PokemonGoBot(Datastore):
                 'distance_unit' # optional
             )
         )
+        self.event_manager.register_event(
+            'path_lap_update',
+            parameters=(
+                'number_lap',
+                'number_lap_max'
+            )
+        )
+        self.event_manager.register_event(
+            'path_lap_end',
+            parameters=(
+                'duration',
+                'resume'
+            )
+        )  
+        
+        
         self.event_manager.register_event('location_cache_error')
 
         self.event_manager.register_event('bot_start')
@@ -398,7 +418,7 @@ class PokemonGoBot(Datastore):
         )
         self.event_manager.register_event(
             'next_egg_incubates',
-            parameters=('km_needed', 'distance_in_km', 'eggs', 'eggs_inc')
+            parameters=('eggs_left', 'eggs_inc', 'eggs')
         )
         self.event_manager.register_event('incubator_already_used')
         self.event_manager.register_event('egg_already_incubating')
@@ -508,6 +528,10 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event(
             'move_to_map_pokemon_teleport_back',
             parameters=('last_lat', 'last_lon')
+        )
+        self.event_manager.register_event(
+            'moving_to_pokemon_throught_fort',
+            parameters=('fort_name', 'distance','poke_name','poke_dist')
         )
 
         # cached recent_forts
@@ -891,6 +915,7 @@ class PokemonGoBot(Datastore):
         pokemon_list = [filter(lambda x: x.pokemon_id == y, bag) for y in id_list]
 
         show_count = self.config.pokemon_bag_show_count
+        show_candies = self.config.pokemon_bag_show_candies
         poke_info_displayed = self.config.pokemon_bag_pokemon_info
 
         def get_poke_info(info, pokemon):
@@ -915,6 +940,8 @@ class PokemonGoBot(Datastore):
             line_p = '#{} {}'.format(pokes[0].pokemon_id, pokes[0].name)
             if show_count:
                 line_p += '[{}]'.format(len(pokes))
+            if show_candies:
+                line_p += '[{} candies]'.format(pokes[0].candy_quantity)
             line_p += ': '
             
             poke_info = ['({})'.format(', '.join([get_poke_info(x, p) for x in poke_info_displayed])) for p in pokes]

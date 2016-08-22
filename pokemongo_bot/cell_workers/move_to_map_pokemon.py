@@ -57,13 +57,13 @@ import requests
 
 from pokemongo_bot import inventory
 from pokemongo_bot.base_dir import _base_dir
-from pokemongo_bot.cell_workers.utils import distance, format_dist, format_time
+from pokemongo_bot.cell_workers.utils import distance, format_dist, format_time, fort_details
 from pokemongo_bot.walkers.walker_factory import walker_factory
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 from random import uniform
-
+from pokemongo_bot.constants import Constants
 
 # Update the map if more than N meters away from the center. (AND'd with
 # UPDATE_MAP_MIN_TIME_MINUTES)
@@ -279,12 +279,23 @@ class MoveToMapPokemon(BaseTask):
         if pokeballs_quantity + superballs_quantity + ultraballs_quantity < self.min_ball:
             return WorkerResult.SUCCESS
 
-        step_walker = self._move_to(pokemon)
-        if not step_walker.step():
-            return WorkerResult.RUNNING
-        self._encountered(pokemon)
-        self.add_caught(pokemon)
-        return WorkerResult.SUCCESS
+        nearest_fort = self.get_nearest_fort_on_the_way(pokemon)
+
+        if nearest_fort is None :
+            step_walker = self._move_to(pokemon)
+            if not step_walker.step():
+
+                if pokemon['dist'] < Constants.MAX_DISTANCE_POKEMON_IS_REACHABLE:
+                    self._encountered(pokemon)
+                    self.add_caught(pokemon)
+                    return WorkerResult.SUCCESS
+                else :
+                    return WorkerResult.RUNNING
+
+        else :
+            step_walker = self._move_to_pokemon_througt_fort(nearest_fort, pokemon)
+            if not step_walker or not step_walker.step():
+                return WorkerResult.RUNNING
 
     def _emit_failure(self, msg):
         """Emits failure to event log.
@@ -384,3 +395,80 @@ class MoveToMapPokemon(BaseTask):
             pokemon['latitude'],
             pokemon['longitude']
         )
+    def _move_to_pokemon_througt_fort(self, fort, pokemon):
+        """Moves trainer towards a fort before a Pokemon.
+
+        Args:
+            fort
+
+        Returns:
+            StepWalker
+        """
+
+        nearest_fort = fort
+
+        lat = nearest_fort['latitude']
+        lng = nearest_fort['longitude']
+        fortID = nearest_fort['id']
+        details = fort_details(self.bot, fortID, lat, lng)
+        fort_name = details.get('name', 'Unknown')
+
+        unit = self.bot.config.distance_unit  # Unit to use when printing formatted distance
+
+        dist = distance(
+            self.bot.position[0],
+            self.bot.position[1],
+            lat,
+            lng
+        )
+
+        if dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE:
+            pokemon_throught_fort_event_data = {
+                'fort_name': u"{}".format(fort_name),
+                'distance': format_dist(dist, unit),
+                'poke_name': pokemon['name'],
+                'poke_dist': (format_dist(pokemon['dist'], self.unit))
+            }
+
+
+            self.emit_event(
+                'moving_to_pokemon_throught_fort',
+                formatted="Moving towards {poke_name} - {poke_dist}  through pokestop  {fort_name} - {distance}",
+                data= pokemon_throught_fort_event_data
+            )
+
+            return walker_factory(self.walker,
+                self.bot,
+                lat,
+                lng
+                )
+
+
+        self.emit_event(
+            'arrived_at_fort',
+            formatted='Arrived at fort.'
+        )
+
+
+
+    def get_nearest_fort_on_the_way(self, pokemon):
+        forts = self.bot.get_forts(order_by_distance=True)
+
+        # Remove stops that are still on timeout
+        forts = filter(lambda x: x["id"] not in self.bot.fort_timeouts, forts)
+        i=0
+        while i < len(forts) :
+            ratio = float(self.config.get('max_extra_dist_fort', 20))
+            dist_self_to_fort = distance (self.bot.position[0], self.bot.position[1], forts[i]['latitude'], forts [i]['longitude'])
+            dist_fort_to_pokemon = distance (pokemon['latitude'], pokemon['longitude'], forts[i]['latitude'], forts [i]['longitude'])
+            total_dist = dist_self_to_fort + dist_fort_to_pokemon
+            dist_self_to_pokemon = distance (self.bot.position[0], self.bot.position[1], pokemon['latitude'], pokemon['longitude'])
+            if total_dist < (1 + (ratio / 100))* dist_self_to_pokemon:
+                i = i + 1
+            else :
+                del forts[i]
+		#Return nearest fort if there are remaining
+        if len(forts)> 0 :
+            return forts[0]
+        else :
+            return None

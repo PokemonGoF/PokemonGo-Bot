@@ -182,12 +182,20 @@ class SpinFort(Datastore, BaseTask):
     def get_forts_in_range(self):
         forts = self.bot.get_forts(order_by_distance=True)
         forts = filter(lambda fort: fort["id"] not in self.bot.fort_timeouts, forts)
-        forts = filter(lambda fort: distance(
-            self.bot.position[0],
-            self.bot.position[1],
-            fort['latitude'],
-            fort['longitude']
-        ) <= Constants.MAX_DISTANCE_FORT_IS_REACHABLE, forts)
+        if self.bot.config.replicate_gps_xy_noise:
+            forts = filter(lambda fort: distance(
+                self.bot.noised_position[0],
+                self.bot.noised_position[1],
+                fort['latitude'],
+                fort['longitude']
+            ) <= Constants.MAX_DISTANCE_FORT_IS_REACHABLE, forts)
+        else:
+            forts = filter(lambda fort: distance(
+                self.bot.position[0],
+                self.bot.position[1],
+                fort['latitude'],
+                fort['longitude']
+            ) <= Constants.MAX_DISTANCE_FORT_IS_REACHABLE, forts)
 
         return forts
 

@@ -62,6 +62,7 @@ class ColoredLoggingHandler(EventHandler):
         'unknown_spin_result':               'red',
         'unset_pokemon_nickname':            'red',
         'vip_pokemon':                       'red',
+        'path_lap_end':                      'green',
         'log_stats':                         'magenta',
         'show_inventory':                    'magenta',
 
@@ -88,6 +89,7 @@ class ColoredLoggingHandler(EventHandler):
         'pokestop_out_of_range':             'white',
         'polyline_request':                  'white',
         'position_update':                   'white',
+        'path_lap_update':                   'white',
         'set_start_location':                'white',
         'softban_fix':                       'white',
         'softban_log':                       'magenta',

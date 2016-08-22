@@ -35,7 +35,8 @@
       {
         "type": "IncubateEggs",
         "config": {
-          "longer_eggs_first": true
+          "longer_eggs_first": true,
+          "min_interval": 120
         }
       },
       {
@@ -68,7 +69,7 @@
                 "transfer": true,
                     "// 'transfer_wait_min' and 'transfer_wait_max' are the minimum and maximum": {},
                     "// time to wait when transferring a pokemon": {},
-                "transfer_wait_min": 1,
+                "transfer_wait_min": 2,
                 "transfer_wait_max": 4,
                     "// the 'evolve' parameter activate or deactivate the evolution of pokemons": {},
                     "// at false, no pokemon is going to be evolved, ever": {},
@@ -83,13 +84,13 @@
                 "evolve_for_xp": true,
                     "// the 'evolve_only_with_lucky_egg' parameter let you choose if you want the optimizer": {},
                     "// to only Evolve Pokemons when a lucky egg is available": {},
-                "evolve_only_with_lucky_egg": true,
+                "evolve_only_with_lucky_egg": false,
                     "// the 'evolve_count_for_lucky_egg' parameter let you define the minimum": {},
                     "// number of Pokemons that must evolve before using a lucky egg": {},
                     "// If that number is not reached, and evolve_only_with_lucky_egg is true, evolution will be skipped": {},
                     "// If that number is not reached, and evolve_only_with_lucky_egg is false,": {},
                     "// evolution will be performed without using a lucky egg": {},
-                "evolve_count_for_lucky_egg": 90,
+                "evolve_count_for_lucky_egg": 92,
                     "// the 'may_use_lucky_egg' parameter let you choose if you want the optimizer": {},
                     "// to use a lucky egg right before evolving Pokemons. At false; the optimizer": {},
                     "// is free to evolve Pokemons even if you do not have any lucky egg.": {},
@@ -232,6 +233,8 @@
       "show_at_start": true,
       "// if 'show_count' is true, it will show the amount of each pokemon (minimum 1)": {},
       "show_count": false,
+      "// if 'show_candies' is true, it will show the amount of candies for each pokemon": {},
+      "show_candies": false,
       "// 'pokemon_info' parameter define which info to show for each pokemon": {},
       "// the available options are": {},
       "// ['cp', 'iv_ads', 'iv_pct', 'ivcp', 'ncp', 'level', 'hp', 'moveset', 'dps']": {},

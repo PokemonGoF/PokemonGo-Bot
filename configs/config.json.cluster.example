@@ -35,7 +35,8 @@
       {
         "type": "IncubateEggs",
         "config": {
-          "longer_eggs_first": true
+          "longer_eggs_first": true,
+          "min_interval": 120
         }
       },
       {
@@ -69,6 +70,7 @@
         "type": "NicknamePokemon",
         "config": {
           "enabled": false,
+          "nickname_above_iv": 0.9,
           "nickname_template": "{iv_pct}_{iv_ads}"
         }
       },
@@ -159,6 +161,8 @@
       "show_at_start": true,
       "// if 'show_count' is true, it will show the amount of each pokemon (minimum 1)": {},
       "show_count": false,
+      "// if 'show_candies' is true, it will show the amount of candies for each pokemon": {},
+      "show_candies": false,
       "// 'pokemon_info' parameter define which info to show for each pokemon": {},
       "// the available options are": {},
       "// ['cp', 'iv_ads', 'iv_pct', 'ivcp', 'ncp', 'level', 'hp', 'moveset', 'dps']": {},

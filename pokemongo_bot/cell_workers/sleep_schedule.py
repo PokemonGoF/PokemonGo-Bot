@@ -18,6 +18,7 @@ class SleepSchedule(BaseTask):
           "duration":"5:30",
           "time_random_offset": "00:30",
           "duration_random_offset": "00:30"
+          "wake_up_at_location": ""
         }
     }
     time: (HH:MM) local time that the bot should sleep
@@ -26,7 +27,8 @@ class SleepSchedule(BaseTask):
                         for this example the possible start time is 11:30-12:30
     duration_random_offset: (HH:MM) random offset of duration of sleep
                         for this example the possible duration is 5:00-6:00
-    """
+    wake_up_at_location: (lat, long | lat, long, alt | "") the location at which the bot wake up 
+    *Note that an empty string ("") will not change the location*.    """
     SUPPORTED_TASK_API_VERSION = 1
 
     LOG_INTERVAL_SECONDS = 600
@@ -42,6 +44,9 @@ class SleepSchedule(BaseTask):
         if self._should_sleep_now():
             self._sleep()
             self._schedule_next_sleep()
+            wake_up_at_location = self.config.get("wake_up_at_location", "")
+            if wake_up_at_location:
+                self.bot.api.set_position(self.wake_up_at_location[0],self.wake_up_at_location[1],self.wake_up_at_location[2])
             self.bot.login()
 
     def _process_config(self):
@@ -60,6 +65,21 @@ class SleepSchedule(BaseTask):
         self.duration_random_offset = int(
             timedelta(
                 hours=duration_random_offset.hour, minutes=duration_random_offset.minute).total_seconds())
+        
+        wake_up_at_location = self.config.get("wake_up_at_location", "")
+        if wake_up_at_location:
+            try:
+                wake_up_at_location = wake_up_at_location.split(',',2)               
+                lat=float(wake_up_at_location[0])
+                lng=float(wake_up_at_location[1])
+                if len(wake_up_at_location) == 3:
+                    alt=float(wake_up_at_location[2])
+                else:
+                    alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
+            except ValueError:
+                raise ValueError('SleepSchedule wake_up_at_location, parsing error in location') #TODO there must be a more elegant way to do it...
+
+            self.wake_up_at_location = [lat, lng, alt]
 
     def _schedule_next_sleep(self):
         self._next_sleep = self._get_next_sleep_schedule()
