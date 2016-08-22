@@ -7,7 +7,7 @@ var markersMap = {};
 var markerImage;
 var advanced = true;
 var infoWindowZIndex = 100;
-var shareAccurateLocation = true;
+var shareAccurateLocation = false;
 
 var isLowResolution = window.screen.width < 768;
 var defaultZoom = isLowResolution ? 2 : 3;
