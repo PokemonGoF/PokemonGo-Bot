@@ -776,6 +776,6 @@ Configure how the bot should use the incubators.
 		"breakable": [10]
 	}
 }
-  ```
+```
 
 
