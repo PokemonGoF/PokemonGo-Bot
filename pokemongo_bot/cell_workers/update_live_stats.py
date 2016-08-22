@@ -172,7 +172,10 @@ class UpdateLiveStats(BaseTask):
             self.terminal_title = False
 
         self._compute_next_update()
-
+    
+    # hard coded values to supplement unknown current_level_xp
+    xp_per_level = [[0, 0], [1000, 1000], [2000, 3000], [3000, 6000], [4000, 10000], [5000, 15000], [6000, 21000], [7000, 28000], [8000, 36000], [9000, 45000], [10000, 55000], [10000, 65000], [10000, 75000], [10000, 85000], [15000, 100000], [20000, 120000], [20000, 140000], [20000, 160000], [25000, 185000], [25000, 210000], [50000, 260000], [75000, 335000], [100000, 435000], [125000, 560000], [150000, 710000], [190000, 900000], [200000, 1100000], [250000, 1350000], [300000, 1650000], [350000, 2000000], [500000, 2500000], [500000, 3000000], [750000, 3750000], [1000000, 4750000], [1250000, 6000000], [1500000, 7500000], [2000000, 9500000], [2500000, 12000000], [3000000, 15000000], [5000000, 20000000]]
+        
     def _get_stats(self, player_stats):
         metrics = self.bot.metrics
         metrics.capture_stats()
@@ -182,7 +185,7 @@ class UpdateLiveStats(BaseTask):
         username = player_data.get('username', '?')
         distance_travelled = metrics.distance_travelled()
         current_level = int(player_stats.get('level', 0))
-        prev_level_xp = int(player_stats.get('prev_level_xp', 0))
+        prev_level_xp = int(xp_per_level[current_level-1][1])
         next_level_xp = int(player_stats.get('next_level_xp', 0))
         experience = player_stats.get('experience', 0)
         current_level_xp = experience - prev_level_xp
@@ -261,7 +264,7 @@ class UpdateLiveStats(BaseTask):
         username = player_data.get('username', '?')
         distance_travelled = metrics.distance_travelled()
         current_level = int(player_stats.get('level', 0))
-        prev_level_xp = int(player_stats.get('prev_level_xp', 0))
+        prev_level_xp = int(xp_per_level[current_level-1][1])
         next_level_xp = int(player_stats.get('next_level_xp', 0))
         experience = int(player_stats.get('experience', 0))
         current_level_xp = experience - prev_level_xp
