@@ -1100,6 +1100,18 @@ class Inventory(object):
         web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
         json_inventory = []
         
+        inventory_items = self.bot.api.get_inventory() \
+            .get('responses', {}) \
+            .get('GET_INVENTORY', {}) \
+            .get('inventory_delta', {}) \
+            .get('inventory_items', {})
+        player_data = next((x["inventory_item_data"]["player_stats"]
+                     for x in inventory_items
+                     if x.get("inventory_item_data", {}).get("player_stats", {})),
+                    None)
+        for player_stat in player_data:
+            json_inventory.append({"inventory_item_data": {"player_stats": player_data}})
+                            
         for pokedex in self.pokedex.all():
             json_inventory.append({"inventory_item_data": {"pokedex_entry": pokedex}})
 
