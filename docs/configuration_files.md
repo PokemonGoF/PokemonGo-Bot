@@ -91,9 +91,11 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 ### Task Options:
 [[back to top](#table-of-contents)]
 * CatchPokemon
+  * `treat_unseen_as_vip`: Default `"true"` | Set to `"false"` to disable treating pokemons you don't have in your pokedex as VIPs.
 * EvolvePokemon
   * `evolve_all`: Default `NONE` | Set to `"all"` to evolve Pokémon if possible when the bot starts. Can also be set to individual Pokémon as well as multiple separated by a comma. e.g "Pidgey,Rattata,Weedle,Zubat"
-  * `evolve_speed`: Default `20`
+  * `min_evolve_speed`: Default `25` | Minimum seconds to wait between each evolution 
+  * `min_evolve_speed`: Default `30` | Maximum seconds to wait between each evolution
   * `use_lucky_egg`: Default: `False`
 * FollowPath
   * `path_mode`: Default `loop` | Set the mode for the path navigator (loop or linear).
@@ -246,7 +248,10 @@ If you don't have it, it will keep it (no matter was it strong or weak Pokémon)
 
 If you already have it, it will keep a stronger version and will transfer the a weaker one.
 
-```"release": {"any": {"keep_best_cp": 2}}```, ```"release": {"any": {"keep_best_cp": 10}}``` - can be any number.
+```"release": {"any": {"keep_best_cp": 2}}```, ```"release": {"any": {"keep_best_cp": 10}}``` - can be any number. In the latter case for every pokemon type bot will keep no more that 10 best CP pokemon.
+
+If you wish to limit your pokemon bag as a whole, not type-wise, use `all`:
+```"release": {"all": {"keep_best_cp": 200}}```. In this case bot looks for 200 best CP pokemon in bag independently of their type. For example, if you have 150 Snorlax with 1500 CP and 100 Pidgeys with CP 100, bot will keep 150 Snorlax and 50 Pidgeys for a total of 200 best CP pokemon.
 
 ### Keep the best custom pokemon configuration (dev branch)
 [[back to top](#table-of-contents)]
@@ -536,7 +541,7 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
       "snipe_high_prio_threshold": 400,
       "update_map": true,
       "mode": "priority",
-      "max_extra_dist_fort": 10,   
+      "max_extra_dist_fort": 10,
       "catch": {
         "Aerodactyl": 1000,
         "Ditto": 900,
@@ -556,12 +561,12 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
 ### Description
 [[back to top](#table-of-contents)]
 
-Walk to the specified locations loaded from .gpx or .json file. It is highly recommended to use website such as [GPSies](http://www.gpsies.com) which allow you to export your created track in JSON file. Note that you'll have to first convert its JSON file into the format that the bot can understand. See [Example of pier39.json] below for the content. I had created a simple python script to do the conversion. 
+Walk to the specified locations loaded from .gpx or .json file. It is highly recommended to use website such as [GPSies](http://www.gpsies.com) which allow you to export your created track in JSON file. Note that you'll have to first convert its JSON file into the format that the bot can understand. See [Example of pier39.json] below for the content. I had created a simple python script to do the conversion.
 
 ### Options
 [[back to top](#table-of-contents)]
 * `path_mode` - linear, loop
-   - `loop` - The bot will walk along all specified waypoints and then move directly to the first waypoint again. 
+   - `loop` - The bot will walk along all specified waypoints and then move directly to the first waypoint again.
    - `linear` - The bot will turn around at the last waypoint and along the given waypoints in reverse order.
 * `path_start_mode` - first
 * `path_file` - "/path/to/your/path.json"
@@ -572,10 +577,10 @@ Walk to the specified locations loaded from .gpx or .json file. It is highly rec
 
 ```
 {
-	"type": "FollowPath",
+  "type": "FollowPath",
     "config": {
-    	"path_mode": "linear",
-	  	"path_start_mode": "first",
+      "path_mode": "linear",
+      "path_start_mode": "first",
       "path_file": "/home/gary/bot/PokemonGo-Bot/configs/path/pier39.json"
     }
 }
@@ -583,10 +588,10 @@ Walk to the specified locations loaded from .gpx or .json file. It is highly rec
 
 Example of pier39.json
 ```
-[{"location": "37.8103848,-122.410325"}, 
-{"location": "37.8103306,-122.410435"}, 
-{"location": "37.8104662,-122.41051"}, 
-{"location": "37.8106146,-122.41059"}, 
+[{"location": "37.8103848,-122.410325"},
+{"location": "37.8103306,-122.410435"},
+{"location": "37.8104662,-122.41051"},
+{"location": "37.8106146,-122.41059"},
 {"location": "37.8105934,-122.410719"}
 ]
 ```
@@ -679,7 +684,7 @@ Periodically displays the user inventory in the terminal.
 ### Options
 [[back to top](#table-of-contents)]
 * `min_interval` : The minimum interval at which the stats are displayed, in seconds (defaults to 120 seconds). The update interval cannot be accurate as workers run synchronously.
-* `show_all_multiple_lines` : Logs all items on inventory using multiple lines. Ignores configuration of 'items' 
+* `show_all_multiple_lines` : Logs all items on inventory using multiple lines. Ignores configuration of 'items'
 * `items` : An array of items to display and their display order (implicitly), see available items below (defaults to []).
 
 Available `items` :
@@ -741,14 +746,14 @@ Simulates the user going to sleep every day for some time, the sleep time and th
 ###Example Config
 ```
 {
-	"type": "SleepSchedule",
-	"config": {
-		"time": "12:00",
-		"duration":"5:30",
-		"time_random_offset": "00:30",
-		"duration_random_offset": "00:30"
-		"wake_up_at_location": "39.408692,149.595838,590.8"
-	}
+  "type": "SleepSchedule",
+  "config": {
+    "time": "12:00",
+    "duration":"5:30",
+    "time_random_offset": "00:30",
+    "duration_random_offset": "00:30"
+    "wake_up_at_location": "39.408692,149.595838,590.8"
+  }
 }
 ```
 
@@ -767,13 +772,13 @@ Simulates the random pause of the day (speaking to someone, getting into a store
 ###Example Config
 ```
 {
-	"type": "RandomPause",
-	"config": {
-		"min_duration": "00:00:10",
-		"max_duration": "00:10:00",
-		"min_interval": "00:10:00",
-		"max_interval": "02:00:00"
-	}
+  "type": "RandomPause",
+  "config": {
+    "min_duration": "00:00:10",
+    "max_duration": "00:10:00",
+    "min_interval": "00:10:00",
+    "max_interval": "02:00:00"
+  }
 }
 ```
 
@@ -783,18 +788,18 @@ Simulates the random pause of the day (speaking to someone, getting into a store
 Configure how the bot should use the incubators.
 
 - `longer_eggs_first`: (True | False ) should the bot start by the longer eggs first. If set to true, the bot first use the 10km eggs, then the 5km eggs, then the 2km eggs.
-- `infinite`: ([2], [2,5], [2,5,10], []) the type of egg the infinite (ie. unbreakable) incubator(s) can incubate. If set to [2,5], the incubator(s) can only incubate the 2km and 5km eggs. If set to [], the incubator(s) can incubate any type of egg.
-- `breakable`: ([2], [2,5], [2,5,10], []) the type of egg the breakable incubator(s) can incubate. If set to [2,5], the incubator(s) can only incubate the 2km and 5km eggs. If set to [], the incubator(s) can incubate any type of egg.
+- `infinite`: ([2], [2,5], [2,5,10], []) the type of egg the infinite (ie. unbreakable) incubator(s) can incubate. If set to [2,5], the incubator(s) can only incubate the 2km and 5km eggs. If set to [], the incubator(s) will not incubate any type of egg.
+- `breakable`: ([2], [2,5], [2,5,10], []) the type of egg the breakable incubator(s) can incubate. If set to [2,5], the incubator(s) can only incubate the 2km and 5km eggs. If set to [], the incubator(s) will not incubate any type of egg.
 
 ###Example Config
 ```
 {
-	"type": "IncubateEggs",
+  "type": "IncubateEggs",
     "config": {
-		"longer_eggs_first": true,
-		"infinite": [2,5],
-		"breakable": [10]
-	}
+    "longer_eggs_first": true,
+    "infinite": [2,5],
+    "breakable": [10]
+  }
 }
 ```
 

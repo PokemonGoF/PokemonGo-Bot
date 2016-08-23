@@ -6,10 +6,21 @@ from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 from utils import distance
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_dir import _base_dir
-
+from pokemongo_bot.inventory import Pokemons, Pokemon, Attack
 
 class CatchVisiblePokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
+
+    def initialize(self):
+        self.encountered = [None] * 10
+
+    def add_encountered(self, pokemon):
+        self.encountered = self.encountered[1:] + [pokemon['encounter_id']]
+
+    def was_encountered(self, pokemon):
+        if pokemon['encounter_id'] in self.encountered:
+            return True
+        return False
 
     def work(self):
         num_catchable_pokemon = 0
@@ -43,14 +54,15 @@ class CatchVisiblePokemon(BaseTask):
                         'latitude': pokemon['latitude'],
                         'longitude': pokemon['longitude'],
                         'expiration_timestamp_ms': pokemon['expiration_timestamp_ms'],
+                        'pokemon_name': Pokemons.name_for(pokemon['pokemon_id']),
                     }
                 )
-
-            self.catch_pokemon(self.bot.cell['catchable_pokemons'].pop(0))
-            if num_catchable_pokemon > 1:
-                return WorkerResult.RUNNING
-            else:
-                return WorkerResult.SUCCESS
+                if not self.was_encountered(pokemon):
+                    self.catch_pokemon(pokemon)
+                    self.add_encountered(pokemon)
+                    return WorkerResult.RUNNING
+ 
+            return WorkerResult.SUCCESS
 
         if num_available_pokemon > 0:
             # Sort all by distance from current pos- eventually this should
@@ -58,12 +70,14 @@ class CatchVisiblePokemon(BaseTask):
             self.bot.cell['wild_pokemons'].sort(
                 key=
                 lambda x: distance(self.bot.position[0], self.bot.position[1], x['latitude'], x['longitude']))
-            self.catch_pokemon(self.bot.cell['wild_pokemons'].pop(0))
 
-            if num_catchable_pokemon > 1:
-                return WorkerResult.RUNNING
-            else:
-                return WorkerResult.SUCCESS
+            for pokemon in self.bot.cell['wild_pokemons']:
+                if not self.was_encountered(pokemon):
+                    self.catch_pokemon(pokemon)
+                    self.add_encountered(pokemon)
+                    return WorkerResult.RUNNING
+
+            return WorkerResult.SUCCESS
 
     def catch_pokemon(self, pokemon):
         worker = PokemonCatchWorker(pokemon, self.bot, self.config)

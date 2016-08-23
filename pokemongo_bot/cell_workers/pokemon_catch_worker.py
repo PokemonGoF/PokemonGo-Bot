@@ -29,6 +29,8 @@ ITEM_GREATBALL = 2
 ITEM_ULTRABALL = 3
 ITEM_RAZZBERRY = 701
 
+DEFAULT_UNSEEN_AS_VIP = True
+
 LOGIC_TO_FUNCTION = {
     'or': lambda x, y, z: x or y or z,
     'and': lambda x, y, z: x and y and z,
@@ -57,6 +59,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
         self.min_ultraball_to_keep = self.config.get('min_ultraball_to_keep', 10)
         self.berry_threshold = self.config.get('berry_threshold', 0.35)
         self.vip_berry_threshold = self.config.get('vip_berry_threshold', 0.9)
+        self.treat_unseen_as_vip = self.config.get('treat_unseen_as_vip', DEFAULT_UNSEEN_AS_VIP)
 
         self.catch_throw_parameters = self.config.get('catch_throw_parameters', {})
         self.catch_throw_parameters_spin_success_rate = self.catch_throw_parameters.get('spin_success_rate', 0.6)
@@ -243,8 +246,8 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
     def _is_vip_pokemon(self, pokemon):
         # having just a name present in the list makes them vip
-        # Not seen pokemons also will become vip
-        if self.bot.config.vips.get(pokemon.name) == {} or not self.pokedex.seen(pokemon.pokemon_id):
+        # Not seen pokemons also will become vip if it's not disabled in config
+        if self.bot.config.vips.get(pokemon.name) == {} or (self.treat_unseen_as_vip and not self.pokedex.seen(pokemon.pokemon_id)):
             return True
         return self._pokemon_matches_config(self.bot.config.vips, pokemon, default_logic='or')
 

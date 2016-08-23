@@ -7,6 +7,7 @@
     "encrypt_location": "",
     "websocket_server": false,
     "heartbeat_threshold": 10,
+    "enable_social": true,
     "tasks": [
       {
         "type": "HandleSoftBan"
@@ -35,6 +36,7 @@
       {
         "type": "IncubateEggs",
         "config": {
+          "enabled": true,
           "longer_eggs_first": true,
           "min_interval": 120
         }
@@ -61,6 +63,7 @@
       {
         "type": "TransferPokemon",
         "config": {
+          "enabled": true,
           "min_free_slot": 5,
           "transfer_wait_min": 1,
           "transfer_wait_max": 4
@@ -77,18 +80,21 @@
       {
         "type": "EvolvePokemon",
         "config": {
+            "enabled": false,
             "evolve_all": "none",
             "first_evolve_by": "cp",
             "evolve_above_cp": 500,
             "evolve_above_iv": 0.8,
             "logic": "or",
-            "evolve_speed": 20,
+            "min_evolve_speed": 25,
+            "max_evolve_speed": 30,
             "use_lucky_egg": false
         }
       },
       {
         "type": "RecycleItems",
         "config": {
+          "enabled": true,
           "min_empty_space": 15,
           "max_balls_keep": 150,
           "max_potions_keep": 50,
@@ -109,36 +115,38 @@
           "recycle_force_max": "00:01:00"
         }
       },
-	    {
-	      "type": "CatchPokemon",
-	      "config": {
-	        "catch_visible_pokemon": true,
-	        "catch_lured_pokemon": true,
-	        "min_ultraball_to_keep": 5,
-	        "berry_threshold": 0.35,
-	        "vip_berry_threshold": 0.9,
-	        "catch_throw_parameters": {
-	          "excellent_rate": 0.1,
-	          "great_rate": 0.5,
-	          "nice_rate": 0.3,
-	          "normal_rate": 0.1,
-	          "spin_success_rate" : 0.6
-	        },
-				  "catch_simulation": {
-				    "flee_count": 3,
-				    "flee_duration": 2,
-				    "catch_wait_min": 2,
-				    "catch_wait_max": 6,
-				    "berry_wait_min": 2,
-				    "berry_wait_max": 3,
-				    "changeball_wait_min": 2,
-				    "changeball_wait_max": 3
-				  }
-	      }
-	    },
+      {
+        "type": "CatchPokemon",
+        "config": {
+          "enabled": true,
+          "catch_visible_pokemon": true,
+          "catch_lured_pokemon": true,
+          "min_ultraball_to_keep": 5,
+          "berry_threshold": 0.35,
+          "vip_berry_threshold": 0.9,
+          "catch_throw_parameters": {
+            "excellent_rate": 0.1,
+            "great_rate": 0.5,
+            "nice_rate": 0.3,
+            "normal_rate": 0.1,
+            "spin_success_rate" : 0.6
+          },
+          "catch_simulation": {
+            "flee_count": 3,
+            "flee_duration": 2,
+            "catch_wait_min": 2,
+            "catch_wait_max": 6,
+            "berry_wait_min": 2,
+            "berry_wait_max": 3,
+            "changeball_wait_min": 2,
+            "changeball_wait_max": 3
+          }
+        }
+      },
       {
         "type": "SpinFort",
         "config": {
+          "enabled": true,
           "spin_wait_min": 3,
           "spin_wait_max": 5
         }
@@ -151,6 +159,7 @@
       {
         "type": "MoveToMapPokemon",
         "config": {
+          "enabled": true,
           "address": "http://localhost:5000",
           "max_distance": 500,
           "min_ball": 50,
@@ -397,6 +406,7 @@
       {
         "type": "MoveToFort",
         "config": {
+            "enabled": true,
             "lure_attraction": true,
             "lure_max_distance": 2000
         }
@@ -404,6 +414,7 @@
       {
         "type": "FollowSpiral",
         "config": {
+          "enabled": true,
           "diameter": 4,
           "step_size": 70
         }
@@ -452,8 +463,10 @@
       "// Pidgey": {"keep_best_cp": 3},
       "// Example of keeping 2 stronger (based on IV) Zubat:": {},
       "// Zubat": {"keep_best_iv": 2},
-      "// Also, it is working with any": {},
+      "// Keep no more than 3 best IV pokemon for every pokemon type": {},
       "// any": {"keep_best_iv": 3},
+      "// Discard all pokemon in bag except 100 pokemon with best CP": {},
+      "// all": {"keep_best_cp": 100},
       "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat:": {},
       "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3}
     },

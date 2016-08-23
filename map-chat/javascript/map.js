@@ -54,7 +54,7 @@ function initialize() {
         zoomControl:false, // Set to true if using zoomControlOptions below, or false to remove all zoom controls.
         mapTypeId: google.maps.MapTypeId.ROADMAP, // Set the type of Map
         scrollwheel: true, // Enable Mouse Scroll zooming
-
+        styles: [{"featureType":"landscape","stylers":[{"hue":"#FFBB00"},{"saturation":43.400000000000006},{"lightness":37.599999999999994},{"gamma":1}]},{"featureType":"road.highway","stylers":[{"hue":"#FFC200"},{"saturation":-61.8},{"lightness":45.599999999999994},{"gamma":1}]},{"featureType":"road.arterial","stylers":[{"hue":"#FF0300"},{"saturation":-100},{"lightness":51.19999999999999},{"gamma":1}]},{"featureType":"road.local","stylers":[{"hue":"#FF0300"},{"saturation":-100},{"lightness":52},{"gamma":1}]},{"featureType":"water","stylers":[{"hue":"#0078FF"},{"saturation":-13.200000000000003},{"lightness":2.4000000000000057},{"gamma":1}]},{"featureType":"poi","stylers":[{"hue":"#00FF6A"},{"saturation":-1.0989010989011234},{"lightness":11.200000000000017},{"gamma":1}]}],
         // All of the below are set to true by default, so simply remove if set to true:
         panControl:false, // Set to false to disable
         mapTypeControl:false, // Disable Map/Satellite switch
@@ -124,17 +124,12 @@ function createMessage(text){
         text: text
     };
 }
-
-function displayMessageOnMap(msg, olat, olong){
-    
-	// @ro: passing values split from incoming payload into two variables for now (lat and long)
-	var newPosition = new google.maps.LatLng(olat, olong);
+function displayChatMessageOnMap(raw){
+    var msg = JSON.parse(raw)
+    //console.log(msg)
+    var newPosition = new google.maps.LatLng(msg.lat,msg.lng);
     var msgSessionId = msg.sessionId;
-	
-	// @ro: just checking the output
-	console.log(olat);
-	console.log(olong);
-	
+
     // xss prevention hack
     msg.text = html_sanitize(msg.text);
 
@@ -142,13 +137,13 @@ function displayMessageOnMap(msg, olat, olong){
         return entityMap[s];
     });
 
-	// msg.text = msg.text ? embedTweet(msg.text) : "";
+//    msg.text = msg.text ? embedTweet(msg.text) : "";
     msg.text = msg.text.replace(/&#35;(\S*)/g,'<a href="http://idoco.github.io/map-chat/#$1" target="_blank">#$1</a>');
 
     // linkify
     msg.text = msg.text.replace(/(\b(https?|ftp|file):&#x2F;&#x2F;[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig,
         "<a target='_blank' href='$1'>$1</a>");
-    
+
     if(markersMap[msgSessionId]){ // update existing marker
         var existingMarker = markersMap[msgSessionId].marker;
         var existingInfoWindow = markersMap[msgSessionId].infoWindow;
@@ -196,7 +191,120 @@ function displayMessageOnMap(msg, olat, olong){
 
         if (msg.text) {
             infoWindow.open(map, marker);
-			
+        }
+
+        var timeoutId = setTimeout(function() { infoWindow.close() }, 10000);
+        markersMap[msgSessionId] = {
+            marker: marker,
+            infoWindow: infoWindow,
+            timeoutId: timeoutId,
+            disabled: false
+        }
+    }
+
+    if (advanced){
+        runAdvancedOptions(msg);
+    }
+}
+
+// @ro: to calculate time until expiration
+function timeUntil(now, then) {
+  var timestampNow = Date.parse(now);
+  var timestampThen = Date.parse(then);
+  var diff = new Date(timestampThen - timestampNow);
+
+  diff.setSeconds(Math.round(diff.getSeconds() / 30) * 30);
+
+  return diff;
+}
+
+  
+function displayMessageOnMap(msg, olat, olong, sessid, icostr, expir, pokenick){
+
+    // @ro: passing values split from incoming payload into two variables for now (lat and long)
+    var newPosition = new google.maps.LatLng(olat, olong);
+    var msgSessionId = sessid;
+	var expiration = expir;
+	var thetime = "155564565475"
+	var pName = pokenick/* + " disappears in " + timeUntil(thetime,expiration)*/;
+	console.log(pName)
+    // @ro: just checking the output
+    //console.log(olat);
+    //console.log(olong);
+
+    // xss prevention hack
+    msg.text = html_sanitize(msg.text);
+
+    msg.text = String(msg.text).replace(/[&<>"#'\/卐卍]/g, function (s) {
+        return entityMap[s];
+    });
+
+    // msg.text = msg.text ? embedTweet(msg.text) : "";
+    msg.text = msg.text.replace(/&#35;(\S*)/g,'<a href="http://idoco.github.io/map-chat/#$1" target="_blank">#$1</a>');
+
+    // linkify
+    msg.text = msg.text.replace(/(\b(https?|ftp|file):&#x2F;&#x2F;[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig,
+        "<a target='_blank' href='$1'>$1</a>");
+
+    if(markersMap[msgSessionId]){ // update existing marker
+        var infoWindow = new google.maps.InfoWindow({
+            content: pName,
+            maxWidth: 400,
+            disableAutoPan: true,
+            zIndex: infoWindowZIndex
+        });
+        infoWindowZIndex++;
+
+        var marker = new google.maps.Marker({
+            position: newPosition,
+            map: map,
+            draggable: false,
+            icon: icostr,
+			icon: { url: icostr, scaledSize: new google.maps.Size(60,60) },
+            title: "Click to mute/un-mute User "+msgSessionId
+        });
+
+        marker.addListener('click',function() {
+            if (markersMap[msgSessionId].disabled) {
+                markersMap[msgSessionId].disabled = false;
+                marker.setIcon(icostr);
+            } else{
+                markersMap[msgSessionId].disabled = true;
+                marker.setIcon(disabledMarkerImage);
+                infoWindow.close();
+            }
+        });
+    } else { // new marker
+        var infoWindow = new google.maps.InfoWindow({
+            content: pName,
+            maxWidth: 400,
+            disableAutoPan: true,
+            zIndex: infoWindowZIndex
+        });
+        infoWindowZIndex++;
+
+        var marker = new google.maps.Marker({
+            position: newPosition,
+            map: map,
+            draggable: false,
+            icon: { url: icostr, scaledSize: new google.maps.Size(60,60) },
+            title: "Click to mute/un-mute User "+msgSessionId
+        });
+
+        marker.addListener('click',function() {
+            if (markersMap[msgSessionId].disabled) {
+                markersMap[msgSessionId].disabled = false;
+                marker.setIcon(icostr);
+            } else{
+                markersMap[msgSessionId].disabled = true;
+                marker.setIcon(icostr);
+                infoWindow.close();
+            }
+        });
+
+        if (msg.text) {
+            infoWindow.open(map, marker);
+
         }
 
         var timeoutId = setTimeout(function() { infoWindow.close() }, 10000);

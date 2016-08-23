@@ -7,6 +7,7 @@
     "encrypt_location": "",
     "websocket_server": false,
     "heartbeat_threshold": 10,
+    "enable_social": true,
     "tasks": [
       {
         "type": "HandleSoftBan"
@@ -35,6 +36,7 @@
       {
         "type": "IncubateEggs",
         "config": {
+          "enabled": true,
           "longer_eggs_first": true,
           "min_interval": 120
         }
@@ -61,6 +63,7 @@
       {
         "type": "TransferPokemon",
         "config": {
+          "enabled": true,
           "min_free_slot": 5,
           "transfer_wait_min": 1,
           "transfer_wait_max": 4
@@ -77,18 +80,21 @@
       {
         "type": "EvolvePokemon",
         "config": {
+            "enabled": false,
             "evolve_all": "none",
             "first_evolve_by": "cp",
             "evolve_above_cp": 500,
             "evolve_above_iv": 0.8,
             "logic": "or",
-            "evolve_speed": 20,
+            "min_evolve_speed": 25,
+            "max_evolve_speed": 30,
             "use_lucky_egg": false
         }
       },
       {
         "type": "RecycleItems",
         "config": {
+          "enabled": true,
           "min_empty_space": 15,
           "max_balls_keep": 150,
           "max_potions_keep": 50,
@@ -112,11 +118,13 @@
       {
         "type": "CatchPokemon",
         "config": {
+          "enabled": true,
           "catch_visible_pokemon": true,
           "catch_lured_pokemon": true,
           "min_ultraball_to_keep": 5,
           "berry_threshold": 0.35,
           "vip_berry_threshold": 0.9,
+          "treat_unseen_as_vip": true,
           "catch_throw_parameters": {
             "excellent_rate": 0.1,
             "great_rate": 0.5,
@@ -139,6 +147,7 @@
       {
         "type": "SpinFort",
         "config": {
+          "enabled": true,
           "spin_wait_min": 3,
           "spin_wait_max": 5
         }
@@ -151,6 +160,7 @@
       {
         "type": "FollowPath",
         "config": {
+          "enabled": true,
           "path_mode": "loop",
           "path_start_mode": "first",
           "path_file": "configs/path.example.json",
@@ -202,8 +212,10 @@
       "// Pidgey": {"keep_best_cp": 3},
       "// Example of keeping 2 stronger (based on IV) Zubat:": {},
       "// Zubat": {"keep_best_iv": 2},
-      "// Also, it is working with any": {},
+      "// Keep no more than 3 best IV pokemon for every pokemon type": {},
       "// any": {"keep_best_iv": 3},
+      "// Discard all pokemon in bag except 100 pokemon with best CP": {},
+      "// all": {"keep_best_cp": 100},
       "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat:": {},
       "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3}
     }
