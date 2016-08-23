@@ -1,6 +1,6 @@
 FROM python:2.7.12-alpine
 
-RUN apk add --update --no-cache alpine-sdk wget git\
+RUN apk add --update --no-cache alpine-sdk bash wget git\
   && rm -rf /var/cache/apk/*
 
 WORKDIR /usr/src/app
