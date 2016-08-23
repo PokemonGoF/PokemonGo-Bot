@@ -2,6 +2,9 @@ FROM python:2.7.12-alpine
 
 RUN apk add --update --no-cache alpine-sdk bash wget git
 
+ADD https://github.com/PokemonGoF/PokemonGo-Bot/archive/dev.tar.gz .
+RUN tar -zxvf dev.tar.gz && mv PokemonGo-Bot-dev /usr/src/app && rm dev.tar.gz
+
 WORKDIR /usr/src/app
 VOLUME ["/usr/src/app/configs", "/usr/src/app/web"]
 
