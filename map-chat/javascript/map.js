@@ -126,7 +126,7 @@ function createMessage(text){
 }
 function displayChatMessageOnMap(raw){
     var msg = JSON.parse(raw)
-    console.log(msg)
+    //console.log(msg)
     var newPosition = new google.maps.LatLng(msg.lat,msg.lng);
     var msgSessionId = msg.sessionId;
 
@@ -207,15 +207,15 @@ function displayChatMessageOnMap(raw){
     }
 }
 
-function displayMessageOnMap(msg, olat, olong, sessid){
+function displayMessageOnMap(msg, olat, olong, sessid, icostr){
 
     // @ro: passing values split from incoming payload into two variables for now (lat and long)
     var newPosition = new google.maps.LatLng(olat, olong);
     var msgSessionId = sessid;
 
     // @ro: just checking the output
-    console.log(olat);
-    console.log(olong);
+    //console.log(olat);
+    //console.log(olong);
 
     // xss prevention hack
     msg.text = html_sanitize(msg.text);
@@ -244,14 +244,14 @@ function displayMessageOnMap(msg, olat, olong, sessid){
             position: newPosition,
             map: map,
             draggable: false,
-            icon: markerImage,
+            icon: icostr,
             title: "Click to mute/un-mute User "+msgSessionId
         });
 
         marker.addListener('click',function() {
             if (markersMap[msgSessionId].disabled) {
                 markersMap[msgSessionId].disabled = false;
-                marker.setIcon(markerImage);
+                marker.setIcon(icostr);
             } else{
                 markersMap[msgSessionId].disabled = true;
                 marker.setIcon(disabledMarkerImage);
@@ -278,10 +278,10 @@ function displayMessageOnMap(msg, olat, olong, sessid){
         marker.addListener('click',function() {
             if (markersMap[msgSessionId].disabled) {
                 markersMap[msgSessionId].disabled = false;
-                marker.setIcon(markerImage);
+                marker.setIcon(icostr);
             } else{
                 markersMap[msgSessionId].disabled = true;
-                marker.setIcon(disabledMarkerImage);
+                marker.setIcon(icostr);
                 infoWindow.close();
             }
         });
