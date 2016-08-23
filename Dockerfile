@@ -30,6 +30,7 @@ RUN ./setup.sh -i
 
 #remove unused stuff
 RUN apk del alpine-sdk\
+  && apk cache clean\
   && rm -rf /var/cache/apk/*
 
 CMD ["sh", "run.sh"]
