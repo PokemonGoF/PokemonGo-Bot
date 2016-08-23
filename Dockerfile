@@ -28,7 +28,7 @@ COPY . /usr/src/app
 RUN ln -s /usr/src/app/configs /config %% /usr/src/app/web /web
 
 #setup the bot
-RUN cd /usr/src/app && sh setup.sh -i
+RUN ./setup.sh -i
 
 #remove unused stuff
 RUN apk del alpine-sdk
