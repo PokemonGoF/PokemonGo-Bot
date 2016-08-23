@@ -22,11 +22,8 @@ RUN cd /tmp && wget http://pgoapi.com/pgoencrypt.tar.gz \
 
 ENV LD_LIBRARY_PATH /usr/src/app
 
-COPY requirements.txt /usr/src/app/
 RUN ln -s /usr/include/locale.h /usr/include/xlocale.h
 RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . /usr/src/app
 
 #remove unused stuff
 RUN apk del alpine-sdk\
