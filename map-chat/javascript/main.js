@@ -14,7 +14,7 @@ function initialiseEventBus(){
     //alert([topic, payload].join(": "));
     console.log('Topic is '+topic)
 
-    Materialize.toast(payload, 4000);
+    //Materialize.toast(payload, 4000);
     if(topic === 'pgomapcatch/chat'){
       console.log('Chatting event')
       displayChatMessageOnMap(payload)
