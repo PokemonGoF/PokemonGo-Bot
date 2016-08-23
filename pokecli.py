@@ -180,7 +180,7 @@ def main():
                 formatted='Bot caught SIGINT. Shutting down.'
             )
             report_summary(bot)
-'''
+
     except Exception as e:
         # always report session summary and then raise exception
         if bot:
@@ -211,7 +211,6 @@ def main():
                         formatted='Error caching forts for {path}',
                         data={'path': cached_forts_path}
                         )
-'''
 
 
 def report_summary(bot):
