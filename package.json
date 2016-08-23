@@ -1,0 +1,28 @@
+{
+  "name": "maps-pikabot",
+  "version": "0.1.0",
+  "description": "Map Server For Pika Bot",
+  "main": "server.js",
+  "dependencies": {
+    "finalhandler": "~0.5.0",
+    "serve-static": "~1.11.1"
+  },
+  "engine": {
+    "node": "*",
+    "npm": "*"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "IP=0.0.0.0 PORT=3030 mocha --timeout 5000 tests/*_test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PokemonGoF/PokemonGo-Bot/tree/gh-pages"
+  },
+  "author": "PokemonGoF",
+  "license": "GNUv3",
+  "bugs": {
+    "url": "https://github.com/PokemonGoF/PokemonGo-Bot/issues"
+  },
+  "homepage": "https://github.com/PokemonGoF/PokemonGo-Bot/issues"
+}
