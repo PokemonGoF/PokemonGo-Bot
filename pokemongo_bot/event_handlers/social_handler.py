@@ -34,16 +34,16 @@ class SocialHandler(EventHandler):
         thread.start_new_thread(self.mqttc.run)
     def handle_event(self, event, sender, level, formatted_msg, data):
         #sender_name = type(sender).__name__
-        if formatted_msg:
-            message = "[{}] {}".format(event, formatted_msg)
-        else:
-            message = '{}: {}'.format(event, str(data))
+        #if formatted_msg:
+        #    message = "[{}] {}".format(event, formatted_msg)
+        #else:
+            #message = '{}: {}'.format(event, str(data))
         if event == 'catchable_pokemon':
             #self.mqttc.publish("pgomapcatch/all", str(data))
-            print data
+            #print data
             if data['pokemon_id']:
                 #self.mqttc.publish("pgomapcatch/all/catchable/"+str(data['pokemon_id']), str(data))
                 self.mqttc.publish("pgomapcatch/all/catchable/"+str(data['pokemon_id']), str(data['latitude'])+","+str(data['longitude'])+","+str(data['encounter_id']))
 
             #print 'have catchable_pokemon'
-            print message
+            #print message
