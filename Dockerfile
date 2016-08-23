@@ -1,6 +1,6 @@
 FROM python:2.7.12-alpine
 
-RUN apk add --update --no-cache build-base gcc abuild binutils binutils-doc gcc-doc wget git
+RUN apk add --update --no-cache build-base gcc abuild binutils binutils-doc gcc-doc python-dev wget git
 
 WORKDIR /usr/src/app
 VOLUME ["/usr/src/app/configs", "/usr/src/app/web"]
