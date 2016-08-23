@@ -44,7 +44,7 @@ function sendMessage(topic, input) {
 function publish(address, message) {
     if (window.client) {
         var json = createMessage(message);
-        window.client.publish(address, JSON.stringify(json.text));
+        window.client.publish(address, JSON.stringify(json));
         console.log(json);
     }
 }
