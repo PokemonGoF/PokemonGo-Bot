@@ -371,9 +371,8 @@ class UpdateLiveStats(BaseTask):
             json_stats = json.load(infile)
 
         json_stats = [x for x in json_stats if not x.get("inventory_item_data", {}).get("player_stats", None)]
-
-        for player_stat in player_data:
-            json_stats.append({"inventory_item_data": {"player_stats": player_data}})
+        
+        json_stats.append({"inventory_item_data": {"player_stats": player_data}})
 
         with open(web_inventory, "w") as outfile:
             json.dump(json_stats, outfile)
