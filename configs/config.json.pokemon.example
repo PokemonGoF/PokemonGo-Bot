@@ -143,6 +143,11 @@
           "spin_wait_max": 5
         }
       },
+      { "type": "UpdateWebInventory",
+        "config": {
+          "enabled": true
+        }
+      },
       {
         "type": "MoveToFort",
         "config":{
