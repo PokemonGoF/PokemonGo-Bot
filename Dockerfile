@@ -1,14 +1,12 @@
 FROM python:2.7.12-alpine
 
-RUN apk add --update --no-cache wget bash tzdata 
+RUN apk add --update --no-cache wget bash
 
 WORKDIR /usr/src/app
 VOLUME ["/usr/src/app/configs", "/usr/src/app/web"]
 
 ARG timezone=Etc/UTC
-RUN echo $timezone > /etc/timezone \
-    && ln -sfn /usr/share/zoneinfo/$timezone /etc/localtime \
-    && dpkg-reconfigure -f noninteractive tzdata
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN cd /tmp && wget http://pgoapi.com/pgoencrypt.tar.gz \
     && tar zxvf pgoencrypt.tar.gz \
@@ -25,6 +23,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /usr/src/app
 
-RUN apk del build-base
+#RUN apk del build-base
 
 ENTRYPOINT ["python", "pokecli.py"]
