@@ -85,7 +85,7 @@ function onPositionUpdate(position) {
 
 function onPositionError(err) {
     // try fallback location provider ipinfo.io or generate random location
-    $.getJSON("http://ipinfo.io", onFallbackLocationProviderResponse, useRandomLocation);
+    $.getJSON("https://ipinfo.io", onFallbackLocationProviderResponse, useRandomLocation);
 }
 
 function onFallbackLocationProviderResponse(ipinfo){
