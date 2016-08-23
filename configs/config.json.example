@@ -50,8 +50,8 @@
           "enabled": true,
           "longer_eggs_first": true,
           "min_interval": 120,
-		  "infinite": [2,5,10],
-		  "breakable": [2,5,10]
+         "infinite": [2,5,10],
+         "breakable": [2,5,10]
         }
       },
       {
@@ -228,12 +228,14 @@
       "// Pidgey": {"keep_best_cp": 3},
       "// Example of keeping 2 best (based on IV) Zubat:": {},
       "// Zubat": {"keep_best_iv": 2},
-      "// Also, it is working with any": {},
+      "// Keep no more than 3 best IV pokemon for every pokemon type": {},
       "// any": {"keep_best_iv": 3},
+      "// Discard all pokemon in bag except 100 pokemon with best CP": {},
+      "// all": {"keep_best_cp": 100},
       "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat:": {},
       "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3},
-	  "// Example of custom order of static criterion": {},
-	  "// Zubat": {"keep_best_custom": "iv, cp, hp_max", "amount":2}
+      "// Example of custom order of static criterion": {},
+      "// Zubat": {"keep_best_custom": "iv, cp, hp_max", "amount":2}
     },
     "vips" : {
         "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate!": {},
