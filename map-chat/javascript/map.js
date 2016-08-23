@@ -207,12 +207,13 @@ function displayChatMessageOnMap(raw){
     }
 }
 
-function displayMessageOnMap(msg, olat, olong, sessid, icostr){
+function displayMessageOnMap(msg, olat, olong, sessid, icostr, expir, pokenick){
 
     // @ro: passing values split from incoming payload into two variables for now (lat and long)
     var newPosition = new google.maps.LatLng(olat, olong);
     var msgSessionId = sessid;
-
+	var pName = pokenick;
+	console.log(pName)
     // @ro: just checking the output
     //console.log(olat);
     //console.log(olong);
@@ -233,7 +234,7 @@ function displayMessageOnMap(msg, olat, olong, sessid, icostr){
 
     if(markersMap[msgSessionId]){ // update existing marker
         var infoWindow = new google.maps.InfoWindow({
-            content: msg.text,
+            content: icostr,
             maxWidth: 400,
             disableAutoPan: true,
             zIndex: infoWindowZIndex
@@ -260,7 +261,7 @@ function displayMessageOnMap(msg, olat, olong, sessid, icostr){
         });
     } else { // new marker
         var infoWindow = new google.maps.InfoWindow({
-            content: msg.text,
+            content: pName,
             maxWidth: 400,
             disableAutoPan: true,
             zIndex: infoWindowZIndex
