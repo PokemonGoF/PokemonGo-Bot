@@ -13,16 +13,6 @@
         "type": "HandleSoftBan"
       },
       {
-        "type": "SleepSchedule",
-        "config": {
-          "enabled": false,
-          "time": "22:54",
-          "duration":"7:46",
-          "time_random_offset": "00:24",
-          "duration_random_offset": "00:43"
-        }
-      },
-      {
         "type": "CompleteTutorial",
         "config": {
           "enabled": false,
@@ -433,6 +423,22 @@
     "walk_min": 2.16,
     "alt_min": 500,
     "alt_max": 1000,
+    "sleep_schedule": [
+      {
+        "time": "12:00",
+        "duration": "5:30",
+        "time_random_offset": "00:30",
+        "duration_random_offset": "00:30",
+        "wake_up_at_location": ""
+      },
+      {
+        "time": "17:45",
+        "duration": "3:00",
+        "time_random_offset": "01:00",
+        "duration_random_offset": "00:30",
+        "wake_up_at_location": ""
+      }
+    ],
     "debug": false,
     "test": false,
     "health_record": true,

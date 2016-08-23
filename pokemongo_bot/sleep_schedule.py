@@ -13,16 +13,16 @@ class SleepSchedule(object):
     "sleep_schedule": [
       {
         "time": "12:00",
-        "duration":"5:30",
+        "duration": "5:30",
         "time_random_offset": "00:30",
-        "duration_random_offset": "00:30"
+        "duration_random_offset": "00:30",
         "wake_up_at_location": ""
       },
       {
         "time": "17:45",
-        "duration":"3:00",
+        "duration": "3:00",
         "time_random_offset": "01:00",
-        "duration_random_offset": "00:30"
+        "duration_random_offset": "00:30",
         "wake_up_at_location": ""
       }
     ]
