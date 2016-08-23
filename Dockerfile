@@ -1,7 +1,7 @@
 FROM python:2.7.12-alpine
 
 RUN apk update && apk upgrade && \
-    apk add --no-cache git bash wget sed nano
+    apk add --no-cache build-base git bash wget sed nano
 
 WORKDIR /usr/src/app
 VOLUME ["/usr/src/app/configs", "/usr/src/app/web"]
@@ -25,5 +25,7 @@ COPY requirements.txt /usr/src/app/
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /usr/src/app
+
+RUN apk del build-base
 
 ENTRYPOINT ["python", "pokecli.py"]
