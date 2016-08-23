@@ -1,7 +1,6 @@
 FROM python:2.7.12-alpine
 
-RUN apk add --update --no-cache build-base gcc abuild binutils binutils-doc gcc-doc py-pip python-dev wget git\
-  && pip install virtualenv \
+RUN apk add --update --no-cache alpine-sdk wget git\
   && rm -rf /var/cache/apk/*
 
 WORKDIR /usr/src/app
@@ -25,6 +24,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /usr/src/app
 
-RUN apk del build-base gcc abuild binutils binutils-doc gcc-doc
+RUN apk del alpine-sdk
 
 ENTRYPOINT ["python", "pokecli.py"]
