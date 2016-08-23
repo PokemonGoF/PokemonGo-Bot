@@ -27,4 +27,4 @@ COPY . /usr/src/app
 
 RUN apk del alpine-sdk
 
-ENTRYPOINT ["python", "pokecli.py"]
+CMD ["sh", "run.sh"]
