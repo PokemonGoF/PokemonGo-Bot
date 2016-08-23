@@ -40,7 +40,7 @@ import string
 import subprocess
 from datetime import timedelta
 from getpass import getpass
-from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException
+from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException, NoPlayerPositionSetException
 from geopy.exc import GeocoderQuotaExceeded
 
 from pokemongo_bot import inventory
@@ -143,6 +143,7 @@ def main():
                     level='info',
                     formatted='Server busy or offline'
                 )
+                time.sleep(wait_time)
             except ServerSideRequestThrottlingException:
                 bot.event_manager.emit(
                     'api_error',
@@ -151,14 +152,23 @@ def main():
                     formatted='Server is throttling, reconnecting in 30 seconds'
                 )
                 time.sleep(30)
+            except PermaBannedException:
+                bot.event_manager.emit(
+                    'api_error',
+                    sender=bot,
+                    level='info',
+                    formatted='Probably permabanned, Game Over ! Play again at https://club.pokemon.com/us/pokemon-trainer-club/sign-up/'
+                )
+                time.sleep(36000)
+            except NoPlayerPositionSetException:
+                bot.event_manager.emit(
+                    'api_error',
+                    sender=bot,
+                    level='info',
+                    formatted='No player position set'
+                )
+                time.sleep(wait_time)
 
-    except PermaBannedException:
-         bot.event_manager.emit(
-            'api_error',
-            sender=bot,
-            level='info',
-            formatted='Probably permabanned, Game Over ! Play again at https://club.pokemon.com/us/pokemon-trainer-club/sign-up/'
-         )
     except GeocoderQuotaExceeded:
         raise Exception("Google Maps API key over requests limit.")
     except SIGINTRecieved:
@@ -560,8 +570,16 @@ def init_config():
         type=float,
         default=8.0
     )
-
-
+    
+    add_config(
+         parser,
+         load,
+         long_flag="--enable_social",
+         help="Enable social event exchange between bot",
+         type=bool,
+         default=True
+    )
+    
     # Start to parse other attrs
     config = parser.parse_args()
     if not config.username and 'username' not in load:
@@ -622,8 +640,8 @@ def init_config():
         parser.error("--walk_min is out of range! (should be >= 1.0)")
         return None
 
-    if config.alt_min < 0:
-        parser.error("--alt_min is out of range! (should be >= 0.0)")
+    if config.alt_min < -413.0:
+        parser.error("--alt_min is out of range! (should be >= -413.0)")
         return None
 
     if not (config.location or config.location_cache):
