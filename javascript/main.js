@@ -14,17 +14,17 @@ function initialiseEventBus(){
     //alert([topic, payload].join(": "));
     console.log('Topic is '+topic)
 
-    Materialize.toast(payload, 8000);
+    //Materialize.toast(payload, 4000);
     if(topic === 'pgomapcatch/chat'){
       console.log('Chatting event')
       displayChatMessageOnMap(payload)
     } else {
 
-    	//@ro: let's grab the message and split that shit. (simple for now, maybe we could just parse the json instead)
-    	var pLoadR = payload.toString();
-    	var pLoadR2 = pLoadR.split(",");
-    	var olat = pLoadR2[0]
-    	var olong = pLoadR2[1]
+        //@ro: let's grab the message and split that shit. (simple for now, maybe we could just parse the json instead)
+        var pLoadR = payload.toString();
+        var pLoadR2 = pLoadR.split(",");
+        var olat = pLoadR2[0]
+        var olong = pLoadR2[1]
       var sessid = pLoadR2[2]
 
       displayMessageOnMap(payload, olat, olong, sessid);
@@ -45,6 +45,7 @@ function publish(address, message) {
     if (window.client) {
         var json = createMessage(message);
         window.client.publish(address, JSON.stringify(json));
+        console.log(json);
     }
 }
 

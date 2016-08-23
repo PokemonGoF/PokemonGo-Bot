@@ -119,6 +119,8 @@ function setUserLocation(lat, lng){
 
 function createMessage(text){
     return {
+        lat: shareAccurateLocation ? userLocation.lat() : fuzzyUserLocation.lat(),
+        lng: shareAccurateLocation ? userLocation.lng() : fuzzyUserLocation.lng(),
         text: text
     };
 }
