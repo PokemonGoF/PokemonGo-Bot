@@ -7,6 +7,7 @@
     "encrypt_location": "",
     "websocket_server": false,
     "heartbeat_threshold": 10,
+    "enable_social": true,
     "tasks": [
       {
         "type": "HandleSoftBan"
@@ -47,7 +48,9 @@
         "type": "IncubateEggs",
         "config": {
           "longer_eggs_first": true,
-          "min_interval": 120
+          "min_interval": 120,
+		  "infinite": [2,5,10],
+		  "breakable": [2,5,10]
         }
       },
       {

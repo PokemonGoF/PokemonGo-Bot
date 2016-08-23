@@ -7,6 +7,7 @@
     "encrypt_location": "",
     "websocket_server": false,
     "heartbeat_threshold": 10,
+    "enable_social": true,
     "tasks": [
       {
         "type": "HandleSoftBan"

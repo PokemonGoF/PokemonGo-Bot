@@ -25,6 +25,11 @@ def random_lat_long_delta():
     # should be 364,000 * .000025 = 9.1. So it returns between [-9.1, 9.1]
     return ((random() * 0.00001) - 0.000005) * 5
 
+def random_alt_delta():
+    # Return random value from [-0.2, 0.2]. Altitude is measured in meters. A delta of 0.4 could for example 
+    # represent a phone near chest level vs in pants pocket level
+    return uniform(-0.2,0.2)
+
 def gps_noise_rng(radius):
     '''
     Simulates gps noise.
