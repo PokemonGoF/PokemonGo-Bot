@@ -25,6 +25,7 @@ from event_manager import EventManager
 from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
+from sleep_schedule import SleepSchedule
 from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler, ColoredLoggingHandler, SocialHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
@@ -101,6 +102,8 @@ class PokemonGoBot(Datastore):
     def start(self):
         self._setup_event_system()
         self._setup_logging()
+        self.sleep_schedule = SleepSchedule(self, self.config.sleep_schedule) if self.config.sleep_schedule else None
+        if self.sleep_schedule: self.sleep_schedule.work()
         self._setup_api()
         self._load_recent_forts()
         init_inventory(self)
@@ -183,9 +186,9 @@ class PokemonGoBot(Datastore):
                 'duration',
                 'resume'
             )
-        )  
-        
-        
+        )
+
+
         self.event_manager.register_event('location_cache_error')
 
         self.event_manager.register_event('bot_start')
@@ -549,6 +552,8 @@ class PokemonGoBot(Datastore):
     def tick(self):
         self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
+
+        if self.sleep_schedule: self.sleep_schedule.work()
 
         now = time.time() * 1000
 
@@ -935,7 +940,7 @@ class PokemonGoBot(Datastore):
             if show_candies:
                 line_p += '[{} candies]'.format(pokes[0].candy_quantity)
             line_p += ': '
-            
+
             poke_info = ['({})'.format(', '.join([get_poke_info(x, p) for x in poke_info_displayed])) for p in pokes]
             self.logger.info(line_p + ' | '.join(poke_info))
 
