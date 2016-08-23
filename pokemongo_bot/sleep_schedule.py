@@ -47,11 +47,14 @@ class SleepSchedule(object):
     def work(self):
         if self._should_sleep_now():
             self._sleep()
-            self._schedule_next_sleep()
             wake_up_at_location = self._wake_up_at_location
+            self._schedule_next_sleep()
             if wake_up_at_location:
-                self.bot.api.set_position(self.wake_up_at_location[0],self.wake_up_at_location[1],self.wake_up_at_location[2])
-            self.bot.login()
+                try:
+                    self.bot.api.set_position(wake_up_at_location[0],wake_up_at_location[1],wake_up_at_location[2]) # Expecting error here
+                    self.bot.login()
+                except AttributeError: # It will happen if bot starts sleeping, in this case api is not initialized yet
+                    self.bot.wake_location = wake_up_at_location
 
     def _process_config(self, config):
         self.entries = []
@@ -76,7 +79,7 @@ class SleepSchedule(object):
             raw_wake_up_at_location = entry['wake_up_at_location'] if 'wake_up_at_location' in entry else ''
             if raw_wake_up_at_location:
                 try:
-                    wake_up_at_location = wake_up_at_location.split(',',2)
+                    wake_up_at_location = raw_wake_up_at_location.split(',',2)
                     lat=float(wake_up_at_location[0])
                     lng=float(wake_up_at_location[1])
                     if len(wake_up_at_location) == 3:
@@ -133,7 +136,7 @@ class SleepSchedule(object):
 
         diffs = {}
         for index in range(len(self.entries)):
-          diff = (next_time-now).total_seconds()
+          diff = (times[index]-now).total_seconds()
           if diff >= 0: diffs[index] = diff
 
         closest = min(diffs.iterkeys(), key=lambda x: diffs[x])
