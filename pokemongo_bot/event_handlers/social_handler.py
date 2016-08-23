@@ -16,7 +16,7 @@ class MyMQTTClass:
     #def mqtt_on_connect(self, mqttc, obj, flags, rc):
         #print "rc: "+str(rc)
     def mqtt_on_message(self, mqttc, obj, msg):
-        print msg.topic+" "+str(msg.qos)+" "+str(msg.payload)
+        msg.topic+" "+str(msg.qos)+" "+str(msg.payload)
     #def mqtt_on_publish(self, mqttc, obj, mid):
         #print "mid: "+str(mid)
     #def mqtt_on_subscribe(self, mqttc, obj, mid, granted_qos):

@@ -11,13 +11,25 @@ from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 class CatchLuredPokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
+    def initialize(self):
+        self.encountered = [None] * 10
+
+    def add_encountered(self, pokemon):
+        self.encountered = self.encountered[1:] + [pokemon['encounter_id']]
+
+    def was_encountered(self, pokemon):
+        if pokemon['encounter_id'] in self.encountered:
+            return True
+        return False
+
     def work(self):
         lured_pokemon = self.get_lured_pokemon()
         if len(lured_pokemon) > 0:
-            self.catch_pokemon(lured_pokemon[0])
-
-            if len(lured_pokemon) > 1:
-                return WorkerResult.RUNNING
+            for pokemon in lured_pokemon:
+                if not self.was_encountered(pokemon):
+                    self.catch_pokemon(pokemon)
+                    self.add_encountered(pokemon)
+                    return WorkerResult.RUNNING
 
         return WorkerResult.SUCCESS
 

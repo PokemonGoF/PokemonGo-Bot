@@ -91,6 +91,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 ### Task Options:
 [[back to top](#table-of-contents)]
 * CatchPokemon
+  * `treat_unseen_as_vip`: Default `"true"` | Set to `"false"` to disable treating pokemons you don't have in your pokedex as VIPs.
 * EvolvePokemon
   * `evolve_all`: Default `NONE` | Set to `"all"` to evolve Pokémon if possible when the bot starts. Can also be set to individual Pokémon as well as multiple separated by a comma. e.g "Pidgey,Rattata,Weedle,Zubat"
   * `evolve_speed`: Default `20`
@@ -782,8 +783,8 @@ Simulates the random pause of the day (speaking to someone, getting into a store
 Configure how the bot should use the incubators.
 
 - `longer_eggs_first`: (True | False ) should the bot start by the longer eggs first. If set to true, the bot first use the 10km eggs, then the 5km eggs, then the 2km eggs.
-- `infinite`: ([2], [2,5], [2,5,10], []) the type of egg the infinite (ie. unbreakable) incubator(s) can incubate. If set to [2,5], the incubator(s) can only incubate the 2km and 5km eggs. If set to [], the incubator(s) can incubate any type of egg.
-- `breakable`: ([2], [2,5], [2,5,10], []) the type of egg the breakable incubator(s) can incubate. If set to [2,5], the incubator(s) can only incubate the 2km and 5km eggs. If set to [], the incubator(s) can incubate any type of egg.
+- `infinite`: ([2], [2,5], [2,5,10], []) the type of egg the infinite (ie. unbreakable) incubator(s) can incubate. If set to [2,5], the incubator(s) can only incubate the 2km and 5km eggs. If set to [], the incubator(s) will not incubate any type of egg.
+- `breakable`: ([2], [2,5], [2,5,10], []) the type of egg the breakable incubator(s) can incubate. If set to [2,5], the incubator(s) can only incubate the 2km and 5km eggs. If set to [], the incubator(s) will not incubate any type of egg.
 
 ###Example Config
 ```
