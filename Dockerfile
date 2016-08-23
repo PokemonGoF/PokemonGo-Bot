@@ -26,5 +26,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /usr/src/app
 
 RUN apk del alpine-sdk
+#link the config and web for easyer use
+RUN ln -s /usr/src/app/configs /config %% /usr/src/app/web /web
 
 CMD ["sh", "run.sh"]
