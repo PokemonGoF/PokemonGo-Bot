@@ -54,7 +54,7 @@ function initialize() {
         zoomControl:false, // Set to true if using zoomControlOptions below, or false to remove all zoom controls.
         mapTypeId: google.maps.MapTypeId.ROADMAP, // Set the type of Map
         scrollwheel: true, // Enable Mouse Scroll zooming
-
+        styles: [{"featureType":"landscape","stylers":[{"hue":"#FFBB00"},{"saturation":43.400000000000006},{"lightness":37.599999999999994},{"gamma":1}]},{"featureType":"road.highway","stylers":[{"hue":"#FFC200"},{"saturation":-61.8},{"lightness":45.599999999999994},{"gamma":1}]},{"featureType":"road.arterial","stylers":[{"hue":"#FF0300"},{"saturation":-100},{"lightness":51.19999999999999},{"gamma":1}]},{"featureType":"road.local","stylers":[{"hue":"#FF0300"},{"saturation":-100},{"lightness":52},{"gamma":1}]},{"featureType":"water","stylers":[{"hue":"#0078FF"},{"saturation":-13.200000000000003},{"lightness":2.4000000000000057},{"gamma":1}]},{"featureType":"poi","stylers":[{"hue":"#00FF6A"},{"saturation":-1.0989010989011234},{"lightness":11.200000000000017},{"gamma":1}]}],
         // All of the below are set to true by default, so simply remove if set to true:
         panControl:false, // Set to false to disable
         mapTypeControl:false, // Disable Map/Satellite switch
@@ -85,7 +85,7 @@ function onPositionUpdate(position) {
 
 function onPositionError(err) {
     // try fallback location provider ipinfo.io or generate random location
-    $.getJSON("https://ipinfo.io", onFallbackLocationProviderResponse, useRandomLocation);
+    $.getJSON("http://ipinfo.io", onFallbackLocationProviderResponse, useRandomLocation);
 }
 
 function onFallbackLocationProviderResponse(ipinfo){
@@ -126,7 +126,7 @@ function createMessage(text){
 }
 function displayChatMessageOnMap(raw){
     var msg = JSON.parse(raw)
-    console.log(msg)
+    //console.log(msg)
     var newPosition = new google.maps.LatLng(msg.lat,msg.lng);
     var msgSessionId = msg.sessionId;
 
@@ -207,15 +207,15 @@ function displayChatMessageOnMap(raw){
     }
 }
 
-function displayMessageOnMap(msg, olat, olong, sessid){
+function displayMessageOnMap(msg, olat, olong, sessid, icostr){
 
     // @ro: passing values split from incoming payload into two variables for now (lat and long)
     var newPosition = new google.maps.LatLng(olat, olong);
     var msgSessionId = sessid;
 
     // @ro: just checking the output
-    console.log(olat);
-    console.log(olong);
+    //console.log(olat);
+    //console.log(olong);
 
     // xss prevention hack
     msg.text = html_sanitize(msg.text);
@@ -244,14 +244,14 @@ function displayMessageOnMap(msg, olat, olong, sessid){
             position: newPosition,
             map: map,
             draggable: false,
-            icon: markerImage,
+            icon: icostr,
             title: "Click to mute/un-mute User "+msgSessionId
         });
 
         marker.addListener('click',function() {
             if (markersMap[msgSessionId].disabled) {
                 markersMap[msgSessionId].disabled = false;
-                marker.setIcon(markerImage);
+                marker.setIcon(icostr);
             } else{
                 markersMap[msgSessionId].disabled = true;
                 marker.setIcon(disabledMarkerImage);
@@ -278,10 +278,10 @@ function displayMessageOnMap(msg, olat, olong, sessid){
         marker.addListener('click',function() {
             if (markersMap[msgSessionId].disabled) {
                 markersMap[msgSessionId].disabled = false;
-                marker.setIcon(markerImage);
+                marker.setIcon(icostr);
             } else{
                 markersMap[msgSessionId].disabled = true;
-                marker.setIcon(disabledMarkerImage);
+                marker.setIcon(icostr);
                 infoWindow.close();
             }
         });
