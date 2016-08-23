@@ -2,12 +2,11 @@ from math import sqrt
 
 from random import uniform
 from pokemongo_bot.cell_workers.utils import distance
-from pokemongo_bot.human_behaviour import random_lat_long_delta, sleep
-
+from pokemongo_bot.human_behaviour import random_lat_long_delta, sleep, random_alt_delta
 
 class StepWalker(object):
 
-    def __init__(self, bot, dest_lat, dest_lng):
+    def __init__(self, bot, dest_lat, dest_lng, dest_alt = None):
         self.bot = bot
         self.api = bot.api
 
@@ -19,9 +18,16 @@ class StepWalker(object):
             dest_lat,
             dest_lng
         )
-
-        self.alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
+        if dest_alt == None:
+            self.alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
+        else:
+            self.alt = dest_alt
         self.speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
+
+        if len(self.bot.position) == 3:
+            self.initAlt = self.bot.position[2]
+        else:
+            self.initAlt = self.alt;
 
         self.destLat = dest_lat
         self.destLng = dest_lng
@@ -40,6 +46,7 @@ class StepWalker(object):
             self.dLat = (dest_lat - self.initLat) / int(self.steps)
             self.dLng = (dest_lng - self.initLng) / int(self.steps)
             self.magnitude = self._pythagorean(self.dLat, self.dLng)
+            self.unitAlt = (self.alt - self.initAlt) / int(self.steps)
 
     def step(self):
         if (self.dLat == 0 and self.dLng == 0) or self.dist < self.speed:
@@ -69,15 +76,16 @@ class StepWalker(object):
 
         cLat = self.initLat + scaledDLat + random_lat_long_delta()
         cLng = self.initLng + scaledDLng + random_lat_long_delta()
+        cAlt = self.initAlt + self.unitAlt + random_alt_delta()
 
-        self.api.set_position(cLat, cLng, self.alt)
+        self.api.set_position(cLat, cLng, cAlt)
         self.bot.event_manager.emit(
             'position_update',
             sender=self,
             level='debug',
             data={
-                'current_position': (cLat, cLng),
-                'last_position': (self.initLat, self.initLng),
+                'current_position': (cLat, cLng, cAlt),
+                'last_position': (self.initLat, self.initLng, self.initAlt),
                 'distance': '',
                 'distance_unit': ''
             }

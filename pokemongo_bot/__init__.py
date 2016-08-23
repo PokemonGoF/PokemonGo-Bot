@@ -25,7 +25,7 @@ from event_manager import EventManager
 from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
-from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler, ColoredLoggingHandler
+from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler, ColoredLoggingHandler, SocialHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from pokemongo_bot.base_dir import _base_dir
@@ -41,6 +41,10 @@ class PokemonGoBot(Datastore):
     @property
     def position(self):
         return self.api.actual_lat, self.api.actual_lng, self.api.actual_alt
+
+    @property
+    def noised_position(self):
+        return self.api.noised_lat, self.api.noised_lng, self.api.noised_alt
 
     #@position.setter # these should be called through api now that gps replication is there...
     #def position(self, position_tuple):
@@ -113,7 +117,8 @@ class PokemonGoBot(Datastore):
             handlers.append(ColoredLoggingHandler())
         else:
             handlers.append(LoggingHandler())
-
+        if self.config.enable_social:
+            handlers.append(SocialHandler(self))
         if self.config.websocket_server_url:
             if self.config.websocket_start_embedded_server:
                 self.sio_runner = SocketIoRunner(self.config.websocket_server_url)
@@ -302,6 +307,7 @@ class PokemonGoBot(Datastore):
             )
         )
         self.event_manager.register_event('no_pokeballs')
+        self.event_manager.register_event('enough_ultraballs')
         self.event_manager.register_event(
             'pokemon_catch_rate',
             parameters=(
@@ -405,7 +411,7 @@ class PokemonGoBot(Datastore):
         )
         self.event_manager.register_event(
             'next_egg_incubates',
-            parameters=('km_needed', 'distance_in_km', 'eggs', 'eggs_inc')
+            parameters=('eggs_left', 'eggs_inc', 'eggs')
         )
         self.event_manager.register_event('incubator_already_used')
         self.event_manager.register_event('egg_already_incubating')
@@ -515,6 +521,10 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event(
             'move_to_map_pokemon_teleport_back',
             parameters=('last_lat', 'last_lon')
+        )
+        self.event_manager.register_event(
+            'moving_to_pokemon_throught_fort',
+            parameters=('fort_name', 'distance','poke_name','poke_dist')
         )
 
         # cached recent_forts
@@ -897,6 +907,7 @@ class PokemonGoBot(Datastore):
         pokemon_list = [filter(lambda x: x.pokemon_id == y, bag) for y in id_list]
 
         show_count = self.config.pokemon_bag_show_count
+        show_candies = self.config.pokemon_bag_show_candies
         poke_info_displayed = self.config.pokemon_bag_pokemon_info
 
         def get_poke_info(info, pokemon):
@@ -921,6 +932,8 @@ class PokemonGoBot(Datastore):
             line_p = '#{} {}'.format(pokes[0].pokemon_id, pokes[0].name)
             if show_count:
                 line_p += '[{}]'.format(len(pokes))
+            if show_candies:
+                line_p += '[{} candies]'.format(pokes[0].candy_quantity)
             line_p += ': '
             
             poke_info = ['({})'.format(', '.join([get_poke_info(x, p) for x in poke_info_displayed])) for p in pokes]
@@ -1047,14 +1060,14 @@ class PokemonGoBot(Datastore):
             possible_coordinates = re.findall(
                 "[-]?\d{1,3}[.]\d{3,7}", location_name
             )
-            if len(possible_coordinates) == 2:
+            if len(possible_coordinates) >= 2:
                 # 2 matches, this must be a coordinate. We'll bypass the Google
                 # geocode so we keep the exact location.
                 self.logger.info(
                     '[x] Coordinates found in passed in location, '
                     'not geocoding.'
                 )
-                return float(possible_coordinates[0]), float(possible_coordinates[1]), self.alt
+                return float(possible_coordinates[0]), float(possible_coordinates[1]), (float(possible_coordinates[2]) if len(possible_coordinates) == 3 else self.alt)
 
         geolocator = GoogleV3(api_key=self.config.gmapkey)
         loc = geolocator.geocode(location_name, timeout=10)

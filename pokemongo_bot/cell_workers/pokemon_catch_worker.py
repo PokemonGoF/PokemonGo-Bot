@@ -48,6 +48,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
         self.position = self.bot.position
         self.pokemon_list = self.bot.pokemon_list
         self.inventory = inventory.items()
+        self.pokedex = inventory.pokedex()
         self.spawn_point_guid = ''
         self.response_key = ''
         self.response_status_key = ''
@@ -105,15 +106,25 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
         # skip ignored pokemon
         if not self._should_catch_pokemon(pokemon):
+            self.emit_event(
+                'pokemon_appeared',
+                formatted='Skip ignored {pokemon}! [CP {cp}] [Potential {iv}] [A/D/S {iv_display}]',
+                data={
+                    'pokemon': pokemon.name,
+                    'cp': pokemon.cp,
+                    'iv': pokemon.iv,
+                    'iv_display': pokemon.iv_display,
+                }
+            )
             return WorkerResult.SUCCESS
 
         is_vip = self._is_vip_pokemon(pokemon)
         if inventory.items().get(ITEM_POKEBALL).count < 1:
             if inventory.items().get(ITEM_GREATBALL).count < 1:
                 if inventory.items().get(ITEM_ULTRABALL).count < 1:
-                    return WorkerResult.SUCCESS
+                    return WorkerResult.ERROR
                 elif (not is_vip) and inventory.items().get(ITEM_ULTRABALL).count <= self.min_ultraball_to_keep:
-                    return WorkerResult.SUCCESS
+                    return WorkerResult.ERROR
 
         # log encounter
         self.emit_event(
@@ -232,7 +243,8 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
     def _is_vip_pokemon(self, pokemon):
         # having just a name present in the list makes them vip
-        if self.bot.config.vips.get(pokemon.name) == {}:
+        # Not seen pokemons also will become vip
+        if self.bot.config.vips.get(pokemon.name) == {} or not self.pokedex.seen(pokemon.pokemon_id):
             return True
         return self._pokemon_matches_config(self.bot.config.vips, pokemon, default_logic='or')
 
@@ -340,6 +352,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
             if self.min_ultraball_to_keep >= 0 and self.min_ultraball_to_keep < min_ultraball_to_keep:
                 min_ultraball_to_keep = self.min_ultraball_to_keep
 
+        used_berry = False
         while True:
 
             # find lowest available ball
@@ -347,14 +360,14 @@ class PokemonCatchWorker(Datastore, BaseTask):
             while ball_count[current_ball] == 0 and current_ball < maximum_ball:
                 current_ball += 1
             if ball_count[current_ball] == 0:
-                self.emit_event('no_pokeballs', formatted='No usable pokeballs found!')
-
                 # use untraball if there is no other balls with constraint to `min_ultraball_to_keep`
                 if maximum_ball != ITEM_ULTRABALL and ball_count[ITEM_ULTRABALL] > min_ultraball_to_keep:
                     maximum_ball = ITEM_ULTRABALL
+                    self.emit_event('enough_ultraballs', formatted='No regular balls left! Trying ultraball.')
                     continue
                 else:
-                    break
+                    self.emit_event('no_pokeballs', formatted='No pokeballs left! Fleeing...')
+                    return WorkerResult.ERROR
 
             # check future ball count
             num_next_balls = 0
@@ -367,9 +380,8 @@ class PokemonCatchWorker(Datastore, BaseTask):
             berries_to_spare = berry_count > 0 if is_vip else berry_count > num_next_balls + 30
 
             # use a berry if we are under our ideal rate and have berries to spare
-            used_berry = False
             changed_ball = False
-            if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and berries_to_spare:
+            if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and berries_to_spare and not used_berry:
                 new_catch_rate_by_ball = self._use_berry(berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball)
                 if new_catch_rate_by_ball != catch_rate_by_ball:
                     catch_rate_by_ball = new_catch_rate_by_ball
@@ -426,7 +438,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
             )
 
             hit_pokemon = 1
-            if random() >= self.catch_throw_parameters_hit_rate:
+            if random() >= self.catch_throw_parameters_hit_rate and not is_vip:
                 hit_pokemon = 0
 
             response_dict = self.api.catch_pokemon(
@@ -451,6 +463,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
                     formatted='{pokemon} capture failed.. trying again!',
                     data={'pokemon': pokemon.name}
                 )
+                used_berry = False
 
                 # sleep according to flee_count and flee_duration config settings
                 # randomly chooses a number of times to 'show' wobble animation between 1 and flee_count

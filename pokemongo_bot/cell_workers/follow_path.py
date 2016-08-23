@@ -63,11 +63,11 @@ class FollowPath(BaseTask):
                     'position': point_tuple
                 }
             )
-            points[index] = self.lat_lng_tuple_to_dict(point_tuple)
+            points[index] = self.point_tuple_to_dict(point_tuple)
         return points
 
-    def lat_lng_tuple_to_dict(self, tpl):
-        return {'lat': tpl[0], 'lng': tpl[1]}
+    def point_tuple_to_dict(self, tpl):
+        return {'lat': tpl[0], 'lng': tpl[1], 'alt': tpl[2]}
 
     def load_gpx(self):
         gpx_file = open(self.path_file, 'r')
@@ -133,15 +133,18 @@ class FollowPath(BaseTask):
         point = self.points[self.ptr]
         lat = float(point['lat'])
         lng = float(point['lng'])
-        alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
+
         if 'alt' in point:
             alt = float(point['alt'])
+        else:
+            alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
 
         if self.bot.config.walk_max > 0:
             step_walker = StepWalker(
                 self.bot,
                 lat,
-                lng
+                lng,
+                alt
             )
 
             is_at_destination = False
@@ -184,8 +187,8 @@ class FollowPath(BaseTask):
                             'number_lap_max': str(self.number_lap_max)
                         }
                     )
-                if self.number_lap >= self.number_lap_max:
-                    self.endLaps()
+                    if self.number_lap >= self.number_lap_max:
+                        self.endLaps()
             else:
                 self.ptr += 1
         
