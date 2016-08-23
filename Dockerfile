@@ -1,6 +1,6 @@
 FROM python:2.7.12-alpine
 
-RUN apk add --update --no-cache wget bash
+RUN apk add --update --no-cache build-base gcc abuild binutils binutils-doc gcc-doc wget bash
 
 WORKDIR /usr/src/app
 VOLUME ["/usr/src/app/configs", "/usr/src/app/web"]
@@ -23,6 +23,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /usr/src/app
 
-#RUN apk del build-base
+RUN apk del build-base gcc abuild binutils binutils-doc gcc-doc
 
 ENTRYPOINT ["python", "pokecli.py"]
