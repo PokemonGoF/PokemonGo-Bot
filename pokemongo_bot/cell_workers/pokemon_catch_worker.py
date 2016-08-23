@@ -29,6 +29,8 @@ ITEM_GREATBALL = 2
 ITEM_ULTRABALL = 3
 ITEM_RAZZBERRY = 701
 
+DEFAULT_UNSEEN_AS_VIP = True
+
 LOGIC_TO_FUNCTION = {
     'or': lambda x, y, z: x or y or z,
     'and': lambda x, y, z: x and y and z,
@@ -48,6 +50,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
         self.position = self.bot.position
         self.pokemon_list = self.bot.pokemon_list
         self.inventory = inventory.items()
+        self.pokedex = inventory.pokedex()
         self.spawn_point_guid = ''
         self.response_key = ''
         self.response_status_key = ''
@@ -56,6 +59,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
         self.min_ultraball_to_keep = self.config.get('min_ultraball_to_keep', 10)
         self.berry_threshold = self.config.get('berry_threshold', 0.35)
         self.vip_berry_threshold = self.config.get('vip_berry_threshold', 0.9)
+        self.treat_unseen_as_vip = self.config.get('treat_unseen_as_vip', DEFAULT_UNSEEN_AS_VIP)
 
         self.catch_throw_parameters = self.config.get('catch_throw_parameters', {})
         self.catch_throw_parameters_spin_success_rate = self.catch_throw_parameters.get('spin_success_rate', 0.6)
@@ -105,15 +109,25 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
         # skip ignored pokemon
         if not self._should_catch_pokemon(pokemon):
+            self.emit_event(
+                'pokemon_appeared',
+                formatted='Skip ignored {pokemon}! [CP {cp}] [Potential {iv}] [A/D/S {iv_display}]',
+                data={
+                    'pokemon': pokemon.name,
+                    'cp': pokemon.cp,
+                    'iv': pokemon.iv,
+                    'iv_display': pokemon.iv_display,
+                }
+            )
             return WorkerResult.SUCCESS
 
         is_vip = self._is_vip_pokemon(pokemon)
         if inventory.items().get(ITEM_POKEBALL).count < 1:
             if inventory.items().get(ITEM_GREATBALL).count < 1:
                 if inventory.items().get(ITEM_ULTRABALL).count < 1:
-                    return WorkerResult.SUCCESS
+                    return WorkerResult.ERROR
                 elif (not is_vip) and inventory.items().get(ITEM_ULTRABALL).count <= self.min_ultraball_to_keep:
-                    return WorkerResult.SUCCESS
+                    return WorkerResult.ERROR
 
         # log encounter
         self.emit_event(
@@ -232,7 +246,8 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
     def _is_vip_pokemon(self, pokemon):
         # having just a name present in the list makes them vip
-        if self.bot.config.vips.get(pokemon.name) == {}:
+        # Not seen pokemons also will become vip if it's not disabled in config
+        if self.bot.config.vips.get(pokemon.name) == {} or (self.treat_unseen_as_vip and not self.pokedex.seen(pokemon.pokemon_id)):
             return True
         return self._pokemon_matches_config(self.bot.config.vips, pokemon, default_logic='or')
 
@@ -348,13 +363,13 @@ class PokemonCatchWorker(Datastore, BaseTask):
             while ball_count[current_ball] == 0 and current_ball < maximum_ball:
                 current_ball += 1
             if ball_count[current_ball] == 0:
-                self.emit_event('no_pokeballs', formatted='No usable pokeballs found!')
-
                 # use untraball if there is no other balls with constraint to `min_ultraball_to_keep`
                 if maximum_ball != ITEM_ULTRABALL and ball_count[ITEM_ULTRABALL] > min_ultraball_to_keep:
                     maximum_ball = ITEM_ULTRABALL
+                    self.emit_event('enough_ultraballs', formatted='No regular balls left! Trying ultraball.')
                     continue
                 else:
+                    self.emit_event('no_pokeballs', formatted='No pokeballs left! Fleeing...')
                     return WorkerResult.ERROR
 
             # check future ball count

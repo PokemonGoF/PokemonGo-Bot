@@ -7,6 +7,7 @@
     "encrypt_location": "",
     "websocket_server": false,
     "heartbeat_threshold": 10,
+    "enable_social": true,
     "tasks": [
       {
         "type": "HandleSoftBan"
@@ -35,6 +36,7 @@
       {
         "type": "IncubateEggs",
         "config": {
+          "enabled": true,
           "longer_eggs_first": true,
           "min_interval": 120
         }
@@ -61,6 +63,7 @@
       {
         "type": "TransferPokemon",
         "config": {
+          "enabled": true,
           "min_free_slot": 5,
           "transfer_wait_min": 1,
           "transfer_wait_max": 4
@@ -77,6 +80,7 @@
       {
         "type": "EvolvePokemon",
         "config": {
+            "enabled": false,
             "evolve_all": "none",
             "first_evolve_by": "cp",
             "evolve_above_cp": 500,
@@ -89,6 +93,7 @@
       {
         "type": "RecycleItems",
         "config": {
+          "enabled": true,
           "min_empty_space": 15,
           "max_balls_keep": 150,
           "max_potions_keep": 50,
@@ -109,11 +114,13 @@
 	    {
 	      "type": "CatchPokemon",
 	      "config": {
+                "enabled": true,
 	        "catch_visible_pokemon": true,
 	        "catch_lured_pokemon": true,
 	        "min_ultraball_to_keep": 5,
 	        "berry_threshold": 0.35,
 	        "vip_berry_threshold": 0.9,
+	        "treat_unseen_as_vip": true,
 	        "catch_throw_parameters": {
 	          "excellent_rate": 0.1,
 	          "great_rate": 0.5,
@@ -136,6 +143,7 @@
       {
         "type": "SpinFort",
         "config": {
+          "enabled": true,
           "spin_wait_min": 3,
           "spin_wait_max": 5
         }
@@ -143,6 +151,7 @@
       {
         "type": "MoveToFort",
         "config":{
+          "enabled": true,
           "lure_attraction": true,
           "lure_max_distance": 2000
         }
@@ -150,6 +159,7 @@
       {
         "type": "FollowSpiral",
         "config": {
+          "enabled": true,
           "diameter": 4,
           "step_size": 70
         }
