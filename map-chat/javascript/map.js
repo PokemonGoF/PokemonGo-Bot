@@ -207,12 +207,26 @@ function displayChatMessageOnMap(raw){
     }
 }
 
+// @ro: to calculate time until expiration
+function timeUntil(now, then) {
+  var timestampNow = Date.parse(now);
+  var timestampThen = Date.parse(then);
+  var diff = new Date(timestampThen - timestampNow);
+
+  diff.setSeconds(Math.round(diff.getSeconds() / 30) * 30);
+
+  return diff;
+}
+
+  
 function displayMessageOnMap(msg, olat, olong, sessid, icostr, expir, pokenick){
 
     // @ro: passing values split from incoming payload into two variables for now (lat and long)
     var newPosition = new google.maps.LatLng(olat, olong);
     var msgSessionId = sessid;
-	var pName = pokenick;
+	var expiration = expir;
+	var thetime = "155564565475"
+	var pName = pokenick/* + " disappears in " + timeUntil(thetime,expiration)*/;
 	console.log(pName)
     // @ro: just checking the output
     //console.log(olat);
