@@ -3,6 +3,9 @@ from pokemongo_bot.event_manager import EventHandler
 import thread
 import paho.mqtt.client as mqtt
 import Geohash
+import errno
+from socket import error as socket_error
+
 class MyMQTTClass:
     def __init__(self, clientid=None):
         self._mqttc = mqtt.Client(clientid)
@@ -30,10 +33,17 @@ class MyMQTTClass:
 class SocialHandler(EventHandler):
     def __init__(self, bot):
         self.bot = bot
-        self.mqttc = MyMQTTClass()
-        self.mqttc.connect_to_mqtt()
-        thread.start_new_thread(self.mqttc.run)
+        try:
+            self.mqttc = MyMQTTClass()
+            self.mqttc.connect_to_mqtt()
+            thread.start_new_thread(self.mqttc.run)
+        except socket_error as serr:
+            #if serr.errno == errno.ECONNREFUSED:
+                # ECONNREFUSED
+            self.mqttc = None
     def handle_event(self, event, sender, level, formatted_msg, data):
+        if self.mqttc == None:
+            return
         #sender_name = type(sender).__name__
         #if formatted_msg:
         #    message = "[{}] {}".format(event, formatted_msg)
