@@ -124,17 +124,12 @@ function createMessage(text){
         text: text
     };
 }
-
-function displayMessageOnMap(msg, olat, olong){
-    
-	// @ro: passing values split from incoming payload into two variables for now (lat and long)
-	var newPosition = new google.maps.LatLng(olat, olong);
+function displayChatMessageOnMap(raw){
+    var msg = JSON.parse(raw)
+    console.log(msg)
+    var newPosition = new google.maps.LatLng(msg.lat,msg.lng);
     var msgSessionId = msg.sessionId;
-	
-	// @ro: just checking the output
-	console.log(olat);
-	console.log(olong);
-	
+
     // xss prevention hack
     msg.text = html_sanitize(msg.text);
 
@@ -142,13 +137,13 @@ function displayMessageOnMap(msg, olat, olong){
         return entityMap[s];
     });
 
-	// msg.text = msg.text ? embedTweet(msg.text) : "";
+//    msg.text = msg.text ? embedTweet(msg.text) : "";
     msg.text = msg.text.replace(/&#35;(\S*)/g,'<a href="http://idoco.github.io/map-chat/#$1" target="_blank">#$1</a>');
 
     // linkify
     msg.text = msg.text.replace(/(\b(https?|ftp|file):&#x2F;&#x2F;[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig,
         "<a target='_blank' href='$1'>$1</a>");
-    
+
     if(markersMap[msgSessionId]){ // update existing marker
         var existingMarker = markersMap[msgSessionId].marker;
         var existingInfoWindow = markersMap[msgSessionId].infoWindow;
@@ -196,7 +191,104 @@ function displayMessageOnMap(msg, olat, olong){
 
         if (msg.text) {
             infoWindow.open(map, marker);
-			
+        }
+
+        var timeoutId = setTimeout(function() { infoWindow.close() }, 10000);
+        markersMap[msgSessionId] = {
+            marker: marker,
+            infoWindow: infoWindow,
+            timeoutId: timeoutId,
+            disabled: false
+        }
+    }
+
+    if (advanced){
+        runAdvancedOptions(msg);
+    }
+}
+
+function displayMessageOnMap(msg, olat, olong, sessid){
+
+    // @ro: passing values split from incoming payload into two variables for now (lat and long)
+    var newPosition = new google.maps.LatLng(olat, olong);
+    var msgSessionId = sessid;
+
+    // @ro: just checking the output
+    console.log(olat);
+    console.log(olong);
+
+    // xss prevention hack
+    msg.text = html_sanitize(msg.text);
+
+    msg.text = String(msg.text).replace(/[&<>"#'\/卐卍]/g, function (s) {
+        return entityMap[s];
+    });
+
+    // msg.text = msg.text ? embedTweet(msg.text) : "";
+    msg.text = msg.text.replace(/&#35;(\S*)/g,'<a href="http://idoco.github.io/map-chat/#$1" target="_blank">#$1</a>');
+
+    // linkify
+    msg.text = msg.text.replace(/(\b(https?|ftp|file):&#x2F;&#x2F;[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig,
+        "<a target='_blank' href='$1'>$1</a>");
+
+    if(markersMap[msgSessionId]){ // update existing marker
+        var infoWindow = new google.maps.InfoWindow({
+            content: msg.text,
+            maxWidth: 400,
+            disableAutoPan: true,
+            zIndex: infoWindowZIndex
+        });
+        infoWindowZIndex++;
+
+        var marker = new google.maps.Marker({
+            position: newPosition,
+            map: map,
+            draggable: false,
+            icon: markerImage,
+            title: "Click to mute/un-mute User "+msgSessionId
+        });
+
+        marker.addListener('click',function() {
+            if (markersMap[msgSessionId].disabled) {
+                markersMap[msgSessionId].disabled = false;
+                marker.setIcon(markerImage);
+            } else{
+                markersMap[msgSessionId].disabled = true;
+                marker.setIcon(disabledMarkerImage);
+                infoWindow.close();
+            }
+        });
+    } else { // new marker
+        var infoWindow = new google.maps.InfoWindow({
+            content: msg.text,
+            maxWidth: 400,
+            disableAutoPan: true,
+            zIndex: infoWindowZIndex
+        });
+        infoWindowZIndex++;
+
+        var marker = new google.maps.Marker({
+            position: newPosition,
+            map: map,
+            draggable: false,
+            icon: markerImage,
+            title: "Click to mute/un-mute User "+msgSessionId
+        });
+
+        marker.addListener('click',function() {
+            if (markersMap[msgSessionId].disabled) {
+                markersMap[msgSessionId].disabled = false;
+                marker.setIcon(markerImage);
+            } else{
+                markersMap[msgSessionId].disabled = true;
+                marker.setIcon(disabledMarkerImage);
+                infoWindow.close();
+            }
+        });
+
+        if (msg.text) {
+            infoWindow.open(map, marker);
+
         }
 
         var timeoutId = setTimeout(function() { infoWindow.close() }, 10000);

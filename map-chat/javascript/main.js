@@ -4,7 +4,7 @@ var retryCount = 10;
 
 // Support dynamic topic registration by #word
 var urlHashTopic = location.hash ? location.hash.substring(1).toLowerCase() : null;
-var topic = urlHashTopic ? urlHashTopic : "pgomapcatch";
+var topic = urlHashTopic ? urlHashTopic : "pgomapcatch/chat";
 
 function initialiseEventBus(){
   window.client = mqtt.connect('ws://test.mosca.io'); // you add a ws:// url here
@@ -12,35 +12,26 @@ function initialiseEventBus(){
 
   client.on("message", function(topic, payload) {
     //alert([topic, payload].join(": "));
-    //client.end();
+    console.log('Topic is '+topic)
 
-    Materialize.toast(payload, 2000);
-	
-	//@ro: let's grab the message and split that shit. (simple for now, maybe we could just parse the json instead)
-	var pLoadR = payload.toString();
-	var pLoadR2 = pLoadR.split(",");
-	var olat = pLoadR2[0]
-	var olong = pLoadR2[1]
-	
-    displayMessageOnMap(payload, olat, olong);
+    Materialize.toast(payload, 4000);
+    if(topic === 'pgomapcatch/chat'){
+      console.log('Chatting event')
+      displayChatMessageOnMap(payload)
+    } else {
+
+        //@ro: let's grab the message and split that shit. (simple for now, maybe we could just parse the json instead)
+        var pLoadR = payload.toString();
+        var pLoadR2 = pLoadR.split(",");
+        var olat = pLoadR2[0]
+        var olong = pLoadR2[1]
+      var sessid = pLoadR2[2]
+
+      displayMessageOnMap(payload, olat, olong, sessid);
+    }
   });
 
-  client.publish("pgomapcatch", "I just connected to the map!");
-    /*eb = new vertx.EventBus("http://localhost:8080/chat");
-
-    eb.onopen = function () {
-        subscribe(topic);
-    };
-
-    eb.onclose = function(){
-        if (retryCount) {
-            retryCount--;
-            console.log('Connection lost, scheduling reconnect');
-            setTimeout(initialiseEventBus, 1000);
-        } else{
-            Materialize.toast('Connection lost, please refresh :( ', 10000);
-        }
-    };*/
+  client.publish("pgochat/join", "I just connected to the map!");
 }
 
 function sendMessage(topic, input) {
@@ -53,7 +44,8 @@ function sendMessage(topic, input) {
 function publish(address, message) {
     if (window.client) {
         var json = createMessage(message);
-        window.client.publish(address, json);
+        window.client.publish(address, JSON.stringify(json.text));
+        console.log(json);
     }
 }
 
@@ -67,13 +59,13 @@ $( document ).ready(function() {
     var input = $("#input");
     input.keyup(function (e) {
         if (e.keyCode == 13) {
-            sendMessage(topic, input);
+            sendMessage('pgomapcatch/chat', input);
         }
     });
     input.focus();
 
     $("#send-button").click(function(){
-        sendMessage(topic, input);
+        sendMessage('pgomapcatch/chat', input);
     });
 
     $("#notification_lever").change(function() {
