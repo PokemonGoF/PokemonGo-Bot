@@ -25,10 +25,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /usr/src/app
 
-
 #remove unused stuff
 RUN apk del alpine-sdk\
-  && apk cache clean\
   && rm -rf /var/cache/apk/*
 
 ENTRYPOINT ["python", "pokecli.py"]
