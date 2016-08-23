@@ -2,6 +2,7 @@
 from pokemongo_bot.event_manager import EventHandler
 import thread
 import paho.mqtt.client as mqtt
+import Geohash
 class MyMQTTClass:
     def __init__(self, clientid=None):
         self._mqttc = mqtt.Client(clientid)
@@ -43,6 +44,9 @@ class SocialHandler(EventHandler):
             #print data
             if data['pokemon_id']:
                 #self.mqttc.publish("pgomapcatch/all/catchable/"+str(data['pokemon_id']), str(data))
+                # precision=4 mean 19545 meters, http://stackoverflow.com/questions/13836416/geohash-and-max-distance
+                geo_hash = Geohash.encode(data['latitude'], data['longitude'], precision=4)
+                self.mqttc.publish("pgomapgeo/"+geo_hash+"/"+str(data['pokemon_id']), str(data['latitude'])+","+str(data['longitude'])+","+str(data['encounter_id']))
                 self.mqttc.publish("pgomapcatch/all/catchable/"+str(data['pokemon_id']), str(data['latitude'])+","+str(data['longitude'])+","+str(data['encounter_id']))
 
             #print 'have catchable_pokemon'
