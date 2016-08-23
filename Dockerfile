@@ -1,7 +1,6 @@
 FROM python:2.7.12-alpine
 
-RUN apk add --update --no-cache alpine-sdk bash wget git\
-  && rm -rf /var/cache/apk/*
+RUN apk add --update --no-cache alpine-sdk bash wget git
 
 WORKDIR /usr/src/app
 VOLUME ["/usr/src/app/configs", "/usr/src/app/web"]
@@ -31,6 +30,7 @@ RUN ln -s /usr/src/app/configs /config %% /usr/src/app/web /web
 RUN ./setup.sh -i
 
 #remove unused stuff
-RUN apk del alpine-sdk
+RUN apk del alpine-sdk\
+  && rm -rf /var/cache/apk/*
 
 CMD ["sh", "run.sh"]
