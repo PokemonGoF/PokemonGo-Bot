@@ -1098,20 +1098,15 @@ class Inventory(object):
    
     def update_web_inventory(self):
         web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
-        json_inventory = []
+
+        with open(web_inventory, "r") as infile:
+            json_inventory = json.load(infile)
+
+        json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("pokedex_entry", None)]
+        json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("candy", None)]
+        json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("item", None)]
+        json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("pokemon_data", None)]
         
-        inventory_items = self.bot.api.get_inventory() \
-            .get('responses', {}) \
-            .get('GET_INVENTORY', {}) \
-            .get('inventory_delta', {}) \
-            .get('inventory_items', {})
-        player_data = next((x["inventory_item_data"]["player_stats"]
-                     for x in inventory_items
-                     if x.get("inventory_item_data", {}).get("player_stats", {})),
-                    None)
-        for player_stat in player_data:
-            json_inventory.append({"inventory_item_data": {"player_stats": player_data}})
-                            
         for pokedex in self.pokedex.all():
             json_inventory.append({"inventory_item_data": {"pokedex_entry": pokedex}})
 
