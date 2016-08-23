@@ -24,7 +24,8 @@ RUN ln -s /usr/include/locale.h /usr/include/xlocale.h
 
 COPY . /usr/src/app
 #link the config and web for easyer use
-RUN ln -s /usr/src/app/configs /config %% /usr/src/app/web /web
+RUN ln -s /configs /usr/src/app/ %% ln -s /web /usr/src/app/
+
 
 #setup the bot
 RUN ./setup.sh -i
