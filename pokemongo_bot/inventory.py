@@ -1107,6 +1107,14 @@ class Inventory(object):
         json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("item", None)]
         json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("pokemon_data", None)]
         
+        json_inventory = json_inventory + self.jsonify_inventory()
+        
+        with open(web_inventory, "w") as outfile:
+            json.dump(json_inventory, outfile)
+
+    def jsonify_inventory(self):
+        json_inventory = []
+        
         for pokedex in self.pokedex.all():
             json_inventory.append({"inventory_item_data": {"pokedex_entry": pokedex}})
 
@@ -1118,10 +1126,9 @@ class Inventory(object):
 
         for pokemon in self.pokemons.all():
             json_inventory.append({"inventory_item_data": {"pokemon_data": pokemon._data}})
-
-        with open(web_inventory, "w") as outfile:
-            json.dump(json_inventory, outfile)
-
+        
+        return json_inventory
+        
     def retrieve_inventories_size(self):
         """
         Retrieves the item inventory size
