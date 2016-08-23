@@ -27,12 +27,14 @@ function initialiseEventBus(){
         var olong = pLoadR2[1]
         var sessid = pLoadR2[2]
         var ico = pLoadR2[3]
+	var expir = pLoadR2[4]
+	var pokenick = pLoadR2[5]
         var path = "./images/p/"
         var icon = path+"0"+ico+".png"
-		    var icostr = icon.toString();
-		    //console.log(icostr)
+	var icostr = icon.toString();
+	//console.log(icostr)
 
-      displayMessageOnMap(payload, olat, olong, sessid, icostr);
+      displayMessageOnMap(payload, olat, olong, sessid, icostr, expir, pokenick);
     }
   });
 

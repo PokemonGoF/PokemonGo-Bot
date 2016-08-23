@@ -207,12 +207,27 @@ function displayChatMessageOnMap(raw){
     }
 }
 
-function displayMessageOnMap(msg, olat, olong, sessid, icostr){
+// @ro: to calculate time until expiration
+function timeUntil(now, then) {
+  var timestampNow = Date.parse(now);
+  var timestampThen = Date.parse(then);
+  var diff = new Date(timestampThen - timestampNow);
+
+  diff.setSeconds(Math.round(diff.getSeconds() / 30) * 30);
+
+  return diff;
+}
+
+  
+function displayMessageOnMap(msg, olat, olong, sessid, icostr, expir, pokenick){
 
     // @ro: passing values split from incoming payload into two variables for now (lat and long)
     var newPosition = new google.maps.LatLng(olat, olong);
     var msgSessionId = sessid;
-
+	var expiration = expir;
+	var thetime = "155564565475"
+	var pName = pokenick/* + " disappears in " + timeUntil(thetime,expiration)*/;
+	console.log(pName)
     // @ro: just checking the output
     //console.log(olat);
     //console.log(olong);
@@ -233,7 +248,7 @@ function displayMessageOnMap(msg, olat, olong, sessid, icostr){
 
     if(markersMap[msgSessionId]){ // update existing marker
         var infoWindow = new google.maps.InfoWindow({
-            content: msg.text,
+            content: pName,
             maxWidth: 400,
             disableAutoPan: true,
             zIndex: infoWindowZIndex
@@ -245,6 +260,7 @@ function displayMessageOnMap(msg, olat, olong, sessid, icostr){
             map: map,
             draggable: false,
             icon: icostr,
+			icon: { url: icostr, scaledSize: new google.maps.Size(60,60) },
             title: "Click to mute/un-mute User "+msgSessionId
         });
 
@@ -260,7 +276,7 @@ function displayMessageOnMap(msg, olat, olong, sessid, icostr){
         });
     } else { // new marker
         var infoWindow = new google.maps.InfoWindow({
-            content: msg.text,
+            content: pName,
             maxWidth: 400,
             disableAutoPan: true,
             zIndex: infoWindowZIndex
@@ -271,7 +287,7 @@ function displayMessageOnMap(msg, olat, olong, sessid, icostr){
             position: newPosition,
             map: map,
             draggable: false,
-            icon: markerImage,
+            icon: { url: icostr, scaledSize: new google.maps.Size(60,60) },
             title: "Click to mute/un-mute User "+msgSessionId
         });
 
