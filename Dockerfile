@@ -1,6 +1,8 @@
 FROM python:2.7.12-alpine
 
-RUN apk add --update --no-cache build-base gcc abuild binutils binutils-doc gcc-doc python-dev wget git
+RUN apk add --update --no-cache build-base gcc abuild binutils binutils-doc gcc-doc py-pip python-dev wget git\
+  && pip install virtualenv \
+  && rm -rf /var/cache/apk/*
 
 WORKDIR /usr/src/app
 VOLUME ["/usr/src/app/configs", "/usr/src/app/web"]
