@@ -1,4 +1,6 @@
-FROM python:2.7.12-slim
+FROM python:2.7.12-alpine
+
+RUN apk add --update --no-cache wget bash
 
 WORKDIR /usr/src/app
 VOLUME ["/usr/src/app/configs", "/usr/src/app/web"]
