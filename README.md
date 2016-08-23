@@ -51,7 +51,7 @@ If you'd like to make your own changes, make sure you follow the pull request te
 - [x] Incubate eggs
 - [ ] [Standalone Desktop Application] (https://github.com/PokemonGoF/PokemonGo-Bot-Desktop)
 - [ ] Use candy
-- [ ] Inventory cleaner
+- [x] Crowd Sourced Map Prototype
 
 ## Gym Battles
 This bot takes a strong stance against automating gym battles. Botting gyms will have a negative effect on most players and thus the game as a whole. We will thus never accept contributions or changes containing code specific for gym battles.
