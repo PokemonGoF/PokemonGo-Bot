@@ -63,7 +63,7 @@
       {
         "type": "TransferPokemon",
         "config": {
-          "enabled": false,
+          "enabled": true,
           "min_free_slot": 5,
           "transfer_wait_min": 1,
           "transfer_wait_max": 4
@@ -93,7 +93,7 @@
       {
         "type": "RecycleItems",
         "config": {
-          "enabled": false,
+          "enabled": true,
           "min_empty_space": 15,
           "max_balls_keep": 150,
           "max_potions_keep": 50,
@@ -114,7 +114,7 @@
 	    {
 	      "type": "CatchPokemon",
 	      "config": {
-                "enabled": false,
+                "enabled": true,
 	        "catch_visible_pokemon": true,
 	        "catch_lured_pokemon": true,
 	        "min_ultraball_to_keep": 5,
@@ -142,7 +142,7 @@
       {
         "type": "SpinFort",
         "config": {
-          "enabled": false,
+          "enabled": true,
           "spin_wait_min": 3,
           "spin_wait_max": 5
         }
@@ -150,7 +150,7 @@
       {
         "type": "FollowCluster",
         "config": {
-            "enabled": false,
+            "enabled": true,
             "radius": 50,
             "lured": true
         }
