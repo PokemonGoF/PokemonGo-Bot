@@ -234,7 +234,7 @@ function displayMessageOnMap(msg, olat, olong, sessid, icostr, expir, pokenick){
 
     if(markersMap[msgSessionId]){ // update existing marker
         var infoWindow = new google.maps.InfoWindow({
-            content: icostr,
+            content: pName,
             maxWidth: 400,
             disableAutoPan: true,
             zIndex: infoWindowZIndex
@@ -246,6 +246,7 @@ function displayMessageOnMap(msg, olat, olong, sessid, icostr, expir, pokenick){
             map: map,
             draggable: false,
             icon: icostr,
+			icon: { url: icostr, scaledSize: new google.maps.Size(60,60) },
             title: "Click to mute/un-mute User "+msgSessionId
         });
 
@@ -272,7 +273,7 @@ function displayMessageOnMap(msg, olat, olong, sessid, icostr, expir, pokenick){
             position: newPosition,
             map: map,
             draggable: false,
-            icon: markerImage,
+            icon: { url: icostr, scaledSize: new google.maps.Size(60,60) },
             title: "Click to mute/un-mute User "+msgSessionId
         });
 
