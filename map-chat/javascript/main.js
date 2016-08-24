@@ -18,6 +18,7 @@ function initialiseEventBus(){
     if(topic === 'pgomapcatch/chat'){
       console.log('Chatting event')
       displayChatMessageOnMap(payload)
+      Materialize.toast(payload, 5000);
     } else {
 
         //@ro: let's grab the message and split that shit. (simple for now, maybe we could just parse the json instead)
