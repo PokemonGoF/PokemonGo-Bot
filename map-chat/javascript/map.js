@@ -229,7 +229,7 @@ function displayMessageOnMap(msg, olat, olong, sessid, icostr, expir, pokenick) 
   if(typeof pokenick === 'undefined'){
   var pName = " <i>just appeared! </i></b><br>lat: " + olat + " / long: " + olong;
   } else {
-    var pName = "<b>" + pokenick + "</b><i>just appeared! </i></b><br>lat: " + olat + " / long: " + olong;
+    var pName = "<b>" + pokenick + "</b><i> just appeared! </i></b><br>lat: " + olat + " / long: " + olong;
   }
   // console.log(pName);
   // @ro: just checking the output
