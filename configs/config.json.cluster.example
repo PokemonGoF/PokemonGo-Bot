@@ -86,7 +86,8 @@
             "evolve_above_cp": 500,
             "evolve_above_iv": 0.8,
             "logic": "or",
-            "evolve_speed": 20,
+            "min_evolve_speed": 25,
+            "max_evolve_speed": 30,
             "use_lucky_egg": false
         }
       },
