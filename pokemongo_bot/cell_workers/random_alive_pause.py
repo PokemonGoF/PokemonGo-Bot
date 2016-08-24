@@ -6,21 +6,21 @@ from pokemongo_bot.worker_result import WorkerResult
 
 class RandomAlivePause(BaseTask):
     """Drops the execution of following bot tasks
-    This task must be placed at beginning of the task list
+    This task MUST be placed on the top of task list
 
     Simulates the user doing "something random" for some time leaving app launched
     Example Config:
     {
-        "type": "RandomAlivePause",
-        "config": {
-          "min_duration": "00:00:10",
-          "max_duration": "00:10:00",
-          "min_interval": "00:05:00",
-          "max_interval": "01:30:00"
-        }
+      "type": "RandomAlivePause",
+      "config": {
+        "min_duration": "00:00:10",
+        "max_duration": "00:10:00",
+        "min_interval": "00:05:00",
+        "max_interval": "01:30:00"
+      }
     }
 
-    Inspired from RandomPause.
+    Based on RandomPause.
     """
     SUPPORTED_TASK_API_VERSION = 1
 
