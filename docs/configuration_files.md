@@ -126,8 +126,8 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 * UpdateLiveStats
 * [UpdateLiveInventory](#updateliveinventory-settings)
 * CollectLevelUpReward
-  * `collect_reward`: Default `True` | Collect level up rewards
-  * `level_limit`: Default `-1` | Bot will stop automatically after trainer reaches level limit 
+  * `collect_reward`: Default `True` | Collect level up rewards.
+  * `level_limit`: Default `-1` | Bot will stop automatically after trainer reaches level limit. Set to `-1` to disable.
 
 
 ### Example configuration:
