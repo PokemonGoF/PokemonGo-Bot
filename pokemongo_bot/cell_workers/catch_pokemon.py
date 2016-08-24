@@ -13,6 +13,7 @@ from pokemongo_bot import inventory
 from utils import fort_details, distance
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.constants import Constants
+from pokemongo_bot.inventory import Pokemons, Pokemon, Attack
 
 
 class CatchPokemon(BaseTask):
@@ -73,6 +74,7 @@ class CatchPokemon(BaseTask):
     		            'latitude': pokemon['latitude'],
     		            'longitude': pokemon['longitude'],
     		            'expiration_timestamp_ms': pokemon['expiration_timestamp_ms'],
+    		            'pokemon_name': Pokemons.name_for(pokemon['pokemon_id']),
     		        }
     		    )
 
