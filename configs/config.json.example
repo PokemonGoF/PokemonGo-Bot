@@ -1,5 +1,6 @@
 {
-    "auth_service": "google",
+    "//auth_service": "google",
+    "//auth_service": "tpc",
     "username": "YOUR_USERNAME",
     "password": "YOUR_PASSWORD",
     "location": "SOME_LOCATION",
