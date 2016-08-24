@@ -21,13 +21,10 @@ class MyMQTTClass:
     def mqtt_on_message(self, mqttc, obj, msg):
         #msg.topic+" "+str(msg.qos)+" "+str(msg.payload)
         pokemon = json.loads(msg.payload)
-        print pokemon
-        #if pokemon and 'encounter_id' in pokemon:
-        #    matches = (x for x in self.bot.mqtt_pokemon_list if x.encounter_id is pokemon['encounter_id'])
-        #    if matches and len(matches) > 0:
-        #        print 'Match es'
-        #    else:
-        #        self.bot.mqtt_pokemon_list.append(pokemon)
+        if pokemon and 'encounter_id' in pokemon:
+            new_list = [x for x in self.bot.mqtt_pokemon_list if x['encounter_id'] is pokemon['encounter_id']]
+            if not (new_list and len(new_list) > 0):
+                self.bot.mqtt_pokemon_list.append(pokemon)
     #def mqtt_on_publish(self, mqttc, obj, mid):
         #print "mid: "+str(mid)
     #def mqtt_on_subscribe(self, mqttc, obj, mid, granted_qos):

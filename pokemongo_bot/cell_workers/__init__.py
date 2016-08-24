@@ -21,3 +21,4 @@ from update_live_inventory import UpdateLiveInventory
 from catch_pokemon import CatchPokemon
 from complete_tutorial import CompleteTutorial
 from random_pause import RandomPause
+from random_alive_pause import RandomAlivePause
