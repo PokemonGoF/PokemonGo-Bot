@@ -6,7 +6,7 @@ import json
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.cell_workers.utils import distance, i2f, format_dist
 from pokemongo_bot.human_behaviour import sleep
-from pokemongo_bot.walkers.step_walker import StepWalker
+from pokemongo_bot.walkers.walker_factory import walker_factory
 from pgoapi.utilities import f2i
 from random import uniform
 from utils import getSeconds
@@ -32,6 +32,7 @@ class FollowPath(BaseTask):
         self.number_lap_max = self.config.get("number_lap", -1) # if < 0, then the number is inf.
         self.timer_restart_min = getSeconds(self.config.get("timer_restart_min", "00:20:00"))
         self.timer_restart_max = getSeconds(self.config.get("timer_restart_max", "02:00:00"))
+        self.walker = self.config.get('walker', 'StepWalker')
 
         if self.timer_restart_min > self.timer_restart_max:
             raise ValueError('path timer_restart_min is bigger than path timer_restart_max') #TODO there must be a more elegant way to do it...
@@ -140,7 +141,7 @@ class FollowPath(BaseTask):
             alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
 
         if self.bot.config.walk_max > 0:
-            step_walker = StepWalker(
+            step_walker = walker_factory(self.walker,
                 self.bot,
                 lat,
                 lng,
