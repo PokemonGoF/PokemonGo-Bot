@@ -1,5 +1,5 @@
 {
-    "auth_service": "google",
+    "auth_service": "google or ptc",
     "username": "YOUR_USERNAME",
     "password": "YOUR_PASSWORD",
     "location": "SOME_LOCATION",
