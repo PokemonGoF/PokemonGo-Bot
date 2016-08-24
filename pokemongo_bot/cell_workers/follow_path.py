@@ -61,7 +61,7 @@ class FollowPath(BaseTask):
         with open(self.path_file) as data_file:
             points=json.load(data_file)
         # Replace Verbal Location with lat&lng.
-        for point in enumerate(points):
+        for _, point in enumerate(points):
             point_tuple = self.bot.get_pos_by_name(point['location'])
             self.emit_event(
                 'location_found',
