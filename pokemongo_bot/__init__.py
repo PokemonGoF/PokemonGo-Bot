@@ -1060,6 +1060,12 @@ class PokemonGoBot(Datastore):
                 )
 
     def get_pos_by_name(self, location_name):
+        # Check if given location name, belongs to favorite_locations
+        favorite_location_coords = self._get_pos_by_fav_location(location_name)
+
+        if favorite_location_coords is not None:
+            return favorite_location_coords
+
         # Check if the given location is already a coordinate.
         if ',' in location_name:
             possible_coordinates = re.findall(
@@ -1078,6 +1084,26 @@ class PokemonGoBot(Datastore):
         loc = geolocator.geocode(location_name, timeout=10)
 
         return float(loc.latitude), float(loc.longitude), float(loc.altitude)
+
+    def _get_pos_by_fav_location(self, location_name):
+
+        location_name = location_name.lower()
+        coords = None
+
+        for location in self.config.favorite_locations:
+            if location.get('name').lower() == location_name:
+                coords = re.findall(
+                    "[-]?\d{1,3}[.]\d{3,7}", location.get('coords').strip()
+                )
+                if len(coords) >= 2:
+                    self.logger.info('Favorite location found: {} ({})'.format(location_name, coords))
+                break
+
+        #TODO: This is real bad
+        if coords is None:
+            return coords
+        else:
+            return float(coords[0]), float(coords[1]), (float(coords[2]) if len(coords) == 3 else self.alt)
 
     def heartbeat(self):
         # Remove forts that we can now spin again.
