@@ -95,7 +95,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 * EvolvePokemon
   * `evolve_all`: Default `NONE` | Set to `"all"` to evolve Pokémon if possible when the bot starts. Can also be set to individual Pokémon as well as multiple separated by a comma. e.g "Pidgey,Rattata,Weedle,Zubat"
   * `min_evolve_speed`: Default `25` | Minimum seconds to wait between each evolution 
-  * `min_evolve_speed`: Default `30` | Maximum seconds to wait between each evolution
+  * `max_evolve_speed`: Default `30` | Maximum seconds to wait between each evolution
   * `use_lucky_egg`: Default: `False`
 * FollowPath
   * `path_mode`: Default `loop` | Set the mode for the path navigator (loop or linear).
