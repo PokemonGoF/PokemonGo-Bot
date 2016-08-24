@@ -213,5 +213,5 @@ class FollowPath(BaseTask):
             else:
                 self.ptr += 1
         
-       self.status = STATUS_MOVING
+        self.status = STATUS_MOVING
         return WorkerResult.RUNNING
