@@ -29,9 +29,10 @@ class TransferPokemon(Datastore, BaseTask):
             pokemon_name = Pokemons.name_for(pokemon_id)
             self._release_pokemon_worst_in_group(group, pokemon_name)
 
-        group = [p for p in inventory.pokemons().all()
-                 if p.in_fort is False and p.is_favorite is False]
-        self._release_pokemon_worst_in_group(group, 'all')
+        if self.bot.config.release.get('all'):
+            group = [p for p in inventory.pokemons().all()
+                     if p.in_fort is False and p.is_favorite is False]
+            self._release_pokemon_worst_in_group(group, 'all')
 
     def _should_work(self):
         return inventory.Pokemons.get_space_left() <= self.min_free_slot

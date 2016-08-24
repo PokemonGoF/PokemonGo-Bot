@@ -609,6 +609,10 @@ class PokemonGoBot(Datastore):
         if alt is None:
             alt = self.api._position_alt
 
+        # dont cache when teleport_to
+        if self.api.teleporting:
+            return
+
         if cells == []:
             location = self.position[0:2]
             cells = self.find_close_cells(*location)
