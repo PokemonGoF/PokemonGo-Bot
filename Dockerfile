@@ -52,9 +52,3 @@ RUN apk del alpine-sdk\
   && rm -rf /var/cache/apk/*
 
 ENTRYPOINT ["python", "pokecli.py"]
-
-#remove unused stuff
-RUN apk del alpine-sdk \
-  && rm -rf /var/cache/apk/*
-
-ENTRYPOINT ["python", "pokecli.py"]
