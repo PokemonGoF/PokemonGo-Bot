@@ -115,6 +115,9 @@
           "max_revives_keep": 70,
           "item_filter": {
             "Pokeball":       { "keep" : 100 },
+            "Greatball":      { "keep" : 50 },
+            "Ultraball":      { "keep" : 70 },
+            "Masterball":     { "keep" : 80 },
             "Potion":         { "keep" : 10 },
             "Super Potion":   { "keep" : 20 },
             "Hyper Potion":   { "keep" : 30 },
