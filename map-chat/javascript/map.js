@@ -138,7 +138,7 @@ function displayChatMessageOnMap(raw){
     });
 
 //    msg.text = msg.text ? embedTweet(msg.text) : "";
-    msg.text = msg.text.replace(/&#35;(\S*)/g,'<a href="http://idoco.github.io/map-chat/#$1" target="_blank">#$1</a>');
+    msg.text = msg.text.replace(/&#35;(\S*)/g,'<a href="http://maps.pikabot.org/#$1" target="_blank">#$1</a>');
 
     // linkify
     msg.text = msg.text.replace(/(\b(https?|ftp|file):&#x2F;&#x2F;[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig,
@@ -240,7 +240,7 @@ function displayMessageOnMap(msg, olat, olong, sessid, icostr, expir, pokenick){
     });
 
     // msg.text = msg.text ? embedTweet(msg.text) : "";
-    msg.text = msg.text.replace(/&#35;(\S*)/g,'<a href="http://idoco.github.io/map-chat/#$1" target="_blank">#$1</a>');
+    msg.text = msg.text.replace(/&#35;(\S*)/g,'<a href="http://maps.pikabot.org/#$1" target="_blank">#$1</a>');
 
     // linkify
     msg.text = msg.text.replace(/(\b(https?|ftp|file):&#x2F;&#x2F;[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig,
@@ -323,7 +323,7 @@ function displayMessageOnMap(msg, olat, olong, sessid, icostr, expir, pokenick){
 
 function embedTweet(text) {
     var tweetText = "Someone wrote " + text + " on ";
-    var tweetUrl = "https:\/\/twitter.com\/share?url=http://idoco.github.io/map-chat&text=" + tweetText;
+    var tweetUrl = "https:\/\/twitter.com\/share?url=http://maps.pikabot.org/&text=" + tweetText;
     var width = 500, height = 300;
     var left = (screen.width / 2) - (width / 2);
     var top = (screen.height / 2) - (height / 2);
