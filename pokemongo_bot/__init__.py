@@ -289,7 +289,8 @@ class PokemonGoBot(Datastore):
                 'encounter_id',
                 'latitude',
                 'longitude',
-                'expiration_timestamp_ms'
+                'expiration_timestamp_ms',
+                'pokemon_name'
             )
         )
         self.event_manager.register_event(

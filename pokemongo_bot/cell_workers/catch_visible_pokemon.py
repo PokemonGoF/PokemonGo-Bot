@@ -6,7 +6,7 @@ from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 from utils import distance
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_dir import _base_dir
-
+from pokemongo_bot.inventory import Pokemons, Pokemon, Attack
 
 class CatchVisiblePokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -54,6 +54,7 @@ class CatchVisiblePokemon(BaseTask):
                         'latitude': pokemon['latitude'],
                         'longitude': pokemon['longitude'],
                         'expiration_timestamp_ms': pokemon['expiration_timestamp_ms'],
+                        'pokemon_name': Pokemons.name_for(pokemon['pokemon_id']),
                     }
                 )
                 if not self.was_encountered(pokemon):
