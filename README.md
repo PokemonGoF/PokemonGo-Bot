@@ -74,6 +74,7 @@ If you do not want any data to be gathered, you can turn off this feature by set
 - [elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR
 - [AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos
 - [AHAAAAAAA](https://github.com/AHAAAAAAA/PokemonGo-Map) for parts of the s2sphere stuff
+- [Breeze ro](https://github.com/BreezeRo) for some of the MQTT/Map stuff
 
 ## [Contributors](https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/CONTRIBUTORS.md)
 
