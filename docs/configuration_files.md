@@ -125,6 +125,9 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `min_free_slot`: Default `5` | Once the pokebag has less empty slots than this amount, the transfer process is triggered. | Big values (i.e 9999) will trigger the transfer process after each catch.
 * UpdateLiveStats
 * [UpdateLiveInventory](#updateliveinventory-settings)
+* CollectLevelUpReward
+  * `collect_reward`: Default `True` | Collect level up rewards
+  * `level_limit`: Default `-1` | Bot will stop automatically after trainer reaches level limit 
 
 
 ### Example configuration:
