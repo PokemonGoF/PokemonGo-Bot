@@ -506,7 +506,7 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
    - `priority` - Will move to the pokemon with the highest priority assigned (tie breaking by distance)
 * `prioritize_vips` - Will prioritize vips in distance and priority mode above all normal pokemon if set to true
 * `min_time` - Minimum time the pokemon has to be available before despawn
-* `min_balls` - Minimum amount of balls required to run task
+* `min_ball` - Minimum amount of balls required to run task
 * `max_distance` - Maximum distance the pokemon is allowed to be when walking, ignored when sniping
 * `snipe`:
    - `True` - Will teleport to target pokemon, encounter it, teleport back then catch it
