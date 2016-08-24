@@ -85,7 +85,7 @@ class RandomAlivePause(BaseTask):
 
         now = dt.now()
         end = self._next_pause + timedelta(seconds=self._next_duration)
-        if now >= self._next_pause and now <= end:
+        if now >= self._next_pause and now < end:
             diff = (now - self._next_pause).total_seconds()
             if (self._next_duration - diff) <= 0:
                 self._schedule_next_pause()
