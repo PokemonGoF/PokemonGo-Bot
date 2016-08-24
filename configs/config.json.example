@@ -1,5 +1,5 @@
 {
-    "//auth_service": "ptc",
+    "_comment": "change aut service with your tipe acount: google or ptc (Pokemon Trainer Club)",
     "auth_service": "google",
     "username": "YOUR_USERNAME",
     "password": "YOUR_PASSWORD",
