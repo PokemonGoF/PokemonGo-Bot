@@ -50,11 +50,12 @@ class SleepSchedule(object):
             wake_up_at_location = self._wake_up_at_location
             self._schedule_next_sleep()
             if wake_up_at_location:
-                try:
-                    self.bot.api.set_position(wake_up_at_location[0],wake_up_at_location[1],wake_up_at_location[2]) # Expecting error here
-                    self.bot.login()
-                except AttributeError: # It will happen if bot starts sleeping, in this case api is not initialized yet
+                if hasattr(self.bot, 'api'): # Check if api is already initialized
+                    self.bot.api.set_position(wake_up_at_location[0],wake_up_at_location[1],wake_up_at_location[2])
+                else:
                     self.bot.wake_location = wake_up_at_location
+            if hasattr(self.bot, 'api'): self.bot.login() # Same here
+
 
     def _process_config(self, config):
         self.entries = []
