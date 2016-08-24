@@ -98,7 +98,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `max_evolve_speed`: Default `30` | Maximum seconds to wait between each evolution
   * `use_lucky_egg`: Default: `False`
 * FollowPath
-  * `path_mode`: Default `loop` | Set the mode for the path navigator (loop or linear).
+  * `path_mode`: Default `loop` | Set the mode for the path navigator (loop, linear or single).
   * `path_file`: Default `NONE` | Set the file containing the waypoints for the path navigator.
 * FollowSpiral
 * HandleSoftBan
@@ -563,14 +563,30 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
 
 Walk to the specified locations loaded from .gpx or .json file. It is highly recommended to use website such as [GPSies](http://www.gpsies.com) which allow you to export your created track in JSON file. Note that you'll have to first convert its JSON file into the format that the bot can understand. See [Example of pier39.json] below for the content. I had created a simple python script to do the conversion.
 
+The json file can contain for each point an optional `loiter` field. This
+indicated the number of seconds the bot should loiter after reaching the point.
+During this time, the next Task in the configuration file is executed, e.g. a
+MoveToFort task. This allows the bot to walk around the waypoint looking for
+forts for a limited time.
+
 ### Options
 [[back to top](#table-of-contents)]
-* `path_mode` - linear, loop
+* `path_mode` - linear, loop, single
    - `loop` - The bot will walk along all specified waypoints and then move directly to the first waypoint again.
    - `linear` - The bot will turn around at the last waypoint and along the given waypoints in reverse order.
-* `path_start_mode` - first
+   - `single` - The bot will walk the path only once.
+* `path_start_mode` - first, closest
+   - `first` - The bot will start at the first point of the path.
+   - `closest` - The bot will start the path at the point which is the closest to the current bot location.
 * `path_file` - "/path/to/your/path.json"
 
+### Notice
+If you use the `single` `path_mode` without e.g. a `MoveToFort` task, your bot 
+with /not move at all/ when the path is finished. Similarly, if you use the
+`loiter` option in your json path file without a following `MoveToFort` or
+similar task, your bot will not move during the loitering period. Please
+make sure, when you use `single` mode or the `loiter` option, that another
+move-type task follows the `FollowPath` task in your `config.json`.
 
 ### Sample Configuration
 [[back to top](#table-of-contents)]
