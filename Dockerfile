@@ -8,7 +8,7 @@
 # 
 # docker build --build-arg BUILD_BRANCH=dev .
 # 
-# You can also build from different fork and ispecify a particular commit as the branch
+# You can also build from different fork and specify a particular commit as the branch
 # 
 # docker build  --build-arg BUILD_REPO=YourFork/PokemonGo-Bot --build-arg BUILD_BRANCH=6a4580f .
 
