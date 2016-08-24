@@ -495,7 +495,7 @@ If you want to make your bot behave as it did prior to the catch_simulation upda
 ### Description
 [[back to top](#table-of-contents)]
 
-This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map instance. For information on how to properly setup PokemonGo-Map have a look at the Github page of the project [here](https://github.com/AHAAAAAAA/PokemonGo-Map/). There is an example config in `config/config.json.map.example`
+This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map instance. For information on how to properly setup PokemonGo-Map have a look at the Github page of the project [here](https://github.com/PokemonGoMap/PokemonGo-Map). There is an example config in `config/config.json.map.example`
 
 ### Options
 [[back to top](#table-of-contents)]
