@@ -286,7 +286,7 @@ class MoveToMapPokemon(BaseTask):
         superballs_quantity = inventory.items().get(GREATBALL_ID).count
         ultraballs_quantity = inventory.items().get(ULTRABALL_ID).count
 
-        if (pokeballs_quantity + superballs_quantity + ultraballs_quantity) < 1:
+        if (pokeballs_quantity + superballs_quantity + ultraballs_quantity) < self.min_ball:
             return WorkerResult.SUCCESS
 
         self.update_map_location()
@@ -305,17 +305,18 @@ class MoveToMapPokemon(BaseTask):
 
         pokemon = pokemon_list[0]
 
-        if pokeballs_quantity < 1:
-            if superballs_quantity < 1:
-                if ultraballs_quantity < 1:
-                    return WorkerResult.SUCCESS
-
         if self.config['snipe']:
             if self.snipe_high_prio_only:
                 if self.snipe_high_prio_threshold < pokemon['priority']:
                     self.snipe(pokemon)
             else:
                 return self.snipe(pokemon)
+
+        # check for pokeballs (excluding masterball)
+        # checking again as we may have lost some if we sniped
+        pokeballs_quantity = inventory.items().get(POKEBALL_ID).count
+        superballs_quantity = inventory.items().get(GREATBALL_ID).count
+        ultraballs_quantity = inventory.items().get(ULTRABALL_ID).count
 
         if pokeballs_quantity + superballs_quantity + ultraballs_quantity < self.min_ball:
             return WorkerResult.SUCCESS
