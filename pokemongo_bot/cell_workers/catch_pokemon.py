@@ -84,7 +84,7 @@ class CatchPokemon(BaseTask):
 
     def get_lured_pokemon(self):
         forts_in_range = []
-        forts = self.bot.get_forts(order_by_distance=True)
+        forts = self.bot.get_forts(order_by_distance=False)
 
         if len(forts) == 0:
             return []
