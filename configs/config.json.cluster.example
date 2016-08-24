@@ -13,6 +13,7 @@
         "//NOTE: This task MUST be placed on the top of task list": {},
         "type": "RandomAlivePause",
         "config": {
+          "enabled": false,
           "min_duration": "00:00:10",
           "max_duration": "00:10:00",
           "min_interval": "00:05:00",
