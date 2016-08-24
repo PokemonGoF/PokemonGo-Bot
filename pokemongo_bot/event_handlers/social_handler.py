@@ -58,7 +58,7 @@ class SocialHandler(EventHandler):
                 # precision=4 mean 19545 meters, http://stackoverflow.com/questions/13836416/geohash-and-max-distance
                 #geo_hash = Geohash.encode(data['latitude'], data['longitude'], precision=4)
                 #self.mqttc.publish("pgomapgeo/"+geo_hash+"/"+str(data['pokemon_id']), str(data['latitude'])+","+str(data['longitude'])+","+str(data['encounter_id'])+","+str(data['pokemon_id'])+","+str(data['expiration_timestamp_ms'])+","+str(data['pokemon_name']))
-                self.mqttc.publish("pgomapcatch/all/catchable/"+str(data['pokemon_id']), str(data['latitude'])+","+str(data['longitude'])+","+str(data['encounter_id'])+","+str(data['pokemon_id'])+","+str(data['expiration_timestamp_ms'])))
+                self.mqttc.publish("pgomapcatch/all/catchable/"+str(data['pokemon_id']), str(data['latitude'])+","+str(data['longitude'])+","+str(data['encounter_id'])+","+str(data['pokemon_id'])+","+str(data['expiration_timestamp_ms']))
 
             #print 'have catchable_pokemon'
             #print message
