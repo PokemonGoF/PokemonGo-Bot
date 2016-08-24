@@ -102,7 +102,7 @@ class MoveToMapPokemon(BaseTask):
             )
         self.alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
     def get_pokemon_from_social(self):
-    	if not hasattr(obj, 'attr_name'):
+    	if not hasattr(self.bot, 'mqtt_pokemon_list'):
             return []
         if not self.bot.mqtt_pokemon_list or len(self.bot.mqtt_pokemon_list) <= 0:
             return []
