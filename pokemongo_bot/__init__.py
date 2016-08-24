@@ -289,7 +289,8 @@ class PokemonGoBot(Datastore):
                 'encounter_id',
                 'latitude',
                 'longitude',
-                'expiration_timestamp_ms'
+                'expiration_timestamp_ms',
+                'pokemon_name'
             )
         )
         self.event_manager.register_event(
@@ -607,6 +608,10 @@ class PokemonGoBot(Datastore):
             lng = self.api._position_lng
         if alt is None:
             alt = self.api._position_alt
+
+        # dont cache when teleport_to
+        if self.api.teleporting:
+            return
 
         if cells == []:
             location = self.position[0:2]

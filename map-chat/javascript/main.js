@@ -7,7 +7,7 @@ var urlHashTopic = location.hash ? location.hash.substring(1).toLowerCase() : nu
 var topic = urlHashTopic ? urlHashTopic : "pgomapcatch/chat";
 
 function initialiseEventBus(){
-  window.client = mqtt.connect('ws://test.mosca.io'); // you add a ws:// url here
+  window.client = mqtt.connect('ws://broker.pikabot.org'); // you add a ws:// url here
   client.subscribe("pgomapcatch/#");
 
   client.on("message", function(topic, payload) {
@@ -18,6 +18,7 @@ function initialiseEventBus(){
     if(topic === 'pgomapcatch/chat'){
       console.log('Chatting event')
       displayChatMessageOnMap(payload)
+      Materialize.toast(payload, 5000);
     } else {
 
         //@ro: let's grab the message and split that shit. (simple for now, maybe we could just parse the json instead)
@@ -27,12 +28,14 @@ function initialiseEventBus(){
         var olong = pLoadR2[1]
         var sessid = pLoadR2[2]
         var ico = pLoadR2[3]
+	var expir = pLoadR2[4]
+	var pokenick = pLoadR2[5]
         var path = "./images/p/"
         var icon = path+"0"+ico+".png"
-		    var icostr = icon.toString();
-		    //console.log(icostr)
+	var icostr = icon.toString();
+	//console.log(icostr)
 
-      displayMessageOnMap(payload, olat, olong, sessid, icostr);
+      displayMessageOnMap(payload, olat, olong, sessid, icostr, expir, pokenick);
     }
   });
 
