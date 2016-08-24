@@ -31,11 +31,7 @@
         }
       },
       {
-        "type": "LevelUp",
-        "config": {
-          "collect_reward": true,
-          "level_limit": -1
-        }
+         "type": "CollectLevelUpReward"
       },
       {
         "type": "IncubateEggs",

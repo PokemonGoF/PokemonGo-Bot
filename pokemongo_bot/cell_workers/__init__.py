@@ -13,7 +13,7 @@ from spin_fort import SpinFort
 from handle_soft_ban import HandleSoftBan
 from follow_path import FollowPath
 from follow_spiral import FollowSpiral
-from level_up import LevelUp
+from collect_level_up_reward import CollectLevelUpReward
 from follow_cluster import FollowCluster
 from sleep_schedule import SleepSchedule
 from update_live_stats import UpdateLiveStats
