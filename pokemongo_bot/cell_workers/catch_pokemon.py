@@ -122,7 +122,7 @@ class CatchPokemon(BaseTask):
                 'lured_pokemon_found',
                 level='info',
                 formatted='Lured pokemon at fort {fort_name} ({fort_id})',
-                data=result
+                data=pokemon
             )
 
             self.add_pokemon(pokemon)
