@@ -101,7 +101,45 @@ class MoveToMapPokemon(BaseTask):
                 open(data_file)
             )
         self.alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
+    def get_pokemon_from_social(self):
+        if not self.bot.mqtt_pokemon_list or len(self.bot.mqtt_pokemon_list) <= 0:
+            return []
 
+        pokemon_list = []
+        now = int(time.time())
+
+        for pokemon in self.bot.mqtt_pokemon_list:
+            pokemon['encounter_id'] = pokemon['encounter_id']
+            pokemon['spawn_point_id'] = pokemon['spawn_point_id']
+            pokemon['disappear_time'] = int(pokemon['expiration_timestamp_ms'] / 1000)
+            pokemon['name'] = self.pokemon_data[pokemon['pokemon_id'] - 1]['Name']
+            pokemon['is_vip'] = pokemon['name'] in self.bot.config.vips
+
+            if pokemon['name'] not in self.config['catch']:
+                continue
+
+            if self.was_caught(pokemon):
+                continue
+
+            pokemon['priority'] = self.config['catch'].get(pokemon['name'], 0)
+
+            pokemon['dist'] = distance(
+                self.bot.position[0],
+                self.bot.position[1],
+                pokemon['latitude'],
+                pokemon['longitude'],
+            )
+
+            if pokemon['dist'] > self.config['max_distance'] and not self.config['snipe']:
+                continue
+
+            # pokemon not reachable with mean walking speed (by config)
+            mean_walk_speed = (self.bot.config.walk_max + self.bot.config.walk_min) / 2
+            if pokemon['dist'] > ((pokemon['disappear_time'] - now) * mean_walk_speed) and not self.config['snipe']:
+                continue
+            pokemon_list.append(pokemon)
+        self.bot.mqtt_pokemon_list = []
+        return pokemon_list
     def get_pokemon_from_map(self):
         try:
             req = requests.get('{}/{}?gyms=false&scanned=false'.format(self.config['address'], self.map_path))
@@ -251,8 +289,9 @@ class MoveToMapPokemon(BaseTask):
 
         self.update_map_location()
         self.dump_caught_pokemon()
-
-        pokemon_list = self.get_pokemon_from_map()
+        pokemon_list = self.get_pokemon_from_social()
+        #Temp works as it, need add more configuration
+        #pokemon_list = self.get_pokemon_from_map()
         pokemon_list.sort(key=lambda x: x['dist'])
         if self.config['mode'] == 'priority':
             pokemon_list.sort(key=lambda x: x['priority'], reverse=True)
@@ -439,7 +478,7 @@ class MoveToMapPokemon(BaseTask):
             self.emit_event(
                 'arrived_at_fort',
                 formatted='Arrived at fort.'
-            )	
+            )
 
 	return walker_factory(self.walker,
             self.bot,
