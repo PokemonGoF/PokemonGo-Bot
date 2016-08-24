@@ -1,4 +1,5 @@
 {
+    "//auth_service": "ptc",
     "auth_service": "google",
     "username": "YOUR_USERNAME",
     "password": "YOUR_PASSWORD",
