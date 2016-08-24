@@ -1,6 +1,6 @@
 {
     "//auth_service choose google or ptc (Pokemon Trainer Club)",
-    "auth_service": "google or ptc",
+    "auth_service": "google",
     "username": "YOUR_USERNAME",
     "password": "YOUR_PASSWORD",
     "location": "SOME_LOCATION",
