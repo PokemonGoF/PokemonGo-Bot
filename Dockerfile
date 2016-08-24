@@ -12,7 +12,6 @@
 # 
 # docker build  --build-arg BUILD_REPO=YourFork/PokemonGo-Bot --build-arg BUILD_BRANCH=6a4580f .
 
-
 FROM python:2.7.12-alpine
 
 RUN apk add --update --no-cache alpine-sdk git
@@ -55,7 +54,7 @@ RUN apk del alpine-sdk\
 ENTRYPOINT ["python", "pokecli.py"]
 
 #remove unused stuff
-RUN apk del alpine-sdk\
+RUN apk del alpine-sdk \
   && rm -rf /var/cache/apk/*
 
 ENTRYPOINT ["python", "pokecli.py"]
