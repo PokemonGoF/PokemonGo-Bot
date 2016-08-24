@@ -49,9 +49,9 @@ If you'd like to make your own changes, make sure you follow the pull request te
 - [x] Adjust delay between Pokemon capture & Transfer as per configuration
 - [x] Hatch eggs
 - [x] Incubate eggs
+- [x] Crowd Sourced Map Prototype
 - [ ] [Standalone Desktop Application] (https://github.com/PokemonGoF/PokemonGo-Bot-Desktop)
 - [ ] Use candy
-- [ ] Inventory cleaner
 
 ## Gym Battles
 This bot takes a strong stance against automating gym battles. Botting gyms will have a negative effect on most players and thus the game as a whole. We will thus never accept contributions or changes containing code specific for gym battles.
@@ -67,7 +67,6 @@ If you do not want any data to be gathered, you can turn off this feature by set
 
 ## Help Needed on [Desktop Version](https://github.com/PokemonGoF/PokemonGo-Bot-Desktop)
 
-
 ## Credits
 - [tejado](https://github.com/tejado) many thanks for the API
 - [U6 Group](http://pgoapi.com) for the U6
@@ -75,6 +74,9 @@ If you do not want any data to be gathered, you can turn off this feature by set
 - [elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR
 - [AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos
 - [AHAAAAAAA](https://github.com/AHAAAAAAA/PokemonGo-Map) for parts of the s2sphere stuff
+- [Breeze ro](https://github.com/BreezeRo) for some of the MQTT/Map stuff
+
+## [Contributors](https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/CONTRIBUTORS.md)
 
 
 [![Analytics](https://ga-beacon.appspot.com/UA-81468120-1/welcome-page-master)](https://github.com/igrigorik/ga-beacon)

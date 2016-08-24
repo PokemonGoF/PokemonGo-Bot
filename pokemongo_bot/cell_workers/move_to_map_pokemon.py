@@ -101,7 +101,47 @@ class MoveToMapPokemon(BaseTask):
                 open(data_file)
             )
         self.alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
+    def get_pokemon_from_social(self):
+    	if not hasattr(self.bot, 'mqtt_pokemon_list'):
+            return []
+        if not self.bot.mqtt_pokemon_list or len(self.bot.mqtt_pokemon_list) <= 0:
+            return []
 
+        pokemon_list = []
+        now = int(time.time())
+
+        for pokemon in self.bot.mqtt_pokemon_list:
+            pokemon['encounter_id'] = pokemon['encounter_id']
+            pokemon['spawn_point_id'] = pokemon['spawn_point_id']
+            pokemon['disappear_time'] = int(pokemon['expiration_timestamp_ms'] / 1000)
+            pokemon['name'] = self.pokemon_data[pokemon['pokemon_id'] - 1]['Name']
+            pokemon['is_vip'] = pokemon['name'] in self.bot.config.vips
+
+            if pokemon['name'] not in self.config['catch']:
+                continue
+
+            if self.was_caught(pokemon):
+                continue
+
+            pokemon['priority'] = self.config['catch'].get(pokemon['name'], 0)
+
+            pokemon['dist'] = distance(
+                self.bot.position[0],
+                self.bot.position[1],
+                pokemon['latitude'],
+                pokemon['longitude'],
+            )
+
+            if pokemon['dist'] > self.config['max_distance'] and not self.config['snipe']:
+                continue
+
+            # pokemon not reachable with mean walking speed (by config)
+            mean_walk_speed = (self.bot.config.walk_max + self.bot.config.walk_min) / 2
+            if pokemon['dist'] > ((pokemon['disappear_time'] - now) * mean_walk_speed) and not self.config['snipe']:
+                continue
+            pokemon_list.append(pokemon)
+        self.bot.mqtt_pokemon_list = []
+        return pokemon_list
     def get_pokemon_from_map(self):
         try:
             req = requests.get('{}/{}?gyms=false&scanned=false'.format(self.config['address'], self.map_path))
@@ -228,7 +268,7 @@ class MoveToMapPokemon(BaseTask):
         api_encounter_response = catch_worker.create_encounter_api_call()
         time.sleep(SNIPE_SLEEP_SEC)
         self._teleport_back(last_position)
-        self.bot.api.set_position(last_position[0], last_position[1], self.alt)
+        self.bot.api.set_position(last_position[0], last_position[1], self.alt, False)
         time.sleep(SNIPE_SLEEP_SEC)
         self.bot.heartbeat()
         catch_worker.work(api_encounter_response)
@@ -246,13 +286,14 @@ class MoveToMapPokemon(BaseTask):
         superballs_quantity = inventory.items().get(GREATBALL_ID).count
         ultraballs_quantity = inventory.items().get(ULTRABALL_ID).count
 
-        if (pokeballs_quantity + superballs_quantity + ultraballs_quantity) < 1:
+        if (pokeballs_quantity + superballs_quantity + ultraballs_quantity) < self.min_ball:
             return WorkerResult.SUCCESS
 
         self.update_map_location()
         self.dump_caught_pokemon()
-
-        pokemon_list = self.get_pokemon_from_map()
+        pokemon_list = self.get_pokemon_from_social()
+        #Temp works as it, need add more configuration
+        #pokemon_list = self.get_pokemon_from_map()
         pokemon_list.sort(key=lambda x: x['dist'])
         if self.config['mode'] == 'priority':
             pokemon_list.sort(key=lambda x: x['priority'], reverse=True)
@@ -264,17 +305,18 @@ class MoveToMapPokemon(BaseTask):
 
         pokemon = pokemon_list[0]
 
-        if pokeballs_quantity < 1:
-            if superballs_quantity < 1:
-                if ultraballs_quantity < 1:
-                    return WorkerResult.SUCCESS
-
         if self.config['snipe']:
             if self.snipe_high_prio_only:
                 if self.snipe_high_prio_threshold < pokemon['priority']:
                     self.snipe(pokemon)
             else:
                 return self.snipe(pokemon)
+
+        # check for pokeballs (excluding masterball)
+        # checking again as we may have lost some if we sniped
+        pokeballs_quantity = inventory.items().get(POKEBALL_ID).count
+        superballs_quantity = inventory.items().get(GREATBALL_ID).count
+        ultraballs_quantity = inventory.items().get(ULTRABALL_ID).count
 
         if pokeballs_quantity + superballs_quantity + ultraballs_quantity < self.min_ball:
             return WorkerResult.SUCCESS
@@ -350,7 +392,7 @@ class MoveToMapPokemon(BaseTask):
             formatted='Teleporting to {poke_name}. ({poke_dist})',
             data=self._pokemon_event_data(pokemon)
         )
-        self.bot.api.set_position(pokemon['latitude'], pokemon['longitude'], self.alt)
+        self.bot.api.set_position(pokemon['latitude'], pokemon['longitude'], self.alt, True)
         self._encountered(pokemon)
 
     def _encountered(self, pokemon):
@@ -439,7 +481,7 @@ class MoveToMapPokemon(BaseTask):
             self.emit_event(
                 'arrived_at_fort',
                 formatted='Arrived at fort.'
-            )	
+            )
 
 	return walker_factory(self.walker,
             self.bot,
