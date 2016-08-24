@@ -1,6 +1,6 @@
 [
 	{"location": "32.087504, 34.806118, 4.810"},
-	{"location": "Bialik 150, Ramat Gan"},
-	{"location": "Ayalon Highway, Ramat Gan"},
+	{"location": "Bialik 150, Ramat Gan", "loiter": 300},
+	{"location": "Ayalon Highway, Ramat Gan", "loiter": 600},
 	{"location": "32.091280, 34.795261, 4.810"}
 ]

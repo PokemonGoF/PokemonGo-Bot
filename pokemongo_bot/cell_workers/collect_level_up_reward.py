@@ -1,3 +1,5 @@
+import sys
+
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot import inventory
 
@@ -9,29 +11,42 @@ class CollectLevelUpReward(BaseTask):
     previous_level = 0
 
     def initialize(self):
+        self._process_config()
         self.current_level = self._get_current_level()
         self.previous_level = 0
 
     def work(self):
-        self.current_level = self._get_current_level()
+        if self._should_run():
+            self.current_level = self._get_current_level()
 
-        # let's check level reward on bot initialization
-        # to be able get rewards for old bots
-        if self.previous_level == 0:
-            self._collect_level_reward()
-        # level up situation
-        elif self.current_level > self.previous_level:
-            self.emit_event(
-                'level_up',
-                formatted='Level up from {previous_level} to {current_level}',
-                data={
-                    'previous_level': self.previous_level,
-                    'current_level': self.current_level
-                }
-            )
-            self._collect_level_reward()
+            if self.collect_reward:
+                # let's check level reward on bot initialization
+                # to be able get rewards for old bots
+                if self.previous_level == 0:
+                    self._collect_level_reward()
+                # level up situation
+                elif self.current_level > self.previous_level:
+                    self.emit_event(
+                        'level_up',
+                        formatted='Level up from {previous_level} to {current_level}',
+                        data={
+                            'previous_level': self.previous_level,
+                            'current_level': self.current_level
+                        }
+                    )
+                    self._collect_level_reward()
 
-        self.previous_level = self.current_level
+            if self.level_limit != -1 and self.current_level >= self.level_limit:
+                sys.exit("You have reached your target level! Exiting now.")
+
+            self.previous_level = self.current_level
+
+    def _process_config(self):
+        self.level_limit = self.config.get('level_limit', -1)
+        self.collect_reward = self.config.get('collect_reward', True)
+
+    def _should_run(self):
+        return self.level_limit != -1 or self.collect_reward
 
     def _collect_level_reward(self):
         response_dict = self.bot.api.level_up_rewards(level=self.current_level)

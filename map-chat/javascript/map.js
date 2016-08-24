@@ -54,32 +54,6 @@ function initialize() {
     zoomControl: false, // Set to true if using zoomControlOptions below, or false to remove all zoom controls.
     mapTypeId: google.maps.MapTypeId.ROADMAP, // Set the type of Map
     scrollwheel: true, // Enable Mouse Scroll zooming
-    styles: [
-      {
-        "featureType": "landscape",
-        "stylers": [{ "hue": "#FFBB00" }, { "saturation": 43.400000000000006 }, { "lightness": 37.599999999999994 }, { "gamma": 1 }]
-      },
-      {
-        "featureType": "road.highway",
-        "stylers": [{ "hue": "#FFC200" }, { "saturation": -61.8 }, { "lightness": 45.599999999999994 }, { "gamma": 1 }]
-      },
-      {
-        "featureType": "road.arterial",
-        "stylers": [{ "hue": "#FF0300" }, { "saturation": -100 }, { "lightness": 51.19999999999999 }, { "gamma": 1 }]
-      },
-      {
-        "featureType": "road.local",
-        "stylers": [{ "hue": "#FF0300" }, { "saturation": -100 }, { "lightness": 52 }, { "gamma": 1 }]
-      },
-      {
-        "featureType": "water",
-        "stylers": [{ "hue": "#0078FF" }, { "saturation": -13.200000000000003 }, { "lightness": 2.4000000000000057 }, { "gamma": 1 }]
-      },
-      {
-        "featureType": "poi",
-        "stylers": [{ "hue": "#00FF6A" }, { "saturation": -1.0989010989011234 }, { "lightness": 11.200000000000017 }, { "gamma": 1 }]
-      }
-    ],
     // All of the below are set to true by default, so simply remove if set to true:
     panControl: false, // Set to false to disable
     mapTypeControl: false, // Disable Map/Satellite switch
@@ -251,8 +225,12 @@ function displayMessageOnMap(msg, olat, olong, sessid, icostr, expir, pokenick) 
   var newPosition = new google.maps.LatLng(olat, olong);
   var msgSessionId = sessid;
   var expiration = expir;
-  var thetime = "155564565475"
-  var pName = pokenick/* + " disappears in " + timeUntil(thetime,expiration)*/;
+  var pName = '';
+  if(typeof pokenick === 'undefined'){
+  var pName = " <i>just appeared! </i></b><br>lat: " + olat + " / long: " + olong;
+  } else {
+    var pName = "<b>" + pokenick + "</b><i> just appeared! </i></b><br>lat: " + olat + " / long: " + olong;
+  }
   // console.log(pName);
   // @ro: just checking the output
   //console.log(olat);
