@@ -1,6 +1,6 @@
 FROM python:2.7.12-alpine
 
-RUN apk add --update --no-cache alpine-sdk wget git
+RUN apk add --update --no-cache alpine-sdk git
 
 ADD https://github.com/PokemonGoF/PokemonGo-Bot/archive/dev.tar.gz .
 RUN tar -zxvf dev.tar.gz && mv PokemonGo-Bot-dev /usr/src/app && rm dev.tar.gz
@@ -12,8 +12,8 @@ ARG timezone=Etc/UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 #setup the bot
-RUN cd /tmp && wget http://pgoapi.com/pgoencrypt.tar.gz \
-    && tar zxvf pgoencrypt.tar.gz \
+ADD http://pgoapi.com/pgoencrypt.tar.gz /tmp/
+RUN cd /tmp && tar zxvf pgoencrypt.tar.gz \
     && cd pgoencrypt/src \
     && make \
     && cp libencrypt.so /usr/src/app/encrypt.so \
