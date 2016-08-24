@@ -153,6 +153,7 @@
         "type": "FollowPath",
         "config": {
           "enabled": true,
+          "walker": "StepWalker",
           "path_mode": "loop",
           "path_start_mode": "first",
           "path_file": "configs/path.example.json",
