@@ -230,6 +230,22 @@ class PokemonGoBot(Datastore):
         )
         self.event_manager.register_event('force_recycle')
 
+        # random alive pause
+        self.event_manager.register_event(
+            'next_random_alive_pause',
+            parameters=(
+                'time',
+                'duration'
+            )
+        )
+        self.event_manager.register_event(
+            'bot_random_alive_pause',
+            parameters=(
+                'time_hms',
+                'resume'
+            )
+        )
+
         # fort stuff
         self.event_manager.register_event(
             'spun_fort',
@@ -617,6 +633,10 @@ class PokemonGoBot(Datastore):
             lng = self.api._position_lng
         if alt is None:
             alt = self.api._position_alt
+
+        # dont cache when teleport_to
+        if self.api.teleporting:
+            return
 
         if cells == []:
             location = self.position[0:2]

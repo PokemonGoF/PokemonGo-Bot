@@ -95,7 +95,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 * EvolvePokemon
   * `evolve_all`: Default `NONE` | Set to `"all"` to evolve Pokémon if possible when the bot starts. Can also be set to individual Pokémon as well as multiple separated by a comma. e.g "Pidgey,Rattata,Weedle,Zubat"
   * `min_evolve_speed`: Default `25` | Minimum seconds to wait between each evolution 
-  * `min_evolve_speed`: Default `30` | Maximum seconds to wait between each evolution
+  * `max_evolve_speed`: Default `30` | Maximum seconds to wait between each evolution
   * `use_lucky_egg`: Default: `False`
 * FollowPath
   * `path_mode`: Default `loop` | Set the mode for the path navigator (loop or linear).
@@ -499,7 +499,7 @@ If you want to make your bot behave as it did prior to the catch_simulation upda
 ### Description
 [[back to top](#table-of-contents)]
 
-This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map instance. For information on how to properly setup PokemonGo-Map have a look at the Github page of the project [here](https://github.com/AHAAAAAAA/PokemonGo-Map/). There is an example config in `config/config.json.map.example`
+This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map instance. For information on how to properly setup PokemonGo-Map have a look at the Github page of the project [here](https://github.com/PokemonGoMap/PokemonGo-Map). There is an example config in `config/config.json.map.example`
 
 ### Options
 [[back to top](#table-of-contents)]
@@ -510,6 +510,7 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
    - `priority` - Will move to the pokemon with the highest priority assigned (tie breaking by distance)
 * `prioritize_vips` - Will prioritize vips in distance and priority mode above all normal pokemon if set to true
 * `min_time` - Minimum time the pokemon has to be available before despawn
+* `min_ball` - Minimum amount of balls required to run task
 * `max_distance` - Maximum distance the pokemon is allowed to be when walking, ignored when sniping
 * `snipe`:
    - `True` - Will teleport to target pokemon, encounter it, teleport back then catch it
