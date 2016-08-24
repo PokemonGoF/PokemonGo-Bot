@@ -251,7 +251,12 @@ function displayMessageOnMap(msg, olat, olong, sessid, icostr, expir, pokenick) 
   var newPosition = new google.maps.LatLng(olat, olong);
   var msgSessionId = sessid;
   var expiration = expir;
-  var pName = "<b>" + pokenick + "</b><i>just appeared! </i></b><br>lat: " + olat + " / long: " + olong;
+  var pName = '';
+  if(typeof pokenick === 'undefined'){
+    var pName = "<i>just appeared! </i></b><br>lat: " + olat + " / long: " + olong;
+  } else {
+    var pName = "<b>" + pokenick + "</b><i>just appeared! </i></b><br>lat: " + olat + " / long: " + olong;
+  }
   // console.log(pName);
   // @ro: just checking the output
   //console.log(olat);
