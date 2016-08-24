@@ -23,6 +23,8 @@ ENV BUILD_BRANCH ${BUILD_BRANCH:-master}
 ARG BUILD_REPO
 ENV BUILD_REPO ${BUILD_REPO:-PokemonGoF/PokemonGo-Bot}
 
+LABEL build_repo=$BUILD_REPO build_branch=$BUILD_BRANCH
+
 ADD https://github.com/$BUILD_REPO/archive/$BUILD_BRANCH.tar.gz .
 RUN tar -zxvf $BUILD_BRANCH.tar.gz && mv PokemonGo-Bot-* /usr/src/app && rm $BUILD_BRANCH.tar.gz
 
