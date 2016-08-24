@@ -6,6 +6,8 @@ from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.tree_config_builder import ConfigException
 
+# XP file
+import json
 
 class UpdateLiveStats(BaseTask):
     """
@@ -62,6 +64,8 @@ class UpdateLiveStats(BaseTask):
     """
     SUPPORTED_TASK_API_VERSION = 1
 
+    global xp_per_level
+
     def __init__(self, bot, config):
         """
         Initializes the worker.
@@ -81,6 +85,64 @@ class UpdateLiveStats(BaseTask):
 
         self.bot.event_manager.register_event('log_stats', parameters=('stats', 'stats_raw'))
 
+        # init xp_per_level
+        global xp_per_level
+        # If xp_level file exists, load variables from json
+        # file name should not be hard coded either
+        xpfile = "data/xp_per_level.json"
+        try:
+            with open(xpfile, 'rb') as data:
+                xp_per_level = json.load(data)
+        except ValueError:
+            # log somme warning message
+            self.emit_event(
+                'log_stats',
+                level='info',
+                formatted="Unable to read XP level file"
+            )
+            # load default valuesto supplement unknown current_level_xp
+            xp_per_level = [[1, 0, 0],
+                [2, 1000, 1000],
+                [3, 2000, 3000],
+                [4, 3000, 6000],
+                [5, 4000, 10000],
+                [6, 5000, 15000],
+                [7, 6000, 21000],
+                [8, 7000, 28000],
+                [9, 8000, 36000],
+                [10, 9000, 45000],
+                [11, 10000, 55000],
+                [12, 10000, 65000],
+                [13, 10000, 75000],
+                [14, 10000, 85000],
+                [15, 15000, 100000],
+                [16, 20000, 120000],
+                [17, 20000, 140000],
+                [18, 20000, 160000],
+                [19, 25000, 185000],
+                [20, 25000, 210000],
+                [21, 50000, 260000],
+                [22, 75000, 335000],
+                [23, 100000, 435000],
+                [24, 125000, 560000],
+                [25, 150000, 710000],
+                [26, 190000, 900000],
+                [27, 200000, 1100000],
+                [28, 250000, 1350000],
+                [29, 300000, 1650000],
+                [30, 350000, 2000000],
+                [31, 500000, 2500000],
+                [32, 500000, 3000000],
+                [33, 750000, 3750000],
+                [34, 1000000, 4750000],
+                [35, 1250000, 6000000],
+                [36, 1500000, 7500000],
+                [37, 2000000, 9500000],
+                [38, 2500000, 12000000],
+                [39, 3000000, 15000000],
+                [40, 5000000, 20000000]]
+        
+        
     def initialize(self):
         pass
 
@@ -173,13 +235,9 @@ class UpdateLiveStats(BaseTask):
 
         self._compute_next_update()
     
-    # hard coded values to supplement unknown current_level_xp
-    global xp_per_level
-    xp_per_level = [[0, 0], [1000, 1000], [2000, 3000], [3000, 6000], [4000, 10000], [5000, 15000], [6000, 21000], [7000, 28000], [8000, 36000], [9000, 45000], [10000, 55000], [10000, 65000], [10000, 75000], [10000, 85000], [15000, 100000], [20000, 120000], [20000, 140000], [20000, 160000], [25000, 185000], [25000, 210000], [50000, 260000], [75000, 335000], [100000, 435000], [125000, 560000], [150000, 710000], [190000, 900000], [200000, 1100000], [250000, 1350000], [300000, 1650000], [350000, 2000000], [500000, 2500000], [500000, 3000000], [750000, 3750000], [1000000, 4750000], [1250000, 6000000], [1500000, 7500000], [2000000, 9500000], [2500000, 12000000], [3000000, 15000000], [5000000, 20000000]]
-        
     def _get_stats(self, player_stats):
-        global xp_per_level
         
+        global xp_per_level
         metrics = self.bot.metrics
         metrics.capture_stats()
         runtime = metrics.runtime()
@@ -188,7 +246,7 @@ class UpdateLiveStats(BaseTask):
         username = player_data.get('username', '?')
         distance_travelled = metrics.distance_travelled()
         current_level = int(player_stats.get('level', 0))
-        prev_level_xp = int(xp_per_level[current_level-1][1])
+        prev_level_xp = int(xp_per_level[current_level-1][2])
         next_level_xp = int(player_stats.get('next_level_xp', 0))
         experience = player_stats.get('experience', 0)
         current_level_xp = experience - prev_level_xp
@@ -269,7 +327,7 @@ class UpdateLiveStats(BaseTask):
         username = player_data.get('username', '?')
         distance_travelled = metrics.distance_travelled()
         current_level = int(player_stats.get('level', 0))
-        prev_level_xp = int(xp_per_level[current_level-1][1])
+        prev_level_xp = int(xp_per_level[current_level-1][2])
         next_level_xp = int(player_stats.get('next_level_xp', 0))
         experience = int(player_stats.get('experience', 0))
         current_level_xp = experience - prev_level_xp
