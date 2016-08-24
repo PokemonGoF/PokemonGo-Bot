@@ -81,11 +81,18 @@ class RandomAlivePause(BaseTask):
         )
 
     def _should_pause_now(self):
-        if dt.now() >= (self._next_pause + timedelta(seconds=self._next_duration) + timedelta(seconds=1)):
-            self._schedule_next_pause()
-            return False
-        if dt.now() >= self._next_pause:
-            return True
+        if self._sleep_to_go > 0: return True
+
+        now = dt.now()
+        end = self._next_pause + timedelta(seconds=self._next_duration)
+        if now >= self._next_pause and now <= end:
+            diff = (now - self._next_pause).total_seconds()
+            if (self._next_duration - diff) <= 0:
+                self._schedule_next_pause()
+                return False
+            else:
+                self._next_duration -= diff
+                return True
 
         return False
 
@@ -104,6 +111,8 @@ class RandomAlivePause(BaseTask):
         return duration
 
     def _sleep(self):
+        if self._next_duration <= 0: return True
+
         now = dt.now()
 
         if self._sleep_to_go <= 0:
