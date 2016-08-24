@@ -27,7 +27,8 @@ class MyMQTTClass:
         self._mqttc.publish(channel, message)
     def connect_to_mqtt(self):
         self._mqttc.connect("b1.pikabot.org", 1883, 60)
-        self._mqttc.subscribe("pgomapcatch/#", 0)
+        # Enable this line if you are doing the snip code, off stress
+        #self._mqttc.subscribe("pgomapcatch/#", 0)
     def run(self):
         self._mqttc.loop_forever()
 class SocialHandler(EventHandler):
