@@ -7,7 +7,7 @@ var urlHashTopic = location.hash ? location.hash.substring(1).toLowerCase() : nu
 var topic = urlHashTopic ? urlHashTopic : "pgomapcatch/chat";
 
 function initialiseEventBus(){
-  window.client = mqtt.connect('ws://test.mosca.io'); // you add a ws:// url here
+  window.client = mqtt.connect('ws://broker.pikabot.org'); // you add a ws:// url here
   client.subscribe("pgomapcatch/#");
 
   client.on("message", function(topic, payload) {
