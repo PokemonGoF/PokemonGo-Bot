@@ -13,6 +13,7 @@ from pokemongo_bot import inventory
 from utils import fort_details, distance
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.constants import Constants
+from pokemongo_bot.inventory import Pokemons, Pokemon, Attack
 
 
 class CatchPokemon(BaseTask):
