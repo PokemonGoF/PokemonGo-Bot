@@ -1,9 +1,11 @@
+
 approve_by_comment: true
-approve_regex: ^Approved
-reject_regex: ^Rejected
-reset_on_push: false
+approve_regex: '^:\+1:'
+reject_regex: '^(Rejected|:-1:)'
+reject_value: -1
+reset_on_push: true
+author_approval: ignored
 reviewers:
-  members:
-  - bbiiggppiigg
-  name: pullapprove
-  required: 1
+    required: 2
+    teams:
+        - pokemongo-bot-team
