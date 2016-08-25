@@ -593,7 +593,6 @@ def init_config():
     config.release = load.get('release', {})
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
-    config.daily_catch_limit = load.get('daily_catch_limit', 800)
     config.vips = load.get('vips', {})
     config.sleep_schedule = load.get('sleep_schedule', [])
 
@@ -637,6 +636,9 @@ def init_config():
 
     if "walk" in load:
         logger.warning('The walk argument is no longer supported. Please use the walk_max and walk_min variables instead')
+
+    if "daily_catch_limit" in load:
+        logger.warning('The daily_catch_limit argument has been moved into the CatchPokemon Task')
 
     if config.walk_min < 1:
         parser.error("--walk_min is out of range! (should be >= 1.0)")

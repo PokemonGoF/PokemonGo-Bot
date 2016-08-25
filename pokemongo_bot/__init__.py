@@ -400,7 +400,9 @@ class PokemonGoBot(Datastore):
                 'encounter_id',
                 'latitude',
                 'longitude',
-                'pokemon_id'
+                'pokemon_id',
+                'daily_catch_limit',
+                'caught_last_24_hour',
             )
         )
         self.event_manager.register_event(
