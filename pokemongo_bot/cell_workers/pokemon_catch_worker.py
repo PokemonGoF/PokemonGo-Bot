@@ -78,6 +78,8 @@ class PokemonCatchWorker(Datastore, BaseTask):
         self.catchsim_berry_wait_max = self.catchsim_config.get('berry_wait_max', 3)
         self.catchsim_changeball_wait_min = self.catchsim_config.get('changeball_wait_min', 2)
         self.catchsim_changeball_wait_max = self.catchsim_config.get('changeball_wait_max', 3)
+        self.catchsim_newtodex_wait_min = self.catchsim_config.get('newtodex_wait_min', 20)
+        self.catchsim_newtodex_wait_max = self.catchsim_config.get('newtodex_wait_max', 30)
 
 
     ############################################################################
@@ -499,6 +501,8 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
                 try:
                     inventory.pokemons().add(pokemon)
+                    exp_gain = sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
+                    
                     self.emit_event(
                         'pokemon_caught',
                         formatted='Captured {pokemon}! [CP {cp}] [NCP {ncp}] [Potential {iv}] [{iv_display}] [+{exp} exp]',
@@ -508,7 +512,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
                             'cp': pokemon.cp,
                             'iv': pokemon.iv,
                             'iv_display': pokemon.iv_display,
-                            'exp': sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp']),
+                            'exp': exp_gain,
                             'encounter_id': self.pokemon['encounter_id'],
                             'latitude': self.pokemon['latitude'],
                             'longitude': self.pokemon['longitude'],
@@ -544,6 +548,10 @@ class PokemonCatchWorker(Datastore, BaseTask):
                             'pokemon_id': pokemon.pokemon_id
                         }, outfile)
                         outfile.write('\n')
+
+                    # if it is a new pokemon to our dex, simulate app animation delay
+                    if exp_gain >= 500:
+                        sleep (randrange(newtodex_wait_min, newtodex_wait_max))
 
                 except IOError as e:
                     self.logger.info('[x] Error while opening location file: %s' % e)
