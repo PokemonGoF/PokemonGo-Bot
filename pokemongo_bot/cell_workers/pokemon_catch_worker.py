@@ -222,8 +222,8 @@ class PokemonCatchWorker(Datastore, BaseTask):
         }
 
         candies = inventory.candies().get(pokemon.pokemon_id).quantity
-        threshold = pokemon_config.get('candy_threshold', 400)
-        if( candies > threshold  ):
+        threshold = pokemon_config.get('candy_threshold', False)
+        if( threshold > 0 and candies > threshold  ):
             self.emit_event(
                 'ignore_candy_above_thresold',
                 level='info',
