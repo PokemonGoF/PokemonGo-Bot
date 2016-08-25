@@ -136,7 +136,7 @@ class IncubateEggs(BaseTask):
                 for incubator in incubators:                                           
                     if 'pokemon_id' in incubator:
                         start_km = incubator.get('start_km_walked', 9001)
-                        km_walked = incubator.get('target_km_walked', 9001)
+                        km_walked = incubator.get('target_km_walked', 0)
                         temp_used_incubators.append({
                             "id": incubator.get('id', -1),
                             "km": km_walked,
