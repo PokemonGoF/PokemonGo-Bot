@@ -43,7 +43,7 @@ class SocialHandler(EventHandler):
     def __init__(self, bot):
         self.bot = bot
         try:
-            self.mqttc = MyMQTTClass(bot)
+            self.mqttc = MyMQTTClass(bot, self.bot.config.client_id)
             self.mqttc.connect_to_mqtt()
             thread.start_new_thread(self.mqttc.run)
         except socket_error as serr:
