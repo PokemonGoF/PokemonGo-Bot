@@ -100,6 +100,7 @@ class PokemonGoBot(Datastore):
         self.heartbeat_counter = 0
         self.last_heartbeat = time.time()
 
+        self.capture_locked = False  # lock catching while moving to VIP pokemon
 
     def start(self):
         self._setup_event_system()
