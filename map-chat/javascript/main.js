@@ -68,13 +68,13 @@ $(document).ready(function () {
   var input = $("#input");
   input.keyup(function (e) {
     if (e.keyCode == 13) {
-      sendMessage('pgomapcatch/chat', input);
+      sendMessage('pgochat/chat', input);
     }
   });
   input.focus();
 
   $("#send-button").click(function () {
-    sendMessage('pgomapcatch/chat', input);
+    sendMessage('pgochat/chat', input);
   });
 
   $("#notification_lever").change(function () {
