@@ -248,7 +248,7 @@
     "logging_color": true,
     "daily_catch_limit": 800,
     "catch": {
-      "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
+      "any": {"candy_threshold" : 400 ,"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},
       "// Rattata": { "always_catch" : true }
     },
