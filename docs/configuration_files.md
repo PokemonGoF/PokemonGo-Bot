@@ -80,6 +80,7 @@ Document the configuration options of PokemonGo-Bot.
 |`pokemon_bag.show_at_start`    | false   |                   At start, bot will show all pokemon in the bag.
 |`pokemon_bag.show_count`    | false   |                   Show amount of each pokemon.
 |`pokemon_bag.pokemon_info`    | []   |                   Check any config example file to see available settings.
+|`favorite_locations`    | []   | Allows you to define a collection of locations and coordinates, allowing rapid switch using a "label" on your location config
 
 
 ## Configuring Tasks
