@@ -551,7 +551,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
                     # if it is a new pokemon to our dex, simulate app animation delay
                     if exp_gain >= 500:
-                        sleep (randrange(catchsim_newtodex_wait_min, catchsim_newtodex_wait_max))
+                        sleep (randrange(self.catchsim_newtodex_wait_min, self.catchsim_newtodex_wait_max))
 
                 except IOError as e:
                     self.logger.info('[x] Error while opening location file: %s' % e)
