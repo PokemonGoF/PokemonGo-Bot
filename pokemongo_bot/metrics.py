@@ -48,7 +48,7 @@ class Metrics(object):
 
     def uniq_caught(self):
         # generate pokemon string 'Snorlax, Pikachu' from list of ids
-        return ', '.join([Pokemons.name_for(pok_id) for pok_id in self.uniq_pokemons_caught]) or ''
+        return ', '.join([Pokemons.name_for(pok_id) for pok_id in self.uniq_pokemons_caught]) if self.uniq_pokemons_caught else ''
 
     def captures_per_hour(self):
         """
