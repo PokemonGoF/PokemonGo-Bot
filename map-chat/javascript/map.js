@@ -33,7 +33,7 @@ var entityMap = {
 
 function initialize() {
 
-  var defaultLatLng = new google.maps.LatLng(32.078043, 34.774177); // Add the coordinates
+  var defaultLatLng = new google.maps.LatLng(0.1, 0.1); // Add the coordinates
 
   markerImage = {
     url: 'images/blue_marker.png',
@@ -84,7 +84,13 @@ function onPositionUpdate(position) {
 
 function onPositionError(err) {
   // try fallback location provider ipinfo.io or generate random location
-  $.getJSON("http://ipinfo.io", onFallbackLocationProviderResponse, useRandomLocation);
+  // $.getJSON("http://ipinfo.io", onFallbackLocationProviderResponse, useRandomLocation);
+  onFirstPosition({
+    "coords": {
+      latitude: parseFloat(0.1),
+      longitude: parseFloat(0.1)
+    }
+  });
 }
 
 function onFallbackLocationProviderResponse(ipinfo) {
