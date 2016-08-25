@@ -221,6 +221,22 @@ class PokemonCatchWorker(Datastore, BaseTask):
             'iv': False,
         }
 
+        candies = inventory.candies().get(pokemon.pokemon_id).quantity
+        threshold = pokemon_config.get('candy_threshold', 400)
+        if( candies > threshold  ):
+            self.emit_event(
+                'ignore_candy_above_thresold',
+                level='info',
+                formatted='Amount of candies for {name} is {amount}, greater than threshold {threshold}',
+                data={
+                    'name': pokemon.name,
+                    'amount': candies ,
+                    'threshold' : threshold
+                }
+            )
+            return False
+
+
         if pokemon_config.get('never_catch', False):
             return False
 

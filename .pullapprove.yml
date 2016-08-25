@@ -1,3 +1,4 @@
+
 approve_by_comment: true
 approve_regex: '^:\+1:'
 reject_regex: '^(Rejected|:-1:)'
