@@ -291,9 +291,11 @@ class MoveToMapPokemon(BaseTask):
 
         self.update_map_location()
         self.dump_caught_pokemon()
-        pokemon_list = self.get_pokemon_from_social()
-        #Temp works as it, need add more configuration
-        #pokemon_list = self.get_pokemon_from_map()
+        if self.bot.config.enable_social:
+            pokemon_list = self.get_pokemon_from_social()
+        else:
+            pokemon_list = self.get_pokemon_from_map()
+
         pokemon_list.sort(key=lambda x: x['dist'])
         if self.config['mode'] == 'priority':
             pokemon_list.sort(key=lambda x: x['priority'], reverse=True)
