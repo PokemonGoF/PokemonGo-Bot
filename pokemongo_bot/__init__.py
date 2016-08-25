@@ -164,8 +164,18 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event('set_start_location')
         self.event_manager.register_event('load_cached_location')
         self.event_manager.register_event('location_cache_ignored')
+        #  ignore candy above threshold
         self.event_manager.register_event(
-            'position_update',
+            'ignore_candy_above_thresold',
+            parameters=(
+                'name',
+                'amount',
+                'threshold'
+            )
+        )
+
+        self.event_manager.register_event(
+               'position_update',
             parameters=(
                 'current_position',
                 'last_position',
