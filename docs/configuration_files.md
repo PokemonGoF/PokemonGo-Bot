@@ -45,7 +45,7 @@
 - [Sleep Schedule Task](#sleep-schedule-task)
 - [Random Pause](#random-pause)
 - [Egg Incubator](#egg-incubator)
-- [ShowBestPokemon Settings](#showbestpokemon-settings)
+- [ShowBestPokemon](#showbestpokemon)
 
 #Configuration files
 
