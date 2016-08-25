@@ -169,7 +169,8 @@
           "enabled": true,
           "lure_attraction": true,
           "lure_max_distance": 2000,
-          "walker": "StepWalker"
+          "walker": "StepWalker",
+          "log_delay": 5
         }
       },
       {
