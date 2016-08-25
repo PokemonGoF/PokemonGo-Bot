@@ -45,6 +45,7 @@
 - [Sleep Schedule Task](#sleep-schedule-task)
 - [Random Pause](#random-pause)
 - [Egg Incubator](#egg-incubator)
+- [ShowBestPokemon Settings](#showbestpokemon-settings)
 
 #Configuration files
 
@@ -704,6 +705,7 @@ Periodically displays the user inventory in the terminal.
 
 ### Options
 [[back to top](#table-of-contents)]
+
 * `min_interval` : The minimum interval at which the stats are displayed, in seconds (defaults to 120 seconds). The update interval cannot be accurate as workers run synchronously.
 * `show_all_multiple_lines` : Logs all items on inventory using multiple lines. Ignores configuration of 'items'
 * `items` : An array of items to display and their display order (implicitly), see available items below (defaults to []).
@@ -824,4 +826,53 @@ Configure how the bot should use the incubators.
 }
 ```
 
+## ShowBestPokemon
+[[back to top](#table-of-contents)]
 
+### Description
+[[back to top](#table-of-contents)]
+
+Periodically displays the user best pokemon in the terminal.
+
+### Options
+[[back to top](#table-of-contents)]
+
+* `min_interval` : The minimum interval at which the pokemon are displayed, in seconds (defaults to 120 seconds). The update interval cannot be accurate as workers run synchronously.
+* `amount` : Amount of pokemon to show.
+* `order_by` : Stat that will be used to get best pokemons.
+Available Stats: 'cp', 'iv', 'ivcp', 'ncp', 'dps', 'hp', 'level'
+* `info_to_show` : Info to show for each pokemon
+
+Available `info_to_show` :
+```
+'cp',
+'iv_ads',
+'iv_pct',
+'ivcp',
+'ncp',
+'level',
+'hp',
+'moveset',
+'dps'
+```
+
+### Sample configuration
+[[back to top](#table-of-contents)]
+```json
+{
+    "type": "ShowBestPokemon",
+    "config": {
+        "enabled": true,
+        "min_interval": 60,
+        "amount": 5,
+        "order_by": "cp",
+        "info_to_show": ["cp", "ivcp", "dps"]
+    }
+}
+```
+
+### Example console output
+[[back to top](#table-of-contents)]
+```
+2016-08-25 21:20:59,642 [ShowBestPokemon] [INFO] [show_best_pokemon] [Tauros, CP 575, IVCP 0.95, DPS 12.04] | [Grimer, CP 613, IVCP 0.93, DPS 13.93] | [Tangela, CP 736, IVCP 0.93, DPS 14.5] | [Staryu, CP 316, IVCP 0.92, DPS 10.75] | [Gastly, CP 224, IVCP 0.9, DPS 11.7]
+```

@@ -9,49 +9,38 @@ from pokemongo_bot.tree_config_builder import ConfigException
 
 class ShowBestPokemon(BaseTask):
     """
-    Periodically displays the user inventory in the terminal.
+    Periodically displays the user best pokemon in the terminal.
 
     Example config :
     {
-        "type": "UpdateLiveInventory",
+        "type": "ShowBestPokemon",
         "config": {
           "enabled": true,
-          "min_interval": 120,
-          "show_all_multiple_lines": false,
-          "items": ["space_info", "pokeballs", "greatballs", "ultraballs", "razzberries", "luckyegg"]
+          "min_interval": 60,
+          "amount": 5,
+          "order_by": "cp",
+          "info_to_show": ["cp", "ivcp", "dps"]
         }
     }
 
-    min_interval : The minimum interval at which the stats are displayed,
+    min_interval : The minimum interval at which the pokemon are displayed,
                    in seconds (defaults to 120 seconds).
                    The update interval cannot be accurate as workers run synchronously.
-    show_all_multiple_lines : Logs all items on inventory using multiple lines.
-                              Ignores configuration of 'items' 
-    items : An array of items to display and their display order (implicitly),
-            see available items below (defaults to []).
+    amount : Amount of pokemon to show
+    order_by : Stat that will be used to get best pokemons
+               Available Stats: 'cp', 'iv', 'ivcp', 'ncp', 'dps', 'hp', 'level'
+    info_to_show : Info to show for each pokemon
 
-    Available items :
-		'pokemon_bag' : pokemon in inventory (i.e. 'Pokemon Bag: 100/250')
-        'space_info': not an item but shows inventory bag space (i.e. 'Items: 140/350')
-        'pokeballs'
-        'greatballs'
-        'ultraballs'
-        'masterballs'
-        'razzberries'
-        'blukberries'
-        'nanabberries'
-        'luckyegg'
-        'incubator'
-        'troydisk'
-        'potion'
-        'superpotion'
-        'hyperpotion'
-        'maxpotion'
-        'incense'
-        'incensespicy'
-        'incensecool'
-        'revive'
-        'maxrevive'
+    Available info_to_show :
+        'cp',
+        'iv_ads',
+        'iv_pct',
+        'ivcp',
+        'ncp',
+        'level',
+        'hp',
+        'moveset',
+        'dps'
     """
 
     SUPPORTED_TASK_API_VERSION = 1
@@ -65,11 +54,11 @@ class ShowBestPokemon(BaseTask):
 
     def work(self):
         """
-        Displays the items if necessary.
+        Displays the pokemon if necessary.
         :return: Always returns WorkerResult.SUCCESS.
         :rtype: WorkerResult
         """
-        if not self.info_to_show or not self._should_print():
+        if not self.info_to_show or not self.amount or not self._should_print():
             return WorkerResult.SUCCESS
 
         self.pokemons = inventory.pokemons().all()
@@ -83,7 +72,7 @@ class ShowBestPokemon(BaseTask):
 
     def _should_print(self):
         """
-        Returns a value indicating whether the items should be displayed.
+        Returns a value indicating whether the pokemon should be displayed.
         :return: True if the stats should be displayed; otherwise, False.
         :rtype: bool
         """
@@ -99,11 +88,9 @@ class ShowBestPokemon(BaseTask):
 
     def print_pokemons(self, pokemons):
         """
-        Logs the items into the terminal using an event.
-        :param items: The items to display.
-        :type items: string
-        :param is_debug: If True emits event at debug level.
-        :type is_debug: boolean
+        Logs the pokemon into the terminal using an event.
+        :param pokemons: The pokemon to display.
+        :type pokemons: string
         :return: Nothing.
         :rtype: None
         """
@@ -116,7 +103,6 @@ class ShowBestPokemon(BaseTask):
         )
 
         self._compute_next_update()
-
 
     def _get_pokemons_line(self):
         """
