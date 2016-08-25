@@ -180,6 +180,7 @@ def main():
                 formatted='Bot caught SIGINT. Shutting down.'
             )
             report_summary(bot)
+
     except Exception as e:
         # always report session summary and then raise exception
         if bot:
@@ -210,7 +211,6 @@ def main():
                         formatted='Error caching forts for {path}',
                         data={'path': cached_forts_path}
                         )
-
 
 
 def report_summary(bot):
@@ -570,7 +570,7 @@ def init_config():
         type=float,
         default=8.0
     )
-    
+
     add_config(
          parser,
          load,
@@ -579,7 +579,7 @@ def init_config():
          type=bool,
          default=True
     )
-    
+
     # Start to parse other attrs
     config = parser.parse_args()
     if not config.username and 'username' not in load:
@@ -594,6 +594,7 @@ def init_config():
     config.raw_tasks = load.get('tasks', [])
     config.daily_catch_limit = load.get('daily_catch_limit', 800)
     config.vips = load.get('vips', {})
+    config.sleep_schedule = load.get('sleep_schedule', [])
 
     if config.map_object_cache_time < 0.0:
         parser.error("--map_object_cache_time is out of range! (should be >= 0.0)")
