@@ -241,6 +241,9 @@ class PokemonCatchWorker(Datastore, BaseTask):
         if pokemon.iv > catch_iv:
             catch_results['iv'] = True
 
+        if self.bot.capture_locked: # seems there is another more preferable pokemon, catching is locked
+            return False
+
         return LOGIC_TO_FUNCTION[pokemon_config.get('logic', default_logic)](*catch_results.values())
 
     def _should_catch_pokemon(self, pokemon):
