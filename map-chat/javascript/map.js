@@ -72,6 +72,12 @@ function onFirstPosition(position) {
   setUserLocation(position.coords.latitude, position.coords.longitude);
   initialiseEventBus();
   map.panTo(userLocation);
+  var message = {};
+  message.lat = position.coords.latitude;
+  message.lng = position.coords.longitude;
+  message.text = "I just connected to the map!"
+
+  client.publish("pgochat/chat", JSON.stringify(message));
 }
 
 function onPositionUpdate(position) {

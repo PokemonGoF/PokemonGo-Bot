@@ -9,10 +9,11 @@ var topic = urlHashTopic ? urlHashTopic : "pgomapcatch/chat";
 function initialiseEventBus(){
   window.client = mqtt.connect('ws://broker.pikabot.org'); // you add a ws:// url here
   client.subscribe("pgomapcatch/#");
+  client.subscribe("pgochat/chat");
 
   client.on("message", function (topic, payload) {
     //Materialize.toast(payload, 4000);
-    if (topic === 'pgomapcatch/chat') {
+    if (topic === 'pgochat/chat') {
       displayChatMessageOnMap(payload);
       Materialize.toast(payload, 5000);
 
@@ -40,8 +41,6 @@ function initialiseEventBus(){
       }
     }
   });
-
-  client.publish("pgochat/join", "I just connected to the map!");
 }
 
 function sendMessage(topic, input) {
