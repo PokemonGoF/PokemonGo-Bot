@@ -1102,8 +1102,8 @@ class Inventory(object):
         if not os.path.exists(web_inventory):
             json_inventory = []
         
-        with open(web_inventory, "w") as outfile:
-            json.dump(json_inventory, outfile)
+            with open(web_inventory, "w") as outfile:
+                json.dump(json_inventory, outfile)
 
     
     def update_web_inventory(self):
