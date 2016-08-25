@@ -96,7 +96,10 @@ class Metrics(object):
         self.releases += count
 
     def capture_stats(self):
-        request = self.bot.api.create_request()
+        try:
+            request = self.bot.api.create_request()
+        except AttributeError:
+            return
         request.get_inventory()
         request.get_player()
         response_dict = request.call()
