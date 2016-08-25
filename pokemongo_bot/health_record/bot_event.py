@@ -19,11 +19,11 @@ class BotEvent(object):
         client_id_file_path = os.path.join(_base_dir, 'data', 'client_id')
         saved_info = shelve.open(client_id_file_path)
         if saved_info.has_key('client_id'):
-            self.client_id = str(saved_info['client_id'])
+            self.client_id = saved_info['client_id']
         else:
             client_uuid = uuid.uuid4()
             self.client_id = str(client_uuid)
-            saved_info['client_id'] = client_uuid
+            saved_info['client_id'] = self.client_id
         saved_info.close()
         # UniversalAnalytics can be reviewed here:
         # https://github.com/analytics-pros/universal-analytics-python
