@@ -224,9 +224,9 @@ def report_summary(bot):
     logger.info('Total XP Earned: {}  Average: {:.2f}/h'.format(metrics.xp_earned(), metrics.xp_per_hour()))
     logger.info('Travelled {:.2f}km'.format(metrics.distance_travelled()))
     logger.info('Visited {} stops'.format(metrics.visits['latest'] - metrics.visits['start']))
-    logger.info('Encountered {} pokemon, {} caught, {} released, {} evolved, {} never seen before'
+    logger.info('Encountered {} pokemon, {} caught, {} released, {} evolved, {} never seen before ({})'
                 .format(metrics.num_encounters(), metrics.num_captures(), metrics.releases,
-                        metrics.num_evolutions(), metrics.num_new_mons()))
+                        metrics.num_evolutions(), metrics.num_new_mons(), metrics.uniq_caught()))
     logger.info('Threw {} pokeball{}'.format(metrics.num_throws(), '' if metrics.num_throws() == 1 else 's'))
     logger.info('Earned {} Stardust'.format(metrics.earned_dust()))
     logger.info('Hatched eggs {}'.format(metrics.hatched_eggs(0)))
