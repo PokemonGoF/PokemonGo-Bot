@@ -239,7 +239,7 @@ function displayMessageOnMap(msg, olat, olong, sessid, icostr, expir, pokenick) 
   var expiration = expir;
   var pName = '';
   if(typeof pokenick === 'undefined'){
-  var pName = " <i>just appeared! </i></b><br>lat: " + olat + " / long: " + olong;
+    var pName = " <i>just appeared! </i></b><br>lat: " + olat + " / long: " + olong;
   } else {
     var pName = "<b>" + pokenick + "</b><i> just appeared! </i></b><br>lat: " + olat + " / long: " + olong;
   }
@@ -320,9 +320,8 @@ function displayMessageOnMap(msg, olat, olong, sessid, icostr, expir, pokenick) 
       }
     });
 
-    if (msg.text) {
+    if (msg.text !== 'undefined') {
       infoWindow.open(map, marker);
-
     }
 
     var timeoutId = setTimeout(function () { infoWindow.close() }, 10000);
