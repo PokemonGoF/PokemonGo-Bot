@@ -14,11 +14,12 @@ function initialiseEventBus(){
   client.on("message", function (topic, payload) {
     //Materialize.toast(payload, 4000);
     if (topic === 'pgochat/chat') {
-      displayChatMessageOnMap(payload);
-      Materialize.toast(payload, 5000);
-
+	  var objx = $.parseJSON(payload);
+	  var message_data = "<b>anonymous" + Math.floor(Math.random()*90000) + "</b>: " + objx.text;
+	  displayChatMessageOnMap(payload);
+      Materialize.toast(message_data, 5000);
       var msg = JSON.parse(payload);
-      console.info('[ CHAT]', '(' + msg.lat + ',' + msg.lng + '): ', msg.text);
+      console.info('[CHAT]', '(' + msg.lat + ',' + msg.lng + '): ', msg.text);
     } else {
       //@ro: let's grab the message and split that shit. (simple for now, maybe we could just parse the json instead)
       var pLoadR = payload.toString();

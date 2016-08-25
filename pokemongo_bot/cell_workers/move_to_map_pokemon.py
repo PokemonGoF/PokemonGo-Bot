@@ -291,9 +291,11 @@ class MoveToMapPokemon(BaseTask):
 
         self.update_map_location()
         self.dump_caught_pokemon()
-        pokemon_list = self.get_pokemon_from_social()
-        #Temp works as it, need add more configuration
-        #pokemon_list = self.get_pokemon_from_map()
+        if self.bot.config.enable_social:
+            pokemon_list = self.get_pokemon_from_social()
+        else:
+            pokemon_list = self.get_pokemon_from_map()
+
         pokemon_list.sort(key=lambda x: x['dist'])
         if self.config['mode'] == 'priority':
             pokemon_list.sort(key=lambda x: x['priority'], reverse=True)
@@ -323,12 +325,14 @@ class MoveToMapPokemon(BaseTask):
 
         nearest_fort = self.get_nearest_fort_on_the_way(pokemon)
 
-        if nearest_fort is None :
+        if pokemon['is_vip'] or nearest_fort is None :
+            self.bot.capture_locked = True # lock catching while moving to vip pokemon or no fort around
             step_walker = self._move_to(pokemon)
             if not step_walker.step():
 
                 if pokemon['dist'] < Constants.MAX_DISTANCE_POKEMON_IS_REACHABLE:
                     self._encountered(pokemon)
+                    self.bot.capture_locked = False # unlock catch_worker
                     self.add_caught(pokemon)
                     return WorkerResult.SUCCESS
                 else :

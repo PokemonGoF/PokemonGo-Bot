@@ -147,7 +147,9 @@
             "berry_wait_min": 2,
             "berry_wait_max": 3,
             "changeball_wait_min": 2,
-            "changeball_wait_max": 3
+            "changeball_wait_max": 3,
+            "newtodex_wait_min": 20, 
+            "newtodex_wait_max": 30
           }
         }
       },

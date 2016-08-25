@@ -1092,29 +1092,32 @@ class Inventory(object):
         inventory = inventory['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
         for i in (self.pokedex, self.candy, self.items, self.pokemons):
             i.refresh(inventory)
-            
+
         self.update_web_inventory()
 
-   
+
     def update_web_inventory(self):
         web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
 
-        with open(web_inventory, "r") as infile:
-            json_inventory = json.load(infile)
+        if os.path.exists(web_inventory):
+            with open(web_inventory, "r") as infile:
+                json_inventory = json.load(infile)
 
-        json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("pokedex_entry", None)]
-        json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("candy", None)]
-        json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("item", None)]
-        json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("pokemon_data", None)]
-        
-        json_inventory = json_inventory + self.jsonify_inventory()
-        
+            json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("pokedex_entry", None)]
+            json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("candy", None)]
+            json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("item", None)]
+            json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("pokemon_data", None)]
+
+            json_inventory = json_inventory + self.jsonify_inventory()
+        else:
+            json_inventory = self.jsonify_inventory()
+
         with open(web_inventory, "w") as outfile:
             json.dump(json_inventory, outfile)
 
     def jsonify_inventory(self):
         json_inventory = []
-        
+
         for pokedex in self.pokedex.all():
             json_inventory.append({"inventory_item_data": {"pokedex_entry": pokedex}})
 
