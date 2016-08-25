@@ -224,6 +224,15 @@ class PokemonGoBot(Datastore):
             )
         )
 
+        # recycle stuff
+        self.event_manager.register_event(
+            'next_force_recycle',
+            parameters=(
+                'time'
+            )
+        )
+        self.event_manager.register_event('force_recycle')
+
         # random alive pause
         self.event_manager.register_event(
             'next_random_alive_pause',

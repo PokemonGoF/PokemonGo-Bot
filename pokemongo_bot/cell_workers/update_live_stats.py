@@ -1,10 +1,13 @@
 import ctypes
+import json
+import os
 from sys import stdout, platform as _platform
 from datetime import datetime, timedelta
 
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.tree_config_builder import ConfigException
+from pokemongo_bot.base_dir import _base_dir
 
 # XP file
 import json
@@ -154,11 +157,15 @@ class UpdateLiveStats(BaseTask):
         """
         if not self._should_display():
             return WorkerResult.SUCCESS
-        line = self._get_stats_line(self._get_player_stats())
+            
+        player_stats = self._get_player_stats()
+        line = self._get_stats_line(player_stats)
         # If line is empty, it couldn't be generated.
         if not line:
             return WorkerResult.SUCCESS
-
+                
+        self.update_web_stats(player_stats)
+                
         if self.terminal_title:
             self._update_title(line, _platform)
 
@@ -422,3 +429,16 @@ class UpdateLiveStats(BaseTask):
                      for x in inventory_items
                      if x.get("inventory_item_data", {}).get("player_stats", {})),
                     None)
+           
+    def update_web_stats(self,player_data):
+        web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
+
+        with open(web_inventory, "r") as infile:
+            json_stats = json.load(infile)
+
+        json_stats = [x for x in json_stats if not x.get("inventory_item_data", {}).get("player_stats", None)]
+        
+        json_stats.append({"inventory_item_data": {"player_stats": player_data}})
+
+        with open(web_inventory, "w") as outfile:
+            json.dump(json_stats, outfile)

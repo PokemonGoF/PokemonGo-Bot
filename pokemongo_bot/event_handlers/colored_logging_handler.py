@@ -23,6 +23,8 @@ class ColoredLoggingHandler(EventHandler):
         'inventory_full':                    'yellow',
         'item_discard_fail':                 'red',
         'item_discarded':                    'green',
+        'next_force_recycle':                'green',
+        'force_recycle':                     'green',
         'keep_best_release':                 'green',
         'level_up':                          'green',
         'level_up_reward':                   'green',

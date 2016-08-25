@@ -121,6 +121,10 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `max_potions_keep`: Default `None` | Maximum amount of potions to keep in inventory
   * `max_berries_keep`: Default `None` | Maximum amount of berries to keep in inventory
   * `max_revives_keep`: Default `None` | Maximum amount of revives to keep in inventory
+  * `recycle_force`: Default `False` | Force scheduled recycle, even if min_empty_space not exceeded
+  * `recycle_force_min`: Default `00:01:00` | Minimum time to wait before scheduling next forced recycle
+  * `recycle_force_max`: Default `00:10:00` | Maximum time to wait before scheduling next forced recycle
+
 * SpinFort
 * TransferPokemon
   * `min_free_slot`: Default `5` | Once the pokebag has less empty slots than this amount, the transfer process is triggered. | Big values (i.e 9999) will trigger the transfer process after each catch.

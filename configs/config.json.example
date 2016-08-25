@@ -129,7 +129,10 @@
             "Razz Berry":     { "keep" : 100 }
           },
           "recycle_wait_min": 3,
-          "recycle_wait_max": 5
+          "recycle_wait_max": 5,
+          "recycle_force": true,
+          "recycle_force_min": "00:00:00",
+          "recycle_force_max": "00:01:00"
         }
       },
       {
@@ -168,6 +171,11 @@
           "enabled": true,
           "spin_wait_min": 3,
           "spin_wait_max": 5
+        }
+      },
+      { "type": "UpdateWebInventory",
+        "config": {
+          "enabled": true
         }
       },
       {
