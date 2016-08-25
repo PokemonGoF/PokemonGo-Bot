@@ -45,7 +45,6 @@ function initialize() {
     scaledSize: new google.maps.Size(30, 30)
   };
 
-
   var mapOptions = {
     center: defaultLatLng,
     zoom: defaultZoom, // The initial zoom level when your map loads (0-20)
@@ -135,6 +134,41 @@ function createMessage(text) {
     text: text
   };
 }
+
+function setupMarkerAndInfoWindow(msgSessionId, content, position, map, icoOn, icoOff) {
+    var infoWindow = new google.maps.InfoWindow({
+      content: content,
+      maxWidth: 400,
+      disableAutoPan: true,
+      zIndex: infoWindowZIndex
+    });
+    infoWindowZIndex++;
+
+    var marker = new google.maps.Marker({
+      position: position,
+      map: map,
+      draggable: false,
+      icon: icoOn,
+      title: "Click to mute/un-mute User " + msgSessionId
+    });
+
+    marker.addListener('click', function () {
+      if (markersMap[msgSessionId].disabled) {
+        markersMap[msgSessionId].disabled = false;
+        marker.setIcon(icoOn);
+      } else {
+        markersMap[msgSessionId].disabled = true;
+        marker.setIcon(icoOff);
+        infoWindow.close();
+      }
+    });
+
+    return {
+      marker: marker,
+      infoWindow: infoWindow
+    };
+}
+
 function displayChatMessageOnMap(raw) {
   var msg = JSON.parse(raw)
   //console.log(msg)
@@ -170,39 +204,15 @@ function displayChatMessageOnMap(raw) {
       if (existingTimeoutId) {
         clearTimeout(existingTimeoutId);
       }
-      markersMap[msgSessionId].timeoutId =
-        setTimeout(function () { existingInfoWindow.close() }, 10000);
+      markersMap[msgSessionId].timeoutId = setTimeout(function () { existingInfoWindow.close() }, 10000);
       existingInfoWindow.open(map, existingMarker);
     }
   } else { // new marker
-    var infoWindow = new google.maps.InfoWindow({
-      content: msg.text,
-      maxWidth: 400,
-      disableAutoPan: true,
-      zIndex: infoWindowZIndex
-    });
-    infoWindowZIndex++;
+    var markerWindow = setupMarkerAndInfoWindow(msgSessionId,msg.text, newPosition, map, markerImage, disabledMarkerImage);
+    var infoWindow = markerWindow.infoWindow;
+    var marker = markerWindow.marker;
 
-    var marker = new google.maps.Marker({
-      position: newPosition,
-      map: map,
-      draggable: false,
-      icon: markerImage,
-      title: "Click to mute/un-mute User " + msgSessionId
-    });
-
-    marker.addListener('click', function () {
-      if (markersMap[msgSessionId].disabled) {
-        markersMap[msgSessionId].disabled = false;
-        marker.setIcon(markerImage);
-      } else {
-        markersMap[msgSessionId].disabled = true;
-        marker.setIcon(disabledMarkerImage);
-        infoWindow.close();
-      }
-    });
-
-    if (msg.text) {
+    if (msg.text !== 'undefined') {
       infoWindow.open(map, marker);
     }
 
@@ -231,7 +241,6 @@ function timeUntil(now, then) {
   return diff;
 }
 
-
 function displayMessageOnMap(msg, olat, olong, sessid, icostr, expir, pokenick) {
   // @ro: passing values split from incoming payload into two variables for now (lat and long)
   var newPosition = new google.maps.LatLng(olat, olong);
@@ -239,7 +248,7 @@ function displayMessageOnMap(msg, olat, olong, sessid, icostr, expir, pokenick) 
   var expiration = expir;
   var pName = '';
   if(typeof pokenick === 'undefined'){
-  var pName = " <i>just appeared! </i></b><br>lat: " + olat + " / long: " + olong;
+    var pName = " <i>just appeared! </i></b><br>lat: " + olat + " / long: " + olong;
   } else {
     var pName = "<b>" + pokenick + "</b><i> just appeared! </i></b><br>lat: " + olat + " / long: " + olong;
   }
@@ -264,66 +273,13 @@ function displayMessageOnMap(msg, olat, olong, sessid, icostr, expir, pokenick) 
     "<a target='_blank' href='$1'>$1</a>"
   );
 
-  if (markersMap[msgSessionId]) { // update existing marker
-    var infoWindow = new google.maps.InfoWindow({
-      content: pName,
-      maxWidth: 400,
-      disableAutoPan: true,
-      zIndex: infoWindowZIndex
-    });
-    infoWindowZIndex++;
+  var icon = { url: icostr, scaledSize: new google.maps.Size(36, 36) };
+  var markerMap = setupMarkerAndInfoWindow(msgSessionId, pName, newPosition, map, icon, icon);
+  var marker = markerMap.marker;
+  var infoWindow = markerMap.infoWindow;
 
-    var marker = new google.maps.Marker({
-      position: newPosition,
-      map: map,
-      draggable: false,
-      icon: icostr,
-      icon: { url: icostr, scaledSize: new google.maps.Size(60, 60) },
-      title: "Click to mute/un-mute User " + msgSessionId
-    });
-
-    marker.addListener('click', function () {
-      if (markersMap[msgSessionId].disabled) {
-        markersMap[msgSessionId].disabled = false;
-        marker.setIcon(icostr);
-      } else {
-        markersMap[msgSessionId].disabled = true;
-        marker.setIcon(disabledMarkerImage);
-        infoWindow.close();
-      }
-    });
-  } else { // new marker
-    var infoWindow = new google.maps.InfoWindow({
-      content: pName,
-      maxWidth: 400,
-      disableAutoPan: true,
-      zIndex: infoWindowZIndex
-    });
-    infoWindowZIndex++;
-
-    var marker = new google.maps.Marker({
-      position: newPosition,
-      map: map,
-      draggable: false,
-      icon: { url: icostr, scaledSize: new google.maps.Size(60, 60) },
-      title: "Click to mute/un-mute User " + msgSessionId
-    });
-
-    marker.addListener('click', function () {
-      if (markersMap[msgSessionId].disabled) {
-        markersMap[msgSessionId].disabled = false;
-        marker.setIcon(icostr);
-      } else {
-        markersMap[msgSessionId].disabled = true;
-        marker.setIcon(icostr);
-        infoWindow.close();
-      }
-    });
-
-    if (msg.text) {
-      infoWindow.open(map, marker);
-
-    }
+  if (!markersMap[msgSessionId]) { // new marker
+    infoWindow.open(map, marker);
 
     var timeoutId = setTimeout(function () { infoWindow.close() }, 10000);
     markersMap[msgSessionId] = {
