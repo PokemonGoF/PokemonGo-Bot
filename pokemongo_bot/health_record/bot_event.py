@@ -24,7 +24,6 @@ class BotEvent(object):
             self.client_id = uuid.uuid4()
             saved_info['client_id'] = self.client_id
         saved_info.close()
-        print self.client_id
         # UniversalAnalytics can be reviewed here:
         # https://github.com/analytics-pros/universal-analytics-python
         if self.config.health_record:
