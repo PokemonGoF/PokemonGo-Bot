@@ -60,6 +60,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
         self.berry_threshold = self.config.get('berry_threshold', 0.35)
         self.vip_berry_threshold = self.config.get('vip_berry_threshold', 0.9)
         self.treat_unseen_as_vip = self.config.get('treat_unseen_as_vip', DEFAULT_UNSEEN_AS_VIP)
+        self.daily_catch_limit = self.config.get('daily_catch_limit', 800)
 
         self.catch_throw_parameters = self.config.get('catch_throw_parameters', {})
         self.catch_throw_parameters_spin_success_rate = self.catch_throw_parameters.get('spin_success_rate', 0.6)
@@ -161,10 +162,10 @@ class PokemonCatchWorker(Datastore, BaseTask):
             c.execute("SELECT DISTINCT COUNT(encounter_id) FROM catch_log WHERE dated >= datetime('now','-1 day')")
 
         result = c.fetchone()
+        self.caught_last_24_hour = result[0]
 
         while True:
-            max_catch = self.bot.config.daily_catch_limit
-            if result[0] < max_catch:
+            if self.caught_last_24_hour < self.daily_catch_limit:
             # catch that pokemon!
                 encounter_id = self.pokemon['encounter_id']
                 catch_rate_by_ball = [0] + response['capture_probability']['capture_probability']  # offset so item ids match indces
@@ -257,9 +258,6 @@ class PokemonCatchWorker(Datastore, BaseTask):
         catch_iv = pokemon_config.get('catch_above_iv', 0.8)
         if pokemon.iv > catch_iv:
             catch_results['iv'] = True
-
-        if self.bot.capture_locked: # seems there is another more preferable pokemon, catching is locked
-            return False
 
         return LOGIC_TO_FUNCTION[pokemon_config.get('logic', default_logic)](*catch_results.values())
 
@@ -525,7 +523,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
                     
                     self.emit_event(
                         'pokemon_caught',
-                        formatted='Captured {pokemon}! [CP {cp}] [NCP {ncp}] [Potential {iv}] [{iv_display}] [+{exp} exp]',
+                        formatted='Captured {pokemon}! [CP {cp}] [NCP {ncp}] [Potential {iv}] [{iv_display}] ({caught_last_24_hour}/{daily_catch_limit}) [+{exp} exp]',
                         data={
                             'pokemon': pokemon.name,
                             'ncp': round(pokemon.cp_percent, 2),
@@ -536,7 +534,9 @@ class PokemonCatchWorker(Datastore, BaseTask):
                             'encounter_id': self.pokemon['encounter_id'],
                             'latitude': self.pokemon['latitude'],
                             'longitude': self.pokemon['longitude'],
-                            'pokemon_id': pokemon.pokemon_id
+                            'pokemon_id': pokemon.pokemon_id,
+                            'caught_last_24_hour': self.caught_last_24_hour + 1,
+                            'daily_catch_limit': self.daily_catch_limit
                         }
 
                     )
