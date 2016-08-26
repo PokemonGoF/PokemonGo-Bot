@@ -66,7 +66,8 @@ class ColoredLoggingHandler(EventHandler):
         'path_lap_end':                      'green',
         'log_stats':                         'magenta',
         'show_inventory':                    'magenta',
-        'show_best_pokemon':                 'magenta',
+        'show_best_pokemon':                'magenta',
+        'badges':                            'blue',
 
         # event names for 'white' still here to remember that these events are already determined its color.
         'arrived_at_cluster':                'white',
@@ -100,7 +101,8 @@ class ColoredLoggingHandler(EventHandler):
         'spun_fort':                         'white',
         'threw_berry':                       'white',
         'threw_pokeball':                    'white',
-        'used_lucky_egg':                    'white'
+        'used_lucky_egg':                    'white',
+        'player_data':                       'white'
     }
     CONTINUOUS_EVENT_NAMES = [
         'catchable_pokemon',
