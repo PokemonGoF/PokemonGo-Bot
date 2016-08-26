@@ -101,16 +101,18 @@ class PokemonGoBot(Datastore):
 
         self.capture_locked = False  # lock catching while moving to VIP pokemon
 
-        client_id_file_path = os.path.join(_base_dir, 'data', 'mqtt_client_id')
-        saved_info = shelve.open(client_id_file_path)
-        if saved_info.has_key('client_id'):
-            self.config.client_id = saved_info['client_id']
-        else:
-            client_uuid = uuid.uuid4()
-            self.config.client_id = str(client_uuid)
-            saved_info['client_id'] = self.config.client_id
-        saved_info.close()
-
+        #client_id_file_path = os.path.join(_base_dir, 'data', 'mqtt_client_id')
+        #saved_info = shelve.open(client_id_file_path)
+        #if saved_info.has_key('client_id'):
+        #    self.config.client_id = saved_info['client_id']
+        #else:
+        #    client_uuid = uuid.uuid4()
+        #    self.config.client_id = str(client_uuid)
+        #    saved_info['client_id'] = self.config.client_id
+        #saved_info.close()
+        # There's issue report, just disable this part.
+        client_uuid = uuid.uuid4()
+        self.config.client_id = str(client_uuid)
     def start(self):
         self._setup_event_system()
         self._setup_logging()
