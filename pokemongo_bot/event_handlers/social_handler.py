@@ -70,7 +70,8 @@ class SocialHandler(EventHandler):
                 #geo_hash = Geohash.encode(data['latitude'], data['longitude'], precision=4)
                 #self.mqttc.publish("pgomapgeo/"+geo_hash+"/"+str(data['pokemon_id']), str(data['latitude'])+","+str(data['longitude'])+","+str(data['encounter_id'])+","+str(data['pokemon_id'])+","+str(data['expiration_timestamp_ms'])+","+str(data['pokemon_name']))
                 #{u'pokemon_id': 13, u'expiration_timestamp_ms': 1472017713812L, u'longitude': 4.897220519201337, u'latitude': 52.33937206069979, u'spawn_point_id': u'47c60a241ad', u'encounter_id': 13653280540966083917L}
-                self.mqttc.publish("pgomapcatch/all/catchable/"+str(data['pokemon_id']), str(data['latitude'])+","+str(data['longitude'])+","+str(data['encounter_id'])+","+str(data['pokemon_id'])+","+str(data['expiration_timestamp_ms'])+","+str(data['pokemon_name']))
+                data_string = "%s, %s, %s, %s, %s" % (str(data['latitude']), str(data['longitude']), str(data['pokemon_id']), str(data['expiration_timestamp_ms']), str(data['pokemon_name']))
+                self.mqttc.publish("pgomapcatch/all/catchable/" + str(data['pokemon_id']), data_string)
                 json_data = json.dumps(data)
                 self.mqttc.publish("pgo/all/catchable/"+str(data['pokemon_id']), json_data)
 
