@@ -1122,7 +1122,6 @@ class Inventory(object):
         json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("pokemon_data", None)]
 
         json_inventory = json_inventory + self.jsonify_inventory()
-        json_inventory = self.jsonify_inventory()
 
         with open(web_inventory, "w") as outfile:
             json.dump(json_inventory, outfile)
