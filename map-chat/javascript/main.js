@@ -20,7 +20,7 @@ function initialiseEventBus(){
       Materialize.toast(message_data, 5000);
       var msg = JSON.parse(payload);
       console.info('[CHAT]', '(' + msg.lat + ',' + msg.lng + '): ', msg.text);
-    } else {
+    } else if (/^pgomapcatch\/all\/catchable/i.test(topic)) {
       //@ro: let's grab the message and split that shit. (simple for now, maybe we could just parse the json instead)
       var pLoadR = payload.toString();
       var pLoadR2 = pLoadR.split(",");
@@ -35,11 +35,9 @@ function initialiseEventBus(){
       var icostr = icon.toString();
       displayMessageOnMap(payload, olat, olong, sessid, icostr, expir, pokenick);
 
-      if (/^pgomapcatch\/all\/catchable/i.test(topic)) {
-        console.debug('[CATCHABLE]', pokenick, '(' + olat + ',' + olong + ')');
-      } else {
-        console.debug(topic);
-      }
+      console.debug('[CATCHABLE]', pokenick, '(' + olat + ',' + olong + ')');
+    } else {
+      console.debug(topic);
     }
   });
 }
