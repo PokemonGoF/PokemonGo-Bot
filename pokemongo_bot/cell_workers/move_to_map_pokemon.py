@@ -102,6 +102,8 @@ class MoveToMapPokemon(BaseTask):
             )
         self.alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
     def get_pokemon_from_social(self):
+    	if not hasattr(self.bot, 'mqtt_pokemon_list'):
+            return []
         if not self.bot.mqtt_pokemon_list or len(self.bot.mqtt_pokemon_list) <= 0:
             return []
 
@@ -130,7 +132,7 @@ class MoveToMapPokemon(BaseTask):
                 pokemon['longitude'],
             )
 
-            if pokemon['dist'] > self.config['max_distance'] and not self.config['snipe']:
+            if pokemon['dist'] > self.config['max_distance'] or not self.config['snipe']:
                 continue
 
             # pokemon not reachable with mean walking speed (by config)
@@ -284,14 +286,16 @@ class MoveToMapPokemon(BaseTask):
         superballs_quantity = inventory.items().get(GREATBALL_ID).count
         ultraballs_quantity = inventory.items().get(ULTRABALL_ID).count
 
-        if (pokeballs_quantity + superballs_quantity + ultraballs_quantity) < 1:
+        if (pokeballs_quantity + superballs_quantity + ultraballs_quantity) < self.min_ball:
             return WorkerResult.SUCCESS
 
         self.update_map_location()
         self.dump_caught_pokemon()
-        pokemon_list = self.get_pokemon_from_social()
-        #Temp works as it, need add more configuration
-        #pokemon_list = self.get_pokemon_from_map()
+        if self.bot.config.enable_social:
+            pokemon_list = self.get_pokemon_from_social()
+        else:
+            pokemon_list = self.get_pokemon_from_map()
+
         pokemon_list.sort(key=lambda x: x['dist'])
         if self.config['mode'] == 'priority':
             pokemon_list.sort(key=lambda x: x['priority'], reverse=True)
@@ -303,11 +307,6 @@ class MoveToMapPokemon(BaseTask):
 
         pokemon = pokemon_list[0]
 
-        if pokeballs_quantity < 1:
-            if superballs_quantity < 1:
-                if ultraballs_quantity < 1:
-                    return WorkerResult.SUCCESS
-
         if self.config['snipe']:
             if self.snipe_high_prio_only:
                 if self.snipe_high_prio_threshold < pokemon['priority']:
@@ -315,17 +314,25 @@ class MoveToMapPokemon(BaseTask):
             else:
                 return self.snipe(pokemon)
 
+        # check for pokeballs (excluding masterball)
+        # checking again as we may have lost some if we sniped
+        pokeballs_quantity = inventory.items().get(POKEBALL_ID).count
+        superballs_quantity = inventory.items().get(GREATBALL_ID).count
+        ultraballs_quantity = inventory.items().get(ULTRABALL_ID).count
+
         if pokeballs_quantity + superballs_quantity + ultraballs_quantity < self.min_ball:
             return WorkerResult.SUCCESS
 
         nearest_fort = self.get_nearest_fort_on_the_way(pokemon)
 
-        if nearest_fort is None :
+        if pokemon['is_vip'] or nearest_fort is None :
+            self.bot.capture_locked = True # lock catching while moving to vip pokemon or no fort around
             step_walker = self._move_to(pokemon)
             if not step_walker.step():
 
                 if pokemon['dist'] < Constants.MAX_DISTANCE_POKEMON_IS_REACHABLE:
                     self._encountered(pokemon)
+                    self.bot.capture_locked = False # unlock catch_worker
                     self.add_caught(pokemon)
                     return WorkerResult.SUCCESS
                 else :

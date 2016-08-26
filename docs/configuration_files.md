@@ -45,6 +45,7 @@
 - [Sleep Schedule Task](#sleep-schedule-task)
 - [Random Pause](#random-pause)
 - [Egg Incubator](#egg-incubator)
+- [ShowBestPokemon](#showbestpokemon)
 
 #Configuration files
 
@@ -80,6 +81,9 @@ Document the configuration options of PokemonGo-Bot.
 |`pokemon_bag.show_at_start`    | false   |                   At start, bot will show all pokemon in the bag.
 |`pokemon_bag.show_count`    | false   |                   Show amount of each pokemon.
 |`pokemon_bag.pokemon_info`    | []   |                   Check any config example file to see available settings.
+|`favorite_locations`    | []   | Allows you to define a collection of locations and coordinates, allowing rapid switch using a "label" on your location config
+| `live_config_update.enabled`            | false     | Enable live config update
+| `live_config_update.tasks_only`            | false     | True: quick update for Tasks only (without re-login). False: slower update for entire config file.
 
 
 ## Configuring Tasks
@@ -98,7 +102,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `max_evolve_speed`: Default `30` | Maximum seconds to wait between each evolution
   * `use_lucky_egg`: Default: `False`
 * FollowPath
-  * `path_mode`: Default `loop` | Set the mode for the path navigator (loop or linear).
+  * `path_mode`: Default `loop` | Set the mode for the path navigator (loop, linear or single).
   * `path_file`: Default `NONE` | Set the file containing the waypoints for the path navigator.
 * FollowSpiral
 * HandleSoftBan
@@ -120,11 +124,18 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `max_potions_keep`: Default `None` | Maximum amount of potions to keep in inventory
   * `max_berries_keep`: Default `None` | Maximum amount of berries to keep in inventory
   * `max_revives_keep`: Default `None` | Maximum amount of revives to keep in inventory
+  * `recycle_force`: Default `False` | Force scheduled recycle, even if min_empty_space not exceeded
+  * `recycle_force_min`: Default `00:01:00` | Minimum time to wait before scheduling next forced recycle
+  * `recycle_force_max`: Default `00:10:00` | Maximum time to wait before scheduling next forced recycle
+
 * SpinFort
 * TransferPokemon
   * `min_free_slot`: Default `5` | Once the pokebag has less empty slots than this amount, the transfer process is triggered. | Big values (i.e 9999) will trigger the transfer process after each catch.
 * UpdateLiveStats
 * [UpdateLiveInventory](#updateliveinventory-settings)
+* CollectLevelUpReward
+  * `collect_reward`: Default `True` | Collect level up rewards.
+  * `level_limit`: Default `-1` | Bot will stop automatically after trainer reaches level limit. Set to `-1` to disable.
 * All tasks
   * `log_interval`: Default `0` | Minimum seconds interval before next log of the current task will be printed
   
@@ -529,6 +540,7 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
    - `priority` - Will move to the pokemon with the highest priority assigned (tie breaking by distance)
 * `prioritize_vips` - Will prioritize vips in distance and priority mode above all normal pokemon if set to true
 * `min_time` - Minimum time the pokemon has to be available before despawn
+* `min_ball` - Minimum amount of balls required to run task
 * `max_distance` - Maximum distance the pokemon is allowed to be when walking, ignored when sniping
 * `snipe`:
    - `True` - Will teleport to target pokemon, encounter it, teleport back then catch it
@@ -582,14 +594,30 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
 
 Walk to the specified locations loaded from .gpx or .json file. It is highly recommended to use website such as [GPSies](http://www.gpsies.com) which allow you to export your created track in JSON file. Note that you'll have to first convert its JSON file into the format that the bot can understand. See [Example of pier39.json] below for the content. I had created a simple python script to do the conversion.
 
+The json file can contain for each point an optional `loiter` field. This
+indicated the number of seconds the bot should loiter after reaching the point.
+During this time, the next Task in the configuration file is executed, e.g. a
+MoveToFort task. This allows the bot to walk around the waypoint looking for
+forts for a limited time.
+
 ### Options
 [[back to top](#table-of-contents)]
-* `path_mode` - linear, loop
+* `path_mode` - linear, loop, single
    - `loop` - The bot will walk along all specified waypoints and then move directly to the first waypoint again.
    - `linear` - The bot will turn around at the last waypoint and along the given waypoints in reverse order.
-* `path_start_mode` - first
+   - `single` - The bot will walk the path only once.
+* `path_start_mode` - first, closest
+   - `first` - The bot will start at the first point of the path.
+   - `closest` - The bot will start the path at the point which is the closest to the current bot location.
 * `path_file` - "/path/to/your/path.json"
 
+### Notice
+If you use the `single` `path_mode` without e.g. a `MoveToFort` task, your bot 
+with /not move at all/ when the path is finished. Similarly, if you use the
+`loiter` option in your json path file without a following `MoveToFort` or
+similar task, your bot will not move during the loitering period. Please
+make sure, when you use `single` mode or the `loiter` option, that another
+move-type task follows the `FollowPath` task in your `config.json`.
 
 ### Sample Configuration
 [[back to top](#table-of-contents)]
@@ -702,6 +730,7 @@ Periodically displays the user inventory in the terminal.
 
 ### Options
 [[back to top](#table-of-contents)]
+
 * `min_interval` : The minimum interval at which the stats are displayed, in seconds (defaults to 120 seconds). The update interval cannot be accurate as workers run synchronously.
 * `show_all_multiple_lines` : Logs all items on inventory using multiple lines. Ignores configuration of 'items'
 * `items` : An array of items to display and their display order (implicitly), see available items below (defaults to []).
@@ -822,4 +851,53 @@ Configure how the bot should use the incubators.
 }
 ```
 
+## ShowBestPokemon
+[[back to top](#table-of-contents)]
 
+### Description
+[[back to top](#table-of-contents)]
+
+Periodically displays the user best pokemon in the terminal.
+
+### Options
+[[back to top](#table-of-contents)]
+
+* `min_interval` : The minimum interval at which the pokemon are displayed, in seconds (defaults to 120 seconds). The update interval cannot be accurate as workers run synchronously.
+* `amount` : Amount of pokemon to show.
+* `order_by` : Stat that will be used to get best pokemons.
+Available Stats: 'cp', 'iv', 'ivcp', 'ncp', 'dps', 'hp', 'level'
+* `info_to_show` : Info to show for each pokemon
+
+Available `info_to_show` :
+```
+'cp',
+'iv_ads',
+'iv_pct',
+'ivcp',
+'ncp',
+'level',
+'hp',
+'moveset',
+'dps'
+```
+
+### Sample configuration
+[[back to top](#table-of-contents)]
+```json
+{
+    "type": "ShowBestPokemon",
+    "config": {
+        "enabled": true,
+        "min_interval": 60,
+        "amount": 5,
+        "order_by": "cp",
+        "info_to_show": ["cp", "ivcp", "dps"]
+    }
+}
+```
+
+### Example console output
+[[back to top](#table-of-contents)]
+```
+2016-08-25 21:20:59,642 [ShowBestPokemon] [INFO] [show_best_pokemon] [Tauros, CP 575, IVCP 0.95, DPS 12.04] | [Grimer, CP 613, IVCP 0.93, DPS 13.93] | [Tangela, CP 736, IVCP 0.93, DPS 14.5] | [Staryu, CP 316, IVCP 0.92, DPS 10.75] | [Gastly, CP 224, IVCP 0.9, DPS 11.7]
+```

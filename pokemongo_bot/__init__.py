@@ -11,6 +11,8 @@ import sys
 import time
 import Queue
 import threading
+import shelve
+import uuid
 
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
@@ -25,6 +27,7 @@ from event_manager import EventManager
 from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
+from sleep_schedule import SleepSchedule
 from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler, ColoredLoggingHandler, SocialHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
@@ -34,8 +37,8 @@ from worker_result import WorkerResult
 from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
 from inventory import init_inventory
 from sys import platform as _platform
+from pgoapi.protos.POGOProtos.Enums import BadgeType_pb2
 import struct
-
 
 class PokemonGoBot(Datastore):
     @property
@@ -72,6 +75,7 @@ class PokemonGoBot(Datastore):
             open(os.path.join(_base_dir, 'data', 'pokemon.json'))
         )
         self.item_list = json.load(open(os.path.join(_base_dir, 'data', 'items.json')))
+        # @var Metrics
         self.metrics = Metrics(self)
         self.latest_inventory = None
         self.cell = None
@@ -97,10 +101,23 @@ class PokemonGoBot(Datastore):
         self.heartbeat_counter = 0
         self.last_heartbeat = time.time()
 
+        self.capture_locked = False  # lock catching while moving to VIP pokemon
 
+        client_id_file_path = os.path.join(_base_dir, 'data', 'mqtt_client_id')
+        saved_info = shelve.open(client_id_file_path)
+        key = 'client_id'.encode('utf-8')
+        if key in saved_info:
+            self.config.client_id = saved_info[key]
+        else:
+            self.config.client_id = str(uuid.uuid4())
+            saved_info[key] = self.config.client_id
+        saved_info.close()
+        
     def start(self):
         self._setup_event_system()
         self._setup_logging()
+        self.sleep_schedule = SleepSchedule(self, self.config.sleep_schedule) if self.config.sleep_schedule else None
+        if self.sleep_schedule: self.sleep_schedule.work()
         self._setup_api()
         self._load_recent_forts()
         init_inventory(self)
@@ -133,6 +150,7 @@ class PokemonGoBot(Datastore):
             if self.config.websocket_remote_control:
                 remote_control = WebsocketRemoteControl(self).start()
 
+        # @var EventManager
         self.event_manager = EventManager(*handlers)
         self._register_events()
         if self.config.show_events:
@@ -161,6 +179,21 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event('set_start_location')
         self.event_manager.register_event('load_cached_location')
         self.event_manager.register_event('location_cache_ignored')
+
+        #  ignore candy above threshold
+        self.event_manager.register_event(
+            'ignore_candy_above_thresold',
+            parameters=(
+                'name',
+                'amount',
+                'threshold'
+            )
+        )
+
+
+
+
+
         self.event_manager.register_event(
             'position_update',
             parameters=(
@@ -183,9 +216,9 @@ class PokemonGoBot(Datastore):
                 'duration',
                 'resume'
             )
-        )  
-        
-        
+        )
+
+
         self.event_manager.register_event('location_cache_error')
 
         self.event_manager.register_event('bot_start')
@@ -215,6 +248,31 @@ class PokemonGoBot(Datastore):
         )
         self.event_manager.register_event(
             'bot_random_pause',
+            parameters=(
+                'time_hms',
+                'resume'
+            )
+        )
+
+        # recycle stuff
+        self.event_manager.register_event(
+            'next_force_recycle',
+            parameters=(
+                'time'
+            )
+        )
+        self.event_manager.register_event('force_recycle')
+
+        # random alive pause
+        self.event_manager.register_event(
+            'next_random_alive_pause',
+            parameters=(
+                'time',
+                'duration'
+            )
+        )
+        self.event_manager.register_event(
+            'bot_random_alive_pause',
             parameters=(
                 'time_hms',
                 'resume'
@@ -360,7 +418,9 @@ class PokemonGoBot(Datastore):
                 'encounter_id',
                 'latitude',
                 'longitude',
-                'pokemon_id'
+                'pokemon_id',
+                'daily_catch_limit',
+                'caught_last_24_hour',
             )
         )
         self.event_manager.register_event(
@@ -372,6 +432,7 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event('vip_pokemon')
         self.event_manager.register_event('gained_candy', parameters=('quantity', 'type'))
         self.event_manager.register_event('catch_limit')
+        self.event_manager.register_event('show_best_pokemon', parameters=('pokemons'))
 
         # level up stuff
         self.event_manager.register_event(
@@ -547,9 +608,20 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event('pokestop_log')
         self.event_manager.register_event('softban_log')
 
+        self.event_manager.register_event(
+            'badges',
+            parameters=('badge', 'level')
+        )
+        self.event_manager.register_event(
+            'player_data',
+            parameters=('player_data', )
+        )
+
     def tick(self):
         self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
+
+        if self.sleep_schedule: self.sleep_schedule.work()
 
         now = time.time() * 1000
 
@@ -805,7 +877,7 @@ class PokemonGoBot(Datastore):
         return full_path
 
     def _setup_api(self):
-        # instantiate pgoapi
+        # instantiate pgoapi @var ApiWrapper
         self.api = ApiWrapper(config=self.config)
 
         # provide player position on the earth
@@ -940,7 +1012,7 @@ class PokemonGoBot(Datastore):
             if show_candies:
                 line_p += '[{} candies]'.format(pokes[0].candy_quantity)
             line_p += ': '
-            
+
             poke_info = ['({})'.format(', '.join([get_poke_info(x, p) for x in poke_info_displayed])) for p in pokes]
             self.logger.info(line_p + ' | '.join(poke_info))
 
@@ -1060,6 +1132,12 @@ class PokemonGoBot(Datastore):
                 )
 
     def get_pos_by_name(self, location_name):
+        # Check if given location name, belongs to favorite_locations
+        favorite_location_coords = self._get_pos_by_fav_location(location_name)
+
+        if favorite_location_coords is not None:
+            return favorite_location_coords
+
         # Check if the given location is already a coordinate.
         if ',' in location_name:
             possible_coordinates = re.findall(
@@ -1079,6 +1157,26 @@ class PokemonGoBot(Datastore):
 
         return float(loc.latitude), float(loc.longitude), float(loc.altitude)
 
+    def _get_pos_by_fav_location(self, location_name):
+
+        location_name = location_name.lower()
+        coords = None
+
+        for location in self.config.favorite_locations:
+            if location.get('name').lower() == location_name:
+                coords = re.findall(
+                    "[-]?\d{1,3}[.]\d{3,7}", location.get('coords').strip()
+                )
+                if len(coords) >= 2:
+                    self.logger.info('Favorite location found: {} ({})'.format(location_name, coords))
+                break
+
+        #TODO: This is real bad
+        if coords is None:
+            return coords
+        else:
+            return float(coords[0]), float(coords[1]), (float(coords[2]) if len(coords) == 3 else self.alt)
+
     def heartbeat(self):
         # Remove forts that we can now spin again.
         now = time.time()
@@ -1091,7 +1189,51 @@ class PokemonGoBot(Datastore):
             request = self.api.create_request()
             request.get_player()
             request.check_awarded_badges()
-            request.call()
+            responses = request.call()
+
+            if responses['responses']['GET_PLAYER']['success'] == True:
+                #we get the player_data anyway, might as well store it
+                self._player = responses['responses']['GET_PLAYER']['player_data']
+                self.event_manager.emit(
+                    'player_data',
+                    sender=self,
+                    level='debug',
+                    formatted='player_data: {player_data}',
+                    data={'player_data': self._player}
+                )
+            if responses['responses']['CHECK_AWARDED_BADGES']['success'] == True:
+                #store awarded_badges reponse to be used in a task or part of heartbeat
+                self._awarded_badges = responses['responses']['CHECK_AWARDED_BADGES']
+
+            if self._awarded_badges.has_key('awarded_badges'):
+                i = 0
+                for badge in self._awarded_badges['awarded_badges']:
+                    badgelevel = self._awarded_badges['awarded_badge_levels'][i]
+                    badgename = BadgeType_pb2._BADGETYPE.values_by_number[badge].name
+                    i += 1
+                    self.event_manager.emit(
+                        'badges',
+                        sender=self,
+                        level='info',
+                        formatted='awarded badge: {badge}, lvl {level}',
+                        data={'badge': badgename,
+                              'level' : badgelevel }
+                    )
+
+                    #todo move equip badge into its own task once working
+                    #should work but gives errors :'(s
+                    #response = self.api.equip_badge(badge_type=badge)
+                    response = {'responses': "awaiting further testing on api call to equip_badge"}
+                    self.event_manager.emit(
+                        'badges',
+                        sender=self,
+                        level='info',
+                        formatted='equiped badge: {badge}',
+                        data={'badge': response['responses']}
+                    )
+                    human_behaviour.action_delay(3,10)
+
+
         try:
             self.web_update_queue.put_nowait(True)  # do this outside of thread every tick
         except Queue.Full:

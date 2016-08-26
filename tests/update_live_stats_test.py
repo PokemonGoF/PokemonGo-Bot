@@ -17,11 +17,12 @@ class UpdateLiveStatsTestCase(unittest.TestCase):
         'terminal_log': True,
         'terminal_title': False
     }
+    # updated to account for XP levels
     player_stats = {
         'level': 25,
-        'prev_level_xp': 1250000,
-        'next_level_xp': 1400000,
-        'experience': 1337500
+        'prev_level_xp': 710000,
+        'next_level_xp': 900000,
+        'experience': 753700
     }
 
     def setUp(self):
@@ -175,8 +176,8 @@ class UpdateLiveStatsTestCase(unittest.TestCase):
         expected = 'Login | Username | Evolved 12 pokemon | Encountered 130 pokemon | ' \
                    'Uptime : 15:42:13 | Caught 120 pokemon | Visited 220 stops | ' \
                    '42.05km walked | Level 25 | Earned 24,069 Stardust | ' \
-                   '87,500 / 150,000 XP (58%) | 1,337 XP/h | Threw 145 pokeballs | ' \
-                   'Highest CP pokemon : highest_cp | Level 25 (87,500 / 150,000, 58%) | ' \
+                   '43,700 / 190,000 XP (23%) | 1,337 XP/h | Threw 145 pokeballs | ' \
+                   'Highest CP pokemon : highest_cp | Level 25 (43,700 / 190,000, 23%) | ' \
                    '+424,242 XP | Encountered 3 new pokemon | ' \
                    'Most perfect pokemon : most_perfect | ' \
                    'Encountered 130 pokemon, 120 caught, 30 released, 12 evolved, ' \

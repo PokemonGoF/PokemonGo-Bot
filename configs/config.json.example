@@ -3,25 +3,32 @@
     "username": "YOUR_USERNAME",
     "password": "YOUR_PASSWORD",
     "location": "SOME_LOCATION",
+    "favorite_locations":[
+        {"name": "Milan", "coords": "45.472849,9.177567"}
+    ],
     "gmapkey": "GOOGLE_MAPS_API_KEY",
     "encrypt_location": "",
     "websocket_server": false,
     "heartbeat_threshold": 10,
     "enable_social": true,
+    "live_config_update": {
+      "enabled": false,
+      "tasks_only": false
+    },
     "tasks": [
       {
-        "type": "HandleSoftBan"
-      },
-      {
-        "type": "SleepSchedule",
+        "//NOTE: This task MUST be placed on the top of task list": {},
+        "type": "RandomAlivePause",
         "config": {
           "enabled": false,
-          "time": "22:54",
-          "duration":"7:46",
-          "time_random_offset": "00:24",
-          "duration_random_offset": "00:43",
-          "wake_up_at_location": ""
+          "min_duration": "00:00:10",
+          "max_duration": "00:10:00",
+          "min_interval": "00:05:00",
+          "max_interval": "01:30:00"
         }
+      },
+      {
+        "type": "HandleSoftBan"
       },
       {
         "type": "RandomPause",
@@ -42,7 +49,11 @@
         }
       },
       {
-         "type": "CollectLevelUpReward"
+        "type": "CollectLevelUpReward",
+        "config": {
+          "collect_reward": true,
+          "level_limit": -1
+        }
       },
       {
         "type": "IncubateEggs",
@@ -71,6 +82,16 @@
           "min_interval": 120,
           "show_all_multiple_lines": false,
           "items": ["pokemon_bag", "space_info", "pokeballs", "greatballs", "ultraballs", "razzberries", "luckyegg"]
+        }
+      },
+      {
+        "type": "ShowBestPokemon",
+        "config": {
+          "enabled": true,
+          "min_interval": 60,
+          "amount": 5,
+          "order_by": "cp",
+          "info_to_show": ["cp", "ivcp", "dps", "hp"]
         }
       },
       {
@@ -122,7 +143,10 @@
             "Razz Berry":     { "keep" : 100 }
           },
           "recycle_wait_min": 3,
-          "recycle_wait_max": 5
+          "recycle_wait_max": 5,
+          "recycle_force": true,
+          "recycle_force_min": "00:01:00",
+          "recycle_force_max": "00:05:00"
         }
       },
       {
@@ -151,7 +175,9 @@
             "berry_wait_min": 3,
             "berry_wait_max": 5,
             "changeball_wait_min": 3,
-            "changeball_wait_max": 5
+            "changeball_wait_max": 5,
+            "newtodex_wait_min": 20, 
+            "newtodex_wait_max": 30
           }
         }
       },
@@ -161,6 +187,11 @@
           "enabled": true,
           "spin_wait_min": 3,
           "spin_wait_max": 5
+        }
+      },
+      { "type": "UpdateWebInventory",
+        "config": {
+          "enabled": true
         }
       },
       {
@@ -204,6 +235,22 @@
     "walk_min": 2.16,
     "alt_min": 500,
     "alt_max": 1000,
+    "sleep_schedule": [
+      {
+        "time": "12:00",
+        "duration": "5:30",
+        "time_random_offset": "00:30",
+        "duration_random_offset": "00:30",
+        "wake_up_at_location": ""
+      },
+      {
+        "time": "17:45",
+        "duration": "3:00",
+        "time_random_offset": "01:00",
+        "duration_random_offset": "00:30",
+        "wake_up_at_location": ""
+      }
+    ],
     "gps_default_altitude": 8.0,
     "replicate_gps_xy_noise": false,
     "replicate_gps_z_noise": false,
@@ -218,7 +265,7 @@
     "logging_color": true,
     "daily_catch_limit": 800,
     "catch": {
-      "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
+      "any": {"candy_threshold" : 400 ,"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},
       "// Rattata": { "always_catch" : true }
     },
@@ -240,7 +287,7 @@
       "// Zubat": {"keep_best_custom": "iv, cp, hp_max", "amount":2}
     },
     "vips" : {
-        "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate!": {},
+        "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate": {},
         "any": {"catch_above_cp": 1200, "catch_above_iv": 0.9, "logic": "or" },
         "Lapras": {},
         "Moltres": {},

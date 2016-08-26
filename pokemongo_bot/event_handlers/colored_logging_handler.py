@@ -23,6 +23,8 @@ class ColoredLoggingHandler(EventHandler):
         'inventory_full':                    'yellow',
         'item_discard_fail':                 'red',
         'item_discarded':                    'green',
+        'next_force_recycle':                'green',
+        'force_recycle':                     'green',
         'keep_best_release':                 'green',
         'level_up':                          'green',
         'level_up_reward':                   'green',
@@ -37,6 +39,7 @@ class ColoredLoggingHandler(EventHandler):
         'next_egg_incubates':                'yellow',
         'next_sleep':                        'green',
         'next_random_pause':                 'green',
+        'next_random_alive_pause':           'green',
         'no_pokeballs':                      'red',
         'pokemon_appeared':                  'yellow',
         'pokemon_capture_failed':            'red',
@@ -63,12 +66,15 @@ class ColoredLoggingHandler(EventHandler):
         'path_lap_end':                      'green',
         'log_stats':                         'magenta',
         'show_inventory':                    'magenta',
+        'show_best_pokemon':                'magenta',
+        'badges':                            'blue',
 
         # event names for 'white' still here to remember that these events are already determined its color.
         'arrived_at_cluster':                'white',
         'arrived_at_fort':                   'white',
         'bot_sleep':                         'white',
         'bot_random_pause':                  'white',
+        'bot_random_alive_pause':            'white',
         'catchable_pokemon':                 'white',
         'found_cluster':                     'white',
         'incubate_try':                      'white',
@@ -95,7 +101,8 @@ class ColoredLoggingHandler(EventHandler):
         'spun_fort':                         'white',
         'threw_berry':                       'white',
         'threw_pokeball':                    'white',
-        'used_lucky_egg':                    'white'
+        'used_lucky_egg':                    'white',
+        'player_data':                       'white'
     }
     CONTINUOUS_EVENT_NAMES = [
         'catchable_pokemon',
