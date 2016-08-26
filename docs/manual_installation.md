@@ -94,7 +94,7 @@ source bin/activate
 
 ##### Requirements
 
-- [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/)
+- [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/) *Be sure to tick "Add python.exe to Path" during install*
 - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 - [Microsoft Visual C++ Compiler for Python 2.7](http://www.microsoft.com/en-us/download/details.aspx?id=44266)
 
@@ -107,8 +107,6 @@ pip2 install --upgrade pip
 pip2 install --upgrade virtualenv
 pip2 install --upgrade protobuf==3.0.0b4
 git clone --recursive -b dev https://github.com/PokemonGoF/PokemonGo-Bot
-pip2 install --upgrade "C:\Python27\PokemonGo-Bot\windows_bat\PyYAML-3.11-cp27-cp27m-win32.whl"
-pip2 install --upgrade "C:\Python27\PokemonGo-Bot\windows_bat\PyYAML-3.11-cp27-cp27m-win_amd64.whl"
 pip2 install --upgrade -r C:/Python27/PokemonGo-Bot/requirements.txt
 cd C:/Python27/PokemonGo-Bot/
 virtualenv .
@@ -118,7 +116,7 @@ pip2 install --upgrade -r C:/Python27/PokemonGo-Bot/requirements.txt
 
 ##### Get encrypt.so and encrypt.dll or encrypt_64.dll
 Due to copywrite on the encrypt.so, encrypt.dll and encrypt_64.dll we are not directly hosting it. Please find a copy elsewhere on the internet and compile it yourself. We accept no responsibility should you encounter any problems with files you download elsewhere.
-Try asking around our Slack chat!
+Try asking around our Slack chat **(Just say the word "encrypt" and Slackbot will give you info)**!
 
 Download it to the `C:/Python27/PokemonGo-Bot/` folder
 
