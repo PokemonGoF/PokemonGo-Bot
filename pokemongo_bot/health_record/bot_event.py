@@ -21,7 +21,8 @@ class BotEvent(object):
         if saved_info.has_key('client_id'):
             self.client_id = saved_info['client_id']
         else:
-            self.client_id = uuid.uuid4()
+            client_uuid = uuid.uuid4()
+            self.client_id = str(client_uuid)
             saved_info['client_id'] = self.client_id
         saved_info.close()
         # UniversalAnalytics can be reviewed here:
