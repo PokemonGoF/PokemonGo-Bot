@@ -11,6 +11,10 @@
     "websocket_server": false,
     "heartbeat_threshold": 10,
     "enable_social": true,
+    "live_config_update": {
+      "enabled": false,
+      "tasks_only": false
+    },
     "tasks": [
       {
         "//NOTE: This task MUST be placed on the top of task list": {},
@@ -66,6 +70,16 @@
           "min_interval": 120,
           "show_all_multiple_lines": false,
           "items": ["pokemon_bag", "space_info", "pokeballs", "greatballs", "ultraballs", "razzberries", "luckyegg"]
+        }
+      },
+      {
+        "type": "ShowBestPokemon",
+        "config": {
+          "enabled": true,
+          "min_interval": 60,
+          "amount": 5,
+          "order_by": "cp",
+          "info_to_show": ["cp", "ivcp", "dps", "hp"]
         }
       },
       {

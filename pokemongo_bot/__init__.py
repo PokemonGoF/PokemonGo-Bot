@@ -103,16 +103,18 @@ class PokemonGoBot(Datastore):
 
         self.capture_locked = False  # lock catching while moving to VIP pokemon
 
-        client_id_file_path = os.path.join(_base_dir, 'data', 'mqtt_client_id')
-        saved_info = shelve.open(client_id_file_path)
-        if saved_info.has_key('client_id'):
-            self.config.client_id = saved_info['client_id']
-        else:
-            client_uuid = uuid.uuid4()
-            self.config.client_id = str(client_uuid)
-            saved_info['client_id'] = self.config.client_id
-        saved_info.close()
-
+        #client_id_file_path = os.path.join(_base_dir, 'data', 'mqtt_client_id')
+        #saved_info = shelve.open(client_id_file_path)
+        #if saved_info.has_key('client_id'):
+        #    self.config.client_id = saved_info['client_id']
+        #else:
+        #    client_uuid = uuid.uuid4()
+        #    self.config.client_id = str(client_uuid)
+        #    saved_info['client_id'] = self.config.client_id
+        #saved_info.close()
+        # There's issue report, just disable this part.
+        client_uuid = uuid.uuid4()
+        self.config.client_id = str(client_uuid)
     def start(self):
         self._setup_event_system()
         self._setup_logging()
@@ -179,6 +181,21 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event('set_start_location')
         self.event_manager.register_event('load_cached_location')
         self.event_manager.register_event('location_cache_ignored')
+
+        #  ignore candy above threshold
+        self.event_manager.register_event(
+            'ignore_candy_above_thresold',
+            parameters=(
+                'name',
+                'amount',
+                'threshold'
+            )
+        )
+
+
+
+
+
         self.event_manager.register_event(
             'position_update',
             parameters=(
@@ -403,7 +420,9 @@ class PokemonGoBot(Datastore):
                 'encounter_id',
                 'latitude',
                 'longitude',
-                'pokemon_id'
+                'pokemon_id',
+                'daily_catch_limit',
+                'caught_last_24_hour',
             )
         )
         self.event_manager.register_event(
@@ -415,6 +434,7 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event('vip_pokemon')
         self.event_manager.register_event('gained_candy', parameters=('quantity', 'type'))
         self.event_manager.register_event('catch_limit')
+        self.event_manager.register_event('show_best_pokemon', parameters=('pokemons'))
 
         # level up stuff
         self.event_manager.register_event(

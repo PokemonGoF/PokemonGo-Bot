@@ -74,6 +74,18 @@ def main():
         raise SIGINTRecieved
     signal.signal(signal.SIGINT, handle_sigint)
 
+    def initialize_task(bot, config):
+        tree = TreeConfigBuilder(bot, config.raw_tasks).build()
+        bot.workers = tree
+
+    def initialize(config):
+        bot = PokemonGoBot(config)
+        bot.start()
+        initialize_task(bot,config)
+        bot.metrics.capture_stats()
+        bot.health_record = BotEvent(config)
+        return bot
+
     def get_commit_hash():
         try:
             hash = subprocess.check_output(['git', 'rev-parse', 'HEAD'], stderr=subprocess.STDOUT)[:-1]
@@ -88,7 +100,7 @@ def main():
         sys.stdout = codecs.getwriter('utf8')(sys.stdout)
         sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
-        config = init_config()
+        config, config_file = init_config()
         if not config:
             return
 
@@ -100,12 +112,8 @@ def main():
 
         while not finished:
             try:
-                bot = PokemonGoBot(config)
-                bot.start()
-                tree = TreeConfigBuilder(bot, config.raw_tasks).build()
-                bot.workers = tree
-                bot.metrics.capture_stats()
-                bot.health_record = health_record
+                bot = initialize(config)
+                config_changed = check_mod(config_file)
 
                 bot.event_manager.emit(
                     'bot_start',
@@ -116,6 +124,12 @@ def main():
 
                 while True:
                     bot.tick()
+                    if config.live_config_update_enabled and config_changed():
+                        logger.info('Config changed! Applying new config.')
+                        config, _ = init_config()
+
+                        if config.live_config_update_tasks_only: initialize_task(bot, config)
+                        else: bot = initialize(config)
 
             except KeyboardInterrupt:
                 bot.event_manager.emit(
@@ -212,6 +226,18 @@ def main():
                         data={'path': cached_forts_path}
                         )
 
+def check_mod(config_file):
+    check_mod.mtime = os.path.getmtime(config_file)
+
+    def compare_mtime():
+        mdate = os.path.getmtime(config_file)
+        if check_mod.mtime == mdate:  # mtime didnt change
+            return False
+        else:
+            check_mod.mtime = mdate
+            return True
+
+    return compare_mtime
 
 def report_summary(bot):
     if bot.metrics.start_time is None:
@@ -265,6 +291,7 @@ def init_config():
 
     if config_arg and os.path.isfile(config_arg):
         _json_loader(config_arg)
+        config_file = config_arg
     elif os.path.isfile(config_file):
         logger.info('No config argument specified, checking for /configs/config.json')
         _json_loader(config_file)
@@ -593,9 +620,11 @@ def init_config():
     config.release = load.get('release', {})
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
-    config.daily_catch_limit = load.get('daily_catch_limit', 800)
     config.vips = load.get('vips', {})
     config.sleep_schedule = load.get('sleep_schedule', [])
+    config.live_config_update = load.get('live_config_update', {})
+    config.live_config_update_enabled = config.live_config_update.get('enabled', False)
+    config.live_config_update_tasks_only = config.live_config_update.get('tasks_only', False)
 
     if config.map_object_cache_time < 0.0:
         parser.error("--map_object_cache_time is out of range! (should be >= 0.0)")
@@ -638,6 +667,9 @@ def init_config():
     if "walk" in load:
         logger.warning('The walk argument is no longer supported. Please use the walk_max and walk_min variables instead')
 
+    if "daily_catch_limit" in load:
+        logger.warning('The daily_catch_limit argument has been moved into the CatchPokemon Task')
+
     if config.walk_min < 1:
         parser.error("--walk_min is out of range! (should be >= 1.0)")
         return None
@@ -662,7 +694,7 @@ def init_config():
             raise
 
     fix_nested_config(config)
-    return config
+    return config, config_file
 
 def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
     if not long_flag:

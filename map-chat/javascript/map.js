@@ -279,7 +279,8 @@ function displayMessageOnMap(msg, olat, olong, sessid, icostr, expir, pokenick) 
   var infoWindow = markerMap.infoWindow;
 
   if (!markersMap[msgSessionId]) { // new marker
-    infoWindow.open(map, marker);
+    //disable it for now
+    //infoWindow.open(map, marker);
 
     var timeoutId = setTimeout(function () { infoWindow.close() }, 10000);
     markersMap[msgSessionId] = {
