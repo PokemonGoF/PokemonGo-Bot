@@ -85,6 +85,8 @@ SNIPE_MAX_IN_CHAIN = 2
 # Don't call sniper every time in workers
 SNIPE_SKIP_IN_ROUND = 30
 
+DEBUG_ON = False
+
 class MoveToMapPokemon(BaseTask):
     """Task for moving a trainer to a Pokemon."""
     SUPPORTED_TASK_API_VERSION = 1
@@ -294,10 +296,17 @@ class MoveToMapPokemon(BaseTask):
         ultraballs_quantity = inventory.items().get(ULTRABALL_ID).count
 
         if (pokeballs_quantity + superballs_quantity + ultraballs_quantity) < self.min_ball:
+            if DEBUG_ON:
+                print 'no enough balls'
             return WorkerResult.SUCCESS
 
         self.dump_caught_pokemon()
         if self.bot.config.enable_social:
+            if self.config['snipe']:
+                self.by_pass_times = self.by_pass_times + 1
+                if self.by_pass_times < SNIPE_SKIP_IN_ROUND:
+                    return WorkerResult.SUCCESS
+                self.by_pass_times = 0
             pokemon_list = self.get_pokemon_from_social()
         else:
             self.update_map_location()
@@ -310,16 +319,14 @@ class MoveToMapPokemon(BaseTask):
             pokemon_list.sort(key=lambda x: x['is_vip'], reverse=True)
 
         if len(pokemon_list) < 1:
-            #print 'No enough pokemon in list to snip'
+            if DEBUG_ON:
+                print 'No enough pokemon in list to snip'
             return WorkerResult.SUCCESS
 
         pokemon = pokemon_list[0]
-        #print 'How many pokemon in list: {}'.format(len(pokemon_list))
+        if DEBUG_ON:
+            print 'How many pokemon in list: {}'.format(len(pokemon_list))
         if self.config['snipe']:
-            self.by_pass_times = self.by_pass_times + 1
-            if self.by_pass_times < SNIPE_SKIP_IN_ROUND:
-                return WorkerResult.SUCCESS
-            self.by_pass_times = 0
             if self.snipe_high_prio_only:
                 count = 0
                 for pokemon in pokemon_list:
@@ -330,8 +337,9 @@ class MoveToMapPokemon(BaseTask):
                             return WorkerResult.SUCCESS
                         if count is not 1:
                             time.sleep(SNIPE_SLEEP_SEC*5)
-                    #else:
-                    #    print 'this pokemon is not good enough to snip {}'.format(pokemon)
+                    else:
+                        if DEBUG_ON:
+                            print 'this pokemon is not good enough to snip {}'.format(pokemon)
                 return WorkerResult.SUCCESS
             else:
                 return self.snipe(pokemon)
