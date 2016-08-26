@@ -74,7 +74,7 @@ Document the configuration options of PokemonGo-Bot.
 | `action_wait_max`   | 4       | Set the maximum time setting for anti-ban time randomizer
 | `debug`            | false   | Let the default value here except if you are developer                                                                                                                                      |
 | `test`             | false   | Let the default value here except if you are developer                                                                                                                                      |  
-| `walker_output_limit`             | false   | Reduce output from walker functions                                                                                                                                      |                                                                                       |
+| `walker_limit_output`             | false   | Reduce output from walker functions                                                                                                                                      |                                                                                       |
 | `location_cache`   | true    | Bot will start at last known location if you do not have location set in the config                                                                                                         |
 | `distance_unit`    | km      | Set the unit to display distance in (km for kilometers, mi for miles, ft for feet)                                                                                                          |
 | `evolve_cp_min`           | 300   |                   Min. CP for evolve_all function
