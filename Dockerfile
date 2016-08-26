@@ -37,9 +37,8 @@ RUN apk -U --no-cache add python py-pip \
     && rm -rf /var/cache/apk/* /tmp/pgoencrypt /usr/include/xlocale.h \
     && find / -name '*.pyc' -o -name '*.pyo' -exec rm -f {} \;
 
-RUN apk -U --no-cache add --virtual .install-dependencies wget ca-certificates tar \
-    && wget -q -O- https://github.com/$BUILD_REPO/archive/$BUILD_BRANCH.tar.gz | tar zxf - --strip-components=1 -C /usr/src/app \
-    && apk del .install-dependencies \
-    && rm -rf /var/cache/apk/*
+ADD https://github.com/$BUILD_REPO/archive/$BUILD_BRANCH.tar.gz /tmp
+RUN cat /tmp/$BUILD_BRANCH.tar.gz | tar zxf - --strip-components=1 -C /usr/src/app \
+    && rm /tmp/$BUILD_BRANCH.tar.gz
 
 ENTRYPOINT ["python", "pokecli.py"]
