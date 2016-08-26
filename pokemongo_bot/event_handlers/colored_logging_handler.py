@@ -66,6 +66,7 @@ class ColoredLoggingHandler(EventHandler):
         'path_lap_end':                      'green',
         'log_stats':                         'magenta',
         'show_inventory':                    'magenta',
+        'show_best_pokemon':                 'magenta',
 
         # event names for 'white' still here to remember that these events are already determined its color.
         'arrived_at_cluster':                'white',
