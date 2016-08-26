@@ -1114,6 +1114,7 @@ class Inventory(object):
             
         with open(web_inventory, "r") as infile:
             json_inventory = json.load(infile)
+            infile.close()
 
         json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("pokedex_entry", None)]
         json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("candy", None)]
