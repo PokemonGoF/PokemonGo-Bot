@@ -607,6 +607,15 @@ def init_config():
          default=True
     )
 
+    add_config(
+         parser,
+         load,
+         long_flag="--walker_limit_output",
+         help="Limit output from walker functions (move_to_fort, position_update, etc)",
+         type=bool,
+         default=False
+    )
+
     # Start to parse other attrs
     config = parser.parse_args()
     if not config.username and 'username' not in load:
