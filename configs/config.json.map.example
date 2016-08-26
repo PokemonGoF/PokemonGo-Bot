@@ -129,8 +129,8 @@
           "recycle_wait_min": 1,
           "recycle_wait_max": 4,
           "recycle_force": true,
-          "recycle_force_min": "00:00:00",
-          "recycle_force_max": "00:01:00"
+          "recycle_force_min": "00:01:00",
+          "recycle_force_max": "00:05:00"
         }
       },
       {
