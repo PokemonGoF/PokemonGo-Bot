@@ -38,7 +38,9 @@ RUN apk -U --no-cache add python py-pip \
     && find / -name '*.pyc' -o -name '*.pyo' -exec rm -f {} \;
 
 ADD https://github.com/$BUILD_REPO/archive/$BUILD_BRANCH.tar.gz /tmp
-RUN cat /tmp/$BUILD_BRANCH.tar.gz | tar zxf - --strip-components=1 -C /usr/src/app \
+RUN apk -U --no-cache add --virtual .tar-deps tar \
+    && cat /tmp/$BUILD_BRANCH.tar.gz | tar -zxf - --strip-components=1 -C /usr/src/app \
+    && apk del .tar-deps \
     && rm /tmp/$BUILD_BRANCH.tar.gz
 
 ENTRYPOINT ["python", "pokecli.py"]
