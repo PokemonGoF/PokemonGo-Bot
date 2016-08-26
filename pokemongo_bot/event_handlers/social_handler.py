@@ -20,11 +20,15 @@ class MyMQTTClass:
         #print "rc: "+str(rc)
     def mqtt_on_message(self, mqttc, obj, msg):
         #msg.topic+" "+str(msg.qos)+" "+str(msg.payload)
+        print msg.topic
         pokemon = json.loads(msg.payload)
         if pokemon and 'encounter_id' in pokemon:
             new_list = [x for x in self.bot.mqtt_pokemon_list if x['encounter_id'] is pokemon['encounter_id']]
             if not (new_list and len(new_list) > 0):
+                print "[new] " + str(pokemon['encounter_id'])
                 self.bot.mqtt_pokemon_list.append(pokemon)
+            else:
+                print "[duplicate] " + str(pokemon['encounter_id'])
     #def mqtt_on_publish(self, mqttc, obj, mid):
         #print "mid: "+str(mid)
     #def mqtt_on_subscribe(self, mqttc, obj, mid, granted_qos):
@@ -70,7 +74,6 @@ class SocialHandler(EventHandler):
                 #geo_hash = Geohash.encode(data['latitude'], data['longitude'], precision=4)
                 #self.mqttc.publish("pgomapgeo/"+geo_hash+"/"+str(data['pokemon_id']), str(data['latitude'])+","+str(data['longitude'])+","+str(data['encounter_id'])+","+str(data['pokemon_id'])+","+str(data['expiration_timestamp_ms'])+","+str(data['pokemon_name']))
                 #{u'pokemon_id': 13, u'expiration_timestamp_ms': 1472017713812L, u'longitude': 4.897220519201337, u'latitude': 52.33937206069979, u'spawn_point_id': u'47c60a241ad', u'encounter_id': 13653280540966083917L}
-                self.mqttc.publish("pgomapcatch/all/catchable/"+str(data['pokemon_id']), str(data['latitude'])+","+str(data['longitude'])+","+str(data['encounter_id'])+","+str(data['pokemon_id'])+","+str(data['expiration_timestamp_ms'])+","+str(data['pokemon_name']))
                 json_data = json.dumps(data)
                 self.mqttc.publish("pgo/all/catchable/"+str(data['pokemon_id']), json_data)
 
