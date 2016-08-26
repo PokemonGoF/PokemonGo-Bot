@@ -125,7 +125,30 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `min_free_slot`: Default `5` | Once the pokebag has less empty slots than this amount, the transfer process is triggered. | Big values (i.e 9999) will trigger the transfer process after each catch.
 * UpdateLiveStats
 * [UpdateLiveInventory](#updateliveinventory-settings)
-
+* All tasks
+  * `log_interval`: Default `0` | Minimum seconds interval before next log of the current task will be printed
+  
+  
+### Specify a custom log_interval for specific task
+  
+  ```
+    {
+      "type": "MoveToFort",
+      "config": {
+        "enabled": true,
+        "lure_attraction": true,
+        "lure_max_distance": 2000,
+        "walker": "StepWalker",
+        "log_interval": 5
+      }
+    }
+   ```
+      
+   Result:
+    
+    2016-08-26 11:43:18,199 [MoveToFort] [INFO] [moving_to_fort] Moving towards pokestop ... - 0.07km
+    2016-08-26 11:43:23,641 [MoveToFort] [INFO] [moving_to_fort] Moving towards pokestop ... - 0.06km
+    2016-08-26 11:43:28,198 [MoveToFort] [INFO] [moving_to_fort] Moving towards pokestop ... - 0.05km
 
 ### Example configuration:
 [[back to top](#table-of-contents)]
