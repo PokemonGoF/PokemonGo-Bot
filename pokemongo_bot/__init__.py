@@ -110,7 +110,7 @@ class PokemonGoBot(Datastore):
             self.config.client_id = str(uuid.uuid4())
             saved_info[key] = self.config.client_id
         saved_info.close()
-        
+
     def start(self):
         self._setup_event_system()
         self._setup_logging()

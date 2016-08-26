@@ -5,57 +5,86 @@ import paho.mqtt.client as mqtt
 import Geohash
 import errno
 import json
-from socket import error as socket_error
+import time
 
+from socket import error as socket_error
+DEBUG_ON = False
 class MyMQTTClass:
     def __init__(self, bot, clientid=None):
-        self._mqttc = mqtt.Client(clientid)
-        self._mqttc.on_message = self.mqtt_on_message
         self.bot = bot
+        self.client_id = clientid
         self.bot.mqtt_pokemon_list = []
-        #self._mqttc.on_connect = self.mqtt_on_connect
-        #self._mqttc.on_publish = self.mqtt_on_publish
-        #self._mqttc.on_subscribe = self.mqtt_on_subscribe
-    #def mqtt_on_connect(self, mqttc, obj, flags, rc):
-        #print "rc: "+str(rc)
+        self._mqttc = None
+    def mqtt_on_connect(self, mqttc, obj, flags, rc):
+        if DEBUG_ON:
+            print "rc: "+str(rc)
     def mqtt_on_message(self, mqttc, obj, msg):
-        #msg.topic+" "+str(msg.qos)+" "+str(msg.payload)
+        #msg.topic+" "+str(msg.qos)+" "+str(msg.payload)]
         pokemon = json.loads(msg.payload)
+        if DEBUG_ON:
+            print 'on message: {}'.format(pokemon)
         if pokemon and 'encounter_id' in pokemon:
             new_list = [x for x in self.bot.mqtt_pokemon_list if x['encounter_id'] is pokemon['encounter_id']]
             if not (new_list and len(new_list) > 0):
                 self.bot.mqtt_pokemon_list.append(pokemon)
-    #def mqtt_on_publish(self, mqttc, obj, mid):
-        #print "mid: "+str(mid)
-    #def mqtt_on_subscribe(self, mqttc, obj, mid, granted_qos):
-    #    print "Subscribed: "+str(mid)+" "+str(granted_qos)
+    def on_disconnect(self,client, userdata, rc):
+        if DEBUG_ON:
+            print 'on_disconnect'
+            if rc != 0:
+                print("Unexpected disconnection.")
+    def mqtt_on_publish(self, mqttc, obj, mid):
+        if DEBUG_ON:
+            print "mid: "+str(mid)
+    def mqtt_on_subscribe(self, mqttc, obj, mid, granted_qos):
+        if DEBUG_ON:
+            print "Subscribed: "+str(mid)+" "+str(granted_qos)
     #def mqtt_on_log(self, mqttc, obj, level, string):
     #    print string
     def publish(self, channel, message):
-        self._mqttc.publish(channel, message)
+        if self._mqttc:
+            self._mqttc.publish(channel, message)
     def connect_to_mqtt(self):
         try:
-            self._mqttc.connect("broker.pikabot.org", 1883, 60)
-            # Enable this line if you are doing the snip code, off stress
-            self._mqttc.subscribe("pgo/#", 0)
+            if DEBUG_ON:
+                print 'connect again'
+            self._mqttc = mqtt.Client(None)
+            if self._mqttc:
+                self._mqttc.on_message = self.mqtt_on_message
+                self._mqttc.on_connect = self.mqtt_on_connect
+                self._mqttc.on_subscribe = self.mqtt_on_subscribe
+                self._mqttc.on_publish = self.mqtt_on_publish
+                self._mqttc.on_disconnect = self.on_disconnect
+
+                self._mqttc.connect("broker.pikabot.org", 1883, 60)
+                # Enable this line if you are doing the snip code, off stress
+                self._mqttc.subscribe("pgo/#", 1)
+                # self._mqttc.loop_start()
         except TypeError:
+            print 'Connect to mqtter error'
             return
     def run(self):
-        self._mqttc.loop_forever()
+        while True:
+            self._mqttc.loop_forever(timeout=30.0, max_packets=100, retry_first_connection=False)
+            print 'Oops disconnected ?'
+            time.sleep(20)
 class SocialHandler(EventHandler):
     def __init__(self, bot):
         self.bot = bot
-        try:
-            self.mqttc = MyMQTTClass(bot, self.bot.config.client_id)
-            self.mqttc.connect_to_mqtt()
-            thread.start_new_thread(self.mqttc.run)
-        except socket_error as serr:
-            #if serr.errno == errno.ECONNREFUSED:
-                # ECONNREFUSED
-            self.mqttc = None
+        self.mqttc = None
     def handle_event(self, event, sender, level, formatted_msg, data):
-        if self.mqttc == None:
-            return
+        if self.mqttc is None:
+            if DEBUG_ON:
+                print 'need connect'
+            try:
+                self.mqttc = MyMQTTClass(self.bot, self.bot.config.client_id)
+                self.mqttc.connect_to_mqtt()
+                self.bot.mqttc = self.mqttc
+                thread.start_new_thread(self.mqttc.run)
+            except socket_error as serr:
+                #if serr.errno == errno.ECONNREFUSED:
+                    # ECONNREFUSED
+                self.mqttc = None
+                return
         #sender_name = type(sender).__name__
         #if formatted_msg:
         #    message = "[{}] {}".format(event, formatted_msg)
