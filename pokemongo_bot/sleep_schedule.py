@@ -125,28 +125,24 @@ class SleepSchedule(object):
             next_time += timedelta(seconds=self._get_random_offset(self.entries[index]['time_random_offset']))
             next_duration = self._get_next_duration(self.entries[index])
             next_end = next_time + timedelta(seconds=next_duration)
+            location = self.entries[index]['wake_up_at_location'] if 'wake_up_at_location' in self.entries[index] else ''
 
-            # If sleep time is passed add one day
-            if next_time <= now and now > next_end:
+            diff = next_time - now
+
+            # If sleep time is passed add one day or time to sleep less than SCHEDULING_MARGIN
+            if (next_time <= now and now > next_end) or (diff < self.SCHEDULING_MARGIN):
                 next_time += timedelta(days=1)
+                diff = next_time - now
             # If now is sleeping time
             elif next_time <= now and now < next_end:
-                location = self.entries[index]['wake_up_at_location'] if 'wake_up_at_location' in self.entries[index] else ''
                 return next_time, next_duration, next_end, location, True
 
-            times.append(next_time)
+            prepared = {'time': next_time, 'duration': next_duration, 'end': next_end, 'location': location, 'diff': diff}
+            times.append(prepared)
 
-        diffs = {}
-        for index in range(len(self.entries)):
-            diff = (times[index]-now).total_seconds()
-            if diff >= 0: diffs[index] = diff
+        closest = min(times, key=lambda x: x['diff'])
 
-        closest = min(diffs.iterkeys(), key=lambda x: diffs[x])
-
-        next_time = times[closest]
-        location = self.entries[closest]['wake_up_at_location'] if 'wake_up_at_location' in self.entries[closest] else ''
-
-        return next_time, next_duration, next_end, location, False
+        return closest['time'], closest['duration'], closest['end'], closest['location'], False
 
     def _get_next_duration(self, entry):
         duration = entry['duration'] + self._get_random_offset(entry['duration_random_offset'])
