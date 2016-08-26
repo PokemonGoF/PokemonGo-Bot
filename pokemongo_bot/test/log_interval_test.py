@@ -15,7 +15,7 @@ class LogDelayTestCase(unittest.TestCase):
           "lure_attraction": 'true',
           "lure_max_distance": 2000,
           "walker": "StepWalker",
-          "log_delay": 3
+          "log_interval": 3
       }
 
     def setUp(self):
@@ -24,11 +24,11 @@ class LogDelayTestCase(unittest.TestCase):
         self.worker = MoveToFort(self.bot, self.config)
 
     def test_read_correct_delay_config(self):
-        self.worker.config['log_delay'] = 3
-        self.assertEqual(self.config.get('log_delay'), 3)
+        self.worker.config['log_interval'] = 3
+        self.assertEqual(self.config.get('log_interval'), 3)
 
     def test_log_with_no_delay(self):
-        self.worker.config['log_delay'] = 3
+        self.worker.config['log_interval'] = 3
         # All those call should not happen cause without any delay between each other
         self.worker.emit_event('moving_to_fort', formatted="just an example")
         self.worker.emit_event('moving_to_fort', formatted="just an example")
@@ -43,10 +43,10 @@ class LogDelayTestCase(unittest.TestCase):
 
     def test_correct_delay_wait(self):
 
-        self.worker.config['log_delay'] = 2
+        self.worker.config['log_interval'] = 2
 
-        # to avoid use sleep() function here, we subtract expected log_delay to last_log_time
-        self.worker.last_log_time -= self.worker.config['log_delay']
+        # to avoid use sleep() function here, we subtract expected log_interval to last_log_time
+        self.worker.last_log_time -= self.worker.config['log_interval']
 
         for number_of_checks in range(10):
             self.worker.emit_event('moving_to_fort', formatted="just an example")
