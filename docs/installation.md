@@ -38,11 +38,12 @@ We do recommend Windows users to use [Docker](#docker) this will work much easie
 2. Download `encrypt.so` and `encrypt.dll` or `encrypt_64.dll` to the same folder of the `PokemonGo-Bot-Install.bat`.
 3. Run `PokemonGo-Bot-install.bat`.
 After that has been done the bot will be installed.
-4. Run `PokemonGo-Bot-Start.bat`.
+4. Run `PokemonGo-Bot-Configurator` to create config.json and userdata.js.
+5. Run `PokemonGo-Bot-Start.bat`.
 This will start the bot and the web interface.
 
 ### To update the bot
-3. Run `PokemonGo-Bot-Start.bat`
+1. Run `PokemonGo-Bot-Start.bat`
 This will check for an update and will start the bot afterwards.
 
 # Docker
