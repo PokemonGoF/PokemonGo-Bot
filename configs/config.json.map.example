@@ -69,6 +69,16 @@
         }
       },
       {
+        "type": "ShowBestPokemon",
+        "config": {
+          "enabled": true,
+          "min_interval": 60,
+          "amount": 5,
+          "order_by": "cp",
+          "info_to_show": ["cp", "ivcp", "dps", "hp"]
+        }
+      },
+      {
         "type": "TransferPokemon",
         "config": {
           "enabled": true,
