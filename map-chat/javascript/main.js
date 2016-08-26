@@ -9,16 +9,18 @@ var topic = urlHashTopic ? urlHashTopic : "pgomapcatch/chat";
 function initialiseEventBus(){
   window.client = mqtt.connect('ws://broker.pikabot.org'); // you add a ws:// url here
   client.subscribe("pgomapcatch/#");
+  client.subscribe("pgochat/chat");
 
   client.on("message", function (topic, payload) {
     //Materialize.toast(payload, 4000);
-    if (topic === 'pgomapcatch/chat') {
-      displayChatMessageOnMap(payload);
-      Materialize.toast(payload, 5000);
-
+    if (topic === 'pgochat/chat') {
+	  var objx = $.parseJSON(payload);
+	  var message_data = "<b>anonymous" + Math.floor(Math.random()*90000) + "</b>: " + objx.text;
+	  displayChatMessageOnMap(payload);
+      Materialize.toast(message_data, 5000);
       var msg = JSON.parse(payload);
-      console.info('[ CHAT]', '(' + msg.lat + ',' + msg.lng + '): ', msg.text);
-    } else {
+      console.info('[CHAT]', '(' + msg.lat + ',' + msg.lng + '): ', msg.text);
+    } else if (/^pgomapcatch\/all\/catchable/i.test(topic)) {
       //@ro: let's grab the message and split that shit. (simple for now, maybe we could just parse the json instead)
       var pLoadR = payload.toString();
       var pLoadR2 = pLoadR.split(",");
@@ -32,16 +34,11 @@ function initialiseEventBus(){
       var icon = path + "0" + ico + ".png"
       var icostr = icon.toString();
       displayMessageOnMap(payload, olat, olong, sessid, icostr, expir, pokenick);
-
-      if (/^pgomapcatch\/all\/catchable/i.test(topic)) {
-        console.debug('[CATCHABLE]', pokenick, '(' + olat + ',' + olong + ')');
-      } else {
-        console.debug(topic);
-      }
+      console.debug('[CATCHABLE]', pokenick, '(' + olat + ',' + olong + ')');
+    } else {
+      console.debug(topic);
     }
   });
-
-  client.publish("pgochat/join", "I just connected to the map!");
 }
 
 function sendMessage(topic, input) {
@@ -69,13 +66,13 @@ $(document).ready(function () {
   var input = $("#input");
   input.keyup(function (e) {
     if (e.keyCode == 13) {
-      sendMessage('pgomapcatch/chat', input);
+      sendMessage('pgochat/chat', input);
     }
   });
   input.focus();
 
   $("#send-button").click(function () {
-    sendMessage('pgomapcatch/chat', input);
+    sendMessage('pgochat/chat', input);
   });
 
   $("#notification_lever").change(function () {

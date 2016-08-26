@@ -331,6 +331,10 @@ class NicknamePokemon(BaseTask):
         moveset = pokemon.moveset
 
         pokemon.name = self._localize(pokemon.name)
+        
+        # Remove spaces from Nidoran M/F 
+        pokemon.name = pokemon.name.replace("Nidoran M","NidoranM")
+        pokemon.name = pokemon.name.replace("Nidoran F","NidoranF")
 
         #
         # Generate new nickname
