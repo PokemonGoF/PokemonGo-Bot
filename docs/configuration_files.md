@@ -137,7 +137,30 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 * CollectLevelUpReward
   * `collect_reward`: Default `True` | Collect level up rewards.
   * `level_limit`: Default `-1` | Bot will stop automatically after trainer reaches level limit. Set to `-1` to disable.
-
+* All tasks
+  * `log_interval`: Default `0` | Minimum seconds interval before next log of the current task will be printed
+  
+  
+### Specify a custom log_interval for specific task
+  
+  ```
+    {
+      "type": "MoveToFort",
+      "config": {
+        "enabled": true,
+        "lure_attraction": true,
+        "lure_max_distance": 2000,
+        "walker": "StepWalker",
+        "log_interval": 5
+      }
+    }
+   ```
+      
+   Result:
+    
+    2016-08-26 11:43:18,199 [MoveToFort] [INFO] [moving_to_fort] Moving towards pokestop ... - 0.07km
+    2016-08-26 11:43:23,641 [MoveToFort] [INFO] [moving_to_fort] Moving towards pokestop ... - 0.06km
+    2016-08-26 11:43:28,198 [MoveToFort] [INFO] [moving_to_fort] Moving towards pokestop ... - 0.05km
 
 ### Example configuration:
 [[back to top](#table-of-contents)]

@@ -432,7 +432,8 @@
         "config": {
             "enabled": true,
             "lure_attraction": true,
-            "lure_max_distance": 2000
+            "lure_max_distance": 2000,
+            "log_interval": 5
         }
       },
       {
