@@ -82,6 +82,8 @@ Document the configuration options of PokemonGo-Bot.
 |`pokemon_bag.show_count`    | false   |                   Show amount of each pokemon.
 |`pokemon_bag.pokemon_info`    | []   |                   Check any config example file to see available settings.
 |`favorite_locations`    | []   | Allows you to define a collection of locations and coordinates, allowing rapid switch using a "label" on your location config
+| `live_config_update.enabled`            | false     | Enable live config update
+| `live_config_update.tasks_only`            | false     | True: quick update for Tasks only (without re-login). False: slower update for entire config file.
 
 
 ## Configuring Tasks
