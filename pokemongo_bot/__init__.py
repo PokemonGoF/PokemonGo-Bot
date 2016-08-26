@@ -151,7 +151,7 @@ class PokemonGoBot(Datastore):
                 remote_control = WebsocketRemoteControl(self).start()
 
         # @var EventManager
-        self.event_manager = EventManager(*handlers)
+        self.event_manager = EventManager(self.config.walker_limit_output, *handlers)
         self._register_events()
         if self.config.show_events:
             self.event_manager.event_report()

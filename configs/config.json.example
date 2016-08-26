@@ -257,6 +257,7 @@
     "gps_z_noise_range": 12.5,
     "debug": false,
     "test": false,
+    "walker_limit_output": false,
     "health_record": true,
     "location_cache": true,
     "distance_unit": "km",
