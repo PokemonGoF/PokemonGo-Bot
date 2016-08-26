@@ -147,6 +147,7 @@
           "berry_threshold": 0.35,
           "vip_berry_threshold": 0.9,
           "treat_unseen_as_vip": true,
+          "daily_catch_limit": 800,
           "catch_throw_parameters": {
             "excellent_rate": 0.1,
             "great_rate": 0.5,
