@@ -1126,6 +1126,7 @@ class Inventory(object):
 
         with open(web_inventory, "w") as outfile:
             json.dump(json_inventory, outfile)
+            outfile.close()
 
     def jsonify_inventory(self):
         json_inventory = []
