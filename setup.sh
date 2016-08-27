@@ -36,7 +36,11 @@ echo "$1" | sed 's/\//\\\//g' | sed 's/"/\\"/g' # escape slash and double quotes
 
 function Pokebotauth () {
 cd $pokebotpath
-read -p "Enter 1 for Google or 2 for Pokemon Trainer Club (PTC)
+read -p "
+-----------------
+Auth generator
+Enter 1 for Google or 2 for Pokemon Trainer Club (PTC)
+-----------------
 " auth
 read -p "Input E-Mail (Google) or Username(PTC)
 " username
@@ -57,7 +61,12 @@ echo "Edit ./configs/auth.json to modify auth or location."
 
 function Pokebotconfig () {
 cd $pokebotpath
-read -p "Enter 1 for default, 2 for cluster, 3 for map, 4 for optimizer, 5 for path or 6 pokemon config
+read -p "
+-----------------
+Config Generator
+Enter 1 for default, 2 for cluster, 3 for map, 4 for optimizer, 5 for path or 6 pokemon config
+-----------------
+
 " cfgoption
 [ "$cfgoption" == "1" ] && cfgoption="config.json.example"
 [ "$cfgoption" == "2" ] && cfgoption="config.json.cluster.example"
@@ -120,7 +129,8 @@ easy_install virtualenv
 Pokebotreset
 Pokebotupdate
 Pokebotencrypt
-echo "Install complete. Starting to generate config.json."
+echo "Install complete. Starting to generate auth.json and config.json."
+Pokebotauth
 Pokebotconfig
 }
 
@@ -171,6 +181,7 @@ Pokebotupdate
 ;;
 --backup|-b)
 mkdir -p $backuppath
+cp -f $pokebotpath/configs/auth*.json $backuppath/
 cp -f $pokebotpath/configs/config*.json $backuppath/
 cp -f $pokebotpath/configs/*.gpx $backuppath/
 cp -f $pokebotpath/configs/path*.json $backuppath/
