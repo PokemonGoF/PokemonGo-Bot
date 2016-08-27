@@ -11,7 +11,7 @@ class TelegramTask(BaseTask):
     tbot = None
 
     def initialize(self):
-        api_key = self.config.get('api_key')
+        api_key = self.bot.config.telegram_token
         if api_key == None:
             self.emit_event(
                 'config_error',
