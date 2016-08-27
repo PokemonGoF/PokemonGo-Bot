@@ -219,6 +219,7 @@ class IncubateEggs(BaseTask):
                 # pokemon ids seem to be offset by one
                 if pokemon['pokemon_id']!=-1:
                     pokemon['name'] = self.bot.pokemon_list[(pokemon.get('pokemon_id')-1)]['Name']
+                    inventory.pokemons().add(pokemon)
                 else:
                     pokemon['name'] = "error"
         except:
