@@ -287,16 +287,19 @@ def init_config():
 
     # Select a config file code
     parser.add_argument("-cf", "--config", help="Config File to use")
-    config_arg = parser.parse_known_args() and parser.parse_known_args()[0].config or None
+    parser.add_argument("-af", "--auth", help="Auth File to use")
 
-    if config_arg and os.path.isfile(config_arg):
-        _json_loader(config_arg)
-        config_file = config_arg
-    elif os.path.isfile(config_file):
-        logger.info('No config argument specified, checking for /configs/config.json')
-        _json_loader(config_file)
-    else:
-        logger.info('Error: No /configs/config.json or specified config')
+    for _config in ['auth', 'config']:
+        config_arg = parser.parse_known_args() and parser.parse_known_args()[0].__dict__[_config] or None
+
+        if config_arg and os.path.isfile(config_arg):
+            _json_loader(config_arg)
+            config_file = config_arg if _config == 'config' else config_file
+        elif os.path.isfile(config_file):
+            logger.info('No ' + _config + ' argument specified, checking for /configs/' + _config + '.json')
+            _json_loader(config_file)
+        else:
+            logger.info('Error: No /configs/config.json or specified config')
 
     # Read passed in Arguments
     required = lambda x: not x in load

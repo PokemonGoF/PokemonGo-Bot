@@ -1,13 +1,4 @@
 {
-    "auth_service": "google",
-    "username": "YOUR_USERNAME",
-    "password": "YOUR_PASSWORD",
-    "location": "SOME_LOCATION",
-    "favorite_locations":[
-        {"name": "Milan", "coords": "45.472849,9.177567"}
-    ],
-    "gmapkey": "GOOGLE_MAPS_API_KEY",
-    "encrypt_location": "",
     "websocket_server": false,
     "heartbeat_threshold": 10,
     "enable_social": true,
@@ -147,6 +138,7 @@
           "berry_threshold": 0.35,
           "vip_berry_threshold": 0.9,
           "treat_unseen_as_vip": true,
+          "daily_catch_limit": 800,
           "catch_throw_parameters": {
             "excellent_rate": 0.1,
             "great_rate": 0.5,
@@ -240,7 +232,6 @@
     "distance_unit": "km",
     "reconnecting_timeout": 15,
     "logging_color": true,
-    "daily_catch_limit": 800,
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},
