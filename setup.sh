@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#encoding=utf8  
+#encoding=utf8
 pokebotpath=$(cd "$(dirname "$0")"; pwd)
 backuppath=$pokebotpath"/backup"
 
@@ -21,8 +21,8 @@ curl -O http://pgoapi.com/pgoencrypt.tar.gz
 else
 wget http://pgoapi.com/pgoencrypt.tar.gz
 fi
-tar -xf pgoencrypt.tar.gz 
-cd pgoencrypt/src/ 
+tar -xf pgoencrypt.tar.gz
+cd pgoencrypt/src/
 make
 mv libencrypt.so $pokebotpath/encrypt.so
 cd ../..
@@ -34,19 +34,40 @@ function Pokebotescapestring () {
 echo "$1" | sed 's/\//\\\//g' | sed 's/"/\\"/g' # escape slash and double quotes
 }
 
-function Pokebotconfig () {
+function Pokebotauth () {
 cd $pokebotpath
-read -p "enter 1 for google or 2 for ptc 
+read -p "Enter 1 for Google or 2 for Pokemon Trainer Club (PTC)
 " auth
-read -p "Input username 
+read -p "Input E-Mail (Google) or Username(PTC)
 " username
-read -p "Input password 
+read -p "Input Password
 " -s password
 password=$(Pokebotescapestring $password)
 read -p "
-Input location 
+Input Location
 " location
-read -p "Input gmapkey 
+read -p "Input Google API Key (gmapkey)
+" gmapkey
+[[ $auth = "2" || $auth = "ptc" ]] && auth="ptc" || auth="google"
+sed -e "s/YOUR_USERNAME/$username/g" -e "s/YOUR_PASSWORD/$password/g" \
+  -e "s/SOME_LOCATION/$location/g" -e "s/GOOGLE_MAPS_API_KEY/$gmapkey/g" \
+  -e "s/google/$auth/g" configs/auth.json.example > configs/auth.json
+echo "Edit ./configs/auth.json to modify auth or location."
+}
+
+function Pokebotconfig () {
+cd $pokebotpath
+read -p "enter 1 for google or 2 for ptc
+" auth
+read -p "Input username
+" username
+read -p "Input password
+" -s password
+password=$(Pokebotescapestring $password)
+read -p "
+Input location
+" location
+read -p "Input gmapkey
 " gmapkey
 [[ $auth = "2" || $auth = "ptc" ]] && auth="ptc" || auth="google"
 sed -e "s/YOUR_USERNAME/$username/g" -e "s/YOUR_PASSWORD/$password/g" \
@@ -61,7 +82,7 @@ cd $pokebotpath
 if [ "$(uname -s)" == "Darwin" ]
 then
 echo "You are on Mac os"
-brew update 
+brew update
 brew install --devel protobuf
 elif [ $(uname -s) == CYGWIN* ]
 then
@@ -119,7 +140,7 @@ then
 echo "Branch dev resetting."
 git reset --hard origin/dev
 elif [ "1" == $(git branch -vv |grep -c "* master") ]
-then 
+then
 echo "Branch master resetting."
 git reset --hard origin/master
 fi
@@ -163,6 +184,10 @@ cp -f $pokebotpath/configs/path*.json $backuppath/
 cp -f $pokebotpath/web/config/userdata.js $backuppath/
 echo "Backup complete."
 ;;
+--auth|-a)
+Pokebotauth
+;;
+
 --config|-c)
 Pokebotconfig
 ;;
