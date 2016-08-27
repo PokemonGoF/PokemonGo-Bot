@@ -11,6 +11,8 @@ class TelegramTask(BaseTask):
     tbot = None
 
     def initialize(self):
+        if not self.enabled:
+            return
         api_key = self.bot.config.telegram_token
         if api_key == None:
             self.emit_event(
@@ -25,6 +27,8 @@ class TelegramTask(BaseTask):
             self.update_id = None
 
     def work(self):
+        if not self.enabled:
+            return
         for update in self.tbot.getUpdates(offset=self.update_id, timeout=10):
             self.update_id = update.update_id+1
             if update.message:
