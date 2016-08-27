@@ -14,7 +14,7 @@ then
 echo "Branch dev have an update. Run ./setup.sh -u to update."
 sleep 2
 elif [ "1" == $(git branch -vv |grep -c "* master") ] && [ $(git log --pretty=format:"%h" -1) != $(git log --pretty=format:"%h" -1 origin/master) ]
-then 
+then
 echo "Branch master have an update. Run ./setup.sh -u to update."
 sleep 2
 fi
@@ -23,8 +23,8 @@ echo "There's no "$filename" file. Please use ./setup.sh -c to creat one."
 fi
 while true
 do
-python pokecli.py -cf $filename
-echo `date`" Pokebot "$*" Stopped." 
+python pokecli.py -af ./configs/auth.json -cf $filename
+echo `date`" Pokebot "$*" Stopped."
 read -p "Press any button or wait 20 seconds to continue.
 " -r -s -n1 -t 20
 done
