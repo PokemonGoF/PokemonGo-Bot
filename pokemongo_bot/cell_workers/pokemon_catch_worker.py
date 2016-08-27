@@ -5,6 +5,8 @@ import time
 import json
 import logging
 import time
+import sys
+
 from random import random, randrange
 from pokemongo_bot import inventory
 from pokemongo_bot.base_task import BaseTask
@@ -173,6 +175,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
                 break
             else:
                 self.emit_event('catch_limit', formatted='WARNING! You have reached your daily catch limit')
+                sys.exit(2)
                 break
 
         # simulate app
@@ -520,7 +523,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
                 try:
                     inventory.pokemons().add(pokemon)
                     exp_gain = sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
-                    
+
                     self.emit_event(
                         'pokemon_caught',
                         formatted='Captured {pokemon}! [CP {cp}] [NCP {ncp}] [Potential {iv}] [{iv_display}] ({caught_last_24_hour}/{daily_catch_limit}) [+{exp} exp]',
