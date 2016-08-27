@@ -264,7 +264,10 @@
     "location_cache": true,
     "distance_unit": "km",
     "reconnecting_timeout": 15,
-    "logging_color": true,
+	"logging": {
+		"color": true,
+		"clean": false
+	},
     "catch": {
       "any": {"candy_threshold" : 400 ,"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},
