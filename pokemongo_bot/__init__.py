@@ -132,6 +132,9 @@ class PokemonGoBot(Datastore):
     def _setup_event_system(self):
         handlers = []
 
+        if self.config.logging_color:
+            self.logger.warning('The logging_color argument has been moved into the logging config section')
+                
         if self.config.logging and 'color' in self.config.logging and self.config.logging['color']:
             handlers.append(ColoredLoggingHandler(self))
         else:
