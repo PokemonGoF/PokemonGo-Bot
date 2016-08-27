@@ -35,15 +35,18 @@ class IncubateEggs(BaseTask):
         except:
             return
 
+        should_print = self._should_print()
+
         if self.used_incubators and IncubateEggs.last_km_walked != self.km_walked:
             self.used_incubators.sort(key=lambda x: x.get("km"))
             km_left = self.used_incubators[0]['km']-self.km_walked
             if km_left <= 0:
                 self._hatch_eggs()
+                should_print = False
             else:
                 self.bot.metrics.next_hatching_km(km_left)
 
-        if self._should_print():
+        if should_print:
             self._print_eggs()
             self._compute_next_update()
 
