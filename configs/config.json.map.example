@@ -94,6 +94,8 @@
         "type": "EvolvePokemon",
         "config": {
             "enabled": false,
+            "//evolve all except Zubat and Rattata": "",
+            "//evolve_all": "-Zubat,-Rattata",
             "evolve_all": "none",
             "first_evolve_by": "cp",
             "evolve_above_cp": 500,
