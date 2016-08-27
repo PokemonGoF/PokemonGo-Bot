@@ -1,3 +1,5 @@
+import time
+
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot import inventory

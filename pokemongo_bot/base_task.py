@@ -32,15 +32,27 @@ class BaseTask(object):
       sender=self
 
     # Print log only if X seconds are passed from last log
-    if (time.time() - self.last_log_time) > self.config.get('log_interval', 0):
-      self.last_log_time = time.time()
-      self.bot.event_manager.emit(
-        event,
-        sender=sender,
-        level=level,
-        formatted=formatted,
-        data=data
-      )
+    try:
+        if (time.time() - self.last_log_time) > self.config.get('log_interval', 0):
+          self.last_log_time = time.time()
+          self.bot.event_manager.emit(
+            event,
+            sender=sender,
+            level=level,
+            formatted=formatted,
+            data=data
+          )
+    except AttributeError:
+        if (time.time() - self.last_log_time) > 0:
+          self.last_log_time = time.time()
+          self.bot.event_manager.emit(
+            event,
+            sender=sender,
+            level=level,
+            formatted=formatted,
+            data=data
+          )
+
 
   def initialize(self):
     pass
