@@ -4,6 +4,7 @@ import os
 from collections import OrderedDict
 
 from pokemongo_bot.base_dir import _base_dir
+from pokemongo_bot.services.item_recycle_worker import ItemRecycler
 
 '''
 Helper class for updating/retrieving Inventory data
@@ -113,7 +114,7 @@ class Item(object):
     """
     def __init__(self, item_id, item_count):
         """
-        Initialise an instance of an item
+        Representation of an item
         :param item_id: ID of the item
         :type item_id: int
         :param item_count: Quantity of the item
@@ -137,6 +138,27 @@ class Item(object):
         if self.count < amount:
             raise Exception('Tried to remove more {} than you have'.format(self.name))
         self.count -= amount
+
+
+    def recycle(self, amount_to_recycle):
+        """
+        Recycle (discard) the specified amount of item from the item inventory.
+        It is making a call to the server to request a recycling as well as updating the cached inventory.
+        :param amount_to_recycle: The amount to recycle.
+        :type amount_to_recycle: int
+        :return: Returns whether or not the task went well
+        :rtype: worker_result.WorkerResult
+        """
+        if self.count < amount_to_recycle:
+            raise Exception('Tried to remove more {} than you have'.format(self.name))
+
+        item_recycler = ItemRecycler(_inventory.bot, self, amount_to_recycle)
+        item_recycler_work_result = item_recycler.work()
+
+        if item_recycler.is_recycling_success():
+            self.remove(amount_to_recycle)
+
+        return item_recycler_work_result
 
     def add(self, amount):
         """
