@@ -57,23 +57,15 @@ echo "Edit ./configs/auth.json to modify auth or location."
 
 function Pokebotconfig () {
 cd $pokebotpath
-read -p "enter 1 for google or 2 for ptc
-" auth
-read -p "Input username
-" username
-read -p "Input password
-" -s password
-password=$(Pokebotescapestring $password)
-read -p "
-Input location
-" location
-read -p "Input gmapkey
-" gmapkey
-[[ $auth = "2" || $auth = "ptc" ]] && auth="ptc" || auth="google"
-sed -e "s/YOUR_USERNAME/$username/g" -e "s/YOUR_PASSWORD/$password/g" \
-  -e "s/SOME_LOCATION/$location/g" -e "s/GOOGLE_MAPS_API_KEY/$gmapkey/g" \
-  -e "s/google/$auth/g" configs/auth.json.example > configs/auth.json
-cp configs/config.json.example configs/config.json
+read -p "Enter 1 for default, 2 for cluster, 3 for map, 4 for optimizer, 5 for path or 6 pokemon config
+" cfgoption
+[ "$cfgoption" == "1" ] && cfgoption="config.json.example"
+[ "$cfgoption" == "2" ] && cfgoption="config.json.cluster.example"
+[ "$cfgoption" == "3" ] && cfgoption="config.json.map.example"
+[ "$cfgoption" == "4" ] && cfgoption="config.json.optimizer.example"
+[ "$cfgoption" == "5" ] && cfgoption="config.json.path.example"
+[ "$cfgoption" == "6" ] && cfgoption="config.json.pokemon.example"
+cp configs/$cfgoption configs/config.json
 echo "Edit ./configs/config.json to modify any other config."
 }
 
@@ -81,7 +73,7 @@ function Pokebotinstall () {
 cd $pokebotpath
 if [ "$(uname -s)" == "Darwin" ]
 then
-echo "You are on Mac os"
+echo "You are on Mac OS"
 brew update
 brew install --devel protobuf
 elif [ $(uname -s) == CYGWIN* ]
@@ -157,6 +149,7 @@ function Pokebothelp () {
 echo "usage:"
 echo "	-i,--install.		Install PokemonGo-Bot."
 echo "	-b,--backup.		Backup config files."
+echo "	-a,--auth.		Easy auth generator."
 echo "	-c,--config.		Easy config generator."
 echo "	-e,--encrypt.		Make encrypt.so."
 echo "	-r,--reset.		Force sync source branch."
