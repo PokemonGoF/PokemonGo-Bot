@@ -19,7 +19,7 @@
       {
         "type": "TelegramTask",
         "config": {
-          "enabled": false
+          "enabled": false,
           "api_key": ""
         }
       },
