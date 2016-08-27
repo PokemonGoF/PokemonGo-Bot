@@ -289,6 +289,12 @@ def init_config():
     parser.add_argument("-cf", "--config", help="Config File to use")
     parser.add_argument("-af", "--auth", help="Auth File to use")
 
+    parser.add_argument("-sl", "--simplelog", help="Simple log output", action="store_true")
+    args = parser.parse_args()
+    if args.simplelog:
+        logging.root.removeHandler(logging.root.handlers[-1])
+        logging.basicConfig(level=logging.INFO, format='%(message)s')
+
     for _config in ['auth', 'config']:
         config_arg = parser.parse_known_args() and parser.parse_known_args()[0].__dict__[_config] or None
 
