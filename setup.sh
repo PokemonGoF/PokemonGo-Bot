@@ -51,7 +51,8 @@ read -p "Input gmapkey
 [[ $auth = "2" || $auth = "ptc" ]] && auth="ptc" || auth="google"
 sed -e "s/YOUR_USERNAME/$username/g" -e "s/YOUR_PASSWORD/$password/g" \
   -e "s/SOME_LOCATION/$location/g" -e "s/GOOGLE_MAPS_API_KEY/$gmapkey/g" \
-  -e "s/google/$auth/g" configs/config.json.example > configs/config.json
+  -e "s/google/$auth/g" configs/auth.json.example > configs/auth.json
+cp configs/config.json.example configs/config.json
 echo "Edit ./configs/config.json to modify any other config."
 }
 
