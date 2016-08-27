@@ -207,7 +207,7 @@ class RecycleItems(BaseTask):
         items_to_recycle = self.get_category_items_to_recycle(category_inventory, category_count, category_max)
         for item in items_to_recycle:
             action_delay(self.recycle_wait_min, self.recycle_wait_max)
-            if ItemRecycler(self.bot, inventory.items().get(item[0]), item[1]).work() == WorkerResult.ERROR:
+            if inventory.items().get(item[0]).recycle(item[1]) == WorkerResult.ERROR:
                 worker_result = WorkerResult.ERROR
         return worker_result
 
