@@ -10,7 +10,7 @@
       {
         "type": "TelegramTask",
         "config": {
-          "enabled": false,
+          "enabled": false
         }
       },
       {
