@@ -695,7 +695,10 @@ def init_config():
 
     if "daily_catch_limit" in load:
         logger.warning('The daily_catch_limit argument has been moved into the CatchPokemon Task')
-
+        
+    if "logging_color" in load:
+        logger.warning('The logging_color argument has been moved into the logging config section')
+            
     if config.walk_min < 1:
         parser.error("--walk_min is out of range! (should be >= 1.0)")
         return None
