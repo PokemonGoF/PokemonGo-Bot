@@ -17,6 +17,13 @@
     },
     "tasks": [
       {
+        "type": "TelegramTask",
+        "config": {
+          "enabled": false
+          "api_key": ""
+        }
+      },
+      {
         "//NOTE: This task MUST be placed on the top of task list": {},
         "type": "RandomAlivePause",
         "config": {
