@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import telegram
 import os
+import logging
 import json
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.base_dir import _base_dir
-
+from pokemongo_bot.event_handlers import TelegramHandler
 class TelegramTask(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
     update_id = None
@@ -13,6 +14,7 @@ class TelegramTask(BaseTask):
     def initialize(self):
         if not self.enabled:
             return
+        self.logger = logging.getLogger(type(self).__name__)
         api_key = self.bot.config.telegram_token
         if api_key == None:
             self.emit_event(
@@ -21,6 +23,8 @@ class TelegramTask(BaseTask):
             )
             return
         self.tbot = telegram.Bot(api_key)
+        if self.config.get('master',None):
+            self.bot.event_manager.add_handler(TelegramHandler(self.tbot,self.config.get('master',None),self.config.get('alert_catch')))
         try:
             self.update_id = self.tbot.getUpdates()[0].update_id
         except IndexError:
@@ -32,6 +36,9 @@ class TelegramTask(BaseTask):
         for update in self.tbot.getUpdates(offset=self.update_id, timeout=10):
             self.update_id = update.update_id+1
             if update.message:
+                self.logger.info("message from {} ({}): {}".format(update.message.from_user.username, update.message.from_user.id, update.message.text))
+                if self.config.get('master',None) and self.config.get('master',None)<>update.message.from_user.id:
+                    continue
                 if update.message.text == "/info":
                     stats = self._get_player_stats()
                     if stats:
@@ -45,8 +52,8 @@ class TelegramTask(BaseTask):
                                 "*"+self.bot.config.username+"*",
                                 "_Level:_ "+str(stats["level"]),
                                 "_XP:_ "+str(stats["experience"])+"/"+str(stats["next_level_xp"]),
-                                "_Pokemons Captured:_ "+str(stats["pokemons_captured"])+" ("+str(catch_day)+" _today_)",
-                                "_Poke Stop Visits:_ "+str(stats["poke_stop_visits"])+" ("+str(ps_day)+" _today_)",
+                                "_Pokemons Captured:_ "+str(stats["pokemons_captured"])+" ("+str(catch_day)+" _last 24h_)",
+                                "_Poke Stop Visits:_ "+str(stats["poke_stop_visits"])+" ("+str(ps_day)+" _last 24h_)",
                                 "_KM Walked:_ "+str(stats["km_walked"])
                             )
                             self.tbot.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
