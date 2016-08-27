@@ -836,7 +836,8 @@ Simulates the random pause of the day (speaking to someone, getting into a store
 
 Configure how the bot should use the incubators.
 
-- `longer_eggs_first`: (True | False ) should the bot start by the longer eggs first. If set to true, the bot first use the 10km eggs, then the 5km eggs, then the 2km eggs.
+- `infinite_longer_eggs_first`: (True | False ) should the bot start by the longer eggs first for the unbreakable incubator. If set to true, the bot first use the 10km eggs, then the 5km eggs, then the 2km eggs.
+- `breakable_longer_eggs_first`: (True | False ) should the bot start by the longer eggs first for the breakable incubator. If set to true, the bot first use the 10km eggs, then the 5km eggs, then the 2km eggs.
 - `infinite`: ([2], [2,5], [2,5,10], []) the type of egg the infinite (ie. unbreakable) incubator(s) can incubate. If set to [2,5], the incubator(s) can only incubate the 2km and 5km eggs. If set to [], the incubator(s) will not incubate any type of egg.
 - `breakable`: ([2], [2,5], [2,5,10], []) the type of egg the breakable incubator(s) can incubate. If set to [2,5], the incubator(s) can only incubate the 2km and 5km eggs. If set to [], the incubator(s) will not incubate any type of egg.
 
@@ -845,7 +846,8 @@ Configure how the bot should use the incubators.
 {
   "type": "IncubateEggs",
     "config": {
-    "longer_eggs_first": true,
+    "infinite_longer_eggs_first": false,
+    "breakable_longer_eggs_first": true,
     "infinite": [2,5],
     "breakable": [10]
   }

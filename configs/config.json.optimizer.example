@@ -40,7 +40,8 @@
         "type": "IncubateEggs",
         "config": {
           "enabled": true,
-          "longer_eggs_first": true,
+          "infinite_longer_eggs_first": false,
+          "breakable_longer_eggs_first": true,
           "min_interval": 120
         }
       },
