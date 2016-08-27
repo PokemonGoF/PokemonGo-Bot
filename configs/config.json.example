@@ -10,7 +10,9 @@
       {
         "type": "TelegramTask",
         "config": {
-          "enabled": false
+          "enabled": false,
+          "master": null,
+          "alert_catch": ["all"]
         }
       },
       {
