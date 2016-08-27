@@ -138,7 +138,7 @@
                             "// 'iv' = individual value": {},
                             "// 'ivcp' = iv weigted so that for equal iv, attack > defense > stamina": {},
                             "// 'cp' = combat power (can be increased with candies)": {},
-                            "// 'cp_exact' = combar power (not rounded)": {},
+                            "// 'cp_exact' = combat power (not rounded)": {},
                             "// 'ncp' (normalized cp) or 'cp_percent' = ratio cp / max_cp": {},
                             "// 'iv_attack' = attach component of iv": {},
                             "// 'iv_defense' = defense component of iv": {},
