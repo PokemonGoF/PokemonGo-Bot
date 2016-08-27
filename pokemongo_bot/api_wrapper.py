@@ -27,6 +27,8 @@ class ApiWrapper(Datastore, PGoApi):
         PGoApi.__init__(self)
         # Set to default, just for CI...
         self.actual_lat, self.actual_lng, self.actual_alt = PGoApi.get_position(self)
+        self.teleporting = False
+        self.noised_lat, self.noised_lng, self.noised_alt = self.actual_lat, self.actual_lng, self.actual_alt
 
         self.useVanillaRequest = False
         self.config = config
@@ -80,13 +82,14 @@ class ApiWrapper(Datastore, PGoApi):
             self.useVanillaRequest = False
         return ret_value
 
-    def set_position(self, lat, lng, alt=None):
+    def set_position(self, lat, lng, alt=None, teleporting=False):
         self.actual_lat = lat
         self.actual_lng = lng
         if None != alt:
             self.actual_alt = alt
         else:
             alt = self.actual_alt
+        self.teleporting = teleporting
         
         if self.config.replicate_gps_xy_noise:
             lat_noise = gps_noise_rng(self.config.gps_xy_noise_range)
@@ -96,6 +99,9 @@ class ApiWrapper(Datastore, PGoApi):
         if self.config.replicate_gps_z_noise:
             alt_noise = gps_noise_rng(self.config.gps_z_noise_range)
             alt = alt + alt_noise
+
+        self.noised_lat, self.noised_lng, self.noised_alt = lat, lng, alt
+
         PGoApi.set_position(self, lat, lng, alt)
 
     def get_position(self):

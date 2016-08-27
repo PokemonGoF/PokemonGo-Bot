@@ -4,6 +4,7 @@ import os
 from collections import OrderedDict
 
 from pokemongo_bot.base_dir import _base_dir
+from pokemongo_bot.services.item_recycle_worker import ItemRecycler
 
 '''
 Helper class for updating/retrieving Inventory data
@@ -113,7 +114,7 @@ class Item(object):
     """
     def __init__(self, item_id, item_count):
         """
-        Initialise an instance of an item
+        Representation of an item
         :param item_id: ID of the item
         :type item_id: int
         :param item_count: Quantity of the item
@@ -137,6 +138,27 @@ class Item(object):
         if self.count < amount:
             raise Exception('Tried to remove more {} than you have'.format(self.name))
         self.count -= amount
+
+
+    def recycle(self, amount_to_recycle):
+        """
+        Recycle (discard) the specified amount of item from the item inventory.
+        It is making a call to the server to request a recycling as well as updating the cached inventory.
+        :param amount_to_recycle: The amount to recycle.
+        :type amount_to_recycle: int
+        :return: Returns whether or not the task went well
+        :rtype: worker_result.WorkerResult
+        """
+        if self.count < amount_to_recycle:
+            raise Exception('Tried to remove more {} than you have'.format(self.name))
+
+        item_recycler = ItemRecycler(_inventory.bot, self, amount_to_recycle)
+        item_recycler_work_result = item_recycler.work()
+
+        if item_recycler.is_recycling_success():
+            self.remove(amount_to_recycle)
+
+        return item_recycler_work_result
 
     def add(self, amount):
         """
@@ -1093,13 +1115,57 @@ class Inventory(object):
         for i in (self.pokedex, self.candy, self.items, self.pokemons):
             i.refresh(inventory)
 
-        user_web_inventory = os.path.join(_base_dir, 'web', 'inventory-%s.json' % (self.bot.config.username))
-        try:
-            with open(user_web_inventory, 'w') as outfile:
-                json.dump(inventory, outfile)
-        except IOError as e:
-            errmsg = '[x] Error while opening location file: user_web_inventory'
+        self.update_web_inventory()
 
+
+    def init_inventory_outfile(self):
+        web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
+
+        if not os.path.exists(web_inventory):
+            json_inventory = []
+        
+            with open(web_inventory, "w") as outfile:
+                json.dump(json_inventory, outfile)
+
+    
+    def update_web_inventory(self):
+        web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
+
+        if not os.path.exists(web_inventory):
+            self.init_inventory_outfile()
+            
+        with open(web_inventory, "r") as infile:
+            json_inventory = json.load(infile)
+            infile.close()
+
+        json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("pokedex_entry", None)]
+        json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("candy", None)]
+        json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("item", None)]
+        json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("pokemon_data", None)]
+
+        json_inventory = json_inventory + self.jsonify_inventory()
+
+        with open(web_inventory, "w") as outfile:
+            json.dump(json_inventory, outfile)
+            outfile.close()
+
+    def jsonify_inventory(self):
+        json_inventory = []
+
+        for pokedex in self.pokedex.all():
+            json_inventory.append({"inventory_item_data": {"pokedex_entry": pokedex}})
+
+        for family_id, candy in self.candy._data.items():
+            json_inventory.append({"inventory_item_data": {"candy": {"family_id": family_id, "candy": candy.quantity}}})
+
+        for item_id, item in self.items._data.items():
+            json_inventory.append({"inventory_item_data": {"item": {"item_id": item_id, "count": item.count}}})
+
+        for pokemon in self.pokemons.all():
+            json_inventory.append({"inventory_item_data": {"pokemon_data": pokemon._data}})
+        
+        return json_inventory
+        
     def retrieve_inventories_size(self):
         """
         Retrieves the item inventory size
@@ -1197,6 +1263,9 @@ def refresh_inventory():
     :rtype: None
     """
     _inventory.refresh()
+    
+def update_web_inventory():
+    _inventory.update_web_inventory()
 
 def get_item_inventory_size():
     """

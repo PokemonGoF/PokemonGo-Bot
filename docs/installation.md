@@ -1,11 +1,11 @@
-#Install the bot
+# Install the bot
 ## Table of Contents
 - [Linux or Mac Automatic Installation](#linuxmac)
 - [Windows Automatic Installation](#windows)
 - [Docker Automatic Installation](#docker)
 
 
-#Linux/Mac
+# Linux/Mac
 ### Requirements (click each one for install guide)
 - [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/)
 - [pip](https://pip.pypa.io/en/stable/installing/)
@@ -28,26 +28,27 @@
 
 for manual installation please refer to [here](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/manual_installation.md)
 
-#Windows
+# Windows
 We do recommend Windows users to use [Docker](#docker) this will work much easier and smoother (also saver)
 
-##Requirements
+## Requirements
 
-###Easy Installation
+### Easy Installation
 1. Download [PokemonGo-Bot-Install.bat](https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/windows_bat/PokemonGo-Bot-Install.bat)
 2. Download `encrypt.so` and `encrypt.dll` or `encrypt_64.dll` to the same folder of the `PokemonGo-Bot-Install.bat`.
 3. Run `PokemonGo-Bot-install.bat`.
 After that has been done the bot will be installed.
-4. Run `PokemonGo-Bot-Start.bat`.
+4. Run `PokemonGo-Bot-Configurator` to create config.json and userdata.js.
+5. Run `PokemonGo-Bot-Start.bat`.
 This will start the bot and the web interface.
 
 ### To update the bot
-3. Run `PokemonGo-Bot-Start.bat`
+1. Run `PokemonGo-Bot-Start.bat`
 This will check for an update and will start the bot afterwards.
 
-#Docker
+# Docker
 
-###Easy installation
+### Easy installation
 Start by downloading for your platform:
 - [Mac](https://www.docker.com/products/docker#/mac)
 - [Windows](https://www.docker.com/products/docker#/windows)
@@ -81,7 +82,7 @@ docker run --name=bot1-pokegoweb --rm -it --volumes-from bot1-pokego -p 8000:800
 ```
 The OpenPoGoWeb will be served on `http://<your host>:8000`
 
-###Remarks for Windows
+### Remarks for Windows
 
 Even if the previous command are valid, you will not be able to visualize the web view under Windows. 
 To visualize the web view, execute instead the following commands (*make sure you are in the root folder and that your docker images is built*):
@@ -109,7 +110,7 @@ Then, with your containers running and your host address, you can access the web
 `http://<your host address>:8000 (eg http://192.168.99.100:8000)`
  
  
-####Errors
+#### Errors
 
 - An error occurred trying to connect:
 
@@ -124,7 +125,7 @@ docker-machine env default
 
 Make sure that the name of the image is correct.
 
- ###Using Docker compose
+### Using Docker compose
 
 if docker-compose [installed](https://docs.docker.com/compose/install/) you can alternatively run the PokemonGo-Bot ecosystem with one simple command:  
 (by using the docker-compose.yml configuration in this repo)

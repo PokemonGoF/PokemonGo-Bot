@@ -40,7 +40,7 @@ import string
 import subprocess
 from datetime import timedelta
 from getpass import getpass
-from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException
+from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException, NoPlayerPositionSetException
 from geopy.exc import GeocoderQuotaExceeded
 
 from pokemongo_bot import inventory
@@ -74,6 +74,18 @@ def main():
         raise SIGINTRecieved
     signal.signal(signal.SIGINT, handle_sigint)
 
+    def initialize_task(bot, config):
+        tree = TreeConfigBuilder(bot, config.raw_tasks).build()
+        bot.workers = tree
+
+    def initialize(config):
+        bot = PokemonGoBot(config)
+        bot.start()
+        initialize_task(bot,config)
+        bot.metrics.capture_stats()
+        bot.health_record = BotEvent(config)
+        return bot
+
     def get_commit_hash():
         try:
             hash = subprocess.check_output(['git', 'rev-parse', 'HEAD'], stderr=subprocess.STDOUT)[:-1]
@@ -88,7 +100,7 @@ def main():
         sys.stdout = codecs.getwriter('utf8')(sys.stdout)
         sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
-        config = init_config()
+        config, config_file = init_config()
         if not config:
             return
 
@@ -100,12 +112,8 @@ def main():
 
         while not finished:
             try:
-                bot = PokemonGoBot(config)
-                bot.start()
-                tree = TreeConfigBuilder(bot, config.raw_tasks).build()
-                bot.workers = tree
-                bot.metrics.capture_stats()
-                bot.health_record = health_record
+                bot = initialize(config)
+                config_changed = check_mod(config_file)
 
                 bot.event_manager.emit(
                     'bot_start',
@@ -116,6 +124,12 @@ def main():
 
                 while True:
                     bot.tick()
+                    if config.live_config_update_enabled and config_changed():
+                        logger.info('Config changed! Applying new config.')
+                        config, _ = init_config()
+
+                        if config.live_config_update_tasks_only: initialize_task(bot, config)
+                        else: bot = initialize(config)
 
             except KeyboardInterrupt:
                 bot.event_manager.emit(
@@ -143,6 +157,7 @@ def main():
                     level='info',
                     formatted='Server busy or offline'
                 )
+                time.sleep(wait_time)
             except ServerSideRequestThrottlingException:
                 bot.event_manager.emit(
                     'api_error',
@@ -151,14 +166,23 @@ def main():
                     formatted='Server is throttling, reconnecting in 30 seconds'
                 )
                 time.sleep(30)
+            except PermaBannedException:
+                bot.event_manager.emit(
+                    'api_error',
+                    sender=bot,
+                    level='info',
+                    formatted='Probably permabanned, Game Over ! Play again at https://club.pokemon.com/us/pokemon-trainer-club/sign-up/'
+                )
+                time.sleep(36000)
+            except NoPlayerPositionSetException:
+                bot.event_manager.emit(
+                    'api_error',
+                    sender=bot,
+                    level='info',
+                    formatted='No player position set'
+                )
+                time.sleep(wait_time)
 
-    except PermaBannedException:
-         bot.event_manager.emit(
-            'api_error',
-            sender=bot,
-            level='info',
-            formatted='Probably permabanned, Game Over ! Play again at https://club.pokemon.com/us/pokemon-trainer-club/sign-up/'
-         )
     except GeocoderQuotaExceeded:
         raise Exception("Google Maps API key over requests limit.")
     except SIGINTRecieved:
@@ -170,6 +194,7 @@ def main():
                 formatted='Bot caught SIGINT. Shutting down.'
             )
             report_summary(bot)
+
     except Exception as e:
         # always report session summary and then raise exception
         if bot:
@@ -201,7 +226,18 @@ def main():
                         data={'path': cached_forts_path}
                         )
 
+def check_mod(config_file):
+    check_mod.mtime = os.path.getmtime(config_file)
 
+    def compare_mtime():
+        mdate = os.path.getmtime(config_file)
+        if check_mod.mtime == mdate:  # mtime didnt change
+            return False
+        else:
+            check_mod.mtime = mdate
+            return True
+
+    return compare_mtime
 
 def report_summary(bot):
     if bot.metrics.start_time is None:
@@ -214,9 +250,9 @@ def report_summary(bot):
     logger.info('Total XP Earned: {}  Average: {:.2f}/h'.format(metrics.xp_earned(), metrics.xp_per_hour()))
     logger.info('Travelled {:.2f}km'.format(metrics.distance_travelled()))
     logger.info('Visited {} stops'.format(metrics.visits['latest'] - metrics.visits['start']))
-    logger.info('Encountered {} pokemon, {} caught, {} released, {} evolved, {} never seen before'
+    logger.info('Encountered {} pokemon, {} caught, {} released, {} evolved, {} never seen before ({})'
                 .format(metrics.num_encounters(), metrics.num_captures(), metrics.releases,
-                        metrics.num_evolutions(), metrics.num_new_mons()))
+                        metrics.num_evolutions(), metrics.num_new_mons(), metrics.uniq_caught()))
     logger.info('Threw {} pokeball{}'.format(metrics.num_throws(), '' if metrics.num_throws() == 1 else 's'))
     logger.info('Earned {} Stardust'.format(metrics.earned_dust()))
     logger.info('Hatched eggs {}'.format(metrics.hatched_eggs(0)))
@@ -251,15 +287,19 @@ def init_config():
 
     # Select a config file code
     parser.add_argument("-cf", "--config", help="Config File to use")
-    config_arg = parser.parse_known_args() and parser.parse_known_args()[0].config or None
+    parser.add_argument("-af", "--auth", help="Auth File to use")
 
-    if config_arg and os.path.isfile(config_arg):
-        _json_loader(config_arg)
-    elif os.path.isfile(config_file):
-        logger.info('No config argument specified, checking for /configs/config.json')
-        _json_loader(config_file)
-    else:
-        logger.info('Error: No /configs/config.json or specified config')
+    for _config in ['auth', 'config']:
+        config_arg = parser.parse_known_args() and parser.parse_known_args()[0].__dict__[_config] or None
+
+        if config_arg and os.path.isfile(config_arg):
+            _json_loader(config_arg)
+            config_file = config_arg if _config == 'config' else config_file
+        elif os.path.isfile(config_file):
+            logger.info('No ' + _config + ' argument specified, checking for /configs/' + _config + '.json')
+            _json_loader(config_file)
+        else:
+            logger.info('Error: No /configs/config.json or specified config')
 
     # Read passed in Arguments
     required = lambda x: not x in load
@@ -491,6 +531,14 @@ def init_config():
     add_config(
         parser,
         load,
+        long_flag="--pokemon_bag.show_candies",
+        help="Shows the amount of candies for each pokemon",
+        type=bool,
+        default=False
+    )
+    add_config(
+        parser,
+        load,
         long_flag="--pokemon_bag.pokemon_info",
         help="List with the info to show for each pokemon",
         type=bool,
@@ -553,6 +601,23 @@ def init_config():
         default=8.0
     )
 
+    add_config(
+         parser,
+         load,
+         long_flag="--enable_social",
+         help="Enable social event exchange between bot",
+         type=bool,
+         default=True
+    )
+
+    add_config(
+         parser,
+         load,
+         long_flag="--walker_limit_output",
+         help="Limit output from walker functions (move_to_fort, position_update, etc)",
+         type=bool,
+         default=False
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()
@@ -561,13 +626,17 @@ def init_config():
     if not config.password and 'password' not in load:
         config.password = getpass("Password: ")
 
+    config.favorite_locations = load.get('favorite_locations', [])
     config.encrypt_location = load.get('encrypt_location', '')
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
-    config.daily_catch_limit = load.get('daily_catch_limit', 800)
     config.vips = load.get('vips', {})
+    config.sleep_schedule = load.get('sleep_schedule', [])
+    config.live_config_update = load.get('live_config_update', {})
+    config.live_config_update_enabled = config.live_config_update.get('enabled', False)
+    config.live_config_update_tasks_only = config.live_config_update.get('tasks_only', False)
 
     if config.map_object_cache_time < 0.0:
         parser.error("--map_object_cache_time is out of range! (should be >= 0.0)")
@@ -610,12 +679,15 @@ def init_config():
     if "walk" in load:
         logger.warning('The walk argument is no longer supported. Please use the walk_max and walk_min variables instead')
 
+    if "daily_catch_limit" in load:
+        logger.warning('The daily_catch_limit argument has been moved into the CatchPokemon Task')
+
     if config.walk_min < 1:
         parser.error("--walk_min is out of range! (should be >= 1.0)")
         return None
 
-    if config.alt_min < 0:
-        parser.error("--alt_min is out of range! (should be >= 0.0)")
+    if config.alt_min < -413.0:
+        parser.error("--alt_min is out of range! (should be >= -413.0)")
         return None
 
     if not (config.location or config.location_cache):
@@ -634,7 +706,7 @@ def init_config():
             raise
 
     fix_nested_config(config)
-    return config
+    return config, config_file
 
 def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
     if not long_flag:

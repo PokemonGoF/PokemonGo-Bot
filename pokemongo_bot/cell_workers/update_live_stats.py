@@ -1,11 +1,16 @@
 import ctypes
+import json
+import os
 from sys import stdout, platform as _platform
 from datetime import datetime, timedelta
 
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.tree_config_builder import ConfigException
+from pokemongo_bot.base_dir import _base_dir
 
+# XP file
+import json
 
 class UpdateLiveStats(BaseTask):
     """
@@ -62,6 +67,8 @@ class UpdateLiveStats(BaseTask):
     """
     SUPPORTED_TASK_API_VERSION = 1
 
+    global xp_per_level
+
     def __init__(self, bot, config):
         """
         Initializes the worker.
@@ -79,8 +86,66 @@ class UpdateLiveStats(BaseTask):
         self.terminal_log = bool(self.config.get('terminal_log', False))
         self.terminal_title = bool(self.config.get('terminal_title', True))
 
-        self.bot.event_manager.register_event('log_stats', parameters=('stats',))
+        self.bot.event_manager.register_event('log_stats', parameters=('stats', 'stats_raw'))
 
+        # init xp_per_level
+        global xp_per_level
+        # If xp_level file exists, load variables from json
+        # file name should not be hard coded either
+        xpfile = "data/xp_per_level.json"
+        try:
+            with open(xpfile, 'rb') as data:
+                xp_per_level = json.load(data)
+        except ValueError:
+            # log somme warning message
+            self.emit_event(
+                'log_stats',
+                level='info',
+                formatted="Unable to read XP level file"
+            )
+            # load default valuesto supplement unknown current_level_xp
+            xp_per_level = [[1, 0, 0],
+                [2, 1000, 1000],
+                [3, 2000, 3000],
+                [4, 3000, 6000],
+                [5, 4000, 10000],
+                [6, 5000, 15000],
+                [7, 6000, 21000],
+                [8, 7000, 28000],
+                [9, 8000, 36000],
+                [10, 9000, 45000],
+                [11, 10000, 55000],
+                [12, 10000, 65000],
+                [13, 10000, 75000],
+                [14, 10000, 85000],
+                [15, 15000, 100000],
+                [16, 20000, 120000],
+                [17, 20000, 140000],
+                [18, 20000, 160000],
+                [19, 25000, 185000],
+                [20, 25000, 210000],
+                [21, 50000, 260000],
+                [22, 75000, 335000],
+                [23, 100000, 435000],
+                [24, 125000, 560000],
+                [25, 150000, 710000],
+                [26, 190000, 900000],
+                [27, 200000, 1100000],
+                [28, 250000, 1350000],
+                [29, 300000, 1650000],
+                [30, 350000, 2000000],
+                [31, 500000, 2500000],
+                [32, 500000, 3000000],
+                [33, 750000, 3750000],
+                [34, 1000000, 4750000],
+                [35, 1250000, 6000000],
+                [36, 1500000, 7500000],
+                [37, 2000000, 9500000],
+                [38, 2500000, 12000000],
+                [39, 3000000, 15000000],
+                [40, 5000000, 20000000]]
+        
+        
     def initialize(self):
         pass
 
@@ -92,11 +157,15 @@ class UpdateLiveStats(BaseTask):
         """
         if not self._should_display():
             return WorkerResult.SUCCESS
-        line = self._get_stats_line(self._get_player_stats())
+            
+        player_stats = self._get_player_stats()
+        line = self._get_stats_line(player_stats)
         # If line is empty, it couldn't be generated.
         if not line:
             return WorkerResult.SUCCESS
-
+                
+        self.update_web_stats(player_stats)
+                
         if self.terminal_title:
             self._update_title(line, _platform)
 
@@ -134,7 +203,8 @@ class UpdateLiveStats(BaseTask):
             'log_stats',
             formatted="{stats}",
             data={
-                'stats': stats
+                'stats': stats,
+                'stats_raw': self._get_stats(self._get_player_stats())
             }
         )
         self._compute_next_update()
@@ -165,12 +235,80 @@ class UpdateLiveStats(BaseTask):
         except AttributeError:
             self.emit_event(
                 'log_stats',
-                level = 'error',
-                formatted = "Unable to write window title"
+                level='error',
+                formatted="Unable to write window title"
             )
             self.terminal_title = False
 
         self._compute_next_update()
+    
+    def _get_stats(self, player_stats):
+        
+        global xp_per_level
+        metrics = self.bot.metrics
+        metrics.capture_stats()
+        runtime = metrics.runtime()
+        login = self.bot.config.username
+        player_data = self.bot.player_data
+        username = player_data.get('username', '?')
+        distance_travelled = metrics.distance_travelled()
+        current_level = int(player_stats.get('level', 0))
+        prev_level_xp = int(xp_per_level[current_level-1][2])
+        next_level_xp = int(player_stats.get('next_level_xp', 0))
+        experience = player_stats.get('experience', 0)
+        current_level_xp = experience - prev_level_xp
+        whole_level_xp = next_level_xp - prev_level_xp
+        level_completion_percentage = (current_level_xp * 100) / whole_level_xp
+        experience_per_hour = metrics.xp_per_hour()
+        xp_earned = metrics.xp_earned()
+        stops_visited = metrics.visits['latest'] - metrics.visits['start']
+        pokemon_encountered = metrics.num_encounters()
+        pokemon_caught = metrics.num_captures()
+        captures_per_hour = metrics.captures_per_hour()
+        pokemon_released = metrics.releases
+        pokemon_evolved = metrics.num_evolutions()
+        pokemon_unseen = metrics.num_new_mons()
+        pokeballs_thrown = metrics.num_throws()
+        stardust_earned = metrics.earned_dust()
+        highest_cp_pokemon = metrics.highest_cp['desc']
+        if not highest_cp_pokemon:
+            highest_cp_pokemon = "None"
+        most_perfect_pokemon = metrics.most_perfect['desc']
+        if not most_perfect_pokemon:
+            most_perfect_pokemon = "None"
+        next_egg_hatching = metrics.next_hatching_km(0)
+        hatched_eggs = metrics.hatched_eggs(0)
+
+        # Create stats strings.
+        available_stats = {
+            'login': login,
+            'username': username,
+            'uptime': '{}'.format(runtime),
+            'km_walked': distance_travelled,
+            'level': current_level,
+            'experience': experience,
+            'current_level_xp': whole_level_xp,
+            'whole_level_xp': whole_level_xp,
+            'level_completion_percentage': level_completion_percentage,
+            'xp_per_hour': experience_per_hour,
+            'xp_earned': xp_earned,
+            'stops_visited': stops_visited,
+            'pokemon_encountered': pokemon_encountered,
+            'pokemon_caught': pokemon_caught,
+            'captures_per_hour': captures_per_hour,
+            'pokemon_released': pokemon_released,
+            'pokemon_evolved': pokemon_evolved,
+            'pokemon_unseen': pokemon_unseen,
+            'pokeballs_thrown': pokeballs_thrown,
+            'stardust_earned': stardust_earned,
+            'highest_cp_pokemon': highest_cp_pokemon,
+            'most_perfect_pokemon': most_perfect_pokemon,
+            'location': [self.bot.position[0], self.bot.position[1]],
+            'next_egg_hatching': float(next_egg_hatching),
+            'hatched_eggs': hatched_eggs
+        }
+
+        return available_stats
 
     def _get_stats_line(self, player_stats):
         """
@@ -185,6 +323,8 @@ class UpdateLiveStats(BaseTask):
         if not self.displayed_stats:
             return ''
 
+        global xp_per_level
+
         # Gather stats values.
         metrics = self.bot.metrics
         metrics.capture_stats()
@@ -194,7 +334,7 @@ class UpdateLiveStats(BaseTask):
         username = player_data.get('username', '?')
         distance_travelled = metrics.distance_travelled()
         current_level = int(player_stats.get('level', 0))
-        prev_level_xp = int(player_stats.get('prev_level_xp', 0))
+        prev_level_xp = int(xp_per_level[current_level-1][2])
         next_level_xp = int(player_stats.get('next_level_xp', 0))
         experience = int(player_stats.get('experience', 0))
         current_level_xp = experience - prev_level_xp
@@ -289,3 +429,16 @@ class UpdateLiveStats(BaseTask):
                      for x in inventory_items
                      if x.get("inventory_item_data", {}).get("player_stats", {})),
                     None)
+           
+    def update_web_stats(self,player_data):
+        web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
+
+        with open(web_inventory, "r") as infile:
+            json_stats = json.load(infile)
+
+        json_stats = [x for x in json_stats if not x.get("inventory_item_data", {}).get("player_stats", None)]
+        
+        json_stats.append({"inventory_item_data": {"player_stats": player_data}})
+
+        with open(web_inventory, "w") as outfile:
+            json.dump(json_stats, outfile)

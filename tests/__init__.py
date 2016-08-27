@@ -11,7 +11,8 @@ def get_fake_conf():
     class ConfObj:
         pass
 
-    conf_dict = json.load(open('configs/config.json.example'))
+    conf_dict = json.load(open('configs/auth.json.example'))
+    conf_dict.update(json.load(open('configs/config.json.example')))
     conf_obj = ConfObj()
     for key, value in conf_dict.items():
         setattr(conf_obj, key, value)

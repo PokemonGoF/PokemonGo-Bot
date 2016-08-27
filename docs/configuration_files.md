@@ -21,11 +21,11 @@
     - [Valid names in templates](#valid-names-in-templates)
         - [Sample usages](#sample-usages)
     - [Sample configuration](#sample-configuration)
-- [CatchPokemon `catch_simulation` Settings](#catchpokemon-catch_simulation-settings)
+- [CatchPokemon Settings](#catchpokemon-settings)
     - [Default Settings](#default-settings)
     - [Settings Description](#settings-description)
     - [`flee_count` and `flee_duration`](#flee_count-and-flee_duration)
-    - [Previous Behaviour](#previous-behaviour)
+    - [Previous `catch_simulation` Behaviour](#previous-catch_simulation-behaviour)
 - [Sniping _(MoveToLocation)_](#sniping-_-movetolocation-_)
     - [Description](#description)
     - [Options](#options)
@@ -44,6 +44,8 @@
     - [Example console output](#example-console-output)
 - [Sleep Schedule Task](#sleep-schedule-task)
 - [Random Pause](#random-pause)
+- [Egg Incubator](#egg-incubator)
+- [ShowBestPokemon](#showbestpokemon)
 
 #Configuration files
 
@@ -71,7 +73,8 @@ Document the configuration options of PokemonGo-Bot.
 | `action_wait_min`   | 1       | Set the minimum time setting for anti-ban time randomizer
 | `action_wait_max`   | 4       | Set the maximum time setting for anti-ban time randomizer
 | `debug`            | false   | Let the default value here except if you are developer                                                                                                                                      |
-| `test`             | false   | Let the default value here except if you are developer                                                                                                                                      |                                                                                       |
+| `test`             | false   | Let the default value here except if you are developer                                                                                                                                      |  
+| `walker_limit_output`             | false   | Reduce output from walker functions                                                                                                                                      |                                                                                       |
 | `location_cache`   | true    | Bot will start at last known location if you do not have location set in the config                                                                                                         |
 | `distance_unit`    | km      | Set the unit to display distance in (km for kilometers, mi for miles, ft for feet)                                                                                                          |
 | `evolve_cp_min`           | 300   |                   Min. CP for evolve_all function
@@ -79,6 +82,9 @@ Document the configuration options of PokemonGo-Bot.
 |`pokemon_bag.show_at_start`    | false   |                   At start, bot will show all pokemon in the bag.
 |`pokemon_bag.show_count`    | false   |                   Show amount of each pokemon.
 |`pokemon_bag.pokemon_info`    | []   |                   Check any config example file to see available settings.
+|`favorite_locations`    | []   | Allows you to define a collection of locations and coordinates, allowing rapid switch using a "label" on your location config
+| `live_config_update.enabled`            | false     | Enable live config update
+| `live_config_update.tasks_only`            | false     | True: quick update for Tasks only (without re-login). False: slower update for entire config file.
 
 
 ## Configuring Tasks
@@ -90,12 +96,14 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 ### Task Options:
 [[back to top](#table-of-contents)]
 * CatchPokemon
+  * `treat_unseen_as_vip`: Default `"true"` | Set to `"false"` to disable treating pokemons you don't have in your pokedex as VIPs.
 * EvolvePokemon
   * `evolve_all`: Default `NONE` | Set to `"all"` to evolve Pokémon if possible when the bot starts. Can also be set to individual Pokémon as well as multiple separated by a comma. e.g "Pidgey,Rattata,Weedle,Zubat"
-  * `evolve_speed`: Default `20`
+  * `min_evolve_speed`: Default `25` | Minimum seconds to wait between each evolution 
+  * `max_evolve_speed`: Default `30` | Maximum seconds to wait between each evolution
   * `use_lucky_egg`: Default: `False`
 * FollowPath
-  * `path_mode`: Default `loop` | Set the mode for the path navigator (loop or linear).
+  * `path_mode`: Default `loop` | Set the mode for the path navigator (loop, linear or single).
   * `path_file`: Default `NONE` | Set the file containing the waypoints for the path navigator.
 * FollowSpiral
 * HandleSoftBan
@@ -105,6 +113,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 * [MoveToMapPokemon](#sniping-movetolocation)
 * NicknamePokemon
   * `nickname_template`: Default `""` | See the [Pokemon Nicknaming](#pokemon-nicknaming) section for more details
+  * `nickname_above_iv`: Default `0` | Rename pokemon which iv is highter than the value
   * `dont_nickname_favorite`: Default `false` | Prevents renaming of favorited pokemons
   * `good_attack_threshold`: Default `0.7` | Threshold for perfection of the attack in it's type *(0.0-1.0)* after which attack will be treated as good.<br>Used for `{fast_attack_char}`, `{charged_attack_char}`, `{attack_code}`  templates
 * RecycleItems
@@ -116,12 +125,42 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `max_potions_keep`: Default `None` | Maximum amount of potions to keep in inventory
   * `max_berries_keep`: Default `None` | Maximum amount of berries to keep in inventory
   * `max_revives_keep`: Default `None` | Maximum amount of revives to keep in inventory
+  * `recycle_force`: Default `False` | Force scheduled recycle, even if min_empty_space not exceeded
+  * `recycle_force_min`: Default `00:01:00` | Minimum time to wait before scheduling next forced recycle
+  * `recycle_force_max`: Default `00:10:00` | Maximum time to wait before scheduling next forced recycle
+
 * SpinFort
 * TransferPokemon
   * `min_free_slot`: Default `5` | Once the pokebag has less empty slots than this amount, the transfer process is triggered. | Big values (i.e 9999) will trigger the transfer process after each catch.
 * UpdateLiveStats
 * [UpdateLiveInventory](#updateliveinventory-settings)
-
+* CollectLevelUpReward
+  * `collect_reward`: Default `True` | Collect level up rewards.
+  * `level_limit`: Default `-1` | Bot will stop automatically after trainer reaches level limit. Set to `-1` to disable.
+* All tasks
+  * `log_interval`: Default `0` | Minimum seconds interval before next log of the current task will be printed
+  
+  
+### Specify a custom log_interval for specific task
+  
+  ```
+    {
+      "type": "MoveToFort",
+      "config": {
+        "enabled": true,
+        "lure_attraction": true,
+        "lure_max_distance": 2000,
+        "walker": "StepWalker",
+        "log_interval": 5
+      }
+    }
+   ```
+      
+   Result:
+    
+    2016-08-26 11:43:18,199 [MoveToFort] [INFO] [moving_to_fort] Moving towards pokestop ... - 0.07km
+    2016-08-26 11:43:23,641 [MoveToFort] [INFO] [moving_to_fort] Moving towards pokestop ... - 0.06km
+    2016-08-26 11:43:28,198 [MoveToFort] [INFO] [moving_to_fort] Moving towards pokestop ... - 0.05km
 
 ### Example configuration:
 [[back to top](#table-of-contents)]
@@ -240,7 +279,10 @@ If you don't have it, it will keep it (no matter was it strong or weak Pokémon)
 
 If you already have it, it will keep a stronger version and will transfer the a weaker one.
 
-```"release": {"any": {"keep_best_cp": 2}}```, ```"release": {"any": {"keep_best_cp": 10}}``` - can be any number.
+```"release": {"any": {"keep_best_cp": 2}}```, ```"release": {"any": {"keep_best_cp": 10}}``` - can be any number. In the latter case for every pokemon type bot will keep no more that 10 best CP pokemon.
+
+If you wish to limit your pokemon bag as a whole, not type-wise, use `all`:
+```"release": {"all": {"keep_best_cp": 200}}```. In this case bot looks for 200 best CP pokemon in bag independently of their type. For example, if you have 150 Snorlax with 1500 CP and 100 Pidgeys with CP 100, bot will keep 150 Snorlax and 50 Pidgeys for a total of 200 best CP pokemon.
 
 ### Keep the best custom pokemon configuration (dev branch)
 [[back to top](#table-of-contents)]
@@ -406,10 +448,10 @@ Key | Info
 }
 ```
 
-## CatchPokemon `catch_simulation` Settings
+## CatchPokemon Settings
 [[back to top](#table-of-contents)]
 
-These settings determine how the bot will simulate the app by adding pauses to throw the ball and navigate menus.  All times are in seconds.  To configure these settings add them to the config in the CatchPokemon task.
+These settings determine how the bot will catch pokemon. `catch_simulate` simulates the app by adding pauses to throw the ball and navigate menus.  All times in `catch_simulation` are in seconds.
 
 ### Default Settings
 [[back to top](#table-of-contents)]
@@ -417,15 +459,28 @@ These settings determine how the bot will simulate the app by adding pauses to t
 The default settings are 'safe' settings intended to simulate human and app behaviour.
 
 ```
+"catch_visible_pokemon": true,
+"catch_lured_pokemon": true,
+"min_ultraball_to_keep": 5,
+"berry_threshold": 0.35,
+"vip_berry_threshold": 0.9,
+"catch_throw_parameters": {
+  "excellent_rate": 0.1,
+  "great_rate": 0.5,
+  "nice_rate": 0.3,
+  "normal_rate": 0.1,
+  "spin_success_rate" : 0.6,
+  "hit_rate": 0.75
+},
 "catch_simulation": {
-    "flee_count": 3,
-    "flee_duration": 2,
-    "catch_wait_min": 2,
-    "catch_wait_max": 6,
-    "berry_wait_min": 2,
-    "berry_wait_max": 3,
-    "changeball_wait_min": 2,
-    "changeball_wait_max": 3
+  "flee_count": 3,
+  "flee_duration": 2,
+  "catch_wait_min": 2,
+  "catch_wait_max": 6,
+  "berry_wait_min": 2,
+  "berry_wait_max": 3,
+  "changeball_wait_min": 2,
+  "changeball_wait_max": 3
 }
 ```
 
@@ -434,6 +489,9 @@ The default settings are 'safe' settings intended to simulate human and app beha
 
 Setting | Description
 ---- | ----
+`min_ultraball_to_keep` | Allows the bot to use ultraballs on non-VIP pokemon as long as number of ultraballs is above this setting
+`berry_threshold` | The ideal catch rate threshold before using a razz berry on normal pokemon (higher threshold means using razz berries more frequently, for example if we raise `berry_threshold` to 0.5, any pokemon that has an initial catch rate between 0 to 0.5 will initiate a berry throw)
+`vip_berry_threshold` | The ideal catch rate threshold before using a razz berry on VIP pokemon
 `flee_count` | The maximum number of times catching animation will play before the pokemon breaks free
 `flee_duration` | The length of time for each animation
 `catch_wait_min`| The minimum amount of time to throw the ball
@@ -448,10 +506,10 @@ Setting | Description
 
 This part is app simulation and the default settings are advised.  When we hit a pokemon in the app the animation will play randomly 1, 2 or 3 times for roughly 2 seconds each time.  So we pause for a random number of animations up to `flee_count` of duration `flee_duration`
 
-### Previous Behaviour
+### Previous `catch_simulation` Behaviour
 [[back to top](#table-of-contents)]
 
-If you want to make your bot behave as it did prior to this update please use the following settings.
+If you want to make your bot behave as it did prior to the catch_simulation update please use the following settings.
 
 ```
 "catch_simulation": {
@@ -472,7 +530,7 @@ If you want to make your bot behave as it did prior to this update please use th
 ### Description
 [[back to top](#table-of-contents)]
 
-This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map instance. For information on how to properly setup PokemonGo-Map have a look at the Github page of the project [here](https://github.com/AHAAAAAAA/PokemonGo-Map/). There is an example config in `config/config.json.map.example`
+This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map instance. For information on how to properly setup PokemonGo-Map have a look at the Github page of the project [here](https://github.com/PokemonGoMap/PokemonGo-Map). There is an example config in `config/config.json.map.example`
 
 ### Options
 [[back to top](#table-of-contents)]
@@ -483,6 +541,7 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
    - `priority` - Will move to the pokemon with the highest priority assigned (tie breaking by distance)
 * `prioritize_vips` - Will prioritize vips in distance and priority mode above all normal pokemon if set to true
 * `min_time` - Minimum time the pokemon has to be available before despawn
+* `min_ball` - Minimum amount of balls required to run task
 * `max_distance` - Maximum distance the pokemon is allowed to be when walking, ignored when sniping
 * `snipe`:
    - `True` - Will teleport to target pokemon, encounter it, teleport back then catch it
@@ -493,6 +552,7 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
 * `snipe_high_prio_threshold` - The threshold number corresponding with the `catch` dictionary.
 *   - Any pokemon above this threshold value will be caught by teleporting to its location, and getting back to original location if `snipe` is `True`.
 *   - Any pokemon under this threshold value will make the bot walk to the Pokemon target wether `snipe` is `True` or `False`.
+*   `max_extra_dist_fort` : Percentage of extra distance allowed to move to a fort on the way to the targeted Pokemon
 
 #### Example
 [[back to top](#table-of-contents)]
@@ -513,6 +573,7 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
       "snipe_high_prio_threshold": 400,
       "update_map": true,
       "mode": "priority",
+      "max_extra_dist_fort": 10,
       "catch": {
         "Aerodactyl": 1000,
         "Ditto": 900,
@@ -532,26 +593,42 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
 ### Description
 [[back to top](#table-of-contents)]
 
-Walk to the specified locations loaded from .gpx or .json file. It is highly recommended to use website such as [GPSies](http://www.gpsies.com) which allow you to export your created track in JSON file. Note that you'll have to first convert its JSON file into the format that the bot can understand. See [Example of pier39.json] below for the content. I had created a simple python script to do the conversion. 
+Walk to the specified locations loaded from .gpx or .json file. It is highly recommended to use website such as [GPSies](http://www.gpsies.com) which allow you to export your created track in JSON file. Note that you'll have to first convert its JSON file into the format that the bot can understand. See [Example of pier39.json] below for the content. I had created a simple python script to do the conversion.
+
+The json file can contain for each point an optional `loiter` field. This
+indicated the number of seconds the bot should loiter after reaching the point.
+During this time, the next Task in the configuration file is executed, e.g. a
+MoveToFort task. This allows the bot to walk around the waypoint looking for
+forts for a limited time.
 
 ### Options
 [[back to top](#table-of-contents)]
-* `path_mode` - linear, loop
-   - `loop` - The bot will walk along all specified waypoints and then move directly to the first waypoint again. 
+* `path_mode` - linear, loop, single
+   - `loop` - The bot will walk along all specified waypoints and then move directly to the first waypoint again.
    - `linear` - The bot will turn around at the last waypoint and along the given waypoints in reverse order.
-* `path_start_mode` - first
+   - `single` - The bot will walk the path only once.
+* `path_start_mode` - first, closest
+   - `first` - The bot will start at the first point of the path.
+   - `closest` - The bot will start the path at the point which is the closest to the current bot location.
 * `path_file` - "/path/to/your/path.json"
 
+### Notice
+If you use the `single` `path_mode` without e.g. a `MoveToFort` task, your bot 
+with /not move at all/ when the path is finished. Similarly, if you use the
+`loiter` option in your json path file without a following `MoveToFort` or
+similar task, your bot will not move during the loitering period. Please
+make sure, when you use `single` mode or the `loiter` option, that another
+move-type task follows the `FollowPath` task in your `config.json`.
 
 ### Sample Configuration
 [[back to top](#table-of-contents)]
 
 ```
 {
-	"type": "FollowPath",
+  "type": "FollowPath",
     "config": {
-    	"path_mode": "linear",
-	  	"path_start_mode": "first",
+      "path_mode": "linear",
+      "path_start_mode": "first",
       "path_file": "/home/gary/bot/PokemonGo-Bot/configs/path/pier39.json"
     }
 }
@@ -559,10 +636,10 @@ Walk to the specified locations loaded from .gpx or .json file. It is highly rec
 
 Example of pier39.json
 ```
-[{"location": "37.8103848,-122.410325"}, 
-{"location": "37.8103306,-122.410435"}, 
-{"location": "37.8104662,-122.41051"}, 
-{"location": "37.8106146,-122.41059"}, 
+[{"location": "37.8103848,-122.410325"},
+{"location": "37.8103306,-122.410435"},
+{"location": "37.8104662,-122.41051"},
+{"location": "37.8106146,-122.41059"},
 {"location": "37.8105934,-122.410719"}
 ]
 ```
@@ -654,8 +731,9 @@ Periodically displays the user inventory in the terminal.
 
 ### Options
 [[back to top](#table-of-contents)]
+
 * `min_interval` : The minimum interval at which the stats are displayed, in seconds (defaults to 120 seconds). The update interval cannot be accurate as workers run synchronously.
-* `show_all_multiple_lines` : Logs all items on inventory using multiple lines. Ignores configuration of 'items' 
+* `show_all_multiple_lines` : Logs all items on inventory using multiple lines. Ignores configuration of 'items'
 * `items` : An array of items to display and their display order (implicitly), see available items below (defaults to []).
 
 Available `items` :
@@ -717,14 +795,14 @@ Simulates the user going to sleep every day for some time, the sleep time and th
 ###Example Config
 ```
 {
-	"type": "SleepSchedule",
-	"config": {
-		"time": "12:00",
-		"duration":"5:30",
-		"time_random_offset": "00:30",
-		"duration_random_offset": "00:30"
-		"wake_up_at_location": "39.408692,149.595838,590.8"
-	}
+  "type": "SleepSchedule",
+  "config": {
+    "time": "12:00",
+    "duration":"5:30",
+    "time_random_offset": "00:30",
+    "duration_random_offset": "00:30"
+    "wake_up_at_location": "39.408692,149.595838,590.8"
+  }
 }
 ```
 
@@ -743,12 +821,84 @@ Simulates the random pause of the day (speaking to someone, getting into a store
 ###Example Config
 ```
 {
-	"type": "RandomPause",
-	"config": {
-		"min_duration": "00:00:10",
-		"max_duration": "00:10:00",
-		"min_interval": "00:10:00",
-		"max_interval": "02:00:00"
-	}
+  "type": "RandomPause",
+  "config": {
+    "min_duration": "00:00:10",
+    "max_duration": "00:10:00",
+    "min_interval": "00:10:00",
+    "max_interval": "02:00:00"
+  }
 }
+```
+
+##Egg Incubator
+[[back to top](#table-of-contents)]
+
+Configure how the bot should use the incubators.
+
+- `longer_eggs_first`: (True | False ) should the bot start by the longer eggs first. If set to true, the bot first use the 10km eggs, then the 5km eggs, then the 2km eggs.
+- `infinite`: ([2], [2,5], [2,5,10], []) the type of egg the infinite (ie. unbreakable) incubator(s) can incubate. If set to [2,5], the incubator(s) can only incubate the 2km and 5km eggs. If set to [], the incubator(s) will not incubate any type of egg.
+- `breakable`: ([2], [2,5], [2,5,10], []) the type of egg the breakable incubator(s) can incubate. If set to [2,5], the incubator(s) can only incubate the 2km and 5km eggs. If set to [], the incubator(s) will not incubate any type of egg.
+
+###Example Config
+```
+{
+  "type": "IncubateEggs",
+    "config": {
+    "longer_eggs_first": true,
+    "infinite": [2,5],
+    "breakable": [10]
+  }
+}
+```
+
+## ShowBestPokemon
+[[back to top](#table-of-contents)]
+
+### Description
+[[back to top](#table-of-contents)]
+
+Periodically displays the user best pokemon in the terminal.
+
+### Options
+[[back to top](#table-of-contents)]
+
+* `min_interval` : The minimum interval at which the pokemon are displayed, in seconds (defaults to 120 seconds). The update interval cannot be accurate as workers run synchronously.
+* `amount` : Amount of pokemon to show.
+* `order_by` : Stat that will be used to get best pokemons.
+Available Stats: 'cp', 'iv', 'ivcp', 'ncp', 'dps', 'hp', 'level'
+* `info_to_show` : Info to show for each pokemon
+
+Available `info_to_show` :
+```
+'cp',
+'iv_ads',
+'iv_pct',
+'ivcp',
+'ncp',
+'level',
+'hp',
+'moveset',
+'dps'
+```
+
+### Sample configuration
+[[back to top](#table-of-contents)]
+```json
+{
+    "type": "ShowBestPokemon",
+    "config": {
+        "enabled": true,
+        "min_interval": 60,
+        "amount": 5,
+        "order_by": "cp",
+        "info_to_show": ["cp", "ivcp", "dps"]
+    }
+}
+```
+
+### Example console output
+[[back to top](#table-of-contents)]
+```
+2016-08-25 21:20:59,642 [ShowBestPokemon] [INFO] [show_best_pokemon] [Tauros, CP 575, IVCP 0.95, DPS 12.04] | [Grimer, CP 613, IVCP 0.93, DPS 13.93] | [Tangela, CP 736, IVCP 0.93, DPS 14.5] | [Staryu, CP 316, IVCP 0.92, DPS 10.75] | [Gastly, CP 224, IVCP 0.9, DPS 11.7]
 ```

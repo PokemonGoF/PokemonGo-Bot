@@ -8,11 +8,25 @@ import os
 import uuid
 import requests
 import time
+import shelve
+import os
+from pokemongo_bot.base_dir import _base_dir
 
 class BotEvent(object):
     def __init__(self, config):
         self.config = config
         self.logger = logging.getLogger(__name__)
+        #client_id_file_path = os.path.join(_base_dir, 'data', 'client_id')
+        #saved_info = shelve.open(client_id_file_path)
+        #if saved_info.has_key('client_id'):
+        #    self.client_id = saved_info['client_id']
+        #else:
+        #    client_uuid = uuid.uuid4()
+        #    self.client_id = str(client_uuid)
+        #    saved_info['client_id'] = self.client_id
+        #saved_info.close()
+        client_uuid = uuid.uuid4()
+        self.client_id = str(client_uuid)
         # UniversalAnalytics can be reviewed here:
         # https://github.com/analytics-pros/universal-analytics-python
         if self.config.health_record:
@@ -32,8 +46,7 @@ class BotEvent(object):
                 context = {}
             )
 
-        self.client_id = uuid.uuid4()
-        self.heartbeat_wait = 30 # seconds
+        self.heartbeat_wait = 15*60 # seconds
         self.last_heartbeat = time.time()
 
     def capture_error(self):

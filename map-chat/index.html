@@ -1,0 +1,132 @@
+<html>
+<head>
+    <title>MapChat</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/css/materialize.min.css">
+    <link href="stylesheets/main.css" rel="stylesheet"/>
+
+    <link rel="apple-touch-icon" sizes="57x57" href="favicons/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="favicons/apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="favicons/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="favicons/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="favicons/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="favicons/apple-touch-icon-120x120.png">
+    <link rel="icon" type="image/png" href="favicons/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="favicons/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="favicons/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="favicons/manifest.json">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+</head>
+
+<body>
+
+<!-- Google translate
+<div class="translation-wrapper hide-on-small-and-down">
+    Translation
+    <div id="google_translate_element" style="float: right; padding-left: 10px"></div>
+</div>
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({pageLanguage: 'auto', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+    }
+</script>
+<script type="text/javascript" src="http://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<div class="navbar">
+    <nav>
+        <div class="nav-wrapper blue">
+            <a class="brand-logo center" href="https://github.com/PokemonGoF/PokemonGo-Bot/tree/master/map-chat">MapChat</a>
+            <a id="side-nav-button" href="#" data-activates="side-nav"><i class="mdi-navigation-menu"></i></a>
+            <ul class="side-nav" id="side-nav">
+                <li>
+                    <div class="switch">
+                        <label style="color: black">
+                            Notifications
+                            <input id="notification_lever" type="checkbox">
+                            <span class="lever"></span>
+                        </label>
+                    </div>
+                </li>
+                <li>
+                    <div class="switch">
+                        <label style="color: black">
+                            Share Accurate Location
+                            <input id="accurate_location_lever" type="checkbox">
+                            <span class="lever"></span>
+                        </label>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+-->
+
+<!--fork me link-->
+<a href="https://github.com/PokemonGoF/PokemonGo-Bot/tree/master/map-chat" class="hide-on-med-and-down">
+    <img src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
+         class="fork-me-link" alt="Fork me on GitHub">
+</a>
+
+<div class="fixed-action-btn zoom-buttons">
+    <div>
+        <a id="zoom-in-button" class="waves-effect waves-light btn grey"
+                onclick="changeZoom(+1)">
+            <i class="mdi-content-add"></i>
+        </a>
+    </div>
+    <div>
+        <a id="zoom-out-button" class="waves-effect waves-light btn grey"
+                onclick="changeZoom(-1)">
+            <i class="mdi-content-remove"></i>
+        </a>
+    </div>
+</div>
+
+<div id="map-canvas"></div>
+
+<div class="center input-wrapper">
+    <div class="input-field">
+        <input placeholder="Type a message" id="input" type="text" maxlength="101">
+    </div>
+</div>
+
+<div class="fixed-action-btn btn-send">
+    <a id="send-button" class="btn-floating btn-large waves-effect waves-light blue">
+        <i class="large mdi-content-send"></i>
+    </a>
+</div>
+
+<div class="fixed-action-btn btn-clear">
+    <a id="clear-button" class="btn-floating btn-large waves-effect waves-light red"
+            onclick="clearMessageFromMap()">
+        <i class="large mdi-content-clear"></i>
+    </a>
+</div>
+
+<!--Import jQuery before materialize.js-->
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/js/materialize.min.js"></script>
+<script src="https://cdn.jsdelivr.net/sockjs/1.0.0/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vertx/2.0.0/vertxbus.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbS09u00uAutq-SzZFzwabK0ihFCFCwU0&v=3.exp&language=en"></script>
+
+<script type="text/javascript" src="javascript/modernizr.custom.js"></script>
+<script type="text/javascript" src="javascript/html-sanitizer-minified.js"></script>
+<script src="javascript/main.js"></script>
+<script src="javascript/map.js"></script>
+<script src="javascript/browserMqtt.js"></script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-83014810-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+</body>
+</html>

@@ -61,9 +61,23 @@ class Polyline(object):
         try:
         # Polyline walker starts teleporting after reaching api query limit.
         # throw error here atm, catch it at factory and return StepWalker
-        # TODO Check what is happening...
+        #
+        # In case of API limit reached we get back we get a status 200 code with an empty routes []
+        #
+        # {u'error_message': u'You have exceeded your rate-limit for this API.',
+        #  u'routes': [],
+        #  u'status': u'OVER_QUERY_LIMIT'
+        # }
+
             self.polyline_points = [x['polyline']['points'] for x in
                                     self.directions_response['routes'][0]['legs'][0]['steps']]
+        # This handles both cases:
+        # a) the above API Quota reached self.directions_response['routes'] = []
+        # b) ZERO_RESULTS {
+        #    "geocoded_waypoints" : [ {}, {} ],
+        #    "routes" : [],
+        #    "status" : "ZERO_RESULTS"
+        # }
         except IndexError:
             self.polyline_points = self.directions_response['routes']
             raise # catch at factory atm...
@@ -171,8 +185,9 @@ class Polyline(object):
         return self._last_pos
 
     def calculate_coord(self, percentage, o, d):
-        # If this is the destination then returning as such
-        if self.points[-1] == d:
+        # If this is the destination then returning as such when percentage complete = 1.0
+        # Here there was a bug causing this to teleport when API quota was reached!!!
+        if self.points[-1] == d and percentage == 1.0 :
             return [d]
         else:
             # intermediary points returned with 5 decimals precision only

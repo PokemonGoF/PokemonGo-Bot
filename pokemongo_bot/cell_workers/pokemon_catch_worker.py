@@ -5,6 +5,8 @@ import time
 import json
 import logging
 import time
+import sys
+
 from random import random, randrange
 from pokemongo_bot import inventory
 from pokemongo_bot.base_task import BaseTask
@@ -29,6 +31,8 @@ ITEM_GREATBALL = 2
 ITEM_ULTRABALL = 3
 ITEM_RAZZBERRY = 701
 
+DEFAULT_UNSEEN_AS_VIP = True
+
 LOGIC_TO_FUNCTION = {
     'or': lambda x, y, z: x or y or z,
     'and': lambda x, y, z: x and y and z,
@@ -48,6 +52,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
         self.position = self.bot.position
         self.pokemon_list = self.bot.pokemon_list
         self.inventory = inventory.items()
+        self.pokedex = inventory.pokedex()
         self.spawn_point_guid = ''
         self.response_key = ''
         self.response_status_key = ''
@@ -56,6 +61,8 @@ class PokemonCatchWorker(Datastore, BaseTask):
         self.min_ultraball_to_keep = self.config.get('min_ultraball_to_keep', 10)
         self.berry_threshold = self.config.get('berry_threshold', 0.35)
         self.vip_berry_threshold = self.config.get('vip_berry_threshold', 0.9)
+        self.treat_unseen_as_vip = self.config.get('treat_unseen_as_vip', DEFAULT_UNSEEN_AS_VIP)
+        self.daily_catch_limit = self.config.get('daily_catch_limit', 800)
 
         self.catch_throw_parameters = self.config.get('catch_throw_parameters', {})
         self.catch_throw_parameters_spin_success_rate = self.catch_throw_parameters.get('spin_success_rate', 0.6)
@@ -74,6 +81,8 @@ class PokemonCatchWorker(Datastore, BaseTask):
         self.catchsim_berry_wait_max = self.catchsim_config.get('berry_wait_max', 3)
         self.catchsim_changeball_wait_min = self.catchsim_config.get('changeball_wait_min', 2)
         self.catchsim_changeball_wait_max = self.catchsim_config.get('changeball_wait_max', 3)
+        self.catchsim_newtodex_wait_min = self.catchsim_config.get('newtodex_wait_min', 20)
+        self.catchsim_newtodex_wait_max = self.catchsim_config.get('newtodex_wait_max', 30)
 
 
     ############################################################################
@@ -105,15 +114,25 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
         # skip ignored pokemon
         if not self._should_catch_pokemon(pokemon):
+            self.emit_event(
+                'pokemon_appeared',
+                formatted='Skip ignored {pokemon}! [CP {cp}] [Potential {iv}] [A/D/S {iv_display}]',
+                data={
+                    'pokemon': pokemon.name,
+                    'cp': pokemon.cp,
+                    'iv': pokemon.iv,
+                    'iv_display': pokemon.iv_display,
+                }
+            )
             return WorkerResult.SUCCESS
 
         is_vip = self._is_vip_pokemon(pokemon)
         if inventory.items().get(ITEM_POKEBALL).count < 1:
             if inventory.items().get(ITEM_GREATBALL).count < 1:
                 if inventory.items().get(ITEM_ULTRABALL).count < 1:
-                    return WorkerResult.SUCCESS
+                    return WorkerResult.ERROR
                 elif (not is_vip) and inventory.items().get(ITEM_ULTRABALL).count <= self.min_ultraball_to_keep:
-                    return WorkerResult.SUCCESS
+                    return WorkerResult.ERROR
 
         # log encounter
         self.emit_event(
@@ -145,10 +164,10 @@ class PokemonCatchWorker(Datastore, BaseTask):
             c.execute("SELECT DISTINCT COUNT(encounter_id) FROM catch_log WHERE dated >= datetime('now','-1 day')")
 
         result = c.fetchone()
+        self.caught_last_24_hour = result[0]
 
         while True:
-            max_catch = self.bot.config.daily_catch_limit
-            if result[0] < max_catch:
+            if self.caught_last_24_hour < self.daily_catch_limit:
             # catch that pokemon!
                 encounter_id = self.pokemon['encounter_id']
                 catch_rate_by_ball = [0] + response['capture_probability']['capture_probability']  # offset so item ids match indces
@@ -156,6 +175,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
                 break
             else:
                 self.emit_event('catch_limit', formatted='WARNING! You have reached your daily catch limit')
+                sys.exit(2)
                 break
 
         # simulate app
@@ -207,6 +227,23 @@ class PokemonCatchWorker(Datastore, BaseTask):
             'iv': False,
         }
 
+        candies = inventory.candies().get(pokemon.pokemon_id).quantity
+        threshold = pokemon_config.get('candy_threshold', -1 )
+        if( threshold > 0 and candies >= threshold  ):
+            self.emit_event(
+                'ignore_candy_above_thresold',
+                level='info',
+                formatted='Amount of candies for {name} is {amount}, greater than threshold {threshold}',
+                data={
+                    'name': pokemon.name,
+                    'amount': candies ,
+                    'threshold' : threshold
+                }
+            )
+            return False
+
+
+
         if pokemon_config.get('never_catch', False):
             return False
 
@@ -232,7 +269,8 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
     def _is_vip_pokemon(self, pokemon):
         # having just a name present in the list makes them vip
-        if self.bot.config.vips.get(pokemon.name) == {}:
+        # Not seen pokemons also will become vip if it's not disabled in config
+        if self.bot.config.vips.get(pokemon.name) == {} or (self.treat_unseen_as_vip and not self.pokedex.seen(pokemon.pokemon_id)):
             return True
         return self._pokemon_matches_config(self.bot.config.vips, pokemon, default_logic='or')
 
@@ -340,6 +378,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
             if self.min_ultraball_to_keep >= 0 and self.min_ultraball_to_keep < min_ultraball_to_keep:
                 min_ultraball_to_keep = self.min_ultraball_to_keep
 
+        used_berry = False
         while True:
 
             # find lowest available ball
@@ -347,14 +386,14 @@ class PokemonCatchWorker(Datastore, BaseTask):
             while ball_count[current_ball] == 0 and current_ball < maximum_ball:
                 current_ball += 1
             if ball_count[current_ball] == 0:
-                self.emit_event('no_pokeballs', formatted='No usable pokeballs found!')
-
                 # use untraball if there is no other balls with constraint to `min_ultraball_to_keep`
                 if maximum_ball != ITEM_ULTRABALL and ball_count[ITEM_ULTRABALL] > min_ultraball_to_keep:
                     maximum_ball = ITEM_ULTRABALL
+                    self.emit_event('enough_ultraballs', formatted='No regular balls left! Trying ultraball.')
                     continue
                 else:
-                    break
+                    self.emit_event('no_pokeballs', formatted='No pokeballs left! Fleeing...')
+                    return WorkerResult.ERROR
 
             # check future ball count
             num_next_balls = 0
@@ -367,9 +406,8 @@ class PokemonCatchWorker(Datastore, BaseTask):
             berries_to_spare = berry_count > 0 if is_vip else berry_count > num_next_balls + 30
 
             # use a berry if we are under our ideal rate and have berries to spare
-            used_berry = False
             changed_ball = False
-            if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and berries_to_spare:
+            if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and berries_to_spare and not used_berry:
                 new_catch_rate_by_ball = self._use_berry(berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball)
                 if new_catch_rate_by_ball != catch_rate_by_ball:
                     catch_rate_by_ball = new_catch_rate_by_ball
@@ -426,7 +464,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
             )
 
             hit_pokemon = 1
-            if random() >= self.catch_throw_parameters_hit_rate:
+            if random() >= self.catch_throw_parameters_hit_rate and not is_vip:
                 hit_pokemon = 0
 
             response_dict = self.api.catch_pokemon(
@@ -451,6 +489,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
                     formatted='{pokemon} capture failed.. trying again!',
                     data={'pokemon': pokemon.name}
                 )
+                used_berry = False
 
                 # sleep according to flee_count and flee_duration config settings
                 # randomly chooses a number of times to 'show' wobble animation between 1 and flee_count
@@ -483,20 +522,24 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
                 try:
                     inventory.pokemons().add(pokemon)
+                    exp_gain = sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
+
                     self.emit_event(
                         'pokemon_caught',
-                        formatted='Captured {pokemon}! [CP {cp}] [NCP {ncp}] [Potential {iv}] [{iv_display}] [+{exp} exp]',
+                        formatted='Captured {pokemon}! [CP {cp}] [NCP {ncp}] [Potential {iv}] [{iv_display}] ({caught_last_24_hour}/{daily_catch_limit}) [+{exp} exp]',
                         data={
                             'pokemon': pokemon.name,
                             'ncp': round(pokemon.cp_percent, 2),
                             'cp': pokemon.cp,
                             'iv': pokemon.iv,
                             'iv_display': pokemon.iv_display,
-                            'exp': sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp']),
+                            'exp': exp_gain,
                             'encounter_id': self.pokemon['encounter_id'],
                             'latitude': self.pokemon['latitude'],
                             'longitude': self.pokemon['longitude'],
-                            'pokemon_id': pokemon.pokemon_id
+                            'pokemon_id': pokemon.pokemon_id,
+                            'caught_last_24_hour': self.caught_last_24_hour + 1,
+                            'daily_catch_limit': self.daily_catch_limit
                         }
 
                     )
@@ -528,6 +571,10 @@ class PokemonCatchWorker(Datastore, BaseTask):
                             'pokemon_id': pokemon.pokemon_id
                         }, outfile)
                         outfile.write('\n')
+
+                    # if it is a new pokemon to our dex, simulate app animation delay
+                    if exp_gain >= 500:
+                        sleep (randrange(self.catchsim_newtodex_wait_min, self.catchsim_newtodex_wait_max))
 
                 except IOError as e:
                     self.logger.info('[x] Error while opening location file: %s' % e)

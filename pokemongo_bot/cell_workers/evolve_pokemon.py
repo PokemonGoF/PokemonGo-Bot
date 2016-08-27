@@ -1,3 +1,5 @@
+from random import uniform
+
 from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.inventory import Pokemon
@@ -14,7 +16,8 @@ class EvolvePokemon(Datastore, BaseTask):
     def initialize(self):
         self.api = self.bot.api
         self.evolve_all = self.config.get('evolve_all', [])
-        self.evolve_speed = self.config.get('evolve_speed', 2)
+        self.min_evolve_speed = self.config.get('min_evolve_speed', 25)
+        self.max_evolve_speed = self.config.get('max_evolve_speed', 30)
         self.first_evolve_by = self.config.get('first_evolve_by', 'cp')
         self.evolve_above_cp = self.config.get('evolve_above_cp', 500)
         self.evolve_above_iv = self.config.get('evolve_above_iv', 0.8)
@@ -25,6 +28,9 @@ class EvolvePokemon(Datastore, BaseTask):
     def _validate_config(self):
         if isinstance(self.evolve_all, basestring):
             self.evolve_all = [str(pokemon_name).strip() for pokemon_name in self.evolve_all.split(',')]
+
+        if 'evolve_speed' in self.config:
+            self.logger.warning("evolve_speed is deprecated, please use instead 'min_evolve_speed' and 'max_evolved_speed'.")
 
     def work(self):
         if not self._should_run():
@@ -128,7 +134,7 @@ class EvolvePokemon(Datastore, BaseTask):
             new_pokemon = inventory.Pokemon(evolution)
             inventory.pokemons().add(new_pokemon)
 
-            sleep(self.evolve_speed)
+            sleep(uniform(self.min_evolve_speed, self.max_evolve_speed))
             evolve_result = True
         else:
             # cache pokemons we can't evolve. Less server calls

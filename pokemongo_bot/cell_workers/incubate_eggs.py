@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.base_task import BaseTask
 
@@ -8,6 +10,7 @@ class IncubateEggs(BaseTask):
     last_km_walked = 0
 
     def initialize(self):
+        self.next_update = None
         self.ready_incubators = []
         self.used_incubators = []
         self.eggs = []
@@ -19,7 +22,11 @@ class IncubateEggs(BaseTask):
 
     def _process_config(self):
         self.longer_eggs_first = self.config.get("longer_eggs_first", True)
-
+        self.min_interval = self.config.get('min_interval', 120)
+        
+        self.breakable_incubator = self.config.get("breakable", [2,5,10])
+        self.infinite_incubator = self.config.get("infinite", [2,5,10])
+    
     def work(self):
         try:
             self._check_inventory()
@@ -33,17 +40,12 @@ class IncubateEggs(BaseTask):
                 self._hatch_eggs()
             else:
                 self.bot.metrics.next_hatching_km(km_left)
-                self.emit_event(
-                    'next_egg_incubates',
-                    formatted='Next egg ({km_needed} km) incubates in {distance_in_km:.2f} km (Eggs left: {eggs}, Incubating: {eggs_inc})',
-                    data={
-                        'km_needed': self.used_incubators[0]['km_needed'],
-                        'distance_in_km': km_left,
-                        'eggs': len(self.eggs),
-                        'eggs_inc': len(self.used_incubators)
-                    }
-                )
-            IncubateEggs.last_km_walked = self.km_walked
+
+        if self._should_print():
+            self._print_eggs()
+            self._compute_next_update()
+
+        IncubateEggs.last_km_walked = self.km_walked
 
         sorting = self.longer_eggs_first
         self.eggs.sort(key=lambda x: x.get("km"), reverse=sorting)
@@ -58,6 +60,17 @@ class IncubateEggs(BaseTask):
             for egg in self.eggs:
                 if egg["used"] or egg["km"] == -1:
                     continue
+                
+                # test if the incubator is of type breakable
+                if incubator.get('uses_remaining') is not None:
+                    if egg["km"] not in self.breakable_incubator:
+                        continue
+                    
+                # test if the incubator is of type infinite
+                if incubator.get('uses_remaining') is None:
+                    if egg["km"] not in self.infinite_incubator:
+                        continue
+                
                 self.emit_event(
                     'incubate_try',
                     level='debug',
@@ -120,10 +133,10 @@ class IncubateEggs(BaseTask):
                 incubators = inv_data.get("egg_incubators", {}).get("egg_incubator",[])
                 if isinstance(incubators, basestring):  # checking for old response
                     incubators = [incubators]
-                for incubator in incubators:
+                for incubator in incubators:                                           
                     if 'pokemon_id' in incubator:
-                        start_km = incubator.get('start_km_walked', 9001)
-                        km_walked = incubator.get('target_km_walked', 9001)
+                        start_km = incubator.get('start_km_walked', 0)
+                        km_walked = incubator.get('target_km_walked', 0)
                         temp_used_incubators.append({
                             "id": incubator.get('id', -1),
                             "km": km_walked,
@@ -210,10 +223,44 @@ class IncubateEggs(BaseTask):
                     'cp': pokemon_data[i]['cp'],
                     'iv': "{} {}".format(
                         "/".join(map(str, pokemon_data[i]['iv'])),
-                        sum(pokemon_data[i]['iv'])/self.max_iv
+                        round(sum(pokemon_data[i]['iv'])/self.max_iv, 2)
                     ),
                     'exp': xp[i],
                     'stardust': stardust[i],
                     'candy': candy[i],
                 }
             )
+
+    def _print_eggs(self):
+        if not self.used_incubators:
+            return
+
+        self.used_incubators.sort(key=lambda x: x.get("km"))
+        
+        eggs = ['{:.2f}/{} km'.format(e['km_needed']-e['km']+self.km_walked, e['km_needed']) for e in self.used_incubators]
+
+        self.emit_event(
+                    'next_egg_incubates',
+                    formatted='Eggs incubating: [{eggs}] (Eggs left: {eggs_left}, Incubating: {eggs_inc})',
+                    data={
+                        'eggs_left': len(self.eggs),
+                        'eggs_inc': len(self.used_incubators),
+                        'eggs': ', '.join(eggs)
+                    }
+                )
+        
+    def _should_print(self):
+        """
+        Returns a value indicating whether the eggs should be displayed.
+        :return: True if the stats should be displayed; otherwise, False.
+        :rtype: bool
+        """
+        return self.next_update is None or datetime.now() >= self.next_update
+
+    def _compute_next_update(self):
+        """
+        Computes the next update datetime based on the minimum update interval.
+        :return: Nothing.
+        :rtype: None
+        """
+        self.next_update = datetime.now() + timedelta(seconds=self.min_interval)

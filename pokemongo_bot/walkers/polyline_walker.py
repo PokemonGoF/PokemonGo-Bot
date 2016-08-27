@@ -15,8 +15,8 @@ class PolylineWalker(StepWalker):
 
     def __init__(self, bot, dest_lat, dest_lng):
         super(PolylineWalker, self).__init__(bot, dest_lat, dest_lng)
-        self.polyline_walker = PolylineObjectHandler.cached_polyline(tuple(self.api.get_position()[:2]),
-                                        (self.destLat, self.destLng), self.speed)
+
+        self.actual_pos = tuple(self.api.get_position()[:2])
 
         self.dist = distance(
             self.bot.position[0],
@@ -26,7 +26,8 @@ class PolylineWalker(StepWalker):
         )
 
     def step(self):
-        cLat, cLng = self.api._position_lat, self.api._position_lng
+        self.polyline_walker = PolylineObjectHandler.cached_polyline(self.actual_pos,
+                                        (self.destLat, self.destLng), self.speed)
 
         if self.dist < 10: # 10m, add config? set it at constants?
             return True
@@ -36,8 +37,10 @@ class PolylineWalker(StepWalker):
         self.polyline_walker.pause()
         
         cLat, cLng = self.polyline_walker.get_pos()
-        alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
-        self.api.set_position(cLat, cLng, alt)
+        cAlt = self.polyline_walker.get_alt()
+        self.api.set_position(cLat, cLng, cAlt)
+        self.actual_pos = (cLat, cLng) # might be a case this instance is reused in the future...
+
         self.bot.heartbeat()
         return False
 

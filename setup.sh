@@ -30,6 +30,10 @@ rm -rf pgoencrypt.tar.gz
 rm -rf pgoencrypt
 }
 
+function Pokebotescapestring () {
+echo "$1" | sed 's/\//\\\//g' | sed 's/"/\\"/g' # escape slash and double quotes
+}
+
 function Pokebotconfig () {
 cd $pokebotpath
 read -p "enter 1 for google or 2 for ptc 
@@ -38,6 +42,7 @@ read -p "Input username
 " username
 read -p "Input password 
 " -s password
+password=$(Pokebotescapestring $password)
 read -p "
 Input location 
 " location
@@ -46,7 +51,8 @@ read -p "Input gmapkey
 [[ $auth = "2" || $auth = "ptc" ]] && auth="ptc" || auth="google"
 sed -e "s/YOUR_USERNAME/$username/g" -e "s/YOUR_PASSWORD/$password/g" \
   -e "s/SOME_LOCATION/$location/g" -e "s/GOOGLE_MAPS_API_KEY/$gmapkey/g" \
-  -e "s/google/$auth/g" configs/config.json.example > configs/config.json
+  -e "s/google/$auth/g" configs/auth.json.example > configs/auth.json
+cp configs/config.json.example configs/config.json
 echo "Edit ./configs/config.json to modify any other config."
 }
 
