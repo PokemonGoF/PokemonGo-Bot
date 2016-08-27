@@ -298,7 +298,10 @@
     "location_cache": true,
     "distance_unit": "km",
     "reconnecting_timeout": 15,
-    "logging_color": true,
+	"logging": {
+		"color": true,
+		"clean": false
+	},
     "catch": {
         "any": {
             "always_catch": true

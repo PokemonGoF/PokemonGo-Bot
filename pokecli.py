@@ -504,10 +504,18 @@ def init_config():
     add_config(
         parser,
         load,
-        long_flag="--logging_color",
+        long_flag="--logging.color",
         help="If logging_color is set to true, colorized logging handler will be used",
         type=bool,
         default=True
+    )
+    add_config(
+        parser,
+        load,
+        long_flag="--logging.clean",
+        help="If clean_logging is set to true, meta data will be stripped from the log messages",
+        type=bool,
+        default=False
     )
     add_config(
         parser,
@@ -605,7 +613,6 @@ def init_config():
         type=float,
         default=8.0
     )
-
     add_config(
          parser,
          load,
