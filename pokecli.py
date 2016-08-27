@@ -294,16 +294,17 @@ def init_config():
     parser.add_argument("-af", "--auth", help="Auth File to use")
 
     for _config in ['auth', 'config']:
+        config_file = os.path.join(_base_dir, 'configs', _config + '.json')
         config_arg = parser.parse_known_args() and parser.parse_known_args()[0].__dict__[_config] or None
 
         if config_arg and os.path.isfile(config_arg):
             _json_loader(config_arg)
-            config_file = config_arg if _config == 'config' else config_file
+            config_file = config_arg
         elif os.path.isfile(config_file):
-            logger.info('No ' + _config + ' argument specified, checking for /configs/' + _config + '.json')
+            logger.info('No ' + _config + ' argument specified, checking for ' + config_file)
             _json_loader(config_file)
         else:
-            logger.info('Error: No /configs/config.json or specified config')
+            logger.info('Error: No /configs/' + _config + '.json')
 
     # Read passed in Arguments
     required = lambda x: not x in load
