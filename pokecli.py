@@ -300,7 +300,7 @@ def init_config():
             logger.info('No ' + _config + ' argument specified, checking for ' + config_file)
             _json_loader(config_file)
         else:
-            logger.info('Error: No /configs/config.json or specified config')
+            logger.info('Error: No /configs/' + _config + '.json')
 
     # Read passed in Arguments
     required = lambda x: not x in load
