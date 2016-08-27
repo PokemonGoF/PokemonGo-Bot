@@ -7,5 +7,6 @@
         {"name": "Milan", "coords": "45.472849,9.177567"}
     ],
     "gmapkey": "GOOGLE_MAPS_API_KEY",
-    "encrypt_location": ""
+    "encrypt_location": "",
+    "telegram_token": ""
 }

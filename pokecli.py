@@ -628,6 +628,7 @@ def init_config():
 
     config.favorite_locations = load.get('favorite_locations', [])
     config.encrypt_location = load.get('encrypt_location', '')
+    config.telegram_token = load.get('telegram_token', '')
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.plugins = load.get('plugins', [])
