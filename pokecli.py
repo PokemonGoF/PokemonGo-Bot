@@ -80,6 +80,9 @@ def main():
 
     def initialize(config):
         bot = PokemonGoBot(config)
+        return bot
+        
+    def start_bot(bot,config):
         bot.start()
         initialize_task(bot,config)
         bot.metrics.capture_stats()
@@ -113,6 +116,7 @@ def main():
         while not finished:
             try:
                 bot = initialize(config)
+                bot = start_bot(bot,config)
                 config_changed = check_mod(config_file)
 
                 bot.event_manager.emit(
