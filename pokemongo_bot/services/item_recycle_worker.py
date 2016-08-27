@@ -25,6 +25,7 @@ class ItemRecycler(BaseTask):
         self.item_to_recycle = item_to_recycle
         self.amount_to_recycle = amount_to_recycle
         self.recycle_item_request_result = None
+        self.last_log_time = time.time()
 
     def work(self):
         """
