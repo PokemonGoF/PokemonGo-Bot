@@ -126,6 +126,7 @@ configs/*
 !configs/path.example.json
 !config.json.cluster.example
 !config.json.optimizer.example
+!auth.json.example
 
 # Virtualenv folders
 bin/
