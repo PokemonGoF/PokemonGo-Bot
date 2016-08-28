@@ -67,6 +67,8 @@ mv pgoencrypt/src/libencrypt.so encrypt.so
 ```bash
 cp configs/config.json.example configs/config.json
 vi configs/config.json
+cp configs/auth.json.example configs/auth.json
+vi configs/auth.json
 ```
 ####
 - make shure your git repo is up to date
@@ -78,7 +80,7 @@ pip install -r requirements.txt
 ####
 - finaly start the bot
 ```bash
-./run.sh configs/config.json
+./run.sh
 ```
 ####
 - after reboot or closing the terminal at every new start go into the folder of the PokemonGo-Bot by going into the folder where you startet installing it an then
@@ -86,7 +88,7 @@ pip install -r requirements.txt
 cd PokemonGo-Bot
 #activate virtualenv and start
 source bin/activate
-./run.sh configs/config.json
+./run.sh
 ```
 
 
