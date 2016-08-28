@@ -3,6 +3,11 @@
 Moves a trainer to a Pokemon.
 
 Events:
+    move_to_map_pokemon
+        When a generic message is logged
+        Returns:
+            message: Log message.
+
     move_to_map_pokemon_fail
         When the worker fails.
         Returns:
@@ -83,7 +88,7 @@ SNIPE_SLEEP_SEC = 2
 SNIPE_MAX_IN_CHAIN = 2
 
 # Don't call sniper every time in workers
-SNIPE_SKIP_IN_ROUND = 30
+SNIPE_SKIP_IN_ROUND = 5
 
 DEBUG_ON = False
 
@@ -130,7 +135,13 @@ class MoveToMapPokemon(BaseTask):
             pokemon['is_vip'] = pokemon['name'] in self.bot.config.vips
 
             if pokemon['name'] not in self.config['catch']:
+                if DEBUG_ON:
+                    self._emit_failure("Not catching {}".format(pokemon['name']))
                 continue
+            else:
+                if DEBUG_ON:
+                    self._emit_log("Catching {}".format(pokemon['name']))
+
 
             if self.was_caught(pokemon):
                 continue
@@ -144,7 +155,7 @@ class MoveToMapPokemon(BaseTask):
                 pokemon['longitude'],
             )
 
-            if pokemon['dist'] > self.config['max_distance'] or not self.config['snipe']:
+            if pokemon['dist'] > self.config['max_distance'] and not self.config['snipe']:
                 continue
 
             # pokemon not reachable with mean walking speed (by config)
@@ -300,7 +311,7 @@ class MoveToMapPokemon(BaseTask):
 
         if (pokeballs_quantity + superballs_quantity + ultraballs_quantity) < self.min_ball:
             if DEBUG_ON:
-                print 'no enough balls'
+                self._emit_log("Not enough balls to start sniping (have {}, {} needed)".format(pokeballs_quantity + superballs_quantity + ultraballs_quantity, self.min_ball))
             return WorkerResult.SUCCESS
 
         self.dump_caught_pokemon()
@@ -308,6 +319,8 @@ class MoveToMapPokemon(BaseTask):
             if self.config['snipe']:
                 self.by_pass_times = self.by_pass_times + 1
                 if self.by_pass_times < SNIPE_SKIP_IN_ROUND:
+                    if DEBUG_ON:
+                        self._emit_log("Skipping pass {}".format(self.by_pass_times))
                     return WorkerResult.SUCCESS
                 self.by_pass_times = 0
             pokemon_list = self.get_pokemon_from_social()
@@ -323,12 +336,12 @@ class MoveToMapPokemon(BaseTask):
 
         if len(pokemon_list) < 1:
             if DEBUG_ON:
-                print 'No enough pokemon in list to snip'
+                self._emit_log("No pokemons in list to snipe")
             return WorkerResult.SUCCESS
 
         pokemon = pokemon_list[0]
         if DEBUG_ON:
-            print 'How many pokemon in list: {}'.format(len(pokemon_list))
+            self._emit_log('How many pokemon in list: {}'.format(len(pokemon_list)))
         if self.config['snipe']:
             if self.snipe_high_prio_only:
                 count = 0
@@ -342,7 +355,7 @@ class MoveToMapPokemon(BaseTask):
                             time.sleep(SNIPE_SLEEP_SEC*5)
                     else:
                         if DEBUG_ON:
-                            print 'this pokemon is not good enough to snip {}'.format(pokemon)
+                            self._emit_log('this pokemon is not good enough to snipe {}'.format(pokemon))
                 return WorkerResult.SUCCESS
             else:
                 return self.snipe(pokemon)
