@@ -1,14 +1,23 @@
 # PokemonGo-Bot
 PokemonGo bot is a project created by the [PokemonGoF](https://github.com/PokemonGoF) team.
 
+## Table of Contents
+- [Installation](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/installation.md)
+- [Documentation](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/)
+- [Support](#support)
+ - [help](#configuration-issueshelp)
+ - [bugs](#bugs--issues)
+ - [Feature request](#feature-requests)
+ - [Pull Requests](#pull-requests)
+- [Features](#features)
+- [Credits](#credits)
+
 The project is currently setup in two main branches. 
 - `dev` also known as `beta` - This is where the latest features are, but you may also experience some issues with stability/crashes
 - `master` also known as `stable` - The bot 'should' be stable on this branch, and is generally well tested
 
-## [Desktop version](https://github.com/PokemonGoF/PokemonGo-Bot-Desktop)
-
 ## Support
-###Configuration issues/help
+### Configuration issues/help
 If you need any help please don't create an issue as we have a great community on Slack. You can count on the community in [#help](https://pokemongo-bot.slack.com/messages/help/) channel.
  - [Click here to signup (first time only)](https://pokemongo-bot.herokuapp.com) 
  - [Join if you're already a member](https://pokemongo-bot.slack.com/messages/general/). 
@@ -22,12 +31,6 @@ While you're there vote on other feature requests to let the devs know what is m
 
 ###[Pull Requests](https://github.com/PokemonGoF/PokemonGo-Bot/pulls)
 If you'd like to make your own changes, make sure you follow the pull request template, and ensure your PR is made against the 'dev' branch
-
-## Table of Contents
-- [Installation](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/installation.md)
-- [Documentation](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/)
-- [Features](#features)
-- [Credits](#credits)
 
 ## Features
 - [x] GPS Location configuration
