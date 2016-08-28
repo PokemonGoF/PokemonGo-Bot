@@ -632,7 +632,7 @@ def init_config():
          type=bool,
          default=False
     )
-
+    
     # Start to parse other attrs
     config = parser.parse_args()
     if not config.username and 'username' not in load:
@@ -652,6 +652,7 @@ def init_config():
     config.live_config_update = load.get('live_config_update', {})
     config.live_config_update_enabled = config.live_config_update.get('enabled', False)
     config.live_config_update_tasks_only = config.live_config_update.get('tasks_only', False)
+    config.logging = load.get('logging', {})
 
     if config.map_object_cache_time < 0.0:
         parser.error("--map_object_cache_time is out of range! (should be >= 0.0)")
@@ -696,7 +697,10 @@ def init_config():
 
     if "daily_catch_limit" in load:
         logger.warning('The daily_catch_limit argument has been moved into the CatchPokemon Task')
-
+        
+    if "logging_color" in load:
+        logger.warning('The logging_color argument has been moved into the logging config section')
+            
     if config.walk_min < 1:
         parser.error("--walk_min is out of range! (should be >= 1.0)")
         return None

@@ -87,6 +87,14 @@ Document the configuration options of PokemonGo-Bot.
 | `live_config_update.tasks_only`            | false     | True: quick update for Tasks only (without re-login). False: slower update for entire config file.
 
 
+## Logging configuration
+[[back to top](#table-of-contents)]
+
+'logging'.'color' (default false) Enabled colored logging
+'logging'.'show_datetime' (default true) Show date and time in log
+'logging'.'show_process_name' (default true) Show name of process generating output in log
+'logging'.'show_log_level' (default true) Show level of log message in log (eg. "INFO")
+
 ## Configuring Tasks
 [[back to top](#table-of-contents)]
 
