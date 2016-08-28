@@ -46,6 +46,7 @@
 - [Random Pause](#random-pause)
 - [Egg Incubator](#egg-incubator)
 - [ShowBestPokemon](#showbestpokemon)
+- [Telegram Task](#telegram-task)
 
 #Configuration files
 
@@ -911,4 +912,35 @@ Available `info_to_show` :
 [[back to top](#table-of-contents)]
 ```
 2016-08-25 21:20:59,642 [ShowBestPokemon] [INFO] [show_best_pokemon] [Tauros, CP 575, IVCP 0.95, DPS 12.04] | [Grimer, CP 613, IVCP 0.93, DPS 13.93] | [Tangela, CP 736, IVCP 0.93, DPS 14.5] | [Staryu, CP 316, IVCP 0.92, DPS 10.75] | [Gastly, CP 224, IVCP 0.9, DPS 11.7]
+```
+
+## Telegram Task
+[[back to top](#table-of-contents)]
+
+### Description
+[[back to top](#table-of-contents)]
+
+[Telegram bot](https://telegram.org/) Announcer Level up, pokemon cought
+
+Bot answer on command '/info' self stats.
+
+### Options
+
+* `telegram_token` : bot token (getting [there](https://core.telegram.org/bots#6-botfather) - one token per bot)
+* `master` : id (without quotes) or username (in quotes, first character @) of bot owner, who will gett announces.
+* `alert_catch` : array of pokemons, which will be announced on catch. if first array item `all` - announce all pokemons.
+
+### Sample configuration
+[[back to top](#table-of-contents)]
+```json
+{
+    "type": "TelegramTask",
+    "config": {
+        "enabled": true,
+        "master": 12345678,
+        "//master": "@username",
+        "alert_catch": ["Lapras","Dragonite"],
+        "//alert_catch": ["all"]
+    }
+}
 ```
