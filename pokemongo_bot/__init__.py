@@ -1226,20 +1226,7 @@ class PokemonGoBot(Datastore):
                         data={'badge': badgename,
                               'level' : badgelevel }
                     )
-
-                    #todo move equip badge into its own task once working
-                    #should work but gives errors :'(s
-                    #response = self.api.equip_badge(badge_type=badge)
-                    response = {'responses': "awaiting further testing on api call to equip_badge"}
-                    self.event_manager.emit(
-                        'badges',
-                        sender=self,
-                        level='info',
-                        formatted='equiped badge: {badge}',
-                        data={'badge': response['responses']}
-                    )
                     human_behaviour.action_delay(3,10)
-
 
         try:
             self.web_update_queue.put_nowait(True)  # do this outside of thread every tick

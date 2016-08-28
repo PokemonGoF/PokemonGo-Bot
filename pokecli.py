@@ -133,7 +133,9 @@ def main():
                         config, _ = init_config()
 
                         if config.live_config_update_tasks_only: initialize_task(bot, config)
-                        else: bot = initialize(config)
+                        else: 
+                            bot = initialize(config)
+                            bot = start_bot(bot,config)
 
             except KeyboardInterrupt:
                 bot.event_manager.emit(
