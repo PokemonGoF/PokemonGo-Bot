@@ -86,7 +86,7 @@ Document the configuration options of PokemonGo-Bot.
 |`favorite_locations`    | []   | Allows you to define a collection of locations and coordinates, allowing rapid switch using a "label" on your location config
 | `live_config_update.enabled`            | false     | Enable live config update
 | `live_config_update.tasks_only`            | false     | True: quick update for Tasks only (without re-login). False: slower update for entire config file.
-
+| `enable_social`            | true     | True: to chat with other pokemon go bot users [more information](https://github.com/PokemonGoF/PokemonGo-Bot/pull/4596)
 
 ## Logging configuration
 [[back to top](#table-of-contents)]
