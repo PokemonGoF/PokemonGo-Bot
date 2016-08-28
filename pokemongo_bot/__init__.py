@@ -13,6 +13,7 @@ import Queue
 import threading
 import shelve
 import uuid
+from logging import Formatter
 
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
@@ -130,12 +131,15 @@ class PokemonGoBot(Datastore):
 
     def _setup_event_system(self):
         handlers = []
-        if self.config.logging_color:
-            handlers.append(ColoredLoggingHandler())
+
+        if self.config.logging and 'color' in self.config.logging and self.config.logging['color']:
+            handlers.append(ColoredLoggingHandler(self))
         else:
-            handlers.append(LoggingHandler())
+            handlers.append(LoggingHandler(self))
+
         if self.config.enable_social:
             handlers.append(SocialHandler(self))
+
         if self.config.websocket_server_url:
             if self.config.websocket_start_embedded_server:
                 self.sio_runner = SocketIoRunner(self.config.websocket_server_url)
@@ -743,32 +747,35 @@ class PokemonGoBot(Datastore):
         return map_cells
 
     def _setup_logging(self):
-        # log settings
-        # log format
+        log_level = logging.ERROR
 
         if self.config.debug:
             log_level = logging.DEBUG
-            logging.getLogger("requests").setLevel(logging.DEBUG)
-            logging.getLogger("websocket").setLevel(logging.DEBUG)
-            logging.getLogger("socketio").setLevel(logging.DEBUG)
-            logging.getLogger("engineio").setLevel(logging.DEBUG)
-            logging.getLogger("socketIO-client").setLevel(logging.DEBUG)
-            logging.getLogger("pgoapi").setLevel(logging.DEBUG)
-            logging.getLogger("rpc_api").setLevel(logging.DEBUG)
-        else:
-            log_level = logging.ERROR
-            logging.getLogger("requests").setLevel(logging.ERROR)
-            logging.getLogger("websocket").setLevel(logging.ERROR)
-            logging.getLogger("socketio").setLevel(logging.ERROR)
-            logging.getLogger("engineio").setLevel(logging.ERROR)
-            logging.getLogger("socketIO-client").setLevel(logging.ERROR)
-            logging.getLogger("pgoapi").setLevel(logging.ERROR)
-            logging.getLogger("rpc_api").setLevel(logging.ERROR)
 
-        logging.basicConfig(
-            level=log_level,
-            format='%(asctime)s [%(name)10s] [%(levelname)s] %(message)s'
-        )
+        logging.getLogger("requests").setLevel(log_level)
+        logging.getLogger("websocket").setLevel(log_level)
+        logging.getLogger("socketio").setLevel(log_level)
+        logging.getLogger("engineio").setLevel(log_level)
+        logging.getLogger("socketIO-client").setLevel(log_level)
+        logging.getLogger("pgoapi").setLevel(log_level)
+        logging.getLogger("rpc_api").setLevel(log_level)
+
+        if self.config.logging:
+            logging_format = '%(message)s'
+            logging_format_options = ''
+            
+            if ('show_log_level' not in self.config.logging) or self.config.logging['show_log_level']:
+                logging_format = '[%(levelname)s] ' + logging_format
+            if ('show_process_name' not in self.config.logging) or self.config.logging['show_process_name']:
+                logging_format = '[%(name)10s] ' + logging_format
+            if ('show_datetime' not in self.config.logging) or self.config.logging['show_datetime']:
+                logging_format = '[%(asctime)s] ' + logging_format
+                logging_format_options = '%Y-%m-%d %H:%M:%S'
+                
+            formatter = Formatter(logging_format,logging_format_options)
+            for handler in logging.root.handlers[:]:
+                handler.setFormatter(formatter)
+
     def check_session(self, position):
 
         # Check session expiry
@@ -1219,20 +1226,7 @@ class PokemonGoBot(Datastore):
                         data={'badge': badgename,
                               'level' : badgelevel }
                     )
-
-                    #todo move equip badge into its own task once working
-                    #should work but gives errors :'(s
-                    #response = self.api.equip_badge(badge_type=badge)
-                    response = {'responses': "awaiting further testing on api call to equip_badge"}
-                    self.event_manager.emit(
-                        'badges',
-                        sender=self,
-                        level='info',
-                        formatted='equiped badge: {badge}',
-                        data={'badge': response['responses']}
-                    )
                     human_behaviour.action_delay(3,10)
-
 
         try:
             self.web_update_queue.put_nowait(True)  # do this outside of thread every tick

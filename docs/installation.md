@@ -58,10 +58,18 @@ Once you have Docker installed, simply create the various config files for your 
 
 ```
 cd PokemonGo-Bot
-docker build --build-arg timezone=Europe/London -t pokemongo-bot .
+docker build --build-arg TIMEZONE=Europe/London -t pokemongo-bot .
 ```
 
 Optionally you can set your timezone with the --build-arg option (default is Etc/UTC). You can find an exhaustive list of timezone here: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+
+By default our Dockerfile ensures that the "master" branch will be used for building the docker container, if you want to use the "dev" branch then you should build the container with below build command:
+
+```
+docker build --build-arg TIMEZONE=Europe/London --build-arg BUILD_BRANCH=dev -t pokemongo-bot .
+```
+
+
 
 After build process you can verify that the image was created with:
 
@@ -81,6 +89,7 @@ Run a second container provided with the OpenPoGoBotWeb view:
 docker run --name=bot1-pokegoweb --rm -it --volumes-from bot1-pokego -p 8000:8000 -v $(pwd)/configs/userdata.js:/usr/src/app/web/userdata.js -w /usr/src/app/web python:2.7 python -m SimpleHTTPServer
 ```
 The OpenPoGoWeb will be served on `http://<your host>:8000`
+
 
 ### Remarks for Windows
 
@@ -153,3 +162,11 @@ command to stop and remove all stopped containers: `docker-compose down`
 TODO: Add infos / configuration for running multiple bot instances.
 
 Do not push your image to a registry with your config.json and account details in it!
+
+### Bug reporting when using docker:
+
+Please include output of below command:
+```
+docker inspect --format='{{.Created}} {{.ContainerConfig.Labels}}' container_tag_or_id
+```
+container_tag_or_id being the final tag_id of container or the id of the intermediary layer at which the docker build failed.
