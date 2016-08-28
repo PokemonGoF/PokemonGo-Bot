@@ -80,6 +80,9 @@ def main():
 
     def initialize(config):
         bot = PokemonGoBot(config)
+        return bot
+        
+    def start_bot(bot,config):
         bot.start()
         initialize_task(bot,config)
         bot.metrics.capture_stats()
@@ -113,6 +116,7 @@ def main():
         while not finished:
             try:
                 bot = initialize(config)
+                bot = start_bot(bot,config)
                 config_changed = check_mod(config_file)
 
                 bot.event_manager.emit(
@@ -129,7 +133,9 @@ def main():
                         config, _ = init_config()
 
                         if config.live_config_update_tasks_only: initialize_task(bot, config)
-                        else: bot = initialize(config)
+                        else: 
+                            bot = initialize(config)
+                            bot = start_bot(bot,config)
 
             except KeyboardInterrupt:
                 bot.event_manager.emit(
@@ -287,16 +293,20 @@ def init_config():
 
     # Select a config file code
     parser.add_argument("-cf", "--config", help="Config File to use")
-    config_arg = parser.parse_known_args() and parser.parse_known_args()[0].config or None
+    parser.add_argument("-af", "--auth", help="Auth File to use")
 
-    if config_arg and os.path.isfile(config_arg):
-        _json_loader(config_arg)
-        config_file = config_arg
-    elif os.path.isfile(config_file):
-        logger.info('No config argument specified, checking for /configs/config.json')
-        _json_loader(config_file)
-    else:
-        logger.info('Error: No /configs/config.json or specified config')
+    for _config in ['auth', 'config']:
+        config_file = os.path.join(_base_dir, 'configs', _config + '.json')
+        config_arg = parser.parse_known_args() and parser.parse_known_args()[0].__dict__[_config] or None
+
+        if config_arg and os.path.isfile(config_arg):
+            _json_loader(config_arg)
+            config_file = config_arg
+        elif os.path.isfile(config_file):
+            logger.info('No ' + _config + ' argument specified, checking for ' + config_file)
+            _json_loader(config_file)
+        else:
+            logger.info('Error: No /configs/' + _config + '.json')
 
     # Read passed in Arguments
     required = lambda x: not x in load
@@ -496,10 +506,18 @@ def init_config():
     add_config(
         parser,
         load,
-        long_flag="--logging_color",
+        long_flag="--logging.color",
         help="If logging_color is set to true, colorized logging handler will be used",
         type=bool,
         default=True
+    )
+    add_config(
+        parser,
+        load,
+        long_flag="--logging.clean",
+        help="If clean_logging is set to true, meta data will be stripped from the log messages",
+        type=bool,
+        default=False
     )
     add_config(
         parser,
@@ -597,7 +615,6 @@ def init_config():
         type=float,
         default=8.0
     )
-
     add_config(
          parser,
          load,
@@ -625,6 +642,7 @@ def init_config():
 
     config.favorite_locations = load.get('favorite_locations', [])
     config.encrypt_location = load.get('encrypt_location', '')
+    config.telegram_token = load.get('telegram_token', '')
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.plugins = load.get('plugins', [])

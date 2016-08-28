@@ -11,7 +11,8 @@ class IncubateEggs(BaseTask):
 
     def initialize(self):
         self.next_update = None
-        self.ready_incubators = []
+        self.ready_incubators_breakable = []
+        self.ready_incubators_infinite = []
         self.used_incubators = []
         self.eggs = []
         self.km_walked = 0
@@ -21,7 +22,8 @@ class IncubateEggs(BaseTask):
         self._process_config()
 
     def _process_config(self):
-        self.longer_eggs_first = self.config.get("longer_eggs_first", True)
+        self.infinite_longer_eggs_first = self.config.get("infinite_longer_eggs_first", False)
+        self.breakable_longer_eggs_first = self.config.get("breakable_longer_eggs_first", True)
         self.min_interval = self.config.get('min_interval', 120)
         
         self.breakable_incubator = self.config.get("breakable", [2,5,10])
@@ -47,28 +49,38 @@ class IncubateEggs(BaseTask):
 
         IncubateEggs.last_km_walked = self.km_walked
 
-        sorting = self.longer_eggs_first
+        sorting = self.breakable_longer_eggs_first
         self.eggs.sort(key=lambda x: x.get("km"), reverse=sorting)
+        if self.ready_incubators_breakable:
+            self._apply_incubators('breakable')
 
-        if self.ready_incubators:
-            self._apply_incubators()
+        sorting = self.infinite_longer_eggs_first
+        self.eggs.sort(key=lambda x: x.get("km"), reverse=sorting)
+        if self.ready_incubators_infinite:
+            self._apply_incubators('infinite')
 
-    def _apply_incubators(self):
-        for incubator in self.ready_incubators:
+    def _apply_incubators(self, type_of_incubator):
+        if type_of_incubator == 'breakable':
+            temp_ready_incubators = self.ready_incubators_breakable
+        elif type_of_incubator == 'infinite':
+            temp_ready_incubators = self.ready_incubators_infinite
+            
+        for incubator in temp_ready_incubators:
             if incubator.get('used', False):
                 continue
             for egg in self.eggs:
                 if egg["used"] or egg["km"] == -1:
                     continue
-                
+
+                km = int(egg["km"])
+
                 # test if the incubator is of type breakable
                 if incubator.get('uses_remaining') is not None:
-                    if egg["km"] not in self.breakable_incubator:
+                    if km not in self.breakable_incubator:
                         continue
-                    
                 # test if the incubator is of type infinite
-                if incubator.get('uses_remaining') is None:
-                    if egg["km"] not in self.infinite_incubator:
+                else:
+                    if km not in self.infinite_incubator:
                         continue
                 
                 self.emit_event(
@@ -119,7 +131,8 @@ class IncubateEggs(BaseTask):
         matched_pokemon = []
         temp_eggs = []
         temp_used_incubators = []
-        temp_ready_incubators = []
+        temp_ready_incubators_breakable = []
+        temp_ready_incubators_infinite = []
         inv = reduce(
             dict.__getitem__,
             ["responses", "GET_INVENTORY", "inventory_delta", "inventory_items"],
@@ -129,7 +142,8 @@ class IncubateEggs(BaseTask):
             inv_data = inv_data.get("inventory_item_data", {})
             if "egg_incubators" in inv_data:
                 temp_used_incubators = []
-                temp_ready_incubators = []
+                temp_ready_incubators_breakable = []
+                temp_ready_incubators_infinite = []
                 incubators = inv_data.get("egg_incubators", {}).get("egg_incubator",[])
                 if isinstance(incubators, basestring):  # checking for old response
                     incubators = [incubators]
@@ -143,9 +157,14 @@ class IncubateEggs(BaseTask):
                             "km_needed": (km_walked - start_km)
                         })
                     else:
-                        temp_ready_incubators.append({
-                            "id": incubator.get('id', -1)
-                        })
+                        if incubator.get('uses_remaining') is not None:
+                            temp_ready_incubators_breakable.append({
+                                "id": incubator.get('id', -1)
+                            })
+                        else:
+                            temp_ready_incubators_infinite.append({
+                                "id": incubator.get('id', -1)
+                            })
                 continue
             if "pokemon_data" in inv_data:
                 pokemon = inv_data.get("pokemon_data", {})
@@ -168,8 +187,10 @@ class IncubateEggs(BaseTask):
                 self.km_walked = inv_data.get("player_stats", {}).get("km_walked", 0)
         if temp_used_incubators:
             self.used_incubators = temp_used_incubators
-        if temp_ready_incubators:
-            self.ready_incubators = temp_ready_incubators
+        if temp_ready_incubators_breakable:
+            self.ready_incubators_breakable = temp_ready_incubators_breakable
+        if temp_ready_incubators_infinite:
+            self.ready_incubators_infinite = temp_ready_incubators_infinite
         if temp_eggs:
             self.eggs = temp_eggs
         return matched_pokemon

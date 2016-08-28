@@ -39,8 +39,15 @@ class EvolvePokemon(Datastore, BaseTask):
         evolve_list = self._sort_and_filter()
 
         if self.evolve_all[0] != 'all':
-            # filter out non-listed pokemons
-            evolve_list = filter(lambda x: x.name in self.evolve_all, evolve_list)
+            # check for negation
+            negate = filter(lambda x: x[0] == '-', self.evolve_all)
+
+            # if there are things to negate
+            if len(negate) > 0:
+                evolve_list = filter(lambda x: '-' + x.name not in negate, evolve_list)
+            else:
+                # filter out non-listed pokemons
+                evolve_list = filter(lambda x: x.name in self.evolve_all, evolve_list)
 
         cache = {}
         for pokemon in evolve_list:

@@ -126,6 +126,7 @@ configs/*
 !configs/path.example.json
 !config.json.cluster.example
 !config.json.optimizer.example
+!auth.json.example
 
 # Virtualenv folders
 bin/
@@ -136,3 +137,6 @@ pip-selfcheck.json
 
 # Some love for the vim users
 .*.sw*
+
+# Mac Gargage
+.DS_Store

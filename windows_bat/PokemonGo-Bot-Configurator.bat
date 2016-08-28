@@ -12,9 +12,9 @@ FOR %%k in (%0) do SET batchName=%%~nk
 SET "vbsGetPrivileges=%temp%\OEgetPriv_%batchName%.vbs"
 SET BatPath=%~dp0
 SET BotPath=%BatPath:~0,-13%
-SET ConFigPath=%BotPath%\configs\
+SET AuthPath=%BotPath%\configs\
 SET UserDataPath=%BotPath%\Web\config\
-SET config=%ConFigPath%config.json
+SET auth=%AuthPath%auth.json
 SET UserData=%UserDataPath%userdata.js
 SETLOCAL EnableDelayedExpansion
 
@@ -50,11 +50,13 @@ ECHO.
 ECHO.--------------------PokemonGo-Bot Configurator--------------------
 ECHO.
 ECHO.
-ECHO. The PokemonGo-Bot Configurator creates the needed config.json and userdata.js
+ECHO. The PokemonGo-Bot Configurator creates the needed %AuthPath%auth.json and %UserDataPath%userdata.js
 ECHO.
-ECHO. It only configures the needed info to start running the PokemonGo-Bot.
+ECHO. It only configures the needed info to login with the PokemonGo-Bot.
 ECHO.
-ECHO. To fine tune your config.json you will have to edit the file
+ECHO. Choose one of the %AuthPath%config.json.examples and rename it to %AuthPath%config.json
+ECHO.
+ECHO. To fine tune your %AuthPath%config.json you will have to edit the file.
 ECHO.
 ECHO.
 ECHO.
@@ -62,7 +64,7 @@ timeout /t 10
 
 :Warning
 cls
-IF EXIST "%ConFigPath%config.json" (
+IF EXIST "%AuthPath%auth.json" (
 color C
 ECHO.
 ECHO.
@@ -71,7 +73,7 @@ ECHO.
 ECHO.
 ECHO.=============================================================================
 ECHO.=                                                                           =
-ECHO.= WARNING - Your existing config.json and/or userdata.js will be overwriten =
+ECHO.=  WARNING - Your existing auth.json and/or userdata.js will be overwriten  =
 ECHO.=                                                                           =
 ECHO.=     Press Enter to abort in next screen or make a choice to continue      =
 ECHO.=                                                                           =
@@ -86,107 +88,64 @@ cls
 color 7
 ECHO.
 ECHO.
-ECHO.--------------------PokemonGo-Bot Config Choice--------------------
+ECHO.--------------------PokemonGo-Bot Auth/Userdata Creator--------------------
 ECHO.
-ECHO. First create your config.json and then your userdata.js.
+ECHO. First create your %AuthPath%auth.json and then your %UserDataPath%userdata.js.
 ECHO.
-ECHO. 1 - Normal config.json
+ECHO. 1 - %AuthPath%auth.json
 ECHO.
-ECHO. 2 - Cluster config.json
-ECHO.
-ECHO. 3 - Map config.json
-ECHO.
-ECHO. 4 - Optimizer config.json
-ECHO.
-ECHO. 5 - Path config.json
-ECHO.
-ECHO. 6 - Pokemon config.json
-ECHO.
-ECHO. 7 - userdata.js
+ECHO. 2 - %UserDataPath%userdata.js
 ECHO.
 ECHO.
 
 :_choice
 SET _ok=
-SET /p _ok= Choose your config.json or press Enter to close: ||goto:eof
-IF "%_ok%" == "1" SET CHOICE=Normal&GOTO :Normal
-IF "%_ok%" == "2" SET CHOICE=Cluster&GOTO :Cluster
-IF "%_ok%" == "3" SET CHOICE=Map&GOTO :Map
-IF "%_ok%" == "4" SET CHOICE=Optimizer&GOTO :Optimizer
-IF "%_ok%" == "5" SET CHOICE=Path&GOTO :Path
-IF "%_ok%" == "6" SET CHOICE=Pokemon&GOTO :Pokemon
-IF "%_ok%" == "7" SET CHOICE=UserData&GOTO :UserData
+SET /p _ok= Make your choice or press Enter to close: ||goto:eof
+IF "%_ok%" == "1" SET CHOICE=Auth&GOTO :Auth
+IF "%_ok%" == "2" SET CHOICE=UserData&GOTO :UserData
 GOTO :_choice 
 
-:Normal
-call:ConfigMake %ConFigPath%config.json.example
+:Auth
+call:AuthMake %AuthPath%auth.json.example
 goto:Menu
 
-:Cluster
-call:ConfigMake %ConFigPath%config.json.cluster.example
-goto:Menu
-
-:Map
-call:ConfigMake %ConFigPath%config.json.map.example
-goto:Menu
-
-:Optimizer
-call:ConfigMake %ConFigPath%config.json.optimizer.example
-goto:Menu
-
-:Path
-call:ConfigMake %ConFigPath%config.json.path.example
-goto:Menu
-
-:Pokemon
-call:ConfigMake %ConFigPath%config.json.pokemon.example
-goto:Menu
-
-:ConfigMake
+:AuthMake
 cls
 ECHO.
 ECHO.
-ECHO.--------------------PokemonGo-Bot config.json creator--------------------
+ECHO.--------------------PokemonGo-Bot auth.json creator--------------------
 ECHO.
 ECHO.
-ECHO.{>%config%
+ECHO.{>%auth%
 SET /p auth_service="What AUTH SERVICE are you using ? google or ptc ?: "
-ECHO.    "auth_service": "%auth_service%",>>%config%
+ECHO.    "auth_service": "%auth_service%",>>%auth%
 ECHO.
 Set /p YOUR_USERNAME="What's your username ?: "
-ECHO.    "username": "%YOUR_USERNAME%",>>%config%
+ECHO.    "username": "%YOUR_USERNAME%",>>%auth%
 ECHO.
 SET /p YOUR_PASSWORD="What's your password ?: "
-ECHO.    "password": "%YOUR_PASSWORD%",>>%config%
+ECHO.    "password": "%YOUR_PASSWORD%",>>%auth%
 ECHO.
 SET /p SOME_LOCATION="What's the location you want to search ?: "
-ECHO.    "location": "%SOME_LOCATION%",>>%config%
+ECHO.    "location": "%SOME_LOCATION%",>>%auth%
 ECHO.
-ECHO.    "favorite_locations":[>>%config%
-ECHO.        {"name": "Milan", "coords": "45.472849,9.177567"}>>%config%
+ECHO.    "favorite_locations":[>>%auth%
+ECHO.        {"name": "Milan", "coords": "45.472849,9.177567"}>>%auth%
 ECHO.
 ECHO.Adding Favorite Locations....
 ECHO.
 call:morefav
 ECHO.
-ECHO.    ],>>%config%
+ECHO.    ],>>%auth%
 SET /p GOOGLE_API="What's your Google Maps API Key ?: "
-ECHO.    "gmapkey": "%GOOGLE_API%",>>%config%
+ECHO.    "gmapkey": "%GOOGLE_API%",>>%auth%
 ECHO.
-ECHO.
-FOR /F "Skip=9 usebackq delims=" %%a in (`"findstr /n ^^ %~1"`) do (
-    set "myVar=%%a"
-    call :processLine myVar
-)
+ECHO.    "encrypt_location": "",>>%auth%
+SET /p telegram="What's your telegram token? Enter for leave blank: "
+ECHO.    "telegram_token": "%telegram%">>%auth%
+ECHO.)>>%auth%
 goto :eof
 
-:processLine
-SETLOCAL EnableDelayedExpansion
-set "line=!%1!"
-set "line=!line:*:=!"
-echo(!line!>>%config%
-ENDLOCAL
-goto :eof
 
 :morefav
 SET _answer=
@@ -201,7 +160,7 @@ ECHO.
 ECHO.
 SET /p name="What City do you want to add ?: "
 SET /p coords="What coordinates has that City ? (example: 45.472849,9.177567 ): "
-ECHO.        {"name": "%name%", "coords": "%coords%"}>>%config%
+ECHO.        {"name": "%name%", "coords": "%coords%"}>>%auth%
 goto:morefav
 
 :UserData
@@ -230,9 +189,11 @@ goto:eof
 cls
 ECHO.
 ECHO.
-ECHO.Your %config% and %UserData% has been made.
+ECHO.Your %auth% and %UserData% has been made.
 ECHO.
-ECHO.If you want to customize your %config% then you have to edit him.
+ECHO.Choose one of the %AuthPath%config.json.examples and rename it to %AuthPath%config.json
+ECHO.
+ECHO.If you want to customize your %AuthPath%config.json then you have to edit him.
 ECHO.
 ECHO.After that you are ready to start the bot.
 ECHO.

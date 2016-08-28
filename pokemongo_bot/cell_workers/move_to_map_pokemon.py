@@ -87,6 +87,7 @@ SNIPE_SKIP_IN_ROUND = 30
 
 DEBUG_ON = False
 
+
 class MoveToMapPokemon(BaseTask):
     """Task for moving a trainer to a Pokemon."""
     SUPPORTED_TASK_API_VERSION = 1
@@ -109,8 +110,9 @@ class MoveToMapPokemon(BaseTask):
                 open(data_file)
             )
         self.alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
+
     def get_pokemon_from_social(self):
-    	if not hasattr(self.bot, 'mqtt_pokemon_list'):
+        if not hasattr(self.bot, 'mqtt_pokemon_list'):
             return []
         if not self.bot.mqtt_pokemon_list or len(self.bot.mqtt_pokemon_list) <= 0:
             return []
@@ -151,6 +153,7 @@ class MoveToMapPokemon(BaseTask):
                 continue
             pokemon_list.append(pokemon)
         return pokemon_list
+
     def get_pokemon_from_map(self):
         try:
             req = requests.get('{}/{}?gyms=false&scanned=false'.format(self.config['address'], self.map_path))
@@ -356,8 +359,9 @@ class MoveToMapPokemon(BaseTask):
 
         nearest_fort = self.get_nearest_fort_on_the_way(pokemon)
 
-        if pokemon['is_vip'] or nearest_fort is None :
-            self.bot.capture_locked = True # lock catching while moving to vip pokemon or no fort around
+        if pokemon['is_vip'] or nearest_fort is None:
+            # lock catching(with pokemon_id specified) while moving to vip pokemon or no fort around
+            self.bot.capture_locked = pokemon['pokemon_id']
             step_walker = self._move_to(pokemon)
             if not step_walker.step():
 

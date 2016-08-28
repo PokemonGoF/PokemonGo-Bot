@@ -5,6 +5,8 @@ import time
 import json
 import logging
 import time
+import sys
+
 from random import random, randrange
 from pokemongo_bot import inventory
 from pokemongo_bot.base_task import BaseTask
@@ -173,6 +175,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
                 break
             else:
                 self.emit_event('catch_limit', formatted='WARNING! You have reached your daily catch limit')
+                sys.exit(2)
                 break
 
         # simulate app
@@ -225,21 +228,19 @@ class PokemonCatchWorker(Datastore, BaseTask):
         }
 
         candies = inventory.candies().get(pokemon.pokemon_id).quantity
-        threshold = pokemon_config.get('candy_threshold', -1 )
-        if( threshold > 0 and candies >= threshold  ):
+        threshold = pokemon_config.get('candy_threshold', -1)
+        if (threshold > 0 and candies >= threshold):
             self.emit_event(
                 'ignore_candy_above_thresold',
                 level='info',
                 formatted='Amount of candies for {name} is {amount}, greater than threshold {threshold}',
                 data={
                     'name': pokemon.name,
-                    'amount': candies ,
-                    'threshold' : threshold
+                    'amount': candies,
+                    'threshold': threshold
                 }
             )
             return False
-
-
 
         if pokemon_config.get('never_catch', False):
             return False
@@ -258,6 +259,10 @@ class PokemonCatchWorker(Datastore, BaseTask):
         catch_iv = pokemon_config.get('catch_above_iv', 0.8)
         if pokemon.iv > catch_iv:
             catch_results['iv'] = True
+
+        # check if encountered pokemon is our locked pokemon
+        if self.bot.capture_locked and self.bot.capture_locked != pokemon.pokemon_id:
+            return False
 
         return LOGIC_TO_FUNCTION[pokemon_config.get('logic', default_logic)](*catch_results.values())
 
@@ -520,7 +525,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
                 try:
                     inventory.pokemons().add(pokemon)
                     exp_gain = sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
-                    
+
                     self.emit_event(
                         'pokemon_caught',
                         formatted='Captured {pokemon}! [CP {cp}] [NCP {ncp}] [Potential {iv}] [{iv_display}] ({caught_last_24_hour}/{daily_catch_limit}) [+{exp} exp]',
