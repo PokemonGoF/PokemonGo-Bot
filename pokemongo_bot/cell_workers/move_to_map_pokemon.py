@@ -144,7 +144,7 @@ class MoveToMapPokemon(BaseTask):
                 pokemon['longitude'],
             )
 
-            if pokemon['dist'] > self.config['max_distance'] and not self.config['snipe']:
+            if pokemon['dist'] > self.config['max_distance'] or not self.config['snipe']:
                 continue
 
             # pokemon not reachable with mean walking speed (by config)
