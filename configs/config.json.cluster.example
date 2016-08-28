@@ -157,7 +157,7 @@
             "berry_wait_max": 5,
             "changeball_wait_min": 3,
             "changeball_wait_max": 5,
-            "newtodex_wait_min": 20, 
+            "newtodex_wait_min": 20,
             "newtodex_wait_max": 30
           }
         }
@@ -224,7 +224,7 @@
     "debug": false,
     "test": false,
     "walker_limit_output": false,
-    "health_record": true,
+    "health_record": false,
     "location_cache": true,
     "distance_unit": "km",
     "reconnecting_timeout": 15,
