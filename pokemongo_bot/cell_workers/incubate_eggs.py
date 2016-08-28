@@ -62,9 +62,9 @@ class IncubateEggs(BaseTask):
 
         if self.ready_breakable_incubators:
             # get available eggs
-            eggs = self._filter_sort_eggs(self.infinite_incubator,
-                    self.infinite_longer_eggs_first)
-            self._apply_incubators(eggs, self.ready_infinite_incubators)
+            eggs = self._filter_sort_eggs(self.breakable_incubator,
+                    self.breakable_longer_eggs_first)
+            self._apply_incubators(eggs, self.ready_breakable_incubators)
 
 
     def _filter_sort_eggs(self, allowed, sorting):
