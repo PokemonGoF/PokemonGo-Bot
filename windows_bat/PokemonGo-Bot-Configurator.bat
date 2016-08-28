@@ -143,7 +143,7 @@ ECHO.
 ECHO.    "encrypt_location": "",>>%auth%
 SET /p telegram="What's your telegram token? Enter for leave blank: "
 ECHO.    "telegram_token": "%telegram%">>%auth%
-ECHO.)>>%auth%
+ECHO.}>>%auth%
 goto :eof
 
 
