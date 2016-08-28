@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.base_task import BaseTask
 
@@ -206,14 +207,13 @@ class IncubateEggs(BaseTask):
         candy = result.get('candy_awarded', "error")
         xp = result.get('experience_awarded', "error")
         sleep(self.hatching_animation_delay)
-        self.bot.latest_inventory = None
         try:
             pokemon_data = self._check_inventory(pokemon_ids)
             for pokemon in pokemon_data:
                 # pokemon ids seem to be offset by one
                 if pokemon['pokemon_id']!=-1:
                     pokemon['name'] = self.bot.pokemon_list[(pokemon.get('pokemon_id')-1)]['Name']
-                    inventory.pokemons().add(pokemon)
+                    inventory.pokemons().add(inventory.Pokemon(pokemon))
                 else:
                     pokemon['name'] = "error"
         except:
