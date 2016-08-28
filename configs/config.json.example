@@ -12,7 +12,12 @@
         "config": {
           "enabled": false,
           "master": null,
-          "alert_catch": ["all"]
+          "// old syntax, still supported: alert_catch": ["all"],
+	  "// new syntax:": {},
+	  "alert_catch": {
+		  "all": {"operator": "and", "cp": 1300, "iv": 0.95},
+		  "Snorlax": {"operator": "or", "cp": 900, "iv": 0.9}
+	  }
         }
       },
       {
