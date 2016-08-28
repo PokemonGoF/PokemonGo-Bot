@@ -183,6 +183,8 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event('set_start_location')
         self.event_manager.register_event('load_cached_location')
         self.event_manager.register_event('location_cache_ignored')
+        
+        self.event_manager.register_event('debug')
 
         #  ignore candy above threshold
         self.event_manager.register_event(
@@ -592,6 +594,12 @@ class PokemonGoBot(Datastore):
             'moving_to_pokemon_throught_fort',
             parameters=('fort_name', 'distance','poke_name','poke_dist')
         )
+        self.event_manager.register_event(
+            'move_to_map_pokemon',
+            parameters=('message')
+        )
+
+
 
         # cached recent_forts
         self.event_manager.register_event('loaded_cached_forts')

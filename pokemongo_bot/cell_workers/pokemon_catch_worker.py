@@ -381,6 +381,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
                 min_ultraball_to_keep = self.min_ultraball_to_keep
 
         used_berry = False
+        original_catch_rate_by_ball = catch_rate_by_ball
         while True:
 
             # find lowest available ball
@@ -492,6 +493,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
                     data={'pokemon': pokemon.name}
                 )
                 used_berry = False
+                catch_rate_by_ball = original_catch_rate_by_ball
 
                 # sleep according to flee_count and flee_duration config settings
                 # randomly chooses a number of times to 'show' wobble animation between 1 and flee_count
