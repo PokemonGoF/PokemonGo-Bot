@@ -180,6 +180,7 @@
         "config": {
           "enabled": true,
           "address": "http://localhost:5000",
+          "//NOTE: Change the max_distance to adjust the max sniping range (km)": {},
           "max_distance": 500,
           "min_ball": 50,
           "prioritize_vips": true,
@@ -485,10 +486,12 @@
     "location_cache": true,
     "distance_unit": "km",
     "reconnecting_timeout": 15,
-	"logging": {
-		"color": true,
-		"clean": false
-	},
+    "logging": {
+      "color": true,
+      "show_datetime": true,
+      "show_process_name": true,
+      "show_log_level": true
+    },
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},

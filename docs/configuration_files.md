@@ -46,6 +46,7 @@
 - [Random Pause](#random-pause)
 - [Egg Incubator](#egg-incubator)
 - [ShowBestPokemon](#showbestpokemon)
+- [Telegram Task](#telegram-task)
 
 #Configuration files
 
@@ -85,7 +86,15 @@ Document the configuration options of PokemonGo-Bot.
 |`favorite_locations`    | []   | Allows you to define a collection of locations and coordinates, allowing rapid switch using a "label" on your location config
 | `live_config_update.enabled`            | false     | Enable live config update
 | `live_config_update.tasks_only`            | false     | True: quick update for Tasks only (without re-login). False: slower update for entire config file.
+| `enable_social`            | true     | True: to chat with other pokemon go bot users [more information](https://github.com/PokemonGoF/PokemonGo-Bot/pull/4596)
 
+## Logging configuration
+[[back to top](#table-of-contents)]
+
+'logging'.'color' (default false) Enabled colored logging
+'logging'.'show_datetime' (default true) Show date and time in log
+'logging'.'show_process_name' (default true) Show name of process generating output in log
+'logging'.'show_log_level' (default true) Show level of log message in log (eg. "INFO")
 
 ## Configuring Tasks
 [[back to top](#table-of-contents)]
@@ -542,7 +551,7 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
 * `prioritize_vips` - Will prioritize vips in distance and priority mode above all normal pokemon if set to true
 * `min_time` - Minimum time the pokemon has to be available before despawn
 * `min_ball` - Minimum amount of balls required to run task
-* `max_distance` - Maximum distance the pokemon is allowed to be when walking, ignored when sniping
+* `max_distance` - Maximum distance the pokemon is allowed to be when sniping. (km)
 * `snipe`:
    - `True` - Will teleport to target pokemon, encounter it, teleport back then catch it
    - `False` - Will walk normally to the pokemon
@@ -564,6 +573,7 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
     "type": "MoveToMapPokemon",
     "config": {
       "address": "http://localhost:5000",
+      "//NOTE: Change the max_distance to adjust the max sniping range (km)": {},
       "max_distance": 500,
       "min_time": 60,
       "min_ball": 50,
@@ -903,4 +913,35 @@ Available `info_to_show` :
 [[back to top](#table-of-contents)]
 ```
 2016-08-25 21:20:59,642 [ShowBestPokemon] [INFO] [show_best_pokemon] [Tauros, CP 575, IVCP 0.95, DPS 12.04] | [Grimer, CP 613, IVCP 0.93, DPS 13.93] | [Tangela, CP 736, IVCP 0.93, DPS 14.5] | [Staryu, CP 316, IVCP 0.92, DPS 10.75] | [Gastly, CP 224, IVCP 0.9, DPS 11.7]
+```
+
+## Telegram Task
+[[back to top](#table-of-contents)]
+
+### Description
+[[back to top](#table-of-contents)]
+
+[Telegram bot](https://telegram.org/) Announcer Level up, pokemon cought
+
+Bot answer on command '/info' self stats.
+
+### Options
+
+* `telegram_token` : bot token (getting [there](https://core.telegram.org/bots#6-botfather) - one token per bot)
+* `master` : id (without quotes) or username (in quotes, first character @) of bot owner, who will gett announces.
+* `alert_catch` : array of pokemons, which will be announced on catch. if first array item `all` - announce all pokemons.
+
+### Sample configuration
+[[back to top](#table-of-contents)]
+```json
+{
+    "type": "TelegramTask",
+    "config": {
+        "enabled": true,
+        "master": 12345678,
+        "//master": "@username",
+        "alert_catch": ["Lapras","Dragonite"],
+        "//alert_catch": ["all"]
+    }
+}
 ```

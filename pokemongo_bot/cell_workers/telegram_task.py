@@ -6,6 +6,10 @@ import json
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.event_handlers import TelegramHandler
+
+from pprint import pprint
+import re
+
 class TelegramTask(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
     update_id = None
@@ -37,8 +41,19 @@ class TelegramTask(BaseTask):
             self.update_id = update.update_id+1
             if update.message:
                 self.logger.info("message from {} ({}): {}".format(update.message.from_user.username, update.message.from_user.id, update.message.text))
-                if self.config.get('master',None) and self.config.get('master',None)<>update.message.from_user.id:
+                if self.config.get('master',None) and self.config.get('master',None) not in [update.message.from_user.id, "@{}".format(update.message.from_user.username)]:
+                    self.emit_event( 
+                            'debug', 
+                            formatted="Master wrong: expecting {}, got {}({})".format(self.config.get('master',None), update.message.from_user.username, update.message.from_user.id))
                     continue
+                else:
+                    if not re.match(r'^[0-9]+$', "{}".format(self.config['master'])): # master was not numeric...
+                        self.config['master'] = update.message.chat_id
+                        idx = (i for i,v in enumerate(self.bot.event_manager._handlers) if type(v) is TelegramHandler).next()
+                        self.bot.event_manager._handlers[idx] = TelegramHandler(self.tbot,self.config['master'], self.config.get('alert_catch'))
+                        
+
+
                 if update.message.text == "/info":
                     stats = self._get_player_stats()
                     if stats:

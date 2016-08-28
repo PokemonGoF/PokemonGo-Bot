@@ -132,7 +132,7 @@ class PokemonGoBot(Datastore):
     def _setup_event_system(self):
         handlers = []
 
-        if self.config.logging_color:
+        if self.config.logging and 'color' in self.config.logging and self.config.logging['color']:
             handlers.append(ColoredLoggingHandler(self))
         else:
             handlers.append(LoggingHandler(self))
@@ -183,6 +183,8 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event('set_start_location')
         self.event_manager.register_event('load_cached_location')
         self.event_manager.register_event('location_cache_ignored')
+        
+        self.event_manager.register_event('debug')
 
         #  ignore candy above threshold
         self.event_manager.register_event(
@@ -592,6 +594,12 @@ class PokemonGoBot(Datastore):
             'moving_to_pokemon_throught_fort',
             parameters=('fort_name', 'distance','poke_name','poke_dist')
         )
+        self.event_manager.register_event(
+            'move_to_map_pokemon',
+            parameters=('message')
+        )
+
+
 
         # cached recent_forts
         self.event_manager.register_event('loaded_cached_forts')
@@ -760,8 +768,19 @@ class PokemonGoBot(Datastore):
         logging.getLogger("pgoapi").setLevel(log_level)
         logging.getLogger("rpc_api").setLevel(log_level)
 
-        if self.config.logging_clean and not self.config.debug:
-            formatter = Formatter(fmt='[%(asctime)s] %(message)s', datefmt='%H:%M:%S')
+        if self.config.logging:
+            logging_format = '%(message)s'
+            logging_format_options = ''
+            
+            if ('show_log_level' not in self.config.logging) or self.config.logging['show_log_level']:
+                logging_format = '[%(levelname)s] ' + logging_format
+            if ('show_process_name' not in self.config.logging) or self.config.logging['show_process_name']:
+                logging_format = '[%(name)10s] ' + logging_format
+            if ('show_datetime' not in self.config.logging) or self.config.logging['show_datetime']:
+                logging_format = '[%(asctime)s] ' + logging_format
+                logging_format_options = '%Y-%m-%d %H:%M:%S'
+                
+            formatter = Formatter(logging_format,logging_format_options)
             for handler in logging.root.handlers[:]:
                 handler.setFormatter(formatter)
 
