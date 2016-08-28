@@ -764,14 +764,11 @@ class PokemonGoBot(Datastore):
             logging_format = '%(message)s'
             logging_format_options = ''
             
-            if 'show_log_level' not in self.config.logging or \
-                    ('show_log_level' in self.config.logging and self.config.logging['show_log_level']):
+            if ('show_log_level' not in self.config.logging) or self.config.logging['show_log_level']:
                 logging_format = '[%(levelname)s] ' + logging_format
-            if 'show_process_name' not in self.config.logging or \
-                    ('show_process_name' in self.config.logging and self.config.logging['show_process_name']):
+            if ('show_process_name' not in self.config.logging) or self.config.logging['show_process_name']:
                 logging_format = '[%(name)10s] ' + logging_format
-            if 'show_datetime' not in self.config.logging or \
-                    ('show_datetime' in self.config.logging and self.config.logging['show_datetime']):
+            if ('show_datetime' not in self.config.logging) or self.config.logging['show_datetime']:
                 logging_format = '[%(asctime)s] ' + logging_format
                 logging_format_options = '%Y-%m-%d %H:%M:%S'
                 
