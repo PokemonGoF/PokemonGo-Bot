@@ -230,7 +230,7 @@
     "debug": false,
     "test": false,
     "walker_limit_output": false,
-    "health_record": true,
+    "health_record": false,
     "location_cache": true,
     "distance_unit": "km",
     "reconnecting_timeout": 15,
