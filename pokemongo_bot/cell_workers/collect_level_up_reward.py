@@ -12,12 +12,12 @@ class CollectLevelUpReward(BaseTask):
 
     def initialize(self):
         self._process_config()
-        self.current_level = self._get_current_level()
+        self.current_level = inventory.player().level
         self.previous_level = 0
 
     def work(self):
         if self._should_run():
-            self.current_level = self._get_current_level()
+            self.current_level = inventory.player().level
 
             if self.collect_reward:
                 # let's check level reward on bot initialization
@@ -70,24 +70,3 @@ class CollectLevelUpReward(BaseTask):
                     'items': data
                 }
             )
-
-    def _get_current_level(self):
-        level = 0
-        response_dict = self.bot.api.get_inventory()
-        data = (response_dict
-                .get('responses', {})
-                .get('GET_INVENTORY', {})
-                .get('inventory_delta', {})
-                .get('inventory_items', {}))
-
-        for item in data:
-            level = (item
-                     .get('inventory_item_data', {})
-                     .get('player_stats', {})
-                     .get('level', 0))
-
-            # we found a level, no need to continue iterate
-            if level:
-                break
-
-        return level
