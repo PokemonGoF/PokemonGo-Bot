@@ -92,11 +92,19 @@ def main():
 
     def get_commit_hash():
         try:
-            hash = subprocess.check_output(['git', 'rev-parse', 'HEAD'], stderr=subprocess.STDOUT)[:-1]
-
-            return hash if all(c in string.hexdigits for c in hash) else "not found"
+            hash = subprocess.check_output(['git', 'rev-parse', 'HEAD'],
+                                           stderr=subprocess.STDOUT)
+            if all(c in string.hexdigits for c in hash[:-1]):
+                with open('version', 'w') as f:
+                    f.write(hash)
         except:
-            return "not found"
+            pass
+
+        if not os.path.exists('version'):
+            return 'unknown'
+
+        with open('version') as f:
+            return f.read()[:8]
 
     try:
         logger.info('PokemonGO Bot v1.0')
