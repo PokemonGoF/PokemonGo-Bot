@@ -32,7 +32,7 @@ RUN apk -U --no-cache add python py-pip \
     && pip install --no-cache-dir -r requirements.txt \
     && apk del .build-dependencies \
     && rm -rf /var/cache/apk/* /usr/include/xlocale.h \
-    && find / -name '*.pyc' -o -name '*.pyo' -exec rm -f {} \;
+    && find / -name '*.pyc' -o -name '*.pyo' | xargs -rn1 rm -f
 
 ADD http://pgoapi.com/pgoencrypt.tar.gz /tmp/pgoencrypt.tar.gz
 RUN apk --no-cache add --virtual .pgoencrypt-dependencies gcc make musl-dev \
