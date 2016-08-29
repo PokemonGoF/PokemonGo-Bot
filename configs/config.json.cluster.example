@@ -95,10 +95,20 @@
         "type": "EvolvePokemon",
         "config": {
             "enabled": false,
+            
+            "// evolve only pidgey and drowzee": "",
             "// evolve_list": "pidgey, drowzee",
+            "// donot_evolve_list": "none",
+            
+            "// evolve all but pidgey and drowzee": "",
+            "// evolve_list": "all",
+            "// donot_evolve_list": "pidgey, drowzee",
+            
+            "evolve_list": "all",
+            "donot_evolve_list": "none",
+            
             "evolve_list": "all",
             "// donot_evolve_list": "dratini",
-            "donot_evolve_list": "",
             "first_evolve_by": "cp",
             "evolve_above_cp": 500,
             "evolve_above_iv": 0.8,
