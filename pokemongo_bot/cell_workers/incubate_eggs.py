@@ -180,9 +180,6 @@ class IncubateEggs(BaseTask):
                             pokemon.get('individual_stamina', 0)
                         ]})
                     matched_pokemon.append(pokemon)
-                    #remove as egg and add as pokemon
-                    inventory.pokemons().remove(pokemon['id'])
-                    inventory.pokemons().add(inventory.Pokemon(pokemon))
                 continue
             if "player_stats" in inv_data:
                 self.km_walked = inv_data.get("player_stats", {}).get("km_walked", 0)
@@ -216,6 +213,9 @@ class IncubateEggs(BaseTask):
                 # pokemon ids seem to be offset by one
                 if pokemon['pokemon_id']!=-1:
                     pokemon['name'] = self.bot.pokemon_list[(pokemon.get('pokemon_id')-1)]['Name']
+                    #remove as egg and add as pokemon
+                    inventory.pokemons().remove(pokemon['id'])
+                    inventory.pokemons().add(inventory.Pokemon(pokemon))
                 else:
                     pokemon['name'] = "error"
         except:
