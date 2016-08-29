@@ -134,6 +134,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
     * `newtodex_wait_min`: 20 | Minimum time to wait if we caught a new type of pokemon
     * `newtodex_wait_max`: 39 | Maximum time to wait if we caught a new type of pokemon
 * EvolvePokemon
+  * `enable`: Disable or enable this task.
   * `evolve_all`: Default `NONE` | Depreciated. Please use evolve_list and donot_evolve_list
   * `evolve_list`: Default `all` | Set to all, or specifiy different pokemon seperated by a comma
   * `donot_evolve_list`: Default `none` | Pokemon seperated by comma, will be ignored from evolve_list
@@ -141,9 +142,13 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `max_evolve_speed`: Default `30` | Maximum seconds to wait between each evolution
   * `use_lucky_egg`: Default: `False` | Only evolve if we can use a lucky egg
 * FollowPath
+  * `enable`: Disable or enable this task.
   * `path_mode`: Default `loop` | Set the mode for the path navigator (loop, linear or single).
   * `path_file`: Default `NONE` | Set the file containing the waypoints for the path navigator.
 * FollowSpiral
+  * `enable`: Disable or enable this task.
+  * `spin_wait_min`: Default 3 | Minimum wait time after fort spin
+  * `spin_wait_max`: Default 5 | Maximum wait time after fort spin
 * HandleSoftBan
 * IncubateEggs
   * `enable`: Disable or enable this task.
@@ -154,8 +159,10 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `infinite`: Default `[2,5,10]` | Types of eggs to be incubated in permanent incubators.
   * `breakable`: Default `[2,5,10]` | Types of eggs to be incubated in breakable incubators.
 * MoveToFort
+  * `enable`: Disable or enable this task.
 * [MoveToMapPokemon](#sniping-movetolocation)
 * NicknamePokemon
+  * `enable`: Disable or enable this task.
   * `nickname_template`: Default `""` | See the [Pokemon Nicknaming](#pokemon-nicknaming) section for more details
   * `nickname_above_iv`: Default `0` | Rename pokemon which iv is highter than the value
   * `dont_nickname_favorite`: Default `false` | Prevents renaming of favorited pokemons
@@ -189,6 +196,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `spin_wait_min`: Defaut 3 | Minimum wait after spinning a fort
   * `spin_wait_max`: Default 5 | Maximum wait after spinning a fort
 * TransferPokemon
+  * `enable`: Disable or enable this task.
   * `min_free_slot`: Default `5` | Once the pokebag has less empty slots than this amount, the transfer process is triggered. | Big values (i.e 9999) will trigger the transfer process after each catch.
 * UpdateLiveStats
 * [UpdateLiveInventory](#updateliveinventory-settings)
