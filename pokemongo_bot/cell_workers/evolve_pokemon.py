@@ -45,7 +45,7 @@ class EvolvePokemon(Datastore, BaseTask):
 
         filtered_list = self._sort_and_filter()
 
-        if self.donot_evolve_list[0] != 'none':
+        if (len(self.donot_evolve_list) > 0) and self.donot_evolve_list[0] != 'none':
             evolve_list = filter(lambda pokemon: pokemon.name not in donot_evolve_list, filtered_list)
 
         cache = {}
