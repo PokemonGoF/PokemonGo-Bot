@@ -194,7 +194,8 @@
         "config": {
           "enabled": true,
           "spin_wait_min": 3,
-          "spin_wait_max": 5
+          "spin_wait_max": 5,
+          "daily_spin_limit": 1900
         }
       },
       { "type": "UpdateWebInventory",
