@@ -42,10 +42,10 @@ RUN apk --no-cache add --virtual .pgoencrypt-dependencies gcc make musl-dev \
     && apk del .pgoencrypt-dependencies \
     && rm -rf /var/cache/apk/* /tmp/pgoencrypt /tmp/pgoencrypt.tar.gz
 
-ADD https://api.github.com/repos/$BUILD_REPO/git/refs/heads/$BUILD_BRANCH /tmp/pgobot-version
+ADD https://api.github.com/repos/$BUILD_REPO/commits/$BUILD_BRANCH /tmp/pgobot-version
 RUN apk -U --no-cache add --virtual .pgobot-dependencies wget ca-certificates tar jq \
     && wget -q -O- https://github.com/$BUILD_REPO/archive/$BUILD_BRANCH.tar.gz | tar zxf - --strip-components=1 -C /usr/src/app \
-    && jq -r .object.sha /tmp/pgobot-version > /usr/src/app/version \
+    && jq -r .sha /tmp/pgobot-version > /usr/src/app/version \
     && apk del .pgobot-dependencies \
     && rm -rf /var/cache/apk/* /tmp/pgobot-version
 
