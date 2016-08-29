@@ -107,10 +107,12 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 * CatchPokemon
   * `treat_unseen_as_vip`: Default `"true"` | Set to `"false"` to disable treating pokemons you don't have in your pokedex as VIPs.
 * EvolvePokemon
-  * `evolve_all`: Default `NONE` | Set to `"all"` to evolve Pokémon if possible when the bot starts. Can also be set to individual Pokémon as well as multiple separated by a comma. e.g "Pidgey,Rattata,Weedle,Zubat"
+  * `evolve_all`: Default `NONE` | Depreciated. Please use evolve_list and donot_evolve_list
+  * `evolve_list`: Default `all` | Set to all, or specifiy different pokemon seperated by a comma
+  * `donot_evolve_list`: Default `none` | Pokemon seperated by comma, will be ignored from evolve_list
   * `min_evolve_speed`: Default `25` | Minimum seconds to wait between each evolution 
   * `max_evolve_speed`: Default `30` | Maximum seconds to wait between each evolution
-  * `use_lucky_egg`: Default: `False`
+  * `use_lucky_egg`: Default: `False` | Only evolve if we can use a lucky egg
 * FollowPath
   * `path_mode`: Default `loop` | Set the mode for the path navigator (loop, linear or single).
   * `path_file`: Default `NONE` | Set the file containing the waypoints for the path navigator.
