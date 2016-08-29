@@ -1,6 +1,8 @@
 import ctypes
 import json
 import os
+import logging
+
 from sys import stdout, platform as _platform
 from datetime import datetime, timedelta
 
@@ -11,6 +13,9 @@ from pokemongo_bot.base_dir import _base_dir
 
 # XP file
 import json
+
+class FileIOException(Exception):
+    pass
 
 class UpdateLiveStats(BaseTask):
     """
@@ -420,25 +425,31 @@ class UpdateLiveStats(BaseTask):
         :rtype: dict
         """
         # TODO : find a better solution than calling the api
-        inventory_items = self.bot.api.get_inventory() \
-            .get('responses', {}) \
-            .get('GET_INVENTORY', {}) \
-            .get('inventory_delta', {}) \
-            .get('inventory_items', {})
-        return next((x["inventory_item_data"]["player_stats"]
-                     for x in inventory_items
-                     if x.get("inventory_item_data", {}).get("player_stats", {})),
-                    None)
-           
+        return self.bot.metrics.player_stats
+        
     def update_web_stats(self,player_data):
         web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
 
-        with open(web_inventory, "r") as infile:
-            json_stats = json.load(infile)
+        try:
+            with open(web_inventory, "r") as infile:
+                json_stats = json.load(infile)
+        except (IOError, ValueError):
+            # Unable to read json from web inventory
+            # File may be corrupt. Create a new one.
+            self.bot.logger.info('[x] Error while opening inventory file for read: %s' % e, 'red')
+            json_stats = []
+        except:
+            raise FileIOException("Unexpected error loading information from json.")
 
         json_stats = [x for x in json_stats if not x.get("inventory_item_data", {}).get("player_stats", None)]
         
         json_stats.append({"inventory_item_data": {"player_stats": player_data}})
 
-        with open(web_inventory, "w") as outfile:
-            json.dump(json_stats, outfile)
+        try:
+            with open(web_inventory, "w") as outfile:
+                json.dump(json_stats, outfile)
+        except (IOError, ValueError):
+            self.bot.logger.info('[x] Error while opening inventory file for write: %s' % e, 'red')
+            pass
+        except:
+            raise FileIOException("Unexpected error writing to {}".web_inventory)

@@ -96,30 +96,7 @@ class PokemonOptimizer(Datastore, BaseTask):
             self.family_by_family_id.setdefault(family_id, []).append(pokemon)
 
     def save_web_inventory(self):
-        web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
-
-        with open(web_inventory, "r") as infile:
-            ii = json.load(infile)
-
-        ii = [x for x in ii if not x.get("inventory_item_data", {}).get("pokedex_entry", None)]
-        ii = [x for x in ii if not x.get("inventory_item_data", {}).get("candy", None)]
-        ii = [x for x in ii if not x.get("inventory_item_data", {}).get("item", None)]
-        ii = [x for x in ii if not x.get("inventory_item_data", {}).get("pokemon_data", None)]
-
-        for pokedex in inventory.pokedex().all():
-            ii.append({"inventory_item_data": {"pokedex_entry": pokedex}})
-
-        for family_id, candy in inventory.candies()._data.items():
-            ii.append({"inventory_item_data": {"candy": {"family_id": family_id, "candy": candy.quantity}}})
-
-        for item_id, item in inventory.items()._data.items():
-            ii.append({"inventory_item_data": {"item": {"item_id": item_id, "count": item.count}}})
-
-        for pokemon in inventory.pokemons().all():
-            ii.append({"inventory_item_data": {"pokemon_data": pokemon._data}})
-
-        with open(web_inventory, "w") as outfile:
-            json.dump(ii, outfile)
+        inventory.update_web_inventory()
 
     def get_family_optimized(self, family_id, family):
         evolve_best = []
