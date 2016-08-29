@@ -161,6 +161,17 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `dont_nickname_favorite`: Default `false` | Prevents renaming of favorited pokemons
   * `good_attack_threshold`: Default `0.7` | Threshold for perfection of the attack in it's type *(0.0-1.0)* after which attack will be treated as good.<br>Used for `{fast_attack_char}`, `{charged_attack_char}`, `{attack_code}`  templates
 * RecycleItems
+  * `enabled`: Default `true` | Disable or enable this task
+  * `min_empty_space`: Default 15 | minimum spaces before forcing transfer
+  * `max_balls_keep`: Default 150 | Maximum cumlative balls to keep
+  * `max_potions_keep`: Default 50 | Maximum cumlative potions to keep
+  * `max_berries_keep`: Default 70 | Maximum culative berries to keep
+  * `max_revives_keep`: Default 70 | Maxiumum culative revies to keep
+  * `recycle_wait_min`: 3 | Minimum wait time after recycling an item
+  * `recycle_wait_max`: 5 | Maxiumum culative revies to keep
+  * `recycle_force`: Default true  | Enable/Disable time forced item recycling
+  * `recycle_force_min`: Default `00:01:00`  | Minimum time to wait before forcing recycling
+  * `recycle_force_max`: default `00:05:00`  | Maximum time to wait before forcing recycling
 
   > **NOTE:** It's highly recommended to put this task before MoveToFort and SpinFort tasks. This way you'll most likely be able to loot.
   * `min_empty_space`: Default `6` | Minimum empty space to keep in inventory. Once the inventory has less empty space than that amount, the recycling process is triggered. Set it to the inventory size to trigger it at every tick.
@@ -174,6 +185,9 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `recycle_force_max`: Default `00:10:00` | Maximum time to wait before scheduling next forced recycle
 
 * SpinFort
+  * `enabled`: Default true | Enable for disable this task
+  * `spin_wait_min`: Defaut 3 | Minimum wait after spinning a fort
+  * `spin_wait_max`: Default 5 | Maximum wait after spinning a fort
 * TransferPokemon
   * `min_free_slot`: Default `5` | Once the pokebag has less empty slots than this amount, the transfer process is triggered. | Big values (i.e 9999) will trigger the transfer process after each catch.
 * UpdateLiveStats
