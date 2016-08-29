@@ -95,6 +95,9 @@ class SpinFort(Datastore, BaseTask):
                 while True:
                     if result[0] == 1:
                         conn.execute('''INSERT INTO pokestop_log (pokestop, exp, items) VALUES (?, ?, ?)''', (fort_name, str(experience_awarded), str(items_awarded)))
+                        cur.execute("SELECT DISTINCT COUNT(pokestop) FROM pokestop_log WHERE dated >= datetime('now','-1 day')")
+                        if cur.fetchone()[0]>=2000:
+                            sys.exit("2000 Pokestop spin in 24 hours")
                         break
                     else:
                         self.emit_event(
