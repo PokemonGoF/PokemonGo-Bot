@@ -40,7 +40,7 @@ class EvolvePokemon(Datastore, BaseTask):
 
         if self.evolve_all[0] != 'all':
             # check for negation
-            negate = filter(lambda x: x[0] == '-', self.evolve_all)
+            negate = filter(lambda x: len(x) > 0 and x[0] == '-', self.evolve_all)
 
             # if there are things to negate
             if len(negate) > 0:
