@@ -94,8 +94,8 @@ class SpinFort(Datastore, BaseTask):
                     c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='pokestop_log'")
                 result = c.fetchone()        
                 c.execute("SELECT DISTINCT COUNT(pokestop) FROM pokestop_log WHERE dated >= datetime('now','-1 day')")
-                if c.fetchone()[0]>=2000:
-                    sys.exit("2000 Pokestop spin in 24 hours")
+                if c.fetchone()[0]>=self.config.get('daily_spin_limit',2000):
+                    sys.exit(str(self.config.get('daily_spin_limit',2000))+" Pokestop spin in 24 hours")
                 while True:
                     if result[0] == 1:
                         conn.execute('''INSERT INTO pokestop_log (pokestop, exp, items) VALUES (?, ?, ?)''', (fort_name, str(experience_awarded), str(items_awarded)))
