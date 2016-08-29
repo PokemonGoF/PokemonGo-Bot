@@ -10,6 +10,9 @@ from pokemongo_bot.event_handlers import TelegramHandler
 from pprint import pprint
 import re
 
+class FileIOException(Exception):
+    pass
+
 class TelegramTask(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
     update_id = None
@@ -18,7 +21,6 @@ class TelegramTask(BaseTask):
     def initialize(self):
         if not self.enabled:
             return
-        self.logger = logging.getLogger(type(self).__name__)
         api_key = self.bot.config.telegram_token
         if api_key == None:
             self.emit_event(
@@ -40,7 +42,7 @@ class TelegramTask(BaseTask):
         for update in self.tbot.getUpdates(offset=self.update_id, timeout=10):
             self.update_id = update.update_id+1
             if update.message:
-                self.logger.info("message from {} ({}): {}".format(update.message.from_user.username, update.message.from_user.id, update.message.text))
+                self.bot.logger.info("message from {} ({}): {}".format(update.message.from_user.username, update.message.from_user.id, update.message.text))
                 if self.config.get('master',None) and self.config.get('master',None) not in [update.message.from_user.id, "@{}".format(update.message.from_user.username)]:
                     self.emit_event( 
                             'debug', 
@@ -89,9 +91,18 @@ class TelegramTask(BaseTask):
         :rtype: dict
         """
         web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
-        with open(web_inventory, "r") as infile:
-            json_inventory = json.load(infile)
-            infile.close()
+        
+        try:
+            with open(web_inventory, "r") as infile:
+                json_inventory = json.load(infile)
+        except ValueError:
+            # Unable to read json from web inventory
+            # File may be corrupt. Create a new one.  
+            self.bot.logger.info('[x] Error while opening inventory file for read: %s' % e)
+            json_inventory = []
+        except:
+            raise FileIOException("Unexpected error reading from {}".web_inventory)
+            
         return next((x["inventory_item_data"]["player_stats"]
                      for x in json_inventory
                      if x.get("inventory_item_data", {}).get("player_stats", {})),
