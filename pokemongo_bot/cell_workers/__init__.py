@@ -21,6 +21,7 @@ from catch_pokemon import CatchPokemon
 from complete_tutorial import CompleteTutorial
 from random_pause import RandomPause
 from update_web_inventory import UpdateWebInventory
+from update_web_playerdata import UpdateWebPlayerdata
 from random_alive_pause import RandomAlivePause
 from show_best_pokemon import ShowBestPokemon
 from telegram_task import TelegramTask

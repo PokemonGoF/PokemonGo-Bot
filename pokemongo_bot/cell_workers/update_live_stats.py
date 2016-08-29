@@ -332,7 +332,6 @@ class UpdateLiveStats(BaseTask):
 
         # Gather stats values.
         metrics = self.bot.metrics
-        metrics.capture_stats()
         runtime = metrics.runtime()
         login = self.bot.config.username
         player_data = self.bot.player_data
