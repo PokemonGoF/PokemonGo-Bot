@@ -106,7 +106,6 @@ class Player(_BaseInventoryComponent):
         if self._level != value:
             now = time.time()
             if now - self.last_lvl_up_reward > self.ttl:
-                print 'Level up reward'
                 self.bot.api.level_up_rewards(level=self.level)
 
         self._level = value
@@ -120,7 +119,6 @@ class Player(_BaseInventoryComponent):
         if self._exp != value:
             now = time.time()
             if now - self.last_lvl_up_reward > self.ttl:
-                print 'Level up reward'
                 self.bot.api.level_up_rewards(level=self.level)
 
         self._exp = value
