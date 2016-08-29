@@ -27,6 +27,7 @@ class FollowPath(BaseTask):
         self.status = STATUS_MOVING
         self.loiter_end_time = 0
         self.distance_unit = self.bot.config.distance_unit
+        self.append_unit = False
 
         if self.path_start_mode == 'closest':
             self.ptr = self.find_closest_point_idx(self.points)
@@ -182,7 +183,7 @@ class FollowPath(BaseTask):
             data={
                 'last_position': (last_lat, last_lng, last_alt),
                 'current_position': (lat, lng, alt),
-                'distance': format_dist(dist,self.distance_unit),
+                'distance': format_dist(dist,self.distance_unit,self.append_unit),
                 'distance_unit': self.distance_unit
             }
         )
