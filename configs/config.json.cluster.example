@@ -107,8 +107,6 @@
             "evolve_list": "all",
             "donot_evolve_list": "none",
             
-            "evolve_list": "all",
-            "// donot_evolve_list": "dratini",
             "first_evolve_by": "cp",
             "evolve_above_cp": 500,
             "evolve_above_iv": 0.8,
