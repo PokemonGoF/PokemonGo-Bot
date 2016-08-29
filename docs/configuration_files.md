@@ -106,7 +106,33 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 ### Task Options:
 [[back to top](#table-of-contents)]
 * CatchPokemon
+  * `enabled`: Default "true" | Enable/Disable the task. 
   * `treat_unseen_as_vip`: Default `"true"` | Set to `"false"` to disable treating pokemons you don't have in your pokedex as VIPs.
+  * `catch_visible_pokemon`:  Default "true" | If enabled, attempts to catch "visible" pokemon that are reachable
+  * `catch_lured_pokemon`: Default "true" | If enabled, attempts to catch "lured" pokemon that are reachable
+  * `min_ultraball_to_keep`: Default 5 | Minimum amount of reserved ultraballs to have on hand (for VIP)
+  * `berry_threshold`: Default 0.35 | Catch percentage we start throwing berries
+  * `vip_berry_threshold`: Default 0.9 | Something similar?
+  * `treat_unseen_as_vip`: Default "true" | If enabled, treat new to our dex as VIP
+  * `daily_catch_limit`: Default 800 | How many pokemon we limit ourselves to daily
+  * `catch_throw_parameters`: Variable catch settings
+    * `excellent_rate`: 0.1 | Change of excellent throw
+    * `great_rate`: 0.5 | Change of excellent throw
+    * `nice_rate`: 0.3 | Change of nice throw
+    * `normal_rate`: 0.1 | Change of normal throw
+    * `spin_success_rate` : 0.6 | Change of using a spin throw
+    * `hit_rate`: 0.75 | Change of overall hit chance
+  `catch_simulation`:
+    * `flee_count`: 3 | ??
+    * `flee_duration`: 2 | ??
+    * `catch_wait_min`: 3 | Minimum time to wait after a catch
+    * `catch_wait_max`: 6 | Maximum time to wait after a catch
+    * `berry_wait_min`: 3 | Minimum time to wait after throwing berry
+    * `berry_wait_max`: 5 | Maxiumum time to wait after throwing berry
+    * `changeball_wait_min`: 3 | Minimum time to wait when changing balls
+    * `changeball_wait_max`: 5 | Maximum time to wait when changing balls
+    * `newtodex_wait_min`: 20 | Minimum time to wait if we caught a new type of pokemon
+    * `newtodex_wait_max`: 39 | Maximum time to wait if we caught a new type of pokemon
 * EvolvePokemon
   * `evolve_all`: Default `NONE` | Depreciated. Please use evolve_list and donot_evolve_list
   * `evolve_list`: Default `all` | Set to all, or specifiy different pokemon seperated by a comma
