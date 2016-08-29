@@ -18,8 +18,12 @@ git fetch -a
 if [ "1" == $(git branch -vv |grep -c "* dev") ] && [ $(git log --pretty=format:"%h" -1) != $(git log --pretty=format:"%h" -1 origin/dev) ] ||
   [ "1" == $(git branch -vv |grep -c "* master") ] && [ $(git log --pretty=format:"%h" -1) != $(git log --pretty=format:"%h" -1 origin/master) ]
 then
-  ./setup.sh -u
-  sleep 2
+  read -p "Branch have an update. Run ./setup.sh -u to update? y/n
+  " do_setup
+  if [[ $do_setup = "y" || $do_setup = "Y" ]];
+  then
+    ./setup.sh -u
+  fi
 fi
 if [ ! -f "$auth" ]; then
   echo "There's no auth file. Please use ./setup.sh -a to create one"
