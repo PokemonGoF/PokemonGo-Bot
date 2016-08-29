@@ -107,7 +107,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 [[back to top](#table-of-contents)]
 * CatchPokemon
   * `enabled`: Default "true" | Enable/Disable the task. 
-  * `treat_unseen_as_vip`: Default `"true"` | Set to `"false"` to disable treating pokemons you don't have in your pokedex as VIPs.
+  * `treat_unseen_as_vip`: Default `"true"` | If true, treat new to dex as VIP
   * `catch_visible_pokemon`:  Default "true" | If enabled, attempts to catch "visible" pokemon that are reachable
   * `catch_lured_pokemon`: Default "true" | If enabled, attempts to catch "lured" pokemon that are reachable
   * `min_ultraball_to_keep`: Default 5 | Minimum amount of reserved ultraballs to have on hand (for VIP)
@@ -160,6 +160,10 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `breakable`: Default `[2,5,10]` | Types of eggs to be incubated in breakable incubators.
 * MoveToFort
   * `enable`: Disable or enable this task.
+  * `lure_attraction`: Default `true` | Be more attracted to lured forts than non
+  * `lure_max_distance`: Default `2000` | Maxmimum distance lured forts influence this task
+  * `walker`: Default `StepWalker` | Which walker moves us
+  * `log_interval`: Default `5` | Log output interval
 * [MoveToMapPokemon](#sniping-movetolocation)
 * NicknamePokemon
   * `enable`: Disable or enable this task.
