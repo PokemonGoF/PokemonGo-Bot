@@ -18,7 +18,7 @@ git fetch -a
 if [ "1" == $(git branch -vv |grep -c "* dev") ] && [ $(git log --pretty=format:"%h" -1) != $(git log --pretty=format:"%h" -1 origin/dev) ] ||
   [ "1" == $(git branch -vv |grep -c "* master") ] && [ $(git log --pretty=format:"%h" -1) != $(git log --pretty=format:"%h" -1 origin/master) ]
 then
-  read -p "Branch have an update. Run ./setup.sh -u to update? y/n
+  read -p "Branch has an update. Run ./setup.sh -u to update? y/n
   " do_setup
   if [[ $do_setup = "y" || $do_setup = "Y" ]];
   then
