@@ -38,12 +38,10 @@ import time
 import signal
 import string
 import subprocess
-from datetime import timedelta
 from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException, NoPlayerPositionSetException
 from geopy.exc import GeocoderQuotaExceeded
 
-from pokemongo_bot import inventory
 from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.health_record import BotEvent
@@ -65,7 +63,10 @@ logging.basicConfig(
 logger = logging.getLogger('cli')
 logger.setLevel(logging.INFO)
 
-class SIGINTRecieved(Exception): pass
+
+class SIGINTRecieved(Exception):
+    pass
+
 
 def main():
     bot = False
@@ -81,21 +82,29 @@ def main():
     def initialize(config):
         bot = PokemonGoBot(config)
         return bot
-        
-    def start_bot(bot,config):
+
+    def start_bot(bot, config):
         bot.start()
-        initialize_task(bot,config)
+        initialize_task(bot, config)
         bot.metrics.capture_stats()
         bot.health_record = BotEvent(config)
         return bot
 
     def get_commit_hash():
         try:
-            hash = subprocess.check_output(['git', 'rev-parse', 'HEAD'], stderr=subprocess.STDOUT)[:-1]
-
-            return hash if all(c in string.hexdigits for c in hash) else "not found"
+            hash = subprocess.check_output(['git', 'rev-parse', 'HEAD'],
+                                           stderr=subprocess.STDOUT)
+            if all(c in string.hexdigits for c in hash[:-1]):
+                with open('version', 'w') as f:
+                    f.write(hash)
         except:
-            return "not found"
+            pass
+
+        if not os.path.exists('version'):
+            return 'unknown'
+
+        with open('version') as f:
+            return f.read()[:8]
 
     try:
         logger.info('PokemonGO Bot v1.0')
@@ -116,7 +125,7 @@ def main():
         while not finished:
             try:
                 bot = initialize(config)
-                bot = start_bot(bot,config)
+                bot = start_bot(bot, config)
                 config_changed = check_mod(config_file)
 
                 bot.event_manager.emit(
@@ -132,10 +141,11 @@ def main():
                         logger.info('Config changed! Applying new config.')
                         config, _ = init_config()
 
-                        if config.live_config_update_tasks_only: initialize_task(bot, config)
-                        else: 
+                        if config.live_config_update_tasks_only:
+                            initialize_task(bot, config)
+                        else:
                             bot = initialize(config)
-                            bot = start_bot(bot,config)
+                            bot = start_bot(bot, config)
 
             except KeyboardInterrupt:
                 bot.event_manager.emit(
@@ -232,6 +242,7 @@ def main():
                         data={'path': cached_forts_path}
                         )
 
+
 def check_mod(config_file):
     check_mod.mtime = os.path.getmtime(config_file)
 
@@ -244,6 +255,7 @@ def check_mod(config_file):
             return True
 
     return compare_mtime
+
 
 def report_summary(bot):
     if bot.metrics.start_time is None:
@@ -269,6 +281,7 @@ def report_summary(bot):
         logger.info('Highest CP Pokemon: {}'.format(metrics.highest_cp['desc']))
     if metrics.most_perfect is not None:
         logger.info('Most Perfect Pokemon: {}'.format(metrics.most_perfect['desc']))
+
 
 def init_config():
     parser = argparse.ArgumentParser()
@@ -390,8 +403,7 @@ def init_config():
         load,
         short_flag="-wmax",
         long_flag="--walk_max",
-        help=
-        "Walk instead of teleport with given speed",
+        help="Walk instead of teleport with given speed",
         type=float,
         default=2.5
     )
@@ -400,8 +412,7 @@ def init_config():
         load,
         short_flag="-wmin",
         long_flag="--walk_min",
-        help=
-        "Walk instead of teleport with given speed",
+        help="Walk instead of teleport with given speed",
         type=float,
         default=2.5
     )
@@ -632,7 +643,7 @@ def init_config():
          type=bool,
          default=False
     )
-    
+
     # Start to parse other attrs
     config = parser.parse_args()
     if not config.username and 'username' not in load:
@@ -697,10 +708,10 @@ def init_config():
 
     if "daily_catch_limit" in load:
         logger.warning('The daily_catch_limit argument has been moved into the CatchPokemon Task')
-        
+
     if "logging_color" in load:
         logger.warning('The logging_color argument has been moved into the logging config section')
-            
+
     if config.walk_min < 1:
         parser.error("--walk_min is out of range! (should be >= 1.0)")
         return None
@@ -727,6 +738,7 @@ def init_config():
     fix_nested_config(config)
     return config, config_file
 
+
 def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
     if not long_flag:
         raise Exception('add_config calls requires long_flag parameter!')
@@ -734,7 +746,7 @@ def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
     full_attribute_path = long_flag.split('--')[1]
     attribute_name = full_attribute_path.split('.')[-1]
 
-    if '.' in full_attribute_path: # embedded config!
+    if '.' in full_attribute_path:  # embedded config!
         embedded_in = full_attribute_path.split('.')[0: -1]
         for level in embedded_in:
             json_config = json_config.get(level, {})
@@ -756,6 +768,7 @@ def fix_nested_config(config):
             new_key = key.replace('.', '_')
             config_dict[new_key] = value
             del config_dict[key]
+
 
 def parse_unicode_str(string):
     try:
