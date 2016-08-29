@@ -187,8 +187,8 @@ class FollowPath(BaseTask):
         )
         
         if dist <= 1 or (self.bot.config.walk_min > 0 and is_at_destination) or (self.status == STATUS_LOITERING and time.time() >= self.loiter_end_time):
-            if "loiter" in point and self.status != STATUS_LOITERING: 
-                print("Loitering {} seconds".format(point["loiter"]))
+            if "loiter" in point and self.status != STATUS_LOITERING:
+                self.logger.info("Loitering for {} seconds...".format(point["loiter"]))
                 self.status = STATUS_LOITERING
                 self.loiter_end_time = time.time() + point["loiter"]
                 return WorkerResult.SUCCESS
