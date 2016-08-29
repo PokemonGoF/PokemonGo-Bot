@@ -425,16 +425,8 @@ class UpdateLiveStats(BaseTask):
         :rtype: dict
         """
         # TODO : find a better solution than calling the api
-        inventory_items = self.bot.api.get_inventory() \
-            .get('responses', {}) \
-            .get('GET_INVENTORY', {}) \
-            .get('inventory_delta', {}) \
-            .get('inventory_items', {})
-        return next((x["inventory_item_data"]["player_stats"]
-                     for x in inventory_items
-                     if x.get("inventory_item_data", {}).get("player_stats", {})),
-                    None)
-           
+        return self.bot.metrics.player_stats
+        
     def update_web_stats(self,player_data):
         web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
 
