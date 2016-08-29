@@ -121,10 +121,10 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 * HandleSoftBan
 * IncubateEggs
   * `enable`: Disable or enable this task.
-  * `longer_eggs_first`: Depreciated`
+  * `longer_eggs_first`: Depreciated
   * `infinite_longer_eggs_first`:  Default `true` | Prioritize longer eggs in perminent incubators. 
   * `breakable_longer_eggs_first`:  Default `false` | Prioritize longer eggs in breakable incubators. 
-  * `min_interval`: Default `120` | Number of seconds between incubation updates.
+  * `min_interval`: Default `120` | Minimum number of seconds between incubation updates.
   * `infinite`: Default `[2,5,10]` | Types of eggs to be incubated in permanent incubators.
   * `breakable`: Default `[2,5,10]` | Types of eggs to be incubated in breakable incubators.
 * MoveToFort
