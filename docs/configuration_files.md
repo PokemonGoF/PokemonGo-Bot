@@ -55,9 +55,10 @@ Document the configuration options of PokemonGo-Bot.
 ## Usage
 [[back to top](#table-of-contents)]
 
-1. copy `config.json.example` to `config.json`.
-2. Edit `config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (other keys are optional, check `Advance Configuration` below)
-3. Simply launch the script with : `./run.sh` or `./pokecli.py` or `python pokecli.py -cf ./configs/config.json` if you want to specify a config file
+1. copy `auth.json.example` to `auth.json`.
+2. Edit `auth.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (other keys are optional)
+3. copy `config.json.example` to `config.json`.=
+3. Simply launch the script with : `./run.sh` or './run.sh ./configs/your_auth_file.json ./configs/your_base_config_file.json'
 
 
 ## Advanced Configuration
@@ -119,7 +120,13 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 * FollowSpiral
 * HandleSoftBan
 * IncubateEggs
-  * `longer_eggs_first`: Default `True`
+  * `enable`: Disable or enable this task.
+  * `longer_eggs_first`: Depreciated`
+  * `infinite_longer_eggs_first`:  Default `true` | Prioritize longer eggs in perminent incubators. 
+  * `breakable_longer_eggs_first`:  Default `false` | Prioritize longer eggs in breakable incubators. 
+  * `min_interval`: Default `120` | Number of seconds between incubation updates.
+  * `infinite`: Default `[2,5,10]` | Types of eggs to be incubated in permanent incubators.
+  * `breakable`: Default `[2,5,10]` | Types of eggs to be incubated in breakable incubators.
 * MoveToFort
 * [MoveToMapPokemon](#sniping-movetolocation)
 * NicknamePokemon
