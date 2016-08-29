@@ -14,6 +14,9 @@ https://drive.google.com/file/d/0B0TeYGBPiuzaenhUNE5UWnRCVlU/view
 https://www.reddit.com/r/pokemongodev/comments/4w7mdg/combat_damage_calculation_formula_exactly/
 '''
 
+class FileIOException(Exception):
+    pass
+
 
 #
 # Abstraction
@@ -1122,6 +1125,8 @@ class Inventory(object):
         web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
 
         if not os.path.exists(web_inventory):
+            self.bot.logger.info('No inventory file %s found. Creating a new one' % web_inventory)
+
             json_inventory = []
         
             with open(web_inventory, "w") as outfile:
@@ -1134,9 +1139,16 @@ class Inventory(object):
         if not os.path.exists(web_inventory):
             self.init_inventory_outfile()
             
-        with open(web_inventory, "r") as infile:
-            json_inventory = json.load(infile)
-            infile.close()
+        try:
+            with open(web_inventory, "r") as infile:
+                json_inventory = json.load(infile)
+        except (IOError, ValueError):
+            # Unable to read json from web inventory
+            # File may be corrupt. Create a new one.            
+            self.bot.logger.info('[x] Error while opening inventory file for read: %s' % e, 'red')
+            json_inventory = []
+        except:
+            raise FileIOException("Unexpected error reading from {}".web_inventory)
 
         json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("pokedex_entry", None)]
         json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("candy", None)]
@@ -1145,9 +1157,14 @@ class Inventory(object):
 
         json_inventory = json_inventory + self.jsonify_inventory()
 
-        with open(web_inventory, "w") as outfile:
-            json.dump(json_inventory, outfile)
-            outfile.close()
+        try:
+            with open(web_inventory, "w") as outfile:
+                json.dump(json_inventory, outfile)
+        except (IOError, ValueError):
+            self.bot.logger.info('[x] Error while opening inventory file for write: %s' % e, 'red')
+            pass
+        except:
+            raise FileIOException("Unexpected error writing to {}".web_inventory)
 
     def jsonify_inventory(self):
         json_inventory = []

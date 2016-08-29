@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.base_task import BaseTask
 
@@ -35,15 +36,18 @@ class IncubateEggs(BaseTask):
         except:
             return
 
+        should_print = self._should_print()
+
         if self.used_incubators and IncubateEggs.last_km_walked != self.km_walked:
             self.used_incubators.sort(key=lambda x: x.get("km"))
             km_left = self.used_incubators[0]['km']-self.km_walked
             if km_left <= 0:
                 self._hatch_eggs()
+                should_print = False
             else:
                 self.bot.metrics.next_hatching_km(km_left)
 
-        if self._should_print():
+        if should_print:
             self._print_eggs()
             self._compute_next_update()
 
@@ -58,9 +62,9 @@ class IncubateEggs(BaseTask):
 
         if self.ready_breakable_incubators:
             # get available eggs
-            eggs = self._filter_sort_eggs(self.infinite_incubator,
-                    self.infinite_longer_eggs_first)
-            self._apply_incubators(eggs, self.ready_infinite_incubators)
+            eggs = self._filter_sort_eggs(self.breakable_incubator,
+                    self.breakable_longer_eggs_first)
+            self._apply_incubators(eggs, self.ready_breakable_incubators)
 
 
     def _filter_sort_eggs(self, allowed, sorting):
@@ -203,13 +207,15 @@ class IncubateEggs(BaseTask):
         candy = result.get('candy_awarded', "error")
         xp = result.get('experience_awarded', "error")
         sleep(self.hatching_animation_delay)
-        self.bot.latest_inventory = None
         try:
             pokemon_data = self._check_inventory(pokemon_ids)
             for pokemon in pokemon_data:
                 # pokemon ids seem to be offset by one
                 if pokemon['pokemon_id']!=-1:
                     pokemon['name'] = self.bot.pokemon_list[(pokemon.get('pokemon_id')-1)]['Name']
+                    #remove as egg and add as pokemon
+                    inventory.pokemons().remove(pokemon['id'])
+                    inventory.pokemons().add(inventory.Pokemon(pokemon))
                 else:
                     pokemon['name'] = "error"
         except:
