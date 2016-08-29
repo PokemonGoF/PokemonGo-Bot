@@ -11,7 +11,7 @@ from pokemongo_bot.walkers.walker_factory import walker_factory
 from pokemongo_bot.worker_result import WorkerResult
 from pgoapi.utilities import f2i
 from random import uniform
-from utils import getSeconds
+from utils import getSeconds, format_dist
 from datetime import datetime as dt, timedelta
 
 STATUS_MOVING = 0
@@ -26,6 +26,7 @@ class FollowPath(BaseTask):
         self.points = self.load_path()
         self.status = STATUS_MOVING
         self.loiter_end_time = 0
+        self.distance_unit = self.bot.config.distance_unit
 
         if self.path_start_mode == 'closest':
             self.ptr = self.find_closest_point_idx(self.points)
@@ -181,8 +182,8 @@ class FollowPath(BaseTask):
             data={
                 'last_position': (last_lat, last_lng, last_alt),
                 'current_position': (lat, lng, alt),
-                'distance': dist,
-                'distance_unit': 'm'
+                'distance': format_dist(dist,self.distance_unit),
+                'distance_unit': self.distance_unit
             }
         )
         
