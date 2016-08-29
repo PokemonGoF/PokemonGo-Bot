@@ -41,6 +41,9 @@ from sys import platform as _platform
 from pgoapi.protos.POGOProtos.Enums import BadgeType_pb2
 import struct
 
+class FileIOException(Exception):
+    pass
+
 class PokemonGoBot(Datastore):
     @property
     def position(self):
@@ -1095,9 +1098,19 @@ class PokemonGoBot(Datastore):
                     level='debug',
                     formatted='Loading cached location...'
                 )
-                with open(os.path.join(_base_dir, 'data', 'last-location-%s.json' %
-                    self.config.username)) as f:
-                    location_json = json.load(f)
+                
+                json_file = os.path.join(_base_dir, 'data', 'last-location-%s.json' % self.config.username)
+
+                try:
+                    with open(json_file, "r") as infile:
+                        location_json = json.load(infile)
+                except (IOError, ValueError):
+                    # Unable to read json file.
+                    # File may be corrupt. Create a new one.            
+                    location_json = []
+                except:
+                    raise FileIOException("Unexpected error reading from {}".web_inventory)
+
                 location = (
                     location_json['lat'],
                     location_json['lng'],
