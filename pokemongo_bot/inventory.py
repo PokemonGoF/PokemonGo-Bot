@@ -1211,7 +1211,7 @@ class Inventory(object):
         try:
             with open(web_inventory, "w") as outfile:
                 json.dump(json_inventory, outfile)
-        except (IOError, ValueError):
+        except (IOError, ValueError) as e:
             self.bot.logger.info('[x] Error while opening inventory file for write: %s' % e, 'red')
             pass
         except:
