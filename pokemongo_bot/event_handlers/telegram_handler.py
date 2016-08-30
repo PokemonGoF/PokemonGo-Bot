@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from pokemongo_bot.event_manager import EventHandler
-from telegram.error import NetworkError, Unauthorized
 from pokemongo_bot.base_dir import _base_dir
 import json
 import os
@@ -86,9 +85,9 @@ class TelegramClass:
                                 "/info - info about bot"
                             )
                             self._tbot.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
-            except NetworkError:
+            except telegram.error.NetworkError:
                 time.sleep(1)
-            except Unauthorized:
+            except telegram.error.Unauthorized:
                 self.update_id += 1
 
 class TelegramHandler(EventHandler):
