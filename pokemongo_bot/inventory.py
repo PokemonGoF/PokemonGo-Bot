@@ -95,10 +95,7 @@ class Player(_BaseInventoryComponent):
         self.pokemons_captured = None
         self.poke_stop_visits = None
         self.last_lvl_up_reward = time.time()  # ts of last lvl_up_reward api call
-<<<<<<< HEAD
         self.player_stats = None
-=======
->>>>>>> pokemongof/dev
         super(_BaseInventoryComponent, self).__init__()
 
     @property
@@ -127,12 +124,9 @@ class Player(_BaseInventoryComponent):
 
         self._exp = value
 
-<<<<<<< HEAD
     def refresh(self,inventory):
         self.player_stats = self.retrieve_data(inventory)
         
-=======
->>>>>>> pokemongof/dev
     def parse(self, item):
         self.exp = item['experience']
         self.level = item['level']
@@ -148,10 +142,7 @@ class Player(_BaseInventoryComponent):
                 item = data[self.TYPE]
                 ret = item
                 self.parse(item)
-<<<<<<< HEAD
-=======
 
->>>>>>> pokemongof/dev
         return ret
 
 
