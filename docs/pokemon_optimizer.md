@@ -3,24 +3,25 @@
 - [Configuration](#configuration)
     - [Default configuration](#default-configuration)
     - [Understand parameters](#understand-parameters)
-	    - [enabled](#enabled)
-	    - [transfer](#transfer)
-	    - [transfer_wait_min](#transfer_wait_min)
-	    - [transfer_wait_max](#transfer_wait_max)
-	    - [evolve](#evolve)
-	    - [evolve_time](#evolve_time)
-	    - [evolve_for_xp](#evolve_for_xp)
-	    - [evolve_only_with_lucky_egg](#evolve_only_with_lucky_egg)
-	    - [evolve_count_for_lucky_egg](#evolve_count_for_lucky_egg)
-	    - [may_use_lucky_egg](#may_use_lucky_egg)
-	    - [groups](#groups)
-	    - [keep](#keep)
-	    	- [mode](#keep-mode)
-	    	- [names](#keep-names)
-	    	- [top](#keep-top)
-	    	- [sort](#keep-sort)
-	    	- [evolve](#keep-evolve)
-	- [Examples of configuration](#examples-of-configuration)
+        - [enabled](#enabled)
+        - [transfer](#transfer)
+        - [transfer_wait_min](#transfer_wait_min)
+        - [transfer_wait_max](#transfer_wait_max)
+        - [evolve](#evolve)
+        - [evolve_time](#evolve_time)
+        - [evolve_for_xp](#evolve_for_xp)
+        - [evolve_only_with_lucky_egg](#evolve_only_with_lucky_egg)
+        - [evolve_count_for_lucky_egg](#evolve_count_for_lucky_egg)
+        - [may_use_lucky_egg](#may_use_lucky_egg)
+        - [upgrade](#upgrade)
+        - [groups](#groups)
+        - [keep](#keep)
+            - [mode](#keep-mode)
+            - [names](#keep-names)
+            - [top](#keep-top)
+            - [sort](#keep-sort)
+            - [evolve](#keep-evolve)
+    - [Examples of configuration](#examples-of-configuration)
 - [Eevee case](#eevee-case)
 
 # About
@@ -34,43 +35,58 @@ The Pokemon Optimizer manage transfer and evolution of your Pokemon.
 ## Default configuration
 ```
 {
-	"tasks": [
-		{
-			"type": "PokemonOptimizer",
-			"config": {
-				"enabled": true,
-				"transfer": true,
-				"transfer_wait_min": 3,
-				"transfer_wait_max": 5,
-				"evolve": true,
-				"evolve_time": 25,
-				"evolve_for_xp": true,
-				"evolve_only_with_lucky_egg": false,
-				"evolve_count_for_lucky_egg": 80,
-				"may_use_lucky_egg": true,
-				"keep": [
-					{
-						"mode": "by_family",
-						"top": 1,
-						"sort": [{"iv": 0.9}],
-						"evolve": true
-					},
-					{
-						"mode": "by_family",
-						"top": 1,
-						"sort": [{"ncp": "0.9"}],
-						"evolve": true
-					},
-					{
-						"mode": "by_family",
-						"top": 1,
-						"sort": ["cp"],
-						"evolve": false
-					}
-				]
-			}
-		}
-	]
+    "tasks": [
+        {
+            "type": "PokemonOptimizer",
+            "config": {
+                "enabled": true,
+                "transfer": true,
+                "transfer_wait_min": 3,
+                "transfer_wait_max": 5,
+                "evolve": true,
+                "evolve_time": 25,
+                "evolve_for_xp": true,
+                "evolve_only_with_lucky_egg": false,
+                "evolve_count_for_lucky_egg": 80,
+                "may_use_lucky_egg": true,
+                "upgrade": true,
+                "groups": {
+                    "gym": ["Dragonite", "Snorlax", "Lapras", "Arcanine"]
+                },
+                "keep": [
+                    {
+                        "mode": "by_family",
+                        "top": 1,
+                        "sort": [{"iv": 0.9}],
+                        "evolve": true,
+                        "upgrade": false
+                    },
+                    {
+                        "mode": "by_family",
+                        "top": 1,
+                        "sort": [{"ncp": "0.9"}],
+                        "evolve": true,
+                        "upgrade": false
+                    },
+                    {
+                        "mode": "by_family",
+                        "top": 1,
+                        "sort": ["cp"],
+                        "evolve": false,
+                        "upgrade": false
+                    },
+                    {
+                        "mode": "by_family",
+                        "names": ["gym"],
+                        "top": 3,
+                        "sort": [{"iv": 0.9}, {"ncp": "0.9"}],
+                        "evolve": true,
+                        "upgrade": true
+                    }
+                ]
+            }
+        }
+    ]
 }
 ```
 
@@ -132,6 +148,7 @@ The `evolve` parameter activate or deactivate the evolution of Pokemon.
 At `true`, you allow the Pokemon Optimizer to evolve every Pokemon that are the best according to your own criteria.
 <br>You also allow it to evolve lower quality Pokemon when [`evolve_for_xp`](#evolve_for_xp) parameter is `true`.
 <br>At `false`, and regardless of other parameters, no Pokemon is ever going to be evolved.
+<br>`evolve` parameter can be deactivated separately for each rule (see [`evolve`](#keep-evolve)).
 
 Note that, whatever is the value you choose to give to that parameter, you will still see logs explaining which Pokemon are evolved.
 <br>The purpose of this is to show you what choices are made by the Pokemon Optimizer.
@@ -209,6 +226,25 @@ Define whether you allow the Pokemon Optimizer to use a lucky egg before evolvin
 
 [[back to top](#pokemon-optimizer)]
 
+### upgrade
+| Parameter | Possible values | Default |
+|-----------|-----------------|---------|
+| `upgrade` | `true`, `false` | `false` |
+
+The `upgrade` parameter activate or deactivate the upgrade (power-up) of Pokemon.
+
+At `true`, you allow the Pokemon Optimizer to upgrade every Pokemon that are the best according to your own criteria.
+<br>At `false`, and regardless of other parameters, no Pokemon is ever going to be upgraded.
+<br>`upgrade` parameter can be deactivated separately for each rule (see [`upgrade`](#keep-upgrade)).
+
+Note that, whatever is the value you choose to give to that parameter, you will still see logs explaining which Pokemon are upgraded.
+<br>The purpose of this is to show you what choices are made by the Pokemon Optimizer.
+It can help you rectify your configuration or guide you during manual power-up.
+
+`Upgraded Magikarp [IV 0.96] [CP 231] [81 candies] [132450 stardust]`
+
+[[back to top](#pokemon-optimizer)]
+
 ### groups
 | Parameter | Possible values | Default |
 |-----------|-----------------|---------|
@@ -220,10 +256,10 @@ You can define `groups` of Pokemon to help you restrict rules to a specific set 
 `groups` are list of Pokemon names:
 ```
 "groups": {
-	"gym": ["Dragonite", "Snorlax"],
-	"my_love": ["Pikachu"],
-	"vip": ["Lapras", "Arcanine", "Gyarados", "gym"],
-	"trash": ["!vip", "!my_love"]
+    "gym": ["Dragonite", "Snorlax"],
+    "my_love": ["Pikachu"],
+    "vip": ["Lapras", "Arcanine", "Gyarados", "gym"],
+    "trash": ["!vip", "!my_love"]
 },
 ```
 
@@ -247,9 +283,10 @@ Every Pokemon not selected is candidate for transfer.
 
 ```
 [
-	{"mode": "by_family", "top": 1, "sort": [{"iv": 0.9}], "evolve": True},
-	{"mode": "by_family", "top": 1, "sort": [{"ncp": 0.9}], "evolve": True},
-	{"mode": "by_family", "top": 1, "sort": ["cp"], "evolve": False}
+    {"mode": "by_family", "top": 1, "sort": [{"iv": 0.9}], "evolve": True, "upgrade": False},
+    {"mode": "by_family", "top": 1, "sort": [{"ncp": 0.9}], "evolve": True, "upgrade": False},
+    {"mode": "by_family", "top": 1, "sort": ["cp"], "evolve": False, "upgrade": False},
+    {"mode": "by_family", "top": 3, "names": ["gym"], "sort": [{"iv": 0.9}, {"ncp": 0.9}], "evolve": True, "upgrade": True}
 ]
 ```
 
@@ -341,7 +378,7 @@ Define according to which criteria you want to sort your Pokemon.
 You can put multiple criteria in the list by separating them by a comma: `"sort": ["iv", "cp"]`
 <br>If multiple criteria are present, Pokemon will be ranked according to the first, then if equals the second, etc...
 
-In addition to define sorting criteria, the `sort` list may contain minimum requirements for evolution:
+In addition to define sorting criteria, the `sort` list may contain minimum requirements for evolution and upgrade:
 - `"top": 1, "sort": ["iv"], "evolve": True` will rank Pokemon by `iv`.
 <br>It will keep and evolve the best of them.
 - `"top": 1, "sort": [{"iv": 0.9}], "evolve": True` will rank Pokemon by `iv`.
@@ -360,6 +397,18 @@ The parameter allow you to selectively control what Pokemon to evolve.
 
 At `true`, all Pokemon selected and meeting the minimum evolution criteria (see [`sort`](#keep-sort)) will be evolved.
 <br>At `false`, Pokemon selected will not be eligible for evolution, unless they are also selected by another rule that allow them to evolve.
+
+[[back to top](#pokemon-optimizer)]
+
+#### keep upgrade
+| Parameter | Possible values | Default |
+|-----------|-----------------|---------|
+| `upgrade` | `true`, `false` | `false` |
+
+The parameter allow you to selectively control what Pokemon to upgrade.
+
+At `true`, all Pokemon selected and meeting the minimum upgrade criteria (see [`sort`](#keep-sort)) will be upgraded.
+<br>At `false`, Pokemon selected will not be eligible for upgrade, unless they are also selected by another rule that allow them to upgrade.
 
 [[back to top](#pokemon-optimizer)]
 
@@ -403,24 +452,24 @@ At `true`, all Pokemon selected and meeting the minimum evolution criteria (see 
 
 ```
 "groups": {
-	"my loves ones" : ["Dragonite", "Snorlax", "Caterpie"]
+    "my loves ones" : ["Dragonite", "Snorlax", "Caterpie"]
 },
 "keep": [
-	{
-	    "mode": "by_family",
-	    "names": ["my loves ones"]
-	    "top": 1,
-	    "sort": ["iv"],
-	    "evolve": false
-	},
-	{
-	    "mode": "by_family",
-	    "names": ["!my loves ones"]
-	    "top": 1,
-	    "sort": ["iv"],
-	    "evolve": true
-	}
-	// + Exclude `my loves ones` from any other rule
+    {
+        "mode": "by_family",
+        "names": ["my loves ones"]
+        "top": 1,
+        "sort": ["iv"],
+        "evolve": false
+    },
+    {
+        "mode": "by_family",
+        "names": ["!my loves ones"]
+        "top": 1,
+        "sort": ["iv"],
+        "evolve": true
+    }
+    // + Exclude `my loves ones` from any other rule
 ]
 ```
 
@@ -447,6 +496,5 @@ For Eevee Pokemon family, and any other family with multiple paths of evolution,
 <br>The Pokemon Optimizer will tentatively try to keep and evolve all Eevees that may replace the worst evolution you have.
 
 - If you deactivate the global `evolve` parameter, the Pokemon Optimizer will not apply above rules since it considers you are manually controlling the evolution of your Eevees.
-
 
 [[back to top](#pokemon-optimizer)]
