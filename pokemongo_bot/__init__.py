@@ -437,6 +437,10 @@ class PokemonGoBot(Datastore):
             'pokemon_evolved',
             parameters=('pokemon', 'iv', 'cp', 'xp', 'candy')
         )
+        self.event_manager.register_event(
+            'pokemon_upgraded',
+            parameters=('pokemon', 'iv', 'cp', 'candy', 'stardust')
+        )
         self.event_manager.register_event('skip_evolve')
         self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
         self.event_manager.register_event('vip_pokemon')
