@@ -606,7 +606,7 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
 [[back to top](#table-of-contents)]
 
 * `Address` - Address of the webserver of PokemonGo-Map. ex: `http://localhost:5000`
-* `Mode` - Which mode to run snipin on
+* `Mode` - Which mode to run sniping on
    - `distance` - Will move to the nearest pokemon
    - `priority` - Will move to the pokemon with the highest priority assigned (tie breaking by distance)
 * `prioritize_vips` - Will prioritize vips in distance and priority mode above all normal pokemon if set to true
@@ -621,8 +621,14 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
 * `snipe_high_prio_only` - Whether to snipe pokemon above a certain threshold.
 * `snipe_high_prio_threshold` - The threshold number corresponding with the `catch` dictionary.
 *   - Any pokemon above this threshold value will be caught by teleporting to its location, and getting back to original location if `snipe` is `True`.
-*   - Any pokemon under this threshold value will make the bot walk to the Pokemon target wether `snipe` is `True` or `False`.
+*   - Any pokemon under this threshold value will make the bot walk to the Pokemon target whether `snipe` is `True` or `False`.
 *   `max_extra_dist_fort` : Percentage of extra distance allowed to move to a fort on the way to the targeted Pokemon
+*   `debug` : Output additional debugging information
+*   `skip_rounds` : Try to snipe every X rounds
+*   `update_map_min_distance_meters` : Update map if more than X meters away
+*   `update_map_min_time_sec` : Update map if older than X seconds
+*   `snipe_sleep_sec` : Sleep for X seconds after snipes
+*   `snipe_max_in_chain` : Maximum snipes in chain
 
 #### Example
 [[back to top](#table-of-contents)]
