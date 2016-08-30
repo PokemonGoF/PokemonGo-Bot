@@ -15,6 +15,9 @@ from pokemongo_bot import inventory
 # XP file
 import json
 
+class FileIOException(Exception):
+    pass
+
 class UpdateLiveStats(BaseTask):
     """
     Periodically displays stats about the bot in the terminal and/or in its title.
@@ -412,3 +415,4 @@ class UpdateLiveStats(BaseTask):
         line = ' | '.join(map(get_stat, self.displayed_stats))
 
         return line
+        

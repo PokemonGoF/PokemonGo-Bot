@@ -1,7 +1,6 @@
 import time
 from datetime import timedelta
 from pokemongo_bot.inventory import Pokemons, refresh_inventory
-from pokemongo_bot import inventory
 
 class Metrics(object):
 
@@ -106,7 +105,7 @@ class Metrics(object):
 
         request.get_player()
         response_dict = request.call()
-        
+
         try:
             uniq_pokemon_list = set()
 
