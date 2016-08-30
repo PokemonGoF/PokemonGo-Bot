@@ -83,6 +83,19 @@ To run the bot container with the PokemonGo-Bot Docker image you've created:
 docker run --name=bot1-pokego --rm -it -v $(pwd)/configs/config.json:/usr/src/app/configs/config.json pokemongo-bot
 ```
 
+>In the case you configured authentification to be handled by auth.json file make sure you mount that file as a volume also
+
+>```
+docker run --name=bot1-pokego --rm -it -v $(pwd)/configs/auth.json:/usr/src/app/configs/auth.json  -v $(pwd)/configs/config.json:/usr/src/app/configs/config.json -v $(pwd)/web/:/usr/src/app/web/ pokemongo-bot
+```
+
+>or for a simplified version mount your whole configs/ subdir to /usr/src/app/configs
+
+>```
+docker run --name=bot1-pokego --rm -it -v $(pwd)/configs:/usr/src/app/configs -v $(pwd)/web/:/usr/src/app/web/ pokemongo-bot
+```
+
+
 Run a second container provided with the OpenPoGoBotWeb view:
 
 ```
