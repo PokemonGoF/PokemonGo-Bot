@@ -201,6 +201,12 @@
           "map_path": "raw_data",
           "walker": "StepWalker",
           "max_extra_dist_fort": 10,
+          "skip_rounds": 5,
+	  "update_map_min_distance_meters": 500,
+	  "update_map_min_time_sec": 120,
+	  "snipe_sleep_sec": 2,
+	  "snipe_max_in_chain": 2,
+	  "debug": false,
           "catch": {
             "==========Legendaries==========": 0,
             "Aerodactyl": 1000,
