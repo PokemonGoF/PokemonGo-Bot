@@ -113,7 +113,9 @@ data/map-caught-*.json
 data/recent-forts-*.json
 data/caught-*.json
 data/deviceid-*.txt
+data/mqtt_client_id.*
 user_web_catchable
+version
 
 # Multiple config
 configs/*

@@ -111,14 +111,17 @@ def convert(distance, from_unit, to_unit):  # Converts units
     return distance * conversions[from_unit][to_unit]
 
 
-def dist_to_str(distance, unit):
-    return '{:.2f}{}'.format(distance, unit)
+def dist_to_str(distance, unit, append_unit = True):
+    if append_unit:
+        return '{:.2f}{}'.format(distance, unit)
+    else:
+        return '{:.2f}'.format(distance)
 
 
-def format_dist(distance, unit):
+def format_dist(distance, unit, append_unit = True):
     # Assumes that distance is in meters and converts it to the given unit, then a formatted string is returned
     # Ex: format_dist(1500, 'km') returns the string "1.5km"
-    return dist_to_str(convert(distance, 'm', unit), unit)
+    return dist_to_str(convert(distance, 'm', unit), unit, append_unit)
 
 
 def getSeconds(strTime):

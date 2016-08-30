@@ -26,15 +26,34 @@ function initialiseEventBus(){
       var pLoadR2 = pLoadR.split(",");
       var olat = pLoadR2[0]
       var olong = pLoadR2[1]
-      var sessid = pLoadR2[2]
-      var ico = pLoadR2[3]
-      var expir = pLoadR2[4]
-      var pokenick = pLoadR2[5]
-      var path = "./images/p/"
-      var icon = path + "0" + ico + ".png"
-      var icostr = icon.toString();
-      displayMessageOnMap(payload, olat, olong, sessid, icostr, expir, pokenick);
-      console.debug('[CATCHABLE]', pokenick, '(' + olat + ',' + olong + ')');
+
+      var pokemon_id = parseInt(pLoadR2[2])
+      if (pokemon_id>0 && pokemon_id< 160){
+        var ico = pLoadR2[2]
+        var expir = pLoadR2[3]
+        var pokenick = pLoadR2[4]
+        var sessid = pLoadR2[2]
+        var path = "./images/p/"
+        console.log('icon is '+ico)
+        var icon = path + "0" + ico.replace(" ","") + ".png"
+        var icostr = icon.toString();
+        displayMessageOnMap(payload, olat, olong, sessid, icostr, expir, pokenick);
+        console.debug('[CATCHABLE]', pokenick, '(' + olat + ',' + olong + ')');
+      } else {
+        var pokemon_id = parseInt(pLoadR2[3])
+        if (pokemon_id>0 && pokemon_id< 160){
+          var ico = pLoadR2[3]
+          var expir = pLoadR2[4]
+          var pokenick = pLoadR2[5]
+          var sessid = pLoadR2[5]
+          var path = "./images/p/"
+          console.log('icon is '+ico)
+          var icon = path + "0" + ico.replace(" ","") + ".png"
+          var icostr = icon.toString();
+          displayMessageOnMap(payload, olat, olong, sessid, icostr, expir, pokenick);
+          console.debug('[CATCHABLE]', pokenick, '(' + olat + ',' + olong + ')');
+        }
+      }
     } else {
       console.debug(topic);
     }

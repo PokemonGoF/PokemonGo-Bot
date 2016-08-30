@@ -33,7 +33,7 @@ class BaseTask(object):
 
     # Print log only if X seconds are passed from last log
     try:
-        if (time.time() - self.last_log_time) > self.config.get('log_interval', 0):
+        if (time.time() - self.last_log_time) >= self.config.get('log_interval', 0):
           self.last_log_time = time.time()
           self.bot.event_manager.emit(
             event,

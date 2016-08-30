@@ -55,9 +55,10 @@ Document the configuration options of PokemonGo-Bot.
 ## Usage
 [[back to top](#table-of-contents)]
 
-1. copy `config.json.example` to `config.json`.
-2. Edit `config.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (other keys are optional, check `Advance Configuration` below)
-3. Simply launch the script with : `./run.sh` or `./pokecli.py` or `python pokecli.py -cf ./configs/config.json` if you want to specify a config file
+1. copy `auth.json.example` to `auth.json`.
+2. Edit `auth.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (other keys are optional)
+3. copy `config.json.example` to `config.json`.=
+3. Simply launch the script with : `./run.sh` or './run.sh ./configs/your_auth_file.json ./configs/your_base_config_file.json'
 
 
 ## Advanced Configuration
@@ -105,27 +106,83 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 ### Task Options:
 [[back to top](#table-of-contents)]
 * CatchPokemon
-  * `treat_unseen_as_vip`: Default `"true"` | Set to `"false"` to disable treating pokemons you don't have in your pokedex as VIPs.
+  * `enabled`: Default "true" | Enable/Disable the task. 
+  * `treat_unseen_as_vip`: Default `"true"` | If true, treat new to dex as VIP
+  * `catch_visible_pokemon`:  Default "true" | If enabled, attempts to catch "visible" pokemon that are reachable
+  * `catch_lured_pokemon`: Default "true" | If enabled, attempts to catch "lured" pokemon that are reachable
+  * `min_ultraball_to_keep`: Default 5 | Minimum amount of reserved ultraballs to have on hand (for VIP)
+  * `berry_threshold`: Default 0.35 | Catch percentage we start throwing berries
+  * `vip_berry_threshold`: Default 0.9 | Something similar?
+  * `treat_unseen_as_vip`: Default "true" | If enabled, treat new to our dex as VIP
+  * `daily_catch_limit`: Default 800 | How many pokemon we limit ourselves to daily
+  * `catch_throw_parameters`: Variable catch settings
+    * `excellent_rate`: 0.1 | Change of excellent throw
+    * `great_rate`: 0.5 | Change of excellent throw
+    * `nice_rate`: 0.3 | Change of nice throw
+    * `normal_rate`: 0.1 | Change of normal throw
+    * `spin_success_rate` : 0.6 | Change of using a spin throw
+    * `hit_rate`: 0.75 | Change of overall hit chance
+  `catch_simulation`:
+    * `flee_count`: 3 | ??
+    * `flee_duration`: 2 | ??
+    * `catch_wait_min`: 3 | Minimum time to wait after a catch
+    * `catch_wait_max`: 6 | Maximum time to wait after a catch
+    * `berry_wait_min`: 3 | Minimum time to wait after throwing berry
+    * `berry_wait_max`: 5 | Maxiumum time to wait after throwing berry
+    * `changeball_wait_min`: 3 | Minimum time to wait when changing balls
+    * `changeball_wait_max`: 5 | Maximum time to wait when changing balls
+    * `newtodex_wait_min`: 20 | Minimum time to wait if we caught a new type of pokemon
+    * `newtodex_wait_max`: 39 | Maximum time to wait if we caught a new type of pokemon
 * EvolvePokemon
-  * `evolve_all`: Default `NONE` | Set to `"all"` to evolve Pokémon if possible when the bot starts. Can also be set to individual Pokémon as well as multiple separated by a comma. e.g "Pidgey,Rattata,Weedle,Zubat"
+  * `enable`: Disable or enable this task.
+  * `evolve_all`: Default `NONE` | Depreciated. Please use evolve_list and donot_evolve_list
+  * `evolve_list`: Default `all` | Set to all, or specifiy different pokemon seperated by a comma
+  * `donot_evolve_list`: Default `none` | Pokemon seperated by comma, will be ignored from evolve_list
   * `min_evolve_speed`: Default `25` | Minimum seconds to wait between each evolution 
   * `max_evolve_speed`: Default `30` | Maximum seconds to wait between each evolution
-  * `use_lucky_egg`: Default: `False`
+  * `use_lucky_egg`: Default: `False` | Only evolve if we can use a lucky egg
 * FollowPath
+  * `enable`: Disable or enable this task.
   * `path_mode`: Default `loop` | Set the mode for the path navigator (loop, linear or single).
   * `path_file`: Default `NONE` | Set the file containing the waypoints for the path navigator.
 * FollowSpiral
+  * `enable`: Disable or enable this task.
+  * `spin_wait_min`: Default 3 | Minimum wait time after fort spin
+  * `spin_wait_max`: Default 5 | Maximum wait time after fort spin
 * HandleSoftBan
 * IncubateEggs
-  * `longer_eggs_first`: Default `True`
+  * `enable`: Disable or enable this task.
+  * `longer_eggs_first`: Depreciated
+  * `infinite_longer_eggs_first`:  Default `true` | Prioritize longer eggs in perminent incubators. 
+  * `breakable_longer_eggs_first`:  Default `false` | Prioritize longer eggs in breakable incubators. 
+  * `min_interval`: Default `120` | Minimum number of seconds between incubation updates.
+  * `infinite`: Default `[2,5,10]` | Types of eggs to be incubated in permanent incubators.
+  * `breakable`: Default `[2,5,10]` | Types of eggs to be incubated in breakable incubators.
 * MoveToFort
+  * `enable`: Disable or enable this task.
+  * `lure_attraction`: Default `true` | Be more attracted to lured forts than non
+  * `lure_max_distance`: Default `2000` | Maxmimum distance lured forts influence this task
+  * `walker`: Default `StepWalker` | Which walker moves us
+  * `log_interval`: Default `5` | Log output interval
 * [MoveToMapPokemon](#sniping-movetolocation)
 * NicknamePokemon
+  * `enable`: Disable or enable this task.
   * `nickname_template`: Default `""` | See the [Pokemon Nicknaming](#pokemon-nicknaming) section for more details
   * `nickname_above_iv`: Default `0` | Rename pokemon which iv is highter than the value
   * `dont_nickname_favorite`: Default `false` | Prevents renaming of favorited pokemons
   * `good_attack_threshold`: Default `0.7` | Threshold for perfection of the attack in it's type *(0.0-1.0)* after which attack will be treated as good.<br>Used for `{fast_attack_char}`, `{charged_attack_char}`, `{attack_code}`  templates
 * RecycleItems
+  * `enabled`: Default `true` | Disable or enable this task
+  * `min_empty_space`: Default 15 | minimum spaces before forcing transfer
+  * `max_balls_keep`: Default 150 | Maximum cumlative balls to keep
+  * `max_potions_keep`: Default 50 | Maximum cumlative potions to keep
+  * `max_berries_keep`: Default 70 | Maximum culative berries to keep
+  * `max_revives_keep`: Default 70 | Maxiumum culative revies to keep
+  * `recycle_wait_min`: 3 | Minimum wait time after recycling an item
+  * `recycle_wait_max`: 5 | Maxiumum culative revies to keep
+  * `recycle_force`: Default true  | Enable/Disable time forced item recycling
+  * `recycle_force_min`: Default `00:01:00`  | Minimum time to wait before forcing recycling
+  * `recycle_force_max`: default `00:05:00`  | Maximum time to wait before forcing recycling
 
   > **NOTE:** It's highly recommended to put this task before MoveToFort and SpinFort tasks. This way you'll most likely be able to loot.
   * `min_empty_space`: Default `6` | Minimum empty space to keep in inventory. Once the inventory has less empty space than that amount, the recycling process is triggered. Set it to the inventory size to trigger it at every tick.
@@ -139,7 +196,11 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `recycle_force_max`: Default `00:10:00` | Maximum time to wait before scheduling next forced recycle
 
 * SpinFort
+  * `enabled`: Default true | Enable for disable this task
+  * `spin_wait_min`: Defaut 3 | Minimum wait after spinning a fort
+  * `spin_wait_max`: Default 5 | Maximum wait after spinning a fort
 * TransferPokemon
+  * `enable`: Disable or enable this task.
   * `min_free_slot`: Default `5` | Once the pokebag has less empty slots than this amount, the transfer process is triggered. | Big values (i.e 9999) will trigger the transfer process after each catch.
 * UpdateLiveStats
 * [UpdateLiveInventory](#updateliveinventory-settings)
@@ -928,8 +989,8 @@ Bot answer on command '/info' self stats.
 ### Options
 
 * `telegram_token` : bot token (getting [there](https://core.telegram.org/bots#6-botfather) - one token per bot)
-* `master` : id (without quotes) or username (in quotes, first character @) of bot owner, who will gett announces.
-* `alert_catch` : array of pokemons, which will be announced on catch. if first array item `all` - announce all pokemons.
+* `master` : id (without quotes) of bot owner, who will gett announces.
+* `alert_catch` : dict of rules pokemons catch.
 
 ### Sample configuration
 [[back to top](#table-of-contents)]
@@ -939,9 +1000,10 @@ Bot answer on command '/info' self stats.
     "config": {
         "enabled": true,
         "master": 12345678,
-        "//master": "@username",
-        "alert_catch": ["Lapras","Dragonite"],
-        "//alert_catch": ["all"]
+        "alert_catch": {
+          "all": {"operator": "and", "cp": 1300, "iv": 0.95},
+          "Snorlax": {"operator": "or", "cp": 900, "iv": 0.9}
+        }
     }
 }
 ```
