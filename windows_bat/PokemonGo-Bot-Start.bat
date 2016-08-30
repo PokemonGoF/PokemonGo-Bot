@@ -44,28 +44,19 @@ if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul & shift /1)
 
 :startBot
 CLS
-@ECHO --------------------Verifying PokemonGo-Bot version--------------------
-@ECHO.
-CD..
-git pull
-git submodule update --init --recursive
-@ECHO.
-@ECHO WARNING: Verify if the Config.json file got updated. If Yes, check if your modifications are still valid before proceeding.
-@ECHO.
-@timeout /t 10
-@ECHO.
-CLS
-@ECHO --------------------Initializing web server--------------------
-@ECHO.
-@ECHO.
+ECHO.
+ECHO.
+ECHO --------------------Initializing web server--------------------
+ECHO.
+ECHO.
 set BatchPath="%~dp0"
 start cmd.exe /k "CD %BatchPath%&CD..&CD web&python -m SimpleHTTPServer"
-@ECHO.
-@ECHO.
+ECHO.
+ECHO.
 CLS
-@ECHO --------------------Starting bot--------------------
-@ECHO.
-@ECHO.
+ECHO --------------------Starting bot--------------------
+ECHO.
+ECHO.
 
 
 
@@ -88,9 +79,9 @@ goto:eof
 
 
 :problem
-@ECHO.
-@ECHO. Something went wrong and the bot needed to be restarted. Please investigate the cause.
-@ECHO.
+ECHO.
+ECHO. Something went wrong and the bot needed to be restarted. Please investigate the cause.
+ECHO.
 goto:eof
 
 
