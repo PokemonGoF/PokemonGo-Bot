@@ -991,7 +991,6 @@ Bot answer on command '/info' self stats.
 * `telegram_token` : bot token (getting [there](https://core.telegram.org/bots#6-botfather) - one token per bot)
 * `master` : id (without quotes) of bot owner, who will gett announces.
 * `alert_catch` : dict of rules pokemons catch.
-* `min_interval`: min interval check messages from telegram.
 
 ### Sample configuration
 [[back to top](#table-of-contents)]
@@ -1001,7 +1000,6 @@ Bot answer on command '/info' self stats.
     "config": {
         "enabled": true,
         "master": 12345678,
-        "min_interval": 120,
         "alert_catch": {
           "all": {"operator": "and", "cp": 1300, "iv": 0.95},
           "Snorlax": {"operator": "or", "cp": 900, "iv": 0.9}
