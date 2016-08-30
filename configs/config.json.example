@@ -12,7 +12,6 @@
         "config": {
           "enabled": false,
           "master": null,
-          "min_interval": 120,
           "// old syntax, still supported: alert_catch": ["all"],
           "// new syntax:": {},
           "alert_catch": {
