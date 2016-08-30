@@ -1,312 +1,54 @@
 {
-    "websocket_server": false,
-    "heartbeat_threshold": 10,
-    "enable_social": true,
-    "live_config_update": {
-      "enabled": false,
-      "tasks_only": false
-    },
-    "tasks": [
-      {
-        "//NOTE: This task MUST be placed on the top of task list": {},
-        "type": "RandomAlivePause",
-        "config": {
-          "enabled": false,
-          "min_duration": "00:00:10",
-          "max_duration": "00:10:00",
-          "min_interval": "00:05:00",
-          "max_interval": "01:30:00"
-        }
-      },
-      {
-        "type": "HandleSoftBan"
-      },
-      {
-        "type": "CompleteTutorial",
-        "config": {
-          "enabled": false,
-          "// set a name": "",
-          "nickname": ""
-        }
-      },
-      {
-        "type": "CollectLevelUpReward",
-        "config": {
-          "collect_reward": true,
-          "level_limit": -1
-        }
-      },
-      {
-        "type": "IncubateEggs",
-        "config": {
-          "enabled": true,
-          "infinite_longer_eggs_first": false,
-          "breakable_longer_eggs_first": true,
-          "min_interval": 120
-        }
-      },
-      {
-        "type": "UpdateLiveStats",
-        "config": {
-          "enabled": false,
-          "min_interval": 10,
-          "stats": ["username", "uptime", "stardust_earned", "xp_earned", "xp_per_hour", "stops_visited"],
-          "terminal_log": true,
-          "terminal_title": true
-        }
-      },
-        {
-            "type": "UpdateLiveInventory",
-            "config": {
-                "enabled": false,
-                "min_interval": 120,
-                "show_all_multiple_lines": false,
-                "items": ["pokemon_bag", "space_info", "pokeballs", "greatballs", "ultraballs", "razzberries", "luckyegg"]
-            }
-        },
-      {
-        "type": "ShowBestPokemon",
-        "config": {
-          "enabled": true,
-          "min_interval": 60,
-          "amount": 5,
-          "order_by": "cp",
-          "info_to_show": ["cp", "ivcp", "dps", "hp"]
-        }
-      },
-        {
-            "type": "PokemonOptimizer",
-            "config": {
-                "enabled": true,
-                    "// the 'transfer' parameter activate or deactivate the transfer of pokemons": {},
-                    "// at false, no pokemon is going to be transfered, ever": {},
-                    "// at false, you will still get the log information of what the optimizer": {},
-                    "// would have transfered if the parameter was true": {},
-                "transfer": true,
-                    "// 'transfer_wait_min' and 'transfer_wait_max' are the minimum and maximum": {},
-                    "// time to wait when transferring a pokemon": {},
-                "transfer_wait_min": 3,
-                "transfer_wait_max": 5,
-                    "// the 'evolve' parameter activate or deactivate the evolution of pokemons": {},
-                    "// at false, no pokemon is going to be evolved, ever": {},
-                    "// at false, you will still get the log information of what the": {},
-                    "// optimizer would have evolved if the parameter was true": {},
-                "evolve": true,
-                    "// Time in seconds to wait between two evolve": {},
-                "evolve_time": 20,
-                    "// the 'evolve_for_xp' parameter let you choose if you want the optimizer": {},
-                    "// to use your candies to evolve low quality pokemons in order to maximize your xp": {},
-                    "// at false, the optimizer will still use candies to evolve your best Pokemons": {},
-                "evolve_for_xp": true,
-                    "// the 'evolve_only_with_lucky_egg' parameter let you choose if you want the optimizer": {},
-                    "// to only Evolve Pokemons when a lucky egg is available": {},
-                "evolve_only_with_lucky_egg": false,
-                    "// the 'evolve_count_for_lucky_egg' parameter let you define the minimum": {},
-                    "// number of Pokemons that must evolve before using a lucky egg": {},
-                    "// If that number is not reached, and evolve_only_with_lucky_egg is true, evolution will be skipped": {},
-                    "// If that number is not reached, and evolve_only_with_lucky_egg is false,": {},
-                    "// evolution will be performed without using a lucky egg": {},
-                "evolve_count_for_lucky_egg": 92,
-                    "// the 'may_use_lucky_egg' parameter let you choose if you want the optimizer": {},
-                    "// to use a lucky egg right before evolving Pokemons. At false; the optimizer": {},
-                    "// is free to evolve Pokemons even if you do not have any lucky egg.": {},
-                "may_use_lucky_egg": true,
-                    "// the 'keep' parameter let you define what pokemons you consider are the 'best'. These Pokemons": {},
-                    "// will be keep and evolved. Note that Pokemons are evaluated inside their whole family": {},
-                    "// Multiple way of ranking can be defined. Following configuration let you keep the best iv,": {},
-                    "// the best ncp and the best cp": {},
-                "keep": [
-                    {
-                            "// Following setting let you keep the best iv of the family": {},
-                            "// the 'top' parameter allow you to define how many Pokemons you want to keep": {},
-                            "// at the top of your ranking. If several Pokemons get the same score, they are": {},
-                            "// considered equal. Thus, top=1 might result in keeping more than 1 Pokemon.": {},
-                        "top": 1,
-                            "// the 'evolve' parameter let you choose if you want to evolve the Pokemons you keep": {},
-                        "evolve": true,
-                            "// the 'sort' parameter define how you want to rank your pokemons": {},
-                            "// Critera are sorted fro, the most important to the least important.": {},
-                            "// Available criteria are:": {},
-                            "// 'iv' = individual value": {},
-                            "// 'ivcp' = iv weigted so that for equal iv, attack > defense > stamina": {},
-                            "// 'cp' = combat power (can be increased with candies)": {},
-                            "// 'cp_exact' = combat power (not rounded)": {},
-                            "// 'ncp' (normalized cp) or 'cp_percent' = ratio cp / max_cp": {},
-                            "// 'iv_attack' = attach component of iv": {},
-                            "// 'iv_defense' = defense component of iv": {},
-                            "// 'iv_stamina' = stamina component of iv": {},
-                            "// 'dps' = raw dps based on the moves of the pokemon": {},
-                            "// 'dps_attack' = average dps when attacking": {},
-                            "// 'attack_perfection' = ratio dps_attack / best_dps_attack. Return same order as 'dps_attack'": {},
-                            "// 'dps_defense' = average dps when defending": {},
-                            "// 'defense_perfection' = ratio dps_defense / best_dps_defense. Return same order as 'dps_defense'": {},
-                            "// 'hp' = current health points": {},
-                            "// 'hp_max' = max health points": {},
-                            "// Note that the more criteria you add to this list, the less likely Pokemons": {},
-                            "// will be equals": {},
-                        "sort": ["iv"]
-                    },
-                    {
-                        "// Following setting let you keep keep the best normalized cp of the family": {},
-                        "// That is the Pokemon with higher CP once fully evolved": {},
-                        "top": 1,
-                        "evolve": true,
-                        "sort": ["ncp"]
-                    },
-                    {
-                        "// Following setting let you keep keep the best cp of the family.": {},
-                        "// But will not evolve it further (in favor of the best ncp)": {},
-                        "// It will only applies to the family of 'Dragonite', 'Arcanine' and 'Muk'": {},
-                        "// Other families are not following this setting": {},
-                        "names": ["Dragonite", "Arcanine", "Muk"],
-                        "top": 1,
-                        "evolve": false,
-                        "sort": ["cp"]
-                    }
-                ]
-            }
-      },
-      {
-        "type": "RecycleItems",
-        "config": {
-          "enabled": true,
-          "min_empty_space": 15,
-          "max_balls_keep": 150,
-          "max_potions_keep": 50,
-          "max_berries_keep": 70,
-          "max_revives_keep": 70,
-          "item_filter": {
-            "Pokeball":       { "keep" : 100 },
-            "Potion":         { "keep" : 10 },
-            "Super Potion":   { "keep" : 20 },
-            "Hyper Potion":   { "keep" : 30 },
-            "Revive":         { "keep" : 30 },
-            "Razz Berry":     { "keep" : 100 }
-          },
-          "recycle_wait_min": 3,
-          "recycle_wait_max": 5,
-          "recycle_force": true,
-          "recycle_force_min": "00:01:00",
-          "recycle_force_max": "00:05:00"
-        }
-      },
-        {
-          "type": "CatchPokemon",
-          "config": {
-            "enabled": true,
-            "catch_visible_pokemon": true,
-            "catch_lured_pokemon": true,
-            "min_ultraball_to_keep": 5,
-            "berry_threshold": 0.35,
-            "vip_berry_threshold": 0.9,
-            "treat_unseen_as_vip": true,
-            "daily_catch_limit": 800,
-            "catch_throw_parameters": {
-              "excellent_rate": 0.1,
-              "great_rate": 0.5,
-              "nice_rate": 0.3,
-              "normal_rate": 0.1,
-              "spin_success_rate" : 0.6
-            },
-            "catch_simulation": {
-              "flee_count": 3,
-              "flee_duration": 2,
-              "catch_wait_min": 3,
-              "catch_wait_max": 6,
-              "berry_wait_min": 3,
-              "berry_wait_max": 5,
-              "changeball_wait_min": 3,
-              "changeball_wait_max": 5,
-              "newtodex_wait_min": 20, 
-              "newtodex_wait_max": 30
-            }
-          }
-        },
-      {
-        "type": "SpinFort",
-        "config": {
-          "enabled": true,
-          "spin_wait_min": 3,
-          "spin_wait_max": 5
-        }
-      },
-      { "type": "UpdateWebInventory",
-        "config": {
-          "enabled": true
-        }
-      },
-      {
-        "type": "MoveToFort",
-        "config": {
-            "enabled": true,
-            "lure_attraction": true,
-            "lure_max_distance": 2000,
-            "log_interval": 5
-        }
-      },
-      {
-        "type": "FollowSpiral",
-        "config": {
-          "enabled": true,
-          "diameter": 4,
-          "step_size": 70
-        }
-      }
-    ],
-    "map_object_cache_time": 5,
-    "forts": {
-      "avoid_circles": true,
-      "max_circle_size": 50,
-      "cache_recent_forts": true
-    },
-    "pokemon_bag": {
-      "// if 'show_at_start' is true, it will log all the pokemons in the bag (not eggs) at bot start": {},
-      "show_at_start": true,
-      "// if 'show_count' is true, it will show the amount of each pokemon (minimum 1)": {},
-      "show_count": false,
-      "// if 'show_candies' is true, it will show the amount of candies for each pokemon": {},
-      "show_candies": false,
-      "// 'pokemon_info' parameter define which info to show for each pokemon": {},
-      "// the available options are": {},
-      "// ['cp', 'iv_ads', 'iv_pct', 'ivcp', 'ncp', 'level', 'hp', 'moveset', 'dps']": {},
-      "pokemon_info": ["cp", "iv_pct"]
-    },
-    "walk_max": 4.16,
-    "walk_min": 2.16,
-    "alt_min": 500,
-    "alt_max": 1000,
-    "sleep_schedule": [
-      {
-        "time": "12:00",
-        "duration": "5:30",
-        "time_random_offset": "00:30",
-        "duration_random_offset": "00:30",
-        "wake_up_at_location": ""
-      },
-      {
-        "time": "17:45",
-        "duration": "3:00",
-        "time_random_offset": "01:00",
-        "duration_random_offset": "00:30",
-        "wake_up_at_location": ""
-      }
-    ],
-    "debug": false,
-    "test": false,
-    "walker_limit_output": false,
-    "health_record": true,
-    "location_cache": true,
-    "distance_unit": "km",
-    "reconnecting_timeout": 15,
-    "logging": {
-      "color": true,
-      "show_datetime": true,
-      "show_process_name": true,
-      "show_log_level": true
-    },
-    "catch": {
-        "any": {
-            "always_catch": true
-        }
-    }
+	"tasks": [
+		{
+			"type": "PokemonOptimizer",
+			"config": {
+				"enabled": true,
+				"transfer": true,
+				"transfer_wait_min": 3,
+				"transfer_wait_max": 5,
+				"evolve": true,
+				"evolve_time": 25,
+				"evolve_for_xp": true,
+				"evolve_only_with_lucky_egg": false,
+				"evolve_count_for_lucky_egg": 80,
+				"may_use_lucky_egg": true,
+				"upgrade": true,
+				"groups": {
+					"gym": ["Dragonite", "Snorlax", "Lapras", "Arcanine"]
+				},
+				"keep": [
+					{
+						"mode": "by_family",
+						"top": 1,
+						"sort": [{"iv": 0.9}],
+						"evolve": true,
+						"upgrade": false
+					},
+					{
+						"mode": "by_family",
+						"top": 1,
+						"sort": [{"ncp": "0.9"}],
+						"evolve": true,
+						"upgrade": false
+					},
+					{
+						"mode": "by_family",
+						"top": 1,
+						"sort": ["cp"],
+						"evolve": false,
+						"upgrade": false
+					},
+					{
+						"mode": "by_family",
+						"names": ["gym"],
+						"top": 3,
+						"sort": [{"iv": 0.9}, {"ncp": "0.9"}],
+						"evolve": true,
+						"upgrade": true
+					}
+				]
+			}
+		}
+	]
 }

@@ -36,13 +36,15 @@ from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.datastore import _init_database, Datastore
 from worker_result import WorkerResult
 from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
-from inventory import init_inventory
+from inventory import init_inventory, player
 from sys import platform as _platform
 from pgoapi.protos.POGOProtos.Enums import BadgeType_pb2
 import struct
 
+
 class FileIOException(Exception):
     pass
+
 
 class PokemonGoBot(Datastore):
     @property
@@ -121,7 +123,9 @@ class PokemonGoBot(Datastore):
         self._setup_event_system()
         self._setup_logging()
         self.sleep_schedule = SleepSchedule(self, self.config.sleep_schedule) if self.config.sleep_schedule else None
-        if self.sleep_schedule: self.sleep_schedule.work()
+        if self.sleep_schedule:
+            self.sleep_schedule.work()
+
         self._setup_api()
         self._load_recent_forts()
         init_inventory(self)
@@ -186,7 +190,7 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event('set_start_location')
         self.event_manager.register_event('load_cached_location')
         self.event_manager.register_event('location_cache_ignored')
-        
+
         self.event_manager.register_event('debug')
 
         #  ignore candy above threshold
@@ -198,11 +202,6 @@ class PokemonGoBot(Datastore):
                 'threshold'
             )
         )
-
-
-
-
-
         self.event_manager.register_event(
             'position_update',
             parameters=(
@@ -227,7 +226,6 @@ class PokemonGoBot(Datastore):
             )
         )
 
-
         self.event_manager.register_event('location_cache_error')
 
         self.event_manager.register_event('bot_start')
@@ -237,7 +235,10 @@ class PokemonGoBot(Datastore):
         # sleep stuff
         self.event_manager.register_event(
             'next_sleep',
-            parameters=('time',)
+            parameters=(
+                'time',
+                'duration'
+            )
         )
         self.event_manager.register_event(
             'bot_sleep',
@@ -436,6 +437,10 @@ class PokemonGoBot(Datastore):
             'pokemon_evolved',
             parameters=('pokemon', 'iv', 'cp', 'xp', 'candy')
         )
+        self.event_manager.register_event(
+            'pokemon_upgraded',
+            parameters=('pokemon', 'iv', 'cp', 'candy', 'stardust')
+        )
         self.event_manager.register_event('skip_evolve')
         self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
         self.event_manager.register_event('vip_pokemon')
@@ -601,9 +606,6 @@ class PokemonGoBot(Datastore):
             'move_to_map_pokemon',
             parameters=('message')
         )
-
-
-
         # cached recent_forts
         self.event_manager.register_event('loaded_cached_forts')
         self.event_manager.register_event('cached_fort')
@@ -636,7 +638,8 @@ class PokemonGoBot(Datastore):
         self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
 
-        if self.sleep_schedule: self.sleep_schedule.work()
+        if self.sleep_schedule:
+            self.sleep_schedule.work()
 
         now = time.time() * 1000
 
@@ -774,7 +777,7 @@ class PokemonGoBot(Datastore):
         if self.config.logging:
             logging_format = '%(message)s'
             logging_format_options = ''
-            
+
             if ('show_log_level' not in self.config.logging) or self.config.logging['show_log_level']:
                 logging_format = '[%(levelname)s] ' + logging_format
             if ('show_process_name' not in self.config.logging) or self.config.logging['show_process_name']:
@@ -782,7 +785,7 @@ class PokemonGoBot(Datastore):
             if ('show_datetime' not in self.config.logging) or self.config.logging['show_datetime']:
                 logging_format = '[%(asctime)s] ' + logging_format
                 logging_format_options = '%Y-%m-%d %H:%M:%S'
-                
+
             formatter = Formatter(logging_format,logging_format_options)
             for handler in logging.root.handlers[:]:
                 handler.setFormatter(formatter)
@@ -828,7 +831,7 @@ class PokemonGoBot(Datastore):
             formatted="Login procedure started."
         )
         lat, lng = self.position[0:2]
-        self.api.set_position(lat, lng, self.alt) # or should the alt kept to zero?
+        self.api.set_position(lat, lng, self.alt)  # or should the alt kept to zero?
 
         while not self.api.login(
             self.config.auth_service,
@@ -1098,7 +1101,7 @@ class PokemonGoBot(Datastore):
                     level='debug',
                     formatted='Loading cached location...'
                 )
-                
+
                 json_file = os.path.join(_base_dir, 'data', 'last-location-%s.json' % self.config.username)
 
                 try:
@@ -1106,7 +1109,7 @@ class PokemonGoBot(Datastore):
                         location_json = json.load(infile)
                 except (IOError, ValueError):
                     # Unable to read json file.
-                    # File may be corrupt. Create a new one.            
+                    # File may be corrupt. Create a new one.
                     location_json = []
                 except:
                     raise FileIOException("Unexpected error reading from {}".web_inventory)
@@ -1220,7 +1223,7 @@ class PokemonGoBot(Datastore):
             responses = request.call()
 
             if responses['responses']['GET_PLAYER']['success'] == True:
-                #we get the player_data anyway, might as well store it
+                # we get the player_data anyway, might as well store it
                 self._player = responses['responses']['GET_PLAYER']['player_data']
                 self.event_manager.emit(
                     'player_data',
@@ -1230,7 +1233,7 @@ class PokemonGoBot(Datastore):
                     data={'player_data': self._player}
                 )
             if responses['responses']['CHECK_AWARDED_BADGES']['success'] == True:
-                #store awarded_badges reponse to be used in a task or part of heartbeat
+                # store awarded_badges reponse to be used in a task or part of heartbeat
                 self._awarded_badges = responses['responses']['CHECK_AWARDED_BADGES']
 
             if self._awarded_badges.has_key('awarded_badges'):
@@ -1245,9 +1248,11 @@ class PokemonGoBot(Datastore):
                         level='info',
                         formatted='awarded badge: {badge}, lvl {level}',
                         data={'badge': badgename,
-                              'level' : badgelevel }
+                              'level': badgelevel}
                     )
-                    human_behaviour.action_delay(3,10)
+                    human_behaviour.action_delay(3, 10)
+                    
+            inventory.refresh_inventory()
 
         try:
             self.web_update_queue.put_nowait(True)  # do this outside of thread every tick
@@ -1260,34 +1265,21 @@ class PokemonGoBot(Datastore):
             self.update_web_location()
 
     def display_player_info(self):
-            inventory_items = self.api.get_inventory()
-            inventory_items = inventory_items['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
-            player_stats = next((x["inventory_item_data"]["player_stats"]
-                     for x in inventory_items
-                     if x.get("inventory_item_data", {}).get("player_stats", {})),
-                    None)
+            player_stats = player()
 
             if player_stats:
+                nextlvlxp = (int(player_stats.next_level_xp) - int(player_stats.exp))
+                self.logger.info(
+                    'Level: {}'.format(player_stats.level) +
+                    ' (Next Level: {} XP)'.format(nextlvlxp) +
+                    ' (Total: {} XP)'
+                    ''.format(player_stats.exp))
 
-                nextlvlxp = (int(player_stats.get('next_level_xp', 0)) - int(player_stats.get('experience', 0)))
-
-                if 'level' in player_stats and 'experience' in player_stats:
-                    self.logger.info(
-                        'Level: {level}'.format(
-                            **player_stats) +
-                        ' (Next Level: {} XP)'.format(
-                            nextlvlxp) +
-                        ' (Total: {experience} XP)'
-                        ''.format(**player_stats))
-
-                if 'pokemons_captured' in player_stats and 'poke_stop_visits' in player_stats:
-                    self.logger.info(
-                        'Pokemon Captured: '
-                        '{pokemons_captured}'.format(
-                            **player_stats) +
-                        ' | Pokestops Visited: '
-                        '{poke_stop_visits}'.format(
-                            **player_stats))
+                self.logger.info(
+                    'Pokemon Captured: '
+                    '{}'.format(player_stats.pokemons_captured) +
+                    ' | Pokestops Visited: '
+                    '{}'.format(player_stats.poke_stop_visits))
 
     def get_forts(self, order_by_distance=False):
         forts = [fort
@@ -1322,12 +1314,18 @@ class PokemonGoBot(Datastore):
         if not self.config.forts_cache_recent_forts:
             return
 
-
         cached_forts_path = os.path.join(_base_dir, 'data', 'recent-forts-%s.json' % self.config.username)
         try:
             # load the cached recent forts
-            with open(cached_forts_path) as f:
-                cached_recent_forts = json.load(f)
+            cached_recent_forts = []
+            try:
+                with open(cached_forts_path) as f:
+                    cached_recent_forts = json.load(f)
+            except (IOError, ValueError) as e:
+                self.bot.logger.info('[x] Error while opening cached forts: %s' % e, 'red')
+                pass
+            except:
+                raise FileIOException("Unexpected error opening {}".cached_forts_path)
 
             num_cached_recent_forts = len(cached_recent_forts)
             num_recent_forts = len(self.recent_forts)
