@@ -124,7 +124,8 @@ class IncubateEggs(BaseTask):
                         egg["used"] = True
 
     def _check_inventory(self, lookup_ids=[]):
-        inv = {}
+        if lookup_ids:
+            inventory.refresh_inventory()
         matched_pokemon = []
         temp_eggs = []
         temp_used_incubators = []
@@ -212,21 +213,18 @@ class IncubateEggs(BaseTask):
                     pokemon['name'] = "error"
         except:
             pokemon_data = [{"name":"error", "cp":"error", "iv":"error"}]
-        try:
-            if not pokemon_ids or pokemon_data[0]['name'] == "error":
-                self.emit_event(
-                    'egg_hatched',
-                    data={
-                        'pokemon': 'error',
-                        'cp': 'error',
-                        'iv': 'error',
-                        'exp': 'error',
-                        'stardust': 'error',
-                        'candy': 'error',
-                    }
-                )
-                return
-        except IndexError:
+        if not pokemon_ids or pokemon_data[0]['name'] == "error":
+            self.emit_event(
+                'egg_hatched',
+                data={
+                    'pokemon': 'error',
+                    'cp': 'error',
+                    'iv': 'error',
+                    'exp': 'error',
+                    'stardust': 'error',
+                    'candy': 'error',
+                }
+            )
             return
         for i in range(len(pokemon_data)):
             msg = "Egg hatched with a {pokemon} (CP {cp} - IV {iv}), {exp} exp, {stardust} stardust and {candy} candies."
