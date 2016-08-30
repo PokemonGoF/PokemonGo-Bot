@@ -301,7 +301,7 @@ class MoveToMapPokemon(BaseTask):
         if self.bot.config.enable_social:
             if self.config['snipe']:
                 self.by_pass_times = self.by_pass_times + 1
-                if self.by_pass_times < self.config.get('skip_rounds', 5):
+                if self.by_pass_times < self.config.get('skip_rounds', 30):
                     if self.config.get('debug', False):
                         self._emit_log("Skipping pass {}".format(self.by_pass_times))
                     return WorkerResult.SUCCESS
