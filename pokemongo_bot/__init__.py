@@ -1244,6 +1244,8 @@ class PokemonGoBot(Datastore):
                               'level': badgelevel}
                     )
                     human_behaviour.action_delay(3, 10)
+                    
+            inventory.refresh_inventory()
 
         try:
             self.web_update_queue.put_nowait(True)  # do this outside of thread every tick

@@ -95,6 +95,7 @@ class Player(_BaseInventoryComponent):
         self.pokemons_captured = None
         self.poke_stop_visits = None
         self.last_lvl_up_reward = time.time()  # ts of last lvl_up_reward api call
+        self.player_stats = None
         super(_BaseInventoryComponent, self).__init__()
 
     @property
@@ -123,6 +124,9 @@ class Player(_BaseInventoryComponent):
 
         self._exp = value
 
+    def refresh(self,inventory):
+        self.player_stats = self.retrieve_data(inventory)
+        
     def parse(self, item):
         self.exp = item['experience']
         self.level = item['level']
@@ -138,7 +142,6 @@ class Player(_BaseInventoryComponent):
                 item = data[self.TYPE]
                 ret = item
                 self.parse(item)
-
         return ret
 
 
@@ -1170,7 +1173,7 @@ class Inventory(object):
         self.candy = Candies()
         self.items = Items()
         self.pokemons = Pokemons()
-        self.player = Player(bot=self.bot)  # include inventory inside Player?
+        self.player = Player(self.bot)  # include inventory inside Player?
         self.refresh()
         self.item_inventory_size = None
         self.pokemon_inventory_size = None
@@ -1202,23 +1205,7 @@ class Inventory(object):
         if not os.path.exists(web_inventory):
             self.init_inventory_outfile()
 
-        try:
-            with open(web_inventory, "r") as infile:
-                json_inventory = json.load(infile)
-        except (IOError, ValueError):
-            # Unable to read json from web inventory
-            # File may be corrupt. Create a new one.
-            self.bot.logger.info('[x] Error while opening inventory file for read: %s' % e, 'red')
-            json_inventory = []
-        except:
-            raise FileIOException("Unexpected error reading from {}".web_inventory)
-
-        json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("pokedex_entry", None)]
-        json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("candy", None)]
-        json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("item", None)]
-        json_inventory = [x for x in json_inventory if not x.get("inventory_item_data", {}).get("pokemon_data", None)]
-
-        json_inventory = json_inventory + self.jsonify_inventory()
+        json_inventory = self.jsonify_inventory()
 
         try:
             with open(web_inventory, "w") as outfile:
@@ -1231,7 +1218,9 @@ class Inventory(object):
 
     def jsonify_inventory(self):
         json_inventory = []
-
+        
+        json_inventory.append({"inventory_item_data": {"player_stats": self.player.player_stats}})
+        
         for pokedex in self.pokedex.all():
             json_inventory.append({"inventory_item_data": {"pokedex_entry": pokedex}})
 
@@ -1344,7 +1333,9 @@ def refresh_inventory(data=None):
     """
     _inventory.refresh(data)
 
-
+def jsonify_inventory():
+    return _inventory.jsonify_inventory()
+    
 def update_web_inventory():
     _inventory.update_web_inventory()
 
