@@ -120,9 +120,18 @@
         "type": "EvolvePokemon",
         "config": {
           "enabled": false,
-          "//evolve all except Zubat and Rattata": "",
-          "//evolve_all": "-Zubat,-Rattata",
-          "evolve_all": "none",
+            
+            "// evolve only pidgey and drowzee": "",
+            "// evolve_list": "pidgey, drowzee",
+            "// donot_evolve_list": "none",
+            
+            "// evolve all but pidgey and drowzee": "",
+            "// evolve_list": "all",
+            "// donot_evolve_list": "pidgey, drowzee",
+            
+            "evolve_list": "all",
+            "donot_evolve_list": "none",
+            
           "first_evolve_by": "cp",
           "evolve_above_cp": 500,
           "evolve_above_iv": 0.8,
@@ -194,7 +203,8 @@
         "config": {
           "enabled": true,
           "spin_wait_min": 3,
-          "spin_wait_max": 5
+          "spin_wait_max": 5,
+          "daily_spin_limit": 1900
         }
       },
       { "type": "UpdateWebInventory",
