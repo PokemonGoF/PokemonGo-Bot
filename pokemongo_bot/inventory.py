@@ -126,7 +126,7 @@ class Player(_BaseInventoryComponent):
 
     def refresh(self,inventory):
         self.player_stats = self.retrieve_data(inventory)
-        
+
     def parse(self, item):
         if not item:
             item = {}
@@ -1225,9 +1225,9 @@ class Inventory(object):
 
     def jsonify_inventory(self):
         json_inventory = []
-        
+
         json_inventory.append({"inventory_item_data": {"player_stats": self.player.player_stats}})
-        
+
         for pokedex in self.pokedex.all():
             json_inventory.append({"inventory_item_data": {"pokedex_entry": pokedex}})
 
@@ -1341,11 +1341,18 @@ def refresh_inventory(data=None):
     :return: Nothing.
     :rtype: None
     """
-    _inventory.refresh(data)
+    try:
+        _inventory.refresh(data)
+    except AttributeError:
+        print '_inventory was not initialized'
 
 def jsonify_inventory():
-    return _inventory.jsonify_inventory()
-    
+    try:
+        return _inventory.jsonify_inventory()
+    except AttributeError:
+        print '_inventory was not initialized'
+        return []
+
 def update_web_inventory():
     _inventory.update_web_inventory()
 

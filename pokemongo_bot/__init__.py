@@ -1251,7 +1251,7 @@ class PokemonGoBot(Datastore):
                               'level': badgelevel}
                     )
                     human_behaviour.action_delay(3, 10)
-                    
+
             inventory.refresh_inventory()
 
         try:
@@ -1322,7 +1322,7 @@ class PokemonGoBot(Datastore):
                 with open(cached_forts_path) as f:
                     cached_recent_forts = json.load(f)
             except (IOError, ValueError) as e:
-                self.bot.logger.info('[x] Error while opening cached forts: %s' % e, 'red')
+                self.logger.info('[x] Error while opening cached forts: %s' % e, 'red')
                 pass
             except:
                 raise FileIOException("Unexpected error opening {}".cached_forts_path)
