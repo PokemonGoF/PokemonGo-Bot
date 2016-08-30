@@ -130,17 +130,10 @@ class IncubateEggs(BaseTask):
         temp_used_incubators = []
         temp_ready_breakable_incubators = []
         temp_ready_infinite_incubators = []
-        inv = reduce(
-            dict.__getitem__,
-            ["responses", "GET_INVENTORY", "inventory_delta", "inventory_items"],
-            inventory.jsonify_inventory()
-        )
+        inv = inventory.jsonify_inventory()
         for inv_data in inv:
             inv_data = inv_data.get("inventory_item_data", {})
             if "egg_incubators" in inv_data:
-                temp_used_incubators = []
-                temp_ready_breakable_incubators = []
-                temp_ready_infinite_incubators = []
                 incubators = inv_data.get("egg_incubators", {}).get("egg_incubator",[])
                 if isinstance(incubators, basestring):  # checking for old response
                     incubators = [incubators]
