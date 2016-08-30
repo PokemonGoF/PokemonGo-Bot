@@ -235,7 +235,10 @@ class PokemonGoBot(Datastore):
         # sleep stuff
         self.event_manager.register_event(
             'next_sleep',
-            parameters=('time',)
+            parameters=(
+                'time',
+                'duration'
+            )
         )
         self.event_manager.register_event(
             'bot_sleep',
