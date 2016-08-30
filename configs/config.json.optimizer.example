@@ -13,34 +13,39 @@
 				"evolve_only_with_lucky_egg": false,
 				"evolve_count_for_lucky_egg": 80,
 				"may_use_lucky_egg": true,
+				"upgrade": true,
 				"groups": {
-					"gym": ["Dragonite", "Snorlax"]
+					"gym": ["Dragonite", "Snorlax", "Lapras", "Arcanine"]
 				},
 				"keep": [
 					{
 						"mode": "by_family",
 						"top": 1,
 						"sort": [{"iv": 0.9}],
-						"evolve": true
+						"evolve": true,
+						"upgrade": false
 					},
 					{
 						"mode": "by_family",
 						"top": 1,
 						"sort": [{"ncp": "0.9"}],
-						"evolve": true
+						"evolve": true,
+						"upgrade": false
 					},
 					{
 						"mode": "by_family",
 						"top": 1,
 						"sort": ["cp"],
-						"evolve": false
+						"evolve": false,
+						"upgrade": false
 					},
 					{
-						"mode": "by_pokemon",
+						"mode": "by_family",
 						"names": ["gym"],
-						"top": 5,
-						"sort": ["cp"],
-						"evolve": false
+						"top": 3,
+						"sort": [{"iv": 0.9}, {"ncp": "0.9"}],
+						"evolve": true,
+						"upgrade": true
 					}
 				]
 			}

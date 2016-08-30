@@ -162,7 +162,7 @@ class InventoryTest(unittest.TestCase):
         max_cpm = l2c.cp_multiplier_for(l2c.MAX_LEVEL)
         self.assertEqual(l2c.MAX_LEVEL, 40)
         self.assertEqual(l2c.MAX_CPM, max_cpm)
-        self.assertEqual(len(l2c.STATIC_DATA), 79)
+        self.assertEqual(len(l2c.STATIC_DATA), 80)
 
         self.assertEqual(l2c.cp_multiplier_for("1"), 0.094)
         self.assertEqual(l2c.cp_multiplier_for(1), 0.094)
