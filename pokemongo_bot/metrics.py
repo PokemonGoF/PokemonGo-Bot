@@ -1,6 +1,7 @@
 import time
 from datetime import timedelta
 from pokemongo_bot.inventory import Pokemons, refresh_inventory
+from pokemongo_bot import inventory
 
 class Metrics(object):
 
@@ -26,7 +27,6 @@ class Metrics(object):
         self.uniq_pokemons_list = None
 
         self.player_stats = []
-        self.inventory_data = []
 
     def runtime(self):
         return timedelta(seconds=round(time.time() - self.start_time))
@@ -104,10 +104,9 @@ class Metrics(object):
         except AttributeError:
             return
 
-        request.get_inventory()
         request.get_player()
         response_dict = request.call()
-        refresh_inventory(response_dict)
+
         try:
             uniq_pokemon_list = set()
 
@@ -115,7 +114,9 @@ class Metrics(object):
             if self.dust['start'] < 0:
                 self.dust['start'] = self.dust['latest']
 
-            for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
+            inventory.refresh_inventory()
+            json_inventory = inventory.jsonify_inventory()
+            for item in json_inventory:
                 if 'inventory_item_data' in item:
                     if 'player_stats' in item['inventory_item_data']:
                         playerdata = item['inventory_item_data']['player_stats']

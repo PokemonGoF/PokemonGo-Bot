@@ -125,7 +125,6 @@ class IncubateEggs(BaseTask):
 
     def _check_inventory(self, lookup_ids=[]):
         inv = {}
-        response_dict = self.bot.api.get_inventory()
         matched_pokemon = []
         temp_eggs = []
         temp_used_incubators = []
@@ -134,7 +133,7 @@ class IncubateEggs(BaseTask):
         inv = reduce(
             dict.__getitem__,
             ["responses", "GET_INVENTORY", "inventory_delta", "inventory_items"],
-            response_dict
+            inventory.jsonify_inventory()
         )
         for inv_data in inv:
             inv_data = inv_data.get("inventory_item_data", {})
