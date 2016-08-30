@@ -1,26 +1,26 @@
 # PokemonGo-Bot
-PokemonGo bot is a project created by the [PokemonGoF](https://github.com/PokemonGoF) team.
+[PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot) is a project created by the [PokemonGoF](https://github.com/PokemonGoF) team.
 
 ## Table of Contents
 - [Installation](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/installation.md)
 - [Documentation](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/)
 - [Support](#support)
- - [help](#configuration-issueshelp)
- - [bugs](#bugs--issues)
- - [Feature request](#feature-requests)
+ - [Help](#configuration-issueshelp)
+ - [Bugs](#bugs--issues)
+ - [Feature Requests](#feature-requests)
  - [Pull Requests](#pull-requests)
 - [Features](#features)
 - [Credits](#credits)
 
-The project is currently setup in two main branches. 
-- `dev` also known as `beta` - This is where the latest features are, but you may also experience some issues with stability/crashes
-- `master` also known as `stable` - The bot 'should' be stable on this branch, and is generally well tested
+The project is currently setup in two main branches:
+- `dev` also known as `beta` - This is where the latest features are, but you may also experience some issues with stability/crashes.
+- `master` also known as `stable` - The bot 'should' be stable on this branch, and is generally well tested.
 
 ## Support
 ### Configuration issues/help
 If you need any help please don't create an issue as we have a great community on Slack. You can count on the community in [#help](https://pokemongo-bot.slack.com/messages/help/) channel.
- - [Click here to signup (first time only)](https://pokemongo-bot.herokuapp.com) 
- - [Join if you're already a member](https://pokemongo-bot.slack.com/messages/general/). 
+ - [Click here to signup (first time only)](https://pokemongo-bot.herokuapp.com)
+ - [Join here if you're already a member](https://pokemongo-bot.slack.com/messages/general/)
 
 ###[Bugs / Issues](https://github.com/PokemonGoF/PokemonGo-Bot/issues?q=is%3Aissue+sort%3Aupdated-desc)
 If you discover a bug in the bot, please [search our issue tracker](https://github.com/PokemonGoF/PokemonGo-Bot/issues?q=is%3Aissue+sort%3Aupdated-desc) first. If it hasn't been reported, please [create a new issue](https://github.com/PokemonGoF/PokemonGo-Bot/issues/new) and ensure you follow the template guide so that our team can assist you as quickly as possible.
@@ -51,10 +51,10 @@ If you'd like to make your own changes, make sure you follow the pull request te
 - [ ] Use candy
 
 ## Gym Battles
-This bot takes a strong stance against automating gym battles. Botting gyms will have a negative effect on most players and thus the game as a whole. We will thus never accept contributions or changes containing code specific for gym battles.
+[PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot) takes a strong stance against automating gym battles. Botting gyms will have a negative effect on most players and thus the game as a whole. We will thus never accept contributions or changes containing code specific for gym battles.
 
 ## Analytics
-This bot is very popular and has a vibrant community. Because of that, it has become very difficult for us to know how the bot is used and what errors people hit. By capturing small amounts of data, we can prioritize our work better such as fixing errors that happen to a large percentage of our user base, not just a vocal minority.
+[PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot) is very popular and has a vibrant community. Because of that, it has become very difficult for us to know how the bot is used and what errors people hit. By capturing small amounts of data, we can prioritize our work better such as fixing errors that happen to a large percentage of our user base, not just a vocal minority.
 
 Our goal is to help inform our decisions by capturing data that helps us get aggregate usage and error reports, not personal information. To view the code that handles analytics in our master branch, you can use this [search link](https://github.com/PokemonGoF/PokemonGo-Bot/search?utf8=%E2%9C%93&q=BotEvent).
 
