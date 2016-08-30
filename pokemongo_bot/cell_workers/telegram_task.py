@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import datetime
 import telegram
 import os
 import logging
@@ -17,7 +18,9 @@ class TelegramTask(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
     update_id = None
     tbot = None
-
+    min_interval=None
+    next_job=None
+    
     def initialize(self):
         if not self.enabled:
             return
@@ -35,10 +38,14 @@ class TelegramTask(BaseTask):
             self.update_id = self.tbot.getUpdates()[0].update_id
         except IndexError:
             self.update_id = None
-
+        self.min_interval=self.config.get('min_interval',120)
+        self.next_job=datetime.now() + timedelta(seconds=self.min_interval)
     def work(self):
         if not self.enabled:
             return
+        if datetime.now()<self.next_job:
+            return
+        self.next_job=datetime.now() + timedelta(seconds=self.min_interval)
         for update in self.tbot.getUpdates(offset=self.update_id, timeout=10):
             self.update_id = update.update_id+1
             if update.message:
