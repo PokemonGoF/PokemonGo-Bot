@@ -101,9 +101,10 @@ class SleepSchedule(object):
         self.bot.event_manager.emit(
             'next_sleep',
             sender=self,
-            formatted="Next sleep at {time}",
+            formatted="Next sleep at {time}, for a duration of {duration}",
             data={
-                'time': str(self._next_sleep)
+                'time': str(self._next_sleep.strftime("%H:%M:%S")),
+                'duration': str(timedelta(seconds=self._next_duration))
             }
         )
 
