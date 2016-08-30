@@ -102,7 +102,7 @@ class TelegramTask(BaseTask):
         try:
             with open(web_inventory, "r") as infile:
                 json_inventory = json.load(infile)
-        except ValueError:
+        except ValueError as e:
             # Unable to read json from web inventory
             # File may be corrupt. Create a new one.  
             self.bot.logger.info('[x] Error while opening inventory file for read: %s' % e)
