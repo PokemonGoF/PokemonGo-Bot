@@ -128,11 +128,14 @@ class Player(_BaseInventoryComponent):
         self.player_stats = self.retrieve_data(inventory)
         
     def parse(self, item):
-        self.exp = item['experience']
-        self.level = item['level']
-        self.next_level_xp = item['next_level_xp']
-        self.pokemons_captured = item['pokemons_captured']
-        self.poke_stop_visits = item['poke_stop_visits']
+        if not item:
+            item = {}
+
+        self.exp = item.get('experience', 0)
+        self.level = item.get('level', 0)
+        self.next_level_xp = item.get('next_level_xp', 0)
+        self.pokemons_captured = item.get('pokemons_captured', 0)
+        self.poke_stop_visits = item.get('poke_stop_visits', 0)
 
     def retrieve_data(self, inventory):
         ret = {}
@@ -1211,7 +1214,7 @@ class Inventory(object):
         try:
             with open(web_inventory, "w") as outfile:
                 json.dump(json_inventory, outfile)
-        except (IOError, ValueError):
+        except (IOError, ValueError) as e:
             self.bot.logger.info('[x] Error while opening inventory file for write: %s' % e, 'red')
             pass
         except:

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+
+from datetime import datetime
+from datetime import timedelta
 import os
-import logging
 import json
 import telegram
 from pokemongo_bot.base_task import BaseTask
@@ -14,6 +16,8 @@ class TelegramTask(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
     update_id = None
     tbot = None
+    min_interval = None
+    next_job = None
 
     def initialize(self):
         if not self.enabled:
@@ -33,10 +37,14 @@ class TelegramTask(BaseTask):
             self.update_id = self.tbot.getUpdates()[0].update_id
         except IndexError:
             self.update_id = None
-
+        self.min_interval = self.config.get('min_interval', 120)
+        self.next_job = datetime.now() + timedelta(seconds=self.min_interval)
     def work(self):
         if not self.enabled:
             return
+        if datetime.now() < self.next_job:
+            return
+        self.next_job = datetime.now() + timedelta(seconds=self.min_interval)
         for update in self.tbot.getUpdates(offset=self.update_id, timeout=10):
             self.update_id = update.update_id+1
             if update.message:
@@ -99,10 +107,10 @@ class TelegramTask(BaseTask):
         try:
             with open(web_inventory, "r") as infile:
                 json_inventory = json.load(infile)
-        except ValueError:
+        except ValueError as exception:
             # Unable to read json from web inventory
             # File may be corrupt. Create a new one.
-            self.bot.logger.info('[x] Error while opening inventory file for read: %s' % ValueError)
+            self.bot.logger.info('[x] Error while opening inventory file for read: %s' % exception)
             json_inventory = []
         except:
             raise FileIOException("Unexpected error reading from {}".format(web_inventory))
