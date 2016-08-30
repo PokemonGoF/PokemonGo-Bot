@@ -1317,7 +1317,6 @@ class PokemonGoBot(Datastore):
         cached_forts_path = os.path.join(_base_dir, 'data', 'recent-forts-%s.json' % self.config.username)
         try:
             # load the cached recent forts
-            
             cached_recent_forts = []
             try:
                 with open(cached_forts_path) as f:
