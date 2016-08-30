@@ -213,7 +213,7 @@ class IncubateEggs(BaseTask):
                     pokemon['name'] = "error"
         except:
             pokemon_data = [{"name":"error", "cp":"error", "iv":"error"}]
-        if not pokemon_ids or pokemon_data[0]['name'] == "error":
+        if not pokemon_ids or not pokemon_data or pokemon_data[0]['name'] == "error":
             self.emit_event(
                 'egg_hatched',
                 data={
