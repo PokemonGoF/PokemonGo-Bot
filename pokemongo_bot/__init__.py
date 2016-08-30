@@ -1313,8 +1313,16 @@ class PokemonGoBot(Datastore):
         cached_forts_path = os.path.join(_base_dir, 'data', 'recent-forts-%s.json' % self.config.username)
         try:
             # load the cached recent forts
-            with open(cached_forts_path) as f:
-                cached_recent_forts = json.load(f)
+            
+            cached_recent_forts = []
+            try:
+                with open(cached_forts_path) as f:
+                    cached_recent_forts = json.load(f)
+            except (IOError, ValueError) as e:
+                self.bot.logger.info('[x] Error while opening cached forts: %s' % e, 'red')
+                pass
+            except:
+                raise FileIOException("Unexpected error opening {}".cached_forts_path)
 
             num_cached_recent_forts = len(cached_recent_forts)
             num_recent_forts = len(self.recent_forts)
