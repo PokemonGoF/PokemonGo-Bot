@@ -3,14 +3,14 @@ pokebotpath=$(cd "$(dirname "$0")"; pwd)
 auth=""
 config=""
 if [ ! -z $1 ]; then
-  auth=$1
-else
-  auth="./configs/auth.json"
-fi
-if [ ! -z $2 ]; then
-  config=$2
+  config=$1
 else
   config="./configs/config.json"
+fi
+if [ ! -z $2 ]; then
+  auth=$2
+else
+  auth="./configs/auth.json"
 fi
 cd $pokebotpath
 source bin/activate
