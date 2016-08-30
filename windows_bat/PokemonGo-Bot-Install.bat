@@ -62,10 +62,9 @@ ECHO.>>%log%
 
 :CheckInstallPath
 cls
-@ECHO.--------------------Installation Path--------------------
-@ECHO.
-@ECHO.
-@ECHO.
+call:ech
+ECHO.--------------------Installation Path--------------------
+call:ech
 SET InstallPath=
 SET /p InstallPath= "Choose an installation folder (example: C:/Test/) or press Enter to close: " ||goto:eof
 ECHO.----- Input Path ----->>%log%
@@ -101,37 +100,30 @@ COPY "%PGBotPath%\windows_bat\PokemonGo-Bot-Install.bat" %InstallPath%
 CALL "%InstallPath%PokemonGo-Bot-Install.bat"
 exit.
 ) ELSE (
-@ECHO.Installation Path OK^^! Proceeding^^!
+ECHO.Installation Path OK^^! Proceeding^^!
 )
 ECHO.----- Checking Some Paths ----->>%log%
 ECHO.>>%log%
 ECHO.BatchPath is "%~dp0">>%log%
 ECHO.PokemonGo-Bot Path is "%PGBotPath%">>%log%
 ECHO.>>%log%
-@ECHO.
-@ECHO.
-@ECHO.
-
 
 
 :Menu
 cls
-@ECHO.--------------------PokemonGo-Bot Installer--------------------
-@ECHO.
-@ECHO.
-@ECHO.
+call:ech
+ECHO.--------------------PokemonGo-Bot Installer--------------------
+call:ech
 if "%OS%" == "32-BIT" (
-@ECHO. 1 - Install 32-Bit software
+ECHO. 1 - Install 32-Bit software
 ) ELSE (
-@ECHO. 1 - Install 64-Bit software
+ECHO. 1 - Install 64-Bit software
 )
-@ECHO.
-@ECHO. 2 - Install PokemonGo-Bot Master Version (Stable)
-@ECHO.
-@ECHO. 3 - Install PokemonGo-Bot Development Version (Unstable)
-@ECHO.
-@ECHO.
-@ECHO.
+ECHO.
+ECHO. 2 - Install PokemonGo-Bot Master Version (Stable)
+ECHO.
+ECHO. 3 - Install PokemonGo-Bot Development Version (Unstable)
+call:ech
 
 
 
@@ -152,32 +144,27 @@ ECHO.>>%log%
 ECHO.Choice was "%_ok%" installing "%OS%" software>>%log%
 ECHO.>>%log%
 cls
-@ECHO.--------------------Installation of required software--------------------
-@ECHO.
-IF NOT EXIST %DownPath%\%GitFName86% @ECHO.Downloading Git...
+call:ech
+ECHO.--------------------Installation of required software--------------------
+call:ech
+IF NOT EXIST %DownPath%\%GitFName86% ECHO.Downloading Git...
 IF NOT EXIST %DownPath%\%GitFName86% call:getit %DownPathGit% %GitFName86%
-IF NOT EXIST %DownPath%\%PythonFName86% @ECHO.Downloading Python...
+IF NOT EXIST %DownPath%\%PythonFName86% ECHO.Downloading Python...
 IF NOT EXIST %DownPath%\%PythonFName86% call:getit %DownPathPython% %PythonFName86%
-IF NOT EXIST %DownPath%\%VisualFName% @ECHO.Downloading Visual C++ for Python...
+IF NOT EXIST %DownPath%\%VisualFName% ECHO.Downloading Visual C++ for Python...
 IF NOT EXIST %DownPath%\%VisualFName% call:getit %DownPathVisual% %VisualFName%
-@ECHO.Installing Python...
+ECHO.Installing Python...
 IF EXIST %DownPath%\%PythonFName86% call:installit %PythonFName86% /quiet
-@ECHO.Installing Git...
+ECHO.Installing Git...
 IF EXIST %DownPath%\%GitFName86% call:installit %GitFName86% /SILENT
-@ECHO.Installing Visual C++ for Python...
+ECHO.Installing Visual C++ for Python...
 IF EXIST %DownPath%\%VisualFName% call:installit %VisualFName% /quiet
-@ECHO.
-@ECHO.
-@ECHO.
-@ECHO.Installation of 32-Bit software is finished.
-@ECHO.
-@ECHO.Choose Install PokemonGo-Bot in next screen to complete.
-@ECHO.
-@ECHO.Wait 5 seconds or press any key to continue...
-@ECHO.
-@ECHO.
-@ECHO.
-timeout /t 5 >nul
+call:ech
+ECHO.Installation of 32-Bit software is finished.
+ECHO.
+ECHO.Choose Install PokemonGo-Bot in next screen to complete installation.
+call:ech
+timeout /t 5
 goto:Menu
 
 
@@ -188,32 +175,28 @@ ECHO.>>%log%
 ECHO.Choice was "%_ok%" installing "%OS%" software>>%log%
 ECHO.>>%log%
 cls
-@ECHO.--------------------Installation of required software--------------------
-@ECHO.
-IF NOT EXIST %DownPath%\%GitFName64% @ECHO.Downloading Git...
+call:ech
+ECHO.--------------------Installation of required software--------------------
+call:ech
+IF NOT EXIST %DownPath%\%GitFName64% ECHO.Downloading Git...
 IF NOT EXIST %DownPath%\%GitFName64% call:getit %DownPathGit% %GitFName64%
-IF NOT EXIST %DownPath%\%PythonFName64% @ECHO.Downloading Python...
+IF NOT EXIST %DownPath%\%PythonFName64% ECHO.Downloading Python...
 IF NOT EXIST %DownPath%\%PythonFName64% call:getit %DownPathPython% %PythonFName64%
-IF NOT EXIST %DownPath%\%VisualFName% @ECHO.Downloading Visual C++ for Python...
+IF NOT EXIST %DownPath%\%VisualFName% ECHO.Downloading Visual C++ for Python...
 IF NOT EXIST %DownPath%\%VisualFName% call:getit %DownPathVisual% %VisualFName%
-@ECHO.Installing Python...
+ECHO.Installing Python...
 IF EXIST %DownPath%\%PythonFName64% call:installit %PythonFName64% /quiet
-@ECHO.Installing Git...
+ECHO.Installing Git...
 IF EXIST %DownPath%\%GitFName64% call:installit %GitFName64% /SILENT
-@ECHO.Installing Visual C++ for Python...
+ECHO.Installing Visual C++ for Python...
 IF EXIST %DownPath%\%VisualFName% call:installit %VisualFName% /quiet
-@ECHO.
-@ECHO.
-@ECHO.
-@ECHO.Installation of 64-Bit software is finished.
-@ECHO.
-@ECHO.Choose Install PokemonGo-Bot in next screen to complete.
-@ECHO.
-@ECHO.Wait 5 seconds or press any key to continue...
-@ECHO.
-@ECHO.
-@ECHO.
-timeout /t 5 >nul
+call:ech
+ECHO.Installation of 64-Bit software is finished.
+ECHO.
+ECHO.Choose Install PokemonGo-Bot in next screen to complete installation.
+call:ech
+ECHO.
+timeout /t 5
 goto:Menu
 
 
@@ -243,10 +226,9 @@ ECHO.>>%log%
 ECHO.Choice was "%_ok%" installing Bot>>%log%
 ECHO.>>%log%
 cls
-@ECHO.--------------------Creating Backup--------------------
-@ECHO.
-@ECHO.
-@ECHO.
+call:ech
+ECHO.--------------------Creating Backup--------------------
+call:ech
 ECHO.----- Checking Creating Backup ----->>%log%
 ECHO.>>%log%
 IF EXIST %PGBotPath%\encrypt.so (
@@ -267,6 +249,12 @@ COPY %PGBotPath%\encrypt_64.dll %DownPath%>>%log%
 ) else (
 ECHO.No "%PGBotPath%\encrypt_64.dll">>%log%
 )
+IF EXIST %PGBotPath%\configs\auth.json (
+ECHO.Copying "%PGBotPath%\configs\auth.json" to %DownPath%>>%log%
+COPY %PGBotPath%\configs\auth.json %DownPath%>>%log%
+) else (
+ECHO.No "%PGBotPath%\configs\auth.json">>%log%
+)
 IF EXIST %PGBotPath%\configs\config.json (
 ECHO.Copying "%PGBotPath%\configs\config.json" to %DownPath%>>%log%
 COPY %PGBotPath%\configs\config.json %DownPath%>>%log%
@@ -280,14 +268,12 @@ COPY %PGBotPath%\web\config\userdata.js %DownPath%>>%log%
 ECHO.No "%PGBotPath%\web\config\userdata.js">>%log%
 )
 ECHO.>>%log%
+
 cls
-@ECHO.
-@ECHO.
-@ECHO.
-@ECHO.--------------------Downloading PokemonGo-Bot--------------------
-@ECHO.
-@ECHO.
-@ECHO.
+ECHO.
+call:ech
+ECHO.--------------------Downloading PokemonGo-Bot--------------------
+call:ech
 ECHO. Be patience... We are working hard to download and install the PokemonGo-Bot.
 ECHO.----- Checking Removing Bot Folder ----->>%log%
 ECHO.>>%log%
@@ -319,13 +305,9 @@ ECHO.----- Checking second pip2 install or upgrade ----->>%log%
 ECHO.>>%log%
 pip2 install -r %PGBotPath%\requirements.txt>>%log%
 ECHO.>>%log%
-@ECHO.
-@ECHO.
-@ECHO.
-@ECHO.--------------------Restoring Backup--------------------
-@ECHO.
-@ECHO.
-@ECHO.
+call:ech
+ECHO.--------------------Restoring Backup--------------------
+call:ech
 ECHO.----- Checking Restoring Backup ----->>%log%
 ECHO.>>%log%
 IF EXIST %~dp0encrypt.so (
@@ -345,6 +327,12 @@ ECHO.Copying %~dp0encrypt_64.dll to %PGBotPath%>>%log%
 COPY %~dp0encrypt_64.dll %PGBotPath%>>%log%
 ) else (
 ECHO.No "%~dp0encrypt_64.dll">>%log%
+)
+IF EXIST %~dp0auth.json (
+ECHO.Copying %~dp0auth.json to %PGBotPath%\configs\>>%log%
+COPY %~dp0auth.json %PGBotPath%\configs\>>%log%
+) else (
+ECHO.No "%~dp0auth.json">>%log%
 )
 IF EXIST %~dp0config.json (
 ECHO.Copying %~dp0config.json to %PGBotPath%\configs\>>%log%
@@ -376,6 +364,12 @@ COPY %DownPath%\encrypt_64.dll %PGBotPath%>>%log%
 ) else (
 ECHO.No "%DownPath%\encrypt_64.dll">>%log%
 )
+IF EXIST %DownPath%\auth.json (
+ECHO.Copying %DownPath%\auth.json to %PGBotPath%\configs\>>%log%
+COPY %DownPath%\auth.json %PGBotPath%\configs\>>%log%
+) else (
+ECHO.No "%DownPath%\auth.json">>%log%
+)
 IF EXIST %DownPath%\config.json (
 ECHO.Copying %DownPath%\config.json to %PGBotPath%\configs\>>%log%
 COPY %DownPath%\config.json %PGBotPath%\configs\>>%log%
@@ -388,50 +382,57 @@ COPY %DownPath%\userdata.js %PGBotPath%\web\config\>>%log%
 ) else (
 ECHO.No "%DownPath%\userdata.js">>%log%
 )
-@ECHO.
-@ECHO.
-@ECHO.
 ECHO.>>%Log%
 ECHO. ----- End Log ----->>%log%
 
 :FinalInstructions
 cls
-@ECHO.--------------------File customization--------------------
-@ECHO.
-@ECHO.
-@ECHO.
-@ECHO.Before starting the bot, please copy the following files to %PGBotPath% if you dont have them yet.
-@ECHO. 
-@ECHO.
+ECHO.--------------------File customization--------------------
+call:ech
+ECHO.Before starting the bot, please copy the following files to %PGBotPath% if you dont have them yet.
+call:ech
 IF NOT EXIST %PGBotPath%\encrypt*.* (
-@ECHO.---- encrypt.so / encrypt.dll or encrypt_64.dll
-@ECHO.     Get them from our Slack chat^^! 
-@ECHO.     "https://pokemongo-bot.herokuapp.com/"
+ECHO.---- encrypt.so / encrypt.dll or encrypt_64.dll
+ECHO.     Get them from our Slack chat^^! 
+ECHO.     "https://pokemongo-bot.herokuapp.com/"
 ) else (
 ECHO.
 )
-@ECHO.
-@ECHO.
-@ECHO.Remember to configure both config.json and userdata.js^^!
-@ECHO.
-@ECHO.
-@ECHO.
-@ECHO."%PGBotPath%\configs\config.json"
-@ECHO.INSTRUCTIONS:
-@ECHO."https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/docs/configuration_files.md"
-@ECHO.
-@ECHO."%PGBotPath%\web\config\userdata.js"
-@ECHO.INSTRUCTIONS:
-@ECHO."https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/docs/google_map.md"
-@ECHO.
-@ECHO.To get an Google Maps API Key:
-@ECHO."https://developers.google.com/maps/documentation/javascript/get-api-key"
-@ECHO.
-@ECHO.
-@ECHO.
+call:ech
+ECHO.Remember to configure auth.json, config.json and userdata.js^^!
+call:ech
+ECHO."%PGBotPath%\configs\auth.json"
+ECHO."%PGBotPath%\configs\config.json"
+ECHO.INSTRUCTIONS:
+ECHO."https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/docs/configuration_files.md"
+call:ech
+ECHO."%PGBotPath%\web\config\userdata.js"
+ECHO.INSTRUCTIONS:
+ECHO."https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/docs/google_map.md"
+call:ech
+ECHO.To get an Google Maps API Key:
+ECHO."https://developers.google.com/maps/documentation/javascript/get-api-key"
+call:ech
 @PAUSE
 
+CLS
+call:ech
+ECHO.You can configure the auth.json and userdata.js files when you choose y in the next question.
+ECHO.
+ECHO.If you first want to get your Google MAPS API key and encrypt dll/so choose n, 
+ECHO.
+ECHO.put encrypt dll/so in %PGBotPath% and then,
+ECHO.
+ECHO.start PokemonGo-Bot-Configurator.bat in %PGBotPath%\windows_bat\
+call:ech
+SET /p json="Do you want to start the PokemonGo-Bot-Configurator (Y/N): "
+IF "%json%" == "y" call %PGBotPath%\windows_bat\PokemonGo-Bot-Configurator.bat
+IF "%json%" == "n" goto:eof
 
+:ech
+ECHO.
+ECHO.
+goto:eof
 
 :eof
 ENDLOCAL
