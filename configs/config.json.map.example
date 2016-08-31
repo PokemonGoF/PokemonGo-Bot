@@ -190,7 +190,7 @@
           "enabled": true,
           "address": "http://localhost:5000",
           "//NOTE: Change the max_sniping_distance to adjust the max sniping range (m)": {},
-          "max_sniping distance": 10000,
+          "max_sniping_distance": 10000,
           "//NOTE: Change the max_walking_distance to adjust the max walking range when snipe is off (m)": {},
           "max_walking_distance": 500,
           "min_ball": 50,
