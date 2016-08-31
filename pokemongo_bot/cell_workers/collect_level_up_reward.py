@@ -62,11 +62,13 @@ class CollectLevelUpReward(BaseTask):
                     item['name'] = got_item
                     count = 'item_count' in item and item['item_count'] or 0
                     inventory.items().get(item['item_id']).add(count)
-
-            self.emit_event(
-                'level_up_reward',
-                formatted='Received level up reward: {items}',
-                data={
-                    'items': ', '.join(["{}x {}".format(data[x], x) for x in data])
-                }
-            )
+            try:
+                self.emit_event(
+                    'level_up_reward',
+                    formatted='Received level up reward: {items}',
+                    data={
+                        'items': ', '.join(["{}x {}".format(data[x], x) for x in data])
+                    }
+                )
+            except TypeError:
+                pass
