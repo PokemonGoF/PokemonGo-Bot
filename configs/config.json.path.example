@@ -268,5 +268,9 @@
       "// all": {"keep_best_cp": 100},
       "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat:": {},
       "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3}
-    }
+    },
+	"websocket": {
+		"start_embedded_server": true,
+		"server_url": "127.0.0.1:4000"
+	}
 }

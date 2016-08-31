@@ -7,10 +7,11 @@ var urlHashTopic = location.hash ? location.hash.substring(1).toLowerCase() : nu
 var topic = urlHashTopic ? urlHashTopic : "pgomapcatch/chat";
 
 function initialiseEventBus(){
-  window.client = mqtt.connect('ws://broker.pikabot.org'); // you add a ws:// url here
+  window.client = mqtt.connect('ws://broker.pikabot.org',{
+      reconnectPeriod:10*1000
+  });
   client.subscribe("pgomapcatch/#");
   client.subscribe("pgochat/chat");
-
   client.on("message", function (topic, payload) {
     //Materialize.toast(payload, 4000);
     if (topic === 'pgochat/chat') {

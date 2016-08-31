@@ -26,10 +26,10 @@ class IncubateEggs(BaseTask):
         self.infinite_longer_eggs_first = self.config.get("infinite_longer_eggs_first", False)
         self.breakable_longer_eggs_first = self.config.get("breakable_longer_eggs_first", True)
         self.min_interval = self.config.get('min_interval', 120)
-        
+
         self.breakable_incubator = self.config.get("breakable", [2,5,10])
         self.infinite_incubator = self.config.get("infinite", [2,5,10])
-    
+
     def work(self):
         try:
             self._check_inventory()
@@ -80,7 +80,7 @@ class IncubateEggs(BaseTask):
             for egg in available_eggs:
                 if egg["used"] or egg["km"] == -1:
                     continue
-                
+
                 self.emit_event(
                     'incubate_try',
                     level='debug',
@@ -124,27 +124,21 @@ class IncubateEggs(BaseTask):
                         egg["used"] = True
 
     def _check_inventory(self, lookup_ids=[]):
-        inv = {}
+        if lookup_ids:
+            inventory.refresh_inventory()
         matched_pokemon = []
         temp_eggs = []
         temp_used_incubators = []
         temp_ready_breakable_incubators = []
         temp_ready_infinite_incubators = []
-        inv = reduce(
-            dict.__getitem__,
-            ["responses", "GET_INVENTORY", "inventory_delta", "inventory_items"],
-            inventory.jsonify_inventory()
-        )
+        inv = inventory.jsonify_inventory()
         for inv_data in inv:
             inv_data = inv_data.get("inventory_item_data", {})
             if "egg_incubators" in inv_data:
-                temp_used_incubators = []
-                temp_ready_breakable_incubators = []
-                temp_ready_infinite_incubators = []
                 incubators = inv_data.get("egg_incubators", {}).get("egg_incubator",[])
                 if isinstance(incubators, basestring):  # checking for old response
                     incubators = [incubators]
-                for incubator in incubators:                                           
+                for incubator in incubators:
                     if 'pokemon_id' in incubator:
                         start_km = incubator.get('start_km_walked', 0)
                         km_walked = incubator.get('target_km_walked', 0)
@@ -218,8 +212,8 @@ class IncubateEggs(BaseTask):
                 else:
                     pokemon['name'] = "error"
         except:
-            pokemon_data = [{"name":"error","cp":"error","iv":"error"}]
-        if not pokemon_ids or pokemon_data[0]['name'] == "error":
+            pokemon_data = [{"name":"error", "cp":"error", "iv":"error"}]
+        if not pokemon_ids or not pokemon_data or pokemon_data[0]['name'] == "error":
             self.emit_event(
                 'egg_hatched',
                 data={
@@ -256,7 +250,7 @@ class IncubateEggs(BaseTask):
             return
 
         self.used_incubators.sort(key=lambda x: x.get("km"))
-        
+
         eggs = ['{:.2f}/{} km'.format(e['km_needed']-e['km']+self.km_walked, e['km_needed']) for e in self.used_incubators]
 
         self.emit_event(
@@ -268,7 +262,7 @@ class IncubateEggs(BaseTask):
                         'eggs': ', '.join(eggs)
                     }
                 )
-        
+
     def _should_print(self):
         """
         Returns a value indicating whether the eggs should be displayed.
