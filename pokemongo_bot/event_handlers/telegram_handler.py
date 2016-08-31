@@ -73,7 +73,7 @@ class TelegramClass:
                                         "_XP:_ "+str(stats["experience"])+"/"+str(stats["next_level_xp"]),
                                         "_Pokemons Captured:_ "+str(stats["pokemons_captured"])+" ("+str(catch_day)+" _last 24h_)",
                                         "_Poke Stop Visits:_ "+str(stats["poke_stop_visits"])+" ("+str(ps_day)+" _last 24h_)",
-                                        "_KM Walked:_ "+str(stats["km_walked"])
+                                        "_KM Walked:_ "+str("%.2f" % stats["km_walked"])
                                     )
                                 self._tbot.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
                                 self._tbot.send_location(chat_id=update.message.chat_id, latitude=self.bot.api._position_lat, longitude=self.bot.api._position_lng)

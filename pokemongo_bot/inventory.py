@@ -1178,6 +1178,7 @@ class Inventory(object):
         self.items = Items()
         self.pokemons = Pokemons()
         self.player = Player(self.bot)  # include inventory inside Player?
+        self.egg_incubators = None
         self.refresh()
         self.item_inventory_size = None
         self.pokemon_inventory_size = None
@@ -1189,6 +1190,8 @@ class Inventory(object):
         inventory = inventory['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
         for i in (self.pokedex, self.candy, self.items, self.pokemons, self.player):
             i.refresh(inventory)
+
+        self.egg_incubators = [x["inventory_item_data"] for x in inventory if "egg_incubators" in x["inventory_item_data"]]
 
         self.update_web_inventory()
 
@@ -1234,8 +1237,11 @@ class Inventory(object):
         for item_id, item in self.items._data.items():
             json_inventory.append({"inventory_item_data": {"item": {"item_id": item_id, "count": item.count}}})
 
-        for pokemon in self.pokemons.all():
+        for pokemon in self.pokemons.all_with_eggs():
             json_inventory.append({"inventory_item_data": {"pokemon_data": pokemon._data}})
+
+        for inc in self.egg_incubators:
+            json_inventory.append({"inventory_item_data": inc})
 
         return json_inventory
 
