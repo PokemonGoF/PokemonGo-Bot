@@ -56,7 +56,7 @@ class TelegramClass:
                     self.update_id = update.update_id+1
                     if update.message:
                         self.bot.logger.info("message from {} ({}): {}".format(update.message.from_user.username, update.message.from_user.id, update.message.text))
-                        if self.master and str(self.master) != str(update.message.from_user.id):
+                        if self.master and self.master not in [update.message.from_user.id, "@{}".format(update.message.from_user.username)]:
                             continue
                         if update.message.text == "/info":
                             stats = self._get_player_stats()
