@@ -285,7 +285,8 @@
       "color": true,
       "show_datetime": true,
       "show_process_name": true,
-      "show_log_level": true
+      "show_log_level": true,
+      "show_thread_name": false
     },
     "catch": {
       "any": {"candy_threshold" : 400 ,"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
