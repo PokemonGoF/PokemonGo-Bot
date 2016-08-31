@@ -612,7 +612,8 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
 * `prioritize_vips` - Will prioritize vips in distance and priority mode above all normal pokemon if set to true
 * `min_time` - Minimum time the pokemon has to be available before despawn
 * `min_ball` - Minimum amount of balls required to run task
-* `max_distance` - Maximum distance the pokemon is allowed to be when sniping. (km)
+* `max_sniping_distance` - Maximum distance the pokemon is allowed to be caught when sniping. (m)
+* `max_walking_distance` - Maximum distance the pokemon is allowed to be caught when sniping is turned off. (m)
 * `snipe`:
    - `True` - Will teleport to target pokemon, encounter it, teleport back then catch it
    - `False` - Will walk normally to the pokemon
@@ -640,8 +641,10 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
     "type": "MoveToMapPokemon",
     "config": {
       "address": "http://localhost:5000",
-      "//NOTE: Change the max_distance to adjust the max sniping range (km)": {},
-      "max_distance": 500,
+      "//NOTE: Change the max_sniping_distance to adjust the max sniping range (m)": {},
+      "max_sniping distance": 10000,
+      "//NOTE: Change the max_walking_distance to adjust the max walking range when snipe is off (m)": {},
+      "max__walking_distance": 500,
       "min_time": 60,
       "min_ball": 50,
       "prioritize_vips": true,
