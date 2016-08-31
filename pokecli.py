@@ -220,7 +220,7 @@ def main():
     finally:
         # Cache here on SIGTERM, or Exception.  Check data is available and worth caching.
         if bot:
-            if bot.recent_forts[-1] is not None and bot.config.forts_cache_recent_forts:
+            if len(bot.recent_forts) > 0 and bot.recent_forts[-1] is not None and bot.config.forts_cache_recent_forts:
                 cached_forts_path = os.path.join(
                     _base_dir, 'data', 'recent-forts-%s.json' % bot.config.username
                 )
