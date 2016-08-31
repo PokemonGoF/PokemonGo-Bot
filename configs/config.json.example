@@ -331,4 +331,10 @@
         "Weezing": {},
         "Flareon": {}
     }
+    "//This Will Make Logging Work at WebUI..":0,
+	"websocket": {
+		"start_embedded_server": true,
+		"server_url": "127.0.0.1:7000",
+		"remote_control": true
+	}
 }
