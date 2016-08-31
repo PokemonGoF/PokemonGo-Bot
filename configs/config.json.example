@@ -330,5 +330,9 @@
         "Muk": {},
         "Weezing": {},
         "Flareon": {}
-    }
+    },
+	"websocket": {
+		"start_embedded_server": true,
+		"server_url": "127.0.0.1:7000"
+	}
 }
