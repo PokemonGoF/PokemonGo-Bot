@@ -7,11 +7,9 @@ import time
 import telegram
 import thread
 import re
+from pokemongo_bot import inventory
 
 DEBUG_ON = False
-
-class FileIOException(Exception):
-    pass
 
 class TelegramClass:
 
@@ -34,19 +32,7 @@ class TelegramClass:
             self.update_id = None
 
     def _get_player_stats(self):
-        web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
-        try:
-            with open(web_inventory, "r") as infile:
-                json_inventory = json.load(infile)
-        except ValueError as exception:
-            self.bot.logger.info('[x] Error while opening inventory file for read: %s' % exception)
-            json_inventory = []
-        except:
-            raise FileIOException("Unexpected error reading from {}".format(web_inventory))
-        return next((x["inventory_item_data"]["player_stats"]
-                for x in json_inventory
-                if x.get("inventory_item_data", {}).get("player_stats", {})),
-            None)
+        return inventory.player().player_stats
 
     def run(self):
         time.sleep(1)
