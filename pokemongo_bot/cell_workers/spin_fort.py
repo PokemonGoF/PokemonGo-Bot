@@ -80,7 +80,7 @@ class SpinFort(Datastore, BaseTask):
                         data={
                             'pokestop': fort_name,
                             'exp': experience_awarded,
-                            'items': items_awarded
+                            'items': ', '.join(["{}x {}".format(items_awarded[x], x) for x in items_awarded])
                         }
                     )
                 else:
@@ -202,6 +202,9 @@ class SpinFort(Datastore, BaseTask):
         return forts
 
     def get_items_awarded_from_fort_spinned(self, response_dict):
+        experience_awarded = response_dict['responses']['FORT_SEARCH'].get('experience_awarded', 0)
+        inventory.player().exp += experience_awarded
+
         items_awarded = response_dict['responses']['FORT_SEARCH'].get('items_awarded', {})
         if items_awarded:
             tmp_count_items = {}

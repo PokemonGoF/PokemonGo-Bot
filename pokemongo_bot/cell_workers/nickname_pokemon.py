@@ -13,6 +13,8 @@ import re
 DEFAULT_IGNORE_FAVORITES = False
 DEFAULT_GOOD_ATTACK_THRESHOLD = 0.7
 DEFAULT_TEMPLATE = '{name}'
+DEFAULT_NICKNAME_WAIT_MIN = 3
+DEFAULT_NICKNAME_WAIT_MAX = 3
 
 MAXIMUM_NICKNAME_LENGTH = 12
 
@@ -187,14 +189,12 @@ class NicknamePokemon(BaseTask):
 
     # noinspection PyAttributeOutsideInit
     def initialize(self):
-        self.ignore_favorites = self.config.get(
-            'dont_nickname_favorite', DEFAULT_IGNORE_FAVORITES)
-        self.good_attack_threshold = self.config.get(
-            'good_attack_threshold', DEFAULT_GOOD_ATTACK_THRESHOLD)
-        self.template = self.config.get(
-            'nickname_template', DEFAULT_TEMPLATE)
-        self.nickname_above_iv = self.config.get(
-            'nickname_above_iv', 0)
+        self.ignore_favorites = self.config.get('dont_nickname_favorite', DEFAULT_IGNORE_FAVORITES)
+        self.good_attack_threshold = self.config.get('good_attack_threshold', DEFAULT_GOOD_ATTACK_THRESHOLD)
+        self.template = self.config.get('nickname_template', DEFAULT_TEMPLATE)
+        self.nickname_above_iv = self.config.get('nickname_above_iv', 0)
+        self.nickname_wait_min = self.config.get('nickname_wait_min', DEFAULT_NICKNAME_WAIT_MIN)
+        self.nickname_wait_max = self.config.get('nickname_wait_max', DEFAULT_NICKNAME_WAIT_MAX)
 
         self.translate = None
         locale = self.config.get('locale', 'en')
@@ -210,6 +210,8 @@ class NicknamePokemon(BaseTask):
         for pokemon in pokemons().all():  # type: Pokemon
             if not pokemon.is_favorite or not self.ignore_favorites:
                 if pokemon.iv >= self.nickname_above_iv:
+                    # Make the bot appears more human
+                    action_delay(self.nickname_wait_min, self.nickname_wait_max)
                     self._nickname_pokemon(pokemon)
 
     def _localize(self, string):

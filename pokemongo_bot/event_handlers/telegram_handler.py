@@ -44,10 +44,30 @@ class TelegramClass:
         except:
             raise FileIOException("Unexpected error reading from {}".format(web_inventory))
         return next((x["inventory_item_data"]["player_stats"]
-                for x in json_inventory
-                if x.get("inventory_item_data", {}).get("player_stats", {})),
-            None)
-
+                     for x in json_inventory
+                     if x.get("inventory_item_data", {}).get("player_stats", {})),
+                    None)
+    def send_player_stats_to_chat(self, chat_id):
+        stats = self._get_player_stats()
+        if stats:
+            with self.bot.database as conn:
+                cur = conn.cursor()
+                cur.execute("SELECT DISTINCT COUNT(encounter_id) FROM catch_log WHERE dated >= datetime('now','-1 day')")
+                catch_day = cur.fetchone()[0]
+                cur.execute("SELECT DISTINCT COUNT(pokestop) FROM pokestop_log WHERE dated >= datetime('now','-1 day')")
+                ps_day = cur.fetchone()[0]
+                res = (
+                    "*"+self.bot.config.username+"*",
+                    "_Level:_ "+str(stats["level"]),
+                    "_XP:_ "+str(stats["experience"])+"/"+str(stats["next_level_xp"]),
+                    "_Pokemons Captured:_ "+str(stats["pokemons_captured"])+" ("+str(catch_day)+" _last 24h_)",
+                    "_Poke Stop Visits:_ "+str(stats["poke_stop_visits"])+" ("+str(ps_day)+" _last 24h_)",
+                    "_KM Walked:_ "+str("%.2f" % stats["km_walked"])
+                )
+            self._tbot.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+            self._tbot.send_location(chat_id=chat_id, latitude=self.bot.api._position_lat, longitude=self.bot.api._position_lng)
+        else:
+            self._tbot.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="Stats not loaded yet\n")
     def run(self):
         time.sleep(1)
         while True:
@@ -59,26 +79,7 @@ class TelegramClass:
                         if self.master and self.master not in [update.message.from_user.id, "@{}".format(update.message.from_user.username)]:
                             continue
                         if update.message.text == "/info":
-                            stats = self._get_player_stats()
-                            if stats:
-                                with self.bot.database as conn:
-                                    cur = conn.cursor()
-                                    cur.execute("SELECT DISTINCT COUNT(encounter_id) FROM catch_log WHERE dated >= datetime('now','-1 day')")
-                                    catch_day = cur.fetchone()[0]
-                                    cur.execute("SELECT DISTINCT COUNT(pokestop) FROM pokestop_log WHERE dated >= datetime('now','-1 day')")
-                                    ps_day = cur.fetchone()[0]
-                                    res = (
-                                        "*"+self.bot.config.username+"*",
-                                        "_Level:_ "+str(stats["level"]),
-                                        "_XP:_ "+str(stats["experience"])+"/"+str(stats["next_level_xp"]),
-                                        "_Pokemons Captured:_ "+str(stats["pokemons_captured"])+" ("+str(catch_day)+" _last 24h_)",
-                                        "_Poke Stop Visits:_ "+str(stats["poke_stop_visits"])+" ("+str(ps_day)+" _last 24h_)",
-                                        "_KM Walked:_ "+str("%.2f" % stats["km_walked"])
-                                    )
-                                self._tbot.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
-                                self._tbot.send_location(chat_id=update.message.chat_id, latitude=self.bot.api._position_lat, longitude=self.bot.api._position_lng)
-                            else:
-                                self._tbot.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Stats not loaded yet\n")
+                            self.send_player_stats_to_chat(update.message.chat_id)
                         elif update.message.text == "/start" or update.message.text == "/help":
                             res = (
                                 "Commands: ",
@@ -130,8 +131,9 @@ class TelegramHandler(EventHandler):
                         msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
                     else:
                         return
+            elif event == 'catch_limit':
+                self.tbot.send_player_stats_to_chat(master)
+                msg = "*You have reached your daily catch limit, quitting.*"
             else:
                 return
             self.tbot.sendMessage(chat_id=master, parse_mode='Markdown', text=msg)
-
-
