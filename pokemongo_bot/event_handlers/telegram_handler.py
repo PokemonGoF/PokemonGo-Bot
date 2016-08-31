@@ -7,9 +7,11 @@ import time
 import telegram
 import thread
 import re
-from pokemongo_bot import inventory
 
 DEBUG_ON = False
+
+class FileIOException(Exception):
+    pass
 
 class TelegramClass:
 
@@ -32,7 +34,19 @@ class TelegramClass:
             self.update_id = None
 
     def _get_player_stats(self):
-        return inventory.player().player_stats
+        web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
+        try:
+            with open(web_inventory, "r") as infile:
+                json_inventory = json.load(infile)
+        except ValueError as exception:
+            self.bot.logger.info('[x] Error while opening inventory file for read: %s' % exception)
+            json_inventory = []
+        except:
+            raise FileIOException("Unexpected error reading from {}".format(web_inventory))
+        return next((x["inventory_item_data"]["player_stats"]
+                for x in json_inventory
+                if x.get("inventory_item_data", {}).get("player_stats", {})),
+            None)
 
     def run(self):
         time.sleep(1)
@@ -42,7 +56,7 @@ class TelegramClass:
                     self.update_id = update.update_id+1
                     if update.message:
                         self.bot.logger.info("message from {} ({}): {}".format(update.message.from_user.username, update.message.from_user.id, update.message.text))
-                        if self.master and self.master not in [update.message.from_user.id, "@{}".format(update.message.from_user.username)]:
+                        if self.master and str(self.master) != str(update.message.from_user.id):
                             continue
                         if update.message.text == "/info":
                             stats = self._get_player_stats()
@@ -59,7 +73,7 @@ class TelegramClass:
                                         "_XP:_ "+str(stats["experience"])+"/"+str(stats["next_level_xp"]),
                                         "_Pokemons Captured:_ "+str(stats["pokemons_captured"])+" ("+str(catch_day)+" _last 24h_)",
                                         "_Poke Stop Visits:_ "+str(stats["poke_stop_visits"])+" ("+str(ps_day)+" _last 24h_)",
-                                        "_KM Walked:_ "+str(stats["km_walked"])
+                                        "_KM Walked:_ "+str("%.2f" % stats["km_walked"])
                                     )
                                 self._tbot.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
                                 self._tbot.send_location(chat_id=update.message.chat_id, latitude=self.bot.api._position_lat, longitude=self.bot.api._position_lng)
