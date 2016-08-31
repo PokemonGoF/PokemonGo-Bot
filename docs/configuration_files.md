@@ -96,6 +96,7 @@ Document the configuration options of PokemonGo-Bot.
 'logging'.'show_datetime' (default true) Show date and time in log
 'logging'.'show_process_name' (default true) Show name of process generating output in log
 'logging'.'show_log_level' (default true) Show level of log message in log (eg. "INFO")
+'logging'.'show_thread_name' (default false) Show name of thread in log
 
 ## Configuring Tasks
 [[back to top](#table-of-contents)]
