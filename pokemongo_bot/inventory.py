@@ -113,7 +113,7 @@ class Player(_BaseInventoryComponent):
     def exp(self, value):
         # if new exp is larger than or equal to next_level_xp
         if value >= self.next_level_xp:
-            self.level = self.level + 1
+            self.level = self._level + 1
             # increase next_level_xp to a big amount
             # will be fix on the next heartbeat
             self.next_level_xp += 10000000
