@@ -67,6 +67,6 @@ class CollectLevelUpReward(BaseTask):
                 'level_up_reward',
                 formatted='Received level up reward: {items}',
                 data={
-                    'items': data
+                    'items': ', '.join(["{}x {}".format(data[x], x) for x in data])
                 }
             )

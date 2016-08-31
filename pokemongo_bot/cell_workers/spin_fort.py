@@ -80,7 +80,7 @@ class SpinFort(Datastore, BaseTask):
                         data={
                             'pokestop': fort_name,
                             'exp': experience_awarded,
-                            'items': items_awarded
+                            'items': ', '.join(["{}x {}".format(items_awarded[x], x) for x in items_awarded])
                         }
                     )
                 else:
