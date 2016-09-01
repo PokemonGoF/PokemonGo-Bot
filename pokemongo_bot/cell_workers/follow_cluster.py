@@ -62,8 +62,8 @@ class FollowCluster(BaseTask):
                 )
                 
                 self.is_at_destination = False		
- -              if step_walker.step():		
- -                  self.is_at_destination = True
+                if step_walker.step():
+                    self.is_at_destination = True
             elif not self.announced:
                 self.emit_event(
                     'arrived_at_cluster',

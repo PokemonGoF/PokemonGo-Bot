@@ -4,9 +4,10 @@ from random import uniform
 from pokemongo_bot.cell_workers.utils import distance
 from pokemongo_bot.human_behaviour import random_lat_long_delta, sleep, random_alt_delta
 
+
 class StepWalker(object):
 
-    def __init__(self, bot, dest_lat, dest_lng, dest_alt = None):
+    def __init__(self, bot, dest_lat, dest_lng, dest_alt=None, fixed_speed=False):
         self.bot = bot
         self.api = bot.api
 
@@ -22,7 +23,11 @@ class StepWalker(object):
             self.alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
         else:
             self.alt = dest_alt
-        self.speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
+        if not fixed_speed:
+            self.speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
+        else:
+            # PolylineWalker uses a fixed speed!
+            self.speed = self.bot.config.walk_min
 
         if len(self.bot.position) == 3:
             self.initAlt = self.bot.position[2]
