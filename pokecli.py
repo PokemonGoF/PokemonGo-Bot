@@ -63,6 +63,7 @@ logging.basicConfig(
 logger = logging.getLogger('cli')
 logger.setLevel(logging.INFO)
 
+bot.metrics.start_time = None
 
 class SIGINTRecieved(Exception):
     pass
