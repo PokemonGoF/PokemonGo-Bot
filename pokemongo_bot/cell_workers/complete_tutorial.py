@@ -17,7 +17,7 @@ class CompleteTutorial(BaseTask):
         self.nickname = self.config.get('nickname','')
         self.team = self.config.get('team',0)
         self.tutorial_run = True
-        self.team_run == True
+        self.team_run = True
 
     def work(self):
 
