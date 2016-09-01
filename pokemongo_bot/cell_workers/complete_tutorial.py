@@ -17,7 +17,7 @@ class CompleteTutorial(BaseTask):
         self.nickname = self.config.get('nickname','')
         self.team = self.config.get('team',0)
         self.tutorial_run = True
-        self.team_run = True
+        self.team_run == True
 
     def work(self):
 
@@ -182,6 +182,10 @@ class CompleteTutorial(BaseTask):
 
     def _set_team(self):
         if self.team == 0:
+            return True
+
+        if self.bot.player_data.get('team', 0) != 0:
+            self.logger.info(u'Team already picked')
             return True
 
         sleep(10)
