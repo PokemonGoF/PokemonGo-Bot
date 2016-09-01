@@ -375,7 +375,7 @@ def init_config():
         load,
         short_flag="-wsr",
         long_flag="--websocket.remote_control",
-        help="Enable remote control through websocket (requires websocekt server url)",
+        help="Enable remote control through websocket (requires websocket server url)",
         default=False
     )
     add_config(
