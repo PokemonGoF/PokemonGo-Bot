@@ -40,6 +40,7 @@ from inventory import init_inventory, player
 from sys import platform as _platform
 from pgoapi.protos.POGOProtos.Enums import BadgeType_pb2
 import struct
+import datetime
 
 
 class FileIOException(Exception):
@@ -118,6 +119,7 @@ class PokemonGoBot(Datastore):
             self.config.client_id = str(uuid.uuid4())
             saved_info[key] = self.config.client_id
         saved_info.close()
+        bot.metrics.start_time = datetime.datetime.now()
 
     def start(self):
         self._setup_event_system()
