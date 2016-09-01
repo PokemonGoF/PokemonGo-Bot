@@ -59,28 +59,22 @@ class Polyline(object):
         
         self.directions_response = requests.get(self.DIRECTIONS_URL).json()
         try:
-        # Polyline walker starts teleporting after reaching api query limit.
-        # throw error here atm, catch it at factory and return StepWalker
-        #
-        # In case of API limit reached we get back we get a status 200 code with an empty routes []
-        #
-        # {u'error_message': u'You have exceeded your rate-limit for this API.',
-        #  u'routes': [],
-        #  u'status': u'OVER_QUERY_LIMIT'
-        # }
-
             self.polyline_points = [x['polyline']['points'] for x in
                                     self.directions_response['routes'][0]['legs'][0]['steps']]
-        # This handles both cases:
-        # a) the above API Quota reached self.directions_response['routes'] = []
-        # b) ZERO_RESULTS {
-        #    "geocoded_waypoints" : [ {}, {} ],
-        #    "routes" : [],
-        #    "status" : "ZERO_RESULTS"
-        # }
         except IndexError:
+            # This handles both cases:
+            # a) In case of API limit reached we get back we get a status 200 code with an empty routes []
+            # {u'error_message': u'You have exceeded your rate-limit for this API.',
+            #  u'routes': [],
+            #  u'status': u'OVER_QUERY_LIMIT'
+            # }
+            # b) In case that google does not have any directions proposals we get:
+            # ZERO_RESULTS {
+            #    "geocoded_waypoints" : [ {}, {} ],
+            #    "routes" : [],
+            #    "status" : "ZERO_RESULTS"
+            # }
             self.polyline_points = self.directions_response['routes']
-            raise # catch at factory atm...
         self.points = [self.origin] + self.get_points(self.polyline_points) + [self.destination]
         self.speed = float(speed)
         self.lat, self.long = self.points[0][0], self.points[0][1]
