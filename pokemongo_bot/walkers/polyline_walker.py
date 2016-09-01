@@ -38,7 +38,14 @@ class PolylineWalker(StepWalker):
         
         cLat, cLng = self.polyline_walker.get_pos()
         cAlt = self.polyline_walker.get_alt()
-        self.api.set_position(cLat, cLng, cAlt)
+    
+        step_walker = StepWalker(
+            self.bot,
+            cLat,
+            cLng,
+            cAlt
+        )
+        
         self.actual_pos = (cLat, cLng) # might be a case this instance is reused in the future...
 
         self.bot.heartbeat()
