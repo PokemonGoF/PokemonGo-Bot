@@ -143,7 +143,7 @@ class FollowPath(BaseTask):
         if self.status == STATUS_LOITERING and time.time() < self.loiter_end_time:
             return WorkerResult.SUCCESS
 
-        last_lat, last_lng, last_alt = self.bot.api.get_position()
+        last_lat, last_lng, last_alt = self.bot.position()
 
         point = self.points[self.ptr]
         lat = point['lat']
