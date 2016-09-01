@@ -29,7 +29,7 @@
 for manual installation please refer to [here](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/manual_installation.md)
 
 # Windows
-We do recommend Windows users to use [Docker](#docker) this will work much easier and smoother (also saver)
+We do recommend Windows users to use [Docker](#docker) this will work much easier and smoother (also safer)
 
 ## Requirements
 
