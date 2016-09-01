@@ -138,13 +138,15 @@ class MoveToMapPokemon(BaseTask):
                 pokemon['longitude'],
             )
 
-            if pokemon['dist'] > self.config['max_sniping_distance'] and self.config['snipe']:
+            # If distance to pokemon greater than the max_sniping_distance, then ignore regardless of "snipe" setting
+            if pokemon['dist'] > self.config.get('max_sniping_distance', 10000):
+                continue
+            
+            # If distance bigger than walking distance, ignore if sniping is not active
+            if pokemon['dist'] > self.config.get('max_walking_distance', 1000) and not self.config.get('snipe', False):
                 continue
 
-            if pokemon['dist'] > self.config['max_walking_distance'] and not self.config['snipe']:
-                continue
-
-            # pokemon not reachable with mean walking speed (by config)
+            # if pokemon not reachable with mean walking speed (by config)
             mean_walk_speed = (self.bot.config.walk_max + self.bot.config.walk_min) / 2
             if pokemon['dist'] > ((pokemon['disappear_time'] - now) * mean_walk_speed) and not self.config['snipe']:
                 continue
