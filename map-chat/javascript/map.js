@@ -64,12 +64,20 @@ function initialize() {
   var mapDiv = document.getElementById('map-canvas');
   map = new google.maps.Map(mapDiv, mapOptions);
 
-  navigator.geolocation.getCurrentPosition(onFirstPosition, onPositionError, locationOptions);
+  initialiseEventBus();
+
+  //navigator.geolocation.getCurrentPosition(onFirstPosition, onPositionError, locationOptions);
+
+  onFirstPosition({
+     "coords": {
+       latitude: parseFloat(0.1),
+       longitude: parseFloat(0.1)
+     }
+   });
 }
 
 function onFirstPosition(position) {
   setUserLocation(position.coords.latitude, position.coords.longitude);
-  initialiseEventBus();
   map.panTo(userLocation);
   var message = {};
   message.lat = position.coords.latitude;
