@@ -8,10 +8,16 @@ var topic = urlHashTopic ? urlHashTopic : "pgomapcatch/chat";
 
 function initialiseEventBus(){
   window.client = mqtt.connect('ws://broker.pikabot.org',{
-      reconnectPeriod:10*1000
+      reconnectPeriod:60*1000
   });
-  client.subscribe("pgomapcatch/#");
-  client.subscribe("pgochat/chat");
+  client.on("connect", function(err,res){
+    client.subscribe("pgomapcatch/#");
+    client.subscribe("pgochat/chat");
+  })
+  client.on("disconnect", function(err,res){
+    client.unsubscribe("pgomapcatch/#");
+    client.unsubscribe("pgochat/chat");
+  })
   client.on("message", function (topic, payload) {
     //Materialize.toast(payload, 4000);
     if (topic === 'pgochat/chat') {
@@ -105,9 +111,9 @@ $(document).ready(function () {
     Materialize.toast(shareAccurateLocation ? 'Sharing Your Accurate Location' : 'Sharing Your Fuzzy Location', 3000);
   });
 
-  if (topic != "main") {
+  /*if (topic != "main") {
     Materialize.toast("Private chat map - " + topic, 5000);
-  }
+  }*/
 
-  Materialize.toast("New: Click a user dot to mute it!", 7000);
+  //Materialize.toast("News: Server Over Load since the huge traffic ... ", 7000);
 });
