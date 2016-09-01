@@ -165,6 +165,7 @@ def main():
                     level='info',
                     formatted='Log logged in, reconnecting in {:d}'.format(wait_time)
                 )
+                bot = None
                 time.sleep(wait_time)
             except ServerBusyOrOfflineException:
                 bot.event_manager.emit(
@@ -173,6 +174,7 @@ def main():
                     level='info',
                     formatted='Server busy or offline'
                 )
+                bot = None
                 time.sleep(wait_time)
             except ServerSideRequestThrottlingException:
                 bot.event_manager.emit(
@@ -189,6 +191,7 @@ def main():
                     level='info',
                     formatted='Probably permabanned, Game Over ! Play again at https://club.pokemon.com/us/pokemon-trainer-club/sign-up/'
                 )
+                bot = None
                 time.sleep(36000)
             except NoPlayerPositionSetException:
                 bot.event_manager.emit(
@@ -197,6 +200,7 @@ def main():
                     level='info',
                     formatted='No player position set'
                 )
+                bot = None
                 time.sleep(wait_time)
 
     except GeocoderQuotaExceeded:
