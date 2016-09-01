@@ -78,7 +78,6 @@ class FollowSpiral(BaseTask):
             point['lng']
         )
 
-        alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
         step_walker = StepWalker(
             self.bot,
             point['lat'],
