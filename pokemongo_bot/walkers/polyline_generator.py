@@ -21,8 +21,9 @@ class PolylineObjectHandler:
         Google API has limits, so we can't generate new Polyline at every tick...
         '''
 
-        # _cache might be None...
-        is_old_cache = lambda : tuple(origin) != PolylineObjectHandler._cache.get_last_pos()
+        # Absolute offset between bot origin and PolyLine get_last_pos() (in meters)
+        abs_offset = abs(haversine.haversine(tuple(origin), PolylineObjectHandler._cache.get_last_pos())*1000)
+        is_old_cache = lambda : abs_offset < 8 # Consider cache old if we identified an offset more then 8 m
         new_dest_set = lambda : tuple(destination) != PolylineObjectHandler._cache.destination
 
         if PolylineObjectHandler._run and (not is_old_cache()):
@@ -142,9 +143,9 @@ class Polyline(object):
         seconds_passed = abs(time_passed - self._timestamp - self._paused_total)
         elevation_index = int(seconds_passed*conversion_factor)
         try:
-            return round(self.polyline_elevations[elevation_index], 2)
+            return self.polyline_elevations[elevation_index]
         except IndexError:
-            return round(self.polyline_elevations[-1], 2)
+            return self.polyline_elevations[-1]
 
     def get_pos(self):
         walked_distance = 0.0
@@ -188,7 +189,7 @@ class Polyline(object):
             # this ensures ~3-50cm ofset from the geometrical point calculated
             lat = o[0]+ (d[0] -o[0]) * percentage
             lon = o[1]+ (d[1] -o[1]) * percentage
-            return [(round(lat, 5), round(lon, 5))]
+            return [(lat, lon)]
 
     def get_total_distance(self, points):
         return ceil(sum([haversine.haversine(*x)*1000 for x in self.walk_steps(points)]))
