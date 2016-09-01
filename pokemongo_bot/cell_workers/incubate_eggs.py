@@ -35,13 +35,11 @@ class IncubateEggs(BaseTask):
         except:
             return WorkerResult.ERROR
 
-        worker = WorkerResult.SUCCESS
-
         if self.used_incubators and IncubateEggs.last_km_walked != self.km_walked:
-            self.used_incubators.sort(key=lambda x: x.get("km"))
             km_left = self.used_incubators[0]['km']-self.km_walked
             if km_left <= 0:
-                worker = self._hatch_eggs()
+                if not self._hatch_eggs():
+                    return WorkerResult.ERROR
             else:
                 self.bot.metrics.next_hatching_km(km_left)
 
@@ -63,7 +61,7 @@ class IncubateEggs(BaseTask):
                     self.breakable_longer_eggs_first)
             self._apply_incubators(eggs, self.ready_breakable_incubators)
 
-        return worker
+        return WorkerResult.SUCCESS
 
 
     def _filter_sort_eggs(self, allowed, sorting):
@@ -168,7 +166,10 @@ class IncubateEggs(BaseTask):
                 continue
             if "player_stats" in inv_data:
                 self.km_walked = inv_data.get("player_stats", {}).get("km_walked", 0)
+
         self.used_incubators = temp_used_incubators
+        if self.used_incubators:
+            self.used_incubators.sort(key=lambda x: x.get("km"))
         self.ready_breakable_incubators = temp_ready_breakable_incubators
         self.ready_infinite_incubators = temp_ready_infinite_incubators
         self.eggs = temp_eggs
@@ -207,7 +208,7 @@ class IncubateEggs(BaseTask):
                     'candy': 'error',
                 }
             )
-            return WorkerResult.ERROR
+            return False
         for i in range(len(pokemon_list)):
             msg = "Egg hatched with a {pokemon} (CP {cp} - NCP {ncp} - IV {iv_ads} {iv_pct}), {exp} exp, {stardust} stardust and {candy} candies."
             self.emit_event(
@@ -217,7 +218,7 @@ class IncubateEggs(BaseTask):
                     'pokemon': pokemon_list[i].name,
                     'cp': pokemon_list[i].cp,
                     'ncp': round(pokemon_list[i].cp_percent, 2),
-                    'iv_ads': "{}/{}/{}".format(pokemon_list[i].iv_attack, pokemon_list[i].iv_defense, pokemon_list[i].iv_stamina),
+                    'iv_ads': pokemon_list[i].iv_display,
                     'iv_pct': pokemon_list[i].iv,
                     'exp': xp[i],
                     'stardust': stardust[i],
@@ -228,13 +229,11 @@ class IncubateEggs(BaseTask):
             inventory.player().exp += xp[i]
             
         self.bot.metrics.hatched_eggs(len(pokemon_list))
-        return WorkerResult.SUCCESS
+        return True
 
     def _print_eggs(self):
         if not self.used_incubators:
             return
-
-        self.used_incubators.sort(key=lambda x: x.get("km"))
 
         eggs = ['{:.2f}/{} km'.format(e['km_needed']-e['km']+self.km_walked, e['km_needed']) for e in self.used_incubators]
 
