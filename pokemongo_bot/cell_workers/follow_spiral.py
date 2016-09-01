@@ -83,5 +83,8 @@ class FollowSpiral(BaseTask):
             point['lat'],
             point['lng']
         )
+        
+        if step_walker.step():		
+            step_walker = None
 
         return [point['lat'], point['lng']]
