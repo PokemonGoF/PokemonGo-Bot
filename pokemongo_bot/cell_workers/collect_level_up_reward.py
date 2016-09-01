@@ -62,11 +62,11 @@ class CollectLevelUpReward(BaseTask):
                     item['name'] = got_item
                     count = 'item_count' in item and item['item_count'] or 0
                     inventory.items().get(item['item_id']).add(count)
-
             self.emit_event(
                 'level_up_reward',
                 formatted='Received level up reward: {items}',
                 data={
-                    'items': data
+                    # [{'item_id': 3, 'name': u'Ultraball', 'item_count': 10}, {'item_id': 103, 'name': u'Hyper Potion', 'item_count': 10}]
+                    'items': ', '.join(["{}x {}".format(x['item_count'], x['name']) for x in data])
                 }
             )

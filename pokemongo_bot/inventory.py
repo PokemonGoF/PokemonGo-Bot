@@ -94,7 +94,6 @@ class Player(_BaseInventoryComponent):
         self.next_level_xp = None
         self.pokemons_captured = None
         self.poke_stop_visits = None
-        self.last_lvl_up_reward = time.time()  # ts of last lvl_up_reward api call
         self.player_stats = None
         super(_BaseInventoryComponent, self).__init__()
 
@@ -104,11 +103,6 @@ class Player(_BaseInventoryComponent):
 
     @level.setter
     def level(self, value):
-        if self._level != value:
-            now = time.time()
-            if now - self.last_lvl_up_reward > self.ttl:
-                self.bot.api.level_up_rewards(level=self.level)
-
         self._level = value
 
     @property
@@ -117,10 +111,12 @@ class Player(_BaseInventoryComponent):
 
     @exp.setter
     def exp(self, value):
-        if self._exp != value:
-            now = time.time()
-            if now - self.last_lvl_up_reward > self.ttl:
-                self.bot.api.level_up_rewards(level=self.level)
+        # if new exp is larger than or equal to next_level_xp
+        if value >= self.next_level_xp:
+            self.level = self._level + 1
+            # increase next_level_xp to a big amount
+            # will be fix on the next heartbeat
+            self.next_level_xp += 10000000
 
         self._exp = value
 
@@ -131,9 +127,9 @@ class Player(_BaseInventoryComponent):
         if not item:
             item = {}
 
+        self.next_level_xp = item.get('next_level_xp', 0)
         self.exp = item.get('experience', 0)
         self.level = item.get('level', 0)
-        self.next_level_xp = item.get('next_level_xp', 0)
         self.pokemons_captured = item.get('pokemons_captured', 0)
         self.poke_stop_visits = item.get('poke_stop_visits', 0)
 

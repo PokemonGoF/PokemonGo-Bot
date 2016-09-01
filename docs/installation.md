@@ -29,7 +29,7 @@
 for manual installation please refer to [here](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/manual_installation.md)
 
 # Windows
-We do recommend Windows users to use [Docker](#docker) this will work much easier and smoother (also saver)
+We do recommend Windows users to use [Docker](#docker) this will work much easier and smoother (also safer)
 
 ## Requirements
 
@@ -58,15 +58,13 @@ Once you have Docker installed, simply create the various config files for your 
 
 ```
 cd PokemonGo-Bot
-docker build --build-arg TIMEZONE=Europe/London -t pokemongo-bot .
+docker build -t pokemongo-bot .
 ```
-
-Optionally you can set your timezone with the --build-arg option (default is Etc/UTC). You can find an exhaustive list of timezone here: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
 By default our Dockerfile ensures that the "master" branch will be used for building the docker container, if you want to use the "dev" branch then you should build the container with below build command:
 
 ```
-docker build --build-arg TIMEZONE=Europe/London --build-arg BUILD_BRANCH=dev -t pokemongo-bot .
+docker build --build-arg BUILD_BRANCH=dev -t pokemongo-bot .
 ```
 
 
@@ -81,6 +79,12 @@ To run the bot container with the PokemonGo-Bot Docker image you've created:
 
 ```
 docker run --name=bot1-pokego --rm -it -v $(pwd)/configs/config.json:/usr/src/app/configs/config.json pokemongo-bot
+```
+
+Optionally you can set your timezone with the -e option (default is Etc/UTC). You can find an exhaustive list of timezone here: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+
+```
+docker run --name=bot1-pokego --rm -it -e TIMEZONE=Asia/Taipei -v $(pwd)/configs/config.json:/usr/src/app/configs/config.json pokemongo-bot
 ```
 
 >In the case you configured authentification to be handled by auth.json file make sure you mount that file as a volume also
@@ -99,7 +103,7 @@ docker run --name=bot1-pokego --rm -it -v $(pwd)/configs:/usr/src/app/configs -v
 Run a second container provided with the OpenPoGoBotWeb view:
 
 ```
-docker run --name=bot1-pokegoweb --rm -it --volumes-from bot1-pokego -p 8000:8000 -v $(pwd)/configs/userdata.js:/usr/src/app/web/userdata.js -w /usr/src/app/web python:2.7 python -m SimpleHTTPServer
+docker run --name=bot1-pokegoweb --rm -it --volumes-from bot1-pokego -p 8000:8000 -v $(pwd)/configs/userdata.js:/usr/src/app/web/config/userdata.js -w /usr/src/app/web python:2.7 python -m SimpleHTTPServer
 ```
 The OpenPoGoWeb will be served on `http://<your host>:8000`
 
@@ -118,7 +122,7 @@ docker run --name=bot1-pokego --rm -it -v $(pwd)/configs/config.json:/usr/src/ap
 - Run the web container:
 
 ```
-docker run --name=bot1-pokegoweb --rm -it --volumes-from bot1-pokego -p 8000:8000 -v $(pwd)/configs/userdata.js:/usr/src/app/web/userdata.js -w /usr/src/app/web python:2.7 python -m SimpleHTTPServer
+docker run --name=bot1-pokegoweb --rm -it --volumes-from bot1-pokego -p 8000:8000 -v $(pwd)/configs/userdata.js:/usr/src/app/web/config/userdata.js -w /usr/src/app/web python:2.7 python -m SimpleHTTPServer
 ```
 
 - Retrieve your host address:

@@ -28,10 +28,10 @@ class EvolvePokemon(Datastore, BaseTask):
 
     def _validate_config(self):
         if isinstance(self.evolve_list, basestring):
-            self.evolve_list = [str(pokemon_name).strip() for pokemon_name in self.evolve_list.split(',')]
+            self.evolve_list = [str(pokemon_name).strip().lower() for pokemon_name in self.evolve_list.split(',')]
             
         if isinstance(self.donot_evolve_list, basestring):
-            self.donot_evolve_list = [str(pokemon_name).strip() for pokemon_name in self.donot_evolve_list.split(',')]
+            self.donot_evolve_list = [str(pokemon_name).strip().lower() for pokemon_name in self.donot_evolve_list.split(',')]
 
         if 'evolve_speed' in self.config:
             self.logger.warning("evolve_speed is deprecated, instead please use 'min_evolve_speed' and 'max_evolved_speed'.")
@@ -46,10 +46,10 @@ class EvolvePokemon(Datastore, BaseTask):
         filtered_list = self._sort_and_filter()
 
         if (len(self.evolve_list) > 0) and self.evolve_list[0] != 'all':
-            filtered_list = filter(lambda x: x.name in self.evolve_list, filtered_list)
+            filtered_list = filter(lambda x: x.name.lower() in self.evolve_list, filtered_list)
 
         if (len(self.donot_evolve_list) > 0) and self.donot_evolve_list[0] != 'none':
-            filtered_list = filter(lambda pokemon: pokemon.name not in self.donot_evolve_list, filtered_list)
+            filtered_list = filter(lambda pokemon: pokemon.name.lower() not in self.donot_evolve_list, filtered_list)
 
         cache = {}
         for pokemon in filtered_list:
@@ -142,6 +142,7 @@ class EvolvePokemon(Datastore, BaseTask):
             inventory.pokemons().remove(pokemon.unique_id)
             new_pokemon = inventory.Pokemon(evolution)
             inventory.pokemons().add(new_pokemon)
+            inventory.player().exp += xp
 
             sleep(uniform(self.min_evolve_speed, self.max_evolve_speed))
             evolve_result = True

@@ -14,6 +14,7 @@
         - [evolve_count_for_lucky_egg](#evolve_count_for_lucky_egg)
         - [may_use_lucky_egg](#may_use_lucky_egg)
         - [upgrade](#upgrade)
+        - [upgrade_level](#upgrade_level)
         - [groups](#groups)
         - [keep](#keep)
             - [mode](#keep-mode)
@@ -50,6 +51,7 @@ The Pokemon Optimizer manage transfer and evolution of your Pokemon.
                 "evolve_count_for_lucky_egg": 80,
                 "may_use_lucky_egg": true,
                 "upgrade": true,
+                "upgrade_level": 60,
                 "groups": {
                     "gym": ["Dragonite", "Snorlax", "Lapras", "Arcanine"]
                 },
@@ -64,7 +66,7 @@ The Pokemon Optimizer manage transfer and evolution of your Pokemon.
                     {
                         "mode": "by_family",
                         "top": 1,
-                        "sort": [{"ncp": "0.9"}],
+                        "sort": [{"ncp": 0.9}],
                         "evolve": true,
                         "upgrade": false
                     },
@@ -79,7 +81,7 @@ The Pokemon Optimizer manage transfer and evolution of your Pokemon.
                         "mode": "by_family",
                         "names": ["gym"],
                         "top": 3,
-                        "sort": [{"iv": 0.9}, {"ncp": "0.9"}],
+                        "sort": [{"iv": 0.9}, {"ncp": 0.9}],
                         "evolve": true,
                         "upgrade": true
                     }
@@ -180,7 +182,7 @@ Better quality Pokemon have priority for evolution and the Pokemon Optimizer wil
 
 The below 2% rule help the Pokemon Optimizer to disregard rare Pokemon and focus on common Pokemon to evolve for xp.
 
-#### 2% rule
+###### 2% rule
 For each family of Pokemon, if, after evolving your best Pokemon, you have enough candies left to evolve 2% of your total bag capacity, the first rank of the family are eligible for xp evolution.
 <br>If you do not have enough candies or Pokemon to evolve these 2%, they will be transfered.
 
@@ -234,6 +236,8 @@ Define whether you allow the Pokemon Optimizer to use a lucky egg before evolvin
 The `upgrade` parameter activate or deactivate the upgrade (power-up) of Pokemon.
 
 At `true`, you allow the Pokemon Optimizer to upgrade every Pokemon that are the best according to your own criteria.
+<br>If `evolve` is also activated, evolution has priority over upgrade.
+Which means that the Pokemon Optimizer is going to wait that a Pokemon is fully evolved before upgrading it.
 <br>At `false`, and regardless of other parameters, no Pokemon is ever going to be upgraded.
 <br>`upgrade` parameter can be deactivated separately for each rule (see [`upgrade`](#keep-upgrade)).
 
@@ -242,6 +246,32 @@ Note that, whatever is the value you choose to give to that parameter, you will 
 It can help you rectify your configuration or guide you during manual power-up.
 
 `Upgraded Magikarp [IV 0.96] [CP 231] [81 candies] [132450 stardust]`
+
+[[back to top](#pokemon-optimizer)]
+
+### upgrade_level
+| Parameter       | Possible values | Default |
+|-----------------|-----------------|---------|
+| `upgrade_level` | `[1-80]`        | `60`    |
+
+This the maximum level at which you want the Pokemon Optimizer to upgrade your Pokemon.
+<br>Pokemon upgrade level cannot be higher than 2 times player level. The parameter value will be majored by `2 * player level`.
+
+Pokemon are either fully upgraded to the maximum possible level or not upgraded at all.
+The higher the level is, the more costly in candies and stardust it becomes to upgrade a Pokemon.
+
+###### Cumulative upgrade cost (candy, stardust)
+
+| From - To | 10        | 20          | 30          | 40          | 50          | 60            | 70            | 80            |
+|-----------|:---------:|:-----------:|:-----------:|:-----------:|:-----------:|:-------------:|:-------------:|:-------------:|
+| 1         | 9<br>3000 | 19<br>11000 | 38<br>25500 | 58<br>47500 | 87<br>80000 | 126<br>125000 | 196<br>190000 | 319<br>280000 |
+| 10        |           | 10<br>8000  | 29<br>22500 | 49<br>44500 | 78<br>77000 | 117<br>122000 | 187<br>187000 | 310<br>277000 |
+| 20        |           |             | 19<br>14500 | 39<br>36500 | 68<br>69000 | 107<br>114000 | 177<br>179000 | 300<br>269000 |
+| 30        |           |             |             | 20<br>22000 | 49<br>54500 |  88<br>99500  | 158<br>164500 | 281<br>254500 |
+| 40        |           |             |             |             | 29<br>32500 |  68<br>77500  | 138<br>142500 | 261<br>232500 |
+| 50        |           |             |             |             |             |  39<br>45000  | 109<br>110000 | 232<br>200000 |
+| 60        |           |             |             |             |             |               |  70<br>65000  | 193<br>155000 |
+| 70        |           |             |             |             |             |               |               | 123<br>90000  |
 
 [[back to top](#pokemon-optimizer)]
 
@@ -368,6 +398,8 @@ Define according to which criteria you want to sort your Pokemon.
 | `iv_defense`         | defense component of iv between 0 and 15                                     |
 | `iv_stamina`         | stamina component of iv between 0 and 15                                     |
 | `dps`                | raw dps based on the moves of the pokemon                                    |
+| `dps1`               | raw dps of the fast attack                                                   |
+| `dps2`               | raw dps of the charge attack                                                 |
 | `dps_attack`         | estimated average dps when attacking                                         |
 | `attack_perfection`  | ratio `dps_attack` / `best_dps_attack`. Return same order as `dps_attack`    |
 | `dps_defense`        | estimated average dps when defending                                         |

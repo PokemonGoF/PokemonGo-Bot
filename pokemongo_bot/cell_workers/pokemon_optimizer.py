@@ -47,6 +47,7 @@ class PokemonOptimizer(Datastore, BaseTask):
         self.config_evolve_count_for_lucky_egg = self.config.get("evolve_count_for_lucky_egg", 80)
         self.config_may_use_lucky_egg = self.config.get("may_use_lucky_egg", False)
         self.config_upgrade = self.config.get("upgrade", False)
+        self.config_upgrade_level = self.config.get("upgrade_level", 60)
         self.config_groups = self.config.get("groups", {"gym": ["Dragonite", "Snorlax", "Lapras", "Arcanine"]})
         self.config_keep = self.config.get("keep", [{"mode": "by_family", "top": 1, "sort": [{"iv": 0.9}], "evolve": True, "upgrade": False},
                                                     {"mode": "by_family", "top": 1, "sort": [{"ncp": 0.9}], "evolve": True, "upgrade": False},
@@ -154,7 +155,6 @@ class PokemonOptimizer(Datastore, BaseTask):
             xp_all += xp
 
         self.apply_optimization(transfer_all, evolve_all, upgrade_all, xp_all)
-        inventory.update_web_inventory()
 
         return WorkerResult.SUCCESS
 
@@ -162,6 +162,8 @@ class PokemonOptimizer(Datastore, BaseTask):
         for pokemon in inventory.pokemons().all():
             setattr(pokemon, "ncp", pokemon.cp_percent)
             setattr(pokemon, "dps", pokemon.moveset.dps)
+            setattr(pokemon, "dps1", pokemon.fast_attack.dps)
+            setattr(pokemon, "dps2", pokemon.charged_attack.dps)
             setattr(pokemon, "dps_attack", pokemon.moveset.dps_attack)
             setattr(pokemon, "dps_defense", pokemon.moveset.dps_defense)
 
@@ -241,13 +243,13 @@ class PokemonOptimizer(Datastore, BaseTask):
         if len(sorted_pokemon) == 0:
             return ([], [], [])
 
-        top = max(rule.get("top", 1), 0)
+        top = max(rule.get("top", 0), 0)
         index = int(math.ceil(top)) - 1
 
         if 0 < top < 1:
             worst = object()
 
-            for a in rule.get("sort"):
+            for a in rule.get("sort", []):
                 best_attribute = getattr(sorted_pokemon[0], a)
                 setattr(worst, a, best_attribute * (1 - top))
         elif 0 <= index < len(sorted_pokemon):
@@ -323,7 +325,7 @@ class PokemonOptimizer(Datastore, BaseTask):
                           rule.get("evolve", True))
         may_try_upgrade = rule.get("upgrade", False)
 
-        for a in rule.get("sort"):
+        for a in rule.get("sort", []):
             if (type(a) is str) or (type(a) is unicode):
                 value = getattr(pokemon, a, 0)
                 score.append(value)
@@ -368,17 +370,18 @@ class PokemonOptimizer(Datastore, BaseTask):
             evolve.append(pokemon)
 
         upgrade = []
+        upgrade_level = min(self.config_upgrade_level, inventory.player().level * 2)
 
         for pokemon in try_upgrade:
             level = int(pokemon.level * 2) - 1
 
-            if level >= 80:
+            if level >= upgrade_level:
                 continue
 
             full_upgrade_candy_cost = 0
             full_upgrade_stardust_cost = 0
 
-            for i in range(level, 80):
+            for i in range(level, upgrade_level):
                 upgrade_cost = self.pokemon_upgrade_cost[i - 1]
                 full_upgrade_candy_cost += upgrade_cost[0]
                 full_upgrade_stardust_cost += upgrade_cost[1]
@@ -556,6 +559,7 @@ class PokemonOptimizer(Datastore, BaseTask):
 
         if self.config_evolve and (not self.bot.config.test):
             candy.consume(pokemon.evolution_cost - candy_awarded)
+            inventory.player().exp += xp
 
         self.emit_event("pokemon_evolved",
                         formatted="Evolved {pokemon} [IV {iv}] [CP {cp}] [{candy} candies] [+{xp} xp]",
@@ -586,9 +590,10 @@ class PokemonOptimizer(Datastore, BaseTask):
 
     def upgrade_pokemon(self, pokemon):
         level = int(pokemon.level * 2) - 1
+        upgrade_level = min(self.config_upgrade_level, inventory.player().level * 2)
         candy = inventory.candies().get(pokemon.pokemon_id)
 
-        for i in range(level, 80):
+        for i in range(level, upgrade_level):
             upgrade_cost = self.pokemon_upgrade_cost[i - 1]
             upgrade_candy_cost = upgrade_cost[0]
             upgrade_stardust_cost = upgrade_cost[1]
