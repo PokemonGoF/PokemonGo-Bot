@@ -64,9 +64,10 @@ function initialize() {
   var mapDiv = document.getElementById('map-canvas');
   map = new google.maps.Map(mapDiv, mapOptions);
 
-  setTimeout(function(){
-    //navigator.geolocation.getCurrentPosition(onFirstPosition, onPositionError, locationOptions);
-  },1);
+  initialiseEventBus();
+
+  //navigator.geolocation.getCurrentPosition(onFirstPosition, onPositionError, locationOptions);
+
   onFirstPosition({
      "coords": {
        latitude: parseFloat(0.1),
@@ -77,7 +78,6 @@ function initialize() {
 
 function onFirstPosition(position) {
   setUserLocation(position.coords.latitude, position.coords.longitude);
-  initialiseEventBus();
   map.panTo(userLocation);
   var message = {};
   message.lat = position.coords.latitude;
