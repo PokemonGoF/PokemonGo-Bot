@@ -21,8 +21,9 @@ class PolylineObjectHandler:
         Google API has limits, so we can't generate new Polyline at every tick...
         '''
 
-        # _cache might be None...
-        is_old_cache = lambda : tuple(origin) != PolylineObjectHandler._cache.get_last_pos()
+        # Absolute offset between bot origin and PolyLine get_last_pos() (in meters)
+        abs_offset = abs(haversine.haversine(tuple(origin), PolylineObjectHandler._cache.get_last_pos())*1000)
+        is_old_cache = lambda : abs_offset < 8 # Consider cache old if we identified an offset more then 8 m
         new_dest_set = lambda : tuple(destination) != PolylineObjectHandler._cache.destination
 
         if PolylineObjectHandler._run and (not is_old_cache()):
