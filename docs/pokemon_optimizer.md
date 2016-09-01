@@ -66,7 +66,7 @@ The Pokemon Optimizer manage transfer and evolution of your Pokemon.
                     {
                         "mode": "by_family",
                         "top": 1,
-                        "sort": [{"ncp": "0.9"}],
+                        "sort": [{"ncp": 0.9}],
                         "evolve": true,
                         "upgrade": false
                     },
@@ -81,7 +81,7 @@ The Pokemon Optimizer manage transfer and evolution of your Pokemon.
                         "mode": "by_family",
                         "names": ["gym"],
                         "top": 3,
-                        "sort": [{"iv": 0.9}, {"ncp": "0.9"}],
+                        "sort": [{"iv": 0.9}, {"ncp": 0.9}],
                         "evolve": true,
                         "upgrade": true
                     }
@@ -236,6 +236,8 @@ Define whether you allow the Pokemon Optimizer to use a lucky egg before evolvin
 The `upgrade` parameter activate or deactivate the upgrade (power-up) of Pokemon.
 
 At `true`, you allow the Pokemon Optimizer to upgrade every Pokemon that are the best according to your own criteria.
+<br>If `evolve` is also activated, evolution has priority over upgrade.
+Which means that the Pokemon Optimizer is going to wait that a Pokemon is fully evolved before upgrading it.
 <br>At `false`, and regardless of other parameters, no Pokemon is ever going to be upgraded.
 <br>`upgrade` parameter can be deactivated separately for each rule (see [`upgrade`](#keep-upgrade)).
 

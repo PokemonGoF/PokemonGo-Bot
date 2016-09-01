@@ -633,6 +633,10 @@ class PokemonGoBot(Datastore):
             'player_data',
             parameters=('player_data', )
         )
+        self.event_manager.register_event(
+            'forts_found',
+            parameters=('json')
+        )
 
     def tick(self):
         self.health_record.heartbeat()
@@ -737,6 +741,26 @@ class PokemonGoBot(Datastore):
                 json.dump({'lat': lat, 'lng': lng, 'alt': alt, 'start_position': self.start_position}, outfile)
         except IOError as e:
             self.logger.info('[x] Error while opening location file: %s' % e)
+    def emit_forts_event(self,response_dict):
+        map_objects = response_dict.get(
+            'responses', {}
+        ).get('GET_MAP_OBJECTS', {})
+        status = map_objects.get('status', None)
+
+        map_cells = []
+        if status and status == 1:
+            map_cells = map_objects['map_cells']
+
+            if map_cells and len(map_cells):
+                for cell in map_cells:
+                    if "forts" in cell and len(cell["forts"]):
+                        self.event_manager.emit(
+                            'forts_found',
+                            sender=self,
+                            level='debug',
+                            formatted='Found forts {json}',
+                            data={'json': json.dumps(cell["forts"])}
+                        )
 
     def find_close_cells(self, lat, lng):
         cellid = get_cell_ids(lat, lng)
@@ -1308,6 +1332,9 @@ class PokemonGoBot(Datastore):
             since_timestamp_ms=timestamp,
             cell_id=cellid
         )
+        self.emit_forts_event(self.last_map_object)
+        #if self.last_map_object:
+        #    print self.last_map_object
         self.last_time_map_object = time.time()
 
         return self.last_map_object

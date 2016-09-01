@@ -244,6 +244,8 @@ class IncubateEggs(BaseTask):
                     'candy': candy[i],
                 }
             )
+            # hatching egg gets exp too!
+            inventory.player().exp += xp[i]
 
     def _print_eggs(self):
         if not self.used_incubators:
