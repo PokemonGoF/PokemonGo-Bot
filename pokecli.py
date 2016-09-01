@@ -17,7 +17,6 @@ copies or substantial portions of the Software.
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
 DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
@@ -165,7 +164,6 @@ def main():
                     level='info',
                     formatted='Log logged in, reconnecting in {:d}'.format(wait_time)
                 )
-                bot = None
                 time.sleep(wait_time)
             except ServerBusyOrOfflineException:
                 bot.event_manager.emit(
@@ -174,7 +172,6 @@ def main():
                     level='info',
                     formatted='Server busy or offline'
                 )
-                bot = None
                 time.sleep(wait_time)
             except ServerSideRequestThrottlingException:
                 bot.event_manager.emit(
@@ -191,7 +188,6 @@ def main():
                     level='info',
                     formatted='Probably permabanned, Game Over ! Play again at https://club.pokemon.com/us/pokemon-trainer-club/sign-up/'
                 )
-                bot = None
                 time.sleep(36000)
             except NoPlayerPositionSetException:
                 bot.event_manager.emit(
@@ -200,7 +196,6 @@ def main():
                     level='info',
                     formatted='No player position set'
                 )
-                bot = None
                 time.sleep(wait_time)
 
     except GeocoderQuotaExceeded:
