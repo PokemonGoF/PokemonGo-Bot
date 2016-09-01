@@ -102,13 +102,12 @@ class FollowPath(BaseTask):
         
         for index in range(len(points)):
             point = points[index]
-            botlat, botlng, _ = self.bot.api.get_position()
             lat = point['lat']
             lng = point['lng']
 
             dist = distance(
-                botlat,
-                botlng,
+                self.bot.position[0],
+                self.bot.position[1],
                 lat,
                 lng
             )
