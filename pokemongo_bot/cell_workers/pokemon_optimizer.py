@@ -249,7 +249,7 @@ class PokemonOptimizer(Datastore, BaseTask):
         if 0 < top < 1:
             worst = object()
 
-            for a in rule.get("sort"):
+            for a in rule.get("sort", []):
                 best_attribute = getattr(sorted_pokemon[0], a)
                 setattr(worst, a, best_attribute * (1 - top))
         elif 0 <= index < len(sorted_pokemon):
@@ -325,7 +325,7 @@ class PokemonOptimizer(Datastore, BaseTask):
                           rule.get("evolve", True))
         may_try_upgrade = rule.get("upgrade", False)
 
-        for a in rule.get("sort"):
+        for a in rule.get("sort", []):
             if (type(a) is str) or (type(a) is unicode):
                 value = getattr(pokemon, a, 0)
                 score.append(value)
