@@ -559,6 +559,7 @@ class PokemonOptimizer(Datastore, BaseTask):
 
         if self.config_evolve and (not self.bot.config.test):
             candy.consume(pokemon.evolution_cost - candy_awarded)
+            inventory.player().exp += xp
 
         self.emit_event("pokemon_evolved",
                         formatted="Evolved {pokemon} [IV {iv}] [CP {cp}] [{candy} candies] [+{xp} xp]",
