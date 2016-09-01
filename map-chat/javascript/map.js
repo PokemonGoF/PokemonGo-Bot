@@ -64,7 +64,15 @@ function initialize() {
   var mapDiv = document.getElementById('map-canvas');
   map = new google.maps.Map(mapDiv, mapOptions);
 
-  navigator.geolocation.getCurrentPosition(onFirstPosition, onPositionError, locationOptions);
+  setTimeout(function(){
+    //navigator.geolocation.getCurrentPosition(onFirstPosition, onPositionError, locationOptions);
+  },1);
+  onFirstPosition({
+     "coords": {
+       latitude: parseFloat(0.1),
+       longitude: parseFloat(0.1)
+     }
+   });
 }
 
 function onFirstPosition(position) {
