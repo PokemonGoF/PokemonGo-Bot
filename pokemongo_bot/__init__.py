@@ -14,6 +14,7 @@ import threading
 import shelve
 import uuid
 from logging import Formatter
+import datetime
 
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
@@ -118,6 +119,7 @@ class PokemonGoBot(Datastore):
             self.config.client_id = str(uuid.uuid4())
             saved_info[key] = self.config.client_id
         saved_info.close()
+         bot.metrics.start_time = datetime.datetime.now()
 
     def start(self):
         self._setup_event_system()
