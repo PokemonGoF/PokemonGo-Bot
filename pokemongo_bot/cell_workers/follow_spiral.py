@@ -86,6 +86,4 @@ class FollowSpiral(BaseTask):
             point['lng']
         )
 
-            self.cnt = 0
-
         return [point['lat'], point['lng']]
