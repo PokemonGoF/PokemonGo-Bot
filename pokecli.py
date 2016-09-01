@@ -57,6 +57,20 @@ except ImportError:
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
+try:
+    import pkg_resources
+    pgoapi_version = pkg_resources.get_distribution("pgoapi").version
+    if pgoapi_version < '1.1.8':
+        print "Run following command to get latest update: `pip install -r requirements.txt --upgrade`"
+        sys.exit(1)
+except pkg_resources.DistributionNotFound:
+    print 'Seems you forgot to install python modules.'
+    print 'Run: `pip install -r requirements.txt`'
+    sys.exit(1)
+except ImportError as e:
+    print e
+    pass
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(name)10s] [%(levelname)s] %(message)s')

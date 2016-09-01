@@ -50,11 +50,15 @@ ECHO.
 ECHO.--------------------PokemonGo-Bot Configurator--------------------
 ECHO.
 ECHO.
-ECHO. The PokemonGo-Bot Configurator creates the needed %AuthPath%auth.json and %UserDataPath%userdata.js
+ECHO. The PokemonGo-Bot Configurator creates
+ECHO.
+ECHO. %AuthPath%auth.json
+ECHO.
+ECHO. and %UserDataPath%userdata.js
 ECHO.
 ECHO. It only configures the needed info to login with the PokemonGo-Bot.
 ECHO.
-ECHO. Choose one of the %AuthPath%config.json.examples and rename it to %AuthPath%config.json
+ECHO. Choose one of the %AuthPath%config.json.examples
 ECHO.
 ECHO. To fine tune your %AuthPath%config.json you will have to edit the file.
 ECHO.
@@ -73,7 +77,9 @@ ECHO.
 ECHO.
 ECHO.=============================================================================
 ECHO.=                                                                           =
-ECHO.=  WARNING - Your existing auth.json and/or userdata.js will be overwriten  =
+ECHO.=           WARNING - Your existing auth.json, userdata.js and              =
+ECHO.=                                                                           =
+ECHO.=                    config.json will be overwriten.                        =
 ECHO.=                                                                           =
 ECHO.=     Press Enter to abort in next screen or make a choice to continue      =
 ECHO.=                                                                           =
@@ -90,11 +96,20 @@ ECHO.
 ECHO.
 ECHO.--------------------PokemonGo-Bot Auth/Userdata Creator--------------------
 ECHO.
-ECHO. First create your %AuthPath%auth.json and then your %UserDataPath%userdata.js.
 ECHO.
 ECHO. 1 - %AuthPath%auth.json
 ECHO.
 ECHO. 2 - %UserDataPath%userdata.js
+ECHO.
+ECHO. 3 - Choose a config.json
+ECHO.
+ECHO.
+ECHO.
+ECHO. First create your %AuthPath%auth.json
+ECHO.
+ECHO. then your %UserDataPath%userdata.js
+ECHO.
+ECHO. after that choose 3 to choose your config.json.
 ECHO.
 ECHO.
 
@@ -103,6 +118,7 @@ SET _ok=
 SET /p _ok= Make your choice or press Enter to close: ||goto:eof
 IF "%_ok%" == "1" SET CHOICE=Auth&GOTO :Auth
 IF "%_ok%" == "2" SET CHOICE=UserData&GOTO :UserData
+IF "%_ok%" == "3" SET CHOICE=Menu2&GOTO :Menu2
 GOTO :_choice 
 
 :Auth
@@ -182,20 +198,54 @@ ECHO.	gMapsAPIKey: "%API%",>>%UserData%
 ECHO.	botPath: true,>>%UserData%
 ECHO.	actionsEnabled: false>>%UserData%
 ECHO.};>>%UserData%
-call:EndUserData
-goto:eof
+goto:menu
+
+:Menu2
+cls
+ECHO.
+ECHO.
+ECHO.--------------------PokemonGo-Bot config.json chooser--------------------
+ECHO.
+ECHO. 
+ECHO. 1 - config.json.example
+ECHO.
+ECHO. 2 - config.json.cluster.example
+ECHO.
+ECHO. 3 - config.json.map.example
+ECHO.
+ECHO. 4 - config.json.optimizer.example
+ECHO.
+ECHO. 5 - config.json.path.example
+ECHO.
+ECHO. 6 - config.json.pokemon.example
+ECHO.
+ECHO. Choose the config you want to use with your bot,
+ECHO.
+ECHO. to customize it you will have to edit %AuthPath%config.json.
+ECHO.
+ECHO.
+:_choice2
+SET _ok2=
+SET /p _ok2= Make your choice or press Enter to close: ||goto:eof
+IF "%_ok2%" == "1" copy %AuthPath%config.json.example %AuthPath%config.json
+IF "%_ok2%" == "2" copy %AuthPath%config.json.cluster.example %AuthPath%config.json
+IF "%_ok2%" == "3" copy %AuthPath%config.json.map.example %AuthPath%config.json
+IF "%_ok2%" == "4" copy %AuthPath%config.json.optimizer.example %AuthPath%config.json
+IF "%_ok2%" == "5" copy %AuthPath%config.json.path.example %AuthPath%config.json
+IF "%_ok2%" == "6" copy %AuthPath%config.json.pokemon.example %AuthPath%config.json
+GOTO :EndUserData 
 
 :EndUserData
 cls
 ECHO.
 ECHO.
-ECHO.Your %auth% and %UserData% has been made.
+ECHO. Your %auth% and %UserData% have been made.
 ECHO.
-ECHO.Choose one of the %AuthPath%config.json.examples and rename it to %AuthPath%config.json
+ECHO. %AuthPath%config.json needs to be customized
 ECHO.
-ECHO.If you want to customize your %AuthPath%config.json then you have to edit him.
+ECHO. or you can run the bot with the default values.
 ECHO.
-ECHO.After that you are ready to start the bot.
+ECHO. After that you are ready to start the bot.
 ECHO.
 ECHO.
 timeout /t 10
