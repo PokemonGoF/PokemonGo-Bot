@@ -29,7 +29,7 @@
 					{
 						"mode": "by_family",
 						"top": 1,
-						"sort": [{"ncp": "0.9"}],
+						"sort": [{"ncp": 0.9}],
 						"evolve": true,
 						"upgrade": false
 					},
@@ -44,7 +44,7 @@
 						"mode": "by_family",
 						"names": ["gym"],
 						"top": 3,
-						"sort": [{"iv": 0.9}, {"ncp": "0.9"}],
+						"sort": [{"iv": 0.9}, {"ncp": 0.9}],
 						"evolve": true,
 						"upgrade": true
 					}
