@@ -757,7 +757,7 @@ class PokemonGoBot(Datastore):
                         self.event_manager.emit(
                             'forts_found',
                             sender=self,
-                            level='info',
+                            level='debug',
                             formatted='Found forts {json}',
                             data={'json': json.dumps(cell["forts"])}
                         )
