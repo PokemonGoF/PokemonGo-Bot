@@ -495,7 +495,7 @@ class PokemonGoBot(Datastore):
             'egg_hatched',
             parameters=(
                 'pokemon',
-                'cp', 'iv', 'exp', 'stardust', 'candy'
+                'cp', 'ncp', 'iv_ads', 'iv_pct', 'exp', 'stardust', 'candy'
             )
         )
 

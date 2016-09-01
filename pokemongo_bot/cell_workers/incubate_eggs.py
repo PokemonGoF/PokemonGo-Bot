@@ -190,6 +190,8 @@ class IncubateEggs(BaseTask):
         try:
             pokemon_data = self._check_inventory(pokemon_ids)
             pokemon_list = [inventory.Pokemon(p) for p in pokemon_data]
+            print("DATA: {}".format(pokemon_data))
+            print("LIST: {}".format(pokemon_list))
             for pokemon in pokemon_list:
                 inventory.pokemons().remove(pokemon.unique_id)
                 inventory.pokemons().add(pokemon)
