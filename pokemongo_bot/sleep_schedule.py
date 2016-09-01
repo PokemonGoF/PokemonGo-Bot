@@ -130,7 +130,7 @@ class SleepSchedule(object):
             diff = next_time - now
 
             # If sleep time is passed add one day or time to sleep less than SCHEDULING_MARGIN
-            if (next_time <= now and now > next_end) or (diff < self.SCHEDULING_MARGIN):
+            if (next_time <= now and now > next_end) or (diff > timedelta(0) and diff < self.SCHEDULING_MARGIN):
                 next_time += timedelta(days=1)
                 diff = next_time - now
             # If now is sleeping time
