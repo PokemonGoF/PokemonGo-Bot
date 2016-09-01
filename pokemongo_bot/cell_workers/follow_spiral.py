@@ -80,32 +80,16 @@ class FollowSpiral(BaseTask):
         )
 
         alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
-        if self.bot.config.walk_max > 0:
-            step_walker = StepWalker(
-                self.bot,
-                point['lat'],
-                point['lng']
-            )
+        step_walker = StepWalker(
+            self.bot,
+            point['lat'],
+            point['lng']
+        )
 
-            if self.cnt == 1:
-                self.emit_event(
-                    'position_update',
-                    formatted="Walking from {last_position} to {current_position} ({distance} {distance_unit})",
-                    data={
-                        'last_position': (last_lat, last_lng, last_alt),
-                        'current_position': (point['lat'], point['lng'], alt),
-                        'distance': dist,
-                        'distance_unit': 'm'
-                    }
-                )
-
-            if step_walker.step():
-                step_walker = None
-        else:
-            self.bot.api.set_position(point['lat'], point['lng'], alt)
+        if self.cnt == 1:
             self.emit_event(
                 'position_update',
-                formatted="Teleported from {last_position} to {current_position} ({distance} {distance_unit})",
+                formatted="Walking from {last_position} to {current_position} ({distance} {distance_unit})",
                 data={
                     'last_position': (last_lat, last_lng, last_alt),
                     'current_position': (point['lat'], point['lng'], alt),
@@ -113,6 +97,9 @@ class FollowSpiral(BaseTask):
                     'distance_unit': 'm'
                 }
             )
+
+        if step_walker.step():
+            step_walker = None
 
         if dist <= 1 or (self.bot.config.walk_min > 0 and step_walker == None):
             if self.ptr + self.direction >= len(self.points) or self.ptr + self.direction <= -1:
