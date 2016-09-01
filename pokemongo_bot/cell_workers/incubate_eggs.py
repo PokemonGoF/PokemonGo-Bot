@@ -196,8 +196,8 @@ class IncubateEggs(BaseTask):
                 inventory.pokemons().remove(pokemon.unique_id)
                 inventory.pokemons().add(pokemon)
         except:
-            pokemon_data = [{"name":"error", "cp":"error", "iv":"error"}]
-        if not pokemon_ids or not pokemon_data or pokemon_data[0]['name'] == "error":
+            pokemon_data = []
+        if not pokemon_ids or not pokemon_data:
             self.emit_event(
                 'egg_hatched',
                 data={
@@ -219,7 +219,7 @@ class IncubateEggs(BaseTask):
                     'pokemon': pokemon_list[i].name,
                     'cp': pokemon_list[i].cp,
                     'ncp': round(pokemon_list[i].cp_percent, 2),
-                    'iv_ads': pokemon_list[i].iv_display(),
+                    'iv_ads': "{}/{}/{}".format(pokemon_list[i].iv_attack, pokemon_list[i].iv_defense, pokemon_list[i].iv_stamina),
                     'iv_pct': pokemon_list[i].iv,
                     'exp': xp[i],
                     'stardust': stardust[i],
