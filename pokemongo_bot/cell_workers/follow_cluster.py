@@ -56,19 +56,13 @@ class FollowCluster(BaseTask):
 
                 self.announced = False
 
-                if self.bot.config.walk_max > 0:
-                    step_walker = StepWalker(
-                        self.bot,
-                        lat,
-                        lng
-                    )
+                step_walker = StepWalker(
+                    self.bot,
+                    lat,
+                    lng
+                )
 
-                    self.is_at_destination = False
-                    if step_walker.step():
-                        self.is_at_destination = True
-                else:
-                    alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
-                    self.bot.api.set_position(lat, lng, alt)
+        alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
 
             elif not self.announced:
                 self.emit_event(
