@@ -29,7 +29,7 @@
 for manual installation please refer to [here](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/manual_installation.md)
 
 # Windows
-We do recommend Windows users to use [Docker](#docker) this will work much easier and smoother (also saver)
+We do recommend Windows users to use [Docker](#docker) this will work much easier and smoother (also safer)
 
 ## Requirements
 
@@ -103,7 +103,7 @@ docker run --name=bot1-pokego --rm -it -v $(pwd)/configs:/usr/src/app/configs -v
 Run a second container provided with the OpenPoGoBotWeb view:
 
 ```
-docker run --name=bot1-pokegoweb --rm -it --volumes-from bot1-pokego -p 8000:8000 -v $(pwd)/configs/userdata.js:/usr/src/app/web/userdata.js -w /usr/src/app/web python:2.7 python -m SimpleHTTPServer
+docker run --name=bot1-pokegoweb --rm -it --volumes-from bot1-pokego -p 8000:8000 -v $(pwd)/configs/userdata.js:/usr/src/app/web/config/userdata.js -w /usr/src/app/web python:2.7 python -m SimpleHTTPServer
 ```
 The OpenPoGoWeb will be served on `http://<your host>:8000`
 
@@ -122,7 +122,7 @@ docker run --name=bot1-pokego --rm -it -v $(pwd)/configs/config.json:/usr/src/ap
 - Run the web container:
 
 ```
-docker run --name=bot1-pokegoweb --rm -it --volumes-from bot1-pokego -p 8000:8000 -v $(pwd)/configs/userdata.js:/usr/src/app/web/userdata.js -w /usr/src/app/web python:2.7 python -m SimpleHTTPServer
+docker run --name=bot1-pokegoweb --rm -it --volumes-from bot1-pokego -p 8000:8000 -v $(pwd)/configs/userdata.js:/usr/src/app/web/config/userdata.js -w /usr/src/app/web python:2.7 python -m SimpleHTTPServer
 ```
 
 - Retrieve your host address:

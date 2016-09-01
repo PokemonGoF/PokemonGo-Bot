@@ -526,7 +526,9 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
                 try:
                     inventory.pokemons().add(pokemon)
-                    exp_gain = sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])
+                    exp_gain = sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])  
+                    # update player's exp
+                    inventory.player().exp += exp_gain
 
                     self.emit_event(
                         'pokemon_caught',

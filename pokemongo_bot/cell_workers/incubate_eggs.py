@@ -224,6 +224,9 @@ class IncubateEggs(BaseTask):
                     'candy': candy[i],
                 }
             )
+            # hatching egg gets exp too!
+            inventory.player().exp += xp[i]
+            
         self.bot.metrics.hatched_eggs(len(pokemon_list))
         return WorkerResult.SUCCESS
 
