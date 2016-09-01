@@ -33,7 +33,6 @@ class FollowCluster(BaseTask):
             self.dest = find_biggest_cluster(self.radius, forts)
 
         if self.dest is not None:
-
             lat = self.dest['latitude']
             lng = self.dest['longitude']
             cnt = self.dest['num_points']
@@ -61,9 +60,6 @@ class FollowCluster(BaseTask):
                     lat,
                     lng
                 )
-
-        alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
-
             elif not self.announced:
                 self.emit_event(
                     'arrived_at_cluster',
