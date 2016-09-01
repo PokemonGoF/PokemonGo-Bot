@@ -8,7 +8,7 @@ class PolylineWalker(StepWalker):
         self.bot = bot
         self.speed = self.bot.config.walk_min
         self.dest_lat, self.dest_lng = dest_lat, dest_lng
-        self.actual_pos = tuple(self.bot.position()[:2])
+        self.actual_pos = tuple(self.bot.position[:2])
         self.polyline = PolylineObjectHandler.cached_polyline(self.actual_pos,
                                                               (self.dest_lat, self.dest_lng),
                                                               self.speed)
