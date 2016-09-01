@@ -70,7 +70,6 @@ class FollowSpiral(BaseTask):
         last_lat, last_lng, last_alt = self.bot.api.get_position()
 
         point = self.points[self.ptr]
-        self.cnt += 1
 
         dist = distance(
             last_lat,
