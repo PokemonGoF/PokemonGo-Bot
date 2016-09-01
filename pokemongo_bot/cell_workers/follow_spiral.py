@@ -86,28 +86,6 @@ class FollowSpiral(BaseTask):
             point['lng']
         )
 
-        if self.cnt == 1:
-            self.emit_event(
-                'position_update',
-                formatted="Walking from {last_position} to {current_position} ({distance} {distance_unit})",
-                data={
-                    'last_position': (last_lat, last_lng, last_alt),
-                    'current_position': (point['lat'], point['lng'], alt),
-                    'distance': dist,
-                    'distance_unit': 'm'
-                }
-            )
-
-        if step_walker.step():
-            step_walker = None
-
-        if dist <= 1 or (self.bot.config.walk_min > 0 and step_walker == None):
-            if self.ptr + self.direction >= len(self.points) or self.ptr + self.direction <= -1:
-                self.direction *= -1
-            if len(self.points) != 1:
-                self.ptr += self.direction
-            else:
-                self.ptr = 0
             self.cnt = 0
 
         return [point['lat'], point['lng']]
