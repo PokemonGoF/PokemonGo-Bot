@@ -2,6 +2,7 @@ import time
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.item_list import Item
+from pokemongo_bot import inventory
 
 class UseIncense(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -10,6 +11,7 @@ class UseIncense(BaseTask):
       self.start_time = 0
       self.use_incense = self.config.get('use_incense', False)
       self.use_order = self.config.get('use_order', {})
+      self._update_inventory()
       
       self.types = {
         401: "Ordinary",
@@ -32,10 +34,10 @@ class UseIncense(BaseTask):
       return Item.ITEM_INCENSE_ORDINARY.value 
     
     def _update_inventory(self):
-      self.incense_ordinary_count = self.bot.item_inventory_count(Item.ITEM_INCENSE_ORDINARY.value)      
-      self.incense_spicy_count = self.bot.item_inventory_count(Item.ITEM_INCENSE_SPICY.value)
-      self.incense_cool_count = self.bot.item_inventory_count(Item.ITEM_INCENSE_COOL.value)      
-      self.incense_floral_count = self.bot.item_inventory_count(Item.ITEM_INCENSE_FLORAL.value)  
+      self.incense_ordinary_count = inventory.items().get(Item.ITEM_INCENSE_ORDINARY.value).count      
+      self.incense_spicy_count = inventory.items().get(Item.ITEM_INCENSE_SPICY.value).count
+      self.incense_cool_count = inventory.items().get(Item.ITEM_INCENSE_COOL.value).count      
+      self.incense_floral_count = inventory.items().get(Item.ITEM_INCENSE_FLORAL.value).count  
     
     def _has_count(self):
       return self.incense_ordinary_count > 0 or self.incense_spicy_count > 0 or self.incense_cool_count > 0 or self.incense_floral_count > 0
@@ -62,7 +64,7 @@ class UseIncense(BaseTask):
               formatted="Using {type} incense. {incense_count} incense remaining",
               data={
                   'type': self.types.get(type, 'Unknown'),
-                  'incense_count': self.bot.item_inventory_count(type)
+                  'incense_count': inventory.items().get(type).count
               }
           )
         else:
@@ -71,7 +73,7 @@ class UseIncense(BaseTask):
               formatted="Unable to use incense {type}. {incense_count} incense remaining",
               data={
                   'type': self.types.get(type, 'Unknown'),
-                  'incense_count': self.bot.item_inventory_count(type)
+                  'incense_count': inventory.items().get(type).count
               }
           )
       
