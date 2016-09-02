@@ -26,7 +26,7 @@ If you need any help please don't create an issue as we have a great community o
 If you discover a bug in the bot, please [search our issue tracker](https://github.com/PokemonGoF/PokemonGo-Bot/issues?q=is%3Aissue+sort%3Aupdated-desc) first. If it hasn't been reported, please [create a new issue](https://github.com/PokemonGoF/PokemonGo-Bot/issues/new) and ensure you follow the template guide so that our team can assist you as quickly as possible.
 
 ###[Feature Requests](https://github.com/PokemonGoF/PokemonGo-Bot/labels/Feature%20Request)
-If you have a great idea to improve the bot, please [search our feature tracker](https://github.com/PokemonGoF/PokemonGo-Bot/labels/Feature%20Request) first to ensure someone else hasn't already come up with the same great idea.  If it hasn't been requested, please [create a new request](https://github.com/PokemonGoF/PokemonGo-Bot/issues/new) and ensure you follow the template guide so that it doesnt get lost with the bug reports. 
+If you have a great idea to improve the bot, please [search our feature tracker](https://github.com/PokemonGoF/PokemonGo-Bot/labels/Feature%20Request) first to ensure someone else hasn't already come up with the same great idea.  If it hasn't been requested, please [create a new request](https://github.com/PokemonGoF/PokemonGo-Bot/issues/new) and ensure you follow the template guide so that it doesnt get lost with the bug reports.
 While you're there vote on other feature requests to let the devs know what is most important to you.
 
 ###[Pull Requests](https://github.com/PokemonGoF/PokemonGo-Bot/pulls)
@@ -71,7 +71,84 @@ If you do not want any data to be gathered, you can turn off this feature by set
 - [AHAAAAAAA](https://github.com/AHAAAAAAA/PokemonGo-Map) for parts of the s2sphere stuff
 - [Breeze ro](https://github.com/BreezeRo) for some of the MQTT/Map stuff
 
-## [Contributors](https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/CONTRIBUTORS.md)
+## Contributors
+ * eggins [first pull request]
+ * crack00r
+ * ethervoid
+ * Bashin
+ * tstumm
+ * TheGoldenXY
+ * Reaver01
+ * rarshonsky
+ * earthchie
+ * haykuro
+ * 05-032
+ * sinistance
+ * CapCap
+ * mzupan
+ * gnekic(GeXx)
+ * Shoh
+ * luizperes
+ * brantje
+ * VirtualSatai
+ * dmateusp
+ * jtdroste
+ * msoedov
+ * Grace
+ * Calcyfer
+ * asaf400
+ * guyz
+ * DavidK1m
+ * budi-khoirudin
+ * riberod07
+ * th3w4y
+ * Leaklessgfy
+ * steffwiz
+ * pulgalipe
+ * BartKoppelmans
+ * phil9l
+ * VictorChen
+ * AlvaroGzP
+ * fierysolid
+ * surfaace
+ * surceis
+ * SpaceWhale
+ * klingan
+ * reddivision
+ * DayBr3ak
+ * kbinani
+ * mhdasding
+ * MFizz
+ * NamPNQ
+ * z4ppy.bbc
+ * matheussampaio
+ * Abraxas000
+ * lucasfevi
+ * pokepal
+ * Moonlight-Angel
+ * mjmadsen
+ * nikofil
+ * bigkraig
+ * nikhil-pandey
+ * thebigjc
+ * JaapMoolenaar
+ * eevee-github
+ * g0vanish
+ * cmezh
+ * Nivong
+ * kestel
+ * simonsmh
+ * joaodragao
+ * extink
+ * Quantra
+ * pmquan
+ * net8q
+ * SyncX
+ * umbreon222
+ * DeXtroTip
+ * rawgni
+ * Breeze Ro
+ * bruno-kenji
 
 ## Disclaimer
 ©2016 Niantic, Inc. ©2016 Pokémon. ©1995–2016 Nintendo / Creatures Inc. / GAME FREAK inc. © 2016 Pokémon/Nintendo Pokémon and Pokémon character names are trademarks of Nintendo. The Google Maps Pin is a trademark of Google Inc. and the trade dress in the product design is a trademark of Google Inc. under license to The Pokémon Company. Other trademarks are the property of their respective owners.

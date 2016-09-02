@@ -70,6 +70,7 @@ class ColoredLoggingHandler(EventHandler):
         'unknown_spin_result':               'red',
         'unset_pokemon_nickname':            'red',
         'vip_pokemon':                       'red',
+        'use_incense':                       'blue',
         'vanish_limit_reached':              'red',
 
         'arrived_at_cluster':                'none',
