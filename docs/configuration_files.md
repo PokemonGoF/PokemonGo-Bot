@@ -165,6 +165,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `lure_max_distance`: Default `2000` | Maxmimum distance lured forts influence this task
   * `walker`: Default `StepWalker` | Which walker moves us
   * `log_interval`: Default `5` | Log output interval
+  * `log_interval_meters`: Default `10` | Log only every X meters (can be combined with log_interval)
 * [MoveToMapPokemon](#sniping-movetolocation)
 * NicknamePokemon
   * `enable`: Disable or enable this task.
