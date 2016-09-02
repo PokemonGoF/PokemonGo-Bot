@@ -32,11 +32,14 @@ import logging
 import os
 import ssl
 import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 import time
 import signal
-from datetime import timedelta
+import string
+import subprocess
 from getpass import getpass
-from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException
+from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException, NoPlayerPositionSetException
 from geopy.exc import GeocoderQuotaExceeded
 
 from pokemongo_bot import PokemonGoBot, TreeConfigBuilder
@@ -54,13 +57,30 @@ except ImportError:
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
+try:
+    import pkg_resources
+    pgoapi_version = pkg_resources.get_distribution("pgoapi").version
+    if pgoapi_version < '1.1.8':
+        print "Run following command to get latest update: `pip install -r requirements.txt --upgrade`"
+        sys.exit(1)
+except pkg_resources.DistributionNotFound:
+    print 'Seems you forgot to install python modules.'
+    print 'Run: `pip install -r requirements.txt`'
+    sys.exit(1)
+except ImportError as e:
+    print e
+    pass
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(name)10s] [%(levelname)s] %(message)s')
 logger = logging.getLogger('cli')
 logger.setLevel(logging.INFO)
 
-class SIGINTRecieved(Exception): pass
+
+class SIGINTRecieved(Exception):
+    pass
+
 
 def main():
     bot = False
@@ -69,12 +89,44 @@ def main():
         raise SIGINTRecieved
     signal.signal(signal.SIGINT, handle_sigint)
 
+    def initialize_task(bot, config):
+        tree = TreeConfigBuilder(bot, config.raw_tasks).build()
+        bot.workers = tree
+
+    def initialize(config):
+        bot = PokemonGoBot(config)
+        return bot
+
+    def start_bot(bot, config):
+        bot.start()
+        initialize_task(bot, config)
+        bot.metrics.capture_stats()
+        bot.health_record = BotEvent(config)
+        return bot
+
+    def get_commit_hash():
+        try:
+            hash = subprocess.check_output(['git', 'rev-parse', 'HEAD'],
+                                           stderr=subprocess.STDOUT)
+            if all(c in string.hexdigits for c in hash[:-1]):
+                with open('version', 'w') as f:
+                    f.write(hash)
+        except:
+            pass
+
+        if not os.path.exists('version'):
+            return 'unknown'
+
+        with open('version') as f:
+            return f.read()[:8]
+
     try:
         logger.info('PokemonGO Bot v1.0')
+        logger.info('commit: ' + get_commit_hash())
         sys.stdout = codecs.getwriter('utf8')(sys.stdout)
         sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
-        config = init_config()
+        config, config_file = init_config()
         if not config:
             return
 
@@ -86,12 +138,9 @@ def main():
 
         while not finished:
             try:
-                bot = PokemonGoBot(config)
-                bot.start()
-                tree = TreeConfigBuilder(bot, config.raw_tasks).build()
-                bot.workers = tree
-                bot.metrics.capture_stats()
-                bot.health_record = health_record
+                bot = initialize(config)
+                bot = start_bot(bot, config)
+                config_changed = check_mod(config_file)
 
                 bot.event_manager.emit(
                     'bot_start',
@@ -102,6 +151,15 @@ def main():
 
                 while True:
                     bot.tick()
+                    if config.live_config_update_enabled and config_changed():
+                        logger.info('Config changed! Applying new config.')
+                        config, _ = init_config()
+
+                        if config.live_config_update_tasks_only:
+                            initialize_task(bot, config)
+                        else:
+                            bot = initialize(config)
+                            bot = start_bot(bot, config)
 
             except KeyboardInterrupt:
                 bot.event_manager.emit(
@@ -129,6 +187,7 @@ def main():
                     level='info',
                     formatted='Server busy or offline'
                 )
+                time.sleep(wait_time)
             except ServerSideRequestThrottlingException:
                 bot.event_manager.emit(
                     'api_error',
@@ -137,14 +196,23 @@ def main():
                     formatted='Server is throttling, reconnecting in 30 seconds'
                 )
                 time.sleep(30)
+            except PermaBannedException:
+                bot.event_manager.emit(
+                    'api_error',
+                    sender=bot,
+                    level='info',
+                    formatted='Probably permabanned, Game Over ! Play again at https://club.pokemon.com/us/pokemon-trainer-club/sign-up/'
+                )
+                time.sleep(36000)
+            except NoPlayerPositionSetException:
+                bot.event_manager.emit(
+                    'api_error',
+                    sender=bot,
+                    level='info',
+                    formatted='No player position set'
+                )
+                time.sleep(wait_time)
 
-    except PermaBannedException:
-         bot.event_manager.emit(
-            'api_error',
-            sender=bot,
-            level='info',
-            formatted='Probably permabanned, Game Over ! Play again at https://club.pokemon.com/us/pokemon-trainer-club/sign-up/'
-         )
     except GeocoderQuotaExceeded:
         raise Exception("Google Maps API key over requests limit.")
     except SIGINTRecieved:
@@ -156,6 +224,7 @@ def main():
                 formatted='Bot caught SIGINT. Shutting down.'
             )
             report_summary(bot)
+
     except Exception as e:
         # always report session summary and then raise exception
         if bot:
@@ -165,7 +234,7 @@ def main():
     finally:
         # Cache here on SIGTERM, or Exception.  Check data is available and worth caching.
         if bot:
-            if bot.recent_forts[-1] is not None and bot.config.forts_cache_recent_forts:
+            if len(bot.recent_forts) > 0 and bot.recent_forts[-1] is not None and bot.config.forts_cache_recent_forts:
                 cached_forts_path = os.path.join(
                     _base_dir, 'data', 'recent-forts-%s.json' % bot.config.username
                 )
@@ -188,6 +257,19 @@ def main():
                         )
 
 
+def check_mod(config_file):
+    check_mod.mtime = os.path.getmtime(config_file)
+
+    def compare_mtime():
+        mdate = os.path.getmtime(config_file)
+        if check_mod.mtime == mdate:  # mtime didnt change
+            return False
+        else:
+            check_mod.mtime = mdate
+            return True
+
+    return compare_mtime
+
 
 def report_summary(bot):
     if bot.metrics.start_time is None:
@@ -200,16 +282,20 @@ def report_summary(bot):
     logger.info('Total XP Earned: {}  Average: {:.2f}/h'.format(metrics.xp_earned(), metrics.xp_per_hour()))
     logger.info('Travelled {:.2f}km'.format(metrics.distance_travelled()))
     logger.info('Visited {} stops'.format(metrics.visits['latest'] - metrics.visits['start']))
-    logger.info('Encountered {} pokemon, {} caught, {} released, {} evolved, {} never seen before'
+    logger.info('Encountered {} pokemon, {} caught, {} released, {} evolved, {} never seen before ({})'
                 .format(metrics.num_encounters(), metrics.num_captures(), metrics.releases,
-                        metrics.num_evolutions(), metrics.num_new_mons()))
+                        metrics.num_evolutions(), metrics.num_new_mons(), metrics.uniq_caught()))
     logger.info('Threw {} pokeball{}'.format(metrics.num_throws(), '' if metrics.num_throws() == 1 else 's'))
     logger.info('Earned {} Stardust'.format(metrics.earned_dust()))
+    logger.info('Hatched eggs {}'.format(metrics.hatched_eggs(0)))
+    if (metrics.next_hatching_km(0)):
+        logger.info('Next egg hatches in {:.2f} km'.format(metrics.next_hatching_km(0)))
     logger.info('')
     if metrics.highest_cp is not None:
         logger.info('Highest CP Pokemon: {}'.format(metrics.highest_cp['desc']))
     if metrics.most_perfect is not None:
         logger.info('Most Perfect Pokemon: {}'.format(metrics.most_perfect['desc']))
+
 
 def init_config():
     parser = argparse.ArgumentParser()
@@ -234,15 +320,20 @@ def init_config():
 
     # Select a config file code
     parser.add_argument("-cf", "--config", help="Config File to use")
-    config_arg = parser.parse_known_args() and parser.parse_known_args()[0].config or None
+    parser.add_argument("-af", "--auth", help="Auth File to use")
 
-    if config_arg and os.path.isfile(config_arg):
-        _json_loader(config_arg)
-    elif os.path.isfile(config_file):
-        logger.info('No config argument specified, checking for /configs/config.json')
-        _json_loader(config_file)
-    else:
-        logger.info('Error: No /configs/config.json or specified config')
+    for _config in ['auth', 'config']:
+        config_file = os.path.join(_base_dir, 'configs', _config + '.json')
+        config_arg = parser.parse_known_args() and parser.parse_known_args()[0].__dict__[_config] or None
+
+        if config_arg and os.path.isfile(config_arg):
+            _json_loader(config_arg)
+            config_file = config_arg
+        elif os.path.isfile(config_file):
+            logger.info('No ' + _config + ' argument specified, checking for ' + config_file)
+            _json_loader(config_file)
+        else:
+            logger.info('Error: No /configs/' + _config + '.json')
 
     # Read passed in Arguments
     required = lambda x: not x in load
@@ -284,7 +375,7 @@ def init_config():
         load,
         short_flag="-wsr",
         long_flag="--websocket.remote_control",
-        help="Enable remote control through websocket (requires websocekt server url)",
+        help="Enable remote control through websocket (requires websocket server url)",
         default=False
     )
     add_config(
@@ -324,10 +415,18 @@ def init_config():
     add_config(
         parser,
         load,
-        short_flag="-w",
-        long_flag="--walk",
-        help=
-        "Walk instead of teleport with given speed (meters per second, e.g. 2.5)",
+        short_flag="-wmax",
+        long_flag="--walk_max",
+        help="Walk instead of teleport with given speed",
+        type=float,
+        default=2.5
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-wmin",
+        long_flag="--walk_min",
+        help="Walk instead of teleport with given speed",
         type=float,
         default=2.5
     )
@@ -432,7 +531,7 @@ def init_config():
     add_config(
         parser,
         load,
-        long_flag="--logging_color",
+        long_flag="--logging.color",
         help="If logging_color is set to true, colorized logging handler will be used",
         type=bool,
         default=True
@@ -440,47 +539,123 @@ def init_config():
     add_config(
         parser,
         load,
-        short_flag="-cte",
-        long_flag="--catch_throw_parameters.excellent_rate",
-        help="Define the odd of performing an excellent throw",
-        type=float,
-        default=1
+        long_flag="--logging.clean",
+        help="If clean_logging is set to true, meta data will be stripped from the log messages",
+        type=bool,
+        default=False
     )
     add_config(
         parser,
         load,
-        short_flag="-ctg",
-        long_flag="--catch_throw_parameters.great_rate",
-        help="Define the odd of performing a great throw",
-        type=float,
-        default=0
+        long_flag="--heartbeat_threshold",
+        help="A threshold between each heartbeat sending to server",
+        type=int,
+        default=10
     )
     add_config(
         parser,
         load,
-        short_flag="-ctn",
-        long_flag="--catch_throw_parameters.nice_rate",
-        help="Define the odd of performing a nice throw",
-        type=float,
-        default=0
+        long_flag="--pokemon_bag.show_at_start",
+        help="Logs all pokemon in the bag at bot start",
+        type=bool,
+        default=False
     )
     add_config(
         parser,
         load,
-        short_flag="-ctm",
-        long_flag="--catch_throw_parameters.normal_rate",
-        help="Define the odd of performing a normal throw",
-        type=float,
-        default=0
+        long_flag="--pokemon_bag.show_count",
+        help="Shows the amount of which pokemon (minimum 1)",
+        type=bool,
+        default=False
     )
     add_config(
         parser,
         load,
-        short_flag="-cts",
-        long_flag="--catch_throw_parameters.spin_success_rate",
-        help="Define the odds of performing a spin throw (Value between 0 (never) and 1 (always))",
+        long_flag="--pokemon_bag.show_candies",
+        help="Shows the amount of candies for each pokemon",
+        type=bool,
+        default=False
+    )
+    add_config(
+        parser,
+        load,
+        long_flag="--pokemon_bag.pokemon_info",
+        help="List with the info to show for each pokemon",
+        type=bool,
+        default=[]
+    )
+    add_config(
+        parser,
+        load,
+        long_flag="--alt_min",
+        help="Minimum random altitude",
         type=float,
-        default=1
+        default=500
+    )
+    add_config(
+        parser,
+        load,
+        long_flag="--alt_max",
+        help="Maximum random altitude",
+        type=float,
+        default=1000
+    )
+    add_config(
+        parser,
+        load,
+        long_flag="--replicate_gps_xy_noise",
+        help="Add noise to current position",
+        type=bool,
+        default=False
+    )
+    add_config(
+        parser,
+        load,
+        long_flag="--replicate_gps_z_noise",
+        help="Add noise to current position",
+        type=bool,
+        default=False
+    )
+    add_config(
+        parser,
+        load,
+        long_flag="--gps_xy_noise_range",
+        help="Intensity of gps noise (unit is lat and lng,) high values may cause issues (default=0.000125)",
+        type=float,
+        default=0.000125
+    )
+    add_config(
+        parser,
+        load,
+        long_flag="--gps_z_noise_range",
+        help="Intensity of gps noise (unit is in meter, default=12.5)",
+        type=float,
+        default=12.5
+    )
+    add_config(
+        parser,
+        load,
+        long_flag="--gps_default_altitude",
+        help="Initial altitude (default=8.0)",
+        type=float,
+        default=8.0
+    )
+    add_config(
+         parser,
+         load,
+         long_flag="--enable_social",
+         help="Enable social event exchange between bot",
+         type=bool,
+         default=True
+    )
+
+    add_config(
+         parser,
+         load,
+         long_flag="--walker_limit_output",
+         help="Limit output from walker functions (move_to_fort, position_update, etc)",
+         type=bool,
+         default=False
     )
 
     # Start to parse other attrs
@@ -490,17 +665,20 @@ def init_config():
     if not config.password and 'password' not in load:
         config.password = getpass("Password: ")
 
-    config.encrypt_location = load.get('encrypt_location','')
+    config.favorite_locations = load.get('favorite_locations', [])
+    config.encrypt_location = load.get('encrypt_location', '')
+    config.telegram_token = load.get('telegram_token', '')
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
-    config.action_wait_max = load.get('action_wait_max', 4)
-    config.action_wait_min = load.get('action_wait_min', 1)
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
-    config.min_ultraball_to_keep = load.get('min_ultraball_to_keep', None)
     config.save_pokemon_spawn = load.get('save_pokemon_spawn', False)
-
     config.vips = load.get('vips', {})
+    config.sleep_schedule = load.get('sleep_schedule', [])
+    config.live_config_update = load.get('live_config_update', {})
+    config.live_config_update_enabled = config.live_config_update.get('enabled', False)
+    config.live_config_update_tasks_only = config.live_config_update.get('tasks_only', False)
+    config.logging = load.get('logging', {})
 
     if config.map_object_cache_time < 0.0:
         parser.error("--map_object_cache_time is out of range! (should be >= 0.0)")
@@ -522,7 +700,10 @@ def init_config():
             """.format(flag_name))
 
     old_flags = ['mode', 'catch_pokemon', 'spin_forts', 'forts_spin', 'hatch_eggs', 'release_pokemon', 'softban_fix',
-                'longer_eggs_first', 'evolve_speed', 'use_lucky_egg', 'item_filter', 'evolve_all', 'evolve_cp_min', 'max_steps']
+                 'longer_eggs_first', 'evolve_speed', 'use_lucky_egg', 'item_filter', 'evolve_all', 'evolve_cp_min',
+                 'max_steps', 'catch_throw_parameters.excellent_rate', 'catch_throw_parameters.great_rate',
+                 'catch_throw_parameters.nice_rate', 'catch_throw_parameters.normal_rate',
+                 'catch_throw_parameters.spin_success_rate']
     for flag in old_flags:
         if flag in load:
             task_configuration_error(flag)
@@ -536,6 +717,23 @@ def init_config():
 
     if "evolve_captured" in load:
         logger.warning('The evolve_captured argument is no longer supported. Please use the EvolvePokemon task instead')
+
+    if "walk" in load:
+        logger.warning('The walk argument is no longer supported. Please use the walk_max and walk_min variables instead')
+
+    if "daily_catch_limit" in load:
+        logger.warning('The daily_catch_limit argument has been moved into the CatchPokemon Task')
+
+    if "logging_color" in load:
+        logger.warning('The logging_color argument has been moved into the logging config section')
+
+    if config.walk_min < 1:
+        parser.error("--walk_min is out of range! (should be >= 1.0)")
+        return None
+
+    if config.alt_min < -413.0:
+        parser.error("--alt_min is out of range! (should be >= -413.0)")
+        return None
 
     if not (config.location or config.location_cache):
         parser.error("Needs either --use-location-cache or --location.")
@@ -553,7 +751,8 @@ def init_config():
             raise
 
     fix_nested_config(config)
-    return config
+    return config, config_file
+
 
 def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
     if not long_flag:
@@ -562,7 +761,7 @@ def add_config(parser, json_config, short_flag=None, long_flag=None, **kwargs):
     full_attribute_path = long_flag.split('--')[1]
     attribute_name = full_attribute_path.split('.')[-1]
 
-    if '.' in full_attribute_path: # embedded config!
+    if '.' in full_attribute_path:  # embedded config!
         embedded_in = full_attribute_path.split('.')[0: -1]
         for level in embedded_in:
             json_config = json_config.get(level, {})
@@ -584,6 +783,7 @@ def fix_nested_config(config):
             new_key = key.replace('.', '_')
             config_dict[new_key] = value
             del config_dict[key]
+
 
 def parse_unicode_str(string):
     try:

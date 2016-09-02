@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#encoding=utf8  
+#encoding=utf8
 pokebotpath=$(cd "$(dirname "$0")"; pwd)
 backuppath=$pokebotpath"/backup"
 
@@ -21,8 +21,8 @@ curl -O http://pgoapi.com/pgoencrypt.tar.gz
 else
 wget http://pgoapi.com/pgoencrypt.tar.gz
 fi
-tar -xf pgoencrypt.tar.gz 
-cd pgoencrypt/src/ 
+tar -xf pgoencrypt.tar.gz
+cd pgoencrypt/src/
 make
 mv libencrypt.so $pokebotpath/encrypt.so
 cd ../..
@@ -30,28 +30,51 @@ rm -rf pgoencrypt.tar.gz
 rm -rf pgoencrypt
 }
 
+function Pokebotescapestring () {
+echo "$1" | sed 's/\//\\\//g' | sed 's/"/\\"/g' # escape slash and double quotes
+}
+
+function Pokebotauth () {
+cd $pokebotpath
+read -p "
+-----------------
+Auth generator
+Enter 1 for Google or 2 for Pokemon Trainer Club (PTC)
+-----------------
+" auth
+read -p "Input E-Mail (Google) or Username(PTC)
+" username
+read -p "Input Password
+" -s password
+password=$(Pokebotescapestring $password)
+read -p "
+Input Location
+" location
+read -p "Input Google API Key (gmapkey)
+" gmapkey
+[[ $auth = "2" || $auth = "ptc" ]] && auth="ptc" || auth="google"
+sed -e "s/YOUR_USERNAME/$username/g" -e "s/YOUR_PASSWORD/$password/g" \
+  -e "s/SOME_LOCATION/$location/g" -e "s/GOOGLE_MAPS_API_KEY/$gmapkey/g" \
+  -e "s/google/$auth/g" configs/auth.json.example > configs/auth.json
+echo "Edit ./configs/auth.json to modify auth or location."
+}
+
 function Pokebotconfig () {
 cd $pokebotpath
-read -p "enter 1 for google or 2 for ptc 
-" auth
-read -p "Input username 
-" username
-read -p "Input password 
-" -s password
 read -p "
-Input location 
-" location
-read -p "Input gmapkey 
-" gmapkey
-cp -f configs/config.json.example configs/config.json && chmod 755 configs/config.json
-if [ "$auth" = "2" ] || [ "$auth" = "ptc" ]
-then
-sed -i "s/google/ptc/g" configs/config.json
-fi
-sed -i "s/YOUR_USERNAME/$username/g" configs/config.json
-sed -i "s/YOUR_PASSWORD/$password/g" configs/config.json
-sed -i "s/SOME_LOCATION/$location/g" configs/config.json
-sed -i "s/GOOGLE_MAPS_API_KEY/$gmapkey/g" configs/config.json
+-----------------
+Config Generator
+Enter 1 for default, 2 for cluster, 3 for map, 4 for optimizer, 5 for path or 6 pokemon config
+-----------------
+
+" cfgoption
+[ "$cfgoption" == "1" ] && cfgoption="config.json.example"
+[ "$cfgoption" == "2" ] && cfgoption="config.json.cluster.example"
+[ "$cfgoption" == "3" ] && cfgoption="config.json.map.example"
+[ "$cfgoption" == "4" ] && cfgoption="config.json.optimizer.example"
+[ "$cfgoption" == "5" ] && cfgoption="config.json.path.example"
+[ "$cfgoption" == "6" ] && cfgoption="config.json.pokemon.example"
+cp configs/$cfgoption configs/config.json
 echo "Edit ./configs/config.json to modify any other config."
 }
 
@@ -59,9 +82,20 @@ function Pokebotinstall () {
 cd $pokebotpath
 if [ "$(uname -s)" == "Darwin" ]
 then
-echo "You are on Mac os"
-sudo brew update 
-sudo brew install --devel protobuf
+echo "You are on Mac OS"
+brew update
+brew install --devel protobuf
+elif [ $(uname -s) == CYGWIN* ]
+then
+echo "You are on Cygwin"
+if [ !-x "$(command -v apt-cyg)" ]
+then
+wget http://apt-cyg.googlecode.com/svn/trunk/apt-cyg
+chmod +x apt-cyg
+mv apt-cyg /usr/local/bin/
+fi
+apt-cyg install gcc-core make
+easy_install pip
 elif [ -x "$(command -v apt-get)" ]
 then
 echo "You are on Debian/Ubuntu"
@@ -91,18 +125,27 @@ echo "Please check if you have  python pip gcc make  installed on your device."
 echo "Wait 5 seconds to continue or Use ctrl+c to interrupt this shell."
 sleep 5
 fi
-sudo pip install virtualenv
+easy_install virtualenv
 Pokebotreset
 Pokebotupdate
 Pokebotencrypt
-echo "Install complete. Starting to generate config.json."
+echo "Install complete. Starting to generate auth.json and config.json."
+Pokebotauth
 Pokebotconfig
 }
 
 function Pokebotreset () {
 cd $pokebotpath
-git fetch --all 
+git fetch -a
+if [ "1" == $(git branch -vv |grep -c "* dev") ]
+then
+echo "Branch dev resetting."
 git reset --hard origin/dev
+elif [ "1" == $(git branch -vv |grep -c "* master") ]
+then
+echo "Branch master resetting."
+git reset --hard origin/master
+fi
 if [ -x "$(command -v python2)" ]
 then
 virtualenv -p python2 .
@@ -116,9 +159,10 @@ function Pokebothelp () {
 echo "usage:"
 echo "	-i,--install.		Install PokemonGo-Bot."
 echo "	-b,--backup.		Backup config files."
+echo "	-a,--auth.		Easy auth generator."
 echo "	-c,--config.		Easy config generator."
 echo "	-e,--encrypt.		Make encrypt.so."
-echo "	-r,--reset.		Force sync dev branch."
+echo "	-r,--reset.		Force sync source branch."
 echo "	-u,--update.		Command git pull to update."
 }
 
@@ -137,12 +181,17 @@ Pokebotupdate
 ;;
 --backup|-b)
 mkdir -p $backuppath
+cp -f $pokebotpath/configs/auth*.json $backuppath/
 cp -f $pokebotpath/configs/config*.json $backuppath/
 cp -f $pokebotpath/configs/*.gpx $backuppath/
 cp -f $pokebotpath/configs/path*.json $backuppath/
 cp -f $pokebotpath/web/config/userdata.js $backuppath/
 echo "Backup complete."
 ;;
+--auth|-a)
+Pokebotauth
+;;
+
 --config|-c)
 Pokebotconfig
 ;;

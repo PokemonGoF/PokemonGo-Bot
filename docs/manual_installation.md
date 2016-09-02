@@ -7,7 +7,7 @@
 ### Linux and Mac
 Ubuntu will be used for the Linux Example
 
-####First install requierd packages
+####First install required packages
 
 #####Linux
 ```bash
@@ -67,6 +67,8 @@ mv pgoencrypt/src/libencrypt.so encrypt.so
 ```bash
 cp configs/config.json.example configs/config.json
 vi configs/config.json
+cp configs/auth.json.example configs/auth.json
+vi configs/auth.json
 ```
 ####
 - make shure your git repo is up to date
@@ -78,7 +80,7 @@ pip install -r requirements.txt
 ####
 - finaly start the bot
 ```bash
-./run.sh configs/config.json
+./run.sh
 ```
 ####
 - after reboot or closing the terminal at every new start go into the folder of the PokemonGo-Bot by going into the folder where you startet installing it an then
@@ -86,54 +88,46 @@ pip install -r requirements.txt
 cd PokemonGo-Bot
 #activate virtualenv and start
 source bin/activate
-./run.sh configs/config.json
+./run.sh
 ```
 
 
 ### Windows
-#### Windows vista, 7, 8:
-Go to : http://pyyaml.org/wiki/PyYAML , download the right version for your pc and install it
 
-##### Windows 10:
-Go to [this](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyyaml) page and download: PyYAML-3.11-cp27-cp27m-win32.whl
-(If running 64-bit python or if you get a 'not a supported wheel on this platform' error,
-download the 64 bit version instead: PyYAML-3.11-cp27-cp27m-win_amd64.whl )
+##### Requirements
 
-*(Run the following commands from Git Bash.)*
+- [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/) *Be sure to tick "Add python.exe to Path" during install*
+- [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+- [Microsoft Visual C++ Compiler for Python 2.7](http://www.microsoft.com/en-us/download/details.aspx?id=44266)
 
-```
-// switch to the directory where you downloaded PyYAML
-$ cd download-directory
-// install 32-bit version
-$ pip2 install PyYAML-3.11-cp27-cp27m-win32.whl
-// if you need to install the 64-bit version, do this instead:
-// pip2 install PyYAML-3.11-cp27-cp27m-win_amd64.whl
-```
 
-After this, just do:
+*Run the following commands in the Command Prompt with Administrator Privileges*
 
 ```
-$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot
-$ cd PokemonGo-Bot
-$ virtualenv .
-$ script\activate
-$ pip2 install -r requirements.txt
-$ git submodule init
-$ git submodule update
+cd C:\Python27\
+pip2 install --upgrade pip
+pip2 install --upgrade virtualenv
+pip2 install --upgrade protobuf==3.0.0b4
+git clone --recursive -b dev https://github.com/PokemonGoF/PokemonGo-Bot
+pip2 install --upgrade -r C:/Python27/PokemonGo-Bot/requirements.txt
+cd C:/Python27/PokemonGo-Bot/
+virtualenv .
+call C:\Python27\PokemonGo-Bot\Scripts\activate.bat
+pip2 install --upgrade -r C:/Python27/PokemonGo-Bot/requirements.txt
 ```
 
-##### Get encrypt.so (Windows part writing need fine tune)
-Due to copywrite on the encrypt.so we are not directly hosting it. Please find a copy elsewhere on the internet and compile it yourself. We accept no responsibility should you encounter any problems with files you download elsewhere.
+##### Get encrypt.so and encrypt.dll or encrypt_64.dll
+Due to copywrite on the encrypt.so, encrypt.dll and encrypt_64.dll we are not directly hosting it. Please find a copy elsewhere on the internet and compile it yourself. We accept no responsibility should you encounter any problems with files you download elsewhere.
+Try asking around our Slack chat **(Just say the word "encrypt" and Slackbot will give you info)**!
 
-Ensure you are in the PokemonGo-Bot main folder and run:
-
-`wget http://pgoapi.com/pgoencrypt.tar.gz && tar -xf pgoencrypt.tar.gz && cd pgoencrypt/src/ && make && mv libencrypt.so ../../encrypt.so && cd ../..`
+Download it to the `C:/Python27/PokemonGo-Bot/` folder
 
 ##### Update
-To update your project do (in the project folder): `git pull`
 
-To update python requirement packages do (in the project folder): `pip install --upgrade -r requirements.txt`
+*Run the following commands in the Command Prompt with Administrator Privileges*
 
-
-
-
+```
+cd C:/Python27/PokemonGo-Bot/
+git pull
+git submodule update --init --recursive
+```

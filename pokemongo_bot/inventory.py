@@ -1,9 +1,11 @@
 import json
 import logging
 import os
+import time
 from collections import OrderedDict
 
 from pokemongo_bot.base_dir import _base_dir
+from pokemongo_bot.services.item_recycle_worker import ItemRecycler
 
 '''
 Helper class for updating/retrieving Inventory data
@@ -14,12 +16,17 @@ https://www.reddit.com/r/pokemongodev/comments/4w7mdg/combat_damage_calculation_
 '''
 
 
+class FileIOException(Exception):
+    pass
+
+
 #
 # Abstraction
 
 class _StaticInventoryComponent(object):
-    STATIC_DATA_FILE = None  # optionally load static data from file,
-                             # dropping the data in a static variable named STATIC_DATA
+    # optionally load static data from file,
+    # dropping the data in a static variable named STATIC_DATA
+    STATIC_DATA_FILE = None
     STATIC_DATA = None
 
     def __init__(self):
@@ -76,6 +83,67 @@ class _BaseInventoryComponent(_StaticInventoryComponent):
 
 #
 # Inventory Components
+class Player(_BaseInventoryComponent):
+    TYPE = 'player_stats'
+
+    def __init__(self, bot, ttl=3):
+        self.bot = bot
+        self._exp = None
+        self._level = None
+        self.ttl = ttl
+        self.next_level_xp = None
+        self.pokemons_captured = None
+        self.poke_stop_visits = None
+        self.player_stats = None
+        super(_BaseInventoryComponent, self).__init__()
+
+    @property
+    def level(self):
+        return self._level
+
+    @level.setter
+    def level(self, value):
+        self._level = value
+
+    @property
+    def exp(self):
+        return self._exp
+
+    @exp.setter
+    def exp(self, value):
+        # if new exp is larger than or equal to next_level_xp
+        if value >= self.next_level_xp:
+            self.level = self._level + 1
+            # increase next_level_xp to a big amount
+            # will be fix on the next heartbeat
+            self.next_level_xp += 10000000
+
+        self._exp = value
+
+    def refresh(self,inventory):
+        self.player_stats = self.retrieve_data(inventory)
+
+    def parse(self, item):
+        if not item:
+            item = {}
+
+        self.next_level_xp = item.get('next_level_xp', 0)
+        self.exp = item.get('experience', 0)
+        self.level = item.get('level', 0)
+        self.pokemons_captured = item.get('pokemons_captured', 0)
+        self.poke_stop_visits = item.get('poke_stop_visits', 0)
+
+    def retrieve_data(self, inventory):
+        ret = {}
+        for item in inventory:
+            data = item['inventory_item_data']
+            if self.TYPE in data:
+                item = data[self.TYPE]
+                ret = item
+                self.parse(item)
+
+        return ret
+
 
 class Candies(_BaseInventoryComponent):
     TYPE = 'candy'
@@ -113,7 +181,7 @@ class Item(object):
     """
     def __init__(self, item_id, item_count):
         """
-        Initialise an instance of an item
+        Representation of an item
         :param item_id: ID of the item
         :type item_id: int
         :param item_count: Quantity of the item
@@ -137,6 +205,27 @@ class Item(object):
         if self.count < amount:
             raise Exception('Tried to remove more {} than you have'.format(self.name))
         self.count -= amount
+
+
+    def recycle(self, amount_to_recycle):
+        """
+        Recycle (discard) the specified amount of item from the item inventory.
+        It is making a call to the server to request a recycling as well as updating the cached inventory.
+        :param amount_to_recycle: The amount to recycle.
+        :type amount_to_recycle: int
+        :return: Returns whether or not the task went well
+        :rtype: worker_result.WorkerResult
+        """
+        if self.count < amount_to_recycle:
+            raise Exception('Tried to remove more {} than you have'.format(self.name))
+
+        item_recycler = ItemRecycler(_inventory.bot, self, amount_to_recycle)
+        item_recycler_work_result = item_recycler.work()
+
+        if item_recycler.is_recycling_success():
+            self.remove(amount_to_recycle)
+
+        return item_recycler_work_result
 
     def add(self, amount):
         """
@@ -216,7 +305,7 @@ class Items(_BaseInventoryComponent):
         :return: The space left in item inventory. 0 if the player has more item than his item inventory can carry.
         :rtype: int
         """
-        _inventory.retrieve_item_inventory_size()
+        _inventory.retrieve_inventories_size()
         space_left = _inventory.item_inventory_size - cls.get_space_used()
         # Space left should never be negative. Returning 0 if the computed value is negative.
         return space_left if space_left >= 0 else 0
@@ -258,6 +347,26 @@ class Pokemons(_BaseInventoryComponent):
             assert len(p.last_evolution_ids) > 0
 
         return data
+
+    @classmethod
+    def get_space_used(cls):
+        """
+        Counts the space used in pokemon inventory.
+        :return: The space used in pokemon inventory.
+        :rtype: int
+        """
+        return len(_inventory.pokemons.all_with_eggs())
+
+    @classmethod
+    def get_space_left(cls):
+        """
+        Compute the space  left in pokemon inventory.
+        :return: The space left in pokemon inventory.
+        :rtype: int
+        """
+        _inventory.retrieve_inventories_size()
+        space_left = _inventory.pokemon_inventory_size - cls.get_space_used()
+        return space_left
 
     @classmethod
     def data_for(cls, pokemon_id):
@@ -302,17 +411,21 @@ class Pokemons(_BaseInventoryComponent):
         # makes caller's lives more difficult)
         return [p for p in super(Pokemons, self).all() if not isinstance(p, Egg)]
 
-    def add(self, pokemon):
-        if pokemon.id <= 0:
-            raise ValueError("Can't add a pokemin whitout id")
-        if pokemon.id in self._data:
-            raise ValueError("Pokemon already present in the inventory")
-        self._data[pokemon.id] = pokemon
+    def all_with_eggs(self):
+        # count pokemon AND eggs, since eggs are counted as bag space
+        return super(Pokemons, self).all()
 
-    def remove(self, pokemon_id):
-        if pokemon_id not in self._data:
+    def add(self, pokemon):
+        if pokemon.unique_id <= 0:
+            raise ValueError("Can't add a pokemon without id")
+        if pokemon.unique_id in self._data:
+            raise ValueError("Pokemon already present in the inventory")
+        self._data[pokemon.unique_id] = pokemon
+
+    def remove(self, pokemon_unique_id):
+        if pokemon_unique_id not in self._data:
             raise ValueError("Pokemon not present in the inventory")
-        self._data.pop(pokemon_id)
+        self._data.pop(pokemon_unique_id)
 
 
 #
@@ -577,6 +690,7 @@ class PokemonInfo(object):
     """
     Static information about pokemon kind
     """
+
     def __init__(self, data):
         self._data = data
         self.id = int(data["Number"])
@@ -736,7 +850,7 @@ class Pokemon(object):
     def __init__(self, data):
         self._data = data
         # Unique ID for this particular Pokemon
-        self.id = data.get('id', 0)
+        self.unique_id = data.get('id', 0)
         # Id of the such pokemons in pokedex
         self.pokemon_id = data['pokemon_id']
         # Static information
@@ -753,6 +867,9 @@ class Pokemon(object):
 
         # Current pokemon level (half of level is a normal value)
         self.level = LevelToCPm.level_from_cpm(self.cp_m)
+
+        if 'level' not in self._data:
+            self._data['level'] = self.level
 
         # Maximum health points
         self.hp_max = data['stamina_max']
@@ -1059,31 +1176,85 @@ class Inventory(object):
         self.candy = Candies()
         self.items = Items()
         self.pokemons = Pokemons()
+        self.player = Player(self.bot)  # include inventory inside Player?
+        self.egg_incubators = None
         self.refresh()
         self.item_inventory_size = None
+        self.pokemon_inventory_size = None
 
-    def refresh(self):
-        # TODO: it would be better if this class was used for all
-        # inventory management. For now, I'm just clearing the old inventory field
-        self.bot.latest_inventory = None
-        inventory = self.bot.get_inventory()['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
-        for i in (self.pokedex, self.candy, self.items, self.pokemons):
+    def refresh(self, inventory=None):
+        if inventory is None:
+            inventory = self.bot.api.get_inventory()
+
+        inventory = inventory['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+        for i in (self.pokedex, self.candy, self.items, self.pokemons, self.player):
             i.refresh(inventory)
 
-        user_web_inventory = os.path.join(_base_dir, 'web', 'inventory-%s.json' % (self.bot.config.username))
-        with open(user_web_inventory, 'w') as outfile:
-            json.dump(inventory, outfile)
+        self.egg_incubators = [x["inventory_item_data"] for x in inventory if "egg_incubators" in x["inventory_item_data"]]
 
-    def retrieve_item_inventory_size(self):
+        self.update_web_inventory()
+
+    def init_inventory_outfile(self):
+        web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
+
+        if not os.path.exists(web_inventory):
+            self.bot.logger.info('No inventory file %s found. Creating a new one' % web_inventory)
+
+            json_inventory = []
+
+            with open(web_inventory, "w") as outfile:
+                json.dump(json_inventory, outfile)
+
+    def update_web_inventory(self):
+        web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
+
+        if not os.path.exists(web_inventory):
+            self.init_inventory_outfile()
+
+        json_inventory = self.jsonify_inventory()
+
+        try:
+            with open(web_inventory, "w") as outfile:
+                json.dump(json_inventory, outfile)
+        except (IOError, ValueError) as e:
+            self.bot.logger.info('[x] Error while opening inventory file for write: %s' % e, 'red')
+            pass
+        except:
+            raise FileIOException("Unexpected error writing to {}".web_inventory)
+
+    def jsonify_inventory(self):
+        json_inventory = []
+
+        json_inventory.append({"inventory_item_data": {"player_stats": self.player.player_stats}})
+
+        for pokedex in self.pokedex.all():
+            json_inventory.append({"inventory_item_data": {"pokedex_entry": pokedex}})
+
+        for family_id, candy in self.candy._data.items():
+            json_inventory.append({"inventory_item_data": {"candy": {"family_id": family_id, "candy": candy.quantity}}})
+
+        for item_id, item in self.items._data.items():
+            json_inventory.append({"inventory_item_data": {"item": {"item_id": item_id, "count": item.count}}})
+
+        for pokemon in self.pokemons.all_with_eggs():
+            json_inventory.append({"inventory_item_data": {"pokemon_data": pokemon._data}})
+
+        for inc in self.egg_incubators:
+            json_inventory.append({"inventory_item_data": inc})
+
+        return json_inventory
+
+    def retrieve_inventories_size(self):
         """
         Retrieves the item inventory size
         :return: Nothing.
         :rtype: None
         """
-        # TODO: Force update of _item_inventory_size if the player upgrades its size
-        if self.item_inventory_size is None:
-           self.item_inventory_size = self.bot.api.get_player()['responses']['GET_PLAYER']['player_data']['max_item_storage']
-
+        # TODO: Force to update it if the player upgrades its size
+        if self.item_inventory_size is None or self.pokemon_inventory_size is None:
+           player_data = self.bot.api.get_player()['responses']['GET_PLAYER']['player_data']
+           self.item_inventory_size = player_data['max_item_storage']
+           self.pokemon_inventory_size = player_data['max_pokemon_storage']
 
 #
 # Other
@@ -1163,13 +1334,27 @@ def init_inventory(bot):
     _inventory = Inventory(bot)
 
 
-def refresh_inventory():
+def refresh_inventory(data=None):
     """
     Refreshes the cached inventory, retrieves data from the server.
     :return: Nothing.
     :rtype: None
     """
-    _inventory.refresh()
+    try:
+        _inventory.refresh(data)
+    except AttributeError:
+        print '_inventory was not initialized'
+
+def jsonify_inventory():
+    try:
+        return _inventory.jsonify_inventory()
+    except AttributeError:
+        print '_inventory was not initialized'
+        return []
+
+def update_web_inventory():
+    _inventory.update_web_inventory()
+
 
 def get_item_inventory_size():
     """
@@ -1177,8 +1362,19 @@ def get_item_inventory_size():
     :return: Item inventory size.
     :rtype: int
     """
-    _inventory.retrieve_item_inventory_size()
+    _inventory.retrieve_inventories_size()
     return _inventory.item_inventory_size
+
+
+def get_pokemon_inventory_size():
+    """
+    Access to the Item inventory size.
+    :return: Item inventory size.
+    :rtype: int
+    """
+    _inventory.retrieve_inventories_size()
+    return _inventory.pokemon_inventory_size
+
 
 def pokedex():
     """
@@ -1186,30 +1382,29 @@ def pokedex():
     :return:
     :rtype: Pokedex
     """
+    # Are new pokemons added to the pokedex ?
     return _inventory.pokedex
 
 
-def candies(refresh=False):
+def player():
+    return _inventory.player
+
+
+def candies():
     """
 
-    :param refresh:
     :return:
     :rtype: Candies
     """
-    if refresh:
-        refresh_inventory()
     return _inventory.candy
 
 
-def pokemons(refresh=False):
+def pokemons():
     """
 
-    :param refresh:
     :return:
     :rtype: Pokemons
     """
-    if refresh:
-        refresh_inventory()
     return _inventory.pokemons
 
 
