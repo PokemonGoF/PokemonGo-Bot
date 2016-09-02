@@ -1039,7 +1039,7 @@ Completes the tutorial:
 [[back to top](#table-of-contents)]
 
 * `nickname` : Nickname to be used ingame.
-* `team` : Team to pick after reaching level 5.
+* `team` : `Default: 0`. Team to pick after reaching level 5.
 
 Available `team` :
 ```
