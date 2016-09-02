@@ -80,7 +80,7 @@ class SpinFort(Datastore, BaseTask):
                 if experience_awarded or items_awarded:
                     awards = ', '.join(["{}x {}".format(items_awarded[x], x) for x in items_awarded if x != u'Egg'])
                     if egg_awarded is not None:
-                        awards += u', {} Egg'.format(eggs_awarded['egg_km_walked_target'])
+                        awards += u', {} Egg'.format(egg_awarded['egg_km_walked_target'])
                     self.emit_event(
                         'spun_pokestop',
                         formatted="Spun pokestop {pokestop}. Experience awarded: {exp}. Items awarded: {items}",
