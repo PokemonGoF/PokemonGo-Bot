@@ -24,3 +24,4 @@ from update_web_inventory import UpdateWebInventory
 from random_alive_pause import RandomAlivePause
 from show_best_pokemon import ShowBestPokemon
 from telegram_task import TelegramTask
+from use_incense import UseIncense
