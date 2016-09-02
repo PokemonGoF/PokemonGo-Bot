@@ -1054,10 +1054,10 @@ Available `team` :
 ```json
 {
 	"type": "CompleteTutorial",
-    "config": {
-	    "enabled": true,
-        "nickname": "PokemonGoF",
-        "team": 2
-    }
+	"config": {
+	"enabled": true,
+		"nickname": "PokemonGoF",
+		"team": 2
+	}
 }
 ```
