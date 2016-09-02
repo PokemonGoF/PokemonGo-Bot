@@ -7,7 +7,7 @@ services:
      - ./data:/usr/src/app/data
      - ./web:/usr/src/app/web
     environment:
-     - TIMEZONE=Etc/UTC
+     - TZ=Etc/UTC
     stdin_open: true
     tty: true
   bot1-pokegoweb:
