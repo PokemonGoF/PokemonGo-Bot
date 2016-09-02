@@ -77,8 +77,6 @@ logging.basicConfig(
 logger = logging.getLogger('cli')
 logger.setLevel(logging.INFO)
 
-started = False
-
 class SIGINTRecieved(Exception):
     pass
 
@@ -273,7 +271,7 @@ def check_mod(config_file):
 
 
 def report_summary(bot):
-    if started is False:
+    if bot:
         return  # Bot didn't actually start, no metrics to show.
 
     metrics = bot.metrics
