@@ -176,14 +176,10 @@ class IncubateEggs(BaseTask):
                 continue
             if "player_stats" in inv_data:
                 self.km_walked = inv_data.get("player_stats", {}).get("km_walked", 0)
-        if temp_used_incubators:
-            self.used_incubators = temp_used_incubators
-        if temp_ready_breakable_incubators:
-            self.ready_breakable_incubators = temp_ready_breakable_incubators
-        if temp_ready_infinite_incubators:
-            self.ready_infinite_incubators = temp_ready_infinite_incubators
-        if temp_eggs:
-            self.eggs = temp_eggs
+        self.used_incubators = temp_used_incubators
+        self.ready_breakable_incubators = temp_ready_breakable_incubators
+        self.ready_infinite_incubators = temp_ready_infinite_incubators
+        self.eggs = temp_eggs
         return matched_pokemon
 
     def _hatch_eggs(self):
