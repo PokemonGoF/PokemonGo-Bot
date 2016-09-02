@@ -4,6 +4,7 @@ from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.datastore import Datastore
+from pokemongo_bot.worker_result import WorkerResult
 
 
 class IncubateEggs(Datastore, BaseTask):
