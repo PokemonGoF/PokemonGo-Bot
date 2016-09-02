@@ -17,6 +17,7 @@ class ColoredLoggingHandler(EventHandler):
         'config_error':                      'red',
         'egg_already_incubating':            'yellow',
         'egg_hatched':                       'green',
+        'eggs_hatched_log':                  'magenta',
         'evolve_log':                        'magenta',
         'future_pokemon_release':            'yellow',
         'incubate':                          'green',
