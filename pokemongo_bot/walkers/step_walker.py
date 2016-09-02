@@ -25,11 +25,11 @@ class StepWalker(object):
         else:
             self.alt = dest_alt
             
-        if not fixed_speed:
-            self.speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
-        else:
+        if fixed_speed:
             # PolylineWalker uses a fixed speed!
             self.speed = self.bot.config.walk_min
+        else:
+            self.speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
 
         if len(self.bot.position) == 3:
             self.initAlt = self.bot.position[2]
