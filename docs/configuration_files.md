@@ -47,6 +47,7 @@
 - [Egg Incubator](#egg-incubator)
 - [ShowBestPokemon](#showbestpokemon)
 - [Telegram Task](#telegram-task)
+- [CompleteTutorial](#completetutorial)
 
 #Configuration files
 
@@ -1016,5 +1017,48 @@ Bot answer on command '/info' self stats.
           "Snorlax": {"operator": "or", "cp": 900, "iv": 0.9}
         }
     }
+}
+```
+
+## CompleteTutorial
+[[back to top](#table-of-contents)]
+
+### Description
+[[back to top](#table-of-contents)]
+
+Completes the tutorial:
+
+* Legal screen
+* Avatar selection
+* First Pokemon capture
+* Set nickname
+* Firte time experience
+* Pick team at level 5
+
+
+### Options
+[[back to top](#table-of-contents)]
+
+* `nickname` : Nickname to be used ingame.
+* `team` : `Default: 0`. Team to pick after reaching level 5.
+
+Available `team` :
+```
+0: Neutral (No team)
+1: Blue (Mystic)
+2: Red (Valor)
+3: Yellow (Instinct)
+```
+
+### Sample configuration
+[[back to top](#table-of-contents)]
+```json
+{
+	"type": "CompleteTutorial",
+	"config": {
+	"enabled": true,
+		"nickname": "PokemonGoF",
+		"team": 2
+	}
 }
 ```
