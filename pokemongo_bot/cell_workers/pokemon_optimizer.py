@@ -68,7 +68,7 @@ class PokemonOptimizer(Datastore, BaseTask):
         return inventory.Pokemons.get_space_left()
 
     def work(self):
-        if (not self.enabled) or (self.get_pokemon_slot_left() > 5):
+        if (not self.enabled) or self.get_pokemon_slot_left() > self.config.get("min_slots_left", 5):
             return WorkerResult.SUCCESS
 
         self.open_inventory()
@@ -249,7 +249,7 @@ class PokemonOptimizer(Datastore, BaseTask):
         if 0 < top < 1:
             worst = object()
 
-            for a in rule.get("sort"):
+            for a in rule.get("sort", []):
                 best_attribute = getattr(sorted_pokemon[0], a)
                 setattr(worst, a, best_attribute * (1 - top))
         elif 0 <= index < len(sorted_pokemon):
@@ -325,7 +325,7 @@ class PokemonOptimizer(Datastore, BaseTask):
                           rule.get("evolve", True))
         may_try_upgrade = rule.get("upgrade", False)
 
-        for a in rule.get("sort"):
+        for a in rule.get("sort", []):
             if (type(a) is str) or (type(a) is unicode):
                 value = getattr(pokemon, a, 0)
                 score.append(value)
@@ -443,7 +443,7 @@ class PokemonOptimizer(Datastore, BaseTask):
                     skip_evolve = True
                     self.emit_event("skip_evolve",
                                     formatted="Skipping evolution step. Not enough Pokemon to evolve with lucky egg: %s/%s" % (len(evolve) + len(xp), self.config_evolve_count_for_lucky_egg))
-                elif self.get_pokemon_slot_left() > 5:
+                elif self.get_pokemon_slot_left() > self.config.get("min_slots_left", 5):
                     skip_evolve = True
                     self.emit_event("skip_evolve",
                                     formatted="Waiting for more Pokemon to evolve with lucky egg: %s/%s" % (len(evolve) + len(xp), self.config_evolve_count_for_lucky_egg))
@@ -559,6 +559,7 @@ class PokemonOptimizer(Datastore, BaseTask):
 
         if self.config_evolve and (not self.bot.config.test):
             candy.consume(pokemon.evolution_cost - candy_awarded)
+            inventory.player().exp += xp
 
         self.emit_event("pokemon_evolved",
                         formatted="Evolved {pokemon} [IV {iv}] [CP {cp}] [{candy} candies] [+{xp} xp]",

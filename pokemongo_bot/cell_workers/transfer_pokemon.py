@@ -253,7 +253,7 @@ class TransferPokemon(Datastore, BaseTask):
         if keep_best_custom and keep_amount:
             keep_best = True
 
-            keep_best_custom = keep_best_custom.split(',')
+            keep_best_custom = keep_best_custom.replace(' ','').split(',')
             for _str in keep_best_custom:
                 if _str not in keep_best_possible_custom:
                     keep_best = False

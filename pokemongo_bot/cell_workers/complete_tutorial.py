@@ -1,6 +1,7 @@
 import random
 
 from pokemongo_bot import logger
+from pokemongo_bot.inventory import player
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.human_behaviour import sleep
@@ -15,23 +16,22 @@ class CompleteTutorial(BaseTask):
         self.api = self.bot.api
         self.nickname = self.config.get('nickname','')
         self.team = self.config.get('team',0)
-        self.may_run = True
-
-    def should_run(self):
-        return self.may_run
+        self.tutorial_run = True
+        self.team_run = True
 
     def work(self):
 
-        if not self.should_run():
-            return WorkerResult.SUCCESS
+        if self.tutorial_run:
+            self.tutorial_run = False
+            if not self._check_tutorial_state():
+                return WorkerResult.ERROR
 
-        # Only execute the worker once to avoid error loop
-        self.may_run = False
+        if self.team_run and player()._level >= 5:
+            self.team_run = False
+            if not self._set_team():
+                return WorkerResult.ERROR
 
-        if self._check_tutorial_state():
-            return WorkerResult.SUCCESS
-        else:
-            return WorkerResult.ERROR
+        return WorkerResult.SUCCESS
 
     def _check_tutorial_state(self):
         self._player=self.bot.player_data
@@ -179,3 +179,36 @@ class CompleteTutorial(BaseTask):
         except KeyError:
             self.logger.error("KeyError while setting tutorial state")
             return False
+
+    def _set_team(self):
+        if self.team == 0:
+            return True
+
+        if self.bot.player_data.get('team', 0) != 0:
+            self.logger.info(u'Team already picked')
+            return True
+
+        sleep(10)
+        response_dict = self.api.set_player_team(team=self.team)
+        try:
+            result = response_dict['responses']['SET_PLAYER_TEAM']['status']
+            if result == 1:
+                team_codes = {
+                    1: 'Mystic (BLUE)',
+                    2: 'Valor (RED)',
+                    3: 'Instinct (YELLOW)'
+                }
+                self.logger.info(u'Picked Team {}.'.format(team_codes[self.team]))
+                return True
+            else:
+                error_codes = {
+                    0: 'UNSET',
+                    1: 'SUCCESS',
+                    2: 'TEAM_ALREADY_SET',
+                    3: 'FAILURE'
+                }
+                self.logger.error(u'Error while picking team : {}'.format(error_codes[result]))
+                return False
+        except KeyError:
+            return False
+
