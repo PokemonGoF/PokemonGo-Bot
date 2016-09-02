@@ -22,7 +22,7 @@ class PolylineObjectHandler:
         '''
 
         # Absolute offset between bot origin and PolyLine get_last_pos() (in meters)
-        if PolylineObjectHandler._cache.get_last_pos():
+        if PolylineObjectHandler._cache and PolylineObjectHandler._cache.get_last_pos() != (None, None):
             abs_offset = haversine.haversine(tuple(origin), PolylineObjectHandler._cache.get_last_pos())*1000
         else:
             abs_offset = float("inf")
