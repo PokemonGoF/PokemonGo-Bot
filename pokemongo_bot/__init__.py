@@ -14,7 +14,6 @@ import threading
 import shelve
 import uuid
 from logging import Formatter
-import datetime
 
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
@@ -136,7 +135,7 @@ class PokemonGoBot(Datastore):
             self._print_list_pokemon()
 
         random.seed()
-        bot.metrics.start_time = datetime.datetime.now()
+        self.started = False
 
     def _setup_event_system(self):
         handlers = []
