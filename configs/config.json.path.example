@@ -155,6 +155,11 @@
           "vip_berry_threshold": 0.9,
           "treat_unseen_as_vip": true,
           "daily_catch_limit": 800,
+          "vanish_settings": {
+            "consecutive_vanish_limit": 10,
+            "rest_duration_min": "02:00:00",
+            "rest_duration_max": "04:00:00"
+          },
           "catch_throw_parameters": {
             "excellent_rate": 0.1,
             "great_rate": 0.5,
