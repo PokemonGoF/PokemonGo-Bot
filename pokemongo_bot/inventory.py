@@ -86,11 +86,10 @@ class _BaseInventoryComponent(_StaticInventoryComponent):
 class Player(_BaseInventoryComponent):
     TYPE = 'player_stats'
 
-    def __init__(self, bot, ttl=3):
+    def __init__(self, bot):
         self.bot = bot
         self._exp = None
         self._level = None
-        self.ttl = ttl
         self.next_level_xp = None
         self.pokemons_captured = None
         self.poke_stop_visits = None
