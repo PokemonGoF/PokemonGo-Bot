@@ -18,6 +18,9 @@ class MoveToFort(BaseTask):
         self.lure_max_distance = self.config.get("lure_max_distance", 2000)
         self.ignore_item_count = self.config.get("ignore_item_count", False)
         self.walker = self.config.get('walker', 'StepWalker')
+        self.prev_dist = -1
+        if self.config.get("log_interval_meters", 10) == 0:
+            self.config["log_interval_meters"] = 10
 
     def should_run(self):
         has_space_for_loot = inventory.Items.has_space_for_loot()
@@ -71,17 +74,21 @@ class MoveToFort(BaseTask):
 
             if self.is_attracted() > 0:
                 fort_event_data.update(lure_distance=format_dist(self.lure_distance, unit))
-                self.emit_event(
-                    'moving_to_lured_fort',
-                    formatted="Moving towards pokestop {fort_name} - {distance} (attraction of lure {lure_distance})",
-                    data=fort_event_data
-                )
+                if int(self.prev_dist/self.config.get("log_interval_meters", 10)) != int(dist/self.config.get("log_interval_meters", 10)):
+                    self.prev_dist = dist
+                    self.emit_event(
+                        'moving_to_lured_fort',
+                        formatted="Moving towards pokestop {fort_name} - {distance} (attraction of lure {lure_distance})",
+                        data=fort_event_data
+                    )
             else:
-                self.emit_event(
-                    'moving_to_fort',
-                    formatted="Moving towards pokestop {fort_name} - {distance}",
-                    data=fort_event_data
-                )
+                if int(self.prev_dist/self.config.get("log_interval_meters", 10)) != int(dist/self.config.get("log_interval_meters", 10)):
+                    self.prev_dist = dist
+                    self.emit_event(
+                        'moving_to_fort',
+                        formatted="Moving towards pokestop {fort_name} - {distance}",
+                        data=fort_event_data
+                    )
 
             step_walker = walker_factory(self.walker,
                 self.bot,

@@ -455,7 +455,8 @@
             "enabled": true,
             "lure_attraction": true,
             "lure_max_distance": 2000,
-            "log_interval": 5
+            "log_interval": 5,
+            "log_interval_meters": 10
         }
       },
       {
