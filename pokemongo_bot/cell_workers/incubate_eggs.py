@@ -205,7 +205,7 @@ class IncubateEggs(BaseTask):
                     'iv': 'error',
                     'exp': 'error',
                     'stardust': 'error',
-                    'candy': 'error',
+                    'candy': 'error'
                 }
             )
             return False
@@ -222,7 +222,7 @@ class IncubateEggs(BaseTask):
                     'iv_pct': pokemon_list[i].iv,
                     'exp': xp[i],
                     'stardust': stardust[i],
-                    'candy': candy[i],
+                    'candy': candy[i]
                 }
             )
             # hatching egg gets exp too!
