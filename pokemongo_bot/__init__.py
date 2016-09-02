@@ -637,6 +637,11 @@ class PokemonGoBot(Datastore):
             'forts_found',
             parameters=('json')
         )
+        # UseIncense
+        self.event_manager.register_event(
+            'use_incense',
+            parameters=('type', 'incense_count')
+        )
 
     def tick(self):
         self.health_record.heartbeat()
