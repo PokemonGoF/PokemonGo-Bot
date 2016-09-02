@@ -150,7 +150,6 @@ class PokemonCatchWorker(Datastore, BaseTask):
                 'pokemon_id': pokemon.pokemon_id
             }
         )
-        self.dump_pokemon_spawn(pokemon)
 
         # simulate app
         time.sleep(3)
@@ -663,39 +662,4 @@ class PokemonCatchWorker(Datastore, BaseTask):
         # Here the reticle size doesn't matter, we scored out of it
         throw_parameters['normalized_reticle_size'] = 1.25 + 0.70 * random()
         throw_parameters['normalized_hit_position'] = 0.0
-<<<<<<< HEAD
-        throw_parameters['throw_type_label'] = 'Normal'
-
-    def dump_pokemon_spawn(self, pokemon):
-        save_pokemon_spawn = self.config.save_pokemon_spawn
-        if save_pokemon_spawn:
-            file_name = 'pokemon_spawns-%s.json' % self.config.username
-            saved_pokemon_spawn_path = os.path.join(
-                _base_dir, 'data', file_name
-            )
-            try:
-                spawn_location = str(self.pokemon['latitude'])+','+str(self.pokemon['longitude'])
-
-                with open(saved_pokemon_spawn_path, 'a') as outfile:
-                    json.dump({'location': spawn_location, 'pokemon': pokemon.name, 'time': time.strftime('%X')}, outfile)
-
-                self.emit_event(
-                    'save_spawn',
-                    formatted='Spawn at {location} saved in '+ file_name +' (Encountered {pokemon})',
-                    data={
-                        'pokemon': pokemon.name,
-                        'location': str(self.pokemon['latitude'])+','+str(self.pokemon['longitude'])
-                    }
-                )
-            except Exception:
-                self.emit_event(
-                    'save_spawn',
-                    formatted='Error when saving spawn : spawn not saved!',
-                    data={
-                        'pokemon': pokemon.name,
-                        'location': str(self.pokemon['latitude'])+','+str(self.pokemon['longitude'])
-                    }
-                )
-=======
         throw_parameters['throw_type_label'] = 'OK'
->>>>>>> e83c7e6b368ea77849c83eb07281b1e30acd8137
