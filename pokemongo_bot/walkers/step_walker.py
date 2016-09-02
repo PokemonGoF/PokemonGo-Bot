@@ -19,10 +19,12 @@ class StepWalker(object):
             dest_lat,
             dest_lng
         )
+        
         if dest_alt == None:
             self.alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
         else:
             self.alt = dest_alt
+            
         if not fixed_speed:
             self.speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
         else:
