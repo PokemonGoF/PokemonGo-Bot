@@ -22,7 +22,10 @@ class PolylineObjectHandler:
         '''
 
         # Absolute offset between bot origin and PolyLine get_last_pos() (in meters)
-        abs_offset = abs(haversine.haversine(tuple(origin), PolylineObjectHandler._cache.get_last_pos())*1000)
+        if PolylineObjectHandler._cache.get_last_pos():
+            abs_offset = haversine.haversine(tuple(origin), PolylineObjectHandler._cache.get_last_pos())*1000
+        else:
+            abs_offset = float("inf")
         is_old_cache = lambda : abs_offset < 8 # Consider cache old if we identified an offset more then 8 m
         new_dest_set = lambda : tuple(destination) != PolylineObjectHandler._cache.destination
 
