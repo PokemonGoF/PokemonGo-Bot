@@ -99,6 +99,8 @@ class TelegramClass:
                             self._tbot.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
             except telegram.error.NetworkError:
                 time.sleep(1)
+            except telegram.error.TelegramError:
+                time.sleep(10)
             except telegram.error.Unauthorized:
                 self.update_id += 1
 
