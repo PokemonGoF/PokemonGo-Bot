@@ -10,7 +10,7 @@
 # 
 # You can also build from different fork and specify a particular commit as the branch
 # 
-# docker build  --build-arg BUILD_REPO=YourFork/PokemonGo-Bot --build-arg BUILD_BRANCH=6a4580f .
+# docker build --build-arg BUILD_REPO=YourFork/PokemonGo-Bot --build-arg BUILD_BRANCH=6a4580f .
 
 FROM alpine
 
@@ -45,14 +45,4 @@ RUN apk -U --no-cache add --virtual .pgobot-dependencies wget ca-certificates ta
     && apk del .pgobot-dependencies \
     && rm -rf /var/cache/apk/* /tmp/pgobot-version
 
-RUN printf "#!/bin/sh\n\
-\n\
-TIMEZONE=\${TIMEZONE:-Etc/UTC}\n\
-\n\
-ln -sfn /usr/share/zoneinfo/\$TIMEZONE /etc/localtime\n\
-echo \$TIMEZONE > /etc/timezone\n\
-\n\
-python pokecli.py \$@\n" > /entrypoint.sh \
-    && chmod +x /entrypoint.sh
-
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["python", "pokecli.py"]
