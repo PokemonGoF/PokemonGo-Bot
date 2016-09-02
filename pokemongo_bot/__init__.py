@@ -135,7 +135,6 @@ class PokemonGoBot(Datastore):
             self._print_list_pokemon()
 
         random.seed()
-        self.started = False
 
     def _setup_event_system(self):
         handlers = []
