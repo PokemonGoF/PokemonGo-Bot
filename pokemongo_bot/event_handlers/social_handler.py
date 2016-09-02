@@ -45,7 +45,10 @@ class MyMQTTClass:
     #    print string
     def publish(self, channel, message):
         if self._mqttc:
-            self._mqttc.publish(channel, message)
+            try:
+                self._mqttc.publish(channel, message)
+            except UnicodeDecodeError:
+                pass
     def connect_to_mqtt(self):
         try:
             if DEBUG_ON:
