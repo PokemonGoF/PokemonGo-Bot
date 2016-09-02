@@ -9,6 +9,9 @@ import time
 
 from socket import error as socket_error
 DEBUG_ON = False
+
+mqtt_private_channel = '/my/private/channel'
+
 class MyMQTTClass:
     def __init__(self, bot, clientid=None):
         self.bot = bot
@@ -110,6 +113,9 @@ class SocialHandler(EventHandler):
                 self.mqttc.publish("pgomapcatch/all/catchable/" + str(data['pokemon_id']), data_string)
                 json_data = json.dumps(data)
                 self.mqttc.publish("pgo/all/catchable/"+str(data['pokemon_id']), json_data)
+        if mqtt_private_channel:
+            json_data = json.dumps(data)
+            self.mqttc.publish(mqtt_private_channel, json_data)
 
             #print 'have catchable_pokemon'
             #print message
