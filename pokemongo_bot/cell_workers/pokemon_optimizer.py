@@ -278,37 +278,31 @@ class PokemonOptimizer(Datastore, BaseTask):
                 try_evolve_all += try_evolve
                 try_upgrade_all += try_upgrade
                 keep_all += keep
-        elif len(senior_pids) < nb_branch:
-            # We did not get every combination yet = All other Pokemon are potentially good to keep
+        else:
             for _, pokemon_list in self.group_by_pokemon_id(senior_pokemon_list):
                 try_evolve, try_upgrade, keep = self.get_best_pokemon_for_rule(pokemon_list, rule)
                 try_evolve_all += try_evolve
                 try_upgrade_all += try_upgrade
                 keep_all += keep
 
-            try_evolve, try_upgrade, keep = self.get_better_pokemon_for_rule(other_family_list, rule, other_family_list[-1])
+            if len(senior_pids) < nb_branch:
+                # We did not get every combination yet = All other Pokemon are potentially good to keep
+                worst = other_family_list[-1]
+            else:
+                best = try_evolve_all + try_upgrade_all + keep_all
+                worst = self.sort_pokemon_list(best, rule)[-1]
+
+            try_evolve, try_upgrade, keep = self.get_better_pokemon_for_rule(other_family_list, rule, worst, 12)
             try_evolve_all += try_evolve
             try_upgrade_all += try_upgrade
             keep_all += keep
-        else:
-            best = []
-
-            for _, pokemon_list in self.group_by_pokemon_id(senior_pokemon_list):
-                try_evolve, try_upgrade, keep = self.get_best_pokemon_for_rule(pokemon_list, rule)
-                best += try_evolve
-                best += try_upgrade
-                best += keep
-
-            worst = self.sort_pokemon_list(best, rule)[-1]
-
-            try_evolve_all, try_upgrade_all, keep_all = self.get_better_pokemon_for_rule(sorted_family, rule, worst)
 
         return try_evolve_all, try_upgrade_all, keep_all
 
-    def get_better_pokemon_for_rule(self, pokemon_list, rule, worst):
+    def get_better_pokemon_for_rule(self, pokemon_list, rule, worst, limit=1000):
         min_score = self.get_score(worst, rule)[0]
         scored_list = [(p, self.get_score(p, rule)) for p in pokemon_list]
-        best = [x for x in scored_list if x[1][0] >= min_score]
+        best = [x for x in scored_list if x[1][0] >= min_score][:limit]
         try_evolve = [x[0] for x in best if x[1][1] is True]
         try_upgrade = [x[0] for x in best if x[1][1] is False and x[1][2] is True]
         keep = [x[0] for x in best]

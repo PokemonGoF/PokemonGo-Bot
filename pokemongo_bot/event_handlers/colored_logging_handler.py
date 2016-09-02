@@ -70,6 +70,8 @@ class ColoredLoggingHandler(EventHandler):
         'unknown_spin_result':               'red',
         'unset_pokemon_nickname':            'red',
         'vip_pokemon':                       'red',
+        'use_incense':                       'blue',
+
         'arrived_at_cluster':                'none',
         'arrived_at_fort':                   'none',
         'bot_sleep':                         'none',
@@ -100,8 +102,7 @@ class ColoredLoggingHandler(EventHandler):
         'spun_fort':                         'none',
         'threw_berry':                       'none',
         'threw_pokeball':                    'none',
-        'used_lucky_egg':                    'none',
-        'save_spawn':                        'none'
+        'used_lucky_egg':                    'none'
     }
     COLOR_CODE = {
         'gray':    '\033[90m',

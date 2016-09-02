@@ -169,7 +169,7 @@ class IncubateEggs(Datastore, BaseTask):
                 continue
             if "player_stats" in inv_data:
                 self.km_walked = inv_data.get("player_stats", {}).get("km_walked", 0)
-
+        
         self.used_incubators = temp_used_incubators
         if self.used_incubators:
             self.used_incubators.sort(key=lambda x: x.get("km"))
