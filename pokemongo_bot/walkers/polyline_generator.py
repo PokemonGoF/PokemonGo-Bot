@@ -88,7 +88,7 @@ class Polyline(object):
         self.ELEVATION_URL = '{}{}&samples={}'.format(self.ELEVATION_API_URL,
                                                       self.polyline, self.elevation_samples)
         self.elevation_response = requests.get(self.ELEVATION_URL).json()
-        self.polyline_elevations = [x['elevation'] for x in self.elevation_response['results']]
+        self.polyline_elevations = [x['elevation'] for x in self.elevation_response['results']] or [None]
         self._timestamp = time.time()
         self.is_paused = False
         self._last_paused_timestamp = None

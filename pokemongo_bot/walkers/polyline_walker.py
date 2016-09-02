@@ -1,3 +1,5 @@
+from random import uniform
+
 from pokemongo_bot.walkers.step_walker import StepWalker
 from polyline_generator import PolylineObjectHandler
 
@@ -13,6 +15,6 @@ class PolylineWalker(StepWalker):
                                                               (self.dest_lat, self.dest_lng),
                                                               self.speed)
         self.pol_lat, self.pol_lon = self.polyline.get_pos()
-        self.pol_alt = self.polyline.get_alt()
+        self.pol_alt = self.polyline.get_alt() or uniform(self.bot.config.alt_min, self.bot.config.alt_max)
         super(PolylineWalker, self).__init__(self.bot, self.pol_lat, self.pol_lon,
                                              self.pol_alt, fixed_speed=True)
