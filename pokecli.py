@@ -672,6 +672,7 @@ def init_config():
     config.release = load.get('release', {})
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
+    config.save_pokemon_spawn = load.get('save_pokemon_spawn', False)
     config.vips = load.get('vips', {})
     config.sleep_schedule = load.get('sleep_schedule', [])
     config.live_config_update = load.get('live_config_update', {})

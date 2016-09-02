@@ -617,6 +617,10 @@ class PokemonGoBot(Datastore):
             'error_caching_forts',
             parameters=('path', )
         )
+        self.event_manager.register_event(
+            'save_spawn',
+            parameters=('pokemon','location')
+
         # database shit
         self.event_manager.register_event('catch_log')
         self.event_manager.register_event('evolve_log')

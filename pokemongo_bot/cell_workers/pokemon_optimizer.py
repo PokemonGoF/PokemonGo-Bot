@@ -68,7 +68,7 @@ class PokemonOptimizer(Datastore, BaseTask):
         return inventory.Pokemons.get_space_left()
 
     def work(self):
-        if (not self.enabled) or (self.get_pokemon_slot_left() > 5):
+        if (not self.enabled) or self.get_pokemon_slot_left() > self.config.get("min_slots_left", 5):
             return WorkerResult.SUCCESS
 
         self.open_inventory()
@@ -443,7 +443,7 @@ class PokemonOptimizer(Datastore, BaseTask):
                     skip_evolve = True
                     self.emit_event("skip_evolve",
                                     formatted="Skipping evolution step. Not enough Pokemon to evolve with lucky egg: %s/%s" % (len(evolve) + len(xp), self.config_evolve_count_for_lucky_egg))
-                elif self.get_pokemon_slot_left() > 5:
+                elif self.get_pokemon_slot_left() > self.config.get("min_slots_left", 5):
                     skip_evolve = True
                     self.emit_event("skip_evolve",
                                     formatted="Waiting for more Pokemon to evolve with lucky egg: %s/%s" % (len(evolve) + len(xp), self.config_evolve_count_for_lucky_egg))

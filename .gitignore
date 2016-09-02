@@ -110,6 +110,7 @@ data/*.db
 data/last-location*.json
 data/cells-*.json
 data/map-caught-*.json
+data/pokemon_spawns-*.json
 data/recent-forts-*.json
 data/caught-*.json
 data/deviceid-*.txt
