@@ -68,18 +68,18 @@ class PolylineTestCase(unittest.TestCase):
 
     @patch('time.time', mock_start)
     def test_pos_and_alt_at_time_mock_start(self):
-        self.assertEquals(self.polyline.get_pos(), ex_orig)
-        self.assertEquals(self.polyline.get_alt(), self.polyline.polyline_elevations[0])
+        self.assertEquals(self.polyline.get_pos(), (round(ex_orig[0], 5), round(ex_orig[1], 5)))
+        self.assertEquals(self.polyline.get_alt(), round(self.polyline.polyline_elevations[0], 2))
 
     @patch('time.time', mock_seven_sec)
     def test_pos_and_alt_at_time_mock_seven_sec(self):
-        self.assertEquals(self.polyline.get_pos(), (47.17048868132221, 8.516689560440737))
-        self.assertAlmostEqual(self.polyline.get_alt(), self.polyline.polyline_elevations[6], places=1)
+        self.assertEquals(self.polyline.get_pos(), (47.17049, 8.51669))
+        self.assertAlmostEqual(self.polyline.get_alt(), self.polyline.polyline_elevations[6], places=2)
 
     @patch('time.time', mock_end)
     def test_pos_and_alt_at_time_mock_end(self):
         self.assertEquals(self.polyline.get_pos(), ex_dest)
-        self.assertEquals(self.polyline.get_alt(), self.polyline.polyline_elevations[-1])
+        self.assertAlmostEqual(self.polyline.get_alt(), self.polyline.polyline_elevations[-1], places=2)
 
     def test_nr_of_elevations_returned(self):
         total_seconds = self.polyline.get_total_distance(self.polyline.points)/self.polyline.speed
@@ -107,8 +107,8 @@ class PolylineTestCase(unittest.TestCase):
 
         @patch('time.time', mock_seven_sec)
         def position_check():
-            self.assertEquals(self.polyline.get_pos(), ex_orig)
-            self.assertEquals(self.polyline.get_alt(), self.polyline.polyline_elevations[0])
+            self.assertEquals(self.polyline.get_pos(), (round(ex_orig[0], 5), round(ex_orig[1], 5)))
+            self.assertEquals(self.polyline.get_alt(), round(self.polyline.polyline_elevations[0], 2))
         position_check()
 
     def test_unpause(self):
@@ -127,8 +127,8 @@ class PolylineTestCase(unittest.TestCase):
 
         @patch('time.time', mock_seven_sec)
         def position_check():
-            self.assertEquals(self.polyline.get_pos(), ex_orig)
-            self.assertEquals(self.polyline.get_alt(), self.polyline.polyline_elevations[0])
+            self.assertEquals(self.polyline.get_pos(), (round(ex_orig[0], 5), round(ex_orig[1], 5)))
+            self.assertEquals(self.polyline.get_alt(), round(self.polyline.polyline_elevations[0], 2))
         position_check()
 
     def test_total_distance(self):
