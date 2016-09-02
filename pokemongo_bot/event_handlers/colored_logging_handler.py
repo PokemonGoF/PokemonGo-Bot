@@ -127,7 +127,7 @@ class ColoredLoggingHandler(EventHandler):
 
         if event in self.EVENT_COLOR_MAP:
             color = self.COLOR_CODE[self.EVENT_COLOR_MAP[event]]
-            if event == 'egg_hatched' and data.get('pokemon', 'error') == 'error':
+            if event == 'egg_hatched' and data.get('name', 'error') == 'error':
                 color = self.COLOR_CODE['red']
             formatted_msg = '{}{}{}'.format(color, formatted_msg, self.COLOR_CODE['none'])
 

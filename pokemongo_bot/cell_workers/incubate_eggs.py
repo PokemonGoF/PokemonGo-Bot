@@ -204,7 +204,7 @@ class IncubateEggs(Datastore, BaseTask):
             self.emit_event(
                 'egg_hatched',
                 data={
-                    'pokemon': 'error',
+                    'name': 'error',
                     'cp': 'error',
                     'iv': 'error',
                     'exp': 'error',
