@@ -146,6 +146,18 @@
         }
       },
       {
+        "type": "UseIncense",
+        "config": {
+          "use_incense": false,
+          "use_order": [
+            "ordinary",
+            "spicy",
+            "cool",
+            "floral" 
+          ]
+        }
+      },
+      {
         "type": "RecycleItems",
         "config": {
           "enabled": true,
@@ -253,7 +265,6 @@
       "// ['cp', 'iv_ads', 'iv_pct', 'ivcp', 'ncp', 'level', 'hp', 'moveset', 'dps']": {},
       "pokemon_info": ["cp", "iv_pct"]
     },
-    "save_pokemon_spawn": true,
     "walk_max": 4.16,
     "walk_min": 2.16,
     "alt_min": 500,
