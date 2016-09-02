@@ -114,6 +114,7 @@ class SocialHandler(EventHandler):
                 json_data = json.dumps(data)
                 self.mqttc.publish("pgo/all/catchable/"+str(data['pokemon_id']), json_data)
         if mqtt_private_channel:
+            data['event_type'] = event
             json_data = json.dumps(data)
             self.mqttc.publish(mqtt_private_channel, json_data)
 
