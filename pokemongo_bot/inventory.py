@@ -868,6 +868,9 @@ class Pokemon(object):
         # Current pokemon level (half of level is a normal value)
         self.level = LevelToCPm.level_from_cpm(self.cp_m)
 
+        if 'level' not in self._data:
+            self._data['level'] = self.level
+
         # Maximum health points
         self.hp_max = data['stamina_max']
         # Current health points
