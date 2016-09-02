@@ -1353,7 +1353,7 @@ class PokemonGoBot(Datastore):
                 with open(cached_forts_path) as f:
                     cached_recent_forts = json.load(f)
             except (IOError, ValueError) as e:
-                self.logger.info('[x] Error while opening cached forts: %s' % e, 'red')
+                self.logger.info('[x] Error while opening cached forts: %s' % e)
                 pass
             except:
                 raise FileIOException("Unexpected error opening {}".cached_forts_path)
