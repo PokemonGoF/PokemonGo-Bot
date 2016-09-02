@@ -49,7 +49,9 @@
         "config": {
           "enabled": false,
           "// set a name": "",
-          "nickname": ""
+          "nickname": "",
+          "// 0 = No Team, 1 = Blue, 2 = Red, 3 = Yellow": "",
+          "team": 0
         }
       },
       {
