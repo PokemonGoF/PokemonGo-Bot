@@ -3,13 +3,16 @@ from datetime import datetime, timedelta
 from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.worker_result import WorkerResult
+from pokemongo_bot.datastore import Datastore
 
 
-class IncubateEggs(BaseTask):
+class IncubateEggs(Datastore, BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     last_km_walked = 0
+
+    def __init__(self, bot, config):
+        super(IncubateEggs, self).__init__(bot, config)
 
     def initialize(self):
         self.next_update = None
@@ -209,17 +212,19 @@ class IncubateEggs(BaseTask):
                 }
             )
             return False
+ 
         for i in range(len(pokemon_list)):
-            msg = "Egg hatched with a {pokemon} (CP {cp} - NCP {ncp} - IV {iv_ads} {iv_pct}), {exp} exp, {stardust} stardust and {candy} candies."
+            pokemon = pokemon_list[i]
+            msg = "Egg hatched with a {name} (CP {cp} - NCP {ncp} - IV {iv_ads} {iv_pct}), {exp} exp, {stardust} stardust and {candy} candies."
             self.emit_event(
                 'egg_hatched',
                 formatted=msg,
                 data={
-                    'pokemon': pokemon_list[i].name,
-                    'cp': pokemon_list[i].cp,
-                    'ncp': round(pokemon_list[i].cp_percent, 2),
-                    'iv_ads': pokemon_list[i].iv_display,
-                    'iv_pct': pokemon_list[i].iv,
+                    'name': pokemon.name,
+                    'cp': pokemon.cp,
+                    'ncp': round(pokemon.cp_percent, 2),
+                    'iv_ads': pokemon.iv_display,
+                    'iv_pct': pokemon.iv,
                     'exp': xp[i],
                     'stardust': stardust[i],
                     'candy': candy[i]
@@ -227,6 +232,23 @@ class IncubateEggs(BaseTask):
             )
             # hatching egg gets exp too!
             inventory.player().exp += xp[i]
+            
+            with self.bot.database as conn:
+                c = conn.cursor()
+                c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='eggs_hatched_log'")
+            result = c.fetchone()
+            while True:
+                if result[0] == 1:
+                    conn.execute('''INSERT INTO eggs_hatched_log (pokemon, cp, iv, pokemon_id) VALUES (?, ?, ?, ?)''', (pokemon.name, pokemon.cp, pokemon.iv, pokemon.pokemon_id))
+                    break
+                else:
+                    self.emit_event(
+                        'eggs_hatched_log',
+                        sender=self,
+                        level='info',
+                        formatted="eggs_hatched_log table not found, skipping log"
+                    )
+                    break
             
         self.bot.metrics.hatched_eggs(len(pokemon_list))
         return True

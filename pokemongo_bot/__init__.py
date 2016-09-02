@@ -494,8 +494,7 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event(
             'egg_hatched',
             parameters=(
-                'pokemon',
-                'cp', 'ncp', 'iv_ads', 'iv_pct', 'exp', 'stardust', 'candy'
+                'name', 'cp', 'ncp', 'iv_ads', 'iv_pct', 'exp', 'stardust', 'candy'
             )
         )
 
@@ -628,6 +627,7 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event('transfer_log')
         self.event_manager.register_event('pokestop_log')
         self.event_manager.register_event('softban_log')
+        self.event_manager.register_event('eggs_hatched_log')
 
         self.event_manager.register_event(
             'badges',
