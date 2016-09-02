@@ -418,6 +418,13 @@ class PokemonGoBot(Datastore):
                 'pokemon_id'
             )
         )
+        self.event_manager.register_event(
+            'vanish_limit_reached',
+            parameters=(
+                'duration',
+                'resume'
+            )
+        )
         self.event_manager.register_event('pokemon_not_in_range')
         self.event_manager.register_event('pokemon_inventory_full')
         self.event_manager.register_event(
@@ -618,6 +625,7 @@ class PokemonGoBot(Datastore):
         )
         # database shit
         self.event_manager.register_event('catch_log')
+        self.event_manager.register_event('vanish_log')
         self.event_manager.register_event('evolve_log')
         self.event_manager.register_event('login_log')
         self.event_manager.register_event('transfer_log')
