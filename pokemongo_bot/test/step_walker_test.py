@@ -26,7 +26,7 @@ class TestStepWalker(unittest.TestCase):
 
     def tearDown(self):
         self.patcherSleep.stop()
-        self.patcherRandomLat.stop()
+        self.patcherRandomUniform.stop()
 
     def test_normalized_distance(self):
         walk_max = self.bot.config.walk_max
