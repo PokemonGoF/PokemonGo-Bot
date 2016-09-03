@@ -23,7 +23,7 @@ class PolylineWalker(StepWalker):
 
     def step(self):
         self.polyline_walker = PolylineObjectHandler.cached_polyline(self.actual_pos,
-                                        (self.destLat, self.destLng), self.speed)
+                                        (self.destLat, self.destLng), self.speed, google_map_api_key=self.bot.config.gmapkey)
 
         if self.dist < 10: # 10m, add config? set it at constants?
             return True
@@ -31,7 +31,7 @@ class PolylineWalker(StepWalker):
         self.polyline_walker.unpause()
         sleep(1)
         self.polyline_walker.pause()
-        
+
         cLat, cLng = self.polyline_walker.get_pos()
         cAlt = self.polyline_walker.get_alt()
         self.api.set_position(cLat, cLng, cAlt)
@@ -39,4 +39,3 @@ class PolylineWalker(StepWalker):
 
         self.bot.heartbeat()
         return False
-
