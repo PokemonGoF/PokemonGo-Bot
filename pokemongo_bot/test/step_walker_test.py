@@ -9,8 +9,8 @@ NORMALIZED_LAT_LNG_DISTANCE_STEP = 6.3593e-6
 class TestStepWalker(unittest.TestCase):
     def setUp(self):
         self.patcherSleep = patch('pokemongo_bot.walkers.step_walker.sleep')
-        self.patcherRandomLat = patch('pokemongo_bot.walkers.step_walker.random_lat_long_delta', return_value=0)
-        self.patcherSleep.start()
+        self.patcherRandomUniform = patch('random.uniform', return_value=0)
+        self.patcherRandomUniform.start()
         self.patcherRandomLat.start()
 
         self.bot = MagicMock()
