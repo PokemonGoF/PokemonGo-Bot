@@ -138,6 +138,11 @@ class StepWalker(object):
         
     def _get_next_pos(self, lat, lon, bearing, speed, precision):
         origin = Point(lat, lon)
-        offset_angle = (1/self.speed)*(precision/1.74)
-        lat, lon, _ = VincentyDistance(kilometers=speed*1e-3).destination(origin, bearing+uniform(-offset_angle, offset_angle))
-        return lat, lon
+        if speed == 0.0:
+            return lat, lon
+        if speed == float("inf"):
+            return self.destLat, self.destLng
+        else:
+            offset_angle = (1/self.speed)*(precision/1.74)
+            lat, lon, _ = VincentyDistance(kilometers=speed*1e-3).destination(origin, bearing + uniform(-offset_angle, offset_angle))
+            return lat, lon
