@@ -15,7 +15,6 @@ from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.base_dir import _base_dir
 from utils import distance, format_time, fort_details
-from pokemongo_bot.datastore import Datastore
 
 SPIN_REQUEST_RESULT_SUCCESS = 1
 SPIN_REQUEST_RESULT_OUT_OF_RANGE = 2
@@ -23,7 +22,7 @@ SPIN_REQUEST_RESULT_IN_COOLDOWN_PERIOD = 3
 SPIN_REQUEST_RESULT_INVENTORY_FULL = 4
 
 
-class SpinFort(Datastore, BaseTask):
+class SpinFort(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def __init__(self, bot, config):

@@ -13,7 +13,6 @@ from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot.inventory import Pokemon
 from pokemongo_bot.worker_result import WorkerResult
-from pokemongo_bot.datastore import Datastore
 from pokemongo_bot.base_dir import _base_dir
 from datetime import datetime, timedelta
 from utils import getSeconds
@@ -42,7 +41,7 @@ LOGIC_TO_FUNCTION = {
 }
 
 
-class PokemonCatchWorker(Datastore, BaseTask):
+class PokemonCatchWorker(BaseTask):
 
     def __init__(self, pokemon, bot, config):
         self.pokemon = pokemon

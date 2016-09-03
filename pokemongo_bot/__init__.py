@@ -33,7 +33,6 @@ from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler, Colore
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from pokemongo_bot.base_dir import _base_dir
-from pokemongo_bot.datastore import _init_database, Datastore
 from worker_result import WorkerResult
 from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
 from inventory import init_inventory, player
@@ -46,7 +45,7 @@ class FileIOException(Exception):
     pass
 
 
-class PokemonGoBot(Datastore):
+class PokemonGoBot(object):
     @property
     def position(self):
         return self.api.actual_lat, self.api.actual_lng, self.api.actual_alt
@@ -68,10 +67,9 @@ class PokemonGoBot(Datastore):
         """
         return self._player
 
-    def __init__(self, config):
+    def __init__(self, db, config):
 
-        # Database connection MUST be setup before migrations will work
-        self.database = _init_database('/data/{}.db'.format(config.username))
+        self.database = db
 
         self.config = config
         super(PokemonGoBot, self).__init__()
