@@ -4,13 +4,12 @@ import time
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.cell_workers.utils import distance, coord2merc, merc2coord
 from pokemongo_bot.constants import Constants
-from pokemongo_bot.datastore import Datastore
 from pokemongo_bot.human_behaviour import random_lat_long_delta, random_alt_delta
 from pokemongo_bot.walkers.polyline_walker import PolylineWalker
 from pokemongo_bot.worker_result import WorkerResult
 
 
-class CampFort(Datastore, BaseTask):
+class CampFort(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def __init__(self, bot, config):
