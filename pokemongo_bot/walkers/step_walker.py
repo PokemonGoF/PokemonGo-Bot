@@ -10,7 +10,7 @@ from geopy import Point
 
 class StepWalker(object):
 
-    def __init__(self, bot, dest_lat, dest_lng, dest_alt=None, fixed_speed=None, precision=15):
+    def __init__(self, bot, dest_lat, dest_lng, dest_alt=None, fixed_speed=None, precision=50):
         self.bot = bot
         self.api = bot.api
         self.precision = precision
