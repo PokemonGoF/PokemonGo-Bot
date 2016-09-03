@@ -94,7 +94,14 @@ def main():
         bot.workers = tree
 
     def initialize(config):
-        bot = PokemonGoBot(config)
+        from pokemongo_bot.datastore import Datastore
+
+        ds = Datastore(conn_str='/data/{}.db'.format(config.username))
+        for directory in ['pokemongo_bot', 'pokemongo_bot/cell_workers']:
+            ds.migrate(directory + '/migrations')
+
+        bot = PokemonGoBot(ds.get_connection(), config)
+
         return bot
 
     def start_bot(bot, config):

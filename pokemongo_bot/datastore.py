@@ -17,37 +17,21 @@ except ImportError:
     warnings.warn('Please run `pip install -r requirements.txt` to ensure you have the latest required packages')
     sys.exit(-1)
 
-
-_DEFAULT = object()
-
-BACKEND = _DEFAULT
-DATABASE = _DEFAULT
-
-def _init_database(connection_string=':memory:', driver='sqlite'):
-    global BACKEND, DATABASE
-
-    if DATABASE is _DEFAULT:
-        BACKEND = get_backend('{driver}://{conn}'.format(driver=driver, conn=connection_string))
-        DATABASE = BACKEND.connection
-
-    return DATABASE
+DEFAULT_DRIVER = 'sqlite'
+DEFAULT_CONN_STR = ':memory:'
 
 class Datastore(object):
-    MIGRATIONS_PATH = _DEFAULT
 
     def __init__(self, *args, **kwargs):
-        """
-        When a subclass is initiated, the migrations should automatically be run.
-        """
-        if _DEFAULT in (BACKEND, DATABASE):
-            raise RuntimeError('Migration database connection not setup. Need to run `_init_database`')
+        super(Datastore, self).__init__()
 
-        # Init parents with additional params we may have received
-        super(Datastore, self).__init__(*args, **kwargs)
+        driver = DEFAULT_DRIVER if 'driver' not in kwargs else kwargs['driver']
+        conn_str = DEFAULT_CONN_STR if 'conn_str' not in kwargs else kwargs['conn_str']
 
-        path = self.MIGRATIONS_PATH
+        self.backend = get_backend('{driver}://{conn}'.format(driver=driver, conn=conn_str))
 
-        if path is _DEFAULT:
+    def migrate(self, path=None):
+        if path is None:
             # `migrations` should be a sub directory of the calling package, unless a path is specified
             filename = inspect.stack()[1][1]
             path = os.path.join(os.path.dirname(filename), 'migrations')
@@ -56,10 +40,13 @@ class Datastore(object):
 
         try:
             migrations = read_migrations(path)
-            BACKEND.apply_migrations(BACKEND.to_apply(migrations))
+            self.backend.apply_migrations(self.backend.to_apply(migrations))
         except (IOError, OSError):
             """
             If `migrations` directory is not present, then whatever is subclassing
             us will not have any DB schemas to load.
             """
             pass
+
+    def get_connection(self):
+        return self.backend.connection
