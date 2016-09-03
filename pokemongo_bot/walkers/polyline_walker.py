@@ -8,7 +8,7 @@ class PolylineWalker(StepWalker):
 
     def __init__(self, bot, dest_lat, dest_lng):
         self.bot = bot
-        self.speed = self.bot.config.walk_min
+        self.speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
         self.dest_lat, self.dest_lng = dest_lat, dest_lng
         self.actual_pos = tuple(self.bot.position[:2])
         self.actual_alt = self.bot.position[-1]
@@ -18,4 +18,4 @@ class PolylineWalker(StepWalker):
         self.pol_lat, self.pol_lon = self.polyline.get_pos()
         self.pol_alt = self.polyline.get_alt() or self.actual_alt
         super(PolylineWalker, self).__init__(self.bot, self.pol_lat, self.pol_lon,
-                                             self.pol_alt, fixed_speed=True)
+                                             self.pol_alt, fixed_speed=self.speed)
