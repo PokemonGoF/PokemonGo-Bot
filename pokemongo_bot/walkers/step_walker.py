@@ -5,7 +5,8 @@ import math
 from random import uniform
 from pokemongo_bot.cell_workers.utils import distance
 from pokemongo_bot.human_behaviour import random_lat_long_delta, random_lat_long_delta2, sleep, random_alt_delta
-
+from geopy.distance import VincentyDistance
+from geopy import Point
 
 class StepWalker(object):
 
@@ -60,10 +61,8 @@ class StepWalker(object):
         self.bearing = self._calc_bearing(self.initLat, self.initLng, self.dLat, self.dLng)
 
     def step(self):
-        walk_sway = random_lat_long_delta2(self.bearing)
-        
         if (self.dLat == 0 and self.dLng == 0) or self.dist < self.speed:
-            self.api.set_position(self.destLat + walk_sway[0], self.destLng + walk_sway[1], self.alt)
+            self.api.set_position(self.destLat, self.destLng, self.alt)
             self.bot.event_manager.emit(
                 'position_update',
                 sender=self,
@@ -78,18 +77,8 @@ class StepWalker(object):
             self.bot.heartbeat()
             return True
 
-        totalDLat = (self.destLat - self.initLat)
-        totalDLng = (self.destLng - self.initLng)
-        magnitude = self._pythagorean(totalDLat, totalDLng)
-        unitLat = totalDLat / magnitude
-        unitLng = totalDLng / magnitude
-
-        scaledDLat = unitLat * self.magnitude
-        scaledDLng = unitLng * self.magnitude
-
-        cLat = self.initLat + scaledDLat + walk_sway[0]
-        cLng = self.initLng + scaledDLng + walk_sway[1]
-        cAlt = self.initAlt + self.unitAlt + random_alt_delta()
+            new_position = get_next_pos(self.initLat, self.initLng, self.bearing, self.speed, 1)
+            cAlt = self.initAlt + self.unitAlt + random_alt_delta()
 
         self.api.set_position(cLat, cLng, cAlt)
         self.bot.event_manager.emit(
@@ -109,9 +98,6 @@ class StepWalker(object):
         # self._work_at_position(
         #     self.initLat, self.initLng,
         #     alt, False)
-
-    def _pythagorean(self, lat, lng):
-        return math.sqrt((lat ** 2) + (lng ** 2))
 
     def _calc_bearing(self, start_lat, start_lng, dest_lat, dest_lng):
         """
@@ -152,3 +138,8 @@ class StepWalker(object):
         compass_bearing = (initial_bearing + 360) % 360
     
         return compass_bearing
+        
+    def get_next_pos(lat, lon, bearing, speed, offset_angle):
+        origin = Point(lat, lon)
+        lat, lon, _ = VincentyDistance(kilometers=speed*1e-3).destination(origin, bearing+random.randrange(-offset_angle, offset_angle))
+        return lat, lon
