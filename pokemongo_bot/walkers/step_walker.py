@@ -86,7 +86,7 @@ class StepWalker(object):
             sender=self,
             level='debug',
             data={
-                'current_position': (cLat, cLng, cAlt),
+                'current_position': (new_position[0], new_position[1], cAlt),
                 'last_position': (self.initLat, self.initLng, self.initAlt),
                 'distance': '',
                 'distance_unit': ''
