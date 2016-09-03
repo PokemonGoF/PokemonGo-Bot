@@ -113,7 +113,7 @@ class StepWalker(object):
     def _pythagorean(self, lat, lng):
         return math.sqrt((lat ** 2) + (lng ** 2))
 
-    def _calc_bearing(start_lat, start_lng, dest_lat, dest_lng):
+    def _calc_bearing(self, start_lat, start_lng, dest_lat, dest_lng):
         """
         Calculates the bearing between two points.
     
