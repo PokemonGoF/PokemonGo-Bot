@@ -78,12 +78,12 @@ class TelegramClass:
                     if update.message:
                         self.bot.logger.info("message from {} ({}): {}".format(update.message.from_user.username, update.message.from_user.id, update.message.text))
                         if not self.master:
+                            # Reject message if no master defined in config
                             outMessage = "Telegram bot setup not yet complete (master = null). Please enter your userid {} into bot configuration file.".format(update.message.from_user.id)
                             self.bot.logger.warn(outMessage)
-                            # Bot could reply to Telegram, but ideally the bot should not respond to ANY unknown sender, ever.
-                            # self._tbot.sendMessage(chat_id=update.message.from_user.id, parse_mode='Markdown', text=outMessage)
                             continue
                         if self.master not in [update.message.from_user.id, "@{}".format(update.message.from_user.username)]:
+                            # Reject message if sender does not match defined master in config
                             outMessage = "Telegram message received from unknown sender. If this was you, please enter your userid {} as master in bot configuration file.".format(update.message.from_user.id)
                             self.bot.logger.warn(outMessage)
                             continue
