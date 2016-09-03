@@ -13,7 +13,7 @@ class PolylineWalker(StepWalker):
         self.actual_pos = tuple(self.bot.position[:2])
         self.polyline = PolylineObjectHandler.cached_polyline(self.actual_pos,
                                                               (self.dest_lat, self.dest_lng),
-                                                              self.speed)
+                                                              self.speed, google_map_api_key=self.bot.config.gmapkey)
         self.pol_lat, self.pol_lon = self.polyline.get_pos()
         self.pol_alt = self.polyline.get_alt() or uniform(self.bot.config.alt_min, self.bot.config.alt_max)
         super(PolylineWalker, self).__init__(self.bot, self.pol_lat, self.pol_lon,
