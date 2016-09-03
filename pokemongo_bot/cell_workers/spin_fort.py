@@ -101,7 +101,8 @@ class SpinFort(BaseTask):
                 result = c.fetchone()        
                 c.execute("SELECT DISTINCT COUNT(pokestop) FROM pokestop_log WHERE dated >= datetime('now','-1 day')")
                 if c.fetchone()[0]>=self.config.get('daily_spin_limit',2000):
-                    sys.exit(str(self.config.get('daily_spin_limit',2000))+" Pokestop spin in 24 hours")
+                    self.emit_event('spin_limit', formatted='WARNING! You have reached your daily spin limit')
+                    sys.exit(2)
                 while True:
                     if result[0] == 1:
                         conn.execute('''INSERT INTO pokestop_log (pokestop, exp, items) VALUES (?, ?, ?)''', (fort_name, str(experience_awarded), str(items_awarded)))
