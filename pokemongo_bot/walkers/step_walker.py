@@ -10,10 +10,10 @@ from geopy import Point
 
 class StepWalker(object):
 
-    def __init__(self, bot, dest_lat, dest_lng, dest_alt=None, fixed_speed=None):
+    def __init__(self, bot, dest_lat, dest_lng, dest_alt=None, fixed_speed=None, offset_angle=5):
         self.bot = bot
         self.api = bot.api
-        self.offset_angle=5
+        self.offset_angle=offset_angle
 
         self.initLat, self.initLng = self.bot.position[0:2]
 
@@ -138,5 +138,5 @@ class StepWalker(object):
         
     def _get_next_pos(self, lat, lon, bearing, speed, offset_angle):
         origin = Point(lat, lon)
-        lat, lon, _ = VincentyDistance(kilometers=speed*1e-3).destination(origin, bearing+random.randrange(-offset_angle, offset_angle))
+        lat, lon, _ = VincentyDistance(kilometers=speed*1e-3).destination(origin, bearing+randrange(-offset_angle, offset_angle))
         return lat, lon
