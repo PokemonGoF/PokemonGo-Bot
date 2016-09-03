@@ -54,10 +54,14 @@ class StepWalker(object):
             self.dLng = (dest_lng - self.initLng) / int(self.steps)
             self.magnitude = self._pythagorean(self.dLat, self.dLng)
             self.unitAlt = (self.alt - self.initAlt) / int(self.steps)
+            
+        self.bearing = calc_bearing(self.initLat, self.initLng, self.dLat, self.dLng)
 
     def step(self):
+        walk_sway = random_lat_long_delta2(self.bearing)
+        
         if (self.dLat == 0 and self.dLng == 0) or self.dist < self.speed:
-            self.api.set_position(self.destLat + random_lat_long_delta(), self.destLng + random_lat_long_delta(), self.alt)
+            self.api.set_position(self.destLat + walk_sway[0], self.destLng + walk_sway[1], self.alt)
             self.bot.event_manager.emit(
                 'position_update',
                 sender=self,
@@ -81,8 +85,8 @@ class StepWalker(object):
         scaledDLat = unitLat * self.magnitude
         scaledDLng = unitLng * self.magnitude
 
-        cLat = self.initLat + scaledDLat + random_lat_long_delta()
-        cLng = self.initLng + scaledDLng + random_lat_long_delta()
+        cLat = self.initLat + scaledDLat + walk_sway[0]
+        cLng = self.initLng + scaledDLng + walk_sway[1]
         cAlt = self.initAlt + self.unitAlt + random_alt_delta()
 
         self.api.set_position(cLat, cLng, cAlt)
