@@ -1000,10 +1000,10 @@ Bot answer on command '/info' self stats.
 ### Options
 
 * `telegram_token` : bot token (getting [there](https://core.telegram.org/bots#6-botfather) - one token per bot)
-* `master` : id (without quotes) of bot owner, who will gett announces.
+* `master` : id (without quotes) or username (with quotes) of bot owner, who will get announces.
 * `alert_catch` : dict of rules pokemons catch.
 
-### Sample configuration
+### Sample configuration with id
 [[back to top](#table-of-contents)]
 ```json
 {
@@ -1011,6 +1011,22 @@ Bot answer on command '/info' self stats.
     "config": {
         "enabled": true,
         "master": 12345678,
+        "alert_catch": {
+          "all": {"operator": "and", "cp": 1300, "iv": 0.95},
+          "Snorlax": {"operator": "or", "cp": 900, "iv": 0.9}
+        }
+    }
+}
+```
+
+### Sample configuration with username
+[[back to top](#table-of-contents)]
+```json
+{
+    "type": "TelegramTask",
+    "config": {
+        "enabled": true,
+        "master": "MyTelegramUsername",
         "alert_catch": {
           "all": {"operator": "and", "cp": 1300, "iv": 0.95},
           "Snorlax": {"operator": "or", "cp": 900, "iv": 0.9}
