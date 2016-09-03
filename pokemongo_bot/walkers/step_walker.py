@@ -2,7 +2,7 @@
 
 import math
 
-from random import uniform, randrange
+from random import uniform
 from pokemongo_bot.cell_workers.utils import distance
 from pokemongo_bot.human_behaviour import sleep, random_alt_delta
 from geopy.distance import VincentyDistance
@@ -34,7 +34,7 @@ class StepWalker(object):
         else:
             self.speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
             
-        self.offset_angle=int((1/self.speed)*(precision/1.74))
+        self.offset_angle=(1/self.speed)*(precision/1.74)
 
         if len(self.bot.position) == 3:
             self.initAlt = self.bot.position[2]
@@ -139,5 +139,5 @@ class StepWalker(object):
         
     def _get_next_pos(self, lat, lon, bearing, speed, offset_angle):
         origin = Point(lat, lon)
-        lat, lon, _ = VincentyDistance(kilometers=speed*1e-3).destination(origin, bearing+randrange(-offset_angle, offset_angle))
+        lat, lon, _ = VincentyDistance(kilometers=speed*1e-3).destination(origin, bearing+uniform(-offset_angle, offset_angle))
         return lat, lon
