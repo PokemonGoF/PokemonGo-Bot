@@ -2,7 +2,7 @@ import math
 
 from random import uniform
 from pokemongo_bot.cell_workers.utils import distance
-from pokemongo_bot.human_behaviour import random_lat_long_delta, sleep, random_alt_delta
+from pokemongo_bot.human_behaviour import random_lat_long_delta2, sleep, random_alt_delta
 
 
 class StepWalker(object):
@@ -55,7 +55,7 @@ class StepWalker(object):
             self.magnitude = self._pythagorean(self.dLat, self.dLng)
             self.unitAlt = (self.alt - self.initAlt) / int(self.steps)
             
-        self.bearing = calc_bearing(self.initLat, self.initLng, self.dLat, self.dLng)
+        self.bearing = self._calc_bearing(self.initLat, self.initLng, self.dLat, self.dLng)
 
     def step(self):
         walk_sway = random_lat_long_delta2(self.bearing)
@@ -111,13 +111,9 @@ class StepWalker(object):
     def _pythagorean(self, lat, lng):
         return math.sqrt((lat ** 2) + (lng ** 2))
 
-    def calc_bearing(start_lat, start_lng, dest_lat, dest_lng):
+    def _calc_bearing(start_lat, start_lng, dest_lat, dest_lng):
         """
         Calculates the bearing between two points.
-    
-        The formulae used is the following:
-            θ = atan2(sin(Δlong).cos(lat2),
-                      cos(lat1).sin(lat2) − sin(lat1).cos(lat2).cos(Δlong))
     
         :Parameters:
           - `start_lat in decimal degrees
