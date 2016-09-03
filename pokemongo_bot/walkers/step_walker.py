@@ -2,7 +2,7 @@
 
 import math
 
-from random import uniform
+from random import uniform, randrange
 from pokemongo_bot.cell_workers.utils import distance
 from pokemongo_bot.human_behaviour import sleep, random_alt_delta
 from geopy.distance import VincentyDistance
