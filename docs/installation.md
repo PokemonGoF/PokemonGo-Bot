@@ -84,7 +84,7 @@ docker run --name=bot1-pokego --rm -it -v $(pwd)/configs/config.json:/usr/src/ap
 Optionally you can set your timezone with the -e option (default is Etc/UTC). You can find an exhaustive list of timezone here: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
 ```
-docker run --name=bot1-pokego --rm -it -e TIMEZONE=Asia/Taipei -v $(pwd)/configs/config.json:/usr/src/app/configs/config.json pokemongo-bot
+docker run --name=bot1-pokego --rm -it -e TZ=Asia/Taipei -v $(pwd)/configs/config.json:/usr/src/app/configs/config.json pokemongo-bot
 ```
 
 >In the case you configured authentification to be handled by auth.json file make sure you mount that file as a volume also

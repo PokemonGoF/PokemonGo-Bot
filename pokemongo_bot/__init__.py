@@ -33,7 +33,6 @@ from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler, Colore
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from pokemongo_bot.base_dir import _base_dir
-from pokemongo_bot.datastore import _init_database, Datastore
 from worker_result import WorkerResult
 from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
 from inventory import init_inventory, player
@@ -46,7 +45,7 @@ class FileIOException(Exception):
     pass
 
 
-class PokemonGoBot(Datastore):
+class PokemonGoBot(object):
     @property
     def position(self):
         return self.api.actual_lat, self.api.actual_lng, self.api.actual_alt
@@ -68,10 +67,9 @@ class PokemonGoBot(Datastore):
         """
         return self._player
 
-    def __init__(self, config):
+    def __init__(self, db, config):
 
-        # Database connection MUST be setup before migrations will work
-        self.database = _init_database('/data/{}.db'.format(config.username))
+        self.database = db
 
         self.config = config
         super(PokemonGoBot, self).__init__()
@@ -418,6 +416,13 @@ class PokemonGoBot(Datastore):
                 'pokemon_id'
             )
         )
+        self.event_manager.register_event(
+            'vanish_limit_reached',
+            parameters=(
+                'duration',
+                'resume'
+            )
+        )
         self.event_manager.register_event('pokemon_not_in_range')
         self.event_manager.register_event('pokemon_inventory_full')
         self.event_manager.register_event(
@@ -446,6 +451,7 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event('vip_pokemon')
         self.event_manager.register_event('gained_candy', parameters=('quantity', 'type'))
         self.event_manager.register_event('catch_limit')
+        self.event_manager.register_event('spin_limit')
         self.event_manager.register_event('show_best_pokemon', parameters=('pokemons'))
 
         # level up stuff
@@ -619,6 +625,7 @@ class PokemonGoBot(Datastore):
         )
         # database shit
         self.event_manager.register_event('catch_log')
+        self.event_manager.register_event('vanish_log')
         self.event_manager.register_event('evolve_log')
         self.event_manager.register_event('login_log')
         self.event_manager.register_event('transfer_log')
@@ -636,6 +643,11 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event(
             'forts_found',
             parameters=('json')
+        )
+        # UseIncense
+        self.event_manager.register_event(
+            'use_incense',
+            parameters=('type', 'incense_count')
         )
 
     def tick(self):
@@ -1351,7 +1363,7 @@ class PokemonGoBot(Datastore):
                 with open(cached_forts_path) as f:
                     cached_recent_forts = json.load(f)
             except (IOError, ValueError) as e:
-                self.logger.info('[x] Error while opening cached forts: %s' % e, 'red')
+                self.logger.info('[x] Error while opening cached forts: %s' % e)
                 pass
             except:
                 raise FileIOException("Unexpected error opening {}".cached_forts_path)

@@ -1,6 +1,7 @@
 import time
 from itertools import chain
 from math import ceil
+from random import uniform
 
 import haversine
 import polyline
@@ -16,13 +17,17 @@ class PolylineObjectHandler:
     _run = False
 
     @staticmethod
-    def cached_polyline(origin, destination, speed):
+    def cached_polyline(origin, destination, speed, google_map_api_key=None):
         '''
         Google API has limits, so we can't generate new Polyline at every tick...
         '''
 
-        # _cache might be None...
-        is_old_cache = lambda : tuple(origin) != PolylineObjectHandler._cache.get_last_pos()
+        # Absolute offset between bot origin and PolyLine get_last_pos() (in meters)
+        if PolylineObjectHandler._cache and PolylineObjectHandler._cache.get_last_pos() != (None, None):
+            abs_offset = haversine.haversine(tuple(origin), PolylineObjectHandler._cache.get_last_pos())*1000
+        else:
+            abs_offset = float("inf")
+        is_old_cache = lambda : abs_offset > 8 # Consider cache old if we identified an offset more then 8 m
         new_dest_set = lambda : tuple(destination) != PolylineObjectHandler._cache.destination
 
         if PolylineObjectHandler._run and (not is_old_cache()):
@@ -39,7 +44,7 @@ class PolylineObjectHandler:
                 PolylineObjectHandler._run = True
                 PolylineObjectHandler._instability = 20 # next N moves use same cache
 
-            PolylineObjectHandler._cache = Polyline(origin, destination, speed)
+            PolylineObjectHandler._cache = Polyline(origin, destination, speed, google_map_api_key)
         else:
             # valid cache found
             PolylineObjectHandler._instability -= 1
@@ -49,14 +54,16 @@ class PolylineObjectHandler:
 
 
 class Polyline(object):
-    def __init__(self, origin, destination, speed):
+    def __init__(self, origin, destination, speed, google_map_api_key=None):
         self.DIRECTIONS_API_URL='https://maps.googleapis.com/maps/api/directions/json?mode=walking'
         self.origin = origin
         self.destination = tuple(destination)
         self.DIRECTIONS_URL = '{}&origin={}&destination={}'.format(self.DIRECTIONS_API_URL,
                 '{},{}'.format(*self.origin),
                 '{},{}'.format(*self.destination))
-        
+        if google_map_api_key:
+            self.DIRECTIONS_URL = '{}&key={}'.format(self.DIRECTIONS_URL, google_map_api_key)
+
         self.directions_response = requests.get(self.DIRECTIONS_URL).json()
         try:
             self.polyline_points = [x['polyline']['points'] for x in
@@ -83,8 +90,12 @@ class Polyline(object):
         self.ELEVATION_API_URL='https://maps.googleapis.com/maps/api/elevation/json?path=enc:'
         self.ELEVATION_URL = '{}{}&samples={}'.format(self.ELEVATION_API_URL,
                                                       self.polyline, self.elevation_samples)
+
+        if google_map_api_key:
+            self.ELEVATION_URL = '{}&key={}'.format(self.ELEVATION_URL, google_map_api_key)
+
         self.elevation_response = requests.get(self.ELEVATION_URL).json()
-        self.polyline_elevations = [x['elevation'] for x in self.elevation_response['results']]
+        self.polyline_elevations = [x['elevation'] for x in self.elevation_response['results']] or [None]
         self._timestamp = time.time()
         self.is_paused = False
         self._last_paused_timestamp = None
@@ -142,9 +153,12 @@ class Polyline(object):
         seconds_passed = abs(time_passed - self._timestamp - self._paused_total)
         elevation_index = int(seconds_passed*conversion_factor)
         try:
-            return round(self.polyline_elevations[elevation_index], 2)
+            return self.polyline_elevations[elevation_index]
         except IndexError:
-            return round(self.polyline_elevations[-1], 2)
+            try:
+                return self.polyline_elevations[-1]
+            except IndexError:
+                return uniform(max_nr_samples/2, max_nr_samples)
 
     def get_pos(self):
         walked_distance = 0.0
@@ -188,7 +202,7 @@ class Polyline(object):
             # this ensures ~3-50cm ofset from the geometrical point calculated
             lat = o[0]+ (d[0] -o[0]) * percentage
             lon = o[1]+ (d[1] -o[1]) * percentage
-            return [(round(lat, 5), round(lon, 5))]
+            return [(lat, lon)]
 
     def get_total_distance(self, points):
         return ceil(sum([haversine.haversine(*x)*1000 for x in self.walk_steps(points)]))

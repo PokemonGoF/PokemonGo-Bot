@@ -4,6 +4,7 @@
 			"type": "PokemonOptimizer",
 			"config": {
 				"enabled": true,
+				"min_slots_left": 5,
 				"transfer": true,
 				"transfer_wait_min": 3,
 				"transfer_wait_max": 5,

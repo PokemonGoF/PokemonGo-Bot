@@ -15,7 +15,6 @@ from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.base_dir import _base_dir
 from utils import distance, format_time, fort_details
-from pokemongo_bot.datastore import Datastore
 
 SPIN_REQUEST_RESULT_SUCCESS = 1
 SPIN_REQUEST_RESULT_OUT_OF_RANGE = 2
@@ -23,7 +22,7 @@ SPIN_REQUEST_RESULT_IN_COOLDOWN_PERIOD = 3
 SPIN_REQUEST_RESULT_INVENTORY_FULL = 4
 
 
-class SpinFort(Datastore, BaseTask):
+class SpinFort(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def __init__(self, bot, config):
@@ -72,15 +71,22 @@ class SpinFort(Datastore, BaseTask):
                 self.bot.softban = False
                 experience_awarded = spin_details.get('experience_awarded', 0)
                 items_awarded = self.get_items_awarded_from_fort_spinned(response_dict)
+                egg_awarded = spin_details.get('pokemon_data_egg', None)
+
+                if egg_awarded is not None:
+                    items_awarded[u'Egg'] = egg_awarded['egg_km_walked_target']
 
                 if experience_awarded or items_awarded:
+                    awards = ', '.join(["{}x {}".format(items_awarded[x], x) for x in items_awarded if x != u'Egg'])
+                    if egg_awarded is not None:
+                        awards += u', {} Egg'.format(egg_awarded['egg_km_walked_target'])
                     self.emit_event(
                         'spun_pokestop',
                         formatted="Spun pokestop {pokestop}. Experience awarded: {exp}. Items awarded: {items}",
                         data={
                             'pokestop': fort_name,
                             'exp': experience_awarded,
-                            'items': ', '.join(["{}x {}".format(items_awarded[x], x) for x in items_awarded])
+                            'items': awards
                         }
                     )
                 else:
@@ -95,7 +101,8 @@ class SpinFort(Datastore, BaseTask):
                 result = c.fetchone()        
                 c.execute("SELECT DISTINCT COUNT(pokestop) FROM pokestop_log WHERE dated >= datetime('now','-1 day')")
                 if c.fetchone()[0]>=self.config.get('daily_spin_limit',2000):
-                    sys.exit(str(self.config.get('daily_spin_limit',2000))+" Pokestop spin in 24 hours")
+                    self.emit_event('spin_limit', formatted='WARNING! You have reached your daily spin limit')
+                    sys.exit(2)
                 while True:
                     if result[0] == 1:
                         conn.execute('''INSERT INTO pokestop_log (pokestop, exp, items) VALUES (?, ?, ?)''', (fort_name, str(experience_awarded), str(items_awarded)))
@@ -183,7 +190,10 @@ class SpinFort(Datastore, BaseTask):
 
     def get_forts_in_range(self):
         forts = self.bot.get_forts(order_by_distance=True)
-        forts = filter(lambda fort: fort["id"] not in self.bot.fort_timeouts, forts)
+        now = time.time() * 1000
+        forts = filter(lambda x: x.get('cooldown_complete_timestamp_ms', 0) < now, forts)
+
+        # forts = filter(lambda fort: fort["id"] not in self.bot.fort_timeouts, forts)
         if self.bot.config.replicate_gps_xy_noise:
             forts = filter(lambda fort: distance(
                 self.bot.noised_position[0],

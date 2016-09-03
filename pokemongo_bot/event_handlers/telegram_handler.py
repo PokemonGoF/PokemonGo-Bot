@@ -17,11 +17,12 @@ class TelegramClass:
 
     update_id = None
 
-    def __init__(self, bot, master, pokemons):
+    def __init__(self, bot, master, pokemons, config):
         self.bot = bot
         self.master = master
         self.pokemons = pokemons
         self._tbot = None
+        self.config = config
 
     def sendMessage(self, chat_id=None, parse_mode='Markdown', text=None):
         self._tbot.sendMessage(chat_id=chat_id, parse_mode=parse_mode, text=text)
@@ -78,6 +79,14 @@ class TelegramClass:
                         self.bot.logger.info("message from {} ({}): {}".format(update.message.from_user.username, update.message.from_user.id, update.message.text))
                         if self.master and self.master not in [update.message.from_user.id, "@{}".format(update.message.from_user.username)]:
                             continue
+                        if self.master and not re.match(r'^[0-9]+$', str(self.master)):
+                            # the "master" is not numeric, set self.master to update.message.chat_id and re-instantiate the handler
+                            newconfig = self.config
+                            newconfig['master'] = update.message.chat_id
+                            # remove old handler
+                            self.bot.event_manager._handlers = filter(lambda x: not isinstance(x, TelegramHandler), self.bot.event_manager._handlers)
+                            # add new handler (passing newconfig as parameter)
+                            self.bot.event_manager.add_handler(TelegramHandler(self.bot, newconfig))
                         if update.message.text == "/info":
                             self.send_player_stats_to_chat(update.message.chat_id)
                         elif update.message.text == "/start" or update.message.text == "/help":
@@ -88,6 +97,8 @@ class TelegramClass:
                             self._tbot.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
             except telegram.error.NetworkError:
                 time.sleep(1)
+            except telegram.error.TelegramError:
+                time.sleep(10)
             except telegram.error.Unauthorized:
                 self.update_id += 1
 
@@ -98,15 +109,17 @@ class TelegramHandler(EventHandler):
         self.master = config.get('master', None)
         self.pokemons = config.get('alert_catch', {})
         self.whoami = "TelegramHandler"
+        self.config = config
 
     def handle_event(self, event, sender, level, formatted_msg, data):
         if self.tbot is None:
             try:
-                self.tbot = TelegramClass(self.bot, self.master, self.pokemons)
+                self.tbot = TelegramClass(self.bot, self.master, self.pokemons, self.config)
                 self.tbot.connect()
                 thread.start_new_thread(self.tbot.run)
             except Exception as inst:
                 self.tbot = None
+                return
         if self.master:
             if not re.match(r'^[0-9]+$', str(self.master)):
                 return
@@ -131,9 +144,14 @@ class TelegramHandler(EventHandler):
                         msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
                     else:
                         return
+            elif event == 'egg_hatched':
+                msg = "Egg hatched with a {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
             elif event == 'catch_limit':
                 self.tbot.send_player_stats_to_chat(master)
                 msg = "*You have reached your daily catch limit, quitting.*"
+            elif event == 'spin_limit':
+                self.tbot.send_player_stats_to_chat(master)
+                msg = "*You have reached your daily spin limit, quitting.*"
             else:
                 return
             self.tbot.sendMessage(chat_id=master, parse_mode='Markdown', text=msg)
