@@ -10,7 +10,7 @@ from geopy import Point
 
 class StepWalker(object):
 
-    def __init__(self, bot, dest_lat, dest_lng, dest_alt=None, fixed_speed=None, precision=50):
+    def __init__(self, bot, dest_lat, dest_lng, dest_alt=None, fixed_speed=None, offset_angle=15):
         self.bot = bot
         self.api = bot.api
 
@@ -34,7 +34,7 @@ class StepWalker(object):
         else:
             self.speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
             
-        self.offset_angle=(1/self.speed)*(precision/1.74)
+        self.offset_angle=offset_angle
 
         if len(self.bot.position) == 3:
             self.initAlt = self.bot.position[2]
@@ -138,6 +138,8 @@ class StepWalker(object):
         return compass_bearing
         
     def _get_next_pos(self, lat, lon, bearing, speed, offset_angle):
+        precision = 50
         origin = Point(lat, lon)
-        lat, lon, _ = VincentyDistance(kilometers=speed*1e-3).destination(origin, bearing+uniform(-offset_angle, offset_angle))
+        temp_offset = (1/self.speed)*(precision/1.74)
+        lat, lon, _ = VincentyDistance(kilometers=speed*1e-3).destination(origin, bearing+uniform(-temp_offset, temp_offset))
         return lat, lon
