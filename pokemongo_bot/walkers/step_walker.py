@@ -55,7 +55,7 @@ class StepWalker(object):
             self.dLat = (dest_lat - self.initLat) / int(self.steps)
             self.dLng = (dest_lng - self.initLng) / int(self.steps)
             
-        self.bearing = self._calc_bearing(self.initLat, self.initLng, self.dLat, self.dLng)
+        self.bearing = self._calc_bearing(self.initLat, self.initLng, self.destLat, self.destLng)
 
     def step(self):
         if (self.dLat == 0 and self.dLng == 0) or self.dist < self.speed:
