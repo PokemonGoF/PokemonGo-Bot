@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import math
 
 from random import uniform
@@ -114,6 +116,10 @@ class StepWalker(object):
     def _calc_bearing(start_lat, start_lng, dest_lat, dest_lng):
         """
         Calculates the bearing between two points.
+    
+        The formulae used is the following:
+            θ = atan2(sin(Δlong).cos(lat2),
+                      cos(lat1).sin(lat2) − sin(lat1).cos(lat2).cos(Δlong))
     
         :Parameters:
           - `start_lat in decimal degrees
