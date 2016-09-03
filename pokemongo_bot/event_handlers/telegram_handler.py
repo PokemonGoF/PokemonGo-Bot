@@ -79,7 +79,7 @@ class TelegramClass:
                         self.bot.logger.info("message from {} ({}): {}".format(update.message.from_user.username, update.message.from_user.id, update.message.text))
                         if self.master and self.master not in [update.message.from_user.id, "@{}".format(update.message.from_user.username)]:
                             continue
-                        if not re.match(r'^[0-9]+$', self.master):
+                        if self.master and not re.match(r'^[0-9]+$', str(self.master)):
                             # the "master" is not numeric, set self.master to update.message.chat_id and re-instantiate the handler
                             newconfig = self.config
                             newconfig['master'] = update.message.chat_id
