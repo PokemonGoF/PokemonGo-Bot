@@ -4,6 +4,7 @@
 			"type": "PokemonOptimizer",
 			"config": {
 				"enabled": true,
+				"min_slots_left": 5,
 				"transfer": true,
 				"transfer_wait_min": 3,
 				"transfer_wait_max": 5,
@@ -15,7 +16,6 @@
 				"may_use_lucky_egg": true,
 				"upgrade": true,
 				"upgrade_level": 60,
-				"min_slots_left": 5,
 				"groups": {
 					"gym": ["Dragonite", "Snorlax", "Lapras", "Arcanine"]
 				},
