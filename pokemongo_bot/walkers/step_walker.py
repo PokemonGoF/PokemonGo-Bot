@@ -4,7 +4,7 @@ import math
 
 from random import uniform
 from pokemongo_bot.cell_workers.utils import distance
-from pokemongo_bot.human_behaviour import random_lat_long_delta2, sleep, random_alt_delta
+from pokemongo_bot.human_behaviour import random_lat_long_delta, random_lat_long_delta2, sleep, random_alt_delta
 
 
 class StepWalker(object):
