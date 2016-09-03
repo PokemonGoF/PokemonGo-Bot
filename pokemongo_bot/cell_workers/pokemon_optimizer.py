@@ -7,7 +7,6 @@ import os
 from pokemongo_bot import inventory
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.datastore import Datastore
 from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.worker_result import WorkerResult
@@ -19,7 +18,7 @@ ERROR_NO_ITEMS_REMAINING = 4
 ERROR_LOCATION_UNSET = 5
 
 
-class PokemonOptimizer(Datastore, BaseTask):
+class PokemonOptimizer(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def __init__(self, bot, config):

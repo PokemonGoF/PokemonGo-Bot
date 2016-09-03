@@ -119,6 +119,7 @@ class TelegramHandler(EventHandler):
                 thread.start_new_thread(self.tbot.run)
             except Exception as inst:
                 self.tbot = None
+                return
         if self.master:
             if not re.match(r'^[0-9]+$', str(self.master)):
                 return
@@ -148,6 +149,9 @@ class TelegramHandler(EventHandler):
             elif event == 'catch_limit':
                 self.tbot.send_player_stats_to_chat(master)
                 msg = "*You have reached your daily catch limit, quitting.*"
+            elif event == 'spin_limit':
+                self.tbot.send_player_stats_to_chat(master)
+                msg = "*You have reached your daily spin limit, quitting.*"
             else:
                 return
             self.tbot.sendMessage(chat_id=master, parse_mode='Markdown', text=msg)
