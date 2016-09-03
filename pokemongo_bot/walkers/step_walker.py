@@ -4,7 +4,7 @@ import math
 
 from random import uniform
 from pokemongo_bot.cell_workers.utils import distance
-from pokemongo_bot.human_behaviour import random_lat_long_delta, random_lat_long_delta2, sleep, random_alt_delta
+from pokemongo_bot.human_behaviour import sleep, random_alt_delta
 from geopy.distance import VincentyDistance
 from geopy import Point
 
@@ -78,7 +78,7 @@ class StepWalker(object):
             return True
 
             new_position = get_next_pos(self.initLat, self.initLng, self.bearing, self.speed, 1)
-            cAlt = self.initAlt + self.unitAlt + random_alt_delta()
+            cAlt = self.initAlt + random_alt_delta()
 
         self.api.set_position(cLat, cLng, cAlt)
         self.bot.event_manager.emit(
