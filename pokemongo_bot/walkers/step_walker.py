@@ -10,9 +10,10 @@ from geopy import Point
 
 class StepWalker(object):
 
-    def __init__(self, bot, dest_lat, dest_lng, dest_alt=None, fixed_speed=None, offset_angle=15):
+    def __init__(self, bot, dest_lat, dest_lng, dest_alt=None, fixed_speed=None, precision=15):
         self.bot = bot
         self.api = bot.api
+        self.precision = precision
 
         self.initLat, self.initLng = self.bot.position[0:2]
 
@@ -33,8 +34,6 @@ class StepWalker(object):
             self.speed = fixed_speed
         else:
             self.speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
-            
-        self.offset_angle=offset_angle
 
         if len(self.bot.position) == 3:
             self.initAlt = self.bot.position[2]
@@ -75,7 +74,7 @@ class StepWalker(object):
             self.bot.heartbeat()
             return True
 
-        self._new_position = self._get_next_pos(self.initLat, self.initLng, self.bearing, self.speed, self.offset_angle)
+        self._new_position = self._get_next_pos(self.initLat, self.initLng, self.bearing, self.speed, self.precision)
         cAlt = self.initAlt + random_alt_delta()
 
         self.api.set_position(self._new_position[0], self._new_position[1], cAlt)
@@ -137,9 +136,8 @@ class StepWalker(object):
     
         return compass_bearing
         
-    def _get_next_pos(self, lat, lon, bearing, speed, offset_angle):
-        precision = 50
+    def _get_next_pos(self, lat, lon, bearing, speed, precision):
         origin = Point(lat, lon)
-        temp_offset = (1/self.speed)*(precision/1.74)
-        lat, lon, _ = VincentyDistance(kilometers=speed*1e-3).destination(origin, bearing+uniform(-temp_offset, temp_offset))
+        offset_angle = (1/self.speed)*(precision/1.74)
+        lat, lon, _ = VincentyDistance(kilometers=speed*1e-3).destination(origin, bearing+uniform(-offset_angle, offset_angle))
         return lat, lon
