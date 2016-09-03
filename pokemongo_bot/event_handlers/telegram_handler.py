@@ -148,6 +148,9 @@ class TelegramHandler(EventHandler):
             elif event == 'catch_limit':
                 self.tbot.send_player_stats_to_chat(master)
                 msg = "*You have reached your daily catch limit, quitting.*"
+            elif event == 'spin_limit':
+                self.tbot.send_player_stats_to_chat(master)
+                msg = "*You have reached your daily spin limit, quitting.*"
             else:
                 return
             self.tbot.sendMessage(chat_id=master, parse_mode='Markdown', text=msg)
