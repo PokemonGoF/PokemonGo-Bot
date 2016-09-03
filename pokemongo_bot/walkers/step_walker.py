@@ -109,7 +109,7 @@ class StepWalker(object):
         #     alt, False)
 
     def _pythagorean(self, lat, lng):
-        return sqrt((lat ** 2) + (lng ** 2))
+        return math.sqrt((lat ** 2) + (lng ** 2))
 
     def calc_bearing(start_lat, start_lng, dest_lat, dest_lng):
         """
