@@ -1,4 +1,4 @@
-from math
+import math
 
 from random import uniform
 from pokemongo_bot.cell_workers.utils import distance
