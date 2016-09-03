@@ -87,8 +87,6 @@ class TelegramClass:
                             self.bot.event_manager._handlers = filter(lambda x: not isinstance(x, TelegramHandler), self.bot.event_manager._handlers)
                             # add new handler (passing newconfig as parameter)
                             self.bot.event_manager.add_handler(TelegramHandler(self.bot, newconfig))
-
-
                         if update.message.text == "/info":
                             self.send_player_stats_to_chat(update.message.chat_id)
                         elif update.message.text == "/start" or update.message.text == "/help":
@@ -145,6 +143,8 @@ class TelegramHandler(EventHandler):
                         msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
                     else:
                         return
+            elif event == 'egg_hatched':
+                msg = "Egg hatched with a {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
             elif event == 'catch_limit':
                 self.tbot.send_player_stats_to_chat(master)
                 msg = "*You have reached your daily catch limit, quitting.*"

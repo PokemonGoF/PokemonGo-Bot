@@ -71,6 +71,7 @@ class ColoredLoggingHandler(EventHandler):
         'unset_pokemon_nickname':            'red',
         'vip_pokemon':                       'red',
         'use_incense':                       'blue',
+        'vanish_limit_reached':              'red',
 
         'arrived_at_cluster':                'none',
         'arrived_at_fort':                   'none',
