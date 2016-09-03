@@ -37,11 +37,10 @@ class StepWalker(object):
         if len(self.bot.position) == 3:
             self.initAlt = self.bot.position[2]
         else:
-            self.initAlt = self.alt;
+            self.initAlt = self.alt
 
         self.destLat = dest_lat
         self.destLng = dest_lng
-        self.totalDist = max(1, self.dist)
 
         if self.speed == 0:
             raise Exception("Walking speed cannot be 0, change your walking speed higher than 1!")
@@ -51,12 +50,9 @@ class StepWalker(object):
         if self.dist < self.speed or int(self.steps) <= 1:
             self.dLat = 0
             self.dLng = 0
-            self.magnitude = 0
         else:
             self.dLat = (dest_lat - self.initLat) / int(self.steps)
             self.dLng = (dest_lng - self.initLng) / int(self.steps)
-            self.magnitude = self._pythagorean(self.dLat, self.dLng)
-            self.unitAlt = (self.alt - self.initAlt) / int(self.steps)
             
         self.bearing = self._calc_bearing(self.initLat, self.initLng, self.dLat, self.dLng)
 
@@ -80,13 +76,13 @@ class StepWalker(object):
         self._new_position = get_next_pos(self.initLat, self.initLng, self.bearing, self.speed, 1)
         cAlt = self.initAlt + random_alt_delta()
 
-        self.api.set_position(new_position[0], new_position[1], cAlt)
+        self.api.set_position(self._new_position[0], self._new_position[1], cAlt)
         self.bot.event_manager.emit(
             'position_update',
             sender=self,
             level='debug',
             data={
-                'current_position': (new_position[0], new_position[1], cAlt),
+                'current_position': (self._new_position[0], self._new_position[1], cAlt),
                 'last_position': (self.initLat, self.initLng, self.initAlt),
                 'distance': '',
                 'distance_unit': ''
