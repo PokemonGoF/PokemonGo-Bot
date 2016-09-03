@@ -144,7 +144,6 @@ class TelegramHandler(EventHandler):
                     else:
                         return
             elif event == 'egg_hatched':
-                self.tbot.send_player_stats_to_chat(master)
                 msg = "Egg hatched with a {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
             elif event == 'catch_limit':
                 self.tbot.send_player_stats_to_chat(master)
