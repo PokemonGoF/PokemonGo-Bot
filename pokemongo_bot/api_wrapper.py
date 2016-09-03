@@ -12,15 +12,13 @@ from pgoapi.pgoapi import PGoApi, PGoApiRequest, RpcApi
 from pgoapi.protos.POGOProtos.Networking.Requests.RequestType_pb2 import RequestType
 from pgoapi.protos.POGOProtos.Networking.Envelopes.Signature_pb2 import Signature
 from pgoapi.utilities import get_time
-from pokemongo_bot.datastore import Datastore
 from human_behaviour import sleep, gps_noise_rng
 from pokemongo_bot.base_dir import _base_dir
 
 class PermaBannedException(Exception):
     pass
 
-
-class ApiWrapper(Datastore, PGoApi):
+class ApiWrapper(PGoApi, object):
     DEVICE_ID = None
 
     def __init__(self, config=None):
