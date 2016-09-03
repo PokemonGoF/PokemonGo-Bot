@@ -73,9 +73,11 @@ class StepWalker(object):
 
         scaledDLat = unitLat * self.magnitude
         scaledDLng = unitLng * self.magnitude
+        
+        bearing = calc_bearing(self.initLat, self.initLng, self.destLat, self.destLng)
 
-        cLat = self.initLat + scaledDLat + random_lat_long_delta()
-        cLng = self.initLng + scaledDLng + random_lat_long_delta()
+        cLat = self.initLat + scaledDLat + random_lat_long_delta(bearing)
+        cLng = self.initLng + scaledDLng + random_lat_long_delta(bearing)
         cAlt = self.initAlt + self.unitAlt + random_alt_delta()
 
         self.api.set_position(cLat, cLng, cAlt)
