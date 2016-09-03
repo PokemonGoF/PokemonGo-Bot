@@ -42,7 +42,10 @@ class UseIncense(BaseTask):
     def _has_count(self):
       return self.incense_ordinary_count > 0 or self.incense_spicy_count > 0 or self.incense_cool_count > 0 or self.incense_floral_count > 0
             
-    def _should_run(self):         
+    def _should_run(self):
+      if not self.use_incense:
+        return False
+
       if self._has_count() > 0 and self.start_time == 0:
         return True      
       
