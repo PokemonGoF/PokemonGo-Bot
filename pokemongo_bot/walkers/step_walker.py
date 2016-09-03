@@ -83,7 +83,7 @@ class StepWalker(object):
 
         cLat = self.initLat + scaledDLat + random_lat_long_delta()
         cLng = self.initLng + scaledDLng + random_lat_long_delta()
-        cAlt = self.initAlt + self.unitAlt + random_alt_delta()
+        cAlt = self.initAlt + self.unitAlt
 
         self.api.set_position(cLat, cLng, cAlt)
         self.bot.event_manager.emit(
