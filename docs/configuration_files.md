@@ -1019,6 +1019,12 @@ Bot answer on command '/info' self stats.
 }
 ```
 
+### Telegram commands:
+
+* `/help`, `/start` : get help
+* `/info` : info about bot
+* `/getmaster` : get id to use as `master` in config
+
 ## CompleteTutorial
 [[back to top](#table-of-contents)]
 
