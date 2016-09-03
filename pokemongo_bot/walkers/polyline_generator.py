@@ -1,6 +1,7 @@
 import time
 from itertools import chain
 from math import ceil
+from random import uniform
 
 import haversine
 import polyline
@@ -60,7 +61,7 @@ class Polyline(object):
         self.DIRECTIONS_URL = '{}&origin={}&destination={}'.format(self.DIRECTIONS_API_URL,
                 '{},{}'.format(*self.origin),
                 '{},{}'.format(*self.destination))
-        
+
         self.directions_response = requests.get(self.DIRECTIONS_URL).json()
         try:
             self.polyline_points = [x['polyline']['points'] for x in
@@ -148,7 +149,10 @@ class Polyline(object):
         try:
             return self.polyline_elevations[elevation_index]
         except IndexError:
-            return self.polyline_elevations[-1]
+            try:
+                return self.polyline_elevations[-1]
+            except IndexError:
+                return uniform(max_nr_samples/2, max_nr_samples)
 
     def get_pos(self):
         walked_distance = 0.0
