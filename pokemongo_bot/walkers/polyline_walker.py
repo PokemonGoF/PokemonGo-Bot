@@ -11,6 +11,7 @@ class PolylineWalker(StepWalker):
         self.speed = self.bot.config.walk_min
         self.dest_lat, self.dest_lng = dest_lat, dest_lng
         self.actual_pos = tuple(self.bot.position[:2])
+        self.actual_alt = self.bot.position[-1]
         # we don't need this if I call StepWalker's stepper right?
         #super(PolylineWalker, self).__init__(self.bot, self.pol_lat, self.pol_lon,
         #                                     self.pol_alt, fixed_speed=True)
