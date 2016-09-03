@@ -73,7 +73,7 @@ class StepWalker(object):
             self.bot.heartbeat()
             return True
 
-        self._new_position = get_next_pos(self.initLat, self.initLng, self.bearing, self.speed, 1)
+        self._new_position = self._get_next_pos(self.initLat, self.initLng, self.bearing, self.speed, 1)
         cAlt = self.initAlt + random_alt_delta()
 
         self.api.set_position(self._new_position[0], self._new_position[1], cAlt)
