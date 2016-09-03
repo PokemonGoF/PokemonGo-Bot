@@ -7,7 +7,7 @@ from pokemongo_bot.human_behaviour import random_lat_long_delta, sleep, random_a
 
 class StepWalker(object):
 
-    def __init__(self, bot, dest_lat, dest_lng, dest_alt=None, fixed_speed=False):
+    def __init__(self, bot, dest_lat, dest_lng, dest_alt=None, fixed_speed=None):
         self.bot = bot
         self.api = bot.api
 
@@ -25,9 +25,9 @@ class StepWalker(object):
         else:
             self.alt = dest_alt
             
-        if fixed_speed:
+        if fixed_speed != None:
             # PolylineWalker uses a fixed speed!
-            self.speed = self.bot.config.walk_min
+            self.speed = fixed_speed
         else:
             self.speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
 

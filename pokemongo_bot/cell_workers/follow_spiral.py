@@ -20,7 +20,7 @@ class FollowSpiral(BaseTask):
         self.spiral = self._generate_spiral(
             self.origin_lat, self.origin_lon, self.step_size, self.diameter_to_steps
         )
-        self.points = cycle(self.spiral+list(reversed(self.spiral)[1:-1]))
+        self.points = cycle(self.spiral+list(reversed(self.spiral))[1:-1])
         self.next_point = None
 
     @staticmethod
