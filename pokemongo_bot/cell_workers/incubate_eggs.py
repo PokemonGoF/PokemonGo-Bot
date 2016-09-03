@@ -188,9 +188,9 @@ class IncubateEggs(Datastore, BaseTask):
         pokemon_ids = []
         if 'pokemon_id' in result:
             pokemon_ids = [id for id in result['pokemon_id']]
-        stardust = result.get('stardust_awarded', "error")
-        candy = result.get('candy_awarded', "error")
-        xp = result.get('experience_awarded', "error")
+        stardust = result.get('stardust_awarded', [])
+        candy = result.get('candy_awarded', [])
+        xp = result.get('experience_awarded', [])
         sleep(self.hatching_animation_delay)
         try:
             pokemon_data = self._check_inventory(pokemon_ids)
@@ -202,15 +202,8 @@ class IncubateEggs(Datastore, BaseTask):
             pokemon_data = []
         if not pokemon_ids or not pokemon_data:
             self.emit_event(
-                'egg_hatched',
-                data={
-                    'name': 'error',
-                    'cp': 'error',
-                    'iv': 'error',
-                    'exp': 'error',
-                    'stardust': 'error',
-                    'candy': 'error'
-                }
+                'egg_hatched_fail',
+                formatted= "Error trying to hatch egg."
             )
             return False
  

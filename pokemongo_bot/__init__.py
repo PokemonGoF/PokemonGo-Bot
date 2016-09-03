@@ -504,6 +504,7 @@ class PokemonGoBot(Datastore):
                 'name', 'cp', 'ncp', 'iv_ads', 'iv_pct', 'exp', 'stardust', 'candy'
             )
         )
+        self.event_manager.register_event('egg_hatched_fail')
 
         # discard item
         self.event_manager.register_event(
