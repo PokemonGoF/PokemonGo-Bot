@@ -10,10 +10,9 @@ from geopy import Point
 
 class StepWalker(object):
 
-    def __init__(self, bot, dest_lat, dest_lng, dest_alt=None, fixed_speed=None, offset_angle=5):
+    def __init__(self, bot, dest_lat, dest_lng, dest_alt=None, fixed_speed=None, precision=50):
         self.bot = bot
         self.api = bot.api
-        self.offset_angle=offset_angle
 
         self.initLat, self.initLng = self.bot.position[0:2]
 
@@ -34,6 +33,8 @@ class StepWalker(object):
             self.speed = fixed_speed
         else:
             self.speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
+            
+        self.offset_angle=(1/self.speed)*(precision/1.74)
 
         if len(self.bot.position) == 3:
             self.initAlt = self.bot.position[2]
