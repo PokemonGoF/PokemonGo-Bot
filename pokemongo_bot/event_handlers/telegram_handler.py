@@ -79,7 +79,7 @@ class TelegramClass:
                         self.bot.logger.info("message from {} ({}): {}".format(update.message.from_user.username, update.message.from_user.id, update.message.text))
                         if self.master and self.master not in [update.message.from_user.id, "@{}".format(update.message.from_user.username)]:
                             continue
-                        if not re.match(r'^[0-9]+$', self.master):
+                        if self.master and not re.match(r'^[0-9]+$', str(self.master)):
                             # the "master" is not numeric, set self.master to update.message.chat_id and re-instantiate the handler
                             newconfig = self.config
                             newconfig['master'] = update.message.chat_id
@@ -87,6 +87,8 @@ class TelegramClass:
                             self.bot.event_manager._handlers = filter(lambda x: not isinstance(x, TelegramHandler), self.bot.event_manager._handlers)
                             # add new handler (passing newconfig as parameter)
                             self.bot.event_manager.add_handler(TelegramHandler(self.bot, newconfig))
+
+
                         if update.message.text == "/info":
                             self.send_player_stats_to_chat(update.message.chat_id)
                         elif update.message.text == "/start" or update.message.text == "/help":
