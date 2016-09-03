@@ -27,7 +27,7 @@ class StepWalker(object):
             
         if fixed_speed:
             # PolylineWalker uses a fixed speed!
-            self.speed = self.bot.config.walk_min
+            self.speed = fixed_speed
         else:
             self.speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
 
