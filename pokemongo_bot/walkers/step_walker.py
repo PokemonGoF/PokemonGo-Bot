@@ -1,4 +1,4 @@
-from math import sqrt
+from math
 
 from random import uniform
 from pokemongo_bot.cell_workers.utils import distance
@@ -99,3 +99,43 @@ class StepWalker(object):
 
     def _pythagorean(self, lat, lng):
         return sqrt((lat ** 2) + (lng ** 2))
+
+    def calc_bearing(start_lat, start_lng, dest_lat, dest_lng):
+        """
+        Calculates the bearing between two points.
+    
+        The formulae used is the following:
+            θ = atan2(sin(Δlong).cos(lat2),
+                      cos(lat1).sin(lat2) − sin(lat1).cos(lat2).cos(Δlong))
+    
+        :Parameters:
+          - `start_lat in decimal degrees
+          - `start_lng in decimal degrees
+          - `dest_lat in decimal degrees
+          - `dest_lng in decimal degrees
+    
+        :Returns:
+          The bearing in degrees
+    
+        :Returns Type:
+          float
+        """
+    
+        lat1 = math.radians(start_lat)
+        lat2 = math.radians(dest_lat)
+    
+        diffLong = math.radians(dest_lng - start_lng)
+    
+        x = math.sin(diffLong) * math.cos(lat2)
+        y = math.cos(lat1) * math.sin(lat2) - (math.sin(lat1)
+                * math.cos(lat2) * math.cos(diffLong))
+    
+        initial_bearing = math.atan2(x, y)
+    
+        # Now we have the initial bearing but math.atan2 return values
+        # from -180° to + 180° which is not what we want for a compass bearing
+        # The solution is to normalize the initial bearing as shown below
+        initial_bearing = math.degrees(initial_bearing)
+        compass_bearing = (initial_bearing + 360) % 360
+    
+        return compass_bearing
