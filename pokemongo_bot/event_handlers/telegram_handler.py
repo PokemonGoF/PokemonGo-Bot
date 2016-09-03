@@ -119,6 +119,7 @@ class TelegramHandler(EventHandler):
                 thread.start_new_thread(self.tbot.run)
             except Exception as inst:
                 self.tbot = None
+                return
         if self.master:
             if not re.match(r'^[0-9]+$', str(self.master)):
                 return
