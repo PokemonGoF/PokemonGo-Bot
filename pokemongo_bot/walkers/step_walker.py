@@ -13,6 +13,7 @@ class StepWalker(object):
     def __init__(self, bot, dest_lat, dest_lng, dest_alt=None, fixed_speed=None):
         self.bot = bot
         self.api = bot.api
+        self.offset_angle=5
 
         self.initLat, self.initLng = self.bot.position[0:2]
 
@@ -73,7 +74,7 @@ class StepWalker(object):
             self.bot.heartbeat()
             return True
 
-        self._new_position = self._get_next_pos(self.initLat, self.initLng, self.bearing, self.speed, 1)
+        self._new_position = self._get_next_pos(self.initLat, self.initLng, self.bearing, self.speed, self.offset_angle)
         cAlt = self.initAlt + random_alt_delta()
 
         self.api.set_position(self._new_position[0], self._new_position[1], cAlt)
@@ -135,7 +136,7 @@ class StepWalker(object):
     
         return compass_bearing
         
-    def _get_next_pos(lat, lon, bearing, speed, offset_angle):
+    def _get_next_pos(self, lat, lon, bearing, speed, offset_angle):
         origin = Point(lat, lon)
         lat, lon, _ = VincentyDistance(kilometers=speed*1e-3).destination(origin, bearing+random.randrange(-offset_angle, offset_angle))
         return lat, lon
