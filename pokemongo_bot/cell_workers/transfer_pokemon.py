@@ -5,12 +5,11 @@ from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.inventory import Pokemons, Pokemon, Attack
-from pokemongo_bot.datastore import Datastore
 from operator import attrgetter
 from random import randrange
 
 
-class TransferPokemon(Datastore, BaseTask):
+class TransferPokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def __init__(self, bot, config):

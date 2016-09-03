@@ -15,7 +15,6 @@ from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.base_dir import _base_dir
 from utils import distance, format_time, fort_details
-from pokemongo_bot.datastore import Datastore
 
 SPIN_REQUEST_RESULT_SUCCESS = 1
 SPIN_REQUEST_RESULT_OUT_OF_RANGE = 2
@@ -23,7 +22,7 @@ SPIN_REQUEST_RESULT_IN_COOLDOWN_PERIOD = 3
 SPIN_REQUEST_RESULT_INVENTORY_FULL = 4
 
 
-class SpinFort(Datastore, BaseTask):
+class SpinFort(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def __init__(self, bot, config):
@@ -102,7 +101,8 @@ class SpinFort(Datastore, BaseTask):
                 result = c.fetchone()        
                 c.execute("SELECT DISTINCT COUNT(pokestop) FROM pokestop_log WHERE dated >= datetime('now','-1 day')")
                 if c.fetchone()[0]>=self.config.get('daily_spin_limit',2000):
-                    sys.exit(str(self.config.get('daily_spin_limit',2000))+" Pokestop spin in 24 hours")
+                    self.emit_event('spin_limit', formatted='WARNING! You have reached your daily spin limit')
+                    sys.exit(2)
                 while True:
                     if result[0] == 1:
                         conn.execute('''INSERT INTO pokestop_log (pokestop, exp, items) VALUES (?, ?, ?)''', (fort_name, str(experience_awarded), str(items_awarded)))

@@ -64,6 +64,7 @@ class ColoredLoggingHandler(EventHandler):
         'skip_evolve':                       'yellow',
         'softban':                           'red',
         'softban_log':                       'magenta',
+        'spin_limit':                        'red',
         'spun_pokestop':                     'cyan',
         'threw_berry_failed':                'red',
         'transfer_log':                      'magenta',
