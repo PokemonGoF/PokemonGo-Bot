@@ -131,7 +131,7 @@ class ColoredLoggingHandler(EventHandler):
             color = self.COLOR_CODE[self.EVENT_COLOR_MAP[event]]
             formatted_msg = '{}{}{}'.format(color, formatted_msg, self.COLOR_CODE['none'])
 
-        if self.bot.config.debug or not self.bot.config.logging_clean:
+        if self.bot.config.debug:
             formatted_msg = '[{}] {}'.format(event, formatted_msg)
 
         logger = logging.getLogger(type(sender).__name__)
