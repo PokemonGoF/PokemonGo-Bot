@@ -5,13 +5,12 @@ from pokemongo_bot.walkers.step_walker import StepWalker
 from pokemongo_bot.cell_workers.utils import float_equal
 
 NORMALIZED_LAT_LNG_DISTANCE_STEP = 6.3593e-6
+NORMALIZED_LAT_LNG_DISTANCE = (6.3948578954430175e-06, 6.35204828670955e-06)
 
 class TestStepWalker(unittest.TestCase):
     def setUp(self):
         self.patcherSleep = patch('pokemongo_bot.walkers.step_walker.sleep')
-        self.patcherRandomLat = patch('pokemongo_bot.walkers.step_walker.random_lat_long_delta', return_value=0)
         self.patcherSleep.start()
-        self.patcherRandomLat.start()
 
         self.bot = MagicMock()
         self.bot.position = [0, 0, 0]
@@ -26,7 +25,6 @@ class TestStepWalker(unittest.TestCase):
 
     def tearDown(self):
         self.patcherSleep.stop()
-        self.patcherRandomLat.stop()
 
     def test_normalized_distance(self):
         walk_max = self.bot.config.walk_max
@@ -35,15 +33,15 @@ class TestStepWalker(unittest.TestCase):
         self.bot.config.walk_max = 1
         self.bot.config.walk_min = 1
 
-        sw = StepWalker(self.bot, 0.1, 0.1)
+        sw = StepWalker(self.bot, 0.1, 0.1, precision=0.0)
         self.assertGreater(sw.dLat, 0)
         self.assertGreater(sw.dLng, 0)
 
         stayInPlace = sw.step()
         self.assertFalse(stayInPlace)
 
-        self.assertTrue(float_equal(self.lat, NORMALIZED_LAT_LNG_DISTANCE_STEP))
-        self.assertTrue(float_equal(self.lng, NORMALIZED_LAT_LNG_DISTANCE_STEP))
+        self.assertTrue(float_equal(self.lat, NORMALIZED_LAT_LNG_DISTANCE[0]))
+        self.assertTrue(float_equal(self.lng, NORMALIZED_LAT_LNG_DISTANCE[1]))
 
         self.bot.config.walk_max = walk_max
         self.bot.config.walk_min = walk_min
@@ -55,15 +53,15 @@ class TestStepWalker(unittest.TestCase):
         self.bot.config.walk_max = 2
         self.bot.config.walk_min = 2
 
-        sw = StepWalker(self.bot, 0.1, 0.1)
+        sw = StepWalker(self.bot, 0.1, 0.1, precision=0.0)
         self.assertTrue(sw.dLat > 0)
         self.assertTrue(sw.dLng > 0)
 
         stayInPlace = sw.step()
         self.assertFalse(stayInPlace)
 
-        self.assertTrue(float_equal(self.lat, NORMALIZED_LAT_LNG_DISTANCE_STEP * 2))
-        self.assertTrue(float_equal(self.lng, NORMALIZED_LAT_LNG_DISTANCE_STEP * 2))
+        self.assertTrue(float_equal(self.lat, NORMALIZED_LAT_LNG_DISTANCE[0] * 2))
+        self.assertTrue(float_equal(self.lng, NORMALIZED_LAT_LNG_DISTANCE[1] * 2))
 
         self.bot.config.walk_max = walk_max
         self.bot.config.walk_min = walk_min
