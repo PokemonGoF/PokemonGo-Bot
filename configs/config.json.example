@@ -200,6 +200,7 @@
           "enabled": true,
           "catch_visible_pokemon": true,
           "catch_lured_pokemon": true,
+          "catch_incensed_pokemon": true,
           "min_ultraball_to_keep": 5,
           "berry_threshold": 0.35,
           "vip_berry_threshold": 0.9,

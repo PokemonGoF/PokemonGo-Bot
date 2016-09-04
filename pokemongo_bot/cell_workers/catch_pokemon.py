@@ -35,6 +35,8 @@ class CatchPokemon(BaseTask):
                 self.get_visible_pokemon()
             if self.config.get('catch_lured_pokemon', True):
                 self.get_lured_pokemon()
+            if self.config.get('catch_incensed_pokemon', True):
+                self.get_incensed_pokemon()
 
             random.shuffle(self.pokemon)
 
@@ -131,6 +133,26 @@ class CatchPokemon(BaseTask):
             )
 
             self.add_pokemon(pokemon)
+
+    def get_incensed_pokemon(self):
+        # call self.bot.api.get_incense_pokemon
+        pokemon_to_catch = self.bot.api.get_incense_pokemon
+
+        if len(pokemon_to_catch) > 0:
+            for pokemon in pokemon_to_catch:
+
+                    # Update web UI
+                with open(user_web_catchable, 'w') as outfile:
+                    json.dump(pokemon, outfile)
+
+                self.emit_event(
+                    'incensed_pokemon_found',
+                    level='info',
+                    formatted='Incense attracted a pokemon at {encounter_location}',
+                    data=pokemon
+                )
+
+                self.add_pokemon(pokemon)
 
     def add_pokemon(self, pokemon):
         if pokemon['encounter_id'] not in self.pokemon:
