@@ -91,7 +91,15 @@ class TelegramClass:
                 self.update_id = update.update_id+1
                 if update.message:
                     self.bot.logger.info("message from {} ({}): {}".format(update.message.from_user.username, update.message.from_user.id, update.message.text))
-                    if self.master and self.master not in [update.message.from_user.id, "@{}".format(update.message.from_user.username)]:
+                    if not self.master:
+                        # Reject message if no master defined in config
+                        outMessage = "Telegram bot setup not yet complete (master = null). Please enter your userid {} into bot configuration file.".format(update.message.from_user.id)
+                        self.bot.logger.warn(outMessage)
+                        continue
+                    if self.master not in [update.message.from_user.id, "@{}".format(update.message.from_user.username)]:
+                        # Reject message if sender does not match defined master in config
+                        outMessage = "Telegram message received from unknown sender. If this was you, please enter your userid {} as master in bot configuration file.".format(update.message.from_user.id)
+                        self.bot.logger.warn(outMessage)
                         continue
                     if self.master and not re.match(r'^[0-9]+$', str(self.master)):
                         # the "master" is not numeric, set self.master to update.message.chat_id and re-instantiate the handler
@@ -109,7 +117,8 @@ class TelegramClass:
                             "/info - info about bot"
                         )
                         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
-
+                    else:
+                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Unrecognized command: {}".format(update.message.text))
 
 class TelegramHandler(EventHandler):
     def __init__(self, bot, config):
