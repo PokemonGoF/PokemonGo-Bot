@@ -89,10 +89,13 @@ class TelegramClass:
                             self.bot.event_manager.add_handler(TelegramHandler(self.bot, newconfig))
                         if update.message.text == "/info":
                             self.send_player_stats_to_chat(update.message.chat_id)
+                        elif update.message.text == "/getmaster":
+                            self._tbot.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Master: "+update.message.chat_id)
                         elif update.message.text == "/start" or update.message.text == "/help":
                             res = (
                                 "Commands: ",
-                                "/info - info about bot"
+                                "/info - info about bot",
+                                "/getmaster - show your id"
                             )
                             self._tbot.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
             except telegram.error.NetworkError:
