@@ -96,19 +96,11 @@ class TelegramClass:
                         outMessage = "Telegram bot setup not yet complete (master = null). Please enter your userid {} into bot configuration file.".format(update.message.from_user.id)
                         self.bot.logger.warn(outMessage)
                         continue
-                    if self.master not in [update.message.from_user.id, "@{}".format(update.message.from_user.username)]:
+                    if self.master != update.message.from_user.id:
                         # Reject message if sender does not match defined master in config
                         outMessage = "Telegram message received from unknown sender. If this was you, please enter your userid {} as master in bot configuration file.".format(update.message.from_user.id)
                         self.bot.logger.warn(outMessage)
                         continue
-                    if self.master and not re.match(r'^[0-9]+$', str(self.master)):
-                        # the "master" is not numeric, set self.master to update.message.chat_id and re-instantiate the handler
-                        newconfig = self.config
-                        newconfig['master'] = update.message.chat_id
-                        # remove old handler
-                        self.bot.event_manager._handlers = filter(lambda x: not isinstance(x, TelegramHandler), self.bot.event_manager._handlers)
-                        # add new handler (passing newconfig as parameter)
-                        self.bot.event_manager.add_handler(TelegramHandler(self.bot, newconfig))
                     if update.message.text == "/info":
                         self.send_player_stats_to_chat(update.message.chat_id)
                     elif update.message.text == "/start" or update.message.text == "/help":
