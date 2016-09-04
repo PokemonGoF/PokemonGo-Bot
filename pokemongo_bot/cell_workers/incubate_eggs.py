@@ -225,6 +225,7 @@ class IncubateEggs(BaseTask):
             )
             # hatching egg gets exp too!
             inventory.player().exp += xp[i]
+            self.bot.stardust += stardust[i]
             
             with self.bot.database as conn:
                 c = conn.cursor()
