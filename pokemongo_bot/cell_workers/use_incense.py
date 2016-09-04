@@ -19,7 +19,16 @@ class UseIncense(BaseTask):
         403: "Cool",
         404: "Floral"
       }
-      
+    
+    def _have_applied_incense(self):
+      for applied_item in inventory.applied_items:
+        if applied_item.expire_ms > 0
+          mins = int(item.expire_ms)/(1000*60))%60
+          self.logger.info("Not applying incense, currently active: %s, %s minutes remaining", applied_item.item.name, mins)
+          return False
+        else
+          return True
+
     def _get_type(self):
       for order in self.use_order:
           if order == "ordinary" and self.incense_ordinary_count > 0:
@@ -43,17 +52,18 @@ class UseIncense(BaseTask):
       return self.incense_ordinary_count > 0 or self.incense_spicy_count > 0 or self.incense_cool_count > 0 or self.incense_floral_count > 0
             
     def _should_run(self):
+      if self._have_applied_incense:
+        return False
+
       if not self.use_incense:
         return False
 
       if self._has_count() > 0 and self.start_time == 0:
         return True      
       
-      using_incense = time.time() - self.start_time < 1800
-      if not using_incense: 
-        self._update_inventory()
-        if self._has_count() and self.use_incense:
-          return True
+      self._update_inventory()
+      if self._has_count() and self.use_incense:
+        return True
 
     def work(self):
       if self._should_run():
