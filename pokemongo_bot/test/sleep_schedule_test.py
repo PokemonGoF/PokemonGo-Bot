@@ -31,7 +31,7 @@ class SleepScheculeTestCase(unittest.TestCase):
         self.assertGreaterEqual(next_time, from_date)
         self.assertLessEqual(next_time, to_date)
 
-    @skip #Will rewrite test later
+    @unittest.skip("Will rewrite test later")
     @patch('pokemongo_bot.sleep_schedule.datetime')
     def test_get_next_time_called_near_activation_time(self, mock_datetime):
         pass
