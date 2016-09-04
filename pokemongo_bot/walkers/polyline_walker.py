@@ -16,6 +16,7 @@ class PolylineWalker(StepWalker):
         self.polyline = PolylineObjectHandler.cached_polyline(self.actual_pos,
                                                               (self.dest_lat, self.dest_lng),
                                                               self.speed, google_map_api_key=self.bot.config.gmapkey)
+        self.polyline.set_speed(self.speed)
         self.pol_lat, self.pol_lon = self.polyline.get_pos()
         self.pol_alt = self.polyline.get_alt() or self.actual_alt
         super(PolylineWalker, self).__init__(self.bot, self.pol_lat, self.pol_lon,
@@ -23,7 +24,7 @@ class PolylineWalker(StepWalker):
 
     def step(self):
         step = super(PolylineWalker, self).step()
-        if not (distance(self.pol_lat, self.pol_lon, self.dest_lat, self.dest_lng) > 10 and step):
+        if not (distance(self.pol_lat, self.pol_lon, self.dest_lat, self.dest_lng) > 2 and step):
             return False
         else:
             return True
