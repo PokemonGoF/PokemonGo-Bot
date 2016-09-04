@@ -15,7 +15,7 @@ class LoggingHandler(EventHandler):
     def handle_event(self, event, sender, level, formatted_msg, data):
         if not formatted_msg:
             formatted_msg = str(data)
-        if self.bot.config.debug or not self.bot.config.logging_clean:
+        if self.bot.config.debug:
             formatted_msg = '[{}] {}'.format(event, formatted_msg)
 
         logger = logging.getLogger(type(sender).__name__)

@@ -5,10 +5,9 @@ from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.inventory import Pokemon
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.datastore import Datastore
 
 
-class EvolvePokemon(Datastore, BaseTask):
+class EvolvePokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
     def __init__(self, bot, config):
         super(EvolvePokemon, self).__init__(bot, config)

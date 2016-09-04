@@ -17,6 +17,8 @@ class ColoredLoggingHandler(EventHandler):
         'config_error':                      'red',
         'egg_already_incubating':            'yellow',
         'egg_hatched':                       'green',
+        'egg_hatched_fail':                  'red',
+        'eggs_hatched_log':                  'magenta',
         'evolve_log':                        'magenta',
         'future_pokemon_release':            'yellow',
         'incubate':                          'green',
@@ -64,6 +66,7 @@ class ColoredLoggingHandler(EventHandler):
         'skip_evolve':                       'yellow',
         'softban':                           'red',
         'softban_log':                       'magenta',
+        'spin_limit':                        'red',
         'spun_pokestop':                     'cyan',
         'threw_berry_failed':                'red',
         'transfer_log':                      'magenta',
@@ -126,11 +129,9 @@ class ColoredLoggingHandler(EventHandler):
 
         if event in self.EVENT_COLOR_MAP:
             color = self.COLOR_CODE[self.EVENT_COLOR_MAP[event]]
-            if event == 'egg_hatched' and data.get('pokemon', 'error') == 'error':
-                color = self.COLOR_CODE['red']
             formatted_msg = '{}{}{}'.format(color, formatted_msg, self.COLOR_CODE['none'])
 
-        if self.bot.config.debug or not self.bot.config.logging_clean:
+        if self.bot.config.debug:
             formatted_msg = '[{}] {}'.format(event, formatted_msg)
 
         logger = logging.getLogger(type(sender).__name__)

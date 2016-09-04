@@ -1000,8 +1000,10 @@ Bot answer on command '/info' self stats.
 ### Options
 
 * `telegram_token` : bot token (getting [there](https://core.telegram.org/bots#6-botfather) - one token per bot)
-* `master` : id (without quotes) of bot owner, who will gett announces.
+* `master` : id (without quotes) of bot owner, who will get alerts and may issue commands.
 * `alert_catch` : dict of rules pokemons catch.
+
+The bot will only alert and respond to a valid master. If you're unsure what this is, send the bot a message from Telegram and watch the log to find out.
 
 ### Sample configuration
 [[back to top](#table-of-contents)]
