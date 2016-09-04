@@ -500,10 +500,10 @@ class PokemonGoBot(object):
         self.event_manager.register_event(
             'egg_hatched',
             parameters=(
-                'pokemon',
-                'cp', 'iv', 'exp', 'stardust', 'candy'
+                'name', 'cp', 'ncp', 'iv_ads', 'iv_pct', 'exp', 'stardust', 'candy'
             )
         )
+        self.event_manager.register_event('egg_hatched_fail')
 
         # discard item
         self.event_manager.register_event(
@@ -631,6 +631,7 @@ class PokemonGoBot(object):
         self.event_manager.register_event('transfer_log')
         self.event_manager.register_event('pokestop_log')
         self.event_manager.register_event('softban_log')
+        self.event_manager.register_event('eggs_hatched_log')
 
         self.event_manager.register_event(
             'badges',
