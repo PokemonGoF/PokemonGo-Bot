@@ -25,8 +25,23 @@ class TelegramClass:
         self.config = config
 
     def sendMessage(self, chat_id=None, parse_mode='Markdown', text=None):
-        self._tbot.sendMessage(chat_id=chat_id, parse_mode=parse_mode, text=text)
-
+        try:
+            self._tbot.sendMessage(chat_id=chat_id, parse_mode=parse_mode, text=text)
+        except telegram.error.NetworkError:
+            time.sleep(1)
+        except telegram.error.TelegramError:
+            time.sleep(10)
+        except telegram.error.Unauthorized:
+            self.update_id += 1
+    def sendLocation(self, chat_id, latitude, longitude):
+        try:
+            self._tbot.send_location(chat_id=chat_id, latitude=latitude, longitude=longitude)
+        except telegram.error.NetworkError:
+            time.sleep(1)
+        except telegram.error.TelegramError:
+            time.sleep(10)
+        except telegram.error.Unauthorized:
+            self.update_id += 1
     def connect(self):
         self._tbot = telegram.Bot(self.bot.config.telegram_token)
         try:
@@ -65,42 +80,36 @@ class TelegramClass:
                     "_Poke Stop Visits:_ "+str(stats["poke_stop_visits"])+" ("+str(ps_day)+" _last 24h_)",
                     "_KM Walked:_ "+str("%.2f" % stats["km_walked"])
                 )
-            self._tbot.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
-            self._tbot.send_location(chat_id=chat_id, latitude=self.bot.api._position_lat, longitude=self.bot.api._position_lng)
+            self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+            self.sendLocation(chat_id=chat_id, latitude=self.bot.api._position_lat, longitude=self.bot.api._position_lng)
         else:
-            self._tbot.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="Stats not loaded yet\n")
+            self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="Stats not loaded yet\n")
     def run(self):
         time.sleep(1)
         while True:
-            try:
-                for update in self._tbot.getUpdates(offset=self.update_id, timeout=10):
-                    self.update_id = update.update_id+1
-                    if update.message:
-                        self.bot.logger.info("message from {} ({}): {}".format(update.message.from_user.username, update.message.from_user.id, update.message.text))
-                        if self.master and self.master not in [update.message.from_user.id, "@{}".format(update.message.from_user.username)]:
-                            continue
-                        if self.master and not re.match(r'^[0-9]+$', str(self.master)):
-                            # the "master" is not numeric, set self.master to update.message.chat_id and re-instantiate the handler
-                            newconfig = self.config
-                            newconfig['master'] = update.message.chat_id
-                            # remove old handler
-                            self.bot.event_manager._handlers = filter(lambda x: not isinstance(x, TelegramHandler), self.bot.event_manager._handlers)
-                            # add new handler (passing newconfig as parameter)
-                            self.bot.event_manager.add_handler(TelegramHandler(self.bot, newconfig))
-                        if update.message.text == "/info":
-                            self.send_player_stats_to_chat(update.message.chat_id)
-                        elif update.message.text == "/start" or update.message.text == "/help":
-                            res = (
-                                "Commands: ",
-                                "/info - info about bot"
-                            )
-                            self._tbot.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
-            except telegram.error.NetworkError:
-                time.sleep(1)
-            except telegram.error.TelegramError:
-                time.sleep(10)
-            except telegram.error.Unauthorized:
-                self.update_id += 1
+            for update in self._tbot.getUpdates(offset=self.update_id, timeout=10):
+                self.update_id = update.update_id+1
+                if update.message:
+                    self.bot.logger.info("message from {} ({}): {}".format(update.message.from_user.username, update.message.from_user.id, update.message.text))
+                    if self.master and self.master not in [update.message.from_user.id, "@{}".format(update.message.from_user.username)]:
+                        continue
+                    if self.master and not re.match(r'^[0-9]+$', str(self.master)):
+                        # the "master" is not numeric, set self.master to update.message.chat_id and re-instantiate the handler
+                        newconfig = self.config
+                        newconfig['master'] = update.message.chat_id
+                        # remove old handler
+                        self.bot.event_manager._handlers = filter(lambda x: not isinstance(x, TelegramHandler), self.bot.event_manager._handlers)
+                        # add new handler (passing newconfig as parameter)
+                        self.bot.event_manager.add_handler(TelegramHandler(self.bot, newconfig))
+                    if update.message.text == "/info":
+                        self.send_player_stats_to_chat(update.message.chat_id)
+                    elif update.message.text == "/start" or update.message.text == "/help":
+                        res = (
+                            "Commands: ",
+                            "/info - info about bot"
+                        )
+                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
+
 
 class TelegramHandler(EventHandler):
     def __init__(self, bot, config):
