@@ -113,15 +113,6 @@ class SleepSchedule(object):
     def _should_sleep_now(self):
         now = datetime.now()
 
-        """Debugging
-        print "==========================================="
-        print "SHOULD WE SLEEP?"
-        print "Now is: %s, Next sleep at: %s, Next end at: %s" % (str(now), str(self._next_sleep), str(self._next_end))
-        print "now >= self._next_sleep: %s" % str(now >= self._next_sleep)
-        print "now < self._next_end: %s" % str(now < self._next_end)
-        print "==========================================="
-        """
-
         if now >= self._next_sleep and now < self._next_end:
             self._next_duration = (self._next_end - now).total_seconds()
             return True
