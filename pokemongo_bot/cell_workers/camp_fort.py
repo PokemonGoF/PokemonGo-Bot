@@ -7,6 +7,8 @@ from pokemongo_bot.constants import Constants
 from pokemongo_bot.human_behaviour import random_lat_long_delta, random_alt_delta
 from pokemongo_bot.walkers.polyline_walker import PolylineWalker
 from pokemongo_bot.worker_result import WorkerResult
+from pokemongo_bot.item_list import Item
+from pokemongo_bot import inventory
 
 
 class CampFort(BaseTask):
@@ -29,6 +31,13 @@ class CampFort(BaseTask):
         self.config_moving_time = self.config.get("moving_time", 600)
 
     def work(self):
+        # Let's make sure we have balls before we sit at a lure!
+        # See also catch_pokemon.py
+        if sum([inventory.items().get(ball.value).count for ball in
+            [Item.ITEM_POKE_BALL, Item.ITEM_GREAT_BALL, Item.ITEM_ULTRA_BALL]]) <= 0:
+            self.logger.info('Not any pokeballs left, refuse to sit at lure!')
+            return WorkerResult.ERROR
+
         if not self.enabled:
             return WorkerResult.SUCCESS
 
