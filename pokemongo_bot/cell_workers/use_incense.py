@@ -21,7 +21,7 @@ class UseIncense(BaseTask):
       }
     
     def _have_applied_incense(self):
-      for applied_item in inventory.applied_items:
+      for applied_item in inventory.applied_items().all():
         if applied_item.expire_ms > 0:
           mins = format_time(item.expire_ms * 1000)
           self.logger.info("Not applying incense, currently active: %s, %s minutes remaining", applied_item.item.name, mins)
