@@ -26,7 +26,7 @@ class TelegramClass:
             cur = conn.cursor()
             try:
                 cur.executescript("""
-                    create table if not exists telegram_uids(uid integer constraint upk primary key, username text not null);
+                    create table if not exists telegram_uids(uid text constraint upk primary key, username text not null);
                     create index if not exists tuids_username on telegram_uids(username);
                     """)
             except sqlite3.Error as e:
@@ -34,16 +34,21 @@ class TelegramClass:
 
 
             # if master is not numeric, try to fetch it from the database
-            if re.match(r'^[0-9]+$', master): # master is numeric
+            if re.match(r'^[0-9]+$', str(master)): # master is numeric
                 self.master = master
+                self.bot.logger.info("Telegram master is valid (numeric): {}".format(master))
             else:
+                self.bot.logger.info("Telegram master is not numeric: {}".format(master))
                 c = conn.cursor()
                 # do we already have a user id?
-                c.execute("SELECT uid from telegram_uids where username in ('{}', '@{}')".format(master, master))
+                srchmaster = re.sub(r'^@', '', master)
+                c.execute("SELECT uid from telegram_uids where username in ('{}', '@{}')".format(srchmaster, srchmaster))
                 results = c.fetchall()
                 if len(results) > 0: # woohoo, we already saw a message from this master and therefore have a uid
+                    self.bot.logger.info("Telegram master UID from datastore: {}".format(results[0][0]))
                     self.master = results[0][0]
                 else: # uid not known yet
+                    self.bot.logger.info("Telegram master UID not in datastore yet")
                     self.master = master
 
         self.pokemons = pokemons
@@ -127,9 +132,9 @@ class TelegramClass:
                         outMessage = "Telegram bot setup not yet complete (master = null). Please enter your userid ({}) or your username (@{}) as master in bot configuration file (config section of TelegramTask).".format(update.message.from_user.id)
                         self.bot.logger.warn(outMessage)
                         continue
-                    if self.master not in [update.message.from_user.id, "@{}".format(update.message.from_user.username)]:
+                    if str(self.master) not in [str(update.message.from_user.id), "@{}".format(update.message.from_user.username), update.message.from_user.username]:
                         # Reject message if sender does not match defined master in config
-                        outMessage = "Telegram message received from unknown sender. If this was you, please enter your userid ({}) or your username (@{}) as master in bot configuration file (config section of TelegramTask).".format(update.message.from_user.id, update.message.from_user.username)
+                        outMessage = "Telegram message received from unknown sender. If this was you, please enter your userid ({}) or your username (@{}) as master in bot configuration file (config section of TelegramTask); current value there: {}.".format(update.message.from_user.id, update.message.from_user.username, self.master)
                         self.bot.logger.warn(outMessage)
                         continue
                     if self.master and not re.match(r'^[0-9]+$', str(self.master)):
@@ -159,34 +164,57 @@ class TelegramHandler(EventHandler):
     def __init__(self, bot, config):
         self.bot = bot
         self.tbot = None
-        self.master = config.get('master', None)
+        master = config.get('master', None)
         self.pokemons = config.get('alert_catch', {})
         self.whoami = "TelegramHandler"
         self.config = config
+        if master == None:
+            self.master = None
+            return
+
+        with self.bot.database as conn:
+            # if master is not numeric, try to fetch it from the database
+            if not re.match(r'^[0-9]+$', str(master)): # master is numeric
+                self.bot.logger.info("Telegram master is not numeric: {}".format(master))
+                c = conn.cursor()
+                # do we already have a user id?
+                srchmaster = re.sub(r'^@', '', master)
+                c.execute("SELECT uid from telegram_uids where username in ('{}', '@{}')".format(srchmaster, srchmaster))
+                results = c.fetchall()
+                if len(results) > 0: # woohoo, we already saw a message from this master and therefore have a uid
+                    self.bot.logger.info("Telegram master UID from datastore: {}".format(results[0][0]))
+                    self.master = results[0][0]
+                else: # uid not known yet
+                    self.bot.logger.info("Telegram master UID not in datastore yet")
+                    self.master = master
 
     def handle_event(self, event, sender, level, formatted_msg, data):
         if self.tbot is None:
             try:
+                self.bot.logger.info("Telegram bot not running, trying to spin it up")
                 self.tbot = TelegramClass(self.bot, self.master, self.pokemons, self.config)
                 self.tbot.connect()
                 thread.start_new_thread(self.tbot.run)
             except Exception as inst:
                 self.tbot = None
+                self.bot.logger.error("Unable to spin Telegram bot; master: {}".format(self.master))
                 return
         if self.master:
             if not re.match(r'^[0-9]+$', str(self.master)):
+                # master not numeric?...
+                self.bot.logger.info("Telegram master not numeric: {}".format(self.master, type(self.master)))
                 return
             master = self.master
 
             if event == 'level_up':
                 msg = "level up ({})".format(data["current_level"])
             elif event == 'pokemon_caught':
-                if isinstance(self.pokemons, list):
+                if isinstance(self.pokemons, list): # alert_catch is a plain list
                     if data["pokemon"] in self.pokemons or "all" in self.pokemons:
                         msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
                     else:
                         return
-                else:
+                else: # alert_catch is a dict
                     if data["pokemon"] in self.pokemons:
                         trigger = self.pokemons[data["pokemon"]]
                     elif "all" in self.pokemons:
