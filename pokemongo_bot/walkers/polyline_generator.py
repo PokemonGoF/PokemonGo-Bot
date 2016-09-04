@@ -137,7 +137,10 @@ class Polyline(object):
             if local_distance < best_distance:
                 closest_sample = point
                 best_distance = local_distance
-        return self._elevation_at_point[closest_sample]
+        if closest_sample in self._elevation_at_point:
+            return self._elevation_at_point[closest_sample]
+        else:
+            return None
 
     def get_pos(self):
         if self.speed > self.get_total_distance():
