@@ -105,7 +105,7 @@ class PokemonCatchWorker(BaseTask):
         try:
             responses = response_dict['responses']
             response = responses[self.response_key]
-            if response[self.response_status_key] != ENCOUNTER_STATUS_SUCCESS && response[self.response_status_key] != INCENSE_ENCOUNTER_SUCCESS:
+            if response[self.response_status_key] != ENCOUNTER_STATUS_SUCCESS and response[self.response_status_key] != INCENSE_ENCOUNTER_SUCCESS:
                 if response[self.response_status_key] == ENCOUNTER_STATUS_NOT_IN_RANGE:
                     self.emit_event('pokemon_not_in_range', formatted='Pokemon went out of range!')
                 elif response[self.response_status_key] == INCENSE_ENCOUNTER_NOT_AVAILABLE:
@@ -228,7 +228,7 @@ class PokemonCatchWorker(BaseTask):
                 player_latitude=player_latitude,
                 player_longitude=player_longitude
             )
-        else
+        else:
             # This must be a incensed mon
             self.response_key = 'INCENSE_ENCOUNTER'
             self.response_status_key = 'result'
