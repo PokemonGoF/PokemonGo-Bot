@@ -1,6 +1,7 @@
+import time
+
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot import inventory
 from pokemongo_bot.tree_config_builder import ConfigException
 
 RECYCLE_REQUEST_RESPONSE_SUCCESS = 1
@@ -25,6 +26,7 @@ class ItemRecycler(BaseTask):
         self.item_to_recycle = item_to_recycle
         self.amount_to_recycle = amount_to_recycle
         self.recycle_item_request_result = None
+        self.last_log_time = time.time()
 
     def work(self):
         """
@@ -33,9 +35,8 @@ class ItemRecycler(BaseTask):
         :rtype: WorkerResult
         """
         if self.should_run():
-            self.request_recycle()
+            self._request_recycle()
             if self.is_recycling_success():
-                self._update_inventory()
                 self._emit_recycle_succeed()
                 return WorkerResult.SUCCESS
             else:
@@ -52,7 +53,7 @@ class ItemRecycler(BaseTask):
             return True
         return False
 
-    def request_recycle(self):
+    def _request_recycle(self):
         """
         Request recycling of the item and store api call response's result.
         :return: Nothing.
@@ -63,14 +64,6 @@ class ItemRecycler(BaseTask):
         # Example of good request response
         # {'responses': {'RECYCLE_INVENTORY_ITEM': {'result': 1, 'new_count': 46}}, 'status_code': 1, 'auth_ticket': {'expire_timestamp_ms': 1469306228058L, 'start': '/HycFyfrT4t2yB2Ij+yoi+on778aymMgxY6RQgvrGAfQlNzRuIjpcnDd5dAxmfoTqDQrbz1m2dGqAIhJ+eFapg==', 'end': 'f5NOZ95a843tgzprJo4W7Q=='}, 'request_id': 8145806132888207460L}
         self.recycle_item_request_result = response.get('responses', {}).get('RECYCLE_INVENTORY_ITEM', {}).get('result', 0)
-
-    def _update_inventory(self):
-        """
-        Updates the inventory. Prevent an unnecessary call to the api
-        :return: Nothing.
-        :rtype: None
-        """
-        inventory.items().get(self.item_to_recycle.id).remove(self.amount_to_recycle)
 
     def is_recycling_success(self):
         """

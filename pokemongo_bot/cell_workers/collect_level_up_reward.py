@@ -12,12 +12,12 @@ class CollectLevelUpReward(BaseTask):
 
     def initialize(self):
         self._process_config()
-        self.current_level = self._get_current_level()
+        self.current_level = inventory.player().level
         self.previous_level = 0
 
     def work(self):
         if self._should_run():
-            self.current_level = self._get_current_level()
+            self.current_level = inventory.player().level
 
             if self.collect_reward:
                 # let's check level reward on bot initialization
@@ -62,32 +62,11 @@ class CollectLevelUpReward(BaseTask):
                     item['name'] = got_item
                     count = 'item_count' in item and item['item_count'] or 0
                     inventory.items().get(item['item_id']).add(count)
-
             self.emit_event(
                 'level_up_reward',
                 formatted='Received level up reward: {items}',
                 data={
-                    'items': data
+                    # [{'item_id': 3, 'name': u'Ultraball', 'item_count': 10}, {'item_id': 103, 'name': u'Hyper Potion', 'item_count': 10}]
+                    'items': ', '.join(["{}x {}".format(x['item_count'], x['name']) for x in data])
                 }
             )
-
-    def _get_current_level(self):
-        level = 0
-        response_dict = self.bot.api.get_inventory()
-        data = (response_dict
-                .get('responses', {})
-                .get('GET_INVENTORY', {})
-                .get('inventory_delta', {})
-                .get('inventory_items', {}))
-
-        for item in data:
-            level = (item
-                     .get('inventory_item_data', {})
-                     .get('player_stats', {})
-                     .get('level', 0))
-
-            # we found a level, no need to continue iterate
-            if level:
-                break
-
-        return level

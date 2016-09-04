@@ -5,11 +5,11 @@ from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.inventory import Pokemons, Pokemon, Attack
-from pokemongo_bot.datastore import Datastore
 from operator import attrgetter
+from random import randrange
 
 
-class TransferPokemon(Datastore, BaseTask):
+class TransferPokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def __init__(self, bot, config):
@@ -35,7 +35,8 @@ class TransferPokemon(Datastore, BaseTask):
             self._release_pokemon_worst_in_group(group, 'all')
 
     def _should_work(self):
-        return inventory.Pokemons.get_space_left() <= self.min_free_slot
+        random_number = randrange (0,20,1) 
+        return inventory.Pokemons.get_space_left() <= self.min_free_slot - random_number
 
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
@@ -251,7 +252,7 @@ class TransferPokemon(Datastore, BaseTask):
         if keep_best_custom and keep_amount:
             keep_best = True
 
-            keep_best_custom = keep_best_custom.split(',')
+            keep_best_custom = keep_best_custom.replace(' ','').split(',')
             for _str in keep_best_custom:
                 if _str not in keep_best_possible_custom:
                     keep_best = False

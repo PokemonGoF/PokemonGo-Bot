@@ -5,17 +5,17 @@ from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.inventory import Pokemon
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.datastore import Datastore
 
 
-class EvolvePokemon(Datastore, BaseTask):
+class EvolvePokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
     def __init__(self, bot, config):
         super(EvolvePokemon, self).__init__(bot, config)
 
     def initialize(self):
         self.api = self.bot.api
-        self.evolve_all = self.config.get('evolve_all', [])
+        self.evolve_list = self.config.get('evolve_list', [])
+        self.donot_evolve_list = self.config.get('donot_evolve_list', [])
         self.min_evolve_speed = self.config.get('min_evolve_speed', 25)
         self.max_evolve_speed = self.config.get('max_evolve_speed', 30)
         self.first_evolve_by = self.config.get('first_evolve_by', 'cp')
@@ -26,29 +26,37 @@ class EvolvePokemon(Datastore, BaseTask):
         self._validate_config()
 
     def _validate_config(self):
-        if isinstance(self.evolve_all, basestring):
-            self.evolve_all = [str(pokemon_name).strip() for pokemon_name in self.evolve_all.split(',')]
+        if isinstance(self.evolve_list, basestring):
+            self.evolve_list = [str(pokemon_name).strip().lower() for pokemon_name in self.evolve_list.split(',')]
+            
+        if isinstance(self.donot_evolve_list, basestring):
+            self.donot_evolve_list = [str(pokemon_name).strip().lower() for pokemon_name in self.donot_evolve_list.split(',')]
 
         if 'evolve_speed' in self.config:
-            self.logger.warning("evolve_speed is deprecated, please use instead 'min_evolve_speed' and 'max_evolved_speed'.")
+            self.logger.warning("evolve_speed is deprecated, instead please use 'min_evolve_speed' and 'max_evolved_speed'.")
+
+        if 'evolve_all' in self.config:
+            self.logger.warning("evolve_all is deprecated, instead please use 'evolve_list' and 'donot_evolve_list'.")
 
     def work(self):
         if not self._should_run():
             return
 
-        evolve_list = self._sort_and_filter()
+        filtered_list = self._sort_and_filter()
 
-        if self.evolve_all[0] != 'all':
-            # filter out non-listed pokemons
-            evolve_list = filter(lambda x: x.name in self.evolve_all, evolve_list)
+        if (len(self.evolve_list) > 0) and self.evolve_list[0] != 'all':
+            filtered_list = filter(lambda x: x.name.lower() in self.evolve_list, filtered_list)
+
+        if (len(self.donot_evolve_list) > 0) and self.donot_evolve_list[0] != 'none':
+            filtered_list = filter(lambda pokemon: pokemon.name.lower() not in self.donot_evolve_list, filtered_list)
 
         cache = {}
-        for pokemon in evolve_list:
+        for pokemon in filtered_list:
             if pokemon.can_evolve_now():
                 self._execute_pokemon_evolve(pokemon, cache)
 
     def _should_run(self):
-        if not self.evolve_all or self.evolve_all[0] == 'none':
+        if not self.evolve_list or self.evolve_list[0] == 'none':
             return False
 
         # Evolve all is used - Use Lucky egg only at the first tick
@@ -133,6 +141,7 @@ class EvolvePokemon(Datastore, BaseTask):
             inventory.pokemons().remove(pokemon.unique_id)
             new_pokemon = inventory.Pokemon(evolution)
             inventory.pokemons().add(new_pokemon)
+            inventory.player().exp += xp
 
             sleep(uniform(self.min_evolve_speed, self.max_evolve_speed))
             evolve_result = True

@@ -11,7 +11,7 @@ from pokemongo_bot.walkers.walker_factory import walker_factory
 from pokemongo_bot.worker_result import WorkerResult
 from pgoapi.utilities import f2i
 from random import uniform
-from utils import getSeconds
+from utils import getSeconds, format_dist
 from datetime import datetime as dt, timedelta
 
 STATUS_MOVING = 0
@@ -26,6 +26,8 @@ class FollowPath(BaseTask):
         self.points = self.load_path()
         self.status = STATUS_MOVING
         self.loiter_end_time = 0
+        self.distance_unit = self.bot.config.distance_unit
+        self.append_unit = False
 
         if self.path_start_mode == 'closest':
             self.ptr = self.find_closest_point_idx(self.points)
@@ -97,16 +99,15 @@ class FollowPath(BaseTask):
     def find_closest_point_idx(self, points):
         return_idx = 0
         min_distance = float("inf");
+        
         for index in range(len(points)):
             point = points[index]
-            botlat = self.bot.api._position_lat
-            botlng = self.bot.api._position_lng
             lat = point['lat']
             lng = point['lng']
 
             dist = distance(
-                botlat,
-                botlng,
+                self.bot.position[0],
+                self.bot.position[1],
                 lat,
                 lng
             )
@@ -142,9 +143,7 @@ class FollowPath(BaseTask):
         if self.status == STATUS_LOITERING and time.time() < self.loiter_end_time:
             return WorkerResult.SUCCESS
 
-        last_lat = self.bot.api._position_lat
-        last_lng = self.bot.api._position_lng
-        last_alt = self.bot.api._position_alt
+        last_lat, last_lng, last_alt = self.bot.position
 
         point = self.points[self.ptr]
         lat = point['lat']
@@ -183,14 +182,14 @@ class FollowPath(BaseTask):
             data={
                 'last_position': (last_lat, last_lng, last_alt),
                 'current_position': (lat, lng, alt),
-                'distance': dist,
-                'distance_unit': 'm'
+                'distance': format_dist(dist,self.distance_unit,self.append_unit),
+                'distance_unit': self.distance_unit
             }
         )
         
         if dist <= 1 or (self.bot.config.walk_min > 0 and is_at_destination) or (self.status == STATUS_LOITERING and time.time() >= self.loiter_end_time):
-            if "loiter" in point and self.status != STATUS_LOITERING: 
-                print("Loitering {} seconds".format(point["loiter"]))
+            if "loiter" in point and self.status != STATUS_LOITERING:
+                self.logger.info("Loitering for {} seconds...".format(point["loiter"]))
                 self.status = STATUS_LOITERING
                 self.loiter_end_time = time.time() + point["loiter"]
                 return WorkerResult.SUCCESS

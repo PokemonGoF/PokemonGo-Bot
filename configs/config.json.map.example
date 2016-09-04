@@ -1,16 +1,11 @@
 {
-    "auth_service": "google",
-    "username": "YOUR_USERNAME",
-    "password": "YOUR_PASSWORD",
-    "location": "SOME_LOCATION",
-    "favorite_locations":[
-        {"name": "Milan", "coords": "45.472849,9.177567"}
-    ],
-    "gmapkey": "GOOGLE_MAPS_API_KEY",
-    "encrypt_location": "",
     "websocket_server": false,
     "heartbeat_threshold": 10,
     "enable_social": true,
+    "live_config_update": {
+      "enabled": false,
+      "tasks_only": false
+    },
     "tasks": [
       {
         "//NOTE: This task MUST be placed on the top of task list": {},
@@ -31,7 +26,9 @@
         "config": {
           "enabled": false,
           "// set a name": "",
-          "nickname": ""
+          "nickname": "",
+          "// 0 = No Team, 1 = Blue, 2 = Red, 3 = Yellow": "",
+          "team": 0
         }
       },
       {
@@ -45,7 +42,8 @@
         "type": "IncubateEggs",
         "config": {
           "enabled": true,
-          "longer_eggs_first": true,
+          "infinite_longer_eggs_first": false,
+          "breakable_longer_eggs_first": true,
           "min_interval": 120
         }
       },
@@ -69,6 +67,16 @@
         }
       },
       {
+        "type": "ShowBestPokemon",
+        "config": {
+          "enabled": true,
+          "min_interval": 60,
+          "amount": 5,
+          "order_by": "cp",
+          "info_to_show": ["cp", "ivcp", "dps", "hp"]
+        }
+      },
+      {
         "type": "TransferPokemon",
         "config": {
           "enabled": true,
@@ -82,14 +90,27 @@
         "config": {
           "enabled": false,
           "nickname_above_iv": 0.9,
-          "nickname_template": "{iv_pct}_{iv_ads}"
+          "nickname_template": "{iv_pct}_{iv_ads}",
+          "nickname_wait_min": 3,
+          "nickname_wait_max": 5
         }
       },
       {
         "type": "EvolvePokemon",
         "config": {
             "enabled": false,
-            "evolve_all": "none",
+            
+            "// evolve only pidgey and drowzee": "",
+            "// evolve_list": "pidgey, drowzee",
+            "// donot_evolve_list": "none",
+            
+            "// evolve all but pidgey and drowzee": "",
+            "// evolve_list": "all",
+            "// donot_evolve_list": "pidgey, drowzee",
+            
+            "evolve_list": "all",
+            "donot_evolve_list": "none",
+            
             "first_evolve_by": "cp",
             "evolve_above_cp": 500,
             "evolve_above_iv": 0.8,
@@ -132,6 +153,12 @@
           "min_ultraball_to_keep": 5,
           "berry_threshold": 0.35,
           "vip_berry_threshold": 0.9,
+          "daily_catch_limit": 800,
+          "vanish_settings": {
+            "consecutive_vanish_limit": 10,
+            "rest_duration_min": "02:00:00",
+            "rest_duration_max": "04:00:00"
+          },
           "catch_throw_parameters": {
             "excellent_rate": 0.1,
             "great_rate": 0.5,
@@ -171,7 +198,10 @@
         "config": {
           "enabled": true,
           "address": "http://localhost:5000",
-          "max_distance": 500,
+          "//NOTE: Change the max_sniping_distance to adjust the max sniping range (m)": {},
+          "max_sniping_distance": 10000,
+          "//NOTE: Change the max_walking_distance to adjust the max walking range when snipe is off (m)": {},
+          "max_walking_distance": 500,
           "min_ball": 50,
           "prioritize_vips": true,
           "snipe": true,
@@ -182,6 +212,12 @@
           "map_path": "raw_data",
           "walker": "StepWalker",
           "max_extra_dist_fort": 10,
+          "skip_rounds": 5,
+	  "update_map_min_distance_meters": 500,
+	  "update_map_min_time_sec": 120,
+	  "snipe_sleep_sec": 2,
+	  "snipe_max_in_chain": 2,
+	  "debug": false,
           "catch": {
             "==========Legendaries==========": 0,
             "Aerodactyl": 1000,
@@ -418,7 +454,8 @@
         "config": {
             "enabled": true,
             "lure_attraction": true,
-            "lure_max_distance": 2000
+            "lure_max_distance": 2000,
+            "log_interval": 5
         }
       },
       {
@@ -470,12 +507,17 @@
     ],
     "debug": false,
     "test": false,
+    "walker_limit_output": false,
     "health_record": true,
     "location_cache": true,
     "distance_unit": "km",
     "reconnecting_timeout": 15,
-    "logging_color": true,
-    "daily_catch_limit": 800,
+    "logging": {
+      "color": true,
+      "show_datetime": true,
+      "show_process_name": true,
+      "show_log_level": true
+    },
     "catch": {
       "any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},
@@ -497,7 +539,7 @@
       "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3}
     },
     "vips" : {
-         "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate!": {},
+         "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate": {},
         "any": {"catch_above_cp": 1200, "catch_above_iv": 0.9, "logic": "or" },
         "Lapras": {},
         "Moltres": {},
@@ -518,5 +560,9 @@
         "Weezing": {},
         "Flareon": {}
 
-    }
+    },
+	"websocket": {
+		"start_embedded_server": true,
+		"server_url": "127.0.0.1:4000"
+	}
 }

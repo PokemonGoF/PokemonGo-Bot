@@ -64,12 +64,20 @@ function initialize() {
   var mapDiv = document.getElementById('map-canvas');
   map = new google.maps.Map(mapDiv, mapOptions);
 
-  navigator.geolocation.getCurrentPosition(onFirstPosition, onPositionError, locationOptions);
+  initialiseEventBus();
+
+  //navigator.geolocation.getCurrentPosition(onFirstPosition, onPositionError, locationOptions);
+
+  onFirstPosition({
+     "coords": {
+       latitude: parseFloat(0.1),
+       longitude: parseFloat(0.1)
+     }
+   });
 }
 
 function onFirstPosition(position) {
   setUserLocation(position.coords.latitude, position.coords.longitude);
-  initialiseEventBus();
   map.panTo(userLocation);
   var message = {};
   message.lat = position.coords.latitude;
@@ -279,7 +287,8 @@ function displayMessageOnMap(msg, olat, olong, sessid, icostr, expir, pokenick) 
   var infoWindow = markerMap.infoWindow;
 
   if (!markersMap[msgSessionId]) { // new marker
-    infoWindow.open(map, marker);
+    //disable it for now
+    //infoWindow.open(map, marker);
 
     var timeoutId = setTimeout(function () { infoWindow.close() }, 10000);
     markersMap[msgSessionId] = {
