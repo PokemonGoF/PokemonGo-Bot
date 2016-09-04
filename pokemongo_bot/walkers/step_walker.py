@@ -72,7 +72,13 @@ class StepWalker(object):
                 }
             )
             self.bot.heartbeat()
+            # This step is implicitlly teleporting...
+            # and since now we have variable speeds it can be quite often that self.dist < self.speed
+            # especially for the polyline
+            # need to speed one even when teleporting small distances
+            sleep(1)  # sleep one second plus a random delta
             return True
+
 
         self._new_position = self._get_next_pos(self.initLat, self.initLng, self.bearing, self.speed, self.precision)
         cAlt = self.initAlt + random_alt_delta()

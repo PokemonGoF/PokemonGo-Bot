@@ -183,6 +183,11 @@ class Polyline(object):
         self.speed = speed
 
     def _calc_next_pos(self, origin, distance, bearing):
+        lat, lng, _ = origin
+        if distance == 0.0:
+            return lat, lng
+        if distance == float("inf"):
+            return self.destination
         lat, lng, _ = VincentyDistance(kilometers=distance * 1e-3).destination(origin, bearing)
         return (lat, lng)
 
