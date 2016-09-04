@@ -13,8 +13,25 @@ else
   auth="./configs/auth.json"
 fi
 cd $pokebotpath
-source bin/activate
+source bin/activate 2> /dev/null
+if [[ $? -eq 1 ]];
+then
+  echo "Virtualenv does not exits"
+  echo "Run: ./setup.sh -i"
+  exit 1
+fi
 git fetch -a
+installed=(`pip list 2>/dev/null |sed -e 's/ //g' -e 's/(/:/' -e 's/)//' -e 's/[-_]//g' | awk '{print tolower($0)}'`)
+required=(`cat requirements.txt | sed -e 's/.*pgoapi$/pgoapi==1.1.8/' -e 's/[-_]//g' -e 's/==\(.*\)/:\1/' | awk '{print tolower($0)}'`)
+for package in ${required[@]}
+do
+  if [[ ! (${installed[*]} =~ $package) ]];
+  then
+    echo "Some of the required packages are not found / have different version."
+    echo "Run: ./setup.sh -u"
+    exit 1
+  fi
+done
 if [ "1" == $(git branch -vv |grep -c "* dev") ] && [ $(git log --pretty=format:"%h" -1) != $(git log --pretty=format:"%h" -1 origin/dev) ] ||
   [ "1" == $(git branch -vv |grep -c "* master") ] && [ $(git log --pretty=format:"%h" -1) != $(git log --pretty=format:"%h" -1 origin/master) ]
 then
