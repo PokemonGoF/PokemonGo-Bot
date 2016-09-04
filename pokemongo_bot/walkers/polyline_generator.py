@@ -140,6 +140,9 @@ class Polyline(object):
         return self._elevation_at_point[closest_sample]
 
     def get_pos(self):
+        if self.speed > self.get_total_distance():
+            self._last_pos = self.destination
+            self._last_step = len(self._step_keys)-1
         if self.get_last_pos() == self.destination:
             return self.get_last_pos()
         distance = self.speed

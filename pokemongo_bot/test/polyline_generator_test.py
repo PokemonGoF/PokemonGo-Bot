@@ -48,15 +48,17 @@ class PolylineTestCase(unittest.TestCase):
 
     def test_pos_and_alt_at_time_mock_seven_sec(self):
 	self.polyline.set_speed(self.polyline.speed*7)
-        self.assertEquals(self.polyline.get_pos(), (47.17048865309364, 8.516689707618356))
+	lat, lng = self.polyline.get_pos()
+	self.assertAlmostEqual(lat, 47.17048865309, places=5)
+	self.assertAlmostEqual(lng, 8.516689707618, places=5)
         self.assertAlmostEqual(self.polyline.get_alt(), 428.65, places=1)
 
     def test_pos_and_alt_at_time_mock_end(self):
-	self.polyline.set_speed(194)
+	self.polyline.set_speed(300)
 	lat, lng = self.polyline.get_pos()
-        self.assertAlmostEqual(lat, ex_orig[0], places=2)
-	self.assertAlmostEqual(lng, ex_orig[1], places=2)
-        self.assertEquals(self.polyline.get_alt(), 424.8204040527344)
+        self.assertAlmostEqual(lat, ex_dest[0], places=5)
+	self.assertAlmostEqual(lng, ex_dest[1], places=5)
+        self.assertEquals(self.polyline.get_alt(), 437.9155883789062)
 
     def test_nr_of_elevations_returned(self):
         total_seconds = self.polyline.get_total_distance() / self.polyline.speed
