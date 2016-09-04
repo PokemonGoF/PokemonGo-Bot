@@ -230,6 +230,8 @@ class TelegramHandler(EventHandler):
                     msg = "Egg hatched with a {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
                 except KeyError:
                     return
+            elif event == 'bot_sleep':
+                msg = "I am too tired, I will take a sleep till {}.".format(data["wake"])
             elif event == 'catch_limit':
                 self.tbot.send_player_stats_to_chat(master)
                 msg = "*You have reached your daily catch limit, quitting.*"
