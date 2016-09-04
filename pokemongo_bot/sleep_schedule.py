@@ -40,6 +40,8 @@ class SleepSchedule(object):
 
     def __init__(self, bot, config):
         self.bot = bot
+        self._last_index = -1
+        self._next_index = -1
         self._process_config(config)
         self._schedule_next_sleep()
 
@@ -110,6 +112,16 @@ class SleepSchedule(object):
 
     def _should_sleep_now(self):
         now = datetime.now()
+
+        """Debugging
+        print "==========================================="
+        print "SHOULD WE SLEEP?"
+        print "Now is: %s, Next sleep at: %s, Next end at: %s" % (str(now), str(self._next_sleep), str(self._next_end))
+        print "now >= self._next_sleep: %s" % str(now >= self._next_sleep)
+        print "now < self._next_end: %s" % str(now < self._next_end)
+        print "==========================================="
+        """
+
         if now >= self._next_sleep and now < self._next_end:
             self._next_duration = (self._next_end - now).total_seconds()
             return True
@@ -129,18 +141,26 @@ class SleepSchedule(object):
 
             diff = next_time - now
 
-            # If sleep time is passed add one day or time to sleep less than SCHEDULING_MARGIN
-            if (next_time <= now and now > next_end) or (diff.total_seconds() > 0 and diff < self.SCHEDULING_MARGIN):
+            # If sleep time is passed or time to sleep less than SCHEDULING_MARGIN then add one day
+            if (next_time <= now and now > next_end) or (diff > timedelta(0) and diff < self.SCHEDULING_MARGIN):
                 next_time += timedelta(days=1)
+                next_end += timedelta(days=1)
                 diff = next_time - now
             # If now is sleeping time
             elif next_time <= now and now < next_end:
-                return next_time, next_duration, next_end, location, True
+                if index == self._last_index: # If it is still the same sleep entry, but now < next_end because of random offset
+                    next_time += timedelta(days=1)
+                    next_end += timedelta(days=1)
+                    diff = next_time - now
+                else:
+                    self._next_index = index
+                    return next_time, next_duration, next_end, location, True
 
-            prepared = {'time': next_time, 'duration': next_duration, 'end': next_end, 'location': location, 'diff': diff}
+            prepared = {'index': index, 'time': next_time, 'duration': next_duration, 'end': next_end, 'location': location, 'diff': diff}
             times.append(prepared)
 
         closest = min(times, key=lambda x: x['diff'])
+        self._next_index = closest['index']
 
         return closest['time'], closest['duration'], closest['end'], closest['location'], False
 
@@ -178,3 +198,5 @@ class SleepSchedule(object):
             else:
                 sleep(self.LOG_INTERVAL_SECONDS)
                 sleep_to_go -= self.LOG_INTERVAL_SECONDS
+
+        self._last_index = self._next_index
