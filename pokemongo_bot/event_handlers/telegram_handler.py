@@ -24,17 +24,13 @@ class TelegramClass:
         with self.bot.database as conn:
             # initialize the DB table if it does not exist yet
             cur = conn.cursor()
-            #cur.execute("create table if not exists telegram_uids(uid integer, username text) primary key(uid)")
-            # create indexes if they don't exist
-            #cur.execute("create index if not exists tuids_username on telegram_uids(username)")
-
             try:
                 cur.executescript("""
                     create table if not exists telegram_uids(uid integer constraint upk primary key, username text not null);
                     create index if not exists tuids_username on telegram_uids(username);
                     """)
             except sqlite3.Error as e:
-                print "An error occurred:", e.args[0]
+                self.bot.logger.warn("An error occurred while initializing Telegram UID table: {}".format(e.args[0]))
 
 
             # if master is not numeric, try to fetch it from the database
