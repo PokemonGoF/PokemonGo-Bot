@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import json
-import os
 import sys
 import time
 
@@ -13,7 +11,6 @@ from pokemongo_bot.constants import Constants
 from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.base_dir import _base_dir
 from utils import distance, format_time, fort_details
 
 SPIN_REQUEST_RESULT_SUCCESS = 1
@@ -27,6 +24,7 @@ class SpinFort(BaseTask):
 
     def __init__(self, bot, config):
         super(SpinFort, self).__init__(bot, config)
+
     def initialize(self):
         self.ignore_item_count = self.config.get("ignore_item_count", False)
         self.spin_wait_min = self.config.get("spin_wait_min", 2)
@@ -98,9 +96,9 @@ class SpinFort(BaseTask):
                 with self.bot.database as conn:
                     c = conn.cursor()
                     c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='pokestop_log'")
-                result = c.fetchone()        
+                result = c.fetchone()
                 c.execute("SELECT DISTINCT COUNT(pokestop) FROM pokestop_log WHERE dated >= datetime('now','-1 day')")
-                if c.fetchone()[0]>=self.config.get('daily_spin_limit',2000):
+                if c.fetchone()[0] >= self.config.get('daily_spin_limit', 2000):
                     self.emit_event('spin_limit', formatted='WARNING! You have reached your daily spin limit')
                     sys.exit(2)
                 while True:
@@ -108,12 +106,10 @@ class SpinFort(BaseTask):
                         conn.execute('''INSERT INTO pokestop_log (pokestop, exp, items) VALUES (?, ?, ?)''', (fort_name, str(experience_awarded), str(items_awarded)))
                         break
                     else:
-                        self.emit_event(
-                        'pokestop_log',
-                        sender=self,
-                        level='info',
-                        formatted="pokestop_log table not found, skipping log"
-                        )
+                        self.emit_event('pokestop_log',
+                                        sender=self,
+                                        level='info',
+                                        formatted="pokestop_log table not found, skipping log")
                         break
                 pokestop_cooldown = spin_details.get(
                     'cooldown_complete_timestamp_ms')
@@ -164,22 +160,20 @@ class SpinFort(BaseTask):
                     with self.bot.database as conn:
                         c = conn.cursor()
                         c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='softban_log'")
-                    result = c.fetchone()        
-                    
+                    result = c.fetchone()
+
                     if result[0] == 1:
                         source = str("PokemonCatchWorker")
                         status = str("Possible Softban")
                         conn.execute('''INSERT INTO softban_log (status, source) VALUES (?, ?)''', (status, source))
                     else:
-                        self.emit_event(
-                        'softban_log',
-                        sender=self,
-                        level='info',
-                        formatted="softban_log table not found, skipping log"
-                        )
-                        
+                        self.emit_event('softban_log',
+                                        sender=self,
+                                        level='info',
+                                        formatted="softban_log table not found, skipping log")
+
                 self.bot.fort_timeouts[fort["id"]] = (time.time() + 300) * 1000  # Don't spin for 5m
-                    
+
                 return WorkerResult.ERROR
         action_delay(self.spin_wait_min, self.spin_wait_max)
 
@@ -190,10 +184,8 @@ class SpinFort(BaseTask):
 
     def get_forts_in_range(self):
         forts = self.bot.get_forts(order_by_distance=True)
-        now = time.time() * 1000
-        forts = filter(lambda x: x.get('cooldown_complete_timestamp_ms', 0) < now, forts)
+        forts = filter(lambda fort: fort["id"] not in self.bot.fort_timeouts, forts)
 
-        # forts = filter(lambda fort: fort["id"] not in self.bot.fort_timeouts, forts)
         if self.bot.config.replicate_gps_xy_noise:
             forts = filter(lambda fort: distance(
                 self.bot.noised_position[0],
@@ -224,7 +216,7 @@ class SpinFort(BaseTask):
                 item_awarded_name = inventory.Items.name_for(item_awarded_id)
                 item_awarded_count = item_awarded['item_count']
 
-                if not item_awarded_name in tmp_count_items:
+                if item_awarded_name not in tmp_count_items:
                     tmp_count_items[item_awarded_name] = item_awarded_count
                 else:
                     tmp_count_items[item_awarded_name] += item_awarded_count
