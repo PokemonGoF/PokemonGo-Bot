@@ -9,6 +9,7 @@ class BuddyPokemon(BaseTask):
 
     def initialize(self):
     	self.api = self.bot.api
+        self.buddy = self.bot.player_data.get('buddy_pokemon', None)
     	self.buddy_list = self.config.get('buddy_list', [])
         '''
     	self.only_one_per_family = self.config.get('only_one_per_family', True)
