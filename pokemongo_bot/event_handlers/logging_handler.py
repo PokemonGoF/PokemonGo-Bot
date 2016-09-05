@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 
 import logging
+import sys
 
 from pokemongo_bot.event_manager import EventHandler
 
@@ -19,4 +20,4 @@ class LoggingHandler(EventHandler):
             formatted_msg = '[{}] {}'.format(event, formatted_msg)
 
         logger = logging.getLogger(type(sender).__name__)
-        getattr(logger, level)(formatted_msg)
+        getattr(logger, level)(formatted_msg.encode(sys.stdout.encoding, "replace").decode("utf-8"))
