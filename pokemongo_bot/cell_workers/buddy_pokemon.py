@@ -10,9 +10,11 @@ class BuddyPokemon(BaseTask):
     def initialize(self):
     	self.api = self.bot.api
     	self.buddy_list = self.config.get('buddy_list', [])
+        '''
     	self.only_one_per_family = self.config.get('only_one_per_family', True)
     	self.best_cp_in_family = self.config.get('best_cp_in_family', True)
     	self.candy_limit = self.config.get('candy_limit', 0) # 0 = Max Limit
+        '''
     	self.buddy_change_wait_min = self.config.get('buddy_change_wait_min', 3)
     	self.buddy_change_wait_max = self.config.get('buddy_change_wait_max', 5)
     	self.km_walked = 0
@@ -24,10 +26,12 @@ class BuddyPokemon(BaseTask):
             self.buddy_list = [str(pokemon_name).strip().lower() for pokemon_name in self.buddy_list.split(',')]
 
     def work(self):
-    	if not self._should_run():
+        if not self._should_run():
     		return WorkerResult.ERROR
 
-    	filtered_list = self._filter_pokemon()
+    	###filtered_list = self._filter_pokemon()
+        
+
 
 
    	def _should_run(self):
@@ -48,4 +52,11 @@ class BuddyPokemon(BaseTask):
    				pokemons = [p for family in temp_list for p = min(family, key=lambda x: x.cp)]
    		return pokemons
 
+    def _set_buddy(self, pokemon):
+        response_dict = self.api.set_buddy_pokemon(pokemon_id=pokemon.unique_id)
+        result = response_dict['responses']['SET_BUDDY_POKEMON']['result']
 
+        if result == 1:
+            updated_buddy = response_dict['responses']['SET_BUDDY_POKEMON']['updated_buddy']
+            ### Why need those
+            
