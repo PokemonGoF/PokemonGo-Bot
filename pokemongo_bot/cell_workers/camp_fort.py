@@ -46,6 +46,8 @@ class CampFort(BaseTask):
             [Item.ITEM_POKE_BALL, Item.ITEM_GREAT_BALL, Item.ITEM_ULTRA_BALL]]) <= 0:
             self.logger.info('No pokeballs left, refuse to sit at lure!')
             # Move away from lures for a time
+            self.destination = None
+            self.stay_until = 0
             self.move_until = now + self.config_moving_time
             return WorkerResult.SUCCESS
 
