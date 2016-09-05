@@ -46,10 +46,7 @@ class BuddyPokemon(BaseTask):
    		if self.only_one_per_family:
    			ids_family = list(set(map(lambda x: x.family_id, pokemon))).sort()
    			temp_list = [filter(lambda x: x.family_id == y, pokemons) for y in ids_family]
-   			if self.best_cp_in_family:
-   				pokemons = [p for family in temp_list for p = max(family, key=lambda x: x.cp)]
-   			else:
-   				pokemons = [p for family in temp_list for p = min(family, key=lambda x: x.cp)]
+            pokemons = [p for family in temp_list for p = family.sort(key=lambda x: x.cp, reverse=self.best_cp_in_family)[0]]
    		return pokemons
 
     def _set_buddy(self, pokemon):
@@ -59,4 +56,35 @@ class BuddyPokemon(BaseTask):
         if result == 1:
             updated_buddy = response_dict['responses']['SET_BUDDY_POKEMON']['updated_buddy']
             ### Why need those
-            
+            unique_id = updated_buddy.get('id', -1)
+            start_km_walked = updated_buddy.get('start_km_walked', 0)
+            last_km_awarded = updated_buddy.get('last_km_awarded', 0)
+
+            self.emit_event(
+                'buddy_update',
+                formated='{name} was set as Buddy Pokemon.',
+                data={
+                    'name': pokemon.name
+                }
+            )
+            return True
+        else
+            error_codes = {
+                0: 'UNSET',
+                2: 'ERROR_POKEMON_DEPLOYED',
+                3: 'ERROR_POKEMON_NOT_OWNED',
+                4: 'ERROR_POKEMON_IS_EGG'
+            }
+            self.emit_event(
+                'buddy_update_fail',
+                formated='Error while setting {name} as Buddy Pokemon: {error}',
+                data={
+                    'name': pokemon.name,
+                    'error': error_codes[result]
+                }
+            )
+            return False
+
+
+
+
