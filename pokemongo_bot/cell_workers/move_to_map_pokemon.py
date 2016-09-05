@@ -341,16 +341,12 @@ class MoveToMapPokemon(BaseTask):
                         self.snipe(pokemon)
                         count = count +1
                         if count >= self.config.get('snipe_max_in_chain', 2):
-                            return WorkerResult.SUCCESS
-                        if count is not 1:
-                            time.sleep(self.config.get('snipe_sleep_sec', 2)*5)
+                            continue
                     else:
                         if self.config.get('debug', False):
                             self._emit_log('this pokemon is not good enough to snipe {}'.format(pokemon))
-                return WorkerResult.SUCCESS
             else:
                 return self.snipe(pokemon)
-            return WorkerResult.SUCCESS
 
         # check for pokeballs (excluding masterball)
         # checking again as we may have lost some if we sniped
