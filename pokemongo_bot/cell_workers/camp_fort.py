@@ -23,7 +23,6 @@ class CampFort(BaseTask):
         self.move_until = 0
         self.last_position_update = 0
         self.walker = None
-        self.announced_out_of_balls = False
 
         self.config_max_distance = self.config.get("max_distance", 2000)
         self.config_min_forts_count = self.config.get("min_forts_count", 2)
@@ -34,20 +33,20 @@ class CampFort(BaseTask):
     def work(self):
         if not self.enabled:
             return WorkerResult.SUCCESS
-            
-        # Let's make sure we have balls before we sit at a lure!
-        # See also catch_pokemon.py
-        if sum([inventory.items().get(ball.value).count for ball in
-            [Item.ITEM_POKE_BALL, Item.ITEM_GREAT_BALL, Item.ITEM_ULTRA_BALL]]) <= 0:
-            if not self.announced_out_of_balls:
-                self.logger.info('No pokeballs left, refuse to sit at lure!')
-                self.announced_out_of_balls = True
-            return WorkerResult.SUCCESS
 
         self.announced_out_of_balls = False
         now = time.time()
 
         if now < self.move_until:
+            return WorkerResult.SUCCESS
+
+        # Let's make sure we have balls before we sit at a lure!
+        # See also catch_pokemon.py
+        if sum([inventory.items().get(ball.value).count for ball in
+            [Item.ITEM_POKE_BALL, Item.ITEM_GREAT_BALL, Item.ITEM_ULTRA_BALL]]) <= 0:
+            self.logger.info('No pokeballs left, refuse to sit at lure!')
+            # Move away from lures for a time
+            self.move_until = now + self.config_moving_time
             return WorkerResult.SUCCESS
 
         if 0 < self.stay_until < now:
