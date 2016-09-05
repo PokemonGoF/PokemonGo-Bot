@@ -285,17 +285,18 @@ class PokemonOptimizer(BaseTask):
                 try_upgrade_all += try_upgrade
                 keep_all += keep
 
-            if len(senior_pids) < nb_branch:
-                # We did not get every combination yet = All other Pokemon are potentially good to keep
-                worst = other_family_list[-1]
-            else:
-                best = try_evolve_all + try_upgrade_all + keep_all
-                worst = self.sort_pokemon_list(best, rule)[-1]
+            if len(other_family_list) > 0:
+                if len(senior_pids) < nb_branch:
+                    # We did not get every combination yet = All other Pokemon are potentially good to keep
+                    worst = other_family_list[-1]
+                else:
+                    best = try_evolve_all + try_upgrade_all + keep_all
+                    worst = self.sort_pokemon_list(best, rule)[-1]
 
-            try_evolve, try_upgrade, keep = self.get_better_pokemon_for_rule(other_family_list, rule, worst, 12)
-            try_evolve_all += try_evolve
-            try_upgrade_all += try_upgrade
-            keep_all += keep
+                try_evolve, try_upgrade, keep = self.get_better_pokemon_for_rule(other_family_list, rule, worst, 12)
+                try_evolve_all += try_evolve
+                try_upgrade_all += try_upgrade
+                keep_all += keep
 
         return try_evolve_all, try_upgrade_all, keep_all
 

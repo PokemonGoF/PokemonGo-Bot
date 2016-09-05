@@ -100,17 +100,9 @@ class Metrics(object):
 
     def capture_stats(self):
         try:
-            request = self.bot.api.create_request()
-        except AttributeError:
-            return
-
-        request.get_player()
-        response_dict = request.call()
-
-        try:
             uniq_pokemon_list = set()
 
-            self.dust['latest'] = response_dict['responses']['GET_PLAYER']['player_data']['currencies'][1]['amount']
+            self.dust['latest'] = self.bot.stardust 
             if self.dust['start'] < 0:
                 self.dust['start'] = self.dust['latest']
 
