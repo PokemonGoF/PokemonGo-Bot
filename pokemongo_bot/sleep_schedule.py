@@ -36,10 +36,11 @@ class SleepSchedule(object):
     *Note that an empty string ("") will not change the location*.    """
 
     LOG_INTERVAL_SECONDS = 600
-    SCHEDULING_MARGIN = timedelta(minutes=10)    # Skip if next sleep is RESCHEDULING_MARGIN from now
+    SCHEDULING_MARGIN = timedelta(minutes=10)    # Skip if next sleep is SCHEDULING_MARGIN from now
 
     def __init__(self, bot, config):
         self.bot = bot
+        self._reminder_interval = self.bot.config.sleep_reminder_interval
         self._last_index = -1
         self._next_index = -1
         self._process_config(config)
@@ -110,6 +111,7 @@ class SleepSchedule(object):
                     'duration': str(timedelta(seconds=self._next_duration))
                 }
             )
+            self._last_reminder = datetime.now()
 
     def _should_sleep_now(self):
         now = datetime.now()
@@ -117,6 +119,19 @@ class SleepSchedule(object):
         if now >= self._next_sleep and now < self._next_end:
             self._next_duration = (self._next_end - now).total_seconds()
             return True
+
+        diff = now - self._last_reminder
+        if (diff.total_seconds() >= self._reminder_interval):
+            self.bot.event_manager.emit(
+                'next_sleep',
+                sender=self,
+                formatted="Next sleep at {time}, for a duration of {duration}",
+                data={
+                    'time': str(self._next_sleep.strftime("%H:%M:%S")),
+                    'duration': str(timedelta(seconds=self._next_duration))
+                }
+            )
+            self._last_reminder = now
 
         return False
 
