@@ -121,40 +121,28 @@ class SleepSchedule(object):
         return False
 
     def _get_next_sleep_schedule(self):
-        now = datetime.now() + self.SCHEDULING_MARGIN
+        now = datetime.now() #+ self.SCHEDULING_MARGIN
 
         times = []
         for index in range(len(self.entries)):
             next_time = now.replace(hour=self.entries[index]['time'].hour, minute=self.entries[index]['time'].minute)
             next_time += timedelta(seconds=self._get_random_offset(self.entries[index]['time_random_offset']))
-            next_duration = self._get_next_duration(self.entries[index])
-            next_end = next_time + timedelta(seconds=next_duration)
+            duration = self._get_next_duration(self.entries[index])
+            end_time = next_time + timedelta(seconds=duration)
             location = self.entries[index]['wake_up_at_location'] if 'wake_up_at_location' in self.entries[index] else ''
 
-            diff = next_time - now
-
-            # If sleep time is passed or time to sleep less than SCHEDULING_MARGIN then add one day
-            if (next_time <= now and now > next_end) or (diff > timedelta(0) and diff < self.SCHEDULING_MARGIN):
+            # if current time is not in the current sleep range
+            if end_time <= now:
                 next_time += timedelta(days=1)
-                next_end += timedelta(days=1)
-                diff = next_time - now
-            # If now is sleeping time
-            elif next_time <= now and now < next_end:
-                if index == self._last_index: # If it is still the same sleep entry, but now < next_end because of random offset
-                    next_time += timedelta(days=1)
-                    next_end += timedelta(days=1)
-                    diff = next_time - now
-                else:
-                    self._next_index = index
-                    return next_time, next_duration, next_end, location, True
+            # if still within range, schedule sleep immediately
+            elif next_time <= now:
+                duration_left = (end_time - now).total_seconds()
+                return now, duration_left, end_time, location, True
 
-            prepared = {'index': index, 'time': next_time, 'duration': next_duration, 'end': next_end, 'location': location, 'diff': diff}
-            times.append(prepared)
+            times.append((next_time, duration, end_time, location))
 
-        closest = min(times, key=lambda x: x['diff'])
-        self._next_index = closest['index']
-
-        return closest['time'], closest['duration'], closest['end'], closest['location'], False
+        times.sort()
+        return times[0][0], times[0][1], times[0][2], times[0][3], False
 
     def _get_next_duration(self, entry):
         duration = entry['duration'] + self._get_random_offset(entry['duration_random_offset'])
