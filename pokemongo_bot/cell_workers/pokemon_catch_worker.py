@@ -120,6 +120,17 @@ class PokemonCatchWorker(BaseTask):
 
         # skip ignored pokemon
         if not self._should_catch_pokemon(pokemon):
+            if not hasattr(self.bot,'skipped_pokemon'):
+                self.bot.skipped_pokemon = []
+                
+            # Check if pokemon already skipped and suppress alert if so
+            for skipped_pokemon in self.bot.skipped_pokemon:
+                if pokemon.pokemon_id == skipped_pokemon.pokemon_id and \
+                    pokemon.cp_exact == skipped_pokemon.cp_exact and \
+                    pokemon.ivcp == skipped_pokemon.ivcp:
+                    return WorkerResult.SUCCESS
+                    
+            self.bot.skipped_pokemon.append(pokemon)
             self.emit_event(
                 'pokemon_appeared',
                 formatted='Skip ignored {pokemon}! [CP {cp}] [Potential {iv}] [A/D/S {iv_display}]',
