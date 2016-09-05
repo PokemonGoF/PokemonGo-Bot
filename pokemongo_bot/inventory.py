@@ -893,6 +893,7 @@ class Pokemon(object):
         self.in_fort = 'deployed_fort_id' in data
         self.is_favorite = data.get('favorite', 0) is 1
         self.buddy_candy = data.get('buddy_candy_awarded', 0)
+        ### self.buddy_km_needed = TODO
 
         self.fast_attack = FastAttacks.data_for(data['move_1'])
         self.charged_attack = ChargedAttacks.data_for(data['move_2'])  # type: ChargedAttack

@@ -10,6 +10,7 @@ class BuddyPokemon(BaseTask):
     def initialize(self):
     	self.api = self.bot.api
         self.buddy = self.bot.player_data.get('buddy_pokemon', None)
+        self.buddy_km_needed = 0
     	self.buddy_list = self.config.get('buddy_list', [])
         '''
     	self.only_one_per_family = self.config.get('only_one_per_family', True)
@@ -18,8 +19,6 @@ class BuddyPokemon(BaseTask):
         '''
     	self.buddy_change_wait_min = self.config.get('buddy_change_wait_min', 3)
     	self.buddy_change_wait_max = self.config.get('buddy_change_wait_max', 5)
-    	self.km_walked = 0
-    	self.last_km_walked = 0
     	self._validate_config()
 
     def _validate_config(self):
@@ -27,18 +26,25 @@ class BuddyPokemon(BaseTask):
             self.buddy_list = [str(pokemon_name).strip().lower() for pokemon_name in self.buddy_list.split(',')]
 
     def work(self):
-        if not self._should_run():
-    		return WorkerResult.ERROR
+        if self.buddy_list:
+            if self.buddy_list[0] == 'none':
+                return WorkerResult.SUCCESS
+            # Else check for existing buddy and candy limit and set or not a new buddy
 
-    	###filtered_list = self._filter_pokemon()
-        
+        if self.buddy is None:
+            return WorkerResult.SUCCESS
 
+        if self.buddy_km_needed == 0:
+            pokemon = self._get_pokemon(self.buddy['id'])
+            self.buddy_km_needed = pokemon.buddy_km_needed
 
+        if self._km_walked() - max(self.buddy['start_km_walked'], self.buddy['last_km_awarded']) >= self.buddy_km_needed:
+            if self._get_award():
+                return WorkerResult.SUCCESS
+            return WorkerResult.ERROR
 
-   	def _should_run(self):
-   		if not self.buddy_list or self.buddy_list[0] == 'none':
-   			return False
-   		return True
+        return WorkerResult.SUCCESS
+
 
    	def _filter_pokemon(self):
    		pokemons = pokemons = inventory.pokemons().all().sort(key=lambda x: x.pokemon_id)
@@ -52,11 +58,15 @@ class BuddyPokemon(BaseTask):
 
     def _set_buddy(self, pokemon):
         response_dict = self.api.set_buddy_pokemon(pokemon_id=pokemon.unique_id)
-        result = response_dict['responses']['SET_BUDDY_POKEMON']['result']
+        try:
+            result = response_dict['responses']['SET_BUDDY_POKEMON']['result']
+        except KeyError:
+            return False
 
         if result == 1:
             updated_buddy = response_dict['responses']['SET_BUDDY_POKEMON']['updated_buddy']
-            ### Why need those
+            
+            ### Is it needed ??
             unique_id = updated_buddy.get('id', -1)
             start_km_walked = updated_buddy.get('start_km_walked', 0)
             last_km_awarded = updated_buddy.get('last_km_awarded', 0)
@@ -86,6 +96,46 @@ class BuddyPokemon(BaseTask):
             )
             return False
 
+    def _km_walked(self):
+        inv = inventory.jsonify_inventory()
+        km_walked = 0
+        for inv_data in inv:
+            inv_data = inv_data.get("inventory_item_data", {})
+            if "player_stats" in inv_data:
+                km_walked = inv_data.get("player_stats", {}).get("km_walked", 0)
+                break
+        return km_walked
 
+    def _get_pokemon(self, unique_id):
+        pokemons = inventory.pokemons().all()
+        for pokemon in pokemons:
+            if pokemon.unique_id == unique_id:
+                return pokemon
 
+    def _get_award(self):
+        response_dict = self.api.get_buddy_walked()
+        try:
+            success = response_dict['responses']['GET_BUDDY_WALKED']['SUCCESS']
+        except KeyError:
+            return False
+
+        if success:
+            family_id = response_dict['responses']['GET_BUDDY_WALKED']['family_candy_id']
+            candy_earned = response_dict['responses']['GET_BUDDY_WALKED']['candy_earned_count']
+
+            self.emit_event(
+                'buddy_candy_earned',
+                formated='{candy} {family} candy earned.',
+                data={
+                    'candy': candy_earned,
+                    'family': ## TO-DO
+                }
+            )
+            return True
+        else:
+            self.emit_event(
+                'buddy_candy_fail',
+                formated='Error trying to get candy from buddy.'
+            )
+            return False
 
