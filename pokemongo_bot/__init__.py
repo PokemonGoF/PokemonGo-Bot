@@ -67,6 +67,14 @@ class PokemonGoBot(object):
         """
         return self._player
 
+    @property
+    def stardust(self):
+        return filter(lambda y: y['name'] == 'STARDUST', self._player['currencies'])[0]['amount']
+
+    @stardust.setter
+    def stardust(self, value):
+        filter(lambda y: y['name'] == 'STARDUST', self._player['currencies'])[0]['amount'] = value
+
     def __init__(self, db, config):
 
         self.database = db
@@ -430,6 +438,7 @@ class PokemonGoBot(object):
             parameters=(
                 'pokemon',
                 'ncp', 'cp', 'iv', 'iv_display', 'exp',
+                'stardust',
                 'encounter_id',
                 'latitude',
                 'longitude',
@@ -500,10 +509,10 @@ class PokemonGoBot(object):
         self.event_manager.register_event(
             'egg_hatched',
             parameters=(
-                'pokemon',
-                'cp', 'iv', 'exp', 'stardust', 'candy'
+                'name', 'cp', 'ncp', 'iv_ads', 'iv_pct', 'exp', 'stardust', 'candy'
             )
         )
+        self.event_manager.register_event('egg_hatched_fail')
 
         # discard item
         self.event_manager.register_event(
@@ -631,6 +640,7 @@ class PokemonGoBot(object):
         self.event_manager.register_event('transfer_log')
         self.event_manager.register_event('pokestop_log')
         self.event_manager.register_event('softban_log')
+        self.event_manager.register_event('eggs_hatched_log')
 
         self.event_manager.register_event(
             'badges',

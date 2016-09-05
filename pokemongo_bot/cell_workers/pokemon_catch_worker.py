@@ -120,6 +120,17 @@ class PokemonCatchWorker(BaseTask):
 
         # skip ignored pokemon
         if not self._should_catch_pokemon(pokemon):
+            if not hasattr(self.bot,'skipped_pokemon'):
+                self.bot.skipped_pokemon = []
+                
+            # Check if pokemon already skipped and suppress alert if so
+            for skipped_pokemon in self.bot.skipped_pokemon:
+                if pokemon.pokemon_id == skipped_pokemon.pokemon_id and \
+                    pokemon.cp_exact == skipped_pokemon.cp_exact and \
+                    pokemon.ivcp == skipped_pokemon.ivcp:
+                    return WorkerResult.SUCCESS
+                    
+            self.bot.skipped_pokemon.append(pokemon)
             self.emit_event(
                 'pokemon_appeared',
                 formatted='Skip ignored {pokemon}! [CP {cp}] [Potential {iv}] [A/D/S {iv_display}]',
@@ -562,31 +573,48 @@ class PokemonCatchWorker(BaseTask):
                 pokemon.unique_id = response_dict['responses']['CATCH_POKEMON']['captured_pokemon_id']
                 self.bot.metrics.captured_pokemon(pokemon.name, pokemon.cp, pokemon.iv_display, pokemon.iv)
 
+                awards = response_dict['responses']['CATCH_POKEMON']['capture_award']
+                exp_gain, candy_gain, stardust_gain = self.extract_award(awards)
+
+                self.emit_event(
+                    'pokemon_caught',
+                    formatted='Captured {pokemon}! [CP {cp}] [NCP {ncp}] [Potential {iv}] [{iv_display}] ({caught_last_24_hour}/{daily_catch_limit}) [+{exp} exp] [+{stardust} stardust]',
+                    data={
+                        'pokemon': pokemon.name,
+                        'ncp': round(pokemon.cp_percent, 2),
+                        'cp': pokemon.cp,
+                        'iv': pokemon.iv,
+                        'iv_display': pokemon.iv_display,
+                        'exp': exp_gain,
+                        'stardust': stardust_gain,
+                        'encounter_id': self.pokemon['encounter_id'],
+                        'latitude': self.pokemon['latitude'],
+                        'longitude': self.pokemon['longitude'],
+                        'pokemon_id': pokemon.pokemon_id,
+                        'caught_last_24_hour': self.caught_last_24_hour + 1,
+                        'daily_catch_limit': self.daily_catch_limit
+                    }
+                )
+
+                inventory.pokemons().add(pokemon)
+                inventory.player().exp += exp_gain
+                self.bot.stardust += stardust_gain
+                candy = inventory.candies().get(pokemon.pokemon_id)
+                candy.add(candy_gain)
+
+                self.emit_event(
+                    'gained_candy',
+                    formatted='You now have {quantity} {type} candy!',
+                    data = {
+                        'quantity': candy.quantity,
+                        'type': candy.type,
+                    },
+                )
+
+                self.bot.softban = False
+
+
                 try:
-                    inventory.pokemons().add(pokemon)
-                    exp_gain = sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])  
-                    # update player's exp
-                    inventory.player().exp += exp_gain
-
-                    self.emit_event(
-                        'pokemon_caught',
-                        formatted='Captured {pokemon}! [CP {cp}] [NCP {ncp}] [Potential {iv}] [{iv_display}] ({caught_last_24_hour}/{daily_catch_limit}) [+{exp} exp]',
-                        data={
-                            'pokemon': pokemon.name,
-                            'ncp': round(pokemon.cp_percent, 2),
-                            'cp': pokemon.cp,
-                            'iv': pokemon.iv,
-                            'iv_display': pokemon.iv_display,
-                            'exp': exp_gain,
-                            'encounter_id': self.pokemon['encounter_id'],
-                            'latitude': self.pokemon['latitude'],
-                            'longitude': self.pokemon['longitude'],
-                            'pokemon_id': pokemon.pokemon_id,
-                            'caught_last_24_hour': self.caught_last_24_hour + 1,
-                            'daily_catch_limit': self.daily_catch_limit
-                        }
-
-                    )
                     with self.bot.database as conn:
                         c = conn.cursor()
                         c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='catch_log'")
@@ -623,20 +651,6 @@ class PokemonCatchWorker(BaseTask):
                 except IOError as e:
                     self.logger.info('[x] Error while opening location file: %s' % e)
 
-                candy = inventory.candies().get(pokemon.pokemon_id)
-                candy.add(self.get_candy_gained_count(response_dict))
-
-                self.emit_event(
-                    'gained_candy',
-                    formatted='You now have {quantity} {type} candy!',
-                    data = {
-                        'quantity': candy.quantity,
-                        'type': candy.type,
-                    },
-                )
-
-                self.bot.softban = False
-
             elif catch_pokemon_status == CATCH_STATUS_MISSED:
                 self.emit_event(
                     'pokemon_capture_failed',
@@ -649,11 +663,8 @@ class PokemonCatchWorker(BaseTask):
 
             break
 
-    def get_candy_gained_count(self, response_dict):
-        total_candy_gained = 0
-        for candy_gained in response_dict['responses']['CATCH_POKEMON']['capture_award']['candy']:
-            total_candy_gained += candy_gained
-        return total_candy_gained
+    def extract_award(self, awards):
+        return sum(awards['xp']), sum(awards['candy']), sum(awards['stardust'])
 
     def generate_spin_parameter(self, throw_parameters):
         spin_success_rate = self.catch_throw_parameters_spin_success_rate
