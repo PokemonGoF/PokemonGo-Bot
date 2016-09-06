@@ -27,7 +27,7 @@ class EvolvePokemon(BaseTask):
 
     def _validate_config(self):
         if isinstance(self.evolve_list, basestring):
-            self.evolve_list = [str(pokemon_name).strip().lower() for pokemon_name in self.evolve_list.split(',')]
+            self.evolve_list = [str(pokemon_name).strip().lower().replace(" ","") for pokemon_name in self.evolve_list.split(',')]
             
         if isinstance(self.donot_evolve_list, basestring):
             self.donot_evolve_list = [str(pokemon_name).strip().lower() for pokemon_name in self.donot_evolve_list.split(',')]
