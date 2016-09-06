@@ -919,6 +919,7 @@ class PokemonGoBot(object):
             level='info',
             formatted="Login successful."
         )
+        self.heartbeat()
 
     def get_encryption_lib(self):
         if _platform == "Windows" or _platform == "win32":
@@ -1306,6 +1307,8 @@ class PokemonGoBot(object):
             self.web_update_queue.put_nowait(True)  # do this outside of thread every tick
         except Queue.Full:
             pass
+
+        threading.Timer(self.heartbeat_threshold, self.heartbeat).start()
 
     def update_web_location_worker(self):
         while True:
