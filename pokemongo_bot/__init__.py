@@ -112,6 +112,7 @@ class PokemonGoBot(object):
         self.heartbeat_threshold = self.config.heartbeat_threshold
         self.heartbeat_counter = 0
         self.last_heartbeat = time.time()
+        self.hb_locked = False # lock hb on snip
 
         self.capture_locked = False  # lock catching while moving to VIP pokemon
 
@@ -1264,7 +1265,7 @@ class PokemonGoBot(object):
                               in self.fort_timeouts.iteritems()
                               if timeout >= now * 1000}
 
-        if now - self.last_heartbeat >= self.heartbeat_threshold:
+        if now - self.last_heartbeat >= self.heartbeat_threshold and not self.hb_locked:
             self.last_heartbeat = now
             request = self.api.create_request()
             request.get_player()
