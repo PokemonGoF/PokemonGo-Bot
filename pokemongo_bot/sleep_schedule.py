@@ -40,9 +40,10 @@ class SleepSchedule(object):
 
     def __init__(self, bot, config):
         self.bot = bot
+        self._last_index = -1
+        self._next_index = -1
         self._process_config(config)
         self._schedule_next_sleep()
-        self._calculate_current_sleep()
 
     def work(self):
         if self._should_sleep_now():
@@ -97,57 +98,51 @@ class SleepSchedule(object):
             self.entries.append(prepared)
 
     def _schedule_next_sleep(self):
-        self._next_sleep, self._next_duration, self._wake_up_at_location = self._get_next_sleep_schedule()
-        self.bot.event_manager.emit(
-            'next_sleep',
-            sender=self,
-            formatted="Next sleep at {time}, for a duration of {duration}",
-            data={
-                'time': str(self._next_sleep.strftime("%H:%M:%S")),
-                'duration': str(timedelta(seconds=self._next_duration))
-            }
-        )
+        self._next_sleep, self._next_duration, self._next_end, self._wake_up_at_location, sleep_now = self._get_next_sleep_schedule()
 
-    def _calculate_current_sleep(self):
-        self._current_sleep = self._next_sleep - timedelta(days=1)
-        current_duration = self._next_duration
-        self._current_end = self._current_sleep + timedelta(seconds = current_duration)
+        if not sleep_now:
+            self.bot.event_manager.emit(
+                'next_sleep',
+                sender=self,
+                formatted="Next sleep at {time}, for a duration of {duration}",
+                data={
+                    'time': str(self._next_sleep.strftime("%H:%M:%S")),
+                    'duration': str(timedelta(seconds=self._next_duration))
+                }
+            )
 
     def _should_sleep_now(self):
-        if datetime.now() >= self._next_sleep:
-            return True
-        if datetime.now() >= self._current_sleep and datetime.now() < self._current_end:
-            self._next_duration = (self._current_end - datetime.now()).total_seconds()
+        now = datetime.now()
+
+        if now >= self._next_sleep and now < self._next_end:
+            self._next_duration = (self._next_end - now).total_seconds()
             return True
 
         return False
 
     def _get_next_sleep_schedule(self):
-        now = datetime.now() + self.SCHEDULING_MARGIN
+        now = datetime.now() #+ self.SCHEDULING_MARGIN
 
         times = []
         for index in range(len(self.entries)):
             next_time = now.replace(hour=self.entries[index]['time'].hour, minute=self.entries[index]['time'].minute)
             next_time += timedelta(seconds=self._get_random_offset(self.entries[index]['time_random_offset']))
+            duration = self._get_next_duration(self.entries[index])
+            end_time = next_time + timedelta(seconds=duration)
+            location = self.entries[index]['wake_up_at_location'] if 'wake_up_at_location' in self.entries[index] else ''
 
-            # If sleep time is passed add one day
-            if next_time <= now:
+            # if current time is not in the current sleep range
+            if end_time <= now:
                 next_time += timedelta(days=1)
+            # if still within range, schedule sleep immediately
+            elif next_time <= now:
+                duration_left = (end_time - now).total_seconds()
+                return now, duration_left, end_time, location, True
 
-            times.append(next_time)
+            times.append((next_time, duration, end_time, location))
 
-        diffs = {}
-        for index in range(len(self.entries)):
-          diff = (times[index]-now).total_seconds()
-          if diff >= 0: diffs[index] = diff
-
-        closest = min(diffs.iterkeys(), key=lambda x: diffs[x])
-
-        next_time = times[closest]
-        next_duration = self._get_next_duration(self.entries[closest])
-        location = self.entries[closest]['wake_up_at_location'] if 'wake_up_at_location' in self.entries[closest] else ''
-
-        return next_time, next_duration, location
+        times.sort()
+        return times[0][0], times[0][1], times[0][2], times[0][3], False
 
     def _get_next_duration(self, entry):
         duration = entry['duration'] + self._get_random_offset(entry['duration_random_offset'])
@@ -183,3 +178,5 @@ class SleepSchedule(object):
             else:
                 sleep(self.LOG_INTERVAL_SECONDS)
                 sleep_to_go -= self.LOG_INTERVAL_SECONDS
+
+        self._last_index = self._next_index

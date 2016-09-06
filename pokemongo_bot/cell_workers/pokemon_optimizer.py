@@ -28,7 +28,6 @@ class PokemonOptimizer(BaseTask):
         self.max_pokemon_storage = inventory.get_pokemon_inventory_size()
         self.last_pokemon_count = 0
         self.pokemon_names = [p.name for p in inventory.pokemons().STATIC_DATA]
-        self.stardust_count = 0
         self.ongoing_stardust_count = 0
 
         pokemon_upgrade_cost_file = os.path.join(_base_dir, "data", "pokemon_upgrade_cost.json")
@@ -167,8 +166,7 @@ class PokemonOptimizer(BaseTask):
             setattr(pokemon, "dps_attack", pokemon.moveset.dps_attack)
             setattr(pokemon, "dps_defense", pokemon.moveset.dps_defense)
 
-        self.stardust_count = self.get_stardust_count()
-        self.ongoing_stardust_count = self.stardust_count
+        self.ongoing_stardust_count = self.bot.stardust
 
     def get_colorlist_names(self, names):
         whitelist_names = []
@@ -285,17 +283,18 @@ class PokemonOptimizer(BaseTask):
                 try_upgrade_all += try_upgrade
                 keep_all += keep
 
-            if len(senior_pids) < nb_branch:
-                # We did not get every combination yet = All other Pokemon are potentially good to keep
-                worst = other_family_list[-1]
-            else:
-                best = try_evolve_all + try_upgrade_all + keep_all
-                worst = self.sort_pokemon_list(best, rule)[-1]
+            if len(other_family_list) > 0:
+                if len(senior_pids) < nb_branch:
+                    # We did not get every combination yet = All other Pokemon are potentially good to keep
+                    worst = other_family_list[-1]
+                else:
+                    best = try_evolve_all + try_upgrade_all + keep_all
+                    worst = self.sort_pokemon_list(best, rule)[-1]
 
-            try_evolve, try_upgrade, keep = self.get_better_pokemon_for_rule(other_family_list, rule, worst, 12)
-            try_evolve_all += try_evolve
-            try_upgrade_all += try_upgrade
-            keep_all += keep
+                try_evolve, try_upgrade, keep = self.get_better_pokemon_for_rule(other_family_list, rule, worst, 12)
+                try_evolve_all += try_evolve
+                try_upgrade_all += try_upgrade
+                keep_all += keep
 
         return try_evolve_all, try_upgrade_all, keep_all
 
@@ -455,7 +454,7 @@ class PokemonOptimizer(BaseTask):
             for pokemon in xp:
                 self.evolve_pokemon(pokemon)
 
-        self.logger.info("Upgrading %s Pokemon [%s stardust]", len(upgrade), self.stardust_count)
+        self.logger.info("Upgrading %s Pokemon [%s stardust]", len(upgrade), self.bot.stardust)
 
         for pokemon in upgrade:
             self.upgrade_pokemon(pokemon)
@@ -609,7 +608,7 @@ class PokemonOptimizer(BaseTask):
 
             if self.config_upgrade and (not self.bot.config.test):
                 candy.consume(upgrade_candy_cost)
-                self.stardust_count -= upgrade_stardust_cost
+                self.bot.stardust -= upgrade_stardust_cost
 
             self.emit_event("pokemon_upgraded",
                             formatted="Upgraded {pokemon} [IV {iv}] [CP {cp}] [{candy} candies] [{stardust} stardust]",
@@ -617,7 +616,7 @@ class PokemonOptimizer(BaseTask):
                                   "iv": pokemon.iv,
                                   "cp": pokemon.cp,
                                   "candy": candy.quantity,
-                                  "stardust": self.stardust_count})
+                                  "stardust": self.bot.stardust})
 
             if self.config_upgrade and (not self.bot.config.test):
                 inventory.pokemons().remove(pokemon.unique_id)
@@ -628,7 +627,3 @@ class PokemonOptimizer(BaseTask):
                 action_delay(self.config_transfer_wait_min, self.config_transfer_wait_max)
 
         return True
-
-    def get_stardust_count(self):
-        response_dict = self.bot.api.get_player()
-        return response_dict.get("responses", {}).get("GET_PLAYER", {}).get("player_data", {}).get("currencies", [{}, {}])[1].get("amount", 0)
