@@ -1,13 +1,18 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 import difflib
 import itertools
 import json
 import math
 import os
+import random
+import time
 
 from pokemongo_bot import inventory
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.human_behaviour import sleep, action_delay
+from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.worker_result import WorkerResult
 
@@ -496,6 +501,7 @@ class PokemonOptimizer(BaseTask):
                     db.execute("INSERT INTO transfer_log (pokemon, iv, cp) VALUES (?, ?, ?)", (pokemon.name, pokemon.iv, pokemon.cp))
 
             action_delay(self.config_transfer_wait_min, self.config_transfer_wait_max)
+            self.bot.heartbeat()
 
         return True
 
@@ -521,6 +527,10 @@ class PokemonOptimizer(BaseTask):
             self.emit_event("used_lucky_egg",
                             formatted="Used lucky egg ({amount_left} left).",
                             data={"amount_left": lucky_egg.count})
+
+            self.sleep(1)
+            self.bot.heartbeat()
+
             return True
         elif result == ERROR_XP_BOOST_ALREADY_ACTIVE:
             self.emit_event("used_lucky_egg",
@@ -579,7 +589,7 @@ class PokemonOptimizer(BaseTask):
                 if db_result[0] == 1:
                     db.execute("INSERT INTO evolve_log (pokemon, iv, cp) VALUES (?, ?, ?)", (pokemon.name, pokemon.iv, pokemon.cp))
 
-            sleep(self.config_evolve_time, 0.1)
+            self.sleep(self.config_evolve_time)
 
         return True
 
@@ -627,9 +637,18 @@ class PokemonOptimizer(BaseTask):
                 inventory.pokemons().add(new_pokemon)
 
                 action_delay(self.config_transfer_wait_min, self.config_transfer_wait_max)
+                self.bot.heartbeat()
 
         return True
 
     def get_stardust_count(self):
         response_dict = self.bot.api.get_player()
         return response_dict.get("responses", {}).get("GET_PLAYER", {}).get("player_data", {}).get("currencies", [{}, {}])[1].get("amount", 0)
+
+    def sleep(self, t):
+        sleep_time = random.uniform(t * 0.9, t * 1.1)
+
+        while sleep_time > 0:
+            time.sleep(min(sleep_time, 1))
+            self.bot.heartbeat()
+            sleep_time -= 1
