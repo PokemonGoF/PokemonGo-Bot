@@ -184,7 +184,7 @@ class TelegramClass:
                         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
                         continue
 
-                    if self.config.get('password', None) == None and not self.master: # no auth provided in config
+                    if self.config.get('password', None) == None and (not hasattr(self, "master") or not self.master): # no auth provided in config
                         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="No password nor master configured in TelegramTask section, bot will not accept any commands")
                         continue
                     if re.match(r'^/login [^ ]+', update.message.text):
