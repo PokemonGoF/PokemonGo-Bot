@@ -24,6 +24,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 Author: tjado <https://github.com/tejado>
 """
+from __future__ import unicode_literals
 
 import argparse
 import codecs
@@ -32,8 +33,6 @@ import logging
 import os
 import ssl
 import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
 import time
 import signal
 import string
@@ -128,10 +127,12 @@ def main():
             return f.read()[:8]
 
     try:
-        logger.info('PokemonGO Bot v1.0')
-        logger.info('commit: ' + get_commit_hash())
+        codecs.register(lambda name: codecs.lookup("utf-8") if name == "cp65001" else None)
         sys.stdout = codecs.getwriter('utf8')(sys.stdout)
         sys.stderr = codecs.getwriter('utf8')(sys.stderr)
+
+        logger.info('PokemonGO Bot v1.0')
+        logger.info('commit: ' + get_commit_hash())
 
         config, config_file = init_config()
         if not config:
