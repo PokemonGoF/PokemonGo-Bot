@@ -229,13 +229,13 @@ class UpdateLiveStats(BaseTask):
             if platform == "linux" or platform == "linux2" or platform == "cygwin":
                 stdout.write("\x1b]2;{}\x07".format(title))
                 stdout.flush()
-            elif platform == "darwin":
+            elif platform == "darwin" or platform == "freebsd10":
                 stdout.write("\033]0;{}\007".format(title))
                 stdout.flush()
             elif platform == "win32":
                 ctypes.windll.kernel32.SetConsoleTitleA(title.encode())
             else:
-                raise RuntimeError("unsupported platform '{}'".format(platform))
+                self.bot.logger.warn("Unable to set window title. OS {} not supported.".format(platform))
         except AttributeError:
             self.emit_event(
                 'log_stats',

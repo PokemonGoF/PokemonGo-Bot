@@ -6,7 +6,9 @@ from tests import FakeBot
 
 
 class SleepScheculeTestCase(unittest.TestCase):
-    config = [{'time': '12:20', 'duration': '01:05', 'time_random_offset': '00:05', 'duration_random_offset': '00:05'}]
+    config = [{'time': '12:20', 'duration': '01:05', 'time_random_offset': '00:05', 'duration_random_offset': '00:05'},
+            {'time': '15:00', 'duration': '03:00', 'time_random_offset': '00:00', 'duration_random_offset': '00:00'}
+            ]
 
     def setUp(self):
         self.bot = FakeBot()
@@ -30,20 +32,47 @@ class SleepScheculeTestCase(unittest.TestCase):
         self.assertGreaterEqual(next_time, from_date)
         self.assertLessEqual(next_time, to_date)
 
+    @unittest.skip("Will rewrite test later")
     @patch('pokemongo_bot.sleep_schedule.datetime')
     def test_get_next_time_called_near_activation_time(self, mock_datetime):
-        mock_datetime.now.return_value = datetime(year=2016, month=8, day=1, hour=12, minute=25)
+        pass
+
+    @patch('pokemongo_bot.sleep_schedule.datetime')
+    def test_get_next_time_called_before_activation_time(self, mock_datetime):
+        mock_datetime.now.return_value = datetime(year=2016, month=8, day=1, hour=11, minute=25)
 
         next = self.worker._get_next_sleep_schedule()[0]
-        from_date = datetime(year=2016, month=8, day=02, hour=12, minute=15)
-        to_date = datetime(year=2016, month=8, day=02, hour=12, minute=25)
+        from_date = datetime(year=2016, month=8, day=01, hour=12, minute=15)
+        to_date = datetime(year=2016, month=8, day=01, hour=12, minute=25)
 
         self.assertGreaterEqual(next, from_date)
         self.assertLessEqual(next, to_date)
 
     @patch('pokemongo_bot.sleep_schedule.datetime')
+    def test_get_next_time_called_within_sleep_range(self, mock_datetime):
+        now = datetime(year=2016, month=8, day=1, hour=12, minute=25)
+        mock_datetime.now.return_value = now
+
+        next = self.worker._get_next_sleep_schedule()[0]
+
+        self.assertEqual(next, now)
+
+    @patch('pokemongo_bot.sleep_schedule.datetime')
+    def test_get_next_time_called_within_sleep_range_2(self, mock_datetime):
+        now = datetime(year=2016, month=8, day=1, hour=17, minute=00)
+        mock_datetime.now.return_value = now
+
+        next, duration, end_time, _, _ = self.worker._get_next_sleep_schedule()
+        expected_duration = 3600
+        expected_endtime = datetime(year=2016, month=8, day=1, hour=18, minute=00)
+
+        self.assertEqual(next, now)
+        self.assertEqual(duration, expected_duration)
+        self.assertEqual(end_time, expected_endtime)
+
+    @patch('pokemongo_bot.sleep_schedule.datetime')
     def test_get_next_time_called_when_this_days_time_passed(self, mock_datetime):
-        mock_datetime.now.return_value = datetime(year=2016, month=8, day=1, hour=14, minute=0)
+        mock_datetime.now.return_value = datetime(year=2016, month=8, day=1, hour=19, minute=0)
 
         next = self.worker._get_next_sleep_schedule()[0]
         from_date = datetime(year=2016, month=8, day=02, hour=12, minute=15)

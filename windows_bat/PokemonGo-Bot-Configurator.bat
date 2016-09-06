@@ -146,7 +146,6 @@ SET /p SOME_LOCATION="What's the location you want to search ?: "
 ECHO.    "location": "%SOME_LOCATION%",>>%auth%
 ECHO.
 ECHO.    "favorite_locations":[>>%auth%
-ECHO.        {"name": "Milan", "coords": "45.472849,9.177567"}>>%auth%
 ECHO.
 ECHO.Adding Favorite Locations....
 ECHO.
@@ -164,20 +163,32 @@ goto :eof
 
 
 :morefav
-SET _answer=
-SET name=
-SET coords=
 ECHO.
-SET /p _answer="Do you want to add more favorite locations (Y/N) ?: "
-IF "%_answer%" == "y" goto :favorite
+SET /p _answer="Do you want to add a favorite location (Y/N)?: "
+IF "%_answer%" == "y" goto :choice1
 IF "%_answer%" == "n" goto :eof
-:favorite
+:choice1
 ECHO.
 ECHO.
 SET /p name="What City do you want to add ?: "
 SET /p coords="What coordinates has that City ? (example: 45.472849,9.177567 ): "
-ECHO.        {"name": "%name%", "coords": "%coords%"}>>%auth%
-goto:morefav
+ECHO.
+ECHO.
+:choice2
+ECHO.
+ECHO.
+SET /p _answer2="Do you want to add more favorite locations (Y/N)?: "
+IF "%_answer2%" == "y" ECHO.        {"name": "%name%", "coords": "%coords%"},>>%auth%&goto :favorite
+IF "%_answer2%" == "n" ECHO.        {"name": "%name%", "coords": "%coords%"}>>%auth%&goto :eof
+:favorite
+SET _answer2=
+SET name=
+SET coords=
+ECHO.
+ECHO.
+SET /p name="What City do you want to add ?: "
+SET /p coords="What coordinates has that City ? (example: 45.472849,9.177567 ): "
+goto:choice2
 
 :UserData
 ECHO.

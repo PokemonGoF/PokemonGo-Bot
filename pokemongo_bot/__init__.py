@@ -67,6 +67,14 @@ class PokemonGoBot(object):
         """
         return self._player
 
+    @property
+    def stardust(self):
+        return filter(lambda y: y['name'] == 'STARDUST', self._player['currencies'])[0]['amount']
+
+    @stardust.setter
+    def stardust(self, value):
+        filter(lambda y: y['name'] == 'STARDUST', self._player['currencies'])[0]['amount'] = value
+
     def __init__(self, db, config):
 
         self.database = db
@@ -430,6 +438,7 @@ class PokemonGoBot(object):
             parameters=(
                 'pokemon',
                 'ncp', 'cp', 'iv', 'iv_display', 'exp',
+                'stardust',
                 'encounter_id',
                 'latitude',
                 'longitude',
