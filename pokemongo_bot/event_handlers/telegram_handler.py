@@ -279,10 +279,10 @@ class TelegramDBInit:
     def initDBobject(self, name, sql):
         res = self.conn.execute("select sql,type from sqlite_master where name = ?", [name]).fetchone() # grab objects definition
 
-        if len(res) > 0 and res[0] != sql: # object exists and sql not matching
+        if res and len(res) > 0 and res[0] != sql: # object exists and sql not matching
             self.conn.execute("drop {} {}".format(res[1], name)) # drop it
 
-        if len(res) == 0 or res[0] != sql: # object missing or sql not matching
+        if res is None or len(res) == 0 or res[0] != sql: # object missing or sql not matching
             self.conn.execute(sql)
         return
 
