@@ -61,6 +61,9 @@ class MyMQTTClass:
 
     def connect_to_mqtt(self):
         try:
+            if DEBUG_ON:
+                print 'connect again'
+
             self._mqttc = mqtt.Client(None)
             self._mqttc.on_message = self.mqtt_on_message
             self._mqttc.on_connect = self.mqtt_on_connect
@@ -94,6 +97,9 @@ class SocialHandler(EventHandler):
     def handle_event(self, event, sender, level, formatted_msg, data):
         if self.mqttc is None:
             try:
+                if DEBUG_ON:
+                    print 'need connect'
+
                 self.mqttc = MyMQTTClass(self.bot, self.bot.config.client_id)
                 self.mqttc.connect_to_mqtt()
                 self.bot.mqttc = self.mqttc
