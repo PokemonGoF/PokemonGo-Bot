@@ -68,9 +68,12 @@ class MyMQTTClass:
             return
     def run(self):
         while True:
-            self._mqttc.loop_forever(timeout=30.0, max_packets=100, retry_first_connection=False)
-            print 'Oops disconnected ?'
-            time.sleep(20)
+            try:
+                self._mqttc.loop_forever(timeout=30.0, max_packets=100, retry_first_connection=False)
+                print 'Oops disconnected ?'
+                time.sleep(20)
+            except UnicodeDecodeError:
+                time.sleep(1)
 class SocialHandler(EventHandler):
     def __init__(self, bot):
         self.bot = bot

@@ -33,7 +33,6 @@ from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler, Colore
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from pokemongo_bot.base_dir import _base_dir
-from pokemongo_bot.datastore import _init_database, Datastore
 from worker_result import WorkerResult
 from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
 from inventory import init_inventory, player
@@ -46,7 +45,7 @@ class FileIOException(Exception):
     pass
 
 
-class PokemonGoBot(Datastore):
+class PokemonGoBot(object):
     @property
     def position(self):
         return self.api.actual_lat, self.api.actual_lng, self.api.actual_alt
@@ -68,10 +67,17 @@ class PokemonGoBot(Datastore):
         """
         return self._player
 
-    def __init__(self, config):
+    @property
+    def stardust(self):
+        return filter(lambda y: y['name'] == 'STARDUST', self._player['currencies'])[0]['amount']
 
-        # Database connection MUST be setup before migrations will work
-        self.database = _init_database('/data/{}.db'.format(config.username))
+    @stardust.setter
+    def stardust(self, value):
+        filter(lambda y: y['name'] == 'STARDUST', self._player['currencies'])[0]['amount'] = value
+
+    def __init__(self, db, config):
+
+        self.database = db
 
         self.config = config
         super(PokemonGoBot, self).__init__()
@@ -418,6 +424,13 @@ class PokemonGoBot(Datastore):
                 'pokemon_id'
             )
         )
+        self.event_manager.register_event(
+            'vanish_limit_reached',
+            parameters=(
+                'duration',
+                'resume'
+            )
+        )
         self.event_manager.register_event('pokemon_not_in_range')
         self.event_manager.register_event('pokemon_inventory_full')
         self.event_manager.register_event(
@@ -425,6 +438,7 @@ class PokemonGoBot(Datastore):
             parameters=(
                 'pokemon',
                 'ncp', 'cp', 'iv', 'iv_display', 'exp',
+                'stardust',
                 'encounter_id',
                 'latitude',
                 'longitude',
@@ -446,6 +460,7 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event('vip_pokemon')
         self.event_manager.register_event('gained_candy', parameters=('quantity', 'type'))
         self.event_manager.register_event('catch_limit')
+        self.event_manager.register_event('spin_limit')
         self.event_manager.register_event('show_best_pokemon', parameters=('pokemons'))
 
         # level up stuff
@@ -494,10 +509,10 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event(
             'egg_hatched',
             parameters=(
-                'pokemon',
-                'cp', 'iv', 'exp', 'stardust', 'candy'
+                'name', 'cp', 'ncp', 'iv_ads', 'iv_pct', 'exp', 'stardust', 'candy'
             )
         )
+        self.event_manager.register_event('egg_hatched_fail')
 
         # discard item
         self.event_manager.register_event(
@@ -619,11 +634,13 @@ class PokemonGoBot(Datastore):
         )
         # database shit
         self.event_manager.register_event('catch_log')
+        self.event_manager.register_event('vanish_log')
         self.event_manager.register_event('evolve_log')
         self.event_manager.register_event('login_log')
         self.event_manager.register_event('transfer_log')
         self.event_manager.register_event('pokestop_log')
         self.event_manager.register_event('softban_log')
+        self.event_manager.register_event('eggs_hatched_log')
 
         self.event_manager.register_event(
             'badges',
@@ -636,6 +653,11 @@ class PokemonGoBot(Datastore):
         self.event_manager.register_event(
             'forts_found',
             parameters=('json')
+        )
+        # UseIncense
+        self.event_manager.register_event(
+            'use_incense',
+            parameters=('type', 'incense_count')
         )
 
     def tick(self):
