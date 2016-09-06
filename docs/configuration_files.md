@@ -1000,8 +1000,9 @@ Bot answer on command '/info' self stats.
 ### Options
 
 * `telegram_token` : bot token (getting [there](https://core.telegram.org/bots#6-botfather) - one token per bot)
-* `master` : id (without quotes) of bot owner, who will get alerts and may issue commands.
+* `master` : id (without quotes) of bot owner, who will get alerts and may issue commands or a (case-sensitive!) user name.
 * `alert_catch` : dict of rules pokemons catch.
+* `password` : a password to be used to authenticate to the bot
 
 The bot will only alert and respond to a valid master. If you're unsure what this is, send the bot a message from Telegram and watch the log to find out.
 
@@ -1016,7 +1017,8 @@ The bot will only alert and respond to a valid master. If you're unsure what thi
         "alert_catch": {
           "all": {"operator": "and", "cp": 1300, "iv": 0.95},
           "Snorlax": {"operator": "or", "cp": 900, "iv": 0.9}
-        }
+        },
+        "password": "alwoefhq348"
     }
 }
 ```
