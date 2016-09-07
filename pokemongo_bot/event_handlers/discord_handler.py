@@ -8,6 +8,7 @@ import discord_simple
 import thread
 import re
 from pokemongo_bot.datastore import Datastore
+from pokemongo_bot import inventory
 import pprint
 
 
@@ -31,15 +32,7 @@ class DiscordClass:
         self._dbot = discord_simple.Bot(self.bot.config.discord_token,on_message=self.on_message)
 
     def _get_player_stats(self):
-        web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
-        try:
-            with open(web_inventory, "r") as infile:
-                json_inventory = json.load(infile)
-        except ValueError as exception:
-            self.bot.logger.info('[x] Error while opening inventory file for read: %s' % exception)
-            json_inventory = []
-        except:
-            raise FileIOException("Unexpected error reading from {}".format(web_inventory))
+        json_inventory = inventory.jsonify_inventory()
         return next((x["inventory_item_data"]["player_stats"]
                      for x in json_inventory
                      if x.get("inventory_item_data", {}).get("player_stats", {})),
@@ -78,7 +71,7 @@ class DiscordClass:
 
     def run(self):
       self._dbot.forever_loop()
-
+      self = None
 
 class DiscordHandler(EventHandler):
     def __init__(self, bot, config):
