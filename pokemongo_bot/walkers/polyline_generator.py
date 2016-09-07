@@ -6,7 +6,7 @@ import math
 import polyline
 import requests
 import numpy as np
-from scipy.spatial import KDTree
+from geopy.distance import great_circle
 
 def distance(point1, point2):
     return Geodesic.WGS84.Inverse(point1[0], point1[1], point2[0], point2[1])["s12"]  # @UndefinedVariable
@@ -104,10 +104,6 @@ class Polyline(object):
         self._elevation_at_point = dict((tuple(x['location'].values()),
                                          x['elevation']) for x in
                                         self._elevation_response['results'])
-        if self._elevation_at_point:
-            self._elevation_kdtree = KDTree(self._elevation_at_point.keys())
-        else:
-            self._elevation_kdtree = None
 
     def _get_directions_points(self):
         points = []
@@ -139,22 +135,8 @@ class Polyline(object):
     def get_alt(self, at_point=None):
         if at_point is None:
             at_point = self._last_pos
-        if self._elevation_kdtree:
-            p1, p2 = np.array(self._elevation_at_point.keys())[self._elevation_kdtree.query(at_point, k=2)[1]]
-            return self._get_relative_hight(at_point, tuple(p1), tuple(p2))
-        else:
-            return None
-
-
-    def _get_relative_hight(self, point, p1, p2):
-        ep1 = self._elevation_at_point[p1]
-        ep2 = self._elevation_at_point[p2]
-        hdelta = ep2 - ep1
-        distance_p1_p2 = distance(p1, p2)
-        distance_to_p1 = distance(p1, point)
-        distance_to_p2 = distance(p2, point)
-        elevation = ((math.pow(distance_p1_p2,2) + math.pow(distance_to_p1,2) - math.pow(distance_to_p2,2)) * hdelta)/ (3 * distance_p1_p2) + ep1
-        return elevation
+        
+        return sorted([(great_circle(at_point, k).meters, v) for k, v in self._elevation_at_point.items()])[0][1]
 
     def get_total_distance(self):
         return math.ceil(sum([distance(*x) for x in self._get_walk_steps()]))

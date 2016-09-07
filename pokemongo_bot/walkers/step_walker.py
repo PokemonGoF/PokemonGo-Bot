@@ -82,6 +82,6 @@ class StepWalker(object):
 
         next_lat = direct["lat2"]
         next_lng = direct["lon2"]
-        next_alt = dest_alt + random_alt_delta()
+        next_alt = origin_alt + (travel / total_distance) * (dest_alt - origin_alt) + random_alt_delta()
 
         return next_lat, next_lng, next_alt

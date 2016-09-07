@@ -28,7 +28,6 @@ class TestPolylineWalker(unittest.TestCase):
         self.patcherSleep.start()
 
         self.bot = MagicMock()
-        self.bot.position = [47.1706378, 8.5167405, 0]
         self.bot.api = MagicMock()
 
         # let us get back the position set by the PolylineWalker
@@ -58,6 +57,8 @@ class TestPolylineWalker(unittest.TestCase):
             ), json=ex_elevations, status_code=200)
             self.polyline = PolylineObjectHandler.cached_polyline(ex_orig, ex_dest, ex_speed)
 
+        self.bot.position = [ex_orig[0], ex_orig[1], self.polyline.get_alt(ex_orig)]
+
     def tearDown(self):
         self.bot.position = [0, 0, 0]
         self.patcherSleep.stop()
@@ -75,7 +76,7 @@ class TestPolylineWalker(unittest.TestCase):
         walk_max = self.bot.config.walk_max
         walk_min = self.bot.config.walk_min
         speed = 0.24
-        precision=0.0
+        precision = 0.0
         dlat = 47.17064
         dlng = 8.51674
 
@@ -107,7 +108,7 @@ class TestPolylineWalker(unittest.TestCase):
         walk_max = self.bot.config.walk_max
         walk_min = self.bot.config.walk_min
         speed = 0.24
-        precision=2.5
+        precision = 2.5
         dlat = 47.17064
         dlng = 8.51674
 
@@ -139,7 +140,7 @@ class TestPolylineWalker(unittest.TestCase):
         walk_max = self.bot.config.walk_max
         walk_min = self.bot.config.walk_min
         speed = 166.8285172348795
-        precision=0.0
+        precision = 0.0
         dlat = 47.17022
         dlng = 8.51789
 
@@ -278,7 +279,7 @@ class TestPolylineWalker(unittest.TestCase):
         self.assertFalse(finishedWalking, 'step should return False')
         distance = Geodesic.WGS84.Inverse(ex_orig[0], ex_orig[1], self.bot.position[0], self.bot.position[1])["s12"]
         self.assertTrue(0.0 <= distance <= (pw.precision + pw.epsilon))
-        self.assertTrue(altitude -1 <= self.bot.position[2] <= altitude + 1)
+        self.assertTrue(altitude - 1 <= self.bot.position[2] <= altitude + 1)
 
         self.bot.config.walk_max = walk_max
         self.bot.config.walk_min = walk_min
