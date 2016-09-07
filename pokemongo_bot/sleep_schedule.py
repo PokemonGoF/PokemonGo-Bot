@@ -58,10 +58,14 @@ class SleepSchedule(object):
                     self.bot.wake_location = wake_up_at_location
             if hasattr(self.bot, 'api'): self.bot.login() # Same here
 
-    def _time_fmt(self, seconds):
-       h, m = divmod(seconds, 3600)
-       m, s = divmod(m, 60)
-       ret = "%02d:%02d:%02d" % (h, m, s)
+    def _time_fmt(self, value):
+       ret = ""
+       if isinstance(value, datetime):
+           ret = value.strftime("%H:%M:%S")
+       elif isinstance(value, (int, float)):
+           h, m = divmod(value, 3600)
+           m, s = divmod(m, 60)
+           ret = "%02d:%02d:%02d" % (h, m, s)
        return ret
 
 
@@ -113,7 +117,7 @@ class SleepSchedule(object):
                 sender=self,
                 formatted="Next sleep at {time}, for a duration of {duration}",
                 data={
-                    'time': self._next_sleep.strftime("%H:%M:%S"),
+                    'time': self._time_fmt(self._next_sleep),
                     'duration': self._time_fmt(self._next_duration)
                 }
             )
@@ -133,7 +137,7 @@ class SleepSchedule(object):
                 sender=self,
                 formatted="Next sleep at {time}, for a duration of {duration}",
                 data={
-                    'time': self._next_sleep.strftime("%H:%M:%S"),
+                    'time': self._time_fmt(self._next_sleep),
                     'duration': self._time_fmt(self._next_duration)
                 }
             )
@@ -201,7 +205,7 @@ class SleepSchedule(object):
         sleep_hms = self._time_fmt(self._next_duration)
 
         now = datetime.now()
-        wake = (now + timedelta(seconds=sleep_to_go)).strftime("%H:%M:%S")
+        wake = self._time_fmt(now + timedelta(seconds=sleep_to_go))
 
         self.bot.event_manager.emit(
             'bot_sleep',
