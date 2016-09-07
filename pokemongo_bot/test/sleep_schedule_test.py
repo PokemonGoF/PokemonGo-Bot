@@ -13,6 +13,7 @@ class SleepScheculeTestCase(unittest.TestCase):
     def setUp(self):
         self.bot = FakeBot()
         self.worker = SleepSchedule(self.bot, self.config)
+        self.worker._last_reminder = datetime.now()
 
     def test_config(self):
         self.assertEqual(self.worker.entries[0]['time'].hour, 12)
