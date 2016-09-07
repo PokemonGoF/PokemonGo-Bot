@@ -35,11 +35,12 @@ class SleepSchedule(object):
     wake_up_at_location: (lat, long | lat, long, alt | "") the location at which the bot wake up 
     *Note that an empty string ("") will not change the location*.    """
 
-    LOG_INTERVAL_SECONDS = 600
-    SCHEDULING_MARGIN = timedelta(minutes=10)    # Skip if next sleep is RESCHEDULING_MARGIN from now
+    SCHEDULING_MARGIN = timedelta(minutes=10)    # Skip if next sleep is SCHEDULING_MARGIN from now
 
     def __init__(self, bot, config):
         self.bot = bot
+        self._last_reminder = datetime.now()
+        self._reminder_interval = self.bot.config.sleep_reminder_interval
         self._last_index = -1
         self._next_index = -1
         self._process_config(config)
@@ -56,6 +57,12 @@ class SleepSchedule(object):
                 else:
                     self.bot.wake_location = wake_up_at_location
             if hasattr(self.bot, 'api'): self.bot.login() # Same here
+
+    def _time_fmt(self, seconds):
+       h, m = divmod(seconds, 3600)
+       m, s = divmod(m, 60)
+       ret = "%02d:%02d:%02d" % (h, m, s)
+       return ret
 
 
     def _process_config(self, config):
@@ -106,10 +113,11 @@ class SleepSchedule(object):
                 sender=self,
                 formatted="Next sleep at {time}, for a duration of {duration}",
                 data={
-                    'time': str(self._next_sleep.strftime("%H:%M:%S")),
-                    'duration': str(timedelta(seconds=self._next_duration))
+                    'time': self._next_sleep.strftime("%H:%M:%S"),
+                    'duration': self._time_fmt(self._next_duration)
                 }
             )
+            self._last_reminder = datetime.now()
 
     def _should_sleep_now(self):
         now = datetime.now()
@@ -118,31 +126,66 @@ class SleepSchedule(object):
             self._next_duration = (self._next_end - now).total_seconds()
             return True
 
+        diff = now - self._last_reminder
+        if (diff.total_seconds() >= self._reminder_interval):
+            self.bot.event_manager.emit(
+                'next_sleep',
+                sender=self,
+                formatted="Next sleep at {time}, for a duration of {duration}",
+                data={
+                    'time': self._next_sleep.strftime("%H:%M:%S"),
+                    'duration': self._time_fmt(self._next_duration)
+                }
+            )
+            self._last_reminder = now
+
         return False
 
     def _get_next_sleep_schedule(self):
-        now = datetime.now() #+ self.SCHEDULING_MARGIN
+        now = datetime.now()
 
         times = []
         for index in range(len(self.entries)):
             next_time = now.replace(hour=self.entries[index]['time'].hour, minute=self.entries[index]['time'].minute)
             next_time += timedelta(seconds=self._get_random_offset(self.entries[index]['time_random_offset']))
-            duration = self._get_next_duration(self.entries[index])
-            end_time = next_time + timedelta(seconds=duration)
+
+            next_duration = self._get_next_duration(self.entries[index])
+
+            next_end = next_time + timedelta(seconds=next_duration)
+
+            prev_day_time = next_time - timedelta(days=1)
+            prev_day_end = next_end - timedelta(days=1)
+
             location = self.entries[index]['wake_up_at_location'] if 'wake_up_at_location' in self.entries[index] else ''
 
-            # if current time is not in the current sleep range
-            if end_time <= now:
+            diff = next_time - now
+
+            # Edge case if sleep time has started previous day
+            if (prev_day_time <= now and now < prev_day_end):
+                self._next_index = index
+                return prev_day_time, next_duration, prev_day_end, location, True
+            # If sleep time is passed or time to sleep less than SCHEDULING_MARGIN then add one day
+            elif (next_time <= now and now > next_end) or (diff > timedelta(0) and diff < self.SCHEDULING_MARGIN):
                 next_time += timedelta(days=1)
-            # if still within range, schedule sleep immediately
-            elif next_time <= now:
-                duration_left = (end_time - now).total_seconds()
-                return now, duration_left, end_time, location, True
+                next_end += timedelta(days=1)
+                diff = next_time - now
+            # If now is sleeping time
+            elif next_time <= now and now < next_end:
+                if index == self._last_index: # If it is still the same sleep entry, but now < next_end because of random offset
+                    next_time += timedelta(days=1)
+                    next_end += timedelta(days=1)
+                    diff = next_time - now
+                else:
+                    self._next_index = index
+                    return next_time, next_duration, next_end, location, True
 
-            times.append((next_time, duration, end_time, location))
+            prepared = {'index': index, 'time': next_time, 'duration': next_duration, 'end': next_end, 'location': location, 'diff': diff}
+            times.append(prepared)
 
-        times.sort()
-        return times[0][0], times[0][1], times[0][2], times[0][3], False
+        closest = min(times, key=lambda x: x['diff'])
+        self._next_index = closest['index']
+
+        return closest['time'], closest['duration'], closest['end'], closest['location'], False
 
     def _get_next_duration(self, entry):
         duration = entry['duration'] + self._get_random_offset(entry['duration_random_offset'])
@@ -155,12 +198,10 @@ class SleepSchedule(object):
     def _sleep(self):
         sleep_to_go = self._next_duration
 
-        sleep_m, sleep_s = divmod(sleep_to_go, 60)
-        sleep_h, sleep_m = divmod(sleep_m, 60)
-        sleep_hms = '%02d:%02d:%02d' % (sleep_h, sleep_m, sleep_s)
+        sleep_hms = self._time_fmt(self._next_duration)
 
         now = datetime.now()
-        wake = str(now + timedelta(seconds=sleep_to_go))
+        wake = (now + timedelta(seconds=sleep_to_go)).strftime("%H:%M:%S")
 
         self.bot.event_manager.emit(
             'bot_sleep',
@@ -171,12 +212,6 @@ class SleepSchedule(object):
                 'wake': wake
             }
         )
-        while sleep_to_go > 0:
-            if sleep_to_go < self.LOG_INTERVAL_SECONDS:
-                sleep(sleep_to_go)
-                sleep_to_go = 0
-            else:
-                sleep(self.LOG_INTERVAL_SECONDS)
-                sleep_to_go -= self.LOG_INTERVAL_SECONDS
 
+        sleep(sleep_to_go)
         self._last_index = self._next_index
