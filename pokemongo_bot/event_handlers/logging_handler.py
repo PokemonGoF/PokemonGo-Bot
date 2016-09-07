@@ -20,4 +20,7 @@ class LoggingHandler(EventHandler):
             formatted_msg = '[{}] {}'.format(event, formatted_msg)
 
         logger = logging.getLogger(type(sender).__name__)
-        getattr(logger, level)(formatted_msg.encode(sys.stdout.encoding, "replace").decode("utf-8"))
+        try:
+            getattr(logger, level)(formatted_msg.encode(sys.stdout.encoding, "replace").decode("utf-8"))
+        except UnicodeDecodeError:
+            getattr(logger, level)(formatted_msg)
