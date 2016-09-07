@@ -406,10 +406,7 @@ class TelegramHandler(EventHandler):
                     else:
                         return
             elif event == 'egg_hatched':
-                try:
-                    msg = "Egg hatched with a {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
-                except KeyError:
-                    return
+                msg = "Egg hatched with a {} CP: {}, IV: {}".format(data["name"], data["cp"], data["iv"])
             elif event == 'bot_sleep':
                 msg = "I am too tired, I will take a sleep till {}.".format(data["wake"])
             elif event == 'catch_limit':
