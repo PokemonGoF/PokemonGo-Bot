@@ -175,7 +175,7 @@ class TelegramClass:
                             "/info - info about bot",
                             "/login <password> - authenticate with the bot; once authenticated, your ID will be registered with the bot and survive bot restarts",
                             "/logout - remove your ID from the 'authenticated' list",
-                            "/sub <event_name> [<parameters>] - subscribe to event_name, with optional parameters, event_name=all will subscribe to ALL events (LOTS of output!)",
+                            "/sub <event_name> [<parameters>] - subscribe to event_name, with optional parameters, event name=all will subscribe to ALL events (LOTS of output!)",
                             "/unsub <event_name> [<parameters>] - unsubscribe from event_name; parameters must match the /sub parameters",
                             "/unsub everything - will remove all subscriptions for this uid",
                             "/showsubs - show current subscriptions",
@@ -217,13 +217,16 @@ class TelegramClass:
                         self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=(", ".join(self.bot.event_manager._registered_events.keys())))
                         continue
                     if update.message.text == "/logout":
+                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=("Logged out."))
                         self.deauthenticate(update)
                         continue
                     if re.match(r'^/sub ', update.message.text):
                         self.chsub(update.message.text, update.message.chat_id)
+                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=("Subscriptions updated."))
                         continue
                     if re.match(r'^/unsub ', update.message.text):
                         self.chsub(update.message.text, update.message.chat_id)
+                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=("Subscriptions updated."))
                         continue
                     if re.match(r'^/showsubs', update.message.text):
                         self.showsubs(update.message.chat_id)
