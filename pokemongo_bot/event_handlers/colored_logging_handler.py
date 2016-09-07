@@ -39,6 +39,7 @@ class ColoredLoggingHandler(EventHandler):
         'log_stats':                         'magenta',
         'lucky_egg_error':                   'red',
         'move_to_map_pokemon_encounter':     'green',
+        'move_to_map_pokemon_teleport_to':   'yellow',
         'move_to_map_pokemon_fail':          'red',
         'next_egg_incubates':                'yellow',
         'next_sleep':                        'green',
