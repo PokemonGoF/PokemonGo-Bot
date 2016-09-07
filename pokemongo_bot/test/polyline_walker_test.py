@@ -97,7 +97,6 @@ class TestPolylineWalker(unittest.TestCase):
         distance = Geodesic.WGS84.Inverse(dlat, dlng, self.bot.position[0], self.bot.position[1])["s12"]
         self.assertTrue(0.0 <= distance <= (pw.precision + pw.epsilon))
         self.polyline._last_pos = (dlat, dlng)
-        print("ALTITUDE [polyline: {} bot: {}]".format(self.polyline.get_alt(), self.bot.position[2]))
         self.assertTrue(abs(self.polyline.get_alt() - self.bot.position[2]) <= 1)
 
         self.bot.config.walk_max = walk_max
@@ -130,7 +129,6 @@ class TestPolylineWalker(unittest.TestCase):
         distance = Geodesic.WGS84.Inverse(dlat, dlng, self.bot.position[0], self.bot.position[1])["s12"]
         self.assertTrue(0.0 <= distance <= (pw.precision + pw.epsilon))
         self.polyline._last_pos = (dlat, dlng)
-        print("ALTITUDE [polyline: {} bot: {}]".format(self.polyline.get_alt(), self.bot.position[2]))
         self.assertTrue(abs(self.polyline.get_alt() - self.bot.position[2]) <= 1)
 
         self.bot.config.walk_max = walk_max
