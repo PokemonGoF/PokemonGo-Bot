@@ -29,7 +29,7 @@ from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
 from sleep_schedule import SleepSchedule
-from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler, ColoredLoggingHandler, SocialHandler
+from pokemongo_bot.event_handlers import SocketIoHandler, LoggingHandler, SocialHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from pokemongo_bot.base_dir import _base_dir
@@ -66,6 +66,14 @@ class PokemonGoBot(object):
         :rtype: dict
         """
         return self._player
+
+    @property
+    def stardust(self):
+        return filter(lambda y: y['name'] == 'STARDUST', self._player['currencies'])[0]['amount']
+
+    @stardust.setter
+    def stardust(self, value):
+        filter(lambda y: y['name'] == 'STARDUST', self._player['currencies'])[0]['amount'] = value
 
     def __init__(self, db, config):
 
@@ -104,6 +112,7 @@ class PokemonGoBot(object):
         self.heartbeat_threshold = self.config.heartbeat_threshold
         self.heartbeat_counter = 0
         self.last_heartbeat = time.time()
+        self.hb_locked = False # lock hb on snip
 
         self.capture_locked = False  # lock catching while moving to VIP pokemon
 
@@ -137,10 +146,10 @@ class PokemonGoBot(object):
     def _setup_event_system(self):
         handlers = []
 
-        if self.config.logging and 'color' in self.config.logging and self.config.logging['color']:
-            handlers.append(ColoredLoggingHandler(self))
-        else:
-            handlers.append(LoggingHandler(self))
+        color = self.config.logging and 'color' in self.config.logging and self.config.logging['color']
+        debug = self.config.debug
+
+        handlers.append(LoggingHandler(color, debug))
 
         if self.config.enable_social:
             handlers.append(SocialHandler(self))
@@ -430,6 +439,7 @@ class PokemonGoBot(object):
             parameters=(
                 'pokemon',
                 'ncp', 'cp', 'iv', 'iv_display', 'exp',
+                'stardust',
                 'encounter_id',
                 'latitude',
                 'longitude',
@@ -910,6 +920,7 @@ class PokemonGoBot(object):
             level='info',
             formatted="Login successful."
         )
+        self.heartbeat()
 
     def get_encryption_lib(self):
         if _platform == "Windows" or _platform == "win32":
@@ -1254,7 +1265,7 @@ class PokemonGoBot(object):
                               in self.fort_timeouts.iteritems()
                               if timeout >= now * 1000}
 
-        if now - self.last_heartbeat >= self.heartbeat_threshold:
+        if now - self.last_heartbeat >= self.heartbeat_threshold and not self.hb_locked:
             self.last_heartbeat = now
             request = self.api.create_request()
             request.get_player()
@@ -1297,6 +1308,8 @@ class PokemonGoBot(object):
             self.web_update_queue.put_nowait(True)  # do this outside of thread every tick
         except Queue.Full:
             pass
+
+        threading.Timer(self.heartbeat_threshold, self.heartbeat).start()
 
     def update_web_location_worker(self):
         while True:
