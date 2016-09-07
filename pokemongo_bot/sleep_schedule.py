@@ -41,6 +41,7 @@ class SleepSchedule(object):
     def __init__(self, bot, config):
         self.bot = bot
         self._reminder_interval = self.bot.config.sleep_reminder_interval
+        self._last_reminder = datetime.now()
         self._last_index = -1
         self._next_index = -1
         self._process_config(config)
