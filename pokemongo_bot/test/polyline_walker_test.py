@@ -260,6 +260,8 @@ class TestPolylineWalker(unittest.TestCase):
         self.bot.config.walk_min = walk_min
 
     def test_stay_put(self):
+        altitude = 123
+        self.bot.position = [47.1706378, 8.5167405, altitude]
         walk_max = self.bot.config.walk_max
         walk_min = self.bot.config.walk_min
         precision = 0.0
@@ -276,8 +278,7 @@ class TestPolylineWalker(unittest.TestCase):
         self.assertFalse(finishedWalking, 'step should return False')
         distance = Geodesic.WGS84.Inverse(ex_orig[0], ex_orig[1], self.bot.position[0], self.bot.position[1])["s12"]
         self.assertTrue(0.0 <= distance <= (pw.precision + pw.epsilon))
-        print("ALTITUDE [polyline: {} bot: {}]".format(self.polyline.get_alt(), self.bot.position[2]))
-        self.assertTrue(abs(self.polyline.get_alt() - self.bot.position[2]) <= 1)
+        self.assertTrue(altitude -1 <= self.bot.position[2] <= altitude + 1)
 
         self.bot.config.walk_max = walk_max
         self.bot.config.walk_min = walk_min
