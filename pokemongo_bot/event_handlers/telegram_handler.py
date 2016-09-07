@@ -137,7 +137,7 @@ class TelegramClass:
                 return True
             else:
                 return False
-    
+
     def isAuthenticated(self, chat_id):
         return self.isMasterFromConfigFile(chat_id) or self.isMasterFromActiveLogins(chat_id)
 
@@ -175,7 +175,7 @@ class TelegramClass:
                             "/info - info about bot",
                             "/login <password> - authenticate with the bot; once authenticated, your ID will be registered with the bot and survive bot restarts",
                             "/logout - remove your ID from the 'authenticated' list",
-                            "/sub <event_name> [<parameters>] - subscribe to event_name, with optional parameters, event_name=all will subscribe to ALL events (LOTS of output!)",
+                            "/sub <event_name> [<parameters>] - subscribe to event_name, with optional parameters, event name=all will subscribe to ALL events (LOTS of output!)",
                             "/unsub <event_name> [<parameters>] - unsubscribe from event_name; parameters must match the /sub parameters",
                             "/unsub everything - will remove all subscriptions for this uid",
                             "/showsubs - show current subscriptions",
@@ -217,13 +217,16 @@ class TelegramClass:
                         self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=(", ".join(self.bot.event_manager._registered_events.keys())))
                         continue
                     if update.message.text == "/logout":
+                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=("Logged out."))
                         self.deauthenticate(update)
                         continue
                     if re.match(r'^/sub ', update.message.text):
                         self.chsub(update.message.text, update.message.chat_id)
+                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=("Subscriptions updated."))
                         continue
                     if re.match(r'^/unsub ', update.message.text):
                         self.chsub(update.message.text, update.message.chat_id)
+                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=("Subscriptions updated."))
                         continue
                     if re.match(r'^/showsubs', update.message.text):
                         self.showsubs(update.message.chat_id)
@@ -263,7 +266,7 @@ class TelegramDBInit:
         self.conn = conn
         self.initDBstructure()
         return
-    
+
     def initDBstructure(self):
         db_structure = {
                 "telegram_uids": "CREATE TABLE telegram_uids(uid text constraint upk primary key, username text not null)",
@@ -275,7 +278,7 @@ class TelegramDBInit:
         for objname in db_structure:
             self.initDBobject(objname, db_structure[objname])
         return
-    
+
     def initDBobject(self, name, sql):
         res = self.conn.execute("select sql,type from sqlite_master where name = ?", [name]).fetchone() # grab objects definition
 
@@ -345,22 +348,24 @@ class TelegramHandler(EventHandler):
                 self.tbot = None
                 self.bot.logger.error("Unable to spin Telegram bot; master: {}, exception: {}".format(selfmaster, pprint.pformat(inst)))
                 return
-        # prepare message to send
-        if event == 'level_up':
-            msg = "level up ({})".format(data["current_level"])
-        elif event == 'pokemon_caught':
-            msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
-        elif event == 'egg_hatched':
-            msg = "Egg hatched with a {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
-        elif event == 'bot_sleep':
-            msg = "I am too tired, I will take a sleep till {}.".format(data["wake"])
-        elif event == 'catch_limit':
-            msg = "*You have reached your daily catch limit, quitting.*"
-        elif event == 'spin_limit':
-            msg = "*You have reached your daily spin limit, quitting.*"
-        else:
-            msg = formatted_msg
-
+        try:
+            # prepare message to send
+            if event == 'level_up':
+                msg = "level up ({})".format(data["current_level"])
+            elif event == 'pokemon_caught':
+                msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
+            elif event == 'egg_hatched':
+                msg = "Egg hatched with a {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
+            elif event == 'bot_sleep':
+                msg = "I am too tired, I will take a sleep till {}.".format(data["wake"])
+            elif event == 'catch_limit':
+                msg = "*You have reached your daily catch limit, quitting.*"
+            elif event == 'spin_limit':
+                msg = "*You have reached your daily spin limit, quitting.*"
+            else:
+                msg = formatted_msg
+        except KeyError:
+            pass
         # first handle subscriptions; they are independent of master setting.
         with self.bot.database as conn:
             subs = conn.execute("select uid, parameters, event_type from telegram_subscriptions where event_type in (?,'all','debug')", [event]).fetchall()
