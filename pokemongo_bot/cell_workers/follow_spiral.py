@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 
+from itertools import cycle
 import math
 
-from pokemongo_bot.cell_workers.utils import distance, format_dist
 from pokemongo_bot.walkers.step_walker import StepWalker
 from pokemongo_bot.base_task import BaseTask
-from random import uniform
 
 class FollowSpiral(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -18,14 +17,11 @@ class FollowSpiral(BaseTask):
         self.origin_lon = self.bot.position[1]
 
         self.diameter_to_steps = (self.steplimit+1) ** 2
-        self.points = self._generate_spiral(
+        self.spiral = self._generate_spiral(
             self.origin_lat, self.origin_lon, self.step_size, self.diameter_to_steps
         )
-
-        self.ptr = 0
-        self.direction = 1
-        self.cnt = 0
-
+        self.points = cycle(self.spiral+list(reversed(self.spiral))[1:-1])
+        self.next_point = None
 
     @staticmethod
     def _generate_spiral(starting_lat, starting_lng, step_size, step_limit):
@@ -67,60 +63,10 @@ class FollowSpiral(BaseTask):
         return coords
 
     def work(self):
-        last_lat, last_lng, last_alt = self.bot.api.get_position()
-
-        point = self.points[self.ptr]
-        self.cnt += 1
-
-        dist = distance(
-            last_lat,
-            last_lng,
-            point['lat'],
-            point['lng']
-        )
-
-        alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
-        if self.bot.config.walk_max > 0:
-            step_walker = StepWalker(
-                self.bot,
-                point['lat'],
-                point['lng']
-            )
-
-            if self.cnt == 1:
-                self.emit_event(
-                    'position_update',
-                    formatted="Walking from {last_position} to {current_position} ({distance} {distance_unit})",
-                    data={
-                        'last_position': (last_lat, last_lng, last_alt),
-                        'current_position': (point['lat'], point['lng'], alt),
-                        'distance': dist,
-                        'distance_unit': 'm'
-                    }
-                )
-
-            if step_walker.step():
-                step_walker = None
-        else:
-            self.bot.api.set_position(point['lat'], point['lng'], alt)
-            self.emit_event(
-                'position_update',
-                formatted="Teleported from {last_position} to {current_position} ({distance} {distance_unit})",
-                data={
-                    'last_position': (last_lat, last_lng, last_alt),
-                    'current_position': (point['lat'], point['lng'], alt),
-                    'distance': dist,
-                    'distance_unit': 'm'
-                }
-            )
-
-        if dist <= 1 or (self.bot.config.walk_min > 0 and step_walker == None):
-            if self.ptr + self.direction >= len(self.points) or self.ptr + self.direction <= -1:
-                self.direction *= -1
-            if len(self.points) != 1:
-                self.ptr += self.direction
-            else:
-                self.ptr = 0
-            self.cnt = 0
-
+        if not self.next_point:
+            self.next_point = self.points.next()
+        point = self.next_point
+        step_walker = StepWalker(self.bot, point['lat'], point['lng'])
+        if step_walker.step():
+            self.next_point = None
         return [point['lat'], point['lng']]

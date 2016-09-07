@@ -7,7 +7,6 @@ import os
 from pokemongo_bot import inventory
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.datastore import Datastore
 from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.worker_result import WorkerResult
@@ -19,7 +18,7 @@ ERROR_NO_ITEMS_REMAINING = 4
 ERROR_LOCATION_UNSET = 5
 
 
-class PokemonOptimizer(Datastore, BaseTask):
+class PokemonOptimizer(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def __init__(self, bot, config):
@@ -29,7 +28,6 @@ class PokemonOptimizer(Datastore, BaseTask):
         self.max_pokemon_storage = inventory.get_pokemon_inventory_size()
         self.last_pokemon_count = 0
         self.pokemon_names = [p.name for p in inventory.pokemons().STATIC_DATA]
-        self.stardust_count = 0
         self.ongoing_stardust_count = 0
 
         pokemon_upgrade_cost_file = os.path.join(_base_dir, "data", "pokemon_upgrade_cost.json")
@@ -37,6 +35,7 @@ class PokemonOptimizer(Datastore, BaseTask):
         with open(pokemon_upgrade_cost_file, "r") as fd:
             self.pokemon_upgrade_cost = json.load(fd)
 
+        self.config_min_slots_left = self.config.get("min_slots_left", 5)
         self.config_transfer = self.config.get("transfer", False)
         self.config_transfer_wait_min = self.config.get("transfer_wait_min", 3)
         self.config_transfer_wait_max = self.config.get("transfer_wait_max", 5)
@@ -68,7 +67,7 @@ class PokemonOptimizer(Datastore, BaseTask):
         return inventory.Pokemons.get_space_left()
 
     def work(self):
-        if (not self.enabled) or self.get_pokemon_slot_left() > self.config.get("min_slots_left", 5):
+        if (not self.enabled) or (self.get_pokemon_slot_left() > self.config_min_slots_left):
             return WorkerResult.SUCCESS
 
         self.open_inventory()
@@ -167,8 +166,7 @@ class PokemonOptimizer(Datastore, BaseTask):
             setattr(pokemon, "dps_attack", pokemon.moveset.dps_attack)
             setattr(pokemon, "dps_defense", pokemon.moveset.dps_defense)
 
-        self.stardust_count = self.get_stardust_count()
-        self.ongoing_stardust_count = self.stardust_count
+        self.ongoing_stardust_count = self.bot.stardust
 
     def get_colorlist_names(self, names):
         whitelist_names = []
@@ -278,37 +276,32 @@ class PokemonOptimizer(Datastore, BaseTask):
                 try_evolve_all += try_evolve
                 try_upgrade_all += try_upgrade
                 keep_all += keep
-        elif len(senior_pids) < nb_branch:
-            # We did not get every combination yet = All other Pokemon are potentially good to keep
+        else:
             for _, pokemon_list in self.group_by_pokemon_id(senior_pokemon_list):
                 try_evolve, try_upgrade, keep = self.get_best_pokemon_for_rule(pokemon_list, rule)
                 try_evolve_all += try_evolve
                 try_upgrade_all += try_upgrade
                 keep_all += keep
 
-            try_evolve, try_upgrade, keep = self.get_better_pokemon_for_rule(other_family_list, rule, other_family_list[-1])
-            try_evolve_all += try_evolve
-            try_upgrade_all += try_upgrade
-            keep_all += keep
-        else:
-            best = []
+            if len(other_family_list) > 0:
+                if len(senior_pids) < nb_branch:
+                    # We did not get every combination yet = All other Pokemon are potentially good to keep
+                    worst = other_family_list[-1]
+                else:
+                    best = try_evolve_all + try_upgrade_all + keep_all
+                    worst = self.sort_pokemon_list(best, rule)[-1]
 
-            for _, pokemon_list in self.group_by_pokemon_id(senior_pokemon_list):
-                try_evolve, try_upgrade, keep = self.get_best_pokemon_for_rule(pokemon_list, rule)
-                best += try_evolve
-                best += try_upgrade
-                best += keep
-
-            worst = self.sort_pokemon_list(best, rule)[-1]
-
-            try_evolve_all, try_upgrade_all, keep_all = self.get_better_pokemon_for_rule(sorted_family, rule, worst)
+                try_evolve, try_upgrade, keep = self.get_better_pokemon_for_rule(other_family_list, rule, worst, 12)
+                try_evolve_all += try_evolve
+                try_upgrade_all += try_upgrade
+                keep_all += keep
 
         return try_evolve_all, try_upgrade_all, keep_all
 
-    def get_better_pokemon_for_rule(self, pokemon_list, rule, worst):
+    def get_better_pokemon_for_rule(self, pokemon_list, rule, worst, limit=1000):
         min_score = self.get_score(worst, rule)[0]
         scored_list = [(p, self.get_score(p, rule)) for p in pokemon_list]
-        best = [x for x in scored_list if x[1][0] >= min_score]
+        best = [x for x in scored_list if x[1][0] >= min_score][:limit]
         try_evolve = [x[0] for x in best if x[1][1] is True]
         try_upgrade = [x[0] for x in best if x[1][1] is False and x[1][2] is True]
         keep = [x[0] for x in best]
@@ -443,7 +436,7 @@ class PokemonOptimizer(Datastore, BaseTask):
                     skip_evolve = True
                     self.emit_event("skip_evolve",
                                     formatted="Skipping evolution step. Not enough Pokemon to evolve with lucky egg: %s/%s" % (len(evolve) + len(xp), self.config_evolve_count_for_lucky_egg))
-                elif self.get_pokemon_slot_left() > self.config.get("min_slots_left", 5):
+                elif self.get_pokemon_slot_left() > self.config_min_slots_left:
                     skip_evolve = True
                     self.emit_event("skip_evolve",
                                     formatted="Waiting for more Pokemon to evolve with lucky egg: %s/%s" % (len(evolve) + len(xp), self.config_evolve_count_for_lucky_egg))
@@ -461,7 +454,7 @@ class PokemonOptimizer(Datastore, BaseTask):
             for pokemon in xp:
                 self.evolve_pokemon(pokemon)
 
-        self.logger.info("Upgrading %s Pokemon [%s stardust]", len(upgrade), self.stardust_count)
+        self.logger.info("Upgrading %s Pokemon [%s stardust]", len(upgrade), self.bot.stardust)
 
         for pokemon in upgrade:
             self.upgrade_pokemon(pokemon)
@@ -615,7 +608,7 @@ class PokemonOptimizer(Datastore, BaseTask):
 
             if self.config_upgrade and (not self.bot.config.test):
                 candy.consume(upgrade_candy_cost)
-                self.stardust_count -= upgrade_stardust_cost
+                self.bot.stardust -= upgrade_stardust_cost
 
             self.emit_event("pokemon_upgraded",
                             formatted="Upgraded {pokemon} [IV {iv}] [CP {cp}] [{candy} candies] [{stardust} stardust]",
@@ -623,7 +616,7 @@ class PokemonOptimizer(Datastore, BaseTask):
                                   "iv": pokemon.iv,
                                   "cp": pokemon.cp,
                                   "candy": candy.quantity,
-                                  "stardust": self.stardust_count})
+                                  "stardust": self.bot.stardust})
 
             if self.config_upgrade and (not self.bot.config.test):
                 inventory.pokemons().remove(pokemon.unique_id)
@@ -634,7 +627,3 @@ class PokemonOptimizer(Datastore, BaseTask):
                 action_delay(self.config_transfer_wait_min, self.config_transfer_wait_max)
 
         return True
-
-    def get_stardust_count(self):
-        response_dict = self.bot.api.get_player()
-        return response_dict.get("responses", {}).get("GET_PLAYER", {}).get("player_data", {}).get("currencies", [{}, {}])[1].get("amount", 0)

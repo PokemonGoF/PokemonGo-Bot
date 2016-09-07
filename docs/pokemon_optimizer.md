@@ -4,6 +4,7 @@
     - [Default configuration](#default-configuration)
     - [Understand parameters](#understand-parameters)
         - [enabled](#enabled)
+        - [min_slots_left](#min_slots_left)
         - [transfer](#transfer)
         - [transfer_wait_min](#transfer_wait_min)
         - [transfer_wait_max](#transfer_wait_max)
@@ -26,9 +27,12 @@
 - [Eevee case](#eevee-case)
 
 # About
-The Pokemon Optimizer manage transfer and evolution of your Pokemon.
+The Pokemon Optimizer manage transfer, evolution and upgrade of your Pokemon.
 <br>It can replace or complement the classical Evolve and Transfer tasks.
 <br>It will be triggered when you bag of Pokemon is full and has no effect until it happens.
+
+The Pokemon Optimizer will first Transfer, then Evolve, then Upgrade.
+There is only one pass at each action.
 
 [[back to top](#pokemon-optimizer)]
 
@@ -41,6 +45,7 @@ The Pokemon Optimizer manage transfer and evolution of your Pokemon.
             "type": "PokemonOptimizer",
             "config": {
                 "enabled": true,
+                "min_slots_left": 5,
                 "transfer": true,
                 "transfer_wait_min": 3,
                 "transfer_wait_max": 5,
@@ -101,6 +106,15 @@ The Pokemon Optimizer manage transfer and evolution of your Pokemon.
 | `enabled` | `true`, `false` | `true`  |
 
 Enable or disable the task.
+
+[[back to top](#pokemon-optimizer)]
+
+### min_slots_left
+| Parameter        | Possible values | Default |
+|------------------|-----------------|---------|
+| `min_slots_left` | `[0-N]`         | `5`     |
+
+The Pokemon Optimizer will be triggered when you have that number (or less) empty slots in your Pokemon Bag.
 
 [[back to top](#pokemon-optimizer)]
 

@@ -1,6 +1,7 @@
 import threading
+import logging
 from socketIO_client import SocketIO, BaseNamespace
-
+from pokemongo_bot import inventory
 
 class WebsocketRemoteControl(object):
 
@@ -15,6 +16,7 @@ class WebsocketRemoteControl(object):
             self.on_remote_command
         )
         self.thread = threading.Thread(target=self.process_messages)
+        self.logger = logging.getLogger(type(self).__name__)
 
     def start(self):
         self.thread.start()
@@ -42,17 +44,14 @@ class WebsocketRemoteControl(object):
         command_handler()
 
     def get_player_info(self):
-        request = self.bot.api.create_request()
-        request.get_player()
-        request.get_inventory()
-        response_dict = request.call()
-        inventory = response_dict['responses'].get('GET_INVENTORY', {})
-        player_info = response_dict['responses'].get('GET_PLAYER', {})
-        self.sio.emit(
-            'bot:send_reply',
-            {
-                'result': {'inventory': inventory, 'player': player_info},
-                'command': 'get_player_info',
-                'account': self.bot.config.username
-            }
-        )
+        try:
+            self.sio.emit(
+                'bot:send_reply',
+                {
+                    'result': {'inventory': inventory.jsonify_inventory(), 'player': self.bot._player},
+                    'command': 'get_player_info',
+                    'account': self.bot.config.username
+                }
+            )
+        except Exception as e:
+            self.logger.error(e)

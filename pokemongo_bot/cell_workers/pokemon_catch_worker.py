@@ -7,15 +7,15 @@ import logging
 import time
 import sys
 
-from random import random, randrange
+from random import random, randrange, uniform
 from pokemongo_bot import inventory
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot.inventory import Pokemon
 from pokemongo_bot.worker_result import WorkerResult
-from pokemongo_bot.datastore import Datastore
 from pokemongo_bot.base_dir import _base_dir
 from datetime import datetime, timedelta
+from utils import getSeconds
 
 CATCH_STATUS_SUCCESS = 1
 CATCH_STATUS_FAILED = 2
@@ -41,7 +41,7 @@ LOGIC_TO_FUNCTION = {
 }
 
 
-class PokemonCatchWorker(Datastore, BaseTask):
+class PokemonCatchWorker(BaseTask):
 
     def __init__(self, pokemon, bot, config):
         self.pokemon = pokemon
@@ -56,6 +56,7 @@ class PokemonCatchWorker(Datastore, BaseTask):
         self.spawn_point_guid = ''
         self.response_key = ''
         self.response_status_key = ''
+        self.rest_completed = False
 
         #Config
         self.min_ultraball_to_keep = self.config.get('min_ultraball_to_keep', 10)
@@ -63,6 +64,11 @@ class PokemonCatchWorker(Datastore, BaseTask):
         self.vip_berry_threshold = self.config.get('vip_berry_threshold', 0.9)
         self.treat_unseen_as_vip = self.config.get('treat_unseen_as_vip', DEFAULT_UNSEEN_AS_VIP)
         self.daily_catch_limit = self.config.get('daily_catch_limit', 800)
+
+        self.vanish_settings = self.config.get('vanish_settings', {})
+        self.consecutive_vanish_limit = self.vanish_settings.get('consecutive_vanish_limit', 10)
+        self.rest_duration_min = getSeconds(self.vanish_settings.get('rest_duration_min', "02:00:00"))
+        self.rest_duration_max = getSeconds(self.vanish_settings.get('rest_duration_max', "04:00:00"))
 
         self.catch_throw_parameters = self.config.get('catch_throw_parameters', {})
         self.catch_throw_parameters_spin_success_rate = self.catch_throw_parameters.get('spin_success_rate', 0.6)
@@ -114,6 +120,17 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
         # skip ignored pokemon
         if not self._should_catch_pokemon(pokemon):
+            if not hasattr(self.bot,'skipped_pokemon'):
+                self.bot.skipped_pokemon = []
+                
+            # Check if pokemon already skipped and suppress alert if so
+            for skipped_pokemon in self.bot.skipped_pokemon:
+                if pokemon.pokemon_id == skipped_pokemon.pokemon_id and \
+                    pokemon.cp_exact == skipped_pokemon.cp_exact and \
+                    pokemon.ivcp == skipped_pokemon.ivcp:
+                    return WorkerResult.SUCCESS
+                    
+            self.bot.skipped_pokemon.append(pokemon)
             self.emit_event(
                 'pokemon_appeared',
                 formatted='Skip ignored {pokemon}! [CP {cp}] [Potential {iv}] [A/D/S {iv_display}]',
@@ -505,6 +522,25 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
             # abandon if pokemon vanished
             elif catch_pokemon_status == CATCH_STATUS_VANISHED:
+                #insert into DB
+                with self.bot.database as conn:
+                    c = conn.cursor()
+                    c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='vanish_log'")
+                result = c.fetchone()
+
+                while True:
+                    if result[0] == 1:
+                        conn.execute('''INSERT INTO vanish_log (pokemon, cp, iv, encounter_id, pokemon_id) VALUES (?, ?, ?, ?, ?)''', (pokemon.name, pokemon.cp, pokemon.iv, str(encounter_id), pokemon.pokemon_id))
+                    break
+                else:
+                    self.emit_event(
+                        'vanish_log',
+                        sender=self,
+                        level='info',
+                        formatted="vanish_log table not found, skipping log"
+                    )
+                    break
+
                 self.emit_event(
                     'pokemon_vanished',
                     formatted='{pokemon} vanished!',
@@ -516,39 +552,69 @@ class PokemonCatchWorker(Datastore, BaseTask):
                         'pokemon_id': pokemon.pokemon_id
                     }
                 )
+
+                with self.bot.database as conn:
+                    c = conn.cursor()
+                    c.execute("SELECT DISTINCT COUNT(encounter_id) FROM vanish_log WHERE dated > (SELECT dated FROM catch_log WHERE dated IN (SELECT MAX(dated) FROM catch_log))")
+
+                result = c.fetchone()
+                self.consecutive_vanishes_so_far = result[0]
+
+                if self.rest_completed == False and self.consecutive_vanishes_so_far >= self.consecutive_vanish_limit:
+                    self.start_rest()
+
                 if self._pct(catch_rate_by_ball[current_ball]) == 100:
                     self.bot.softban = True
 
             # pokemon caught!
             elif catch_pokemon_status == CATCH_STATUS_SUCCESS:
+                if self.rest_completed == True:
+                    self.rest_completed = False
                 pokemon.unique_id = response_dict['responses']['CATCH_POKEMON']['captured_pokemon_id']
                 self.bot.metrics.captured_pokemon(pokemon.name, pokemon.cp, pokemon.iv_display, pokemon.iv)
 
+                awards = response_dict['responses']['CATCH_POKEMON']['capture_award']
+                exp_gain, candy_gain, stardust_gain = self.extract_award(awards)
+
+                self.emit_event(
+                    'pokemon_caught',
+                    formatted='Captured {pokemon}! [CP {cp}] [NCP {ncp}] [Potential {iv}] [{iv_display}] ({caught_last_24_hour}/{daily_catch_limit}) [+{exp} exp] [+{stardust} stardust]',
+                    data={
+                        'pokemon': pokemon.name,
+                        'ncp': round(pokemon.cp_percent, 2),
+                        'cp': pokemon.cp,
+                        'iv': pokemon.iv,
+                        'iv_display': pokemon.iv_display,
+                        'exp': exp_gain,
+                        'stardust': stardust_gain,
+                        'encounter_id': self.pokemon['encounter_id'],
+                        'latitude': self.pokemon['latitude'],
+                        'longitude': self.pokemon['longitude'],
+                        'pokemon_id': pokemon.pokemon_id,
+                        'caught_last_24_hour': self.caught_last_24_hour + 1,
+                        'daily_catch_limit': self.daily_catch_limit
+                    }
+                )
+
+                inventory.pokemons().add(pokemon)
+                inventory.player().exp += exp_gain
+                self.bot.stardust += stardust_gain
+                candy = inventory.candies().get(pokemon.pokemon_id)
+                candy.add(candy_gain)
+
+                self.emit_event(
+                    'gained_candy',
+                    formatted='You now have {quantity} {type} candy!',
+                    data = {
+                        'quantity': candy.quantity,
+                        'type': candy.type,
+                    },
+                )
+
+                self.bot.softban = False
+
+
                 try:
-                    inventory.pokemons().add(pokemon)
-                    exp_gain = sum(response_dict['responses']['CATCH_POKEMON']['capture_award']['xp'])  
-                    # update player's exp
-                    inventory.player().exp += exp_gain
-
-                    self.emit_event(
-                        'pokemon_caught',
-                        formatted='Captured {pokemon}! [CP {cp}] [NCP {ncp}] [Potential {iv}] [{iv_display}] ({caught_last_24_hour}/{daily_catch_limit}) [+{exp} exp]',
-                        data={
-                            'pokemon': pokemon.name,
-                            'ncp': round(pokemon.cp_percent, 2),
-                            'cp': pokemon.cp,
-                            'iv': pokemon.iv,
-                            'iv_display': pokemon.iv_display,
-                            'exp': exp_gain,
-                            'encounter_id': self.pokemon['encounter_id'],
-                            'latitude': self.pokemon['latitude'],
-                            'longitude': self.pokemon['longitude'],
-                            'pokemon_id': pokemon.pokemon_id,
-                            'caught_last_24_hour': self.caught_last_24_hour + 1,
-                            'daily_catch_limit': self.daily_catch_limit
-                        }
-
-                    )
                     with self.bot.database as conn:
                         c = conn.cursor()
                         c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='catch_log'")
@@ -585,20 +651,6 @@ class PokemonCatchWorker(Datastore, BaseTask):
                 except IOError as e:
                     self.logger.info('[x] Error while opening location file: %s' % e)
 
-                candy = inventory.candies().get(pokemon.pokemon_id)
-                candy.add(self.get_candy_gained_count(response_dict))
-
-                self.emit_event(
-                    'gained_candy',
-                    formatted='You now have {quantity} {type} candy!',
-                    data = {
-                        'quantity': candy.quantity,
-                        'type': candy.type,
-                    },
-                )
-
-                self.bot.softban = False
-
             elif catch_pokemon_status == CATCH_STATUS_MISSED:
                 self.emit_event(
                     'pokemon_capture_failed',
@@ -611,11 +663,8 @@ class PokemonCatchWorker(Datastore, BaseTask):
 
             break
 
-    def get_candy_gained_count(self, response_dict):
-        total_candy_gained = 0
-        for candy_gained in response_dict['responses']['CATCH_POKEMON']['capture_award']['candy']:
-            total_candy_gained += candy_gained
-        return total_candy_gained
+    def extract_award(self, awards):
+        return sum(awards['xp']), sum(awards['candy']), sum(awards['stardust'])
 
     def generate_spin_parameter(self, throw_parameters):
         spin_success_rate = self.catch_throw_parameters_spin_success_rate
@@ -663,3 +712,20 @@ class PokemonCatchWorker(Datastore, BaseTask):
         throw_parameters['normalized_reticle_size'] = 1.25 + 0.70 * random()
         throw_parameters['normalized_hit_position'] = 0.0
         throw_parameters['throw_type_label'] = 'OK'
+
+    def start_rest(self):
+        duration = int(uniform(self.rest_duration_min, self.rest_duration_max))
+        resume = datetime.now() + timedelta(seconds=duration)
+        
+        self.emit_event(
+            'vanish_limit_reached',
+            formatted="Vanish limit reached! Taking a rest now for {duration}, will resume at {resume}.",
+            data={
+                'duration': str(timedelta(seconds=duration)),
+                'resume': resume.strftime("%H:%M:%S")
+            }
+        )
+        
+        sleep(duration)
+        self.rest_completed = True
+        self.bot.login()

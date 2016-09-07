@@ -24,6 +24,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 Author: tjado <https://github.com/tejado>
 """
+from __future__ import unicode_literals
 
 import argparse
 import codecs
@@ -32,8 +33,6 @@ import logging
 import os
 import ssl
 import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
 import time
 import signal
 import string
@@ -94,7 +93,14 @@ def main():
         bot.workers = tree
 
     def initialize(config):
-        bot = PokemonGoBot(config)
+        from pokemongo_bot.datastore import Datastore
+
+        ds = Datastore(conn_str='/data/{}.db'.format(config.username))
+        for directory in ['pokemongo_bot', 'pokemongo_bot/cell_workers']:
+            ds.migrate(directory + '/migrations')
+
+        bot = PokemonGoBot(ds.get_connection(), config)
+
         return bot
 
     def start_bot(bot, config):
@@ -121,10 +127,12 @@ def main():
             return f.read()[:8]
 
     try:
-        logger.info('PokemonGO Bot v1.0')
-        logger.info('commit: ' + get_commit_hash())
+        codecs.register(lambda name: codecs.lookup("utf-8") if name == "cp65001" else None)
         sys.stdout = codecs.getwriter('utf8')(sys.stdout)
         sys.stderr = codecs.getwriter('utf8')(sys.stderr)
+
+        logger.info('PokemonGO Bot v1.0')
+        logger.info('commit: ' + get_commit_hash())
 
         config, config_file = init_config()
         if not config:
@@ -245,7 +253,7 @@ def main():
                         'cached_fort',
                         sender=bot,
                         level='debug',
-                        formatted='Forts cached.',
+                        formatted='Forts cached.'
                     )
                 except IOError as e:
                     bot.event_manager.emit(
