@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import time
 
 from geographiclib.geodesic import Geodesic
 from random import uniform
@@ -22,9 +23,13 @@ class StepWalker(object):
             self.dest_alt = dest_alt
 
         self.saved_location = None
+        self.last_update = 0
 
     def step(self, speed=None):
-        sleep(1)
+        now = time.time()
+
+        sleep(1 - min(now - self.last_update, 1))
+        self.last_update = now
 
         if speed is None:
             speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
