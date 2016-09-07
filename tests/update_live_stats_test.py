@@ -164,6 +164,8 @@ class UpdateLiveStatsTestCase(unittest.TestCase):
         self.assertEqual(line, '')
 
     def test_get_stats_line_no_displayed_stats(self):
+        self.mock_metrics()
+
         self.worker.displayed_stats = []
         line = self.worker._get_stats_line(self.worker._get_stats(self.player_stats))
 
