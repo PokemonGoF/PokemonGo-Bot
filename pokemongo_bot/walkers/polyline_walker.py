@@ -10,10 +10,12 @@ class PolylineWalker(StepWalker):
 
         while True:
             _, (dest_lat, dest_lng) = polyline._step_dict[polyline._step_keys[polyline._last_step]]
-
-            next_lat, next_lng, next_alt = super(PolylineWalker, self).get_next_position(origin_lat, origin_lng, origin_alt, dest_lat, dest_lng, dest_alt, distance)
-            polyline._last_pos = (next_lat, next_lng)
+            polyline._last_pos = (dest_lat, dest_lng)
             dest_alt = polyline.get_alt() or origin_alt
+
+            next_lat, next_lng, _ = super(PolylineWalker, self).get_next_position(origin_lat, origin_lng, origin_alt, dest_lat, dest_lng, dest_alt, distance)
+            polyline._last_pos = (next_lat, next_lng)
+            next_alt = polyline.get_alt() or origin_alt
 
             if polyline._last_step == len(polyline._step_keys) - 1:
                 break
