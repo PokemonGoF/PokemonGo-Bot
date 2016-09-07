@@ -18,16 +18,13 @@ class FileIOException(Exception):
 
 class DiscordClass:
 
-    update_id = None
-
-
     def __init__(self, bot, master, pokemons, config):
         self.bot = bot
         self.pokemons = pokemons
         self._dbot = None
         self.config = config
 
-    def sendMessage(self, to=None, parse_mode='Markdown', text=None):
+    def sendMessage(self, to=None, text=None):
         self._dbot.send_message(to, text)
 
     def connect(self):
@@ -65,9 +62,9 @@ class DiscordClass:
                     "_Poke Stop Visits:_ "+str(stats["poke_stop_visits"])+" ("+str(ps_day)+" _last 24h_)",
                     "_KM Walked:_ "+str("%.2f" % stats["km_walked"])
                 )
-            self.sendMessage(to=chat_id, parse_mode='Markdown', text="\n".join(res))
+            self.sendMessage(to=chat_id, text="\n".join(res))
         else:
-            self.sendMessage(to=chat_id, parse_mode='Markdown', text="Stats not loaded yet\n")
+            self.sendMessage(to=chat_id, text="Stats not loaded yet\n")
 
     def on_message(self,message):
         if message.content == "/help":
@@ -75,7 +72,7 @@ class DiscordClass:
                 "Commands: ",
                 "/info - info about bot"
             )
-            self.sendMessage(to=str(message.author), parse_mode='Markdown', text="\n".join(res))
+            self.sendMessage(to=str(message.author), text="\n".join(res))
         elif message.content == "/info":
             self.send_player_stats_to_chat(message.author)
 
@@ -132,4 +129,4 @@ class DiscordHandler(EventHandler):
         elif event == 'spin_limit':
             msg = "*You have reached your daily spin limit, quitting.*"
         if msg:
-          self.dbot.sendMessage(to=self.master, parse_mode='Markdown', text=msg)
+          self.dbot.sendMessage(to=self.master, text=msg)
