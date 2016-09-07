@@ -2,6 +2,7 @@ from geographiclib.geodesic import Geodesic
 
 from pokemongo_bot.walkers.step_walker import StepWalker
 from polyline_generator import PolylineObjectHandler
+from pokemongo_bot.human_behaviour import random_alt_delta
 
 
 class PolylineWalker(StepWalker):
@@ -34,4 +35,4 @@ class PolylineWalker(StepWalker):
         polyline._last_pos = (next_lat, next_lng)
         next_alt = polyline.get_alt() or origin_alt
 
-        return next_lat, next_lng, next_alt
+        return next_lat, next_lng, next_alt  + random_alt_delta()
