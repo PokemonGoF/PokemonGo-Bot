@@ -75,7 +75,7 @@ class TestPolylineWalker(unittest.TestCase):
     def test_one_small_speed(self):
         walk_max = self.bot.config.walk_max
         walk_min = self.bot.config.walk_min
-        speed = 0.2475
+        speed = 0.247503233266
         precision = 0.0
         dlat = 47.17064
         dlng = 8.51674
@@ -107,7 +107,7 @@ class TestPolylineWalker(unittest.TestCase):
     def test_one_small_speed_big_precision(self):
         walk_max = self.bot.config.walk_max
         walk_min = self.bot.config.walk_min
-        speed = 0.2475
+        speed = 0.247503233266
         precision = 2.5
         dlat = 47.17064
         dlng = 8.51674
