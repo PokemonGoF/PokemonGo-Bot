@@ -127,6 +127,8 @@ class SleepSchedule(object):
             prepared['duration_random_offset'] = duration_random_offset
             self.entries.append(prepared)
 
+        if not len(self.entries): self.bot.logger.warning('SleepSchedule is disabled')
+
     def _schedule_next_sleep(self):
         if not len(self.entries): return
 
