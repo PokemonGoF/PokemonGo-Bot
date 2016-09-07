@@ -47,6 +47,7 @@
 - [Egg Incubator](#egg-incubator)
 - [ShowBestPokemon](#showbestpokemon)
 - [Telegram Task](#telegram-task)
+- [Discord Task](#discord-task)
 - [CompleteTutorial](#completetutorial)
 
 #Configuration files
@@ -1019,6 +1020,40 @@ The bot will only alert and respond to a valid master. If you're unsure what thi
           "Snorlax": {"operator": "or", "cp": 900, "iv": 0.9}
         },
         "password": "alwoefhq348"
+    }
+}
+```
+
+## Discord Task
+[[back to top](#table-of-contents)]
+
+### Description
+[[back to top](#table-of-contents)]
+
+[Discord bot](https://discordapp.com/) Announcer Level up, pokemon cought
+
+Bot answer on command '/info' self stats.
+
+### Options
+
+* `discord_token` : bot token (getting [tutorial](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token) - one token per bot)
+* `master` : username with discriminator of bot owner('user#1234') , who will get alerts and may issue commands or a (case-sensitive!) user name.
+* `alert_catch` : dict of rules pokemons catch.
+
+The bot will only alert and respond to a valid master. If you're unsure what this is, send the bot a message from Discord and watch the log to find out.
+
+### Sample configuration
+[[back to top](#table-of-contents)]
+```json
+{
+    "type": "DiscordTask",
+    "config": {
+        "enabled": true,
+        "master": "user#1234",
+        "alert_catch": {
+          "all": {"operator": "and", "cp": 1300, "iv": 0.95},
+          "Snorlax": {"operator": "or", "cp": 900, "iv": 0.9}
+        }
     }
 }
 ```
