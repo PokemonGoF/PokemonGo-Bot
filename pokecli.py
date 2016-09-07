@@ -253,7 +253,7 @@ def main():
                         'cached_fort',
                         sender=bot,
                         level='debug',
-                        formatted='Forts cached.',
+                        formatted='Forts cached.'
                     )
                 except IOError as e:
                     bot.event_manager.emit(
