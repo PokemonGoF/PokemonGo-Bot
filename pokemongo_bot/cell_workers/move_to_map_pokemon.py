@@ -75,7 +75,6 @@ GREATBALL_ID = 2
 POKEBALL_ID = 1
 
 
-
 class MoveToMapPokemon(BaseTask):
     """Task for moving a trainer to a Pokemon."""
     SUPPORTED_TASK_API_VERSION = 1
@@ -125,7 +124,6 @@ class MoveToMapPokemon(BaseTask):
                 if self.config.get('debug', False):
                     self._emit_log("Catching {}".format(pokemon['name']))
 
-
             if self.was_caught(pokemon):
                 continue
 
@@ -135,13 +133,13 @@ class MoveToMapPokemon(BaseTask):
                 self.bot.position[0],
                 self.bot.position[1],
                 pokemon['latitude'],
-                pokemon['longitude'],
+                pokemon['longitude']
             )
 
             # If distance to pokemon greater than the max_sniping_distance, then ignore regardless of "snipe" setting
             if pokemon['dist'] > self.config.get('max_sniping_distance', 10000):
                 continue
-            
+
             # If distance bigger than walking distance, ignore if sniping is not active
             if pokemon['dist'] > self.config.get('max_walking_distance', 1000) and not self.config.get('snipe', False):
                 continue
@@ -157,9 +155,7 @@ class MoveToMapPokemon(BaseTask):
         try:
             req = requests.get('{}/{}?gyms=false&scanned=false'.format(self.config['address'], self.map_path))
         except requests.exceptions.ConnectionError:
-            self._emit_failure('Could not get Pokemon data from PokemonGo-Map: '
-                               '{}. Is it running?'.format(
-                                   self.config['address']))
+            self._emit_failure('Could not get Pokemon data from {}. Is it running?'.format(self.config['address']))
             return []
 
         try:
@@ -173,58 +169,79 @@ class MoveToMapPokemon(BaseTask):
 
         for pokemon in raw_data['pokemons']:
             try:
-                pokemon['encounter_id'] = long(base64.b64decode(pokemon['encounter_id']))
+                # Attempt to get potential nullable values
+                pokemon['encounter_id'] = "" if not pokemon['encounter_id'] else long(base64.b64decode(pokemon['encounter_id']))
+                pokemon['spawn_point_id'] = "" if not pokemon['spawnpoint_id'] else pokemon['spawnpoint_id']
+                pokemon['iv'] = 0 if 'iv' not in pokemon else pokemon['iv']
+
+                # Other parsable values...
+                pokemon['disappear_time'] = int(pokemon['disappear_time'] / 1000)
+                pokemon['name'] = self.pokemon_data[pokemon['pokemon_id'] - 1]['Name']
+                pokemon['is_vip'] = pokemon['name'] in self.bot.config.vips
             except:
-                self._emit_failure('base64 error: {}'.format(pokemon['encounter_id']))
+                self._emit_failure('Error while parsing information')
                 continue
-            pokemon['spawn_point_id'] = pokemon['spawnpoint_id']
-            pokemon['disappear_time'] = int(pokemon['disappear_time'] / 1000)
-            pokemon['name'] = self.pokemon_data[pokemon['pokemon_id'] - 1]['Name']
-            pokemon['is_vip'] = pokemon['name'] in self.bot.config.vips
 
             if pokemon['name'] not in self.config['catch'] and not pokemon['is_vip']:
+                if self.config.get('debug', False):
+                    self._emit_log('Skipped {} because its not in catch list and not a VIP'.format(pokemon['name']))
                 continue
 
             if self.was_caught(pokemon):
+                if self.config.get('debug', False):
+                    self._emit_log('Skipped {} because it was already catch or does not exist'.format(pokemon['name']))
                 continue
 
             pokemon['priority'] = self.config['catch'].get(pokemon['name'], 0)
-
             pokemon['dist'] = distance(
                 self.bot.position[0],
                 self.bot.position[1],
                 pokemon['latitude'],
-                pokemon['longitude'],
+                pokemon['longitude']
             )
 
             if pokemon['dist'] > self.config['max_sniping_distance'] and self.config['snipe']:
+                if self.config.get('debug', False):
+                    self._emit_log(
+                        'Skipped {} because the sniping distance exceeds the max ({})'.format(pokemon['name'], self.config['max_sniping_distance']))
                 continue
 
             if pokemon['dist'] > self.config['max_walking_distance'] and not self.config['snipe']:
+                if self.config.get('debug', False):
+                    self._emit_log(
+                        'Skipped {} because the walking distance exceeds the max ({})'.format(pokemon['name'],
+                                                                                              self.config[
+                                                                                                  'max_walking_distance']))
                 continue
 
             # pokemon not reachable with mean walking speed (by config)
             mean_walk_speed = (self.bot.config.walk_max + self.bot.config.walk_min) / 2
             if pokemon['dist'] > ((pokemon['disappear_time'] - now) * mean_walk_speed) and not self.config['snipe']:
+                if self.config.get('debug', False):
+                    self._emit_log(
+                        'Skipped {} because -pokemon not reachable with mean walking speed (by config)-'.format(
+                            pokemon['name']))
                 continue
 
             pokemon_list.append(pokemon)
 
         return pokemon_list
 
-    def add_caught(self, pokemon):
+    def was_caught(self, pokemon):
         for caught_pokemon in self.caught:
-            if caught_pokemon['encounter_id'] == pokemon['encounter_id']:
+            # Since IDs might be invalid (null/blank) by this time, compare by approximate location (TODO: make a better comparision)
+            if "{0:.4f}".format(pokemon['latitude']) == "{0:.4f}".format(caught_pokemon['latitude']) and "{0:.4f}".format(pokemon['longitude']) == "{0:.4f}".format(caught_pokemon['longitude']):
+                return True
+        return False
+
+    def add_caught(self, pokemon):
+        # Make sure it was not caught!
+        for caught_pokemon in self.caught:
+            if "{0:.4f}".format(pokemon['latitude']) == "{0:.4f}".format(caught_pokemon['latitude']) and "{0:.4f}".format(pokemon['longitude']) == "{0:.4f}".format(caught_pokemon['longitude']):
                 return
         if len(self.caught) >= 200:
             self.caught.pop(0)
         self.caught.append(pokemon)
-
-    def was_caught(self, pokemon):
-        for caught_pokemon in self.caught:
-            if pokemon['encounter_id'] == caught_pokemon['encounter_id']:
-                return True
-        return False
 
     def update_map_location(self):
         if not self.config['update_map']:
@@ -234,7 +251,7 @@ class MoveToMapPokemon(BaseTask):
         except requests.exceptions.ConnectionError:
             self._emit_failure('Could not update trainer location '
                                'PokemonGo-Map: {}. Is it running?'.format(
-                                   self.config['address']))
+                self.config['address']))
             return
 
         try:
@@ -254,7 +271,7 @@ class MoveToMapPokemon(BaseTask):
         # update map when 500m away from center and last update longer than 2 minutes away
         now = int(time.time())
         if (dist > self.config.get('update_map_min_distance_meters', 500) and
-            now - self.last_map_update > self.config.get('update_map_min_time_sec', 120)):
+                        now - self.last_map_update > self.config.get('update_map_min_time_sec', 120)):
             requests.post(
                 '{}/next_loc?lat={}&lon={}'.format(self.config['address'],
                                                    self.bot.position[0],
@@ -270,24 +287,67 @@ class MoveToMapPokemon(BaseTask):
             self.last_map_update = now
 
     def snipe(self, pokemon):
-        """Snipe a Pokemon by teleporting.
-
+        """
+		Snipe a Pokemon by teleporting.
         Args:
             pokemon: Pokemon to snipe.
         """
+
+        # Backup position before anything
         last_position = self.bot.position[0:2]
+
+        # Teleport, so that we can see nearby stuff
         self.bot.heartbeat()
         self._teleport_to(pokemon)
-        catch_worker = PokemonCatchWorker(pokemon, self.bot, self.config)
-        api_encounter_response = catch_worker.create_encounter_api_call()
+
+        exists = False
+        nearby_pokemons = []
+        nearby_stuff = self.bot.get_meta_cell()
+
+        # Sleep some time, so that we have accurate results (successfull cell data request)
         time.sleep(self.config.get('snipe_sleep_sec', 2))
-        self._teleport_back(last_position)
-        self.bot.api.set_position(last_position[0], last_position[1], self.alt, False)
-        time.sleep(self.config.get('snipe_sleep_sec', 2))
-        self.bot.heartbeat()
-        catch_worker.work(api_encounter_response)
-        self.add_caught(pokemon)
-        return WorkerResult.SUCCESS
+
+        # Retrieve nearby pokemons for validation
+        if 'wild_pokemons' in nearby_stuff:
+            nearby_pokemons.extend(nearby_stuff['wild_pokemons'])
+        if 'catchable_pokemons' in nearby_stuff:
+            nearby_pokemons.extend(nearby_stuff['catchable_pokemons'])
+
+        # Make sure the target still/really exists (TODO: validate expiration)
+        for nearby_pokemon in nearby_pokemons:
+            is_wild = 'pokemon_data' in nearby_pokemon
+            target_id = nearby_pokemon['pokemon_data']['pokemon_id'] if is_wild else nearby_pokemon['pokemon_id']
+            #self._emit_log(nearby_pokemon)
+            if target_id == pokemon['pokemon_id']:
+                exists = True
+                # Also, if the IDs arent valid, update them!
+                if not pokemon['encounter_id'] or not pokemon['spawnpoint_id']:
+                    pokemon['encounter_id'] = nearby_pokemon['encounter_id']
+                    pokemon['spawn_point_id'] = nearby_pokemon['spawn_point_id']
+                    pokemon['disappear_time'] = nearby_pokemon['last_modified_timestamp_ms'] if is_wild else nearby_pokemon['expiration_timestamp_ms']
+                break
+
+        # If target exists, catch it, otherwise ignore
+        if exists:
+            self._encountered(pokemon)
+            catch_worker = PokemonCatchWorker(pokemon, self.bot, self.config)
+            api_encounter_response = catch_worker.create_encounter_api_call()
+            time.sleep(self.config.get('snipe_sleep_sec', 2))
+            self._teleport_back(last_position)
+            self.bot.api.set_position(last_position[0], last_position[1], self.alt, False)
+            time.sleep(self.config.get('snipe_sleep_sec', 2))
+            self.bot.heartbeat()
+            catch_worker.work(api_encounter_response)
+            self.add_caught(pokemon)
+            return WorkerResult.SUCCESS
+        else:
+            self._emit_failure('{} doesnt exist anymore. Skipping...'.format(pokemon['name']))
+            self.add_caught(pokemon)
+            time.sleep(self.config.get('snipe_sleep_sec', 2))
+            self._teleport_back(last_position)
+            self.bot.api.set_position(last_position[0], last_position[1], self.alt, False)
+            time.sleep(self.config.get('snipe_sleep_sec', 2))
+            return WorkerResult.SUCCESS
 
     def dump_caught_pokemon(self):
         user_data_map_caught = os.path.join(_base_dir, 'data', 'map-caught-{}.json'.format(self.bot.config.username))
@@ -302,7 +362,8 @@ class MoveToMapPokemon(BaseTask):
 
         if (pokeballs_quantity + superballs_quantity + ultraballs_quantity) < self.min_ball:
             if self.config.get('debug', False):
-                self._emit_log("Not enough balls to start sniping (have {}, {} needed)".format(pokeballs_quantity + superballs_quantity + ultraballs_quantity, self.min_ball))
+                self._emit_log("Not enough balls to start sniping (have {}, {} needed)".format(
+                    pokeballs_quantity + superballs_quantity + ultraballs_quantity, self.min_ball))
             return WorkerResult.SUCCESS
 
         self.dump_caught_pokemon()
@@ -319,11 +380,12 @@ class MoveToMapPokemon(BaseTask):
             self.update_map_location()
             pokemon_list = self.get_pokemon_from_map()
 
-        pokemon_list.sort(key=lambda x: x['dist'])
+        # TODO: check if its really working
         if self.config['mode'] == 'priority':
             pokemon_list.sort(key=lambda x: x['priority'], reverse=True)
         if self.config['prioritize_vips']:
             pokemon_list.sort(key=lambda x: x['is_vip'], reverse=True)
+        pokemon_list.sort(key=lambda x: x['dist'])
 
         if len(pokemon_list) < 1:
             if self.config.get('debug', False):
@@ -339,11 +401,11 @@ class MoveToMapPokemon(BaseTask):
                 for pokemon in pokemon_list:
                     if self.snipe_high_prio_threshold < pokemon['priority']:
                         self.snipe(pokemon)
-                        count = count +1
+                        count = count + 1
                         if count >= self.config.get('snipe_max_in_chain', 2):
                             return WorkerResult.SUCCESS
                         if count is not 1:
-                            time.sleep(self.config.get('snipe_sleep_sec', 2)*5)
+                            time.sleep(self.config.get('snipe_sleep_sec', 2) * 5)
                     else:
                         if self.config.get('debug', False):
                             self._emit_log('this pokemon is not good enough to snipe {}'.format(pokemon))
@@ -371,13 +433,13 @@ class MoveToMapPokemon(BaseTask):
 
                 if pokemon['dist'] < Constants.MAX_DISTANCE_POKEMON_IS_REACHABLE:
                     self._encountered(pokemon)
-                    self.bot.capture_locked = False # unlock catch_worker
+                    self.bot.capture_locked = False  # unlock catch_worker
                     self.add_caught(pokemon)
                     return WorkerResult.SUCCESS
-                else :
+                else:
                     return WorkerResult.RUNNING
 
-        else :
+        else:
             step_walker = self._move_to_pokemon_througt_fort(nearest_fort, pokemon)
             if not step_walker or not step_walker.step():
                 return WorkerResult.RUNNING
@@ -436,7 +498,6 @@ class MoveToMapPokemon(BaseTask):
             data=self._pokemon_event_data(pokemon)
         )
         self.bot.api.set_position(pokemon['latitude'], pokemon['longitude'], self.alt, True)
-        self._encountered(pokemon)
 
     def _encountered(self, pokemon):
         """Emit event when trainer encounters a Pokemon.
@@ -476,10 +537,11 @@ class MoveToMapPokemon(BaseTask):
             data=self._pokemon_event_data(pokemon)
         )
         return walker_factory(self.walker,
-            self.bot,
-            pokemon['latitude'],
-            pokemon['longitude']
-        )
+                              self.bot,
+                              pokemon['latitude'],
+                              pokemon['longitude']
+                              )
+
     def _move_to_pokemon_througt_fort(self, fort, pokemon):
         """Moves trainer towards a fort before a Pokemon.
 
@@ -518,7 +580,7 @@ class MoveToMapPokemon(BaseTask):
             self.emit_event(
                 'moving_to_pokemon_throught_fort',
                 formatted="Moving towards {poke_name} - {poke_dist}  through pokestop  {fort_name} - {distance}",
-                data= pokemon_throught_fort_event_data
+                data=pokemon_throught_fort_event_data
             )
         else:
             self.emit_event(
@@ -526,30 +588,33 @@ class MoveToMapPokemon(BaseTask):
                 formatted='Arrived at fort.'
             )
 
-	return walker_factory(self.walker,
-            self.bot,
-            lat,
-            lng
-        )
+        return walker_factory(self.walker,
+                              self.bot,
+                              lat,
+                              lng
+                              )
 
     def get_nearest_fort_on_the_way(self, pokemon):
         forts = self.bot.get_forts(order_by_distance=True)
 
         # Remove stops that are still on timeout
         forts = filter(lambda x: x["id"] not in self.bot.fort_timeouts, forts)
-        i=0
-        while i < len(forts) :
+        i = 0
+        while i < len(forts):
             ratio = float(self.config.get('max_extra_dist_fort', 20))
-            dist_self_to_fort = distance (self.bot.position[0], self.bot.position[1], forts[i]['latitude'], forts [i]['longitude'])
-            dist_fort_to_pokemon = distance (pokemon['latitude'], pokemon['longitude'], forts[i]['latitude'], forts [i]['longitude'])
+            dist_self_to_fort = distance(self.bot.position[0], self.bot.position[1], forts[i]['latitude'],
+                                         forts[i]['longitude'])
+            dist_fort_to_pokemon = distance(pokemon['latitude'], pokemon['longitude'], forts[i]['latitude'],
+                                            forts[i]['longitude'])
             total_dist = dist_self_to_fort + dist_fort_to_pokemon
-            dist_self_to_pokemon = distance (self.bot.position[0], self.bot.position[1], pokemon['latitude'], pokemon['longitude'])
-            if total_dist < (1 + (ratio / 100))* dist_self_to_pokemon:
+            dist_self_to_pokemon = distance(self.bot.position[0], self.bot.position[1], pokemon['latitude'],
+                                            pokemon['longitude'])
+            if total_dist < (1 + (ratio / 100)) * dist_self_to_pokemon:
                 i = i + 1
-            else :
+            else:
                 del forts[i]
-		#Return nearest fort if there are remaining
-        if len(forts)> 0 :
+            # Return nearest fort if there are remaining
+        if len(forts) > 0:
             return forts[0]
-        else :
+        else:
             return None
