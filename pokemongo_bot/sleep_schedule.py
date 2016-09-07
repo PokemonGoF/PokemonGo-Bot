@@ -12,6 +12,7 @@ class SleepSchedule(object):
     Example Config:
     "sleep_schedule": [
       {
+        "enabled": true,
         "time": "12:00",
         "duration": "5:30",
         "time_random_offset": "00:30",
@@ -19,6 +20,7 @@ class SleepSchedule(object):
         "wake_up_at_location": ""
       },
       {
+        "enabled": true,
         "time": "17:45",
         "duration": "3:00",
         "time_random_offset": "01:00",
@@ -26,13 +28,14 @@ class SleepSchedule(object):
         "wake_up_at_location": ""
       }
     ]
+    enabled: (true | false) enables/disables SleepSchedule entry
     time: (HH:MM) local time that the bot should sleep
     duration: (HH:MM) the duration of sleep
     time_random_offset: (HH:MM) random offset of time that the sleep will start
-                        for this example the possible start time is 11:30-12:30
+                        for this example the possible start times are 11:30-12:30 and 16:45-18:45
     duration_random_offset: (HH:MM) random offset of duration of sleep
-                        for this example the possible duration is 5:00-6:00
-    wake_up_at_location: (lat, long | lat, long, alt | "") the location at which the bot wake up 
+                        for this example the possible durations are 5:00-6:00 and 2:30-3:30
+    wake_up_at_location: (lat, long | lat, long, alt | "") the location at which the bot wake up
     *Note that an empty string ("") will not change the location*.    """
 
     SCHEDULING_MARGIN = timedelta(minutes=10)    # Skip if next sleep is SCHEDULING_MARGIN from now
@@ -70,20 +73,35 @@ class SleepSchedule(object):
 
 
     def _process_config(self, config):
+
+        def testkey(entry, key, offset=False, defval=''):
+            if not key in entry:
+                index = config.index(entry) + 1
+                if not offset:
+                    raise ValueError('SleepSchedule: No %s key found in entry %d' % (key, index))
+                else:
+                    self.bot.logger.warning('SleepSchedule: No %s key found in entry %d, using default value (%s)' % (key, index, defval))
+
         self.entries = []
         for entry in config:
-            prepared = {}
-            prepared['time'] = datetime.strptime(entry['time'] if 'time' in entry else '01:00', '%H:%M')
+            if 'enabled' in entry and entry['enabled'] == False: continue
 
-            # Using datetime for easier stripping of timedeltas
-            raw_duration = datetime.strptime(entry['duration'] if 'duration' in entry else '07:00', '%H:%M')
+            prepared = {}
+
+            testkey(entry, 'time')
+            prepared['time'] = datetime.strptime(entry['time'], '%H:%M')
+
+            testkey(entry, 'duration')
+            raw_duration = datetime.strptime(entry['duration'], '%H:%M')
             duration = int(timedelta(hours=raw_duration.hour, minutes=raw_duration.minute).total_seconds())
 
+            testkey(entry, 'time_random_offset', offset=True, defval='01:00')
             raw_time_random_offset = datetime.strptime(entry['time_random_offset'] if 'time_random_offset' in entry else '01:00', '%H:%M')
             time_random_offset = int(
                 timedelta(
                     hours=raw_time_random_offset.hour, minutes=raw_time_random_offset.minute).total_seconds())
 
+            testkey(entry, 'duration_random_offset', offset=True, defval='00:30')
             raw_duration_random_offset = datetime.strptime(entry['duration_random_offset'] if 'duration_random_offset' in entry else '00:30', '%H:%M')
             duration_random_offset = int(
                 timedelta(
@@ -99,16 +117,19 @@ class SleepSchedule(object):
                         alt=float(wake_up_at_location[2])
                     else:
                         alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
+                    prepared['wake_up_at_location'] = [lat, lng, alt]
                 except ValueError:
-                    raise ValueError('SleepSchedule wake_up_at_location, parsing error in location') #TODO there must be a more elegant way to do it...
+                    index = config.index(entry)
+                    self.bot.warning('SleepSchedule: error parsing wake_up_at_location in entry %d' % index)
 
-                prepared['wake_up_at_location'] = [lat, lng, alt]
             prepared['duration'] = duration
             prepared['time_random_offset'] = time_random_offset
             prepared['duration_random_offset'] = duration_random_offset
             self.entries.append(prepared)
 
     def _schedule_next_sleep(self):
+        if not len(self.entries): return
+
         self._next_sleep, self._next_duration, self._next_end, self._wake_up_at_location, sleep_now = self._get_next_sleep_schedule()
 
         if not sleep_now:
@@ -124,6 +145,8 @@ class SleepSchedule(object):
             self._last_reminder = datetime.now()
 
     def _should_sleep_now(self):
+        if not len(self.entries): return False
+
         now = datetime.now()
 
         if now >= self._next_sleep and now < self._next_end:
