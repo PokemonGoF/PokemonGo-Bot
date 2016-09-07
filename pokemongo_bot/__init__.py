@@ -29,7 +29,7 @@ from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
 from sleep_schedule import SleepSchedule
-from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler, ColoredLoggingHandler, SocialHandler
+from pokemongo_bot.event_handlers import SocketIoHandler, LoggingHandler, SocialHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from pokemongo_bot.base_dir import _base_dir
@@ -146,10 +146,10 @@ class PokemonGoBot(object):
     def _setup_event_system(self):
         handlers = []
 
-        if self.config.logging and 'color' in self.config.logging and self.config.logging['color']:
-            handlers.append(ColoredLoggingHandler(self))
-        else:
-            handlers.append(LoggingHandler(self))
+        color = self.config.logging and 'color' in self.config.logging and self.config.logging['color']
+        debug = self.config.debug
+
+        handlers.append(LoggingHandler(color, debug))
 
         if self.config.enable_social:
             handlers.append(SocialHandler(self))
