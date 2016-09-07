@@ -5,8 +5,8 @@ from itertools import chain
 import math
 import polyline
 import requests
-import numpy as np
 from geopy.distance import great_circle
+
 
 def distance(point1, point2):
     return Geodesic.WGS84.Inverse(point1[0], point1[1], point2[0], point2[1])["s12"]  # @UndefinedVariable
