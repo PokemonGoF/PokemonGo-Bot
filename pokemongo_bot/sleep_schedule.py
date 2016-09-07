@@ -78,9 +78,9 @@ class SleepSchedule(object):
             if not key in entry:
                 index = config.index(entry) + 1
                 if not offset:
-                    raise ValueError('SleepSchedule: No %s key found in entry %d' % (key, index))
+                    raise ValueError('SleepSchedule: No "%s" key found in entry %d' % (key, index))
                 else:
-                    self.bot.logger.warning('SleepSchedule: No %s key found in entry %d, using default value (%s)' % (key, index, defval))
+                    self.bot.logger.warning('SleepSchedule: No "%s" key found in entry %d, using default value (%s)' % (key, index, defval))
 
         self.entries = []
         for entry in config:
