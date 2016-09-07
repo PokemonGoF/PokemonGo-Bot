@@ -261,7 +261,7 @@ class TestPolylineWalker(unittest.TestCase):
         self.bot.config.walk_min = walk_min
 
     def test_stay_put(self):
-        altitude = 123
+        altitude = 429.5
         self.bot.position = [47.1706378, 8.5167405, altitude]
         walk_max = self.bot.config.walk_max
         walk_min = self.bot.config.walk_min
