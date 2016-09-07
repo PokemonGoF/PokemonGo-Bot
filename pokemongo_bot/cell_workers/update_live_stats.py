@@ -12,9 +12,6 @@ from pokemongo_bot import inventory
 import json
 
 
-class FileIOException(Exception):
-    pass
-
 
 class UpdateLiveStats(BaseTask):
     """
