@@ -98,7 +98,7 @@ class UpdateLiveStats(BaseTask):
         try:
             with open(xpfile, 'rb') as data:
                 self.xp_per_level = json.load(data)
-        except ValueError:
+        except (ValueError, IOError):
             # log somme warning message
             self.emit_event(
                 'log_stats',
