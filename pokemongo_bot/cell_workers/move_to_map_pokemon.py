@@ -276,7 +276,7 @@ class MoveToMapPokemon(BaseTask):
             pokemon: Pokemon to snipe.
         """
         last_position = self.bot.position[0:2]
-        self.bot.heartbeat()
+        self.bot.hb_locked = True
         self._teleport_to(pokemon)
         catch_worker = PokemonCatchWorker(pokemon, self.bot, self.config)
         api_encounter_response = catch_worker.create_encounter_api_call()
@@ -284,7 +284,7 @@ class MoveToMapPokemon(BaseTask):
         self._teleport_back(last_position)
         self.bot.api.set_position(last_position[0], last_position[1], self.alt, False)
         time.sleep(self.config.get('snipe_sleep_sec', 2))
-        self.bot.heartbeat()
+        self.bot.hb_locked = False
         catch_worker.work(api_encounter_response)
         self.add_caught(pokemon)
         return WorkerResult.SUCCESS
