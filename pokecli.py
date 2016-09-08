@@ -37,6 +37,9 @@ import time
 import signal
 import string
 import subprocess
+
+codecs.register(lambda name: codecs.lookup("utf-8") if name == "cp65001" else None)
+
 from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException, NoPlayerPositionSetException
 from geopy.exc import GeocoderQuotaExceeded
@@ -127,7 +130,6 @@ def main():
             return f.read()[:8]
 
     try:
-        codecs.register(lambda name: codecs.lookup("utf-8") if name == "cp65001" else None)
         sys.stdout = codecs.getwriter('utf8')(sys.stdout)
         sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
