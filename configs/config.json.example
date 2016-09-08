@@ -21,6 +21,19 @@
         }
       },
       {
+        "type": "DiscordTask",
+        "config": {
+          "enabled": false,
+          "master": null,
+          "// old syntax, still supported: alert_catch": ["all"],
+          "// new syntax:": {},
+          "alert_catch": {
+            "all": {"operator": "and", "cp": 1300, "iv": 0.95},
+            "Snorlax": {"operator": "or", "cp": 900, "iv": 0.9}
+          }
+        }
+      },
+      {
         "//NOTE: This task MUST be placed on the top of task list": {},
         "type": "RandomAlivePause",
         "config": {

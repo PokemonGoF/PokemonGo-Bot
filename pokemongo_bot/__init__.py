@@ -94,6 +94,7 @@ class PokemonGoBot(object):
         self.recent_forts = [None] * config.forts_max_circle_size
         self.tick_count = 0
         self.softban = False
+        self.wake_location = None
         self.start_position = None
         self.last_map_object = None
         self.last_time_map_object = 0
@@ -1110,6 +1111,41 @@ class PokemonGoBot(object):
         if self.config.test:
             # TODO: Add unit tests
             return
+
+        if self.wake_location:
+            msg = "Wake up location found: {location} {position}"
+            self.event_manager.emit(
+                'location_found',
+                sender=self,
+                level='info',
+                formatted=msg,
+                data={
+                    'location': self.wake_location['raw'],
+                    'position': self.wake_location['coord']
+                }
+            )
+
+            self.api.set_position(*self.wake_location['coord'])
+
+            self.event_manager.emit(
+                'position_update',
+                sender=self,
+                level='info',
+                formatted="Now at {current_position}",
+                data={
+                    'current_position': self.position,
+                    'last_position': '',
+                    'distance': '',
+                    'distance_unit': ''
+                }
+            )
+
+            self.start_position = self.position
+
+            has_position = True
+
+            return
+
 
         if self.config.location:
             location_str = self.config.location

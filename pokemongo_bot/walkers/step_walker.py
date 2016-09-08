@@ -23,7 +23,7 @@ class StepWalker(object):
             self.dest_alt = dest_alt
 
         self.saved_location = None
-        self.last_update = 0
+        self.last_update = time.time()
 
     def step(self, speed=None):
         now = time.time()
@@ -46,8 +46,6 @@ class StepWalker(object):
                                           "last_position": (origin_lat, origin_lng, origin_alt),
                                           "distance": "",
                                           "distance_unit": ""})
-
-        self.bot.heartbeat()
 
         return self.is_arrived()
 

@@ -21,6 +21,7 @@ class TestLocationParser(unittest.TestCase):
             username='Foobar',
         )
         self.bot.alt = 8
+        self.bot.wake_location = None
         self.bot.logger = MagicMock(return_value="")
         self.bot.updateConfig(config)
 
