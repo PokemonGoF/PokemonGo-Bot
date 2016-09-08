@@ -135,8 +135,26 @@ class Polyline(object):
     def get_alt(self, at_point=None):
         if at_point is None:
             at_point = self._last_pos
-        
-        return sorted([(great_circle(at_point, k).meters, v) for k, v in self._elevation_at_point.items()])[0][1]
+        if self._elevation_at_point:
+            return sorted([(great_circle(at_point, k).meters, v) for k, v in self._elevation_at_point.items()])[0][1]
+        else:
+            return None
+
+    def _get_alt(self, at_point=None):
+        if at_point is None:
+            at_point = self._last_pos
+        if self._elevation_at_point:
+            (distance_to_p1, ep1, p1), (distance_to_p2, ep2, p2) = sorted([(great_circle(at_point, k).meters, v, k) for k, v in self._elevation_at_point.items()])[:2]
+            distance_p1_p2 = great_circle(p1, p2).meters
+            return self._get_relative_hight(ep1, ep2, distance_p1_p2, distance_to_p1, distance_to_p2)
+        else:
+            return None
+
+
+    def _get_relative_hight(self, ep1, ep2, distance_p1_p2, distance_to_p1, distance_to_p2):
+        hdelta = ep2 - ep1
+        elevation = ((math.pow(distance_p1_p2,2) + math.pow(distance_to_p1,2) - math.pow(distance_to_p2,2)) * hdelta)/ (3 * distance_p1_p2) + ep1
+        return elevation
 
     def get_total_distance(self):
         return math.ceil(sum([distance(*x) for x in self._get_walk_steps()]))
