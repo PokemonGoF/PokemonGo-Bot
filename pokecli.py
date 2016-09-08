@@ -213,6 +213,7 @@ def main():
                 )
                 time.sleep(36000)
             except NoPlayerPositionSetException:
+                wait_time = config.reconnecting_timeout * 60
                 bot.event_manager.emit(
                     'api_error',
                     sender=bot,
