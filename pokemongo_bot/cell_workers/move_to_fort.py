@@ -95,12 +95,13 @@ class MoveToFort(BaseTask):
             if not step_walker.step():
                 return WorkerResult.RUNNING
         else:
-            if nearest_fort.get('active_fort_modifier') and self.wait_at_fort and not self.wait_log_sent:
-                self.wait_log_sent = True
-                self.emit_event(
-                    'arrived_at_fort',
-                    formatted='Waiting near fort %s until Lure module expires' % fort_name
-                )
+            if nearest_fort.get('active_fort_modifier') and self.wait_at_fort:
+                if not self.wait_log_sent:
+                    self.wait_log_sent = True
+                    self.emit_event(
+                        'arrived_at_fort',
+                        formatted='Waiting near fort %s until Lure module expires' % fort_name
+                    )
             else:
                 self.emit_event(
                     'arrived_at_fort',
