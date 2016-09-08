@@ -10,12 +10,17 @@ class FakeDatetime(datetime):
         return datetime.__new__(datetime, *args, **kwargs)
 
 class SleepScheculeTestCase(unittest.TestCase):
-    config1 = [ {'time': '12:20', 'duration': '01:05', 'time_random_offset': '00:05', 'duration_random_offset': '00:05'},
-                {'time': '15:00', 'duration': '03:00', 'time_random_offset': '00:00', 'duration_random_offset': '00:00'},
-                {'time': '23:00', 'duration': '07:00', 'time_random_offset': '00:00', 'duration_random_offset': '00:00'}
-              ]
+    config1 = { 'entries': [
+                  {'time': '12:20', 'duration': '01:05', 'time_random_offset': '00:05', 'duration_random_offset': '00:05'},
+                  {'time': '15:00', 'duration': '03:00', 'time_random_offset': '00:00', 'duration_random_offset': '00:00'},
+                  {'time': '23:00', 'duration': '07:00', 'time_random_offset': '00:00', 'duration_random_offset': '00:00'}
+                ]
+              }
 
-    config2 = [ {'time': '12:20', 'duration': '01:05', 'time_random_offset': '00:05', 'duration_random_offset': '00:05'} ]
+    config2 = { 'entries': [
+                  {'time': '12:20', 'duration': '01:05', 'time_random_offset': '00:05', 'duration_random_offset': '00:05'}
+                ]
+              }
 
 
     def setUp(self):
