@@ -110,10 +110,10 @@ Simulates the user going to sleep every day for some time, the sleep time and th
 ###Example Config
 ```
 "sleep_schedule": {
-  enabled: true,
-  enable_reminder: false,
-  reminder_interval: 600,
-  [
+  "enabled": true,
+  "enable_reminder": false,
+  "reminder_interval": 600,
+  "entries": [
     {
       "enabled": true,
       "time": "12:00",
