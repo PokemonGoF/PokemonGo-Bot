@@ -145,11 +145,11 @@ def main():
         finished = False
 
         while not finished:
-            try:
+           wait_time = config.reconnecting_timeout * 60
+           try:
                 bot = initialize(config)
                 bot = start_bot(bot, config)
                 config_changed = check_mod(config_file)
-                wait_time = config.reconnecting_timeout * 60
 
                 bot.event_manager.emit(
                     'bot_start',
