@@ -76,6 +76,7 @@ class LoggingHandler(EventHandler):
         'vip_pokemon':                       'red',
         'use_incense':                       'blue',
         'vanish_limit_reached':              'red',
+        'move_to_map_pokemon_teleport_to':   'yellow',
 
         'arrived_at_cluster':                'none',
         'arrived_at_fort':                   'none',
