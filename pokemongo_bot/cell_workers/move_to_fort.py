@@ -7,6 +7,7 @@ from pokemongo_bot.walkers.walker_factory import walker_factory
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
 from utils import distance, format_dist, fort_details
+from datetime import datetime, timedelta
 
 
 class MoveToFort(BaseTask):
@@ -19,7 +20,7 @@ class MoveToFort(BaseTask):
         self.ignore_item_count = self.config.get("ignore_item_count", False)
         self.walker = self.config.get('walker', 'StepWalker')
         self.wait_at_fort = self.config.get('wait_on_lure', False)
-        self.wait_log_sent = False
+        self.wait_log_sent = None
 
     def should_run(self):
         has_space_for_loot = inventory.Items.has_space_for_loot()
@@ -66,7 +67,7 @@ class MoveToFort(BaseTask):
         moving = noised_dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE if self.bot.config.replicate_gps_xy_noise else dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE
 
         if moving:
-            self.wait_log_sent = False
+            self.wait_log_sent = None
             fort_event_data = {
                 'fort_name': u"{}".format(fort_name),
                 'distance': format_dist(dist, unit),
@@ -96,11 +97,11 @@ class MoveToFort(BaseTask):
                 return WorkerResult.RUNNING
         else:
             if nearest_fort.get('active_fort_modifier') and self.wait_at_fort:
-                if not self.wait_log_sent:
-                    self.wait_log_sent = True
-                    self.emit_event(
+                if self.wait_log_sent == None or self.wait_log_sent < datetime.now() - timedelta(seconds=60):
+                        self.wait_log_sent = datetime.now()
+                        self.emit_event(
                         'arrived_at_fort',
-                        formatted='Waiting near fort %s until Lure module expires' % fort_name
+                        formatted='Waiting near fort %s until lure module expires' % fort_name
                     )
             else:
                 self.emit_event(
