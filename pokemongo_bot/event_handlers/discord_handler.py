@@ -71,7 +71,6 @@ class DiscordClass:
 
     def run(self):
       self._dbot.forever_loop()
-      self = None
 
 class DiscordHandler(EventHandler):
     def __init__(self, bot, config):
