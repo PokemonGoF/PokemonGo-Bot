@@ -489,25 +489,31 @@
     "walk_min": 2.16,
     "alt_min": 500,
     "alt_max": 1000,
-    "sleep_schedule": [
-      {
-        "enabled": true,
-        "time": "12:00",
-        "duration": "5:30",
-        "time_random_offset": "00:30",
-        "duration_random_offset": "00:30",
-        "wake_up_at_location": ""
-      },
-      {
-        "enabled": true,
-        "time": "17:45",
-        "duration": "3:00",
-        "time_random_offset": "01:00",
-        "duration_random_offset": "00:30",
-        "wake_up_at_location": ""
-      }
-    ],
-    "sleep_reminder_interval": 600,
+
+    "sleep_schedule": {
+      "enabled": true,
+      "enable_reminder": false,
+      "reminder_interval": 600,
+      "entries": [
+        {
+          "enabled": true,
+          "time": "12:00",
+          "duration": "5:30",
+          "time_random_offset": "00:30",
+          "duration_random_offset": "00:30",
+          "wake_up_at_location": ""
+        },
+        {
+          "enabled": true,
+          "time": "17:45",
+          "duration": "3:00",
+          "time_random_offset": "01:00",
+          "duration_random_offset": "00:30",
+          "wake_up_at_location": ""
+        }
+      ]
+    },
+
     "debug": false,
     "test": false,
     "walker_limit_output": false,
