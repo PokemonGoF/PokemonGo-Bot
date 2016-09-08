@@ -47,8 +47,6 @@ class StepWalker(object):
                                           "distance": "",
                                           "distance_unit": ""})
 
-        self.bot.heartbeat()
-
         return self.is_arrived()
 
     def is_arrived(self):
