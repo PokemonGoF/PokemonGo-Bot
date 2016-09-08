@@ -149,6 +149,7 @@ def main():
                 bot = initialize(config)
                 bot = start_bot(bot, config)
                 config_changed = check_mod(config_file)
+                wait_time = config.reconnecting_timeout * 60
 
                 bot.event_manager.emit(
                     'bot_start',
@@ -180,7 +181,6 @@ def main():
                 report_summary(bot)
 
             except NotLoggedInException:
-                wait_time = config.reconnecting_timeout * 60
                 bot.event_manager.emit(
                     'api_error',
                     sender=bot,
@@ -213,7 +213,6 @@ def main():
                 )
                 time.sleep(36000)
             except NoPlayerPositionSetException:
-                wait_time = config.reconnecting_timeout * 60
                 bot.event_manager.emit(
                     'api_error',
                     sender=bot,
