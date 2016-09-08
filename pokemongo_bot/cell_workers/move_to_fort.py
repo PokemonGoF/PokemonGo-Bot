@@ -19,6 +19,7 @@ class MoveToFort(BaseTask):
         self.ignore_item_count = self.config.get("ignore_item_count", False)
         self.walker = self.config.get('walker', 'StepWalker')
         self.wait_at_fort = self.config.get('wait_on_lure', False)
+        self.wait_log_sent = False
 
     def should_run(self):
         has_space_for_loot = inventory.Items.has_space_for_loot()
@@ -65,6 +66,7 @@ class MoveToFort(BaseTask):
         moving = noised_dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE if self.bot.config.replicate_gps_xy_noise else dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE
 
         if moving:
+            self.wait_log_sent = False
             fort_event_data = {
                 'fort_name': u"{}".format(fort_name),
                 'distance': format_dist(dist, unit),
@@ -93,10 +95,11 @@ class MoveToFort(BaseTask):
             if not step_walker.step():
                 return WorkerResult.RUNNING
         else:
-            if nearest_fort.get('active_fort_modifier') and self.wait_at_fort:
+            if nearest_fort.get('active_fort_modifier') and self.wait_at_fort and not self.wait_log_sent:
+                self.wait_log_sent = True
                 self.emit_event(
                     'arrived_at_fort',
-                    formatted='Waiting near fort %s till Lure module expired' % fort_name
+                    formatted='Waiting near fort %s until Lure module expires' % fort_name
                 )
             else:
                 self.emit_event(
