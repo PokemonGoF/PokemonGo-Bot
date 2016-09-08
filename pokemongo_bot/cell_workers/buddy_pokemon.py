@@ -13,8 +13,7 @@ class BuddyPokemon(BaseTask):
         self.buddy_km_needed = 0
     	self.buddy_list = self.config.get('buddy_list', [])
         '''
-    	self.only_one_per_family = self.config.get('only_one_per_family', True)
-    	self.best_cp_in_family = self.config.get('best_cp_in_family', True)
+    	self.best_in_family = self.config.get('best_in_family', True)
     	self.candy_limit = self.config.get('candy_limit', 0) # 0 = Max Limit
         '''
     	self.buddy_change_wait_min = self.config.get('buddy_change_wait_min', 3)
