@@ -98,8 +98,8 @@ class MoveToFort(BaseTask):
         else:
             if nearest_fort.get('active_fort_modifier') and self.wait_at_fort:
                 if self.wait_log_sent == None or self.wait_log_sent < datetime.now() - timedelta(seconds=60):
-                        self.wait_log_sent = datetime.now()
-                        self.emit_event(
+                    self.wait_log_sent = datetime.now()
+                    self.emit_event(
                         'arrived_at_fort',
                         formatted='Waiting near fort %s until lure module expires' % fort_name
                     )
