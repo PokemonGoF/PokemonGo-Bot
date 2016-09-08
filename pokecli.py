@@ -682,7 +682,7 @@ def init_config():
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
     config.vips = load.get('vips', {})
-    config.sleep_schedule = load.get('sleep_schedule', [])
+    config.sleep_schedule = load.get('sleep_schedule', {})
     config.live_config_update = load.get('live_config_update', {})
     config.live_config_update_enabled = config.live_config_update.get('enabled', False)
     config.live_config_update_tasks_only = config.live_config_update.get('tasks_only', False)
