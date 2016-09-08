@@ -139,12 +139,13 @@ Simulates the user going to sleep every day for some time, the sleep time and th
 - enable_reminder: (true | false) enables/disables sleep reminder. Default: false
 - reminder_interval: (interval) reminder interval in seconds. Default: 600
 
+- entries: [{}] SleepSchedule entries. Default: []
 - enabled: (true | false) see above
 - time: (HH:MM) local time that the bot should sleep
 - duration: (HH:MM) the duration of sleep
 - time_random_offset: (HH:MM) random offset of time that the sleep will start, for this example the possible start times are 11:30-12:30 and 16:45-18:45. Default: 01:00
 - duration_random_offset: (HH:MM) random offset of duration of sleep, for this example the possible durations are 5:00-6:00 and 2:30-3:30. Default: 00:30
-- wake_up_at_location: (lat, long | lat, long, alt | "") the location at which the bot wake up *Note that an empty string ("") will not change the location*.
+- wake_up_at_location: (label | lat, long | lat, long, alt | "") the location at which the bot wake up. You can use location "label" set in favorite_location config. Default: "". *Note that an empty string ("") will not change the location*.
 
 
 ## Configuring Tasks
