@@ -249,9 +249,9 @@ class MoveToMapPokemon(BaseTask):
         last_position = self.bot.position[0:2]
 
         # Teleport, so that we can see nearby stuff
-        self.bot.heartbeat()
+        # self.bot.heartbeat() was moved to thread, if you do want to call it, you need sleep 10s.
+        self.bot.hb_locked = True
         self._teleport_to(pokemon)
-
         # Simulate kind of a lag after teleporting/moving to a long distance
         time.sleep(2)
 
@@ -300,6 +300,7 @@ class MoveToMapPokemon(BaseTask):
             self.bot.heartbeat()
             catch_worker.work(api_encounter_response)
             self.inspect(pokemon)
+            self.bot.hb_locked = False
             return WorkerResult.SUCCESS
         else:
             self._emit_failure('{} doesnt exist anymore. Skipping...'.format(pokemon['name']))
@@ -308,6 +309,7 @@ class MoveToMapPokemon(BaseTask):
             self._teleport_back(last_position)
             self.bot.api.set_position(last_position[0], last_position[1], self.alt, False)
             time.sleep(self.config.get('snipe_sleep_sec', 2))
+            self.bot.hb_locked = False
             return WorkerResult.SUCCESS
 
     def dump_caught_pokemon(self):

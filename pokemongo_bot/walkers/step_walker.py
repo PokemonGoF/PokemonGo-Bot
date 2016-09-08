@@ -71,7 +71,6 @@ class StepWalker(object):
                     'distance_unit': ''
                 }
             )
-            self.bot.heartbeat()
             # This step is implicitlly teleporting...
             # and since now we have variable speeds it can be quite often that self.dist < self.speed
             # especially for the polyline
@@ -95,7 +94,6 @@ class StepWalker(object):
                 'distance_unit': ''
             }
         )
-        self.bot.heartbeat()
 
         sleep(1)  # sleep one second plus a random delta
         # self._work_at_position(
