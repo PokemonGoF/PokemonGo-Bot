@@ -2,6 +2,7 @@ numpy==1.11.0
 networkx==1.11
 -e git+https://github.com/joelgreen/pgoapi.git/@fa49ada8570b0817c5a73b9315ba010fa7a47874#egg=pgoapi
 geopy==1.11.0
+geographiclib==1.46.3
 protobuf==3.0.0b4
 requests==2.10.0
 requests-mock==1.0.0

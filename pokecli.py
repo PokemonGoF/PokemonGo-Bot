@@ -145,6 +145,7 @@ def main():
         finished = False
 
         while not finished:
+            wait_time = config.reconnecting_timeout * 60
             try:
                 bot = initialize(config)
                 bot = start_bot(bot, config)
@@ -180,7 +181,6 @@ def main():
                 report_summary(bot)
 
             except NotLoggedInException:
-                wait_time = config.reconnecting_timeout * 60
                 bot.event_manager.emit(
                     'api_error',
                     sender=bot,
@@ -681,7 +681,7 @@ def init_config():
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
     config.vips = load.get('vips', {})
-    config.sleep_schedule = load.get('sleep_schedule', [])
+    config.sleep_schedule = load.get('sleep_schedule', {})
     config.live_config_update = load.get('live_config_update', {})
     config.live_config_update_enabled = config.live_config_update.get('enabled', False)
     config.live_config_update_tasks_only = config.live_config_update.get('tasks_only', False)

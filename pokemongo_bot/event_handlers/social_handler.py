@@ -71,7 +71,7 @@ class MyMQTTClass:
             self._mqttc.on_publish = self.mqtt_on_publish
             self._mqttc.on_disconnect = self.on_disconnect
 
-            self._mqttc.connect("broker.pikabot.org", 1883, 60)
+            self._mqttc.connect("broker.pikabot.org", 1883, 10)
             # Enable this line if you are doing the snip code, off stress
             # self._mqttc.loop_start()
         except TypeError:
