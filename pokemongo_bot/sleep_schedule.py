@@ -42,8 +42,6 @@ class SleepSchedule(object):
 
     def __init__(self, bot, config):
         self.bot = bot
-        self._last_reminder = datetime.now()
-        self._reminder_interval = self.bot.config.sleep_reminder_interval
         self._last_index = -1
         self._next_index = -1
         self._process_config(config)
@@ -144,7 +142,6 @@ class SleepSchedule(object):
                     'duration': self._time_fmt(self._next_duration)
                 }
             )
-            self._last_reminder = datetime.now()
 
     def _should_sleep_now(self):
         if not len(self.entries): return False
@@ -154,19 +151,6 @@ class SleepSchedule(object):
         if now >= self._next_sleep and now < self._next_end:
             self._next_duration = (self._next_end - now).total_seconds()
             return True
-
-        diff = now - self._last_reminder
-        if (diff.total_seconds() >= self._reminder_interval):
-            self.bot.event_manager.emit(
-                'next_sleep',
-                sender=self,
-                formatted="Next sleep at {time}, for a duration of {duration}",
-                data={
-                    'time': self._time_fmt(self._next_sleep),
-                    'duration': self._time_fmt(self._next_duration)
-                }
-            )
-            self._last_reminder = now
 
         return False
 
