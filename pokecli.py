@@ -145,6 +145,7 @@ def main():
         finished = False
 
         while not finished:
+            wait_time = config.reconnecting_timeout * 60
             try:
                 bot = initialize(config)
                 bot = start_bot(bot, config)
@@ -180,7 +181,6 @@ def main():
                 report_summary(bot)
 
             except NotLoggedInException:
-                wait_time = config.reconnecting_timeout * 60
                 bot.event_manager.emit(
                     'api_error',
                     sender=bot,
