@@ -10,31 +10,42 @@ class SleepSchedule(object):
     and the duration is changed every day by a random offset defined in the
     config file
     Example Config:
-    "sleep_schedule": [
-      {
-        "enabled": true,
-        "time": "12:00",
-        "duration": "5:30",
-        "time_random_offset": "00:30",
-        "duration_random_offset": "00:30",
-        "wake_up_at_location": ""
-      },
-      {
-        "enabled": true,
-        "time": "17:45",
-        "duration": "3:00",
-        "time_random_offset": "01:00",
-        "duration_random_offset": "00:30",
-        "wake_up_at_location": ""
-      }
-    ]
-    enabled: (true | false) enables/disables SleepSchedule entry
+    "sleep_schedule": {
+      enabled: true,
+      enable_reminder: false,
+      reminder_interval: 600,
+      [
+        {
+          "enabled": true,
+          "time": "12:00",
+          "duration": "5:30",
+          "time_random_offset": "00:30",
+          "duration_random_offset": "00:30",
+          "wake_up_at_location": ""
+        },
+        {
+          "enabled": true,
+          "time": "17:45",
+          "duration": "3:00",
+          "time_random_offset": "01:00",
+          "duration_random_offset": "00:30",
+          "wake_up_at_location": ""
+        }
+      ]
+    }
+    enabled: (true | false) enables/disables SleepSchedule. Inside of entry will enable/disable single entry, but will not override global value. Default: true
+    enable_reminder: (true | false) enables/disables sleep reminder. Default: false
+    reminder_interval: (interval) reminder interval in seconds. Default: 600
+
+    enabled: (true | false) see above
     time: (HH:MM) local time that the bot should sleep
     duration: (HH:MM) the duration of sleep
     time_random_offset: (HH:MM) random offset of time that the sleep will start
                         for this example the possible start times are 11:30-12:30 and 16:45-18:45
+                        default: 01:00
     duration_random_offset: (HH:MM) random offset of duration of sleep
                         for this example the possible durations are 5:00-6:00 and 2:30-3:30
+                        default: 00:30
     wake_up_at_location: (lat, long | lat, long, alt | "") the location at which the bot wake up
     *Note that an empty string ("") will not change the location*.    """
 
@@ -42,7 +53,6 @@ class SleepSchedule(object):
 
     def __init__(self, bot, config):
         self.bot = bot
-        self._reminder_interval = self.bot.config.sleep_reminder_interval
         self._last_index = -1
         self._next_index = -1
         self._process_config(config)
@@ -82,7 +92,20 @@ class SleepSchedule(object):
                     self.bot.logger.warning('SleepSchedule: No "%s" key found in entry %d, using default value (%s)' % (key, index, defval))
 
         self.entries = []
-        for entry in config:
+
+        if 'enabled' in config and config['enabled'] == False: return
+
+        if 'enable_reminder' in config and config['enable_reminder'] == True:
+            self._enable_reminder = True
+            self._reminder_interval = config['reminder_interval'] if 'reminder_interval' in config else 600
+        else:
+            self._enable_reminder = False
+
+        if not 'entries' in config:
+            self.bot.logger.warning('SleepSchedule is disabled. Config structure has been changed, see docs/configuration_files.md for more information')
+            return
+
+        for entry in config['entries']:
             if 'enabled' in entry and entry['enabled'] == False: continue
 
             prepared = {}
@@ -143,7 +166,7 @@ class SleepSchedule(object):
                     'duration': self._time_fmt(self._next_duration)
                 }
             )
-            self._last_reminder = datetime.now()
+            if self._enable_reminder: self._last_reminder = datetime.now()
 
     def _should_sleep_now(self):
         if not len(self.entries): return False
@@ -154,18 +177,19 @@ class SleepSchedule(object):
             self._next_duration = (self._next_end - now).total_seconds()
             return True
 
-        diff = now - self._last_reminder
-        if (diff.total_seconds() >= self._reminder_interval):
-            self.bot.event_manager.emit(
-                'next_sleep',
-                sender=self,
-                formatted="Next sleep at {time}, for a duration of {duration}",
-                data={
-                    'time': str(self._next_sleep.strftime("%H:%M:%S")),
-                    'duration': str(timedelta(seconds=self._next_duration))
-                }
-            )
-            self._last_reminder = now
+        if self._enable_reminder:
+            diff = now - self._last_reminder
+            if (diff.total_seconds() >= self._reminder_interval):
+                self.bot.event_manager.emit(
+                    'next_sleep',
+                    sender=self,
+                    formatted="Next sleep at {time}, for a duration of {duration}",
+                    data={
+                        'time': str(self._next_sleep.strftime("%H:%M:%S")),
+                        'duration': str(timedelta(seconds=self._next_duration))
+                    }
+                )
+                self._last_reminder = now
 
         return False
 
