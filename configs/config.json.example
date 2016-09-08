@@ -292,6 +292,7 @@
         "wake_up_at_location": ""
       }
     ],
+    "sleep_reminder_interval": 600,
     "gps_default_altitude": 8.0,
     "replicate_gps_xy_noise": false,
     "replicate_gps_z_noise": false,

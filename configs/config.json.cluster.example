@@ -241,6 +241,7 @@
         "wake_up_at_location": ""
       }
     ],
+    "sleep_reminder_interval": 600,
     "debug": false,
     "test": false,
     "walker_limit_output": false,
