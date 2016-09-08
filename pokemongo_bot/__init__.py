@@ -833,7 +833,8 @@ class PokemonGoBot(object):
                 logging_format = '[%(threadName)s] ' + logging_format
             if ('show_datetime' not in self.config.logging) or self.config.logging['show_datetime']:
                 logging_format = '[%(asctime)s] ' + logging_format
-                logging_format_options = '%Y-%m-%d %H:%M:%S'
+                logging_format_options = '%H:%M:%S'
+                # logging_format_options = '%Y-%m-%d %H:%M:%S'
 
             formatter = Formatter(logging_format,logging_format_options)
             for handler in logging.root.handlers[:]:

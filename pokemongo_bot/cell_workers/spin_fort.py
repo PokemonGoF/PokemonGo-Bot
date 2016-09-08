@@ -80,7 +80,7 @@ class SpinFort(BaseTask):
                         awards += u', {} Egg'.format(egg_awarded['egg_km_walked_target'])
                     self.emit_event(
                         'spun_pokestop',
-                        formatted="Spun pokestop {pokestop}. Experience awarded: {exp}. Items awarded: {items}",
+                        formatted="{pokestop}: {exp} exp, {items}",
                         data={
                             'pokestop': fort_name,
                             'exp': experience_awarded,
