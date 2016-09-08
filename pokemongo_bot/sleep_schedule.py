@@ -160,7 +160,7 @@ class SleepSchedule(object):
                     wake_up_at_location = self.bot.get_pos_by_name(raw_wake_up_at_location)
                     lat = float(wake_up_at_location[0])
                     lng = float(wake_up_at_location[1])
-                    alt = float(wake_up_at_location[2]) if len(wake_up_at_location) == 3 else uniform(self.bot.config.alt_min, self.bot.config.alt_max)
+                    alt = float(wake_up_at_location[2]) if wake_up_at_location[2] else uniform(self.bot.config.alt_min, self.bot.config.alt_max)
                     prepared['wake_up_at_location'] = { 'raw': raw_wake_up_at_location, 'coord': [lat, lng, alt] }
                 except:
                     index = config.index(entry)
