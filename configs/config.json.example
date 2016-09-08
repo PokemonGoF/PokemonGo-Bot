@@ -276,6 +276,7 @@
     "alt_max": 1000,
     "sleep_schedule": [
       {
+        "enabled": true,
         "time": "12:00",
         "duration": "5:30",
         "time_random_offset": "00:30",
@@ -283,6 +284,7 @@
         "wake_up_at_location": ""
       },
       {
+        "enabled": true,
         "time": "17:45",
         "duration": "3:00",
         "time_random_offset": "01:00",
