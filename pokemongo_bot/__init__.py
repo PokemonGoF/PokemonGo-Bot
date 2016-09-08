@@ -29,7 +29,7 @@ from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
 from sleep_schedule import SleepSchedule
-from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler, ColoredLoggingHandler, SocialHandler
+from pokemongo_bot.event_handlers import SocketIoHandler, LoggingHandler, SocialHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from pokemongo_bot.base_dir import _base_dir
@@ -94,6 +94,7 @@ class PokemonGoBot(object):
         self.recent_forts = [None] * config.forts_max_circle_size
         self.tick_count = 0
         self.softban = False
+        self.wake_location = None
         self.start_position = None
         self.last_map_object = None
         self.last_time_map_object = 0
@@ -112,6 +113,7 @@ class PokemonGoBot(object):
         self.heartbeat_threshold = self.config.heartbeat_threshold
         self.heartbeat_counter = 0
         self.last_heartbeat = time.time()
+        self.hb_locked = False # lock hb on snip
 
         self.capture_locked = False  # lock catching while moving to VIP pokemon
 
@@ -145,10 +147,10 @@ class PokemonGoBot(object):
     def _setup_event_system(self):
         handlers = []
 
-        if self.config.logging and 'color' in self.config.logging and self.config.logging['color']:
-            handlers.append(ColoredLoggingHandler(self))
-        else:
-            handlers.append(LoggingHandler(self))
+        color = self.config.logging and 'color' in self.config.logging and self.config.logging['color']
+        debug = self.config.debug
+
+        handlers.append(LoggingHandler(color, debug))
 
         if self.config.enable_social:
             handlers.append(SocialHandler(self))
@@ -919,6 +921,7 @@ class PokemonGoBot(object):
             level='info',
             formatted="Login successful."
         )
+        self.heartbeat()
 
     def get_encryption_lib(self):
         if _platform == "Windows" or _platform == "win32":
@@ -1105,6 +1108,41 @@ class PokemonGoBot(object):
             # TODO: Add unit tests
             return
 
+        if self.wake_location:
+            msg = "Wake up location found: {location} {position}"
+            self.event_manager.emit(
+                'location_found',
+                sender=self,
+                level='info',
+                formatted=msg,
+                data={
+                    'location': self.wake_location['raw'],
+                    'position': self.wake_location['coord']
+                }
+            )
+
+            self.api.set_position(*self.wake_location['coord'])
+
+            self.event_manager.emit(
+                'position_update',
+                sender=self,
+                level='info',
+                formatted="Now at {current_position}",
+                data={
+                    'current_position': self.position,
+                    'last_position': '',
+                    'distance': '',
+                    'distance_unit': ''
+                }
+            )
+
+            self.start_position = self.position
+
+            has_position = True
+
+            return
+
+
         if self.config.location:
             location_str = self.config.location
             location = self.get_pos_by_name(location_str.replace(" ", ""))
@@ -1263,7 +1301,7 @@ class PokemonGoBot(object):
                               in self.fort_timeouts.iteritems()
                               if timeout >= now * 1000}
 
-        if now - self.last_heartbeat >= self.heartbeat_threshold:
+        if now - self.last_heartbeat >= self.heartbeat_threshold and not self.hb_locked:
             self.last_heartbeat = now
             request = self.api.create_request()
             request.get_player()
@@ -1306,6 +1344,8 @@ class PokemonGoBot(object):
             self.web_update_queue.put_nowait(True)  # do this outside of thread every tick
         except Queue.Full:
             pass
+
+        threading.Timer(self.heartbeat_threshold, self.heartbeat).start()
 
     def update_web_location_worker(self):
         while True:
