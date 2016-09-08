@@ -53,6 +53,7 @@ Events:
             last_lon: Trainer's last known longitude
 
 """
+from __future__ import unicode_literals
 
 import os
 import time
