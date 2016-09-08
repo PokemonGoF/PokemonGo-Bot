@@ -9,6 +9,7 @@ import thread
 import re
 from pokemongo_bot.datastore import Datastore
 import pprint
+from pokemongo_bot import inventory
 
 
 DEBUG_ON = False
@@ -162,6 +163,43 @@ class TelegramClass:
             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Authentication successful, you can now use all commands")
         return
 
+    def display_events(self, update):
+        cmd = update.message.text.split(" ", 1)
+        if len(cmd) > 1:
+            # we have a filter
+            event_filter = ".*{}-*".format(cmd[1])
+        else:
+            # no filter
+            event_filter = ".*"
+        events = filter(lambda k: re.match(event_filter, k), self.bot.event_manager._registered_events.keys())
+        self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=("\n".join(events)))
+
+    def showtop(self, chatid, num, order):
+        if not num.isnumeric():
+            num = 10
+        else:
+            num = int(num)
+
+        if order not in ["cp", "iv"]:
+            order = "iv"
+
+        pkmns = sorted(inventory.pokemons().all(), key=lambda p: getattr(p, order), reverse=True)[:num]
+
+        outMsg = "\n".join(["{} CP:{} IV:{} ID:{} Candy:{}".format(p.name, p.cp, p.iv, p.unique_id, inventory.candies().get(p.pokemon_id).quantity) for p in pkmns])
+        self.sendMessage(chat_id=chatid, parse_mode='HTML', text=outMsg)
+
+        return
+
+    def evolve(self, chatid, uid):
+        # TODO: here comes evolve logic (later)
+        self.sendMessage(chat_id=chatid, parse_mode='HTML', text="Evolve logic not implemented yet")
+        return
+
+    def upgrade(self, chatid, uid):
+        # TODO: here comes upgrade logic (later)
+        self.sendMessage(chat_id=chatid, parse_mode='HTML', text="Upgrade logic not implemented yet")
+        return
+
     def run(self):
         time.sleep(1)
         while True:
@@ -175,11 +213,12 @@ class TelegramClass:
                             "/info - info about bot",
                             "/login <password> - authenticate with the bot; once authenticated, your ID will be registered with the bot and survive bot restarts",
                             "/logout - remove your ID from the 'authenticated' list",
-                            "/sub <event_name> [<parameters>] - subscribe to event_name, with optional parameters, event name=all will subscribe to ALL events (LOTS of output!)",
+                            "/sub <event\_name> [<parameters>] - subscribe to event_name, with optional parameters, event name=all will subscribe to ALL events (LOTS of output!)",
                             "/unsub <event_name> [<parameters>] - unsubscribe from event_name; parameters must match the /sub parameters",
                             "/unsub everything - will remove all subscriptions for this uid",
                             "/showsubs - show current subscriptions",
-                            "/events - show available events"
+                            "/events <filter> - show available events, filtered by regular expression  <filter>",
+                            "/top <num> <cp-or-iv> - show top X pokemons, sorted by CP or IV"
                         )
                         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
                         continue
@@ -213,8 +252,8 @@ class TelegramClass:
                     if update.message.text == "/info":
                         self.send_player_stats_to_chat(update.message.chat_id)
                         continue
-                    if update.message.text == "/events":
-                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=(", ".join(self.bot.event_manager._registered_events.keys())))
+                    if re.match("^/events", update.message.text):
+                        self.display_events(update)
                         continue
                     if update.message.text == "/logout":
                         self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=("Logged out."))
@@ -230,6 +269,10 @@ class TelegramClass:
                         continue
                     if re.match(r'^/showsubs', update.message.text):
                         self.showsubs(update.message.chat_id)
+                        continue
+                    if re.match(r'^/top ', update.message.text):
+                        (cmd, num, order) = self.tokenize(update.message.text, 3)
+                        self.showtop(update.message.chat_id, num, order)
                         continue
 
                     self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Unrecognized command: {}".format(update.message.text))
@@ -365,6 +408,7 @@ class TelegramHandler(EventHandler):
             else:
                 msg = formatted_msg
         except KeyError:
+            msg = "Error on event {}".format(event)
             pass
         # first handle subscriptions; they are independent of master setting.
         with self.bot.database as conn:

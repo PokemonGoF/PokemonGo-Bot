@@ -37,6 +37,9 @@ import time
 import signal
 import string
 import subprocess
+
+codecs.register(lambda name: codecs.lookup("utf-8") if name == "cp65001" else None)
+
 from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException, NoPlayerPositionSetException
 from geopy.exc import GeocoderQuotaExceeded
@@ -127,7 +130,6 @@ def main():
             return f.read()[:8]
 
     try:
-        codecs.register(lambda name: codecs.lookup("utf-8") if name == "cp65001" else None)
         sys.stdout = codecs.getwriter('utf8')(sys.stdout)
         sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
@@ -676,6 +678,7 @@ def init_config():
     config.favorite_locations = load.get('favorite_locations', [])
     config.encrypt_location = load.get('encrypt_location', '')
     config.telegram_token = load.get('telegram_token', '')
+    config.discord_token = load.get('discord_token', '')
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.plugins = load.get('plugins', [])
