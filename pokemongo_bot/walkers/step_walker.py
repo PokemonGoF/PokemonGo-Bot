@@ -23,7 +23,9 @@ class StepWalker(object):
             self.dest_alt = dest_alt
 
         self.saved_location = None
-        self.last_update = 0
+        # last_update should be init time otherwise "1 - min(now - self.last_update, 1)" = 1 - min(now - 0),1 = 0
+        # and you'd teleport on first .step() and would impact all task that are creating a StepWalker object on each .work()
+        self.last_update = time.time()
 
     def step(self, speed=None):
         now = time.time()
