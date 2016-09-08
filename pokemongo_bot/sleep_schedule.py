@@ -65,7 +65,7 @@ class SleepSchedule(object):
             self._schedule_next_sleep()
             if wake_up_at_location:
                 if hasattr(self.bot, 'api'): # Check if api is already initialized
-                    msg = "Location found: {location} {position}"
+                    msg = "Wake up location found: {location} {position}"
                     self.bot.event_manager.emit(
                         'location_found',
                         sender=self,
@@ -161,7 +161,7 @@ class SleepSchedule(object):
                     lat = float(wake_up_at_location[0])
                     lng = float(wake_up_at_location[1])
                     alt = float(wake_up_at_location[2]) if wake_up_at_location[2] else uniform(self.bot.config.alt_min, self.bot.config.alt_max)
-                    prepared['wake_up_at_location'] = { 'raw': raw_wake_up_at_location, 'coord': [lat, lng, alt] }
+                    prepared['wake_up_at_location'] = { 'raw': raw_wake_up_at_location, 'coord': (lat, lng, alt) }
                 except:
                     index = config.index(entry)
                     self.bot.warning('SleepSchedule: error parsing wake_up_at_location in entry %d' % index)
