@@ -136,17 +136,14 @@ class Polyline(object):
         if at_point is None:
             at_point = self._last_pos
         if self._elevation_at_point:
-            return sorted([(great_circle(at_point, k).meters, v) for k, v in self._elevation_at_point.items()])[0][1]
-        else:
-            return None
+            elevations = sorted([(great_circle(at_point, k).meters, v, k) for k, v in self._elevation_at_point.items()])
 
-    def _get_alt(self, at_point=None):
-        if at_point is None:
-            at_point = self._last_pos
-        if self._elevation_at_point:
-            (distance_to_p1, ep1, p1), (distance_to_p2, ep2, p2) = sorted([(great_circle(at_point, k).meters, v, k) for k, v in self._elevation_at_point.items()])[:2]
-            distance_p1_p2 = great_circle(p1, p2).meters
-            return self._get_relative_hight(ep1, ep2, distance_p1_p2, distance_to_p1, distance_to_p2)
+            if len(elevations) == 1:
+                return elevations[0][1]
+            else:
+                (distance_to_p1, ep1, p1), (distance_to_p2, ep2, p2) = elevations[:2]
+                distance_p1_p2 = great_circle(p1, p2).meters
+                return self._get_relative_hight(ep1, ep2, distance_p1_p2, distance_to_p1, distance_to_p2)
         else:
             return None
 

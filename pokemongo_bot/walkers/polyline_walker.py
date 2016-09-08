@@ -35,4 +35,4 @@ class PolylineWalker(StepWalker):
         polyline._last_pos = (next_lat, next_lng)
         next_alt = polyline.get_alt() or origin_alt
 
-        return next_lat, next_lng, next_alt  + random_alt_delta()
+        return next_lat, next_lng, next_alt + random_alt_delta()

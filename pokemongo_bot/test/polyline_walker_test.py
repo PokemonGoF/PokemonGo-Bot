@@ -109,8 +109,8 @@ class TestPolylineWalker(unittest.TestCase):
         walk_min = self.bot.config.walk_min
         speed = 0.247503233266
         precision = 2.5
-        dlat = 47.17064
-        dlng = 8.51674
+        dlat = 47.170635631
+        dlng = 8.51673976413
 
         self.bot.config.walk_max = speed
         self.bot.config.walk_min = speed
