@@ -32,13 +32,6 @@
         }
       },
       {
-        "type": "CollectLevelUpReward",
-        "config": {
-          "collect_reward": true,
-          "level_limit": -1
-        }
-      },
-      {
         "type": "IncubateEggs",
         "config": {
           "enabled": true,
@@ -485,6 +478,7 @@
       "// ['cp', 'iv_ads', 'iv_pct', 'ivcp', 'ncp', 'level', 'hp', 'moveset', 'dps']": {},
       "pokemon_info": ["cp", "iv_pct"]
     },
+    "level_limit": -1,
     "walk_max": 4.16,
     "walk_min": 2.16,
     "alt_min": 500,

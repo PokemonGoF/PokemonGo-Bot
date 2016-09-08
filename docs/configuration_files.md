@@ -90,6 +90,7 @@ Document the configuration options of PokemonGo-Bot.
 | `live_config_update.enabled`            | false     | Enable live config update
 | `live_config_update.tasks_only`            | false     | True: quick update for Tasks only (without re-login). False: slower update for entire config file.
 | `enable_social`            | true     | True: to chat with other pokemon go bot users [more information](https://github.com/PokemonGoF/PokemonGo-Bot/pull/4596)
+| `level_limit`            | -1     | Bot will stop automatically after trainer reaches level limit. Set to `-1` to disable.
 
 ## Logging configuration
 [[back to top](#table-of-contents)]
@@ -253,9 +254,6 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `min_free_slot`: Default `5` | Once the pokebag has less empty slots than this amount, the transfer process is triggered. | Big values (i.e 9999) will trigger the transfer process after each catch.
 * UpdateLiveStats
 * [UpdateLiveInventory](#updateliveinventory-settings)
-* CollectLevelUpReward
-  * `collect_reward`: Default `True` | Collect level up rewards.
-  * `level_limit`: Default `-1` | Bot will stop automatically after trainer reaches level limit. Set to `-1` to disable.
 * All tasks
   * `log_interval`: Default `0` | Minimum seconds interval before next log of the current task will be printed
   

@@ -656,7 +656,6 @@ def init_config():
          type=bool,
          default=True
     )
-
     add_config(
          parser,
          load,
@@ -664,6 +663,14 @@ def init_config():
          help="Limit output from walker functions (move_to_fort, position_update, etc)",
          type=bool,
          default=False
+    )
+    add_config(
+         parser,
+         load,
+         long_flag="--level_limit",
+         help="Level limit where bot will stop running.",
+         type=int,
+         default=-1
     )
 
     # Start to parse other attrs
@@ -745,6 +752,9 @@ def init_config():
     if not (config.location or config.location_cache):
         parser.error("Needs either --use-location-cache or --location.")
         return None
+
+    if "CollectLevelUpReward" in [task_name for task in config.raw_tasks for task_name = task["type"]]:
+        logger.warning('The task CollectLevelUpReward is not used anymore. Please use only level_limit variable outside tasks config')
 
     plugin_loader = PluginLoader()
     for plugin in config.plugins:
