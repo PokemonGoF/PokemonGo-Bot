@@ -798,9 +798,8 @@ def fix_nested_config(config):
 def parse_unicode_str(string):
     try:
         return string.decode('utf8')
-    except UnicodeEncodeError:
+    except (UnicodeEncodeError,UnicodeDecodeError):
         return string
-
 
 if __name__ == '__main__':
     main()
