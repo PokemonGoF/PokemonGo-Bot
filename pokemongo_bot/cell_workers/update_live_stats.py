@@ -16,10 +16,8 @@ import json
 class UpdateLiveStats(BaseTask):
     """
     Periodically displays stats about the bot in the terminal and/or in its title.
-
     Fetching some stats requires making API calls. If you're concerned about the amount of calls
     your bot is making, don't enable this worker.
-
     Example config :
     {
         "type": "UpdateLiveStats",
@@ -30,7 +28,6 @@ class UpdateLiveStats(BaseTask):
             "terminal_title": false
         }
     }
-
     min_interval : The minimum interval at which the stats are displayed,
                    in seconds (defaults to 120 seconds).
                    The update interval cannot be accurate as workers run synchronously.
@@ -38,7 +35,6 @@ class UpdateLiveStats(BaseTask):
             see available stats below (defaults to []).
     terminal_log : Logs the stats into the terminal (defaults to false).
     terminal_title : Displays the stats into the terminal title (defaults to true).
-
     Available stats :
     - login : The account login (from the credentials).
     - username : The trainer name (asked at first in-game connection).
@@ -60,7 +56,6 @@ class UpdateLiveStats(BaseTask):
     - pokemon_stats : Puts together the pokemon encountered, caught, released, evolved and unseen.
     - pokeballs_thrown : The number of thrown pokeballs.
     - stardust_earned : The number of earned stardust since the bot started.
-    - stardust_amount : The overall number of stardust 
     - highest_cp_pokemon : The caught pokemon with the highest CP since the bot started.
     - most_perfect_pokemon : The most perfect caught pokemon since the bot started.
     - location : The location where the player is located.
@@ -316,83 +311,6 @@ class UpdateLiveStats(BaseTask):
         # No player stats available, won't be able to gather all informations.
         if player_stats is None:
             return ''
-<<<<<<< HEAD
-        # No stats to display, avoid any useless overhead.
-        if not self.displayed_stats:
-            return ''
-
-        global xp_per_level
-
-        # Gather stats values.
-        metrics = self.bot.metrics
-        metrics.capture_stats()
-        runtime = metrics.runtime()
-        login = self.bot.config.username
-        player_data = self.bot.player_data
-        username = player_data.get('username', '?')
-        distance_travelled = metrics.distance_travelled()
-        current_level = int(player_stats.get('level', 0))
-        prev_level_xp = int(xp_per_level[current_level-1][2])
-        next_level_xp = int(player_stats.get('next_level_xp', 0))
-        experience = int(player_stats.get('experience', 0))
-        current_level_xp = experience - prev_level_xp
-        whole_level_xp = next_level_xp - prev_level_xp
-        level_completion_percentage = int((current_level_xp * 100) / whole_level_xp)
-        experience_per_hour = int(metrics.xp_per_hour())
-        xp_earned = metrics.xp_earned()
-        stops_visited = metrics.visits['latest'] - metrics.visits['start']
-        pokemon_encountered = metrics.num_encounters()
-        pokemon_caught = metrics.num_captures()
-        captures_per_hour = int(metrics.captures_per_hour())
-        pokemon_released = metrics.releases
-        pokemon_evolved = metrics.num_evolutions()
-        pokemon_unseen = metrics.num_new_mons()
-        pokeballs_thrown = metrics.num_throws()
-        stardust_earned = metrics.earned_dust()
-        stardust_amount = self.bot.stardust
-        highest_cp_pokemon = metrics.highest_cp['desc']
-        if not highest_cp_pokemon:
-            highest_cp_pokemon = "None"
-        most_perfect_pokemon = metrics.most_perfect['desc']
-        if not most_perfect_pokemon:
-            most_perfect_pokemon = "None"
-        next_egg_hatching = metrics.next_hatching_km(0)
-        hatched_eggs = metrics.hatched_eggs(0)
-
-        # Create stats strings.
-        available_stats = {
-            'login': login,
-            'username': username,
-            'uptime': 'Uptime : {}'.format(runtime),
-            'km_walked': '{:,.2f}km walked'.format(distance_travelled),
-            'level': 'Level {}'.format(current_level),
-            'level_completion': '{:,} / {:,} XP ({}%)'.format(current_level_xp, whole_level_xp,
-                                                              level_completion_percentage),
-            'level_stats': 'Level {} ({:,} / {:,}, {}%)'.format(current_level, current_level_xp,
-                                                                whole_level_xp,
-                                                                level_completion_percentage),
-            'xp_per_hour': '{:,} XP/h'.format(experience_per_hour),
-            'xp_earned': '+{:,} XP'.format(xp_earned),
-            'stops_visited': 'Visited {:,} stops'.format(stops_visited),
-            'pokemon_encountered': 'Encountered {:,} pokemon'.format(pokemon_encountered),
-            'pokemon_caught': 'Caught {:,} pokemon'.format(pokemon_caught),
-            'captures_per_hour': '{:,} pokemon/h'.format(captures_per_hour),
-            'pokemon_released': 'Released {:,} pokemon'.format(pokemon_released),
-            'pokemon_evolved': 'Evolved {:,} pokemon'.format(pokemon_evolved),
-            'pokemon_unseen': 'Encountered {} new pokemon'.format(pokemon_unseen),
-            'pokemon_stats': 'Encountered {:,} pokemon, {:,} caught, {:,} released, {:,} evolved, '
-                             '{} never seen before'.format(pokemon_encountered, pokemon_caught,
-                                                           pokemon_released, pokemon_evolved,
-                                                           pokemon_unseen),
-            'pokeballs_thrown': 'Threw {:,} pokeballs'.format(pokeballs_thrown),
-            'stardust_earned': 'Earned {:,} Stardust'.format(stardust_earned),
-            'stardust_amount': 'Have {:,} Stardust'.format(stardust_amount),
-            'highest_cp_pokemon': 'Highest CP pokemon : {}'.format(highest_cp_pokemon),
-            'most_perfect_pokemon': 'Most perfect pokemon : {}'.format(most_perfect_pokemon),
-            'location': 'Location : ({}, {})'.format(self.bot.position[0], self.bot.position[1]),
-            'next_egg_hatching': 'Next egg hatches in : {:.2f} km'.format(float(next_egg_hatching)),
-            'hatched_eggs': 'Hatched {} eggs.'.format(hatched_eggs)
-=======
 
         # Create stats strings.
         available_stats = {
@@ -427,7 +345,6 @@ class UpdateLiveStats(BaseTask):
             'location': 'Location : ({}, {})'.format(*player_stats['location']),
             'next_egg_hatching': 'Next egg hatches in : {:.2f} km'.format(player_stats['next_egg_hatching']),
             'hatched_eggs': 'Hatched {} eggs.'.format(player_stats['hatched_eggs'])
->>>>>>> 0bbfe94c663ea29178159540744413cd83580637
         }
 
         def get_stat(stat):
@@ -447,8 +364,4 @@ class UpdateLiveStats(BaseTask):
         # Map stats the user wants to see to available stats and join them with pipes.
         line = ' | '.join(map(get_stat, self.displayed_stats))
 
-        return line
-<<<<<<< HEAD
-        
-=======
->>>>>>> 0bbfe94c663ea29178159540744413cd83580637
+return line
