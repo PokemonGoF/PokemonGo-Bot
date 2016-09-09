@@ -84,27 +84,16 @@ class DiscordHandler(EventHandler):
     def handle_event(self, event, sender, level, formatted_msg, data):
         if self.dbot is None:
             try:
-                self.bot.logger.info("Discord bot not running, trying to spin it up")
+                self.bot.logger.info("Discord bot not running. Starting")
                 self.dbot = DiscordClass(self.bot, self.master, self.pokemons, self.config)
                 self.dbot.connect()
                 thread.start_new_thread(self.dbot.run)
             except Exception as inst:
                 self.dbot = None
-                self.bot.logger.error("Unable to spin Telegram bot; master: {}, exception: {}".format(self.master, pprint.pformat(inst)))
+                self.bot.logger.error("Unable to start Discord bot; master: {}, exception: {}".format(self.master, pprint.pformat(inst)))
                 return
         # prepare message to send
-        msg=None
-        if event == 'level_up':
-            msg = "level up ({})".format(data["current_level"])
-        elif event == 'pokemon_caught':
-            msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
-        elif event == 'egg_hatched':
-            msg = "Egg hatched with a {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
-        elif event == 'bot_sleep':
-            msg = "I am too tired, I will take a sleep till {}.".format(data["wake"])
-        elif event == 'catch_limit':
-            msg = "*You have reached your daily catch limit, quitting.*"
-        elif event == 'spin_limit':
-            msg = "*You have reached your daily spin limit, quitting.*"
+        msg = None
+        msg = self.chat_handler.get_event(event, formatted_msg, data)
         if msg:
           self.dbot.sendMessage(to=self.master, text=msg)
