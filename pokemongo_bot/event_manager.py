@@ -48,7 +48,7 @@ class EventManager(object):
             raise ArgumentError('Event needs a sender!')
 
         levels = ['info', 'warning', 'error', 'critical', 'debug']
-        if not level in levels:
+        if level not in levels:
             raise ArgumentError('Event level needs to be in: {}'.format(levels))
 
         if event not in self._registered_events:
