@@ -9,7 +9,7 @@ class FakeDatetime(datetime):
     def __new__(cls, *args, **kwargs):
         return datetime.__new__(datetime, *args, **kwargs)
 
-class SleepScheculeTestCase(unittest.TestCase):
+class SleepScheduleTestCase(unittest.TestCase):
     config1 = { 'entries': [
                   {'time': '12:20', 'duration': '01:05', 'time_random_offset': '00:05', 'duration_random_offset': '00:05'},
                   {'time': '15:00', 'duration': '03:00', 'time_random_offset': '00:00', 'duration_random_offset': '00:00'},
