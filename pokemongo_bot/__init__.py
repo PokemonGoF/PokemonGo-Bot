@@ -29,6 +29,7 @@ from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
 from sleep_schedule import SleepSchedule
+from default_tasks import DefaultTasks
 from pokemongo_bot.event_handlers import SocketIoHandler, LoggingHandler, SocialHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
@@ -101,11 +102,11 @@ class PokemonGoBot(object):
         self.logger = logging.getLogger(type(self).__name__)
         self.alt = self.config.gps_default_altitude
 
-        # Keep control of level to collect level up reward
-        self.previous_level = 0
-
         # Make our own copy of the workers for this instance
         self.workers = []
+
+        # To be able to run default_tasks
+        self.default_tasks = DefaultTasks(self, self.config)
 
         # Theading setup for file writing
         self.web_update_queue = Queue.Queue(maxsize=1)
@@ -668,7 +669,6 @@ class PokemonGoBot(object):
     def tick(self):
         self.health_record.heartbeat()
         self.cell = self.get_meta_cell()
-        self.level_up_reward()
 
         if self.sleep_schedule:
             self.sleep_schedule.work()
@@ -685,6 +685,9 @@ class PokemonGoBot(object):
 
         # Check if session token has expired
         self.check_session(self.position)
+
+        # Run default tasks
+        self.default_tasks.work()
 
         for worker in self.workers:
             if worker.work() == WorkerResult.RUNNING:
@@ -1450,41 +1453,3 @@ class PokemonGoBot(object):
                 formatted='Starting new cached forts for {path}',
                 data={'path': cached_forts_path}
             )
-
-    def level_up_reward(self):
-        current_level = inventory.player().level
-        if current_level > self.previous_level:
-            if previous_level != 0:
-                self.event_manager.emit(
-                    'level_up',
-                    sender=self,
-                    level='info',
-                    formatted='Level up from {previous_level} to {current_level}',
-                    data={
-                        'previous_level': self.previous_level,
-                        'current_level': current_level
-                    }
-                )
-            self.previous_level = current_level
-            
-            response_dict = self.bot.api.level_up_rewards(level=self.current_level)
-            if 'status_code' in response_dict and response_dict['status_code'] == 1:
-                data = (response_dict.get('responses', {}).get('LEVEL_UP_REWARDS', {}).get('items_awarded', []))
-                for item in data:
-                    if 'item_id' in item and str(item['item_id']) in self.bot.item_list:
-                        got_item = self.bot.item_list[str(item['item_id'])]
-                        item['name'] = got_item
-                        count = 'item_count' in item and item['item_count'] or 0
-                        inventory.items().get(item['item_id']).add(count)
-                self.eṽent_manager.emit(
-                    'level_up_reward',
-                    sender=self,
-                    level='info'
-                    formatted='Received level up reward: {items}',
-                    data={
-                        # [{'item_id': 3, 'name': u'Ultraball', 'item_count': 10}, {'item_id': 103, 'name': u'Hyper Potion', 'item_count': 10}]
-                        'items': ', '.join(["{}x {}".format(x['item_count'], x['name']) for x in data])
-                    }
-                )
-        if config.level_limit != -1 and current_level >= config.level_limit:
-            sys.exit("You have reached your target level! Exiting now.")

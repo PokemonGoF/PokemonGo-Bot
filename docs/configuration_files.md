@@ -91,6 +91,8 @@ Document the configuration options of PokemonGo-Bot.
 | `live_config_update.enabled`            | false     | Enable live config update
 | `live_config_update.tasks_only`            | false     | True: quick update for Tasks only (without re-login). False: slower update for entire config file.
 | `enable_social`            | true     | True: to chat with other pokemon go bot users [more information](https://github.com/PokemonGoF/PokemonGo-Bot/pull/4596)
+| `nickname`            | ''     | Bot will try to set this as ingame nickname. If not set, uses account username. If not available tries generated nickname based on this one.
+| `team`            | 0     | Bot will set team when reaching level 5. 0_ Neutral (No team), 1: Blue (Mystic), 2: Red (Valor), 3: Yellow (Instinct)
 | `level_limit`            | -1     | Bot will stop automatically after trainer reaches level limit. Set to `-1` to disable.
 
 ## Logging configuration
@@ -1074,48 +1076,5 @@ The bot will only alert and respond to a valid master. If you're unsure what thi
           "Snorlax": {"operator": "or", "cp": 900, "iv": 0.9}
         }
     }
-}
-```
-
-## CompleteTutorial
-[[back to top](#table-of-contents)]
-
-### Description
-[[back to top](#table-of-contents)]
-
-Completes the tutorial:
-
-* Legal screen
-* Avatar selection
-* First Pokemon capture
-* Set nickname
-* Firte time experience
-* Pick team at level 5
-
-
-### Options
-[[back to top](#table-of-contents)]
-
-* `nickname` : Nickname to be used ingame.
-* `team` : `Default: 0`. Team to pick after reaching level 5.
-
-Available `team` :
-```
-0: Neutral (No team)
-1: Blue (Mystic)
-2: Red (Valor)
-3: Yellow (Instinct)
-```
-
-### Sample configuration
-[[back to top](#table-of-contents)]
-```json
-{
-	"type": "CompleteTutorial",
-	"config": {
-	"enabled": true,
-		"nickname": "PokemonGoF",
-		"team": 2
-	}
 }
 ```

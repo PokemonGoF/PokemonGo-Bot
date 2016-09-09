@@ -674,6 +674,22 @@ def init_config():
          type=int,
          default=-1
     )
+    add_config(
+         parser,
+         load,
+         long_flag="--nickname",
+         help="Nickname that will be used in the account, set in the tutorial.",
+         type=str,
+         default=''
+    )
+    add_config(
+         parser,
+         load,
+         long_flag="--team",
+         help="Team that will be picked after reaching level 5.",
+         type=int,
+         default=0
+    )
 
     # Start to parse other attrs
     config = parser.parse_args()
@@ -755,9 +771,6 @@ def init_config():
     if not (config.location or config.location_cache):
         parser.error("Needs either --use-location-cache or --location.")
         return None
-
-    if "CollectLevelUpReward" in [task_name for task in config.raw_tasks for task_name = task["type"]]:
-        logger.warning('The task CollectLevelUpReward is not used anymore. Please use only level_limit variable outside tasks config')
 
     plugin_loader = PluginLoader()
     for plugin in config.plugins:
