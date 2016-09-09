@@ -342,7 +342,7 @@ Every Pokemon not selected is candidate for transfer.
 | `mode`    | `"by_pokemon"`, `"by_family"`, `"overall"` | `"by_family"` |
 
 The `mode` define how the Pokemon Optimizer is going to apply the rule.
-- `"by_pokemon"` will apply the rule for each Pokemon. That is for every types of Pokemon individually.
+- `"by_pokemon"` will apply the rule for each individual pokemon (eg. Bulbasaur, Ivysaur, Venusaur, Charmander etc.)
 <br>In that mode, each Pokemon will be compared to other Pokemon of the same type.
 <br>This is the most conservative mode and the one that will result in the most number of Pokemon kept.
 
