@@ -346,7 +346,7 @@ def init_config():
             logger.info('Error: No /configs/' + _config + '.json')
 
     # Read passed in Arguments
-    required = lambda x: not x in load
+    required = lambda x: x not in load
     add_config(
         parser,
         load,
@@ -798,7 +798,7 @@ def fix_nested_config(config):
 def parse_unicode_str(string):
     try:
         return string.decode('utf8')
-    except (UnicodeEncodeError,UnicodeDecodeError):
+    except (UnicodeEncodeError, UnicodeDecodeError):
         return string
 
 if __name__ == '__main__':
