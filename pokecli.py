@@ -37,6 +37,9 @@ import time
 import signal
 import string
 import subprocess
+
+codecs.register(lambda name: codecs.lookup("utf-8") if name == "cp65001" else None)
+
 from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException, NoPlayerPositionSetException
 from geopy.exc import GeocoderQuotaExceeded
@@ -127,7 +130,6 @@ def main():
             return f.read()[:8]
 
     try:
-        codecs.register(lambda name: codecs.lookup("utf-8") if name == "cp65001" else None)
         sys.stdout = codecs.getwriter('utf8')(sys.stdout)
         sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
@@ -145,6 +147,7 @@ def main():
         finished = False
 
         while not finished:
+            wait_time = config.reconnecting_timeout * 60
             try:
                 bot = initialize(config)
                 bot = start_bot(bot, config)
@@ -180,7 +183,6 @@ def main():
                 report_summary(bot)
 
             except NotLoggedInException:
-                wait_time = config.reconnecting_timeout * 60
                 bot.event_manager.emit(
                     'api_error',
                     sender=bot,
@@ -676,12 +678,13 @@ def init_config():
     config.favorite_locations = load.get('favorite_locations', [])
     config.encrypt_location = load.get('encrypt_location', '')
     config.telegram_token = load.get('telegram_token', '')
+    config.discord_token = load.get('discord_token', '')
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
     config.vips = load.get('vips', {})
-    config.sleep_schedule = load.get('sleep_schedule', [])
+    config.sleep_schedule = load.get('sleep_schedule', {})
     config.live_config_update = load.get('live_config_update', {})
     config.live_config_update_enabled = config.live_config_update.get('enabled', False)
     config.live_config_update_tasks_only = config.live_config_update.get('tasks_only', False)

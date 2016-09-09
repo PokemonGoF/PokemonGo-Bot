@@ -1,29 +1,25 @@
 # -*- coding: utf-8 -*-
 from pokemongo_bot.event_manager import EventHandler
 from pokemongo_bot.base_dir import _base_dir
-import json
-import os
 import time
 import telegram
 import thread
 import re
-from pokemongo_bot.datastore import Datastore
 import pprint
+from pokemongo_bot.datastore import Datastore
 from pokemongo_bot import inventory
-
+from telegram.utils import request
 
 DEBUG_ON = False
-
-class FileIOException(Exception):
-    pass
 
 class TelegramClass:
 
     update_id = None
-
+    session = None
 
     def __init__(self, bot, master, pokemons, config):
         self.bot = bot
+        request.CON_POOL_SIZE = 16
         with self.bot.database as conn:
             # initialize the DB table if it does not exist yet
             initiator = TelegramDBInit(bot.database)
@@ -61,6 +57,7 @@ class TelegramClass:
             time.sleep(10)
         except telegram.error.Unauthorized:
             self.update_id += 1
+
     def sendLocation(self, chat_id, latitude, longitude):
         try:
             self._tbot.send_location(chat_id=chat_id, latitude=latitude, longitude=longitude)
@@ -70,6 +67,7 @@ class TelegramClass:
             time.sleep(10)
         except telegram.error.Unauthorized:
             self.update_id += 1
+            
     def connect(self):
         self._tbot = telegram.Bot(self.bot.config.telegram_token)
         try:
@@ -78,19 +76,8 @@ class TelegramClass:
             self.update_id = None
 
     def _get_player_stats(self):
-        web_inventory = os.path.join(_base_dir, "web", "inventory-%s.json" % self.bot.config.username)
-        try:
-            with open(web_inventory, "r") as infile:
-                json_inventory = json.load(infile)
-        except ValueError as exception:
-            self.bot.logger.info('[x] Error while opening inventory file for read: %s' % exception)
-            json_inventory = []
-        except:
-            raise FileIOException("Unexpected error reading from {}".format(web_inventory))
-        return next((x["inventory_item_data"]["player_stats"]
-                     for x in json_inventory
-                     if x.get("inventory_item_data", {}).get("player_stats", {})),
-                    None)
+        return inventory.player().player_stats
+        
     def send_player_stats_to_chat(self, chat_id):
         stats = self._get_player_stats()
         if stats:
@@ -112,6 +99,7 @@ class TelegramClass:
             self.sendLocation(chat_id=chat_id, latitude=self.bot.api._position_lat, longitude=self.bot.api._position_lng)
         else:
             self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="Stats not loaded yet\n")
+            
     def grab_uid(self, update):
         with self.bot.database as conn:
             conn.execute("replace into telegram_uids (uid, username) values (?, ?)", (update.message.chat_id, update.message.from_user.username))
@@ -276,6 +264,7 @@ class TelegramClass:
                         continue
 
                     self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Unrecognized command: {}".format(update.message.text))
+                    
     def showsubs(self, chatid):
         subs = []
         with self.bot.database as conn:
@@ -383,13 +372,13 @@ class TelegramHandler(EventHandler):
                     selfmaster = self.master
                 else:
                     selfmaster = None
-                self.bot.logger.info("Telegram bot not running, trying to spin it up")
+                self.bot.logger.info("Telegram bot not running. Starting")
                 self.tbot = TelegramClass(self.bot, selfmaster, self.pokemons, self.config)
                 self.tbot.connect()
                 thread.start_new_thread(self.tbot.run)
             except Exception as inst:
                 self.tbot = None
-                self.bot.logger.error("Unable to spin Telegram bot; master: {}, exception: {}".format(selfmaster, pprint.pformat(inst)))
+                self.bot.logger.error("Unable to start Telegram bot; master: {}, exception: {}".format(selfmaster, pprint.pformat(inst)))
                 return
         try:
             # prepare message to send
@@ -398,7 +387,7 @@ class TelegramHandler(EventHandler):
             elif event == 'pokemon_caught':
                 msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
             elif event == 'egg_hatched':
-                msg = "Egg hatched with a {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
+                msg = "Egg hatched with a {} CP: {}, IV: {} {}".format(data["name"], data["cp"], data["iv_ads"], data["iv_pct"])
             elif event == 'bot_sleep':
                 msg = "I am too tired, I will take a sleep till {}.".format(data["wake"])
             elif event == 'catch_limit':
@@ -450,10 +439,7 @@ class TelegramHandler(EventHandler):
                     else:
                         return
             elif event == 'egg_hatched':
-                try:
-                    msg = "Egg hatched with a {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
-                except KeyError:
-                    return
+                msg = "Egg hatched with a {} CP: {}, IV: {} {}".format(data["name"], data["cp"], data["iv_ads"], data["iv_pct"])
             elif event == 'bot_sleep':
                 msg = "I am too tired, I will take a sleep till {}.".format(data["wake"])
             elif event == 'catch_limit':
@@ -465,3 +451,4 @@ class TelegramHandler(EventHandler):
             else:
                 return
             self.tbot.sendMessage(chat_id=master, parse_mode='Markdown', text=msg)
+            
