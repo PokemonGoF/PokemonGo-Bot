@@ -65,6 +65,7 @@ class UpdateLiveStats(BaseTask):
     - pokemon_stats : Puts together the pokemon encountered, caught, released, evolved and unseen.
     - pokeballs_thrown : The number of thrown pokeballs.
     - stardust_earned : The number of earned stardust since the bot started.
+    - stardust_amount : The overall number of stardust 
     - highest_cp_pokemon : The caught pokemon with the highest CP since the bot started.
     - most_perfect_pokemon : The most perfect caught pokemon since the bot started.
     - location : The location where the player is located.
@@ -355,6 +356,7 @@ class UpdateLiveStats(BaseTask):
         pokemon_unseen = metrics.num_new_mons()
         pokeballs_thrown = metrics.num_throws()
         stardust_earned = metrics.earned_dust()
+        stardust_amount = self.bot.stardust
         highest_cp_pokemon = metrics.highest_cp['desc']
         if not highest_cp_pokemon:
             highest_cp_pokemon = "None"
@@ -391,6 +393,7 @@ class UpdateLiveStats(BaseTask):
                                                            pokemon_unseen),
             'pokeballs_thrown': 'Threw {:,} pokeballs'.format(pokeballs_thrown),
             'stardust_earned': 'Earned {:,} Stardust'.format(stardust_earned),
+            'stardust_amount': 'Have {:,} Stardust'.format(stardust_amount),
             'highest_cp_pokemon': 'Highest CP pokemon : {}'.format(highest_cp_pokemon),
             'most_perfect_pokemon': 'Most perfect pokemon : {}'.format(most_perfect_pokemon),
             'location': 'Location : ({}, {})'.format(self.bot.position[0], self.bot.position[1]),
