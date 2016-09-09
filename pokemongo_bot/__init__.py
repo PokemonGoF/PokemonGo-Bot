@@ -54,8 +54,8 @@ class PokemonGoBot(object):
     def noised_position(self):
         return self.api.noised_lat, self.api.noised_lng, self.api.noised_alt
 
-    #@position.setter # these should be called through api now that gps replication is there...
-    #def position(self, position_tuple):
+    # @position.setter # these should be called through api now that gps replication is there...
+    # def position(self, position_tuple):
     #    self.api._position_lat, self.api._position_lng, self.api._position_alt = position_tuple
 
     @property
@@ -113,7 +113,7 @@ class PokemonGoBot(object):
         self.heartbeat_threshold = self.config.heartbeat_threshold
         self.heartbeat_counter = 0
         self.last_heartbeat = time.time()
-        self.hb_locked = False # lock hb on snip
+        self.hb_locked = False  # lock hb on snip
 
         self.capture_locked = False  # lock catching while moving to VIP pokemon
 
@@ -215,8 +215,8 @@ class PokemonGoBot(object):
             parameters=(
                 'current_position',
                 'last_position',
-                'distance', # optional
-                'distance_unit' # optional
+                'distance',  # optional
+                'distance_unit'  # optional
             )
         )
         self.event_manager.register_event(
@@ -617,7 +617,7 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'moving_to_pokemon_throught_fort',
-            parameters=('fort_name', 'distance','poke_name','poke_dist')
+            parameters=('fort_name', 'distance', 'poke_name', 'poke_dist')
         )
         self.event_manager.register_event(
             'move_to_map_pokemon',
@@ -765,7 +765,8 @@ class PokemonGoBot(object):
                 json.dump({'lat': lat, 'lng': lng, 'alt': alt, 'start_position': self.start_position}, outfile)
         except IOError as e:
             self.logger.info('[x] Error while opening location file: %s' % e)
-    def emit_forts_event(self,response_dict):
+
+    def emit_forts_event(self, response_dict):
         map_objects = response_dict.get(
             'responses', {}
         ).get('GET_MAP_OBJECTS', {})
@@ -836,7 +837,7 @@ class PokemonGoBot(object):
                 logging_format = '[%(asctime)s] ' + logging_format
                 logging_format_options = '%Y-%m-%d %H:%M:%S'
 
-            formatter = Formatter(logging_format,logging_format_options)
+            formatter = Formatter(logging_format, logging_format_options)
             for handler in logging.root.handlers[:]:
                 handler.setFormatter(formatter)
 
@@ -884,10 +885,9 @@ class PokemonGoBot(object):
         self.api.set_position(lat, lng, self.alt)  # or should the alt kept to zero?
 
         while not self.api.login(
-            self.config.auth_service,
-            str(self.config.username),
-            str(self.config.password)):
-
+                self.config.auth_service,
+                str(self.config.username),
+                str(self.config.password)):
             self.event_manager.emit(
                 'login_failed',
                 sender=self,
@@ -938,13 +938,13 @@ class PokemonGoBot(object):
         else:
             path = self.config.encrypt_location
 
-        full_path = path + '/'+ file_name
+        full_path = path + '/' + file_name
         if not os.path.isfile(full_path):
             self.logger.error(file_name + ' is not found! Please place it in the bots root directory or set encrypt_location in config.')
-            self.logger.info('Platform: '+ _platform + ' ' + file_name + ' directory: '+ path)
+            self.logger.info('Platform: ' + _platform + ' ' + file_name + ' directory: ' + path)
             sys.exit(1)
         else:
-            self.logger.info('Found '+ file_name +'! Platform: ' + _platform + ' ' + file_name + ' directory: ' + path)
+            self.logger.info('Found ' + file_name + '! Platform: ' + _platform + ' ' + file_name + ' directory: ' + path)
 
         return full_path
 
@@ -1051,7 +1051,7 @@ class PokemonGoBot(object):
     def _print_list_pokemon(self):
         # get pokemon list
         bag = inventory.pokemons().all()
-        id_list =list(set(map(lambda x: x.pokemon_id, bag)))
+        id_list = list(set(map(lambda x: x.pokemon_id, bag)))
         id_list.sort()
         pokemon_list = [filter(lambda x: x.pokemon_id == y, bag) for y in id_list]
 
@@ -1064,8 +1064,8 @@ class PokemonGoBot(object):
                 'cp': 'CP {}'.format(pokemon.cp),
                 'iv_ads': 'A/D/S {}/{}/{}'.format(pokemon.iv_attack, pokemon.iv_defense, pokemon.iv_stamina),
                 'iv_pct': 'IV {}'.format(pokemon.iv),
-                'ivcp': 'IVCP {}'.format(round(pokemon.ivcp,2)),
-                'ncp': 'NCP {}'.format(round(pokemon.cp_percent,2)),
+                'ivcp': 'IVCP {}'.format(round(pokemon.ivcp, 2)),
+                'ncp': 'NCP {}'.format(round(pokemon.cp_percent, 2)),
                 'level': "Level {}".format(pokemon.level),
                 'hp': 'HP {}/{}'.format(pokemon.hp, pokemon.hp_max),
                 'moveset': 'Moves: {}'.format(pokemon.moveset),
@@ -1138,11 +1138,9 @@ class PokemonGoBot(object):
             )
 
             self.start_position = self.position
-
             has_position = True
 
             return
-
 
         if self.config.location:
             location_str = self.config.location
@@ -1323,7 +1321,7 @@ class PokemonGoBot(object):
                 # store awarded_badges reponse to be used in a task or part of heartbeat
                 self._awarded_badges = responses['responses']['CHECK_AWARDED_BADGES']
 
-            if self._awarded_badges.has_key('awarded_badges'):
+            if 'awarded_badges' in self._awarded_badges:
                 i = 0
                 for badge in self._awarded_badges['awarded_badges']:
                     badgelevel = self._awarded_badges['awarded_badge_levels'][i]
@@ -1396,7 +1394,7 @@ class PokemonGoBot(object):
             cell_id=cellid
         )
         self.emit_forts_event(self.last_map_object)
-        #if self.last_map_object:
+        # if self.last_map_object:
         #    print self.last_map_object
         self.last_time_map_object = time.time()
 
