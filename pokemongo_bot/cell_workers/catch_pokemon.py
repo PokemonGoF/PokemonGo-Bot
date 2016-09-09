@@ -24,7 +24,7 @@ class CatchPokemon(BaseTask):
 
     def work(self):
         # make sure we have SOME balls
-        if sum([inventory.items().get(ball.value).count for ball in 
+        if sum([inventory.items().get(ball.value).count for ball in
             [Item.ITEM_POKE_BALL, Item.ITEM_GREAT_BALL, Item.ITEM_ULTRA_BALL]]) <= 0:
             return WorkerResult.ERROR
 
@@ -41,12 +41,15 @@ class CatchPokemon(BaseTask):
         num_pokemon = len(self.pokemon)
         if num_pokemon > 0:
             # try catching
-            if self.catch_pokemon(self.pokemon.pop()) == WorkerResult.ERROR:
-                # give up incase something went wrong in our catch worker (ran out of balls, etc)
+            try:
+                if self.catch_pokemon(self.pokemon.pop()) == WorkerResult.ERROR:
+                    # give up incase something went wrong in our catch worker (ran out of balls, etc)
+                    return WorkerResult.ERROR
+                elif num_pokemon > 1:
+                    # we have more pokemon to catch
+                    return WorkerResult.RUNNING
+            except ValueError:
                 return WorkerResult.ERROR
-            elif num_pokemon > 1:
-                # we have more pokemon to catch
-                return WorkerResult.RUNNING
 
         # all pokemon have been processed
         return WorkerResult.SUCCESS
