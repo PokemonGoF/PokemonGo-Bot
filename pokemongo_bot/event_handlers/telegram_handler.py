@@ -63,6 +63,92 @@ class TelegramClass:
                      for x in json_inventory
                      if x.get("inventory_item_data", {}).get("player_stats", {})),
                     None)
+
+    def get_evolved(self, chat_id):
+        stats = self._get_player_stats()
+        if stats:
+            with self.bot.database as conn:
+                cur = conn.cursor()
+                cur.execute("SELECT * FROM evolve_log ORDER BY dated DESC LIMIT 25")
+                evolved = cur.fetchall()
+                for x in evolved:
+                    res = (
+                        str(x[0]),
+                        'CP: ' + str(x[1]),
+                        'IV: ' + str(x[2]),
+                        str(x[3])
+                    )
+                    self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+
+    def get_softban(self, chat_id):
+        with self.bot.database as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM softban_log")
+            softban = cur.fetchall()
+            for x in softban:
+                res = (
+                    str(x[0]),
+                    str(x[2]))
+                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+
+    def get_hatched(self, chat_id):
+        stats = self._get_player_stats()
+        if stats:
+            with self.bot.database as conn:
+                cur = conn.cursor()
+                cur.execute("SELECT * FROM eggs_hatched_log ORDER BY dated DESC LIMIT 25")
+                hatched = cur.fetchall()
+                for x in hatched:
+                    res = (
+                        str(x[0]),
+                        'CP: ' + str(x[1]),
+                        'IV: ' + str(x[2]),
+                        str(x[3])
+                    )
+                    self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+
+    def get_caught(self, chat_id):
+        with self.bot.database as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM catch_log ORDER BY dated DESC LIMIT 25")
+            caught = cur.fetchall()
+            for x in caught:
+                res = (
+                    str(x[0]),
+                    'CP: '+str(x[1]),
+                    'IV: ' + str(x[2])
+                    )
+                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+
+    def get_pokestop(self, chat_id):
+        with self.bot.database as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM pokestop_log ORDER BY dated DESC LIMIT 25")
+            pokestop = cur.fetchall()
+
+            for x in pokestop:
+                res = (
+                    str(x[0]),
+                    'XP: ' + str(x[1]),
+                    'Items: ' + str(x[2]),
+                    str(x[3])
+                )
+                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+
+    def get_transfer(self, chat_id):
+        with self.bot.database as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM transfer_log ORDER BY dated DESC LIMIT 25")
+            transfer = cur.fetchall()
+            for x in transfer:
+                res = (
+                    str(x[0]),
+                    'XP: ' + str(x[1]),
+                    'IV: ' + str(x[2]),
+                    str(x[3])
+                )
+                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+
     def send_player_stats_to_chat(self, chat_id):
         stats = self._get_player_stats()
         if stats:
@@ -84,6 +170,7 @@ class TelegramClass:
             self.sendLocation(chat_id=chat_id, latitude=self.bot.api._position_lat, longitude=self.bot.api._position_lng)
         else:
             self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="Stats not loaded yet\n")
+
     def run(self):
         time.sleep(1)
         while True:
@@ -111,10 +198,28 @@ class TelegramClass:
                         self.bot.event_manager.add_handler(TelegramHandler(self.bot, newconfig))
                     if update.message.text == "/info":
                         self.send_player_stats_to_chat(update.message.chat_id)
+                    elif update.message.text == "/evolved":
+                        self.get_evolved(update.message.chat_id)
+                    elif update.message.text == "/hatched":
+                        self.get_hatched(update.message.chat_id)
+                    elif update.message.text == "/caught":
+                        self.get_caught(update.message.chat_id)
+                    elif update.message.text == "/pokestops":
+                        self.get_pokestop(update.message.chat_id)
+                    elif update.message.text == "/transfers":
+                        self.get_transfer(update.message.chat_id)
+                    elif update.message.text == "/softbans":
+                        self.get_softban(update.message.chat_id)
                     elif update.message.text == "/start" or update.message.text == "/help":
                         res = (
                             "Commands: ",
-                            "/info - info about bot"
+                            "/info - info about bot",
+                            "/evolved - show last 25 pokemon evolved",
+                            "/hatched - show last 25 pokemon hatched",
+                            "/caught - show last 25 pokemon caught",
+                            "/pokestops - show last 25 pokestops",
+                            "/transfers - show last 25 transfers",
+                            "/softbans - info about possible softbans"
                         )
                         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
                     else:
