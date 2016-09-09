@@ -73,8 +73,8 @@ class TelegramClass:
                 for x in evolved:
                     res = (
                         "*"+str(x[0])+"*",
-                        "_CP:_ " + str(x[1]),
-                        "_IV:_ " + str(x[2]),
+                        "_CP:_ " + str(x[2]),
+                        "_IV:_ " + str(x[1]),
                         str(x[3])
                         )
 
@@ -105,8 +105,8 @@ class TelegramClass:
                 for x in hatched:
                     res = (
                         "*" + str(x[0]) + "*",
-                        "_CP:_ " + str(x[1]),
-                        "_IV:_ " + str(x[2]),
+                        "_CP:_ " + str(x[2]),
+                        "_IV:_ " + str(x[1]),
                         str(x[4])
                         )
                     self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
