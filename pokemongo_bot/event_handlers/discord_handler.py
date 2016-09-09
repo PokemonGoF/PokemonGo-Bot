@@ -39,9 +39,9 @@ class DiscordClass:
                     None)
 
     def send_player_stats_to_chat(self, chat_id):
-        res = self.chat_handler.get_player_stats()
+        stats = self.chat_handler.get_player_stats()
         if stats:
-            self.sendMessage(to=chat_id, text="\n".join(res))
+            self.sendMessage(to=chat_id, text="\n".join(stats))
         else:
             self.sendMessage(to=chat_id, text="Stats not loaded yet\n")
 
