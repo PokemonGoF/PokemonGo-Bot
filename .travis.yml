@@ -1,16 +1,18 @@
 language: python
 python:
   - "2.7"
-addons:
- apt:
-   packages:
-   - protobuf-compiler
-   - protobuf-c-compiler
-   - python-protobuf
 install:
-  - pip install -r requirements.txt
-  - pip install pylint
+  - wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda info -a
+  - conda install -y protobuf pylint -q
+  - pip install --ignore-installed -U -r requirements.txt --src="$HOME/pgoapi"
 script:
-  - python pylint-recursive.py
-  - python json-validate.py configs/*.json.*
   - python -m unittest discover -v -p "*_test.py"
+  - python json-validate.py configs/*.json.*
+  - python pylint-recursive.py
+cache: pip
+
