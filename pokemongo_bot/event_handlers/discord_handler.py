@@ -39,22 +39,8 @@ class DiscordClass:
                     None)
 
     def send_player_stats_to_chat(self, chat_id):
-        stats = self._get_player_stats()
+        res = self.chat_handler.get_player_stats()
         if stats:
-            with self.bot.database as conn:
-                cur = conn.cursor()
-                cur.execute("SELECT DISTINCT COUNT(encounter_id) FROM catch_log WHERE dated >= datetime('now','-1 day')")
-                catch_day = cur.fetchone()[0]
-                cur.execute("SELECT DISTINCT COUNT(pokestop) FROM pokestop_log WHERE dated >= datetime('now','-1 day')")
-                ps_day = cur.fetchone()[0]
-                res = (
-                    "*"+self.bot.config.username+"*",
-                    "_Level:_ "+str(stats["level"]),
-                    "_XP:_ "+str(stats["experience"])+"/"+str(stats["next_level_xp"]),
-                    "_Pokemons Captured:_ "+str(stats["pokemons_captured"])+" ("+str(catch_day)+" _last 24h_)",
-                    "_Poke Stop Visits:_ "+str(stats["poke_stop_visits"])+" ("+str(ps_day)+" _last 24h_)",
-                    "_KM Walked:_ "+str("%.2f" % stats["km_walked"])
-                )
             self.sendMessage(to=chat_id, text="\n".join(res))
         else:
             self.sendMessage(to=chat_id, text="Stats not loaded yet\n")
