@@ -2,11 +2,14 @@ import cell_workers
 from pokemongo_bot.plugin_loader import PluginLoader
 from pokemongo_bot.base_task import BaseTask
 
+
 class ConfigException(Exception):
     pass
 
+
 class MismatchTaskApiVersion(Exception):
     pass
+
 
 class TreeConfigBuilder(object):
     def __init__(self, bot, tasks_raw):
