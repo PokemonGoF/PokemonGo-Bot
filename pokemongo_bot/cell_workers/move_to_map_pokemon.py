@@ -88,7 +88,7 @@ class MoveToMapPokemon(BaseTask):
         self.min_ball = self.config.get('min_ball', 1)
         self.map_path = self.config.get('map_path', 'raw_data')
         self.walker = self.config.get('walker', 'StepWalker')
-        self.snip = self.config.get('snipe', False)
+        self.snip_enabled = self.config.get('snipe', False)
         self.snipe_high_prio_only = self.config.get('snipe_high_prio_only', False)
         self.snipe_high_prio_threshold = self.config.get('snipe_high_prio_threshold', 400)
         self.by_pass_times = 0
@@ -144,12 +144,12 @@ class MoveToMapPokemon(BaseTask):
                 continue
 
             # If distance bigger than walking distance, ignore if sniping is not active
-            if pokemon['dist'] > self.config.get('max_walking_distance', 1000) and not self.snip:
+            if pokemon['dist'] > self.config.get('max_walking_distance', 1000) and not self.snip_enabled:
                 continue
 
             # if pokemon not reachable with mean walking speed (by config)
             mean_walk_speed = (self.bot.config.walk_max + self.bot.config.walk_min) / 2
-            if pokemon['dist'] > ((pokemon['disappear_time'] - now) * mean_walk_speed) and not self.snip:
+            if pokemon['dist'] > ((pokemon['disappear_time'] - now) * mean_walk_speed) and not self.snip_enabled:
                 continue
             pokemons.append(pokemon)
 
@@ -257,15 +257,14 @@ class MoveToMapPokemon(BaseTask):
             self.bot.api.set_position(last_position[0], last_position[1], self.alt, False)
             time.sleep(self.config.get('snipe_sleep_sec', 2))
             catch_worker.work(api_encounter_response)
-            self.inspect(pokemon)
         else:
             self._emit_failure('{} doesnt exist anymore. Skipping...'.format(pokemon['name']))
-            self.inspect(pokemon)
             time.sleep(self.config.get('snipe_sleep_sec', 2))
             self._teleport_back(last_position)
             self.bot.api.set_position(last_position[0], last_position[1], self.alt, False)
             time.sleep(self.config.get('snipe_sleep_sec', 2))
 
+        self.inspect(pokemon)
         self.bot.hb_locked = False
         return WorkerResult.SUCCESS
 
@@ -290,7 +289,7 @@ class MoveToMapPokemon(BaseTask):
         # Retrieve pokemos
         self.dump_caught_pokemon()
         if self.bot.config.enable_social:
-            if self.snip:
+            if self.snip_enabled:
                 self.by_pass_times += 1
                 if self.by_pass_times < self.config.get('skip_rounds', 30):
                     if self.debug:
@@ -316,7 +315,7 @@ class MoveToMapPokemon(BaseTask):
         if self.debug:
             self._emit_log('How many pokemon in list: {}'.format(len(pokemon_list)))
 
-        if self.snip:
+        if self.snip_enabled:
             if self.snipe_high_prio_only:
                 count = 0
                 for pokemon in pokemon_list:
