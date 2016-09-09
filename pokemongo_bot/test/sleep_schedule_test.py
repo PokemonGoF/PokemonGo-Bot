@@ -22,11 +22,12 @@ class SleepScheduleTestCase(unittest.TestCase):
                 ]
               }
 
-
     def setUp(self):
-        self.bot = FakeBot()
+        self.bot = MagicMock()
         self.worker1 = SleepSchedule(self.bot, self.config1)
         self.worker2 = SleepSchedule(self.bot, self.config2)
+        self.bot.event_manager = MagicMock()
+        self.bot.event_manager.emit = lambda *args, **kwargs: None
 
     def setNow(self, val):
         FakeDatetime.now = classmethod(lambda cls: val)
