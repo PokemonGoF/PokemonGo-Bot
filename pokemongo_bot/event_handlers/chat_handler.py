@@ -45,11 +45,11 @@ class ChatHandler:
                 elif "all" in self.pokemons:
                     trigger = self.pokemons["all"]
                 else:
-                    return
+                    return "Catch error 2"
                 if (not "operator" in trigger or trigger["operator"] == "and") and data["cp"] >= trigger["cp"] and data["iv"] >= trigger["iv"] or ("operator" in trigger and trigger["operator"] == "or" and (data["cp"] >= trigger["cp"] or data["iv"] >= trigger["iv"])):
                     msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
                 else:
-                    return "Catch error 2"
+                    return "Catch error 3"
         elif event == 'egg_hatched':
             msg = "Egg hatched with a {} CP: {}, IV: {} {}".format(data["name"], data["cp"], data["iv_ads"], data["iv_pct"])
         elif event == 'bot_sleep':
