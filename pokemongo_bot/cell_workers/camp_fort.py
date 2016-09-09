@@ -3,15 +3,19 @@ from __future__ import unicode_literals
 
 import math
 import time
+from geopy.distance import great_circle
 
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.cell_workers.utils import distance, coord2merc, merc2coord
+from pokemongo_bot.cell_workers.utils import coord2merc, merc2coord
 from pokemongo_bot.constants import Constants
-from pokemongo_bot.human_behaviour import random_lat_long_delta, random_alt_delta
 from pokemongo_bot.walkers.polyline_walker import PolylineWalker
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.item_list import Item
 from pokemongo_bot import inventory
+
+LOG_TIME_INTERVAL = 60
+NO_LURED_TIME_MALUS = 5
+NO_BALLS_MOVING_TIME = 5 * 60
 
 
 class CampFort(BaseTask):
@@ -24,8 +28,8 @@ class CampFort(BaseTask):
         self.destination = None
         self.stay_until = 0
         self.move_until = 0
-        self.last_position_update = 0
         self.walker = None
+        self.no_log_until = 0
 
         self.config_max_distance = self.config.get("max_distance", 2000)
         self.config_min_forts_count = self.config.get("min_forts_count", 2)
@@ -37,21 +41,9 @@ class CampFort(BaseTask):
         if not self.enabled:
             return WorkerResult.SUCCESS
 
-        self.announced_out_of_balls = False
         now = time.time()
 
         if now < self.move_until:
-            return WorkerResult.SUCCESS
-
-        # Let's make sure we have balls before we sit at a lure!
-        # See also catch_pokemon.py
-        if sum([inventory.items().get(ball.value).count for ball in
-            [Item.ITEM_POKE_BALL, Item.ITEM_GREAT_BALL, Item.ITEM_ULTRA_BALL]]) <= 0:
-            self.logger.info('No pokeballs left, refuse to sit at lure!')
-            # Move away from lures for a time
-            self.destination = None
-            self.stay_until = 0
-            self.move_until = now + self.config_moving_time
             return WorkerResult.SUCCESS
 
         if 0 < self.stay_until < now:
@@ -62,42 +54,59 @@ class CampFort(BaseTask):
             if self.config_moving_time > 0:
                 return WorkerResult.SUCCESS
 
-        forts = self.get_forts()
+        # Let's make sure we have balls before we sit at a lure!
+        # See also catch_pokemon.py
+        if self.get_pokeball_count() <= 0:
+            self.logger.info("No pokeballs left, refuse to sit at lure!")
+            # Move away from lures for a time
+            self.destination = None
+            self.stay_until = 0
+            self.move_until = now + max(self.config_moving_time, NO_BALLS_MOVING_TIME)
+
+            return WorkerResult.SUCCESS
 
         if self.destination is None:
+            forts = self.get_forts()
             forts_clusters = self.get_forts_clusters(forts)
 
             if len(forts_clusters) > 0:
                 self.destination = forts_clusters[0]
                 self.walker = PolylineWalker(self.bot, self.destination[0], self.destination[1])
-                self.logger.info("New destination at %s meters: %s forts, %s lured.", int(self.destination[4]), self.destination[3], self.destination[2])
+                self.logger.info("New destination at %s meters: %s forts, %s lured", round(self.destination[4], 2), self.destination[3], self.destination[2])
+                self.no_log_until = now + LOG_TIME_INTERVAL
             else:
-                # forts = [f for f in forts if f.get("cooldown_complete_timestamp_ms", 0) < now * 1000]
-                # fort = min(forts, key=lambda f: self.dist(self.bot.position, f))
-                # self.destination = (fort["latitude"], fort["longitude"])
                 return WorkerResult.SUCCESS
 
-        if (now - self.last_position_update) < 1:
-            return WorkerResult.RUNNING
-        else:
-            self.last_position_update = now
-
-        circle = (self.destination[0], self.destination[1], Constants.MAX_DISTANCE_FORT_IS_REACHABLE)
-        cluster = self.get_cluster(forts, circle)
-
         if self.stay_until >= now:
+            cluster = self.get_current_cluster()
+
+            if self.no_log_until < now:
+                self.logger.info("Staying at destination: %s forts, %s lured", cluster[3], cluster[2])
+                self.no_log_until = now + LOG_TIME_INTERVAL
+
+            if cluster[2] == 0:
+                self.stay_until -= NO_LURED_TIME_MALUS
+
             self.walker.step(speed=0)
         elif self.walker.step():
-            self.logger.info("Arrived at destination: %s forts, %s lured.", cluster[3], cluster[2])
+            cluster = self.get_current_cluster()
+            self.logger.info("Arrived at destination: %s forts, %s lured", cluster[3], cluster[2])
             self.stay_until = now + self.config_camping_time
+        elif self.no_log_until < now:
+            cluster = self.get_current_cluster()
+            self.logger.info("Moving to destination at %s meters: %s forts, %s lured", round(cluster[4], 2), cluster[3], cluster[2])
+            self.no_log_until = now + LOG_TIME_INTERVAL
 
         return WorkerResult.RUNNING
+
+    def get_pokeball_count(self):
+        return sum([inventory.items().get(ball.value).count for ball in [Item.ITEM_POKE_BALL, Item.ITEM_GREAT_BALL, Item.ITEM_ULTRA_BALL]])
 
     def get_forts(self):
         radius = self.config_max_distance + Constants.MAX_DISTANCE_FORT_IS_REACHABLE
 
         forts = [f for f in self.bot.cell["forts"] if ("latitude" in f) and ("type" in f)]
-        forts = [f for f in forts if self.dist(self.bot.start_position, f) <= radius]
+        forts = [f for f in forts if self.get_distance(self.bot.start_position, f) <= radius]
 
         return forts
 
@@ -187,15 +196,20 @@ class CampFort(BaseTask):
         return c1, c2
 
     def get_cluster(self, forts, circle):
-        forts_in_circle = [f for f in forts if self.dist(circle, f) <= circle[2]]
+        forts_in_circle = [f for f in forts if self.get_distance(circle, f) <= circle[2]]
         count = len(forts_in_circle)
         lured = len([f for f in forts_in_circle if "active_fort_modifier" in f])
-        dst = distance(self.bot.position[0], self.bot.position[1], circle[0], circle[1])
+        dst = great_circle(self.bot.position, circle).meters
 
         return (circle[0], circle[1], lured, count, dst)
 
     def get_cluster_key(self, cluster):
         return (cluster[2], cluster[3], -cluster[4])
 
-    def dist(self, location, fort):
-        return distance(location[0], location[1], fort["latitude"], fort["longitude"])
+    def get_current_cluster(self):
+        forts = self.get_forts()
+        circle = (self.destination[0], self.destination[1], Constants.MAX_DISTANCE_FORT_IS_REACHABLE)
+        return self.get_cluster(forts, circle)
+
+    def get_distance(self, location, fort):
+        return great_circle(location, (fort["latitude"], fort["longitude"])).meters
