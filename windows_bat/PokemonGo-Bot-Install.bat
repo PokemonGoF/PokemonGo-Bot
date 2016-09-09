@@ -303,7 +303,8 @@ IF EXIST %PGBotPath% ECHO.%PGBotPath% has been made>>%log%
 ECHO.>>%log%
 ECHO.----- Checking second pip2 install or upgrade ----->>%log%
 ECHO.>>%log%
-pip2 install -r %PGBotPath%\requirements.txt>>%log%
+CD %PGBotPath%\
+pip2 install -r requirements.txt>>%log%
 ECHO.>>%log%
 call:ech
 ECHO.--------------------Restoring Backup--------------------

@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 import math
 import time
 
@@ -59,12 +62,14 @@ class CampFort(BaseTask):
             if self.config_moving_time > 0:
                 return WorkerResult.SUCCESS
 
+        forts = self.get_forts()
+
         if self.destination is None:
-            forts = self.get_forts()
             forts_clusters = self.get_forts_clusters(forts)
 
             if len(forts_clusters) > 0:
                 self.destination = forts_clusters[0]
+                self.walker = PolylineWalker(self.bot, self.destination[0], self.destination[1])
                 self.logger.info("New destination at %s meters: %s forts, %s lured.", int(self.destination[4]), self.destination[3], self.destination[2])
             else:
                 # forts = [f for f in forts if f.get("cooldown_complete_timestamp_ms", 0) < now * 1000]
@@ -77,24 +82,14 @@ class CampFort(BaseTask):
         else:
             self.last_position_update = now
 
+        circle = (self.destination[0], self.destination[1], Constants.MAX_DISTANCE_FORT_IS_REACHABLE)
+        cluster = self.get_cluster(forts, circle)
+
         if self.stay_until >= now:
-            lat = self.destination[0] + random_lat_long_delta() / 5
-            lon = self.destination[1] + random_lat_long_delta() / 5
-            alt = self.walker.pol_alt + random_alt_delta() / 2
-            self.bot.api.set_position(lat, lon, alt)
-        else:
-            self.walker = PolylineWalker(self.bot, self.destination[0], self.destination[1])
-            self.walker.step()
-
-            dst = distance(self.bot.position[0], self.bot.position[1], self.destination[0], self.destination[1])
-
-            if dst < 1:
-                forts = self.get_forts()
-                circle = (self.destination[0], self.destination[1], Constants.MAX_DISTANCE_FORT_IS_REACHABLE)
-                cluster = self.get_cluster(forts, circle)
-
-                self.logger.info("Arrived at destination: %s forts, %s lured.", cluster[3], cluster[2])
-                self.stay_until = now + self.config_camping_time
+            self.walker.step(speed=0)
+        elif self.walker.step():
+            self.logger.info("Arrived at destination: %s forts, %s lured.", cluster[3], cluster[2])
+            self.stay_until = now + self.config_camping_time
 
         return WorkerResult.RUNNING
 
