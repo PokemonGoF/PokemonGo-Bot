@@ -114,6 +114,11 @@ class PokemonGoBot(object):
         self.heartbeat_counter = 0
         self.last_heartbeat = time.time()
         self.hb_locked = False # lock hb on snip
+        
+        # Inventory refresh limiting
+        self.inventory_refresh_threshold = 10
+        self.inventory_refresh_counter = 0
+        self.last_inventory_refresh = time.time()
 
         self.capture_locked = False  # lock catching while moving to VIP pokemon
 
@@ -676,6 +681,8 @@ class PokemonGoBot(object):
 
             if timeout >= now:
                 self.fort_timeouts[fort["id"]] = timeout
+
+        self._refresh_inventory()
 
         self.tick_count += 1
 
@@ -1339,8 +1346,6 @@ class PokemonGoBot(object):
                     )
                     human_behaviour.action_delay(3, 10)
 
-            inventory.refresh_inventory()
-
         try:
             self.web_update_queue.put_nowait(True)  # do this outside of thread every tick
         except Queue.Full:
@@ -1446,3 +1451,12 @@ class PokemonGoBot(object):
                 formatted='Starting new cached forts for {path}',
                 data={'path': cached_forts_path}
             )
+
+    def _refresh_inventory(self):
+        # Perform inventory update every n seconds
+        now = time.time()
+        if now - self.last_inventory_refresh >= self.inventory_refresh_threshold:
+            inventory.refresh_inventory()
+            self.last_inventory_refresh = now
+            self.inventory_refresh_counter += 1
+            
