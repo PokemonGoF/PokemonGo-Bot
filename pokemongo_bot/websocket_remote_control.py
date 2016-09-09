@@ -3,9 +3,8 @@ import logging
 from socketIO_client import SocketIO, BaseNamespace
 from pokemongo_bot import inventory
 
+
 class WebsocketRemoteControl(object):
-
-
     def __init__(self, bot):
         self.bot = bot
         self.host, port_str = self.bot.config.websocket_server_url.split(':')
