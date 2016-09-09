@@ -65,89 +65,104 @@ class TelegramClass:
                     None)
 
     def get_evolved(self, chat_id):
-        stats = self._get_player_stats()
-        if stats:
-            with self.bot.database as conn:
-                cur = conn.cursor()
-                cur.execute("SELECT * FROM evolve_log ORDER BY dated DESC LIMIT 25")
-                evolved = cur.fetchall()
+        with self.bot.database as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM evolve_log ORDER BY dated DESC LIMIT 25")
+            evolved = cur.fetchall()
+            if evolved:
                 for x in evolved:
                     res = (
-                        str(x[0]),
-                        'CP: ' + str(x[1]),
-                        'IV: ' + str(x[2]),
+                        "*"+str(x[0])+"*",
+                        "_CP:_ " + str(x[1]),
+                        "_IV:_ " + str(x[2]),
                         str(x[3])
-                    )
+                        )
+
                     self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+            else:
+                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Evolutions Found.\n")
 
     def get_softban(self, chat_id):
         with self.bot.database as conn:
             cur = conn.cursor()
             cur.execute("SELECT * FROM softban_log")
             softban = cur.fetchall()
-            for x in softban:
-                res = (
-                    str(x[0]),
-                    str(x[2]))
-                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+            if softban:
+                for x in softban:
+                    res = (
+                        "*" + str(x[0]) + "*",
+                        str(x[2]))
+                    self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+            else:
+                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Softbans found! Good job!\n")
 
     def get_hatched(self, chat_id):
-        stats = self._get_player_stats()
-        if stats:
-            with self.bot.database as conn:
-                cur = conn.cursor()
-                cur.execute("SELECT * FROM eggs_hatched_log ORDER BY dated DESC LIMIT 25")
-                hatched = cur.fetchall()
+        with self.bot.database as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM eggs_hatched_log ORDER BY dated DESC LIMIT 25")
+            hatched = cur.fetchall()
+            if hatched:
                 for x in hatched:
                     res = (
-                        str(x[0]),
-                        'CP: ' + str(x[1]),
-                        'IV: ' + str(x[2]),
-                        str(x[3])
-                    )
+                        "*" + str(x[0]) + "*",
+                        "_CP:_ " + str(x[1]),
+                        "_IV:_ " + str(x[2]),
+                        str(x[4])
+                        )
                     self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+            else:
+                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Eggs Hatched Yet.\n")
 
     def get_caught(self, chat_id):
         with self.bot.database as conn:
             cur = conn.cursor()
             cur.execute("SELECT * FROM catch_log ORDER BY dated DESC LIMIT 25")
             caught = cur.fetchall()
-            for x in caught:
-                res = (
-                    str(x[0]),
-                    'CP: '+str(x[1]),
-                    'IV: ' + str(x[2])
-                    )
-                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+            if caught:
+                for x in caught:
+                    res = (
+                        "*" + str(x[0]) + "*",
+                        "_CP:_ " + str(x[1]),
+                        "_IV:_ " + str(x[2]),
+                        str(x[5])
+                        )
+                    self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+            else:
+                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Pokemon Caught Yet.\n")
 
     def get_pokestop(self, chat_id):
         with self.bot.database as conn:
             cur = conn.cursor()
             cur.execute("SELECT * FROM pokestop_log ORDER BY dated DESC LIMIT 25")
             pokestop = cur.fetchall()
-
-            for x in pokestop:
-                res = (
-                    str(x[0]),
-                    'XP: ' + str(x[1]),
-                    'Items: ' + str(x[2]),
-                    str(x[3])
-                )
-                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+            if pokestop:
+                for x in pokestop:
+                    res = (
+                        "*" + str(x[0] + "*"),
+                        "_XP:_ " + str(x[1]),
+                        "_Items:_ " + str(x[2]),
+                        str(x[3])
+                    )
+                    self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+            else:
+                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Pokestops Encountered Yet.\n")
 
     def get_transfer(self, chat_id):
         with self.bot.database as conn:
             cur = conn.cursor()
             cur.execute("SELECT * FROM transfer_log ORDER BY dated DESC LIMIT 25")
             transfer = cur.fetchall()
-            for x in transfer:
-                res = (
-                    str(x[0]),
-                    'XP: ' + str(x[1]),
-                    'IV: ' + str(x[2]),
-                    str(x[3])
-                )
-                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+            if transfer:
+                for x in transfer:
+                    res = (
+                        "*" + str(x[0]) + "*",
+                        "_XP:_ " + str(x[1]),
+                        "_IV:_ " + str(x[2]),
+                        str(x[3])
+                    )
+                    self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+            else:
+                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Pokemon Released Yet.\n")
 
     def send_player_stats_to_chat(self, chat_id):
         stats = self._get_player_stats()
