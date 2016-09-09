@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 from pokemongo_bot.event_manager import EventHandler
 from pokemongo_bot.base_dir import _base_dir
-import json
 import os
 import time
 import discord_simple
 import thread
 import re
-from pokemongo_bot.datastore import Datastore
 from pokemongo_bot import inventory
 import pprint
+from chat_handler import ChatHandler
 
 
 DEBUG_ON = False
@@ -30,13 +29,6 @@ class DiscordClass:
 
     def connect(self):
         self._dbot = discord_simple.Bot(self.bot.config.discord_token,on_message=self.on_message)
-
-    def _get_player_stats(self):
-        json_inventory = inventory.jsonify_inventory()
-        return next((x["inventory_item_data"]["player_stats"]
-                     for x in json_inventory
-                     if x.get("inventory_item_data", {}).get("player_stats", {})),
-                    None)
 
     def send_player_stats_to_chat(self, chat_id):
         stats = self.chat_handler.get_player_stats()
@@ -68,7 +60,8 @@ class DiscordHandler(EventHandler):
         self.pokemons = config.get('alert_catch', {})
         self.whoami = "DiscordHandler"
         self.config = config
-
+        self.chat_handler = ChatHandler(self.bot,[])
+        
     def catch_notify(self, pokemon, cp, iv, params):
         if params == " ":
             return True
