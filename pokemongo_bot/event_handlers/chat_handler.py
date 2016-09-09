@@ -14,9 +14,9 @@ class ChatHandler:
         if stats:
             with self.bot.database as conn:
                 cur = conn.cursor()
-                cur.execute("SELECT DISTINCT COUNT(encounter_id) FROM catch_log WHERE dated >= datetime('now','-1 day')")
+                cur.execute("SELECT COUNT(DISTINCT encounter_id) FROM catch_log WHERE dated >= datetime('now','-1 day')")
                 catch_day = cur.fetchone()[0]
-                cur.execute("SELECT DISTINCT COUNT(pokestop) FROM pokestop_log WHERE dated >= datetime('now','-1 day')")
+                cur.execute("SELECT COUNT(pokestop) FROM pokestop_log WHERE dated >= datetime('now','-1 day')")
                 ps_day = cur.fetchone()[0]
                 res = (
                     "*"+self.bot.config.username+"*",
@@ -31,25 +31,25 @@ class ChatHandler:
             return("Stats not loaded yet\n")
             
     def get_event(self, event, formatted_msg, data):
+        msg = None
         if event == 'level_up':
             msg = "level up ({})".format(data["current_level"])
         elif event == 'pokemon_caught':
             if isinstance(self.pokemons, list): # alert_catch is a plain list
                 if data["pokemon"] in self.pokemons or "all" in self.pokemons:
                     msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
-                else:
-                    return "Catch error 1"
             else: # alert_catch is a dict
                 if data["pokemon"] in self.pokemons:
                     trigger = self.pokemons[data["pokemon"]]
                 elif "all" in self.pokemons:
                     trigger = self.pokemons["all"]
                 else:
-                    return "Catch error 2"
-                if (not "operator" in trigger or trigger["operator"] == "and") and data["cp"] >= trigger["cp"] and data["iv"] >= trigger["iv"] or ("operator" in trigger and trigger["operator"] == "or" and (data["cp"] >= trigger["cp"] or data["iv"] >= trigger["iv"])):
+                    return None
+                if (not "operator" in trigger or trigger["operator"] == "and") and \
+                        data["cp"] >= trigger["cp"] and data["iv"] >= trigger["iv"] or \
+                        ("operator" in trigger and trigger["operator"] == "or" and \
+                        (data["cp"] >= trigger["cp"] or data["iv"] >= trigger["iv"])):
                     msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
-                else:
-                    return "Catch error 3"
         elif event == 'egg_hatched':
             msg = "Egg hatched with a {} CP: {}, IV: {} {}".format(data["name"], data["cp"], data["iv_ads"], data["iv_pct"])
         elif event == 'bot_sleep':
@@ -62,8 +62,6 @@ class ChatHandler:
             return formatted_msg
 
         return msg
-
-
             
     def display_events(self, update):
         cmd = update.message.text.split(" ", 1)

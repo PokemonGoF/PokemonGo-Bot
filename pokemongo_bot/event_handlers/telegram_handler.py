@@ -364,6 +364,8 @@ class TelegramHandler(EventHandler):
                 return
                 
         msg = self.chat_handler.get_event(event, formatted_msg, data)
+        if msg is None:
+            return
 
         # first handle subscriptions; they are independent of master setting.
         with self.bot.database as conn:
@@ -384,7 +386,5 @@ class TelegramHandler(EventHandler):
                 # cannot send event notifications to non-numeric master (yet), so quitting
                 return
             master = self.master
-            msg = self.chat_handler.get_event(event)
-            if msg:
-                self.tbot.sendMessage(chat_id=master, parse_mode='Markdown', text=msg)
+            self.tbot.sendMessage(chat_id=master, parse_mode='Markdown', text=msg)
             
