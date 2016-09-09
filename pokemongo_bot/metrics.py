@@ -3,8 +3,8 @@ from datetime import timedelta
 from pokemongo_bot.inventory import Pokemons, refresh_inventory
 from pokemongo_bot import inventory
 
-class Metrics(object):
 
+class Metrics(object):
     def __init__(self, bot):
         self.bot = bot
         self.start_time = time.time()
@@ -103,7 +103,7 @@ class Metrics(object):
             uniq_pokemon_list = set()
 
             if self.bot.tick_count > 0:
-                self.dust['latest'] = self.bot.stardust 
+                self.dust['latest'] = self.bot.stardust
                 if self.dust['start'] < 0:
                     self.dust['start'] = self.dust['latest']
 
@@ -116,34 +116,44 @@ class Metrics(object):
                         self.player_stats = playerdata
 
                         self.xp['latest'] = playerdata.get('experience', 0)
-                        if self.xp['start'] < 0: self.xp['start'] = self.xp['latest']
+                        if self.xp['start'] < 0:
+                            self.xp['start'] = self.xp['latest']
 
                         self.visits['latest'] = playerdata.get('poke_stop_visits', 0)
-                        if self.visits['start'] < 0: self.visits['start'] = self.visits['latest']
+                        if self.visits['start'] < 0:
+                            self.visits['start'] = self.visits['latest']
 
                         self.captures['latest'] = playerdata.get('pokemons_captured', 0)
-                        if self.captures['start'] < 0: self.captures['start'] = self.captures['latest']
+                        if self.captures['start'] < 0:
+                            self.captures['start'] = self.captures['latest']
 
                         self.distance['latest'] = playerdata.get('km_walked', 0)
-                        if self.distance['start'] < 0: self.distance['start'] = self.distance['latest']
+                        if self.distance['start'] < 0:
+                            self.distance['start'] = self.distance['latest']
 
                         self.encounters['latest'] = playerdata.get('pokemons_encountered', 0)
-                        if self.encounters['start'] < 0: self.encounters['start'] = self.encounters['latest']
+                        if self.encounters['start'] < 0:
+                            self.encounters['start'] = self.encounters['latest']
 
                         self.throws['latest'] = playerdata.get('pokeballs_thrown', 0)
-                        if self.throws['start'] < 0: self.throws['start'] = self.throws['latest']
+                        if self.throws['start'] < 0:
+                            self.throws['start'] = self.throws['latest']
 
                         self.unique_mons['latest'] = playerdata.get('unique_pokedex_entries', 0)
-                        if self.unique_mons['start'] < 0: self.unique_mons['start'] = self.unique_mons['latest']
+                        if self.unique_mons['start'] < 0:
+                            self.unique_mons['start'] = self.unique_mons['latest']
 
                         self.visits['latest'] = playerdata.get('poke_stop_visits', 0)
-                        if self.visits['start'] < 0: self.visits['start'] = self.visits['latest']
+                        if self.visits['start'] < 0:
+                            self.visits['start'] = self.visits['latest']
 
                         self.evolutions['latest'] = playerdata.get('evolutions', 0)
-                        if self.evolutions['start'] < 0: self.evolutions['start'] = self.evolutions['latest']
+                        if self.evolutions['start'] < 0:
+                            self.evolutions['start'] = self.evolutions['latest']
                     elif 'pokedex_entry' in item['inventory_item_data']:
                         entry = item['inventory_item_data']['pokedex_entry'].get('pokemon_id')
-                        if entry: uniq_pokemon_list.add(entry)
+                        if entry:
+                            uniq_pokemon_list.add(entry)
 
             if not self.uniq_pokemons_list:  # make set from pokedex entries on first run
                 self.uniq_pokemons_list = uniq_pokemon_list
