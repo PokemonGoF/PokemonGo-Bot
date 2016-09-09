@@ -156,13 +156,10 @@ class MoveToMapPokemon(BaseTask):
         return pokemons
 
     def get_pokemon_from_social(self):
-        if not hasattr(self.bot, 'mqtt_pokemon_list'):
-            return []
-        if not self.bot.mqtt_pokemon_list or len(self.bot.mqtt_pokemon_list) <= 0:
+        if not hasattr(self.bot, 'mqtt_pokemon_list') or not self.bot.mqtt_pokemon_list:
             return []
 
-        tmp_pokemon_list = self.bot.mqtt_pokemon_list
-        self.bot.mqtt_pokemon_list = []
+        tmp_pokemon_list, self.bot.mqtt_pokemon_list = self.bot.mqtt_pokemon_list, []
         return self.pokemons_parser(tmp_pokemon_list)
 
     def get_pokemon_from_url(self):
