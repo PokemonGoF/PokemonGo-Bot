@@ -1078,6 +1078,7 @@ class PokemonGoBot(object):
         self.logger.info('Pokemon:')
 
         for pokes in pokemon_list:
+            pokes.sort(key=lambda p: p.cp, reverse=True)
             line_p = '#{} {}'.format(pokes[0].pokemon_id, pokes[0].name)
             if show_count:
                 line_p += '[{}]'.format(len(pokes))
