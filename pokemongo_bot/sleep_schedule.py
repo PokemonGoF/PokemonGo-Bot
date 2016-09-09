@@ -64,7 +64,7 @@ class SleepSchedule(object):
             wake_up_at_location = self._wake_up_at_location
             self._schedule_next_sleep()
             if wake_up_at_location:
-                if hasattr(self.bot, 'api'): # Check if api is already initialized
+                if hasattr(self.bot, 'api'):  # Check if api is already initialized
                     msg = "Wake up location found: {location} {position}"
                     self.bot.event_manager.emit(
                         'location_found',
@@ -93,23 +93,22 @@ class SleepSchedule(object):
                     )
                 else:
                     self.bot.wake_location = wake_up_at_location
-            if hasattr(self.bot, 'api'): self.bot.login() # Same here
+            if hasattr(self.bot, 'api'):
+                self.bot.login()  # Same here
 
     def _time_fmt(self, value):
-       ret = ""
-       if isinstance(value, datetime):
-           ret = value.strftime("%H:%M:%S")
-       elif isinstance(value, (int, float)):
-           h, m = divmod(value, 3600)
-           m, s = divmod(m, 60)
-           ret = "%02d:%02d:%02d" % (h, m, s)
-       return ret
-
+        ret = ""
+        if isinstance(value, datetime):
+            ret = value.strftime("%H:%M:%S")
+        elif isinstance(value, (int, float)):
+            h, m = divmod(value, 3600)
+            m, s = divmod(m, 60)
+            ret = "%02d:%02d:%02d" % (h, m, s)
+        return ret
 
     def _process_config(self, config):
-
         def testkey(entry, key, offset=False, defval=''):
-            if not key in entry:
+            if key not in entry:
                 index = config.index(entry) + 1
                 if not offset:
                     raise ValueError('SleepSchedule: No "%s" key found in entry %d' % (key, index))
@@ -118,7 +117,8 @@ class SleepSchedule(object):
 
         self.entries = []
 
-        if 'enabled' in config and config['enabled'] == False: return
+        if 'enabled' in config and config['enabled'] == False:
+            return
 
         if 'enable_reminder' in config and config['enable_reminder'] == True:
             self._enable_reminder = True
@@ -126,12 +126,13 @@ class SleepSchedule(object):
         else:
             self._enable_reminder = False
 
-        if not 'entries' in config:
+        if 'entries' not in config:
             self.bot.logger.warning('SleepSchedule is disabled. Config structure has been changed, see docs/configuration_files.md for more information')
             return
 
         for entry in config['entries']:
-            if 'enabled' in entry and entry['enabled'] == False: continue
+            if 'enabled' in entry and entry['enabled'] == False:
+                continue
 
             prepared = {}
 
@@ -161,7 +162,7 @@ class SleepSchedule(object):
                     lat = float(wake_up_at_location[0])
                     lng = float(wake_up_at_location[1])
                     alt = float(wake_up_at_location[2]) if wake_up_at_location[2] else uniform(self.bot.config.alt_min, self.bot.config.alt_max)
-                    prepared['wake_up_at_location'] = { 'raw': raw_wake_up_at_location, 'coord': (lat, lng, alt) }
+                    prepared['wake_up_at_location'] = {'raw': raw_wake_up_at_location, 'coord': (lat, lng, alt)}
                 except:
                     index = config.index(entry)
                     self.bot.warning('SleepSchedule: error parsing wake_up_at_location in entry %d' % index)
@@ -171,10 +172,12 @@ class SleepSchedule(object):
             prepared['duration_random_offset'] = duration_random_offset
             self.entries.append(prepared)
 
-        if not len(self.entries): self.bot.logger.warning('SleepSchedule is disabled')
+        if not len(self.entries):
+            self.bot.logger.warning('SleepSchedule is disabled')
 
     def _schedule_next_sleep(self):
-        if not len(self.entries): return
+        if not len(self.entries):
+            return
 
         self._next_sleep, self._next_duration, self._next_end, self._wake_up_at_location, sleep_now = self._get_next_sleep_schedule()
 
@@ -188,10 +191,12 @@ class SleepSchedule(object):
                     'duration': self._time_fmt(self._next_duration)
                 }
             )
-            if self._enable_reminder: self._last_reminder = datetime.now()
+            if self._enable_reminder:
+                self._last_reminder = datetime.now()
 
     def _should_sleep_now(self):
-        if not len(self.entries): return False
+        if not len(self.entries):
+            return False
 
         now = datetime.now()
 
@@ -245,7 +250,7 @@ class SleepSchedule(object):
                 diff = next_time - now
             # If now is sleeping time
             elif next_time <= now and now < next_end:
-                if index == self._last_index: # If it is still the same sleep entry, but now < next_end because of random offset
+                if index == self._last_index:  # If it is still the same sleep entry, but now < next_end because of random offset
                     next_time += timedelta(days=1)
                     next_end += timedelta(days=1)
                     diff = next_time - now
