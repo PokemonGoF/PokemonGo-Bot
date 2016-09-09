@@ -13,10 +13,7 @@ from telegram.utils import request
 DEBUG_ON = False
 
 class TelegramClass:
-
     update_id = None
-    session = None
-
     def __init__(self, bot, master, pokemons, config):
         self.bot = bot
         request.CON_POOL_SIZE = 16
