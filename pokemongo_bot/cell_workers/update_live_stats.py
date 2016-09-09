@@ -364,4 +364,4 @@ class UpdateLiveStats(BaseTask):
         # Map stats the user wants to see to available stats and join them with pipes.
         line = ' | '.join(map(get_stat, self.displayed_stats))
 
-return line
+        return line
