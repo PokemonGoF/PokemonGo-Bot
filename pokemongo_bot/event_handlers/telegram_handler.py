@@ -74,10 +74,9 @@ class TelegramClass:
             self.update_id = None
 
     def send_player_stats_to_chat(self, chat_id):
-        res = self.chat_handler.get_player_stats()
-        stats = self._get_player_stats()
+        stats = self.chat_handler.get_player_stats()
         if stats:
-            self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+            self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(stats))
             self.sendLocation(chat_id=chat_id, latitude=self.bot.api._position_lat, longitude=self.bot.api._position_lng)
         else:
             self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="Stats not loaded yet\n")
