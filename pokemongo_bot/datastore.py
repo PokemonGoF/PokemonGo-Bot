@@ -20,6 +20,7 @@ except ImportError:
 DEFAULT_DRIVER = 'sqlite'
 DEFAULT_CONN_STR = ':memory:'
 
+
 class Datastore(object):
 
     def __init__(self, *args, **kwargs):
