@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 import math
 import time
 
@@ -7,6 +10,8 @@ from pokemongo_bot.constants import Constants
 from pokemongo_bot.human_behaviour import random_lat_long_delta, random_alt_delta
 from pokemongo_bot.walkers.polyline_walker import PolylineWalker
 from pokemongo_bot.worker_result import WorkerResult
+from pokemongo_bot.item_list import Item
+from pokemongo_bot import inventory
 
 
 class CampFort(BaseTask):
@@ -32,9 +37,21 @@ class CampFort(BaseTask):
         if not self.enabled:
             return WorkerResult.SUCCESS
 
+        self.announced_out_of_balls = False
         now = time.time()
 
         if now < self.move_until:
+            return WorkerResult.SUCCESS
+
+        # Let's make sure we have balls before we sit at a lure!
+        # See also catch_pokemon.py
+        if sum([inventory.items().get(ball.value).count for ball in
+            [Item.ITEM_POKE_BALL, Item.ITEM_GREAT_BALL, Item.ITEM_ULTRA_BALL]]) <= 0:
+            self.logger.info('No pokeballs left, refuse to sit at lure!')
+            # Move away from lures for a time
+            self.destination = None
+            self.stay_until = 0
+            self.move_until = now + self.config_moving_time
             return WorkerResult.SUCCESS
 
         if 0 < self.stay_until < now:
@@ -45,12 +62,14 @@ class CampFort(BaseTask):
             if self.config_moving_time > 0:
                 return WorkerResult.SUCCESS
 
+        forts = self.get_forts()
+
         if self.destination is None:
-            forts = self.get_forts()
             forts_clusters = self.get_forts_clusters(forts)
 
             if len(forts_clusters) > 0:
                 self.destination = forts_clusters[0]
+                self.walker = PolylineWalker(self.bot, self.destination[0], self.destination[1])
                 self.logger.info("New destination at %s meters: %s forts, %s lured.", int(self.destination[4]), self.destination[3], self.destination[2])
             else:
                 # forts = [f for f in forts if f.get("cooldown_complete_timestamp_ms", 0) < now * 1000]
@@ -63,24 +82,14 @@ class CampFort(BaseTask):
         else:
             self.last_position_update = now
 
+        circle = (self.destination[0], self.destination[1], Constants.MAX_DISTANCE_FORT_IS_REACHABLE)
+        cluster = self.get_cluster(forts, circle)
+
         if self.stay_until >= now:
-            lat = self.destination[0] + random_lat_long_delta() / 5
-            lon = self.destination[1] + random_lat_long_delta() / 5
-            alt = self.walker.pol_alt + random_alt_delta() / 2
-            self.bot.api.set_position(lat, lon, alt)
-        else:
-            self.walker = PolylineWalker(self.bot, self.destination[0], self.destination[1])
-            self.walker.step()
-
-            dst = distance(self.bot.position[0], self.bot.position[1], self.destination[0], self.destination[1])
-
-            if dst < 1:
-                forts = self.get_forts()
-                circle = (self.destination[0], self.destination[1], Constants.MAX_DISTANCE_FORT_IS_REACHABLE)
-                cluster = self.get_cluster(forts, circle)
-
-                self.logger.info("Arrived at destination: %s forts, %s lured.", cluster[3], cluster[2])
-                self.stay_until = now + self.config_camping_time
+            self.walker.step(speed=0)
+        elif self.walker.step():
+            self.logger.info("Arrived at destination: %s forts, %s lured.", cluster[3], cluster[2])
+            self.stay_until = now + self.config_camping_time
 
         return WorkerResult.RUNNING
 
