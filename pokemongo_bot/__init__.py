@@ -677,6 +677,8 @@ class PokemonGoBot(object):
             if timeout >= now:
                 self.fort_timeouts[fort["id"]] = timeout
 
+        inventory.refresh_inventory()
+
         self.tick_count += 1
 
         # Check if session token has expired
@@ -1338,8 +1340,6 @@ class PokemonGoBot(object):
                               'level': badgelevel}
                     )
                     human_behaviour.action_delay(3, 10)
-
-            inventory.refresh_inventory()
 
         try:
             self.web_update_queue.put_nowait(True)  # do this outside of thread every tick
