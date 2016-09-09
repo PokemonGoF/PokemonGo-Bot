@@ -6,9 +6,9 @@ import telegram
 import thread
 import re
 import pprint
-from pokemongo_bot.datastore import Datastore
 from pokemongo_bot import inventory
 from telegram.utils import request
+from chat_handler import ChatHandler
 
 DEBUG_ON = False
 
@@ -17,6 +17,7 @@ class TelegramClass:
     def __init__(self, bot, master, pokemons, config):
         self.bot = bot
         request.CON_POOL_SIZE = 16
+        self.chat_handler = ChatHandler(self.bot)
         with self.bot.database as conn:
             # initialize the DB table if it does not exist yet
             initiator = TelegramDBInit(bot.database)
@@ -72,26 +73,10 @@ class TelegramClass:
         except IndexError:
             self.update_id = None
 
-    def _get_player_stats(self):
-        return inventory.player().player_stats
-        
     def send_player_stats_to_chat(self, chat_id):
+        res = self.chat_handler.get_player_stats()
         stats = self._get_player_stats()
         if stats:
-            with self.bot.database as conn:
-                cur = conn.cursor()
-                cur.execute("SELECT DISTINCT COUNT(encounter_id) FROM catch_log WHERE dated >= datetime('now','-1 day')")
-                catch_day = cur.fetchone()[0]
-                cur.execute("SELECT DISTINCT COUNT(pokestop) FROM pokestop_log WHERE dated >= datetime('now','-1 day')")
-                ps_day = cur.fetchone()[0]
-                res = (
-                    "*"+self.bot.config.username+"*",
-                    "_Level:_ "+str(stats["level"]),
-                    "_XP:_ "+str(stats["experience"])+"/"+str(stats["next_level_xp"]),
-                    "_Pokemons Captured:_ "+str(stats["pokemons_captured"])+" ("+str(catch_day)+" _last 24h_)",
-                    "_Poke Stop Visits:_ "+str(stats["poke_stop_visits"])+" ("+str(ps_day)+" _last 24h_)",
-                    "_KM Walked:_ "+str("%.2f" % stats["km_walked"])
-                )
             self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
             self.sendLocation(chat_id=chat_id, latitude=self.bot.api._position_lat, longitude=self.bot.api._position_lng)
         else:
