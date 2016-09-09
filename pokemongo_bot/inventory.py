@@ -119,7 +119,7 @@ class Player(_BaseInventoryComponent):
 
         self._exp = value
 
-    def refresh(self,inventory):
+    def refresh(self, inventory):
         self.player_stats = self.retrieve_data(inventory)
 
     def parse(self, item):
@@ -204,7 +204,6 @@ class Item(object):
         if self.count < amount:
             raise Exception('Tried to remove more {} than you have'.format(self.name))
         self.count -= amount
-
 
     def recycle(self, amount_to_recycle):
         """
@@ -318,7 +317,6 @@ class Items(_BaseInventoryComponent):
         """
         max_number_of_items_looted_at_stop = 5
         return cls.get_space_left() >= max_number_of_items_looted_at_stop
-
 
 
 class Pokemons(_BaseInventoryComponent):
@@ -1251,9 +1249,9 @@ class Inventory(object):
         """
         # TODO: Force to update it if the player upgrades its size
         if self.item_inventory_size is None or self.pokemon_inventory_size is None:
-           player_data = self.bot.api.get_player()['responses']['GET_PLAYER']['player_data']
-           self.item_inventory_size = player_data['max_item_storage']
-           self.pokemon_inventory_size = player_data['max_pokemon_storage']
+            player_data = self.bot.api.get_player()['responses']['GET_PLAYER']['player_data']
+            self.item_inventory_size = player_data['max_item_storage']
+            self.pokemon_inventory_size = player_data['max_pokemon_storage']
 
 #
 # Other
@@ -1344,12 +1342,14 @@ def refresh_inventory(data=None):
     except AttributeError:
         print '_inventory was not initialized'
 
+
 def jsonify_inventory():
     try:
         return _inventory.jsonify_inventory()
     except AttributeError:
         print '_inventory was not initialized'
         return []
+
 
 def update_web_inventory():
     _inventory.update_web_inventory()

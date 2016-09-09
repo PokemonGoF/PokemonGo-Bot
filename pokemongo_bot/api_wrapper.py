@@ -1,6 +1,8 @@
 import time
 import logging
-import random, base64, struct
+import random
+import base64
+import struct
 import hashlib
 import os
 import json
@@ -13,10 +15,13 @@ from pgoapi.protos.POGOProtos.Networking.Requests.RequestType_pb2 import Request
 from pgoapi.protos.POGOProtos.Networking.Envelopes.Signature_pb2 import Signature
 from pgoapi.utilities import get_time
 from human_behaviour import sleep, gps_noise_rng
+
 from pokemongo_bot.base_dir import _base_dir
+
 
 class PermaBannedException(Exception):
     pass
+
 
 class ApiWrapper(PGoApi, object):
     DEVICE_ID = None
@@ -83,12 +88,12 @@ class ApiWrapper(PGoApi, object):
     def set_position(self, lat, lng, alt=None, teleporting=False):
         self.actual_lat = lat
         self.actual_lng = lng
-        if None != alt:
+        if alt is not None:
             self.actual_alt = alt
         else:
             alt = self.actual_alt
         self.teleporting = teleporting
-        
+
         if self.config.replicate_gps_xy_noise:
             lat_noise = gps_noise_rng(self.config.gps_xy_noise_range)
             lng_noise = gps_noise_rng(self.config.gps_xy_noise_range)
@@ -194,7 +199,7 @@ class ApiRequest(PGoApiRequest):
         if not result or result is None or not isinstance(result, dict):
             return False
 
-        if not 'responses' in result or not 'status_code' in result:
+        if 'responses' not in result or 'status_code' not in result:
             return False
 
         if not isinstance(result['responses'], dict):
@@ -211,7 +216,7 @@ class ApiRequest(PGoApiRequest):
         # the response can still programatically be valid at this point
         # but still be wrong. we need to check if the server did sent what we asked it
         for request_caller in request_callers:
-            if not request_caller in result['responses']:
+            if request_caller not in result['responses']:
                 return False
 
         return True
@@ -282,7 +287,7 @@ class ApiRequest(PGoApiRequest):
 
         difference = now_milliseconds - (self.last_api_request_time if self.last_api_request_time else 0)
 
-        if self.last_api_request_time != None and difference < required_delay_between_requests:
+        if self.last_api_request_time is not None and difference < required_delay_between_requests:
             sleep_time = required_delay_between_requests - difference
             time.sleep(sleep_time / 1000)
 
