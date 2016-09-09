@@ -14,3 +14,5 @@ script:
   - python -m unittest discover -v -p "*_test.py"
   - python json-validate.py configs/*.json.*
   - python pylint-recursive.py
+cache: pip
+
