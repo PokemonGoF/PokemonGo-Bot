@@ -387,3 +387,7 @@ class TelegramHandler(EventHandler):
                 return
             master = self.master
             self.tbot.sendMessage(chat_id=master, parse_mode='Markdown', text=msg)
+<<<<<<< HEAD
+=======
+            
+>>>>>>> More updates
