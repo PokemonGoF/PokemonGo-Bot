@@ -416,9 +416,12 @@ class Pokemons(_BaseInventoryComponent):
 
     def add(self, pokemon):
         if pokemon.unique_id <= 0:
-            raise ValueError("Can't add a pokemon without id")
+            self.bot.logger.debug("Can't add a pokemon without id")
+            return
         if pokemon.unique_id in self._data:
-            raise ValueError("Pokemon already present in the inventory")
+            self.bot.logger.debug("Pokemon already present in the inventory")
+            return
+            
         self._data[pokemon.unique_id] = pokemon
 
     def remove(self, pokemon_unique_id):
