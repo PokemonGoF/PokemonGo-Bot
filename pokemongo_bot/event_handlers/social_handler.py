@@ -71,7 +71,6 @@ class MyMQTTClass:
             self._mqttc.on_publish = self.mqtt_on_publish
             self._mqttc.on_disconnect = self.on_disconnect
 
-            self._mqttc.connect("broker.pikabot.org", 1883, 10)
             # Enable this line if you are doing the snip code, off stress
             # self._mqttc.loop_start()
         except TypeError:
@@ -79,6 +78,7 @@ class MyMQTTClass:
             return
 
     def run(self):
+        self._mqttc.connect("broker.pikabot.org", 1883, 20)
         while True:
             try:
                 self._mqttc.loop_forever(timeout=30.0, max_packets=100, retry_first_connection=False)
@@ -101,7 +101,6 @@ class SocialHandler(EventHandler):
                     print 'need connect'
 
                 self.mqttc = MyMQTTClass(self.bot, self.bot.config.client_id)
-                self.mqttc.connect_to_mqtt()
                 self.bot.mqttc = self.mqttc
                 thread.start_new_thread(self.mqttc.run)
             except socket_error as serr:
