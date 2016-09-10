@@ -59,7 +59,7 @@ class MyMQTTClass:
             except UnicodeDecodeError:
                 pass
 
-    def connect_to_mqtt(self):
+    def initialize(self):
         try:
             if DEBUG_ON:
                 print 'connect again'
@@ -86,6 +86,9 @@ class MyMQTTClass:
                 time.sleep(20)
             except UnicodeDecodeError:
                 time.sleep(1)
+            except Exception as e:
+                print e
+                time.sleep(10)
 
 
 class SocialHandler(EventHandler):
@@ -101,6 +104,7 @@ class SocialHandler(EventHandler):
                     print 'need connect'
 
                 self.mqttc = MyMQTTClass(self.bot, self.bot.config.client_id)
+                self.mqttc.initialize()
                 self.bot.mqttc = self.mqttc
                 thread.start_new_thread(self.mqttc.run)
             except socket_error as serr:
