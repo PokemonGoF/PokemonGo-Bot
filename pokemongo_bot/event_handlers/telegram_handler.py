@@ -265,6 +265,7 @@ class TelegramHandler(EventHandler):
 
             if event == 'level_up':
                 msg = "level up ({})".format(data["current_level"])
+
             elif event == 'pokemon_caught':
                 if isinstance(self.pokemons, list):
                     if data["pokemon"] in self.pokemons or "all" in self.pokemons:
@@ -289,6 +290,14 @@ class TelegramHandler(EventHandler):
                     return
             elif event == 'bot_sleep':
                 msg = "I am too tired, I will take a sleep till {}.".format(data["wake"])
+            elif event == 'bot_random_pause':
+                msg = "Taking a random break until {}.".format(data["resume"])
+            elif event == 'bot_random_alive_pause':
+                msg = "Taking a random break until {}.".format(data["resume"])
+            elif event == 'log_stats':
+                msg = "{}".format(data["msg"])
+            elif event == 'show_inventory':
+                msg = "{}".format(data["msg"])
             elif event == 'catch_limit':
                 self.tbot.send_player_stats_to_chat(master)
                 msg = "*You have reached your daily catch limit, quitting.*"
