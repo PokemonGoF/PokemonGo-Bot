@@ -6,9 +6,9 @@ import telegram
 import thread
 import re
 import pprint
-from pokemongo_bot.datastore import Datastore
 from pokemongo_bot import inventory
 from telegram.utils import request
+from chat_handler import ChatHandler
 
 DEBUG_ON = False
 
@@ -17,6 +17,7 @@ class TelegramClass:
     def __init__(self, bot, master, pokemons, config):
         self.bot = bot
         request.CON_POOL_SIZE = 16
+        self.chat_handler = ChatHandler(self.bot, pokemons)
         with self.bot.database as conn:
             # initialize the DB table if it does not exist yet
             initiator = TelegramDBInit(bot.database)
@@ -72,27 +73,10 @@ class TelegramClass:
         except IndexError:
             self.update_id = None
 
-    def _get_player_stats(self):
-        return inventory.player().player_stats
-        
     def send_player_stats_to_chat(self, chat_id):
-        stats = self._get_player_stats()
+        stats = self.chat_handler.get_player_stats()
         if stats:
-            with self.bot.database as conn:
-                cur = conn.cursor()
-                cur.execute("SELECT DISTINCT COUNT(encounter_id) FROM catch_log WHERE dated >= datetime('now','-1 day')")
-                catch_day = cur.fetchone()[0]
-                cur.execute("SELECT DISTINCT COUNT(pokestop) FROM pokestop_log WHERE dated >= datetime('now','-1 day')")
-                ps_day = cur.fetchone()[0]
-                res = (
-                    "*"+self.bot.config.username+"*",
-                    "_Level:_ "+str(stats["level"]),
-                    "_XP:_ "+str(stats["experience"])+"/"+str(stats["next_level_xp"]),
-                    "_Pokemons Captured:_ "+str(stats["pokemons_captured"])+" ("+str(catch_day)+" _last 24h_)",
-                    "_Poke Stop Visits:_ "+str(stats["poke_stop_visits"])+" ("+str(ps_day)+" _last 24h_)",
-                    "_KM Walked:_ "+str("%.2f" % stats["km_walked"])
-                )
-            self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+            self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(stats))
             self.sendLocation(chat_id=chat_id, latitude=self.bot.api._position_lat, longitude=self.bot.api._position_lng)
         else:
             self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="Stats not loaded yet\n")
@@ -328,6 +312,7 @@ class TelegramHandler(EventHandler):
         self.pokemons = config.get('alert_catch', {})
         self.whoami = "TelegramHandler"
         self.config = config
+        self.chat_handler = ChatHandler(self.bot, self.pokemons)
         if master == None:
             self.master = None
             return
@@ -377,25 +362,11 @@ class TelegramHandler(EventHandler):
                 self.tbot = None
                 self.bot.logger.error("Unable to start Telegram bot; master: {}, exception: {}".format(selfmaster, pprint.pformat(inst)))
                 return
-        try:
-            # prepare message to send
-            if event == 'level_up':
-                msg = "level up ({})".format(data["current_level"])
-            elif event == 'pokemon_caught':
-                msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
-            elif event == 'egg_hatched':
-                msg = "Egg hatched with a {} CP: {}, IV: {} {}".format(data["name"], data["cp"], data["iv_ads"], data["iv_pct"])
-            elif event == 'bot_sleep':
-                msg = "I am too tired, I will take a sleep till {}.".format(data["wake"])
-            elif event == 'catch_limit':
-                msg = "*You have reached your daily catch limit, quitting.*"
-            elif event == 'spin_limit':
-                msg = "*You have reached your daily spin limit, quitting.*"
-            else:
-                msg = formatted_msg
-        except KeyError:
-            msg = "Error on event {}".format(event)
-            pass
+                
+        msg = self.chat_handler.get_event(event, formatted_msg, data)
+        if msg is None:
+            return
+
         # first handle subscriptions; they are independent of master setting.
         with self.bot.database as conn:
             subs = conn.execute("select uid, parameters, event_type from telegram_subscriptions where event_type in (?,'all','debug')", [event]).fetchall()
@@ -415,37 +386,4 @@ class TelegramHandler(EventHandler):
                 # cannot send event notifications to non-numeric master (yet), so quitting
                 return
             master = self.master
-
-            if event == 'level_up':
-                msg = "level up ({})".format(data["current_level"])
-            elif event == 'pokemon_caught':
-                if isinstance(self.pokemons, list): # alert_catch is a plain list
-                    if data["pokemon"] in self.pokemons or "all" in self.pokemons:
-                        msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
-                    else:
-                        return
-                else: # alert_catch is a dict
-                    if data["pokemon"] in self.pokemons:
-                        trigger = self.pokemons[data["pokemon"]]
-                    elif "all" in self.pokemons:
-                        trigger = self.pokemons["all"]
-                    else:
-                        return
-                    if (not "operator" in trigger or trigger["operator"] == "and") and data["cp"] >= trigger["cp"] and data["iv"] >= trigger["iv"] or ("operator" in trigger and trigger["operator"] == "or" and (data["cp"] >= trigger["cp"] or data["iv"] >= trigger["iv"])):
-                        msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
-                    else:
-                        return
-            elif event == 'egg_hatched':
-                msg = "Egg hatched with a {} CP: {}, IV: {} {}".format(data["name"], data["cp"], data["iv_ads"], data["iv_pct"])
-            elif event == 'bot_sleep':
-                msg = "I am too tired, I will take a sleep till {}.".format(data["wake"])
-            elif event == 'catch_limit':
-                self.tbot.send_player_stats_to_chat(master)
-                msg = "*You have reached your daily catch limit, quitting.*"
-            elif event == 'spin_limit':
-                self.tbot.send_player_stats_to_chat(master)
-                msg = "*You have reached your daily spin limit, quitting.*"
-            else:
-                return
             self.tbot.sendMessage(chat_id=master, parse_mode='Markdown', text=msg)
-            
