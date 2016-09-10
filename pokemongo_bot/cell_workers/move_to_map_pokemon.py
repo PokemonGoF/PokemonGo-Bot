@@ -133,6 +133,8 @@ class MoveToMapPokemon(BaseTask):
                 if self.debug:
                     self._emit_log('Skipped {} because it was already catch or does not exist'.format(pokemon['name']))
                 continue
+            else:
+                self._emit_log('{}-{} {} not inspected'.format(pokemon['latitude'], pokemon['longitude'], pokemon['name']))
 
             pokemon['priority'] = self.config['catch'].get(pokemon['name'], 0)
             pokemon['dist'] = distance(
@@ -193,8 +195,8 @@ class MoveToMapPokemon(BaseTask):
 
     def inspect(self, pokemon):
         # Make sure it was not caught!
-        for caught_pokemon in self.cache:
-            if self.is_inspected(caught_pokemon):
+        for entry in self.cache:
+            if self.is_inspected(entry):
                 return
 
         if len(self.cache) >= 200:
