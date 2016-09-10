@@ -10,11 +10,10 @@ from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.item_list import Item
 from pokemongo_bot import inventory
-from utils import fort_details, distance
+from utils import fort_details, distance,  format_time
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.constants import Constants
-from pokemongo_bot.inventory import Pokemons, Pokemon, Attack
-
+from pokemongo_bot.inventory import Pokemons
 
 class CatchPokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -62,17 +61,17 @@ class CatchPokemon(BaseTask):
             pokemon_to_catch = self.bot.cell['catchable_pokemons']
 
             if len(pokemon_to_catch) > 0:
-    		user_web_catchable = os.path.join(_base_dir, 'web', 'catchable-{}.json'.format(self.bot.config.username))
-    		for pokemon in pokemon_to_catch:
-
-    	            # Update web UI
-    		    with open(user_web_catchable, 'w') as outfile:
+                user_web_catchable = os.path.join(_base_dir, 'web', 'catchable-{}.json'.format(self.bot.config.username))
+            for pokemon in pokemon_to_catch:
+                # Update web UI
+                with open(user_web_catchable, 'w') as outfile:
     		        json.dump(pokemon, outfile)
 
-    		    self.emit_event(
-    		        'catchable_pokemon',
-    		        level='debug',
-    		        data={
+
+                self.emit_event(
+                    'catchable_pokemon',
+                    level='debug',
+                    data={
     		            'pokemon_id': pokemon['pokemon_id'],
     		            'spawn_point_id': pokemon['spawn_point_id'],
     		            'encounter_id': pokemon['encounter_id'],
@@ -83,7 +82,7 @@ class CatchPokemon(BaseTask):
     		        }
     		    )
 
-                    self.add_pokemon(pokemon)
+                self.add_pokemon(pokemon)
 
         if 'wild_pokemons' in self.bot.cell:
             for pokemon in self.bot.cell['wild_pokemons']:
@@ -161,13 +160,13 @@ class CatchPokemon(BaseTask):
         return return_value
 
     def _have_applied_incense(self):
-      for applied_item in inventory.applied_items().all():
-        if applied_item.expire_ms > 0:
-          mins = format_time(item.expire_ms * 1000)
-          self.logger.info("Not applying incense, currently active: %s, %s minutes remaining", applied_item.item.name, mins)
-          return True
-        else:
-          self.logger.info("")
-          return False
-
-      return False
+        for applied_item in inventory.applied_items().all():
+            self.logger.info(applied_item)
+            if applied_item.expire_ms > 0:
+                mins = format_time(applied_item.expire_ms * 1000)
+                self.logger.info("Not applying incense, currently active: %s, %s minutes remaining", applied_item.item.name, mins)
+                return True
+            else:
+                self.logger.info("")
+                return False
+        return False
