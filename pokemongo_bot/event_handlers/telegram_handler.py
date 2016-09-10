@@ -10,7 +10,7 @@ from pokemongo_bot.datastore import Datastore
 from pokemongo_bot import inventory
 from telegram.utils import request
 
-DEBUG_ON = False
+DEBUG_ON = True
 
 class TelegramClass:
 
@@ -25,8 +25,7 @@ class TelegramClass:
             initiator = TelegramDBInit(bot.database)
 
             if master == None: # no master supplied
-                if config["master"]:
-                    self.master = config["master"]
+                self.master = master
 
             # if master is not numeric, try to fetch it from the database
             elif unicode(master).isnumeric(): # master is numeric
@@ -297,7 +296,7 @@ class TelegramClass:
             for update in self._tbot.getUpdates(offset=self.update_id, timeout=10):
                 self.update_id = update.update_id+1
                 if update.message:
-                    self.bot.logger.info("Telegram message from {} ({}): {}".format(update.message.from_user.username, update.message.from_user.id, update.message.text))
+                    #self.bot.logger.info("Telegram message from {} ({}): {}".format(update.message.from_user.username, update.message.from_user.id, update.message.text))
                     if update.message.text == "/start" or update.message.text == "/help":
                         res = (
                             "Commands: ",
@@ -586,4 +585,4 @@ class TelegramHandler(EventHandler):
             else:
                 return
             self.tbot.sendMessage(chat_id=master, parse_mode='Markdown', text=msg)
-            
+
