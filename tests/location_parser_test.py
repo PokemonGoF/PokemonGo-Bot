@@ -21,6 +21,7 @@ class TestLocationParser(unittest.TestCase):
             username='Foobar',
         )
         self.bot.alt = 8
+        self.bot.wake_location = None
         self.bot.logger = MagicMock(return_value="")
         self.bot.updateConfig(config)
 
@@ -55,7 +56,7 @@ class TestLocationParser(unittest.TestCase):
 
     def test_named_position_utf8(self):
         position = (42, 42, 0)
-        self.bot.config.location = u"àéùƱǣЊ؍ ข᠃"
+        self.bot.config.location = u"\ue000\ue900\uf900\u1b10\u1e30\u40a0\u60d0\u2000\ue020\u1803"
         self.bot.get_pos_by_name = MagicMock(return_value=position)
 
         self.bot._set_starting_position()

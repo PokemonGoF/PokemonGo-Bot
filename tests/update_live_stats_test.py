@@ -164,15 +164,17 @@ class UpdateLiveStatsTestCase(unittest.TestCase):
         self.assertEqual(line, '')
 
     def test_get_stats_line_no_displayed_stats(self):
+        self.mock_metrics()
+
         self.worker.displayed_stats = []
-        line = self.worker._get_stats_line(self.player_stats)
+        line = self.worker._get_stats_line(self.worker._get_stats(self.player_stats))
 
         self.assertEqual(line, '')
 
     def test_get_stats_line(self):
         self.mock_metrics()
 
-        line = self.worker._get_stats_line(self.player_stats)
+        line = self.worker._get_stats_line(self.worker._get_stats(self.player_stats))
         expected = 'Login | Username | Evolved 12 pokemon | Encountered 130 pokemon | ' \
                    'Uptime : 15:42:13 | Caught 120 pokemon | Visited 220 stops | ' \
                    '42.05km walked | Level 25 | Earned 24,069 Stardust | ' \

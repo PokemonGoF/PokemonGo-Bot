@@ -3,6 +3,8 @@
 # Table of Contents
 - [Usage](#usage)
 - [Advanced Configuration](#advanced-configuration)
+- [Logging configuration](#logging-configuration)
+- [Sleep Schedule configuration](#sleep-schedule-configuration)
 - [Configuring Tasks](#configuring-tasks)
     - [Task Options:](#task-options)
     - [Example configuration:](#example-configuration)
@@ -42,11 +44,11 @@
     - [Options](#options)
     - [Sample configuration](#sample-configuration)
     - [Example console output](#example-console-output)
-- [Sleep Schedule Task](#sleep-schedule-task)
 - [Random Pause](#random-pause)
 - [Egg Incubator](#egg-incubator)
 - [ShowBestPokemon](#showbestpokemon)
 - [Telegram Task](#telegram-task)
+- [Discord Task](#discord-task)
 - [CompleteTutorial](#completetutorial)
 
 #Configuration files
@@ -93,11 +95,58 @@ Document the configuration options of PokemonGo-Bot.
 ## Logging configuration
 [[back to top](#table-of-contents)]
 
-'logging'.'color' (default false) Enabled colored logging
-'logging'.'show_datetime' (default true) Show date and time in log
-'logging'.'show_process_name' (default true) Show name of process generating output in log
-'logging'.'show_log_level' (default true) Show level of log message in log (eg. "INFO")
-'logging'.'show_thread_name' (default false) Show name of thread in log
+- 'logging'.'color' (default false) Enabled colored logging
+- 'logging'.'show_datetime' (default true) Show date and time in log
+- 'logging'.'show_process_name' (default true) Show name of process generating output in log
+- 'logging'.'show_log_level' (default true) Show level of log message in log (eg. "INFO")
+- 'logging'.'show_thread_name' (default false) Show name of thread in log
+
+## Sleep Schedule configuration
+[[back to top](#table-of-contents)]
+
+Pauses the execution of the bot every day for some time
+
+Simulates the user going to sleep every day for some time, the sleep time and the duration is changed every day by a random offset defined in the config file.
+
+###Example Config
+```
+"sleep_schedule": {
+  "enabled": true,
+  "enable_reminder": false,
+  "reminder_interval": 600,
+  "entries": [
+    {
+      "enabled": true,
+      "time": "12:00",
+      "duration": "5:30",
+      "time_random_offset": "00:30",
+      "duration_random_offset": "00:30",
+      "wake_up_at_location": ""
+    },
+    {
+      "enabled": true,
+      "time": "17:45",
+      "duration": "3:00",
+      "time_random_offset": "01:00",
+      "duration_random_offset": "00:30",
+      "wake_up_at_location": ""
+    }
+  ]
+}
+```
+
+- enabled: (true | false) enables/disables SleepSchedule. Inside of entry will enable/disable single entry, but will not override global value. Default: true
+- enable_reminder: (true | false) enables/disables sleep reminder. Default: false
+- reminder_interval: (interval) reminder interval in seconds. Default: 600
+
+- entries: [{}] SleepSchedule entries. Default: []
+- enabled: (true | false) see above
+- time: (HH:MM) local time that the bot should sleep
+- duration: (HH:MM) the duration of sleep
+- time_random_offset: (HH:MM) random offset of time that the sleep will start, for this example the possible start times are 11:30-12:30 and 16:45-18:45. Default: 01:00
+- duration_random_offset: (HH:MM) random offset of duration of sleep, for this example the possible durations are 5:00-6:00 and 2:30-3:30. Default: 00:30
+- wake_up_at_location: (label | lat, long | lat, long, alt | "") the location at which the bot wake up. You can use location "label" set in favorite_location config. Default: "". *Note that an empty string ("") will not change the location*.
+
 
 ## Configuring Tasks
 [[back to top](#table-of-contents)]
@@ -861,33 +910,6 @@ Available `items` :
 2016-08-20 18:56:22,754 [UpdateLiveInventory] [INFO] [show_inventory] Items: 335/350 | Pokeballs: 8 | GreatBalls: 186 | UltraBalls: 0 | RazzBerries: 51 | LuckyEggs: 3
 ```
 
-## Sleep Schedule Task
-[[back to top](#table-of-contents)]
-
-Pauses the execution of the bot every day for some time
-
-Simulates the user going to sleep every day for some time, the sleep time and the duration is changed every day by a random offset defined in the config file.
-
-- `time`: (HH:MM) local time that the bot should sleep
-- `duration`: (HH:MM) the duration of sleep
-- `time_random_offset`: (HH:MM) random offset of time that the sleep will start for this example the possible start time is 11:30-12:30
-- `duration_random_offset`: (HH:MM) random offset of duration of sleep for this example the possible duration is 5:00-6:00
-- `wake_up_at_location`: (lat, long | lat, long, alt | "") the location at which the bot wake up *Note that an empty string ("") will not change the location*.
-
-###Example Config
-```
-{
-  "type": "SleepSchedule",
-  "config": {
-    "time": "12:00",
-    "duration":"5:30",
-    "time_random_offset": "00:30",
-    "duration_random_offset": "00:30"
-    "wake_up_at_location": "39.408692,149.595838,590.8"
-  }
-}
-```
-
 ## Random Pause
 [[back to top](#table-of-contents)]
 
@@ -1000,8 +1022,9 @@ Bot answer on command '/info' self stats.
 ### Options
 
 * `telegram_token` : bot token (getting [there](https://core.telegram.org/bots#6-botfather) - one token per bot)
-* `master` : id (without quotes) of bot owner, who will get alerts and may issue commands.
+* `master` : id (without quotes) of bot owner, who will get alerts and may issue commands or a (case-sensitive!) user name.
 * `alert_catch` : dict of rules pokemons catch.
+* `password` : a password to be used to authenticate to the bot
 
 The bot will only alert and respond to a valid master. If you're unsure what this is, send the bot a message from Telegram and watch the log to find out.
 
@@ -1013,6 +1036,41 @@ The bot will only alert and respond to a valid master. If you're unsure what thi
     "config": {
         "enabled": true,
         "master": 12345678,
+        "alert_catch": {
+          "all": {"operator": "and", "cp": 1300, "iv": 0.95},
+          "Snorlax": {"operator": "or", "cp": 900, "iv": 0.9}
+        },
+        "password": "alwoefhq348"
+    }
+}
+```
+
+## Discord Task
+[[back to top](#table-of-contents)]
+
+### Description
+[[back to top](#table-of-contents)]
+
+[Discord bot](https://discordapp.com/) Announcer Level up, pokemon cought
+
+Bot answer on command '/info' self stats.
+
+### Options
+
+* `discord_token` : bot token (getting [tutorial](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token) - one token per bot)
+* `master` : username with discriminator of bot owner('user#1234') , who will get alerts and may issue commands or a (case-sensitive!) user name.
+* `alert_catch` : dict of rules pokemons catch.
+
+The bot will only alert and respond to a valid master. If you're unsure what this is, send the bot a message from Discord and watch the log to find out.
+
+### Sample configuration
+[[back to top](#table-of-contents)]
+```json
+{
+    "type": "DiscordTask",
+    "config": {
+        "enabled": true,
+        "master": "user#1234",
         "alert_catch": {
           "all": {"operator": "and", "cp": 1300, "iv": 0.95},
           "Snorlax": {"operator": "or", "cp": 900, "iv": 0.9}

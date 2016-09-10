@@ -11,7 +11,7 @@ class FollowClusterTestCase(unittest.TestCase):
         with open(forts_path, 'rb') as forts:
             ex_forts = pickle.load(forts)
         config = {'radius': 50, 'lured': False}
-        mock_pokemongo_bot.position = (37.396787, -5.994587)
+        mock_pokemongo_bot.position = (37.396787, -5.994587, 0)
         mock_pokemongo_bot.config.walk_max = 4.16
         mock_pokemongo_bot.config.walk_min = 2.16
         mock_pokemongo_bot.get_forts.return_value = ex_forts
@@ -30,7 +30,7 @@ class FollowClusterTestCase(unittest.TestCase):
         with open(forts_path, 'rb') as forts:
             ex_forts = pickle.load(forts)
         config = {'radius': 50, 'lured': False}
-        mock_pokemongo_bot.position = (37.39718375014263, -5.9932912500000013)
+        mock_pokemongo_bot.position = (37.39718375014263, -5.9932912500000013, 0)
         mock_pokemongo_bot.config.walk_max = 4.16
         mock_pokemongo_bot.config.walk_min = 2.16
         mock_pokemongo_bot.get_forts.return_value = ex_forts
