@@ -91,18 +91,14 @@ class CompleteTutorial(object):
 
             self.bot.logger.info(u'Trying to set {} as nickname'.format(self.nickname))
             sleep(5)
-            if self._set_nickname(self.nickname):
-                self._set_tutorial_state(4)
-                tutorial_state = self._player.get('tutorial_state', [])
-            else:
-                self.bot.logger.error('Error trying to set {} as nickname. Trying suggested nickname'.format(self.nickname))
-                generated = self._generate_nickname()
-                if self._set_nickname(generated):
-                    self._set_tutorial_state(4)
-                    tutorial_state = self._player.get('tutorial_state', [])
-                else:
-                    self.bot.logger.error('Error trying to set {} as nickname'.format(generated))
-                    return
+            while not self._set_nickname(self.nickname):
+                self.bot.logger.error('Error trying to set {} as nickname.'
+                                      ' Trying new generated nickname'.format(self.nickname))
+                self.nickname = self._generate_nickname()
+                sleep(5)
+            self._set_tutorial_state(4)
+            tutorial_state = self._player.get('tutorial_state', [])
+            self.bot.logger.info("{} was set as nickname".format(self.nickname))
 
         # FIRST_TIME_EXPERIENCE_COMPLETE = 7
         if 7 not in tutorial_state:
