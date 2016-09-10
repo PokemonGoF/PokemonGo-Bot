@@ -28,7 +28,6 @@ class PokemonOptimizer(BaseTask):
         self.max_pokemon_storage = inventory.get_pokemon_inventory_size()
         self.last_pokemon_count = 0
         self.pokemon_names = [p.name for p in inventory.pokemons().STATIC_DATA]
-        self.stardust_count = 0
         self.ongoing_stardust_count = 0
 
         pokemon_upgrade_cost_file = os.path.join(_base_dir, "data", "pokemon_upgrade_cost.json")
@@ -167,8 +166,7 @@ class PokemonOptimizer(BaseTask):
             setattr(pokemon, "dps_attack", pokemon.moveset.dps_attack)
             setattr(pokemon, "dps_defense", pokemon.moveset.dps_defense)
 
-        self.stardust_count = self.get_stardust_count()
-        self.ongoing_stardust_count = self.stardust_count
+        self.ongoing_stardust_count = self.bot.stardust
 
     def get_colorlist_names(self, names):
         whitelist_names = []
@@ -418,48 +416,60 @@ class PokemonOptimizer(BaseTask):
         return (transfer, evolve, upgrade, xp)
 
     def apply_optimization(self, transfer, evolve, upgrade, xp):
-        self.logger.info("Transferring %s Pokemon", len(transfer))
+        transfer_count = len(transfer)
+        evolve_count = len(evolve)
+        upgrade_count = len(upgrade)
+        xp_count = len(xp)
 
-        for pokemon in transfer:
-            self.transfer_pokemon(pokemon)
+        if transfer_count > 0:
+            self.logger.info("Transferring %s Pokemon", transfer_count)
 
-        skip_evolve = False
+            for pokemon in transfer:
+                self.transfer_pokemon(pokemon)
 
-        if self.config_evolve and self.config_may_use_lucky_egg and (not self.bot.config.test):
-            lucky_egg = inventory.items().get(Item.ITEM_LUCKY_EGG.value)  # @UndefinedVariable
+        evolve_xp_count = evolve_count + xp_count
 
-            if lucky_egg.count == 0:
-                if self.config_evolve_only_with_lucky_egg:
-                    skip_evolve = True
-                    self.emit_event("skip_evolve",
-                                    formatted="Skipping evolution step. No lucky egg available")
-            elif (len(evolve) + len(xp)) < self.config_evolve_count_for_lucky_egg:
-                if self.config_evolve_only_with_lucky_egg:
-                    skip_evolve = True
-                    self.emit_event("skip_evolve",
-                                    formatted="Skipping evolution step. Not enough Pokemon to evolve with lucky egg: %s/%s" % (len(evolve) + len(xp), self.config_evolve_count_for_lucky_egg))
-                elif self.get_pokemon_slot_left() > self.config_min_slots_left:
-                    skip_evolve = True
-                    self.emit_event("skip_evolve",
-                                    formatted="Waiting for more Pokemon to evolve with lucky egg: %s/%s" % (len(evolve) + len(xp), self.config_evolve_count_for_lucky_egg))
-            else:
-                self.use_lucky_egg()
+        if evolve_xp_count > 0:
+            skip_evolve = False
 
-        if not skip_evolve:
-            self.logger.info("Evolving %s Pokemon (the best)", len(evolve))
+            if self.config_evolve and self.config_may_use_lucky_egg and (not self.bot.config.test):
+                lucky_egg = inventory.items().get(Item.ITEM_LUCKY_EGG.value)  # @UndefinedVariable
 
-            for pokemon in evolve:
-                self.evolve_pokemon(pokemon)
+                if lucky_egg.count == 0:
+                    if self.config_evolve_only_with_lucky_egg:
+                        skip_evolve = True
+                        self.emit_event("skip_evolve",
+                                        formatted="Skipping evolution step. No lucky egg available")
+                elif evolve_xp_count < self.config_evolve_count_for_lucky_egg:
+                    if self.config_evolve_only_with_lucky_egg:
+                        skip_evolve = True
+                        self.emit_event("skip_evolve",
+                                        formatted="Skipping evolution step. Not enough Pokemon to evolve with lucky egg: %s/%s" % (evolve_xp_count, self.config_evolve_count_for_lucky_egg))
+                    elif self.get_pokemon_slot_left() > self.config_min_slots_left:
+                        skip_evolve = True
+                        self.emit_event("skip_evolve",
+                                        formatted="Waiting for more Pokemon to evolve with lucky egg: %s/%s" % (evolve_xp_count, self.config_evolve_count_for_lucky_egg))
+                else:
+                    self.use_lucky_egg()
 
-            self.logger.info("Evolving %s Pokemon (for xp)", len(xp))
+            if not skip_evolve:
+                if evolve_count > 0:
+                    self.logger.info("Evolving %s Pokemon (the best)", evolve_count)
 
-            for pokemon in xp:
-                self.evolve_pokemon(pokemon)
+                    for pokemon in evolve:
+                        self.evolve_pokemon(pokemon)
 
-        self.logger.info("Upgrading %s Pokemon [%s stardust]", len(upgrade), self.stardust_count)
+                if xp_count > 0:
+                    self.logger.info("Evolving %s Pokemon (for xp)", xp_count)
 
-        for pokemon in upgrade:
-            self.upgrade_pokemon(pokemon)
+                    for pokemon in xp:
+                        self.evolve_pokemon(pokemon)
+
+        if upgrade_count > 0:
+            self.logger.info("Upgrading %s Pokemon [%s stardust]", upgrade_count, self.bot.stardust)
+
+            for pokemon in upgrade:
+                self.upgrade_pokemon(pokemon)
 
     def transfer_pokemon(self, pokemon):
         if self.config_transfer and (not self.bot.config.test):
@@ -610,7 +620,7 @@ class PokemonOptimizer(BaseTask):
 
             if self.config_upgrade and (not self.bot.config.test):
                 candy.consume(upgrade_candy_cost)
-                self.stardust_count -= upgrade_stardust_cost
+                self.bot.stardust -= upgrade_stardust_cost
 
             self.emit_event("pokemon_upgraded",
                             formatted="Upgraded {pokemon} [IV {iv}] [CP {cp}] [{candy} candies] [{stardust} stardust]",
@@ -618,7 +628,7 @@ class PokemonOptimizer(BaseTask):
                                   "iv": pokemon.iv,
                                   "cp": pokemon.cp,
                                   "candy": candy.quantity,
-                                  "stardust": self.stardust_count})
+                                  "stardust": self.bot.stardust})
 
             if self.config_upgrade and (not self.bot.config.test):
                 inventory.pokemons().remove(pokemon.unique_id)
@@ -629,7 +639,3 @@ class PokemonOptimizer(BaseTask):
                 action_delay(self.config_transfer_wait_min, self.config_transfer_wait_max)
 
         return True
-
-    def get_stardust_count(self):
-        response_dict = self.bot.api.get_player()
-        return response_dict.get("responses", {}).get("GET_PLAYER", {}).get("player_data", {}).get("currencies", [{}, {}])[1].get("amount", 0)

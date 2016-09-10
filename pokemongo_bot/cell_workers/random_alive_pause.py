@@ -136,7 +136,6 @@ class RandomAlivePause(BaseTask):
             self._last_call = now
             return False
 
-        self.bot.heartbeat()
         if self.bot.config.replicate_gps_xy_noise or self.bot.config.replicate_gps_z_noise: # Adding some noise
             lat, lng, alt = self.bot.api.get_position()
             self.bot.api.set_position(lat, lng, alt) # Just set the same _actual_ values. set_position will add noise itself

@@ -102,9 +102,10 @@ class Metrics(object):
         try:
             uniq_pokemon_list = set()
 
-            self.dust['latest'] = self.bot.stardust 
-            if self.dust['start'] < 0:
-                self.dust['start'] = self.dust['latest']
+            if self.bot.tick_count > 0:
+                self.dust['latest'] = self.bot.stardust 
+                if self.dust['start'] < 0:
+                    self.dust['start'] = self.dust['latest']
 
             inventory.refresh_inventory()
             json_inventory = inventory.jsonify_inventory()

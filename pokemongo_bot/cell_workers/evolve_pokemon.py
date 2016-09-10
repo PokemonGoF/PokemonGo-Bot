@@ -1,7 +1,7 @@
 from random import uniform
 
 from pokemongo_bot import inventory
-from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot.inventory import Pokemon
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.base_task import BaseTask
@@ -27,10 +27,10 @@ class EvolvePokemon(BaseTask):
 
     def _validate_config(self):
         if isinstance(self.evolve_list, basestring):
-            self.evolve_list = [str(pokemon_name).strip().lower() for pokemon_name in self.evolve_list.split(',')]
+            self.evolve_list = [str(pokemon_name).lower().replace(" ","") for pokemon_name in self.evolve_list.split(',')]
             
         if isinstance(self.donot_evolve_list, basestring):
-            self.donot_evolve_list = [str(pokemon_name).strip().lower() for pokemon_name in self.donot_evolve_list.split(',')]
+            self.donot_evolve_list = [str(pokemon_name).lower().replace(" ","") for pokemon_name in self.donot_evolve_list.split(',')]
 
         if 'evolve_speed' in self.config:
             self.logger.warning("evolve_speed is deprecated, instead please use 'min_evolve_speed' and 'max_evolved_speed'.")
@@ -143,7 +143,7 @@ class EvolvePokemon(BaseTask):
             inventory.pokemons().add(new_pokemon)
             inventory.player().exp += xp
 
-            sleep(uniform(self.min_evolve_speed, self.max_evolve_speed))
+            action_delay(self.min_evolve_speed, self.max_evolve_speed)
             evolve_result = True
         else:
             # cache pokemons we can't evolve. Less server calls
