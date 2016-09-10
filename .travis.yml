@@ -13,4 +13,4 @@ install:
 script:
   - python pylint-recursive.py
   - python json-validate.py configs/*.json.*
-  - python -m unittest discover -v -p "*_test.py"
+  - python -m unittest discover -v -p '*_test.py'
