@@ -161,9 +161,9 @@ class CompleteTutorial(object):
             return False
 
     def _generate_nickname(self):
-        nickname = self.nickname[:10]
+        random_len = min(random.randint(7, 10), len(self.nickname))
         random_nums = ''.join(random.choice("0123456789") for i in range(5))
-        nickname += random_nums
+        nickname = self.nickname[:random_len] + random_nums
         return nickname
 
     def _set_nickname(self, nickname):
