@@ -13,7 +13,6 @@ import Queue
 import threading
 import shelve
 import uuid
-from logging import Formatter
 
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
