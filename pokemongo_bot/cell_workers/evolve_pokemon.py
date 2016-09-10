@@ -1,7 +1,7 @@
 from random import uniform
 
 from pokemongo_bot import inventory
-from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot.inventory import Pokemon
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.base_task import BaseTask
@@ -143,7 +143,7 @@ class EvolvePokemon(BaseTask):
             inventory.pokemons().add(new_pokemon)
             inventory.player().exp += xp
 
-            sleep(uniform(self.min_evolve_speed, self.max_evolve_speed))
+            action_delay(self.min_evolve_speed, self.max_evolve_speed)
             evolve_result = True
         else:
             # cache pokemons we can't evolve. Less server calls

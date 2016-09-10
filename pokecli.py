@@ -37,6 +37,9 @@ import time
 import signal
 import string
 import subprocess
+
+codecs.register(lambda name: codecs.lookup("utf-8") if name == "cp65001" else None)
+
 from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException, NoPlayerPositionSetException
 from geopy.exc import GeocoderQuotaExceeded
@@ -127,7 +130,6 @@ def main():
             return f.read()[:8]
 
     try:
-        codecs.register(lambda name: codecs.lookup("utf-8") if name == "cp65001" else None)
         sys.stdout = codecs.getwriter('utf8')(sys.stdout)
         sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
@@ -344,7 +346,7 @@ def init_config():
             logger.info('Error: No /configs/' + _config + '.json')
 
     # Read passed in Arguments
-    required = lambda x: not x in load
+    required = lambda x: x not in load
     add_config(
         parser,
         load,
@@ -676,6 +678,7 @@ def init_config():
     config.favorite_locations = load.get('favorite_locations', [])
     config.encrypt_location = load.get('encrypt_location', '')
     config.telegram_token = load.get('telegram_token', '')
+    config.discord_token = load.get('discord_token', '')
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.plugins = load.get('plugins', [])
@@ -795,9 +798,8 @@ def fix_nested_config(config):
 def parse_unicode_str(string):
     try:
         return string.decode('utf8')
-    except UnicodeEncodeError:
+    except (UnicodeEncodeError, UnicodeDecodeError):
         return string
-
 
 if __name__ == '__main__':
     main()

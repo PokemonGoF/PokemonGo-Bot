@@ -94,6 +94,7 @@ class PokemonGoBot(object):
         self.recent_forts = [None] * config.forts_max_circle_size
         self.tick_count = 0
         self.softban = False
+        self.wake_location = None
         self.start_position = None
         self.last_map_object = None
         self.last_time_map_object = 0
@@ -113,6 +114,11 @@ class PokemonGoBot(object):
         self.heartbeat_counter = 0
         self.last_heartbeat = time.time()
         self.hb_locked = False # lock hb on snip
+        
+        # Inventory refresh limiting
+        self.inventory_refresh_threshold = 10
+        self.inventory_refresh_counter = 0
+        self.last_inventory_refresh = time.time()
 
         self.capture_locked = False  # lock catching while moving to VIP pokemon
 
@@ -676,6 +682,8 @@ class PokemonGoBot(object):
             if timeout >= now:
                 self.fort_timeouts[fort["id"]] = timeout
 
+        self._refresh_inventory()
+
         self.tick_count += 1
 
         # Check if session token has expired
@@ -1077,6 +1085,7 @@ class PokemonGoBot(object):
         self.logger.info('Pokemon:')
 
         for pokes in pokemon_list:
+            pokes.sort(key=lambda p: p.cp, reverse=True)
             line_p = '#{} {}'.format(pokes[0].pokemon_id, pokes[0].name)
             if show_count:
                 line_p += '[{}]'.format(len(pokes))
@@ -1106,6 +1115,41 @@ class PokemonGoBot(object):
         if self.config.test:
             # TODO: Add unit tests
             return
+
+        if self.wake_location:
+            msg = "Wake up location found: {location} {position}"
+            self.event_manager.emit(
+                'location_found',
+                sender=self,
+                level='info',
+                formatted=msg,
+                data={
+                    'location': self.wake_location['raw'],
+                    'position': self.wake_location['coord']
+                }
+            )
+
+            self.api.set_position(*self.wake_location['coord'])
+
+            self.event_manager.emit(
+                'position_update',
+                sender=self,
+                level='info',
+                formatted="Now at {current_position}",
+                data={
+                    'current_position': self.position,
+                    'last_position': '',
+                    'distance': '',
+                    'distance_unit': ''
+                }
+            )
+
+            self.start_position = self.position
+
+            has_position = True
+
+            return
+
 
         if self.config.location:
             location_str = self.config.location
@@ -1302,8 +1346,6 @@ class PokemonGoBot(object):
                     )
                     human_behaviour.action_delay(3, 10)
 
-            inventory.refresh_inventory()
-
         try:
             self.web_update_queue.put_nowait(True)  # do this outside of thread every tick
         except Queue.Full:
@@ -1409,3 +1451,12 @@ class PokemonGoBot(object):
                 formatted='Starting new cached forts for {path}',
                 data={'path': cached_forts_path}
             )
+
+    def _refresh_inventory(self):
+        # Perform inventory update every n seconds
+        now = time.time()
+        if now - self.last_inventory_refresh >= self.inventory_refresh_threshold:
+            inventory.refresh_inventory()
+            self.last_inventory_refresh = now
+            self.inventory_refresh_counter += 1
+            
