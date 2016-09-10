@@ -75,7 +75,6 @@ ULTRABALL_ID = 3
 GREATBALL_ID = 2
 POKEBALL_ID = 1
 
-
 class MoveToMapPokemon(BaseTask):
     """Task for moving a trainer to a Pokemon."""
     SUPPORTED_TASK_API_VERSION = 1
@@ -88,21 +87,22 @@ class MoveToMapPokemon(BaseTask):
         self.min_ball = self.config.get('min_ball', 1)
         self.map_path = self.config.get('map_path', 'raw_data')
         self.walker = self.config.get('walker', 'StepWalker')
-        self.snip_enabled = self.config.get('snipe', False)
+        self.snipe_enabled = self.config.get('snipe', False)
         self.snipe_high_prio_only = self.config.get('snipe_high_prio_only', False)
         self.snipe_high_prio_threshold = self.config.get('snipe_high_prio_threshold', 400)
+        self.snipe_sleep_sec = self.config.get('snipe_sleep_sec', 2)
         self.by_pass_times = 0
-
+        self.alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
+        self.debug = self.config.get('debug', False)
         data_file = os.path.join(_base_dir, 'map-caught-{}.json'.format(self.bot.config.username))
         if os.path.isfile(data_file):
             self.cache = json.load(
                 open(data_file)
             )
-        self.alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
-        self.debug = self.config.get('debug', False)
 
     def pokemons_parser(self, pokemon_list):
         pokemons = []
+
         if not pokemon_list:
             return pokemons
 
@@ -118,14 +118,17 @@ class MoveToMapPokemon(BaseTask):
             pokemon['name'] = self.pokemon_data[pokemon['pokemon_id'] - 1]['Name']
             pokemon['is_vip'] = pokemon['name'] in self.bot.config.vips
 
+            # Is expired?
             if now > pokemon['disappear_time']:
                 continue
 
+            # Should catch?
             if pokemon['name'] not in self.config['catch'] and not pokemon['is_vip']:
                 if self.debug:
                     self._emit_failure("Not catching {}".format(pokemon['name']))
                 continue
 
+            # Already seen/caught?
             if self.is_inspected(pokemon):
                 if self.debug:
                     self._emit_log('Skipped {} because it was already catch or does not exist'.format(pokemon['name']))
@@ -144,13 +147,14 @@ class MoveToMapPokemon(BaseTask):
                 continue
 
             # If distance bigger than walking distance, ignore if sniping is not active
-            if pokemon['dist'] > self.config.get('max_walking_distance', 1000) and not self.snip_enabled:
+            if pokemon['dist'] > self.config.get('max_walking_distance', 1000) and not self.snipe_enabled:
                 continue
 
             # if pokemon not reachable with mean walking speed (by config)
             mean_walk_speed = (self.bot.config.walk_max + self.bot.config.walk_min) / 2
-            if pokemon['dist'] > ((pokemon['disappear_time'] - now) * mean_walk_speed) and not self.snip_enabled:
+            if pokemon['dist'] > ((pokemon['disappear_time'] - now) * mean_walk_speed) and not self.snipe_enabled:
                 continue
+
             pokemons.append(pokemon)
 
         return pokemons
@@ -160,6 +164,7 @@ class MoveToMapPokemon(BaseTask):
             return []
 
         tmp_pokemon_list, self.bot.mqtt_pokemon_list = self.bot.mqtt_pokemon_list, []
+
         return self.pokemons_parser(tmp_pokemon_list)
 
     def get_pokemon_from_url(self):
@@ -170,36 +175,32 @@ class MoveToMapPokemon(BaseTask):
             self._emit_failure('Could not get data from {}'.format(self.config['address']))
             return []
         except ValueError:
-            self._emit_failure('JSON format is not valid')
+            self._emit_failure('Could not parse the JSON response. It might be related to a bad url or JSON format.')
             return []
 
         return self.pokemons_parser(response.get('pokemons', []))
 
-    # TODO: refactor
     def is_inspected(self, pokemon):
         for caught_pokemon in self.cache:
-            # Since IDs might be invalid (null/blank) by this time, compare by approximate location
-            # TODO: make a better comparision
             same_latitude = "{0:.4f}".format(pokemon['latitude']) == "{0:.4f}".format(caught_pokemon['latitude'])
             same_longitude = "{0:.4f}".format(pokemon['longitude']) == "{0:.4f}".format(caught_pokemon['longitude'])
+
+            # Since IDs might be invalid (null/blank) by this time, compare by approximate location
             if same_latitude and same_longitude:
                 return True
 
         return False
 
-    # Stores a target so that
-    # TODO: refactor
     def inspect(self, pokemon):
         # Make sure it was not caught!
         for caught_pokemon in self.cache:
-            same_latitude = "{0:.4f}".format(pokemon['latitude']) == "{0:.4f}".format(caught_pokemon['latitude'])
-            same_longitude = "{0:.4f}".format(pokemon['longitude']) == "{0:.4f}".format(caught_pokemon['longitude'])
-            if same_latitude and same_longitude:
+            if self.is_inspected(caught_pokemon):
                 return
 
         if len(self.cache) >= 200:
             self.cache.pop(0)
 
+        # Save!
         self.cache.append(pokemon)
 
     def snipe(self, pokemon):
@@ -207,7 +208,6 @@ class MoveToMapPokemon(BaseTask):
         last_position = self.bot.position[0:2]
 
         # Teleport, so that we can see nearby stuff
-        # self.bot.heartbeat() was moved to thread, if you do want to call it, you need sleep 10s.
         self.bot.hb_locked = True
         self._teleport_to(pokemon)
 
@@ -224,7 +224,7 @@ class MoveToMapPokemon(BaseTask):
             nearby_stuff = self.bot.get_meta_cell()
 
             # Sleep some time, so that we have accurate results (successfull cell data request)
-            time.sleep(2)
+            time.sleep(3)
 
             # Retrieve nearby pokemons for validation
             if 'wild_pokemons' in nearby_stuff:
@@ -252,20 +252,22 @@ class MoveToMapPokemon(BaseTask):
             self._encountered(pokemon)
             catch_worker = PokemonCatchWorker(pokemon, self.bot, self.config)
             api_encounter_response = catch_worker.create_encounter_api_call()
-            time.sleep(self.config.get('snipe_sleep_sec', 2))
+            time.sleep(self.snipe_sleep_sec)
             self._teleport_back(last_position)
             self.bot.api.set_position(last_position[0], last_position[1], self.alt, False)
-            time.sleep(self.config.get('snipe_sleep_sec', 2))
+            time.sleep(self.snipe_sleep_sec)
             catch_worker.work(api_encounter_response)
         else:
             self._emit_failure('{} doesnt exist anymore. Skipping...'.format(pokemon['name']))
-            time.sleep(self.config.get('snipe_sleep_sec', 2))
+            time.sleep(self.snipe_sleep_sec)
             self._teleport_back(last_position)
             self.bot.api.set_position(last_position[0], last_position[1], self.alt, False)
-            time.sleep(self.config.get('snipe_sleep_sec', 2))
+            time.sleep(self.snipe_sleep_sec)
 
+        # Save target and unlock heartbeat calls
         self.inspect(pokemon)
         self.bot.hb_locked = False
+
         return WorkerResult.SUCCESS
 
     def dump_caught_pokemon(self):
@@ -289,7 +291,7 @@ class MoveToMapPokemon(BaseTask):
         # Retrieve pokemos
         self.dump_caught_pokemon()
         if self.bot.config.enable_social:
-            if self.snip_enabled:
+            if self.snipe_enabled:
                 self.by_pass_times += 1
                 if self.by_pass_times < self.config.get('skip_rounds', 30):
                     if self.debug:
@@ -315,7 +317,7 @@ class MoveToMapPokemon(BaseTask):
         if self.debug:
             self._emit_log('How many pokemon in list: {}'.format(len(pokemon_list)))
 
-        if self.snip_enabled:
+        if self.snipe_enabled:
             if self.snipe_high_prio_only:
                 count = 0
                 for pokemon in pokemon_list:
@@ -378,21 +380,12 @@ class MoveToMapPokemon(BaseTask):
         )
 
     def _pokemon_event_data(self, pokemon):
-        """Generates parameters used for the Bot's event manager.
-
-        Args:
-            pokemon: Pokemon object
-
-        Returns:
-            Dictionary with Pokemon's info.
-        """
-        now = int(time.time())
         return {
             'poke_name': pokemon['name'],
             'poke_dist': (format_dist(pokemon['dist'], self.unit)),
             'poke_lat': pokemon['latitude'],
             'poke_lon': pokemon['longitude'],
-            'disappears_in': (format_time(pokemon['disappear_time'] - now))
+            'disappears_in': (format_time(pokemon['disappear_time'] - int(time.time())))
         }
 
     def _teleport_to(self, pokemon):
@@ -418,14 +411,6 @@ class MoveToMapPokemon(BaseTask):
         )
 
     def _move_to(self, pokemon):
-        """Moves trainer towards a Pokemon.
-
-        Args:
-            pokemon: Pokemon to move to.
-
-        Returns:
-            Walker
-        """
         self.emit_event(
             'move_to_map_pokemon_move_towards',
             formatted=('Moving towards {poke_name}, {poke_dist}, left ('
@@ -435,15 +420,6 @@ class MoveToMapPokemon(BaseTask):
         return walker_factory(self.walker, self.bot, pokemon['latitude'], pokemon['longitude'])
 
     def _move_to_pokemon_througt_fort(self, fort, pokemon):
-        """Moves trainer towards a fort before a Pokemon.
-
-        Args:
-            fort
-
-        Returns:
-            StepWalker
-        """
-
         nearest_fort = fort
 
         lat = nearest_fort['latitude']

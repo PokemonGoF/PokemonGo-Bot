@@ -645,7 +645,7 @@ If you want to make your bot behave as it did prior to the catch_simulation upda
 }
 ```
 
-## Sniping _(MoveToLocation)_
+## Sniping _(MoveToMapPokemon)_
 [[back to top](#table-of-contents)]
 
 ### Description
@@ -656,19 +656,17 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
 ### Options
 [[back to top](#table-of-contents)]
 
-* `Address` - Address of the webserver of PokemonGo-Map. ex: `http://localhost:5000`
+* `Address` - Address of the source that provides pokemons information. For PokemonGo-Map, use: `http://localhost:SOME_PORT/raw_data`
 * `Mode` - Which mode to run sniping on
    - `distance` - Will move to the nearest pokemon
    - `priority` - Will move to the pokemon with the highest priority assigned (tie breaking by distance)
 * `prioritize_vips` - Will prioritize vips in distance and priority mode above all normal pokemon if set to true
-* `min_time` - Minimum time the pokemon has to be available before despawn
 * `min_ball` - Minimum amount of balls required to run task
 * `max_sniping_distance` - Maximum distance the pokemon is allowed to be caught when sniping. (m)
 * `max_walking_distance` - Maximum distance the pokemon is allowed to be caught when sniping is turned off. (m)
 * `snipe`:
    - `True` - Will teleport to target pokemon, encounter it, teleport back then catch it
    - `False` - Will walk normally to the pokemon
-* `update_map` - disable/enable if the map location should be automatically updated to the bots current location
 * `catch` - A dictionary of pokemon to catch with an assigned priority (higher => better)
 * `snipe_high_prio_only` - Whether to snipe pokemon above a certain threshold.
 * `snipe_high_prio_threshold` - The threshold number corresponding with the `catch` dictionary.
@@ -691,18 +689,16 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
   {
     "type": "MoveToMapPokemon",
     "config": {
-      "address": "http://localhost:5000",
+      "address": "http://localhost:5000/raw_data",
       "//NOTE: Change the max_sniping_distance to adjust the max sniping range (m)": {},
       "max_sniping distance": 10000,
       "//NOTE: Change the max_walking_distance to adjust the max walking range when snipe is off (m)": {},
       "max__walking_distance": 500,
-      "min_time": 60,
       "min_ball": 50,
       "prioritize_vips": true,
       "snipe": true,
       "snipe_high_prio_only": true,
       "snipe_high_prio_threshold": 400,
-      "update_map": true,
       "mode": "priority",
       "max_extra_dist_fort": 10,
       "catch": {
