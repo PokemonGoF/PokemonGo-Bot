@@ -4,7 +4,6 @@ import os
 import time
 import json
 import logging
-import time
 import sys
 
 from random import random, randrange, uniform
@@ -25,6 +24,8 @@ CATCH_STATUS_MISSED = 4
 ENCOUNTER_STATUS_SUCCESS = 1
 ENCOUNTER_STATUS_NOT_IN_RANGE = 5
 ENCOUNTER_STATUS_POKEMON_INVENTORY_FULL = 7
+INCENSE_ENCOUNTER_AVAILABLE = 1
+INCENSE_ENCOUNTER_NOT_AVAILABLE = 2
 
 ITEM_POKEBALL = 1
 ITEM_GREATBALL = 2
@@ -105,7 +106,7 @@ class PokemonCatchWorker(BaseTask):
         try:
             responses = response_dict['responses']
             response = responses[self.response_key]
-            if response[self.response_status_key] != ENCOUNTER_STATUS_SUCCESS and response[self.response_status_key] != INCENSE_ENCOUNTER_SUCCESS:
+            if response[self.response_status_key] != ENCOUNTER_STATUS_SUCCESS and response[self.response_status_key] != INCENSE_ENCOUNTER_AVAILABLE:
                 if response[self.response_status_key] == ENCOUNTER_STATUS_NOT_IN_RANGE:
                     self.emit_event('pokemon_not_in_range', formatted='Pokemon went out of range!')
                 elif response[self.response_status_key] == INCENSE_ENCOUNTER_NOT_AVAILABLE:
@@ -124,14 +125,14 @@ class PokemonCatchWorker(BaseTask):
         if not self._should_catch_pokemon(pokemon):
             if not hasattr(self.bot,'skipped_pokemon'):
                 self.bot.skipped_pokemon = []
-                
+
             # Check if pokemon already skipped and suppress alert if so
             for skipped_pokemon in self.bot.skipped_pokemon:
                 if pokemon.pokemon_id == skipped_pokemon.pokemon_id and \
                     pokemon.cp_exact == skipped_pokemon.cp_exact and \
                     pokemon.ivcp == skipped_pokemon.ivcp:
                     return WorkerResult.SUCCESS
-                    
+
             self.bot.skipped_pokemon.append(pokemon)
             self.emit_event(
                 'pokemon_appeared',
@@ -726,7 +727,7 @@ class PokemonCatchWorker(BaseTask):
     def start_rest(self):
         duration = int(uniform(self.rest_duration_min, self.rest_duration_max))
         resume = datetime.now() + timedelta(seconds=duration)
-        
+
         self.emit_event(
             'vanish_limit_reached',
             formatted="Vanish limit reached! Taking a rest now for {duration}, will resume at {resume}.",
@@ -735,7 +736,7 @@ class PokemonCatchWorker(BaseTask):
                 'resume': resume.strftime("%H:%M:%S")
             }
         )
-        
+
         sleep(duration)
         self.rest_completed = True
         self.bot.login()
