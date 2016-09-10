@@ -23,6 +23,7 @@ class EvolvePokemon(BaseTask):
         self.evolve_above_iv = self.config.get('evolve_above_iv', 0.8)
         self.cp_iv_logic = self.config.get('logic', 'or')
         self.use_lucky_egg = self.config.get('use_lucky_egg', False)
+        self.min_pokemon_to_be_evolved = self.config.get('min_pokemon_to_be_evolved', 1)
         self._validate_config()
 
     def _validate_config(self):
@@ -50,10 +51,19 @@ class EvolvePokemon(BaseTask):
         if (len(self.donot_evolve_list) > 0) and self.donot_evolve_list[0] != 'none':
             filtered_list = filter(lambda pokemon: pokemon.name.lower() not in self.donot_evolve_list, filtered_list)
 
-        cache = {}
+        pokemon_to_be_evolved = 0
+        pokemon_ids = []
         for pokemon in filtered_list:
-            if pokemon.can_evolve_now():
-                self._execute_pokemon_evolve(pokemon, cache)
+            if pokemon.pokemon_id not in pokemon_ids:
+                pokemon_ids.append(pokemon.pokemon_id)
+                candy = inventory.candies().get(pokemon.pokemon_id)
+                pokemon_to_be_evolved = pokemon_to_be_evolved + ( candy.quantity / pokemon.evolution_cost)
+
+        if pokemon_to_be_evolved >= self.min_pokemon_to_be_evolved:
+            cache = {}
+            for pokemon in filtered_list:
+                if pokemon.can_evolve_now():
+                    self._execute_pokemon_evolve(pokemon, cache)
 
     def _should_run(self):
         if not self.evolve_list or self.evolve_list[0] == 'none':
