@@ -18,7 +18,6 @@ class TelegramClass:
 
     def __init__(self, bot, master, pokemons, config):
         self.bot = bot
-        master = config["master"]
         request.CON_POOL_SIZE = 16
 
         with self.bot.database as conn:
@@ -26,7 +25,8 @@ class TelegramClass:
             initiator = TelegramDBInit(bot.database)
 
             if master == None: # no master supplied
-                master = config["master"]
+                if config["master"]:
+                    self.master = config["master"]
 
             # if master is not numeric, try to fetch it from the database
             elif unicode(master).isnumeric(): # master is numeric
