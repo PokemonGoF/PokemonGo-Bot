@@ -13,7 +13,6 @@ import Queue
 import threading
 import shelve
 import uuid
-from logging import Formatter
 
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
@@ -118,6 +117,11 @@ class PokemonGoBot(object):
         self.heartbeat_counter = 0
         self.last_heartbeat = time.time()
         self.hb_locked = False # lock hb on snip
+        
+        # Inventory refresh limiting
+        self.inventory_refresh_threshold = 10
+        self.inventory_refresh_counter = 0
+        self.last_inventory_refresh = time.time()
 
         self.capture_locked = False  # lock catching while moving to VIP pokemon
 
@@ -133,7 +137,6 @@ class PokemonGoBot(object):
 
     def start(self):
         self._setup_event_system()
-        self._setup_logging()
         self.sleep_schedule = SleepSchedule(self, self.config.sleep_schedule) if self.config.sleep_schedule else None
         if self.sleep_schedule:
             self.sleep_schedule.work()
@@ -681,6 +684,8 @@ class PokemonGoBot(object):
             if timeout >= now:
                 self.fort_timeouts[fort["id"]] = timeout
 
+        self._refresh_inventory()
+
         self.tick_count += 1
 
         # Check if session token has expired
@@ -814,38 +819,6 @@ class PokemonGoBot(object):
                     x['forts'][0]['longitude']) if x.get('forts', []) else 1e6
             )
         return map_cells
-
-    def _setup_logging(self):
-        log_level = logging.ERROR
-
-        if self.config.debug:
-            log_level = logging.DEBUG
-
-        logging.getLogger("requests").setLevel(log_level)
-        logging.getLogger("websocket").setLevel(log_level)
-        logging.getLogger("socketio").setLevel(log_level)
-        logging.getLogger("engineio").setLevel(log_level)
-        logging.getLogger("socketIO-client").setLevel(log_level)
-        logging.getLogger("pgoapi").setLevel(log_level)
-        logging.getLogger("rpc_api").setLevel(log_level)
-
-        if self.config.logging:
-            logging_format = '%(message)s'
-            logging_format_options = ''
-
-            if ('show_log_level' not in self.config.logging) or self.config.logging['show_log_level']:
-                logging_format = '[%(levelname)s] ' + logging_format
-            if ('show_process_name' not in self.config.logging) or self.config.logging['show_process_name']:
-                logging_format = '[%(name)10s] ' + logging_format
-            if ('show_thread_name' not in self.config.logging) or self.config.logging['show_thread_name']:
-                logging_format = '[%(threadName)s] ' + logging_format
-            if ('show_datetime' not in self.config.logging) or self.config.logging['show_datetime']:
-                logging_format = '[%(asctime)s] ' + logging_format
-                logging_format_options = '%Y-%m-%d %H:%M:%S'
-
-            formatter = Formatter(logging_format,logging_format_options)
-            for handler in logging.root.handlers[:]:
-                handler.setFormatter(formatter)
 
     def check_session(self, position):
 
@@ -1346,8 +1319,6 @@ class PokemonGoBot(object):
                     )
                     human_behaviour.action_delay(3, 10)
 
-            inventory.refresh_inventory()
-
         try:
             self.web_update_queue.put_nowait(True)  # do this outside of thread every tick
         except Queue.Full:
@@ -1453,3 +1424,12 @@ class PokemonGoBot(object):
                 formatted='Starting new cached forts for {path}',
                 data={'path': cached_forts_path}
             )
+
+    def _refresh_inventory(self):
+        # Perform inventory update every n seconds
+        now = time.time()
+        if now - self.last_inventory_refresh >= self.inventory_refresh_threshold:
+            inventory.refresh_inventory()
+            self.last_inventory_refresh = now
+            self.inventory_refresh_counter += 1
+            
