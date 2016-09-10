@@ -343,7 +343,7 @@ class UpdateLiveStats(BaseTask):
             ),
             'pokeballs_thrown': 'Threw {:,} pokeballs'.format(player_stats['pokeballs_thrown']),
             'stardust_earned': 'Earned {:,} Stardust'.format(player_stats['stardust_earned']),
-            'stardust_amount': 'Have {:,} Stardust'.format(self.bot.metrics.dust['latest']),
+            'stardust_amount': 'Have {:,} Stardust'.format(int(self.bot.metrics.dust['latest'])),
             'highest_cp_pokemon': 'Highest CP pokemon : {}'.format(player_stats['highest_cp_pokemon']),
             'most_perfect_pokemon': 'Most perfect pokemon : {}'.format(player_stats['most_perfect_pokemon']),
             'location': 'Location : ({}, {})'.format(*player_stats['location']),
