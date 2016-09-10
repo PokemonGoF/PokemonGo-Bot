@@ -826,6 +826,7 @@ Available `stats` parameters:
 - pokemon_stats : Puts together the pokemon encountered, caught, released, evolved and unseen.
 - pokeballs_thrown : The number of thrown pokeballs.
 - stardust_earned : The number of earned stardust since the bot started.
+- stardust_amount : The overall number of stardust in inventory.
 - highest_cp_pokemon : The caught pokemon with the highest CP since the bot started.
 - most_perfect_pokemon : The most perfect caught pokemon since the bot started.
 ```

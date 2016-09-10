@@ -191,21 +191,25 @@ class TelegramClass:
             for update in self._tbot.getUpdates(offset=self.update_id, timeout=10):
                 self.update_id = update.update_id+1
                 if update.message:
-                    self.bot.logger.info("Telegram message from {} ({}): {}".format(update.message.from_user.username, update.message.from_user.id, update.message.text))
+                    self.bot.logger.info("Telegram message from {} ({}): >{}<".format(update.message.from_user.username, update.message.from_user.id, update.message.text))
                     if update.message.text == "/start" or update.message.text == "/help":
                         res = (
                             "Commands: ",
                             "/info - info about bot",
                             "/login <password> - authenticate with the bot; once authenticated, your ID will be registered with the bot and survive bot restarts",
                             "/logout - remove your ID from the 'authenticated' list",
-                            "/sub <event\_name> [<parameters>] - subscribe to event_name, with optional parameters, event name=all will subscribe to ALL events (LOTS of output!)",
+                            "/sub <event_name> [<parameters>] - subscribe to event_name, with optional parameters, event name=all will subscribe to ALL events (LOTS of output!)",
                             "/unsub <event_name> [<parameters>] - unsubscribe from event_name; parameters must match the /sub parameters",
                             "/unsub everything - will remove all subscriptions for this uid",
                             "/showsubs - show current subscriptions",
                             "/events <filter> - show available events, filtered by regular expression  <filter>",
-                            "/top <num> <cp-or-iv> - show top X pokemons, sorted by CP or IV"
+                            "/top <num> <cp_or_iv> - show top X pokemons, sorted by CP or IV"
                         )
-                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
+                        res = map(lambda r: re.sub(r'<', '&lt;', r), res)
+                        res = map(lambda r: re.sub(r'>', '&gt;', r), res)
+                        res = map(lambda r: re.sub(r'(/.*?) - ', '<b>\\1</b> - ', r), res)
+                        outMsg = "\n".join(res)
+                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=outMsg)
                         continue
 
                     if self.config.get('password', None) == None and (not hasattr(self, "master") or not self.master): # no auth provided in config
