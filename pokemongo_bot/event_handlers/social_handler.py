@@ -86,6 +86,9 @@ class MyMQTTClass:
                 time.sleep(20)
             except UnicodeDecodeError:
                 time.sleep(1)
+            except Exception as e:
+                print e
+                time.sleep(10)
 
 
 class SocialHandler(EventHandler):
