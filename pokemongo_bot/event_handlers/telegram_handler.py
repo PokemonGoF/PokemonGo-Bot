@@ -13,16 +13,21 @@ from telegram.utils import request
 DEBUG_ON = False
 
 class TelegramClass:
+
     update_id = None
+
     def __init__(self, bot, master, pokemons, config):
         self.bot = bot
+        master = config["master"]
         request.CON_POOL_SIZE = 16
+
         with self.bot.database as conn:
             # initialize the DB table if it does not exist yet
             initiator = TelegramDBInit(bot.database)
 
             if master == None: # no master supplied
-                self.master = master
+                master = config["master"]
+
             # if master is not numeric, try to fetch it from the database
             elif unicode(master).isnumeric(): # master is numeric
                 self.master = master
@@ -315,7 +320,7 @@ class TelegramClass:
                         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
                         continue
 
-                    if self.config.get('password', None) == None and (not hasattr(self, "master") or not self.master): # no auth provided in config
+                    if self.config.get('password', None) == None and (not hasattr(self, "master") or not self.config.get('master', None)): # no auth provided in config
                         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="No password nor master configured in TelegramTask section, bot will not accept any commands")
                         continue
                     if re.match(r'^/login [^ ]+', update.message.text):
