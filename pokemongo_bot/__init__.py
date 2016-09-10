@@ -134,7 +134,6 @@ class PokemonGoBot(object):
 
     def start(self):
         self._setup_event_system()
-        self._setup_logging()
         self.sleep_schedule = SleepSchedule(self, self.config.sleep_schedule) if self.config.sleep_schedule else None
         if self.sleep_schedule:
             self.sleep_schedule.work()
@@ -814,38 +813,6 @@ class PokemonGoBot(object):
                     x['forts'][0]['longitude']) if x.get('forts', []) else 1e6
             )
         return map_cells
-
-    def _setup_logging(self):
-        log_level = logging.ERROR
-
-        if self.config.debug:
-            log_level = logging.DEBUG
-
-        logging.getLogger("requests").setLevel(log_level)
-        logging.getLogger("websocket").setLevel(log_level)
-        logging.getLogger("socketio").setLevel(log_level)
-        logging.getLogger("engineio").setLevel(log_level)
-        logging.getLogger("socketIO-client").setLevel(log_level)
-        logging.getLogger("pgoapi").setLevel(log_level)
-        logging.getLogger("rpc_api").setLevel(log_level)
-
-        if self.config.logging:
-            logging_format = '%(message)s'
-            logging_format_options = ''
-
-            if ('show_log_level' not in self.config.logging) or self.config.logging['show_log_level']:
-                logging_format = '[%(levelname)s] ' + logging_format
-            if ('show_process_name' not in self.config.logging) or self.config.logging['show_process_name']:
-                logging_format = '[%(name)10s] ' + logging_format
-            if ('show_thread_name' not in self.config.logging) or self.config.logging['show_thread_name']:
-                logging_format = '[%(threadName)s] ' + logging_format
-            if ('show_datetime' not in self.config.logging) or self.config.logging['show_datetime']:
-                logging_format = '[%(asctime)s] ' + logging_format
-                logging_format_options = '%Y-%m-%d %H:%M:%S'
-
-            formatter = Formatter(logging_format,logging_format_options)
-            for handler in logging.root.handlers[:]:
-                handler.setFormatter(formatter)
 
     def check_session(self, position):
 

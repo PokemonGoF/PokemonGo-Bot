@@ -38,6 +38,8 @@ import signal
 import string
 import subprocess
 
+from logging import Formatter
+
 codecs.register(lambda name: codecs.lookup("utf-8") if name == "cp65001" else None)
 
 from getpass import getpass
@@ -106,6 +108,38 @@ def main():
 
         return bot
 
+    def setup_logging(config):
+        log_level = logging.ERROR
+
+        if config.debug:
+            log_level = logging.DEBUG
+
+        logging.getLogger("requests").setLevel(log_level)
+        logging.getLogger("websocket").setLevel(log_level)
+        logging.getLogger("socketio").setLevel(log_level)
+        logging.getLogger("engineio").setLevel(log_level)
+        logging.getLogger("socketIO-client").setLevel(log_level)
+        logging.getLogger("pgoapi").setLevel(log_level)
+        logging.getLogger("rpc_api").setLevel(log_level)
+
+        if config.logging:
+            logging_format = '%(message)s'
+            logging_format_options = ''
+
+            if ('show_log_level' not in config.logging) or config.logging['show_log_level']:
+                logging_format = '[%(levelname)s] ' + logging_format
+            if ('show_process_name' not in config.logging) or config.logging['show_process_name']:
+                logging_format = '[%(name)10s] ' + logging_format
+            if ('show_thread_name' not in config.logging) or config.logging['show_thread_name']:
+                logging_format = '[%(threadName)s] ' + logging_format
+            if ('show_datetime' not in config.logging) or config.logging['show_datetime']:
+                logging_format = '[%(asctime)s] ' + logging_format
+                logging_format_options = '%Y-%m-%d %H:%M:%S'
+
+            formatter = Formatter(logging_format,logging_format_options)
+            for handler in logging.root.handlers[:]:
+                handler.setFormatter(formatter)
+
     def start_bot(bot, config):
         bot.start()
         initialize_task(bot, config)
@@ -143,6 +177,8 @@ def main():
         logger.info('Configuration initialized')
         health_record = BotEvent(config)
         health_record.login_success()
+
+        setup_logging(config)
 
         finished = False
 
