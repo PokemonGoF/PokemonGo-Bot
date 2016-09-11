@@ -37,6 +37,7 @@ from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeCon
 from inventory import init_inventory, player
 from sys import platform as _platform
 from pgoapi.protos.POGOProtos.Enums import BadgeType_pb2
+from pgoapi.exceptions import AuthException
 import struct
 
 
@@ -814,15 +815,12 @@ class PokemonGoBot(object):
         return map_cells
 
     def check_session(self, position):
-
         # Check session expiry
         if self.api._auth_provider and self.api._auth_provider._ticket_expire:
 
             # prevent crash if return not numeric value
-            if not self.is_numeric(self.api._auth_provider._ticket_expire):
+            if not str(self.api._auth_provider._ticket_expire).isdigit():
                 self.logger.info("Ticket expired value is not numeric", 'yellow')
-                return
-
             remaining_time = \
                 self.api._auth_provider._ticket_expire / 1000 - time.time()
 
@@ -838,14 +836,6 @@ class PokemonGoBot(object):
                 self.login()
                 self.api.activate_signature(self.get_encryption_lib())
 
-    @staticmethod
-    def is_numeric(s):
-        try:
-            float(s)
-            return True
-        except ValueError:
-            return False
-
     def login(self):
         self.event_manager.emit(
             'login_started',
@@ -856,18 +846,19 @@ class PokemonGoBot(object):
         lat, lng = self.position[0:2]
         self.api.set_position(lat, lng, self.alt)  # or should the alt kept to zero?
 
-        while not self.api.login(
-            self.config.auth_service,
-            str(self.config.username),
-            str(self.config.password)):
-
+        try:
+            self.api.login(
+                    self.config.auth_service,
+                    str(self.config.username),
+                    str(self.config.password))
+        except AuthException as e:
             self.event_manager.emit(
-                'login_failed',
-                sender=self,
-                level='info',
-                formatted="Login error, server busy. Waiting 10 seconds to try again."
-            )
-            time.sleep(10)
+                    'login_failed',
+                    sender=self,
+                    level='info',
+                    formatted='Login process failed: {}'.format(e));
+
+            sys.exit()
 
         with self.database as conn:
             c = conn.cursor()
@@ -875,18 +866,15 @@ class PokemonGoBot(object):
 
         result = c.fetchone()
 
-        while True:
-            if result[0] == 1:
-                conn.execute('''INSERT INTO login (timestamp, message) VALUES (?, ?)''', (time.time(), 'LOGIN_SUCCESS'))
-                break
-            else:
-                self.event_manager.emit(
-                    'login_failed',
-                    sender=self,
-                    level='info',
-                    formatted="Login table not founded, skipping log"
-                )
-                break
+        if result[0] == 1:
+            conn.execute('''INSERT INTO login (timestamp, message) VALUES (?, ?)''', (time.time(), 'LOGIN_SUCCESS'))
+        else:
+            self.event_manager.emit(
+                'login_failed',
+                sender=self,
+                level='info',
+                formatted="Login table not founded, skipping log"
+            )
 
         self.event_manager.emit(
             'login_successful',
