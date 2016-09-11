@@ -275,7 +275,7 @@ class TelegramClass:
 
         pkmns = sorted(inventory.pokemons().all(), key=lambda p: getattr(p, order), reverse=True)[:num]
 
-        outMsg = "\n".join(["{} CP:{} IV:{} ID:{} Candy:{}".format(p.name, p.cp, p.iv, p.unique_id, inventory.candies().get(p.pokemon_id).quantity) for p in pkmns])
+        outMsg = "\n".join(["<b>{}</b> \nCP: {} \nIV: {} \nCandy: {}\n".format(p.name, p.cp, p.iv, inventory.candies().get(p.pokemon_id).quantity) for p in pkmns])
         self.sendMessage(chat_id=chatid, parse_mode='HTML', text=outMsg)
 
         return
