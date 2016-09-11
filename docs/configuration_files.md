@@ -191,6 +191,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `donot_evolve_list`: Default `none` | Pokemon seperated by comma, will be ignored from evolve_list
   * `min_evolve_speed`: Default `25` | Minimum seconds to wait between each evolution 
   * `max_evolve_speed`: Default `30` | Maximum seconds to wait between each evolution
+  * `min_pokemon_to_be_evolved`: Default: `1` | Minimum pokemon to be evolved
   * `use_lucky_egg`: Default: `False` | Only evolve if we can use a lucky egg
 * FollowPath
   * `enable`: Disable or enable this task.

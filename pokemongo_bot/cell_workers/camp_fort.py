@@ -94,6 +94,13 @@ class CampFort(BaseTask):
             self.stay_until = now + self.config_camping_time
         elif self.no_log_until < now:
             cluster = self.get_current_cluster()
+
+            if cluster[2] == 0:
+                self.logger.info("Lures gone! Resetting destination!")
+                self.destination = None
+                self.stay_until = 0
+                return WorkerResult.SUCCESS
+
             self.logger.info("Moving to destination at %s meters: %s forts, %s lured", round(cluster[4], 2), cluster[3], cluster[2])
             self.no_log_until = now + LOG_TIME_INTERVAL
 
