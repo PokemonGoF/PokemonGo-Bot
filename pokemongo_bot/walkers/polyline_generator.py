@@ -20,6 +20,8 @@ class PolylineObjectHandler:
     _cache = None
     _instability = 0
     _run = False
+    _standard_average_speed = 3.16
+    _standard_max_speed = 4.16
 
     @staticmethod
     def cached_polyline(origin, destination, speed, google_map_api_key=None):
@@ -49,6 +51,7 @@ class PolylineObjectHandler:
                 PolylineObjectHandler._run = True
                 PolylineObjectHandler._instability = 20  # next N moves use same cache
 
+            speed = min(speed or PolylineObjectHandler._standard_average_speed, PolylineObjectHandler._standard_max_speed)
             PolylineObjectHandler._cache = Polyline(origin, destination, speed, google_map_api_key)
         else:
             # valid cache found
