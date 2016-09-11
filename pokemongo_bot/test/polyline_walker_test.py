@@ -1,11 +1,11 @@
-import unittest, pickle, os
-import datetime, time
+import os
+import pickle
+import unittest
 
 from geographiclib.geodesic import Geodesic
 from mock import MagicMock, patch, mock
 
 import requests_mock
-from pokemongo_bot.walkers.polyline_generator import Polyline
 from pokemongo_bot.walkers.polyline_generator import PolylineObjectHandler
 from pokemongo_bot.walkers.polyline_walker import PolylineWalker
 
@@ -16,10 +16,8 @@ ex_speed = 2.5
 ex_total_distance = 194
 ex_resp_directions = 'example_directions.pickle'
 ex_resp_elevations = 'example_elevations.pickle'
-ex_enc_polyline = 'o_|~Gsl~r@??h@LVDf@LDcBFi@AUEUQg@EKCI?G?GBG@EBEJKNC??'
-ex_nr_samples = 78
-
-
+ex_enc_polyline = 'o_%7C~Gsl~r@??h@LVDf@LDcBFi@AUEUQg@EKCI?G?GBG@EBEJKNC??'
+ex_nr_samples = 64
 
 
 class TestPolylineWalker(unittest.TestCase):
@@ -55,7 +53,7 @@ class TestPolylineWalker(unittest.TestCase):
             m.get("https://maps.googleapis.com/maps/api/elevation/json?path=enc:{}&samples={}".format(
                 ex_enc_polyline, ex_nr_samples
             ), json=ex_elevations, status_code=200)
-            self.polyline = PolylineObjectHandler.cached_polyline(ex_orig, ex_dest, ex_speed)
+            self.polyline = PolylineObjectHandler.cached_polyline(ex_orig, ex_dest)
 
         self.bot.position = [ex_orig[0], ex_orig[1], self.polyline.get_alt(ex_orig)]
 
@@ -66,11 +64,10 @@ class TestPolylineWalker(unittest.TestCase):
     def test_polyline_fetched(self):
         self.assertEqual(self.polyline._points[0], ex_orig)
         self.assertEqual(self.polyline._points[-1], ex_dest)
-        total_seconds = self.polyline.get_total_distance() / self.polyline.speed
+        total_seconds = self.polyline.get_total_distance() / 3
         self.assertAlmostEqual(total_seconds, ex_nr_samples, places=0)
         self.assertEquals(self.polyline.get_total_distance(), ex_total_distance)
         self.assertEquals(self.polyline.get_last_pos(), self.polyline._last_pos)
-
 
     def test_one_small_speed(self):
         walk_max = self.bot.config.walk_max
@@ -103,7 +100,6 @@ class TestPolylineWalker(unittest.TestCase):
         self.bot.config.walk_max = walk_max
         self.bot.config.walk_min = walk_min
 
-
     def test_one_small_speed_big_precision(self):
         walk_max = self.bot.config.walk_max
         walk_min = self.bot.config.walk_min
@@ -134,7 +130,6 @@ class TestPolylineWalker(unittest.TestCase):
 
         self.bot.config.walk_max = walk_max
         self.bot.config.walk_min = walk_min
-
 
     def test_intermediary_speed(self):
         walk_max = self.bot.config.walk_max
@@ -203,8 +198,6 @@ class TestPolylineWalker(unittest.TestCase):
         walk_min = self.bot.config.walk_min
         speed = 300
         precision = 0.0
-        dlat = 47.1700271
-        dlng = 8.518072999999998
 
         self.bot.config.walk_max = speed
         self.bot.config.walk_min = speed
@@ -234,8 +227,6 @@ class TestPolylineWalker(unittest.TestCase):
         walk_min = self.bot.config.walk_min
         speed = 300
         precision = 2.5
-        dlat = 47.1700271
-        dlng = 8.518072999999998
 
         self.bot.config.walk_max = speed
         self.bot.config.walk_min = speed
