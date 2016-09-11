@@ -13,6 +13,7 @@ class EvolvePokemon(BaseTask):
         super(EvolvePokemon, self).__init__(bot, config)
 
     def initialize(self):
+        self.start_time = 0
         self.api = self.bot.api
         self.evolve_list = self.config.get('evolve_list', [])
         self.donot_evolve_list = self.config.get('donot_evolve_list', [])
@@ -60,6 +61,8 @@ class EvolvePokemon(BaseTask):
                 pokemon_to_be_evolved = pokemon_to_be_evolved + ( candy.quantity / pokemon.evolution_cost)
 
         if pokemon_to_be_evolved >= self.min_pokemon_to_be_evolved:
+            if self.use_lucky_egg:
+                self._use_lucky_egg()
             cache = {}
             for pokemon in filtered_list:
                 if pokemon.can_evolve_now():
@@ -68,10 +71,12 @@ class EvolvePokemon(BaseTask):
     def _should_run(self):
         if not self.evolve_list or self.evolve_list[0] == 'none':
             return False
-
-        # Evolve all is used - Use Lucky egg only at the first tick
-        if self.bot.tick_count is not 1 or not self.use_lucky_egg:
-            return True
+        return True
+    
+    def _use_lucky_egg(self):
+        using_lucky_egg = time.time() - self.start_time < 1800
+        if using_lucky_egg:
+            return False
 
         lucky_egg = inventory.items().get(Item.ITEM_LUCKY_EGG.value)
 
@@ -81,6 +86,7 @@ class EvolvePokemon(BaseTask):
             if response_dict_lucky_egg:
                 result = response_dict_lucky_egg.get('responses', {}).get('USE_ITEM_XP_BOOST', {}).get('result', 0)
                 if result is 1:  # Request success
+                    self.start_time = time.time()
                     lucky_egg.remove(1)
                     self.emit_event(
                         'used_lucky_egg',
