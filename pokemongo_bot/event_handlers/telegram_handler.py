@@ -460,7 +460,8 @@ class TelegramHandler(EventHandler):
         if master == None:
             self.master = None
             return
-
+        else:
+            self.master = master
         with self.bot.database as conn:
             # if master is not numeric, try to fetch it from the database
             if not unicode(master).isnumeric():
@@ -520,14 +521,6 @@ class TelegramHandler(EventHandler):
                 msg = "*You have reached your daily catch limit, quitting.*"
             elif event == 'spin_limit':
                 msg = "*You have reached your daily spin limit, quitting.*"
-            elif event == 'bot_random_pause':
-                msg = "Taking a random break until {}.".format(data["resume"])
-            elif event == 'bot_random_alive_pause':
-                msg = "Taking a random break until {}.".format(data["resume"])
-            elif event == 'log_stats':
-                msg = "{}".format(data["msg"])
-            elif event == 'show_inventory':
-                msg = "{}".format(data["msg"])
             else:
                 msg = formatted_msg
         except KeyError:
@@ -543,9 +536,6 @@ class TelegramHandler(EventHandler):
                         self.bot.logger.info("[{}] {}".format(event, msg))
                     else:
                         self.tbot.sendMessage(chat_id=uid, parse_mode='Markdown', text=msg)
-
-
-
         if hasattr(self, "master") and self.master:
             if not unicode(self.master).isnumeric():
                 # master not numeric?...
@@ -555,6 +545,14 @@ class TelegramHandler(EventHandler):
 
             if event == 'level_up':
                 msg = "level up ({})".format(data["current_level"])
+            elif event == 'log_stats':
+                msg = "{}".format(data["msg"])
+            elif event == 'show_inventory':
+                msg = "{}".format(data["msg"])
+            elif event == 'bot_random_pause':
+                msg = "Taking a random break until {}.".format(data["resume"])
+            elif event == 'bot_random_alive_pause':
+                msg = "Taking a random break until {}.".format(data["resume"])
             elif event == 'pokemon_caught':
                 if isinstance(self.pokemons, list): # alert_catch is a plain list
                     if data["pokemon"] in self.pokemons or "all" in self.pokemons:
