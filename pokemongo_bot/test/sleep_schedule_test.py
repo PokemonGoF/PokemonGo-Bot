@@ -9,7 +9,7 @@ class FakeDatetime(datetime):
     def __new__(cls, *args, **kwargs):
         return datetime.__new__(datetime, *args, **kwargs)
 
-class SleepScheculeTestCase(unittest.TestCase):
+class SleepScheduleTestCase(unittest.TestCase):
     config1 = { 'entries': [
                   {'time': '12:20', 'duration': '01:05', 'time_random_offset': '00:05', 'duration_random_offset': '00:05'},
                   {'time': '15:00', 'duration': '03:00', 'time_random_offset': '00:00', 'duration_random_offset': '00:00'},
@@ -22,11 +22,12 @@ class SleepScheculeTestCase(unittest.TestCase):
                 ]
               }
 
-
     def setUp(self):
-        self.bot = FakeBot()
+        self.bot = MagicMock()
         self.worker1 = SleepSchedule(self.bot, self.config1)
         self.worker2 = SleepSchedule(self.bot, self.config2)
+        self.bot.event_manager = MagicMock()
+        self.bot.event_manager.emit = lambda *args, **kwargs: None
 
     def setNow(self, val):
         FakeDatetime.now = classmethod(lambda cls: val)
