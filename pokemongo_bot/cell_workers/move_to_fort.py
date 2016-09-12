@@ -109,7 +109,7 @@ class MoveToFort(BaseTask):
                     formatted='Arrived at fort.'
                 )
 
-        return WorkerResult.SUCCESS
+        return WorkerResult.RUNNING
 
     def _get_nearest_fort_on_lure_way(self, forts):
 
