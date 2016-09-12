@@ -5,7 +5,7 @@ from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot.inventory import Pokemon
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.base_task import BaseTask
-
+import time
 
 class EvolvePokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
