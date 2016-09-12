@@ -78,7 +78,8 @@ class MoveToFort(BaseTask):
                 fort_event_data.update(lure_distance=format_dist(self.lure_distance, unit))
                 self.emit_event(
                     'moving_to_lured_fort',
-                    formatted="*Moving towards pokestop* {} - {} (attraction of lure {})".format(fort_name, distance, fort_event_data),
+                    formatted="*Moving towards pokestop* {} - {} (attraction of lure {})".format(
+                        fort_name, distance, format_dist(self.lure_distance, unit)),
                     data=fort_event_data
                 )
             else:
