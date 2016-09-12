@@ -145,6 +145,3 @@ pip-selfcheck.json
 .DS_Store
 data/mqtt_client_id
 Encrypt_64.dll
-
-# Todo file
-TODO.txt
