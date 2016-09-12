@@ -252,13 +252,13 @@ class IncubateEggs(BaseTask):
         if not self.used_incubators:
             return
 
-        eggs = ['{:.2f}/{} km'.format(e['km_needed'] - e['km'] + self.km_walked, e['km_needed']) for e in
-                self.used_incubators]
+        eggs = ('{:.2f}/{} km'.format(e['km_needed'] - e['km'] + self.km_walked, e['km_needed']) for e in
+                self.used_incubators)
 
         self.emit_event(
             'next_egg_incubates',
-            formatted='*Eggs incubating:* ({}) (Eggs left: {}, Incubating: {})'.format(eggs,
-                                                                                                            len(self.eggs), len(self.used_incubators)),
+            formatted='*Eggs incubating:* ({}) (Eggs left: {}, Incubating: {})'.format(
+                ', '.join(eggs), len(self.eggs),len(self.used_incubators)),
             data={
                 'eggs_left': len(self.eggs),
                 'eggs_inc': len(self.used_incubators),
