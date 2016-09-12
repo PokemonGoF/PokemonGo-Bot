@@ -133,7 +133,7 @@ class PokemonCatchWorker(BaseTask):
             self.bot.skipped_pokemon.append(pokemon)
             self.emit_event(
                 'pokemon_appeared',
-                formatted='Skip ignored {pokemon}! [CP {cp}] [Potential {iv}] [A/D/S {iv_display}]',
+                formatted='Skip ignored {}! (CP {}) (Potential {}) (A/D/S {})'.format(pokemon.name, pokemon.cp, pokemon.iv, pokemon.iv_display),
                 data={
                     'pokemon': pokemon.name,
                     'cp': pokemon.cp,
@@ -154,7 +154,7 @@ class PokemonCatchWorker(BaseTask):
         # log encounter
         self.emit_event(
             'pokemon_appeared',
-            formatted='A wild {pokemon} appeared! [CP {cp}] [NCP {ncp}] [Potential {iv}] [A/D/S {iv_display}]',
+            formatted='*A wild {} appeared!* (CP: {}) (NCP: {}) (Potential {}) (A/D/S {})'.format(pokemon.name, pokemon.cp, round(pokemon.cp_percent, 2), pokemon.iv, pokemon.iv_display),
             data={
                 'pokemon': pokemon.name,
                 'ncp': round(pokemon.cp_percent, 2),
@@ -543,7 +543,7 @@ class PokemonCatchWorker(BaseTask):
 
                 self.emit_event(
                     'pokemon_vanished',
-                    formatted='{pokemon} vanished!',
+                    formatted='{} vanished!'.format(pokemon.name),
                     data={
                         'pokemon': pokemon.name,
                         'encounter_id': self.pokemon['encounter_id'],

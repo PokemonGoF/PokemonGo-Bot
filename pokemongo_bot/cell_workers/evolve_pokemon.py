@@ -144,7 +144,7 @@ class EvolvePokemon(BaseTask):
 
             self.emit_event(
                 'pokemon_evolved',
-                formatted="Evolved {pokemon} [IV {iv}] [CP {cp}] [{candy} candies] [+{xp} xp]",
+                formatted="*Evolved {}* (IV {}) (CP {}) ({} candies) (+{} xp)".format(pokemon.name, pokemon.iv, pokemon.cp, candy.quantity, xp),
                 data={
                     'pokemon': pokemon.name,
                     'iv': pokemon.iv,
