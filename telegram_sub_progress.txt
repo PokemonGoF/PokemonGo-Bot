@@ -52,7 +52,7 @@ pokestop_searching_too_often
 spun_fort
 softban_fix
 softban_fix_done
-
+used_lucky_egg
 
 
 unknown:
@@ -66,7 +66,6 @@ location_found
 no_cached_forts
 pokemon_upgraded
 item_discard_fail
-used_lucky_egg
 move_to_map_pokemon_encounter
 ignore_candy_above_thresold
 pokemon_nickname_invalid
