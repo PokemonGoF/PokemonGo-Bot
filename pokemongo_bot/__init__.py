@@ -13,7 +13,6 @@ import Queue
 import threading
 import shelve
 import uuid
-from logging import Formatter
 
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
@@ -29,7 +28,7 @@ from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
 from sleep_schedule import SleepSchedule
-from pokemongo_bot.event_handlers import LoggingHandler, SocketIoHandler, ColoredLoggingHandler, SocialHandler
+from pokemongo_bot.event_handlers import SocketIoHandler, LoggingHandler, SocialHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from pokemongo_bot.base_dir import _base_dir
@@ -38,6 +37,7 @@ from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeCon
 from inventory import init_inventory, player
 from sys import platform as _platform
 from pgoapi.protos.POGOProtos.Enums import BadgeType_pb2
+from pgoapi.exceptions import AuthException
 import struct
 
 
@@ -94,6 +94,7 @@ class PokemonGoBot(object):
         self.recent_forts = [None] * config.forts_max_circle_size
         self.tick_count = 0
         self.softban = False
+        self.wake_location = None
         self.start_position = None
         self.last_map_object = None
         self.last_time_map_object = 0
@@ -112,6 +113,12 @@ class PokemonGoBot(object):
         self.heartbeat_threshold = self.config.heartbeat_threshold
         self.heartbeat_counter = 0
         self.last_heartbeat = time.time()
+        self.hb_locked = False # lock hb on snip
+        
+        # Inventory refresh limiting
+        self.inventory_refresh_threshold = 10
+        self.inventory_refresh_counter = 0
+        self.last_inventory_refresh = time.time()
 
         self.capture_locked = False  # lock catching while moving to VIP pokemon
 
@@ -127,7 +134,6 @@ class PokemonGoBot(object):
 
     def start(self):
         self._setup_event_system()
-        self._setup_logging()
         self.sleep_schedule = SleepSchedule(self, self.config.sleep_schedule) if self.config.sleep_schedule else None
         if self.sleep_schedule:
             self.sleep_schedule.work()
@@ -145,10 +151,10 @@ class PokemonGoBot(object):
     def _setup_event_system(self):
         handlers = []
 
-        if self.config.logging and 'color' in self.config.logging and self.config.logging['color']:
-            handlers.append(ColoredLoggingHandler(self))
-        else:
-            handlers.append(LoggingHandler(self))
+        color = self.config.logging and 'color' in self.config.logging and self.config.logging['color']
+        debug = self.config.debug
+
+        handlers.append(LoggingHandler(color, debug))
 
         if self.config.enable_social:
             handlers.append(SocialHandler(self))
@@ -675,6 +681,8 @@ class PokemonGoBot(object):
             if timeout >= now:
                 self.fort_timeouts[fort["id"]] = timeout
 
+        self._refresh_inventory()
+
         self.tick_count += 1
 
         # Check if session token has expired
@@ -806,48 +814,13 @@ class PokemonGoBot(object):
             )
         return map_cells
 
-    def _setup_logging(self):
-        log_level = logging.ERROR
-
-        if self.config.debug:
-            log_level = logging.DEBUG
-
-        logging.getLogger("requests").setLevel(log_level)
-        logging.getLogger("websocket").setLevel(log_level)
-        logging.getLogger("socketio").setLevel(log_level)
-        logging.getLogger("engineio").setLevel(log_level)
-        logging.getLogger("socketIO-client").setLevel(log_level)
-        logging.getLogger("pgoapi").setLevel(log_level)
-        logging.getLogger("rpc_api").setLevel(log_level)
-
-        if self.config.logging:
-            logging_format = '%(message)s'
-            logging_format_options = ''
-
-            if ('show_log_level' not in self.config.logging) or self.config.logging['show_log_level']:
-                logging_format = '[%(levelname)s] ' + logging_format
-            if ('show_process_name' not in self.config.logging) or self.config.logging['show_process_name']:
-                logging_format = '[%(name)10s] ' + logging_format
-            if ('show_thread_name' not in self.config.logging) or self.config.logging['show_thread_name']:
-                logging_format = '[%(threadName)s] ' + logging_format
-            if ('show_datetime' not in self.config.logging) or self.config.logging['show_datetime']:
-                logging_format = '[%(asctime)s] ' + logging_format
-                logging_format_options = '%Y-%m-%d %H:%M:%S'
-
-            formatter = Formatter(logging_format,logging_format_options)
-            for handler in logging.root.handlers[:]:
-                handler.setFormatter(formatter)
-
     def check_session(self, position):
-
         # Check session expiry
         if self.api._auth_provider and self.api._auth_provider._ticket_expire:
 
             # prevent crash if return not numeric value
-            if not self.is_numeric(self.api._auth_provider._ticket_expire):
+            if not str(self.api._auth_provider._ticket_expire).isdigit():
                 self.logger.info("Ticket expired value is not numeric", 'yellow')
-                return
-
             remaining_time = \
                 self.api._auth_provider._ticket_expire / 1000 - time.time()
 
@@ -863,14 +836,6 @@ class PokemonGoBot(object):
                 self.login()
                 self.api.activate_signature(self.get_encryption_lib())
 
-    @staticmethod
-    def is_numeric(s):
-        try:
-            float(s)
-            return True
-        except ValueError:
-            return False
-
     def login(self):
         self.event_manager.emit(
             'login_started',
@@ -881,18 +846,19 @@ class PokemonGoBot(object):
         lat, lng = self.position[0:2]
         self.api.set_position(lat, lng, self.alt)  # or should the alt kept to zero?
 
-        while not self.api.login(
-            self.config.auth_service,
-            str(self.config.username),
-            str(self.config.password)):
-
+        try:
+            self.api.login(
+                    self.config.auth_service,
+                    str(self.config.username),
+                    str(self.config.password))
+        except AuthException as e:
             self.event_manager.emit(
-                'login_failed',
-                sender=self,
-                level='info',
-                formatted="Login error, server busy. Waiting 10 seconds to try again."
-            )
-            time.sleep(10)
+                    'login_failed',
+                    sender=self,
+                    level='info',
+                    formatted='Login process failed: {}'.format(e));
+
+            sys.exit()
 
         with self.database as conn:
             c = conn.cursor()
@@ -900,18 +866,15 @@ class PokemonGoBot(object):
 
         result = c.fetchone()
 
-        while True:
-            if result[0] == 1:
-                conn.execute('''INSERT INTO login (timestamp, message) VALUES (?, ?)''', (time.time(), 'LOGIN_SUCCESS'))
-                break
-            else:
-                self.event_manager.emit(
-                    'login_failed',
-                    sender=self,
-                    level='info',
-                    formatted="Login table not founded, skipping log"
-                )
-                break
+        if result[0] == 1:
+            conn.execute('''INSERT INTO login (timestamp, message) VALUES (?, ?)''', (time.time(), 'LOGIN_SUCCESS'))
+        else:
+            self.event_manager.emit(
+                'login_failed',
+                sender=self,
+                level='info',
+                formatted="Login table not founded, skipping log"
+            )
 
         self.event_manager.emit(
             'login_successful',
@@ -919,6 +882,7 @@ class PokemonGoBot(object):
             level='info',
             formatted="Login successful."
         )
+        self.heartbeat()
 
     def get_encryption_lib(self):
         if _platform == "Windows" or _platform == "win32":
@@ -1075,6 +1039,7 @@ class PokemonGoBot(object):
         self.logger.info('Pokemon:')
 
         for pokes in pokemon_list:
+            pokes.sort(key=lambda p: p.cp, reverse=True)
             line_p = '#{} {}'.format(pokes[0].pokemon_id, pokes[0].name)
             if show_count:
                 line_p += '[{}]'.format(len(pokes))
@@ -1104,6 +1069,41 @@ class PokemonGoBot(object):
         if self.config.test:
             # TODO: Add unit tests
             return
+
+        if self.wake_location:
+            msg = "Wake up location found: {location} {position}"
+            self.event_manager.emit(
+                'location_found',
+                sender=self,
+                level='info',
+                formatted=msg,
+                data={
+                    'location': self.wake_location['raw'],
+                    'position': self.wake_location['coord']
+                }
+            )
+
+            self.api.set_position(*self.wake_location['coord'])
+
+            self.event_manager.emit(
+                'position_update',
+                sender=self,
+                level='info',
+                formatted="Now at {current_position}",
+                data={
+                    'current_position': self.position,
+                    'last_position': '',
+                    'distance': '',
+                    'distance_unit': ''
+                }
+            )
+
+            self.start_position = self.position
+
+            has_position = True
+
+            return
+
 
         if self.config.location:
             location_str = self.config.location
@@ -1263,7 +1263,7 @@ class PokemonGoBot(object):
                               in self.fort_timeouts.iteritems()
                               if timeout >= now * 1000}
 
-        if now - self.last_heartbeat >= self.heartbeat_threshold:
+        if now - self.last_heartbeat >= self.heartbeat_threshold and not self.hb_locked:
             self.last_heartbeat = now
             request = self.api.create_request()
             request.get_player()
@@ -1300,12 +1300,12 @@ class PokemonGoBot(object):
                     )
                     human_behaviour.action_delay(3, 10)
 
-            inventory.refresh_inventory()
-
         try:
             self.web_update_queue.put_nowait(True)  # do this outside of thread every tick
         except Queue.Full:
             pass
+
+        threading.Timer(self.heartbeat_threshold, self.heartbeat).start()
 
     def update_web_location_worker(self):
         while True:
@@ -1405,3 +1405,12 @@ class PokemonGoBot(object):
                 formatted='Starting new cached forts for {path}',
                 data={'path': cached_forts_path}
             )
+
+    def _refresh_inventory(self):
+        # Perform inventory update every n seconds
+        now = time.time()
+        if now - self.last_inventory_refresh >= self.inventory_refresh_threshold:
+            inventory.refresh_inventory()
+            self.last_inventory_refresh = now
+            self.inventory_refresh_counter += 1
+            

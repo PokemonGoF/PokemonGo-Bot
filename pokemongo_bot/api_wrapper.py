@@ -70,15 +70,23 @@ class ApiWrapper(PGoApi, object):
             self._position_alt
         )
 
-    def login(self, *args):
+    def login(self, provider, username, password):
         # login needs base class "create_request"
         self.useVanillaRequest = True
         try:
-            ret_value = PGoApi.login(self, *args)
-        finally:
-            # cleanup code
-            self.useVanillaRequest = False
-        return ret_value
+            PGoApi.set_authentication(
+                    self,
+                    provider,
+                    username=username,
+                    password=password
+                    )
+        except:
+            raise
+
+        response = PGoApi.app_simulation_login(self)
+        # cleanup code
+        self.useVanillaRequest = False
+        return response
 
     def set_position(self, lat, lng, alt=None, teleporting=False):
         self.actual_lat = lat

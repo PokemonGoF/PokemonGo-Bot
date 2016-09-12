@@ -1,7 +1,7 @@
 from random import uniform
 
 from pokemongo_bot import inventory
-from pokemongo_bot.human_behaviour import sleep
+from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot.inventory import Pokemon
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.base_task import BaseTask
@@ -13,6 +13,7 @@ class EvolvePokemon(BaseTask):
         super(EvolvePokemon, self).__init__(bot, config)
 
     def initialize(self):
+        self.start_time = 0
         self.api = self.bot.api
         self.evolve_list = self.config.get('evolve_list', [])
         self.donot_evolve_list = self.config.get('donot_evolve_list', [])
@@ -23,14 +24,15 @@ class EvolvePokemon(BaseTask):
         self.evolve_above_iv = self.config.get('evolve_above_iv', 0.8)
         self.cp_iv_logic = self.config.get('logic', 'or')
         self.use_lucky_egg = self.config.get('use_lucky_egg', False)
+        self.min_pokemon_to_be_evolved = self.config.get('min_pokemon_to_be_evolved', 1)
         self._validate_config()
 
     def _validate_config(self):
         if isinstance(self.evolve_list, basestring):
-            self.evolve_list = [str(pokemon_name).strip().lower() for pokemon_name in self.evolve_list.split(',')]
+            self.evolve_list = [str(pokemon_name).lower().replace(" ","") for pokemon_name in self.evolve_list.split(',')]
             
         if isinstance(self.donot_evolve_list, basestring):
-            self.donot_evolve_list = [str(pokemon_name).strip().lower() for pokemon_name in self.donot_evolve_list.split(',')]
+            self.donot_evolve_list = [str(pokemon_name).lower().replace(" ","") for pokemon_name in self.donot_evolve_list.split(',')]
 
         if 'evolve_speed' in self.config:
             self.logger.warning("evolve_speed is deprecated, instead please use 'min_evolve_speed' and 'max_evolved_speed'.")
@@ -50,18 +52,31 @@ class EvolvePokemon(BaseTask):
         if (len(self.donot_evolve_list) > 0) and self.donot_evolve_list[0] != 'none':
             filtered_list = filter(lambda pokemon: pokemon.name.lower() not in self.donot_evolve_list, filtered_list)
 
-        cache = {}
+        pokemon_to_be_evolved = 0
+        pokemon_ids = []
         for pokemon in filtered_list:
-            if pokemon.can_evolve_now():
-                self._execute_pokemon_evolve(pokemon, cache)
+            if pokemon.pokemon_id not in pokemon_ids:
+                pokemon_ids.append(pokemon.pokemon_id)
+                candy = inventory.candies().get(pokemon.pokemon_id)
+                pokemon_to_be_evolved = pokemon_to_be_evolved + ( candy.quantity / pokemon.evolution_cost)
+
+        if pokemon_to_be_evolved >= self.min_pokemon_to_be_evolved:
+            if self.use_lucky_egg:
+                self._use_lucky_egg()
+            cache = {}
+            for pokemon in filtered_list:
+                if pokemon.can_evolve_now():
+                    self._execute_pokemon_evolve(pokemon, cache)
 
     def _should_run(self):
         if not self.evolve_list or self.evolve_list[0] == 'none':
             return False
-
-        # Evolve all is used - Use Lucky egg only at the first tick
-        if self.bot.tick_count is not 1 or not self.use_lucky_egg:
-            return True
+        return True
+    
+    def _use_lucky_egg(self):
+        using_lucky_egg = time.time() - self.start_time < 1800
+        if using_lucky_egg:
+            return False
 
         lucky_egg = inventory.items().get(Item.ITEM_LUCKY_EGG.value)
 
@@ -71,6 +86,7 @@ class EvolvePokemon(BaseTask):
             if response_dict_lucky_egg:
                 result = response_dict_lucky_egg.get('responses', {}).get('USE_ITEM_XP_BOOST', {}).get('result', 0)
                 if result is 1:  # Request success
+                    self.start_time = time.time()
                     lucky_egg.remove(1)
                     self.emit_event(
                         'used_lucky_egg',
@@ -128,7 +144,7 @@ class EvolvePokemon(BaseTask):
 
             self.emit_event(
                 'pokemon_evolved',
-                formatted="Evolved {pokemon} [IV {iv}] [CP {cp}] [{candy} candies] [+{xp} xp]",
+                formatted="*Evolved {}* (IV {}) (CP {}) ({} candies) (+{} xp)".format(pokemon.name, pokemon.iv, pokemon.cp, candy.quantity, xp),
                 data={
                     'pokemon': pokemon.name,
                     'iv': pokemon.iv,
@@ -143,7 +159,7 @@ class EvolvePokemon(BaseTask):
             inventory.pokemons().add(new_pokemon)
             inventory.player().exp += xp
 
-            sleep(uniform(self.min_evolve_speed, self.max_evolve_speed))
+            action_delay(self.min_evolve_speed, self.max_evolve_speed)
             evolve_result = True
         else:
             # cache pokemons we can't evolve. Less server calls
