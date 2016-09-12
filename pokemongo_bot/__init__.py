@@ -665,6 +665,20 @@ class PokemonGoBot(object):
             'use_incense',
             parameters=('type', 'incense_count')
         )
+        # BuddyPokemon
+        self.event_manager.register_event(
+            'buddy_update',
+            parameters=('name')
+        )
+        self.event_manager.register_event(
+            'buddy_update_fail',
+            parameters=('name', 'error')
+        )
+        self.event_manager.register_event(
+            'buddy_candy_earned',
+            parameters=('candy', 'family')
+        )
+        self.event_manager.register_event('buddy_candy_fail')
 
     def tick(self):
         self.health_record.heartbeat()

@@ -205,7 +205,6 @@ class Item(object):
             raise Exception('Tried to remove more {} than you have'.format(self.name))
         self.count -= amount
 
-
     def recycle(self, amount_to_recycle):
         """
         Recycle (discard) the specified amount of item from the item inventory.
@@ -318,7 +317,6 @@ class Items(_BaseInventoryComponent):
         """
         max_number_of_items_looted_at_stop = 5
         return cls.get_space_left() >= max_number_of_items_looted_at_stop
-
 
 
 class Pokemons(_BaseInventoryComponent):
@@ -710,6 +708,9 @@ class PokemonInfo(object):
         # chance of the pokemon to flee away
         self.flee_rate = data['FleeRate']
 
+        # km needed for buddy reward
+        self.buddy_km_needed = data['BuddyKm']
+
         # prepare attacks (moves)
         self.fast_attacks = self._process_attacks()
         self.charged_attack = self._process_attacks(charged=True)
@@ -756,9 +757,6 @@ class PokemonInfo(object):
             ids = [int(e['Number']) for e in data['Next evolution(s)']]
             self.next_evolutions_all = ids
             self.evolution_cost = int(data['Next Evolution Requirements']['Amount'])
-
-        # km needed for buddy reward
-        self.buddy_km_needed = data['Buddy km']
 
     @property
     def family_id(self):

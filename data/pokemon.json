@@ -46,7 +46,7 @@
     "BaseStamina": 90,
     "CaptureRate": 0.16,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "002",
@@ -97,7 +97,7 @@
     "BaseStamina": 120,
     "CaptureRate": 0.08,
     "FleeRate": 0.07,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "003",
@@ -141,7 +141,7 @@
     "BaseStamina": 160,
     "CaptureRate": 0.04,
     "FleeRate": 0.05,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "004",
@@ -186,7 +186,7 @@
     "BaseStamina": 78,
     "CaptureRate": 0.16,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "005",
@@ -233,7 +233,7 @@
     "BaseStamina": 116,
     "CaptureRate": 0.08,
     "FleeRate": 0.07,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "006",
@@ -276,7 +276,7 @@
     "BaseStamina": 156,
     "CaptureRate": 0.04,
     "FleeRate": 0.05,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "007",
@@ -320,7 +320,7 @@
     "BaseStamina": 88,
     "CaptureRate": 0.16,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "008",
@@ -366,7 +366,7 @@
     "BaseStamina": 118,
     "CaptureRate": 0.08,
     "FleeRate": 0.07,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "009",
@@ -405,7 +405,7 @@
     "BaseStamina": 158,
     "CaptureRate": 0.04,
     "FleeRate": 0.05,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "010",
@@ -448,7 +448,7 @@
     "BaseStamina": 90,
     "CaptureRate": 0.4,
     "FleeRate": 0.2,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "011",
@@ -493,7 +493,7 @@
     "BaseStamina": 100,
     "CaptureRate": 0.2,
     "FleeRate": 0.09,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "012",
@@ -538,7 +538,7 @@
     "BaseStamina": 120,
     "CaptureRate": 0.1,
     "FleeRate": 0.06,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "013",
@@ -585,7 +585,7 @@
     "BaseStamina": 80,
     "CaptureRate": 0.4,
     "FleeRate": 0.2,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "014",
@@ -634,7 +634,7 @@
     "BaseStamina": 90,
     "CaptureRate": 0.2,
     "FleeRate": 0.09,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "015",
@@ -678,7 +678,7 @@
     "BaseStamina": 130,
     "CaptureRate": 0.1,
     "FleeRate": 0.06,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "016",
@@ -725,7 +725,7 @@
     "BaseStamina": 80,
     "CaptureRate": 0.4,
     "FleeRate": 0.2,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "017",
@@ -774,7 +774,7 @@
     "BaseStamina": 126,
     "CaptureRate": 0.2,
     "FleeRate": 0.09,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "018",
@@ -816,7 +816,7 @@
     "BaseStamina": 166,
     "CaptureRate": 0.1,
     "FleeRate": 0.06,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "019",
@@ -855,7 +855,7 @@
     "BaseStamina": 60,
     "CaptureRate": 0.4,
     "FleeRate": 0.2,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "020",
@@ -889,7 +889,7 @@
     "BaseStamina": 110,
     "CaptureRate": 0.16,
     "FleeRate": 0.07,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "021",
@@ -932,7 +932,7 @@
     "BaseStamina": 80,
     "CaptureRate": 0.4,
     "FleeRate": 0.15,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "022",
@@ -970,7 +970,7 @@
     "BaseStamina": 130,
     "CaptureRate": 0.16,
     "FleeRate": 0.07,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "023",
@@ -1010,7 +1010,7 @@
     "BaseStamina": 70,
     "CaptureRate": 0.4,
     "FleeRate": 0.15,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "024",
@@ -1045,7 +1045,7 @@
     "BaseStamina": 120,
     "CaptureRate": 0.16,
     "FleeRate": 0.07,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "025",
@@ -1084,7 +1084,7 @@
     "BaseStamina": 70,
     "CaptureRate": 0.16,
     "FleeRate": 0.1,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "026",
@@ -1118,7 +1118,7 @@
     "BaseStamina": 120,
     "CaptureRate": 0.08,
     "FleeRate": 0.06,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "027",
@@ -1159,7 +1159,7 @@
     "BaseStamina": 100,
     "CaptureRate": 0.4,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "028",
@@ -1195,7 +1195,7 @@
     "BaseStamina": 150,
     "CaptureRate": 0.16,
     "FleeRate": 0.06,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "029",
@@ -1239,7 +1239,7 @@
     "BaseStamina": 110,
     "CaptureRate": 0.4,
     "FleeRate": 0.15,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "030",
@@ -1285,7 +1285,7 @@
     "BaseStamina": 140,
     "CaptureRate": 0.2,
     "FleeRate": 0.07,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "031",
@@ -1329,7 +1329,7 @@
     "BaseStamina": 180,
     "CaptureRate": 0.1,
     "FleeRate": 0.05,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "032",
@@ -1373,7 +1373,7 @@
     "BaseStamina": 92,
     "CaptureRate": 0.4,
     "FleeRate": 0.15,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "033",
@@ -1419,7 +1419,7 @@
     "BaseStamina": 122,
     "CaptureRate": 0.2,
     "FleeRate": 0.07,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "034",
@@ -1463,7 +1463,7 @@
     "BaseStamina": 162,
     "CaptureRate": 0.1,
     "FleeRate": 0.05,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "035",
@@ -1502,7 +1502,7 @@
     "BaseStamina": 140,
     "CaptureRate": 0.24,
     "FleeRate": 0.1,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "036",
@@ -1536,7 +1536,7 @@
     "BaseStamina": 190,
     "CaptureRate": 0.08,
     "FleeRate": 0.06,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "037",
@@ -1577,7 +1577,7 @@
     "BaseStamina": 76,
     "CaptureRate": 0.24,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "038",
@@ -1613,7 +1613,7 @@
     "BaseStamina": 146,
     "CaptureRate": 0.08,
     "FleeRate": 0.06,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "039",
@@ -1657,7 +1657,7 @@
     "BaseStamina": 230,
     "CaptureRate": 0.4,
     "FleeRate": 0.1,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "040",
@@ -1694,7 +1694,7 @@
     "BaseStamina": 280,
     "CaptureRate": 0.16,
     "FleeRate": 0.06,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "041",
@@ -1739,7 +1739,7 @@
     "BaseStamina": 80,
     "CaptureRate": 0.4,
     "FleeRate": 0.2,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "042",
@@ -1779,7 +1779,7 @@
     "BaseStamina": 150,
     "CaptureRate": 0.16,
     "FleeRate": 0.07,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "043",
@@ -1828,7 +1828,7 @@
     "BaseStamina": 90,
     "CaptureRate": 0.48,
     "FleeRate": 0.15,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "044",
@@ -1879,7 +1879,7 @@
     "BaseStamina": 120,
     "CaptureRate": 0.24,
     "FleeRate": 0.07,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "045",
@@ -1923,7 +1923,7 @@
     "BaseStamina": 150,
     "CaptureRate": 0.12,
     "FleeRate": 0.05,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "046",
@@ -1970,7 +1970,7 @@
     "BaseStamina": 70,
     "CaptureRate": 0.32,
     "FleeRate": 0.15,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "047",
@@ -2012,7 +2012,7 @@
     "BaseStamina": 120,
     "CaptureRate": 0.16,
     "FleeRate": 0.07,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "048",
@@ -2057,7 +2057,7 @@
     "BaseStamina": 120,
     "CaptureRate": 0.4,
     "FleeRate": 0.15,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "049",
@@ -2097,7 +2097,7 @@
     "BaseStamina": 140,
     "CaptureRate": 0.16,
     "FleeRate": 0.07,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "050",
@@ -2139,7 +2139,7 @@
     "BaseStamina": 20,
     "CaptureRate": 0.4,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "051",
@@ -2176,7 +2176,7 @@
     "BaseStamina": 70,
     "CaptureRate": 0.16,
     "FleeRate": 0.06,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "052",
@@ -2215,7 +2215,7 @@
     "BaseStamina": 80,
     "CaptureRate": 0.4,
     "FleeRate": 0.15,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "053",
@@ -2249,7 +2249,7 @@
     "BaseStamina": 130,
     "CaptureRate": 0.16,
     "FleeRate": 0.07,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "054",
@@ -2289,7 +2289,7 @@
     "BaseStamina": 100,
     "CaptureRate": 0.4,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "055",
@@ -2324,7 +2324,7 @@
     "BaseStamina": 160,
     "CaptureRate": 0.16,
     "FleeRate": 0.06,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "056",
@@ -2365,7 +2365,7 @@
     "BaseStamina": 80,
     "CaptureRate": 0.4,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "057",
@@ -2401,7 +2401,7 @@
     "BaseStamina": 130,
     "CaptureRate": 0.16,
     "FleeRate": 0.06,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "058",
@@ -2442,7 +2442,7 @@
     "BaseStamina": 110,
     "CaptureRate": 0.24,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "059",
@@ -2478,7 +2478,7 @@
     "BaseStamina": 180,
     "CaptureRate": 0.08,
     "FleeRate": 0.06,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "060",
@@ -2522,7 +2522,7 @@
     "BaseStamina": 80,
     "CaptureRate": 0.4,
     "FleeRate": 0.15,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "061",
@@ -2568,7 +2568,7 @@
     "BaseStamina": 130,
     "CaptureRate": 0.2,
     "FleeRate": 0.07,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "062",
@@ -2613,7 +2613,7 @@
     "BaseStamina": 180,
     "CaptureRate": 0.1,
     "FleeRate": 0.05,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "063",
@@ -2657,7 +2657,7 @@
     "BaseStamina": 50,
     "CaptureRate": 0.4,
     "FleeRate": 0.99,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "064",
@@ -2704,7 +2704,7 @@
     "BaseStamina": 80,
     "CaptureRate": 0.2,
     "FleeRate": 0.07,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "065",
@@ -2744,7 +2744,7 @@
     "BaseStamina": 110,
     "CaptureRate": 0.1,
     "FleeRate": 0.05,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "066",
@@ -2789,7 +2789,7 @@
     "BaseStamina": 140,
     "CaptureRate": 0.4,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "067",
@@ -2836,7 +2836,7 @@
     "BaseStamina": 160,
     "CaptureRate": 0.2,
     "FleeRate": 0.07,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "068",
@@ -2876,7 +2876,7 @@
     "BaseStamina": 180,
     "CaptureRate": 0.1,
     "FleeRate": 0.05,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "069",
@@ -2925,7 +2925,7 @@
     "BaseStamina": 100,
     "CaptureRate": 0.4,
     "FleeRate": 0.15,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "070",
@@ -2976,7 +2976,7 @@
     "BaseStamina": 130,
     "CaptureRate": 0.2,
     "FleeRate": 0.07,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "071",
@@ -3020,7 +3020,7 @@
     "BaseStamina": 160,
     "CaptureRate": 0.1,
     "FleeRate": 0.05,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "072",
@@ -3064,7 +3064,7 @@
     "BaseStamina": 80,
     "CaptureRate": 0.4,
     "FleeRate": 0.15,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "073",
@@ -3103,7 +3103,7 @@
     "BaseStamina": 160,
     "CaptureRate": 0.16,
     "FleeRate": 0.07,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "074",
@@ -3154,7 +3154,7 @@
     "BaseStamina": 80,
     "CaptureRate": 0.4,
     "FleeRate": 0.1,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "075",
@@ -3208,7 +3208,7 @@
     "BaseStamina": 110,
     "CaptureRate": 0.2,
     "FleeRate": 0.07,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "076",
@@ -3255,7 +3255,7 @@
     "BaseStamina": 160,
     "CaptureRate": 0.1,
     "FleeRate": 0.05,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "077",
@@ -3296,7 +3296,7 @@
     "BaseStamina": 100,
     "CaptureRate": 0.32,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "078",
@@ -3332,7 +3332,7 @@
     "BaseStamina": 130,
     "CaptureRate": 0.12,
     "FleeRate": 0.06,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "079",
@@ -3378,7 +3378,7 @@
     "BaseStamina": 180,
     "CaptureRate": 0.4,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "080",
@@ -3419,7 +3419,7 @@
     "BaseStamina": 190,
     "CaptureRate": 0.16,
     "FleeRate": 0.06,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "081",
@@ -3463,7 +3463,7 @@
     "BaseStamina": 50,
     "CaptureRate": 0.4,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "082",
@@ -3502,7 +3502,7 @@
     "BaseStamina": 100,
     "CaptureRate": 0.16,
     "FleeRate": 0.06,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "083",
@@ -3534,7 +3534,7 @@
     "BaseStamina": 104,
     "CaptureRate": 0.24,
     "FleeRate": 0.09,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "084",
@@ -3577,7 +3577,7 @@
     "BaseStamina": 70,
     "CaptureRate": 0.4,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "085",
@@ -3615,7 +3615,7 @@
     "BaseStamina": 120,
     "CaptureRate": 0.16,
     "FleeRate": 0.06,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "086",
@@ -3656,7 +3656,7 @@
     "BaseStamina": 130,
     "CaptureRate": 0.4,
     "FleeRate": 0.09,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "087",
@@ -3696,7 +3696,7 @@
     "BaseStamina": 180,
     "CaptureRate": 0.16,
     "FleeRate": 0.06,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "088",
@@ -3737,7 +3737,7 @@
     "BaseStamina": 160,
     "CaptureRate": 0.4,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "089",
@@ -3773,7 +3773,7 @@
     "BaseStamina": 210,
     "CaptureRate": 0.16,
     "FleeRate": 0.06,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "090",
@@ -3813,7 +3813,7 @@
     "BaseStamina": 60,
     "CaptureRate": 0.4,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "091",
@@ -3853,7 +3853,7 @@
     "BaseStamina": 100,
     "CaptureRate": 0.16,
     "FleeRate": 0.06,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "092",
@@ -3902,7 +3902,7 @@
     "BaseStamina": 60,
     "CaptureRate": 0.32,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "093",
@@ -3953,7 +3953,7 @@
     "BaseStamina": 90,
     "CaptureRate": 0.16,
     "FleeRate": 0.07,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "094",
@@ -3998,7 +3998,7 @@
     "BaseStamina": 120,
     "CaptureRate": 0.08,
     "FleeRate": 0.05,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "095",
@@ -4034,7 +4034,7 @@
     "BaseStamina": 70,
     "CaptureRate": 0.16,
     "FleeRate": 0.09,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "096",
@@ -4075,7 +4075,7 @@
     "BaseStamina": 120,
     "CaptureRate": 0.4,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "097",
@@ -4111,7 +4111,7 @@
     "BaseStamina": 170,
     "CaptureRate": 0.16,
     "FleeRate": 0.06,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "098",
@@ -4151,7 +4151,7 @@
     "BaseStamina": 60,
     "CaptureRate": 0.4,
     "FleeRate": 0.15,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "099",
@@ -4186,7 +4186,7 @@
     "BaseStamina": 110,
     "CaptureRate": 0.16,
     "FleeRate": 0.07,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "100",
@@ -4225,7 +4225,7 @@
     "BaseStamina": 80,
     "CaptureRate": 0.4,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "101",
@@ -4259,7 +4259,7 @@
     "BaseStamina": 120,
     "CaptureRate": 0.16,
     "FleeRate": 0.06,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "102",
@@ -4306,7 +4306,7 @@
     "BaseStamina": 120,
     "CaptureRate": 0.4,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "103",
@@ -4349,7 +4349,7 @@
     "BaseStamina": 190,
     "CaptureRate": 0.16,
     "FleeRate": 0.06,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "104",
@@ -4390,7 +4390,7 @@
     "BaseStamina": 100,
     "CaptureRate": 0.32,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "105",
@@ -4426,7 +4426,7 @@
     "BaseStamina": 120,
     "CaptureRate": 0.12,
     "FleeRate": 0.06,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "106",
@@ -4457,7 +4457,7 @@
     "BaseStamina": 100,
     "CaptureRate": 0.16,
     "FleeRate": 0.09,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "107",
@@ -4488,7 +4488,7 @@
     "BaseStamina": 100,
     "CaptureRate": 0.16,
     "FleeRate": 0.09,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "108",
@@ -4516,7 +4516,7 @@
     "BaseStamina": 180,
     "CaptureRate": 0.16,
     "FleeRate": 0.09,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "109",
@@ -4556,7 +4556,7 @@
     "BaseStamina": 80,
     "CaptureRate": 0.4,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "110",
@@ -4591,7 +4591,7 @@
     "BaseStamina": 130,
     "CaptureRate": 0.16,
     "FleeRate": 0.06,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "111",
@@ -4638,7 +4638,7 @@
     "BaseStamina": 160,
     "CaptureRate": 0.4,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "112",
@@ -4680,7 +4680,7 @@
     "BaseStamina": 210,
     "CaptureRate": 0.16,
     "FleeRate": 0.06,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "113",
@@ -4709,7 +4709,7 @@
     "BaseStamina": 500,
     "CaptureRate": 0.16,
     "FleeRate": 0.09,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "114",
@@ -4740,7 +4740,7 @@
     "BaseStamina": 130,
     "CaptureRate": 0.32,
     "FleeRate": 0.09,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "115",
@@ -4768,7 +4768,7 @@
     "BaseStamina": 210,
     "CaptureRate": 0.16,
     "FleeRate": 0.09,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "116",
@@ -4808,7 +4808,7 @@
     "BaseStamina": 60,
     "CaptureRate": 0.4,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "117",
@@ -4843,7 +4843,7 @@
     "BaseStamina": 110,
     "CaptureRate": 0.16,
     "FleeRate": 0.06,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "118",
@@ -4883,7 +4883,7 @@
     "BaseStamina": 90,
     "CaptureRate": 0.4,
     "FleeRate": 0.15,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "119",
@@ -4918,7 +4918,7 @@
     "BaseStamina": 160,
     "CaptureRate": 0.16,
     "FleeRate": 0.07,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "120",
@@ -4959,7 +4959,7 @@
     "BaseStamina": 60,
     "CaptureRate": 0.4,
     "FleeRate": 0.15,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "121",
@@ -5002,7 +5002,7 @@
     "BaseStamina": 120,
     "CaptureRate": 0.16,
     "FleeRate": 0.06,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "122",
@@ -5035,7 +5035,7 @@
     "BaseStamina": 80,
     "CaptureRate": 0.24,
     "FleeRate": 0.09,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "123",
@@ -5070,7 +5070,7 @@
     "BaseStamina": 140,
     "CaptureRate": 0.24,
     "FleeRate": 0.09,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "124",
@@ -5106,7 +5106,7 @@
     "BaseStamina": 130,
     "CaptureRate": 0.24,
     "FleeRate": 0.09,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "125",
@@ -5134,7 +5134,7 @@
     "BaseStamina": 130,
     "CaptureRate": 0.24,
     "FleeRate": 0.09,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "126",
@@ -5164,7 +5164,7 @@
     "BaseStamina": 130,
     "CaptureRate": 0.24,
     "FleeRate": 0.09,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "127",
@@ -5193,7 +5193,8 @@
     "BaseDefense": 186,
     "BaseStamina": 130,
     "CaptureRate": 0.24,
-    "FleeRate": 0.09
+    "FleeRate": 0.09,
+    "BuddyKm": 5
   },
   {
     "Number": "128",
@@ -5221,7 +5222,7 @@
     "BaseStamina": 150,
     "CaptureRate": 0.24,
     "FleeRate": 0.09,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "129",
@@ -5258,7 +5259,7 @@
     "BaseStamina": 40,
     "CaptureRate": 0.56,
     "FleeRate": 0.15,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "130",
@@ -5296,7 +5297,7 @@
     "BaseStamina": 190,
     "CaptureRate": 0.08,
     "FleeRate": 0.07,
-    "Buddy Km": 1
+    "BuddyKm": 1
   },
   {
     "Number": "131",
@@ -5330,7 +5331,7 @@
     "BaseStamina": 260,
     "CaptureRate": 0.16,
     "FleeRate": 0.09,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "132",
@@ -5355,7 +5356,7 @@
     "BaseStamina": 96,
     "CaptureRate": 0.16,
     "FleeRate": 0.1,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "133",
@@ -5402,7 +5403,7 @@
     "BaseStamina": 110,
     "CaptureRate": 0.32,
     "FleeRate": 0.1,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "134",
@@ -5436,7 +5437,7 @@
     "BaseStamina": 260,
     "CaptureRate": 0.12,
     "FleeRate": 0.06,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "135",
@@ -5469,7 +5470,7 @@
     "BaseStamina": 130,
     "CaptureRate": 0.12,
     "FleeRate": 0.06,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "136",
@@ -5504,7 +5505,7 @@
     "BaseStamina": 130,
     "CaptureRate": 0.12,
     "FleeRate": 0.06,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "137",
@@ -5533,7 +5534,7 @@
     "BaseStamina": 130,
     "CaptureRate": 0.32,
     "FleeRate": 0.09,
-    "Buddy Km": 3
+    "BuddyKm": 3
   },
   {
     "Number": "138",
@@ -5578,7 +5579,7 @@
     "BaseStamina": 70,
     "CaptureRate": 0.32,
     "FleeRate": 0.09,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "139",
@@ -5619,7 +5620,7 @@
     "BaseStamina": 140,
     "CaptureRate": 0.12,
     "FleeRate": 0.05,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "140",
@@ -5664,7 +5665,7 @@
     "BaseStamina": 60,
     "CaptureRate": 0.32,
     "FleeRate": 0.09,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "141",
@@ -5704,7 +5705,7 @@
     "BaseStamina": 120,
     "CaptureRate": 0.12,
     "FleeRate": 0.05,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "142",
@@ -5739,7 +5740,7 @@
     "BaseStamina": 160,
     "CaptureRate": 0.16,
     "FleeRate": 0.09,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "143",
@@ -5767,7 +5768,7 @@
     "BaseStamina": 320,
     "CaptureRate": 0.16,
     "FleeRate": 0.09,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "144",
@@ -5800,7 +5801,7 @@
     "BaseStamina": 180,
     "CaptureRate": 0,
     "FleeRate": 0.1,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "145",
@@ -5831,7 +5832,7 @@
     "BaseStamina": 180,
     "CaptureRate": 0,
     "FleeRate": 0.1,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "146",
@@ -5863,7 +5864,7 @@
     "BaseStamina": 180,
     "CaptureRate": 0,
     "FleeRate": 0.1,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "147",
@@ -5907,7 +5908,7 @@
     "BaseStamina": 82,
     "CaptureRate": 0.32,
     "FleeRate": 0.09,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "148",
@@ -5953,7 +5954,7 @@
     "BaseStamina": 122,
     "CaptureRate": 0.08,
     "FleeRate": 0.06,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "149",
@@ -5997,7 +5998,7 @@
     "BaseStamina": 182,
     "CaptureRate": 0.04,
     "FleeRate": 0.05,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "150",
@@ -6027,7 +6028,7 @@
     "BaseStamina": 212,
     "CaptureRate": 0,
     "FleeRate": 0.1,
-    "Buddy Km": 5
+    "BuddyKm": 5
   },
   {
     "Number": "151",
@@ -6063,6 +6064,6 @@
     "BaseStamina": 200,
     "CaptureRate": 0,
     "FleeRate": 0.1,
-    "Buddy Km": 5
+    "BuddyKm": 5
   }
 ]

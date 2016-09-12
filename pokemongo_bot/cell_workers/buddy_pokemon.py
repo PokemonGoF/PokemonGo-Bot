@@ -8,7 +8,6 @@ class BuddyPokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def initialize(self):
-        self.api = self.bot.api
         self.buddy = self.bot.player_data.get('buddy_pokemon', None)
         self.buddy_km_needed = 0
         self.buddy_list = self.config.get('buddy_list', [])
@@ -29,11 +28,11 @@ class BuddyPokemon(BaseTask):
             if self.buddy_list[0] == 'none':
                 return WorkerResult.SUCCESS
             # Else check for existing buddy and candy limit and set or not a new buddy
-            if self.candy_awarded >= self.candy_limit or self.buddy is None:
+            if self.buddy is None or self.candy_limit != 0 and self.candy_awarded >= self.candy_limit:
                 poke_name = ''
                 for name in self.buddy_list:
                     if name not in self.cache:
-                        cache.append(name)
+                        self.cache.append(name)
                         poke_name = name
                         break
                 if not poke_name:
@@ -57,12 +56,13 @@ class BuddyPokemon(BaseTask):
         return WorkerResult.SUCCESS
 
     def _set_buddy(self, pokemon):
-        response_dict = self.api.set_buddy_pokemon(pokemon_id=pokemon.unique_id)
+        response_dict = self.bot.api.set_buddy_pokemon(pokemon_id=pokemon.unique_id)
         try:
             result = response_dict['responses']['SET_BUDDY_POKEMON']['result']
         except KeyError:
             return False
 
+        action_delay(self.buddy_change_wait_min, self.buddy_change_wait_max)
         if result == 1:
             updated_buddy = response_dict['responses']['SET_BUDDY_POKEMON']['updated_buddy']
             self.buddy = updated_buddy
@@ -114,7 +114,7 @@ class BuddyPokemon(BaseTask):
                 return pokemon
 
     def _get_award(self):
-        response_dict = self.api.get_buddy_walked()
+        response_dict = self.bot.api.get_buddy_walked()
         try:
             success = response_dict['responses']['GET_BUDDY_WALKED']['SUCCESS']
         except KeyError:
@@ -123,13 +123,14 @@ class BuddyPokemon(BaseTask):
         if success:
             family_id = response_dict['responses']['GET_BUDDY_WALKED']['family_candy_id']
             candy_earned = response_dict['responses']['GET_BUDDY_WALKED']['candy_earned_count']
+            self.candy_awarded += candy_earned
 
             self.emit_event(
                 'buddy_candy_earned',
                 formated='{candy} {family} candy earned.',
                 data={
                     'candy': candy_earned,
-                    'family':  # TO-DO
+                    'family': inventory.candies().get(family_id).type
                 }
             )
             return True
@@ -139,16 +140,6 @@ class BuddyPokemon(BaseTask):
                 formated='Error trying to get candy from buddy.'
             )
             return False
-
-    def _filter_pokemon(self):
-        pokemons = pokemons = inventory.pokemons().all().sort(key=lambda x: x.family_id_id)
-        if self.buddy_list[0] != 'all':
-            pokemons = filter(lambda x: x.name.lower() in self.buddy_list, pokemons)
-        if self.only_one_per_family:
-            ids_family = list(set(map(lambda x: x.family_id, pokemon))).sort()
-            temp_list = [filter(lambda x: x.family_id == y, pokemons) for y in ids_family]
-            pokemons = [p for family in temp_list for p = family.sort(key=lambda x: x.cp, reverse=self.best_cp_in_family)[0]]
-        return pokemons
 
     def _get_pokemon_by_name(self, name):
         pokemons = inventory.pokemons().all()
@@ -163,4 +154,5 @@ class BuddyPokemon(BaseTask):
             poke_list = [p for p in pokemons if p.pokemon_id == poke_id]
 
         if poke_list:
-            return poke_list.sort(key=lambda p: p.cp, reverse=True)[0]
+            poke_list.sort(key=lambda p: p.cp, reverse=True)
+            return poke_list[0]
