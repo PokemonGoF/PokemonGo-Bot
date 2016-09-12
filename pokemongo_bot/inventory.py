@@ -319,6 +319,85 @@ class Items(_BaseInventoryComponent):
         max_number_of_items_looted_at_stop = 5
         return cls.get_space_left() >= max_number_of_items_looted_at_stop
 
+class AppliedItem(object):
+    """
+    Representation of an applied item, like incense.
+    """
+    def __init__(self, item_id, expire_ms, applied_ms):
+        """
+        Representation of an applied item
+        :param item_id: ID of the item
+        :type item_id: int
+        :param expire_ms: expire in ms
+        :type expire_ms: in
+        :param applied_ms: applied at
+        :type applied_ms: int
+        :return: An applied item
+        :rtype: AppliedItemItem
+        """
+        self.id = item_id
+        self.name = Items.name_for(self.id)
+        self.applied_ms = applied_ms
+        self.expire_ms = expire_ms
+
+    def refresh(self,inventory):
+        self.retrieve_data(inventory)
+
+    def parse(self, item):
+        if not item:
+            item = {}
+
+        self.id = item.get('id', 0)
+        self.name = Items.name_for(self.id)
+        self.expire_ms = item.get('expire_ms', 0)
+        self.applied_ms = item.get('applied_ms', 0)
+
+    def retrieve_data(self, inventory):
+        ret = {}
+        for item in inventory:
+            data = item['inventory_item_data']
+            if self.TYPE in data:
+                item = data[self.TYPE]
+                ret = item
+                self.parse(item)
+
+        return ret
+
+    def __str__(self):
+        return self.name
+
+
+class AppliedItems(_BaseInventoryComponent):
+    TYPE='applied_items'
+    ID_FIELD = 'item_id'
+    STATIC_DATA_FILE = os.path.join(_base_dir, 'data', 'items.json')
+
+    def all(self):
+        """
+        Get EVERY Item from the cached inventory.
+        :return: List of evey item in the cached inventory
+        :rtype: list of Item
+        """
+        return list(self._data.values())
+
+    def get(self, item_id):
+        """
+        Get ONE Item from the cached inventory.
+        :param item_id: Item's ID to search for.
+        :return: Instance of the item from the cached inventory
+        :rtype: Item
+        """
+        return self._data.setdefault(item_id, Item(item_id, 0))
+
+    @classmethod
+    def name_for(cls, item_id):
+        """
+        Search the name for an item from its ID.
+        :param item_id: Item's ID to search for.
+        :return: Item's name.
+        :rtype: str
+        """
+        return cls.STATIC_DATA[str(item_id)]
 
 
 class Pokemons(_BaseInventoryComponent):
@@ -1174,6 +1253,7 @@ class Inventory(object):
         self.pokedex = Pokedex()
         self.candy = Candies()
         self.items = Items()
+        self.applied_items = AppliedItems()
         self.pokemons = Pokemons()
         self.player = Player(self.bot)  # include inventory inside Player?
         self.egg_incubators = None
@@ -1189,6 +1269,7 @@ class Inventory(object):
         for i in (self.pokedex, self.candy, self.items, self.pokemons, self.player):
             i.refresh(inventory)
 
+        # self.applied_items = [x["inventory_item_data"] for x in inventory if "applied_items" in x["inventory_item_data"]]
         self.egg_incubators = [x["inventory_item_data"] for x in inventory if "egg_incubators" in x["inventory_item_data"]]
 
         self.update_web_inventory()
@@ -1240,6 +1321,9 @@ class Inventory(object):
 
         for inc in self.egg_incubators:
             json_inventory.append({"inventory_item_data": inc})
+
+        # for item in self.applied_items:
+            # json_inventory.append({"inventory_applied_item_data": {"applied_item": {"item_id": item.item_id, "applied_ms": item.applied_ms, "expire_ms": item.expire_ms}}})
 
         return json_inventory
 
@@ -1415,6 +1499,13 @@ def items():
     """
     return _inventory.items
 
+def applied_items():
+    """
+    Access to the cached applied item inventory.
+    :return: Instance of the cached applied item inventory.
+    :rtype: Items
+    """
+    return _inventory.applied_items
 
 def types_data():
     """
