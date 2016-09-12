@@ -116,6 +116,7 @@
             "evolve_above_iv": 0.8,
             "logic": "or",
             "evolve_speed": 20,
+            "min_pokemon_to_be_evolved": 1,
             "use_lucky_egg": false
         }
       },
