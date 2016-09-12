@@ -9,7 +9,6 @@ from pokemongo_bot.inventory import pokemons, Pokemon, Attack
 
 import re
 
-
 DEFAULT_IGNORE_FAVORITES = False
 DEFAULT_GOOD_ATTACK_THRESHOLD = 0.7
 DEFAULT_TEMPLATE = '{name}'
@@ -68,7 +67,7 @@ class NicknamePokemon(BaseTask):
         "enabled": true,
         "dont_nickname_favorite": false,
         "good_attack_threshold": 0.7,
-        "nickname_template": "{iv_pct}_{iv_ads}"
+        "nickname_template": "{iv_pct}-{iv_ads}"
       }
     }
 
@@ -174,7 +173,7 @@ class NicknamePokemon(BaseTask):
 
     EXAMPLES:
 
-    1. "nickname_template": "{ivcp_pct}_{iv_pct}_{iv_ads}"
+    1. "nickname_template": "{ivcp_pct}-{iv_pct}-{iv_ads}"
 
     Golbat with IV (attack: 9, defense: 4 and stamina: 8) will result in:
      '48_46_9/4/8'
@@ -244,7 +243,7 @@ class NicknamePokemon(BaseTask):
             self.emit_event(
                 'config_error',
                 formatted="Unable to nickname {} due to bad template ({})"
-                          .format(old_nickname, bad_key)
+                    .format(old_nickname, bad_key)
             )
             return False
 
@@ -305,7 +304,7 @@ class NicknamePokemon(BaseTask):
 
         # Filter template
         # only convert the keys to lowercase, leaving the format specifier alone
-        template = re.sub(r"{[\w_\d]*", lambda x:x.group(0).lower(), template).strip()
+        template = re.sub(r"{[\w_\d]*", lambda x: x.group(0).lower(), template).strip()
 
         # Individial Values of the current specific pokemon (different for each)
         iv_attack = pokemon.iv_attack
@@ -335,10 +334,10 @@ class NicknamePokemon(BaseTask):
         moveset = pokemon.moveset
 
         pokemon.name = self._localize(pokemon.name)
-        
+
         # Remove spaces from Nidoran M/F 
-        pokemon.name = pokemon.name.replace("Nidoran M","NidoranM")
-        pokemon.name = pokemon.name.replace("Nidoran F","NidoranF")
+        pokemon.name = pokemon.name.replace("Nidoran M", "NidoranM")
+        pokemon.name = pokemon.name.replace("Nidoran F", "NidoranF")
 
         #
         # Generate new nickname
@@ -360,7 +359,7 @@ class NicknamePokemon(BaseTask):
             # Joined IV values like: 4/12/9
             iv_ads='/'.join(map(str, iv_list)),
             # Joined IV values in HEX like: 4C9
-            iv_ads_hex = ''.join(map(lambda x: format(x, 'X'), iv_list)),
+            iv_ads_hex=''.join(map(lambda x: format(x, 'X'), iv_list)),
             # Sum of the Individial Values
             iv_sum=iv_sum,
             # IV perfection (in 000-100 format - 3 chars)
