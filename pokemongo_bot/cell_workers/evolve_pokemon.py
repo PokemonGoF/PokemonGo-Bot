@@ -5,7 +5,11 @@ from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot.inventory import Pokemon
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.base_task import BaseTask
+import time
 
+class Counter(dict):
+    def __missing__(self,key):
+        return 0
 
 class EvolvePokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -27,6 +31,15 @@ class EvolvePokemon(BaseTask):
         self.min_pokemon_to_be_evolved = self.config.get('min_pokemon_to_be_evolved', 1)
         self._validate_config()
 
+        self.logic_to_function = {
+            'or': lambda pokemon: pokemon.cp >= self.evolve_above_cp or pokemon.iv >= self.evolve_above_iv,
+            'and': lambda pokemon: pokemon.cp >= self.evolve_above_cp and pokemon.iv >= self.evolve_above_iv
+        }
+
+        self.default_to_evolve = False
+        if (len(self.evolve_list) > 0) and self.evolve_list[0] == 'all':
+            self.default_to_evolve = True
+
     def _validate_config(self):
         if isinstance(self.evolve_list, basestring):
             self.evolve_list = [str(pokemon_name).lower().replace(" ","") for pokemon_name in self.evolve_list.split(',')]
@@ -44,13 +57,7 @@ class EvolvePokemon(BaseTask):
         if not self._should_run():
             return
 
-        filtered_list = self._sort_and_filter()
-
-        if (len(self.evolve_list) > 0) and self.evolve_list[0] != 'all':
-            filtered_list = filter(lambda x: x.name.lower() in self.evolve_list, filtered_list)
-
-        if (len(self.donot_evolve_list) > 0) and self.donot_evolve_list[0] != 'none':
-            filtered_list = filter(lambda pokemon: pokemon.name.lower() not in self.donot_evolve_list, filtered_list)
+        filtered_list, filtered_dict = self._sort_and_filter()
 
         pokemon_to_be_evolved = 0
         pokemon_ids = []
@@ -58,7 +65,7 @@ class EvolvePokemon(BaseTask):
             if pokemon.pokemon_id not in pokemon_ids:
                 pokemon_ids.append(pokemon.pokemon_id)
                 candy = inventory.candies().get(pokemon.pokemon_id)
-                pokemon_to_be_evolved = pokemon_to_be_evolved + ( candy.quantity / pokemon.evolution_cost)
+                pokemon_to_be_evolved = pokemon_to_be_evolved + min(candy.quantity / (pokemon.evolution_cost - 1), filtered_dict[pokemon.pokemon_id])
 
         if pokemon_to_be_evolved >= self.min_pokemon_to_be_evolved:
             if self.use_lucky_egg:
@@ -113,21 +120,29 @@ class EvolvePokemon(BaseTask):
 
     def _sort_and_filter(self):
         pokemons = []
-        logic_to_function = {
-            'or': lambda pokemon: pokemon.cp >= self.evolve_above_cp or pokemon.iv >= self.evolve_above_iv,
-            'and': lambda pokemon: pokemon.cp >= self.evolve_above_cp and pokemon.iv >= self.evolve_above_iv
-        }
+        pokemon_count = Counter()
 
         for pokemon in inventory.pokemons().all():
-            if pokemon.unique_id > 0 and pokemon.has_next_evolution() and (logic_to_function[self.cp_iv_logic](pokemon)):
+            if self._should_evolve(pokemon):
                 pokemons.append(pokemon)
+                pokemon_count[pokemon.pokemon_id] += 1
 
         if self.first_evolve_by == "cp":
             pokemons.sort(key=lambda x: (x.pokemon_id, x.cp, x.iv), reverse=True)
         else:
             pokemons.sort(key=lambda x: (x.pokemon_id, x.iv, x.cp), reverse=True)
 
-        return pokemons
+        return pokemons, pokemon_count
+
+    def _should_evolve(self,pokemon):
+        to_evolve = self.default_to_evolve
+        if pokemon.unique_id > 0 and pokemon.has_next_evolution() and (self.logic_to_function[self.cp_iv_logic](pokemon)):
+            if (len(self.evolve_list) > 0) and (self.evolve_list[0] == 'all' or pokemon.name.lower() in self.evolve_list):
+                to_evolve = True
+            if (len(self.donot_evolve_list) > 0) and self.donot_evolve_list[0] != 'none' and pokemon.name.lower() in self.donot_evolve_list:
+                to_evolve = False
+            return to_evolve
+        return False
 
     def _execute_pokemon_evolve(self, pokemon, cache):
         if pokemon.name in cache:
