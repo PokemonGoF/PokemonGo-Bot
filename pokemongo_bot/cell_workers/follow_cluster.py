@@ -4,6 +4,7 @@ from pokemongo_bot.cell_workers.utils import find_biggest_cluster
 from pokemongo_bot.base_task import BaseTask
 from random import uniform
 
+
 class FollowCluster(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
@@ -39,9 +40,10 @@ class FollowCluster(BaseTask):
 
             if not self.is_at_destination:
                 msg = log_lure_avail_str + (
-                    "*Move to cluster:* {num_points} {forts} "
-                    "pokestops will be in range of {radius}. Walking {distance}m.".format(cnt, log_lured_str,
-                                                                                          str(self.radius), str(round(distance(self.bot.position[0], self.bot.position[1], lat, lng), 2)))
+                    "*Move to cluster:* {} {} "
+                    "pokestops will be in range of {}. Walking {}m.".format(
+                        cnt, log_lured_str, str(self.radius), str(round(distance(self.bot.position[0],
+                                                                                 self.bot.position[1], lat, lng), 2)))
                 )
                 self.emit_event(
                     'found_cluster',
@@ -61,8 +63,8 @@ class FollowCluster(BaseTask):
                     lat,
                     lng
                 )
-                
-                self.is_at_destination = False		
+
+                self.is_at_destination = False
                 if step_walker.step():
                     self.is_at_destination = True
             elif not self.announced:
