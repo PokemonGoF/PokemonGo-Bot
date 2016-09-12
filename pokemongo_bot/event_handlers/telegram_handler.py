@@ -544,9 +544,9 @@ class TelegramHandler(EventHandler):
             if event == 'level_up':
                 msg = "level up ({})".format(data["current_level"])
             elif event == 'log_stats':
-                msg = "{}".format(data["msg"])
+                msg = formatted_msg
             elif event == 'show_inventory':
-                msg = "{}".format(data["msg"])
+                msg = formatted_msg
             elif event == 'bot_random_pause':
                 msg = "Taking a random break until {}.".format(data["resume"])
             elif event == 'bot_random_alive_pause':
@@ -581,4 +581,3 @@ class TelegramHandler(EventHandler):
             else:
                 return
             self.tbot.sendMessage(chat_id=master, parse_mode='Markdown', text=msg)
-
