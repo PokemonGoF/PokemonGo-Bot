@@ -757,6 +757,9 @@ class PokemonInfo(object):
             self.next_evolutions_all = ids
             self.evolution_cost = int(data['Next Evolution Requirements']['Amount'])
 
+        # km needed for buddy reward
+        self.buddy_km_needed = data['buddy_km_needed']
+
     @property
     def family_id(self):
         return self.first_evolution_id
@@ -893,7 +896,7 @@ class Pokemon(object):
         self.in_fort = 'deployed_fort_id' in data
         self.is_favorite = data.get('favorite', 0) is 1
         self.buddy_candy = data.get('buddy_candy_awarded', 0)
-        ### self.buddy_km_needed = TODO
+        self.buddy_km_needed = self.static.buddy_km_needed
 
         self.fast_attack = FastAttacks.data_for(data['move_1'])
         self.charged_attack = ChargedAttacks.data_for(data['move_2'])  # type: ChargedAttack

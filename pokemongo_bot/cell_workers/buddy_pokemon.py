@@ -8,52 +8,53 @@ class BuddyPokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def initialize(self):
-    	self.api = self.bot.api
+        self.api = self.bot.api
         self.buddy = self.bot.player_data.get('buddy_pokemon', None)
         self.buddy_km_needed = 0
-    	self.buddy_list = self.config.get('buddy_list', [])
-        '''
-    	self.best_in_family = self.config.get('best_in_family', True)
-    	self.candy_limit = self.config.get('candy_limit', 0) # 0 = Max Limit
-        '''
-    	self.buddy_change_wait_min = self.config.get('buddy_change_wait_min', 3)
-    	self.buddy_change_wait_max = self.config.get('buddy_change_wait_max', 5)
-    	self._validate_config()
+        self.buddy_list = self.config.get('buddy_list', [])
+        self.best_in_family = self.config.get('best_in_family', True)
+        self.candy_limit = self.config.get('candy_limit', 0)  # 0 = No Limit
+        self.buddy_change_wait_min = self.config.get('buddy_change_wait_min', 3)
+        self.buddy_change_wait_max = self.config.get('buddy_change_wait_max', 5)
+        self.cache = []
+        self.candy_awarded = 0
+        self._validate_config()
 
     def _validate_config(self):
-    	if isinstance(self.buddy_list, basestring):
-            self.buddy_list = [str(pokemon_name).strip().lower() for pokemon_name in self.buddy_list.split(',')]
+        if isinstance(self.buddy_list, basestring):
+            self.buddy_list = [str(pokemon_name).lower().replace(" ", "") for pokemon_name in self.buddy_list.split(',')]
 
     def work(self):
         if self.buddy_list:
             if self.buddy_list[0] == 'none':
                 return WorkerResult.SUCCESS
             # Else check for existing buddy and candy limit and set or not a new buddy
+            if self.candy_awarded >= self.candy_limit or self.buddy is None:
+                poke_name = ''
+                for name in self.buddy_list:
+                    if name not in self.cache:
+                        cache.append(name)
+                        poke_name = name
+                        break
+                if not poke_name:
+                    self.cache = []
+                    return WorkerResult.SUCCESS
+                pokemon = self._get_pokemon_by_name(poke_name)
+                self._set_buddy(pokemon)
 
         if self.buddy is None:
             return WorkerResult.SUCCESS
 
         if self.buddy_km_needed == 0:
-            pokemon = self._get_pokemon(self.buddy['id'])
+            pokemon = self._get_pokemon_by_id(self.buddy['id'])
             self.buddy_km_needed = pokemon.buddy_km_needed
 
-        if self._km_walked() - max(self.buddy['start_km_walked'], self.buddy['last_km_awarded']) >= self.buddy_km_needed:
-            if self._get_award():
-                return WorkerResult.SUCCESS
-            return WorkerResult.ERROR
+        if self._km_walked() - self.buddy['last_km_awarded'] >= self.buddy_km_needed:
+            self.buddy['last_km_awarded'] += self.buddy_km_needed
+            if not self._get_award():
+                return WorkerResult.ERROR
 
         return WorkerResult.SUCCESS
-
-
-   	def _filter_pokemon(self):
-   		pokemons = pokemons = inventory.pokemons().all().sort(key=lambda x: x.pokemon_id)
-   		if self.buddy_list[0] != 'all':
-   			pokemons = filter(lambda x: x.name.lower() in self.buddy_list, pokemons)
-   		if self.only_one_per_family:
-   			ids_family = list(set(map(lambda x: x.family_id, pokemon))).sort()
-   			temp_list = [filter(lambda x: x.family_id == y, pokemons) for y in ids_family]
-            pokemons = [p for family in temp_list for p = family.sort(key=lambda x: x.cp, reverse=self.best_cp_in_family)[0]]
-   		return pokemons
 
     def _set_buddy(self, pokemon):
         response_dict = self.api.set_buddy_pokemon(pokemon_id=pokemon.unique_id)
@@ -64,8 +65,9 @@ class BuddyPokemon(BaseTask):
 
         if result == 1:
             updated_buddy = response_dict['responses']['SET_BUDDY_POKEMON']['updated_buddy']
-            
-            ### Is it needed ??
+            self.buddy = updated_buddy
+
+            # Is it needed ??
             unique_id = updated_buddy.get('id', -1)
             start_km_walked = updated_buddy.get('start_km_walked', 0)
             last_km_awarded = updated_buddy.get('last_km_awarded', 0)
@@ -78,7 +80,7 @@ class BuddyPokemon(BaseTask):
                 }
             )
             return True
-        else
+        else:
             error_codes = {
                 0: 'UNSET',
                 2: 'ERROR_POKEMON_DEPLOYED',
@@ -105,7 +107,7 @@ class BuddyPokemon(BaseTask):
                 break
         return km_walked
 
-    def _get_pokemon(self, unique_id):
+    def _get_pokemon_by_id(self, unique_id):
         pokemons = inventory.pokemons().all()
         for pokemon in pokemons:
             if pokemon.unique_id == unique_id:
@@ -127,7 +129,7 @@ class BuddyPokemon(BaseTask):
                 formated='{candy} {family} candy earned.',
                 data={
                     'candy': candy_earned,
-                    'family': ## TO-DO
+                    'family':  # TO-DO
                 }
             )
             return True
@@ -138,3 +140,27 @@ class BuddyPokemon(BaseTask):
             )
             return False
 
+    def _filter_pokemon(self):
+        pokemons = pokemons = inventory.pokemons().all().sort(key=lambda x: x.family_id_id)
+        if self.buddy_list[0] != 'all':
+            pokemons = filter(lambda x: x.name.lower() in self.buddy_list, pokemons)
+        if self.only_one_per_family:
+            ids_family = list(set(map(lambda x: x.family_id, pokemon))).sort()
+            temp_list = [filter(lambda x: x.family_id == y, pokemons) for y in ids_family]
+            pokemons = [p for family in temp_list for p = family.sort(key=lambda x: x.cp, reverse=self.best_cp_in_family)[0]]
+        return pokemons
+
+    def _get_pokemon_by_name(self, name):
+        pokemons = inventory.pokemons().all()
+        for p in pokemons:
+            if p.name.lower() == name:
+                fam_id = p.family_id
+                poke_id = p.pokemon_id
+                break
+        if self.best_in_family:
+            poke_list = [p for p in pokemons if p.family_id == fam_id]
+        else:
+            poke_list = [p for p in pokemons if p.pokemon_id == poke_id]
+
+        if poke_list:
+            return poke_list.sort(key=lambda p: p.cp, reverse=True)[0]
