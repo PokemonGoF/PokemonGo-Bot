@@ -758,7 +758,7 @@ class PokemonInfo(object):
             self.evolution_cost = int(data['Next Evolution Requirements']['Amount'])
 
         # km needed for buddy reward
-        self.buddy_km_needed = data['buddy_km_needed']
+        self.buddy_km_needed = data['Buddy km']
 
     @property
     def family_id(self):
