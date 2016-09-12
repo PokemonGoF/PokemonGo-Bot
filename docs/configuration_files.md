@@ -161,7 +161,6 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `treat_unseen_as_vip`: Default `"true"` | If true, treat new to dex as VIP
   * `catch_visible_pokemon`:  Default "true" | If enabled, attempts to catch "visible" pokemon that are reachable
   * `catch_lured_pokemon`: Default "true" | If enabled, attempts to catch "lured" pokemon that are reachable
-  * `catch_incensed_pokemon`: Default "true" | If enabled, attempts to catch pokemon that are found because of an active incense
   * `min_ultraball_to_keep`: Default 5 | Minimum amount of reserved ultraballs to have on hand (for VIP)
   * `berry_threshold`: Default 0.35 | Catch percentage we start throwing berries
   * `vip_berry_threshold`: Default 0.9 | Something similar?

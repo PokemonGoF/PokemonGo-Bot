@@ -374,16 +374,6 @@ class PokemonGoBot(object):
             )
         )
         self.event_manager.register_event(
-            'incensed_pokemon_found',
-            parameters=(
-                'pokemon_id',
-                'encounter_id',
-                'encounter_location',
-                'latitude',
-                'longitude'
-            )
-        )
-        self.event_manager.register_event(
             'pokemon_appeared',
             parameters=(
                 'pokemon',
