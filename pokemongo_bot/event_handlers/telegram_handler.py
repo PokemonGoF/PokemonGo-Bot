@@ -490,8 +490,6 @@ class TelegramHandler(EventHandler):
         except:
             return False
 
-
-
     def handle_event(self, event, sender, level, formatted_msg, data):
         if self.tbot is None:
             try:
