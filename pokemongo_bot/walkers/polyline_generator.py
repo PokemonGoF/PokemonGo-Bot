@@ -22,7 +22,7 @@ class PolylineObjectHandler:
     _run = False
 
     @staticmethod
-    def cached_polyline(origin, destination, speed, google_map_api_key=None):
+    def cached_polyline(origin, destination, google_map_api_key=None):
         '''
         Google API has limits, so we can't generate new Polyline at every tick...
         '''
@@ -49,7 +49,7 @@ class PolylineObjectHandler:
                 PolylineObjectHandler._run = True
                 PolylineObjectHandler._instability = 20  # next N moves use same cache
 
-            PolylineObjectHandler._cache = Polyline(origin, destination, speed, google_map_api_key)
+            PolylineObjectHandler._cache = Polyline(origin, destination, google_map_api_key)
         else:
             # valid cache found
             PolylineObjectHandler._instability -= 1
@@ -59,8 +59,7 @@ class PolylineObjectHandler:
 
 
 class Polyline(object):
-    def __init__(self, origin, destination, speed, google_map_api_key=None):
-        self.speed = float(speed)
+    def __init__(self, origin, destination, google_map_api_key=None):
         self.origin = origin
         self.destination = tuple(destination)
         self.DIRECTIONS_API_URL = 'https://maps.googleapis.com/maps/api/directions/json?mode=walking'
@@ -94,7 +93,7 @@ class Polyline(object):
         self._step_keys = sorted(self._step_dict.keys())
         self._last_step = 0
 
-        self._nr_samples = int(min(self.get_total_distance() / self.speed + 1, 512))
+        self._nr_samples = int(max(min(self.get_total_distance() / 3, 512), 2))
         self.ELEVATION_API_URL = 'https://maps.googleapis.com/maps/api/elevation/json?path=enc:'
         self.ELEVATION_URL = '{}{}&samples={}'.format(self.ELEVATION_API_URL,
                                                       self._polyline, self._nr_samples)

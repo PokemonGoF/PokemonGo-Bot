@@ -7,7 +7,7 @@ from pokemongo_bot.human_behaviour import random_alt_delta
 
 class PolylineWalker(StepWalker):
     def get_next_position(self, origin_lat, origin_lng, origin_alt, dest_lat, dest_lng, dest_alt, distance):
-        polyline = PolylineObjectHandler.cached_polyline((self.bot.position[0], self.bot.position[1]), (dest_lat, dest_lng), distance, google_map_api_key=self.bot.config.gmapkey)
+        polyline = PolylineObjectHandler.cached_polyline((self.bot.position[0], self.bot.position[1]), (dest_lat, dest_lng), google_map_api_key=self.bot.config.gmapkey)
 
         while True:
             _, (dest_lat, dest_lng) = polyline._step_dict[polyline._step_keys[polyline._last_step]]
