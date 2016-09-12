@@ -169,7 +169,7 @@ class TransferPokemon(BaseTask):
             self.emit_event(
                 'future_pokemon_release',
                 formatted="*Releasing {}* CP: {}, IV: {} | based on rule: CP < {} {} IV < {}".format(
-                    pokemon.name, pokemon.cp, pokemon.iv, release_cp, cp_iv_logic.upper(), release_cp),
+                    pokemon.name, pokemon.cp, pokemon.iv, release_cp, cp_iv_logic.upper(), release_iv),
                 data={
                     'pokemon': pokemon.name,
                     'cp': pokemon.cp,
