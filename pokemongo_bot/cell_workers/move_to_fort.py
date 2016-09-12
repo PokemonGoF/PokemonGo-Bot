@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import time
+from geopy.distance import great_circle
+
 from pokemongo_bot import inventory
-from pokemongo_bot.constants import Constants
 from pokemongo_bot.walkers.walker_factory import walker_factory
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
+from pokemongo_bot.constants import Constants
 from utils import distance, format_dist, fort_details
-from datetime import datetime, timedelta
 
 
 class MoveToFort(BaseTask):
@@ -15,12 +17,15 @@ class MoveToFort(BaseTask):
 
     def initialize(self):
         self.lure_distance = 0
+        self.wait_log_sent = None
+        self.destination = None
+        self.walker = None
+
         self.lure_attraction = self.config.get("lure_attraction", True)
         self.lure_max_distance = self.config.get("lure_max_distance", 2000)
         self.ignore_item_count = self.config.get("ignore_item_count", False)
-        self.walker = self.config.get('walker', 'StepWalker')
+        self.config_walker = self.config.get('walker', 'StepWalker')
         self.wait_at_fort = self.config.get('wait_on_lure', False)
-        self.wait_log_sent = None
 
     def should_run(self):
         has_space_for_loot = inventory.Items.has_space_for_loot()
@@ -38,78 +43,56 @@ class MoveToFort(BaseTask):
         if not self.should_run():
             return WorkerResult.SUCCESS
 
-        nearest_fort = self.get_nearest_fort()
+        if self.destination is None:
+            self.destination = self.get_nearest_fort()
 
-        if nearest_fort is None:
-            return WorkerResult.SUCCESS
+            if self.destination is not None:
+                self.walker = walker_factory(self.config_walker, self.bot, self.destination['latitude'], self.destination['longitude'])
+                self.walker.is_arrived = self.walker_is_arrived
+            else:
+                return WorkerResult.SUCCESS
 
-        lat = nearest_fort['latitude']
-        lng = nearest_fort['longitude']
-        fortID = nearest_fort['id']
-        details = fort_details(self.bot, fortID, lat, lng)
+        fortID = self.destination['id']
+        details = fort_details(self.bot, fortID, self.destination['latitude'], self.destination['longitude'])
         fort_name = details.get('name', 'Unknown')
 
-        unit = self.bot.config.distance_unit  # Unit to use when printing formatted distance
-
-        dist = distance(
-            self.bot.position[0],
-            self.bot.position[1],
-            lat,
-            lng
-        )
-        noised_dist = distance(
-            self.bot.noised_position[0],
-            self.bot.noised_position[1],
-            lat,
-            lng
-        )
-
-        moving = noised_dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE if self.bot.config.replicate_gps_xy_noise else dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE
-
-        if moving:
+        if not self.walker.step():
             self.wait_log_sent = None
-            fort_event_data = {
-                'fort_name': u"{}".format(fort_name),
-                'distance': format_dist(dist, unit),
-            }
+
+            dist = distance(self.bot.position[0], self.bot.position[1], self.destination['latitude'], self.destination['longitude'])
+            unit = self.bot.config.distance_unit  # Unit to use when printing formatted distance
+
+            fort_event_data = {'fort_name': u"{}".format(fort_name),
+                               'distance': format_dist(dist, unit)}
 
             if self.is_attracted() > 0:
                 fort_event_data.update(lure_distance=format_dist(self.lure_distance, unit))
-                self.emit_event(
-                    'moving_to_lured_fort',
-                    formatted="Moving towards pokestop {fort_name} - {distance} (attraction of lure {lure_distance})",
-                    data=fort_event_data
-                )
+
+                self.emit_event('moving_to_lured_fort',
+                                formatted="Moving towards pokestop {fort_name} - {distance} (attraction of lure {lure_distance})",
+                                data=fort_event_data)
             else:
-                self.emit_event(
-                    'moving_to_fort',
-                    formatted="Moving towards pokestop {fort_name} - {distance}",
-                    data=fort_event_data
-                )
+                self.emit_event('moving_to_fort',
+                                formatted="Moving towards pokestop {fort_name} - {distance}",
+                                data=fort_event_data)
+        elif self.destination.get('active_fort_modifier') and self.wait_at_fort:
+            now = time.time()
 
-            step_walker = walker_factory(self.walker,
-                self.bot,
-                lat,
-                lng
-            )
+            if (self.wait_log_sent is None) or (self.wait_log_sent < now - 60):
+                self.wait_log_sent = now
 
-            if not step_walker.step():
-                return WorkerResult.RUNNING
+                self.emit_event('arrived_at_fort',
+                                formatted='Waiting near fort %s until lure module expires' % fort_name)
         else:
-            if nearest_fort.get('active_fort_modifier') and self.wait_at_fort:
-                if self.wait_log_sent == None or self.wait_log_sent < datetime.now() - timedelta(seconds=60):
-                    self.wait_log_sent = datetime.now()
-                    self.emit_event(
-                        'arrived_at_fort',
-                        formatted='Waiting near fort %s until lure module expires' % fort_name
-                    )
-            else:
-                self.emit_event(
-                    'arrived_at_fort',
-                    formatted='Arrived at fort.'
-                )
+            self.destination = None
+
+            self.emit_event('arrived_at_fort',
+                            formatted='Arrived at fort.')
 
         return WorkerResult.RUNNING
+
+    def walker_is_arrived(self):
+        return great_circle(self.bot.position, (self.walker.dest_lat, self.walker.dest_lng)).meters < Constants.MAX_DISTANCE_FORT_IS_REACHABLE
 
     def _get_nearest_fort_on_lure_way(self, forts):
 
@@ -122,7 +105,7 @@ class MoveToFort(BaseTask):
 
         if len(lures):
             dist_lure_me = distance(self.bot.position[0], self.bot.position[1],
-                                    lures[0]['latitude'],lures[0]['longitude'])
+                                    lures[0]['latitude'], lures[0]['longitude'])
         else:
             dist_lure_me = 0
 
