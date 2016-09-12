@@ -85,7 +85,7 @@ class MoveToFort(BaseTask):
             else:
                 self.emit_event(
                     'moving_to_fort',
-                    formatted="*Moving towards pokestop* {} - {}".format(fort_name, distance),
+                    formatted="*Moving towards pokestop* {} - {}".format(fort_name, format_dist(dist, unit)),
                     data=fort_event_data
                 )
 
