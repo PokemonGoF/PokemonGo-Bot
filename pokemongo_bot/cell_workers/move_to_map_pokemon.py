@@ -128,7 +128,7 @@ class MoveToMapPokemon(BaseTask):
 
             if self.is_inspected(pokemon):
                 if self.debug:
-                    self._emit_log('Skipped {} because it was already catch or does not exist'.format(pokemon['name']))
+                    self._emit_log('*Skipped {}* because it was already catch or does not exist'.format(pokemon['name']))
                 continue
 
             pokemon['priority'] = self.config['catch'].get(pokemon['name'], 0)
@@ -366,14 +366,14 @@ class MoveToMapPokemon(BaseTask):
     def _emit_failure(self, msg):
         self.emit_event(
             'move_to_map_pokemon_fail',
-            formatted='Failure! {message}',
+            formatted='*Failure!* {}'.format(msg),
             data={'message': msg}
         )
 
     def _emit_log(self, msg):
         self.emit_event(
             'move_to_map_pokemon',
-            formatted='{message}',
+            formatted='*{}*'.format(msg),
             data={'message': msg}
         )
 
@@ -398,7 +398,7 @@ class MoveToMapPokemon(BaseTask):
     def _teleport_to(self, pokemon):
         self.emit_event(
             'move_to_map_pokemon_teleport_to',
-            formatted='Teleporting to {poke_name}. ({poke_dist})',
+            formatted='*Teleporting* to {}. ({})'.format(pokemon['name'], (format_dist(pokemon['dist'], self.unit))),
             data=self._pokemon_event_data(pokemon)
         )
         self.bot.api.set_position(pokemon['latitude'], pokemon['longitude'], self.alt, True)
@@ -406,14 +406,14 @@ class MoveToMapPokemon(BaseTask):
     def _encountered(self, pokemon):
         self.emit_event(
             'move_to_map_pokemon_encounter',
-            formatted='Encountered Pokemon: {poke_name}',
+            formatted='*Encountered Pokemon: {}*'.format(pokemon['name']),
             data=self._pokemon_event_data(pokemon)
         )
 
     def _teleport_back(self, last_position):
         self.emit_event(
             'move_to_map_pokemon_teleport_back',
-            formatted='Teleporting back to previous location ({last_lat}, {last_lon})...',
+            formatted='*Teleporting back to previous location* ({}, {})...'.format(last_position[0], last_position[1]),
             data={'last_lat': last_position[0], 'last_lon': last_position[1]}
         )
 
@@ -426,10 +426,11 @@ class MoveToMapPokemon(BaseTask):
         Returns:
             Walker
         """
+        now = int(time.time())
         self.emit_event(
             'move_to_map_pokemon_move_towards',
-            formatted=('Moving towards {poke_name}, {poke_dist}, left ('
-                       '{disappears_in})'),
+            formatted='*Moving towards {}*, {}, left ({})'.format(
+                pokemon['name'], (format_dist(pokemon['dist'], (format_time(pokemon['disappear_time'] - now)))),),
             data=self._pokemon_event_data(pokemon)
         )
         return walker_factory(self.walker, self.bot, pokemon['latitude'], pokemon['longitude'])
@@ -471,13 +472,13 @@ class MoveToMapPokemon(BaseTask):
 
             self.emit_event(
                 'moving_to_pokemon_throught_fort',
-                formatted="Moving towards {poke_name} - {poke_dist}  through pokestop  {fort_name} - {distance}",
+                formatted="*Moving towards {}* - {} through pokestop {} - {}".format(pokemon['name'], (format_dist(pokemon['dist'], self.unit)), u"{}".format(fort_name), format_dist(dist, unit)),
                 data=pokemon_throught_fort_event_data
             )
         else:
             self.emit_event(
                 'arrived_at_fort',
-                formatted='Arrived at fort.'
+                formatted='*Arrived at fort.*'
             )
 
         return walker_factory(self.walker, self.bot, lat, lng)

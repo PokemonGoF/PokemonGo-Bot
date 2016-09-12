@@ -38,14 +38,14 @@ class HandleSoftBan(BaseTask):
             spins = randint(50,60)
             self.emit_event(
                 'softban_fix',
-                formatted='Fixing softban.'
+                formatted='*Fixing softban.*'
             )
             for i in xrange(spins):
                 self.spin_fort(forts[0])
             self.bot.softban = False
             self.emit_event(
                 'softban_fix_done',
-                formatted='Softban should be fixed'
+                formatted='*Softban should be fixed.*'
             )
 
     def spin_fort(self, fort):
@@ -62,7 +62,7 @@ class HandleSoftBan(BaseTask):
         self.emit_event(
             'spun_fort',
             level='debug',
-            formatted="Spun fort {fort_id}",
+            formatted="*Spun fort* {}".format(fort_id),
             data={
                 'fort_id': fort_id,
                 'latitude': latitude,

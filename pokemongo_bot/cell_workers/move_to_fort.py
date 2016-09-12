@@ -27,7 +27,8 @@ class MoveToFort(BaseTask):
         if not has_space_for_loot and not self.ignore_item_count:
             self.emit_event(
                 'inventory_full',
-                formatted="Inventory is full. You might want to change your config to recycle more items if this message appears consistently."
+                formatted="*Inventory is full.* You might want to change your config to recycle more items if "
+                          "this message appears consistently."
             )
         return has_space_for_loot or self.ignore_item_count or self.bot.softban
 
@@ -77,13 +78,13 @@ class MoveToFort(BaseTask):
                 fort_event_data.update(lure_distance=format_dist(self.lure_distance, unit))
                 self.emit_event(
                     'moving_to_lured_fort',
-                    formatted="Moving towards pokestop {fort_name} - {distance} (attraction of lure {lure_distance})",
+                    formatted="*Moving towards pokestop* {} - {} (attraction of lure {})".format(fort_name, distance, fort_event_data),
                     data=fort_event_data
                 )
             else:
                 self.emit_event(
                     'moving_to_fort',
-                    formatted="Moving towards pokestop {fort_name} - {distance}",
+                    formatted="*Moving towards pokestop* {} - {}".format(fort_name, distance),
                     data=fort_event_data
                 )
 
@@ -101,12 +102,12 @@ class MoveToFort(BaseTask):
                     self.wait_log_sent = datetime.now()
                     self.emit_event(
                         'arrived_at_fort',
-                        formatted='Waiting near fort %s until lure module expires' % fort_name
+                        formatted='*Waiting near fort {}* until lure module expires'.format(fort_name)
                     )
             else:
                 self.emit_event(
                     'arrived_at_fort',
-                    formatted='Arrived at fort.'
+                    formatted='*Arrived at fort.*'
                 )
 
         return WorkerResult.RUNNING
@@ -178,3 +179,4 @@ class MoveToFort(BaseTask):
             return forts[0]
         else:
             return None
+

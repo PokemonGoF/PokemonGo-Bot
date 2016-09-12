@@ -126,7 +126,7 @@ class CatchPokemon(BaseTask):
             self.emit_event(
                 'lured_pokemon_found',
                 level='info',
-                formatted='Lured pokemon at fort {fort_name} ({fort_id})',
+                formatted='*Lured pokemon at fort* {} ({})'.format(fort_name, pokemon['fort_id']),
                 data=pokemon
             )
 

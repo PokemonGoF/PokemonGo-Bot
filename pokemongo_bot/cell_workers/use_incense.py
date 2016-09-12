@@ -64,7 +64,9 @@ class UseIncense(BaseTask):
         if result is 1:
           self.emit_event(
               'use_incense',
-              formatted="Using {type} incense. {incense_count} incense remaining",
+              formatted="*Using {} incense.* {} incense remaining".format(
+                  self.types.get(type, 'Unknown'), inventory.items().get(type).count
+              ),
               data={
                   'type': self.types.get(type, 'Unknown'),
                   'incense_count': inventory.items().get(type).count
@@ -73,7 +75,10 @@ class UseIncense(BaseTask):
         else:
           self.emit_event(
               'use_incense',
-              formatted="Unable to use incense {type}. {incense_count} incense remaining",
+              formatted="*Unable to use incense {}.* {} incense remaining".format(
+                  self.types.get(type, 'Unknown'),
+                  inventory.items().get(type).count
+              ),
               data={
                   'type': self.types.get(type, 'Unknown'),
                   'incense_count': inventory.items().get(type).count

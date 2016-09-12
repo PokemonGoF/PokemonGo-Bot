@@ -28,7 +28,7 @@ class CollectLevelUpReward(BaseTask):
                 elif self.current_level > self.previous_level:
                     self.emit_event(
                         'level_up',
-                        formatted='Level up from {previous_level} to {current_level}',
+                        formatted='*Level up* from {} to {}'.format(self.previous_level, self.current_level),
                         data={
                             'previous_level': self.previous_level,
                             'current_level': self.current_level
@@ -37,7 +37,7 @@ class CollectLevelUpReward(BaseTask):
                     self._collect_level_reward()
 
             if self.level_limit != -1 and self.current_level >= self.level_limit:
-                sys.exit("You have reached your target level! Exiting now.")
+                sys.exit("*You have reached your target level!* Exiting now.")
 
             self.previous_level = self.current_level
 
@@ -64,7 +64,7 @@ class CollectLevelUpReward(BaseTask):
                     inventory.items().get(item['item_id']).add(count)
             self.emit_event(
                 'level_up_reward',
-                formatted='Received level up reward: {items}',
+                formatted='*Received level up reward:* {items}',
                 data={
                     # [{'item_id': 3, 'name': u'Ultraball', 'item_count': 10}, {'item_id': 103, 'name': u'Hyper Potion', 'item_count': 10}]
                     'items': ', '.join(["{}x {}".format(x['item_count'], x['name']) for x in data])

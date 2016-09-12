@@ -107,9 +107,9 @@ class PokemonCatchWorker(BaseTask):
             response = responses[self.response_key]
             if response[self.response_status_key] != ENCOUNTER_STATUS_SUCCESS:
                 if response[self.response_status_key] == ENCOUNTER_STATUS_NOT_IN_RANGE:
-                    self.emit_event('pokemon_not_in_range', formatted='Pokemon went out of range!')
+                    self.emit_event('pokemon_not_in_range', formatted='*Pokemon went out of range!*')
                 elif response[self.response_status_key] == ENCOUNTER_STATUS_POKEMON_INVENTORY_FULL:
-                    self.emit_event('pokemon_inventory_full', formatted='Your Pokemon inventory is full! Could not catch!')
+                    self.emit_event('pokemon_inventory_full', formatted='*Your Pokemon inventory is full! Could not catch!*')
                 return WorkerResult.ERROR
         except KeyError:
             return WorkerResult.ERROR
@@ -133,7 +133,8 @@ class PokemonCatchWorker(BaseTask):
             self.bot.skipped_pokemon.append(pokemon)
             self.emit_event(
                 'pokemon_appeared',
-                formatted='Skip ignored {}! (CP {}) (Potential {}) (A/D/S {})'.format(pokemon.name, pokemon.cp, pokemon.iv, pokemon.iv_display),
+                formatted='*Skip ignored {}!* (CP: {}) (Potential: {}) (A/D/S: {})'.format(
+                    pokemon.name, pokemon.cp, pokemon.iv, pokemon.iv_display),
                 data={
                     'pokemon': pokemon.name,
                     'cp': pokemon.cp,
@@ -154,7 +155,7 @@ class PokemonCatchWorker(BaseTask):
         # log encounter
         self.emit_event(
             'pokemon_appeared',
-            formatted='*A wild {} appeared!* (CP: {}) (NCP: {}) (Potential {}) (A/D/S {})'.format(pokemon.name, pokemon.cp, round(pokemon.cp_percent, 2), pokemon.iv, pokemon.iv_display),
+            formatted='*A wild {} appeared!* (CP: {}) (NCP: {}) (Potential: {}) (A/D/S: {})'.format(pokemon.name, pokemon.cp, round(pokemon.cp_percent, 2), pokemon.iv, pokemon.iv_display),
             data={
                 'pokemon': pokemon.name,
                 'ncp': round(pokemon.cp_percent, 2),
@@ -173,7 +174,7 @@ class PokemonCatchWorker(BaseTask):
 
         # check for VIP pokemon
         if is_vip:
-            self.emit_event('vip_pokemon', formatted='This is a VIP pokemon. Catch!!!')
+            self.emit_event('vip_pokemon', formatted='*This is a VIP pokemon. Catch!!!*')
 
         # check catch limits before catch
         with self.bot.database as conn:
@@ -191,7 +192,7 @@ class PokemonCatchWorker(BaseTask):
                 self._do_catch(pokemon, encounter_id, catch_rate_by_ball, is_vip=is_vip)
                 break
             else:
-                self.emit_event('catch_limit', formatted='WARNING! You have reached your daily catch limit')
+                self.emit_event('catch_limit', formatted='*WARNING! You have reached your daily catch limit*')
                 sys.exit(2)
                 break
 
@@ -250,7 +251,7 @@ class PokemonCatchWorker(BaseTask):
             self.emit_event(
                 'ignore_candy_above_thresold',
                 level='info',
-                formatted='Amount of candies for {name} is {amount}, greater than threshold {threshold}',
+                formatted='*Amount of candies for {name} is {amount}*, greater than threshold {threshold}',
                 data={
                     'name': pokemon.name,
                     'amount': candies,
@@ -303,7 +304,9 @@ class PokemonCatchWorker(BaseTask):
         self.emit_event(
             'pokemon_catch_rate',
             level='debug',
-            formatted='Catch rate of {catch_rate} with {ball_name} is low. Throwing {berry_name} (have {berry_count})',
+            formatted='*Catch rate of {} with {} is low. Throwing {}* (have {})'
+                .format(self._pct(catch_rate_by_ball[current_ball]),
+                        self.inventory.get(current_ball).name, self.inventory.get(berry_id).name, berry_count),
             data={
                 'catch_rate': self._pct(catch_rate_by_ball[current_ball]),
                 'ball_name': self.inventory.get(current_ball).name,
@@ -327,7 +330,10 @@ class PokemonCatchWorker(BaseTask):
                     new_catch_rate_by_ball.append(rate * responses['USE_ITEM_CAPTURE']['item_capture_mult'])
                 self.emit_event(
                     'threw_berry',
-                    formatted="Threw a {berry_name}! Catch rate with {ball_name} is now: {new_catch_rate}",
+                    formatted="*Threw a {}!* Catch rate with {} is now: {}".format(
+                        self.inventory.get(berry_id).name, self.inventory.get(current_ball).name,
+                        self._pct(new_catch_rate_by_ball[current_ball])
+                    ),
                     data={
                         'berry_name': self.inventory.get(berry_id).name,
                         'ball_name': self.inventory.get(current_ball).name,
@@ -360,7 +366,7 @@ class PokemonCatchWorker(BaseTask):
                         'softban_log',
                         sender=self,
                         level='info',
-                        formatted="softban_log table not found, skipping log"
+                        formatted="*Softban Table not found, skipping log.*"
                     )
 
         # unknown status code
@@ -368,7 +374,7 @@ class PokemonCatchWorker(BaseTask):
             new_catch_rate_by_ball = catch_rate_by_ball
             self.emit_event(
                 'threw_berry_failed',
-                formatted='Unknown response when throwing berry: {status_code}.',
+                formatted='*Unknown response when throwing berry:* {}.'.format(response_dict['status_code']),
                 data={
                     'status_code': response_dict['status_code']
                 }
@@ -409,10 +415,10 @@ class PokemonCatchWorker(BaseTask):
                 # use untraball if there is no other balls with constraint to `min_ultraball_to_keep`
                 if maximum_ball != ITEM_ULTRABALL and ball_count[ITEM_ULTRABALL] > min_ultraball_to_keep:
                     maximum_ball = ITEM_ULTRABALL
-                    self.emit_event('enough_ultraballs', formatted='No regular balls left! Trying ultraball.')
+                    self.emit_event('enough_ultraballs', formatted='*No regular balls left! Trying ultraball.*')
                     continue
                 else:
-                    self.emit_event('no_pokeballs', formatted='No pokeballs left! Fleeing...')
+                    self.emit_event('no_pokeballs', formatted='*No pokeballs left! Fleeing...*')
                     return WorkerResult.ERROR
 
             # check future ball count
@@ -473,7 +479,11 @@ class PokemonCatchWorker(BaseTask):
             action_delay(self.catchsim_catch_wait_min, self.catchsim_catch_wait_max)
             self.emit_event(
                 'threw_pokeball',
-                formatted='{throw_type}{spin_label} throw! Used {ball_name}, with chance {success_percentage} ({count_left} left)',
+                formatted='*{}{} throw!* Used {}, with chance {} ({} left)'.format(
+                    throw_parameters['throw_type_label'], throw_parameters['spin_label'],
+                    self.inventory.get(current_ball).name,self._pct(catch_rate_by_ball[current_ball]),
+                    ball_count[current_ball]
+                ),
                 data={
                     'throw_type': throw_parameters['throw_type_label'],
                     'spin_label': throw_parameters['spin_label'],
@@ -506,7 +516,7 @@ class PokemonCatchWorker(BaseTask):
             if catch_pokemon_status == CATCH_STATUS_FAILED:
                 self.emit_event(
                     'pokemon_capture_failed',
-                    formatted='{pokemon} capture failed.. trying again!',
+                    formatted='*{pokemon} capture failed*.. trying again!',
                     data={'pokemon': pokemon.name}
                 )
                 used_berry = False
@@ -543,7 +553,7 @@ class PokemonCatchWorker(BaseTask):
 
                 self.emit_event(
                     'pokemon_vanished',
-                    formatted='{} vanished!'.format(pokemon.name),
+                    formatted='*{} vanished!*'.format(pokemon.name),
                     data={
                         'pokemon': pokemon.name,
                         'encounter_id': self.pokemon['encounter_id'],
@@ -578,7 +588,8 @@ class PokemonCatchWorker(BaseTask):
 
                 self.emit_event(
                     'pokemon_caught',
-                    formatted='Captured {pokemon}! [CP {cp}] [NCP {ncp}] [Potential {iv}] [{iv_display}] ({caught_last_24_hour}/{daily_catch_limit}) [+{exp} exp] [+{stardust} stardust]',
+                    formatted='Captured {pokemon}! [CP {cp}] [NCP {ncp}] [Potential {iv}] [{iv_display}] '
+                              '({caught_last_24_hour}/{daily_catch_limit}) [+{exp} exp] [+{stardust} stardust]',
                     data={
                         'pokemon': pokemon.name,
                         'ncp': round(pokemon.cp_percent, 2),
@@ -604,8 +615,8 @@ class PokemonCatchWorker(BaseTask):
 
                 self.emit_event(
                     'gained_candy',
-                    formatted='You now have {quantity} {type} candy!',
-                    data = {
+                    formatted='You now have *{quantity} {type} candy!*',
+                    data={
                         'quantity': candy.quantity,
                         'type': candy.type,
                     },
@@ -654,7 +665,7 @@ class PokemonCatchWorker(BaseTask):
             elif catch_pokemon_status == CATCH_STATUS_MISSED:
                 self.emit_event(
                     'pokemon_capture_failed',
-                    formatted='Pokeball thrown to {pokemon} missed.. trying again!',
+                    formatted='*Pokeball thrown to {pokemon} missed*.. trying again!',
                     data={'pokemon': pokemon.name}
                 )
                 # Take some time to throw the ball from config options
@@ -719,7 +730,7 @@ class PokemonCatchWorker(BaseTask):
         
         self.emit_event(
             'vanish_limit_reached',
-            formatted="Vanish limit reached! Taking a rest now for {duration}, will resume at {resume}.",
+            formatted="*Vanish limit reached!* Taking a rest now for {duration}, will resume at {resume}.",
             data={
                 'duration': str(timedelta(seconds=duration)),
                 'resume': resume.strftime("%H:%M:%S")

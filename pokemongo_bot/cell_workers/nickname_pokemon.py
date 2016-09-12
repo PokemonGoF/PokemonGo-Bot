@@ -9,6 +9,7 @@ from pokemongo_bot.inventory import pokemons, Pokemon, Attack
 
 import re
 
+
 DEFAULT_IGNORE_FAVORITES = False
 DEFAULT_GOOD_ATTACK_THRESHOLD = 0.7
 DEFAULT_TEMPLATE = '{name}'
@@ -231,7 +232,7 @@ class NicknamePokemon(BaseTask):
         if not instance_id:
             self.emit_event(
                 'api_error',
-                formatted='Failed to get pokemon name, will not rename.'
+                formatted='*Failed to get pokemon name*, will not rename.'
             )
             return False
 
@@ -242,8 +243,8 @@ class NicknamePokemon(BaseTask):
         except KeyError as bad_key:
             self.emit_event(
                 'config_error',
-                formatted="Unable to nickname {} due to bad template ({})"
-                    .format(old_nickname, bad_key)
+                formatted="*Unable to nickname {}* due to bad template ({})"
+                          .format(old_nickname, bad_key)
             )
             return False
 
@@ -263,7 +264,7 @@ class NicknamePokemon(BaseTask):
         except KeyError:
             self.emit_event(
                 'api_error',
-                formatted='Attempt to nickname received bad response from server.'
+                formatted='*Attempt to nickname received bad response from server.*'
             )
             return True
 
@@ -271,28 +272,27 @@ class NicknamePokemon(BaseTask):
         if result == 0:
             self.emit_event(
                 'unset_pokemon_nickname',
-                formatted="Pokemon {} nickname unset.".format(old_nickname),
+                formatted="*Pokemon {} nickname unset.*".format(old_nickname),
                 data={'old_name': old_nickname}
             )
             pokemon.update_nickname(new_nickname)
         elif result == 1:
             self.emit_event(
                 'rename_pokemon',
-                formatted="*{} Renamed* to {}".format(old_nickname, new_nickname),
+                formatted="*{} Renamed* to {}.".format(old_nickname, new_nickname),
                 data={'old_name': old_nickname, 'current_name': new_nickname}
             )
             pokemon.update_nickname(new_nickname)
         elif result == 2:
             self.emit_event(
                 'pokemon_nickname_invalid',
-                formatted="Nickname {} is invalid".format(new_nickname),
+                formatted="*Nickname {} is invalid.*".format(new_nickname),
                 data={'nickname': new_nickname}
             )
         else:
             self.emit_event(
                 'api_error',
-                formatted='Attempt to nickname received unexpected result'
-                          ' from server ({}).'.format(result)
+                formatted='*Attempt to nickname received unexpected result from server* ({}).'.format(result)
             )
         return True
 
@@ -304,7 +304,7 @@ class NicknamePokemon(BaseTask):
 
         # Filter template
         # only convert the keys to lowercase, leaving the format specifier alone
-        template = re.sub(r"{[\w_\d]*", lambda x: x.group(0).lower(), template).strip()
+        template = re.sub(r"{[\w_\d]*", lambda x:x.group(0).lower(), template).strip()
 
         # Individial Values of the current specific pokemon (different for each)
         iv_attack = pokemon.iv_attack
@@ -334,7 +334,7 @@ class NicknamePokemon(BaseTask):
         moveset = pokemon.moveset
 
         pokemon.name = self._localize(pokemon.name)
-
+        
         # Remove spaces from Nidoran M/F 
         pokemon.name = pokemon.name.replace("Nidoran M", "NidoranM")
         pokemon.name = pokemon.name.replace("Nidoran F", "NidoranF")
@@ -359,7 +359,7 @@ class NicknamePokemon(BaseTask):
             # Joined IV values like: 4/12/9
             iv_ads='/'.join(map(str, iv_list)),
             # Joined IV values in HEX like: 4C9
-            iv_ads_hex=''.join(map(lambda x: format(x, 'X'), iv_list)),
+            iv_ads_hex = ''.join(map(lambda x: format(x, 'X'), iv_list)),
             # Sum of the Individial Values
             iv_sum=iv_sum,
             # IV perfection (in 000-100 format - 3 chars)
