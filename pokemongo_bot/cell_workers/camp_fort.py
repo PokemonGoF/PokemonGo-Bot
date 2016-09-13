@@ -57,7 +57,10 @@ class CampFort(BaseTask):
         # Let's make sure we have balls before we sit at a lure!
         # See also catch_pokemon.py
         if self.get_pokeball_count() <= 0:
-            self.logger.info("No pokeballs left, refuse to sit at lure!")
+            self.emit_event(
+                'refuse_to_sit',
+                formatted='No pokeballs left, refuse to sit at lure!',
+            )
             # Move away from lures for a time
             self.destination = None
             self.stay_until = 0
@@ -72,7 +75,10 @@ class CampFort(BaseTask):
             if len(forts_clusters) > 0:
                 self.destination = forts_clusters[0]
                 self.walker = PolylineWalker(self.bot, self.destination[0], self.destination[1])
-                self.logger.info("New destination at %s meters: %s forts, %s lured", round(self.destination[4], 2), self.destination[3], self.destination[2])
+                self.emit_event(
+                    'new_destination',
+                    formatted='New destination at {} meters: {} forts, {} lured'.format(
+                        round(self.destination[4], 2), self.destination[3], self.destination[2]))
                 self.no_log_until = now + LOG_TIME_INTERVAL
             else:
                 return WorkerResult.SUCCESS
@@ -81,7 +87,11 @@ class CampFort(BaseTask):
             cluster = self.get_current_cluster()
 
             if self.no_log_until < now:
-                self.logger.info("Staying at destination: %s forts, %s lured", cluster[3], cluster[2])
+                self.emit_event(
+                    'staying_at_destination',
+                    formatted='Staying at destination: {} forts, {} lured'.format(
+                        cluster[3], cluster[2]))
+
                 self.no_log_until = now + LOG_TIME_INTERVAL
 
             if cluster[2] == 0:
@@ -90,18 +100,28 @@ class CampFort(BaseTask):
             self.walker.step(speed=0)
         elif self.walker.step():
             cluster = self.get_current_cluster()
-            self.logger.info("Arrived at destination: %s forts, %s lured", cluster[3], cluster[2])
+            self.emit_event(
+                'arrived_at_destination',
+                formatted='Arrived at destination: {} forts, {} lured'.format(
+                    cluster[3], cluster[2]))
             self.stay_until = now + self.config_camping_time
         elif self.no_log_until < now:
             cluster = self.get_current_cluster()
 
             if cluster[2] == 0:
-                self.logger.info("Lures gone! Resetting destination!")
+
+                self.emit_event(
+                    'reset_destination',
+                    formatted="Lures gone! Resetting destination!")
                 self.destination = None
                 self.stay_until = 0
                 return WorkerResult.SUCCESS
 
-            self.logger.info("Moving to destination at %s meters: %s forts, %s lured", round(cluster[4], 2), cluster[3], cluster[2])
+            self.emit_event(
+                'moving_to_destination',
+                formatted="Moving to destination at {} meters: {} forts, {} lured".format(
+                round(cluster[4], 2), cluster[3], cluster[2])
+            )
             self.no_log_until = now + LOG_TIME_INTERVAL
 
         return WorkerResult.RUNNING
