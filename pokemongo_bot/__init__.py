@@ -204,6 +204,11 @@ class PokemonGoBot(object):
         self.event_manager.register_event('location_cache_ignored')
 
         self.event_manager.register_event('debug')
+        self.event_manager.register_event('refuse_to_sit')
+        self.event_manager.register_event('new_destination')
+        self.event_manager.register_event('moving_to_destination')
+        self.event_manager.register_event('arrived_at_destination')
+        self.event_manager.register_event('staying_at_destination')
 
         #  ignore candy above threshold
         self.event_manager.register_event(
