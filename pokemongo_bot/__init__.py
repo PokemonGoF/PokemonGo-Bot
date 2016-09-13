@@ -209,7 +209,7 @@ class PokemonGoBot(object):
         self.event_manager.register_event('moving_to_destination')
         self.event_manager.register_event('arrived_at_destination')
         self.event_manager.register_event('staying_at_destination')
-
+        self.event_manager.register_event('not_applying_incense')
         #  ignore candy above threshold
         self.event_manager.register_event(
             'ignore_candy_above_thresold',

@@ -35,7 +35,7 @@ class SpinFort(BaseTask):
         if not has_space_for_loot and not self.ignore_item_count:
             self.emit_event(
                 'inventory_full',
-                formatted="Inventory is full. You might want to change your config to recycle more items if this message appears consistently."
+                formatted="*Inventory is full.* You might want to change your config to recycle more items if this message appears consistently."
             )
         return self.ignore_item_count or has_space_for_loot
 
@@ -80,7 +80,7 @@ class SpinFort(BaseTask):
                         awards += u', {} Egg'.format(egg_awarded['egg_km_walked_target'])
                     self.emit_event(
                         'spun_pokestop',
-                        formatted="Spun pokestop {pokestop}. Experience awarded: {exp}. Items awarded: {items}",
+                        formatted="*Spun pokestop* {pokestop}. Experience awarded: {exp}. Items awarded: {items}",
                         data={
                             'pokestop': fort_name,
                             'exp': experience_awarded,
@@ -90,7 +90,7 @@ class SpinFort(BaseTask):
                 else:
                     self.emit_event(
                         'pokestop_empty',
-                        formatted='Found nothing in pokestop {pokestop}.',
+                        formatted='*Found nothing in pokestop* {pokestop}.',
                         data={'pokestop': fort_name}
                     )
                 with self.bot.database as conn:
@@ -118,7 +118,7 @@ class SpinFort(BaseTask):
             elif spin_result == SPIN_REQUEST_RESULT_OUT_OF_RANGE:
                 self.emit_event(
                     'pokestop_out_of_range',
-                    formatted="Pokestop {pokestop} out of range.",
+                    formatted="*Pokestop* {pokestop} *out of range.*",
                     data={'pokestop': fort_name}
                 )
             elif spin_result == SPIN_REQUEST_RESULT_IN_COOLDOWN_PERIOD:
@@ -132,13 +132,13 @@ class SpinFort(BaseTask):
                     )
                     self.emit_event(
                         'pokestop_on_cooldown',
-                        formatted="Pokestop {pokestop} on cooldown. Time left: {minutes_left}.",
+                        formatted="*Pokestop* {pokestop} *on cooldown.* Time left: {minutes_left}.",
                         data={'pokestop': fort_name, 'minutes_left': minutes_left}
                     )
             else:
                 self.emit_event(
                     'unknown_spin_result',
-                    formatted="Unknown spint result {status_code}",
+                    formatted="*Unknown spint result* {status_code}",
                     data={'status_code': str(spin_result)}
                 )
             if 'chain_hack_sequence_number' in response_dict['responses'][
@@ -149,7 +149,7 @@ class SpinFort(BaseTask):
             else:
                 self.emit_event(
                     'pokestop_searching_too_often',
-                    formatted="Possibly searching too often, take a rest."
+                    formatted="*Possibly searching too often, take a rest.*"
                 )
                 if spin_result == 1 and not items_awarded and not experience_awarded and not pokestop_cooldown:
                     self.bot.softban = True

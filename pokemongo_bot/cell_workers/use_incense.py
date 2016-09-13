@@ -26,7 +26,10 @@ class UseIncense(BaseTask):
         for applied_item in inventory.applied_items().all():
             if applied_item.expire_ms > 0:
                     mins = format_time(applied_item.expire_ms * 1000)
-                    self.logger.info("Not applying incense, currently active: %s, %s minutes remaining", applied_item.item.name, mins)
+                    self.emit_event(
+                        'not_applying_incense',
+                        formatted='Not applying incense, currently active: {}, {} minutes remaining'.format(
+                            applied_item.item.name, mins))
                     return False
             else:
                     return True
@@ -75,7 +78,8 @@ class UseIncense(BaseTask):
             if result is 1:
                 self.emit_event(
                     'use_incense',
-                    formatted="Using {type} incense. {incense_count} incense remaining",
+                    formatted="*Using {} incense.* {} incense remaining".format(self.types.get(type, 'Unknown'),
+                                                                              inventory.items().get(type).count),
                     data={
                         'type': self.types.get(type, 'Unknown'),
                         'incense_count': inventory.items().get(type).count
@@ -84,7 +88,8 @@ class UseIncense(BaseTask):
             else:
                 self.emit_event(
                     'use_incense',
-                    formatted="Unable to use incense {type}. {incense_count} incense remaining",
+                    formatted="*Unable to use incense {}.* {} incense remaining".format(
+                        self.types.get(type, 'Unknown'), inventory.items().get(type).count),
                     data={
                         'type': self.types.get(type, 'Unknown'),
                         'incense_count': inventory.items().get(type).count

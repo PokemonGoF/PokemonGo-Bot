@@ -318,9 +318,9 @@ class UpdateLiveStats(BaseTask):
 
         # Create stats strings.
         available_stats = {
-            'login': player_stats['login'],
-            'username': player_stats['username'],
-            'uptime': 'Uptime : {}'.format(player_stats['uptime']),
+            'login': "{}".format(player_stats['login']),
+            'username': "*{}*".format(player_stats['username']),
+            'uptime': 'Uptime: {}'.format(player_stats['uptime']),
             'km_walked': '{:,.2f}km walked'.format(player_stats['km_walked']),
             'level': 'Level {}'.format(player_stats['level']),
             'level_completion': '{:,} / {:,} XP ({}%)'.format(
