@@ -16,6 +16,9 @@ from pokemongo_bot.base_dir import _base_dir
 from datetime import datetime, timedelta
 from utils import getSeconds
 
+from pprint import pprint
+
+
 CATCH_STATUS_SUCCESS = 1
 CATCH_STATUS_FAILED = 2
 CATCH_STATUS_VANISHED = 3
@@ -58,6 +61,7 @@ class PokemonCatchWorker(BaseTask):
         self.response_key = ''
         self.response_status_key = ''
         self.rest_completed = False
+
 
         #Config
         self.min_ultraball_to_keep = self.config.get('min_ultraball_to_keep', 10)
@@ -249,10 +253,13 @@ class PokemonCatchWorker(BaseTask):
         if not pokemon_config:
             return False
 
+
         catch_results = {
             'ncp': False,
             'cp': False,
             'iv': False,
+            'fa': True,
+            'ca': True
         }
 
         candies = inventory.candies().get(pokemon.pokemon_id).quantity
@@ -284,15 +291,32 @@ class PokemonCatchWorker(BaseTask):
         if pokemon.cp > catch_cp:
             catch_results['cp'] = True
 
+        catch_below_cp = pokemon_config.get('catch_below_cp', 12000)
+        if pokemon.cp < catch_below_cp:
+            catch_results['cp'] = True
+
         catch_iv = pokemon_config.get('catch_above_iv', 0.8)
         if pokemon.iv > catch_iv:
             catch_results['iv'] = True
+
+
+        catch_results['fa'] = ( len(pokemon_config.get('fast_attack', [])) == 0 or unicode(pokemon.fast_attack) in map(lambda x: unicode(x), pokemon_config.get('fast_attack', [])))
+        catch_results['ca'] = ( len(pokemon_config.get('charged_attack', [])) == 0 or unicode(pokemon.charged_attack) in map(lambda x: unicode(x), pokemon_config.get('charged_attack', [])))
 
         # check if encountered pokemon is our locked pokemon
         if self.bot.capture_locked and self.bot.capture_locked != pokemon.pokemon_id:
             return False
 
-        return LOGIC_TO_FUNCTION[pokemon_config.get('logic', default_logic)](*catch_results.values())
+        cr = {
+            'ncp': catch_results['ncp'],
+            'cp': catch_results['cp'],
+            'iv': catch_results['iv']
+        }
+        
+        if LOGIC_TO_FUNCTION[pokemon_config.get('logic', default_logic)](*cr.values()):
+            return catch_results['fa'] and catch_results['ca']
+        else:
+            return False
 
     def _should_catch_pokemon(self, pokemon):
         return self._pokemon_matches_config(self.bot.config.catch, pokemon)
