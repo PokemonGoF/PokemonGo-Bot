@@ -139,9 +139,9 @@
           "enabled": false,
             
             "// evolve only pidgey and drowzee": "",
-            "// evolve_list": "pidgey, drowzee",
-            "// donot_evolve_list": "none",
-            
+            "//evolve_list": "pidgey, drowzee",
+            "//donot_evolve_list": "none",
+
             "// evolve all but pidgey and drowzee": "",
             "// evolve_list": "all",
             "// donot_evolve_list": "pidgey, drowzee",
@@ -201,7 +201,6 @@
           "enabled": true,
           "catch_visible_pokemon": true,
           "catch_lured_pokemon": true,
-          "catch_incensed_pokemon": true,
           "min_ultraball_to_keep": 5,
           "berry_threshold": 0.35,
           "vip_berry_threshold": 0.9,
@@ -351,9 +350,9 @@
       "// Discard all pokemon in bag except 100 pokemon with best CP": {},
       "// all": {"keep_best_cp": 100},
       "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat:": {},
-      "// Zubat": {"keep_best_cp": 2, "keep_best_iv": 3},
+      "// Caterpie": {"keep_best_cp": 2, "keep_best_iv": 3},
       "// Example of custom order of static criterion": {},
-      "// Zubat": {"keep_best_custom": "iv, cp, hp_max", "amount":2}
+      "// Drowzee": {"keep_best_custom": "iv, cp, hp_max", "amount":2}
     },
     "vips" : {
         "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate": {},

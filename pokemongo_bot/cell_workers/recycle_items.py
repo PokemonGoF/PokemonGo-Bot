@@ -99,7 +99,7 @@ class RecycleItems(BaseTask):
         self._next_force = self._get_next_force_schedule()
         self.emit_event(
             'next_force_recycle',
-            formatted="Next forced item recycle at {time}",
+            formatted="*Next forced item recycle at {time}*",
             data={
                 'time': str(self._next_force.strftime("%H:%M:%S"))
             }
@@ -142,7 +142,7 @@ class RecycleItems(BaseTask):
         if self.recycle_force and self._should_force_now():
             self.emit_event(
                 'force_recycle',
-                formatted="Forcing item recycle based on schedule"
+                formatted="*Forcing item recycle* based on schedule"
             )
             self._schedule_next_force()
             return True

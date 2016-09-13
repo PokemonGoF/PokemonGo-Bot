@@ -8,7 +8,7 @@ from pokemongo_bot.base_task import BaseTask
 import time
 
 class Counter(dict):
-    def __missing__(self,key):
+    def __missing__(self, key):
         return 0
 
 class EvolvePokemon(BaseTask):
@@ -97,7 +97,7 @@ class EvolvePokemon(BaseTask):
                     lucky_egg.remove(1)
                     self.emit_event(
                         'used_lucky_egg',
-                        formatted='Used lucky egg ({amount_left} left).',
+                        formatted='*Used lucky egg* ({} left).'.format(lucky_egg.count),
                         data={
                              'amount_left': lucky_egg.count
                         }
@@ -107,14 +107,14 @@ class EvolvePokemon(BaseTask):
                     self.emit_event(
                         'lucky_egg_error',
                         level='error',
-                        formatted='Failed to use lucky egg!'
+                        formatted='*Failed to use lucky egg!*'
                     )
                     return False
         else:
             # Skipping evolve so they aren't wasted
             self.emit_event(
                 'skip_evolve',
-                formatted='Skipping evolve because has no lucky egg.'
+                formatted='*Skipping evolve* because has no lucky egg.'
             )
             return False
 
@@ -197,7 +197,7 @@ class EvolvePokemon(BaseTask):
                     'evolve_log',
                     sender=self,
                     level='info',
-                    formatted="evolve_log table not found, skipping log"
+                    formatted="*Evolve Table not found*, skipping log"
                 )
                 break
 

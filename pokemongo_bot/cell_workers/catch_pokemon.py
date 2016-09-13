@@ -10,10 +10,11 @@ from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.item_list import Item
 from pokemongo_bot import inventory
-from utils import fort_details, distance,  format_time
+from utils import fort_details, distance
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.constants import Constants
-from pokemongo_bot.inventory import Pokemons
+from pokemongo_bot.inventory import Pokemons, Pokemon, Attack
+
 
 class CatchPokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -34,8 +35,6 @@ class CatchPokemon(BaseTask):
                 self.get_visible_pokemon()
             if self.config.get('catch_lured_pokemon', True):
                 self.get_lured_pokemon()
-            if self._have_applied_incense() and self.config.get('catch_incensed_pokemon', True):
-                self.get_incensed_pokemon()
 
             random.shuffle(self.pokemon)
 
@@ -61,17 +60,17 @@ class CatchPokemon(BaseTask):
             pokemon_to_catch = self.bot.cell['catchable_pokemons']
 
             if len(pokemon_to_catch) > 0:
-                user_web_catchable = os.path.join(_base_dir, 'web', 'catchable-{}.json'.format(self.bot.config.username))
-            for pokemon in pokemon_to_catch:
-                # Update web UI
-                with open(user_web_catchable, 'w') as outfile:
+    		user_web_catchable = os.path.join(_base_dir, 'web', 'catchable-{}.json'.format(self.bot.config.username))
+    		for pokemon in pokemon_to_catch:
+
+    	            # Update web UI
+    		    with open(user_web_catchable, 'w') as outfile:
     		        json.dump(pokemon, outfile)
 
-
-                self.emit_event(
-                    'catchable_pokemon',
-                    level='debug',
-                    data={
+    		    self.emit_event(
+    		        'catchable_pokemon',
+    		        level='debug',
+    		        data={
     		            'pokemon_id': pokemon['pokemon_id'],
     		            'spawn_point_id': pokemon['spawn_point_id'],
     		            'encounter_id': pokemon['encounter_id'],
@@ -82,7 +81,7 @@ class CatchPokemon(BaseTask):
     		        }
     		    )
 
-                self.add_pokemon(pokemon)
+                    self.add_pokemon(pokemon)
 
         if 'wild_pokemons' in self.bot.cell:
             for pokemon in self.bot.cell['wild_pokemons']:
@@ -127,27 +126,11 @@ class CatchPokemon(BaseTask):
             self.emit_event(
                 'lured_pokemon_found',
                 level='info',
-                formatted='Lured pokemon at fort {fort_name} ({fort_id})',
+                formatted='*Lured pokemon at fort* {} ({})'.format(fort_name, pokemon['fort_id']),
                 data=pokemon
             )
 
             self.add_pokemon(pokemon)
-
-    def get_incensed_pokemon(self):
-        # call self.bot.api.get_incense_pokemon
-        pokemon_to_catch = self.bot.api.get_incense_pokemon()
-
-        if len(pokemon_to_catch) > 0:
-            for pokemon in pokemon_to_catch:
-                self.logger.warning("Pokemon: %s", pokemon)
-                self.emit_event(
-                    'incensed_pokemon_found',
-                    level='info',
-                    formatted='Incense attracted a pokemon at {encounter_location}',
-                    data=pokemon
-                )
-
-                self.add_pokemon(pokemon)
 
     def add_pokemon(self, pokemon):
         if pokemon['encounter_id'] not in self.pokemon:
@@ -158,15 +141,3 @@ class CatchPokemon(BaseTask):
         return_value = worker.work()
 
         return return_value
-
-    def _have_applied_incense(self):
-        for applied_item in inventory.applied_items().all():
-            self.logger.info(applied_item)
-            if applied_item.expire_ms > 0:
-                mins = format_time(applied_item.expire_ms * 1000)
-                self.logger.info("Not applying incense, currently active: %s, %s minutes remaining", applied_item.item.name, mins)
-                return True
-            else:
-                self.logger.info("")
-                return False
-        return False

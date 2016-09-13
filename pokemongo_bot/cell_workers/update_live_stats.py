@@ -319,7 +319,7 @@ class UpdateLiveStats(BaseTask):
         # Create stats strings.
         available_stats = {
             'login': player_stats['login'],
-            'username': player_stats['username'],
+            'username': "*{}".format(player_stats['username']),
             'uptime': 'Uptime : {}'.format(player_stats['uptime']),
             'km_walked': '{:,.2f}km walked'.format(player_stats['km_walked']),
             'level': 'Level {}'.format(player_stats['level']),
@@ -331,7 +331,7 @@ class UpdateLiveStats(BaseTask):
                 player_stats['whole_level_xp'], player_stats['level_completion_percentage']),
             'xp_per_hour': '{:,} XP/h'.format(player_stats['xp_per_hour']),
             'xp_earned': '+{:,} XP'.format(player_stats['xp_earned']),
-            'stops_visited': 'Visited {:,} stops'.format(player_stats['stops_visited']),
+            'stops_visited': 'Visited {:,} stops*'.format(player_stats['stops_visited']),
             'pokemon_encountered': 'Encountered {:,} pokemon'.format(player_stats['pokemon_encountered']),
             'pokemon_caught': 'Caught {:,} pokemon'.format(player_stats['pokemon_caught']),
             'captures_per_hour': '{:,} pokemon/h'.format(player_stats['captures_per_hour']),

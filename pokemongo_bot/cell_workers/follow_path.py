@@ -124,7 +124,8 @@ class FollowPath(BaseTask):
         
         self.emit_event(
             'path_lap_end',
-            formatted="Great job, lot of calories burned! Taking a break now for {duration}, will resume at {resume}.",
+            formatted="Great job, lot of calories burned! *Taking a break now* for {duration},"
+                      " will resume at {resume}.",
             data={
                 'duration': str(timedelta(seconds=duration)),
                 'resume': resume.strftime("%H:%M:%S")
@@ -178,7 +179,10 @@ class FollowPath(BaseTask):
 
         self.emit_event(
             'position_update',
-            formatted="Walking from {last_position} to {current_position}, distance left: ({distance} {distance_unit}) ..",
+            formatted="*Walking from {} to {},* distance left: "
+                      "({} {}) ..".format((last_lat, last_lng, last_alt), (lat, lng, alt),
+                                                               format_dist(dist, self.distance_unit,self.append_unit),
+                                                               self.distance_unit),
             data={
                 'last_position': (last_lat, last_lng, last_alt),
                 'current_position': (lat, lng, alt),
@@ -204,7 +208,7 @@ class FollowPath(BaseTask):
                     self.number_lap+=1
                     self.emit_event(
                         'path_lap_update',
-                        formatted="number lap : {number_lap} / {number_lap_max}",
+                        formatted="number lap : {} / {}".format(str(self.number_lap, self.number_lap_max), ),
                         data={
                             'number_lap': str(self.number_lap),
                             'number_lap_max': str(self.number_lap_max)

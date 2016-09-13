@@ -374,16 +374,6 @@ class PokemonGoBot(object):
             )
         )
         self.event_manager.register_event(
-            'incensed_pokemon_found',
-            parameters=(
-                'pokemon_id',
-                'encounter_id',
-                'encounter_location',
-                'latitude',
-                'longitude'
-            )
-        )
-        self.event_manager.register_event(
             'pokemon_appeared',
             parameters=(
                 'pokemon',
@@ -657,6 +647,12 @@ class PokemonGoBot(object):
         self.event_manager.register_event('pokestop_log')
         self.event_manager.register_event('softban_log')
         self.event_manager.register_event('eggs_hatched_log')
+        self.event_manager.register_event('refuse_to_sit')
+        self.event_manager.register_event('new_destination')
+        self.event_manager.register_event('staying_at_destination')
+        self.event_manager.register_event('arrived_at_destination')
+        self.event_manager.register_event('reset_destination')
+        self.event_manager.register_event('moving_to_destination')
 
         self.event_manager.register_event(
             'badges',

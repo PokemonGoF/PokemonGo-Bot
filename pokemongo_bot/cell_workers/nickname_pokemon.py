@@ -68,7 +68,7 @@ class NicknamePokemon(BaseTask):
         "enabled": true,
         "dont_nickname_favorite": false,
         "good_attack_threshold": 0.7,
-        "nickname_template": "{iv_pct}_{iv_ads}"
+        "nickname_template": "{iv_pct}-{iv_ads}"
       }
     }
 
@@ -174,7 +174,7 @@ class NicknamePokemon(BaseTask):
 
     EXAMPLES:
 
-    1. "nickname_template": "{ivcp_pct}_{iv_pct}_{iv_ads}"
+    1. "nickname_template": "{ivcp_pct}-{iv_pct}-{iv_ads}"
 
     Golbat with IV (attack: 9, defense: 4 and stamina: 8) will result in:
      '48_46_9/4/8'
@@ -232,7 +232,7 @@ class NicknamePokemon(BaseTask):
         if not instance_id:
             self.emit_event(
                 'api_error',
-                formatted='Failed to get pokemon name, will not rename.'
+                formatted='*Failed to get pokemon name*, will not rename.'
             )
             return False
 
@@ -243,7 +243,7 @@ class NicknamePokemon(BaseTask):
         except KeyError as bad_key:
             self.emit_event(
                 'config_error',
-                formatted="Unable to nickname {} due to bad template ({})"
+                formatted="*Unable to nickname {}* due to bad template ({})"
                           .format(old_nickname, bad_key)
             )
             return False
@@ -264,7 +264,7 @@ class NicknamePokemon(BaseTask):
         except KeyError:
             self.emit_event(
                 'api_error',
-                formatted='Attempt to nickname received bad response from server.'
+                formatted='*Attempt to nickname received bad response from server.*'
             )
             return True
 
@@ -272,28 +272,27 @@ class NicknamePokemon(BaseTask):
         if result == 0:
             self.emit_event(
                 'unset_pokemon_nickname',
-                formatted="Pokemon {} nickname unset.".format(old_nickname),
+                formatted="*Pokemon {} nickname unset.*".format(old_nickname),
                 data={'old_name': old_nickname}
             )
             pokemon.update_nickname(new_nickname)
         elif result == 1:
             self.emit_event(
                 'rename_pokemon',
-                formatted="*{} Renamed* to {}".format(old_nickname, new_nickname),
+                formatted="*{} Renamed* to {}.".format(old_nickname, new_nickname),
                 data={'old_name': old_nickname, 'current_name': new_nickname}
             )
             pokemon.update_nickname(new_nickname)
         elif result == 2:
             self.emit_event(
                 'pokemon_nickname_invalid',
-                formatted="Nickname {} is invalid".format(new_nickname),
+                formatted="*Nickname {} is invalid.*".format(new_nickname),
                 data={'nickname': new_nickname}
             )
         else:
             self.emit_event(
                 'api_error',
-                formatted='Attempt to nickname received unexpected result'
-                          ' from server ({}).'.format(result)
+                formatted='*Attempt to nickname received unexpected result from server* ({}).'.format(result)
             )
         return True
 
@@ -337,8 +336,8 @@ class NicknamePokemon(BaseTask):
         pokemon.name = self._localize(pokemon.name)
         
         # Remove spaces from Nidoran M/F 
-        pokemon.name = pokemon.name.replace("Nidoran M","NidoranM")
-        pokemon.name = pokemon.name.replace("Nidoran F","NidoranF")
+        pokemon.name = pokemon.name.replace("Nidoran M", "NidoranM")
+        pokemon.name = pokemon.name.replace("Nidoran F", "NidoranF")
 
         #
         # Generate new nickname

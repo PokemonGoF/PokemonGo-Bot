@@ -111,7 +111,7 @@ class TransferPokemon(BaseTask):
                 if best_pokemons:
                     self.emit_event(
                         'keep_best_release',
-                        formatted="Keeping best {amount} {pokemon}, based on {criteria}",
+                        formatted="*Keeping best {amount} {pokemon}*, based on {criteria}",
                         data={
                             'amount': len(best_pokemons),
                             'pokemon': pokemon_name,
@@ -168,8 +168,8 @@ class TransferPokemon(BaseTask):
         if logic_to_function[cp_iv_logic](*release_results.values()):
             self.emit_event(
                 'future_pokemon_release',
-                formatted="*Releasing {}* CP: {}, IV: {} | based on rule: CP < {} {} IV < {}".format(pokemon.name, pokemon.cp, pokemon.iv,
-                                                                                release_cp, cp_iv_logic.upper(),release_cp),
+                formatted="*Releasing {}* CP: {}, IV: {} | based on rule: CP < {} {} IV < {}".format(
+                    pokemon.name, pokemon.cp, pokemon.iv, release_cp, cp_iv_logic.upper(), release_iv),
                 data={
                     'pokemon': pokemon.name,
                     'cp': pokemon.cp,

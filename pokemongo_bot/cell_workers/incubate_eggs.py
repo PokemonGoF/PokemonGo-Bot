@@ -29,8 +29,8 @@ class IncubateEggs(BaseTask):
         self.infinite_longer_eggs_first = self.config.get("infinite_longer_eggs_first", False)
         self.breakable_longer_eggs_first = self.config.get("breakable_longer_eggs_first", True)
         self.min_interval = self.config.get('min_interval', 120)
-        self.breakable_incubator = self.config.get("breakable", [2,5,10])
-        self.infinite_incubator = self.config.get("infinite", [2,5,10])
+        self.breakable_incubator = self.config.get("breakable", [2, 5, 10])
+        self.infinite_incubator = self.config.get("infinite", [2, 5, 10])
 
     def work(self):
         try:
@@ -39,7 +39,7 @@ class IncubateEggs(BaseTask):
             return WorkerResult.ERROR
 
         if self.used_incubators and IncubateEggs.last_km_walked != self.km_walked:
-            km_left = self.used_incubators[0]['km']-self.km_walked
+            km_left = self.used_incubators[0]['km'] - self.km_walked
             if km_left <= 0:
                 if not self._hatch_eggs():
                     return WorkerResult.ERROR
@@ -56,23 +56,21 @@ class IncubateEggs(BaseTask):
         if self.ready_infinite_incubators:
             # get available eggs
             eggs = self._filter_sort_eggs(self.infinite_incubator,
-                    self.infinite_longer_eggs_first)
+                                          self.infinite_longer_eggs_first)
             self._apply_incubators(eggs, self.ready_infinite_incubators)
         if self.ready_breakable_incubators:
             # get available eggs
             eggs = self._filter_sort_eggs(self.breakable_incubator,
-                    self.breakable_longer_eggs_first)
+                                          self.breakable_longer_eggs_first)
             self._apply_incubators(eggs, self.ready_breakable_incubators)
 
         return WorkerResult.SUCCESS
-
 
     def _filter_sort_eggs(self, allowed, sorting):
         eligible_eggs = filter(lambda egg: int(egg["km"]) in allowed, self.eggs)
         eligible_eggs.sort(key=lambda egg: egg["km"], reverse=sorting)
 
         return eligible_eggs
-
 
     def _apply_incubators(self, available_eggs, available_incubators):
         for incubator in available_incubators:
@@ -83,7 +81,7 @@ class IncubateEggs(BaseTask):
                 self.emit_event(
                     'incubate_try',
                     level='debug',
-                    formatted="Attempting to apply incubator {incubator_id} to egg {egg_id}",
+                    formatted="*Attempting to apply incubator* {} to egg {}".format(incubator['id'], egg['id']),
                     data={
                         'incubator_id': incubator['id'],
                         'egg_id': egg['id']
@@ -98,7 +96,7 @@ class IncubateEggs(BaseTask):
                     if code == 1:
                         self.emit_event(
                             'incubate',
-                            formatted='Incubating a {distance_in_km} egg.',
+                            formatted='*Incubating a {} egg.*'.format(str(egg['km'])),
                             data={
                                 'distance_in_km': str(egg['km'])
                             }
@@ -134,7 +132,7 @@ class IncubateEggs(BaseTask):
         for inv_data in inv:
             inv_data = inv_data.get("inventory_item_data", {})
             if "egg_incubators" in inv_data:
-                incubators = inv_data.get("egg_incubators", {}).get("egg_incubator",[])
+                incubators = inv_data.get("egg_incubators", {}).get("egg_incubator", [])
                 if isinstance(incubators, basestring):  # checking for old response
                     incubators = [incubators]
                 for incubator in incubators:
@@ -169,7 +167,7 @@ class IncubateEggs(BaseTask):
                 continue
             if "player_stats" in inv_data:
                 self.km_walked = inv_data.get("player_stats", {}).get("km_walked", 0)
-        
+
         self.used_incubators = temp_used_incubators
         if self.used_incubators:
             self.used_incubators.sort(key=lambda x: x.get("km"))
@@ -202,13 +200,15 @@ class IncubateEggs(BaseTask):
         if not pokemon_ids or not pokemon_data:
             self.emit_event(
                 'egg_hatched_fail',
-                formatted= "Error trying to hatch egg."
+                formatted="Error trying to hatch egg."
             )
             return False
- 
+
         for i in range(len(pokemon_list)):
             pokemon = pokemon_list[i]
-            msg = "Egg hatched with a {name} (CP {cp} - NCP {ncp} - IV {iv_ads} {iv_pct}), {exp} exp, {stardust} stardust and {candy} candies."
+            msg = "*Egg hatched* with a {} (CP {} - NCP {} - IV {} {}), {} exp, {} stardust and {} candies."\
+                .format(pokemon.name, pokemon.cp, round(pokemon.cp_percent, 2),
+                                                    pokemon.iv_display, pokemon.iv, xp[i], stardust[i], candy[i])
             self.emit_event(
                 'egg_hatched',
                 formatted=msg,
@@ -226,24 +226,25 @@ class IncubateEggs(BaseTask):
             # hatching egg gets exp too!
             inventory.player().exp += xp[i]
             self.bot.stardust += stardust[i]
-            
+
             with self.bot.database as conn:
                 c = conn.cursor()
                 c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='eggs_hatched_log'")
             result = c.fetchone()
             while True:
                 if result[0] == 1:
-                    conn.execute('''INSERT INTO eggs_hatched_log (pokemon, cp, iv, pokemon_id) VALUES (?, ?, ?, ?)''', (pokemon.name, pokemon.cp, pokemon.iv, pokemon.pokemon_id))
+                    conn.execute('''INSERT INTO eggs_hatched_log (pokemon, cp, iv, pokemon_id) VALUES (?, ?, ?, ?)''',
+                                 (pokemon.name, pokemon.cp, pokemon.iv, pokemon.pokemon_id))
                     break
                 else:
                     self.emit_event(
                         'eggs_hatched_log',
                         sender=self,
                         level='info',
-                        formatted="eggs_hatched_log table not found, skipping log"
+                        formatted="*Eggs Hatched Table not found*, skipping log"
                     )
                     break
-            
+
         self.bot.metrics.hatched_eggs(len(pokemon_list))
         return True
 
@@ -251,11 +252,13 @@ class IncubateEggs(BaseTask):
         if not self.used_incubators:
             return
 
-        eggs = ['{:.2f}/{} km'.format(e['km_needed']-e['km']+self.km_walked, e['km_needed']) for e in self.used_incubators]
+        eggs = ('{:.2f}/{} km'.format(e['km_needed'] - e['km'] + self.km_walked, e['km_needed']) for e in
+                self.used_incubators)
 
         self.emit_event(
             'next_egg_incubates',
-            formatted='Eggs incubating: [{eggs}] (Eggs left: {eggs_left}, Incubating: {eggs_inc})',
+            formatted='*Eggs incubating:* ({}) (Eggs left: {}, Incubating: {})'.format(
+                ', '.join(eggs), len(self.eggs),len(self.used_incubators)),
             data={
                 'eggs_left': len(self.eggs),
                 'eggs_inc': len(self.used_incubators),

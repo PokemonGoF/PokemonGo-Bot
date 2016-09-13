@@ -96,7 +96,7 @@ class ShowBestPokemon(BaseTask):
         """
         self.emit_event(
             'show_best_pokemon',
-            formatted="*Best Pokemons* {pokemons}",
+            formatted="*Best Pokemons:* {pokemons}",
             data={
                 'pokemons': pokemons
             }
