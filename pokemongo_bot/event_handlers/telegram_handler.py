@@ -543,31 +543,6 @@ class TelegramHandler(EventHandler):
 
             if event == 'level_up':
                 msg = "level up ({})".format(data["current_level"])
-            elif event == 'log_stats':
-                msg = formatted_msg
-            elif event == 'show_inventory':
-                msg = formatted_msg
-            elif event == 'bot_random_pause':
-                msg = "Taking a random break until {}.".format(data["resume"])
-            elif event == 'bot_random_alive_pause':
-                msg = "Taking a random break until {}.".format(data["resume"])
-            elif event == 'pokemon_caught':
-                if isinstance(self.pokemons, list): # alert_catch is a plain list
-                    if data["pokemon"] in self.pokemons or "all" in self.pokemons:
-                        msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
-                    else:
-                        return
-                else: # alert_catch is a dict
-                    if data["pokemon"] in self.pokemons:
-                        trigger = self.pokemons[data["pokemon"]]
-                    elif "all" in self.pokemons:
-                        trigger = self.pokemons["all"]
-                    else:
-                        return
-                    if (not "operator" in trigger or trigger["operator"] == "and") and data["cp"] >= trigger["cp"] and data["iv"] >= trigger["iv"] or ("operator" in trigger and trigger["operator"] == "or" and (data["cp"] >= trigger["cp"] or data["iv"] >= trigger["iv"])):
-                        msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
-                    else:
-                        return
             elif event == 'egg_hatched':
                 msg = "Egg hatched with a {} CP: {}, IV: {} {}".format(data["name"], data["cp"], data["iv_ads"], data["iv_pct"])
             elif event == 'bot_sleep':
