@@ -506,21 +506,7 @@ class TelegramHandler(EventHandler):
                 self.bot.logger.error("Unable to start Telegram bot; master: {}, exception: {}".format(selfmaster, pprint.pformat(inst)))
                 return
         try:
-            # prepare message to send
-            if event == 'level_up':
-                msg = "level up ({})".format(data["current_level"])
-            elif event == 'pokemon_caught':
-                msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
-            elif event == 'egg_hatched':
-                msg = "Egg hatched with a {} CP: {}, IV: {} {}".format(data["name"], data["cp"], data["iv_ads"], data["iv_pct"])
-            elif event == 'bot_sleep':
-                msg = "I am too tired, I will take a sleep till {}.".format(data["wake"])
-            elif event == 'catch_limit':
-                msg = "*You have reached your daily catch limit, quitting.*"
-            elif event == 'spin_limit':
-                msg = "*You have reached your daily spin limit, quitting.*"
-            else:
-                msg = formatted_msg
+            msg = formatted_msg
         except KeyError:
             msg = "Error on event {}".format(event)
             pass
@@ -539,45 +525,3 @@ class TelegramHandler(EventHandler):
                 # master not numeric?...
                 # cannot send event notifications to non-numeric master (yet), so quitting
                 return
-            master = self.master
-
-            if event == 'level_up':
-                msg = "level up ({})".format(data["current_level"])
-            elif event == 'log_stats':
-                msg = formatted_msg
-            elif event == 'show_inventory':
-                msg = formatted_msg
-            elif event == 'bot_random_pause':
-                msg = "Taking a random break until {}.".format(data["resume"])
-            elif event == 'bot_random_alive_pause':
-                msg = "Taking a random break until {}.".format(data["resume"])
-            elif event == 'pokemon_caught':
-                if isinstance(self.pokemons, list): # alert_catch is a plain list
-                    if data["pokemon"] in self.pokemons or "all" in self.pokemons:
-                        msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
-                    else:
-                        return
-                else: # alert_catch is a dict
-                    if data["pokemon"] in self.pokemons:
-                        trigger = self.pokemons[data["pokemon"]]
-                    elif "all" in self.pokemons:
-                        trigger = self.pokemons["all"]
-                    else:
-                        return
-                    if (not "operator" in trigger or trigger["operator"] == "and") and data["cp"] >= trigger["cp"] and data["iv"] >= trigger["iv"] or ("operator" in trigger and trigger["operator"] == "or" and (data["cp"] >= trigger["cp"] or data["iv"] >= trigger["iv"])):
-                        msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
-                    else:
-                        return
-            elif event == 'egg_hatched':
-                msg = "Egg hatched with a {} CP: {}, IV: {} {}".format(data["name"], data["cp"], data["iv_ads"], data["iv_pct"])
-            elif event == 'bot_sleep':
-                msg = "I am too tired, I will take a sleep till {}.".format(data["wake"])
-            elif event == 'catch_limit':
-                self.tbot.send_player_stats_to_chat(master)
-                msg = "*You have reached your daily catch limit, quitting.*"
-            elif event == 'spin_limit':
-                self.tbot.send_player_stats_to_chat(master)
-                msg = "*You have reached your daily spin limit, quitting.*"
-            else:
-                return
-            self.tbot.sendMessage(chat_id=master, parse_mode='Markdown', text=msg)
