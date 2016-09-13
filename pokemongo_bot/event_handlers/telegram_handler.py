@@ -543,10 +543,6 @@ class TelegramHandler(EventHandler):
 
             if event == 'level_up':
                 msg = "*Level up ({})*".format(data["current_level"])
-            elif event == 'log_stats':
-                msg = formatted_msg
-            elif event == 'show_inventory':
-                msg = formatted_msg
             elif event == 'bot_random_pause':
                 msg = "*Taking a random break until {}.*".format(data["resume"])
             elif event == 'bot_random_alive_pause':
@@ -554,7 +550,7 @@ class TelegramHandler(EventHandler):
             elif event == 'pokemon_caught':
                 if isinstance(self.pokemons, list): # alert_catch is a plain list
                     if data["pokemon"] in self.pokemons or "all" in self.pokemons:
-                        msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
+                        msg = "*Caught {}* CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
                     else:
                         return
                 else: # alert_catch is a dict
