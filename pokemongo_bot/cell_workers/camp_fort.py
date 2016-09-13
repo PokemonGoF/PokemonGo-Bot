@@ -117,7 +117,6 @@ class CampFort(BaseTask):
                 self.stay_until = 0
                 return WorkerResult.SUCCESS
 
-            self.logger.info("Moving to destination at %s meters: %s forts, %s lured", round(cluster[4], 2), cluster[3], cluster[2])
             self.emit_event(
                 'moving_to_destination',
                 formatted="Moving to destination at {} meters: {} forts, {} lured").format(
