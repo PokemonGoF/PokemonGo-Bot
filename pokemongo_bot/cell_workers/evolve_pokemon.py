@@ -8,9 +8,8 @@ from pokemongo_bot.base_task import BaseTask
 import time
 
 class Counter(dict):
-    def __missing__(self,key):
+    def __missing__(self, key):
         return 0
-
 
 class EvolvePokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
