@@ -347,7 +347,7 @@ class PokemonOptimizer(BaseTask):
 
         satisfy = True
 
-        for a, v in req[0].items():
+        for a, v in req.items():
             value = getattr(pokemon, a, 0)
 
             if (type(v) is str) or (type(v) is unicode):
