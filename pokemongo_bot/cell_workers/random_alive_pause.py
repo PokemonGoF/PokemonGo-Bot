@@ -73,7 +73,7 @@ class RandomAlivePause(BaseTask):
         self._next_duration = self._get_next_duration()
         self.emit_event(
             'next_random_alive_pause',
-            formatted="Next random alive pause at {time}, for a duration of {duration}",
+            formatted="Next *random alive pause* at {time}, for a duration of {duration}",
             data={
                 'time': str(self._next_pause.strftime("%H:%M:%S")),
                 'duration': str(timedelta(seconds=self._next_duration))
@@ -126,7 +126,7 @@ class RandomAlivePause(BaseTask):
 
             self.emit_event(
                 'bot_random_alive_pause',
-                formatted="Taking a random break keeping bot alive for {time_hms}, will resume at {resume}",
+                formatted="Taking a *random break keeping bot alive* for {time_hms}, will resume at {resume}",
                 data={
                     'time_hms': sleep_hms,
                     'resume': resume.strftime("%H:%M:%S")
