@@ -121,7 +121,7 @@ class UpdateLiveInventory(BaseTask):
         if not is_debug:
             self.emit_event(
                 'show_inventory',
-                formatted="{items}",
+                formatted="*{items}*",
                 data={
                     'items': items
                 }
