@@ -126,9 +126,10 @@ configs/*
 !configs/config.json.path.example
 !configs/config.json.map.example
 !configs/path.example.json
-!config.json.cluster.example
-!config.json.optimizer.example
 !config.json.campfort.example
+!config.json.cluster.example
+!config.json.hunter.example
+!config.json.optimizer.example
 !auth.json.example
 
 # Virtualenv folders
