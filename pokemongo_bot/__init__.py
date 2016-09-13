@@ -17,6 +17,7 @@ import uuid
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
 from pgoapi.utilities import f2i, get_cell_ids
+from s2sphere import Cell, CellId, LatLng
 
 import cell_workers
 from base_task import BaseTask
@@ -204,6 +205,11 @@ class PokemonGoBot(object):
         self.event_manager.register_event('location_cache_ignored')
 
         self.event_manager.register_event('debug')
+        self.event_manager.register_event('refuse_to_sit')
+        self.event_manager.register_event('new_destination')
+        self.event_manager.register_event('moving_to_destination')
+        self.event_manager.register_event('arrived_at_destination')
+        self.event_manager.register_event('staying_at_destination')
 
         #  ignore candy above threshold
         self.event_manager.register_event(
@@ -710,6 +716,7 @@ class PokemonGoBot(object):
         forts = []
         wild_pokemons = []
         catchable_pokemons = []
+        nearby_pokemons = []
         for cell in cells:
             if "forts" in cell and len(cell["forts"]):
                 forts += cell["forts"]
@@ -717,20 +724,31 @@ class PokemonGoBot(object):
                 wild_pokemons += cell["wild_pokemons"]
             if "catchable_pokemons" in cell and len(cell["catchable_pokemons"]):
                 catchable_pokemons += cell["catchable_pokemons"]
+            if "nearby_pokemons" in cell and len(cell["nearby_pokemons"]):
+                latlng = LatLng.from_point(Cell(CellId(cell["s2_cell_id"])).get_center())
+
+                for p in cell["nearby_pokemons"]:
+                    p["latitude"] = latlng.lat().degrees
+                    p["longitude"] = latlng.lng().degrees
+                    p["s2_cell_id"] = cell["s2_cell_id"]
+
+                nearby_pokemons += cell["nearby_pokemons"]
 
         # If there are forts present in the cells sent from the server or we don't yet have any cell data, return all data retrieved
         if len(forts) > 1 or not self.cell:
             return {
                 "forts": forts,
                 "wild_pokemons": wild_pokemons,
-                "catchable_pokemons": catchable_pokemons
+                "catchable_pokemons": catchable_pokemons,
+                "nearby_pokemons": nearby_pokemons
             }
         # If there are no forts present in the data from the server, keep our existing fort data and only update the pokemon cells.
         else:
             return {
                 "forts": self.cell["forts"],
                 "wild_pokemons": wild_pokemons,
-                "catchable_pokemons": catchable_pokemons
+                "catchable_pokemons": catchable_pokemons,
+                "nearby_pokemons": nearby_pokemons
             }
 
     def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
