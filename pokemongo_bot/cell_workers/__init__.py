@@ -17,7 +17,7 @@ from follow_spiral import FollowSpiral
 from collect_level_up_reward import CollectLevelUpReward
 from follow_cluster import FollowCluster
 from update_live_stats import UpdateLiveStats
-from update_live_inventory import UpdateLiveInventory
+from update_web_inventory import UpdateWebInventory
 from catch_pokemon import CatchPokemon
 from complete_tutorial import CompleteTutorial
 from random_pause import RandomPause
