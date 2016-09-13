@@ -119,7 +119,7 @@ class CampFort(BaseTask):
 
             self.emit_event(
                 'moving_to_destination',
-                formatted="Moving to destination at {} meters: {} forts, {} lured").format(
+                formatted="Moving to destination at {} meters: {} forts, {} lured".format(
                 round(cluster[4], 2), cluster[3], cluster[2]
             )
             self.no_log_until = now + LOG_TIME_INTERVAL
