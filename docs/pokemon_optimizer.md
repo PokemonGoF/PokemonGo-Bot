@@ -17,14 +17,16 @@
         - [upgrade](#upgrade)
         - [upgrade_level](#upgrade_level)
         - [groups](#groups)
-        - [keep](#keep)
-            - [mode](#keep-mode)
-            - [names](#keep-names)
-            - [top](#keep-top)
-            - [sort](#keep-sort)
-            - [evolve](#keep-evolve)
-    - [Examples of configuration](#examples-of-configuration)
+        - [rules](#rules)
+            - [mode](#rule-mode)
+            - [names](#rule-names)
+            - [top](#rule-top)
+            - [sort](#rule-sort)
+            - [keep](#rule-keep)
+            - [evolve](#rule-evolve)
+            - [upgrade](#rule-upgrade)
 - [Eevee case](#eevee-case)
+- [FAQ](#faq)
 
 # About
 The Pokemon Optimizer manage transfer, evolution and upgrade of your Pokemon.
@@ -60,35 +62,31 @@ There is only one pass at each action.
                 "groups": {
                     "gym": ["Dragonite", "Snorlax", "Lapras", "Arcanine"]
                 },
-                "keep": [
+                "rules": [
                     {
                         "mode": "by_family",
                         "top": 1,
-                        "sort": [{"iv": 0.9}],
-                        "evolve": true,
-                        "upgrade": false
+                        "sort": ["iv"],
+                        "evolve": {"iv": 0.9}
                     },
                     {
                         "mode": "by_family",
                         "top": 1,
-                        "sort": [{"ncp": 0.9}],
-                        "evolve": true,
-                        "upgrade": false
+                        "sort": ["ncp"],
+                        "evolve": {"ncp": 0.9}
                     },
                     {
                         "mode": "by_family",
                         "top": 1,
-                        "sort": ["cp"],
-                        "evolve": false,
-                        "upgrade": false
+                        "sort": ["cp"]
                     },
                     {
                         "mode": "by_family",
-                        "names": ["gym"],
                         "top": 3,
-                        "sort": [{"iv": 0.9}, {"ncp": 0.9}],
-                        "evolve": true,
-                        "upgrade": true
+                        "names": ["gym"],
+                        "sort": ["iv", "ncp"],
+                        "evolve": {"iv": 0.9, "ncp": 0.9},
+                        "upgrade": {"iv": 0.9, "ncp": 0.9}
                     }
                 ]
             }
@@ -115,6 +113,7 @@ Enable or disable the task.
 | `min_slots_left` | `[0-N]`         | `5`     |
 
 The Pokemon Optimizer will be triggered when you have that number (or less) empty slots in your Pokemon Bag.
+<br>If this number is higher than your total bag capacity, the Pokemon Optimizer will run each time there is a Pokemon to either transfer, evolve or upgrade.
 
 [[back to top](#pokemon-optimizer)]
 
@@ -125,7 +124,7 @@ The Pokemon Optimizer will be triggered when you have that number (or less) empt
 
 The `transfer` parameter activate or deactivate the transfer of Pokemon.
 
-At `true`, you allow the Pokemon Optimizer to transfer every Pokemon that are not good enough to be kept according to your own criteria.
+At `true`, you allow the Pokemon Optimizer to transfer every Pokemon that are not good enough to be kept according to your criteria.
 <br>At `false`, and regardless of other parameters, no Pokemon is ever going to be transfered.
 
 Note that, whatever is the value you choose to give to that parameter, you will still see logs explaining which Pokemon are transfered.
@@ -161,10 +160,9 @@ This is the maximum time to wait after transferring a Pokemon.
 
 The `evolve` parameter activate or deactivate the evolution of Pokemon.
 
-At `true`, you allow the Pokemon Optimizer to evolve every Pokemon that are the best according to your own criteria.
+At `true`, you allow the Pokemon Optimizer to evolve every Pokemon that is meeting the evolution criteria.
 <br>You also allow it to evolve lower quality Pokemon when [`evolve_for_xp`](#evolve_for_xp) parameter is `true`.
 <br>At `false`, and regardless of other parameters, no Pokemon is ever going to be evolved.
-<br>`evolve` parameter can be deactivated separately for each rule (see [`evolve`](#keep-evolve)).
 
 Note that, whatever is the value you choose to give to that parameter, you will still see logs explaining which Pokemon are evolved.
 <br>The purpose of this is to show you what choices are made by the Pokemon Optimizer.
@@ -189,7 +187,7 @@ This is the duration of the evolution animation and time to wait after performin
 |-----------------|-----------------|---------|
 | `evolve_for_xp` | `true`, `false` | `true`  |
 
-Let you choose if you want the Pokemon Otimizer to use your candies to evolve low quality Pokemon.
+Let you choose if you want the Pokemon Optimizer to use your candies to evolve low quality Pokemon.
 
 Better quality Pokemon have priority for evolution and the Pokemon Optimizer will never evolve for xp if a better Pokemon is waiting for candies to evolve.
 <br>These low quality Pokemon will only be used if you have plenty of candies left after evolving your best Pokemon.
@@ -223,7 +221,7 @@ At `true`, no evolution will be performed unless we have an available lucky egg 
 |------------------------------|-----------------|---------|
 | `evolve_count_for_lucky_egg` | `[0-N]`         | `80`    |
 
-If you allow the Pokemon Optimizer to use a lucky egg, this parameter let you define the minimum number of Pokemons that must evolve when using a lucky egg.
+If you allow the Pokemon Optimizer to use a lucky egg, this parameter let you define the minimum number of Pokemon that must evolve when using a lucky egg.
 
 If a lucky egg is available, the Pokemon Optimizer is going to wait that number is reached to perform evolution.
 <br>If you do not have any available lucky egg, the Pokemon Optimizer will ignore this parameter and evolution will be performed without lucky egg.
@@ -249,11 +247,10 @@ Define whether you allow the Pokemon Optimizer to use a lucky egg before evolvin
 
 The `upgrade` parameter activate or deactivate the upgrade (power-up) of Pokemon.
 
-At `true`, you allow the Pokemon Optimizer to upgrade every Pokemon that are the best according to your own criteria.
+At `true`, you allow the Pokemon Optimizer to upgrade every Pokemon that is meeting the upgrade criteria.
 <br>If `evolve` is also activated, evolution has priority over upgrade.
 Which means that the Pokemon Optimizer is going to wait that a Pokemon is fully evolved before upgrading it.
 <br>At `false`, and regardless of other parameters, no Pokemon is ever going to be upgraded.
-<br>`upgrade` parameter can be deactivated separately for each rule (see [`upgrade`](#keep-upgrade)).
 
 Note that, whatever is the value you choose to give to that parameter, you will still see logs explaining which Pokemon are upgraded.
 <br>The purpose of this is to show you what choices are made by the Pokemon Optimizer.
@@ -295,7 +292,7 @@ The higher the level is, the more costly in candies and stardust it becomes to u
 | `groups`  | (see below)     | `{}`    |
 
 You can define `groups` of Pokemon to help you restrict rules to a specific set of Pokemon.
-<br>You can then use these `groups` names in the [`names`](#keep-names) parameter of your rule to refer to list of Pokemon
+<br>You can then use these `groups` names in the [`names`](#rule-names) parameter of your rule to refer to list of Pokemon
 
 `groups` are list of Pokemon names:
 ```
@@ -308,15 +305,15 @@ You can define `groups` of Pokemon to help you restrict rules to a specific set 
 ```
 
 A same Pokemon name can appear in different `groups`. And `groups` may reference each others.
-<br>Just like [`names`](#keep-names), you can also negate a group by preceding its name by a `!` or `-`.
+<br>Just like [`names`](#rule-names), you can also negate a group by preceding its name by a `!` or `-`.
 <br>Including `groups` and negating others allow you to create group unions and/or intersections.
 
 [[back to top](#pokemon-optimizer)]
 
-### keep
+### rules
 | Parameter | Possible values | Default     |
 |-----------|-----------------|-------------|
-| `keep`    | (see below)     | (see below) |
+| `rules`   | (see below)     | (see below) |
 
 This parameter is a list that contains as many element as you want.
 <br>Each element of that list define a rule that select what Pokemon are the best.
@@ -326,27 +323,49 @@ The conjunction of all rules define the list of all Pokemon to keep.
 Every Pokemon not selected is candidate for transfer.
 
 ```
-[
-    {"mode": "by_family", "top": 1, "sort": [{"iv": 0.9}], "evolve": True, "upgrade": False},
-    {"mode": "by_family", "top": 1, "sort": [{"ncp": 0.9}], "evolve": True, "upgrade": False},
-    {"mode": "by_family", "top": 1, "sort": ["cp"], "evolve": False, "upgrade": False},
-    {"mode": "by_family", "top": 3, "names": ["gym"], "sort": [{"iv": 0.9}, {"ncp": 0.9}], "evolve": True, "upgrade": True}
+"rules": [
+    {
+        "mode": "by_family",
+        "top": 1,
+        "sort": ["iv"],
+        "evolve": {"iv": 0.9}
+    },
+    {
+        "mode": "by_family",
+        "top": 1,
+        "sort": ["ncp"],
+        "evolve": {"ncp": 0.9}
+    },
+    {
+        "mode": "by_family",
+        "top": 1,
+        "sort": ["cp"]
+    },
+    {
+        "mode": "by_family",
+        "top": 3,
+        "names": ["gym"],
+        "sort": ["iv", "ncp"],
+        "evolve": {"iv": 0.9, "ncp": 0.9},
+        "upgrade": {"iv": 0.9, "ncp": 0.9}
+    }
 ]
 ```
 
 [[back to top](#pokemon-optimizer)]
 
-#### keep mode
+#### rule mode
 | Parameter | Possible values                            | Default       |
 |-----------|--------------------------------------------|---------------|
 | `mode`    | `"by_pokemon"`, `"by_family"`, `"overall"` | `"by_family"` |
 
 The `mode` define how the Pokemon Optimizer is going to apply the rule.
-- `"by_pokemon"` will apply the rule for each Pokemon.
-<br>In that mode, each Pokemon will be compared to other Pokemon of the same name.
+- `"by_pokemon"` will apply the rule for each individual pokemon (eg. Bulbasaur, Ivysaur, Venusaur, Charmander etc.)
+<br>In that mode, each Pokemon will be compared to other Pokemon of the same type.
 <br>This is the most conservative mode and the one that will result in the most number of Pokemon kept.
 
 - `"by_family"` will apply the rule for each Pokemon family.
+A family is the group of a Pokemon with all its evolutions.
 <br>In that mode, each Pokemon will be compared to other Pokemon of the same family.
 
 - `"overall"` will apply the rule to the whole bag.
@@ -355,7 +374,7 @@ The `mode` define how the Pokemon Optimizer is going to apply the rule.
 
 [[back to top](#pokemon-optimizer)]
 
-#### keep names
+#### rule names
 | Parameter | Possible values | Default                  |
 |-----------|-----------------|--------------------------|
 | `names`   | list of strings | `[]` = All Pokemon names |
@@ -365,13 +384,13 @@ The `names` allow you to restrict a rule to a selected set of Pokemon.
 <br>You can negate a name by preceding it by a `!` or `-`. In that case, the rule apply to all except the negated names.
 <br>You can combine Pokemon names and group names together in the same list.
 
-By default, rules apply to all Pokemons.
+By default, rules apply to all Pokemon.
 - In `by_family` mode, if a Pokemon name is present in the `names` list, it refer to all Pokemon in that Pokemon family.
 - In `overall` mode, the `names` list behave as a filter on the whole Pokemon bag.
 
 [[back to top](#pokemon-optimizer)]
 
-#### keep top
+#### rule top
 | Parameter | Possible values       | Default |
 |-----------|-----------------------|---------|
 | `top`     | `0`, `]0-1[`, `[1-N]` | `0`     |
@@ -393,13 +412,14 @@ This value define how many Pokemon, at the top of your selection, you wish to ke
 
 [[back to top](#pokemon-optimizer)]
 
-#### keep sort
+#### rule sort
 | Parameter | Possible values | Default |
 |-----------|-----------------|---------|
 | `sort`    | (see below)     | `[]`    |
 
 Define according to which criteria you want to sort your Pokemon.
-<br>Available criteria are:
+
+###### Available criteria
 
 | Criteria             | Description                                                                  |
 |----------------------|------------------------------------------------------------------------------|
@@ -422,112 +442,80 @@ Define according to which criteria you want to sort your Pokemon.
 | `hp_max`             | max health points                                                            |
 
 You can put multiple criteria in the list by separating them by a comma: `"sort": ["iv", "cp"]`
-<br>If multiple criteria are present, Pokemon will be ranked according to the first, then if equals the second, etc...
+<br>If multiple criteria are present, Pokemon will be ranked according to the first criteria, then, if equals, to the second criteria, etc.
 
-In addition to define sorting criteria, the `sort` list may contain minimum requirements for evolution and upgrade:
-- `"top": 1, "sort": ["iv"], "evolve": True` will rank Pokemon by `iv`.
-<br>It will keep and evolve the best of them.
-- `"top": 1, "sort": [{"iv": 0.9}], "evolve": True` will rank Pokemon by `iv`.
-<br>It will keep the best of them and evolve it only if its `iv` is greater than `0.9`.
-- `"top": 3, "sort": [{"iv": 0.9}, {"cp": 1200}], "evolve": True` will rank Pokemon by `iv` and then `cp`.
-<br>It will keep the top 3 of them and evolve them only if their `iv` is greater than `0.9` and their `cp` greater than `1200`.
-
-[[back to top](#pokemon-optimizer)]
-
-#### keep evolve
+#### rule keep
 | Parameter | Possible values | Default |
 |-----------|-----------------|---------|
-| `evolve`  | `true`, `false` | `true`  |
+| `keep`    | (see below)     | `true`  |
 
-The parameter allow you to selectively control what Pokemon to evolve.
+Define minimum requirements to keep the Pokemon. Only Pokemon meeting these minimum requirements will be sorted.
+By default, if `keep` is not provided or is empty, all Pokemon will be sorted.
 
-At `true`, all Pokemon selected and meeting the minimum evolution criteria (see [`sort`](#keep-sort)) will be evolved.
-<br>At `false`, Pokemon selected will not be eligible for evolution, unless they are also selected by another rule that allow them to evolve.
+The parameter can be a boolean value (`true` or `false`) or a list a criteria.
+The available criteria are the same as for the [`sort`](#available-criteria) parameter.
+
+The minimum requirement values can be a single value or a range.
+<br>They can also be a negative value if you wish to keep Pokemon below a certain criteria:
+
+- `"keep": false` will not rank any Pokemon. That is like deactivating the rule.
+- `"keep": true` will rank all Pokemon.
+- `"keep": {"iv": 0.9}` will only rank Pokemon with `iv` greater than `0.9`.
+- `"keep": {"iv": 0.9, "cp": 1200}` will only rank Pokemon with `iv` greater than `0.9` and `cp` greater than `1200`.
+- `"keep": {"iv": 0.9}` will only rank Pokemon with `iv` greater than `0.9`.
+- `"keep": {"cp": -20}` will only rank Pokemon with `cp` lower than `20`.
+- `"keep": {"cp": [10, 20]}` will only rank Pokemon with `cp` between `10` and `20`.
+- `"keep": {"iv": [[0.3, 0.5], [0.9, 1.0]]}` will only rank Pokemon with `iv` between `0.3` and `0.5` or between `0.9` and `1.0`.
 
 [[back to top](#pokemon-optimizer)]
 
-#### keep upgrade
+#### rule evolve
 | Parameter | Possible values | Default |
 |-----------|-----------------|---------|
-| `upgrade` | `true`, `false` | `false` |
+| `evolve`  | (see below)     | `true`  |
 
-The parameter allow you to selectively control what Pokemon to upgrade.
+Define minimum requirements to evolve the Pokemon. Only Pokemon meeting these minimum requirements will be evolved.
+By default, if `evolve` is not provided or is empty, no Pokemon will be evolved.
 
-At `true`, all Pokemon selected and meeting the minimum upgrade criteria (see [`sort`](#keep-sort)) will be upgraded.
-<br>At `false`, Pokemon selected will not be eligible for upgrade, unless they are also selected by another rule that allow them to upgrade.
+The parameter can be a boolean value (`true` or `false`) or a list a criteria.
+The available criteria are the same as for the [`sort`](#available-criteria) parameter.
+
+The minimum requirement values can be a single value or a range.
+<br>They can also be a negative value if you wish to evolve Pokemon below a certain criteria:
+
+- `"evolve": false` will not try to evolve any of the Pokemon selected.
+- `"evolve": true` will try to evolve all Pokemon selected.
+- `"evolve": {"iv": 0.9}` will only evolve Pokemon with `iv` greater than `0.9`.
+- `"evolve": {"iv": 0.9, "cp": 1200}` will only evolve Pokemon with `iv` greater than `0.9` and `cp` greater than `1200`.
+- `"evolve": {"iv": 0.9}` will only evolve Pokemon with `iv` greater than `0.9`.
+- `"evolve": {"cp": -20}` will only evolve Pokemon with `cp` lower than `20`.
+- `"evolve": {"cp": [10, 20]}` will only evolve Pokemon with `cp` between `10` and `20`.
+- `"evolve": {"iv": [[0.3, 0.5], [0.9, 1.0]]}` will only evolve Pokemon with `iv` between `0.3` and `0.5` or between `0.9` and `1.0`.
 
 [[back to top](#pokemon-optimizer)]
 
-## Examples of configuration
-> Keep the 2 best `iv` of every single Pokemon, and evolve them if they are over 0.9 `iv`. 
+#### rule upgrade
+| Parameter | Possible values | Default |
+|-----------|-----------------|---------|
+| `upgrade` | (see below)     | `false` |
 
-```
-{
-    "mode": "by_pokemon",
-    "top": 2,
-    "sort": [{"iv": 0.9}],
-    "evolve": true
-},
-```
+Define minimum requirements to upgrade the Pokemon. Only Pokemon meeting these minimum requirements will be upgraded.
+By default, if `upgrade` is not provided or is empty, no Pokemon will be upgraded.
 
-> Keep my 10 best `cp` Dragonite and Snorlax to fight gyms. 
+The parameter can be a boolean value (`true` or `false`) or a list a criteria.
+The available criteria are the same as for the [`sort`](#available-criteria) parameter.
 
-```
-{
-    "mode": "by_pokemon",
-    "names": ["Dragonite", "Snorlax"]
-    "top": 10,
-    "sort": ["cp"],
-    "evolve": false
-},
-```
+The minimum requirement values can be a single value or a range.
+<br>They can also be a negative value if you wish to evolve Pokemon below a certain criteria:
 
-> Keep my Gyarados with the best moveset for attack.
-
-```
-{
-    "mode": "by_pokemon",
-    "names": ["Gyarados"]
-    "top": 1,
-    "sort": ["dps_attack"],
-    "evolve": false
-},
-```
-
-> I don't want you to use my candies for my loved Pokemon, But for others, it is ok.
-
-```
-"groups": {
-    "my loves ones" : ["Dragonite", "Snorlax", "Caterpie"]
-},
-"keep": [
-    {
-        "mode": "by_family",
-        "names": ["my loves ones"]
-        "top": 1,
-        "sort": ["iv"],
-        "evolve": false
-    },
-    {
-        "mode": "by_family",
-        "names": ["!my loves ones"]
-        "top": 1,
-        "sort": ["iv"],
-        "evolve": true
-    }
-    // + Exclude `my loves ones` from any other rule
-]
-```
-
-> Do not touch my Dragonites !
-
-```
-{
-    "mode": "by_pokemon",
-    "names": ["Dragonite"]
-},
-// + Exclude Dragonite from any other rule
-```
+- `"upgrade": false` will not try to upgrade any of the Pokemon selected.
+- `"upgrade": true` will try to upgrade all Pokemon selected.
+- `"upgrade": {"iv": 0.9}` will only upgrade Pokemon with `iv` greater than `0.9`.
+- `"upgrade": {"iv": 0.9, "cp": 1200}` will only upgrade Pokemon with `iv` greater than `0.9` and `cp` greater than `1200`.
+- `"upgrade": {"iv": 0.9}` will only upgrade Pokemon with `iv` greater than `0.9`.
+- `"upgrade": {"cp": -20}` will only upgrade Pokemon with `cp` lower than `20`.
+- `"upgrade": {"cp": [10, 20]}` will only upgrade Pokemon with `cp` between `10` and `20`.
+- `"upgrade": {"iv": [[0.3, 0.5], [0.9, 1.0]]}` will only upgrade Pokemon with `iv` between `0.3` and `0.5` or between `0.9` and `1.0`.
 
 [[back to top](#pokemon-optimizer)]
 
@@ -535,12 +523,80 @@ At `true`, all Pokemon selected and meeting the minimum upgrade criteria (see [`
 
 For Eevee Pokemon family, and any other family with multiple paths of evolution, the Pokemon Optimizer behaves as if the chances of getting a specific evolution were random and equal.
 <br>In practice, here are the effects you might notice regarding Eevee family:
-- If you are missing one version of evolution, every Eevee is a possible candidate to the become the best Eevee you have for that specific evolution.
+- If you are missing one version of evolution, every Eevee is a possible candidate to become the best Eevee you have for that specific evolution.
 <br>So as long as an evolution version is missing, the Pokemon Optimizer will tentatively try to keep and evolve all Eevees.
 
-- Once you have all version of evolution, things are not yet simple. Every every better than the worst evolution you have is a candidate to replace it.
+- Once you have all version of evolution, things are not yet simple. Every Pokemon better than the worst evolution you have is a candidate to replace it.
 <br>The Pokemon Optimizer will tentatively try to keep and evolve all Eevees that may replace the worst evolution you have.
 
 - If you deactivate the global `evolve` parameter, the Pokemon Optimizer will not apply above rules since it considers you are manually controlling the evolution of your Eevees.
+
+[[back to top](#pokemon-optimizer)]
+
+# FAQ
+#### How do I keep the 2 best `iv` of every single Pokemon, and evolve them if they are over `0.9` `iv` ?
+
+```
+{
+    "mode": "by_pokemon",
+    "top": 2,
+    "sort": ["iv"],
+    "evolve": {"iv": 0.9}
+},
+```
+
+#### How do I keep the 2 best `iv` of every single Pokemon, and evolve them if they are over `0.9` `ncp` ?
+
+```
+{
+    "mode": "by_pokemon",
+    "top": 2,
+    "sort": ["iv"],
+    "evolve": {"ncp": 0.9}
+},
+```
+
+#### How do I keep my 10 best `cp` Dragonite and Snorlax to fight gyms ?
+
+```
+{
+    "mode": "by_pokemon",
+    "names": ["Dragonite", "Snorlax"]
+    "top": 10,
+    "sort": ["cp"]
+},
+```
+
+#### How do I keep the Gyarados with the best moveset for attack ?
+
+```
+{
+    "mode": "by_pokemon",
+    "names": ["Gyarados"]
+    "top": 1,
+    "sort": ["dps_attack"]
+},
+```
+
+#### How do I keep the Gyarados with the best fast attack ?
+
+```
+{
+    "mode": "by_pokemon",
+    "names": ["Gyarados"]
+    "top": 1,
+    "sort": ["dps1"]
+},
+```
+
+#### How do I keep all my Poliwag with `cp` less that `20` ?
+
+```
+{
+    "mode": "by_pokemon",
+    "names": ["Poliwag"]
+    "keep": {"cp": -20}
+},
+```
 
 [[back to top](#pokemon-optimizer)]
