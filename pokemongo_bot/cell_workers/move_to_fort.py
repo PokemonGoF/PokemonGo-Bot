@@ -33,7 +33,7 @@ class MoveToFort(BaseTask):
         return has_space_for_loot or self.ignore_item_count or self.bot.softban
 
     def is_attracted(self):
-        return (self.lure_distance > 0)
+        return self.lure_distance > 0
 
     def work(self):
         if not self.should_run():
@@ -79,21 +79,17 @@ class MoveToFort(BaseTask):
                 self.emit_event(
                     'moving_to_lured_fort',
                     formatted="*Moving towards pokestop* {} - {} (attraction of lure {})".format(
-                        fort_name, distance, format_dist(self.lure_distance, unit)),
+                        u"{}".format(fort_name), format_dist(dist, unit), format_dist(self.lure_distance, unit)),
                     data=fort_event_data
                 )
             else:
                 self.emit_event(
                     'moving_to_fort',
-                    formatted="*Moving towards pokestop* {} - {}".format(fort_name, format_dist(dist, unit)),
+                    formatted="*Moving towards pokestop* {} - {}".format(u"{}".format(fort_name), format_dist(dist, unit)),
                     data=fort_event_data
                 )
 
-            step_walker = walker_factory(self.walker,
-                self.bot,
-                lat,
-                lng
-            )
+            step_walker = walker_factory(self.walker, self.bot, lat, lng)
 
             if not step_walker.step():
                 return WorkerResult.RUNNING
