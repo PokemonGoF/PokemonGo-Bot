@@ -272,21 +272,21 @@ class NicknamePokemon(BaseTask):
         if result == 0:
             self.emit_event(
                 'unset_pokemon_nickname',
-                formatted="Pokemon {old_name} nickname unset.",
+                formatted="Pokemon {} nickname unset.".format(old_nickname),
                 data={'old_name': old_nickname}
             )
             pokemon.update_nickname(new_nickname)
         elif result == 1:
             self.emit_event(
                 'rename_pokemon',
-                formatted="Pokemon {old_name} renamed to {current_name}",
+                formatted="*{} Renamed* to {}".format(old_nickname, new_nickname),
                 data={'old_name': old_nickname, 'current_name': new_nickname}
             )
             pokemon.update_nickname(new_nickname)
         elif result == 2:
             self.emit_event(
                 'pokemon_nickname_invalid',
-                formatted="Nickname {nickname} is invalid",
+                formatted="Nickname {} is invalid".format(new_nickname),
                 data={'nickname': new_nickname}
             )
         else:
