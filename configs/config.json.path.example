@@ -39,6 +39,21 @@
         }
       },
       {
+        "type": "BuddyPokemon",
+        "config": {
+          "enabled": true,
+          "buddy_list": "dratini, magikarp",
+          "best_in_family": true,
+          "// candy_limit = 0 means no limit, so it will never change current buddy": {},
+          "candy_limit": 0,
+          "// force_first_change = true will always change buddy at start removing current one": {},
+          "force_first_change": false,
+          "buddy_change_wait_min": 3,
+          "buddy_change_wait_min": 5,
+          "min_interval": 120
+        }
+      },
+      {
         "type": "IncubateEggs",
         "config": {
           "enabled": true,
