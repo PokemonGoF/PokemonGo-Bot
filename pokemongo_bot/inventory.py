@@ -2,7 +2,6 @@ from __future__ import print_function
 import json
 import logging
 import os
-import time
 from collections import OrderedDict
 
 from pokemongo_bot.base_dir import _base_dir
@@ -1299,7 +1298,6 @@ class Inventory(object):
                 json.dump(json_inventory, outfile)
         except (IOError, ValueError) as e:
             self.bot.logger.info('[x] Error while opening inventory file for write: %s' % e, 'red')
-            pass
         except:
             raise FileIOException("Unexpected error writing to {}".web_inventory)
 

@@ -35,12 +35,13 @@ from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from pokemongo_bot.base_dir import _base_dir
 from .worker_result import WorkerResult
-from .tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
+from .tree_config_builder import ConfigException
+from .tree_config_builder import MismatchTaskApiVersion
+from .tree_config_builder import TreeConfigBuilder
 from .inventory import init_inventory, player
 from sys import platform as _platform
 from pgoapi.protos.POGOProtos.Enums import BadgeType_pb2
 from pgoapi.exceptions import AuthException
-import struct
 
 
 class FileIOException(Exception):
@@ -1403,7 +1404,6 @@ class PokemonGoBot(object):
                     cached_recent_forts = json.load(f)
             except (IOError, ValueError) as e:
                 self.logger.info('[x] Error while opening cached forts: %s' % e)
-                pass
             except:
                 raise FileIOException("Unexpected error opening {}".cached_forts_path)
 

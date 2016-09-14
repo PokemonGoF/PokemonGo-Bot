@@ -1,10 +1,10 @@
-import json
-import os
 
 from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.inventory import Pokemons, Pokemon, Attack
+from pokemongo_bot.inventory import Attack
+from pokemongo_bot.inventory import Pokemon
+from pokemongo_bot.inventory import Pokemons
 from operator import attrgetter
 from random import randrange
 

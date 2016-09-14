@@ -4,7 +4,6 @@ from __future__ import absolute_import
 import os
 import time
 import json
-import logging
 import sys
 
 from random import random, randrange, uniform

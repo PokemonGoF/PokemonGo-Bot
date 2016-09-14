@@ -6,7 +6,9 @@ import gpxpy.gpx
 import json
 import time
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.cell_workers.utils import distance, i2f, format_dist
+from pokemongo_bot.cell_workers.utils import distance
+from pokemongo_bot.cell_workers.utils import format_dist
+from pokemongo_bot.cell_workers.utils import i2f
 from pokemongo_bot.human_behaviour import sleep
 from pokemongo_bot.walkers.walker_factory import walker_factory
 from pokemongo_bot.worker_result import WorkerResult

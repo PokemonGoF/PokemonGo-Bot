@@ -4,12 +4,13 @@ import logging
 import random, base64, struct
 import hashlib
 import os
-import json
 from pgoapi.exceptions import (ServerSideRequestThrottlingException,
                                NotLoggedInException, ServerBusyOrOfflineException,
                                NoPlayerPositionSetException, EmptySubrequestChainException,
                                UnexpectedResponseException)
-from pgoapi.pgoapi import PGoApi, PGoApiRequest, RpcApi
+from pgoapi.pgoapi import PGoApi
+from pgoapi.pgoapi import PGoApiRequest
+from pgoapi.pgoapi import RpcApi
 from pgoapi.protos.POGOProtos.Networking.Requests.RequestType_pb2 import RequestType
 from pgoapi.utilities import get_time
 from .human_behaviour import sleep, gps_noise_rng
