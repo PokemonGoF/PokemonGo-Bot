@@ -43,16 +43,15 @@ class ResponseMapper():
     ENCOUNTER = 'encounter'
     SPAWNPOINT = 'spawnpoint'
 
+# TODO: Increase the JSON param mapping flexibility by adding 'optional' and 'required' values
 class Sniper(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
     MIN_SECONDS_ALLOWED_FOR_CELL_CHECK = 10
     CACHE_LIST_MAX_SIZE = 200
 
-    # Constructor (invokes base constructor, which invokes initialize())
     def __init__(self, bot, config):
         super(Sniper, self).__init__(bot, config)
 
-    # Constructor dispatcher
     def initialize(self):
         self.cached_pokemons = []
         self.is_mappings_good = False
@@ -69,7 +68,13 @@ class Sniper(BaseTask):
         self.max_consecutive_catches = self.config.get('max_consecutive_catches', 1)
         self.min_balls_to_teleport_and_catch = self.config.get('min_balls_to_teleport_and_catch', 10)
         self.min_iv_to_ignore_catch_list = self.config.get('min_iv_to_ignore_catch_list', 100)
-        self.optional_mappings = [ResponseMapper.IV, ResponseMapper.ID, ResponseMapper.NAME, ResponseMapper.ENCOUNTER, ResponseMapper.SPAWNPOINT]
+        self.optional_mappings = [
+            ResponseMapper.IV,
+            ResponseMapper.ID,
+            ResponseMapper.NAME,
+            ResponseMapper.ENCOUNTER,
+            ResponseMapper.SPAWNPOINT
+        ]
         self.mappings = {
             ResponseMapper.IV: self.config.get('mappings', {}).get('pokemon_iv', 'iv'),
             ResponseMapper.ID: self.config.get('mappings', {}).get('pokemon_id', 'id'),
@@ -105,7 +110,7 @@ class Sniper(BaseTask):
 
         # Skip if already cached
         if self._is_cached(pokemon):
-            self._trace('{} was already caught! Skipping...'.format(pokemon['name']))
+            self._trace('{} was already seen! Skipping...'.format(pokemon['name']))
             return False
 
         # Skip if not enought balls
@@ -139,7 +144,7 @@ class Sniper(BaseTask):
 
         # If social is enabled, trust it. If encounter and spawnpoint IDs arent valid, verify them!
         exists = self.is_social
-        verify = pokemon.get('encounter_id') and pokemon.get('spawn_point_id')
+        verify = pokemon.get('encounter_id') is None or pokemon.get('spawn_point_id') is None
 
         # If information verification have to be done, do so
         if verify:
