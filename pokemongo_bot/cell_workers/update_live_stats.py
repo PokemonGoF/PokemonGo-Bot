@@ -319,7 +319,7 @@ class UpdateLiveStats(BaseTask):
         # Create stats strings.
         available_stats = {
             'login': "{}".format(player_stats['login']),
-            'username': "*{}*".format(player_stats['username']),
+            'username': "{}".format(player_stats['username']),
             'uptime': 'Uptime: {}'.format(player_stats['uptime']),
             'km_walked': '{:,.2f}km walked'.format(player_stats['km_walked']),
             'level': 'Level {}'.format(player_stats['level']),
