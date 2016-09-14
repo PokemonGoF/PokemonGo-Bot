@@ -686,9 +686,18 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'buddy_candy_earned',
-            parameters=('candy', 'family')
+            parameters=('candy', 'family', 'quantity')
         )
         self.event_manager.register_event('buddy_candy_fail')
+        self.event_manager.register_event(
+            'buddy_next_reward',
+            parameters=('name', 'km_walked', 'km_total')
+        )
+        self.event_manager.register_event('buddy_keep_active')
+        self.event_manager.register_event(
+            'buddy_not_available',
+            parameters=('name')
+        )
 
     def tick(self):
         self.health_record.heartbeat()
