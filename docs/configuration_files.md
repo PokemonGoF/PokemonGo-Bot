@@ -647,42 +647,36 @@ If you want to make your bot behave as it did prior to the catch_simulation upda
 }
 ```
 
-## Sniping _(MoveToLocation)_
+## Sniping _(Sniper)_
 [[back to top](#table-of-contents)]
 
 ### Description
 [[back to top](#table-of-contents)]
 
-This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map instance. For information on how to properly setup PokemonGo-Map have a look at the Github page of the project [here](https://github.com/PokemonGoMap/PokemonGo-Map). There is an example config in `config/config.json.map.example`
+This task will fetch pokemon informations from either a custom url or from the social feature. You can also use the old PokemonGo-Map project. For information on how to properly setup PokemonGo-Map have a look at the Github page of the project [here](https://github.com/PokemonGoMap/PokemonGo-Map). You can also use [this](https://github.com/YvesHenri/PogoLocationFeeder), which is an adapted version of the application that NecroBot used to snipe. There is an example config in `config/config.json.map.example`.
 
 ### Options
 [[back to top](#table-of-contents)]
 
-* `Address` - Address of the webserver of PokemonGo-Map. ex: `http://localhost:5000`
-* `Mode` - Which mode to run sniping on
-   - `distance` - Will move to the nearest pokemon
-   - `priority` - Will move to the pokemon with the highest priority assigned (tie breaking by distance)
-* `prioritize_vips` - Will prioritize vips in distance and priority mode above all normal pokemon if set to true
-* `min_time` - Minimum time the pokemon has to be available before despawn
-* `min_ball` - Minimum amount of balls required to run task
-* `max_sniping_distance` - Maximum distance the pokemon is allowed to be caught when sniping. (m)
-* `max_walking_distance` - Maximum distance the pokemon is allowed to be caught when sniping is turned off. (m)
-* `snipe`:
+* `url` - Address that returns a JSON with pokemons information. For the PokemonGo-Map, use `http://localhost:5000/raw_data`. This only needs to be specified if mode is `url`.
+* `mode` - The mode on which the sniper will fetch the informations. (default: social)
+   - `social` - Information will come from the social network. Make sure to enable it (enable_social)!
+   - `url` - Information will come from the given url.
+* `max_consecutive_catches` - Number of catch attempts before terminating the task. (default: 1)
+* `min_balls_to_teleport_and_catch` - Minimum amount of balls required to run task. (default: 10)
+* `min_iv_to_ignore_catch_list` - This will skip the catch list if the value is greater than the target's IV. This only works if JSON response contains an IV value. (default: 100)
+* `order_by` - 
    - `True` - Will teleport to target pokemon, encounter it, teleport back then catch it
    - `False` - Will walk normally to the pokemon
-* `update_map` - disable/enable if the map location should be automatically updated to the bots current location
-* `catch` - A dictionary of pokemon to catch with an assigned priority (higher => better)
-* `snipe_high_prio_only` - Whether to snipe pokemon above a certain threshold.
-* `snipe_high_prio_threshold` - The threshold number corresponding with the `catch` dictionary.
-*   - Any pokemon above this threshold value will be caught by teleporting to its location, and getting back to original location if `snipe` is `True`.
-*   - Any pokemon under this threshold value will make the bot walk to the Pokemon target whether `snipe` is `True` or `False`.
-*   `max_extra_dist_fort` : Percentage of extra distance allowed to move to a fort on the way to the targeted Pokemon
-*   `debug` : Output additional debugging information
-*   `skip_rounds` : Try to snipe every X rounds
-*   `update_map_min_distance_meters` : Update map if more than X meters away
-*   `update_map_min_time_sec` : Update map if older than X seconds
-*   `snipe_sleep_sec` : Sleep for X seconds after snipes
-*   `snipe_max_in_chain` : Maximum snipes in chain
+* `mappings` - The values below should map each of the JSON response params. For example: different urls will provide different JSON response formats. Map bellow their corresponding values:
+   - `latitude` - The JSON param that corresponds to the latitude. It will work if a single param is used for both `latitude` and `longitude`, eg.: "coords": "1.2345, 6.7890" (default: latitude)
+   - `longitude` - The JSON param that corresponds to the longitude. It will work if a single param is used for both `latitude` and `longitude`, eg.: "coords": "1.2345, 6.7890" (default: longitude)
+   - `pokemon_iv` - The JSON param that corresponds to the pokemon IV. Only certain sources provide this info. NOTE: social does not provide this info! (default: iv)
+   - `pokemon_id` - The JSON param that corresponds to the pokemon ID. (default: id)
+   - `pokemon_name` - The JSON param that corresponds to the pokemon name. (default: name)
+   - `encounter_id` - The JSON param that corresponds to encounter ID. This value is very unlikely to be provided by third-party urls. However, it is safely updated internally. (default: encounter_id)
+   - `spawnpoint_id` - The JSON param that corresponds to spawnpoint ID. This value is very unlikely to be provided by third-party urls. However, it is safely updated internally. (default: spawn_point_id)
+* `catch` - A dictionary of pokemon to catch with an assigned priority (higher => better).
 
 #### Example
 [[back to top](#table-of-contents)]
@@ -691,22 +685,24 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
 {
   \\ ...
   {
-    "type": "MoveToMapPokemon",
+    "type": "Sniper",
     "config": {
-      "address": "http://localhost:5000",
-      "//NOTE: Change the max_sniping_distance to adjust the max sniping range (m)": {},
-      "max_sniping distance": 10000,
-      "//NOTE: Change the max_walking_distance to adjust the max walking range when snipe is off (m)": {},
-      "max__walking_distance": 500,
-      "min_time": 60,
-      "min_ball": 50,
-      "prioritize_vips": true,
-      "snipe": true,
-      "snipe_high_prio_only": true,
-      "snipe_high_prio_threshold": 400,
-      "update_map": true,
-      "mode": "priority",
-      "max_extra_dist_fort": 10,
+      "enabled": true,
+      "mode": "social",
+      "url": "",
+      "order_by": [ "missing", "iv", "threshold" ],
+      "max_consecutive_catches": 1,
+      "min_balls_to_teleport_and_catch": 10,
+      "min_iv_to_ignore_catch_list": 100,
+      "mappings": {
+        "latitude": "latitude",
+        "longitude": "longitude",
+        "pokemon_iv": "iv",
+        "pokemon_id": "id",
+        "pokemon_name": "name",
+        "encounter_id": "encounter_id",
+        "spawnpoint_id": "spawn_point_id"
+      },
       "catch": {
         "Aerodactyl": 1000,
         "Ditto": 900,

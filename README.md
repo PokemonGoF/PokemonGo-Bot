@@ -84,6 +84,7 @@ If you do not want any data to be gathered, you can turn off this feature by set
  * Reaver01
  * rarshonsky
  * earthchie
+ * YvesHenri
  * haykuro
  * 05-032
  * sinistance
