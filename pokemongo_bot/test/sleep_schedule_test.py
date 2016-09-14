@@ -41,7 +41,7 @@ class SleepScheduleTestCase(unittest.TestCase):
 
     @patch('pokemongo_bot.sleep_schedule.datetime', FakeDatetime)
     def test_get_next_time(self):
-        self.setNow(datetime(year=2016, month=8, day=0o1, hour=8, minute=0))
+        self.setNow(datetime(year=2016, month=8, day=01, hour=8, minute=0))
 
         next_time = self.worker1._get_next_sleep_schedule()[0]
         from_date = datetime(year=2016, month=8, day=1, hour=12, minute=15)
@@ -53,7 +53,7 @@ class SleepScheduleTestCase(unittest.TestCase):
     @unittest.skipIf(SleepSchedule.SCHEDULING_MARGIN != timedelta(minutes=10), "Modifed SCHEDULING_MARGIN detected")
     @patch('pokemongo_bot.sleep_schedule.datetime', FakeDatetime)
     def test_get_next_time_called_near_activation_time(self):
-        self.setNow(datetime(year=2016, month=8, day=0o1, hour=14, minute=51))
+        self.setNow(datetime(year=2016, month=8, day=01, hour=14, minute=51))
 
         next_time = self.worker1._get_next_sleep_schedule()[0]
         expected_start = datetime(year=2016, month=8, day=1, hour=23, minute=00)
@@ -65,8 +65,8 @@ class SleepScheduleTestCase(unittest.TestCase):
         self.setNow(datetime(year=2016, month=8, day=1, hour=11, minute=25))
 
         next = self.worker1._get_next_sleep_schedule()[0]
-        from_date = datetime(year=2016, month=8, day=0o1, hour=12, minute=15)
-        to_date = datetime(year=2016, month=8, day=0o1, hour=12, minute=25)
+        from_date = datetime(year=2016, month=8, day=01, hour=12, minute=15)
+        to_date = datetime(year=2016, month=8, day=01, hour=12, minute=25)
 
         self.assertGreaterEqual(next, from_date)
         self.assertLessEqual(next, to_date)
@@ -81,7 +81,7 @@ class SleepScheduleTestCase(unittest.TestCase):
 
     @patch('pokemongo_bot.sleep_schedule.datetime', FakeDatetime)
     def test_start_within_sleep_range_beginning_previous_day(self):
-        self.setNow(datetime(year=2016, month=8, day=1, hour=0o2, minute=00))
+        self.setNow(datetime(year=2016, month=8, day=1, hour=02, minute=00))
 
         sleep_now = self.worker1._get_next_sleep_schedule()[4]
 
@@ -103,8 +103,8 @@ class SleepScheduleTestCase(unittest.TestCase):
         self.setNow(datetime(year=2016, month=8, day=1, hour=19, minute=0))
 
         next = self.worker2._get_next_sleep_schedule()[0]
-        from_date = datetime(year=2016, month=8, day=0o2, hour=12, minute=15)
-        to_date = datetime(year=2016, month=8, day=0o2, hour=12, minute=25)
+        from_date = datetime(year=2016, month=8, day=02, hour=12, minute=15)
+        to_date = datetime(year=2016, month=8, day=02, hour=12, minute=25)
 
         self.assertGreaterEqual(next, from_date)
         self.assertLessEqual(next, to_date)
