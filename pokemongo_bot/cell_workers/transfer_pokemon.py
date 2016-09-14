@@ -130,10 +130,10 @@ class TransferPokemon(BaseTask):
         release_config = self._get_release_config_for(pokemon.name)
 
         if (keep_best_mode
-                and not release_config.has_key('never_release')
-                and not release_config.has_key('always_release')
-                and not release_config.has_key('release_below_cp')
-                and not release_config.has_key('release_below_iv')):
+                and 'never_release' not in release_config
+                and 'always_release' not in release_config
+                and 'release_below_cp' not in release_config
+                and 'release_below_iv' not in release_config):
             return True
 
         cp_iv_logic = release_config.get('logic')

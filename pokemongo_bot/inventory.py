@@ -1,3 +1,4 @@
+from __future__ import print_function
 import json
 import logging
 import os
@@ -1426,13 +1427,13 @@ def refresh_inventory(data=None):
     try:
         _inventory.refresh(data)
     except AttributeError:
-        print '_inventory was not initialized'
+        print('_inventory was not initialized')
 
 def jsonify_inventory():
     try:
         return _inventory.jsonify_inventory()
     except AttributeError:
-        print '_inventory was not initialized'
+        print('_inventory was not initialized')
         return []
 
 def update_web_inventory():

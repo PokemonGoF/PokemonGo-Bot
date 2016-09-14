@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 import gpxpy
 import gpxpy.gpx
 import json
@@ -11,7 +12,7 @@ from pokemongo_bot.walkers.walker_factory import walker_factory
 from pokemongo_bot.worker_result import WorkerResult
 from pgoapi.utilities import f2i
 from random import uniform
-from utils import getSeconds, format_dist
+from .utils import getSeconds, format_dist
 from datetime import datetime as dt, timedelta
 
 STATUS_MOVING = 0
