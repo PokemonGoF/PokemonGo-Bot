@@ -16,7 +16,7 @@ sudo apt-get install build-essential autoconf libtool pkg-config make python2.7-
 ####
 if you are on a different Linux OS you maybe have to adapt things like:
 
-- package mananger (for example yum instead of apt-get)
+- package manager (for example yum instead of apt-get)
 - package names
 
 #####Mac
@@ -25,9 +25,9 @@ brew install --devel protobuf
 brew install  autoconf libtool pkg-config wget git
 ```
 ####Mac + Linux installation
-make shure you installed everything above
+make sure you installed everything above
 
-- get pip for pyton2.7
+- get pip for python2.7
 ```bash
 wget https://bootstrap.pypa.io/get-pip.py
 python2.7 get-pip.py
@@ -47,9 +47,10 @@ cd PokemonGo-Bot
 ```bash
 pip install virtualenv
 virtualenv .
+source bin/activate
 ```
 ####
-- install the requirements and get the needen encryption.so
+- install the requirements and get the needed encryption.so
 
 (we move `encrypt.so` to the root folder of the Bot so no need to edit the config regarding that)
 ```bash
@@ -71,19 +72,19 @@ cp configs/auth.json.example configs/auth.json
 vi configs/auth.json
 ```
 ####
-- make shure your git repo is up to date
-(make shure you are in the bot folder and activated virtualenv)
+- make sure your git repo is up to date
+(make sure you are in the bot folder and activated virtualenv)
 ```bash
 git pull
 pip install -r requirements.txt
 ```
 ####
-- finaly start the bot
+- finally start the bot
 ```bash
 ./run.sh
 ```
 ####
-- after reboot or closing the terminal at every new start go into the folder of the PokemonGo-Bot by going into the folder where you startet installing it an then
+- after reboot or closing the terminal at every new start go into the folder of the PokemonGo-Bot by going into the folder where you started installing it and then
 ```bash
 cd PokemonGo-Bot
 #activate virtualenv and start
@@ -117,7 +118,7 @@ pip2 install --upgrade -r C:/Python27/PokemonGo-Bot/requirements.txt
 ```
 
 ##### Get encrypt.so and encrypt.dll or encrypt_64.dll
-Due to copywrite on the encrypt.so, encrypt.dll and encrypt_64.dll we are not directly hosting it. Please find a copy elsewhere on the internet and compile it yourself. We accept no responsibility should you encounter any problems with files you download elsewhere.
+Due to copyright on the encrypt.so, encrypt.dll and encrypt_64.dll we are not directly hosting it. Please find a copy elsewhere on the internet and compile it yourself. We accept no responsibility should you encounter any problems with files you download elsewhere.
 Try asking around our Slack chat **(Just say the word "encrypt" and Slackbot will give you info)**!
 
 Download it to the `C:/Python27/PokemonGo-Bot/` folder

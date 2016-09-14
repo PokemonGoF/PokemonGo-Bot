@@ -168,7 +168,8 @@ class TransferPokemon(BaseTask):
         if logic_to_function[cp_iv_logic](*release_results.values()):
             self.emit_event(
                 'future_pokemon_release',
-                formatted="Releasing {pokemon} [CP {cp}] [IV {iv}] based on rule: CP < {below_cp} {cp_iv_logic} IV < {below_iv}",
+                formatted="*Releasing {}* CP: {}, IV: {} | based on rule: CP < {} {} IV < {}".format(pokemon.name, pokemon.cp, pokemon.iv,
+                                                                                release_cp, cp_iv_logic.upper(),release_iv),
                 data={
                     'pokemon': pokemon.name,
                     'cp': pokemon.cp,
@@ -176,7 +177,7 @@ class TransferPokemon(BaseTask):
                     'below_cp': release_cp,
                     'cp_iv_logic': cp_iv_logic.upper(),
                     'below_iv': release_iv
-                }
+                },
             )
 
         return logic_to_function[cp_iv_logic](*release_results.values())
@@ -204,13 +205,13 @@ class TransferPokemon(BaseTask):
         self.bot.metrics.released_pokemon()
         self.emit_event(
             'pokemon_release',
-            formatted='Exchanged {pokemon} [IV {iv}] [CP {cp}] [{candy} candies]',
             data={
                 'pokemon': pokemon.name,
                 'iv': pokemon.iv,
                 'cp': pokemon.cp,
                 'candy': candy.quantity
-            }
+            },
+            formatted="*{} Released* You now have {} {} candies".format(pokemon.name, candy.quantity, pokemon.name),
         )
         with self.bot.database as conn:
             c = conn.cursor()

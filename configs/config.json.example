@@ -21,6 +21,19 @@
         }
       },
       {
+        "type": "DiscordTask",
+        "config": {
+          "enabled": false,
+          "master": null,
+          "// old syntax, still supported: alert_catch": ["all"],
+          "// new syntax:": {},
+          "alert_catch": {
+            "all": {"operator": "and", "cp": 1300, "iv": 0.95},
+            "Snorlax": {"operator": "or", "cp": 900, "iv": 0.9}
+          }
+        }
+      },
+      {
         "//NOTE: This task MUST be placed on the top of task list": {},
         "type": "RandomAlivePause",
         "config": {
@@ -115,7 +128,7 @@
         "config": {
           "enabled": false,
           "nickname_above_iv": 0.9,
-          "nickname_template": "{iv_pct}_{iv_ads}",
+          "nickname_template": "{iv_pct}-{iv_ads}",
           "nickname_wait_min": 3,
           "nickname_wait_max": 5
         }
@@ -142,6 +155,7 @@
           "logic": "or",
           "min_evolve_speed": 25,
           "max_evolve_speed": 30,
+          "min_pokemon_to_be_evolved": 1,
           "use_lucky_egg": false
         }
       },
@@ -187,6 +201,7 @@
           "enabled": true,
           "catch_visible_pokemon": true,
           "catch_lured_pokemon": true,
+          "catch_incensed_pokemon": true,
           "min_ultraball_to_keep": 5,
           "berry_threshold": 0.35,
           "vip_berry_threshold": 0.9,
@@ -274,22 +289,31 @@
     "walk_min": 2.16,
     "alt_min": 500,
     "alt_max": 1000,
-    "sleep_schedule": [
-      {
-        "time": "12:00",
-        "duration": "5:30",
-        "time_random_offset": "00:30",
-        "duration_random_offset": "00:30",
-        "wake_up_at_location": ""
-      },
-      {
-        "time": "17:45",
-        "duration": "3:00",
-        "time_random_offset": "01:00",
-        "duration_random_offset": "00:30",
-        "wake_up_at_location": ""
-      }
-    ],
+
+    "sleep_schedule": {
+      "enabled": true,
+      "enable_reminder": false,
+      "reminder_interval": 600,
+      "entries": [
+        {
+          "enabled": true,
+          "time": "12:00",
+          "duration": "5:30",
+          "time_random_offset": "00:30",
+          "duration_random_offset": "00:30",
+          "wake_up_at_location": ""
+        },
+        {
+          "enabled": true,
+          "time": "17:45",
+          "duration": "3:00",
+          "time_random_offset": "01:00",
+          "duration_random_offset": "00:30",
+          "wake_up_at_location": ""
+        }
+      ]
+    },
+
     "gps_default_altitude": 8.0,
     "replicate_gps_xy_noise": false,
     "replicate_gps_z_noise": false,

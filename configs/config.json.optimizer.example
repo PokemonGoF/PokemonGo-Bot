@@ -19,35 +19,31 @@
 				"groups": {
 					"gym": ["Dragonite", "Snorlax", "Lapras", "Arcanine"]
 				},
-				"keep": [
+				"rules": [
 					{
 						"mode": "by_family",
 						"top": 1,
-						"sort": [{"iv": 0.9}],
-						"evolve": true,
-						"upgrade": false
+						"sort": ["iv"],
+						"evolve": {"iv": 0.9}
 					},
 					{
 						"mode": "by_family",
 						"top": 1,
-						"sort": [{"ncp": 0.9}],
-						"evolve": true,
-						"upgrade": false
+						"sort": ["ncp"],
+						"evolve": {"ncp": 0.9}
 					},
 					{
 						"mode": "by_family",
 						"top": 1,
-						"sort": ["cp"],
-						"evolve": false,
-						"upgrade": false
+						"sort": ["cp"]
 					},
 					{
 						"mode": "by_family",
 						"names": ["gym"],
 						"top": 3,
-						"sort": [{"iv": 0.9}, {"ncp": 0.9}],
-						"evolve": true,
-						"upgrade": true
+						"sort": ["iv", "ncp"],
+						"evolve": {"iv": 0.9, "ncp": 0.9},
+						"upgrade": {"iv": 0.9, "ncp": 0.9}
 					}
 				]
 			}
