@@ -120,6 +120,8 @@ class MoveToMapPokemon(BaseTask):
                 pokemon['is_vip'] = pokemon['name'] in self.bot.config.vips
             except TypeError:
                 continue
+            except KeyError:
+                continue
             if now > pokemon['disappear_time']:
                 continue
 
