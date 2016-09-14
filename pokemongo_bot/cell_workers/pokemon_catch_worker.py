@@ -283,28 +283,31 @@ class PokemonCatchWorker(BaseTask):
         if pokemon_config.get('always_catch', False):
             return True
 
-        catch_ncp = pokemon_config.get('catch_above_ncp', 0.8)
-        if pokemon.cp_percent > catch_ncp:
+        catch_ncp = pokemon_config.get('catch_above_ncp', pokemon.cp_percent)
+        if pokemon.cp_percent >= catch_ncp:
             catch_results['ncp'] = True
 
-        catch_cp = pokemon_config.get('catch_above_cp', 1200)
-        if pokemon.cp > catch_cp:
+        catch_cp = pokemon_config.get('catch_above_cp', pokemon.cp)
+        if pokemon.cp >= catch_cp:
             catch_results['cp'] = True
 
-        catch_below_cp = pokemon_config.get('catch_below_cp', 12000)
-        if pokemon.cp < catch_below_cp:
+        catch_below_cp = pokemon_config.get('catch_below_cp', pokemon.cp)
+        if pokemon.cp <= catch_below_cp:
             catch_results['cp'] = True
 
-        catch_iv = pokemon_config.get('catch_above_iv', 0.8)
-        if pokemon.iv > catch_iv:
+        catch_iv = pokemon_config.get('catch_above_iv', pokemon.iv)
+        if pokemon.iv >= catch_iv:
             catch_results['iv'] = True
 
 
         catch_results['fa'] = ( len(pokemon_config.get('fast_attack', [])) == 0 or unicode(pokemon.fast_attack) in map(lambda x: unicode(x), pokemon_config.get('fast_attack', [])))
         catch_results['ca'] = ( len(pokemon_config.get('charged_attack', [])) == 0 or unicode(pokemon.charged_attack) in map(lambda x: unicode(x), pokemon_config.get('charged_attack', [])))
 
+        self.bot.logger.debug("Our comparison results: FA: {}, CA: {}, CP: {}, NCP: {}, IV: {}".format(catch_results['fa'], catch_results['ca'], catch_results['cp'],  catch_results['ncp'], catch_results['iv']))
+
         # check if encountered pokemon is our locked pokemon
         if self.bot.capture_locked and self.bot.capture_locked != pokemon.pokemon_id:
+            self.bot.logger.debug("Pokemon locked!")
             return False
 
         cr = {
