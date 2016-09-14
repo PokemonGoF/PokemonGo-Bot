@@ -26,7 +26,7 @@ class OrderMode():
     MISSING = 'missing'
     THRESHOLD = 'threshold'
     VALUES = [IV, VIP, MISSING, THRESHOLD]
-    DEFAULT = [MISSING, IV, THRESHOLD]
+    DEFAULT = [MISSING, VIP, THRESHOLD]
 
 class SnipingMode():
     URL = 'url'
@@ -69,7 +69,7 @@ class Sniper(BaseTask):
         self.max_consecutive_catches = self.config.get('max_consecutive_catches', 1)
         self.min_balls_to_teleport_and_catch = self.config.get('min_balls_to_teleport_and_catch', 10)
         self.min_iv_to_ignore_catch_list = self.config.get('min_iv_to_ignore_catch_list', 100)
-        self.optional_mappings = ['iv', 'id', 'name', 'encounter', 'spawnpoint']
+        self.optional_mappings = [ResponseMapper.IV, ResponseMapper.ID, ResponseMapper.NAME, ResponseMapper.ENCOUNTER, ResponseMapper.SPAWNPOINT]
         self.mappings = {
             ResponseMapper.IV: self.config.get('mappings', {}).get('pokemon_iv', 'iv'),
             ResponseMapper.ID: self.config.get('mappings', {}).get('pokemon_id', 'id'),
@@ -233,7 +233,6 @@ class Sniper(BaseTask):
             except Exception as exception:
                 # If mappings contain errors, log it instead of forwarding the exception
                 self._error(exception)
-                self._trace('This is the dictionary: {}'.format(pokemon_dictionary_list[0])) # TODO: Remove
                 return pokemons
 
         # Build up the pokemon. Pops are used to destroy random attribute names and keep the known ones!

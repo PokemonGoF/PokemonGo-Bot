@@ -661,13 +661,15 @@ This task will fetch pokemon informations from either a custom url or from the s
 * `url` - Address that returns a JSON with pokemons information. For the PokemonGo-Map, use `http://localhost:5000/raw_data`. This only needs to be specified if mode is `url`.
 * `mode` - The mode on which the sniper will fetch the informations. (default: social)
    - `social` - Information will come from the social network. Make sure to enable it (enable_social)!
-   - `url` - Information will come from the given url.
+   - `url` - Information will come from the given url. Make sure to enter a valid URL!
 * `max_consecutive_catches` - Number of catch attempts before terminating the task. (default: 1)
 * `min_balls_to_teleport_and_catch` - Minimum amount of balls required to run task. (default: 10)
-* `min_iv_to_ignore_catch_list` - This will skip the catch list if the value is greater than the target's IV. This only works if JSON response contains an IV value. (default: 100)
-* `order_by` - 
-   - `True` - Will teleport to target pokemon, encounter it, teleport back then catch it
-   - `False` - Will walk normally to the pokemon
+* `min_iv_to_ignore_catch_list` - This will skip the catch list if the value is greater than the target's IV. This currently does not work with `social` mode and only works if the given `url` has this information. (default: 100)
+* `order_by` - The order on which you want to snipe. This can be one or multiple of the following values (default: [`missing`, `vip`, `threshold`]):
+   - `iv` - Order by IV, if any. See `min_iv_to_ignore_catch_list`.
+   - `vip` - Order by VIP.
+   - `missing` - Order by the target's pokedex missing status.
+   - `threshold` - Order by the threshold you have specified in the `catch` list.
 * `mappings` - The values below should map each of the JSON response params. For example: different urls will provide different JSON response formats. Map bellow their corresponding values:
    - `latitude` - The JSON param that corresponds to the latitude. It will work if a single param is used for both `latitude` and `longitude`, eg.: "coords": "1.2345, 6.7890" (default: latitude)
    - `longitude` - The JSON param that corresponds to the longitude. It will work if a single param is used for both `latitude` and `longitude`, eg.: "coords": "1.2345, 6.7890" (default: longitude)
