@@ -169,6 +169,8 @@ class PokemonOptimizer(BaseTask):
             setattr(pokemon, "dps2", pokemon.charged_attack.dps)
             setattr(pokemon, "dps_attack", pokemon.moveset.dps_attack)
             setattr(pokemon, "dps_defense", pokemon.moveset.dps_defense)
+            setattr(pokemon, "attack_perfection", pokemon.moveset.attack_perfection)
+            setattr(pokemon, "defense_perfection", pokemon.moveset.defense_perfection)
 
         self.ongoing_stardust_count = self.bot.stardust
 
