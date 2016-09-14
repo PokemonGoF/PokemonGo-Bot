@@ -27,7 +27,7 @@ class UpdateLiveInventory(BaseTask):
                    in seconds (defaults to 120 seconds).
                    The update interval cannot be accurate as workers run synchronously.
     show_all_multiple_lines : Logs all items on inventory using multiple lines.
-                              Ignores configuration of 'items' 
+                              Ignores configuration of 'items'
     items : An array of items to display and their display order (implicitly),
             see available items below (defaults to []).
 
@@ -69,7 +69,6 @@ class UpdateLiveInventory(BaseTask):
         else:
             self.bot.event_manager.register_event('show_inventory', parameters=('items',))
 
-
     def work(self):
         """
         Displays the items if necessary.
@@ -82,7 +81,7 @@ class UpdateLiveInventory(BaseTask):
         self.inventory = inventory.items()
         if self.show_all_multiple_lines:
             self.print_all()
-            self.print_inv(self.get_inventory_line(True),  True)
+            self.print_inv(self.get_inventory_line(True), True)
             return WorkerResult.SUCCESS
 
         line = self.get_inventory_line()
@@ -139,7 +138,6 @@ class UpdateLiveInventory(BaseTask):
 
         self.compute_next_update()
 
-
     def get_inventory_line(self, is_debug=False):
         """
         Generates a items string according to the configuration.
@@ -149,7 +147,8 @@ class UpdateLiveInventory(BaseTask):
         :rtype: string
         """
         available_items = {
-			'pokemon_bag': 'Pokemon: {:,}/{:,}'.format(inventory.Pokemons.get_space_used(), inventory.get_pokemon_inventory_size()),
+            'pokemon_bag': 'Pokemon: {:,}/{:,}'.format(inventory.Pokemons.get_space_used(),
+                                                       inventory.get_pokemon_inventory_size()),
             'space_info': 'Items: {:,}/{:,}'.format(self.inventory.get_space_used(),
                                                     self.inventory.get_space_used() + self.inventory.get_space_left()),
             'pokeballs': 'Pokeballs: {:,}'.format(self.inventory.get(1).count),
@@ -209,13 +208,13 @@ class UpdateLiveInventory(BaseTask):
                 inventory.get_pokemon_inventory_size()
             )
         )
-		
+
         self.logger.info(
             'Items: {}/{}'.format(
                 self.inventory.get_space_used(),
                 inventory.get_item_inventory_size()
-                )
             )
+        )
 
         self.logger.info(
             'PokeBalls: {} | GreatBalls: {} | UltraBalls: {} | MasterBalls: {}'.format(
@@ -223,24 +222,24 @@ class UpdateLiveInventory(BaseTask):
                 self.inventory.get(2).count,
                 self.inventory.get(3).count,
                 self.inventory.get(4).count
-                )
             )
+        )
 
         self.logger.info(
             'RazzBerries: {} | BlukBerries: {} | NanabBerries: {}'.format(
                 self.inventory.get(701).count,
                 self.inventory.get(702).count,
                 self.inventory.get(703).count
-                )
             )
+        )
 
         self.logger.info(
             'LuckyEgg: {} | Incubator: {} | TroyDisk: {}'.format(
                 self.inventory.get(301).count,
                 self.inventory.get(902).count,
                 self.inventory.get(501).count
-                )
             )
+        )
 
         self.logger.info(
             'Potion: {} | SuperPotion: {} | HyperPotion: {} | MaxPotion: {}'.format(
@@ -248,22 +247,22 @@ class UpdateLiveInventory(BaseTask):
                 self.inventory.get(102).count,
                 self.inventory.get(103).count,
                 self.inventory.get(104).count
-                )
             )
+        )
 
         self.logger.info(
             'Incense: {} | IncenseSpicy: {} | IncenseCool: {}'.format(
                 self.inventory.get(401).count,
                 self.inventory.get(402).count,
                 self.inventory.get(403).count
-                )
             )
+        )
 
         self.logger.info(
             'Revive: {} | MaxRevive: {}'.format(
                 self.inventory.get(201).count,
                 self.inventory.get(202).count
-                )
             )
+        )
 
         self.compute_next_update()

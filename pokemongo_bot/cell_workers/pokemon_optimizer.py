@@ -37,7 +37,8 @@ class PokemonOptimizer(BaseTask):
             self.pokemon_upgrade_cost = json.load(fd)
 
         if self.config.get("keep", None) is not None:
-            raise ConfigException("Pokemon Optimizer configuration has changed. See docs/pokemon_optimized.md or configs/config.json.optimizer.example")
+            raise ConfigException("Pokemon Optimizer configuration has changed. "
+                                  "See docs/pokemon_optimized.md or configs/config.json.optimizer.example")
 
         self.config_min_slots_left = self.config.get("min_slots_left", 5)
         self.config_transfer = self.config.get("transfer", False)
@@ -474,16 +475,19 @@ class PokemonOptimizer(BaseTask):
                     if self.config_evolve_only_with_lucky_egg:
                         skip_evolve = True
                         self.emit_event("skip_evolve",
-                                        formatted="Skipping evolution step. No lucky egg available")
+                                        formatted="*Skipping evolution step. No lucky egg available*")
                 elif evolve_xp_count < self.config_evolve_count_for_lucky_egg:
                     if self.config_evolve_only_with_lucky_egg:
                         skip_evolve = True
                         self.emit_event("skip_evolve",
-                                        formatted="Skipping evolution step. Not enough Pokemon to evolve with lucky egg: %s/%s" % (evolve_xp_count, self.config_evolve_count_for_lucky_egg))
+                                        formatted="Skipping evolution step. "
+                                                  "Not enough Pokemon to evolve with lucky egg:* {}/{}".format(
+                                                    evolve_xp_count, self.config_evolve_count_for_lucky_egg))
                     elif self.get_pokemon_slot_left() > self.config_min_slots_left:
                         skip_evolve = True
                         self.emit_event("skip_evolve",
-                                        formatted="Waiting for more Pokemon to evolve with lucky egg: %s/%s" % (evolve_xp_count, self.config_evolve_count_for_lucky_egg))
+                                        formatted="*Waiting for more Pokemon to evolve with lucky egg:* {}/{}".format(
+                                            evolve_xp_count, self.config_evolve_count_for_lucky_egg))
                 else:
                     self.use_lucky_egg()
 
@@ -522,7 +526,9 @@ class PokemonOptimizer(BaseTask):
             candy.add(candy_awarded)
 
         self.emit_event("pokemon_release",
-                        formatted="Exchanged {pokemon} [IV {iv}] [CP {cp}] [{candy} candies]",
+                        formatted="*Exchanged {}* (IV: {}) (CP: {}) ({} candies)".format(
+                            pokemon.name, pokemon.iv, pokemon.cp, candy.quantity
+                        ),
                         data={"pokemon": pokemon.name,
                               "iv": pokemon.iv,
                               "cp": pokemon.cp,
@@ -555,7 +561,7 @@ class PokemonOptimizer(BaseTask):
         if not response_dict:
             self.emit_event("lucky_egg_error",
                             level='error',
-                            formatted="Failed to use lucky egg!")
+                            formatted="*Failed to use lucky egg!*")
             return False
 
         result = response_dict.get("responses", {}).get("USE_ITEM_XP_BOOST", {}).get("result", 0)
@@ -564,18 +570,18 @@ class PokemonOptimizer(BaseTask):
             lucky_egg.remove(1)
 
             self.emit_event("used_lucky_egg",
-                            formatted="Used lucky egg ({amount_left} left).",
+                            formatted="*Used lucky egg* ({} left).".format(lucky_egg.count),
                             data={"amount_left": lucky_egg.count})
             return True
         elif result == ERROR_XP_BOOST_ALREADY_ACTIVE:
             self.emit_event("used_lucky_egg",
-                            formatted="Lucky egg already active ({amount_left} left).",
+                            formatted="*Lucky egg already active* ({} left).".format(lucky_egg.count),
                             data={"amount_left": lucky_egg.count})
             return True
         else:
             self.emit_event("lucky_egg_error",
                             level='error',
-                            formatted="Failed to use lucky egg!")
+                            formatted="*Failed to use lucky egg!*")
             return False
 
     def evolve_pokemon(self, pokemon):
@@ -602,7 +608,9 @@ class PokemonOptimizer(BaseTask):
             inventory.player().exp += xp
 
         self.emit_event("pokemon_evolved",
-                        formatted="Evolved {pokemon} [IV {iv}] [CP {cp}] [{candy} candies] [+{xp} xp]",
+                        formatted="*Evolved {}* (IV: {}) (CP: {}) ({} candies) (+{} xp)".format(
+                            pokemon.name, pokemon.iv, pokemon.cp, candy.quantity, xp
+                        ),
                         data={"pokemon": pokemon.name,
                               "iv": pokemon.iv,
                               "cp": pokemon.cp,
@@ -658,7 +666,9 @@ class PokemonOptimizer(BaseTask):
                 self.bot.stardust -= upgrade_stardust_cost
 
             self.emit_event("pokemon_upgraded",
-                            formatted="Upgraded {pokemon} [IV {iv}] [CP {cp}] [{candy} candies] [{stardust} stardust]",
+                            formatted="*Upgraded {}* (IV: {} (CP: {}) ({} candies) ({} stardust)".format(
+                                pokemon.name, pokemon.iv, pokemon.cp, candy.quantity, self.bot.stardust
+                            ),
                             data={"pokemon": pokemon.name,
                                   "iv": pokemon.iv,
                                   "cp": pokemon.cp,

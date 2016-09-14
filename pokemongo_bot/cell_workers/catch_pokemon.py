@@ -81,7 +81,19 @@ class CatchPokemon(BaseTask):
     		            'pokemon_name': Pokemons.name_for(pokemon['pokemon_id']),
     		        }
     		    )
-
+                self.emit_event(
+                    'catchable_pokemon',
+                    level='info',
+                    data={
+                        'pokemon_id': pokemon['pokemon_id'],
+                        'spawn_point_id': pokemon['spawn_point_id'],
+                        'encounter_id': pokemon['encounter_id'],
+                        'latitude': pokemon['latitude'],
+                        'longitude': pokemon['longitude'],
+                        'expiration_timestamp_ms': pokemon['expiration_timestamp_ms'],
+                        'pokemon_name': Pokemons.name_for(pokemon['pokemon_id']),
+                    }
+                )
                 self.add_pokemon(pokemon)
 
         if 'wild_pokemons' in self.bot.cell:
@@ -127,7 +139,7 @@ class CatchPokemon(BaseTask):
             self.emit_event(
                 'lured_pokemon_found',
                 level='info',
-                formatted='Lured pokemon at fort {fort_name} ({fort_id})',
+                formatted='*Lured pokemon at fort* {} ({})'.format(u"{}".format(fort_name), fort['id'],),
                 data=pokemon
             )
 
