@@ -6,7 +6,6 @@ from move_to_fort import MoveToFort
 from move_to_map_pokemon import MoveToMapPokemon
 from nickname_pokemon import NicknamePokemon
 from pokemon_catch_worker import PokemonCatchWorker
-from pokemon_hunter import PokemonHunter
 from pokemon_optimizer import PokemonOptimizer
 from transfer_pokemon import TransferPokemon
 from recycle_items import RecycleItems
