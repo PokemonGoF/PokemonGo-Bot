@@ -523,7 +523,6 @@ class TelegramHandler(EventHandler):
                 msg = formatted_msg
         except KeyError:
             msg = "Error on event {}".format(event)
-            pass
         # first handle subscriptions; they are independent of master setting.
         with self.bot.database as conn:
             subs = conn.execute("select uid, parameters, event_type from telegram_subscriptions where event_type in (?,'all','debug')", [event]).fetchall()

@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import absolute_import
 
 from pokemongo_bot import inventory
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.walkers.walker_factory import walker_factory
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
-from utils import distance, format_dist, fort_details
+from .utils import distance, format_dist, fort_details
 from datetime import datetime, timedelta
 
 
