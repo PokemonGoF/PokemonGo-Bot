@@ -10,27 +10,42 @@ from pgoapi.exceptions import (ServerSideRequestThrottlingException,
                                UnexpectedResponseException)
 from pgoapi.pgoapi import PGoApi, PGoApiRequest, RpcApi
 from pgoapi.protos.POGOProtos.Networking.Requests.RequestType_pb2 import RequestType
-from pgoapi.protos.POGOProtos.Networking.Envelopes.Signature_pb2 import Signature
 from pgoapi.utilities import get_time
 from human_behaviour import sleep, gps_noise_rng
 from pokemongo_bot.base_dir import _base_dir
 
+
 class PermaBannedException(Exception):
     pass
+
 
 class ApiWrapper(PGoApi, object):
     DEVICE_ID = None
 
     def __init__(self, config=None):
-        PGoApi.__init__(self)
+        self.config = config
+        self.gen_device_id()
+        device_info = {
+            "device_id": ApiWrapper.DEVICE_ID,
+            "device_brand": 'Apple',
+            "device_model": 'iPhone',
+            "device_model_boot": 'iPhone8,2',
+            "hardware_manufacturer": 'Apple',
+            "hardware_model": 'N66AP',
+            "firmware_brand": 'iPhone OS',
+            "firmware_type": '9.3.3'
+        }
+
+        PGoApi.__init__(self, device_info=device_info)
+
         # Set to default, just for CI...
         self.actual_lat, self.actual_lng, self.actual_alt = PGoApi.get_position(self)
         self.teleporting = False
         self.noised_lat, self.noised_lng, self.noised_alt = self.actual_lat, self.actual_lng, self.actual_alt
 
         self.useVanillaRequest = False
-        self.config = config
 
+    def gen_device_id(self):
         if self.config is None or self.config.username is None:
             ApiWrapper.DEVICE_ID = "3d65919ca1c2fc3a8e2bd7cc3f974c34"
             return
@@ -70,15 +85,23 @@ class ApiWrapper(PGoApi, object):
             self._position_alt
         )
 
-    def login(self, *args):
+    def login(self, provider, username, password):
         # login needs base class "create_request"
         self.useVanillaRequest = True
         try:
-            ret_value = PGoApi.login(self, *args)
-        finally:
-            # cleanup code
-            self.useVanillaRequest = False
-        return ret_value
+            PGoApi.set_authentication(
+                    self,
+                    provider,
+                    username=username,
+                    password=password
+                    )
+        except:
+            raise
+
+        response = PGoApi.app_simulation_login(self)
+        # cleanup code
+        self.useVanillaRequest = False
+        return response
 
     def set_position(self, lat, lng, alt=None, teleporting=False):
         self.actual_lat = lat
@@ -88,7 +111,7 @@ class ApiWrapper(PGoApi, object):
         else:
             alt = self.actual_alt
         self.teleporting = teleporting
-        
+
         if self.config.replicate_gps_xy_noise:
             lat_noise = gps_noise_rng(self.config.gps_xy_noise_range)
             lng_noise = gps_noise_rng(self.config.gps_xy_noise_range)
@@ -128,62 +151,7 @@ class ApiRequest(PGoApiRequest):
         return True
 
     def _call(self):
-        # Need fill in the location_fix
-        location_fix = [Signature.LocationFix(
-            provider='fused',
-            timestamp_snapshot=(get_time(ms=True) - RpcApi.START_TIME) - random.randint(100, 300),
-            latitude=self._position_lat,
-            longitude=self._position_lng,
-            horizontal_accuracy=round(random.uniform(50, 250), 7),
-            altitude=self._position_alt,
-            vertical_accuracy=random.randint(2, 5),
-            provider_status=3,
-            location_type=1
-        )]
-
-        sensor_info = Signature.SensorInfo(
-            timestamp_snapshot=(get_time(ms=True) - RpcApi.START_TIME) - random.randint(200, 400),
-            magnetometer_x=random.uniform(-0.139084026217, 0.138112977147),
-            magnetometer_y=random.uniform(-0.2, 0.19),
-            magnetometer_z=random.uniform(-0.2, 0.4),
-            angle_normalized_x=random.uniform(-47.149471283, 61.8397789001),
-            angle_normalized_y=random.uniform(-47.149471283, 61.8397789001),
-            angle_normalized_z=random.uniform(-47.149471283, 5),
-            accel_raw_x=random.uniform(0.0729667818829, 0.0729667818829),
-            accel_raw_y=random.uniform(-2.788630499244109, 3.0586791383810468),
-            accel_raw_z=random.uniform(-0.34825887123552773, 0.19347580173737935),
-            gyroscope_raw_x=random.uniform(-0.9703824520111084, 0.8556089401245117),
-            gyroscope_raw_y=random.uniform(-1.7470258474349976, 1.4218578338623047),
-            gyroscope_raw_z=random.uniform(-0.9681901931762695, 0.8396636843681335),
-            accel_normalized_x=random.uniform(-0.31110161542892456, 0.1681540310382843),
-            accel_normalized_y=random.uniform(-0.6574847102165222, -0.07290205359458923),
-            accel_normalized_z=random.uniform(-0.9943905472755432, -0.7463029026985168),
-            accelerometer_axes=3
-        )
-        device_info = Signature.DeviceInfo(
-            device_id=ApiWrapper.DEVICE_ID,
-            device_brand='Apple',
-            device_model='iPhone',
-            device_model_boot='iPhone8,2',
-            hardware_manufacturer='Apple',
-            hardware_model='N66AP',
-            firmware_brand='iPhone OS',
-            firmware_type='9.3.3'
-        )
-        activity_status = Signature.ActivityStatus(
-            # walking=True,
-            # stationary=True,
-            # automotive=True,
-            # tilting=True
-        )
-        signature = Signature(
-            location_fix=location_fix,
-            sensor_info=sensor_info,
-            device_info=device_info,
-            activity_status=activity_status,
-            unknown25=-8537042734809897855
-        )
-        return PGoApiRequest.call(self, signature)
+        return PGoApiRequest.call(self)
 
     def _pop_request_callers(self):
         r = self.request_callers
@@ -202,7 +170,8 @@ class ApiRequest(PGoApiRequest):
 
         try:
             # Permaban symptom is empty response to GET_INVENTORY and status_code = 3
-            if result['status_code'] == 3 and 'GET_INVENTORY' in request_callers and not result['responses']['GET_INVENTORY']:
+            if result['status_code'] == 3 and 'GET_INVENTORY' in request_callers and not result['responses'][
+                'GET_INVENTORY']:
                 raise PermaBannedException
         except KeyError:
             # Still wrong

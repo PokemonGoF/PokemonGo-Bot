@@ -1,7 +1,8 @@
 numpy==1.11.0
 networkx==1.11
--e git+https://github.com/joelgreen/pgoapi.git/@fa49ada8570b0817c5a73b9315ba010fa7a47874#egg=pgoapi
+-e git+https://github.com/pogodevorg/pgoapi.git/@5e550f656b318227f021801c796b8a80ad917b93#egg=pgoapi
 geopy==1.11.0
+geographiclib==1.46.3
 protobuf==3.0.0b4
 requests==2.10.0
 requests-mock==1.0.0
@@ -28,3 +29,4 @@ yoyo-migrations==5.0.3
 paho-mqtt==1.2
 Geohash==1.0
 python-telegram-bot==5.0.0
+discord_simple==0.0.1.15
