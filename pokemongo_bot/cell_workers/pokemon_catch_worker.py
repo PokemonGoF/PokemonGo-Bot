@@ -288,12 +288,10 @@ class PokemonCatchWorker(BaseTask):
             catch_results['ncp'] = True
 
         catch_cp = pokemon_config.get('catch_above_cp', pokemon.cp)
-        if pokemon.cp >= catch_cp:
+        catch_below_cp = pokemon_config.get('catch_below_cp', pokemon.cp)
+        if catch_cp <= pokemon.cp <= catch_below_cp:
             catch_results['cp'] = True
 
-        catch_below_cp = pokemon_config.get('catch_below_cp', pokemon.cp)
-        if pokemon.cp <= catch_below_cp:
-            catch_results['cp'] = True
 
         catch_iv = pokemon_config.get('catch_above_iv', pokemon.iv)
         if pokemon.iv >= catch_iv:
