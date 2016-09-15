@@ -262,6 +262,17 @@ class TelegramClass:
             # no filter
             event_filter = ".*"
         events = filter(lambda k: re.match(event_filter, k), self.bot.event_manager._registered_events.keys())
+        events.remove('vanish_log')
+        events.remove('eggs_hatched_log')
+        events.remove('catch_log')
+        events.remove('pokestop_log')
+        events.remove('load_cached_location')
+        events.remove('location_cache_ignored')
+        events.remove('softban_log')
+        events.remove('loaded_cached_forts')
+        events.remove('login_log')
+        events.remove('evolve_log')
+        events.remove('transfer_log')
         self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=("\n".join(events)))
 
     def showtop(self, chatid, num, order):
@@ -530,10 +541,24 @@ class TelegramHandler(EventHandler):
             for sub in subs:
                 (uid, params, event_type) = sub
                 if event != 'pokemon_caught' or self.catch_notify(data["pokemon"], int(data["cp"]), float(data["iv"]), params):
-                    if event_type == "debug":
+                    if event == 'vanish_log' \
+                            or event == 'eggs_hatched_log' \
+                            or event == 'catch_log' \
+                            or event == 'pokestop_log' \
+                            or event == 'load_cached_location' \
+                            or event == 'location_cache_ignored' \
+                            or event == 'softban_log' \
+                            or event == 'loaded_cached_forts' \
+                            or event == 'login_log' \
+                            or event == 'evolve_log' \
+                            or event == 'transfer_log':
+                        pass
+                    elif event_type == "debug":
                         self.bot.logger.info("[{}] {}".format(event, msg))
+
                     else:
                         self.tbot.sendMessage(chat_id=uid, parse_mode='Markdown', text=msg)
+
         if hasattr(self, "master") and self.master:
             if not unicode(self.master).isnumeric():
                 # master not numeric?...
