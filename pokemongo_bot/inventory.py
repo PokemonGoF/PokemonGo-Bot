@@ -169,9 +169,7 @@ class Pokedex(_BaseInventoryComponent):
         return pokemon_id in self._data
 
     def captured(self, pokemon_id):
-        if not self.seen(pokemon_id):
-            return False
-        return self._data[pokemon_id]['times_captured'] > 0
+        return self.seen(pokemon_id) and self._data.get(pokemon_id, {}).get('times_captured', 0) > 0
 
 
 class Item(object):

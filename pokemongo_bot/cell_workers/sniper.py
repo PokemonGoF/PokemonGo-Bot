@@ -118,14 +118,20 @@ class Sniper(BaseTask):
             self._trace('Not enought balls left! Skipping...')
             return False
 
-        # Skip if not in catch list, not a VIP and/or IV sucks (if any)
-        if pokemon['name'] not in self.catch_list:
-            # If its a VIP, ignore the IV check
-            if not pokemon['vip']:
-                # If target is not a VIP, check the IV (if any)
-                if pokemon['iv'] and pokemon['iv'] < self.min_iv_to_ignore_catch_list:
-                    self._trace('{} is not a target, nor a VIP and its IV sucks ({}). Skipping...'.format(pokemon['name'], pokemon['iv']))
+        # Skip if not in catch list, not a VIP and/or IV sucks (if any and url mode only)
+        if pokemon.get('name', '') not in self.catch_list:
+            # This is not in the catch list. Lets see if its a VIP one
+            if not pokemon.get('vip'):
+                # It is not a VIP either. Lets see if its IV is good (if any and url mode only)
+                if pokemon.get('iv', 0) < self.min_iv_to_ignore_catch_list and not self.mode == SnipingMode.URL:
+                    self._trace('{} is not listed to catch, nor a VIP and its IV sucks. Skipping...'.format(pokemon.get('name')))
                     return False
+                else:
+                    self._trace('{} has a decent IV ({}), therefore a valid target'.format(pokemon.get('name'), pokemon.get('iv')))
+            else:
+                self._trace('{} is a VIP, therefore a valid target'.format(pokemon.get('name')))
+        else:
+            self._trace('{} is in the catch list, therefore a valid target'.format(pokemon.get('name')))
 
         return True
 
@@ -142,9 +148,9 @@ class Sniper(BaseTask):
         self.bot.hb_locked = True
         self._teleport_to(pokemon)
 
-        # If social is enabled, trust it. If encounter and spawnpoint IDs arent valid, verify them!
-        exists = self.is_social
-        verify = pokemon.get('encounter_id') is None or pokemon.get('spawn_point_id') is None
+        # If social is enabled and if no verification is needed, trust it. Otherwise, update encounter and spawnpoint IDs!
+        verify = not pokemon.get('encounter_id') or not pokemon.get('spawn_point_id')
+        exists = not verify and self.is_social
 
         # If information verification have to be done, do so
         if verify:
@@ -164,9 +170,9 @@ class Sniper(BaseTask):
 
             # Make sure the target really/still exists (nearby_pokemon key names are game-bound!)
             for nearby_pokemon in nearby_pokemons:
-                nearby_pokemon_id = nearby_pokemon.get('pokemon_data', {}).get('pokemon_id') or nearby_pokemon.get('pokemon_id')
+                nearby_pokemon_id = nearby_pokemon.get('pokemon_data', {}).get('pokemon_id', 0) or nearby_pokemon.get('pokemon_id', 0)
 
-                if int(nearby_pokemon_id) == int(pokemon.get('id')):
+                if nearby_pokemon_id == pokemon.get('id', -1):
                     exists = True
 
                     # Also, if the IDs arent valid, update them (nearby_pokemon key names are game-bound!)
@@ -180,7 +186,7 @@ class Sniper(BaseTask):
             self._log('Encountered {}!'.format(pokemon['name']))
             self._teleport_back_and_catch(last_position, pokemon)
         else:
-            self._error('{} does not exist anymore. Skipping...'.format(pokemon['name']))
+            self._error('{} has failed the verification (Reasons: too far, caught, expired or blank). Skipping...'.format(pokemon['name']))
             self._teleport_back(last_position)
 
         # Save target and unlock heartbeat calls
@@ -233,10 +239,10 @@ class Sniper(BaseTask):
 
         # If were parsing for the first time, lets validate the mappings (use first item as a dictionary sample)
         if not self.is_mappings_good and pokemon_dictionary_list:
+            # If mappings contain errors, log it instead of forwarding the exception
             try:
                 self._validate_mappings(pokemon_dictionary_list[0])
             except Exception as exception:
-                # If mappings contain errors, log it instead of forwarding the exception
                 self._error(exception)
                 return pokemons
 
@@ -271,6 +277,12 @@ class Sniper(BaseTask):
             pokemon_dictonary['missing'] = not self.pokedex.captured(pokemon_dictonary.get('id'))
             pokemon_dictonary['threshold'] = self.catch_list.get(pokemon_dictonary.get('name'), 0)
 
+            # TODO: See below
+            # The plan is to only keep valid data in the broker, so if it hasnt ever been verified, we'll verify it and
+            # send the information back to the broker. Untill then, dont trust it.
+            # Sniper should send back to the broker whether it really exists or not. Use this in the snipe() function.
+            pokemon_dictonary['verified'] = pokemon_dictonary.get('verified', False)
+
             # Check whether this is a valid target
             if self.is_snipeable(pokemon_dictonary):
                 pokemons.append(pokemon_dictonary)
@@ -284,6 +296,7 @@ class Sniper(BaseTask):
         # Backup mqtt list and clean it for the next cycle
         mqtt_pokemon_list = self.bot.mqtt_pokemon_list
         self.bot.mqtt_pokemon_list = []
+        self._trace('Found {} pokemons from the broker'.format(len(mqtt_pokemon_list)))
 
         return self._parse_pokemons(mqtt_pokemon_list)
 
