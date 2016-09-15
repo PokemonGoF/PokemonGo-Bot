@@ -118,12 +118,12 @@ class Sniper(BaseTask):
             self._trace('Not enought balls left! Skipping...')
             return False
 
-        # Skip if not in catch list, not a VIP and/or IV sucks (if any and url mode only)
+        # Skip if not in catch list, not a VIP and/or IV sucks (if any)
         if pokemon.get('name', '') not in self.catch_list:
             # This is not in the catch list. Lets see if its a VIP one
             if not pokemon.get('vip'):
-                # It is not a VIP either. Lets see if its IV is good (if any and url mode only)
-                if pokemon.get('iv', 0) < self.min_iv_to_ignore_catch_list and not self.mode == SnipingMode.URL:
+                # It is not a VIP either. Lets see if its IV is good (if any)
+                if pokemon.get('iv', 0) < self.min_iv_to_ignore_catch_list:
                     self._trace('{} is not listed to catch, nor a VIP and its IV sucks. Skipping...'.format(pokemon.get('name')))
                     return False
                 else:
@@ -183,10 +183,10 @@ class Sniper(BaseTask):
 
         # If target exists, catch it, otherwise ignore
         if exists:
-            self._log('Encountered {}!'.format(pokemon['name']))
+            self._log('Meeting {} successful!'.format(pokemon['name']))
             self._teleport_back_and_catch(last_position, pokemon)
         else:
-            self._error('{} has failed the verification (Reasons: too far, caught, expired or blank). Skipping...'.format(pokemon['name']))
+            self._error('Could not meet {}. Reasons: too far, caught, expired or fake data. Skipping...'.format(pokemon['name']))
             self._teleport_back(last_position)
 
         # Save target and unlock heartbeat calls
@@ -296,7 +296,7 @@ class Sniper(BaseTask):
         # Backup mqtt list and clean it for the next cycle
         mqtt_pokemon_list = self.bot.mqtt_pokemon_list
         self.bot.mqtt_pokemon_list = []
-        self._trace('Found {} pokemons from the broker'.format(len(mqtt_pokemon_list)))
+        self._trace('Broker has returned {} pokemons'.format(len(mqtt_pokemon_list)))
 
         return self._parse_pokemons(mqtt_pokemon_list)
 
@@ -350,7 +350,7 @@ class Sniper(BaseTask):
     def _teleport_to(self, pokemon):
         self.emit_event(
             'sniper_teleporting',
-            formatted = 'Teleporting to {name} at [{latitude}; {longitude}]...',
+            formatted = 'Trying to meet {name} at [{latitude}; {longitude}]... (teleporting)',
             data = { 'name': pokemon['name'], 'latitude': pokemon['latitude'], 'longitude': pokemon['longitude'] }
         )
         self._teleport(pokemon['latitude'], pokemon['longitude'], self.altitude)
