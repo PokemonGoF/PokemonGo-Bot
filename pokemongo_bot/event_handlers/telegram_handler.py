@@ -273,6 +273,7 @@ class TelegramClass:
         events.remove('login_log')
         events.remove('evolve_log')
         events.remove('transfer_log')
+        events.remove('catchable_pokemon')
         self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=("\n".join(events)))
 
     def showtop(self, chatid, num, order):
@@ -551,6 +552,7 @@ class TelegramHandler(EventHandler):
                             or event == 'loaded_cached_forts' \
                             or event == 'login_log' \
                             or event == 'evolve_log' \
+                            or event == 'catchable_pokemon' \
                             or event == 'transfer_log':
                         pass
                     elif event_type == "debug":
