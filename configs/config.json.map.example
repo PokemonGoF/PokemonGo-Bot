@@ -196,10 +196,10 @@
       },
       {
         "type": "Sniper",
-		"config": {
+        "config": {
           "enabled": true,
 		  "mode": "social",
-		  "url": "",
+		  "url": "http://localhost:5000/raw_data",
 		  "order_by": [ "missing", "vip", "threshold" ],
 		  "max_consecutive_catches": 1,
 		  "min_balls_to_teleport_and_catch": 10,
