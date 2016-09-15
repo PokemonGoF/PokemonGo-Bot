@@ -200,7 +200,7 @@ class TransferPokemon(BaseTask):
 
         # We could refresh here too, but adding 1 saves a inventory request
         candy = inventory.candies().get(pokemon.pokemon_id)
-        candy.add(candy_awarded)
+        total_candy = candy + candy_awarded
         inventory.pokemons().remove(pokemon.unique_id)
         self.bot.metrics.released_pokemon()
         self.emit_event(
@@ -211,7 +211,7 @@ class TransferPokemon(BaseTask):
                 'cp': pokemon.cp,
                 'candy': candy.quantity
             },
-            formatted="*{} Released* You now have {} {} candies".format(pokemon.name, candy.quantity, pokemon.name),
+            formatted="*{} Released* You now have {} {} candies".format(pokemon.name, total_candy, pokemon.name),
         )
         with self.bot.database as conn:
             c = conn.cursor()
