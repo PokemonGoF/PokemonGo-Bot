@@ -206,6 +206,30 @@ class TelegramClass:
             else:
                 self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Pokemon Released Yet.\n")
 
+    def get_vanished(self, chat_id, num, order):
+        if not num.isnumeric():
+            num = 10
+        else:
+            num = int(num)
+
+        if order not in ["cp", "iv"]:
+            order = "iv"
+        with self.bot.database as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM vanish_log ORDER BY dated ASC LIMIT " + str(num))
+            vanished = cur.fetchall()
+            if vanished:
+                for x in vanished:
+                    res = (
+                        "*" + str(x[0]) + "*",
+                        "_CP:_ " + str(x[1]),
+                        "_IV:_ " + str(x[2]),
+                        "_NCP:_ " + str(x[4]),
+                        str(x[5])
+                    )
+                    self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+            else:
+                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Pokemon Vanished Yet.\n")
 
     def send_player_stats_to_chat(self, chat_id):
         stats = self._get_player_stats()
@@ -349,11 +373,12 @@ class TelegramClass:
                             "/showsubs - show current subscriptions",
                             "/events <filter> - show available events, filtered by regular expression  <filter>",
                             "/top <num> <cp-or-iv> - show top X pokemons, sorted by CP or IV",
-                            "/evolved <num> <cp-or-iv> - show last 25 pokemon evolved",
-                            "/hatched <num> <cp-or-iv> - show last 25 pokemon hatched",
+                            "/evolved <num> <cp-or-iv> - show last x pokemon evolved",
+                            "/hatched <num> <cp-or-iv> - show last x pokemon hatched",
                             "/caught <num> <cp-or-iv>- show last x pokemon caught",
                             "/pokestop - show last x pokestops",
-                            "/transfers <num> <cp-or-iv> - show last 25 transfers",
+                            "/transfers <num> <cp-or-iv> - show last x transfers",
+                            "/vanished <num> <cp-or-iv> - show last x vanished",
                             "/softbans - info about possible softbans"
                         )
                         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
@@ -432,6 +457,10 @@ class TelegramClass:
                     if re.match(r'^/transfers ', update.message.text):
                         (cmd, num, order) = self.tokenize(update.message.text, 3)
                         self.get_transfers(update.message.chat_id, num, order)
+                        continue
+                    if re.match(r'^/vanished ', update.message.text):
+                        (cmd, num, order) = self.tokenize(update.message.text, 3)
+                        self.get_vanished(update.message.chat_id, num, order)
                         continue
                     self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Unrecognized command: {}".format(update.message.text))
 
