@@ -128,10 +128,18 @@ class TelegramClass:
             else:
                 self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Eggs Hatched Yet.\n")
 
-    def get_caught(self, chat_id):
+    def get_caught(self, chat_id, num, order):
+        if not num.isnumeric():
+            num = 10
+        else:
+            num = int(num)
+
+        if order not in ["cp", "iv"]:
+            order = "iv"
+
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM catch_log ORDER BY dated DESC LIMIT 25")
+            cur.execute("SELECT * FROM catch_log ORDER BY dated ASC LIMIT " + str(num))
             caught = cur.fetchall()
             if caught:
                 for x in caught:
@@ -292,6 +300,7 @@ class TelegramClass:
 
         return
 
+
     def evolve(self, chatid, uid):
         # TODO: here comes evolve logic (later)
         self.sendMessage(chat_id=chatid, parse_mode='HTML', text="Evolve logic not implemented yet")
@@ -323,7 +332,7 @@ class TelegramClass:
                             "/top <num> <cp-or-iv> - show top X pokemons, sorted by CP or IV",
                             "/evolved - show last 25 pokemon evolved",
                             "/hatched - show last 25 pokemon hatched",
-                            "/caught - show last 25 pokemon caught",
+                            "/caught <num> <cp-or-iv>- show last x pokemon caught",
                             "/pokestops - show last 25 pokestops",
                             "/transfers - show last 25 transfers",
                             "/softbans - info about possible softbans"
@@ -366,9 +375,9 @@ class TelegramClass:
                     if update.message.text == "/hatched":
                         self.get_hatched(update.message.chat_id)
                         continue
-                    if update.message.text == "/caught":
-                        self.get_caught(update.message.chat_id)
-                        continue
+                    #if update.message.text == "/caught":
+                        #self.get_caught(update.message.chat_id)
+                        #continue
                     if update.message.text == "/pokestops":
                         self.get_pokestop(update.message.chat_id)
                         continue
@@ -400,7 +409,10 @@ class TelegramClass:
                         (cmd, num, order) = self.tokenize(update.message.text, 3)
                         self.showtop(update.message.chat_id, num, order)
                         continue
-
+                    if re.match(r'^/caught ', update.message.text):
+                        (cmd, num, order) = self.tokenize(update.message.text, 3)
+                        self.get_caught(update.message.chat_id, num, order)
+                        continue
                     self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Unrecognized command: {}".format(update.message.text))
 
     def showsubs(self, chatid):
