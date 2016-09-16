@@ -566,12 +566,16 @@ class PokemonGoBot(object):
         self.event_manager.register_event(
             'future_pokemon_release',
             parameters=(
-                'pokemon', 'cp', 'iv', 'below_iv', 'below_cp', 'cp_iv_logic'
+                'pokemon', 'cp', 'iv', 'ivcp', 'below_iv', 'below_cp', 'below_ivcp', 'cp_iv_logic'
             )
         )
         self.event_manager.register_event(
             'pokemon_release',
-            parameters=('pokemon', 'iv', 'cp', 'candy')
+            parameters=('pokemon', 'iv', 'cp', 'ivcp', 'candy')
+        )
+        self.event_manager.register_event(
+            'pokemon_keep',
+            parameters=('pokemon', 'iv', 'cp', 'ivcp')
         )
 
         # polyline walker
