@@ -114,6 +114,14 @@ class ChatHandler:
         except telegram.error.Unauthorized:
             self.update_id += 1
 
+    def send_player_stats_to_chat(self, chat_id):
+        stats = self.get_player_stats()
+        if stats:
+            self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(stats))
+            self.sendLocation(chat_id=chat_id, latitude=self.bot.api._position_lat, longitude=self.bot.api._position_lng)
+        else:
+            self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="Stats not loaded yet\n")
+
     def showtop(self, chatid, num, order):
         if not num.isnumeric():
             num = 10
