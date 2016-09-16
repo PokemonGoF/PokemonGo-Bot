@@ -245,7 +245,7 @@ class ChatHandler:
             else:
                 self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Pokestops Encountered Yet.\n")
 
-    def get_transfers(self, chat_id, num, order):
+    def get_released(self, chat_id, num, order):
         if not num.isnumeric():
             num = 10
         else:

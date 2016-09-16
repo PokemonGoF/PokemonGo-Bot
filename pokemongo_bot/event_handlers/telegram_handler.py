@@ -163,7 +163,7 @@ class TelegramClass:
                             "/hatched <num> <cp-or-iv> - show top x pokemon hatched, sorted by CP or IV",
                             "/caught <num> <cp-or-iv>- show top x pokemon caught, sorted by CP or IV",
                             "/pokestops - show last x pokestops visited",
-                            "/transfers <num> <cp-or-iv> - show top x transfers, sorted by CP or IV",
+                            "/released <num> <cp-or-iv> - show top x released, sorted by CP or IV",
                             "/vanished <num> <cp-or-iv> - show top x vanished, sorted by CP or IV",
                             "/softbans - info about possible softbans"
                         )
