@@ -206,6 +206,7 @@ class PokemonGoBot(object):
 
         self.event_manager.register_event('debug')
         self.event_manager.register_event('refuse_to_sit')
+        self.event_manager.register_event('reset_destination')
         self.event_manager.register_event('new_destination')
         self.event_manager.register_event('moving_to_destination')
         self.event_manager.register_event('arrived_at_destination')
