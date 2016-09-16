@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 import os
 import time
 import json
-import logging
 import sys
 
 from random import random, randrange, uniform
@@ -14,7 +14,7 @@ from pokemongo_bot.inventory import Pokemon
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_dir import _base_dir
 from datetime import datetime, timedelta
-from utils import getSeconds
+from .utils import getSeconds
 
 from pprint import pprint
 

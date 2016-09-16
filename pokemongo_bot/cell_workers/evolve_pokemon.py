@@ -1,4 +1,3 @@
-from random import uniform
 
 from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import sleep, action_delay
