@@ -24,6 +24,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 Author: tjado <https://github.com/tejado>
 """
+from __future__ import unicode_literals
 
 import argparse
 import codecs
@@ -32,12 +33,15 @@ import logging
 import os
 import ssl
 import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
 import time
 import signal
 import string
 import subprocess
+
+from logging import Formatter
+
+codecs.register(lambda name: codecs.lookup("utf-8") if name == "cp65001" else None)
+
 from getpass import getpass
 from pgoapi.exceptions import NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException, NoPlayerPositionSetException
 from geopy.exc import GeocoderQuotaExceeded
@@ -60,7 +64,7 @@ if sys.version_info >= (2, 7, 9):
 try:
     import pkg_resources
     pgoapi_version = pkg_resources.get_distribution("pgoapi").version
-    if pgoapi_version < '1.1.8':
+    if pgoapi_version != '1.1.6':
         print "Run following command to get latest update: `pip install -r requirements.txt --upgrade`"
         sys.exit(1)
 except pkg_resources.DistributionNotFound:
@@ -104,6 +108,38 @@ def main():
 
         return bot
 
+    def setup_logging(config):
+        log_level = logging.ERROR
+
+        if config.debug:
+            log_level = logging.DEBUG
+
+        logging.getLogger("requests").setLevel(log_level)
+        logging.getLogger("websocket").setLevel(log_level)
+        logging.getLogger("socketio").setLevel(log_level)
+        logging.getLogger("engineio").setLevel(log_level)
+        logging.getLogger("socketIO-client").setLevel(log_level)
+        logging.getLogger("pgoapi").setLevel(log_level)
+        logging.getLogger("rpc_api").setLevel(log_level)
+
+        if config.logging:
+            logging_format = '%(message)s'
+            logging_format_options = ''
+
+            if ('show_log_level' not in config.logging) or config.logging['show_log_level']:
+                logging_format = '[%(levelname)s] ' + logging_format
+            if ('show_process_name' not in config.logging) or config.logging['show_process_name']:
+                logging_format = '[%(name)10s] ' + logging_format
+            if ('show_thread_name' not in config.logging) or config.logging['show_thread_name']:
+                logging_format = '[%(threadName)s] ' + logging_format
+            if ('show_datetime' not in config.logging) or config.logging['show_datetime']:
+                logging_format = '[%(asctime)s] ' + logging_format
+                logging_format_options = '%Y-%m-%d %H:%M:%S'
+
+            formatter = Formatter(logging_format,logging_format_options)
+            for handler in logging.root.handlers[:]:
+                handler.setFormatter(formatter)
+
     def start_bot(bot, config):
         bot.start()
         initialize_task(bot, config)
@@ -128,10 +164,11 @@ def main():
             return f.read()[:8]
 
     try:
-        logger.info('PokemonGO Bot v1.0')
-        logger.info('commit: ' + get_commit_hash())
         sys.stdout = codecs.getwriter('utf8')(sys.stdout)
         sys.stderr = codecs.getwriter('utf8')(sys.stderr)
+
+        logger.info('PokemonGO Bot v1.0')
+        logger.info('commit: ' + get_commit_hash())
 
         config, config_file = init_config()
         if not config:
@@ -141,9 +178,12 @@ def main():
         health_record = BotEvent(config)
         health_record.login_success()
 
+        setup_logging(config)
+
         finished = False
 
         while not finished:
+            wait_time = config.reconnecting_timeout * 60
             try:
                 bot = initialize(config)
                 bot = start_bot(bot, config)
@@ -179,12 +219,11 @@ def main():
                 report_summary(bot)
 
             except NotLoggedInException:
-                wait_time = config.reconnecting_timeout * 60
                 bot.event_manager.emit(
                     'api_error',
                     sender=bot,
                     level='info',
-                    formatted='Log logged in, reconnecting in {:d}'.format(wait_time)
+                    formatted='Not logged in, reconnecting in {:d} seconds'.format(wait_time)
                 )
                 time.sleep(wait_time)
             except ServerBusyOrOfflineException:
@@ -252,7 +291,7 @@ def main():
                         'cached_fort',
                         sender=bot,
                         level='debug',
-                        formatted='Forts cached.',
+                        formatted='Forts cached.'
                     )
                 except IOError as e:
                     bot.event_manager.emit(
@@ -343,7 +382,7 @@ def init_config():
             logger.info('Error: No /configs/' + _config + '.json')
 
     # Read passed in Arguments
-    required = lambda x: not x in load
+    required = lambda x: x not in load
     add_config(
         parser,
         load,
@@ -675,12 +714,13 @@ def init_config():
     config.favorite_locations = load.get('favorite_locations', [])
     config.encrypt_location = load.get('encrypt_location', '')
     config.telegram_token = load.get('telegram_token', '')
+    config.discord_token = load.get('discord_token', '')
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.plugins = load.get('plugins', [])
     config.raw_tasks = load.get('tasks', [])
     config.vips = load.get('vips', {})
-    config.sleep_schedule = load.get('sleep_schedule', [])
+    config.sleep_schedule = load.get('sleep_schedule', {})
     config.live_config_update = load.get('live_config_update', {})
     config.live_config_update_enabled = config.live_config_update.get('enabled', False)
     config.live_config_update_tasks_only = config.live_config_update.get('tasks_only', False)
@@ -794,9 +834,8 @@ def fix_nested_config(config):
 def parse_unicode_str(string):
     try:
         return string.decode('utf8')
-    except UnicodeEncodeError:
+    except (UnicodeEncodeError, UnicodeDecodeError):
         return string
-
 
 if __name__ == '__main__':
     main()

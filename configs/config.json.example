@@ -12,6 +12,20 @@
         "config": {
           "enabled": false,
           "master": null,
+          "password": null,
+          "// old syntax, still supported: alert_catch": ["all"],
+          "// new syntax:": {},
+          "alert_catch": {
+            "all": {"operator": "and", "cp": 1300, "iv": 0.95},
+            "Snorlax": {"operator": "or", "cp": 900, "iv": 0.9}
+          }
+        }
+      },
+      {
+        "type": "DiscordTask",
+        "config": {
+          "enabled": false,
+          "master": null,
           "// old syntax, still supported: alert_catch": ["all"],
           "// new syntax:": {},
           "alert_catch": {
@@ -115,7 +129,7 @@
         "config": {
           "enabled": false,
           "nickname_above_iv": 0.9,
-          "nickname_template": "{iv_pct}_{iv_ads}",
+          "nickname_template": "{iv_pct}-{iv_ads}",
           "nickname_wait_min": 3,
           "nickname_wait_max": 5
         }
@@ -142,6 +156,7 @@
           "logic": "or",
           "min_evolve_speed": 25,
           "max_evolve_speed": 30,
+          "min_pokemon_to_be_evolved": 1,
           "use_lucky_egg": false
         }
       },
@@ -187,6 +202,7 @@
           "enabled": true,
           "catch_visible_pokemon": true,
           "catch_lured_pokemon": true,
+          "catch_incensed_pokemon": true,
           "min_ultraball_to_keep": 5,
           "berry_threshold": 0.35,
           "vip_berry_threshold": 0.9,
@@ -274,22 +290,31 @@
     "walk_min": 2.16,
     "alt_min": 500,
     "alt_max": 1000,
-    "sleep_schedule": [
-      {
-        "time": "12:00",
-        "duration": "5:30",
-        "time_random_offset": "00:30",
-        "duration_random_offset": "00:30",
-        "wake_up_at_location": ""
-      },
-      {
-        "time": "17:45",
-        "duration": "3:00",
-        "time_random_offset": "01:00",
-        "duration_random_offset": "00:30",
-        "wake_up_at_location": ""
-      }
-    ],
+
+    "sleep_schedule": {
+      "enabled": true,
+      "enable_reminder": false,
+      "reminder_interval": 600,
+      "entries": [
+        {
+          "enabled": true,
+          "time": "12:00",
+          "duration": "5:30",
+          "time_random_offset": "00:30",
+          "duration_random_offset": "00:30",
+          "wake_up_at_location": ""
+        },
+        {
+          "enabled": true,
+          "time": "17:45",
+          "duration": "3:00",
+          "time_random_offset": "01:00",
+          "duration_random_offset": "00:30",
+          "wake_up_at_location": ""
+        }
+      ]
+    },
+
     "gps_default_altitude": 8.0,
     "replicate_gps_xy_noise": false,
     "replicate_gps_z_noise": false,
@@ -312,10 +337,15 @@
     "catch": {
       "any": {"candy_threshold" : 400 ,"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"},
       "// Example of always catching Rattata:": {},
-      "// Rattata": { "always_catch" : true }
+      "// Rattata": { "always_catch" : true },
+      "// Example of catching only Diglett and Horsea needed for Bubblestrat; you might want to also configure sniping (MoveToMap - helps you get hold of neede pokemons faster) and disable SpinFort (or you will advance past level 2 which will make it impossible to catch level-1 pokemons)": {},
+      "Diglett": { "candy_threshold": 1, "catch_below_cp": 11, "catch_above_iv": 0, "logic": "and", "fast_attack": ["Scratch", "Mud Slap"] },
+      "Horsea": { "candy_threshold": 1, "catch_below_cp": 11, "catch_above_iv": 0, "logic": "and", "fast_attack": ["Bubble"] },
+      "// Example of catching Vaporeon only with Water Gun and Hydro Pump": {},
+      "Vaporeon": { "catch_above_iv": 0.99, "charged_attack": ["Hydro Pump"], "fast_attack": ["Water Gun"]}
     },
     "release": {
-      "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or"},
+      "any": {"release_below_cp": 0, "release_below_iv": 0, "release_below_ivcp": 0, "logic": "or"},
       "// Example of always releasing Rattata:": {},
       "// Rattata": {"always_release": true},
       "// Example of keeping 3 stronger (based on CP) Pidgey:": {},
@@ -324,6 +354,8 @@
       "// Zubat": {"keep_best_iv": 2},
       "// Keep no more than 3 best IV pokemon for every pokemon type": {},
       "// any": {"keep_best_iv": 3},
+      "// Keep no more than 3 best IVCP pokemon for every pokemon type": {},
+      "// any": {"keep_best_ivcp": 3},
       "// Discard all pokemon in bag except 100 pokemon with best CP": {},
       "// all": {"keep_best_cp": 100},
       "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat:": {},

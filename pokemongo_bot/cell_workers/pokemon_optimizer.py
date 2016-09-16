@@ -9,6 +9,7 @@ from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot.item_list import Item
+from pokemongo_bot.tree_config_builder import ConfigException
 from pokemongo_bot.worker_result import WorkerResult
 
 SUCCESS = 1
@@ -28,13 +29,15 @@ class PokemonOptimizer(BaseTask):
         self.max_pokemon_storage = inventory.get_pokemon_inventory_size()
         self.last_pokemon_count = 0
         self.pokemon_names = [p.name for p in inventory.pokemons().STATIC_DATA]
-        self.stardust_count = 0
         self.ongoing_stardust_count = 0
 
         pokemon_upgrade_cost_file = os.path.join(_base_dir, "data", "pokemon_upgrade_cost.json")
 
         with open(pokemon_upgrade_cost_file, "r") as fd:
             self.pokemon_upgrade_cost = json.load(fd)
+
+        if self.config.get("keep", None) is not None:
+            raise ConfigException("Pokemon Optimizer configuration has changed. See docs/pokemon_optimized.md or configs/config.json.optimizer.example")
 
         self.config_min_slots_left = self.config.get("min_slots_left", 5)
         self.config_transfer = self.config.get("transfer", False)
@@ -49,10 +52,10 @@ class PokemonOptimizer(BaseTask):
         self.config_upgrade = self.config.get("upgrade", False)
         self.config_upgrade_level = self.config.get("upgrade_level", 60)
         self.config_groups = self.config.get("groups", {"gym": ["Dragonite", "Snorlax", "Lapras", "Arcanine"]})
-        self.config_keep = self.config.get("keep", [{"mode": "by_family", "top": 1, "sort": [{"iv": 0.9}], "evolve": True, "upgrade": False},
-                                                    {"mode": "by_family", "top": 1, "sort": [{"ncp": 0.9}], "evolve": True, "upgrade": False},
-                                                    {"mode": "by_family", "top": 1, "sort": ["cp"], "evolve": False, "upgrade": False},
-                                                    {"mode": "by_family", "top": 3, "names": ["gym"], "sort": [{"iv": 0.9}, {"ncp": 0.9}], "evolve": True, "upgrade": True}])
+        self.config_rules = self.config.get("rules", [{"mode": "by_family", "top": 1, "sort": ["iv"], "evolve": {"iv": 0.9}},
+                                                      {"mode": "by_family", "top": 1, "sort": ["ncp"], "evolve": {"ncp": 0.9}},
+                                                      {"mode": "by_family", "top": 1, "sort": ["cp"]},
+                                                      {"mode": "by_family", "top": 3, "names": ["gym"], "sort": ["iv", "ncp"], "evolve": {"iv": 0.9, "ncp": 0.9}, "upgrade": {"iv": 0.9, "ncp": 0.9}}])
 
         if (not self.config_may_use_lucky_egg) and self.config_evolve_only_with_lucky_egg:
             self.config_evolve = False
@@ -73,11 +76,11 @@ class PokemonOptimizer(BaseTask):
 
         self.open_inventory()
 
+        keep_all = []
         try_evolve_all = []
         try_upgrade_all = []
-        keep_all = []
 
-        for rule in self.config_keep:
+        for rule in self.config_rules:
             mode = rule.get("mode", "by_family")
             names = rule.get("names", [])
             whitelist_names, blacklist_names = self.get_colorlist_names(names)
@@ -92,10 +95,10 @@ class PokemonOptimizer(BaseTask):
                     if whitelist_names and (name not in whitelist_names):
                         continue
 
-                    try_evolve, try_upgrade, keep = self.get_best_pokemon_for_rule(pokemon_list, rule)
+                    keep, try_evolve, try_upgrade = self.get_best_pokemon_for_rule(pokemon_list, rule)
+                    keep_all += keep
                     try_evolve_all += try_evolve
                     try_upgrade_all += try_upgrade
-                    keep_all += keep
             elif mode == "by_family":
                 for family_id, pokemon_list in self.group_by_family_id(inventory.pokemons().all()):
                     matching_names = self.get_family_names(family_id)
@@ -107,13 +110,13 @@ class PokemonOptimizer(BaseTask):
                         continue
 
                     if family_id == 133:  # "Eevee"
-                        try_evolve, try_upgrade, keep = self.get_multi_best_pokemon_for_rule(pokemon_list, rule, 3)
+                        keep, try_evolve, try_upgrade = self.get_multi_best_pokemon_for_rule(pokemon_list, rule, 3)
                     else:
-                        try_evolve, try_upgrade, keep = self.get_best_pokemon_for_rule(pokemon_list, rule)
+                        keep, try_evolve, try_upgrade = self.get_best_pokemon_for_rule(pokemon_list, rule)
 
+                    keep_all += keep
                     try_evolve_all += try_evolve
                     try_upgrade_all += try_upgrade
-                    keep_all += keep
             elif mode == "overall":
                 pokemon_list = []
 
@@ -128,14 +131,14 @@ class PokemonOptimizer(BaseTask):
 
                     pokemon_list.append(pokemon)
 
-                try_evolve, try_upgrade, keep = self.get_best_pokemon_for_rule(pokemon_list, rule)
+                keep, try_evolve, try_upgrade = self.get_best_pokemon_for_rule(pokemon_list, rule)
+                keep_all += keep
                 try_evolve_all += try_evolve
                 try_upgrade_all += try_upgrade
-                keep_all += keep
 
+        keep_all = self.unique_pokemon_list(keep_all)
         try_evolve_all = self.unique_pokemon_list(try_evolve_all)
         try_upgrade_all = self.unique_pokemon_list(try_upgrade_all)
-        keep_all = self.unique_pokemon_list(keep_all)
 
         transfer_all = []
         evolve_all = []
@@ -143,11 +146,11 @@ class PokemonOptimizer(BaseTask):
         xp_all = []
 
         for family_id, pokemon_list in self.group_by_family_id(inventory.pokemons().all()):
+            keep = [p for p in keep_all if self.get_family_id(p) == family_id]
             try_evolve = [p for p in try_evolve_all if self.get_family_id(p) == family_id]
             try_upgrade = [p for p in try_upgrade_all if self.get_family_id(p) == family_id]
-            keep = [p for p in keep_all if self.get_family_id(p) == family_id]
 
-            transfer, evolve, upgrade, xp = self.get_evolution_plan(family_id, pokemon_list, try_evolve, try_upgrade, keep)
+            transfer, evolve, upgrade, xp = self.get_evolution_plan(family_id, pokemon_list, keep, try_evolve, try_upgrade)
 
             transfer_all += transfer
             evolve_all += evolve
@@ -166,9 +169,10 @@ class PokemonOptimizer(BaseTask):
             setattr(pokemon, "dps2", pokemon.charged_attack.dps)
             setattr(pokemon, "dps_attack", pokemon.moveset.dps_attack)
             setattr(pokemon, "dps_defense", pokemon.moveset.dps_defense)
+            setattr(pokemon, "attack_perfection", pokemon.moveset.attack_perfection)
+            setattr(pokemon, "defense_perfection", pokemon.moveset.defense_perfection)
 
-        self.stardust_count = self.get_stardust_count()
-        self.ongoing_stardust_count = self.stardust_count
+        self.ongoing_stardust_count = self.bot.stardust
 
     def get_colorlist_names(self, names):
         whitelist_names = []
@@ -220,8 +224,7 @@ class PokemonOptimizer(BaseTask):
 
             return closest_name
         else:
-            self.logger.error("Unknown Pokemon name [%s]", name)
-            return ""
+            raise ConfigException("Unknown Pokemon name [%s]" % name)
 
     def group_by_pokemon_id(self, pokemon_list):
         sorted_list = sorted(pokemon_list, key=self.get_pokemon_id)
@@ -238,7 +241,7 @@ class PokemonOptimizer(BaseTask):
         return pokemon.first_evolution_id
 
     def get_best_pokemon_for_rule(self, pokemon_list, rule):
-        sorted_pokemon = self.sort_pokemon_list(pokemon_list, rule)
+        sorted_pokemon = self.sort_pokemon_list_to_keep(pokemon_list, rule)
 
         if len(sorted_pokemon) == 0:
             return ([], [], [])
@@ -260,88 +263,120 @@ class PokemonOptimizer(BaseTask):
         return self.get_better_pokemon_for_rule(sorted_pokemon, rule, worst)
 
     def get_multi_best_pokemon_for_rule(self, family_list, rule, nb_branch):
-        sorted_family = self.sort_pokemon_list(family_list, rule)
+        sorted_family = self.sort_pokemon_list_to_keep(family_list, rule)
 
         # Handle each group of senior independently
         senior_pokemon_list = [p for p in sorted_family if not p.has_next_evolution()]
         other_family_list = [p for p in sorted_family if p.has_next_evolution()]
         senior_pids = set(p.pokemon_id for p in senior_pokemon_list)
 
+        keep_all = []
         try_evolve_all = []
         try_upgrade_all = []
-        keep_all = []
 
         if not self.config_evolve:
             # Player handle evolution manually = Fall-back to per Pokemon behavior
             for _, pokemon_list in self.group_by_pokemon_id(sorted_family):
-                try_evolve, try_upgrade, keep = self.get_best_pokemon_for_rule(pokemon_list, rule)
+                keep, try_evolve, try_upgrade = self.get_best_pokemon_for_rule(pokemon_list, rule)
+                keep_all += keep
                 try_evolve_all += try_evolve
                 try_upgrade_all += try_upgrade
-                keep_all += keep
         else:
             for _, pokemon_list in self.group_by_pokemon_id(senior_pokemon_list):
-                try_evolve, try_upgrade, keep = self.get_best_pokemon_for_rule(pokemon_list, rule)
+                keep, try_evolve, try_upgrade = self.get_best_pokemon_for_rule(pokemon_list, rule)
+                keep_all += keep
                 try_evolve_all += try_evolve
                 try_upgrade_all += try_upgrade
-                keep_all += keep
 
             if len(other_family_list) > 0:
                 if len(senior_pids) < nb_branch:
                     # We did not get every combination yet = All other Pokemon are potentially good to keep
                     worst = other_family_list[-1]
                 else:
-                    best = try_evolve_all + try_upgrade_all + keep_all
-                    worst = self.sort_pokemon_list(best, rule)[-1]
+                    best = keep_all + try_evolve_all + try_upgrade_all
+                    worst = self.sort_pokemon_list_to_keep(best, rule)[-1]
 
-                try_evolve, try_upgrade, keep = self.get_better_pokemon_for_rule(other_family_list, rule, worst, 12)
+                keep, try_evolve, try_upgrade = self.get_better_pokemon_for_rule(other_family_list, rule, worst, 12)
+                keep_all += keep
                 try_evolve_all += try_evolve
                 try_upgrade_all += try_upgrade
-                keep_all += keep
 
-        return try_evolve_all, try_upgrade_all, keep_all
+        return keep_all, try_evolve_all, try_upgrade_all
 
     def get_better_pokemon_for_rule(self, pokemon_list, rule, worst, limit=1000):
         min_score = self.get_score(worst, rule)[0]
         scored_list = [(p, self.get_score(p, rule)) for p in pokemon_list]
-        best = [x for x in scored_list if x[1][0] >= min_score][:limit]
-        try_evolve = [x[0] for x in best if x[1][1] is True]
-        try_upgrade = [x[0] for x in best if x[1][1] is False and x[1][2] is True]
-        keep = [x[0] for x in best]
+        scored_keep = [x for x in scored_list if (x[1][0] >= min_score) and (x[1][1] is True)][:limit]
+        keep = [x[0] for x in scored_keep]
+        try_evolve = [x[0] for x in scored_keep if x[1][2] is True]
+        try_upgrade = [x[0] for x in scored_keep if (x[1][2] is False) and (x[1][3] is True)]
 
-        return try_evolve, try_upgrade, keep
+        return keep, try_evolve, try_upgrade
 
-    def sort_pokemon_list(self, pokemon_list, rule):
-        return sorted(pokemon_list, key=lambda p: self.get_score(p, rule)[0], reverse=True)
+    def sort_pokemon_list_to_keep(self, pokemon_list, rule):
+        scored_list = [(p, self.get_score(p, rule)) for p in pokemon_list]
+        scored_keep = [x for x in scored_list if x[1][1] is True]
+        scored_keep.sort(key=lambda x: x[1][0], reverse=True)
+
+        return [p for p, x in scored_keep]
 
     def get_score(self, pokemon, rule):
         score = []
-        may_try_evolve = (getattr(pokemon, "has_next_evolution", False) and
-                          pokemon.has_next_evolution() and
-                          rule.get("evolve", True))
-        may_try_upgrade = rule.get("upgrade", False)
 
         for a in rule.get("sort", []):
-            if (type(a) is str) or (type(a) is unicode):
-                value = getattr(pokemon, a, 0)
-                score.append(value)
-            elif type(a) is dict:
-                value = getattr(pokemon, a.keys()[0], 0)
-                score.append(value)
-                may_try_evolve &= (value >= a.values()[0])
-                may_try_upgrade &= (value >= a.values()[0])
-            elif type(a) is list:
-                value = getattr(pokemon, a[0], 0)
-                score.append(value)
-                may_try_evolve &= (value >= a[1])
-                may_try_upgrade &= (value >= a[1])
+            value = getattr(pokemon, a, 0)
+            score.append(value)
 
-        return tuple(score), may_try_evolve, may_try_upgrade
+        rule_keep = rule.get("keep", True)
+        rule_evolve = rule.get("evolve", True)
+        rule_upgrade = rule.get("upgrade", False)
+
+        keep = rule_keep not in [False, {}]
+        keep &= self.satisfy_requirements(pokemon, rule_keep)
+
+        may_try_evolve = (hasattr(pokemon, "has_next_evolution") and pokemon.has_next_evolution())
+        may_try_evolve &= rule_evolve not in [False, {}]
+        may_try_evolve &= self.satisfy_requirements(pokemon, rule_evolve)
+
+        may_try_upgrade = rule_upgrade not in [False, {}]
+        may_try_upgrade &= self.satisfy_requirements(pokemon, rule_upgrade)
+
+        return tuple(score), keep, may_try_evolve, may_try_upgrade
+
+    def satisfy_requirements(self, pokemon, req):
+        if type(req) is bool:
+            return req
+
+        satisfy = True
+
+        for a, v in req.items():
+            value = getattr(pokemon, a, 0)
+
+            if (type(v) is str) or (type(v) is unicode):
+                v = float(v)
+
+            if type(v) is list:
+                if type(v[0]) is list:
+                    satisfy_range = False
+
+                    for r in v:
+                        satisfy_range |= (value >= r[0]) and (value <= r[1])
+
+                    satisfy &= satisfy_range
+                else:
+                    satisfy &= (value >= v[0]) and (value <= v[1])
+            elif v < 0:
+                satisfy &= (value <= abs(v))
+            else:
+                satisfy &= (value >= v)
+
+        return satisfy
 
     def unique_pokemon_list(self, pokemon_list):
         seen = set()
         return [p for p in pokemon_list if not (p.unique_id in seen or seen.add(p.unique_id))]
 
-    def get_evolution_plan(self, family_id, family_list, try_evolve, try_upgrade, keep):
+    def get_evolution_plan(self, family_id, family_list, keep, try_evolve, try_upgrade):
         candies = inventory.candies().get(family_id).quantity
 
         # All the rest is crap, for now
@@ -418,48 +453,60 @@ class PokemonOptimizer(BaseTask):
         return (transfer, evolve, upgrade, xp)
 
     def apply_optimization(self, transfer, evolve, upgrade, xp):
-        self.logger.info("Transferring %s Pokemon", len(transfer))
+        transfer_count = len(transfer)
+        evolve_count = len(evolve)
+        upgrade_count = len(upgrade)
+        xp_count = len(xp)
 
-        for pokemon in transfer:
-            self.transfer_pokemon(pokemon)
+        if transfer_count > 0:
+            self.logger.info("Transferring %s Pokemon", transfer_count)
 
-        skip_evolve = False
+            for pokemon in transfer:
+                self.transfer_pokemon(pokemon)
 
-        if self.config_evolve and self.config_may_use_lucky_egg and (not self.bot.config.test):
-            lucky_egg = inventory.items().get(Item.ITEM_LUCKY_EGG.value)  # @UndefinedVariable
+        evolve_xp_count = evolve_count + xp_count
 
-            if lucky_egg.count == 0:
-                if self.config_evolve_only_with_lucky_egg:
-                    skip_evolve = True
-                    self.emit_event("skip_evolve",
-                                    formatted="Skipping evolution step. No lucky egg available")
-            elif (len(evolve) + len(xp)) < self.config_evolve_count_for_lucky_egg:
-                if self.config_evolve_only_with_lucky_egg:
-                    skip_evolve = True
-                    self.emit_event("skip_evolve",
-                                    formatted="Skipping evolution step. Not enough Pokemon to evolve with lucky egg: %s/%s" % (len(evolve) + len(xp), self.config_evolve_count_for_lucky_egg))
-                elif self.get_pokemon_slot_left() > self.config_min_slots_left:
-                    skip_evolve = True
-                    self.emit_event("skip_evolve",
-                                    formatted="Waiting for more Pokemon to evolve with lucky egg: %s/%s" % (len(evolve) + len(xp), self.config_evolve_count_for_lucky_egg))
-            else:
-                self.use_lucky_egg()
+        if evolve_xp_count > 0:
+            skip_evolve = False
 
-        if not skip_evolve:
-            self.logger.info("Evolving %s Pokemon (the best)", len(evolve))
+            if self.config_evolve and self.config_may_use_lucky_egg and (not self.bot.config.test):
+                lucky_egg = inventory.items().get(Item.ITEM_LUCKY_EGG.value)  # @UndefinedVariable
 
-            for pokemon in evolve:
-                self.evolve_pokemon(pokemon)
+                if lucky_egg.count == 0:
+                    if self.config_evolve_only_with_lucky_egg:
+                        skip_evolve = True
+                        self.emit_event("skip_evolve",
+                                        formatted="Skipping evolution step. No lucky egg available")
+                elif evolve_xp_count < self.config_evolve_count_for_lucky_egg:
+                    if self.config_evolve_only_with_lucky_egg:
+                        skip_evolve = True
+                        self.emit_event("skip_evolve",
+                                        formatted="Skipping evolution step. Not enough Pokemon to evolve with lucky egg: %s/%s" % (evolve_xp_count, self.config_evolve_count_for_lucky_egg))
+                    elif self.get_pokemon_slot_left() > self.config_min_slots_left:
+                        skip_evolve = True
+                        self.emit_event("skip_evolve",
+                                        formatted="Waiting for more Pokemon to evolve with lucky egg: %s/%s" % (evolve_xp_count, self.config_evolve_count_for_lucky_egg))
+                else:
+                    self.use_lucky_egg()
 
-            self.logger.info("Evolving %s Pokemon (for xp)", len(xp))
+            if not skip_evolve:
+                if evolve_count > 0:
+                    self.logger.info("Evolving %s Pokemon (the best)", evolve_count)
 
-            for pokemon in xp:
-                self.evolve_pokemon(pokemon)
+                    for pokemon in evolve:
+                        self.evolve_pokemon(pokemon)
 
-        self.logger.info("Upgrading %s Pokemon [%s stardust]", len(upgrade), self.stardust_count)
+                if xp_count > 0:
+                    self.logger.info("Evolving %s Pokemon (for xp)", xp_count)
 
-        for pokemon in upgrade:
-            self.upgrade_pokemon(pokemon)
+                    for pokemon in xp:
+                        self.evolve_pokemon(pokemon)
+
+        if upgrade_count > 0:
+            self.logger.info("Upgrading %s Pokemon [%s stardust]", upgrade_count, self.bot.stardust)
+
+            for pokemon in upgrade:
+                self.upgrade_pokemon(pokemon)
 
     def transfer_pokemon(self, pokemon):
         if self.config_transfer and (not self.bot.config.test):
@@ -610,7 +657,7 @@ class PokemonOptimizer(BaseTask):
 
             if self.config_upgrade and (not self.bot.config.test):
                 candy.consume(upgrade_candy_cost)
-                self.stardust_count -= upgrade_stardust_cost
+                self.bot.stardust -= upgrade_stardust_cost
 
             self.emit_event("pokemon_upgraded",
                             formatted="Upgraded {pokemon} [IV {iv}] [CP {cp}] [{candy} candies] [{stardust} stardust]",
@@ -618,7 +665,7 @@ class PokemonOptimizer(BaseTask):
                                   "iv": pokemon.iv,
                                   "cp": pokemon.cp,
                                   "candy": candy.quantity,
-                                  "stardust": self.stardust_count})
+                                  "stardust": self.bot.stardust})
 
             if self.config_upgrade and (not self.bot.config.test):
                 inventory.pokemons().remove(pokemon.unique_id)
@@ -629,7 +676,3 @@ class PokemonOptimizer(BaseTask):
                 action_delay(self.config_transfer_wait_min, self.config_transfer_wait_max)
 
         return True
-
-    def get_stardust_count(self):
-        response_dict = self.bot.api.get_player()
-        return response_dict.get("responses", {}).get("GET_PLAYER", {}).get("player_data", {}).get("currencies", [{}, {}])[1].get("amount", 0)
