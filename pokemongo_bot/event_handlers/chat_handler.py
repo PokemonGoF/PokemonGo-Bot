@@ -301,3 +301,13 @@ class ChatHandler:
                     self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
             else:
                 self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Pokemon Vanished Yet.\n")
+
+        def evolve(self, chatid, uid):
+            # TODO: here comes evolve logic (later)
+            self.sendMessage(chat_id=chatid, parse_mode='HTML', text="Evolve logic not implemented yet")
+            return
+
+        def upgrade(self, chatid, uid):
+            # TODO: here comes upgrade logic (later)
+            self.sendMessage(chat_id=chatid, parse_mode='HTML', text="Upgrade logic not implemented yet")
+            return

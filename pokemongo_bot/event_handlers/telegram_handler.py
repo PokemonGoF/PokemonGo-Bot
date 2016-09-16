@@ -50,28 +50,12 @@ class TelegramClass:
         self._tbot = None
         self.config = config
 
-
-
-    def sendLocation(self, chat_id, latitude, longitude):
-        try:
-            self._tbot.send_location(chat_id=chat_id, latitude=latitude, longitude=longitude)
-        except telegram.error.NetworkError:
-            time.sleep(1)
-        except telegram.error.TelegramError:
-            time.sleep(10)
-        except telegram.error.Unauthorized:
-            self.update_id += 1
-
     def connect(self):
         self._tbot = telegram.Bot(self.bot.config.telegram_token)
         try:
             self.update_id = self._tbot.getUpdates()[0].update_id
         except IndexError:
             self.update_id = None
-
-
-
-
 
     def grab_uid(self, update):
         with self.bot.database as conn:
@@ -122,16 +106,6 @@ class TelegramClass:
                 cur.execute("insert into telegram_logins(uid) values(?)", [update.message.chat_id])
                 conn.commit()
             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Authentication successful, you can now use all commands")
-        return
-
-    def evolve(self, chatid, uid):
-        # TODO: here comes evolve logic (later)
-        self.sendMessage(chat_id=chatid, parse_mode='HTML', text="Evolve logic not implemented yet")
-        return
-
-    def upgrade(self, chatid, uid):
-        # TODO: here comes upgrade logic (later)
-        self.sendMessage(chat_id=chatid, parse_mode='HTML', text="Upgrade logic not implemented yet")
         return
 
     def run(self):
