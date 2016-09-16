@@ -29,6 +29,7 @@ from human_behaviour import sleep
 from item_list import Item
 from metrics import Metrics
 from sleep_schedule import SleepSchedule
+from default_tasks import DefaultTasks
 from pokemongo_bot.event_handlers import SocketIoHandler, LoggingHandler, SocialHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
@@ -104,6 +105,9 @@ class PokemonGoBot(object):
 
         # Make our own copy of the workers for this instance
         self.workers = []
+
+        # To be able to run default_tasks
+        self.default_tasks = DefaultTasks(self, self.config)
 
         # Theading setup for file writing
         self.web_update_queue = Queue.Queue(maxsize=1)
@@ -708,6 +712,9 @@ class PokemonGoBot(object):
 
         # Check if session token has expired
         self.check_session(self.position)
+
+        # Run default tasks
+        self.default_tasks.work()
 
         for worker in self.workers:
             if worker.work() == WorkerResult.RUNNING:

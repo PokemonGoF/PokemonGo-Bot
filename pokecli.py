@@ -694,7 +694,6 @@ def init_config():
          type=bool,
          default=True
     )
-
     add_config(
          parser,
          load,
@@ -702,6 +701,30 @@ def init_config():
          help="Limit output from walker functions (move_to_fort, position_update, etc)",
          type=bool,
          default=False
+    )
+    add_config(
+         parser,
+         load,
+         long_flag="--level_limit",
+         help="Level limit where bot will stop running.",
+         type=int,
+         default=-1
+    )
+    add_config(
+         parser,
+         load,
+         long_flag="--nickname",
+         help="Nickname that will be used in the account, set in the tutorial.",
+         type=str,
+         default=''
+    )
+    add_config(
+         parser,
+         load,
+         long_flag="--team",
+         help="Team that will be picked after reaching level 5.",
+         type=int,
+         default=0
     )
 
     # Start to parse other attrs

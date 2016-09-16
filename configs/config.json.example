@@ -59,23 +59,6 @@
         }
       },
       {
-        "type": "CompleteTutorial",
-        "config": {
-          "enabled": false,
-          "// set a name": "",
-          "nickname": "",
-          "// 0 = No Team, 1 = Blue, 2 = Red, 3 = Yellow": "",
-          "team": 0
-        }
-      },
-      {
-        "type": "CollectLevelUpReward",
-        "config": {
-          "collect_reward": true,
-          "level_limit": -1
-        }
-      },
-      {
         "type": "IncubateEggs",
         "config": {
           "enabled": true,
@@ -286,6 +269,9 @@
       "// ['cp', 'iv_ads', 'iv_pct', 'ivcp', 'ncp', 'level', 'hp', 'moveset', 'dps']": {},
       "pokemon_info": ["cp", "iv_pct"]
     },
+    "nickname": "",
+    "team": 0,
+    "level_limit": -1,
     "walk_max": 4.16,
     "walk_min": 2.16,
     "alt_min": 500,

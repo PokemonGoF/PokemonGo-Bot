@@ -49,7 +49,6 @@
 - [ShowBestPokemon](#showbestpokemon)
 - [Telegram Task](#telegram-task)
 - [Discord Task](#discord-task)
-- [CompleteTutorial](#completetutorial)
 
 #Configuration files
 
@@ -91,6 +90,9 @@ Document the configuration options of PokemonGo-Bot.
 | `live_config_update.enabled`            | false     | Enable live config update
 | `live_config_update.tasks_only`            | false     | True: quick update for Tasks only (without re-login). False: slower update for entire config file.
 | `enable_social`            | true     | True: to chat with other pokemon go bot users [more information](https://github.com/PokemonGoF/PokemonGo-Bot/pull/4596)
+| `nickname`            | ''     | Bot will try to set this as ingame nickname. If not set, uses account username. If not available tries generated nickname based on this one.
+| `team`            | 0     | Bot will set team when reaching level 5. 0: Neutral (No team), 1: Blue (Mystic), 2: Red (Valor), 3: Yellow (Instinct)
+| `level_limit`            | -1     | Bot will stop automatically after trainer reaches level limit. Set to `-1` to disable.
 
 ## Logging configuration
 [[back to top](#table-of-contents)]
@@ -257,9 +259,6 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `min_free_slot`: Default `5` | Once the pokebag has less empty slots than this amount, the transfer process is triggered. | Big values (i.e 9999) will trigger the transfer process after each catch.
 * UpdateLiveStats
 * [UpdateLiveInventory](#updateliveinventory-settings)
-* CollectLevelUpReward
-  * `collect_reward`: Default `True` | Collect level up rewards.
-  * `level_limit`: Default `-1` | Bot will stop automatically after trainer reaches level limit. Set to `-1` to disable.
 * All tasks
   * `log_interval`: Default `0` | Minimum seconds interval before next log of the current task will be printed
   
@@ -1078,48 +1077,5 @@ The bot will only alert and respond to a valid master. If you're unsure what thi
           "Snorlax": {"operator": "or", "cp": 900, "iv": 0.9}
         }
     }
-}
-```
-
-## CompleteTutorial
-[[back to top](#table-of-contents)]
-
-### Description
-[[back to top](#table-of-contents)]
-
-Completes the tutorial:
-
-* Legal screen
-* Avatar selection
-* First Pokemon capture
-* Set nickname
-* Firte time experience
-* Pick team at level 5
-
-
-### Options
-[[back to top](#table-of-contents)]
-
-* `nickname` : Nickname to be used ingame.
-* `team` : `Default: 0`. Team to pick after reaching level 5.
-
-Available `team` :
-```
-0: Neutral (No team)
-1: Blue (Mystic)
-2: Red (Valor)
-3: Yellow (Instinct)
-```
-
-### Sample configuration
-[[back to top](#table-of-contents)]
-```json
-{
-	"type": "CompleteTutorial",
-	"config": {
-	"enabled": true,
-		"nickname": "PokemonGoF",
-		"team": 2
-	}
 }
 ```
