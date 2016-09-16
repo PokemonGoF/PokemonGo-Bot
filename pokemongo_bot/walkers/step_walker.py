@@ -27,9 +27,10 @@ class StepWalker(object):
 
     def step(self, speed=None):
         now = time.time()
+        t = 1 - min(now - self.last_update, 1)
 
-        sleep(1 - min(now - self.last_update, 1))
-        self.last_update = now
+        sleep(t)
+        self.last_update = now + t
 
         if speed is None:
             speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
@@ -54,8 +55,8 @@ class StepWalker(object):
         return inverse["s12"] <= self.precision + self.epsilon
 
     def get_next_position(self, origin_lat, origin_lng, origin_alt, dest_lat, dest_lng, dest_alt, distance):
-        inverse = Geodesic.WGS84.Inverse(origin_lat, origin_lng, dest_lat, dest_lng)
-        total_distance = inverse["s12"]
+        line = Geodesic.WGS84.InverseLine(origin_lat, origin_lng, dest_lat, dest_lng)
+        total_distance = line.s13
 
         if total_distance == 0:
             total_distance = self.precision or self.epsilon
@@ -70,11 +71,11 @@ class StepWalker(object):
             self.saved_location = None
             travel = min(total_distance, distance)
 
-        direct = Geodesic.WGS84.Direct(origin_lat, origin_lng, inverse["azi1"], travel)
-        next_lat = direct["lat2"]
-        next_lng = direct["lon2"]
+        position = line.Position(travel)
+        next_lat = position["lat2"]
+        next_lng = position["lon2"]
 
-        random_azi = uniform(inverse["azi1"] - 90, inverse["azi1"] + 90)
+        random_azi = uniform(line.azi1 - 90, line.azi1 + 90)
         random_dist = uniform(0.0, self.precision)
         direct = Geodesic.WGS84.Direct(next_lat, next_lng, random_azi, random_dist)
 
