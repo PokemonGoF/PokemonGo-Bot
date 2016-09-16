@@ -79,17 +79,15 @@ class TelegramClass:
     def _get_player_stats(self):
         return inventory.player().player_stats
 
-    def get_evolved(self, chat_id, num, order):
+    def get_evolved(self, chat_id, num):
         if not num.isnumeric():
             num = 10
         else:
             num = int(num)
 
-        if order not in ["cp", "iv"]:
-            order = "iv"
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM evolve_log ORDER BY dated ASC LIMIT " + num)
+            cur.execute("SELECT * FROM evolve_log ORDER BY dated ASC LIMIT " + str(num))
             evolved = cur.fetchall()
             if evolved:
                 for x in evolved:
@@ -420,8 +418,8 @@ class TelegramClass:
                         self.get_caught(update.message.chat_id, num, order)
                         continue
                     if re.match(r'^/evolved ', update.message.text):
-                        (cmd, num) = self.tokenize(update.message.text, 3)
-                        self.get_evolved(update.message.chat_id, num, order)
+                        (cmd, num) = self.tokenize(update.message.text, 2)
+                        self.get_evolved(update.message.chat_id, num)
                         continue
                     if re.match(r'^/pokestops ', update.message.text):
                         (cmd, num) = self.tokenize(update.message.text, 2)
