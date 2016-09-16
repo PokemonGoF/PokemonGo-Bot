@@ -126,7 +126,7 @@ class TelegramClass:
             order = "iv"
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM eggs_hatched_log ORDER BY dated ASC LIMIT 25")
+            cur.execute("SELECT * FROM eggs_hatched_log ORDER BY dated ASC LIMIT " + str(num))
             hatched = cur.fetchall()
             if hatched:
                 for x in hatched:
@@ -192,7 +192,7 @@ class TelegramClass:
             order = "iv"
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM transfer_log ORDER BY dated ASC LIMIT 25")
+            cur.execute("SELECT * FROM transfer_log ORDER BY dated ASC LIMIT " + str(num))
             transfer = cur.fetchall()
             if transfer:
                 for x in transfer:
