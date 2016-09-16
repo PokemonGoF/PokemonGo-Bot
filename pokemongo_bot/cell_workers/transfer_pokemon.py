@@ -334,4 +334,4 @@ class TransferPokemon(BaseTask):
             if keep_best_cp == 0 and keep_best_iv == 0 and keep_best_ivcp == 0:
                 keep_best = False
                 
-            return keep_best, keep_best_cp, keep_best_iv, keep_best_ivcp
+        return keep_best, keep_best_cp, keep_best_iv, keep_best_ivcp
