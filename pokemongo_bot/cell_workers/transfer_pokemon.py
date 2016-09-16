@@ -199,7 +199,7 @@ class TransferPokemon(BaseTask):
         if logic_to_function[cp_iv_logic](*release_results.values()):
             self.emit_event(
                 'future_pokemon_release',
-                formatted="*Releasing {}* CP: {}, IV: {}, IVCP: {} | based on rule: CP < {} {} IV < {} IVCP < {}".format(pokemon.name, pokemon.cp, pokemon.iv, pokemon.ivcp, 
+                formatted="*Releasing {}* CP: {}, IV: {}, IVCP: {:.2f} | based on rule: CP < {} {} IV < {} IVCP < {}".format(pokemon.name, pokemon.cp, pokemon.iv, pokemon.ivcp,
                                                                                 release_cp, cp_iv_logic.upper(),release_iv, release_ivcp),
                 data={
                     'pokemon': pokemon.name,
@@ -245,7 +245,8 @@ class TransferPokemon(BaseTask):
                 'ivcp': pokemon.ivcp,
                 'candy': candy.quantity
             },
-            formatted="Released {} (CP: {}, IV: {}, IVCP: {}) You now have {} {} candies".format(pokemon.name, pokemon.cp, pokemon.iv, pokemon.ivcp, candy.quantity, pokemon.name),
+
+            formatted="Released {} (CP: {}, IV: {}, IVCP: {:.2f}) You now have {} {} candies".format(pokemon.name, pokemon.cp, pokemon.iv, pokemon.ivcp, candy.quantity, pokemon.name),
         )
         with self.bot.database as conn:
             c = conn.cursor()
@@ -335,4 +336,4 @@ class TransferPokemon(BaseTask):
             if keep_best_cp == 0 and keep_best_iv == 0 and keep_best_ivcp == 0:
                 keep_best = False
                 
-            return keep_best, keep_best_cp, keep_best_iv, keep_best_ivcp
+        return keep_best, keep_best_cp, keep_best_iv, keep_best_ivcp
