@@ -88,7 +88,7 @@ class TelegramClass:
 
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM evolve_log ORDER BY " + order + " ASC LIMIT " + str(num))
+            cur.execute("SELECT * FROM evolve_log ORDER BY " + order + " DESC LIMIT " + str(num))
             evolved = cur.fetchall()
             if evolved:
                 for x in evolved:
@@ -127,7 +127,7 @@ class TelegramClass:
             order = "iv"
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM eggs_hatched_log ORDER BY " + order + " ASC LIMIT " + str(num))
+            cur.execute("SELECT * FROM eggs_hatched_log ORDER BY " + order + " DESC LIMIT " + str(num))
             hatched = cur.fetchall()
             if hatched:
                 for x in hatched:
@@ -152,7 +152,7 @@ class TelegramClass:
 
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM catch_log ORDER BY " + order + " ASC LIMIT " + str(num))
+            cur.execute("SELECT * FROM catch_log ORDER BY " + order + " DESC LIMIT " + str(num))
             caught = cur.fetchall()
             if caught:
                 for x in caught:
@@ -169,7 +169,7 @@ class TelegramClass:
     def get_pokestops(self, chat_id, num):
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM pokestop_log ORDER BY dated ASC LIMIT " + str(num))
+            cur.execute("SELECT * FROM pokestop_log ORDER BY dated DESC LIMIT " + str(num))
             pokestop = cur.fetchall()
             if pokestop:
                 for x in pokestop:
@@ -193,7 +193,7 @@ class TelegramClass:
             order = "iv"
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM transfer_log ORDER BY " + order + " ASC LIMIT " + str(num))
+            cur.execute("SELECT * FROM transfer_log ORDER BY " + order + " DESC LIMIT " + str(num))
             transfer = cur.fetchall()
             if transfer:
                 for x in transfer:
@@ -217,7 +217,7 @@ class TelegramClass:
             order = "iv"
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM vanish_log ORDER BY " + order + " ASC LIMIT " + str(num))
+            cur.execute("SELECT * FROM vanish_log ORDER BY " + order + " DESC LIMIT " + str(num))
             vanished = cur.fetchall()
             if vanished:
                 for x in vanished:
