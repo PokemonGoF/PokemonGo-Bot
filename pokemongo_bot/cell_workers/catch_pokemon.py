@@ -25,7 +25,7 @@ class CatchPokemon(BaseTask):
     def work(self):
         # make sure we have SOME balls
         if sum([inventory.items().get(ball.value).count for ball in
-            [Item.ITEM_POKE_BALL, Item.ITEM_GREAT_BALL, Item.ITEM_ULTRA_BALL]]) <= 0:
+    [Item.ITEM_POKE_BALL, Item.ITEM_GREAT_BALL, Item.ITEM_ULTRA_BALL]]) <= 0:
             return WorkerResult.ERROR
 
         # check if we have already loaded a list
@@ -66,22 +66,21 @@ class CatchPokemon(BaseTask):
             for pokemon in pokemon_to_catch:
                 # Update web UI
                 with open(user_web_catchable, 'w') as outfile:
-    		        json.dump(pokemon, outfile)
-
+                    json.dump(pokemon, outfile)
 
                 self.emit_event(
                     'catchable_pokemon',
                     level='debug',
                     data={
-    		            'pokemon_id': pokemon['pokemon_id'],
-    		            'spawn_point_id': pokemon['spawn_point_id'],
-    		            'encounter_id': pokemon['encounter_id'],
-    		            'latitude': pokemon['latitude'],
-    		            'longitude': pokemon['longitude'],
-    		            'expiration_timestamp_ms': pokemon['expiration_timestamp_ms'],
-    		            'pokemon_name': Pokemons.name_for(pokemon['pokemon_id']),
-    		        }
-    		    )
+                        'pokemon_id': pokemon['pokemon_id'],
+                        'spawn_point_id': pokemon['spawn_point_id'],
+                        'encounter_id': pokemon['encounter_id'],
+                        'latitude': pokemon['latitude'],
+                        'longitude': pokemon['longitude'],
+                        'expiration_timestamp_ms': pokemon['expiration_timestamp_ms'],
+                        'pokemon_name': Pokemons.name_for(pokemon['pokemon_id']),
+                    }
+                )
 
                 self.add_pokemon(pokemon)
 
