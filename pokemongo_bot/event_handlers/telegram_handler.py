@@ -376,12 +376,12 @@ class TelegramClass:
                             "/showsubs - show current subscriptions",
                             "/events <filter> - show available events, filtered by regular expression  <filter>",
                             "/top <num> <cp-or-iv> - show top X pokemons, sorted by CP or IV",
-                            "/evolved <num> <cp-or-iv> - show last x pokemon evolved, sorted by CP or IV",
-                            "/hatched <num> <cp-or-iv> - show last x pokemon hatched, sorted by CP or IV",
-                            "/caught <num> <cp-or-iv>- show last x pokemon caught, sorted by CP or IV",
+                            "/evolved <num> <cp-or-iv> - show top x pokemon evolved, sorted by CP or IV",
+                            "/hatched <num> <cp-or-iv> - show top x pokemon hatched, sorted by CP or IV",
+                            "/caught <num> <cp-or-iv>- show top x pokemon caught, sorted by CP or IV",
                             "/pokestops - show last x pokestops visited",
-                            "/transfers <num> <cp-or-iv> - show last x transfers, sorted by CP or IV",
-                            "/vanished <num> <cp-or-iv> - show last x vanished, sorted by CP or IV",
+                            "/transfers <num> <cp-or-iv> - show top x transfers, sorted by CP or IV",
+                            "/vanished <num> <cp-or-iv> - show top x vanished, sorted by CP or IV",
                             "/softbans - info about possible softbans"
                         )
                         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
