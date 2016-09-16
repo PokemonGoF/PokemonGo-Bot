@@ -79,10 +79,18 @@ class TelegramClass:
     def _get_player_stats(self):
         return inventory.player().player_stats
 
-    def get_evolved(self, chat_id):
+    def get_evolved(self, chat_id, num, order):
+        if not num.isnumeric():
+            num = 10
+        else:
+            num = int(num)
+
+        if order not in ["cp", "iv"]:
+            order = "iv"
+
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM evolve_log ORDER BY dated DESC LIMIT 25")
+            cur.execute("SELECT * FROM evolve_log ORDER BY " + order + " ASC LIMIT " + str(num))
             evolved = cur.fetchall()
             if evolved:
                 for x in evolved:
@@ -111,10 +119,17 @@ class TelegramClass:
             else:
                 self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Softbans found! Good job!\n")
 
-    def get_hatched(self, chat_id):
+    def get_hatched(self, chat_id, num, order):
+        if not num.isnumeric():
+            num = 10
+        else:
+            num = int(num)
+
+        if order not in ["cp", "iv"]:
+            order = "iv"
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM eggs_hatched_log ORDER BY dated DESC LIMIT 25")
+            cur.execute("SELECT * FROM eggs_hatched_log ORDER BY " + order + " ASC LIMIT " + str(num))
             hatched = cur.fetchall()
             if hatched:
                 for x in hatched:
@@ -128,10 +143,18 @@ class TelegramClass:
             else:
                 self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Eggs Hatched Yet.\n")
 
-    def get_caught(self, chat_id):
+    def get_caught(self, chat_id, num, order):
+        if not num.isnumeric():
+            num = 10
+        else:
+            num = int(num)
+
+        if order not in ["cp", "iv"]:
+            order = "iv"
+
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM catch_log ORDER BY dated DESC LIMIT 25")
+            cur.execute("SELECT * FROM catch_log ORDER BY " + order + " ASC LIMIT " + str(num))
             caught = cur.fetchall()
             if caught:
                 for x in caught:
@@ -145,10 +168,10 @@ class TelegramClass:
             else:
                 self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Pokemon Caught Yet.\n")
 
-    def get_pokestop(self, chat_id):
+    def get_pokestops(self, chat_id, num):
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM pokestop_log ORDER BY dated DESC LIMIT 25")
+            cur.execute("SELECT * FROM pokestop_log ORDER BY dated ASC LIMIT " + str(num))
             pokestop = cur.fetchall()
             if pokestop:
                 for x in pokestop:
@@ -162,10 +185,17 @@ class TelegramClass:
             else:
                 self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Pokestops Encountered Yet.\n")
 
-    def get_transfer(self, chat_id):
+    def get_transfers(self, chat_id, num, order):
+        if not num.isnumeric():
+            num = 10
+        else:
+            num = int(num)
+
+        if order not in ["cp", "iv"]:
+            order = "iv"
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM transfer_log ORDER BY dated DESC LIMIT 25")
+            cur.execute("SELECT * FROM transfer_log ORDER BY " + order + " ASC LIMIT " + str(num))
             transfer = cur.fetchall()
             if transfer:
                 for x in transfer:
@@ -179,6 +209,30 @@ class TelegramClass:
             else:
                 self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Pokemon Released Yet.\n")
 
+    def get_vanished(self, chat_id, num, order):
+        if not num.isnumeric():
+            num = 10
+        else:
+            num = int(num)
+
+        if order not in ["cp", "iv"]:
+            order = "iv"
+        with self.bot.database as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM vanish_log ORDER BY " + order + " ASC LIMIT " + str(num))
+            vanished = cur.fetchall()
+            if vanished:
+                for x in vanished:
+                    res = (
+                        "*" + str(x[0]) + "*",
+                        "_CP:_ " + str(x[1]),
+                        "_IV:_ " + str(x[2]),
+                        "_NCP:_ " + str(x[4]),
+                        str(x[5])
+                    )
+                    self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+            else:
+                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Pokemon Vanished Yet.\n")
 
     def send_player_stats_to_chat(self, chat_id):
         stats = self._get_player_stats()
@@ -292,6 +346,7 @@ class TelegramClass:
 
         return
 
+
     def evolve(self, chatid, uid):
         # TODO: here comes evolve logic (later)
         self.sendMessage(chat_id=chatid, parse_mode='HTML', text="Evolve logic not implemented yet")
@@ -321,11 +376,12 @@ class TelegramClass:
                             "/showsubs - show current subscriptions",
                             "/events <filter> - show available events, filtered by regular expression  <filter>",
                             "/top <num> <cp-or-iv> - show top X pokemons, sorted by CP or IV",
-                            "/evolved - show last 25 pokemon evolved",
-                            "/hatched - show last 25 pokemon hatched",
-                            "/caught - show last 25 pokemon caught",
-                            "/pokestops - show last 25 pokestops",
-                            "/transfers - show last 25 transfers",
+                            "/evolved <num> <cp-or-iv> - show last x pokemon evolved",
+                            "/hatched <num> <cp-or-iv> - show last x pokemon hatched",
+                            "/caught <num> <cp-or-iv>- show last x pokemon caught",
+                            "/pokestop - show last x pokestops",
+                            "/transfers <num> <cp-or-iv> - show last x transfers",
+                            "/vanished <num> <cp-or-iv> - show last x vanished",
                             "/softbans - info about possible softbans"
                         )
                         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
@@ -360,21 +416,6 @@ class TelegramClass:
                     if update.message.text == "/info":
                         self.send_player_stats_to_chat(update.message.chat_id)
                         continue
-                    if update.message.text == "/evolved":
-                        self.get_evolved(update.message.chat_id)
-                        continue
-                    if update.message.text == "/hatched":
-                        self.get_hatched(update.message.chat_id)
-                        continue
-                    if update.message.text == "/caught":
-                        self.get_caught(update.message.chat_id)
-                        continue
-                    if update.message.text == "/pokestops":
-                        self.get_pokestop(update.message.chat_id)
-                        continue
-                    if update.message.text == "/transfers":
-                        self.get_transfer(update.message.chat_id)
-                        continue
                     if update.message.text == "/softbans":
                         self.get_softban(update.message.chat_id)
                         continue
@@ -400,7 +441,30 @@ class TelegramClass:
                         (cmd, num, order) = self.tokenize(update.message.text, 3)
                         self.showtop(update.message.chat_id, num, order)
                         continue
-
+                    if re.match(r'^/caught ', update.message.text):
+                        (cmd, num, order) = self.tokenize(update.message.text, 3)
+                        self.get_caught(update.message.chat_id, num, order)
+                        continue
+                    if re.match(r'^/evolved ', update.message.text):
+                        (cmd, num, order) = self.tokenize(update.message.text, 3)
+                        self.get_evolved(update.message.chat_id, num, order)
+                        continue
+                    if re.match(r'^/pokestops ', update.message.text):
+                        (cmd, num) = self.tokenize(update.message.text, 2)
+                        self.get_pokestops(update.message.chat_id, num)
+                        continue
+                    if re.match(r'^/hatched ', update.message.text):
+                        (cmd, num, order) = self.tokenize(update.message.text, 3)
+                        self.get_hatched(update.message.chat_id, num, order)
+                        continue
+                    if re.match(r'^/transfers ', update.message.text):
+                        (cmd, num, order) = self.tokenize(update.message.text, 3)
+                        self.get_transfers(update.message.chat_id, num, order)
+                        continue
+                    if re.match(r'^/vanished ', update.message.text):
+                        (cmd, num, order) = self.tokenize(update.message.text, 3)
+                        self.get_vanished(update.message.chat_id, num, order)
+                        continue
                     self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Unrecognized command: {}".format(update.message.text))
 
     def showsubs(self, chatid):
