@@ -75,12 +75,9 @@ except ImportError as e:
     print e
     pass
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s [%(name)10s] [%(levelname)s] %(message)s')
+logging.basicConfig(level=logging.INFO, format='[%(asctime)s] %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger('cli')
 logger.setLevel(logging.INFO)
-
 
 class SIGINTRecieved(Exception):
     pass

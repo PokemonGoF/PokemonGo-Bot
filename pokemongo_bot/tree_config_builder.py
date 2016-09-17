@@ -31,12 +31,15 @@ class TreeConfigBuilder(object):
 
         for task in self.tasks_raw:
             task_type = task.get('type', None)
-            if task_type is None:
-                raise ConfigException('No type found for given task {}'.format(task))
-            elif task_type == 'EvolveAll':
-                raise ConfigException('The EvolveAll task has been renamed to EvolvePokemon')
-
             task_config = task.get('config', {})
+
+            # Validate task name refactors
+            if type is None:
+                raise ConfigException('No type found for given task {}'.format(type))
+            elif type == 'EvolveAll':
+                raise ConfigException('The EvolveAll task has been renamed to EvolvePokemon')
+            elif type == 'MoveToMapPokemon':
+                raise ConfigException('The MoveToMapPokemon task has been renamed to Sniper')
 
             if task_type in ['CatchVisiblePokemon', 'CatchLuredPokemon']:
                 if deprecated_pokemon_task:
