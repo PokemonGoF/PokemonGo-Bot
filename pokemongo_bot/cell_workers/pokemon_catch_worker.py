@@ -44,7 +44,7 @@ LOGIC_TO_FUNCTION = {
     'andor': lambda x, y, z: x and y or z
 }
 
-DEBUG_ON = True
+DEBUG_ON = False
 
 class PokemonCatchWorker(BaseTask):
 
