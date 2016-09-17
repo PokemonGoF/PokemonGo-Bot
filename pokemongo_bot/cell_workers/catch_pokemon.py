@@ -150,7 +150,8 @@ class CatchPokemon(BaseTask):
                 self.add_pokemon(pokemon)
 
     def add_pokemon(self, pokemon):
-        if pokemon['encounter_id'] not in self.pokemon:
+        if pokemon['encounter_id'] not in \
+                map(lambda pokemon: pokemon['encounter_id'], self.pokemon):
             self.pokemon.append(pokemon)
 
     def catch_pokemon(self, pokemon):
