@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 import os
 import time
 import json
-import logging
 import sys
 
 from random import random, randrange, uniform
@@ -14,7 +14,7 @@ from pokemongo_bot.inventory import Pokemon
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_dir import _base_dir
 from datetime import datetime, timedelta
-from utils import getSeconds
+from .utils import getSeconds
 
 from pprint import pprint
 
@@ -365,8 +365,8 @@ class PokemonCatchWorker(BaseTask):
         # Not seen pokemons also will become vip if it's not disabled in config
         if self.bot.config.vips.get(pokemon.name) == {} or (self.treat_unseen_as_vip and not self.pokedex.seen(pokemon.pokemon_id)):
             return True
-        return self._pokemon_matches_config(self.bot.config.vips, pokemon, default_logic='or')
-        
+        return False
+
     def _pct(self, rate_by_ball):
         return '{0:.2f}'.format(rate_by_ball * 100)
 
