@@ -1,7 +1,6 @@
 import time
 from datetime import timedelta
-from pokemongo_bot.inventory import Pokemons
-from pokemongo_bot.inventory import refresh_inventory
+from pokemongo_bot.inventory import Pokemons, refresh_inventory
 from pokemongo_bot import inventory
 
 class Metrics(object):
