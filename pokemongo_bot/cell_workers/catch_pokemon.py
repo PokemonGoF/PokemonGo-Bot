@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import absolute_import
 
 import json
 import os
@@ -10,7 +11,7 @@ from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.item_list import Item
 from pokemongo_bot import inventory
-from utils import fort_details, distance,  format_time
+from .utils import fort_details, distance,  format_time
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.inventory import Pokemons

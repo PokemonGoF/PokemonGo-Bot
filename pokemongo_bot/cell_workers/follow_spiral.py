@@ -64,7 +64,7 @@ class FollowSpiral(BaseTask):
 
     def work(self):
         if not self.next_point:
-            self.next_point = self.points.next()
+            self.next_point = next(self.points)
         point = self.next_point
         step_walker = StepWalker(self.bot, point['lat'], point['lng'])
         if step_walker.step():
