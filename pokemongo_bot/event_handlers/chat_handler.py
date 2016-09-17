@@ -91,13 +91,7 @@ class ChatHandler:
         events.remove('evolve_log')
         events.remove('transfer_log')
         events.remove('catchable_pokemon')
-        if hasattr(self, "master") and self.master:
-            if not unicode(self.master).isnumeric():
-                # master not numeric?...
-                # cannot send event notifications to non-numeric master (yet), so quitting
-                return
-            master = self.master
-            self.sendMessage(chat_id=master, parse_mode='Markdown', text=msg)
+        return events
 
 
 
