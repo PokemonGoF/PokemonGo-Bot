@@ -171,7 +171,7 @@ class TelegramClass:
                         self.chat_handler.get_softban(update.message.chat_id)
                         continue
                     if re.match("^/events", update.message.text):
-                        self.chat_handler.get_events(update, update.message.chat_id)
+                        self.chat_handler.get_events(update)
                         continue
                     if update.message.text == "/logout":
                         self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=("Logged out."))

@@ -70,7 +70,7 @@ class ChatHandler:
 
         return msg
 
-    def get_events(self, update, chat_id):
+    def get_events(self, update):
         cmd = update.message.text.split(" ", 1)
         if len(cmd) > 1:
             # we have a filter
@@ -91,10 +91,13 @@ class ChatHandler:
         events.remove('evolve_log')
         events.remove('transfer_log')
         events.remove('catchable_pokemon')
-        if events:
-            self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(events))
-        else:
-            self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="There has been an error\n")
+        if hasattr(self, "master") and self.master:
+            if not unicode(self.master).isnumeric():
+                # master not numeric?...
+                # cannot send event notifications to non-numeric master (yet), so quitting
+                return
+            master = self.master
+            self.sendMessage(chat_id=master, parse_mode='Markdown', text=msg)
 
 
 
