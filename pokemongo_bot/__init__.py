@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import absolute_import
 
 import datetime
 import json
@@ -19,27 +20,28 @@ from pgoapi import PGoApi
 from pgoapi.utilities import f2i, get_cell_ids
 from s2sphere import Cell, CellId, LatLng
 
-import cell_workers
-from base_task import BaseTask
-from plugin_loader import PluginLoader
-from api_wrapper import ApiWrapper
-from cell_workers.utils import distance
-from event_manager import EventManager
-from human_behaviour import sleep
-from item_list import Item
-from metrics import Metrics
-from sleep_schedule import SleepSchedule
+from . import cell_workers
+from .base_task import BaseTask
+from .plugin_loader import PluginLoader
+from .api_wrapper import ApiWrapper
+from .cell_workers.utils import distance
+from .event_manager import EventManager
+from .human_behaviour import sleep
+from .item_list import Item
+from .metrics import Metrics
+from .sleep_schedule import SleepSchedule
 from pokemongo_bot.event_handlers import SocketIoHandler, LoggingHandler, SocialHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from pokemongo_bot.base_dir import _base_dir
-from worker_result import WorkerResult
-from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
-from inventory import init_inventory, player
+from .worker_result import WorkerResult
+from .tree_config_builder import ConfigException
+from .tree_config_builder import MismatchTaskApiVersion
+from .tree_config_builder import TreeConfigBuilder
+from .inventory import init_inventory, player
 from sys import platform as _platform
 from pgoapi.protos.POGOProtos.Enums import BadgeType_pb2
 from pgoapi.exceptions import AuthException
-import struct
 
 
 class FileIOException(Exception):
@@ -1317,7 +1319,7 @@ class PokemonGoBot(object):
                 # store awarded_badges reponse to be used in a task or part of heartbeat
                 self._awarded_badges = responses['responses']['CHECK_AWARDED_BADGES']
 
-            if self._awarded_badges.has_key('awarded_badges'):
+            if 'awarded_badges' in self._awarded_badges:
                 i = 0
                 for badge in self._awarded_badges['awarded_badges']:
                     badgelevel = self._awarded_badges['awarded_badge_levels'][i]
@@ -1407,7 +1409,6 @@ class PokemonGoBot(object):
                     cached_recent_forts = json.load(f)
             except (IOError, ValueError) as e:
                 self.logger.info('[x] Error while opening cached forts: %s' % e)
-                pass
             except:
                 raise FileIOException("Unexpected error opening {}".cached_forts_path)
 

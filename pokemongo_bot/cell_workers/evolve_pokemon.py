@@ -1,4 +1,3 @@
-from random import uniform
 
 from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import sleep, action_delay
@@ -18,7 +17,6 @@ class EvolvePokemon(BaseTask):
 
     def initialize(self):
         self.start_time = 0
-        self.api = self.bot.api
         self.evolve_list = self.config.get('evolve_list', [])
         self.donot_evolve_list = self.config.get('donot_evolve_list', [])
         self.min_evolve_speed = self.config.get('min_evolve_speed', 25)
@@ -148,7 +146,7 @@ class EvolvePokemon(BaseTask):
         if pokemon.name in cache:
             return False
 
-        response_dict = self.api.evolve_pokemon(pokemon_id=pokemon.unique_id)
+        response_dict = self.bot.api.evolve_pokemon(pokemon_id=pokemon.unique_id)
         if response_dict.get('responses', {}).get('EVOLVE_POKEMON', {}).get('result', 0) == 1:
             xp = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("experience_awarded", 0)
             evolution = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("evolved_pokemon_data", {})

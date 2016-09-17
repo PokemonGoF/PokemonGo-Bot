@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 import os
 import time
 import json
-import logging
 import sys
 
 from random import random, randrange, uniform
@@ -14,7 +14,7 @@ from pokemongo_bot.inventory import Pokemon
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_dir import _base_dir
 from datetime import datetime, timedelta
-from utils import getSeconds
+from .utils import getSeconds
 
 from pprint import pprint
 
@@ -44,15 +44,16 @@ LOGIC_TO_FUNCTION = {
     'andor': lambda x, y, z: x and y or z
 }
 
+DEBUG_ON = False
 
 class PokemonCatchWorker(BaseTask):
 
     def __init__(self, pokemon, bot, config):
         self.pokemon = pokemon
         super(PokemonCatchWorker, self).__init__(bot, config)
+        if self.config.get('debug', False): DEBUG_ON = True
 
     def initialize(self):
-        self.api = self.bot.api
         self.position = self.bot.position
         self.pokemon_list = self.bot.pokemon_list
         self.inventory = inventory.items()
@@ -125,8 +126,11 @@ class PokemonCatchWorker(BaseTask):
         pokemon_data = response['wild_pokemon']['pokemon_data'] if 'wild_pokemon' in response else response['pokemon_data']
         pokemon = Pokemon(pokemon_data)
 
+        # check if vip pokemon
+        is_vip = self._is_vip_pokemon(pokemon)
+
         # skip ignored pokemon
-        if not self._should_catch_pokemon(pokemon):
+        if not self._should_catch_pokemon(pokemon) and not is_vip:
             if not hasattr(self.bot,'skipped_pokemon'):
                 self.bot.skipped_pokemon = []
 
@@ -150,7 +154,6 @@ class PokemonCatchWorker(BaseTask):
             )
             return WorkerResult.SUCCESS
 
-        is_vip = self._is_vip_pokemon(pokemon)
         if inventory.items().get(ITEM_POKEBALL).count < 1:
             if inventory.items().get(ITEM_GREATBALL).count < 1:
                 if inventory.items().get(ITEM_ULTRABALL).count < 1:
@@ -210,7 +213,7 @@ class PokemonCatchWorker(BaseTask):
         player_latitude = self.pokemon['latitude']
         player_longitude = self.pokemon['longitude']
 
-        request = self.api.create_request()
+        request = self.bot.api.create_request()
         if 'spawn_point_id' in self.pokemon:
             spawn_point_id = self.pokemon['spawn_point_id']
             self.spawn_point_guid = spawn_point_id
@@ -262,6 +265,8 @@ class PokemonCatchWorker(BaseTask):
             'ca': True
         }
 
+        catch_logic = pokemon_config.get('logic', default_logic)
+
         candies = inventory.candies().get(pokemon.pokemon_id).quantity
         threshold = pokemon_config.get('candy_threshold', -1)
         if (threshold > 0 and candies >= threshold):
@@ -283,20 +288,21 @@ class PokemonCatchWorker(BaseTask):
         if pokemon_config.get('always_catch', False):
             return True
 
-        catch_ncp = pokemon_config.get('catch_above_ncp', pokemon.cp_percent)
-        if pokemon.cp_percent >= catch_ncp:
-            catch_results['ncp'] = True
+        if pokemon_config.get('catch_above_ncp',-1) >= 0:
+            if pokemon.cp_percent >= pokemon_config.get('catch_above_ncp'):
+                catch_results['ncp'] = True
 
-        catch_cp = pokemon_config.get('catch_above_cp', pokemon.cp)
-        catch_below_cp = pokemon_config.get('catch_below_cp', pokemon.cp)
-        if catch_cp <= pokemon.cp <= catch_below_cp:
-            catch_results['cp'] = True
+        if pokemon_config.get('catch_above_cp',-1) >= 0:
+            if pokemon.cp >= pokemon_config.get('catch_above_cp'):
+                catch_results['cp'] = True
+                
+        if pokemon_config.get('catch_below_cp',-1) >= 0:
+            if pokemon.cp <= pokemon_config.get('catch_below_cp'):
+                catch_results['cp'] = True
 
-
-        catch_iv = pokemon_config.get('catch_above_iv', pokemon.iv)
-        if pokemon.iv >= catch_iv:
-            catch_results['iv'] = True
-
+        if pokemon_config.get('catch_above_iv',-1) >= 0:
+            if pokemon.iv > pokemon_config.get('catch_above_iv', pokemon.iv):
+                catch_results['iv'] = True
 
         catch_results['fa'] = ( len(pokemon_config.get('fast_attack', [])) == 0 or unicode(pokemon.fast_attack) in map(lambda x: unicode(x), pokemon_config.get('fast_attack', [])))
         catch_results['ca'] = ( len(pokemon_config.get('charged_attack', [])) == 0 or unicode(pokemon.charged_attack) in map(lambda x: unicode(x), pokemon_config.get('charged_attack', [])))
@@ -308,13 +314,45 @@ class PokemonCatchWorker(BaseTask):
             self.bot.logger.debug("Pokemon locked!")
             return False
 
+        # build catch results
         cr = {
-            'ncp': catch_results['ncp'],
-            'cp': catch_results['cp'],
-            'iv': catch_results['iv']
+            'ncp': False,
+            'cp': False,
+            'iv': False
         }
+        if catch_logic == 'and':
+            cr['ncp'] = True,
+            cr['cp'] = True,
+            cr['iv'] = True
+        elif catch_logic == 'andor':
+            cr['ncp'] = True,
+            cr['cp'] = True
+        elif catch_logic == 'orand':
+            cr['cp'] = True,
+            cr['iv'] = True    
         
-        if LOGIC_TO_FUNCTION[pokemon_config.get('logic', default_logic)](*cr.values()):
+        if pokemon_config.get('catch_above_ncp',-1) >= 0: cr['ncp'] = catch_results['ncp']
+        if pokemon_config.get('catch_above_cp',-1) >= 0: cr['cp'] = catch_results['cp']
+        if pokemon_config.get('catch_below_cp',-1) >= 0: cr['cp'] = catch_results['cp']
+        if pokemon_config.get('catch_above_iv',-1) >= 0: cr['iv'] = catch_results['iv']
+        
+        if DEBUG_ON:
+            print "Debug information for match rules..."
+            print "catch_results ncp = {}".format(catch_results['ncp'])
+            print "catch_results cp = {}".format(catch_results['cp'])
+            print "catch_results iv = {}".format(catch_results['iv'])
+            print "cr = {}".format(cr)
+            print "catch_above_ncp = {}".format(pokemon_config.get('catch_above_ncp'))
+            print "catch_above_cp iv = {}".format(pokemon_config.get('catch_above_cp'))
+            print "catch_below_cp iv = {}".format(pokemon_config.get('catch_below_cp'))
+            print "catch_above_iv iv = {}".format(pokemon_config.get('catch_above_iv'))
+            print "Pokemon {}".format(pokemon.name)
+            print "pokemon ncp = {}".format(pokemon.cp_percent)
+            print "pokemon cp = {}".format(pokemon.cp)
+            print "pokemon iv = {}".format(pokemon.iv)
+            print "catch logic = {}".format(catch_logic)
+
+        if LOGIC_TO_FUNCTION[catch_logic](*cr.values()):
             return catch_results['fa'] and catch_results['ca']
         else:
             return False
@@ -348,7 +386,7 @@ class PokemonCatchWorker(BaseTask):
             }
         )
 
-        response_dict = self.api.use_item_capture(
+        response_dict = self.bot.api.use_item_capture(
             item_id=berry_id,
             encounter_id=encounter_id,
             spawn_point_id=self.spawn_point_guid
@@ -523,7 +561,7 @@ class PokemonCatchWorker(BaseTask):
             if random() >= self.catch_throw_parameters_hit_rate and not is_vip:
                 hit_pokemon = 0
 
-            response_dict = self.api.catch_pokemon(
+            response_dict = self.bot.api.catch_pokemon(
                 encounter_id=encounter_id,
                 pokeball=current_ball,
                 normalized_reticle_size=throw_parameters['normalized_reticle_size'],
