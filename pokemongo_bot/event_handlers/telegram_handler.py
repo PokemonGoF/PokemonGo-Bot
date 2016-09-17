@@ -337,31 +337,10 @@ class TelegramHandler(EventHandler):
                 self.tbot = None
                 self.bot.logger.error("Unable to start Telegram bot; master: {}, exception: {}".format(selfmaster, pprint.pformat(inst)))
                 return
-<<<<<<< HEAD
             msg = self.chat_handler.get_event(event, formatted_msg, data)
             if msg is None:
                 return
 
-=======
-        try:
-            # prepare message to send
-            if event == 'level_up':
-                msg = "level up ({})".format(data["current_level"])
-            elif event == 'pokemon_caught':
-                msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
-            elif event == 'egg_hatched':
-                msg = "Egg hatched with a {} CP: {}, IV: {} {}".format(data["name"], data["cp"], data["iv_ads"], data["iv_pct"])
-            elif event == 'bot_sleep':
-                msg = "I am too tired, I will take a sleep till {}.".format(data["wake"])
-            elif event == 'catch_limit':
-                msg = "*You have reached your daily catch limit, quitting.*"
-            elif event == 'spin_limit':
-                msg = "*You have reached your daily spin limit, quitting.*"
-            else:
-                msg = formatted_msg
-        except KeyError:
-            msg = "Error on event {}".format(event)
->>>>>>> PokemonGoF/dev
         # first handle subscriptions; they are independent of master setting.
         with self.bot.database as conn:
             subs = conn.execute("select uid, parameters, event_type from telegram_subscriptions where event_type in (?,'all','debug')", [event]).fetchall()
