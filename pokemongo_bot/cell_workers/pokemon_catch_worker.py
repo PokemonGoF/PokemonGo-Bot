@@ -53,7 +53,6 @@ class PokemonCatchWorker(BaseTask):
         super(PokemonCatchWorker, self).__init__(bot, config)
 
     def initialize(self):
-        self.api = self.bot.api
         self.position = self.bot.position
         self.pokemon_list = self.bot.pokemon_list
         self.inventory = inventory.items()
@@ -213,7 +212,7 @@ class PokemonCatchWorker(BaseTask):
         player_latitude = self.pokemon['latitude']
         player_longitude = self.pokemon['longitude']
 
-        request = self.api.create_request()
+        request = self.bot.api.create_request()
         if 'spawn_point_id' in self.pokemon:
             spawn_point_id = self.pokemon['spawn_point_id']
             self.spawn_point_guid = spawn_point_id
@@ -369,7 +368,7 @@ class PokemonCatchWorker(BaseTask):
             }
         )
 
-        response_dict = self.api.use_item_capture(
+        response_dict = self.bot.api.use_item_capture(
             item_id=berry_id,
             encounter_id=encounter_id,
             spawn_point_id=self.spawn_point_guid
@@ -544,7 +543,7 @@ class PokemonCatchWorker(BaseTask):
             if random() >= self.catch_throw_parameters_hit_rate and not is_vip:
                 hit_pokemon = 0
 
-            response_dict = self.api.catch_pokemon(
+            response_dict = self.bot.api.catch_pokemon(
                 encounter_id=encounter_id,
                 pokeball=current_ball,
                 normalized_reticle_size=throw_parameters['normalized_reticle_size'],
