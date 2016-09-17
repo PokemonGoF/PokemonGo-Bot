@@ -18,9 +18,9 @@ class ChatHandler:
             with self.bot.database as conn:
                 cur = conn.cursor()
                 cur.execute(
-                    "SELECT DISTINCT COUNT(encounter_id) FROM catch_log WHERE dated >= datetime('now','-1 day')")
+                    "SELECT COUNT(DISTINCT encounter_id) FROM catch_log WHERE dated >= datetime('now','-1 day')")
                 catch_day = cur.fetchone()[0]
-                cur.execute("SELECT DISTINCT COUNT(pokestop) FROM pokestop_log WHERE dated >= datetime('now','-1 day')")
+                cur.execute("SELECT COUNT(pokestop) FROM pokestop_log WHERE dated >= datetime('now','-1 day')")
                 ps_day = cur.fetchone()[0]
                 res = (
                     "*" + self.bot.config.username + "*",
