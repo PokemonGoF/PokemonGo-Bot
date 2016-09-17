@@ -365,7 +365,7 @@ class PokemonCatchWorker(BaseTask):
         # Not seen pokemons also will become vip if it's not disabled in config
         if self.bot.config.vips.get(pokemon.name) == {} or (self.treat_unseen_as_vip and not self.pokedex.seen(pokemon.pokemon_id)):
             return True
-        return False
+        return self._pokemon_matches_config(self.bot.config.vips, pokemon, default_logic='or')
 
     def _pct(self, rate_by_ball):
         return '{0:.2f}'.format(rate_by_ball * 100)
