@@ -237,15 +237,15 @@ class TransferPokemon(BaseTask):
         self.bot.metrics.released_pokemon()
         self.emit_event(
             'pokemon_release',
+            formatted="Released {pokemon} (CP: {cp}, IV: {iv}, IVCP: {ivcp:.2f}) You now have {candy} {candy_type} candies",
             data={
                 'pokemon': pokemon.name,
                 'iv': pokemon.iv,
                 'cp': pokemon.cp,
                 'ivcp': pokemon.ivcp,
-                'candy': candy.quantity
-            },
-
-            formatted="Released {} (CP: {}, IV: {}, IVCP: {:.2f}) You now have {} {} candies".format(pokemon.name, pokemon.cp, pokemon.iv, pokemon.ivcp, candy.quantity, pokemon.name),
+                'candy': candy.quantity,
+                'candy_type': candy.type
+            }
         )
         with self.bot.database as conn:
             c = conn.cursor()
