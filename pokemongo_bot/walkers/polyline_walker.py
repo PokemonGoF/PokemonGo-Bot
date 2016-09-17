@@ -1,7 +1,8 @@
+from __future__ import absolute_import
 from geographiclib.geodesic import Geodesic
 
 from pokemongo_bot.walkers.step_walker import StepWalker
-from polyline_generator import PolylineObjectHandler
+from .polyline_generator import PolylineObjectHandler
 from pokemongo_bot.human_behaviour import random_alt_delta
 
 

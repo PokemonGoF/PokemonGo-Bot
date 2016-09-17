@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import print_function
 from sys import stdout
 
 
@@ -30,12 +31,12 @@ class EventManager(object):
 
     def event_report(self):
         for event, parameters in self._registered_events.iteritems():
-            print '-'*80
-            print 'Event: {}'.format(event)
+            print('-'*80)
+            print('Event: {}'.format(event))
             if parameters:
-                print 'Parameters:'
+                print('Parameters:')
                 for parameter in parameters:
-                    print '* {}'.format(parameter)
+                    print('* {}'.format(parameter))
 
     def add_handler(self, event_handler):
         self._handlers.append(event_handler)
