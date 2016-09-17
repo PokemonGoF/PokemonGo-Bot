@@ -1,7 +1,8 @@
 import unittest
+from datetime import timedelta, datetime
+from time import sleep
 
-from mock import MagicMock
-from mock import patch
+from mock import patch, MagicMock
 
 from pokemongo_bot.cell_workers import MoveToFort
 from tests import FakeBot

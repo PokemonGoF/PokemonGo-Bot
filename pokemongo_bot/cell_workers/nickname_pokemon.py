@@ -5,9 +5,7 @@ import os
 import json
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.human_behaviour import sleep, action_delay
-from pokemongo_bot.inventory import Attack
-from pokemongo_bot.inventory import Pokemon
-from pokemongo_bot.inventory import pokemons
+from pokemongo_bot.inventory import pokemons, Pokemon, Attack
 
 import re
 

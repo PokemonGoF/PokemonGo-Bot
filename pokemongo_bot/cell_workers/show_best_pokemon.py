@@ -1,3 +1,4 @@
+import ctypes
 from datetime import datetime, timedelta
 
 from pokemongo_bot import inventory
