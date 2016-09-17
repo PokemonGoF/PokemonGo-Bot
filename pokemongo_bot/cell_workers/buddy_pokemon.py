@@ -11,7 +11,6 @@ class BuddyPokemon(BaseTask):
 
     def initialize(self):
         self.buddy = self.bot.player_data.get('buddy_pokemon', {})
-        print(self.buddy)
         self.buddy_list = self.config.get('buddy_list', 'none')
         self.best_in_family = self.config.get('best_in_family', True)
         self.candy_limit = self.config.get('candy_limit', 0)  # 0 = No Limit
@@ -38,6 +37,9 @@ class BuddyPokemon(BaseTask):
                 formatted='BuddyPokemon is still active since is not possible'
                           ' to remove Buddy'
             )
+        if self.buddy:
+            pokemon = self._get_pokemon_by_id(self.buddy['id'])
+            self.buddy_km_needed = pokemon.buddy_km_needed
 
     def work(self):
         if self.buddy_list:
@@ -61,10 +63,6 @@ class BuddyPokemon(BaseTask):
 
         if not self.buddy:
             return WorkerResult.SUCCESS
-
-        if self.buddy_km_needed == 0:
-            pokemon = self._get_pokemon_by_id(self.buddy['id'])
-            self.buddy_km_needed = pokemon.buddy_km_needed
 
         if self._km_walked() - self.buddy['last_km_awarded'] >= self.buddy_km_needed:
             self.buddy['last_km_awarded'] += self.buddy_km_needed
@@ -93,6 +91,7 @@ class BuddyPokemon(BaseTask):
                                                        ]['updated_buddy']
             self.buddy = updated_buddy
             self.candy_awarded = 0
+            self.buddy_km_needed = pokemon.buddy_km_needed
 
             self.emit_event(
                 'buddy_update',
@@ -162,11 +161,10 @@ class BuddyPokemon(BaseTask):
         pokemon = self._get_pokemon_by_id(self.buddy['id'])
         self.buddy_km_needed = pokemon.buddy_km_needed
         km_diff = self._km_walked() - self.buddy['last_km_awarded']
-        print("KM Diff: {}".format(km_diff))
         rewards_size = km_diff // self.buddy_km_needed
-        # if rewards_size > 0:
-        self._get_award()
-        self.buddy['last_km_awarded'] += self.buddy_km_needed*rewards_size
+        if rewards_size > 0:
+            self._get_award()
+            self.buddy['last_km_awarded'] += self.buddy_km_needed*rewards_size
 
     def _km_walked(self):
         inv = inventory.jsonify_inventory()
