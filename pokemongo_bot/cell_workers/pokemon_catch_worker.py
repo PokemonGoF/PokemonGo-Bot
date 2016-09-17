@@ -44,7 +44,7 @@ LOGIC_TO_FUNCTION = {
     'andor': lambda x, y, z: x and y or z
 }
 
-DEBUG_ON = False
+DEBUG_ON = True
 
 class PokemonCatchWorker(BaseTask):
 
@@ -285,20 +285,20 @@ class PokemonCatchWorker(BaseTask):
         if pokemon_config.get('always_catch', False):
             return True
 
-        if pokemon_config.get('catch_above_ncp'):
+        if pokemon_config.get('catch_above_ncp',-1) >= 0:
             if pokemon.cp_percent >= pokemon_config.get('catch_above_ncp'):
                 catch_results['ncp'] = True
 
-        if pokemon_config.get('catch_above_cp'):
+        if pokemon_config.get('catch_above_cp',-1) >= 0:
             if pokemon.cp >= pokemon_config.get('catch_above_cp'):
                 catch_results['cp'] = True
                 
-        if pokemon_config.get('catch_below_cp'):
+        if pokemon_config.get('catch_below_cp',-1) >= 0:
             if pokemon.cp <= pokemon_config.get('catch_below_cp'):
                 catch_results['cp'] = True
 
 
-        if pokemon_config.get('catch_above_iv'):
+        if pokemon_config.get('catch_above_iv',-1) >= 0:
             if pokemon.iv > pokemon_config.get('catch_above_iv', pokemon.iv):
                 catch_results['iv'] = True
 
