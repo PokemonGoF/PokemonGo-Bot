@@ -10,7 +10,6 @@ from pokemongo_bot.human_behaviour import sleep, random_alt_delta
 class StepWalker(object):
     def __init__(self, bot, dest_lat, dest_lng, dest_alt=None, precision=0.5):
         self.bot = bot
-        self.api = bot.api
         self.epsilon = 0.01
         self.precision = max(precision, self.epsilon)
 
@@ -38,7 +37,7 @@ class StepWalker(object):
 
         new_position = self.get_next_position(origin_lat, origin_lng, origin_alt, self.dest_lat, self.dest_lng, self.dest_alt, speed)
 
-        self.api.set_position(new_position[0], new_position[1], new_position[2])
+        self.bot.api.set_position(new_position[0], new_position[1], new_position[2])
         self.bot.event_manager.emit("position_update",
                                     sender=self,
                                     level="debug",
