@@ -242,10 +242,13 @@ class TransferPokemon(BaseTask):
                 'iv': pokemon.iv,
                 'cp': pokemon.cp,
                 'ivcp': pokemon.ivcp,
-                'candy': candy.quantity
+                'candy': candy.quantity,
+                'candy_type': candy.type
             },
-
-            formatted="Released {} (CP: {}, IV: {}, IVCP: {:.2f}) You now have {} {} candies".format(pokemon.name, pokemon.cp, pokemon.iv, pokemon.ivcp, candy.quantity, pokemon.name),
+            formatted="Released {} (CP: {}, IV: {}, IVCP: {:.2f}) You now have"
+                      " {} {} candies".format(pokemon.name, pokemon.cp,
+                                              pokemon.iv, pokemon.ivcp,
+                                              candy.quantity, candy.type)
         )
         with self.bot.database as conn:
             c = conn.cursor()

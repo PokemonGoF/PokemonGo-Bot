@@ -573,7 +573,7 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'pokemon_release',
-            parameters=('pokemon', 'iv', 'cp', 'ivcp', 'candy')
+            parameters=('pokemon', 'iv', 'cp', 'ivcp', 'candy', 'candy_type')
         )
         self.event_manager.register_event(
             'pokemon_keep',
