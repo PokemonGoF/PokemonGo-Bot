@@ -686,7 +686,7 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'buddy_candy_earned',
-            parameters=('candy', 'family', 'quantity')
+            parameters=('candy', 'family', 'quantity', 'candy_earned', 'candy_limit')
         )
         self.event_manager.register_event('buddy_candy_fail')
         self.event_manager.register_event(

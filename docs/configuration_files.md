@@ -50,6 +50,7 @@
 - [Telegram Task](#telegram-task)
 - [Discord Task](#discord-task)
 - [CompleteTutorial](#completetutorial)
+- [BuddyPokemon](#buddypokemon)
 
 #Configuration files
 
@@ -1121,5 +1122,53 @@ Available `team` :
 		"nickname": "PokemonGoF",
 		"team": 2
 	}
+}
+```
+
+## BuddyPokemon
+[[back to top](#table-of-contents)]
+
+### Description
+[[back to top](#table-of-contents)]
+
+Completes the tutorial:
+
+* Legal screen
+* Avatar selection
+* First Pokemon capture
+* Set nickname
+* Firte time experience
+* Pick team at level 5
+
+
+### Options
+[[back to top](#table-of-contents)]
+
+* `nickname` : Nickname to be used ingame.
+* `team` : `Default: 0`. Team to pick after reaching level 5.
+
+Available `team` :
+```
+0: Neutral (No team)
+1: Blue (Mystic)
+2: Red (Valor)
+3: Yellow (Instinct)
+```
+
+### Sample configuration
+[[back to top](#table-of-contents)]
+```json
+{
+  "type": "BuddyPokemon",
+  "config": {
+    "enabled": true,
+    "buddy_list": "dratini, magikarp",
+    "best_in_family": true,
+    "candy_limit": 0,
+    "force_first_change": false,
+    "buddy_change_wait_min": 3,
+    "buddy_change_wait_min": 5,
+    "min_interval": 120
+  }
 }
 ```
