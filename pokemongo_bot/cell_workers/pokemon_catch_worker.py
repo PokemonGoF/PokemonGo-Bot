@@ -51,6 +51,7 @@ class PokemonCatchWorker(BaseTask):
     def __init__(self, pokemon, bot, config):
         self.pokemon = pokemon
         super(PokemonCatchWorker, self).__init__(bot, config)
+        if self.config.get('debug', False): DEBUG_ON = True
 
     def initialize(self):
         self.position = self.bot.position
@@ -264,6 +265,8 @@ class PokemonCatchWorker(BaseTask):
             'ca': True
         }
 
+        catch_logic = pokemon_config.get('logic', default_logic)
+
         candies = inventory.candies().get(pokemon.pokemon_id).quantity
         threshold = pokemon_config.get('candy_threshold', -1)
         if (threshold > 0 and candies >= threshold):
@@ -297,11 +300,9 @@ class PokemonCatchWorker(BaseTask):
             if pokemon.cp <= pokemon_config.get('catch_below_cp'):
                 catch_results['cp'] = True
 
-
         if pokemon_config.get('catch_above_iv',-1) >= 0:
             if pokemon.iv > pokemon_config.get('catch_above_iv', pokemon.iv):
                 catch_results['iv'] = True
-
 
         catch_results['fa'] = ( len(pokemon_config.get('fast_attack', [])) == 0 or unicode(pokemon.fast_attack) in map(lambda x: unicode(x), pokemon_config.get('fast_attack', [])))
         catch_results['ca'] = ( len(pokemon_config.get('charged_attack', [])) == 0 or unicode(pokemon.charged_attack) in map(lambda x: unicode(x), pokemon_config.get('charged_attack', [])))
@@ -313,11 +314,27 @@ class PokemonCatchWorker(BaseTask):
             self.bot.logger.debug("Pokemon locked!")
             return False
 
+        # build catch results
         cr = {
-            'ncp': catch_results['ncp'],
-            'cp': catch_results['cp'],
-            'iv': catch_results['iv']
+            'ncp': False,
+            'cp': False,
+            'iv': False
         }
+        if catch_logic == 'and':
+            cr['ncp'] = True,
+            cr['cp'] = True,
+            cr['iv'] = True
+        elif catch_logic == 'andor':
+            cr['ncp'] = True,
+            cr['cp'] = True
+        elif catch_logic == 'orand':
+            cr['cp'] = True,
+            cr['iv'] = True    
+        
+        if pokemon_config.get('catch_above_ncp',-1) >= 0: cr['ncp'] = catch_results['ncp']
+        if pokemon_config.get('catch_above_cp',-1) >= 0: cr['cp'] = catch_results['cp']
+        if pokemon_config.get('catch_below_cp',-1) >= 0: cr['cp'] = catch_results['cp']
+        if pokemon_config.get('catch_above_iv',-1) >= 0: cr['iv'] = catch_results['iv']
         
         if DEBUG_ON:
             print "Debug information for match rules..."
@@ -333,8 +350,9 @@ class PokemonCatchWorker(BaseTask):
             print "pokemon ncp = {}".format(pokemon.cp_percent)
             print "pokemon cp = {}".format(pokemon.cp)
             print "pokemon iv = {}".format(pokemon.iv)
+            print "catch logic = {}".format(catch_logic)
 
-        if LOGIC_TO_FUNCTION[pokemon_config.get('logic', default_logic)](*cr.values()):
+        if LOGIC_TO_FUNCTION[catch_logic](*cr.values()):
             return catch_results['fa'] and catch_results['ca']
         else:
             return False
