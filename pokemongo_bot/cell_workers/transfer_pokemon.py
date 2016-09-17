@@ -35,9 +35,8 @@ class TransferPokemon(BaseTask):
             self._release_pokemon_worst_in_group(group, 'all')
 
     def _should_work(self):
-        return True
         random_number = randrange (0,20,1) 
-        return inventory.Pokemons.get_space_left() <= self.min_free_slot - random_number
+        return inventory.Pokemons.get_space_left() <= max(1,self.min_free_slot - random_number)
 
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
