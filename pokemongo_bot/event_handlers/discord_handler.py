@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from pokemongo_bot.event_manager import EventHandler
 from pokemongo_bot.base_dir import _base_dir
+import json
+import os
+import time
 import discord_simple
 import thread
 import re

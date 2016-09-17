@@ -46,6 +46,7 @@ class Datastore(object):
             If `migrations` directory is not present, then whatever is subclassing
             us will not have any DB schemas to load.
             """
+            pass
 
     def get_connection(self):
         return self.backend.connection

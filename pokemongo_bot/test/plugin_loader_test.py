@@ -1,9 +1,13 @@
+import imp
+import sys
+import pkgutil
+import importlib
 import unittest
 import os
 import shutil
 import mock
-from mock import MagicMock
-from mock import patch
+from datetime import timedelta, datetime
+from mock import patch, MagicMock
 from pokemongo_bot.plugin_loader import PluginLoader, GithubPlugin
 from pokemongo_bot.test.resources.plugin_fixture import FakeTask
 

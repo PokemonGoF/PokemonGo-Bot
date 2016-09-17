@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
 import struct
 from math import asin, atan, cos, exp, log, pi, sin, sqrt, tan
 
