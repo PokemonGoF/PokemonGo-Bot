@@ -70,7 +70,7 @@ class ChatHandler:
 
         return msg
 
-    def display_events(self, update):
+    def get_events(self, update, chat_id):
         cmd = update.message.text.split(" ", 1)
         if len(cmd) > 1:
             # we have a filter
@@ -91,7 +91,11 @@ class ChatHandler:
         events.remove('evolve_log')
         events.remove('transfer_log')
         events.remove('catchable_pokemon')
-        return "\n".join(events)
+        if events:
+            self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(events))
+        else:
+            self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="There has been an error\n")
+
 
 
     def sendMessage(self, chat_id=None, parse_mode='Markdown', text=None):

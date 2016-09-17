@@ -92,20 +92,20 @@ class TelegramClass:
             cur = conn.cursor()
             cur.execute("delete from telegram_logins where uid = ?", [update.message.chat_id])
             conn.commit()
-        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Logout completed")
+        self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Logout completed")
         return
 
     def authenticate(self, update):
         (command, password) = update.message.text.split(' ')
         if password != self.config.get('password', None):
-            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Invalid password")
+            self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Invalid password")
         else:
             with self.bot.database as conn:
                 cur = conn.cursor()
                 cur.execute("delete from telegram_logins where uid = ?", [update.message.chat_id])
                 cur.execute("insert into telegram_logins(uid) values(?)", [update.message.chat_id])
                 conn.commit()
-            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Authentication successful, you can now use all commands")
+            self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Authentication successful, you can now use all commands")
         return
 
     def run(self):
@@ -171,7 +171,7 @@ class TelegramClass:
                         self.chat_handler.get_softban(update.message.chat_id)
                         continue
                     if re.match("^/events", update.message.text):
-                        self.display_events(update)
+                        self.chat_handler.get_events(update, update.message.chat_id)
                         continue
                     if update.message.text == "/logout":
                         self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=("Logged out."))
@@ -179,7 +179,8 @@ class TelegramClass:
                         continue
                     if re.match(r'^/sub ', update.message.text):
                         self.chsub(update.message.text, update.message.chat_id)
-                        self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=("Subscriptions updated."))
+                        self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML',
+                                                      text=("Subscriptions updated."))
                         continue
                     if re.match(r'^/unsub ', update.message.text):
                         self.chsub(update.message.text, update.message.chat_id)
