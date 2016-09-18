@@ -31,6 +31,7 @@ import codecs
 import json
 import logging
 import os
+import six
 import ssl
 import sys
 import time
@@ -164,8 +165,9 @@ def main():
             return f.read()[:8]
 
     try:
-        sys.stdout = codecs.getwriter('utf8')(sys.stdout)
-        sys.stderr = codecs.getwriter('utf8')(sys.stderr)
+        if six.PY2:
+            sys.stdout = codecs.getwriter('utf8')(sys.stdout)
+            sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
         logger.info('PokemonGO Bot v1.0')
         logger.info('commit: ' + get_commit_hash())
@@ -223,7 +225,7 @@ def main():
                     'api_error',
                     sender=bot,
                     level='info',
-                    formatted='Log logged in, reconnecting in {:d}'.format(wait_time)
+                    formatted='Not logged in, reconnecting in {:d} seconds'.format(wait_time)
                 )
                 time.sleep(wait_time)
             except ServerBusyOrOfflineException:

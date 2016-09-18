@@ -45,4 +45,4 @@ RUN apk -U --no-cache add --virtual .pgobot-dependencies wget ca-certificates ta
     && apk del .pgobot-dependencies \
     && rm -rf /var/cache/apk/* /tmp/pgobot-version
 
-ENTRYPOINT ["python", "pokecli.py"]
+CMD ["python", "pokecli.py"]

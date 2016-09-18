@@ -11,7 +11,7 @@ class BuddyPokemon(BaseTask):
 
     def initialize(self):
         self.buddy = self.bot.player_data.get('buddy_pokemon', {})
-        self.buddy_list = self.config.get('buddy_list', 'none')
+        self.buddy_list = self.config.get('buddy_list', [])
         self.best_in_family = self.config.get('best_in_family', True)
         self.candy_limit = self.config.get('candy_limit', 0)  # 0 = No Limit
         self.force_first_change = self.config.get('force_first_change', False)
@@ -66,12 +66,10 @@ class BuddyPokemon(BaseTask):
 
         if self._km_walked() - self.buddy['last_km_awarded'] >= self.buddy_km_needed:
             self.buddy['last_km_awarded'] += self.buddy_km_needed
-            print("REWARDING!!! KM Walked: {}".format(self._km_walked()))
             if not self._get_award():
                 return WorkerResult.ERROR
 
         if self._should_print():
-            print("KM Walked: {}".format(self._km_walked()))
             self._print_update()
             self._compute_next_update()
 
@@ -80,15 +78,12 @@ class BuddyPokemon(BaseTask):
     def _set_buddy(self, pokemon):
         response_dict = \
             self.bot.api.set_buddy_pokemon(pokemon_id=pokemon.unique_id)
-        try:
-            result = response_dict['responses']['SET_BUDDY_POKEMON']['result']
-        except KeyError:
-            return False
+        data = response_dict.get('responses', {}).get('SET_BUDDY_POKEMON', {})
+        result = data.get('result', 0)
 
         action_delay(self.buddy_change_wait_min, self.buddy_change_wait_max)
         if result == 1:
-            updated_buddy = response_dict['responses']['SET_BUDDY_POKEMON'
-                                                       ]['updated_buddy']
+            updated_buddy = data['updated_buddy']
             self.buddy = updated_buddy
             self.candy_awarded = 0
             self.buddy_km_needed = pokemon.buddy_km_needed
@@ -120,29 +115,28 @@ class BuddyPokemon(BaseTask):
 
     def _get_award(self):
         response_dict = self.bot.api.get_buddy_walked()
-        result = response_dict['responses']['GET_BUDDY_WALKED']
-        print(response_dict)
-        print(result)
-        try:
-            success = result['success']
-            family_id = result.get('family_candy_id', -1)
-            candy_earned = result.get('candy_earned_count', -1)
-        except KeyError:
-            return False
+        result = response_dict.get('responses', {}).get('GET_BUDDY_WALKED', {})
+        success = result.get('success', False)
+        family_id = result.get('family_candy_id', 0)
+        candy_earned = result.get('candy_earned_count', 0)
 
-        if success and family_id != -1 and candy_earned != -1:
+        if success and family_id != 0:
+            candy = inventory.candies().get(family.id)
+            candy.add(candy_earned)
             self.candy_awarded += candy_earned
 
             msg = "{candy} {family} candy earned. You now have {quantity} candy!"
             if self.candy_limit != 0 and len(self.buddy_list) > 1:
                 msg += " (Candy limit: {candy_earned}/{candy_limit})"
+            if candy.earned == 0:
+                msg += " Probably reached candy daily limit"
             self.emit_event(
                 'buddy_candy_earned',
                 formatted=msg,
                 data={
                     'candy': candy_earned,
                     'family': inventory.candies().get(family_id).type,
-                    'quantity': inventory.candies().get(family_id).quantity + 1,
+                    'quantity': candy.quantity,
                     'candy_earned': self.candy_awarded,
                     'candy_limit': self.candy_limit
                 }
@@ -158,8 +152,6 @@ class BuddyPokemon(BaseTask):
     def _check_old_reward(self):
         if not self.buddy:
             return
-        pokemon = self._get_pokemon_by_id(self.buddy['id'])
-        self.buddy_km_needed = pokemon.buddy_km_needed
         km_diff = self._km_walked() - self.buddy['last_km_awarded']
         rewards_size = km_diff // self.buddy_km_needed
         if rewards_size > 0:
@@ -219,10 +211,10 @@ class BuddyPokemon(BaseTask):
         pokemon = self._get_pokemon_by_id(self.buddy['id'])
         self.emit_event(
             'buddy_next_reward',
-            formatted='({name}) Buddy next award {km_walked}/{km_total} km',
+            formatted='({name}) Buddy next award {km_walked:.2f}/{km_total:.1f} km',
             data={
                 'name': pokemon.name,
-                'km_walked': round(self._km_walked() - self.buddy['last_km_awarded'], 2),
-                'km_total': round(self.buddy_km_needed, 1)
+                'km_walked': self._km_walked() - self.buddy['last_km_awarded'],
+                'km_total': self.buddy_km_needed
             }
         )

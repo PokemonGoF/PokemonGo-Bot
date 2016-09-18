@@ -1,4 +1,4 @@
-import cell_workers
+from __future__ import absolute_import
 from pokemongo_bot.plugin_loader import PluginLoader
 from pokemongo_bot.base_task import BaseTask
 
@@ -16,6 +16,7 @@ class TreeConfigBuilder(object):
 
     def _get_worker_by_name(self, name):
         try:
+            from . import cell_workers
             worker = getattr(cell_workers, name)
         except AttributeError:
             raise ConfigException('No worker named {} defined'.format(name))

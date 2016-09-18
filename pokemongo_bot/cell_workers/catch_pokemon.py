@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import absolute_import
 
 import json
 import os
@@ -10,7 +11,7 @@ from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.item_list import Item
 from pokemongo_bot import inventory
-from utils import fort_details, distance,  format_time
+from .utils import fort_details, distance,  format_time
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.constants import Constants
 from pokemongo_bot.inventory import Pokemons
@@ -24,7 +25,7 @@ class CatchPokemon(BaseTask):
     def work(self):
         # make sure we have SOME balls
         if sum([inventory.items().get(ball.value).count for ball in
-            [Item.ITEM_POKE_BALL, Item.ITEM_GREAT_BALL, Item.ITEM_ULTRA_BALL]]) <= 0:
+    [Item.ITEM_POKE_BALL, Item.ITEM_GREAT_BALL, Item.ITEM_ULTRA_BALL]]) <= 0:
             return WorkerResult.ERROR
 
         # check if we have already loaded a list
@@ -65,22 +66,21 @@ class CatchPokemon(BaseTask):
             for pokemon in pokemon_to_catch:
                 # Update web UI
                 with open(user_web_catchable, 'w') as outfile:
-    		        json.dump(pokemon, outfile)
-
+                    json.dump(pokemon, outfile)
 
                 self.emit_event(
                     'catchable_pokemon',
                     level='debug',
                     data={
-    		            'pokemon_id': pokemon['pokemon_id'],
-    		            'spawn_point_id': pokemon['spawn_point_id'],
-    		            'encounter_id': pokemon['encounter_id'],
-    		            'latitude': pokemon['latitude'],
-    		            'longitude': pokemon['longitude'],
-    		            'expiration_timestamp_ms': pokemon['expiration_timestamp_ms'],
-    		            'pokemon_name': Pokemons.name_for(pokemon['pokemon_id']),
-    		        }
-    		    )
+                        'pokemon_id': pokemon['pokemon_id'],
+                        'spawn_point_id': pokemon['spawn_point_id'],
+                        'encounter_id': pokemon['encounter_id'],
+                        'latitude': pokemon['latitude'],
+                        'longitude': pokemon['longitude'],
+                        'expiration_timestamp_ms': pokemon['expiration_timestamp_ms'],
+                        'pokemon_name': Pokemons.name_for(pokemon['pokemon_id']),
+                    }
+                )
 
                 self.add_pokemon(pokemon)
 
@@ -150,7 +150,8 @@ class CatchPokemon(BaseTask):
                 self.add_pokemon(pokemon)
 
     def add_pokemon(self, pokemon):
-        if pokemon['encounter_id'] not in self.pokemon:
+        if pokemon['encounter_id'] not in \
+                map(lambda pokemon: pokemon['encounter_id'], self.pokemon):
             self.pokemon.append(pokemon)
 
     def catch_pokemon(self, pokemon):

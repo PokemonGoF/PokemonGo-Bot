@@ -1,4 +1,3 @@
-from random import uniform
 
 from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import sleep, action_delay
@@ -18,7 +17,6 @@ class EvolvePokemon(BaseTask):
 
     def initialize(self):
         self.start_time = 0
-        self.api = self.bot.api
         self.evolve_list = self.config.get('evolve_list', [])
         self.donot_evolve_list = self.config.get('donot_evolve_list', [])
         self.min_evolve_speed = self.config.get('min_evolve_speed', 25)
@@ -42,10 +40,10 @@ class EvolvePokemon(BaseTask):
 
     def _validate_config(self):
         if isinstance(self.evolve_list, basestring):
-            self.evolve_list = [str(pokemon_name).lower().replace(" ","") for pokemon_name in self.evolve_list.split(',')]
+            self.evolve_list = [str(pokemon_name).lower().strip() for pokemon_name in self.evolve_list.split(',')]
             
         if isinstance(self.donot_evolve_list, basestring):
-            self.donot_evolve_list = [str(pokemon_name).lower().replace(" ","") for pokemon_name in self.donot_evolve_list.split(',')]
+            self.donot_evolve_list = [str(pokemon_name).lower().strip() for pokemon_name in self.donot_evolve_list.split(',')]
 
         if 'evolve_speed' in self.config:
             self.logger.warning("evolve_speed is deprecated, instead please use 'min_evolve_speed' and 'max_evolved_speed'.")
@@ -148,7 +146,7 @@ class EvolvePokemon(BaseTask):
         if pokemon.name in cache:
             return False
 
-        response_dict = self.api.evolve_pokemon(pokemon_id=pokemon.unique_id)
+        response_dict = self.bot.api.evolve_pokemon(pokemon_id=pokemon.unique_id)
         if response_dict.get('responses', {}).get('EVOLVE_POKEMON', {}).get('result', 0) == 1:
             xp = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("experience_awarded", 0)
             evolution = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("evolved_pokemon_data", {})

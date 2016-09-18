@@ -5,7 +5,9 @@ import os
 import json
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.human_behaviour import sleep, action_delay
-from pokemongo_bot.inventory import pokemons, Pokemon, Attack
+from pokemongo_bot.inventory import Attack
+from pokemongo_bot.inventory import Pokemon
+from pokemongo_bot.inventory import pokemons
 
 import re
 
@@ -68,7 +70,7 @@ class NicknamePokemon(BaseTask):
         "enabled": true,
         "dont_nickname_favorite": false,
         "good_attack_threshold": 0.7,
-        "nickname_template": "{iv_pct}_{iv_ads}"
+        "nickname_template": "{iv_pct}-{iv_ads}"
       }
     }
 
@@ -174,7 +176,7 @@ class NicknamePokemon(BaseTask):
 
     EXAMPLES:
 
-    1. "nickname_template": "{ivcp_pct}_{iv_pct}_{iv_ads}"
+    1. "nickname_template": "{ivcp_pct}-{iv_pct}-{iv_ads}"
 
     Golbat with IV (attack: 9, defense: 4 and stamina: 8) will result in:
      '48_46_9/4/8'
@@ -279,7 +281,7 @@ class NicknamePokemon(BaseTask):
         elif result == 1:
             self.emit_event(
                 'rename_pokemon',
-                formatted="*{} Renamed* to {}".format(old_nickname, new_nickname),
+                formatted="*{} Renamed* to *{}*".format(old_nickname, new_nickname),
                 data={'old_name': old_nickname, 'current_name': new_nickname}
             )
             pokemon.update_nickname(new_nickname)
@@ -337,8 +339,8 @@ class NicknamePokemon(BaseTask):
         pokemon.name = self._localize(pokemon.name)
         
         # Remove spaces from Nidoran M/F 
-        pokemon.name = pokemon.name.replace("Nidoran M","NidoranM")
-        pokemon.name = pokemon.name.replace("Nidoran F","NidoranF")
+        pokemon.name = pokemon.name.replace("Nidoran M", "NidoranM")
+        pokemon.name = pokemon.name.replace("Nidoran F", "NidoranF")
 
         #
         # Generate new nickname

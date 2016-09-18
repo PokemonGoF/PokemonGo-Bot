@@ -10,6 +10,19 @@ services:
      - TZ=Etc/UTC
     stdin_open: true
     tty: true
+  bot1-pokegows:
+    build: .
+    volumes:
+     - ./configs:/usr/src/app/configs
+     - ./data:/usr/src/app/data
+     - ./web:/usr/src/app/web
+     - ./pokemongo_bot:/usr/src/app/pokemongo_bot
+     - ./ws_server.py:/usr/src/app/ws_server.py
+    environment:
+     - TZ=Etc/UTC
+    ports:
+     - "4000:4000"
+    command: ./ws_server.py
   bot1-pokegoweb:
     image: python:2.7-alpine
     ports:

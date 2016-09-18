@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import absolute_import
 
 import datetime
 import json
@@ -17,28 +18,30 @@ import uuid
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
 from pgoapi.utilities import f2i, get_cell_ids
+from s2sphere import Cell, CellId, LatLng
 
-import cell_workers
-from base_task import BaseTask
-from plugin_loader import PluginLoader
-from api_wrapper import ApiWrapper
-from cell_workers.utils import distance
-from event_manager import EventManager
-from human_behaviour import sleep
-from item_list import Item
-from metrics import Metrics
-from sleep_schedule import SleepSchedule
+from . import cell_workers
+from .base_task import BaseTask
+from .plugin_loader import PluginLoader
+from .api_wrapper import ApiWrapper
+from .cell_workers.utils import distance
+from .event_manager import EventManager
+from .human_behaviour import sleep
+from .item_list import Item
+from .metrics import Metrics
+from .sleep_schedule import SleepSchedule
 from pokemongo_bot.event_handlers import SocketIoHandler, LoggingHandler, SocialHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from pokemongo_bot.base_dir import _base_dir
-from worker_result import WorkerResult
-from tree_config_builder import ConfigException, MismatchTaskApiVersion, TreeConfigBuilder
-from inventory import init_inventory, player
+from .worker_result import WorkerResult
+from .tree_config_builder import ConfigException
+from .tree_config_builder import MismatchTaskApiVersion
+from .tree_config_builder import TreeConfigBuilder
+from .inventory import init_inventory, player
 from sys import platform as _platform
 from pgoapi.protos.POGOProtos.Enums import BadgeType_pb2
 from pgoapi.exceptions import AuthException
-import struct
 
 
 class FileIOException(Exception):
@@ -204,6 +207,12 @@ class PokemonGoBot(object):
         self.event_manager.register_event('location_cache_ignored')
 
         self.event_manager.register_event('debug')
+        self.event_manager.register_event('refuse_to_sit')
+        self.event_manager.register_event('reset_destination')
+        self.event_manager.register_event('new_destination')
+        self.event_manager.register_event('moving_to_destination')
+        self.event_manager.register_event('arrived_at_destination')
+        self.event_manager.register_event('staying_at_destination')
 
         #  ignore candy above threshold
         self.event_manager.register_event(
@@ -465,7 +474,7 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'pokemon_evolved',
-            parameters=('pokemon', 'iv', 'cp', 'xp', 'candy')
+            parameters=('pokemon', 'iv', 'cp', 'candy', 'xp')
         )
         self.event_manager.register_event(
             'pokemon_upgraded',
@@ -559,12 +568,16 @@ class PokemonGoBot(object):
         self.event_manager.register_event(
             'future_pokemon_release',
             parameters=(
-                'pokemon', 'cp', 'iv', 'below_iv', 'below_cp', 'cp_iv_logic'
+                'pokemon', 'cp', 'iv', 'ivcp', 'below_iv', 'below_cp', 'below_ivcp', 'cp_iv_logic'
             )
         )
         self.event_manager.register_event(
             'pokemon_release',
-            parameters=('pokemon', 'iv', 'cp', 'candy')
+            parameters=('pokemon', 'iv', 'cp', 'ivcp', 'candy', 'candy_type')
+        )
+        self.event_manager.register_event(
+            'pokemon_keep',
+            parameters=('pokemon', 'iv', 'cp', 'ivcp')
         )
 
         # polyline walker
@@ -733,6 +746,7 @@ class PokemonGoBot(object):
         forts = []
         wild_pokemons = []
         catchable_pokemons = []
+        nearby_pokemons = []
         for cell in cells:
             if "forts" in cell and len(cell["forts"]):
                 forts += cell["forts"]
@@ -740,20 +754,31 @@ class PokemonGoBot(object):
                 wild_pokemons += cell["wild_pokemons"]
             if "catchable_pokemons" in cell and len(cell["catchable_pokemons"]):
                 catchable_pokemons += cell["catchable_pokemons"]
+            if "nearby_pokemons" in cell and len(cell["nearby_pokemons"]):
+                latlng = LatLng.from_point(Cell(CellId(cell["s2_cell_id"])).get_center())
+
+                for p in cell["nearby_pokemons"]:
+                    p["latitude"] = latlng.lat().degrees
+                    p["longitude"] = latlng.lng().degrees
+                    p["s2_cell_id"] = cell["s2_cell_id"]
+
+                nearby_pokemons += cell["nearby_pokemons"]
 
         # If there are forts present in the cells sent from the server or we don't yet have any cell data, return all data retrieved
         if len(forts) > 1 or not self.cell:
             return {
                 "forts": forts,
                 "wild_pokemons": wild_pokemons,
-                "catchable_pokemons": catchable_pokemons
+                "catchable_pokemons": catchable_pokemons,
+                "nearby_pokemons": nearby_pokemons
             }
         # If there are no forts present in the data from the server, keep our existing fort data and only update the pokemon cells.
         else:
             return {
                 "forts": self.cell["forts"],
                 "wild_pokemons": wild_pokemons,
-                "catchable_pokemons": catchable_pokemons
+                "catchable_pokemons": catchable_pokemons,
+                "nearby_pokemons": nearby_pokemons
             }
 
     def update_web_location(self, cells=[], lat=None, lng=None, alt=None):
@@ -1317,7 +1342,7 @@ class PokemonGoBot(object):
                 # store awarded_badges reponse to be used in a task or part of heartbeat
                 self._awarded_badges = responses['responses']['CHECK_AWARDED_BADGES']
 
-            if self._awarded_badges.has_key('awarded_badges'):
+            if 'awarded_badges' in self._awarded_badges:
                 i = 0
                 for badge in self._awarded_badges['awarded_badges']:
                     badgelevel = self._awarded_badges['awarded_badge_levels'][i]
@@ -1407,7 +1432,6 @@ class PokemonGoBot(object):
                     cached_recent_forts = json.load(f)
             except (IOError, ValueError) as e:
                 self.logger.info('[x] Error while opening cached forts: %s' % e)
-                pass
             except:
                 raise FileIOException("Unexpected error opening {}".cached_forts_path)
 
