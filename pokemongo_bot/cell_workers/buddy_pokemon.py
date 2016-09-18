@@ -121,7 +121,7 @@ class BuddyPokemon(BaseTask):
         candy_earned = result.get('candy_earned_count', 0)
 
         if success and family_id != 0:
-            candy = inventory.candies().get(family.id)
+            candy = inventory.candies().get(family_id)
             candy.add(candy_earned)
             self.candy_awarded += candy_earned
 
