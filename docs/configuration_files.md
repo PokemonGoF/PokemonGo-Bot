@@ -1139,7 +1139,7 @@ After setting a buddy it's not possible to remove it, only change it. So if a bu
 ### Options
 [[back to top](#table-of-contents)]
 
-* `buddy_list`: `Default: []`. List of pokemon names that will be used as buddy.
+* `buddy_list`: `Default: []`. List of pokemon names that will be used as buddy. If '[]' or 'none', will not use or change buddy.
 * `best_in_family`: `Default: True`. If True, picks best Pokemon in the family (sorted by cp).
 * `candy_limit`: `Default: 0`. Set the candy limit to be rewarded per buddy, when reaching this limit the bot will change the buddy to the next in the list. When candy_limit = 0 or only one buddy in list, it has no limit and never changes buddy.
 * `force_first_change`: `Default: False`. If True, will try to change buddy at bot start according to the buddy list. If False, will use the buddy already set until candy_limit is reached and then use the buddy list.

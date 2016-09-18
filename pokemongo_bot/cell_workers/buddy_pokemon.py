@@ -34,6 +34,7 @@ class BuddyPokemon(BaseTask):
     }
 
     buddy_list: Default: []. List of pokemon names that will be used as buddy.
+                             If '[]' or 'none', will not use or change buddy.
     best_in_family: Default: True. If True, picks best Pokemon in the family
                                    (sorted by cp).
     candy_limit: Default: 0. Set the candy limit to be rewarded per buddy, when
@@ -73,7 +74,7 @@ class BuddyPokemon(BaseTask):
 
     def _validate_config(self):
         if isinstance(self.buddy_list, basestring):
-            self.buddy_list = [str(pokemon_name).lower().replace(' ', '')
+            self.buddy_list = [str(pokemon_name).lower().strip()
                                for pokemon_name in self.buddy_list.split(',')]
         if self.buddy_list and self.buddy_list[0] == 'none':
             self.buddy_list = []
