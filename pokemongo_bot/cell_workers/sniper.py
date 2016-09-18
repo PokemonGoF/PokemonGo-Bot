@@ -83,9 +83,9 @@ class SniperSource(object):
                     'spawn_point_id': str(spawnpoint or '')
                 })
         except requests.exceptions.Timeout:
-            raise Exception("Fetching has timed out!")
+            raise Exception("Fetching has timed out")
         except requests.exceptions.ConnectionError:
-            raise Exception("Source not available!")
+            raise Exception("Source not available")
         except:
             raise
 
@@ -222,7 +222,7 @@ class Sniper(BaseTask):
                         self._log("Source '{}' is good!".format(source.url))
                     # TODO: On ValueError, remember source and validate later (pending validation)
                     except (LookupError, ValueError) as exception:
-                        self._error("Source '{}' contains errors. Details: {}".format(source.url, exception))
+                        self._error("Source '{}' contains errors. Details: {}. Removing from sources list...".format(source.url, exception))
                         self.sources.remove(source)
 
                 # Notify user if all sources are invalid and cant proceed
@@ -417,6 +417,8 @@ class Sniper(BaseTask):
                         # Add if new
                         if not results_hash_map.has_key(hash_key):
                             results_hash_map[hash_key] = source_pokemon
+                        else:
+                            self._log("The generated hash ({}) for {} already exists".format(hash_key, source_pokemon))
                 except Exception as exception:
                     self._error("Could not fetch data from '{}'. Details: {}. Skipping...".format(source.url, exception))
                     continue
