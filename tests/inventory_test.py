@@ -122,7 +122,7 @@ class InventoryTest(unittest.TestCase):
             "cp_multiplier": 0.4627983868122101,
             "additional_cp_multiplier": 0.018886566162109375,
             "cp": 653, "nickname": "Golb", "id": 13632861873471324})
-        self.assertEqual(poke.level, 12.5)
+        self.assertEqual(poke.level, 13)
         self.assertEqual(poke.iv, 0.47)
         self.assertAlmostEqual(poke.ivcp, 0.488747515)
         self.assertAlmostEqual(poke.static.max_cp, 1921.34561459)
@@ -141,7 +141,7 @@ class InventoryTest(unittest.TestCase):
             "move_1": 221, "move_2": 129, "pokemon_id": 19, "cp": 106,
             "individual_attack": 6, "stamina_max": 22, "individual_defense": 14,
             "cp_multiplier": 0.37523558735847473, "id": 7841053399})
-        self.assertEqual(poke.level, 7.5)
+        self.assertEqual(poke.level, 8)
         self.assertEqual(poke.iv, 0.44)
         self.assertAlmostEqual(poke.ivcp, 0.3804059)
         self.assertAlmostEqual(poke.static.max_cp, 581.64643575)
@@ -162,14 +162,11 @@ class InventoryTest(unittest.TestCase):
         max_cpm = l2c.cp_multiplier_for(l2c.MAX_LEVEL)
         self.assertEqual(l2c.MAX_LEVEL, 40)
         self.assertEqual(l2c.MAX_CPM, max_cpm)
-        self.assertEqual(len(l2c.STATIC_DATA), 80)
+        self.assertEqual(len(l2c.STATIC_DATA), 79)
 
-        self.assertEqual(l2c.cp_multiplier_for("1"), 0.094)
         self.assertEqual(l2c.cp_multiplier_for(1), 0.094)
         self.assertEqual(l2c.cp_multiplier_for(1.0), 0.094)
-        self.assertEqual(l2c.cp_multiplier_for("17.5"), 0.558830576)
         self.assertEqual(l2c.cp_multiplier_for(17.5), 0.558830576)
-        self.assertEqual(l2c.cp_multiplier_for('40.0'), 0.79030001)
         self.assertEqual(l2c.cp_multiplier_for(40.0), 0.79030001)
         self.assertEqual(l2c.cp_multiplier_for(40), 0.79030001)
 

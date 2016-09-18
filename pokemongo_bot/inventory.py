@@ -584,8 +584,6 @@ class LevelToCPm(_StaticInventoryComponent):
     STATIC_DATA_FILE = os.path.join(_base_dir, 'data', 'level_to_cpm.json')
     MAX_LEVEL = 40
     MAX_CPM = .0
-    # half of the lowest difference between CPMs
-    HALF_DIFF_BETWEEN_HALF_LVL = 14e-3
 
     @classmethod
     def init_static_data(cls):
@@ -595,19 +593,11 @@ class LevelToCPm(_StaticInventoryComponent):
 
     @classmethod
     def cp_multiplier_for(cls, level):
-        # type: (Union[float, int, string]) -> float
-        level = float(level)
-        level = str(int(level) if level.is_integer() else level)
-        return cls.STATIC_DATA[level]
+        return cls.STATIC_DATA[int(2 * (level - 1))]
 
     @classmethod
     def level_from_cpm(cls, cp_multiplier):
-        # type: (float) -> float
-        for lvl, cpm in cls.STATIC_DATA.iteritems():
-            diff = abs(cpm - cp_multiplier)
-            if diff <= cls.HALF_DIFF_BETWEEN_HALF_LVL:
-                return float(lvl)
-        raise ValueError("Unknown cp_multiplier: {}".format(cp_multiplier))
+        return min(range(len(cls.STATIC_DATA)), key=lambda i: abs(cls.STATIC_DATA[i] - cp_multiplier)) * 0.5 + 1
 
 
 class _Attacks(_StaticInventoryComponent):
