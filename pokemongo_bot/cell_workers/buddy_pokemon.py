@@ -7,6 +7,52 @@ from pokemongo_bot.worker_result import WorkerResult
 
 
 class BuddyPokemon(BaseTask):
+    """
+    Makes use of the Pokemon Buddy system.
+    It's able to switch the buddy automatically given an list of pokemon that
+        should be using this feature.
+    Periodically logs the status of the buddy walking.
+    After setting a buddy it's not possible to remove it, only change it.
+        So if a buddy is already selected and no buddy list is given, it will
+        still run with the buddy already selected.
+
+    Example config:
+    {
+        "type": "BuddyPokemon",
+        "config": {
+            "enabled": true,
+            "buddy_list": "dratini, magikarp",
+            "best_in_family": true,
+            "// candy_limit = 0 means no limit, so it will never change current buddy": {},
+            "candy_limit": 0,
+            "// force_first_change = true will always change buddy at start removing current one": {},
+            "force_first_change": false,
+            "buddy_change_wait_min": 3,
+            "buddy_change_wait_min": 5,
+            "min_interval": 120
+        }
+    }
+
+    buddy_list: Default: []. List of pokemon names that will be used as buddy.
+    best_in_family: Default: True. If True, picks best Pokemon in the family
+                                   (sorted by cp).
+    candy_limit: Default: 0. Set the candy limit to be rewarded per buddy, when
+                             reaching this limit the bot will change the buddy
+                             to the next in the list. When candy_limit = 0 or
+                             only one buddy in list, it has no limit and never
+                             changes buddy.
+    force_first_change: Default: False. If True, will try to change buddy at
+                        bot start according to the buddy list. If False, will
+                        use the buddy already set until candy_limit is reached
+                        and then use the buddy list.
+    buddy_change_wait_min: Default: 3. Minimum time (in seconds) that the buddy
+                                       change takes.
+    buddy_change_wait_max: Default: 5. Maximum time (in seconds) that the buddy
+                                    change takes.
+    min_interval: Default: 120. Time (in seconds) to periodically log the buddy
+                                walk status.
+    """
+
     SUPPORTED_TASK_API_VERSION = 1
 
     def initialize(self):
@@ -118,23 +164,23 @@ class BuddyPokemon(BaseTask):
         result = response_dict.get('responses', {}).get('GET_BUDDY_WALKED', {})
         success = result.get('success', False)
         family_id = result.get('family_candy_id', 0)
-        candy_earned = result.get('candy_earned_count', 0)
+        candy_awarded = result.get('candy_earned_count', 0)
 
         if success and family_id != 0:
             candy = inventory.candies().get(family_id)
-            candy.add(candy_earned)
-            self.candy_awarded += candy_earned
+            candy.add(candy_awarded)
+            self.candy_awarded += candy_awarded
 
             msg = "{candy} {family} candy earned. You now have {quantity} candy!"
             if self.candy_limit != 0 and len(self.buddy_list) > 1:
                 msg += " (Candy limit: {candy_earned}/{candy_limit})"
-            if candy.earned == 0:
+            if candy_awarded == 0:
                 msg += " Probably reached candy daily limit"
             self.emit_event(
                 'buddy_candy_earned',
                 formatted=msg,
                 data={
-                    'candy': candy_earned,
+                    'candy': candy_awarded,
                     'family': inventory.candies().get(family_id).type,
                     'quantity': candy.quantity,
                     'candy_earned': self.candy_awarded,

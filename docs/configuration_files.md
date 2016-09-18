@@ -1116,12 +1116,12 @@ Available `team` :
 [[back to top](#table-of-contents)]
 ```json
 {
-	"type": "CompleteTutorial",
-	"config": {
-	"enabled": true,
-		"nickname": "PokemonGoF",
-		"team": 2
-	}
+  "type": "CompleteTutorial",
+  "config": {
+  "enabled": true,
+    "nickname": "PokemonGoF",
+    "team": 2
+  }
 }
 ```
 
@@ -1131,44 +1131,38 @@ Available `team` :
 ### Description
 [[back to top](#table-of-contents)]
 
-Completes the tutorial:
-
-* Legal screen
-* Avatar selection
-* First Pokemon capture
-* Set nickname
-* Firte time experience
-* Pick team at level 5
-
+Makes use of the Pokemon Buddy system.
+It's able to switch the buddy automatically given an list of pokemon that should be using this feature.
+Periodically logs the status of the buddy walking.
+After setting a buddy it's not possible to remove it, only change it. So if a buddy is already selected and no buddy list is given, it will still run with the buddy already selected.
 
 ### Options
 [[back to top](#table-of-contents)]
 
-* `nickname` : Nickname to be used ingame.
-* `team` : `Default: 0`. Team to pick after reaching level 5.
-
-Available `team` :
-```
-0: Neutral (No team)
-1: Blue (Mystic)
-2: Red (Valor)
-3: Yellow (Instinct)
-```
+* `buddy_list`: `Default: []`. List of pokemon names that will be used as buddy.
+* `best_in_family`: `Default: True`. If True, picks best Pokemon in the family (sorted by cp).
+* `candy_limit`: `Default: 0`. Set the candy limit to be rewarded per buddy, when reaching this limit the bot will change the buddy to the next in the list. When candy_limit = 0 or only one buddy in list, it has no limit and never changes buddy.
+* `force_first_change`: `Default: False`. If True, will try to change buddy at bot start according to the buddy list. If False, will use the buddy already set until candy_limit is reached and then use the buddy list.
+* `buddy_change_wait_min`: `Default: 3`. Minimum time (in seconds) that the buddy change takes.
+* `buddy_change_wait_max`: `Default: 5`. Maximum time (in seconds) that the buddy change takes.
+* `min_interval`: `Default: 120`. Time (in seconds) to periodically log the buddy walk status.
 
 ### Sample configuration
 [[back to top](#table-of-contents)]
 ```json
 {
   "type": "BuddyPokemon",
-  "config": {
-    "enabled": true,
-    "buddy_list": "dratini, magikarp",
-    "best_in_family": true,
-    "candy_limit": 0,
-    "force_first_change": false,
-    "buddy_change_wait_min": 3,
-    "buddy_change_wait_min": 5,
-    "min_interval": 120
+    "config": {
+      "enabled": true,
+        "buddy_list": "dratini, magikarp",
+        "best_in_family": true,
+        "// candy_limit = 0 means no limit, so it will never change current buddy": {},
+        "candy_limit": 0,
+        "// force_first_change = true will always change buddy at start removing current one": {},
+        "force_first_change": false,
+        "buddy_change_wait_min": 3,
+        "buddy_change_wait_min": 5,
+        "min_interval": 120
   }
 }
 ```
