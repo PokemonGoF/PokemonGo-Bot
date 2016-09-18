@@ -242,7 +242,7 @@ class Sniper(BaseTask):
 
         # Skip if expired (cast milliseconds to seconds for comparision)
         if (pokemon.get('expiration_timestamp_ms', 0) or pokemon.get('last_modified_timestamp_ms', 0)) / 1000 < time.time():
-            self._trace('{} is expired ({})! Skipping...'.format(pokemon.get('pokemon_name')))
+            self._trace('{} is expired ! Skipping...'.format(pokemon.get('pokemon_name')))
             return False
 
         # Skip if already cached
