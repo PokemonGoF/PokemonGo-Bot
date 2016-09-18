@@ -417,8 +417,6 @@ class Sniper(BaseTask):
                         # Add if new
                         if not results_hash_map.has_key(hash_key):
                             results_hash_map[hash_key] = source_pokemon
-                        else:
-                            self._log("The generated hash ({}) for {} already exists".format(hash_key, source_pokemon))
                 except Exception as exception:
                     self._error("Could not fetch data from '{}'. Details: {}. Skipping...".format(source.url, exception))
                     continue
