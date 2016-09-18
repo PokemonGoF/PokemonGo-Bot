@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
-from pokemongo_bot.event_manager import EventHandler
-from pokemongo_bot.base_dir import _base_dir
-import time
-import telegram
-import thread
-import re
 import pprint
-from pokemongo_bot.datastore import Datastore
-from pokemongo_bot import inventory
-from telegram.utils import request
+import re
+import thread
+import telegram
+import time
 from chat_handler import ChatHandler
+from telegram.utils import request
+from pokemongo_bot import inventory
+from pokemongo_bot.base_dir import _base_dir
+from pokemongo_bot.datastore import Datastore
+from pokemongo_bot.event_manager import EventHandler
+
 
 DEBUG_ON = False
 
@@ -358,6 +359,13 @@ class TelegramHandler(EventHandler):
                             or event == 'login_log' \
                             or event == 'evolve_log' \
                             or event == 'catchable_pokemon' \
+                            or event == 'bot_start' \
+                            or event == 'login_failed' \
+                            or event == 'login_started' \
+                            or event == 'unset_pokemon_nickname' \
+                            or event == 'set_start_location' \
+                            or event == 'login_successful' \
+                            or event == 'spun_fort' \
                             or event == 'transfer_log':
                         pass
                     elif event_type == "debug":

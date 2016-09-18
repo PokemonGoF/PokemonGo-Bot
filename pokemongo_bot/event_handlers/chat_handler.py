@@ -91,6 +91,13 @@ class ChatHandler:
         events.remove('evolve_log')
         events.remove('transfer_log')
         events.remove('catchable_pokemon')
+        events.remove('bot_start')
+        events.remove('login_failed')
+        events.remove('login_started')
+        events.remove('unset_pokemon_nickname')
+        events.remove('set_start_location')
+        events.remove('login_successful')
+        events.remove('spun_fort')
         return events
 
 
