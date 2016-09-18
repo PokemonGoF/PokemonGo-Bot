@@ -451,6 +451,50 @@
         }
       },
       {
+		"type": "Sniper",
+		"config": {
+			"enabled": true,
+			"mode": "social",
+			"bullets": 3,
+			"homing_shots": true,
+			"special_iv": 100,
+			"order": ["missing", "iv", "priority", "vip", "expiration_timestamp_ms"],
+			"sources": [
+				{
+					"url": "http://localhost:5000/raw_data",
+					"key": "pokemons",
+					"mappings": {
+						"iv": { "param": "iv" },
+						"id": { "param": "pokemon_id" },
+						"name": { "param": "pokemon_name" },
+						"latitude": { "param": "latitude" },
+						"longitude": { "param": "longitude" },
+						"expiration": { "param": "disappear_time", "format": "milliseconds" }
+					}
+				}
+			],
+			"catch": {
+				"Snorlax": 1000,
+				"Dragonite": 1000,
+				"Growlithe": 600,
+				"Clefairy": 500,
+				"Kabuto": 500,
+				"Dratini": 500,
+				"Dragonair": 500,
+				"Mr. Mime": 500,
+				"Magmar": 500,
+				"Electabuzz": 500,
+				"Tangela": 500,
+				"Tauros": 500,
+				"Primeape": 500,
+				"Chansey": 500,
+				"Pidgey": 100,
+				"Caterpie": 100,
+				"Weedle": 100
+			}
+		}
+      },
+      {
         "type": "MoveToFort",
         "config": {
             "enabled": true,
