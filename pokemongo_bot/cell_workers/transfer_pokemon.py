@@ -178,9 +178,15 @@ class TransferPokemon(BaseTask):
         release_ivcp = release_config.get('release_below_ivcp', 0)
 
         release_results = {}
-        release_results['cp'] = not release_cp or pokemon.cp < release_cp
-        release_results['iv'] = not release_iv or pokemon.iv < release_iv
-        release_results['ivcp'] = not release_ivcp or pokemon.ivcp < release_ivcp
+
+        if cp_iv_logic == 'and':
+            release_results['cp'] = not release_cp or pokemon.cp < release_cp
+            release_results['iv'] = not release_iv or pokemon.iv < release_iv
+            release_results['ivcp'] = not release_ivcp or pokemon.ivcp < release_ivcp
+        else:
+            release_results['cp'] = release_cp and pokemon.cp < release_cp
+            release_results['iv'] = release_iv and pokemon.iv < release_iv
+            release_results['ivcp'] = release_ivcp and pokemon.ivcp < release_ivcp
 
         logic_to_function = {
             'or': lambda x, y, z: x or y or z,
