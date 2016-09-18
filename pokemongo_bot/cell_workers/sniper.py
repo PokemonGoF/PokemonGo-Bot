@@ -404,7 +404,7 @@ class Sniper(BaseTask):
         if (seconds_since_last_valid_request > self.MIN_SECONDS_ALLOWED_FOR_REQUESTING_DATA):
             self.last_data_request_time = time.time()
 
-            self._log("Fetching pokemons from the sources...")
+            self._trace("Fetching pokemons from the sources...")
             for source in self.sources:
                 try:
                     source_pokemons = source.fetch(3)
@@ -421,7 +421,7 @@ class Sniper(BaseTask):
                     self._error("Could not fetch data from '{}'. Details: {}. Skipping...".format(source.url, exception))
                     continue
 
-            self._log("After merging, we've got {} results".format(len(results_hash_map.values())))
+            self._trace("After merging, we've got {} results".format(len(results_hash_map.values())))
         else:
             self._trace("Not ready yet to retrieve data...")
 
