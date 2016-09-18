@@ -26,8 +26,8 @@ class ChatHandler:
                     "*" + self.bot.config.username + "*",
                     "_Level:_ " + str(stats["level"]),
                     "_XP:_ " + str(stats["experience"]) + "/" + str(stats["next_level_xp"]),
-                    "_Pokemons Captured:_ " + str(stats["pokemons_captured"]) + " (" + str(catch_day) + " _last 24h_)",
-                    "_Poke Stop Visits:_ " + str(stats["poke_stop_visits"]) + " (" + str(ps_day) + " _last 24h_)",
+                    "_Pokemons Captured:_ " + str(stats.get("pokemons_captured",0)) + " (" + str(catch_day) + " _last 24h_)",
+                    "_Poke Stop Visits:_ " + str(stats.get("poke_stop_visits",0)) + " (" + str(ps_day) + " _last 24h_)",
                     "_KM Walked:_ " + str("%.2f" % stats["km_walked"])
                 )
             return (res)
