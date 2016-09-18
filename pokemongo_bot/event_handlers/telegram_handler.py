@@ -108,9 +108,12 @@ class TelegramClass:
             self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Authentication successful, you can now use all commands")
         return
 
-    def run(self):
+    def run(self):            
         time.sleep(1)
         while True:
+            if self._tbot is None:
+                self.connect()
+                
             for update in self._tbot.getUpdates(offset=self.update_id, timeout=10):
                 self.update_id = update.update_id+1
                 if update.message:
@@ -288,6 +291,7 @@ class TelegramHandler(EventHandler):
         self.whoami = "TelegramHandler"
         self.config = config
         self.chat_handler = ChatHandler(self.bot, self.pokemons)
+
         if master == None:
             self.master = None
             return
@@ -309,6 +313,13 @@ class TelegramHandler(EventHandler):
                 else: # uid not known yet
                     self.bot.logger.info("Telegram master UID not in datastore yet")
                     self.master = master
+        
+        self._connect()
+
+    def _connect(self):
+        self.bot.logger.info("Telegram bot not running. Starting")
+        self.tbot = TelegramClass(self.bot, self.master, self.pokemons, self.config)
+        thread.start_new_thread(self.tbot.run)
 
     def catch_notify(self, pokemon, cp, iv, params):
         if params == " ":
@@ -324,15 +335,10 @@ class TelegramHandler(EventHandler):
 
     def handle_event(self, event, sender, level, formatted_msg, data):
         if self.tbot is None:
+            if DEBUG_ON: 
+                self.bot.logger.info("handle_event Telegram bot not running.")
             try:
-                if hasattr(self, "master"):
-                    selfmaster = self.master
-                else:
-                    selfmaster = None
-                self.bot.logger.info("Telegram bot not running. Starting")
-                self.tbot = TelegramClass(self.bot, selfmaster, self.pokemons, self.config)
-                self.tbot.connect()
-                thread.start_new_thread(self.tbot.run)
+                self._connect()
             except Exception as inst:
                 self.tbot = None
                 self.bot.logger.error("Unable to start Telegram bot; master: {}, exception: {}".format(selfmaster, pprint.pformat(inst)))
