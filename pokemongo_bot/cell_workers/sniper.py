@@ -66,7 +66,7 @@ class SniperSource(object):
                 # If either name or ID are invalid, fix it using each other
                 if not name or not id:
                     if not name and id:
-                        name = Pokemons.name_for(id)
+                        name = Pokemons.name_for(id - 1)
                     if not id and name:
                         id = Pokemons.id_for(name)
 
@@ -369,8 +369,8 @@ class Sniper(BaseTask):
 
         # Build up the pokemon. Pops are used to destroy random attribute names and keep the known ones!
         for pokemon in pokemon_dictionary_list:
-            # Even thought the dict might have the name in it, use ID instead for safety
-            pokemon_name = Pokemons.name_for(pokemon.get('pokemon_id'))
+            # Even thought the dict might have the name in it, use ID instead for safety (social vs url)
+            pokemon_name = Pokemons.name_for(pokemon.get('pokemon_id') - 1)
 
             # TODO: See below
             # The plan is to only keep valid data in the broker, so if it hasnt ever been verified, we'll verify it and

@@ -456,6 +456,15 @@ class Pokemons(_BaseInventoryComponent):
         return cls.data_for(pokemon_id).name
 
     @classmethod
+    def id_for(cls, pokemon_name):
+        # TODO: Use a better searching algorithm. This one is O(n)
+        for data in cls.STATIC_DATA:
+            if data.name.lower() == pokemon_name.lower():
+                return data.id
+
+        raise Exception('Could not find pokemon named {}'.format(pokemon_name))
+
+    @classmethod
     def first_evolution_id_for(cls, pokemon_id):
         return cls.data_for(pokemon_id).first_evolution_id
 

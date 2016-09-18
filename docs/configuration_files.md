@@ -779,7 +779,7 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
                 "key": "results",
                 "mappings": {
                     "iv": { "param": "iv" },
-                    "name": { "param": "namez" },
+                    "name": { "param": "name" },
                     "latitude": { "param": "coords" },
                     "longitude": { "param": "coords" },
                     "expiration": { "param": "until", "format": "utc" }
