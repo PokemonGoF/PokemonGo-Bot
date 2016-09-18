@@ -3,9 +3,10 @@ from __future__ import unicode_literals
 import time
 import json
 import requests
-import datetime
+import calendar
 
 from random import uniform
+from datetime import datetime, timedelta
 from pokemongo_bot import inventory
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.base_task import BaseTask
@@ -60,8 +61,11 @@ class SniperSource(object):
                     if self.mappings.expiration.format == SniperSourceMappingTimeFormat.SECONDS:
                         expiration = expiration * 1000
                     elif self.mappings.expiration.format == SniperSourceMappingTimeFormat.UTC:
-                        date = datetime.datetime.strptime(expiration.replace("T", " ")[:19], self.time_mask)
-                        expiration = time.mktime(date.timetuple()) - time.mktime(time.gmtime()) * 1000
+                        utc_date = datetime.strptime(expiration.replace("T", " ")[:19], self.time_mask)
+                        timestamp = calendar.timegm(utc_date.timetuple())
+                        local_date = datetime.fromtimestamp(timestamp)
+                        local_date = local_date.replace(microsecond=utc_date.microsecond)
+                        expiration = time.mktime(local_date.timetuple()) * 1000
 
                 # If either name or ID are invalid, fix it using each other
                 if not name or not id:
@@ -236,9 +240,14 @@ class Sniper(BaseTask):
         ultraballs_count = self.inventory.get(Item.ITEM_ULTRA_BALL.value).count
         all_balls_count = pokeballs_count + greatballs_count + ultraballs_count
 
+        # Skip if expired (cast milliseconds to seconds for comparision)
+        if (pokemon.get('expiration_timestamp_ms', 0) or pokemon.get('last_modified_timestamp_ms', 0)) / 1000 < time.time():
+            self._trace('{} is expired ({})! Skipping...'.format(pokemon.get('pokemon_name')))
+            return False
+
         # Skip if already cached
         if self._is_cached(pokemon):
-            self._trace('{} was already handled! Skipping...'.format(pokemon['pokemon_name']))
+            self._trace('{} was already handled! Skipping...'.format(pokemon.get('pokemon_name', '')))
             return False
 
         # Skip if not enought balls. Sniping wastes a lot of balls. Theres no point to let user decide this amount
