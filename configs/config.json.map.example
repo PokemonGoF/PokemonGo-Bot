@@ -534,7 +534,7 @@
       "// Rattata": { "always_catch" : true }
     },
     "release": {
-      "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or"},
+      "any": {"release_below_cp": 0, "release_below_iv": 0, "release_below_ivcp": 0, "logic": "or"},
       "// Example of always releasing Rattata:": {},
       "// Rattata": {"always_release": true},
       "// Example of keeping 3 stronger (based on CP) Pidgey:": {},
@@ -543,6 +543,8 @@
       "// Zubat": {"keep_best_iv": 2},
       "// Keep no more than 3 best IV pokemon for every pokemon type": {},
       "// any": {"keep_best_iv": 3},
+      "// Keep no more than 3 best IVCP pokemon for every pokemon type": {},
+      "// any": {"keep_best_ivcp": 3},
       "// Discard all pokemon in bag except 100 pokemon with best CP": {},
       "// all": {"keep_best_cp": 100},
       "// Example of keeping the 2 strongest (based on CP) and 3 best (based on IV) Zubat:": {},

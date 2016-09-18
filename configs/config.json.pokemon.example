@@ -348,7 +348,7 @@
       "Kangaskhan": { "always_catch": true }
     },
     "release": {
-      "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or" },
+      "any": {"release_below_cp": 0, "release_below_iv": 0, "release_below_ivcp": 0, "logic": "or" },
 
       "// Legendary pokemons (Goes under S-Tier)": {},
       "Lapras": { "release_below_cp": 1041, "release_below_iv": 0.8, "logic": "and" },

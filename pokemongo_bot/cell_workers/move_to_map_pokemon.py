@@ -109,15 +109,19 @@ class MoveToMapPokemon(BaseTask):
         now = int(time.time())
 
         for pokemon in pokemon_list:
-            disappear = int(pokemon.get('expiration_timestamp_ms', 0) / 1000) or int(pokemon.get('disappear_time', 0) / 1000)
+            try:
+                disappear = int(pokemon.get('expiration_timestamp_ms', 0) / 1000) or int(pokemon.get('disappear_time', 0) / 1000)
 
-            pokemon['encounter_id'] = pokemon.get('encounter_id', '')
-            pokemon['spawn_point_id'] = pokemon.get('spawn_point_id', '') or pokemon.get('spawnpoint_id', '')
-            pokemon['iv'] = pokemon.get('iv', 0)
-            pokemon['disappear_time'] = disappear
-            pokemon['name'] = self.pokemon_data[pokemon['pokemon_id'] - 1]['Name']
-            pokemon['is_vip'] = pokemon['name'] in self.bot.config.vips
-
+                pokemon['encounter_id'] = pokemon.get('encounter_id', '')
+                pokemon['spawn_point_id'] = pokemon.get('spawn_point_id', '') or pokemon.get('spawnpoint_id', '')
+                pokemon['iv'] = pokemon.get('iv', 0)
+                pokemon['disappear_time'] = disappear
+                pokemon['name'] = self.pokemon_data[pokemon['pokemon_id'] - 1]['Name']
+                pokemon['is_vip'] = pokemon['name'] in self.bot.config.vips
+            except TypeError:
+                continue
+            except KeyError:
+                continue
             if now > pokemon['disappear_time']:
                 continue
 

@@ -55,6 +55,7 @@ class LoggingHandler(EventHandler):
         'pokemon_inventory_full':            'red',
         'pokemon_nickname_invalid':          'red',
         'pokemon_not_in_range':              'yellow',
+        'pokemon_keep':                      'green',
         'pokemon_release':                   'green',
         'pokemon_upgraded':                  'green',
         'pokemon_vanished':                  'red',

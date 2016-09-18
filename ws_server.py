@@ -12,7 +12,7 @@ if __name__ == '__main__':
         "--host",
         help="Host for the websocket",
         type=str,
-        default='localhost'
+        default='0.0.0.0'
     )
     parser.add_argument(
         "--port",
