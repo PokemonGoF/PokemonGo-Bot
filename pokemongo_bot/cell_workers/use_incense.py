@@ -1,9 +1,10 @@
+from __future__ import absolute_import
 import time
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.item_list import Item
 from pokemongo_bot import inventory
-from utils import format_time
+from .utils import format_time
 
 
 class UseIncense(BaseTask):

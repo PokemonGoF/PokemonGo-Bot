@@ -13,7 +13,6 @@ class CompleteTutorial(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
     def initialize(self):
-        self.api = self.bot.api
         self.nickname = self.config.get('nickname','')
         self.team = self.config.get('team',0)
         self.tutorial_run = True
@@ -96,7 +95,7 @@ class CompleteTutorial(BaseTask):
         # You just need to call the API with the pokemon you choose
         # Probably can't get MewTwo as first pokemon though
         first_pokemon_id = random.choice([1, 4, 7])
-        response_dict = self.api.encounter_tutorial_complete(
+        response_dict = self.bot.api.encounter_tutorial_complete(
             pokemon_id=first_pokemon_id)
         try:
             if response_dict['responses']['ENCOUNTER_TUTORIAL_COMPLETE']['result'] == 1:
@@ -128,7 +127,7 @@ class CompleteTutorial(BaseTask):
 
     def _set_avatar(self):
         avatar = self._random_avatar()
-        response_dict = self.api.set_avatar(player_avatar=avatar)
+        response_dict = self.bot.api.set_avatar(player_avatar=avatar)
         status = response_dict['responses']['SET_AVATAR']['status']
         try:
             if status == 1:
@@ -147,7 +146,7 @@ class CompleteTutorial(BaseTask):
             return False
 
     def _set_nickname(self, nickname):
-        response_dict = self.api.claim_codename(codename=nickname)
+        response_dict = self.bot.api.claim_codename(codename=nickname)
         try:
             result = response_dict['responses']['CLAIM_CODENAME']['status']
             if result == 1:
@@ -170,7 +169,7 @@ class CompleteTutorial(BaseTask):
             return False
 
     def _set_tutorial_state(self, completed):
-        response_dict = self.api.mark_tutorial_complete(tutorials_completed=[
+        response_dict = self.bot.api.mark_tutorial_complete(tutorials_completed=[
                                                         completed], send_marketing_emails=False, send_push_notifications=False)
         try:
             self._player = response_dict['responses'][
@@ -189,7 +188,7 @@ class CompleteTutorial(BaseTask):
             return True
 
         sleep(10)
-        response_dict = self.api.set_player_team(team=self.team)
+        response_dict = self.bot.api.set_player_team(team=self.team)
         try:
             result = response_dict['responses']['SET_PLAYER_TEAM']['status']
             if result == 1:
