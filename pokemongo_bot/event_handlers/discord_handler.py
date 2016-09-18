@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 from pokemongo_bot.event_manager import EventHandler
 from pokemongo_bot.base_dir import _base_dir
+import json
+import os
+import time
 import discord_simple
 import thread
 import re
 from pokemongo_bot.datastore import Datastore
 from pokemongo_bot import inventory
+from chat_handler import ChatHandler
 import pprint
 
 
@@ -36,23 +40,9 @@ class DiscordClass:
                     None)
 
     def send_player_stats_to_chat(self, chat_id):
-        stats = self._get_player_stats()
+        stats = self.chat_handler.get_player_stats()
         if stats:
-            with self.bot.database as conn:
-                cur = conn.cursor()
-                cur.execute("SELECT DISTINCT COUNT(encounter_id) FROM catch_log WHERE dated >= datetime('now','-1 day')")
-                catch_day = cur.fetchone()[0]
-                cur.execute("SELECT DISTINCT COUNT(pokestop) FROM pokestop_log WHERE dated >= datetime('now','-1 day')")
-                ps_day = cur.fetchone()[0]
-                res = (
-                    "*"+self.bot.config.username+"*",
-                    "_Level:_ "+str(stats["level"]),
-                    "_XP:_ "+str(stats["experience"])+"/"+str(stats["next_level_xp"]),
-                    "_Pokemons Captured:_ "+str(stats["pokemons_captured"])+" ("+str(catch_day)+" _last 24h_)",
-                    "_Poke Stop Visits:_ "+str(stats["poke_stop_visits"])+" ("+str(ps_day)+" _last 24h_)",
-                    "_KM Walked:_ "+str("%.2f" % stats["km_walked"])
-                )
-            self.sendMessage(to=chat_id, text="\n".join(res))
+            self.sendMessage(to=chat_id, text="\n".join(stats))
         else:
             self.sendMessage(to=chat_id, text="Stats not loaded yet\n")
 
@@ -79,7 +69,7 @@ class DiscordHandler(EventHandler):
         self.pokemons = config.get('alert_catch', {})
         self.whoami = "DiscordHandler"
         self.config = config
-
+        self.chat_handler = ChatHandler(self.bot, [])
     def catch_notify(self, pokemon, cp, iv, params):
         if params == " ":
             return True
@@ -95,27 +85,16 @@ class DiscordHandler(EventHandler):
     def handle_event(self, event, sender, level, formatted_msg, data):
         if self.dbot is None:
             try:
-                self.bot.logger.info("Discord bot not running, trying to spin it up")
+                self.bot.logger.info("Discord bot not running, Starting..")
                 self.dbot = DiscordClass(self.bot, self.master, self.pokemons, self.config)
                 self.dbot.connect()
                 thread.start_new_thread(self.dbot.run)
             except Exception as inst:
                 self.dbot = None
-                self.bot.logger.error("Unable to spin Telegram bot; master: {}, exception: {}".format(self.master, pprint.pformat(inst)))
+                self.bot.logger.error("Unable to start Discord bot; master: {}, exception: {}".format(self.master, pprint.pformat(inst)))
                 return
         # prepare message to send
-        msg=None
-        if event == 'level_up':
-            msg = "level up ({})".format(data["current_level"])
-        elif event == 'pokemon_caught':
-            msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
-        elif event == 'egg_hatched':
-            msg = "Egg hatched with a {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
-        elif event == 'bot_sleep':
-            msg = "I am too tired, I will take a sleep till {}.".format(data["wake"])
-        elif event == 'catch_limit':
-            msg = "*You have reached your daily catch limit, quitting.*"
-        elif event == 'spin_limit':
-            msg = "*You have reached your daily spin limit, quitting.*"
+        msg = None
+        msg = self.chat_handler.get_event(event, formatted_msg, data)
         if msg:
-          self.dbot.sendMessage(to=self.master, text=msg)
+            self.dbot.sendMessage(to=self.master, text=msg)
