@@ -49,7 +49,7 @@ class ChatHandler:
                         ("operator" in trigger and trigger["operator"] == "or" and (data["cp"] >= trigger["cp"] or data["iv"] >= trigger["iv"])):
                     msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
         elif event == 'egg_hatched':
-            msg = "Egg hatched with a {} CP: {}, IV: {} {}".format(data["name"], data["cp"], data["iv_ads"], data["iv_pct"])
+            msg = "Egg hatched with a {} CP: {}, IV: {} (A/D/S {})".format(data["name"], data["cp"], data["iv_pct"], data["iv_ads"])
         elif event == 'bot_sleep':
             msg = "I am too tired, I will take a sleep till {}.".format(data["wake"])
         elif event == 'catch_limit':
