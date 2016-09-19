@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from __future__ import absolute_import
 
-import sys
+from datetime import datetime, timedelta
 import time
 
 from pgoapi.utilities import f2i
@@ -27,9 +27,13 @@ class SpinFort(BaseTask):
         super(SpinFort, self).__init__(bot, config)
 
     def initialize(self):
+        # 10 seconds from current time
+        self.next_update = datetime.now() + timedelta(0, 10)
+
         self.ignore_item_count = self.config.get("ignore_item_count", False)
         self.spin_wait_min = self.config.get("spin_wait_min", 2)
         self.spin_wait_max = self.config.get("spin_wait_max", 3)
+        self.min_interval = int(self.config.get('min_interval', 120))
 
     def should_run(self):
         has_space_for_loot = inventory.Items.has_space_for_loot()
@@ -39,6 +43,7 @@ class SpinFort(BaseTask):
                 formatted="Inventory is full. You might want to change your config to recycle more items if this message appears consistently."
             )
         return self.ignore_item_count or has_space_for_loot
+
 
     def work(self):
         forts = self.get_forts_in_range()
@@ -100,8 +105,9 @@ class SpinFort(BaseTask):
                 result = c.fetchone()
                 c.execute("SELECT DISTINCT COUNT(pokestop) FROM pokestop_log WHERE dated >= datetime('now','-1 day')")
                 if c.fetchone()[0] >= self.config.get('daily_spin_limit', 2000):
-                    self.emit_event('spin_limit', formatted='WARNING! You have reached your daily spin limit')
-                    sys.exit(2)
+                   if datetime.now() >= self.next_update:
+                       self.emit_event('spin_limit', formatted='WARNING! You have reached your daily spin limit')
+                       self._compute_next_update()
                 while True:
                     if result[0] == 1:
                         conn.execute('''INSERT INTO pokestop_log (pokestop, exp, items) VALUES (?, ?, ?)''', (fort_name, str(experience_awarded), str(items_awarded)))
@@ -229,3 +235,11 @@ class SpinFort(BaseTask):
     # TODO : Refactor this class, hide the inventory update right after the api call
     def _update_inventory(self, item_awarded):
         inventory.items().get(item_awarded['item_id']).add(item_awarded['item_count'])
+
+    def _compute_next_update(self):
+        """
+        Computes the next update datetime based on the minimum update interval.
+        :return: Nothing.
+        :rtype: None
+        """
+        self.next_update = datetime.now() + timedelta(seconds=self.min_interval)
