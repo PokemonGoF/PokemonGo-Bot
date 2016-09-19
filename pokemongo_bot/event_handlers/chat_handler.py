@@ -43,9 +43,10 @@ class ChatHandler:
                 trigger = self.pokemons[data["pokemon"]]		
             elif "all" in self.pokemons:		
                 trigger = self.pokemons["all"]
-            if ((not "operator" in trigger or trigger["operator"] == "and") and data["cp"] >= trigger["cp"] and data["iv"] >= trigger["iv"]) or \
-            ("operator" in trigger and trigger["operator"] == "or" and (data["cp"] >= trigger["cp"] or data["iv"] >= trigger["iv"])):
-                msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
+            if trigger:
+                if ((not "operator" in trigger or trigger["operator"] == "and") and data["cp"] >= trigger["cp"] and data["iv"] >= trigger["iv"]) or \
+                        ("operator" in trigger and trigger["operator"] == "or" and (data["cp"] >= trigger["cp"] or data["iv"] >= trigger["iv"])):
+                    msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
         elif event == 'egg_hatched':
             msg = "Egg hatched with a {} CP: {}, IV: {} {}".format(data["name"], data["cp"], data["iv_ads"], data["iv_pct"])
         elif event == 'bot_sleep':
