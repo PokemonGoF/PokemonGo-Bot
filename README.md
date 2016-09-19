@@ -56,10 +56,7 @@ If this is your first time making a PR or aren't sure of the standard practice o
 - [x] Incubate eggs
 - [x] Crowd Sourced Map Prototype
 - [ ] [Standalone Desktop Application] (https://github.com/PokemonGoF/PokemonGo-Bot-Desktop)
-- [ ] Use candy
-
-## Gym Battles
-[PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot) takes a strong stance against automating gym battles. Botting gyms will have a negative effect on most players and thus the game as a whole. We will thus never accept contributions or changes containing code specific for gym battles.
+- [x] Use candy
 
 ## Analytics
 [PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot) is very popular and has a vibrant community. Because of that, it has become very difficult for us to know how the bot is used and what errors people hit. By capturing small amounts of data, we can prioritize our work better such as fixing errors that happen to a large percentage of our user base, not just a vocal minority.
