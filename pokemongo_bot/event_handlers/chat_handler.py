@@ -39,6 +39,7 @@ class ChatHandler:
         if event == 'level_up':
             msg = "level up ({})".format(data["current_level"])
         elif event == 'pokemon_caught':
+            trigger = None
             if data["pokemon"] in self.pokemons:		
                 trigger = self.pokemons[data["pokemon"]]		
             elif "all" in self.pokemons:		
