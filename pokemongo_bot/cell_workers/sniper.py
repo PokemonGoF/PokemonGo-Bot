@@ -125,9 +125,9 @@ class SniperSource(object):
             else:
                 raise ValueError("Empty reply")
         except requests.exceptions.Timeout:
-            raise ValueError("Fetching has timed out!")
+            raise ValueError("Fetching has timed out")
         except requests.exceptions.ConnectionError:
-            raise ValueError("Source not available!")
+            raise ValueError("Source not available")
         except:
             raise
 
@@ -231,7 +231,7 @@ class Sniper(BaseTask):
 
                 # Notify user if all sources are invalid and cant proceed
                 if not self.sources:
-                    self._error("There is no source available. Disabling TeleportSniper...")
+                    self._error("There is no source available. Disabling Sniper...")
                     self.disabled = True
 
     def is_snipeable(self, pokemon):
@@ -242,7 +242,7 @@ class Sniper(BaseTask):
 
         # Skip if expired (cast milliseconds to seconds for comparision)
         if (pokemon.get('expiration_timestamp_ms', 0) or pokemon.get('last_modified_timestamp_ms', 0)) / 1000 < time.time():
-            self._trace('{} is expired ! Skipping...'.format(pokemon.get('pokemon_name')))
+            self._trace('{} is expired! Skipping...'.format(pokemon.get('pokemon_name')))
             return False
 
         # Skip if already cached
@@ -311,7 +311,7 @@ class Sniper(BaseTask):
                 for nearby_pokemon in nearby_pokemons:
                     nearby_pokemon_id = nearby_pokemon.get('pokemon_data', {}).get('pokemon_id') or nearby_pokemon.get('pokemon_id')
 
-                    # If we find the target, it exists and will very likely be encountered/caught (success)
+                    # If we found the target, it exists and will very likely be encountered/caught (success)
                     if nearby_pokemon_id == pokemon.get('pokemon_id', 0):
                         exists = True
                         success = True
