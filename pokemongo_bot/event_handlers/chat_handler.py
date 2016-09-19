@@ -39,7 +39,13 @@ class ChatHandler:
             msg = "level up ({})".format(data["current_level"])
         elif event == 'pokemon_caught':
             try:
-               msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
+                if data["pokemon"] in self.pokemons:		
+                    trigger = self.pokemons[data["pokemon"]]		
+                elif "all" in self.pokemons:		
+                    trigger = self.pokemons["all"]
+                if ((not "operator" in trigger or trigger["operator"] == "and") and data["cp"] >= trigger["cp"] and data["iv"] >= trigger["iv"]) or \
+                ("operator" in trigger and trigger["operator"] == "or" and (data["cp"] >= trigger["cp"] or data["iv"] >= trigger["iv"])):
+                    msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
             except:
                msg = "Caught pokemon but unable to get details."
         elif event == 'egg_hatched':
