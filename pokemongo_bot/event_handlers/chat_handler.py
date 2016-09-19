@@ -35,19 +35,17 @@ class ChatHandler:
             return ("Stats not loaded yet\n")
 
     def get_event(self, event, formatted_msg, data):
+        msg = None
         if event == 'level_up':
             msg = "level up ({})".format(data["current_level"])
         elif event == 'pokemon_caught':
-            try:
-                if data["pokemon"] in self.pokemons:		
-                    trigger = self.pokemons[data["pokemon"]]		
-                elif "all" in self.pokemons:		
-                    trigger = self.pokemons["all"]
-                if ((not "operator" in trigger or trigger["operator"] == "and") and data["cp"] >= trigger["cp"] and data["iv"] >= trigger["iv"]) or \
-                ("operator" in trigger and trigger["operator"] == "or" and (data["cp"] >= trigger["cp"] or data["iv"] >= trigger["iv"])):
-                    msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
-            except:
-               msg = "Caught pokemon but unable to get details."
+            if data["pokemon"] in self.pokemons:		
+                trigger = self.pokemons[data["pokemon"]]		
+            elif "all" in self.pokemons:		
+                trigger = self.pokemons["all"]
+            if ((not "operator" in trigger or trigger["operator"] == "and") and data["cp"] >= trigger["cp"] and data["iv"] >= trigger["iv"]) or \
+            ("operator" in trigger and trigger["operator"] == "or" and (data["cp"] >= trigger["cp"] or data["iv"] >= trigger["iv"])):
+                msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
         elif event == 'egg_hatched':
             msg = "Egg hatched with a {} CP: {}, IV: {} {}".format(data["name"], data["cp"], data["iv_ads"], data["iv_pct"])
         elif event == 'bot_sleep':
