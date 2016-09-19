@@ -32,9 +32,8 @@ class TelegramClass:
             elif self.master is not None: # Master is not numeric, fetch from db
                 self.bot.logger.info("Telegram master is not numeric: {}".format(self.master))
                 c = conn.cursor()
-                # do we already have a user id?
                 srchmaster = re.sub(r'^@', '', self.master)
-                c.execute("SELECT uid from telegram_uids where username in ('{}', '@{}')".format(srchmaster, srchmaster))
+                c.execute("SELECT uid from telegram_uids where username = '{}'".format(srchmaster))
                 results = c.fetchall()
                 if len(results) > 0: # woohoo, we already saw a message from this master and therefore have a uid
                     self.bot.logger.info("Telegram master UID from datastore: {}".format(results[0][0]))
@@ -230,6 +229,7 @@ class TelegramClass:
         with self.bot.database as conn:
             for sub in conn.execute("select uid, event_type, parameters from telegram_subscriptions where uid = ?", [chatid]).fetchall():
                 subs.append("{} -&gt; {}".format(sub[1], sub[2]))
+        if subs == []: subs.append("No subscriptions found. Subscribe using /sub EVENTNAME. For a list of events, send /events")
         self.chat_handler.sendMessage(chat_id=chatid, parse_mode='HTML', text="\n".join(subs))
 
     def chsub(self, msg, chatid):
