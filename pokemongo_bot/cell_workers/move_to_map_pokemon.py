@@ -245,7 +245,7 @@ class MoveToMapPokemon(BaseTask):
                     exists = True
 
                     # Also, if the IDs arent valid, update them!
-                    if not pokemon['encounter_id'] or not pokemon['spawnpoint_id']:
+                    if not pokemon['encounter_id'] or not pokemon['spawn_point_id']:
                         pokemon['encounter_id'] = nearby_pokemon['encounter_id']
                         pokemon['spawn_point_id'] = nearby_pokemon['spawn_point_id']
                         pokemon['disappear_time'] = nearby_pokemon['last_modified_timestamp_ms'] if is_wild else nearby_pokemon['expiration_timestamp_ms']
