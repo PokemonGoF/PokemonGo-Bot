@@ -91,6 +91,7 @@ class ChatHandler:
         events.remove('evolve_log')
         events.remove('transfer_log')
         events.remove('catchable_pokemon')
+        events = sorted(events)
         return events
 
 
