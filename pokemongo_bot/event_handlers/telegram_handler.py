@@ -227,7 +227,10 @@ class TelegramClass:
         subs = []
         with self.bot.database as conn:
             for sub in conn.execute("select uid, event_type, parameters from telegram_subscriptions where uid = ?", [chatid]).fetchall():
-                subs.append("{} -&gt; {}".format(sub[1], sub[2]))
+                if "{}".format(sub[2]) != "":
+                    subs.append("*{}* -&gt; {}".format(sub[1], sub[2]))
+                else:
+                    subs.append("*{}*".format(sub[1]))
         if subs == []: subs.append("No subscriptions found. Subscribe using /sub EVENTNAME. For a list of events, send /events")
         self.chat_handler.sendMessage(chat_id=chatid, parse_mode='HTML', text="\n".join(subs))
 
