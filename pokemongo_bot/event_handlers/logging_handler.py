@@ -78,7 +78,10 @@ class LoggingHandler(EventHandler):
         'use_incense':                       'blue',
         'vanish_limit_reached':              'red',
         'move_to_map_pokemon_teleport_to':   'yellow',
+        'sniper_teleporting':                'yellow',
+        'sniper_error':                      'red',
 
+        'sniper_log':                        'none',
         'arrived_at_cluster':                'none',
         'arrived_at_fort':                   'none',
         'bot_sleep':                         'none',

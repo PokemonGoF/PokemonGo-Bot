@@ -93,6 +93,7 @@ If you do not want any data to be gathered, you can turn off this feature by set
  * 05-032
  * sinistance
  * CapCap
+ * YvesHenri
  * mzupan
  * gnekic(GeXx)
  * Shoh

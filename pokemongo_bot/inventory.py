@@ -169,9 +169,7 @@ class Pokedex(_BaseInventoryComponent):
         return pokemon_id in self._data
 
     def captured(self, pokemon_id):
-        if not self.seen(pokemon_id):
-            return False
-        return self._data[pokemon_id]['times_captured'] > 0
+        return self.seen(pokemon_id) and self._data.get(pokemon_id, {}).get('times_captured', 0) > 0
 
 
 class Item(object):
@@ -454,6 +452,15 @@ class Pokemons(_BaseInventoryComponent):
     @classmethod
     def name_for(cls, pokemon_id):
         return cls.data_for(pokemon_id).name
+
+    @classmethod
+    def id_for(cls, pokemon_name):
+        # TODO: Use a better searching algorithm. This one is O(n)
+        for data in cls.STATIC_DATA:
+            if data.name.lower() == pokemon_name.lower():
+                return data.id
+
+        raise Exception('Could not find pokemon named {}'.format(pokemon_name))
 
     @classmethod
     def first_evolution_id_for(cls, pokemon_id):
