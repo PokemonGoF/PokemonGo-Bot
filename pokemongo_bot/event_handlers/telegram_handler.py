@@ -11,7 +11,7 @@ from pokemongo_bot import inventory
 from telegram.utils import request
 from chat_handler import ChatHandler
 
-DEBUG_ON = True
+DEBUG_ON = False
 
 class TelegramClass:
 
@@ -311,22 +311,7 @@ class TelegramHandler(EventHandler):
             return False
 
     def handle_event(self, event, sender, level, formatted_msg, data):
-        #if DEBUG_ON: self.bot.logger.info("Handling an event {}".format(event))
         msg = None
-        if self.tbot is None:
-            if DEBUG_ON: 
-                self.bot.logger.info("handle_event Telegram bot not running.")
-            try:
-                self._connect()
-            except Exception as inst:
-                self.bot.logger.error("Unable to start Telegram bot; exception: {}".format(pprint.pformat(inst)))
-                self.tbot = None
-                return
-            msg = self.chat_handler.get_event(event, formatted_msg, data)
-            
-        if not (self.tbot or msg):
-            return
-
         # first handle subscriptions; they are independent of master setting.
         with self.bot.database as conn:
             subs = conn.execute("select uid, parameters, event_type from telegram_subscriptions where event_type in (?,'all','debug')", [event]).fetchall()
@@ -359,5 +344,16 @@ class TelegramHandler(EventHandler):
                 else:
                     if DEBUG_ON: self.bot.logger.info("No match sub {} event {}".format(sub, event))
 
-        if msg:
-            self.chat_handler.sendMessage(chat_id=uid, parse_mode='Markdown', text=msg)
+        if msg is not None:
+            if self.tbot is None: # instantiate tbot (TelegramClass) if not already set
+                if DEBUG_ON: 
+                    self.bot.logger.info("handle_event Telegram bot not running.")
+                try:
+                    self._connect()
+                except Exception as inst:
+                    self.bot.logger.error("Unable to start Telegram bot; exception: {}".format(pprint.pformat(inst)))
+                    self.tbot = None
+                    return
+                    
+            if self.tbot is not None: # tbot should be running, but just in case it hasn't started yet
+                self.chat_handler.sendMessage(chat_id=uid, parse_mode='Markdown', text=msg)
