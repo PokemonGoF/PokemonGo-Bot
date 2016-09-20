@@ -89,6 +89,9 @@ class BuddyPokemon(BaseTask):
             self.buddy_distance_needed = pokemon.buddy_distance_needed
 
     def work(self):
+        if not self.enabled:
+            return WorkerResult.SUCCESS
+
         if self.buddy_list:
             if self.force_first_change or not self.buddy or self.candy_limit != 0 and self.candy_awarded >= self.candy_limit:
                 self.force_first_change = False
@@ -105,7 +108,7 @@ class BuddyPokemon(BaseTask):
                 if pokemon is None:
                     return WorkerResult.ERROR
 
-                if pokemon.name != self._get_pokemon_by_id(self.buddy['id']).name:
+                if not self.buddy or pokemon.name != self._get_pokemon_by_id(self.buddy['id']).name:
                     self._set_buddy(pokemon)
 
         if not self.buddy:
