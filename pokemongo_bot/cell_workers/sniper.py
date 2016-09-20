@@ -19,6 +19,7 @@ class SniperSource(object):
     def __init__(self, data):
         self.url = data.get('url', '')
         self.key = data.get('key', '')
+        self.enabled = data.get('enabled', False)
         self.time_mask = data.get('time_mask', '%Y-%m-%d %H:%M:%S')
         self.mappings = SniperSourceMapping(data.get('mappings', {}))
 
@@ -70,7 +71,7 @@ class SniperSource(object):
                 # If either name or ID are invalid, fix it using each other
                 if not name or not id:
                     if not name and id:
-                        name = Pokemons.name_for(id - 1)
+                        name = Pokemons.name_for(id)
                     if not id and name:
                         id = Pokemons.id_for(name)
 
@@ -97,33 +98,36 @@ class SniperSource(object):
 
     def validate(self):
         try:
-            errors = []
-            data = self.fetch_raw(7)
+            if self.enabled:
+                errors = []
+                data = self.fetch_raw(10)
 
-            # Check whether the params really exist if they have been specified like so
-            if data:
-                if self.mappings.iv.exists and self.mappings.iv.param not in data[0]:
-                   errors.append(self.mappings.iv.param)
-                if self.mappings.id.exists and self.mappings.id.param not in data[0]:
-                    errors.append(self.mappings.id.param)
-                if self.mappings.name.exists and self.mappings.name.param not in data[0]:
-                    errors.append(self.mappings.name.param)
-                if self.mappings.latitude.exists and self.mappings.latitude.param not in data[0]:
-                    errors.append(self.mappings.latitude.param)
-                if self.mappings.longitude.exists and self.mappings.longitude.param not in data[0]:
-                    errors.append(self.mappings.longitude.param)
-                if self.mappings.expiration.exists and self.mappings.expiration.param not in data[0]:
-                    errors.append(self.mappings.expiration.param)
-                if self.mappings.encounter.exists and self.mappings.encounter.param not in data[0]:
-                    errors.append(self.mappings.encounter.param)
-                if self.mappings.spawnpoint.exists and self.mappings.spawnpoint.param not in data[0]:
-                    errors.append(self.mappings.spawnpoint.param)
+                # Check whether the params really exist if they have been specified like so
+                if data:
+                    if self.mappings.iv.exists and self.mappings.iv.param not in data[0]:
+                       errors.append(self.mappings.iv.param)
+                    if self.mappings.id.exists and self.mappings.id.param not in data[0]:
+                        errors.append(self.mappings.id.param)
+                    if self.mappings.name.exists and self.mappings.name.param not in data[0]:
+                        errors.append(self.mappings.name.param)
+                    if self.mappings.latitude.exists and self.mappings.latitude.param not in data[0]:
+                        errors.append(self.mappings.latitude.param)
+                    if self.mappings.longitude.exists and self.mappings.longitude.param not in data[0]:
+                        errors.append(self.mappings.longitude.param)
+                    if self.mappings.expiration.exists and self.mappings.expiration.param not in data[0]:
+                        errors.append(self.mappings.expiration.param)
+                    if self.mappings.encounter.exists and self.mappings.encounter.param not in data[0]:
+                        errors.append(self.mappings.encounter.param)
+                    if self.mappings.spawnpoint.exists and self.mappings.spawnpoint.param not in data[0]:
+                        errors.append(self.mappings.spawnpoint.param)
 
-                # All wrong mappings were gathered at once for a better usability (instead of raising multiple exceptions)
-                if errors:
-                    raise LookupError("The following params dont exist: {}".format(", ".join(errors)))
+                    # All wrong mappings were gathered at once for a better usability (instead of raising multiple exceptions)
+                    if errors:
+                        raise LookupError("The following params dont exist: {}".format(", ".join(errors)))
+                else:
+                    raise ValueError("Empty reply")
             else:
-                raise ValueError("Empty reply")
+                raise ValueError("Source is not enabled")
         except requests.exceptions.Timeout:
             raise ValueError("Fetching has timed out")
         except requests.exceptions.ConnectionError:
@@ -184,7 +188,7 @@ class Sniper(BaseTask):
     MIN_SECONDS_ALLOWED_FOR_CELL_CHECK = 10
     MIN_SECONDS_ALLOWED_FOR_REQUESTING_DATA = 5
     MIN_BALLS_FOR_CATCHING = 10
-    CACHE_LIST_MAX_SIZE = 200
+    MAX_CACHE_LIST_SIZE = 200
 
     def __init__(self, bot, config):
         super(Sniper, self).__init__(bot, config)
@@ -206,7 +210,7 @@ class Sniper(BaseTask):
         self.altitude = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
         self.sources = [SniperSource(data) for data in self.config.get('sources', [])]
 
-        # Dont bother validating config if its not enabled
+        # Dont bother validating config if task is not even enabled
         if self.enabled:
             # Validate ordering
             for ordering in self.order:
@@ -258,19 +262,19 @@ class Sniper(BaseTask):
             return False
 
         # Skip if not in catch list, not a VIP and/or IV sucks (if any)
-        if pokemon.get('pokemon_name', '') not in self.catch_list:
-            # This is not in the catch list. Lets see if its a VIP one
-            if not pokemon.get('vip', False):
-                # It is not a VIP either. Lets see if its IV is good (if any)
-                if pokemon.get('iv', 0) < self.special_iv:
-                    self._trace('{} is not listed to catch, nor a VIP and its IV sucks. Skipping...'.format(pokemon.get('pokemon_name')))
+        if pokemon.get('pokemon_name', '') in self.catch_list:
+            self._trace('{} is catchable!'.format(pokemon.get('pokemon_name')))
+        else:
+            # Not catchable. Having a good IV should suppress the not in catch/vip list (most important)
+            if pokemon.get('iv', 0) and pokemon.get('iv', 0) < self.special_iv:
+                self._trace('{} is not catchable, but has a decent IV!'.format(pokemon.get('pokemon_name')))
+            else:
+                # Not catchable and IV is not good enough (if any). Check VIP list
+                if pokemon.get('vip', False):
+                    self._trace('{} is not catchable and bad IV (if any), however its a VIP!'.format(pokemon.get('pokemon_name')))
+                else:
+                    self._trace('{} is not catachable, nor a VIP and bad IV (if any). Skipping...'.format(pokemon.get('pokemon_name')))
                     return False
-        #         else:
-        #             self._trace('{} has a decent IV ({}), therefore a valid target'.format(pokemon.get('pokemon_name'), pokemon.get('iv')))
-        #     else:
-        #         self._trace('{} is a VIP, therefore a valid target'.format(pokemon.get('pokemon_name')))
-        # else:
-        #     self._trace('{} is in the catch list, therefore a valid target'.format(pokemon.get('pokemon_name')))
 
         return True
 
@@ -292,6 +296,7 @@ class Sniper(BaseTask):
             # If social is enabled and if no verification is needed, trust it. Otherwise, update IDs!
             verify = not pokemon.get('encounter_id') or not pokemon.get('spawn_point_id')
             exists = not verify and self.mode == SniperMode.SOCIAL
+            success = exists
 
             # If information verification have to be done, do so
             if verify:
@@ -380,18 +385,11 @@ class Sniper(BaseTask):
 
         # Build up the pokemon. Pops are used to destroy random attribute names and keep the known ones!
         for pokemon in pokemon_dictionary_list:
-            # Even thought the dict might have the name in it, use ID instead for safety (social vs url)
-            pokemon_name = Pokemons.name_for(pokemon.get('pokemon_id') - 1)
-
-            # TODO: See below
-            # The plan is to only keep valid data in the broker, so if it hasnt ever been verified, we'll verify it and
-            # send the information back to the broker. Untill then, dont trust it.
-            # Sniper should send back to the broker whether it really exists or not. Use this in the snipe() function.
-            pokemon['verified'] = pokemon.get('verified', False)
             pokemon['iv'] = pokemon.get('iv', 0)
-            pokemon['vip'] = pokemon_name in self.bot.config.vips
+            pokemon['pokemon_name'] = pokemon.get('pokemon_name', Pokemons.name_for(pokemon.get('pokemon_id')))
+            pokemon['vip'] = pokemon.get('pokemon_name') in self.bot.config.vips
             pokemon['missing'] = not self.pokedex.captured(pokemon.get('pokemon_id'))
-            pokemon['priority'] = self.catch_list.get(pokemon_name, 0)
+            pokemon['priority'] = self.catch_list.get(pokemon.get('pokemon_name'), 0)
 
             # Check whether this is a valid target
             if self.is_snipeable(pokemon):
@@ -411,27 +409,28 @@ class Sniper(BaseTask):
         results_hash_map = {}
         seconds_since_last_valid_request = time.time() - self.last_data_request_time
 
-        # If something is requesting this info too fast, skip it, otherwise lets merge the results!
+        # If something is requesting this info too fast, skip it (we might crash their servers)
         if (seconds_since_last_valid_request > self.MIN_SECONDS_ALLOWED_FOR_REQUESTING_DATA):
             self.last_data_request_time = time.time()
 
             self._trace("Fetching pokemons from the sources...")
             for source in self.sources:
                 try:
-                    source_pokemons = source.fetch(3)
-                    self._trace("Source '{}' returned {} results".format(source.url, len(source_pokemons)))
+                    if source.enabled:
+                        source_pokemons = source.fetch(3)
+                        self._trace("Source '{}' returned {} results".format(source.url, len(source_pokemons)))
 
-                    # Merge lists, making sure to exclude repeated data. Use location as the hash key
-                    for source_pokemon in source_pokemons:
-                        hash_key = self._hash(source_pokemon)
+                        # Merge lists, making sure to exclude repeated data. Use location as the hash key
+                        for source_pokemon in source_pokemons:
+                            hash_key = self._hash(source_pokemon)
 
-                        # Add if new
-                        if not results_hash_map.has_key(hash_key):
-                            results_hash_map[hash_key] = source_pokemon
+                            # Add if new
+                            if not results_hash_map.has_key(hash_key):
+                                results_hash_map[hash_key] = source_pokemon
+                    else:
+                        self._trace("Source '{}' is disabled".format(source.url))
                 except Exception as exception:
                     self._error("Could not fetch data from '{}'. Details: {}. Skipping...".format(source.url, exception))
-                    continue
-
             self._trace("After merging, we've got {} results".format(len(results_hash_map.values())))
         else:
             self._trace("Not ready yet to retrieve data...")
@@ -456,7 +455,7 @@ class Sniper(BaseTask):
         # Skip repeated items
         if not self._is_cached(pokemon):
             # Free space if full and store it
-            if len(self.cache) >= self.CACHE_LIST_MAX_SIZE:
+            if len(self.cache) >= self.MAX_CACHE_LIST_SIZE:
                 self.cache.pop(0)
             self.cache.append(pokemon)
 

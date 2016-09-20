@@ -453,7 +453,7 @@
       {
 		"type": "Sniper",
 		"config": {
-			"enabled": true,
+			"enabled": false,
 			"mode": "social",
 			"bullets": 1,
 			"homing_shots": true,
@@ -461,6 +461,7 @@
 			"order": ["missing", "vip", "priority"],
 			"sources": [
 				{
+				    "enabled": false,
 					"url": "http://localhost:5000/raw_data",
 					"key": "pokemons",
 					"mappings": {
@@ -472,6 +473,7 @@
 					}
 				},
 				{
+				    "enabled": false,
 					"url": "https://pokewatchers.com/grab/",
 					"mappings": {
 						"iv": { "param": "iv" },
@@ -483,6 +485,7 @@
 					}
 				},
 				{
+				    "enabled": false,
 					"url": "http://pokesnipers.com/api/v1/pokemon.json",
 					"key": "results",
 					"mappings": {

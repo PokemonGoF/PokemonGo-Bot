@@ -735,6 +735,7 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
 ### Options
 [[back to top](#table-of-contents)]
 
+* `sources` - Defines whether the **WHOLE** task is enabled or not. Please bear in mind that even if the task is enabled, all or any of its sources can be disabled. (default: false)
 * `mode` - The mode on which the sniper will fetch the informations. (default: social)
    - `social` - Information will come from the social network.
    - `url` - Information will come from one or multiple urls.
@@ -743,12 +744,15 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
 * `special_iv` - This will skip the catch list if the value is greater than or equal to the target's IV. This currently does not work with `social` mode and only works if the given `url` has this information. (default: 100)
 * `time_mask` - The time mask used (if `expiration.format` is a full date). The default mask is '%Y-%m-%d %H:%M:%S'.
 * `order` - The order on which you want to snipe. This can be one or multiple of the following values (default: [`missing`, `vip`, `priority`]):
-   - `iv` - Order by IV, if any. See `min_iv_to_ignore_catch_list`.
+   - `iv` - Order by IV, if any. See `special_iv`.
    - `vip` - Order by VIP.
    - `missing` - Order by the target's pokedex missing status.
    - `priority` - Order by the priority you have specified in the `catch` list.
    - `expiration_timestamp_ms` - Order by the expiration time.
 * `sources` - This should map a JSON param values from a given url. For example: different urls will provide different JSON response formats. **PLEASE ADVISED THAT, IF A PARAM DOES NOT EXIST (OR CONTAINS WRONG DATA LIKE PokeSnipers's ID PARAM), DO NOT SPECIFY IT!** Pokesnipers is a special case where it does provide IDs, however theyre wrong. Map bellow their corresponding values:
+* `sources.key` - The JSON key that contains the results, eg.: For a JSON response such as `{ "SomeWeirdoName": [{"id": 123, ...}, {"id": 143, ...}]}`, `SomeWeirdoName` would be the key name.
+* `sources.url` - The URL that will provide the JSON.
+* `sources.enabled` - Defines whether this source is enabled or not. This has nothing to do with the task's `enabled`.
    - `iv` - The JSON param that corresponds to the pokemon IV. Only certain sources provide this info. **NOTE:** `social` mode does not provide this info!
    - `id` - The JSON param that corresponds to the pokemon ID. (required)
    - `name` - The JSON param that corresponds to the pokemon name. (required)
