@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from __future__ import absolute_import
 
 from datetime import datetime, timedelta
+import sys
 import time
 
 from pgoapi.utilities import f2i
@@ -34,6 +35,7 @@ class SpinFort(BaseTask):
         self.spin_wait_min = self.config.get("spin_wait_min", 2)
         self.spin_wait_max = self.config.get("spin_wait_max", 3)
         self.min_interval = int(self.config.get('min_interval', 120))
+        self.bypass_daily_limit = self.config.get("bypass_daily_limit", False)
 
     def should_run(self):
         has_space_for_loot = inventory.Items.has_space_for_loot()
@@ -47,6 +49,18 @@ class SpinFort(BaseTask):
 
     def work(self):
         forts = self.get_forts_in_range()
+
+        with self.bot.database as conn:
+            c = conn.cursor()
+            c.execute("SELECT DISTINCT COUNT(pokestop) FROM pokestop_log WHERE dated >= datetime('now','-1 day')")
+        if c.fetchone()[0] >= self.config.get('daily_spin_limit', 2000):
+           if not self.bypass_daily_limit:
+               self.emit_event('spin_limit', formatted='WARNING! You have reached your daily spin limit')
+               sys.exit(2)
+
+           if datetime.now() >= self.next_update:
+               self.emit_event('spin_limit', formatted='WARNING! You have reached your daily spin limit')
+               self._compute_next_update()
 
         if not self.should_run() or len(forts) == 0:
             return WorkerResult.SUCCESS
@@ -103,11 +117,6 @@ class SpinFort(BaseTask):
                     c = conn.cursor()
                     c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='pokestop_log'")
                 result = c.fetchone()
-                c.execute("SELECT DISTINCT COUNT(pokestop) FROM pokestop_log WHERE dated >= datetime('now','-1 day')")
-                if c.fetchone()[0] >= self.config.get('daily_spin_limit', 2000):
-                   if datetime.now() >= self.next_update:
-                       self.emit_event('spin_limit', formatted='WARNING! You have reached your daily spin limit')
-                       self._compute_next_update()
                 while True:
                     if result[0] == 1:
                         conn.execute('''INSERT INTO pokestop_log (pokestop, exp, items) VALUES (?, ?, ?)''', (fort_name, str(experience_awarded), str(items_awarded)))
