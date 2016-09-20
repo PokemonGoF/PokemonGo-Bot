@@ -203,7 +203,6 @@ class Item(object):
             raise Exception('Tried to remove more {} than you have'.format(self.name))
         self.count -= amount
 
-
     def recycle(self, amount_to_recycle):
         """
         Recycle (discard) the specified amount of item from the item inventory.
@@ -396,7 +395,6 @@ class AppliedItems(_BaseInventoryComponent):
         :rtype: str
         """
         return cls.STATIC_DATA[str(item_id)]
-
 
 class Pokemons(_BaseInventoryComponent):
     TYPE = 'pokemon_data'
@@ -786,6 +784,9 @@ class PokemonInfo(object):
         # chance of the pokemon to flee away
         self.flee_rate = data['FleeRate']
 
+        # km needed for buddy reward
+        self.buddy_distance_needed = data['BuddyDistanceNeeded']
+
         # prepare attacks (moves)
         self.fast_attacks = self._process_attacks()
         self.charged_attack = self._process_attacks(charged=True)
@@ -968,6 +969,8 @@ class Pokemon(object):
 
         self.in_fort = 'deployed_fort_id' in data
         self.is_favorite = data.get('favorite', 0) is 1
+        self.buddy_candy = data.get('buddy_candy_awarded', 0)
+        self.buddy_distance_needed = self.static.buddy_distance_needed
 
         self.fast_attack = FastAttacks.data_for(data['move_1'])
         self.charged_attack = ChargedAttacks.data_for(data['move_2'])  # type: ChargedAttack
