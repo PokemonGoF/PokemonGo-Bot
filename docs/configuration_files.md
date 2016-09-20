@@ -738,18 +738,18 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
 * `mode` - The mode on which the sniper will fetch the informations. (default: social)
    - `social` - Information will come from the social network.
    - `url` - Information will come from one or multiple urls.
-* `bullets` - Each bullet corresponds to an attempt of catching a pokemon. (default: 1)
-* `homing_shots` - This will ensure that each bullet will catch a target. (default: true)
-* `special_iv` - This will skip the catch list if the value is greater than the target's IV. This currently does not work with `social` mode and only works if the given `url` has this information. (default: 100)
+* `bullets` - Each bullet corresponds to an **ATTEMPT** of catching a pokemon. (default: 1)
+* `homing_shots` - This will ensure that each bullet **will catch** a target. If disabled, a target might not exist and thus it wont be caught. When enabled, this will jump to the next target (if any) and try again to catch it. This will be repeated untill you've spent all the bullets. (default: true)
+* `special_iv` - This will skip the catch list if the value is greater than or equal to the target's IV. This currently does not work with `social` mode and only works if the given `url` has this information. (default: 100)
 * `time_mask` - The time mask used (if `expiration.format` is a full date). The default mask is '%Y-%m-%d %H:%M:%S'.
-* `order` - The order on which you want to snipe. This can be one or multiple of the following values (default: [`missing`, `vip`, `threshold`]):
+* `order` - The order on which you want to snipe. This can be one or multiple of the following values (default: [`missing`, `vip`, `priority`]):
    - `iv` - Order by IV, if any. See `min_iv_to_ignore_catch_list`.
    - `vip` - Order by VIP.
    - `missing` - Order by the target's pokedex missing status.
-   - `threshold` - Order by the threshold you have specified in the `catch` list.
+   - `priority` - Order by the priority you have specified in the `catch` list.
    - `expiration_timestamp_ms` - Order by the expiration time.
-* `sources` - This should map a JSON param values from a given url. For example: different urls will provide different JSON response formats. If a param does not exist, you DO NOT have to specify it! Map bellow their corresponding values:
-   - `iv` - The JSON param that corresponds to the pokemon IV. Only certain sources provide this info. NOTE: social does not provide this info!
+* `sources` - This should map a JSON param values from a given url. For example: different urls will provide different JSON response formats. **PLEASE ADVISED THAT, IF A PARAM DOES NOT EXIST (OR CONTAINS WRONG DATA LIKE PokeSnipers's ID PARAM), DO NOT SPECIFY IT!** Pokesnipers is a special case where it does provide IDs, however theyre wrong. Map bellow their corresponding values:
+   - `iv` - The JSON param that corresponds to the pokemon IV. Only certain sources provide this info. **NOTE:** `social` mode does not provide this info!
    - `id` - The JSON param that corresponds to the pokemon ID. (required)
    - `name` - The JSON param that corresponds to the pokemon name. (required)
    - `latitude` - The JSON param that corresponds to the latitude. It will work if a single param is used for both `latitude` and `longitude`, eg.: "coords": "1.2345, 6.7890" (required)
@@ -789,12 +789,22 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
                 "url": "http://localhost:5000/raw_data",
                 "key": "pokemons",
                 "mappings": {
-                    "iv": { "param": "iv" },
                     "id": { "param": "pokemon_id" },
                     "name": { "param": "pokemon_name" },
                     "latitude": { "param": "latitude" },
                     "longitude": { "param": "longitude" },
                     "expiration": { "param": "disappear_time", "format": "milliseconds" }
+                }
+            },
+            {
+                "url": "https://pokewatchers.com/grab/",
+                "mappings": {
+                    "iv": { "param": "iv" },
+                    "id": { "param": "pid" },
+                    "name": { "param": "pokemon" },
+                    "latitude": { "param": "cords" },
+                    "longitude": { "param": "cords" },
+                    "expiration": { "param": "timeend", "format": "milliseconds" }
                 }
             }
         ],

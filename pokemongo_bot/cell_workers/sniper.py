@@ -6,7 +6,7 @@ import requests
 import calendar
 
 from random import uniform
-from datetime import datetime, timedelta
+from datetime import datetime
 from pokemongo_bot import inventory
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.base_task import BaseTask
@@ -62,8 +62,8 @@ class SniperSource(object):
                         expiration = expiration * 1000
                     elif self.mappings.expiration.format == SniperSourceMappingTimeFormat.UTC:
                         utc_date = datetime.strptime(expiration.replace("T", " ")[:19], self.time_mask)
-                        timestamp = calendar.timegm(utc_date.timetuple())
-                        local_date = datetime.fromtimestamp(timestamp)
+                        unix_timestamp = calendar.timegm(utc_date.timetuple())
+                        local_date = datetime.fromtimestamp(unix_timestamp)
                         local_date = local_date.replace(microsecond=utc_date.microsecond)
                         expiration = time.mktime(local_date.timetuple()) * 1000
 
@@ -206,33 +206,35 @@ class Sniper(BaseTask):
         self.altitude = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
         self.sources = [SniperSource(data) for data in self.config.get('sources', [])]
 
-        # Validate ordering
-        for ordering in self.order:
-            if ordering not in vars(SniperOrderMode).values():
-                raise ValueError("Unrecognized ordering: '{}'".format(ordering))
+        # Dont bother validating config if its not enabled
+        if self.enabled:
+            # Validate ordering
+            for ordering in self.order:
+                if ordering not in vars(SniperOrderMode).values():
+                    raise ValueError("Unrecognized ordering: '{}'".format(ordering))
 
-        # Validate mode and sources
-        if self.mode not in vars(SniperMode).values():
-            raise ValueError("Unrecognized mode: '{}'".format(self.mode))
-        else:
-            # Selected mode is valid. Validate sources if mode is URL
-            if self.mode == SniperMode.URL:
-                self._log("Validating sources: {}...".format(", ".join([source.url for source in self.sources])))
+            # Validate mode and sources
+            if self.mode not in vars(SniperMode).values():
+                raise ValueError("Unrecognized mode: '{}'".format(self.mode))
+            else:
+                # Selected mode is valid. Validate sources if mode is URL
+                if self.mode == SniperMode.URL:
+                    self._log("Validating sources: {}...".format(", ".join([source.url for source in self.sources])))
 
-                # Create a copy of the list so we can iterate and remove elements at the same time
-                for source in list(self.sources):
-                    try:
-                        source.validate()
-                        self._log("Source '{}' is good!".format(source.url))
-                    # TODO: On ValueError, remember source and validate later (pending validation)
-                    except (LookupError, ValueError) as exception:
-                        self._error("Source '{}' contains errors. Details: {}. Removing from sources list...".format(source.url, exception))
-                        self.sources.remove(source)
+                    # Create a copy of the list so we can iterate and remove elements at the same time
+                    for source in list(self.sources):
+                        try:
+                            source.validate()
+                            self._log("Source '{}' is good!".format(source.url))
+                        # TODO: On ValueError, remember source and validate later (pending validation)
+                        except (LookupError, ValueError) as exception:
+                            self._error("Source '{}' contains errors. Details: {}. Removing from sources list...".format(source.url, exception))
+                            self.sources.remove(source)
 
-                # Notify user if all sources are invalid and cant proceed
-                if not self.sources:
-                    self._error("There is no source available. Disabling Sniper...")
-                    self.disabled = True
+                    # Notify user if all sources are invalid and cant proceed
+                    if not self.sources:
+                        self._error("There is no source available. Disabling Sniper...")
+                        self.disabled = True
 
     def is_snipeable(self, pokemon):
         pokeballs_count = self.inventory.get(Item.ITEM_POKE_BALL.value).count
@@ -258,7 +260,7 @@ class Sniper(BaseTask):
         # Skip if not in catch list, not a VIP and/or IV sucks (if any)
         if pokemon.get('pokemon_name', '') not in self.catch_list:
             # This is not in the catch list. Lets see if its a VIP one
-            if not pokemon.get('vip'):
+            if not pokemon.get('vip', False):
                 # It is not a VIP either. Lets see if its IV is good (if any)
                 if pokemon.get('iv', 0) < self.special_iv:
                     self._trace('{} is not listed to catch, nor a VIP and its IV sucks. Skipping...'.format(pokemon.get('pokemon_name')))
@@ -278,7 +280,7 @@ class Sniper(BaseTask):
 
         # Apply snipping business rules and snipe if its good
         if not self.is_snipeable(pokemon):
-            self._error('{} is not snipeable! Skipping...'.format(pokemon['pokemon_name']))
+            self._trace('{} is not snipeable! Skipping...'.format(pokemon['pokemon_name']))
         else:
             # Backup position before anything
             last_position = self.bot.position[0:2]
