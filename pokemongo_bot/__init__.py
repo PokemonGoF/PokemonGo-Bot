@@ -211,6 +211,9 @@ class PokemonGoBot(object):
         self.event_manager.register_event('moving_to_destination')
         self.event_manager.register_event('arrived_at_destination')
         self.event_manager.register_event('staying_at_destination')
+        self.event_manager.register_event('buddy_pokemon', parameters=('pokemon', 'iv', 'cp'))
+        self.event_manager.register_event('buddy_reward', parameters=('pokemon', 'family', 'candy_earned', 'candy'))
+        self.event_manager.register_event('buddy_walked', parameters=('pokemon', 'distance_walked', 'distance_needed'))
 
         #  ignore candy above threshold
         self.event_manager.register_event(
