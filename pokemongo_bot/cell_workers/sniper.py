@@ -258,7 +258,7 @@ class Sniper(BaseTask):
         # Skip if not in catch list, not a VIP and/or IV sucks (if any)
         if pokemon.get('pokemon_name', '') not in self.catch_list:
             # This is not in the catch list. Lets see if its a VIP one
-            if not pokemon.get('vip'):
+            if not pokemon.get('pokemon_name') in self.bot.config.vips:
                 # It is not a VIP either. Lets see if its IV is good (if any)
                 if pokemon.get('iv', 0) < self.special_iv:
                     self._trace('{} is not listed to catch, nor a VIP and its IV sucks. Skipping...'.format(pokemon.get('pokemon_name')))
