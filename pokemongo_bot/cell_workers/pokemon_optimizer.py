@@ -88,9 +88,6 @@ class PokemonOptimizer(BaseTask):
         if not self.enabled:
             return WorkerResult.SUCCESS
 
-        if not (self.config_transfer or self.config_evolve or self.config_transfer):
-            return
-            
         self.check_buddy()
 
         if self.lock_buddy and (self.get_pokemon_slot_left() > self.config_min_slots_left):
