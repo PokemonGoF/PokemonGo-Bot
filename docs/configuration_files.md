@@ -1262,7 +1262,7 @@ After setting a buddy it's not possible to remove it, only change it. So if a bu
         "// force_first_change = true will always change buddy at start removing current one": {},
         "force_first_change": false,
         "buddy_change_wait_min": 3,
-        "buddy_change_wait_min": 5,
+        "buddy_change_wait_max": 5,
         "min_interval": 120
   }
 }
