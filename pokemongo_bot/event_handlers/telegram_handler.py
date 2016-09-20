@@ -126,13 +126,13 @@ class TelegramClass:
                             "/unsub everything - will remove all subscriptions for this uid",
                             "/showsubs - show current subscriptions",
                             "/events <filter> - show available events, filtered by regular expression  <filter>",
-                            "/top <num> <cp-or-iv> - show top X pokemons, sorted by CP or IV",
-                            "/evolved <num> <cp-or-iv> - show top x pokemon evolved, sorted by CP or IV",
-                            "/hatched <num> <cp-or-iv> - show top x pokemon hatched, sorted by CP or IV",
-                            "/caught <num> <cp-or-iv>- show top x pokemon caught, sorted by CP or IV",
+                            "/top <num> <cp-or-iv-or-dated> - show top X pokemons, sorted by CP, IV, or Date",
+                            "/evolved <num> <cp-or-iv-or-dated> - show top x pokemon evolved, sorted by CP, IV, or Date",
+                            "/hatched <num> <cp-or-iv-or-dated> - show top x pokemon hatched, sorted by CP, IV, or Date",
+                            "/caught <num> <cp-or-iv-or-dated> - show top x pokemon caught, sorted by CP, IV, or Date",
                             "/pokestops - show last x pokestops visited",
-                            "/released <num> <cp-or-iv> - show top x released, sorted by CP or IV",
-                            "/vanished <num> <cp-or-iv> - show top x vanished, sorted by CP or IV",
+                            "/released <num> <cp-or-iv-or-dated> - show top x released, sorted by CP, IV, or Date",
+                            "/vanished <num> <cp-or-iv-or-dated> - show top x vanished, sorted by CP, IV, or Date",
                             "/softbans - info about possible softbans"
                         )
                         self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))

@@ -453,10 +453,6 @@ class PokemonCatchWorker(BaseTask):
 
         :type pokemon: Pokemon
         """
-        berry_id = ITEM_RAZZBERRY
-        maximum_ball = ITEM_ULTRABALL if is_vip else ITEM_GREATBALL
-        ideal_catch_rate_before_throw = self.vip_berry_threshold if is_vip else self.berry_threshold
-
         berry_count = self.inventory.get(ITEM_RAZZBERRY).count
         ball_count = {}
         for ball_id in [ITEM_POKEBALL, ITEM_GREATBALL, ITEM_ULTRABALL]:
@@ -464,9 +460,12 @@ class PokemonCatchWorker(BaseTask):
 
         # use `min_ultraball_to_keep` from config if is not None
         min_ultraball_to_keep = ball_count[ITEM_ULTRABALL]
-        if self.min_ultraball_to_keep is not None:
-            if self.min_ultraball_to_keep >= 0 and self.min_ultraball_to_keep < min_ultraball_to_keep:
-                min_ultraball_to_keep = self.min_ultraball_to_keep
+        if self.min_ultraball_to_keep is not None and self.min_ultraball_to_keep >= 0:
+            min_ultraball_to_keep = self.min_ultraball_to_keep
+
+        berry_id = ITEM_RAZZBERRY
+        maximum_ball = ITEM_GREATBALL if ball_count[ITEM_ULTRABALL] < min_ultraball_to_keep else ITEM_ULTRABALL
+        ideal_catch_rate_before_throw = self.vip_berry_threshold if is_vip else self.berry_threshold
 
         used_berry = False
         original_catch_rate_by_ball = catch_rate_by_ball
@@ -477,14 +476,8 @@ class PokemonCatchWorker(BaseTask):
             while ball_count[current_ball] == 0 and current_ball < maximum_ball:
                 current_ball += 1
             if ball_count[current_ball] == 0:
-                # use untraball if there is no other balls with constraint to `min_ultraball_to_keep`
-                if maximum_ball != ITEM_ULTRABALL and ball_count[ITEM_ULTRABALL] > min_ultraball_to_keep:
-                    maximum_ball = ITEM_ULTRABALL
-                    self.emit_event('enough_ultraballs', formatted='No regular balls left! Trying ultraball.')
-                    continue
-                else:
-                    self.emit_event('no_pokeballs', formatted='No pokeballs left! Fleeing...')
-                    return WorkerResult.ERROR
+                self.emit_event('no_pokeballs', formatted='No pokeballs left! Fleeing...')
+                return WorkerResult.ERROR
 
             # check future ball count
             num_next_balls = 0
