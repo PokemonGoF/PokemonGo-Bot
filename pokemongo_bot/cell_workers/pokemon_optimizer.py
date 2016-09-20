@@ -56,11 +56,11 @@ class PokemonOptimizer(BaseTask):
         self.config_upgrade = self.config.get("upgrade", False)
         self.config_upgrade_level = self.config.get("upgrade_level", 30)
         self.config_groups = self.config.get("groups", {"gym": ["Dragonite", "Snorlax", "Lapras", "Arcanine"]})
-        self.config_rules = self.config.get("rules", [{"mode": "overall", "top": 1, "sort": ["max_cp", "cp"], "buddy": {"candy": -124}},
+        self.config_rules = self.config.get("rules", [{"mode": "overall", "top": 1, "sort": ["max_cp", "cp"], "evolve": False, "buddy": {"candy": -124}},
                                                       {"mode": "by_family", "top": 3, "names": ["gym"], "sort": ["iv", "ncp"], "evolve": {"iv": 0.9, "ncp": 0.9}, "upgrade": {"iv": 0.9, "ncp": 0.9}},
                                                       {"mode": "by_family", "top": 1, "sort": ["iv"], "evolve": {"iv": 0.9}},
                                                       {"mode": "by_family", "top": 1, "sort": ["ncp"], "evolve": {"ncp": 0.9}},
-                                                      {"mode": "by_family", "top": 1, "sort": ["cp"]}])
+                                                      {"mode": "by_family", "top": 1, "sort": ["cp"], "evolve": False}])
 
         if (not self.config_may_use_lucky_egg) and self.config_evolve_only_with_lucky_egg:
             self.config_evolve = False
@@ -167,7 +167,7 @@ class PokemonOptimizer(BaseTask):
         if (not self.lock_buddy) and (len(buddy_all) > 0):
             new_buddy = buddy_all[0]
 
-            if self.buddy["id"] != new_buddy.unique_id:
+            if (not self.buddy) or (self.buddy["id"] != new_buddy.unique_id):
                 self.set_buddy_pokemon(new_buddy)
 
         if self.get_pokemon_slot_left() > self.config_min_slots_left:
