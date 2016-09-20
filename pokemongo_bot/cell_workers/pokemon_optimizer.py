@@ -508,8 +508,8 @@ class PokemonOptimizer(BaseTask):
             full_upgrade_candy_cost = 0
             full_upgrade_stardust_cost = 0
 
-            for i in range(pokemon.level, upgrade_level, 0.5):
-                upgrade_cost = self.pokemon_upgrade_cost[2 * (i - 1)]
+            for i in range(int(pokemon.level * 2), int(upgrade_level * 2)):
+                upgrade_cost = self.pokemon_upgrade_cost[i - 2]
                 full_upgrade_candy_cost += upgrade_cost[0]
                 full_upgrade_stardust_cost += upgrade_cost[1]
 
