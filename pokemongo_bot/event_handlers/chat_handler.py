@@ -69,12 +69,7 @@ class ChatHandler:
         else:
             # no filter
             event_filter = ".*"
-        events = filter(lambda k: re.match(event_filter, k), self.bot.event_manager._registered_events.keys())
-        events_to_discard = [ 'vanish_log', 'eggs_hatched_log', 'catch_log', 'pokestop_log', 'load_cached_location', 'location_cache_ignored', 'softban_log', 'loaded_cached_forts', 'login_log', 'evolve_log', 'transfer_log', 'catchable_pokemon' ]
-        return sorted([x for x in events if x not in events_to_discard])
-
-
-
+        return sorted(filter(lambda k: re.match(event_filter, k), self.bot.event_manager._registered_events.keys()))
 
     def sendMessage(self, chat_id=None, parse_mode='Markdown', text=None):
         try:
