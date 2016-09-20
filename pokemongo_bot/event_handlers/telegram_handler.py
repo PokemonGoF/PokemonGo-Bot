@@ -92,7 +92,11 @@ class TelegramClass:
         return
 
     def authenticate(self, update):
-        (command, password) = update.message.text.split(' ')
+        args = update.message.text.split(' ')
+        if len(args) != 2:
+            self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Invalid password")
+            return
+        password = args[1]
         if password != self.config.get('password', None):
             self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Invalid password")
         else:
