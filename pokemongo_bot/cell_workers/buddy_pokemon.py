@@ -68,7 +68,7 @@ class BuddyPokemon(BaseTask):
         self.next_update = None
         self.cache = []
         self.candy_awarded = 0
-        self.buddy_km_needed = 0
+        self.buddy_distance_needed = 0
         self._validate_config()
         self._check_old_reward()
 
@@ -86,7 +86,7 @@ class BuddyPokemon(BaseTask):
             )
         if self.buddy:
             pokemon = self._get_pokemon_by_id(self.buddy['id'])
-            self.buddy_km_needed = pokemon.buddy_km_needed
+            self.buddy_distance_needed = pokemon.buddy_distance_needed
 
     def work(self):
         if self.buddy_list:
@@ -111,8 +111,8 @@ class BuddyPokemon(BaseTask):
         if not self.buddy:
             return WorkerResult.SUCCESS
 
-        if self._km_walked() - self.buddy['last_km_awarded'] >= self.buddy_km_needed:
-            self.buddy['last_km_awarded'] += self.buddy_km_needed
+        if self._km_walked() - self.buddy['last_km_awarded'] >= self.buddy_distance_needed:
+            self.buddy['last_km_awarded'] += self.buddy_distance_needed
             if not self._get_award():
                 return WorkerResult.ERROR
 
@@ -133,7 +133,7 @@ class BuddyPokemon(BaseTask):
             updated_buddy = data['updated_buddy']
             self.buddy = updated_buddy
             self.candy_awarded = 0
-            self.buddy_km_needed = pokemon.buddy_km_needed
+            self.buddy_distance_needed = pokemon.buddy_distance_needed
 
             self.emit_event(
                 'buddy_update',
@@ -200,20 +200,13 @@ class BuddyPokemon(BaseTask):
         if not self.buddy:
             return
         km_diff = self._km_walked() - self.buddy['last_km_awarded']
-        rewards_size = km_diff // self.buddy_km_needed
+        rewards_size = km_diff // self.buddy_distance_needed
         if rewards_size > 0:
             self._get_award()
-            self.buddy['last_km_awarded'] += self.buddy_km_needed*rewards_size
+            self.buddy['last_km_awarded'] += self.buddy_distance_needed*rewards_size
 
     def _km_walked(self):
-        inv = inventory.jsonify_inventory()
-        km_walked = 0
-        for inv_data in inv:
-            inv_data = inv_data.get('inventory_item_data', {})
-            if 'player_stats' in inv_data:
-                km_walked = inv_data.get('player_stats', {}).get('km_walked', 0)
-                break
-        return km_walked
+        return inventory.player().player_stats.get("km_walked", 0)
 
     def _get_pokemon_by_name(self, name):
         pokemons = inventory.pokemons().all()
@@ -262,6 +255,6 @@ class BuddyPokemon(BaseTask):
             data={
                 'name': pokemon.name,
                 'km_walked': self._km_walked() - self.buddy['last_km_awarded'],
-                'km_total': self.buddy_km_needed
+                'km_total': self.buddy_distance_needed
             }
         )

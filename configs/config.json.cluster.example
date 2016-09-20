@@ -114,18 +114,18 @@
         "type": "EvolvePokemon",
         "config": {
             "enabled": false,
-            
+
             "// evolve only pidgey and drowzee": "",
             "// evolve_list": "pidgey, drowzee",
             "// donot_evolve_list": "none",
-            
+
             "// evolve all but pidgey and drowzee": "",
             "// evolve_list": "all",
             "// donot_evolve_list": "pidgey, drowzee",
-            
+
             "evolve_list": "all",
             "donot_evolve_list": "none",
-            
+
             "first_evolve_by": "cp",
             "evolve_above_cp": 500,
             "evolve_above_iv": 0.8,
@@ -191,7 +191,7 @@
             "berry_wait_max": 5,
             "changeball_wait_min": 3,
             "changeball_wait_max": 5,
-            "newtodex_wait_min": 20, 
+            "newtodex_wait_min": 20,
             "newtodex_wait_max": 30
           }
         }
@@ -324,6 +324,6 @@
     },
 	"websocket": {
 		"start_embedded_server": true,
-		"server_url": "127.0.0.1:4000"
+		"server_url": "0.0.0.0:4000"
 	}
 }

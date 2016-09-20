@@ -1,3 +1,4 @@
+from collections import Counter
 from datetime import datetime, timedelta
 
 from pokemongo_bot import inventory
@@ -170,7 +171,7 @@ class IncubateEggs(BaseTask):
                 continue
             if "player_stats" in inv_data:
                 self.km_walked = inv_data.get("player_stats", {}).get("km_walked", 0)
-        
+
         self.used_incubators = temp_used_incubators
         if self.used_incubators:
             self.used_incubators.sort(key=lambda x: x.get("km"))
@@ -206,7 +207,7 @@ class IncubateEggs(BaseTask):
                 formatted= "Error trying to hatch egg."
             )
             return False
- 
+
         for i in range(len(pokemon_list)):
             pokemon = pokemon_list[i]
             msg = "Egg hatched with a {name} (CP {cp} - NCP {ncp} - IV {iv_ads} {iv_pct}), {exp} exp, {stardust} stardust and {candy} candies."
@@ -227,7 +228,7 @@ class IncubateEggs(BaseTask):
             # hatching egg gets exp too!
             inventory.player().exp += xp[i]
             self.bot.stardust += stardust[i]
-            
+
             with self.bot.database as conn:
                 c = conn.cursor()
                 c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='eggs_hatched_log'")
@@ -244,7 +245,7 @@ class IncubateEggs(BaseTask):
                         formatted="eggs_hatched_log table not found, skipping log"
                     )
                     break
-            
+
         self.bot.metrics.hatched_eggs(len(pokemon_list))
         return True
 
@@ -253,12 +254,13 @@ class IncubateEggs(BaseTask):
             return
 
         eggs = ['{:.2f}/{} km'.format(e['km_needed']-e['km']+self.km_walked, e['km_needed']) for e in self.used_incubators]
+        all_eggs = Counter([egg['km'] for egg in self.eggs])
 
         self.emit_event(
             'next_egg_incubates',
             formatted='Eggs incubating: [{eggs}] (Eggs left: {eggs_left}, Incubating: {eggs_inc})',
             data={
-                'eggs_left': len(self.eggs),
+                'eggs_left': sorted(all_eggs.iteritems()),
                 'eggs_inc': len(self.used_incubators),
                 'eggs': ', '.join(eggs)
             }

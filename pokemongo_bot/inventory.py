@@ -169,9 +169,7 @@ class Pokedex(_BaseInventoryComponent):
         return pokemon_id in self._data
 
     def captured(self, pokemon_id):
-        if not self.seen(pokemon_id):
-            return False
-        return self._data[pokemon_id]['times_captured'] > 0
+        return self.seen(pokemon_id) and self._data.get(pokemon_id, {}).get('times_captured', 0) > 0
 
 
 class Item(object):
@@ -454,6 +452,15 @@ class Pokemons(_BaseInventoryComponent):
         return cls.data_for(pokemon_id).name
 
     @classmethod
+    def id_for(cls, pokemon_name):
+        # TODO: Use a better searching algorithm. This one is O(n)
+        for data in cls.STATIC_DATA:
+            if data.name.lower() == pokemon_name.lower():
+                return data.id
+
+        raise Exception('Could not find pokemon named {}'.format(pokemon_name))
+
+    @classmethod
     def first_evolution_id_for(cls, pokemon_id):
         return cls.data_for(pokemon_id).first_evolution_id
 
@@ -582,8 +589,6 @@ class LevelToCPm(_StaticInventoryComponent):
     STATIC_DATA_FILE = os.path.join(_base_dir, 'data', 'level_to_cpm.json')
     MAX_LEVEL = 40
     MAX_CPM = .0
-    # half of the lowest difference between CPMs
-    HALF_DIFF_BETWEEN_HALF_LVL = 14e-3
 
     @classmethod
     def init_static_data(cls):
@@ -593,19 +598,11 @@ class LevelToCPm(_StaticInventoryComponent):
 
     @classmethod
     def cp_multiplier_for(cls, level):
-        # type: (Union[float, int, string]) -> float
-        level = float(level)
-        level = str(int(level) if level.is_integer() else level)
-        return cls.STATIC_DATA[level]
+        return cls.STATIC_DATA[int(2 * (level - 1))]
 
     @classmethod
     def level_from_cpm(cls, cp_multiplier):
-        # type: (float) -> float
-        for lvl, cpm in cls.STATIC_DATA.iteritems():
-            diff = abs(cpm - cp_multiplier)
-            if diff <= cls.HALF_DIFF_BETWEEN_HALF_LVL:
-                return float(lvl)
-        raise ValueError("Unknown cp_multiplier: {}".format(cp_multiplier))
+        return min(range(len(cls.STATIC_DATA)), key=lambda i: abs(cls.STATIC_DATA[i] - cp_multiplier)) * 0.5 + 1
 
 
 class _Attacks(_StaticInventoryComponent):
@@ -788,7 +785,7 @@ class PokemonInfo(object):
         self.flee_rate = data['FleeRate']
 
         # km needed for buddy reward
-        self.buddy_km_needed = data['BuddyKm']
+        self.buddy_distance_needed = data['BuddyDistanceNeeded']
 
         # prepare attacks (moves)
         self.fast_attacks = self._process_attacks()

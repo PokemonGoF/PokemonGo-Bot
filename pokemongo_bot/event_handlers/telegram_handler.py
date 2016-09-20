@@ -7,7 +7,6 @@ import thread
 import re
 import pprint
 from pokemongo_bot.datastore import Datastore
-from pokemongo_bot import inventory
 from telegram.utils import request
 from chat_handler import ChatHandler
 
@@ -17,40 +16,36 @@ class TelegramClass:
 
     update_id = None
 
-    def __init__(self, bot, master, pokemons, config):
+    def __init__(self, bot, pokemons, config):
         self.bot = bot
         request.CON_POOL_SIZE = 16
+        self.config = config
         self.chat_handler = ChatHandler(self.bot, pokemons)
+        self.master = self.config.get('master')
+        
         with self.bot.database as conn:
             # initialize the DB table if it does not exist yet
             initiator = TelegramDBInit(bot.database)
-
-            if master == None: # no master supplied
-                self.master = master
-
-            # if master is not numeric, try to fetch it from the database
-            elif unicode(master).isnumeric(): # master is numeric
-                self.master = master
-                self.bot.logger.info("Telegram master is valid (numeric): {}".format(master))
-            else:
-                self.bot.logger.info("Telegram master is not numeric: {}".format(master))
+            if unicode(self.master).isnumeric(): # master is numeric
+                self.bot.logger.info("Telegram master is valid (numeric): {}".format(self.master))
+            elif self.master is not None: # Master is not numeric, fetch from db
+                self.bot.logger.info("Telegram master is not numeric: {}".format(self.master))
                 c = conn.cursor()
-                # do we already have a user id?
-                srchmaster = re.sub(r'^@', '', master)
-                c.execute("SELECT uid from telegram_uids where username in ('{}', '@{}')".format(srchmaster, srchmaster))
+                srchmaster = re.sub(r'^@', '', self.master)
+                c.execute("SELECT uid from telegram_uids where username = '{}'".format(srchmaster))
                 results = c.fetchall()
                 if len(results) > 0: # woohoo, we already saw a message from this master and therefore have a uid
                     self.bot.logger.info("Telegram master UID from datastore: {}".format(results[0][0]))
                     self.master = results[0][0]
                 else: # uid not known yet
                     self.bot.logger.info("Telegram master UID not in datastore yet")
-                    self.master = master
 
         self.pokemons = pokemons
         self._tbot = None
         self.config = config
 
     def connect(self):
+        if DEBUG_ON: self.bot.logger.info("Not connected. Reconnecting")
         self._tbot = telegram.Bot(self.bot.config.telegram_token)
         try:
             self.update_id = self._tbot.getUpdates()[0].update_id
@@ -61,6 +56,7 @@ class TelegramClass:
         with self.bot.database as conn:
             conn.execute("replace into telegram_uids (uid, username) values (?, ?)", (update.message.chat_id, update.message.from_user.username))
             conn.commit()
+        self.master = update.message.chat_id
 
     def isMasterFromConfigFile(self, chat_id):
         if not hasattr(self, "master") or not self.master:
@@ -108,9 +104,13 @@ class TelegramClass:
             self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Authentication successful, you can now use all commands")
         return
 
-    def run(self):
+    def run(self):            
         time.sleep(1)
         while True:
+            if DEBUG_ON: self.bot.logger.info("Telegram loop running")
+            if self._tbot is None:
+                self.connect()
+                
             for update in self._tbot.getUpdates(offset=self.update_id, timeout=10):
                 self.update_id = update.update_id+1
                 if update.message:
@@ -126,13 +126,13 @@ class TelegramClass:
                             "/unsub everything - will remove all subscriptions for this uid",
                             "/showsubs - show current subscriptions",
                             "/events <filter> - show available events, filtered by regular expression  <filter>",
-                            "/top <num> <cp-or-iv> - show top X pokemons, sorted by CP or IV",
-                            "/evolved <num> <cp-or-iv> - show top x pokemon evolved, sorted by CP or IV",
-                            "/hatched <num> <cp-or-iv> - show top x pokemon hatched, sorted by CP or IV",
-                            "/caught <num> <cp-or-iv>- show top x pokemon caught, sorted by CP or IV",
+                            "/top <num> <cp-or-iv-or-dated> - show top X pokemons, sorted by CP, IV, or Date",
+                            "/evolved <num> <cp-or-iv-or-dated> - show top x pokemon evolved, sorted by CP, IV, or Date",
+                            "/hatched <num> <cp-or-iv-or-dated> - show top x pokemon hatched, sorted by CP, IV, or Date",
+                            "/caught <num> <cp-or-iv-or-dated> - show top x pokemon caught, sorted by CP, IV, or Date",
                             "/pokestops - show last x pokestops visited",
-                            "/released <num> <cp-or-iv> - show top x released, sorted by CP or IV",
-                            "/vanished <num> <cp-or-iv> - show top x vanished, sorted by CP or IV",
+                            "/released <num> <cp-or-iv-or-dated> - show top x released, sorted by CP, IV, or Date",
+                            "/vanished <num> <cp-or-iv-or-dated> - show top x vanished, sorted by CP, IV, or Date",
                             "/softbans - info about possible softbans"
                         )
                         self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
@@ -164,6 +164,8 @@ class TelegramClass:
                         self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Please /login first")
                         continue
                     # one way or another, the user is now authenticated
+                    # make sure uid is in database
+                    self.grab_uid(update)
                     if update.message.text == "/info":
                         self.chat_handler.send_player_stats_to_chat(update.message.chat_id)
                         continue
@@ -226,6 +228,7 @@ class TelegramClass:
         with self.bot.database as conn:
             for sub in conn.execute("select uid, event_type, parameters from telegram_subscriptions where uid = ?", [chatid]).fetchall():
                 subs.append("{} -&gt; {}".format(sub[1], sub[2]))
+        if subs == []: subs.append("No subscriptions found. Subscribe using /sub EVENTNAME. For a list of events, send /events")
         self.chat_handler.sendMessage(chat_id=chatid, parse_mode='HTML', text="\n".join(subs))
 
     def chsub(self, msg, chatid):
@@ -283,32 +286,16 @@ class TelegramHandler(EventHandler):
         initiator = TelegramDBInit(bot.database)
         self.bot = bot
         self.tbot = None
-        master = config.get('master', None)
         self.pokemons = config.get('alert_catch', {})
         self.whoami = "TelegramHandler"
         self.config = config
         self.chat_handler = ChatHandler(self.bot, self.pokemons)
-        if master == None:
-            self.master = None
-            return
-        else:
-            self.master = master
+        self._connect()
 
-        with self.bot.database as conn:
-            # if master is not numeric, try to fetch it from the database
-            if not unicode(master).isnumeric():
-                self.bot.logger.info("Telegram master is not numeric: {}".format(master))
-                c = conn.cursor()
-                # do we already have a user id?
-                srchmaster = re.sub(r'^@', '', master)
-                c.execute("SELECT uid from telegram_uids where username in ('{}', '@{}')".format(srchmaster, srchmaster))
-                results = c.fetchall()
-                if len(results) > 0: # woohoo, we already saw a message from this master and therefore have a uid
-                    self.bot.logger.info("Telegram master UID from datastore: {}".format(results[0][0]))
-                    self.master = results[0][0]
-                else: # uid not known yet
-                    self.bot.logger.info("Telegram master UID not in datastore yet")
-                    self.master = master
+    def _connect(self):
+        self.bot.logger.info("Telegram bot not running. Starting")
+        self.tbot = TelegramClass(self.bot, self.pokemons, self.config)
+        thread.start_new_thread(self.tbot.run)
 
     def catch_notify(self, pokemon, cp, iv, params):
         if params == " ":
@@ -323,30 +310,15 @@ class TelegramHandler(EventHandler):
             return False
 
     def handle_event(self, event, sender, level, formatted_msg, data):
-        if self.tbot is None:
-            try:
-                if hasattr(self, "master"):
-                    selfmaster = self.master
-                else:
-                    selfmaster = None
-                self.bot.logger.info("Telegram bot not running. Starting")
-                self.tbot = TelegramClass(self.bot, selfmaster, self.pokemons, self.config)
-                self.tbot.connect()
-                thread.start_new_thread(self.tbot.run)
-            except Exception as inst:
-                self.tbot = None
-                self.bot.logger.error("Unable to start Telegram bot; master: {}, exception: {}".format(selfmaster, pprint.pformat(inst)))
-                return
-            msg = self.chat_handler.get_event(event, formatted_msg, data)
-            if msg is None:
-                return
-
+        msg = None
         # first handle subscriptions; they are independent of master setting.
         with self.bot.database as conn:
             subs = conn.execute("select uid, parameters, event_type from telegram_subscriptions where event_type in (?,'all','debug')", [event]).fetchall()
             for sub in subs:
+                if DEBUG_ON: self.bot.logger.info("Processing sub {}".format(sub))
                 (uid, params, event_type) = sub
                 if event != 'pokemon_caught' or self.catch_notify(data["pokemon"], int(data["cp"]), float(data["iv"]), params):
+                    if DEBUG_ON: self.bot.logger.info("Matched sub {} event {}".format(sub, event))
                     if event == 'vanish_log' \
                             or event == 'eggs_hatched_log' \
                             or event == 'catch_log' \
@@ -362,17 +334,25 @@ class TelegramHandler(EventHandler):
                         pass
                     elif event_type == "debug":
                         self.bot.logger.info("[{}] {}".format(event, msg))
-
                     else:
                         msg = self.chat_handler.get_event(event, formatted_msg, data)
-                        if msg is None:
-                            return
+                    
+                    if DEBUG_ON: self.bot.logger.info("Telegram message {}".format(msg))
 
-        if hasattr(self, "master") and self.master:
-            if not unicode(self.master).isnumeric():
-                # master not numeric?...
-                # cannot send event notifications to non-numeric master (yet), so quitting
-                return
-            master = self.master
-            msg = self.chat_handler.get_event(event, formatted_msg, data)
-            self.chat_handler.sendMessage(chat_id=master, parse_mode='Markdown', text=msg)
+                    if msg is None: return
+                else:
+                    if DEBUG_ON: self.bot.logger.info("No match sub {} event {}".format(sub, event))
+
+        if msg is not None:
+            if self.tbot is None: # instantiate tbot (TelegramClass) if not already set
+                if DEBUG_ON: 
+                    self.bot.logger.info("handle_event Telegram bot not running.")
+                try:
+                    self._connect()
+                except Exception as inst:
+                    self.bot.logger.error("Unable to start Telegram bot; exception: {}".format(pprint.pformat(inst)))
+                    self.tbot = None
+                    return
+                    
+            if self.tbot is not None: # tbot should be running, but just in case it hasn't started yet
+                self.chat_handler.sendMessage(chat_id=uid, parse_mode='Markdown', text=msg)

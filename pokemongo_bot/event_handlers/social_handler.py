@@ -13,6 +13,8 @@ DEBUG_ON = False
 
 
 class MyMQTTClass:
+    MAX_RESULTS = 50
+
     def __init__(self, bot, clientid=None):
         self.bot = bot
         self.client_id = clientid
@@ -33,6 +35,8 @@ class MyMQTTClass:
         if pokemon and 'encounter_id' in pokemon:
             new_list = [x for x in self.bot.mqtt_pokemon_list if x['encounter_id'] is pokemon['encounter_id']]
             if not (new_list and len(new_list) > 0):
+                if len(self.bot.mqtt_pokemon_list) > self.MAX_RESULTS:
+                    del self.bot.mqtt_pokemon_list[:]
                 self.bot.mqtt_pokemon_list.append(pokemon)
 
     def on_disconnect(self, client, userdata, rc):
