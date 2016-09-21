@@ -215,7 +215,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `spin_wait_max`: Default 5 | Maximum wait time after fort spin
   * `daily_spin_limit`: Default 2000 | Daily spin limit
   * `min_interval`: Default 120 | When daily spin limit is reached, how often should the warning message be shown
-  * `bypass_daily_limit`: Default `False` | Disable the spin daily limit protection
+  * `exit_on_limit_reached`: Default `True` | Code will exits if daily_spin_limit is reached
 * HandleSoftBan
 * IncubateEggs
   * `enable`: Disable or enable this task.

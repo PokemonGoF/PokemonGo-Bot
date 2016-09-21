@@ -35,7 +35,7 @@ class SpinFort(BaseTask):
         self.spin_wait_min = self.config.get("spin_wait_min", 2)
         self.spin_wait_max = self.config.get("spin_wait_max", 3)
         self.min_interval = int(self.config.get('min_interval', 120))
-        self.bypass_daily_limit = self.config.get("bypass_daily_limit", False)
+        self.exit_on_limit_reached = self.config.get("exit_on_limit_reached", True)
 
     def should_run(self):
         has_space_for_loot = inventory.Items.has_space_for_loot()
@@ -54,7 +54,7 @@ class SpinFort(BaseTask):
             c = conn.cursor()
             c.execute("SELECT DISTINCT COUNT(pokestop) FROM pokestop_log WHERE dated >= datetime('now','-1 day')")
         if c.fetchone()[0] >= self.config.get('daily_spin_limit', 2000):
-           if not self.bypass_daily_limit:
+           if self.exit_on_limit_reached:
                self.emit_event('spin_limit', formatted='WARNING! You have reached your daily spin limit')
                sys.exit(2)
 
