@@ -268,7 +268,7 @@ class TelegramClass:
                         continue
                     if re.match(r'^/top ', update.message.text):
                         (cmd, num, order) = self.tokenize(update.message.text, 3)
-                        pkmns = self.chat_handler.showto(num, order)
+                        pkmns = self.chat_handler.showtop(num, order)
                         outMsg = "\n".join(["*{}* (_CP:_ {} _IV:_ {} Candy:{})".format(p.name, p.cp, p.iv, p.candy)])
                         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text=outMsg)
                         continue
