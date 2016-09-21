@@ -69,8 +69,23 @@ class ChatHandler:
         else:
             # no filter
             event_filter = ".*"
-        self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text="\n".join(
-            sorted(filter(lambda k: re.match(event_filter, k), self.bot.event_manager._registered_events.keys()))))
+        events = filter(lambda k: re.match(event_filter, k), self.bot.event_manager._registered_events.keys())
+        events.remove('vanish_log')
+        events.remove('eggs_hatched_log')
+        events.remove('catch_log')
+        events.remove('pokestop_log')
+        events.remove('load_cached_location')
+        events.remove('location_cache_ignored')
+        events.remove('softban_log')
+        events.remove('loaded_cached_forts')
+        events.remove('login_log')
+        events.remove('evolve_log')
+        events.remove('transfer_log')
+        events.remove('catchable_pokemon')
+        events = sorted(events)
+        return events
+
+
 
     def sendMessage(self, chat_id=None, parse_mode='Markdown', text=None):
         try:
@@ -125,7 +140,6 @@ class ChatHandler:
         # TODO: here comes upgrade logic (later)
         self.sendMessage(chat_id=chatid, parse_mode='HTML', text="Upgrade logic not implemented yet")
         return
-
     def get_evolved(self, chat_id, num, order):
         if not num.isnumeric():
             num = 10
@@ -263,80 +277,3 @@ class ChatHandler:
             # TODO: here comes upgrade logic (later)
             self.sendMessage(chat_id=chatid, parse_mode='HTML', text="Upgrade logic not implemented yet")
             return
-    def showsubs(self, chatid):
-        subs = []
-        with self.bot.database as conn:
-            for sub in conn.execute("select uid, event_type, parameters from telegram_subscriptions where uid = ?", [chatid]).fetchall():
-                subs.append("{} -&gt; {}".format(sub[1], sub[2]))
-        if subs == []: subs.append("No subscriptions found. Subscribe using /sub EVENTNAME. For a list of events, send /events")
-        self.chat_handler.sendMessage(chat_id=chatid, parse_mode='HTML', text="\n".join(subs))
-
-    def chsub(self, msg, chatid):
-        (cmd, evt, params) = self.tokenize(msg, 3)
-        if cmd == "/sub":
-            sql = "replace into telegram_subscriptions(uid, event_type, parameters) values (?, ?, ?)"
-        else:
-            if evt == "everything":
-                sql = "delete from telegram_subscriptions where uid = ? and (event_type = ? or parameters = ? or 1 = 1)" # does not look very elegant, but makes unsub'ing everythign possible
-            else:
-                sql = "delete from telegram_subscriptions where uid = ? and event_type = ? and parameters = ?"
-
-        with self.bot.database as conn:
-            conn.execute(sql, [chatid, evt, params])
-            conn.commit()
-        return
-
-    def tokenize(self, string, maxnum):
-        spl = string.split(' ', maxnum-1)
-        while len(spl) < maxnum:
-            spl.append(" ")
-        return spl
-
-    def deauthenticate(self,  update):
-        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Logout completed")
-
-    def authenticate(self, update):
-        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Invalid password")
-
-    def invalid_password(self, update):
-        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Invalid password")
-
-    def authentication_successful(self, update):
-        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Authentication successful, you can now use all commands")
-
-    def update_message(self, update):
-        res = (
-                "*Commands: *",
-                "/info - info about bot",
-                "/login <password> - authenticate with the bot; once authenticated, your ID will be registered with the bot and survive bot restarts",
-                "/logout - remove your ID from the 'authenticated' list",
-                "/sub <eventName> <parameters> - subscribe to eventName, with optional parameters, event name=all will subscribe to ALL events (LOTS of output!)",
-                "/unsub <eventName> <parameters> - unsubscribe from eventName; parameters must match the /sub parameters",
-                "/unsub everything - will remove all subscriptions for this uid",
-                "/showsubs - show current subscriptions",
-                "/events <filter> - show available events, filtered by regular expression  <filter>",
-                "/top <num> <cp-or-iv-or-dated> - show top X pokemons, sorted by CP, IV, or Date",
-                "/evolved <num> <cp-or-iv-or-dated> - show top x pokemon evolved, sorted by CP, IV, or Date",
-                "/hatched <num> <cp-or-iv-or-dated> - show top x pokemon hatched, sorted by CP, IV, or Date",
-                "/caught <num> <cp-or-iv-or-dated> - show top x pokemon caught, sorted by CP, IV, or Date",
-                "/pokestops - show last x pokestops visited",
-                "/released <num> <cp-or-iv-or-dated> - show top x released, sorted by CP, IV, or Date",
-                "/vanished <num> <cp-or-iv-or-dated> - show top x vanished, sorted by CP, IV, or Date",
-                "/softbans - info about possible softbans"
-            )
-        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
-
-    def do_not_accept(self, update):
-        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="No password nor master configured in TelegramTask section, bot will not accept any commands")
-
-    def login_first(self, update):
-        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Please /login first")
-
-    def sub_message(self, update):
-        self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=("Subscriptions updated."))
-
-    def unrecognized_command(self, update):
-        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Unrecognized command: {}".format(update.message.text))
-
-    def tbot_test(self, msg, uid):
-        self.sendMessage(chat_id=uid, parse_mode='Markdown', text=msg)
