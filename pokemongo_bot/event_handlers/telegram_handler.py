@@ -256,8 +256,8 @@ class TelegramClass:
                         outMsg = ''
                         if evolved:
                             for x in evolved:
-                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[2])) + ') (_IV:_ ' + str(
-                                    x[1]) + ')\n'
+                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ') (_IV:_ ' + str(
+                                    x[2]) + ')\n'
                             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                              text="".join(outMsg))
                         else:
