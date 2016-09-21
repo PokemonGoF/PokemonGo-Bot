@@ -3,7 +3,6 @@ from pokemongo_bot.event_manager import EventHandler
 import telegram
 import thread
 import re
-from pokemongo_bot import inventory
 import time
 import pprint
 from telegram.utils import request
