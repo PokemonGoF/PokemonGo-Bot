@@ -126,7 +126,7 @@ class ChatHandler:
 
         pkmns = sorted(inventory.pokemons().all(), key=lambda p: getattr(p, order), reverse=True)[:num]
 
-        outMsg = "\n".join(["*{}* \nCP:{} \nIV:{} \nCandy:{}\n".format(p.name, p.cp, p.iv,
+        outMsg = "\n".join(["*{}* (_CP:_ {}) (_IV:_ {}) (Candy:{})".format(p.name, p.cp, p.iv,
                                                                    inventory.candies().get(p.pokemon_id).quantity) for p
                             in pkmns])
         self.sendMessage(chat_id=chatid, parse_mode='Markdown', text=outMsg)
@@ -148,21 +148,19 @@ class ChatHandler:
 
         if order not in ["cp", "iv"]:
             order = "iv"
-
+        if order == "cp":
+            order_key = 2
+        else:  # If it's not "cp", we assume "iv"
+            order_key = 1
         with self.bot.database as conn:
             cur = conn.cursor()
             cur.execute("SELECT * FROM evolve_log ORDER BY " + order + " DESC LIMIT " + str(num))
             evolved = cur.fetchall()
+            outMsg = ''
             if evolved:
                 for x in evolved:
-                    res = (
-                        "*"+str(x[0])+"*",
-                        "_CP:_ " + str(x[2]),
-                        "_IV:_ " + str(x[1]),
-                        str(x[3])
-                        )
-
-                    self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+                    outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[2])) + ') (_IV:_ ' + str(x[1]) + ')\n'
+                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="".join(str(outMsg)))
             else:
                 self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Evolutions Found.\n")
 
@@ -171,12 +169,11 @@ class ChatHandler:
             cur = conn.cursor()
             cur.execute("SELECT * FROM softban_log")
             softban = cur.fetchall()
+            outMsg = ''
             if softban:
                 for x in softban:
-                    res = (
-                        "*" + str(x[0]) + "*",
-                        str(x[2]))
-                    self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+                    outMsg += '*' + x[0] + '* ' + '(' + str(x[2]) + ')\n'
+                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="".join(str(outMsg)))
             else:
                 self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Softbans found! Good job!\n")
 
@@ -192,15 +189,11 @@ class ChatHandler:
             cur = conn.cursor()
             cur.execute("SELECT * FROM eggs_hatched_log ORDER BY " + order + " DESC LIMIT " + str(num))
             hatched = cur.fetchall()
+            outMsg = ''
             if hatched:
                 for x in hatched:
-                    res = (
-                        "*" + str(x[0]) + "*",
-                        "_CP:_ " + str(x[1]),
-                        "_IV:_ " + str(x[2]),
-                        str(x[4])
-                        )
-                    self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+                    outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ') (_IV:_ ' + str(x[2]) + ')\n'
+                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="".join(str(outMsg)))
             else:
                 self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Eggs Hatched Yet.\n")
 
@@ -217,15 +210,11 @@ class ChatHandler:
             cur = conn.cursor()
             cur.execute("SELECT * FROM catch_log ORDER BY " + order + " DESC LIMIT " + str(num))
             caught = cur.fetchall()
+            outMsg = ''
             if caught:
                 for x in caught:
-                    res = (
-                        "*" + str(x[0]) + "*",
-                        "_CP:_ " + str(x[1]),
-                        "_IV:_ " + str(x[2]),
-                        str(x[5])
-                        )
-                    self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+                    outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[2])) + ') (_IV:_ ' + str(x[1]) + ')\n'
+                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="".join(str(outMsg)))
             else:
                 self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Pokemon Caught Yet.\n")
 
@@ -234,15 +223,11 @@ class ChatHandler:
             cur = conn.cursor()
             cur.execute("SELECT * FROM pokestop_log ORDER BY dated DESC LIMIT " + str(num))
             pokestop = cur.fetchall()
+            outMsg = ''
             if pokestop:
                 for x in pokestop:
-                    res = (
-                        "*" + str(x[0] + "*"),
-                        "_XP:_ " + str(x[1]),
-                        "_Items:_ " + str(x[2]),
-                        str(x[3])
-                    )
-                    self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+                    outMsg += '*' + x[0] + '* ' + '(_XP:_ ' + str(x[1]) + ') (_Items:_ ' + str(x[2]) + ')\n'
+                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="".join(str(outMsg)))
             else:
                 self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Pokestops Encountered Yet.\n")
 
@@ -258,15 +243,11 @@ class ChatHandler:
             cur = conn.cursor()
             cur.execute("SELECT * FROM transfer_log ORDER BY " + order + " DESC LIMIT " + str(num))
             transfer = cur.fetchall()
+            outMsg = ''
             if transfer:
                 for x in transfer:
-                    res = (
-                        "*" + str(x[0]) + "*",
-                        "_CP:_ " + str(x[2]),
-                        "_IV:_ " + str(x[1]),
-                        str(x[3])
-                    )
-                    self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+                    outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[2])) + ') (_IV:_ ' + str(x[1]) + ')\n'
+                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="".join(str(outMsg)))
             else:
                 self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Pokemon Released Yet.\n")
 
@@ -282,16 +263,11 @@ class ChatHandler:
             cur = conn.cursor()
             cur.execute("SELECT * FROM vanish_log ORDER BY " + order + " DESC LIMIT " + str(num))
             vanished = cur.fetchall()
+            outMsg = ''
             if vanished:
                 for x in vanished:
-                    res = (
-                        "*" + str(x[0]) + "*",
-                        "_CP:_ " + str(x[1]),
-                        "_IV:_ " + str(x[2]),
-                        "_NCP:_ " + str(x[4]),
-                        str(x[5])
-                    )
-                    self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(res))
+                    outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ') (_IV:_ ' + str(x[2]) + ')\n'
+                self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="".join(str(outMsg)))
             else:
                 self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Pokemon Vanished Yet.\n")
 
