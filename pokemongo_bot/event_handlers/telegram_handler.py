@@ -8,6 +8,7 @@ import pprint
 from telegram.utils import request
 from chat_handler import ChatHandler
 
+
 DEBUG_ON = False
 
 
@@ -261,7 +262,12 @@ class TelegramClass:
                         continue
                     if re.match(r'^/top ', update.message.text):
                         (cmd, num, order) = self.tokenize(update.message.text, 3)
-                        outMsg = self.chat_handler.showtop(num, order)
+                        pkmns = self.chat_handler.showtop(num, order)
+                        outMsg = "\n".join(["*{}* (_CP:_ {} _IV:_ {} Candy:{})".format(p.name, p.cp, p.iv,
+                                                                                       inventory.candies().get(
+                                                                                           p.pokemon_id).quantity)
+                                            for p
+                                            in pkmns])
                         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text=outMsg)
                         continue
                     if re.match(r'^/caught ', update.message.text):
