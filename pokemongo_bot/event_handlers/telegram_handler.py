@@ -437,5 +437,4 @@ class TelegramHandler(EventHandler):
                     return
                     
             if self.tbot is not None: # tbot should be running, but just in case it hasn't started yet
-                self._tbot = telegram.Bot(self.bot.config.telegram_token)
-                self._tbot.sendMessage(chat_id=uid, parse_mode='Markdown', text=msg)
+                self.chat_handler.sendTeleMessage(chat_id=uid, parse_mode='Markdown', text=msg)
