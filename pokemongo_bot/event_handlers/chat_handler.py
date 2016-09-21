@@ -140,3 +140,13 @@ class ChatHandler:
             return formatted_msg
 
         return msg
+
+    def sendTeleMessage(self, chat_id=None, parse_mode='Markdown', text=None):
+        try:
+            self._tbot.sendMessage(chat_id=chat_id, parse_mode=parse_mode, text=text)
+        except telegram.error.NetworkError:
+            time.sleep(1)
+        except telegram.error.TelegramError:
+            time.sleep(10)
+        except telegram.error.Unauthorized:
+            self.update_id += 1
