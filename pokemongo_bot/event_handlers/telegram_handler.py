@@ -149,6 +149,12 @@ class TelegramClass:
         self.sendMessage(chat_id=chatid, parse_mode='HTML', text="Upgrade logic not implemented yet")
         return
 
+    def get_event(self, event, formatted_msg, data):
+        return self.chat_handler.get_event(event, formatted_msg, data)
+
+    def get_events(self, update):
+        return self.chat_handler.get_events(update)
+
     def run(self):
         time.sleep(1)
         while True:
@@ -238,7 +244,7 @@ class TelegramClass:
                                              text="No Softbans found! Good job!\n")
                         continue
                     if re.match("^/events", update.message.text):
-                        events = self.chat_handler.get_events(update)
+                        events = self.get_events(update)
                         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                          text="\n".join(events))
                         continue
@@ -262,12 +268,8 @@ class TelegramClass:
                         continue
                     if re.match(r'^/top ', update.message.text):
                         (cmd, num, order) = self.tokenize(update.message.text, 3)
-                        pkmns = self.chat_handler.showtop(num, order)
-                        outMsg = "\n".join(["*{}* (_CP:_ {} _IV:_ {} Candy:{})".format(p.name, p.cp, p.iv,
-                                                                                       inventory.candies().get(
-                                                                                           p.pokemon_id).quantity)
-                                            for p
-                                            in pkmns])
+                        pkmns = self.chat_handler.showto(num, order)
+                        outMsg = "\n".join(["*{}* (_CP:_ {} _IV:_ {} Candy:{})".format(p.name, p.cp, p.iv, p.candy)])
                         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text=outMsg)
                         continue
                     if re.match(r'^/caught ', update.message.text):
@@ -462,7 +464,7 @@ class TelegramHandler(EventHandler):
                     elif event_type == "debug":
                         self.bot.logger.info("[{}] {}".format(event, msg))
                     else:
-                        msg = self.chat_handler.get_event(event, formatted_msg, data)
+                        msg = self.tbot.get_event(event, formatted_msg, data)
 
                     if DEBUG_ON: self.bot.logger.info("Telegram message {}".format(msg))
 
