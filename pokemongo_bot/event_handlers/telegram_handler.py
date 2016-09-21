@@ -88,27 +88,27 @@ class TelegramClass:
             cur = conn.cursor()
             cur.execute("delete from telegram_logins where uid = ?", [update.message.chat_id])
             conn.commit()
-        self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Logout completed")
+        self.chat_handler.deauthenticate(update)
         return
 
     def authenticate(self, update):
         args = update.message.text.split(' ')
         if len(args) != 2:
-            self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Invalid password")
+            self.chat_handler.authenticate(update)
             return
         password = args[1]
         if password != self.config.get('password', None):
-            self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Invalid password")
+            self.chat_handler.invalid_password(update)
         else:
             with self.bot.database as conn:
                 cur = conn.cursor()
                 cur.execute("delete from telegram_logins where uid = ?", [update.message.chat_id])
                 cur.execute("insert into telegram_logins(uid) values(?)", [update.message.chat_id])
                 conn.commit()
-            self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Authentication successful, you can now use all commands")
+            self.chat_handler.authentication_successful(update)
         return
 
-    def run(self):            
+    def run(self):
         time.sleep(1)
         while True:
             if DEBUG_ON: self.bot.logger.info("Telegram loop running")
@@ -120,30 +120,10 @@ class TelegramClass:
                 if update.message:
                     self.bot.logger.info("Telegram message from {} ({}): {}".format(update.message.from_user.username, update.message.from_user.id, update.message.text))
                     if update.message.text == "/start" or update.message.text == "/help":
-                        res = (
-                            "*Commands: *",
-                            "/info - info about bot",
-                            "/login <password> - authenticate with the bot; once authenticated, your ID will be registered with the bot and survive bot restarts",
-                            "/logout - remove your ID from the 'authenticated' list",
-                            "/sub <eventName> <parameters> - subscribe to eventName, with optional parameters, event name=all will subscribe to ALL events (LOTS of output!)",
-                            "/unsub <eventName> <parameters> - unsubscribe from eventName; parameters must match the /sub parameters",
-                            "/unsub everything - will remove all subscriptions for this uid",
-                            "/showsubs - show current subscriptions",
-                            "/events <filter> - show available events, filtered by regular expression  <filter>",
-                            "/top <num> <cp-or-iv-or-dated> - show top X pokemons, sorted by CP, IV, or Date",
-                            "/evolved <num> <cp-or-iv-or-dated> - show top x pokemon evolved, sorted by CP, IV, or Date",
-                            "/hatched <num> <cp-or-iv-or-dated> - show top x pokemon hatched, sorted by CP, IV, or Date",
-                            "/caught <num> <cp-or-iv-or-dated> - show top x pokemon caught, sorted by CP, IV, or Date",
-                            "/pokestops - show last x pokestops visited",
-                            "/released <num> <cp-or-iv-or-dated> - show top x released, sorted by CP, IV, or Date",
-                            "/vanished <num> <cp-or-iv-or-dated> - show top x vanished, sorted by CP, IV, or Date",
-                            "/softbans - info about possible softbans"
-                        )
-                        self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
+                        self.chat_handler.update_message(update)
                         continue
-
                     if self.config.get('password', None) == None and (not hasattr(self, "master") or not self.config.get('master', None)): # no auth provided in config
-                        self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="No password nor master configured in TelegramTask section, bot will not accept any commands")
+                        self.chat_handler.do_not_accept(update)
                         continue
                     if re.match(r'^/login [^ ]+', update.message.text):
                         self.authenticate(update)
@@ -165,7 +145,7 @@ class TelegramClass:
                         # Reject message if sender does not match defined master in config
                         outMessage = "Telegram message received from unknown sender. Please either make sure your username or ID is in TelegramTask/master, or a password is set in TelegramTask section and /login is issued"
                         self.bot.logger.error(outMessage)
-                        self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Please /login first")
+                        self.chat_handler.login_first(update)
                         continue
                     # one way or another, the user is now authenticated
                     # make sure uid is in database
@@ -177,84 +157,54 @@ class TelegramClass:
                         self.chat_handler.get_softban(update.message.chat_id)
                         continue
                     if re.match("^/events", update.message.text):
-                        events = self.chat_handler.get_events(update)
-                        self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML',
-                                                      text="\n".join(events))
+                        self.chat_handler.get_events(update)
                         continue
                     if update.message.text == "/logout":
-                        self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=("Logged out."))
+                        self.chat_handler.deauthenticate(update)
                         self.deauthenticate(update)
                         continue
                     if re.match(r'^/sub ', update.message.text):
-                        self.chsub(update.message.text, update.message.chat_id)
-                        self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML',
-                                                      text=("Subscriptions updated."))
+                        self.chat_handler.chsub(update.message.text, update.message.chat_id)
+                        self.chat_handler.sub_message(update)
                         continue
                     if re.match(r'^/unsub ', update.message.text):
-                        self.chsub(update.message.text, update.message.chat_id)
-                        self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=("Subscriptions updated."))
+                        self.chat_handler.chsub(update.message.text, update.message.chat_id)
+                        self.chat_handler.sub_message(update)
                         continue
                     if re.match(r'^/showsubs', update.message.text):
-                        self.showsubs(update.message.chat_id)
+                        self.chat_handler.showsubs(update.message.chat_id)
                         continue
                     if re.match(r'^/top ', update.message.text):
-                        (cmd, num, order) = self.tokenize(update.message.text, 3)
+                        (cmd, num, order) = self.chat_handler.tokenize(update.message.text, 3)
                         self.chat_handler.showtop(update.message.chat_id, num, order)
                         continue
                     if re.match(r'^/caught ', update.message.text):
-                        (cmd, num, order) = self.tokenize(update.message.text, 3)
+                        (cmd, num, order) = self.chat_handler.tokenize(update.message.text, 3)
                         self.chat_handler.get_caught(update.message.chat_id, num, order)
                         continue
                     if re.match(r'^/evolved ', update.message.text):
-                        (cmd, num, order) = self.tokenize(update.message.text, 3)
+                        (cmd, num, order) = self.chat_handler.tokenize(update.message.text, 3)
                         self.chat_handler.get_evolved(update.message.chat_id, num, order)
                         continue
                     if re.match(r'^/pokestops ', update.message.text):
-                        (cmd, num) = self.tokenize(update.message.text, 2)
+                        (cmd, num) = self.chat_handler.tokenize(update.message.text, 2)
                         self.chat_handler.get_pokestops(update.message.chat_id, num)
                         continue
                     if re.match(r'^/hatched ', update.message.text):
-                        (cmd, num, order) = self.tokenize(update.message.text, 3)
+                        (cmd, num, order) = self.chat_handler.tokenize(update.message.text, 3)
                         self.chat_handler.get_hatched(update.message.chat_id, num, order)
                         continue
                     if re.match(r'^/released ', update.message.text):
-                        (cmd, num, order) = self.tokenize(update.message.text, 3)
+                        (cmd, num, order) = self.chat_handler.tokenize(update.message.text, 3)
                         self.chat_handler.get_released(update.message.chat_id, num, order)
                         continue
                     if re.match(r'^/vanished ', update.message.text):
-                        (cmd, num, order) = self.tokenize(update.message.text, 3)
+                        (cmd, num, order) = self.chat_handler.tokenize(update.message.text, 3)
                         self.chat_handler.get_vanished(update.message.chat_id, num, order)
                         continue
-                    self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Unrecognized command: {}".format(update.message.text))
+                    self.chat_handler.unrecognized_command(update)
 
-    def showsubs(self, chatid):
-        subs = []
-        with self.bot.database as conn:
-            for sub in conn.execute("select uid, event_type, parameters from telegram_subscriptions where uid = ?", [chatid]).fetchall():
-                subs.append("{} -&gt; {}".format(sub[1], sub[2]))
-        if subs == []: subs.append("No subscriptions found. Subscribe using /sub EVENTNAME. For a list of events, send /events")
-        self.chat_handler.sendMessage(chat_id=chatid, parse_mode='HTML', text="\n".join(subs))
 
-    def chsub(self, msg, chatid):
-        (cmd, evt, params) = self.tokenize(msg, 3)
-        if cmd == "/sub":
-            sql = "replace into telegram_subscriptions(uid, event_type, parameters) values (?, ?, ?)"
-        else:
-            if evt == "everything":
-                sql = "delete from telegram_subscriptions where uid = ? and (event_type = ? or parameters = ? or 1 = 1)" # does not look very elegant, but makes unsub'ing everythign possible
-            else:
-                sql = "delete from telegram_subscriptions where uid = ? and event_type = ? and parameters = ?"
-
-        with self.bot.database as conn:
-            conn.execute(sql, [chatid, evt, params])
-            conn.commit()
-        return
-
-    def tokenize(self, string, maxnum):
-        spl = string.split(' ', maxnum-1)
-        while len(spl) < maxnum:
-            spl.append(" ")
-        return spl
 
 class TelegramDBInit:
     def __init__(self, conn):
@@ -323,19 +273,6 @@ class TelegramHandler(EventHandler):
                 (uid, params, event_type) = sub
                 if event != 'pokemon_caught' or self.catch_notify(data["pokemon"], int(data["cp"]), float(data["iv"]), params):
                     if DEBUG_ON: self.bot.logger.info("Matched sub {} event {}".format(sub, event))
-                    if event == 'vanish_log' \
-                            or event == 'eggs_hatched_log' \
-                            or event == 'catch_log' \
-                            or event == 'pokestop_log' \
-                            or event == 'load_cached_location' \
-                            or event == 'location_cache_ignored' \
-                            or event == 'softban_log' \
-                            or event == 'loaded_cached_forts' \
-                            or event == 'login_log' \
-                            or event == 'evolve_log' \
-                            or event == 'catchable_pokemon' \
-                            or event == 'transfer_log':
-                        pass
                     elif event_type == "debug":
                         self.bot.logger.info("[{}] {}".format(event, msg))
                     else:
@@ -359,4 +296,4 @@ class TelegramHandler(EventHandler):
                     return
                     
             if self.tbot is not None: # tbot should be running, but just in case it hasn't started yet
-                self.chat_handler.sendMessage(chat_id=uid, parse_mode='Markdown', text=msg)
+                self.chat_handler.tbot_test(msg, uid)
