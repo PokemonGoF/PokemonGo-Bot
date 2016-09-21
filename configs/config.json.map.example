@@ -552,7 +552,7 @@
     },
     "vips" : {
          "Any pokemon put here directly force to use Berry & Best Ball to capture, to secure the capture rate": {},
-        "any": {"catch_above_cp": 1200, "catch_above_iv": 0.9, "logic": "or" },
+        "any": {"catch_above_cp": 1200, "catch_above_iv": 0.9, "catch_above_ncp": 0.9, "logic": "or" },
         "Lapras": {},
         "Moltres": {},
         "Zapdos": {},
