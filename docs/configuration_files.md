@@ -736,6 +736,7 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
 ### Options
 [[back to top](#table-of-contents)]
 
+* `debug` - Display more informations on Pokemons found and Snipe task details. (default: false)
 * `mode` - The mode on which the sniper will fetch the informations. (default: social)
    - `social` - Information will come from the social network.
    - `url` - Information will come from one or multiple urls.
@@ -743,11 +744,12 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
 * `homing_shots` - This will ensure that each bullet will catch a target. (default: true)
 * `special_iv` - This will skip the catch list if the value is greater than the target's IV. This currently does not work with `social` mode and only works if the given `url` has this information. (default: 100)
 * `time_mask` - The time mask used (if `expiration.format` is a full date). The default mask is '%Y-%m-%d %H:%M:%S'.
+* `min_seconds_between_snipe` - The minimum number of seconds before the bot will try another Snipe task. Meantime the bot continue the other tasks. You may then told the bot to walk normally and then Snipe every hour or every 10 minutes.
 * `order` - The order on which you want to snipe. This can be one or multiple of the following values (default: [`missing`, `vip`, `threshold`]):
    - `iv` - Order by IV, if any. See `min_iv_to_ignore_catch_list`.
    - `vip` - Order by VIP.
    - `missing` - Order by the target's pokedex missing status.
-   - `threshold` - Order by the threshold you have specified in the `catch` list.
+   - `priority` - Order by the threshold you have specified in the `catch` list.
    - `expiration_timestamp_ms` - Order by the expiration time.
 * `sources` - This should map a JSON param values from a given url. For example: different urls will provide different JSON response formats. If a param does not exist, you DO NOT have to specify it! Map bellow their corresponding values:
    - `iv` - The JSON param that corresponds to the pokemon IV. Only certain sources provide this info. NOTE: social does not provide this info!
