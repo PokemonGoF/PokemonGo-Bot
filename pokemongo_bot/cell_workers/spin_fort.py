@@ -61,6 +61,7 @@ class SpinFort(BaseTask):
            if datetime.now() >= self.next_update:
                self.emit_event('spin_limit', formatted='WARNING! You have reached your daily spin limit')
                self._compute_next_update()
+               return WorkerResult.SUCCESS
 
         if not self.should_run() or len(forts) == 0:
             return WorkerResult.SUCCESS
