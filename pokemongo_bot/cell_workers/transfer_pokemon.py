@@ -170,7 +170,6 @@ class TransferPokemon(BaseTask):
             return False
 
         if release_config.get('always_release', False):
-            print "FUCKITYFUCK"
             return True
 
         release_cp = release_config.get('release_below_cp', 0)
