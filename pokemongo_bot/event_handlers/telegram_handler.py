@@ -7,7 +7,6 @@ import time
 import pprint
 from telegram.utils import request
 from chat_handler import ChatHandler
-from pokemongo_bot import inventory
 
 DEBUG_ON = False
 
@@ -263,7 +262,7 @@ class TelegramClass:
                     if re.match(r'^/top ', update.message.text):
                         (cmd, num, order) = self.tokenize(update.message.text, 3)
                         pkmns = self.chat_handler.showtop(num, order)
-                        outMsg = "\n".join(["*{}* (_CP:_ {}) (_IV:_ {}) (Candy:{})".format(p.name, p.cp, p.iv,
+                        outMsg = "\n".join(["*{}* (_CP:_ {} _IV:_ {} Candy:{})".format(p.name, p.cp, p.iv,
                                                                                            inventory.candies().get(
                                                                                                p.pokemon_id).quantity)
                                             for p
@@ -276,7 +275,7 @@ class TelegramClass:
                         outMsg = ''
                         if caught:
                             for x in caught:
-                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ') (_IV:_ ' + str(
+                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ' _IV:_ ' + str(
                                     x[2]) + ')\n'
                             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                              text="".join(outMsg))
@@ -290,7 +289,7 @@ class TelegramClass:
                         outMsg = ''
                         if evolved:
                             for x in evolved:
-                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ') (_IV:_ ' + str(
+                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ' _IV:_ ' + str(
                                     x[2]) + ')\n'
                             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                              text="".join(outMsg))
@@ -304,7 +303,7 @@ class TelegramClass:
                         outMsg = ''
                         if pokestops:
                             for x in pokestops:
-                                outMsg += '*' + x[0] + '* ' + '(_XP:_ ' + str(x[1]) + ') (_Items:_ ' + str(x[2]) + ')\n'
+                                outMsg += '*' + x[0] + '* ' + '(_XP:_ ' + str(x[1]) + ' _Items:_ ' + str(x[2]) + ')\n'
                             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                              text="".join(outMsg))
                         else:
@@ -317,7 +316,7 @@ class TelegramClass:
                         outMsg = ''
                         if hatched:
                             for x in hatched:
-                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ') (_IV:_ ' + str(
+                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ' _IV:_ ' + str(
                                     x[2]) + ')\n'
                             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                              text="".join(outMsg))
@@ -331,7 +330,7 @@ class TelegramClass:
                         outMsg = ''
                         if released:
                             for x in released:
-                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[2])) + ') (_IV:_ ' + str(
+                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[2])) + ' _IV:_ ' + str(
                                     x[1]) + ')\n'
                             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                              text="".join(outMsg))
@@ -346,7 +345,7 @@ class TelegramClass:
                         outMsg = ''
                         if vanished:
                             for x in vanished:
-                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ') (_IV:_ ' + str(
+                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ' _IV:_ ' + str(
                                     x[2]) + ')\n'
                             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                              text=outMsg)
