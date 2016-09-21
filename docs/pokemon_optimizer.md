@@ -72,6 +72,7 @@ It will also collect the candies from your Buddy and select the next buddy.
                         "mode": "overall",
                         "top": 1,
                         "sort": ["max_cp", "cp"],
+                        "evolve": false,
                         "buddy": {"candy": -124}
                     },
                     {
@@ -97,7 +98,8 @@ It will also collect the candies from your Buddy and select the next buddy.
                     {
                         "mode": "by_family",
                         "top": 1,
-                        "sort": ["cp"]
+                        "sort": ["cp"],
+                        "evolve": false
                     }
                 ]
             }
@@ -167,7 +169,7 @@ It can help you rectify your configuration or guide you during manual transfer.
 ### evolve
 | Parameter | Possible values | Default |
 |-----------|-----------------|---------|
-| `evolve`  | `true`, `false` | `false` |
+| `evolve`  | `true`, `false` | `true`  |
 
 The `evolve` parameter activate or deactivate the evolution of Pokemon.
 

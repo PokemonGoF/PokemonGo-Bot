@@ -689,6 +689,29 @@ class PokemonGoBot(object):
             'use_incense',
             parameters=('type', 'incense_count')
         )
+        # BuddyPokemon
+        self.event_manager.register_event(
+            'buddy_update',
+            parameters=('name')
+        )
+        self.event_manager.register_event(
+            'buddy_update_fail',
+            parameters=('name', 'error')
+        )
+        self.event_manager.register_event(
+            'buddy_candy_earned',
+            parameters=('candy', 'family', 'quantity', 'candy_earned', 'candy_limit')
+        )
+        self.event_manager.register_event('buddy_candy_fail')
+        self.event_manager.register_event(
+            'buddy_next_reward',
+            parameters=('name', 'km_walked', 'km_total')
+        )
+        self.event_manager.register_event('buddy_keep_active')
+        self.event_manager.register_event(
+            'buddy_not_available',
+            parameters=('name')
+        )
 
         # Sniper
         self.event_manager.register_event('sniper_log', parameters=('message', 'message'))

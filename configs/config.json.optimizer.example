@@ -25,6 +25,7 @@
                         "mode": "overall",
                         "top": 1,
                         "sort": ["max_cp", "cp"],
+                        "evolve": false,
                         "buddy": {"candy": -124}
                     },
                     {
@@ -50,7 +51,8 @@
                     {
                         "mode": "by_family",
                         "top": 1,
-                        "sort": ["cp"]
+                        "sort": ["cp"],
+                        "evolve": false
                     }
                 ]
             }

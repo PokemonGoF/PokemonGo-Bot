@@ -56,11 +56,11 @@ class PokemonOptimizer(BaseTask):
         self.config_upgrade = self.config.get("upgrade", False)
         self.config_upgrade_level = self.config.get("upgrade_level", 30)
         self.config_groups = self.config.get("groups", {"gym": ["Dragonite", "Snorlax", "Lapras", "Arcanine"]})
-        self.config_rules = self.config.get("rules", [{"mode": "overall", "top": 1, "sort": ["max_cp", "cp"], "buddy": {"candy": -124}},
+        self.config_rules = self.config.get("rules", [{"mode": "overall", "top": 1, "sort": ["max_cp", "cp"], "evolve": False, "buddy": {"candy": -124}},
                                                       {"mode": "by_family", "top": 3, "names": ["gym"], "sort": ["iv", "ncp"], "evolve": {"iv": 0.9, "ncp": 0.9}, "upgrade": {"iv": 0.9, "ncp": 0.9}},
                                                       {"mode": "by_family", "top": 1, "sort": ["iv"], "evolve": {"iv": 0.9}},
                                                       {"mode": "by_family", "top": 1, "sort": ["ncp"], "evolve": {"ncp": 0.9}},
-                                                      {"mode": "by_family", "top": 1, "sort": ["cp"]}])
+                                                      {"mode": "by_family", "top": 1, "sort": ["cp"], "evolve": False}])
 
         if (not self.config_may_use_lucky_egg) and self.config_evolve_only_with_lucky_egg:
             self.config_evolve = False
@@ -167,7 +167,7 @@ class PokemonOptimizer(BaseTask):
         if (not self.lock_buddy) and (len(buddy_all) > 0):
             new_buddy = buddy_all[0]
 
-            if self.buddy["id"] != new_buddy.unique_id:
+            if (not self.buddy) or (self.buddy["id"] != new_buddy.unique_id):
                 self.set_buddy_pokemon(new_buddy)
 
         if self.get_pokemon_slot_left() > self.config_min_slots_left:
@@ -207,7 +207,7 @@ class PokemonOptimizer(BaseTask):
             return
 
         distance_walked = inventory.player().player_stats.get("km_walked", 0) - self.buddy["last_km_awarded"]
-        distance_needed = pokemon.static._data.get("BuddyDistanceNeeded", 5)
+        distance_needed = pokemon.buddy_distance_needed
 
         if distance_walked >= distance_needed:
             self.get_buddy_walked(pokemon)
@@ -313,7 +313,7 @@ class PokemonOptimizer(BaseTask):
         sorted_pokemon = self.sort_pokemon_list_to_keep(pokemon_list, rule)
 
         if len(sorted_pokemon) == 0:
-            return ([], [], [])
+            return ([], [], [], [])
 
         top = max(rule.get("top", 0), 0)
         index = int(math.ceil(top)) - 1
@@ -508,8 +508,8 @@ class PokemonOptimizer(BaseTask):
             full_upgrade_candy_cost = 0
             full_upgrade_stardust_cost = 0
 
-            for i in range(pokemon.level, upgrade_level, 0.5):
-                upgrade_cost = self.pokemon_upgrade_cost[2 * (i - 1)]
+            for i in range(int(pokemon.level * 2), int(upgrade_level * 2)):
+                upgrade_cost = self.pokemon_upgrade_cost[i - 2]
                 full_upgrade_candy_cost += upgrade_cost[0]
                 full_upgrade_stardust_cost += upgrade_cost[1]
 
@@ -553,57 +553,60 @@ class PokemonOptimizer(BaseTask):
         upgrade_count = len(upgrade)
         xp_count = len(xp)
 
-        if transfer_count > 0:
-            self.logger.info("Transferring %s Pokemon", transfer_count)
+        if self.config_transfer or self.bot.config.test:
+            if transfer_count > 0:
+                self.logger.info("Transferring %s Pokemon", transfer_count)
 
-            for pokemon in transfer:
-                self.transfer_pokemon(pokemon)
+                for pokemon in transfer:
+                    self.transfer_pokemon(pokemon)
+        
+        if self.config_evolve or self.bot.config.test:
+            evolve_xp_count = evolve_count + xp_count
 
-        evolve_xp_count = evolve_count + xp_count
+            if evolve_xp_count > 0:
+                skip_evolve = False
 
-        if evolve_xp_count > 0:
-            skip_evolve = False
+                if self.config_evolve and self.config_may_use_lucky_egg and (not self.bot.config.test):
+                    lucky_egg = inventory.items().get(Item.ITEM_LUCKY_EGG.value)  # @UndefinedVariable
 
-            if self.config_evolve and self.config_may_use_lucky_egg and (not self.bot.config.test):
-                lucky_egg = inventory.items().get(Item.ITEM_LUCKY_EGG.value)  # @UndefinedVariable
+                    if lucky_egg.count == 0:
+                        if self.config_evolve_only_with_lucky_egg:
+                            skip_evolve = True
+                            self.emit_event("skip_evolve",
+                                            formatted="Skipping evolution step. No lucky egg available")
+                    elif evolve_xp_count < self.config_evolve_count_for_lucky_egg:
+                        if self.config_evolve_only_with_lucky_egg:
+                            skip_evolve = True
+                            self.emit_event("skip_evolve",
+                                            formatted="Skipping evolution step. Not enough Pokemon to evolve with lucky egg: %s/%s" % (evolve_xp_count, self.config_evolve_count_for_lucky_egg))
+                        elif self.get_pokemon_slot_left() > self.config_min_slots_left:
+                            skip_evolve = True
+                            self.emit_event("skip_evolve",
+                                            formatted="Waiting for more Pokemon to evolve with lucky egg: %s/%s" % (evolve_xp_count, self.config_evolve_count_for_lucky_egg))
+                    else:
+                        self.use_lucky_egg()
 
-                if lucky_egg.count == 0:
-                    if self.config_evolve_only_with_lucky_egg:
-                        skip_evolve = True
-                        self.emit_event("skip_evolve",
-                                        formatted="Skipping evolution step. No lucky egg available")
-                elif evolve_xp_count < self.config_evolve_count_for_lucky_egg:
-                    if self.config_evolve_only_with_lucky_egg:
-                        skip_evolve = True
-                        self.emit_event("skip_evolve",
-                                        formatted="Skipping evolution step. Not enough Pokemon to evolve with lucky egg: %s/%s" % (evolve_xp_count, self.config_evolve_count_for_lucky_egg))
-                    elif self.get_pokemon_slot_left() > self.config_min_slots_left:
-                        skip_evolve = True
-                        self.emit_event("skip_evolve",
-                                        formatted="Waiting for more Pokemon to evolve with lucky egg: %s/%s" % (evolve_xp_count, self.config_evolve_count_for_lucky_egg))
-                else:
-                    self.use_lucky_egg()
+                if not skip_evolve:
+                    self.evolution_map = {}
 
-            if not skip_evolve:
-                self.evolution_map = {}
+                    if evolve_count > 0:
+                        self.logger.info("Evolving %s Pokemon (the best)", evolve_count)
 
-                if evolve_count > 0:
-                    self.logger.info("Evolving %s Pokemon (the best)", evolve_count)
+                        for pokemon in evolve:
+                            self.evolve_pokemon(pokemon)
 
-                    for pokemon in evolve:
-                        self.evolve_pokemon(pokemon)
+                    if xp_count > 0:
+                        self.logger.info("Evolving %s Pokemon (for xp)", xp_count)
 
-                if xp_count > 0:
-                    self.logger.info("Evolving %s Pokemon (for xp)", xp_count)
+                        for pokemon in xp:
+                            self.evolve_pokemon(pokemon)
 
-                    for pokemon in xp:
-                        self.evolve_pokemon(pokemon)
+        if self.config_upgrade or self.bot.config.test:
+            if upgrade_count > 0:
+                self.logger.info("Upgrading %s Pokemon [%s stardust]", upgrade_count, self.bot.stardust)
 
-        if upgrade_count > 0:
-            self.logger.info("Upgrading %s Pokemon [%s stardust]", upgrade_count, self.bot.stardust)
-
-            for pokemon in upgrade:
-                self.upgrade_pokemon(pokemon)
+                for pokemon in upgrade:
+                    self.upgrade_pokemon(pokemon)
 
     def transfer_pokemon(self, pokemon):
         if self.config_transfer and (not self.bot.config.test):
