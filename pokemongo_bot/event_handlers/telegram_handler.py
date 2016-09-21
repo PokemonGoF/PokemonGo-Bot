@@ -6,6 +6,7 @@ import telegram
 import thread
 import re
 import pprint
+from pokemongo_bot import inventory
 from pokemongo_bot.datastore import Datastore
 from telegram.utils import request
 from chat_handler import ChatHandler
@@ -108,6 +109,24 @@ class TelegramClass:
             self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Authentication successful, you can now use all commands")
         return
 
+    def send_player_stats_to_chat(self, chat_id):
+        stats = self.chat_handler.get_player_stats()
+        if stats:
+            self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(stats))
+            self.sendLocation(chat_id=chat_id, latitude=self.bot.api._position_lat, longitude=self.bot.api._position_lng)
+        else:
+            self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="Stats not loaded yet\n")
+
+    def sendMessage(self, chat_id=None, parse_mode='Markdown', text=None):
+        try:
+            self._tbot.sendMessage(chat_id=chat_id, parse_mode=parse_mode, text=text)
+        except telegram.error.NetworkError:
+            time.sleep(1)
+        except telegram.error.TelegramError:
+            time.sleep(10)
+        except telegram.error.Unauthorized:
+            self.update_id += 1
+
     def run(self):            
         time.sleep(1)
         while True:
@@ -139,11 +158,11 @@ class TelegramClass:
                             "/vanished <num> <cp-or-iv-or-dated> - show top x vanished, sorted by CP, IV, or Date",
                             "/softbans - info about possible softbans"
                         )
-                        self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
+                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="\n".join(res))
                         continue
 
                     if self.config.get('password', None) == None and (not hasattr(self, "master") or not self.config.get('master', None)): # no auth provided in config
-                        self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="No password nor master configured in TelegramTask section, bot will not accept any commands")
+                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="No password nor master configured in TelegramTask section, bot will not accept any commands")
                         continue
                     if re.match(r'^/login [^ ]+', update.message.text):
                         self.authenticate(update)
@@ -165,67 +184,139 @@ class TelegramClass:
                         # Reject message if sender does not match defined master in config
                         outMessage = "Telegram message received from unknown sender. Please either make sure your username or ID is in TelegramTask/master, or a password is set in TelegramTask section and /login is issued"
                         self.bot.logger.error(outMessage)
-                        self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Please /login first")
+                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Please /login first")
                         continue
                     # one way or another, the user is now authenticated
                     # make sure uid is in database
                     self.grab_uid(update)
                     if update.message.text == "/info":
-                        self.chat_handler.send_player_stats_to_chat(update.message.chat_id)
+                        self.send_player_stats_to_chat(update.message.chat_id)
                         continue
                     if update.message.text == "/softbans":
-                        self.chat_handler.get_softban(update.message.chat_id)
+                        softbans = self.chat_handler.get_softbans(num)
+                        self.bot.logger.info(softbans)
+                        outMsg = ''
+                        if softbans:
+                            for x in softbans:
+                                outMsg += '*' + x[0] + '* ' + '(' + str(x[2]) + ')\n'
+                            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                                             text="".join(outMsg))
+                        else:
+                            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                                             text="No Softbans found! Good job!\n")
                         continue
                     if re.match("^/events", update.message.text):
                         events = self.chat_handler.get_events(update)
-                        self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML',
-                                                      text="\n".join(events))
+                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                                         text="\n".join(events))
                         continue
                     if update.message.text == "/logout":
-                        self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=("Logged out."))
+                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=("Logged out."))
                         self.deauthenticate(update)
                         continue
                     if re.match(r'^/sub ', update.message.text):
                         self.chsub(update.message.text, update.message.chat_id)
-                        self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML',
+                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML',
                                                       text=("Subscriptions updated."))
                         continue
                     if re.match(r'^/unsub ', update.message.text):
                         self.chsub(update.message.text, update.message.chat_id)
-                        self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=("Subscriptions updated."))
+                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=("Subscriptions updated."))
                         continue
                     if re.match(r'^/showsubs', update.message.text):
                         self.showsubs(update.message.chat_id)
                         continue
                     if re.match(r'^/top ', update.message.text):
                         (cmd, num, order) = self.tokenize(update.message.text, 3)
-                        self.chat_handler.showtop(update.message.chat_id, num, order)
+                        pkmns = self.chat_handler.showtop(num, order)
+                        outMsg = "\n".join(["*{}* (_CP:_ {}) (_IV:_ {}) (Candy:{})".format(p.name, p.cp, p.iv,
+                                                                                           inventory.candies().get(
+                                                                                               p.pokemon_id).quantity)
+                                            for p
+                                            in pkmns])
+                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text=outMsg)
                         continue
                     if re.match(r'^/caught ', update.message.text):
                         (cmd, num, order) = self.tokenize(update.message.text, 3)
-                        self.chat_handler.get_caught(update.message.chat_id, num, order)
+                        caught = self.chat_handler.get_caught(num, order)
+                        outMsg = ''
+                        if caught:
+                            for x in caught:
+                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ') (_IV:_ ' + str(
+                                    x[2]) + ')\n'
+                            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                                             text="".join(outMsg))
+                        else:
+                            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                                             text="No Pokemon Caught Yet.\n")
                         continue
                     if re.match(r'^/evolved ', update.message.text):
                         (cmd, num, order) = self.tokenize(update.message.text, 3)
-                        self.chat_handler.get_evolved(update.message.chat_id, num, order)
+                        evolved = self.chat_handler.get_evolved(num, order)
+                        outMsg = ''
+                        if evolved:
+                            for x in evolved:
+                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[2])) + ') (_IV:_ ' + str(
+                                    x[1]) + ')\n'
+                            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                                             text="".join(outMsg))
+                        else:
+                            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                                             text="No Evolutions Found.\n")
                         continue
                     if re.match(r'^/pokestops ', update.message.text):
                         (cmd, num) = self.tokenize(update.message.text, 2)
-                        self.chat_handler.get_pokestops(update.message.chat_id, num)
+                        pokestops = self.chat_handler.get_pokestops(num)
+                        outMsg = ''
+                        if pokestops:
+                            for x in pokestops:
+                                outMsg += '*' + x[0] + '* ' + '(_XP:_ ' + str(x[1]) + ') (_Items:_ ' + str(x[2]) + ')\n'
+                            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                                             text="".join(outMsg))
+                        else:
+                            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                                             text="No Pokestops Encountered Yet.\n")
                         continue
                     if re.match(r'^/hatched ', update.message.text):
                         (cmd, num, order) = self.tokenize(update.message.text, 3)
-                        self.chat_handler.get_hatched(update.message.chat_id, num, order)
+                        hatched = self.chat_handler.get_hatched(num, order)
+                        outMsg = ''
+                        if hatched:
+                            for x in hatched:
+                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ') (_IV:_ ' + str(
+                                    x[2]) + ')\n'
+                            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                                             text="".join(outMsg))
+                        else:
+                            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                                             text="No Eggs Hatched Yet.\n")
                         continue
                     if re.match(r'^/released ', update.message.text):
                         (cmd, num, order) = self.tokenize(update.message.text, 3)
-                        self.chat_handler.get_released(update.message.chat_id, num, order)
+                        released = self.chat_handler.get_released(num, order)
+                        outMsg = ''
+                        if released:
+                            for x in released:
+                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[2])) + ') (_IV:_ ' + str(
+                                    x[1]) + ')\n'
+                            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                                             text="".join(outMsg))
+                        else:
+                            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                                             text="No Pokemon Released Yet.\n")
                         continue
                     if re.match(r'^/vanished ', update.message.text):
                         (cmd, num, order) = self.tokenize(update.message.text, 3)
-                        self.chat_handler.get_vanished(update.message.chat_id, num, order)
+                        vanished = self.chat_handler.get_vanished(num, order)
+                        outMsg = ''
+                        if vanished:
+                            for x in vanished:
+                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ') (_IV:_ ' + str(
+                                    x[2]) + ')\n'
+                            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                                             text=outMsg)
                         continue
-                    self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Unrecognized command: {}".format(update.message.text))
+                    self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Unrecognized command: {}".format(update.message.text))
 
     def showsubs(self, chatid):
         subs = []
@@ -323,19 +414,6 @@ class TelegramHandler(EventHandler):
                 (uid, params, event_type) = sub
                 if event != 'pokemon_caught' or self.catch_notify(data["pokemon"], int(data["cp"]), float(data["iv"]), params):
                     if DEBUG_ON: self.bot.logger.info("Matched sub {} event {}".format(sub, event))
-                    if event == 'vanish_log' \
-                            or event == 'eggs_hatched_log' \
-                            or event == 'catch_log' \
-                            or event == 'pokestop_log' \
-                            or event == 'load_cached_location' \
-                            or event == 'location_cache_ignored' \
-                            or event == 'softban_log' \
-                            or event == 'loaded_cached_forts' \
-                            or event == 'login_log' \
-                            or event == 'evolve_log' \
-                            or event == 'catchable_pokemon' \
-                            or event == 'transfer_log':
-                        pass
                     elif event_type == "debug":
                         self.bot.logger.info("[{}] {}".format(event, msg))
                     else:
@@ -359,4 +437,4 @@ class TelegramHandler(EventHandler):
                     return
                     
             if self.tbot is not None: # tbot should be running, but just in case it hasn't started yet
-                self.chat_handler.sendMessage(chat_id=uid, parse_mode='Markdown', text=msg)
+                self.chat_handler.sendTeleMessage(chat_id=uid, parse_mode='Markdown', text=msg)
