@@ -10,7 +10,7 @@ class ChatHandler:
     def __init__(self, bot, pokemons):
         self.bot = bot
         self.pokemons = pokemons
-        self._tbot = telegram.Bot(self.bot.config.telegram_token)
+
 
     def get_evolved(self, num, order):
         if not num.isnumeric():
@@ -35,7 +35,7 @@ class ChatHandler:
 
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM catch_log DESC LIMIT " + str(num))
+            cur.execute("SELECT * FROM softban_log DESC LIMIT " + str(num))
             softbans = cur.fetchall()
             return softbans
 
@@ -110,6 +110,51 @@ class ChatHandler:
             cur.execute("SELECT * FROM vanish_log ORDER BY " + order + " DESC LIMIT " + str(num))
             vanished = cur.fetchall()
             return vanished
+
+    def get_player_stats(self):
+        stats = inventory.player().player_stats
+        if stats:
+            with self.bot.database as conn:
+                cur = conn.cursor()
+                cur.execute(
+                    "SELECT COUNT(DISTINCT encounter_id) FROM catch_log WHERE dated >= datetime('now','-1 day')")
+                catch_day = cur.fetchone()[0]
+                cur.execute("SELECT COUNT(pokestop) FROM pokestop_log WHERE dated >= datetime('now','-1 day')")
+                ps_day = cur.fetchone()[0]
+                res = (
+                    "*" + self.bot.config.username + "*",
+                    "_Level:_ " + str(stats["level"]),
+                    "_XP:_ " + str(stats["experience"]) + "/" + str(stats["next_level_xp"]),
+                    "_Pokemons Captured:_ " + str(stats["pokemons_captured"]) + " (" + str(catch_day) + " _last 24h_)",
+                    "_Poke Stop Visits:_ " + str(stats["poke_stop_visits"]) + " (" + str(ps_day) + " _last 24h_)",
+                    "_KM Walked:_ " + str("%.2f" % stats["km_walked"])
+                )
+            return (res)
+        else:
+            return ("Stats not loaded yet\n")
+
+    def showtop(self, num, order):
+        if not num.isnumeric():
+            num = 10
+        else:
+            num = int(num)
+
+        if order not in ["cp", "iv"]:
+            order = "iv"
+        pkmns = sorted(inventory.pokemons().all(), key=lambda p: getattr(p, order), reverse=True)[:num]
+        return pkmns
+
+    def get_events(self, update):
+        cmd = update.message.text.split(" ", 1)
+        if len(cmd) > 1:
+            # we have a filter
+            event_filter = ".*{}-*".format(cmd[1])
+        else:
+            # no filter
+            event_filter = ".*"
+        events = filter(lambda k: re.match(event_filter, k), self.bot.event_manager._registered_events.keys())
+        events = sorted(events)
+        return events
 
     def get_event(self, event, formatted_msg, data):
         msg = None
