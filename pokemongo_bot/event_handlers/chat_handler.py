@@ -3,6 +3,7 @@ from pokemongo_bot import inventory
 import re
 import telegram
 import time
+from pokemongo_bot import inventory
 DEBUG_ON = False
 
 
