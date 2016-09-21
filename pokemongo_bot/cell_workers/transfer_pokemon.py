@@ -180,7 +180,7 @@ class TransferPokemon(BaseTask):
         # Check if any rules supplied
         if (release_cp == 0 and release_iv == 0 and release_ivcp == 0): # No rules supplied, assume all false
             release_results = {'cp': False, 'iv': False, 'ivcp': False}
-        else # One or more rules supplied, evaluate
+        else: # One or more rules supplied, evaluate
             if (cp_iv_logic == 'and'): # "and" logic assumes true if not provided
                 release_results['cp'] = (release_config.get('release_below_cp', -1) != 0) and (not release_cp or pokemon.cp < release_cp)
                 release_results['iv'] = (release_config.get('release_below_iv', -1) != 0) and (not release_iv or pokemon.iv < release_iv)
