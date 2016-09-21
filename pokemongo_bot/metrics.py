@@ -72,6 +72,9 @@ class Metrics(object):
 
     def earned_dust(self):
         return self.dust['latest'] - self.dust['start']
+        
+    def stardust_per_hour(self):
+        return self.earned_dust()/(time.time() - self.start_time)*3600
 
     def hatched_eggs(self, update):
         if (update):
