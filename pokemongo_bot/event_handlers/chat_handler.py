@@ -148,10 +148,7 @@ class ChatHandler:
 
         if order not in ["cp", "iv"]:
             order = "iv"
-        if order == "cp":
-            order_key = 2
-        else:  # If it's not "cp", we assume "iv"
-            order_key = 1
+
         with self.bot.database as conn:
             cur = conn.cursor()
             cur.execute("SELECT * FROM evolve_log ORDER BY " + order + " DESC LIMIT " + str(num))
