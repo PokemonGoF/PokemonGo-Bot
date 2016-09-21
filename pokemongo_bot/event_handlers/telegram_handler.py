@@ -7,6 +7,7 @@ import time
 import pprint
 from telegram.utils import request
 from chat_handler import ChatHandler
+from pokemongo_bot import inventory
 
 DEBUG_ON = False
 
