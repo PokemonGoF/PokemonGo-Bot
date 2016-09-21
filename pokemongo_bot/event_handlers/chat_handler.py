@@ -143,7 +143,12 @@ class ChatHandler:
         if order not in ["cp", "iv"]:
             order = "iv"
         pkmns = sorted(inventory.pokemons().all(), key=lambda p: getattr(p, order), reverse=True)[:num]
-        return pkmns
+        outMsg = "\n".join(["*{}* (_CP:_ {} _IV:_ {} Candy:{})".format(p.name, p.cp, p.iv,
+                                                                                           inventory.candies().get(
+                                                                                               p.pokemon_id).quantity)
+                                            for p
+                                            in pkmns])
+        return outMsg
 
     def get_events(self, update):
         cmd = update.message.text.split(" ", 1)
