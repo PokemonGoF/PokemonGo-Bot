@@ -189,12 +189,12 @@ class ChatHandler:
 
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM catch_log ORDER BY " + order + " DESC LIMIT " + str(num))
+            cur.execute("SELECT pokemon, cp, iv FROM catch_log ORDER BY " + order + " DESC LIMIT " + str(num))
             caught = cur.fetchall()
             outMsg = ''
             if caught:
                 for x in caught:
-                    outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[2])) + ') (_IV:_ ' + str(x[1]) + ')\n'
+                    outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ') (_IV:_ ' + str(x[2]) + ')\n'
                 self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="".join(str(outMsg)))
             else:
                 self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="No Pokemon Caught Yet.\n")
