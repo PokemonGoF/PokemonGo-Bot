@@ -153,6 +153,7 @@
         "type": "EvolvePokemon",
         "config": {
           "enabled": false,
+          "interval": 60,
 
             "// evolve only pidgey and drowzee": "",
             "// evolve_list": "pidgey, drowzee",

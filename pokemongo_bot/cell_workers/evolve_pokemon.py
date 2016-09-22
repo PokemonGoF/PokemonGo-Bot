@@ -17,6 +17,8 @@ class EvolvePokemon(BaseTask):
 
     def initialize(self):
         self.start_time = 0
+        self.next_update = None
+        self.interval = self.config.get('interval', 60)
         self.evolve_list = self.config.get('evolve_list', [])
         self.donot_evolve_list = self.config.get('donot_evolve_list', [])
         self.min_evolve_speed = self.config.get('min_evolve_speed', 25)
@@ -41,7 +43,7 @@ class EvolvePokemon(BaseTask):
     def _validate_config(self):
         if isinstance(self.evolve_list, basestring):
             self.evolve_list = [str(pokemon_name).lower().strip() for pokemon_name in self.evolve_list.split(',')]
-            
+
         if isinstance(self.donot_evolve_list, basestring):
             self.donot_evolve_list = [str(pokemon_name).lower().strip() for pokemon_name in self.donot_evolve_list.split(',')]
 
@@ -55,6 +57,9 @@ class EvolvePokemon(BaseTask):
         if not self._should_run():
             return
 
+        self._compute_next_update()
+
+        result_message = ""
         filtered_list, filtered_dict = self._sort_and_filter()
 
         pokemon_to_be_evolved = 0
@@ -65,7 +70,10 @@ class EvolvePokemon(BaseTask):
                 candy = inventory.candies().get(pokemon.pokemon_id)
                 pokemon_to_be_evolved = pokemon_to_be_evolved + min(candy.quantity / (pokemon.evolution_cost - 1), filtered_dict[pokemon.pokemon_id])
 
-        if pokemon_to_be_evolved >= self.min_pokemon_to_be_evolved:
+        self._print_check(pokemon_to_be_evolved)
+
+        has_minimum_to_evolve = pokemon_to_be_evolved >= self.min_pokemon_to_be_evolved
+        if has_minimum_to_evolve:
             if self.use_lucky_egg:
                 self._use_lucky_egg()
             cache = {}
@@ -73,11 +81,27 @@ class EvolvePokemon(BaseTask):
                 if pokemon.can_evolve_now():
                     self._execute_pokemon_evolve(pokemon, cache)
 
+    def _print_check(self, pokemon_to_be_evolved):
+        has_minimum_to_evolve = pokemon_to_be_evolved >= self.min_pokemon_to_be_evolved
+        result_message = ("Gotta catch`em all!", "Gotta evolv`em all!")[has_minimum_to_evolve]
+        self.emit_event(
+            'pokemon_evolve_check',
+            formatted='Checking... Has {has}, needs {needs}. {message}',
+            data={
+                'has': pokemon_to_be_evolved,
+                'needs': self.min_pokemon_to_be_evolved,
+                'message': result_message
+            }
+        )
+
     def _should_run(self):
         if not self.evolve_list or self.evolve_list[0] == 'none':
             return False
-        return True
-    
+        return self.next_update is None or datetime.now() >= self.next_update
+
+    def _compute_next_update(self):
+        self.next_update = datetime.now() + timedelta(seconds=self.interval)
+
     def _use_lucky_egg(self):
         using_lucky_egg = time.time() - self.start_time < 1800
         if using_lucky_egg:

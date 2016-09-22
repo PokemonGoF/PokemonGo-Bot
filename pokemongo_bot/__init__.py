@@ -117,7 +117,7 @@ class PokemonGoBot(object):
         self.heartbeat_counter = 0
         self.last_heartbeat = time.time()
         self.hb_locked = False # lock hb on snip
-        
+
         # Inventory refresh limiting
         self.inventory_refresh_threshold = 10
         self.inventory_refresh_counter = 0
@@ -476,6 +476,10 @@ class PokemonGoBot(object):
         self.event_manager.register_event(
             'pokemon_evolved',
             parameters=('pokemon', 'iv', 'cp', 'candy', 'xp')
+        )
+        self.event_manager.register_event(
+            'pokemon_evolve_check',
+            parameters=('has', 'needs', 'message')
         )
         self.event_manager.register_event(
             'pokemon_upgraded',
@@ -1476,4 +1480,4 @@ class PokemonGoBot(object):
             inventory.refresh_inventory()
             self.last_inventory_refresh = now
             self.inventory_refresh_counter += 1
-            
+
