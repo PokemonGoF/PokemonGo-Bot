@@ -326,13 +326,13 @@ def report_summary(bot):
     logger.info('')
     logger.info('Ran for {}'.format(metrics.runtime()))
     logger.info('Total XP Earned: {}  Average: {:.2f}/h'.format(metrics.xp_earned(), metrics.xp_per_hour()))
-    logger.info('Earned {} Stardust Average: {:.2f}/h Total Dust {}'.format(metrics.earned_dust(), metrics.stardust_per_hour(), metrics.total_dust()))
     logger.info('Travelled {:.2f}km'.format(metrics.distance_travelled()))
     logger.info('Visited {} stops'.format(metrics.visits['latest'] - metrics.visits['start']))
     logger.info('Encountered {} pokemon, {} caught, {} released, {} evolved, {} never seen before ({})'
                 .format(metrics.num_encounters(), metrics.num_captures(), metrics.releases,
                         metrics.num_evolutions(), metrics.num_new_mons(), metrics.uniq_caught()))
     logger.info('Threw {} pokeball{}'.format(metrics.num_throws(), '' if metrics.num_throws() == 1 else 's'))
+    logger.info('Earned {} Stardust'.format(metrics.earned_dust()))
     logger.info('Hatched eggs {}'.format(metrics.hatched_eggs(0)))
     if (metrics.next_hatching_km(0)):
         logger.info('Next egg hatches in {:.2f} km'.format(metrics.next_hatching_km(0)))
