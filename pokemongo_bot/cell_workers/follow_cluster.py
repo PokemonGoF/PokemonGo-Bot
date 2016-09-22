@@ -2,7 +2,6 @@ from pokemongo_bot.walkers.step_walker import StepWalker
 from pokemongo_bot.cell_workers.utils import distance
 from pokemongo_bot.cell_workers.utils import find_biggest_cluster
 from pokemongo_bot.base_task import BaseTask
-from random import uniform
 
 class FollowCluster(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1

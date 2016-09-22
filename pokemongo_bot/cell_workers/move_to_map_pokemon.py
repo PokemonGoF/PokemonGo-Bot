@@ -218,9 +218,9 @@ class MoveToMapPokemon(BaseTask):
         # Simulate kind of a lag after teleporting/moving to a long distance
         time.sleep(2)
 
-        # If social is enabled, trust it
-        exists = self.bot.config.enable_social
-        verify = not self.bot.config.enable_social
+        # If social is enabled and if no verification is needed, trust it. Otherwise, update IDs!
+        verify = not pokemon.get('encounter_id') or not pokemon.get('spawn_point_id')
+        exists = not verify and self.bot.config.enable_social
 
         # If social is disabled, we will have to make sure the target still exists
         if verify:
@@ -245,7 +245,7 @@ class MoveToMapPokemon(BaseTask):
                     exists = True
 
                     # Also, if the IDs arent valid, update them!
-                    if not pokemon['encounter_id'] or not pokemon['spawnpoint_id']:
+                    if not pokemon['encounter_id'] or not pokemon['spawn_point_id']:
                         pokemon['encounter_id'] = nearby_pokemon['encounter_id']
                         pokemon['spawn_point_id'] = nearby_pokemon['spawn_point_id']
                         pokemon['disappear_time'] = nearby_pokemon['last_modified_timestamp_ms'] if is_wild else nearby_pokemon['expiration_timestamp_ms']

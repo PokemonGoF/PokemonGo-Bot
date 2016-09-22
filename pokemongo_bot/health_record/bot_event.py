@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
-from time import sleep
 
 import logging
 from raven import Client
 import raven
-import os
 import uuid
 import requests
 import time
-import shelve
-import os
 from pokemongo_bot.base_dir import _base_dir
 
 class BotEvent(object):

@@ -1,7 +1,7 @@
 {
     "websocket_server": false,
     "heartbeat_threshold": 10,
-    "enable_social": true,
+    "enable_social": false,
     "live_config_update": {
       "enabled": false,
       "tasks_only": false
@@ -76,6 +76,21 @@
         }
       },
       {
+        "type": "BuddyPokemon",
+        "config": {
+          "enabled": true,
+          "buddy_list": "dratini, magikarp",
+          "best_in_family": true,
+          "// candy_limit = 0 means no limit, so it will never change current buddy": {},
+          "candy_limit": 0,
+          "// force_first_change = true will always change buddy at start removing current one": {},
+          "force_first_change": false,
+          "buddy_change_wait_min": 3,
+          "buddy_change_wait_max": 5,
+          "min_interval": 120
+        }
+      },
+      {
         "type": "IncubateEggs",
         "config": {
           "enabled": true,
@@ -138,18 +153,18 @@
         "type": "EvolvePokemon",
         "config": {
           "enabled": false,
-            
+
             "// evolve only pidgey and drowzee": "",
             "// evolve_list": "pidgey, drowzee",
             "// donot_evolve_list": "none",
-            
+
             "// evolve all but pidgey and drowzee": "",
             "// evolve_list": "all",
             "// donot_evolve_list": "pidgey, drowzee",
-            
+
             "evolve_list": "all",
             "donot_evolve_list": "none",
-            
+
           "first_evolve_by": "cp",
           "evolve_above_cp": 500,
           "evolve_above_iv": 0.8,
@@ -168,7 +183,7 @@
             "ordinary",
             "spicy",
             "cool",
-            "floral" 
+            "floral"
           ]
         }
       },
@@ -195,6 +210,74 @@
           "recycle_force_min": "00:01:00",
           "recycle_force_max": "00:05:00"
         }
+      },
+      {
+		"type": "Sniper",
+		"config": {
+			"enabled": false,
+			"mode": "social",
+			"bullets": 1,
+			"homing_shots": true,
+			"special_iv": 100,
+			"order": ["missing", "vip", "priority"],
+			"sources": [
+				{
+				    "enabled": false,
+					"url": "http://localhost:5000/raw_data",
+					"key": "pokemons",
+					"mappings": {
+						"id": { "param": "pokemon_id" },
+						"name": { "param": "pokemon_name" },
+						"latitude": { "param": "latitude" },
+						"longitude": { "param": "longitude" },
+						"expiration": { "param": "disappear_time", "format": "milliseconds" }
+					}
+				},
+				{
+				    "enabled": false,
+					"url": "https://pokewatchers.com/grab/",
+					"mappings": {
+						"iv": { "param": "iv" },
+						"id": { "param": "pid" },
+						"name": { "param": "pokemon" },
+						"latitude": { "param": "cords" },
+						"longitude": { "param": "cords" },
+						"expiration": { "param": "timeend", "format": "milliseconds" }
+					}
+				},
+				{
+				    "enabled": false,
+					"url": "http://pokesnipers.com/api/v1/pokemon.json",
+					"key": "results",
+					"mappings": {
+						"iv": { "param": "iv" },
+						"name": { "param": "name" },
+						"latitude": { "param": "coords" },
+						"longitude": { "param": "coords" },
+						"expiration": { "param": "until", "format": "utc" }
+					}
+				}
+			],
+			"catch": {
+				"Snorlax": 1000,
+				"Dragonite": 1000,
+				"Growlithe": 600,
+				"Clefairy": 500,
+				"Kabuto": 500,
+				"Dratini": 500,
+				"Dragonair": 500,
+				"Mr. Mime": 500,
+				"Magmar": 500,
+				"Electabuzz": 500,
+				"Tangela": 500,
+				"Tauros": 500,
+				"Primeape": 500,
+				"Chansey": 500,
+				"Pidgey": 100,
+				"Caterpie": 100,
+				"Weedle": 100
+			}
+		}
       },
       {
         "type": "CatchPokemon",
@@ -230,7 +313,7 @@
             "berry_wait_max": 5,
             "changeball_wait_min": 3,
             "changeball_wait_max": 5,
-            "newtodex_wait_min": 20, 
+            "newtodex_wait_min": 20,
             "newtodex_wait_max": 30
           }
         }
@@ -387,6 +470,6 @@
     },
 	"websocket": {
 		"start_embedded_server": true,
-		"server_url": "127.0.0.1:4000"
+		"server_url": "0.0.0.0:4000"
 	}
 }

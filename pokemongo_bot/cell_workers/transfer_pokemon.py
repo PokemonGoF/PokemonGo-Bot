@@ -1,10 +1,10 @@
-import json
-import os
 
 from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.inventory import Pokemons, Pokemon, Attack
+from pokemongo_bot.inventory import Attack
+from pokemongo_bot.inventory import Pokemon
+from pokemongo_bot.inventory import Pokemons
 from operator import attrgetter
 from random import randrange
 
@@ -36,7 +36,7 @@ class TransferPokemon(BaseTask):
 
     def _should_work(self):
         random_number = randrange (0,20,1) 
-        return inventory.Pokemons.get_space_left() <= self.min_free_slot - random_number
+        return inventory.Pokemons.get_space_left() <= max(1,self.min_free_slot - random_number)
 
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
@@ -154,23 +154,17 @@ class TransferPokemon(BaseTask):
         release_config = self._get_release_config_for(pokemon.name)
 
         if (keep_best_mode
-                and not release_config.has_key('never_release')
-                and not release_config.has_key('always_release')
-                and not release_config.has_key('release_below_cp')
-                and not release_config.has_key('release_below_iv')
-                and not release_config.has_key('release_below_ivcp')):
+                and 'never_release' not in release_config
+                and 'always_release' not in release_config
+                and 'release_below_cp' not in release_config
+                and 'release_below_iv' not in release_config
+                and 'release_below_ivcp' not in release_config):
             return True
 
         cp_iv_logic = release_config.get('logic')
         if not cp_iv_logic:
             cp_iv_logic = self._get_release_config_for(
                 'any').get('logic', 'and')
-
-        release_results = {
-            'cp': False,
-            'iv': False,
-            'ivcp': False
-        }
 
         if release_config.get('never_release', False):
             return False
@@ -179,17 +173,23 @@ class TransferPokemon(BaseTask):
             return True
 
         release_cp = release_config.get('release_below_cp', 0)
-        if pokemon.cp < release_cp:
-            release_results['cp'] = True
-
         release_iv = release_config.get('release_below_iv', 0)
-        if pokemon.iv < release_iv:
-            release_results['iv'] = True
-
         release_ivcp = release_config.get('release_below_ivcp', 0)
-        if pokemon.ivcp < release_ivcp:
-            release_results['ivcp'] = True
 
+        release_results = {}
+        # Check if any rules supplied
+        if (release_cp == 0 and release_iv == 0 and release_ivcp == 0): # No rules supplied, assume all false
+            release_results = {'cp': False, 'iv': False, 'ivcp': False}
+        else: # One or more rules supplied, evaluate
+            if (cp_iv_logic == 'and'): # "and" logic assumes true if not provided
+                release_results['cp'] = (release_config.get('release_below_cp', -1) != 0) and (not release_cp or pokemon.cp < release_cp)
+                release_results['iv'] = (release_config.get('release_below_iv', -1) != 0) and (not release_iv or pokemon.iv < release_iv)
+                release_results['ivcp'] = (release_config.get('release_below_ivcp', -1) != 0) and (not release_ivcp or pokemon.ivcp < release_ivcp)
+            else: # "or" logic assumes false if not provided
+                release_results['cp'] = release_cp and pokemon.cp < release_cp
+                release_results['iv'] = release_iv and pokemon.iv < release_iv
+                release_results['ivcp'] = release_ivcp and pokemon.ivcp < release_ivcp
+            
         logic_to_function = {
             'or': lambda x, y, z: x or y or z,
             'and': lambda x, y, z: x and y and z
@@ -198,7 +198,7 @@ class TransferPokemon(BaseTask):
         if logic_to_function[cp_iv_logic](*release_results.values()):
             self.emit_event(
                 'future_pokemon_release',
-                formatted="*Releasing {}* CP: {}, IV: {}, IVCP: {} | based on rule: CP < {} {} IV < {} IVCP < {}".format(pokemon.name, pokemon.cp, pokemon.iv, pokemon.ivcp, 
+                formatted="*Releasing {}* CP: {}, IV: {}, IVCP: {:.2f} | based on rule: CP < {} {} IV < {} IVCP < {}".format(pokemon.name, pokemon.cp, pokemon.iv, pokemon.ivcp,
                                                                                 release_cp, cp_iv_logic.upper(),release_iv, release_ivcp),
                 data={
                     'pokemon': pokemon.name,
@@ -242,9 +242,13 @@ class TransferPokemon(BaseTask):
                 'iv': pokemon.iv,
                 'cp': pokemon.cp,
                 'ivcp': pokemon.ivcp,
-                'candy': candy.quantity
+                'candy': candy.quantity,
+                'candy_type': candy.type
             },
-            formatted="Released {} (CP: {}, IV: {}, IVCP: {}) You now have {} {} candies".format(pokemon.name, pokemon.cp, pokemon.iv, pokemon.ivcp, candy.quantity, pokemon.name),
+            formatted="Released {} (CP: {}, IV: {}, IVCP: {:.2f}) You now have"
+                      " {} {} candies".format(pokemon.name, pokemon.cp,
+                                              pokemon.iv, pokemon.ivcp,
+                                              candy.quantity, candy.type)
         )
         with self.bot.database as conn:
             c = conn.cursor()

@@ -1,52 +1,61 @@
 {
-	"tasks": [
-		{
-			"type": "PokemonOptimizer",
-			"config": {
-				"enabled": true,
-				"min_slots_left": 5,
-				"transfer": true,
-				"transfer_wait_min": 3,
-				"transfer_wait_max": 5,
-				"evolve": true,
-				"evolve_time": 25,
-				"evolve_for_xp": true,
-				"evolve_only_with_lucky_egg": false,
-				"evolve_count_for_lucky_egg": 80,
-				"may_use_lucky_egg": true,
-				"upgrade": true,
-				"upgrade_level": 60,
-				"groups": {
-					"gym": ["Dragonite", "Snorlax", "Lapras", "Arcanine"]
-				},
-				"rules": [
-					{
-						"mode": "by_family",
-						"top": 1,
-						"sort": ["iv"],
-						"evolve": {"iv": 0.9}
-					},
-					{
-						"mode": "by_family",
-						"top": 1,
-						"sort": ["ncp"],
-						"evolve": {"ncp": 0.9}
-					},
-					{
-						"mode": "by_family",
-						"top": 1,
-						"sort": ["cp"]
-					},
-					{
-						"mode": "by_family",
-						"names": ["gym"],
-						"top": 3,
-						"sort": ["iv", "ncp"],
-						"evolve": {"iv": 0.9, "ncp": 0.9},
-						"upgrade": {"iv": 0.9, "ncp": 0.9}
-					}
-				]
-			}
-		}
-	]
+    "tasks": [
+        {
+            "type": "PokemonOptimizer",
+            "config": {
+                "enabled": true,
+                "min_slots_left": 5,
+                "action_wait_min": 3,
+                "action_wait_max": 5,
+                "transfer": true,
+                "evolve": true,
+                "evolve_to_final": true,
+                "evolve_time": 25,
+                "evolve_for_xp": true,
+                "evolve_only_with_lucky_egg": false,
+                "evolve_count_for_lucky_egg": 80,
+                "may_use_lucky_egg": true,
+                "upgrade": true,
+                "upgrade_level": 30,
+                "groups": {
+                    "gym": ["Dragonite", "Snorlax", "Lapras", "Arcanine"]
+                },
+                "rules": [
+                    {
+                        "mode": "overall",
+                        "top": 1,
+                        "sort": ["max_cp", "cp"],
+                        "evolve": false,
+                        "buddy": {"candy": -124}
+                    },
+                    {
+                        "mode": "by_pokemon",
+                        "names": ["gym"],
+                        "top": 3,
+                        "sort": ["iv", "ncp"],
+                        "evolve": {"iv": 0.9, "ncp": 0.9},
+                        "upgrade": {"iv": 0.9, "ncp": 0.9}
+                    },
+                    {
+                        "mode": "by_family",
+                        "top": 1,
+                        "sort": ["iv"],
+                        "evolve": {"iv": 0.9}
+                    },
+                    {
+                        "mode": "by_family",
+                        "top": 1,
+                        "sort": ["ncp"],
+                        "evolve": {"ncp": 0.9}
+                    },
+                    {
+                        "mode": "by_family",
+                        "top": 1,
+                        "sort": ["cp"],
+                        "evolve": false
+                    }
+                ]
+            }
+        }
+    ]
 }
