@@ -736,7 +736,7 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
 ### Options
 [[back to top](#table-of-contents)]
 
-* `sources` - Defines whether the **WHOLE** task is enabled or not. Please bear in mind that even if the task is enabled, all or any of its sources can be disabled. (default: false)
+* `enabled` - Defines whether the **WHOLE** task is enabled or not. Please bear in mind that even if the task is enabled, all or any of its sources can be disabled. (default: false)
 * `mode` - The mode on which the sniper will fetch the informations. (default: social)
    - `social` - Information will come from the social network.
    - `url` - Information will come from one or multiple urls.
