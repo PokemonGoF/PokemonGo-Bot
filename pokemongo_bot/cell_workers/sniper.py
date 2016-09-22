@@ -281,7 +281,7 @@ class Sniper(BaseTask):
                     if pokemon['missing']:
                         self._trace('{} is not catchable, not VIP and bad IV (if any), however its a missing one.'.format(pokemon.get('pokemon_name')))
                     else:
-                        self._trace('{} is not catachable, nor a VIP or a missing one and bad IV (if any). Skipping...'.format(pokemon.get('pokemon_name')))
+                        self._trace('{} is not catchable, nor a VIP or a missing one and bad IV (if any). Skipping...'.format(pokemon.get('pokemon_name')))
                         return False
 
         return True
