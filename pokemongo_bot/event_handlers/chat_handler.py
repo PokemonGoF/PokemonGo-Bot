@@ -26,9 +26,9 @@ class ChatHandler:
                     "*" + self.bot.config.username + "*",
                     "_Level:_ " + str(stats["level"]),
                     "_XP:_ " + str(stats["experience"]) + "/" + str(stats["next_level_xp"]),
-                    "_Pokemons Captured:_ " + str(stats["pokemons_captured"]) + " (" + str(catch_day) + " _last 24h_)",
-                    "_Poke Stop Visits:_ " + str(stats["poke_stop_visits"]) + " (" + str(ps_day) + " _last 24h_)",
-                    "_KM Walked:_ " + str("%.2f" % stats["km_walked"])
+                    "_Pokemons Captured:_ " + str(stats.get("pokemons_captured",0)) + " (" + str(catch_day) + " _last 24h_)",
+                    "_Poke Stop Visits:_ " + str(stats.get("poke_stop_visits",0)) + " (" + str(ps_day) + " _last 24h_)",
+                    "_KM Walked:_ " + str("%.2f" % stats.get("km_walked",0))
                 )
             return (res)
         else:
@@ -65,27 +65,11 @@ class ChatHandler:
         cmd = update.message.text.split(" ", 1)
         if len(cmd) > 1:
             # we have a filter
-            event_filter = ".*{}-*".format(cmd[1])
+            event_filter = ".*{}.*".format(cmd[1])
         else:
             # no filter
             event_filter = ".*"
-        events = filter(lambda k: re.match(event_filter, k), self.bot.event_manager._registered_events.keys())
-        events.remove('vanish_log')
-        events.remove('eggs_hatched_log')
-        events.remove('catch_log')
-        events.remove('pokestop_log')
-        events.remove('load_cached_location')
-        events.remove('location_cache_ignored')
-        events.remove('softban_log')
-        events.remove('loaded_cached_forts')
-        events.remove('login_log')
-        events.remove('evolve_log')
-        events.remove('transfer_log')
-        events.remove('catchable_pokemon')
-        events = sorted(events)
-        return events
-
-
+        return sorted(filter(lambda k: re.match(event_filter, k), self.bot.event_manager._registered_events.keys()))
 
     def sendMessage(self, chat_id=None, parse_mode='Markdown', text=None):
         try:

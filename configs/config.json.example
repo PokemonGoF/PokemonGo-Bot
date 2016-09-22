@@ -1,7 +1,7 @@
 {
     "websocket_server": false,
     "heartbeat_threshold": 10,
-    "enable_social": true,
+    "enable_social": false,
     "live_config_update": {
       "enabled": false,
       "tasks_only": false
@@ -210,6 +210,74 @@
           "recycle_force_min": "00:01:00",
           "recycle_force_max": "00:05:00"
         }
+      },
+      {
+		"type": "Sniper",
+		"config": {
+			"enabled": false,
+			"mode": "social",
+			"bullets": 1,
+			"homing_shots": true,
+			"special_iv": 100,
+			"order": ["missing", "vip", "priority"],
+			"sources": [
+				{
+				    "enabled": false,
+					"url": "http://localhost:5000/raw_data",
+					"key": "pokemons",
+					"mappings": {
+						"id": { "param": "pokemon_id" },
+						"name": { "param": "pokemon_name" },
+						"latitude": { "param": "latitude" },
+						"longitude": { "param": "longitude" },
+						"expiration": { "param": "disappear_time", "format": "milliseconds" }
+					}
+				},
+				{
+				    "enabled": false,
+					"url": "https://pokewatchers.com/grab/",
+					"mappings": {
+						"iv": { "param": "iv" },
+						"id": { "param": "pid" },
+						"name": { "param": "pokemon" },
+						"latitude": { "param": "cords" },
+						"longitude": { "param": "cords" },
+						"expiration": { "param": "timeend", "format": "milliseconds" }
+					}
+				},
+				{
+				    "enabled": false,
+					"url": "http://pokesnipers.com/api/v1/pokemon.json",
+					"key": "results",
+					"mappings": {
+						"iv": { "param": "iv" },
+						"name": { "param": "name" },
+						"latitude": { "param": "coords" },
+						"longitude": { "param": "coords" },
+						"expiration": { "param": "until", "format": "utc" }
+					}
+				}
+			],
+			"catch": {
+				"Snorlax": 1000,
+				"Dragonite": 1000,
+				"Growlithe": 600,
+				"Clefairy": 500,
+				"Kabuto": 500,
+				"Dratini": 500,
+				"Dragonair": 500,
+				"Mr. Mime": 500,
+				"Magmar": 500,
+				"Electabuzz": 500,
+				"Tangela": 500,
+				"Tauros": 500,
+				"Primeape": 500,
+				"Chansey": 500,
+				"Pidgey": 100,
+				"Caterpie": 100,
+				"Weedle": 100
+			}
+		}
       },
       {
         "type": "CatchPokemon",

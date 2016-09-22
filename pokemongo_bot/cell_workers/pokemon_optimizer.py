@@ -313,7 +313,7 @@ class PokemonOptimizer(BaseTask):
         sorted_pokemon = self.sort_pokemon_list_to_keep(pokemon_list, rule)
 
         if len(sorted_pokemon) == 0:
-            return ([], [], [])
+            return ([], [], [], [])
 
         top = max(rule.get("top", 0), 0)
         index = int(math.ceil(top)) - 1
