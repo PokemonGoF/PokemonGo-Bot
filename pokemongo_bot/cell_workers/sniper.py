@@ -277,8 +277,11 @@ class Sniper(BaseTask):
                 if pokemon.get('vip', False):
                     self._trace('{} is not catchable and bad IV (if any), however its a VIP!'.format(pokemon.get('pokemon_name')))
                 else:
-                    self._trace('{} is not catachable, nor a VIP and bad IV (if any). Skipping...'.format(pokemon.get('pokemon_name')))
-                    return False
+                    if pokemon['missing']:
+                        self._trace('{} is not catchable, not VIP and bad IV (if any), however its a missing one.'.format(pokemon.get('pokemon_name')))
+                    else:
+                        self._trace('{} is not catachable, nor a VIP or a missing one and bad IV (if any). Skipping...'.format(pokemon.get('pokemon_name')))
+                        return False
 
         return True
 
@@ -362,8 +365,7 @@ class Sniper(BaseTask):
 
             if targets:
                 # Order the targets (descending)
-                for attr in self.order:
-                    targets.sort(key=lambda pokemon: pokemon[attr], reverse=True)
+                targets = sorted(targets, key=itemgetter(*self.order), reverse=True)
 
                 shots = 0
 
