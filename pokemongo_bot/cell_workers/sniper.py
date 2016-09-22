@@ -68,7 +68,6 @@ class SniperSource(object):
                         local_date = datetime.fromtimestamp(unix_timestamp)
                         local_date = local_date.replace(microsecond=utc_date.microsecond)
                         expiration = time.mktime(local_date.timetuple()) * 1000
-                else:
                     minutes_to_expire = 3
                     seconds_per_minute = 60
                     expiration = (time.time() + minutes_to_expire * seconds_per_minute) * 1000
@@ -105,7 +104,7 @@ class SniperSource(object):
         try:
             if self.enabled:
                 errors = []
-                data = self.fetch_raw(10)
+                data = self.fetch_raw(Sniper.FETCHING_POKEMONS_TIMEOUT)
 
                 # Check whether the params really exist if they have been specified like so
                 if data:
@@ -194,6 +193,7 @@ class Sniper(BaseTask):
     MIN_SECONDS_ALLOWED_FOR_REQUESTING_DATA = 5
     MIN_BALLS_FOR_CATCHING = 10
     MAX_CACHE_LIST_SIZE = 200
+    FETCHING_POKEMONS_TIMEOUT=30
 
     def __init__(self, bot, config):
         super(Sniper, self).__init__(bot, config)
@@ -252,7 +252,11 @@ class Sniper(BaseTask):
         all_balls_count = pokeballs_count + greatballs_count + ultraballs_count
 
         # Skip if expired (cast milliseconds to seconds for comparision)
-        if (pokemon.get('expiration_timestamp_ms', 0) or pokemon.get('last_modified_timestamp_ms', 0)) / 1000 < time.time():
+        expiration = pokemon.get('expiration_timestamp_ms', 0)
+        if expiration==0:
+            expiration = pokemon.get('last_modified_timestamp_ms', 0)
+
+        if (expiration > 0 and expiration / 1000 < time.time()):
             self._trace('{} is expired! Skipping...'.format(pokemon.get('pokemon_name')))
             return False
 
@@ -424,7 +428,7 @@ class Sniper(BaseTask):
             for source in self.sources:
                 try:
                     if source.enabled:
-                        source_pokemons = source.fetch(3)
+                        source_pokemons = source.fetch(Sniper.FETCHING_POKEMONS_TIMEOUT)
                         self._trace("Source '{}' returned {} results".format(source.url, len(source_pokemons)))
 
                         # Merge lists, making sure to exclude repeated data. Use location as the hash key
