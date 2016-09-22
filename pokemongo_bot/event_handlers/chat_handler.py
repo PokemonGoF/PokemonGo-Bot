@@ -3,6 +3,7 @@ from pokemongo_bot import inventory
 import re
 import telegram
 import time
+from pokemongo_bot import inventory
 DEBUG_ON = False
 
 
@@ -142,7 +143,7 @@ class ChatHandler:
         if order not in ["cp", "iv"]:
             order = "iv"
         pkmns = sorted(inventory.pokemons().all(), key=lambda p: getattr(p, order), reverse=True)[:num]
-        return pkmns
+        outMsg = []
 
     def get_events(self, update):
         cmd = update.message.text.split(" ", 1)
@@ -185,13 +186,3 @@ class ChatHandler:
             return formatted_msg
 
         return msg
-
-    def sendTeleMessage(self, chat_id=None, parse_mode='Markdown', text=None):
-        try:
-            self._tbot.sendMessage(chat_id=chat_id, parse_mode=parse_mode, text=text)
-        except telegram.error.NetworkError:
-            time.sleep(1)
-        except telegram.error.TelegramError:
-            time.sleep(10)
-        except telegram.error.Unauthorized:
-            self.update_id += 1

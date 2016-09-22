@@ -3,11 +3,11 @@ from pokemongo_bot.event_manager import EventHandler
 import telegram
 import thread
 import re
-from pokemongo_bot import inventory
 import time
 import pprint
 from telegram.utils import request
 from chat_handler import ChatHandler
+
 
 DEBUG_ON = False
 
@@ -149,6 +149,12 @@ class TelegramClass:
         self.sendMessage(chat_id=chatid, parse_mode='HTML', text="Upgrade logic not implemented yet")
         return
 
+    def get_event(self, event, formatted_msg, data):
+        return self.chat_handler.get_event(event, formatted_msg, data)
+
+    def get_events(self, update):
+        return self.chat_handler.get_events(update)
+
     def run(self):
         time.sleep(1)
         while True:
@@ -238,7 +244,7 @@ class TelegramClass:
                                              text="No Softbans found! Good job!\n")
                         continue
                     if re.match("^/events", update.message.text):
-                        events = self.chat_handler.get_events(update)
+                        events = self.get_events(update)
                         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                          text="\n".join(events))
                         continue
@@ -263,11 +269,7 @@ class TelegramClass:
                     if re.match(r'^/top ', update.message.text):
                         (cmd, num, order) = self.tokenize(update.message.text, 3)
                         pkmns = self.chat_handler.showtop(num, order)
-                        outMsg = "\n".join(["*{}* (_CP:_ {}) (_IV:_ {}) (Candy:{})".format(p.name, p.cp, p.iv,
-                                                                                           inventory.candies().get(
-                                                                                               p.pokemon_id).quantity)
-                                            for p
-                                            in pkmns])
+                        outMsg = "\n".join(["*{}* (_CP:_ {} _IV:_ {} Candy:{})".format(p.name, p.cp, p.iv, p.candy)])
                         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text=outMsg)
                         continue
                     if re.match(r'^/caught ', update.message.text):
@@ -276,7 +278,7 @@ class TelegramClass:
                         outMsg = ''
                         if caught:
                             for x in caught:
-                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ') (_IV:_ ' + str(
+                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ' _IV:_ ' + str(
                                     x[2]) + ')\n'
                             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                              text="".join(outMsg))
@@ -290,7 +292,7 @@ class TelegramClass:
                         outMsg = ''
                         if evolved:
                             for x in evolved:
-                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ') (_IV:_ ' + str(
+                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ' _IV:_ ' + str(
                                     x[2]) + ')\n'
                             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                              text="".join(outMsg))
@@ -304,7 +306,7 @@ class TelegramClass:
                         outMsg = ''
                         if pokestops:
                             for x in pokestops:
-                                outMsg += '*' + x[0] + '* ' + '(_XP:_ ' + str(x[1]) + ') (_Items:_ ' + str(x[2]) + ')\n'
+                                outMsg += '*' + x[0] + '* ' + '(_XP:_ ' + str(x[1]) + ' _Items:_ ' + str(x[2]) + ')\n'
                             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                              text="".join(outMsg))
                         else:
@@ -317,7 +319,7 @@ class TelegramClass:
                         outMsg = ''
                         if hatched:
                             for x in hatched:
-                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ') (_IV:_ ' + str(
+                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ' _IV:_ ' + str(
                                     x[2]) + ')\n'
                             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                              text="".join(outMsg))
@@ -331,7 +333,7 @@ class TelegramClass:
                         outMsg = ''
                         if released:
                             for x in released:
-                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[2])) + ') (_IV:_ ' + str(
+                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[2])) + ' _IV:_ ' + str(
                                     x[1]) + ')\n'
                             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                              text="".join(outMsg))
@@ -346,7 +348,7 @@ class TelegramClass:
                         outMsg = ''
                         if vanished:
                             for x in vanished:
-                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ') (_IV:_ ' + str(
+                                outMsg += '*' + x[0] + '* ' + '(_CP:_ ' + str(int(x[1])) + ' _IV:_ ' + str(
                                     x[2]) + ')\n'
                             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                              text=outMsg)
@@ -462,7 +464,7 @@ class TelegramHandler(EventHandler):
                     elif event_type == "debug":
                         self.bot.logger.info("[{}] {}".format(event, msg))
                     else:
-                        msg = self.chat_handler.get_event(event, formatted_msg, data)
+                        msg = self.tbot.get_event(event, formatted_msg, data)
 
                     if DEBUG_ON: self.bot.logger.info("Telegram message {}".format(msg))
 
