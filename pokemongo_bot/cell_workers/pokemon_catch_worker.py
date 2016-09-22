@@ -266,17 +266,7 @@ class PokemonCatchWorker(BaseTask):
 
         candies = inventory.candies().get(pokemon.pokemon_id).quantity
         threshold = pokemon_config.get('candy_threshold', -1)
-        if (threshold > 0 and candies >= threshold):
-            self.emit_event(
-                'ignore_candy_above_thresold',
-                level='info',
-                formatted='Amount of candies for {name} is {amount}, greater than threshold {threshold}',
-                data={
-                    'name': pokemon.name,
-                    'amount': candies,
-                    'threshold': threshold
-                }
-            )
+        if threshold > 0 and candies >= threshold: # Got enough candies
             return False
 
         if pokemon_config.get('never_catch', False):
