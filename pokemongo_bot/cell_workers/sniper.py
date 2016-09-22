@@ -29,7 +29,6 @@ class SniperSource(object):
         return self.url
 
     def fetch_raw(self):
-        print "timeout: {} {}".format(self.timeout, self.url)
         some_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/52.0.2743.116 Safari/537.36'
         response = requests.get(self.url, headers={'User-Agent': some_agent}, timeout=self.timeout)
         results = response.json()
@@ -108,7 +107,7 @@ class SniperSource(object):
             if self.enabled:
                 errors = []
                 data = self.fetch_raw()
-
+                
                 # Check whether the params really exist if they have been specified like so
                 if data:
                     if self.mappings.iv.exists and self.mappings.iv.param not in data[0]:
