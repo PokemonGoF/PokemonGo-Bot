@@ -469,10 +469,12 @@
 		"type": "Sniper",
 		"config": {
 			"enabled": true,
+            "debug": false,
 			"mode": "social",
 			"bullets": 3,
 			"homing_shots": true,
 			"special_iv": 100,
+            "min_seconds_between_snipe": 360,
 			"order": ["missing", "iv", "priority", "vip", "expiration_timestamp_ms"],
 			"sources": [
 				{

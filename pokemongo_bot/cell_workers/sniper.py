@@ -6,6 +6,7 @@ import requests
 import calendar
 
 from random import uniform
+from operator import itemgetter, attrgetter, methodcaller
 from datetime import datetime, timedelta
 from pokemongo_bot import inventory
 from pokemongo_bot.item_list import Item
@@ -192,6 +193,7 @@ class Sniper(BaseTask):
     def initialize(self):
         self.cache = []
         self.disabled = False
+        self.last_snipe_time = 0
         self.last_cell_check_time = time.time()
         self.last_data_request_time = time.time()
         self.inventory = inventory.items()
@@ -199,6 +201,7 @@ class Sniper(BaseTask):
         self.debug = self.config.get('debug', False)
         self.special_iv = self.config.get('special_iv', 100)
         self.bullets = self.config.get('bullets', 1)
+        self.min_seconds_between_snipe = self.config.get('min_seconds_between_snipe', 0)
         self.homing_shots = self.config.get('homing_shots', True)
         self.mode = self.config.get('mode', SniperMode.DEFAULT)
         self.order = self.config.get('order', SniperOrderMode.DEFAULT)
@@ -261,8 +264,10 @@ class Sniper(BaseTask):
             if not pokemon.get('pokemon_name') in self.bot.config.vips:
                 # It is not a VIP either. Lets see if its IV is good (if any)
                 if pokemon.get('iv', 0) < self.special_iv:
-                    self._trace('{} is not listed to catch, nor a VIP and its IV sucks. Skipping...'.format(pokemon.get('pokemon_name')))
-                    return False
+                    # its IV (if any) is not good. Lets see if it's a missing Pokemon
+                    if not pokemon['missing']:
+                        self._trace('{} is not listed to catch, nor a VIP or a missing one and its IV sucks. Skipping...'.format(pokemon.get('pokemon_name')))
+                        return False
         #         else:
         #             self._trace('{} has a decent IV ({}), therefore a valid target'.format(pokemon.get('pokemon_name'), pokemon.get('iv')))
         #     else:
@@ -337,10 +342,14 @@ class Sniper(BaseTask):
         return success
 
     def work(self):
+        # Calculate seconds since last Snipe task
+        seconds_since_last_snipe = time.time() - self.last_snipe_time
+        
         # Do nothing if this task was invalidated
         if self.disabled:
             self._error("Sniper was disabled for some reason. Scroll up to find out.")
-        else:
+        # Check if we wait enough time since last task before making a new snipe
+        elif (seconds_since_last_snipe > self.min_seconds_between_snipe):
             targets = []
 
             # Retrieve the targets
@@ -351,8 +360,13 @@ class Sniper(BaseTask):
 
             if targets:
                 # Order the targets (descending)
-                for attr in self.order:
-                    targets.sort(key=lambda pokemon: pokemon[attr], reverse=True)
+                self._trace('Sorting the Pokemon by {}'.format(self.order))
+                targets = sorted(targets, key=itemgetter(*self.order), reverse=True)
+                #List Pokemons found
+                self._trace('Using {} bullets to Snipe thoses Pokemons :'.format(self.bullets))
+                self._trace('===========================================')
+                for index, target in enumerate(targets):
+                    self._trace('{} : #{} - {}  iv:{}  verified:{}   VIP:{}   Missing:{}   Priority:{}'.format(index+1, target.get('pokemon_id'), target.get('pokemon_name'), target.get('iv'), target.get('verified'), target.get('vip'), target.get('missing'), target.get('priority')))
 
                 shots = 0
 
@@ -371,6 +385,16 @@ class Sniper(BaseTask):
                             self._trace('Waiting a few seconds to teleport again to another target...')
                             time.sleep(3)
 
+            self.last_snipe_time = time.time()
+
+            if self.min_seconds_between_snipe > 0:
+                now = datetime.now()
+                wait_m, wait_s = divmod(self.min_seconds_between_snipe, 60)
+                wait_h, wait_m = divmod(wait_m, 60)
+                wait_hms = '%02d:%02d:%02d' % (wait_h, wait_m, wait_s)
+                resume = now + timedelta(seconds=self.min_seconds_between_snipe)
+                self._log('Waiting for {} before attempting another Snipe task (not before {}).'.format(wait_hms, resume.strftime("%H:%M:%S")))
+
         return WorkerResult.SUCCESS
 
     def _parse_pokemons(self, pokemon_dictionary_list):
@@ -379,7 +403,7 @@ class Sniper(BaseTask):
         # Build up the pokemon. Pops are used to destroy random attribute names and keep the known ones!
         for pokemon in pokemon_dictionary_list:
             # Even thought the dict might have the name in it, use ID instead for safety (social vs url)
-            pokemon_name = Pokemons.name_for(pokemon.get('pokemon_id') - 1)
+            pokemon_name = Pokemons.name_for(pokemon.get('pokemon_id'))
 
             # TODO: See below
             # The plan is to only keep valid data in the broker, so if it hasnt ever been verified, we'll verify it and
@@ -390,6 +414,8 @@ class Sniper(BaseTask):
             pokemon['vip'] = pokemon_name in self.bot.config.vips
             pokemon['missing'] = not self.pokedex.captured(pokemon.get('pokemon_id'))
             pokemon['priority'] = self.catch_list.get(pokemon_name, 0)
+
+            self._trace('Found {}  iv:{}   Verified:{}   VIP:{}   Missing:{}   Priority:{}'.format(pokemon_name, pokemon.get('iv'), pokemon.get('verified'), pokemon.get('vip'), pokemon.get('missing'), pokemon.get('priority')))
 
             # Check whether this is a valid target
             if self.is_snipeable(pokemon):
