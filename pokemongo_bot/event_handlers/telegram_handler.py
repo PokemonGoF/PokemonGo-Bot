@@ -22,7 +22,6 @@ class TelegramClass:
         self.config = config
         self.chat_handler = ChatHandler(self.bot, pokemons)
         self.master = self.config.get('master')
-        self.logged_in = False
         with self.bot.database as conn:
             # initialize the DB table if it does not exist yet
             initiator = TelegramDBInit(bot.database)
@@ -57,7 +56,7 @@ class TelegramClass:
             conn.execute("replace into telegram_uids (uid, username) values (?, ?)",
                          (update.message.chat_id, update.message.from_user.username))
             conn.commit()
-        self.master = update.message.chat_id
+        if self.master: self.master = update.message.chat_id
 
     def isMasterFromConfigFile(self, chat_id):
         if not hasattr(self, "master") or not self.master:
@@ -76,21 +75,19 @@ class TelegramClass:
             cur = conn.cursor()
             cur.execute("select count(1) from telegram_logins where uid = ?", [chat_id])
             res = cur.fetchone()
-            if res[0] == 1:
-                return True
-            else:
-                return False
+            if res[0] == 1: return True
+            return False
 
     def isAuthenticated(self, chat_id):
         return self.isMasterFromConfigFile(chat_id) or self.isMasterFromActiveLogins(chat_id)
-
+        
     def deauthenticate(self, update):
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("delete from telegram_logins where uid = ?", [update.message.chat_id])
+            sql = "delete from telegram_logins where uid = {}".format(update.message.chat_id)
+            cur.execute(sql)
             conn.commit()
         self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Logout completed")
-        self.logged_in = False
         return
 
     def authenticate(self, update):
@@ -106,12 +103,10 @@ class TelegramClass:
         else:
             with self.bot.database as conn:
                 cur = conn.cursor()
-                cur.execute("delete from telegram_logins where uid = ?", [update.message.chat_id])
-                cur.execute("insert into telegram_logins(uid) values(?)", [update.message.chat_id])
+                cur.execute("insert or replace into telegram_logins(uid) values(?)",[update.message.chat_id])
                 conn.commit()
             self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                           text="Authentication successful, you can now use all commands")
-            self.logged_in = True
         return
 
     def run(self):
@@ -161,9 +156,8 @@ class TelegramClass:
                         self.authenticate(update)
                         continue
                     if not self.isAuthenticated(update.message.from_user.id) and hasattr(self,
-                                                                                         "master") and self.master and not unicode(
-                            self.master).isnumeric() and unicode(self.master) == unicode(
-                            update.message.from_user.username):
+                            "master") and self.master and not unicode(self.master).isnumeric() and \
+                            unicode(self.master) == unicode(update.message.from_user.username):
                         outMessage = "Telegram message received from correct user, but master is not numeric, updating datastore."
                         self.bot.logger.warn(outMessage)
                         # the "master" is not numeric, set self.master to update.message.chat_id and re-instantiate the handler
@@ -352,7 +346,7 @@ class TelegramHandler(EventHandler):
             for sub in subs:
                 if DEBUG_ON: self.bot.logger.info("Processing sub {}".format(sub))
                 (uid, params, event_type) = sub
-                if not self.tbot.logged_in:
+                if not self.tbot.isAuthenticated(uid): # UID has subs but not in auth list.
                     return
                 if event != 'pokemon_caught' or self.catch_notify(data["pokemon"], int(data["cp"]), float(data["iv"]),
                                                                   params):
