@@ -22,7 +22,7 @@ class TelegramClass:
         self.config = config
         self.chat_handler = ChatHandler(self.bot, pokemons)
         self.master = self.config.get('master')
-        
+        self.logged_in = False
         with self.bot.database as conn:
             # initialize the DB table if it does not exist yet
             initiator = TelegramDBInit(bot.database)
@@ -58,6 +58,7 @@ class TelegramClass:
             conn.commit()
         self.master = update.message.chat_id
 
+
     def isMasterFromConfigFile(self, chat_id):
         if not hasattr(self, "master") or not self.master:
             return False
@@ -89,6 +90,7 @@ class TelegramClass:
             cur.execute("delete from telegram_logins where uid = ?", [update.message.chat_id])
             conn.commit()
         self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Logout completed")
+        self.logged_in = False
         return
 
     def authenticate(self, update):
@@ -106,6 +108,7 @@ class TelegramClass:
                 cur.execute("insert into telegram_logins(uid) values(?)", [update.message.chat_id])
                 conn.commit()
             self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Authentication successful, you can now use all commands")
+            self.logged_in = True
         return
 
     def run(self):            
@@ -176,6 +179,7 @@ class TelegramClass:
                     if update.message.text == "/softbans":
                         self.chat_handler.get_softban(update.message.chat_id)
                         continue
+
                     if re.match("^/events", update.message.text):
                         events = self.chat_handler.get_events(update)
                         self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML',
@@ -324,26 +328,15 @@ class TelegramHandler(EventHandler):
             for sub in subs:
                 if DEBUG_ON: self.bot.logger.info("Processing sub {}".format(sub))
                 (uid, params, event_type) = sub
+                if not self.tbot.logged_in:
+                    return
                 if event != 'pokemon_caught' or self.catch_notify(data["pokemon"], int(data["cp"]), float(data["iv"]), params):
                     if DEBUG_ON: self.bot.logger.info("Matched sub {} event {}".format(sub, event))
-                    if event == 'vanish_log' \
-                            or event == 'eggs_hatched_log' \
-                            or event == 'catch_log' \
-                            or event == 'pokestop_log' \
-                            or event == 'load_cached_location' \
-                            or event == 'location_cache_ignored' \
-                            or event == 'softban_log' \
-                            or event == 'loaded_cached_forts' \
-                            or event == 'login_log' \
-                            or event == 'evolve_log' \
-                            or event == 'catchable_pokemon' \
-                            or event == 'transfer_log':
-                        pass
                     elif event_type == "debug":
                         self.bot.logger.info("[{}] {}".format(event, msg))
                     else:
                         msg = self.chat_handler.get_event(event, formatted_msg, data)
-                    
+
                     if DEBUG_ON: self.bot.logger.info("Telegram message {}".format(msg))
 
                     if msg is None: return
@@ -362,4 +355,5 @@ class TelegramHandler(EventHandler):
                     return
                     
             if self.tbot is not None: # tbot should be running, but just in case it hasn't started yet
+
                 self.chat_handler.sendMessage(chat_id=uid, parse_mode='Markdown', text=msg)
