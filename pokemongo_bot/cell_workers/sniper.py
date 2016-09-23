@@ -424,7 +424,7 @@ class Sniper(BaseTask):
             for source in self.sources:
                 try:
                     if source.enabled:
-                        source_pokemons = source.fetch(3)
+                        source_pokemons = source.fetch(timeoutz)
                         self._trace("Source '{}' returned {} results".format(source.url, len(source_pokemons)))
 
                         # Merge lists, making sure to exclude repeated data. Use location as the hash key
