@@ -70,7 +70,7 @@ class EvolvePokemon(BaseTask):
                 candy = inventory.candies().get(pokemon.pokemon_id)
                 pokemon_to_be_evolved = pokemon_to_be_evolved + min(candy.quantity / (pokemon.evolution_cost - 1), filtered_dict[pokemon.pokemon_id])
 
-        self._print_check(pokemon_to_be_evolved)
+        self._print_check(pokemon_to_be_evolved, self.min_pokemon_to_be_evolved)
 
         has_minimum_to_evolve = pokemon_to_be_evolved >= self.min_pokemon_to_be_evolved
         if has_minimum_to_evolve:
@@ -81,16 +81,13 @@ class EvolvePokemon(BaseTask):
                 if pokemon.can_evolve_now():
                     self._execute_pokemon_evolve(pokemon, cache)
 
-    def _print_check(self, pokemon_to_be_evolved):
-        has_minimum_to_evolve = pokemon_to_be_evolved >= self.min_pokemon_to_be_evolved
-        result_message = ("Gotta catch`em all!", "Gotta evolv`em all!")[has_minimum_to_evolve]
+    def _print_check(self, has, needs):
         self.emit_event(
             'pokemon_evolve_check',
-            formatted='Checking... Has {has}, needs {needs}. {message}',
+            formatted='Evolvable: {has}/{need}',
             data={
-                'has': pokemon_to_be_evolved,
-                'needs': self.min_pokemon_to_be_evolved,
-                'message': result_message
+                'has': has,
+                'needs': needs
             }
         )
 

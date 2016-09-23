@@ -479,7 +479,7 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'pokemon_evolve_check',
-            parameters=('has', 'needs', 'message')
+            parameters=('has', 'needs')
         )
         self.event_manager.register_event(
             'pokemon_upgraded',
