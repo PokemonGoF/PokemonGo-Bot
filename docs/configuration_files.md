@@ -32,7 +32,7 @@
     - [Description](#description)
     - [Options](#options)
         - [Example](#example)
-- [Sniping _(Sniper)_](#sniping-_-sniper-_)
+- [Sniping _(Sniper)_](#sniper)
     - [Description](#description)
     - [Options](#options)
         - [Example](#example)
@@ -725,7 +725,7 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
 }
 ```
 
-## Sniping _(Sniper)_
+## Sniper
 [[back to top](#table-of-contents)]
 
 ### Description
@@ -754,6 +754,8 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
 * `sources.key` - The JSON key that contains the results, eg.: For a JSON response such as `{ "SomeWeirdoName": [{"id": 123, ...}, {"id": 143, ...}]}`, `SomeWeirdoName` would be the key name.
 * `sources.url` - The URL that will provide the JSON.
 * `sources.enabled` - Defines whether this source is enabled or not. This has nothing to do with the task's `enabled`.
+* `sources.timeout` - How long to wait for this source to respond before giving up (default 5 seconds)
+* `mappings`- Map JSON parameters to required values.
    - `iv` - The JSON param that corresponds to the pokemon IV. Only certain sources provide this info. **NOTE:** `social` mode does not provide this info!
    - `id` - The JSON param that corresponds to the pokemon ID. (required)
    - `name` - The JSON param that corresponds to the pokemon name. (required)
@@ -781,6 +783,8 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
         "sources": [
             {
                 "url": "http://pokesnipers.com/api/v1/pokemon.json",
+                "enabled": true,
+                "timeout": 15,
                 "key": "results",
                 "mappings": {
                     "iv": { "param": "iv" },
@@ -793,6 +797,8 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
             {
                 "url": "http://localhost:5000/raw_data",
                 "key": "pokemons",
+                "enabled": true,
+                "timeout": 5,
                 "mappings": {
                     "id": { "param": "pokemon_id" },
                     "name": { "param": "pokemon_name" },
@@ -803,6 +809,8 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
             },
             {
                 "url": "https://pokewatchers.com/grab/",
+                "enabled": true,
+                "timeout": 15,
                 "mappings": {
                     "iv": { "param": "iv" },
                     "id": { "param": "pid" },
