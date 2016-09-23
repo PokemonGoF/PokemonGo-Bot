@@ -79,18 +79,15 @@ class TelegramClass:
             return False
 
     def isAuthenticated(self, chat_id):
-        if self.isMasterFromConfigFile(chat_id): return True
-        if self.isMasterFromActiveLogins(chat_id): return True
-        return False
-
+        return self.isMasterFromConfigFile(chat_id) or self.isMasterFromActiveLogins(chat_id)
+        
     def deauthenticate(self, update):
         with self.bot.database as conn:
             cur = conn.cursor()
-            sql = "delete from telegram_logins where uid = '{}'".format(update.message.chat_id)
+            sql = "delete from telegram_logins where uid = {}".format(update.message.chat_id)
             cur.execute(sql)
             conn.commit()
         self.chat_handler.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Logout completed")
-        self.logged_in = False
         return
 
     def authenticate(self, update):
