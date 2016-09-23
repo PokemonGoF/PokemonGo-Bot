@@ -479,7 +479,6 @@
 				    "enabled": false,
 					"url": "http://localhost:5000/raw_data",
 					"key": "pokemons",
-					"timeout": 3,
 					"mappings": {
 						"id": { "param": "pokemon_id" },
 						"name": { "param": "pokemon_name" },
@@ -491,7 +490,6 @@
 				{
 				    "enabled": false,
 					"url": "https://pokewatchers.com/grab/",
-					"timeout": 10,
 					"mappings": {
 						"iv": { "param": "iv" },
 						"id": { "param": "pid" },
@@ -504,7 +502,6 @@
 				{
 				    "enabled": false,
 					"url": "http://pokesnipers.com/api/v1/pokemon.json",
-					"timeout": 10,
 					"key": "results",
 					"mappings": {
 						"iv": { "param": "iv" },
