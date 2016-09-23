@@ -163,22 +163,22 @@ class RecycleItems(BaseTask):
 
             if not (self.max_balls_keep is None):
                 this_worker_result = self.recycle_excess_category_max(self.max_balls_keep, [1,2,3,4])
-                if this_worker_result <> WorkerResult.SUCCESS:
+                if this_worker_result != WorkerResult.SUCCESS:
                     worker_result = this_worker_result
                     
             if not (self.max_potions_keep is None):
                 this_worker_result =  self.recycle_excess_category_max(self.max_potions_keep, [101,102,103,104])
-                if this_worker_result <> WorkerResult.SUCCESS:
+                if this_worker_result != WorkerResult.SUCCESS:
                     worker_result = this_worker_result
                    
             if not (self.max_berries_keep is None):
                 this_worker_result =  self.recycle_excess_category_max(self.max_berries_keep, [701,702,703,704,705])
-                if this_worker_result <> WorkerResult.SUCCESS:
+                if this_worker_result != WorkerResult.SUCCESS:
                     worker_result = this_worker_result
                     
             if not (self.max_revives_keep is None):
                 this_worker_result = self.recycle_excess_category_max(self.max_revives_keep, [201,202])
-                if this_worker_result <> WorkerResult.SUCCESS:
+                if this_worker_result != WorkerResult.SUCCESS:
                     worker_result = this_worker_result
                     
             for item_in_inventory in inventory.items().all():

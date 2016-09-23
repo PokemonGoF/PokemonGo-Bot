@@ -1,4 +1,3 @@
-import ctypes
 from datetime import datetime, timedelta
 
 from pokemongo_bot import inventory
@@ -96,7 +95,7 @@ class ShowBestPokemon(BaseTask):
         """
         self.emit_event(
             'show_best_pokemon',
-            formatted="{pokemons}",
+            formatted="*Best Pokemons* {pokemons}",
             data={
                 'pokemons': pokemons
             }
@@ -146,7 +145,7 @@ class ShowBestPokemon(BaseTask):
         pokemons_ordered = sorted(self.pokemons, key=lambda x: get_poke_info(self.order_by, x), reverse=True)
         pokemons_ordered = pokemons_ordered[:self.amount]
 
-        poke_info = ['[{}]'.format(', '.join([get_poke_info_formatted(x, p) for x in info_to_show])) for p in pokemons_ordered]
+        poke_info = ['({})'.format(', '.join([get_poke_info_formatted(x, p) for x in info_to_show])) for p in pokemons_ordered]
 
         line = ' | '.join(poke_info)
         return line

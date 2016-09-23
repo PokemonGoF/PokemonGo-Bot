@@ -13,6 +13,16 @@ class LoggingHandler(EventHandler):
         'badges':                            'blue',
         'bot_exit':                          'red',
         'bot_start':                         'green',
+        'buddy_candy_earned':                'green',
+        'buddy_candy_fail':                  'red',
+        'buddy_keep_active':                 'red',
+        'buddy_next_reward':                 'yellow',
+        'buddy_not_available':               'red',
+        'buddy_pokemon':                     'magenta',
+        'buddy_update':                      'blue',
+        'buddy_update_fail':                 'red',
+        'buddy_reward':                      'green',
+        'buddy_walked':                      'yellow',
         'catch_limit':                       'red',
         'catch_log':                         'magenta',
         'config_error':                      'red',
@@ -55,6 +65,7 @@ class LoggingHandler(EventHandler):
         'pokemon_inventory_full':            'red',
         'pokemon_nickname_invalid':          'red',
         'pokemon_not_in_range':              'yellow',
+        'pokemon_keep':                      'green',
         'pokemon_release':                   'green',
         'pokemon_upgraded':                  'green',
         'pokemon_vanished':                  'red',
@@ -76,7 +87,11 @@ class LoggingHandler(EventHandler):
         'vip_pokemon':                       'red',
         'use_incense':                       'blue',
         'vanish_limit_reached':              'red',
+        'move_to_map_pokemon_teleport_to':   'yellow',
+        'sniper_teleporting':                'yellow',
+        'sniper_error':                      'red',
 
+        'sniper_log':                        'none',
         'arrived_at_cluster':                'none',
         'arrived_at_fort':                   'none',
         'bot_sleep':                         'none',
@@ -137,4 +152,4 @@ class LoggingHandler(EventHandler):
             formatted_msg = '[{}] {}'.format(event, formatted_msg)
 
         logger = logging.getLogger(type(sender).__name__)
-        getattr(logger, level)(formatted_msg.encode(sys.stdout.encoding, "replace").decode("utf-8"))
+        getattr(logger, level)(formatted_msg.encode(sys.stdout.encoding or sys.getdefaultencoding(), "replace").decode("utf-8", "replace"))

@@ -39,6 +39,21 @@
         }
       },
       {
+        "type": "BuddyPokemon",
+        "config": {
+          "enabled": true,
+          "buddy_list": "dratini, magikarp",
+          "best_in_family": true,
+          "// candy_limit = 0 means no limit, so it will never change current buddy": {},
+          "candy_limit": 0,
+          "// force_first_change = true will always change buddy at start removing current one": {},
+          "force_first_change": false,
+          "buddy_change_wait_min": 3,
+          "buddy_change_wait_max": 5,
+          "min_interval": 120
+        }
+      },
+      {
         "type": "IncubateEggs",
         "config": {
           "enabled": true,
@@ -90,7 +105,7 @@
         "config": {
           "enabled": false,
           "nickname_above_iv": 0.9,
-          "nickname_template": "{iv_pct}_{iv_ads}",
+          "nickname_template": "{iv_pct}-{iv_ads}",
           "nickname_wait_min": 3,
           "nickname_wait_max": 5
         }
@@ -99,23 +114,24 @@
         "type": "EvolvePokemon",
         "config": {
             "enabled": false,
-            
+
             "// evolve only pidgey and drowzee": "",
             "// evolve_list": "pidgey, drowzee",
             "// donot_evolve_list": "none",
-            
+
             "// evolve all but pidgey and drowzee": "",
             "// evolve_list": "all",
             "// donot_evolve_list": "pidgey, drowzee",
-            
+
             "evolve_list": "all",
             "donot_evolve_list": "none",
-            
+
             "first_evolve_by": "cp",
             "evolve_above_cp": 500,
             "evolve_above_iv": 0.8,
             "logic": "or",
             "evolve_speed": 20,
+            "min_pokemon_to_be_evolved": 1,
             "use_lucky_egg": false
         }
       },
@@ -347,7 +363,7 @@
       "Kangaskhan": { "always_catch": true }
     },
     "release": {
-      "any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or" },
+      "any": {"release_below_cp": 0, "release_below_iv": 0, "release_below_ivcp": 0, "logic": "or" },
 
       "// Legendary pokemons (Goes under S-Tier)": {},
       "Lapras": { "release_below_cp": 1041, "release_below_iv": 0.8, "logic": "and" },
@@ -540,6 +556,6 @@
     },
 	"websocket": {
 		"start_embedded_server": true,
-		"server_url": "127.0.0.1:4000"
+		"server_url": "0.0.0.0:4000"
 	}
 }

@@ -1,6 +1,7 @@
 import time
 from datetime import timedelta
-from pokemongo_bot.inventory import Pokemons, refresh_inventory
+from pokemongo_bot.inventory import Pokemons
+from pokemongo_bot.inventory import refresh_inventory
 from pokemongo_bot import inventory
 
 class Metrics(object):
@@ -72,6 +73,9 @@ class Metrics(object):
 
     def earned_dust(self):
         return self.dust['latest'] - self.dust['start']
+        
+    def stardust_per_hour(self):
+        return self.earned_dust()/(time.time() - self.start_time)*3600
 
     def hatched_eggs(self, update):
         if (update):

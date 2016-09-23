@@ -65,7 +65,32 @@ class SleepSchedule(object):
             self._schedule_next_sleep()
             if wake_up_at_location:
                 if hasattr(self.bot, 'api'): # Check if api is already initialized
-                    self.bot.api.set_position(wake_up_at_location[0],wake_up_at_location[1],wake_up_at_location[2])
+                    msg = "Wake up location found: {location} {position}"
+                    self.bot.event_manager.emit(
+                        'location_found',
+                        sender=self,
+                        level='info',
+                        formatted=msg,
+                        data={
+                            'location': wake_up_at_location['raw'],
+                            'position': wake_up_at_location['coord']
+                        }
+                    )
+
+                    self.bot.api.set_position(*wake_up_at_location['coord'])
+
+                    self.bot.event_manager.emit(
+                        'position_update',
+                        sender=self,
+                        level='info',
+                        formatted="Now at {current_position}",
+                        data={
+                            'current_position': self.bot.position,
+                            'last_position': '',
+                            'distance': '',
+                            'distance_unit': ''
+                        }
+                    )
                 else:
                     self.bot.wake_location = wake_up_at_location
             if hasattr(self.bot, 'api'): self.bot.login() # Same here
@@ -129,18 +154,15 @@ class SleepSchedule(object):
                 timedelta(
                     hours=raw_duration_random_offset.hour, minutes=raw_duration_random_offset.minute).total_seconds())
 
-            raw_wake_up_at_location = entry['wake_up_at_location'] if 'wake_up_at_location' in entry else ''
+            raw_wake_up_at_location = entry['wake_up_at_location'] if 'wake_up_at_location' in entry else None
             if raw_wake_up_at_location:
                 try:
-                    wake_up_at_location = raw_wake_up_at_location.split(',',2)
-                    lat=float(wake_up_at_location[0])
-                    lng=float(wake_up_at_location[1])
-                    if len(wake_up_at_location) == 3:
-                        alt=float(wake_up_at_location[2])
-                    else:
-                        alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
-                    prepared['wake_up_at_location'] = [lat, lng, alt]
-                except ValueError:
+                    wake_up_at_location = self.bot.get_pos_by_name(raw_wake_up_at_location)
+                    lat = float(wake_up_at_location[0])
+                    lng = float(wake_up_at_location[1])
+                    alt = float(wake_up_at_location[2]) if wake_up_at_location[2] else uniform(self.bot.config.alt_min, self.bot.config.alt_max)
+                    prepared['wake_up_at_location'] = { 'raw': raw_wake_up_at_location, 'coord': (lat, lng, alt) }
+                except:
                     index = config.index(entry)
                     self.bot.warning('SleepSchedule: error parsing wake_up_at_location in entry %d' % index)
 
@@ -208,7 +230,7 @@ class SleepSchedule(object):
             prev_day_time = next_time - timedelta(days=1)
             prev_day_end = next_end - timedelta(days=1)
 
-            location = self.entries[index]['wake_up_at_location'] if 'wake_up_at_location' in self.entries[index] else ''
+            location = self.entries[index]['wake_up_at_location'] if 'wake_up_at_location' in self.entries[index] else None
 
             diff = next_time - now
 

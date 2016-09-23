@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import absolute_import
 
 import sys
 import time
@@ -11,7 +12,7 @@ from pokemongo_bot.constants import Constants
 from pokemongo_bot.human_behaviour import action_delay
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_task import BaseTask
-from utils import distance, format_time, fort_details
+from .utils import distance, format_time, fort_details
 
 SPIN_REQUEST_RESULT_SUCCESS = 1
 SPIN_REQUEST_RESULT_OUT_OF_RANGE = 2

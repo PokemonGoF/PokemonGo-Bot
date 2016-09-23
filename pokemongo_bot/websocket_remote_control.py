@@ -1,6 +1,7 @@
 import threading
 import logging
-from socketIO_client import SocketIO, BaseNamespace
+from socketIO_client import BaseNamespace
+from socketIO_client import SocketIO
 from pokemongo_bot import inventory
 
 class WebsocketRemoteControl(object):

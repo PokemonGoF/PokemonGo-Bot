@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import absolute_import
 
 import json
 import os
@@ -10,11 +11,10 @@ from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.item_list import Item
 from pokemongo_bot import inventory
-from utils import fort_details, distance
+from .utils import fort_details, distance,  format_time
 from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.constants import Constants
-from pokemongo_bot.inventory import Pokemons, Pokemon, Attack
-
+from pokemongo_bot.inventory import Pokemons
 
 class CatchPokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -24,8 +24,8 @@ class CatchPokemon(BaseTask):
 
     def work(self):
         # make sure we have SOME balls
-        if sum([inventory.items().get(ball.value).count for ball in 
-            [Item.ITEM_POKE_BALL, Item.ITEM_GREAT_BALL, Item.ITEM_ULTRA_BALL]]) <= 0:
+        if sum([inventory.items().get(ball.value).count for ball in
+    [Item.ITEM_POKE_BALL, Item.ITEM_GREAT_BALL, Item.ITEM_ULTRA_BALL]]) <= 0:
             return WorkerResult.ERROR
 
         # check if we have already loaded a list
@@ -35,18 +35,23 @@ class CatchPokemon(BaseTask):
                 self.get_visible_pokemon()
             if self.config.get('catch_lured_pokemon', True):
                 self.get_lured_pokemon()
+            if self._have_applied_incense() and self.config.get('catch_incensed_pokemon', True):
+                self.get_incensed_pokemon()
 
             random.shuffle(self.pokemon)
 
         num_pokemon = len(self.pokemon)
         if num_pokemon > 0:
             # try catching
-            if self.catch_pokemon(self.pokemon.pop()) == WorkerResult.ERROR:
-                # give up incase something went wrong in our catch worker (ran out of balls, etc)
+            try:
+                if self.catch_pokemon(self.pokemon.pop()) == WorkerResult.ERROR:
+                    # give up incase something went wrong in our catch worker (ran out of balls, etc)
+                    return WorkerResult.ERROR
+                elif num_pokemon > 1:
+                    # we have more pokemon to catch
+                    return WorkerResult.RUNNING
+            except ValueError:
                 return WorkerResult.ERROR
-            elif num_pokemon > 1:
-                # we have more pokemon to catch
-                return WorkerResult.RUNNING
 
         # all pokemon have been processed
         return WorkerResult.SUCCESS
@@ -57,28 +62,27 @@ class CatchPokemon(BaseTask):
             pokemon_to_catch = self.bot.cell['catchable_pokemons']
 
             if len(pokemon_to_catch) > 0:
-    		user_web_catchable = os.path.join(_base_dir, 'web', 'catchable-{}.json'.format(self.bot.config.username))
-    		for pokemon in pokemon_to_catch:
+                user_web_catchable = os.path.join(_base_dir, 'web', 'catchable-{}.json'.format(self.bot.config.username))
+            for pokemon in pokemon_to_catch:
+                # Update web UI
+                with open(user_web_catchable, 'w') as outfile:
+                    json.dump(pokemon, outfile)
 
-    	            # Update web UI
-    		    with open(user_web_catchable, 'w') as outfile:
-    		        json.dump(pokemon, outfile)
+                self.emit_event(
+                    'catchable_pokemon',
+                    level='debug',
+                    data={
+                        'pokemon_id': pokemon['pokemon_id'],
+                        'spawn_point_id': pokemon['spawn_point_id'],
+                        'encounter_id': pokemon['encounter_id'],
+                        'latitude': pokemon['latitude'],
+                        'longitude': pokemon['longitude'],
+                        'expiration_timestamp_ms': pokemon['expiration_timestamp_ms'],
+                        'pokemon_name': Pokemons.name_for(pokemon['pokemon_id']),
+                    }
+                )
 
-    		    self.emit_event(
-    		        'catchable_pokemon',
-    		        level='debug',
-    		        data={
-    		            'pokemon_id': pokemon['pokemon_id'],
-    		            'spawn_point_id': pokemon['spawn_point_id'],
-    		            'encounter_id': pokemon['encounter_id'],
-    		            'latitude': pokemon['latitude'],
-    		            'longitude': pokemon['longitude'],
-    		            'expiration_timestamp_ms': pokemon['expiration_timestamp_ms'],
-    		            'pokemon_name': Pokemons.name_for(pokemon['pokemon_id']),
-    		        }
-    		    )
-
-                    self.add_pokemon(pokemon)
+                self.add_pokemon(pokemon)
 
         if 'wild_pokemons' in self.bot.cell:
             for pokemon in self.bot.cell['wild_pokemons']:
@@ -129,8 +133,25 @@ class CatchPokemon(BaseTask):
 
             self.add_pokemon(pokemon)
 
+    def get_incensed_pokemon(self):
+        # call self.bot.api.get_incense_pokemon
+        pokemon_to_catch = self.bot.api.get_incense_pokemon()
+
+        if len(pokemon_to_catch) > 0:
+            for pokemon in pokemon_to_catch:
+                self.logger.warning("Pokemon: %s", pokemon)
+                self.emit_event(
+                    'incensed_pokemon_found',
+                    level='info',
+                    formatted='Incense attracted a pokemon at {encounter_location}',
+                    data=pokemon
+                )
+
+                self.add_pokemon(pokemon)
+
     def add_pokemon(self, pokemon):
-        if pokemon['encounter_id'] not in self.pokemon:
+        if pokemon['encounter_id'] not in \
+                map(lambda pokemon: pokemon['encounter_id'], self.pokemon):
             self.pokemon.append(pokemon)
 
     def catch_pokemon(self, pokemon):
@@ -138,3 +159,15 @@ class CatchPokemon(BaseTask):
         return_value = worker.work()
 
         return return_value
+
+    def _have_applied_incense(self):
+        for applied_item in inventory.applied_items().all():
+            self.logger.info(applied_item)
+            if applied_item.expire_ms > 0:
+                mins = format_time(applied_item.expire_ms * 1000)
+                self.logger.info("Not applying incense, currently active: %s, %s minutes remaining", applied_item.item.name, mins)
+                return True
+            else:
+                self.logger.info("")
+                return False
+        return False

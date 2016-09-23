@@ -24,7 +24,14 @@ This will send a notification if a Dratini is caught with at least 1200CP and at
 
 **Dynamic notifications(subscriptions)**
 
-Every authenticated user can subscribe to be notified in case a certain event is emitted. The list of currently available events can be retrieved by sending "/events" command.
+Every authenticated user can subscribe to be notified in case a certain event is emitted. The list of currently available events can be retrieved by sending `/events` command:
+> /events
+
+List all available eventy (MANY!)
+
+> /events egg
+
+List all events matching regular expression .\*egg.\*
 
 In order to subscribe to a certain event, e.g. to "no_pokeballs", you simply send the `/sub` command as follows:
 > /sub no_pokeballs
@@ -43,3 +50,12 @@ This will subscribe you to be notified every time a Dratini has been caught with
 `/showsubs` will show your current subscriptions.
 
 
+**Listing pokemon**
+
+> /top 10 iv
+
+List top 10 pokemon, ordered by IV
+
+> /top 15 cp
+
+List top 15 pokemon, ordered by CP
