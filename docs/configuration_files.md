@@ -193,6 +193,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 * EvolvePokemon
   * `enable`: Disable or enable this task.
   * `evolve_all`: Default `NONE` | Depreciated. Please use evolve_list and donot_evolve_list
+  * `interval`: `Default: 120`. Time (in seconds) to periodically check if you have enough pokemon to evolve (more than `min_pokemon_to_be_evolved`)
   * `evolve_list`: Default `all` | Set to all, or specifiy different pokemon seperated by a comma
   * `donot_evolve_list`: Default `none` | Pokemon seperated by comma, will be ignored from evolve_list
   * `min_evolve_speed`: Default `25` | Minimum seconds to wait between each evolution 

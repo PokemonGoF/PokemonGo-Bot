@@ -18,7 +18,7 @@ class EvolvePokemon(BaseTask):
     def initialize(self):
         self.start_time = 0
         self.next_update = None
-        self.interval = self.config.get('interval', 60)
+        self.interval = self.config.get('interval', 120)
         self.evolve_list = self.config.get('evolve_list', [])
         self.donot_evolve_list = self.config.get('donot_evolve_list', [])
         self.min_evolve_speed = self.config.get('min_evolve_speed', 25)
