@@ -5,10 +5,11 @@
     - [Understand parameters](#understand-parameters)
         - [enabled](#enabled)
         - [min_slots_left](#min_slots_left)
+        - [action_wait_min](#action_wait_min)
+        - [action_wait_max](#action_wait_max)
         - [transfer](#transfer)
-        - [transfer_wait_min](#transfer_wait_min)
-        - [transfer_wait_max](#transfer_wait_max)
         - [evolve](#evolve)
+        - [evolve_to_final](#evolve_to_final)
         - [evolve_time](#evolve_time)
         - [evolve_for_xp](#evolve_for_xp)
         - [evolve_only_with_lucky_egg](#evolve_only_with_lucky_egg)
@@ -25,16 +26,19 @@
             - [keep](#rule-keep)
             - [evolve](#rule-evolve)
             - [upgrade](#rule-upgrade)
+            - [buddy](#rule-buddy)
 - [Eevee case](#eevee-case)
 - [FAQ](#faq)
 
 # About
-The Pokemon Optimizer manage transfer, evolution and upgrade of your Pokemon.
+The Pokemon Optimizer manage buddy, transfer, evolution and upgrade of your Pokemon.
 <br>It can replace or complement the classical Evolve and Transfer tasks.
-<br>It will be triggered when you bag of Pokemon is full and has no effect until it happens.
+<br>Transfer, evolution and upgrade will be triggered when you bag of Pokemon is full.
 
 The Pokemon Optimizer will first Transfer, then Evolve, then Upgrade.
 There is only one pass at each action.
+
+It will also collect the candies from your Buddy and select the next buddy.
 
 [[back to top](#pokemon-optimizer)]
 
@@ -48,45 +52,75 @@ There is only one pass at each action.
             "config": {
                 "enabled": true,
                 "min_slots_left": 5,
+                "action_wait_min": 3,
+                "action_wait_max": 5,
                 "transfer": true,
-                "transfer_wait_min": 3,
-                "transfer_wait_max": 5,
                 "evolve": true,
+                "evolve_to_final": true,
                 "evolve_time": 25,
                 "evolve_for_xp": true,
                 "evolve_only_with_lucky_egg": false,
                 "evolve_count_for_lucky_egg": 80,
                 "may_use_lucky_egg": true,
                 "upgrade": true,
-                "upgrade_level": 60,
+                "upgrade_level": 30,
                 "groups": {
                     "gym": ["Dragonite", "Snorlax", "Lapras", "Arcanine"]
                 },
                 "rules": [
                     {
+                        "// Of all Pokemon with less than 124 candies, buddy the Pokemon having the highest maximum cp": {},
+                        "mode": "overall",
+                        "top": 1,
+                        "sort": ["max_cp", "cp"],
+                        "keep": {"candy": -124},
+                        "evolve": false,
+                        "buddy": true
+                    },
+                    {
+                        "// Buddy the Pokemon having the less candies. In case no Pokemon match first rule": {},
+                        "mode": "overall",
+                        "top": 1,
+                        "sort": ["-candy", "max_cp", "cp"],
+                        "evolve": false,
+                        "buddy": true
+                    },
+                    {
+                        "mode": "by_pokemon",
+                        "names": ["gym"],
+                        "top": 3,
+                        "sort": ["iv", "ncp"],
+                        "evolve": {"iv": 0.9, "ncp": 0.9},
+                        "upgrade": {"iv": 0.9, "ncp": 0.9}
+                    },
+                    {
+                        "// Keep best iv of each family and evolve it if its iv is greater than 0.9": {},
                         "mode": "by_family",
                         "top": 1,
                         "sort": ["iv"],
                         "evolve": {"iv": 0.9}
                     },
                     {
+                        "// Keep best ncp of each family and evolve it if its ncp is greater than 0.9": {},
                         "mode": "by_family",
                         "top": 1,
                         "sort": ["ncp"],
                         "evolve": {"ncp": 0.9}
                     },
                     {
+                        "// Keep best cp of each family but do not evolve it": {},
                         "mode": "by_family",
                         "top": 1,
-                        "sort": ["cp"]
+                        "sort": ["cp"],
+                        "evolve": false
                     },
                     {
-                        "mode": "by_family",
-                        "top": 3,
-                        "names": ["gym"],
-                        "sort": ["iv", "ncp"],
-                        "evolve": {"iv": 0.9, "ncp": 0.9},
-                        "upgrade": {"iv": 0.9, "ncp": 0.9}
+                        "// For Pokemon of final evolution and with iv greater than 0.9, keep the best dps_attack": {},
+                        "mode": "by_pokemon",
+                        "names": ["!with_next_evolution"],
+                        "top": 1,
+                        "sort": ["dps_attack"],
+                        "keep": {"iv": 0.9}
                     }
                 ]
             }
@@ -117,6 +151,24 @@ The Pokemon Optimizer will be triggered when you have that number (or less) empt
 
 [[back to top](#pokemon-optimizer)]
 
+### action_wait_min
+| Parameter           | Possible values | Default |
+|---------------------|-----------------|---------|
+| `action_wait_min`   | `[0-N]`         | `3`     |
+
+This is the minimum time to wait after performing an action in the inventory like transferring, upgrading etc.
+
+[[back to top](#pokemon-optimizer)]
+
+### action_wait_max
+| Parameter           | Possible values | Default |
+|---------------------|-----------------|---------|
+| `action_wait_max`   | `[0-N]`         | `5`     |
+
+This is the maximum time to wait after performing an action in the inventory like transferring, upgrading etc.
+
+[[back to top](#pokemon-optimizer)]
+
 ### transfer
 | Parameter  | Possible values | Default |
 |------------|-----------------|---------|
@@ -127,48 +179,50 @@ The `transfer` parameter activate or deactivate the transfer of Pokemon.
 At `true`, you allow the Pokemon Optimizer to transfer every Pokemon that are not good enough to be kept according to your criteria.
 <br>At `false`, and regardless of other parameters, no Pokemon is ever going to be transfered.
 
-Note that, whatever is the value you choose to give to that parameter, you will still see logs explaining which Pokemon are transfered.
-<br>The purpose of this is to show you what choices are made by the Pokemon Optimizer.
-It can help you rectify your configuration or guide you during manual transfer.
+Note that in test mode, you can see logs explaining which Pokemon would be transfered in non-test mode.
+<br>It can help you rectify your configuration or guide you during manual transfer.
 
-`Exchanged Magikarp [IV 0.4] [CP 69] [481 candies]`
-
-[[back to top](#pokemon-optimizer)]
-
-### transfer_wait_min
-| Parameter           | Possible values | Default |
-|---------------------|-----------------|---------|
-| `transfer_wait_min` | `[0-N]`         | `3`     |
-
-This is the minimum time to wait after transferring a Pokemon.
-
-[[back to top](#pokemon-optimizer)]
-
-### transfer_wait_max
-| Parameter           | Possible values | Default |
-|---------------------|-----------------|---------|
-| `transfer_wait_max` | `[0-N]`         | `5`     |
-
-This is the maximum time to wait after transferring a Pokemon.
+```
+Exchanged Magikarp [IV 0.4] [CP 69] [481 candies]
+```
 
 [[back to top](#pokemon-optimizer)]
 
 ### evolve
 | Parameter | Possible values | Default |
 |-----------|-----------------|---------|
-| `evolve`  | `true`, `false` | `false` |
+| `evolve`  | `true`, `false` | `true`  |
 
 The `evolve` parameter activate or deactivate the evolution of Pokemon.
 
 At `true`, you allow the Pokemon Optimizer to evolve every Pokemon that is meeting the evolution criteria.
-<br>You also allow it to evolve lower quality Pokemon when [`evolve_for_xp`](#evolve_for_xp) parameter is `true`.
+<br>You also allow it to evolve lower quality Pokemon when [`evolve_for_xp`](#evolve_for_xp) parameter is activated.
 <br>At `false`, and regardless of other parameters, no Pokemon is ever going to be evolved.
 
-Note that, whatever is the value you choose to give to that parameter, you will still see logs explaining which Pokemon are evolved.
-<br>The purpose of this is to show you what choices are made by the Pokemon Optimizer.
-It can help you rectify your configuration or guide you during manual evolution.
+Note that in test mode, you can see logs explaining which Pokemon would be evolved in non-test mode.
+<br>It can help you rectify your configuration or guide you during manual evolution.
 
-`Evolved Magikarp [IV 0.96] [CP 231] [+1000 xp] [82 candies]`
+```
+Evolved Magikarp [IV 0.96] [CP 231] [+1000 xp] [82 candies]
+```
+
+[[back to top](#pokemon-optimizer)]
+
+### evolve_to_final
+| Parameter         | Possible values | Default |
+|-------------------|-----------------|---------|
+| `evolve_to_final` | `true`, `false` | `true`  |
+
+Choose whether or not you want to wait to have enough candies to evolve Pokemon to their final evolution.
+
+At `true`, it is only when you have enough candies that your best Pokemon will be evolved directly to their final evolution.
+<br>At `false`, your best Pokemon are allowed to evolve progressively.
+
+```
+Evolving 2 Pokemon (the best)
+Evolved Weedle [IV 0.91] [CP 246] [60 candies] [+500 xp]
+Evolved Kakuna [IV 0.91] [CP 265] [11 candies] [+500 xp]
+```
 
 [[back to top](#pokemon-optimizer)]
 
@@ -183,23 +237,37 @@ This is the duration of the evolution animation and time to wait after performin
 [[back to top](#pokemon-optimizer)]
 
 ### evolve_for_xp
-| Parameter       | Possible values | Default |
-|-----------------|-----------------|---------|
-| `evolve_for_xp` | `true`, `false` | `true`  |
+| Parameter       | Possible values       | Default |
+|-----------------|-----------------------|---------|
+| `evolve_for_xp` | `true`, `false`, `[]` | `true`  |
 
 Let you choose if you want the Pokemon Optimizer to use your candies to evolve low quality Pokemon.
+
+At `false`, low quality Pokemon get transferred normally following your rules.
+At `true`, this option is restricted to the following list of 18 Pokemon:
+
+|     |     |     |     |     |     |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| `#010`<br>`Caterpie`  | `#013`<br>`Weedle` | `#016`<br>`Pidgey`  | `#019`<br>`Rattata` | `#029`<br>`Nidoran F` | `#032`<br>`Nidoran M` |
+| `#041`<br>`Zubat`     | `#043`<br>`Oddish` | `#046`<br>`Paras`   | `#048`<br>`Venonat` | `#054`<br>`Psyduck`   | `#072`<br>`Tentacool` |
+| `#081`<br>`Magnemite` | `#098`<br>`Krabby` | `#100`<br>`Voltorb` | `#118`<br>`Goldeen` | `#120`<br>`Staryu`    | `#133`<br>`Eevee`     |
+
+You can also define `evolve_for_xp` as a list of Pokemon names or Pokemon [`groups`](#groups).
+<br>For example: `"evolve_for_xp": ["Caterpie", "Weedle", "Pidgey"]`
 
 Better quality Pokemon have priority for evolution and the Pokemon Optimizer will never evolve for xp if a better Pokemon is waiting for candies to evolve.
 <br>These low quality Pokemon will only be used if you have plenty of candies left after evolving your best Pokemon.
 
-The below 2% rule help the Pokemon Optimizer to disregard rare Pokemon and focus on common Pokemon to evolve for xp.
-
-###### 2% rule
-For each family of Pokemon, if, after evolving your best Pokemon, you have enough candies left to evolve 2% of your total bag capacity, the first rank of the family are eligible for xp evolution.
-<br>If you do not have enough candies or Pokemon to evolve these 2%, they will be transfered.
-
-For example, for a bag total capacity of 250, you must have enough candies and Pokemon to evolve 5 of them for xp evolution.
-<br>This usually means that the rarest Pokemon in your area will never be eligible since you never have 5 low quality of them at the point where your bag is full.
+```
+Evolving 50 Pokemon (for xp)
+Evolved Caterpie [IV 0.62] [CP 58] [574 candies] [+500 xp]
+Evolved Caterpie [IV 0.6] [CP 301] [563 candies] [+500 xp]
+Evolved Caterpie [IV 0.6] [CP 270] [552 candies] [+500 xp]
+Evolved Caterpie [IV 0.53] [CP 245] [541 candies] [+500 xp]
+Evolved Caterpie [IV 0.53] [CP 25] [530 candies] [+500 xp]
+Evolved Caterpie [IV 0.51] [CP 46] [519 candies] [+500 xp]
+...
+```
 
 [[back to top](#pokemon-optimizer)]
 
@@ -252,9 +320,8 @@ At `true`, you allow the Pokemon Optimizer to upgrade every Pokemon that is meet
 Which means that the Pokemon Optimizer is going to wait that a Pokemon is fully evolved before upgrading it.
 <br>At `false`, and regardless of other parameters, no Pokemon is ever going to be upgraded.
 
-Note that, whatever is the value you choose to give to that parameter, you will still see logs explaining which Pokemon are upgraded.
-<br>The purpose of this is to show you what choices are made by the Pokemon Optimizer.
-It can help you rectify your configuration or guide you during manual power-up.
+Note that in test mode, you can see logs explaining which Pokemon would be upgraded in non-test mode.
+<br>It can help you rectify your configuration or guide you during manual power-up.
 
 `Upgraded Magikarp [IV 0.96] [CP 231] [81 candies] [132450 stardust]`
 
@@ -263,26 +330,27 @@ It can help you rectify your configuration or guide you during manual power-up.
 ### upgrade_level
 | Parameter       | Possible values | Default |
 |-----------------|-----------------|---------|
-| `upgrade_level` | `[1-80]`        | `60`    |
+| `upgrade_level` | `[1-40]`        | `30`    |
 
 This the maximum level at which you want the Pokemon Optimizer to upgrade your Pokemon.
-<br>Pokemon upgrade level cannot be higher than 2 times player level. The parameter value will be majored by `2 * player level`.
+<br>Pokemon upgrade level cannot be higher than `player level + 1.5` and cannot be higher than `40`.
+The parameter value will be majored by `player level + 1.5` or `40` if it goes over that value.
 
-Pokemon are either fully upgraded to the maximum possible level or not upgraded at all.
+Pokemon are either fully upgraded to the configured level or not upgraded at all.
 The higher the level is, the more costly in candies and stardust it becomes to upgrade a Pokemon.
 
 ###### Cumulative upgrade cost (candy, stardust)
 
-| From - To | 10        | 20          | 30          | 40          | 50          | 60            | 70            | 80            |
+| From - To | 5         | 10          | 15          | 20          | 25          | 30            | 35            | 40            |
 |-----------|:---------:|:-----------:|:-----------:|:-----------:|:-----------:|:-------------:|:-------------:|:-------------:|
-| 1         | 9<br>3000 | 19<br>11000 | 38<br>25500 | 58<br>47500 | 87<br>80000 | 126<br>125000 | 196<br>190000 | 319<br>280000 |
-| 10        |           | 10<br>8000  | 29<br>22500 | 49<br>44500 | 78<br>77000 | 117<br>122000 | 187<br>187000 | 310<br>277000 |
-| 20        |           |             | 19<br>14500 | 39<br>36500 | 68<br>69000 | 107<br>114000 | 177<br>179000 | 300<br>269000 |
-| 30        |           |             |             | 20<br>22000 | 49<br>54500 |  88<br>99500  | 158<br>164500 | 281<br>254500 |
-| 40        |           |             |             |             | 29<br>32500 |  68<br>77500  | 138<br>142500 | 261<br>232500 |
-| 50        |           |             |             |             |             |  39<br>45000  | 109<br>110000 | 232<br>200000 |
-| 60        |           |             |             |             |             |               |  70<br>65000  | 193<br>155000 |
-| 70        |           |             |             |             |             |               |               | 123<br>90000  |
+| 1         | 8<br>2400 | 18<br>10000 | 36<br>23600 | 56<br>45000 | 84<br>76000 | 124<br>120000 | 188<br>182000 | 306<br>270000 |
+| 5         |           | 10<br>7600  | 28<br>21200 | 48<br>42600 | 76<br>73600 | 116<br>117600 | 180<br>179600 | 298<br>267600 |
+| 10        |           |             | 18<br>13600 | 38<br>35000 | 66<br>66000 | 106<br>110000 | 170<br>172000 | 288<br>260000 |
+| 15        |           |             |             | 20<br>21400 | 48<br>52400 |  88<br>96400  | 152<br>158400 | 270<br>246400 |
+| 20        |           |             |             |             | 28<br>31000 |  68<br>75000  | 132<br>137000 | 250<br>225000 |
+| 25        |           |             |             |             |             |  40<br>44000  | 104<br>106000 | 222<br>194000 |
+| 30        |           |             |             |             |             |               |  64<br>62000  | 182<br>150000 |
+| 35        |           |             |             |             |             |               |               | 118<br>88000  |
 
 [[back to top](#pokemon-optimizer)]
 
@@ -308,12 +376,16 @@ A same Pokemon name can appear in different `groups`. And `groups` may reference
 <br>Just like [`names`](#rule-names), you can also negate a group by preceding its name by a `!` or `-`.
 <br>Including `groups` and negating others allow you to create group unions and/or intersections.
 
+There is a few predifined group names that you can use in your configuration:
+- `with_next_evolution`, target all Pokemon that can be evolved.
+- `with_previous_evolution`, target all Pokemon that are the result of an evolution.
+
 [[back to top](#pokemon-optimizer)]
 
 ### rules
 | Parameter | Possible values | Default     |
 |-----------|-----------------|-------------|
-| `rules`   | (see below)     | (see below) |
+| `rules`   | `[]`            | (see below) |
 
 This parameter is a list that contains as many element as you want.
 <br>Each element of that list define a rule that select what Pokemon are the best.
@@ -321,6 +393,10 @@ This parameter is a list that contains as many element as you want.
 
 The conjunction of all rules define the list of all Pokemon to keep.
 Every Pokemon not selected is candidate for transfer.
+
+The order in which the rule are defined may have an impact on the behavior.
+Especially, if there not enough candies/stardust to evolve/upgrade all the selected Pokemon, the Pokemon selected by the first rule will be evolved/upgraded first, then the ones of the second rule etc.
+More generally, the first rule always have higher priority for evolve, upgrade or buddy.
 
 ```
 "rules": [
@@ -377,7 +453,7 @@ A family is the group of a Pokemon with all its evolutions.
 #### rule names
 | Parameter | Possible values | Default                  |
 |-----------|-----------------|--------------------------|
-| `names`   | list of strings | `[]` = All Pokemon names |
+| `names`   | `[]`            | `[]` = All Pokemon names |
 
 The `names` allow you to restrict a rule to a selected set of Pokemon.
 <br>It is a list of Pokemon names or Pokemon [`groups`](#groups).
@@ -427,6 +503,7 @@ Define according to which criteria you want to sort your Pokemon.
 | `ivcp`               | iv weighted so that for equal iv, attack > defense > stamina                 |
 | `cp`                 | combat power (can be increased with candies)                                 |
 | `cp_exact`           | combat power (not rounded)                                                   |
+| `max_cp`             | maximum possible cp                                                          |
 | `ncp`                | normalized cp = ratio cp / max_cp                                            |
 | `iv_attack`          | attack component of iv between 0 and 15                                      |
 | `iv_defense`         | defense component of iv between 0 and 15                                     |
@@ -440,16 +517,28 @@ Define according to which criteria you want to sort your Pokemon.
 | `defense_perfection` | ratio `dps_defense` / `best_dps_defense`. Return same order as `dps_defense` |
 | `hp`                 | current health points                                                        |
 | `hp_max`             | max health points                                                            |
+| `candy`              | number of candies for this pokemon                                           |
+| `candy_to_evolution` | number of candies missing to evolve this Pokemon                             |
+| `evolution_cost`     | total number of candies required to evolve this Pokemon to next evolution    |
 
 You can put multiple criteria in the list by separating them by a comma: `"sort": ["iv", "cp"]`
 <br>If multiple criteria are present, Pokemon will be ranked according to the first criteria, then, if equals, to the second criteria, etc.
+
+Pokemon are sorted from highest score to lowest score in the selected criteria.
+Preceding the criteria name by a `-` will reverse the order:
+
+- `"sort": ["candy"]` will sort Pokemon from highest to lowest number of candies.
+- `"sort": ["-candy"]` will sort Pokemon from lowest to highest number of candies.
+
+[[back to top](#pokemon-optimizer)]
 
 #### rule keep
 | Parameter | Possible values | Default |
 |-----------|-----------------|---------|
 | `keep`    | (see below)     | `true`  |
 
-Define minimum requirements to keep the Pokemon. Only Pokemon meeting these minimum requirements will be sorted.
+Define minimum requirements to keep the Pokemon.
+Only Pokemon meeting these minimum requirements will be sorted.
 By default, if `keep` is not provided or is empty, all Pokemon will be sorted.
 
 The parameter can be a boolean value (`true` or `false`) or a list a criteria.
@@ -474,7 +563,8 @@ The minimum requirement values can be a single value or a range.
 |-----------|-----------------|---------|
 | `evolve`  | (see below)     | `true`  |
 
-Define minimum requirements to evolve the Pokemon. Only Pokemon meeting these minimum requirements will be evolved.
+Define minimum requirements to evolve the Pokemon.
+Only Pokemon meeting these minimum requirements will be evolved.
 By default, if `evolve` is not provided or is empty, no Pokemon will be evolved.
 
 The parameter can be a boolean value (`true` or `false`) or a list a criteria.
@@ -499,7 +589,8 @@ The minimum requirement values can be a single value or a range.
 |-----------|-----------------|---------|
 | `upgrade` | (see below)     | `false` |
 
-Define minimum requirements to upgrade the Pokemon. Only Pokemon meeting these minimum requirements will be upgraded.
+Define minimum requirements to upgrade the Pokemon.
+Only Pokemon meeting these minimum requirements will be upgraded.
 By default, if `upgrade` is not provided or is empty, no Pokemon will be upgraded.
 
 The parameter can be a boolean value (`true` or `false`) or a list a criteria.
@@ -516,6 +607,32 @@ The minimum requirement values can be a single value or a range.
 - `"upgrade": {"cp": -20}` will only upgrade Pokemon with `cp` lower than `20`.
 - `"upgrade": {"cp": [10, 20]}` will only upgrade Pokemon with `cp` between `10` and `20`.
 - `"upgrade": {"iv": [[0.3, 0.5], [0.9, 1.0]]}` will only upgrade Pokemon with `iv` between `0.3` and `0.5` or between `0.9` and `1.0`.
+
+[[back to top](#pokemon-optimizer)]
+
+#### rule buddy
+| Parameter | Possible values | Default |
+|-----------|-----------------|---------|
+| `buddy`   | (see below)     | `false` |
+
+Define minimum requirements to make a Pokemon your buddy.
+Only Pokemon meeting these minimum requirements will be candidate for being a buddy.
+By default, if `buddy` is not provided or is empty, no Pokemon will be set as buddy.
+
+The buddy selected if the best Pokemon meeting the requirements.
+He will become the new buddy if there is currently no buddy or if the current buddy walked its complete distance.
+If multiple rules are used to select a buddy, the order of the rules define which Pokemon will be the new buddy.
+
+The minimum requirement values can be a single value or a range.
+<br>They can also be a negative value if you wish to buddy Pokemon below a certain criteria:
+
+- `"buddy": false` will not select any Pokemon as buddy candidate.
+- `"buddy": true` will select all Pokemon as buddy candidate.
+- `"buddy": {"candy": -400}` will only select Pokemon for which the number of `candy` is less than or equal to `400`.
+- `"buddy": {"candy_to_evolution": -5}` will only select Pokemon for which the number of candy missing to evolve it is less than or equal to `5`.
+- `"buddy": {"evolution_cost": 50}` will only select Pokemon for which the number of needed for next evolution is a least `50`.
+
+`Buddy Hitmonlee rewards Hitmonlee candies [+1 candies] [6 candies]`
 
 [[back to top](#pokemon-optimizer)]
 
@@ -596,6 +713,17 @@ For Eevee Pokemon family, and any other family with multiple paths of evolution,
     "mode": "by_pokemon",
     "names": ["Poliwag"]
     "keep": {"cp": -20}
+},
+```
+
+#### How do I buddy the Pokemon for which I have the less number of candies ?
+
+```
+{
+    "mode": "overall",
+    "top": 1,
+    "sort": ["-candy", "cp"],
+    "buddy": true
 },
 ```
 

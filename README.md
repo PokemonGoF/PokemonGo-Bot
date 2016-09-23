@@ -56,10 +56,7 @@ If this is your first time making a PR or aren't sure of the standard practice o
 - [x] Incubate eggs
 - [x] Crowd Sourced Map Prototype
 - [ ] [Standalone Desktop Application] (https://github.com/PokemonGoF/PokemonGo-Bot-Desktop)
-- [ ] Use candy
-
-## Gym Battles
-[PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot) takes a strong stance against automating gym battles. Botting gyms will have a negative effect on most players and thus the game as a whole. We will thus never accept contributions or changes containing code specific for gym battles.
+- [x] Use candy
 
 ## Analytics
 [PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot) is very popular and has a vibrant community. Because of that, it has become very difficult for us to know how the bot is used and what errors people hit. By capturing small amounts of data, we can prioritize our work better such as fixing errors that happen to a large percentage of our user base, not just a vocal minority.
@@ -93,9 +90,11 @@ If you do not want any data to be gathered, you can turn off this feature by set
  * 05-032
  * sinistance
  * CapCap
+ * YvesHenri
  * mzupan
  * gnekic(GeXx)
  * Shoh
+ * JSchwerberg
  * luizperes
  * brantje
  * VirtualSatai
@@ -157,6 +156,7 @@ If you do not want any data to be gathered, you can turn off this feature by set
  * rawgni
  * Breeze Ro
  * bruno-kenji
+ * Gobberwart
 
 ## Disclaimer
 ©2016 Niantic, Inc. ©2016 Pokémon. ©1995–2016 Nintendo / Creatures Inc. / GAME FREAK inc. © 2016 Pokémon/Nintendo Pokémon and Pokémon character names are trademarks of Nintendo. The Google Maps Pin is a trademark of Google Inc. and the trade dress in the product design is a trademark of Google Inc. under license to The Pokémon Company. Other trademarks are the property of their respective owners.

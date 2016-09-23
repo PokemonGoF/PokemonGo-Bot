@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 import json
 import thread
 import time
@@ -12,6 +13,8 @@ DEBUG_ON = False
 
 
 class MyMQTTClass:
+    MAX_RESULTS = 50
+
     def __init__(self, bot, clientid=None):
         self.bot = bot
         self.client_id = clientid
@@ -22,32 +25,34 @@ class MyMQTTClass:
         if rc is 0:
             self._mqttc.subscribe("pgo/#", 1)
         if DEBUG_ON:
-            print "rc: " + str(rc)
+            print("rc: " + str(rc))
 
     def mqtt_on_message(self, mqttc, obj, msg):
         if DEBUG_ON:
-            print 'on message: {}'.format(msg.payload)
+            print('on message: {}'.format(msg.payload))
 
         pokemon = json.loads(msg.payload)
         if pokemon and 'encounter_id' in pokemon:
             new_list = [x for x in self.bot.mqtt_pokemon_list if x['encounter_id'] is pokemon['encounter_id']]
             if not (new_list and len(new_list) > 0):
+                if len(self.bot.mqtt_pokemon_list) > self.MAX_RESULTS:
+                    del self.bot.mqtt_pokemon_list[:]
                 self.bot.mqtt_pokemon_list.append(pokemon)
 
     def on_disconnect(self, client, userdata, rc):
         self._mqttc.unsubscribe("pgo/#")
         if DEBUG_ON:
-            print 'on_disconnect'
+            print('on_disconnect')
             if rc != 0:
-                print "Unexpected disconnection."
+                print("Unexpected disconnection.")
 
     def mqtt_on_publish(self, mqttc, obj, mid):
         if DEBUG_ON:
-            print "mid: " + str(mid)
+            print("mid: " + str(mid))
 
     def mqtt_on_subscribe(self, mqttc, obj, mid, granted_qos):
         if DEBUG_ON:
-            print "Subscribed: " + str(mid) + " " + str(granted_qos)
+            print("Subscribed: " + str(mid) + " " + str(granted_qos))
 
     # def mqtt_on_log(self, mqttc, obj, level, string):
     #    print string
@@ -62,7 +67,7 @@ class MyMQTTClass:
     def initialize(self):
         try:
             if DEBUG_ON:
-                print 'connect again'
+                print('connect again')
 
             self._mqttc = mqtt.Client(None)
             self._mqttc.on_message = self.mqtt_on_message
@@ -74,7 +79,7 @@ class MyMQTTClass:
             # Enable this line if you are doing the snip code, off stress
             # self._mqttc.loop_start()
         except TypeError:
-            print 'Connect to mqtter error'
+            print('Connect to mqtter error')
             return
 
     def run(self):
@@ -82,12 +87,12 @@ class MyMQTTClass:
         while True:
             try:
                 self._mqttc.loop_forever(timeout=30.0, max_packets=100, retry_first_connection=False)
-                print 'Oops disconnected ?'
+                print('Oops disconnected ?')
                 time.sleep(20)
             except UnicodeDecodeError:
                 time.sleep(1)
             except Exception as e:
-                print e
+                print(e)
                 time.sleep(10)
 
 
@@ -101,7 +106,7 @@ class SocialHandler(EventHandler):
         if self.mqttc is None:
             try:
                 if DEBUG_ON:
-                    print 'need connect'
+                    print('need connect')
 
                 self.mqttc = MyMQTTClass(self.bot, self.bot.config.client_id)
                 self.mqttc.initialize()

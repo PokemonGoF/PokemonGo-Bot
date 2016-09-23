@@ -39,6 +39,21 @@
         }
       },
       {
+        "type": "BuddyPokemon",
+        "config": {
+          "enabled": true,
+          "buddy_list": "dratini, magikarp",
+          "best_in_family": true,
+          "// candy_limit = 0 means no limit, so it will never change current buddy": {},
+          "candy_limit": 0,
+          "// force_first_change = true will always change buddy at start removing current one": {},
+          "force_first_change": false,
+          "buddy_change_wait_min": 3,
+          "buddy_change_wait_max": 5,
+          "min_interval": 120
+        }
+      },
+      {
         "type": "IncubateEggs",
         "config": {
           "enabled": true,
@@ -99,18 +114,18 @@
         "type": "EvolvePokemon",
         "config": {
             "enabled": false,
-            
+
             "// evolve only pidgey and drowzee": "",
             "// evolve_list": "pidgey, drowzee",
             "// donot_evolve_list": "none",
-            
+
             "// evolve all but pidgey and drowzee": "",
             "// evolve_list": "all",
             "// donot_evolve_list": "pidgey, drowzee",
-            
+
             "evolve_list": "all",
             "donot_evolve_list": "none",
-            
+
             "first_evolve_by": "cp",
             "evolve_above_cp": 500,
             "evolve_above_iv": 0.8,
@@ -176,7 +191,7 @@
             "berry_wait_max": 5,
             "changeball_wait_min": 3,
             "changeball_wait_max": 5,
-            "newtodex_wait_min": 20, 
+            "newtodex_wait_min": 20,
             "newtodex_wait_max": 30
           }
         }
@@ -309,6 +324,6 @@
     },
 	"websocket": {
 		"start_embedded_server": true,
-		"server_url": "127.0.0.1:4000"
+		"server_url": "0.0.0.0:4000"
 	}
 }
