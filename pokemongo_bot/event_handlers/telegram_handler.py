@@ -76,7 +76,7 @@ class TelegramClass:
             cur = conn.cursor()
             cur.execute("select count(1) from telegram_logins where uid = ?", [chat_id])
             res = cur.fetchone()
-            if len(res) > 0:
+            if res[0] == 1:
                 return True
             else:
                 return False
