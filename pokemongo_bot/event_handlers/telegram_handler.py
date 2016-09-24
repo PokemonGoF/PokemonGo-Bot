@@ -260,16 +260,15 @@ class TelegramClass:
                             in pkmns])
         self.sendMessage(chat_id=chatid, parse_mode='Markdown', text=outMsg)
 
-    def showsubs(self, chatid):
+    def showsubs(self, update):
         subs = []
         with self.bot.database as conn:
-            for sub in conn.execute("select uid, event_type, parameters from telegram_subscriptions where uid = ?",[chatid]):
+            for sub in conn.execute("select uid, event_type, parameters from telegram_subscriptions where uid = ?",
+                                    [update.message.chat_id]).fetchall():
                 subs.append("{} -&gt; {}".format(sub[1], sub[2]))
         if subs == []: subs.append(
             "No subscriptions found. Subscribe using /sub EVENTNAME. For a list of events, send /events")
         return subs
-
-
 
     def chsub(self, msg, chatid):
         (cmd, evt, params) = self.tokenize(msg, 3)
