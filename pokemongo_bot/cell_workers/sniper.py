@@ -6,6 +6,7 @@ import requests
 import calendar
 
 from random import uniform
+from operator import itemgetter, methodcaller
 from datetime import datetime
 from pokemongo_bot import inventory
 from pokemongo_bot.item_list import Item
@@ -22,23 +23,24 @@ class SniperSource(object):
         self.enabled = data.get('enabled', False)
         self.time_mask = data.get('time_mask', '%Y-%m-%d %H:%M:%S')
         self.mappings = SniperSourceMapping(data.get('mappings', {}))
+        self.timeout = data.get('timeout', 5)
 
     def __str__(self):
         return self.url
 
-    def fetch_raw(self, timeoutz):
+    def fetch_raw(self):
         some_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/52.0.2743.116 Safari/537.36'
-        response = requests.get(self.url, headers={'User-Agent': some_agent}, timeout=timeoutz)
+        response = requests.get(self.url, headers={'User-Agent': some_agent}, timeout=self.timeout)
         results = response.json()
 
         # If the results is a dict, retrieve the list from it by the given key. This will return a list afterall.
         return results.get(self.key, []) if isinstance(results, dict) else results
 
-    def fetch(self, timeout):
+    def fetch(self):
         pokemons = []
 
         try:
-            results = self.fetch_raw(timeout)
+            results = self.fetch_raw()
 
             # Parse results
             for result in results:
@@ -104,8 +106,8 @@ class SniperSource(object):
         try:
             if self.enabled:
                 errors = []
-                data = self.fetch_raw(10)
-
+                data = self.fetch_raw()
+                
                 # Check whether the params really exist if they have been specified like so
                 if data:
                     if self.mappings.iv.exists and self.mappings.iv.param not in data[0]:
@@ -277,8 +279,11 @@ class Sniper(BaseTask):
                 if pokemon.get('vip', False):
                     self._trace('{} is not catchable and bad IV (if any), however its a VIP!'.format(pokemon.get('pokemon_name')))
                 else:
-                    self._trace('{} is not catachable, nor a VIP and bad IV (if any). Skipping...'.format(pokemon.get('pokemon_name')))
-                    return False
+                    if pokemon.get('missing', False):
+                        self._trace('{} is not catchable, not VIP and bad IV (if any), however its a missing one.'.format(pokemon.get('pokemon_name')))
+                    else:
+                        self._trace('{} is not catchable, nor a VIP or a missing one and bad IV (if any). Skipping...'.format(pokemon.get('pokemon_name')))
+                        return False
 
         return True
 
@@ -362,8 +367,7 @@ class Sniper(BaseTask):
 
             if targets:
                 # Order the targets (descending)
-                for attr in self.order:
-                    targets.sort(key=lambda pokemon: pokemon[attr], reverse=True)
+                targets = sorted(targets, key=itemgetter(*self.order), reverse=True)
 
                 shots = 0
 
@@ -421,7 +425,7 @@ class Sniper(BaseTask):
             for source in self.sources:
                 try:
                     if source.enabled:
-                        source_pokemons = source.fetch(3)
+                        source_pokemons = source.fetch()
                         self._trace("Source '{}' returned {} results".format(source.url, len(source_pokemons)))
 
                         # Merge lists, making sure to exclude repeated data. Use location as the hash key
