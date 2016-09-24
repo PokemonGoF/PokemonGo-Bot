@@ -34,7 +34,17 @@ class SniperSource(object):
         results = response.json()
 
         # If the results is a dict, retrieve the list from it by the given key. This will return a list afterall.
-        return results.get(self.key, []) if isinstance(results, dict) else results
+        if isinstance(results, dict): 
+            results = results.get(self.key, []) 
+            
+        # If results is STILL a dict (eg. each pokemon is its own dict), need to build data from nested json (example whereispokemon.net)
+        while isinstance(results,dict):
+            tmpResults = []
+            for key, value in results.iteritems(): 
+                tmpResults.append(value)
+                results = tmpResults
+                
+        return results
 
     def fetch(self):
         pokemons = []
@@ -46,7 +56,7 @@ class SniperSource(object):
             for result in results:
                 iv = result.get(self.mappings.iv.param)
                 id = result.get(self.mappings.id.param)
-                name = result.get(self.mappings.name.param)
+                name = self._fixname(result.get(self.mappings.name.param))
                 latitude = result.get(self.mappings.latitude.param)
                 longitude = result.get(self.mappings.longitude.param)
                 expiration = result.get(self.mappings.expiration.param)
@@ -140,6 +150,12 @@ class SniperSource(object):
             raise ValueError("Source not available")
         except:
             raise
+            
+    def _fixname(self,name):
+        name = name.replace("mr-mime","mr. mime")
+        name = name.replace("farfetchd","farfetch'd")
+        return name
+
 
 # Represents the JSON params mappings
 class SniperSourceMapping(object):
