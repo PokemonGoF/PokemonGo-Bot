@@ -742,6 +742,7 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
    - `url` - Information will come from one or multiple urls.
 * `bullets` - Each bullet corresponds to an **ATTEMPT** of catching a pokemon. (default: 1)
 * `homing_shots` - This will ensure that each bullet **will catch** a target. If disabled, a target might not exist and thus it wont be caught. When enabled, this will jump to the next target (if any) and try again to catch it. This will be repeated untill you've spent all the bullets. (default: true)
+* `snipe_once` - If set to true, only catch pokemons which are not in the pokedex. (default: false)
 * `special_iv` - This will skip the catch list if the value is greater than or equal to the target's IV. This currently does not work with `social` mode and only works if the given `url` has this information. (default: 100)
 * `time_mask` - The time mask used (if `expiration.format` is a full date). The default mask is '%Y-%m-%d %H:%M:%S'.
 * `order` - The order on which you want to snipe. This can be one or multiple of the following values (default: [`missing`, `vip`, `priority`]):
