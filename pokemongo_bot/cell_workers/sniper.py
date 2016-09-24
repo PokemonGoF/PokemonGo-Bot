@@ -56,7 +56,7 @@ class SniperSource(object):
             for result in results:
                 iv = result.get(self.mappings.iv.param)
                 id = result.get(self.mappings.id.param)
-                name = result.get(self.mappings.name.param)
+                name = self._fixname(result.get(self.mappings.name.param))
                 latitude = result.get(self.mappings.latitude.param)
                 longitude = result.get(self.mappings.longitude.param)
                 expiration = result.get(self.mappings.expiration.param)
@@ -150,6 +150,11 @@ class SniperSource(object):
             raise ValueError("Source not available")
         except:
             raise
+            
+    def _fixname(self,name):
+        name = name.replace("mr-mime","mr. mime")
+        return name
+
 
 # Represents the JSON params mappings
 class SniperSourceMapping(object):
