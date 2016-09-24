@@ -136,7 +136,10 @@ class TelegramClass:
     def send_player_stats_to_chat(self, chat_id):
         stats = self.chat_handler.get_player_stats()
         if stats:
-            self.sendMessage(chat_id=chat_id, parse_mode='Markdown', text="\n".join(stats))
+            self.sendMessage(chat_id=chat_id,
+                             parse_mode='Markdown',
+                             text="*{}* \n_Level:_ {} \n_XP:_ {}/{} \n_Pokemons Captured:_ {} ({} _last 24h_) \n_Poke Stop Visits:_ {} ({} _last 24h_) \n _KM Walked:_ {}".format(
+                                 stats[0], stats[1], stats[2], stats[3], stats[4], stats[5], stats[6], stats[7], stats[8]))
             self.sendLocation(chat_id=chat_id, latitude=self.bot.api._position_lat,
                               longitude=self.bot.api._position_lng)
         else:
