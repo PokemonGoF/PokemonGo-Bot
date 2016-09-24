@@ -361,16 +361,11 @@ class TelegramClass:
                     self.bot.logger.info("Telegram message from {} ({}): {}".format(update.message.from_user.username,
                                                                                     update.message.from_user.id,
                                                                                     update.message.text))
-                    if update.message.text == "/start" or update.message.text == "/help":
-                        self.send_start(update)
-                        continue
+
 
                     if self.config.get('password', None) == None and (
                         not hasattr(self, "master") or not self.config.get('master', None)):# no auth provided in config
                         self.is_configured(update)
-                        continue
-                    if re.match(r'^/login [^ ]+', update.message.text):
-                        self.authenticate(update)
                         continue
                     if not self.isAuthenticated(update.message.from_user.id) and hasattr(self,
                             "master") and self.master and not unicode(self.master).isnumeric() and \
@@ -383,8 +378,14 @@ class TelegramClass:
                     # one way or another, the user is now authenticated
                     # make sure uid is in database
                     self.grab_uid(update)
+                    if update.message.text == "/start" or update.message.text == "/help":
+                        self.send_start(update)
+                        continue
                     if update.message.text == "/info":
                         self.send_info(update)
+                        continue
+                    if re.match(r'^/login [^ ]+', update.message.text):
+                        self.authenticate(update)
                         continue
                     if re.match(r'^/softbans ', update.message.text):
                         (cmd, num) = self.tokenize(update.message.text, 2)
