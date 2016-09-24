@@ -288,6 +288,54 @@ class TelegramClass:
             conn.commit()
         return
 
+    def send_start(self, update):
+        res = (
+            "*Commands: *",
+            "/info - info about bot",
+            "/login <password> - authenticate with the bot; once authenticated, your ID will be registered with the bot and survive bot restarts",
+            "/logout - remove your ID from the 'authenticated' list",
+            "/sub <eventName> <parameters> - subscribe to eventName, with optional parameters, event name=all will subscribe to ALL events (LOTS of output!)",
+            "/unsub <eventName> <parameters> - unsubscribe from eventName; parameters must match the /sub parameters",
+            "/unsub everything - will remove all subscriptions for this uid",
+            "/showsubs - show current subscriptions",
+            "/events <filter> - show available events, filtered by regular expression  <filter>",
+            "/top <num> <cp-or-iv-or-dated> - show top X pokemons, sorted by CP, IV, or Date",
+            "/evolved <num> <cp-or-iv-or-dated> - show top x pokemon evolved, sorted by CP, IV, or Date",
+            "/hatched <num> <cp-or-iv-or-dated> - show top x pokemon hatched, sorted by CP, IV, or Date",
+            "/caught <num> <cp-or-iv-or-dated> - show top x pokemon caught, sorted by CP, IV, or Date",
+            "/pokestops - show last x pokestops visited",
+            "/released <num> <cp-or-iv-or-dated> - show top x released, sorted by CP, IV, or Date",
+            "/vanished <num> <cp-or-iv-or-dated> - show top x vanished, sorted by CP, IV, or Date",
+            "/softbans - info about possible softbans"
+        )
+        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                         text="\n".join(res))
+
+    def is_configured(self, update):
+        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                         text="No password nor master configured in TelegramTask section, bot will not accept any commands")
+
+    def is_master_numeric(self, update):
+        outMessage = "Telegram message received from correct user, but master is not numeric, updating datastore."
+        self.bot.logger.warn(outMessage)
+        # the "master" is not numeric, set self.master to update.message.chat_id and re-instantiate the handler
+        newconfig = self.config
+        newconfig['master'] = update.message.chat_id
+        # insert chat id into database
+        self.grab_uid(update)
+        # remove old handler
+        self.bot.event_manager._handlers = filter(lambda x: not isinstance(x, TelegramHandler),
+                                                  self.bot.event_manager._handlers)
+        # add new handler (passing newconfig as parameter)
+        self.bot.event_manager.add_handler(TelegramHandler(self.bot, newconfig))
+
+    def is_known_sender(self, update):
+        # Reject message if sender does not match defined master in config
+        outMessage = "Telegram message received from unknown sender. Please either make sure your username or ID is in TelegramTask/master, or a password is set in TelegramTask section and /login is issued"
+        self.bot.logger.error(outMessage)
+        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                         text="Please /login first")
+
     def tokenize(self, string, maxnum):
         spl = string.split(' ', maxnum - 1)
         while len(spl) < maxnum:
@@ -315,34 +363,12 @@ class TelegramClass:
                                                                                     update.message.from_user.id,
                                                                                     update.message.text))
                     if update.message.text == "/start" or update.message.text == "/help":
-                        res = (
-                            "*Commands: *",
-                            "/info - info about bot",
-                            "/login <password> - authenticate with the bot; once authenticated, your ID will be registered with the bot and survive bot restarts",
-                            "/logout - remove your ID from the 'authenticated' list",
-                            "/sub <eventName> <parameters> - subscribe to eventName, with optional parameters, event name=all will subscribe to ALL events (LOTS of output!)",
-                            "/unsub <eventName> <parameters> - unsubscribe from eventName; parameters must match the /sub parameters",
-                            "/unsub everything - will remove all subscriptions for this uid",
-                            "/showsubs - show current subscriptions",
-                            "/events <filter> - show available events, filtered by regular expression  <filter>",
-                            "/top <num> <cp-or-iv-or-dated> - show top X pokemons, sorted by CP, IV, or Date",
-                            "/evolved <num> <cp-or-iv-or-dated> - show top x pokemon evolved, sorted by CP, IV, or Date",
-                            "/hatched <num> <cp-or-iv-or-dated> - show top x pokemon hatched, sorted by CP, IV, or Date",
-                            "/caught <num> <cp-or-iv-or-dated> - show top x pokemon caught, sorted by CP, IV, or Date",
-                            "/pokestops - show last x pokestops visited",
-                            "/released <num> <cp-or-iv-or-dated> - show top x released, sorted by CP, IV, or Date",
-                            "/vanished <num> <cp-or-iv-or-dated> - show top x vanished, sorted by CP, IV, or Date",
-                            "/softbans - info about possible softbans"
-                        )
-                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
-                                                      text="\n".join(res))
+                        self.send_start(update)
                         continue
 
                     if self.config.get('password', None) == None and (
-                        not hasattr(self, "master") or not self.config.get('master',
-                                                                           None)):  # no auth provided in config
-                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
-                                                      text="No password nor master configured in TelegramTask section, bot will not accept any commands")
+                        not hasattr(self, "master") or not self.config.get('master', None)):# no auth provided in config
+                        self.is_configured(update)
                         continue
                     if re.match(r'^/login [^ ]+', update.message.text):
                         self.authenticate(update)
@@ -350,25 +376,10 @@ class TelegramClass:
                     if not self.isAuthenticated(update.message.from_user.id) and hasattr(self,
                             "master") and self.master and not unicode(self.master).isnumeric() and \
                             unicode(self.master) == unicode(update.message.from_user.username):
-                        outMessage = "Telegram message received from correct user, but master is not numeric, updating datastore."
-                        self.bot.logger.warn(outMessage)
-                        # the "master" is not numeric, set self.master to update.message.chat_id and re-instantiate the handler
-                        newconfig = self.config
-                        newconfig['master'] = update.message.chat_id
-                        # insert chat id into database
-                        self.grab_uid(update)
-                        # remove old handler
-                        self.bot.event_manager._handlers = filter(lambda x: not isinstance(x, TelegramHandler),
-                                                                  self.bot.event_manager._handlers)
-                        # add new handler (passing newconfig as parameter)
-                        self.bot.event_manager.add_handler(TelegramHandler(self.bot, newconfig))
+                        self.is_master_numeric(update)
                         continue
                     if not self.isAuthenticated(update.message.from_user.id):
-                        # Reject message if sender does not match defined master in config
-                        outMessage = "Telegram message received from unknown sender. Please either make sure your username or ID is in TelegramTask/master, or a password is set in TelegramTask section and /login is issued"
-                        self.bot.logger.error(outMessage)
-                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
-                                                      text="Please /login first")
+                        self.is_known_sender(update)
                         continue
                     # one way or another, the user is now authenticated
                     # make sure uid is in database
