@@ -12,8 +12,8 @@ def convert_from_json(str):
 class TreeConfigBuilderTest(unittest.TestCase):
     def setUp(self):
         self.bot = MagicMock()
-        self.bot.logger = MagicMock()
-        self.bot.logger.warning = lambda *args, **kwargs: None
+        self.bot.event_manager = MagicMock()
+        self.bot.event_manager.emit = lambda *args, **kwargs: None
 
     def test_should_throw_on_no_type_key(self):
         obj = convert_from_json("""[{
