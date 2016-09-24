@@ -21,7 +21,7 @@ class ChatHandler:
 
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM catch_log ORDER BY " + order + " DESC LIMIT " + str(num))
+            cur.execute("SELECT pokemon, cp, iv FROM catch_log ORDER BY " + order + " DESC LIMIT " + str(num))
             evolved = cur.fetchall()
             return evolved
 
@@ -48,7 +48,7 @@ class ChatHandler:
 
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM eggs_hatched_log ORDER BY " + order + " DESC LIMIT " + str(num))
+            cur.execute("SELECT pokemon, cp, iv From eggs_hatched_log ORDER BY " + order + " DESC LIMIT " + str(num))
             hatched = cur.fetchall()
             return hatched
 
@@ -63,7 +63,7 @@ class ChatHandler:
 
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM catch_log ORDER BY " + order + " DESC LIMIT " + str(num))
+            cur.execute("SELECT pokemon, cp, iv FROM catch_log ORDER BY " + order + " DESC LIMIT " + str(num))
             caught = cur.fetchall()
             return caught
 
@@ -90,7 +90,7 @@ class ChatHandler:
 
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM transfer_log ORDER BY " + order + " DESC LIMIT " + str(num))
+            cur.execute("SELECT pokemon, cp, iv FROM transfer_log ORDER BY " + order + " DESC LIMIT " + str(num))
             released = cur.fetchall()
             return released
 
@@ -105,7 +105,7 @@ class ChatHandler:
 
         with self.bot.database as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM vanish_log ORDER BY " + order + " DESC LIMIT " + str(num))
+            cur.execute("SELECT pokemon, cp, iv FROM vanish_log ORDER BY " + order + " DESC LIMIT " + str(num))
             vanished = cur.fetchall()
             return vanished
 
