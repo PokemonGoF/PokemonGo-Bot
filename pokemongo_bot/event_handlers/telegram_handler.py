@@ -39,9 +39,11 @@ class TelegramClass:
                 else:  # uid not known yet
                     self.bot.logger.info("Telegram master UID not in datastore yet")
 
+
         self.pokemons = pokemons
         self._tbot = None
         self.config = config
+        self.master = None
 
     def connect(self):
         if DEBUG_ON: self.bot.logger.info("Not connected. Reconnecting")
