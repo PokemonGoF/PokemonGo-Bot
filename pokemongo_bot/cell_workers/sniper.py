@@ -62,8 +62,6 @@ class SniperSource(object):
                 expiration = result.get(self.mappings.expiration.param)
                 encounter = result.get(self.mappings.encounter.param)
                 spawnpoint = result.get(self.mappings.spawnpoint.param)
-                
-                print name
 
                 # If this is a composite param, split it ("coords": "-31.415553, -64.190480")
                 if self.mappings.latitude.param == self.mappings.longitude.param:
