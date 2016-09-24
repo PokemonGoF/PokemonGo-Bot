@@ -152,8 +152,11 @@ class SniperSource(object):
             raise
             
     def _fixname(self,name):
-        name = name.replace("mr-mime","mr. mime")
-        name = name.replace("farfetchd","farfetch'd")
+        if name:
+            name = name.replace("mr-mime","mr. mime")
+            name = name.replace("farfetchd","farfetch'd")
+            name = name.replace("Nidoran\u2642","nidoran m")
+            name = name.replace("Nidoran\u2640","nidoran f")
         return name
 
 
