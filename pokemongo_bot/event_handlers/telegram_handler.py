@@ -255,7 +255,7 @@ class TelegramClass:
         top = self.chat_handler.get_top(num, order)
         outMsg = ''
         for x in top:
-            outMsg += "*{}* _CP:_ {} _IV:_ {} (candy {})\n".format(x[0], x[1], x[2], x[3])
+            outMsg += "*{}* _CP:_ {} _IV:_ {} (Candy: {})\n".format(x[0], x[1], x[2], x[3])
         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text=outMsg)
 
 
