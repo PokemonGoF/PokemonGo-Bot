@@ -146,10 +146,10 @@ class ChatHandler:
 
     def get_event(self, event, formatted_msg, data):
         msg = None
+        trigger = None
         if event == 'level_up':
             msg = "level up ({})".format(data["current_level"])
         if event == 'pokemon_caught':
-            trigger = None
             if data["pokemon"] in self.pokemons:
                 trigger = self.pokemons[data["pokemon"]]
             elif "all" in self.pokemons:
@@ -169,7 +169,27 @@ class ChatHandler:
             msg = "*You have reached your daily catch limit, quitting.*"
         if event == 'spin_limit':
             msg = "*You have reached your daily spin limit, quitting.*"
-        if msg == None:
+        if msg is None:
             return formatted_msg
         else:
             return msg
+
+    def get_top(self, num, order):
+        if not num.isnumeric():
+            num = 10
+        else:
+            num = int(num)
+
+        if order not in ["cp", "iv"]:
+            order = "iv"
+        pkmns = sorted(inventory.pokemons().all(), key=lambda p: getattr(p, order), reverse=True)[:num]
+        res = []
+        for p in pkmns:
+            res.append([
+                p.name,
+                p.cp,
+                p.iv,
+                inventory.candies().get(p.pokemon_id).quantity
+            ])
+
+        return res

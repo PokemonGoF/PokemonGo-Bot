@@ -251,21 +251,16 @@ class TelegramClass:
             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                              text=outMsg)
 
-    def showtop(self, chatid, num, order):
-        if not num.isnumeric():
-            num = 10
-        else:
-            num = int(num)
 
-        if order not in ["cp", "iv"]:
-            order = "iv"
 
-        pkmns = sorted(inventory.pokemons().all(), key=lambda p: getattr(p, order), reverse=True)[:num]
+    def send_top(self, update, num, order):
+        top = self.chat_handler.get_top(num, order)
+        outMsg = ''
+        for x in top:
+            outMsg += "*{}* _CP:_ {} _IV:_ {} (candy {})\n".format(x[0], x[1], x[2], x[3])
+        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text=outMsg)
 
-        outMsg = "\n".join(["*{}* (_CP:_ {}) (_IV:_ {}) (Candy:{})".format(p.name, p.cp, p.iv,
-                                                                   inventory.candies().get(p.pokemon_id).quantity) for p
-                            in pkmns])
-        self.sendMessage(chat_id=chatid, parse_mode='Markdown', text=outMsg)
+
 
     def showsubs(self, update):
         subs = []
@@ -414,7 +409,7 @@ class TelegramClass:
                         continue
                     if re.match(r'^/top ', update.message.text):
                         (cmd, num, order) = self.tokenize(update.message.text, 3)
-                        self.showtop(update.message.chat_id, num, order)
+                        self.send_top(update, num, order)
                         continue
                     if re.match(r'^/caught ', update.message.text):
                         (cmd, num, order) = self.tokenize(update.message.text, 3)
