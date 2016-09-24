@@ -110,8 +110,6 @@ class TelegramClass:
         return
 
     def sendMessage(self, chat_id=None, parse_mode='Markdown', text=None):
-        if self._tbot is None:
-            self.connect()
         try:
             self._tbot.sendMessage(chat_id=chat_id, parse_mode=parse_mode, text=text)
         except telegram.error.NetworkError:
@@ -356,6 +354,8 @@ class TelegramClass:
         time.sleep(1)
         while True:
             if DEBUG_ON: self.bot.logger.info("Telegram loop running")
+            if self._tbot is None:
+                self.connect()
             for update in self._tbot.getUpdates(offset=self.update_id, timeout=10):
                 self.update_id = update.update_id + 1
                 if update.message:
@@ -436,10 +436,6 @@ class TelegramClass:
                         continue
                     self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                      text="Unrecognized command: {}".format(update.message.text))
-
-
-
-
 
 
 class TelegramDBInit:
