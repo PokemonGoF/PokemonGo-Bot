@@ -387,15 +387,11 @@ class TelegramClass:
                     if re.match(r'^/login [^ ]+', update.message.text):
                         self.authenticate(update)
                         continue
-                    if re.match(r'^/softbans ', update.message.text):
-                        (cmd, num) = self.tokenize(update.message.text, 2)
-                        self.send_softbans(update, num)
+                    if update.message.text == "/logout":
+                        self.send_logout(update)
                         continue
                     if re.match("^/events", update.message.text):
                         self.send_events(update)
-                        continue
-                    if update.message.text == "/logout":
-                        self.send_logout(update)
                         continue
                     if re.match(r'^/sub ', update.message.text):
                         self.send_subscription_updated(update)
@@ -433,6 +429,10 @@ class TelegramClass:
                     if re.match(r'^/vanished ', update.message.text):
                         (cmd, num, order) = self.tokenize(update.message.text, 3)
                         self.send_vanished(update, num, order)
+                        continue
+                    if re.match(r'^/softbans ', update.message.text):
+                        (cmd, num) = self.tokenize(update.message.text, 2)
+                        self.send_softbans(update, num)
                         continue
                     self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                      text="Unrecognized command: {}".format(update.message.text))
