@@ -34,7 +34,17 @@ class SniperSource(object):
         results = response.json()
 
         # If the results is a dict, retrieve the list from it by the given key. This will return a list afterall.
-        return results.get(self.key, []) if isinstance(results, dict) else results
+        if isinstance(results, dict): 
+            results = results.get(self.key, []) 
+            
+        # If results is STILL a dict (eg. each pokemon is its own dict), need to build data from nested json (example whereispokemon.net)
+        while isinstance(results,dict):
+            tmpResults = []
+            for key, value in results.iteritems(): 
+                tmpResults.append(value)
+                results = tmpResults
+                
+        return results
 
     def fetch(self):
         pokemons = []
