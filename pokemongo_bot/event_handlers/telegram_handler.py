@@ -166,7 +166,7 @@ class TelegramClass:
                                       text=("Subscriptions updated."))
 
     def send_info(self, update):
-        self.chat_handler.send_player_stats_to_chat(update.message.chat_id)
+        self.send_player_stats_to_chat(update.message.chat_id)
 
     def send_logout(self, update):
         self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text=("Logged out."))
