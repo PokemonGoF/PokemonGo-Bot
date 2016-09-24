@@ -4,8 +4,6 @@ import time
 import telegram
 import thread
 import re
-import pprint
-from pokemongo_bot import inventory
 from telegram.utils import request
 from chat_handler import ChatHandler
 
