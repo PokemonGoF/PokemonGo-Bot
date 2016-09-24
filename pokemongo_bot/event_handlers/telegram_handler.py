@@ -111,6 +111,8 @@ class TelegramClass:
 
     def sendMessage(self, chat_id=None, parse_mode='Markdown', text=None):
         try:
+            if self._tbot is None:
+                self.connect()
             self._tbot.sendMessage(chat_id=chat_id, parse_mode=parse_mode, text=text)
         except telegram.error.NetworkError:
             time.sleep(1)
@@ -465,9 +467,6 @@ class TelegramDBInit:
         if res is None or len(res) == 0 or res[0] != sql:  # object missing or sql not matching
             self.conn.execute(sql)
         return
-
-
-
 
 
 class TelegramHandler(EventHandler):
