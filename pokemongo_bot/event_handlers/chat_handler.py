@@ -209,7 +209,3 @@ class ChatHandler:
         session = metrics.Metrics.xp_earned(self.metrics)
         res = (str(total_xp), str(int(xpph)), str(session))
         return res
-
-    def get_stats(self):
-        cph = metrics.Metrics.captures_per_hour(self.metrics)
-        return [str(cph)]
