@@ -1,20 +1,21 @@
-from datetime import datetime, timedelta
+from datetime import datetime, date, timedelta
 from time import sleep
 from random import uniform
 
 
 class SleepSchedule(object):
-    """Pauses the execution of the bot every day for some time
+    """The main class of sleep/pause tasks
 
-    Simulates the user going to sleep every day for some time, the sleep time
-    and the duration is changed every day by a random offset defined in the
-    config file
+    Pauses the execution of the bot for some time using schedule
+      and/or at a random time for a random duration
+      and/or at a random time for a random duration keeping bot alive
+
     Example Config:
     "sleep_schedule": {
       "enabled": true,
       "enable_reminder": false,
       "reminder_interval": 600,
-      "entries": [
+      "sleep": [
         {
           "enabled": true,
           "time": "12:00",
@@ -31,32 +32,61 @@ class SleepSchedule(object):
           "duration_random_offset": "00:30",
           "wake_up_at_location": ""
         }
-      ]
+      ],
+      "random_pause": {
+        "enabled": true,
+        "min_duration": "00:00:10",
+        "max_duration": "00:10:00",
+        "min_interval": "00:05:00",
+        "max_interval": "01:30:00"
+      },
+      "random_alive_pause": {
+        "enabled": true,
+        "min_duration": "00:00:10",
+        "max_duration": "00:10:00",
+        "min_interval": "00:05:00",
+        "max_interval": "01:30:00"
+      }
     }
-    enabled: (true | false) enables/disables SleepSchedule. Inside of entry will enable/disable single entry, but will not override global value. Default: true
-    enable_reminder: (true | false) enables/disables sleep reminder. Default: false
+
+    enabled: (true | false) enables/disables SleepSchedule. Default: true
+    enable_reminder: (true | false) enables/disables sleep/pause reminder. Default: false
     reminder_interval: (interval) reminder interval in seconds. Default: 600
 
-    enabled: (true | false) see above
-    time: (HH:MM) local time that the bot should sleep
-    duration: (HH:MM) the duration of sleep
-    time_random_offset: (HH:MM) random offset of time that the sleep will start
-                        for this example the possible start times are 11:30-12:30 and 16:45-18:45
-                        default: 01:00
-    duration_random_offset: (HH:MM) random offset of duration of sleep
-                        for this example the possible durations are 5:00-6:00 and 2:30-3:30
-                        default: 00:30
-    wake_up_at_location: (lat, long | lat, long, alt | "") the location at which the bot wake up
-    *Note that an empty string ("") will not change the location*.    """
+    sleep: bot sleep rules. Default: []
+      enabled: (true | false) enables/disables single sleep entry, doesn't override global value. Default: true
+      time: (HH:MM) local time that the bot should sleep
+      duration: (HH:MM) the duration of sleep
+      time_random_offset: (HH:MM) random offset of time that the sleep will start
+                          for this example the possible start times are 11:30-12:30 and 16:45-18:45
+                          default: 01:00
+      duration_random_offset: (HH:MM) random offset of duration of sleep
+                          for this example the possible durations are 5:00-6:00 and 2:30-3:30
+                          default: 00:30
+      wake_up_at_location: (lat, long | lat, long, alt | "") the location at which the bot wake up
+      *Note that an empty string ("") will not change the location*.
 
-    SCHEDULING_MARGIN = timedelta(minutes=10)    # Skip if next sleep is SCHEDULING_MARGIN from now
+    random_pause: rules to pause the execution of the bot at a random time for a random duration. Default: {}
+      enabled: (true | false) enables/disables random pause feature. Default: true
+      min_duration: (HH:MM:SS) minumum duration of the pause. Default: 00:00:10
+      max_duration: (HH:MM:SS) maximum duration of the pause. Default: 00:10:00
+      min_interval: (HH:MM:SS) minimum interval between pauses. Default: 00:05:00
+      max_interval: (HH:MM:SS) maximum interval between pauses. Default: 01:30:00
+
+    random_alive_pause: rules to pause the execution of the bot keeping it alive at a random time for a random duration. Default: {}
+      Configuration including default values is the same as random_pause configuration
+
+    """
+
+    SCHEDULING_MARGIN = timedelta(minutes=10)
 
     def __init__(self, bot, config):
         self.bot = bot
         self._last_index = -1
         self._next_index = -1
+        self.today = date.today()
         self._process_config(config)
-        self._schedule_next_sleep()
+        self._schedule()
 
     def work(self):
         if self._should_sleep_now():
@@ -95,6 +125,23 @@ class SleepSchedule(object):
                     self.bot.wake_location = wake_up_at_location
             if hasattr(self.bot, 'api'): self.bot.login() # Same here
 
+    def getSeconds(self, strTime):
+        '''
+        Return the duration in seconds of a time string
+        :param strTime: string time of format %H:%M:%S
+        '''
+        try:
+            x = dt.strptime(strTime, '%H:%M:%S')
+            seconds = int(timedelta(hours=x.hour,minutes=x.minute,seconds=x.second).total_seconds())
+        except ValueError:
+            seconds = 0;
+
+        if seconds < 0:
+            seconds = 0;
+
+        return seconds
+
+
     def _time_fmt(self, value):
        ret = ""
        if isinstance(value, datetime):
@@ -108,15 +155,22 @@ class SleepSchedule(object):
 
     def _process_config(self, config):
 
-        def testkey(entry, key, offset=False, defval=''):
-            if not key in entry:
-                index = config.index(entry) + 1
-                if not offset:
-                    raise ValueError('SleepSchedule: No "%s" key found in entry %d' % (key, index))
-                else:
-                    self.bot.logger.warning('SleepSchedule: No "%s" key found in entry %d, using default value (%s)' % (key, index, defval))
+        def testkey(cfg, cfg_type, key, entry=None, warn=False, defval=''):
+            if cfg_type == 'sleep':
+                if not key in entry:
+                    index = cfg.index(entry) + 1
+                    if not warn:
+                        raise ValueError('SleepSchedule: No "%s" key found in sleep entry %d' % (key, index))
+                    else:
+                        self.bot.logger.warning('SleepSchedule: No "%s" key found in sleep entry %d, using default value (%s)' % (key, index, defval))
+            elif cfg_type == 'random_pause' or cfg_type == 'random_alive_pause':
+                if not key in cfg:
+                    self.bot.logger.warning('SleepSchedule: No "%s" key found in %s entry, using default value (%s)' % (key, cfg_type, defval))
 
-        self.entries = []
+        self.sleep = []
+        self.random_pause = {}
+        self.random_alive_pause = {}
+
 
         if 'enabled' in config and config['enabled'] == False: return
 
@@ -126,52 +180,103 @@ class SleepSchedule(object):
         else:
             self._enable_reminder = False
 
-        if not 'entries' in config:
+        if 'entries' in config:
             self.bot.logger.warning('SleepSchedule is disabled. Config structure has been changed, see docs/configuration_files.md for more information')
             return
 
-        for entry in config['entries']:
-            if 'enabled' in entry and entry['enabled'] == False: continue
+        if 'sleep' in config:
+            cfg = config['sleep']
+            for entry in cfg:
+                if 'enabled' in entry and entry['enabled'] == False: continue
 
-            prepared = {}
+                prepared = {}
 
-            testkey(entry, 'time')
-            prepared['time'] = datetime.strptime(entry['time'], '%H:%M')
+                testkey(cfg, 'sleep', 'time', entry=entry)
+                prepared['time'] = datetime.strptime(entry['time'], '%H:%M')
 
-            testkey(entry, 'duration')
-            raw_duration = datetime.strptime(entry['duration'], '%H:%M')
-            duration = int(timedelta(hours=raw_duration.hour, minutes=raw_duration.minute).total_seconds())
+                testkey(cfg, 'sleep', 'duration', entry=entry)
+                raw_duration = datetime.strptime(entry['duration'], '%H:%M')
+                duration = int(timedelta(hours=raw_duration.hour, minutes=raw_duration.minute).total_seconds())
 
-            testkey(entry, 'time_random_offset', offset=True, defval='01:00')
-            raw_time_random_offset = datetime.strptime(entry['time_random_offset'] if 'time_random_offset' in entry else '01:00', '%H:%M')
-            time_random_offset = int(
-                timedelta(
-                    hours=raw_time_random_offset.hour, minutes=raw_time_random_offset.minute).total_seconds())
+                testkey(cfg, 'sleep', 'time_random_offset', entry=entry, warn=True, defval='01:00')
+                raw_time_random_offset = datetime.strptime(entry['time_random_offset'] if 'time_random_offset' in entry else '01:00', '%H:%M')
+                time_random_offset = int(timedelta(hours=raw_time_random_offset.hour, minutes=raw_time_random_offset.minute).total_seconds())
 
-            testkey(entry, 'duration_random_offset', offset=True, defval='00:30')
-            raw_duration_random_offset = datetime.strptime(entry['duration_random_offset'] if 'duration_random_offset' in entry else '00:30', '%H:%M')
-            duration_random_offset = int(
-                timedelta(
-                    hours=raw_duration_random_offset.hour, minutes=raw_duration_random_offset.minute).total_seconds())
+                testkey(cfg, 'sleep', 'duration_random_offset', entry=entry, warn=True, defval='00:30')
+                raw_duration_random_offset = datetime.strptime(entry['duration_random_offset'] if 'duration_random_offset' in entry else '00:30', '%H:%M')
+                duration_random_offset = int(timedelta(hours=raw_duration_random_offset.hour, minutes=raw_duration_random_offset.minute).total_seconds())
 
-            raw_wake_up_at_location = entry['wake_up_at_location'] if 'wake_up_at_location' in entry else None
-            if raw_wake_up_at_location:
-                try:
-                    wake_up_at_location = self.bot.get_pos_by_name(raw_wake_up_at_location)
-                    lat = float(wake_up_at_location[0])
-                    lng = float(wake_up_at_location[1])
-                    alt = float(wake_up_at_location[2]) if wake_up_at_location[2] else uniform(self.bot.config.alt_min, self.bot.config.alt_max)
-                    prepared['wake_up_at_location'] = { 'raw': raw_wake_up_at_location, 'coord': (lat, lng, alt) }
-                except:
-                    index = config.index(entry)
-                    self.bot.warning('SleepSchedule: error parsing wake_up_at_location in entry %d' % index)
+                raw_wake_up_at_location = entry['wake_up_at_location'] if 'wake_up_at_location' in entry else None
+                if raw_wake_up_at_location:
+                    try:
+                        wake_up_at_location = self.bot.get_pos_by_name(raw_wake_up_at_location)
+                        lat = float(wake_up_at_location[0])
+                        lng = float(wake_up_at_location[1])
+                        alt = float(wake_up_at_location[2]) if wake_up_at_location[2] else uniform(self.bot.config.alt_min, self.bot.config.alt_max)
+                        prepared['wake_up_at_location'] = { 'raw': raw_wake_up_at_location, 'coord': (lat, lng, alt) }
+                    except:
+                        index = config.index(entry)
+                        self.bot.warning('SleepSchedule: error parsing wake_up_at_location in entry %d' % index)
 
-            prepared['duration'] = duration
-            prepared['time_random_offset'] = time_random_offset
-            prepared['duration_random_offset'] = duration_random_offset
-            self.entries.append(prepared)
+                prepared['duration'] = duration
+                prepared['time_random_offset'] = time_random_offset
+                prepared['duration_random_offset'] = duration_random_offset
+                self.sleep.append(prepared)
 
-        if not len(self.entries): self.bot.logger.warning('SleepSchedule is disabled')
+        if "random_pause" in config:
+            cfg = config['random_pause']
+            if 'enabled' in cfg and cfg['enabled']:
+                testkey(cfg, 'random_pause', 'min_duration', defval='00:00:10')
+                raw_min_duration = cfg['min_duration'] if 'min_duration' in cfg else '00:00:10'
+                self.random_pause['min_duration'] = self.getSeconds(raw_min_duration)
+
+                testkey(cfg, 'random_pause', 'max_duration', defval='00:00:10')
+                raw_max_duration = cfg['max_duration'] if 'max_duration' in cfg else '00:10:00'
+                self.random_pause['max_duration'] = self.getSeconds(raw_max_duration)
+
+                testkey(cfg, 'random_pause', 'min_interval', defval='00:05:00')
+                raw_min_interval = cfg['min_interval'] if 'min_interval' in cfg else '00:05:00'
+                self.random_pause['min_interval'] = self.getSeconds(raw_min_interval)
+
+                testkey(cfg, 'random_pause', 'max_interval', defval='01:30:00')
+                raw_max_interval = cfg['max_interval'] if 'max_interval' in cfg else '01:30:00'
+                self.random_pause['max_interval'] = self.getSeconds(raw_max_interval)
+
+                if self.random_pause['min_duration'] > self.random_pause['max_duration']:
+                    self.bot.logger.warning('SleepSchedule: random_pause: min_duration is greater than max_duration. random_pause is disabled')
+                    self.random_pause = {}
+                elif self.random_pause['min_interval'] > self.random_pause['max_interval']:
+                    self.bot.logger.warning('SleepSchedule: random_pause: min_interval is greater than max_interval, random_pause is disabled')
+                    self.random_pause = {}
+
+        if "random_alive_pause" in config:
+            cfg = config['random_alive_pause']
+            if 'enabled' in cfg and cfg['enabled']:
+                testkey(cfg, 'random_alive_pause', 'min_duration', defval='00:00:10')
+                raw_min_duration = cfg['min_duration'] if 'min_duration' in cfg else '00:00:10'
+                self.random_alive_pause['min_duration'] = self.getSeconds(raw_min_duration)
+
+                testkey(cfg, 'random_alive_pause', 'max_duration', defval='00:00:10')
+                raw_max_duration = cfg['max_duration'] if 'max_duration' in cfg else '00:10:00'
+                self.random_alive_pause['max_duration'] = self.getSeconds(raw_max_duration)
+
+                testkey(cfg, 'random_alive_pause', 'min_interval', defval='00:05:00')
+                raw_min_interval = cfg['min_interval'] if 'min_interval' in cfg else '00:05:00'
+                self.random_alive_pause['min_interval'] = self.getSeconds(raw_min_interval)
+
+                testkey(cfg, 'random_alive_pause', 'max_interval', defval='01:30:00')
+                raw_max_interval = cfg['max_interval'] if 'max_interval' in cfg else '01:30:00'
+                self.random_alive_pause['max_interval'] = self.getSeconds(raw_max_interval)
+
+                if self.random_alive_pause['min_duration'] > self.random_alive_pause['max_duration']:
+                    self.bot.logger.warning('SleepSchedule: random_alive_pause: min_duration is greater than max_duration. random_alive_pause is disabled')
+                    self.random_alive_pause = {}
+                elif self.random_alive_pause['min_interval'] > self.random_alive_pause['max_interval']:
+                    self.bot.logger.warning('SleepSchedule: random_alive_pause: min_interval is greater than max_interval, random_alive_pause is disabled')
+                    self.random_alive_pause = {}
+
+
+        if (not len(self.sleep)) and (not self.random_pause) and (not self.random_alive_pause): self.bot.logger.warning('SleepSchedule is disabled')
 
     def _schedule_next_sleep(self):
         if not len(self.entries): return
