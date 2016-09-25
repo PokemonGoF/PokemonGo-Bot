@@ -197,5 +197,19 @@ class ChatHandler:
         return res
 
     def get_dust(self):
-        dust = metrics.Metrics.total_stardust(self.metrics)
-        return dust
+        total_dust = metrics.Metrics.total_stardust(self.metrics)
+        dph = metrics.Metrics.stardust_per_hour(self.metrics)
+        session = metrics.Metrics.earned_dust(self.metrics)
+        res = (str(total_dust), str(int(dph)), str(session))
+        return res
+
+    def get_xp(self):
+        total_xp = metrics.Metrics.txp(self.metrics)
+        xpph = metrics.Metrics.xp_per_hour(self.metrics)
+        session = metrics.Metrics.xp_earned(self.metrics)
+        res = (str(total_xp), str(int(xpph)), str(session))
+        return res
+
+    def get_stats(self):
+        cph = metrics.Metrics.captures_per_hour(self.metrics)
+        return [str(cph)]
