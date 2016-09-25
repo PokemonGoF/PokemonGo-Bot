@@ -210,7 +210,16 @@ class IncubateEggs(BaseTask):
 
         for i in range(len(pokemon_list)):
             pokemon = pokemon_list[i]
-            msg = "Egg hatched with a {name} (CP {cp} - NCP {ncp} - IV {iv_ads} {iv_pct}), {exp} exp, {stardust} stardust and {candy} candies."
+            msg = "Egg hatched with a *{}* (CP {} - NCP {} - IV {} {}), {} exp, {} stardust and {} candies.".format(
+                pokemon.name,
+                pokemon.cp,
+                round(pokemon.cp_percent, 2),
+                pokemon.iv_display,
+                pokemon.iv,
+                xp[i],
+                stardust[i],
+                candy[i]
+            )
             self.emit_event(
                 'egg_hatched',
                 formatted=msg,
@@ -258,7 +267,11 @@ class IncubateEggs(BaseTask):
 
         self.emit_event(
             'next_egg_incubates',
-            formatted='Eggs incubating: [{eggs}] (Eggs left: {eggs_left}, Incubating: {eggs_inc})',
+            formatted='Eggs incubating: ({}) (Eggs left: {}, Incubating: {})'.format(
+                sorted(all_eggs.iteritems()),
+                len(self.used_incubators),
+                ', '.join(eggs)
+            ),
             data={
                 'eggs_left': sorted(all_eggs.iteritems()),
                 'eggs_inc': len(self.used_incubators),
