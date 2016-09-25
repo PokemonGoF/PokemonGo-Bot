@@ -85,7 +85,7 @@ class IncubateEggs(BaseTask):
                 self.emit_event(
                     'incubate_try',
                     level='debug',
-                    formatted="Attempting to apply incubator {incubator_id} to egg {egg_id}",
+                    formatted="Attempting to apply incubator {} to egg {}".format(incubator['id'], egg['id']),
                     data={
                         'incubator_id': incubator['id'],
                         'egg_id': egg['id']
@@ -100,7 +100,7 @@ class IncubateEggs(BaseTask):
                     if code == 1:
                         self.emit_event(
                             'incubate',
-                            formatted='Incubating a {distance_in_km} egg.',
+                            formatted='Incubating a {} egg.'.format(str(egg['km'])),
                             data={
                                 'distance_in_km': str(egg['km'])
                             }
@@ -210,7 +210,16 @@ class IncubateEggs(BaseTask):
 
         for i in range(len(pokemon_list)):
             pokemon = pokemon_list[i]
-            msg = "Egg hatched with a {name} (CP {cp} - NCP {ncp} - IV {iv_ads} {iv_pct}), {exp} exp, {stardust} stardust and {candy} candies."
+            msg = "Egg hatched with a *{}* (_CP:_ {} - _NCP:_ {} - _IV:_ {} {}), {} exp, {} stardust and {} candies.".format(
+                pokemon.name,
+                pokemon.cp,
+                round(pokemon.cp_percent, 2),
+                pokemon.iv_display,
+                pokemon.iv,
+                xp[i],
+                stardust[i],
+                candy[i]
+            )
             self.emit_event(
                 'egg_hatched',
                 formatted=msg,
@@ -258,7 +267,11 @@ class IncubateEggs(BaseTask):
 
         self.emit_event(
             'next_egg_incubates',
-            formatted='Eggs incubating: [{eggs}] (Eggs left: {eggs_left}, Incubating: {eggs_inc})',
+            formatted='Eggs incubating: ({}) (Eggs left: {}, Incubating: {})'.format(
+                sorted(all_eggs.iteritems()),
+                len(self.used_incubators),
+                ', '.join(eggs)
+            ),
             data={
                 'eggs_left': sorted(all_eggs.iteritems()),
                 'eggs_inc': len(self.used_incubators),
