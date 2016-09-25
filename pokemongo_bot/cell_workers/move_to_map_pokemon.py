@@ -289,6 +289,15 @@ class MoveToMapPokemon(BaseTask):
                 self._emit_log("Not enough balls to start sniping (have {}, {} needed)".format(
                     pokeballs_quantity + superballs_quantity + ultraballs_quantity, self.min_ball))
             return WorkerResult.SUCCESS
+            
+        if self.bot.catch_disabled:
+            if not hasattr(self.bot,"mtmp_disabled_global_warning") or \
+                        (hasattr(self.bot,"mtmp_disabled_global_warning") and not self.bot.mtmp_disabled_global_warning):
+                self._emit_log("All catching tasks are currently disabled. Sniping will resume when catching tasks are re-enabled")
+            self.bot.mtmp_disabled_global_warning = True
+            return WorkerResult.SUCCESS
+        else:
+            self.bot.mtmp_disabled_global_warning = False
 
         # Retrieve pokemos
         self.dump_caught_pokemon()
