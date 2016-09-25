@@ -85,7 +85,7 @@ class IncubateEggs(BaseTask):
                 self.emit_event(
                     'incubate_try',
                     level='debug',
-                    formatted="Attempting to apply incubator {incubator_id} to egg {egg_id}",
+                    formatted="Attempting to apply incubator {} to egg {}".format(incubator['id'], egg['id']),
                     data={
                         'incubator_id': incubator['id'],
                         'egg_id': egg['id']
@@ -100,7 +100,7 @@ class IncubateEggs(BaseTask):
                     if code == 1:
                         self.emit_event(
                             'incubate',
-                            formatted='Incubating a {distance_in_km} egg.',
+                            formatted='Incubating a {} egg.'.format(str(egg['km'])),
                             data={
                                 'distance_in_km': str(egg['km'])
                             }
