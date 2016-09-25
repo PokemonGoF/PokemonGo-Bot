@@ -210,7 +210,7 @@ class IncubateEggs(BaseTask):
 
         for i in range(len(pokemon_list)):
             pokemon = pokemon_list[i]
-            msg = "Egg hatched with a *{}* (CP {} - NCP {} - IV {} {}), {} exp, {} stardust and {} candies.".format(
+            msg = "Egg hatched with a *{}* (_CP:_ {} - _NCP:_ {} - _IV:_ {} {}), {} exp, {} stardust and {} candies.".format(
                 pokemon.name,
                 pokemon.cp,
                 round(pokemon.cp_percent, 2),
