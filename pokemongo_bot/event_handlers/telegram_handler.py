@@ -304,7 +304,8 @@ class TelegramClass:
             "/released <num> <cp-or-iv-or-dated> - show top x released, sorted by CP, IV, or Date",
             "/vanished <num> <cp-or-iv-or-dated> - show top x vanished, sorted by CP, IV, or Date",
             "/softbans - info about possible softbans",
-            "/stardust - current total stardust"
+            "/stardust - stardust info",
+            "/xp - xp info"
         )
         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                          text="\n".join(res))
@@ -335,7 +336,19 @@ class TelegramClass:
                          text="Please /login first")
 
 
+    def send_stardust(self, update):
+        dust = self.chat_handler.get_dust()
+        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                         text="_Total:_ {} \n_Per Hour:_ {} \n_This Session:_ {}".format(dust[0],
+                                                                                         dust[1],
+                                                                                         dust[2]))
 
+    def send_xp(self, update):
+        xp = self.chat_handler.get_dust()
+        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                         text="_Total:_ {} \n_Per Hour:_ {} \n_This Session:_ {}".format(xp[0],
+                                                                                         xp[1],
+                                                                                         xp[2]))
     def tokenize(self, string, maxnum):
         spl = string.split(' ', maxnum - 1)
         while len(spl) < maxnum:
@@ -394,9 +407,10 @@ class TelegramClass:
                         self.send_logout(update)
                         continue
                     if update.message.text == "/stardust":
-                        dust = self.chat_handler.get_dust()
-                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text="Stardust: " + str(dust))
-
+                        self.send_stardust(update)
+                        continue
+                    if update.message.text == "/xp":
+                        self.send_xp(update)
                         continue
                     if re.match("^/events", update.message.text):
                         self.send_events(update)
