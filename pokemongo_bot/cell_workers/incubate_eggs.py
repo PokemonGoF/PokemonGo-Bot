@@ -85,7 +85,7 @@ class IncubateEggs(BaseTask):
                 self.emit_event(
                     'incubate_try',
                     level='debug',
-                    formatted="Attempting to apply incubator {} to egg {}".format(incubator['id'], egg['id']),
+                    formatted="Attempting to apply incubator {incubator_id} to egg {egg_id}",
                     data={
                         'incubator_id': incubator['id'],
                         'egg_id': egg['id']
@@ -100,7 +100,7 @@ class IncubateEggs(BaseTask):
                     if code == 1:
                         self.emit_event(
                             'incubate',
-                            formatted='Incubating a {} egg.'.format(str(egg['km'])),
+                            formatted='Incubating a {distance_in_km} egg.',
                             data={
                                 'distance_in_km': str(egg['km'])
                             }
@@ -210,28 +210,19 @@ class IncubateEggs(BaseTask):
 
         for i in range(len(pokemon_list)):
             pokemon = pokemon_list[i]
-            msg = "Egg hatched with a *{}* (_CP:_ {} - _NCP:_ {} - _IV:_ {} {}), {} exp, {} stardust and {} candies.".format(
-                pokemon.name,
-                pokemon.cp,
-                round(pokemon.cp_percent, 2),
-                pokemon.iv_display,
-                pokemon.iv,
-                xp[i],
-                stardust[i],
-                candy[i]
-            )
+            msg = "Egg hatched with a {name} (CP {cp} - NCP {ncp} - IV {iv_ads} {iv_pct}), {exp} exp, {stardust} stardust and {candy} candies."
             self.emit_event(
                 'egg_hatched',
                 formatted=msg,
                 data={
                     'name': pokemon.name,
-                    'cp': pokemon.cp,
-                    'ncp': round(pokemon.cp_percent, 2),
-                    'iv_ads': pokemon.iv_display,
-                    'iv_pct': pokemon.iv,
-                    'exp': xp[i],
-                    'stardust': stardust[i],
-                    'candy': candy[i]
+                    'cp': str(int(pokemon.cp)),
+                    'ncp': str(round(pokemon.cp_percent, 2)),
+                    'iv_ads': str(pokemon.iv_display),
+                    'iv_pct': str(pokemon.iv),
+                    'exp': str(xp[i]),
+                    'stardust': str(stardust[i]),
+                    'candy': str(candy[i])
                 }
             )
             # hatching egg gets exp too!
@@ -267,13 +258,9 @@ class IncubateEggs(BaseTask):
 
         self.emit_event(
             'next_egg_incubates',
-            formatted='Eggs incubating: ({}) (Eggs left: {}, Incubating: {})'.format(
-                sorted(all_eggs.iteritems()),
-                len(self.used_incubators),
-                ', '.join(eggs)
-            ),
+            formatted='Eggs incubating: {eggs} (Eggs left: {eggs_left}, Incubating: {eggs_inc})',
             data={
-                'eggs_left': sorted(all_eggs.iteritems()),
+                'eggs_left': str(sorted(all_eggs.iteritems())).strip('[]'),
                 'eggs_inc': len(self.used_incubators),
                 'eggs': ', '.join(eggs)
             }

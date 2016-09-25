@@ -113,6 +113,7 @@ class ChatHandler:
 
     def get_player_stats(self):
         stats = inventory.player().player_stats
+        dust = self.get_dust()
         if stats:
             with self.bot.database as conn:
                 cur = conn.cursor()
@@ -130,7 +131,8 @@ class ChatHandler:
                     str(catch_day),
                     str(stats["poke_stop_visits"]),
                     str(ps_day),
-                    str("%.2f" % stats["km_walked"])
+                    str("%.2f" % stats["km_walked"]),
+                    str(dust)
                 )
             return (res)
 
