@@ -125,7 +125,7 @@ class PokemonCatchWorker(BaseTask):
         is_vip = self._is_vip_pokemon(pokemon)
 
         # skip ignored pokemon
-        if not self._should_catch_pokemon(pokemon) and not is_vip:
+        if (not self._should_catch_pokemon(pokemon) and not is_vip) or self.bot.catch_disabled:            
             if not hasattr(self.bot,'skipped_pokemon'):
                 self.bot.skipped_pokemon = []
 
@@ -135,6 +135,9 @@ class PokemonCatchWorker(BaseTask):
                     pokemon.cp_exact == skipped_pokemon.cp_exact and \
                     pokemon.ivcp == skipped_pokemon.ivcp:
                     return WorkerResult.SUCCESS
+
+            if self.bot.catch_disabled:
+                self.logger.info("Not catching {}. All catching tasks are currently disabled.".format(pokemon))
 
             self.bot.skipped_pokemon.append(pokemon)
             self.emit_event(

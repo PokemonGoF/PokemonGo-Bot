@@ -122,6 +122,9 @@ class PokemonGoBot(object):
         self.inventory_refresh_threshold = 10
         self.inventory_refresh_counter = 0
         self.last_inventory_refresh = time.time()
+        
+        # Catch on/off
+        self.catch_disabled = False
 
         self.capture_locked = False  # lock catching while moving to VIP pokemon
 
@@ -717,6 +720,11 @@ class PokemonGoBot(object):
         self.event_manager.register_event('sniper_log', parameters=('message', 'message'))
         self.event_manager.register_event('sniper_error', parameters=('message', 'message'))
         self.event_manager.register_event('sniper_teleporting', parameters=('latitude', 'longitude', 'name'))
+        
+        # Catch-limiter
+        self.event_manager.register_event('catch_limit_on')
+        self.event_manager.register_event('catch_limit_off')
+        
 
     def tick(self):
         self.health_record.heartbeat()
