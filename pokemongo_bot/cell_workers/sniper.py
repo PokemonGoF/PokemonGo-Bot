@@ -4,6 +4,7 @@ import time
 import json
 import requests
 import calendar
+import difflib
 
 from random import uniform
 from operator import itemgetter, methodcaller
@@ -56,7 +57,7 @@ class SniperSource(object):
             for result in results:
                 iv = result.get(self.mappings.iv.param)
                 id = result.get(self.mappings.id.param)
-                name = self._fixname(result.get(self.mappings.name.param))
+                name = self._get_closest_name(self._fixname(result.get(self.mappings.name.param)))
                 latitude = result.get(self.mappings.latitude.param)
                 longitude = result.get(self.mappings.longitude.param)
                 expiration = result.get(self.mappings.expiration.param)
@@ -159,6 +160,20 @@ class SniperSource(object):
             name = name.replace("Nidoran\u2640","nidoran f")
         return name
 
+    def _get_closest_name(self, name):
+        if not name:
+            return
+            
+        pokemon_names = [p.name for p in inventory.pokemons().STATIC_DATA]
+        closest_names = difflib.get_close_matches(name, pokemon_names, 1)
+
+        if closest_names:
+            closest_name = closest_names[0]
+
+            if name != closest_name:
+                print "Unknown Pokemon name {}. Assuming it is {}".format(name, closest_name)
+
+            return closest_name
 
 # Represents the JSON params mappings
 class SniperSourceMapping(object):
