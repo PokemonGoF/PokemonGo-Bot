@@ -5,7 +5,6 @@ import json
 import requests
 import calendar
 import difflib
-import hashlib
 
 from random import uniform
 from operator import itemgetter, methodcaller
