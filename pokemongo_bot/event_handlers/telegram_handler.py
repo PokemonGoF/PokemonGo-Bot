@@ -333,6 +333,8 @@ class TelegramClass:
         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                          text="Please /login first")
 
+
+
     def tokenize(self, string, maxnum):
         spl = string.split(' ', maxnum - 1)
         while len(spl) < maxnum:
@@ -362,7 +364,9 @@ class TelegramClass:
                                                                                     update.message.from_user.id,
                                                                                     update.message.text))
 
-
+                    if re.match(r'^/login [^ ]+', update.message.text):
+                        self.authenticate(update)
+                        continue
                     if self.config.get('password', None) == None and (
                         not hasattr(self, "master") or not self.config.get('master', None)):# no auth provided in config
                         self.is_configured(update)
@@ -384,9 +388,7 @@ class TelegramClass:
                     if update.message.text == "/info":
                         self.send_info(update)
                         continue
-                    if re.match(r'^/login [^ ]+', update.message.text):
-                        self.authenticate(update)
-                        continue
+
                     if update.message.text == "/logout":
                         self.send_logout(update)
                         continue
@@ -433,6 +435,10 @@ class TelegramClass:
                     if re.match(r'^/softbans ', update.message.text):
                         (cmd, num) = self.tokenize(update.message.text, 2)
                         self.send_softbans(update, num)
+                        continue
+                    if re.match(r'^/pokemon ', update.message.text):
+                        (cmd, name) = self.tokenize(update.message.text, 2)
+                        self.send_pokemon(update, name)
                         continue
                     self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                      text="Unrecognized command: {}".format(update.message.text))
