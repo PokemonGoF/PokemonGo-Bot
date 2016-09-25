@@ -163,7 +163,7 @@ class ChatHandler:
                             data["iv"] >= trigger["iv"]) or \
                         ("operator" in trigger and trigger["operator"] == "or" and (
                                 data["cp"] >= trigger["cp"] or data["iv"] >= trigger["iv"])):
-                    msg = "Captured {}! (CP: {} IV: {} {} NCP: {}) Catch Limit: ({}/{}) +{} exp +{} stardust".format(data["pokemon"], data["cp"], data["iv"], data["iv_display"], data["ncp"],  data["caught_last_24_hour"], data["daily_catch_limit"], data["exp"], data["stardust"])
+                    msg = "Captured {}! (CP: {} IV: {} A/D/S {} NCP: {}) Catch Limit: ({}/{}) +{} exp +{} stardust".format(data["pokemon"], data["cp"], data["iv"], data["iv_display"], data["ncp"],  data["caught_last_24_hour"], data["daily_catch_limit"], data["exp"], data["stardust"])
         if event == 'egg_hatched':
             msg = "Egg hatched with a {} CP: {}, IV: {} (A/D/S {})".format(data["name"], data["cp"], data["iv_pct"],
                                                                            data["iv_ads"])

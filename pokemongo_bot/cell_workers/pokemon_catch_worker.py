@@ -15,7 +15,7 @@ from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_dir import _base_dir
 from datetime import datetime, timedelta
 from .utils import getSeconds
-
+from pokemongo_bot import metrics
 
 CATCH_STATUS_SUCCESS = 1
 CATCH_STATUS_FAILED = 2
@@ -61,6 +61,8 @@ class PokemonCatchWorker(BaseTask):
         self.response_key = ''
         self.response_status_key = ''
         self.rest_completed = False
+        self.caught_last_24 = 0
+
 
 
         #Config
@@ -634,6 +636,12 @@ class PokemonCatchWorker(BaseTask):
 
                 awards = response_dict['responses']['CATCH_POKEMON']['capture_award']
                 exp_gain, candy_gain, stardust_gain = self.extract_award(awards)
+                with self.bot.database as conn:
+                    c = conn.cursor()
+                    c.execute(
+                        "SELECT DISTINCT COUNT(encounter_id) FROM catch_log WHERE dated >= datetime('now','-1 day')")
+
+                result = c.fetchone()
 
                 self.emit_event(
                     'pokemon_caught',
@@ -650,10 +658,11 @@ class PokemonCatchWorker(BaseTask):
                         'latitude': str(self.pokemon['latitude']),
                         'longitude': str(self.pokemon['longitude']),
                         'pokemon_id': str(pokemon.pokemon_id),
-                        'caught_last_24_hour': str(self.caught_last_24_hour + 1),
+                        'caught_last_24_hour': str(result[0]),
                         'daily_catch_limit': str(self.daily_catch_limit)
                     }
                 )
+
 
                 inventory.pokemons().add(pokemon)
                 inventory.player().exp += exp_gain
