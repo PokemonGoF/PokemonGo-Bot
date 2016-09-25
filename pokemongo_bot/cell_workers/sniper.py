@@ -169,10 +169,6 @@ class SniperSource(object):
 
         if closest_names:
             closest_name = closest_names[0]
-
-            if name != closest_name:
-                print "Unknown Pokemon name {}. Assuming it is {}".format(name, closest_name)
-
             return closest_name
         
         return name
