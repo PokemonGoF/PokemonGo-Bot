@@ -376,7 +376,7 @@ class Sniper(BaseTask):
         elif self.bot.catch_disabled:
             if not hasattr(self.bot,"sniper_disabled_global_warning") or \
                         (hasattr(self.bot,"sniper_disabled_global_warning") and not self.bot.sniper_disabled_global_warning):
-                self._log("All catching tasks are currently disabled. Sniper will resume when catching tasks are re-enabled")
+                self._log("All catching tasks are currently disabled until {}. Sniper will resume when catching tasks are re-enabled".format(self.bot.catch_resume_at.strftime("%H:%M:%S")))
             self.bot.sniper_disabled_global_warning = True
             
         else:
