@@ -174,6 +174,8 @@ class SniperSource(object):
                 print "Unknown Pokemon name {}. Assuming it is {}".format(name, closest_name)
 
             return closest_name
+        
+        return name
 
 # Represents the JSON params mappings
 class SniperSourceMapping(object):
