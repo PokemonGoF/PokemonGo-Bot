@@ -5,6 +5,7 @@ import json
 import requests
 import calendar
 import difflib
+import hashlib
 
 from random import uniform
 from operator import itemgetter, methodcaller
@@ -232,7 +233,6 @@ class Sniper(BaseTask):
         super(Sniper, self).__init__(bot, config)
 
     def initialize(self):
-        self.cache = []
         self.disabled = False
         self.last_cell_check_time = time.time()
         self.last_data_request_time = time.time()
@@ -248,6 +248,9 @@ class Sniper(BaseTask):
         self.altitude = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
         self.sources = [SniperSource(data) for data in self.config.get('sources', [])]
 
+        if not hasattr(self.bot,"sniper_cache"):
+            self.bot.sniper_cache = []
+            
         # Dont bother validating config if task is not even enabled
         if self.enabled:
             # Validate ordering
@@ -327,60 +330,71 @@ class Sniper(BaseTask):
         if not self.is_snipeable(pokemon):
             self._trace('{} is not snipeable! Skipping...'.format(pokemon['pokemon_name']))
         else:
-            # Backup position before anything
-            last_position = self.bot.position[0:2]
-
-            # Teleport, so that we can see nearby stuff
-            self.bot.hb_locked = True
-            self._teleport_to(pokemon)
-
-            # If social is enabled and if no verification is needed, trust it. Otherwise, update IDs!
-            verify = not pokemon.get('encounter_id') or not pokemon.get('spawn_point_id')
-            exists = not verify and self.mode == SniperMode.SOCIAL
-            success = exists
-
-            # If information verification have to be done, do so
-            if verify:
-                seconds_since_last_check = time.time() - self.last_cell_check_time
-
-                # Wait a maximum of MIN_SECONDS_ALLOWED_FOR_CELL_CHECK seconds before requesting nearby cells
-                if (seconds_since_last_check < self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK):
-                    time.sleep(self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK - seconds_since_last_check)
-
-                nearby_pokemons = []
-                nearby_stuff = self.bot.get_meta_cell()
-                self.last_cell_check_time = time.time()
-
-                # Retrieve nearby pokemons for validation
-                nearby_pokemons.extend(nearby_stuff.get('wild_pokemons', []))
-                nearby_pokemons.extend(nearby_stuff.get('catchable_pokemons', []))
-
-                # Make sure the target really/still exists (nearby_pokemon key names are game-bound!)
-                for nearby_pokemon in nearby_pokemons:
-                    nearby_pokemon_id = nearby_pokemon.get('pokemon_data', {}).get('pokemon_id') or nearby_pokemon.get('pokemon_id')
-
-                    # If we found the target, it exists and will very likely be encountered/caught (success)
-                    if nearby_pokemon_id == pokemon.get('pokemon_id', 0):
-                        exists = True
-                        success = True
-
-                        # Also, if the IDs arent valid, override them (nearby_pokemon key names are game-bound!) with game values
-                        if not pokemon.get('encounter_id') or not pokemon.get('spawn_point_id'):
-                            pokemon['encounter_id'] = nearby_pokemon['encounter_id']
-                            pokemon['spawn_point_id'] = nearby_pokemon['spawn_point_id']
-                        break
-
-            # If target exists, catch it, otherwise ignore
-            if exists:
-                self._log('Yay! There really is a wild {} nearby!'.format(pokemon.get('pokemon_name')))
-                self._teleport_back_and_catch(last_position, pokemon)
+            # Have we already tried this pokemon?
+            if not hasattr(self.bot,'sniper_unique_pokemon'):
+                self.bot.sniper_unique_pokemon = []
+            
+            # Check if already in list of pokemon we've tried
+            if self._is_cached(pokemon):
+                # Do nothing. Either we already got this, or it doesn't really exist
+                print "Already tried"
+                self._trace('{} already sniped! Skipping...'.format(pokemon['pokemon_name']))
             else:
-                self._error('Damn! Its not here. Reasons: too far, caught, expired or fake data. Skipping...')
-                self._teleport_back(last_position)
+                print "Not already tried"
+                # Backup position before anything
+                last_position = self.bot.position[0:2]
 
-            # Save target and unlock heartbeat calls
-            self._cache(pokemon)
-            self.bot.hb_locked = False
+                # Teleport, so that we can see nearby stuff
+                self.bot.hb_locked = True
+                self._teleport_to(pokemon)
+
+                # If social is enabled and if no verification is needed, trust it. Otherwise, update IDs!
+                verify = not pokemon.get('encounter_id') or not pokemon.get('spawn_point_id')
+                exists = not verify and self.mode == SniperMode.SOCIAL
+                success = exists
+
+                # If information verification have to be done, do so
+                if verify:
+                    seconds_since_last_check = time.time() - self.last_cell_check_time
+
+                    # Wait a maximum of MIN_SECONDS_ALLOWED_FOR_CELL_CHECK seconds before requesting nearby cells
+                    if (seconds_since_last_check < self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK):
+                        time.sleep(self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK - seconds_since_last_check)
+
+                    nearby_pokemons = []
+                    nearby_stuff = self.bot.get_meta_cell()
+                    self.last_cell_check_time = time.time()
+
+                    # Retrieve nearby pokemons for validation
+                    nearby_pokemons.extend(nearby_stuff.get('wild_pokemons', []))
+                    nearby_pokemons.extend(nearby_stuff.get('catchable_pokemons', []))
+
+                    # Make sure the target really/still exists (nearby_pokemon key names are game-bound!)
+                    for nearby_pokemon in nearby_pokemons:
+                        nearby_pokemon_id = nearby_pokemon.get('pokemon_data', {}).get('pokemon_id') or nearby_pokemon.get('pokemon_id')
+
+                        # If we found the target, it exists and will very likely be encountered/caught (success)
+                        if nearby_pokemon_id == pokemon.get('pokemon_id', 0):
+                            exists = True
+                            success = True
+
+                            # Also, if the IDs arent valid, override them (nearby_pokemon key names are game-bound!) with game values
+                            if not pokemon.get('encounter_id') or not pokemon.get('spawn_point_id'):
+                                pokemon['encounter_id'] = nearby_pokemon['encounter_id']
+                                pokemon['spawn_point_id'] = nearby_pokemon['spawn_point_id']
+                            break
+
+                # If target exists, catch it, otherwise ignore
+                if exists:
+                    self._log('Yay! There really is a wild {} nearby!'.format(pokemon.get('pokemon_name')))
+                    self._teleport_back_and_catch(last_position, pokemon)
+                else:
+                    self._error('Damn! Its not here. Reasons: too far, caught, expired or fake data. Skipping...')
+                    self._teleport_back(last_position)
+                    
+                # Save target and unlock heartbeat calls
+                self._cache(pokemon)
+                self.bot.hb_locked = False
 
         return success
 
@@ -493,7 +507,7 @@ class Sniper(BaseTask):
         return self._hash(pokemon_1) == self._hash(pokemon_2)
 
     def _is_cached(self, pokemon):
-        for cached_pokemon in self.cache:
+        for cached_pokemon in self.bot.sniper_cache:
             if self._equals(pokemon, cached_pokemon):
                 return True
 
@@ -503,9 +517,9 @@ class Sniper(BaseTask):
         # Skip repeated items
         if not self._is_cached(pokemon):
             # Free space if full and store it
-            if len(self.cache) >= self.MAX_CACHE_LIST_SIZE:
-                self.cache.pop(0)
-            self.cache.append(pokemon)
+            if len(self.bot.sniper_cache) >= self.MAX_CACHE_LIST_SIZE:
+                self.bot.sniper_cache.pop(0)
+            self.bot.sniper_cache.append(pokemon)
 
     def _log(self, message):
         self.emit_event('sniper_log', formatted='{message}', data={'message': message})
