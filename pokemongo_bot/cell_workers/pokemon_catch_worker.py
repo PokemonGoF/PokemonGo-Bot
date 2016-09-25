@@ -15,7 +15,6 @@ from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.base_dir import _base_dir
 from datetime import datetime, timedelta
 from .utils import getSeconds
-from pokemongo_bot import metrics
 
 CATCH_STATUS_SUCCESS = 1
 CATCH_STATUS_FAILED = 2
