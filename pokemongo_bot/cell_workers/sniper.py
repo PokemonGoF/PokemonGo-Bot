@@ -5,6 +5,7 @@ import json
 import requests
 import calendar
 import difflib
+import hashlib
 
 from random import uniform
 from operator import itemgetter, methodcaller
@@ -226,7 +227,7 @@ class Sniper(BaseTask):
     MIN_SECONDS_ALLOWED_FOR_CELL_CHECK = 10
     MIN_SECONDS_ALLOWED_FOR_REQUESTING_DATA = 5
     MIN_BALLS_FOR_CATCHING = 10
-    MAX_CACHE_LIST_SIZE = 200
+    MAX_CACHE_LIST_SIZE = 500
 
     def __init__(self, bot, config):
         super(Sniper, self).__init__(bot, config)
@@ -291,11 +292,6 @@ class Sniper(BaseTask):
             self._trace('{} is expired! Skipping...'.format(pokemon.get('pokemon_name')))
             return False
 
-        # Skip if already cached
-        if self._is_cached(pokemon):
-            self._trace('{} was already handled! Skipping...'.format(pokemon.get('pokemon_name', '')))
-            return False
-
         # Skip if not enought balls. Sniping wastes a lot of balls. Theres no point to let user decide this amount
         if all_balls_count < self.MIN_BALLS_FOR_CATCHING:
             self._trace('Not enought balls left! Skipping...')
@@ -334,9 +330,10 @@ class Sniper(BaseTask):
                 self.bot.sniper_unique_pokemon = []
             
             # Check if already in list of pokemon we've tried
-            if self._is_cached(pokemon):
+            uniqueid = self._build_unique_id(pokemon)
+            if self._is_cached(uniqueid):
                 # Do nothing. Either we already got this, or it doesn't really exist
-                self._trace('{} already sniped! Skipping...'.format(pokemon['pokemon_name']))
+                self._trace('{} was already handled! Skipping...'.format(pokemon['pokemon_name']))
             else:
                 # Backup position before anything
                 last_position = self.bot.position[0:2]
@@ -390,7 +387,7 @@ class Sniper(BaseTask):
                     self._teleport_back(last_position)
                     
                 # Save target and unlock heartbeat calls
-                self._cache(pokemon)
+                self._cache(uniqueid)
                 self.bot.hb_locked = False
 
         return success
@@ -419,7 +416,6 @@ class Sniper(BaseTask):
             if targets:
                 # Order the targets (descending)
                 targets = sorted(targets, key=itemgetter(*self.order), reverse=True)
-
                 shots = 0
 
                 # For as long as there are targets available, try to snipe untill we run out of bullets
@@ -503,20 +499,25 @@ class Sniper(BaseTask):
     def _equals(self, pokemon_1, pokemon_2):
         return self._hash(pokemon_1) == self._hash(pokemon_2)
 
-    def _is_cached(self, pokemon):
-        for cached_pokemon in self.bot.sniper_cache:
-            if self._equals(pokemon, cached_pokemon):
-                return True
-
+    def _is_cached(self, uniqueid):
+        if uniqueid in self.bot.sniper_cache:
+            return True
         return False
 
-    def _cache(self, pokemon):
-        # Skip repeated items
-        if not self._is_cached(pokemon):
+    def _cache(self, uniqueid):
+        if not self._is_cached(uniqueid):
             # Free space if full and store it
             if len(self.bot.sniper_cache) >= self.MAX_CACHE_LIST_SIZE:
                 self.bot.sniper_cache.pop(0)
-            self.bot.sniper_cache.append(pokemon)
+            self.bot.sniper_cache.append(uniqueid)
+
+    def _build_unique_id(self, pokemon):
+        # Build unique id for this pokemon from id, latitude, longitude and expiration
+        uniqueid = str(pokemon.get('pokemon_id','')) + str(pokemon.get('latitude','')) + str(pokemon.get('longitude','')) + str(pokemon.get('expiration',''))
+        md5str = hashlib.md5()
+        md5str.update(uniqueid)
+        uniqueid = str(md5str.hexdigest())
+        return uniqueid
 
     def _log(self, message):
         self.emit_event('sniper_log', formatted='{message}', data={'message': message})
