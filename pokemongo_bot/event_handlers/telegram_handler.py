@@ -436,10 +436,7 @@ class TelegramClass:
                         (cmd, num) = self.tokenize(update.message.text, 2)
                         self.send_softbans(update, num)
                         continue
-                    if re.match(r'^/pokemon ', update.message.text):
-                        (cmd, name) = self.tokenize(update.message.text, 2)
-                        self.send_pokemon(update, name)
-                        continue
+                 
                     self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                      text="Unrecognized command: {}".format(update.message.text))
 
