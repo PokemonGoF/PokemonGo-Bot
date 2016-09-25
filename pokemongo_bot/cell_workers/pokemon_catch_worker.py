@@ -61,7 +61,6 @@ class PokemonCatchWorker(BaseTask):
         self.response_key = ''
         self.response_status_key = ''
         self.rest_completed = False
-        self.caught_last_24_hour = 0
 
 
         #Config
