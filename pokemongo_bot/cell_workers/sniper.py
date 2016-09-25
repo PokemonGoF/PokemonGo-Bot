@@ -337,10 +337,8 @@ class Sniper(BaseTask):
             # Check if already in list of pokemon we've tried
             if self._is_cached(pokemon):
                 # Do nothing. Either we already got this, or it doesn't really exist
-                print "Already tried"
                 self._trace('{} already sniped! Skipping...'.format(pokemon['pokemon_name']))
             else:
-                print "Not already tried"
                 # Backup position before anything
                 last_position = self.bot.position[0:2]
 
