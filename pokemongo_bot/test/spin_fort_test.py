@@ -65,4 +65,4 @@ class SpinFortTestCase(unittest.TestCase):
         items_awarded.return_value = items_awarded
 
         result = spin_fort.work()
-        self.assertEqual(result, 'RUNNING')
+        self.assertEqual(result, 1)
