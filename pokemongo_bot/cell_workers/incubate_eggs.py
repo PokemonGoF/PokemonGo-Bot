@@ -258,7 +258,7 @@ class IncubateEggs(BaseTask):
 
         self.emit_event(
             'next_egg_incubates',
-            formatted='Eggs incubating: {eggs} (Eggs left: {eggs_left}, Incubating: {eggs_inc})',
+            formatted='Eggs incubating: ({eggs}) (Eggs left: {eggs_left}, Incubating: {eggs_inc})',
             data={
                 'eggs_left': str(sorted(all_eggs.iteritems())).strip('[]'),
                 'eggs_inc': len(self.used_incubators),
