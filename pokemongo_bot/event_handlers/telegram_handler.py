@@ -304,7 +304,8 @@ class TelegramClass:
             "/released <num> <cp-or-iv-or-dated> - show top x released, sorted by CP, IV, or Date",
             "/vanished <num> <cp-or-iv-or-dated> - show top x vanished, sorted by CP, IV, or Date",
             "/softbans - info about possible softbans",
-            "/stardust - current total stardust"
+            "/stardust - stardust info",
+            "/xp - xp info"
         )
         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                          text="\n".join(res))
