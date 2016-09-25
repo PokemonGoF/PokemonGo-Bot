@@ -132,6 +132,7 @@ class ChatHandler:
                     str(stats["poke_stop_visits"]),
                     str(ps_day),
                     str("%.2f" % stats["km_walked"]),
+                    str(dust)
 
                 )
             return (res)
