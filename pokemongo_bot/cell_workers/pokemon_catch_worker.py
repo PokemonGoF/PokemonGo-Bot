@@ -147,7 +147,7 @@ class PokemonCatchWorker(BaseTask):
             self.bot.skipped_pokemon.append(pokemon)
             self.emit_event(
                 'pokemon_appeared',
-                formatted='Skip ignored {pokemon}! (CP: {cp} IV: {iv} A/D/S {iv_display})',
+                formatted='Skip ignored {pokemon}! (CP: {cp} IV: {iv} A/D/S: {iv_display})',
                 data={
                     'pokemon': pokemon.name,
                     'cp': str(int(pokemon.cp)),
