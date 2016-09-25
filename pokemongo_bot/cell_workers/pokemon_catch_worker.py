@@ -644,7 +644,7 @@ class PokemonCatchWorker(BaseTask):
 
                 self.emit_event(
                     'pokemon_caught',
-                    formatted='Captured {pokemon}! (CP: {cp} IV: {iv} {iv_display} NCP: {ncp}) Catch Limit: ({caught_last_24_hour}/{daily_catch_limit}) +{exp} exp',
+                    formatted='Captured {pokemon}! (CP: {cp} IV: {iv} A/D/S: {iv_display} NCP: {ncp}) Catch Limit: ({caught_last_24_hour}/{daily_catch_limit}) +{exp} exp',
                     data={
                         'pokemon': pokemon.name,
                         'ncp': str(round(pokemon.cp_percent, 2)),
