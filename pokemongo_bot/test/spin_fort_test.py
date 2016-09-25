@@ -57,19 +57,12 @@ class SpinFortTestCase(unittest.TestCase):
         self.patcherFortRange.stop()
         self.patcherInventoryItem.stop()
 
-    def test_spin_fort(self):
-        spin_fort = SpinFort(self.bot, config)
-        result = spin_fort.work()
-        self.assertEqual(result, 'RUNNING')
-
     @patch('pokemongo_bot.cell_workers.spin_fort.SpinFort.get_items_awarded_from_fort_spinned')
-    def test_daily_limit_reached(self, items_awarded):
+    def test_spin_fort(self, items_awarded):
         spin_fort = SpinFort(self.bot, config)
         self.bot.api = MagicMock()
         self.bot.api.fort_search.return_value = response_dict
         items_awarded.return_value = items_awarded
 
-        with self.assertRaises(SystemExit) as cm:
-            result = spin_fort.work()
-
-        self.assertEqual(cm.exception.code, 2)
+        result = spin_fort.work()
+        self.assertEqual(result, 'RUNNING')
