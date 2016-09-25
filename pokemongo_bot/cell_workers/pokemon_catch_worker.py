@@ -16,8 +16,6 @@ from pokemongo_bot.base_dir import _base_dir
 from datetime import datetime, timedelta
 from .utils import getSeconds
 
-from pprint import pprint
-
 
 CATCH_STATUS_SUCCESS = 1
 CATCH_STATUS_FAILED = 2
@@ -127,7 +125,7 @@ class PokemonCatchWorker(BaseTask):
         is_vip = self._is_vip_pokemon(pokemon)
 
         # skip ignored pokemon
-        if not self._should_catch_pokemon(pokemon) and not is_vip:
+        if (not self._should_catch_pokemon(pokemon) and not is_vip) or self.bot.catch_disabled:            
             if not hasattr(self.bot,'skipped_pokemon'):
                 self.bot.skipped_pokemon = []
 
@@ -137,6 +135,9 @@ class PokemonCatchWorker(BaseTask):
                     pokemon.cp_exact == skipped_pokemon.cp_exact and \
                     pokemon.ivcp == skipped_pokemon.ivcp:
                     return WorkerResult.SUCCESS
+
+            if self.bot.catch_disabled:
+                self.logger.info("Not catching {}. All catching tasks are currently disabled.".format(pokemon))
 
             self.bot.skipped_pokemon.append(pokemon)
             self.emit_event(
@@ -282,7 +283,7 @@ class PokemonCatchWorker(BaseTask):
         if pokemon_config.get('catch_above_cp',-1) >= 0:
             if pokemon.cp >= pokemon_config.get('catch_above_cp'):
                 catch_results['cp'] = True
-                
+
         if pokemon_config.get('catch_below_cp',-1) >= 0:
             if pokemon.cp <= pokemon_config.get('catch_below_cp'):
                 catch_results['cp'] = True
@@ -316,13 +317,13 @@ class PokemonCatchWorker(BaseTask):
             cr['cp'] = True
         elif catch_logic == 'orand':
             cr['cp'] = True,
-            cr['iv'] = True    
-        
+            cr['iv'] = True
+
         if pokemon_config.get('catch_above_ncp',-1) >= 0: cr['ncp'] = catch_results['ncp']
         if pokemon_config.get('catch_above_cp',-1) >= 0: cr['cp'] = catch_results['cp']
         if pokemon_config.get('catch_below_cp',-1) >= 0: cr['cp'] = catch_results['cp']
         if pokemon_config.get('catch_above_iv',-1) >= 0: cr['iv'] = catch_results['iv']
-        
+
         if DEBUG_ON:
             print "Debug information for match rules..."
             print "catch_results ncp = {}".format(catch_results['ncp'])
