@@ -266,9 +266,9 @@ class TelegramClass:
             for sub in conn.execute("select uid, event_type, parameters from telegram_subscriptions where uid = ?",
                                     [update.message.chat_id]).fetchall():
                 subs.append("{} -&gt; {}".format(sub[1], sub[2]))
-        if subs == []: subs.append(
+        if subs is []: subs.append(
             "No subscriptions found. Subscribe using /sub EVENTNAME. For a list of events, send /events")
-        return subs
+        self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text="\n{}".join(subs))
 
     def chsub(self, msg, chatid):
         (cmd, evt, params) = self.tokenize(msg, 3)
