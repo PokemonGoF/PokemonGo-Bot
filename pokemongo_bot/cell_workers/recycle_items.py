@@ -99,7 +99,7 @@ class RecycleItems(BaseTask):
         self._next_force = self._get_next_force_schedule()
         self.emit_event(
             'next_force_recycle',
-            formatted="Next forced item recycle at {}".format(str(self._next_force.strftime("%H:%M:%S"))),
+            formatted="Next forced item recycle at {time}",
             data={
                 'time': str(self._next_force.strftime("%H:%M:%S"))
             }
