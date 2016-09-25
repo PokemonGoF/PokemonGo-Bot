@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 import re
 from pokemongo_bot import inventory
+from pokemongo_bot import metrics
 
 DEBUG_ON = False
-
 
 class ChatHandler:
     def __init__(self, bot, pokemons):
         self.bot = bot
         self.pokemons = pokemons
+        self.metrics = metrics.Metrics(bot)
+
 
     def get_evolved(self, num, order):
         if not num.isnumeric():
@@ -193,3 +195,7 @@ class ChatHandler:
             ])
 
         return res
+
+    def get_dust(self):
+        dust = metrics.Metrics.total_stardust(self.metrics)
+        return dust

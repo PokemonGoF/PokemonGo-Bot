@@ -303,7 +303,8 @@ class TelegramClass:
             "/pokestops - show last x pokestops visited",
             "/released <num> <cp-or-iv-or-dated> - show top x released, sorted by CP, IV, or Date",
             "/vanished <num> <cp-or-iv-or-dated> - show top x vanished, sorted by CP, IV, or Date",
-            "/softbans - info about possible softbans"
+            "/softbans - info about possible softbans",
+            "/stardust - current total stardust"
         )
         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                          text="\n".join(res))
@@ -391,6 +392,11 @@ class TelegramClass:
 
                     if update.message.text == "/logout":
                         self.send_logout(update)
+                        continue
+                    if update.message.text == "/stardust":
+                        dust = self.chat_handler.get_dust()
+                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text="Stardust: " + str(dust))
+
                         continue
                     if re.match("^/events", update.message.text):
                         self.send_events(update)
