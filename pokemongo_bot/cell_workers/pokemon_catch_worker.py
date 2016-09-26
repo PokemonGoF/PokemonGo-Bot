@@ -61,6 +61,7 @@ class PokemonCatchWorker(BaseTask):
         self.response_status_key = ''
         self.rest_completed = False
         self.caught_last_24 = 0
+        self.daily_catch_limit = self.config.get('daily_catch_limit', 800)
 
 
 
@@ -658,7 +659,7 @@ class PokemonCatchWorker(BaseTask):
                         'longitude': str(self.pokemon['longitude']),
                         'pokemon_id': str(pokemon.pokemon_id),
                         'caught_last_24_hour': str(result[0]),
-                        'daily_catch_limit': self.config.get('daily_catch_limit', 800)
+                        'daily_catch_limit': self.daily_catch_limit
                     }
                 )
 
