@@ -49,9 +49,8 @@ class PokemonCatchWorker(BaseTask):
         self.pokemon = pokemon
         super(PokemonCatchWorker, self).__init__(bot, config)
         if self.config.get('debug', False): DEBUG_ON = True
-        self.daily_catch_limit = self.config.get('daily_catch_limit', None)
-        if self.config.get('daily_catch_limit', None) is None:
-            self.daily_catch_limit = self.config.get('daily_catch_limit', 800)
+        
+       
 
 
     def initialize(self):
@@ -74,6 +73,7 @@ class PokemonCatchWorker(BaseTask):
         self.berry_threshold = self.config.get('berry_threshold', 0.35)
         self.vip_berry_threshold = self.config.get('vip_berry_threshold', 0.9)
         self.treat_unseen_as_vip = self.config.get('treat_unseen_as_vip', DEFAULT_UNSEEN_AS_VIP)
+        self.daily_catch_limit = self.config.get('daily_catch_limit', 800)
 
         self.vanish_settings = self.config.get('vanish_settings', {})
         self.consecutive_vanish_limit = self.vanish_settings.get('consecutive_vanish_limit', 10)
