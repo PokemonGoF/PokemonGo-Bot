@@ -579,7 +579,11 @@ class PokemonOptimizer(BaseTask):
                 keep_for_xp = 0
 
             xp = [p for p in crap if p.has_next_evolution() and p.evolution_cost == lowest_evolution_cost][:keep_for_xp]
-            transfer = [p for p in crap if p not in xp]
+
+            if self.config_evolve_for_xp:
+                transfer = [p for p in crap if p not in xp]
+            else:
+                transfer = [p for p in crap]
 
         return (transfer, evolve, upgrade, xp)
 
@@ -631,7 +635,7 @@ class PokemonOptimizer(BaseTask):
                         for pokemon in evolve:
                             self.evolve_pokemon(pokemon)
 
-                    if xp_count > 0:
+                    if xp_count > 0 and self.config_evolve_for_xp:
                         self.logger.info("Evolving %s Pokemon (for xp)", xp_count)
 
                         for pokemon in xp:
