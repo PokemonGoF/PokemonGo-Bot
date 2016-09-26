@@ -49,6 +49,9 @@ class PokemonCatchWorker(BaseTask):
         self.pokemon = pokemon
         super(PokemonCatchWorker, self).__init__(bot, config)
         if self.config.get('debug', False): DEBUG_ON = True
+        self.daily_catch_limit = self.config.get('daily_catch_limit', None)
+        if self.config.get('daily_catch_limit', None) is None:
+            self.daily_catch_limit = self.config.get('daily_catch_limit', 800)
 
 
     def initialize(self):
@@ -61,7 +64,7 @@ class PokemonCatchWorker(BaseTask):
         self.response_status_key = ''
         self.rest_completed = False
         self.caught_last_24 = 0
-        self.daily_catch_limit = self.config.get('daily_catch_limit', 800)
+
 
 
 
