@@ -6,6 +6,7 @@ import requests
 import calendar
 
 from random import uniform
+from random import randint
 from operator import itemgetter, methodcaller
 from datetime import datetime
 from pokemongo_bot import inventory
