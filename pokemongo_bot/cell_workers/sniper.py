@@ -331,6 +331,10 @@ class Sniper(BaseTask):
                 if (seconds_since_last_check < self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK):
                     time.sleep(self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK - seconds_since_last_check)
 
+                # Sleep a bit longer for the Pokemon to appear
+                self._log('Waiting for the Pokemon to appear...')
+                time.sleep(randint(5,10))
+
                 nearby_pokemons = []
                 nearby_stuff = self.bot.get_meta_cell()
                 self.last_cell_check_time = time.time()
