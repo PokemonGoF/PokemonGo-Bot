@@ -1,9 +1,9 @@
-
 from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import sleep, action_delay
 from pokemongo_bot.inventory import Pokemon
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.base_task import BaseTask
+from datetime import datetime, timedelta
 import time
 
 class Counter(dict):
@@ -83,7 +83,7 @@ class EvolvePokemon(BaseTask):
         if self._should_log_update:
             self.emit_event(
                 'pokemon_evolve_check',
-                formatted='Evolvable: {has}/{need}',
+                formatted='Evolvable: {has}/{needs}',
                 data={'has': has, 'needs': needs}
             )
 
