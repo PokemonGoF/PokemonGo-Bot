@@ -198,6 +198,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 * EvolvePokemon
   * `enable`: Disable or enable this task.
   * `evolve_all`: Default `NONE` | Depreciated. Please use evolve_list and donot_evolve_list
+  * `log_interval`: `Default: 120`. Time (in seconds) to periodically print how far you are from having enough pokemon to evolve (more than `min_pokemon_to_be_evolved`)
   * `evolve_list`: Default `all` | Set to all, or specifiy different pokemon seperated by a comma
   * `donot_evolve_list`: Default `none` | Pokemon seperated by comma, will be ignored from evolve_list
   * `min_evolve_speed`: Default `25` | Minimum seconds to wait between each evolution 
@@ -881,8 +882,8 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
 
 Walk to the specified locations loaded from .gpx or .json file. It is highly recommended to use website such as [GPSies](http://www.gpsies.com) which allow you to export your created track in JSON file. Note that you'll have to first convert its JSON file into the format that the bot can understand. See [Example of pier39.json] below for the content. I had created a simple python script to do the conversion.
 
-The json file can contain for each point an optional `loiter` field. This
-indicated the number of seconds the bot should loiter after reaching the point.
+The json file can contain for each point an optional `wander` field. This
+indicated the number of seconds the bot should wander after reaching the point.
 During this time, the next Task in the configuration file is executed, e.g. a
 MoveToFort task. This allows the bot to walk around the waypoint looking for
 forts for a limited time.
@@ -901,9 +902,9 @@ forts for a limited time.
 ### Notice
 If you use the `single` `path_mode` without e.g. a `MoveToFort` task, your bot 
 with /not move at all/ when the path is finished. Similarly, if you use the
-`loiter` option in your json path file without a following `MoveToFort` or
-similar task, your bot will not move during the loitering period. Please
-make sure, when you use `single` mode or the `loiter` option, that another
+`wander` option in your json path file without a following `MoveToFort` or
+similar task, your bot will not move during the wandering period. Please
+make sure, when you use `single` mode or the `wander` option, that another
 move-type task follows the `FollowPath` task in your `config.json`.
 
 ### Sample Configuration
