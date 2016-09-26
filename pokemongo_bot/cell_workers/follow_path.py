@@ -144,7 +144,7 @@ class FollowPath(BaseTask):
             return WorkerResult.SUCCESS
 
         if self.status == STATUS_WANDERING and time.time() < self.wander_end_time:
-            return WorkerResult.RUNNING
+            return WorkerResult.SUCCESS
 
         last_lat, last_lng, last_alt = self.bot.position
 
@@ -197,7 +197,7 @@ class FollowPath(BaseTask):
                 self.logger.info("Wandering for {} seconds...".format(point["wander"]))
                 self.status = STATUS_WANDERING
                 self.wander_end_time = time.time() + point["wander"]
-                return WorkerResult.RUNNING
+                return WorkerResult.SUCCESS
             if (self.ptr + 1) == len(self.points):
                 if self.path_mode == 'single':
                     self.status = STATUS_FINISHED
