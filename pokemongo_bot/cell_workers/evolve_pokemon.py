@@ -17,8 +17,8 @@ class EvolvePokemon(BaseTask):
 
     def initialize(self):
         self.start_time = 0
-        self.next_update = None
-        self.interval = self.config.get('interval', 120)
+        self.next_log_update = None
+        self.log_interval = self.config.get('log_interval', 120)
         self.evolve_list = self.config.get('evolve_list', [])
         self.donot_evolve_list = self.config.get('donot_evolve_list', [])
         self.min_evolve_speed = self.config.get('min_evolve_speed', 25)
@@ -57,9 +57,6 @@ class EvolvePokemon(BaseTask):
         if not self._should_run():
             return
 
-        self._compute_next_update()
-
-        result_message = ""
         filtered_list, filtered_dict = self._sort_and_filter()
 
         pokemon_to_be_evolved = 0
@@ -70,7 +67,7 @@ class EvolvePokemon(BaseTask):
                 candy = inventory.candies().get(pokemon.pokemon_id)
                 pokemon_to_be_evolved = pokemon_to_be_evolved + min(candy.quantity / (pokemon.evolution_cost - 1), filtered_dict[pokemon.pokemon_id])
 
-        self._print_check(pokemon_to_be_evolved, self.min_pokemon_to_be_evolved)
+        self._log_interval_if_should(pokemon_to_be_evolved, self.min_pokemon_to_be_evolved)
 
         has_minimum_to_evolve = pokemon_to_be_evolved >= self.min_pokemon_to_be_evolved
         if has_minimum_to_evolve:
@@ -81,23 +78,25 @@ class EvolvePokemon(BaseTask):
                 if pokemon.can_evolve_now():
                     self._execute_pokemon_evolve(pokemon, cache)
 
-    def _print_check(self, has, needs):
-        self.emit_event(
-            'pokemon_evolve_check',
-            formatted='Evolvable: {has}/{need}',
-            data={
-                'has': has,
-                'needs': needs
-            }
-        )
+    def _log_interval_if_should(self, has, needs):
+        self._compute_next_log_update()
+        if self._should_log_update:
+            self.emit_event(
+                'pokemon_evolve_check',
+                formatted='Evolvable: {has}/{need}',
+                data={'has': has, 'needs': needs}
+            )
+
+    def _compute_next_log_update(self):
+        self.next_log_update = datetime.now() + timedelta(seconds=self.log_interval)
+
+    def _should_log_update(self):
+        return self.next_log_update is None or datetime.now() >= self.next_log_update
 
     def _should_run(self):
         if not self.evolve_list or self.evolve_list[0] == 'none':
             return False
-        return self.next_update is None or datetime.now() >= self.next_update
-
-    def _compute_next_update(self):
-        self.next_update = datetime.now() + timedelta(seconds=self.interval)
+        return True
 
     def _use_lucky_egg(self):
         using_lucky_egg = time.time() - self.start_time < 1800
