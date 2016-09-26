@@ -18,7 +18,7 @@ class ChatHandler:
         else:
             num = int(num)
 
-        if order not in ["cp", "iv"]:
+        if order not in ["cp", "iv", "dated"]:
             order = "iv"
 
         with self.bot.database as conn:
@@ -45,7 +45,7 @@ class ChatHandler:
         else:
             num = int(num)
 
-        if order not in ["cp", "iv"]:
+        if order not in ["cp", "iv", "dated"]:
             order = "iv"
 
         with self.bot.database as conn:
@@ -60,7 +60,7 @@ class ChatHandler:
         else:
             num = int(num)
 
-        if order not in ["cp", "iv"]:
+        if order not in ["cp", "iv", "dated"]:
             order = "iv"
 
         with self.bot.database as conn:
@@ -87,7 +87,7 @@ class ChatHandler:
         else:
             num = int(num)
 
-        if order not in ["cp", "iv"]:
+        if order not in ["cp", "iv", "dated"]:
             order = "iv"
 
         with self.bot.database as conn:
@@ -102,7 +102,7 @@ class ChatHandler:
         else:
             num = int(num)
 
-        if order not in ["cp", "iv"]:
+        if order not in ["cp", "iv", "dated"]:
             order = "iv"
 
         with self.bot.database as conn:
@@ -185,7 +185,7 @@ class ChatHandler:
         else:
             num = int(num)
 
-        if order not in ["cp", "iv"]:
+        if order not in ["cp", "iv", "dated"]:
             order = "iv"
         pkmns = sorted(inventory.pokemons().all(), key=lambda p: getattr(p, order), reverse=True)[:num]
         res = []
