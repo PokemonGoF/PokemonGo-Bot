@@ -880,13 +880,27 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
 ### Description
 [[back to top](#table-of-contents)]
 
-Walk to the specified locations loaded from .gpx or .json file. It is highly recommended to use website such as [GPSies](http://www.gpsies.com) which allow you to export your created track in JSON file. Note that you'll have to first convert its JSON file into the format that the bot can understand. See [Example of pier39.json] below for the content. I had created a simple python script to do the conversion.
+Walk to the specified locations loaded from .gpx or .json file. It is highly 
+recommended to use website such as [GPSies](http://www.gpsies.com) which allow 
+you to export your created track in JSON file. Note that you'll have to first 
+convert its JSON file into the format that the bot can understand. See [Example 
+of pier39.json] below for the content. I had created a simple python script to 
+do the conversion.
+
+The `location` fields in the `.json` file can also contain a street address. In
+this case the `location` is interpreted by the Google Maps API.
 
 The json file can contain for each point an optional `wander` field. This
 indicated the number of seconds the bot should wander after reaching the point.
 During this time, the next Task in the configuration file is executed, e.g. a
 MoveToFort task. This allows the bot to walk around the waypoint looking for
 forts for a limited time.
+
+The `loiter` field, also optional for each point in the json file, works
+similarly to the `wander` field. The difference is that with `loiter` the 
+next `Task` in the configuration file is /not/ executed, meaning the bot 
+will wait, without moving, at the point in the json file with the `loiter` 
+option.
 
 ### Options
 [[back to top](#table-of-contents)]
