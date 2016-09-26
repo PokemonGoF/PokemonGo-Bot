@@ -28,6 +28,7 @@
     - [Settings Description](#settings-description)
     - [`flee_count` and `flee_duration`](#flee_count-and-flee_duration)
     - [Previous `catch_simulation` Behaviour](#previous-catch_simulation-behaviour)
+- [CatchLimiter Settings](#catchlimiter-settings)
 - [Sniping _(MoveToLocation)_](#sniping-_-movetolocation-_)
     - [Description](#description)
     - [Options](#options)
@@ -190,6 +191,10 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
     * `changeball_wait_max`: 5 | Maximum time to wait when changing balls
     * `newtodex_wait_min`: 20 | Minimum time to wait if we caught a new type of pokemon
     * `newtodex_wait_max`: 39 | Maximum time to wait if we caught a new type of pokemon
+* Catch Limiter
+  * `enabled`: Default false | Enable/disable the task
+  * `min_balls`: Default 20 | Minimum balls on hand before catch tasks enabled
+  * `duration`: Default 15 | Length of time to disable catch tasks
 * EvolvePokemon
   * `enable`: Disable or enable this task.
   * `evolve_all`: Default `NONE` | Depreciated. Please use evolve_list and donot_evolve_list
@@ -570,7 +575,7 @@ Key | Info
     "enabled": true,
     "dont_nickname_favorite": false,
     "good_attack_threshold": 0.7,
-    "nickname_template": "{iv_pct}-{iv_ads}"
+    "nickname_template": "{iv_pct}-{iv_ads}",
     "locale": "en"
   }
 }
@@ -651,6 +656,30 @@ If you want to make your bot behave as it did prior to the catch_simulation upda
     "changeball_wait_max": 0
 }
 ```
+
+## CatchLimiter Settings
+[[back to top](#table-of-contents)]
+
+These settings define thresholds and duration to disable all catching tasks for a specified duration when balls are low. This allows your bot to spend time moving/looting and recovering balls spent catching.
+
+## Default Settings
+
+```
+"enabled": false,
+"min_balls": 20,
+"duration": 15
+```
+
+### Settings Description
+[[back to top](#table-of-contents)]
+
+Setting | Description
+---- | ----
+`enabled` | Specify whether this task should run or not
+`min_balls` | Determine minimum ball level required for catching tasks to be enabled
+`duration` | How long to disable catching
+
+Catching will be disabled when balls on hand reaches/is below "min_balls" and will be re-enabled when "duration" is reached, or when balls on hand > min_balls (whichever is later)
 
 ## Sniping _(MoveToLocation)_
 [[back to top](#table-of-contents)]
