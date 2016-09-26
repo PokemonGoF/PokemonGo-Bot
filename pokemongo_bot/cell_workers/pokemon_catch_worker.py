@@ -142,7 +142,7 @@ class PokemonCatchWorker(BaseTask):
                     return WorkerResult.SUCCESS
 
             if self.bot.catch_disabled:
-                self.logger.info("Not catching {}. All catching tasks are currently disabled.".format(pokemon))
+                self.logger.info("Not catching {}. All catching tasks are currently disabled until {}.".format(pokemon,self.bot.catch_resume_at.strftime("%H:%M:%S")))
 
             self.bot.skipped_pokemon.append(pokemon)
             self.emit_event(
