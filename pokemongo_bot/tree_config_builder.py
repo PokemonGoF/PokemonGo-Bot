@@ -54,17 +54,6 @@ class TreeConfigBuilder(object):
                                         'See config.json.*example for more information.')
                 continue
 
-            if not task_config.get("enabled", True):
-                msg = "Task {task_name} is disabled"
-                self.bot.event_manager.emit(
-                    'task_disabled',
-                    sender=self,
-                    level='info',
-                    formatted=msg,
-                    data={'task_name': task_type}
-                )
-                continue
-
             if self._is_plugin_task(task_type):
                 worker = self.plugin_loader.get_class(task_type)
             else:
