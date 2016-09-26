@@ -64,12 +64,12 @@ class PokemonCatchWorker(BaseTask):
 
 
 
+
         #Config
         self.min_ultraball_to_keep = self.config.get('min_ultraball_to_keep', 10)
         self.berry_threshold = self.config.get('berry_threshold', 0.35)
         self.vip_berry_threshold = self.config.get('vip_berry_threshold', 0.9)
         self.treat_unseen_as_vip = self.config.get('treat_unseen_as_vip', DEFAULT_UNSEEN_AS_VIP)
-        self.daily_catch_limit = self.config.get('daily_catch_limit', 800)
 
         self.vanish_settings = self.config.get('vanish_settings', {})
         self.consecutive_vanish_limit = self.vanish_settings.get('consecutive_vanish_limit', 10)
@@ -197,7 +197,7 @@ class PokemonCatchWorker(BaseTask):
 
 
         while True:
-            if result[0] < self.daily_catch_limit:
+            if result[0] < self.config.get('daily_catch_limit', 800):
             # catch that pokemon!
                 encounter_id = self.pokemon['encounter_id']
                 catch_rate_by_ball = [0] + response['capture_probability']['capture_probability']  # offset so item ids match indces
@@ -658,7 +658,7 @@ class PokemonCatchWorker(BaseTask):
                         'longitude': str(self.pokemon['longitude']),
                         'pokemon_id': str(pokemon.pokemon_id),
                         'caught_last_24_hour': str(result[0]),
-                        'daily_catch_limit': str(self.daily_catch_limit)
+                        'daily_catch_limit': self.config.get('daily_catch_limit', 800)
                     }
                 )
 
