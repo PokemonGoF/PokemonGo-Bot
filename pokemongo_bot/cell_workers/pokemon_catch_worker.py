@@ -642,8 +642,7 @@ class PokemonCatchWorker(BaseTask):
                         "SELECT DISTINCT COUNT(encounter_id) FROM catch_log WHERE dated >= datetime('now','-1 day')")
 
                 result = c.fetchone()
-                if self.daily_catch_limit is None:
-                    self.daily_catch_limit = self.config.get('daily_catch_limit', 800)
+
                 self.emit_event(
                     'pokemon_caught',
                     formatted='Captured {pokemon}! (CP: {cp} IV: {iv} A/D/S: {iv_display} NCP: {ncp}) Catch Limit: ({caught_last_24_hour}/{daily_catch_limit}) +{exp} exp',
