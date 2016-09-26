@@ -330,6 +330,7 @@ class Sniper(BaseTask):
 
                 # Wait a maximum of MIN_SECONDS_ALLOWED_FOR_CELL_CHECK seconds before requesting nearby cells
                 if (seconds_since_last_check < self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK):
+		    time.sleep(self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK - seconds_since_last_check)
                 
                 # Sleep a bit longer for the Pokemon to appear
                 self._log('Waiting for the Pokemon to appear...')
