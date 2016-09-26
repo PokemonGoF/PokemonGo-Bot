@@ -216,13 +216,13 @@ class IncubateEggs(BaseTask):
                 formatted=msg,
                 data={
                     'name': pokemon.name,
-                    'cp': pokemon.cp,
-                    'ncp': round(pokemon.cp_percent, 2),
-                    'iv_ads': pokemon.iv_display,
-                    'iv_pct': pokemon.iv,
-                    'exp': xp[i],
-                    'stardust': stardust[i],
-                    'candy': candy[i]
+                    'cp': str(int(pokemon.cp)),
+                    'ncp': str(round(pokemon.cp_percent, 2)),
+                    'iv_ads': str(pokemon.iv_display),
+                    'iv_pct': str(pokemon.iv),
+                    'exp': str(xp[i]),
+                    'stardust': str(stardust[i]),
+                    'candy': str(candy[i])
                 }
             )
             # hatching egg gets exp too!
@@ -258,9 +258,9 @@ class IncubateEggs(BaseTask):
 
         self.emit_event(
             'next_egg_incubates',
-            formatted='Eggs incubating: [{eggs}] (Eggs left: {eggs_left}, Incubating: {eggs_inc})',
+            formatted='Eggs incubating: {eggs} (Eggs left: {eggs_left}, Incubating: {eggs_inc})',
             data={
-                'eggs_left': sorted(all_eggs.iteritems()),
+                'eggs_left': str(sorted(all_eggs.iteritems())).strip('[]'),
                 'eggs_inc': len(self.used_incubators),
                 'eggs': ', '.join(eggs)
             }

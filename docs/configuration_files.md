@@ -28,11 +28,12 @@
     - [Settings Description](#settings-description)
     - [`flee_count` and `flee_duration`](#flee_count-and-flee_duration)
     - [Previous `catch_simulation` Behaviour](#previous-catch_simulation-behaviour)
+- [CatchLimiter Settings](#catchlimiter-settings)
 - [Sniping _(MoveToLocation)_](#sniping-_-movetolocation-_)
     - [Description](#description)
     - [Options](#options)
         - [Example](#example)
-- [Sniping _(Sniper)_](#sniping-_-sniper-_)
+- [Sniping _(Sniper)_](#sniper)
     - [Description](#description)
     - [Options](#options)
         - [Example](#example)
@@ -190,6 +191,10 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
     * `changeball_wait_max`: 5 | Maximum time to wait when changing balls
     * `newtodex_wait_min`: 20 | Minimum time to wait if we caught a new type of pokemon
     * `newtodex_wait_max`: 39 | Maximum time to wait if we caught a new type of pokemon
+* Catch Limiter
+  * `enabled`: Default false | Enable/disable the task
+  * `min_balls`: Default 20 | Minimum balls on hand before catch tasks enabled
+  * `duration`: Default 15 | Length of time to disable catch tasks
 * EvolvePokemon
   * `enable`: Disable or enable this task.
   * `evolve_all`: Default `NONE` | Depreciated. Please use evolve_list and donot_evolve_list
@@ -570,7 +575,7 @@ Key | Info
     "enabled": true,
     "dont_nickname_favorite": false,
     "good_attack_threshold": 0.7,
-    "nickname_template": "{iv_pct}-{iv_ads}"
+    "nickname_template": "{iv_pct}-{iv_ads}",
     "locale": "en"
   }
 }
@@ -652,6 +657,30 @@ If you want to make your bot behave as it did prior to the catch_simulation upda
 }
 ```
 
+## CatchLimiter Settings
+[[back to top](#table-of-contents)]
+
+These settings define thresholds and duration to disable all catching tasks for a specified duration when balls are low. This allows your bot to spend time moving/looting and recovering balls spent catching.
+
+## Default Settings
+
+```
+"enabled": false,
+"min_balls": 20,
+"duration": 15
+```
+
+### Settings Description
+[[back to top](#table-of-contents)]
+
+Setting | Description
+---- | ----
+`enabled` | Specify whether this task should run or not
+`min_balls` | Determine minimum ball level required for catching tasks to be enabled
+`duration` | How long to disable catching
+
+Catching will be disabled when balls on hand reaches/is below "min_balls" and will be re-enabled when "duration" is reached, or when balls on hand > min_balls (whichever is later)
+
 ## Sniping _(MoveToLocation)_
 [[back to top](#table-of-contents)]
 
@@ -725,7 +754,7 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
 }
 ```
 
-## Sniping _(Sniper)_
+## Sniper
 [[back to top](#table-of-contents)]
 
 ### Description
@@ -754,6 +783,8 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
 * `sources.key` - The JSON key that contains the results, eg.: For a JSON response such as `{ "SomeWeirdoName": [{"id": 123, ...}, {"id": 143, ...}]}`, `SomeWeirdoName` would be the key name.
 * `sources.url` - The URL that will provide the JSON.
 * `sources.enabled` - Defines whether this source is enabled or not. This has nothing to do with the task's `enabled`.
+* `sources.timeout` - How long to wait for this source to respond before giving up (default 5 seconds)
+* `mappings`- Map JSON parameters to required values.
    - `iv` - The JSON param that corresponds to the pokemon IV. Only certain sources provide this info. **NOTE:** `social` mode does not provide this info!
    - `id` - The JSON param that corresponds to the pokemon ID. (required)
    - `name` - The JSON param that corresponds to the pokemon name. (required)
@@ -781,6 +812,8 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
         "sources": [
             {
                 "url": "http://pokesnipers.com/api/v1/pokemon.json",
+                "enabled": true,
+                "timeout": 15,
                 "key": "results",
                 "mappings": {
                     "iv": { "param": "iv" },
@@ -793,6 +826,8 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
             {
                 "url": "http://localhost:5000/raw_data",
                 "key": "pokemons",
+                "enabled": true,
+                "timeout": 5,
                 "mappings": {
                     "id": { "param": "pokemon_id" },
                     "name": { "param": "pokemon_name" },
@@ -803,6 +838,8 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
             },
             {
                 "url": "https://pokewatchers.com/grab/",
+                "enabled": true,
+                "timeout": 15,
                 "mappings": {
                     "iv": { "param": "iv" },
                     "id": { "param": "pid" },
