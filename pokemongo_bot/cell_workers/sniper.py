@@ -227,7 +227,7 @@ class Sniper(BaseTask):
     MIN_SECONDS_ALLOWED_FOR_CELL_CHECK = 10
     MIN_SECONDS_ALLOWED_FOR_REQUESTING_DATA = 5
     MIN_BALLS_FOR_CATCHING = 10
-    MAX_CACHE_LIST_SIZE = 500
+    MAX_CACHE_LIST_SIZE = 300
 
     def __init__(self, bot, config):
         super(Sniper, self).__init__(bot, config)
