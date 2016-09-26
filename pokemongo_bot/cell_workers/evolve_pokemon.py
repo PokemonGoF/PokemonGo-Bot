@@ -67,7 +67,7 @@ class EvolvePokemon(BaseTask):
                 candy = inventory.candies().get(pokemon.pokemon_id)
                 pokemon_to_be_evolved = pokemon_to_be_evolved + min(candy.quantity / (pokemon.evolution_cost - 1), filtered_dict[pokemon.pokemon_id])
 
-        self._log_interval_if_should(pokemon_to_be_evolved, self.min_pokemon_to_be_evolved)
+        self._log_update_if_should(pokemon_to_be_evolved, self.min_pokemon_to_be_evolved)
 
         has_minimum_to_evolve = pokemon_to_be_evolved >= self.min_pokemon_to_be_evolved
         if has_minimum_to_evolve:
@@ -78,7 +78,7 @@ class EvolvePokemon(BaseTask):
                 if pokemon.can_evolve_now():
                     self._execute_pokemon_evolve(pokemon, cache)
 
-    def _log_interval_if_should(self, has, needs):
+    def _log_update_if_should(self, has, needs):
         self._compute_next_log_update()
         if self._should_log_update:
             self.emit_event(
@@ -91,7 +91,7 @@ class EvolvePokemon(BaseTask):
         self.next_log_update = datetime.now() + timedelta(seconds=self.log_interval)
 
     def _should_log_update(self):
-        return self.next_log_update is None or datetime.now() >= self.next_log_update
+        return datetime.now() >= self.next_log_update
 
     def _should_run(self):
         if not self.evolve_list or self.evolve_list[0] == 'none':
