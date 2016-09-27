@@ -255,7 +255,7 @@ class MoveToMapPokemon(BaseTask):
         # If target exists, catch it, otherwise ignore
         if exists:
             self._encountered(pokemon)
-            catch_worker = PokemonCatchWorker(pokemon, self.bot, self.config)
+            catch_worker = PokemonCatchWorker(pokemon, self.bot)
             api_encounter_response = catch_worker.create_encounter_api_call()
             time.sleep(self.config.get('snipe_sleep_sec', 2))
             self._teleport_back(last_position)

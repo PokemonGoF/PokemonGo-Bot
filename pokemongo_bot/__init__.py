@@ -117,7 +117,7 @@ class PokemonGoBot(object):
         self.heartbeat_counter = 0
         self.last_heartbeat = time.time()
         self.hb_locked = False # lock hb on snip
-        
+
         # Inventory refresh limiting
         self.inventory_refresh_threshold = 10
         self.inventory_refresh_counter = 0
@@ -217,7 +217,6 @@ class PokemonGoBot(object):
         self.event_manager.register_event('buddy_pokemon', parameters=('pokemon', 'iv', 'cp'))
         self.event_manager.register_event('buddy_reward', parameters=('pokemon', 'family', 'candy_earned', 'candy'))
         self.event_manager.register_event('buddy_walked', parameters=('pokemon', 'distance_walked', 'distance_needed'))
-        self.event_manager.register_event('task_disabled', parameters=('task_name',))
 
         #  ignore candy above threshold
         self.event_manager.register_event(
@@ -480,6 +479,10 @@ class PokemonGoBot(object):
         self.event_manager.register_event(
             'pokemon_evolved',
             parameters=('pokemon', 'iv', 'cp', 'candy', 'xp')
+        )
+        self.event_manager.register_event(
+            'pokemon_evolve_check',
+            parameters=('has', 'needs')
         )
         self.event_manager.register_event(
             'pokemon_upgraded',
@@ -1485,4 +1488,4 @@ class PokemonGoBot(object):
             inventory.refresh_inventory()
             self.last_inventory_refresh = now
             self.inventory_refresh_counter += 1
-            
+
