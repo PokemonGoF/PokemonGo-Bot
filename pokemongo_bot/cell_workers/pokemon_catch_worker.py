@@ -45,8 +45,17 @@ DEBUG_ON = False
 
 class PokemonCatchWorker(BaseTask):
 
-    def __init__(self, pokemon, bot, config):
+    def __init__(self, pokemon, bot, config={}):
         self.pokemon = pokemon
+
+        # Load CatchPokemon config if no config supplied  
+        if not config:
+            for value in bot.workers:
+                if hasattr(value, 'catch_pokemon'):
+                    config = value.config
+                    
+        self.config = config
+
         super(PokemonCatchWorker, self).__init__(bot, config)
         if self.config.get('debug', False): DEBUG_ON = True
 
@@ -61,8 +70,6 @@ class PokemonCatchWorker(BaseTask):
         self.response_status_key = ''
         self.rest_completed = False
         self.caught_last_24 = 0
-
-
 
         #Config
         self.min_ultraball_to_keep = self.config.get('min_ultraball_to_keep', 10)

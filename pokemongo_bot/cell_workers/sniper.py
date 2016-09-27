@@ -550,7 +550,7 @@ class Sniper(BaseTask):
         self._teleport(position_array[0], position_array[1], self.altitude)
 
     def _teleport_back_and_catch(self, position_array, pokemon):
-        catch_worker = PokemonCatchWorker(pokemon, self.bot, self.config)
+        catch_worker = PokemonCatchWorker(pokemon, self.bot)
         api_encounter_response = catch_worker.create_encounter_api_call()
         self._teleport_back(position_array)
         catch_worker.work(api_encounter_response)
