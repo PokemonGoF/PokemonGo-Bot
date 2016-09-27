@@ -45,11 +45,11 @@ DEBUG_ON = False
 
 class PokemonCatchWorker(BaseTask):
 
-    def __init__(self, pokemon, bot, config=None):
+    def __init__(self, pokemon, bot, config={}):
         self.pokemon = pokemon
 
         # Load CatchPokemon config if no config supplied  
-        if config is None:
+        if not config:
             for value in bot.workers:
                 if hasattr(value, 'catch_pokemon'):
                     config = value.config
