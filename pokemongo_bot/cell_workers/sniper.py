@@ -188,7 +188,7 @@ class SniperOrderMode(object):
     VIP = 'vip'
     MISSING = 'missing'
     PRIORITY = 'priority'
-    EXPIRATION = 'expiration_timestamp_ms'
+    EXPIRATION = 'expiration'
     DEFAULT = [MISSING, VIP, PRIORITY]
 
 # Represents the snipping type
@@ -202,7 +202,6 @@ class Sniper(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
     MIN_SECONDS_ALLOWED_FOR_CELL_CHECK = 10
     MIN_SECONDS_ALLOWED_FOR_REQUESTING_DATA = 5
-    MIN_BALLS_FOR_CATCHING = 25
     MAX_CACHE_LIST_SIZE = 300
 
     def __init__(self, bot, config):
@@ -246,32 +245,35 @@ class Sniper(BaseTask):
                 self.vip_dictionary[Pokemons.id_for(key)] = 0
 
     def is_snipeable(self, pokemon):
+        pokemon_name = pokemon.get('pokemon_name')
+
         # Skip if already handled
         if self._is_cached(pokemon):
-            self._trace('{} was already handled! Skipping...'.format(pokemon.get('pokemon_name')))
+            self._trace('{} was already handled! Skipping...'.format(pokemon_name))
             return False
 
         # Skip if expired (cast milliseconds to seconds for comparision)
         if (pokemon.get('expiration_timestamp_ms', 0) or pokemon.get('last_modified_timestamp_ms', 0)) / 1000 < time.time():
-            self._trace('{} is expired! Skipping...'.format(pokemon.get('pokemon_name')))
+            self._trace('{} is expired! Skipping...'.format(pokemon_name))
             return False
 
-        # Skip if not in catch list, not a VIP and/or IV sucks (if any)
-        if self.catch_dictionary.has_key(pokemon.get('pokemon_id', 0)):
-            self._trace('{} is catchable!'.format(pokemon.get('pokemon_name')))
+        # Check whether the IV is good enough to skip the VIP and catch lists checkup
+        if pokemon.get('catchable_iv', False):
+            self._trace('{} has a decent IV ({})!'.format(pokemon_name, pokemon.get('iv')))
         else:
-            # Not catchable. Having a good IV should suppress the not in catch/vip list (most important)
-            if pokemon.get('iv', 0) and pokemon.get('iv', 0) < self.special_iv:
-                self._trace('{} is not catchable, but has a decent IV!'.format(pokemon.get('pokemon_name')))
+            # Bad IV (if any). Check whether its in the catch list
+            if pokemon.get('catchable_list', False):
+                self._trace('{} is in the catch list!'.format(pokemon_name))
             else:
-                # Not catchable and IV is not good enough (if any). Check VIP list
-                if pokemon.get('vip', False):
-                    self._trace('{} is not catchable and bad IV (if any), but its a VIP!'.format(pokemon.get('pokemon_name')))
+                # Bad IV (if any) and not in the catch list. Check whether its in the VIP list
+                if pokemon.get('catchable_vip', False):
+                    self._trace('{} is in the VIP list!'.format(pokemon_name))
                 else:
-                    if pokemon.get('missing', False):
-                        self._trace('{} is not catchable, not VIP and bad IV (if any), but its a missing one.'.format(pokemon.get('pokemon_name')))
+                    # Bad IV (if any) and not in any of the catching lists. Check whether its missing
+                    if pokemon.get('catchable_missing', False):
+                        self._trace("{} is missing!".format(pokemon_name))
                     else:
-                        self._trace('{} is not catchable, nor a VIP or a missing one and bad IV (if any). Skipping...'.format(pokemon.get('pokemon_name')))
+                        self._trace("{} is worthless (can be missing, but no ordering specified). Skipping...".format(pokemon_name))
                         return False
 
         return True
@@ -376,13 +378,25 @@ class Sniper(BaseTask):
     def _parse_pokemons(self, pokemon_dictionary_list):
         result = []
 
-        # Build up the pokemon by adding unusual information (used in multiple purposes)
+        # Build up the pokemon dictionary. Some keys are created if they do not already exist!
         for pokemon in pokemon_dictionary_list:
+            # Ordering attributes
             pokemon['iv'] = pokemon.get('iv', 0)
-            pokemon['pokemon_name'] = pokemon.get('pokemon_name', Pokemons.name_for(pokemon.get('pokemon_id')))
             pokemon['vip'] = self.vip_dictionary.has_key(pokemon.get('pokemon_id'))
-            pokemon['missing'] = not self.pokedex.captured(pokemon.get('pokemon_id'))
             pokemon['priority'] = self.catch_dictionary.get(pokemon.get('pokemon_id'), 0)
+            pokemon['missing'] = not self.pokedex.captured(pokemon.get('pokemon_id'))
+            pokemon['expiration'] = pokemon.get('expiration_timestamp_ms', 0) or pokemon.get('last_modified_timestamp_ms', 0)
+
+            # Catchable flags
+            pokemon['catchable_iv'] = pokemon.get('iv') > 0 and pokemon.get('iv') >= self.special_iv
+            pokemon['catchable_missing'] = pokemon.get('missing') and SniperOrderMode.MISSING in self.order
+            pokemon['catchable_vip'] = self.vip_dictionary.has_key(pokemon.get('pokemon_id'))
+            pokemon['catchable_list'] = self.catch_dictionary.has_key(pokemon.get('pokemon_id'))
+
+            # Other attributes
+            pokemon['expiration_timestamp_ms'] = pokemon.get('expiration', 0)
+            pokemon['last_modified_timestamp_ms'] = pokemon.get('expiration', 0)
+            pokemon['pokemon_name'] = pokemon.get('pokemon_name', Pokemons.name_for(pokemon.get('pokemon_id')))
 
             # Check whether this is a valid target
             if self.is_snipeable(pokemon):
@@ -458,7 +472,7 @@ class Sniper(BaseTask):
             self._validate_sources()
 
         # Check whether we have some snipe sources to snipe from or if catching has been disabled at all
-        if not self.sources and not self.sources_pending_validation:
+        if not self.sources:
             self._error("There is no source available to snipe from. Skipping...")
             return False
         elif self.bot.catch_disabled:
