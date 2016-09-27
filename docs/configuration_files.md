@@ -79,8 +79,10 @@ Document the configuration options of PokemonGo-Bot.
 | `max_steps`        | 5       | The steps around your initial location (DEFAULT 5 mean 25 cells around your location) that will be explored
 | `forts.avoid_circles`             | False     | Set whether the bot should avoid circles |
 | `forts.max_circle_size`             | 10     | How many forts to keep in ignore list |
-| `walk_max`             | 4.16    | Set the maximum walking speed in m/s (1 is about 3.6km/hr) 4.16m/s = 15km/h
-| `walk_min`             | 2.16    | Set the minimum walking speed in m/s (1 is about 3.6km/hr) 2.16m/s = 7.8km/h
+| `walk_max`             | 4.16    | Set the maximum walking speed in m/s (1 is about 3.6km/h) 4.16m/s = 15km/h
+| `walk_min`             | 2.16    | Set the minimum walking speed in m/s (1 is about 3.6km/h) 2.16m/s = 7.8km/h
+| `fly_max`              |  282    | Set the maximum flying speed in m/s (1 is about 3.6km/h) 282m/s = 1015km/h
+| `fly_min`              |  294    | Set the minimum flying speed in m/s (1 is about 3.6km/h) 294m/s = 1058km/h
 | `action_wait_min`   | 1       | Set the minimum time setting for anti-ban time randomizer
 | `action_wait_max`   | 4       | Set the maximum time setting for anti-ban time randomizer
 | `debug`            | false   | Let the default value here except if you are developer                                                                                                                                      |
@@ -887,6 +889,23 @@ indicated the number of seconds the bot should wander after reaching the point.
 During this time, the next Task in the configuration file is executed, e.g. a
 MoveToFort task. This allows the bot to walk around the waypoint looking for
 forts for a limited time.
+
+For each point in the json file, the optional `mode` field indicates the
+simulated travel model. This is only supported when `walker` is set to
+`PolylineWalker`. When `mode` is set to `driving` or `bicycling`, the
+Google Directions API is used to get the appropriate route.
+
+The supported values for `mode` are:
+* `walking` - walk as usual, using a speed between `walk_min` and `walk_max` 
+  in `config.json`
+* `bicycling` - simulate riding a bicycle. The speed from the Google Directions
+  API is used
+* `driving` - simulate driving a car. The speed from the Google Directions
+  API is used, which depends on the road (e.g. 100 km/h on a highway and 30 km/h 
+  in a suburban area).
+* `flying` - simulate taking an aeroplane. Flies are typical airline cruising
+  speed, configurable with `fly_min` and `fly_max`. During the simulated flight
+  no other actions are taken by the bot.
 
 ### Options
 [[back to top](#table-of-contents)]

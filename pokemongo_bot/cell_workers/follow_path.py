@@ -77,10 +77,12 @@ class FollowPath(BaseTask):
                     'position': point_tuple
                 }
             )
-            # Keep point['location']
+            # Keep point['location'] and other keys
             point["lat"] = float(point_tuple[0])
             point["lng"] = float(point_tuple[1])
             point["alt"] = float(point_tuple[2])
+            if "mode" not in point:
+                point["mode"] = "walking"
         return points
 
     def load_gpx(self):
@@ -158,11 +160,15 @@ class FollowPath(BaseTask):
             alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
 
         if self.bot.config.walk_max > 0:
+            mode = "walking"
+            if "mode" in point:
+                mode = point["mode"]
             step_walker = walker_factory(self.walker,
                 self.bot,
                 lat,
                 lng,
-                alt
+                alt,
+                mode=mode
             )
 
             is_at_destination = False
@@ -181,10 +187,10 @@ class FollowPath(BaseTask):
 
         self.emit_event(
             'position_update',
-            formatted="Walking from {last_position} to {current_position}, distance left: ({distance} {distance_unit}) ..",
+            formatted="Moving from {last_position} to {current_position}, distance left: ({distance} {distance_unit}) ..",
             data={
                 'last_position': (last_lat, last_lng, last_alt),
-                'current_position': (lat, lng, alt),
+                'current_position': "{} ({})".format(point["location"], point["mode"]),
                 'distance': format_dist(dist,self.distance_unit,self.append_unit),
                 'distance_unit': self.distance_unit
             }

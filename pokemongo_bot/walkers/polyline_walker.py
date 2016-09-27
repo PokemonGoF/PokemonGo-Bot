@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 from geographiclib.geodesic import Geodesic
+from random import uniform
+from time import sleep
 
 from pokemongo_bot.walkers.step_walker import StepWalker
 from .polyline_generator import PolylineObjectHandler
@@ -7,11 +9,43 @@ from pokemongo_bot.human_behaviour import random_alt_delta
 
 
 class PolylineWalker(StepWalker):
+    def handle_flight(self):
+        speed = uniform(self.bot.config.fly_min, self.bot.config.fly_max)
+        origin_lat, origin_lng, origin_alt = self.bot.position
+        remaining = Geodesic.WGS84.Inverse(origin_lat, origin_lng, self.dest_lat, self.dest_lng)["s12"]
+        time_to_sleep = remaining / speed
+        sleep(time_to_sleep)
+        self.bot.api.set_position(self.dest_lat, self.dest_lng, self.dest_alt)
+        self.bot.event_manager.emit("position_update",
+                                    sender=self,
+                                    level="debug",
+                                    data={"current_position": (self.dest_lat, self.dest_lng, self.dest_alt),
+                                          "last_position": (origin_lat, origin_lng, origin_alt),
+                                          "distance": remaining,
+                                          "distance_unit": "m"})
+
+    def step(self, speed=None):
+        if speed is None:
+            if self.mode == "walking":
+                speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
+            if self.mode == "flying":
+                self.handle_flight()
+                return True
+            else:
+                try:
+                    cache = PolylineObjectHandler._cache
+                    _,_,speed = cache._step_dict[cache._step_keys[cache._last_step]]
+                    speed = speed * uniform(0.95, 1.05)
+                except Exception as e:
+                    pass
+
+        return super(PolylineWalker, self).step(speed)
+
     def get_next_position(self, origin_lat, origin_lng, origin_alt, dest_lat, dest_lng, dest_alt, distance):
-        polyline = PolylineObjectHandler.cached_polyline((self.bot.position[0], self.bot.position[1]), (dest_lat, dest_lng), google_map_api_key=self.bot.config.gmapkey)
+        polyline = PolylineObjectHandler.cached_polyline((self.bot.position[0], self.bot.position[1]), (dest_lat, dest_lng), google_map_api_key=self.bot.config.gmapkey, mode=self.mode)
 
         while True:
-            _, (dest_lat, dest_lng) = polyline._step_dict[polyline._step_keys[polyline._last_step]]
+            _, (dest_lat, dest_lng), _ = polyline._step_dict[polyline._step_keys[polyline._last_step]]
 
             next_lat, next_lng, _ = super(PolylineWalker, self).get_next_position(origin_lat, origin_lng, origin_alt, dest_lat, dest_lng, dest_alt, distance)
 

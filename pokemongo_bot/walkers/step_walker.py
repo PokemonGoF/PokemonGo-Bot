@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 import time
 
 from geographiclib.geodesic import Geodesic
@@ -8,10 +9,12 @@ from pokemongo_bot.human_behaviour import sleep, random_alt_delta
 
 
 class StepWalker(object):
-    def __init__(self, bot, dest_lat, dest_lng, dest_alt=None, precision=0.5):
+    def __init__(self, bot, dest_lat, dest_lng, dest_alt=None, precision=0.5, mode="walking"):
         self.bot = bot
         self.epsilon = 0.01
         self.precision = max(precision, self.epsilon)
+        self.logger = logging.getLogger(type(self).__name__)
+        self.mode = mode
 
         self.dest_lat = dest_lat
         self.dest_lng = dest_lng

@@ -58,6 +58,8 @@ class BuddyPokemon(BaseTask):
 
     def initialize(self):
         self.buddy = self.bot.player_data.get('buddy_pokemon', {})
+        if 'last_km_awarded' not in self.buddy:
+            self.buddy['last_km_awarded'] = 0
         self.buddy_list = self.config.get('buddy_list', [])
         self.best_in_family = self.config.get('best_in_family', True)
         self.candy_limit = self.config.get('candy_limit', 0)  # 0 = No Limit
