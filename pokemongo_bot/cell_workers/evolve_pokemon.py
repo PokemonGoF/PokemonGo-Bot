@@ -17,7 +17,7 @@ class EvolvePokemon(BaseTask):
 
     def initialize(self):
         self.start_time = 0
-        self.next_log_update = None
+        self.next_log_update = 0
         self.log_interval = self.config.get('log_interval', 120)
         self.evolve_list = self.config.get('evolve_list', [])
         self.donot_evolve_list = self.config.get('donot_evolve_list', [])
@@ -79,19 +79,19 @@ class EvolvePokemon(BaseTask):
                     self._execute_pokemon_evolve(pokemon, cache)
 
     def _log_update_if_should(self, has, needs):
-        self._compute_next_log_update()
-        if self._should_log_update:
+        if self._should_log_update():
+            self._compute_next_log_update()
             self.emit_event(
                 'pokemon_evolve_check',
-                formatted='Evolvable: {has}/{need}',
+                formatted='Evolvable: {has}/{needs}',
                 data={'has': has, 'needs': needs}
             )
 
     def _compute_next_log_update(self):
-        self.next_log_update = datetime.now() + timedelta(seconds=self.log_interval)
+        self.next_log_update = time.time() + self.log_interval
 
     def _should_log_update(self):
-        return datetime.now() >= self.next_log_update
+        return time.time() >= self.next_log_update
 
     def _should_run(self):
         if not self.evolve_list or self.evolve_list[0] == 'none':
