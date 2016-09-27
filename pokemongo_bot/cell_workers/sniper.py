@@ -9,7 +9,6 @@ from random import uniform
 from operator import itemgetter, methodcaller
 from datetime import datetime
 from pokemongo_bot import inventory
-from pokemongo_bot.item_list import Item
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.inventory import Pokemons
 from pokemongo_bot.worker_result import WorkerResult
@@ -214,7 +213,6 @@ class Sniper(BaseTask):
         self.catch_dictionary = {}
         self.last_cell_check_time = time.time()
         self.last_data_request_time = time.time()
-        self.inventory = inventory.items()
         self.pokedex = inventory.pokedex()
         self.debug = self.config.get('debug', False)
         self.special_iv = self.config.get('special_iv', 100)
@@ -248,11 +246,6 @@ class Sniper(BaseTask):
                 self.vip_dictionary[Pokemons.id_for(key)] = 0
 
     def is_snipeable(self, pokemon):
-        pokeballs_count = self.inventory.get(Item.ITEM_POKE_BALL.value).count
-        greatballs_count = self.inventory.get(Item.ITEM_GREAT_BALL.value).count
-        ultraballs_count = self.inventory.get(Item.ITEM_ULTRA_BALL.value).count
-        all_balls_count = pokeballs_count + greatballs_count + ultraballs_count
-
         # Skip if already handled
         if self._is_cached(pokemon):
             self._trace('{} was already handled! Skipping...'.format(pokemon.get('pokemon_name')))
@@ -261,11 +254,6 @@ class Sniper(BaseTask):
         # Skip if expired (cast milliseconds to seconds for comparision)
         if (pokemon.get('expiration_timestamp_ms', 0) or pokemon.get('last_modified_timestamp_ms', 0)) / 1000 < time.time():
             self._trace('{} is expired! Skipping...'.format(pokemon.get('pokemon_name')))
-            return False
-
-        # Skip if not enought balls. Sniping wastes a lot of balls. Theres no point to let user decide this amount
-        if all_balls_count < self.MIN_BALLS_FOR_CATCHING:
-            self._trace('Not enought balls left! Skipping...')
             return False
 
         # Skip if not in catch list, not a VIP and/or IV sucks (if any)
@@ -388,7 +376,7 @@ class Sniper(BaseTask):
     def _parse_pokemons(self, pokemon_dictionary_list):
         result = []
 
-        # Build up the pokemon. Pops are used to destroy random attribute names and keep the known ones!
+        # Build up the pokemon by adding unusual information (used in multiple purposes)
         for pokemon in pokemon_dictionary_list:
             pokemon['iv'] = pokemon.get('iv', 0)
             pokemon['pokemon_name'] = pokemon.get('pokemon_name', Pokemons.name_for(pokemon.get('pokemon_id')))
@@ -421,18 +409,15 @@ class Sniper(BaseTask):
             self._trace("Fetching pokemons from the sources...")
             for source in self.sources:
                 try:
-                    if source.enabled:
-                        source_pokemons = source.fetch()
-                        self._trace("Source '{}' returned {} results".format(source.url, len(source_pokemons)))
+                    source_pokemons = source.fetch()
+                    self._trace("Source '{}' returned {} results".format(source.url, len(source_pokemons)))
 
-                        # Merge lists, making sure to exclude repeated data. Use location as the hash key
-                        for source_pokemon in source_pokemons:
-                            key = self._hash(source_pokemon)
+                    # Merge lists, making sure to exclude repeated data. Use location as the hash key
+                    for source_pokemon in source_pokemons:
+                        key = self._hash(source_pokemon)
 
-                            if not results_hash_map.has_key(key):
-                                results_hash_map[key] = source_pokemon
-                    else:
-                        self._trace("Source '{}' is disabled".format(source.url))
+                        if not results_hash_map.has_key(key):
+                            results_hash_map[key] = source_pokemon
                 except Exception as exception:
                     self._error("Could not fetch data from '{}'. Details: {}. Skipping...".format(source.url, exception))
             self._trace("After merging, we've got {} results".format(len(results_hash_map.values())))
@@ -477,8 +462,7 @@ class Sniper(BaseTask):
             self._error("There is no source available to snipe from. Skipping...")
             return False
         elif self.bot.catch_disabled:
-            # TODO: Show catching disabled warning GLOBALLY, only once
-            self._log("All catching tasks are currently disabled until {}. Sniper will resume when catching tasks are re-enabled".format(self.bot.catch_resume_at.strftime("%H:%M:%S")))
+            self._trace("All catching tasks are currently disabled until {}. Sniper will resume when catching tasks are re-enabled".format(self.bot.catch_resume_at.strftime("%H:%M:%S")))
             return False
 
         return True
