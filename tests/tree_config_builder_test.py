@@ -1,7 +1,6 @@
 import unittest
 import json
 import os
-from mock import MagicMock
 from pokemongo_bot import PokemonGoBot, ConfigException, MismatchTaskApiVersion, TreeConfigBuilder, PluginLoader, BaseTask
 from pokemongo_bot.cell_workers import HandleSoftBan, CatchPokemon
 from pokemongo_bot.test.resources.plugin_fixture import FakeTask, UnsupportedApiTask
@@ -11,9 +10,7 @@ def convert_from_json(str):
 
 class TreeConfigBuilderTest(unittest.TestCase):
     def setUp(self):
-        self.bot = MagicMock()
-        self.bot.event_manager = MagicMock()
-        self.bot.event_manager.emit = lambda *args, **kwargs: None
+        self.bot = {}
 
     def test_should_throw_on_no_type_key(self):
         obj = convert_from_json("""[{

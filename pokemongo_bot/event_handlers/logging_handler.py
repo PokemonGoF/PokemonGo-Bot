@@ -81,7 +81,6 @@ class LoggingHandler(EventHandler):
         'softban_log':                       'magenta',
         'spin_limit':                        'red',
         'spun_pokestop':                     'cyan',
-        'task_disabled':                     'yellow',
         'threw_berry_failed':                'red',
         'transfer_log':                      'magenta',
         'unknown_spin_result':               'red',
