@@ -81,8 +81,7 @@ class FollowPath(BaseTask):
             point["lat"] = float(point_tuple[0])
             point["lng"] = float(point_tuple[1])
             point["alt"] = float(point_tuple[2])
-            if "mode" not in point:
-                point["mode"] = "walking"
+            point["mode"] = mode.get("mode", "walking")
         return points
 
     def load_gpx(self):
@@ -160,9 +159,7 @@ class FollowPath(BaseTask):
             alt = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
 
         if self.bot.config.walk_max > 0:
-            mode = "walking"
-            if "mode" in point:
-                mode = point["mode"]
+            mode = point.get("mode", "walking")
             step_walker = walker_factory(self.walker,
                 self.bot,
                 lat,

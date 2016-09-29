@@ -15,14 +15,7 @@ class PolylineWalker(StepWalker):
         remaining = Geodesic.WGS84.Inverse(origin_lat, origin_lng, self.dest_lat, self.dest_lng)["s12"]
         time_to_sleep = remaining / speed
         sleep(time_to_sleep)
-        self.bot.api.set_position(self.dest_lat, self.dest_lng, self.dest_alt)
-        self.bot.event_manager.emit("position_update",
-                                    sender=self,
-                                    level="debug",
-                                    data={"current_position": (self.dest_lat, self.dest_lng, self.dest_alt),
-                                          "last_position": (origin_lat, origin_lng, origin_alt),
-                                          "distance": remaining,
-                                          "distance_unit": "m"})
+        super(PolylineWalker, self).step(float("inf"))
 
     def step(self, speed=None):
         if speed is None:
