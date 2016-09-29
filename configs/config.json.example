@@ -383,6 +383,8 @@
     },
     "walk_max": 4.16,
     "walk_min": 2.16,
+    "fly_max": 222,
+    "fly_min": 202,
     "alt_min": 500,
     "alt_max": 1000,
 

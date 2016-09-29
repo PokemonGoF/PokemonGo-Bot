@@ -81,8 +81,8 @@ Document the configuration options of PokemonGo-Bot.
 | `forts.max_circle_size`             | 10     | How many forts to keep in ignore list |
 | `walk_max`             | 4.16    | Set the maximum walking speed in m/s (1 is about 3.6km/h) 4.16m/s = 15km/h
 | `walk_min`             | 2.16    | Set the minimum walking speed in m/s (1 is about 3.6km/h) 2.16m/s = 7.8km/h
-| `fly_max`              |  282    | Set the maximum flying speed in m/s (1 is about 3.6km/h) 282m/s = 1015km/h
-| `fly_min`              |  294    | Set the minimum flying speed in m/s (1 is about 3.6km/h) 294m/s = 1058km/h
+| `fly_max`              |  222    | Set the maximum flying speed in m/s (1 is about 3.6km/h) 222m/s = 800km/h
+| `fly_min`              |  202    | Set the minimum flying speed in m/s (1 is about 3.6km/h) 202m/s = 727km/h
 | `action_wait_min`   | 1       | Set the minimum time setting for anti-ban time randomizer
 | `action_wait_max`   | 4       | Set the maximum time setting for anti-ban time randomizer
 | `debug`            | false   | Let the default value here except if you are developer                                                                                                                                      |
