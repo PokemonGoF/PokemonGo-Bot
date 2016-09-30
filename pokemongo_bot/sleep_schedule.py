@@ -1,6 +1,7 @@
 from datetime import datetime, date, timedelta
 from time import sleep
 from random import uniform
+import sys
 
 
 class SleepSchedule(object):
@@ -286,7 +287,7 @@ class SleepSchedule(object):
                               'end': prev_day_end,
                               'duration': sch_duration,
                               'location': location})
-            elif sch_time > now and diff < self.SCHEDULING_MARGIN:
+            elif sch_time > now and diff > self.SCHEDULING_MARGIN:
                 times.append({'type': 'sleep',
                               'start': sch_time,
                               'end': sch_end,
@@ -297,60 +298,88 @@ class SleepSchedule(object):
         next_day = self.today + timedelta(days=1)
         for cfg_type in ["random_pause", "random_alive_pause"]:
             if not self.pause[cfg_type]: continue
-            sch_time = now + timedelta(seconds=self._get_random_offset(self.pause[cfg_type]['max_interval']), min_offset=self.pause[cfg_type]['min_interval'])
-            while sch_time < next_day:
+            sch_time = now + timedelta(seconds=self._get_random_offset(self.pause[cfg_type]['max_interval'], min_offset=self.pause[cfg_type]['min_interval']))
+            while sch_time.date() < next_day:
                 sch_duration = self._get_random_offset(self.pause[cfg_type]['max_duration'], min_offset=self.pause[cfg_type]['min_duration'])
                 sch_end = sch_time + timedelta(seconds=sch_duration)
                 times.append({'type': cfg_type,
                               'start': sch_time,
                               'end': sch_end,
-                              'duration': sch_duration})
-                sch_time = sch_end + timedelta(seconds=self._get_random_offset(self.pause[cfg_type]['min_interval'], self.pause[cfg_type]['max_interval']))
+                              'duration': sch_duration,
+                              'min_duration': self.pause[cfg_type]['min_duration']})
+                sch_time = sch_end + timedelta(seconds=self._get_random_offset(self.pause[cfg_type]['max_interval'], min_offset=self.pause[cfg_type]['min_interval']))
 
         sorted_times = sorted(times, key=lambda k: k['start'])
         new_times = []
 
         for index in range(len(sorted_times)):
-            entry = sorted_times[index]
-            if new_times:
-                latest = new_times[len(new_times)-1]
-                if latest['end'] >= entry['start']:
-                    if latest['type'] == 'sleep' and entry['type'] == 'sleep':
-                        if latest['end'] >= entry['end']:
-                            continue
-                        else:
-                            latest['end'] = entry['end']
-                            latest['duration'] = int(timedelta(latest['end'] - latest['start']).total_seconds())
-                    elif latest['type'] == 'sleep' and (entry['type'] == 'random_pause' or entry['type'] == 'random_alive_pause'):
-                        if (latest['end'] + self.SCHEDULING_MARGIN) >= entry['end']:
-                            continue
-                        else:
-                            entry['start'] = latest['end'] + self.SCHEDULING_MARGIN
-                            entry['duration'] = int(timedelta(entry['end'] - entry['start']).total_seconds())
-                            new_times.append(entry)
-                    elif (latest['type'] == 'random_pause' or latest['type'] == 'random_alive_pause') and entry['type'] == 'sleep':
-                        while ((entry['start'] - self.SCHEDULING_MARGIN) < latest['end'] or (entry['start'] - self.SCHEDULING_MARGIN) < latest['start']) and latest['type'] != 'sleep':
-                            new_times.remove(latest)
-                            if new_times: latest = new_times[len(new_times)-1]
-                        new_times.append(entry)
-                    elif (latest['type'] == 'random_pause') and (entry['type'] == 'random_alive_pause'):
-                        entry['start'] = latest['end']
-                        entry['duration'] = int(timedelta(entry['end'] - entry['start']).total_seconds())
-                        if entry['duration'] <= 0:
-                            continue
-                        else:
-                            new_times.append(entry)
-                    elif (latest['type'] == 'random_alive_pause') and (entry['type'] == 'random_pause'):
-                        latest['end'] = entry['start']
-                        latest['duration'] = int(timedelta(latest['end'] - latest['start']).total_seconds())
-                        if latest['duration'] <= 0: new_times.remove(latest)
+            print sorted_times[index]['type'], self._time_fmt(sorted_times[index]['start'])
+            self.overlay(sorted_times[index], new_times)
 
         self._schedule = new_times
 
+        #DEBUG
+        for n in range(len(self._schedule)):
+            i = self._schedule[n]
+            t = i['type']
+            s = self._time_fmt(i['start'])
+            e = self._time_fmt(i['end'])
+            d = self._time_fmt(i['duration'])
+            if n:
+                b = self._time_fmt((i['start'] - self._schedule[n-1]['end']).total_seconds())
+                print 'Break: %s' % b
+            print 'Type: %s, start: %s, end: %s, duration: %s' % (t, s, e, d)
+        sys.exit(0)
+
+    def overlay(self, entry, target):
+        if target:
+            latest = target[len(target)-1]
+            if latest['duration'] <= 0:
+                target.remove(latest)
+                self.overlay(entry, target)
+            elif latest['end'] == entry['start'] and ((latest['type'] == 'random_pause' and entry['type'] == 'random_alive_pause') or (latest['type'] == 'random_alive_pause' and entry['type'] == 'random_pause')):
+                target.append(entry)
+            elif (latest['end'] + self.SCHEDULING_MARGIN) >= entry['start']:
+                if latest['type'] == 'sleep' and entry['type'] == 'sleep':
+                    latest['end'] = entry['start'] - self.SCHEDULING_MARGIN
+                    latest['duration'] = int((latest['end'] - latest['start']).total_seconds())
+                    self.overlay(entry, target)
+                elif latest['type'] == 'sleep' and (entry['type'] == 'random_pause' or entry['type'] == 'random_alive_pause'):
+                    entry['start'] = latest['end'] + self.SCHEDULING_MARGIN
+                    entry['duration'] = int((entry['end'] - entry['start']).total_seconds())
+                    if entry['duration'] < entry['min_duration']: return
+                    self.overlay(entry, target)
+                elif (latest['type'] == 'random_pause' or latest['type'] == 'random_alive_pause') and entry['type'] == 'sleep':
+                    latest['end'] = entry['start'] - self.SCHEDULING_MARGIN
+                    latest['duration'] = int((latest['end'] - latest['start']).total_seconds())
+                    if latest['duration'] < latest['min_duration']:
+                        target.remove(latest)
+                        self.overlay(entry, target)
+                elif (latest['type'] == 'random_pause') and (entry['type'] == 'random_alive_pause'):
+                    entry['start'] = latest['end']
+                    entry['duration'] = int((entry['end'] - entry['start']).total_seconds())
+                    if entry['duration'] <= 0: return
+                elif (latest['type'] == 'random_alive_pause') and (entry['type'] == 'random_pause'):
+                    latest['end'] = entry['start']
+                    latest['duration'] = int((latest['end'] - latest['start']).total_seconds())
+                    if latest['duration'] <= 0:
+                        target.remove(latest)
+                        self.overlay(entry, target)
+            else:
+                target.append(entry)
+        else:
+            target.append(entry)
 
     def _should_sleep_now(self):
         entry = self._schedule[0]
         now = datetime.now()
+
+        if now >= entry['end']:
+            self._schedule.remove(entry)
+            if self._schedule:
+                return self._should_sleep_now()
+            else:
+                return False
 
         if now >= entry['start'] and now < entry['end']:
             entry['duration'] = (entry['end'] - now).total_seconds()

@@ -731,7 +731,9 @@ class PokemonGoBot(object):
         self.cell = self.get_meta_cell()
 
         if self.sleep_schedule:
+            hb_lock = self.hb_locked
             self.sleep_schedule.work()
+            self.hb_locked = hb_lock
 
         now = time.time() * 1000
 
