@@ -313,23 +313,9 @@ class SleepSchedule(object):
         new_times = []
 
         for index in range(len(sorted_times)):
-            print sorted_times[index]['type'], self._time_fmt(sorted_times[index]['start'])
             self.overlay(sorted_times[index], new_times)
 
         self._schedule = new_times
-
-        #DEBUG
-        for n in range(len(self._schedule)):
-            i = self._schedule[n]
-            t = i['type']
-            s = self._time_fmt(i['start'])
-            e = self._time_fmt(i['end'])
-            d = self._time_fmt(i['duration'])
-            if n:
-                b = self._time_fmt((i['start'] - self._schedule[n-1]['end']).total_seconds())
-                print 'Break: %s' % b
-            print 'Type: %s, start: %s, end: %s, duration: %s' % (t, s, e, d)
-        sys.exit(0)
 
     def overlay(self, entry, target):
         if target:
