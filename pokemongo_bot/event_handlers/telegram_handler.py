@@ -136,8 +136,8 @@ class TelegramClass:
         if stats:
             self.sendMessage(chat_id=chat_id,
                              parse_mode='Markdown',
-                             text="*{}* \n_Level:_ {} \n_XP:_ {}/{} \n_Pokemons Captured:_ {} ({} _last 24h_) \n_Poke Stop Visits:_ {} ({} _last 24h_) \n _KM Walked:_ {}".format(
-                                 stats[0], stats[1], stats[2], stats[3], stats[4], stats[5], stats[6], stats[7], stats[8]))
+                             text="*{}* \n_Level:_ {} \n_XP:_ {}/{} \n_Pokemons Captured:_ {} ({} _last 24h_) \n_Poke Stop Visits:_ {} ({} _last 24h_) \n_KM Walked:_ {} \n_Stardust:_ {}".format(
+                                 stats[0], stats[1], stats[2], stats[3], stats[4], stats[5], stats[6], stats[7], stats[8], stats[9]))
             self.sendLocation(chat_id=chat_id, latitude=self.bot.api._position_lat,
                               longitude=self.bot.api._position_lng)
         else:
@@ -303,8 +303,7 @@ class TelegramClass:
             "/pokestops - show last x pokestops visited",
             "/released <num> <cp-or-iv-or-dated> - show top x released, sorted by CP, IV, or Date",
             "/vanished <num> <cp-or-iv-or-dated> - show top x vanished, sorted by CP, IV, or Date",
-            "/softbans - info about possible softbans",
-            "/stardust - current total stardust"
+            "/softbans - info about possible softbans"
         )
         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                          text="\n".join(res))
@@ -392,11 +391,6 @@ class TelegramClass:
 
                     if update.message.text == "/logout":
                         self.send_logout(update)
-                        continue
-                    if update.message.text == "/stardust":
-                        dust = self.chat_handler.get_dust()
-                        self.sendMessage(chat_id=update.message.chat_id, parse_mode='HTML', text="Stardust: " + str(dust))
-
                         continue
                     if re.match("^/events", update.message.text):
                         self.send_events(update)

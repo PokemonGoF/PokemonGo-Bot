@@ -18,7 +18,7 @@ class ChatHandler:
         else:
             num = int(num)
 
-        if order not in ["cp", "iv"]:
+        if order not in ["cp", "iv", "dated"]:
             order = "iv"
 
         with self.bot.database as conn:
@@ -45,7 +45,7 @@ class ChatHandler:
         else:
             num = int(num)
 
-        if order not in ["cp", "iv"]:
+        if order not in ["cp", "iv", "dated"]:
             order = "iv"
 
         with self.bot.database as conn:
@@ -60,7 +60,7 @@ class ChatHandler:
         else:
             num = int(num)
 
-        if order not in ["cp", "iv"]:
+        if order not in ["cp", "iv", "dated"]:
             order = "iv"
 
         with self.bot.database as conn:
@@ -87,7 +87,7 @@ class ChatHandler:
         else:
             num = int(num)
 
-        if order not in ["cp", "iv"]:
+        if order not in ["cp", "iv", "dated"]:
             order = "iv"
 
         with self.bot.database as conn:
@@ -102,7 +102,7 @@ class ChatHandler:
         else:
             num = int(num)
 
-        if order not in ["cp", "iv"]:
+        if order not in ["cp", "iv", "dated"]:
             order = "iv"
 
         with self.bot.database as conn:
@@ -113,6 +113,7 @@ class ChatHandler:
 
     def get_player_stats(self):
         stats = inventory.player().player_stats
+        dust = self.get_dust()
         if stats:
             with self.bot.database as conn:
                 cur = conn.cursor()
@@ -130,7 +131,9 @@ class ChatHandler:
                     str(catch_day),
                     str(stats["poke_stop_visits"]),
                     str(ps_day),
-                    str("%.2f" % stats["km_walked"])
+                    str("%.2f" % stats["km_walked"]),
+                    str(dust)
+
                 )
             return (res)
 
@@ -161,7 +164,7 @@ class ChatHandler:
                             data["iv"] >= trigger["iv"]) or \
                         ("operator" in trigger and trigger["operator"] == "or" and (
                                 data["cp"] >= trigger["cp"] or data["iv"] >= trigger["iv"])):
-                    msg = "Caught {} CP: {}, IV: {}".format(data["pokemon"], data["cp"], data["iv"])
+                    msg = "Captured {}! (CP: {} IV: {} A/D/S {} NCP: {}) Catch Limit: ({}/{}) +{} exp +{} stardust".format(data["pokemon"], data["cp"], data["iv"], data["iv_display"], data["ncp"],  data["caught_last_24_hour"], data["daily_catch_limit"], data["exp"], data["stardust"])
         if event == 'egg_hatched':
             msg = "Egg hatched with a {} CP: {}, IV: {} (A/D/S {})".format(data["name"], data["cp"], data["iv_pct"],
                                                                            data["iv_ads"])
@@ -182,7 +185,7 @@ class ChatHandler:
         else:
             num = int(num)
 
-        if order not in ["cp", "iv"]:
+        if order not in ["cp", "iv", "dated"]:
             order = "iv"
         pkmns = sorted(inventory.pokemons().all(), key=lambda p: getattr(p, order), reverse=True)[:num]
         res = []

@@ -44,7 +44,7 @@ It will also collect the candies from your Buddy and select the next buddy.
 
 # Configuration
 ## Default configuration
-```
+```json
 {
     "tasks": [
         {
@@ -119,7 +119,7 @@ It will also collect the candies from your Buddy and select the next buddy.
                         "mode": "by_pokemon",
                         "names": ["!with_next_evolution"],
                         "top": 1,
-                        "sort": ["dps_attack"],
+                        "sort": ["dps_attack", "iv"],
                         "keep": {"iv": 0.9}
                     }
                 ]
@@ -363,7 +363,7 @@ You can define `groups` of Pokemon to help you restrict rules to a specific set 
 <br>You can then use these `groups` names in the [`names`](#rule-names) parameter of your rule to refer to list of Pokemon
 
 `groups` are list of Pokemon names:
-```
+```json
 "groups": {
     "gym": ["Dragonite", "Snorlax"],
     "my_love": ["Pikachu"],
@@ -398,35 +398,77 @@ The order in which the rule are defined may have an impact on the behavior.
 Especially, if there not enough candies/stardust to evolve/upgrade all the selected Pokemon, the Pokemon selected by the first rule will be evolved/upgraded first, then the ones of the second rule etc.
 More generally, the first rule always have higher priority for evolve, upgrade or buddy.
 
-```
+```json
 "rules": [
     {
+        "// Of all Pokemon with less than 124 candies, buddy the Pokemon having the highest maximum cp": {},
+        "mode": "overall",
+        "top": 1,
+        "sort": ["max_cp", "cp"],
+        "keep": {"candy": -124},
+        "evolve": false,
+        "buddy": true
+    },
+    {
+        "// Buddy the Pokemon having the less candies. In case no Pokemon match first rule": {},
+        "mode": "overall",
+        "top": 1,
+        "sort": ["-candy", "max_cp", "cp"],
+        "evolve": false,
+        "buddy": true
+    },
+    {
+        "mode": "by_pokemon",
+        "names": ["gym"],
+        "top": 3,
+        "sort": ["iv", "ncp"],
+        "evolve": {"iv": 0.9, "ncp": 0.9},
+        "upgrade": {"iv": 0.9, "ncp": 0.9}
+    },
+    {
+        "// Keep best iv of each family and evolve it if its iv is greater than 0.9": {},
         "mode": "by_family",
         "top": 1,
         "sort": ["iv"],
         "evolve": {"iv": 0.9}
     },
     {
+        "// Keep best ncp of each family and evolve it if its ncp is greater than 0.9": {},
         "mode": "by_family",
         "top": 1,
         "sort": ["ncp"],
         "evolve": {"ncp": 0.9}
     },
     {
+        "// Keep best cp of each family but do not evolve it": {},
         "mode": "by_family",
         "top": 1,
-        "sort": ["cp"]
+        "sort": ["cp"],
+        "evolve": false
     },
     {
-        "mode": "by_family",
-        "top": 3,
-        "names": ["gym"],
-        "sort": ["iv", "ncp"],
-        "evolve": {"iv": 0.9, "ncp": 0.9},
-        "upgrade": {"iv": 0.9, "ncp": 0.9}
+        "// For Pokemon of final evolution and with iv greater than 0.9, keep the best dps_attack": {},
+        "mode": "by_pokemon",
+        "names": ["!with_next_evolution"],
+        "top": 1,
+        "sort": ["dps_attack", "iv"],
+        "keep": {"iv": 0.9}
     }
 ]
 ```
+
+The following table describe how the parameters of a rule affect the selection of Pokemon:
+
+|         |               | Balbusaur `{"iv": 0.38}` | Ivysaur `{"iv": 0.98}` | Venusaur `{"iv": 0.71}` | ... | Dratini `{"iv": 0.47}` | Dratini `{"iv": 0.93}` | Dragonair `{"iv": 0.82}` | Dragonair `{"iv": 0.91}` | Dragonite `{"iv": 1.0}` |
+|:-------:|:-------------:|:------------------------:|:----------------------:|:-----------------------:|:---:|:----------------------:|:----------------------:|:------------------------:|:------------------------:|:-----------------------:|
+|   mode  |  `per_family` |             A            |            A           |            A            |     |            B           |            B           |             B            |             B            |            B            |
+|  names  |  `Dragonite`  |                          |                        |                         |     |            x           |            x           |             x            |             x            |            x            |
+|   keep  | `{"iv": 0.8}` |                          |                        |                         |     |                        |            x           |             x            |             x            |            x            |
+|   sort  |    `["iv"]`   |                          |                        |                         |     |                        |            2           |             4            |             3            |            1            |
+|   top   |      `3`      |                          |                        |                         |     |                        |            x           |                          |             x            |            x            |
+|  evolve | `{"iv": 0.9}` |                          |                        |                         |     |                        |            x           |                          |             x            |                         |
+| upgrade | `{"iv": 1.0}` |                          |                        |                         |     |                        |                        |                          |                          |            x            |
+
 
 [[back to top](#pokemon-optimizer)]
 
@@ -653,7 +695,7 @@ For Eevee Pokemon family, and any other family with multiple paths of evolution,
 # FAQ
 #### How do I keep the 2 best `iv` of every single Pokemon, and evolve them if they are over `0.9` `iv` ?
 
-```
+```json
 {
     "mode": "by_pokemon",
     "top": 2,
@@ -664,7 +706,7 @@ For Eevee Pokemon family, and any other family with multiple paths of evolution,
 
 #### How do I keep the 2 best `iv` of every single Pokemon, and evolve them if they are over `0.9` `ncp` ?
 
-```
+```json
 {
     "mode": "by_pokemon",
     "top": 2,
@@ -675,10 +717,10 @@ For Eevee Pokemon family, and any other family with multiple paths of evolution,
 
 #### How do I keep my 10 best `cp` Dragonite and Snorlax to fight gyms ?
 
-```
+```json
 {
     "mode": "by_pokemon",
-    "names": ["Dragonite", "Snorlax"]
+    "names": ["Dragonite", "Snorlax"],
     "top": 10,
     "sort": ["cp"]
 },
@@ -686,10 +728,10 @@ For Eevee Pokemon family, and any other family with multiple paths of evolution,
 
 #### How do I keep the Gyarados with the best moveset for attack ?
 
-```
+```json
 {
     "mode": "by_pokemon",
-    "names": ["Gyarados"]
+    "names": ["Gyarados"],
     "top": 1,
     "sort": ["dps_attack"]
 },
@@ -697,10 +739,10 @@ For Eevee Pokemon family, and any other family with multiple paths of evolution,
 
 #### How do I keep the Gyarados with the best fast attack ?
 
-```
+```json
 {
     "mode": "by_pokemon",
-    "names": ["Gyarados"]
+    "names": ["Gyarados"],
     "top": 1,
     "sort": ["dps1"]
 },
@@ -708,17 +750,17 @@ For Eevee Pokemon family, and any other family with multiple paths of evolution,
 
 #### How do I keep all my Poliwag with `cp` less that `20` ?
 
-```
+```json
 {
     "mode": "by_pokemon",
-    "names": ["Poliwag"]
+    "names": ["Poliwag"],
     "keep": {"cp": -20}
 },
 ```
 
 #### How do I buddy the Pokemon for which I have the less number of candies ?
 
-```
+```json
 {
     "mode": "overall",
     "top": 1,
