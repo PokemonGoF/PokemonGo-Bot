@@ -84,6 +84,8 @@ class SleepSchedule(object):
         self.bot = bot
         self.enabled = True
         self.today = date.today()
+        self._schedule = []
+        self._last_reminder = None
         self._process_config(config)
         if not self.enabled: return
         self._mkschedule()
@@ -136,26 +138,26 @@ class SleepSchedule(object):
         :param strTime: string time of format %H:%M:%S
         '''
         try:
-            x = dt.strptime(strTime, '%H:%M:%S')
-            seconds = int(timedelta(hours=x.hour,minutes=x.minute,seconds=x.second).total_seconds())
+            x = datetime.strptime(strTime, '%H:%M:%S')
+            seconds = int(timedelta(hours=x.hour, minutes=x.minute, seconds=x.second).total_seconds())
         except ValueError:
-            seconds = 0;
+            seconds = 0
 
         if seconds < 0:
-            seconds = 0;
+            seconds = 0
 
         return seconds
 
 
     def _time_fmt(self, value):
-       ret = ""
-       if isinstance(value, datetime):
-           ret = value.strftime("%H:%M:%S")
-       elif isinstance(value, (int, float)):
-           h, m = divmod(value, 3600)
-           m, s = divmod(m, 60)
-           ret = "%02d:%02d:%02d" % (h, m, s)
-       return ret
+        ret = ""
+        if isinstance(value, datetime):
+            ret = value.strftime("%H:%M:%S")
+        elif isinstance(value, (int, float)):
+            h, m = divmod(value, 3600)
+            m, s = divmod(m, 60)
+            ret = "%02d:%02d:%02d" % (h, m, s)
+        return ret
 
 
     def _process_config(self, config):
@@ -225,7 +227,7 @@ class SleepSchedule(object):
                         lat = float(wake_up_at_location[0])
                         lng = float(wake_up_at_location[1])
                         alt = float(wake_up_at_location[2]) if wake_up_at_location[2] else uniform(self.bot.config.alt_min, self.bot.config.alt_max)
-                        prepared['wake_up_at_location'] = { 'raw': raw_wake_up_at_location, 'coord': (lat, lng, alt) }
+                        prepared['wake_up_at_location'] = {'raw': raw_wake_up_at_location, 'coord': (lat, lng, alt)}
                     except:
                         index = config.index(entry)
                         self.bot.warning('SleepSchedule: sleep: error parsing wake_up_at_location in entry %d' % index)
@@ -240,7 +242,7 @@ class SleepSchedule(object):
                 cfg = config[cfg_type]
                 if 'enabled' in cfg and cfg['enabled']:
                     raw_min_duration = getkey('min_duration', cfg, cfg_type=cfg_type, defval='00:00:10')
-                    self.random_pause['min_duration'] = self.getSeconds(raw_min_duration)
+                    self.pause[cfg_type]['min_duration'] = self.getSeconds(raw_min_duration)
 
                     raw_max_duration = getkey('max_duration', cfg, cfg_type=cfg_type, defval='00:10:00')
                     self.pause[cfg_type]['max_duration'] = self.getSeconds(raw_max_duration)
@@ -258,7 +260,7 @@ class SleepSchedule(object):
                         self.bot.logger.warning('SleepSchedule: %s: min_interval is greater than max_interval, %s is disabled' % (cfg_type, cfg_type))
                         self.pause[cfg_type] = {}
 
-        if (not len(self.sleep)) and (not self.pause['random_pause']) and (not self.pause['random_alive_pause'):
+        if (not len(self.sleep)) and (not self.pause['random_pause']) and (not self.pause['random_alive_pause']):
             self.enabled = False
             self.bot.logger.warning('SleepSchedule is disabled')
 
@@ -278,13 +280,13 @@ class SleepSchedule(object):
             diff = sch_time - now
 
             # Edge case if sleep time has started previous day
-            if (prev_day_time <= now and now < prev_day_end):
+            if prev_day_time <= now and now < prev_day_end:
                 times.append({'type': 'sleep',
                               'start': prev_day_time,
                               'end': prev_day_end,
                               'duration': sch_duration,
                               'location': location})
-            elif (sch_time > now and diff < self.SCHEDULING_MARGIN):
+            elif sch_time > now and diff < self.SCHEDULING_MARGIN:
                 times.append({'type': 'sleep',
                               'start': sch_time,
                               'end': sch_end,
@@ -292,12 +294,12 @@ class SleepSchedule(object):
                               'location': location})
 
         now += self.SCHEDULING_MARGIN
-        next_day = today + timedelta(days=1)
+        next_day = self.today + timedelta(days=1)
         for cfg_type in ["random_pause", "random_alive_pause"]:
             if not self.pause[cfg_type]: continue
-            sch_time = now + timedelta(seconds=self._get_random_offset(self.pause[cfg_type]['min_interval'], self.pause[cfg_type]['max_interval']))
+            sch_time = now + timedelta(seconds=self._get_random_offset(self.pause[cfg_type]['max_interval']), min_offset=self.pause[cfg_type]['min_interval'])
             while sch_time < next_day:
-                sch_duration = self._get_random_offset(self.pause[cfg_type]['min_duration'], self.pause[cfg_type]['max_duration'])
+                sch_duration = self._get_random_offset(self.pause[cfg_type]['max_duration'], min_offset=self.pause[cfg_type]['min_duration'])
                 sch_end = sch_time + timedelta(seconds=sch_duration)
                 times.append({'type': cfg_type,
                               'start': sch_time,
@@ -343,7 +345,7 @@ class SleepSchedule(object):
                         latest['duration'] = int(timedelta(latest['end'] - latest['start']).total_seconds())
                         if latest['duration'] <= 0: new_times.remove(latest)
 
-    self._schedule = new_times
+        self._schedule = new_times
 
 
     def _should_sleep_now(self):
@@ -364,8 +366,8 @@ class SleepSchedule(object):
                     sender=self,
                     formatted="Next %s at {time}, for a duration of {duration}" % entry['type'],
                     data={
-                        'time': str(self._next_sleep.strftime("%H:%M:%S")),
-                        'duration': str(timedelta(seconds=entry['duration']))
+                        'time': self._time_fmt(entry['start']),
+                        'duration': self._time_fmt(entry['duration'])
                     }
                 )
                 self._last_reminder = now
@@ -376,7 +378,7 @@ class SleepSchedule(object):
         duration = entry['duration'] + self._get_random_offset(entry['duration_random_offset'])
         return duration
 
-    def _get_random_offset(self, min_offset=-1, max_offset):
+    def _get_random_offset(self, max_offset, min_offset=-1):
         if min_offset < 0:
             offset = uniform(-max_offset, max_offset)
         else:
@@ -405,7 +407,7 @@ class SleepSchedule(object):
             self.bot.hb_locked = True
             sleep(sleep_to_go)
         elif entry['type'] == 'random_pause':
-            self.emit_event(
+            self.bot.event_manager.emit(
                 'bot_random_pause',
                 formatted="Taking a random break for {time_hms}, will resume at {resume}",
                 data={
@@ -417,7 +419,7 @@ class SleepSchedule(object):
             sleep(sleep_to_go)
         elif entry['type'] == 'random_alive_pause':
             raw_wake = now + timedelta(seconds=sleep_to_go)
-            self.emit_event(
+            self.bot.event_manager.emit(
                 'bot_random_alive_pause',
                 formatted="Taking a random break keeping bot alive for {time_hms}, will resume at {resume}",
                 data={
@@ -426,7 +428,7 @@ class SleepSchedule(object):
                 }
             )
             while datetime.now() <= raw_wake:
-                sleep(uniform(1,3))
+                sleep(uniform(1, 3))
                 if self.bot.config.replicate_gps_xy_noise or self.bot.config.replicate_gps_z_noise: # Adding some noise
                     lat, lng, alt = self.bot.api.get_position()
                     self.bot.api.set_position(lat, lng, alt) # Just set the same _actual_ values. set_position will add noise itself
@@ -434,4 +436,4 @@ class SleepSchedule(object):
 
         end = entry['end']
         self._schedule.remove(entry)
-        if self._schedule and self.schedule[0]['end'] == end: self._sleep()
+        if self._schedule and self._schedule[0]['end'] == end: self._sleep()
