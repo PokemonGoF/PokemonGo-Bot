@@ -1,7 +1,6 @@
 from datetime import datetime, date, timedelta
 from time import sleep
 from random import uniform
-import sys
 
 
 class SleepSchedule(object):
