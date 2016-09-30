@@ -423,6 +423,7 @@ class SleepSchedule(object):
         elif entry['type'] == 'random_pause':
             self.bot.event_manager.emit(
                 'bot_random_pause',
+                sender=self,
                 formatted="Taking a random break for {time_hms}, will resume at {resume}",
                 data={
                     'time_hms': sleep_hms,
@@ -435,6 +436,7 @@ class SleepSchedule(object):
             raw_wake = now + timedelta(seconds=sleep_to_go)
             self.bot.event_manager.emit(
                 'bot_random_alive_pause',
+                sender=self,
                 formatted="Taking a random break keeping bot alive for {time_hms}, will resume at {resume}",
                 data={
                     'time_hms': sleep_hms,
