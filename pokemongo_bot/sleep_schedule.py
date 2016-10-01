@@ -317,6 +317,7 @@ class SleepSchedule(object):
         self._schedule = new_times
 
     def overlay(self, entry, target):
+        if entry['duration'] <= 0: return
         if target:
             latest = target[len(target)-1]
             if latest['duration'] <= 0:
@@ -324,7 +325,7 @@ class SleepSchedule(object):
                 self.overlay(entry, target)
             elif latest['end'] == entry['start'] and ((latest['type'] == 'random_pause' and entry['type'] == 'random_alive_pause') or (latest['type'] == 'random_alive_pause' and entry['type'] == 'random_pause')):
                 target.append(entry)
-            elif (latest['end'] + self.SCHEDULING_MARGIN) >= entry['start']:
+            elif (latest['end'] + self.SCHEDULING_MARGIN) > entry['start']:
                 if latest['type'] == 'sleep' and entry['type'] == 'sleep':
                     latest['end'] = entry['start'] - self.SCHEDULING_MARGIN
                     latest['duration'] = int((latest['end'] - latest['start']).total_seconds())
