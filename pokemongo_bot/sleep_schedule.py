@@ -99,38 +99,40 @@ class SleepSchedule(object):
                 self._mkschedule()
         if self._should_sleep_now():
             location = self._schedule[0]['location'] if 'location' in self._schedule[0] else None
+            cfg_type = self._schedule[0]['type']
             self._sleep()
-            if location:
-                if hasattr(self.bot, 'api'): # Check if api is already initialized
-                    msg = "Wake up location found: {location} {position}"
-                    self.bot.event_manager.emit(
-                        'location_found',
-                        sender=self,
-                        level='info',
-                        formatted=msg,
-                        data={
-                            'location': location['raw'],
-                            'position': location['coord']
-                        }
-                    )
+            if cfg_type != 'random_alive_pause':
+                if location:
+                    if hasattr(self.bot, 'api'): # Check if api is already initialized
+                        msg = "Wake up location found: {location} {position}"
+                        self.bot.event_manager.emit(
+                            'location_found',
+                            sender=self,
+                            level='info',
+                            formatted=msg,
+                            data={
+                                'location': location['raw'],
+                                'position': location['coord']
+                            }
+                        )
 
-                    self.bot.api.set_position(*location['coord'])
+                        self.bot.api.set_position(*location['coord'])
 
-                    self.bot.event_manager.emit(
-                        'position_update',
-                        sender=self,
-                        level='info',
-                        formatted="Now at {current_position}",
-                        data={
-                            'current_position': self.bot.position,
-                            'last_position': '',
-                            'distance': '',
-                            'distance_unit': ''
-                        }
-                    )
-                else:
-                    self.bot.wake_location = location
-            if hasattr(self.bot, 'api'): self.bot.login() # Same here
+                        self.bot.event_manager.emit(
+                            'position_update',
+                            sender=self,
+                            level='info',
+                            formatted="Now at {current_position}",
+                            data={
+                                'current_position': self.bot.position,
+                                'last_position': '',
+                                'distance': '',
+                                'distance_unit': ''
+                            }
+                        )
+                    else:
+                        self.bot.wake_location = location
+                if hasattr(self.bot, 'api'): self.bot.login() # Same here
 
     def getSeconds(self, strTime):
         '''
