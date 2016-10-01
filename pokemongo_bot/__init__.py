@@ -477,6 +477,20 @@ class PokemonGoBot(object):
             )
         )
         self.event_manager.register_event(
+            'pokemon_vip_caught',
+            parameters=(
+                'pokemon',
+                'ncp', 'cp', 'iv', 'iv_display', 'exp',
+                'stardust',
+                'encounter_id',
+                'latitude',
+                'longitude',
+                'pokemon_id',
+                'daily_catch_limit',
+                'caught_last_24_hour',
+            )
+        )
+        self.event_manager.register_event(
             'pokemon_evolved',
             parameters=('pokemon', 'iv', 'cp', 'candy', 'xp')
         )
