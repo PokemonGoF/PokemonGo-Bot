@@ -54,8 +54,19 @@ This will subscribe you to be notified every time a Dratini has been caught with
 
 > /top 10 iv
 
-List top 10 pokemon, ordered by IV
+List top 10 pokemon, ordered by IV, descending order
 
 > /top 15 cp
 
-List top 15 pokemon, ordered by CP
+List top 15 pokemon, ordered by CP, descending order
+
+> /top 5 dated
+
+List top 5 pokemon, ordered by catching date, descending order
+
+Same logic for :
+/evolved <num> <cp-or-iv-or-dated>
+/hatched <num> <cp-or-iv-or-dated>
+/caught <num> <cp-or-iv-or-dated>
+/released <num> <cp-or-iv-or-dated>
+/vanished <num> <cp-or-iv-or-dated>

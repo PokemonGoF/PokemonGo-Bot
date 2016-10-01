@@ -117,11 +117,14 @@ class PokemonGoBot(object):
         self.heartbeat_counter = 0
         self.last_heartbeat = time.time()
         self.hb_locked = False # lock hb on snip
-        
+
         # Inventory refresh limiting
         self.inventory_refresh_threshold = 10
         self.inventory_refresh_counter = 0
         self.last_inventory_refresh = time.time()
+        
+        # Catch on/off
+        self.catch_disabled = False
 
         self.capture_locked = False  # lock catching while moving to VIP pokemon
 
@@ -478,6 +481,10 @@ class PokemonGoBot(object):
             parameters=('pokemon', 'iv', 'cp', 'candy', 'xp')
         )
         self.event_manager.register_event(
+            'pokemon_evolve_check',
+            parameters=('has', 'needs')
+        )
+        self.event_manager.register_event(
             'pokemon_upgraded',
             parameters=('pokemon', 'iv', 'cp', 'candy', 'stardust')
         )
@@ -717,6 +724,11 @@ class PokemonGoBot(object):
         self.event_manager.register_event('sniper_log', parameters=('message', 'message'))
         self.event_manager.register_event('sniper_error', parameters=('message', 'message'))
         self.event_manager.register_event('sniper_teleporting', parameters=('latitude', 'longitude', 'name'))
+        
+        # Catch-limiter
+        self.event_manager.register_event('catch_limit_on')
+        self.event_manager.register_event('catch_limit_off')
+        
 
     def tick(self):
         self.health_record.heartbeat()
@@ -1476,4 +1488,4 @@ class PokemonGoBot(object):
             inventory.refresh_inventory()
             self.last_inventory_refresh = now
             self.inventory_refresh_counter += 1
-            
+

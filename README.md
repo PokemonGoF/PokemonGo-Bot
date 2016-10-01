@@ -157,6 +157,8 @@ If you do not want any data to be gathered, you can turn off this feature by set
  * Breeze Ro
  * bruno-kenji
  * Gobberwart
+ * javajohnHub
+ * kolinkorr839
 
 ## Disclaimer
 ©2016 Niantic, Inc. ©2016 Pokémon. ©1995–2016 Nintendo / Creatures Inc. / GAME FREAK inc. © 2016 Pokémon/Nintendo Pokémon and Pokémon character names are trademarks of Nintendo. The Google Maps Pin is a trademark of Google Inc. and the trade dress in the product design is a trademark of Google Inc. under license to The Pokémon Company. Other trademarks are the property of their respective owners.

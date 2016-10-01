@@ -18,7 +18,7 @@ from .utils import getSeconds, format_dist
 from datetime import datetime as dt, timedelta
 
 STATUS_MOVING = 0
-STATUS_LOITERING = 1
+STATUS_WANDERING = 1
 STATUS_FINISHED = 2
  
 class FollowPath(BaseTask):
@@ -28,7 +28,7 @@ class FollowPath(BaseTask):
         self._process_config()
         self.points = self.load_path()
         self.status = STATUS_MOVING
-        self.loiter_end_time = 0
+        self.wander_end_time = 0
         self.distance_unit = self.bot.config.distance_unit
         self.append_unit = False
 
@@ -139,12 +139,12 @@ class FollowPath(BaseTask):
         self.bot.login()
 
     def work(self):
-        # If done or loitering allow the next task to run
+        # If done or wandering allow the next task to run
         if self.status == STATUS_FINISHED:
             return WorkerResult.SUCCESS
 
-        if self.status == STATUS_LOITERING and time.time() < self.loiter_end_time:
-            return WorkerResult.RUNNING
+        if self.status == STATUS_WANDERING and time.time() < self.wander_end_time:
+            return WorkerResult.SUCCESS
 
         last_lat, last_lng, last_alt = self.bot.position
 
@@ -190,12 +190,14 @@ class FollowPath(BaseTask):
             }
         )
         
-        if (self.bot.config.walk_min > 0 and is_at_destination) or (self.status == STATUS_LOITERING and time.time() >= self.loiter_end_time):
-            if "loiter" in point and self.status != STATUS_LOITERING:
-                self.logger.info("Loitering for {} seconds...".format(point["loiter"]))
-                self.status = STATUS_LOITERING
-                self.loiter_end_time = time.time() + point["loiter"]
-                return WorkerResult.RUNNING
+        if (self.bot.config.walk_min > 0 and is_at_destination) or (self.status == STATUS_WANDERING and time.time() >= self.wander_end_time):
+            if "loiter" in point:
+                self.logger.warning("'loiter' is obsolete, please change to 'wander' in {}".format(self.path_file))
+            if "wander" in point and self.status != STATUS_WANDERING:
+                self.logger.info("Wandering for {} seconds...".format(point["wander"]))
+                self.status = STATUS_WANDERING
+                self.wander_end_time = time.time() + point["wander"]
+                return WorkerResult.SUCCESS
             if (self.ptr + 1) == len(self.points):
                 if self.path_mode == 'single':
                     self.status = STATUS_FINISHED

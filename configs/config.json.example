@@ -153,6 +153,7 @@
         "type": "EvolvePokemon",
         "config": {
           "enabled": false,
+          "log_interval": 120,
 
             "// evolve only pidgey and drowzee": "",
             "// evolve_list": "pidgey, drowzee",
@@ -209,6 +210,14 @@
           "recycle_force": true,
           "recycle_force_min": "00:01:00",
           "recycle_force_max": "00:05:00"
+        }
+      },
+      {
+        "type": "CatchLimiter",
+        "config": {
+          "enabled": false,
+          "min_balls": 20,
+          "duration": 15
         }
       },
       {

@@ -61,6 +61,7 @@ class LoggingHandler(EventHandler):
         'pokemon_capture_failed':            'red',
         'pokemon_caught':                    'blue',
         'pokemon_evolved':                   'green',
+        'pokemon_evolve_check':              'green',
         'pokemon_fled':                      'red',
         'pokemon_inventory_full':            'red',
         'pokemon_nickname_invalid':          'red',
@@ -122,7 +123,9 @@ class LoggingHandler(EventHandler):
         'spun_fort':                         'none',
         'threw_berry':                       'none',
         'threw_pokeball':                    'none',
-        'used_lucky_egg':                    'none'
+        'used_lucky_egg':                    'none',
+        'catch_limit_on':                    'yellow',
+        'catch_limit_off':                   'green'
     }
     COLOR_CODE = {
         'gray':    '\033[90m',

@@ -210,6 +210,14 @@
         }
       },
       {
+        "type": "CatchLimiter",
+        "config": {
+          "enabled": false,
+          "min_balls": 20,
+          "duration": 15
+        }
+      },
+      {
         "type": "MoveToMapPokemon",
         "config": {
           "enabled": true,
