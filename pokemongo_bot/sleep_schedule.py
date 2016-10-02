@@ -91,6 +91,7 @@ class SleepSchedule(object):
         self._mkschedule()
 
     def work(self):
+        if not self.enabled: return
         if not self._schedule:
             if date.today() == self.today:
                 return
