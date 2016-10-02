@@ -9,9 +9,15 @@ Ubuntu will be used for the Linux Example
 
 ####First install required packages
 
-#####Linux
+#####Linux - Ubuntu
 ```bash
 sudo apt-get install build-essential autoconf libtool pkg-config make python2.7-dev wget git
+```
+#####Linux - Centos 7
+```bash
+sudo yum install -y epel-release
+sudo yum install -y git wget python python-pip
+sudo yum groupinstall -y "Development Tools"
 ```
 ####
 if you are on a different Linux OS you maybe have to adapt things like:
