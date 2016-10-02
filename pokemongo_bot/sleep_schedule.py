@@ -92,12 +92,7 @@ class SleepSchedule(object):
 
     def work(self):
         if not self.enabled: return
-        if not self._schedule:
-            if date.today() == self.today:
-                return
-            else:
-                self.today = date.today()
-                self._mkschedule()
+        if not self._schedule: self._mkschedule()
         if self._should_sleep_now():
             location = self._schedule[0]['location'] if 'location' in self._schedule[0] else None
             cfg_type = self._schedule[0]['type']
@@ -267,8 +262,11 @@ class SleepSchedule(object):
             self.enabled = False
             self.bot.logger.warning('SleepSchedule is disabled')
 
-    def _mkschedule(self): # Calculating all of sleep/pause triggering this day
-        now = datetime.now()
+    def _mkschedule(self, mk_next=False): # Calculating all of sleep/pause triggering this day
+        if not mk_next:
+            now = datetime.now()
+        else:
+            now = datetime.now().replace(hour=0, minute=0, second=0) + timedelta(days=1)
 
         times = []
         for index in range(len(self.sleep)):
@@ -311,6 +309,10 @@ class SleepSchedule(object):
                               'min_duration': self.pause[cfg_type]['min_duration']})
                 sch_time = sch_end + timedelta(seconds=self._get_random_offset(self.pause[cfg_type]['max_interval'], min_offset=self.pause[cfg_type]['min_interval']))
 
+        if (self.sleep or self.pause['random_pause'] or self.pause['random_alive_pause']) and not mk_next and not times:
+            self._mkschedule(mk_next=True)
+            return
+
         sorted_times = sorted(times, key=lambda k: k['start'])
         new_times = []
 
@@ -318,6 +320,7 @@ class SleepSchedule(object):
             self.overlay(sorted_times[index], new_times)
 
         self._schedule = new_times
+
 
     def overlay(self, entry, target):
         if entry['duration'] <= 0: return
