@@ -8,17 +8,6 @@
     },
     "tasks": [
       {
-        "//NOTE: This task MUST be placed on the top of task list": {},
-        "type": "RandomAlivePause",
-        "config": {
-          "enabled": false,
-          "min_duration": "00:00:10",
-          "max_duration": "00:10:00",
-          "min_interval": "00:05:00",
-          "max_interval": "01:30:00"
-        }
-      },
-      {
         "type": "HandleSoftBan"
       },
       {
@@ -254,7 +243,7 @@
       "enabled": true,
       "enable_reminder": false,
       "reminder_interval": 600,
-      "entries": [
+      "sleep": [
         {
           "enabled": true,
           "time": "12:00",
@@ -271,7 +260,21 @@
           "duration_random_offset": "00:30",
           "wake_up_at_location": ""
         }
-      ]
+      ],
+      "random_pause": {
+        "enabled": true,
+        "min_duration": "00:00:10",
+        "max_duration": "00:10:00",
+        "min_interval": "00:05:00",
+        "max_interval": "01:30:00"
+      },
+      "random_alive_pause": {
+        "enabled": true,
+        "min_duration": "00:00:10",
+        "max_duration": "00:10:00",
+        "min_interval": "00:05:00",
+        "max_interval": "01:30:00"
+      }
     },
 
     "debug": false,
