@@ -20,6 +20,7 @@ class TransferPokemon(BaseTask):
         self.transfer_wait_min = self.config.get('transfer_wait_min', 1)
         self.transfer_wait_max = self.config.get('transfer_wait_max', 4)
         self.buddy = self.bot.player_data.get('buddy_pokemon', {})
+        self.buddyid = self._get_buddyid()
 
     def work(self):
         if not self._should_work():
@@ -32,7 +33,7 @@ class TransferPokemon(BaseTask):
 
         if self.bot.config.release.get('all'):
             group = [p for p in inventory.pokemons().all()
-                     if not p.in_fort and not p.is_favorite and not (p.unique_id == self.buddy['id'])]
+                     if not p.in_fort and not p.is_favorite and not (p.unique_id == self.buddyid)]
             self._release_pokemon_worst_in_group(group, 'all')
 
     def _should_work(self):
@@ -42,7 +43,7 @@ class TransferPokemon(BaseTask):
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
         for pokemon in inventory.pokemons().all():
-            if pokemon.in_fort or pokemon.is_favorite or pokemon.unique_id == self.buddy['id']:
+            if pokemon.in_fort or pokemon.is_favorite or pokemon.unique_id == self.buddyid:
                 continue
 
             group_id = pokemon.pokemon_id
@@ -340,3 +341,8 @@ class TransferPokemon(BaseTask):
                 keep_best = False
                 
         return keep_best, keep_best_cp, keep_best_iv, keep_best_ivcp
+        
+    def _get_buddyid(self):
+        if self.buddy and'id' in self.buddy:
+            return self.buddy['id']
+        return 0
