@@ -19,6 +19,7 @@ class TransferPokemon(BaseTask):
         self.min_free_slot = self.config.get('min_free_slot', 5)
         self.transfer_wait_min = self.config.get('transfer_wait_min', 1)
         self.transfer_wait_max = self.config.get('transfer_wait_max', 4)
+        self.buddy = self.bot.player_data.get('buddy_pokemon', {})
 
     def work(self):
         if not self._should_work():
@@ -31,17 +32,18 @@ class TransferPokemon(BaseTask):
 
         if self.bot.config.release.get('all'):
             group = [p for p in inventory.pokemons().all()
-                     if p.in_fort is False and p.is_favorite is False]
+                     if not p.in_fort and not p.is_favorite and not (p.unique_id == self.buddy['id'])]
             self._release_pokemon_worst_in_group(group, 'all')
 
     def _should_work(self):
+        return True
         random_number = randrange (0,20,1) 
         return inventory.Pokemons.get_space_left() <= max(1,self.min_free_slot - random_number)
 
     def _release_pokemon_get_groups(self):
         pokemon_groups = {}
         for pokemon in inventory.pokemons().all():
-            if pokemon.in_fort or pokemon.is_favorite:
+            if pokemon.in_fort or pokemon.is_favorite or pokemon.unique_id == self.buddy['id']:
                 continue
 
             group_id = pokemon.pokemon_id

@@ -523,7 +523,7 @@ class PokemonOptimizer(BaseTask):
         # All the rest is crap, for now
         crap = list(family_list)
         crap = [p for p in crap if p not in keep]
-        crap = [p for p in crap if not p.in_fort and not p.is_favorite]
+        crap = [p for p in crap if not p.in_fort and not p.is_favorite and not (p.unique_id == self.buddy['id'])]
         crap.sort(key=lambda p: (p.iv, p.cp), reverse=True)
 
         # We will gain a candy whether we choose to transfer or evolve these Pokemon
