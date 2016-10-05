@@ -255,7 +255,7 @@ class BuddyPokemon(BaseTask):
                 }
             )
             return None
-        
+
         fam_id = pokemon.family_id
         poke_id = pokemon.pokemon_id
         if self.best_in_family:
