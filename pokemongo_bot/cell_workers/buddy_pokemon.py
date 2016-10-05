@@ -106,22 +106,13 @@ class BuddyPokemon(BaseTask):
 
         if self.buddy_list:
             pokemon = self._get_pokemon_by_name(self._get_pokemon_by_id(self.buddy['id']).name)
-            if pokemon is None:
-                self.force_first_change = True
-            else:
-                candies_absolute = inventory.candies().get(pokemon.family_id).quantity
-                
-            if self.force_first_change or not self.buddy or (self.candy_limit != 0 and self.candy_awarded >= self.candy_limit) or (self.candy_limit_absolute != 0 and candies_absolute >= self.candy_limit_absolute):
+            if self.force_first_change or not self.buddy or pokemon is None or (self.candy_limit != 0 and self.candy_awarded >= self.candy_limit) or (self.candy_limit_absolute != 0 and inventory.candies().get(pokemon.family_id).quantity >= self.candy_limit_absolute):
                 self.force_first_change = False
 
                 remaining = []
                 for name in self.buddy_list:
                     pokemon = self._get_pokemon_by_name(name)
-                    if pokemon is None:
-                        continue
-                    elif self.candy_limit_absolute != 0 and inventory.candies().get(pokemon.family_id).quantity >= self.candy_limit_absolute:
-                        continue
-                    if name not in self.cache:
+                    if name not in self.cache and pokemon is not None and (self.candy_limit_absolute == 0 or inventory.candies().get(pokemon.family_id).quantity < self.candy_limit_absolute):
                         remaining.append(name)
 
                 if not remaining:
