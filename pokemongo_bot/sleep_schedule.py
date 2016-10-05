@@ -288,7 +288,16 @@ class SleepSchedule(object):
                               'end': prev_day_end,
                               'duration': sch_duration,
                               'location': location})
-            elif (sch_time <= now and sch_end > now) or (sch_time > now and diff > self.SCHEDULING_MARGIN):
+            elif sch_time <= now and sch_end > now:
+                self.sleep[index]['time'] = datetime.now()
+                sch_time = now.replace(hour=self.sleep[index]['time'].hour, minute=self.sleep[index]['time'].minute)
+                sch_duration = self._get_sleep_duration(self.sleep[index])
+                times.append({'type': 'sleep',
+                              'start': sch_time,
+                              'end': sch_end,
+                              'duration': sch_duration,
+                              'location': location})
+            elif sch_time > now and diff > self.SCHEDULING_MARGIN:
                 times.append({'type': 'sleep',
                               'start': sch_time,
                               'end': sch_end,
@@ -345,9 +354,8 @@ class SleepSchedule(object):
                 elif (latest['type'] == 'random_pause' or latest['type'] == 'random_alive_pause') and entry['type'] == 'sleep':
                     latest['end'] = entry['start'] - self.SCHEDULING_MARGIN
                     latest['duration'] = int((latest['end'] - latest['start']).total_seconds())
-                    if latest['duration'] < latest['min_duration']:
-                        target.remove(latest)
-                        self.overlay(entry, target)
+                    if latest['duration'] < latest['min_duration']: target.remove(latest)
+                    self.overlay(entry, target)
                 elif (latest['type'] == 'random_pause') and (entry['type'] == 'random_alive_pause'):
                     entry['start'] = latest['end']
                     entry['duration'] = int((entry['end'] - entry['start']).total_seconds())
