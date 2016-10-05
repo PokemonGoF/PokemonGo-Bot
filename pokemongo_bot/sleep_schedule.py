@@ -198,6 +198,7 @@ class SleepSchedule(object):
 
         if 'entries' in config:
             self.bot.logger.warning('SleepSchedule is disabled. Config structure has been changed, see docs/configuration_files.md for more information')
+            self.enabled = False
             return
 
         if 'sleep' in config:
