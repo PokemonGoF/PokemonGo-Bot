@@ -416,6 +416,16 @@ class Sniper(BaseTask):
             if targets:
                 # Order the targets (descending)
                 targets = sorted(targets, key=itemgetter(*self.order), reverse=True)
+                #List Pokemons found
+                self._trace('Sniping the {} best Pokemons found, ordered by {}'.format(self.bullets, self.order))
+                self._trace('+----+------+----------------+-------+----------+---------+---------+----------+')
+                self._trace('|  # |   Id | Name           |    IV | Verified | VIP     | Missing | Priority |')
+                self._trace('+----+------+----------------+-------+----------+---------+---------+----------+')
+                row_format ="|{:>3} |{:>5} | {:<15}|{:>6} | {:<9}| {:<8}| {:<8}|{:>9} |"
+                for index, target in enumerate(targets):
+                    self._trace(row_format.format(*[index+1, target.get('pokemon_id'), target.get('pokemon_name'), target.get('iv'), str(target.get('verified')), str(target.get('vip')), str(target.get('missing')), target.get('priority')]))
+
+                self._trace('+----+------+----------------+-------+----------+---------+---------+----------+')
                 shots = 0
 
                 # For as long as there are targets available, try to snipe untill we run out of bullets
