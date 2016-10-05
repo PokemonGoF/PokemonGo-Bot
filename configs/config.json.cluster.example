@@ -46,6 +46,7 @@
           "best_in_family": true,
           "// candy_limit = 0 means no limit, so it will never change current buddy": {},
           "candy_limit": 0,
+          "candy_limit_absolute":0,
           "// force_first_change = true will always change buddy at start removing current one": {},
           "force_first_change": false,
           "buddy_change_wait_min": 3,
