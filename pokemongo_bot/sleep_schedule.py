@@ -85,6 +85,8 @@ class SleepSchedule(object):
         self.enabled = True
         self.today = date.today()
         self._schedule = []
+        self._enable_reminder = False
+        self._reminder_interval = 600
         self._last_reminder = None
         self._process_config(config)
         if not self.enabled: return
@@ -191,10 +193,7 @@ class SleepSchedule(object):
 
         if 'enable_reminder' in config and config['enable_reminder'] == True:
             self._enable_reminder = True
-            self._reminder_interval = config['reminder_interval'] if 'reminder_interval' in config else 600
-            self._last_reminder = None
-        else:
-            self._enable_reminder = False
+            if 'reminder_interval' in config: self._reminder_interval = config['reminder_interval']
 
         if 'entries' in config:
             self.bot.logger.warning('SleepSchedule is disabled. Config structure has been changed, see docs/configuration_files.md for more information')
@@ -380,8 +379,10 @@ class SleepSchedule(object):
         if self._enable_reminder:
             if not self._last_reminder:
                 self._last_reminder = now
-            diff = now - self._last_reminder
-            if (diff.total_seconds() >= self._reminder_interval) or (self._last_reminder == now):
+
+            if self._last_reminder: diff = now - self._last_reminder
+
+            if not self._last_reminder or diff.total_seconds() >= self._reminder_interval:
                 self.bot.event_manager.emit(
                     'next_sleep',
                     sender=self,
