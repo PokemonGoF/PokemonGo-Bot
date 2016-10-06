@@ -324,6 +324,6 @@
     },
 	"websocket": {
 		"start_embedded_server": true,
-		"server_url": "0.0.0.0:4000"
+		"server_url": "127.0.0.1:4000"
 	}
 }

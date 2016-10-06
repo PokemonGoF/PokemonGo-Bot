@@ -34,6 +34,7 @@ class PokemonOptimizer(BaseTask):
         self.evolution_map = {}
         self.ongoing_stardust_count = 0
         self.buddy = None
+        self.buddyid = 0
         self.lock_buddy = True
         self.no_log_until = 0
 
@@ -241,6 +242,7 @@ class PokemonOptimizer(BaseTask):
 
     def check_buddy(self):
         self.buddy = self.bot.player_data.get("buddy_pokemon", {})
+        self.buddyid = self._get_buddyid()
 
         if not self.buddy:
             self.lock_buddy = False
@@ -523,7 +525,7 @@ class PokemonOptimizer(BaseTask):
         # All the rest is crap, for now
         crap = list(family_list)
         crap = [p for p in crap if p not in keep]
-        crap = [p for p in crap if not p.in_fort and not p.is_favorite]
+        crap = [p for p in crap if not p.in_fort and not p.is_favorite and not (p.unique_id == self.buddyid)]
         crap.sort(key=lambda p: (p.iv, p.cp), reverse=True)
 
         # We will gain a candy whether we choose to transfer or evolve these Pokemon
@@ -858,6 +860,7 @@ class PokemonOptimizer(BaseTask):
 
         if not self.bot.config.test:
             self.buddy = response_dict.get("responses", {}).get("SET_BUDDY_POKEMON", {}).get("updated_buddy", {})
+            self.buddyid = self._get_buddyid()
 
         self.emit_event("buddy_pokemon",
                         formatted="Buddy {pokemon} [IV {iv}] [CP {cp}]",
@@ -908,3 +911,8 @@ class PokemonOptimizer(BaseTask):
             action_delay(self.config_action_wait_min, self.config_action_wait_max)
 
         return True
+        
+    def _get_buddyid(self):
+        if self.buddy and'id' in self.buddy:
+            return self.buddy['id']
+        return 0
