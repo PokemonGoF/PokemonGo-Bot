@@ -70,6 +70,7 @@ class LoggingHandler(EventHandler):
         'pokemon_release':                   'green',
         'pokemon_upgraded':                  'green',
         'pokemon_vanished':                  'red',
+        'pokemon_vip_caught':                'blue',
         'pokestop_empty':                    'yellow',
         'pokestop_log':                      'magenta',
         'pokestop_searching_too_often':      'yellow',
