@@ -1298,6 +1298,7 @@ After setting a buddy it's not possible to remove it, only change it. So if a bu
 * `buddy_list`: `Default: []`. List of pokemon names that will be used as buddy. If '[]' or 'none', will not use or change buddy.
 * `best_in_family`: `Default: True`. If True, picks best Pokemon in the family (sorted by cp).
 * `candy_limit`: `Default: 0`. Set the candy limit to be rewarded per buddy, when reaching this limit the bot will change the buddy to the next in the list. When candy_limit = 0 or only one buddy in list, it has no limit and never changes buddy.
+* `candy_limit_absolute`: `Default: 0`. Set the absolute candy limit to be rewarded per buddy, when reaching this limit the bot will change the buddy to the next in the list. When candy_limit_absolute = 0 or only one buddy in list, it has no limit and never changes buddy. Use this to stop collecting candy when a candy threshold for your buddy's pokemon family is reached (e.g. 50 for evolving).
 * `force_first_change`: `Default: False`. If True, will try to change buddy at bot start according to the buddy list. If False, will use the buddy already set until candy_limit is reached and then use the buddy list.
 * `buddy_change_wait_min`: `Default: 3`. Minimum time (in seconds) that the buddy change takes.
 * `buddy_change_wait_max`: `Default: 5`. Maximum time (in seconds) that the buddy change takes.
@@ -1314,6 +1315,7 @@ After setting a buddy it's not possible to remove it, only change it. So if a bu
         "best_in_family": true,
         "// candy_limit = 0 means no limit, so it will never change current buddy": {},
         "candy_limit": 0,
+        "candy_limit_absolute": 0,
         "// force_first_change = true will always change buddy at start removing current one": {},
         "force_first_change": false,
         "buddy_change_wait_min": 3,
