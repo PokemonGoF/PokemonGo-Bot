@@ -850,7 +850,7 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
                     "name": { "param": "pokemon" },
                     "latitude": { "param": "cords" },
                     "longitude": { "param": "cords" },
-                    "expiration": { "param": "timeend", "format": "milliseconds" }
+                    "expiration": { "param": "timeend", "format": "seconds" }
                 }
             }
         ],
