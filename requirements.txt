@@ -1,11 +1,14 @@
 numpy==1.11.0
 networkx==1.11
--e git+https://github.com/keyphact/pgoapi.git@a2755eb42dfe49e359798d2f4defefc97fb8163d#egg=pgoapi
+-e git+https://github.com/pogodevorg/pgoapi.git/@3a02e7416f6924b1bbcbcdde60c10bd247ba8e11#egg=pgoapi
 geopy==1.11.0
+geographiclib==1.46.3
 protobuf==3.0.0b4
 requests==2.10.0
+requests-mock==1.0.0
 s2sphere==0.2.4
-gpsoauth==0.3.0
+gpsoauth==0.4.0
+six==1.9.0
 protobuf-to-dict==0.1.0
 googlemaps==2.4.4
 colorama==0.3.7
@@ -22,3 +25,9 @@ mock==2.0.0
 timeout-decorator==0.3.2
 raven==5.23.0
 demjson==2.2.4
+greenlet==0.4.9
+yoyo-migrations==5.0.3
+paho-mqtt==1.2
+Geohash==1.0
+python-telegram-bot==5.0.0
+discord_simple==0.0.1.15

@@ -1,10 +1,16 @@
 import ctypes
+
 from sys import stdout, platform as _platform
 from datetime import datetime, timedelta
 
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.tree_config_builder import ConfigException
+from pokemongo_bot import inventory
+
+# XP file
+import json
+
 
 
 class UpdateLiveStats(BaseTask):
@@ -54,8 +60,12 @@ class UpdateLiveStats(BaseTask):
     - pokemon_stats : Puts together the pokemon encountered, caught, released, evolved and unseen.
     - pokeballs_thrown : The number of thrown pokeballs.
     - stardust_earned : The number of earned stardust since the bot started.
+    - stardust_per_hour : The estimated gain of stardust per hour
     - highest_cp_pokemon : The caught pokemon with the highest CP since the bot started.
     - most_perfect_pokemon : The most perfect caught pokemon since the bot started.
+    - location : The location where the player is located.
+    - next_egg_hatching : The remaining distance to the next egg hatching (km).
+    - hatched_eggs : The number of hatched eggs since the bot started.
     """
     SUPPORTED_TASK_API_VERSION = 1
 
@@ -76,7 +86,65 @@ class UpdateLiveStats(BaseTask):
         self.terminal_log = bool(self.config.get('terminal_log', False))
         self.terminal_title = bool(self.config.get('terminal_title', True))
 
-        self.bot.event_manager.register_event('log_stats', parameters=('stats',))
+        self.bot.event_manager.register_event('log_stats', parameters=('stats', 'stats_raw'))
+
+        # init xp_per_level
+        self.xp_per_level = None
+        # If xp_level file exists, load variables from json
+        # file name should not be hard coded either
+        xpfile = "data/xp_per_level.json"
+        try:
+            with open(xpfile, 'rb') as data:
+                self.xp_per_level = json.load(data)
+        except (ValueError, IOError):
+            # log somme warning message
+            self.emit_event(
+                'log_stats',
+                level='info',
+                formatted="Unable to read XP level file"
+            )
+            # load default valuesto supplement unknown current_level_xp
+            self.xp_per_level = [[1, 0, 0],
+                [2, 1000, 1000],
+                [3, 2000, 3000],
+                [4, 3000, 6000],
+                [5, 4000, 10000],
+                [6, 5000, 15000],
+                [7, 6000, 21000],
+                [8, 7000, 28000],
+                [9, 8000, 36000],
+                [10, 9000, 45000],
+                [11, 10000, 55000],
+                [12, 10000, 65000],
+                [13, 10000, 75000],
+                [14, 10000, 85000],
+                [15, 15000, 100000],
+                [16, 20000, 120000],
+                [17, 20000, 140000],
+                [18, 20000, 160000],
+                [19, 25000, 185000],
+                [20, 25000, 210000],
+                [21, 50000, 260000],
+                [22, 75000, 335000],
+                [23, 100000, 435000],
+                [24, 125000, 560000],
+                [25, 150000, 710000],
+                [26, 190000, 900000],
+                [27, 200000, 1100000],
+                [28, 250000, 1350000],
+                [29, 300000, 1650000],
+                [30, 350000, 2000000],
+                [31, 500000, 2500000],
+                [32, 500000, 3000000],
+                [33, 750000, 3750000],
+                [34, 1000000, 4750000],
+                [35, 1250000, 6000000],
+                [36, 1500000, 7500000],
+                [37, 2000000, 9500000],
+                [38, 2500000, 12000000],
+                [39, 3000000, 15000000],
+                [40, 5000000, 20000000]
+            ]
 
     def initialize(self):
         pass
@@ -89,7 +157,9 @@ class UpdateLiveStats(BaseTask):
         """
         if not self._should_display():
             return WorkerResult.SUCCESS
-        line = self._get_stats_line(self._get_player_stats())
+
+        player_stats = inventory.player().player_stats
+        line = self._get_stats_line(self._get_stats(player_stats))
         # If line is empty, it couldn't be generated.
         if not line:
             return WorkerResult.SUCCESS
@@ -107,7 +177,7 @@ class UpdateLiveStats(BaseTask):
         :return: True if the stats should be displayed; otherwise, False.
         :rtype: bool
         """
-        if not self.terminal_title and not self.terminal_log:
+        if not self.terminal_title and not self.terminal_log or not self.displayed_stats:
             return False
         return self.next_update is None or datetime.now() >= self.next_update
 
@@ -131,7 +201,8 @@ class UpdateLiveStats(BaseTask):
             'log_stats',
             formatted="{stats}",
             data={
-                'stats': stats
+                'stats': stats,
+                'stats_raw': self._get_stats(inventory.player().player_stats)
             }
         )
         self._compute_next_update()
@@ -148,32 +219,29 @@ class UpdateLiveStats(BaseTask):
         :raise: RuntimeError: When the given platform isn't supported.
         """
 
-        if platform == "linux" or platform == "linux2" or platform == "cygwin":
-            stdout.write("\x1b]2;{}\x07".format(title))
-            stdout.flush()
-        elif platform == "darwin":
-            stdout.write("\033]0;{}\007".format(title))
-            stdout.flush()
-        elif platform == "win32":
-            ctypes.windll.kernel32.SetConsoleTitleA(title.encode())
-        else:
-            raise RuntimeError("unsupported platform '{}'".format(platform))
+        try:
+            if platform == "linux" or platform == "linux2" or platform == "cygwin":
+                stdout.write("\x1b]2;{}\x07".format(title))
+                stdout.flush()
+            elif platform == "darwin" or platform == "freebsd10":
+                stdout.write("\033]0;{}\007".format(title))
+                stdout.flush()
+            elif platform == "win32":
+                ctypes.windll.kernel32.SetConsoleTitleA(title.encode())
+            else:
+                self.bot.logger.warn("Unable to set window title. OS {} not supported.".format(platform))
+        except AttributeError:
+            self.emit_event(
+                'log_stats',
+                level='error',
+                formatted="Unable to write window title"
+            )
+            self.terminal_title = False
+
         self._compute_next_update()
 
-    def _get_stats_line(self, player_stats):
-        """
-        Generates a stats string with the given player stats according to the configuration.
-        :return: A string containing human-readable stats, ready to be displayed.
-        :rtype: string
-        """
-        # No player stats available, won't be able to gather all informations.
-        if player_stats is None:
-            return ''
-        # No stats to display, avoid any useless overhead.
-        if not self.displayed_stats:
-            return ''
-
-        # Gather stats values.
+    def _get_stats(self, player_stats):
+        """ Some data """
         metrics = self.bot.metrics
         metrics.capture_stats()
         runtime = metrics.runtime()
@@ -182,7 +250,7 @@ class UpdateLiveStats(BaseTask):
         username = player_data.get('username', '?')
         distance_travelled = metrics.distance_travelled()
         current_level = int(player_stats.get('level', 0))
-        prev_level_xp = int(player_stats.get('prev_level_xp', 0))
+        prev_level_xp = int(self.xp_per_level[current_level - 1][2])
         next_level_xp = int(player_stats.get('next_level_xp', 0))
         experience = int(player_stats.get('experience', 0))
         current_level_xp = experience - prev_level_xp
@@ -198,6 +266,7 @@ class UpdateLiveStats(BaseTask):
         pokemon_evolved = metrics.num_evolutions()
         pokemon_unseen = metrics.num_new_mons()
         pokeballs_thrown = metrics.num_throws()
+        dust_per_hour = int(metrics.stardust_per_hour())
         stardust_earned = metrics.earned_dust()
         highest_cp_pokemon = metrics.highest_cp['desc']
         if not highest_cp_pokemon:
@@ -205,36 +274,85 @@ class UpdateLiveStats(BaseTask):
         most_perfect_pokemon = metrics.most_perfect['desc']
         if not most_perfect_pokemon:
             most_perfect_pokemon = "None"
+        next_egg_hatching = metrics.next_hatching_km(0)
+        hatched_eggs = metrics.hatched_eggs(0)
 
         # Create stats strings.
         available_stats = {
             'login': login,
             'username': username,
-            'uptime': 'Uptime : {}'.format(runtime),
-            'km_walked': '{:,.2f}km walked'.format(distance_travelled),
-            'level': 'Level {}'.format(current_level),
-            'level_completion': '{:,} / {:,} XP ({}%)'.format(current_level_xp, whole_level_xp,
-                                                              level_completion_percentage),
-            'level_stats': 'Level {} ({:,} / {:,}, {}%)'.format(current_level, current_level_xp,
-                                                                whole_level_xp,
-                                                                level_completion_percentage),
-            'xp_per_hour': '{:,} XP/h'.format(experience_per_hour),
-            'xp_earned': '+{:,} XP'.format(xp_earned),
-            'stops_visited': 'Visited {:,} stops'.format(stops_visited),
-            'pokemon_encountered': 'Encountered {:,} pokemon'.format(pokemon_encountered),
-            'pokemon_caught': 'Caught {:,} pokemon'.format(pokemon_caught),
-            'captures_per_hour': '{:,} pokemon/h'.format(captures_per_hour),
-            'pokemon_released': 'Released {:,} pokemon'.format(pokemon_released),
-            'pokemon_evolved': 'Evolved {:,} pokemon'.format(pokemon_evolved),
-            'pokemon_unseen': 'Encountered {} new pokemon'.format(pokemon_unseen),
-            'pokemon_stats': 'Encountered {:,} pokemon, {:,} caught, {:,} released, {:,} evolved, '
-                             '{} never seen before'.format(pokemon_encountered, pokemon_caught,
-                                                           pokemon_released, pokemon_evolved,
-                                                           pokemon_unseen),
-            'pokeballs_thrown': 'Threw {:,} pokeballs'.format(pokeballs_thrown),
-            'stardust_earned': 'Earned {:,} Stardust'.format(stardust_earned),
-            'highest_cp_pokemon': 'Highest CP pokemon : {}'.format(highest_cp_pokemon),
-            'most_perfect_pokemon': 'Most perfect pokemon : {}'.format(most_perfect_pokemon),
+            'uptime': '{}'.format(runtime),
+            'km_walked': distance_travelled,
+            'level': current_level,
+            'experience': experience,
+            'current_level_xp': current_level_xp,
+            'whole_level_xp': whole_level_xp,
+            'level_completion_percentage': level_completion_percentage,
+            'xp_per_hour': experience_per_hour,
+            'xp_earned': xp_earned,
+            'stops_visited': stops_visited,
+            'pokemon_encountered': pokemon_encountered,
+            'pokemon_caught': pokemon_caught,
+            'captures_per_hour': captures_per_hour,
+            'pokemon_released': pokemon_released,
+            'pokemon_evolved': pokemon_evolved,
+            'pokemon_unseen': pokemon_unseen,
+            'pokeballs_thrown': pokeballs_thrown,
+            'stardust_earned': stardust_earned,
+            'stardust_per_hour': dust_per_hour,
+            'highest_cp_pokemon': highest_cp_pokemon,
+            'most_perfect_pokemon': most_perfect_pokemon,
+            'location': [self.bot.position[0], self.bot.position[1]],
+            'next_egg_hatching': float(next_egg_hatching),
+            'hatched_eggs': hatched_eggs
+        }
+
+        return available_stats
+
+    def _get_stats_line(self, player_stats):
+        """
+        Generates a stats string with the given player stats according to the configuration.
+        :return: A string containing human-readable stats, ready to be displayed.
+        :rtype: string
+        """
+        # No player stats available, won't be able to gather all informations.
+        if player_stats is None:
+            return ''
+
+        # Create stats strings.
+        available_stats = {
+            'login': player_stats['login'],
+            'username': player_stats['username'],
+            'uptime': 'Uptime : {}'.format(player_stats['uptime']),
+            'km_walked': '{:,.2f}km walked'.format(player_stats['km_walked']),
+            'level': 'Level {}'.format(player_stats['level']),
+            'level_completion': '{:,} / {:,} XP ({}%)'.format(
+                player_stats['current_level_xp'], player_stats['whole_level_xp'],
+                player_stats['level_completion_percentage']),
+            'level_stats': 'Level {} ({:,} / {:,}, {}%)'.format(
+                player_stats['level'], player_stats['current_level_xp'],
+                player_stats['whole_level_xp'], player_stats['level_completion_percentage']),
+            'xp_per_hour': '{:,} XP/h'.format(player_stats['xp_per_hour']),
+            'xp_earned': '+{:,} XP'.format(player_stats['xp_earned']),
+            'stops_visited': 'Visited {:,} stops'.format(player_stats['stops_visited']),
+            'pokemon_encountered': 'Encountered {:,} pokemon'.format(player_stats['pokemon_encountered']),
+            'pokemon_caught': 'Caught {:,} pokemon'.format(player_stats['pokemon_caught']),
+            'captures_per_hour': '{:,} pokemon/h'.format(player_stats['captures_per_hour']),
+            'pokemon_released': 'Released {:,} pokemon'.format(player_stats['pokemon_released']),
+            'pokemon_evolved': 'Evolved {:,} pokemon'.format(player_stats['pokemon_evolved']),
+            'pokemon_unseen': 'Encountered {} new pokemon'.format(player_stats['pokemon_unseen']),
+            'pokemon_stats': 'Encountered {:,} pokemon, {:,} caught, {:,} released, {:,} evolved, {} never seen before'.format(
+                player_stats['pokemon_encountered'], player_stats['pokemon_caught'],
+                player_stats['pokemon_released'], player_stats['pokemon_evolved'], player_stats['pokemon_unseen']
+            ),
+            'pokeballs_thrown': 'Threw {:,} pokeballs'.format(player_stats['pokeballs_thrown']),
+            'stardust_earned': 'Earned {:,} Stardust'.format(player_stats['stardust_earned']),
+            'stardust_per_hour': '{:,} Stardust/h'.format(player_stats['stardust_per_hour']),
+            'highest_cp_pokemon': 'Highest CP pokemon : {}'.format(player_stats['highest_cp_pokemon']),
+            'most_perfect_pokemon': 'Most perfect pokemon : {}'.format(player_stats['most_perfect_pokemon']),
+            'location': 'Location : ({}, {})'.format(*player_stats['location']),
+            'next_egg_hatching': 'Next egg hatches in : {:.2f} km'.format(player_stats['next_egg_hatching']),
+            'hatched_eggs': 'Hatched {} eggs.'.format(player_stats['hatched_eggs'])
         }
 
         def get_stat(stat):
@@ -255,19 +373,3 @@ class UpdateLiveStats(BaseTask):
         line = ' | '.join(map(get_stat, self.displayed_stats))
 
         return line
-
-    def _get_player_stats(self):
-        """
-        Helper method parsing the bot inventory object and returning the player stats object.
-        :return: The player stats object.
-        :rtype: dict
-        """
-        inventory_items = self.bot.get_inventory() \
-            .get('responses', {}) \
-            .get('GET_INVENTORY', {}) \
-            .get('inventory_delta', {}) \
-            .get('inventory_items', {})
-        return next((x["inventory_item_data"]["player_stats"]
-                     for x in inventory_items
-                     if x.get("inventory_item_data", {}).get("player_stats", {})),
-                    None)

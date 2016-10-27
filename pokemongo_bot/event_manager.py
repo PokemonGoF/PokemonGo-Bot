@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import print_function
+from sys import stdout
 
 
 class EventNotRegisteredException(Exception):
@@ -21,18 +23,20 @@ class EventHandler(object):
 
 class EventManager(object):
 
-    def __init__(self, *handlers):
+    def __init__(self, limit_output=False, *handlers):
         self._registered_events = dict()
-        self._handlers = handlers or []
+        self._handlers = list(handlers) or []
+        self._last_event = None
+        self._limit_output = limit_output
 
     def event_report(self):
         for event, parameters in self._registered_events.iteritems():
-            print '-'*80
-            print 'Event: {}'.format(event)
+            print('-'*80)
+            print('Event: {}'.format(event))
             if parameters:
-                print 'Parameters:'
+                print('Parameters:')
                 for parameter in parameters:
-                    print '* {}'.format(parameter)
+                    print('* {}'.format(parameter))
 
     def add_handler(self, event_handler):
         self._handlers.append(event_handler)
@@ -50,6 +54,14 @@ class EventManager(object):
 
         if event not in self._registered_events:
             raise EventNotRegisteredException("Event %s not registered..." % event)
+
+        if self._limit_output:
+            if (event == self._last_event) and (event in ["moving_to_fort", "moving_to_lured_fort", "position_update"]):
+                stdout.write("\033[1A\033[0K\r")
+                stdout.flush()
+
+            if level == "info" and formatted:
+                self._last_event = event
 
         # verify params match event
         parameters = self._registered_events[event]

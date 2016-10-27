@@ -1,25 +1,33 @@
 import time
 from datetime import timedelta
-
+from pokemongo_bot.inventory import Pokemons
+from pokemongo_bot.inventory import refresh_inventory
+from pokemongo_bot import inventory
 
 class Metrics(object):
 
     def __init__(self, bot):
         self.bot = bot
         self.start_time = time.time()
-        self.dust = {'start': None, 'latest': None}
-        self.xp = {'start': None, 'latest': None}
-        self.distance = {'start': None, 'latest': None}
-        self.encounters = {'start': None, 'latest': None}
-        self.throws = {'start': None, 'latest': None}
-        self.captures = {'start': None, 'latest': None}
-        self.visits = {'start': None, 'latest': None}
-        self.unique_mons = {'start': None, 'latest': None}
-        self.evolutions = {'start': None, 'latest': None}
+        self.dust = {'start': -1, 'latest': -1}
+        self.xp = {'start': -1, 'latest': -1}
+        self.distance = {'start': -1, 'latest': -1}
+        self.encounters = {'start': -1, 'latest': -1}
+        self.throws = {'start': -1, 'latest': -1}
+        self.captures = {'start': -1, 'latest': -1}
+        self.visits = {'start': -1, 'latest': -1}
+        self.unique_mons = {'start': -1, 'latest': -1}
+        self.evolutions = {'start': -1, 'latest': -1}
 
         self.releases = 0
         self.highest_cp = {'cp': 0, 'desc': ''}
         self.most_perfect = {'potential': 0, 'desc': ''}
+        self.eggs = {'hatched': 0, 'next_hatching_km': 0}
+
+        self.uniq_pokemons_caught = None
+        self.uniq_pokemons_list = None
+
+        self.player_stats = []
 
     def runtime(self):
         return timedelta(seconds=round(time.time() - self.start_time))
@@ -42,6 +50,10 @@ class Metrics(object):
     def num_captures(self):
         return self.captures['latest'] - self.captures['start']
 
+    def uniq_caught(self):
+        # generate pokemon string 'Snorlax, Pikachu' from list of ids
+        return ', '.join([Pokemons.name_for(pok_id) for pok_id in self.uniq_pokemons_caught]) if self.uniq_pokemons_caught else ''
+
     def captures_per_hour(self):
         """
         Returns an estimated number of pokemon caught per hour.
@@ -62,6 +74,22 @@ class Metrics(object):
     def earned_dust(self):
         return self.dust['latest'] - self.dust['start']
 
+    def total_stardust(self):
+        return self.bot.stardust
+
+    def stardust_per_hour(self):
+        return self.earned_dust()/(time.time() - self.start_time)*3600
+
+    def hatched_eggs(self, update):
+        if (update):
+            self.eggs['hatched'] += update
+        return self.eggs['hatched']
+
+    def next_hatching_km(self, update):
+        if (update):
+            self.eggs['next_hatching_km'] = update
+        return self.eggs['next_hatching_km']
+
     def captured_pokemon(self, name, cp, iv_display, potential):
         if cp > self.highest_cp['cp']:
             self.highest_cp = \
@@ -78,44 +106,58 @@ class Metrics(object):
         self.releases += count
 
     def capture_stats(self):
-        request = self.bot.api.create_request()
-        request.get_inventory()
-        request.get_player()
-        response_dict = request.call()
         try:
-            self.dust['latest'] = response_dict['responses']['GET_PLAYER']['player_data']['currencies'][1]['amount']
-            if self.dust['start'] is None: self.dust['start'] = self.dust['latest']
-            for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
+            uniq_pokemon_list = set()
+
+            if self.bot.tick_count > 0:
+                self.dust['latest'] = self.bot.stardust 
+                if self.dust['start'] < 0:
+                    self.dust['start'] = self.dust['latest']
+
+            inventory.refresh_inventory()
+            json_inventory = inventory.jsonify_inventory()
+            for item in json_inventory:
                 if 'inventory_item_data' in item:
                     if 'player_stats' in item['inventory_item_data']:
                         playerdata = item['inventory_item_data']['player_stats']
+                        self.player_stats = playerdata
 
                         self.xp['latest'] = playerdata.get('experience', 0)
-                        if self.xp['start'] is None: self.xp['start'] = self.xp['latest']
+                        if self.xp['start'] < 0: self.xp['start'] = self.xp['latest']
 
                         self.visits['latest'] = playerdata.get('poke_stop_visits', 0)
-                        if self.visits['start'] is None: self.visits['start'] = self.visits['latest']
+                        if self.visits['start'] < 0: self.visits['start'] = self.visits['latest']
 
                         self.captures['latest'] = playerdata.get('pokemons_captured', 0)
-                        if self.captures['start'] is None: self.captures['start'] = self.captures['latest']
+                        if self.captures['start'] < 0: self.captures['start'] = self.captures['latest']
 
                         self.distance['latest'] = playerdata.get('km_walked', 0)
-                        if self.distance['start'] is None: self.distance['start'] = self.distance['latest']
+                        if self.distance['start'] < 0: self.distance['start'] = self.distance['latest']
 
                         self.encounters['latest'] = playerdata.get('pokemons_encountered', 0)
-                        if self.encounters['start'] is None: self.encounters['start'] = self.encounters['latest']
+                        if self.encounters['start'] < 0: self.encounters['start'] = self.encounters['latest']
 
                         self.throws['latest'] = playerdata.get('pokeballs_thrown', 0)
-                        if self.throws['start'] is None: self.throws['start'] = self.throws['latest']
+                        if self.throws['start'] < 0: self.throws['start'] = self.throws['latest']
 
                         self.unique_mons['latest'] = playerdata.get('unique_pokedex_entries', 0)
-                        if self.unique_mons['start'] is None: self.unique_mons['start'] = self.unique_mons['latest']
+                        if self.unique_mons['start'] < 0: self.unique_mons['start'] = self.unique_mons['latest']
 
                         self.visits['latest'] = playerdata.get('poke_stop_visits', 0)
-                        if self.visits['start'] is None: self.visits['start'] = self.visits['latest']
+                        if self.visits['start'] < 0: self.visits['start'] = self.visits['latest']
 
                         self.evolutions['latest'] = playerdata.get('evolutions', 0)
-                        if self.evolutions['start'] is None: self.evolutions['start'] = self.evolutions['latest']
+                        if self.evolutions['start'] < 0: self.evolutions['start'] = self.evolutions['latest']
+                    elif 'pokedex_entry' in item['inventory_item_data']:
+                        entry = item['inventory_item_data']['pokedex_entry'].get('pokemon_id')
+                        if entry: uniq_pokemon_list.add(entry)
+
+            if not self.uniq_pokemons_list:  # make set from pokedex entries on first run
+                self.uniq_pokemons_list = uniq_pokemon_list
+            else:
+                # generate new entries for current bot session
+                self.uniq_pokemons_caught = uniq_pokemon_list - self.uniq_pokemons_list
+
         except KeyError:
             # Nothing we can do if there's no player info.
             return

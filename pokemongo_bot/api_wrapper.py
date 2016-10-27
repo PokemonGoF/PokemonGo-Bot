@@ -1,19 +1,79 @@
+from __future__ import absolute_import
 import time
 import logging
-
+import random, base64, struct
+import hashlib
+import os
 from pgoapi.exceptions import (ServerSideRequestThrottlingException,
-    NotLoggedInException, ServerBusyOrOfflineException,
-    NoPlayerPositionSetException, EmptySubrequestChainException,
-    UnexpectedResponseException)
-from pgoapi.pgoapi import PGoApi, PGoApiRequest, RpcApi
-from pgoapi.protos.POGOProtos.Networking.Requests_pb2 import RequestType
+                               NotLoggedInException, ServerBusyOrOfflineException,
+                               NoPlayerPositionSetException, EmptySubrequestChainException,
+                               UnexpectedResponseException)
+from pgoapi.pgoapi import PGoApi
+from pgoapi.pgoapi import PGoApiRequest
+from pgoapi.pgoapi import RpcApi
+from pgoapi.protos.POGOProtos.Networking.Requests.RequestType_pb2 import RequestType
+from pgoapi.utilities import get_time
+from .human_behaviour import sleep, gps_noise_rng
+from pokemongo_bot.base_dir import _base_dir
 
-from human_behaviour import sleep
 
-class ApiWrapper(PGoApi):
-    def __init__(self):
-        PGoApi.__init__(self)
+class PermaBannedException(Exception):
+    pass
+
+
+class ApiWrapper(PGoApi, object):
+    DEVICE_ID = None
+
+    def __init__(self, config=None):
+        self.config = config
+        self.gen_device_id()
+        device_info = {
+            "device_id": ApiWrapper.DEVICE_ID,
+            "device_brand": 'Apple',
+            "device_model": 'iPhone',
+            "device_model_boot": 'iPhone8,2',
+            "hardware_manufacturer": 'Apple',
+            "hardware_model": 'N66AP',
+            "firmware_brand": 'iPhone OS',
+            "firmware_type": '9.3.3'
+        }
+
+        PGoApi.__init__(self, device_info=device_info)
+
+        # Set to default, just for CI...
+        self.actual_lat, self.actual_lng, self.actual_alt = PGoApi.get_position(self)
+        self.teleporting = False
+        self.noised_lat, self.noised_lng, self.noised_alt = self.actual_lat, self.actual_lng, self.actual_alt
+
         self.useVanillaRequest = False
+
+    def gen_device_id(self):
+        if self.config is None or self.config.username is None:
+            ApiWrapper.DEVICE_ID = "3d65919ca1c2fc3a8e2bd7cc3f974c34"
+            return
+        file_salt = None
+        did_path = os.path.join(_base_dir, 'data', 'deviceid-%s.txt' % self.config.username)
+        if os.path.exists(did_path):
+            file_salt = open(did_path, 'r').read()
+        if self.config is not None:
+            key_string = self.config.username
+            if file_salt is not None:
+                # Config and file are set, so use those.
+                ApiWrapper.DEVICE_ID = hashlib.md5(key_string + file_salt).hexdigest()
+            else:
+                # Config is set, but file isn't, so make it.
+                rand_float = random.SystemRandom().random()
+                salt = base64.b64encode((struct.pack('!d', rand_float)))
+                ApiWrapper.DEVICE_ID = hashlib.md5(key_string + salt).hexdigest()
+                with open(did_path, "w") as text_file:
+                    text_file.write("{0}".format(salt))
+        else:
+            if file_salt is not None:
+                # No config, but there's a file, use it.
+                ApiWrapper.DEVICE_ID = hashlib.md5(file_salt).hexdigest()
+            else:
+                # No config or file, so make up a reasonable default.
+                ApiWrapper.DEVICE_ID = "3d65919ca1c2fc3a8e2bd7cc3f974c34"
 
     def create_request(self):
         RequestClass = ApiRequest
@@ -27,15 +87,48 @@ class ApiWrapper(PGoApi):
             self._position_alt
         )
 
-    def login(self, *args):
+    def login(self, provider, username, password):
         # login needs base class "create_request"
         self.useVanillaRequest = True
         try:
-            ret_value = PGoApi.login(self, *args)
-        finally:
-            # cleanup code
-            self.useVanillaRequest = False
-        return ret_value
+            PGoApi.set_authentication(
+                    self,
+                    provider,
+                    username=username,
+                    password=password
+                    )
+        except:
+            raise
+
+        response = PGoApi.app_simulation_login(self)
+        # cleanup code
+        self.useVanillaRequest = False
+        return response
+
+    def set_position(self, lat, lng, alt=None, teleporting=False):
+        self.actual_lat = lat
+        self.actual_lng = lng
+        if None != alt:
+            self.actual_alt = alt
+        else:
+            alt = self.actual_alt
+        self.teleporting = teleporting
+
+        if self.config.replicate_gps_xy_noise:
+            lat_noise = gps_noise_rng(self.config.gps_xy_noise_range)
+            lng_noise = gps_noise_rng(self.config.gps_xy_noise_range)
+            lat = lat + lat_noise
+            lng = lng + lng_noise
+        if self.config.replicate_gps_z_noise:
+            alt_noise = gps_noise_rng(self.config.gps_z_noise_range)
+            alt = alt + alt_noise
+
+        self.noised_lat, self.noised_lng, self.noised_alt = lat, lng, alt
+
+        PGoApi.set_position(self, lat, lng, alt)
+
+    def get_position(self):
+        return (self.actual_lat, self.actual_lng, self.actual_alt)
 
 
 class ApiRequest(PGoApiRequest):
@@ -77,6 +170,15 @@ class ApiRequest(PGoApiRequest):
         if not isinstance(result['responses'], dict):
             return False
 
+        try:
+            # Permaban symptom is empty response to GET_INVENTORY and status_code = 3
+            if result['status_code'] == 3 and 'GET_INVENTORY' in request_callers and not result['responses'][
+                'GET_INVENTORY']:
+                raise PermaBannedException
+        except KeyError:
+            # Still wrong
+            return False
+
         # the response can still programatically be valid at this point
         # but still be wrong. we need to check if the server did sent what we asked it
         for request_caller in request_callers:
@@ -88,7 +190,7 @@ class ApiRequest(PGoApiRequest):
     def call(self, max_retry=15):
         request_callers = self._pop_request_callers()
         if not self.can_call():
-            return False # currently this is never ran, exceptions are raised before
+            return False  # currently this is never ran, exceptions are raised before
 
         request_timestamp = None
         api_req_method_list = self._req_method_list
@@ -113,13 +215,14 @@ class ApiRequest(PGoApiRequest):
                 throttling_retry += 1
                 if throttling_retry >= max_retry:
                     raise ServerSideRequestThrottlingException('Server throttled too many times')
-                sleep(1) # huge sleep ?
-                continue # skip response checking
+                sleep(1)  # huge sleep ?
+                continue  # skip response checking
 
             if should_unexpected_response_retry:
                 unexpected_response_retry += 1
                 if unexpected_response_retry >= 5:
-                    self.logger.warning('Server is not responding correctly to our requests.  Waiting for 30 seconds to reconnect.')
+                    self.logger.warning(
+                        'Server is not responding correctly to our requests.  Waiting for 30 seconds to reconnect.')
                     sleep(30)
                 else:
                     sleep(2)
@@ -128,7 +231,8 @@ class ApiRequest(PGoApiRequest):
             if not self.is_response_valid(result, request_callers):
                 try_cnt += 1
                 if try_cnt > 3:
-                    self.logger.warning('Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry))
+                    self.logger.warning(
+                        'Server seems to be busy or offline - try again - {}/{}'.format(try_cnt, max_retry))
                 if try_cnt >= max_retry:
                     raise ServerBusyOrOfflineException()
                 sleep(1)
@@ -139,7 +243,7 @@ class ApiRequest(PGoApiRequest):
         return result
 
     def __getattr__(self, func):
-        if func.upper() in  RequestType.keys():
+        if func.upper() in RequestType.keys():
             self.request_callers.append(func)
         return PGoApiRequest.__getattr__(self, func)
 

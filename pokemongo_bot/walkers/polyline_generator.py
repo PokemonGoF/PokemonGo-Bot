@@ -1,109 +1,159 @@
-import time
+# -*- coding: utf-8 -*-
+from geographiclib.geodesic import Geodesic
 from itertools import chain
-from math import ceil
 
-import haversine
+import math
 import polyline
 import requests
+from geopy.distance import great_circle
+
+
+def distance(point1, point2):
+    return Geodesic.WGS84.Inverse(point1[0], point1[1], point2[0], point2[1])["s12"]  # @UndefinedVariable
+
+
+class PolylineObjectHandler:
+    '''
+    Does this need to be a class?
+    More like a namespace...
+    '''
+    _cache = None
+    _instability = 0
+    _run = False
+
+    @staticmethod
+    def cached_polyline(origin, destination, google_map_api_key=None):
+        '''
+        Google API has limits, so we can't generate new Polyline at every tick...
+        '''
+
+        # Absolute offset between bot origin and PolyLine get_last_pos() (in meters)
+        if PolylineObjectHandler._cache and PolylineObjectHandler._cache.get_last_pos() != (None, None):
+            abs_offset = distance(origin, PolylineObjectHandler._cache.get_last_pos())
+        else:
+            abs_offset = float("inf")
+        is_old_cache = lambda : abs_offset > 8  # Consider cache old if we identified an offset more then 8 m
+        new_dest_set = lambda : tuple(destination) != PolylineObjectHandler._cache.destination
+
+        if PolylineObjectHandler._run and (not is_old_cache()):
+            # bot used to have struggle with making a decision.
+            PolylineObjectHandler._instability -= 1
+            if PolylineObjectHandler._instability <= 0:
+                PolylineObjectHandler._instability = 0
+                PolylineObjectHandler._run = False
+            pass  # use current cache
+        elif None == PolylineObjectHandler._cache or is_old_cache() or new_dest_set():
+            # no cache, old cache or new destination set by bot, so make new polyline
+            PolylineObjectHandler._instability += 2
+            if 10 <= PolylineObjectHandler._instability:
+                PolylineObjectHandler._run = True
+                PolylineObjectHandler._instability = 20  # next N moves use same cache
+
+            PolylineObjectHandler._cache = Polyline(origin, destination, google_map_api_key)
+        else:
+            # valid cache found
+            PolylineObjectHandler._instability -= 1
+            PolylineObjectHandler._instability = max(PolylineObjectHandler._instability, 0)
+            pass  # use current cache
+        return PolylineObjectHandler._cache
 
 
 class Polyline(object):
-
-    def __init__(self, origin, destination, speed):
-        self.DISTANCE_API_URL='https://maps.googleapis.com/maps/api/directions/json?mode=walking'
+    def __init__(self, origin, destination, google_map_api_key=None):
         self.origin = origin
-        self.destination = destination
-        self.URL = '{}&origin={}&destination={}'.format(self.DISTANCE_API_URL,
-                                                   '{},{}'.format(*self.origin),
-                                                   '{},{}'.format(*self.destination))
-        self.request_responce = requests.get(self.URL).json()
+        self.destination = tuple(destination)
+        self.DIRECTIONS_API_URL = 'https://maps.googleapis.com/maps/api/directions/json?mode=walking'
+        self.DIRECTIONS_URL = '{}&origin={}&destination={}'.format(self.DIRECTIONS_API_URL,
+                '{},{}'.format(*self.origin),
+                '{},{}'.format(*self.destination))
+        if google_map_api_key:
+            self.DIRECTIONS_URL = '{}&key={}'.format(self.DIRECTIONS_URL, google_map_api_key)
+        self._directions_response = requests.get(self.DIRECTIONS_URL).json()
         try:
-            self.polyline_points = [x['polyline']['points'] for x in
-                                    self.request_responce['routes'][0]['legs'][0]['steps']]
+            self._directions_encoded_points = [x['polyline']['points'] for x in
+                                               self._directions_response['routes'][0]['legs'][0]['steps']]
         except IndexError:
-            self.polyline_points = self.request_responce['routes']
-        self.speed = float(speed)
-        self.points = [self.origin] + self.get_points(self.polyline_points) + [self.destination]
-        self.lat, self.long = self.points[0][0], self.points[0][1]
-        self.polyline = self.combine_polylines(self.points)
-        self._timestamp = time.time()
-        self.is_paused = False
-        self._last_paused_timestamp = None
-        self._paused_total = 0.0
+            # This handles both cases:
+            # a) In case of API limit reached we get back we get a status 200 code with an empty routes []
+            # {u'error_message': u'You have exceeded your rate-limit for this API.',
+            #  u'routes': [],
+            #  u'status': u'OVER_QUERY_LIMIT'
+            # }
+            # b) In case that google does not have any directions proposals we get:
+            # ZERO_RESULTS {
+            #    "geocoded_waypoints" : [ {}, {} ],
+            #    "routes" : [],
+            #    "status" : "ZERO_RESULTS"
+            # }
+            self._directions_encoded_points = self._directions_response['routes']
+        self._points = [self.origin] + self._get_directions_points() + [self.destination]
+        self._polyline = self._get_encoded_points()
+        self._last_pos = self._points[0]
+        self._step_dict = self._get_steps_dict()
+        self._step_keys = sorted(self._step_dict.keys())
+        self._last_step = 0
 
-    def reset_timestamps(self):
-        self._timestamp = time.time()
-        self.is_paused = False
-        self._last_paused_timestamp = None
-        self._paused_total = 0.0
+        self._nr_samples = int(max(min(self.get_total_distance() / 3, 512), 2))
+        self.ELEVATION_API_URL = 'https://maps.googleapis.com/maps/api/elevation/json?path=enc:'
+        self.ELEVATION_URL = '{}{}&samples={}'.format(self.ELEVATION_API_URL,
+                                                      self._polyline, self._nr_samples)
+        if google_map_api_key:
+            self.ELEVATION_URL = '{}&key={}'.format(self.ELEVATION_URL, google_map_api_key)
+        self._elevation_response = requests.get(self.ELEVATION_URL).json()
+        self._elevation_at_point = dict((tuple(x['location'].values()),
+                                         x['elevation']) for x in
+                                        self._elevation_response['results'])
 
-    def get_points(self, polyline_points):
-        crd_points = []
-        for points in polyline_points:
-            crd_points += polyline.decode(points)
-        crd_points = [x for n,x in enumerate(crd_points) if x not in crd_points[:n]]
-        return crd_points
+    def _get_directions_points(self):
+        points = []
+        for point in self._directions_encoded_points:
+            points += polyline.decode(point)
+        return [x for n, x in enumerate(points) if x not in points[:n]]
 
-    def combine_polylines(self, points):
-        return polyline.encode(points)
+    def _get_encoded_points(self):
+        return polyline.encode(self._points)
 
-    def pause(self):
-        if not self.is_paused:
-            self.is_paused = True
-            self._last_paused_timestamp = time.time()
-
-    def unpause(self):
-        if self.is_paused:
-            self.is_paused = False
-            self._paused_total += time.time() - self._last_paused_timestamp
-            self._last_paused_timestamp = None
-
-    def walk_steps(self):
-        if self.points:
-            walk_steps = zip(chain([self.points[0]], self.points),
-                             chain(self.points, [self.points[-1]]))
-            walk_steps = filter(None, [(o, d) if o != d else None for o, d in walk_steps])
-            # consume the filter as list https://github.com/th3w4y/PokemonGo-Bot/issues/27
-            return list(walk_steps)
+    def _get_walk_steps(self):
+        if self._points:
+            steps = zip(chain([self._points[0]], self._points),
+                        chain(self._points, [self._points[-1]]))
+            steps = filter(None, [(o, d) if o != d else None for o, d in steps])
+            # consume the filter as list
+            return list(steps)
         else:
             return []
 
-    def get_pos(self):
+    def _get_steps_dict(self):
         walked_distance = 0.0
-        if not self.is_paused:
-            time_passed = time.time()
-        else:
-            time_passed = self._last_paused_timestamp
-        time_passed_distance = self.speed * abs(time_passed - self._timestamp - self._paused_total)
-        # check if there are any steps to take https://github.com/th3w4y/PokemonGo-Bot/issues/27
-        if self.walk_steps():
-            steps_dict = {}
-            for step in self.walk_steps():
-                walked_distance += haversine.haversine(*step)*1000
-                steps_dict[walked_distance] = step
-            for walked_end_step in sorted(steps_dict.keys()):
-                if walked_end_step >= time_passed_distance:
-                    break
-            step_distance = haversine.haversine(*steps_dict[walked_end_step])*1000
-            if walked_end_step >= time_passed_distance:
-                percentage_walked = (time_passed_distance - (walked_end_step - step_distance)) / step_distance
-            else:
-                percentage_walked = 1.0
-            return self.calculate_coord(percentage_walked, *steps_dict[walked_end_step])
-        else:
-            # otherwise return the destination https://github.com/th3w4y/PokemonGo-Bot/issues/27
-            return [self.points[-1]]
+        steps_dict = {}
+        for step in self._get_walk_steps():
+            walked_distance += distance(*step)
+            steps_dict[walked_distance] = step
+        return steps_dict
 
-    def calculate_coord(self, percentage, o, d):
-        # If this is the destination then returning as such
-        if self.points[-1] == d:
-            return [d]
+    def get_alt(self, at_point=None):
+        if at_point is None:
+            at_point = self._last_pos
+        if self._elevation_at_point:
+            elevations = sorted([(great_circle(at_point, k).meters, v, k) for k, v in self._elevation_at_point.items()])
+
+            if len(elevations) == 1:
+                return elevations[0][1]
+            else:
+                (distance_to_p1, ep1, p1), (distance_to_p2, ep2, p2) = elevations[:2]
+                distance_p1_p2 = great_circle(p1, p2).meters
+                return self._get_relative_hight(ep1, ep2, distance_p1_p2, distance_to_p1, distance_to_p2)
         else:
-            # intermediary points returned with 5 decimals precision only
-            # this ensures ~3-50cm ofset from the geometrical point calculated
-            lat = o[0]+ (d[0] -o[0]) * percentage
-            lon = o[1]+ (d[1] -o[1]) * percentage
-            return [(round(lat, 5), round(lon, 5))]
+            return None
+
+
+    def _get_relative_hight(self, ep1, ep2, distance_p1_p2, distance_to_p1, distance_to_p2):
+        hdelta = ep2 - ep1
+        elevation = ((math.pow(distance_p1_p2,2) + math.pow(distance_to_p1,2) - math.pow(distance_to_p2,2)) * hdelta)/ (3 * distance_p1_p2) + ep1
+        return elevation
 
     def get_total_distance(self):
-        return ceil(sum([haversine.haversine(*x)*1000 for x in self.walk_steps()]))
+        return math.ceil(sum([distance(*x) for x in self._get_walk_steps()]))
+
+    def get_last_pos(self):
+        return self._last_pos

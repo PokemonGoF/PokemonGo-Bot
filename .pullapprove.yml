@@ -5,6 +5,6 @@ reject_value: -1
 reset_on_push: true
 author_approval: ignored
 reviewers:
-    required: 2
+    required: 1
     teams:
         - pokemongo-bot-team

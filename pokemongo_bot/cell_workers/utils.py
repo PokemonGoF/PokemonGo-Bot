@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
 import struct
 from math import asin, atan, cos, exp, log, pi, sin, sqrt, tan
 
@@ -8,6 +9,8 @@ from networkx.algorithms.clique import find_cliques
 
 import networkx as nx
 import numpy as np
+
+from datetime import datetime as dt, timedelta
 
 init()
 
@@ -109,16 +112,35 @@ def convert(distance, from_unit, to_unit):  # Converts units
     return distance * conversions[from_unit][to_unit]
 
 
-def dist_to_str(distance, unit):
-    return '{:.2f}{}'.format(distance, unit)
+def dist_to_str(distance, unit, append_unit = True):
+    if append_unit:
+        return '{:.2f}{}'.format(distance, unit)
+    else:
+        return '{:.2f}'.format(distance)
 
 
-def format_dist(distance, unit):
+def format_dist(distance, unit, append_unit = True):
     # Assumes that distance is in meters and converts it to the given unit, then a formatted string is returned
     # Ex: format_dist(1500, 'km') returns the string "1.5km"
-    return dist_to_str(convert(distance, 'm', unit), unit)
+    return dist_to_str(convert(distance, 'm', unit), unit, append_unit)
 
 
+def getSeconds(strTime):
+    '''
+    Return the duration in seconds of a time string
+    :param strTime: string time of format %H:%M:%S
+    '''
+    try:
+        x = dt.strptime(strTime, '%H:%M:%S')
+        seconds = int(timedelta(hours=x.hour,minutes=x.minute,seconds=x.second).total_seconds())
+    except ValueError: 
+        seconds = 0;
+        
+    if seconds < 0:
+        seconds = 0;
+          
+    return seconds
+    
 def format_time(seconds):
     # Return a string displaying the time given as seconds or minutes
     num, duration = 0, long(round(seconds))
@@ -216,8 +238,11 @@ def rad2deg(rad):
 def find_biggest_cluster(radius, points, order=None):
     graph = nx.Graph()
     for point in points:
-            if order is 'lure_info':
-                f = point['latitude'], point['longitude'], point['lure_info']['lure_expires_timestamp_ms']
+            if order is '9QM=':
+                #is a lure module - 9QM=
+                now = int(time.time())
+                remaining = now - point['last_modified_timestamp_ms']
+                f = point['latitude'], point['longitude'], remaining
             else:
                 f = point['latitude'], point['longitude'], 0
             graph.add_node(f)

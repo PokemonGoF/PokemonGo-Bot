@@ -23,6 +23,8 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+*.orig
+*.bak
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -101,13 +103,21 @@ share/
 # PyCharm IDE settings
 .idea/
 *.iml
+out/
 
 # Personal load details
 src/
 web/
+data/*.db
 data/last-location*.json
 data/cells-*.json
 data/map-caught-*.json
+data/recent-forts-*.json
+data/caught-*.json
+data/deviceid-*.txt
+data/mqtt_client_id.*
+user_web_catchable
+version
 
 # Multiple config
 configs/*
@@ -118,7 +128,11 @@ configs/*
 !configs/config.json.path.example
 !configs/config.json.map.example
 !configs/path.example.json
+!config.json.campfort.example
 !config.json.cluster.example
+!config.json.hunter.example
+!config.json.optimizer.example
+!auth.json.example
 
 # Virtualenv folders
 bin/
@@ -129,3 +143,12 @@ pip-selfcheck.json
 
 # Some love for the vim users
 .*.sw*
+
+# Mac Gargage
+.DS_Store
+data/mqtt_client_id
+
+# pgoapi files
+encrypt.so
+encrypt.dll
+encrypt_64.dll

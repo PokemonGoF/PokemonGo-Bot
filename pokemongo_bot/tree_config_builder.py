@@ -1,4 +1,4 @@
-import cell_workers
+from __future__ import absolute_import
 from pokemongo_bot.plugin_loader import PluginLoader
 from pokemongo_bot.base_task import BaseTask
 
@@ -16,6 +16,7 @@ class TreeConfigBuilder(object):
 
     def _get_worker_by_name(self, name):
         try:
+            from . import cell_workers
             worker = getattr(cell_workers, name)
         except AttributeError:
             raise ConfigException('No worker named {} defined'.format(name))
@@ -27,6 +28,7 @@ class TreeConfigBuilder(object):
 
     def build(self):
         workers = []
+        deprecated_pokemon_task = False
 
         for task in self.tasks_raw:
             task_type = task.get('type', None)
@@ -36,6 +38,21 @@ class TreeConfigBuilder(object):
                 raise ConfigException('The EvolveAll task has been renamed to EvolvePokemon')
 
             task_config = task.get('config', {})
+
+            if task_type in ['CatchVisiblePokemon', 'CatchLuredPokemon']:
+                if deprecated_pokemon_task:
+                    continue
+                else:
+                    deprecated_pokemon_task = True
+                    task_type = 'CatchPokemon'
+                    task_config = {}
+                    self.bot.logger.warning('The CatchVisiblePokemon & CatchLuredPokemon tasks have been replaced with '
+                                            'CatchPokemon.  CatchPokemon has been enabled with default settings.')
+
+            if task_type == 'SleepSchedule':
+                self.bot.logger.warning('The SleepSchedule task was moved out of the task section. '
+                                        'See config.json.*example for more information.')
+                continue
 
             if self._is_plugin_task(task_type):
                 worker = self.plugin_loader.get_class(task_type)
@@ -65,4 +82,3 @@ class TreeConfigBuilder(object):
                 workers.append(instance)
 
         return workers
-
