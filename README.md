@@ -19,13 +19,14 @@ The project is currently setup in two main branches:
 - `master` also known as `stable` - The bot 'should' be stable on this branch, and is generally well tested.
 
 ## Support
-### Development Channel
-[![Join the chat at https://gitter.im/pikabot-org/Lobby](https://badges.gitter.im/pikabot-org/db.svg)](https://gitter.im/pikabot-org/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ### Configuration issues/help
 If you need any help please don't create an issue as we have a great community on Slack. You can count on the community in [#help](https://pokemongo-bot.slack.com/messages/help/) channel.
  - [Click here to signup (first time only)](https://pokemongo-bot.herokuapp.com)
  - [Join here if you're already a member](https://pokemongo-bot.slack.com/messages/general/)
+
+### Development Channel 
+ - #dev channel in slack
 
 ###[Bugs / Issues](https://github.com/PokemonGoF/PokemonGo-Bot/issues?q=is%3Aissue+sort%3Aupdated-desc)
 If you discover a bug in the bot, please [search our issue tracker](https://github.com/PokemonGoF/PokemonGo-Bot/issues?q=is%3Aissue+sort%3Aupdated-desc) first. If it hasn't been reported, please [create a new issue](https://github.com/PokemonGoF/PokemonGo-Bot/issues/new) and ensure you follow the template guide so that our team can assist you as quickly as possible.
