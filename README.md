@@ -69,7 +69,7 @@ If you do not want any data to be gathered, you can turn off this feature by set
 
 ## Credits
 - [tejado](https://github.com/tejado) many thanks for the API
-- [U6 Group](http://pgoapi.com) for the U6
+- [pogodevorg](https://github.com/pogodevorg/pgoapi) Without keyphact's coordination, this would not gonna happan again.
 - [Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets
 - [elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR
 - [AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos
