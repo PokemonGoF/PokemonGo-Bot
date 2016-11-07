@@ -1,7 +1,7 @@
 # PokemonGo-Bot
 [PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot) is a project created by the [PokemonGoF](https://github.com/PokemonGoF) team.
 
-## Is the bot working? [New API basic support](https://github.com/PokemonGoF/PokemonGo-Bot/pull/5784)
+## Is the bot working? [Yes, since this PR](https://github.com/PokemonGoF/PokemonGo-Bot/pull/5784)
 
 ## Table of Contents
 - [Installation](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/installation.md)
@@ -75,7 +75,7 @@ If you do not want any data to be gathered, you can turn off this feature by set
 
 ## Credits
 - [tejado](https://github.com/tejado) many thanks for the API
-- [U6 Group](http://pgoapi.com) for the U6
+- [pogodevorg](https://github.com/pogodevorg/pgoapi) Without keyphact's coordination, this would not gonna happan again.
 - [Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets
 - [elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR
 - [AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos
