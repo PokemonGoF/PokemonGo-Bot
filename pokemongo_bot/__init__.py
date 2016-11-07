@@ -167,7 +167,7 @@ class PokemonGoBot(object):
             if self.config.websocket_start_embedded_server:
                 self.sio_runner = SocketIoRunner(self.config.websocket_server_url)
                 self.sio_runner.start_listening_async()
-
+        
             websocket_handler = SocketIoHandler(
                 self,
                 self.config.websocket_server_url
@@ -975,17 +975,17 @@ class PokemonGoBot(object):
         )
         self.heartbeat()
 
-    #I'm missing OSX libraries support, anyone that can help me on this.
     def get_encryption_lib(self):
         if _platform == "Windows" or _platform == "win32":
             # Check if we are on 32 or 64 bit
             if sys.maxsize > 2**32:
-                file_name = 'encrypt64.dll'
+                file_name = 'src/pgoapi/pgoapi/lib/encrypt64.dll'
             else:
-                file_name = 'encrypt32.dll'
-        else:
-            file_name = 'libencrypt-linux-x86-64.so'
-
+                file_name = 'src/pgoapi/pgoapi/lib/encrypt32.dll'
+        if _platform.lower() == "darwin":
+            file_name= 'src/pgoapi/pgoapi/lib/libencrypt-osx-64.so'
+        if _platform.lower() == "linux" or _platform.lower() == "linux2":
+            file_name = 'src/pgoapi/pgoapi/lib/libencrypt-linux-x86-64.so'
         if self.config.encrypt_location == '':
             path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
         else:
@@ -1001,17 +1001,17 @@ class PokemonGoBot(object):
 
         return full_path
 
-    #I'm missing OSX libraries support, anyone that can help me on this.
     def get_hash_lib(self):
         if _platform == "Windows" or _platform == "win32":
             # Check if we are on 32 or 64 bit
             if sys.maxsize > 2**32:
-                file_name = 'niantichash64.dll'
+                file_name = 'src/pgoapi/pgoapi/lib/niantichash64.dll'
             else:
-                file_name = 'niantichash32.dll'
-        else:
-            file_name = 'libniantichash-linux-x86-64.so'
-
+                file_name = 'src/pgoapi/pgoapi/lib/niantichash32.dll'
+        if _platform.lower() == "darwin":
+            file_name= 'src/pgoapi/pgoapi/lib/libniantichash-osx-64.so'
+        if _platform.lower() == "linux" or _platform.lower() == "linux2":
+            file_name = 'src/pgoapi/pgoapi/lib/libniantichash-linux-x86-64.so'
         if self.config.encrypt_location == '':
             path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
         else:
