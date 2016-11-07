@@ -727,6 +727,8 @@ def init_config():
     config.live_config_update_enabled = config.live_config_update.get('enabled', False)
     config.live_config_update_tasks_only = config.live_config_update.get('tasks_only', False)
     config.logging = load.get('logging', {})
+    config.fly_min = load.get('fly_min', 282)
+    config.fly_max = load.get('fly_max', 294)
 
     if config.map_object_cache_time < 0.0:
         parser.error("--map_object_cache_time is out of range! (should be >= 0.0)")

@@ -8,5 +8,5 @@ def walker_factory(name, bot, dest_lat, dest_lng, dest_alt=None, *args, **kwargs
     if 'StepWalker' == name:
         ret = StepWalker(bot, dest_lat, dest_lng, dest_alt)
     elif 'PolylineWalker' == name:
-        ret = PolylineWalker(bot, dest_lat, dest_lng)
+        ret = PolylineWalker(bot, dest_lat, dest_lng, mode=kwargs.get("mode", "walking"))
     return ret

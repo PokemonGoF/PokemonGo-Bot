@@ -4,9 +4,14 @@ from itertools import chain
 
 import math
 import polyline
+from random import uniform
 import requests
 from geopy.distance import great_circle
 
+MODE_WALKING = 1
+MODE_BICYCLING = 2
+MODE_DRIVING = 3
+MODE_FLYING = 4
 
 def distance(point1, point2):
     return Geodesic.WGS84.Inverse(point1[0], point1[1], point2[0], point2[1])["s12"]  # @UndefinedVariable
@@ -22,7 +27,7 @@ class PolylineObjectHandler:
     _run = False
 
     @staticmethod
-    def cached_polyline(origin, destination, google_map_api_key=None):
+    def cached_polyline(origin, destination, google_map_api_key=None, mode="walking"):
         '''
         Google API has limits, so we can't generate new Polyline at every tick...
         '''
@@ -49,7 +54,7 @@ class PolylineObjectHandler:
                 PolylineObjectHandler._run = True
                 PolylineObjectHandler._instability = 20  # next N moves use same cache
 
-            PolylineObjectHandler._cache = Polyline(origin, destination, google_map_api_key)
+            PolylineObjectHandler._cache = Polyline(origin, destination, google_map_api_key, mode)
         else:
             # valid cache found
             PolylineObjectHandler._instability -= 1
@@ -59,18 +64,22 @@ class PolylineObjectHandler:
 
 
 class Polyline(object):
-    def __init__(self, origin, destination, google_map_api_key=None):
+    def __init__(self, origin, destination, google_map_api_key=None, mode="walking"):
         self.origin = origin
         self.destination = tuple(destination)
-        self.DIRECTIONS_API_URL = 'https://maps.googleapis.com/maps/api/directions/json?mode=walking'
-        self.DIRECTIONS_URL = '{}&origin={}&destination={}'.format(self.DIRECTIONS_API_URL,
+        self.DIRECTIONS_API_URL = 'https://maps.googleapis.com/maps/api/directions/json'
+        self.DIRECTIONS_URL = '{}?mode={}&origin={}&destination={}'.format(self.DIRECTIONS_API_URL,
+                mode,
                 '{},{}'.format(*self.origin),
                 '{},{}'.format(*self.destination))
         if google_map_api_key:
             self.DIRECTIONS_URL = '{}&key={}'.format(self.DIRECTIONS_URL, google_map_api_key)
         self._directions_response = requests.get(self.DIRECTIONS_URL).json()
+
         try:
             self._directions_encoded_points = [x['polyline']['points'] for x in
+                                               self._directions_response['routes'][0]['legs'][0]['steps']]
+            self._directions_speeds = [x['distance']['value'] / float(x['duration']['value']) for x in
                                                self._directions_response['routes'][0]['legs'][0]['steps']]
         except IndexError:
             # This handles both cases:
@@ -86,9 +95,13 @@ class Polyline(object):
             #    "status" : "ZERO_RESULTS"
             # }
             self._directions_encoded_points = self._directions_response['routes']
-        self._points = [self.origin] + self._get_directions_points() + [self.destination]
+            self._directions_speeds = [uniform(2.16, 4.16)
+                                               for x in self._directions_encoded_points]
+        self._points = [(self.origin, self._directions_speeds[0])] + \
+                        self._get_directions_points_and_speeds() + \
+                       [(self.destination, self._directions_speeds[-1])]
         self._polyline = self._get_encoded_points()
-        self._last_pos = self._points[0]
+        self._last_pos = self._points[0][0]
         self._step_dict = self._get_steps_dict()
         self._step_keys = sorted(self._step_dict.keys())
         self._last_step = 0
@@ -104,30 +117,38 @@ class Polyline(object):
                                          x['elevation']) for x in
                                         self._elevation_response['results'])
 
-    def _get_directions_points(self):
+    # Returns a list of points along the route. Each point consists of a tuple
+    # ((lat,long),speed)
+    def _get_directions_points_and_speeds(self):
         points = []
-        for point in self._directions_encoded_points:
-            points += polyline.decode(point)
-        return [x for n, x in enumerate(points) if x not in points[:n]]
+        speeds = []
+        for point in zip(self._directions_encoded_points, self._directions_speeds):
+            new_points = polyline.decode(point[0])
+            points += new_points
+            speeds += [ point[1] * uniform(0.9, 1.1) for p in new_points ]
+        return [(x, speeds[n]) for n, x in enumerate(points) if x not in points[:n]]
 
     def _get_encoded_points(self):
-        return polyline.encode(self._points)
+        return polyline.encode([point[0] for point in self._points])
 
+    # Returns a list of ((from_lat, from_long), (to_lat, to_long), speed)
     def _get_walk_steps(self):
         if self._points:
-            steps = zip(chain([self._points[0]], self._points),
-                        chain(self._points, [self._points[-1]]))
-            steps = filter(None, [(o, d) if o != d else None for o, d in steps])
+            steps = zip(chain([self._points[0][0]], [x[0] for x in self._points]),
+                        chain([x[0] for x in self._points], [self._points[-1][0]]),
+                        chain([x[1] for x in self._points], [self._points[-1][1]]))
+            steps = filter(None, [(o, d, s) if o != d else None for o, d, s in steps])
             # consume the filter as list
             return list(steps)
         else:
             return []
 
+    # Returns a dict of items {start_distance: ((from_lat,from_long), (to_lat,to_long), speed)}
     def _get_steps_dict(self):
         walked_distance = 0.0
         steps_dict = {}
         for step in self._get_walk_steps():
-            walked_distance += distance(*step)
+            walked_distance += distance(step[0], step[1])
             steps_dict[walked_distance] = step
         return steps_dict
 
@@ -153,7 +174,7 @@ class Polyline(object):
         return elevation
 
     def get_total_distance(self):
-        return math.ceil(sum([distance(*x) for x in self._get_walk_steps()]))
+        return math.ceil(sum([distance(x[0], x[1]) for x in self._get_walk_steps()]))
 
     def get_last_pos(self):
         return self._last_pos
