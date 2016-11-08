@@ -105,7 +105,7 @@ class BuddyPokemon(BaseTask):
             return WorkerResult.SUCCESS
 
         if self.buddy_list:
-            pokemon = self._get_pokemon_by_name(self._get_pokemon_by_id(self.buddy['id']).name) if "id" in self.buddy else None
+            pokemon = self._get_pokemon_by_name(self._get_pokemon_by_id(self.buddy['id']).name) if 'id' in self.buddy else None
             if self.force_first_change or not self.buddy or pokemon is None or (self.candy_limit != 0 and self.candy_awarded >= self.candy_limit) or self._check_candy_limit_absolute(pokemon):
                 self.force_first_change = False
 
@@ -221,7 +221,7 @@ class BuddyPokemon(BaseTask):
         return self.candy_limit_absolute != 0 and inventory.candies().get(pokemon.family_id).quantity >= self.candy_limit_absolute
 
     def _check_old_reward(self):
-        if not self.buddy:
+        if not self.buddy or 'last_km_awarded' not in self.buddy:
             return
         km_diff = self._km_walked() - self.buddy['last_km_awarded']
         rewards_size = km_diff // self.buddy_distance_needed
