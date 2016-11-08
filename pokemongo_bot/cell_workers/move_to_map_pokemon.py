@@ -70,6 +70,7 @@ from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
 from random import uniform
 from pokemongo_bot.constants import Constants
+from datetime import datetime
 
 ULTRABALL_ID = 3
 GREATBALL_ID = 2
@@ -254,7 +255,7 @@ class MoveToMapPokemon(BaseTask):
         # If target exists, catch it, otherwise ignore
         if exists:
             self._encountered(pokemon)
-            catch_worker = PokemonCatchWorker(pokemon, self.bot, self.config)
+            catch_worker = PokemonCatchWorker(pokemon, self.bot)
             api_encounter_response = catch_worker.create_encounter_api_call()
             time.sleep(self.config.get('snipe_sleep_sec', 2))
             self._teleport_back(last_position)
@@ -289,6 +290,15 @@ class MoveToMapPokemon(BaseTask):
                 self._emit_log("Not enough balls to start sniping (have {}, {} needed)".format(
                     pokeballs_quantity + superballs_quantity + ultraballs_quantity, self.min_ball))
             return WorkerResult.SUCCESS
+            
+        if self.bot.catch_disabled:
+            if not hasattr(self.bot,"mtmp_disabled_global_warning") or \
+                        (hasattr(self.bot,"mtmp_disabled_global_warning") and not self.bot.mtmp_disabled_global_warning):
+                self._emit_log("All catching tasks are currently disabled until {}. Sniping will resume when catching tasks are re-enabled".format(self.bot.catch_resume_at.strftime("%H:%M:%S")))
+            self.bot.mtmp_disabled_global_warning = True
+            return WorkerResult.SUCCESS
+        else:
+            self.bot.mtmp_disabled_global_warning = False
 
         # Retrieve pokemos
         self.dump_caught_pokemon()

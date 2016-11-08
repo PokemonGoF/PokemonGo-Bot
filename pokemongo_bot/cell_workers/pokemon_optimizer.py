@@ -1,3 +1,6 @@
+from __future__ import unicode_literals
+
+# import datetime
 import difflib
 import itertools
 import json
@@ -31,6 +34,7 @@ class PokemonOptimizer(BaseTask):
         self.evolution_map = {}
         self.ongoing_stardust_count = 0
         self.buddy = None
+        self.buddyid = 0
         self.lock_buddy = True
         self.no_log_until = 0
 
@@ -41,6 +45,14 @@ class PokemonOptimizer(BaseTask):
 
         if self.config.get("keep", None) is not None:
             raise ConfigException("Pokemon Optimizer configuration has changed. See docs/pokemon_optimized.md or configs/config.json.optimizer.example")
+
+#         log_file_path = os.path.join(_base_dir, "data", "pokemon-optimizer-%s.log" % self.bot.config.username)
+#
+#         with open(log_file_path, "a") as _:
+#             pass
+#
+#         self.log_file = open(log_file_path, "r+")
+#         self.log_file.seek(0, 2)
 
         self.config_min_slots_left = self.config.get("min_slots_left", 5)
         self.config_action_wait_min = self.config.get("action_wait_min", 3)
@@ -56,13 +68,13 @@ class PokemonOptimizer(BaseTask):
         self.config_upgrade = self.config.get("upgrade", False)
         self.config_upgrade_level = self.config.get("upgrade_level", 30)
         self.config_groups = self.config.get("groups", {"gym": ["Dragonite", "Snorlax", "Lapras", "Arcanine"]})
-        self.config_rules = self.config.get("rules", [{"mode": "overall", "top": 1, "sort": ["max_cp", "cp"], "keep": {"candy":-124}, "evolve": False, "buddy": True},
+        self.config_rules = self.config.get("rules", [{"mode": "overall", "top": 1, "sort": ["max_cp", "cp"], "keep": {"candy": -124}, "evolve": False, "buddy": True},
                                                       {"mode": "overall", "top": 1, "sort": ["-candy", "max_cp", "cp"], "evolve": False, "buddy": True},
                                                       {"mode": "by_family", "top": 3, "names": ["gym"], "sort": ["iv", "ncp"], "evolve": {"iv": 0.9, "ncp": 0.9}, "upgrade": {"iv": 0.9, "ncp": 0.9}},
                                                       {"mode": "by_family", "top": 1, "sort": ["iv"], "evolve": {"iv": 0.9}},
                                                       {"mode": "by_family", "top": 1, "sort": ["ncp"], "evolve": {"ncp": 0.9}},
                                                       {"mode": "by_family", "top": 1, "sort": ["cp"], "evolve": False},
-                                                      {"mode": "by_pokemon", "names": ["!with_next_evolution"], "top": 1, "sort": ["dps_attack"], "keep": {"iv": 0.9}}])
+                                                      {"mode": "by_pokemon", "names": ["!with_next_evolution"], "top": 1, "sort": ["dps_attack", "iv"], "keep": {"iv": 0.9}}])
 
         if (not self.config_may_use_lucky_egg) and self.config_evolve_only_with_lucky_egg:
             self.config_evolve = False
@@ -85,6 +97,13 @@ class PokemonOptimizer(BaseTask):
 
             if pokemon.prev_evolutions_all:
                 self.config_groups["with_previous_evolution"].append(pokemon.name)
+
+#     def log(self, txt):
+#         if self.log_file.tell() >= 1024 * 1024:
+#             self.log_file.seek(0, 0)
+#
+#         self.log_file.write("[%s] %s\n" % (datetime.datetime.now().isoformat(str(" ")), txt))
+#         self.log_file.flush()
 
     def get_pokemon_slot_left(self):
         pokemon_count = inventory.Pokemons.get_space_used()
@@ -223,6 +242,7 @@ class PokemonOptimizer(BaseTask):
 
     def check_buddy(self):
         self.buddy = self.bot.player_data.get("buddy_pokemon", {})
+        self.buddyid = self._get_buddyid()
 
         if not self.buddy:
             self.lock_buddy = False
@@ -312,10 +332,12 @@ class PokemonOptimizer(BaseTask):
         return [inventory.pokemons().name_for(x) for x in ids]
 
     def get_closest_name(self, name):
-        closest_names = difflib.get_close_matches(name, self.pokemon_names, 1)
+        mapping = {ord(x): ord(y) for x, y in zip("\u2641\u2642.-", "fm  ")}
+        clean_names = {n.lower().translate(mapping): n for n in self.pokemon_names}
+        closest_names = difflib.get_close_matches(name.lower().translate(mapping), clean_names.keys(), 1)
 
         if closest_names:
-            closest_name = closest_names[0]
+            closest_name = clean_names[closest_names[0]]
 
             if name != closest_name:
                 self.logger.warning("Unknown Pokemon name [%s]. Assuming it is [%s]", name, closest_name)
@@ -337,6 +359,83 @@ class PokemonOptimizer(BaseTask):
 
     def get_family_id(self, pokemon):
         return pokemon.first_evolution_id
+
+    def score_and_sort(self, pokemon_list, rule):
+        pokemon_list = list(pokemon_list)
+
+#         self.log("Pokemon %s" % pokemon_list)
+#         self.log("Rule %s" % rule)
+
+        for pokemon in pokemon_list:
+            setattr(pokemon, "__score__", self.get_score(pokemon, rule))
+
+        keep = [p for p in pokemon_list if p.__score__[1] is True]
+        keep.sort(key=lambda p: p.__score__[0], reverse=True)
+
+        return keep
+
+    def get_score(self, pokemon, rule):
+        score = []
+
+        for a in rule.get("sort", []):
+            if a[0] == "-":
+                value = -getattr(pokemon, a[1:], 0)
+            else:
+                value = getattr(pokemon, a, 0)
+
+            score.append(value)
+
+        rule_keep = rule.get("keep", True)
+        rule_evolve = rule.get("evolve", True)
+        rule_upgrade = rule.get("upgrade", False)
+        rule_buddy = rule.get("buddy", False)
+
+        keep = rule_keep not in [False, {}]
+        keep &= self.satisfy_requirements(pokemon, rule_keep)
+
+        may_try_evolve = (hasattr(pokemon, "has_next_evolution") and pokemon.has_next_evolution())
+        may_try_evolve &= rule_evolve not in [False, {}]
+        may_try_evolve &= self.satisfy_requirements(pokemon, rule_evolve)
+
+        may_try_upgrade = rule_upgrade not in [False, {}]
+        may_try_upgrade &= self.satisfy_requirements(pokemon, rule_upgrade)
+
+        may_buddy = rule_buddy not in [False, {}]
+        may_buddy &= pokemon.in_fort is False
+        may_buddy &= self.satisfy_requirements(pokemon, may_buddy)
+
+#         self.log("%s %s %s %s %s %s" % (pokemon, tuple(score), keep, may_try_evolve, may_try_upgrade, may_buddy))
+
+        return tuple(score), keep, may_try_evolve, may_try_upgrade, may_buddy
+
+    def satisfy_requirements(self, pokemon, req):
+        if type(req) is bool:
+            return req
+
+        satisfy = True
+
+        for a, v in req.items():
+            value = getattr(pokemon, a, 0)
+
+            if (type(v) is str) or (type(v) is unicode):
+                v = float(v)
+
+            if type(v) is list:
+                if type(v[0]) is list:
+                    satisfy_range = False
+
+                    for r in v:
+                        satisfy_range |= (value >= r[0]) and (value <= r[1])
+
+                    satisfy &= satisfy_range
+                else:
+                    satisfy &= (value >= v[0]) and (value <= v[1])
+            elif v < 0:
+                satisfy &= (value <= abs(v))
+            else:
+                satisfy &= (value >= v)
+
+        return satisfy
 
     def get_best_pokemon_for_rule(self, pokemon_list, rule):
         pokemon_list = list(pokemon_list)
@@ -419,82 +518,6 @@ class PokemonOptimizer(BaseTask):
 
         return keep, try_evolve, try_upgrade, buddy
 
-    def score_and_sort(self, pokemon_list, rule):
-        pokemon_list = list(pokemon_list)
-
-        for pokemon in pokemon_list:
-            setattr(pokemon, "__score__", self.get_score(pokemon, rule))
-
-        keep = [p for p in pokemon_list if p.__score__[1] is True]
-        keep.sort(key=lambda p: p.__score__[0], reverse=True)
-
-        return keep
-
-    def get_score(self, pokemon, rule):
-        score = []
-
-        for a in rule.get("sort", []):
-            if a[0] == "-":
-                value = -getattr(pokemon, a[1:], 0)
-            else:
-                value = getattr(pokemon, a, 0)
-
-            score.append(value)
-
-        rule_keep = rule.get("keep", True)
-        rule_evolve = rule.get("evolve", True)
-        rule_upgrade = rule.get("upgrade", False)
-        rule_buddy = rule.get("buddy", False)
-
-        keep = rule_keep not in [False, {}]
-        keep &= self.satisfy_requirements(pokemon, rule_keep)
-
-        may_try_evolve = (hasattr(pokemon, "has_next_evolution") and pokemon.has_next_evolution())
-        may_try_evolve &= rule_evolve not in [False, {}]
-        may_try_evolve &= self.satisfy_requirements(pokemon, rule_evolve)
-
-        may_try_upgrade = rule_upgrade not in [False, {}]
-        may_try_upgrade &= self.satisfy_requirements(pokemon, rule_upgrade)
-
-        may_buddy = rule_buddy not in [False, {}]
-        may_buddy &= pokemon.in_fort is False
-        may_buddy &= self.satisfy_requirements(pokemon, may_buddy)
-
-        return tuple(score), keep, may_try_evolve, may_try_upgrade, may_buddy
-
-    def satisfy_requirements(self, pokemon, req):
-        if type(req) is bool:
-            return req
-
-        satisfy = True
-
-        for a, v in req.items():
-            value = getattr(pokemon, a, 0)
-
-            if (type(v) is str) or (type(v) is unicode):
-                v = float(v)
-
-            if type(v) is list:
-                if type(v[0]) is list:
-                    satisfy_range = False
-
-                    for r in v:
-                        satisfy_range |= (value >= r[0]) and (value <= r[1])
-
-                    satisfy &= satisfy_range
-                else:
-                    satisfy &= (value >= v[0]) and (value <= v[1])
-            elif v < 0:
-                satisfy &= (value <= abs(v))
-            else:
-                satisfy &= (value >= v)
-
-        return satisfy
-
-    def unique_pokemon_list(self, pokemon_list):
-        seen = set()
-        return [p for p in pokemon_list if not (p.unique_id in seen or seen.add(p.unique_id))]
-
     def get_evolution_plan(self, family_id, family_list, keep, try_evolve, try_upgrade):
         candies = inventory.candies().get(family_id).quantity
         family_name = inventory.Pokemons().name_for(family_id)
@@ -502,7 +525,7 @@ class PokemonOptimizer(BaseTask):
         # All the rest is crap, for now
         crap = list(family_list)
         crap = [p for p in crap if p not in keep]
-        crap = [p for p in crap if not p.in_fort and not p.is_favorite]
+        crap = [p for p in crap if not p.in_fort and not p.is_favorite and not (p.unique_id == self.buddyid)]
         crap.sort(key=lambda p: (p.iv, p.cp), reverse=True)
 
         # We will gain a candy whether we choose to transfer or evolve these Pokemon
@@ -557,7 +580,7 @@ class PokemonOptimizer(BaseTask):
 
             upgrade.append(pokemon)
 
-        if family_name in self.config_evolve_for_xp_blacklist:
+        if (not self.config_evolve_for_xp) or (family_name in self.config_evolve_for_xp_blacklist):
             xp = []
             transfer = crap
         elif self.config_evolve_for_xp_whitelist and (family_name not in self.config_evolve_for_xp_whitelist):
@@ -582,6 +605,10 @@ class PokemonOptimizer(BaseTask):
             transfer = [p for p in crap if p not in xp]
 
         return (transfer, evolve, upgrade, xp)
+
+    def unique_pokemon_list(self, pokemon_list):
+        seen = set()
+        return [p for p in pokemon_list if not (p.unique_id in seen or seen.add(p.unique_id))]
 
     def apply_optimization(self, transfer, evolve, upgrade, xp):
         transfer_count = len(transfer)
@@ -833,6 +860,7 @@ class PokemonOptimizer(BaseTask):
 
         if not self.bot.config.test:
             self.buddy = response_dict.get("responses", {}).get("SET_BUDDY_POKEMON", {}).get("updated_buddy", {})
+            self.buddyid = self._get_buddyid()
 
         self.emit_event("buddy_pokemon",
                         formatted="Buddy {pokemon} [IV {iv}] [CP {cp}]",
@@ -861,8 +889,12 @@ class PokemonOptimizer(BaseTask):
         if not success:
             return False
 
-        family_candy_id = response_dict.get("responses", {}).get("GET_BUDDY_WALKED", {}).get("family_candy_id", 0)
         candy_earned_count = response_dict.get("responses", {}).get("GET_BUDDY_WALKED", {}).get("candy_earned_count", 0)
+
+        if candy_earned_count == 0:
+            return
+
+        family_candy_id = self.get_family_id(pokemon)
         candy = inventory.candies().get(family_candy_id)
 
         if not self.bot.config.test:
@@ -879,3 +911,8 @@ class PokemonOptimizer(BaseTask):
             action_delay(self.config_action_wait_min, self.config_action_wait_max)
 
         return True
+        
+    def _get_buddyid(self):
+        if self.buddy and'id' in self.buddy:
+            return self.buddy['id']
+        return 0

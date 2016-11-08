@@ -25,6 +25,7 @@ class BuddyPokemon(BaseTask):
             "best_in_family": true,
             "// candy_limit = 0 means no limit, so it will never change current buddy": {},
             "candy_limit": 0,
+            "candy_limit_absolute": 0,
             "// force_first_change = true will always change buddy at start removing current one": {},
             "force_first_change": false,
             "buddy_change_wait_min": 3,
@@ -42,6 +43,16 @@ class BuddyPokemon(BaseTask):
                              to the next in the list. When candy_limit = 0 or
                              only one buddy in list, it has no limit and never
                              changes buddy.
+    candy_limit_absolute: Default: 0. Set the absolute candy limit to be
+                                      rewarded per buddy, when reaching this
+                                      limit the bot will change the buddy to the
+                                      next in the list. When
+                                      candy_limit_absolute = 0 or only one buddy
+                                      in list, it has no limit and never changes
+                                      buddy. Use this to stop collecting candy
+                                      when a candy threshold for your buddy's
+                                      pokemon family is reached (e.g. 50 for
+                                      evolving).
     force_first_change: Default: False. If True, will try to change buddy at
                         bot start according to the buddy list. If False, will
                         use the buddy already set until candy_limit is reached
@@ -61,6 +72,7 @@ class BuddyPokemon(BaseTask):
         self.buddy_list = self.config.get('buddy_list', [])
         self.best_in_family = self.config.get('best_in_family', True)
         self.candy_limit = self.config.get('candy_limit', 0)  # 0 = No Limit
+        self.candy_limit_absolute = self.config.get('candy_limit_absolute', 0)  # 0 = No Limit
         self.force_first_change = self.config.get('force_first_change', False)
         self.buddy_change_wait_min = self.config.get('buddy_change_wait_min', 3)
         self.buddy_change_wait_max = self.config.get('buddy_change_wait_max', 5)
@@ -93,10 +105,16 @@ class BuddyPokemon(BaseTask):
             return WorkerResult.SUCCESS
 
         if self.buddy_list:
-            if self.force_first_change or not self.buddy or self.candy_limit != 0 and self.candy_awarded >= self.candy_limit:
+            pokemon = self._get_pokemon_by_name(self._get_pokemon_by_id(self.buddy['id']).name)
+            if self.force_first_change or not self.buddy or pokemon is None or (self.candy_limit != 0 and self.candy_awarded >= self.candy_limit) or self._check_candy_limit_absolute(pokemon):
                 self.force_first_change = False
 
-                remaining = [name for name in self.buddy_list if name not in self.cache]
+                remaining = []
+                for name in self.buddy_list:
+                    pokemon = self._get_pokemon_by_name(name)
+                    if name not in self.cache and pokemon is not None and not self._check_candy_limit_absolute(pokemon):
+                        remaining.append(name)
+
                 if not remaining:
                     self.cache = []
                     return WorkerResult.SUCCESS
@@ -199,6 +217,9 @@ class BuddyPokemon(BaseTask):
             )
             return False
 
+    def _check_candy_limit_absolute(self, pokemon):
+        return self.candy_limit_absolute != 0 and inventory.candies().get(pokemon.family_id).quantity >= self.candy_limit_absolute
+
     def _check_old_reward(self):
         if not self.buddy:
             return
@@ -215,7 +236,7 @@ class BuddyPokemon(BaseTask):
         pokemons = inventory.pokemons().all()
         pokemon = None
         for p in pokemons:
-            if p.name.lower() == name:
+            if p.name.lower() == name.lower():
                 pokemon = p
                 break
 
