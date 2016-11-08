@@ -105,7 +105,7 @@ class BuddyPokemon(BaseTask):
             return WorkerResult.SUCCESS
 
         if self.buddy_list:
-            pokemon = self._get_pokemon_by_name(self._get_pokemon_by_id(self.buddy['id']).name)
+            pokemon = self._get_pokemon_by_name(self._get_pokemon_by_id(self.buddy['id']).name) if "id" in self.buddy else None
             if self.force_first_change or not self.buddy or pokemon is None or (self.candy_limit != 0 and self.candy_awarded >= self.candy_limit) or self._check_candy_limit_absolute(pokemon):
                 self.force_first_change = False
 
