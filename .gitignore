@@ -147,4 +147,8 @@ pip-selfcheck.json
 # Mac Gargage
 .DS_Store
 data/mqtt_client_id
-Encrypt_64.dll
+
+# pgoapi files
+encrypt.so
+encrypt.dll
+encrypt_64.dll

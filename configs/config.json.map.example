@@ -46,6 +46,7 @@
           "best_in_family": true,
           "// candy_limit = 0 means no limit, so it will never change current buddy": {},
           "candy_limit": 0,
+          "candy_limit_absolute":0,
           "// force_first_change = true will always change buddy at start removing current one": {},
           "force_first_change": false,
           "buddy_change_wait_min": 3,
@@ -207,6 +208,14 @@
       { "type": "UpdateWebInventory",
         "config": {
           "enabled": true
+        }
+      },
+      {
+        "type": "CatchLimiter",
+        "config": {
+          "enabled": false,
+          "min_balls": 20,
+          "duration": 15
         }
       },
       {
@@ -498,7 +507,7 @@
 						"name": { "param": "pokemon" },
 						"latitude": { "param": "cords" },
 						"longitude": { "param": "cords" },
-						"expiration": { "param": "timeend", "format": "milliseconds" }
+						"expiration": { "param": "timeend", "format": "seconds" }
 					}
 				},
 				{
@@ -661,6 +670,6 @@
     },
 	"websocket": {
 		"start_embedded_server": true,
-		"server_url": "0.0.0.0:4000"
+		"server_url": "127.0.0.1:4000"
 	}
 }

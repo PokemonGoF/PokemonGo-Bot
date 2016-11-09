@@ -16,7 +16,6 @@ from pokemongo_bot.base_dir import _base_dir
 from datetime import datetime, timedelta
 from .utils import getSeconds
 
-
 CATCH_STATUS_SUCCESS = 1
 CATCH_STATUS_FAILED = 2
 CATCH_STATUS_VANISHED = 3
@@ -46,10 +45,20 @@ DEBUG_ON = False
 
 class PokemonCatchWorker(BaseTask):
 
-    def __init__(self, pokemon, bot, config):
+    def __init__(self, pokemon, bot, config={}):
         self.pokemon = pokemon
+
+        # Load CatchPokemon config if no config supplied  
+        if not config:
+            for value in bot.workers:
+                if hasattr(value, 'catch_pokemon'):
+                    config = value.config
+                    
+        self.config = config
+
         super(PokemonCatchWorker, self).__init__(bot, config)
         if self.config.get('debug', False): DEBUG_ON = True
+
 
     def initialize(self):
         self.position = self.bot.position
@@ -60,7 +69,7 @@ class PokemonCatchWorker(BaseTask):
         self.response_key = ''
         self.response_status_key = ''
         self.rest_completed = False
-
+        self.caught_last_24 = 0
 
         #Config
         self.min_ultraball_to_keep = self.config.get('min_ultraball_to_keep', 10)
@@ -95,6 +104,9 @@ class PokemonCatchWorker(BaseTask):
         self.catchsim_newtodex_wait_max = self.catchsim_config.get('newtodex_wait_max', 30)
 
 
+
+
+
     ############################################################################
     # public methods
     ############################################################################
@@ -125,7 +137,7 @@ class PokemonCatchWorker(BaseTask):
         is_vip = self._is_vip_pokemon(pokemon)
 
         # skip ignored pokemon
-        if not self._should_catch_pokemon(pokemon) and not is_vip:
+        if (not self._should_catch_pokemon(pokemon) and not is_vip) or self.bot.catch_disabled:            
             if not hasattr(self.bot,'skipped_pokemon'):
                 self.bot.skipped_pokemon = []
 
@@ -136,15 +148,18 @@ class PokemonCatchWorker(BaseTask):
                     pokemon.ivcp == skipped_pokemon.ivcp:
                     return WorkerResult.SUCCESS
 
+            if self.bot.catch_disabled:
+                self.logger.info("Not catching {}. All catching tasks are currently disabled until {}.".format(pokemon,self.bot.catch_resume_at.strftime("%H:%M:%S")))
+
             self.bot.skipped_pokemon.append(pokemon)
             self.emit_event(
                 'pokemon_appeared',
-                formatted='Skip ignored {}! (CP {}) (Potential {}) (A/D/S {})'.format(pokemon.name, pokemon.cp, pokemon.iv, pokemon.iv_display),
+                formatted='Skip ignored {pokemon}! (CP: {cp} IV: {iv} A/D/S {iv_display})',
                 data={
                     'pokemon': pokemon.name,
-                    'cp': pokemon.cp,
-                    'iv': pokemon.iv,
-                    'iv_display': pokemon.iv_display,
+                    'cp': str(int(pokemon.cp)),
+                    'iv': str(pokemon.iv),
+                    'iv_display': str(pokemon.iv_display),
                 }
             )
             return WorkerResult.SUCCESS
@@ -159,7 +174,7 @@ class PokemonCatchWorker(BaseTask):
         # log encounter
         self.emit_event(
             'pokemon_appeared',
-            formatted='*A wild {} appeared!* (CP: {}) (NCP: {}) (Potential {}) (A/D/S {})'.format(pokemon.name, pokemon.cp, round(pokemon.cp_percent, 2), pokemon.iv, pokemon.iv_display),
+            formatted='A wild {} appeared! (CP: {} IV: {} A/D/S {} NCP: {})'.format(pokemon.name, pokemon.cp,  pokemon.iv, pokemon.iv_display, round(pokemon.cp_percent, 2),),
             data={
                 'pokemon': pokemon.name,
                 'ncp': round(pokemon.cp_percent, 2),
@@ -186,10 +201,10 @@ class PokemonCatchWorker(BaseTask):
             c.execute("SELECT DISTINCT COUNT(encounter_id) FROM catch_log WHERE dated >= datetime('now','-1 day')")
 
         result = c.fetchone()
-        self.caught_last_24_hour = result[0]
+
 
         while True:
-            if self.caught_last_24_hour < self.daily_catch_limit:
+            if result[0] < self.daily_catch_limit:
             # catch that pokemon!
                 encounter_id = self.pokemon['encounter_id']
                 catch_rate_by_ball = [0] + response['capture_probability']['capture_probability']  # offset so item ids match indces
@@ -627,26 +642,55 @@ class PokemonCatchWorker(BaseTask):
 
                 awards = response_dict['responses']['CATCH_POKEMON']['capture_award']
                 exp_gain, candy_gain, stardust_gain = self.extract_award(awards)
+                with self.bot.database as conn:
+                    c = conn.cursor()
+                    c.execute(
+                        "SELECT DISTINCT COUNT(encounter_id) FROM catch_log WHERE dated >= datetime('now','-1 day')")
 
-                self.emit_event(
-                    'pokemon_caught',
-                    formatted='Captured {pokemon}! [CP {cp}] [NCP {ncp}] [Potential {iv}] [{iv_display}] ({caught_last_24_hour}/{daily_catch_limit}) [+{exp} exp] [+{stardust} stardust]',
-                    data={
-                        'pokemon': pokemon.name,
-                        'ncp': round(pokemon.cp_percent, 2),
-                        'cp': pokemon.cp,
-                        'iv': pokemon.iv,
-                        'iv_display': pokemon.iv_display,
-                        'exp': exp_gain,
-                        'stardust': stardust_gain,
-                        'encounter_id': self.pokemon['encounter_id'],
-                        'latitude': self.pokemon['latitude'],
-                        'longitude': self.pokemon['longitude'],
-                        'pokemon_id': pokemon.pokemon_id,
-                        'caught_last_24_hour': self.caught_last_24_hour + 1,
-                        'daily_catch_limit': self.daily_catch_limit
-                    }
-                )
+                result = c.fetchone()
+
+                if is_vip:
+                    self.emit_event(
+                        'pokemon_vip_caught',
+                        formatted='Vip Captured {pokemon}! (CP: {cp} IV: {iv} {iv_display} NCP: {ncp}) Catch Limit: ({caught_last_24_hour}/{daily_catch_limit}) +{exp} exp +{stardust} stardust',
+                        data={
+                            'pokemon': pokemon.name,
+                            'ncp': str(round(pokemon.cp_percent, 2)),
+                            'cp': str(int(pokemon.cp)),
+                            'iv': str(pokemon.iv),
+                            'iv_display': str(pokemon.iv_display),
+                            'exp': str(exp_gain),
+                            'stardust': stardust_gain,
+                            'encounter_id': str(self.pokemon['encounter_id']),
+                            'latitude': str(self.pokemon['latitude']),
+                            'longitude': str(self.pokemon['longitude']),
+                            'pokemon_id': str(pokemon.pokemon_id),
+                            'caught_last_24_hour': str(result[0]),
+                            'daily_catch_limit': str(self.daily_catch_limit)
+                        }
+                    )
+
+                else:
+                    self.emit_event(
+                        'pokemon_caught',
+                        formatted='Captured {pokemon}! (CP: {cp} IV: {iv} {iv_display} NCP: {ncp}) Catch Limit: ({caught_last_24_hour}/{daily_catch_limit}) +{exp} exp +{stardust} stardust',
+                        data={
+                            'pokemon': pokemon.name,
+                            'ncp': str(round(pokemon.cp_percent, 2)),
+                            'cp': str(int(pokemon.cp)),
+                            'iv': str(pokemon.iv),
+                            'iv_display': str(pokemon.iv_display),
+                            'exp': str(exp_gain),
+                            'stardust': stardust_gain,
+                            'encounter_id': str(self.pokemon['encounter_id']),
+                            'latitude': str(self.pokemon['latitude']),
+                            'longitude': str(self.pokemon['longitude']),
+                            'pokemon_id': str(pokemon.pokemon_id),
+                            'caught_last_24_hour': str(result[0]),
+                            'daily_catch_limit': str(self.daily_catch_limit)
+                        }
+                    )
+
 
                 inventory.pokemons().add(pokemon)
                 inventory.player().exp += exp_gain

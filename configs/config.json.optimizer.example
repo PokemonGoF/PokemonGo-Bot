@@ -72,7 +72,7 @@
                         "mode": "by_pokemon",
                         "names": ["!with_next_evolution"],
                         "top": 1,
-                        "sort": ["dps_attack"],
+                        "sort": ["dps_attack", "iv"],
                         "keep": {"iv": 0.9}
                     }
                 ]
