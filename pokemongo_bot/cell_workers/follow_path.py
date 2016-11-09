@@ -18,8 +18,9 @@ from .utils import getSeconds, format_dist
 from datetime import datetime as dt, timedelta
 
 STATUS_MOVING = 0
-STATUS_WANDERING = 1
-STATUS_FINISHED = 2
+STATUS_LOITERING = 1
+STATUS_WANDERING = 2
+STATUS_FINISHED = 3
  
 class FollowPath(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -28,7 +29,7 @@ class FollowPath(BaseTask):
         self._process_config()
         self.points = self.load_path()
         self.status = STATUS_MOVING
-        self.wander_end_time = 0
+        self.waiting_end_time = 0
         self.distance_unit = self.bot.config.distance_unit
         self.append_unit = False
 
@@ -143,8 +144,11 @@ class FollowPath(BaseTask):
         if self.status == STATUS_FINISHED:
             return WorkerResult.SUCCESS
 
-        if self.status == STATUS_WANDERING and time.time() < self.wander_end_time:
-            return WorkerResult.SUCCESS
+        if time.time() < self.waiting_end_time:
+            if self.status == STATUS_WANDERING:
+                return WorkerResult.SUCCESS
+            elif self.status == STATUS_LOITERING:
+                return WorkerResult.RUNNING
 
         last_lat, last_lng, last_alt = self.bot.position
 
@@ -184,19 +188,22 @@ class FollowPath(BaseTask):
             formatted="Walking from {last_position} to {current_position}, distance left: ({distance} {distance_unit}) ..",
             data={
                 'last_position': (last_lat, last_lng, last_alt),
-                'current_position': (lat, lng, alt),
+                'current_position': point["location"],
                 'distance': format_dist(dist,self.distance_unit,self.append_unit),
                 'distance_unit': self.distance_unit
             }
         )
         
-        if (self.bot.config.walk_min > 0 and is_at_destination) or (self.status == STATUS_WANDERING and time.time() >= self.wander_end_time):
-            if "loiter" in point:
-                self.logger.warning("'loiter' is obsolete, please change to 'wander' in {}".format(self.path_file))
+        if (self.bot.config.walk_min > 0 and is_at_destination) or (self.status in [STATUS_WANDERING, STATUS_LOITERING] and time.time() >= self.waiting_end_time):
+            if "loiter" in point and self.status != STATUS_LOITERING:
+                self.logger.info("Loitering for {} seconds...".format(point["loiter"]))
+                self.status = STATUS_LOITERING
+                self.waiting_end_time = time.time() + point["loiter"]
+                return WorkerResult.RUNNING
             if "wander" in point and self.status != STATUS_WANDERING:
                 self.logger.info("Wandering for {} seconds...".format(point["wander"]))
                 self.status = STATUS_WANDERING
-                self.wander_end_time = time.time() + point["wander"]
+                self.waiting_end_time = time.time() + point["wander"]
                 return WorkerResult.SUCCESS
             if (self.ptr + 1) == len(self.points):
                 if self.path_mode == 'single':
