@@ -1009,7 +1009,7 @@ class PokemonGoBot(object):
             else:
                 file_name = 'src/pgoapi/pgoapi/lib/niantichash32.dll'
         if _platform.lower() == "darwin":
-            file_name= 'src/pgoapi/pgoapi/lib/libniantichash-osx-64.so'
+            file_name= 'src/pgoapi/pgoapi/lib/libniantichash-macos-64.dylib'
         if _platform.lower() == "linux" or _platform.lower() == "linux2":
             file_name = 'src/pgoapi/pgoapi/lib/libniantichash-linux-x86-64.so'
         if self.config.encrypt_location == '':
