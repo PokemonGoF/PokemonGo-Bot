@@ -1,6 +1,6 @@
 numpy==1.11.0
 networkx==1.11
--e git+https://github.com/pogodevorg/pgoapi.git/@v0.43.3-alpha#egg=pgoapi
+-e git+https://github.com/sebastienvercammen/pgoapi.git#egg=pgoapi
 geopy==1.11.0
 geographiclib==1.46.3
 protobuf==3.0.0b4
