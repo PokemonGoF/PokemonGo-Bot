@@ -186,7 +186,9 @@ def main():
         finished = False
 
         while not finished:
-            wait_time = randint((config.reconnecting_timeout * 0.8 * 60), (config.reconnecting_timeout *  1.2 * 60))
+            min_wait_time = int(config.reconnecting_timeout * 0.8 * 60)
+            max_wait_time = int(config.reconnecting_timeout *  1.2 * 60)
+            wait_time = randint(min_wait_time, max_wait_time)
             try:
                 bot = initialize(config)
                 bot = start_bot(bot, config)
