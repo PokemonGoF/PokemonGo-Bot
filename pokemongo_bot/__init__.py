@@ -122,7 +122,7 @@ class PokemonGoBot(object):
         self.inventory_refresh_threshold = 10
         self.inventory_refresh_counter = 0
         self.last_inventory_refresh = time.time()
-        
+
         # Catch on/off
         self.catch_disabled = False
 
@@ -167,7 +167,7 @@ class PokemonGoBot(object):
             if self.config.websocket_start_embedded_server:
                 self.sio_runner = SocketIoRunner(self.config.websocket_server_url)
                 self.sio_runner.start_listening_async()
-        
+
             websocket_handler = SocketIoHandler(
                 self,
                 self.config.websocket_server_url
@@ -738,11 +738,11 @@ class PokemonGoBot(object):
         self.event_manager.register_event('sniper_log', parameters=('message', 'message'))
         self.event_manager.register_event('sniper_error', parameters=('message', 'message'))
         self.event_manager.register_event('sniper_teleporting', parameters=('latitude', 'longitude', 'name'))
-        
+
         # Catch-limiter
         self.event_manager.register_event('catch_limit_on')
         self.event_manager.register_event('catch_limit_off')
-        
+
 
     def tick(self):
         self.health_record.heartbeat()
@@ -996,7 +996,7 @@ class PokemonGoBot(object):
             full_path = path + '/' + file_name
         elif os.path.isfile(path + '/src/pgoapi/pgoapi/lib/' + file_name): # if not found, check pgoapi lib folder
             full_path = path + '/src/pgoapi/pgoapi/lib/' + file_name
-            
+
         if full_path == '':
             self.logger.error(file_name + ' is not found! Please place it in the bots root directory or set encrypt_location in config.')
             sys.exit(1)
@@ -1026,7 +1026,7 @@ class PokemonGoBot(object):
             full_path = path + '/'+ file_name
         elif os.path.isfile(path + '/src/pgoapi/pgoapi/lib/' + file_name): # if not found, check pgoapi lib folder
             full_path = path + '/src/pgoapi/pgoapi/lib/' + file_name
-            
+
         if full_path == '':
             self.logger.error(file_name + ' is not found! Please place it in the bots root directory or set encrypt_location in config.')
             sys.exit(1)
@@ -1045,8 +1045,8 @@ class PokemonGoBot(object):
         self.login()
         # chain subrequests (methods) into one RPC call
 
-        self.api.set_signature_lib(self.get_encryption_lib())
-        self.api.set_hash_lib(self.get_hash_lib())
+        #self.api.set_signature_lib(self.get_encryption_lib())
+        #self.api.set_hash_lib(self.get_hash_lib())
 
         self.logger.info('')
         # send empty map_cells and then our position
@@ -1540,4 +1540,3 @@ class PokemonGoBot(object):
             inventory.refresh_inventory()
             self.last_inventory_refresh = now
             self.inventory_refresh_counter += 1
-
