@@ -781,9 +781,9 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
 * `order` - The order on which you want to snipe. This can be one or multiple of the following values (default: [`missing`, `vip`, `priority`]):
    - `iv` - Order by IV, if any. See `special_iv`.
    - `vip` - Order by VIP.
-   - `missing` - Order by the target's pokedex missing status.
+   - `missing` - Order by the target's pokedex missing status. If not specified, it will never snipe missing pokemons!
    - `priority` - Order by the priority you have specified in the `catch` list.
-   - `expiration_timestamp_ms` - Order by the expiration time.
+   - `expiration` - Order by the expiration time.
 * `sources` - This should map a JSON param values from a given url. For example: different urls will provide different JSON response formats. **PLEASE ADVISED THAT, IF A PARAM DOES NOT EXIST (OR CONTAINS WRONG DATA LIKE PokeSnipers's ID PARAM), DO NOT SPECIFY IT!** Pokesnipers is a special case where it does provide IDs, however theyre wrong. Map bellow their corresponding values:
 * `sources.key` - The JSON key that contains the results, eg.: For a JSON response such as `{ "SomeWeirdoName": [{"id": 123, ...}, {"id": 143, ...}]}`, `SomeWeirdoName` would be the key name.
 * `sources.url` - The URL that will provide the JSON.

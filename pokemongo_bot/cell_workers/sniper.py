@@ -4,14 +4,11 @@ import time
 import json
 import requests
 import calendar
-import difflib
-import hashlib
 
 from random import uniform
 from operator import itemgetter, methodcaller
 from datetime import datetime
 from pokemongo_bot import inventory
-from pokemongo_bot.item_list import Item
 from pokemongo_bot.base_task import BaseTask
 from pokemongo_bot.inventory import Pokemons
 from pokemongo_bot.worker_result import WorkerResult
@@ -22,10 +19,10 @@ class SniperSource(object):
     def __init__(self, data):
         self.url = data.get('url', '')
         self.key = data.get('key', '')
+        self.timeout = data.get('timeout', 5)
         self.enabled = data.get('enabled', False)
         self.time_mask = data.get('time_mask', '%Y-%m-%d %H:%M:%S')
         self.mappings = SniperSourceMapping(data.get('mappings', {}))
-        self.timeout = data.get('timeout', 5)
 
     def __str__(self):
         return self.url
@@ -36,13 +33,13 @@ class SniperSource(object):
         results = response.json()
 
         # If the results is a dict, retrieve the list from it by the given key. This will return a list afterall.
-        if isinstance(results, dict): 
-            results = results.get(self.key, []) 
-            
+        if isinstance(results, dict):
+            results = results.get(self.key, [])
+
         # If results is STILL a dict (eg. each pokemon is its own dict), need to build data from nested json (example whereispokemon.net)
         while isinstance(results,dict):
             tmpResults = []
-            for key, value in results.iteritems(): 
+            for key, value in results.iteritems():
                 tmpResults.append(value)
                 results = tmpResults
                 
@@ -58,7 +55,7 @@ class SniperSource(object):
             for result in results:
                 iv = result.get(self.mappings.iv.param)
                 id = result.get(self.mappings.id.param)
-                name = self._get_closest_name(self._fixname(result.get(self.mappings.name.param)))
+                name = result.get(self.mappings.name.param).replace("\u2642", " M").replace("\u2640", " F")
                 latitude = result.get(self.mappings.latitude.param)
                 longitude = result.get(self.mappings.longitude.param)
                 expiration = result.get(self.mappings.expiration.param)
@@ -152,27 +149,6 @@ class SniperSource(object):
             raise ValueError("Source not available")
         except:
             raise
-            
-    def _fixname(self,name):
-        if name:
-            name = name.replace("mr-mime","mr. mime")
-            name = name.replace("farfetchd","farfetch'd")
-            name = name.replace("Nidoran\u2642","nidoran m")
-            name = name.replace("Nidoran\u2640","nidoran f")
-        return name
-
-    def _get_closest_name(self, name):
-        if not name:
-            return
-            
-        pokemon_names = [p.name for p in inventory.pokemons().STATIC_DATA]
-        closest_names = difflib.get_close_matches(name, pokemon_names, 1)
-
-        if closest_names:
-            closest_name = closest_names[0]
-            return closest_name
-        
-        return name
 
 # Represents the JSON params mappings
 class SniperSourceMapping(object):
@@ -212,7 +188,7 @@ class SniperOrderMode(object):
     VIP = 'vip'
     MISSING = 'missing'
     PRIORITY = 'priority'
-    EXPIRATION = 'expiration_timestamp_ms'
+    EXPIRATION = 'expiration'
     DEFAULT = [MISSING, VIP, PRIORITY]
 
 # Represents the snipping type
@@ -226,17 +202,16 @@ class Sniper(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
     MIN_SECONDS_ALLOWED_FOR_CELL_CHECK = 10
     MIN_SECONDS_ALLOWED_FOR_REQUESTING_DATA = 5
-    MIN_BALLS_FOR_CATCHING = 10
     MAX_CACHE_LIST_SIZE = 300
 
     def __init__(self, bot, config):
         super(Sniper, self).__init__(bot, config)
 
     def initialize(self):
-        self.disabled = False
+        self.vip_dictionary = {}
+        self.catch_dictionary = {}
         self.last_cell_check_time = time.time()
         self.last_data_request_time = time.time()
-        self.inventory = inventory.items()
         self.pokedex = inventory.pokedex()
         self.debug = self.config.get('debug', False)
         self.special_iv = self.config.get('special_iv', 100)
@@ -244,15 +219,16 @@ class Sniper(BaseTask):
         self.homing_shots = self.config.get('homing_shots', True)
         self.mode = self.config.get('mode', SniperMode.DEFAULT)
         self.order = self.config.get('order', SniperOrderMode.DEFAULT)
-        self.catch_list = self.config.get('catch', {})
         self.altitude = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
-        self.sources = [SniperSource(data) for data in self.config.get('sources', [])]
+        self.sources_pending_validation = [SniperSource(data) for data in self.config.get('sources', [])]
+        self.sources = []
 
-        if not hasattr(self.bot,"sniper_cache"):
-            self.bot.sniper_cache = []
-            
-        # Dont bother validating config if task is not even enabled
+        # Dont bother with validations/builds if task is not even enabled
         if self.enabled:
+            # Allocate space on the global bot object to cache results. TODO: Use dict instead (faster lookup - O(1))
+            if not hasattr(self.bot, "sniper_cache"):
+                self.bot.sniper_cache = []
+
             # Validate ordering
             for ordering in self.order:
                 if ordering not in vars(SniperOrderMode).values():
@@ -261,58 +237,43 @@ class Sniper(BaseTask):
             # Validate mode and sources
             if self.mode not in vars(SniperMode).values():
                 raise ValueError("Unrecognized mode: '{}'".format(self.mode))
-            else:
-                # Selected mode is valid. Validate sources if mode is URL
-                if self.mode == SniperMode.URL:
-                    self._log("Validating sources: {}...".format(", ".join([source.url for source in self.sources])))
 
-                    # Create a copy of the list so we can iterate and remove elements at the same time
-                    for source in list(self.sources):
-                        try:
-                            source.validate()
-                            self._log("Source '{}' is good!".format(source.url))
-                        # TODO: On ValueError, remember source and validate later (pending validation)
-                        except (LookupError, ValueError) as exception:
-                            self._error("Source '{}' contains errors. Details: {}. Removing from sources list...".format(source.url, exception))
-                            self.sources.remove(source)
-
-                    # Notify user if all sources are invalid and cant proceed
-                    if not self.sources:
-                        self._error("There is no source available. Disabling Sniper...")
-                        self.disabled = True
+            # Build catchable dictionaries, where key = id and value = priority
+            for key, value in self.config.get('catch', {}).iteritems():
+                self.catch_dictionary[Pokemons.id_for(key)] = value
+            for key, name in self.bot.config.vips.iteritems():
+                self.vip_dictionary[Pokemons.id_for(key)] = 0
 
     def is_snipeable(self, pokemon):
-        pokeballs_count = self.inventory.get(Item.ITEM_POKE_BALL.value).count
-        greatballs_count = self.inventory.get(Item.ITEM_GREAT_BALL.value).count
-        ultraballs_count = self.inventory.get(Item.ITEM_ULTRA_BALL.value).count
-        all_balls_count = pokeballs_count + greatballs_count + ultraballs_count
+        pokemon_name = pokemon.get('pokemon_name')
+
+        # Skip if already handled
+        if self._is_cached(pokemon):
+            self._trace('{} was already handled! Skipping...'.format(pokemon_name))
+            return False
 
         # Skip if expired (cast milliseconds to seconds for comparision)
         if (pokemon.get('expiration_timestamp_ms', 0) or pokemon.get('last_modified_timestamp_ms', 0)) / 1000 < time.time():
-            self._trace('{} is expired! Skipping...'.format(pokemon.get('pokemon_name')))
+            self._trace('{} is expired! Skipping...'.format(pokemon_name))
             return False
 
-        # Skip if not enought balls. Sniping wastes a lot of balls. Theres no point to let user decide this amount
-        if all_balls_count < self.MIN_BALLS_FOR_CATCHING:
-            self._trace('Not enought balls left! Skipping...')
-            return False
-
-        # Skip if not in catch list, not a VIP and/or IV sucks (if any)
-        if pokemon.get('pokemon_name', '') in self.catch_list:
-            self._trace('{} is catchable!'.format(pokemon.get('pokemon_name')))
+        # Check whether the IV is good enough to skip the VIP and catch lists checkup
+        if pokemon.get('catchable_iv', False):
+            self._trace('{} has a decent IV ({})!'.format(pokemon_name, pokemon.get('iv')))
         else:
-            # Not catchable. Having a good IV should suppress the not in catch/vip list (most important)
-            if pokemon.get('iv', 0) and pokemon.get('iv', 0) < self.special_iv:
-                self._trace('{} is not catchable, but has a decent IV!'.format(pokemon.get('pokemon_name')))
+            # Bad IV (if any). Check whether its in the catch list
+            if pokemon.get('catchable_list', False):
+                self._trace('{} is in the catch list!'.format(pokemon_name))
             else:
-                # Not catchable and IV is not good enough (if any). Check VIP list
-                if pokemon.get('vip', False):
-                    self._trace('{} is not catchable and bad IV (if any), however its a VIP!'.format(pokemon.get('pokemon_name')))
+                # Bad IV (if any) and not in the catch list. Check whether its in the VIP list
+                if pokemon.get('catchable_vip', False):
+                    self._trace('{} is in the VIP list!'.format(pokemon_name))
                 else:
-                    if pokemon.get('missing', False):
-                        self._trace('{} is not catchable, not VIP and bad IV (if any), however its a missing one.'.format(pokemon.get('pokemon_name')))
+                    # Bad IV (if any) and not in any of the catching lists. Check whether its missing
+                    if pokemon.get('catchable_missing', False):
+                        self._trace("{} is missing!".format(pokemon_name))
                     else:
-                        self._trace('{} is not catchable, nor a VIP or a missing one and bad IV (if any). Skipping...'.format(pokemon.get('pokemon_name')))
+                        self._trace("{} is worthless (can be missing, but no ordering specified). Skipping...".format(pokemon_name))
                         return False
 
         return True
@@ -325,86 +286,65 @@ class Sniper(BaseTask):
         if not self.is_snipeable(pokemon):
             self._trace('{} is not snipeable! Skipping...'.format(pokemon['pokemon_name']))
         else:
-            # Have we already tried this pokemon?
-            if not hasattr(self.bot,'sniper_unique_pokemon'):
-                self.bot.sniper_unique_pokemon = []
-            
-            # Check if already in list of pokemon we've tried
-            uniqueid = self._build_unique_id(pokemon)
-            if self._is_cached(uniqueid):
-                # Do nothing. Either we already got this, or it doesn't really exist
-                self._trace('{} was already handled! Skipping...'.format(pokemon['pokemon_name']))
+            # Backup position before anything
+            last_position = self.bot.position[0:2]
+
+            # Teleport, so that we can see nearby stuff
+            self.bot.hb_locked = True
+            self._teleport_to(pokemon)
+
+            # If social is enabled and if no verification is needed, trust it. Otherwise, update IDs!
+            verify = not pokemon.get('encounter_id') or not pokemon.get('spawn_point_id')
+            exists = not verify and self.mode == SniperMode.SOCIAL
+            success = exists
+
+            # If information verification have to be done, do so
+            if verify:
+                seconds_since_last_check = time.time() - self.last_cell_check_time
+
+                # Wait a maximum of MIN_SECONDS_ALLOWED_FOR_CELL_CHECK seconds before requesting nearby cells
+                if (seconds_since_last_check < self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK):
+                    time.sleep(self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK - seconds_since_last_check)
+
+                nearby_pokemons = []
+                nearby_stuff = self.bot.get_meta_cell()
+                self.last_cell_check_time = time.time()
+
+                # Retrieve nearby pokemons for validation
+                nearby_pokemons.extend(nearby_stuff.get('wild_pokemons', []))
+                nearby_pokemons.extend(nearby_stuff.get('catchable_pokemons', []))
+
+                # Make sure the target really/still exists (nearby_pokemon key names are game-bound!)
+                for nearby_pokemon in nearby_pokemons:
+                    nearby_pokemon_id = nearby_pokemon.get('pokemon_data', {}).get('pokemon_id') or nearby_pokemon.get('pokemon_id')
+
+                    # If we found the target, it exists and will very likely be encountered/caught (success)
+                    if nearby_pokemon_id == pokemon.get('pokemon_id', 0):
+                        exists = True
+                        success = True
+
+                        # Also, if the IDs arent valid, override them (nearby_pokemon key names are game-bound!) with game values
+                        if not pokemon.get('encounter_id') or not pokemon.get('spawn_point_id'):
+                            pokemon['encounter_id'] = nearby_pokemon['encounter_id']
+                            pokemon['spawn_point_id'] = nearby_pokemon['spawn_point_id']
+                        break
+
+            # If target exists, catch it, otherwise ignore
+            if exists:
+                self._log('Yay! There really is a wild {} nearby!'.format(pokemon.get('pokemon_name')))
+                self._teleport_back_and_catch(last_position, pokemon)
             else:
-                # Backup position before anything
-                last_position = self.bot.position[0:2]
+                self._error('Damn! Its not here. Reasons: too far, caught, expired or fake data. Skipping...')
+                self._teleport_back(last_position)
 
-                # Teleport, so that we can see nearby stuff
-                self.bot.hb_locked = True
-                self._teleport_to(pokemon)
-
-                # If social is enabled and if no verification is needed, trust it. Otherwise, update IDs!
-                verify = not pokemon.get('encounter_id') or not pokemon.get('spawn_point_id')
-                exists = not verify and self.mode == SniperMode.SOCIAL
-                success = exists
-
-                # If information verification have to be done, do so
-                if verify:
-                    seconds_since_last_check = time.time() - self.last_cell_check_time
-
-                    # Wait a maximum of MIN_SECONDS_ALLOWED_FOR_CELL_CHECK seconds before requesting nearby cells
-                    if (seconds_since_last_check < self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK):
-                        time.sleep(self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK - seconds_since_last_check)
-
-                    nearby_pokemons = []
-                    nearby_stuff = self.bot.get_meta_cell()
-                    self.last_cell_check_time = time.time()
-
-                    # Retrieve nearby pokemons for validation
-                    nearby_pokemons.extend(nearby_stuff.get('wild_pokemons', []))
-                    nearby_pokemons.extend(nearby_stuff.get('catchable_pokemons', []))
-
-                    # Make sure the target really/still exists (nearby_pokemon key names are game-bound!)
-                    for nearby_pokemon in nearby_pokemons:
-                        nearby_pokemon_id = nearby_pokemon.get('pokemon_data', {}).get('pokemon_id') or nearby_pokemon.get('pokemon_id')
-
-                        # If we found the target, it exists and will very likely be encountered/caught (success)
-                        if nearby_pokemon_id == pokemon.get('pokemon_id', 0):
-                            exists = True
-                            success = True
-
-                            # Also, if the IDs arent valid, override them (nearby_pokemon key names are game-bound!) with game values
-                            if not pokemon.get('encounter_id') or not pokemon.get('spawn_point_id'):
-                                pokemon['encounter_id'] = nearby_pokemon['encounter_id']
-                                pokemon['spawn_point_id'] = nearby_pokemon['spawn_point_id']
-                            break
-
-                # If target exists, catch it, otherwise ignore
-                if exists:
-                    self._log('Yay! There really is a wild {} nearby!'.format(pokemon.get('pokemon_name')))
-                    self._teleport_back_and_catch(last_position, pokemon)
-                else:
-                    self._error('Damn! Its not here. Reasons: too far, caught, expired or fake data. Skipping...')
-                    self._teleport_back(last_position)
-                    
-                # Save target and unlock heartbeat calls
-                self._cache(uniqueid)
-                self.bot.hb_locked = False
+            # Save target and unlock heartbeat calls
+            self._cache(pokemon)
+            self.bot.hb_locked = False
 
         return success
 
     def work(self):
-        # Do nothing if this task was invalidated
-        if self.disabled:
-            self._error("Sniper was disabled for some reason. Scroll up to find out.")
-            
-        elif self.bot.catch_disabled:
-            if not hasattr(self.bot,"sniper_disabled_global_warning") or \
-                        (hasattr(self.bot,"sniper_disabled_global_warning") and not self.bot.sniper_disabled_global_warning):
-                self._log("All catching tasks are currently disabled until {}. Sniper will resume when catching tasks are re-enabled".format(self.bot.catch_resume_at.strftime("%H:%M:%S")))
-            self.bot.sniper_disabled_global_warning = True
-            
-        else:
-            self.bot.sniper_disabled_global_warning = False
+        if self._is_enabled():
             targets = []
 
             # Retrieve the targets
@@ -440,7 +380,7 @@ class Sniper(BaseTask):
 
                         # Wait a bit if were going to snipe again (bullets and targets left)
                         if shots < self.bullets and index < len(targets):
-                            self._trace('Waiting a few seconds to teleport again to another target...')
+                            self._log('Waiting a few seconds to teleport again to another target...')
                             time.sleep(3)
 
         return WorkerResult.SUCCESS
@@ -448,13 +388,25 @@ class Sniper(BaseTask):
     def _parse_pokemons(self, pokemon_dictionary_list):
         result = []
 
-        # Build up the pokemon. Pops are used to destroy random attribute names and keep the known ones!
+        # Build up the pokemon dictionary. Some keys are created if they do not already exist!
         for pokemon in pokemon_dictionary_list:
+            # Ordering attributes
             pokemon['iv'] = pokemon.get('iv', 0)
-            pokemon['pokemon_name'] = pokemon.get('pokemon_name', Pokemons.name_for(pokemon.get('pokemon_id')))
-            pokemon['vip'] = pokemon.get('pokemon_name') in self.bot.config.vips
+            pokemon['vip'] = self.vip_dictionary.has_key(pokemon.get('pokemon_id'))
+            pokemon['priority'] = self.catch_dictionary.get(pokemon.get('pokemon_id'), 0)
             pokemon['missing'] = not self.pokedex.captured(pokemon.get('pokemon_id'))
-            pokemon['priority'] = self.catch_list.get(pokemon.get('pokemon_name'), 0)
+            pokemon['expiration'] = pokemon.get('expiration_timestamp_ms', 0) or pokemon.get('last_modified_timestamp_ms', 0)
+
+            # Catchable flags
+            pokemon['catchable_iv'] = pokemon.get('iv') > 0 and pokemon.get('iv') >= self.special_iv
+            pokemon['catchable_missing'] = pokemon.get('missing') and SniperOrderMode.MISSING in self.order
+            pokemon['catchable_vip'] = self.vip_dictionary.has_key(pokemon.get('pokemon_id'))
+            pokemon['catchable_list'] = self.catch_dictionary.has_key(pokemon.get('pokemon_id'))
+
+            # Other attributes
+            pokemon['expiration_timestamp_ms'] = pokemon.get('expiration', 0)
+            pokemon['last_modified_timestamp_ms'] = pokemon.get('expiration', 0)
+            pokemon['pokemon_name'] = pokemon.get('pokemon_name', Pokemons.name_for(pokemon.get('pokemon_id')))
 
             # Check whether this is a valid target
             if self.is_snipeable(pokemon):
@@ -481,19 +433,15 @@ class Sniper(BaseTask):
             self._trace("Fetching pokemons from the sources...")
             for source in self.sources:
                 try:
-                    if source.enabled:
-                        source_pokemons = source.fetch()
-                        self._trace("Source '{}' returned {} results".format(source.url, len(source_pokemons)))
+                    source_pokemons = source.fetch()
+                    self._trace("Source '{}' returned {} results".format(source.url, len(source_pokemons)))
 
-                        # Merge lists, making sure to exclude repeated data. Use location as the hash key
-                        for source_pokemon in source_pokemons:
-                            hash_key = self._hash(source_pokemon)
+                    # Merge lists, making sure to exclude repeated data. Use location as the hash key
+                    for source_pokemon in source_pokemons:
+                        key = self._hash(source_pokemon)
 
-                            # Add if new
-                            if not results_hash_map.has_key(hash_key):
-                                results_hash_map[hash_key] = source_pokemon
-                    else:
-                        self._trace("Source '{}' is disabled".format(source.url))
+                        if not results_hash_map.has_key(key):
+                            results_hash_map[key] = source_pokemon
                 except Exception as exception:
                     self._error("Could not fetch data from '{}'. Details: {}. Skipping...".format(source.url, exception))
             self._trace("After merging, we've got {} results".format(len(results_hash_map.values())))
@@ -509,25 +457,49 @@ class Sniper(BaseTask):
     def _equals(self, pokemon_1, pokemon_2):
         return self._hash(pokemon_1) == self._hash(pokemon_2)
 
-    def _is_cached(self, uniqueid):
-        if uniqueid in self.bot.sniper_cache:
-            return True
-        return False
+    def _validate_sources(self):
+        # Create a copy of the list so we can iterate and remove elements at the same time
+        for source in list(self.sources_pending_validation):
+            try:
+                if source.enabled:
+                    source.validate()
+                    self._log("Source '{}' is good! Storing...".format(source.url))
+                    self.sources_pending_validation.remove(source)
+                    self.sources.append(source)
+                else:
+                    self._log("Source '{}' is disabled! Ignoring...".format(source.url))
+                    self.sources_pending_validation.remove(source)
+            except LookupError as exception:
+                self._error("Source '{}' contains errors. Details: {}. Ignoring...".format(source.url, exception))
+                self.sources_pending_validation.remove(source)
+            except ValueError as exception:
+                self._error("Source '{}' could not be validated. Details: {}. Still pending...".format(source.url, exception))
 
-    def _cache(self, uniqueid):
-        if not self._is_cached(uniqueid):
-            # Free space if full and store it
+    def _is_enabled(self):
+        # Check if there are pending validations
+        if self.sources_pending_validation:
+            self._log("Validating sources: {}...".format(", ".join([source.url for source in self.sources_pending_validation])))
+            self._validate_sources()
+
+        # Check whether we have some snipe sources to snipe from or if catching has been disabled at all
+        if not self.sources:
+            self._error("There is no source available to snipe from. Skipping...")
+            return False
+        elif self.bot.catch_disabled:
+            self._trace("All catching tasks are currently disabled until {}. Sniper will resume when catching tasks are re-enabled".format(self.bot.catch_resume_at.strftime("%H:%M:%S")))
+            return False
+
+        return True
+
+    def _is_cached(self, pokemon):
+        return self._hash(pokemon) in self.bot.sniper_cache
+
+    def _cache(self, pokemon):
+        if not self._is_cached(pokemon):
+            # If cache is full, remove the first 25 registries (resource saving - too much comparisions)
             if len(self.bot.sniper_cache) >= self.MAX_CACHE_LIST_SIZE:
-                self.bot.sniper_cache.pop(0)
-            self.bot.sniper_cache.append(uniqueid)
-
-    def _build_unique_id(self, pokemon):
-        # Build unique id for this pokemon from id, latitude, longitude and expiration
-        uniqueid = str(pokemon.get('pokemon_id','')) + str(pokemon.get('latitude','')) + str(pokemon.get('longitude','')) + str(pokemon.get('expiration',''))
-        md5str = hashlib.md5()
-        md5str.update(uniqueid)
-        uniqueid = str(md5str.hexdigest())
-        return uniqueid
+                del self.bot.sniper_cache[:25]
+            self.bot.sniper_cache.append(self._hash(pokemon))
 
     def _log(self, message):
         self.emit_event('sniper_log', formatted='{message}', data={'message': message})
