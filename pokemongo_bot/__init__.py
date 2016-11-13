@@ -924,8 +924,8 @@ class PokemonGoBot(object):
                 self.api = ApiWrapper(config=self.config)
                 self.api.set_position(*position)
                 self.login()
-                self.api.set_signature_lib(self.get_encryption_lib())
-                self.api.set_hash_lib(self.get_hash_lib())
+                #self.api.set_signature_lib(self.get_encryption_lib())
+                #self.api.set_hash_lib(self.get_hash_lib())
 
     def login(self):
         self.event_manager.emit(
