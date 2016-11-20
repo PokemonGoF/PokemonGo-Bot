@@ -100,7 +100,7 @@ def query_yes_no(question, default="no"):
         else:
             sys.stdout.write("Please respond with 'yes' or 'no' "\
                              "(or 'y' or 'n').\n")
-capi = '0.43.0'
+capi = '0.45.0'
 link = "https://pgorelease.nianticlabs.com/plfe/version"
 print capi
 f = urllib.urlopen(link)
