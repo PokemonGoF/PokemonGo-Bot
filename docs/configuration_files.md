@@ -49,7 +49,6 @@
     - [Options](#options)
     - [Sample configuration](#sample-configuration)
     - [Example console output](#example-console-output)
-- [Random Pause](#random-pause)
 - [Egg Incubator](#egg-incubator)
 - [ShowBestPokemon](#showbestpokemon)
 - [Telegram Task](#telegram-task)
@@ -111,9 +110,7 @@ Document the configuration options of PokemonGo-Bot.
 ## Sleep Schedule configuration
 [[back to top](#table-of-contents)]
 
-Pauses the execution of the bot every day for some time
-
-Simulates the user going to sleep every day for some time, the sleep time and the duration is changed every day by a random offset defined in the config file.
+Pauses the execution of the bot for some time using schedule and/or at a random time for a random duration and/or at a random time for a random duration keeping bot alive.
 
 ###Example Config
 ```
@@ -121,7 +118,7 @@ Simulates the user going to sleep every day for some time, the sleep time and th
   "enabled": true,
   "enable_reminder": false,
   "reminder_interval": 600,
-  "entries": [
+  "sleep": [
     {
       "enabled": true,
       "time": "12:00",
@@ -138,21 +135,44 @@ Simulates the user going to sleep every day for some time, the sleep time and th
       "duration_random_offset": "00:30",
       "wake_up_at_location": ""
     }
-  ]
+  ],
+  "random_pause": {
+    "enabled": true,
+    "min_duration": "00:00:10",
+    "max_duration": "00:10:00",
+    "min_interval": "00:05:00",
+    "max_interval": "01:30:00"
+  },
+  "random_alive_pause": {
+    "enabled": true,
+    "min_duration": "00:00:10",
+    "max_duration": "00:10:00",
+    "min_interval": "00:05:00",
+    "max_interval": "01:30:00"
+  }
 }
 ```
-
-- enabled: (true | false) enables/disables SleepSchedule. Inside of entry will enable/disable single entry, but will not override global value. Default: true
-- enable_reminder: (true | false) enables/disables sleep reminder. Default: false
+- enabled: (true | false) enables/disables SleepSchedule. Default: true
+- enable_reminder: (true | false) enables/disables sleep/pause reminder. Default: false
 - reminder_interval: (interval) reminder interval in seconds. Default: 600
 
-- entries: [{}] SleepSchedule entries. Default: []
-- enabled: (true | false) see above
-- time: (HH:MM) local time that the bot should sleep
-- duration: (HH:MM) the duration of sleep
-- time_random_offset: (HH:MM) random offset of time that the sleep will start, for this example the possible start times are 11:30-12:30 and 16:45-18:45. Default: 01:00
-- duration_random_offset: (HH:MM) random offset of duration of sleep, for this example the possible durations are 5:00-6:00 and 2:30-3:30. Default: 00:30
-- wake_up_at_location: (label | lat, long | lat, long, alt | "") the location at which the bot wake up. You can use location "label" set in favorite_location config. Default: "". *Note that an empty string ("") will not change the location*.
+- sleep: bot sleep rules. Default: []
+  - enabled: (true | false) enables/disables single sleep entry, doesn't override global value. Default: true
+  - time: (HH:MM) local time that the bot should sleep
+  - duration: (HH:MM) the duration of sleep
+  - time_random_offset: (HH:MM) random offset of time that the sleep will start. For this example the possible start times are 11:30-12:30 and 16:45-18:45. Default: 01:00
+  - duration_random_offset: (HH:MM) random offset of duration of sleep. For this example the possible durations are 5:00-6:00 and 2:30-3:30. Default: 00:30
+  - wake_up_at_location: (lat, long | lat, long, alt | "") the location at which the bot wake up. *Note that an empty string ("") will not change the location*.
+
+- random_pause: rules to pause the execution of the bot at a random time for a random duration. Default: {}
+  - enabled: (true | false) enables/disables random pause feature. Default: true
+  - min_duration: (HH:MM:SS) minumum duration of the pause. Default: 00:00:10
+  - max_duration: (HH:MM:SS) maximum duration of the pause. Default: 00:10:00
+  - min_interval: (HH:MM:SS) minimum interval between pauses. Default: 00:05:00
+  - max_interval: (HH:MM:SS) maximum interval between pauses. Default: 01:30:00
+  
+- random_alive_pause: rules to pause the execution of the bot keeping it alive at a random time for a random duration. Default: {}
+  - Configuration including default values is the same as random_pause configuration
 
 
 ## Configuring Tasks
@@ -477,7 +497,7 @@ An example for a JSON file can be found in `configs/path.example.json`. GPX file
 #### Number of Laps
 [[back to top](#table-of-contents)]
 
-In the path navigator configuration task, add a maximum of passage above which the bot stop for a time before starting again. *Note that others tasks (such as SleepSchedule or RandomPause) can stop the bot before.*
+In the path navigator configuration task, add a maximum of passage above which the bot stop for a time before starting again.
 
 - number_lap set-up the number of passage. **To allow for an infinity number of laps, set-up the number at -1**.
 
@@ -1082,31 +1102,6 @@ Available `items` :
 [[back to top](#table-of-contents)]
 ```
 2016-08-20 18:56:22,754 [UpdateLiveInventory] [INFO] [show_inventory] Items: 335/350 | Pokeballs: 8 | GreatBalls: 186 | UltraBalls: 0 | RazzBerries: 51 | LuckyEggs: 3
-```
-
-## Random Pause
-[[back to top](#table-of-contents)]
-
-Pause the execution of the bot at a random time for a random time.
-
-Simulates the random pause of the day (speaking to someone, getting into a store, ...) where the user stops the app. The interval between pauses and the duration of pause are configurable.
-
-- `min_duration`: (HH:MM:SS) the minimum duration of each pause
-- `max_duration`: (HH:MM:SS) the maximum duration of each pause
-- `min_interval`: (HH:MM:SS) the minimum interval between each pause
-- `max_interval`: (HH:MM:SS) the maximum interval between each pause
-
-###Example Config
-```
-{
-  "type": "RandomPause",
-  "config": {
-    "min_duration": "00:00:10",
-    "max_duration": "00:10:00",
-    "min_interval": "00:10:00",
-    "max_interval": "02:00:00"
-  }
-}
 ```
 
 ##Egg Incubator
