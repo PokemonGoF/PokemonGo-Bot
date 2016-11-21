@@ -122,7 +122,7 @@ class PokemonGoBot(object):
         self.inventory_refresh_threshold = 10
         self.inventory_refresh_counter = 0
         self.last_inventory_refresh = time.time()
-        
+
         # Catch on/off
         self.catch_disabled = False
 
@@ -477,6 +477,20 @@ class PokemonGoBot(object):
             )
         )
         self.event_manager.register_event(
+            'pokemon_vip_caught',
+            parameters=(
+                'pokemon',
+                'ncp', 'cp', 'iv', 'iv_display', 'exp',
+                'stardust',
+                'encounter_id',
+                'latitude',
+                'longitude',
+                'pokemon_id',
+                'daily_catch_limit',
+                'caught_last_24_hour',
+            )
+        )
+        self.event_manager.register_event(
             'pokemon_evolved',
             parameters=('pokemon', 'iv', 'cp', 'candy', 'xp')
         )
@@ -724,11 +738,11 @@ class PokemonGoBot(object):
         self.event_manager.register_event('sniper_log', parameters=('message', 'message'))
         self.event_manager.register_event('sniper_error', parameters=('message', 'message'))
         self.event_manager.register_event('sniper_teleporting', parameters=('latitude', 'longitude', 'name'))
-        
+
         # Catch-limiter
         self.event_manager.register_event('catch_limit_on')
         self.event_manager.register_event('catch_limit_off')
-        
+
 
     def tick(self):
         self.health_record.heartbeat()
@@ -910,7 +924,8 @@ class PokemonGoBot(object):
                 self.api = ApiWrapper(config=self.config)
                 self.api.set_position(*position)
                 self.login()
-                self.api.activate_signature(self.get_encryption_lib())
+                #self.api.set_signature_lib(self.get_encryption_lib())
+                #self.api.set_hash_lib(self.get_hash_lib())
 
     def login(self):
         self.event_manager.emit(
@@ -964,24 +979,59 @@ class PokemonGoBot(object):
         if _platform == "Windows" or _platform == "win32":
             # Check if we are on 32 or 64 bit
             if sys.maxsize > 2**32:
-                file_name = 'encrypt_64.dll'
+                file_name = 'encrypt64.dll'
             else:
-                file_name = 'encrypt.dll'
-        else:
-            file_name = 'encrypt.so'
-
+                file_name = 'encrypt32.dll'
+        if _platform.lower() == "darwin":
+            file_name= 'libencrypt-osx-64.so'
+        if _platform.lower() == "linux" or _platform.lower() == "linux2":
+            file_name = 'libencrypt-linux-x86-64.so'
         if self.config.encrypt_location == '':
             path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
         else:
             path = self.config.encrypt_location
 
-        full_path = path + '/'+ file_name
-        if not os.path.isfile(full_path):
+        full_path = ''
+        if os.path.isfile(path + '/' + file_name): # check encrypt_location or local dir first
+            full_path = path + '/' + file_name
+        elif os.path.isfile(path + '/src/pgoapi/pgoapi/lib/' + file_name): # if not found, check pgoapi lib folder
+            full_path = path + '/src/pgoapi/pgoapi/lib/' + file_name
+
+        if full_path == '':
             self.logger.error(file_name + ' is not found! Please place it in the bots root directory or set encrypt_location in config.')
-            self.logger.info('Platform: '+ _platform + ' ' + file_name + ' directory: '+ path)
             sys.exit(1)
         else:
-            self.logger.info('Found '+ file_name +'! Platform: ' + _platform + ' ' + file_name + ' directory: ' + path)
+            self.logger.info('Found '+ file_name +'! Platform: ' + _platform + ' ' + file_name + ' directory: ' + full_path)
+
+        return full_path
+
+    def get_hash_lib(self):
+        if _platform == "Windows" or _platform == "win32":
+            # Check if we are on 32 or 64 bit
+            if sys.maxsize > 2**32:
+                file_name = 'niantichash64.dll'
+            else:
+                file_name = 'niantichash32.dll'
+        if _platform.lower() == "darwin":
+            file_name= 'libniantichash-macos-64.dylib'
+        if _platform.lower() == "linux" or _platform.lower() == "linux2":
+            file_name = 'libniantichash-linux-x86-64.so'
+        if self.config.encrypt_location == '':
+            path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+        else:
+            path = self.config.encrypt_location
+
+        full_path = ''
+        if os.path.isfile(path + '/' + file_name): # check encrypt_location or local dir first
+            full_path = path + '/'+ file_name
+        elif os.path.isfile(path + '/src/pgoapi/pgoapi/lib/' + file_name): # if not found, check pgoapi lib folder
+            full_path = path + '/src/pgoapi/pgoapi/lib/' + file_name
+
+        if full_path == '':
+            self.logger.error(file_name + ' is not found! Please place it in the bots root directory or set encrypt_location in config.')
+            sys.exit(1)
+        else:
+            self.logger.info('Found '+ file_name +'! Platform: ' + _platform + ' ' + file_name + ' directory: ' + full_path)
 
         return full_path
 
@@ -995,7 +1045,9 @@ class PokemonGoBot(object):
         self.login()
         # chain subrequests (methods) into one RPC call
 
-        self.api.activate_signature(self.get_encryption_lib())
+        #self.api.set_signature_lib(self.get_encryption_lib())
+        #self.api.set_hash_lib(self.get_hash_lib())
+
         self.logger.info('')
         # send empty map_cells and then our position
         self.update_web_location()
@@ -1488,4 +1540,3 @@ class PokemonGoBot(object):
             inventory.refresh_inventory()
             self.last_inventory_refresh = now
             self.inventory_refresh_counter += 1
-

@@ -40,6 +40,7 @@ import string
 import subprocess
 
 from logging import Formatter
+from random import randint
 
 codecs.register(lambda name: codecs.lookup("utf-8") if name == "cp65001" else None)
 
@@ -185,7 +186,9 @@ def main():
         finished = False
 
         while not finished:
-            wait_time = config.reconnecting_timeout * 60
+            min_wait_time = int(config.reconnecting_timeout * 0.8 * 60)
+            max_wait_time = int(config.reconnecting_timeout *  1.2 * 60)
+            wait_time = randint(min_wait_time, max_wait_time)
             try:
                 bot = initialize(config)
                 bot = start_bot(bot, config)
@@ -233,7 +236,7 @@ def main():
                     'api_error',
                     sender=bot,
                     level='info',
-                    formatted='Server busy or offline'
+                    formatted='Server busy or offline, reconnecting in {:d} seconds'.format(wait_time)
                 )
                 time.sleep(wait_time)
             except ServerSideRequestThrottlingException:
@@ -241,9 +244,9 @@ def main():
                     'api_error',
                     sender=bot,
                     level='info',
-                    formatted='Server is throttling, reconnecting in 30 seconds'
+                    formatted='Server is throttling, reconnecting in {:d} seconds'.format(wait_time)
                 )
-                time.sleep(30)
+                time.sleep(wait_time)
             except PermaBannedException:
                 bot.event_manager.emit(
                     'api_error',
@@ -257,7 +260,7 @@ def main():
                     'api_error',
                     sender=bot,
                     level='info',
-                    formatted='No player position set'
+                    formatted='No player position set, reconnecting in {:d} seconds'.format(wait_time)
                 )
                 time.sleep(wait_time)
 
