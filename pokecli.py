@@ -38,7 +38,6 @@ import time
 import signal
 import string
 import subprocess
-import urllib
 
 from logging import Formatter
 from random import randint
@@ -78,40 +77,6 @@ except ImportError as e:
     print e
     pass
 
-def query_yes_no(question, default="no"):
-    valid = {"yes":"yes",   "y":"yes",  "ye":"yes",
-             "no":"no",     "n":"no"}
-    if default == None:
-        prompt = " [y/n] "
-    elif default == "yes":
-        prompt = " [Y/n] "
-    elif default == "no":
-        prompt = " [y/N] "
-    else:
-        raise ValueError("invalid default answer: '%s'" % default)
-
-    while 1:
-        sys.stdout.write(question + prompt)
-        choice = raw_input().lower()
-        if default is not None and choice == '':
-            return default
-        elif choice in valid.keys():
-            return valid[choice]
-        else:
-            sys.stdout.write("Please respond with 'yes' or 'no' "\
-                             "(or 'y' or 'n').\n")
-capi = '0.45.0'
-link = "https://pgorelease.nianticlabs.com/plfe/version"
-print capi
-f = urllib.urlopen(link)
-myfile = f.read()
-print myfile
-if capi not in myfile:
-    print "Not safe to bot. Official API version is not equal to current version"
-    response = query_yes_no("Do you want to continue?")
-    if response == "no":
-        print "Exiting..."
-        sys.exit(1)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -440,6 +405,15 @@ def init_config():
         long_flag="--username",
         help="Username",
         default=None
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-capi",
+        long_flag="--check_niantic_api",
+        help="Enable killswitch on API Change",
+        type=bool,
+        default=True
     )
     add_config(
         parser,
