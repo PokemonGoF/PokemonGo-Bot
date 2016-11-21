@@ -88,7 +88,7 @@ If you do not want any data to be gathered, you can turn off this feature by set
  * ethervoid
  * Bashin
  * tstumm
- * TheGoldenXY
+ * AdaptCharm
  * Reaver01
  * rarshonsky
  * earthchie
