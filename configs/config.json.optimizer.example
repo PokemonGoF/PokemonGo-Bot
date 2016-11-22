@@ -18,15 +18,25 @@
                 "upgrade": true,
                 "upgrade_level": 30,
                 "groups": {
-                    "gym": ["Dragonite", "Snorlax", "Lapras", "Arcanine"]
+                    "gym": [
+                        "Dragonite",
+                        "Snorlax",
+                        "Lapras",
+                        "Arcanine"
+                    ]
                 },
                 "rules": [
                     {
                         "// Of all Pokemon with less than 124 candies, buddy the Pokemon having the highest maximum cp": {},
                         "mode": "overall",
                         "top": 1,
-                        "sort": ["max_cp", "cp"],
-                        "keep": {"candy": -124},
+                        "sort": [
+                            "max_cp",
+                            "cp"
+                        ],
+                        "keep": {
+                            "candy": -124
+                        },
                         "evolve": false,
                         "buddy": true
                     },
@@ -34,46 +44,78 @@
                         "// Buddy the Pokemon having the less candies. In case no Pokemon match first rule": {},
                         "mode": "overall",
                         "top": 1,
-                        "sort": ["-candy", "max_cp", "cp"],
+                        "sort": [
+                            "-candy",
+                            "max_cp",
+                            "cp"
+                        ],
                         "evolve": false,
                         "buddy": true
                     },
                     {
                         "mode": "by_pokemon",
-                        "names": ["gym"],
+                        "names": [
+                            "gym"
+                        ],
                         "top": 3,
-                        "sort": ["iv", "ncp"],
-                        "evolve": {"iv": 0.9, "ncp": 0.9},
-                        "upgrade": {"iv": 0.9, "ncp": 0.9}
+                        "sort": [
+                            "iv",
+                            "ncp"
+                        ],
+                        "evolve": {
+                            "iv": 0.9,
+                            "ncp": 0.9
+                        },
+                        "upgrade": {
+                            "iv": 0.9,
+                            "ncp": 0.9
+                        }
                     },
                     {
                         "// Keep best iv of each family and evolve it if its iv is greater than 0.9": {},
                         "mode": "by_family",
                         "top": 1,
-                        "sort": ["iv"],
-                        "evolve": {"iv": 0.9}
+                        "sort": [
+                            "iv"
+                        ],
+                        "evolve": {
+                            "iv": 0.9
+                        }
                     },
                     {
                         "// Keep best ncp of each family and evolve it if its ncp is greater than 0.9": {},
                         "mode": "by_family",
                         "top": 1,
-                        "sort": ["ncp"],
-                        "evolve": {"ncp": 0.9}
+                        "sort": [
+                            "ncp"
+                        ],
+                        "evolve": {
+                            "ncp": 0.9
+                        }
                     },
                     {
                         "// Keep best cp of each family but do not evolve it": {},
                         "mode": "by_family",
                         "top": 1,
-                        "sort": ["cp"],
+                        "sort": [
+                            "cp"
+                        ],
                         "evolve": false
                     },
                     {
                         "// For Pokemon of final evolution and with iv greater than 0.9, keep the best dps_attack": {},
                         "mode": "by_pokemon",
-                        "names": ["!with_next_evolution"],
+                        "names": [
+                            "!with_next_evolution"
+                        ],
                         "top": 1,
-                        "sort": ["dps_attack", "iv"],
-                        "keep": {"iv": 0.9}
+                        "sort": [
+                            "dps_attack",
+                            "iv"
+                        ],
+                        "keep": {
+                            "iv": 0.9
+                        }
                     }
                 ]
             }
