@@ -174,7 +174,7 @@ class PokemonCatchWorker(BaseTask):
         # log encounter
         self.emit_event(
             'pokemon_appeared',
-            formatted='A wild {} appeared! (CP: {} IV: {} A/D/S {} NCP: {})'.format(pokemon.name, pokemon.cp,  pokemon.iv, pokemon.iv_display, round(pokemon.cp_percent, 2),),
+            formatted='A wild {} appeared! (CP: {} IV: {} A/D/S {} NCP: {}) at {},{} (lat,lon)'.format(pokemon.name, pokemon.cp,  pokemon.iv, pokemon.iv_display, round(pokemon.cp_percent, 2),round(response['wild_pokemon']['latitude'], 8),round(response['wild_pokemon']['longitude'], 8)),
             data={
                 'pokemon': pokemon.name,
                 'ncp': round(pokemon.cp_percent, 2),
@@ -193,7 +193,7 @@ class PokemonCatchWorker(BaseTask):
 
         # check for VIP pokemon
         if is_vip:
-            self.emit_event('vip_pokemon', formatted='This is a VIP pokemon. Catch!!!')
+            self.emit_event('vip_pokemon', formatted='{} is a VIP pokemon. Catch!!! (CP: {} IV: {} A/D/S {} NCP: {}) at {},{} (lat,lon)'.format(pokemon.name, pokemon.cp,  pokemon.iv, pokemon.iv_display, round(pokemon.cp_percent, 2),round(response['wild_pokemon']['latitude'], 8),round(response['wild_pokemon']['longitude'], 8)) )
 
         # check catch limits before catch
         with self.bot.database as conn:
