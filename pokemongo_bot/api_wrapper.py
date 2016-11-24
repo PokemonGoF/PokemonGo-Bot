@@ -4,6 +4,8 @@ import logging
 import random, base64, struct
 import hashlib
 import os
+import urllib
+import sys
 from pgoapi.exceptions import (ServerSideRequestThrottlingException,
                                NotLoggedInException, ServerBusyOrOfflineException,
                                NoPlayerPositionSetException, EmptySubrequestChainException,
@@ -90,6 +92,17 @@ class ApiWrapper(PGoApi, object):
     def login(self, provider, username, password):
         # login needs base class "create_request"
         self.useVanillaRequest = True
+        if self.config.check_niantic_api is True:
+            capi = '0.45.0'
+            link = "https://pgorelease.nianticlabs.com/plfe/version"
+            f = urllib.urlopen(link)
+            myfile = f.read()
+            self.config.check_niantic_api
+            print "Niantic Official API Version:" + myfile
+            if capi not in myfile:
+                print("\033[1;31;40m We have detected a Pokemon API Change. The current API version 0.45.0 is no longer supported. Exiting...")
+                sys.exit(1)
+        
         try:
             PGoApi.set_authentication(
                     self,

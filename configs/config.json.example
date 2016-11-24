@@ -2,6 +2,7 @@
     "websocket_server": false,
     "heartbeat_threshold": 10,
     "enable_social": false,
+    "check_niantic_api": true,
     "live_config_update": {
       "enabled": false,
       "tasks_only": false
