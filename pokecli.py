@@ -77,6 +77,7 @@ except ImportError as e:
     print e
     pass
 
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(name)10s] [%(levelname)s] %(message)s')
@@ -404,6 +405,15 @@ def init_config():
         long_flag="--username",
         help="Username",
         default=None
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-capi",
+        long_flag="--check_niantic_api",
+        help="Enable killswitch on API Change",
+        type=bool,
+        default=True
     )
     add_config(
         parser,
