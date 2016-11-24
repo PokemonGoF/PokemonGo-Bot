@@ -5399,7 +5399,7 @@
             "Swift"
         ],
         "BaseAttack": 104,
-        "BaseDefense": 127,
+        "BaseDefense": 121,
         "BaseStamina": 110,
         "CaptureRate": 0.32,
         "FleeRate": 0.1,
