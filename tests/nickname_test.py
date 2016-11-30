@@ -83,7 +83,7 @@ class NicknamePokemonTest(unittest.TestCase):
                 "cp": 653, "nickname": "Golb", "id": 13632861873471324}),
             Pokemon({
                 "move_1": 221, "move_2": 129, "pokemon_id": 19, "cp": 106,
-                "individual_attack": 6, "stamina_max": 22, "individual_defense": 14,
+                "individual_attack": 6, "stamina_max": 60, "individual_defense": 14,
                 "cp_multiplier": 0.37523558735847473, "id": 7841053399}),
         ]
 
