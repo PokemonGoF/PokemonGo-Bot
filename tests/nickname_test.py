@@ -76,7 +76,7 @@ class NicknamePokemonTest(unittest.TestCase):
             Pokemon({
                 "num_upgrades": 2, "move_1": 210, "move_2": 69, "pokeball": 2,
                 "favorite": 1, "pokemon_id": 42, "battles_attacked": 4,
-                "stamina": 76, "stamina_max": 76, "individual_attack": 9,
+                "stamina": 80, "stamina_max": 80, "individual_attack": 9,
                 "individual_defense": 4, "individual_stamina": 8,
                 "cp_multiplier": 0.4627983868122101,
                 "additional_cp_multiplier": 0.018886566162109375,
