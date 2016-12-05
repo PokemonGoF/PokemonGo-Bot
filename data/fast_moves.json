@@ -38,4 +38,5 @@
 {"id":219,"name":"Quick Attack","type":"Normal","damage":10,"duration":1330,"energy":7,"dps":7.51},
 {"id":200,"name":"Fury Cutter","type":"Bug","damage":3,"duration":400,"energy":12,"dps":7.5},
 {"id":208,"name":"Karate Chop","type":"Fighting","damage":6,"duration":800,"energy":7,"dps":7.5},
-{"id":231,"name":"Splash","type":"Water","damage":0,"duration":1230,"energy":7,"dps":0.0}]
+{"id":231,"name":"Splash","type":"Water","damage":0,"duration":1230,"energy":7,"dps":0.0},
+{"id":242,"name":"Transformacion","type":"Normal","damage":0,"duration":1230,"energy":7,"dps":0.0}]
