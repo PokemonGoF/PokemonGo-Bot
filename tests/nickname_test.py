@@ -76,14 +76,14 @@ class NicknamePokemonTest(unittest.TestCase):
             Pokemon({
                 "num_upgrades": 2, "move_1": 210, "move_2": 69, "pokeball": 2,
                 "favorite": 1, "pokemon_id": 42, "battles_attacked": 4,
-                "stamina": 76, "stamina_max": 76, "individual_attack": 9,
+                "stamina": 80, "stamina_max": 80, "individual_attack": 9,
                 "individual_defense": 4, "individual_stamina": 8,
                 "cp_multiplier": 0.4627983868122101,
                 "additional_cp_multiplier": 0.018886566162109375,
                 "cp": 653, "nickname": "Golb", "id": 13632861873471324}),
             Pokemon({
                 "move_1": 221, "move_2": 129, "pokemon_id": 19, "cp": 106,
-                "individual_attack": 6, "stamina_max": 22, "individual_defense": 14,
+                "individual_attack": 6, "stamina_max": 60, "individual_defense": 14,
                 "cp_multiplier": 0.37523558735847473, "id": 7841053399}),
         ]
 
