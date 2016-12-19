@@ -1,8 +1,6 @@
 # PokemonGo-Bot
 [PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot) is a project created by the [PokemonGoF](https://github.com/PokemonGoF) team.
 
-## Is the bot working? [Yes, since this PR](https://github.com/PokemonGoF/PokemonGo-Bot/pull/5784)
-
 ## Table of Contents
 - [Installation](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/installation.md)
 - [Documentation](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/)
