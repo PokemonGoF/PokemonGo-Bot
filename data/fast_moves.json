@@ -360,6 +360,15 @@
         "dps": 7.5
     },
     {
+        "id": 242,
+        "name": "Transform",
+        "type": "Normal",
+        "damage": 0,
+        "duration": 1230,
+        "energy": 7,
+        "dps": 0.0
+    },
+    {
         "id": 231,
         "name": "Splash",
         "type": "Water",

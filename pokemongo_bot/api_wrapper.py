@@ -11,7 +11,7 @@ from pgoapi.exceptions import (ServerSideRequestThrottlingException,
 from pgoapi.pgoapi import PGoApi
 from pgoapi.pgoapi import PGoApiRequest
 from pgoapi.pgoapi import RpcApi
-from pgoapi.protos.POGOProtos.Networking.Requests.RequestType_pb2 import RequestType
+from pgoapi.protos.pogoprotos.networking.requests.request_type_pb2 import RequestType
 from pgoapi.utilities import get_time
 from .human_behaviour import sleep, gps_noise_rng
 from pokemongo_bot.base_dir import _base_dir
@@ -39,7 +39,7 @@ class ApiWrapper(PGoApi, object):
         }
 
         PGoApi.__init__(self, device_info=device_info)
-
+        PGoApi.activate_hash_server(self,self.config.hashkey)
         # Set to default, just for CI...
         self.actual_lat, self.actual_lng, self.actual_alt = PGoApi.get_position(self)
         self.teleporting = False
