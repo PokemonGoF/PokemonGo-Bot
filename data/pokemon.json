@@ -21,6 +21,10 @@
                            ],
         "Weight":  "6.9 kg",
         "Height":  "0.7 m",
+        "Candy":  {
+                      "Name":  "Bulbasaur candies",
+                      "FamilyID":  1
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  1,
@@ -70,6 +74,10 @@
                            ],
         "Weight":  "13.0 kg",
         "Height":  "1.0 m",
+        "Candy":  {
+                      "Name":  "Bulbasaur candies",
+                      "FamilyID":  1
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  100,
                                             "Family":  1,
@@ -121,6 +129,10 @@
                            ],
         "Weight":  "100.0 kg",
         "Height":  "2.0 m",
+        "Candy":  {
+                      "Name":  "Bulbasaur candies",
+                      "FamilyID":  1
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "001",
@@ -161,6 +173,10 @@
                            ],
         "Weight":  "8.5 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  "Charmander candies",
+                      "FamilyID":  4
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  4,
@@ -206,6 +222,10 @@
                            ],
         "Weight":  "19.0 kg",
         "Height":  "1.1 m",
+        "Candy":  {
+                      "Name":  "Charmander candies",
+                      "FamilyID":  4
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  100,
                                             "Family":  4,
@@ -256,6 +276,10 @@
                            ],
         "Weight":  "90.5 kg",
         "Height":  "1.7 m",
+        "Candy":  {
+                      "Name":  "Charmander candies",
+                      "FamilyID":  4
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "004",
@@ -295,6 +319,10 @@
                            ],
         "Weight":  "9.0 kg",
         "Height":  "0.5 m",
+        "Candy":  {
+                      "Name":  "Squirtle candies",
+                      "FamilyID":  7
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  7,
@@ -339,6 +367,10 @@
                            ],
         "Weight":  "22.5 kg",
         "Height":  "1.0 m",
+        "Candy":  {
+                      "Name":  "Squirtle candies",
+                      "FamilyID":  7
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  100,
                                             "Family":  7,
@@ -385,6 +417,10 @@
                            ],
         "Weight":  "85.5 kg",
         "Height":  "1.6 m",
+        "Candy":  {
+                      "Name":  "Squirtle candies",
+                      "FamilyID":  7
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "007",
@@ -425,6 +461,10 @@
                            ],
         "Weight":  "2.9 kg",
         "Height":  "0.3 m",
+        "Candy":  {
+                      "Name":  "Caterpie candies",
+                      "FamilyID":  10
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  12,
                                             "Family":  10,
@@ -468,6 +508,10 @@
                            ],
         "Weight":  "9.9 kg",
         "Height":  "0.7 m",
+        "Candy":  {
+                      "Name":  "Caterpie candies",
+                      "FamilyID":  10
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  10,
@@ -518,6 +562,10 @@
                            ],
         "Weight":  "32.0 kg",
         "Height":  "1.1 m",
+        "Candy":  {
+                      "Name":  "Caterpie candies",
+                      "FamilyID":  10
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "010",
@@ -562,6 +610,10 @@
                            ],
         "Weight":  "3.2 kg",
         "Height":  "0.3 m",
+        "Candy":  {
+                      "Name":  "Weedle candies",
+                      "FamilyID":  13
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  12,
                                             "Family":  13,
@@ -609,6 +661,10 @@
                            ],
         "Weight":  "10.0 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  "Weedle candies",
+                      "FamilyID":  13
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  13,
@@ -658,6 +714,10 @@
                            ],
         "Weight":  "29.5 kg",
         "Height":  "1.0 m",
+        "Candy":  {
+                      "Name":  "Weedle candies",
+                      "FamilyID":  13
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "013",
@@ -701,6 +761,10 @@
                            ],
         "Weight":  "1.8 kg",
         "Height":  "0.3 m",
+        "Candy":  {
+                      "Name":  "Pidgey candies",
+                      "FamilyID":  16
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  12,
                                             "Family":  16,
@@ -749,6 +813,10 @@
                            ],
         "Weight":  "30.0 kg",
         "Height":  "1.1 m",
+        "Candy":  {
+                      "Name":  "Pidgey candies",
+                      "FamilyID":  16
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  16,
@@ -799,6 +867,10 @@
                            ],
         "Weight":  "39.5 kg",
         "Height":  "1.5 m",
+        "Candy":  {
+                      "Name":  "Pidgey candies",
+                      "FamilyID":  16
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "016",
@@ -837,6 +909,10 @@
                            ],
         "Weight":  "3.5 kg",
         "Height":  "0.3 m",
+        "Candy":  {
+                      "Name":  "Rattata candies",
+                      "FamilyID":  19
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  19,
@@ -876,6 +952,10 @@
                            ],
         "Weight":  "18.5 kg",
         "Height":  "0.7 m",
+        "Candy":  {
+                      "Name":  "Rattata candies",
+                      "FamilyID":  19
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "019",
@@ -915,6 +995,10 @@
                            ],
         "Weight":  "2.0 kg",
         "Height":  "0.3 m",
+        "Candy":  {
+                      "Name":  "Spearow candies",
+                      "FamilyID":  21
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  21,
@@ -959,6 +1043,10 @@
                            ],
         "Weight":  "38.0 kg",
         "Height":  "1.2 m",
+        "Candy":  {
+                      "Name":  "Spearow candies",
+                      "FamilyID":  21
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "021",
@@ -994,6 +1082,10 @@
                            ],
         "Weight":  "6.9 kg",
         "Height":  "2.0 m",
+        "Candy":  {
+                      "Name":  "Ekans candies",
+                      "FamilyID":  23
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  23,
@@ -1034,6 +1126,10 @@
                            ],
         "Weight":  "65.0 kg",
         "Height":  "3.5 m",
+        "Candy":  {
+                      "Name":  "Ekans candies",
+                      "FamilyID":  23
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "023",
@@ -1068,6 +1164,10 @@
                            ],
         "Weight":  "6.0 kg",
         "Height":  "0.4 m",
+        "Candy":  {
+                      "Name":  "Pikachu candies",
+                      "FamilyID":  25
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  25,
@@ -1113,6 +1213,10 @@
                            ],
         "Weight":  "30.0 kg",
         "Height":  "0.8 m",
+        "Candy":  {
+                      "Name":  "Pikachu candies",
+                      "FamilyID":  25
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "172",
@@ -1153,6 +1257,10 @@
                            ],
         "Weight":  "12.0 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  "Sandshrew candies",
+                      "FamilyID":  27
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  27,
@@ -1194,6 +1302,10 @@
                            ],
         "Weight":  "29.5 kg",
         "Height":  "1.0 m",
+        "Candy":  {
+                      "Name":  "Sandshrew candies",
+                      "FamilyID":  27
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "027",
@@ -1229,6 +1341,10 @@
                            ],
         "Weight":  "7.0 kg",
         "Height":  "0.4 m",
+        "Candy":  {
+                      "Name":  "Nidoran Female candies",
+                      "FamilyID":  29
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  29,
@@ -1273,6 +1389,10 @@
                            ],
         "Weight":  "20.0 kg",
         "Height":  "0.8 m",
+        "Candy":  {
+                      "Name":  "Nidoran Female candies",
+                      "FamilyID":  29
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  100,
                                             "Family":  29,
@@ -1324,6 +1444,10 @@
                            ],
         "Weight":  "60.0 kg",
         "Height":  "1.3 m",
+        "Candy":  {
+                      "Name":  "Nidoran Female candies",
+                      "FamilyID":  29
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "029",
@@ -1363,6 +1487,10 @@
                            ],
         "Weight":  "9.0 kg",
         "Height":  "0.5 m",
+        "Candy":  {
+                      "Name":  "Nidoran Male candies",
+                      "FamilyID":  32
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  32,
@@ -1407,6 +1535,10 @@
                            ],
         "Weight":  "19.5 kg",
         "Height":  "0.9 m",
+        "Candy":  {
+                      "Name":  "Nidoran Male candies",
+                      "FamilyID":  32
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  100,
                                             "Family":  32,
@@ -1458,6 +1590,10 @@
                            ],
         "Weight":  "62.0 kg",
         "Height":  "1.4 m",
+        "Candy":  {
+                      "Name":  "Nidoran Male candies",
+                      "FamilyID":  32
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "032",
@@ -1497,6 +1633,10 @@
                            ],
         "Weight":  "7.5 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  "Clefairy candies",
+                      "FamilyID":  35
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  35,
@@ -1543,6 +1683,10 @@
                            ],
         "Weight":  "40.0 kg",
         "Height":  "1.3 m",
+        "Candy":  {
+                      "Name":  "Clefairy candies",
+                      "FamilyID":  35
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "173",
@@ -1583,10 +1727,14 @@
                            ],
         "Weight":  "9.9 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  "Vulpix candies",
+                      "FamilyID":  37
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  37,
-                                            "Name":  "Vulpi"
+                                            "Name":  "Vulpix candies"
                                         },
         "Next evolution(s)":  [
                                   {
@@ -1624,6 +1772,10 @@
                            ],
         "Weight":  "19.9 kg",
         "Height":  "1.1 m",
+        "Candy":  {
+                      "Name":  "Vulpix candies",
+                      "FamilyID":  37
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "037",
@@ -1662,6 +1814,10 @@
                            ],
         "Weight":  "5.5 kg",
         "Height":  "0.5 m",
+        "Candy":  {
+                      "Name":  "Jigglypuff candies",
+                      "FamilyID":  39
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  39,
@@ -1711,6 +1867,10 @@
                            ],
         "Weight":  "12.0 kg",
         "Height":  "1.0 m",
+        "Candy":  {
+                      "Name":  "Jigglypuff candies",
+                      "FamilyID":  39
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "174",
@@ -1755,6 +1915,10 @@
                            ],
         "Weight":  "7.5 kg",
         "Height":  "0.8 m",
+        "Candy":  {
+                      "Name":  "Zubat candies",
+                      "FamilyID":  41
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  41,
@@ -1804,6 +1968,10 @@
                            ],
         "Weight":  "55.0 kg",
         "Height":  "1.6 m",
+        "Candy":  {
+                      "Name":  "Zubat candies",
+                      "FamilyID":  41
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "041",
@@ -1844,6 +2012,10 @@
                            ],
         "Weight":  "5.4 kg",
         "Height":  "0.5 m",
+        "Candy":  {
+                      "Name":  "Oddish candies",
+                      "FamilyID":  43
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  43,
@@ -1897,6 +2069,10 @@
                            ],
         "Weight":  "8.6 kg",
         "Height":  "0.8 m",
+        "Candy":  {
+                      "Name":  "Oddish candies",
+                      "FamilyID":  43
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  100,
                                             "Family":  43,
@@ -1952,6 +2128,10 @@
                            ],
         "Weight":  "18.6 kg",
         "Height":  "1.2 m",
+        "Candy":  {
+                      "Name":  "Oddish candies",
+                      "FamilyID":  43
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "043",
@@ -1998,6 +2178,10 @@
                            ],
         "Weight":  "5.4 kg",
         "Height":  "0.3 m",
+        "Candy":  {
+                      "Name":  "Paras candies",
+                      "FamilyID":  46
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  46,
@@ -2045,6 +2229,10 @@
                            ],
         "Weight":  "29.5 kg",
         "Height":  "1.0 m",
+        "Candy":  {
+                      "Name":  "Paras candies",
+                      "FamilyID":  46
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "046",
@@ -2085,6 +2273,10 @@
                            ],
         "Weight":  "30.0 kg",
         "Height":  "1.0 m",
+        "Candy":  {
+                      "Name":  "Venonat candies",
+                      "FamilyID":  48
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  48,
@@ -2130,6 +2322,10 @@
                            ],
         "Weight":  "12.5 kg",
         "Height":  "1.5 m",
+        "Candy":  {
+                      "Name":  "Venonat candies",
+                      "FamilyID":  48
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "048",
@@ -2166,6 +2362,10 @@
                            ],
         "Weight":  "0.8 kg",
         "Height":  "0.2 m",
+        "Candy":  {
+                      "Name":  "Diglett candies",
+                      "FamilyID":  50
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  50,
@@ -2207,6 +2407,10 @@
                            ],
         "Weight":  "33.3 kg",
         "Height":  "0.7 m",
+        "Candy":  {
+                      "Name":  "Diglett candies",
+                      "FamilyID":  50
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "050",
@@ -2241,6 +2445,10 @@
                            ],
         "Weight":  "4.2 kg",
         "Height":  "0.4 m",
+        "Candy":  {
+                      "Name":  "Meowth candies",
+                      "FamilyID":  52
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  52,
@@ -2280,6 +2488,10 @@
                            ],
         "Weight":  "32.0 kg",
         "Height":  "1.0 m",
+        "Candy":  {
+                      "Name":  "Meowth candies",
+                      "FamilyID":  52
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "052",
@@ -2315,6 +2527,10 @@
                            ],
         "Weight":  "19.6 kg",
         "Height":  "0.8 m",
+        "Candy":  {
+                      "Name":  "Psyduck candies",
+                      "FamilyID":  54
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  54,
@@ -2355,6 +2571,10 @@
                            ],
         "Weight":  "76.6 kg",
         "Height":  "1.7 m",
+        "Candy":  {
+                      "Name":  "Psyduck candies",
+                      "FamilyID":  54
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "054",
@@ -2391,6 +2611,10 @@
                            ],
         "Weight":  "28.0 kg",
         "Height":  "0.5 m",
+        "Candy":  {
+                      "Name":  "Mankey candies",
+                      "FamilyID":  56
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  56,
@@ -2432,6 +2656,10 @@
                            ],
         "Weight":  "32.0 kg",
         "Height":  "1.0 m",
+        "Candy":  {
+                      "Name":  "Mankey candies",
+                      "FamilyID":  56
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "056",
@@ -2468,6 +2696,10 @@
                            ],
         "Weight":  "19.0 kg",
         "Height":  "0.7 m",
+        "Candy":  {
+                      "Name":  "Growlithe candies",
+                      "FamilyID":  58
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  58,
@@ -2509,6 +2741,10 @@
                            ],
         "Weight":  "155.0 kg",
         "Height":  "1.9 m",
+        "Candy":  {
+                      "Name":  "Growlithe candies",
+                      "FamilyID":  58
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "058",
@@ -2544,6 +2780,10 @@
                            ],
         "Weight":  "12.4 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  "Poliwag candies",
+                      "FamilyID":  60
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  60,
@@ -2592,6 +2832,10 @@
                            ],
         "Weight":  "20.0 kg",
         "Height":  "1.0 m",
+        "Candy":  {
+                      "Name":  "Poliwag candies",
+                      "FamilyID":  60
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  100,
                                             "Family":  60,
@@ -2648,6 +2892,10 @@
                            ],
         "Weight":  "54.0 kg",
         "Height":  "1.3 m",
+        "Candy":  {
+                      "Name":  "Poliwag candies",
+                      "FamilyID":  60
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "060",
@@ -2687,6 +2935,10 @@
                            ],
         "Weight":  "19.5 kg",
         "Height":  "0.9 m",
+        "Candy":  {
+                      "Name":  "Abra candies",
+                      "FamilyID":  63
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  63,
@@ -2732,6 +2984,10 @@
                            ],
         "Weight":  "56.5 kg",
         "Height":  "1.3 m",
+        "Candy":  {
+                      "Name":  "Abra candies",
+                      "FamilyID":  63
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  100,
                                             "Family":  63,
@@ -2779,6 +3035,10 @@
                            ],
         "Weight":  "48.0 kg",
         "Height":  "1.5 m",
+        "Candy":  {
+                      "Name":  "Abra candies",
+                      "FamilyID":  63
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "063",
@@ -2819,6 +3079,10 @@
                            ],
         "Weight":  "19.5 kg",
         "Height":  "0.8 m",
+        "Candy":  {
+                      "Name":  "Machop candies",
+                      "FamilyID":  66
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  66,
@@ -2864,6 +3128,10 @@
                            ],
         "Weight":  "70.5 kg",
         "Height":  "1.5 m",
+        "Candy":  {
+                      "Name":  "Machop candies",
+                      "FamilyID":  66
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  100,
                                             "Family":  66,
@@ -2911,6 +3179,10 @@
                            ],
         "Weight":  "130.0 kg",
         "Height":  "1.6 m",
+        "Candy":  {
+                      "Name":  "Machop candies",
+                      "FamilyID":  66
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "066",
@@ -2955,6 +3227,10 @@
                            ],
         "Weight":  "4.0 kg",
         "Height":  "0.7 m",
+        "Candy":  {
+                      "Name":  "Bellsprout candies",
+                      "FamilyID":  69
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  69,
@@ -3004,6 +3280,10 @@
                            ],
         "Weight":  "6.4 kg",
         "Height":  "1.0 m",
+        "Candy":  {
+                      "Name":  "Bellsprout candies",
+                      "FamilyID":  69
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  100,
                                             "Family":  69,
@@ -3055,6 +3335,10 @@
                            ],
         "Weight":  "15.5 kg",
         "Height":  "1.7 m",
+        "Candy":  {
+                      "Name":  "Bellsprout candies",
+                      "FamilyID":  69
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "069",
@@ -3098,6 +3382,10 @@
                            ],
         "Weight":  "45.5 kg",
         "Height":  "0.9 m",
+        "Candy":  {
+                      "Name":  "Tentacool candies",
+                      "FamilyID":  72
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  72,
@@ -3142,6 +3430,10 @@
                            ],
         "Weight":  "55.0 kg",
         "Height":  "1.6 m",
+        "Candy":  {
+                      "Name":  "Tentacool candies",
+                      "FamilyID":  72
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "072",
@@ -3184,6 +3476,10 @@
                            ],
         "Weight":  "20.0 kg",
         "Height":  "0.4 m",
+        "Candy":  {
+                      "Name":  "Geodude candies",
+                      "FamilyID":  74
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  74,
@@ -3235,6 +3531,10 @@
                            ],
         "Weight":  "105.0 kg",
         "Height":  "1.0 m",
+        "Candy":  {
+                      "Name":  "Geodude candies",
+                      "FamilyID":  74
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  100,
                                             "Family":  74,
@@ -3288,6 +3588,10 @@
                            ],
         "Weight":  "300.0 kg",
         "Height":  "1.4 m",
+        "Candy":  {
+                      "Name":  "Geodude candies",
+                      "FamilyID":  74
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "074",
@@ -3328,6 +3632,10 @@
                            ],
         "Weight":  "30.0 kg",
         "Height":  "1.0 m",
+        "Candy":  {
+                      "Name":  "Ponyta candies",
+                      "FamilyID":  77
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  77,
@@ -3369,6 +3677,10 @@
                            ],
         "Weight":  "95.0 kg",
         "Height":  "1.7 m",
+        "Candy":  {
+                      "Name":  "Ponyta candies",
+                      "FamilyID":  77
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "077",
@@ -3410,6 +3722,10 @@
                            ],
         "Weight":  "36.0 kg",
         "Height":  "1.2 m",
+        "Candy":  {
+                      "Name":  "Slowpoke candies",
+                      "FamilyID":  79
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  79,
@@ -3460,6 +3776,10 @@
                            ],
         "Weight":  "78.5 kg",
         "Height":  "1.6 m",
+        "Candy":  {
+                      "Name":  "Slowpoke candies",
+                      "FamilyID":  79
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "079",
@@ -3499,6 +3819,10 @@
                            ],
         "Weight":  "6.0 kg",
         "Height":  "0.3 m",
+        "Candy":  {
+                      "Name":  "Magnemite candies",
+                      "FamilyID":  81
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  81,
@@ -3543,6 +3867,10 @@
                            ],
         "Weight":  "60.0 kg",
         "Height":  "1.0 m",
+        "Candy":  {
+                      "Name":  "Magnemite candies",
+                      "FamilyID":  81
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "081",
@@ -3582,6 +3910,10 @@
                            ],
         "Weight":  "15.0 kg",
         "Height":  "0.8 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  83
+                  },
         "Special Attack(s)":  [
                                   "Aerial Ace",
                                   "Air Cutter",
@@ -3615,6 +3947,10 @@
                            ],
         "Weight":  "39.2 kg",
         "Height":  "1.4 m",
+        "Candy":  {
+                      "Name":  "Doduo candies",
+                      "FamilyID":  84
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  84,
@@ -3659,6 +3995,10 @@
                            ],
         "Weight":  "85.2 kg",
         "Height":  "1.8 m",
+        "Candy":  {
+                      "Name":  "Doduo candies",
+                      "FamilyID":  84
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "084",
@@ -3694,6 +4034,10 @@
                            ],
         "Weight":  "90.0 kg",
         "Height":  "1.1 m",
+        "Candy":  {
+                      "Name":  "Seel candies",
+                      "FamilyID":  86
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  86,
@@ -3739,6 +4083,10 @@
                            ],
         "Weight":  "120.0 kg",
         "Height":  "1.7 m",
+        "Candy":  {
+                      "Name":  "Seel candies",
+                      "FamilyID":  86
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "086",
@@ -3774,6 +4122,10 @@
                            ],
         "Weight":  "30.0 kg",
         "Height":  "0.9 m",
+        "Candy":  {
+                      "Name":  "Grimer candies",
+                      "FamilyID":  88
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  88,
@@ -3814,6 +4166,10 @@
                            ],
         "Weight":  "30.0 kg",
         "Height":  "1.2 m",
+        "Candy":  {
+                      "Name":  "Grimer candies",
+                      "FamilyID":  88
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "088",
@@ -3849,6 +4205,10 @@
                            ],
         "Weight":  "4.0 kg",
         "Height":  "0.3 m",
+        "Candy":  {
+                      "Name":  "Shellder candies",
+                      "FamilyID":  90
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  90,
@@ -3894,6 +4254,10 @@
                            ],
         "Weight":  "132.5 kg",
         "Height":  "1.5 m",
+        "Candy":  {
+                      "Name":  "Shellder candies",
+                      "FamilyID":  90
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "090",
@@ -3934,6 +4298,10 @@
                            ],
         "Weight":  "0.1 kg",
         "Height":  "1.3 m",
+        "Candy":  {
+                      "Name":  "Gastly candies",
+                      "FamilyID":  92
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  92,
@@ -3983,6 +4351,10 @@
                            ],
         "Weight":  "0.1 kg",
         "Height":  "1.6 m",
+        "Candy":  {
+                      "Name":  "Gastly candies",
+                      "FamilyID":  92
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  100,
                                             "Family":  92,
@@ -4034,6 +4406,10 @@
                            ],
         "Weight":  "40.5 kg",
         "Height":  "1.5 m",
+        "Candy":  {
+                      "Name":  "Gastly candies",
+                      "FamilyID":  92
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "092",
@@ -4080,6 +4456,10 @@
                            ],
         "Weight":  "210.0 kg",
         "Height":  "8.8 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  95
+                  },
         "Special Attack(s)":  [
                                   "Iron Head",
                                   "Rock Slide",
@@ -4110,6 +4490,10 @@
                            ],
         "Weight":  "32.4 kg",
         "Height":  "1.0 m",
+        "Candy":  {
+                      "Name":  "Drowzee candies",
+                      "FamilyID":  96
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  96,
@@ -4151,6 +4535,10 @@
                            ],
         "Weight":  "75.6 kg",
         "Height":  "1.6 m",
+        "Candy":  {
+                      "Name":  "Drowzee candies",
+                      "FamilyID":  96
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "096",
@@ -4186,6 +4574,10 @@
                            ],
         "Weight":  "6.5 kg",
         "Height":  "0.4 m",
+        "Candy":  {
+                      "Name":  "Krabby candies",
+                      "FamilyID":  98
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  98,
@@ -4226,6 +4618,10 @@
                            ],
         "Weight":  "60.0 kg",
         "Height":  "1.3 m",
+        "Candy":  {
+                      "Name":  "Krabby candies",
+                      "FamilyID":  98
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "098",
@@ -4260,6 +4656,10 @@
                            ],
         "Weight":  "10.4 kg",
         "Height":  "0.5 m",
+        "Candy":  {
+                      "Name":  "Voltorb candies",
+                      "FamilyID":  100
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  100,
@@ -4299,6 +4699,10 @@
                            ],
         "Weight":  "66.6 kg",
         "Height":  "1.2 m",
+        "Candy":  {
+                      "Name":  "Voltorb candies",
+                      "FamilyID":  100
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "100",
@@ -4341,10 +4745,14 @@
                            ],
         "Weight":  "2.5 kg",
         "Height":  "0.4 m",
+        "Candy":  {
+                      "Name":  "Exeggcute candies",
+                      "FamilyID":  102
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  102,
-                                            "Name":  "E"
+                                            "Name":  "Exeggcute candies"
                                         },
         "Next evolution(s)":  [
                                   {
@@ -4389,6 +4797,10 @@
                            ],
         "Weight":  "120.0 kg",
         "Height":  "2.0 m",
+        "Candy":  {
+                      "Name":  "Exeggcute candies",
+                      "FamilyID":  102
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "102",
@@ -4425,6 +4837,10 @@
                            ],
         "Weight":  "6.5 kg",
         "Height":  "0.4 m",
+        "Candy":  {
+                      "Name":  "Cubone candies",
+                      "FamilyID":  104
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  104,
@@ -4466,6 +4882,10 @@
                            ],
         "Weight":  "45.0 kg",
         "Height":  "1.0 m",
+        "Candy":  {
+                      "Name":  "Cubone candies",
+                      "FamilyID":  104
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "104",
@@ -4502,6 +4922,10 @@
                            ],
         "Weight":  "49.8 kg",
         "Height":  "1.5 m",
+        "Candy":  {
+                      "Name":  "Tyrogue candies",
+                      "FamilyID":  236
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "236",
@@ -4538,6 +4962,10 @@
                            ],
         "Weight":  "50.2 kg",
         "Height":  "1.4 m",
+        "Candy":  {
+                      "Name":  "Tyrogue candies",
+                      "FamilyID":  236
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "236",
@@ -4573,6 +5001,10 @@
                            ],
         "Weight":  "65.5 kg",
         "Height":  "1.2 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  108
+                  },
         "Special Attack(s)":  [
                                   "Hyper Beam",
                                   "Power Whip",
@@ -4601,6 +5033,10 @@
                            ],
         "Weight":  "1.0 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  "Koffing candies",
+                      "FamilyID":  109
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  109,
@@ -4640,6 +5076,10 @@
                            ],
         "Weight":  "9.5 kg",
         "Height":  "1.2 m",
+        "Candy":  {
+                      "Name":  "Koffing candies",
+                      "FamilyID":  109
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "109",
@@ -4682,6 +5122,10 @@
                            ],
         "Weight":  "115.0 kg",
         "Height":  "1.0 m",
+        "Candy":  {
+                      "Name":  "Rhyhorn candies",
+                      "FamilyID":  111
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  111,
@@ -4729,6 +5173,10 @@
                            ],
         "Weight":  "120.0 kg",
         "Height":  "1.9 m",
+        "Candy":  {
+                      "Name":  "Rhyhorn candies",
+                      "FamilyID":  111
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "111",
@@ -4763,6 +5211,10 @@
                            ],
         "Weight":  "34.6 kg",
         "Height":  "1.1 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  113
+                  },
         "Special Attack(s)":  [
                                   "Dazzling Gleam",
                                   "Hyper Beam",
@@ -4794,6 +5246,10 @@
                            ],
         "Weight":  "35.0 kg",
         "Height":  "1.0 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  114
+                  },
         "Special Attack(s)":  [
                                   "Power Whip",
                                   "Sludge Bomb",
@@ -4822,6 +5278,10 @@
                            ],
         "Weight":  "80.0 kg",
         "Height":  "2.2 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  115
+                  },
         "Special Attack(s)":  [
                                   "Brick Break",
                                   "Earthquake",
@@ -4851,6 +5311,10 @@
                            ],
         "Weight":  "8.0 kg",
         "Height":  "0.4 m",
+        "Candy":  {
+                      "Name":  "Horsea candies",
+                      "FamilyID":  116
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  116,
@@ -4895,6 +5359,10 @@
                            ],
         "Weight":  "25.0 kg",
         "Height":  "1.2 m",
+        "Candy":  {
+                      "Name":  "Horsea candies",
+                      "FamilyID":  116
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "116",
@@ -4930,6 +5398,10 @@
                            ],
         "Weight":  "15.0 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  "Goldeen candies",
+                      "FamilyID":  118
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  118,
@@ -4970,6 +5442,10 @@
                            ],
         "Weight":  "39.0 kg",
         "Height":  "1.3 m",
+        "Candy":  {
+                      "Name":  "Goldeen candies",
+                      "FamilyID":  118
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "118",
@@ -5005,6 +5481,10 @@
                            ],
         "Weight":  "34.5 kg",
         "Height":  "0.8 m",
+        "Candy":  {
+                      "Name":  "Staryu candies",
+                      "FamilyID":  120
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  120,
@@ -5051,6 +5531,10 @@
                            ],
         "Weight":  "80.0 kg",
         "Height":  "1.1 m",
+        "Candy":  {
+                      "Name":  "Staryu candies",
+                      "FamilyID":  120
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "120",
@@ -5090,6 +5574,10 @@
                            ],
         "Weight":  "54.5 kg",
         "Height":  "1.3 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  122
+                  },
         "Special Attack(s)":  [
                                   "Psybeam",
                                   "Psychic",
@@ -5125,6 +5613,10 @@
                            ],
         "Weight":  "56.0 kg",
         "Height":  "1.5 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  123
+                  },
         "Special Attack(s)":  [
                                   "Bug Buzz",
                                   "Night Slash",
@@ -5161,6 +5653,10 @@
                            ],
         "Weight":  "40.6 kg",
         "Height":  "1.4 m",
+        "Candy":  {
+                      "Name":  "Jynx candies",
+                      "FamilyID":  124
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "238",
@@ -5195,6 +5691,10 @@
                            ],
         "Weight":  "30.0 kg",
         "Height":  "1.1 m",
+        "Candy":  {
+                      "Name":  "Electabuzz candies",
+                      "FamilyID":  125
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "239",
@@ -5231,6 +5731,10 @@
                            ],
         "Weight":  "44.5 kg",
         "Height":  "1.3 m",
+        "Candy":  {
+                      "Name":  "Magmar candies",
+                      "FamilyID":  126
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "240",
@@ -5267,6 +5771,10 @@
                            ],
         "Weight":  "55.0 kg",
         "Height":  "1.5 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  127
+                  },
         "Special Attack(s)":  [
                                   "Submission",
                                   "Vice Grip",
@@ -5295,6 +5803,10 @@
                            ],
         "Weight":  "88.4 kg",
         "Height":  "1.4 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  128
+                  },
         "Special Attack(s)":  [
                                   "Earthquake",
                                   "Horn Attack",
@@ -5323,6 +5835,10 @@
                            ],
         "Weight":  "10.0 kg",
         "Height":  "0.9 m",
+        "Candy":  {
+                      "Name":  "Magikarp candies",
+                      "FamilyID":  129
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  400,
                                             "Family":  129,
@@ -5363,6 +5879,10 @@
                            ],
         "Weight":  "235.0 kg",
         "Height":  "6.5 m",
+        "Candy":  {
+                      "Name":  "Magikarp candies",
+                      "FamilyID":  129
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "129",
@@ -5403,6 +5923,10 @@
                            ],
         "Weight":  "220.0 kg",
         "Height":  "2.5 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  131
+                  },
         "Special Attack(s)":  [
                                   "Blizzard",
                                   "Dragon Pulse",
@@ -5430,6 +5954,10 @@
                            ],
         "Weight":  "4.0 kg",
         "Height":  "0.3 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  132
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -5456,6 +5984,10 @@
                            ],
         "Weight":  "6.5 kg",
         "Height":  "0.3 m",
+        "Candy":  {
+                      "Name":  "Eevee candies",
+                      "FamilyID":  133
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  133,
@@ -5511,6 +6043,10 @@
                            ],
         "Weight":  "29.0 kg",
         "Height":  "1.0 m",
+        "Candy":  {
+                      "Name":  "Eevee candies",
+                      "FamilyID":  133
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "133",
@@ -5544,6 +6080,10 @@
                            ],
         "Weight":  "24.5 kg",
         "Height":  "0.8 m",
+        "Candy":  {
+                      "Name":  "Eevee candies",
+                      "FamilyID":  133
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "133",
@@ -5579,6 +6119,10 @@
                            ],
         "Weight":  "25.0 kg",
         "Height":  "0.9 m",
+        "Candy":  {
+                      "Name":  "Eevee candies",
+                      "FamilyID":  133
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "133",
@@ -5613,6 +6157,10 @@
                            ],
         "Weight":  "36.5 kg",
         "Height":  "0.8 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  137
+                  },
         "Special Attack(s)":  [
                                   "Discharge",
                                   "Psybeam",
@@ -5647,6 +6195,10 @@
                            ],
         "Weight":  "7.5 kg",
         "Height":  "0.4 m",
+        "Candy":  {
+                      "Name":  "Omanyte candies",
+                      "FamilyID":  138
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  138,
@@ -5692,6 +6244,10 @@
                            ],
         "Weight":  "35.0 kg",
         "Height":  "1.0 m",
+        "Candy":  {
+                      "Name":  "Omanyte candies",
+                      "FamilyID":  138
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "138",
@@ -5732,6 +6288,10 @@
                            ],
         "Weight":  "11.5 kg",
         "Height":  "0.5 m",
+        "Candy":  {
+                      "Name":  "Kabuto candies",
+                      "FamilyID":  140
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  140,
@@ -5777,6 +6337,10 @@
                            ],
         "Weight":  "40.5 kg",
         "Height":  "1.3 m",
+        "Candy":  {
+                      "Name":  "Kabuto candies",
+                      "FamilyID":  140
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "140",
@@ -5818,6 +6382,10 @@
                            ],
         "Weight":  "59.0 kg",
         "Height":  "1.8 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  142
+                  },
         "Special Attack(s)":  [
                                   "Ancient Power",
                                   "Hyper Beam",
@@ -5846,6 +6414,10 @@
                            ],
         "Weight":  "460.0 kg",
         "Height":  "2.1 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  143
+                  },
         "Special Attack(s)":  [
                                   "Body Slam",
                                   "Earthquake",
@@ -5879,6 +6451,10 @@
                            ],
         "Weight":  "55.4 kg",
         "Height":  "1.7 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  144
+                  },
         "Special Attack(s)":  [
                                   "Blizzard",
                                   "Ice Beam",
@@ -5910,6 +6486,10 @@
                            ],
         "Weight":  "52.6 kg",
         "Height":  "1.6 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  145
+                  },
         "Special Attack(s)":  [
                                   "Discharge",
                                   "Thunder",
@@ -5942,6 +6522,10 @@
                            ],
         "Weight":  "60.0 kg",
         "Height":  "2.0 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  146
+                  },
         "Special Attack(s)":  [
                                   "Fire Blast",
                                   "Flamethrower",
@@ -5971,6 +6555,10 @@
                            ],
         "Weight":  "3.3 kg",
         "Height":  "1.8 m",
+        "Candy":  {
+                      "Name":  "Dratini candies",
+                      "FamilyID":  147
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  147,
@@ -6015,6 +6603,10 @@
                            ],
         "Weight":  "16.5 kg",
         "Height":  "4.0 m",
+        "Candy":  {
+                      "Name":  "Dratini candies",
+                      "FamilyID":  147
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  100,
                                             "Family":  147,
@@ -6066,6 +6658,10 @@
                            ],
         "Weight":  "210.0 kg",
         "Height":  "2.2 m",
+        "Candy":  {
+                      "Name":  "Dratini candies",
+                      "FamilyID":  147
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "147",
@@ -6106,6 +6702,10 @@
                            ],
         "Weight":  "122.0 kg",
         "Height":  "2.0 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  150
+                  },
         "Special Attack(s)":  [
                                   "Hyper Beam",
                                   "Psychic",
@@ -6135,6 +6735,10 @@
                            ],
         "Weight":  "4.0 kg",
         "Height":  "0.4 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  151
+                  },
         "Special Attack(s)":  [
                                   "Blizzard",
                                   "Dragon Pulse",
@@ -6172,6 +6776,10 @@
                            ],
         "Weight":  "6.4 kg",
         "Height":  "0.9 m",
+        "Candy":  {
+                      "Name":  "Chikorita candies",
+                      "FamilyID":  152
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  152,
@@ -6217,6 +6825,10 @@
                            ],
         "Weight":  "15.8 kg",
         "Height":  "1.2 m",
+        "Candy":  {
+                      "Name":  "Chikorita candies",
+                      "FamilyID":  152
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  100,
                                             "Family":  152,
@@ -6264,6 +6876,10 @@
                            ],
         "Weight":  "100.5 kg",
         "Height":  "1.8 m",
+        "Candy":  {
+                      "Name":  "Chikorita candies",
+                      "FamilyID":  152
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "152",
@@ -6302,6 +6918,10 @@
                            ],
         "Weight":  "7.9 kg",
         "Height":  "0.5 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  155
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -6330,6 +6950,10 @@
                            ],
         "Weight":  "19.0 kg",
         "Height":  "0.9 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  155
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "155",
@@ -6364,6 +6988,10 @@
                            ],
         "Weight":  "79.5 kg",
         "Height":  "1.7 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  155
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "155",
@@ -6401,6 +7029,10 @@
                            ],
         "Weight":  "9.5 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  158
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -6428,6 +7060,10 @@
                            ],
         "Weight":  "25.0 kg",
         "Height":  "1.1 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  158
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "158",
@@ -6461,6 +7097,10 @@
                            ],
         "Weight":  "88.8 kg",
         "Height":  "2.3 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  158
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "158",
@@ -6497,6 +7137,10 @@
                            ],
         "Weight":  "6.0 kg",
         "Height":  "0.8 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  161
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -6523,6 +7167,10 @@
                            ],
         "Weight":  "32.5 kg",
         "Height":  "1.8 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  161
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "161",
@@ -6560,6 +7208,10 @@
                            ],
         "Weight":  "21.2 kg",
         "Height":  "0.7 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  163
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -6591,6 +7243,10 @@
                            ],
         "Weight":  "40.8 kg",
         "Height":  "1.6 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  163
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "163",
@@ -6630,6 +7286,10 @@
                            ],
         "Weight":  "10.8 kg",
         "Height":  "1.0 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  165
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -6663,6 +7323,10 @@
                            ],
         "Weight":  "35.6 kg",
         "Height":  "1.4 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  165
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "165",
@@ -6701,6 +7365,10 @@
                            ],
         "Weight":  "8.5 kg",
         "Height":  "0.5 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  167
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -6733,6 +7401,10 @@
                            ],
         "Weight":  "33.5 kg",
         "Height":  "1.1 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  167
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "167",
@@ -6771,6 +7443,10 @@
                            ],
         "Weight":  "75.0 kg",
         "Height":  "1.8 m",
+        "Candy":  {
+                      "Name":  "Zubat candies",
+                      "FamilyID":  41
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "041",
@@ -6811,6 +7487,10 @@
                            ],
         "Weight":  "12.0 kg",
         "Height":  "0.5 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  170
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -6841,6 +7521,10 @@
                            ],
         "Weight":  "22.5 kg",
         "Height":  "1.2 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  170
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "170",
@@ -6873,6 +7557,10 @@
                            ],
         "Weight":  "2.0 kg",
         "Height":  "0.3 m",
+        "Candy":  {
+                      "Name":  "Pikachu candies",
+                      "FamilyID":  25
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  25,
@@ -6917,6 +7605,10 @@
                            ],
         "Weight":  "3.0 kg",
         "Height":  "0.3 m",
+        "Candy":  {
+                      "Name":  "Clefairy candies",
+                      "FamilyID":  35
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  35,
@@ -6964,6 +7656,10 @@
                            ],
         "Weight":  "1.0 kg",
         "Height":  "0.3 m",
+        "Candy":  {
+                      "Name":  "Jigglypuff candies",
+                      "FamilyID":  39
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  39,
@@ -7008,6 +7704,10 @@
                            ],
         "Weight":  "1.5 kg",
         "Height":  "0.3 m",
+        "Candy":  {
+                      "Name":  "Togepi candies",
+                      "FamilyID":  175
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
                                             "Family":  175,
@@ -7054,6 +7754,10 @@
                            ],
         "Weight":  "3.2 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  "Togepi candies",
+                      "FamilyID":  175
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "175",
@@ -7094,6 +7798,10 @@
                            ],
         "Weight":  "2.0 kg",
         "Height":  "0.2 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  177
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -7126,6 +7834,10 @@
                            ],
         "Weight":  "15.0 kg",
         "Height":  "1.5 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  177
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "177",
@@ -7157,6 +7869,10 @@
                            ],
         "Weight":  "7.8 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  179
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -7182,6 +7898,10 @@
                            ],
         "Weight":  "13.3 kg",
         "Height":  "0.8 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  179
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "179",
@@ -7213,6 +7933,10 @@
                            ],
         "Weight":  "61.5 kg",
         "Height":  "1.4 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  179
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "179",
@@ -7252,6 +7976,10 @@
                            ],
         "Weight":  "5.8 kg",
         "Height":  "0.4 m",
+        "Candy":  {
+                      "Name":  "Oddish candies",
+                      "FamilyID":  43
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "043",
@@ -7292,6 +8020,10 @@
                            ],
         "Weight":  "8.5 kg",
         "Height":  "0.4 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  183
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -7322,6 +8054,10 @@
                            ],
         "Weight":  "28.5 kg",
         "Height":  "0.8 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  183
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "183",
@@ -7357,6 +8093,10 @@
                            ],
         "Weight":  "38.0 kg",
         "Height":  "1.2 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  185
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -7383,6 +8123,10 @@
                            ],
         "Weight":  "33.9 kg",
         "Height":  "1.1 m",
+        "Candy":  {
+                      "Name":  "Poliwag candies",
+                      "FamilyID":  60
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "060",
@@ -7425,6 +8169,10 @@
                            ],
         "Weight":  "0.5 kg",
         "Height":  "0.4 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  187
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -7457,6 +8205,10 @@
                            ],
         "Weight":  "1.0 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  187
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "187",
@@ -7495,6 +8247,10 @@
                            ],
         "Weight":  "3.0 kg",
         "Height":  "0.8 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  187
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "187",
@@ -7530,6 +8286,10 @@
                            ],
         "Weight":  "11.5 kg",
         "Height":  "0.8 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  190
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -7559,6 +8319,10 @@
                            ],
         "Weight":  "1.8 kg",
         "Height":  "0.3 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  191
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -7588,6 +8352,10 @@
                            ],
         "Weight":  "8.5 kg",
         "Height":  "0.8 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  191
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "191",
@@ -7626,6 +8394,10 @@
                            ],
         "Weight":  "38.0 kg",
         "Height":  "1.2 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  193
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -7654,6 +8426,10 @@
                            ],
         "Weight":  "8.5 kg",
         "Height":  "0.4 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  194
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -7682,6 +8458,10 @@
                            ],
         "Weight":  "75.0 kg",
         "Height":  "1.4 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  194
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "194",
@@ -7716,6 +8496,10 @@
                            ],
         "Weight":  "26.5 kg",
         "Height":  "0.9 m",
+        "Candy":  {
+                      "Name":  "Eevee candies",
+                      "FamilyID":  133
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "133",
@@ -7750,6 +8534,10 @@
                            ],
         "Weight":  "27.0 kg",
         "Height":  "1.0 m",
+        "Candy":  {
+                      "Name":  "Eevee candies",
+                      "FamilyID":  133
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "133",
@@ -7787,6 +8575,10 @@
                            ],
         "Weight":  "2.1 kg",
         "Height":  "0.5 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  198
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -7819,6 +8611,10 @@
                            ],
         "Weight":  "79.5 kg",
         "Height":  "2.0 m",
+        "Candy":  {
+                      "Name":  "Slowpoke candies",
+                      "FamilyID":  79
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "079",
@@ -7851,6 +8647,10 @@
                            ],
         "Weight":  "1.0 kg",
         "Height":  "0.7 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  200
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -7878,6 +8678,10 @@
                            ],
         "Weight":  "5.0 kg",
         "Height":  "0.5 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  201
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -7905,6 +8709,10 @@
                            ],
         "Weight":  "28.5 kg",
         "Height":  "1.3 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  202
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -7934,6 +8742,10 @@
                            ],
         "Weight":  "41.5 kg",
         "Height":  "1.5 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  203
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -7961,6 +8773,10 @@
                            ],
         "Weight":  "7.2 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  204
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -7989,6 +8805,10 @@
                            ],
         "Weight":  "125.8 kg",
         "Height":  "1.2 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  204
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "204",
@@ -8020,6 +8840,10 @@
                            ],
         "Weight":  "14.0 kg",
         "Height":  "1.5 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  206
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -8049,6 +8873,10 @@
                            ],
         "Weight":  "64.8 kg",
         "Height":  "1.1 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  207
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -8080,6 +8908,10 @@
                            ],
         "Weight":  "400.0 kg",
         "Height":  "9.2 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  95
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "095",
@@ -8112,6 +8944,10 @@
                            ],
         "Weight":  "7.8 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  209
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -8138,6 +8974,10 @@
                            ],
         "Weight":  "48.7 kg",
         "Height":  "1.4 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  209
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "209",
@@ -8174,6 +9014,10 @@
                            ],
         "Weight":  "3.9 kg",
         "Height":  "0.5 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  211
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -8202,6 +9046,10 @@
                            ],
         "Weight":  "118.0 kg",
         "Height":  "1.8 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  123
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "123",
@@ -8238,6 +9086,10 @@
                            ],
         "Weight":  "20.5 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  213
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -8269,6 +9121,10 @@
                            ],
         "Weight":  "54.0 kg",
         "Height":  "1.5 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  214
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -8302,6 +9158,10 @@
                            ],
         "Weight":  "28.0 kg",
         "Height":  "0.9 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  215
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -8327,6 +9187,10 @@
                            ],
         "Weight":  "8.8 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  216
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -8352,6 +9216,10 @@
                            ],
         "Weight":  "125.8 kg",
         "Height":  "1.8 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  216
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "216",
@@ -8385,6 +9253,10 @@
                            ],
         "Weight":  "35.0 kg",
         "Height":  "0.7 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  218
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -8416,6 +9288,10 @@
                            ],
         "Weight":  "55.0 kg",
         "Height":  "0.8 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  218
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "218",
@@ -8454,6 +9330,10 @@
                            ],
         "Weight":  "6.5 kg",
         "Height":  "0.4 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  220
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -8486,6 +9366,10 @@
                            ],
         "Weight":  "55.8 kg",
         "Height":  "1.1 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  220
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "220",
@@ -8523,6 +9407,10 @@
                            ],
         "Weight":  "5.0 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  222
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -8549,6 +9437,10 @@
                            ],
         "Weight":  "12.0 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  223
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -8575,6 +9467,10 @@
                            ],
         "Weight":  "28.5 kg",
         "Height":  "0.9 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  223
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "223",
@@ -8612,6 +9508,10 @@
                            ],
         "Weight":  "16.0 kg",
         "Height":  "0.9 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  225
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -8641,6 +9541,10 @@
                            ],
         "Weight":  "220.0 kg",
         "Height":  "2.1 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  226
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -8670,6 +9574,10 @@
                            ],
         "Weight":  "50.5 kg",
         "Height":  "1.7 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  227
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -8701,6 +9609,10 @@
                            ],
         "Weight":  "10.8 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  228
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -8732,6 +9644,10 @@
                            ],
         "Weight":  "35.0 kg",
         "Height":  "1.4 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  228
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "228",
@@ -8767,6 +9683,10 @@
                            ],
         "Weight":  "152.0 kg",
         "Height":  "1.8 m",
+        "Candy":  {
+                      "Name":  "Horsea candies",
+                      "FamilyID":  116
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "116",
@@ -8804,6 +9724,10 @@
                            ],
         "Weight":  "33.5 kg",
         "Height":  "0.5 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  231
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -8831,6 +9755,10 @@
                            ],
         "Weight":  "120.0 kg",
         "Height":  "1.1 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  231
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "231",
@@ -8862,6 +9790,10 @@
                            ],
         "Weight":  "32.5 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  137
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "137",
@@ -8893,6 +9825,10 @@
                            ],
         "Weight":  "71.2 kg",
         "Height":  "1.4 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  234
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -8918,6 +9854,10 @@
                            ],
         "Weight":  "58.0 kg",
         "Height":  "1.2 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  235
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -8946,6 +9886,10 @@
                            ],
         "Weight":  "21.0 kg",
         "Height":  "0.7 m",
+        "Candy":  {
+                      "Name":  "Tyrogue candies",
+                      "FamilyID":  236
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  236,
@@ -8994,6 +9938,10 @@
                            ],
         "Weight":  "48.0 kg",
         "Height":  "1.4 m",
+        "Candy":  {
+                      "Name":  "Tyrogue candies",
+                      "FamilyID":  236
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "236",
@@ -9034,10 +9982,14 @@
                            ],
         "Weight":  "6.0 kg",
         "Height":  "0.4 m",
+        "Candy":  {
+                      "Name":  "Jynx candies",
+                      "FamilyID":  124
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
-                                            "Family":  238,
-                                            "Name":  "Jyn"
+                                            "Family":  124,
+                                            "Name":  "Jynx candies"
                                         },
         "Next evolution(s)":  [
                                   {
@@ -9073,6 +10025,10 @@
                            ],
         "Weight":  "23.5 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  "Electabuzz candies",
+                      "FamilyID":  125
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  125,
@@ -9114,6 +10070,10 @@
                            ],
         "Weight":  "21.4 kg",
         "Height":  "0.7 m",
+        "Candy":  {
+                      "Name":  "Magmar candies",
+                      "FamilyID":  126
+                  },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  126,
@@ -9152,6 +10112,10 @@
                            ],
         "Weight":  "75.5 kg",
         "Height":  "1.2 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  241
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -9177,6 +10141,10 @@
                            ],
         "Weight":  "46.8 kg",
         "Height":  "1.5 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  113
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "113",
@@ -9208,6 +10176,10 @@
                            ],
         "Weight":  "178.0 kg",
         "Height":  "1.9 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  243
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -9235,6 +10207,10 @@
                            ],
         "Weight":  "198.0 kg",
         "Height":  "2.1 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  244
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -9261,6 +10237,10 @@
                            ],
         "Weight":  "187.0 kg",
         "Height":  "2.0 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  245
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -9294,6 +10274,10 @@
                            ],
         "Weight":  "72.0 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  246
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -9327,6 +10311,10 @@
                            ],
         "Weight":  "152.0 kg",
         "Height":  "1.2 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  246
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "246",
@@ -9367,6 +10355,10 @@
                            ],
         "Weight":  "202.0 kg",
         "Height":  "2.0 m",
+        "Candy":  {
+                      "Name":  null,
+                      "FamilyID":  246
+                  },
         "Previous evolution(s)":  [
                                       {
                                           "Number":  "246",
@@ -9409,6 +10401,10 @@
                            ],
         "Weight":  "216.0 kg",
         "Height":  "5.2 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  249
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -9439,6 +10435,10 @@
                            ],
         "Weight":  "199.0 kg",
         "Height":  "3.8 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  250
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
@@ -9473,6 +10473,10 @@
                            ],
         "Weight":  "5.0 kg",
         "Height":  "0.6 m",
+        "Candy":  {
+                      "Name":  "",
+                      "FamilyID":  251
+                  },
         "Special Attack(s)":  [
                                   "Struggle"
                               ],
