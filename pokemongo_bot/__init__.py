@@ -1416,7 +1416,7 @@ class PokemonGoBot(object):
                 i = 0
                 for badge in self._awarded_badges['awarded_badges']:
                     badgelevel = self._awarded_badges['awarded_badge_levels'][i]
-                    badgename = BadgeType_pb2._BADGETYPE.values_by_number[badge].name
+                    badgename = badge_type_pb2._BADGETYPE.values_by_number[badge].name
                     i += 1
                     self.event_manager.emit(
                         'badges',
