@@ -3911,7 +3911,7 @@
         "Weight":  "15.0 kg",
         "Height":  "0.8 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Farfetchd candies",
                       "FamilyID":  83
                   },
         "Special Attack(s)":  [
@@ -4457,7 +4457,7 @@
         "Weight":  "210.0 kg",
         "Height":  "8.8 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Onix candies",
                       "FamilyID":  95
                   },
         "Special Attack(s)":  [
@@ -5002,7 +5002,7 @@
         "Weight":  "65.5 kg",
         "Height":  "1.2 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Lickitung candies",
                       "FamilyID":  108
                   },
         "Special Attack(s)":  [
@@ -5212,7 +5212,7 @@
         "Weight":  "34.6 kg",
         "Height":  "1.1 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Chansey candies",
                       "FamilyID":  113
                   },
         "Special Attack(s)":  [
@@ -5247,7 +5247,7 @@
         "Weight":  "35.0 kg",
         "Height":  "1.0 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Tangela candies",
                       "FamilyID":  114
                   },
         "Special Attack(s)":  [
@@ -5279,7 +5279,7 @@
         "Weight":  "80.0 kg",
         "Height":  "2.2 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Kangaskhan candies",
                       "FamilyID":  115
                   },
         "Special Attack(s)":  [
@@ -5575,7 +5575,7 @@
         "Weight":  "54.5 kg",
         "Height":  "1.3 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Mr Mime candies",
                       "FamilyID":  122
                   },
         "Special Attack(s)":  [
@@ -5614,7 +5614,7 @@
         "Weight":  "56.0 kg",
         "Height":  "1.5 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Scyther candies",
                       "FamilyID":  123
                   },
         "Special Attack(s)":  [
@@ -5772,7 +5772,7 @@
         "Weight":  "55.0 kg",
         "Height":  "1.5 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Pinsir candies",
                       "FamilyID":  127
                   },
         "Special Attack(s)":  [
@@ -5804,7 +5804,7 @@
         "Weight":  "88.4 kg",
         "Height":  "1.4 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Tauros candies",
                       "FamilyID":  128
                   },
         "Special Attack(s)":  [
@@ -5924,7 +5924,7 @@
         "Weight":  "220.0 kg",
         "Height":  "2.5 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Lapras candies",
                       "FamilyID":  131
                   },
         "Special Attack(s)":  [
@@ -5955,7 +5955,7 @@
         "Weight":  "4.0 kg",
         "Height":  "0.3 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Ditto candies",
                       "FamilyID":  132
                   },
         "Special Attack(s)":  [
@@ -6158,7 +6158,7 @@
         "Weight":  "36.5 kg",
         "Height":  "0.8 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Porygon candies",
                       "FamilyID":  137
                   },
         "Special Attack(s)":  [
@@ -6383,7 +6383,7 @@
         "Weight":  "59.0 kg",
         "Height":  "1.8 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Aerodactyl candies",
                       "FamilyID":  142
                   },
         "Special Attack(s)":  [
@@ -6415,7 +6415,7 @@
         "Weight":  "460.0 kg",
         "Height":  "2.1 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Snorlax candies",
                       "FamilyID":  143
                   },
         "Special Attack(s)":  [
@@ -6452,7 +6452,7 @@
         "Weight":  "55.4 kg",
         "Height":  "1.7 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Articuno candies",
                       "FamilyID":  144
                   },
         "Special Attack(s)":  [
@@ -6487,7 +6487,7 @@
         "Weight":  "52.6 kg",
         "Height":  "1.6 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Zapdos candies",
                       "FamilyID":  145
                   },
         "Special Attack(s)":  [
@@ -6523,7 +6523,7 @@
         "Weight":  "60.0 kg",
         "Height":  "2.0 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Moltres candies",
                       "FamilyID":  146
                   },
         "Special Attack(s)":  [
@@ -6703,7 +6703,7 @@
         "Weight":  "122.0 kg",
         "Height":  "2.0 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Mewtwo candies",
                       "FamilyID":  150
                   },
         "Special Attack(s)":  [
@@ -6736,7 +6736,7 @@
         "Weight":  "4.0 kg",
         "Height":  "0.4 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Mew candies",
                       "FamilyID":  151
                   },
         "Special Attack(s)":  [
@@ -6919,7 +6919,7 @@
         "Weight":  "7.9 kg",
         "Height":  "0.5 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Cyndaquil candies",
                       "FamilyID":  155
                   },
         "Special Attack(s)":  [
@@ -6951,7 +6951,7 @@
         "Weight":  "19.0 kg",
         "Height":  "0.9 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Cyndaquil candies",
                       "FamilyID":  155
                   },
         "Previous evolution(s)":  [
@@ -6989,7 +6989,7 @@
         "Weight":  "79.5 kg",
         "Height":  "1.7 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Cyndaquil candies",
                       "FamilyID":  155
                   },
         "Previous evolution(s)":  [
@@ -7030,7 +7030,7 @@
         "Weight":  "9.5 kg",
         "Height":  "0.6 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Totodile candies",
                       "FamilyID":  158
                   },
         "Special Attack(s)":  [
@@ -7061,7 +7061,7 @@
         "Weight":  "25.0 kg",
         "Height":  "1.1 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Totodile candies",
                       "FamilyID":  158
                   },
         "Previous evolution(s)":  [
@@ -7098,7 +7098,7 @@
         "Weight":  "88.8 kg",
         "Height":  "2.3 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Totodile candies",
                       "FamilyID":  158
                   },
         "Previous evolution(s)":  [
@@ -7138,7 +7138,7 @@
         "Weight":  "6.0 kg",
         "Height":  "0.8 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Sentret candies",
                       "FamilyID":  161
                   },
         "Special Attack(s)":  [
@@ -7168,7 +7168,7 @@
         "Weight":  "32.5 kg",
         "Height":  "1.8 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Sentret candies",
                       "FamilyID":  161
                   },
         "Previous evolution(s)":  [
@@ -7209,7 +7209,7 @@
         "Weight":  "21.2 kg",
         "Height":  "0.7 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Hoothoot candies",
                       "FamilyID":  163
                   },
         "Special Attack(s)":  [
@@ -7244,7 +7244,7 @@
         "Weight":  "40.8 kg",
         "Height":  "1.6 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Hoothoot candies",
                       "FamilyID":  163
                   },
         "Previous evolution(s)":  [
@@ -7287,7 +7287,7 @@
         "Weight":  "10.8 kg",
         "Height":  "1.0 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Ledyba candies",
                       "FamilyID":  165
                   },
         "Special Attack(s)":  [
@@ -7324,7 +7324,7 @@
         "Weight":  "35.6 kg",
         "Height":  "1.4 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Ledyba candies",
                       "FamilyID":  165
                   },
         "Previous evolution(s)":  [
@@ -7366,7 +7366,7 @@
         "Weight":  "8.5 kg",
         "Height":  "0.5 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Spinarak candies",
                       "FamilyID":  167
                   },
         "Special Attack(s)":  [
@@ -7402,7 +7402,7 @@
         "Weight":  "33.5 kg",
         "Height":  "1.1 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Spinarak candies",
                       "FamilyID":  167
                   },
         "Previous evolution(s)":  [
@@ -7488,7 +7488,7 @@
         "Weight":  "12.0 kg",
         "Height":  "0.5 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Chinchou candies",
                       "FamilyID":  170
                   },
         "Special Attack(s)":  [
@@ -7522,7 +7522,7 @@
         "Weight":  "22.5 kg",
         "Height":  "1.2 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Chinchou candies",
                       "FamilyID":  170
                   },
         "Previous evolution(s)":  [
@@ -7799,7 +7799,7 @@
         "Weight":  "2.0 kg",
         "Height":  "0.2 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Natu candies",
                       "FamilyID":  177
                   },
         "Special Attack(s)":  [
@@ -7835,7 +7835,7 @@
         "Weight":  "15.0 kg",
         "Height":  "1.5 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Natu candies",
                       "FamilyID":  177
                   },
         "Previous evolution(s)":  [
@@ -7870,7 +7870,7 @@
         "Weight":  "7.8 kg",
         "Height":  "0.6 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Mareep candies",
                       "FamilyID":  179
                   },
         "Special Attack(s)":  [
@@ -7899,7 +7899,7 @@
         "Weight":  "13.3 kg",
         "Height":  "0.8 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Mareep candies",
                       "FamilyID":  179
                   },
         "Previous evolution(s)":  [
@@ -7934,7 +7934,7 @@
         "Weight":  "61.5 kg",
         "Height":  "1.4 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Mareep candies",
                       "FamilyID":  179
                   },
         "Previous evolution(s)":  [
@@ -8021,7 +8021,7 @@
         "Weight":  "8.5 kg",
         "Height":  "0.4 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Marill candies",
                       "FamilyID":  183
                   },
         "Special Attack(s)":  [
@@ -8055,7 +8055,7 @@
         "Weight":  "28.5 kg",
         "Height":  "0.8 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Marill candies",
                       "FamilyID":  183
                   },
         "Previous evolution(s)":  [
@@ -8094,7 +8094,7 @@
         "Weight":  "38.0 kg",
         "Height":  "1.2 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Sudowoodo candies",
                       "FamilyID":  185
                   },
         "Special Attack(s)":  [
@@ -8170,7 +8170,7 @@
         "Weight":  "0.5 kg",
         "Height":  "0.4 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Hoppip candies",
                       "FamilyID":  187
                   },
         "Special Attack(s)":  [
@@ -8206,7 +8206,7 @@
         "Weight":  "1.0 kg",
         "Height":  "0.6 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Hoppip candies",
                       "FamilyID":  187
                   },
         "Previous evolution(s)":  [
@@ -8248,7 +8248,7 @@
         "Weight":  "3.0 kg",
         "Height":  "0.8 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Hoppip candies",
                       "FamilyID":  187
                   },
         "Previous evolution(s)":  [
@@ -8287,7 +8287,7 @@
         "Weight":  "11.5 kg",
         "Height":  "0.8 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Aipom candies",
                       "FamilyID":  190
                   },
         "Special Attack(s)":  [
@@ -8320,7 +8320,7 @@
         "Weight":  "1.8 kg",
         "Height":  "0.3 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Sunkern candies",
                       "FamilyID":  191
                   },
         "Special Attack(s)":  [
@@ -8353,7 +8353,7 @@
         "Weight":  "8.5 kg",
         "Height":  "0.8 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Sunkern candies",
                       "FamilyID":  191
                   },
         "Previous evolution(s)":  [
@@ -8395,7 +8395,7 @@
         "Weight":  "38.0 kg",
         "Height":  "1.2 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Yanma candies",
                       "FamilyID":  193
                   },
         "Special Attack(s)":  [
@@ -8427,7 +8427,7 @@
         "Weight":  "8.5 kg",
         "Height":  "0.4 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Wooper candies",
                       "FamilyID":  194
                   },
         "Special Attack(s)":  [
@@ -8459,7 +8459,7 @@
         "Weight":  "75.0 kg",
         "Height":  "1.4 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Wooper candies",
                       "FamilyID":  194
                   },
         "Previous evolution(s)":  [
@@ -8576,7 +8576,7 @@
         "Weight":  "2.1 kg",
         "Height":  "0.5 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Murkrow candies",
                       "FamilyID":  198
                   },
         "Special Attack(s)":  [
@@ -8648,7 +8648,7 @@
         "Weight":  "1.0 kg",
         "Height":  "0.7 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Misdreavus candies",
                       "FamilyID":  200
                   },
         "Special Attack(s)":  [
@@ -8679,7 +8679,7 @@
         "Weight":  "5.0 kg",
         "Height":  "0.5 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Unown candies",
                       "FamilyID":  201
                   },
         "Special Attack(s)":  [
@@ -8710,7 +8710,7 @@
         "Weight":  "28.5 kg",
         "Height":  "1.3 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Wobbuffet candies",
                       "FamilyID":  202
                   },
         "Special Attack(s)":  [
@@ -8743,7 +8743,7 @@
         "Weight":  "41.5 kg",
         "Height":  "1.5 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Girafarig candies",
                       "FamilyID":  203
                   },
         "Special Attack(s)":  [
@@ -8774,7 +8774,7 @@
         "Weight":  "7.2 kg",
         "Height":  "0.6 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Pineco candies",
                       "FamilyID":  204
                   },
         "Special Attack(s)":  [
@@ -8806,7 +8806,7 @@
         "Weight":  "125.8 kg",
         "Height":  "1.2 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Pineco candies",
                       "FamilyID":  204
                   },
         "Previous evolution(s)":  [
@@ -8841,7 +8841,7 @@
         "Weight":  "14.0 kg",
         "Height":  "1.5 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Dunsparce candies",
                       "FamilyID":  206
                   },
         "Special Attack(s)":  [
@@ -8874,7 +8874,7 @@
         "Weight":  "64.8 kg",
         "Height":  "1.1 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Gligar candies",
                       "FamilyID":  207
                   },
         "Special Attack(s)":  [
@@ -8909,7 +8909,7 @@
         "Weight":  "400.0 kg",
         "Height":  "9.2 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Onix candies",
                       "FamilyID":  95
                   },
         "Previous evolution(s)":  [
@@ -8945,7 +8945,7 @@
         "Weight":  "7.8 kg",
         "Height":  "0.6 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Snubbull candies",
                       "FamilyID":  209
                   },
         "Special Attack(s)":  [
@@ -8975,7 +8975,7 @@
         "Weight":  "48.7 kg",
         "Height":  "1.4 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Snubbull candies",
                       "FamilyID":  209
                   },
         "Previous evolution(s)":  [
@@ -9015,7 +9015,7 @@
         "Weight":  "3.9 kg",
         "Height":  "0.5 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Qwilfish candies",
                       "FamilyID":  211
                   },
         "Special Attack(s)":  [
@@ -9047,7 +9047,7 @@
         "Weight":  "118.0 kg",
         "Height":  "1.8 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Scyther candies",
                       "FamilyID":  123
                   },
         "Previous evolution(s)":  [
@@ -9087,7 +9087,7 @@
         "Weight":  "20.5 kg",
         "Height":  "0.6 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Shuckle candies",
                       "FamilyID":  213
                   },
         "Special Attack(s)":  [
@@ -9122,7 +9122,7 @@
         "Weight":  "54.0 kg",
         "Height":  "1.5 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Heracross candies",
                       "FamilyID":  214
                   },
         "Special Attack(s)":  [
@@ -9159,7 +9159,7 @@
         "Weight":  "28.0 kg",
         "Height":  "0.9 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Sneasel candies",
                       "FamilyID":  215
                   },
         "Special Attack(s)":  [
@@ -9188,7 +9188,7 @@
         "Weight":  "8.8 kg",
         "Height":  "0.6 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Teddiursa candies",
                       "FamilyID":  216
                   },
         "Special Attack(s)":  [
@@ -9217,7 +9217,7 @@
         "Weight":  "125.8 kg",
         "Height":  "1.8 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Teddiursa candies",
                       "FamilyID":  216
                   },
         "Previous evolution(s)":  [
@@ -9254,7 +9254,7 @@
         "Weight":  "35.0 kg",
         "Height":  "0.7 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Slugma candies",
                       "FamilyID":  218
                   },
         "Special Attack(s)":  [
@@ -9289,7 +9289,7 @@
         "Weight":  "55.0 kg",
         "Height":  "0.8 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Slugma candies",
                       "FamilyID":  218
                   },
         "Previous evolution(s)":  [
@@ -9331,7 +9331,7 @@
         "Weight":  "6.5 kg",
         "Height":  "0.4 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Swinub candies",
                       "FamilyID":  220
                   },
         "Special Attack(s)":  [
@@ -9367,7 +9367,7 @@
         "Weight":  "55.8 kg",
         "Height":  "1.1 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Swinub candies",
                       "FamilyID":  220
                   },
         "Previous evolution(s)":  [
@@ -9408,7 +9408,7 @@
         "Weight":  "5.0 kg",
         "Height":  "0.6 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Corsola candies",
                       "FamilyID":  222
                   },
         "Special Attack(s)":  [
@@ -9438,7 +9438,7 @@
         "Weight":  "12.0 kg",
         "Height":  "0.6 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Remoraid candies",
                       "FamilyID":  223
                   },
         "Special Attack(s)":  [
@@ -9468,7 +9468,7 @@
         "Weight":  "28.5 kg",
         "Height":  "0.9 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Remoraid candies",
                       "FamilyID":  223
                   },
         "Previous evolution(s)":  [
@@ -9509,7 +9509,7 @@
         "Weight":  "16.0 kg",
         "Height":  "0.9 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Delibird candies",
                       "FamilyID":  225
                   },
         "Special Attack(s)":  [
@@ -9542,7 +9542,7 @@
         "Weight":  "220.0 kg",
         "Height":  "2.1 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Mantine candies",
                       "FamilyID":  226
                   },
         "Special Attack(s)":  [
@@ -9575,7 +9575,7 @@
         "Weight":  "50.5 kg",
         "Height":  "1.7 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Skarmory candies",
                       "FamilyID":  227
                   },
         "Special Attack(s)":  [
@@ -9610,7 +9610,7 @@
         "Weight":  "10.8 kg",
         "Height":  "0.6 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Houndour candies",
                       "FamilyID":  228
                   },
         "Special Attack(s)":  [
@@ -9645,7 +9645,7 @@
         "Weight":  "35.0 kg",
         "Height":  "1.4 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Houndour candies",
                       "FamilyID":  228
                   },
         "Previous evolution(s)":  [
@@ -9725,7 +9725,7 @@
         "Weight":  "33.5 kg",
         "Height":  "0.5 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Phanpy candies",
                       "FamilyID":  231
                   },
         "Special Attack(s)":  [
@@ -9756,7 +9756,7 @@
         "Weight":  "120.0 kg",
         "Height":  "1.1 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Phanpy candies",
                       "FamilyID":  231
                   },
         "Previous evolution(s)":  [
@@ -9791,7 +9791,7 @@
         "Weight":  "32.5 kg",
         "Height":  "0.6 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Porygon candies",
                       "FamilyID":  137
                   },
         "Previous evolution(s)":  [
@@ -9826,7 +9826,7 @@
         "Weight":  "71.2 kg",
         "Height":  "1.4 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Stantler candies",
                       "FamilyID":  234
                   },
         "Special Attack(s)":  [
@@ -9855,7 +9855,7 @@
         "Weight":  "58.0 kg",
         "Height":  "1.2 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Smeargle candies",
                       "FamilyID":  235
                   },
         "Special Attack(s)":  [
@@ -10113,7 +10113,7 @@
         "Weight":  "75.5 kg",
         "Height":  "1.2 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Miltank candies",
                       "FamilyID":  241
                   },
         "Special Attack(s)":  [
@@ -10142,7 +10142,7 @@
         "Weight":  "46.8 kg",
         "Height":  "1.5 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Chansey candies",
                       "FamilyID":  113
                   },
         "Previous evolution(s)":  [
@@ -10177,7 +10177,7 @@
         "Weight":  "178.0 kg",
         "Height":  "1.9 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Raikou candies",
                       "FamilyID":  243
                   },
         "Special Attack(s)":  [
@@ -10208,7 +10208,7 @@
         "Weight":  "198.0 kg",
         "Height":  "2.1 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Entei candies",
                       "FamilyID":  244
                   },
         "Special Attack(s)":  [
@@ -10238,7 +10238,7 @@
         "Weight":  "187.0 kg",
         "Height":  "2.0 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Suicune candies",
                       "FamilyID":  245
                   },
         "Special Attack(s)":  [
@@ -10275,7 +10275,7 @@
         "Weight":  "72.0 kg",
         "Height":  "0.6 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Larvitar candies",
                       "FamilyID":  246
                   },
         "Special Attack(s)":  [
@@ -10312,7 +10312,7 @@
         "Weight":  "152.0 kg",
         "Height":  "1.2 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Larvitar candies",
                       "FamilyID":  246
                   },
         "Previous evolution(s)":  [
@@ -10356,7 +10356,7 @@
         "Weight":  "202.0 kg",
         "Height":  "2.0 m",
         "Candy":  {
-                      "Name":  null,
+                      "Name":  "Larvitar candies",
                       "FamilyID":  246
                   },
         "Previous evolution(s)":  [
@@ -10402,7 +10402,7 @@
         "Weight":  "216.0 kg",
         "Height":  "5.2 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Lugia candies",
                       "FamilyID":  249
                   },
         "Special Attack(s)":  [
@@ -10436,7 +10436,7 @@
         "Weight":  "199.0 kg",
         "Height":  "3.8 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Ho oh candies",
                       "FamilyID":  250
                   },
         "Special Attack(s)":  [
@@ -10474,7 +10474,7 @@
         "Weight":  "5.0 kg",
         "Height":  "0.6 m",
         "Candy":  {
-                      "Name":  "",
+                      "Name":  "Celebi candies",
                       "FamilyID":  251
                   },
         "Special Attack(s)":  [
