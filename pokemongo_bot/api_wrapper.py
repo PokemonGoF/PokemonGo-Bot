@@ -6,7 +6,7 @@ import hashlib
 import os
 from pgoapi.exceptions import (ServerSideRequestThrottlingException,
                                NotLoggedInException, ServerBusyOrOfflineException,
-                               NoPlayerPositionSetException, EmptySubrequestChainException,
+                               NoPlayerPositionSetException, 
                                UnexpectedResponseException)
 from pgoapi.pgoapi import PGoApi
 from pgoapi.pgoapi import PGoApiRequest
