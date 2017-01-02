@@ -36,16 +36,16 @@ class SniperSource(object):
         results = response.json()
 
         # If the results is a dict, retrieve the list from it by the given key. This will return a list afterall.
-        if isinstance(results, dict): 
-            results = results.get(self.key, []) 
-            
+        if isinstance(results, dict):
+            results = results.get(self.key, [])
+
         # If results is STILL a dict (eg. each pokemon is its own dict), need to build data from nested json (example whereispokemon.net)
         while isinstance(results,dict):
             tmpResults = []
-            for key, value in results.iteritems(): 
+            for key, value in results.iteritems():
                 tmpResults.append(value)
                 results = tmpResults
-                
+
         return results
 
     def fetch(self):
@@ -119,7 +119,7 @@ class SniperSource(object):
             if self.enabled:
                 errors = []
                 data = self.fetch_raw()
-                
+
                 # Check whether the params really exist if they have been specified like so
                 if data:
                     if self.mappings.iv.exists and self.mappings.iv.param not in data[0]:
@@ -152,7 +152,7 @@ class SniperSource(object):
             raise ValueError("Source not available")
         except:
             raise
-            
+
     def _fixname(self,name):
         if name:
             name = name.replace("mr-mime","mr. mime")
@@ -242,6 +242,7 @@ class Sniper(BaseTask):
         self.special_iv = self.config.get('special_iv', 100)
         self.bullets = self.config.get('bullets', 1)
         self.homing_shots = self.config.get('homing_shots', True)
+        self.snipe_once = self.config.get('snipe_once', False)
         self.mode = self.config.get('mode', SniperMode.DEFAULT)
         self.order = self.config.get('order', SniperOrderMode.DEFAULT)
         self.catch_list = self.config.get('catch', {})
@@ -296,6 +297,14 @@ class Sniper(BaseTask):
         if all_balls_count < self.MIN_BALLS_FOR_CATCHING:
             self._trace('Not enought balls left! Skipping...')
             return False
+
+        # Skip if snipe_once config is true because you just want to fill up your pokedex
+        if self.snipe_once:
+            try:
+                if pokemon.get('pokemon_id', ()) in self.pokedex._data:
+                    return False
+            except KeyError:
+                self._trace("{} has not been seen in pokedex yet. Continue if snipeable.".format(pokemon.get('pokemon_name', '')))
 
         # Skip if not in catch list, not a VIP and/or IV sucks (if any)
         if pokemon.get('pokemon_name', '') in self.catch_list:
