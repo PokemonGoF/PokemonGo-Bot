@@ -344,7 +344,7 @@ class Sniper(BaseTask):
 
                 # If social is enabled and if no verification is needed, trust it. Otherwise, update IDs!
                 verify = not pokemon.get('encounter_id') or not pokemon.get('spawn_point_id')
-                exists = not verify and self.mode == SniperMode.SOCIAL
+                exists = not verify or self.mode == SniperMode.SOCIAL
                 success = exists
 
                 # If information verification have to be done, do so
