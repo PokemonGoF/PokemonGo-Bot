@@ -369,7 +369,7 @@
         "duration": 1230,
         "energy": 7,
         "dps": 0
-    }
+    },
     {
         "id": 242,
         "name": "Transform",
@@ -378,6 +378,5 @@
         "duration": 1230,
         "energy": 7,
         "dps": 0.0
-    },
-    
+    }
 ]
