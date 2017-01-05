@@ -1838,7 +1838,8 @@
         "Special Attack(s)":  [
                                   "Body Slam",
                                   "Dazzling Gleam",
-                                  "Disarming Voice"
+                                  "Disarming Voice",
+                                  "Play Rough"
                               ],
         "BaseAttack":  80,
         "BaseDefense":  44,
@@ -2403,7 +2404,8 @@
                        ],
         "Fast Attack(s)":  [
                                "Mud Slap",
-                               "Sucker Punch"
+                               "Sucker Punch",
+                               "Mud Shot"
                            ],
         "Weight":  "33.3 kg",
         "Height":  "0.7 m",
@@ -3527,7 +3529,8 @@
                        ],
         "Fast Attack(s)":  [
                                "Mud Slap",
-                               "Rock Throw"
+                               "Rock Throw",
+                               "Mud Shot"
                            ],
         "Weight":  "105.0 kg",
         "Height":  "1.0 m",
@@ -3555,7 +3558,8 @@
         "Special Attack(s)":  [
                                   "Dig",
                                   "Rock Slide",
-                                  "Stone Edge"
+                                  "Stone Edge",
+                                  "Earthquake"
                               ],
         "BaseAttack":  164,
         "BaseDefense":  196,
@@ -4030,7 +4034,9 @@
                        ],
         "Fast Attack(s)":  [
                                "Ice Shard",
-                               "Lick"
+                               "Lick",
+                               "Rock Throw",
+                               "Water Gun"
                            ],
         "Weight":  "90.0 kg",
         "Height":  "1.1 m",
@@ -4052,7 +4058,8 @@
         "Special Attack(s)":  [
                                   "Aqua Jet",
                                   "Aqua Tail",
-                                  "Icy Wind"
+                                  "Icy Wind",
+                                  "Ancient Power"
                               ],
         "BaseAttack":  85,
         "BaseDefense":  128,
@@ -5072,7 +5079,8 @@
                            "Psychic"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Tackle",
+                               "Acid"
                            ],
         "Weight":  "9.5 kg",
         "Height":  "1.2 m",
@@ -5477,7 +5485,8 @@
                        ],
         "Fast Attack(s)":  [
                                "Tackle",
-                               "Water Gun"
+                               "Water Gun",
+                               "Quick Attack"
                            ],
         "Weight":  "34.5 kg",
         "Height":  "0.8 m",
@@ -5527,7 +5536,8 @@
                        ],
         "Fast Attack(s)":  [
                                "Tackle",
-                               "Water Gun"
+                               "Water Gun",
+                               "Quick Attack"
                            ],
         "Weight":  "80.0 kg",
         "Height":  "1.1 m",
@@ -5544,7 +5554,8 @@
         "Special Attack(s)":  [
                                   "Hydro Pump",
                                   "Power Gem",
-                                  "Psychic"
+                                  "Psychic",
+                                  "Psybeam"
                               ],
         "BaseAttack":  210,
         "BaseDefense":  184,
@@ -6240,7 +6251,8 @@
                        ],
         "Fast Attack(s)":  [
                                "Mud Shot",
-                               "Water Gun"
+                               "Water Gun",
+                               "Rock Throw"
                            ],
         "Weight":  "35.0 kg",
         "Height":  "1.0 m",
