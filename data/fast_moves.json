@@ -15,9 +15,9 @@
         "damage": 8,
         "duration": 630,
         "energy": 7,
-        "dps": 12.69
+        "dps": 12.7
     },
-    {
+        {
         "id": 226,
         "name": "Psycho Cut",
         "type": "Psychic",
@@ -25,6 +25,24 @@
         "duration": 570,
         "energy": 7,
         "dps": 12.28
+    },
+    {
+        "id": 220,
+        "name": "Scratch",
+        "type": "Normal",
+        "damage": 6,
+        "duration": 570,
+        "energy": 7,
+        "dps": 12.28
+    },
+    {
+        "id": 230,
+        "name": "Water Gun",
+        "type": "Water",
+        "damage": 6,
+        "duration": 500,
+        "energy": 7,
+        "dps": 12
     },
     {
         "id": 210,
@@ -54,30 +72,12 @@
         "dps": 12
     },
     {
-        "id": 220,
-        "name": "Scratch",
-        "type": "Normal",
-        "damage": 6,
-        "duration": 500,
-        "energy": 7,
-        "dps": 12
-    },
-    {
-        "id": 230,
-        "name": "Water Gun",
-        "type": "Water",
-        "damage": 6,
-        "duration": 500,
-        "energy": 7,
-        "dps": 12
-    },
-    {
         "id": 240,
         "name": "Fire Fang",
         "type": "Fire",
         "damage": 10,
         "duration": 840,
-        "energy": 4,
+        "energy": 8,
         "dps": 11.9
     },
     {
@@ -86,8 +86,8 @@
         "type": "Ghost",
         "damage": 11,
         "duration": 950,
-        "energy": 7,
-        "dps": 11.57
+        "energy": 8,
+        "dps": 11.58
     },
     {
         "id": 238,
@@ -95,8 +95,8 @@
         "type": "Dark",
         "damage": 12,
         "duration": 1040,
-        "energy": 7,
-        "dps": 11.53
+        "energy": 10,
+        "dps": 11.54
     },
     {
         "id": 224,
@@ -104,8 +104,8 @@
         "type": "Poison",
         "damage": 12,
         "duration": 1050,
-        "energy": 7,
-        "dps": 11.42
+        "energy": 10,
+        "dps": 11.43
     },
     {
         "id": 234,
@@ -113,8 +113,8 @@
         "type": "Psychic",
         "damage": 12,
         "duration": 1050,
-        "energy": 4,
-        "dps": 11.42
+        "energy": 9,
+        "dps": 11.43
     },
     {
         "id": 239,
@@ -122,17 +122,8 @@
         "type": "Steel",
         "damage": 15,
         "duration": 1330,
-        "energy": 4,
-        "dps": 11.27
-    },
-    {
-        "id": 201,
-        "name": "Bug Bite",
-        "type": "Bug",
-        "damage": 5,
-        "duration": 450,
-        "energy": 7,
-        "dps": 11.11
+        "energy": 12,
+        "dps": 11.28
     },
     {
         "id": 218,
@@ -144,13 +135,31 @@
         "dps": 11.11
     },
     {
+        "id": 201,
+        "name": "Bug Bite",
+        "type": "Bug",
+        "damage": 5,
+        "duration": 450,
+        "energy": 7,
+        "dps": 11.11
+    },
+    {
         "id": 233,
         "name": "Mud Slap",
         "type": "Ground",
         "damage": 15,
         "duration": 1350,
-        "energy": 9,
+        "energy": 12,
         "dps": 11.11
+    },
+    {
+        "id": 221,
+        "name": "Tackle",
+        "type": "Normal",
+        "damage": 12,
+        "duration": 1100,
+        "energy": 10,
+        "dps": 10.91
     },
     {
         "id": 216,
@@ -159,25 +168,17 @@
         "damage": 6,
         "duration": 550,
         "energy": 7,
-        "dps": 10.9
+        "dps": 10.91
     },
-    {
-        "id": 221,
-        "name": "Tackle",
-        "type": "Normal",
-        "damage": 12,
-        "duration": 1100,
-        "energy": 7,
-        "dps": 10.9
-    },
+    
     {
         "id": 237,
         "name": "Bubble",
         "type": "Water",
         "damage": 25,
         "duration": 2300,
-        "energy": 15,
-        "dps": 10.86
+        "energy": 25,
+        "dps": 10.87
     },
     {
         "id": 214,
@@ -186,7 +187,7 @@
         "damage": 7,
         "duration": 650,
         "energy": 7,
-        "dps": 10.76
+        "dps": 10.77
     },
     {
         "id": 217,
@@ -194,7 +195,7 @@
         "type": "Ice",
         "damage": 15,
         "duration": 1400,
-        "energy": 7,
+        "energy": 12,
         "dps": 10.71
     },
     {
@@ -203,8 +204,8 @@
         "type": "Fighting",
         "damage": 15,
         "duration": 1410,
-        "energy": 7,
-        "dps": 10.63
+        "energy": 12,
+        "dps": 10.64
     },
     {
         "id": 223,
@@ -212,16 +213,16 @@
         "type": "Normal",
         "damage": 12,
         "duration": 1130,
-        "energy": 7,
-        "dps": 10.61
+        "energy": 10,
+        "dps": 10.62
     },
     {
         "id": 236,
         "name": "Poison Sting",
         "type": "Poison",
         "damage": 6,
-        "duration": 575,
-        "energy": 4,
+        "duration": 580,
+        "energy": 8,
         "dps": 10.43
     },
     {
@@ -230,7 +231,7 @@
         "type": "Grass",
         "damage": 15,
         "duration": 1450,
-        "energy": 7,
+        "energy": 12,
         "dps": 10.34
     },
     {
@@ -239,7 +240,7 @@
         "type": "Ghost",
         "damage": 5,
         "duration": 500,
-        "energy": 7,
+        "energy": 6,
         "dps": 10
     },
     {
@@ -248,7 +249,7 @@
         "type": "Electric",
         "damage": 7,
         "duration": 700,
-        "energy": 4,
+        "energy": 9,
         "dps": 10
     },
     {
@@ -257,7 +258,7 @@
         "type": "Dark",
         "damage": 7,
         "duration": 700,
-        "energy": 4,
+        "energy": 8,
         "dps": 10
     },
     {
@@ -266,8 +267,17 @@
         "type": "Psychic",
         "damage": 15,
         "duration": 1510,
-        "energy": 7,
+        "energy": 14,
         "dps": 9.93
+    },
+     {
+        "id": 209,
+        "name": "Ember",
+        "type": "Fire",
+        "damage": 10,
+        "duration": 1050,
+        "energy": 10,
+        "dps": 9.52
     },
     {
         "id": 225,
@@ -275,18 +285,10 @@
         "type": "Poison",
         "damage": 10,
         "duration": 1050,
-        "energy": 7,
+        "energy": 10,
         "dps": 9.52
     },
-    {
-        "id": 209,
-        "name": "Ember",
-        "type": "Fire",
-        "damage": 10,
-        "duration": 1050,
-        "energy": 7,
-        "dps": 9.52
-    },
+   
     {
         "id": 227,
         "name": "Rock Throw",
@@ -303,7 +305,7 @@
         "damage": 10,
         "duration": 1150,
         "energy": 10,
-        "dps": 8.69
+        "dps": 8.7
     },
     {
         "id": 207,
@@ -329,7 +331,7 @@
         "type": "Steel",
         "damage": 10,
         "duration": 1200,
-        "energy": 7,
+        "energy": 10,
         "dps": 8.33
     },
     {
@@ -338,8 +340,8 @@
         "type": "Normal",
         "damage": 10,
         "duration": 1330,
-        "energy": 7,
-        "dps": 7.51
+        "energy": 12,
+        "dps": 7.52
     },
     {
         "id": 200,
@@ -347,7 +349,7 @@
         "type": "Bug",
         "damage": 3,
         "duration": 400,
-        "energy": 12,
+        "energy": 6,
         "dps": 7.5
     },
     {
@@ -356,7 +358,7 @@
         "type": "Fighting",
         "damage": 6,
         "duration": 800,
-        "energy": 7,
+        "energy": 8,
         "dps": 7.5
     },
     {
@@ -367,5 +369,14 @@
         "duration": 1230,
         "energy": 7,
         "dps": 0
+    },
+    {
+        "id": 242,
+        "name": "Transform",
+        "type": "Normal",
+        "damage": 0,
+        "duration": 1230,
+        "energy": 7,
+        "dps": 0.0
     }
 ]

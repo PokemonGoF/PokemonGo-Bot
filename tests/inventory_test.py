@@ -27,14 +27,14 @@ class InventoryTest(unittest.TestCase):
         self.assertEqual(len(Pokemons().all()), 0)  # No inventory loaded here
 
         obj = Pokemons
-        self.assertEqual(len(obj.STATIC_DATA), 151)
+        self.assertEqual(len(obj.STATIC_DATA), 251)
 
         for idx in xrange(len(obj.STATIC_DATA)):
             pokemon = obj.STATIC_DATA[idx]  # type: PokemonInfo
             name = pokemon.name
             pokemon_id = pokemon.id
             self.assertEqual(pokemon.id, idx+1)
-            assert (1 <= pokemon_id <= 151)
+            assert (1 <= pokemon_id <= 251)
 
             self.assertGreaterEqual(len(pokemon.movesets), 1)
             self.assertIsInstance(pokemon.movesets[0], Moveset)

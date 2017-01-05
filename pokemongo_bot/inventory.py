@@ -150,7 +150,7 @@ class Candies(_BaseInventoryComponent):
 
     @classmethod
     def family_id_for(cls, pokemon_id):
-        return Pokemons.first_evolution_id_for(pokemon_id)
+        return Pokemons.candyid_for(pokemon_id)
 
     def get(self, pokemon_id):
         family_id = self.family_id_for(pokemon_id)
@@ -450,6 +450,9 @@ class Pokemons(_BaseInventoryComponent):
     @classmethod
     def name_for(cls, pokemon_id):
         return cls.data_for(pokemon_id).name
+    @classmethod
+    def candyid_for(cls, pokemon_id):
+        return cls.data_for(pokemon_id).candyid
 
     @classmethod
     def id_for(cls, pokemon_name):
@@ -827,6 +830,9 @@ class PokemonInfo(object):
         self.last_evolution_ids = [self.id]
         # ids of the next possible evolutions (one level only)
         self.next_evolution_ids = []
+        #candies
+        self.candyid = int(data['Candy']['FamilyID'])
+        self.candyName = (data['Candy']['Name'])
         # ids of all available next evolutions in the family
         self.next_evolutions_all = []
         if self.has_next_evolution:
@@ -988,7 +994,7 @@ class Pokemon(object):
         self.cp_exact = _calc_cp(
             base_attack, base_defense, base_stamina,
             self.iv_attack, self.iv_defense, self.iv_stamina, self.cp_m)
-        assert max(int(self.cp_exact), 10) == self.cp
+        # assert max(int(self.cp_exact), 10) == self.cp
 
         # Percent of maximum possible CP
         self.cp_percent = self.cp_exact / self.static.max_cp
