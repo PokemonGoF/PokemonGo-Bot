@@ -302,7 +302,7 @@ class Sniper(BaseTask):
             self._trace('{} is catchable!'.format(pokemon.get('pokemon_name')))
         else:
             # Not catchable. Having a good IV should suppress the not in catch/vip list (most important)
-            if pokemon.get('iv', 0) and pokemon.get('iv', 0) < self.special_iv:
+            if pokemon.get('iv', 0) and pokemon.get('iv', 0) <= self.special_iv:
                 self._trace('{} is not catchable, but has a decent IV!'.format(pokemon.get('pokemon_name')))
             else:
                 # Not catchable and IV is not good enough (if any). Check VIP list
