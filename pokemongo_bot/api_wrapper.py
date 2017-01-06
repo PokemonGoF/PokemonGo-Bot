@@ -39,7 +39,8 @@ class ApiWrapper(PGoApi, object):
         }
 
         PGoApi.__init__(self, device_info=device_info)
-        PGoApi.activate_hash_server(self,self.config.hashkey)
+        if not self.config.hashkey is None:
+            PGoApi.activate_hash_server(self,self.config.hashkey)
         # Set to default, just for CI...
         self.actual_lat, self.actual_lng, self.actual_alt = PGoApi.get_position(self)
         self.teleporting = False
