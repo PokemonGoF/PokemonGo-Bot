@@ -15,7 +15,7 @@
         "damage": 8,
         "duration": 630,
         "energy": 7,
-        "dps": 12.69
+        "dps": 12.7
     },
     {
         "id": 226,
@@ -77,7 +77,7 @@
         "type": "Fire",
         "damage": 10,
         "duration": 840,
-        "energy": 4,
+        "energy": 8,
         "dps": 11.9
     },
     {
@@ -86,8 +86,8 @@
         "type": "Ghost",
         "damage": 11,
         "duration": 950,
-        "energy": 7,
-        "dps": 11.57
+        "energy": 8,
+        "dps": 11.58
     },
     {
         "id": 238,
@@ -95,8 +95,8 @@
         "type": "Dark",
         "damage": 12,
         "duration": 1040,
-        "energy": 7,
-        "dps": 11.53
+        "energy": 10,
+        "dps": 11.54
     },
     {
         "id": 224,
@@ -104,8 +104,8 @@
         "type": "Poison",
         "damage": 12,
         "duration": 1050,
-        "energy": 7,
-        "dps": 11.42
+        "energy": 10,
+        "dps": 11.43
     },
     {
         "id": 234,
@@ -113,8 +113,8 @@
         "type": "Psychic",
         "damage": 12,
         "duration": 1050,
-        "energy": 4,
-        "dps": 11.42
+        "energy": 9,
+        "dps": 11.43
     },
     {
         "id": 239,
@@ -122,8 +122,8 @@
         "type": "Steel",
         "damage": 15,
         "duration": 1330,
-        "energy": 4,
-        "dps": 11.27
+        "energy": 12,
+        "dps": 11.28
     },
     {
         "id": 201,
@@ -149,7 +149,7 @@
         "type": "Ground",
         "damage": 15,
         "duration": 1350,
-        "energy": 9,
+        "energy": 12,
         "dps": 11.11
     },
     {
@@ -159,7 +159,7 @@
         "damage": 6,
         "duration": 550,
         "energy": 7,
-        "dps": 10.9
+        "dps": 10.91
     },
     {
         "id": 221,
@@ -167,8 +167,8 @@
         "type": "Normal",
         "damage": 12,
         "duration": 1100,
-        "energy": 7,
-        "dps": 10.9
+        "energy": 10,
+        "dps": 10.91
     },
     {
         "id": 237,
@@ -176,8 +176,8 @@
         "type": "Water",
         "damage": 25,
         "duration": 2300,
-        "energy": 15,
-        "dps": 10.86
+        "energy": 25,
+        "dps": 10.87
     },
     {
         "id": 214,
@@ -194,7 +194,7 @@
         "type": "Ice",
         "damage": 15,
         "duration": 1400,
-        "energy": 7,
+        "energy": 12,
         "dps": 10.71
     },
     {
@@ -203,7 +203,7 @@
         "type": "Fighting",
         "damage": 15,
         "duration": 1410,
-        "energy": 7,
+        "energy": 12,
         "dps": 10.63
     },
     {
@@ -212,7 +212,7 @@
         "type": "Normal",
         "damage": 12,
         "duration": 1130,
-        "energy": 7,
+        "energy": 10,
         "dps": 10.61
     },
     {
@@ -221,7 +221,7 @@
         "type": "Poison",
         "damage": 6,
         "duration": 575,
-        "energy": 4,
+        "energy": 8,
         "dps": 10.43
     },
     {
@@ -230,7 +230,7 @@
         "type": "Grass",
         "damage": 15,
         "duration": 1450,
-        "energy": 7,
+        "energy": 12,
         "dps": 10.34
     },
     {
@@ -239,7 +239,7 @@
         "type": "Ghost",
         "damage": 5,
         "duration": 500,
-        "energy": 7,
+        "energy": 6,
         "dps": 10
     },
     {
@@ -248,7 +248,7 @@
         "type": "Electric",
         "damage": 7,
         "duration": 700,
-        "energy": 4,
+        "energy": 8,
         "dps": 10
     },
     {
@@ -257,7 +257,7 @@
         "type": "Dark",
         "damage": 7,
         "duration": 700,
-        "energy": 4,
+        "energy": 9,
         "dps": 10
     },
     {
@@ -266,7 +266,7 @@
         "type": "Psychic",
         "damage": 15,
         "duration": 1510,
-        "energy": 7,
+        "energy": 14,
         "dps": 9.93
     },
     {
@@ -275,7 +275,7 @@
         "type": "Poison",
         "damage": 10,
         "duration": 1050,
-        "energy": 7,
+        "energy": 10,
         "dps": 9.52
     },
     {
@@ -284,7 +284,7 @@
         "type": "Fire",
         "damage": 10,
         "duration": 1050,
-        "energy": 7,
+        "energy": 10,
         "dps": 9.52
     },
     {
@@ -293,7 +293,7 @@
         "type": "Rock",
         "damage": 12,
         "duration": 1360,
-        "energy": 7,
+        "energy": 15,
         "dps": 8.82
     },
     {
@@ -320,7 +320,7 @@
         "type": "Electric",
         "damage": 5,
         "duration": 600,
-        "energy": 7,
+        "energy": 8,
         "dps": 8.33
     },
     {
@@ -329,7 +329,7 @@
         "type": "Steel",
         "damage": 10,
         "duration": 1200,
-        "energy": 7,
+        "energy": 10,
         "dps": 8.33
     },
     {
@@ -338,7 +338,7 @@
         "type": "Normal",
         "damage": 10,
         "duration": 1330,
-        "energy": 7,
+        "energy": 12,
         "dps": 7.51
     },
     {
@@ -347,7 +347,7 @@
         "type": "Bug",
         "damage": 3,
         "duration": 400,
-        "energy": 12,
+        "energy": 6,
         "dps": 7.5
     },
     {
@@ -374,7 +374,7 @@
         "type": "Water",
         "damage": 0,
         "duration": 1230,
-        "energy": 7,
+        "energy": 10,
         "dps": 0
     }
 ]
