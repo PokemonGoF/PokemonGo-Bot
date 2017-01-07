@@ -3588,7 +3588,8 @@
                        ],
         "Fast Attack(s)":  [
                                "Mud Slap",
-                               "Rock Throw"
+                               "Rock Throw",
+                               "Mud Shot"
                            ],
         "Weight":  "300.0 kg",
         "Height":  "1.4 m",
@@ -4942,7 +4943,8 @@
         "Special Attack(s)":  [
                                   "Brick Break",
                                   "Low Sweep",
-                                  "Stone Edge"
+                                  "Stone Edge",
+                                  "Stomp"
                               ],
         "BaseAttack":  224,
         "BaseDefense":  211,
