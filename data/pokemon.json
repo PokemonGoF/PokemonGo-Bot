@@ -4170,7 +4170,8 @@
                        ],
         "Fast Attack(s)":  [
                                "Lick",
-                               "Poison Jab"
+                               "Poison Jab",
+                               "Acid"
                            ],
         "Weight":  "30.0 kg",
         "Height":  "1.2 m",
@@ -5888,7 +5889,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Bite"
+                               "Bite",
+                               "Dragon Breath"
                            ],
         "Weight":  "235.0 kg",
         "Height":  "6.5 m",
@@ -6166,6 +6168,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Tackle",
+                               "Quick Attack",
                                "Zen Headbutt"
                            ],
         "Weight":  "36.5 kg",
