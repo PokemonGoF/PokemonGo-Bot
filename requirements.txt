@@ -1,6 +1,6 @@
 numpy==1.11.0
 networkx==1.11
--e git+https://github.com/pogodevorg/pgoapi.git#egg=pgoapi
+git+https://github.com/pogodevorg/pgoapi.git@develop#egg=pgoapi
 geopy==1.11.0
 geographiclib==1.46.3
 protobuf==3.0.0b4
@@ -16,6 +16,7 @@ enum34==1.1.6
 pyyaml==3.11
 haversine==0.4.5
 polyline==1.3.1
+websocket-client==0.37.0
 python-socketio==1.4.2
 flask==0.11.1
 socketIO_client==0.7.0

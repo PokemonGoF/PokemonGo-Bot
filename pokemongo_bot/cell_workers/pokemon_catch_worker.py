@@ -5,6 +5,7 @@ import os
 import time
 import json
 import sys
+from collections import OrderedDict
 
 from random import random, randrange, uniform
 from pokemongo_bot import inventory
@@ -730,14 +731,16 @@ class PokemonCatchWorker(BaseTask):
                         break
                     user_data_caught = os.path.join(_base_dir, 'data', 'caught-%s.json' % self.bot.config.username)
                     with open(user_data_caught, 'ab') as outfile:
-                        outfile.write(str(datetime.now()))
-                        json.dump({
+                        json.dump(OrderedDict({
+                            'datetime': str(datetime.now()),
                             'pokemon': pokemon.name,
                             'cp': pokemon.cp,
                             'iv': pokemon.iv,
                             'encounter_id': self.pokemon['encounter_id'],
-                            'pokemon_id': pokemon.pokemon_id
-                        }, outfile)
+                            'pokemon_id': pokemon.pokemon_id,
+                            'latitude': self.pokemon['latitude'],
+                            'longitude': self.pokemon['longitude']
+                        }), outfile)
                         outfile.write('\n')
 
                     # if it is a new pokemon to our dex, simulate app animation delay

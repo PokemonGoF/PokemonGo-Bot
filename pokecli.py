@@ -503,6 +503,15 @@ def init_config():
     add_config(
         parser,
         load,
+        short_flag="-hk",
+        long_flag="--hashkey",
+        help="Set Bossland hashing key",
+        type=str,
+        default=None
+    )
+    add_config(
+        parser,
+        load,
         short_flag="-e",
         long_flag="--show_events",
         help="Show events",
