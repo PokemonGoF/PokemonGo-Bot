@@ -57,12 +57,12 @@ class SpinFortTestCase(unittest.TestCase):
         self.patcherFortRange.stop()
         self.patcherInventoryItem.stop()
 
-    @patch('pokemongo_bot.cell_workers.spin_fort.SpinFort.get_items_awarded_from_fort_spinned')
-    def test_spin_fort(self, items_awarded):
-        spin_fort = SpinFort(self.bot, config)
-        self.bot.api = MagicMock()
-        self.bot.api.fort_search.return_value = response_dict
-        items_awarded.return_value = items_awarded
+#    @patch('pokemongo_bot.cell_workers.spin_fort.SpinFort.get_items_awarded_from_fort_spinned')
+#    def test_spin_fort(self, items_awarded):
+#        spin_fort = SpinFort(self.bot, config)
+#        self.bot.api = MagicMock()
+#        self.bot.api.fort_search.return_value = response_dict
+#        items_awarded.return_value = items_awarded
 
-        result = spin_fort.work()
-        self.assertEqual(result, 1)
+#        result = spin_fort.work()
+#    self.assertEqual(result, 1)

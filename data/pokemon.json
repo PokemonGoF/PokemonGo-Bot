@@ -1165,13 +1165,13 @@
         "Weight":  "6.0 kg",
         "Height":  "0.4 m",
         "Candy":  {
-                      "Name":  "Pikachu candies",
+                      "Name":  "Pichu candies",
                       "FamilyID":  172
                   },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
-                                            "Family":  25,
-                                            "Name":  "Pikachu candies"
+                                            "Family":  172,
+                                            "Name":  "Pichu candies"
                                         },
         "Next evolution(s)":  [
                                   {
@@ -1214,7 +1214,7 @@
         "Weight":  "30.0 kg",
         "Height":  "0.8 m",
         "Candy":  {
-                      "Name":  "Pikachu candies",
+                      "Name":  "Pichu candies",
                       "FamilyID":  172
                   },
         "Previous evolution(s)":  [
@@ -1342,13 +1342,13 @@
         "Weight":  "7.0 kg",
         "Height":  "0.4 m",
         "Candy":  {
-                      "Name":  "Nidoran Female candies",
+                      "Name":  "Nidoran F candies",
                       "FamilyID":  29
                   },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  29,
-                                            "Name":  "Nidoran Female candies"
+                                            "Name":  "Nidoran F candies"
                                         },
         "Next evolution(s)":  [
                                   {
@@ -1390,13 +1390,13 @@
         "Weight":  "20.0 kg",
         "Height":  "0.8 m",
         "Candy":  {
-                      "Name":  "Nidoran Female candies",
+                      "Name":  "Nidoran F candies",
                       "FamilyID":  29
                   },
         "Next Evolution Requirements":  {
                                             "Amount":  100,
                                             "Family":  29,
-                                            "Name":  "Nidoran Female candies"
+                                            "Name":  "Nidoran F candies"
                                         },
         "Next evolution(s)":  [
                                   {
@@ -1445,7 +1445,7 @@
         "Weight":  "60.0 kg",
         "Height":  "1.3 m",
         "Candy":  {
-                      "Name":  "Nidoran Female candies",
+                      "Name":  "Nidoran F candies",
                       "FamilyID":  29
                   },
         "Previous evolution(s)":  [
@@ -1488,13 +1488,13 @@
         "Weight":  "9.0 kg",
         "Height":  "0.5 m",
         "Candy":  {
-                      "Name":  "Nidoran Male candies",
+                      "Name":  "Nidoran M candies",
                       "FamilyID":  32
                   },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
                                             "Family":  32,
-                                            "Name":  "Nidoran Male candies"
+                                            "Name":  "Nidoran M candies"
                                         },
         "Next evolution(s)":  [
                                   {
@@ -1536,13 +1536,13 @@
         "Weight":  "19.5 kg",
         "Height":  "0.9 m",
         "Candy":  {
-                      "Name":  "Nidoran Male candies",
+                      "Name":  "Nidoran M candies",
                       "FamilyID":  32
                   },
         "Next Evolution Requirements":  {
                                             "Amount":  100,
                                             "Family":  32,
-                                            "Name":  "Nidoran Male candies"
+                                            "Name":  "Nidoran M candies"
                                         },
         "Next evolution(s)":  [
                                   {
@@ -1591,7 +1591,7 @@
         "Weight":  "62.0 kg",
         "Height":  "1.4 m",
         "Candy":  {
-                      "Name":  "Nidoran Male candies",
+                      "Name":  "Nidoran M candies",
                       "FamilyID":  32
                   },
         "Previous evolution(s)":  [
@@ -1634,13 +1634,13 @@
         "Weight":  "7.5 kg",
         "Height":  "0.6 m",
         "Candy":  {
-                      "Name":  "Clefairy candies",
-                      "FamilyID":  35
+                      "Name":  "Cleffa candies",
+                      "FamilyID":  173
                   },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
-                                            "Family":  35,
-                                            "Name":  "Clefairy candies"
+                                            "Family":  173,
+                                            "Name":  "Cleffa candies"
                                         },
         "Next evolution(s)":  [
                                   {
@@ -1684,8 +1684,8 @@
         "Weight":  "40.0 kg",
         "Height":  "1.3 m",
         "Candy":  {
-                      "Name":  "Clefairy candies",
-                      "FamilyID":  35
+                      "Name":  "Cleffa candies",
+                      "FamilyID":  173
                   },
         "Previous evolution(s)":  [
                                       {
@@ -7575,13 +7575,13 @@
         "Weight":  "2.0 kg",
         "Height":  "0.3 m",
         "Candy":  {
-                      "Name":  "Pikachu candies",
+                      "Name":  "Pichu candies",
                       "FamilyID":  172
                   },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
-                                            "Family":  25,
-                                            "Name":  "Pikachu candies"
+                                            "Family":  172,
+                                            "Name":  "Pichu candies"
                                         },
         "Next evolution(s)":  [
                                   {
@@ -7623,13 +7623,13 @@
         "Weight":  "3.0 kg",
         "Height":  "0.3 m",
         "Candy":  {
-                      "Name":  "Clefairy candies",
-                      "FamilyID":  35
+                      "Name":  "Cleffa candies",
+                      "FamilyID":  173
                   },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
-                                            "Family":  35,
-                                            "Name":  "Clefairy candies"
+                                            "Family":  173,
+                                            "Name":  "Cleffa candies"
                                         },
         "Next evolution(s)":  [
                                   {
