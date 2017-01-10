@@ -24,7 +24,7 @@ class NicknamePokemonTest(unittest.TestCase):
         self.assertNicks('{iv_pct2}', ['46', '44'])
         self.assertNicks('{iv_pct1}', ['4', '4'])
         self.assertNicks('{base_attack}', ['161', '103'])
-        self.assertNicks('{base_defense}', ['164', '86'])
+        self.assertNicks('{base_defense}', ['153', '70'])
         self.assertNicks('{base_stamina}', ['150', '60'])
         self.assertNicks('{base_ads}', ['164/164/150', '92/86/60'])
         self.assertNicks('{attack}', ['173', '98'])
