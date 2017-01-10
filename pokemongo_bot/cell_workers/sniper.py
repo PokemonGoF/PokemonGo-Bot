@@ -302,7 +302,7 @@ class Sniper(BaseTask):
             self._trace('{} is catchable!'.format(pokemon.get('pokemon_name')))
         else:
             # Not catchable. Having a good IV should suppress the not in catch/vip list (most important)
-            if pokemon.get('iv', 0) and pokemon.get('iv', 0) < self.special_iv:
+            if pokemon.get('iv', 0) and pokemon.get('iv', 0) <= self.special_iv:
                 self._trace('{} is not catchable, but has a decent IV!'.format(pokemon.get('pokemon_name')))
             else:
                 # Not catchable and IV is not good enough (if any). Check VIP list
@@ -344,7 +344,7 @@ class Sniper(BaseTask):
 
                 # If social is enabled and if no verification is needed, trust it. Otherwise, update IDs!
                 verify = not pokemon.get('encounter_id') or not pokemon.get('spawn_point_id')
-                exists = not verify and self.mode == SniperMode.SOCIAL
+                exists = not verify or self.mode == SniperMode.SOCIAL
                 success = exists
 
                 # If information verification have to be done, do so
