@@ -1166,7 +1166,7 @@
         "Height":  "0.4 m",
         "Candy":  {
                       "Name":  "Pikachu candies",
-                      "FamilyID":  25
+                      "FamilyID":  172
                   },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
@@ -1215,7 +1215,7 @@
         "Height":  "0.8 m",
         "Candy":  {
                       "Name":  "Pikachu candies",
-                      "FamilyID":  25
+                      "FamilyID":  172
                   },
         "Previous evolution(s)":  [
                                       {
@@ -7576,7 +7576,7 @@
         "Height":  "0.3 m",
         "Candy":  {
                       "Name":  "Pikachu candies",
-                      "FamilyID":  25
+                      "FamilyID":  172
                   },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
