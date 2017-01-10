@@ -27,7 +27,7 @@ class InventoryTest(unittest.TestCase):
         self.assertEqual(len(Pokemons().all()), 0)  # No inventory loaded here
 
         obj = Pokemons
-        self.assertEqual(len(obj.STATIC_DATA), 151)
+        self.assertEqual(len(obj.STATIC_DATA), 251)
 
         for idx in xrange(len(obj.STATIC_DATA)):
             pokemon = obj.STATIC_DATA[idx]  # type: PokemonInfo
