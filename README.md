@@ -1,5 +1,7 @@
 # PokemonGo-Bot
-[PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot) is a project created by the [PokemonGoF](https://github.com/PokemonGoF) team. Now running with HASH-Server.
+[PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot) is a project created by the [PokemonGoF](https://github.com/PokemonGoF) team. Now running with HASH-Server. 
+Usage of Hash-server (and 0.51 api) require a purchase of hashing key from http://hashing.pogodev.org/ . 
+150 RPM key should be enough even for 3 bots. 
 
 ## Table of Contents
 - [Installation](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/installation.md)
