@@ -1634,12 +1634,12 @@
         "Weight":  "7.5 kg",
         "Height":  "0.6 m",
         "Candy":  {
-                      "Name":  "Cleffa candies",
-                      "FamilyID":  173
+                      "Name":  "Clefairy candies",
+                      "FamilyID":  35
                   },
         "Next Evolution Requirements":  {
                                             "Amount":  50,
-                                            "Family":  173,
+                                            "Family":  35,
                                             "Name":  "Clefairy candies"
                                         },
         "Next evolution(s)":  [
@@ -1685,7 +1685,7 @@
         "Height":  "1.3 m",
         "Candy":  {
                       "Name":  "Clefairy candies",
-                      "FamilyID":  173
+                      "FamilyID":  35
                   },
         "Previous evolution(s)":  [
                                       {
@@ -7624,7 +7624,7 @@
         "Height":  "0.3 m",
         "Candy":  {
                       "Name":  "Clefairy candies",
-                      "FamilyID":  173
+                      "FamilyID":  35
                   },
         "Next Evolution Requirements":  {
                                             "Amount":  25,
