@@ -52,9 +52,12 @@ Input Location
 " location
 read -p "Input Google API Key (gmapkey)
 " gmapkey
+read -p "Input Hashing servers key  (hashkey)
+" hashkey
 [[ $auth = "2" || $auth = "ptc" ]] && auth="ptc" || auth="google"
 sed -e "s/YOUR_USERNAME/$username/g" -e "s/YOUR_PASSWORD/$password/g" \
   -e "s/SOME_LOCATION/$location/g" -e "s/GOOGLE_MAPS_API_KEY/$gmapkey/g" \
+  -e "s/YOUR_PURCHASED_HASH_KEY/$hashkey/g"  \
   -e "s/google/$auth/g" configs/auth.json.example > configs/auth.json
 echo "Edit ./configs/auth.json to modify auth or location."
 }
