@@ -97,7 +97,8 @@ class MoveToFort(BaseTask):
             if not step_walker.step():
                 return WorkerResult.RUNNING
         else:
-            if nearest_fort.get('active_fort_modifier') and self.wait_at_fort:
+            # Don't wait at a fort if not catching Pokemon
+            if nearest_fort.get('active_fort_modifier') and self.wait_at_fort and not self.bot.catch_disabled:
                 if self.wait_log_sent == None or self.wait_log_sent < datetime.now() - timedelta(seconds=60):
                     self.wait_log_sent = datetime.now()
                     self.emit_event(
