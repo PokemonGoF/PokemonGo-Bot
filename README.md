@@ -1,7 +1,7 @@
 # PokemonGo-Bot
-[PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot) is a project created by the [PokemonGoF](https://github.com/PokemonGoF) team. Now running with HASH-Server.  
+[PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot) is a project created by the [PokemonGoF](https://github.com/PokemonGoF) team. Since no public API available for now, a patch to use HASH-Server was applied. PokemonGoF is not part of HASH-Server dev team and has no connection with it.
 
-# Donation 
+# Donation
 
 Bitcoin: 1PJMCx9NNQRasQYaa4MMff9yyNFffhHgLu
 
