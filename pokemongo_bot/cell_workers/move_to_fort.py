@@ -97,7 +97,7 @@ class MoveToFort(BaseTask):
             if not step_walker.step():
                 return WorkerResult.RUNNING
         else:
-            if nearest_fort.get('active_fort_modifier') and self.wait_at_fort:
+            if not self.bot.catch_disabled and nearest_fort.get('active_fort_modifier') and self.wait_at_fort:
                 if self.wait_log_sent == None or self.wait_log_sent < datetime.now() - timedelta(seconds=60):
                     self.wait_log_sent = datetime.now()
                     self.emit_event(
@@ -113,15 +113,11 @@ class MoveToFort(BaseTask):
         return WorkerResult.RUNNING
 
     def _get_nearest_fort_on_lure_way(self, forts):
-	# Don't care about lures if catching is disabled
-	if self.bot.catch_disabled:
-	    return None, 0
-
         if not self.lure_attraction:
             return None, 0
 
         lures = filter(lambda x: True if x.get('lure_info', None) != None else False, forts)
-        if self.wait_at_fort:
+        if not self.bot.catch_disabled and self.wait_at_fort:
             lures = filter(lambda x: x.get('active_fort_modifier', False), forts)
 
         if len(lures):
@@ -162,7 +158,7 @@ class MoveToFort(BaseTask):
         # Remove stops that are still on timeout
         forts = filter(
             lambda x: x["id"] not in self.bot.fort_timeouts or (
-                x.get('active_fort_modifier', False) and self.wait_at_fort
+                x.get('active_fort_modifier', False) and self.wait_at_fort and not self.bot.catch_disabled
             ),
             forts
         )
@@ -170,7 +166,7 @@ class MoveToFort(BaseTask):
         next_attracted_pts, lure_distance = self._get_nearest_fort_on_lure_way(forts)
 
         # Remove all forts which were spun in the last ticks to avoid circles if set
-        if self.bot.config.forts_avoid_circles or not self.wait_at_fort:
+        if self.bot.config.forts_avoid_circles or not self.wait_at_fort or self.bot.catch_disabled:
             forts = filter(lambda x: x["id"] not in self.bot.recent_forts, forts)
 
         self.lure_distance = lure_distance
