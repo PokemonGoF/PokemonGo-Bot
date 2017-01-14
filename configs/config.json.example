@@ -142,7 +142,8 @@
                     "stardust_earned",
                     "xp_earned",
                     "xp_per_hour",
-                    "stops_visited"
+                    "stops_visited",
+                    "total_stardust"
                 ],
                 "terminal_log": true,
                 "terminal_title": true
