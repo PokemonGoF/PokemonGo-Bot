@@ -43,6 +43,8 @@ class PokemonHunter(BaseTask):
                 self.logger.info("All catching tasks are currently disabled until {}. Pokemon Hunter will resume when catching tasks are re-enabled".format(self.bot.catch_resume_at.strftime("%H:%M:%S")))
             self.bot.hunter_disabled_global_warning = True
             return WorkerResult.SUCCESS
+        else:
+            self.bot.hunter_disabled_global_warning = False
 
         if self.get_pokeball_count() <= 0:
             self.destination = None
