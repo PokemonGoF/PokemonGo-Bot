@@ -28,6 +28,16 @@ class CatchPokemon(BaseTask):
     [Item.ITEM_POKE_BALL, Item.ITEM_GREAT_BALL, Item.ITEM_ULTRA_BALL]]) <= 0:
             return WorkerResult.ERROR
 
+	# Don't try to catch a Pokemon when catching is disabled.
+        if self.bot.catch_disabled:
+            if not hasattr(self.bot,"all_disabled_global_warning") or \
+                        (hasattr(self.bot,"all_disabled_global_warning") and not self.bot.all_disabled_global_warning):
+                self.logger.info("All catching tasks are currently disabled until {}. Ignoring all Pokemon till then.".format(self.bot.catch_resume_at.strftime("%H:%M:%S")))
+            self.bot.all_disabled_global_warning = True
+            return WorkerResult.SUCCESS
+        else:
+            self.bot.all_disabled_global_warning = False
+
         # check if we have already loaded a list
         if len(self.pokemon) <= 0:
             # load available pokemon by config settings

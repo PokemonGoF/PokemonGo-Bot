@@ -97,10 +97,6 @@ class MoveToFort(BaseTask):
             if not step_walker.step():
                 return WorkerResult.RUNNING
         else:
-            # Don't wait at a fort if not catching Pokemon
-            if self.bot.catch_disabled:
-                return WorkerResult.SUCCESS
-
             if nearest_fort.get('active_fort_modifier') and self.wait_at_fort:
                 if self.wait_log_sent == None or self.wait_log_sent < datetime.now() - timedelta(seconds=60):
                     self.wait_log_sent = datetime.now()
@@ -117,6 +113,9 @@ class MoveToFort(BaseTask):
         return WorkerResult.RUNNING
 
     def _get_nearest_fort_on_lure_way(self, forts):
+	# Don't care about lures if catching is disabled
+	if self.bot.catch_disabled:
+	    return None, 0
 
         if not self.lure_attraction:
             return None, 0
