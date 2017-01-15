@@ -219,24 +219,25 @@ class PokemonOptimizer(BaseTask):
         if self.get_pokemon_slot_left() > self.config_min_slots_left:
             return WorkerResult.SUCCESS
 
-        transfer_all = []
-        evolve_all = []
-        upgrade_all = []
-        xp_all = []
+        # Repeat the optimizer 2 times, to get rid of the trash evolved.
+        for _ in itertools.repeat(None, 2):
+            transfer_all = []
+            evolve_all = []
+            upgrade_all = []
+            xp_all = []
+            for family_id, pokemon_list in self.group_by_family_id(inventory.pokemons().all()):
+                keep = [p for p in keep_all if self.get_family_id(p) == family_id]
+                try_evolve = [p for p in try_evolve_all if self.get_family_id(p) == family_id]
+                try_upgrade = [p for p in try_upgrade_all if self.get_family_id(p) == family_id]
 
-        for family_id, pokemon_list in self.group_by_family_id(inventory.pokemons().all()):
-            keep = [p for p in keep_all if self.get_family_id(p) == family_id]
-            try_evolve = [p for p in try_evolve_all if self.get_family_id(p) == family_id]
-            try_upgrade = [p for p in try_upgrade_all if self.get_family_id(p) == family_id]
+                transfer, evolve, upgrade, xp = self.get_evolution_plan(family_id, pokemon_list, keep, try_evolve, try_upgrade)
 
-            transfer, evolve, upgrade, xp = self.get_evolution_plan(family_id, pokemon_list, keep, try_evolve, try_upgrade)
+                transfer_all += transfer
+                evolve_all += evolve
+                upgrade_all += upgrade
+                xp_all += xp
 
-            transfer_all += transfer
-            evolve_all += evolve
-            upgrade_all += upgrade
-            xp_all += xp
-
-        self.apply_optimization(transfer_all, evolve_all, upgrade_all, xp_all)
+            self.apply_optimization(transfer_all, evolve_all, upgrade_all, xp_all)
 
         return WorkerResult.SUCCESS
 
