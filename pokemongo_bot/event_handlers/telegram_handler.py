@@ -459,8 +459,12 @@ class TelegramClass:
                         self.send_vanished(update, num, order)
                         continue
                     if re.match(r'^/snipe ', update.message.text):
-                        (cmd, pkm, lat, lng) = self.tokenize(update.message.text, 4)
-                        self.request_snipe(update, pkm, lat, lng)
+                        try:
+                            (cmd, pkm, lat, lng) = self.tokenize(update.message.text, 4)
+                            self.request_snipe(update, pkm, lat, lng)
+                        except:
+                            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                                             text="An Error has occured")
                         continue
                     if re.match(r'^/softbans ', update.message.text):
                         (cmd, num) = self.tokenize(update.message.text, 2)
