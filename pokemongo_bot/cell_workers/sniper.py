@@ -305,8 +305,8 @@ class Sniper(BaseTask):
             self._trace('Not enought balls left! Skipping...')
             return False
 
-        # Skip if not in catch list, not a VIP and/or IV sucks (if any)
-        if pokemon.get('pokemon_name', '') in self.catch_list:
+        # Skip if not in catch list, not a VIP and/or IV sucks (if any), ignore telegram mode
+        if pokemon.get('pokemon_name', '') in self.catch_list or self.mode == SniperMode.TELEGRAM:
             self._trace('{} is catchable!'.format(pokemon.get('pokemon_name')))
         else:
             # Not catchable. Having a good IV should suppress the not in catch/vip list (most important)
