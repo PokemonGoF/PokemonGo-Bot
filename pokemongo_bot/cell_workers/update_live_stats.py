@@ -268,7 +268,7 @@ class UpdateLiveStats(BaseTask):
         pokemon_unseen = metrics.num_new_mons()
         pokeballs_thrown = metrics.num_throws()
         dust_per_hour = int(metrics.stardust_per_hour())
-        total_stardust = int(self.bot.stardust)
+        total_stardust = int(metrics.total_stardust())
         stardust_earned = metrics.earned_dust()
         highest_cp_pokemon = metrics.highest_cp['desc']
         if not highest_cp_pokemon:
