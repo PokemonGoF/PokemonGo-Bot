@@ -42,6 +42,15 @@ class CampFort(BaseTask):
         if not self.enabled:
             return WorkerResult.SUCCESS
 
+	if self.bot.catch_disabled:
+            if not hasattr(self.bot,"camper_disabled_global_warning") or \
+                        (hasattr(self.bot,"camper_disabled_global_warning") and not self.bot.camper_disabled_global_warning):
+                self.logger.info("All catching tasks are currently disabled until {}. Camping of lured forts disabled till then.".format(self.bot.catch_resume_at.strftime("%H:%M:%S")))
+            self.bot.camper_disabled_global_warning = True
+            return WorkerResult.SUCCESS
+        else:
+            self.bot.camper_disabled_global_warning = False
+
         now = time.time()
 
         if now < self.move_until:
