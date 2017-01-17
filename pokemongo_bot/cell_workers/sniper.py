@@ -449,7 +449,6 @@ class Sniper(BaseTask):
         else:
             self.bot.sniper_disabled_global_warning = False
             targets = []
-            target = {}
 
             # Retrieve the targets
             if self.mode == SniperMode.SOCIAL:
