@@ -6,9 +6,16 @@ import thread
 import re
 from telegram.utils import request
 from chat_handler import ChatHandler
+from pokemongo_bot.inventory import Pokemons
 
 DEBUG_ON = False
 
+class TelegramSnipe(object):
+    ENABLED = False
+    ID = int(0)
+    POKEMON_NAME = ''
+    LATITUDE = float(0)
+    LONGITUDE = float(0)
 
 class TelegramClass:
     update_id = None
@@ -187,7 +194,25 @@ class TelegramClass:
         else:
             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                              text="No Pokemon Caught Yet.\n")
+                             
+    def request_snipe(self, update, pkm, lat, lng):
+        snipeSuccess = False
+        try:
+            id = Pokemons.id_for(pkm)
+        except:
+            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Invaild Pokemon")
+            return
 
+        #Set Telegram Snipe to true and let sniper do its work
+        TelegramSnipe.ENABLED = True
+        TelegramSnipe.ID = int(id)
+        TelegramSnipe.POKEMON_NAME = str(pkm)
+        TelegramSnipe.LATITUDE = float(lat)
+        TelegramSnipe.LONGITUDE = float(lng)
+        
+        outMsg = 'Catching pokemon: ' + TelegramSnipe.POKEMON_NAME + ' at Latitude: ' + str(TelegramSnipe.LATITUDE) + ' Longitude: ' + str(TelegramSnipe.LONGITUDE) + '\n'
+        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="".join(outMsg))
+        
     def send_evolved(self, update, num, order):
         evolved = self.chat_handler.get_evolved(num, order)
         outMsg = ''
@@ -303,6 +328,7 @@ class TelegramClass:
             "/pokestops - show last x pokestops visited",
             "/released <num> <cp-or-iv-or-dated> - show top x released, sorted by CP, IV, or Date",
             "/vanished <num> <cp-or-iv-or-dated> - show top x vanished, sorted by CP, IV, or Date",
+            "/snipe <PokemonName> <Lat> <Lng> - to snipe a pokemon at location Latitude, Longitude",
             "/softbans - info about possible softbans"
         )
         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
@@ -431,6 +457,14 @@ class TelegramClass:
                     if re.match(r'^/vanished ', update.message.text):
                         (cmd, num, order) = self.tokenize(update.message.text, 3)
                         self.send_vanished(update, num, order)
+                        continue
+                    if re.match(r'^/snipe ', update.message.text):
+                        try:
+                            (cmd, pkm, lat, lng) = self.tokenize(update.message.text, 4)
+                            self.request_snipe(update, pkm, lat, lng)
+                        except:
+                            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                                             text="An Error has occured")
                         continue
                     if re.match(r'^/softbans ', update.message.text):
                         (cmd, num) = self.tokenize(update.message.text, 2)
