@@ -61,6 +61,7 @@ class UpdateLiveStats(BaseTask):
     - pokeballs_thrown : The number of thrown pokeballs.
     - stardust_earned : The number of earned stardust since the bot started.
     - stardust_per_hour : The estimated gain of stardust per hour
+    - total_stardust : The stardust in possesion of Trainer
     - highest_cp_pokemon : The caught pokemon with the highest CP since the bot started.
     - most_perfect_pokemon : The most perfect caught pokemon since the bot started.
     - location : The location where the player is located.
@@ -267,6 +268,7 @@ class UpdateLiveStats(BaseTask):
         pokemon_unseen = metrics.num_new_mons()
         pokeballs_thrown = metrics.num_throws()
         dust_per_hour = int(metrics.stardust_per_hour())
+        total_stardust = int(metrics.total_stardust())
         stardust_earned = metrics.earned_dust()
         highest_cp_pokemon = metrics.highest_cp['desc']
         if not highest_cp_pokemon:
@@ -300,6 +302,7 @@ class UpdateLiveStats(BaseTask):
             'pokeballs_thrown': pokeballs_thrown,
             'stardust_earned': stardust_earned,
             'stardust_per_hour': dust_per_hour,
+            'total_stardust' : total_stardust,
             'highest_cp_pokemon': highest_cp_pokemon,
             'most_perfect_pokemon': most_perfect_pokemon,
             'location': [self.bot.position[0], self.bot.position[1]],
@@ -348,6 +351,7 @@ class UpdateLiveStats(BaseTask):
             'pokeballs_thrown': 'Threw {:,} pokeballs'.format(player_stats['pokeballs_thrown']),
             'stardust_earned': 'Earned {:,} Stardust'.format(player_stats['stardust_earned']),
             'stardust_per_hour': '{:,} Stardust/h'.format(player_stats['stardust_per_hour']),
+            'total_stardust': 'Total Stardust: {}'.format(player_stats['total_stardust']),
             'highest_cp_pokemon': 'Highest CP pokemon : {}'.format(player_stats['highest_cp_pokemon']),
             'most_perfect_pokemon': 'Most perfect pokemon : {}'.format(player_stats['most_perfect_pokemon']),
             'location': 'Location : ({}, {})'.format(*player_stats['location']),

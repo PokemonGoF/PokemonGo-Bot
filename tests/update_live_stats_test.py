@@ -13,7 +13,7 @@ class UpdateLiveStatsTestCase(unittest.TestCase):
                   'pokemon_caught', 'stops_visited', 'km_walked', 'level', 'stardust_earned',
                   'level_completion', 'xp_per_hour', 'pokeballs_thrown', 'highest_cp_pokemon',
                   'level_stats', 'xp_earned', 'pokemon_unseen', 'most_perfect_pokemon',
-                  'pokemon_stats', 'pokemon_released', 'captures_per_hour'],
+                  'pokemon_stats', 'pokemon_released', 'captures_per_hour','total_stardust'],
         'terminal_log': True,
         'terminal_title': False
     }
@@ -183,6 +183,6 @@ class UpdateLiveStatsTestCase(unittest.TestCase):
                    '+424,242 XP | Encountered 3 new pokemon | ' \
                    'Most perfect pokemon : most_perfect | ' \
                    'Encountered 130 pokemon, 120 caught, 30 released, 12 evolved, ' \
-                   '3 never seen before | Released 30 pokemon | 75 pokemon/h'
+                   '3 never seen before | Released 30 pokemon | 75 pokemon/h | Total Stardust: 1'
 
         self.assertEqual(line, expected)
