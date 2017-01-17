@@ -774,6 +774,7 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
 * `mode` - The mode on which the sniper will fetch the informations. (default: social)
    - `social` - Information will come from the social network.
    - `url` - Information will come from one or multiple urls.
+   - `telegram` - Manual snipping through telegram.  In telegram, use "/snipe <PokemonName> <Lat> <Lng>" to snipe. Subscript to "/sub sniper_log" and "/sub pokemon_vip_caught" to retrieve snipping results through telegram. 
 * `bullets` - Each bullet corresponds to an **ATTEMPT** of catching a pokemon. (default: 1)
 * `homing_shots` - This will ensure that each bullet **will catch** a target. If disabled, a target might not exist and thus it wont be caught. When enabled, this will jump to the next target (if any) and try again to catch it. This will be repeated untill you've spent all the bullets. (default: true)
 * `special_iv` - This will skip the catch list if the value is greater than or equal to the target's IV. This currently does not work with `social` mode and only works if the given `url` has this information. (default: 100)
