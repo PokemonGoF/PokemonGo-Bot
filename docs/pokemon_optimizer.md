@@ -40,6 +40,8 @@ There is only one pass at each action.
 
 It will also collect the candies from your Buddy and select the next buddy.
 
+In case that logging will be enabled, look for .log file in data folder. 
+
 [[back to top](#pokemon-optimizer)]
 
 # Configuration
@@ -53,6 +55,7 @@ It will also collect the candies from your Buddy and select the next buddy.
                 "enabled": true,
                 "min_slots_left": 5,
                 "action_wait_min": 3,
+                "debug": false,
                 "action_wait_max": 5,
                 "transfer": true,
                 "evolve": true,

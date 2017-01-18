@@ -9,6 +9,7 @@
                 "action_wait_max": 5,
                 "transfer": true,
                 "evolve": true,
+                "debug": false,
                 "evolve_to_final": true,
                 "evolve_time": 25,
                 "evolve_for_xp": true,
