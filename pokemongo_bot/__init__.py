@@ -72,11 +72,17 @@ class PokemonGoBot(object):
 
     @property
     def stardust(self):
-        return filter(lambda y: y['name'] == 'STARDUST', self._player['currencies'])[0]['amount']
+        dust = filter(lambda y: y['name'] == 'STARDUST', self._player['currencies'])[0]
+        if 'amount' in dust:
+            return dust['amount']
+        else:
+            return 0
 
     @stardust.setter
     def stardust(self, value):
-        filter(lambda y: y['name'] == 'STARDUST', self._player['currencies'])[0]['amount'] = value
+        dust = filter(lambda y: y['name'] == 'STARDUST', self._player['currencies'])[0]
+        if 'amount' in dust:
+            dust['amount'] = value
 
     def __init__(self, db, config):
 
