@@ -1,5 +1,6 @@
 numpy==1.11.0
 networkx==1.11
+six==1.10
 git+https://github.com/pogodevorg/pgoapi.git@develop#egg=pgoapi
 geopy==1.11.0
 geographiclib==1.46.3
@@ -7,7 +8,6 @@ requests==2.10.0
 requests-mock==1.0.0
 s2sphere==0.2.4
 gpsoauth==0.4.0
-six==1.9.0
 googlemaps==2.4.4
 colorama==0.3.7
 enum34==1.1.6
