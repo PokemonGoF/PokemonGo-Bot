@@ -7,6 +7,7 @@ import json
 import math
 import os
 import time
+import datetime
 
 from pokemongo_bot import inventory
 from pokemongo_bot.base_dir import _base_dir
@@ -32,6 +33,7 @@ class PokemonOptimizer(BaseTask):
         self.last_pokemon_count = 0
         self.pokemon_names = [p.name for p in inventory.pokemons().STATIC_DATA]
         self.evolution_map = {}
+        self.debug = self.config.get('debug', False)
         self.ongoing_stardust_count = 0
         self.buddy = None
         self.buddyid = 0
@@ -46,13 +48,14 @@ class PokemonOptimizer(BaseTask):
         if self.config.get("keep", None) is not None:
             raise ConfigException("Pokemon Optimizer configuration has changed. See docs/pokemon_optimized.md or configs/config.json.optimizer.example")
 
-#         log_file_path = os.path.join(_base_dir, "data", "pokemon-optimizer-%s.log" % self.bot.config.username)
-#
-#         with open(log_file_path, "a") as _:
-#             pass
-#
-#         self.log_file = open(log_file_path, "r+")
-#         self.log_file.seek(0, 2)
+        if self.debug:
+            log_file_path = os.path.join(_base_dir, "data", "pokemon-optimizer-%s.log" % self.bot.config.username)
+
+            with open(log_file_path, "a") as _:
+                pass
+
+            self.log_file = open(log_file_path, "r+")
+            self.log_file.seek(0, 2)
 
         self.config_min_slots_left = self.config.get("min_slots_left", 5)
         self.config_action_wait_min = self.config.get("action_wait_min", 3)
@@ -98,12 +101,12 @@ class PokemonOptimizer(BaseTask):
             if pokemon.prev_evolutions_all:
                 self.config_groups["with_previous_evolution"].append(pokemon.name)
 
-#     def log(self, txt):
-#         if self.log_file.tell() >= 1024 * 1024:
-#             self.log_file.seek(0, 0)
-#
-#         self.log_file.write("[%s] %s\n" % (datetime.datetime.now().isoformat(str(" ")), txt))
-#         self.log_file.flush()
+    def log(self, txt):
+        if self.log_file.tell() >= 1024 * 1024:
+             self.log_file.seek(0, 0)
+
+        self.log_file.write("[%s] %s\n" % (datetime.datetime.now().isoformat(str(" ")), txt))
+        self.log_file.flush()
 
     def get_pokemon_slot_left(self):
         pokemon_count = inventory.Pokemons.get_space_used()
@@ -364,8 +367,9 @@ class PokemonOptimizer(BaseTask):
     def score_and_sort(self, pokemon_list, rule):
         pokemon_list = list(pokemon_list)
 
-#         self.log("Pokemon %s" % pokemon_list)
-#         self.log("Rule %s" % rule)
+        if self.debug:
+            self.log("Pokemon %s" % pokemon_list)
+            self.log("Rule %s" % rule)
 
         for pokemon in pokemon_list:
             setattr(pokemon, "__score__", self.get_score(pokemon, rule))
@@ -405,7 +409,8 @@ class PokemonOptimizer(BaseTask):
         may_buddy &= pokemon.in_fort is False
         may_buddy &= self.satisfy_requirements(pokemon, may_buddy)
 
-#         self.log("%s %s %s %s %s %s" % (pokemon, tuple(score), keep, may_try_evolve, may_try_upgrade, may_buddy))
+        if self.debug:
+            self.log("%s %s %s %s %s %s" % (pokemon, tuple(score), keep, may_try_evolve, may_try_upgrade, may_buddy))
 
         return tuple(score), keep, may_try_evolve, may_try_upgrade, may_buddy
 

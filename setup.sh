@@ -87,7 +87,7 @@ if [ "$(uname -s)" == "Darwin" ]
 then
 echo "You are on Mac OS"
 brew update
-brew install --devel protobuf
+#brew install --devel protobuf
 elif [ $(uname -s) == CYGWIN* ]
 then
 echo "You are on Cygwin"

@@ -27,7 +27,6 @@ if you are on a different Linux OS you maybe have to adapt things like:
 
 #####Mac
 ```bash
-brew install --devel protobuf
 brew install  autoconf libtool pkg-config wget git
 ```
 ####Mac + Linux installation
@@ -114,7 +113,6 @@ source bin/activate
 cd C:\Python27\
 pip2 install --upgrade pip
 pip2 install --upgrade virtualenv
-pip2 install --upgrade protobuf==3.0.0b4
 git clone --recursive -b dev https://github.com/PokemonGoF/PokemonGo-Bot
 pip2 install --upgrade -r C:/Python27/PokemonGo-Bot/requirements.txt
 cd C:/Python27/PokemonGo-Bot/
@@ -136,5 +134,6 @@ Download it to the `C:/Python27/PokemonGo-Bot/` folder
 ```
 cd C:/Python27/PokemonGo-Bot/
 git pull
+pip uninstall pgoapi
 git submodule update --init --recursive
 ```
