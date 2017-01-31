@@ -264,6 +264,9 @@ class PokemonOptimizer(BaseTask):
 
         if distance_walked >= distance_needed:
             self.get_buddy_walked(pokemon)
+            # self.buddy["start_km_walked"] can be empty here
+            if 'start_km_walked' not in self.buddy:
+                self.buddy["start_km_walked"] = 0
             self.buddy["last_km_awarded"] = self.buddy["start_km_walked"] + distance_needed * int(distance_walked / distance_needed)
             self.lock_buddy = False
         else:
@@ -917,7 +920,7 @@ class PokemonOptimizer(BaseTask):
             action_delay(self.config_action_wait_min, self.config_action_wait_max)
 
         return True
-        
+
     def _get_buddyid(self):
         if self.buddy and'id' in self.buddy:
             return self.buddy['id']
