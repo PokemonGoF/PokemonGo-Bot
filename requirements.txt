@@ -30,3 +30,4 @@ paho-mqtt==1.2
 Geohash==1.0
 python-telegram-bot==5.0.0
 discord_simple==0.0.1.15
+urllib3==1.18
