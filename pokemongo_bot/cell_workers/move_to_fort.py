@@ -10,7 +10,6 @@ from pokemongo_bot.base_task import BaseTask
 from .utils import distance, format_dist, fort_details
 from datetime import datetime, timedelta
 
-
 class MoveToFort(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
@@ -19,6 +18,7 @@ class MoveToFort(BaseTask):
         self.lure_attraction = self.config.get("lure_attraction", True)
         self.lure_max_distance = self.config.get("lure_max_distance", 2000)
         self.ignore_item_count = self.config.get("ignore_item_count", False)
+        self.fort_ids = []
         self.walker = self.config.get('walker', 'StepWalker')
         self.wait_at_fort = self.config.get('wait_on_lure', False)
         self.wait_log_sent = None
@@ -154,6 +154,7 @@ class MoveToFort(BaseTask):
             return None, 0
 
     def get_nearest_fort(self):
+        nearest_fort = []
         forts = self.bot.get_forts(order_by_distance=True)
         # Remove stops that are still on timeout
         forts = filter(
@@ -174,7 +175,23 @@ class MoveToFort(BaseTask):
         if (lure_distance > 0):
             return next_attracted_pts
 
-        if len(forts):
-            return forts[0]
+        if len(forts) >= 3:
+            # Get ID of fort, store it. Check index 0 & index 2. Both must not be same
+            nearest_fort = forts[0]
+            
+            if len(self.fort_ids) < 3:
+                self.fort_ids.extend(nearest_fort['id'])
+            else:
+                #this will always be len of 3, compare index 1 and nearest_fort
+                if self.fort_ids[1] == nearest_fort['id'] and self.fort_ids[0] == self.fort_ids[2]:
+                    self.fort_ids.pop(0)
+                    # take the next nearest, assuming bot is bouncing between index 0 and 1
+                    nearest_fort = forts[2]
+                    self.fort_ids.extend(nearest_fort['id'])
+                else:
+                    self.fort_ids.pop(0)
+                    self.fort_ids.extend(nearest_fort['id'])
+                    
+            return nearest_fort
         else:
             return None
