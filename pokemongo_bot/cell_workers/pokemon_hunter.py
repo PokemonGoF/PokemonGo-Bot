@@ -32,6 +32,9 @@ class PokemonHunter(BaseTask):
         self.config_hunt_all = self.config.get("hunt_all", False)
         self.config_hunt_vip = self.config.get("hunt_vip", True)
         self.config_hunt_pokedex = self.config.get("hunt_pokedex", True)
+        # Lock on Target; ignore all other Pokémon until we found our target.
+        self.config_lock_on_target = self.config.get("lock_on_target", True)
+        self.bot.hunter_locked_target = None
 
     def work(self):
         if not self.enabled:
@@ -63,6 +66,8 @@ class PokemonHunter(BaseTask):
 
                 self.logger.info("New destination at %(distance).2f meters: %(name)s", self.destination)
                 self.no_log_until = now + 60
+                if self.config_lock_on_target:
+                    self.bot.hunter_locked_target = self.destination
 
                 if self.destination["s2_cell_id"] != self.search_cell_id:
                     self.search_points = self.get_search_points(self.destination["s2_cell_id"])
@@ -87,6 +92,7 @@ class PokemonHunter(BaseTask):
                 self.lost_counter = 0
 
             if self.lost_counter >= 3:
+                self.logger.info("I haven't found %(name)s", self.destination)
                 self.destination = None
             else:
                 self.logger.info("Now searching for %(name)s", self.destination)

@@ -21,6 +21,7 @@ class CatchPokemon(BaseTask):
 
     def initialize(self):
         self.pokemon = []
+        self.ignored_while_looking = []
 
     def work(self):
         # make sure we have SOME balls
@@ -50,11 +51,34 @@ class CatchPokemon(BaseTask):
 
             random.shuffle(self.pokemon)
 
+        # Filter out already ignored mons
+        if self.bot.hunter_locked_target != None:
+            self.pokemon = filter(lambda x: x["pokemon_id"] not in self.ignored_while_looking, self.pokemon)
+        elif len(self.ignored_while_looking) > 0:
+            self.logger.info("No longer hunting for a Pokémon, resuming normal operations.")
+            # Reset the ignored list when no longer needed.
+            self.ignored_while_looking = []
+
         num_pokemon = len(self.pokemon)
         if num_pokemon > 0:
             # try catching
+            mon_to_catch = self.pokemon.pop()
+
+            if self.bot.hunter_locked_target != None:
+                bounty = self.bot.hunter_locked_target
+                mon_name = Pokemons.name_for(mon_to_catch['pokemon_id'])
+                bounty_name = Pokemons.name_for(bounty['pokemon_id'])
+                if mon_to_catch['encounter_id'] != bounty['encounter_id']:
+                    # This is not the Pokémon you are looking for...
+                    self.logger.info("[Hunter locked a {}] Ignoring a {}".format(bounty_name, mon_name))
+                    self.ignored_while_looking.append(mon_to_catch['pokemon_id'])
+                    if num_pokemon > 1:
+                        return WorkerResult.RUNNING
+                    else:
+                        return WorkerResult.SUCCESS
+
             try:
-                if self.catch_pokemon(self.pokemon.pop()) == WorkerResult.ERROR:
+                if self.catch_pokemon(mon_to_catch) == WorkerResult.ERROR:
                     # give up incase something went wrong in our catch worker (ran out of balls, etc)
                     return WorkerResult.ERROR
                 elif num_pokemon > 1:
