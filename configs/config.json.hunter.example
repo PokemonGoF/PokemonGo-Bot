@@ -7,7 +7,8 @@
                 "max_distance": 1500,
                 "hunt_all": false,
                 "hunt_vip": true,
-                "hunt_pokedex": true
+                "hunt_pokedex": true,
+                "lock_on_target": false
             }
         },
         {

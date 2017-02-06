@@ -33,7 +33,7 @@ class PokemonHunter(BaseTask):
         self.config_hunt_vip = self.config.get("hunt_vip", True)
         self.config_hunt_pokedex = self.config.get("hunt_pokedex", True)
         # Lock on Target; ignore all other Pokémon until we found our target.
-        self.config_lock_on_target = self.config.get("lock_on_target", True)
+        self.config_lock_on_target = self.config.get("lock_on_target", False)
         self.bot.hunter_locked_target = None
 
     def work(self):
