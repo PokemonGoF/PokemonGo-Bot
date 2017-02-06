@@ -94,6 +94,8 @@ class PokemonHunter(BaseTask):
             if self.lost_counter >= 3:
                 self.logger.info("I haven't found %(name)s", self.destination)
                 self.destination = None
+                if self.bot.hunter_locked_target != None:
+                    self.bot.hunter_locked_target = None
             else:
                 self.logger.info("Now searching for %(name)s", self.destination)
 
