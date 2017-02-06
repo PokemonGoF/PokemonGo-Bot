@@ -93,9 +93,8 @@ class PokemonHunter(BaseTask):
 
             if self.lost_counter >= 3:
                 self.logger.info("I haven't found %(name)s", self.destination)
+                self.bot.hunter_locked_target = None
                 self.destination = None
-                if self.bot.hunter_locked_target != None:
-                    self.bot.hunter_locked_target = None
             else:
                 self.logger.info("Now searching for %(name)s", self.destination)
 
@@ -104,6 +103,8 @@ class PokemonHunter(BaseTask):
         elif self.no_log_until < now:
             distance = great_circle(self.bot.position, (self.walker.dest_lat, self.walker.dest_lng)).meters
             self.logger.info("Moving to destination at %s meters: %s", round(distance, 2), self.destination["name"])
+            if self.config_lock_on_target:
+                self.bot.hunter_locked_target = self.destination
             self.no_log_until = now + 30
 
         return WorkerResult.RUNNING
