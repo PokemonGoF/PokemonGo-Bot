@@ -29,6 +29,20 @@ class ApiWrapper(PGoApi, object):
     def __init__(self, config=None):
         self.config = config
         self.gen_device_id()
+        self.capi = float(0.55)
+        self.POGOProtos = float(2.6)
+        # Check if bot is using lastest POGOProtos, only do so if check_niantic_api is set to true
+        # If a new Protos is availible, it mean there's a possibility of a new API
+        latestProtos = float(0.0)
+        if self.config.check_niantic_api is True:
+            if latestProtos > self.POGOProtos:
+                link = "https://raw.githubusercontent.com/AeonLucid/POGOProtos/master/.current-version"
+                f = urllib.urlopen(link)
+                myfile = f.read()
+                latestProtos = float(myfile[0:3])
+                print("\033[1;31;40m We have detected a possibility of a new pogo API. Try upgarding it by using ./setup.sh -u command")
+                print("\033[1;31;40m This message might still be shown after updating unless a new commit is done in Github\n")
+        
         device_info = {
             "device_id": ApiWrapper.DEVICE_ID,
             "device_brand": 'Apple',
@@ -92,16 +106,17 @@ class ApiWrapper(PGoApi, object):
 
     def login(self, provider, username, password):
         # login needs base class "create_request"
+        officalAPI = float(0.0)
         self.useVanillaRequest = True
         if self.config.check_niantic_api is True:
-            capi = '0.45.0'
             link = "https://pgorelease.nianticlabs.com/plfe/version"
             f = urllib.urlopen(link)
             myfile = f.read()
             self.config.check_niantic_api
-            print "Niantic Official API Version:" + myfile
-            if capi not in myfile:
-                print("\033[1;31;40m We have detected a Pokemon API Change. The current API version 0.45.0 is no longer supported. Exiting...")
+            print "Niantic Official API Version:" + myfile.strip()
+            officalAPI = float(myfile[2:6])
+            if officalAPI > self.capi:
+                print("\033[1;31;40m We have detected a Pokemon API Change. The current API version" + str(self.capi) + ".x is no longer supported. Exiting...")
                 sys.exit(1)
         
         try:

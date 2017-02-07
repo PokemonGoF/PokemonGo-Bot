@@ -204,6 +204,8 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event('api_error')
         self.event_manager.register_event('config_error')
+        
+        self.event_manager.register_event('captcha')
 
         self.event_manager.register_event('login_started')
         self.event_manager.register_event('login_failed')
@@ -934,6 +936,7 @@ class PokemonGoBot(object):
                 #self.api.set_hash_lib(self.get_hash_lib())
 
     def login(self):
+        status = {}
         self.event_manager.emit(
             'login_started',
             sender=self,
@@ -979,6 +982,28 @@ class PokemonGoBot(object):
             level='info',
             formatted="Login successful."
         )
+        
+        # When successful login, do a captcha check
+        #Basic Captcha detection, more to come
+        response_dict = self.api.check_challenge()
+        captcha_url = response_dict['responses']['CHECK_CHALLENGE']['challenge_url']
+        if len(captcha_url) > 1:
+            status['message'] = 'Captcha Encountered, URL: {captcha_url}'
+            self.event_manager.emit(
+                'captcha',
+                sender=self,
+                level='critical',
+                formatted=status['message']
+            )
+            sys.exit(1)
+        
+        self.event_manager.emit(
+            'captcha',
+            sender=self,
+            level='info',
+            formatted="Captcha Check Passed"
+        )
+        
         self.heartbeat()
 
     def get_encryption_lib(self):
