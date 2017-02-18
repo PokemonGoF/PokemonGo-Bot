@@ -218,7 +218,8 @@
                        ],
         "Fast Attack(s)":  [
                                "Ember",
-                               "Scratch"
+                               "Scratch",
+							   "Fire Fang"
                            ],
         "Weight":  "19.0 kg",
         "Height":  "1.1 m",
@@ -272,7 +273,9 @@
                        ],
         "Fast Attack(s)":  [
                                "Ember",
-                               "Wing Attack"
+							   "Fire Spin",
+                               "Wing Attack",
+							   "Air Slash"
                            ],
         "Weight":  "90.5 kg",
         "Height":  "1.7 m",
@@ -293,7 +296,8 @@
         "Special Attack(s)":  [
                                   "Dragon Claw",
                                   "Fire Blast",
-                                  "Flamethrower"
+                                  "Flamethrower",
+								  "Overheat"
                               ],
         "BaseAttack":  223,
         "BaseDefense":  176,
@@ -558,6 +562,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Bug Bite",
+							   "Struggle Bug",
                                "Confusion"
                            ],
         "Weight":  "32.0 kg",
@@ -710,6 +715,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Bug Bite",
+							   "Infestation",
                                "Poison Jab"
                            ],
         "Weight":  "29.5 kg",
@@ -863,6 +869,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Steel Wing",
+							   "Air Slash",
                                "Wing Attack"
                            ],
         "Weight":  "39.5 kg",
@@ -883,6 +890,7 @@
                                   ],
         "Special Attack(s)":  [
                                   "Aerial Ace",
+								  "Brave Bird",
                                   "Air Cutter",
                                   "Hurricane"
                               ],
@@ -1013,6 +1021,7 @@
         "Special Attack(s)":  [
                                   "Aerial Ace",
                                   "Drill Peck",
+								  "Sky Attack",
                                   "Twister"
                               ],
         "BaseAttack":  112,
@@ -1056,6 +1065,7 @@
         "Special Attack(s)":  [
                                   "Aerial Ace",
                                   "Drill Run",
+								  "Sky Attack",
                                   "Twister"
                               ],
         "BaseAttack":  182,
@@ -1099,6 +1109,7 @@
                               ],
         "Special Attack(s)":  [
                                   "Gunk Shot",
+								  "Wrap",
                                   "Sludge Bomb",
                                   "Wrap"
                               ],
@@ -1188,6 +1199,7 @@
         "Special Attack(s)":  [
                                   "Discharge",
                                   "Thunder",
+								  "Wild Charge",
                                   "Thunderbolt"
                               ],
         "BaseAttack":  112,
@@ -1209,6 +1221,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Spark",
+							   "Volt Switch",
                                "Thunder Shock"
                            ],
         "Weight":  "30.0 kg",
@@ -1230,6 +1243,7 @@
         "Special Attack(s)":  [
                                   "Brick Break",
                                   "Thunder",
+								  "Wild Charge",
                                   "Thunder Punch"
                               ],
         "BaseAttack":  193,
@@ -1586,6 +1600,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Fury Cutter",
+							   "Iron Tail",
                                "Poison Jab"
                            ],
         "Weight":  "62.0 kg",
@@ -1679,6 +1694,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Pound",
+							   "Charge Beam",
                                "Zen Headbutt"
                            ],
         "Weight":  "40.0 kg",
@@ -1784,6 +1800,8 @@
                                   ],
         "Special Attack(s)":  [
                                   "Fire Blast",
+								  "Solar Beam",
+								  "Overheat",
                                   "Flamethrower",
                                   "Heat Wave"
                               ],
@@ -1837,6 +1855,7 @@
                                   ],
         "Special Attack(s)":  [
                                   "Body Slam",
+								  "Gyro Ball",
                                   "Dazzling Gleam",
                                   "Disarming Voice",
                                   "Play Rough"
@@ -1938,6 +1957,7 @@
         "Special Attack(s)":  [
                                   "Air Cutter",
                                   "Poison Fang",
+								  "Swift",
                                   "Sludge Bomb"
                               ],
         "BaseAttack":  83,
@@ -1982,6 +2002,7 @@
         "Special Attack(s)":  [
                                   "Air Cutter",
                                   "Ominous Wind",
+								  "Shadow Ball",
                                   "Poison Fang"
                               ],
         "BaseAttack":  161,
@@ -2226,6 +2247,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Bug Bite",
+							   "Struggle Bug",
                                "Fury Cutter"
                            ],
         "Weight":  "29.5 kg",
@@ -2319,6 +2341,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Bug Bite",
+							   "Infestation",
                                "Confusion"
                            ],
         "Weight":  "12.5 kg",
@@ -2336,6 +2359,7 @@
         "Special Attack(s)":  [
                                   "Bug Buzz",
                                   "Poison Fang",
+								  "Silver Wind",
                                   "Psychic"
                               ],
         "BaseAttack":  179,
@@ -2359,6 +2383,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Mud Slap",
+							   "Mud Shot",
                                "Scratch"
                            ],
         "Weight":  "0.8 kg",
@@ -2464,6 +2489,7 @@
                               ],
         "Special Attack(s)":  [
                                   "Body Slam",
+								  "Foul Play",
                                   "Dark Pulse",
                                   "Night Slash"
                               ],
@@ -2502,6 +2528,7 @@
                                   ],
         "Special Attack(s)":  [
                                   "Night Slash",
+								  "Foul Play",
                                   "Play Rough",
                                   "Power Gem"
                               ],
@@ -2654,6 +2681,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Karate Chop",
+							   "Counter",
                                "Low Kick"
                            ],
         "Weight":  "32.0 kg",
@@ -2670,6 +2698,7 @@
                                   ],
         "Special Attack(s)":  [
                                   "Cross Chop",
+								  "Close Combat",
                                   "Low Sweep",
                                   "Night Slash"
                               ],
@@ -2739,6 +2768,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Bite",
+							   "Snarl",
                                "Fire Fang"
                            ],
         "Weight":  "155.0 kg",
@@ -2756,6 +2786,8 @@
         "Special Attack(s)":  [
                                   "Bulldoze",
                                   "Fire Blast",
+								  "Crunch",
+								  "Wild Charge",
                                   "Flamethrower"
                               ],
         "BaseAttack":  227,
@@ -2862,6 +2894,7 @@
         "Special Attack(s)":  [
                                   "Bubble Beam",
                                   "Mud Bomb",
+								  "Water Pulse",
                                   "Scald"
                               ],
         "BaseAttack":  130,
@@ -2890,6 +2923,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Bubble",
+							   "Rock Smash",
                                "Mud Shot"
                            ],
         "Weight":  "54.0 kg",
@@ -2911,6 +2945,7 @@
         "Special Attack(s)":  [
                                   "Hydro Pump",
                                   "Ice Punch",
+								  "Dynamic Punch",
                                   "Submission"
                               ],
         "BaseAttack":  182,
@@ -2933,7 +2968,8 @@
                            "Dark"
                        ],
         "Fast Attack(s)":  [
-                               "Zen Headbutt"
+                               "Zen Headbutt",
+							   "Charge Beam"
                            ],
         "Weight":  "19.5 kg",
         "Height":  "0.9 m",
@@ -3054,6 +3090,8 @@
         "Special Attack(s)":  [
                                   "Dazzling Gleam",
                                   "Psychic",
+								  "Futuresight",
+								  "Focus Blast",
                                   "Shadow Ball"
                               ],
         "BaseAttack":  271,
@@ -3077,6 +3115,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Karate Chop",
+							   "Rock Smash",
                                "Low Kick"
                            ],
         "Weight":  "19.5 kg",
@@ -3177,6 +3216,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Bullet Punch",
+							   "Counter",
                                "Karate Chop"
                            ],
         "Weight":  "130.0 kg",
@@ -3197,6 +3237,9 @@
                                   ],
         "Special Attack(s)":  [
                                   "Cross Chop",
+								  "Heavy Slam",
+								  "Dynamic Punch",
+								  "Close Combat",
                                   "Stone Edge",
                                   "Submission"
                               ],
@@ -3278,6 +3321,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Acid",
+							   "Bullet Seed",
                                "Razor Leaf"
                            ],
         "Weight":  "6.4 kg",
@@ -3559,6 +3603,7 @@
                                   "Dig",
                                   "Rock Slide",
                                   "Stone Edge",
+								  "Rock Blast",
                                   "Earthquake"
                               ],
         "BaseAttack":  164,
@@ -3609,6 +3654,7 @@
                                   ],
         "Special Attack(s)":  [
                                   "Ancient Power",
+								  "Rock Blast",
                                   "Earthquake",
                                   "Stone Edge"
                               ],
@@ -3654,6 +3700,7 @@
                               ],
         "Special Attack(s)":  [
                                   "Fire Blast",
+								  "Stomp",
                                   "Flame Charge",
                                   "Flame Wheel"
                               ],
@@ -3678,6 +3725,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Ember",
+							   "Fire Spin",
                                "Low Kick"
                            ],
         "Weight":  "95.0 kg",
@@ -3868,6 +3916,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Spark",
+							   "Charge Beam",
                                "Thunder Shock"
                            ],
         "Weight":  "60.0 kg",
@@ -3884,6 +3933,7 @@
                                   ],
         "Special Attack(s)":  [
                                   "Discharge",
+								  "Zap Cannon",
                                   "Flash Cannon",
                                   "Magnet Bomb"
                               ],
@@ -3911,6 +3961,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Cut",
+							   "Air Slash",
                                "Fury Cutter"
                            ],
         "Weight":  "15.0 kg",
@@ -3970,6 +4021,7 @@
         "Special Attack(s)":  [
                                   "Aerial Ace",
                                   "Drill Peck",
+								  "Brave Bird",
                                   "Swift"
                               ],
         "BaseAttack":  158,
@@ -4013,6 +4065,7 @@
         "Special Attack(s)":  [
                                   "Aerial Ace",
                                   "Air Cutter",
+								  "Brave Bird",
                                   "Drill Peck"
                               ],
         "BaseAttack":  218,
@@ -4058,6 +4111,7 @@
                               ],
         "Special Attack(s)":  [
                                   "Aqua Jet",
+								  "Aurora Beam",
                                   "Aqua Tail",
                                   "Icy Wind",
                                   "Ancient Power"
@@ -4087,6 +4141,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Frost Breath",
+							   "Iron Tail",
                                "Ice Shard"
                            ],
         "Weight":  "120.0 kg",
@@ -4103,7 +4158,9 @@
                                   ],
         "Special Attack(s)":  [
                                   "Aqua Jet",
+								  "Aurora Beam",
                                   "Blizzard",
+								  "Water Pulse",
                                   "Icy Wind"
                               ],
         "BaseAttack":  139,
@@ -4126,7 +4183,8 @@
                        ],
         "Fast Attack(s)":  [
                                "Mud Slap",
-                               "Poison Jab"
+                               "Poison Jab",
+							   "Acid"
                            ],
         "Weight":  "30.0 kg",
         "Height":  "0.9 m",
@@ -4170,6 +4228,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Lick",
+							   "Infestation",
                                "Poison Jab",
                                "Acid"
                            ],
@@ -4275,7 +4334,9 @@
                                   ],
         "Special Attack(s)":  [
                                   "Blizzard",
+								  "Aurora Beam",
                                   "Hydro Pump",
+								  "Avalanche",
                                   "Icy Wind"
                               ],
         "BaseAttack":  186,
@@ -4303,6 +4364,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Lick",
+							   "Astonish",
                                "Sucker Punch"
                            ],
         "Weight":  "0.1 kg",
@@ -4328,6 +4390,7 @@
                               ],
         "Special Attack(s)":  [
                                   "Dark Pulse",
+								  "Night Shade",
                                   "Ominous Wind",
                                   "Sludge Bomb"
                               ],
@@ -4356,6 +4419,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Lick",
+							   "Astonish",
                                "Shadow Claw"
                            ],
         "Weight":  "0.1 kg",
@@ -4384,6 +4448,7 @@
         "Special Attack(s)":  [
                                   "Dark Pulse",
                                   "Shadow Ball",
+								  "Shadow Punch",
                                   "Sludge Bomb"
                               ],
         "BaseAttack":  223,
@@ -4411,6 +4476,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Shadow Claw",
+							   "Hex",
                                "Sucker Punch"
                            ],
         "Weight":  "40.5 kg",
@@ -4431,7 +4497,9 @@
                                   ],
         "Special Attack(s)":  [
                                   "Dark Pulse",
+								  "Sludge Wave",
                                   "Shadow Ball",
+								  "Focus Blast",
                                   "Sludge Bomb"
                               ],
         "BaseAttack":  261,
@@ -4471,7 +4539,9 @@
                   },
         "Special Attack(s)":  [
                                   "Iron Head",
+								  "Sand Tomb",
                                   "Rock Slide",
+								  "Heavy Slam",
                                   "Stone Edge"
                               ],
         "BaseAttack":  85,
@@ -4557,6 +4627,8 @@
         "Special Attack(s)":  [
                                   "Psychic",
                                   "Psyshock",
+								  "Focus Blast",
+								  "Futuresight",
                                   "Shadow Ball"
                               ],
         "BaseAttack":  144,
@@ -4623,6 +4695,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Metal Claw",
+							   "Bubble",
                                "Mud Shot"
                            ],
         "Weight":  "60.0 kg",
@@ -4683,6 +4756,7 @@
         "Special Attack(s)":  [
                                   "Discharge",
                                   "Signal Beam",
+								  "Gyro Ball",
                                   "Thunderbolt"
                               ],
         "BaseAttack":  109,
@@ -4704,6 +4778,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Spark",
+							   "Volt Switch",
                                "Tackle"
                            ],
         "Weight":  "66.6 kg",
@@ -4750,7 +4825,8 @@
                            "Dark"
                        ],
         "Fast Attack(s)":  [
-                               "Confusion"
+                               "Confusion",
+							   "Bullet Seed"
                            ],
         "Weight":  "2.5 kg",
         "Height":  "0.4 m",
@@ -4802,6 +4878,8 @@
                        ],
         "Fast Attack(s)":  [
                                "Confusion",
+							   "Bullet Seed",
+							   "Extrasensory",
                                "Zen Headbutt"
                            ],
         "Weight":  "120.0 kg",
@@ -4943,6 +5021,7 @@
                                   ],
         "Special Attack(s)":  [
                                   "Brick Break",
+								  "Close Combat",
                                   "Low Sweep",
                                   "Stone Edge",
                                   "Stomp"
@@ -4968,6 +5047,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Bullet Punch",
+							   "Counter",
                                "Rock Smash"
                            ],
         "Weight":  "50.2 kg",
@@ -4984,6 +5064,7 @@
                                   ],
         "Special Attack(s)":  [
                                   "Brick Break",
+								  "Close Combat",
                                   "Fire Punch",
                                   "Ice Punch",
                                   "Thunder Punch"
@@ -5039,7 +5120,9 @@
                            "Psychic"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Tackle",
+							   "Infestation",
+							   "Acid"
                            ],
         "Weight":  "1.0 kg",
         "Height":  "0.6 m",
@@ -5083,7 +5166,8 @@
                        ],
         "Fast Attack(s)":  [
                                "Tackle",
-                               "Acid"
+                               "Acid",
+							   "Infestation"
                            ],
         "Weight":  "9.5 kg",
         "Height":  "1.2 m",
@@ -5229,7 +5313,8 @@
         "Special Attack(s)":  [
                                   "Dazzling Gleam",
                                   "Hyper Beam",
-                                  "Psychic"
+                                  "Psychic",
+								  "Psybeam"
                               ],
         "BaseAttack":  60,
         "BaseDefense":  176,
@@ -5253,7 +5338,8 @@
                            "Bug"
                        ],
         "Fast Attack(s)":  [
-                               "Vine Whip"
+                               "Vine Whip",
+							   "Infestation"
                            ],
         "Weight":  "35.0 kg",
         "Height":  "1.0 m",
@@ -5263,6 +5349,7 @@
                   },
         "Special Attack(s)":  [
                                   "Power Whip",
+								  "Grass Knot",
                                   "Sludge Bomb",
                                   "Solar Beam"
                               ],
@@ -5295,7 +5382,9 @@
                   },
         "Special Attack(s)":  [
                                   "Brick Break",
+								  "Crunch",
                                   "Earthquake",
+								  "Outrage",
                                   "Stomp"
                               ],
         "BaseAttack":  181,
@@ -5382,6 +5471,7 @@
                                   ],
         "Special Attack(s)":  [
                                   "Blizzard",
+								  "Aurora Beam",
                                   "Dragon Pulse",
                                   "Hydro Pump"
                               ],
@@ -5465,6 +5555,8 @@
                                   ],
         "Special Attack(s)":  [
                                   "Drill Run",
+								  "Ice Beam",
+								  "Water Pulse",
                                   "Icy Wind",
                                   "Megahorn"
                               ],
@@ -5539,6 +5631,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Tackle",
+							   "Hidden Power",
                                "Water Gun",
                                "Quick Attack"
                            ],
@@ -5623,6 +5716,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Fury Cutter",
+							   "Air Slash",
                                "Steel Wing"
                            ],
         "Weight":  "56.0 kg",
@@ -5633,6 +5727,7 @@
                   },
         "Special Attack(s)":  [
                                   "Bug Buzz",
+								  "Aerial Ace",
                                   "Night Slash",
                                   "X Scissor"
                               ],
@@ -5663,6 +5758,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Frost Breath",
+							   "Confusion",
                                "Pound"
                            ],
         "Weight":  "40.6 kg",
@@ -5680,6 +5776,7 @@
         "Special Attack(s)":  [
                                   "Draining Kiss",
                                   "Ice Punch",
+								  "Avalanche",
                                   "Psyshock"
                               ],
         "BaseAttack":  223,
@@ -5781,6 +5878,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Fury Cutter",
+							   "Bug Bite",
                                "Rock Smash"
                            ],
         "Weight":  "55.0 kg",
@@ -5791,6 +5889,7 @@
                   },
         "Special Attack(s)":  [
                                   "Submission",
+								  "Close Combat",
                                   "Vice Grip",
                                   "X Scissor"
                               ],
@@ -5890,7 +5989,8 @@
                        ],
         "Fast Attack(s)":  [
                                "Bite",
-                               "Dragon Breath"
+                               "Dragon Breath",
+							   "Dragon Tail"
                            ],
         "Weight":  "235.0 kg",
         "Height":  "6.5 m",
@@ -5906,6 +6006,8 @@
                                   ],
         "Special Attack(s)":  [
                                   "Dragon Pulse",
+								  "Crunch",
+								  "Outrage",
                                   "Hydro Pump",
                                   "Twister"
                               ],
@@ -5934,6 +6036,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Frost Breath",
+							   "Water Gun",
                                "Ice Shard"
                            ],
         "Weight":  "220.0 kg",
@@ -5945,6 +6048,7 @@
         "Special Attack(s)":  [
                                   "Blizzard",
                                   "Dragon Pulse",
+								  "Hydro Pump",
                                   "Ice Beam"
                               ],
         "BaseAttack":  186,
@@ -6091,7 +6195,8 @@
                            "Ground"
                        ],
         "Fast Attack(s)":  [
-                               "Thunder Shock"
+                               "Thunder Shock",
+							   "Volt Switch"
                            ],
         "Weight":  "24.5 kg",
         "Height":  "0.8 m",
@@ -6130,7 +6235,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Ember"
+                               "Ember",
+							   "Fire Spin"
                            ],
         "Weight":  "25.0 kg",
         "Height":  "0.9 m",
@@ -6147,6 +6253,7 @@
         "Special Attack(s)":  [
                                   "Fire Blast",
                                   "Flamethrower",
+								  "Overheat",
                                   "Heat Wave"
                               ],
         "BaseAttack":  246,
@@ -6168,7 +6275,9 @@
                        ],
         "Fast Attack(s)":  [
                                "Tackle",
+							   "Charge Beam",
                                "Quick Attack",
+							   "Hidden Power",
                                "Zen Headbutt"
                            ],
         "Weight":  "36.5 kg",
@@ -6179,7 +6288,10 @@
                   },
         "Special Attack(s)":  [
                                   "Discharge",
+								  "Solar Beam",
+								  "Hyper Beam",
                                   "Psybeam",
+								  "Zap Cannon",
                                   "Signal Beam"
                               ],
         "BaseAttack":  153,
@@ -6229,6 +6341,8 @@
         "Special Attack(s)":  [
                                   "Ancient Power",
                                   "Brine",
+								  "Bubble Beam",
+								  "Rock Blast",
                                   "Rock Tomb"
                               ],
         "BaseAttack":  155,
@@ -6274,6 +6388,7 @@
         "Special Attack(s)":  [
                                   "Ancient Power",
                                   "Hydro Pump",
+								  "Rock Blast",
                                   "Rock Slide"
                               ],
         "BaseAttack":  207,
@@ -6350,6 +6465,7 @@
                        ],
         "Fast Attack(s)":  [
                                "Fury Cutter",
+							   "Rock Smash",
                                "Mud Shot"
                            ],
         "Weight":  "40.5 kg",
@@ -6437,6 +6553,7 @@
                   },
         "Special Attack(s)":  [
                                   "Body Slam",
+								  "Heavy Slam",
                                   "Earthquake",
                                   "Hyper Beam"
                               ],
@@ -6499,7 +6616,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Thunder Shock"
+                               "Thunder Shock",
+							   "Charge Beam"
                            ],
         "Weight":  "52.6 kg",
         "Height":  "1.6 m",
@@ -6509,6 +6627,7 @@
                   },
         "Special Attack(s)":  [
                                   "Discharge",
+								  "Zap Cannon",
                                   "Thunder",
                                   "Thunderbolt"
                               ],
@@ -6535,7 +6654,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Ember"
+                               "Ember",
+							   "Fire Spin"
                            ],
         "Weight":  "60.0 kg",
         "Height":  "2.0 m",
@@ -6545,6 +6665,7 @@
                   },
         "Special Attack(s)":  [
                                   "Fire Blast",
+								  "Overheat",
                                   "Flamethrower",
                                   "Heat Wave"
                               ],
@@ -6568,7 +6689,8 @@
                            "Fairy"
                        ],
         "Fast Attack(s)":  [
-                               "Dragon Breath"
+                               "Dragon Breath",
+							   "Iron Tail"
                            ],
         "Weight":  "3.3 kg",
         "Height":  "1.8 m",
@@ -6616,7 +6738,8 @@
                            "Fairy"
                        ],
         "Fast Attack(s)":  [
-                               "Dragon Breath"
+                               "Dragon Breath",
+							   "Iron Tail"
                            ],
         "Weight":  "16.5 kg",
         "Height":  "4.0 m",
@@ -6692,6 +6815,8 @@
         "Special Attack(s)":  [
                                   "Dragon Claw",
                                   "Dragon Pulse",
+								  "Hurricane",
+								  "Outrage",
                                   "Hyper Beam"
                               ],
         "BaseAttack":  263,
@@ -6726,7 +6851,8 @@
         "Special Attack(s)":  [
                                   "Hyper Beam",
                                   "Psychic",
-                                  "Shadow Ball"
+                                  "Shadow Ball",
+								  "Focus Blast"
                               ],
         "BaseAttack":  330,
         "BaseDefense":  200,
@@ -6758,12 +6884,15 @@
                   },
         "Special Attack(s)":  [
                                   "Blizzard",
+								  "Hurricane",
                                   "Dragon Pulse",
                                   "Earthquake",
                                   "Fire Blast",
                                   "Hyper Beam",
                                   "Psychic",
                                   "Solar Beam",
+								  "Focus Blast",
+								  "Moonblast",
                                   "Thunder"
                               ],
         "BaseAttack":  210,
@@ -6788,7 +6917,7 @@
                            "Bug"
                        ],
         "Fast Attack(s)":  [
-                               "Razor Leaf",
+                               "Vine Whip",
                                "Tackle"
                            ],
         "Weight":  "6.4 kg",
@@ -6813,7 +6942,9 @@
                                   }
                               ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Energy Ball",
+                                  "Grass Knot",
+                                  "Body Slam"
                               ],
         "BaseAttack":  92,
         "BaseDefense":  122,
@@ -6864,7 +6995,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Energy Ball",
+                                  "Grass Knot",
+                                  "Ancient Power"
                               ],
         "BaseAttack":  122,
         "BaseDefense":  155,
@@ -6908,7 +7041,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Petal Blizzard",
+                                  "Solar Beam",
+                                  "Earthquake"
                               ],
         "BaseAttack":  168,
         "BaseDefense":  202,
@@ -6940,7 +7075,9 @@
                       "FamilyID":  155
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Flame Charge",
+                                  "Swift",
+                                  "Flamethrower"
                               ],
         "BaseAttack":  116,
         "BaseDefense":  96,
@@ -7020,7 +7157,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Fire Blast",
+                                  "Overheat",
+                                  "Solar Beam"
                               ],
         "BaseAttack":  223,
         "BaseDefense":  176,
@@ -7051,7 +7190,9 @@
                       "FamilyID":  158
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Crunch",
+                                  "Aqua Jet",
+                                  "Water Pulse"
                               ],
         "BaseAttack":  117,
         "BaseDefense":  116,
@@ -7088,7 +7229,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Crunch",
+                                  "Ice Punch",
+                                  "Water Pulse"
                               ],
         "BaseAttack":  150,
         "BaseDefense":  151,
@@ -7129,7 +7272,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Crunch",
+                                  "Hydro Pump",
+                                  "Ice Beam"
                               ],
         "BaseAttack":  205,
         "BaseDefense":  197,
@@ -7149,8 +7294,8 @@
                            "Fighting"
                        ],
         "Fast Attack(s)":  [
-                               "Quick Attack",
-                               "Scratch"
+                               "Scratch",
+                               "Quick Attack"
                            ],
         "Weight":  "6.0 kg",
         "Height":  "0.8 m",
@@ -7159,7 +7304,9 @@
                       "FamilyID":  161
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Dig",
+                                  "Brick Break",
+                                  "Grass Knot"
                               ],
         "BaseAttack":  79,
         "BaseDefense":  77,
@@ -7195,7 +7342,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Dig",
+                                  "Brick Break",
+                                  "Hyper Beam"
                               ],
         "BaseAttack":  148,
         "BaseDefense":  130,
@@ -7220,8 +7369,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Peck",
-                               "Tackle"
+                               "Feint Attack",
+                               "Peck"
                            ],
         "Weight":  "21.2 kg",
         "Height":  "0.7 m",
@@ -7230,7 +7379,9 @@
                       "FamilyID":  163
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Aerial Ace",
+								  "Sky Attack",
+								  "Night Shade"
                               ],
         "BaseAttack":  67,
         "BaseDefense":  101,
@@ -7255,8 +7406,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Peck",
-                               "Tackle"
+                               "Wing Attack",
+                               "Extrasensory"
                            ],
         "Weight":  "40.8 kg",
         "Height":  "1.6 m",
@@ -7271,7 +7422,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Psychic",
+                                  "Sky Attack",
+                                  "Night Shade"
                               ],
         "BaseAttack":  145,
         "BaseDefense":  179,
@@ -7298,8 +7451,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Bug Bite",
-                               "Tackle"
+                               "Tackle",
+                               "Bug Bite"
                            ],
         "Weight":  "10.8 kg",
         "Height":  "1.0 m",
@@ -7308,7 +7461,9 @@
                       "FamilyID":  165
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Silver Wind",
+                                  "Swift",
+                                  "Aerial Ace"
                               ],
         "BaseAttack":  72,
         "BaseDefense":  142,
@@ -7335,8 +7490,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Bug Bite",
-                               "Tackle"
+                               "Struggle Bug",
+                               "Bug Bite"
                            ],
         "Weight":  "35.6 kg",
         "Height":  "1.4 m",
@@ -7351,7 +7506,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Bug Buzz",
+                                  "Silver Wind",
+                                  "Aerial Ace"
                               ],
         "BaseAttack":  107,
         "BaseDefense":  209,
@@ -7377,8 +7534,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Bug Bite",
-                               "Poison Sting"
+                               "Poison Sting",
+                               "Bug Bite"
                            ],
         "Weight":  "8.5 kg",
         "Height":  "0.5 m",
@@ -7387,7 +7544,9 @@
                       "FamilyID":  167
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Night Slash",
+                                  "Signal Beam",
+                                  "Cross Poison"
                               ],
         "BaseAttack":  105,
         "BaseDefense":  73,
@@ -7413,8 +7572,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Bug Bite",
-                               "Poison Sting"
+                               "Poison Sting",
+                               "Infestation"
                            ],
         "Weight":  "33.5 kg",
         "Height":  "1.1 m",
@@ -7429,7 +7588,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Shadow Sneak",
+                                  "Megahorn",
+                                  "Cross Poison"
                               ],
         "BaseAttack":  161,
         "BaseDefense":  128,
@@ -7455,8 +7616,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Bite",
-                               "Wing Attack"
+                               "Air Slash",
+                               "Bite"
                            ],
         "Weight":  "75.0 kg",
         "Height":  "1.8 m",
@@ -7475,7 +7636,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Shadow Ball",
+                                  "Air Cutter",
+                                  "Sludge Bomb"
                               ],
         "BaseAttack":  194,
         "BaseDefense":  178,
@@ -7509,7 +7672,9 @@
                       "FamilyID":  170
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Water Pulse",
+                                  "Thunderbolt",
+                                  "Bubble Beam"
                               ],
         "BaseAttack":  106,
         "BaseDefense":  106,
@@ -7533,8 +7698,8 @@
                            "Ground"
                        ],
         "Fast Attack(s)":  [
-                               "Spark",
-                               "Water Gun"
+                               "Water Gun",
+                               "Charge Beam"
                            ],
         "Weight":  "22.5 kg",
         "Height":  "1.2 m",
@@ -7549,7 +7714,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Hydro Pump",
+                                  "Thunderbolt",
+                                  "Thunder"
                               ],
         "BaseAttack":  146,
         "BaseDefense":  146,
@@ -7569,8 +7736,8 @@
                            "Ground"
                        ],
         "Fast Attack(s)":  [
-                               "Quick Attack",
-                               "Thunder Shock"
+                               "Thunder Shock",
+							   "Quick Attack"
                            ],
         "Weight":  "2.0 kg",
         "Height":  "0.3 m",
@@ -7594,9 +7761,9 @@
                                   }
                               ],
         "Special Attack(s)":  [
+                                  "Thunderbolt",
                                   "Disarming Voice",
-                                  "Thunder Punch",
-                                  "Thunderbolt"
+                                  "Thunder Punch"
                               ],
         "BaseAttack":  77,
         "BaseDefense":  63,
@@ -7642,8 +7809,9 @@
                                   }
                               ],
         "Special Attack(s)":  [
-                                  "Body Slam",
-                                  "Psychic",
+                                  "Grass Knot",
+								  "Body Slam",
+                                  "Psyshock",
                                   "Signal Beam"
                               ],
         "BaseAttack":  75,
@@ -7668,8 +7836,8 @@
                            "Steel"
                        ],
         "Fast Attack(s)":  [
-                               "Feint Attack",
-                               "Pound"
+                               "Pound",
+                               "Feint Attack"
                            ],
         "Weight":  "1.0 kg",
         "Height":  "0.3 m",
@@ -7693,9 +7861,10 @@
                                   }
                               ],
         "Special Attack(s)":  [
-                                  "Body Slam",
-                                  "Psychic",
-                                  "Shadow Ball"
+                                  "Wild Charge",
+								  "Body Slam",
+                                  "Shadow Ball",
+                                  "Psychic"
                               ],
         "BaseAttack":  69,
         "BaseDefense":  34,
@@ -7716,8 +7885,9 @@
                            "Steel"
                        ],
         "Fast Attack(s)":  [
+                               "Hidden Power",
                                "Peck",
-                               "Zen Headbutt"
+							   "Zen Headbutt"
                            ],
         "Weight":  "1.5 kg",
         "Height":  "0.3 m",
@@ -7738,8 +7908,8 @@
                               ],
         "Special Attack(s)":  [
                                   "Ancient Power",
-                                  "Dazzling Gleam",
-                                  "Psyshock"
+                                  "Psyshock",
+                                  "Dazzling Gleam"
                               ],
         "BaseAttack":  67,
         "BaseDefense":  116,
@@ -7766,8 +7936,10 @@
                            "Steel"
                        ],
         "Fast Attack(s)":  [
-                               "Steel Wing",
-                               "Zen Headbutt"
+                               "Extrasensory",
+							   "Steel Wing",
+							   "Zen Headbutt",
+                               "Hidden Power"
                            ],
         "Weight":  "3.2 kg",
         "Height":  "0.6 m",
@@ -7782,9 +7954,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Aerial Ace",
                                   "Ancient Power",
-                                  "Dazzling Gleam"
+                                  "Dazzling Gleam",
+                                  "Aerial Ace"
                               ],
         "BaseAttack":  139,
         "BaseDefense":  191,
@@ -7811,7 +7983,8 @@
                            "Dark"
                        ],
         "Fast Attack(s)":  [
-                               "Peck"
+                               "Peck",
+                               "Quick Attack"
                            ],
         "Weight":  "2.0 kg",
         "Height":  "0.2 m",
@@ -7820,7 +7993,9 @@
                       "FamilyID":  177
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Night Shade",
+                                  "Psyshock",
+                                  "Drill Peck"
                               ],
         "BaseAttack":  134,
         "BaseDefense":  89,
@@ -7847,7 +8022,8 @@
                            "Dark"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Air Slash",
+                               "Feint Attack"
                            ],
         "Weight":  "15.0 kg",
         "Height":  "1.5 m",
@@ -7862,7 +8038,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Ominous Wind",
+                                  "Futuresight",
+                                  "Aerial Ace"
                               ],
         "BaseAttack":  192,
         "BaseDefense":  146,
@@ -7882,7 +8060,8 @@
                            "Ground"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Tackle",
+                               "Thunder Shock"
                            ],
         "Weight":  "7.8 kg",
         "Height":  "0.6 m",
@@ -7891,7 +8070,9 @@
                       "FamilyID":  179
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Body Slam",
+                                  "Thunderbolt",
+                                  "Discharge"
                               ],
         "BaseAttack":  114,
         "BaseDefense":  82,
@@ -7911,7 +8092,8 @@
                            "Ground"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Tackle",
+                               "Charge Beam"
                            ],
         "Weight":  "13.3 kg",
         "Height":  "0.8 m",
@@ -7926,7 +8108,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Power Gem",
+                                  "Thunderbolt",
+                                  "Discharge"
                               ],
         "BaseAttack":  145,
         "BaseDefense":  112,
@@ -7946,7 +8130,8 @@
                            "Ground"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Charge Beam",
+                               "Volt Switch"
                            ],
         "Weight":  "61.5 kg",
         "Height":  "1.4 m",
@@ -7965,7 +8150,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Zap Cannon",
+                                  "Focus Blast",
+                                  "Thunder"
                               ],
         "BaseAttack":  211,
         "BaseDefense":  172,
@@ -7989,7 +8176,8 @@
                            "Bug"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Razor Leaf",
+                               "Acid"
                            ],
         "Weight":  "5.8 kg",
         "Height":  "0.4 m",
@@ -8008,7 +8196,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Leaf Blade",
+                                  "Petal Blizzard",
+                                  "Dazzling Gleam"
                               ],
         "BaseAttack":  169,
         "BaseDefense":  189,
@@ -8033,7 +8223,8 @@
                            "Poison"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Tackle",
+                               "Bubble"
                            ],
         "Weight":  "8.5 kg",
         "Height":  "0.4 m",
@@ -8042,7 +8233,9 @@
                       "FamilyID":  183
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Bubble Beam",
+                                  "Aqua Tail",
+                                  "Body Slam"
                               ],
         "BaseAttack":  37,
         "BaseDefense":  93,
@@ -8067,7 +8260,8 @@
                            "Poison"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Rock Smash",
+                               "Bubble"
                            ],
         "Weight":  "28.5 kg",
         "Height":  "0.8 m",
@@ -8082,7 +8276,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Play Rough",
+                                  "Hydro Pump",
+                                  "Ice Beam"
                               ],
         "BaseAttack":  112,
         "BaseDefense":  152,
@@ -8106,7 +8302,8 @@
                            "Steel"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Rock Throw",
+                               "Counter"
                            ],
         "Weight":  "38.0 kg",
         "Height":  "1.2 m",
@@ -8115,7 +8312,9 @@
                       "FamilyID":  185
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Stone Edge",
+                                  "Earthquake",
+                                  "Rock Slide"
                               ],
         "BaseAttack":  167,
         "BaseDefense":  198,
@@ -8136,7 +8335,8 @@
                            "Grass"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Mud Shot",
+                               "Bubble"
                            ],
         "Weight":  "33.9 kg",
         "Height":  "1.1 m",
@@ -8155,7 +8355,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Hydro Pump",
+                                  "Blizzard",
+                                  "Earthquake"
                               ],
         "BaseAttack":  174,
         "BaseDefense":  192,
@@ -8182,7 +8384,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Tackle",
+                               "Bullet Seed"
                            ],
         "Weight":  "0.5 kg",
         "Height":  "0.4 m",
@@ -8191,7 +8394,9 @@
                       "FamilyID":  187
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Grass Knot",
+                                  "Dazzling Gleam",
+                                  "Seed Bomb"
                               ],
         "BaseAttack":  67,
         "BaseDefense":  101,
@@ -8218,7 +8423,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Tackle",
+                               "Bullet Seed"
                            ],
         "Weight":  "1.0 kg",
         "Height":  "0.6 m",
@@ -8233,7 +8439,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Grass Knot",
+                                  "Dazzling Gleam",
+                                  "Energy Ball"
                               ],
         "BaseAttack":  91,
         "BaseDefense":  127,
@@ -8260,7 +8468,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Infestation",
+                               "Bullet Seed"
                            ],
         "Weight":  "3.0 kg",
         "Height":  "0.8 m",
@@ -8279,7 +8488,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Energy Ball",
+                                  "Dazzling Gleam",
+                                  "Solar Beam"
                               ],
         "BaseAttack":  118,
         "BaseDefense":  197,
@@ -8299,7 +8510,8 @@
                            "Fighting"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Scratch",
+                               "Astonish"
                            ],
         "Weight":  "11.5 kg",
         "Height":  "0.8 m",
@@ -8308,7 +8520,9 @@
                       "FamilyID":  190
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Low Sweep",
+                                  "Swift",
+                                  "Aerial Ace"
                               ],
         "BaseAttack":  136,
         "BaseDefense":  112,
@@ -8332,7 +8546,8 @@
                            "Bug"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Razor Leaf",
+                               "Cut"
                            ],
         "Weight":  "1.8 kg",
         "Height":  "0.3 m",
@@ -8341,7 +8556,9 @@
                       "FamilyID":  191
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Energy Ball",
+                                  "Grass Knot",
+                                  "Seed Bomb"
                               ],
         "BaseAttack":  55,
         "BaseDefense":  55,
@@ -8365,7 +8582,8 @@
                            "Bug"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Razor Leaf",
+                               "Bullet Seed"
                            ],
         "Weight":  "8.5 kg",
         "Height":  "0.8 m",
@@ -8380,7 +8598,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Solar Beam",
+                                  "Petal Blizzard",
+                                  "Sludge Bomb"
                               ],
         "BaseAttack":  185,
         "BaseDefense":  148,
@@ -8407,7 +8627,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Quick Attack",
+                               "Wing Attack"
                            ],
         "Weight":  "38.0 kg",
         "Height":  "1.2 m",
@@ -8416,7 +8637,9 @@
                       "FamilyID":  193
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Ancient Power",
+                                  "Aerial Ace",
+                                  "Silver Wind"
                               ],
         "BaseAttack":  154,
         "BaseDefense":  94,
@@ -8439,7 +8662,8 @@
                            "Grass"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Water Gun",
+                               "Mud Shot"
                            ],
         "Weight":  "8.5 kg",
         "Height":  "0.4 m",
@@ -8448,7 +8672,9 @@
                       "FamilyID":  194
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Mud Bomb",
+                                  "Dig",
+                                  "Body Slam"
                               ],
         "BaseAttack":  75,
         "BaseDefense":  75,
@@ -8471,7 +8697,8 @@
                            "Grass"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Water Gun",
+                               "Mud Shot"
                            ],
         "Weight":  "75.0 kg",
         "Height":  "1.4 m",
@@ -8486,7 +8713,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Sludge Bomb",
+                                  "Earthquake",
+                                  "Stone Edge"
                               ],
         "BaseAttack":  152,
         "BaseDefense":  152,
@@ -8524,7 +8753,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Psybeam",
+                                  "Psychic",
+                                  "Futuresight"
                               ],
         "BaseAttack":  261,
         "BaseDefense":  194,
@@ -8546,8 +8777,8 @@
                            "Fairy"
                        ],
         "Fast Attack(s)":  [
-                               "Bite",
-                               "Feint Attack"
+                               "Feint Attack",
+                               "Snarl"
                            ],
         "Weight":  "27.0 kg",
         "Height":  "1.0 m",
@@ -8562,7 +8793,8 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Dark Pulse",
+                                  "Foul Play"
                               ],
         "BaseAttack":  126,
         "BaseDefense":  250,
@@ -8588,7 +8820,8 @@
                            "Fairy"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Peck",
+                               "Feint Attack"
                            ],
         "Weight":  "2.1 kg",
         "Height":  "0.5 m",
@@ -8597,7 +8830,9 @@
                       "FamilyID":  198
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Drill Peck",
+                                  "Foul Play",
+                                  "Dark Pulse"
                               ],
         "BaseAttack":  175,
         "BaseDefense":  87,
@@ -8624,7 +8859,8 @@
                            "Dark"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Water Gun",
+                               "Confusion"
                            ],
         "Weight":  "79.5 kg",
         "Height":  "2.0 m",
@@ -8639,7 +8875,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Blizzard",
+                                  "Psychic",
+                                  "Fire Blast"
                               ],
         "BaseAttack":  177,
         "BaseDefense":  194,
@@ -8660,7 +8898,8 @@
                            "Dark"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Astonish",
+                               "Hex"
                            ],
         "Weight":  "1.0 kg",
         "Height":  "0.7 m",
@@ -8669,7 +8908,9 @@
                       "FamilyID":  200
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Shadow Sneak",
+                                  "Dark Pulse",
+                                  "Ominous Wind"
                               ],
         "BaseAttack":  167,
         "BaseDefense":  167,
@@ -8691,7 +8932,7 @@
                            "Dark"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Hidden Power"
                            ],
         "Weight":  "5.0 kg",
         "Height":  "0.5 m",
@@ -8722,7 +8963,8 @@
                            "Dark"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Counter",
+                               "Splash"
                            ],
         "Weight":  "28.5 kg",
         "Height":  "1.3 m",
@@ -8731,7 +8973,7 @@
                       "FamilyID":  202
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Mirror Coat"
                               ],
         "BaseAttack":  60,
         "BaseDefense":  106,
@@ -8755,7 +8997,8 @@
                            "Dark"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Tackle",
+                               "Confusion"
                            ],
         "Weight":  "41.5 kg",
         "Height":  "1.5 m",
@@ -8764,7 +9007,9 @@
                       "FamilyID":  203
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Psychic",
+                                  "Thunderbolt",
+                                  "Mirror Coat"
                               ],
         "BaseAttack":  182,
         "BaseDefense":  133,
@@ -8786,7 +9031,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Tackle",
+                               "Bug Bite"
                            ],
         "Weight":  "7.2 kg",
         "Height":  "0.6 m",
@@ -8795,7 +9041,9 @@
                       "FamilyID":  204
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Gyro Ball",
+                                  "Rock Tomb",
+                                  "Sand Tomb"
                               ],
         "BaseAttack":  108,
         "BaseDefense":  146,
@@ -8818,7 +9066,8 @@
                            "Fire"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Bug Bite",
+                               "Struggle Bug"
                            ],
         "Weight":  "125.8 kg",
         "Height":  "1.2 m",
@@ -8833,7 +9082,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Heavy Slam",
+                                  "Earthquake",
+                                  "Rock Tomb"
                               ],
         "BaseAttack":  161,
         "BaseDefense":  242,
@@ -8853,7 +9104,8 @@
                            "Fighting"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Bite",
+                               "Astonish"
                            ],
         "Weight":  "14.0 kg",
         "Height":  "1.5 m",
@@ -8862,7 +9114,9 @@
                       "FamilyID":  206
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Dig",
+                                  "Rock Slide",
+                                  "Drill Run"
                               ],
         "BaseAttack":  131,
         "BaseDefense":  131,
@@ -8886,7 +9140,8 @@
                            "Ice"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Fury Cutter",
+                               "Wing Attack"
                            ],
         "Weight":  "64.8 kg",
         "Height":  "1.1 m",
@@ -8895,7 +9150,9 @@
                       "FamilyID":  207
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Dig",
+                                  "Aerial Ace",
+                                  "Night Slash"
                               ],
         "BaseAttack":  143,
         "BaseDefense":  204,
@@ -8921,7 +9178,8 @@
                            "Ground"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Iron Tail",
+                               "Dragon Tail"
                            ],
         "Weight":  "400.0 kg",
         "Height":  "9.2 m",
@@ -8936,7 +9194,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Earthquake",
+                                  "Heavy Slam",
+                                  "Crunch"
                               ],
         "BaseAttack":  148,
         "BaseDefense":  333,
@@ -8957,7 +9217,8 @@
                            "Steel"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Tackle",
+                               "Bite"
                            ],
         "Weight":  "7.8 kg",
         "Height":  "0.6 m",
@@ -8966,7 +9227,9 @@
                       "FamilyID":  209
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Crunch",
+                                  "Dazzling Gleam",
+                                  "Brick Break"
                               ],
         "BaseAttack":  137,
         "BaseDefense":  89,
@@ -8987,7 +9250,8 @@
                            "Steel"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Bite",
+                               "Snarl"
                            ],
         "Weight":  "48.7 kg",
         "Height":  "1.4 m",
@@ -9002,7 +9266,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Crunch",
+                                  "Play Rough",
+                                  "Close Combat"
                               ],
         "BaseAttack":  212,
         "BaseDefense":  137,
@@ -9027,7 +9293,8 @@
                            "Psychic"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Poison Sting",
+                               "Water Gun"
                            ],
         "Weight":  "3.9 kg",
         "Height":  "0.5 m",
@@ -9036,7 +9303,9 @@
                       "FamilyID":  211
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Aqua Tail",
+                                  "Ice Beam",
+                                  "Sludge Wave"
                               ],
         "BaseAttack":  184,
         "BaseDefense":  148,
@@ -9059,7 +9328,8 @@
                            "Fire"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Bullet Punch",
+                               "Fury Cutter"
                            ],
         "Weight":  "118.0 kg",
         "Height":  "1.8 m",
@@ -9074,7 +9344,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "X Scissor",
+                                  "Iron Head",
+                                  "Night Slash"
                               ],
         "BaseAttack":  236,
         "BaseDefense":  191,
@@ -9099,7 +9371,8 @@
                            "Steel"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Struggle Bug",
+                               "Rock Throw"
                            ],
         "Weight":  "20.5 kg",
         "Height":  "0.6 m",
@@ -9108,7 +9381,9 @@
                       "FamilyID":  213
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Rock Blast",
+                                  "Stone Edge",
+                                  "Gyro Ball"
                               ],
         "BaseAttack":  17,
         "BaseDefense":  396,
@@ -9134,7 +9409,8 @@
                            "Fairy"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Counter",
+                               "Struggle Bug"
                            ],
         "Weight":  "54.0 kg",
         "Height":  "1.5 m",
@@ -9143,7 +9419,9 @@
                       "FamilyID":  214
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Megahorn",
+                                  "Close Combat",
+                                  "Earthquake"
                               ],
         "BaseAttack":  234,
         "BaseDefense":  189,
@@ -9171,7 +9449,8 @@
                            "Fairy"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Ice Shard",
+                               "Feint Attack"
                            ],
         "Weight":  "28.0 kg",
         "Height":  "0.9 m",
@@ -9180,7 +9459,9 @@
                       "FamilyID":  215
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Avalanche",
+                                  "Ice Punch",
+                                  "Foul Play"
                               ],
         "BaseAttack":  189,
         "BaseDefense":  157,
@@ -9200,7 +9481,8 @@
                            "Fighting"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Scratch",
+                               "Lick"
                            ],
         "Weight":  "8.8 kg",
         "Height":  "0.6 m",
@@ -9209,7 +9491,9 @@
                       "FamilyID":  216
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Cross Chop",
+                                  "Crunch",
+                                  "Play Rough"
                               ],
         "BaseAttack":  142,
         "BaseDefense":  93,
@@ -9229,7 +9513,8 @@
                            "Fighting"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Metal Claw",
+                               "Counter"
                            ],
         "Weight":  "125.8 kg",
         "Height":  "1.8 m",
@@ -9244,7 +9529,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Close Combat",
+                                  "Hyper Beam",
+                                  "Play Rough"
                               ],
         "BaseAttack":  236,
         "BaseDefense":  144,
@@ -9266,7 +9553,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Ember",
+                               "Rock Throw"
                            ],
         "Weight":  "35.0 kg",
         "Height":  "0.7 m",
@@ -9275,7 +9563,10 @@
                       "FamilyID":  218
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Flame Burst",
+                                  "Flame Charge",
+                                  "Rock Slide"
+
                               ],
         "BaseAttack":  118,
         "BaseDefense":  71,
@@ -9301,7 +9592,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Ember",
+                               "Rock Throw"
                            ],
         "Weight":  "55.0 kg",
         "Height":  "0.8 m",
@@ -9316,7 +9608,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Heat Wave",
+                                  "Overheat",
+                                  "Stone Edge"
                               ],
         "BaseAttack":  139,
         "BaseDefense":  209,
@@ -9343,7 +9637,8 @@
                            "Steel"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Tackle",
+                               "Powder Snow"
                            ],
         "Weight":  "6.5 kg",
         "Height":  "0.4 m",
@@ -9352,7 +9647,9 @@
                       "FamilyID":  220
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Icy Wind",
+                                  "Body Slam",
+                                  "Rock Slide"
                               ],
         "BaseAttack":  90,
         "BaseDefense":  74,
@@ -9379,7 +9676,8 @@
                            "Steel"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Ice Shard",
+                               "Powder Snow"
                            ],
         "Weight":  "55.8 kg",
         "Height":  "1.1 m",
@@ -9394,7 +9692,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Avalanche",
+                                  "Bulldoze",
+                                  "Stone Edge"
                               ],
         "BaseAttack":  181,
         "BaseDefense":  147,
@@ -9420,7 +9720,8 @@
                            "Ground"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Tackle",
+                               "Bubble"
                            ],
         "Weight":  "5.0 kg",
         "Height":  "0.6 m",
@@ -9429,7 +9730,9 @@
                       "FamilyID":  222
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Rock Blast",
+                                  "Power Gem",
+                                  "Bubble Beam"
                               ],
         "BaseAttack":  118,
         "BaseDefense":  156,
@@ -9450,7 +9753,8 @@
                            "Grass"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Water Gun",
+                               "Mud Shot"
                            ],
         "Weight":  "12.0 kg",
         "Height":  "0.6 m",
@@ -9459,7 +9763,9 @@
                       "FamilyID":  223
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Aurora Beam",
+                                  "Water Pulse",
+                                  "Rock Blast"
                               ],
         "BaseAttack":  127,
         "BaseDefense":  69,
@@ -9480,7 +9786,8 @@
                            "Grass"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Water Gun",
+                               "Mud Shot"
                            ],
         "Weight":  "28.5 kg",
         "Height":  "0.9 m",
@@ -9495,7 +9802,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Gunk Shot",
+                                  "Water Pulse",
+                                  "Aurora Beam"
                               ],
         "BaseAttack":  197,
         "BaseDefense":  141,
@@ -9521,7 +9830,8 @@
                            "Steel"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Ice Shard",
+                               "Quick Attack"
                            ],
         "Weight":  "16.0 kg",
         "Height":  "0.9 m",
@@ -9530,7 +9840,9 @@
                       "FamilyID":  225
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Ice Punch",
+                                  "Icy Wind",
+                                  "Aerial Ace"
                               ],
         "BaseAttack":  128,
         "BaseDefense":  90,
@@ -9554,7 +9866,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Bubble",
+                               "Wing Attack"
                            ],
         "Weight":  "220.0 kg",
         "Height":  "2.1 m",
@@ -9563,7 +9876,9 @@
                       "FamilyID":  226
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Water Pulse",
+                                  "Ice Beam",
+                                  "Aerial Ace"
                               ],
         "BaseAttack":  148,
         "BaseDefense":  260,
@@ -9587,7 +9902,8 @@
                            "Electric"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Steel Wing",
+                               "Air Slash"
                            ],
         "Weight":  "50.5 kg",
         "Height":  "1.7 m",
@@ -9596,7 +9912,9 @@
                       "FamilyID":  227
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Brave Bird",
+                                  "Sky Attack",
+                                  "Flash Cannon"
                               ],
         "BaseAttack":  148,
         "BaseDefense":  260,
@@ -9622,7 +9940,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Feint Attack",
+                               "Ember"
                            ],
         "Weight":  "10.8 kg",
         "Height":  "0.6 m",
@@ -9631,7 +9950,9 @@
                       "FamilyID":  228
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Crunch",
+                                  "Flamethrower",
+                                  "Dark Pulse"
                               ],
         "BaseAttack":  152,
         "BaseDefense":  93,
@@ -9657,7 +9978,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Snarl",
+                               "Fire Fang"
                            ],
         "Weight":  "35.0 kg",
         "Height":  "1.4 m",
@@ -9672,7 +9994,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Crunch",
+                                  "Fire Blast",
+                                  "Foul Play"
                               ],
         "BaseAttack":  224,
         "BaseDefense":  159,
@@ -9696,7 +10020,8 @@
                            "Fairy"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Water Gun",
+                               "Dragon Breath"
                            ],
         "Weight":  "152.0 kg",
         "Height":  "1.8 m",
@@ -9715,7 +10040,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Hydro Pump",
+                                  "Blizzard",
+                                  "Outrage"
                               ],
         "BaseAttack":  194,
         "BaseDefense":  194,
@@ -9737,7 +10064,8 @@
                            "Ice"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Tackle",
+                               "Rock Smash"
                            ],
         "Weight":  "33.5 kg",
         "Height":  "0.5 m",
@@ -9746,7 +10074,9 @@
                       "FamilyID":  231
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Bulldoze",
+                                  "Rock Slide",
+                                  "Body Slam"
                               ],
         "BaseAttack":  107,
         "BaseDefense":  107,
@@ -9768,7 +10098,8 @@
                            "Ice"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Tackle",
+                               "Counter"
                            ],
         "Weight":  "120.0 kg",
         "Height":  "1.1 m",
@@ -9783,7 +10114,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Earthquake",
+                                  "Heavy Slam",
+                                  "Play Rough"
                               ],
         "BaseAttack":  214,
         "BaseDefense":  214,
@@ -9803,7 +10136,8 @@
                            "Fighting"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Hidden Power",
+                               "Charge Beam"
                            ],
         "Weight":  "32.5 kg",
         "Height":  "0.6 m",
@@ -9818,7 +10152,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Solar Beam",
+                                  "Hyper Beam",
+                                  "Zap Cannon"
                               ],
         "BaseAttack":  198,
         "BaseDefense":  183,
@@ -9838,7 +10174,8 @@
                            "Fighting"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Tackle",
+                               "Zen Headbutt"
                            ],
         "Weight":  "71.2 kg",
         "Height":  "1.4 m",
@@ -9847,7 +10184,9 @@
                       "FamilyID":  234
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Stomp",
+                                  "Wild Charge",
+                                  "Megahorn"
                               ],
         "BaseAttack":  192,
         "BaseDefense":  132,
@@ -9898,8 +10237,8 @@
                            "Fairy"
                        ],
         "Fast Attack(s)":  [
-                               "Low Kick",
-                               "Rock Smash"
+                               "Rock Smash",
+                               "Tackle"
                            ],
         "Weight":  "21.0 kg",
         "Height":  "0.7 m",
@@ -9927,8 +10266,8 @@
                                   }
                               ],
         "Special Attack(s)":  [
-                                  "Body Slam",
                                   "Brick Break",
+                                  "Rock Slide",
                                   "Low Sweep"
                               ],
         "BaseAttack":  64,
@@ -9951,7 +10290,8 @@
                            "Fairy"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Rock Smash",
+                               "Counter"
                            ],
         "Weight":  "48.0 kg",
         "Height":  "1.4 m",
@@ -9966,7 +10306,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Close Combat",
+                                  "Gyro Ball",
+                                  "Stone Edge"
                               ],
         "BaseAttack":  173,
         "BaseDefense":  214,
@@ -9994,7 +10336,8 @@
                            "Steel"
                        ],
         "Fast Attack(s)":  [
-                               "Frost Breath",
+                               "Powder Snow",
+							   "Frost Breath",
                                "Pound"
                            ],
         "Weight":  "6.0 kg",
@@ -10037,8 +10380,8 @@
                            "Ground"
                        ],
         "Fast Attack(s)":  [
-                               "Low Kick",
-                               "Thunder Shock"
+                               "Thunder Shock",
+                               "Low Kick"
                            ],
         "Weight":  "23.5 kg",
         "Height":  "0.6 m",
@@ -10058,9 +10401,10 @@
                                   }
                               ],
         "Special Attack(s)":  [
-                                  "Discharge",
                                   "Thunder Punch",
-                                  "Thunderbolt"
+                                  "Brick Break",
+								  "Thunderbolt",
+                                  "Discharge"
                               ],
         "BaseAttack":  135,
         "BaseDefense":  110,
@@ -10105,7 +10449,8 @@
         "Special Attack(s)":  [
                                   "Brick Break",
                                   "Fire Punch",
-                                  "Flamethrower"
+								  "Flamethrower",
+                                  "Flame Burst"
                               ],
         "BaseAttack":  151,
         "BaseDefense":  108,
@@ -10125,7 +10470,8 @@
                            "Fighting"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Tackle",
+                               "Zen Headbutt"
                            ],
         "Weight":  "75.5 kg",
         "Height":  "1.2 m",
@@ -10134,7 +10480,9 @@
                       "FamilyID":  241
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Stomp",
+                                  "Body Slam",
+                                  "Gyro Ball"
                               ],
         "BaseAttack":  157,
         "BaseDefense":  211,
@@ -10154,7 +10502,8 @@
                            "Fighting"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Pound",
+                               "Zen Headbutt"
                            ],
         "Weight":  "46.8 kg",
         "Height":  "1.5 m",
@@ -10169,7 +10518,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Psychic",
+                                  "Hyper Beam",
+                                  "Dazzling Gleam"
                               ],
         "BaseAttack":  129,
         "BaseDefense":  229,
@@ -10189,7 +10540,8 @@
                            "Ground"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Thunder Shock",
+                               "Volt Switch"
                            ],
         "Weight":  "178.0 kg",
         "Height":  "1.9 m",
@@ -10198,7 +10550,9 @@
                       "FamilyID":  243
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Thunder",
+                                  "Thunderbolt",
+                                  "Wild Charge"
                               ],
         "BaseAttack":  241,
         "BaseDefense":  210,
@@ -10220,7 +10574,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Fire Spin",
+                               "Fire Fang"
                            ],
         "Weight":  "198.0 kg",
         "Height":  "2.1 m",
@@ -10229,7 +10584,9 @@
                       "FamilyID":  244
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Flamethrower",
+                                  "Fire Blast",
+                                  "Overheat"
                               ],
         "BaseAttack":  235,
         "BaseDefense":  176,
@@ -10250,7 +10607,8 @@
                            "Grass"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Extrasensory",
+                               "Snarl"
                            ],
         "Weight":  "187.0 kg",
         "Height":  "2.0 m",
@@ -10259,7 +10617,9 @@
                       "FamilyID":  245
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Hydro Pump",
+                                  "Bubble Beam",
+                                  "Water Pulse"
                               ],
         "BaseAttack":  180,
         "BaseDefense":  235,
@@ -10287,7 +10647,8 @@
                            "Steel"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Bite",
+                               "Rock Smash"
                            ],
         "Weight":  "72.0 kg",
         "Height":  "0.6 m",
@@ -10296,7 +10657,9 @@
                       "FamilyID":  246
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Stomp",
+                                  "Crunch",
+                                  "Ancient Power"
                               ],
         "BaseAttack":  115,
         "BaseDefense":  93,
@@ -10324,7 +10687,8 @@
                            "Steel"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Bite",
+                               "Rock Smash"
                            ],
         "Weight":  "152.0 kg",
         "Height":  "1.2 m",
@@ -10339,7 +10703,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Dig",
+                                  "Crunch",
+                                  "Ancient Power"
                               ],
         "BaseAttack":  155,
         "BaseDefense":  133,
@@ -10368,7 +10734,8 @@
                            "Fairy"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Bite",
+                               "Iron Tail"
                            ],
         "Weight":  "202.0 kg",
         "Height":  "2.0 m",
@@ -10387,7 +10754,9 @@
                                       }
                                   ],
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Fire Blast",
+                                  "Crunch",
+                                  "Stone Edge"
                               ],
         "BaseAttack":  251,
         "BaseDefense":  212,
@@ -10414,7 +10783,8 @@
                            "Dark"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Extrasensory",
+                               "Dragon Tail"
                            ],
         "Weight":  "216.0 kg",
         "Height":  "5.2 m",
@@ -10423,7 +10793,9 @@
                       "FamilyID":  249
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Sky Attack",
+                                  "Hydro Pump",
+                                  "Futuresight"
                               ],
         "BaseAttack":  193,
         "BaseDefense":  323,
@@ -10448,7 +10820,8 @@
                            "Rock"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Extrasensory",
+                               "Steel Wing"
                            ],
         "Weight":  "199.0 kg",
         "Height":  "3.8 m",
@@ -10457,7 +10830,9 @@
                       "FamilyID":  250
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Brave Bird",
+                                  "Fire Blast",
+                                  "Solar Beam"
                               ],
         "BaseAttack":  263,
         "BaseDefense":  301,
@@ -10486,7 +10861,8 @@
                            "Dark"
                        ],
         "Fast Attack(s)":  [
-                               "Tackle"
+                               "Confusion",
+                               "Charge Beam"
                            ],
         "Weight":  "5.0 kg",
         "Height":  "0.6 m",
@@ -10495,7 +10871,9 @@
                       "FamilyID":  251
                   },
         "Special Attack(s)":  [
-                                  "Struggle"
+                                  "Hyper Beam",
+                                  "Psychic",
+                                  "Dazzling Gleam"
                               ],
         "BaseAttack":  210,
         "BaseDefense":  210,

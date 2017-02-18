@@ -39,5 +39,11 @@
     "902": "Incubator",
 
     "1001": "Pokemon Storage Upgrade",
-    "1002": "Item Storage Upgrade"
+    "1002": "Item Storage Upgrade",
+	
+	"1101": "Sun Stone",
+	"1102": "Kings Rock",
+	"1103": "Metal Coat",
+	"1104": "Dragon Scale",
+	"1105": "Upgrade"
 }
