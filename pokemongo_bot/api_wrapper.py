@@ -29,8 +29,8 @@ class ApiWrapper(PGoApi, object):
     def __init__(self, config=None):
         self.config = config
         self.gen_device_id()
-        self.capi = float(0.55)
-        self.POGOProtos = float(2.6)
+        self.capi = float(0.57)
+        self.POGOProtos = float(2.7)
         # Check if bot is using lastest POGOProtos, only do so if check_niantic_api is set to true
         # If a new Protos is availible, it mean there's a possibility of a new API
         latestProtos = float(0.0)
