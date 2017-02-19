@@ -1341,7 +1341,7 @@
   },
   {
     "Number": "029",
-    "Name": "Nidoran-F",
+    "Name": "Nidoran F",
     "Classification": "Poison Pin Pokemon",
     "Type I": [
       "Poison"
@@ -1357,13 +1357,13 @@
     "Weight": "7 kg",
     "Height": "0.4 m",
     "Candy": {
-      "Name": "Nidoran-F candies",
+      "Name": "Nidoran F candies",
       "FamilyID": 29
     },
     "Next Evolution Requirements": {
       "Amount": 25,
       "Family": 29,
-      "Name": "Nidoran-F candies"
+      "Name": "Nidoran F candies"
     },
     "Next evolution(s)": [
       {
@@ -1405,13 +1405,13 @@
     "Weight": "20 kg",
     "Height": "0.8 m",
     "Candy": {
-      "Name": "Nidoran-F candies",
+      "Name": "Nidoran F candies",
       "FamilyID": 29
     },
     "Next Evolution Requirements": {
       "Amount": 100,
       "Family": 29,
-      "Name": "Nidoran-F candies"
+      "Name": "Nidoran F candies"
     },
     "Next evolution(s)": [
       {
@@ -1460,13 +1460,13 @@
     "Weight": "60 kg",
     "Height": "1.3 m",
     "Candy": {
-      "Name": "Nidoran-F candies",
+      "Name": "Nidoran F candies",
       "FamilyID": 29
     },
     "Previous evolution(s)": [
       {
         "Number": "029",
-        "Name": "Nidoran-F"
+        "Name": "Nidoran F"
       },
       {
         "Number": "030",
@@ -1487,7 +1487,7 @@
   },
   {
     "Number": "032",
-    "Name": "Nidoran-M",
+    "Name": "Nidoran M",
     "Classification": "Poison Pin Pokemon",
     "Type I": [
       "Poison"
@@ -1503,13 +1503,13 @@
     "Weight": "9 kg",
     "Height": "0.5 m",
     "Candy": {
-      "Name": "Nidoran-M candies",
+      "Name": "Nidoran M candies",
       "FamilyID": 32
     },
     "Next Evolution Requirements": {
       "Amount": 25,
       "Family": 32,
-      "Name": "Nidoran-M candies"
+      "Name": "Nidoran M candies"
     },
     "Next evolution(s)": [
       {
@@ -1551,13 +1551,13 @@
     "Weight": "19.5 kg",
     "Height": "0.9 m",
     "Candy": {
-      "Name": "Nidoran-M candies",
+      "Name": "Nidoran M candies",
       "FamilyID": 32
     },
     "Next Evolution Requirements": {
       "Amount": 100,
       "Family": 32,
-      "Name": "Nidoran-M candies"
+      "Name": "Nidoran M candies"
     },
     "Next evolution(s)": [
       {
@@ -1607,13 +1607,13 @@
     "Weight": "62 kg",
     "Height": "1.4 m",
     "Candy": {
-      "Name": "Nidoran-M candies",
+      "Name": "Nidoran M candies",
       "FamilyID": 32
     },
     "Previous evolution(s)": [
       {
         "Number": "032",
-        "Name": "Nidoran-M"
+        "Name": "Nidoran M"
       },
       {
         "Number": "033",
