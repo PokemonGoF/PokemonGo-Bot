@@ -198,8 +198,7 @@ class InventoryTest(unittest.TestCase):
             self.assertIsInstance(attack.type, Type)
             self.assertGreaterEqual(attack.damage, 0)
             self.assertGreater(attack.duration, .0)
-            # Energy can be negative, commented out test
-            # self.assertGreater(attack.energy, 0)
+            self.assertGreater(attack.energy, 0)
             self.assertGreaterEqual(attack.dps, 0)
             assert (.0 <= attack.rate_in_type <= 1.0)
             self.assertLessEqual(attack.dps, prev_dps)
