@@ -40,6 +40,8 @@ class UpdateLiveInventory(BaseTask):
         'razzberries'
         'blukberries'
         'nanabberries'
+        'wapabberries'
+        'pinabberries'
         'luckyegg'
         'incubator'
         'troydisk'
@@ -52,6 +54,11 @@ class UpdateLiveInventory(BaseTask):
         'incensecool'
         'revive'
         'maxrevive'
+        'sunstone'
+        'kingsrock'
+        'metalcoat'
+        'dragonscale'
+        'upgrade'
     """
 
     SUPPORTED_TASK_API_VERSION = 1
@@ -158,6 +165,8 @@ class UpdateLiveInventory(BaseTask):
             'razzberries': 'RazzBerries: {:,}'.format(self.inventory.get(701).count),
             'blukberries': 'BlukBerries: {:,}'.format(self.inventory.get(702).count),
             'nanabberries': 'NanabBerries: {:,}'.format(self.inventory.get(703).count),
+            'wepabberries': 'WeparBerries: {:,}'.format(self.inventory.get(704).count),
+            'pinabberries': 'PinapBerries: {:,}'.format(self.inventory.get(705).count),
             'luckyegg': 'LuckyEgg: {:,}'.format(self.inventory.get(301).count),
             'incubator': 'Incubator: {:,}'.format(self.inventory.get(902).count),
             'troydisk': 'TroyDisk: {:,}'.format(self.inventory.get(501).count),
@@ -169,7 +178,12 @@ class UpdateLiveInventory(BaseTask):
             'incensespicy': 'IncenseSpicy: {:,}'.format(self.inventory.get(402).count),
             'incensecool': 'IncenseCool: {:,}'.format(self.inventory.get(403).count),
             'revive': 'Revive: {:,}'.format(self.inventory.get(201).count),
-            'maxrevive': 'MaxRevive: {:,}'.format(self.inventory.get(202).count)
+            'maxrevive': 'MaxRevive: {:,}'.format(self.inventory.get(202).count),
+            'sunstone': 'SunStone: {:,}'.format(self.inventory.get(1101).count),
+            'kingsrock': 'KingsRock: {:,}'.format(self.inventory.get(1102).count),
+            'metalcoat': 'MetalCoat: {:,}'.format(self.inventory.get(1103).count),
+            'dragonscale': 'DragonScale: {:,}'.format(self.inventory.get(1104).count),
+            'upgrade': 'Upgrade: {:,}'.format(self.inventory.get(1105).count)
         }
 
         def get_item(item):
@@ -226,10 +240,12 @@ class UpdateLiveInventory(BaseTask):
             )
 
         self.logger.info(
-            'RazzBerries: {} | BlukBerries: {} | NanabBerries: {}'.format(
+            'RazzBerries: {} | BlukBerries: {} | NanabBerries: {} | WeparBerries: {} | PinapBerries: {}'.format(
                 self.inventory.get(701).count,
                 self.inventory.get(702).count,
-                self.inventory.get(703).count
+                self.inventory.get(703).count,
+                self.inventory.get(704).count,
+                self.inventory.get(705).count
                 )
             )
 
@@ -265,4 +281,15 @@ class UpdateLiveInventory(BaseTask):
                 )
             )
 
+        self.logger.info(
+            'SunStone: {} | KingsRock: {} | MetalCoat: {} | DragonScale: {} | Upgrade: {}'.format(
+                self.inventory.get(1101).count,
+                self.inventory.get(1102).count,
+                self.inventory.get(1103).count,
+                self.inventory.get(1104).count,
+                self.inventory.get(1105).count
+                )
+            )
+
         self.compute_next_update()
+
