@@ -124,17 +124,17 @@ class InventoryTest(unittest.TestCase):
             "cp": 653, "nickname": "Golb", "id": 13632861873471324})
         self.assertEqual(poke.level, 13)
         self.assertEqual(poke.iv, 0.47)
-        self.assertAlmostEqual(poke.ivcp, 0.48540612019085483)
+        self.assertAlmostEqual(poke.ivcp, 0.4857492694248581)
         self.assertAlmostEqual(poke.static.max_cp, 1830.17768446934)
         self.assertAlmostEqual(poke.cp_percent, 0.33943779314748107)
         self.assertEqual(poke.name, 'Golbat')
         self.assertEqual(poke.nickname, "Golb")
         self.assertEqual(poke.nickname_raw, poke.nickname)
-        self.assertAlmostEqual(poke.moveset.dps, 10.7540173053)
-        self.assertAlmostEqual(poke.moveset.dps_attack, 12.14462299)
-        self.assertAlmostEqual(poke.moveset.dps_defense, 4.876681614)
-        self.assertAlmostEqual(poke.moveset.attack_perfection, 0.4720730048)
-        self.assertAlmostEqual(poke.moveset.defense_perfection, 0.8158081497)
+        self.assertAlmostEqual(poke.moveset.dps,12.88659793814433 )
+        self.assertAlmostEqual(poke.moveset.dps_attack, 14.175257731958762)
+        self.assertAlmostEqual(poke.moveset.dps_defense, 6.426735218508997 )
+        self.assertAlmostEqual(poke.moveset.attack_perfection, 0.17871880620369532)
+        self.assertAlmostEqual(poke.moveset.defense_perfection, 0.49179377480604713)
 
         poke = Pokemon({
             "move_1": 221, "move_2": 129, "pokemon_id": 19, "cp": 106,
@@ -149,11 +149,11 @@ class InventoryTest(unittest.TestCase):
         self.assertEqual(poke.name, 'Rattata')
         self.assertEqual(poke.nickname, poke.name)
         self.assertEqual(poke.nickname_raw, '')
-        self.assertAlmostEqual(poke.moveset.dps, 13.00578034682081)
-        self.assertAlmostEqual(poke.moveset.dps_attack, 16.25722543352601)
-        self.assertAlmostEqual(poke.moveset.dps_defense, 6.114130434782608)
-        self.assertAlmostEqual(poke.moveset.attack_perfection, 0.7830652035809673)
-        self.assertAlmostEqual(poke.moveset.defense_perfection, 0.49197568321772184)
+        self.assertAlmostEqual(poke.moveset.dps, 14.4 )
+        self.assertAlmostEqual(poke.moveset.dps_attack, 18.0)
+        self.assertAlmostEqual(poke.moveset.dps_defense, 5.625)
+        self.assertAlmostEqual(poke.moveset.attack_perfection, 1.0)
+        self.assertAlmostEqual(poke.moveset.defense_perfection, 0.18421739130434753)
 
     def test_levels_to_cpm(self):
         l2c = LevelToCPm
