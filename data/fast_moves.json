@@ -383,7 +383,7 @@
    "type": "Normal",
    "damage": 0,
    "duration": 2230,
-   "energy": 0,
+   "energy": 7,
    "dps": 0
  },
  {
