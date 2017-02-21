@@ -487,6 +487,14 @@ class Pokemons(_BaseInventoryComponent):
     def evolution_cost_for(cls, pokemon_id):
         return cls.data_for(pokemon_id).evolution_cost
 
+    @classmethod
+    def evolution_item_for(cls, pokemon_id):
+        return cls.data_for(pokemon_id).evolution_item
+
+    @classmethod
+    def evolution_items_needed_for(cls, pokemon_id):
+        return cls.data_for(pokemon_id).evolution_item_needed
+
     def parse(self, item):
         if 'is_egg' in item:
             return Egg(item)
@@ -753,7 +761,6 @@ class Candy(object):
             raise Exception('Must add positive amount of candy')
         self.quantity += amount
 
-
 class Egg(object):
     def __init__(self, data):
         self._data = data
@@ -823,6 +830,9 @@ class PokemonInfo(object):
 
         # Number of candies for the next evolution (if possible)
         self.evolution_cost = 0
+        # Next evolution doesn't need a special item
+        self.evolution_item = None
+        self.evolution_item_needed = 0
         # next evolution flag
         self.has_next_evolution = 'Next evolution(s)' in data \
                                   or 'Next Evolution Requirements' in data
@@ -833,12 +843,14 @@ class PokemonInfo(object):
         #candies
         self.candyid = int(data['Candy']['FamilyID'])
         self.candyName = (data['Candy']['Name'])
-        # ids of all available next evolutions in the family
         self.next_evolutions_all = []
         if self.has_next_evolution:
             ids = [int(e['Number']) for e in data['Next evolution(s)']]
             self.next_evolutions_all = ids
             self.evolution_cost = int(data['Next Evolution Requirements']['Amount'])
+            if 'EvoItem' in data['Next Evolution Requirements']:
+                self.evolution_item = int(data['Next Evolution Requirements']['EvoItem'])
+                self.evolution_item_needed = int(data['Next Evolution Requirements']['EvoItemNeeded'])
 
     @property
     def family_id(self):
@@ -1013,8 +1025,14 @@ class Pokemon(object):
         self.nickname = self.nickname_raw or self.name
 
     def can_evolve_now(self):
-        return self.has_next_evolution() and \
-               self.candy_quantity >= self.evolution_cost
+        if self.evolution_item is None:
+            return self.has_next_evolution() and \
+                self.candy_quantity >= self.evolution_cost
+        else:
+            evo_items = items().get(self.evolution_item).count
+            return self.has_next_evolution() and \
+                self.candy_quantity >= self.evolution_cost and \
+                evo_items >= self.evolution_items_needed
 
     def has_next_evolution(self):
         return self.static.has_next_evolution
@@ -1052,6 +1070,14 @@ class Pokemon(object):
     @property
     def evolution_cost(self):
         return self.static.evolution_cost
+
+    @property
+    def evolution_item(self):
+        return self.static.evolution_item
+
+    @property
+    def evolution_items_needed(self):
+        return self.static.evolution_item_needed
 
     @property
     def iv_display(self):

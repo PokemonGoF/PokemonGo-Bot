@@ -543,9 +543,18 @@ class PokemonOptimizer(BaseTask):
         evolve = []
 
         for pokemon in try_evolve:
+            pokemon_id = pokemon.pokemon_id
+            needed_evolution_item = inventory.pokemons().evolution_item_for(pokemon_id)
+            if needed_evolution_item is not None:
+                # We need a special Item to evolve this Pokemon!
+                item = inventory.items().get(needed_evolution_item)
+                needed = inventory.pokemons().evolution_items_needed_for(pokemon_id)
+                if item.count < needed:
+                    self.logger.info("To evolve a {} we need {} of {}. We have {}".format(pokemon.name, needed, item.name, item.count))
+                    continue
+
             if self.config_evolve_to_final:
                 pokemon_id = pokemon.pokemon_id
-
                 while inventory.pokemons().has_next_evolution(pokemon_id):
                     candies -= inventory.pokemons().evolution_cost_for(pokemon_id)
                     pokemon_id = inventory.pokemons().next_evolution_ids_for(pokemon_id)[0]
