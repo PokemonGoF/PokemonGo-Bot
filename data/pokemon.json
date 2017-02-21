@@ -4554,7 +4554,9 @@
     "Next Evolution Requirements": {
       "Amount": 50,
       "Family": 95,
-      "Name": "Onix candies"
+      "Name": "Onix candies",
+      "EvoItem": 1103,
+      "EvoItemNeeded": 1
     },
     "Next evolution(s)": [
       {
