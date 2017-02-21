@@ -1143,8 +1143,8 @@ class PokemonGoBot(object):
 
         self.logger.info(
             'RazzBerries: ' + str(items_inventory.get(701).count) +
-            ' | BlukBerries: ' + str(items_inventory.get(702).count) +
-            ' | NanabBerries: ' + str(items_inventory.get(703).count))
+            ' | Nanab Berries: ' + str(items_inventory.get(703).count) +
+            ' | Pinap Berries: ' + str(items_inventory.get(705).count))
 
         self.logger.info(
             'LuckyEgg: ' + str(items_inventory.get(301).count) +
@@ -1165,6 +1165,13 @@ class PokemonGoBot(object):
         self.logger.info(
             'Revive: ' + str(items_inventory.get(201).count) +
             ' | MaxRevive: ' + str(items_inventory.get(202).count))
+            
+        self.logger.info(
+            'Sun Stone: ' + str(items_inventory.get(1101).count) +
+            ' | Kings Rock: ' + str(items_inventory.get(1102).count) +
+            ' | Metal Coat: ' + str(items_inventory.get(1103).count) +
+            ' | Dragon Scale: ' + str(items_inventory.get(1104).count) +
+            ' | Upgrade: ' + str(items_inventory.get(1105).count))
 
         self.logger.info('')
 

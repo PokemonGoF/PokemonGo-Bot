@@ -34,15 +34,15 @@ class NicknamePokemonTest(unittest.TestCase):
         self.assertNicks('{ivcp_pct}', ['049', '039'])
         self.assertNicks('{ivcp_pct2}', ['48', '38'])
         self.assertNicks('{ivcp_pct1}', ['4', '3'])
-        self.assertNicks('{fast_attack_char}', ['L', 'N'])
-        self.assertNicks('{charged_attack_char}', ['h', 'n'])
-        self.assertNicks('{attack_code}', ['Lh', 'Nn'])
-        self.assertNicks('{attack_pct}', ['047', '078'])
-        self.assertNicks('{attack_pct2}', ['47', '78'])
-        self.assertNicks('{attack_pct1}', ['4', '7'])
-        self.assertNicks('{defense_pct}', ['082', '049'])
-        self.assertNicks('{defense_pct2}', ['81', '49'])
-        self.assertNicks('{defense_pct1}', ['7', '4'])
+        self.assertNicks('{fast_attack_char}', ['l', 'N'])
+        self.assertNicks('{charged_attack_char}', ['h', 'N'])
+        self.assertNicks('{attack_code}', ['lh', 'NN'])
+        self.assertNicks('{attack_pct}', ['018', '100'])
+        self.assertNicks('{attack_pct2}', ['18', '99'])
+        self.assertNicks('{attack_pct1}', ['2', '9'])
+        self.assertNicks('{defense_pct}', ['049', '018'])
+        self.assertNicks('{defense_pct2}', ['49', '18'])
+        self.assertNicks('{defense_pct1}', ['4', '2'])
 
         # complex
         self.assertNicks('{name:2}', ['', ''])
@@ -50,8 +50,8 @@ class NicknamePokemonTest(unittest.TestCase):
         self.assertNicks('{pokemon.fast_attack}', ['Wing Attack', 'Tackle'])
         self.assertNicks('{pokemon.charged_attack}', ['Ominous Wind', 'Hyper Fang'])
         self.assertNicks('{pokemon.fast_attack.type}', ['Flying', 'Normal'])
-        self.assertNicks('{pokemon.fast_attack.dps:.2f}', ['12.00', '10.91'])
-        self.assertNicks('{pokemon.fast_attack.dps:.0f}', ['12', '11'])
+        self.assertNicks('{pokemon.fast_attack.dps:.2f}', ['8.00', '10.00'])
+        self.assertNicks('{pokemon.fast_attack.dps:.0f}', ['8', '10'])
         self.assertNicks('{iv_pct}_{iv_ads}', ['047_9/4/8', '044_6/14/0'])
         self.assertNicks('{iv_pct}_{iv_ads_hex}', ['047_948', '044_6E0'])
         self.assertNicks(
@@ -62,7 +62,7 @@ class NicknamePokemonTest(unittest.TestCase):
             ['48_46_948', '38_44_6E0'])
         self.assertNicks(
             '{attack_code}{attack_pct1}{defense_pct1}{ivcp_pct1}{name}',
-            ['Lh474Golbat', 'Nn743Rattata'])
+            ['lh244Golbat', 'NN923Rattata'])
 
     #
     def setUp(self):
