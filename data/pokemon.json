@@ -1870,7 +1870,7 @@
       "FamilyID": 41
     },
     "Next Evolution Requirements": {
-      "Amount": 50,
+      "Amount": 25,
       "Family": 41,
       "Name": "Zubat candies"
     },
@@ -1921,7 +1921,7 @@
       "FamilyID": 41
     },
     "Next Evolution Requirements": {
-      "Amount": 0,
+      "Amount": 100,
       "Family": 41,
       "Name": "Zubat candies"
     },
@@ -4343,7 +4343,7 @@
       "FamilyID": 95
     },
     "Next Evolution Requirements": {
-      "Amount": 0,
+      "Amount": 50,
       "Family": 95,
       "Name": "Onix candies"
     },
@@ -5076,7 +5076,7 @@
       "FamilyID": 113
     },
     "Next Evolution Requirements": {
-      "Amount": 0,
+      "Amount": 50,
       "Family": 113,
       "Name": "Chansey candies"
     },
@@ -5186,7 +5186,7 @@
       "FamilyID": 116
     },
     "Next Evolution Requirements": {
-      "Amount": 50,
+      "Amount": 25,
       "Family": 116,
       "Name": "Horsea candies"
     },
@@ -5194,6 +5194,10 @@
       {
         "Number": "117",
         "Name": "Seadra"
+      },
+      {
+        "Number": "230",
+        "Name": "Kingdra"
       }
     ],
     "Special Attack(s)": [
@@ -5229,11 +5233,16 @@
       "FamilyID": 116
     },
     "Next Evolution Requirements": {
-      "Amount": 0,
+      "Amount": 100,
       "Family": 116,
       "Name": "Horsea candies"
     },
-    "Next evolution(s)": [],
+    "Next evolution(s)": [
+      {
+        "Number": "230",
+        "Name": "Kingdra"
+      }
+    ],
     "Previous evolution(s)": [
       {
         "Number": "116",
@@ -5484,7 +5493,7 @@
       "FamilyID": 123
     },
     "Next Evolution Requirements": {
-      "Amount": 0,
+      "Amount": 50,
       "Family": 123,
       "Name": "Scyther candies"
     },
@@ -6039,7 +6048,7 @@
       "FamilyID": 137
     },
     "Next Evolution Requirements": {
-      "Amount": 0,
+      "Amount": 50,
       "Family": 137,
       "Name": "Porygon candies"
     },
@@ -9999,6 +10008,16 @@
       "Name": "Horsea candies",
       "FamilyID": 116
     },
+    "Previous evolution(s)": [
+      {
+        "Number": "116",
+        "Name": "Horsea"
+      },
+      {
+        "Number": "117",
+        "Name": "Seadra"
+      }
+    ],
     "Special Attack(s)": [
       "Hydro Pump",
       "Blizzard",
