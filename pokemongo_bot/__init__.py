@@ -167,7 +167,7 @@ class PokemonGoBot(object):
         debug = self.config.debug
 
         handlers.append(LoggingHandler(color, debug))
-        handlers.append(SocialHandler(self))
+        #handlers.append(SocialHandler(self))
 
         if self.config.websocket_server_url:
             if self.config.websocket_start_embedded_server:
