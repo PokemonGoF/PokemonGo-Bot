@@ -1052,7 +1052,7 @@ class PokemonGoBot(object):
                         'security_check',
                         sender=self,
                         level='info',
-                        formatted="Niantic API Check Pass"
+                        formatted="Current PGoAPI is using API Version: {}. Niantic API Check Pass".format(PGoAPI_hash_version[0])
                     )        
         
         # When successful login, do a captcha check
