@@ -1064,7 +1064,7 @@ class PokemonGoBot(object):
                 'captcha',
                 sender=self,
                 level='critical',
-                formatted='Captcha Encountered, URL: {}}'.format(captcha_url)
+                formatted='Captcha Encountered, URL: {}'.format(captcha_url)
             )
             sys.exit(1)
         
