@@ -14,6 +14,7 @@ import Queue
 import threading
 import shelve
 import uuid
+import urllib
 
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
@@ -41,7 +42,8 @@ from .tree_config_builder import TreeConfigBuilder
 from .inventory import init_inventory, player
 from sys import platform as _platform
 from pgoapi.protos.pogoprotos.enums import badge_type_pb2
-from pgoapi.exceptions import AuthException
+from pgoapi.exceptions import AuthException, NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException, NoPlayerPositionSetException
+from pgoapi.hash_server import HashServer
 
 
 class FileIOException(Exception):
@@ -260,6 +262,8 @@ class PokemonGoBot(object):
         )
 
         self.event_manager.register_event('location_cache_error')
+        
+        self.event_manager.register_event('security_check')
 
         self.event_manager.register_event('bot_start')
         self.event_manager.register_event('bot_exit')
@@ -956,7 +960,8 @@ class PokemonGoBot(object):
                     'login_failed',
                     sender=self,
                     level='info',
-                    formatted='Login process failed: {}'.format(e));
+                    formatted='Login process failed: {}'.format(e)
+                    )
 
             sys.exit()
 
@@ -983,17 +988,83 @@ class PokemonGoBot(object):
             formatted="Login successful."
         )
         
+        # Start of security, to get various API Versions from different sources
+        # Get Official API
+        link = "https://pgorelease.nianticlabs.com/plfe/version"
+        f = urllib.urlopen(link)
+        myfile = f.read()
+        officalAPI = myfile[2:8]
+        self.event_manager.emit(
+            'security_check',
+            sender=self,
+            level='info',
+            formatted="Niantic Official API Version: {}".format(officalAPI)
+        )
+        
+        link = "https://pokehash.buddyauth.com/api/hash/versions"
+        f = urllib.urlopen(link)
+        myfile = f.read()
+        bossland_hash_endpoint = myfile.split(",")
+        total_entry = int(len(bossland_hash_endpoint))
+        last_bossland_entry = bossland_hash_endpoint[total_entry-1]
+        bossland_lastestAPI = last_bossland_entry.split(":")[0].replace('\"','')
+        self.event_manager.emit(
+            'security_check',
+            sender=self,
+            level='info',
+            formatted="Latest Bossland Hashing API Version: {}".format(bossland_lastestAPI)
+        )
+        
+        if self.config.check_niantic_api is True:
+            if HashServer.endpoint == "": 
+                self.event_manager.emit(
+                    'security_check',
+                    sender=self,
+                    level='info',
+                    formatted="Warning: Bot is running on legacy API"
+                )
+            else:
+                PGoAPI_hash_endpoint = HashServer.endpoint.split("com/",1)[1]
+                PGoAPI_hash_version = []
+                # Check if PGoAPI hashing is in Bossland versioning
+                bossland_hash_data = json.loads(myfile)
+                
+                for version, endpoint in bossland_hash_data.iteritems():
+                    if endpoint == PGoAPI_hash_endpoint:
+                        PGoAPI_hash_version.append(version)
+                        # assuming andorid versioning is always last entry
+                        PGoAPI_hash_version.reverse()
+                
+                # covert official api version & hashing api version to numbers
+                officialAPI_int = int(officalAPI.replace('.',''))
+                hashingAPI_int = int(PGoAPI_hash_version[0].replace('.',''))
+                
+                if hashingAPI_int < officialAPI_int:
+                    self.event_manager.emit(
+                        'security_check',
+                        sender=self,
+                        level='info',
+                        formatted="We have detected a Pokemon API Change. Latest Niantic Version is: {}. Program Exiting...".format(officalAPI)
+                    )
+                    sys.exit(1)
+                else:
+                    self.event_manager.emit(
+                        'security_check',
+                        sender=self,
+                        level='info',
+                        formatted="Current PGoAPI is using API Version: {}. Niantic API Check Pass".format(PGoAPI_hash_version[0])
+                    )        
+        
         # When successful login, do a captcha check
         #Basic Captcha detection, more to come
         response_dict = self.api.check_challenge()
         captcha_url = response_dict['responses']['CHECK_CHALLENGE']['challenge_url']
         if len(captcha_url) > 1:
-            status['message'] = 'Captcha Encountered, URL: {captcha_url}'
             self.event_manager.emit(
                 'captcha',
                 sender=self,
                 level='critical',
-                formatted=status['message']
+                formatted='Captcha Encountered, URL: {}'.format(captcha_url)
             )
             sys.exit(1)
         
