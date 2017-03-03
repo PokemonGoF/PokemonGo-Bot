@@ -151,8 +151,10 @@ class PokemonCatchWorker(BaseTask):
 
             if self.bot.catch_disabled:
                 self.logger.info("Not catching {}. All catching tasks are currently disabled until {}.".format(pokemon,self.bot.catch_resume_at.strftime("%H:%M:%S")))
-
+            # Add the encounter_id to the Pokemon
+            pokemon.encounter_id = self.pokemon['encounter_id']
             self.bot.skipped_pokemon.append(pokemon)
+
             self.emit_event(
                 'pokemon_appeared',
                 formatted='Skip ignored {pokemon}! (CP: {cp} IV: {iv} A/D/S {iv_display})',
