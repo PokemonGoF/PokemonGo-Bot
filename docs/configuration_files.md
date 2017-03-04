@@ -56,6 +56,7 @@
 - [Discord Task](#discord-task)
 - [CompleteTutorial](#completetutorial)
 - [BuddyPokemon](#buddypokemon)
+- [PokemonHunter](#pokemonhunter)
 
 #Configuration files
 
@@ -1338,5 +1339,44 @@ After setting a buddy it's not possible to remove it, only change it. So if a bu
         "buddy_change_wait_max": 5,
         "min_interval": 120
   }
+}
+```
+
+## PokemonHunter
+[[back to top](#table-of-contents)]
+
+### Description
+[[back to top](#table-of-contents)]
+
+Hunts down nearby Pokemon. Searches for Pokemon to complete the Pokedex, or if a Pokemon is a VIP. Can be set to hunt ALL nearby Pokemon
+
+### Options
+[[back to top](#table-of-contents)]
+
+* `max_distance`: `Default: 2000`. Maxium of meters for the "nearby" part.
+* `hunt_all`: `Default: false`. Should we hunt for ALL nearby Pokemon?
+* `hunt_vip`: `Default: true`. Should we hunt for VIP Pokemon?
+* `hunt_pokedex`: `Default: true`. Should we hunt for Pokemon we need to complete the Pokedex (make family complete)
+* `lock_on_target`: `Default: false`. Should we ignore all other Pokemon while hunting?
+* `lock_vip_only`: `Default: true`. Is the above only used for real VIPs? (Not to complete the Pokedex)
+* `disabled_while_camping`: `Default: true`. Should we stop hunting for nearby Pokemon while sitting at lures?
+* `treat_unseen_as_vip`: `Default: true`. Should we treat unseen Pokemons as VIPs?
+
+### Sample configuration
+[[back to top](#table-of-contents)]
+```json
+{
+    "type": "PokemonHunter",
+    "config": {
+        "enabled": true,
+        "max_distance": 1500,
+        "hunt_all": false,
+        "hunt_vip": true,
+        "hunt_pokedex": true,
+        "lock_on_target": false,
+        "lock_vip_only": true,
+        "disabled_while_camping": true,
+        "treat_unseen_as_vip": true
+    }
 }
 ```

@@ -945,6 +945,8 @@ class Pokemon(object):
         self._data = data
         # Unique ID for this particular Pokemon
         self.unique_id = data.get('id', 0)
+        # Let's try this
+        self.encounter_id = data.get('encounter_id')
         # Id of the such pokemons in pokedex
         self.pokemon_id = data['pokemon_id']
         # Static information
