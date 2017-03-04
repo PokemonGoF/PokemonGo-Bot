@@ -14,7 +14,7 @@ import Queue
 import threading
 import shelve
 import uuid
-import urllib
+import urllib2
 
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
@@ -991,8 +991,9 @@ class PokemonGoBot(object):
         # Start of security, to get various API Versions from different sources
         # Get Official API
         link = "https://pgorelease.nianticlabs.com/plfe/version"
-        f = urllib.urlopen(link)
+        f = urllib2.urlopen(link)
         myfile = f.read()
+        f.close()
         officalAPI = myfile[2:8]
         self.event_manager.emit(
             'security_check',
@@ -1002,8 +1003,9 @@ class PokemonGoBot(object):
         )
         
         link = "https://pokehash.buddyauth.com/api/hash/versions"
-        f = urllib.urlopen(link)
+        f = urllib2.urlopen(link)
         myfile = f.read()
+        f.close()
         bossland_hash_endpoint = myfile.split(",")
         total_entry = int(len(bossland_hash_endpoint))
         last_bossland_entry = bossland_hash_endpoint[total_entry-1]
