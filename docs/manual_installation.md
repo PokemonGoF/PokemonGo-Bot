@@ -1,4 +1,5 @@
 # Manual installation
+Consider purchase of [hashing key](http://hashing.pogodev.org) - if you want use latest API, not the old, 0.45
 
 ## Table of Contents
 - [Linux and Mac Installation](#linux-and-mac)
@@ -55,17 +56,13 @@ virtualenv .
 source bin/activate
 ```
 ####
-- install the requirements and get the needed encryption.so
+- install the requirements
 
-(we move `encrypt.so` to the root folder of the Bot so no need to edit the config regarding that)
+
 ```bash
 pip install -r requirements.txt
-wget http://pgoapi.com/pgoencrypt.tar.gz
-tar -xzvf pgoencrypt.tar.gz
-cd pgoencrypt/src/
 make
 cd ../../
-mv pgoencrypt/src/libencrypt.so encrypt.so
 ```
 ####
 - copy and edit the config
@@ -121,11 +118,6 @@ call C:\Python27\PokemonGo-Bot\Scripts\activate.bat
 pip2 install --upgrade -r C:/Python27/PokemonGo-Bot/requirements.txt
 ```
 
-##### Get encrypt.so and encrypt.dll or encrypt_64.dll
-Due to copyright on the encrypt.so, encrypt.dll and encrypt_64.dll we are not directly hosting it. Please find a copy elsewhere on the internet and compile it yourself. We accept no responsibility should you encounter any problems with files you download elsewhere.
-Try asking around our Slack chat **(Just say the word "encrypt" and Slackbot will give you info)**!
-
-Download it to the `C:/Python27/PokemonGo-Bot/` folder
 
 ##### Update
 
