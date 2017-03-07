@@ -117,6 +117,7 @@
             "config": {
                 "enabled": true,
                 "infinite_longer_eggs_first": false,
+                "infinite_random_eggs": false,
                 "breakable_longer_eggs_first": true,
                 "min_interval": 120,
                 "infinite": [

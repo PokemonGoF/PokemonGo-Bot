@@ -222,8 +222,9 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 * IncubateEggs
   * `enable`: Disable or enable this task.
   * `longer_eggs_first`: Depreciated
-  * `infinite_longer_eggs_first`:  Default `true` | Prioritize longer eggs in perminent incubators.
-  * `breakable_longer_eggs_first`:  Default `false` | Prioritize longer eggs in breakable incubators.
+  * `infinite_longer_eggs_first`:  Default `false` | Prioritize longer eggs in perminent incubators.
+  * `infinite_random_eggs`:  Default `false` | Put a random egg in perminent incubators.
+  * `breakable_longer_eggs_first`:  Default `true` | Prioritize longer eggs in breakable incubators.
   * `min_interval`: Default `120` | Minimum number of seconds between incubation updates.
   * `infinite`: Default `[2,5,10]` | Types of eggs to be incubated in permanent incubators.
   * `breakable`: Default `[2,5,10]` | Types of eggs to be incubated in breakable incubators.
@@ -775,7 +776,7 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
 * `mode` - The mode on which the sniper will fetch the informations. (default: social)
    - `social` - Information will come from the social network.
    - `url` - Information will come from one or multiple urls.
-   - `telegram` - Manual snipping through telegram.  In telegram, use "/snipe <PokemonName> <Lat> <Lng>" to snipe. Subscript to "/sub sniper_log" and "/sub pokemon_vip_caught" to retrieve snipping results through telegram. 
+   - `telegram` - Manual snipping through telegram.  In telegram, use "/snipe <PokemonName> <Lat> <Lng>" to snipe. Subscript to "/sub sniper_log" and "/sub pokemon_vip_caught" to retrieve snipping results through telegram.
 * `bullets` - Each bullet corresponds to an **ATTEMPT** of catching a pokemon. (default: 1)
 * `homing_shots` - This will ensure that each bullet **will catch** a target. If disabled, a target might not exist and thus it wont be caught. When enabled, this will jump to the next target (if any) and try again to catch it. This will be repeated untill you've spent all the bullets. (default: true)
 * `special_iv` - This will skip the catch list if the value is greater than or equal to the target's IV. This currently does not work with `social` mode and only works if the given `url` has this information. (default: 100)
@@ -886,11 +887,11 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
 ### Description
 [[back to top](#table-of-contents)]
 
-Walk to the specified locations loaded from .gpx or .json file. It is highly 
-recommended to use website such as [GPSies](http://www.gpsies.com) which allow 
-you to export your created track in JSON file. Note that you'll have to first 
-convert its JSON file into the format that the bot can understand. See [Example 
-of pier39.json] below for the content. I had created a simple python script to 
+Walk to the specified locations loaded from .gpx or .json file. It is highly
+recommended to use website such as [GPSies](http://www.gpsies.com) which allow
+you to export your created track in JSON file. Note that you'll have to first
+convert its JSON file into the format that the bot can understand. See [Example
+of pier39.json] below for the content. I had created a simple python script to
 do the conversion.
 
 The `location` fields in the `.json` file can also contain a street address. In
@@ -903,9 +904,9 @@ MoveToFort task. This allows the bot to walk around the waypoint looking for
 forts for a limited time.
 
 The `loiter` field, also optional for each point in the json file, works
-similarly to the `wander` field. The difference is that with `loiter` the 
-next `Task` in the configuration file is /not/ executed, meaning the bot 
-will wait, without moving, at the point in the json file with the `loiter` 
+similarly to the `wander` field. The difference is that with `loiter` the
+next `Task` in the configuration file is /not/ executed, meaning the bot
+will wait, without moving, at the point in the json file with the `loiter`
 option.
 
 ### Options
