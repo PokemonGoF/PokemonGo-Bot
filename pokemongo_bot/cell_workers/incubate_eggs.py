@@ -1,5 +1,6 @@
 from collections import Counter
 from datetime import datetime, timedelta
+import random
 
 from pokemongo_bot import inventory
 from pokemongo_bot.human_behaviour import sleep
@@ -29,6 +30,7 @@ class IncubateEggs(BaseTask):
 
     def _process_config(self):
         self.infinite_longer_eggs_first = self.config.get("infinite_longer_eggs_first", False)
+        self.infinite_random_eggs = self.config.get("infinite_random_eggs", False)
         self.breakable_longer_eggs_first = self.config.get("breakable_longer_eggs_first", True)
         self.min_interval = self.config.get('min_interval', 120)
         self.breakable_incubator = self.config.get("breakable", [2,5,10])
@@ -59,6 +61,8 @@ class IncubateEggs(BaseTask):
             # get available eggs
             eggs = self._filter_sort_eggs(self.infinite_incubator,
                     self.infinite_longer_eggs_first)
+            if self.infinite_random_eggs:
+                eggs = random.shuffle(eggs)
             self._apply_incubators(eggs, self.ready_infinite_incubators)
         if self.ready_breakable_incubators:
             # get available eggs
