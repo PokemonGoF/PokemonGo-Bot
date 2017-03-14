@@ -291,6 +291,8 @@
                 "mode": "social",
                 "bullets": 1,
                 "homing_shots": true,
+                "cooldown_enabled": false,
+                "loiter_after_snipe": false,
                 "special_iv": 100,
                 "order": [
                     "missing",

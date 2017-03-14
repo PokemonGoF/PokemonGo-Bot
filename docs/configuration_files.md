@@ -781,6 +781,8 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
 * `homing_shots` - This will ensure that each bullet **will catch** a target. If disabled, a target might not exist and thus it wont be caught. When enabled, this will jump to the next target (if any) and try again to catch it. This will be repeated untill you've spent all the bullets. (default: true)
 * `special_iv` - This will skip the catch list if the value is greater than or equal to the target's IV. This currently does not work with `social` mode and only works if the given `url` has this information. (default: 100)
 * `time_mask` - The time mask used (if `expiration.format` is a full date). The default mask is '%Y-%m-%d %H:%M:%S'.
+* `cooldown_enabled` - Do we set the sniper on a cool down of a random time after snipping? This might help avoiding bans.
+* `loiter_after_snipe` - Do we wait a random time after sniping (aside of the above cooldown)? This might also help avoiding bans.
 * `order` - The order on which you want to snipe. This can be one or multiple of the following values (default: [`missing`, `vip`, `priority`]):
    - `iv` - Order by IV, if any. See `special_iv`.
    - `vip` - Order by VIP.

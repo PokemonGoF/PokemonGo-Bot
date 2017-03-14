@@ -134,7 +134,7 @@ class SniperSource(object):
                 # Check whether the params really exist if they have been specified like so
                 if data:
                     if self.mappings.iv.exists and self.mappings.iv.param not in data[0]:
-                       errors.append(self.mappings.iv.param)
+                        errors.append(self.mappings.iv.param)
                     if self.mappings.id.exists and self.mappings.id.param not in data[0]:
                         errors.append(self.mappings.id.param)
                     if self.mappings.name.exists and self.mappings.name.param not in data[0]:
@@ -256,6 +256,8 @@ class Sniper(BaseTask):
         self.homing_shots = self.config.get('homing_shots', True)
         self.mode = self.config.get('mode', SniperMode.DEFAULT)
         self.order = self.config.get('order', SniperOrderMode.DEFAULT)
+        self.cooldown_enabled = self.config.get('cooldown_enabled', False)
+        self.loiter_after_snipe = self.config.get('loiter_after_snipe', False)
         self.catch_list = self.config.get('catch', {})
         self.altitude = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
         self.sources = [SniperSource(data) for data in self.config.get('sources', [])]
@@ -467,6 +469,7 @@ class Sniper(BaseTask):
         else:
             self.bot.sniper_disabled_global_warning = False
             targets = []
+            sniped = False
 
             # Retrieve the targets
             if self.mode == SniperMode.SOCIAL:
@@ -493,6 +496,7 @@ class Sniper(BaseTask):
 
                 # For as long as there are targets available, try to snipe untill we run out of bullets
                 for index, target in enumerate(targets):
+                    sniped = True
                     if shots < self.bullets:
                         success = self.snipe(target)
                         shots += 1
@@ -509,9 +513,15 @@ class Sniper(BaseTask):
                 # Always set telegram back to false
         TelegramSnipe.ENABLED = False
 
-        wait = uniform(60, 360)
-        self.no_snipe_until = time.time() + wait
-        self._log("Snipe on cooldown until {}.".format((datetime.now() + timedelta(seconds=wait)).strftime("%H:%M:%S")))
+        if sniped:
+            if self.loiter_after_snipe:
+                loiter = int(uniform(20, 40))
+                self._log("Loitering for {} seconds after sniping to allow Niantic flags to drop off...".format(loiter))
+                time.sleep(loiter)
+            if self.cooldown_enabled:
+                wait = uniform(60, 360)
+                self.no_snipe_until = time.time() + wait
+                self._log("Snipe on cooldown until {}.".format((datetime.now() + timedelta(seconds=wait)).strftime("%H:%M:%S")))
 
         return WorkerResult.SUCCESS
 
