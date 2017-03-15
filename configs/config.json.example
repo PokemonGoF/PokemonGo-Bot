@@ -405,6 +405,7 @@
                 "catch_incensed_pokemon": true,
                 "min_ultraball_to_keep": 5,
                 "berry_threshold": 0.35,
+		 "use_pinap_on_vip": false,
                 "vip_berry_threshold": 0.9,
                 "treat_unseen_as_vip": true,
                 "daily_catch_limit": 800,
