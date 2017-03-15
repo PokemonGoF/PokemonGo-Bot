@@ -517,7 +517,7 @@ class PokemonGoBot(object):
         self.event_manager.register_event('skip_evolve')
         self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
         self.event_manager.register_event('vip_pokemon')
-        self.event_manager.register_event('gained_candy', parameters=('quantity', 'type'))
+        self.event_manager.register_event('gained_candy', parameters=('gained_candy', 'quantity', 'type'))
         self.event_manager.register_event('catch_limit')
         self.event_manager.register_event('spin_limit')
         self.event_manager.register_event('show_best_pokemon', parameters=('pokemons'))

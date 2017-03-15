@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import time
+from datetime import datetime, timedelta
 import json
 import requests
 import calendar
@@ -9,7 +10,6 @@ import hashlib
 
 from random import uniform
 from operator import itemgetter, methodcaller
-from datetime import datetime
 from itertools import izip
 from pokemongo_bot import inventory
 from pokemongo_bot.item_list import Item
@@ -35,19 +35,20 @@ class SniperSource(object):
     def fetch_raw(self):
         some_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/52.0.2743.116 Safari/537.36'
         response = requests.get(self.url, headers={'User-Agent': some_agent}, timeout=self.timeout)
+
         results = response.json()
 
         # If the results is a dict, retrieve the list from it by the given key. This will return a list afterall.
-        if isinstance(results, dict): 
-            results = results.get(self.key, []) 
-            
+        if isinstance(results, dict):
+            results = results.get(self.key, [])
+
         # If results is STILL a dict (eg. each pokemon is its own dict), need to build data from nested json (example whereispokemon.net)
         while isinstance(results,dict):
             tmpResults = []
-            for key, value in results.iteritems(): 
+            for key, value in results.iteritems():
                 tmpResults.append(value)
                 results = tmpResults
-                
+
         return results
 
     def fetch(self):
@@ -73,6 +74,14 @@ class SniperSource(object):
                     latitude = position[0]
                     longitude = position[1]
 
+                # Some sources block access to all pokemon, need to skip those!
+                try:
+                    float(latitude)
+                    float(longitude)
+                except ValueError:
+                    # Seems to be blacked out, do next.
+                    continue
+
                 # Format the time accordingly. Pokemon times are in milliseconds!
                 if self.mappings.expiration.exists and expiration:
                     if self.mappings.expiration.format == SniperSourceMappingTimeFormat.SECONDS:
@@ -97,7 +106,7 @@ class SniperSource(object):
 
                 # Some type castings were specified for a better readability
                 pokemons.append({
-                    'iv': int(iv or 0),
+                    'iv': float(iv or 0),
                     'pokemon_id': int(id or 0),
                     'pokemon_name': str(name or ''),
                     'latitude': float(latitude or .0),
@@ -121,11 +130,11 @@ class SniperSource(object):
             if self.enabled:
                 errors = []
                 data = self.fetch_raw()
-                
+
                 # Check whether the params really exist if they have been specified like so
                 if data:
                     if self.mappings.iv.exists and self.mappings.iv.param not in data[0]:
-                       errors.append(self.mappings.iv.param)
+                        errors.append(self.mappings.iv.param)
                     if self.mappings.id.exists and self.mappings.id.param not in data[0]:
                         errors.append(self.mappings.id.param)
                     if self.mappings.name.exists and self.mappings.name.param not in data[0]:
@@ -154,7 +163,7 @@ class SniperSource(object):
             raise ValueError("Source not available")
         except:
             raise
-            
+
     def _fixname(self,name):
         if name:
             name = name.replace("mr-mime","mr. mime")
@@ -166,14 +175,14 @@ class SniperSource(object):
     def _get_closest_name(self, name):
         if not name:
             return
-            
+
         pokemon_names = [p.name for p in inventory.pokemons().STATIC_DATA]
         closest_names = difflib.get_close_matches(name, pokemon_names, 1)
 
         if closest_names:
             closest_name = closest_names[0]
             return closest_name
-        
+
         return name
 
 # Represents the JSON params mappings
@@ -247,13 +256,16 @@ class Sniper(BaseTask):
         self.homing_shots = self.config.get('homing_shots', True)
         self.mode = self.config.get('mode', SniperMode.DEFAULT)
         self.order = self.config.get('order', SniperOrderMode.DEFAULT)
+        self.cooldown_enabled = self.config.get('cooldown_enabled', False)
+        self.loiter_after_snipe = self.config.get('loiter_after_snipe', False)
         self.catch_list = self.config.get('catch', {})
         self.altitude = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
         self.sources = [SniperSource(data) for data in self.config.get('sources', [])]
+        self.no_snipe_until = None
 
         if not hasattr(self.bot,"sniper_cache"):
             self.bot.sniper_cache = []
-            
+
         # Dont bother validating config if task is not even enabled
         if self.enabled:
             # Validate ordering
@@ -283,7 +295,7 @@ class Sniper(BaseTask):
                     if not self.sources :
                         self._error("There is no source available. Disabling Sniper...")
                         self.disabled = True
-                        
+
                     # Re-enable snipping if source is from telegram
                     if self.mode == SniperMode.TELEGRAM:
                         self.disabled = False
@@ -310,8 +322,8 @@ class Sniper(BaseTask):
             self._trace('{} is catchable!'.format(pokemon.get('pokemon_name')))
         else:
             # Not catchable. Having a good IV should suppress the not in catch/vip list (most important)
-            if pokemon.get('iv', 0) and pokemon.get('iv', 0) <= self.special_iv:
-                self._trace('{} is not catchable, but has a decent IV!'.format(pokemon.get('pokemon_name')))
+            if pokemon.get('iv', 0) and pokemon.get('iv', 0) >= self.special_iv:
+                self._trace('{} is not catchable, but has a decent IV ({})!'.format(pokemon.get('pokemon_name'), pokemon.get('iv', 0)))
             else:
                 # Not catchable and IV is not good enough (if any). Check VIP list
                 if pokemon.get('vip', False):
@@ -336,7 +348,7 @@ class Sniper(BaseTask):
             # Have we already tried this pokemon?
             if not hasattr(self.bot,'sniper_unique_pokemon'):
                 self.bot.sniper_unique_pokemon = []
-            
+
             # Check if already in list of pokemon we've tried
             uniqueid = self._build_unique_id(pokemon)
             if self._is_cached(uniqueid):
@@ -349,13 +361,13 @@ class Sniper(BaseTask):
                 # Teleport, so that we can see nearby stuff
                 self.bot.hb_locked = True
                 self._teleport_to(pokemon)
-                
+
 
                 # If social is enabled and if no verification is needed, trust it. Otherwise, update IDs!
                 verify = not pokemon.get('encounter_id') or not pokemon.get('spawn_point_id')
                 exists = not verify or self.mode == SniperMode.SOCIAL
                 success = exists
-                
+
                 # Always verify if it's from telegram
                 if TelegramSnipe.ENABLED == True:
                     verify = True
@@ -366,12 +378,12 @@ class Sniper(BaseTask):
 
                     # Wait a maximum of MIN_SECONDS_ALLOWED_FOR_CELL_CHECK seconds before requesting nearby cells
                     self._trace('Pausing for {} secs before checking for Pokemons'.format(self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK))
-        
+
                     #recode it to check every 5 secs, first check for wild then catchable
                     nearby_pokemons = []
                     nearby_stuff = []
                     num = 0
-                    for num in range(0,self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK): 
+                    for num in range(0,self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK):
                         if num%5 == 0:
                             nearby_stuff = self.bot.get_meta_cell()
                             self.last_cell_check_time = time.time()
@@ -380,12 +392,12 @@ class Sniper(BaseTask):
                             nearby_pokemons.extend(nearby_stuff.get('wild_pokemons', []))
                             if nearby_pokemons:
                                 break
-                                
+
                         time.sleep(1)
                         num += 1
-                    
+
                     num = 0
-                    for num in range(0,self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK): 
+                    for num in range(0,self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK):
                         if num%5 == 0:
                             nearby_stuff = self.bot.get_meta_cell()
                             self.last_cell_check_time = time.time()
@@ -394,16 +406,16 @@ class Sniper(BaseTask):
                             nearby_pokemons.extend(nearby_stuff.get('catchable_pokemons', []))
                             if nearby_pokemons:
                                 break
-                                
+
                         time.sleep(1)
                         num += 1
 
                     self._trace('Pokemon Nearby: {}'.format(nearby_pokemons))
-                   
+
                     # Make sure the target really/still exists (nearby_pokemon key names are game-bound!)
                     for nearby_pokemon in nearby_pokemons:
                         nearby_pokemon_id = nearby_pokemon.get('pokemon_data', {}).get('pokemon_id') or nearby_pokemon.get('pokemon_id')
-                        
+
                         # If we found the target, it exists and will very likely be encountered/caught (success)
                         if nearby_pokemon_id == pokemon.get('pokemon_id', 0):
                             exists = True
@@ -419,14 +431,14 @@ class Sniper(BaseTask):
                 if exists:
                     self._log('Yay! There really is a wild {} nearby!'.format(pokemon.get('pokemon_name')))
                     self._teleport_back_and_catch(last_position, pokemon)
-                        
+
                 else:
                     self._error('Damn! Its not here. Reasons: too far, caught, expired or fake data. Skipping...')
                     self._teleport_back(last_position)
-                
+
                 #Set always to false to re-enable sniper to check for telegram data
                 TelegramSnipe.ENABLED = False
-                    
+
                 # Save target and unlock heartbeat calls
                 self._cache(uniqueid)
                 self.bot.hb_locked = False
@@ -435,20 +447,29 @@ class Sniper(BaseTask):
 
     def work(self):
         #Check if telegram is called
-        
+
+        if self.no_snipe_until != None and self.no_snipe_until > time.time():
+            # No hunting now, cooling down
+            return WorkerResult.SUCCESS
+        else:
+            # Resume hunting
+            self.no_hunt_until = None
+
         # Do nothing if this task was invalidated
         if self.disabled:
             self._error("Sniper was disabled for some reason. Scroll up to find out.")
-            
+
         elif self.bot.catch_disabled:
             if not hasattr(self.bot,"sniper_disabled_global_warning") or \
                         (hasattr(self.bot,"sniper_disabled_global_warning") and not self.bot.sniper_disabled_global_warning):
                 self._log("All catching tasks are currently disabled until {}. Sniper will resume when catching tasks are re-enabled".format(self.bot.catch_resume_at.strftime("%H:%M:%S")))
             self.bot.sniper_disabled_global_warning = True
-            
+            return WorkerResult.SUCCESS
+
         else:
             self.bot.sniper_disabled_global_warning = False
             targets = []
+            sniped = False
 
             # Retrieve the targets
             if self.mode == SniperMode.SOCIAL:
@@ -475,6 +496,7 @@ class Sniper(BaseTask):
 
                 # For as long as there are targets available, try to snipe untill we run out of bullets
                 for index, target in enumerate(targets):
+                    sniped = True
                     if shots < self.bullets:
                         success = self.snipe(target)
                         shots += 1
@@ -487,9 +509,19 @@ class Sniper(BaseTask):
                         if shots < self.bullets and index < len(targets):
                             self._trace('Waiting a few seconds to teleport again to another target...')
                             time.sleep(3)
-                            
+
                 # Always set telegram back to false
         TelegramSnipe.ENABLED = False
+
+        if sniped:
+            if self.loiter_after_snipe:
+                loiter = int(uniform(20, 40))
+                self._log("Loitering for {} seconds after sniping to allow Niantic flags to drop off...".format(loiter))
+                time.sleep(loiter)
+            if self.cooldown_enabled:
+                wait = uniform(60, 360)
+                self.no_snipe_until = time.time() + wait
+                self._log("Snipe on cooldown until {}.".format((datetime.now() + timedelta(seconds=wait)).strftime("%H:%M:%S")))
 
         return WorkerResult.SUCCESS
 
@@ -507,19 +539,19 @@ class Sniper(BaseTask):
             # Check whether this is a valid target
             if self.is_snipeable(pokemon):
                 result.append(pokemon)
-        
+
         return result
-        
+
     def _get_pokemons_from_telegram(self):
         if not TelegramSnipe.ENABLED:
             return {}
-        
+
         pokemons = []
         pokemon = {'iv': int(0), 'pokemon_id': int(TelegramSnipe.ID), 'pokemon_name': str(TelegramSnipe.POKEMON_NAME), 'latitude': float(TelegramSnipe.LATITUDE), 'longitude': float(TelegramSnipe.LONGITUDE)}
         self._log('Telegram snipe request: {}'.format(pokemon.get('pokemon_name')))
-        
+
         pokemons = [pokemon]
-        
+
         return self._parse_pokemons(pokemons)
 
     def _get_pokemons_from_social(self):
