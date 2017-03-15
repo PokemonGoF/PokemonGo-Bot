@@ -291,6 +291,8 @@
                 "mode": "social",
                 "bullets": 1,
                 "homing_shots": true,
+                "cooldown_enabled": false,
+                "loiter_after_snipe": false,
                 "special_iv": 100,
                 "order": [
                     "missing",
@@ -405,7 +407,7 @@
                 "berry_threshold": 0.35,
 		 "use_pinap_on_vip": false,
                 "vip_berry_threshold": 0.9,
-                "treat_unseen_as_vip": false,
+                "treat_unseen_as_vip": true,
                 "daily_catch_limit": 800,
                 "vanish_settings": {
                     "consecutive_vanish_limit": 10,
