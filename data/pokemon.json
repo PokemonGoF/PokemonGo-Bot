@@ -4010,7 +4010,8 @@
     ],
     "Fast Attack(s)": [
       "Poison Jab",
-      "Mud Slap"
+      "Mud Slap",
+      "Acid"
     ],
     "Weight": "30 kg",
     "Height": "0,9 m",
@@ -4806,6 +4807,12 @@
       "Name": "Tyrogue candies",
       "FamilyID": 236
     },
+    "Previous evolution(s)": [
+      {
+        "Number": "236",
+        "Name": "Tyrogue"
+      }
+    ],
     "Special Attack(s)": [
       "Close Combat",
       "Low Sweep",
@@ -4841,6 +4848,12 @@
       "Name": "Tyrogue candies",
       "FamilyID": 236
     },
+    "Previous evolution(s)": [
+      {
+        "Number": "236",
+        "Name": "Tyrogue"
+      }
+    ],
     "Special Attack(s)": [
       "Fire Punch",
       "Ice Punch",
@@ -4898,9 +4911,9 @@
       "DataNotInGameMaster"
     ],
     "Fast Attack(s)": [
-      "Acid",
       "Tackle",
-      "Infestation"
+      "Infestation",
+      "Acid"
     ],
     "Weight": "1 kg",
     "Height": "0,6 m",
@@ -10245,6 +10258,14 @@
       "Name": "Tyrogue candies"
     },
     "Next evolution(s)": [
+      {
+        "Number": "106",
+        "Name": "Hitmonlee"
+      },
+      {
+        "Number": "107",
+        "Name": "Hitmonchan"
+      },
       {
         "Number": "237",
         "Name": "Hitmontop"
