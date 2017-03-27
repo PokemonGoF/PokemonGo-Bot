@@ -480,6 +480,7 @@ class PokemonGoBot(object):
             parameters=(
                 'pokemon',
                 'ncp', 'cp', 'iv', 'iv_display', 'exp',
+                'shiny',
                 'stardust',
                 'encounter_id',
                 'latitude',
@@ -494,6 +495,7 @@ class PokemonGoBot(object):
             parameters=(
                 'pokemon',
                 'ncp', 'cp', 'iv', 'iv_display', 'exp',
+                'shiny'
                 'stardust',
                 'encounter_id',
                 'latitude',
