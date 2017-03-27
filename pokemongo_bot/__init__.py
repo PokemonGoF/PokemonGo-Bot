@@ -206,7 +206,7 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event('api_error')
         self.event_manager.register_event('config_error')
-        
+
         self.event_manager.register_event('captcha')
 
         self.event_manager.register_event('login_started')
@@ -262,7 +262,7 @@ class PokemonGoBot(object):
         )
 
         self.event_manager.register_event('location_cache_error')
-        
+
         self.event_manager.register_event('security_check')
 
         self.event_manager.register_event('bot_start')
@@ -419,7 +419,8 @@ class PokemonGoBot(object):
                 'encounter_id',
                 'latitude',
                 'longitude',
-                'pokemon_id'
+                'pokemon_id',
+                'shiny'
             )
         )
         self.event_manager.register_event('no_pokeballs')
@@ -987,7 +988,7 @@ class PokemonGoBot(object):
             level='info',
             formatted="Login successful."
         )
-        
+
         # Start of security, to get various API Versions from different sources
         # Get Official API
         link = "https://pgorelease.nianticlabs.com/plfe/version"
@@ -1001,7 +1002,7 @@ class PokemonGoBot(object):
             level='info',
             formatted="Niantic Official API Version: {}".format(officalAPI)
         )
-        
+
         link = "https://pokehash.buddyauth.com/api/hash/versions"
         f = urllib2.urlopen(link)
         myfile = f.read()
@@ -1016,9 +1017,9 @@ class PokemonGoBot(object):
             level='info',
             formatted="Latest Bossland Hashing API Version: {}".format(bossland_lastestAPI)
         )
-        
+
         if self.config.check_niantic_api is True:
-            if HashServer.endpoint == "": 
+            if HashServer.endpoint == "":
                 self.event_manager.emit(
                     'security_check',
                     sender=self,
@@ -1030,17 +1031,17 @@ class PokemonGoBot(object):
                 PGoAPI_hash_version = []
                 # Check if PGoAPI hashing is in Bossland versioning
                 bossland_hash_data = json.loads(myfile)
-                
+
                 for version, endpoint in bossland_hash_data.iteritems():
                     if endpoint == PGoAPI_hash_endpoint:
                         PGoAPI_hash_version.append(version)
                         # assuming andorid versioning is always last entry
                         PGoAPI_hash_version.reverse()
-                
+
                 # covert official api version & hashing api version to numbers
                 officialAPI_int = int(officalAPI.replace('.',''))
                 hashingAPI_int = int(PGoAPI_hash_version[0].replace('.',''))
-                
+
                 if hashingAPI_int < officialAPI_int:
                     self.event_manager.emit(
                         'security_check',
@@ -1055,8 +1056,8 @@ class PokemonGoBot(object):
                         sender=self,
                         level='info',
                         formatted="Current PGoAPI is using API Version: {}. Niantic API Check Pass".format(PGoAPI_hash_version[0])
-                    )        
-        
+                    )
+
         # When successful login, do a captcha check
         #Basic Captcha detection, more to come
         response_dict = self.api.check_challenge()
@@ -1069,14 +1070,14 @@ class PokemonGoBot(object):
                 formatted='Captcha Encountered, URL: {}'.format(captcha_url)
             )
             sys.exit(1)
-        
+
         self.event_manager.emit(
             'captcha',
             sender=self,
             level='info',
             formatted="Captcha Check Passed"
         )
-        
+
         self.heartbeat()
 
     def get_encryption_lib(self):
@@ -1238,7 +1239,7 @@ class PokemonGoBot(object):
         self.logger.info(
             'Revive: ' + str(items_inventory.get(201).count) +
             ' | MaxRevive: ' + str(items_inventory.get(202).count))
-            
+
         self.logger.info(
             'Sun Stone: ' + str(items_inventory.get(1101).count) +
             ' | Kings Rock: ' + str(items_inventory.get(1102).count) +
