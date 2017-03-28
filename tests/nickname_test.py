@@ -80,11 +80,13 @@ class NicknamePokemonTest(unittest.TestCase):
                 "individual_defense": 4, "individual_stamina": 8,
                 "cp_multiplier": 0.4627983868122101,
                 "additional_cp_multiplier": 0.018886566162109375,
-                "cp": 653, "nickname": "Golb", "id": 13632861873471324}),
+                "cp": 653, "nickname": "Golb", "id": 13632861873471324,
+                "pokemon_display": {"shiny": False }}),
             Pokemon({
                 "move_1": 221, "move_2": 129, "pokemon_id": 19, "cp": 106,
                 "individual_attack": 6, "stamina_max": 22, "individual_defense": 14,
-                "cp_multiplier": 0.37523558735847473, "id": 7841053399}),
+                "cp_multiplier": 0.37523558735847473, "id": 7841053399,
+                "pokemon_display": {"shiny": False }}),
         ]
 
     def assertNicks(self, template, expected_results):
