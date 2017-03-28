@@ -121,9 +121,11 @@ class InventoryTest(unittest.TestCase):
             "individual_defense": 4, "individual_stamina": 8,
             "cp_multiplier": 0.4627983868122101,
             "additional_cp_multiplier": 0.018886566162109375,
-            "cp": 653, "nickname": "Golb", "id": 13632861873471324})
+            "cp": 653, "nickname": "Golb", "id": 13632861873471324,
+            "pokemon_display": {"shiny": False }})
         self.assertEqual(poke.level, 13)
         self.assertEqual(poke.iv, 0.47)
+        self.assertEqual(poke.shiny, False)
         self.assertAlmostEqual(poke.ivcp, 0.4857492694248581)
         self.assertAlmostEqual(poke.static.max_cp, 1830.17768446934)
         self.assertAlmostEqual(poke.cp_percent, 0.33943779314748107)
@@ -139,7 +141,8 @@ class InventoryTest(unittest.TestCase):
         poke = Pokemon({
             "move_1": 221, "move_2": 129, "pokemon_id": 19, "cp": 106,
             "individual_attack": 6, "stamina_max": 22, "individual_defense": 14,
-            "cp_multiplier": 0.37523558735847473, "id": 7841053399})
+            "cp_multiplier": 0.37523558735847473, "id": 7841053399,
+            "pokemon_display": {"shiny": False }})
         self.assertEqual(poke.level, 8)
         self.assertEqual(poke.iv, 0.44)
         self.assertAlmostEqual(poke.ivcp, 0.38537234816542393)
