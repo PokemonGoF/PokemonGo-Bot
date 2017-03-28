@@ -171,6 +171,12 @@ class Pokedex(_BaseInventoryComponent):
     def captured(self, pokemon_id):
         return self.seen(pokemon_id) and self._data.get(pokemon_id, {}).get('times_captured', 0) > 0
 
+    def shiny_seen(self, pokemon_id):
+        return self._data.get(pokemon_id, {}).get('encountered_shiny', False)
+
+    def shiny_captured(self, pokemon_id):
+        return self._data.get(pokemon_id, {}).get('captured_shiny', False)
+
 
 class Item(object):
     """
@@ -951,6 +957,11 @@ class Pokemon(object):
         self.pokemon_id = data['pokemon_id']
         # Static information
         self.static = Pokemons.data_for(self.pokemon_id)
+
+        # Shiny information
+        self.display_data = data.get('pokemon_display')
+        self.shiny = self.display_data.get('shiny', False)
+        # self.form = self.display_data.get('form', )
 
         # Combat points value
         self.cp = data['cp']
