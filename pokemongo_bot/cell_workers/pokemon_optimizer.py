@@ -688,7 +688,7 @@ class PokemonOptimizer(BaseTask):
                 for pokemon in upgrade:
                     self.upgrade_pokemon(pokemon)
 
-    def transfer_pokemon(self, pokemon):
+    def transfer_pokemon(self, transfer):
         pokemon_ids = []
         for pokemon in transfer:
             pokemon_ids.extend([pokemon.unique_id])
