@@ -604,6 +604,9 @@ The default settings are 'safe' settings intended to simulate human and app beha
 "min_ultraball_to_keep": 5,
 "berry_threshold": 0.35,
 "use_pinap_on_vip": false,
+"pinap_on_level_below": 0,
+"pinap_operator": "or",
+"pinap_ignore_threshold": false,
 "vip_berry_threshold": 0.9,
 "catch_throw_parameters": {
   "excellent_rate": 0.1,
@@ -633,6 +636,9 @@ Setting | Description
 `min_ultraball_to_keep` | Allows the bot to use ultraballs on non-VIP pokemon as long as number of ultraballs is above this setting
 `berry_threshold` | The ideal catch rate threshold before using a razz berry on normal pokemon (higher threshold means using razz berries more frequently, for example if we raise `berry_threshold` to 0.5, any pokemon that has an initial catch rate between 0 to 0.5 will initiate a berry throw)
 `use_pinap_on_vip` | Use pinap berry instead of razz berry on on VIP pokemon. The bot will use razz berry if pinap berry has run out
+`pinap_on_level_below` | Set at what level (and below) of the pokemon should Pinap berry br use on. Set to 0 to disable use of pinap berry
+`pinap_operator` | Set if Pinap berry going to be use together with "use_pinap_on_vip" or without (Operator "or", "and")
+`pinap_ignore_threshold` | Set if bot is going to ignore catch rate threshold when using pinap berry
 `vip_berry_threshold` | The ideal catch rate threshold before using a razz berry on VIP pokemon
 `flee_count` | The maximum number of times catching animation will play before the pokemon breaks free
 `flee_duration` | The length of time for each animation
