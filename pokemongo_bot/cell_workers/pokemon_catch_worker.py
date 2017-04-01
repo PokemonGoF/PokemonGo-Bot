@@ -80,6 +80,9 @@ class PokemonCatchWorker(BaseTask):
         self.treat_unseen_as_vip = self.config.get('treat_unseen_as_vip', DEFAULT_UNSEEN_AS_VIP)
         self.daily_catch_limit = self.config.get('daily_catch_limit', 800)
         self.use_pinap_on_vip = self.config.get('use_pinap_on_vip', False)
+        self.pinap_on_level_below = self.config.get('pinap_on_level_below', 0)
+        self.pinap_operator = self.config.get('pinap_operator', "or")
+        self.pinap_ignore_threshold = self.config.get('pinap_ignore_threshold', False)
 
         self.vanish_settings = self.config.get('vanish_settings', {})
         self.consecutive_vanish_limit = self.vanish_settings.get('consecutive_vanish_limit', 10)
@@ -466,10 +469,14 @@ class PokemonCatchWorker(BaseTask):
         :type pokemon: Pokemon
         """
 
-        if self.use_pinap_on_vip and is_vip:
+        if self.use_pinap_on_vip and is_vip and pokemon.level <= self.pinap_on_level_below and self.pinap_operator == "and":
             berry_id = ITEM_PINAPBERRY
         else:
             berry_id = ITEM_RAZZBERRY
+        
+        if self.pinap_operator == "or":
+            if (self.use_pinap_on_vip and is_vip) or (pokemon.level <= self.pinap_on_level_below):
+                berry_id = ITEM_PINAPBERRY
 
         berry_count = self.inventory.get(berry_id).count
 
@@ -484,9 +491,14 @@ class PokemonCatchWorker(BaseTask):
 
         maximum_ball = ITEM_GREATBALL if ball_count[ITEM_ULTRABALL] < min_ultraball_to_keep else ITEM_ULTRABALL
         ideal_catch_rate_before_throw = self.vip_berry_threshold if is_vip else self.berry_threshold
+        ideal_catch_rate_before_throw = 1 if self.pinap_ignore_threshold and berry_id == ITEM_PINAPBERRY else ideal_catch_rate_before_throw
 
         used_berry = False
         original_catch_rate_by_ball = catch_rate_by_ball
+        
+        if DEBUG_ON:
+            print "Pokemon Level: " + str(pokemon.level) + " Berries count: " + str(berry_count) + " Berries ID: " + str(berry_id) + " Catch rate: " + str(ideal_catch_rate_before_throw)
+        
         while True:
 
             # find lowest available ball
@@ -505,25 +517,15 @@ class PokemonCatchWorker(BaseTask):
                 num_next_balls += ball_count[next_ball]
 
             # If pinap berry is not enough, use razz berry
-            if berry_count == 0 and self.use_pinap_on_vip:
-                if berry_id == ITEM_PINAPBERRY:
-                    berry_id = ITEM_RAZZBERRY
-                    berry_count = self.inventory.get(berry_id).count
-                else:
-                    berry_id = ITEM_PINAPBERRY
-                    berry_count = self.inventory.get(berry_id).count
+            if berry_count == 0 and berry_id == ITEM_PINAPBERRY:
+                berry_id = ITEM_RAZZBERRY
+                ideal_catch_rate_before_throw = self.vip_berry_threshold if is_vip else self.berry_threshold
+                berry_count = self.inventory.get(berry_id).count
 
             # check if we've got berries to spare
             berries_to_spare = berry_count > 0 if is_vip else berry_count > num_next_balls + 30
 
             changed_ball = False
-
-            # use pinap if config set to true
-            if self.use_pinap_on_vip and is_vip and berries_to_spare and not used_berry:
-                self._use_berry(berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball)
-                self.inventory.get(berry_id).remove(1)
-                berry_count -= 1
-                used_berry = True
 
             # use a berry if we are under our ideal rate and have berries to spare
             if catch_rate_by_ball[current_ball] < ideal_catch_rate_before_throw and berries_to_spare and not used_berry:
