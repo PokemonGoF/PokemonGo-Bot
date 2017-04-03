@@ -7,7 +7,7 @@ from pgoapi.hash_server import HashServer
 
 class UpdateHashStats(BaseTask):
     """
-    Display hashkey stats every 'min_interval' second(s).
+    Periodically displays the hash stats in the terminal.
     Time return is UTC format.
     
     Example config :
