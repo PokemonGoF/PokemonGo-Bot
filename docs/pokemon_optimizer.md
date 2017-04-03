@@ -53,6 +53,8 @@ In case that logging will be enabled, look for .log file in data folder.
             "type": "PokemonOptimizer",
             "config": {
                 "enabled": true,
+                "bulktransfer_enabled": False,
+                "max_bulktransfer": 10,
                 "min_slots_left": 5,
                 "action_wait_min": 3,
                 "debug": false,
@@ -141,6 +143,24 @@ In case that logging will be enabled, look for .log file in data folder.
 | `enabled` | `true`, `false` | `true`  |
 
 Enable or disable the task.
+
+[[back to top](#pokemon-optimizer)]
+
+### bulktransfer_enabled
+| Parameter              | Posible values  | Default |
+|------------------------|-----------------|---------|
+| `bulktransfer_enabled` | `true`, `false` | `false` |
+
+Enable bulktransfer pokemon for faster transfer.
+
+[[back to top](#pokemon-optimizer)]
+
+### max_bulktransfer
+| Parameter          | Posible values  | Default |
+|--------------------|-----------------|---------|
+| `max_bulktransfer` | `[0-100]`       | `10`    |
+
+Maximum bulktransfer pokemon at a time.
 
 [[back to top](#pokemon-optimizer)]
 
