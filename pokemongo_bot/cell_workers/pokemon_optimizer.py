@@ -691,7 +691,7 @@ class PokemonOptimizer(BaseTask):
                     self.upgrade_pokemon(pokemon)
 
     def transfer_pokemon(self, transfer):
-        error_code = {
+        error_codes = {
             0: 'UNSET',
             1: 'SUCCESS',
             2: 'POKEMON_DEPLOYED',
@@ -699,13 +699,14 @@ class PokemonOptimizer(BaseTask):
             4: 'ERROR_POKEMON_IS_EGG',
             5: 'ERROR_POKEMON_IS_BUDDY'
         }
-        pokemons = transfer
-        if self.config_bulktransfer_enabled:
+        pokemons = list(transfer)
+        if self.config_bulktransfer_enabled and len(pokemons) > 1:
             while len(pokemons) > 0:
-                count = 0
                 pokemon_ids = []
+                count = 0
                 while len(pokemons) > 0 and count < self.config_max_bulktransfer:
-                    pokemon_ids.extend([pokemons.pop().unique_id])
+                    pokemon = pokemons.pop()
+                    pokemon_ids.append(pokemon.unique_id)
                     count = count + 1
                 try:
                     if self.config_transfer:
@@ -714,15 +715,20 @@ class PokemonOptimizer(BaseTask):
                         if result != 1:
                             self.logger.error(u'Error while transfer pokemon: {}'.format(error_codes[result]))
                             return False
-                except KeyError:
+                except Exception:
                     return False
-        
-            for pokemon in pokemons:
+            for pokemon in transfer:
+                candy = inventory.candies().get(pokemon.pokemon_id)
+
+                if self.config_transfer and (not self.bot.config.test):
+                    candy.add(1)
+                    
                 self.emit_event("pokemon_release",
-                                formatted="Exchanged {pokemon} [IV {iv}] [CP {cp}]",
+                                formatted="Exchanged {pokemon} [IV {iv}] [CP {cp}] [{candy} candies]",
                                 data={"pokemon": pokemon.name,
                                       "iv": pokemon.iv,
-                                      "cp": pokemon.cp})
+                                      "cp": pokemon.cp,
+                                      "candy": candy.quantity})
 
                 if self.config_transfer:
                     inventory.pokemons().remove(pokemon.unique_id)
