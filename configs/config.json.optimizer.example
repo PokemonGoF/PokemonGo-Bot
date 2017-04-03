@@ -4,6 +4,8 @@
             "type": "PokemonOptimizer",
             "config": {
                 "enabled": true,
+                "bulktransfer_enabled": false,
+                "max_bulktransfer": 10,
                 "min_slots_left": 5,
                 "action_wait_min": 3,
                 "action_wait_max": 5,
