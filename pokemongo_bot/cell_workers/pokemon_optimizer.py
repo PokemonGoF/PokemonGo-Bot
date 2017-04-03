@@ -57,6 +57,8 @@ class PokemonOptimizer(BaseTask):
             self.log_file = open(log_file_path, "r+")
             self.log_file.seek(0, 2)
 
+        self.config_bulktransfer_enabled = self.config.get("bulktransfer_enabled", False)
+        self.config_max_bulktransfer = self.config.get("max_bulktransfer", 10)
         self.config_min_slots_left = self.config.get("min_slots_left", 5)
         self.config_action_wait_min = self.config.get("action_wait_min", 3)
         self.config_action_wait_max = self.config.get("action_wait_max", 5)
@@ -702,7 +704,7 @@ class PokemonOptimizer(BaseTask):
             while len(pokemons) > 0:
                 count = 0
                 pokemon_ids = []
-                while len(pokemons) > 0 and count < self.max_bulktransfer:
+                while len(pokemons) > 0 and count < self.config_max_bulktransfer:
                     pokemon_ids.extend([pokemons.pop().unique_id])
                     count = count + 1
                 try:
