@@ -32,3 +32,4 @@ from .camp_fort import CampFort
 from .discord_task import DiscordTask
 from .buddy_pokemon import BuddyPokemon
 from .catch_limiter import CatchLimiter
+from .update_hash_stats import UpdateHashStats

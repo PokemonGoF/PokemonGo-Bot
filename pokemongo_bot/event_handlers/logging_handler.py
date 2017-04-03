@@ -48,6 +48,7 @@ class LoggingHandler(EventHandler):
         'login_log':                         'magenta',
         'login_successful':                  'green',
         'log_stats':                         'magenta',
+        'log_hash_stats':                    'magenta',
         'lucky_egg_error':                   'red',
         'move_to_map_pokemon_encounter':     'green',
         'move_to_map_pokemon_fail':          'red',
