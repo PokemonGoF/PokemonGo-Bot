@@ -168,6 +168,14 @@
             }
         },
         {
+            "type": "UpdateHashStats",
+            "config": {
+                "enabled": true,
+                "min_interval": 60,
+                "stats" : ["period", "remaining", "maximum", "expiration"]
+            }
+        },
+        {
             "type": "ShowBestPokemon",
             "config": {
                 "enabled": true,
