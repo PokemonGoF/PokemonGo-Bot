@@ -49,6 +49,11 @@
     - [Options](#options)
     - [Sample configuration](#sample-configuration)
     - [Example console output](#example-console-output)
+- [UpdateHashStats Settings](#updatehashstats-settings)
+    - [Description](#description)
+    - [Options](#options)
+    - [Sample configuration](#sample-configuration)
+    - [Example console output](#example-console-output)
 - [Random Pause](#random-pause)
 - [Egg Incubator](#egg-incubator)
 - [ShowBestPokemon](#showbestpokemon)
@@ -1097,7 +1102,7 @@ Available `items` :
 2016-08-20 18:56:22,754 [UpdateLiveInventory] [INFO] [show_inventory] Items: 335/350 | Pokeballs: 8 | GreatBalls: 186 | UltraBalls: 0 | RazzBerries: 51 | LuckyEggs: 3
 ```
 
-## UpdateHashStats
+## UpdateHashStats Settings
 [[back to top](#table-of-contents)]
 
 ### Description
