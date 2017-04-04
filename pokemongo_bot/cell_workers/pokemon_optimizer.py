@@ -699,13 +699,15 @@ class PokemonOptimizer(BaseTask):
             4: 'ERROR_POKEMON_IS_EGG',
             5: 'ERROR_POKEMON_IS_BUDDY'
         }
-        pokemons = list(transfer)
         if self.config_bulktransfer_enabled and len(pokemons) > 1:
             while len(pokemons) > 0:
+                action_delay(self.config_action_wait_min, self.config_action_wait_max)
                 pokemon_ids = []
                 count = 0
+                transfered = []
                 while len(pokemons) > 0 and count < self.config_max_bulktransfer:
                     pokemon = pokemons.pop()
+                    transfered.append(pokemon)
                     pokemon_ids.append(pokemon.unique_id)
                     count = count + 1
                 try:
@@ -717,32 +719,32 @@ class PokemonOptimizer(BaseTask):
                             return False
                 except Exception:
                     return False
-            for pokemon in transfer:
-                candy = inventory.candies().get(pokemon.pokemon_id)
+                
+                for pokemon in transfered:
+                    candy = inventory.candies().get(pokemon.pokemon_id)
 
-                if self.config_transfer and (not self.bot.config.test):
-                    candy.add(1)
-                    
-                self.emit_event("pokemon_release",
-                                formatted="Exchanged {pokemon} [IV {iv}] [CP {cp}] [{candy} candies]",
-                                data={"pokemon": pokemon.name,
-                                      "iv": pokemon.iv,
-                                      "cp": pokemon.cp,
-                                      "candy": candy.quantity})
+                    if self.config_transfer and (not self.bot.config.test):
+                        candy.add(1)
+                        
+                    self.emit_event("pokemon_release",
+                                    formatted="Exchanged {pokemon} [IV {iv}] [CP {cp}] [{candy} candies]",
+                                    data={"pokemon": pokemon.name,
+                                          "iv": pokemon.iv,
+                                          "cp": pokemon.cp,
+                                          "candy": candy.quantity})
 
-                if self.config_transfer:
-                    inventory.pokemons().remove(pokemon.unique_id)
+                    if self.config_transfer:
+                        inventory.pokemons().remove(pokemon.unique_id)
 
-                    with self.bot.database as db:
-                        cursor = db.cursor()
-                        cursor.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='transfer_log'")
+                        with self.bot.database as db:
+                            cursor = db.cursor()
+                            cursor.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='transfer_log'")
 
-                        db_result = cursor.fetchone()
+                            db_result = cursor.fetchone()
 
-                        if db_result[0] == 1:
-                            db.execute("INSERT INTO transfer_log (pokemon, iv, cp) VALUES (?, ?, ?)", (pokemon.name, pokemon.iv, pokemon.cp))
+                            if db_result[0] == 1:
+                                db.execute("INSERT INTO transfer_log (pokemon, iv, cp) VALUES (?, ?, ?)", (pokemon.name, pokemon.iv, pokemon.cp))
 
-            action_delay(self.config_action_wait_min, self.config_action_wait_max)
         else:
             for pokemon in pokemons:
                 if self.config_transfer and (not self.bot.config.test):

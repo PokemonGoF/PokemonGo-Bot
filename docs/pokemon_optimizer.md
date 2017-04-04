@@ -4,6 +4,8 @@
     - [Default configuration](#default-configuration)
     - [Understand parameters](#understand-parameters)
         - [enabled](#enabled)
+        - [bulktransfer_enabled](#bulktransfer_enabled)
+        - [max_bulktransfer](#max_bulktransfer)
         - [min_slots_left](#min_slots_left)
         - [action_wait_min](#action_wait_min)
         - [action_wait_max](#action_wait_max)

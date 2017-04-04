@@ -34,26 +34,26 @@
     - [Options](#options)
         - [Example](#example)
 - [Sniping _(Sniper)_](#sniper)
-    - [Description](#description)
-    - [Options](#options)
+    - [Description](#description-1)
+    - [Options](#options-1)
         - [Example](#example)
 - [FollowPath Settings](#followpath-settings)
-    - [Description](#description)
-    - [Options](#options)
-    - [Sample Configuration](#sample-configuration)
+    - [Description](#description-2)
+    - [Options](#options-2)
+    - [Sample Configuration](#sample-configuration-1)
 - [UpdateLiveStats Settings](#updatelivestats-settings)
-    - [Options](#options)
-    - [Sample Configuration](#sample-configuration)
+    - [Options](#options-3)
+    - [Sample Configuration](#sample-configuration-2)
 - [UpdateLiveInventory Settings](#updateliveinventory-settings)
-    - [Description](#description)
-    - [Options](#options)
-    - [Sample configuration](#sample-configuration)
+    - [Description](#description-3)
+    - [Options](#options-4)
+    - [Sample configuration](#sample-configuration-3)
     - [Example console output](#example-console-output)
 - [UpdateHashStats Settings](#updatehashstats-settings)
-    - [Description](#description)
-    - [Options](#options)
-    - [Sample configuration](#sample-configuration)
-    - [Example console output](#example-console-output)
+    - [Description](#description-4)
+    - [Options](#options-5)
+    - [Sample configuration](#sample-configuration-4)
+    - [Example console output](#example-console-output-1)
 - [Random Pause](#random-pause)
 - [Egg Incubator](#egg-incubator)
 - [ShowBestPokemon](#showbestpokemon)
@@ -121,7 +121,7 @@ Pauses the execution of the bot every day for some time
 
 Simulates the user going to sleep every day for some time, the sleep time and the duration is changed every day by a random offset defined in the config file.
 
-###Example Config
+### Example Config
 ```
 "sleep_schedule": {
   "enabled": true,
@@ -436,7 +436,7 @@ Define a list of criteria to keep the best Pokemons according to those criteria.
 
 The list of criteria is the following:```'cp','iv', 'iv_attack', 'iv_defense', 'iv_stamina', 'moveset.attack_perfection', 'moveset.defense_perfection', 'hp', 'hp_max'```
 
-####Examples:
+#### Examples:
 
 - Keep the top 25 Zubat with the best hp_max:
 
@@ -1147,7 +1147,7 @@ Simulates the random pause of the day (speaking to someone, getting into a store
 - `min_interval`: (HH:MM:SS) the minimum interval between each pause
 - `max_interval`: (HH:MM:SS) the maximum interval between each pause
 
-###Example Config
+### Example Config
 ```
 {
   "type": "RandomPause",
@@ -1160,7 +1160,7 @@ Simulates the random pause of the day (speaking to someone, getting into a store
 }
 ```
 
-##Egg Incubator
+## Egg Incubator
 [[back to top](#table-of-contents)]
 
 Configure how the bot should use the incubators.
@@ -1170,7 +1170,7 @@ Configure how the bot should use the incubators.
 - `infinite`: ([2], [2,5], [2,5,10], []) the type of egg the infinite (ie. unbreakable) incubator(s) can incubate. If set to [2,5], the incubator(s) can only incubate the 2km and 5km eggs. If set to [], the incubator(s) will not incubate any type of egg.
 - `breakable`: ([2], [2,5], [2,5,10], []) the type of egg the breakable incubator(s) can incubate. If set to [2,5], the incubator(s) can only incubate the 2km and 5km eggs. If set to [], the incubator(s) will not incubate any type of egg.
 
-###Example Config
+### Example Config
 ```
 {
   "type": "IncubateEggs",
