@@ -720,21 +720,21 @@ class PokemonOptimizer(BaseTask):
                 except Exception:
                     return False
                 
-                for x in transfered:
-                    candy = inventory.candies().get(x.pokemon_id)
+                for pokemon in transfered:
+                    candy = inventory.candies().get(pokemon.pokemon_id)
 
                     if self.config_transfer and (not self.bot.config.test):
                         candy.add(1)
                         
                     self.emit_event("pokemon_release",
                                     formatted="Exchanged {pokemon} [IV {iv}] [CP {cp}] [{candy} candies]",
-                                    data={"pokemon": x.name,
-                                          "iv": x.iv,
-                                          "cp": x.cp,
+                                    data={"pokemon": pokemon.name,
+                                          "iv": pokemon.iv,
+                                          "cp": pokemon.cp,
                                           "candy": candy.quantity})
 
                     if self.config_transfer:
-                        inventory.pokemons().remove(x.unique_id)
+                        inventory.pokemons().remove(pokemon.unique_id)
 
                         with self.bot.database as db:
                             cursor = db.cursor()
@@ -743,7 +743,7 @@ class PokemonOptimizer(BaseTask):
                             db_result = cursor.fetchone()
 
                             if db_result[0] == 1:
-                                db.execute("INSERT INTO transfer_log (pokemon, iv, cp) VALUES (?, ?, ?)", (x.name, x.iv, x.cp))
+                                db.execute("INSERT INTO transfer_log (pokemon, iv, cp) VALUES (?, ?, ?)", (pokemon.name, pokemon.iv, pokemon.cp))
 
         else:
             for pokemon in pokemons:
