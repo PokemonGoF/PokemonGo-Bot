@@ -121,7 +121,7 @@ Pauses the execution of the bot every day for some time
 
 Simulates the user going to sleep every day for some time, the sleep time and the duration is changed every day by a random offset defined in the config file.
 
-###Example Config
+### Example Config
 ```
 "sleep_schedule": {
   "enabled": true,
@@ -436,7 +436,7 @@ Define a list of criteria to keep the best Pokemons according to those criteria.
 
 The list of criteria is the following:```'cp','iv', 'iv_attack', 'iv_defense', 'iv_stamina', 'moveset.attack_perfection', 'moveset.defense_perfection', 'hp', 'hp_max'```
 
-####Examples:
+#### Examples:
 
 - Keep the top 25 Zubat with the best hp_max:
 
