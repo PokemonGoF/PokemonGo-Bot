@@ -1147,7 +1147,7 @@ Simulates the random pause of the day (speaking to someone, getting into a store
 - `min_interval`: (HH:MM:SS) the minimum interval between each pause
 - `max_interval`: (HH:MM:SS) the maximum interval between each pause
 
-###Example Config
+### Example Config
 ```
 {
   "type": "RandomPause",
@@ -1160,7 +1160,7 @@ Simulates the random pause of the day (speaking to someone, getting into a store
 }
 ```
 
-##Egg Incubator
+## Egg Incubator
 [[back to top](#table-of-contents)]
 
 Configure how the bot should use the incubators.
@@ -1170,7 +1170,7 @@ Configure how the bot should use the incubators.
 - `infinite`: ([2], [2,5], [2,5,10], []) the type of egg the infinite (ie. unbreakable) incubator(s) can incubate. If set to [2,5], the incubator(s) can only incubate the 2km and 5km eggs. If set to [], the incubator(s) will not incubate any type of egg.
 - `breakable`: ([2], [2,5], [2,5,10], []) the type of egg the breakable incubator(s) can incubate. If set to [2,5], the incubator(s) can only incubate the 2km and 5km eggs. If set to [], the incubator(s) will not incubate any type of egg.
 
-###Example Config
+### Example Config
 ```
 {
   "type": "IncubateEggs",
