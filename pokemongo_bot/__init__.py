@@ -1034,12 +1034,12 @@ class PokemonGoBot(object):
                 # Check if PGoAPI hashing is in Bossland versioning
                 bossland_hash_data = json.loads(myfile)
 
-                for version, endpoint in bossland_hash_data.iteritems():
+                for version, endpoint in bossland_hash_data.items():
                     if endpoint == PGoAPI_hash_endpoint:
-                        PGoAPI_hash_version.append(version)
+                        if not "1." in version and "0." in version:
+                            PGoAPI_hash_version.append(version)
                         # assuming andorid versioning is always last entry
-                        PGoAPI_hash_version.reverse()
-
+                PGoAPI_hash_version.sort(reverse=True)
                 # covert official api version & hashing api version to numbers
                 officialAPI_int = int(officalAPI.replace('.',''))
                 hashingAPI_int = int(PGoAPI_hash_version[0].replace('.',''))
