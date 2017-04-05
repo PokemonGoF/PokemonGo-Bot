@@ -690,7 +690,7 @@ class PokemonOptimizer(BaseTask):
                 for pokemon in upgrade:
                     self.upgrade_pokemon(pokemon)
 
-    def transfer_pokemon(self, transfer):
+    def transfer_pokemon(self, pokemons):
         error_codes = {
             0: 'UNSET',
             1: 'SUCCESS',
