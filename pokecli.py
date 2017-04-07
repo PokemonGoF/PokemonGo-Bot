@@ -66,7 +66,7 @@ if sys.version_info >= (2, 7, 9):
 try:
     import pkg_resources
     pgoapi_version = pkg_resources.get_distribution("pgoapi").version
-    if pgoapi_version != '1.1.6':
+    if pgoapi_version != '1.2.0':
         print "Run following command to get latest update: `pip install -r requirements.txt --upgrade`"
         sys.exit(1)
 except pkg_resources.DistributionNotFound:
