@@ -230,9 +230,24 @@ class PokemonHunter(BaseTask):
     def _is_needed_pokedex(self, pokemon):
         candies = inventory.candies().get(pokemon["pokemon_id"]).quantity
         if candies > 150:
-            return False
             # We have enough candies, pass on hunting this Pokemon
-        if any(not inventory.pokedex().seen(fid) for fid in self.get_family_ids(pokemon)):
+            return False
+
+        # get family ids, gets ALL ids, also for previous evo!
+        # We could see a Ivysaur on the map, and need a Bulbasaur
+        # Then we have no need for a Ivysaur. If we see a Bulbasaur and need
+        # a Ivysaur, then we DO need this pokemon.
+        got_current_evo = False
+        ids = []
+        for fid in self.get_family_ids(pokemon):
+            if got_current_evo:
+                ids += [fid]
+            else:
+                if fid == pokemon["pokemon_id"]:
+                    ids += [fid]
+                    got_current_evo = True
+        # Check if we need this, or a next EVO in the Pokedex
+        if any(not inventory.pokedex().seen(fid) for fid in ids):
             return True
 
     def get_worth_pokemons(self, pokemons):
