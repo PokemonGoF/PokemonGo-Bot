@@ -99,7 +99,7 @@ docker run --name=bot1-pokego --rm -it -v $(pwd)/configs/auth.json:/usr/src/app/
 >```
 docker run --name=bot1-pokego --rm -it -v $(pwd)/configs:/usr/src/app/configs -v $(pwd)/web/:/usr/src/app/web/ pokemongo-bot
 ```
-
+>
 
 Run a second container provided with the OpenPoGoBotWeb view:
 
@@ -132,11 +132,19 @@ docker run --name=bot1-pokegoweb --rm -it --volumes-from bot1-pokego -p 8000:800
   docker-machine ip default
 ```
 
+
 Then, with your containers running and your host address, you can access the web view in your browser:
 
 `http://<your host address>:8000 (eg http://192.168.99.100:8000)`
- 
- 
+Using proxy with docker:
+- https proxy
+ ```
+ docker run --name=bot1-pokego -e "https_proxy=https://PROXY_IP:PORT" --rm -it -v $(pwd)/configs:/usr/src/app/configs -v $(pwd)/web/:/usr/src/app/web/ pokemongo-bot
+```
+- http proxy
+ ```
+ docker run --name=bot1-pokego -e "http_proxy=http://PROXY_IP:PORT" --rm -it -v $(pwd)/configs:/usr/src/app/configs -v $(pwd)/web/:/usr/src/app/web/ pokemongo-bot
+```
 #### Errors
 
 - An error occurred trying to connect:
