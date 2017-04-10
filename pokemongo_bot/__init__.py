@@ -1013,6 +1013,7 @@ class PokemonGoBot(object):
         total_entry = int(len(bossland_hash_endpoint))
         last_bossland_entry = bossland_hash_endpoint[total_entry-1]
         bossland_lastestAPI = last_bossland_entry.split(":")[0].replace('\"','')
+        hashingAPI_temp = 0
         self.event_manager.emit(
             'security_check',
             sender=self,
@@ -1036,9 +1037,15 @@ class PokemonGoBot(object):
 
                 for version, endpoint in bossland_hash_data.items():
                     if endpoint == PGoAPI_hash_endpoint:
-                        if int(version[0]) != 1 and int(version[0]) == 0:
+                        # Version should always be in this format x.xx.x
+                        # Check total len, if less than 4, pack a zero behind
+                        if len(version.replace('.','')) < 4:
+                            version = version + ".0"
+                        hashingAPI_temp = int(version.replace('.',''))
+                        # iOS versioning is always more than 1.19.0
+                        if hashingAPI_temp < 1190:
                             PGoAPI_hash_version.append(version)
-                        # assuming andorid versioning is always last entry
+                # assuming andorid versioning is always last entry
                 PGoAPI_hash_version.sort(reverse=True)
                 # covert official api version & hashing api version to numbers
                 officialAPI_int = int(officalAPI.replace('.',''))
