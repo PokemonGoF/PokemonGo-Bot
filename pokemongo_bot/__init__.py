@@ -1036,7 +1036,7 @@ class PokemonGoBot(object):
 
                 for version, endpoint in bossland_hash_data.items():
                     if endpoint == PGoAPI_hash_endpoint:
-                        if not "1." in version and "0." in version:
+                        if int(version[0]) != 1 and int(version[0]) == 0:
                             PGoAPI_hash_version.append(version)
                         # assuming andorid versioning is always last entry
                 PGoAPI_hash_version.sort(reverse=True)
