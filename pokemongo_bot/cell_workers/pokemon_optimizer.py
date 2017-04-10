@@ -227,11 +227,6 @@ class PokemonOptimizer(BaseTask):
                 if (not self.buddy) or (self.buddy["id"] != new_buddy.unique_id):
                     self.set_buddy_pokemon(new_buddy)
 
-<<<<<<< Updated upstream
-        # Repeat the optimizer 2 times, to get rid of the trash evolved.
-        for _ in itertools.repeat(None, 2):
-=======
->>>>>>> Stashed changes
             transfer_all = []
             evolve_all = []
             upgrade_all = []
@@ -725,13 +720,13 @@ class PokemonOptimizer(BaseTask):
                             return False
                 except Exception:
                     return False
-                
+
                 for pokemon in transfered:
                     candy = inventory.candies().get(pokemon.pokemon_id)
 
                     if self.config_transfer and (not self.bot.config.test):
                         candy.add(1)
-                        
+
                     self.emit_event("pokemon_release",
                                     formatted="Exchanged {pokemon} [IV {iv}] [CP {cp}] [{candy} candies]",
                                     data={"pokemon": pokemon.name,
