@@ -33,14 +33,14 @@ If you need any help please don't create an issue as we have a great community o
 ## Discord
   - [Click here to join discord server](https://discord.gg/n3g5puF)
 
-###[Bugs / Issues](https://github.com/PokemonGoF/PokemonGo-Bot/issues?q=is%3Aissue+sort%3Aupdated-desc)
+### [Bugs / Issues](https://github.com/PokemonGoF/PokemonGo-Bot/issues?q=is%3Aissue+sort%3Aupdated-desc)
 If you discover a bug in the bot, please [search our issue tracker](https://github.com/PokemonGoF/PokemonGo-Bot/issues?q=is%3Aissue+sort%3Aupdated-desc) first. If it hasn't been reported, please [create a new issue](https://github.com/PokemonGoF/PokemonGo-Bot/issues/new) and ensure you follow the template guide so that our team can assist you as quickly as possible.
 
-###[Feature Requests](https://github.com/PokemonGoF/PokemonGo-Bot/labels/Feature%20Request)
+### [Feature Requests](https://github.com/PokemonGoF/PokemonGo-Bot/labels/Feature%20Request)
 If you have a great idea to improve the bot, please [search our feature tracker](https://github.com/PokemonGoF/PokemonGo-Bot/labels/Feature%20Request) first to ensure someone else hasn't already come up with the same great idea.  If it hasn't been requested, please [create a new request](https://github.com/PokemonGoF/PokemonGo-Bot/issues/new) and ensure you follow the template guide so that it doesnt get lost with the bug reports.
 While you're there vote on other feature requests to let the devs know what is most important to you.
 
-###[Pull Requests](https://github.com/PokemonGoF/PokemonGo-Bot/pulls)
+### [Pull Requests](https://github.com/PokemonGoF/PokemonGo-Bot/pulls)
 If you'd like to make your own changes, make sure you follow the pull request template, and ensure your PR is made against the 'dev' branch.
 
 If this is your first time making a PR or aren't sure of the standard practice of making a PR, here are some articles to get you started.
