@@ -16,7 +16,8 @@ class CatchLimiter(BaseTask):
         self.bot = bot
         self.config = config
         self.enabled = self.config.get("enabled",False)
-        self.min_balls = self.config.get("min_balls",20)
+        self.min_balls = self.config.get("min_balls", 20)
+        self.resume_at_balls = self.config.get("resume_at_balls", 100)
         self.duration = self.config.get("duration",15)
         if not hasattr(self.bot, "catch_resume_at"): self.bot.catch_resume_at = None
 
@@ -26,7 +27,7 @@ class CatchLimiter(BaseTask):
 
         now = datetime.now()
         balls_on_hand = self.get_pokeball_count()
-        
+
         # If resume time has passed, resume catching tasks
         if self.bot.catch_disabled and now >= self.bot.catch_resume_at:
             if balls_on_hand > self.min_balls:
@@ -37,6 +38,15 @@ class CatchLimiter(BaseTask):
                 )
                 self.bot.catch_disabled = False
 
+        # If currently not catching, but balls >= resume_at_balls
+        if self.bot.catch_disabled and balls_on_hand >= self.resume_at_balls:
+            self.emit_event(
+                'catch_limit_off',
+                formatted="Resume time hasn't passed yet, bu balls on hand ({}) exceeds threshold {}. Re-enabling catch tasks.".
+                    format(balls_on_hand, self.resume_at_balls)
+            )
+            self.bot.catch_disabled = False
+
         # If balls_on_hand less than threshold, pause catching tasks for duration minutes
         if not self.bot.catch_disabled and balls_on_hand <= self.min_balls:
             self.bot.catch_resume_at = now + timedelta(minutes = self.duration)
@@ -46,7 +56,7 @@ class CatchLimiter(BaseTask):
                 formatted="Balls on hand ({}) has reached threshold {}. Disabling catch tasks until {} or balls on hand > threshold (whichever is later).".
                     format(balls_on_hand, self.min_balls, self.bot.catch_resume_at.strftime("%H:%M:%S"))
             )
-            
+
         return WorkerResult.SUCCESS
 
     def get_pokeball_count(self):

@@ -581,7 +581,9 @@ class PokemonOptimizer(BaseTask):
         upgrade_level = min(self.config_upgrade_level, inventory.player().level + 1.5, 40)
 
         for pokemon in try_upgrade:
+            # self.log("Considering %s for upgrade" % pokemon.name)
             if pokemon.level >= upgrade_level:
+                # self.log("Pokemon already at target level. %s" % pokemon.level)
                 continue
 
             full_upgrade_candy_cost = 0
@@ -596,8 +598,12 @@ class PokemonOptimizer(BaseTask):
             self.ongoing_stardust_count -= full_upgrade_stardust_cost
 
             if (candies < 0) or (self.ongoing_stardust_count < 0):
+                # self.log("Not enough candy: %s" % candies)
+                # self.log("or stardust %s" % self.ongoing_stardust_count)
+                # We didn' t use the stardust, so refund it...
+                self.ongoing_stardust_count += full_upgrade_stardust_cost
                 continue
-
+            # self.log("Pokemon can be upgraded!!")
             upgrade.append(pokemon)
 
         if (not self.config_evolve_for_xp) or (family_name in self.config_evolve_for_xp_blacklist):

@@ -8,13 +8,13 @@ Consider purchase of [hashing key](http://hashing.pogodev.org) - if you want use
 ### Linux and Mac
 Ubuntu will be used for the Linux Example
 
-####First install required packages
+#### First install required packages
 
-#####Linux - Ubuntu
+##### Linux - Ubuntu
 ```bash
 sudo apt-get install build-essential autoconf libtool pkg-config make python2.7-dev wget git
 ```
-#####Linux - Centos 7
+##### Linux - Centos 7
 ```bash
 sudo yum install -y epel-release
 sudo yum install -y git wget python python-pip
@@ -26,11 +26,11 @@ if you are on a different Linux OS you maybe have to adapt things like:
 - package manager (for example yum instead of apt-get)
 - package names
 
-#####Mac
+##### Mac
 ```bash
 brew install  autoconf libtool pkg-config wget git
 ```
-####Mac + Linux installation
+#### Mac + Linux installation
 make sure you installed everything above
 
 - get pip for python2.7

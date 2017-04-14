@@ -201,6 +201,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 * Catch Limiter
   * `enabled`: Default false | Enable/disable the task
   * `min_balls`: Default 20 | Minimum balls on hand before catch tasks enabled
+  * `resume_at_balls`: Default 100 | When this number of balls is reached, immediately resume catching
   * `duration`: Default 15 | Length of time to disable catch tasks
 * EvolvePokemon
   * `enable`: Disable or enable this task.
