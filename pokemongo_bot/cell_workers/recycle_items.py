@@ -71,6 +71,7 @@ class RecycleItems(BaseTask):
         self.recycle_force_max = self.config.get('recycle_force_max', '00:10:00')       
         self.minInterval = self.getSeconds(self.recycle_force_min)
         self.maxInterval = self.getSeconds(self.recycle_force_max)
+        self.last_log_time = time.time()
         self._validate_item_filter()
         
         if self.recycle_force:
