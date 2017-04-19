@@ -1,0 +1,18 @@
+Run multiple bots on the same server (linux)
+
+To run multiple bots on a single server that has multiple ips assigned Im preloading a library that allows me to direct
+bot traffic on the ip that interests me
+
+I have relied on the document https://www.x4b.net/kb/BindProcessToIPonLinux for installing the library on my VPS
+
+
+apt-get install build-essential
+apt-get install g ++ - multilib libc6-dev-i386
+wget -O https://www.x4b.net/files/bind.c.txt bind.c
+cp /usr/lib/bind.so bind.o
+
+To run the bot would have to run
+
+BIND_ADDR=xxx.xxx.xxx.xxx LD_PRELOAD=/usr/lib/bind.so /usr/bin/python  pokecli.py
+
+where xxx.xxx.xxx.xxx is the ip that I want to assign to the bot 
