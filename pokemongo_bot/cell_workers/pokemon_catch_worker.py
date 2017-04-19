@@ -142,6 +142,20 @@ class PokemonCatchWorker(BaseTask):
         # check if vip pokemon
         is_vip = self._is_vip_pokemon(pokemon)
 
+        # determine maximum ball based on pokemon vip status
+        is_vip = self._is_vip_pokemon(pokemon)
+        maximum_ball = ITEM_ULTRABALL if is_vip else ITEM_GREATBALL
+
+        # find lowest available ball
+        items_stock = self.bot.current_inventory()
+        current_ball = ITEM_POKEBALL
+        while items_stock[current_ball] == 0 and current_ball < maximum_ball:
+            current_ball += 1
+
+        #skip if no available pokeballs
+        if items_stock[current_ball] == 0:
+            return WorkerResult.SUCCESS
+
         # skip ignored pokemon
         if (not self._should_catch_pokemon(pokemon) and not is_vip) or self.bot.catch_disabled:
             if not hasattr(self.bot,'skipped_pokemon'):
