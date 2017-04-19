@@ -136,6 +136,11 @@ class IncubateEggs(BaseTask):
         temp_used_incubators = []
         temp_ready_breakable_incubators = []
         temp_ready_infinite_incubators = []
+        
+        # Force inventory refresh to ensure we have correct data to compare against
+        if lookup_ids:
+            inventory.refresh()
+            
         inv = inventory.jsonify_inventory()
         for inv_data in inv:
             inv_data = inv_data.get("inventory_item_data", {})
