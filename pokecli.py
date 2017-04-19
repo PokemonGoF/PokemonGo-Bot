@@ -60,6 +60,10 @@ except ImportError:
     # Run `pip install -r requirements.txt` to fix this
     jsonlint = None
 
+reload(sys)                   
+sys.setdefaultencoding('UTF8')
+
+
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
