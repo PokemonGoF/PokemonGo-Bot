@@ -100,8 +100,8 @@ class SpinFort(BaseTask):
                     if egg_awarded is not None:
                         awards += u', {} Egg'.format(egg_awarded['egg_km_walked_target'])
                     self.emit_event(
-                        'spun_pokestop',
-                        formatted="Spun pokestop {pokestop}. Experience awarded: {exp}. Items awarded: {items}",
+                        'spin_pokestop',
+                        formatted="Spin pokestop {pokestop}. Experience awarded: {exp}. Items awarded: {items}",
                         data={
                             'pokestop': fort_name,
                             'exp': experience_awarded,
