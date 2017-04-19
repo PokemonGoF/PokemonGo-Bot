@@ -1,0 +1,40 @@
+How to configure the multibot scripts
+
+first you need to install screen.
+how to depends on your package manager (assuming you are running linux).
+
+then change the parameters in EACH file to suit your preferences
+the names you choose MUST be coherent between file
+(i.e. confiName1 in start_pokego must be the same as configName1 in status/restart/stop_pokego)
+
+- screenName is the name of the screen that will be created
+- configName is the config file for that account (must be placed in configs folder and named configName.config
+- username.. well its your username (doesnt need to be tho)
+
+note: you can also leave the parameters like this and just call your config file "configName1",
+but its really ugly.
+TODO: autoconfig script
+
+to run:
+./start_pokego.sh 
+#will kill and restart all bots and web server if already running. (killing the screens)
+
+to stop:
+./stop_pokego.sh 
+#will stop all bot and the web server. (killing the screens)
+
+note: all bots are started in a loop so if they crash they will restart automatically.
+
+if you stop some of them manually and dont remember which one you can check which bot is currently running with:
+./status_pokego.sh
+
+you can restart only currently running bots with:
+./restart_pokego.sh
+#will kill the bot process but neither the loop nor the screen, so the bot will restart.
+
+you can also interact with screen directly using:
+
+screen -r screenName #to attach to a screen
+C-a d to detach
+screen -list #to check a list of the running screens
+(checkout the manual for screen running "man screen" for more info)
