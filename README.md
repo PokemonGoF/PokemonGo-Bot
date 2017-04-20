@@ -23,7 +23,9 @@ The project is currently setup in two main branches:
 ## Slack Channel
 
 ### Configuration issues/help
-If you need any help please don't create an issue as we have a great community on Slack. You can count on the community in [#help](https://pokemongo-bot.slack.com/messages/help/) channel.
+If you need any help please don't create an issue as we have a great community on Slack. 
+You can count on the community in 
+ - [#help](https://pokemongo-bot.slack.com/messages/help/) channel.
  - [Click here to signup (first time only)](https://pokemongo-bot.herokuapp.com)
  - [Join here if you're already a member](https://pokemongo-bot.slack.com/messages/general/)
 
