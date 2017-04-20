@@ -87,6 +87,7 @@ class MoveToMapPokemon(BaseTask):
         self.unit = self.bot.config.distance_unit
         self.cache = []
         self.min_ball = self.config.get('min_ball', 1)
+        self.address = self.config.get('address', 'http://localhost:5000')
         self.map_path = self.config.get('map_path', 'raw_data')
         self.walker = self.config.get('walker', 'StepWalker')
         self.snip_enabled = self.config.get('snipe', False)
@@ -168,11 +169,12 @@ class MoveToMapPokemon(BaseTask):
         return self.pokemons_parser(tmp_pokemon_list)
 
     def get_pokemon_from_url(self):
+        url = '{0}/{1}'.format(self.address, self.map_path)
         try:
-            request = requests.get(self.config['address'])
+            request = requests.get(url)
             response = request.json()
         except requests.exceptions.ConnectionError:
-            self._emit_failure('Could not get data from {}'.format(self.config['address']))
+            self._emit_failure('Could not get data from {}'.format(url))
             return []
         except ValueError:
             self._emit_failure('JSON format is not valid')
