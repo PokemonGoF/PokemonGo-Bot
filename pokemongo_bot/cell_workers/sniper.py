@@ -153,8 +153,6 @@ class SniperSource(object):
                     # All wrong mappings were gathered at once for a better usability (instead of raising multiple exceptions)
                     if errors:
                         raise LookupError("The following params dont exist: {}".format(", ".join(errors)))
-                else:
-                    raise ValueError("Empty reply")
             else:
                 raise ValueError("Source is not enabled")
         except requests.exceptions.Timeout:
