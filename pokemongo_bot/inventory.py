@@ -981,7 +981,7 @@ class Pokemon(object):
         # Maximum health points
         self.hp_max = data['stamina_max']
         # Current health points
-        self.hp = data.get('stamina', self.hp_max)
+        self.hp = data.get('stamina', 0) #self.hp_max)
         assert 0 <= self.hp <= self.hp_max
 
         # Individial Values of the current specific pokemon (different for each)
