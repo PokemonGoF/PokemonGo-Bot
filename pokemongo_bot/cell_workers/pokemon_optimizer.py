@@ -140,7 +140,7 @@ class PokemonOptimizer(BaseTask):
             mode = rule.get("mode", "by_family")
             names = rule.get("names", [])
             check_top = rule.get("top", "all")
-            check_keep = rules.get("keep", True)
+            check_keep = rule.get("keep", True)
             whitelist, blacklist = self.get_colorlist(names)
 
             if check_top == "all" and names == [] and check_keep:
