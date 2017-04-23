@@ -127,37 +127,89 @@ class PokemonOptimizer(BaseTask):
         if not self.enabled:
             return WorkerResult.SUCCESS
 
-        self.check_buddy()
-        self.open_inventory()
+        # Repeat the optimizer 2 times, to get rid of the trash evolved.
+        for _ in itertools.repeat(None, 2):
+            self.check_buddy()
+            self.open_inventory()
 
-        keep_all = []
-        try_evolve_all = []
-        try_upgrade_all = []
-        buddy_all = []
-        favor_all = []
+            keep_all = []
+            try_evolve_all = []
+            try_upgrade_all = []
+            buddy_all = []
+            favor_all = []
 
-        for rule in self.config_rules:
-            mode = rule.get("mode", "by_family")
-            names = rule.get("names", [])
-            check_top = rule.get("top", "all")
-            check_keep = rule.get("keep", True)
-            whitelist, blacklist = self.get_colorlist(names)
+            for rule in self.config_rules:
+                mode = rule.get("mode", "by_family")
+                names = rule.get("names", [])
+                check_top = rule.get("top", "all")
+                check_keep = rule.get("keep", True)
+                whitelist, blacklist = self.get_colorlist(names)
 
-            if check_top == "all" and names == [] and check_keep:
-                self.logger.info("WARNING!! Will not transfer any Pokemon!!")
-                self.logger.info(rule)
-                self.logger.info("This rule is set to keep (`keep` is true) all Pokemon (no `top` and no `names` set!!)")
-                self.logger.info("Are you sure you want this?")
+                if check_top == "all" and names == [] and check_keep:
+                    self.logger.info("WARNING!! Will not transfer any Pokemon!!")
+                    self.logger.info(rule)
+                    self.logger.info("This rule is set to keep (`keep` is true) all Pokemon (no `top` and no `names` set!!)")
+                    self.logger.info("Are you sure you want this?")
 
-            if mode == "by_pokemon":
-                for pokemon_id, pokemon_list in self.group_by_pokemon_id(inventory.pokemons().all()):
-                    name = inventory.pokemons().name_for(pokemon_id)
+                if mode == "by_pokemon":
+                    for pokemon_id, pokemon_list in self.group_by_pokemon_id(inventory.pokemons().all()):
+                        name = inventory.pokemons().name_for(pokemon_id)
 
-                    if name in blacklist:
-                        continue
+                        if name in blacklist:
+                            continue
 
-                    if whitelist and (name not in whitelist):
-                        continue
+                        if whitelist and (name not in whitelist):
+                            continue
+
+                        sorted_list = self.score_and_sort(pokemon_list, rule)
+
+                        if len(sorted_list) == 0:
+                            continue
+
+                        keep, try_evolve, try_upgrade, buddy, favor = self.get_best_pokemon_for_rule(sorted_list, rule)
+                        keep_all += keep
+                        try_evolve_all += try_evolve
+                        try_upgrade_all += try_upgrade
+                        buddy_all += buddy
+                        favor_all += favor
+                elif mode == "by_family":
+                    for family_id, pokemon_list in self.group_by_family_id(inventory.pokemons().all()):
+                        matching_names = self.get_family_names(family_id)
+
+                        if any(n in blacklist for n in matching_names):
+                            continue
+
+                        if whitelist and not any(n in whitelist for n in matching_names):
+                            continue
+
+                        sorted_list = self.score_and_sort(pokemon_list, rule)
+
+                        if len(sorted_list) == 0:
+                            continue
+
+                        if family_id == 133:  # "Eevee"
+                            keep, try_evolve, try_upgrade, buddy, favor = self.get_multi_best_pokemon_for_rule(sorted_list, rule, 3)
+                        else:
+                            keep, try_evolve, try_upgrade, buddy, favor = self.get_best_pokemon_for_rule(sorted_list, rule)
+
+                        keep_all += keep
+                        try_evolve_all += try_evolve
+                        try_upgrade_all += try_upgrade
+                        buddy_all += buddy
+                        favor_all += favor
+                elif mode == "overall":
+                    pokemon_list = []
+
+                    for pokemon in inventory.pokemons().all():
+                        name = pokemon.name
+
+                        if name in blacklist:
+                            continue
+
+                        if whitelist and (name not in whitelist):
+                            continue
+
+                        pokemon_list.append(pokemon)
 
                     sorted_list = self.score_and_sort(pokemon_list, rule)
 
@@ -170,93 +222,41 @@ class PokemonOptimizer(BaseTask):
                     try_upgrade_all += try_upgrade
                     buddy_all += buddy
                     favor_all += favor
-            elif mode == "by_family":
-                for family_id, pokemon_list in self.group_by_family_id(inventory.pokemons().all()):
-                    matching_names = self.get_family_names(family_id)
 
-                    if any(n in blacklist for n in matching_names):
-                        continue
-
-                    if whitelist and not any(n in whitelist for n in matching_names):
-                        continue
-
-                    sorted_list = self.score_and_sort(pokemon_list, rule)
-
-                    if len(sorted_list) == 0:
-                        continue
-
-                    if family_id == 133:  # "Eevee"
-                        keep, try_evolve, try_upgrade, buddy, favor = self.get_multi_best_pokemon_for_rule(sorted_list, rule, 3)
-                    else:
-                        keep, try_evolve, try_upgrade, buddy, favor = self.get_best_pokemon_for_rule(sorted_list, rule)
-
-                    keep_all += keep
-                    try_evolve_all += try_evolve
-                    try_upgrade_all += try_upgrade
-                    buddy_all += buddy
-                    favor_all += favor
-            elif mode == "overall":
-                pokemon_list = []
-
+            keep_all = self.unique_pokemon_list(keep_all)
+            try_evolve_all = self.unique_pokemon_list(try_evolve_all)
+            try_upgrade_all = self.unique_pokemon_list(try_upgrade_all)
+            buddy_all = self.unique_pokemon_list(buddy_all)
+            try_favor_all = self.unique_pokemon_list(favor_all)
+            # Favorites has nothing to do with evolve, can be done even when bag not full
+            # Like a buddy
+            if self.config_may_unfavor_pokemon:
+                unfavor = []
                 for pokemon in inventory.pokemons().all():
-                    name = pokemon.name
+                    if not pokemon in try_favor_all and pokemon.is_favorite:
+                        unfavor.append(pokemon)
+                if len(unfavor) > 0:
+                    self.logger.info("Marking %s Pokemon as no longer favorite", len(unfavor))
+                    for pokemon in unfavor:
+                        self.unfavor_pokemon(pokemon)
+            # Dont favor Pokemon if already a favorite
+            try_favor_all = [p for p in try_favor_all if not p.is_favorite]
+            if len(try_favor_all) > 0:
+                self.logger.info("Setting %s Poken as favorite", len(try_favor_all))
 
-                    if name in blacklist:
-                        continue
+                for pokemon in try_favor_all:
+                    if pokemon.is_favorite is False:
+                        self.favor_pokemon(pokemon)
 
-                    if whitelist and (name not in whitelist):
-                        continue
+            if (not self.lock_buddy) and (len(buddy_all) > 0):
+                new_buddy = buddy_all[0]
 
-                    pokemon_list.append(pokemon)
+                if (not self.buddy) or (self.buddy["id"] != new_buddy.unique_id):
+                    self.set_buddy_pokemon(new_buddy)
 
-                sorted_list = self.score_and_sort(pokemon_list, rule)
+            if self.get_pokemon_slot_left() > self.config_min_slots_left:
+                return WorkerResult.SUCCESS
 
-                if len(sorted_list) == 0:
-                    continue
-
-                keep, try_evolve, try_upgrade, buddy, favor = self.get_best_pokemon_for_rule(sorted_list, rule)
-                keep_all += keep
-                try_evolve_all += try_evolve
-                try_upgrade_all += try_upgrade
-                buddy_all += buddy
-                favor_all += favor
-
-        keep_all = self.unique_pokemon_list(keep_all)
-        try_evolve_all = self.unique_pokemon_list(try_evolve_all)
-        try_upgrade_all = self.unique_pokemon_list(try_upgrade_all)
-        buddy_all = self.unique_pokemon_list(buddy_all)
-        try_favor_all = self.unique_pokemon_list(favor_all)
-        # Favorites has nothing to do with evolve, can be done even when bag not full
-        # Like a buddy
-        if self.config_may_unfavor_pokemon:
-            unfavor = []
-            for pokemon in inventory.pokemons().all():
-                if not pokemon in try_favor_all and pokemon.is_favorite:
-                    unfavor.append(pokemon)
-            if len(unfavor) > 0:
-                self.logger.info("Marking %s Pokemon as no longer favorite", len(unfavor))
-                for pokemon in unfavor:
-                    self.unfavor_pokemon(pokemon)
-        # Dont favor Pokemon if already a favorite
-        try_favor_all = [p for p in try_favor_all if not p.is_favorite]
-        if len(try_favor_all) > 0:
-            self.logger.info("Setting %s Poken as favorite", len(try_favor_all))
-
-            for pokemon in try_favor_all:
-                if pokemon.is_favorite is False:
-                    self.favor_pokemon(pokemon)
-
-        if (not self.lock_buddy) and (len(buddy_all) > 0):
-            new_buddy = buddy_all[0]
-
-            if (not self.buddy) or (self.buddy["id"] != new_buddy.unique_id):
-                self.set_buddy_pokemon(new_buddy)
-
-        if self.get_pokemon_slot_left() > self.config_min_slots_left:
-            return WorkerResult.SUCCESS
-
-        # Repeat the optimizer 2 times, to get rid of the trash evolved.
-        for _ in itertools.repeat(None, 2):
             transfer_all = []
             evolve_all = []
             upgrade_all = []
