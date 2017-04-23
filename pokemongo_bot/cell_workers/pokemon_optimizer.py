@@ -139,7 +139,15 @@ class PokemonOptimizer(BaseTask):
         for rule in self.config_rules:
             mode = rule.get("mode", "by_family")
             names = rule.get("names", [])
+            check_top = rule.get("top", "all")
+            check_keep = rules.get("keep", True)
             whitelist, blacklist = self.get_colorlist(names)
+
+            if check_top == "all" and names == [] and check_keep:
+                self.logger.info("WARNING!! Will not transfer any Pokemon!!")
+                self.logger.info(rule)
+                self.logger.info("This rule is set to keep (`keep` is true) all Pokemon (no `top` and no `names` set!!)")
+                self.logger.info("Are you sure you want this?")
 
             if mode == "by_pokemon":
                 for pokemon_id, pokemon_list in self.group_by_pokemon_id(inventory.pokemons().all()):
@@ -266,10 +274,12 @@ class PokemonOptimizer(BaseTask):
                 upgrade_all += upgrade
                 xp_all += xp
 
-            if self.config_may_evolve_favorites is False:
+            if not self.config_may_evolve_favorites:
+                self.logger.info("Removing favorites from evolve list.")
                 evolve_all = [p for p in evolve_all if not p.is_favorite]
 
-            if self.config_may_upgrade_favorites is False:
+            if not self.config_may_upgrade_favorites:
+                self.logger.info("Removing favorites from upgrade list.")
                 upgrade_all = [p for p in upgrade_all if not p.is_favorite]
 
             self.apply_optimization(transfer_all, evolve_all, upgrade_all, xp_all)
@@ -594,11 +604,6 @@ class PokemonOptimizer(BaseTask):
                     self.logger.info("To evolve a {} we need {} of {}. We have {}".format(pokemon.name, needed, item.name, item.count))
                     continue
 
-            if self.config_may_evolve_favorites == False:
-                if pokemon.is_favorite:
-                    # Don't evolve these!
-                    continue
-
             if self.config_evolve_to_final:
                 pokemon_id = pokemon.pokemon_id
                 while inventory.pokemons().has_next_evolution(pokemon_id):
@@ -629,11 +634,6 @@ class PokemonOptimizer(BaseTask):
             if pokemon.level >= upgrade_level:
                 # self.log("Pokemon already at target level. %s" % pokemon.level)
                 continue
-
-            if self.config_may_upgrade_favorites is False:
-                if pokemon.is_favorite:
-                    # Don't upgrade these!
-                    continue
 
             full_upgrade_candy_cost = 0
             full_upgrade_stardust_cost = 0
