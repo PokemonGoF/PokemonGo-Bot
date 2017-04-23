@@ -18,6 +18,9 @@
                 "evolve_only_with_lucky_egg": false,
                 "evolve_count_for_lucky_egg": 80,
                 "may_use_lucky_egg": true,
+                "may_evolve_favorites": true,
+                "may_upgrade_favorites": true,
+                "may_unfavor_pokemon": false,
                 "upgrade": true,
                 "upgrade_level": 30,
                 "groups": {
