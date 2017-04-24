@@ -17,6 +17,9 @@
         - [evolve_only_with_lucky_egg](#evolve_only_with_lucky_egg)
         - [evolve_count_for_lucky_egg](#evolve_count_for_lucky_egg)
         - [may_use_lucky_egg](#may_use_lucky_egg)
+        - [may_evolve_favorites](#may_evolve_favorites)
+        - [may_upgrade_favorites](#may_upgrade_favorites)
+        - [may_unfavor_pokemon](#may_unfavor_pokemon)
         - [upgrade](#upgrade)
         - [upgrade_level](#upgrade_level)
         - [groups](#groups)
@@ -29,6 +32,7 @@
             - [evolve](#rule-evolve)
             - [upgrade](#rule-upgrade)
             - [buddy](#rule-buddy)
+            - [favorite](#rule-favorite)
 - [Eevee case](#eevee-case)
 - [FAQ](#faq)
 
@@ -42,7 +46,7 @@ There is only one pass at each action.
 
 It will also collect the candies from your Buddy and select the next buddy.
 
-In case that logging will be enabled, look for .log file in data folder. 
+In case that logging will be enabled, look for .log file in data folder.
 
 [[back to top](#pokemon-optimizer)]
 
@@ -69,6 +73,9 @@ In case that logging will be enabled, look for .log file in data folder.
                 "evolve_only_with_lucky_egg": false,
                 "evolve_count_for_lucky_egg": 80,
                 "may_use_lucky_egg": true,
+                "may_evolve_favorites": true,
+                "may_upgrade_favorites": true,
+                "may_unfavor_pokemon": false,
                 "upgrade": true,
                 "upgrade_level": 30,
                 "groups": {
@@ -330,6 +337,39 @@ If a lucky egg is available, the Pokemon Optimizer is going to wait that number 
 Define whether you allow the Pokemon Optimizer to use a lucky egg before evolving Pokemon or not.
 <br>At `true`, and if a lucky egg is available, the Pokemon Optimizer will wait for the [`evolve_count_for_lucky_egg`](#evolve_count_for_lucky_egg) Pokemon to use the lucky egg.
 <br>At `false`, or when no luck egg is available, no lucky egg will be used.
+
+[[back to top](#pokemon-optimizer)]
+
+### may_evolve_favorites
+| Parameter           | Possible values | Default |
+|---------------------|-----------------|---------|
+| `may_evolve_favorites` | `true`, `false` | `true`  |
+
+Define whether you allow the Pokemon Optimizer to evolve favorite Pokemon or not.
+<br>At `true`, the Pokemon Optimizer will evolve favorite Pokemon according to the rules.
+<br>At `false`, the Pokemon Optimizer will not evolve favorite Pokemon.
+
+[[back to top](#pokemon-optimizer)]
+
+### may_upgrade_favorites
+| Parameter           | Possible values | Default |
+|---------------------|-----------------|---------|
+| `may_upgrade_favorites` | `true`, `false` | `true`  |
+
+Define whether you allow the Pokemon Optimizer to upgrade favorite Pokemon or not.
+<br>At `true`, the Pokemon Optimizer will upgrade favorite Pokemon according to the rules.
+<br>At `false`, the Pokemon Optimizer will not upgrade favorite Pokemon.
+
+[[back to top](#pokemon-optimizer)]
+
+### may_unfavor_pokemon
+| Parameter           | Possible values | Default |
+|---------------------|-----------------|---------|
+| `may_unfavor_pokemon` | `true`, `false` | `false`  |
+
+Define whether you allow the Pokemon Optimizer to unmark favorite Pokemon as favorite or not.
+<br>At `true`, the Pokemon Optimizer will unmark favorite Pokemon if it no longer matches favorite rules.
+<br>At `false`, the Pokemon Optimizer will not unmark favorite Pokemon.
 
 [[back to top](#pokemon-optimizer)]
 
@@ -637,6 +677,8 @@ By default, if `evolve` is not provided or is empty, no Pokemon will be evolved.
 The parameter can be a boolean value (`true` or `false`) or a list a criteria.
 The available criteria are the same as for the [`sort`](#available-criteria) parameter.
 
+*Note!* If [may_evolve_favorites](#may_evolve_favorites) is `false`, favorite Pokemon will never be evolved!
+
 The minimum requirement values can be a single value or a range.
 <br>They can also be a negative value if you wish to evolve Pokemon below a certain criteria:
 
@@ -663,8 +705,10 @@ By default, if `upgrade` is not provided or is empty, no Pokemon will be upgrade
 The parameter can be a boolean value (`true` or `false`) or a list a criteria.
 The available criteria are the same as for the [`sort`](#available-criteria) parameter.
 
+*Note!* If [may_upgrade_favorites](#may_upgrade_favorites) is `false`, favorite Pokemon will never be upgraded!
+
 The minimum requirement values can be a single value or a range.
-<br>They can also be a negative value if you wish to evolve Pokemon below a certain criteria:
+<br>They can also be a negative value if you wish to upgrade Pokemon below a certain criteria:
 
 - `"upgrade": false` will not try to upgrade any of the Pokemon selected.
 - `"upgrade": true` will try to upgrade all Pokemon selected.
@@ -674,6 +718,32 @@ The minimum requirement values can be a single value or a range.
 - `"upgrade": {"cp": -20}` will only upgrade Pokemon with `cp` lower than `20`.
 - `"upgrade": {"cp": [10, 20]}` will only upgrade Pokemon with `cp` between `10` and `20`.
 - `"upgrade": {"iv": [[0.3, 0.5], [0.9, 1.0]]}` will only upgrade Pokemon with `iv` between `0.3` and `0.5` or between `0.9` and `1.0`.
+
+[[back to top](#pokemon-optimizer)]
+
+#### rule favorite
+| Parameter | Possible values | Default |
+|-----------|-----------------|---------|
+| `favorite` | (see below)     | `false` |
+
+Define minimum requirements to favorite the Pokemon.
+Only Pokemon meeting these minimum requirements will be marked as favorite.
+By default, if `favorite` is not provided or is empty, no Pokemon will be marked favorite.
+
+The parameter can be a boolean value (`true` or `false`) or a list a criteria.
+The available criteria are the same as for the [`sort`](#available-criteria) parameter.
+
+The minimum requirement values can be a single value or a range.
+<br>They can also be a negative value if you wish to mark Pokemon below a certain criteria as favorite:
+
+- `"favorite": false` will not try to mark any of the Pokemon selected as favorite.
+- `"favorite": true` will try to mark all Pokemon selected as favorite.
+- `"favorite": {"iv": 0.9}` will only favorite Pokemon with `iv` greater than `0.9`.
+- `"favorite": {"iv": 0.9, "cp": 1200}` will only favorite Pokemon with `iv` greater than `0.9` and `cp` greater than `1200`.
+- `"favorite": {"iv": 0.9}` will only favorite Pokemon with `iv` greater than `0.9`.
+- `"favorite": {"cp": -20}` will only favorite Pokemon with `cp` lower than `20`.
+- `"favorite": {"cp": [10, 20]}` will only favorite Pokemon with `cp` between `10` and `20`.
+- `"favorite": {"iv": [[0.3, 0.5], [0.9, 1.0]]}` will only favorite Pokemon with `iv` between `0.3` and `0.5` or between `0.9` and `1.0`.
 
 [[back to top](#pokemon-optimizer)]
 
