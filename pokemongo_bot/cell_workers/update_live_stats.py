@@ -258,6 +258,21 @@ class UpdateLiveStats(BaseTask):
         whole_level_xp = next_level_xp - prev_level_xp
         level_completion_percentage = int((current_level_xp * 100) / whole_level_xp)
         experience_per_hour = int(metrics.xp_per_hour())
+        # Calculate est time to level
+        remaining_xp = next_level_xp - current_level_xp
+        # eample; 30_000 xp remaining 3000 xp/h => 10h till level
+        if experience_per_hour > 0:
+            ttl = (float(remaining_xp) / float(experience_per_hour))
+            hours = int(ttl)
+            minutes = int((ttl - hours) * 60)
+            if hours > 24:
+                days = hours / 24
+                hours = hours % 24
+                time_to_level = "%s days %s hours %s minutes" % (days, hours, minutes)
+            else:
+                time_to_level = "%s hours %s minutes" % (hours, minutes)
+        else:
+            time_to_level = "Unknown"
         xp_earned = metrics.xp_earned()
         stops_visited = metrics.visits['latest'] - metrics.visits['start']
         pokemon_encountered = metrics.num_encounters()
@@ -292,6 +307,7 @@ class UpdateLiveStats(BaseTask):
             'level_completion_percentage': level_completion_percentage,
             'xp_per_hour': experience_per_hour,
             'xp_earned': xp_earned,
+            'time_to_level': time_to_level,
             'stops_visited': stops_visited,
             'pokemon_encountered': pokemon_encountered,
             'pokemon_caught': pokemon_caught,
@@ -337,6 +353,7 @@ class UpdateLiveStats(BaseTask):
                 player_stats['whole_level_xp'], player_stats['level_completion_percentage']),
             'xp_per_hour': '{:,} XP/h'.format(player_stats['xp_per_hour']),
             'xp_earned': '+{:,} XP'.format(player_stats['xp_earned']),
+            'time_to_level': 'TTL: {}'.format(player_stats['time_to_level']),
             'stops_visited': 'Visited {:,} stops'.format(player_stats['stops_visited']),
             'pokemon_encountered': 'Encountered {:,} pokemon'.format(player_stats['pokemon_encountered']),
             'pokemon_caught': 'Caught {:,} pokemon'.format(player_stats['pokemon_caught']),
@@ -351,7 +368,7 @@ class UpdateLiveStats(BaseTask):
             'pokeballs_thrown': 'Threw {:,} pokeballs'.format(player_stats['pokeballs_thrown']),
             'stardust_earned': 'Earned {:,} Stardust'.format(player_stats['stardust_earned']),
             'stardust_per_hour': '{:,} Stardust/h'.format(player_stats['stardust_per_hour']),
-            'total_stardust': 'Total Stardust: {}'.format(player_stats['total_stardust']),
+            'total_stardust': 'Total Stardust: {:,}'.format(player_stats['total_stardust']),
             'highest_cp_pokemon': 'Highest CP pokemon : {}'.format(player_stats['highest_cp_pokemon']),
             'most_perfect_pokemon': 'Most perfect pokemon : {}'.format(player_stats['most_perfect_pokemon']),
             'location': 'Location : ({}, {})'.format(*player_stats['location']),
