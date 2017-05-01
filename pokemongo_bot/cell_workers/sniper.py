@@ -92,7 +92,6 @@ class SniperSource(object):
                         local_date = datetime.fromtimestamp(unix_timestamp)
                         local_date = local_date.replace(microsecond=utc_date.microsecond)
                         expiration = time.mktime(local_date.timetuple()) * 1000
-                else:
                     minutes_to_expire = 3
                     seconds_per_minute = 60
                     expiration = (time.time() + minutes_to_expire * seconds_per_minute) * 1000
