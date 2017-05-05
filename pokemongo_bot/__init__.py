@@ -1187,7 +1187,8 @@ class PokemonGoBot(object):
 
         if response_dict:
             self._player = response_dict['responses']['GET_PLAYER']['player_data']
-            warn = response_dict['responses']['GET_PLAYER']['warn']
+            if 'warn' in response_dict['responses']['GET_PLAYER']:
+                warn = response_dict['responses']['GET_PLAYER']['warn']
             player = self._player
         else:
             self.logger.info(
