@@ -56,6 +56,7 @@ class LoggingHandler(EventHandler):
         'next_sleep':                        'green',
         'next_random_pause':                 'green',
         'next_random_alive_pause':           'green',
+        'niantic_warning':                   'magenta',
         'no_pokeballs':                      'red',
         'path_lap_end':                      'green',
         'pokemon_appeared':                  'yellow',
