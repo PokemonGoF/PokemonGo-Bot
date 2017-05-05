@@ -212,6 +212,8 @@ class PokemonGoBot(object):
         self.event_manager.register_event('login_started')
         self.event_manager.register_event('login_failed')
         self.event_manager.register_event('login_successful')
+        
+        self.event_manager.register_event('niantic_warning')
 
         self.event_manager.register_event('set_start_location')
         self.event_manager.register_event('load_cached_location')
@@ -1181,9 +1183,11 @@ class PokemonGoBot(object):
         # print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
         currency_1 = "0"
         currency_2 = "0"
+        warn = False
 
         if response_dict:
             self._player = response_dict['responses']['GET_PLAYER']['player_data']
+            warn = response_dict['responses']['GET_PLAYER']['warn']
             player = self._player
         else:
             self.logger.info(
@@ -1263,6 +1267,16 @@ class PokemonGoBot(object):
             ' | Metal Coat: ' + str(items_inventory.get(1103).count) +
             ' | Dragon Scale: ' + str(items_inventory.get(1104).count) +
             ' | Upgrade: ' + str(items_inventory.get(1105).count))
+            
+        if warn:
+            self.logger.info('')
+            self.event_manager.emit(
+                'niantic_warning',
+                sender=self,
+                level='warning',
+                formatted="This account has recieved a warning from Niantic. Bot at own risk."
+            )
+            sleep(5) # Pause to allow user to see warning
 
         self.logger.info('')
 
