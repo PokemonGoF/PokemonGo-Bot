@@ -38,6 +38,12 @@ class FollowPath(BaseTask):
 
         else:
             self.ptr = 0
+            
+        if self.disable_location_output:
+            self.emit_event(
+                'position_update',
+                formatted="Bot in follow path mode, position update disabled. You will not be inform of path taken by bot."
+            )
 
     def _process_config(self):
         self.path_file = self.config.get("path_file", None)
@@ -48,6 +54,7 @@ class FollowPath(BaseTask):
         self.timer_restart_max = getSeconds(self.config.get("timer_restart_max", "02:00:00"))
         self.walker = self.config.get('walker', 'StepWalker')
         self.disable_while_hunting = self.config.get("disable_while_hunting", True)
+        self.disable_location_output = self.config.get('disable_location_output', False)
 
         if self.timer_restart_min > self.timer_restart_max:
             raise ValueError('path timer_restart_min is bigger than path timer_restart_max') #TODO there must be a more elegant way to do it...
@@ -187,17 +194,18 @@ class FollowPath(BaseTask):
             lat,
             lng
         )
-
-        self.emit_event(
-            'position_update',
-            formatted="Walking from {last_position} to {current_position}, distance left: ({distance} {distance_unit}) ..",
-            data={
-                'last_position': (last_lat, last_lng, last_alt),
-                'current_position': point["location"],
-                'distance': format_dist(dist,self.distance_unit,self.append_unit),
-                'distance_unit': self.distance_unit
-            }
-        )
+        
+        if not self.disable_location_output:
+            self.emit_event(
+                'position_update',
+                formatted="Walking from {last_position} to {current_position}, distance left: ({distance} {distance_unit}) ..",
+                data={
+                    'last_position': (last_lat, last_lng, last_alt),
+                    'current_position': point["location"],
+                    'distance': format_dist(dist,self.distance_unit,self.append_unit),
+                    'distance_unit': self.distance_unit
+                }
+            )
 
         if (self.bot.config.walk_min > 0 and is_at_destination) or (self.status in [STATUS_WANDERING, STATUS_LOITERING] and time.time() >= self.waiting_end_time):
             if "loiter" in point and self.status != STATUS_LOITERING:
