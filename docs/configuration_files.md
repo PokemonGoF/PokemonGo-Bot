@@ -936,6 +936,7 @@ option.
    - `first` - The bot will start at the first point of the path.
    - `closest` - The bot will start the path at the point which is the closest to the current bot location.
 * `path_file` - "/path/to/your/path.json"
+* `disable_location_output` - true,false. Set to true if you do not want to see follow path updating information. Default false.
 
 ### Notice
 If you use the `single` `path_mode` without e.g. a `MoveToFort` task, your bot
