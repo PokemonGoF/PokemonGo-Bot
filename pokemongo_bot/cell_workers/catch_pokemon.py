@@ -29,6 +29,15 @@ class CatchPokemon(BaseTask):
     [Item.ITEM_POKE_BALL, Item.ITEM_GREAT_BALL, Item.ITEM_ULTRA_BALL]]) <= 0:
             return WorkerResult.ERROR
 
+        if self.bot.softban:
+            if not hasattr(self.bot, "softban_global_warning") or \
+                        (hasattr(self.bot, "softban_global_warning") and not self.bot.softban_global_warning):
+                self.logger.info("Possible softban! Not trying to catch Pokemon.")
+            self.bot.softban_global_warning = True
+            return WorkerResult.SUCCESS
+        else:
+            self.bot.softban_global_warning = False
+
 	# Don't try to catch a Pokemon when catching is disabled.
         if self.bot.catch_disabled:
             if not hasattr(self.bot,"all_disabled_global_warning") or \

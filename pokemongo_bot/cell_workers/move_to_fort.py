@@ -107,7 +107,7 @@ class MoveToFort(BaseTask):
             else:
                 self.emit_event(
                     'arrived_at_fort',
-                    formatted='Arrived at fort.'
+                    formatted='Arrived at fort %s.' % fort_name
                 )
 
         return WorkerResult.RUNNING
