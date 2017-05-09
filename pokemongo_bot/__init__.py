@@ -239,6 +239,7 @@ class PokemonGoBot(object):
                 'threshold'
             )
         )
+        self.event_manager.register_event('followpath_output_disabled')
         self.event_manager.register_event(
             'position_update',
             parameters=(
