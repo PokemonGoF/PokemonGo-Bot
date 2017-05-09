@@ -53,6 +53,15 @@ class CampFort(BaseTask):
         else:
             self.bot.camper_disabled_global_warning = False
 
+        if self.bot.softban:
+            if not hasattr(self.bot, "camper_softban_global_warning") or \
+                        (hasattr(self.bot, "camper_softban_global_warning") and not self.bot.camper_softban_global_warning):
+                self.logger.info("Possible softban! Not camping forts till fixed.")
+            self.bot.camper_softban_global_warning = True
+            return WorkerResult.SUCCESS
+        else:
+            self.bot.softban_global_warning = False
+
         now = time.time()
 
         if now < self.move_until:
