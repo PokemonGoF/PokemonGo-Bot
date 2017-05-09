@@ -41,7 +41,7 @@ class FollowPath(BaseTask):
             
         if self.disable_location_output:
             self.emit_event(
-                'position_update',
+                'followpath_output_disabled',
                 formatted="Bot in follow path mode, position update disabled. You will not be inform of path taken by bot."
             )
 
