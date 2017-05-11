@@ -1,4 +1,4 @@
-import cell_workers
+from __future__ import absolute_import
 from pokemongo_bot.plugin_loader import PluginLoader
 from pokemongo_bot.base_task import BaseTask
 
@@ -16,6 +16,7 @@ class TreeConfigBuilder(object):
 
     def _get_worker_by_name(self, name):
         try:
+            from . import cell_workers
             worker = getattr(cell_workers, name)
         except AttributeError:
             raise ConfigException('No worker named {} defined'.format(name))
@@ -47,6 +48,11 @@ class TreeConfigBuilder(object):
                     task_config = {}
                     self.bot.logger.warning('The CatchVisiblePokemon & CatchLuredPokemon tasks have been replaced with '
                                             'CatchPokemon.  CatchPokemon has been enabled with default settings.')
+
+            if task_type == 'SleepSchedule':
+                self.bot.logger.warning('The SleepSchedule task was moved out of the task section. '
+                                        'See config.json.*example for more information.')
+                continue
 
             if self._is_plugin_task(task_type):
                 worker = self.plugin_loader.get_class(task_type)

@@ -1,0 +1,29 @@
+{
+    "tasks": [
+        {
+            "type": "PokemonHunter",
+            "config": {
+                "enabled": true,
+                "max_distance": 1500,
+                "hunt_all": false,
+                "hunt_vip": true,
+                "hunt_pokedex": true,
+                "lock_on_target": false,
+                "lock_vip_only": true,
+                "disabled_while_camping": true,
+                "treat_unseen_as_vip": true
+            }
+        },
+        {
+            "type": "MoveToFort",
+            "config": {
+                "enabled": true,
+                "lure_attraction": true,
+                "lure_max_distance": 300,
+                "ignore_item_count": true,
+                "walker": "PolylineWalker",
+                "log_interval": 5
+            }
+        }
+    ]
+}

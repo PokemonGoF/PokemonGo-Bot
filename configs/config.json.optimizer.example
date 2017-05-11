@@ -1,214 +1,130 @@
 {
-    "auth_service": "google",
-    "username": "YOUR_USERNAME",
-    "password": "YOUR_PASSWORD",
-    "location": "SOME_LOCATION",
-    "gmapkey": "GOOGLE_MAPS_API_KEY",
-    "encrypt_location": "",
-    "websocket_server": false,
-    "heartbeat_threshold": 10,
     "tasks": [
-      {
-        "type": "HandleSoftBan"
-      },
-      {
-        "type": "SleepSchedule",
-        "config": {
-          "enabled": false,
-          "time": "22:54",
-          "duration":"7:46",
-          "time_random_offset": "00:24",
-          "duration_random_offset": "00:43"
-        }
-      },
-      {
-        "type": "CollectLevelUpReward"
-      },
-      {
-        "type": "IncubateEggs",
-        "config": {
-          "longer_eggs_first": true
-        }
-      },
-      {
-        "type": "UpdateLiveStats",
-        "config": {
-          "enabled": false,
-          "min_interval": 10,
-          "stats": ["username", "uptime", "stardust_earned", "xp_earned", "xp_per_hour", "stops_visited"],
-          "terminal_log": true,
-          "terminal_title": true
-        }
-      },
         {
             "type": "PokemonOptimizer",
             "config": {
-                    "// the 'transfer' parameter activate or deactivate the transfer of pokemons": {},
-                    "// at false, no pokemon is going to be transfered, ever": {},
-                    "// at false, you will still get the log information of what the optimizer": {},
-                    "// would have transfered if the parameter was true": {},
+                "enabled": true,
+                "bulktransfer_enabled": false,
+                "max_bulktransfer": 10,
+                "min_slots_left": 5,
+                "action_wait_min": 3,
+                "action_wait_max": 5,
                 "transfer": true,
-                    "// 'transfer_wait_min' and 'transfer_wait_max' are the minimum and maximum": {},
-                    "// time to wait when transferring a pokemon": {},
-                "transfer_wait_min": 1,
-                "transfer_wait_max": 4,
-                    "// the 'evolve' parameter activate or deactivate the evolution of pokemons": {},
-                    "// at false, no pokemon is going to be evolved, ever": {},
-                    "// at false, you will still get the log information of what the": {},
-                    "// optimizer would have evolved if the parameter was true": {},
                 "evolve": true,
-                    "// Time in seconds to wait between two evolve": {},
-                "evolve_time": 20,
-                    "// the 'evolve_for_xp' parameter let you choose if you want the optimizer": {},
-                    "// to use your candies to evolve low quality pokemons in order to maximize your xp": {},
-                    "// at false, the optimizer will still use candies to evolve your best Pokemons": {},
+                "debug": false,
+                "evolve_to_final": true,
+                "evolve_time": 25,
                 "evolve_for_xp": true,
-                    "// the 'evolve_only_with_lucky_egg' parameter let you choose if you want the optimizer": {},
-                    "// to only Evolve Pokemons when a lucky egg is available": {},
-                "evolve_only_with_lucky_egg": true,
-                    "// the 'evolve_count_for_lucky_egg' parameter let you define the minimum": {},
-                    "// number of Pokemons that must evolve before using a lucky egg": {},
-                    "// If that number is not reached, and evolve_only_with_lucky_egg is true, evolution will be skipped": {},
-                    "// If that number is not reached, and evolve_only_with_lucky_egg is false,": {},
-                    "// evolution will be performed without using a lucky egg": {},
-                "evolve_count_for_lucky_egg": 90,
-                    "// the 'may_use_lucky_egg' parameter let you choose if you want the optimizer": {},
-                    "// to use a lucky egg right before evolving Pokemons. At false; the optimizer": {},
-                    "// is free to evolve Pokemons even if you do not have any lucky egg.": {},
+                "evolve_only_with_lucky_egg": false,
+                "evolve_count_for_lucky_egg": 80,
                 "may_use_lucky_egg": true,
-                    "// the 'keep' parameter let you define what pokemons you consider are the 'best'. These Pokemons": {},
-                    "// will be keep and evolved. Note that Pokemons are evaluated inside their whole family": {},
-                    "// Multiple way of ranking can be defined. Following configuration let you keep the best iv,": {},
-                    "// the best ncp and the best cp": {},
-                "keep": [
+                "may_evolve_favorites": true,
+                "may_upgrade_favorites": true,
+                "may_unfavor_pokemon": false,
+                "upgrade": true,
+                "upgrade_level": 30,
+                "groups": {
+                    "gym": [
+                        "Dragonite",
+                        "Snorlax",
+                        "Lapras",
+                        "Arcanine"
+                    ]
+                },
+                "rules": [
                     {
-                            "// Following setting let you keep the best iv of the family": {},
-                            "// the 'top' parameter allow you to define how many Pokemons you want to keep": {},
-                            "// at the top of your ranking. If several Pokemons get the same score, they are": {},
-                            "// considered equal. Thus, top=1 might result in keeping more than 1 Pokemon.": {},
+                        "// Of all Pokemon with less than 124 candies, buddy the Pokemon having the highest maximum cp": {},
+                        "mode": "overall",
                         "top": 1,
-                            "// the 'evolve' parameter let you choose if you want to evolve the Pokemons you keep": {},
-                        "evolve": true,
-                            "// the 'sort' parameter define how you want to rank your pokemons": {},
-                            "// Critera are sorted fro, the most important to the least important.": {},
-                            "// Available criteria are:": {},
-                            "// 'iv' = individual value": {},
-                            "// 'ivcp' = iv weigted so that for equal iv, attack > defense > stamina": {},
-                            "// 'cp' = combat power (can be increased with candies)": {},
-                            "// 'cp_exact' = combar power (not rounded)": {},
-                            "// 'ncp' (normalized cp) or 'cp_percent' = ratio cp / max_cp": {},
-                            "// iv_attack = attach component of iv": {},
-                            "// iv_defense = defense component of iv": {},
-                            "// iv_stamina = stamina component of iv": {},
-                            "// dps = raw dps based on the moves of the pokemon": {},
-                            "// dps_attack = average dps when attacking": {},
-                            "// dps_defense = average dps when defending": {},
-                            "// Note that the more criteria you add to this list, the less likely Pokemons": {},
-                            "// will be equals": {},
-                        "sort": ["iv"]
-                    },
-                    {
-                        "// Following setting let you keep keep the best normalized cp of the family": {},
-                        "// That is the Pokemon with higher CP once fully evolved": {},
-                        "top": 1,
-                        "evolve": true,
-                        "sort": ["ncp"]
-                    },
-                    {
-                        "// Following setting let you keep keep the best cp of the family.": {},
-                        "// But will not evolve it further (in favor of the best ncp)": {},
-                        "top": 1,
+                        "sort": [
+                            "max_cp",
+                            "cp"
+                        ],
+                        "keep": {
+                            "candy": -124
+                        },
                         "evolve": false,
-                        "sort": ["cp"]
+                        "buddy": true
+                    },
+                    {
+                        "// Buddy the Pokemon having the less candies. In case no Pokemon match first rule": {},
+                        "mode": "overall",
+                        "top": 1,
+                        "sort": [
+                            "-candy",
+                            "max_cp",
+                            "cp"
+                        ],
+                        "evolve": false,
+                        "buddy": true
+                    },
+                    {
+                        "mode": "by_pokemon",
+                        "names": [
+                            "gym"
+                        ],
+                        "top": 3,
+                        "sort": [
+                            "iv",
+                            "ncp"
+                        ],
+                        "evolve": {
+                            "iv": 0.9,
+                            "ncp": 0.9
+                        },
+                        "upgrade": {
+                            "iv": 0.9,
+                            "ncp": 0.9
+                        }
+                    },
+                    {
+                        "// Keep best iv of each family and evolve it if its iv is greater than 0.9": {},
+                        "mode": "by_family",
+                        "top": 1,
+                        "sort": [
+                            "iv"
+                        ],
+                        "evolve": {
+                            "iv": 0.9
+                        }
+                    },
+                    {
+                        "// Keep best ncp of each family and evolve it if its ncp is greater than 0.9": {},
+                        "mode": "by_family",
+                        "top": 1,
+                        "sort": [
+                            "ncp"
+                        ],
+                        "evolve": {
+                            "ncp": 0.9
+                        }
+                    },
+                    {
+                        "// Keep best cp of each family but do not evolve it": {},
+                        "mode": "by_family",
+                        "top": 1,
+                        "sort": [
+                            "cp"
+                        ],
+                        "evolve": false
+                    },
+                    {
+                        "// For Pokemon of final evolution and with iv greater than 0.9, keep the best dps_attack": {},
+                        "mode": "by_pokemon",
+                        "names": [
+                            "!with_next_evolution"
+                        ],
+                        "top": 1,
+                        "sort": [
+                            "dps_attack",
+                            "iv"
+                        ],
+                        "keep": {
+                            "iv": 0.9
+                        }
                     }
                 ]
             }
-      },
-      {
-        "type": "RecycleItems",
-        "config": {
-          "min_empty_space": 15,
-          "max_balls_keep": 150,
-          "max_potions_keep": 50,
-          "max_berries_keep": 70,
-          "max_revives_keep": 70,
-          "item_filter": {
-            "Pokeball":       { "keep" : 100 },
-            "Potion":         { "keep" : 10 },
-            "Super Potion":   { "keep" : 20 },
-            "Hyper Potion":   { "keep" : 30 },
-            "Revive":         { "keep" : 30 },
-            "Razz Berry":     { "keep" : 100 }
-          },
-          "recycle_wait_min": 1,
-          "recycle_wait_max": 4
         }
-      },
-        {
-          "type": "CatchPokemon",
-          "config": {
-            "catch_visible_pokemon": true,
-            "catch_lured_pokemon": true,
-            "min_ultraball_to_keep": 5,
-            "catch_throw_parameters": {
-              "excellent_rate": 0.1,
-              "great_rate": 0.5,
-              "nice_rate": 0.3,
-              "normal_rate": 0.1,
-              "spin_success_rate" : 0.6
-            },
-                  "catch_simulation": {
-                    "flee_count": 3,
-                    "flee_duration": 2,
-                    "catch_wait_min": 2,
-                    "catch_wait_max": 6,
-                    "berry_wait_min": 2,
-                    "berry_wait_max": 3,
-                    "changeball_wait_min": 2,
-                    "changeball_wait_max": 3
-                  }
-          }
-        },
-      {
-        "type": "SpinFort",
-        "config": {
-          "spin_wait_min": 2,
-          "spin_wait_max": 3
-        }
-      },
-      {
-        "type": "MoveToFort",
-        "config": {
-            "lure_attraction": true,
-            "lure_max_distance": 2000
-        }
-      },
-      {
-        "type": "FollowSpiral",
-        "config": {
-          "diameter": 4,
-          "step_size": 70
-        }
-      }
-    ],
-    "map_object_cache_time": 5,
-    "forts": {
-      "avoid_circles": true,
-      "max_circle_size": 50,
-      "cache_recent_forts": true
-    },
-    "walk_max": 4.16,
-    "walk_min": 2.16,
-    "debug": false,
-    "test": false,
-    "health_record": true,
-    "location_cache": true,
-    "distance_unit": "km",
-    "reconnecting_timeout": 15,
-    "logging_color": true,
-    "catch": {
-        "any": {
-            "always_catch": true
-        }
-    }
+    ]
 }

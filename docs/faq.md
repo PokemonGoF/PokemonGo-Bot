@@ -1,3 +1,6 @@
+### Do I need hashing key ?
+Without hashing key, the bot will use API in version 0.45, which is not used in legit game any longer. Learn more about - [hashing key here](http://hashing.pogodev.org).
+
 ### How do I start the application?
 After [installing] (https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/installation.md), in the root folder run the following command:
 ### Linux

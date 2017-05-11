@@ -1,0 +1,17 @@
+{
+    "auth_service": "google",
+    "username": "YOUR_USERNAME",
+    "password": "YOUR_PASSWORD",
+    "location": "SOME_LOCATION",
+    "favorite_locations": [
+        {
+            "name": "Milan",
+            "coords": "45.472849,9.177567"
+        }
+    ],
+    "gmapkey": "GOOGLE_MAPS_API_KEY",
+    "hashkey" : "YOUR_PURCHASED_HASH_KEY",
+    "encrypt_location": "",
+    "telegram_token": "",
+    "discord_token": ""
+}

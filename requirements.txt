@@ -1,18 +1,20 @@
 numpy==1.11.0
 networkx==1.11
--e git+https://github.com/keyphact/pgoapi.git@a2755eb42dfe49e359798d2f4defefc97fb8163d#egg=pgoapi
+six==1.10
+git+https://github.com/pogodevorg/pgoapi.git@develop#egg=pgoapi
 geopy==1.11.0
-protobuf==3.0.0b4
+geographiclib==1.46.3
 requests==2.10.0
+requests-mock==1.0.0
 s2sphere==0.2.4
-gpsoauth==0.3.0
-protobuf-to-dict==0.1.0
+gpsoauth==0.4.0
 googlemaps==2.4.4
 colorama==0.3.7
 enum34==1.1.6
 pyyaml==3.11
 haversine==0.4.5
 polyline==1.3.1
+websocket-client==0.37.0
 python-socketio==1.4.2
 flask==0.11.1
 socketIO_client==0.7.0
@@ -24,3 +26,8 @@ raven==5.23.0
 demjson==2.2.4
 greenlet==0.4.9
 yoyo-migrations==5.0.3
+paho-mqtt==1.2
+Geohash==1.0
+python-telegram-bot==5.0.0
+discord_simple==0.0.1.15
+urllib3==1.18

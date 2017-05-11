@@ -1,0 +1,94 @@
+html {
+    overflow-y: hidden;
+}
+
+.navbar-fixed {
+    height: 0;
+}
+
+.translation-wrapper {
+    color: white;
+    position: absolute;
+    right: 25px;
+    padding-top: 20px;
+    z-index: 500
+}
+
+.translation-dropdown {
+    float: right;
+    padding-left: 10px
+}
+
+.fork-me-link {
+    position: absolute;
+    right: 0;
+    border: 0;
+    z-index: 1000;
+}
+
+.switch label {
+    color: white;
+}
+
+.switch label input[type=checkbox]:checked+.lever{
+    background-color: #B6B6B6;
+}
+
+.switch label input[type=checkbox]:checked+.lever:after{
+    background-color: #FF9800;
+}
+
+html, body, #map-canvas {
+    height: 100%;
+    margin: 0;
+    padding: 0
+}
+
+.input-wrapper {
+    position: fixed;
+    bottom: 30px;
+    width: 100%;
+}
+
+.input-field label {
+    color: black;
+}
+
+.input-field input {
+    max-width: 58%;
+
+    border: none !important;
+    border-radius: 5px;
+    background-color: white;
+    padding-left: 10px;
+
+    -webkit-box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19) !important;
+    -moz-box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19) !important;
+    box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19) !important;
+}
+
+.fixed-action-btn {
+    z-index: 995;
+}
+
+.zoom-buttons {
+    top: 90px;
+    left: 30px;
+    width: 30px !important;
+    height: 90px !important;
+}
+
+.btn {
+    padding: 0 5px;
+}
+
+.btn-send {
+    bottom: 40px;
+    right: 20px;
+}
+
+.btn-clear{
+    bottom: 40px;
+    left: 20px;
+    width: 56px !important;
+}

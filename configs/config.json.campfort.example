@@ -1,0 +1,25 @@
+{
+    "tasks": [
+        {
+            "type": "CampFort",
+            "config": {
+                "enabled": true,
+                "max_distance": 2000,
+                "min_forts_count": 2,
+                "min_lured_forts_count": 1,
+                "camping_time": 1800,
+                "moving_time": 600
+            }
+        },
+        {
+            "type": "MoveToFort",
+            "config": {
+                "enabled": true,
+                "lure_attraction": true,
+                "lure_max_distance": 300,
+                "walker": "PolylineWalker",
+                "log_interval": 5
+            }
+        }
+    ]
+}

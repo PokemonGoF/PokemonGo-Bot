@@ -4,8 +4,10 @@ from __future__ import unicode_literals
 import os
 import json
 from pokemongo_bot.base_task import BaseTask
-from pokemongo_bot.human_behaviour import sleep
-from pokemongo_bot.inventory import pokemons, Pokemon, Attack
+from pokemongo_bot.human_behaviour import sleep, action_delay
+from pokemongo_bot.inventory import Attack
+from pokemongo_bot.inventory import Pokemon
+from pokemongo_bot.inventory import pokemons
 
 import re
 
@@ -13,6 +15,8 @@ import re
 DEFAULT_IGNORE_FAVORITES = False
 DEFAULT_GOOD_ATTACK_THRESHOLD = 0.7
 DEFAULT_TEMPLATE = '{name}'
+DEFAULT_NICKNAME_WAIT_MIN = 3
+DEFAULT_NICKNAME_WAIT_MAX = 3
 
 MAXIMUM_NICKNAME_LENGTH = 12
 
@@ -66,7 +70,7 @@ class NicknamePokemon(BaseTask):
         "enabled": true,
         "dont_nickname_favorite": false,
         "good_attack_threshold": 0.7,
-        "nickname_template": "{iv_pct}_{iv_ads}"
+        "nickname_template": "{iv_pct}-{iv_ads}"
       }
     }
 
@@ -172,7 +176,7 @@ class NicknamePokemon(BaseTask):
 
     EXAMPLES:
 
-    1. "nickname_template": "{ivcp_pct}_{iv_pct}_{iv_ads}"
+    1. "nickname_template": "{ivcp_pct}-{iv_pct}-{iv_ads}"
 
     Golbat with IV (attack: 9, defense: 4 and stamina: 8) will result in:
      '48_46_9/4/8'
@@ -187,12 +191,12 @@ class NicknamePokemon(BaseTask):
 
     # noinspection PyAttributeOutsideInit
     def initialize(self):
-        self.ignore_favorites = self.config.get(
-            'dont_nickname_favorite', DEFAULT_IGNORE_FAVORITES)
-        self.good_attack_threshold = self.config.get(
-            'good_attack_threshold', DEFAULT_GOOD_ATTACK_THRESHOLD)
-        self.template = self.config.get(
-            'nickname_template', DEFAULT_TEMPLATE)
+        self.ignore_favorites = self.config.get('dont_nickname_favorite', DEFAULT_IGNORE_FAVORITES)
+        self.good_attack_threshold = self.config.get('good_attack_threshold', DEFAULT_GOOD_ATTACK_THRESHOLD)
+        self.template = self.config.get('nickname_template', DEFAULT_TEMPLATE)
+        self.nickname_above_iv = self.config.get('nickname_above_iv', 0)
+        self.nickname_wait_min = self.config.get('nickname_wait_min', DEFAULT_NICKNAME_WAIT_MIN)
+        self.nickname_wait_max = self.config.get('nickname_wait_max', DEFAULT_NICKNAME_WAIT_MAX)
 
         self.translate = None
         locale = self.config.get('locale', 'en')
@@ -207,7 +211,10 @@ class NicknamePokemon(BaseTask):
         """
         for pokemon in pokemons().all():  # type: Pokemon
             if not pokemon.is_favorite or not self.ignore_favorites:
-                self._nickname_pokemon(pokemon)
+                if pokemon.iv >= self.nickname_above_iv:
+                    if self._nickname_pokemon(pokemon):
+                        # Make the bot appears more human
+                        action_delay(self.nickname_wait_min, self.nickname_wait_max)
 
     def _localize(self, string):
         if self.translate and string in self.translate:
@@ -216,19 +223,20 @@ class NicknamePokemon(BaseTask):
             return string
 
     def _nickname_pokemon(self, pokemon):
-        # type: (Pokemon) -> None
+        # type: (Pokemon) -> bool
+        # returns False if no wait needed (no API calls tried before return), True if wait is needed
         """
         Nicknaming process
         """
 
         # We need id of the specific pokemon unstance to be able to rename it
-        instance_id = pokemon.id
+        instance_id = pokemon.unique_id
         if not instance_id:
             self.emit_event(
                 'api_error',
                 formatted='Failed to get pokemon name, will not rename.'
             )
-            return
+            return False
 
         # Generate new nickname
         old_nickname = pokemon.nickname
@@ -240,11 +248,11 @@ class NicknamePokemon(BaseTask):
                 formatted="Unable to nickname {} due to bad template ({})"
                           .format(old_nickname, bad_key)
             )
-            return
+            return False
 
         # Skip if pokemon is already well named
         if pokemon.nickname_raw == new_nickname:
-            return
+            return False
 
         # Send request
         response = self.bot.api.nickname_pokemon(
@@ -260,27 +268,27 @@ class NicknamePokemon(BaseTask):
                 'api_error',
                 formatted='Attempt to nickname received bad response from server.'
             )
-            return
+            return True
 
         # Nickname unset
         if result == 0:
             self.emit_event(
                 'unset_pokemon_nickname',
-                formatted="Pokemon {old_name} nickname unset.",
+                formatted="Pokemon {} nickname unset.".format(old_nickname),
                 data={'old_name': old_nickname}
             )
             pokemon.update_nickname(new_nickname)
         elif result == 1:
             self.emit_event(
                 'rename_pokemon',
-                formatted="Pokemon {old_name} renamed to {current_name}",
+                formatted="*{} Renamed* to *{}*".format(old_nickname, new_nickname),
                 data={'old_name': old_nickname, 'current_name': new_nickname}
             )
             pokemon.update_nickname(new_nickname)
         elif result == 2:
             self.emit_event(
                 'pokemon_nickname_invalid',
-                formatted="Nickname {nickname} is invalid",
+                formatted="Nickname {} is invalid".format(new_nickname),
                 data={'nickname': new_nickname}
             )
         else:
@@ -289,6 +297,7 @@ class NicknamePokemon(BaseTask):
                 formatted='Attempt to nickname received unexpected result'
                           ' from server ({}).'.format(result)
             )
+        return True
 
     def _generate_new_nickname(self, pokemon, template):
         # type: (Pokemon, string) -> string
@@ -328,6 +337,10 @@ class NicknamePokemon(BaseTask):
         moveset = pokemon.moveset
 
         pokemon.name = self._localize(pokemon.name)
+        
+        # Remove spaces from Nidoran M/F 
+        pokemon.name = pokemon.name.replace("Nidoran M", "NidoranM")
+        pokemon.name = pokemon.name.replace("Nidoran F", "NidoranF")
 
         #
         # Generate new nickname
