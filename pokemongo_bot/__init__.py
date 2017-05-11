@@ -42,7 +42,7 @@ from .tree_config_builder import TreeConfigBuilder
 from .inventory import init_inventory, player
 from sys import platform as _platform
 from pgoapi.protos.pogoprotos.enums import badge_type_pb2
-from pgoapi.exceptions import AuthException, NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException, NoPlayerPositionSetException
+from pgoapi.exceptions import AuthException, NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException, NoPlayerPositionSetException, HashingOfflineException
 from pgoapi.hash_server import HashServer
 
 
@@ -1541,7 +1541,12 @@ class PokemonGoBot(object):
             request = self.api.create_request()
             request.get_player()
             request.check_awarded_badges()
-            responses = request.call()
+            try:
+                responses = request.call()
+            except NotLoggedInException:
+                self.logger.warning('Unable to login, retying')
+            except:
+                self.logger.warning('Error occured in heatbeat, retying')
 
             if responses['responses']['GET_PLAYER']['success'] == True:
                 # we get the player_data anyway, might as well store it

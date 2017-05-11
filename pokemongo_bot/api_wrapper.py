@@ -8,7 +8,7 @@ import urllib
 import sys
 from pgoapi.exceptions import (ServerSideRequestThrottlingException,
                                NotLoggedInException, ServerBusyOrOfflineException,
-                               NoPlayerPositionSetException, 
+                               NoPlayerPositionSetException, HashingOfflineException,
                                UnexpectedResponseException)
 from pgoapi.pgoapi import PGoApi
 from pgoapi.pgoapi import PGoApiRequest
@@ -209,12 +209,23 @@ class ApiRequest(PGoApiRequest):
             self._req_method_list = [req_method for req_method in api_req_method_list]
             should_throttle_retry = False
             should_unexpected_response_retry = False
+            hashing_offline = False
+            
             try:
                 result = self._call()
             except ServerSideRequestThrottlingException:
                 should_throttle_retry = True
+            except HashingOfflineException:
+                hashing_offline = True
             except UnexpectedResponseException:
                 should_unexpected_response_retry = True
+            except:
+                should_unexpected_response_retry = True
+            
+            if hashing_offline:
+                self.logger.warning('Hashing server issue, retrying in 5 Secs...')
+                sleep(5)
+                continue
 
             if should_throttle_retry:
                 throttling_retry += 1
