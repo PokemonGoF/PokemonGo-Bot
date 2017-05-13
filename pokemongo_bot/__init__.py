@@ -510,7 +510,7 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'pokemon_evolved',
-            parameters=('pokemon', 'iv', 'old_cp', 'cp', 'candy', 'xp')
+            parameters=('pokemon', 'new', 'iv', 'old_cp', 'cp', 'candy', 'xp')
         )
         self.event_manager.register_event(
             'pokemon_favored',
