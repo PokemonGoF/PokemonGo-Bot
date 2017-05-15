@@ -42,7 +42,7 @@ from .tree_config_builder import TreeConfigBuilder
 from .inventory import init_inventory, player
 from sys import platform as _platform
 from pgoapi.protos.pogoprotos.enums import badge_type_pb2
-from pgoapi.exceptions import AuthException, NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException, NoPlayerPositionSetException
+from pgoapi.exceptions import AuthException, NotLoggedInException, ServerSideRequestThrottlingException, ServerBusyOrOfflineException, NoPlayerPositionSetException, HashingOfflineException
 from pgoapi.hash_server import HashServer
 
 
@@ -213,6 +213,8 @@ class PokemonGoBot(object):
         self.event_manager.register_event('login_failed')
         self.event_manager.register_event('login_successful')
 
+        self.event_manager.register_event('niantic_warning')
+
         self.event_manager.register_event('set_start_location')
         self.event_manager.register_event('load_cached_location')
         self.event_manager.register_event('location_cache_ignored')
@@ -237,6 +239,7 @@ class PokemonGoBot(object):
                 'threshold'
             )
         )
+        self.event_manager.register_event('followpath_output_disabled')
         self.event_manager.register_event(
             'position_update',
             parameters=(
@@ -507,7 +510,15 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'pokemon_evolved',
-            parameters=('pokemon', 'iv', 'cp', 'candy', 'xp')
+            parameters=('pokemon', 'new', 'iv', 'old_cp', 'cp', 'candy', 'xp')
+        )
+        self.event_manager.register_event(
+            'pokemon_favored',
+            parameters=('pokemon', 'iv', 'cp')
+        )
+        self.event_manager.register_event(
+            'pokemon_unfavored',
+            parameters=('pokemon', 'iv', 'cp')
         )
         self.event_manager.register_event(
             'pokemon_evolve_check',
@@ -515,7 +526,7 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'pokemon_upgraded',
-            parameters=('pokemon', 'iv', 'cp', 'candy', 'stardust')
+            parameters=('pokemon', 'iv', 'cp', 'new_cp', 'candy', 'stardust')
         )
         self.event_manager.register_event('skip_evolve')
         self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
@@ -1173,9 +1184,12 @@ class PokemonGoBot(object):
         # print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
         currency_1 = "0"
         currency_2 = "0"
+        warn = False
 
         if response_dict:
             self._player = response_dict['responses']['GET_PLAYER']['player_data']
+            if 'warn' in response_dict['responses']['GET_PLAYER']:
+                warn = response_dict['responses']['GET_PLAYER']['warn']
             player = self._player
         else:
             self.logger.info(
@@ -1255,6 +1269,16 @@ class PokemonGoBot(object):
             ' | Metal Coat: ' + str(items_inventory.get(1103).count) +
             ' | Dragon Scale: ' + str(items_inventory.get(1104).count) +
             ' | Upgrade: ' + str(items_inventory.get(1105).count))
+
+        if warn:
+            self.logger.info('')
+            self.event_manager.emit(
+                'niantic_warning',
+                sender=self,
+                level='warning',
+                formatted="This account has recieved a warning from Niantic. Bot at own risk."
+            )
+            sleep(5) # Pause to allow user to see warning
 
         self.logger.info('')
 
@@ -1517,7 +1541,12 @@ class PokemonGoBot(object):
             request = self.api.create_request()
             request.get_player()
             request.check_awarded_badges()
-            responses = request.call()
+            try:
+                responses = request.call()
+            except NotLoggedInException:
+                self.logger.warning('Unable to login, retying')
+            except:
+                self.logger.warning('Error occured in heatbeat, retying')
 
             if responses['responses']['GET_PLAYER']['success'] == True:
                 # we get the player_data anyway, might as well store it

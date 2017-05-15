@@ -108,6 +108,16 @@ docker run --name=bot1-pokegoweb --rm -it --volumes-from bot1-pokego -p 8000:800
 ```
 The OpenPoGoWeb will be served on `http://<your host>:8000`
 
+### Using proxy with docker:
+
+- https proxy
+ ```
+ docker run --name=bot1-pokego -e "https_proxy=https://PROXY_IP:PORT" --rm -it -v $(pwd)/configs:/usr/src/app/configs -v $(pwd)/web/:/usr/src/app/web/ pokemongocc-bot
+```
+- http proxy
+ ```
+ docker run --name=bot1-pokego -e "http_proxy=http://PROXY_IP:PORT" --rm -it -v $(pwd)/configs:/usr/src/app/configs -v $(pwd)/web/:/usr/src/app/web/ pokemongo-bot
+ ```
 
 ### Remarks for Windows
 
@@ -136,14 +146,6 @@ docker run --name=bot1-pokegoweb --rm -it --volumes-from bot1-pokego -p 8000:800
 Then, with your containers running and your host address, you can access the web view in your browser:
 
 `http://<your host address>:8000 (eg http://192.168.99.100:8000)`
-Using proxy with docker:
-- https proxy
- ```
- docker run --name=bot1-pokego -e "https_proxy=https://PROXY_IP:PORT" --rm -it -v $(pwd)/configs:/usr/src/app/configs -v $(pwd)/web/:/usr/src/app/web/ pokemongo-bot
-```
-- http proxy
- ```
- docker run --name=bot1-pokego -e "http_proxy=http://PROXY_IP:PORT" --rm -it -v $(pwd)/configs:/usr/src/app/configs -v $(pwd)/web/:/usr/src/app/web/ pokemongo-bot
 ```
 #### Errors
 

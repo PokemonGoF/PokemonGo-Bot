@@ -71,3 +71,56 @@ restart:
           end tell
 
                 end repeat
+               
+ 
+ # For any other linux distribution
+ 
+ > You can use the this script to make your bot auto-restart
+ 
+ ```
+ #!/usr/bin/bash
+while true ; do
+		#Add your bot start command after this comment
+		
+		echo "If you want to completely the restart process now, press Ctrl+C before the time is up!"
+		echo "Restarting bot in 2 minute" 
+		sleep 1m
+		echo "Restarting bot in 1 minute"
+		sleep 30s
+		echo "Restarting bot in 30 seconds"
+		sleep 10s
+		echo "Restarting bot in 20 seconds"
+		sleep 10s
+		echo "Restarting bot in 10 seconds"
+		sleep 5s  
+		echo "Restarting bot in 5 seconds"
+		sleep 1s
+		echo "Restarting bot in 4 seconds"
+		sleep 1s
+		echo "Restarting bot in 3 seconds"
+		sleep 1s
+		echo "Restarting bot in 2 seconds"
+		sleep 1s
+		echo "Restarting bot in 1 seconds"
+		sleep 1s
+		echo "Restarting now !"
+done
+
+```
+
+You just need to add your command to start the bot after the comment
+
+And after you need to do this:
+```
+chmod 755 <scriptname>
+```
+If you get an error like this:
+```
+-bash: ./loop.sh: /usr/bin/bash^M: bad interpreter: No such file or directory
+
+```
+You need to convert the script in dos
+
+```
+dos2unix scriptname.sh
+```

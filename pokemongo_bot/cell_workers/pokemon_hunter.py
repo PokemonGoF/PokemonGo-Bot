@@ -78,6 +78,15 @@ class PokemonHunter(BaseTask):
         else:
             self.bot.hunter_disabled_global_warning = False
 
+        if self.bot.softban:
+            if not hasattr(self.bot, "softban_global_warning") or \
+                        (hasattr(self.bot, "softban_global_warning") and not self.bot.softban_global_warning):
+                self.logger.info("Possible softban! Not trying to catch Pokemon.")
+            self.bot.softban_global_warning = True
+            return WorkerResult.SUCCESS
+        else:
+            self.bot.softban_global_warning = False
+
         if self.get_pokeball_count() <= 0:
             self.destination = None
             self.last_cell_id = None

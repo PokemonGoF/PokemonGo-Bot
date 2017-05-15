@@ -153,8 +153,6 @@ class SniperSource(object):
                     # All wrong mappings were gathered at once for a better usability (instead of raising multiple exceptions)
                     if errors:
                         raise LookupError("The following params dont exist: {}".format(", ".join(errors)))
-                else:
-                    raise ValueError("Empty reply")
             else:
                 raise ValueError("Source is not enabled")
         except requests.exceptions.Timeout:
@@ -455,6 +453,16 @@ class Sniper(BaseTask):
             # Resume hunting
             self.no_hunt_until = None
 
+        if self.bot.softban:
+            if not hasattr(self.bot, "sniper_softban_global_warning") or \
+                        (hasattr(self.bot, "sniper_softban_global_warning") and not self.bot.sniper_softban_global_warning):
+                self.logger.info("Possible softban! Not sniping any targets.")
+            self.bot.sniper_softban_global_warning = True
+            return WorkerResult.SUCCESS
+        else:
+            self.bot.softban_global_warning = False
+
+        sniped = False
         # Do nothing if this task was invalidated
         if self.disabled:
             self._error("Sniper was disabled for some reason. Scroll up to find out.")

@@ -215,6 +215,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `use_lucky_egg`: Default: `False` | Only evolve if we can use a lucky egg
 * FollowPath
   * `enable`: Disable or enable this task.
+  * `disable_while_hunting`: Default `true` | Disable walking when Pokemon Hunter has a target locked.
   * `path_mode`: Default `loop` | Set the mode for the path navigator (loop, linear or single).
   * `path_file`: Default `NONE` | Set the file containing the waypoints for the path navigator.
 * FollowSpiral
@@ -935,6 +936,7 @@ option.
    - `first` - The bot will start at the first point of the path.
    - `closest` - The bot will start the path at the point which is the closest to the current bot location.
 * `path_file` - "/path/to/your/path.json"
+* `disable_location_output` - true,false. Set to true if you do not want to see follow path updating information. Default false.
 
 ### Notice
 If you use the `single` `path_mode` without e.g. a `MoveToFort` task, your bot

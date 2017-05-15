@@ -253,6 +253,7 @@
                 "path_start_mode": "first",
                 "path_file": "configs/path.example.json",
                 "number_lap": 10,
+                "disable_location_output": false,
                 "timer_restart_min": "00:10:00",
                 "timer_restart_max": "00:20:00"
             }
