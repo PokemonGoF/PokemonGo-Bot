@@ -212,7 +212,7 @@ class PokemonGoBot(object):
         self.event_manager.register_event('login_started')
         self.event_manager.register_event('login_failed')
         self.event_manager.register_event('login_successful')
-        
+
         self.event_manager.register_event('niantic_warning')
 
         self.event_manager.register_event('set_start_location')
@@ -510,7 +510,7 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'pokemon_evolved',
-            parameters=('pokemon', 'iv', 'cp', 'candy', 'xp')
+            parameters=('pokemon', 'new', 'iv', 'old_cp', 'cp', 'candy', 'xp')
         )
         self.event_manager.register_event(
             'pokemon_favored',
@@ -526,7 +526,7 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event(
             'pokemon_upgraded',
-            parameters=('pokemon', 'iv', 'cp', 'candy', 'stardust')
+            parameters=('pokemon', 'iv', 'cp', 'new_cp', 'candy', 'stardust')
         )
         self.event_manager.register_event('skip_evolve')
         self.event_manager.register_event('threw_berry_failed', parameters=('status_code',))
@@ -1269,7 +1269,7 @@ class PokemonGoBot(object):
             ' | Metal Coat: ' + str(items_inventory.get(1103).count) +
             ' | Dragon Scale: ' + str(items_inventory.get(1104).count) +
             ' | Upgrade: ' + str(items_inventory.get(1105).count))
-            
+
         if warn:
             self.logger.info('')
             self.event_manager.emit(
