@@ -27,25 +27,29 @@ class FollowPath(BaseTask):
 
     def initialize(self):
         self._process_config()
-        self.points = self.load_path()
-        self.status = STATUS_MOVING
-        self.waiting_end_time = 0
-        self.distance_unit = self.bot.config.distance_unit
-        self.append_unit = False
+        if self.enable:
+            self.points = self.load_path()
+            self.status = STATUS_MOVING
+            self.waiting_end_time = 0
+            self.distance_unit = self.bot.config.distance_unit
+            self.append_unit = False
 
-        if self.path_start_mode == 'closest':
-            self.ptr = self.find_closest_point_idx(self.points)
+            if self.path_start_mode == 'closest':
+                self.ptr = self.find_closest_point_idx(self.points)
 
-        else:
-            self.ptr = 0
+            else:
+                self.ptr = 0
             
-        if self.disable_location_output:
-            self.emit_event(
-                'followpath_output_disabled',
-                formatted="Bot in follow path mode, position update disabled. You will not be inform of path taken by bot."
-            )
+            if self.disable_location_output:
+                self.emit_event(
+                    'followpath_output_disabled',
+                    formatted="Bot in follow path mode, position update disabled. You will not be inform of path taken by bot."
+                )
+        else:
+            self.status = STATUS_FINISHED
 
     def _process_config(self):
+        self.enable = self.config.get("enable", True)
         self.path_file = self.config.get("path_file", None)
         self.path_mode = self.config.get("path_mode", "linear")
         self.path_start_mode = self.config.get("path_start_mode", "first")
