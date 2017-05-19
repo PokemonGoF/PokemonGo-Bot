@@ -108,6 +108,7 @@ class SpinFort(BaseTask):
                             'items': awards
                         }
                     )
+                    #time.sleep(10)
                 else:
                     self.emit_event(
                         'pokestop_empty',
