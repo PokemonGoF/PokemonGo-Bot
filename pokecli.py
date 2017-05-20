@@ -328,7 +328,17 @@ def report_summary(bot):
         return  # Bot didn't actually start, no metrics to show.
 
     metrics = bot.metrics
-    metrics.capture_stats()
+    try:
+        metrics.capture_stats()
+    except NotLoggedInException:
+        bot.event_manager.emit(
+            'api_error',
+            sender=bot,
+            level='info',
+            formatted='Not logged in, reconnecting in {:d} seconds'.format(5)
+        )
+        time.sleep(5)
+        return
     logger.info('')
     logger.info('Ran for {}'.format(metrics.runtime()))
     logger.info('Total XP Earned: {}  Average: {:.2f}/h'.format(metrics.xp_earned(), metrics.xp_per_hour()))
