@@ -276,6 +276,7 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `enabled`: Default true | Enable for disable this task
   * `spin_wait_min`: Defaut 3 | Minimum wait after spinning a fort
   * `spin_wait_max`: Default 5 | Maximum wait after spinning a fort
+  * `use_lure`: Default `False` | Enable to depoly lure (if available) at fort
 * TransferPokemon
   * `enable`: Disable or enable this task.
   * `min_free_slot`: Default `5` | Once the pokebag has less empty slots than this amount, the transfer process is triggered. | Big values (i.e 9999) will trigger the transfer process after each catch.

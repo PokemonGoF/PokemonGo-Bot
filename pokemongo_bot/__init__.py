@@ -431,6 +431,10 @@ class PokemonGoBot(object):
         )
         self.event_manager.register_event('no_pokeballs')
         self.event_manager.register_event('enough_ultraballs')
+        self.event_manager.register_event('lure_success')
+        self.event_manager.register_event('lure_failed')
+        self.event_manager.register_event('lure_not_enough')
+        self.event_manager.register_event('lure_info')
         self.event_manager.register_event(
             'pokemon_catch_rate',
             parameters=(
