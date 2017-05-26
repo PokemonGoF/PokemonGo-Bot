@@ -18,7 +18,6 @@ import urllib2
 
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
-from pgoapi import RpcApi
 from pgoapi.utilities import f2i, get_cell_ids
 from s2sphere import Cell, CellId, LatLng
 
@@ -485,9 +484,7 @@ class PokemonGoBot(object):
             )
         )
         self.event_manager.register_event('pokemon_not_in_range')
-        self.event_manager.register_event('pokemon_blocked_by_anticheat')
         self.event_manager.register_event('pokemon_inventory_full')
-        self.event_manager.register_event('pokemon_encounter_error')
         self.event_manager.register_event(
             'pokemon_caught',
             parameters=(
@@ -1307,13 +1304,6 @@ class PokemonGoBot(object):
                 formatted="This account has recieved a warning from Niantic. Bot at own risk."
             )
             sleep(5) # Pause to allow user to see warning
-        
-        '''
-        plat = RpcApi.request.platform_requests(type=5)
-         
-        if plat:
-            print('Response dictionary: \n\r{}'.format(json.dumps(plat, indent=2)))
-        '''
 
         self.logger.info('')
 
