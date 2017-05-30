@@ -13,5 +13,6 @@
     "hashkey" : "YOUR_PURCHASED_HASH_KEY",
     "encrypt_location": "",
     "telegram_token": "",
-    "discord_token": ""
+    "discord_token": "",
+    "2captcha_token": ""
 }
