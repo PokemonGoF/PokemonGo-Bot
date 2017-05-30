@@ -28,6 +28,7 @@ greenlet==0.4.9
 yoyo-migrations==5.0.3
 paho-mqtt==1.2
 Geohash==1.0
-python-telegram-bot==5.0.0
+python-telegram-bot==5.3.0
 discord_simple==0.0.1.15
 urllib3==1.18
+selenium==2.53.6
