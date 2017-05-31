@@ -6,6 +6,7 @@ import requests
 import os
 
 from pokemongo_bot.event_manager import EventHandler
+from pokemongo_bot.base_task import BaseTask
 from sys import platform as _platform
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -14,10 +15,12 @@ SITE_KEY = '6LeeTScTAAAAADqvhqVMhPpr_vB9D364Ia-1dSgK'
 
 
 class CaptchaHandler(EventHandler):
-    def __init__(self, bot):
+    def __init__(self, bot, captcha_solving):
         super(CaptchaHandler, self).__init__()
         self.bot = bot
-        
+        self.enabled = captcha_solving
+
+
     def get_token(self, url):
         token = ''
         path = os.getcwd()
@@ -61,6 +64,7 @@ class CaptchaHandler(EventHandler):
     def handle_event(self, event, sender, level, formatted_msg, data):
         if event in ('pokestop_searching_too_often', 'login_successful'):
             self.bot.logger.info('Checking for captcha challenge.')
+
             # test manual 
             url = 'http://www.google.com/xhtml'        
             response_dict = self.bot.api.check_challenge()
@@ -74,6 +78,16 @@ class CaptchaHandler(EventHandler):
                 )
                 return
             url = challenge['challenge_url']
+            
+            if self.enabled == False:
+                self.bot.event_manager.emit(
+                    'captcha',
+                    sender=self,
+                    level='info',
+                    formatted="Captcha encountered but solving diabled, exiting..."
+                )
+                sys.exit(1)
+                return
 
             if not self.bot.config.twocaptcha_token:
                 self.bot.logger.warn('No 2captcha token set, executing manual solving')
