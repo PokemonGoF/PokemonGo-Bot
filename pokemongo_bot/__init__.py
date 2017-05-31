@@ -173,7 +173,7 @@ class PokemonGoBot(object):
 
         handlers.append(LoggingHandler(color, debug))
         handlers.append(SocialHandler(self))
-        handlers.append(CaptchaHandler(self))
+        handlers.append(CaptchaHandler(self, self.config.solve_captcha))
 
         if self.config.websocket_server_url:
             if self.config.websocket_start_embedded_server:
