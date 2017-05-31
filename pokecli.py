@@ -428,6 +428,15 @@ def init_config():
     add_config(
         parser,
         load,
+        short_flag="-sc",
+        long_flag="--solve_captcha",
+        help="Enable manual or automatic captcha solving",
+        type=bool,
+        default=False
+    )
+    add_config(
+        parser,
+        load,
         short_flag="-ws",
         long_flag="--websocket.server_url",
         help="Connect to websocket server at given url",
@@ -749,6 +758,7 @@ def init_config():
     config.encrypt_location = load.get('encrypt_location', '')
     config.telegram_token = load.get('telegram_token', '')
     config.discord_token = load.get('discord_token', '')
+    config.discord_token = load.get('2captcha_token', '')
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.plugins = load.get('plugins', [])

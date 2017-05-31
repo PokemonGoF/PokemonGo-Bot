@@ -31,7 +31,7 @@ from .human_behaviour import sleep
 from .item_list import Item
 from .metrics import Metrics
 from .sleep_schedule import SleepSchedule
-from pokemongo_bot.event_handlers import SocketIoHandler, LoggingHandler, SocialHandler
+from pokemongo_bot.event_handlers import SocketIoHandler, LoggingHandler, SocialHandler, CaptchaHandler
 from pokemongo_bot.socketio_server.runner import SocketIoRunner
 from pokemongo_bot.websocket_remote_control import WebsocketRemoteControl
 from pokemongo_bot.base_dir import _base_dir
@@ -173,6 +173,7 @@ class PokemonGoBot(object):
 
         handlers.append(LoggingHandler(color, debug))
         handlers.append(SocialHandler(self))
+        handlers.append(CaptchaHandler(self, self.config.solve_captcha))
 
         if self.config.websocket_server_url:
             if self.config.websocket_start_embedded_server:
@@ -1102,26 +1103,6 @@ class PokemonGoBot(object):
                         level='info',
                         formatted="Current PGoAPI is using API Version: {}. Niantic API Check Pass".format(PGoAPI_hash_version[0])
                     )
-
-        # When successful login, do a captcha check
-        #Basic Captcha detection, more to come
-        response_dict = self.api.check_challenge()
-        captcha_url = response_dict['responses']['CHECK_CHALLENGE']['challenge_url']
-        if len(captcha_url) > 1:
-            self.event_manager.emit(
-                'captcha',
-                sender=self,
-                level='critical',
-                formatted='Captcha Encountered, URL: {}'.format(captcha_url)
-            )
-            sys.exit(1)
-
-        self.event_manager.emit(
-            'captcha',
-            sender=self,
-            level='info',
-            formatted="Captcha Check Passed"
-        )
 
         self.heartbeat()
 

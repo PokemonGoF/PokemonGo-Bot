@@ -1,5 +1,15 @@
-### Do I need hashing key ?
-Without hashing key, the bot will use API in version 0.45, which is not used in legit game any longer. Learn more about - [hashing key here](http://hashing.pogodev.org).
+### Do I need hashing key?
+The bot will not run without a vaild hashing key. Learn more about - [hashing key here](http://hashing.pogodev.org).
+
+### Does the bot support 2Captcha service?
+Yes. Please include your 2Captcha token in auth.json
+```
+"2captcha_token": "YOUR_KEY_HERE"
+```
+
+### Does the bot support manual Captcha solving?
+Yes. Please download chrome driver for your os plaform and place it into the root directory of the bot.
+More information on [chrome driver here](https://sites.google.com/a/chromium.org/chromedriver/).
 
 ### How do I start the application?
 After [installing] (https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/installation.md), in the root folder run the following command:
