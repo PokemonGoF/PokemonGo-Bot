@@ -82,6 +82,7 @@ Document the configuration options of PokemonGo-Bot.
 |      Parameter     | Default |                                                                                         Description                                                                                         |
 |------------------|-------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `tasks`            | []     | The behaviors you want the bot to do. Read [how to configure tasks](#configuring-tasks).
+| `solve_captcha`            | False     | True: Allow bot to solve captcha when enabled. Either using automatic (2Captcha service, token to be specify in auth.json) or manual solving [more information](https://github.com/PokemonGoF/PokemonGo-Bot/pull/6050)
 | `max_steps`        | 5       | The steps around your initial location (DEFAULT 5 mean 25 cells around your location) that will be explored
 | `forts.avoid_circles`             | False     | Set whether the bot should avoid circles |
 | `forts.max_circle_size`             | 10     | How many forts to keep in ignore list |
