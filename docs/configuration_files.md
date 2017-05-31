@@ -1408,13 +1408,23 @@ Hunts down nearby Pokemon. Searches for Pokemon to complete the Pokedex, or if a
 [[back to top](#table-of-contents)]
 
 * `max_distance`: `Default: 2000`. Maxium of meters for the "nearby" part.
+* `enable_cooldown`: `Default: true`. After a hunt (succesful or not) have a cool down (stops hunting for a bit)
 * `hunt_all`: `Default: false`. Should we hunt for ALL nearby Pokemon?
 * `hunt_vip`: `Default: true`. Should we hunt for VIP Pokemon?
 * `hunt_pokedex`: `Default: true`. Should we hunt for Pokemon we need to complete the Pokedex (make family complete)
 * `lock_on_target`: `Default: false`. Should we ignore all other Pokemon while hunting?
 * `lock_vip_only`: `Default: true`. Is the above only used for real VIPs? (Not to complete the Pokedex)
 * `disabled_while_camping`: `Default: true`. Should we stop hunting for nearby Pokemon while sitting at lures?
+* `hunt_closest_first`: `Default: false`. Prioritize by distance instead of number of candy?
 * `treat_unseen_as_vip`: `Default: true`. Should we treat unseen Pokemons as VIPs?
+* `target_family_of_vip`: `Default: true`. Should we treat family of a VIP as a valid target?
+* `treat_family_of_vip_as_vip`: `Default: false`. Should we see family of an VIP as a VIP (locking onto it if enabled)
+* `hunt_for_trash_to_fill_bag`: `Default: false`. Should we try to fill the bag with trash if a set amount of slots is left?
+* `trash_hunt_open_slots`: `Default: 25`. The amount of slots for the previous setting
+
+### Hunting for trash
+If enabled the hunter will start hunting down Pidgeys, Weedles and Caterpies when a set amount of slots (defaults to 25) are left in the bag to fill. The idea is simple; we are about to start evolving Pokemon. So the priority of the hunter shiftes. BUT when a VIP Pokemon is nearby, the Hunter will always start chasing that VIP first.
+Also hunting for trash does NOT lock the target, catching all Pokemon it find on the way to the target.
 
 ### Sample configuration
 [[back to top](#table-of-contents)]
@@ -1423,6 +1433,7 @@ Hunts down nearby Pokemon. Searches for Pokemon to complete the Pokedex, or if a
     "type": "PokemonHunter",
     "config": {
         "enabled": true,
+        "enable_cooldown": false,
         "max_distance": 1500,
         "hunt_all": false,
         "hunt_vip": true,
@@ -1430,7 +1441,10 @@ Hunts down nearby Pokemon. Searches for Pokemon to complete the Pokedex, or if a
         "lock_on_target": false,
         "lock_vip_only": true,
         "disabled_while_camping": true,
-        "treat_unseen_as_vip": true
+        "hunt_closest_first": true,
+        "treat_unseen_as_vip": true,
+        "hunt_for_trash_to_fill_bag": true,
+        "trash_hunt_open_slots": 30
     }
 }
 ```
