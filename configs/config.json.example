@@ -3,6 +3,7 @@
     "heartbeat_threshold": 10,
     "enable_social": false,
     "check_niantic_api": false,
+    "solve_captcha": false,
     "live_config_update": {
         "enabled": false,
         "tasks_only": false
