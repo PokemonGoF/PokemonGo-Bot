@@ -135,7 +135,7 @@ class PokemonGoBot(object):
         self.catch_disabled = False
 
         self.capture_locked = False  # lock catching while moving to VIP pokemon
-        
+
         # Inform bot if there's a response
         self.empty_response = False
 
@@ -963,9 +963,9 @@ class PokemonGoBot(object):
 
     def login(self):
         status = {}
-        retry = 0 
+        retry = 0
         quit_login = False
-        
+
         self.event_manager.emit(
             'login_started',
             sender=self,
@@ -974,7 +974,7 @@ class PokemonGoBot(object):
         )
         lat, lng = self.position[0:2]
         self.api.set_position(lat, lng, self.alt)  # or should the alt kept to zero?
-        
+
         while not quit_login:
             try:
                 self.api.login(
@@ -1555,7 +1555,7 @@ class PokemonGoBot(object):
             except:
                 self.logger.warning('Error occured in heatbeat, retying')
                 self.empty_response = True
-            
+
             if not self.empty_response:
                 if responses['responses']['GET_PLAYER']['success'] == True:
                     # we get the player_data anyway, might as well store it
@@ -1622,6 +1622,19 @@ class PokemonGoBot(object):
         forts = [fort
                  for fort in self.cell['forts']
                  if 'latitude' in fort and 'type' in fort]
+        # Need to filter out disabled forts!
+        forts = filter(lambda x: x["enabled"] is True, forts)
+        forts = filter(lambda x: 'closed' not in fort, forts)
+
+        if order_by_distance:
+            forts.sort(key=lambda x: distance(
+                self.position[0],
+                self.position[1],
+                x['latitude'],
+                x['longitude']
+            ))
+
+        return forts
 
         if order_by_distance:
             forts.sort(key=lambda x: distance(
