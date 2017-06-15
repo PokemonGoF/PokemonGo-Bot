@@ -137,12 +137,8 @@ class RandomAlivePause(BaseTask):
             return False
 
         if self.bot.config.replicate_gps_xy_noise or self.bot.config.replicate_gps_z_noise: # Adding some noise
-            request = self.bot.api.create_request()
-            request.get_position()
-            lat, lng, alt = request.call()
-            
-            request = self.bot.api.create_request()
-            request.set_position(lat, lng, alt) # Just set the same _actual_ values. set_position will add noise itself
+            lat, lng, alt = self.bot.api.get_position()
+            self.bot.api.set_position(lat, lng, alt) # Just set the same _actual_ values. set_position will add noise itself
 
         diff = (now - self._last_call).total_seconds()
         self._last_call = now
