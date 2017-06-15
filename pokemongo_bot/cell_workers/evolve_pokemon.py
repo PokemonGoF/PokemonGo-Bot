@@ -165,8 +165,11 @@ class EvolvePokemon(BaseTask):
     def _execute_pokemon_evolve(self, pokemon, cache):
         if pokemon.name in cache:
             return False
-
-        response_dict = self.bot.api.evolve_pokemon(pokemon_id=pokemon.unique_id)
+        
+        request = self.bot.api.create_request()
+        request.evolve_pokemon(pokemon_id=pokemon.unique_id)
+        response_dict = request.call()
+        
         if response_dict.get('responses', {}).get('EVOLVE_POKEMON', {}).get('result', 0) == 1:
             xp = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("experience_awarded", 0)
             evolution = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("evolved_pokemon_data", {})

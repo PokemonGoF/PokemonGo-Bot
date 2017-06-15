@@ -640,7 +640,9 @@ class Sniper(BaseTask):
             self._log(message)
 
     def _teleport(self, latitude, longitude, altitude):
-        self.bot.api.set_position(latitude, longitude, altitude, True)
+        request = self.bot.api.create_request()
+        request.set_position(latitude, longitude, altitude, True)
+        request.call()
         time.sleep(3)
 
     def _teleport_to(self, pokemon):

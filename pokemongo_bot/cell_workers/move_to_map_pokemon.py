@@ -259,14 +259,22 @@ class MoveToMapPokemon(BaseTask):
             api_encounter_response = catch_worker.create_encounter_api_call()
             time.sleep(self.config.get('snipe_sleep_sec', 2))
             self._teleport_back(last_position)
-            self.bot.api.set_position(last_position[0], last_position[1], self.alt, False)
+            
+            request = self.bot.api.create_request()
+            request.set_position(last_position[0], last_position[1], self.alt, False)
+            request.call()
+            
             time.sleep(self.config.get('snipe_sleep_sec', 2))
             catch_worker.work(api_encounter_response)
         else:
             self._emit_failure('{} doesnt exist anymore. Skipping...'.format(pokemon['name']))
             time.sleep(self.config.get('snipe_sleep_sec', 2))
             self._teleport_back(last_position)
-            self.bot.api.set_position(last_position[0], last_position[1], self.alt, False)
+            
+            request = self.bot.api.create_request()
+            request.set_position(last_position[0], last_position[1], self.alt, False)
+            request.call()
+            
             time.sleep(self.config.get('snipe_sleep_sec', 2))
 
         self.inspect(pokemon)
@@ -424,7 +432,9 @@ class MoveToMapPokemon(BaseTask):
             formatted='Teleporting to {poke_name}. ({poke_dist})',
             data=self._pokemon_event_data(pokemon)
         )
-        self.bot.api.set_position(pokemon['latitude'], pokemon['longitude'], self.alt, True)
+        request = self.bot.api.create_request()
+        request.set_position(pokemon['latitude'], pokemon['longitude'], self.alt, True)
+        request.call()
 
     def _encountered(self, pokemon):
         self.emit_event(

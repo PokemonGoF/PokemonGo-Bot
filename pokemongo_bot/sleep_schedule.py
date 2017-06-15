@@ -76,8 +76,10 @@ class SleepSchedule(object):
                             'position': wake_up_at_location['coord']
                         }
                     )
-
-                    self.bot.api.set_position(*wake_up_at_location['coord'])
+                    
+                    request = self.bot.api.create_request()
+                    request.set_position(*wake_up_at_location['coord'])
+                    request.call()
 
                     self.bot.event_manager.emit(
                         'position_update',

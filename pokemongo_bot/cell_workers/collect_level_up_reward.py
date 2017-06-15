@@ -49,7 +49,10 @@ class CollectLevelUpReward(BaseTask):
         return self.level_limit != -1 or self.collect_reward
 
     def _collect_level_reward(self):
-        response_dict = self.bot.api.level_up_rewards(level=self.current_level)
+        request = self.bot.api.create_request()
+        request.level_up_rewards(level=self.current_level)
+        response_dict = request.call()
+        
         if 'status_code' in response_dict and response_dict['status_code'] == 1:
             data = (response_dict
                     .get('responses', {})
