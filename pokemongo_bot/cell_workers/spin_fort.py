@@ -20,6 +20,11 @@ SPIN_REQUEST_RESULT_OUT_OF_RANGE = 2
 SPIN_REQUEST_RESULT_IN_COOLDOWN_PERIOD = 3
 SPIN_REQUEST_RESULT_INVENTORY_FULL = 4
 
+LURE_REQUEST_RESULT_SUCCESS = 1
+LURE_REQUEST_FORT_ALREADY_HAS_MODIFIER= 2
+LURE_REQUEST_TOO_FAR_AWAY = 3
+LURE_REQUEST_NO_ITEM_IN_INVENTORY = 4
+LURE_REQUEST_POI_INACCESSIBLE = 5
 
 class SpinFort(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
@@ -36,6 +41,7 @@ class SpinFort(BaseTask):
         self.spin_wait_max = self.config.get("spin_wait_max", 3)
         self.min_interval = int(self.config.get('min_interval', 120))
         self.exit_on_limit_reached = self.config.get("exit_on_limit_reached", True)
+        self.use_lure = self.config.get("use_lure", False)
 
     def should_run(self):
         has_space_for_loot = inventory.Items.has_space_for_loot()
@@ -72,7 +78,42 @@ class SpinFort(BaseTask):
         lng = fort['longitude']
 
         details = fort_details(self.bot, fort['id'], lat, lng)
-        fort_name = details.get('name', 'Unknown')
+
+        fort_name = details.get('name', 'Unknown')     
+        check_fort_modifier = details.get('modifiers', {})
+        if check_fort_modifier:
+            # check_fort_modifier_id = check_fort_modifier[0].get('item_id')
+            self.emit_event('lure_info', formatted='A lure is already in fort, skip deploying lure')
+        
+        if self.use_lure and not check_fort_modifier:
+            # check lures availiblity
+            lure_count = inventory.items().get(501).count
+            
+            if lure_count > 1: # Only use lures when there's more than one
+                request = self.bot.api.create_request()
+                request.add_fort_modifier(
+                    modifier_type=501,
+                    fort_id = fort['id'], 
+                    player_latitude = f2i(self.bot.position[0]), 
+                    player_longitude = f2i(self.bot.position[1])
+                )
+                response_dict = request.call()
+
+                if ('responses' in response_dict) and ('ADD_FORT_MODIFIER' in response_dict['responses']):
+                    add_modifier_deatils = response_dict['responses']['ADD_FORT_MODIFIER']
+                    add_modifier_result = add_modifier_deatils.get('result', -1)
+                    if (add_modifier_result == LURE_REQUEST_RESULT_SUCCESS):
+                        self.emit_event('lure_success', formatted='You have successfully placed a lure')
+                    if (add_modifier_result == LURE_REQUEST_FORT_ALREADY_HAS_MODIFIER):
+                        self.emit_event('lure_failed', formatted='A lure has being placed before you try to do so')
+                    if (add_modifier_result == LURE_REQUEST_TOO_FAR_AWAY):
+                        self.emit_event('lure_failed', formatted='Pokestop out of range')
+                    if (add_modifier_result == LURE_REQUEST_NO_ITEM_IN_INVENTORY):
+                        self.emit_event('lure_not_enough', formatted='Not enough lure in inventory')
+                    if (add_modifier_result == LURE_REQUEST_POI_INACCESSIBLE):
+                        self.emit_event('lure_info', formatted='Unkown Error')
+            else:
+                self.emit_event('lure_not_enough', formatted='Not enough lure in inventory')
         
         request = self.bot.api.create_request()
         request.fort_search(
@@ -110,6 +151,7 @@ class SpinFort(BaseTask):
                             'items': awards
                         }
                     )
+                    #time.sleep(10)
                 else:
                     self.emit_event(
                         'pokestop_empty',

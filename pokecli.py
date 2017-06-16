@@ -328,7 +328,17 @@ def report_summary(bot):
         return  # Bot didn't actually start, no metrics to show.
 
     metrics = bot.metrics
-    metrics.capture_stats()
+    try:
+        metrics.capture_stats()
+    except NotLoggedInException:
+        bot.event_manager.emit(
+            'api_error',
+            sender=bot,
+            level='info',
+            formatted='Not logged in, reconnecting in {:d} seconds'.format(5)
+        )
+        time.sleep(5)
+        return
     logger.info('')
     logger.info('Ran for {}'.format(metrics.runtime()))
     logger.info('Total XP Earned: {}  Average: {:.2f}/h'.format(metrics.xp_earned(), metrics.xp_per_hour()))
@@ -414,6 +424,15 @@ def init_config():
         help="Enable killswitch on API Change",
         type=bool,
         default=True
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-sc",
+        long_flag="--solve_captcha",
+        help="Enable manual or automatic captcha solving",
+        type=bool,
+        default=False
     )
     add_config(
         parser,
@@ -739,6 +758,7 @@ def init_config():
     config.encrypt_location = load.get('encrypt_location', '')
     config.telegram_token = load.get('telegram_token', '')
     config.discord_token = load.get('discord_token', '')
+    config.twocaptcha_token = load.get('2captcha_token', '')
     config.catch = load.get('catch', {})
     config.release = load.get('release', {})
     config.plugins = load.get('plugins', [])
