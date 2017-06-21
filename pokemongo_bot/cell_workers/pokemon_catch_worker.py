@@ -398,12 +398,13 @@ class PokemonCatchWorker(BaseTask):
                 'berry_count': berry_count
             }
         )
-
-        response_dict = self.bot.api.use_item_encounter(
-            item=berry_id,
-            encounter_id=encounter_id,
-            spawn_point_guid=self.spawn_point_guid
-        )
+        
+        request = self.bot.api.create_request()
+        request.use_item_encounter(item=berry_id,
+                                   encounter_id=encounter_id,
+                                   spawn_point_guid=self.spawn_point_guid)
+        response_dict = request.call()
+        
         responses = response_dict['responses']
 
         if response_dict['status_code'] == 1:
@@ -587,8 +588,9 @@ class PokemonCatchWorker(BaseTask):
             hit_pokemon = 1
             if random() >= self.catch_throw_parameters_hit_rate and not is_vip:
                 hit_pokemon = 0
-
-            response_dict = self.bot.api.catch_pokemon(
+            
+            request = self.bot.api.create_request()
+            request.catch_pokemon(
                 encounter_id=encounter_id,
                 pokeball=current_ball,
                 normalized_reticle_size=throw_parameters['normalized_reticle_size'],
@@ -597,7 +599,8 @@ class PokemonCatchWorker(BaseTask):
                 spin_modifier=throw_parameters['spin_modifier'],
                 normalized_hit_position=throw_parameters['normalized_hit_position']
             )
-
+            response_dict = request.call()
+            
             try:
                 catch_pokemon_status = response_dict['responses']['CATCH_POKEMON']['status']
             except KeyError:

@@ -1186,7 +1186,10 @@ class PokemonGoBot(object):
     def _print_character_info(self):
         # get player profile call
         # ----------------------
-        response_dict = self.api.get_player()
+        request = self.api.create_request()
+        request.get_player()
+        response_dict = request.call()
+        
         # print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
         currency_1 = "0"
         currency_2 = "0"
@@ -1332,7 +1335,9 @@ class PokemonGoBot(object):
         self.logger.info('')
 
     def use_lucky_egg(self):
-        return self.api.use_item_xp_boost(item_id=301)
+        request = self.api.create_request()
+        request.use_item_xp_boost(item_id=301)
+        return request.call()
 
     def _set_starting_position(self):
 
@@ -1649,13 +1654,16 @@ class PokemonGoBot(object):
     def get_map_objects(self, lat, lng, timestamp, cellid):
         if time.time() - self.last_time_map_object < self.config.map_object_cache_time:
             return self.last_map_object
-
-        self.last_map_object = self.api.get_map_objects(
+        
+        request = self.api.create_request()
+        request.get_map_objects(
             latitude=f2i(lat),
             longitude=f2i(lng),
             since_timestamp_ms=timestamp,
             cell_id=cellid
         )
+        self.last_map_object = request.call()
+        
         self.emit_forts_event(self.last_map_object)
         #if self.last_map_object:
         #    print self.last_map_object

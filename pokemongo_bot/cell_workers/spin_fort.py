@@ -78,6 +78,7 @@ class SpinFort(BaseTask):
         lng = fort['longitude']
 
         details = fort_details(self.bot, fort['id'], lat, lng)
+
         fort_name = details.get('name', 'Unknown')     
         check_fort_modifier = details.get('modifiers', {})
         if check_fort_modifier:
@@ -89,12 +90,14 @@ class SpinFort(BaseTask):
             lure_count = inventory.items().get(501).count
             
             if lure_count > 1: # Only use lures when there's more than one
-                response_dict = self.bot.api.add_fort_modifier(
+                request = self.bot.api.create_request()
+                request.add_fort_modifier(
                     modifier_type=501,
                     fort_id = fort['id'], 
                     player_latitude = f2i(self.bot.position[0]), 
                     player_longitude = f2i(self.bot.position[1])
                 )
+                response_dict = request.call()
 
                 if ('responses' in response_dict) and ('ADD_FORT_MODIFIER' in response_dict['responses']):
                     add_modifier_deatils = response_dict['responses']['ADD_FORT_MODIFIER']
@@ -111,15 +114,17 @@ class SpinFort(BaseTask):
                         self.emit_event('lure_info', formatted='Unkown Error')
             else:
                 self.emit_event('lure_not_enough', formatted='Not enough lure in inventory')
-
-        response_dict = self.bot.api.fort_search(
+        
+        request = self.bot.api.create_request()
+        request.fort_search(
             fort_id=fort['id'],
             fort_latitude=lat,
             fort_longitude=lng,
             player_latitude=f2i(self.bot.position[0]),
             player_longitude=f2i(self.bot.position[1])
         )
-
+        response_dict = request.call()
+        
         if ('responses' in response_dict) and ('FORT_SEARCH' in response_dict['responses']):
             spin_details = response_dict['responses']['FORT_SEARCH']
             spin_result = spin_details.get('result', -1)

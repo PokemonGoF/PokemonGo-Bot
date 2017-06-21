@@ -255,8 +255,10 @@ class NicknamePokemon(BaseTask):
             return False
 
         # Send request
-        response = self.bot.api.nickname_pokemon(
-            pokemon_id=instance_id, nickname=new_nickname)
+        request = self.bot.api.create_request()
+        request.nickname_pokemon(pokemon_id=instance_id, nickname=new_nickname)
+        response = request.call()
+        
         sleep(1.2)  # wait a bit after request
 
         # Check result

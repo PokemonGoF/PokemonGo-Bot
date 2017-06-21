@@ -1308,7 +1308,9 @@ class Inventory(object):
 
     def refresh(self, inventory=None):
         if inventory is None:
-            inventory = self.bot.api.get_inventory()
+            request = self.bot.api.create_request()
+            request.get_inventory()
+            inventory = request.call()
 
         inventory = inventory['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
         for i in (self.pokedex, self.candy, self.items, self.pokemons, self.player):
@@ -1379,9 +1381,12 @@ class Inventory(object):
         """
         # TODO: Force to update it if the player upgrades its size
         if self.item_inventory_size is None or self.pokemon_inventory_size is None:
-           player_data = self.bot.api.get_player()['responses']['GET_PLAYER']['player_data']
-           self.item_inventory_size = player_data['max_item_storage']
-           self.pokemon_inventory_size = player_data['max_pokemon_storage']
+            request = self.bot.api.create_request()
+            request.get_player()
+            player_data = request.call()['responses']['GET_PLAYER']['player_data']
+            
+            self.item_inventory_size = player_data['max_item_storage']
+            self.pokemon_inventory_size = player_data['max_pokemon_storage']
 
 #
 # Other

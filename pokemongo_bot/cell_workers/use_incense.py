@@ -71,7 +71,11 @@ class UseIncense(BaseTask):
     def work(self):
         if self._should_run():
             self.start_time = time.time()
-            response_dict = self.bot.api.use_incense(incense_type=self._get_type())
+            
+            request = self.bot.api.create_request()
+            request.use_incense(incense_type=self._get_type())
+            response_dict = request.call()
+            
             result = response_dict.get('responses', {}).get('USE_INCENSE', {}).get('result', 0)
             if result is 1:
                 self.emit_event(

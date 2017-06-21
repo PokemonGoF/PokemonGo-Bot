@@ -52,13 +52,17 @@ class HandleSoftBan(BaseTask):
         fort_id = fort['id']
         latitude = fort['latitude']
         longitude = fort['longitude']
-        self.bot.api.fort_search(
+        
+        request = self.bot.api.create_request()
+        request.fort_search(
             fort_id=fort_id,
             fort_latitude=latitude,
             fort_longitude=longitude,
             player_latitude=f2i(self.bot.position[0]),
             player_longitude=f2i(self.bot.position[1])
         )
+        request.call()
+        
         self.emit_event(
             'spun_fort',
             level='debug',
