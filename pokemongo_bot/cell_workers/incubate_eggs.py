@@ -95,12 +95,16 @@ class IncubateEggs(BaseTask):
                         'egg_id': egg['id']
                     }
                 )
-                ret = self.bot.api.use_item_egg_incubator(
+                
+                request = self.bot.api.create_request()
+                request.use_item_egg_incubator(
                     item_id=incubator["id"],
                     pokemon_id=egg["id"]
                 )
-                if ret:
-                    code = ret.get("responses", {}).get("USE_ITEM_EGG_INCUBATOR", {}).get("result", 0)
+                response = request.call()
+                
+                if response:
+                    code = response.get("responses", {}).get("USE_ITEM_EGG_INCUBATOR", {}).get("result", 0)
                     if code == 1:
                         self.emit_event(
                             'incubate',
@@ -185,7 +189,10 @@ class IncubateEggs(BaseTask):
         return matched_pokemon
 
     def _hatch_eggs(self):
-        response_dict = self.bot.api.get_hatched_eggs()
+        request = self.bot.api.create_request()
+        request.get_hatched_eggs()
+        response_dict = request.call()
+        
         try:
             result = reduce(dict.__getitem__, ["responses", "GET_HATCHED_EGGS"], response_dict)
         except KeyError:

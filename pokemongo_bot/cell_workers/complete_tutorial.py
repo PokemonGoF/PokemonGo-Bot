@@ -95,8 +95,11 @@ class CompleteTutorial(BaseTask):
         # You just need to call the API with the pokemon you choose
         # Probably can't get MewTwo as first pokemon though
         first_pokemon_id = random.choice([1, 4, 7])
-        response_dict = self.bot.api.encounter_tutorial_complete(
-            pokemon_id=first_pokemon_id)
+        
+        request = self.bot.api.create_request()
+        request.encounter_tutorial_complete(pokemon_id=first_pokemon_id)
+        response_dict = request.call()
+        
         try:
             if response_dict['responses']['ENCOUNTER_TUTORIAL_COMPLETE']['result'] == 1:
                 return True
@@ -127,7 +130,11 @@ class CompleteTutorial(BaseTask):
 
     def _set_avatar(self):
         avatar = self._random_avatar()
-        response_dict = self.bot.api.set_avatar(player_avatar=avatar)
+        
+        request = self.bot.api.create_request()
+        request.set_avatar(player_avatar=avatar)
+        response_dict = request.call()
+        
         status = response_dict['responses']['SET_AVATAR']['status']
         try:
             if status == 1:
@@ -146,7 +153,10 @@ class CompleteTutorial(BaseTask):
             return False
 
     def _set_nickname(self, nickname):
-        response_dict = self.bot.api.claim_codename(codename=nickname)
+        request = self.bot.api.create_request()
+        request.claim_codename(codename=nickname)
+        response_dict = request.call()
+        
         try:
             result = response_dict['responses']['CLAIM_CODENAME']['status']
             if result == 1:
@@ -169,8 +179,12 @@ class CompleteTutorial(BaseTask):
             return False
 
     def _set_tutorial_state(self, completed):
-        response_dict = self.bot.api.mark_tutorial_complete(tutorials_completed=[
-                                                        completed], send_marketing_emails=False, send_push_notifications=False)
+        request = self.bot.api.create_request()
+        request.mark_tutorial_complete(tutorials_completed=[completed], 
+                                       send_marketing_emails=False,
+                                       send_push_notifications=False)
+        response_dict = request.call()
+        
         try:
             self._player = response_dict['responses'][
                 'MARK_TUTORIAL_COMPLETE']['player_data']
@@ -188,7 +202,10 @@ class CompleteTutorial(BaseTask):
             return True
 
         sleep(10)
-        response_dict = self.bot.api.set_player_team(team=self.team)
+        request = self.bot.api.create_request()
+        request.set_player_team(team=self.team)
+        response_dict = request.call()
+        
         try:
             result = response_dict['responses']['SET_PLAYER_TEAM']['status']
             if result == 1:

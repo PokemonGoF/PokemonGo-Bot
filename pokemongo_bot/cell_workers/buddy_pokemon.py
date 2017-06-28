@@ -144,8 +144,10 @@ class BuddyPokemon(BaseTask):
         return WorkerResult.SUCCESS
 
     def _set_buddy(self, pokemon):
-        response_dict = \
-            self.bot.api.set_buddy_pokemon(pokemon_id=pokemon.unique_id)
+        request = self.bot.api.create_request()
+        request.set_buddy_pokemon(pokemon_id=pokemon.unique_id)
+        response_dict = request.call()
+        
         data = response_dict.get('responses', {}).get('SET_BUDDY_POKEMON', {})
         result = data.get('result', 0)
 
@@ -182,7 +184,10 @@ class BuddyPokemon(BaseTask):
             return False
 
     def _get_award(self):
-        response_dict = self.bot.api.get_buddy_walked()
+        request = self.bot.api.create_request()
+        request.get_buddy_walked()
+        response_dict = request.call()
+        
         result = response_dict.get('responses', {}).get('GET_BUDDY_WALKED', {})
         success = result.get('success', False)
         family_id = result.get('family_candy_id', 0)

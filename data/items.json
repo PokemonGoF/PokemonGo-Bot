@@ -4,6 +4,7 @@
   "2": "Greatball",
   "3": "Ultraball",
   "4": "Masterball",
+  "5": "Premier Ball",
   "101": "Potion",
   "102": "Super Potion",
   "103": "Hyper Potion",
@@ -24,6 +25,9 @@
   "703": "Nanab Berry",
   "704": "Wepar Berry",
   "705": "Pinap Berry",
+  "706": "Golden Razz Berry",
+  "707": "Golden Nanab Berry",
+  "708": "Golden Pinap Berry",
   "801": "Special Camera",
   "901": "Incubator Basic Unlimited",
   "902": "Incubator Basic",
@@ -33,5 +37,11 @@
   "1102": "Kings Rock",
   "1103": "Metal Coat",
   "1104": "Dragon Scale",
-  "1105": "Upgrade"
+  "1105": "Upgrade",
+  "1201": "Reroll Fast Attack",
+  "1202": "Reroll Special Attack",
+  "1301": "Rare Candy",
+  "1401": "Free Raid Ticket",
+  "1402": "Paid Raid Ticket",
+  "1403": "Legendart Raid Ticket"
 }
