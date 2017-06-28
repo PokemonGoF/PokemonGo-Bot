@@ -269,13 +269,17 @@ class SpinFort(BaseTask):
         inventory.player().exp += experience_awarded
 
         items_awarded = response_dict['responses']['FORT_SEARCH'].get('items_awarded', {})
-        if items_awarded:
-            tmp_count_items = {}
-            for item_awarded in items_awarded:
+        loot = response_dict['responses']['FORT_SEARCH'].get('loot', {})
+        bonus_loot = response_dict['responses']['FORT_SEARCH'].get('bonus_loot', {})
+        team_bonus_loot = response_dict['responses']['FORT_SEARCH'].get('team_bonus_loot', {})
+        tmp_count_items = {}
 
-                item_awarded_id = item_awarded['item_id']
+        if loot:
+            # self.logger.info("Loot: %s" % loot)
+            for item_awarded in loot['loot_item']:
+                item_awarded_id = item_awarded['item']
                 item_awarded_name = inventory.Items.name_for(item_awarded_id)
-                item_awarded_count = item_awarded['item_count']
+                item_awarded_count = item_awarded['count']
 
                 if item_awarded_name not in tmp_count_items:
                     tmp_count_items[item_awarded_name] = item_awarded_count
@@ -284,11 +288,42 @@ class SpinFort(BaseTask):
 
                 self._update_inventory(item_awarded)
 
-            return tmp_count_items
+        if bonus_loot:
+            # self.logger.info("Bonus Loot: %s" % bonus_loot)
+            for item_awarded in bonus_loot['loot_item']:
+                item_awarded_id = item_awarded['item']
+                item_awarded_name = inventory.Items.name_for(item_awarded_id)
+                item_awarded_count = item_awarded['count']
+
+                if item_awarded_name not in tmp_count_items:
+                    tmp_count_items[item_awarded_name] = item_awarded_count
+                else:
+                    tmp_count_items[item_awarded_name] += item_awarded_count
+
+                self._update_inventory(item_awarded)
+
+        if team_bonus_loot:
+            # self.logger.info("Team Bonus Loot: %s" % team_bonus_loot)
+            for item_awarded in team_bonus_loot['loot_item']:
+                item_awarded_id = item_awarded['item']
+                item_awarded_name = inventory.Items.name_for(item_awarded_id)
+                item_awarded_count = item_awarded['count']
+
+                if item_awarded_name not in tmp_count_items:
+                    tmp_count_items[item_awarded_name] = item_awarded_count
+                else:
+                    tmp_count_items[item_awarded_name] += item_awarded_count
+
+                self._update_inventory(item_awarded)
+
+        return tmp_count_items
 
     # TODO : Refactor this class, hide the inventory update right after the api call
     def _update_inventory(self, item_awarded):
-        inventory.items().get(item_awarded['item_id']).add(item_awarded['item_count'])
+        if 'item_id' in item_awarded:
+            inventory.items().get(item_awarded['item_id']).add(item_awarded['item_count'])
+        elif 'item' in item_awarded:
+            inventory.items().get(item_awarded['item']).add(item_awarded['count'])
 
     def _compute_next_update(self):
         """
