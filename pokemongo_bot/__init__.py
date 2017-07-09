@@ -73,6 +73,15 @@ class PokemonGoBot(object):
         return self._player
 
     @property
+    def inbox(self):
+        """
+        Returns the inbox data as received from the API.
+        :return: The inbox data.
+        :rtype: dict
+        """
+        return self._inbox
+
+    @property
     def stardust(self):
         dust = filter(lambda y: y['name'] == 'STARDUST', self._player['currencies'])[0]
         if 'amount' in dust:
@@ -776,6 +785,16 @@ class PokemonGoBot(object):
         # Catch-limiter
         self.event_manager.register_event('catch_limit_on')
         self.event_manager.register_event('catch_limit_off')
+
+        self.event_manager.register_event(
+            'pokemon_knock_out_gym',
+            parameters=('pokemon', 'gym_name', 'notification_date', 'awarded_coins', 'awarded_coins_today')
+        )
+
+        self.event_manager.register_event(
+            'pokemon_hungy',
+            parameters=('pokemon', 'gym_name', 'notification_date')
+        )
 
 
     def tick(self):
@@ -1548,10 +1567,13 @@ class PokemonGoBot(object):
                               if timeout >= now * 1000}
 
         if now - self.last_heartbeat >= self.heartbeat_threshold and not self.hb_locked:
+            previous_heartbeat = self.last_heartbeat
             self.last_heartbeat = now
             request = self.api.create_request()
             request.get_player()
             request.check_awarded_badges()
+            request.get_inbox()
+            responses = None
             try:
                 responses = request.call()
             except NotLoggedInException:
@@ -1572,6 +1594,64 @@ class PokemonGoBot(object):
                         formatted='player_data: {player_data}',
                         data={'player_data': self._player}
                     )
+                if responses['responses']['GET_INBOX']['result'] == 1:
+                    self._inbox = responses['responses']['GET_INBOX']['inbox']
+                    # self.logger.info("Got inbox messages?")
+                    # self.logger.info("Inbox: %s" % responses['responses']['GET_INBOX'])
+                if 'notifications' in self._inbox:
+                    for notification in self._inbox['notifications']:
+                        notification_date = datetime.datetime.fromtimestamp(int(notification['create_timestamp_ms']) / 1e3)
+                        if previous_heartbeat > (int(notification['create_timestamp_ms']) / 1e3):
+                            # Skipp old notifications!
+                            continue
+
+                        if notification['category'] == 'pokemon_hungry':
+                            gym_name = pokemon = 'Unknown'
+                            for variable in notification['variables']:
+                                if variable['name'] == 'GYM_NAME':
+                                    gym_name = variable['literal']
+                                if variable['name'] == 'POKEMON_NICKNAME':
+                                    pokemon = variable['literal']
+
+                            self.event_manager.emit(
+                                'pokemon_hungy',
+                                sender=self,
+                                level='info',
+                                formatted='{pokemon} in the Gym {gym_name} is hungy and want a candy! {notification_date}',
+                                data={
+                                    'pokemon': pokemon,
+                                    'gym_name': gym_name,
+                                    'notification_date': notification_date.strftime('%Y-%m-%d %H:%M:%S.%f')
+                                }
+                            )
+
+                        if notification['category'] == 'gym_removal':
+                            gym_name = pokemon = 'Unknown'
+                            for variable in notification['variables']:
+                                if variable['name'] == 'GYM_NAME':
+                                    gym_name = variable['literal']
+                                if variable['name'] == 'POKEMON_NICKNAME':
+                                    pokemon = variable['literal']
+                                if variable['name'] == 'POKECOIN_AWARDED':
+                                    coins_awared = variable['literal']
+                                if variable['name'] == 'POKECOIN_AWARDED_TODAY':
+                                    coins_awared_today = variable['literal']
+
+                            self.event_manager.emit(
+                                'pokemon_knock_out_gym',
+                                sender=self,
+                                level='info',
+                                formatted='{pokemon} has been knocked out the Gym {gym_name} at {notification_date}. Awarded coins: {awarded_coins} | Today awared: {awarded_coins_today}',
+                                data={
+                                    'pokemon': pokemon,
+                                    'gym_name': gym_name,
+                                    'notification_date': notification_date.strftime('%Y-%m-%d %H:%M:%S.%f'),
+                                    'awarded_coins': coins_awared,
+                                    'awarded_coins_today': coins_awared_today
+                                }
+                            )
+
+
                 if responses['responses']['CHECK_AWARDED_BADGES']['success'] == True:
                     # store awarded_badges reponse to be used in a task or part of heartbeat
                     self._awarded_badges = responses['responses']['CHECK_AWARDED_BADGES']
