@@ -18,6 +18,7 @@ class BadPokemon(BaseTask):
     self.config_action_wait_min = self.config.get("action_wait_min", 3)
     self.config_action_wait_max = self.config.get("action_wait_max", 5)
     self.min_interval = self.config.get('min_interval', 120)
+    self.config_max_bulktransfer = self.config.get('max_bulktransfer', 100)
     self.next_update = None
 
   def work(self):
