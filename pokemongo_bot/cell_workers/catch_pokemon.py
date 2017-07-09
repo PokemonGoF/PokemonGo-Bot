@@ -71,36 +71,54 @@ class CatchPokemon(BaseTask):
 
         if hasattr(self.bot, "skipped_pokemon"):
             # Skip pokemon the catcher told us to ignore
-            self.pokemon = [ p for p in self.pokemon if p not in self.bot.skipped_pokemon ]
+            self.pokemon = [p for p in self.pokemon if p not in self.bot.skipped_pokemon]
 
         num_pokemon = len(self.pokemon)
+        always_catch_family_of_vip = self.config.get('always_catch_family_of_vip', False)
+        always_catch_trash = self.config.get('always_catch_trash', False)
+        trash_pokemon = ["Caterpie", "Weedle", "Pidgey", "Pidgeotto", "Pidgeot", "Kakuna", "Beedrill", "Metapod", "Butterfree"]
 
         if num_pokemon > 0:
             # try catching
             mon_to_catch = self.pokemon.pop()
-            is_vip = hasattr(mon_to_catch, "pokemon_id") and self._is_vip_pokemon(mon_to_catch['pokemon_id'])
+            is_vip = self._is_vip_pokemon(mon_to_catch) # hasattr(mon_to_catch, "pokemon_id") and self._is_vip_pokemon(mon_to_catch['pokemon_id'])
             # Always catch VIP Pokemons!
             if hasattr(self.bot,"hunter_locked_target") and self.bot.hunter_locked_target != None:
                 bounty = self.bot.hunter_locked_target
                 mon_name = Pokemons.name_for(mon_to_catch['pokemon_id'])
                 bounty_name = Pokemons.name_for(bounty['pokemon_id'])
 
-                if mon_name != bounty_name and is_vip == False:
-                    # This is not the Pokémon you are looking for...
-                    self.logger.info("[Hunter locked a {}] Ignoring a {}".format(bounty_name, mon_name))
-                    self.ignored_while_looking.append(mon_to_catch['pokemon_id'])
+                family_catch = False
+                trash_catch = False
 
-                    if num_pokemon > 1:
-                        return WorkerResult.RUNNING
+                if always_catch_trash:
+                    if mon_name in trash_pokemon:
+                        self.logger.info("While on the hunt for {}, I found a {}! I want that Pokemon! Will try to catch...".format(bounty_name, mon_name))
+                        trash_catch = True
+
+                if always_catch_family_of_vip:
+                    if mon_name != bounty_name:
+                        if self._is_family_of_vip(mon_to_catch['pokemon_id']):
+                            self.logger.info("While on the hunt for {}, I found a {}! I want that Pokemon! Will try to catch...".format(bounty_name, mon_name))
+                            family_catch = True
+
+                if not family_catch and not trash_catch:
+                    if (mon_name != bounty_name and is_vip is False):
+                        # This is not the Pokémon you are looking for...
+                        self.logger.info("[Hunter locked a {}] Ignoring a {}".format(bounty_name, mon_name))
+                        self.ignored_while_looking.append(mon_to_catch['pokemon_id'])
+
+                        if num_pokemon > 1:
+                            return WorkerResult.RUNNING
+                        else:
+                            return WorkerResult.SUCCESS
                     else:
-                        return WorkerResult.SUCCESS
-                else:
-                    # We have found a vip or our target...
-                    if bounty_name == mon_name:
-                        self.bot.hunter_locked_target = None
-                        self.logger.info("Found my target {}!".format(bounty_name))
-                    else:
-                        self.logger.info("While on the hunt for {}, I found a {}! I need that Pokemon! Will try to catch...".format(bounty_name, mon_name))
+                        # We have found a vip or our target...
+                        if bounty_name == mon_name:
+                            self.bot.hunter_locked_target = None
+                            self.logger.info("Found my target {}!".format(bounty_name))
+                        else:
+                            self.logger.info("While on the hunt for {}, I found a {}! I want that Pokemon! Will try to catch...".format(bounty_name, mon_name))
             try:
                 if self.catch_pokemon(mon_to_catch) == WorkerResult.ERROR:
                     # give up incase something went wrong in our catch worker (ran out of balls, etc)
@@ -114,15 +132,23 @@ class CatchPokemon(BaseTask):
         # all pokemon have been processed
         return WorkerResult.SUCCESS
 
-    def _is_vip_pokemon(self, pokemon_id):
+    def _is_vip_pokemon(self, pokemon):
+        if 'pokemon_id' not in pokemon:
+            if not 'name' in pokemon:
+                return False
+            pokemon['pokemon_id'] = Pokemons.id_for(pokemon['name'])
         # having just a name present in the list makes them vip
         # Not seen pokemons also will become vip if it's not disabled in config
-        if self.bot.config.vips.get(Pokemons.name_for(pokemon_id)) == {}:
+        if self.bot.config.vips.get(Pokemons.name_for(pokemon['pokemon_id'])) == {}:
             return True
-        if (not inventory.pokedex().seen(pokemon_id)):
+        if (not inventory.pokedex().seen(pokemon['pokemon_id'])):
             return True
+        # If we must treat family of VIP as VIP
+        if self.config.get('treat_family_of_vip_as_vip', False):
+            if self._is_family_of_vip(pokemon['pokemon_id']):
+                return True
         # If we need the Pokemon for an evolution, catch it.
-        if any(not inventory.pokedex().seen(fid) for fid in self.get_family_ids(pokemon_id)):
+        if any(not inventory.pokedex().seen(fid) for fid in self.get_family_ids(pokemon['pokemon_id'])):
             # self.logger.info('Found a Pokemon whoes family is not yet complete in Pokedex!')
             return True
 
@@ -265,6 +291,14 @@ class CatchPokemon(BaseTask):
             else:
                 self.logger.info("")
                 return False
+        return False
+
+    def _is_family_of_vip(self, pokemon_id):
+        for fid in self.get_family_ids(pokemon_id):
+            name = inventory.pokemons().name_for(fid)
+            if self.bot.config.vips.get(name) == {}:
+                return True
+        # No, not a family member of the VIP
         return False
 
     def get_family_ids(self, pokemon_id):
