@@ -353,6 +353,13 @@ class PokemonGoBot(object):
             )
         )
         self.event_manager.register_event(
+            'moving_to_hunter_target',
+            parameters=(
+                'target_name',
+                'distance'
+            )
+        )
+        self.event_manager.register_event(
             'moving_to_fort',
             parameters=(
                 'fort_name',

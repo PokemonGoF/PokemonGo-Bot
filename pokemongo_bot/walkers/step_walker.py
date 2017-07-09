@@ -34,6 +34,9 @@ class StepWalker(object):
 
         if speed is None:
             speed = uniform(self.bot.config.walk_min, self.bot.config.walk_max)
+        elif speed == self.bot.config.walk_max:
+            # Keep it more Human like...
+            speed = uniform(speed - 0.5, speed + 0.5)
 
         origin_lat, origin_lng, origin_alt = self.bot.position
 
