@@ -62,6 +62,7 @@
 - [CompleteTutorial](#completetutorial)
 - [BuddyPokemon](#buddypokemon)
 - [PokemonHunter](#pokemonhunter)
+- [BadPokemon](#badpokemon)
 
 # Configuration files
 
@@ -1445,6 +1446,36 @@ Also hunting for trash does NOT lock the target, catching all Pokemon it find on
         "treat_unseen_as_vip": true,
         "hunt_for_trash_to_fill_bag": true,
         "trash_hunt_open_slots": 30
+    }
+}
+```
+## BadPokemon
+[[back to top](#table-of-contents)]
+
+### Description
+[[back to top](#table-of-contents)]
+
+If you have any Pokemon that Niantic has marked as bad (red slashes) this will notify you. If you set the option, it will also transfer those Pokemon.
+
+### Options
+[[back to top](#table-of-contents)]
+
+* `transfer`: `Default: False`. Must we transfer the bad Pokemon?
+* `bulktransfer_enabled`: `Default: True`. If we do transfer the bad Pokemon, may we do so in a batch?
+* `action_wait_min`: `Default: 3`. Wait time min
+* `action_wait_min`: `Default: 5`. Wait time max
+* `min_interval`: `Default: 120`. Run once every X seconds
+
+
+### Sample configuration
+[[back to top](#table-of-contents)]
+```json
+{
+    "type": "BadPokemon",
+    "config": {
+        "enabled": true,
+        "transfer": true,
+        "min_interval": 240
     }
 }
 ```
