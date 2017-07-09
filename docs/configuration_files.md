@@ -172,6 +172,8 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 [[back to top](#table-of-contents)]
 * CatchPokemon
   * `enabled`: Default "true" | Enable/Disable the task.
+  * `always_catch_family_of_vip`: Default "false" | Always catch family members of a VIP, even if locked on a target.
+  * `always_catch_trash`: Default "false" | Always catch trash Pokemon (12 candy evolve), even if locked on a target.
   * `treat_unseen_as_vip`: Default `"true"` | If true, treat new to dex as VIP
   * `catch_visible_pokemon`:  Default "true" | If enabled, attempts to catch "visible" pokemon that are reachable
   * `catch_lured_pokemon`: Default "true" | If enabled, attempts to catch "lured" pokemon that are reachable
@@ -1421,6 +1423,11 @@ Hunts down nearby Pokemon. Searches for Pokemon to complete the Pokedex, or if a
 * `treat_family_of_vip_as_vip`: `Default: false`. Should we see family of an VIP as a VIP (locking onto it if enabled)
 * `hunt_for_trash_to_fill_bag`: `Default: false`. Should we try to fill the bag with trash if a set amount of slots is left?
 * `trash_hunt_open_slots`: `Default: 25`. The amount of slots for the previous setting
+* `run_to_vip`: `Default: false`. Run to a VIP Pokemon? Running sets the speed of the walker to the walk_max value!
+
+### Hunting family members of VIPs
+If enabled (`target_family_of_vip` = true), the hunter will also hunt down family members of a VIP. For example, if you marked Gyarados as a VIP Pokemon then the hunter will now also hunt down Magikarps.
+When on the hunt for a family member of a VIP, and `treat_family_of_vip_as_vip` is false, the hunter will keep a look out for "real" VIPs. So when hunting for a Magikarp, if a Snorlax shows up in the sightings, the hunter will target the Snorlax.
 
 ### Hunting for trash
 If enabled the hunter will start hunting down Pidgeys, Weedles and Caterpies when a set amount of slots (defaults to 25) are left in the bag to fill. The idea is simple; we are about to start evolving Pokemon. So the priority of the hunter shiftes. BUT when a VIP Pokemon is nearby, the Hunter will always start chasing that VIP first.
