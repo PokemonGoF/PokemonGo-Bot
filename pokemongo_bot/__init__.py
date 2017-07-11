@@ -1068,20 +1068,14 @@ class PokemonGoBot(object):
             formatted="Niantic Official API Version: {}".format(officalAPI)
         )
 
-        link = "https://pokehash.buddyauth.com/api/hash/versions"
-        f = urllib2.urlopen(link)
-        myfile = f.read()
-        f.close()
-        bossland_hash_endpoint = myfile.split(",")
-        total_entry = int(len(bossland_hash_endpoint))
-        last_bossland_entry = bossland_hash_endpoint[total_entry-1]
-        bossland_lastestAPI = last_bossland_entry.split(":")[0].replace('\"','')
-        hashingAPI_temp = 0
+        PGoAPI_version = PGoApi.get_api_version()
+        PGoAPI_version_str = str(PGoAPI_version)
+        PGoAPI_version_str = "0."+ PGoAPI_version_str[0:2] + "." + PGoAPI_version_str[-1]
         self.event_manager.emit(
             'security_check',
             sender=self,
             level='info',
-            formatted="Latest Bossland Hashing API Version: {}".format(bossland_lastestAPI)
+            formatted="Bot is currently running on API {}".format(PGoAPI_version_str)
         )
 
         if self.config.check_niantic_api is True:
@@ -1093,28 +1087,13 @@ class PokemonGoBot(object):
                     formatted="Warning: Bot is running on legacy API"
                 )
             else:
-                PGoAPI_hash_endpoint = HashServer.endpoint.split("com/",1)[1]
-                PGoAPI_hash_version = []
-                # Check if PGoAPI hashing is in Bossland versioning
-                bossland_hash_data = json.loads(myfile)
-
-                for version, endpoint in bossland_hash_data.items():
-                    if endpoint == PGoAPI_hash_endpoint:
-                        # Version should always be in this format x.xx.x
-                        # Check total len, if less than 4, pack a zero behind
-                        if len(version.replace('.','')) < 4:
-                            version = version + ".0"
-                        hashingAPI_temp = int(version.replace('.',''))
-                        # iOS versioning is always more than 1.19.0
-                        if hashingAPI_temp < 1190:
-                            PGoAPI_hash_version.append(version)
-                # assuming andorid versioning is always last entry
-                PGoAPI_hash_version.sort(reverse=True)
-                # covert official api version & hashing api version to numbers
                 officialAPI_int = int(officalAPI.replace('.',''))
-                hashingAPI_int = int(PGoAPI_hash_version[0].replace('.',''))
+                
+                PGoAPI_version_tmp = str(PGoAPI_version)
+                PGoAPI_version_tmp = PGoAPI_version_tmp[0:2] + PGoAPI_version_tmp[-1]
+                PGoAPI_version_int = int(PGoAPI_version_tmp)
 
-                if hashingAPI_int < officialAPI_int:
+                if PGoAPI_version_int < officialAPI_int:
                     self.event_manager.emit(
                         'security_check',
                         sender=self,
@@ -1127,7 +1106,7 @@ class PokemonGoBot(object):
                         'security_check',
                         sender=self,
                         level='info',
-                        formatted="Current PGoAPI is using API Version: {}. Niantic API Check Pass".format(PGoAPI_hash_version[0])
+                        formatted="Current PGoAPI is using {} API. Niantic API Check Pass".format(PGoAPI_version_str)
                     )
 
         self.heartbeat()
