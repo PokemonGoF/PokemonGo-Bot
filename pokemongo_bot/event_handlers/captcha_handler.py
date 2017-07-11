@@ -66,8 +66,12 @@ class CaptchaHandler(EventHandler):
             self.bot.logger.info('Checking for captcha challenge.')
 
             # test manual 
-            url = 'http://www.google.com/xhtml'        
-            response_dict = self.bot.api.check_challenge()
+            url = 'http://www.google.com/xhtml'
+            
+            request = self.bot.api.create_request()
+            request.check_challenge()
+            response_dict = request.call()
+            
             challenge = response_dict['responses']['CHECK_CHALLENGE']
             if not challenge.get('show_challenge'):
                 self.bot.event_manager.emit(
@@ -94,7 +98,11 @@ class CaptchaHandler(EventHandler):
                 token = self.get_token(url)
                 if token !='':
                     self.bot.logger.info('Token: ' + token)
-                    self.bot.api.verify_challenge(token=token)
+                    
+                    request = self.bot.api.create_request()
+                    request.verify_challenge(token=token)
+                    request.call()
+                    
                     self.bot.logger.info('Captcha solved')
                 else:
                     self.bot.logger.error('Could not solve captcha')
@@ -128,7 +136,10 @@ class CaptchaHandler(EventHandler):
 
                 if result[0] == 'OK':
                     self.bot.logger.info('2captcha reports captcha has been solved.')
-                    self.bot.api.verify_challenge(token=result[1])
+                    
+                    request = self.bot.api.create_request()
+                    request.verify_challenge(token=result[1])
+                    request.call()
                 else:
                     self.bot.logger.error('Could not solve captcha: {}'.format('|'.join(result)))
 

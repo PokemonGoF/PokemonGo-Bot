@@ -62,6 +62,7 @@
 - [CompleteTutorial](#completetutorial)
 - [BuddyPokemon](#buddypokemon)
 - [PokemonHunter](#pokemonhunter)
+- [BadPokemon](#badpokemon)
 
 # Configuration files
 
@@ -172,6 +173,8 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
 [[back to top](#table-of-contents)]
 * CatchPokemon
   * `enabled`: Default "true" | Enable/Disable the task.
+  * `always_catch_family_of_vip`: Default "false" | Always catch family members of a VIP, even if locked on a target.
+  * `always_catch_trash`: Default "false" | Always catch trash Pokemon (12 candy evolve), even if locked on a target.
   * `treat_unseen_as_vip`: Default `"true"` | If true, treat new to dex as VIP
   * `catch_visible_pokemon`:  Default "true" | If enabled, attempts to catch "visible" pokemon that are reachable
   * `catch_lured_pokemon`: Default "true" | If enabled, attempts to catch "lured" pokemon that are reachable
@@ -1408,13 +1411,28 @@ Hunts down nearby Pokemon. Searches for Pokemon to complete the Pokedex, or if a
 [[back to top](#table-of-contents)]
 
 * `max_distance`: `Default: 2000`. Maxium of meters for the "nearby" part.
+* `enable_cooldown`: `Default: true`. After a hunt (succesful or not) have a cool down (stops hunting for a bit)
 * `hunt_all`: `Default: false`. Should we hunt for ALL nearby Pokemon?
 * `hunt_vip`: `Default: true`. Should we hunt for VIP Pokemon?
 * `hunt_pokedex`: `Default: true`. Should we hunt for Pokemon we need to complete the Pokedex (make family complete)
 * `lock_on_target`: `Default: false`. Should we ignore all other Pokemon while hunting?
 * `lock_vip_only`: `Default: true`. Is the above only used for real VIPs? (Not to complete the Pokedex)
 * `disabled_while_camping`: `Default: true`. Should we stop hunting for nearby Pokemon while sitting at lures?
+* `hunt_closest_first`: `Default: false`. Prioritize by distance instead of number of candy?
 * `treat_unseen_as_vip`: `Default: true`. Should we treat unseen Pokemons as VIPs?
+* `target_family_of_vip`: `Default: true`. Should we treat family of a VIP as a valid target?
+* `treat_family_of_vip_as_vip`: `Default: false`. Should we see family of an VIP as a VIP (locking onto it if enabled)
+* `hunt_for_trash_to_fill_bag`: `Default: false`. Should we try to fill the bag with trash if a set amount of slots is left?
+* `trash_hunt_open_slots`: `Default: 25`. The amount of slots for the previous setting
+* `run_to_vip`: `Default: false`. Run to a VIP Pokemon? Running sets the speed of the walker to the walk_max value!
+
+### Hunting family members of VIPs
+If enabled (`target_family_of_vip` = true), the hunter will also hunt down family members of a VIP. For example, if you marked Gyarados as a VIP Pokemon then the hunter will now also hunt down Magikarps.
+When on the hunt for a family member of a VIP, and `treat_family_of_vip_as_vip` is false, the hunter will keep a look out for "real" VIPs. So when hunting for a Magikarp, if a Snorlax shows up in the sightings, the hunter will target the Snorlax.
+
+### Hunting for trash
+If enabled the hunter will start hunting down Pidgeys, Weedles and Caterpies when a set amount of slots (defaults to 25) are left in the bag to fill. The idea is simple; we are about to start evolving Pokemon. So the priority of the hunter shiftes. BUT when a VIP Pokemon is nearby, the Hunter will always start chasing that VIP first.
+Also hunting for trash does NOT lock the target, catching all Pokemon it find on the way to the target.
 
 ### Sample configuration
 [[back to top](#table-of-contents)]
@@ -1423,6 +1441,7 @@ Hunts down nearby Pokemon. Searches for Pokemon to complete the Pokedex, or if a
     "type": "PokemonHunter",
     "config": {
         "enabled": true,
+        "enable_cooldown": false,
         "max_distance": 1500,
         "hunt_all": false,
         "hunt_vip": true,
@@ -1430,7 +1449,40 @@ Hunts down nearby Pokemon. Searches for Pokemon to complete the Pokedex, or if a
         "lock_on_target": false,
         "lock_vip_only": true,
         "disabled_while_camping": true,
-        "treat_unseen_as_vip": true
+        "hunt_closest_first": true,
+        "treat_unseen_as_vip": true,
+        "hunt_for_trash_to_fill_bag": true,
+        "trash_hunt_open_slots": 30
+    }
+}
+```
+## BadPokemon
+[[back to top](#table-of-contents)]
+
+### Description
+[[back to top](#table-of-contents)]
+
+If you have any Pokemon that Niantic has marked as bad (red slashes) this will notify you. If you set the option, it will also transfer those Pokemon.
+
+### Options
+[[back to top](#table-of-contents)]
+
+* `transfer`: `Default: False`. Must we transfer the bad Pokemon?
+* `bulktransfer_enabled`: `Default: True`. If we do transfer the bad Pokemon, may we do so in a batch?
+* `action_wait_min`: `Default: 3`. Wait time min
+* `action_wait_min`: `Default: 5`. Wait time max
+* `min_interval`: `Default: 120`. Run once every X seconds
+
+
+### Sample configuration
+[[back to top](#table-of-contents)]
+```json
+{
+    "type": "BadPokemon",
+    "config": {
+        "enabled": true,
+        "transfer": true,
+        "min_interval": 240
     }
 }
 ```

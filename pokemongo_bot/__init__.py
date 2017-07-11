@@ -73,6 +73,15 @@ class PokemonGoBot(object):
         return self._player
 
     @property
+    def inbox(self):
+        """
+        Returns the inbox data as received from the API.
+        :return: The inbox data.
+        :rtype: dict
+        """
+        return self._inbox
+
+    @property
     def stardust(self):
         dust = filter(lambda y: y['name'] == 'STARDUST', self._player['currencies'])[0]
         if 'amount' in dust:
@@ -135,7 +144,7 @@ class PokemonGoBot(object):
         self.catch_disabled = False
 
         self.capture_locked = False  # lock catching while moving to VIP pokemon
-        
+
         # Inform bot if there's a response
         self.empty_response = False
 
@@ -350,6 +359,13 @@ class PokemonGoBot(object):
                 'encounter_id',
                 'latitude',
                 'longitude'
+            )
+        )
+        self.event_manager.register_event(
+            'moving_to_hunter_target',
+            parameters=(
+                'target_name',
+                'distance'
             )
         )
         self.event_manager.register_event(
@@ -777,6 +793,16 @@ class PokemonGoBot(object):
         self.event_manager.register_event('catch_limit_on')
         self.event_manager.register_event('catch_limit_off')
 
+        self.event_manager.register_event(
+            'pokemon_knock_out_gym',
+            parameters=('pokemon', 'gym_name', 'notification_date', 'awarded_coins', 'awarded_coins_today')
+        )
+
+        self.event_manager.register_event(
+            'pokemon_hungy',
+            parameters=('pokemon', 'gym_name', 'notification_date')
+        )
+
 
     def tick(self):
         self.health_record.heartbeat()
@@ -963,9 +989,9 @@ class PokemonGoBot(object):
 
     def login(self):
         status = {}
-        retry = 0 
+        retry = 0
         quit_login = False
-        
+
         self.event_manager.emit(
             'login_started',
             sender=self,
@@ -974,7 +1000,7 @@ class PokemonGoBot(object):
         )
         lat, lng = self.position[0:2]
         self.api.set_position(lat, lng, self.alt)  # or should the alt kept to zero?
-        
+
         while not quit_login:
             try:
                 self.api.login(
@@ -1186,7 +1212,10 @@ class PokemonGoBot(object):
     def _print_character_info(self):
         # get player profile call
         # ----------------------
-        response_dict = self.api.get_player()
+        request = self.api.create_request()
+        request.get_player()
+        response_dict = request.call()
+        
         # print('Response dictionary: \n\r{}'.format(json.dumps(response_dict, indent=2)))
         currency_1 = "0"
         currency_2 = "0"
@@ -1332,7 +1361,9 @@ class PokemonGoBot(object):
         self.logger.info('')
 
     def use_lucky_egg(self):
-        return self.api.use_item_xp_boost(item_id=301)
+        request = self.api.create_request()
+        request.use_item_xp_boost(item_id=301)
+        return request.call()
 
     def _set_starting_position(self):
 
@@ -1543,10 +1574,13 @@ class PokemonGoBot(object):
                               if timeout >= now * 1000}
 
         if now - self.last_heartbeat >= self.heartbeat_threshold and not self.hb_locked:
+            previous_heartbeat = self.last_heartbeat
             self.last_heartbeat = now
             request = self.api.create_request()
             request.get_player()
             request.check_awarded_badges()
+            request.get_inbox()
+            responses = None
             try:
                 responses = request.call()
             except NotLoggedInException:
@@ -1555,7 +1589,7 @@ class PokemonGoBot(object):
             except:
                 self.logger.warning('Error occured in heatbeat, retying')
                 self.empty_response = True
-            
+
             if not self.empty_response:
                 if responses['responses']['GET_PLAYER']['success'] == True:
                     # we get the player_data anyway, might as well store it
@@ -1567,6 +1601,64 @@ class PokemonGoBot(object):
                         formatted='player_data: {player_data}',
                         data={'player_data': self._player}
                     )
+                if responses['responses']['GET_INBOX']['result'] == 1:
+                    self._inbox = responses['responses']['GET_INBOX']['inbox']
+                    # self.logger.info("Got inbox messages?")
+                    # self.logger.info("Inbox: %s" % responses['responses']['GET_INBOX'])
+                if 'notifications' in self._inbox:
+                    for notification in self._inbox['notifications']:
+                        notification_date = datetime.datetime.fromtimestamp(int(notification['create_timestamp_ms']) / 1e3)
+                        if previous_heartbeat > (int(notification['create_timestamp_ms']) / 1e3):
+                            # Skipp old notifications!
+                            continue
+
+                        if notification['category'] == 'pokemon_hungry':
+                            gym_name = pokemon = 'Unknown'
+                            for variable in notification['variables']:
+                                if variable['name'] == 'GYM_NAME':
+                                    gym_name = variable['literal']
+                                if variable['name'] == 'POKEMON_NICKNAME':
+                                    pokemon = variable['literal']
+
+                            self.event_manager.emit(
+                                'pokemon_hungy',
+                                sender=self,
+                                level='info',
+                                formatted='{pokemon} in the Gym {gym_name} is hungy and want a candy! {notification_date}',
+                                data={
+                                    'pokemon': pokemon,
+                                    'gym_name': gym_name,
+                                    'notification_date': notification_date.strftime('%Y-%m-%d %H:%M:%S.%f')
+                                }
+                            )
+
+                        if notification['category'] == 'gym_removal':
+                            gym_name = pokemon = 'Unknown'
+                            for variable in notification['variables']:
+                                if variable['name'] == 'GYM_NAME':
+                                    gym_name = variable['literal']
+                                if variable['name'] == 'POKEMON_NICKNAME':
+                                    pokemon = variable['literal']
+                                if variable['name'] == 'POKECOIN_AWARDED':
+                                    coins_awared = variable['literal']
+                                if variable['name'] == 'POKECOIN_AWARDED_TODAY':
+                                    coins_awared_today = variable['literal']
+
+                            self.event_manager.emit(
+                                'pokemon_knock_out_gym',
+                                sender=self,
+                                level='info',
+                                formatted='{pokemon} has been knocked out the Gym {gym_name} at {notification_date}. Awarded coins: {awarded_coins} | Today awared: {awarded_coins_today}',
+                                data={
+                                    'pokemon': pokemon,
+                                    'gym_name': gym_name,
+                                    'notification_date': notification_date.strftime('%Y-%m-%d %H:%M:%S.%f'),
+                                    'awarded_coins': coins_awared,
+                                    'awarded_coins_today': coins_awared_today
+                                }
+                            )
+
+
                 if responses['responses']['CHECK_AWARDED_BADGES']['success'] == True:
                     # store awarded_badges reponse to be used in a task or part of heartbeat
                     self._awarded_badges = responses['responses']['CHECK_AWARDED_BADGES']
@@ -1621,7 +1713,20 @@ class PokemonGoBot(object):
     def get_forts(self, order_by_distance=False):
         forts = [fort
                  for fort in self.cell['forts']
-                 if 'latitude' in fort and 'type' in fort]
+                 if 'latitude' in fort and 'longitude' in fort]
+        # Need to filter out disabled forts!
+        forts = filter(lambda x: x["enabled"] is True, forts)
+        forts = filter(lambda x: 'closed' not in fort, forts)
+
+        if order_by_distance:
+            forts.sort(key=lambda x: distance(
+                self.position[0],
+                self.position[1],
+                x['latitude'],
+                x['longitude']
+            ))
+
+        return forts
 
         if order_by_distance:
             forts.sort(key=lambda x: distance(
@@ -1636,13 +1741,16 @@ class PokemonGoBot(object):
     def get_map_objects(self, lat, lng, timestamp, cellid):
         if time.time() - self.last_time_map_object < self.config.map_object_cache_time:
             return self.last_map_object
-
-        self.last_map_object = self.api.get_map_objects(
+        
+        request = self.api.create_request()
+        request.get_map_objects(
             latitude=f2i(lat),
             longitude=f2i(lng),
             since_timestamp_ms=timestamp,
             cell_id=cellid
         )
+        self.last_map_object = request.call()
+        
         self.emit_forts_event(self.last_map_object)
         #if self.last_map_object:
         #    print self.last_map_object

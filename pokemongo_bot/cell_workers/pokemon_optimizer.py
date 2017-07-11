@@ -790,7 +790,10 @@ class PokemonOptimizer(BaseTask):
                     count = count + 1
                 try:
                     if self.config_transfer:
-                        response_dict = self.bot.api.release_pokemon(pokemon_ids=pokemon_ids)
+                        request = self.bot.api.create_request()
+                        request.release_pokemon(pokemon_ids=pokemon_ids)
+                        response_dict = request.call()
+                        
                         result = response_dict['responses']['RELEASE_POKEMON']['result']
                         if result != 1:
                             self.logger.error(u'Error while transfer pokemon: {}'.format(error_codes[result]))
@@ -826,7 +829,9 @@ class PokemonOptimizer(BaseTask):
         else:
             for pokemon in pokemons:
                 if self.config_transfer and (not self.bot.config.test):
-                    response_dict = self.bot.api.release_pokemon(pokemon_id=pokemon.unique_id)
+                    request = self.bot.api.create_request()
+                    request.release_pokemon(pokemon_id=pokemon.unique_id)
+                    response_dict = request.call()
                 else:
                     response_dict = {"responses": {"RELEASE_POKEMON": {"candy_awarded": 0}}}
 
@@ -906,11 +911,15 @@ class PokemonOptimizer(BaseTask):
             if needed_evolution_item is not None:
                 if self.config_use_evolution_items:
                     # We need evolution_item_requirement with some!!
-                    response_dict = self.bot.api.evolve_pokemon(pokemon_id=pokemon.unique_id, evolution_item_requirement=needed_evolution_item)
+                    request = self.bot.api.create_request()
+                    request.evolve_pokemon(pokemon_id=pokemon.unique_id, evolution_item_requirement=needed_evolution_item)
+                    response_dict = request.call()
                 else:
                     return False
             else:
-                response_dict = self.bot.api.evolve_pokemon(pokemon_id=pokemon.unique_id)
+                request = self.bot.api.create_request()
+                request.evolve_pokemon(pokemon_id=pokemon.unique_id)
+                response_dict = request.call()
         else:
             response_dict = {"responses": {"EVOLVE_POKEMON": {"result": SUCCESS}}}
 
@@ -978,7 +987,9 @@ class PokemonOptimizer(BaseTask):
             upgrade_stardust_cost = upgrade_cost[1]
 
             if self.config_upgrade and (not self.bot.config.test):
-                response_dict = self.bot.api.upgrade_pokemon(pokemon_id=pokemon.unique_id)
+                request = self.bot.api.create_request()
+                request.upgrade_pokemon(pokemon_id=pokemon.unique_id)
+                response_dict = request.call()
             else:
                 response_dict = {"responses": {"UPGRADE_POKEMON": {"result": SUCCESS}}}
 
@@ -1019,7 +1030,9 @@ class PokemonOptimizer(BaseTask):
 
     def set_buddy_pokemon(self, pokemon):
         if not self.bot.config.test:
-            response_dict = self.bot.api.set_buddy_pokemon(pokemon_id=pokemon.unique_id)
+            request = self.bot.api.create_request()
+            request.set_buddy_pokemon(pokemon_id=pokemon.unique_id)
+            response_dict = request.call()
         else:
             response_dict = {"responses": {"SET_BUDDY_POKEMON": {"result": SUCCESS, "updated_buddy": {"start_km_walked": 0, "last_km_awarded": 0, "id": 0}}}}
 
@@ -1050,7 +1063,9 @@ class PokemonOptimizer(BaseTask):
 
     def get_buddy_walked(self, pokemon):
         if not self.bot.config.test:
-            response_dict = self.bot.api.get_buddy_walked()
+            request = self.bot.api.create_request()
+            request.get_buddy_walked()
+            response_dict = request.call()
         else:
             response_dict = {"responses": {"GET_BUDDY_WALKED": {"success": True, "family_candy_id": 0, "candy_earned_count": 0}}}
 
@@ -1091,7 +1106,10 @@ class PokemonOptimizer(BaseTask):
         return 0
 
     def favor_pokemon(self, pokemon):
-        response_dict = self.bot.api.set_favorite_pokemon(pokemon_id=pokemon.unique_id, is_favorite=True)
+        request = self.bot.api.create_request()
+        request.set_favorite_pokemon(pokemon_id=pokemon.unique_id, is_favorite=True)
+        response_dict = request.call()
+        
         sleep(1.2)  # wait a bit after request
         if response_dict:
             result = response_dict.get('responses', {}).get('SET_FAVORITE_POKEMON', {}).get('result', 0)
@@ -1111,7 +1129,10 @@ class PokemonOptimizer(BaseTask):
                 self.logger.info("Unable to set %s as favorite!" % pokemon.name)
 
     def unfavor_pokemon(self, pokemon):
-        response_dict = self.bot.api.set_favorite_pokemon(pokemon_id=pokemon.unique_id, is_favorite=False)
+        request = self.bot.api.create_request()
+        request.set_favorite_pokemon(pokemon_id=pokemon.unique_id, is_favorite=False)
+        response_dict = request.call()
+        
         sleep(1.2)  # wait a bit after request
         if response_dict:
             result = response_dict.get('responses', {}).get('SET_FAVORITE_POKEMON', {}).get('result', 0)

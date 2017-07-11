@@ -225,8 +225,10 @@ class TransferPokemon(BaseTask):
             if self.bot.config.test:
                 candy_awarded = 1
             else:
-                response_dict = self.bot.api.release_pokemon(
-                    pokemon_id=pokemon.unique_id)
+                request = self.bot.api.create_request()
+                request.release_pokemon(pokemon_id=pokemon.unique_id)
+                response_dict = request.call()
+                
                 candy_awarded = response_dict['responses'][
                     'RELEASE_POKEMON']['candy_awarded']
         except KeyError:
