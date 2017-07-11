@@ -1393,11 +1393,12 @@ class Inventory(object):
 
 # STAB (Same-type attack bonus)
 # Factor applied to attack of the same type as pokemon
-STAB_FACTOR = 1.25
+STAB_FACTOR = 1.2
 # Factor applied to attack when it's effective against defending pokemon type
-EFFECTIVENESS_FACTOR = 1.25
+EFFECTIVENESS_FACTOR = 1.4
 # Factor applied to attack when it's weak against defending pokemon type
-RESISTANCE_FACTOR = 0.8
+RESISTANCE_FACTOR = 0.714
+IMMUNITY_FACTOR = 0.51
 
 
 _inventory = None  # type: Inventory
