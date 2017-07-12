@@ -38,8 +38,8 @@ class NicknamePokemonTest(unittest.TestCase):
         self.assertNicks('{charged_attack_char}', ['h', 'N'])
         self.assertNicks('{attack_code}', ['lh', 'nN'])
         self.assertNicks('{attack_pct}', ['015', '076'])
-        self.assertNicks('{attack_pct2}', ['20', '77'])
-        self.assertNicks('{attack_pct1}', ['2', '7'])
+        self.assertNicks('{attack_pct2}', ['15', '75'])
+        self.assertNicks('{attack_pct1}', ['1', '7'])
         self.assertNicks('{defense_pct}', ['062', '008'])
         self.assertNicks('{defense_pct2}', ['62', '08'])
         self.assertNicks('{defense_pct1}', ['6', '1'])
@@ -62,7 +62,7 @@ class NicknamePokemonTest(unittest.TestCase):
             ['48_46_948', '38_44_6E0'])
         self.assertNicks(
             '{attack_code}{attack_pct1}{defense_pct1}{ivcp_pct1}{name}',
-            ['lh264Golbat', 'nN713Rattata'])
+            ['lh164Golbat', 'nN713Rattata'])
 
     #
     def setUp(self):
