@@ -1248,34 +1248,35 @@ class PokemonGoBot(object):
         # Items Output
         self.logger.info(
             'PokeBalls: ' + str(items_inventory.get(1).count) +
-            ' | GreatBalls: ' + str(items_inventory.get(2).count) +
-            ' | UltraBalls: ' + str(items_inventory.get(3).count) +
-            ' | MasterBalls: ' + str(items_inventory.get(4).count))
+            ' | Great Balls: ' + str(items_inventory.get(2).count) +
+            ' | Ultra Balls: ' + str(items_inventory.get(3).count) +
+            ' | Master Balls: ' + str(items_inventory.get(4).count))
 
         self.logger.info(
             'RazzBerries: ' + str(items_inventory.get(701).count) +
             ' | Nanab Berries: ' + str(items_inventory.get(703).count) +
-            ' | Pinap Berries: ' + str(items_inventory.get(705).count))
+            ' | Pinap Berries: ' + str(items_inventory.get(705).count) +
+            ' | Golden RazzBerries: ' + str(items_inventory.get(706).count) +
+            ' | Golden Nanab Berries: ' + str(items_inventory.get(707).count) +
+            ' | Golden Pinap Berries: ' + str(items_inventory.get(708).count))
 
         self.logger.info(
             'LuckyEgg: ' + str(items_inventory.get(301).count) +
-            ' | Incubator: ' + str(items_inventory.get(902).count) +
-            ' | TroyDisk: ' + str(items_inventory.get(501).count))
+            ' | Incubator: ' + str(items_inventory.get(902).count))
 
         self.logger.info(
             'Potion: ' + str(items_inventory.get(101).count) +
-            ' | SuperPotion: ' + str(items_inventory.get(102).count) +
-            ' | HyperPotion: ' + str(items_inventory.get(103).count) +
-            ' | MaxPotion: ' + str(items_inventory.get(104).count))
+            ' | Super Potion: ' + str(items_inventory.get(102).count) +
+            ' | Hyper Potion: ' + str(items_inventory.get(103).count) +
+            ' | Max Potion: ' + str(items_inventory.get(104).count))
 
         self.logger.info(
             'Incense: ' + str(items_inventory.get(401).count) +
-            ' | IncenseSpicy: ' + str(items_inventory.get(402).count) +
-            ' | IncenseCool: ' + str(items_inventory.get(403).count))
+            ' | Lure Module: ' + str(items_inventory.get(501).count))
 
         self.logger.info(
             'Revive: ' + str(items_inventory.get(201).count) +
-            ' | MaxRevive: ' + str(items_inventory.get(202).count))
+            ' | Max Revive: ' + str(items_inventory.get(202).count))
 
         self.logger.info(
             'Sun Stone: ' + str(items_inventory.get(1101).count) +
@@ -1283,6 +1284,14 @@ class PokemonGoBot(object):
             ' | Metal Coat: ' + str(items_inventory.get(1103).count) +
             ' | Dragon Scale: ' + str(items_inventory.get(1104).count) +
             ' | Upgrade: ' + str(items_inventory.get(1105).count))
+        
+        self.logger.info(
+            'Fast TM: ' + str(items_inventory.get(1201).count) +
+            ' | Charge TM: ' + str(items_inventory.get(1202).count) +
+            ' | Rare Candy: ' + str(items_inventory.get(1301).count) +
+            ' | Free Raid Pass: ' + str(items_inventory.get(1401).count) +
+            ' | Premium Raid Pass: ' + str(items_inventory.get(1402).count) +
+            ' | Legendary Raid Pass: ' + str(items_inventory.get(1403).count))
 
         if warn:
             self.logger.info('')
