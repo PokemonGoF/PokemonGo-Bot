@@ -73,6 +73,15 @@ class PokemonGoBot(object):
         return self._player
 
     @property
+    def inbox(self):
+        """
+        Returns the inbox data as received from the API.
+        :return: The inbox data.
+        :rtype: dict
+        """
+        return self._inbox
+
+    @property
     def stardust(self):
         dust = filter(lambda y: y['name'] == 'STARDUST', self._player['currencies'])[0]
         if 'amount' in dust:
@@ -350,6 +359,13 @@ class PokemonGoBot(object):
                 'encounter_id',
                 'latitude',
                 'longitude'
+            )
+        )
+        self.event_manager.register_event(
+            'moving_to_hunter_target',
+            parameters=(
+                'target_name',
+                'distance'
             )
         )
         self.event_manager.register_event(
@@ -777,6 +793,16 @@ class PokemonGoBot(object):
         self.event_manager.register_event('catch_limit_on')
         self.event_manager.register_event('catch_limit_off')
 
+        self.event_manager.register_event(
+            'pokemon_knock_out_gym',
+            parameters=('pokemon', 'gym_name', 'notification_date', 'awarded_coins', 'awarded_coins_today')
+        )
+
+        self.event_manager.register_event(
+            'pokemon_hungy',
+            parameters=('pokemon', 'gym_name', 'notification_date')
+        )
+
 
     def tick(self):
         self.health_record.heartbeat()
@@ -1042,20 +1068,14 @@ class PokemonGoBot(object):
             formatted="Niantic Official API Version: {}".format(officalAPI)
         )
 
-        link = "https://pokehash.buddyauth.com/api/hash/versions"
-        f = urllib2.urlopen(link)
-        myfile = f.read()
-        f.close()
-        bossland_hash_endpoint = myfile.split(",")
-        total_entry = int(len(bossland_hash_endpoint))
-        last_bossland_entry = bossland_hash_endpoint[total_entry-1]
-        bossland_lastestAPI = last_bossland_entry.split(":")[0].replace('\"','')
-        hashingAPI_temp = 0
+        PGoAPI_version = PGoApi.get_api_version()
+        PGoAPI_version_str = str(PGoAPI_version)
+        PGoAPI_version_str = "0."+ PGoAPI_version_str[0:2] + "." + PGoAPI_version_str[-1]
         self.event_manager.emit(
             'security_check',
             sender=self,
             level='info',
-            formatted="Latest Bossland Hashing API Version: {}".format(bossland_lastestAPI)
+            formatted="Bot is currently running on API {}".format(PGoAPI_version_str)
         )
 
         if self.config.check_niantic_api is True:
@@ -1067,28 +1087,13 @@ class PokemonGoBot(object):
                     formatted="Warning: Bot is running on legacy API"
                 )
             else:
-                PGoAPI_hash_endpoint = HashServer.endpoint.split("com/",1)[1]
-                PGoAPI_hash_version = []
-                # Check if PGoAPI hashing is in Bossland versioning
-                bossland_hash_data = json.loads(myfile)
-
-                for version, endpoint in bossland_hash_data.items():
-                    if endpoint == PGoAPI_hash_endpoint:
-                        # Version should always be in this format x.xx.x
-                        # Check total len, if less than 4, pack a zero behind
-                        if len(version.replace('.','')) < 4:
-                            version = version + ".0"
-                        hashingAPI_temp = int(version.replace('.',''))
-                        # iOS versioning is always more than 1.19.0
-                        if hashingAPI_temp < 1190:
-                            PGoAPI_hash_version.append(version)
-                # assuming andorid versioning is always last entry
-                PGoAPI_hash_version.sort(reverse=True)
-                # covert official api version & hashing api version to numbers
                 officialAPI_int = int(officalAPI.replace('.',''))
-                hashingAPI_int = int(PGoAPI_hash_version[0].replace('.',''))
+                
+                PGoAPI_version_tmp = str(PGoAPI_version)
+                PGoAPI_version_tmp = PGoAPI_version_tmp[0:2] + PGoAPI_version_tmp[-1]
+                PGoAPI_version_int = int(PGoAPI_version_tmp)
 
-                if hashingAPI_int < officialAPI_int:
+                if PGoAPI_version_int < officialAPI_int:
                     self.event_manager.emit(
                         'security_check',
                         sender=self,
@@ -1101,7 +1106,7 @@ class PokemonGoBot(object):
                         'security_check',
                         sender=self,
                         level='info',
-                        formatted="Current PGoAPI is using API Version: {}. Niantic API Check Pass".format(PGoAPI_hash_version[0])
+                        formatted="Current PGoAPI is using {} API. Niantic API Check Pass".format(PGoAPI_version_str)
                     )
 
         self.heartbeat()
@@ -1243,34 +1248,35 @@ class PokemonGoBot(object):
         # Items Output
         self.logger.info(
             'PokeBalls: ' + str(items_inventory.get(1).count) +
-            ' | GreatBalls: ' + str(items_inventory.get(2).count) +
-            ' | UltraBalls: ' + str(items_inventory.get(3).count) +
-            ' | MasterBalls: ' + str(items_inventory.get(4).count))
+            ' | Great Balls: ' + str(items_inventory.get(2).count) +
+            ' | Ultra Balls: ' + str(items_inventory.get(3).count) +
+            ' | Master Balls: ' + str(items_inventory.get(4).count))
 
         self.logger.info(
             'RazzBerries: ' + str(items_inventory.get(701).count) +
             ' | Nanab Berries: ' + str(items_inventory.get(703).count) +
-            ' | Pinap Berries: ' + str(items_inventory.get(705).count))
+            ' | Pinap Berries: ' + str(items_inventory.get(705).count) +
+            ' | Golden RazzBerries: ' + str(items_inventory.get(706).count) +
+            ' | Golden Nanab Berries: ' + str(items_inventory.get(707).count) +
+            ' | Golden Pinap Berries: ' + str(items_inventory.get(708).count))
 
         self.logger.info(
             'LuckyEgg: ' + str(items_inventory.get(301).count) +
-            ' | Incubator: ' + str(items_inventory.get(902).count) +
-            ' | TroyDisk: ' + str(items_inventory.get(501).count))
+            ' | Incubator: ' + str(items_inventory.get(902).count))
 
         self.logger.info(
             'Potion: ' + str(items_inventory.get(101).count) +
-            ' | SuperPotion: ' + str(items_inventory.get(102).count) +
-            ' | HyperPotion: ' + str(items_inventory.get(103).count) +
-            ' | MaxPotion: ' + str(items_inventory.get(104).count))
+            ' | Super Potion: ' + str(items_inventory.get(102).count) +
+            ' | Hyper Potion: ' + str(items_inventory.get(103).count) +
+            ' | Max Potion: ' + str(items_inventory.get(104).count))
 
         self.logger.info(
             'Incense: ' + str(items_inventory.get(401).count) +
-            ' | IncenseSpicy: ' + str(items_inventory.get(402).count) +
-            ' | IncenseCool: ' + str(items_inventory.get(403).count))
+            ' | Lure Module: ' + str(items_inventory.get(501).count))
 
         self.logger.info(
             'Revive: ' + str(items_inventory.get(201).count) +
-            ' | MaxRevive: ' + str(items_inventory.get(202).count))
+            ' | Max Revive: ' + str(items_inventory.get(202).count))
 
         self.logger.info(
             'Sun Stone: ' + str(items_inventory.get(1101).count) +
@@ -1278,6 +1284,14 @@ class PokemonGoBot(object):
             ' | Metal Coat: ' + str(items_inventory.get(1103).count) +
             ' | Dragon Scale: ' + str(items_inventory.get(1104).count) +
             ' | Upgrade: ' + str(items_inventory.get(1105).count))
+        
+        self.logger.info(
+            'Fast TM: ' + str(items_inventory.get(1201).count) +
+            ' | Charge TM: ' + str(items_inventory.get(1202).count) +
+            ' | Rare Candy: ' + str(items_inventory.get(1301).count) +
+            ' | Free Raid Pass: ' + str(items_inventory.get(1401).count) +
+            ' | Premium Raid Pass: ' + str(items_inventory.get(1402).count) +
+            ' | Legendary Raid Pass: ' + str(items_inventory.get(1403).count))
 
         if warn:
             self.logger.info('')
@@ -1548,10 +1562,13 @@ class PokemonGoBot(object):
                               if timeout >= now * 1000}
 
         if now - self.last_heartbeat >= self.heartbeat_threshold and not self.hb_locked:
+            previous_heartbeat = self.last_heartbeat
             self.last_heartbeat = now
             request = self.api.create_request()
             request.get_player()
             request.check_awarded_badges()
+            request.get_inbox()
+            responses = None
             try:
                 responses = request.call()
             except NotLoggedInException:
@@ -1572,6 +1589,64 @@ class PokemonGoBot(object):
                         formatted='player_data: {player_data}',
                         data={'player_data': self._player}
                     )
+                if responses['responses']['GET_INBOX']['result'] == 1:
+                    self._inbox = responses['responses']['GET_INBOX']['inbox']
+                    # self.logger.info("Got inbox messages?")
+                    # self.logger.info("Inbox: %s" % responses['responses']['GET_INBOX'])
+                if 'notifications' in self._inbox:
+                    for notification in self._inbox['notifications']:
+                        notification_date = datetime.datetime.fromtimestamp(int(notification['create_timestamp_ms']) / 1e3)
+                        if previous_heartbeat > (int(notification['create_timestamp_ms']) / 1e3):
+                            # Skipp old notifications!
+                            continue
+
+                        if notification['category'] == 'pokemon_hungry':
+                            gym_name = pokemon = 'Unknown'
+                            for variable in notification['variables']:
+                                if variable['name'] == 'GYM_NAME':
+                                    gym_name = variable['literal']
+                                if variable['name'] == 'POKEMON_NICKNAME':
+                                    pokemon = variable['literal']
+
+                            self.event_manager.emit(
+                                'pokemon_hungy',
+                                sender=self,
+                                level='info',
+                                formatted='{pokemon} in the Gym {gym_name} is hungy and want a candy! {notification_date}',
+                                data={
+                                    'pokemon': pokemon,
+                                    'gym_name': gym_name,
+                                    'notification_date': notification_date.strftime('%Y-%m-%d %H:%M:%S.%f')
+                                }
+                            )
+
+                        if notification['category'] == 'gym_removal':
+                            gym_name = pokemon = 'Unknown'
+                            for variable in notification['variables']:
+                                if variable['name'] == 'GYM_NAME':
+                                    gym_name = variable['literal']
+                                if variable['name'] == 'POKEMON_NICKNAME':
+                                    pokemon = variable['literal']
+                                if variable['name'] == 'POKECOIN_AWARDED':
+                                    coins_awared = variable['literal']
+                                if variable['name'] == 'POKECOIN_AWARDED_TODAY':
+                                    coins_awared_today = variable['literal']
+
+                            self.event_manager.emit(
+                                'pokemon_knock_out_gym',
+                                sender=self,
+                                level='info',
+                                formatted='{pokemon} has been knocked out the Gym {gym_name} at {notification_date}. Awarded coins: {awarded_coins} | Today awared: {awarded_coins_today}',
+                                data={
+                                    'pokemon': pokemon,
+                                    'gym_name': gym_name,
+                                    'notification_date': notification_date.strftime('%Y-%m-%d %H:%M:%S.%f'),
+                                    'awarded_coins': coins_awared,
+                                    'awarded_coins_today': coins_awared_today
+                                }
+                            )
+
+
                 if responses['responses']['CHECK_AWARDED_BADGES']['success'] == True:
                     # store awarded_badges reponse to be used in a task or part of heartbeat
                     self._awarded_badges = responses['responses']['CHECK_AWARDED_BADGES']

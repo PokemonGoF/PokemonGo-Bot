@@ -56,7 +56,7 @@ class EventManager(object):
             raise EventNotRegisteredException("Event %s not registered..." % event)
 
         if self._limit_output:
-            if (event == self._last_event) and (event in ["moving_to_fort", "moving_to_lured_fort", "position_update"]):
+            if (event == self._last_event) and (event in ["moving_to_fort", "moving_to_lured_fort", "position_update", "moving_to_hunter_target"]):
                 stdout.write("\033[1A\033[0K\r")
                 stdout.flush()
 
