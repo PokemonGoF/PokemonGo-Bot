@@ -14,7 +14,7 @@
 
 FROM alpine
 
-ARG BUILD_REPO=PokemonGoF/PokemonGo-Bot
+ARG BUILD_REPO=goedzo/PokemonGo-Bot
 ARG BUILD_BRANCH=master
 
 LABEL build_repo=$BUILD_REPO build_branch=$BUILD_BRANCH
