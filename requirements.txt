@@ -1,7 +1,7 @@
 numpy==1.11.0
 networkx==1.11
 six==1.10
-git+https://github.com/pogodevorg/pgoapi.git@develop#egg=pgoapi
+git+https://github.com/goedzo/pgoapi.git@develop#egg=pgoapi
 geopy==1.11.0
 geographiclib==1.46.3
 requests==2.10.0
@@ -18,7 +18,7 @@ websocket-client==0.37.0
 python-socketio==1.4.2
 flask==0.11.1
 socketIO_client==0.7.0
-eventlet==0.19.0
+eventlet==0.20.1
 gpxpy==1.1.1
 mock==2.0.0
 timeout-decorator==0.3.2
