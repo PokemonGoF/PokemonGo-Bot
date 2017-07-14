@@ -52,7 +52,7 @@ class GymPokemon(BaseTask):
         # 10 seconds from current time
         self.next_update = datetime.now() + timedelta(0, 10)
         self.order_by = self.config.get('order_by', 'cp')
-        self.min_interval = self.config.get('min_interval', 60)
+        self.min_interval = self.config.get('min_interval', 360)
         self.min_recheck = self.config.get('min_recheck', 30)
         self.max_recheck = self.config.get('max_recheck', 120)
         self.recheck = datetime.now()
@@ -671,7 +671,7 @@ class GymPokemon(BaseTask):
         possible_pokemons = [p for p in possible_pokemons if not p.in_fort]
         # Sort them
         pokemons_ordered = sorted(possible_pokemons, key=lambda x: get_poke_info(self.order_by, x), reverse=True)
-        # Top 10 picks
+        # Top 20 picks
         pokemons_ordered = pokemons_ordered[0:20]
         # Pick a random one!
         random.shuffle(pokemons_ordered)
