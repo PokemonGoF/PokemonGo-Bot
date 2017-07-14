@@ -406,6 +406,11 @@ class GymPokemon(BaseTask):
             if result == 1:
                 # Succesful feeding
                 self.logger.info("Fed a Pokemon!")
+                self.emit_event(
+                    'fed_pokemon',
+                    formatted=("We fed %s in the gym %s!!" % (pokemon_id, gym_details["name"])),
+                    data={'gym_id': gym['id'], 'pokemon_id': pokemon_id}
+                )
             else:
                 self.logger.info("Feeding failed! %s" % result)
 
