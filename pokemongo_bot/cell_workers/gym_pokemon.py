@@ -55,6 +55,7 @@ class GymPokemon(BaseTask):
         self.min_interval = self.config.get('min_interval', 360)
         self.min_recheck = self.config.get('min_recheck', 30)
         self.max_recheck = self.config.get('max_recheck', 120)
+        self.feed_berries = self.config.get('feed_berries', False)
         self.recheck = datetime.now()
         self.walker = self.config.get('walker', 'StepWalker')
         self.destination = None
@@ -151,7 +152,7 @@ class GymPokemon(BaseTask):
                             continue
                     if 'owned_by_team' in gym:
                         if gym["owned_by_team"] == self.team:
-                            # self.feed_pokemons_in_gym(gym)
+                            self.feed_pokemons_in_gym(self,gym)
 
                             if 'gym_display' in gym:
                                 display = gym['gym_display']
@@ -278,7 +279,7 @@ class GymPokemon(BaseTask):
             current_pokemons = self._get_pokemons_in_gym(gym_details)
             self.drop_pokemon_in_gym(self.destination, current_pokemons)
             # Feed the Pokemon now we're here...
-            # self.feed_pokemons_in_gym(self.destination)
+            self.feed_pokemons_in_gym(self,self.destination)
             self.destination = None
             # Look around if there are more gyms to fill
             self.determin_new_destination()
@@ -329,6 +330,10 @@ class GymPokemon(BaseTask):
         return pokemon_names
 
     def feed_pokemons_in_gym(self, gym):
+        #Check if berry feeding is enabled from config
+        if self.feed_berries == False
+            return True
+
         berries = inventory.items().get(ITEM_RAZZBERRY).count + (inventory.items().get(ITEM_PINAPBERRY).count - 10) + inventory.items().get(ITEM_NANABBERRY).count
         if berries < 1:
             self.logger.info("No berries left to feed Pokemon.")
