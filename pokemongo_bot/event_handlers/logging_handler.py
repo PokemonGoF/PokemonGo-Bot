@@ -128,7 +128,8 @@ class LoggingHandler(EventHandler):
         'threw_pokeball':                    'none',
         'used_lucky_egg':                    'none',
         'catch_limit_on':                    'yellow',
-        'catch_limit_off':                   'green'
+        'catch_limit_off':                   'green',
+        'deployed_pokemon':                  'green'
     }
     COLOR_CODE = {
         'gray':    '\033[90m',
