@@ -27,11 +27,13 @@ GYM_DETAIL_RESULT_SUCCESS = 1
 GYM_DETAIL_RESULT_OUT_OF_RANGE = 2
 GYM_DETAIL_RESULT_UNSET = 0
 
+TEAM_NOT_SET = 0
 TEAM_BLUE = 1
 TEAM_RED = 2
 TEAM_YELLOW = 3
 
 TEAMS = {
+    0: "Not Set",
     1: "Mystic",
     2: "Valor",
     3: "Instinct"
@@ -52,6 +54,7 @@ class GymPokemon(BaseTask):
         # 10 seconds from current time
         self.next_update = datetime.now() + timedelta(0, 10)
         self.order_by = self.config.get('order_by', 'cp')
+        self.enabled = self.config.get('enabled', False)
         self.min_interval = self.config.get('min_interval', 360)
         self.min_recheck = self.config.get('min_recheck', 30)
         self.max_recheck = self.config.get('max_recheck', 120)
@@ -69,11 +72,27 @@ class GymPokemon(BaseTask):
         self.check_interval = 0
         self.gyms = []
         self.raid_gyms = dict()
-        self.team = self.bot.player_data['team']
+
+        self.bot.event_manager.register_event('gym_error')
+        self.bot.event_manager.register_event('fed_pokemon')
+        self.bot.event_manager.register_event('gym_full')
+        self.bot.event_manager.register_event('deployed_pokemon')
+        
+        #self.logger.info("player_date %s." % self.bot.player_data)
+
+        try:
+            self.team = self.bot.player_data['team']
+        except KeyError:
+            self.team = TEAM_NOT_SET
+            if self.enabled:
+                self.emit_event(
+                    'gym_error',
+                    formatted="You have no team selected, so the module GymPokemon should be disabled"
+                )
 
     def should_run(self):
-        # Check if we have any Pokemons and are level > 5
-        return player()._level >= 5 and len(self.pokemons) > 0
+        # Check if we have any Pokemons and are level > 5 and have selected a team
+        return player()._level >= 5 and len(self.pokemons) > 0 and self.team > TEAM_NOT_SET
 
     def display_fort_pokemon(self):
         if len(self.fort_pokemons) == 0:
@@ -331,7 +350,7 @@ class GymPokemon(BaseTask):
 
     def feed_pokemons_in_gym(self, gym):
         #Check if berry feeding is enabled from config
-        if self.feed_berries == False
+        if self.feed_berries == False:
             return True
 
         berries = inventory.items().get(ITEM_RAZZBERRY).count + (inventory.items().get(ITEM_PINAPBERRY).count - 10) + inventory.items().get(ITEM_NANABBERRY).count
