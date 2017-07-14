@@ -360,7 +360,10 @@ class GymPokemon(BaseTask):
                     # self.logger.info("This pokemon deserves a candy")
                     berry_id = self._determin_feed_berry_id(motivated_pokemon)
                     poke_id = pokemon_info.get('id')
-                    quantity = pokemon_info.get('num_upgrades')
+
+                    #Testing to see what quantity field does. Probably just the amount of berries you want to feed
+                    #quantity = pokemon_info.get('num_upgrades')
+                    quantity=1
                     self._feed_pokemon(gym, poke_id, berry_id, quantity)
 
     def _determin_feed_berry_id(self, motivated_pokemon):
