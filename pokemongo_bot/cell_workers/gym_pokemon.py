@@ -405,7 +405,7 @@ class GymPokemon(BaseTask):
             self.logger.info("Feeding: %s" % feeding) 
             if result == 1:
                 # Succesful feeding
-                self.logger.info("Fed a Pokemon!")
+                #self.logger.info("Fed a Pokemon!")
                 self.emit_event(
                     'fed_pokemon',
                     formatted=("We fed %s in the gym %s!!" % (pokemon_id, gym_details["name"])),
@@ -523,7 +523,7 @@ class GymPokemon(BaseTask):
                 self.dropped_gyms.append(gym["id"])
                 gym_details = self.get_gym_details(gym)
                 # SUCCES
-                self.logger.info("We deployed %s (%s CP) in the gym! We now have %s Pokemon in gyms!" % (fort_pokemon.name, fort_pokemon.cp, len(self.dropped_gyms)))
+                #self.logger.info("We deployed %s (%s CP) in the gym! We now have %s Pokemon in gyms!" % (fort_pokemon.name, fort_pokemon.cp, len(self.dropped_gyms)))
                 self.emit_event(
                     'deployed_pokemon',
                     formatted=("We deployed %s (%s CP) in the gym %s!!" % (fort_pokemon.name, fort_pokemon.cp, gym_details["name"])),
