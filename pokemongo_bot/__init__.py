@@ -1725,6 +1725,25 @@ class PokemonGoBot(object):
             ))
 
         return forts
+    
+    def get_gyms(self, order_by_distance=False):
+        forts = [fort
+                 for fort in self.cell['forts']
+                 if 'latitude' in fort and 'type' not in fort]
+        # Need to filter out disabled gyms!
+        forts = filter(lambda x: x["enabled"] is True, forts)
+        forts = filter(lambda x: 'closed' not in fort, forts)
+        # forts = filter(lambda x: 'type' not in fort, forts)
+
+        if order_by_distance:
+            forts.sort(key=lambda x: distance(
+                self.position[0],
+                self.position[1],
+                x['latitude'],
+                x['longitude']
+            ))
+
+        return forts
 
     def get_map_objects(self, lat, lng, timestamp, cellid):
         if time.time() - self.last_time_map_object < self.config.map_object_cache_time:
