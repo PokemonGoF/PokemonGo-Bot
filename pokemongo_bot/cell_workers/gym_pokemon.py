@@ -365,7 +365,14 @@ class GymPokemon(BaseTask):
             return True
 
         max_gym_time = timedelta(hours=8,minutes=20)
-        gym_info = self.get_gym_details(gym).get('gym_status_and_defenders', None)
+        
+        try:
+            gym_info = self.get_gym_details(gym).get('gym_status_and_defenders', None)
+        except TypeError:
+            #This gym does not give status results.
+            self.team = TEAM_NOT_SET
+            return True
+        
         # self.logger.info("Defenders in gym:")okemon_info..items()get('pokemon_id')
         if gym_info:
             defenders = gym_info.get('gym_defender', [])
