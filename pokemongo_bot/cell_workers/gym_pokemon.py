@@ -291,6 +291,9 @@ class GymPokemon(BaseTask):
 
             if not step_walker.step():
                 return WorkerResult.RUNNING
+            else:
+                #Running fails. Let's stop moving to the gym
+                return WorkerResult.SUCCESS
         else:
             self.emit_event(
                 'arrived_at_fort',
