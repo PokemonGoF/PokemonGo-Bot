@@ -44,6 +44,7 @@ ITEM_NANABBERRY = 703
 ITEM_PINAPBERRY = 705
 
 
+
 class GymPokemon(BaseTask):
     SUPPORTED_TASK_API_VERSION = 1
 
@@ -51,6 +52,10 @@ class GymPokemon(BaseTask):
         super(GymPokemon, self).__init__(bot, config)
 
     def initialize(self):
+
+        #Adding this to play with finding a quantity that works
+        self.gym_quantity_test = 1
+
         # 10 seconds from current time
         self.next_update = datetime.now() + timedelta(0, 10)
         self.order_by = self.config.get('order_by', 'cp')
@@ -72,7 +77,6 @@ class GymPokemon(BaseTask):
         self.check_interval = 0
         self.gyms = []
         self.raid_gyms = dict()
-
         self.bot.event_manager.register_event('gym_error')
         self.bot.event_manager.register_event('fed_pokemon')
         self.bot.event_manager.register_event('gym_full')
@@ -227,9 +231,7 @@ class GymPokemon(BaseTask):
                             break
                         else:
                             #If there are mons we can feed, check them. Note: gym_details returns false if gym is not in range.
-                            gym_to_feed = self.get_gym_details(gym)
-                            if gym_to_feed!=False:
-                                self.feed_pokemons_in_gym(gym_to_feed)
+                            self.feed_pokemons_in_gym(gym)
             else:
                 # self.logger.info("Found a Neutral gym?")
                 # self.logger.info("Info: %s" % gym)
@@ -371,16 +373,15 @@ class GymPokemon(BaseTask):
         
         try:
             gym_info = self.get_gym_details(gym).get('gym_status_and_defenders', None)
-        except TypeError:
-            #This gym does not give status results.
-            self.team = TEAM_NOT_SET
+        except (TypeError,KeyError,AttributeError):
+            #This gym does not give status results. Probably it is not in range
             return True
         
         # self.logger.info("Defenders in gym:")okemon_info..items()get('pokemon_id')
         if gym_info:
             defenders = gym_info.get('gym_defender', [])
             for defender in defenders:
-                #self.logger.info("Feed data: defender %s" % defender)
+                #self.logger.info("LOG: Defender data: defender %s" % defender)
 
                 motivated_pokemon = defender.get('motivated_pokemon')
                 pokemon_info = motivated_pokemon.get('pokemon')
@@ -400,14 +401,16 @@ class GymPokemon(BaseTask):
 
                     #Testing to see what quantity field does. Probably just the amount of berries you want to feed
                     #quantity = pokemon_info.get('num_upgrades') <- Failed
-                    #quantity=1                                  <- Failed
-                    quantity=0
-                    food_values = motivated_pokemon.get('food_value')
-                    for food_value in food_values:
-                        if food_value.get('food_item') == berry_id:
-                            quantity = food_value.get('motivation_increase')
-                    if quantity !=0:
-                         self._feed_pokemon(gym, poke_id, berry_id, quantity)
+                    quantity=2
+                    self._feed_pokemon(gym, poke_id, berry_id, quantity)
+
+                    # quantity=0
+                    # food_values = motivated_pokemon.get('food_value')
+                    # for food_value in food_values:
+                        # if food_value.get('food_item') == berry_id:
+                            # quantity = food_value.get('motivation_increase')
+                    # if quantity !=0:
+                         # self._feed_pokemon(gym, poke_id, berry_id, quantity)
 
     def _determin_feed_berry_id(self, motivated_pokemon):
         # # Store the amount of berries we have
@@ -443,13 +446,29 @@ class GymPokemon(BaseTask):
         
         self.logger.info("----THIS IS IN DEVELOPEMENT-----")
         self.logger.info("We are feeding pokemon %s with berry %s ",pokemon_id,berry_id)
-        self.logger.info("Feed data: quantity %s" % quantity)
+        self.logger.info("Feed data: quantity %s" % self.gym_quantity_test)
+        #self.logger.info("Feed data: gym %s" % gym)
         self.logger.info("----ABORTING HERE SINCE WE HAVE NOT YET FIND THE RIGHT API PARAMETERS-----")
         return True
-                
+
+        #Get the gym_name to show in messages
+        lat = self.destination["latitude"]
+        lng = self.destination["longitude"]
+
+        details = fort_details(self.bot, gym["id"], lat, lng)
+        if details:
+            gym_name = details.get('name', 'Unknown')
+        else:
+            #Seem that we cannot read details here. Let's exit
+            return True
+        
+        
+        #Overide the quantity to find the right value
+        #quantity = self.gym_quantity_test
+        
         request = self.bot.api.create_request()
         request.gym_feed_pokemon(
-            starting_quantity=quantity,
+            starting_quantity=self.gym_quantity_test,
             item_id=berry_id,
             gym_id=gym["id"],
             pokemon_id=pokemon_id,
@@ -459,19 +478,40 @@ class GymPokemon(BaseTask):
         response_dict = request.call()
         if ('responses' in response_dict) and ('GYM_FEED_POKEMON' in response_dict['responses']):
             feeding = response_dict['responses']['GYM_FEED_POKEMON']
+            self.logger.info("Feeding result: %s" % feeding) 
             result = feeding.get('result', -1)
-            self.logger.info("Feeding: %s" % feeding) 
             if result == 1:
                 # Succesful feeding
-                #self.logger.info("Fed a Pokemon!")
                 self.emit_event(
                     'fed_pokemon',
-                    formatted=("We fed %s in the gym %s!!" % (pokemon_id, gym_details["name"])),
+                    formatted=("We fed %s in the gym %s!!" % (pokemon_id, gym_name)),
                     data={'gym_id': gym['id'], 'pokemon_id': pokemon_id}
                 )
+            elif result == 4:    #ERROR_POKEMON_NOT_THERE
+                self.emit_event(
+                    'fed_pokemon',
+                    formatted=("Pokemon %s has dropped out of the gym %s!" % (pokemon_id, gym_name)),
+                    data={'gym_id': gym['id'], 'pokemon_id': pokemon_id}
+                )
+            elif result == 5:    #ERROR_POKEMON_FULL
+                self.emit_event(
+                    'fed_pokemon',
+                    formatted=("Pokemon %s is full in gym %s!" % (pokemon_id, gym_name)),
+                    data={'gym_id': gym['id'], 'pokemon_id': pokemon_id}
+                )
+            elif result == 7:    #ERROR_WRONG_TEAM
+                self.emit_event(
+                    'fed_pokemon',
+                    formatted=("Team Switched while feeding %s in gym %s!" % (pokemon_id, gym_name)),
+                    data={'gym_id': gym['id'], 'pokemon_id': pokemon_id}
+                )
+            elif result == 8:    #ERROR_WRONG_COUNT
+                #Let's try a different quantity
+                self.gym_quantity_test += 1
             else:
                 self.logger.info("Feeding failed! %s" % result)
-
+        
+        
     def drop_pokemon_in_gym(self, gym, current_pokemons):
         self.pokemons = inventory.pokemons().all()
         self.fort_pokemons = [p for p in self.pokemons if p.in_fort]
@@ -546,12 +586,12 @@ class GymPokemon(BaseTask):
                 self.logger.info("Lockout time: %s" % lockout_time.strftime('%Y-%m-%d %H:%M:%S.%f'))
                 while lockout_time > datetime.now():
                     self.logger.info("Waiting for %s seconds deployment lockout to end..." % (lockout_time-datetime.today()).seconds)
-                    #Feed any mons while we are waiting
-                    self.feed_pokemons_in_gym(gym)
-                    if (lockout_time-datetime.today()).seconds > 20:
-                        sleep(20)
+                    if (lockout_time-datetime.today()).seconds > 40:
+                        sleep(40)
+                        #Feed any mons while we are waiting
+                        self.feed_pokemons_in_gym(gym)
                     else:
-                        sleep((lockout_time-t).seconds)
+                        sleep((lockout_time-datetime.today()).seconds)
                         break
 
         #FortDeployPokemon
