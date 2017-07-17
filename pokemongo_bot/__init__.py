@@ -560,6 +560,7 @@ class PokemonGoBot(object):
         self.event_manager.register_event('spin_limit')
         self.event_manager.register_event('show_best_pokemon', parameters=('pokemons'))
         self.event_manager.register_event('revived_pokemon')
+        self.event_manager.register_event('healing_pokemon')
 
         # level up stuff
         self.event_manager.register_event(
