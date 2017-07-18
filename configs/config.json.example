@@ -465,6 +465,16 @@
             }
         },
         {
+            "type": "GymPokemon",
+            "config": {
+                "enabled": false,
+                "order_by": "cp",
+                "min_interval":360,
+                "min_recheck":30,
+                "max_recheck":120
+            }
+        },
+        {
             "type": "MoveToFort",
             "config": {
                 "enabled": true,
@@ -482,6 +492,7 @@
                 "step_size": 70
             }
         }
+        
     ],
     "map_object_cache_time": 5,
     "forts": {

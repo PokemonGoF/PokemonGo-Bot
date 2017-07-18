@@ -372,6 +372,7 @@ class PokemonGoBot(object):
             'moving_to_fort',
             parameters=(
                 'fort_name',
+                'target_type',
                 'distance'
             )
         )
@@ -379,6 +380,7 @@ class PokemonGoBot(object):
             'moving_to_lured_fort',
             parameters=(
                 'fort_name',
+                'target_type',
                 'distance',
                 'lure_distance'
             )
@@ -386,7 +388,7 @@ class PokemonGoBot(object):
         self.event_manager.register_event(
             'spun_pokestop',
             parameters=(
-                'pokestop', 'exp', 'items'
+                'pokestop', 'exp', 'items', 'stop_kind', 'spin_amount_now'
             )
         )
         self.event_manager.register_event(
@@ -559,6 +561,8 @@ class PokemonGoBot(object):
         self.event_manager.register_event('catch_limit')
         self.event_manager.register_event('spin_limit')
         self.event_manager.register_event('show_best_pokemon', parameters=('pokemons'))
+        self.event_manager.register_event('revived_pokemon')
+        self.event_manager.register_event('healing_pokemon')
 
         # level up stuff
         self.event_manager.register_event(
@@ -1715,6 +1719,25 @@ class PokemonGoBot(object):
             ))
 
         return forts
+
+        if order_by_distance:
+            forts.sort(key=lambda x: distance(
+                self.position[0],
+                self.position[1],
+                x['latitude'],
+                x['longitude']
+            ))
+
+        return forts
+    
+    def get_gyms(self, order_by_distance=False):
+        forts = [fort
+                 for fort in self.cell['forts']
+                 if 'latitude' in fort and 'type' not in fort]
+        # Need to filter out disabled gyms!
+        forts = filter(lambda x: x["enabled"] is True, forts)
+        forts = filter(lambda x: 'closed' not in fort, forts)
+        # forts = filter(lambda x: 'type' not in fort, forts)
 
         if order_by_distance:
             forts.sort(key=lambda x: distance(

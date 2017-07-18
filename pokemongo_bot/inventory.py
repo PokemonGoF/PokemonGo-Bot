@@ -522,6 +522,11 @@ class Pokemons(_BaseInventoryComponent):
             raise ValueError("Pokemon already present in the inventory")
         self._data[pokemon.unique_id] = pokemon
 
+    def get_from_unique_id(self, pokemon_unique_id):
+        if pokemon_unique_id not in self._data:
+            raise ValueError("Pokemon not present in the inventory")
+        return self._data[pokemon_unique_id]
+
     def remove(self, pokemon_unique_id):
         if pokemon_unique_id not in self._data:
             raise ValueError("Pokemon not present in the inventory")
@@ -999,6 +1004,9 @@ class Pokemon(object):
         self.nickname = self.nickname_raw or self.name
 
         self.in_fort = 'deployed_fort_id' in data
+        if 'deployed_fort_id' in data:
+            self.fort_id = data['deployed_fort_id']
+
         self.is_favorite = data.get('favorite', 0) is 1
         self.buddy_candy = data.get('buddy_candy_awarded', 0)
         self.is_bad = data.get('is_bad', False)
