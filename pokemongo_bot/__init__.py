@@ -372,6 +372,7 @@ class PokemonGoBot(object):
             'moving_to_fort',
             parameters=(
                 'fort_name',
+                'target_type',
                 'distance'
             )
         )
@@ -379,6 +380,7 @@ class PokemonGoBot(object):
             'moving_to_lured_fort',
             parameters=(
                 'fort_name',
+                'target_type',
                 'distance',
                 'lure_distance'
             )
@@ -386,7 +388,7 @@ class PokemonGoBot(object):
         self.event_manager.register_event(
             'spun_pokestop',
             parameters=(
-                'pokestop', 'exp', 'items'
+                'pokestop', 'exp', 'items', 'stop_kind', 'spin_amount_now'
             )
         )
         self.event_manager.register_event(
