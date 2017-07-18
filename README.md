@@ -31,7 +31,7 @@ If you need any help please don't create an issue as we have a great community o
  - #dev channel in slack
 
 ## Discord
-  - [Click here to join discord server](https://discord.gg/n3g5puF)
+  - [Click here to join discord server](https://discord.gg/n3g5puF) ---->RECOMENDED<----
 
 ### [Bugs / Issues](https://github.com/PokemonGoF/PokemonGo-Bot/issues?q=is%3Aissue+sort%3Aupdated-desc)
 If you discover a bug in the bot, please [search our issue tracker](https://github.com/PokemonGoF/PokemonGo-Bot/issues?q=is%3Aissue+sort%3Aupdated-desc) first. If it hasn't been reported, please [create a new issue](https://github.com/PokemonGoF/PokemonGo-Bot/issues/new) and ensure you follow the template guide so that our team can assist you as quickly as possible.
@@ -53,27 +53,25 @@ If this is your first time making a PR or aren't sure of the standard practice o
 - [x] Search Pokestops
 - [x] Catch Pokemon
 - [x] Determine which pokeball to use (uses Razz Berry if the catch percentage is low!)
-- [x] Exchange Pokemon as per configuration
-- [x] Evolve Pokemon as per configuration
+- [x] Exchange, evolve and catch Pokemon as per configuration
+- [x] Transfer Pokemon in bulk
 - [x] Auto switch mode (Inventory Checks - switches between catch/farming items)
 - [x] Limit the step to farm specific area for pokestops
-- [x] Rudimentary IV Functionality filter
-- [x] Ignore certain pokemon filter
+- [x] Limit Pokestops/catch Pokemons per day
+- [x] IV Functionality filter
 - [x] Adjust delay between Pokemon capture & Transfer as per configuration
 - [x] Hatch eggs
 - [x] Incubate eggs
-- [x] Crowd Sourced Map Prototype
-- [ ] [Standalone Desktop Application] (https://github.com/PokemonGoF/PokemonGo-Bot-Desktop)
 - [x] Use candy
+- [x] Set family ID as VIP and priorice bot to catch it!
+- [x] Spin Gyms pokestops
+- [x] Transfer red slashed pokemons
+- [x] Set shiny pokemons as VIP
+- [x] Deploy a pokemon in Gym if slot available
+- [x] Docker support
+- [x] Auto heal Pokemons
+- [x] Information about PGoAPI bot version is rather Bossland endpoint, expiration key date and RPM used
 
-## Analytics
-[PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot) is very popular and has a vibrant community. Because of that, it has become very difficult for us to know how the bot is used and what errors people hit. By capturing small amounts of data, we can prioritize our work better such as fixing errors that happen to a large percentage of our user base, not just a vocal minority.
-
-Our goal is to help inform our decisions by capturing data that helps us get aggregate usage and error reports, not personal information. To view the code that handles analytics in our master branch, you can use this [search link](https://github.com/PokemonGoF/PokemonGo-Bot/search?utf8=%E2%9C%93&q=BotEvent).
-
-If there are any concerns with this policy or you believe we are tracking something we shouldn't, please open a ticket in the tracker. The contributors always intend to do the right thing for our users, and we want to make sure we are held to that path.
-
-If you do not want any data to be gathered, you can turn off this feature by setting `health_record` to `false` in your `config.json`.
 
 ## Credits
 - [tejado](https://github.com/tejado) many thanks for the API
@@ -167,6 +165,14 @@ If you do not want any data to be gathered, you can turn off this feature by set
  * Gobberwart
  * javajohnHub
  * kolinkorr839
+ * lepeli
+ * davidakachaos
+ * MerlionRock
+ * walaoaaa1234
+ * pogarek
+ * goedzo
+ * solderzzc aka BIG BOSS
+ 
 
 ## Disclaimer
 ©2016 Niantic, Inc. ©2016 Pokémon. ©1995–2016 Nintendo / Creatures Inc. / GAME FREAK inc. © 2016 Pokémon/Nintendo Pokémon and Pokémon character names are trademarks of Nintendo. The Google Maps Pin is a trademark of Google Inc. and the trade dress in the product design is a trademark of Google Inc. under license to The Pokémon Company. Other trademarks are the property of their respective owners.
