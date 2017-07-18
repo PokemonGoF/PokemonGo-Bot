@@ -132,8 +132,7 @@ class LoggingHandler(EventHandler):
         'revived_pokemon':                   'green',
         'healing_pokemon':                   'green',
         'deployed_pokemon':                  'green',
-        'gym_error':                         'red',
-        'fed_pokemon':                       'white'
+        'gym_error':                         'red'
     }
     COLOR_CODE = {
         'gray':    '\033[90m',
