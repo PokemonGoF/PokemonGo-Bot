@@ -468,7 +468,6 @@
             "type": "GymPokemon",
             "config": {
                 "enabled": false,
-                "feed_berries": false,
                 "order_by": "cp",
                 "min_interval":360,
                 "min_recheck":30,
