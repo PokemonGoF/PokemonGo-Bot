@@ -34,3 +34,5 @@ from .buddy_pokemon import BuddyPokemon
 from .catch_limiter import CatchLimiter
 from .update_hash_stats import UpdateHashStats
 from .bad_pokemon import BadPokemon
+from .heal_pokemon import HealPokemon
+from .gym_pokemon import GymPokemon
