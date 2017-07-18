@@ -284,7 +284,7 @@ class SpinFort(BaseTask):
     def get_forts_in_range(self):
         forts = self.bot.get_forts(order_by_distance=True)
         forts = filter(lambda fort: fort["id"] not in self.bot.fort_timeouts, forts)
-        if self.bot.camping_forts and self.try_to_keep_streak:
+        if hasattr(self.bot, "camping_forts") and self.bot.camping_forts and self.try_to_keep_streak:
             if datetime.now() >= self.next_update:
                 self.logger.info("Camping forts, ignoring 10 stops streak.")
         elif self.try_to_keep_streak:
