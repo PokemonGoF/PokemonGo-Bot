@@ -34,7 +34,6 @@ class FakeBot(PokemonGoBot):
     def __init__(self):
         self.config = MagicMock(websocket_server_url=False, show_events=False)
         self.api = FakeApi()
-        self.bot = bot
         self.event_manager = EventManager(None)
         self._setup_event_system()
 
