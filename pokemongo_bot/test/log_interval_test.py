@@ -18,7 +18,7 @@ class LogDelayTestCase(unittest.TestCase):
       }
 
     def setUp(self):
-        self.bot = FakeBot()
+        self.bot = FakeBot(self.bot)
         self.bot.event_manager = MagicMock()
         self.worker = MoveToFort(self.bot, self.config)
 

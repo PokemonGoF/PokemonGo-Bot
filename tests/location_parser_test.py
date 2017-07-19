@@ -9,7 +9,7 @@ from tests import FakeBot
 class TestLocationParser(unittest.TestCase):
 
     def setUp(self):
-        self.bot = FakeBot()
+        self.bot = FakeBot(self.bot)
         config = dict(
             test=False,
             location='Paris',

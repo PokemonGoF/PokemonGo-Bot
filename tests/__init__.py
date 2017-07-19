@@ -31,10 +31,10 @@ class FakeApi(ApiWrapper):
         return request
 
 class FakeBot(PokemonGoBot):
-    def __init__(self):
+    def __init__(self,bot):
         self.config = MagicMock(websocket_server_url=False, show_events=False)
         self.api = FakeApi()
-        self.event_manager = EventManager(PokemonGoBot)
+        self.event_manager = EventManager(bot)
         self._setup_event_system()
 
     def updateConfig(self, conf):
