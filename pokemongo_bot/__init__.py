@@ -158,8 +158,8 @@ class PokemonGoBot(object):
             saved_info[key] = self.config.client_id
         saved_info.close()
 
-    def start(self):
-        self._setup_event_system()
+    def start(self, bot):
+        self._setup_event_system(bot)
         self.sleep_schedule = SleepSchedule(self, self.config.sleep_schedule) if self.config.sleep_schedule else None
         if self.sleep_schedule:
             self.sleep_schedule.work()
@@ -174,7 +174,7 @@ class PokemonGoBot(object):
 
         random.seed()
 
-    def _setup_event_system(self):
+    def _setup_event_system(self, bot):
         handlers = []
 
         color = self.config.logging and 'color' in self.config.logging and self.config.logging['color']
@@ -199,7 +199,7 @@ class PokemonGoBot(object):
                 remote_control = WebsocketRemoteControl(self).start()
 
         # @var EventManager
-        self.event_manager = EventManager(self.config.walker_limit_output, *handlers)
+        self.event_manager = EventManager(bot, self.config.walker_limit_output, *handlers)
         self._register_events()
         if self.config.show_events:
             self.event_manager.event_report()

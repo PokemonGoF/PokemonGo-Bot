@@ -144,7 +144,7 @@ def main():
                 handler.setFormatter(formatter)
 
     def start_bot(bot, config):
-        bot.start()
+        bot.start(bot)
         initialize_task(bot, config)
         bot.metrics.capture_stats()
         bot.health_record = BotEvent(config)
