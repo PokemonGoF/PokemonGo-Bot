@@ -71,7 +71,10 @@ class Events(object):
         self._events = []
         self.MaxEventlog = 50
         self.bot = bot
-        self._username = self.bot.config.username
+        if bot==None:
+            self._username = "TESTBUILD"
+        else:
+            self._username = self.bot.config.username
         #Hardcoded to avoid the file is being flooded on disk
         self._write_debug = False
 

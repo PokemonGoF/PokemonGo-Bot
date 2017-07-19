@@ -26,7 +26,7 @@ class UpdateLiveStatsTestCase(unittest.TestCase):
     }
 
     def setUp(self):
-        self.bot = FakeBot(self.bot)
+        self.bot = FakeBot()
         self.bot._player = {'username': 'Username'}
         self.bot.config.username = 'Login'
         self.worker = UpdateLiveStats(self.bot, self.config)
