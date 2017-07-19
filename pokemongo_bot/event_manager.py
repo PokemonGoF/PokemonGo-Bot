@@ -92,6 +92,10 @@ class Events(object):
 
 
     def add_event(self, event):
+        #Do not log anything on disk  when in Jenkins test build
+        if self._username == "TESTBUILD":
+            return
+
         if event.level=="debug" and self._write_debug==False:
             return
         else:
