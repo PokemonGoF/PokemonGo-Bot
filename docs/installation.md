@@ -51,9 +51,11 @@ This will check for an update and will start the bot afterwards.
 
 ### Easy installation
 Start by downloading for your platform:
+
 - [Mac](https://www.docker.com/products/docker#/mac)
 - [Windows](https://www.docker.com/products/docker#/windows)
 - [Linux](https://www.docker.com/products/docker#/linux)
+
 
 - Once you have Docker installed, simply create the various config files for your different accounts (e.g. `configs/config.json`, `configs/userdata.js`) and then create a Docker image for PokemonGo-Bot using the Dockerfile in this repo.
 
