@@ -26,8 +26,28 @@ def fort_details(bot, fort_id, latitude, longitude):
     """
     Lookup fort metadata and (if possible) serve from cache.
     """
-
+    first_call = False
     if fort_id not in FORT_CACHE:
+        if distance(latitude, longitude, bot.position[0], bot.position[1]) > 1000:
+          # Fort too far away to get the details!
+          FORT_CACHE[fort_id] = dict()
+          first_call = True
+        else:
+          """
+          Lookup the fort details and cache the response for future use.
+          """
+          request = bot.api.create_request()
+          request.fort_details(fort_id=fort_id, latitude=latitude, longitude=longitude)
+          try:
+              response_dict = request.call()
+              FORT_CACHE[fort_id] = response_dict['responses']['FORT_DETAILS']
+              first_call = True
+          except Exception:
+              FORT_CACHE[fort_id] = dict()
+              first_call = True
+
+    if not first_call and FORT_CACHE.get(fort_id, dict()) == dict():
+      if distance(latitude, longitude, bot.position[0], bot.position[1]) < 1000:
         """
         Lookup the fort details and cache the response for future use.
         """
@@ -37,7 +57,7 @@ def fort_details(bot, fort_id, latitude, longitude):
             response_dict = request.call()
             FORT_CACHE[fort_id] = response_dict['responses']['FORT_DETAILS']
         except Exception:
-            pass
+            FORT_CACHE[fort_id] = dict()
 
     # Just to avoid KeyErrors
     return FORT_CACHE.get(fort_id, {})
@@ -133,14 +153,14 @@ def getSeconds(strTime):
     try:
         x = dt.strptime(strTime, '%H:%M:%S')
         seconds = int(timedelta(hours=x.hour,minutes=x.minute,seconds=x.second).total_seconds())
-    except ValueError: 
+    except ValueError:
         seconds = 0;
-        
+
     if seconds < 0:
         seconds = 0;
-          
+
     return seconds
-    
+
 def format_time(seconds):
     # Return a string displaying the time given as seconds or minutes
     num, duration = 0, long(round(seconds))

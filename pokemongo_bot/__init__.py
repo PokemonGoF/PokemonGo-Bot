@@ -158,8 +158,8 @@ class PokemonGoBot(object):
             saved_info[key] = self.config.client_id
         saved_info.close()
 
-    def start(self):
-        self._setup_event_system()
+    def start(self, bot):
+        self._setup_event_system(bot)
         self.sleep_schedule = SleepSchedule(self, self.config.sleep_schedule) if self.config.sleep_schedule else None
         if self.sleep_schedule:
             self.sleep_schedule.work()
@@ -174,7 +174,7 @@ class PokemonGoBot(object):
 
         random.seed()
 
-    def _setup_event_system(self):
+    def _setup_event_system(self, bot):
         handlers = []
 
         color = self.config.logging and 'color' in self.config.logging and self.config.logging['color']
@@ -199,7 +199,7 @@ class PokemonGoBot(object):
                 remote_control = WebsocketRemoteControl(self).start()
 
         # @var EventManager
-        self.event_manager = EventManager(self.config.walker_limit_output, *handlers)
+        self.event_manager = EventManager(bot, self.config.walker_limit_output, *handlers)
         self._register_events()
         if self.config.show_events:
             self.event_manager.event_report()
@@ -372,6 +372,7 @@ class PokemonGoBot(object):
             'moving_to_fort',
             parameters=(
                 'fort_name',
+                'target_type',
                 'distance'
             )
         )
@@ -379,6 +380,7 @@ class PokemonGoBot(object):
             'moving_to_lured_fort',
             parameters=(
                 'fort_name',
+                'target_type',
                 'distance',
                 'lure_distance'
             )
@@ -386,7 +388,7 @@ class PokemonGoBot(object):
         self.event_manager.register_event(
             'spun_pokestop',
             parameters=(
-                'pokestop', 'exp', 'items'
+                'pokestop', 'exp', 'items', 'stop_kind', 'spin_amount_now'
             )
         )
         self.event_manager.register_event(
@@ -559,6 +561,8 @@ class PokemonGoBot(object):
         self.event_manager.register_event('catch_limit')
         self.event_manager.register_event('spin_limit')
         self.event_manager.register_event('show_best_pokemon', parameters=('pokemons'))
+        self.event_manager.register_event('revived_pokemon')
+        self.event_manager.register_event('healing_pokemon')
 
         # level up stuff
         self.event_manager.register_event(
@@ -984,8 +988,6 @@ class PokemonGoBot(object):
                 self.api = ApiWrapper(config=self.config)
                 self.api.set_position(*position)
                 self.login()
-                #self.api.set_signature_lib(self.get_encryption_lib())
-                #self.api.set_hash_lib(self.get_hash_lib())
 
     def login(self):
         status = {}
@@ -1111,66 +1113,6 @@ class PokemonGoBot(object):
 
         self.heartbeat()
 
-    def get_encryption_lib(self):
-        if _platform == "Windows" or _platform == "win32":
-            # Check if we are on 32 or 64 bit
-            if sys.maxsize > 2**32:
-                file_name = 'encrypt64.dll'
-            else:
-                file_name = 'encrypt32.dll'
-        if _platform.lower() == "darwin":
-            file_name= 'libencrypt-osx-64.so'
-        if _platform.lower() == "linux" or _platform.lower() == "linux2":
-            file_name = 'libencrypt-linux-x86-64.so'
-        if self.config.encrypt_location == '':
-            path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-        else:
-            path = self.config.encrypt_location
-
-        full_path = ''
-        if os.path.isfile(path + '/' + file_name): # check encrypt_location or local dir first
-            full_path = path + '/' + file_name
-        elif os.path.isfile(path + '/src/pgoapi/pgoapi/lib/' + file_name): # if not found, check pgoapi lib folder
-            full_path = path + '/src/pgoapi/pgoapi/lib/' + file_name
-
-        if full_path == '':
-            self.logger.error(file_name + ' is not found! Please place it in the bots root directory or set encrypt_location in config.')
-            sys.exit(1)
-        else:
-            self.logger.info('Found '+ file_name +'! Platform: ' + _platform + ' ' + file_name + ' directory: ' + full_path)
-
-        return full_path
-
-    def get_hash_lib(self):
-        if _platform == "Windows" or _platform == "win32":
-            # Check if we are on 32 or 64 bit
-            if sys.maxsize > 2**32:
-                file_name = 'niantichash64.dll'
-            else:
-                file_name = 'niantichash32.dll'
-        if _platform.lower() == "darwin":
-            file_name= 'libniantichash-macos-64.dylib'
-        if _platform.lower() == "linux" or _platform.lower() == "linux2":
-            file_name = 'libniantichash-linux-x86-64.so'
-        if self.config.encrypt_location == '':
-            path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-        else:
-            path = self.config.encrypt_location
-
-        full_path = ''
-        if os.path.isfile(path + '/' + file_name): # check encrypt_location or local dir first
-            full_path = path + '/'+ file_name
-        elif os.path.isfile(path + '/src/pgoapi/pgoapi/lib/' + file_name): # if not found, check pgoapi lib folder
-            full_path = path + '/src/pgoapi/pgoapi/lib/' + file_name
-
-        if full_path == '':
-            self.logger.error(file_name + ' is not found! Please place it in the bots root directory or set encrypt_location in config.')
-            sys.exit(1)
-        else:
-            self.logger.info('Found '+ file_name +'! Platform: ' + _platform + ' ' + file_name + ' directory: ' + full_path)
-
-        return full_path
-
     def _setup_api(self):
         # instantiate pgoapi @var ApiWrapper
         self.api = ApiWrapper(config=self.config)
@@ -1180,9 +1122,6 @@ class PokemonGoBot(object):
 
         self.login()
         # chain subrequests (methods) into one RPC call
-
-        #self.api.set_signature_lib(self.get_encryption_lib())
-        #self.api.set_hash_lib(self.get_hash_lib())
 
         self.logger.info('')
         # send empty map_cells and then our position
@@ -1715,6 +1654,25 @@ class PokemonGoBot(object):
             ))
 
         return forts
+
+        if order_by_distance:
+            forts.sort(key=lambda x: distance(
+                self.position[0],
+                self.position[1],
+                x['latitude'],
+                x['longitude']
+            ))
+
+        return forts
+    
+    def get_gyms(self, order_by_distance=False):
+        forts = [fort
+                 for fort in self.cell['forts']
+                 if 'latitude' in fort and 'type' not in fort]
+        # Need to filter out disabled gyms!
+        forts = filter(lambda x: x["enabled"] is True, forts)
+        forts = filter(lambda x: 'closed' not in fort, forts)
+        # forts = filter(lambda x: 'type' not in fort, forts)
 
         if order_by_distance:
             forts.sort(key=lambda x: distance(

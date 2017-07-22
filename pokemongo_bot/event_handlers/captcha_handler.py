@@ -33,7 +33,7 @@ class CaptchaHandler(EventHandler):
             file_name = 'chromedriver'
             
         full_path = ''
-        if os.path.isfile(path + '/' + file_name): # check encrypt_location or local dir first
+        if os.path.isfile(path + '/' + file_name): # check local dir first
             full_path = path + '/' + file_name
 
         if full_path == '':

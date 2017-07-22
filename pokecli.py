@@ -144,7 +144,7 @@ def main():
                 handler.setFormatter(formatter)
 
     def start_bot(bot, config):
-        bot.start()
+        bot.start(bot)
         initialize_task(bot, config)
         bot.metrics.capture_stats()
         bot.health_record = BotEvent(config)
@@ -755,7 +755,6 @@ def init_config():
         config.password = getpass("Password: ")
 
     config.favorite_locations = load.get('favorite_locations', [])
-    config.encrypt_location = load.get('encrypt_location', '')
     config.telegram_token = load.get('telegram_token', '')
     config.discord_token = load.get('discord_token', '')
     config.twocaptcha_token = load.get('2captcha_token', '')

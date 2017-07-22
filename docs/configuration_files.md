@@ -63,6 +63,7 @@
 - [BuddyPokemon](#buddypokemon)
 - [PokemonHunter](#pokemonhunter)
 - [BadPokemon](#badpokemon)
+- [HealPokemon](#healpokemon)
 
 # Configuration files
 
@@ -1486,3 +1487,32 @@ If you have any Pokemon that Niantic has marked as bad (red slashes) this will n
     }
 }
 ```
+
+## HealPokemon
+[[back to top](#table-of-contents)]
+
+### Description
+[[back to top](#table-of-contents)]
+
+If you have any Pokemon that are dead or need healing, this task will try to do that.
+
+### Options
+[[back to top](#table-of-contents)]
+
+* `heal`: `Default: True`. Should Pokemon be healed?
+* `revive`: `Default: True`. Should dead Pokemon be revived?
+
+
+### Sample configuration
+[[back to top](#table-of-contents)]
+```json
+{
+    "type": "BadPokemon",
+    "config": {
+        "enabled": true,
+        "heal": true,
+        "revive": true
+    }
+}
+```
+
