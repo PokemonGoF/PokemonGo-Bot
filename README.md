@@ -20,18 +20,8 @@ The project is currently setup in two main branches:
 - `dev` also known as `beta` - This is where the latest features are, but you may also experience some issues with stability/crashes.
 - `master` also known as `stable` - The bot 'should' be stable on this branch, and is generally well tested.
 
-## Slack Channel
-
-### Configuration issues/help
-If you need any help please don't create an issue as we have a great community on Slack. You can count on the community in [#help](https://pokemongo-bot.slack.com/messages/help/) channel.
- - [Click here to signup (first time only)](https://pokemongo-bot.herokuapp.com)
- - [Join here if you're already a member](https://pokemongo-bot.slack.com/messages/general/)
-
-### Development Channel 
- - #dev channel in slack
-
 ## Discord
-  - [Click here to join discord server](https://discord.gg/n3g5puF) ---->RECOMENDED<----
+  - [Click here to join discord server](https://discord.gg/n3g5puF)
 
 ### [Bugs / Issues](https://github.com/PokemonGoF/PokemonGo-Bot/issues?q=is%3Aissue+sort%3Aupdated-desc)
 If you discover a bug in the bot, please [search our issue tracker](https://github.com/PokemonGoF/PokemonGo-Bot/issues?q=is%3Aissue+sort%3Aupdated-desc) first. If it hasn't been reported, please [create a new issue](https://github.com/PokemonGoF/PokemonGo-Bot/issues/new) and ensure you follow the template guide so that our team can assist you as quickly as possible.
@@ -172,6 +162,7 @@ If this is your first time making a PR or aren't sure of the standard practice o
  * pogarek
  * goedzo
  * solderzzc aka BIG BOSS
+ * nbq aka Holoshed
  
 
 ## Disclaimer
