@@ -32,16 +32,12 @@ ADD https://raw.githubusercontent.com/$BUILD_REPO/$BUILD_BRANCH/requirements.txt
 RUN apk update
 RUN apk add ca-certificates wget
 RUN update-ca-certificates
-RUN wget -P /tmp/ http://pgoapi.com/pgoencrypt.tar.gz
 
 RUN apk -U --no-cache add --virtual .build-dependencies python-dev gcc make musl-dev git
-RUN tar xvzf /tmp/pgoencrypt.tar.gz -C /tmp
-RUN make -C /tmp/pgoencrypt/src
-RUN cp /tmp/pgoencrypt/src/libencrypt.so /usr/src/app/encrypt.so
 RUN ln -s locale.h /usr/include/xlocale.h
 RUN pip install --no-cache-dir -r requirements.txt
 RUN apk del .build-dependencies
-RUN rm -rf /var/cache/apk/* /tmp/pgoencrypt* /usr/include/xlocale.h
+RUN rm -rf /var/cache/apk/* /usr/include/xlocale.h
 RUN find / -name '*.pyc' -o -name '*.pyo' | xargs -rn1 rm -f
 
 

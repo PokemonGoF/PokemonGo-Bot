@@ -13,23 +13,6 @@ pip install -r requirements.txt --upgrade
 pip install -r requirements.txt
 }
 
-function Pokebotencrypt () {
-echo "Start to make encrypt.so."
-if [ -x "$(command -v curl)" ]
-then
-curl -O http://pgoapi.com/pgoencrypt.tar.gz
-else
-wget http://pgoapi.com/pgoencrypt.tar.gz
-fi
-tar -xf pgoencrypt.tar.gz
-cd pgoencrypt/src/
-make
-mv libencrypt.so $pokebotpath/encrypt.so
-cd ../..
-rm -rf pgoencrypt.tar.gz
-rm -rf pgoencrypt
-}
-
 function Pokebotescapestring () {
 echo "$1" | sed 's/\//\\\//g' | sed 's/"/\\"/g' # escape slash and double quotes
 }
@@ -42,7 +25,7 @@ Auth generator
 Enter 1 for Google or 2 for Pokemon Trainer Club (PTC)
 -----------------
 " auth
-read -p "Input E-Mail (Google) or Username(PTC)
+read -p "Input E-Mail (Google) or Username (PTC)
 " username
 read -p "Input Password
 " -s password
@@ -131,8 +114,8 @@ echo "You are on Open SUSE"
 sudo zypper update
 sudo zypper -y install python-pip python-devel gcc make
 else
-echo "Please check if you have  python pip gcc make  installed on your device."
-echo "Wait 5 seconds to continue or Use ctrl+c to interrupt this shell."
+echo "Please check if you have python, pip, gcc and make installed on your device."
+echo "Wait 5 seconds to continue or use ctrl+c to interrupt this shell."
 sleep 5
 fi
 if [ ! -e /etc/fedora-release ]
@@ -141,7 +124,6 @@ easy_install virtualenv
 fi
 Pokebotreset
 Pokebotupdate
-Pokebotencrypt
 echo "Install complete. Starting to generate auth.json and config.json."
 Pokebotauth
 Pokebotconfig
@@ -174,7 +156,6 @@ echo "	-i,--install.		Install PokemonGo-Bot."
 echo "	-b,--backup.		Backup config files."
 echo "	-a,--auth.		Easy auth generator."
 echo "	-c,--config.		Easy config generator."
-echo "	-e,--encrypt.		Make encrypt.so."
 echo "	-r,--reset.		Force sync source branch."
 echo "	-u,--update.		Command git pull to update."
 }
@@ -182,9 +163,6 @@ echo "	-u,--update.		Command git pull to update."
 case $* in
 --install|-i)
 Pokebotinstall
-;;
---encrypt|-e)
-Pokebotencrypt
 ;;
 --reset|-r)
 Pokebotreset
@@ -204,7 +182,6 @@ echo "Backup complete."
 --auth|-a)
 Pokebotauth
 ;;
-
 --config|-c)
 Pokebotconfig
 ;;
