@@ -471,7 +471,13 @@
                 "order_by": "cp",
                 "min_interval":360,
                 "min_recheck":30,
-                "max_recheck":120
+                "max_recheck":120,
+                "chain_fill_gyms": true,
+                "ignore_max_cp_pokemon": ["Blissey"],
+                "never_place": ["Machamp"],
+                "leave_at_least_spots": 1,
+                "take_at_most": 10,
+                "pick_random_pokemon": true
             }
         },
         {
