@@ -59,6 +59,21 @@ class GymPokemon(BaseTask):
         self.min_interval = self.config.get('min_interval', 360)
         self.min_recheck = self.config.get('min_recheck', 30)
         self.max_recheck = self.config.get('max_recheck', 120)
+        
+        self.take_at_most = self.config.get('take_at_most', 20)
+        if self.take_at_most > 20:
+            self.logger.warning("We can take more than 20 gyms!")
+            self.take_at_most = 20
+        self.leave_at_least_spots = self.config.get('leave_at_least_spots', 0)
+        if self.leave_at_least_spots > 4:
+            self.logger.warning("There are only 6 spots in a gym, when we drop a Pokemon in that would leave 5 spots! Setting leave open spots to 4!")
+            self.leave_at_least_spots = 4
+        self.chain_fill_gyms = self.config.get('chain_fill_gyms', True)
+        self.ignore_max_cp_pokemon = self.config.get('allow_above_cp', ["Blissey"])
+        self.never_place = self.config.get('never_place', [])
+
+        self.pick_random_pokemon = self.config.get('pick_random_pokemon', True)
+
         self.recheck = datetime.now()
         self.walker = self.config.get('walker', 'StepWalker')
         self.destination = None
@@ -72,6 +87,7 @@ class GymPokemon(BaseTask):
         self.check_interval = 0
         self.gyms = []
         self.raid_gyms = dict()
+
         self.bot.event_manager.register_event('gym_error')
         self.bot.event_manager.register_event('fed_pokemon')
         self.bot.event_manager.register_event('gym_full')
@@ -120,9 +136,9 @@ class GymPokemon(BaseTask):
         if self.bot.softban:
             return WorkerResult.SUCCESS
 
-        if len(self.fort_pokemons) >= 20:
+        if len(self.fort_pokemons) >= self.take_at_most:
             if self._should_print():
-                self.logger.info("We have a max of 20 Pokemon in gyms.")
+                self.logger.info("We have a max of %s Pokemon in gyms." % self.take_at_most)
             return WorkerResult.SUCCESS
 
         if not self.should_run():
@@ -219,9 +235,17 @@ class GymPokemon(BaseTask):
                     if 'gym_display' in gym:
                         display = gym['gym_display']
                         if 'slots_available' in display:
-                            self.logger.info("Gym has %s open spots!" % display['slots_available'])
-                            self.destination = gym
-                            break
+                            if self.leave_at_least_spots > 0:
+                                if display['slots_available'] > self.leave_at_least_spots:
+                                    self.logger.info("Gym has %s open spots!" % display['slots_available'])
+                                    self.destination = gym
+                                    break
+                                else:
+                                    self.logger.info("Gym has %s open spots, but we don't drop Pokemon in it because that would leave less than %s open spots" % (display['slots_available'], self.leave_at_least_spots))
+                            else:
+                                self.logger.info("Gym has %s open spots!" % display['slots_available'])
+                                self.destination = gym
+                                break
             else:
                 # self.logger.info("Found a Neutral gym?")
                 # self.logger.info("Info: %s" % gym)
@@ -295,13 +319,19 @@ class GymPokemon(BaseTask):
             current_pokemons = self._get_pokemons_in_gym(gym_details)
             self.drop_pokemon_in_gym(self.destination, current_pokemons)
             self.destination = None
-            # Look around if there are more gyms to fill
-            self.determin_new_destination()
-            # If there is none, we're done, else we go to the next!
-            if self.destination is None:
+            if len(self.fort_pokemons) >= self.take_at_most:
+                self.logger.info("We have a max of %s Pokemon in gyms." % self.take_at_most)
                 return WorkerResult.SUCCESS
+            elif self.chain_fill_gyms:
+                # Look around if there are more gyms to fill
+                self.determin_new_destination()
+                # If there is none, we're done, else we go to the next!
+                if self.destination is None:
+                    return WorkerResult.SUCCESS
+                else:
+                    return WorkerResult.RUNNING
             else:
-                return WorkerResult.RUNNING
+                return WorkerResult.SUCCESS
     
     def get_gym_details(self, gym):
         lat = gym['latitude']
@@ -397,12 +427,22 @@ class GymPokemon(BaseTask):
                     self.raid_gyms[gym["id"]] = raid_ends
                     return WorkerResult.SUCCESS
                 else:
+                    first_time = False
                     while raid_ends > datetime.now():
-                        self.logger.info("Waiting for %s seconds for raid to end..." % (raid_ends-datetime.today()).seconds)
-                        if (raid_ends-datetime.today()).seconds > 20:
+                        raid_ending = (raid_ends-datetime.today()).seconds
+                        sleep_m, sleep_s = divmod(raid_ending, 60)
+                        sleep_h, sleep_m = divmod(sleep_m, 60)
+                        sleep_hms = '%02d:%02d:%02d' % (sleep_h, sleep_m, sleep_s)
+                        if not first_time:
+                            # Clear the last log line!
+                            stdout.write("\033[1A\033[0K\r")
+                            stdout.flush()
+                        first_time = True
+                        self.logger.info("Waiting for %s for raid to end..." % sleep_hms)
+                        if raid_ending > 20:
                             sleep(20)
                         else:
-                            sleep((raid_ends-datetime.today()).seconds)
+                            sleep(raid_ending)
                             break
             else:
                 self.logger.info("Raid has not begun yet!")
@@ -416,11 +456,20 @@ class GymPokemon(BaseTask):
             if lockout_time > datetime.now():
                 self.logger.info("Lockout time: %s" % lockout_time.strftime('%Y-%m-%d %H:%M:%S.%f'))
                 while lockout_time > datetime.now():
-                    self.logger.info("Waiting for %s seconds deployment lockout to end..." % (lockout_time-datetime.today()).seconds)
-                    if (lockout_time-datetime.today()).seconds > 40:
+                    lockout_ending = (lockout_time-datetime.today()).seconds
+                    sleep_m, sleep_s = divmod(lockout_ending, 60)
+                    sleep_h, sleep_m = divmod(sleep_m, 60)
+                    sleep_hms = '%02d:%02d:%02d' % (sleep_h, sleep_m, sleep_s)
+                    if not first_time:
+                        # Clear the last log line!
+                        stdout.write("\033[1A\033[0K\r")
+                        stdout.flush()
+                    first_time = True
+                    self.logger.info("Waiting for %s deployment lockout to end..." % sleep_hms)
+                    if lockout_ending > 40:
                         sleep(40)
                     else:
-                        sleep((lockout_time-datetime.today()).seconds)
+                        sleep(lockout_ending)
                         break
 
         #FortDeployPokemon
@@ -450,6 +499,7 @@ class GymPokemon(BaseTask):
             # self.logger.info("Status: %s" % result)
             if result == 1:
                 self.dropped_gyms.append(gym["id"])
+                self.fort_pokemons.append(fort_pokemon)
                 gym_details = self.get_gym_details(gym)
                 # SUCCES
                 #self.logger.info("We deployed %s (%s CP) in the gym! We now have %s Pokemon in gyms!" % (fort_pokemon.name, fort_pokemon.cp, len(self.dropped_gyms)))
@@ -592,9 +642,11 @@ class GymPokemon(BaseTask):
         # Don't place a Pokemon which is already in the gym (prevent ALL Blissey etc)
         possible_pokemons = [p for p in self.pokemons if not p.name in current_pokemons]
         # Don't put in Pokemon above 3000 cp (morale drops too fast)
-        possible_pokemons = [p for p in possible_pokemons if p.cp < 3000]
+        possible_pokemons = [p for p in possible_pokemons if p.cp < 3000 and p.name not in self.ignore_max_cp_pokemon]
         # Filter out "bad" Pokemon
         possible_pokemons = [p for p in possible_pokemons if not p.is_bad]
+        # Filter out "never place" Pokemon
+        possible_pokemons = [p for p in possible_pokemons if p.name not in self.never_place]
         # HP Must be max
         possible_pokemons = [p for p in possible_pokemons if p.hp == p.hp_max]
         possible_pokemons = [p for p in possible_pokemons if not p.in_fort]
@@ -602,6 +654,7 @@ class GymPokemon(BaseTask):
         pokemons_ordered = sorted(possible_pokemons, key=lambda x: get_poke_info(self.order_by, x), reverse=True)
         # Top 20 picks
         pokemons_ordered = pokemons_ordered[0:20]
-        # Pick a random one!
-        random.shuffle(pokemons_ordered)
+        if self.pick_random_pokemon:
+            # Pick a random one!
+            random.shuffle(pokemons_ordered)
         return pokemons_ordered[0]
