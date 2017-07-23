@@ -457,6 +457,7 @@ class GymPokemon(BaseTask):
 
             if lockout_time > datetime.now():
                 self.logger.info("Lockout time: %s" % lockout_time.strftime('%Y-%m-%d %H:%M:%S.%f'))
+                first_time = False
                 while lockout_time > datetime.now():
                     lockout_ending = (lockout_time-datetime.today()).seconds
                     sleep_m, sleep_s = divmod(lockout_ending, 60)
