@@ -52,7 +52,8 @@ class Event(object):
             self.sender = str(sender).encode('ascii', 'xmlcharrefreplace')
         
         self.level = str(level).encode('ascii', 'xmlcharrefreplace')
-        self.formatted = str(formatted).encode('ascii', 'xmlcharrefreplace')
+        #self.formatted = str(formatted).encode('ascii', 'xmlcharrefreplace')
+        self.formatted = str(formatted).encode('utf-8', 'xmlcharrefreplace')
         self.data = str(data).encode('ascii', 'xmlcharrefreplace')
         self.friendly_msg = ""
         
