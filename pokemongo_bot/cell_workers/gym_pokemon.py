@@ -23,6 +23,8 @@ from pokemongo_bot.tree_config_builder import ConfigException
 from pokemongo_bot.walkers.walker_factory import walker_factory
 from pokemongo_bot.inventory import Pokemons
 
+from sys import stdout
+
 GYM_DETAIL_RESULT_SUCCESS = 1
 GYM_DETAIL_RESULT_OUT_OF_RANGE = 2
 GYM_DETAIL_RESULT_UNSET = 0
