@@ -119,13 +119,13 @@ class CompleteTutorial(BaseTask):
         # at the first choices in general, so fully
         # random on the whole avatar space is not the way to go either
         avatar['skin']=random.randint(0,3)
-        avatar['hair']=random.randint(0,3)
-        avatar['shirt']=random.randint(0,3)
-        avatar['pants']=random.randint(0,3)
-        avatar['hat']=random.randint(0,3)
-        avatar['shoes']=random.randint(0,3)
-        avatar['eyes']=random.randint(0,3)
-        avatar['backpack']=random.randint(0,3)
+        avatar['avartar_hair']=random.randint(0,3)
+        avatar['avartar_shirt']=random.randint(0,3)
+        avatar['avartar_pants']=random.randint(0,3)
+        avatar['avartar_hat']=random.randint(0,3)
+        avatar['avartar_shoes']=random.randint(0,3)
+        avatar['avartar_eyes']=random.randint(0,3)
+        avatar['avartar_backpack']=random.randint(0,3)
         return avatar
 
     def _set_avatar(self):
