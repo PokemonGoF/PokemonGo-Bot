@@ -1516,3 +1516,47 @@ If you have any Pokemon that are dead or need healing, this task will try to do 
 }
 ```
 
+## GymPokemon
+[[back to top](#table-of-contents)]
+
+### Description
+[[back to top](#table-of-contents)]
+
+Drop a Pokemon in a Gym when there is room for. No fighting will be done! Never!
+
+### Options
+[[back to top](#table-of-contents)]
+
+* `enabled`: `Default: False`. Enable or distable this task
+* `order_by`: `Default: "cp"`. Based on what atrribute should be sorted (decending)
+* `min_interval`: `Default: 360`. Time in seconds between printing the Pokemon we have in gyms
+* `min_recheck`: `Default: 30`. Minimal time in seconds to check for new gyms in range
+* `max_recheck`: `Default: 120`. Maxium time in seconds to check for new gyms in range
+* `chain_fill_gyms`: `Default: True`. When we drop a Pokemon in a gym, should we imediatly move to the next gym if a open spot is found?
+* `ignore_max_cp_pokemon`: `Default: ["Blissey"]`. A list of Pokemon who can be placed in gyms even if above 3000cp
+* `never_place`: `Default: []`. A list of Pokemon that should never be placed in a gym
+* `leave_at_least_spots`: `Default: 0`. How many open spots should we leave for normal players? (Max 4!!)
+* `take_at_most`: `Default: 20`. How many gym should we be in at the same time? Max 20!!
+* `pick_random_pokemon`: `Default: True`. Pick a random Pokemon from the top 20 sorted by "order_by", or the top 1 availible?
+
+
+### Sample configuration
+[[back to top](#table-of-contents)]
+```json
+{
+  "type": "GymPokemon",
+  "config": {
+      "enabled": false,
+      "order_by": "cp",
+      "min_interval":360,
+      "min_recheck":30,
+      "max_recheck":120,
+      "chain_fill_gyms": true,
+      "ignore_max_cp_pokemon": ["Blissey"],
+      "never_place": ["Machamp"],
+      "leave_at_least_spots": 1,
+      "take_at_most": 10,
+      "pick_random_pokemon": true
+  }
+}
+```
