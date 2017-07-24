@@ -471,6 +471,7 @@ class GymPokemon(BaseTask):
                     self.logger.info("Waiting for %s deployment lockout to end..." % sleep_hms)
                     if lockout_ending > 40:
                         sleep(40)
+                        break
                     else:
                         sleep(lockout_ending)
                         break
