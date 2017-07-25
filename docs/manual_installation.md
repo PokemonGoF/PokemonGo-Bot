@@ -147,7 +147,7 @@ cd ..
 *Run the following commands in the Command Prompt with Administrator Privileges*
 
 ```
-cd PokemonGo-Bot directory
+cd to PokemonGo-Bot directory
 git pull
 git submodule update --init --recursive
 ```
