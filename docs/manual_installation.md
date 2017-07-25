@@ -131,7 +131,7 @@ source bin/activate
 cd C:\Python27\
 pip install --upgrade pip
 cd ..
-cd PokemonGo-Bot
+cd to PokemonGo-Bot directory
 git clone --recursive -b dev https://github.com/PokemonGoF/PokemonGo-Bot
 pip install --upgrade -r requirements.txt
 git pull
@@ -147,7 +147,7 @@ cd ..
 *Run the following commands in the Command Prompt with Administrator Privileges*
 
 ```
-cd C:/Python27/PokemonGo-Bot/
+cd PokemonGo-Bot directory
 git pull
 git submodule update --init --recursive
 ```
