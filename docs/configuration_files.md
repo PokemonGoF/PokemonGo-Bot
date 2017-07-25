@@ -726,7 +726,10 @@ Setting | Description
 `pinap_on_level_below` | Set at what level (and below) of the pokemon should Pinap berry br use on. Set to 0 to disable use of pinap berry
 `pinap_operator` | Set if Pinap berry going to be use together with "use_pinap_on_vip" or without (Operator "or", "and")
 `pinap_ignore_threshold` | Set if bot is going to ignore catch rate threshold when using pinap berry
-`vip_berry_threshold` | The ideal catch rate threshold before using a razz berry on VIP pokemon
+`smart_pinap_enabled` | Set if bot is going to use the smart pinap function that uses pinap berry on high catch rate mons (does not interfere razz berry use)
+`smart_pinap_threshold` | If set to 0.85, pinap will be used on non-VIP with catch rate higher rate than 0.85
+`smart_pinap_to_keep` | Number of pinaps to keep to be used on VIP 
+`vip_berry_threshold` | The ideal catch rate threshold before using a razz berry on VIP pokemon (If smart_pinap_enabled=true, VIP above this catch rate will be pinapped)
 `flee_count` | The maximum number of times catching animation will play before the pokemon breaks free
 `flee_duration` | The length of time for each animation
 `catch_wait_min`| The minimum amount of time to throw the ball
