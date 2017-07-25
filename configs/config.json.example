@@ -477,7 +477,8 @@
                 "never_place": ["Machamp"],
                 "leave_at_least_spots": 1,
                 "take_at_most": 10,
-                "pick_random_pokemon": true
+                "pick_random_pokemon": true,
+                "can_be_disabled_by_catch_limter": false
             }
         },
         {
