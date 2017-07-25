@@ -66,7 +66,7 @@ if sys.version_info >= (2, 7, 9):
 try:
     import pkg_resources
     pgoapi_version = pkg_resources.get_distribution("pgoapi").version
-    if pgoapi_version != '1.2.0':
+    if pgoapi_version != '1.2.1':
         print "Run following command to get latest update: `pip install -r requirements.txt --upgrade`"
         sys.exit(1)
 except pkg_resources.DistributionNotFound:
@@ -755,7 +755,6 @@ def init_config():
         config.password = getpass("Password: ")
 
     config.favorite_locations = load.get('favorite_locations', [])
-    config.encrypt_location = load.get('encrypt_location', '')
     config.telegram_token = load.get('telegram_token', '')
     config.discord_token = load.get('discord_token', '')
     config.twocaptcha_token = load.get('2captcha_token', '')

@@ -57,7 +57,9 @@ FOR /F "usebackq" %%A IN ('%BotPath%\configs\config.json.optimizer.example') DO 
 FOR /F "usebackq" %%A IN ('%BotPath%\configs\config.json.path.example') DO set OldSizePath=%%~zA
 FOR /F "usebackq" %%A IN ('%BotPath%\configs\config.json.pokemon.example') DO set OldSizePokemon=%%~zA
 git pull
+pip uninstall -y pgoapi
 git submodule update --init --recursive
+pip install --upgrade -r requirements.txt
 FOR /F "usebackq" %%A IN ('%BotPath%\configs\config.json.example') DO set SizeNormal=%%~zA
 FOR /F "usebackq" %%A IN ('%BotPath%\configs\config.json.cluster.example') DO set SizeCluster=%%~zA
 FOR /F "usebackq" %%A IN ('%BotPath%\configs\config.json.map.example') DO set SizeMap=%%~zA

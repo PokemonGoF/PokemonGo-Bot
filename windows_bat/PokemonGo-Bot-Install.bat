@@ -231,24 +231,6 @@ ECHO.--------------------Creating Backup--------------------
 call:ech
 ECHO.----- Checking Creating Backup ----->>%log%
 ECHO.>>%log%
-IF EXIST %PGBotPath%\encrypt.so (
-ECHO.Copying "%PGBotPath%\encrypt.so" to %DownPath%>>%log%
-COPY %PGBotPath%\encrypt.so %DownPath%>>%log%
-) else (
-ECHO.No "%PGBotPath%\encrypt.so">>%log%
-)
-IF EXIST %PGBotPath%\encrypt.dll (
-ECHO.Copying %PGBotPath%\encrypt.dll to %DownPath%>>%log%
-COPY %PGBotPath%\encrypt.dll %DownPath%>>%log%
-) else (
-ECHO.No "%PGBotPath%\encrypt.dll">>%log%
-)
-IF EXIST %PGBotPath%\encrypt_64.dll (
-ECHO.Copying "%PGBotPath%\encrypt_64.dll" to %DownPath%>>%log%
-COPY %PGBotPath%\encrypt_64.dll %DownPath%>>%log%
-) else (
-ECHO.No "%PGBotPath%\encrypt_64.dll">>%log%
-)
 IF EXIST %PGBotPath%\configs\auth.json (
 ECHO.Copying "%PGBotPath%\configs\auth.json" to %DownPath%>>%log%
 COPY %PGBotPath%\configs\auth.json %DownPath%>>%log%
@@ -274,7 +256,7 @@ ECHO.
 call:ech
 ECHO.--------------------Downloading PokemonGo-Bot--------------------
 call:ech
-ECHO. Be patience... We are working hard to download and install the PokemonGo-Bot.
+ECHO. Please wait... We are now downloading and installing the files for PokemonGo-Bot.
 ECHO.----- Checking Removing Bot Folder ----->>%log%
 ECHO.>>%log%
 IF EXIST %PGBotPath% rmdir %PGBotPath% /s /q
@@ -311,24 +293,6 @@ ECHO.--------------------Restoring Backup--------------------
 call:ech
 ECHO.----- Checking Restoring Backup ----->>%log%
 ECHO.>>%log%
-IF EXIST %~dp0encrypt.so (
-ECHO.Copying %~dp0encrypt.so to %PGBotPath%>>%log%
-COPY %~dp0encrypt.so %PGBotPath%>>%log%
-) else (
-ECHO.No "%~dp0encrypt.so">>%log%
-)
-IF EXIST %~dp0encrypt.dll (
-ECHO.Copying %~dp0encrypt.dll to %PGBotPath%>>%log%
-COPY %~dp0encrypt.dll %PGBotPath%>>%log%
-) else (
-ECHO.No "%~dp0encrypt.dll">>%log%
-)
-IF EXIST %~dp0encrypt_64.dll (
-ECHO.Copying %~dp0encrypt_64.dll to %PGBotPath%>>%log%
-COPY %~dp0encrypt_64.dll %PGBotPath%>>%log%
-) else (
-ECHO.No "%~dp0encrypt_64.dll">>%log%
-)
 IF EXIST %~dp0auth.json (
 ECHO.Copying %~dp0auth.json to %PGBotPath%\configs\>>%log%
 COPY %~dp0auth.json %PGBotPath%\configs\>>%log%
@@ -346,24 +310,6 @@ ECHO.Copying %~dp0userdata.js to %PGBotPath%\web\config\>>%log%
 COPY %~dp0userdata.js %PGBotPath%\web\config\>>%log%
 ) else (
 ECHO.No "%~dp0userdata.js">>%log%
-)
-IF EXIST %DownPath%\encrypt.so (
-ECHO.Copying %DownPath%\encrypt.so to %PGBotPath%>>%log%
-COPY %DownPath%\encrypt.so %PGBotPath%>>%log%
-) else (
-ECHO.No "%DownPath%\encrypt.so">>%log%
-)
-IF EXIST %DownPath%\encrypt.dll (
-ECHO.Copying %DownPath%\encrypt.dll to %PGBotPath%>>%log%
-COPY %DownPath%\encrypt.dll %PGBotPath%>>%log%
-) else (
-ECHO.No "%DownPath%\encrypt.dll">>%log%
-)
-IF EXIST %DownPath%\encrypt_64.dll (
-ECHO.Copying %DownPath%\encrypt_64.dll to %PGBotPath%>>%log%
-COPY %DownPath%\encrypt_64.dll %PGBotPath%>>%log%
-) else (
-ECHO.No "%DownPath%\encrypt_64.dll">>%log%
 )
 IF EXIST %DownPath%\auth.json (
 ECHO.Copying %DownPath%\auth.json to %PGBotPath%\configs\>>%log%
@@ -390,28 +336,20 @@ ECHO. ----- End Log ----->>%log%
 cls
 ECHO.--------------------File customization--------------------
 call:ech
-ECHO.Before starting the bot, please copy the following files to %PGBotPath% if you dont have them yet.
-call:ech
-IF NOT EXIST %PGBotPath%\encrypt*.* (
-ECHO.---- encrypt.so / encrypt.dll or encrypt_64.dll
-ECHO.     Get them from our Slack chat^^! 
-ECHO.     "https://pokemongo-bot.herokuapp.com/"
-) else (
-ECHO.
-)
-call:ech
 ECHO.Remember to configure auth.json, config.json and userdata.js^^!
+call:ech
+ECHO.BOT CONFIGURATION INSTRUCTIONS:
+ECHO."https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/docs/configuration_files.md"
 call:ech
 ECHO."%PGBotPath%\configs\auth.json"
 ECHO."%PGBotPath%\configs\config.json"
-ECHO.INSTRUCTIONS:
-ECHO."https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/docs/configuration_files.md"
 call:ech
-ECHO."%PGBotPath%\web\config\userdata.js"
-ECHO.INSTRUCTIONS:
+ECHO.MAP CONFIGURATION INSTRUCTIONS:
 ECHO."https://github.com/PokemonGoF/PokemonGo-Bot/blob/master/docs/google_map.md"
 call:ech
-ECHO.To get an Google Maps API Key:
+ECHO."%PGBotPath%\web\config\userdata.js"
+call:ech
+ECHO.TO GET A GOOGLE MAPS API KEY:
 ECHO."https://developers.google.com/maps/documentation/javascript/get-api-key"
 call:ech
 @PAUSE
@@ -420,10 +358,7 @@ CLS
 call:ech
 ECHO.You can configure the auth.json and userdata.js files when you choose y in the next question.
 ECHO.
-ECHO.If you first want to get your Google MAPS API key and encrypt dll/so choose n, 
-ECHO.
-ECHO.put encrypt dll/so in %PGBotPath% and then,
-ECHO.
+ECHO.If you first want to get your Google MAPS API key choose n then 
 ECHO.start PokemonGo-Bot-Configurator.bat in %PGBotPath%\windows_bat\
 call:ech
 SET /p json="Do you want to start the PokemonGo-Bot-Configurator (Y/N): "
