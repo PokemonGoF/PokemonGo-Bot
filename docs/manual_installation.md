@@ -129,14 +129,17 @@ source bin/activate
 
 ```
 cd C:\Python27\
-pip install --upgrade pip
-pip install --upgrade virtualenv
+pip2 install --upgrade pip
+cd ..
+cd PokemonGo-Bot
 git clone --recursive -b dev https://github.com/PokemonGoF/PokemonGo-Bot
-pip install --upgrade -r C:/Python27/PokemonGo-Bot/requirements.txt
-cd C:/Python27/PokemonGo-Bot/
-virtualenv .
-call C:\Python27\PokemonGo-Bot\Scripts\activate.bat
-pip install --upgrade -r C:/Python27/PokemonGo-Bot/requirements.txt
+pip install --upgrade -r requirements.txt
+git pull
+cd web
+git checkout master
+git pull
+cd ..
+
 ```
 
 ##### Update
@@ -146,6 +149,5 @@ pip install --upgrade -r C:/Python27/PokemonGo-Bot/requirements.txt
 ```
 cd C:/Python27/PokemonGo-Bot/
 git pull
-pip uninstall pgoapi
 git submodule update --init --recursive
 ```
