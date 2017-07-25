@@ -12,6 +12,7 @@
         - [transfer](#transfer)
         - [evolve](#evolve)
         - [evolve_to_final](#evolve_to_final)
+        - [use_evolution_items](#use_evolution_items)
         - [evolve_time](#evolve_time)
         - [evolve_for_xp](#evolve_for_xp)
         - [evolve_only_with_lucky_egg](#evolve_only_with_lucky_egg)
@@ -79,15 +80,25 @@ In case that logging will be enabled, look for .log file in data folder.
                 "upgrade": true,
                 "upgrade_level": 30,
                 "groups": {
-                    "gym": ["Dragonite", "Snorlax", "Lapras", "Arcanine"]
+                    "gym": [
+                        "Dragonite",
+                        "Snorlax",
+                        "Lapras",
+                        "Arcanine"
+                    ]
                 },
                 "rules": [
                     {
-                        "// Of all Pokemon with less than 124 candies, buddy the Pokemon having the highest maximum cp": {},
+                        "// Pokemon with less than 124 candies, buddy the Pokemon having the highest maximum CP": {},
                         "mode": "overall",
                         "top": 1,
-                        "sort": ["max_cp", "cp"],
-                        "keep": {"candy": -124},
+                        "sort": [
+                            "max_cp",
+                            "cp"
+                        ],
+                        "keep": {
+                            "candy": -124
+                        },
                         "evolve": false,
                         "buddy": true
                     },
@@ -95,46 +106,78 @@ In case that logging will be enabled, look for .log file in data folder.
                         "// Buddy the Pokemon having the less candies. In case no Pokemon match first rule": {},
                         "mode": "overall",
                         "top": 1,
-                        "sort": ["-candy", "max_cp", "cp"],
+                        "sort": [
+                            "-candy",
+                            "max_cp",
+                            "cp"
+                        ],
                         "evolve": false,
                         "buddy": true
                     },
                     {
                         "mode": "by_pokemon",
-                        "names": ["gym"],
+                        "names": [
+                            "gym"
+                        ],
                         "top": 3,
-                        "sort": ["iv", "ncp"],
-                        "evolve": {"iv": 0.9, "ncp": 0.9},
-                        "upgrade": {"iv": 0.9, "ncp": 0.9}
+                        "sort": [
+                            "iv",
+                            "ncp"
+                            ],
+                        "evolve": {
+                            "iv": 0.9,
+                            "ncp": 0.9
+                        },
+                        "upgrade": {
+                            "iv": 0.9,
+                            "ncp": 0.9
+                        }
                     },
                     {
-                        "// Keep best iv of each family and evolve it if its iv is greater than 0.9": {},
+                        "// Keep best IV of each family and evolve it if its IV > 0.9": {},
                         "mode": "by_family",
                         "top": 1,
-                        "sort": ["iv"],
-                        "evolve": {"iv": 0.9}
+                        "sort": [
+                            "iv"
+                        ],
+                        "evolve": {
+                            "iv": 0.9
+                        }
                     },
                     {
-                        "// Keep best ncp of each family and evolve it if its ncp is greater than 0.9": {},
+                        "// Keep best NCP of each family and evolve it if its NCP > 0.9": {},
                         "mode": "by_family",
                         "top": 1,
-                        "sort": ["ncp"],
-                        "evolve": {"ncp": 0.9}
+                        "sort": [
+                            "ncp"
+                        ],
+                        "evolve": {
+                            "ncp": 0.9
+                        }
                     },
                     {
-                        "// Keep best cp of each family but do not evolve it": {},
+                        "// Keep best CP of each family but do not evolve it": {},
                         "mode": "by_family",
                         "top": 1,
-                        "sort": ["cp"],
+                        "sort": [
+                            "cp"
+                        ],
                         "evolve": false
                     },
                     {
-                        "// For Pokemon of final evolution and with iv greater than 0.9, keep the best dps_attack": {},
+                        "// For Pokemon of final evolution and iv > 0.9, keep the best dps_attack": {},
                         "mode": "by_pokemon",
-                        "names": ["!with_next_evolution"],
+                        "names": [
+                            "!with_next_evolution"
+                        ],
                         "top": 1,
-                        "sort": ["dps_attack", "iv"],
-                        "keep": {"iv": 0.9}
+                        "sort": [
+                            "dps_attack",
+                            "iv"
+                        ],
+                        "keep": {
+                            "iv": 0.9
+                        }
                     }
                 ]
             }
@@ -238,6 +281,7 @@ Note that in test mode, you can see logs explaining which Pokemon would be evolv
 Evolved Magikarp [IV 0.96] [CP 231] [+1000 xp] [82 candies]
 ```
 
+
 [[back to top](#pokemon-optimizer)]
 
 ### evolve_to_final
@@ -245,9 +289,9 @@ Evolved Magikarp [IV 0.96] [CP 231] [+1000 xp] [82 candies]
 |-------------------|-----------------|---------|
 | `evolve_to_final` | `true`, `false` | `true`  |
 
-Choose whether or not you want to wait to have enough candies to evolve Pokemon to their final evolution.
+Choose whether or not you want to wait to have enough candies to evolve Pokemon to their normal final evolution.
 
-At `true`, it is only when you have enough candies that your best Pokemon will be evolved directly to their final evolution.
+At `true`, it is only when you have enough candies that your best Pokemon will be evolved directly to their normal final evolution.
 <br>At `false`, your best Pokemon are allowed to evolve progressively.
 
 ```
@@ -255,6 +299,27 @@ Evolving 2 Pokemon (the best)
 Evolved Weedle [IV 0.91] [CP 246] [60 candies] [+500 xp]
 Evolved Kakuna [IV 0.91] [CP 265] [11 candies] [+500 xp]
 ```
+
+
+[[back to top](#pokemon-optimizer)]
+
+### use_evolution_items
+| Parameter             | Possible values | Default  |
+|-----------------------|-----------------|----------|
+| `use_evolution_items` | `true`, `false` | `false`  |
+
+Choose whether or not you want to wait to have enough candies to evolve Pokemon to their alternative final evolution.
+
+At `true`, it is only when you have enough candies and special item will evolved your pokemon to their alternative final evolution.
+<br>At `false`, will evolve to normal final evolution.
+
+```
+Evolving 3 Pokemon (the best)
+Evolved Oddish [IV 0.91] [CP 246] [60 candies] [+500 xp]
+Evolved Gloom [IV 0.91] [CP 265] [11 candies] [+500 xp]
+Evolved Bellossom [IV 0.91] [CP 265] [11 candies] [+500 xp]
+```
+
 
 [[back to top](#pokemon-optimizer)]
 
@@ -430,10 +495,23 @@ You can define `groups` of Pokemon to help you restrict rules to a specific set 
 `groups` are list of Pokemon names:
 ```json
 "groups": {
-    "gym": ["Dragonite", "Snorlax"],
-    "my_love": ["Pikachu"],
-    "vip": ["Lapras", "Arcanine", "Gyarados", "gym"],
-    "trash": ["!vip", "!my_love"]
+    "gym": [
+        "Dragonite",
+        "Snorlax"
+    ],
+    "my_love": [
+        "Pikachu"
+    ],
+    "vip": [
+        "Lapras",
+        "Arcanine",
+        "Gyarados",
+        "gym"
+    ],
+    "trash": [
+        "!vip",
+        "!my_love"
+    ]
 },
 ```
 
@@ -469,8 +547,13 @@ More generally, the first rule always have higher priority for evolve, upgrade o
         "// Of all Pokemon with less than 124 candies, buddy the Pokemon having the highest maximum cp": {},
         "mode": "overall",
         "top": 1,
-        "sort": ["max_cp", "cp"],
-        "keep": {"candy": -124},
+        "sort": [
+            "max_cp",
+            "cp"
+            ],
+        "keep": {
+            "candy": -124
+        },
         "evolve": false,
         "buddy": true
     },
@@ -478,46 +561,76 @@ More generally, the first rule always have higher priority for evolve, upgrade o
         "// Buddy the Pokemon having the less candies. In case no Pokemon match first rule": {},
         "mode": "overall",
         "top": 1,
-        "sort": ["-candy", "max_cp", "cp"],
+        "sort": [
+            "-candy",
+            "max_cp","cp"
+        ],
         "evolve": false,
         "buddy": true
     },
     {
         "mode": "by_pokemon",
-        "names": ["gym"],
+        "names": [
+            "gym"
+        ],
         "top": 3,
-        "sort": ["iv", "ncp"],
-        "evolve": {"iv": 0.9, "ncp": 0.9},
-        "upgrade": {"iv": 0.9, "ncp": 0.9}
+        "sort": [
+            "iv","ncp"
+        ],
+        "evolve": {
+            "iv": 0.9,
+            "ncp": 0.9
+        },
+        "upgrade": {
+            "iv": 0.9,
+            "ncp": 0.9
+        }
     },
     {
         "// Keep best iv of each family and evolve it if its iv is greater than 0.9": {},
         "mode": "by_family",
         "top": 1,
-        "sort": ["iv"],
-        "evolve": {"iv": 0.9}
+        "sort": [
+            "iv"
+        ],
+        "evolve": {
+            "iv": 0.9
+        }
     },
     {
         "// Keep best ncp of each family and evolve it if its ncp is greater than 0.9": {},
         "mode": "by_family",
         "top": 1,
-        "sort": ["ncp"],
-        "evolve": {"ncp": 0.9}
+        "sort": [
+            "ncp"
+        ],
+        "evolve": {
+            "ncp": 0.9
+        }
     },
     {
         "// Keep best cp of each family but do not evolve it": {},
         "mode": "by_family",
         "top": 1,
-        "sort": ["cp"],
+        "sort": [
+            "cp"
+        ],
         "evolve": false
     },
     {
         "// For Pokemon of final evolution and with iv greater than 0.9, keep the best dps_attack": {},
         "mode": "by_pokemon",
-        "names": ["!with_next_evolution"],
+        "names": [
+            "!with_next_evolution"
+        ],
         "top": 1,
-        "sort": ["dps_attack", "iv"],
-        "keep": {"iv": 0.9}
+        "sort": [
+            "dps_attack",
+            "iv"
+        ],
+        "keep": {
+            "iv": 0.9
+        }
     }
 ]
 ```
@@ -656,12 +769,55 @@ The minimum requirement values can be a single value or a range.
 
 - `"keep": false` will not rank any Pokemon. That is like deactivating the rule.
 - `"keep": true` will rank all Pokemon.
-- `"keep": {"iv": 0.9}` will only rank Pokemon with `iv` greater than `0.9`.
-- `"keep": {"iv": 0.9, "cp": 1200}` will only rank Pokemon with `iv` greater than `0.9` and `cp` greater than `1200`.
-- `"keep": {"iv": 0.9}` will only rank Pokemon with `iv` greater than `0.9`.
-- `"keep": {"cp": -20}` will only rank Pokemon with `cp` lower than `20`.
-- `"keep": {"cp": [10, 20]}` will only rank Pokemon with `cp` between `10` and `20`.
-- `"keep": {"iv": [[0.3, 0.5], [0.9, 1.0]]}` will only rank Pokemon with `iv` between `0.3` and `0.5` or between `0.9` and `1.0`.
+- 
+```
+"keep": {
+    "iv": 0.9
+}
+```
+will only rank Pokemon with `iv` greater than `0.9`.
+- 
+```
+"keep": {
+    "iv": 0.9,
+    "cp": 1200
+}
+```
+will only rank Pokemon with `iv` greater than `0.9` and `cp` greater than `1200`.
+- 
+```
+"keep": {
+    "iv": 0.9
+}
+``` 
+will only rank Pokemon with `iv` greater than `0.9`.
+- 
+```
+"keep": {
+    "cp": -20
+}
+``` 
+will only rank Pokemon with `cp` lower than `20`.
+- 
+```
+"keep": {
+    "cp": [
+    10,
+    20
+    ]
+}
+``` 
+will only rank Pokemon with `cp` between `10` and `20`.
+-
+```
+"keep": {
+    "iv": [
+        [0.3, 0.5],
+        [0.9, 1.0]
+    ]
+}
+```
+will only rank Pokemon with `iv` between `0.3` and `0.5` or between `0.9` and `1.0`.
 
 [[back to top](#pokemon-optimizer)]
 
@@ -684,12 +840,54 @@ The minimum requirement values can be a single value or a range.
 
 - `"evolve": false` will not try to evolve any of the Pokemon selected.
 - `"evolve": true` will try to evolve all Pokemon selected.
-- `"evolve": {"iv": 0.9}` will only evolve Pokemon with `iv` greater than `0.9`.
-- `"evolve": {"iv": 0.9, "cp": 1200}` will only evolve Pokemon with `iv` greater than `0.9` and `cp` greater than `1200`.
-- `"evolve": {"iv": 0.9}` will only evolve Pokemon with `iv` greater than `0.9`.
-- `"evolve": {"cp": -20}` will only evolve Pokemon with `cp` lower than `20`.
-- `"evolve": {"cp": [10, 20]}` will only evolve Pokemon with `cp` between `10` and `20`.
-- `"evolve": {"iv": [[0.3, 0.5], [0.9, 1.0]]}` will only evolve Pokemon with `iv` between `0.3` and `0.5` or between `0.9` and `1.0`.
+```
+"evolve": {
+    "iv": 0.9
+}
+```
+ will only evolve Pokemon with `iv` greater than `0.9`.
+- 
+```
+"evolve": {
+    "iv": 0.9,
+    "cp": 1200
+}
+```
+will only evolve Pokemon with `iv` greater than `0.9` and `cp` greater than `1200`.
+- 
+```
+"evolve": {
+    "iv": 0.9
+}
+```
+will only evolve Pokemon with `iv` greater than `0.9`.
+- 
+```
+"evolve": {
+    "cp": -20
+}
+```
+will only evolve Pokemon with `cp` lower than `20`.
+- 
+```
+"evolve": {
+    "cp": [
+        10,
+        20
+    ]
+}
+```
+will only evolve Pokemon with `cp` between `10` and `20`.
+- 
+```
+"evolve": {
+    "iv": [
+        [0.3, 0.5],
+        [0.9, 1.0]
+    ]
+}
+```
+will only evolve Pokemon with `iv` between `0.3` and `0.5` or between `0.9` and `1.0`.
 
 [[back to top](#pokemon-optimizer)]
 
@@ -712,12 +910,55 @@ The minimum requirement values can be a single value or a range.
 
 - `"upgrade": false` will not try to upgrade any of the Pokemon selected.
 - `"upgrade": true` will try to upgrade all Pokemon selected.
-- `"upgrade": {"iv": 0.9}` will only upgrade Pokemon with `iv` greater than `0.9`.
-- `"upgrade": {"iv": 0.9, "cp": 1200}` will only upgrade Pokemon with `iv` greater than `0.9` and `cp` greater than `1200`.
-- `"upgrade": {"iv": 0.9}` will only upgrade Pokemon with `iv` greater than `0.9`.
-- `"upgrade": {"cp": -20}` will only upgrade Pokemon with `cp` lower than `20`.
-- `"upgrade": {"cp": [10, 20]}` will only upgrade Pokemon with `cp` between `10` and `20`.
-- `"upgrade": {"iv": [[0.3, 0.5], [0.9, 1.0]]}` will only upgrade Pokemon with `iv` between `0.3` and `0.5` or between `0.9` and `1.0`.
+- 
+```
+"upgrade": {
+    "iv": 0.9
+}
+```
+will only upgrade Pokemon with `iv` greater than `0.9`.
+- 
+```
+"upgrade": {
+    "iv": 0.9,
+    "cp": 1200
+}
+``` 
+will only upgrade Pokemon with `iv` greater than `0.9` and `cp` greater than `1200`.
+- 
+```
+"upgrade": {
+    "iv": 0.9
+}
+```
+will only upgrade Pokemon with `iv` greater than `0.9`.
+- 
+```
+"upgrade": {
+    "cp": -20
+}
+```
+will only upgrade Pokemon with `cp` lower than `20`.
+-
+```
+"upgrade": {
+    "cp": [
+        10,
+        20
+    ]
+}
+```
+will only upgrade Pokemon with `cp` between `10` and `20`.
+- 
+```
+"upgrade": {
+    "iv": [
+        [0.3, 0.5],
+        [0.9, 1.0]
+    ]
+}
+```
+will only upgrade Pokemon with `iv` between `0.3` and `0.5` or between `0.9` and `1.0`.
 
 [[back to top](#pokemon-optimizer)]
 
@@ -738,12 +979,54 @@ The minimum requirement values can be a single value or a range.
 
 - `"favorite": false` will not try to mark any of the Pokemon selected as favorite.
 - `"favorite": true` will try to mark all Pokemon selected as favorite.
-- `"favorite": {"iv": 0.9}` will only favorite Pokemon with `iv` greater than `0.9`.
-- `"favorite": {"iv": 0.9, "cp": 1200}` will only favorite Pokemon with `iv` greater than `0.9` and `cp` greater than `1200`.
-- `"favorite": {"iv": 0.9}` will only favorite Pokemon with `iv` greater than `0.9`.
-- `"favorite": {"cp": -20}` will only favorite Pokemon with `cp` lower than `20`.
-- `"favorite": {"cp": [10, 20]}` will only favorite Pokemon with `cp` between `10` and `20`.
-- `"favorite": {"iv": [[0.3, 0.5], [0.9, 1.0]]}` will only favorite Pokemon with `iv` between `0.3` and `0.5` or between `0.9` and `1.0`.
+```
+"favorite": {
+    "iv": 0.9
+}
+```
+will only favorite Pokemon with `iv` greater than `0.9`.
+-
+ ```
+"favorite": {
+    "iv": 0.9,
+    "cp": 1200
+}
+```
+will only favorite Pokemon with `iv` greater than `0.9` and `cp` greater than `1200`.
+- 
+```
+"favorite": {
+    "iv": 0.9
+}
+```
+will only favorite Pokemon with `iv` greater than `0.9`.
+-
+```
+"favorite": {
+    "cp": -20
+}
+```
+will only favorite Pokemon with `cp` lower than `20`.
+- 
+```
+"favorite": {
+    "cp": [
+        10,
+        20
+    ]
+}
+```
+will only favorite Pokemon with `cp` between `10` and `20`.
+- 
+```
+"favorite": {
+    "iv": [
+        [0.3, 0.5],
+        [0.9, 1.0]
+    ]
+}
+```
+will only favorite Pokemon with `iv` between `0.3` and `0.5` or between `0.9` and `1.0`.
 
 [[back to top](#pokemon-optimizer)]
 
@@ -765,9 +1048,26 @@ The minimum requirement values can be a single value or a range.
 
 - `"buddy": false` will not select any Pokemon as buddy candidate.
 - `"buddy": true` will select all Pokemon as buddy candidate.
-- `"buddy": {"candy": -400}` will only select Pokemon for which the number of `candy` is less than or equal to `400`.
-- `"buddy": {"candy_to_evolution": -5}` will only select Pokemon for which the number of candy missing to evolve it is less than or equal to `5`.
-- `"buddy": {"evolution_cost": 50}` will only select Pokemon for which the number of needed for next evolution is a least `50`.
+```
+"buddy": {
+    "candy": -400
+}
+```
+will only select Pokemon for which the number of `candy` is less than or equal to `400`.
+- 
+```
+"buddy": {
+    "candy_to_evolution": -5
+}
+```
+will only select Pokemon for which the number of candy missing to evolve it is less than or equal to `5`.
+- 
+```
+"buddy": {
+    "evolution_cost": 50
+}
+```
+will only select Pokemon for which the number of needed for next evolution is a least `50`.
 
 `Buddy Hitmonlee rewards Hitmonlee candies [+1 candies] [6 candies]`
 
@@ -794,8 +1094,12 @@ For Eevee Pokemon family, and any other family with multiple paths of evolution,
 {
     "mode": "by_pokemon",
     "top": 2,
-    "sort": ["iv"],
-    "evolve": {"iv": 0.9}
+    "sort": [
+        "iv"
+    ],
+    "evolve": {
+        "iv": 0.9
+    }
 },
 ```
 
@@ -805,8 +1109,12 @@ For Eevee Pokemon family, and any other family with multiple paths of evolution,
 {
     "mode": "by_pokemon",
     "top": 2,
-    "sort": ["iv"],
-    "evolve": {"ncp": 0.9}
+    "sort": [
+        "iv"
+    ],
+    "evolve": {
+        "ncp": 0.9
+    }
 },
 ```
 
@@ -815,9 +1123,14 @@ For Eevee Pokemon family, and any other family with multiple paths of evolution,
 ```json
 {
     "mode": "by_pokemon",
-    "names": ["Dragonite", "Snorlax"],
+    "names": [
+        "Dragonite",
+        "Snorlax"
+    ],
     "top": 10,
-    "sort": ["cp"]
+    "sort": [
+        "cp"
+    ]
 },
 ```
 
@@ -826,9 +1139,13 @@ For Eevee Pokemon family, and any other family with multiple paths of evolution,
 ```json
 {
     "mode": "by_pokemon",
-    "names": ["Gyarados"],
+    "names": [
+        "Gyarados"
+    ],
     "top": 1,
-    "sort": ["dps_attack"]
+    "sort": [
+        "dps_attack"
+    ]
 },
 ```
 
@@ -837,9 +1154,13 @@ For Eevee Pokemon family, and any other family with multiple paths of evolution,
 ```json
 {
     "mode": "by_pokemon",
-    "names": ["Gyarados"],
+    "names": [
+        "Gyarados"
+    ],
     "top": 1,
-    "sort": ["dps1"]
+    "sort": [
+        "dps1"
+    ]
 },
 ```
 
@@ -848,8 +1169,12 @@ For Eevee Pokemon family, and any other family with multiple paths of evolution,
 ```json
 {
     "mode": "by_pokemon",
-    "names": ["Poliwag"],
-    "keep": {"cp": -20}
+    "names": [
+        "Poliwag"
+    ],
+    "keep": {
+        "cp": -20
+    }
 },
 ```
 
@@ -859,7 +1184,10 @@ For Eevee Pokemon family, and any other family with multiple paths of evolution,
 {
     "mode": "overall",
     "top": 1,
-    "sort": ["-candy", "cp"],
+    "sort": [
+        "-candy",
+        "cp"
+        ],
     "buddy": true
 },
 ```
