@@ -129,7 +129,7 @@ source bin/activate
 
 ```
 cd C:\Python27\
-pip2 install --upgrade pip
+pip install --upgrade pip
 cd ..
 cd PokemonGo-Bot
 git clone --recursive -b dev https://github.com/PokemonGoF/PokemonGo-Bot
