@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #encoding=utf8
 pokebotpath=$(cd "$(dirname "$0")"; pwd)
+webpath=$pokebotpath"/web"
 backuppath=$pokebotpath"/backup"
 
 function Pokebotupdate () {
@@ -64,13 +65,31 @@ cp configs/$cfgoption configs/config.json
 echo "Edit ./configs/config.json to modify any other config."
 }
 
+function Webconfig () {
+cd $webpath
+if [ -f config/userdata.js.example ]; then
+echo "
+-----------------
+Configure userdata.js for web
+-----------------
+"
+read -p "Input E-Mail (Google) or Username (PTC)
+" webusername
+read -p "Input Google API Key (gmapkey)
+" webgmapkey
+sed -e "s/username1/$webusername/g" -e "s/YOUR_API_KEY_HERE/$webgmapkey/g" \
+  config/userdata.js.example > config/userdata.js
+echo "Your userdata.js is now configured."
+else 
+echo "You do not yet have the web files installed. Please first run 'setup.sh -i' to install all the files."
+fi
+}
+
 function Pokebotinstall () {
 cd $pokebotpath
 if [ "$(uname -s)" == "Darwin" ]
 then
-echo "You are on Mac OS"
-brew update
-#brew install --devel protobuf
+echo "You are on macOS"
 elif [ $(uname -s) == CYGWIN* ]
 then
 echo "You are on Cygwin"
@@ -124,9 +143,11 @@ easy_install virtualenv
 fi
 Pokebotreset
 Pokebotupdate
-echo "Install complete. Starting to generate auth.json and config.json."
+echo "Install complete. Starting to generate auth.json and config.json and userdata.js for web."
 Pokebotauth
 Pokebotconfig
+Webconfig
+echo "You can now use the bot by executing 'run.sh'. You may also start the web tracker by executing 'web.sh'."
 }
 
 function Pokebotreset () {
@@ -135,6 +156,7 @@ git fetch -a
 if [ "1" == $(git branch -vv |grep -c "* dev") ]
 then
 echo "Branch dev resetting."
+
 git reset --hard origin/dev
 elif [ "1" == $(git branch -vv |grep -c "* master") ]
 then
@@ -156,6 +178,7 @@ echo "	-i,--install.		Install PokemonGo-Bot."
 echo "	-b,--backup.		Backup config files."
 echo "	-a,--auth.		Easy auth generator."
 echo "	-c,--config.		Easy config generator."
+echo "	-w,--web.		Web config generator."
 echo "	-r,--reset.		Force sync source branch."
 echo "	-u,--update.		Command git pull to update."
 }
@@ -184,6 +207,9 @@ Pokebotauth
 ;;
 --config|-c)
 Pokebotconfig
+;;
+--web|-w)
+Webconfig
 ;;
 --help|-h)
 Pokebothelp
