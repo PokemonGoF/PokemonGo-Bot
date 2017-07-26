@@ -9,7 +9,7 @@
 	"CompleteTutorialNickName": true,
 	"WebSocket": {
 		"IP": "127.0.0.1",
-		"Port": "4000"
+		"Port": 4000
 	},
 	"walker_limit_output": true
 }
