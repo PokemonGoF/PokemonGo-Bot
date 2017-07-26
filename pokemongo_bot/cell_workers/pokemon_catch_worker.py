@@ -79,10 +79,6 @@ class PokemonCatchWorker(BaseTask):
         self.vip_berry_threshold = self.config.get('vip_berry_threshold', 0.9)
         self.treat_unseen_as_vip = self.config.get('treat_unseen_as_vip', DEFAULT_UNSEEN_AS_VIP)
         self.daily_catch_limit = self.config.get('daily_catch_limit', 500)
-        if self.daily_catch_limit > 500:
-            self.logger.warning("BE WARNED! The total catch limit in 72 hours is 1500!")
-            self.logger.warning("Setting your daily limit to %s might get you account flagged or banned!" % self.daily_catch_limit)
-            sleep(5)
         self.use_pinap_on_vip = self.config.get('use_pinap_on_vip', False)
         self.pinap_on_level_below = self.config.get('pinap_on_level_below', 0)
         self.pinap_operator = self.config.get('pinap_operator', "or")
@@ -125,6 +121,13 @@ class PokemonCatchWorker(BaseTask):
     ############################################################################
 
     def work(self, response_dict=None):
+        if self.daily_catch_limit > 500:
+            if not hasattr(self.bot, "no_notify_until") or self.bot.no_notify_until <= datetime.now():
+                self.logger.warning("BE WARNED! The total catch limit in 72 hours is 1500!")
+                self.logger.warning("Setting your daily limit to %s might get you account flagged or banned!" % self.daily_catch_limit)
+                sleep(5)
+                self.bot.no_notify_until = datetime.now() + timedelta(minutes=5)
+
         response_dict = response_dict or self.create_encounter_api_call()
 
         # validate response
