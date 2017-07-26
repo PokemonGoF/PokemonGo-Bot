@@ -1,9 +1,9 @@
 {
 	"Threads": 2,
-	"HashKeyFile": "hashkey.txt",
+	"HashKeyFile": "MultiBotConfigHashkey.txt",
 	"UseProxy": false,
-	"ProxyFile": "proxy.txt",
-	"AccountsFile": "accounts.txt",
+	"ProxyFile": "MultiBotConfigProxy.txt",
+	"AccountsFile": "MultiBotConfigAccounts.txt",
 	"AuthJsonFile": "auth.json",
 	"ConfigJsonFile": "config.json",
 	"CompleteTutorialNickName": true,
