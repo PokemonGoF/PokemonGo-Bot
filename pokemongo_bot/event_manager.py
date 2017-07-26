@@ -54,8 +54,10 @@ class Event(object):
         self.level = str(level).encode('ascii', 'xmlcharrefreplace')
 
         #Fixing issue 6123 for gym names that are in utf format.
-        self.formatted = str(formatted).encode('utf-8', 'ignore').decode('utf-8')
-        self.formatted = str(formatted).encode('ascii', 'xmlcharrefreplace')
+        try:
+            self.formatted = str(formatted).encode('ascii', 'xmlcharrefreplace')
+        except UnicodeEncodeError:
+            self.formatted = str(unicode(formatted).encode('unicode_escape'))
         
         self.data = str(data).encode('ascii', 'xmlcharrefreplace')
         self.friendly_msg = ""
