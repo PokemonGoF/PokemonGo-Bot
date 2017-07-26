@@ -64,6 +64,7 @@
 - [PokemonHunter](#pokemonhunter)
 - [BadPokemon](#badpokemon)
 - [HealPokemon](#healpokemon)
+- [GymPokemon](#gympokemon)
 
 # Configuration files
 
@@ -393,15 +394,34 @@ If you want to configure a given task, you can pass values like this:
 
 Default configuration will catch all Pokémon.
 
-```"any": {"catch_above_cp": 0, "catch_above_iv": 0, "logic": "or"}```
+```
+"any": {
+    "catch_above_cp": 0,
+    "catch_above_iv": 0,
+    "logic": "or"
+}
+```
 
 You can override the global configuration with Pokémon-specific options, such as:
 
-```"Pidgey": {"catch_above_cp": 0, "catch_above_iv": 0.8", "logic": "and"}``` to only catch Pidgey with a good roll.
+```
+"Pidgey": {
+    "catch_above_cp": 0,
+    "catch_above_iv": 0.8,
+    "logic": "and"
+}
+```
+to only catch Pidgey with a good roll.
 
 Additionally, you can specify always_catch and never_catch flags.
 
-For example: ```"Pidgey": {"never_catch": true}``` will stop catching Pidgey entirely.
+For example: 
+```
+"Pidgey": {
+    "never_catch": true
+}
+```
+will stop catching Pidgey entirely.
 
 ## Release Configuration
 [[back to top](#table-of-contents)]
@@ -411,20 +431,49 @@ For example: ```"Pidgey": {"never_catch": true}``` will stop catching Pidgey ent
 
 Default configuration will not release any Pokémon.
 
-```"release": {"any": {"release_below_cp": 0, "release_below_iv": 0, "logic": "or"}}```
+```"release": {
+        "any": {
+            "release_below_cp": 0,
+            "release_below_iv": 0,
+            "logic": "or"
+        }
+```
 
 You can override the global configuration with Pokémon-specific options, such as:
 
-```"release": {"Pidgey": {"release_below_cp": 0, "release_below_iv": 0.8, "logic": "or"}}``` to only release Pidgey with bad rolls.
+```"release": {
+        "Pidgey": {
+            "release_below_cp": 0,
+            "release_below_iv": 0.8,
+            "logic": "or"
+        }
+```
+to only release Pidgey with bad rolls.
 
 Additionally, you can specify always_release and never_release flags. For example:
 
-```"release": {"Pidgey": {"always_release": true}}``` will release all Pidgey caught.
+```"release": {
+        "Pidgey": {
+            "always_release": true
+        }
+```
+will release all Pidgey caught.
 
 ### Keep the strongest pokemon configuration (dev branch)
 [[back to top](#table-of-contents)]
 
-You can set ```"release": {"Pidgey": {"keep_best_cp": 1}}``` or ```"release": {"any": {"keep_best_iv": 1}}```.
+You can set:
+```"release": {
+        "Pidgey": {
+            "keep_best_cp": 1
+        }
+```
+or 
+```"release": {
+        "any": {
+            "keep_best_iv": 1
+        }
+```
 
 In that case after each capture bot will check that do you have a new Pokémon or not.
 
@@ -432,10 +481,25 @@ If you don't have it, it will keep it (no matter was it strong or weak Pokémon)
 
 If you already have it, it will keep a stronger version and will transfer the a weaker one.
 
-```"release": {"any": {"keep_best_cp": 2}}```, ```"release": {"any": {"keep_best_cp": 10}}``` - can be any number. In the latter case for every pokemon type bot will keep no more that 10 best CP pokemon.
+```"release": {
+        "any": {
+            "keep_best_cp": 2
+        }
+```
+```"release": {
+        "any": {
+          "keep_best_cp": 10
+        }
+```
+Can be any number. In the latter case for every pokemon type bot will keep no more that 10 best CP pokemon.
 
 If you wish to limit your pokemon bag as a whole, not type-wise, use `all`:
-```"release": {"all": {"keep_best_cp": 200}}```. In this case bot looks for 200 best CP pokemon in bag independently of their type. For example, if you have 150 Snorlax with 1500 CP and 100 Pidgeys with CP 100, bot will keep 150 Snorlax and 50 Pidgeys for a total of 200 best CP pokemon.
+```"release": {
+        "all": {
+            "keep_best_cp": 200
+        }
+```
+In this case bot looks for 200 best CP pokemon in bag independently of their type. For example, if you have 150 Snorlax with 1500 CP and 100 Pidgeys with CP 100, bot will keep 150 Snorlax and 50 Pidgeys for a total of 200 best CP pokemon.
 
 ### Keep the best custom pokemon configuration (dev branch)
 [[back to top](#table-of-contents)]
@@ -448,10 +512,20 @@ The list of criteria is the following:```'cp','iv', 'iv_attack', 'iv_defense', '
 
 - Keep the top 25 Zubat with the best hp_max:
 
-```"release": {"Zubat": {"keep_best_custom": "hp_max", "amount":25}}```
+```"release": {
+        "Zubat": {
+          "keep_best_custom": "hp_max",
+          "amount":25
+        }
+```
 - Keep the top 10 Zubat with the best hp_max and, if there are Zubat with the same hp_max, to keep the one with the highest hp:
 
-```"release": {"Zubat": {"keep_best_custom": "hp_max,hp", "amount":10}}````
+```"release": {
+        "Zubat": {
+          "keep_best_custom": "hp_max,hp",
+          "amount":10
+        }
+```
 
 ## Evolve All Configuration
 [[back to top](#table-of-contents)]
@@ -652,7 +726,10 @@ Setting | Description
 `pinap_on_level_below` | Set at what level (and below) of the pokemon should Pinap berry br use on. Set to 0 to disable use of pinap berry
 `pinap_operator` | Set if Pinap berry going to be use together with "use_pinap_on_vip" or without (Operator "or", "and")
 `pinap_ignore_threshold` | Set if bot is going to ignore catch rate threshold when using pinap berry
-`vip_berry_threshold` | The ideal catch rate threshold before using a razz berry on VIP pokemon
+`smart_pinap_enabled` | Set if bot is going to use the smart pinap function that uses pinap berry on high catch rate mons (If `smart_pinap_threshold` is set higher than `berry_threshold` pinap will be used on high catch rate mons and razz will be used on low catch rate mons, making the bot "smart".)
+`smart_pinap_threshold` | If set to 0.85, pinap will be used on non-VIP with catch rate higher rate than 0.85
+`smart_pinap_to_keep` | Number of pinaps to keep to be used on VIP 
+`vip_berry_threshold` | The ideal catch rate threshold before using a razz berry on VIP pokemon (If `smart_pinap_enabled`=true, VIP above this catch rate will be pinapped)
 `flee_count` | The maximum number of times catching animation will play before the pokemon breaks free
 `flee_duration` | The length of time for each animation
 `catch_wait_min`| The minimum amount of time to throw the ball
@@ -839,7 +916,12 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
         "bullets": 1,
         "homing_shots": true,
         "special_iv": 100,
-        "order": ["missing", "iv", "priority", "vip"],
+        "order": [
+          "missing",
+          "iv",
+          "priority",
+          "vip"
+        ],
         "sources": [
             {
                 "url": "http://pokesnipers.com/api/v1/pokemon.json",
@@ -847,11 +929,22 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
                 "timeout": 15,
                 "key": "results",
                 "mappings": {
-                    "iv": { "param": "iv" },
-                    "name": { "param": "name" },
-                    "latitude": { "param": "coords" },
-                    "longitude": { "param": "coords" },
-                    "expiration": { "param": "until", "format": "utc" }
+                    "iv": {
+                      "param": "iv"
+                    },
+                    "name": {
+                      "param": "name"
+                    },
+                    "latitude": {
+                      "param": "coords"
+                    },
+                    "longitude": {
+                      "param": "coords"
+                    },
+                    "expiration": {
+                      "param": "until",
+                      "format": "utc"
+                    }
                 }
             },
             {
@@ -860,11 +953,22 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
                 "enabled": true,
                 "timeout": 5,
                 "mappings": {
-                    "id": { "param": "pokemon_id" },
-                    "name": { "param": "pokemon_name" },
-                    "latitude": { "param": "latitude" },
-                    "longitude": { "param": "longitude" },
-                    "expiration": { "param": "disappear_time", "format": "milliseconds" }
+                    "id": {
+                      "param": "pokemon_id"
+                    },
+                    "name": {
+                      "param": "pokemon_name"
+                    },
+                    "latitude":{
+                      "param": "latitude"
+                    },
+                    "longitude": {
+                      "param": "longitude"
+                    },
+                    "expiration": {
+                      "param": "disappear_time",
+                      "format": "milliseconds"
+                    }
                 }
             },
             {
@@ -872,12 +976,25 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
                 "enabled": true,
                 "timeout": 15,
                 "mappings": {
-                    "iv": { "param": "iv" },
-                    "id": { "param": "pid" },
-                    "name": { "param": "pokemon" },
-                    "latitude": { "param": "cords" },
-                    "longitude": { "param": "cords" },
-                    "expiration": { "param": "timeend", "format": "seconds" }
+                    "iv": {
+                       "param": "iv"
+                    },
+                    "id": {
+                      "param": "pid"
+                    },
+                    "name": {
+                      "param": "pokemon"
+                    },
+                    "latitude": {
+                      "param": "cords"
+                    },
+                    "longitude": {
+                      "param": "cords"
+                    },
+                    "expiration": {
+                      "param": "timeend",
+                      "format": "seconds"
+                    }
                 }
             }
         ],
@@ -958,7 +1075,7 @@ move-type task follows the `FollowPath` task in your `config.json`.
 ```
 {
   "type": "FollowPath",
-    "config": {
+  "config": {
       "path_mode": "linear",
       "path_start_mode": "first",
       "path_file": "/home/gary/bot/PokemonGo-Bot/configs/path/pier39.json"
@@ -1041,7 +1158,23 @@ Following task will shows the information on the console every 10 seconds.
   "config": {
     "enabled": true,
     "min_interval": 10,
-    "stats": ["username", "uptime", "level_completion", "stardust_earned", "xp_earned", "xp_per_hour", "stops_visited", "km_walked", "pokemon_encountered", "pokemon_caught", "pokemon_released", "pokemon_unseen", "pokeballs_thrown", "highest_cp_pokemon", "most_perfect_pokemon"],
+    "stats": [
+    "username",
+    "uptime",
+    "level_completion",
+    "stardust_earned",
+    "xp_earned",
+    "xp_per_hour",
+    "stops_visited",
+    "km_walked",
+    "pokemon_encountered",
+    "pokemon_caught",
+    "pokemon_released",
+    "pokemon_unseen",
+    "pokeballs_thrown",
+    "highest_cp_pokemon",
+    "most_perfect_pokemon"
+    ],
     "terminal_log": true,
     "terminal_title": true
   }
@@ -1091,6 +1224,12 @@ Available `items` :
 - 'incensecool'
 - 'revive'
 - 'maxrevive'
+- 'pinapberries'
+- 'sunstone'
+- 'kingsrock'
+- 'metalcoat'
+- 'dragonscale'
+- 'upgrade'
 ```
 
 ### Sample configuration
@@ -1102,7 +1241,14 @@ Available `items` :
       "enabled": true,
       "min_interval": 120,
       "show_all_multiple_lines": false,
-      "items": ["space_info", "pokeballs", "greatballs", "ultraballs", "razzberries", "luckyegg"]
+      "items": [
+        "space_info",
+        "pokeballs",
+        "greatballs",
+        "ultraballs",
+        "razzberries",
+        "luckyegg"
+        ]
 ```
 
 ### Example console output
@@ -1133,7 +1279,12 @@ Periodically displays the hash stats in the terminal.
     "config": {
         "enabled": true,
         "min_interval": 60,
-        "stats": ["period", "remaining", "maximum", "expiration"]
+        "stats": [
+          "period",
+          "remaining",
+          "maximum",
+          "expiration"
+          ]
     }
 }
 ```
@@ -1183,11 +1334,16 @@ Configure how the bot should use the incubators.
 ```
 {
   "type": "IncubateEggs",
-    "config": {
-    "infinite_longer_eggs_first": false,
-    "breakable_longer_eggs_first": true,
-    "infinite": [2,5],
-    "breakable": [10]
+  "config": {
+      "infinite_longer_eggs_first": false,
+      "breakable_longer_eggs_first": true,
+      "infinite": [
+        2,
+        5
+      ],
+      "breakable": [
+        10
+      ]
   }
 }
 ```
@@ -1232,7 +1388,11 @@ Available `info_to_show` :
         "min_interval": 60,
         "amount": 5,
         "order_by": "cp",
-        "info_to_show": ["cp", "ivcp", "dps"]
+        "info_to_show": [
+          "cp",
+          "ivcp",
+          "dps"
+        ]
     }
 }
 ```
@@ -1271,8 +1431,16 @@ The bot will only alert and respond to a valid master. If you're unsure what thi
         "enabled": true,
         "master": 12345678,
         "alert_catch": {
-          "all": {"operator": "and", "cp": 1300, "iv": 0.95},
-          "Snorlax": {"operator": "or", "cp": 900, "iv": 0.9}
+          "all": {
+            "operator": "and",
+            "cp": 1300,
+            "iv": 0.95
+            },
+          "Snorlax": {
+            "operator": "or",
+            "cp": 900,
+            "iv": 0.9
+            }
         },
         "password": "alwoefhq348"
     }
@@ -1306,8 +1474,16 @@ The bot will only alert and respond to a valid master. If you're unsure what thi
         "enabled": true,
         "master": "user#1234",
         "alert_catch": {
-          "all": {"operator": "and", "cp": 1300, "iv": 0.95},
-          "Snorlax": {"operator": "or", "cp": 900, "iv": 0.9}
+          "all": {
+            "operator": "and",
+            "cp": 1300,
+            "iv": 0.95
+            },
+          "Snorlax": {
+            "operator": "or",
+            "cp": 900,
+            "iv": 0.9
+            }
         }
     }
 }
@@ -1384,7 +1560,7 @@ After setting a buddy it's not possible to remove it, only change it. So if a bu
 ```json
 {
   "type": "BuddyPokemon",
-    "config": {
+  "config": {
       "enabled": true,
         "buddy_list": "dratini, magikarp",
         "best_in_family": true,
@@ -1507,7 +1683,7 @@ If you have any Pokemon that are dead or need healing, this task will try to do 
 [[back to top](#table-of-contents)]
 ```json
 {
-    "type": "BadPokemon",
+    "type": "HealPokemon",
     "config": {
         "enabled": true,
         "heal": true,
@@ -1516,3 +1692,51 @@ If you have any Pokemon that are dead or need healing, this task will try to do 
 }
 ```
 
+## GymPokemon
+[[back to top](#table-of-contents)]
+
+### Description
+[[back to top](#table-of-contents)]
+
+Drop a Pokemon in a Gym when there is room for. No fighting will be done! Never!
+
+### Options
+[[back to top](#table-of-contents)]
+
+* `enabled`: `Default: False`. Enable or distable this task
+* `order_by`: `Default: "cp"`. Based on what atrribute should be sorted (decending)
+* `min_interval`: `Default: 360`. Time in seconds between printing the Pokemon we have in gyms
+* `min_recheck`: `Default: 30`. Minimal time in seconds to check for new gyms in range
+* `max_recheck`: `Default: 120`. Maxium time in seconds to check for new gyms in range
+* `chain_fill_gyms`: `Default: True`. When we drop a Pokemon in a gym, should we imediatly move to the next gym if a open spot is found?
+* `ignore_max_cp_pokemon`: `Default: ["Blissey"]`. A list of Pokemon who can be placed in gyms even if above 3000cp
+* `never_place`: `Default: []`. A list of Pokemon that should never be placed in a gym
+* `leave_at_least_spots`: `Default: 0`. How many open spots should we leave for normal players? (Max 4!!)
+* `take_at_most`: `Default: 20`. How many gym should we be in at the same time? Max 20!!
+* `pick_random_pokemon`: `Default: True`. Pick a random Pokemon from the top 20 sorted by "order_by", or the top 1 availible?
+
+
+### Sample configuration
+[[back to top](#table-of-contents)]
+```json
+{
+  "type": "GymPokemon",
+  "config": {
+      "enabled": false,
+      "order_by": "cp",
+      "min_interval":360,
+      "min_recheck":30,
+      "max_recheck":120,
+      "chain_fill_gyms": true,
+      "ignore_max_cp_pokemon": [
+        "Blissey"
+        ],
+      "never_place": [ 
+        "Machamp"
+        ],
+      "leave_at_least_spots": 1,
+      "take_at_most": 10,
+      "pick_random_pokemon": true
+  }
+}
+```

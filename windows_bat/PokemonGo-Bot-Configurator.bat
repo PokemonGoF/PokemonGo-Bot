@@ -158,7 +158,6 @@ ECHO.
 SET /p hashkey="What's your Hashing Server Key ?: "
 ECHO.    "hashkey": "%hashkey%",>>%auth%
 ECHO.
-ECHO.    "encrypt_location": "",>>%auth%
 SET /p telegram="What's your telegram token? Enter for leave blank: "
 ECHO.    "telegram_token": "%telegram%">>%auth%
 ECHO.}>>%auth%
@@ -202,16 +201,20 @@ ECHO.
 ECHO.// MUST CONFIGURE THE USER ARRAY AND GOOGLE MAPS API KEY.>%UserData%
 ECHO.// YOU CAN GET A KEY HERE: https://developers.google.com/maps/documentation/javascript/get-api-key>>%UserData%
 ECHO.var userInfo = {>>%UserData%
+ECHO. 	users: [{>>%UserData%
+ECHO. 	    enable: true,>>%UserData%
 Set /p users="What's the username to use ?: "
-ECHO.	users: ["%users%"],>>%UserData%
-ECHO.	userZoom: true,>>%UserData%
-ECHO.	zoom: 16,>>%UserData%
-ECHO.	userFollow: true,>>%UserData%
+ECHO. 	    username: "%users%",>>%UserData%
+ECHO. 	    socketAddress: "127.0.0.1:4000",>>%UserData%
+ECHO. 	    enableSocket: true>>%UserData%
+ECHO. 	}],>>%UserData%
+ECHO. 	userZoom: false,>>%UserData%
+ECHO. 	userPath: true,>>%UserData%
+ECHO. 	zoom: 16,>>%UserData%
+ECHO. 	userFollow: true,>>%UserData%
 SET /p API="What's your Google Maps API Key ?: "
-ECHO.	gMapsAPIKey: "%API%",>>%UserData%
-ECHO.	botPath: true,>>%UserData%
-ECHO.	actionsEnabled: false>>%UserData%
-ECHO.};>>%UserData%
+ECHO. 	gMapsAPIKey: "%API%">>%UserData%
+ECHO. };>>%UserData%
 goto:menu
 
 :Menu2

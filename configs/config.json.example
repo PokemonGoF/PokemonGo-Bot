@@ -418,6 +418,9 @@
 		"pinap_on_level_below": 0,
 		"pinap_operator": "or",
 		"pinap_ignore_threshold": false,
+				"smart_pinap_enabled": true,
+				"smart_pinap_threshold": 0.85,
+				"smart_pinap_to_keep": 3,
                 "vip_berry_threshold": 0.9,
                 "treat_unseen_as_vip": true,
                 "daily_catch_limit": 800,
@@ -471,7 +474,14 @@
                 "order_by": "cp",
                 "min_interval":360,
                 "min_recheck":30,
-                "max_recheck":120
+                "max_recheck":120,
+                "chain_fill_gyms": true,
+                "ignore_max_cp_pokemon": ["Blissey"],
+                "never_place": ["Machamp"],
+                "leave_at_least_spots": 1,
+                "take_at_most": 10,
+                "pick_random_pokemon": true,
+                "can_be_disabled_by_catch_limter": false
             }
         },
         {

@@ -22,6 +22,9 @@ class HealPokemon(BaseTask):
         self.next_update = None
         self.to_heal = []
 
+        self.warned_about_no_revives = False
+        self.warned_about_no_potions = False
+
     def work(self):
 
         if not self.enabled:
@@ -59,17 +62,23 @@ class HealPokemon(BaseTask):
 
         if self.revive_pokemon:
             if len(to_revive) > 0 and revives == 0 and max_revives == 0:
-                self.logger.info("No revives left! Can't revive %s pokemons." % len(to_revive))
+                if not self.warned_about_no_revives:
+                    self.logger.info("No revives left! Can't revive %s pokemons." % len(to_revive))
+                    self.warned_about_no_revives = True
             elif len(to_revive) > 0:
                 self.logger.info("Reviving %s pokemon..." % len(to_revive))
+                self.warned_about_no_revives = False
                 for pokemon in to_revive:
                     self._revive_pokemon(pokemon)
 
         if self.heal_pokemon:
             if len(self.to_heal) > 0 and (normal + super_p + hyper + max_p) == 0:
-                self.logger.info("No potions left! Can't heal %s pokemon" % len(self.to_heal))
+                if not self.warned_about_no_potions:
+                    self.logger.info("No potions left! Can't heal %s pokemon" % len(self.to_heal))
+                    self.warned_about_no_potions = True
             elif len(self.to_heal) > 0:
                 self.logger.info("Healing %s pokemon" % len(self.to_heal))
+                self.warned_about_no_potions = False
                 for pokemon in self.to_heal:
                     self._heal_pokemon(pokemon)
 
@@ -185,6 +194,10 @@ class HealPokemon(BaseTask):
 
 
     def _use_potion(self, potion_id, pokemon):
+        if pokemon.hp >= pokemon.hp_max:
+            # Already at MAX health
+            return True
+
         potion_count = inventory.items().get(potion_id).count
         healing = 0
         if potion_count == 0:

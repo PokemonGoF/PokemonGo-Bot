@@ -11,7 +11,6 @@
     ],
     "gmapkey": "GOOGLE_MAPS_API_KEY",
     "hashkey" : "YOUR_PURCHASED_HASH_KEY",
-    "encrypt_location": "",
     "telegram_token": "",
     "discord_token": "",
     "2captcha_token": ""

@@ -23,6 +23,8 @@ from pokemongo_bot.tree_config_builder import ConfigException
 from pokemongo_bot.walkers.walker_factory import walker_factory
 from pokemongo_bot.inventory import Pokemons
 
+from sys import stdout
+
 GYM_DETAIL_RESULT_SUCCESS = 1
 GYM_DETAIL_RESULT_OUT_OF_RANGE = 2
 GYM_DETAIL_RESULT_UNSET = 0
@@ -52,10 +54,6 @@ class GymPokemon(BaseTask):
         super(GymPokemon, self).__init__(bot, config)
 
     def initialize(self):
-
-        #Adding this to play with finding a quantity that works
-        self.gym_quantity_test = 1
-
         # 10 seconds from current time
         self.next_update = datetime.now() + timedelta(0, 10)
         self.order_by = self.config.get('order_by', 'cp')
@@ -63,7 +61,23 @@ class GymPokemon(BaseTask):
         self.min_interval = self.config.get('min_interval', 360)
         self.min_recheck = self.config.get('min_recheck', 30)
         self.max_recheck = self.config.get('max_recheck', 120)
-        self.feed_berries = self.config.get('feed_berries', False)
+        
+        self.take_at_most = self.config.get('take_at_most', 20)
+        if self.take_at_most > 20:
+            self.logger.warning("We can take more than 20 gyms!")
+            self.take_at_most = 20
+        self.leave_at_least_spots = self.config.get('leave_at_least_spots', 0)
+        if self.leave_at_least_spots > 4:
+            self.logger.warning("There are only 6 spots in a gym, when we drop a Pokemon in that would leave 5 spots! Setting leave open spots to 4!")
+            self.leave_at_least_spots = 4
+        self.chain_fill_gyms = self.config.get('chain_fill_gyms', True)
+        self.ignore_max_cp_pokemon = self.config.get('allow_above_cp', ["Blissey"])
+        self.never_place = self.config.get('never_place', [])
+
+        self.pick_random_pokemon = self.config.get('pick_random_pokemon', True)
+        
+        self.can_be_disabled_by_catch_limter = self.config.get("can_be_disabled_by_catch_limter", False)
+
         self.recheck = datetime.now()
         self.walker = self.config.get('walker', 'StepWalker')
         self.destination = None
@@ -77,6 +91,7 @@ class GymPokemon(BaseTask):
         self.check_interval = 0
         self.gyms = []
         self.raid_gyms = dict()
+
         self.bot.event_manager.register_event('gym_error')
         self.bot.event_manager.register_event('fed_pokemon')
         self.bot.event_manager.register_event('gym_full')
@@ -108,6 +123,22 @@ class GymPokemon(BaseTask):
             self.logger.info("%s (%s CP)" % (pokemon.name, pokemon.cp))
 
     def work(self):
+        if not self.enabled:
+            return WorkerResult.SUCCESS
+
+        if self.bot.catch_disabled and self.can_be_disabled_by_catch_limter:
+            # When catching is disabled, drop the target.
+            if self.destination is not None:
+                self.destination = None
+
+            if not hasattr(self.bot, "gym_pokemon_disabled_global_warning") or \
+                        (hasattr(self.bot, "gym_pokemon_disabled_global_warning") and not self.bot.gym_pokemon_disabled_global_warning):
+                self.logger.info("All gym tasks are currently disabled until {}. Gym function will resume when catching tasks are re-enabled".format(self.bot.catch_resume_at.strftime("%H:%M:%S")))
+            self.bot.gym_pokemon_disabled_global_warning = True
+            return WorkerResult.SUCCESS
+        else:
+            self.bot.gym_pokemon_disabled_global_warning = False
+            
         self.pokemons = inventory.pokemons().all()
         self.fort_pokemons = [p for p in self.pokemons if p.in_fort]
         self.pokemons = [p for p in self.pokemons if not p.in_fort]
@@ -125,9 +156,9 @@ class GymPokemon(BaseTask):
         if self.bot.softban:
             return WorkerResult.SUCCESS
 
-        if len(self.fort_pokemons) >= 20:
+        if len(self.fort_pokemons) >= self.take_at_most:
             if self._should_print():
-                self.logger.info("We have a max of 20 Pokemon in gyms.")
+                self.logger.info("We have a max of %s Pokemon in gyms." % self.take_at_most)
             return WorkerResult.SUCCESS
 
         if not self.should_run():
@@ -172,8 +203,6 @@ class GymPokemon(BaseTask):
                             continue
                     if 'owned_by_team' in gym:
                         if gym["owned_by_team"] == self.team:
-                            self.feed_pokemons_in_gym(gym)
-
                             if 'gym_display' in gym:
                                 display = gym['gym_display']
                                 if 'slots_available' in display:
@@ -226,12 +255,17 @@ class GymPokemon(BaseTask):
                     if 'gym_display' in gym:
                         display = gym['gym_display']
                         if 'slots_available' in display:
-                            self.logger.info("Gym has %s open spots!" % display['slots_available'])
-                            self.destination = gym
-                            break
-                        else:
-                            #If there are mons we can feed, check them. Note: gym_details returns false if gym is not in range.
-                            self.feed_pokemons_in_gym(gym)
+                            if self.leave_at_least_spots > 0:
+                                if display['slots_available'] > self.leave_at_least_spots:
+                                    self.logger.info("Gym has %s open spots!" % display['slots_available'])
+                                    self.destination = gym
+                                    break
+                                else:
+                                    self.logger.info("Gym has %s open spots, but we don't drop Pokemon in it because that would leave less than %s open spots" % (display['slots_available'], self.leave_at_least_spots))
+                            else:
+                                self.logger.info("Gym has %s open spots!" % display['slots_available'])
+                                self.destination = gym
+                                break
             else:
                 # self.logger.info("Found a Neutral gym?")
                 # self.logger.info("Info: %s" % gym)
@@ -304,16 +338,20 @@ class GymPokemon(BaseTask):
             gym_details = self.get_gym_details(self.destination)
             current_pokemons = self._get_pokemons_in_gym(gym_details)
             self.drop_pokemon_in_gym(self.destination, current_pokemons)
-            # Feed the Pokemon now we're here...
-            self.feed_pokemons_in_gym(self.destination)
             self.destination = None
-            # Look around if there are more gyms to fill
-            self.determin_new_destination()
-            # If there is none, we're done, else we go to the next!
-            if self.destination is None:
+            if len(self.fort_pokemons) >= self.take_at_most:
+                self.logger.info("We have a max of %s Pokemon in gyms." % self.take_at_most)
                 return WorkerResult.SUCCESS
+            elif self.chain_fill_gyms:
+                # Look around if there are more gyms to fill
+                self.determin_new_destination()
+                # If there is none, we're done, else we go to the next!
+                if self.destination is None:
+                    return WorkerResult.SUCCESS
+                else:
+                    return WorkerResult.RUNNING
             else:
-                return WorkerResult.RUNNING
+                return WorkerResult.SUCCESS
     
     def get_gym_details(self, gym):
         lat = gym['latitude']
@@ -354,164 +392,7 @@ class GymPokemon(BaseTask):
                 pokemon_names.append(Pokemons.name_for(pokemon_id))
 
         return pokemon_names
-
-    def feed_pokemons_in_gym(self, gym):
-        #Check if berry feeding is enabled from config
-        if self.feed_berries == False:
-            return True
-
-        #check if gym is in range. If not, gym=false    
-        if gym == False:
-            return True
-            
-        berries = inventory.items().get(ITEM_RAZZBERRY).count + (inventory.items().get(ITEM_PINAPBERRY).count - 10) + inventory.items().get(ITEM_NANABBERRY).count
-        if berries < 1:
-            self.logger.info("No berries left to feed Pokemon.")
-            return True
-
-        max_gym_time = timedelta(hours=8,minutes=20)
-        
-        try:
-            gym_info = self.get_gym_details(gym).get('gym_status_and_defenders', None)
-        except (TypeError,KeyError,AttributeError):
-            #This gym does not give status results. Probably it is not in range
-            return True
-        
-        # self.logger.info("Defenders in gym:")okemon_info..items()get('pokemon_id')
-        if gym_info:
-            defenders = gym_info.get('gym_defender', [])
-            for defender in defenders:
-                #self.logger.info("LOG: Defender data: defender %s" % defender)
-
-                motivated_pokemon = defender.get('motivated_pokemon')
-                pokemon_info = motivated_pokemon.get('pokemon')
-                pokemon_id=pokemon_info.get('id')
-                # timestamp when deployed
-                deployed_on = datetime.fromtimestamp(int(motivated_pokemon.get('deploy_ms')) / 1e3)
-                time_deployed = datetime.now() - deployed_on
-                # % of motivation
-                current_motivation = motivated_pokemon.get('motivation_now')
-
-                # Let's see if we should feed this Pokemon                
-                if time_deployed < max_gym_time and current_motivation < 1.0:
-                    # Let's feed this Pokemon a candy
-                    # self.logger.info("This pokemon deserves a candy")
-                    berry_id = self._determin_feed_berry_id(motivated_pokemon)
-                    poke_id = pokemon_id
-
-                    #Testing to see what quantity field does. Probably just the amount of berries you want to feed
-                    #quantity = pokemon_info.get('num_upgrades') <- Failed
-                    quantity=2
-                    self._feed_pokemon(gym, poke_id, berry_id, quantity)
-
-                    # quantity=0
-                    # food_values = motivated_pokemon.get('food_value')
-                    # for food_value in food_values:
-                        # if food_value.get('food_item') == berry_id:
-                            # quantity = food_value.get('motivation_increase')
-                    # if quantity !=0:
-                         # self._feed_pokemon(gym, poke_id, berry_id, quantity)
-
-    def _determin_feed_berry_id(self, motivated_pokemon):
-        # # Store the amount of berries we have
-        razzb = inventory.items().get(ITEM_RAZZBERRY).count
-        pinap = inventory.items().get(ITEM_PINAPBERRY).count
-        nanab = inventory.items().get(ITEM_NANABBERRY).count
-        missing_motivation = 1.0 - motivated_pokemon.get('motivation_now')
-        # Always allow feeding with RAZZ and NANAB
-        allowed_berries = []
-        if razzb > 0:
-            allowed_berries.append(ITEM_RAZZBERRY)
-        
-        if nanab > 0:
-            allowed_berries.append(ITEM_NANABBERRY)
-
-        if pinap > 10:
-            allowed_berries.append(ITEM_PINAPBERRY)
-
-        food_values = motivated_pokemon['food_value']
-        # Only check the berries we wish to feed
-        food_values = [f for f in food_values if f['food_item'] in allowed_berries]
-        # Sort by the least restore first
-        sorted(food_values, key=lambda x: x['motivation_increase'])
-
-        for food_value in food_values:
-            if food_value['motivation_increase'] >= missing_motivation:
-                # We fully restore CP with this berry!
-                return food_value['food_item']
-        # Okay, we can't completely fill the CP for the pokemon, get the best berry then NO GOLDEN
-        return food_values[-1]['food_item']
-
-    def _feed_pokemon(self, gym, pokemon_id, berry_id, quantity):
-        
-        self.logger.info("----THIS IS IN DEVELOPEMENT-----")
-        self.logger.info("We are feeding pokemon %s with berry %s ",pokemon_id,berry_id)
-        self.logger.info("Feed data: quantity %s" % self.gym_quantity_test)
-        #self.logger.info("Feed data: gym %s" % gym)
-        self.logger.info("----ABORTING HERE SINCE WE HAVE NOT YET FIND THE RIGHT API PARAMETERS-----")
-        return True
-
-        #Get the gym_name to show in messages
-        lat = self.destination["latitude"]
-        lng = self.destination["longitude"]
-
-        details = fort_details(self.bot, gym["id"], lat, lng)
-        if details:
-            gym_name = details.get('name', 'Unknown')
-        else:
-            #Seem that we cannot read details here. Let's exit
-            return True
-        
-        
-        #Overide the quantity to find the right value
-        #quantity = self.gym_quantity_test
-        
-        request = self.bot.api.create_request()
-        request.gym_feed_pokemon(
-            starting_quantity=self.gym_quantity_test,
-            item_id=berry_id,
-            gym_id=gym["id"],
-            pokemon_id=pokemon_id,
-            player_lat_degrees=f2i(self.bot.position[0]),
-            player_lng_degrees=f2i(self.bot.position[1])
-        )
-        response_dict = request.call()
-        if ('responses' in response_dict) and ('GYM_FEED_POKEMON' in response_dict['responses']):
-            feeding = response_dict['responses']['GYM_FEED_POKEMON']
-            self.logger.info("Feeding result: %s" % feeding) 
-            result = feeding.get('result', -1)
-            if result == 1:
-                # Succesful feeding
-                self.emit_event(
-                    'fed_pokemon',
-                    formatted=("We fed %s in the gym %s!!" % (pokemon_id, gym_name)),
-                    data={'gym_id': gym['id'], 'pokemon_id': pokemon_id}
-                )
-            elif result == 4:    #ERROR_POKEMON_NOT_THERE
-                self.emit_event(
-                    'fed_pokemon',
-                    formatted=("Pokemon %s has dropped out of the gym %s!" % (pokemon_id, gym_name)),
-                    data={'gym_id': gym['id'], 'pokemon_id': pokemon_id}
-                )
-            elif result == 5:    #ERROR_POKEMON_FULL
-                self.emit_event(
-                    'fed_pokemon',
-                    formatted=("Pokemon %s is full in gym %s!" % (pokemon_id, gym_name)),
-                    data={'gym_id': gym['id'], 'pokemon_id': pokemon_id}
-                )
-            elif result == 7:    #ERROR_WRONG_TEAM
-                self.emit_event(
-                    'fed_pokemon',
-                    formatted=("Team Switched while feeding %s in gym %s!" % (pokemon_id, gym_name)),
-                    data={'gym_id': gym['id'], 'pokemon_id': pokemon_id}
-                )
-            elif result == 8:    #ERROR_WRONG_COUNT
-                #Let's try a different quantity
-                self.gym_quantity_test += 1
-            else:
-                self.logger.info("Feeding failed! %s" % result)
-        
-        
+       
     def drop_pokemon_in_gym(self, gym, current_pokemons):
         self.pokemons = inventory.pokemons().all()
         self.fort_pokemons = [p for p in self.pokemons if p.in_fort]
@@ -566,12 +447,22 @@ class GymPokemon(BaseTask):
                     self.raid_gyms[gym["id"]] = raid_ends
                     return WorkerResult.SUCCESS
                 else:
+                    first_time = False
                     while raid_ends > datetime.now():
-                        self.logger.info("Waiting for %s seconds for raid to end..." % (raid_ends-datetime.today()).seconds)
-                        if (raid_ends-datetime.today()).seconds > 20:
+                        raid_ending = (raid_ends-datetime.today()).seconds
+                        sleep_m, sleep_s = divmod(raid_ending, 60)
+                        sleep_h, sleep_m = divmod(sleep_m, 60)
+                        sleep_hms = '%02d:%02d:%02d' % (sleep_h, sleep_m, sleep_s)
+                        if not first_time:
+                            # Clear the last log line!
+                            stdout.write("\033[1A\033[0K\r")
+                            stdout.flush()
+                        first_time = True
+                        self.logger.info("Waiting for %s for raid to end..." % sleep_hms)
+                        if raid_ending > 20:
                             sleep(20)
                         else:
-                            sleep((raid_ends-datetime.today()).seconds)
+                            sleep(raid_ending)
                             break
             else:
                 self.logger.info("Raid has not begun yet!")
@@ -584,14 +475,23 @@ class GymPokemon(BaseTask):
 
             if lockout_time > datetime.now():
                 self.logger.info("Lockout time: %s" % lockout_time.strftime('%Y-%m-%d %H:%M:%S.%f'))
+                first_time = False
                 while lockout_time > datetime.now():
-                    self.logger.info("Waiting for %s seconds deployment lockout to end..." % (lockout_time-datetime.today()).seconds)
-                    if (lockout_time-datetime.today()).seconds > 40:
+                    lockout_ending = (lockout_time-datetime.today()).seconds
+                    sleep_m, sleep_s = divmod(lockout_ending, 60)
+                    sleep_h, sleep_m = divmod(sleep_m, 60)
+                    sleep_hms = '%02d:%02d:%02d' % (sleep_h, sleep_m, sleep_s)
+                    if not first_time:
+                        # Clear the last log line!
+                        stdout.write("\033[1A\033[0K\r")
+                        stdout.flush()
+                    first_time = True
+                    self.logger.info("Waiting for %s deployment lockout to end..." % sleep_hms)
+                    if lockout_ending > 40:
                         sleep(40)
-                        #Feed any mons while we are waiting
-                        self.feed_pokemons_in_gym(gym)
+                        break
                     else:
-                        sleep((lockout_time-datetime.today()).seconds)
+                        sleep(lockout_ending)
                         break
 
         #FortDeployPokemon
@@ -621,6 +521,7 @@ class GymPokemon(BaseTask):
             # self.logger.info("Status: %s" % result)
             if result == 1:
                 self.dropped_gyms.append(gym["id"])
+                self.fort_pokemons.append(fort_pokemon)
                 gym_details = self.get_gym_details(gym)
                 # SUCCES
                 #self.logger.info("We deployed %s (%s CP) in the gym! We now have %s Pokemon in gyms!" % (fort_pokemon.name, fort_pokemon.cp, len(self.dropped_gyms)))
@@ -763,9 +664,11 @@ class GymPokemon(BaseTask):
         # Don't place a Pokemon which is already in the gym (prevent ALL Blissey etc)
         possible_pokemons = [p for p in self.pokemons if not p.name in current_pokemons]
         # Don't put in Pokemon above 3000 cp (morale drops too fast)
-        possible_pokemons = [p for p in possible_pokemons if p.cp < 3000]
+        possible_pokemons = [p for p in possible_pokemons if p.cp < 3000 and p.name not in self.ignore_max_cp_pokemon]
         # Filter out "bad" Pokemon
         possible_pokemons = [p for p in possible_pokemons if not p.is_bad]
+        # Filter out "never place" Pokemon
+        possible_pokemons = [p for p in possible_pokemons if p.name not in self.never_place]
         # HP Must be max
         possible_pokemons = [p for p in possible_pokemons if p.hp == p.hp_max]
         possible_pokemons = [p for p in possible_pokemons if not p.in_fort]
@@ -773,6 +676,7 @@ class GymPokemon(BaseTask):
         pokemons_ordered = sorted(possible_pokemons, key=lambda x: get_poke_info(self.order_by, x), reverse=True)
         # Top 20 picks
         pokemons_ordered = pokemons_ordered[0:20]
-        # Pick a random one!
-        random.shuffle(pokemons_ordered)
+        if self.pick_random_pokemon:
+            # Pick a random one!
+            random.shuffle(pokemons_ordered)
         return pokemons_ordered[0]
