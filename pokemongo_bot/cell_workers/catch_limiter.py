@@ -24,6 +24,9 @@ class CatchLimiter(BaseTask):
         self.duration = self.config.get("duration", 15)
         self.no_log_until = datetime.now()
         self.min_ultraball_to_keep = 0
+        self.daily_catch_limit = 500 # default it to 500 if not found in CatchPokemon
+        self.exit_on_limit_reached = False # default it to false if not found in CatchPokemon
+        
         for catch_cfg in self.bot.config.raw_tasks:
             if "type" in catch_cfg:
                 if catch_cfg["type"] == "CatchPokemon":
