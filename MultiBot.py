@@ -2,6 +2,7 @@
 # the above tag defines encoding for this document and is for Python 2.x compatibility
 import gzip
 import json
+import multiprocessing
 import os
 import platform
 import re
@@ -17,12 +18,15 @@ proxyCur = 0
 hashkeyCur = 0
 accountNum = 0
 try:
-    os.stat('configs/temp')
+    os.rmdir('configs/temp')
 except:
-    os.mkdir('configs/temp')  
+    pass
+try:
+    os.mkdir('configs/temp')    
+except:
+    pass 
 AccountLock = Semaphore(value=1)
 MultiBotConfig = json.loads(open('configs/MultiBotConfig.json').read())
-ThreadNum = MultiBotConfig[u'Threads']
 
 def getProxy():
     try:
@@ -89,11 +93,9 @@ def AccountManager(Account=None):
         Accounts.append(Account)
         AccountLock.release()
 
-def MakeConf(CurThread):
+def MakeConf(CurThread, username, password):
     try:
         jsonData = json.loads(open('configs/' + MultiBotConfig[u'AuthJsonFile']).read())
-        Account = AccountManager()
-        username, password = Account.split(':')
         jsonData[u'username'] = username
         jsonData[u'password'] = password
         jsonData[u'hashkey'] = getHashKey()
@@ -111,9 +113,10 @@ def MakeConf(CurThread):
                 except:
                     pass
         try:
-            jsonData[u'websocket'][u'server_url'] = MultiBotConfig[u'WebSocket'][u'IP'] + ':' + str(MultiBotConfig[u'WebSocket'][u'Port'] + CurThread)
+            if jsonData[u'websocket'][u'start_embedded_server']:
+                jsonData[u'websocket'][u'server_url'] = MultiBotConfig[u'WebSocket'][u'IP'] + ':' + str(MultiBotConfig[u'WebSocket'][u'Port'] + CurThread)
         except:
-            pass
+            print 'error websocket'
 
         with open('configs/temp/config-' + str(CurThread) + '.json', 'w') as s:
             s.write(json.dumps(jsonData))
@@ -121,32 +124,34 @@ def MakeConf(CurThread):
 
     except IOError:
         print 'config file error'
+        time.sleep(30)
 
 class ThreadClass(threading.Thread):
       def run(self):
-        CurThread = int(self.getName().replace('Thread-', '')) -1
+        self.CurThread = int(self.getName().replace('Thread-', '')) -1
         while True:
-            Account = AccountManager()
-            username, password = Account.split(':')
+            self.Account = AccountManager()
+            self.username, self.password = self.Account.split(':')
+            print 'Thread-{0} using account {1}'.format(self.CurThread, self.username)
             try:
-                MakeConf(CurThread)
+                MakeConf(self.CurThread, self.username, self.password)
                 if MultiBotConfig[u'UseProxy']:
-                    proxy = getProxy()
+                    self.proxy = getProxy()
                     if platform.system() == "Linux":
-                        os.system('export HTTP_PROXY="http://' + proxy + '"; export HTTPS_PROXY="https://' + proxy + '"')
+                        self.os.system('export HTTP_PROXY="http://' + proxy + '"; export HTTPS_PROXY="https://' + proxy + '"')
                     if platform.system() == "Windows":
-                        os.system('')
+                        self.os.system('')
                 os.system(
                     "python pokecli.py -af configs/temp/auth-{0}.json -cf configs/temp/config-{0}.json --walker_limit_output {1}".format(
-                        CurThread, MultiBotConfig[u'walker_limit_output']))
+                        self.CurThread, MultiBotConfig[u'walker_limit_output']))
             except Exception as e:
                 import traceback
                 print("Generic Exception: " + traceback.format_exc())
             finally:
-                AccountManager(Account)
+                AccountManager(self.Account)
                 time.sleep (60)
 def start():
-    for i in range(ThreadNum):
+    for i in range(MultiBotConfig[u'Threads']):
         t = ThreadClass()
         time.sleep (0.1)
         t.start()
