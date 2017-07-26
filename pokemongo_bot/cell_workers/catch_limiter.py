@@ -84,7 +84,7 @@ class CatchLimiter(BaseTask):
                 self.bot.catch_resume_at = now
             self.bot.warned_about_catch_limit = False
 
-        elif self.bot.catch_resume_at is not None:
+        elif self.bot.catch_resume_at is not None and self.bot.catch_limit_reached:
             # Lets check if the resume time has passed and the limit is okay
             if now >= self.bot.catch_resume_at and result[0] < self.daily_catch_limit:
                 self.emit_event(
