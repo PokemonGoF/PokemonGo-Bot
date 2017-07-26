@@ -78,7 +78,11 @@ class PokemonCatchWorker(BaseTask):
         self.berry_threshold = self.config.get('berry_threshold', 0.35)
         self.vip_berry_threshold = self.config.get('vip_berry_threshold', 0.9)
         self.treat_unseen_as_vip = self.config.get('treat_unseen_as_vip', DEFAULT_UNSEEN_AS_VIP)
-        self.daily_catch_limit = self.config.get('daily_catch_limit', 800)
+        self.daily_catch_limit = self.config.get('daily_catch_limit', 500)
+        if self.daily_catch_limit > 500:
+            self.logger.warning("BE WARNED! The total catch limit in 72 hours is 1500!")
+            self.logger.warning("Setting your daily limit to %s might get you account flagged or banned!" % self.daily_catch_limit)
+            sleep(5)
         self.use_pinap_on_vip = self.config.get('use_pinap_on_vip', False)
         self.pinap_on_level_below = self.config.get('pinap_on_level_below', 0)
         self.pinap_operator = self.config.get('pinap_operator', "or")
