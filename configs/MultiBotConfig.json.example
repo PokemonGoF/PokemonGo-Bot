@@ -8,6 +8,7 @@
 	"ConfigJsonFile": "config.json",
 	"CompleteTutorialNickName": true,
 	"WebSocket": {
+		"start_embedded_server": false,
 		"IP": "127.0.0.1",
 		"Port": 4000
 	},
