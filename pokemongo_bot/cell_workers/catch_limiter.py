@@ -74,9 +74,11 @@ class CatchLimiter(BaseTask):
 
         elif result[0] <= (self.daily_catch_limit - 20):
             if self.bot.catch_limit_reached:
-                self.logger.info(
-                    "Resume time hasn't passed yet, but catch limit passing with > 20 (%s / %s), resuming catch..." %
-                    (result[0], self.daily_catch_limit))
+                self.emit_event(
+                    'catch_limit_off',
+                    formatted="Resume time hasn't passed yet, but catch limit passing ({} / {}}). Re-enabling catch tasks.".format(
+                        result[0],
+                        self.daily_catch_limit))
                 self.bot.catch_disabled = False
                 self.bot.catch_limit_reached = False
                 self.bot.catch_resume_at = now
