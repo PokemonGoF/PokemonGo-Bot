@@ -1,0 +1,16 @@
+{
+	"Threads": 2,
+	"HashKeyFile": "MultiBotConfigHashkey.txt",
+	"UseProxy": false,
+	"ProxyFile": "MultiBotConfigProxy.txt",
+	"AccountsFile": "MultiBotConfigAccounts.txt",
+	"AuthJsonFile": "auth.json",
+	"ConfigJsonFile": "config.json",
+	"CompleteTutorialNickName": true,
+	"WebSocket": {
+		"start_embedded_server": false,
+		"IP": "127.0.0.1",
+		"Port": 4000
+	},
+	"walker_limit_output": true
+}
