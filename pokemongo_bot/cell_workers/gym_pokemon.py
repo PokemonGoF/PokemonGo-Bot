@@ -75,6 +75,8 @@ class GymPokemon(BaseTask):
         self.never_place = self.config.get('never_place', [])
 
         self.pick_random_pokemon = self.config.get('pick_random_pokemon', True)
+        
+        self.can_be_disabled_by_catch_limter = self.config.get("can_be_disabled_by_catch_limter", False)
 
         self.recheck = datetime.now()
         self.walker = self.config.get('walker', 'StepWalker')
@@ -121,6 +123,22 @@ class GymPokemon(BaseTask):
             self.logger.info("%s (%s CP)" % (pokemon.name, pokemon.cp))
 
     def work(self):
+        if not self.enabled:
+            return WorkerResult.SUCCESS
+
+        if self.bot.catch_disabled and self.can_be_disabled_by_catch_limter:
+            # When catching is disabled, drop the target.
+            if self.destination is not None:
+                self.destination = None
+
+            if not hasattr(self.bot, "gym_pokemon_disabled_global_warning") or \
+                        (hasattr(self.bot, "gym_pokemon_disabled_global_warning") and not self.bot.gym_pokemon_disabled_global_warning):
+                self.logger.info("All gym tasks are currently disabled until {}. Gym function will resume when catching tasks are re-enabled".format(self.bot.catch_resume_at.strftime("%H:%M:%S")))
+            self.bot.gym_pokemon_disabled_global_warning = True
+            return WorkerResult.SUCCESS
+        else:
+            self.bot.gym_pokemon_disabled_global_warning = False
+            
         self.pokemons = inventory.pokemons().all()
         self.fort_pokemons = [p for p in self.pokemons if p.in_fort]
         self.pokemons = [p for p in self.pokemons if not p.in_fort]

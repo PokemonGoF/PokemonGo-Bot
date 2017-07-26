@@ -151,3 +151,4 @@ cd to PokemonGo-Bot directory
 git pull
 git submodule update --init --recursive
 ```
+
