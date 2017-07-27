@@ -77,6 +77,7 @@ class MoveToFort(BaseTask):
         moving = noised_dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE if self.bot.config.replicate_gps_xy_noise else dist > Constants.MAX_DISTANCE_FORT_IS_REACHABLE
 
         distance_to_target = int(noised_dist if self.bot.config.replicate_gps_xy_noise else dist)
+
         if len(self.previous_distance) == 0:
             self.previous_distance.append(distance_to_target)
         elif self.target_id is not fort_name:
@@ -86,15 +87,16 @@ class MoveToFort(BaseTask):
             if self.walker is not self.config.get('walker', 'StepWalker'):
                 self.walker = self.config.get('walker', 'StepWalker')
         else:
-            # self.logger.info("Previous distances: %s" % self.previous_distance)
-            if len(self.previous_distance) > 5:
-                self.previous_distance.pop(0)
-            error_moving = False
-            times_found = 0
-            for prev_distance in self.previous_distance:
-                if prev_distance == distance_to_target:
-                    error_moving = True
-                    break
+            if len(self.previous_distance) < 10:
+                self.previous_distance.append(distance_to_target) # collect more previous distance data
+                error_moving = False
+            else:
+                if sum(self.previous_distance[0:5]) <= sum(self.previous_distance[5:10]):
+                    error_moving = True # if previous distance data trend is increasing we're stuck
+                else:
+                    self.previous_distance.pop(0)
+                    self.previous_distance.append(distance_to_target) # collect more previous distance data
+                    error_moving = False
 
             if error_moving:
                 if self.walker == 'StepWalker':
@@ -105,8 +107,6 @@ class MoveToFort(BaseTask):
                     self.logger.info("Having difficulty walking to %s. Changing walker." % fort_name)
                     self.walker = 'StepWalker'
                     self.previous_distance = [distance_to_target]
-            else:
-                self.previous_distance.append(distance_to_target)
 
         if moving:
             self.wait_log_sent = None
