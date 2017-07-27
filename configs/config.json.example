@@ -308,6 +308,7 @@
                     "vip",
                     "priority"
                 ],
+		 "teleport_back_to_last_location": false,
                 "sources": [
                     {
                         "enabled": false,
