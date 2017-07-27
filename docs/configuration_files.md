@@ -867,6 +867,8 @@ This task will fetch current pokemon spawns from /raw_data of an PokemonGo-Map i
 
 This task is an upgrade version of the MoveToMapPokemon task. It will fetch pokemon informations from any number of urls (sources), including PokemonGo-Map, or from the social feature. You can also use the old PokemonGo-Map project. For information on how to properly setup PokemonGo-Map have a look at the Github page of the project [here](https://github.com/PokemonGoMap/PokemonGo-Map). You can also use [this](https://github.com/YvesHenri/PogoLocationFeeder), which is an adapted version of the application that NecroBot used to snipe. There is an example config in `config/config.json.map.example`.
 
+Please note that this feature only works with a radius of 15KM. By default, it will continue at new location once snipe is done unless you specify it not to with `teleport_back_to_last_location` set to true.
+
 ### Options
 [[back to top](#table-of-contents)]
 
@@ -887,6 +889,7 @@ This task is an upgrade version of the MoveToMapPokemon task. It will fetch poke
    - `missing` - Order by the target's pokedex missing status.
    - `priority` - Order by the priority you have specified in the `catch` list.
    - `expiration_timestamp_ms` - Order by the expiration time.
+* `teleport_back_to_last_location` - Specify if you want to teleport back to last location. Default is false.
 * `sources` - This should map a JSON param values from a given url. For example: different urls will provide different JSON response formats. **PLEASE ADVISED THAT, IF A PARAM DOES NOT EXIST (OR CONTAINS WRONG DATA LIKE PokeSnipers's ID PARAM), DO NOT SPECIFY IT!** Pokesnipers is a special case where it does provide IDs, however theyre wrong. Map bellow their corresponding values:
 * `sources.key` - The JSON key that contains the results, eg.: For a JSON response such as `{ "SomeWeirdoName": [{"id": 123, ...}, {"id": 143, ...}]}`, `SomeWeirdoName` would be the key name.
 * `sources.url` - The URL that will provide the JSON.
