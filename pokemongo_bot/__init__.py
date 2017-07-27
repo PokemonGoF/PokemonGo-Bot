@@ -1643,8 +1643,7 @@ class PokemonGoBot(object):
                  if 'latitude' in fort and 'longitude' in fort]
         # Need to filter out disabled forts!
         forts = filter(lambda x: x["enabled"] is True, forts)
-        forts = filter(lambda x: 'closed' not in x, forts)
-        # forts = filter(lambda x: 'closed' not in fort, forts)
+        forts = filter(lambda x: 'closed' not in fort, forts)
         
         if order_by_distance:
             forts.sort(key=lambda x: distance(
@@ -1672,8 +1671,7 @@ class PokemonGoBot(object):
                  if 'latitude' in fort and 'type' not in fort]
         # Need to filter out disabled gyms!
         forts = filter(lambda x: x["enabled"] is True, forts)
-        forts = filter(lambda x: 'closed' not in x, forts)
-        # forts = filter(lambda x: 'type' not in fort, forts)
+        forts = filter(lambda x: 'closed' not in fort, forts)
 
         if order_by_distance:
             forts.sort(key=lambda x: distance(
