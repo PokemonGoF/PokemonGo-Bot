@@ -8,6 +8,8 @@ import calendar
 import difflib
 import hashlib
 
+from geopy.distance import great_circle
+
 from random import uniform
 from operator import itemgetter, methodcaller
 from itertools import izip
@@ -260,6 +262,7 @@ class Sniper(BaseTask):
         self.altitude = uniform(self.bot.config.alt_min, self.bot.config.alt_max)
         self.sources = [SniperSource(data) for data in self.config.get('sources', [])]
         self.no_snipe_until = None
+        self.teleport_back_to_last_location = self.config.get('teleport_back_to_last_location', False) 
 
         if not hasattr(self.bot,"sniper_cache"):
             self.bot.sniper_cache = []
@@ -276,7 +279,8 @@ class Sniper(BaseTask):
                 raise ValueError("Unrecognized mode: '{}'".format(self.mode))
             else:
                 # Selected mode is valid. Validate sources if mode is URL
-                if self.mode == SniperMode.URL:
+                if self.mode == SniperMode.URL or self.mode == SniperMode.SOCIAL:
+                    self._log("NOTE: Sniper only works if your bot location is in same city as your source")
                     self._log("Validating sources: {}...".format(", ".join([source.url for source in self.sources])))
 
                     # Create a copy of the list so we can iterate and remove elements at the same time
@@ -294,9 +298,9 @@ class Sniper(BaseTask):
                         self._error("There is no source available. Disabling Sniper...")
                         self.disabled = True
 
-                    # Re-enable snipping if source is from telegram
-                    if self.mode == SniperMode.TELEGRAM:
-                        self.disabled = False
+                # Re-enable snipping if source is from telegram
+                if self.mode == SniperMode.TELEGRAM:
+                    self.disabled = False
 
     def is_snipeable(self, pokemon):
         pokeballs_count = self.inventory.get(Item.ITEM_POKE_BALL.value).count
@@ -304,7 +308,7 @@ class Sniper(BaseTask):
         ultraballs_count = self.inventory.get(Item.ITEM_ULTRA_BALL.value).count
         all_balls_count = pokeballs_count + greatballs_count + ultraballs_count
 
-        # Skip if expired (cast milliseconds to seconds for comparision), snipe check if source is from telegram
+        #Skip if expired (cast milliseconds to seconds for comparision), snipe check if source is from telegram
         if self.mode != SniperMode.TELEGRAM:
             if (pokemon.get('expiration_timestamp_ms', 0) or pokemon.get('last_modified_timestamp_ms', 0)) / 1000 < time.time():
                 self._trace('{} is expired! Skipping...'.format(pokemon.get('pokemon_name')))
@@ -338,6 +342,7 @@ class Sniper(BaseTask):
     # Snipe a target. This function admits that if a target really exists, it will be 'caught'.
     def snipe(self, pokemon):
         success = False
+        
 
         # Apply snipping business rules and snipe if its good
         if not self.is_snipeable(pokemon) and not self.mode == SniperMode.TELEGRAM:
@@ -355,93 +360,114 @@ class Sniper(BaseTask):
             else:
                 # Backup position before anything
                 last_position = self.bot.position[0:2]
-
-                # Teleport, so that we can see nearby stuff
-                self.bot.hb_locked = True
-                self._teleport_to(pokemon)
-
-
-                # If social is enabled and if no verification is needed, trust it. Otherwise, update IDs!
-                verify = not pokemon.get('encounter_id') or not pokemon.get('spawn_point_id')
-                exists = not verify or self.mode == SniperMode.SOCIAL
-                success = exists
-
-                # Always verify if it's from telegram
-                if TelegramSnipe.ENABLED == True:
-                    verify = True
-
-                # If information verification have to be done, do so
-                if verify:
-                    seconds_since_last_check = time.time() - self.last_cell_check_time
-
-                    # Wait a maximum of MIN_SECONDS_ALLOWED_FOR_CELL_CHECK seconds before requesting nearby cells
-                    self._trace('Pausing for {} secs before checking for Pokemons'.format(self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK))
-
-                    #recode it to check every 5 secs, first check for wild then catchable
-                    nearby_pokemons = []
-                    nearby_stuff = []
-                    num = 0
-                    for num in range(0,self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK):
-                        if num%5 == 0:
-                            nearby_stuff = self.bot.get_meta_cell()
-                            self.last_cell_check_time = time.time()
-
-                            # Retrieve nearby pokemons for validation
-                            nearby_pokemons.extend(nearby_stuff.get('wild_pokemons', []))
-                            if nearby_pokemons:
-                                break
-
-                        time.sleep(1)
-                        num += 1
-
-                    num = 0
-                    for num in range(0,self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK):
-                        if num%5 == 0:
-                            nearby_stuff = self.bot.get_meta_cell()
-                            self.last_cell_check_time = time.time()
-
-                            # Retrieve nearby pokemons for validation
-                            nearby_pokemons.extend(nearby_stuff.get('catchable_pokemons', []))
-                            if nearby_pokemons:
-                                break
-
-                        time.sleep(1)
-                        num += 1
-
-                    self._trace('Pokemon Nearby: {}'.format(nearby_pokemons))
-
-                    # Make sure the target really/still exists (nearby_pokemon key names are game-bound!)
-                    for nearby_pokemon in nearby_pokemons:
-                        nearby_pokemon_id = nearby_pokemon.get('pokemon_data', {}).get('pokemon_id') or nearby_pokemon.get('pokemon_id')
-
-                        # If we found the target, it exists and will very likely be encountered/caught (success)
-                        if nearby_pokemon_id == pokemon.get('pokemon_id', 0):
-                            exists = True
-                            success = True
-
-                            # Also, if the IDs arent valid, override them (nearby_pokemon key names are game-bound!) with game values
-                            if not pokemon.get('encounter_id') or not pokemon.get('spawn_point_id'):
-                                pokemon['encounter_id'] = nearby_pokemon['encounter_id']
-                                pokemon['spawn_point_id'] = nearby_pokemon['spawn_point_id']
-                            break
-
-                # If target exists, catch it, otherwise ignore
-                if exists:
-                    self._log('Yay! There really is a wild {} nearby!'.format(pokemon.get('pokemon_name')))
-                    self._teleport_back_and_catch(last_position, pokemon)
-
+                teleport_position = [pokemon['latitude'], pokemon['longitude']]
+                teleport_distance = self._get_distance(last_position, teleport_position)
+                sleep_time = self._get_sleep_sec(teleport_distance)
+                
+                if sleep_time > 900:
+                    success = False
+                    exists = False
+                    self._log('Sniping distance is more than supported distance, abort sniping')
                 else:
-                    self._error('Damn! Its not here. Reasons: too far, caught, expired or fake data. Skipping...')
-                    self._teleport_back(last_position)
+                    self._log('Base on distance, pausing for {} sec'.format(sleep_time))
 
-                #Set always to false to re-enable sniper to check for telegram data
-                TelegramSnipe.ENABLED = False
+                    # Teleport, so that we can see nearby stuff
+                    self.bot.hb_locked = True
+                    time.sleep(sleep_time)
+                    self._teleport_to(pokemon)
 
-                # Save target and unlock heartbeat calls
-                self._cache(uniqueid)
-                self.bot.hb_locked = False
 
-        return success
+                    # If social is enabled and if no verification is needed, trust it. Otherwise, update IDs!
+                    verify = not pokemon.get('encounter_id') or not pokemon.get('spawn_point_id')
+                    exists = not verify or self.mode == SniperMode.SOCIAL
+                    success = exists
+
+                    # Always verify if it's from telegram
+                    if TelegramSnipe.ENABLED == True:
+                        verify = True
+
+                    # If information verification have to be done, do so
+                    if verify:
+                        seconds_since_last_check = time.time() - self.last_cell_check_time
+
+                        # Wait a maximum of MIN_SECONDS_ALLOWED_FOR_CELL_CHECK seconds before requesting nearby cells
+                        self._log('Pausing for {} secs before checking for Pokemons'.format(self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK))
+
+                        #recode it to check every 5 secs, first check for wild then catchable
+                        nearby_pokemons = []
+                        nearby_stuff = []
+                        num = 0
+                        for num in range(0,self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK):
+                            if num%5 == 0:
+                                nearby_stuff = self.bot.get_meta_cell()
+                                self.last_cell_check_time = time.time()
+
+                                # Retrieve nearby pokemons for validation
+                                nearby_pokemons.extend(nearby_stuff.get('wild_pokemons', []))
+                                if nearby_pokemons:
+                                    break
+
+                            time.sleep(1)
+                            num += 1
+
+                        num = 0
+                        for num in range(0,self.MIN_SECONDS_ALLOWED_FOR_CELL_CHECK):
+                            if num%5 == 0:
+                                nearby_stuff = self.bot.get_meta_cell()
+                                self.last_cell_check_time = time.time()
+
+                                # Retrieve nearby pokemons for validation
+                                nearby_pokemons.extend(nearby_stuff.get('catchable_pokemons', []))
+                                if nearby_pokemons:
+                                    break
+
+                            time.sleep(1)
+                            num += 1
+
+                        self._trace('Pokemon Nearby: {}'.format(nearby_pokemons))
+
+                        # Make sure the target really/still exists (nearby_pokemon key names are game-bound!)
+                        for nearby_pokemon in nearby_pokemons:
+                            nearby_pokemon_id = nearby_pokemon.get('pokemon_data', {}).get('pokemon_id') or nearby_pokemon.get('pokemon_id')
+
+                            # If we found the target, it exists and will very likely be encountered/caught (success)
+                            if nearby_pokemon_id == pokemon.get('pokemon_id', 0):
+                                exists = True
+                                success = True
+
+                                # Also, if the IDs arent valid, override them (nearby_pokemon key names are game-bound!) with game values
+                                if not pokemon.get('encounter_id') or not pokemon.get('spawn_point_id'):
+                                    pokemon['encounter_id'] = nearby_pokemon['encounter_id']
+                                    pokemon['spawn_point_id'] = nearby_pokemon['spawn_point_id']
+                                break
+
+                    # If target exists, catch it, otherwise ignore
+                    if exists:
+                        self._log('Yay! There really is a wild {} nearby!'.format(pokemon.get('pokemon_name')))
+                        self._catch(pokemon)
+                        if self.teleport_back_to_last_location:
+                            self._log('You have set to return to previous location, pause for {} sec before returning'.format(sleep_time))
+                            time.sleep(sleep_time)
+                            self._teleport_back(last_position)
+                            #self._teleport_back_and_catch(last_position, pokemon)
+                    else:
+                        self._error('Damn! Its not here. Reasons: too far, caught, expired or fake data. Skipping...')
+                        if self.teleport_back_to_last_location:
+                            self._log('You have set to return to previous location, pause for {} sec before returning'.format(sleep_time))
+                            time.sleep(sleep_time)
+                            self._teleport_back(last_position)
+                        else:
+                            self._log('Bot will now continue from new position')
+                            #self._teleport_back(last_position)
+
+                    #Set always to false to re-enable sniper to check for telegram data
+                    TelegramSnipe.ENABLED = False
+
+                    # Save target and unlock heartbeat calls
+                    self._cache(uniqueid)
+                    self.bot.hb_locked = False
+
+            return success
 
     def work(self):
         #Check if telegram is called
@@ -658,9 +684,20 @@ class Sniper(BaseTask):
             data = { 'latitude': position_array[0], 'longitude': position_array[1] }
         )
         self._teleport(position_array[0], position_array[1], self.altitude)
+    
+    def _catch(self, pokemon):
+        catch_worker = PokemonCatchWorker(pokemon, self.bot)
+        api_encounter_response = catch_worker.create_encounter_api_call()
+        catch_worker.work(api_encounter_response)
 
     def _teleport_back_and_catch(self, position_array, pokemon):
         catch_worker = PokemonCatchWorker(pokemon, self.bot)
         api_encounter_response = catch_worker.create_encounter_api_call()
         self._teleport_back(position_array)
         catch_worker.work(api_encounter_response)
+    
+    def _get_distance(self, location_from, location_to):
+        return great_circle(location_from, location_to).kilometers
+        
+    def _get_sleep_sec(self, distance):
+        return distance * 60
