@@ -10,6 +10,7 @@ import shutil
 import sys
 import threading
 import time
+from time import gmtime, strftime, sleep
 from threading import *
 import requests
 
@@ -26,6 +27,7 @@ try:
 except:
     pass 
 AccountLock = Semaphore(value=1)
+screen_lock = Semaphore(value=1)
 MultiBotConfig = json.loads(open('configs/MultiBotConfig.json').read())
 
 def getProxy():
@@ -48,15 +50,19 @@ def getProxy():
                     if requests.get('https://sso.pokemon.com/', headers=headers, proxies=proxies).status_code == 200:
                         return proxy
                     else:
-                        print ("Proxy is Banned")
+                        Lprint ("Proxy is Banned")
                 else:
-                    print ("Proxy is Banned")
+                    Lprint ("Proxy is Banned")
 
             except Exception as e:
-                print (e)
+                Lprint (e)
                 pass
+            except KeyboardInterrupt:
+                stop()                  
     except IOError:
-        print 'configs/{} does not exist'.format(MultiBotConfig[u'ProxyFile'])
+        Lprint ('configs/{} does not exist'.format(MultiBotConfig[u'ProxyFile']))
+    except KeyboardInterrupt:
+        stop()
 
 try:
     Accounts = []
@@ -65,7 +71,9 @@ try:
             line = line.replace('\n', '').replace('\r', '').replace(',', '.')
             Accounts.append(line)
 except IOError:
-    print 'configs/{} does not exist'.format(MultiBotConfig[u'AccountsFile'])
+    Lprint ('configs/{} does not exist'.format(MultiBotConfig[u'AccountsFile']))
+except KeyboardInterrupt:
+    stop()
 
 def getHashKey():
     try:
@@ -79,7 +87,18 @@ def getHashKey():
         hashkeyCur += 1
         return hashkeyAll[hashkeyCur].replace('\n', '').replace('\r', '')
     except IOError:
-        print 'configs/{} does not exist'.format(MultiBotConfig[u'HashKeyFile'])
+        Lprint ('configs/{} does not exist'.format(MultiBotConfig[u'HashKeyFile']))
+    except KeyboardInterrupt:
+        stop()
+
+def stop():
+    Lprint ('Interrupted stopping')
+    try:
+        sys.exit(0)
+    except SystemExit:
+        os._exit(0)
+
+
 
 def AccountManager(Account=None):
     AccountLock.acquire()
@@ -92,6 +111,12 @@ def AccountManager(Account=None):
     else:
         Accounts.append(Account)
         AccountLock.release()
+
+def Lprint (content):
+    content = "{0} {1}".format(strftime("%Y-%m-%d %H:%M:%S"), content)
+    screen_lock.acquire()
+    print (content)
+    screen_lock.release()
 
 def MakeConf(CurThread, username, password):
     try:
@@ -110,29 +135,50 @@ def MakeConf(CurThread, username, password):
                 try:
                     if jsonData[u'tasks'][i][u'config'][u'nickname']:
                         jsonData[u'tasks'][i][u'config'][u'nickname'] = username.replace('_', '')
+                except KeyboardInterrupt:
+                    stop()
                 except:
                     pass
-        try:
-            if jsonData[u'websocket'][u'start_embedded_server']:
-                jsonData[u'websocket'][u'server_url'] = MultiBotConfig[u'WebSocket'][u'IP'] + ':' + str(MultiBotConfig[u'WebSocket'][u'Port'] + CurThread)
-        except:
-            print 'error websocket'
+        if MultiBotConfig[u'WebSocket'][u'start_embedded_server']:
+            try:
+                if jsonData[u'websocket'][u'server_url']:
+                    jsonData[u'websocket'][u'server_url'] = MultiBotConfig[u'WebSocket'][u'IP'] + ':' + str(MultiBotConfig[u'WebSocket'][u'Port'] + CurThread)
+            except KeyboardInterrupt:
+                stop()
+            except:
+                jsonData.items().append("{u'websocket':,{u'server_url': u'" + MultiBotConfig[u'WebSocket'][u'IP'] + ":" + str(MultiBotConfig[u'WebSocket'][u'Port'] + CurThread) + "u'start_embedded_server': True}")
+
+
 
         with open('configs/temp/config-' + str(CurThread) + '.json', 'w') as s:
             s.write(json.dumps(jsonData))
             s.close()
 
     except IOError:
-        print 'config file error'
+        Lprint ('config file error')
         time.sleep(30)
+    except KeyboardInterrupt:
+        stop()
+
 
 class ThreadClass(threading.Thread):
-      def run(self):
-        self.CurThread = int(self.getName().replace('Thread-', '')) -1
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.paused = True  # start out paused
+        self.state = threading.Condition()
+
+    def run(self):
+        time.sleep(.1)
+        self.resume() # unpause self
         while True:
+            with self.state:
+                if self.paused:
+                    self.state.wait() # block until notified
+            self.CurThread = int(self.getName().replace('Thread-', '')) -1
+           
             self.Account = AccountManager()
             self.username, self.password = self.Account.split(':')
-            print 'Thread-{0} using account {1}'.format(self.CurThread, self.username)
+            Lprint ('Thread-{0} using account {1}'.format(self.CurThread, self.username))
             try:
                 MakeConf(self.CurThread, self.username, self.password)
                 if MultiBotConfig[u'UseProxy']:
@@ -146,16 +192,37 @@ class ThreadClass(threading.Thread):
                         self.CurThread, MultiBotConfig[u'walker_limit_output']))
             except Exception as e:
                 import traceback
-                print("Generic Exception: " + traceback.format_exc())
+                Lprint ((e))
+                time.sleep (60)
+            except KeyboardInterrupt:
+                stop()
             finally:
                 AccountManager(self.Account)
-                time.sleep (60)
+
+    def resume(self):
+        with self.state:
+            self.paused = False
+            self.state.notify()  # unblock self if waiting
+
+    def pause(self):
+        with self.state:
+            self.paused = True  # make self block and wait
+    def stop(self):
+            self.stopped = True
+
+
 def start():
-    for i in range(MultiBotConfig[u'Threads']):
-        t = ThreadClass()
-        time.sleep (0.1)
-        t.start()
-        time.sleep (10)
+    try:
+        for i in range(MultiBotConfig[u'Threads']):
+            t = ThreadClass()
+            time.sleep (0.1)
+            t.start()
+            time.sleep (10)
+    except KeyboardInterrupt:
+        Lprint("stopping all Threads")
+        for i in range(MultiBotConfig[u'Threads']):
+            t.stop()
+        stop()
 
 if __name__ == "__main__":
     start()

@@ -24,12 +24,18 @@ class CatchLimiter(BaseTask):
         self.duration = self.config.get("duration", 15)
         self.no_log_until = datetime.now()
         self.min_ultraball_to_keep = 0
+        self.daily_catch_limit = 500 # default it to 500 if not found in CatchPokemon
+        self.exit_on_limit_reached = False # default it to false if not found in CatchPokemon
+        
         for catch_cfg in self.bot.config.raw_tasks:
             if "type" in catch_cfg:
                 if catch_cfg["type"] == "CatchPokemon":
-                    self.min_ultraball_to_keep = catch_cfg["config"]["min_ultraball_to_keep"]
-                    self.daily_catch_limit = catch_cfg["config"]["daily_catch_limit"]
-                    self.exit_on_limit_reached = catch_cfg["config"]["exit_on_limit_reached"]
+                    if "min_ultraball_to_keep" in catch_cfg["config"]:
+                        self.min_ultraball_to_keep = catch_cfg["config"]["min_ultraball_to_keep"]
+                    if "daily_catch_limit" in catch_cfg["config"]:
+                        self.daily_catch_limit = catch_cfg["config"]["daily_catch_limit"]
+                    if "exit_on_limit_reached" in catch_cfg["config"]:
+                        self.exit_on_limit_reached = catch_cfg["config"]["exit_on_limit_reached"]
 
         if not hasattr(self.bot, "catch_resume_at"):
             self.bot.catch_resume_at = None
@@ -76,7 +82,7 @@ class CatchLimiter(BaseTask):
             if self.bot.catch_limit_reached:
                 self.emit_event(
                     'catch_limit_off',
-                    formatted="Resume time hasn't passed yet, but catch limit passing ({} / {}}). Re-enabling catch tasks.".format(
+                    formatted="Resume time hasn't passed yet, but catch limit passing ({} / {}). Re-enabling catch tasks.".format(
                         result[0],
                         self.daily_catch_limit))
                 self.bot.catch_disabled = False
