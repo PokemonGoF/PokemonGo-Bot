@@ -43,17 +43,10 @@ if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul & shift /1)
 
 
 :startBot
-REM CLS
-REM ECHO.
-REM ECHO.
-REM ECHO --------------------Initializing web server--------------------
-REM ECHO.
-REM ECHO.
-REM set BatchPath="%~dp0"
-REM start cmd.exe /k "CD %BatchPath%&CD..&CD web&python -m SimpleHTTPServer"
-REM ECHO.
-REM ECHO.
 CLS
+set BatchPath="%~dp0"
+ECHO.
+ECHO.
 ECHO --------------------Starting bot--------------------
 ECHO.
 ECHO.
