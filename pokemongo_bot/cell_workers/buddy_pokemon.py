@@ -132,8 +132,8 @@ class BuddyPokemon(BaseTask):
         if not self.buddy:
             return WorkerResult.SUCCESS
 
-+        if not self.buddy.has_key('last_km_awarded'):
-+            self.buddy['last_km_awarded'] = 0
+        if not self.buddy.has_key('last_km_awarded'):
+            self.buddy['last_km_awarded'] = 0
 
         if self._km_walked() - self.buddy['last_km_awarded'] >= self.buddy_distance_needed:
             self.buddy['last_km_awarded'] += self.buddy_distance_needed
