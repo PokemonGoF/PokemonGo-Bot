@@ -423,6 +423,19 @@ For example:
 ```
 will stop catching Pidgey entirely.
 
+You can set a rule to only catch better IV or CP Pokemon by setting the only_catch_better_cp or only_catch_better_iv flags.
+
+
+For example:
+```
+"Pidgey": {
+    "only_catch_better_iv": true
+},
+"Gloom": {
+    "only_catch_better_cp": true
+}
+```
+
 ## Release Configuration
 [[back to top](#table-of-contents)]
 
