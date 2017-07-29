@@ -301,6 +301,7 @@ class PokemonCatchWorker(BaseTask):
 
         catch_logic = pokemon_config.get('logic', default_logic)
 
+        current_owned = [p for p in inventory.pokemons().all() if p.name == pokemon.name]
         candies = inventory.candies().get(pokemon.pokemon_id).quantity
         threshold = pokemon_config.get('candy_threshold', -1)
         if threshold > 0 and candies >= threshold: # Got enough candies
