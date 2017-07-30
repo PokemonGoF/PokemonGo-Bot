@@ -10,7 +10,7 @@ then
 fi
 git fetch -a
 installed=(`pip list 2>/dev/null |sed -e 's/ //g' -e 's/(/:/' -e 's/)//' -e 's/[-_]//g' | awk '{print tolower($0)}'`)
-required=(`cat requirements.txt | sed -e 's/.*pgoapi$/pgoapi==1.2.0/' -e 's/[-_]//g' -e 's/==\(.*\)/:\1/' | awk '{print tolower($0)}'`)
+required=(`cat requirements.txt | sed -e 's/.*pgoapi$/pgoapi==1.2.1/' -e 's/[-_]//g' -e 's/==\(.*\)/:\1/' | awk '{print tolower($0)}'`)
 for package in ${required[@]}
 do
   if [[ ! (${installed[*]} =~ $package) ]];
@@ -30,6 +30,11 @@ then
     ./setup.sh -u
   fi
 fi
-python MultiBot.py
+while true
+do
+  python MultiBot.py
+  echo `date`" Pokebot "$*" Stopped."
+  read -p "Press any button or wait 20 seconds to continue.
+  " -r -s -n1 -t 20
 done
 exit 0
