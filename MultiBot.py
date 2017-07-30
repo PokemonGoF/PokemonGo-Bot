@@ -47,7 +47,7 @@ def getProxy():
                 headers = {'user-agent': 'Niantic App'}
                 if requests.get('https://pgorelease.nianticlabs.com/plfe/', headers=headers, proxies=proxies).status_code == 200:
                     headers = {'user-agent': 'pokemongo/1 CFNetwork/758.5.3 Darwin/15.6.0'}
-                    if requests.get('https://sso.pokemon.com/', headers=headers, proxies=proxies).status_code == 200:
+                    if requests.get('https://sso.pokemon.com/', headers=headers, proxies=proxies).status_code != 404:
                         return proxy
                     else:
                         Lprint ("Proxy is Banned")
@@ -147,8 +147,11 @@ def MakeConf(CurThread, username, password):
                 stop()
             except:
                 jsonData.items().append("{u'websocket':,{u'server_url': u'" + MultiBotConfig[u'WebSocket'][u'IP'] + ":" + str(MultiBotConfig[u'WebSocket'][u'Port'] + CurThread) + "u'start_embedded_server': True}")
-
-
+        else:
+            try:
+                del jsonData[u'websocket']
+            except KeyboardInterrupt:
+                stop()
 
         with open('configs/temp/config-' + str(CurThread) + '.json', 'w') as s:
             s.write(json.dumps(jsonData))
@@ -184,9 +187,11 @@ class ThreadClass(threading.Thread):
                 if MultiBotConfig[u'UseProxy']:
                     self.proxy = getProxy()
                     if platform.system() == "Linux":
-                        self.os.system('export HTTP_PROXY="http://' + proxy + '"; export HTTPS_PROXY="https://' + proxy + '"')
+                        os.system('export HTTP_PROXY="http://' + proxy + '"; export HTTPS_PROXY="https://' + proxy + '"')
                     if platform.system() == "Windows":
-                        self.os.system('')
+                        Lprint ("Proxy on Windows not Supported yet, exit in 15s")
+                        time.sleep (15)
+                        stop()
                 os.system(
                     "python pokecli.py -af configs/temp/auth-{0}.json -cf configs/temp/config-{0}.json --walker_limit_output {1}".format(
                         self.CurThread, MultiBotConfig[u'walker_limit_output']))
