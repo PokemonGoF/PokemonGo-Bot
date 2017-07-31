@@ -30,11 +30,5 @@ then
     ./setup.sh -u
   fi
 fi
-while true
-do
-  python MultiBot.py
-  echo `date`" Pokebot "$*" Stopped."
-  read -p "Press any button or wait 20 seconds to continue.
-  " -r -s -n1 -t 20
-done
+python MultiBot.py
 exit 0
