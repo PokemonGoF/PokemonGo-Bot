@@ -45,14 +45,14 @@ def getProxy():
                 if proxyCur >= proxyNum:
                     proxyCur = 0
                 headers = {'user-agent': 'Niantic App'}
-                if requests.get('https://pgorelease.nianticlabs.com/plfe/', headers=headers, proxies=proxies).status_code == 200:
+                if requests.get('https://pgorelease.nianticlabs.com/plfe/', headers=headers, proxies=proxies, timeout=15).status_code == 200:
                     headers = {'user-agent': 'pokemongo/1 CFNetwork/758.5.3 Darwin/15.6.0'}
-                    if requests.get('https://sso.pokemon.com/', headers=headers, proxies=proxies).status_code == 200:
+                    if requests.get('https://sso.pokemon.com/', headers=headers, proxies=proxies, timeout=15).status_code == 200:
                         return proxy
                     else:
-                        Lprint ("Proxy is Banned")
+                        Lprint ("Proxy {} is Banned or offline".format(proxy))
                 else:
-                    Lprint ("Proxy is Banned")
+                    Lprint ("Proxy {} is Banned or offline".format(proxy))
 
             except Exception as e:
                 Lprint (e)
@@ -154,7 +154,26 @@ def MakeConf(CurThread, username, password):
                 stop()
             except:
                 pass
-
+        if MultiBotConfig[u'TelegramTask']:
+            try:
+            	for i in range(len(jsonData[u'tasks'])):
+            		if jsonData[u'tasks'][1][u'type'] == u'TelegramTask':
+            			jsonData[u'tasks'][i][u'config'][u'enabled'] = True
+            except KeyboardInterrupt:
+                stop()
+            except:
+                pass
+            
+        if not MultiBotConfig[u'TelegramTask']:
+            try:
+            	for i in range(len(jsonData[u'tasks'])):
+            		if jsonData[u'tasks'][1][u'type'] == u'TelegramTask':
+            			jsonData[u'tasks'][i][u'config'][u'enabled'] = False
+            except KeyboardInterrupt:
+                stop()
+            except:
+                pass
+                
         with open('configs/temp/config-' + str(CurThread) + '.json', 'w') as s:
             s.write(json.dumps(jsonData))
             s.close()
