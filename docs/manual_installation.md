@@ -73,8 +73,6 @@ source bin/activate
 - install the requirements
 ```bash
 pip install -r requirements.txt
-make
-cd ../../
 ```
 
 ####
@@ -82,6 +80,7 @@ cd ../../
 - copy and edit the config
 (after copying it you can use any editor you like if you don't like `vi`) 
 ```bash
+cd ../PokemonGo-Bot/configs/
 cp configs/config.json.example configs/config.json
 vi configs/config.json
 cp configs/auth.json.example configs/auth.json
