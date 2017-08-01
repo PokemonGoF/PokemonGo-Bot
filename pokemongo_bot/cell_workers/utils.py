@@ -67,6 +67,25 @@ def encode(cellid):
     encoder._VarintEncoder()(output.append, cellid)
     return ''.join(output)
 
+def wait_time_sec(distance):
+    if distance <= 1:
+        return distance*60
+    elif distance <= 3:
+        return (distance/3)*(60*2)
+    elif distance <= 7:
+        return (distance/7)*(60*5)
+    elif distance <= 10:
+        return (distance/10)*(60*7)
+    elif distance <= 12:
+        return (distance/12)*(60*8)
+    elif distance <= 18:
+        return (distance/18)*(60*10)
+    elif distance <= 30:
+        return (distance/30)*(60*15)
+    else:
+        return distance*60
+        
+    
 
 def distance(lat1, lon1, lat2, lon2):
     p = 0.017453292519943295
