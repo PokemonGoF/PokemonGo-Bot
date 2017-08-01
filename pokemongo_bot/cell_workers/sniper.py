@@ -7,9 +7,6 @@ import requests
 import calendar
 import difflib
 import hashlib
-
-from geopy.distance import great_circle
-
 from random import uniform
 from operator import itemgetter, methodcaller
 from itertools import izip
@@ -20,6 +17,7 @@ from pokemongo_bot.inventory import Pokemons
 from pokemongo_bot.worker_result import WorkerResult
 from pokemongo_bot.event_handlers.telegram_handler import TelegramSnipe
 from pokemongo_bot.cell_workers.pokemon_catch_worker import PokemonCatchWorker
+from pokemongo_bot.cell_workers.utils import wait_time_sec, distance, convert
 
 # Represents a URL source and its mappings
 class SniperSource(object):
@@ -361,15 +359,17 @@ class Sniper(BaseTask):
                 # Backup position before anything
                 last_position = self.bot.position[0:2]
                 teleport_position = [pokemon['latitude'], pokemon['longitude']]
-                teleport_distance = self._get_distance(last_position, teleport_position)
-                sleep_time = self._get_sleep_sec(teleport_distance)
+                #teleport_distance = self._get_distance(last_position, teleport_position)
+                teleport_distance = convert(distance(last_position[0],last_position[1],float(pokemon['latitude']),float(pokemon['longitude'])),"m","km")
+                #sleep_time = self._get_sleep_sec(teleport_distance)
+                sleep_time = wait_time_sec(teleport_distance)
                 
                 if sleep_time > 900:
                     success = False
                     exists = False
                     self._log('Sniping distance is more than supported distance, abort sniping')
                 else:
-                    self._log('Base on distance, pausing for {} sec'.format(sleep_time))
+                    self._log('Base on distance, pausing for {0:.2f} Mins'.format(sleep_time/60))
 
                     # Teleport, so that we can see nearby stuff
                     self.bot.hb_locked = True
@@ -695,9 +695,3 @@ class Sniper(BaseTask):
         api_encounter_response = catch_worker.create_encounter_api_call()
         self._teleport_back(position_array)
         catch_worker.work(api_encounter_response)
-    
-    def _get_distance(self, location_from, location_to):
-        return great_circle(location_from, location_to).kilometers
-        
-    def _get_sleep_sec(self, distance):
-        return distance * 60

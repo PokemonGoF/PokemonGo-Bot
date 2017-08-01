@@ -205,6 +205,8 @@ ECHO. 	users: [{>>%UserData%
 ECHO. 	    enable: true,>>%UserData%
 Set /p users="What's the username to use ?: "
 ECHO. 	    username: "%users%",>>%UserData%
+Set /p friendlyname="What's the friendly/display name to use ?: "
+ECHO. 	    alias: "%friendlyname%",>>%UserData%
 ECHO. 	    socketAddress: "127.0.0.1:4000",>>%UserData%
 ECHO. 	    enableSocket: true>>%UserData%
 ECHO. 	}],>>%UserData%

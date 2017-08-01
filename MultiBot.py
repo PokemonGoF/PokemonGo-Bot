@@ -45,14 +45,14 @@ def getProxy():
                 if proxyCur >= proxyNum:
                     proxyCur = 0
                 headers = {'user-agent': 'Niantic App'}
-                if requests.get('https://pgorelease.nianticlabs.com/plfe/', headers=headers, proxies=proxies).status_code == 200:
+                if requests.get('https://pgorelease.nianticlabs.com/plfe/', headers=headers, proxies=proxies, timeout=15).status_code == 200:
                     headers = {'user-agent': 'pokemongo/1 CFNetwork/758.5.3 Darwin/15.6.0'}
-                    if requests.get('https://sso.pokemon.com/', headers=headers, proxies=proxies).status_code == 200:
+                    if requests.get('https://sso.pokemon.com/', headers=headers, proxies=proxies, timeout=15).status_code == 200:
                         return proxy
                     else:
-                        Lprint ("Proxy is Banned")
+                        Lprint ("Proxy {} is Banned or offline".format(proxy))
                 else:
-                    Lprint ("Proxy is Banned")
+                    Lprint ("Proxy {} is Banned or offline".format(proxy))
 
             except Exception as e:
                 Lprint (e)
@@ -147,13 +147,37 @@ def MakeConf(CurThread, username, password):
                 stop()
             except:
                 jsonData.items().append("{u'websocket':,{u'server_url': u'" + MultiBotConfig[u'WebSocket'][u'IP'] + ":" + str(MultiBotConfig[u'WebSocket'][u'Port'] + CurThread) + "u'start_embedded_server': True}")
-
-
-
+        elif not MultiBotConfig[u'WebSocket'][u'start_embedded_server']:
+            try:
+                del jsonData[u'websocket']
+            except KeyboardInterrupt:
+                stop()
+            except:
+                pass
+        if MultiBotConfig[u'TelegramTask']:
+            try:
+            	for i in range(len(jsonData[u'tasks'])):
+            		if jsonData[u'tasks'][1][u'type'] == u'TelegramTask':
+            			jsonData[u'tasks'][i][u'config'][u'enabled'] = True
+            except KeyboardInterrupt:
+                stop()
+            except:
+                pass
+            
+        if not MultiBotConfig[u'TelegramTask']:
+            try:
+            	for i in range(len(jsonData[u'tasks'])):
+            		if jsonData[u'tasks'][1][u'type'] == u'TelegramTask':
+            			jsonData[u'tasks'][i][u'config'][u'enabled'] = False
+            except KeyboardInterrupt:
+                stop()
+            except:
+                pass
+                
         with open('configs/temp/config-' + str(CurThread) + '.json', 'w') as s:
             s.write(json.dumps(jsonData))
             s.close()
-
+            
     except IOError:
         Lprint ('config file error')
         time.sleep(30)
@@ -181,15 +205,14 @@ class ThreadClass(threading.Thread):
             Lprint ('Thread-{0} using account {1}'.format(self.CurThread, self.username))
             try:
                 MakeConf(self.CurThread, self.username, self.password)
+                StartCmd = "python pokecli.py -af configs/temp/auth-{0}.json -cf configs/temp/config-{0}.json --walker_limit_output {1}".format(self.CurThread, MultiBotConfig[u'walker_limit_output'])
                 if MultiBotConfig[u'UseProxy']:
                     self.proxy = getProxy()
                     if platform.system() == "Linux":
-                        self.os.system('export HTTP_PROXY="http://' + proxy + '"; export HTTPS_PROXY="https://' + proxy + '"')
+                        os.system('export HTTP_PROXY="http://' + proxy + '"; export HTTPS_PROXY="https://' + proxy + '"; ' + StartCmd)
                     if platform.system() == "Windows":
-                        self.os.system('')
-                os.system(
-                    "python pokecli.py -af configs/temp/auth-{0}.json -cf configs/temp/config-{0}.json --walker_limit_output {1}".format(
-                        self.CurThread, MultiBotConfig[u'walker_limit_output']))
+                        os.system('set HTTP_PROXY="http://' + proxy + '" & set HTTPS_PROXY="https://' + proxy + '" & ' + StartCmd)
+                os.system(StartCmd)
             except Exception as e:
                 import traceback
                 Lprint ((e))

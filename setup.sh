@@ -75,9 +75,12 @@ Configure userdata.js for web
 "
 read -p "Input E-Mail (Google) or Username (PTC)
 " webusername
+read -p "Input Friendly Name For Your Bot (Name you want bot to show up as on the map)
+" webfriendlyname
 read -p "Input Google API Key (gmapkey)
 " webgmapkey
 sed -e "s/username1/$webusername/g" -e "s/YOUR_API_KEY_HERE/$webgmapkey/g" \
+  -e "s/FriendlyName1/$webfriendlyname/g" \
   config/userdata.js.example > config/userdata.js
 echo "Your userdata.js is now configured."
 else 
