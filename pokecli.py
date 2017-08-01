@@ -68,7 +68,7 @@ def yes_no( question ):
     yes = set(['yes','y', 'ye', ''])
     no = set(['no','n'])
     print question
-    choice = input().lower()
+    choice = raw_input().lower()
     if choice in yes:
        return True
     elif choice in no:
@@ -81,10 +81,12 @@ try:
     import pkg_resources
     pgoapi_version = pkg_resources.get_distribution("pgoapi").version
     if pgoapi_version != '2.13.0':
-    if pgoapi_version != '1.2.1':
-        while yes_no("A new pokemon API version is found. ")
-        print "Run following command to get latest update: `pip install -r requirements.txt --upgrade`"
-        sys.exit(1)
+        yn=None
+        while yn==None:
+            yn = yes_no("Warning: A new pokemon API version is found. Do you want to keep the bot running on your own risk of loosing your account? Y/N")
+        if not yn:
+            sys.exit(1)
+
 except pkg_resources.DistributionNotFound:
     print 'Seems you forgot to install python modules.'
     print 'Run: `pip install -r requirements.txt`'
