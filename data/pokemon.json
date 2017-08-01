@@ -16,8 +16,8 @@
       "Vine Whip",
       "Tackle"
     ],
-    "Weight": "6,9 kg",
-    "Height": "0,7 m",
+    "Weight": "6.9 kg",
+    "Height": "0.7 m",
     "Candy": {
       "Name": "Bulbasaur candies",
       "FamilyID": 1
@@ -160,8 +160,8 @@
       "Ember",
       "Scratch"
     ],
-    "Weight": "8,5 kg",
-    "Height": "0,6 m",
+    "Weight": "8.5 kg",
+    "Height": "0.6 m",
     "Candy": {
       "Name": "Charmander candies",
       "FamilyID": 4
@@ -205,11 +205,10 @@
     ],
     "Fast Attack(s)": [
       "Ember",
-      "Fire Fang",
-      "Scratch"
+      "Fire Fang"
     ],
     "Weight": "19 kg",
-    "Height": "1,1 m",
+    "Height": "1.1 m",
     "Candy": {
       "Name": "Charmander candies",
       "FamilyID": 4
@@ -258,12 +257,10 @@
     ],
     "Fast Attack(s)": [
       "Fire Spin",
-      "Air Slash",
-      "Ember",
-      "Wing Attack"
+      "Air Slash"
     ],
-    "Weight": "90,5 kg",
-    "Height": "1,7 m",
+    "Weight": "90.5 kg",
+    "Height": "1.7 m",
     "Candy": {
       "Name": "Charmander candies",
       "FamilyID": 4
@@ -281,8 +278,7 @@
     "Special Attack(s)": [
       "Fire Blast",
       "Dragon Claw",
-      "Overheat",
-      "Flamethrower"
+      "Overheat"
     ],
     "BaseAttack": 223,
     "BaseDefense": 176,
@@ -306,7 +302,7 @@
       "Tackle"
     ],
     "Weight": "9 kg",
-    "Height": "0,5 m",
+    "Height": "0.5 m",
     "Candy": {
       "Name": "Squirtle candies",
       "FamilyID": 7
@@ -352,7 +348,7 @@
       "Water Gun",
       "Bite"
     ],
-    "Weight": "22,5 kg",
+    "Weight": "22.5 kg",
     "Height": "1 m",
     "Candy": {
       "Name": "Squirtle candies",
@@ -401,8 +397,8 @@
       "Water Gun",
       "Bite"
     ],
-    "Weight": "85,5 kg",
-    "Height": "1,6 m",
+    "Weight": "85.5 kg",
+    "Height": "1.6 m",
     "Candy": {
       "Name": "Squirtle candies",
       "FamilyID": 7
@@ -443,8 +439,8 @@
       "Bug Bite",
       "Tackle"
     ],
-    "Weight": "2,9 kg",
-    "Height": "0,3 m",
+    "Weight": "2.9 kg",
+    "Height": "0.3 m",
     "Candy": {
       "Name": "Caterpie candies",
       "FamilyID": 10
@@ -488,8 +484,8 @@
       "Bug Bite",
       "Tackle"
     ],
-    "Weight": "9,9 kg",
-    "Height": "0,7 m",
+    "Weight": "9.9 kg",
+    "Height": "0.7 m",
     "Candy": {
       "Name": "Caterpie candies",
       "FamilyID": 10
@@ -536,11 +532,10 @@
     ],
     "Fast Attack(s)": [
       "Struggle Bug",
-      "Confusion",
-      "Bug Bite"
+      "Confusion"
     ],
     "Weight": "32 kg",
-    "Height": "1,1 m",
+    "Height": "1.1 m",
     "Candy": {
       "Name": "Caterpie candies",
       "FamilyID": 10
@@ -584,8 +579,8 @@
       "Bug Bite",
       "Poison Sting"
     ],
-    "Weight": "3,2 kg",
-    "Height": "0,3 m",
+    "Weight": "3.2 kg",
+    "Height": "0.3 m",
     "Candy": {
       "Name": "Weedle candies",
       "FamilyID": 13
@@ -633,7 +628,7 @@
       "Poison Sting"
     ],
     "Weight": "10 kg",
-    "Height": "0,6 m",
+    "Height": "0.6 m",
     "Candy": {
       "Name": "Weedle candies",
       "FamilyID": 13
@@ -680,10 +675,9 @@
     ],
     "Fast Attack(s)": [
       "Infestation",
-      "Poison Jab",
-      "Bug Bite"
+      "Poison Jab"
     ],
-    "Weight": "29,5 kg",
+    "Weight": "29.5 kg",
     "Height": "1 m",
     "Candy": {
       "Name": "Weedle candies",
@@ -728,8 +722,8 @@
       "Quick Attack",
       "Tackle"
     ],
-    "Weight": "1,8 kg",
-    "Height": "0,3 m",
+    "Weight": "1.8 kg",
+    "Height": "0.3 m",
     "Candy": {
       "Name": "Pidgey candies",
       "FamilyID": 16
@@ -779,7 +773,7 @@
       "Steel Wing"
     ],
     "Weight": "30 kg",
-    "Height": "1,1 m",
+    "Height": "1.1 m",
     "Candy": {
       "Name": "Pidgey candies",
       "FamilyID": 16
@@ -828,11 +822,10 @@
     ],
     "Fast Attack(s)": [
       "Air Slash",
-      "Steel Wing",
-      "Wing Attack"
+      "Steel Wing"
     ],
-    "Weight": "39,5 kg",
-    "Height": "1,5 m",
+    "Weight": "39.5 kg",
+    "Height": "1.5 m",
     "Candy": {
       "Name": "Pidgey candies",
       "FamilyID": 16
@@ -850,8 +843,7 @@
     "Special Attack(s)": [
       "Hurricane",
       "Aerial Ace",
-      "Brave Bird",
-      "Air Cutter"
+      "Brave Bird"
     ],
     "BaseAttack": 166,
     "BaseDefense": 157,
@@ -874,8 +866,8 @@
       "Tackle",
       "Quick Attack"
     ],
-    "Weight": "3,5 kg",
-    "Height": "0,3 m",
+    "Weight": "3.5 kg",
+    "Height": "0.3 m",
     "Candy": {
       "Name": "Rattata candies",
       "FamilyID": 19
@@ -917,8 +909,8 @@
       "Bite",
       "Quick Attack"
     ],
-    "Weight": "18,5 kg",
-    "Height": "0,7 m",
+    "Weight": "18.5 kg",
+    "Height": "0.7 m",
     "Candy": {
       "Name": "Rattata candies",
       "FamilyID": 19
@@ -959,7 +951,7 @@
       "Quick Attack"
     ],
     "Weight": "2 kg",
-    "Height": "0,3 m",
+    "Height": "0.3 m",
     "Candy": {
       "Name": "Spearow candies",
       "FamilyID": 21
@@ -978,8 +970,7 @@
     "Special Attack(s)": [
       "Aerial Ace",
       "Drill Peck",
-      "Sky Attack",
-      "Twister"
+      "Sky Attack"
     ],
     "BaseAttack": 112,
     "BaseDefense": 61,
@@ -1006,7 +997,7 @@
       "Steel Wing"
     ],
     "Weight": "38 kg",
-    "Height": "1,2 m",
+    "Height": "1.2 m",
     "Candy": {
       "Name": "Spearow candies",
       "FamilyID": 21
@@ -1020,8 +1011,7 @@
     "Special Attack(s)": [
       "Aerial Ace",
       "Drill Run",
-      "Sky Attack",
-      "Twister"
+      "Sky Attack"
     ],
     "BaseAttack": 182,
     "BaseDefense": 135,
@@ -1044,7 +1034,7 @@
       "Poison Sting",
       "Acid"
     ],
-    "Weight": "6,9 kg",
+    "Weight": "6.9 kg",
     "Height": "2 m",
     "Candy": {
       "Name": "Ekans candies",
@@ -1064,8 +1054,7 @@
     "Special Attack(s)": [
       "Wrap",
       "Poison Fang",
-      "Sludge Bomb",
-      "Gunk Shot"
+      "Sludge Bomb"
     ],
     "BaseAttack": 110,
     "BaseDefense": 102,
@@ -1089,7 +1078,7 @@
       "Acid"
     ],
     "Weight": "65 kg",
-    "Height": "3,5 m",
+    "Height": "3.5 m",
     "Candy": {
       "Name": "Ekans candies",
       "FamilyID": 23
@@ -1127,7 +1116,7 @@
       "Quick Attack"
     ],
     "Weight": "6 kg",
-    "Height": "0,4 m",
+    "Height": "0.4 m",
     "Candy": {
       "Name": "Pikachu candies",
       "FamilyID": 25
@@ -1152,8 +1141,7 @@
     "Special Attack(s)": [
       "Discharge",
       "Thunderbolt",
-      "Wild Charge",
-      "Thunder"
+      "Wild Charge"
     ],
     "BaseAttack": 112,
     "BaseDefense": 101,
@@ -1174,11 +1162,10 @@
     ],
     "Fast Attack(s)": [
       "Volt Switch",
-      "Spark",
-      "Thunder Shock"
+      "Spark"
     ],
     "Weight": "30 kg",
-    "Height": "0,8 m",
+    "Height": "0.8 m",
     "Candy": {
       "Name": "Pikachu candies",
       "FamilyID": 25
@@ -1196,8 +1183,7 @@
     "Special Attack(s)": [
       "Brick Break",
       "Thunder Punch",
-      "Wild Charge",
-      "Thunder"
+      "Wild Charge"
     ],
     "BaseAttack": 193,
     "BaseDefense": 165,
@@ -1221,7 +1207,7 @@
       "Mud Shot"
     ],
     "Weight": "12 kg",
-    "Height": "0,6 m",
+    "Height": "0.6 m",
     "Candy": {
       "Name": "Sandshrew candies",
       "FamilyID": 27
@@ -1240,8 +1226,7 @@
     "Special Attack(s)": [
       "Dig",
       "Rock Slide",
-      "Sand Tomb",
-      "Rock Tomb"
+      "Sand Tomb"
     ],
     "BaseAttack": 126,
     "BaseDefense": 145,
@@ -1264,7 +1249,7 @@
       "Metal Claw",
       "Mud Shot"
     ],
-    "Weight": "29,5 kg",
+    "Weight": "29.5 kg",
     "Height": "1 m",
     "Candy": {
       "Name": "Sandshrew candies",
@@ -1303,7 +1288,7 @@
       "Poison Sting"
     ],
     "Weight": "7 kg",
-    "Height": "0,4 m",
+    "Height": "0.4 m",
     "Candy": {
       "Name": "Nidoran F candies",
       "FamilyID": 29
@@ -1350,7 +1335,7 @@
       "Poison Sting"
     ],
     "Weight": "20 kg",
-    "Height": "0,8 m",
+    "Height": "0.8 m",
     "Candy": {
       "Name": "Nidoran F candies",
       "FamilyID": 29
@@ -1402,7 +1387,7 @@
       "Bite"
     ],
     "Weight": "60 kg",
-    "Height": "1,3 m",
+    "Height": "1.3 m",
     "Candy": {
       "Name": "Nidoran F candies",
       "FamilyID": 29
@@ -1444,7 +1429,7 @@
       "Poison Sting"
     ],
     "Weight": "9 kg",
-    "Height": "0,5 m",
+    "Height": "0.5 m",
     "Candy": {
       "Name": "Nidoran M candies",
       "FamilyID": 32
@@ -1490,8 +1475,8 @@
       "Poison Jab",
       "Poison Sting"
     ],
-    "Weight": "19,5 kg",
-    "Height": "0,9 m",
+    "Weight": "19.5 kg",
+    "Height": "0.9 m",
     "Candy": {
       "Name": "Nidoran M candies",
       "FamilyID": 32
@@ -1540,11 +1525,10 @@
     ],
     "Fast Attack(s)": [
       "Poison Jab",
-      "Iron Tail",
-      "Fury Cutter"
+      "Iron Tail"
     ],
     "Weight": "62 kg",
-    "Height": "1,4 m",
+    "Height": "1.4 m",
     "Candy": {
       "Name": "Nidoran M candies",
       "FamilyID": 32
@@ -1585,8 +1569,8 @@
       "Pound",
       "Zen Headbutt"
     ],
-    "Weight": "7,5 kg",
-    "Height": "0,6 m",
+    "Weight": "7.5 kg",
+    "Height": "0.6 m",
     "Candy": {
       "Name": "Clefairy candies",
       "FamilyID": 35
@@ -1632,11 +1616,10 @@
     ],
     "Fast Attack(s)": [
       "Charge Beam",
-      "Zen Headbutt",
-      "Pound"
+      "Zen Headbutt"
     ],
     "Weight": "40 kg",
-    "Height": "1,3 m",
+    "Height": "1.3 m",
     "Candy": {
       "Name": "Clefairy candies",
       "FamilyID": 35
@@ -1677,8 +1660,8 @@
       "Quick Attack",
       "Ember"
     ],
-    "Weight": "9,9 kg",
-    "Height": "0,6 m",
+    "Weight": "9.9 kg",
+    "Height": "0.6 m",
     "Candy": {
       "Name": "Vulpix candies",
       "FamilyID": 37
@@ -1718,11 +1701,10 @@
     ],
     "Fast Attack(s)": [
       "Feint Attack",
-      "Fire Spin",
-      "Ember"
+      "Fire Spin"
     ],
-    "Weight": "19,9 kg",
-    "Height": "1,1 m",
+    "Weight": "19.9 kg",
+    "Height": "1.1 m",
     "Candy": {
       "Name": "Vulpix candies",
       "FamilyID": 37
@@ -1736,9 +1718,7 @@
     "Special Attack(s)": [
       "Heat Wave",
       "Overheat",
-      "Solar Beam",
-      "Fire Blast",
-      "Flamethrower"
+      "Solar Beam"
     ],
     "BaseAttack": 169,
     "BaseDefense": 204,
@@ -1764,8 +1744,8 @@
       "Pound",
       "Feint Attack"
     ],
-    "Weight": "5,5 kg",
-    "Height": "0,5 m",
+    "Weight": "5.5 kg",
+    "Height": "0.5 m",
     "Candy": {
       "Name": "Jigglypuff candies",
       "FamilyID": 39
@@ -1790,9 +1770,7 @@
     "Special Attack(s)": [
       "Disarming Voice",
       "Gyro Ball",
-      "Dazzling Gleam",
-      "Body Slam",
-      "Play Rough"
+      "Dazzling Gleam"
     ],
     "BaseAttack": 80,
     "BaseDefense": 44,
@@ -1863,8 +1841,8 @@
       "Quick Attack",
       "Bite"
     ],
-    "Weight": "7,5 kg",
-    "Height": "0,8 m",
+    "Weight": "7.5 kg",
+    "Height": "0.8 m",
     "Candy": {
       "Name": "Zubat candies",
       "FamilyID": 41
@@ -1887,8 +1865,7 @@
     "Special Attack(s)": [
       "Poison Fang",
       "Air Cutter",
-      "Swift",
-      "Sludge Bomb"
+      "Swift"
     ],
     "BaseAttack": 83,
     "BaseDefense": 76,
@@ -1915,7 +1892,7 @@
       "Bite"
     ],
     "Weight": "55 kg",
-    "Height": "1,6 m",
+    "Height": "1.6 m",
     "Candy": {
       "Name": "Zubat candies",
       "FamilyID": 41
@@ -1940,8 +1917,7 @@
     "Special Attack(s)": [
       "Shadow Ball",
       "Air Cutter",
-      "Poison Fang",
-      "Ominous Wind"
+      "Poison Fang"
     ],
     "BaseAttack": 161,
     "BaseDefense": 153,
@@ -1967,8 +1943,8 @@
       "Razor Leaf",
       "Acid"
     ],
-    "Weight": "5,4 kg",
-    "Height": "0,5 m",
+    "Weight": "5.4 kg",
+    "Height": "0.5 m",
     "Candy": {
       "Name": "Oddish candies",
       "FamilyID": 43
@@ -2021,8 +1997,8 @@
       "Razor Leaf",
       "Acid"
     ],
-    "Weight": "8,6 kg",
-    "Height": "0,8 m",
+    "Weight": "8.6 kg",
+    "Height": "0.8 m",
     "Candy": {
       "Name": "Oddish candies",
       "FamilyID": 43
@@ -2077,8 +2053,8 @@
       "Razor Leaf",
       "Acid"
     ],
-    "Weight": "18,6 kg",
-    "Height": "1,2 m",
+    "Weight": "18.6 kg",
+    "Height": "1.2 m",
     "Candy": {
       "Name": "Oddish candies",
       "FamilyID": 43
@@ -2122,8 +2098,8 @@
       "Scratch",
       "Bug Bite"
     ],
-    "Weight": "5,4 kg",
-    "Height": "0,3 m",
+    "Weight": "5.4 kg",
+    "Height": "0.3 m",
     "Candy": {
       "Name": "Paras candies",
       "FamilyID": 46
@@ -2166,10 +2142,9 @@
     ],
     "Fast Attack(s)": [
       "Struggle Bug",
-      "Fury Cutter",
-      "Bug Bite"
+      "Fury Cutter"
     ],
-    "Weight": "29,5 kg",
+    "Weight": "29.5 kg",
     "Height": "1 m",
     "Candy": {
       "Name": "Paras candies",
@@ -2254,11 +2229,10 @@
     ],
     "Fast Attack(s)": [
       "Infestation",
-      "Confusion",
-      "Bug Bite"
+      "Confusion"
     ],
-    "Weight": "12,5 kg",
-    "Height": "1,5 m",
+    "Weight": "12.5 kg",
+    "Height": "1.5 m",
     "Candy": {
       "Name": "Venonat candies",
       "FamilyID": 48
@@ -2272,8 +2246,7 @@
     "Special Attack(s)": [
       "Silver Wind",
       "Psychic",
-      "Bug Buzz",
-      "Poison Fang"
+      "Bug Buzz"
     ],
     "BaseAttack": 179,
     "BaseDefense": 150,
@@ -2294,11 +2267,10 @@
     ],
     "Fast Attack(s)": [
       "Mud Slap",
-      "Scratch",
-      "Mud Shot"
+      "Scratch"
     ],
-    "Weight": "0,8 kg",
-    "Height": "0,2 m",
+    "Weight": "0.8 kg",
+    "Height": "0.2 m",
     "Candy": {
       "Name": "Diglett candies",
       "FamilyID": 50
@@ -2338,11 +2310,10 @@
     ],
     "Fast Attack(s)": [
       "Sucker Punch",
-      "Mud Slap",
-      "Mud Shot"
+      "Mud Slap"
     ],
-    "Weight": "33,3 kg",
-    "Height": "0,7 m",
+    "Weight": "33.3 kg",
+    "Height": "0.7 m",
     "Candy": {
       "Name": "Diglett candies",
       "FamilyID": 50
@@ -2379,8 +2350,8 @@
       "Scratch",
       "Bite"
     ],
-    "Weight": "4,2 kg",
-    "Height": "0,4 m",
+    "Weight": "4.2 kg",
+    "Height": "0.4 m",
     "Candy": {
       "Name": "Meowth candies",
       "FamilyID": 52
@@ -2399,8 +2370,7 @@
     "Special Attack(s)": [
       "Night Slash",
       "Dark Pulse",
-      "Foul Play",
-      "Body Slam"
+      "Foul Play"
     ],
     "BaseAttack": 92,
     "BaseDefense": 81,
@@ -2438,8 +2408,7 @@
     "Special Attack(s)": [
       "Foul Play",
       "Power Gem",
-      "Play Rough",
-      "Night Slash"
+      "Play Rough"
     ],
     "BaseAttack": 150,
     "BaseDefense": 139,
@@ -2462,8 +2431,8 @@
       "Water Gun",
       "Zen Headbutt"
     ],
-    "Weight": "19,6 kg",
-    "Height": "0,8 m",
+    "Weight": "19.6 kg",
+    "Height": "0.8 m",
     "Candy": {
       "Name": "Psyduck candies",
       "FamilyID": 54
@@ -2505,8 +2474,8 @@
       "Water Gun",
       "Confusion"
     ],
-    "Weight": "76,6 kg",
-    "Height": "1,7 m",
+    "Weight": "76.6 kg",
+    "Height": "1.7 m",
     "Candy": {
       "Name": "Psyduck candies",
       "FamilyID": 54
@@ -2544,7 +2513,7 @@
       "Scratch"
     ],
     "Weight": "28 kg",
-    "Height": "0,5 m",
+    "Height": "0.5 m",
     "Candy": {
       "Name": "Mankey candies",
       "FamilyID": 56
@@ -2584,8 +2553,7 @@
     ],
     "Fast Attack(s)": [
       "Low Kick",
-      "Counter",
-      "Karate Chop"
+      "Counter"
     ],
     "Weight": "32 kg",
     "Height": "1 m",
@@ -2602,8 +2570,7 @@
     "Special Attack(s)": [
       "Close Combat",
       "Low Sweep",
-      "Night Slash",
-      "Cross Chop"
+      "Night Slash"
     ],
     "BaseAttack": 207,
     "BaseDefense": 144,
@@ -2627,7 +2594,7 @@
       "Bite"
     ],
     "Weight": "19 kg",
-    "Height": "0,7 m",
+    "Height": "0.7 m",
     "Candy": {
       "Name": "Growlithe candies",
       "FamilyID": 58
@@ -2667,11 +2634,10 @@
     ],
     "Fast Attack(s)": [
       "Fire Fang",
-      "Snarl",
-      "Bite"
+      "Snarl"
     ],
     "Weight": "155 kg",
-    "Height": "1,9 m",
+    "Height": "1.9 m",
     "Candy": {
       "Name": "Growlithe candies",
       "FamilyID": 58
@@ -2685,9 +2651,7 @@
     "Special Attack(s)": [
       "Fire Blast",
       "Wild Charge",
-      "Crunch",
-      "Bulldoze",
-      "Flamethrower"
+      "Crunch"
     ],
     "BaseAttack": 227,
     "BaseDefense": 166,
@@ -2710,8 +2674,8 @@
       "Bubble",
       "Mud Shot"
     ],
-    "Weight": "12,4 kg",
-    "Height": "0,6 m",
+    "Weight": "12.4 kg",
+    "Height": "0.6 m",
     "Candy": {
       "Name": "Poliwag candies",
       "FamilyID": 60
@@ -2791,8 +2755,7 @@
     "Special Attack(s)": [
       "Water Pulse",
       "Mud Bomb",
-      "Bubble Beam",
-      "Scald"
+      "Bubble Beam"
     ],
     "BaseAttack": 130,
     "BaseDefense": 130,
@@ -2816,11 +2779,10 @@
     ],
     "Fast Attack(s)": [
       "Bubble",
-      "Rock Smash",
-      "Mud Shot"
+      "Rock Smash"
     ],
     "Weight": "54 kg",
-    "Height": "1,3 m",
+    "Height": "1.3 m",
     "Candy": {
       "Name": "Poliwag candies",
       "FamilyID": 60
@@ -2838,8 +2800,7 @@
     "Special Attack(s)": [
       "Hydro Pump",
       "Dynamic Punch",
-      "Ice Punch",
-      "Submission"
+      "Ice Punch"
     ],
     "BaseAttack": 182,
     "BaseDefense": 187,
@@ -2862,8 +2823,8 @@
       "Zen Headbutt",
       "Charge Beam"
     ],
-    "Weight": "19,5 kg",
-    "Height": "0,9 m",
+    "Weight": "19.5 kg",
+    "Height": "0.9 m",
     "Candy": {
       "Name": "Abra candies",
       "FamilyID": 63
@@ -2909,8 +2870,8 @@
       "Psycho Cut",
       "Confusion"
     ],
-    "Weight": "56,5 kg",
-    "Height": "1,3 m",
+    "Weight": "56.5 kg",
+    "Height": "1.3 m",
     "Candy": {
       "Name": "Abra candies",
       "FamilyID": 63
@@ -2959,7 +2920,7 @@
       "Confusion"
     ],
     "Weight": "48 kg",
-    "Height": "1,5 m",
+    "Height": "1.5 m",
     "Candy": {
       "Name": "Abra candies",
       "FamilyID": 63
@@ -2977,14 +2938,12 @@
     "Special Attack(s)": [
       "Futuresight",
       "Focus Blast",
-      "Shadow Ball",
-      "Dazzling Gleam",
-      "Psychic"
+      "Shadow Ball"
     ],
     "BaseAttack": 271,
     "BaseDefense": 194,
     "BaseStamina": 110,
-    "CaptureRate": 0.13,
+    "CaptureRate": 0.1,
     "FleeRate": 0.05,
     "BuddyDistanceNeeded": 3
   },
@@ -3000,11 +2959,10 @@
     ],
     "Fast Attack(s)": [
       "Rock Smash",
-      "Karate Chop",
-      "Low Kick"
+      "Karate Chop"
     ],
-    "Weight": "19,5 kg",
-    "Height": "0,8 m",
+    "Weight": "19.5 kg",
+    "Height": "0.8 m",
     "Candy": {
       "Name": "Machop candies",
       "FamilyID": 66
@@ -3050,8 +3008,8 @@
       "Low Kick",
       "Karate Chop"
     ],
-    "Weight": "70,5 kg",
-    "Height": "1,5 m",
+    "Weight": "70.5 kg",
+    "Height": "1.5 m",
     "Candy": {
       "Name": "Machop candies",
       "FamilyID": 66
@@ -3076,8 +3034,7 @@
     "Special Attack(s)": [
       "Submission",
       "Brick Break",
-      "Dynamic Punch",
-      "Cross Chop"
+      "Dynamic Punch"
     ],
     "BaseAttack": 177,
     "BaseDefense": 130,
@@ -3098,11 +3055,10 @@
     ],
     "Fast Attack(s)": [
       "Bullet Punch",
-      "Counter",
-      "Karate Chop"
+      "Counter"
     ],
     "Weight": "130 kg",
-    "Height": "1,6 m",
+    "Height": "1.6 m",
     "Candy": {
       "Name": "Machop candies",
       "FamilyID": 66
@@ -3120,15 +3076,12 @@
     "Special Attack(s)": [
       "Heavy Slam",
       "Dynamic Punch",
-      "Close Combat",
-      "Cross Chop",
-      "Stone Edge",
-      "Submission"
+      "Close Combat"
     ],
     "BaseAttack": 234,
     "BaseDefense": 162,
     "BaseStamina": 180,
-    "CaptureRate": 0.13,
+    "CaptureRate": 0.1,
     "FleeRate": 0.05,
     "BuddyDistanceNeeded": 3
   },
@@ -3150,7 +3103,7 @@
       "Acid"
     ],
     "Weight": "4 kg",
-    "Height": "0,7 m",
+    "Height": "0.7 m",
     "Candy": {
       "Name": "Bellsprout candies",
       "FamilyID": 69
@@ -3197,10 +3150,9 @@
     ],
     "Fast Attack(s)": [
       "Bullet Seed",
-      "Acid",
-      "Razor Leaf"
+      "Acid"
     ],
-    "Weight": "6,4 kg",
+    "Weight": "6.4 kg",
     "Height": "1 m",
     "Candy": {
       "Name": "Bellsprout candies",
@@ -3252,8 +3204,8 @@
       "Razor Leaf",
       "Acid"
     ],
-    "Weight": "15,5 kg",
-    "Height": "1,7 m",
+    "Weight": "15.5 kg",
+    "Height": "1.7 m",
     "Candy": {
       "Name": "Bellsprout candies",
       "FamilyID": 69
@@ -3297,8 +3249,8 @@
       "Bubble",
       "Poison Sting"
     ],
-    "Weight": "45,5 kg",
-    "Height": "0,9 m",
+    "Weight": "45.5 kg",
+    "Height": "0.9 m",
     "Candy": {
       "Name": "Tentacool candies",
       "FamilyID": 72
@@ -3344,7 +3296,7 @@
       "Poison Jab"
     ],
     "Weight": "55 kg",
-    "Height": "1,6 m",
+    "Height": "1.6 m",
     "Candy": {
       "Name": "Tentacool candies",
       "FamilyID": 72
@@ -3385,7 +3337,7 @@
       "Tackle"
     ],
     "Weight": "20 kg",
-    "Height": "0,4 m",
+    "Height": "0.4 m",
     "Candy": {
       "Name": "Geodude candies",
       "FamilyID": 74
@@ -3432,8 +3384,7 @@
     ],
     "Fast Attack(s)": [
       "Rock Throw",
-      "Mud Slap",
-      "Mud Shot"
+      "Mud Slap"
     ],
     "Weight": "105 kg",
     "Height": "1 m",
@@ -3461,9 +3412,7 @@
     "Special Attack(s)": [
       "Dig",
       "Stone Edge",
-      "Rock Blast",
-      "Rock Slide",
-      "Earthquake"
+      "Rock Blast"
     ],
     "BaseAttack": 164,
     "BaseDefense": 196,
@@ -3487,11 +3436,10 @@
     ],
     "Fast Attack(s)": [
       "Rock Throw",
-      "Mud Slap",
-      "Mud Shot"
+      "Mud Slap"
     ],
     "Weight": "300 kg",
-    "Height": "1,4 m",
+    "Height": "1.4 m",
     "Candy": {
       "Name": "Geodude candies",
       "FamilyID": 74
@@ -3509,8 +3457,7 @@
     "Special Attack(s)": [
       "Stone Edge",
       "Rock Blast",
-      "Earthquake",
-      "Ancient Power"
+      "Earthquake"
     ],
     "BaseAttack": 211,
     "BaseDefense": 229,
@@ -3553,8 +3500,7 @@
     "Special Attack(s)": [
       "Flame Charge",
       "Flame Wheel",
-      "Stomp",
-      "Fire Blast"
+      "Stomp"
     ],
     "BaseAttack": 170,
     "BaseDefense": 132,
@@ -3575,11 +3521,10 @@
     ],
     "Fast Attack(s)": [
       "Low Kick",
-      "Fire Spin",
-      "Ember"
+      "Fire Spin"
     ],
     "Weight": "95 kg",
-    "Height": "1,7 m",
+    "Height": "1.7 m",
     "Candy": {
       "Name": "Ponyta candies",
       "FamilyID": 77
@@ -3620,7 +3565,7 @@
       "Confusion"
     ],
     "Weight": "36 kg",
-    "Height": "1,2 m",
+    "Height": "1.2 m",
     "Candy": {
       "Name": "Slowpoke candies",
       "FamilyID": 79
@@ -3669,8 +3614,8 @@
       "Water Gun",
       "Confusion"
     ],
-    "Weight": "78,5 kg",
-    "Height": "1,6 m",
+    "Weight": "78.5 kg",
+    "Height": "1.6 m",
     "Candy": {
       "Name": "Slowpoke candies",
       "FamilyID": 79
@@ -3711,7 +3656,7 @@
       "Thunder Shock"
     ],
     "Weight": "6 kg",
-    "Height": "0,3 m",
+    "Height": "0.3 m",
     "Candy": {
       "Name": "Magnemite candies",
       "FamilyID": 81
@@ -3754,8 +3699,7 @@
     ],
     "Fast Attack(s)": [
       "Spark",
-      "Charge Beam",
-      "Thunder Shock"
+      "Charge Beam"
     ],
     "Weight": "60 kg",
     "Height": "1 m",
@@ -3772,8 +3716,7 @@
     "Special Attack(s)": [
       "Zap Cannon",
       "Magnet Bomb",
-      "Flash Cannon",
-      "Discharge"
+      "Flash Cannon"
     ],
     "BaseAttack": 223,
     "BaseDefense": 182,
@@ -3797,11 +3740,10 @@
     ],
     "Fast Attack(s)": [
       "Air Slash",
-      "Fury Cutter",
-      "Cut"
+      "Fury Cutter"
     ],
     "Weight": "15 kg",
-    "Height": "0,8 m",
+    "Height": "0.8 m",
     "Candy": {
       "Name": "Farfetchd candies",
       "FamilyID": 83
@@ -3835,8 +3777,8 @@
       "Peck",
       "Quick Attack"
     ],
-    "Weight": "39,2 kg",
-    "Height": "1,4 m",
+    "Weight": "39.2 kg",
+    "Height": "1.4 m",
     "Candy": {
       "Name": "Doduo candies",
       "FamilyID": 84
@@ -3855,8 +3797,7 @@
     "Special Attack(s)": [
       "Drill Peck",
       "Aerial Ace",
-      "Brave Bird",
-      "Swift"
+      "Brave Bird"
     ],
     "BaseAttack": 158,
     "BaseDefense": 88,
@@ -3882,8 +3823,8 @@
       "Feint Attack",
       "Steel Wing"
     ],
-    "Weight": "85,2 kg",
-    "Height": "1,8 m",
+    "Weight": "85.2 kg",
+    "Height": "1.8 m",
     "Candy": {
       "Name": "Doduo candies",
       "FamilyID": 84
@@ -3897,8 +3838,7 @@
     "Special Attack(s)": [
       "Drill Peck",
       "Aerial Ace",
-      "Brave Bird",
-      "Air Cutter"
+      "Brave Bird"
     ],
     "BaseAttack": 218,
     "BaseDefense": 145,
@@ -3919,12 +3859,10 @@
     ],
     "Fast Attack(s)": [
       "Ice Shard",
-      "Lick",
-      "Rock Throw",
-      "Water Gun"
+      "Lick"
     ],
     "Weight": "90 kg",
-    "Height": "1,1 m",
+    "Height": "1.1 m",
     "Candy": {
       "Name": "Seel candies",
       "FamilyID": 86
@@ -3943,9 +3881,7 @@
     "Special Attack(s)": [
       "Aurora Beam",
       "Icy Wind",
-      "Aqua Tail",
-      "Aqua Jet",
-      "Ancient Power"
+      "Aqua Tail"
     ],
     "BaseAttack": 85,
     "BaseDefense": 128,
@@ -3969,11 +3905,10 @@
     ],
     "Fast Attack(s)": [
       "Frost Breath",
-      "Iron Tail",
-      "Ice Shard"
+      "Iron Tail"
     ],
     "Weight": "120 kg",
-    "Height": "1,7 m",
+    "Height": "1.7 m",
     "Candy": {
       "Name": "Seel candies",
       "FamilyID": 86
@@ -3987,9 +3922,7 @@
     "Special Attack(s)": [
       "Aurora Beam",
       "Water Pulse",
-      "Blizzard",
-      "Aqua Jet",
-      "Icy Wind"
+      "Blizzard"
     ],
     "BaseAttack": 139,
     "BaseDefense": 184,
@@ -4010,11 +3943,10 @@
     ],
     "Fast Attack(s)": [
       "Poison Jab",
-      "Mud Slap",
-      "Acid"
+      "Mud Slap"
     ],
     "Weight": "30 kg",
-    "Height": "0,9 m",
+    "Height": "0.9 m",
     "Candy": {
       "Name": "Grimer candies",
       "FamilyID": 88
@@ -4054,12 +3986,10 @@
     ],
     "Fast Attack(s)": [
       "Infestation",
-      "Poison Jab",
-      "Lick",
-      "Acid"
+      "Poison Jab"
     ],
     "Weight": "30 kg",
-    "Height": "1,2 m",
+    "Height": "1.2 m",
     "Candy": {
       "Name": "Grimer candies",
       "FamilyID": 88
@@ -4097,7 +4027,7 @@
       "Tackle"
     ],
     "Weight": "4 kg",
-    "Height": "0,3 m",
+    "Height": "0.3 m",
     "Candy": {
       "Name": "Shellder candies",
       "FamilyID": 90
@@ -4142,8 +4072,8 @@
       "Frost Breath",
       "Ice Shard"
     ],
-    "Weight": "132,5 kg",
-    "Height": "1,5 m",
+    "Weight": "132.5 kg",
+    "Height": "1.5 m",
     "Candy": {
       "Name": "Shellder candies",
       "FamilyID": 90
@@ -4157,9 +4087,7 @@
     "Special Attack(s)": [
       "Aurora Beam",
       "Hydro Pump",
-      "Avalanche",
-      "Blizzard",
-      "Icy Wind"
+      "Avalanche"
     ],
     "BaseAttack": 186,
     "BaseDefense": 323,
@@ -4183,11 +4111,10 @@
     ],
     "Fast Attack(s)": [
       "Lick",
-      "Astonish",
-      "Sucker Punch"
+      "Astonish"
     ],
-    "Weight": "0,1 kg",
-    "Height": "1,3 m",
+    "Weight": "0.1 kg",
+    "Height": "1.3 m",
     "Candy": {
       "Name": "Gastly candies",
       "FamilyID": 92
@@ -4210,8 +4137,7 @@
     "Special Attack(s)": [
       "Night Shade",
       "Dark Pulse",
-      "Sludge Bomb",
-      "Ominous Wind"
+      "Sludge Bomb"
     ],
     "BaseAttack": 186,
     "BaseDefense": 70,
@@ -4235,11 +4161,10 @@
     ],
     "Fast Attack(s)": [
       "Shadow Claw",
-      "Astonish",
-      "Lick"
+      "Astonish"
     ],
-    "Weight": "0,1 kg",
-    "Height": "1,6 m",
+    "Weight": "0.1 kg",
+    "Height": "1.6 m",
     "Candy": {
       "Name": "Gastly candies",
       "FamilyID": 92
@@ -4264,8 +4189,7 @@
     "Special Attack(s)": [
       "Shadow Punch",
       "Dark Pulse",
-      "Sludge Bomb",
-      "Shadow Ball"
+      "Sludge Bomb"
     ],
     "BaseAttack": 223,
     "BaseDefense": 112,
@@ -4289,11 +4213,10 @@
     ],
     "Fast Attack(s)": [
       "Sucker Punch",
-      "Hex",
-      "Shadow Claw"
+      "Hex"
     ],
-    "Weight": "40,5 kg",
-    "Height": "1,5 m",
+    "Weight": "40.5 kg",
+    "Height": "1.5 m",
     "Candy": {
       "Name": "Gastly candies",
       "FamilyID": 92
@@ -4311,8 +4234,7 @@
     "Special Attack(s)": [
       "Shadow Ball",
       "Focus Blast",
-      "Sludge Bomb",
-      "Dark Pulse"
+      "Sludge Bomb"
     ],
     "BaseAttack": 261,
     "BaseDefense": 156,
@@ -4339,7 +4261,7 @@
       "Tackle"
     ],
     "Weight": "210 kg",
-    "Height": "8,8 m",
+    "Height": "8.8 m",
     "Candy": {
       "Name": "Onix candies",
       "FamilyID": 95
@@ -4358,9 +4280,7 @@
     "Special Attack(s)": [
       "Sand Tomb",
       "Stone Edge",
-      "Heavy Slam",
-      "Iron Head",
-      "Rock Slide"
+      "Heavy Slam"
     ],
     "BaseAttack": 85,
     "BaseDefense": 288,
@@ -4383,7 +4303,7 @@
       "Pound",
       "Confusion"
     ],
-    "Weight": "32,4 kg",
+    "Weight": "32.4 kg",
     "Height": "1 m",
     "Candy": {
       "Name": "Drowzee candies",
@@ -4426,8 +4346,8 @@
       "Zen Headbutt",
       "Confusion"
     ],
-    "Weight": "75,6 kg",
-    "Height": "1,6 m",
+    "Weight": "75.6 kg",
+    "Height": "1.6 m",
     "Candy": {
       "Name": "Drowzee candies",
       "FamilyID": 96
@@ -4441,9 +4361,7 @@
     "Special Attack(s)": [
       "Futuresight",
       "Psychic",
-      "Focus Blast",
-      "Psyshock",
-      "Shadow Ball"
+      "Focus Blast"
     ],
     "BaseAttack": 144,
     "BaseDefense": 215,
@@ -4466,8 +4384,8 @@
       "Bubble",
       "Mud Shot"
     ],
-    "Weight": "6,5 kg",
-    "Height": "0,4 m",
+    "Weight": "6.5 kg",
+    "Height": "0.4 m",
     "Candy": {
       "Name": "Krabby candies",
       "FamilyID": 98
@@ -4507,11 +4425,10 @@
     ],
     "Fast Attack(s)": [
       "Bubble",
-      "Metal Claw",
-      "Mud Shot"
+      "Metal Claw"
     ],
     "Weight": "60 kg",
-    "Height": "1,3 m",
+    "Height": "1.3 m",
     "Candy": {
       "Name": "Krabby candies",
       "FamilyID": 98
@@ -4548,8 +4465,8 @@
       "Spark",
       "Tackle"
     ],
-    "Weight": "10,4 kg",
-    "Height": "0,5 m",
+    "Weight": "10.4 kg",
+    "Height": "0.5 m",
     "Candy": {
       "Name": "Voltorb candies",
       "FamilyID": 100
@@ -4568,8 +4485,7 @@
     "Special Attack(s)": [
       "Discharge",
       "Thunderbolt",
-      "Gyro Ball",
-      "Signal Beam"
+      "Gyro Ball"
     ],
     "BaseAttack": 109,
     "BaseDefense": 114,
@@ -4590,11 +4506,10 @@
     ],
     "Fast Attack(s)": [
       "Spark",
-      "Volt Switch",
-      "Tackle"
+      "Volt Switch"
     ],
-    "Weight": "66,6 kg",
-    "Height": "1,2 m",
+    "Weight": "66.6 kg",
+    "Height": "1.2 m",
     "Candy": {
       "Name": "Voltorb candies",
       "FamilyID": 100
@@ -4634,8 +4549,8 @@
       "Confusion",
       "Bullet Seed"
     ],
-    "Weight": "2,5 kg",
-    "Height": "0,4 m",
+    "Weight": "2.5 kg",
+    "Height": "0.4 m",
     "Candy": {
       "Name": "Exeggcute candies",
       "FamilyID": 102
@@ -4678,9 +4593,7 @@
     ],
     "Fast Attack(s)": [
       "Bullet Seed",
-      "Extrasensory",
-      "Confusion",
-      "Zen Headbutt"
+      "Extrasensory"
     ],
     "Weight": "120 kg",
     "Height": "2 m",
@@ -4720,8 +4633,8 @@
       "Mud Slap",
       "Rock Smash"
     ],
-    "Weight": "6,5 kg",
-    "Height": "0,4 m",
+    "Weight": "6.5 kg",
+    "Height": "0.4 m",
     "Candy": {
       "Name": "Cubone candies",
       "FamilyID": 104
@@ -4801,8 +4714,8 @@
       "Low Kick",
       "Rock Smash"
     ],
-    "Weight": "49,8 kg",
-    "Height": "1,5 m",
+    "Weight": "49.8 kg",
+    "Height": "1.5 m",
     "Candy": {
       "Name": "Tyrogue candies",
       "FamilyID": 236
@@ -4816,9 +4729,7 @@
     "Special Attack(s)": [
       "Close Combat",
       "Low Sweep",
-      "Stone Edge",
-      "Brick Break",
-      "Stomp"
+      "Stone Edge"
     ],
     "BaseAttack": 224,
     "BaseDefense": 211,
@@ -4839,11 +4750,10 @@
     ],
     "Fast Attack(s)": [
       "Bullet Punch",
-      "Counter",
-      "Rock Smash"
+      "Counter"
     ],
-    "Weight": "50,2 kg",
-    "Height": "1,4 m",
+    "Weight": "50.2 kg",
+    "Height": "1.4 m",
     "Candy": {
       "Name": "Tyrogue candies",
       "FamilyID": 236
@@ -4858,8 +4768,7 @@
       "Fire Punch",
       "Ice Punch",
       "Thunder Punch",
-      "Close Combat",
-      "Brick Break"
+      "Close Combat"
     ],
     "BaseAttack": 193,
     "BaseDefense": 212,
@@ -4882,8 +4791,8 @@
       "Lick",
       "Zen Headbutt"
     ],
-    "Weight": "65,5 kg",
-    "Height": "1,2 m",
+    "Weight": "65.5 kg",
+    "Height": "1.2 m",
     "Candy": {
       "Name": "Lickitung candies",
       "FamilyID": 108
@@ -4912,11 +4821,10 @@
     ],
     "Fast Attack(s)": [
       "Tackle",
-      "Infestation",
-      "Acid"
+      "Infestation"
     ],
     "Weight": "1 kg",
-    "Height": "0,6 m",
+    "Height": "0.6 m",
     "Candy": {
       "Name": "Koffing candies",
       "FamilyID": 109
@@ -4956,11 +4864,10 @@
     ],
     "Fast Attack(s)": [
       "Tackle",
-      "Infestation",
-      "Acid"
+      "Infestation"
     ],
-    "Weight": "9,5 kg",
-    "Height": "1,2 m",
+    "Weight": "9.5 kg",
+    "Height": "1.2 m",
     "Candy": {
       "Name": "Koffing candies",
       "FamilyID": 109
@@ -5047,7 +4954,7 @@
       "Rock Smash"
     ],
     "Weight": "120 kg",
-    "Height": "1,9 m",
+    "Height": "1.9 m",
     "Candy": {
       "Name": "Rhyhorn candies",
       "FamilyID": 111
@@ -5066,7 +4973,7 @@
     "BaseAttack": 222,
     "BaseDefense": 206,
     "BaseStamina": 210,
-    "CaptureRate": 0.2,
+    "CaptureRate": 0.05,
     "FleeRate": 0.06,
     "BuddyDistanceNeeded": 3
   },
@@ -5084,8 +4991,8 @@
       "Pound",
       "Zen Headbutt"
     ],
-    "Weight": "34,6 kg",
-    "Height": "1,1 m",
+    "Weight": "34.6 kg",
+    "Height": "1.1 m",
     "Candy": {
       "Name": "Chansey candies",
       "FamilyID": 113
@@ -5136,8 +5043,7 @@
     "Special Attack(s)": [
       "Grass Knot",
       "Sludge Bomb",
-      "Solar Beam",
-      "Power Whip"
+      "Solar Beam"
     ],
     "BaseAttack": 183,
     "BaseDefense": 205,
@@ -5161,7 +5067,7 @@
       "Low Kick"
     ],
     "Weight": "80 kg",
-    "Height": "2,2 m",
+    "Height": "2.2 m",
     "Candy": {
       "Name": "Kangaskhan candies",
       "FamilyID": 115
@@ -5169,9 +5075,7 @@
     "Special Attack(s)": [
       "Crunch",
       "Earthquake",
-      "Outrage",
-      "Brick Break",
-      "Stomp"
+      "Outrage"
     ],
     "BaseAttack": 181,
     "BaseDefense": 165,
@@ -5195,7 +5099,7 @@
       "Bubble"
     ],
     "Weight": "8 kg",
-    "Height": "0,4 m",
+    "Height": "0.4 m",
     "Candy": {
       "Name": "Horsea candies",
       "FamilyID": 116
@@ -5242,7 +5146,7 @@
       "Dragon Breath"
     ],
     "Weight": "25 kg",
-    "Height": "1,2 m",
+    "Height": "1.2 m",
     "Candy": {
       "Name": "Horsea candies",
       "FamilyID": 116
@@ -5267,8 +5171,7 @@
     "Special Attack(s)": [
       "Aurora Beam",
       "Dragon Pulse",
-      "Hydro Pump",
-      "Blizzard"
+      "Hydro Pump"
     ],
     "BaseAttack": 187,
     "BaseDefense": 182,
@@ -5292,7 +5195,7 @@
       "Mud Shot"
     ],
     "Weight": "15 kg",
-    "Height": "0,6 m",
+    "Height": "0.6 m",
     "Candy": {
       "Name": "Goldeen candies",
       "FamilyID": 118
@@ -5335,7 +5238,7 @@
       "Poison Jab"
     ],
     "Weight": "39 kg",
-    "Height": "1,3 m",
+    "Height": "1.3 m",
     "Candy": {
       "Name": "Goldeen candies",
       "FamilyID": 118
@@ -5349,9 +5252,7 @@
     "Special Attack(s)": [
       "Ice Beam",
       "Water Pulse",
-      "Megahorn",
-      "Drill Run",
-      "Icy Wind"
+      "Megahorn"
     ],
     "BaseAttack": 175,
     "BaseDefense": 154,
@@ -5372,11 +5273,10 @@
     ],
     "Fast Attack(s)": [
       "Tackle",
-      "Water Gun",
-      "Quick Attack"
+      "Water Gun"
     ],
-    "Weight": "34,5 kg",
-    "Height": "0,8 m",
+    "Weight": "34.5 kg",
+    "Height": "0.8 m",
     "Candy": {
       "Name": "Staryu candies",
       "FamilyID": 120
@@ -5419,12 +5319,10 @@
     ],
     "Fast Attack(s)": [
       "Hidden Power",
-      "Water Gun",
-      "Tackle",
-      "Quick Attack"
+      "Water Gun"
     ],
     "Weight": "80 kg",
-    "Height": "1,1 m",
+    "Height": "1.1 m",
     "Candy": {
       "Name": "Staryu candies",
       "FamilyID": 120
@@ -5438,8 +5336,7 @@
     "Special Attack(s)": [
       "Hydro Pump",
       "Power Gem",
-      "Psychic",
-      "Psybeam"
+      "Psychic"
     ],
     "BaseAttack": 210,
     "BaseDefense": 184,
@@ -5465,8 +5362,8 @@
       "Confusion",
       "Zen Headbutt"
     ],
-    "Weight": "54,5 kg",
-    "Height": "1,3 m",
+    "Weight": "54.5 kg",
+    "Height": "1.3 m",
     "Candy": {
       "Name": "MrMime candies",
       "FamilyID": 122
@@ -5498,11 +5395,10 @@
     ],
     "Fast Attack(s)": [
       "Fury Cutter",
-      "Air Slash",
-      "Steel Wing"
+      "Air Slash"
     ],
     "Weight": "56 kg",
-    "Height": "1,5 m",
+    "Height": "1.5 m",
     "Candy": {
       "Name": "Scyther candies",
       "FamilyID": 123
@@ -5521,8 +5417,7 @@
     "Special Attack(s)": [
       "Night Slash",
       "X Scissor",
-      "Aerial Ace",
-      "Bug Buzz"
+      "Aerial Ace"
     ],
     "BaseAttack": 218,
     "BaseDefense": 170,
@@ -5546,11 +5441,10 @@
     ],
     "Fast Attack(s)": [
       "Frost Breath",
-      "Confusion",
-      "Pound"
+      "Confusion"
     ],
-    "Weight": "40,6 kg",
-    "Height": "1,4 m",
+    "Weight": "40.6 kg",
+    "Height": "1.4 m",
     "Candy": {
       "Name": "Jynx candies",
       "FamilyID": 124
@@ -5564,8 +5458,7 @@
     "Special Attack(s)": [
       "Draining Kiss",
       "Avalanche",
-      "Psyshock",
-      "Ice Punch"
+      "Psyshock"
     ],
     "BaseAttack": 223,
     "BaseDefense": 182,
@@ -5589,7 +5482,7 @@
       "Low Kick"
     ],
     "Weight": "30 kg",
-    "Height": "1,1 m",
+    "Height": "1.1 m",
     "Candy": {
       "Name": "Electabuzz candies",
       "FamilyID": 125
@@ -5608,7 +5501,7 @@
     "BaseAttack": 198,
     "BaseDefense": 173,
     "BaseStamina": 130,
-    "CaptureRate": 0.3,
+    "CaptureRate": 0.2,
     "FleeRate": 0.09,
     "BuddyDistanceNeeded": 5
   },
@@ -5626,8 +5519,8 @@
       "Ember",
       "Karate Chop"
     ],
-    "Weight": "44,5 kg",
-    "Height": "1,3 m",
+    "Weight": "44.5 kg",
+    "Height": "1.3 m",
     "Candy": {
       "Name": "Magmar candies",
       "FamilyID": 126
@@ -5646,7 +5539,7 @@
     "BaseAttack": 206,
     "BaseDefense": 169,
     "BaseStamina": 130,
-    "CaptureRate": 0.3,
+    "CaptureRate": 0.2,
     "FleeRate": 0.09,
     "BuddyDistanceNeeded": 5
   },
@@ -5662,11 +5555,10 @@
     ],
     "Fast Attack(s)": [
       "Rock Smash",
-      "Bug Bite",
-      "Fury Cutter"
+      "Bug Bite"
     ],
     "Weight": "55 kg",
-    "Height": "1,5 m",
+    "Height": "1.5 m",
     "Candy": {
       "Name": "Pinsir candies",
       "FamilyID": 127
@@ -5674,8 +5566,7 @@
     "Special Attack(s)": [
       "Vice Grip",
       "X Scissor",
-      "Close Combat",
-      "Submission"
+      "Close Combat"
     ],
     "BaseAttack": 238,
     "BaseDefense": 197,
@@ -5698,8 +5589,8 @@
       "Tackle",
       "Zen Headbutt"
     ],
-    "Weight": "88,4 kg",
-    "Height": "1,4 m",
+    "Weight": "88.4 kg",
+    "Height": "1.4 m",
     "Candy": {
       "Name": "Tauros candies",
       "FamilyID": 128
@@ -5730,7 +5621,7 @@
       "Splash"
     ],
     "Weight": "10 kg",
-    "Height": "0,9 m",
+    "Height": "0.9 m",
     "Candy": {
       "Name": "Magikarp candies",
       "FamilyID": 129
@@ -5771,11 +5662,10 @@
     ],
     "Fast Attack(s)": [
       "Bite",
-      "Dragon Tail",
-      "Dragon Breath"
+      "Dragon Tail"
     ],
     "Weight": "235 kg",
-    "Height": "6,5 m",
+    "Height": "6.5 m",
     "Candy": {
       "Name": "Magikarp candies",
       "FamilyID": 129
@@ -5789,9 +5679,7 @@
     "Special Attack(s)": [
       "Hydro Pump",
       "Crunch",
-      "Outrage",
-      "Dragon Pulse",
-      "Twister"
+      "Outrage"
     ],
     "BaseAttack": 237,
     "BaseDefense": 197,
@@ -5815,11 +5703,10 @@
     ],
     "Fast Attack(s)": [
       "Frost Breath",
-      "Water Gun",
-      "Ice Shard"
+      "Water Gun"
     ],
     "Weight": "220 kg",
-    "Height": "2,5 m",
+    "Height": "2.5 m",
     "Candy": {
       "Name": "Lapras candies",
       "FamilyID": 131
@@ -5827,13 +5714,12 @@
     "Special Attack(s)": [
       "Hydro Pump",
       "Ice Beam",
-      "Blizzard",
-      "Dragon Pulse"
+      "Blizzard"
     ],
     "BaseAttack": 165,
     "BaseDefense": 180,
     "BaseStamina": 260,
-    "CaptureRate": 0.2,
+    "CaptureRate": 0.05,
     "FleeRate": 0.09,
     "BuddyDistanceNeeded": 5
   },
@@ -5851,7 +5737,7 @@
       "Transform"
     ],
     "Weight": "4 kg",
-    "Height": "0,3 m",
+    "Height": "0.3 m",
     "Candy": {
       "Name": "Ditto candies",
       "FamilyID": 132
@@ -5880,8 +5766,8 @@
       "Quick Attack",
       "Tackle"
     ],
-    "Weight": "6,5 kg",
-    "Height": "0,3 m",
+    "Weight": "6.5 kg",
+    "Height": "0.3 m",
     "Candy": {
       "Name": "Eevee candies",
       "FamilyID": 133
@@ -5915,8 +5801,7 @@
     ],
     "Special Attack(s)": [
       "Dig",
-      "Swift",
-      "Body Slam"
+      "Swift"
     ],
     "BaseAttack": 104,
     "BaseDefense": 121,
@@ -5958,7 +5843,7 @@
     "BaseAttack": 205,
     "BaseDefense": 177,
     "BaseStamina": 260,
-    "CaptureRate": 0.15,
+    "CaptureRate": 0.13,
     "FleeRate": 0.06,
     "BuddyDistanceNeeded": 5
   },
@@ -5976,8 +5861,8 @@
       "Thunder Shock",
       "Volt Switch"
     ],
-    "Weight": "24,5 kg",
-    "Height": "0,8 m",
+    "Weight": "24.5 kg",
+    "Height": "0.8 m",
     "Candy": {
       "Name": "Eevee candies",
       "FamilyID": 133
@@ -5996,7 +5881,7 @@
     "BaseAttack": 232,
     "BaseDefense": 201,
     "BaseStamina": 130,
-    "CaptureRate": 0.15,
+    "CaptureRate": 0.13,
     "FleeRate": 0.06,
     "BuddyDistanceNeeded": 5
   },
@@ -6015,7 +5900,7 @@
       "Fire Spin"
     ],
     "Weight": "25 kg",
-    "Height": "0,9 m",
+    "Height": "0.9 m",
     "Candy": {
       "Name": "Eevee candies",
       "FamilyID": 133
@@ -6029,13 +5914,12 @@
     "Special Attack(s)": [
       "Fire Blast",
       "Flamethrower",
-      "Overheat",
-      "Heat Wave"
+      "Overheat"
     ],
     "BaseAttack": 246,
     "BaseDefense": 204,
     "BaseStamina": 130,
-    "CaptureRate": 0.15,
+    "CaptureRate": 0.13,
     "FleeRate": 0.06,
     "BuddyDistanceNeeded": 5
   },
@@ -6051,13 +5935,10 @@
     ],
     "Fast Attack(s)": [
       "Charge Beam",
-      "Hidden Power",
-      "Tackle",
-      "Quick Attack",
-      "Zen Headbutt"
+      "Hidden Power"
     ],
-    "Weight": "36,5 kg",
-    "Height": "0,8 m",
+    "Weight": "36.5 kg",
+    "Height": "0.8 m",
     "Candy": {
       "Name": "Porygon candies",
       "FamilyID": 137
@@ -6076,10 +5957,7 @@
     "Special Attack(s)": [
       "Solar Beam",
       "Hyper Beam",
-      "Zap Cannon",
-      "Discharge",
-      "Psybeam",
-      "Signal Beam"
+      "Zap Cannon"
     ],
     "BaseAttack": 153,
     "BaseDefense": 139,
@@ -6105,8 +5983,8 @@
       "Water Gun",
       "Mud Shot"
     ],
-    "Weight": "7,5 kg",
-    "Height": "0,4 m",
+    "Weight": "7.5 kg",
+    "Height": "0.4 m",
     "Candy": {
       "Name": "Omanyte candies",
       "FamilyID": 138
@@ -6125,9 +6003,7 @@
     "Special Attack(s)": [
       "Ancient Power",
       "Bubble Beam",
-      "Rock Blast",
-      "Brine",
-      "Rock Tomb"
+      "Rock Blast"
     ],
     "BaseAttack": 155,
     "BaseDefense": 174,
@@ -6151,8 +6027,7 @@
     ],
     "Fast Attack(s)": [
       "Mud Shot",
-      "Water Gun",
-      "Rock Throw"
+      "Water Gun"
     ],
     "Weight": "35 kg",
     "Height": "1 m",
@@ -6169,8 +6044,7 @@
     "Special Attack(s)": [
       "Ancient Power",
       "Hydro Pump",
-      "Rock Blast",
-      "Rock Slide"
+      "Rock Blast"
     ],
     "BaseAttack": 207,
     "BaseDefense": 227,
@@ -6196,8 +6070,8 @@
       "Scratch",
       "Mud Shot"
     ],
-    "Weight": "11,5 kg",
-    "Height": "0,5 m",
+    "Weight": "11.5 kg",
+    "Height": "0.5 m",
     "Candy": {
       "Name": "Kabuto candies",
       "FamilyID": 140
@@ -6240,11 +6114,10 @@
     ],
     "Fast Attack(s)": [
       "Mud Shot",
-      "Rock Smash",
-      "Fury Cutter"
+      "Rock Smash"
     ],
-    "Weight": "40,5 kg",
-    "Height": "1,3 m",
+    "Weight": "40.5 kg",
+    "Height": "1.3 m",
     "Candy": {
       "Name": "Kabuto candies",
       "FamilyID": 140
@@ -6285,7 +6158,7 @@
       "Bite"
     ],
     "Weight": "59 kg",
-    "Height": "1,8 m",
+    "Height": "1.8 m",
     "Candy": {
       "Name": "Aerodactyl candies",
       "FamilyID": 142
@@ -6317,7 +6190,7 @@
       "Lick"
     ],
     "Weight": "460 kg",
-    "Height": "2,1 m",
+    "Height": "2.1 m",
     "Candy": {
       "Name": "Snorlax candies",
       "FamilyID": 143
@@ -6325,13 +6198,12 @@
     "Special Attack(s)": [
       "Heavy Slam",
       "Hyper Beam",
-      "Earthquake",
-      "Body Slam"
+      "Earthquake"
     ],
     "BaseAttack": 190,
     "BaseDefense": 190,
     "BaseStamina": 320,
-    "CaptureRate": 0.2,
+    "CaptureRate": 0.05,
     "FleeRate": 0.09,
     "BuddyDistanceNeeded": 5
   },
@@ -6351,8 +6223,8 @@
     "Fast Attack(s)": [
       "Frost Breath"
     ],
-    "Weight": "55,4 kg",
-    "Height": "1,7 m",
+    "Weight": "55.4 kg",
+    "Height": "1.7 m",
     "Candy": {
       "Name": "Articuno candies",
       "FamilyID": 144
@@ -6365,9 +6237,9 @@
     "BaseAttack": 192,
     "BaseDefense": 249,
     "BaseStamina": 180,
-    "CaptureRate": 0.0,
-    "FleeRate": 0.1,
-    "BuddyDistanceNeeded": 5
+    "CaptureRate": 0.03,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 20
   },
   {
     "Number": "145",
@@ -6383,11 +6255,10 @@
       "DataNotInGameMaster"
     ],
     "Fast Attack(s)": [
-      "Charge Beam",
-      "Thunder Shock"
+      "Charge Beam"
     ],
-    "Weight": "52,6 kg",
-    "Height": "1,6 m",
+    "Weight": "52.6 kg",
+    "Height": "1.6 m",
     "Candy": {
       "Name": "Zapdos candies",
       "FamilyID": 145
@@ -6395,15 +6266,14 @@
     "Special Attack(s)": [
       "Zap Cannon",
       "Thunderbolt",
-      "Thunder",
-      "Discharge"
+      "Thunder"
     ],
     "BaseAttack": 253,
     "BaseDefense": 188,
     "BaseStamina": 180,
-    "CaptureRate": 0.0,
-    "FleeRate": 0.1,
-    "BuddyDistanceNeeded": 5
+    "CaptureRate": 0.03,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 20
   },
   {
     "Number": "146",
@@ -6419,8 +6289,7 @@
       "DataNotInGameMaster"
     ],
     "Fast Attack(s)": [
-      "Fire Spin",
-      "Ember"
+      "Fire Spin"
     ],
     "Weight": "60 kg",
     "Height": "2 m",
@@ -6431,15 +6300,14 @@
     "Special Attack(s)": [
       "Fire Blast",
       "Heat Wave",
-      "Overheat",
-      "Flamethrower"
+      "Overheat"
     ],
     "BaseAttack": 251,
     "BaseDefense": 184,
     "BaseStamina": 180,
-    "CaptureRate": 0.0,
-    "FleeRate": 0.1,
-    "BuddyDistanceNeeded": 5
+    "CaptureRate": 0.03,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 20
   },
   {
     "Number": "147",
@@ -6455,8 +6323,8 @@
       "Dragon Breath",
       "Iron Tail"
     ],
-    "Weight": "3,3 kg",
-    "Height": "1,8 m",
+    "Weight": "3.3 kg",
+    "Height": "1.8 m",
     "Candy": {
       "Name": "Dratini candies",
       "FamilyID": 147
@@ -6502,7 +6370,7 @@
       "Dragon Breath",
       "Iron Tail"
     ],
-    "Weight": "16,5 kg",
+    "Weight": "16.5 kg",
     "Height": "4 m",
     "Candy": {
       "Name": "Dratini candies",
@@ -6552,11 +6420,10 @@
     ],
     "Fast Attack(s)": [
       "Dragon Tail",
-      "Steel Wing",
-      "Dragon Breath"
+      "Steel Wing"
     ],
     "Weight": "210 kg",
-    "Height": "2,2 m",
+    "Height": "2.2 m",
     "Candy": {
       "Name": "Dratini candies",
       "FamilyID": 147
@@ -6574,9 +6441,7 @@
     "Special Attack(s)": [
       "Hurricane",
       "Hyper Beam",
-      "Outrage",
-      "Dragon Claw",
-      "Dragon Pulse"
+      "Outrage"
     ],
     "BaseAttack": 263,
     "BaseDefense": 201,
@@ -6614,9 +6479,9 @@
     "BaseAttack": 330,
     "BaseDefense": 200,
     "BaseStamina": 212,
-    "CaptureRate": 0.0,
+    "CaptureRate": 0.02,
     "FleeRate": 0.1,
-    "BuddyDistanceNeeded": 5
+    "BuddyDistanceNeeded": 20
   },
   {
     "Number": "151",
@@ -6632,7 +6497,7 @@
       "Pound"
     ],
     "Weight": "4 kg",
-    "Height": "0,4 m",
+    "Height": "0.4 m",
     "Candy": {
       "Name": "Mew candies",
       "FamilyID": 151
@@ -6645,8 +6510,7 @@
       "Thunder",
       "Fire Blast",
       "Solar Beam",
-      "Hyper Beam",
-      "Dragon Pulse"
+      "Hyper Beam"
     ],
     "BaseAttack": 210,
     "BaseDefense": 210,
@@ -6667,11 +6531,10 @@
     ],
     "Fast Attack(s)": [
       "Vine Whip",
-      "Tackle",
-      "Razor Leaf"
+      "Tackle"
     ],
-    "Weight": "6,4 kg",
-    "Height": "0,89 m",
+    "Weight": "6.4 kg",
+    "Height": "0.89 m",
     "Candy": {
       "Name": "Chikorita candies",
       "FamilyID": 152
@@ -6694,8 +6557,7 @@
     "Special Attack(s)": [
       "Energy Ball",
       "Grass Knot",
-      "Body Slam",
-      "Struggle"
+      "Body Slam"
     ],
     "BaseAttack": 92,
     "BaseDefense": 122,
@@ -6718,8 +6580,8 @@
       "Razor Leaf",
       "Tackle"
     ],
-    "Weight": "15,8 kg",
-    "Height": "1,19 m",
+    "Weight": "15.8 kg",
+    "Height": "1.19 m",
     "Candy": {
       "Name": "Chikorita candies",
       "FamilyID": 152
@@ -6744,8 +6606,7 @@
     "Special Attack(s)": [
       "Energy Ball",
       "Grass Knot",
-      "Ancient Power",
-      "Struggle"
+      "Ancient Power"
     ],
     "BaseAttack": 122,
     "BaseDefense": 155,
@@ -6768,8 +6629,8 @@
       "Razor Leaf",
       "Vine Whip"
     ],
-    "Weight": "100,5 kg",
-    "Height": "1,8 m",
+    "Weight": "100.5 kg",
+    "Height": "1.8 m",
     "Candy": {
       "Name": "Chikorita candies",
       "FamilyID": 152
@@ -6787,8 +6648,7 @@
     "Special Attack(s)": [
       "Petal Blizzard",
       "Solar Beam",
-      "Earthquake",
-      "Struggle"
+      "Earthquake"
     ],
     "BaseAttack": 168,
     "BaseDefense": 202,
@@ -6811,8 +6671,8 @@
       "Ember",
       "Tackle"
     ],
-    "Weight": "7,9 kg",
-    "Height": "0,51 m",
+    "Weight": "7.9 kg",
+    "Height": "0.51 m",
     "Candy": {
       "Name": "Cyndaquil candies",
       "FamilyID": 155
@@ -6835,8 +6695,7 @@
     "Special Attack(s)": [
       "Flame Charge",
       "Swift",
-      "Flamethrower",
-      "Struggle"
+      "Flamethrower"
     ],
     "BaseAttack": 116,
     "BaseDefense": 96,
@@ -6860,7 +6719,7 @@
       "Tackle"
     ],
     "Weight": "19 kg",
-    "Height": "0,89 m",
+    "Height": "0.89 m",
     "Candy": {
       "Name": "Cyndaquil candies",
       "FamilyID": 155
@@ -6885,8 +6744,7 @@
     "Special Attack(s)": [
       "Flame Charge",
       "Dig",
-      "Flamethrower",
-      "Struggle"
+      "Flamethrower"
     ],
     "BaseAttack": 158,
     "BaseDefense": 129,
@@ -6909,8 +6767,8 @@
       "Ember",
       "Shadow Claw"
     ],
-    "Weight": "79,5 kg",
-    "Height": "1,7 m",
+    "Weight": "79.5 kg",
+    "Height": "1.7 m",
     "Candy": {
       "Name": "Cyndaquil candies",
       "FamilyID": 155
@@ -6928,8 +6786,7 @@
     "Special Attack(s)": [
       "Fire Blast",
       "Overheat",
-      "Solar Beam",
-      "Struggle"
+      "Solar Beam"
     ],
     "BaseAttack": 223,
     "BaseDefense": 176,
@@ -6952,8 +6809,8 @@
       "Water Gun",
       "Scratch"
     ],
-    "Weight": "9,5 kg",
-    "Height": "0,61 m",
+    "Weight": "9.5 kg",
+    "Height": "0.61 m",
     "Candy": {
       "Name": "Totodile candies",
       "FamilyID": 158
@@ -6976,8 +6833,7 @@
     "Special Attack(s)": [
       "Crunch",
       "Aqua Jet",
-      "Water Pulse",
-      "Struggle"
+      "Water Pulse"
     ],
     "BaseAttack": 117,
     "BaseDefense": 116,
@@ -7001,7 +6857,7 @@
       "Scratch"
     ],
     "Weight": "25 kg",
-    "Height": "1,09 m",
+    "Height": "1.09 m",
     "Candy": {
       "Name": "Totodile candies",
       "FamilyID": 158
@@ -7026,8 +6882,7 @@
     "Special Attack(s)": [
       "Crunch",
       "Ice Punch",
-      "Water Pulse",
-      "Struggle"
+      "Water Pulse"
     ],
     "BaseAttack": 150,
     "BaseDefense": 151,
@@ -7050,8 +6905,8 @@
       "Water Gun",
       "Bite"
     ],
-    "Weight": "88,8 kg",
-    "Height": "2,31 m",
+    "Weight": "88.8 kg",
+    "Height": "2.31 m",
     "Candy": {
       "Name": "Totodile candies",
       "FamilyID": 158
@@ -7069,8 +6924,7 @@
     "Special Attack(s)": [
       "Crunch",
       "Hydro Pump",
-      "Ice Beam",
-      "Struggle"
+      "Ice Beam"
     ],
     "BaseAttack": 205,
     "BaseDefense": 197,
@@ -7094,7 +6948,7 @@
       "Quick Attack"
     ],
     "Weight": "6 kg",
-    "Height": "0,79 m",
+    "Height": "0.79 m",
     "Candy": {
       "Name": "Sentret candies",
       "FamilyID": 161
@@ -7113,8 +6967,7 @@
     "Special Attack(s)": [
       "Dig",
       "Brick Break",
-      "Grass Knot",
-      "Struggle"
+      "Grass Knot"
     ],
     "BaseAttack": 79,
     "BaseDefense": 77,
@@ -7137,8 +6990,8 @@
       "Quick Attack",
       "Sucker Punch"
     ],
-    "Weight": "32,5 kg",
-    "Height": "1,8 m",
+    "Weight": "32.5 kg",
+    "Height": "1.8 m",
     "Candy": {
       "Name": "Sentret candies",
       "FamilyID": 161
@@ -7152,8 +7005,7 @@
     "Special Attack(s)": [
       "Dig",
       "Brick Break",
-      "Hyper Beam",
-      "Struggle"
+      "Hyper Beam"
     ],
     "BaseAttack": 148,
     "BaseDefense": 130,
@@ -7177,11 +7029,10 @@
     ],
     "Fast Attack(s)": [
       "Feint Attack",
-      "Peck",
-      "Tackle"
+      "Peck"
     ],
-    "Weight": "21,2 kg",
-    "Height": "0,71 m",
+    "Weight": "21.2 kg",
+    "Height": "0.71 m",
     "Candy": {
       "Name": "Hoothoot candies",
       "FamilyID": 163
@@ -7200,8 +7051,7 @@
     "Special Attack(s)": [
       "Aerial Ace",
       "Sky Attack",
-      "Night Shade",
-      "Struggle"
+      "Night Shade"
     ],
     "BaseAttack": 67,
     "BaseDefense": 101,
@@ -7225,12 +7075,10 @@
     ],
     "Fast Attack(s)": [
       "Wing Attack",
-      "Extrasensory",
-      "Peck",
-      "Tackle"
+      "Extrasensory"
     ],
-    "Weight": "40,8 kg",
-    "Height": "1,6 m",
+    "Weight": "40.8 kg",
+    "Height": "1.6 m",
     "Candy": {
       "Name": "Hoothoot candies",
       "FamilyID": 163
@@ -7244,8 +7092,7 @@
     "Special Attack(s)": [
       "Psychic",
       "Sky Attack",
-      "Night Shade",
-      "Struggle"
+      "Night Shade"
     ],
     "BaseAttack": 145,
     "BaseDefense": 179,
@@ -7271,8 +7118,8 @@
       "Tackle",
       "Bug Bite"
     ],
-    "Weight": "10,8 kg",
-    "Height": "0,99 m",
+    "Weight": "10.8 kg",
+    "Height": "0.99 m",
     "Candy": {
       "Name": "Ledyba candies",
       "FamilyID": 165
@@ -7291,8 +7138,7 @@
     "Special Attack(s)": [
       "Silver Wind",
       "Swift",
-      "Aerial Ace",
-      "Struggle"
+      "Aerial Ace"
     ],
     "BaseAttack": 72,
     "BaseDefense": 142,
@@ -7316,11 +7162,10 @@
     ],
     "Fast Attack(s)": [
       "Struggle Bug",
-      "Bug Bite",
-      "Tackle"
+      "Bug Bite"
     ],
-    "Weight": "35,6 kg",
-    "Height": "1,4 m",
+    "Weight": "35.6 kg",
+    "Height": "1.4 m",
     "Candy": {
       "Name": "Ledyba candies",
       "FamilyID": 165
@@ -7334,8 +7179,7 @@
     "Special Attack(s)": [
       "Bug Buzz",
       "Silver Wind",
-      "Aerial Ace",
-      "Struggle"
+      "Aerial Ace"
     ],
     "BaseAttack": 107,
     "BaseDefense": 209,
@@ -7361,8 +7205,8 @@
       "Poison Sting",
       "Bug Bite"
     ],
-    "Weight": "8,5 kg",
-    "Height": "0,51 m",
+    "Weight": "8.5 kg",
+    "Height": "0.51 m",
     "Candy": {
       "Name": "Spinarak candies",
       "FamilyID": 167
@@ -7381,8 +7225,7 @@
     "Special Attack(s)": [
       "Night Slash",
       "Signal Beam",
-      "Cross Poison",
-      "Struggle"
+      "Cross Poison"
     ],
     "BaseAttack": 105,
     "BaseDefense": 73,
@@ -7406,11 +7249,10 @@
     ],
     "Fast Attack(s)": [
       "Poison Sting",
-      "Infestation",
-      "Bug Bite"
+      "Infestation"
     ],
-    "Weight": "33,5 kg",
-    "Height": "1,09 m",
+    "Weight": "33.5 kg",
+    "Height": "1.09 m",
     "Candy": {
       "Name": "Spinarak candies",
       "FamilyID": 167
@@ -7424,8 +7266,7 @@
     "Special Attack(s)": [
       "Shadow Sneak",
       "Megahorn",
-      "Cross Poison",
-      "Struggle"
+      "Cross Poison"
     ],
     "BaseAttack": 161,
     "BaseDefense": 128,
@@ -7449,11 +7290,10 @@
     ],
     "Fast Attack(s)": [
       "Air Slash",
-      "Bite",
-      "Wing Attack"
+      "Bite"
     ],
     "Weight": "75 kg",
-    "Height": "1,8 m",
+    "Height": "1.8 m",
     "Candy": {
       "Name": "Zubat candies",
       "FamilyID": 41
@@ -7471,8 +7311,7 @@
     "Special Attack(s)": [
       "Shadow Ball",
       "Air Cutter",
-      "Sludge Bomb",
-      "Struggle"
+      "Sludge Bomb"
     ],
     "BaseAttack": 194,
     "BaseDefense": 178,
@@ -7499,7 +7338,7 @@
       "Spark"
     ],
     "Weight": "12 kg",
-    "Height": "0,51 m",
+    "Height": "0.51 m",
     "Candy": {
       "Name": "Chinchou candies",
       "FamilyID": 170
@@ -7518,8 +7357,7 @@
     "Special Attack(s)": [
       "Water Pulse",
       "Thunderbolt",
-      "Bubble Beam",
-      "Struggle"
+      "Bubble Beam"
     ],
     "BaseAttack": 106,
     "BaseDefense": 106,
@@ -7543,11 +7381,10 @@
     ],
     "Fast Attack(s)": [
       "Water Gun",
-      "Charge Beam",
-      "Spark"
+      "Charge Beam"
     ],
-    "Weight": "22,5 kg",
-    "Height": "1,19 m",
+    "Weight": "22.5 kg",
+    "Height": "1.19 m",
     "Candy": {
       "Name": "Chinchou candies",
       "FamilyID": 170
@@ -7561,8 +7398,7 @@
     "Special Attack(s)": [
       "Hydro Pump",
       "Thunderbolt",
-      "Thunder",
-      "Struggle"
+      "Thunder"
     ],
     "BaseAttack": 146,
     "BaseDefense": 146,
@@ -7582,11 +7418,10 @@
       "DataNotInGameMaster"
     ],
     "Fast Attack(s)": [
-      "Thunder Shock",
-      "Quick Attack"
+      "Thunder Shock"
     ],
     "Weight": "2 kg",
-    "Height": "0,3 m",
+    "Height": "0.3 m",
     "Candy": {
       "Name": "Pikachu candies",
       "FamilyID": 25
@@ -7633,7 +7468,7 @@
       "Zen Headbutt"
     ],
     "Weight": "3 kg",
-    "Height": "0,3 m",
+    "Height": "0.3 m",
     "Candy": {
       "Name": "Clefairy candies",
       "FamilyID": 35
@@ -7656,9 +7491,7 @@
     "Special Attack(s)": [
       "Grass Knot",
       "Psyshock",
-      "Signal Beam",
-      "Body Slam",
-      "Psychic"
+      "Signal Beam"
     ],
     "BaseAttack": 75,
     "BaseDefense": 91,
@@ -7685,7 +7518,7 @@
       "Feint Attack"
     ],
     "Weight": "1 kg",
-    "Height": "0,3 m",
+    "Height": "0.3 m",
     "Candy": {
       "Name": "Jigglypuff candies",
       "FamilyID": 39
@@ -7708,8 +7541,7 @@
     "Special Attack(s)": [
       "Wild Charge",
       "Shadow Ball",
-      "Psychic",
-      "Body Slam"
+      "Psychic"
     ],
     "BaseAttack": 69,
     "BaseDefense": 34,
@@ -7730,11 +7562,10 @@
     ],
     "Fast Attack(s)": [
       "Hidden Power",
-      "Peck",
-      "Zen Headbutt"
+      "Peck"
     ],
-    "Weight": "1,5 kg",
-    "Height": "0,3 m",
+    "Weight": "1.5 kg",
+    "Height": "0.3 m",
     "Candy": {
       "Name": "Togepi candies",
       "FamilyID": 175
@@ -7777,12 +7608,10 @@
     ],
     "Fast Attack(s)": [
       "Extrasensory",
-      "Hidden Power",
-      "Steel Wing",
-      "Zen Headbutt"
+      "Hidden Power"
     ],
-    "Weight": "3,2 kg",
-    "Height": "0,61 m",
+    "Weight": "3.2 kg",
+    "Height": "0.61 m",
     "Candy": {
       "Name": "Togepi candies",
       "FamilyID": 175
@@ -7823,7 +7652,7 @@
       "Quick Attack"
     ],
     "Weight": "2 kg",
-    "Height": "0,2 m",
+    "Height": "0.2 m",
     "Candy": {
       "Name": "Natu candies",
       "FamilyID": 177
@@ -7842,8 +7671,7 @@
     "Special Attack(s)": [
       "Night Shade",
       "Psyshock",
-      "Drill Peck",
-      "Struggle"
+      "Drill Peck"
     ],
     "BaseAttack": 134,
     "BaseDefense": 89,
@@ -7867,11 +7695,10 @@
     ],
     "Fast Attack(s)": [
       "Air Slash",
-      "Feint Attack",
-      "Tackle"
+      "Feint Attack"
     ],
     "Weight": "15 kg",
-    "Height": "1,5 m",
+    "Height": "1.5 m",
     "Candy": {
       "Name": "Natu candies",
       "FamilyID": 177
@@ -7885,8 +7712,7 @@
     "Special Attack(s)": [
       "Ominous Wind",
       "Futuresight",
-      "Aerial Ace",
-      "Struggle"
+      "Aerial Ace"
     ],
     "BaseAttack": 192,
     "BaseDefense": 146,
@@ -7909,8 +7735,8 @@
       "Tackle",
       "Thunder Shock"
     ],
-    "Weight": "7,8 kg",
-    "Height": "0,61 m",
+    "Weight": "7.8 kg",
+    "Height": "0.61 m",
     "Candy": {
       "Name": "Mareep candies",
       "FamilyID": 179
@@ -7933,8 +7759,7 @@
     "Special Attack(s)": [
       "Body Slam",
       "Thunderbolt",
-      "Discharge",
-      "Struggle"
+      "Discharge"
     ],
     "BaseAttack": 114,
     "BaseDefense": 82,
@@ -7957,8 +7782,8 @@
       "Tackle",
       "Charge Beam"
     ],
-    "Weight": "13,3 kg",
-    "Height": "0,79 m",
+    "Weight": "13.3 kg",
+    "Height": "0.79 m",
     "Candy": {
       "Name": "Mareep candies",
       "FamilyID": 179
@@ -7983,8 +7808,7 @@
     "Special Attack(s)": [
       "Power Gem",
       "Thunderbolt",
-      "Discharge",
-      "Struggle"
+      "Discharge"
     ],
     "BaseAttack": 145,
     "BaseDefense": 112,
@@ -8005,11 +7829,10 @@
     ],
     "Fast Attack(s)": [
       "Charge Beam",
-      "Volt Switch",
-      "Tackle"
+      "Volt Switch"
     ],
-    "Weight": "61,5 kg",
-    "Height": "1,4 m",
+    "Weight": "61.5 kg",
+    "Height": "1.4 m",
     "Candy": {
       "Name": "Mareep candies",
       "FamilyID": 179
@@ -8027,8 +7850,7 @@
     "Special Attack(s)": [
       "Zap Cannon",
       "Focus Blast",
-      "Thunder",
-      "Struggle"
+      "Thunder"
     ],
     "BaseAttack": 211,
     "BaseDefense": 172,
@@ -8049,11 +7871,10 @@
     ],
     "Fast Attack(s)": [
       "Razor Leaf",
-      "Acid",
-      "Tackle"
+      "Acid"
     ],
-    "Weight": "5,8 kg",
-    "Height": "0,41 m",
+    "Weight": "5.8 kg",
+    "Height": "0.41 m",
     "Candy": {
       "Name": "Oddish candies",
       "FamilyID": 43
@@ -8071,8 +7892,7 @@
     "Special Attack(s)": [
       "Leaf Blade",
       "Petal Blizzard",
-      "Dazzling Gleam",
-      "Struggle"
+      "Dazzling Gleam"
     ],
     "BaseAttack": 169,
     "BaseDefense": 189,
@@ -8098,8 +7918,8 @@
       "Tackle",
       "Bubble"
     ],
-    "Weight": "8,5 kg",
-    "Height": "0,41 m",
+    "Weight": "8.5 kg",
+    "Height": "0.41 m",
     "Candy": {
       "Name": "Marill candies",
       "FamilyID": 183
@@ -8118,8 +7938,7 @@
     "Special Attack(s)": [
       "Bubble Beam",
       "Aqua Tail",
-      "Body Slam",
-      "Struggle"
+      "Body Slam"
     ],
     "BaseAttack": 37,
     "BaseDefense": 93,
@@ -8143,11 +7962,10 @@
     ],
     "Fast Attack(s)": [
       "Rock Smash",
-      "Bubble",
-      "Tackle"
+      "Bubble"
     ],
-    "Weight": "28,5 kg",
-    "Height": "0,79 m",
+    "Weight": "28.5 kg",
+    "Height": "0.79 m",
     "Candy": {
       "Name": "Marill candies",
       "FamilyID": 183
@@ -8161,8 +7979,7 @@
     "Special Attack(s)": [
       "Play Rough",
       "Hydro Pump",
-      "Ice Beam",
-      "Struggle"
+      "Ice Beam"
     ],
     "BaseAttack": 112,
     "BaseDefense": 152,
@@ -8183,11 +8000,10 @@
     ],
     "Fast Attack(s)": [
       "Rock Throw",
-      "Counter",
-      "Tackle"
+      "Counter"
     ],
     "Weight": "38 kg",
-    "Height": "1,19 m",
+    "Height": "1.19 m",
     "Candy": {
       "Name": "Sudowoodo candies",
       "FamilyID": 185
@@ -8195,8 +8011,7 @@
     "Special Attack(s)": [
       "Stone Edge",
       "Earthquake",
-      "Rock Slide",
-      "Struggle"
+      "Rock Slide"
     ],
     "BaseAttack": 167,
     "BaseDefense": 198,
@@ -8217,11 +8032,10 @@
     ],
     "Fast Attack(s)": [
       "Mud Shot",
-      "Bubble",
-      "Tackle"
+      "Bubble"
     ],
-    "Weight": "33,9 kg",
-    "Height": "1,09 m",
+    "Weight": "33.9 kg",
+    "Height": "1.09 m",
     "Candy": {
       "Name": "Poliwag candies",
       "FamilyID": 60
@@ -8239,8 +8053,7 @@
     "Special Attack(s)": [
       "Hydro Pump",
       "Blizzard",
-      "Earthquake",
-      "Struggle"
+      "Earthquake"
     ],
     "BaseAttack": 174,
     "BaseDefense": 192,
@@ -8266,8 +8079,8 @@
       "Tackle",
       "Bullet Seed"
     ],
-    "Weight": "0,5 kg",
-    "Height": "0,41 m",
+    "Weight": "0.5 kg",
+    "Height": "0.41 m",
     "Candy": {
       "Name": "Hoppip candies",
       "FamilyID": 187
@@ -8290,8 +8103,7 @@
     "Special Attack(s)": [
       "Grass Knot",
       "Dazzling Gleam",
-      "Seed Bomb",
-      "Struggle"
+      "Seed Bomb"
     ],
     "BaseAttack": 67,
     "BaseDefense": 101,
@@ -8318,7 +8130,7 @@
       "Bullet Seed"
     ],
     "Weight": "1 kg",
-    "Height": "0,61 m",
+    "Height": "0.61 m",
     "Candy": {
       "Name": "Hoppip candies",
       "FamilyID": 187
@@ -8343,8 +8155,7 @@
     "Special Attack(s)": [
       "Grass Knot",
       "Dazzling Gleam",
-      "Energy Ball",
-      "Struggle"
+      "Energy Ball"
     ],
     "BaseAttack": 91,
     "BaseDefense": 127,
@@ -8368,11 +8179,10 @@
     ],
     "Fast Attack(s)": [
       "Infestation",
-      "Bullet Seed",
-      "Tackle"
+      "Bullet Seed"
     ],
     "Weight": "3 kg",
-    "Height": "0,79 m",
+    "Height": "0.79 m",
     "Candy": {
       "Name": "Hoppip candies",
       "FamilyID": 187
@@ -8390,8 +8200,7 @@
     "Special Attack(s)": [
       "Energy Ball",
       "Dazzling Gleam",
-      "Solar Beam",
-      "Struggle"
+      "Solar Beam"
     ],
     "BaseAttack": 118,
     "BaseDefense": 197,
@@ -8412,11 +8221,10 @@
     ],
     "Fast Attack(s)": [
       "Scratch",
-      "Astonish",
-      "Tackle"
+      "Astonish"
     ],
-    "Weight": "11,5 kg",
-    "Height": "0,79 m",
+    "Weight": "11.5 kg",
+    "Height": "0.79 m",
     "Candy": {
       "Name": "Aipom candies",
       "FamilyID": 190
@@ -8424,8 +8232,7 @@
     "Special Attack(s)": [
       "Low Sweep",
       "Swift",
-      "Aerial Ace",
-      "Struggle"
+      "Aerial Ace"
     ],
     "BaseAttack": 136,
     "BaseDefense": 112,
@@ -8446,11 +8253,10 @@
     ],
     "Fast Attack(s)": [
       "Razor Leaf",
-      "Cut",
-      "Tackle"
+      "Cut"
     ],
-    "Weight": "1,8 kg",
-    "Height": "0,3 m",
+    "Weight": "1.8 kg",
+    "Height": "0.3 m",
     "Candy": {
       "Name": "Sunkern candies",
       "FamilyID": 191
@@ -8469,8 +8275,7 @@
     "Special Attack(s)": [
       "Energy Ball",
       "Grass Knot",
-      "Seed Bomb",
-      "Struggle"
+      "Seed Bomb"
     ],
     "BaseAttack": 55,
     "BaseDefense": 55,
@@ -8491,11 +8296,10 @@
     ],
     "Fast Attack(s)": [
       "Razor Leaf",
-      "Bullet Seed",
-      "Tackle"
+      "Bullet Seed"
     ],
-    "Weight": "8,5 kg",
-    "Height": "0,79 m",
+    "Weight": "8.5 kg",
+    "Height": "0.79 m",
     "Candy": {
       "Name": "Sunkern candies",
       "FamilyID": 191
@@ -8509,8 +8313,7 @@
     "Special Attack(s)": [
       "Solar Beam",
       "Petal Blizzard",
-      "Sludge Bomb",
-      "Struggle"
+      "Sludge Bomb"
     ],
     "BaseAttack": 185,
     "BaseDefense": 148,
@@ -8534,11 +8337,10 @@
     ],
     "Fast Attack(s)": [
       "Quick Attack",
-      "Wing Attack",
-      "Tackle"
+      "Wing Attack"
     ],
     "Weight": "38 kg",
-    "Height": "1,19 m",
+    "Height": "1.19 m",
     "Candy": {
       "Name": "Yanma candies",
       "FamilyID": 193
@@ -8546,8 +8348,7 @@
     "Special Attack(s)": [
       "Ancient Power",
       "Aerial Ace",
-      "Silver Wind",
-      "Struggle"
+      "Silver Wind"
     ],
     "BaseAttack": 154,
     "BaseDefense": 94,
@@ -8571,11 +8372,10 @@
     ],
     "Fast Attack(s)": [
       "Water Gun",
-      "Mud Shot",
-      "Tackle"
+      "Mud Shot"
     ],
-    "Weight": "8,5 kg",
-    "Height": "0,41 m",
+    "Weight": "8.5 kg",
+    "Height": "0.41 m",
     "Candy": {
       "Name": "Wooper candies",
       "FamilyID": 194
@@ -8594,8 +8394,7 @@
     "Special Attack(s)": [
       "Mud Bomb",
       "Dig",
-      "Body Slam",
-      "Struggle"
+      "Body Slam"
     ],
     "BaseAttack": 75,
     "BaseDefense": 75,
@@ -8619,11 +8418,10 @@
     ],
     "Fast Attack(s)": [
       "Water Gun",
-      "Mud Shot",
-      "Tackle"
+      "Mud Shot"
     ],
     "Weight": "75 kg",
-    "Height": "1,4 m",
+    "Height": "1.4 m",
     "Candy": {
       "Name": "Wooper candies",
       "FamilyID": 194
@@ -8637,8 +8435,7 @@
     "Special Attack(s)": [
       "Sludge Bomb",
       "Earthquake",
-      "Stone Edge",
-      "Struggle"
+      "Stone Edge"
     ],
     "BaseAttack": 152,
     "BaseDefense": 152,
@@ -8661,8 +8458,8 @@
       "Confusion",
       "Zen Headbutt"
     ],
-    "Weight": "26,5 kg",
-    "Height": "0,89 m",
+    "Weight": "26.5 kg",
+    "Height": "0.89 m",
     "Candy": {
       "Name": "Eevee candies",
       "FamilyID": 133
@@ -8676,8 +8473,7 @@
     "Special Attack(s)": [
       "Psybeam",
       "Psychic",
-      "Futuresight",
-      "Struggle"
+      "Futuresight"
     ],
     "BaseAttack": 261,
     "BaseDefense": 194,
@@ -8698,11 +8494,10 @@
     ],
     "Fast Attack(s)": [
       "Feint Attack",
-      "Snarl",
-      "Bite"
+      "Snarl"
     ],
     "Weight": "27 kg",
-    "Height": "0,99 m",
+    "Height": "0.99 m",
     "Candy": {
       "Name": "Eevee candies",
       "FamilyID": 133
@@ -8715,8 +8510,7 @@
     ],
     "Special Attack(s)": [
       "Dark Pulse",
-      "Foul Play",
-      "Struggle"
+      "Foul Play"
     ],
     "BaseAttack": 126,
     "BaseDefense": 250,
@@ -8740,11 +8534,10 @@
     ],
     "Fast Attack(s)": [
       "Peck",
-      "Feint Attack",
-      "Tackle"
+      "Feint Attack"
     ],
-    "Weight": "2,1 kg",
-    "Height": "0,51 m",
+    "Weight": "2.1 kg",
+    "Height": "0.51 m",
     "Candy": {
       "Name": "Murkrow candies",
       "FamilyID": 198
@@ -8752,8 +8545,7 @@
     "Special Attack(s)": [
       "Drill Peck",
       "Foul Play",
-      "Dark Pulse",
-      "Struggle"
+      "Dark Pulse"
     ],
     "BaseAttack": 175,
     "BaseDefense": 87,
@@ -8777,11 +8569,10 @@
     ],
     "Fast Attack(s)": [
       "Water Gun",
-      "Confusion",
-      "Tackle"
+      "Confusion"
     ],
-    "Weight": "79,5 kg",
-    "Height": "2,01 m",
+    "Weight": "79.5 kg",
+    "Height": "2.01 m",
     "Candy": {
       "Name": "Slowpoke candies",
       "FamilyID": 79
@@ -8795,8 +8586,7 @@
     "Special Attack(s)": [
       "Blizzard",
       "Psychic",
-      "Fire Blast",
-      "Struggle"
+      "Fire Blast"
     ],
     "BaseAttack": 177,
     "BaseDefense": 194,
@@ -8817,11 +8607,10 @@
     ],
     "Fast Attack(s)": [
       "Astonish",
-      "Hex",
-      "Tackle"
+      "Hex"
     ],
     "Weight": "1 kg",
-    "Height": "0,71 m",
+    "Height": "0.71 m",
     "Candy": {
       "Name": "Misdreavus candies",
       "FamilyID": 200
@@ -8829,8 +8618,7 @@
     "Special Attack(s)": [
       "Shadow Sneak",
       "Dark Pulse",
-      "Ominous Wind",
-      "Struggle"
+      "Ominous Wind"
     ],
     "BaseAttack": 167,
     "BaseDefense": 167,
@@ -8850,11 +8638,10 @@
       "DataNotInGameMaster"
     ],
     "Fast Attack(s)": [
-      "Hidden Power",
-      "Tackle"
+      "Hidden Power"
     ],
     "Weight": "5 kg",
-    "Height": "0,51 m",
+    "Height": "0.51 m",
     "Candy": {
       "Name": "Unown candies",
       "FamilyID": 201
@@ -8881,18 +8668,16 @@
     ],
     "Fast Attack(s)": [
       "Counter",
-      "Splash",
-      "Tackle"
+      "Splash"
     ],
-    "Weight": "28,5 kg",
-    "Height": "1,3 m",
+    "Weight": "28.5 kg",
+    "Height": "1.3 m",
     "Candy": {
       "Name": "Wobbuffet candies",
       "FamilyID": 202
     },
     "Special Attack(s)": [
-      "Mirror Coat",
-      "Struggle"
+      "Mirror Coat"
     ],
     "BaseAttack": 60,
     "BaseDefense": 106,
@@ -8918,8 +8703,8 @@
       "Tackle",
       "Confusion"
     ],
-    "Weight": "41,5 kg",
-    "Height": "1,5 m",
+    "Weight": "41.5 kg",
+    "Height": "1.5 m",
     "Candy": {
       "Name": "Girafarig candies",
       "FamilyID": 203
@@ -8927,8 +8712,7 @@
     "Special Attack(s)": [
       "Psychic",
       "Thunderbolt",
-      "Mirror Coat",
-      "Struggle"
+      "Mirror Coat"
     ],
     "BaseAttack": 182,
     "BaseDefense": 133,
@@ -8951,8 +8735,8 @@
       "Tackle",
       "Bug Bite"
     ],
-    "Weight": "7,2 kg",
-    "Height": "0,61 m",
+    "Weight": "7.2 kg",
+    "Height": "0.61 m",
     "Candy": {
       "Name": "Pineco candies",
       "FamilyID": 204
@@ -8971,8 +8755,7 @@
     "Special Attack(s)": [
       "Gyro Ball",
       "Rock Tomb",
-      "Sand Tomb",
-      "Struggle"
+      "Sand Tomb"
     ],
     "BaseAttack": 108,
     "BaseDefense": 146,
@@ -8996,11 +8779,10 @@
     ],
     "Fast Attack(s)": [
       "Bug Bite",
-      "Struggle Bug",
-      "Tackle"
+      "Struggle Bug"
     ],
-    "Weight": "125,8 kg",
-    "Height": "1,19 m",
+    "Weight": "125.8 kg",
+    "Height": "1.19 m",
     "Candy": {
       "Name": "Pineco candies",
       "FamilyID": 204
@@ -9014,8 +8796,7 @@
     "Special Attack(s)": [
       "Heavy Slam",
       "Earthquake",
-      "Rock Tomb",
-      "Struggle"
+      "Rock Tomb"
     ],
     "BaseAttack": 161,
     "BaseDefense": 242,
@@ -9036,11 +8817,10 @@
     ],
     "Fast Attack(s)": [
       "Bite",
-      "Astonish",
-      "Tackle"
+      "Astonish"
     ],
     "Weight": "14 kg",
-    "Height": "1,5 m",
+    "Height": "1.5 m",
     "Candy": {
       "Name": "Dunsparce candies",
       "FamilyID": 206
@@ -9048,8 +8828,7 @@
     "Special Attack(s)": [
       "Dig",
       "Rock Slide",
-      "Drill Run",
-      "Struggle"
+      "Drill Run"
     ],
     "BaseAttack": 131,
     "BaseDefense": 131,
@@ -9073,11 +8852,10 @@
     ],
     "Fast Attack(s)": [
       "Fury Cutter",
-      "Wing Attack",
-      "Tackle"
+      "Wing Attack"
     ],
-    "Weight": "64,8 kg",
-    "Height": "1,09 m",
+    "Weight": "64.8 kg",
+    "Height": "1.09 m",
     "Candy": {
       "Name": "Gligar candies",
       "FamilyID": 207
@@ -9085,8 +8863,7 @@
     "Special Attack(s)": [
       "Dig",
       "Aerial Ace",
-      "Night Slash",
-      "Struggle"
+      "Night Slash"
     ],
     "BaseAttack": 143,
     "BaseDefense": 204,
@@ -9110,11 +8887,10 @@
     ],
     "Fast Attack(s)": [
       "Iron Tail",
-      "Dragon Tail",
-      "Tackle"
+      "Dragon Tail"
     ],
     "Weight": "400 kg",
-    "Height": "9,19 m",
+    "Height": "9.19 m",
     "Candy": {
       "Name": "Onix candies",
       "FamilyID": 95
@@ -9128,8 +8904,7 @@
     "Special Attack(s)": [
       "Earthquake",
       "Heavy Slam",
-      "Crunch",
-      "Struggle"
+      "Crunch"
     ],
     "BaseAttack": 148,
     "BaseDefense": 333,
@@ -9152,8 +8927,8 @@
       "Tackle",
       "Bite"
     ],
-    "Weight": "7,8 kg",
-    "Height": "0,61 m",
+    "Weight": "7.8 kg",
+    "Height": "0.61 m",
     "Candy": {
       "Name": "Snubbull candies",
       "FamilyID": 209
@@ -9172,8 +8947,7 @@
     "Special Attack(s)": [
       "Crunch",
       "Dazzling Gleam",
-      "Brick Break",
-      "Struggle"
+      "Brick Break"
     ],
     "BaseAttack": 137,
     "BaseDefense": 89,
@@ -9194,11 +8968,10 @@
     ],
     "Fast Attack(s)": [
       "Bite",
-      "Snarl",
-      "Tackle"
+      "Snarl"
     ],
-    "Weight": "48,7 kg",
-    "Height": "1,4 m",
+    "Weight": "48.7 kg",
+    "Height": "1.4 m",
     "Candy": {
       "Name": "Snubbull candies",
       "FamilyID": 209
@@ -9212,8 +8985,7 @@
     "Special Attack(s)": [
       "Crunch",
       "Play Rough",
-      "Close Combat",
-      "Struggle"
+      "Close Combat"
     ],
     "BaseAttack": 212,
     "BaseDefense": 137,
@@ -9237,11 +9009,10 @@
     ],
     "Fast Attack(s)": [
       "Poison Sting",
-      "Water Gun",
-      "Tackle"
+      "Water Gun"
     ],
-    "Weight": "3,9 kg",
-    "Height": "0,51 m",
+    "Weight": "3.9 kg",
+    "Height": "0.51 m",
     "Candy": {
       "Name": "Qwilfish candies",
       "FamilyID": 211
@@ -9249,8 +9020,7 @@
     "Special Attack(s)": [
       "Aqua Tail",
       "Ice Beam",
-      "Sludge Wave",
-      "Struggle"
+      "Sludge Wave"
     ],
     "BaseAttack": 184,
     "BaseDefense": 148,
@@ -9274,11 +9044,10 @@
     ],
     "Fast Attack(s)": [
       "Bullet Punch",
-      "Fury Cutter",
-      "Tackle"
+      "Fury Cutter"
     ],
     "Weight": "125 kg",
-    "Height": "2,01 m",
+    "Height": "2.01 m",
     "Candy": {
       "Name": "Scyther candies",
       "FamilyID": 123
@@ -9292,8 +9061,7 @@
     "Special Attack(s)": [
       "X Scissor",
       "Iron Head",
-      "Night Slash",
-      "Struggle"
+      "Night Slash"
     ],
     "BaseAttack": 236,
     "BaseDefense": 191,
@@ -9317,11 +9085,10 @@
     ],
     "Fast Attack(s)": [
       "Struggle Bug",
-      "Rock Throw",
-      "Tackle"
+      "Rock Throw"
     ],
-    "Weight": "20,5 kg",
-    "Height": "0,61 m",
+    "Weight": "20.5 kg",
+    "Height": "0.61 m",
     "Candy": {
       "Name": "Shuckle candies",
       "FamilyID": 213
@@ -9329,8 +9096,7 @@
     "Special Attack(s)": [
       "Rock Blast",
       "Stone Edge",
-      "Gyro Ball",
-      "Struggle"
+      "Gyro Ball"
     ],
     "BaseAttack": 17,
     "BaseDefense": 396,
@@ -9354,11 +9120,10 @@
     ],
     "Fast Attack(s)": [
       "Counter",
-      "Struggle Bug",
-      "Tackle"
+      "Struggle Bug"
     ],
     "Weight": "54 kg",
-    "Height": "1,5 m",
+    "Height": "1.5 m",
     "Candy": {
       "Name": "Heracross candies",
       "FamilyID": 214
@@ -9366,8 +9131,7 @@
     "Special Attack(s)": [
       "Megahorn",
       "Close Combat",
-      "Earthquake",
-      "Struggle"
+      "Earthquake"
     ],
     "BaseAttack": 234,
     "BaseDefense": 189,
@@ -9391,11 +9155,10 @@
     ],
     "Fast Attack(s)": [
       "Ice Shard",
-      "Feint Attack",
-      "Tackle"
+      "Feint Attack"
     ],
     "Weight": "28 kg",
-    "Height": "0,89 m",
+    "Height": "0.89 m",
     "Candy": {
       "Name": "Sneasel candies",
       "FamilyID": 215
@@ -9403,8 +9166,7 @@
     "Special Attack(s)": [
       "Avalanche",
       "Ice Punch",
-      "Foul Play",
-      "Struggle"
+      "Foul Play"
     ],
     "BaseAttack": 189,
     "BaseDefense": 157,
@@ -9425,11 +9187,10 @@
     ],
     "Fast Attack(s)": [
       "Scratch",
-      "Lick",
-      "Tackle"
+      "Lick"
     ],
-    "Weight": "8,8 kg",
-    "Height": "0,61 m",
+    "Weight": "8.8 kg",
+    "Height": "0.61 m",
     "Candy": {
       "Name": "Teddiursa candies",
       "FamilyID": 216
@@ -9448,8 +9209,7 @@
     "Special Attack(s)": [
       "Cross Chop",
       "Crunch",
-      "Play Rough",
-      "Struggle"
+      "Play Rough"
     ],
     "BaseAttack": 142,
     "BaseDefense": 93,
@@ -9470,11 +9230,10 @@
     ],
     "Fast Attack(s)": [
       "Metal Claw",
-      "Counter",
-      "Tackle"
+      "Counter"
     ],
-    "Weight": "125,8 kg",
-    "Height": "1,8 m",
+    "Weight": "125.8 kg",
+    "Height": "1.8 m",
     "Candy": {
       "Name": "Teddiursa candies",
       "FamilyID": 216
@@ -9488,8 +9247,7 @@
     "Special Attack(s)": [
       "Close Combat",
       "Hyper Beam",
-      "Play Rough",
-      "Struggle"
+      "Play Rough"
     ],
     "BaseAttack": 236,
     "BaseDefense": 144,
@@ -9510,11 +9268,10 @@
     ],
     "Fast Attack(s)": [
       "Ember",
-      "Rock Throw",
-      "Tackle"
+      "Rock Throw"
     ],
     "Weight": "35 kg",
-    "Height": "0,71 m",
+    "Height": "0.71 m",
     "Candy": {
       "Name": "Slugma candies",
       "FamilyID": 218
@@ -9533,8 +9290,7 @@
     "Special Attack(s)": [
       "Flame Burst",
       "Flame Charge",
-      "Rock Slide",
-      "Struggle"
+      "Rock Slide"
     ],
     "BaseAttack": 118,
     "BaseDefense": 71,
@@ -9558,11 +9314,10 @@
     ],
     "Fast Attack(s)": [
       "Ember",
-      "Rock Throw",
-      "Tackle"
+      "Rock Throw"
     ],
     "Weight": "55 kg",
-    "Height": "0,79 m",
+    "Height": "0.79 m",
     "Candy": {
       "Name": "Slugma candies",
       "FamilyID": 218
@@ -9576,8 +9331,7 @@
     "Special Attack(s)": [
       "Heat Wave",
       "Overheat",
-      "Stone Edge",
-      "Struggle"
+      "Stone Edge"
     ],
     "BaseAttack": 139,
     "BaseDefense": 209,
@@ -9603,8 +9357,8 @@
       "Tackle",
       "Powder Snow"
     ],
-    "Weight": "6,5 kg",
-    "Height": "0,41 m",
+    "Weight": "6.5 kg",
+    "Height": "0.41 m",
     "Candy": {
       "Name": "Swinub candies",
       "FamilyID": 220
@@ -9623,8 +9377,7 @@
     "Special Attack(s)": [
       "Icy Wind",
       "Body Slam",
-      "Rock Slide",
-      "Struggle"
+      "Rock Slide"
     ],
     "BaseAttack": 90,
     "BaseDefense": 74,
@@ -9648,11 +9401,10 @@
     ],
     "Fast Attack(s)": [
       "Ice Shard",
-      "Powder Snow",
-      "Tackle"
+      "Powder Snow"
     ],
-    "Weight": "55,8 kg",
-    "Height": "1,09 m",
+    "Weight": "55.8 kg",
+    "Height": "1.09 m",
     "Candy": {
       "Name": "Swinub candies",
       "FamilyID": 220
@@ -9666,8 +9418,7 @@
     "Special Attack(s)": [
       "Avalanche",
       "Bulldoze",
-      "Stone Edge",
-      "Struggle"
+      "Stone Edge"
     ],
     "BaseAttack": 181,
     "BaseDefense": 147,
@@ -9694,7 +9445,7 @@
       "Bubble"
     ],
     "Weight": "5 kg",
-    "Height": "0,61 m",
+    "Height": "0.61 m",
     "Candy": {
       "Name": "Corsola candies",
       "FamilyID": 222
@@ -9702,8 +9453,7 @@
     "Special Attack(s)": [
       "Rock Blast",
       "Power Gem",
-      "Bubble Beam",
-      "Struggle"
+      "Bubble Beam"
     ],
     "BaseAttack": 118,
     "BaseDefense": 156,
@@ -9724,11 +9474,10 @@
     ],
     "Fast Attack(s)": [
       "Water Gun",
-      "Mud Shot",
-      "Tackle"
+      "Mud Shot"
     ],
     "Weight": "12 kg",
-    "Height": "0,61 m",
+    "Height": "0.61 m",
     "Candy": {
       "Name": "Remoraid candies",
       "FamilyID": 223
@@ -9747,8 +9496,7 @@
     "Special Attack(s)": [
       "Aurora Beam",
       "Water Pulse",
-      "Rock Blast",
-      "Struggle"
+      "Rock Blast"
     ],
     "BaseAttack": 127,
     "BaseDefense": 69,
@@ -9769,11 +9517,10 @@
     ],
     "Fast Attack(s)": [
       "Water Gun",
-      "Mud Shot",
-      "Tackle"
+      "Mud Shot"
     ],
-    "Weight": "28,5 kg",
-    "Height": "0,89 m",
+    "Weight": "28.5 kg",
+    "Height": "0.89 m",
     "Candy": {
       "Name": "Remoraid candies",
       "FamilyID": 223
@@ -9787,8 +9534,7 @@
     "Special Attack(s)": [
       "Gunk Shot",
       "Water Pulse",
-      "Aurora Beam",
-      "Struggle"
+      "Aurora Beam"
     ],
     "BaseAttack": 197,
     "BaseDefense": 141,
@@ -9812,11 +9558,10 @@
     ],
     "Fast Attack(s)": [
       "Ice Shard",
-      "Quick Attack",
-      "Tackle"
+      "Quick Attack"
     ],
     "Weight": "16 kg",
-    "Height": "0,89 m",
+    "Height": "0.89 m",
     "Candy": {
       "Name": "Delibird candies",
       "FamilyID": 225
@@ -9824,8 +9569,7 @@
     "Special Attack(s)": [
       "Ice Punch",
       "Icy Wind",
-      "Aerial Ace",
-      "Struggle"
+      "Aerial Ace"
     ],
     "BaseAttack": 128,
     "BaseDefense": 90,
@@ -9849,11 +9593,10 @@
     ],
     "Fast Attack(s)": [
       "Bubble",
-      "Wing Attack",
-      "Tackle"
+      "Wing Attack"
     ],
     "Weight": "220 kg",
-    "Height": "2,11 m",
+    "Height": "2.11 m",
     "Candy": {
       "Name": "Mantine candies",
       "FamilyID": 226
@@ -9861,8 +9604,7 @@
     "Special Attack(s)": [
       "Water Pulse",
       "Ice Beam",
-      "Aerial Ace",
-      "Struggle"
+      "Aerial Ace"
     ],
     "BaseAttack": 148,
     "BaseDefense": 260,
@@ -9886,11 +9628,10 @@
     ],
     "Fast Attack(s)": [
       "Steel Wing",
-      "Air Slash",
-      "Tackle"
+      "Air Slash"
     ],
-    "Weight": "50,5 kg",
-    "Height": "1,7 m",
+    "Weight": "50.5 kg",
+    "Height": "1.7 m",
     "Candy": {
       "Name": "Skarmory candies",
       "FamilyID": 227
@@ -9898,8 +9639,7 @@
     "Special Attack(s)": [
       "Brave Bird",
       "Sky Attack",
-      "Flash Cannon",
-      "Struggle"
+      "Flash Cannon"
     ],
     "BaseAttack": 148,
     "BaseDefense": 260,
@@ -9923,11 +9663,10 @@
     ],
     "Fast Attack(s)": [
       "Feint Attack",
-      "Ember",
-      "Tackle"
+      "Ember"
     ],
-    "Weight": "10,8 kg",
-    "Height": "0,61 m",
+    "Weight": "10.8 kg",
+    "Height": "0.61 m",
     "Candy": {
       "Name": "Houndour candies",
       "FamilyID": 228
@@ -9946,8 +9685,7 @@
     "Special Attack(s)": [
       "Crunch",
       "Flamethrower",
-      "Dark Pulse",
-      "Struggle"
+      "Dark Pulse"
     ],
     "BaseAttack": 152,
     "BaseDefense": 93,
@@ -9971,11 +9709,10 @@
     ],
     "Fast Attack(s)": [
       "Snarl",
-      "Fire Fang",
-      "Tackle"
+      "Fire Fang"
     ],
     "Weight": "35 kg",
-    "Height": "1,4 m",
+    "Height": "1.4 m",
     "Candy": {
       "Name": "Houndour candies",
       "FamilyID": 228
@@ -9989,8 +9726,7 @@
     "Special Attack(s)": [
       "Crunch",
       "Fire Blast",
-      "Foul Play",
-      "Struggle"
+      "Foul Play"
     ],
     "BaseAttack": 224,
     "BaseDefense": 159,
@@ -10014,11 +9750,10 @@
     ],
     "Fast Attack(s)": [
       "Water Gun",
-      "Dragon Breath",
-      "Tackle"
+      "Dragon Breath"
     ],
     "Weight": "152 kg",
-    "Height": "1,8 m",
+    "Height": "1.8 m",
     "Candy": {
       "Name": "Horsea candies",
       "FamilyID": 116
@@ -10036,8 +9771,7 @@
     "Special Attack(s)": [
       "Hydro Pump",
       "Blizzard",
-      "Outrage",
-      "Struggle"
+      "Outrage"
     ],
     "BaseAttack": 194,
     "BaseDefense": 194,
@@ -10060,8 +9794,8 @@
       "Tackle",
       "Rock Smash"
     ],
-    "Weight": "33,5 kg",
-    "Height": "0,51 m",
+    "Weight": "33.5 kg",
+    "Height": "0.51 m",
     "Candy": {
       "Name": "Phanpy candies",
       "FamilyID": 231
@@ -10080,8 +9814,7 @@
     "Special Attack(s)": [
       "Bulldoze",
       "Rock Slide",
-      "Body Slam",
-      "Struggle"
+      "Body Slam"
     ],
     "BaseAttack": 107,
     "BaseDefense": 107,
@@ -10105,7 +9838,7 @@
       "Counter"
     ],
     "Weight": "120 kg",
-    "Height": "1,09 m",
+    "Height": "1.09 m",
     "Candy": {
       "Name": "Phanpy candies",
       "FamilyID": 231
@@ -10119,8 +9852,7 @@
     "Special Attack(s)": [
       "Earthquake",
       "Heavy Slam",
-      "Play Rough",
-      "Struggle"
+      "Play Rough"
     ],
     "BaseAttack": 214,
     "BaseDefense": 214,
@@ -10141,11 +9873,10 @@
     ],
     "Fast Attack(s)": [
       "Hidden Power",
-      "Charge Beam",
-      "Tackle"
+      "Charge Beam"
     ],
-    "Weight": "32,5 kg",
-    "Height": "0,61 m",
+    "Weight": "32.5 kg",
+    "Height": "0.61 m",
     "Candy": {
       "Name": "Porygon candies",
       "FamilyID": 137
@@ -10159,8 +9890,7 @@
     "Special Attack(s)": [
       "Solar Beam",
       "Hyper Beam",
-      "Zap Cannon",
-      "Struggle"
+      "Zap Cannon"
     ],
     "BaseAttack": 198,
     "BaseDefense": 183,
@@ -10183,8 +9913,8 @@
       "Tackle",
       "Zen Headbutt"
     ],
-    "Weight": "71,2 kg",
-    "Height": "1,4 m",
+    "Weight": "71.2 kg",
+    "Height": "1.4 m",
     "Candy": {
       "Name": "Stantler candies",
       "FamilyID": 234
@@ -10192,8 +9922,7 @@
     "Special Attack(s)": [
       "Stomp",
       "Wild Charge",
-      "Megahorn",
-      "Struggle"
+      "Megahorn"
     ],
     "BaseAttack": 192,
     "BaseDefense": 132,
@@ -10216,7 +9945,7 @@
       "Tackle"
     ],
     "Weight": "58 kg",
-    "Height": "1,19 m",
+    "Height": "1.19 m",
     "Candy": {
       "Name": "Smeargle candies",
       "FamilyID": 235
@@ -10243,11 +9972,10 @@
     ],
     "Fast Attack(s)": [
       "Rock Smash",
-      "Tackle",
-      "Low Kick"
+      "Tackle"
     ],
     "Weight": "21 kg",
-    "Height": "0,71 m",
+    "Height": "0.71 m",
     "Candy": {
       "Name": "Tyrogue candies",
       "FamilyID": 236
@@ -10274,8 +10002,7 @@
     "Special Attack(s)": [
       "Brick Break",
       "Rock Slide",
-      "Low Sweep",
-      "Body Slam"
+      "Low Sweep"
     ],
     "BaseAttack": 64,
     "BaseDefense": 64,
@@ -10296,11 +10023,10 @@
     ],
     "Fast Attack(s)": [
       "Rock Smash",
-      "Counter",
-      "Tackle"
+      "Counter"
     ],
     "Weight": "48 kg",
-    "Height": "1,4 m",
+    "Height": "1.4 m",
     "Candy": {
       "Name": "Tyrogue candies",
       "FamilyID": 236
@@ -10314,8 +10040,7 @@
     "Special Attack(s)": [
       "Close Combat",
       "Gyro Ball",
-      "Stone Edge",
-      "Struggle"
+      "Stone Edge"
     ],
     "BaseAttack": 173,
     "BaseDefense": 214,
@@ -10339,11 +10064,10 @@
     ],
     "Fast Attack(s)": [
       "Powder Snow",
-      "Pound",
-      "Frost Breath"
+      "Pound"
     ],
     "Weight": "6 kg",
-    "Height": "0,41 m",
+    "Height": "0.41 m",
     "Candy": {
       "Name": "Jynx candies",
       "FamilyID": 124
@@ -10385,8 +10109,8 @@
       "Thunder Shock",
       "Low Kick"
     ],
-    "Weight": "23,5 kg",
-    "Height": "0,61 m",
+    "Weight": "23.5 kg",
+    "Height": "0.61 m",
     "Candy": {
       "Name": "Electabuzz candies",
       "FamilyID": 125
@@ -10405,8 +10129,7 @@
     "Special Attack(s)": [
       "Thunder Punch",
       "Brick Break",
-      "Discharge",
-      "Thunderbolt"
+      "Discharge"
     ],
     "BaseAttack": 135,
     "BaseDefense": 110,
@@ -10429,8 +10152,8 @@
       "Ember",
       "Karate Chop"
     ],
-    "Weight": "21,4 kg",
-    "Height": "0,71 m",
+    "Weight": "21.4 kg",
+    "Height": "0.71 m",
     "Candy": {
       "Name": "Magmar candies",
       "FamilyID": 126
@@ -10449,8 +10172,7 @@
     "Special Attack(s)": [
       "Brick Break",
       "Fire Punch",
-      "Flame Burst",
-      "Flamethrower"
+      "Flame Burst"
     ],
     "BaseAttack": 151,
     "BaseDefense": 108,
@@ -10473,8 +10195,8 @@
       "Tackle",
       "Zen Headbutt"
     ],
-    "Weight": "75,5 kg",
-    "Height": "1,19 m",
+    "Weight": "75.5 kg",
+    "Height": "1.19 m",
     "Candy": {
       "Name": "Miltank candies",
       "FamilyID": 241
@@ -10482,8 +10204,7 @@
     "Special Attack(s)": [
       "Stomp",
       "Body Slam",
-      "Gyro Ball",
-      "Struggle"
+      "Gyro Ball"
     ],
     "BaseAttack": 157,
     "BaseDefense": 211,
@@ -10504,11 +10225,10 @@
     ],
     "Fast Attack(s)": [
       "Pound",
-      "Zen Headbutt",
-      "Tackle"
+      "Zen Headbutt"
     ],
-    "Weight": "46,8 kg",
-    "Height": "1,5 m",
+    "Weight": "46.8 kg",
+    "Height": "1.5 m",
     "Candy": {
       "Name": "Chansey candies",
       "FamilyID": 113
@@ -10522,8 +10242,7 @@
     "Special Attack(s)": [
       "Psychic",
       "Hyper Beam",
-      "Dazzling Gleam",
-      "Struggle"
+      "Dazzling Gleam"
     ],
     "BaseAttack": 129,
     "BaseDefense": 229,
@@ -10544,11 +10263,10 @@
     ],
     "Fast Attack(s)": [
       "Thunder Shock",
-      "Volt Switch",
-      "Tackle"
+      "Volt Switch"
     ],
     "Weight": "178 kg",
-    "Height": "1,91 m",
+    "Height": "1.91 m",
     "Candy": {
       "Name": "Raikou candies",
       "FamilyID": 243
@@ -10556,15 +10274,14 @@
     "Special Attack(s)": [
       "Thunder",
       "Thunderbolt",
-      "Wild Charge",
-      "Struggle"
+      "Wild Charge"
     ],
     "BaseAttack": 241,
     "BaseDefense": 210,
     "BaseStamina": 180,
-    "CaptureRate": 0.0,
+    "CaptureRate": 0.02,
     "FleeRate": 0.04,
-    "BuddyDistanceNeeded": 5
+    "BuddyDistanceNeeded": 20
   },
   {
     "Number": "244",
@@ -10578,11 +10295,10 @@
     ],
     "Fast Attack(s)": [
       "Fire Spin",
-      "Fire Fang",
-      "Tackle"
+      "Fire Fang"
     ],
     "Weight": "198 kg",
-    "Height": "2,11 m",
+    "Height": "2.11 m",
     "Candy": {
       "Name": "Entei candies",
       "FamilyID": 244
@@ -10590,15 +10306,14 @@
     "Special Attack(s)": [
       "Flamethrower",
       "Fire Blast",
-      "Overheat",
-      "Struggle"
+      "Overheat"
     ],
     "BaseAttack": 235,
     "BaseDefense": 176,
     "BaseStamina": 230,
-    "CaptureRate": 0.0,
+    "CaptureRate": 0.02,
     "FleeRate": 0.04,
-    "BuddyDistanceNeeded": 5
+    "BuddyDistanceNeeded": 20
   },
   {
     "Number": "245",
@@ -10612,11 +10327,10 @@
     ],
     "Fast Attack(s)": [
       "Extrasensory",
-      "Snarl",
-      "Tackle"
+      "Snarl"
     ],
     "Weight": "187 kg",
-    "Height": "2,01 m",
+    "Height": "2.01 m",
     "Candy": {
       "Name": "Suicune candies",
       "FamilyID": 245
@@ -10624,15 +10338,14 @@
     "Special Attack(s)": [
       "Hydro Pump",
       "Bubble Beam",
-      "Water Pulse",
-      "Struggle"
+      "Water Pulse"
     ],
     "BaseAttack": 180,
     "BaseDefense": 235,
     "BaseStamina": 200,
-    "CaptureRate": 0.0,
+    "CaptureRate": 0.02,
     "FleeRate": 0.04,
-    "BuddyDistanceNeeded": 5
+    "BuddyDistanceNeeded": 20
   },
   {
     "Number": "246",
@@ -10649,11 +10362,10 @@
     ],
     "Fast Attack(s)": [
       "Bite",
-      "Rock Smash",
-      "Tackle"
+      "Rock Smash"
     ],
     "Weight": "72 kg",
-    "Height": "0,61 m",
+    "Height": "0.61 m",
     "Candy": {
       "Name": "Larvitar candies",
       "FamilyID": 246
@@ -10676,8 +10388,7 @@
     "Special Attack(s)": [
       "Stomp",
       "Crunch",
-      "Ancient Power",
-      "Struggle"
+      "Ancient Power"
     ],
     "BaseAttack": 115,
     "BaseDefense": 93,
@@ -10701,11 +10412,10 @@
     ],
     "Fast Attack(s)": [
       "Bite",
-      "Rock Smash",
-      "Tackle"
+      "Rock Smash"
     ],
     "Weight": "152 kg",
-    "Height": "1,19 m",
+    "Height": "1.19 m",
     "Candy": {
       "Name": "Larvitar candies",
       "FamilyID": 246
@@ -10730,8 +10440,7 @@
     "Special Attack(s)": [
       "Dig",
       "Crunch",
-      "Ancient Power",
-      "Struggle"
+      "Ancient Power"
     ],
     "BaseAttack": 155,
     "BaseDefense": 133,
@@ -10755,11 +10464,10 @@
     ],
     "Fast Attack(s)": [
       "Bite",
-      "Iron Tail",
-      "Tackle"
+      "Iron Tail"
     ],
     "Weight": "202 kg",
-    "Height": "2,01 m",
+    "Height": "2.01 m",
     "Candy": {
       "Name": "Larvitar candies",
       "FamilyID": 246
@@ -10777,8 +10485,7 @@
     "Special Attack(s)": [
       "Fire Blast",
       "Crunch",
-      "Stone Edge",
-      "Struggle"
+      "Stone Edge"
     ],
     "BaseAttack": 251,
     "BaseDefense": 212,
@@ -10802,11 +10509,10 @@
     ],
     "Fast Attack(s)": [
       "Extrasensory",
-      "Dragon Tail",
-      "Tackle"
+      "Dragon Tail"
     ],
     "Weight": "216 kg",
-    "Height": "5,21 m",
+    "Height": "5.21 m",
     "Candy": {
       "Name": "Lugia candies",
       "FamilyID": 249
@@ -10814,15 +10520,14 @@
     "Special Attack(s)": [
       "Sky Attack",
       "Hydro Pump",
-      "Futuresight",
-      "Struggle"
+      "Futuresight"
     ],
     "BaseAttack": 193,
     "BaseDefense": 323,
     "BaseStamina": 212,
-    "CaptureRate": 0.0,
+    "CaptureRate": 0.02,
     "FleeRate": 0.04,
-    "BuddyDistanceNeeded": 5
+    "BuddyDistanceNeeded": 20
   },
   {
     "Number": "250",
@@ -10839,11 +10544,10 @@
     ],
     "Fast Attack(s)": [
       "Extrasensory",
-      "Steel Wing",
-      "Tackle"
+      "Steel Wing"
     ],
     "Weight": "199 kg",
-    "Height": "3,81 m",
+    "Height": "3.81 m",
     "Candy": {
       "Name": "HoOh candies",
       "FamilyID": 250
@@ -10851,15 +10555,14 @@
     "Special Attack(s)": [
       "Brave Bird",
       "Fire Blast",
-      "Solar Beam",
-      "Struggle"
+      "Solar Beam"
     ],
     "BaseAttack": 263,
     "BaseDefense": 301,
     "BaseStamina": 212,
-    "CaptureRate": 0.0,
+    "CaptureRate": 0.02,
     "FleeRate": 0.04,
-    "BuddyDistanceNeeded": 5
+    "BuddyDistanceNeeded": 20
   },
   {
     "Number": "251",
@@ -10876,11 +10579,10 @@
     ],
     "Fast Attack(s)": [
       "Confusion",
-      "Charge Beam",
-      "Tackle"
+      "Charge Beam"
     ],
     "Weight": "5 kg",
-    "Height": "0,61 m",
+    "Height": "0.61 m",
     "Candy": {
       "Name": "Celebi candies",
       "FamilyID": 251
@@ -10888,14 +10590,13 @@
     "Special Attack(s)": [
       "Hyper Beam",
       "Psychic",
-      "Dazzling Gleam",
-      "Struggle"
+      "Dazzling Gleam"
     ],
     "BaseAttack": 210,
     "BaseDefense": 210,
     "BaseStamina": 200,
     "CaptureRate": 0.0,
     "FleeRate": 0.04,
-    "BuddyDistanceNeeded": 5
+    "BuddyDistanceNeeded": 20
   }
 ]
