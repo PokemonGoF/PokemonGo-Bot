@@ -11,7 +11,7 @@ from pokemongo_bot import inventory
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.cell_workers.utils import wait_time_sec, distance, convert
 
-DEBUG_ON = True
+DEBUG_ON = False
 SUCCESS = 1
 ERROR_XP_BOOST_ALREADY_ACTIVE = 3
 ERROR_INCENSE_ALREADY_ACTIVE = 2
