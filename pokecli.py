@@ -80,6 +80,7 @@ def yes_no( question ):
 try:
     import pkg_resources
     pgoapi_version = pkg_resources.get_distribution("pgoapi").version
+    if pgoapi_version != '2.13.0':
     if pgoapi_version != '1.2.1':
         while yes_no("A new pokemon API version is found. ")
         print "Run following command to get latest update: `pip install -r requirements.txt --upgrade`"

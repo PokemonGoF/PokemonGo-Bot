@@ -14,6 +14,7 @@ from pokemongo_bot.cell_workers.utils import wait_time_sec, distance, convert
 DEBUG_ON = False
 SUCCESS = 1
 ERROR_XP_BOOST_ALREADY_ACTIVE = 3
+ERROR_INCENSE_ALREADY_ACTIVE = 2
 
 class TelegramSnipe(object):
     ENABLED = False
@@ -255,6 +256,10 @@ class TelegramClass:
         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                          text="Lucky Egg Count: " + str(lucky_egg.count))
 
+    def request_ordincense_count(self,update):
+        ord_incense = inventory.items().get(Item.ITEM_INCENSE_ORDINARY.value)  # @UndefinedVariable
+        self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                         text="Ordinary Incense Count: " + str(ord_incense.count))
             
     def request_luckyegg(self,update):
         lucky_egg = inventory.items().get(Item.ITEM_LUCKY_EGG.value)  # @UndefinedVariable
@@ -288,6 +293,50 @@ class TelegramClass:
             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                              text="Failed to use lucky egg!\n")
             return False
+
+    def request_ordincense(self,update):
+        ord_incense = inventory.items().get(Item.ITEM_INCENSE_ORDINARY.value)  # @UndefinedVariable
+
+        if ord_incense.count == 0:
+            return False
+
+        request = self.bot.api.create_request()
+        request.use_incense(incense_type=401)
+        response_dict = request.call()
+
+        if not response_dict:
+            self.bot.logger.info("Telegram Request: Failed to use ordinary incense!")
+            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                             text="Failed to use ordinary incense!\n")
+            return False
+
+        result = response_dict.get('responses', {}).get('USE_INCENSE', {}).get('result', 0)
+
+        self.bot.logger.info("Result = " + str(result))
+
+        if result == SUCCESS:
+            ord_incense.remove(1)
+            self.bot.logger.info("Telegram Request: Used ordinary incense, {} left.".format(ord_incense.count))
+            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                             text="Used ordinary incense, " + str(ord_incense.count) + " left.")
+            return True
+        elif result == ERROR_INCENSE_ALREADY_ACTIVE:
+            self.bot.logger.info("Telegram Request: Ordinary incense already active, {} left.".format(ord_incense.count))
+            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                             text="Ordinary incense already active, " + str(ord_incense.count) + " left and has " + str(currentincense.expire_ms) + " remaining")
+            return True
+        else:
+            self.bot.logger.info("Telegram Request: Failed to use ordinary incense! Result=" + str(result))
+            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                             text="Failed to use ordinary incense!\n")
+            return False
+
+    def request_incensetime(self, update):
+            self.bot.logger.info("Time Started")
+            currentincense = inventory.applied_items().get('401')
+            self.bot.logger.info(currentincense)
+            #self.bot.logger.info(currentincense.expire_ms)
+            return True
 
     def send_pokestops(self, update, num):
         pokestops = self.chat_handler.get_pokestops( num)
@@ -395,6 +444,8 @@ class TelegramClass:
             "/snipetime <Lag> <Lng> - return time that will be teaken to snipe at given location",
             "/luckyegg - activate luckyegg",
             "/luckyeggcount - return number of luckyegg",
+            "/ordincense - activate ordinary incense",
+            "/ordincensecount - return number of ordinary incense",
             "/softbans - info about possible softbans"
         )
         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
@@ -554,6 +605,33 @@ class TelegramClass:
                                 self.bot.logger.info("Telegram has called for lucky egg. Success.")
                             else:
                                 self.bot.logger.info("Telegram has called for lucky egg. Failed.")
+                        except:
+                            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                                             text="An Error has occured")
+                        continue
+                    if re.match(r'^/ordincensecount', update.message.text):
+                        try:
+                            self.request_ordincense_count(update)
+                        except:
+                            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                                             text="An Error has occured")
+                        continue
+                    if re.match(r'^/ordincense', update.message.text):
+                        try:
+                            if self.request_ordincense(update):
+                                self.bot.logger.info("Telegram has called for ordinary incense. Success.")
+                            else:
+                                self.bot.logger.info("Telegram has called for ordinary incense. Failed.")
+                        except:
+                            self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
+                                             text="An Error has occured")
+                        continue
+                    if re.match(r'^/itime', update.message.text):
+                        try:
+                            if self.request_incensetime(update):
+                                self.bot.logger.info("Telegram has called for incense time. Success.")
+                            else:
+                                self.bot.logger.info("Telegram has called for incense time. Failed.")
                         except:
                             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                              text="An Error has occured")
