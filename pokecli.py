@@ -63,10 +63,25 @@ except ImportError:
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
+def yes_no( question ):
+    # raw_input returns the empty string for "enter"
+    yes = set(['yes','y', 'ye', ''])
+    no = set(['no','n'])
+    print question
+    choice = input().lower()
+    if choice in yes:
+       return True
+    elif choice in no:
+       return False
+    else:
+       print "Please respond with 'yes' or 'no'"
+       return None
+    
 try:
     import pkg_resources
     pgoapi_version = pkg_resources.get_distribution("pgoapi").version
     if pgoapi_version != '1.2.1':
+        while yes_no("A new pokemon API version is found. ")
         print "Run following command to get latest update: `pip install -r requirements.txt --upgrade`"
         sys.exit(1)
 except pkg_resources.DistributionNotFound:
