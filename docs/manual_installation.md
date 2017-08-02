@@ -55,7 +55,7 @@ rm -f get-pip.py
 
 (Please keep in mind that `master` is stable and tested but `dev` is bleeding edge. In the installation note below change `master` to `dev` if you want to get and use the latest version.)
 ```bash
-git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot  
+git clone --recursive -b master https://github.com/PokemonGoF/PokemonGo-Bot.git
 cd PokemonGo-Bot
 ```
 
@@ -73,8 +73,6 @@ source bin/activate
 - install the requirements
 ```bash
 pip install -r requirements.txt
-make
-cd ../../
 ```
 
 ####
@@ -82,6 +80,7 @@ cd ../../
 - copy and edit the config
 (after copying it you can use any editor you like if you don't like `vi`) 
 ```bash
+cd ../PokemonGo-Bot/configs/
 cp configs/config.json.example configs/config.json
 vi configs/config.json
 cp configs/auth.json.example configs/auth.json
@@ -132,7 +131,7 @@ cd C:\Python27\
 pip install --upgrade pip
 cd ..
 cd to PokemonGo-Bot directory
-git clone --recursive -b dev https://github.com/PokemonGoF/PokemonGo-Bot
+git clone --recursive -b dev https://github.com/PokemonGoF/PokemonGo-Bot.git
 pip install --upgrade -r requirements.txt
 git pull
 cd web

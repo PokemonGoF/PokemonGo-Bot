@@ -661,14 +661,18 @@ class GymPokemon(BaseTask):
             if info not in poke_info:
                 raise ConfigException("order by {}' isn't available".format(self.order_by))
             return poke_info[info]
+        legendaries = ["Lugia", "Zapdos", "HoOh", "Celebi", "Articuno", "Moltres", "Mewtwo", "Mew"]
         # Don't place a Pokemon which is already in the gym (prevent ALL Blissey etc)
         possible_pokemons = [p for p in self.pokemons if not p.name in current_pokemons]
         # Don't put in Pokemon above 3000 cp (morale drops too fast)
         possible_pokemons = [p for p in possible_pokemons if p.cp < 3000 and p.name not in self.ignore_max_cp_pokemon]
         # Filter out "bad" Pokemon
         possible_pokemons = [p for p in possible_pokemons if not p.is_bad]
+        # Ignore legendaries for in Gyms
+        possible_pokemons = [p for p in possible_pokemons if not p.name in legendaries]
         # Filter out "never place" Pokemon
         possible_pokemons = [p for p in possible_pokemons if p.name not in self.never_place]
+        
         # HP Must be max
         possible_pokemons = [p for p in possible_pokemons if p.hp == p.hp_max]
         possible_pokemons = [p for p in possible_pokemons if not p.in_fort]
