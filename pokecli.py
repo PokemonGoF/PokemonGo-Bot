@@ -437,6 +437,14 @@ def init_config():
     add_config(
         parser,
         load,
+        short_flag="-hp",
+        long_flag="--hashendpoint",
+        help="hashendpoint",
+        default=None
+    )
+    add_config(
+        parser,
+        load,
         short_flag="-capi",
         long_flag="--check_niantic_api",
         help="Enable killswitch on API Change",
