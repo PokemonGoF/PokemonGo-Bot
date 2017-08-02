@@ -139,6 +139,10 @@ class PokemonGoBot(object):
         self.inventory_refresh_threshold = 10
         self.inventory_refresh_counter = 0
         self.last_inventory_refresh = time.time()
+        
+        # Allow user to change hash service
+        if self.config.hashendpoint:
+            HashServer.endpoint = self.config.hashendpoint
 
         # Catch on/off
         self.catch_disabled = False
