@@ -63,12 +63,30 @@ except ImportError:
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
+def yes_no( question ):
+    # raw_input returns the empty string for "enter"
+    yes = set(['yes','y', 'ye', ''])
+    no = set(['no','n'])
+    print question
+    choice = raw_input().lower()
+    if choice in yes:
+       return True
+    elif choice in no:
+       return False
+    else:
+       print "Please respond with 'yes' or 'no'"
+       return None
+    
 try:
     import pkg_resources
     pgoapi_version = pkg_resources.get_distribution("pgoapi").version
     if pgoapi_version != '2.13.0':
-        print "Run following command to get latest update: `pip install -r requirements.txt --upgrade`"
-        sys.exit(1)
+        yn=None
+        while yn==None:
+            yn = yes_no("Warning: A new pokemon API version is found. Do you want to keep the bot running on your own risk of loosing your account? Y/N")
+        if not yn:
+            sys.exit(1)
+
 except pkg_resources.DistributionNotFound:
     print 'Seems you forgot to install python modules.'
     print 'Run: `pip install -r requirements.txt`'
@@ -415,6 +433,22 @@ def init_config():
         long_flag="--username",
         help="Username",
         default=None
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-hp",
+        long_flag="--hashendpoint",
+        help="hashendpoint",
+        default=None
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-ll",
+        long_flag="--locale_by_location",
+        help="Set locale information base on bot location",
+        default=False
     )
     add_config(
         parser,
