@@ -139,6 +139,10 @@ class PokemonGoBot(object):
         self.inventory_refresh_threshold = 10
         self.inventory_refresh_counter = 0
         self.last_inventory_refresh = time.time()
+        
+        # Allow user to change hash service
+        if self.config.hashendpoint:
+            HashServer.endpoint = self.config.hashendpoint
 
         # Catch on/off
         self.catch_disabled = False
@@ -1003,6 +1007,21 @@ class PokemonGoBot(object):
         lat, lng = self.position[0:2]
         self.api.set_position(lat, lng, self.alt)  # or should the alt kept to zero?
 
+        def yes_no( question ):
+            # raw_input returns the empty string for "enter"
+            yes = set(['yes','y', 'ye', ''])
+            no = set(['no','n'])
+            print question
+            choice = raw_input().lower()
+            if choice in yes:
+               return True
+            elif choice in no:
+               return False
+            else:
+               print "Please respond with 'yes' or 'no'"
+               return None
+        
+        
         while not quit_login:
             try:
                 self.api.login(
@@ -1102,7 +1121,11 @@ class PokemonGoBot(object):
                         level='info',
                         formatted="We have detected a Pokemon API Change. Latest Niantic Version is: {}. Program Exiting...".format(officalAPI)
                     )
-                    sys.exit(1)
+                    yn=None
+                    while yn==None:
+                        yn = yes_no("Warning: A new pokemon API version is found. Do you want to keep the bot running on your own risk of loosing your account? Y/N")
+                    if not yn:
+                        sys.exit(1)
                 else:
                     self.event_manager.emit(
                         'security_check',
