@@ -445,6 +445,14 @@ def init_config():
     add_config(
         parser,
         load,
+        short_flag="-ll",
+        long_flag="--locale_by_location",
+        help="Set locale information base on bot location",
+        default=False
+    )
+    add_config(
+        parser,
+        load,
         short_flag="-capi",
         long_flag="--check_niantic_api",
         help="Enable killswitch on API Change",
