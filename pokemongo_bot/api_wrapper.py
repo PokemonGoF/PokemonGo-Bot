@@ -18,7 +18,6 @@ from pgoapi.utilities import get_time
 from .human_behaviour import sleep, gps_noise_rng
 from pokemongo_bot.base_dir import _base_dir
 from geopy.geocoders import GoogleV3
-from geopy.geocoders import Nominatim
 
 class PermaBannedException(Exception):
     pass
