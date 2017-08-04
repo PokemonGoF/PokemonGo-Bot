@@ -202,7 +202,8 @@ class TelegramClass:
             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                              text="No Pokemon Caught Yet.\n")
                              
-    def request_snipe(self, update, pkm, lat, lng):
+    def request_snipe(self, update, pkm, location):
+        loc_list = location.split(',')
         snipeSuccess = False
         try:
             id = Pokemons.id_for(pkm)
@@ -214,18 +215,20 @@ class TelegramClass:
         TelegramSnipe.ENABLED = True
         TelegramSnipe.ID = int(id)
         TelegramSnipe.POKEMON_NAME = str(pkm)
-        TelegramSnipe.LATITUDE = float(lat)
-        TelegramSnipe.LONGITUDE = float(lng)
+        TelegramSnipe.LATITUDE = float(loc_list[0].strip())
+        TelegramSnipe.LONGITUDE = float(loc_list[1].strip())
         
         outMsg = 'Catching pokemon: ' + TelegramSnipe.POKEMON_NAME + ' at Latitude: ' + str(TelegramSnipe.LATITUDE) + ' Longitude: ' + str(TelegramSnipe.LONGITUDE) + '\n'
         self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="".join(outMsg))
         
-    def request_snipe_time(self, update, lat, lng):
+    def request_snipe_time(self, update, location):
         last_position = self.bot.position[0:2]
-        snipe_distance = convert(distance(last_position[0],last_position[1],float(lat),float(lng)),"m","km")
-        time_to_snipe = wait_time_sec(snipe_distance)/60
+        loc_list = location.split(',')
+        snipe_distance = convert(distance(last_position[0],last_position[1],float(loc_list[0].strip()),float(loc_list[1].strip())),"m","km")
+        time_to_snipe = wait_time_sec(snipe_distance)
+        time_to_snipe_str_min = time.strftime("%M:%S", time.gmtime(time_to_snipe))
         if time_to_snipe <= 900:
-            outMsg = "Estimate Time to Snipe: " + "{0:.2f}".format(time_to_snipe) + " Mins. Distance: " + "{0:.2f}".format(snipe_distance) + "KM"
+            outMsg = "Estimated Time to Snipe: " + time_to_snipe_str_min + " Distance: " + "{0:.2f}".format(snipe_distance) + "KM"
             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="".join(outMsg))
         else:
             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown', text="Sniping distance is more than supported distance")
@@ -440,8 +443,8 @@ class TelegramClass:
             "/pokestops - show last x pokestops visited",
             "/released <num> <cp-or-iv-or-dated> - show top x released, sorted by CP, IV, or Date",
             "/vanished <num> <cp-or-iv-or-dated> - show top x vanished, sorted by CP, IV, or Date",
-            "/snipe <PokemonName> <Lat> <Lng> - to snipe a pokemon at location Latitude, Longitude",
-            "/snipetime <Lag> <Lng> - return time that will be teaken to snipe at given location",
+            "/snipe <PokemonName> <Lat,Lng> - to snipe a pokemon at location Latitude, Longitude",
+            "/snipetime <Lat,Lng> - return time that will be taken to snipe at given location",
             "/luckyegg - activate luckyegg",
             "/luckyeggcount - return number of luckyegg",
             "/ordincense - activate ordinary incense",
@@ -577,16 +580,16 @@ class TelegramClass:
                         continue
                     if re.match(r'^/snipe ', update.message.text):
                         try:
-                            (cmd, pkm, lat, lng) = self.tokenize(update.message.text, 4)
-                            self.request_snipe(update, pkm, lat, lng)
+                            (cmd, pkm, location) = self.tokenize(update.message.text, 3)
+                            self.request_snipe(update, pkm, location)
                         except:
                             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                              text="An Error has occured")
                         continue
                     if re.match(r'^/snipetime ', update.message.text):
                         try:
-                            (cmd, lat, lng) = self.tokenize(update.message.text, 3)
-                            self.request_snipe_time(update, lat, lng)
+                            (cmd, location) = self.tokenize(update.message.text,2)
+                            self.request_snipe_time(update, location)
                         except:
                             self.sendMessage(chat_id=update.message.chat_id, parse_mode='Markdown',
                                              text="An Error has occured")
