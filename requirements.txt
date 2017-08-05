@@ -32,3 +32,4 @@ python-telegram-bot==5.3.0
 discord_simple==0.0.1.15
 urllib3==1.18
 selenium==2.53.6
+pytz==2017.2
