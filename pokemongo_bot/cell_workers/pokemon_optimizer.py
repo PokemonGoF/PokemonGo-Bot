@@ -94,7 +94,9 @@ class PokemonOptimizer(BaseTask):
         if self.config_evolve_for_xp is True:
             self.config_evolve_for_xp = ["Caterpie", "Weedle", "Pidgey", "Rattata", "Nidoran F", "Nidoran M",
                                          "Zubat", "Oddish", "Paras", "Venonat", "Psyduck", "Tentacool",
-                                         "Magnemite", "Krabby", "Voltorb", "Goldeen", "Staryu", "Eevee"]
+                                         "Magnemite", "Krabby", "Voltorb", "Goldeen", "Staryu", "Eevee",
+                                         "Sentret", "Swinub", "Hoothoot", "Ledyba", "Natu", "Spinarak", 
+                                         "Wooper", "Marill", "Remoraid"]
         elif self.config_evolve_for_xp is False:
             self.config_evolve_for_xp = []
 
