@@ -445,6 +445,14 @@ def init_config():
     add_config(
         parser,
         load,
+        short_flag="-pr",
+        long_flag="--proxy",
+        help="Set proxy to use when connecting",
+        default=None
+    )
+    add_config(
+        parser,
+        load,
         short_flag="-ll",
         long_flag="--locale_by_location",
         help="Set locale information base on bot location",

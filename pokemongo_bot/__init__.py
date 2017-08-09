@@ -144,6 +144,12 @@ class PokemonGoBot(object):
         if self.config.hashendpoint:
             HashServer.endpoint = self.config.hashendpoint
 
+        # Allow user to use a proxy with the bot
+        if self.config.proxy:
+            self.proxy = self.config.proxy
+        else:
+            self.proxy = False
+
         # Catch on/off
         self.catch_disabled = False
 
@@ -1077,6 +1083,16 @@ class PokemonGoBot(object):
 
         # Start of security, to get various API Versions from different sources
         # Get Official API
+
+        if self.proxy:
+            proxy = urllib2.ProxyHandler({'http': self.proxy, 'https': self.proxy})
+            opener = urllib2.build_opener(proxy)
+            opener.addheaders = [('User-Agent', 'Niantic App')] # Mimic Niantic Software
+            urllib2.install_opener(opener)
+        else:
+            opener = urllib2.build_opener()
+            opener.addheaders = [('User-Agent', 'Niantic App')] # Mimic Niantic Software
+
         link = "https://pgorelease.nianticlabs.com/plfe/version"
         f = urllib2.urlopen(link)
         myfile = f.read()
@@ -1139,6 +1155,9 @@ class PokemonGoBot(object):
     def _setup_api(self):
         # instantiate pgoapi @var ApiWrapper
         self.api = ApiWrapper(config=self.config)
+
+        if self.proxy:
+            self.api.set_proxy({'http': self.proxy, 'https': self.proxy})
 
         # provide player position on the earth
         self._set_starting_position()

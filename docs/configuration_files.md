@@ -75,8 +75,8 @@ Document the configuration options of PokemonGo-Bot.
 
 1. copy `auth.json.example` to `auth.json`.
 2. Edit `auth.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (other keys are optional)
-3. copy `config.json.example` to `config.json`.=
-3. Simply launch the script with : `./run.sh` or './run.sh ./configs/your_auth_file.json ./configs/your_base_config_file.json'
+3. copy `config.json.example` to `config.json`.
+3. Simply launch the script with : `./run.sh` or `./run.sh ./configs/your_auth_file.json ./configs/your_base_config_file.json`
 
 ### About locale\_by\_location
 [[back to top](#table-of-contents)]
@@ -664,7 +664,7 @@ Key | Info
 - `"{iv_pct}_{iv_ads}"` => `091_15/11/15`
 - `""` -> `Mankey`
 - `"{attack_code}{attack_pct1}{defense_pct1}{ivcp_pct1}{name}"` => `Lh474Golbat`
-![sample](https://cloud.githubusercontent.com/assets/8896778/17285954/0fa44a88-577b-11e6-8204-b1302f4294bd.png)
+- ![sample](https://cloud.githubusercontent.com/assets/8896778/17285954/0fa44a88-577b-11e6-8204-b1302f4294bd.png)
 
 ### Sample configuration
 [[back to top](#table-of-contents)]
