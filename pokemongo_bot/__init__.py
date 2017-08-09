@@ -1087,7 +1087,11 @@ class PokemonGoBot(object):
         if self.proxy:
             proxy = urllib2.ProxyHandler({'http': self.proxy, 'https': self.proxy})
             opener = urllib2.build_opener(proxy)
+            opener.addheaders = [('User-Agent', 'Niantic App')] # Mimic Niantic Software
             urllib2.install_opener(opener)
+        else:
+            opener = urllib2.build_opener()
+            opener.addheaders = [('User-Agent', 'Niantic App')] # Mimic Niantic Software
 
         link = "https://pgorelease.nianticlabs.com/plfe/version"
         f = urllib2.urlopen(link)
