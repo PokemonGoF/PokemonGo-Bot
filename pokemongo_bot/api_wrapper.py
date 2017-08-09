@@ -121,14 +121,21 @@ class ApiWrapper(PGoApi, object):
 
         # Start login process
         try:
-            PGoApi.set_proxy({'http': 'p.goman.io:8000', 'https': 'p.goman.io:8000'})
-            PGoApi.set_authentication(
-                self,
-                provider,
-                username=username,
-                password=password,
-                proxy_config={'http': 'p.goman.io:8000', 'https': 'p.goman.io:8000'}
-            )
+            if self.config.proxy:
+                PGoApi.set_authentication(
+                    self,
+                    provider,
+                    username=username,
+                    password=password,
+                    proxy_config={'http': self.config.proxy, 'https': self.config.proxy}
+                )
+            else:
+                PGoApi.set_authentication(
+                    self,
+                    provider,
+                    username=username,
+                    password=password
+                )
         except:
             raise
         try:
