@@ -6367,7 +6367,7 @@
     "BaseStamina": 180,
     "CaptureRate": 0.0,
     "FleeRate": 0.1,
-    "BuddyDistanceNeeded": 5
+    "BuddyDistanceNeeded": 20
   },
   {
     "Number": "145",
@@ -6403,7 +6403,7 @@
     "BaseStamina": 180,
     "CaptureRate": 0.0,
     "FleeRate": 0.1,
-    "BuddyDistanceNeeded": 5
+    "BuddyDistanceNeeded": 20
   },
   {
     "Number": "146",
@@ -6439,7 +6439,7 @@
     "BaseStamina": 180,
     "CaptureRate": 0.0,
     "FleeRate": 0.1,
-    "BuddyDistanceNeeded": 5
+    "BuddyDistanceNeeded": 20
   },
   {
     "Number": "147",
@@ -6616,7 +6616,7 @@
     "BaseStamina": 212,
     "CaptureRate": 0.0,
     "FleeRate": 0.1,
-    "BuddyDistanceNeeded": 5
+    "BuddyDistanceNeeded": 20
   },
   {
     "Number": "151",
@@ -6653,7 +6653,7 @@
     "BaseStamina": 200,
     "CaptureRate": 0.0,
     "FleeRate": 0.1,
-    "BuddyDistanceNeeded": 5
+    "BuddyDistanceNeeded": 20
   },
   {
     "Number": "152",
@@ -10564,7 +10564,7 @@
     "BaseStamina": 180,
     "CaptureRate": 0.0,
     "FleeRate": 0.04,
-    "BuddyDistanceNeeded": 5
+    "BuddyDistanceNeeded": 20
   },
   {
     "Number": "244",
@@ -10598,7 +10598,7 @@
     "BaseStamina": 230,
     "CaptureRate": 0.0,
     "FleeRate": 0.04,
-    "BuddyDistanceNeeded": 5
+    "BuddyDistanceNeeded": 20
   },
   {
     "Number": "245",
@@ -10632,7 +10632,7 @@
     "BaseStamina": 200,
     "CaptureRate": 0.0,
     "FleeRate": 0.04,
-    "BuddyDistanceNeeded": 5
+    "BuddyDistanceNeeded": 20
   },
   {
     "Number": "246",
@@ -10822,7 +10822,7 @@
     "BaseStamina": 212,
     "CaptureRate": 0.0,
     "FleeRate": 0.04,
-    "BuddyDistanceNeeded": 5
+    "BuddyDistanceNeeded": 20
   },
   {
     "Number": "250",
@@ -10859,7 +10859,7 @@
     "BaseStamina": 212,
     "CaptureRate": 0.0,
     "FleeRate": 0.04,
-    "BuddyDistanceNeeded": 5
+    "BuddyDistanceNeeded": 20
   },
   {
     "Number": "251",
@@ -10896,6 +10896,6 @@
     "BaseStamina": 200,
     "CaptureRate": 0.0,
     "FleeRate": 0.04,
-    "BuddyDistanceNeeded": 5
+    "BuddyDistanceNeeded": 20
   }
 ]
