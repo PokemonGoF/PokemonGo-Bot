@@ -4,6 +4,7 @@
     "enable_social": false,
     "check_niantic_api": false,
     "solve_captcha": false,
+    "bypass_warning": false,
     "live_config_update": {
         "enabled": false,
         "tasks_only": false
