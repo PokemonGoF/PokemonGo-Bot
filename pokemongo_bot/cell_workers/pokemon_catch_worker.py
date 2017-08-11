@@ -301,6 +301,7 @@ class PokemonCatchWorker(BaseTask):
 
         catch_logic = pokemon_config.get('logic', default_logic)
 
+        current_owned = [p for p in inventory.pokemons().all() if p.name == pokemon.name]
         candies = inventory.candies().get(pokemon.pokemon_id).quantity
         threshold = pokemon_config.get('candy_threshold', -1)
         if threshold > 0 and candies >= threshold: # Got enough candies
@@ -311,6 +312,35 @@ class PokemonCatchWorker(BaseTask):
 
         if pokemon_config.get('always_catch', False):
             return True
+
+        if pokemon_config.get('only_catch_better_cp', False):
+            # If we don't have the Pokemon, this always returns true
+            if len(current_owned) == 0:
+                return True
+            # Catch only if better CP
+            current_owned.sort(key=lambda p: p.cp)
+            if pokemon.cp > current_owned[0].cp:
+                return True
+            else:
+                return False
+
+        if pokemon_config.get('only_catch_better_iv', False):
+            # If we don't have the Pokemon, this always returns true
+            if len(current_owned) == 0:
+                return True
+            # Catch only if better CP
+            current_owned.sort(key=lambda p: p.iv)
+            if current_owned[0].iv == 1:
+                # Already have a perfect Pokemon, checking CP
+                if pokemon.cp > current_owned[0].cp:
+                    return True
+                else:
+                    return False
+            # Check the IV
+            if pokemon.iv > current_owned[0].iv:
+                return True
+            else:
+                return False
 
         if pokemon_config.get('catch_above_ncp',-1) >= 0:
             if pokemon.cp_percent >= pokemon_config.get('catch_above_ncp'):

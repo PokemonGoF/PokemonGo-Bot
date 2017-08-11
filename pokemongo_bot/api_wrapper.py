@@ -121,12 +121,21 @@ class ApiWrapper(PGoApi, object):
 
         # Start login process
         try:
-            PGoApi.set_authentication(
-                self,
-                provider,
-                username=username,
-                password=password
-            )
+            if self.config.proxy:
+                PGoApi.set_authentication(
+                    self,
+                    provider,
+                    username=username,
+                    password=password,
+                    proxy_config={'http': self.config.proxy, 'https': self.config.proxy}
+                )
+            else:
+                PGoApi.set_authentication(
+                    self,
+                    provider,
+                    username=username,
+                    password=password
+                )
         except:
             raise
         try:

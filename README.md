@@ -41,28 +41,37 @@ If this is your first time making a PR or aren't sure of the standard practice o
  - [A great example from one of our own contributors](https://github.com/PokemonGoF/PokemonGo-Bot/pull/3912)
 
 ## Features
+- [x] Based on Python for botting on any operating system - Windows, macOS and Linux
+- [x] Allow custom hash service provider [NEW]
 - [x] GPS Location configuration
-- [x] Search Pokestops
-- [x] Catch Pokemon
-- [x] Determine which pokeball to use (uses Razz Berry if the catch percentage is low!)
-- [x] Exchange, evolve and catch Pokemon as per configuration
+- [x] Search & spin Pokestops / Gyms
+- [x] Diverse options for humanlike behavior from movement to overall game play
+- [x] Ability to add multiple coordinates to select between your favorite botting locations
+- [x] Support self defined path / route
+- [x] Advanced catch, evolve and transfer confuration using our PokemonOptimizer settings
+- [x] Determine which pokeball to use
+- [x] Rules to determine the use of Razz and Pinap Berries
+- [x] Exchange, evolve and catch Pokemon base on pre-configured rules
 - [x] Transfer Pokemon in bulk
 - [x] Auto switch mode (Inventory Checks - switches between catch/farming items)
 - [x] Limit the step to farm specific area for pokestops
-- [x] Limit Pokestops/catch Pokemons per day
+- [x] Limit Spin Pokestops/Catch Pokemons per day
 - [x] IV Functionality filter
+- [x] Mass rename of Pokemon with comprehenive rules
 - [x] Adjust delay between Pokemon capture & Transfer as per configuration
-- [x] Hatch eggs
-- [x] Incubate eggs
-- [x] Use candy
-- [x] Set family ID as VIP and priorice bot to catch it!
-- [x] Spin Gyms pokestops
+- [x] Telegram integration - reporting of bot's events
+- [x] Snipe Pokemon within a radius of 30Km, either through telegram command or local map (Example Rocket Map)
+- [x] Issue command through telegream - Activate Lucky egg / Incense, Snipping
+- [x] Support dropping of Lure Module
+- [x] Incubate eggs & Buddy walk
+- [x] Bot is able to identify pokemon in their family
+- [x] Set family ID as VIP and prioritize bot to catch it!
 - [x] Transfer red slashed pokemons
 - [x] Set shiny pokemons as VIP
-- [x] Deploy a pokemon in Gym if slot available
+- [x] Deploy a pokemon in Gym if there are slots available
 - [x] Docker support
 - [x] Auto heal Pokemons
-- [x] Information about PGoAPI bot version is rather Bossland endpoint, expiration key date and RPM used
+- [x] Displaying of Hash expiration date and RPM information
 
 
 ## Credits
