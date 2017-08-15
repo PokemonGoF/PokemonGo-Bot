@@ -33,6 +33,7 @@ ITEM_GREATBALL = 2
 ITEM_ULTRABALL = 3
 ITEM_RAZZBERRY = 701
 ITEM_PINAPBERRY = 705
+ITEM_GOLDEN_RAZZ_BERRY = 706
 
 DEFAULT_UNSEEN_AS_VIP = True
 
@@ -76,6 +77,9 @@ class PokemonCatchWorker(BaseTask):
         #Config
         self.min_ultraball_to_keep = self.config.get('min_ultraball_to_keep', 10)
         self.berry_threshold = self.config.get('berry_threshold', 0.35)
+        self.golden_razz_threshold = self.config.get('golden_razz_threshold', 0.1)
+        self.golden_razz_to_keep = self.config.get('golden_razz_to_keep', 30)
+        self.use_golden_razz_on_vip_only = self.config.get('use_golden_razz_on_vip_only', True)
         self.vip_berry_threshold = self.config.get('vip_berry_threshold', 0.9)
         self.treat_unseen_as_vip = self.config.get('treat_unseen_as_vip', DEFAULT_UNSEEN_AS_VIP)
         self.daily_catch_limit = self.config.get('daily_catch_limit', 500)
@@ -571,10 +575,22 @@ class PokemonCatchWorker(BaseTask):
             berries_to_spare = berry_count > 0 if is_vip else berry_count > num_next_balls + 30
 
             changed_ball = False
+            
+            # Golden Razz: Use golden razz
+            if (self.use_golden_razz_on_vip_only==is_vip) or (self.use_golden_razz_on_vip_only == False):
+                # Golden Razz: Use golden razz when catch rate is low, keep some for raid
+                if (self.inventory.get(ITEM_GOLDEN_RAZZ_BERRY).count > self.golden_razz_to_keep and catch_rate_by_ball[current_ball] < self.golden_razz_threshold):
+                    berry_id = ITEM_GOLDEN_RAZZ_BERRY
+                    berry_count = self.inventory.get(berry_id).count
+                    new_catch_rate_by_ball = self._use_berry(berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball)
+                    self.inventory.get(berry_id).remove(1)
+                    berry_count -= 1
+                    used_berry = True
 
             # SMART_PINAP: Use pinap when high catch rate, but spare some for VIP with high catch rate
             if self.smart_pinap_enabled and ( (not is_vip and self.inventory.get(ITEM_PINAPBERRY).count > self.smart_pinap_to_keep and catch_rate_by_ball[current_ball] > self.smart_pinap_threshold) or (is_vip and self.inventory.get(ITEM_PINAPBERRY).count > 0 and catch_rate_by_ball[current_ball] >= self.vip_berry_threshold) ) and not used_berry:
                 berry_id = ITEM_PINAPBERRY
+                berry_count = self.inventory.get(berry_id).count
                 new_catch_rate_by_ball = self._use_berry(berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball)
                 self.inventory.get(berry_id).remove(1)
                 berry_count -= 1
