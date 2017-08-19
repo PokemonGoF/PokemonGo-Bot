@@ -29,6 +29,7 @@ from __future__ import unicode_literals
 import argparse
 import codecs
 import json
+import urllib2
 import logging
 import os
 import six
@@ -101,6 +102,7 @@ def main():
 
     def initialize(config):
         from pokemongo_bot.datastore import Datastore
+        killswitch_url = 'https://raw.githubusercontent.com/PokemonGoF/PokemonGo-Bot/dev/killswitch.json'
         
         # Allow user to by pass warning without question
         if config.bypass_warning:
@@ -108,6 +110,16 @@ def main():
         else:
             bypass_warning = False
             
+        if config.killswitch:
+            response = urllib2.urlopen(killswitch_url)
+            killswitch_data = json.load(response)
+            response.close()
+
+            if killswitch_data['killswitch']:
+                print "\033[91mKill Switch Activated By: \033[0m" + format(killswitch_data['activated_by'])
+                print "\033[91mMessage: \033[0m\n" + format(killswitch_data['message']) + "\n\n\n"
+                sys.exit(1)
+    
         try:
             import pkg_resources
             pgoapi_version = pkg_resources.get_distribution("pgoapi").version
@@ -460,6 +472,15 @@ def init_config():
         help="Allow bypass to warning",
         type=bool,
         default=False
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-ksw",
+        long_flag="--killswitch",
+        help="Do you want to enable killswitch",
+        type=bool,
+        default=True
     )
     add_config(
         parser,
