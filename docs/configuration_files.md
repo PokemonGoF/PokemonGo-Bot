@@ -75,8 +75,8 @@ Document the configuration options of PokemonGo-Bot.
 
 1. copy `auth.json.example` to `auth.json`.
 2. Edit `auth.json` and replace `auth_service`, `username`, `password`, `location` and `gmapkey` with your parameters (other keys are optional)
-3. copy `config.json.example` to `config.json`.=
-3. Simply launch the script with : `./run.sh` or './run.sh ./configs/your_auth_file.json ./configs/your_base_config_file.json'
+3. copy `config.json.example` to `config.json`.
+3. Simply launch the script with : `./run.sh` or `./run.sh ./configs/your_auth_file.json ./configs/your_base_config_file.json`
 
 ### About locale\_by\_location
 [[back to top](#table-of-contents)]
@@ -430,6 +430,19 @@ For example:
 ```
 will stop catching Pidgey entirely.
 
+You can set a rule to only catch better IV or CP Pokemon by setting the only_catch_better_cp or only_catch_better_iv flags.
+
+
+For example:
+```
+"Pidgey": {
+    "only_catch_better_iv": true
+},
+"Gloom": {
+    "only_catch_better_cp": true
+}
+```
+
 ## Release Configuration
 [[back to top](#table-of-contents)]
 
@@ -664,7 +677,7 @@ Key | Info
 - `"{iv_pct}_{iv_ads}"` => `091_15/11/15`
 - `""` -> `Mankey`
 - `"{attack_code}{attack_pct1}{defense_pct1}{ivcp_pct1}{name}"` => `Lh474Golbat`
-![sample](https://cloud.githubusercontent.com/assets/8896778/17285954/0fa44a88-577b-11e6-8204-b1302f4294bd.png)
+- ![sample](https://cloud.githubusercontent.com/assets/8896778/17285954/0fa44a88-577b-11e6-8204-b1302f4294bd.png)
 
 ### Sample configuration
 [[back to top](#table-of-contents)]
@@ -693,33 +706,51 @@ These settings determine how the bot will catch pokemon. `catch_simulate` simula
 The default settings are 'safe' settings intended to simulate human and app behaviour.
 
 ```
-"catch_visible_pokemon": true,
-"catch_lured_pokemon": true,
-"min_ultraball_to_keep": 5,
-"berry_threshold": 0.35,
-"use_pinap_on_vip": false,
-"pinap_on_level_below": 0,
-"pinap_operator": "or",
-"pinap_ignore_threshold": false,
-"vip_berry_threshold": 0.9,
-"catch_throw_parameters": {
-  "excellent_rate": 0.1,
-  "great_rate": 0.5,
-  "nice_rate": 0.3,
-  "normal_rate": 0.1,
-  "spin_success_rate" : 0.6,
-  "hit_rate": 0.75
-},
-"catch_simulation": {
-  "flee_count": 3,
-  "flee_duration": 2,
-  "catch_wait_min": 2,
-  "catch_wait_max": 6,
-  "berry_wait_min": 2,
-  "berry_wait_max": 3,
-  "changeball_wait_min": 2,
-  "changeball_wait_max": 3
-}
+				"enabled": true,
+				"catch_visible_pokemon": true,
+				"catch_lured_pokemon": true,
+				"catch_incensed_pokemon": true,
+				"min_ultraball_to_keep": 5,
+				"berry_threshold": 0.35,
+				"golden_razz_threshold": 0.2,
+				"golden_razz_to_keep": 30,
+				"use_golden_razz_on_vip_only": true,
+				"use_pinap_on_vip": false,
+				"pinap_on_level_below": 0,
+				"pinap_operator": "or",
+				"pinap_ignore_threshold": false,
+				"smart_pinap_enabled": true,
+				"smart_pinap_threshold": 0.85,
+				"smart_pinap_to_keep": 3,
+				"vip_berry_threshold": 0.9,
+				"treat_unseen_as_vip": true,
+				"daily_catch_limit": 500,
+				"exit_on_limit_reached": false,
+				"vanish_settings": {
+					"consecutive_vanish_limit": 10,
+					"rest_duration_min": "02:00:00",
+					"rest_duration_max": "04:00:00"
+				},
+				"catch_throw_parameters": {
+					"excellent_rate": 0.1,
+					"great_rate": 0.5,
+					"nice_rate": 0.3,
+					"normal_rate": 0.1,
+					"spin_success_rate": 0.6,
+					"hit_rate": 0.75
+				},
+				"catch_simulation": {
+					"flee_count": 3,
+					"flee_duration": 2,
+					"catch_wait_min": 3,
+					"catch_wait_max": 6,
+					"berry_wait_min": 3,
+					"berry_wait_max": 5,
+					"changeball_wait_min": 3,
+					"changeball_wait_max": 5,
+					"newtodex_wait_min": 20,
+					"newtodex_wait_max": 30
+				}
 ```
 
 ### Settings Description
@@ -730,6 +761,9 @@ Setting | Description
 `min_ultraball_to_keep` | Allows the bot to use ultraballs on non-VIP pokemon as long as number of ultraballs is above this setting
 `berry_threshold` | The ideal catch rate threshold before using a razz berry on normal pokemon (higher threshold means using razz berries more frequently, for example if we raise `berry_threshold` to 0.5, any pokemon that has an initial catch rate between 0 to 0.5 will initiate a berry throw)
 `use_pinap_on_vip` | Use pinap berry instead of razz berry on on VIP pokemon. The bot will use razz berry if pinap berry has run out
+`golden_razz_threshold` | The ideal catch rate threshold before using a golden razz berry on normal pokemon (higher threshold means using golden razz berries more frequently, for example if we raise `berry_threshold` to 0.5, any pokemon that has an initial catch rate between 0 to 0.5 will initiate a berry throw) If do not want the bot to use golden razz berries at all, set it to 0.
+`use_golden_razz_on_vip_only` | Use golden razz berries instead of razz berry on on VIP pokemon.
+`golden_razz_to_keep` | Number of golden razz berries to keep.
 `pinap_on_level_below` | Set at what level (and below) of the pokemon should Pinap berry br use on. Set to 0 to disable use of pinap berry
 `pinap_operator` | Set if Pinap berry going to be use together with "use_pinap_on_vip" or without (Operator "or", "and")
 `pinap_ignore_threshold` | Set if bot is going to ignore catch rate threshold when using pinap berry
