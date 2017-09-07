@@ -29,6 +29,7 @@ from __future__ import unicode_literals
 import argparse
 import codecs
 import json
+import urllib2
 import logging
 import os
 import six
@@ -63,39 +64,6 @@ except ImportError:
 if sys.version_info >= (2, 7, 9):
     ssl._create_default_https_context = ssl._create_unverified_context
 
-def yes_no( question ):
-    # raw_input returns the empty string for "enter"
-    yes = set(['yes','y', 'ye', ''])
-    no = set(['no','n'])
-    print question
-    choice = raw_input().lower()
-    if choice in yes:
-       return True
-    elif choice in no:
-       return False
-    else:
-       print "Please respond with 'yes' or 'no'"
-       return None
-    
-try:
-    import pkg_resources
-    pgoapi_version = pkg_resources.get_distribution("pgoapi").version
-    if pgoapi_version != '2.13.0':
-        yn=None
-        while yn==None:
-            yn = yes_no("Warning: A new pokemon API version is found. Do you want to keep the bot running on your own risk of loosing your account? Y/N")
-        if not yn:
-            sys.exit(1)
-
-except pkg_resources.DistributionNotFound:
-    print 'Seems you forgot to install python modules.'
-    print 'Run: `pip install -r requirements.txt`'
-    sys.exit(1)
-except ImportError as e:
-    print e
-    pass
-
-
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(name)10s] [%(levelname)s] %(message)s')
@@ -117,9 +85,63 @@ def main():
     def initialize_task(bot, config):
         tree = TreeConfigBuilder(bot, config.raw_tasks).build()
         bot.workers = tree
+    
+    def yes_no(question):
+        # raw_input returns the empty string for "enter"
+        yes = set(['yes','y', 'ye', ''])
+        no = set(['no','n'])
+        print question
+        choice = raw_input().lower()
+        if choice in yes:
+            return True
+        elif choice in no:
+            return False
+        else:
+            print "Please respond with 'yes' or 'no'"
+            return None
 
     def initialize(config):
         from pokemongo_bot.datastore import Datastore
+        killswitch_url = 'https://raw.githubusercontent.com/PokemonGoF/PokemonGo-Bot/dev/killswitch.json'
+        
+        # Allow user to by pass warning without question
+        if config.bypass_warning:
+            bypass_warning = config.bypass_warning
+        else:
+            bypass_warning = False
+            
+        if config.killswitch:
+            response = urllib2.urlopen(killswitch_url)
+            killswitch_data = json.load(response)
+            response.close()
+
+            if killswitch_data['killswitch']:
+                print "\033[91mKill Switch Activated By: \033[0m" + format(killswitch_data['activated_by'])
+                print "\033[91mMessage: \033[0m\n" + format(killswitch_data['message']) + "\n\n\n"
+                sys.exit(1)
+    
+        try:
+            import pkg_resources
+            pgoapi_version = pkg_resources.get_distribution("pgoapi").version
+            if pgoapi_version != '2.13.0':
+                yn=None
+                while yn==None:
+                    if not bypass_warning:
+                        yn = yes_no("Warning: A new pokemon API version is found.\n Run following command to get latest update: `pip install -r requirements.txt --upgrade` \n Do you want to contine? Y/N")
+                    else:
+                        print "Warning: A new pokemon API version is found.\n Run following command to get latest update: `pip install -r requirements.txt --upgrade` \n You have chose to bypass warning, bot will continue running."
+                        yn = True
+                        time.sleep(5)
+                if not yn:
+                    sys.exit(1)
+
+        except pkg_resources.DistributionNotFound:
+            print 'Seems you forgot to install python modules.'
+            print 'Run: `pip install -r requirements.txt`'
+            sys.exit(1)
+        except ImportError as e:
+            print e
+            pass
 
         ds = Datastore(conn_str='/data/{}.db'.format(config.username))
         for directory in ['pokemongo_bot', 'pokemongo_bot/cell_workers']:
@@ -440,6 +462,32 @@ def init_config():
         short_flag="-hp",
         long_flag="--hashendpoint",
         help="hashendpoint",
+        default=None
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-bp",
+        long_flag="--bypass_warning",
+        help="Allow bypass to warning",
+        type=bool,
+        default=False
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-ksw",
+        long_flag="--killswitch",
+        help="Do you want to enable killswitch",
+        type=bool,
+        default=True
+    )
+    add_config(
+        parser,
+        load,
+        short_flag="-pr",
+        long_flag="--proxy",
+        help="Set proxy to use when connecting",
         default=None
     )
     add_config(

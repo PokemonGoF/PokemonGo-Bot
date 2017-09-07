@@ -33,6 +33,7 @@ ITEM_GREATBALL = 2
 ITEM_ULTRABALL = 3
 ITEM_RAZZBERRY = 701
 ITEM_PINAPBERRY = 705
+ITEM_GOLDEN_RAZZ_BERRY = 706
 
 DEFAULT_UNSEEN_AS_VIP = True
 
@@ -76,6 +77,9 @@ class PokemonCatchWorker(BaseTask):
         #Config
         self.min_ultraball_to_keep = self.config.get('min_ultraball_to_keep', 10)
         self.berry_threshold = self.config.get('berry_threshold', 0.35)
+        self.golden_razz_threshold = self.config.get('golden_razz_threshold', 0.1)
+        self.golden_razz_to_keep = self.config.get('golden_razz_to_keep', 30)
+        self.use_golden_razz_on_vip_only = self.config.get('use_golden_razz_on_vip_only', True)
         self.vip_berry_threshold = self.config.get('vip_berry_threshold', 0.9)
         self.treat_unseen_as_vip = self.config.get('treat_unseen_as_vip', DEFAULT_UNSEEN_AS_VIP)
         self.daily_catch_limit = self.config.get('daily_catch_limit', 500)
@@ -301,6 +305,7 @@ class PokemonCatchWorker(BaseTask):
 
         catch_logic = pokemon_config.get('logic', default_logic)
 
+        current_owned = [p for p in inventory.pokemons().all() if p.name == pokemon.name]
         candies = inventory.candies().get(pokemon.pokemon_id).quantity
         threshold = pokemon_config.get('candy_threshold', -1)
         if threshold > 0 and candies >= threshold: # Got enough candies
@@ -311,6 +316,35 @@ class PokemonCatchWorker(BaseTask):
 
         if pokemon_config.get('always_catch', False):
             return True
+
+        if pokemon_config.get('only_catch_better_cp', False):
+            # If we don't have the Pokemon, this always returns true
+            if len(current_owned) == 0:
+                return True
+            # Catch only if better CP
+            current_owned.sort(key=lambda p: p.cp)
+            if pokemon.cp > current_owned[0].cp:
+                return True
+            else:
+                return False
+
+        if pokemon_config.get('only_catch_better_iv', False):
+            # If we don't have the Pokemon, this always returns true
+            if len(current_owned) == 0:
+                return True
+            # Catch only if better CP
+            current_owned.sort(key=lambda p: p.iv)
+            if current_owned[0].iv == 1:
+                # Already have a perfect Pokemon, checking CP
+                if pokemon.cp > current_owned[0].cp:
+                    return True
+                else:
+                    return False
+            # Check the IV
+            if pokemon.iv > current_owned[0].iv:
+                return True
+            else:
+                return False
 
         if pokemon_config.get('catch_above_ncp',-1) >= 0:
             if pokemon.cp_percent >= pokemon_config.get('catch_above_ncp'):
@@ -541,10 +575,22 @@ class PokemonCatchWorker(BaseTask):
             berries_to_spare = berry_count > 0 if is_vip else berry_count > num_next_balls + 30
 
             changed_ball = False
+            
+            # Golden Razz: Use golden razz
+            if (self.use_golden_razz_on_vip_only==is_vip) or (self.use_golden_razz_on_vip_only == False):
+                # Golden Razz: Use golden razz when catch rate is low, keep some for raid
+                if (self.inventory.get(ITEM_GOLDEN_RAZZ_BERRY).count > self.golden_razz_to_keep and catch_rate_by_ball[current_ball] < self.golden_razz_threshold):
+                    berry_id = ITEM_GOLDEN_RAZZ_BERRY
+                    berry_count = self.inventory.get(berry_id).count
+                    new_catch_rate_by_ball = self._use_berry(berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball)
+                    self.inventory.get(berry_id).remove(1)
+                    berry_count -= 1
+                    used_berry = True
 
             # SMART_PINAP: Use pinap when high catch rate, but spare some for VIP with high catch rate
             if self.smart_pinap_enabled and ( (not is_vip and self.inventory.get(ITEM_PINAPBERRY).count > self.smart_pinap_to_keep and catch_rate_by_ball[current_ball] > self.smart_pinap_threshold) or (is_vip and self.inventory.get(ITEM_PINAPBERRY).count > 0 and catch_rate_by_ball[current_ball] >= self.vip_berry_threshold) ) and not used_berry:
                 berry_id = ITEM_PINAPBERRY
+                berry_count = self.inventory.get(berry_id).count
                 new_catch_rate_by_ball = self._use_berry(berry_id, berry_count, encounter_id, catch_rate_by_ball, current_ball)
                 self.inventory.get(berry_id).remove(1)
                 berry_count -= 1

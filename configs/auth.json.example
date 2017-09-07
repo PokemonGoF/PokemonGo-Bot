@@ -14,5 +14,6 @@
     "hashkey" : "YOUR_PURCHASED_HASH_KEY",
     "telegram_token": "",
     "discord_token": "",
-    "2captcha_token": ""
+    "2captcha_token": "",
+    "proxy": ""
 }

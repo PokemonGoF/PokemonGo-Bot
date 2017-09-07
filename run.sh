@@ -48,11 +48,11 @@ fi
 if [ ! -f "$config" ]; then
   echo "There's no config file. Please use ./setup.sh -c to create one."
 fi
-while true
-do
+#while true
+#do
   python pokecli.py -af $auth -cf $config
   echo `date`" Pokebot "$*" Stopped."
-  read -p "Press any button or wait 20 seconds to continue.
+  read -p "Press any button or wait 20 seconds to exit.
   " -r -s -n1 -t 20
-done
+  #done
 exit 0

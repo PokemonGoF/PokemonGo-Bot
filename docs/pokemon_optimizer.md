@@ -341,13 +341,15 @@ This is the duration of the evolution animation and time to wait after performin
 Let you choose if you want the Pokemon Optimizer to use your candies to evolve low quality Pokemon.
 
 At `false`, low quality Pokemon get transferred normally following your rules.
-At `true`, this option is restricted to the following list of 18 Pokemon:
+At `true`, this option is restricted to the following list of 27 Pokemons:
 
 |     |     |     |     |     |     |
 |:---:|:---:|:---:|:---:|:---:|:---:|
 | `#010`<br>`Caterpie`  | `#013`<br>`Weedle` | `#016`<br>`Pidgey`  | `#019`<br>`Rattata` | `#029`<br>`Nidoran F` | `#032`<br>`Nidoran M` |
 | `#041`<br>`Zubat`     | `#043`<br>`Oddish` | `#046`<br>`Paras`   | `#048`<br>`Venonat` | `#054`<br>`Psyduck`   | `#072`<br>`Tentacool` |
 | `#081`<br>`Magnemite` | `#098`<br>`Krabby` | `#100`<br>`Voltorb` | `#118`<br>`Goldeen` | `#120`<br>`Staryu`    | `#133`<br>`Eevee`     |
+| `#161`<br>`Sentret`   | `#220`<br>`Swinub` | `#163`<br>`Hoothoot`| `#165`<br>`Ledyba`  | `#177`<br>`Natu`      | `#167`<br>`Spinarak`  |
+| `#194`<br>`Wooper`    | `#183`<br>`Marill` | `#223`<br>`Remoraid`|                     |                       |                       |
 
 You can also define `evolve_for_xp` as a list of Pokemon names or Pokemon [`groups`](#groups).
 <br>For example: `"evolve_for_xp": ["Caterpie", "Weedle", "Pidgey"]`
