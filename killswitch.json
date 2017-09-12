@@ -1,0 +1,5 @@
+{
+    "killswitch": true,
+    "activated_by": "MerlionRock",
+    "message": "Current API is unsafe.\nPlease visit our Discord Channel (Announcement) for more information.\nTo overwrite killswitch, add \"killswitch\": \"false\" to config.json"
+}

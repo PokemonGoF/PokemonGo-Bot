@@ -4,6 +4,8 @@
 	"HashKeyFile": "MultiBotConfigHashkey.txt",
 	"UseProxy": false,
 	"ProxyFile": "MultiBotConfigProxy.txt",
+	"AccountRunOrder": "set to true to run accounts in random order",
+	"AccountRunOrder": true,
 	"AccountsFile": "MultiBotConfigAccounts.txt",
 	"AuthJsonFile": "auth.json",
 	"ConfigJsonFile": "config.json",

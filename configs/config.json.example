@@ -2,6 +2,7 @@
 	"websocket_server": false,
 	"heartbeat_threshold": 10,
 	"enable_social": false,
+	"killswitch": true,
 	"check_niantic_api": false,
 	"solve_captcha": false,
 	"bypass_warning": false,
