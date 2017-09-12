@@ -119,11 +119,23 @@ def main():
                 print "\033[91mKill Switch Activated By: \033[0m" + format(killswitch_data['activated_by'])
                 print "\033[91mMessage: \033[0m\n" + format(killswitch_data['message']) + "\n\n\n"
                 sys.exit(1)
-    
+            
+            if killswitch_data['show_warning']:
+                yn=None
+                while yn==None:
+                    if killswitch_data['pause_bot']:
+                        yn = yes_no("\033[91mMessage: " + format(killswitch_data['message'])+ "\033[0m\nDo you wish to continue? Y/N")
+                    else:
+                        print "\033[91mMessage: " + format(killswitch_data['message']) + "\033[0m\n"
+                        yn = True
+                        time.sleep(5)
+                if not yn:
+                    sys.exit(1)
+
         try:
             import pkg_resources
             pgoapi_version = pkg_resources.get_distribution("pgoapi").version
-            if pgoapi_version != '2.13.0':
+            if pgoapi_version != '2.14.0':
                 yn=None
                 while yn==None:
                     if not bypass_warning:

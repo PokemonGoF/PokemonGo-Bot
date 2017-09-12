@@ -22,7 +22,7 @@ then
 fi
 git fetch -a
 installed=(`pip list 2>/dev/null |sed -e 's/ //g' -e 's/(/:/' -e 's/)//' -e 's/[-_]//g' | awk '{print tolower($0)}'`)
-required=(`cat requirements.txt | sed -e 's/.*pgoapi$/pgoapi==2.13.0/' -e 's/[-_]//g' -e 's/==\(.*\)/:\1/' | awk '{print tolower($0)}'`)
+required=(`cat requirements.txt | sed -e 's/.*pgoapi$/pgoapi==2.14.0/' -e 's/[-_]//g' -e 's/==\(.*\)/:\1/' | awk '{print tolower($0)}'`)
 for package in ${required[@]}
 do
   if [[ ! (${installed[*]} =~ $package) ]];

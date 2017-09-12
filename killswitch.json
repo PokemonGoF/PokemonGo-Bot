@@ -1,5 +1,7 @@
 {
-    "killswitch": true,
+    "killswitch": false,
+	"show_warning": true,
+	"pause_bot": true,
     "activated_by": "MerlionRock",
-    "message": "Current API is unsafe.\nPlease visit our Discord Channel (Announcement) for more information.\nTo overwrite killswitch, add \"killswitch\": \"false\" to config.json"
+    "message": "Bot is now compatible with 0.73.1 API. There are noted issues with the current API and subsequent bans and warnings may very well be issued and you take the risk into your own hands if you follow through."
 }
