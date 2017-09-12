@@ -123,7 +123,7 @@ def main():
         try:
             import pkg_resources
             pgoapi_version = pkg_resources.get_distribution("pgoapi").version
-            if pgoapi_version != '2.13.0':
+            if pgoapi_version != '2.14.0':
                 yn=None
                 while yn==None:
                     if not bypass_warning:
