@@ -4,12 +4,16 @@ import time
 
 import requests
 import os
+import sys
 
 from pokemongo_bot.event_manager import EventHandler
 from pokemongo_bot.base_task import BaseTask
 from sys import platform as _platform
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 
 SITE_KEY = '6LeeTScTAAAAADqvhqVMhPpr_vB9D364Ia-1dSgK'
 

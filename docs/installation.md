@@ -3,7 +3,7 @@
 - [Linux or Mac Automatic Installation](#linuxmac)
 - [Windows Automatic Installation](#windows)
 - [Docker Automatic Installation](#docker)
-
+- [Chrome Driver](#chromedriver)
 
 # Linux/Mac
 ### Requirements (click each one for install guide)
@@ -201,3 +201,9 @@ docker inspect --format='{{.Created}} {{.ContainerConfig.Labels}}' container_tag
 ```
 
 `container_tag_or_id` being the final tag_id of container or the id of the intermediary layer at which the docker build failed.
+
+# Chrome Driver
+
+Chrome driver is needed for manual solving of captcha. For more information and download of Chrome Driver, please visit [Chrome Driver](https://sites.google.com/a/chromium.org/chromedriver/)
+
+Chrome driver must be placed in root dir of the bot.

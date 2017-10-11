@@ -151,3 +151,8 @@ git pull
 git submodule update --init --recursive
 ```
 
+# Chrome Driver
+
+Chrome driver is needed for manual solving of captcha. For more information and download of Chrome Driver, please visit [Chrome Driver](https://sites.google.com/a/chromium.org/chromedriver/)
+
+Chrome driver must be placed in root dir of the bot.
