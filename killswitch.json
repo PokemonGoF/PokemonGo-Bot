@@ -3,5 +3,5 @@
 	"show_warning": true,
 	"pause_bot": true,
     "activated_by": "MerlionRock",
-    "message": "Bot is now compatible with 0.73.1 API. There are noted issues with the current API and subsequent bans and warnings may very well be issued and you take the risk into your own hands if you follow through."
+    "message": "Bot is now compatible with 0.75.1 API. There are noted issues with the current API and subsequent bans and warnings may very well be issued and you take the risk into your own hands if you follow through."
 }
