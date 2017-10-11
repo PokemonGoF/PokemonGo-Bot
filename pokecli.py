@@ -123,7 +123,7 @@ def main():
             if killswitch_data['show_warning']:
                 yn=None
                 while yn==None:
-                    if killswitch_data['pause_bot']:
+                    if killswitch_data['pause_bot'] or not bypass_warning:
                         yn = yes_no("\033[91mMessage: " + format(killswitch_data['message'])+ "\033[0m\nDo you wish to continue? Y/N")
                     else:
                         print "\033[91mMessage: " + format(killswitch_data['message']) + "\033[0m\n"
