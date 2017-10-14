@@ -257,14 +257,14 @@ class ThreadClass(threading.Thread):
                 if MultiBotConfig[u'UseProxy']:
                     proxy2 = Manager.getProxy()
                     if platform.system() == "Linux":
-                        # os.system('export HTTP_PROXY="http://' + proxy + '"; export HTTPS_PROXY="https://' + proxy + '"; ' + StartCmd)
-                        pass
+                        os.system('export HTTP_PROXY="http://' + proxy + '"; export HTTPS_PROXY="https://' + proxy + '"; ' + StartCmd)
+                        # pass
                     if platform.system() == "Windows":
-                        pass
-                        # os.system('set HTTP_PROXY="http://' + proxy + '" & set HTTPS_PROXY="https://' + proxy + '" & ' + StartCmd)
+                        # pass
+                        os.system('set HTTP_PROXY="http://' + proxy + '" & set HTTPS_PROXY="https://' + proxy + '" & ' + StartCmd)
                 else:
-                    pass
-                    # os.system(StartCmd)
+                    # pass
+                    os.system(StartCmd)
             except Exception as e:
                 Lprint((traceback()))
                 time.sleep(60)
