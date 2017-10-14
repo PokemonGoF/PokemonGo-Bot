@@ -266,7 +266,7 @@ class ThreadClass(threading.Thread):
                     # pass
                     os.system(StartCmd)
             except Exception as e:
-                Lprint((traceback()))
+                Lprint(e)
                 time.sleep(60)
             except KeyboardInterrupt:
                 stop()
