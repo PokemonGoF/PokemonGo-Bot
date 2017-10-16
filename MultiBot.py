@@ -116,8 +116,6 @@ class Manager:
                 pass
 
     def getProxy(self):
-        # global proxyCur
-        # global proxy
         while True:
             try:
                 proxy = self.proxyAll[0]
@@ -255,7 +253,7 @@ class ThreadClass(threading.Thread):
                 StartCmd = "python pokecli.py -af configs/temp/auth-{0}.json -cf configs/temp/config-{0}.json --walker_limit_output {1}".format(
                     self.CurThread, MultiBotConfig[u'walker_limit_output'])
                 if MultiBotConfig[u'UseProxy']:
-                    proxy2 = Manager.getProxy()
+                    proxy = Manager.getProxy()
                     if platform.system() == "Linux":
                         os.system('export HTTP_PROXY="http://' + proxy + '"; export HTTPS_PROXY="https://' + proxy + '"; ' + StartCmd)
                         # pass
