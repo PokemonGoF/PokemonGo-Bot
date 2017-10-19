@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from __future__ import absolute_import
@@ -15,6 +16,7 @@ import threading
 import shelve
 import uuid
 import urllib2
+import calendar
 
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
@@ -1582,7 +1584,9 @@ class PokemonGoBot(object):
                 request.get_inbox(is_history=True, is_reverse=False)
             else:
                 request.get_inbox(is_history=False,is_reverse=True,not_before_ms=self.get_inbox_time)
-            self.get_inbox_time = int(round(time.time() * 1000))
+            # self.get_inbox_time = int(round(time.time() * 1000))
+            #more windows friendly as this is a python method and not OS built in.
+            self.get_inbox_time =calendar.timegm(datetime.datetime.now().timetuple())*1000
             responses = None
             try:
                 responses = request.call()
