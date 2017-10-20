@@ -34,7 +34,7 @@ class InventoryTest(unittest.TestCase):
             name = pokemon.name
             pokemon_id = pokemon.id
             self.assertEqual(pokemon.id, idx+1)
-            assert (1 <= pokemon_id <= 251)
+            assert (1 <= pokemon_id <= 386)
 
             self.assertGreaterEqual(len(pokemon.movesets), 1)
             self.assertIsInstance(pokemon.movesets[0], Moveset)
