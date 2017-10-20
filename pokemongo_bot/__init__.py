@@ -15,6 +15,7 @@ import threading
 import shelve
 import uuid
 import urllib2
+import calendar
 
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
@@ -1584,7 +1585,9 @@ class PokemonGoBot(object):
             else:
                 request.get_inbox(is_history=False,is_reverse=False,not_before_ms=self.get_inbox_time)
         
-            self.get_inbox_time = int(datetime.datetime.now().strftime("%s")) * 1000 
+            # self.get_inbox_time = int(datetime.datetime.now().strftime("%s")) * 1000
+            # More Windows friendly
+            self.get_inbox_time = calendar.timegm(datetime.datetime.now().timetuple())*1000 
             
             responses = None
             try:
