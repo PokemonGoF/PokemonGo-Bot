@@ -38,7 +38,7 @@ class InventoryTest(unittest.TestCase):
 
             self.assertGreaterEqual(len(pokemon.movesets), 1)
             self.assertIsInstance(pokemon.movesets[0], Moveset)
-            assert 200 <= pokemon.max_cp <= 4761
+            assert 200 <= pokemon.max_cp <= 5441
             assert 1 <= len(pokemon.types) <= 2
             assert 1 <= pokemon.base_attack <= 800
             assert 20 <= pokemon.base_defense <= 500
