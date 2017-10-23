@@ -15,6 +15,7 @@ import threading
 import shelve
 import uuid
 import urllib2
+import calendar
 
 from geopy.geocoders import GoogleV3
 from pgoapi import PGoApi
@@ -176,7 +177,7 @@ class PokemonGoBot(object):
             self.config.client_id = str(uuid.uuid4())
             saved_info[key] = self.config.client_id
         saved_info.close()
-
+    
     def start(self, bot):
         self._setup_event_system(bot)
         self.sleep_schedule = SleepSchedule(self, self.config.sleep_schedule) if self.config.sleep_schedule else None
@@ -1265,7 +1266,8 @@ class PokemonGoBot(object):
 
         self.logger.info(
             'LuckyEgg: ' + str(items_inventory.get(301).count) +
-            ' | Incubator: ' + str(items_inventory.get(902).count))
+            ' | Incubator Basic: ' + str(items_inventory.get(902).count) +
+            ' | Incubator Super: ' + str(items_inventory.get(903).count))
 
         self.logger.info(
             'Potion: ' + str(items_inventory.get(101).count) +
@@ -1579,10 +1581,14 @@ class PokemonGoBot(object):
             request.get_player()
             request.check_awarded_badges()
             if self.get_inbox_time==0:
-                request.get_inbox(is_history=True, is_reverse=False)
+                request.get_inbox(is_history=True,is_reverse=False)
             else:
-                request.get_inbox(is_history=False,is_reverse=True,not_before_ms=self.get_inbox_time)
-            self.get_inbox_time = int(round(time.time() * 1000))
+                request.get_inbox(is_history=False,is_reverse=False,not_before_ms=self.get_inbox_time)
+        
+            # self.get_inbox_time = int(datetime.datetime.now().strftime("%s")) * 1000
+            # More Windows friendly
+            self.get_inbox_time = calendar.timegm(datetime.datetime.now().timetuple())*1000 
+            
             responses = None
             try:
                 responses = request.call()
@@ -1613,60 +1619,58 @@ class PokemonGoBot(object):
                     for notification in self._inbox['notifications']:
                         notification_date = datetime.datetime.fromtimestamp(int(notification['create_timestamp_ms']) / 1e3)
                                                 
-                        if 2 not in notification['labels']:
-                            continue
+                        if 2 in notification['labels']:
+                            if notification['category'] == 'pokemon_hungry':
+                                gym_name = pokemon = 'Unknown'
+                                for variable in notification['variables']:
+                                    if variable['name'] == 'GYM_NAME':
+                                        gym_name = variable['literal']
+                                    if variable['name'] == 'POKEDEX_ENTRY_NUMBER':
+                                        pokemon_int = int(variable['key'])
+                                        pokemon = Pokemons.name_for(pokemon_int)
+                                    if variable['name'] == 'POKEMON_NICKNAME':
+                                        pokemon = variable['literal']
 
-                        if notification['category'] == 'pokemon_hungry':
-                            gym_name = pokemon = 'Unknown'
-                            for variable in notification['variables']:
-                                if variable['name'] == 'GYM_NAME':
-                                    gym_name = variable['literal']
-                                if variable['name'] == 'POKEDEX_ENTRY_NUMBER':
-                                    pokemon_int = int(variable['key'])
-                                    pokemon = Pokemons.name_for(pokemon_int)
-                                if variable['name'] == 'POKEMON_NICKNAME':
-                                    pokemon = variable['literal']
+                                self.event_manager.emit(
+                                    'pokemon_hungy',
+                                    sender=self,
+                                    level='info',
+                                    formatted='{pokemon} in the Gym {gym_name} is hungy and want a candy! {notification_date}',
+                                    data={
+                                        'pokemon': pokemon,
+                                        'gym_name': gym_name,
+                                        'notification_date': notification_date.strftime('%Y-%m-%d %H:%M:%S.%f')
+                                    }
+                                )
 
-                            self.event_manager.emit(
-                                'pokemon_hungy',
-                                sender=self,
-                                level='info',
-                                formatted='{pokemon} in the Gym {gym_name} is hungy and want a candy! {notification_date}',
-                                data={
-                                    'pokemon': pokemon,
-                                    'gym_name': gym_name,
-                                    'notification_date': notification_date.strftime('%Y-%m-%d %H:%M:%S.%f')
-                                }
-                            )
+                            if notification['category'] == 'gym_removal':
+                                gym_name = pokemon = 'Unknown'
+                                for variable in notification['variables']:
+                                    if variable['name'] == 'GYM_NAME':
+                                        gym_name = variable['literal']
+                                    if variable['name'] == 'POKEDEX_ENTRY_NUMBER':
+                                        pokemon_int = int(variable['key'])
+                                        pokemon = Pokemons.name_for(pokemon_int)
+                                    if variable['name'] == 'POKEMON_NICKNAME':
+                                        pokemon = variable['literal']
+                                    if variable['name'] == 'POKECOIN_AWARDED':
+                                        coins_awared = variable['literal']
+                                    if variable['name'] == 'POKECOIN_AWARDED_TODAY':
+                                        coins_awared_today = variable['literal']
 
-                        if notification['category'] == 'gym_removal':
-                            gym_name = pokemon = 'Unknown'
-                            for variable in notification['variables']:
-                                if variable['name'] == 'GYM_NAME':
-                                    gym_name = variable['literal']
-                                if variable['name'] == 'POKEDEX_ENTRY_NUMBER':
-                                    pokemon_int = int(variable['key'])
-                                    pokemon = Pokemons.name_for(pokemon_int)
-                                if variable['name'] == 'POKEMON_NICKNAME':
-                                    pokemon = variable['literal']
-                                if variable['name'] == 'POKECOIN_AWARDED':
-                                    coins_awared = variable['literal']
-                                if variable['name'] == 'POKECOIN_AWARDED_TODAY':
-                                    coins_awared_today = variable['literal']
-
-                            self.event_manager.emit(
-                                'pokemon_knock_out_gym',
-                                sender=self,
-                                level='info',
-                                formatted='{pokemon} has been knocked out the Gym {gym_name} at {notification_date}. Awarded coins: {awarded_coins} | Today awared: {awarded_coins_today}',
-                                data={
-                                    'pokemon': pokemon,
-                                    'gym_name': gym_name,
-                                    'notification_date': notification_date.strftime('%Y-%m-%d %H:%M:%S.%f'),
-                                    'awarded_coins': coins_awared,
-                                    'awarded_coins_today': coins_awared_today
-                                }
-                            )
+                                self.event_manager.emit(
+                                    'pokemon_knock_out_gym',
+                                    sender=self,
+                                    level='info',
+                                    formatted='{pokemon} has been knocked out the Gym {gym_name} at {notification_date}. Awarded coins: {awarded_coins} | Today awared: {awarded_coins_today}',
+                                    data={
+                                        'pokemon': pokemon,
+                                        'gym_name': gym_name,
+                                        'notification_date': notification_date.strftime('%Y-%m-%d %H:%M:%S.%f'),
+                                        'awarded_coins': coins_awared,
+                                        'awarded_coins_today': coins_awared_today
+                                    }
+                                )
 
 
                 if responses['responses']['CHECK_AWARDED_BADGES']['success'] == True:
