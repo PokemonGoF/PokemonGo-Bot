@@ -10897,5 +10897,5284 @@
     "CaptureRate": 0.0,
     "FleeRate": 0.04,
     "BuddyDistanceNeeded": 20
+  },
+  {
+    "Number": "252",
+    "Name": "Treecko",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Grass"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "5 kg",
+    "Height": "0.51 m",
+    "Candy": {
+      "Name": "Treecko candies",
+      "FamilyID": 252
+    },
+    "Next Evolution Requirements": {
+      "Amount": 25,
+      "Family": 252,
+      "Name": "Treecko candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "253",
+        "Name": "Grovyle"
+      },
+      {
+        "Number": "254",
+        "Name": "Sceptile"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 124,
+    "BaseDefense": 104,
+    "BaseStamina": 80,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "253",
+    "Name": "Grovyle",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Grass"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "21.6 kg",
+    "Height": "0.89 m",
+    "Candy": {
+      "Name": "Treecko candies",
+      "FamilyID": 252
+    },
+    "Next Evolution Requirements": {
+      "Amount": 100,
+      "Family": 252,
+      "Name": "Treecko candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "254",
+        "Name": "Sceptile"
+      }
+    ],
+    "Previous evolution(s)": [
+      {
+        "Number": "252",
+        "Name": "Treecko"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 172,
+    "BaseDefense": 130,
+    "BaseStamina": 100,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "254",
+    "Name": "Sceptile",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Grass"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "52.2 kg",
+    "Height": "1.7 m",
+    "Candy": {
+      "Name": "Treecko candies",
+      "FamilyID": 252
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "252",
+        "Name": "Treecko"
+      },
+      {
+        "Number": "253",
+        "Name": "Grovyle"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 223,
+    "BaseDefense": 180,
+    "BaseStamina": 140,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "255",
+    "Name": "Torchic",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Fire"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "2.5 kg",
+    "Height": "0.41 m",
+    "Candy": {
+      "Name": "Torchic candies",
+      "FamilyID": 255
+    },
+    "Next Evolution Requirements": {
+      "Amount": 25,
+      "Family": 255,
+      "Name": "Torchic candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "256",
+        "Name": "Combusken"
+      },
+      {
+        "Number": "257",
+        "Name": "Blaziken"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 130,
+    "BaseDefense": 92,
+    "BaseStamina": 90,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "256",
+    "Name": "Combusken",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Fire"
+    ],
+    "Type II": [
+      "Fighting"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "19.5 kg",
+    "Height": "0.89 m",
+    "Candy": {
+      "Name": "Torchic candies",
+      "FamilyID": 255
+    },
+    "Next Evolution Requirements": {
+      "Amount": 100,
+      "Family": 255,
+      "Name": "Torchic candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "257",
+        "Name": "Blaziken"
+      }
+    ],
+    "Previous evolution(s)": [
+      {
+        "Number": "255",
+        "Name": "Torchic"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 163,
+    "BaseDefense": 115,
+    "BaseStamina": 120,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "257",
+    "Name": "Blaziken",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Fire"
+    ],
+    "Type II": [
+      "Fighting"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "52 kg",
+    "Height": "1.91 m",
+    "Candy": {
+      "Name": "Torchic candies",
+      "FamilyID": 255
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "255",
+        "Name": "Torchic"
+      },
+      {
+        "Number": "256",
+        "Name": "Combusken"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 240,
+    "BaseDefense": 141,
+    "BaseStamina": 160,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "258",
+    "Name": "Mudkip",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "7.6 kg",
+    "Height": "0.41 m",
+    "Candy": {
+      "Name": "Mudkip candies",
+      "FamilyID": 258
+    },
+    "Next Evolution Requirements": {
+      "Amount": 25,
+      "Family": 258,
+      "Name": "Mudkip candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "259",
+        "Name": "Marshtomp"
+      },
+      {
+        "Number": "260",
+        "Name": "Swampert"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 126,
+    "BaseDefense": 93,
+    "BaseStamina": 100,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "259",
+    "Name": "Marshtomp",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Type II": [
+      "Ground"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "28 kg",
+    "Height": "0.71 m",
+    "Candy": {
+      "Name": "Mudkip candies",
+      "FamilyID": 258
+    },
+    "Next Evolution Requirements": {
+      "Amount": 100,
+      "Family": 258,
+      "Name": "Mudkip candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "260",
+        "Name": "Swampert"
+      }
+    ],
+    "Previous evolution(s)": [
+      {
+        "Number": "258",
+        "Name": "Mudkip"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 156,
+    "BaseDefense": 133,
+    "BaseStamina": 140,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "260",
+    "Name": "Swampert",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Type II": [
+      "Ground"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "81.9 kg",
+    "Height": "1.5 m",
+    "Candy": {
+      "Name": "Mudkip candies",
+      "FamilyID": 258
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "258",
+        "Name": "Mudkip"
+      },
+      {
+        "Number": "259",
+        "Name": "Marshtomp"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 208,
+    "BaseDefense": 175,
+    "BaseStamina": 200,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "261",
+    "Name": "Poochyena",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Dark"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "13.6 kg",
+    "Height": "0.51 m",
+    "Candy": {
+      "Name": "Poochyena candies",
+      "FamilyID": 261
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 261,
+      "Name": "Poochyena candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "262",
+        "Name": "Mightyena"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 96,
+    "BaseDefense": 63,
+    "BaseStamina": 70,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "262",
+    "Name": "Mightyena",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Dark"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "37 kg",
+    "Height": "0.99 m",
+    "Candy": {
+      "Name": "Poochyena candies",
+      "FamilyID": 261
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "261",
+        "Name": "Poochyena"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 171,
+    "BaseDefense": 137,
+    "BaseStamina": 140,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "263",
+    "Name": "Zigzagoon",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Normal"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "17.5 kg",
+    "Height": "0.41 m",
+    "Candy": {
+      "Name": "Zigzagoon candies",
+      "FamilyID": 263
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 263,
+      "Name": "Zigzagoon candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "264",
+        "Name": "Linoone"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 58,
+    "BaseDefense": 80,
+    "BaseStamina": 76,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "264",
+    "Name": "Linoone",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Normal"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "32.5 kg",
+    "Height": "0.51 m",
+    "Candy": {
+      "Name": "Zigzagoon candies",
+      "FamilyID": 263
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "263",
+        "Name": "Zigzagoon"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 142,
+    "BaseDefense": 128,
+    "BaseStamina": 156,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "265",
+    "Name": "Wurmple",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Bug"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "3.6 kg",
+    "Height": "0.3 m",
+    "Candy": {
+      "Name": "Wurmple candies",
+      "FamilyID": 265
+    },
+    "Next Evolution Requirements": {
+      "Amount": 12,
+      "Family": 265,
+      "Name": "Wurmple candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "266",
+        "Name": "Silcoon"
+      },
+      {
+        "Number": "268",
+        "Name": "Cascoon"
+      },
+      {
+        "Number": "267",
+        "Name": "Beautifly"
+      },
+      {
+        "Number": "269",
+        "Name": "Dustox"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 75,
+    "BaseDefense": 61,
+    "BaseStamina": 90,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "266",
+    "Name": "Silcoon",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Bug"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "10 kg",
+    "Height": "0.61 m",
+    "Candy": {
+      "Name": "Wurmple candies",
+      "FamilyID": 265
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 265,
+      "Name": "Wurmple candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "267",
+        "Name": "Beautifly"
+      },
+      {
+        "Number": "269",
+        "Name": "Dustox"
+      }
+    ],
+    "Previous evolution(s)": [
+      {
+        "Number": "265",
+        "Name": "Wurmple"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 60,
+    "BaseDefense": 91,
+    "BaseStamina": 100,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "267",
+    "Name": "Beautifly",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Bug"
+    ],
+    "Type II": [
+      "Flying"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "28.4 kg",
+    "Height": "0.99 m",
+    "Candy": {
+      "Name": "Wurmple candies",
+      "FamilyID": 265
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "265",
+        "Name": "Wurmple"
+      },
+      {
+        "Number": "266",
+        "Name": "Silcoon"
+      },
+      {
+        "Number": "268",
+        "Name": "Cascoon"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 189,
+    "BaseDefense": 98,
+    "BaseStamina": 120,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "268",
+    "Name": "Cascoon",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Bug"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "11.5 kg",
+    "Height": "0.71 m",
+    "Candy": {
+      "Name": "Wurmple candies",
+      "FamilyID": 265
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 265,
+      "Name": "Wurmple candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "267",
+        "Name": "Beautifly"
+      },
+      {
+        "Number": "269",
+        "Name": "Dustox"
+      }
+    ],
+    "Previous evolution(s)": [
+      {
+        "Number": "265",
+        "Name": "Wurmple"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 60,
+    "BaseDefense": 91,
+    "BaseStamina": 100,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "269",
+    "Name": "Dustox",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Bug"
+    ],
+    "Type II": [
+      "Poison"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "31.6 kg",
+    "Height": "1.19 m",
+    "Candy": {
+      "Name": "Wurmple candies",
+      "FamilyID": 265
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "265",
+        "Name": "Wurmple"
+      },
+      {
+        "Number": "266",
+        "Name": "Silcoon"
+      },
+      {
+        "Number": "268",
+        "Name": "Cascoon"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 98,
+    "BaseDefense": 172,
+    "BaseStamina": 120,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "270",
+    "Name": "Lotad",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Type II": [
+      "Grass"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "2.6 kg",
+    "Height": "0.51 m",
+    "Candy": {
+      "Name": "Lotad candies",
+      "FamilyID": 270
+    },
+    "Next Evolution Requirements": {
+      "Amount": 25,
+      "Family": 270,
+      "Name": "Lotad candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "271",
+        "Name": "Lombre"
+      },
+      {
+        "Number": "272",
+        "Name": "Ludicolo"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 71,
+    "BaseDefense": 86,
+    "BaseStamina": 80,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "271",
+    "Name": "Lombre",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Type II": [
+      "Grass"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "32.5 kg",
+    "Height": "1.19 m",
+    "Candy": {
+      "Name": "Lotad candies",
+      "FamilyID": 270
+    },
+    "Next Evolution Requirements": {
+      "Amount": 100,
+      "Family": 270,
+      "Name": "Lotad candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "272",
+        "Name": "Ludicolo"
+      }
+    ],
+    "Previous evolution(s)": [
+      {
+        "Number": "270",
+        "Name": "Lotad"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 112,
+    "BaseDefense": 128,
+    "BaseStamina": 120,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "272",
+    "Name": "Ludicolo",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Type II": [
+      "Grass"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "55 kg",
+    "Height": "1.5 m",
+    "Candy": {
+      "Name": "Lotad candies",
+      "FamilyID": 270
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "270",
+        "Name": "Lotad"
+      },
+      {
+        "Number": "271",
+        "Name": "Lombre"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 173,
+    "BaseDefense": 191,
+    "BaseStamina": 160,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "273",
+    "Name": "Seedot",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Grass"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "4 kg",
+    "Height": "0.51 m",
+    "Candy": {
+      "Name": "Seedot candies",
+      "FamilyID": 273
+    },
+    "Next Evolution Requirements": {
+      "Amount": 25,
+      "Family": 273,
+      "Name": "Seedot candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "274",
+        "Name": "Nuzleaf"
+      },
+      {
+        "Number": "275",
+        "Name": "Shiftry"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 71,
+    "BaseDefense": 86,
+    "BaseStamina": 80,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "274",
+    "Name": "Nuzleaf",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Grass"
+    ],
+    "Type II": [
+      "Dark"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "28 kg",
+    "Height": "0.99 m",
+    "Candy": {
+      "Name": "Seedot candies",
+      "FamilyID": 273
+    },
+    "Next Evolution Requirements": {
+      "Amount": 100,
+      "Family": 273,
+      "Name": "Seedot candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "275",
+        "Name": "Shiftry"
+      }
+    ],
+    "Previous evolution(s)": [
+      {
+        "Number": "273",
+        "Name": "Seedot"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 134,
+    "BaseDefense": 78,
+    "BaseStamina": 140,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "275",
+    "Name": "Shiftry",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Grass"
+    ],
+    "Type II": [
+      "Dark"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "59.6 kg",
+    "Height": "1.3 m",
+    "Candy": {
+      "Name": "Seedot candies",
+      "FamilyID": 273
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "273",
+        "Name": "Seedot"
+      },
+      {
+        "Number": "274",
+        "Name": "Nuzleaf"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 200,
+    "BaseDefense": 121,
+    "BaseStamina": 180,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "276",
+    "Name": "Taillow",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Normal"
+    ],
+    "Type II": [
+      "Flying"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "2.3 kg",
+    "Height": "0.3 m",
+    "Candy": {
+      "Name": "Taillow candies",
+      "FamilyID": 276
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 276,
+      "Name": "Taillow candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "277",
+        "Name": "Swellow"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 106,
+    "BaseDefense": 61,
+    "BaseStamina": 80,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "277",
+    "Name": "Swellow",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Normal"
+    ],
+    "Type II": [
+      "Flying"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "19.8 kg",
+    "Height": "0.71 m",
+    "Candy": {
+      "Name": "Taillow candies",
+      "FamilyID": 276
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "276",
+        "Name": "Taillow"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 185,
+    "BaseDefense": 130,
+    "BaseStamina": 120,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "278",
+    "Name": "Wingull",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Type II": [
+      "Flying"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "9.5 kg",
+    "Height": "0.61 m",
+    "Candy": {
+      "Name": "Wingull candies",
+      "FamilyID": 278
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 278,
+      "Name": "Wingull candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "279",
+        "Name": "Pelipper"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 106,
+    "BaseDefense": 61,
+    "BaseStamina": 80,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "279",
+    "Name": "Pelipper",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Type II": [
+      "Flying"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "28 kg",
+    "Height": "1.19 m",
+    "Candy": {
+      "Name": "Wingull candies",
+      "FamilyID": 278
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "278",
+        "Name": "Wingull"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 175,
+    "BaseDefense": 189,
+    "BaseStamina": 120,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "280",
+    "Name": "Ralts",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Psychic"
+    ],
+    "Type II": [
+      "Fairy"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "6.6 kg",
+    "Height": "0.41 m",
+    "Candy": {
+      "Name": "Ralts candies",
+      "FamilyID": 280
+    },
+    "Next Evolution Requirements": {
+      "Amount": 25,
+      "Family": 280,
+      "Name": "Ralts candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "281",
+        "Name": "Kirlia"
+      },
+      {
+        "Number": "282",
+        "Name": "Gardevoir"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 79,
+    "BaseDefense": 63,
+    "BaseStamina": 56,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "281",
+    "Name": "Kirlia",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Psychic"
+    ],
+    "Type II": [
+      "Fairy"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "20.2 kg",
+    "Height": "0.79 m",
+    "Candy": {
+      "Name": "Ralts candies",
+      "FamilyID": 280
+    },
+    "Next Evolution Requirements": {
+      "Amount": 100,
+      "Family": 280,
+      "Name": "Ralts candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "282",
+        "Name": "Gardevoir"
+      }
+    ],
+    "Previous evolution(s)": [
+      {
+        "Number": "280",
+        "Name": "Ralts"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 117,
+    "BaseDefense": 100,
+    "BaseStamina": 76,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "282",
+    "Name": "Gardevoir",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Psychic"
+    ],
+    "Type II": [
+      "Fairy"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "48.4 kg",
+    "Height": "1.6 m",
+    "Candy": {
+      "Name": "Ralts candies",
+      "FamilyID": 280
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "280",
+        "Name": "Ralts"
+      },
+      {
+        "Number": "281",
+        "Name": "Kirlia"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 237,
+    "BaseDefense": 220,
+    "BaseStamina": 136,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "283",
+    "Name": "Surskit",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Bug"
+    ],
+    "Type II": [
+      "Water"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "1.7 kg",
+    "Height": "0.51 m",
+    "Candy": {
+      "Name": "Surskit candies",
+      "FamilyID": 283
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 283,
+      "Name": "Surskit candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "284",
+        "Name": "Masquerain"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 93,
+    "BaseDefense": 97,
+    "BaseStamina": 80,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "284",
+    "Name": "Masquerain",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Bug"
+    ],
+    "Type II": [
+      "Flying"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "3.6 kg",
+    "Height": "0.79 m",
+    "Candy": {
+      "Name": "Surskit candies",
+      "FamilyID": 283
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "283",
+        "Name": "Surskit"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 192,
+    "BaseDefense": 161,
+    "BaseStamina": 140,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "285",
+    "Name": "Shroomish",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Grass"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "4.5 kg",
+    "Height": "0.41 m",
+    "Candy": {
+      "Name": "Shroomish candies",
+      "FamilyID": 285
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 285,
+      "Name": "Shroomish candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "286",
+        "Name": "Breloom"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 74,
+    "BaseDefense": 110,
+    "BaseStamina": 120,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "286",
+    "Name": "Breloom",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Grass"
+    ],
+    "Type II": [
+      "Fighting"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "39.2 kg",
+    "Height": "1.19 m",
+    "Candy": {
+      "Name": "Shroomish candies",
+      "FamilyID": 285
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "285",
+        "Name": "Shroomish"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 241,
+    "BaseDefense": 153,
+    "BaseStamina": 120,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "287",
+    "Name": "Slakoth",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Normal"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "24 kg",
+    "Height": "0.79 m",
+    "Candy": {
+      "Name": "Slakoth candies",
+      "FamilyID": 287
+    },
+    "Next Evolution Requirements": {
+      "Amount": 25,
+      "Family": 287,
+      "Name": "Slakoth candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "288",
+        "Name": "Vigoroth"
+      },
+      {
+        "Number": "289",
+        "Name": "Slaking"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 104,
+    "BaseDefense": 104,
+    "BaseStamina": 120,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "288",
+    "Name": "Vigoroth",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Normal"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "46.5 kg",
+    "Height": "1.4 m",
+    "Candy": {
+      "Name": "Slakoth candies",
+      "FamilyID": 287
+    },
+    "Next Evolution Requirements": {
+      "Amount": 100,
+      "Family": 287,
+      "Name": "Slakoth candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "289",
+        "Name": "Slaking"
+      }
+    ],
+    "Previous evolution(s)": [
+      {
+        "Number": "287",
+        "Name": "Slakoth"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 159,
+    "BaseDefense": 159,
+    "BaseStamina": 160,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "289",
+    "Name": "Slaking",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Normal"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "130.5 kg",
+    "Height": "2.01 m",
+    "Candy": {
+      "Name": "Slakoth candies",
+      "FamilyID": 287
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "287",
+        "Name": "Slakoth"
+      },
+      {
+        "Number": "288",
+        "Name": "Vigoroth"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 319,
+    "BaseDefense": 201,
+    "BaseStamina": 300,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "290",
+    "Name": "Nincada",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Bug"
+    ],
+    "Type II": [
+      "Ground"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "5.5 kg",
+    "Height": "0.51 m",
+    "Candy": {
+      "Name": "Nincada candies",
+      "FamilyID": 290
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 290,
+      "Name": "Nincada candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "291",
+        "Name": "Ninjask"
+      },
+      {
+        "Number": "292",
+        "Name": "Shedinja"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 80,
+    "BaseDefense": 153,
+    "BaseStamina": 62,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "291",
+    "Name": "Ninjask",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Bug"
+    ],
+    "Type II": [
+      "Flying"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "12 kg",
+    "Height": "0.79 m",
+    "Candy": {
+      "Name": "Nincada candies",
+      "FamilyID": 290
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "290",
+        "Name": "Nincada"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 196,
+    "BaseDefense": 114,
+    "BaseStamina": 122,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "292",
+    "Name": "Shedinja",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Bug"
+    ],
+    "Type II": [
+      "Ghost"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "1.2 kg",
+    "Height": "0.79 m",
+    "Candy": {
+      "Name": "Nincada candies",
+      "FamilyID": 290
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "290",
+        "Name": "Nincada"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 153,
+    "BaseDefense": 80,
+    "BaseStamina": 2,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "293",
+    "Name": "Whismur",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Normal"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "16.3 kg",
+    "Height": "0.61 m",
+    "Candy": {
+      "Name": "Whismur candies",
+      "FamilyID": 293
+    },
+    "Next Evolution Requirements": {
+      "Amount": 12,
+      "Family": 293,
+      "Name": "Whismur candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "294",
+        "Name": "Loudred"
+      },
+      {
+        "Number": "295",
+        "Name": "Exploud"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 92,
+    "BaseDefense": 42,
+    "BaseStamina": 128,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "294",
+    "Name": "Loudred",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Normal"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "40.5 kg",
+    "Height": "0.99 m",
+    "Candy": {
+      "Name": "Whismur candies",
+      "FamilyID": 293
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 293,
+      "Name": "Whismur candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "295",
+        "Name": "Exploud"
+      }
+    ],
+    "Previous evolution(s)": [
+      {
+        "Number": "293",
+        "Name": "Whismur"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 134,
+    "BaseDefense": 81,
+    "BaseStamina": 168,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "295",
+    "Name": "Exploud",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Normal"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "84 kg",
+    "Height": "1.5 m",
+    "Candy": {
+      "Name": "Whismur candies",
+      "FamilyID": 293
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "293",
+        "Name": "Whismur"
+      },
+      {
+        "Number": "294",
+        "Name": "Loudred"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 179,
+    "BaseDefense": 142,
+    "BaseStamina": 208,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "296",
+    "Name": "Makuhita",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Fighting"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "86.4 kg",
+    "Height": "0.99 m",
+    "Candy": {
+      "Name": "Makuhita candies",
+      "FamilyID": 296
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 296,
+      "Name": "Makuhita candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "297",
+        "Name": "Hariyama"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 99,
+    "BaseDefense": 54,
+    "BaseStamina": 144,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "297",
+    "Name": "Hariyama",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Fighting"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "253.8 kg",
+    "Height": "2.31 m",
+    "Candy": {
+      "Name": "Makuhita candies",
+      "FamilyID": 296
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "296",
+        "Name": "Makuhita"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 209,
+    "BaseDefense": 114,
+    "BaseStamina": 288,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "298",
+    "Name": "Azurill",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Normal"
+    ],
+    "Type II": [
+      "Fairy"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "2 kg",
+    "Height": "0.2 m",
+    "Candy": {
+      "Name": "Marill candies",
+      "FamilyID": 183
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "183",
+        "Name": "Marill"
+      },
+      {
+        "Number": "184",
+        "Name": "Azumarill"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 36,
+    "BaseDefense": 71,
+    "BaseStamina": 100,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "299",
+    "Name": "Nosepass",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Rock"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "97 kg",
+    "Height": "0.99 m",
+    "Candy": {
+      "Name": "Nosepass candies",
+      "FamilyID": 299
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 82,
+    "BaseDefense": 236,
+    "BaseStamina": 60,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "300",
+    "Name": "Skitty",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Normal"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "11 kg",
+    "Height": "0.61 m",
+    "Candy": {
+      "Name": "Skitty candies",
+      "FamilyID": 300
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 300,
+      "Name": "Skitty candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "301",
+        "Name": "Delcatty"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 84,
+    "BaseDefense": 84,
+    "BaseStamina": 100,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "301",
+    "Name": "Delcatty",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Normal"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "32.6 kg",
+    "Height": "1.09 m",
+    "Candy": {
+      "Name": "Skitty candies",
+      "FamilyID": 300
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "300",
+        "Name": "Skitty"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 132,
+    "BaseDefense": 132,
+    "BaseStamina": 140,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "302",
+    "Name": "Sableye",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Dark"
+    ],
+    "Type II": [
+      "Ghost"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Shadow Claw",
+      "Feint Attack"
+    ],
+    "Weight": "11 kg",
+    "Height": "0.51 m",
+    "Candy": {
+      "Name": "Sableye candies",
+      "FamilyID": 302
+    },
+    "Special Attack(s)": [
+      "Power Gem",
+      "Foul Play",
+      "Shadow Sneak"
+    ],
+    "BaseAttack": 141,
+    "BaseDefense": 141,
+    "BaseStamina": 100,
+    "CaptureRate": 0.2,
+    "FleeRate": 0.07,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "303",
+    "Name": "Mawile",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Steel"
+    ],
+    "Type II": [
+      "Fairy"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "11.5 kg",
+    "Height": "0.61 m",
+    "Candy": {
+      "Name": "Mawile candies",
+      "FamilyID": 303
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 155,
+    "BaseDefense": 155,
+    "BaseStamina": 100,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "304",
+    "Name": "Aron",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Steel"
+    ],
+    "Type II": [
+      "Rock"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "60 kg",
+    "Height": "0.41 m",
+    "Candy": {
+      "Name": "Aron candies",
+      "FamilyID": 304
+    },
+    "Next Evolution Requirements": {
+      "Amount": 25,
+      "Family": 304,
+      "Name": "Aron candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "305",
+        "Name": "Lairon"
+      },
+      {
+        "Number": "306",
+        "Name": "Aggron"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 121,
+    "BaseDefense": 168,
+    "BaseStamina": 100,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "305",
+    "Name": "Lairon",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Steel"
+    ],
+    "Type II": [
+      "Rock"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "120 kg",
+    "Height": "0.89 m",
+    "Candy": {
+      "Name": "Aron candies",
+      "FamilyID": 304
+    },
+    "Next Evolution Requirements": {
+      "Amount": 100,
+      "Family": 304,
+      "Name": "Aron candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "306",
+        "Name": "Aggron"
+      }
+    ],
+    "Previous evolution(s)": [
+      {
+        "Number": "304",
+        "Name": "Aron"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 158,
+    "BaseDefense": 240,
+    "BaseStamina": 120,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "306",
+    "Name": "Aggron",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Steel"
+    ],
+    "Type II": [
+      "Rock"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "360 kg",
+    "Height": "2.11 m",
+    "Candy": {
+      "Name": "Aron candies",
+      "FamilyID": 304
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "304",
+        "Name": "Aron"
+      },
+      {
+        "Number": "305",
+        "Name": "Lairon"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 198,
+    "BaseDefense": 314,
+    "BaseStamina": 140,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "307",
+    "Name": "Meditite",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Fighting"
+    ],
+    "Type II": [
+      "Psychic"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "11.2 kg",
+    "Height": "0.61 m",
+    "Candy": {
+      "Name": "Meditite candies",
+      "FamilyID": 307
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 307,
+      "Name": "Meditite candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "308",
+        "Name": "Medicham"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 78,
+    "BaseDefense": 107,
+    "BaseStamina": 60,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "308",
+    "Name": "Medicham",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Fighting"
+    ],
+    "Type II": [
+      "Psychic"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "31.5 kg",
+    "Height": "1.3 m",
+    "Candy": {
+      "Name": "Meditite candies",
+      "FamilyID": 307
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "307",
+        "Name": "Meditite"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 121,
+    "BaseDefense": 152,
+    "BaseStamina": 120,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "309",
+    "Name": "Electrike",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Electric"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "15.2 kg",
+    "Height": "0.61 m",
+    "Candy": {
+      "Name": "Electrike candies",
+      "FamilyID": 309
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 309,
+      "Name": "Electrike candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "310",
+        "Name": "Manectric"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 123,
+    "BaseDefense": 78,
+    "BaseStamina": 80,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "310",
+    "Name": "Manectric",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Electric"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "40.2 kg",
+    "Height": "1.5 m",
+    "Candy": {
+      "Name": "Electrike candies",
+      "FamilyID": 309
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "309",
+        "Name": "Electrike"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 215,
+    "BaseDefense": 127,
+    "BaseStamina": 140,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "311",
+    "Name": "Plusle",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Electric"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "4.2 kg",
+    "Height": "0.41 m",
+    "Candy": {
+      "Name": "Plusle candies",
+      "FamilyID": 311
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 167,
+    "BaseDefense": 147,
+    "BaseStamina": 120,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "312",
+    "Name": "Minun",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Electric"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "4.2 kg",
+    "Height": "0.41 m",
+    "Candy": {
+      "Name": "Minun candies",
+      "FamilyID": 312
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 147,
+    "BaseDefense": 167,
+    "BaseStamina": 120,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "313",
+    "Name": "Volbeat",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Bug"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "17.7 kg",
+    "Height": "0.71 m",
+    "Candy": {
+      "Name": "Volbeat candies",
+      "FamilyID": 313
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 143,
+    "BaseDefense": 171,
+    "BaseStamina": 130,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "314",
+    "Name": "Illumise",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Bug"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "17.7 kg",
+    "Height": "0.61 m",
+    "Candy": {
+      "Name": "Illumise candies",
+      "FamilyID": 314
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 143,
+    "BaseDefense": 171,
+    "BaseStamina": 130,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "315",
+    "Name": "Roselia",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Grass"
+    ],
+    "Type II": [
+      "Poison"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "2 kg",
+    "Height": "0.3 m",
+    "Candy": {
+      "Name": "Roselia candies",
+      "FamilyID": 315
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 186,
+    "BaseDefense": 148,
+    "BaseStamina": 100,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "316",
+    "Name": "Gulpin",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Poison"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "10.3 kg",
+    "Height": "0.41 m",
+    "Candy": {
+      "Name": "Gulpin candies",
+      "FamilyID": 316
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 316,
+      "Name": "Gulpin candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "317",
+        "Name": "Swalot"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 80,
+    "BaseDefense": 99,
+    "BaseStamina": 140,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "317",
+    "Name": "Swalot",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Poison"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "80 kg",
+    "Height": "1.7 m",
+    "Candy": {
+      "Name": "Gulpin candies",
+      "FamilyID": 316
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "316",
+        "Name": "Gulpin"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 140,
+    "BaseDefense": 159,
+    "BaseStamina": 200,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "318",
+    "Name": "Carvanha",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Type II": [
+      "Dark"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "20.8 kg",
+    "Height": "0.79 m",
+    "Candy": {
+      "Name": "Carvanha candies",
+      "FamilyID": 318
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 318,
+      "Name": "Carvanha candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "319",
+        "Name": "Sharpedo"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 171,
+    "BaseDefense": 39,
+    "BaseStamina": 90,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "319",
+    "Name": "Sharpedo",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Type II": [
+      "Dark"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "88.8 kg",
+    "Height": "1.8 m",
+    "Candy": {
+      "Name": "Carvanha candies",
+      "FamilyID": 318
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "318",
+        "Name": "Carvanha"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 243,
+    "BaseDefense": 83,
+    "BaseStamina": 140,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "320",
+    "Name": "Wailmer",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "130 kg",
+    "Height": "2.01 m",
+    "Candy": {
+      "Name": "Wailmer candies",
+      "FamilyID": 320
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 320,
+      "Name": "Wailmer candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "321",
+        "Name": "Wailord"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 136,
+    "BaseDefense": 68,
+    "BaseStamina": 260,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "321",
+    "Name": "Wailord",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "398 kg",
+    "Height": "14.5 m",
+    "Candy": {
+      "Name": "Wailmer candies",
+      "FamilyID": 320
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "320",
+        "Name": "Wailmer"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 175,
+    "BaseDefense": 87,
+    "BaseStamina": 340,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "322",
+    "Name": "Numel",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Fire"
+    ],
+    "Type II": [
+      "Ground"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "24 kg",
+    "Height": "0.71 m",
+    "Candy": {
+      "Name": "Numel candies",
+      "FamilyID": 322
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 322,
+      "Name": "Numel candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "323",
+        "Name": "Camerupt"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 119,
+    "BaseDefense": 82,
+    "BaseStamina": 120,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "323",
+    "Name": "Camerupt",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Fire"
+    ],
+    "Type II": [
+      "Ground"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "220 kg",
+    "Height": "1.91 m",
+    "Candy": {
+      "Name": "Numel candies",
+      "FamilyID": 322
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "322",
+        "Name": "Numel"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 194,
+    "BaseDefense": 139,
+    "BaseStamina": 140,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "324",
+    "Name": "Torkoal",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Fire"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "80.4 kg",
+    "Height": "0.51 m",
+    "Candy": {
+      "Name": "Torkoal candies",
+      "FamilyID": 324
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 151,
+    "BaseDefense": 234,
+    "BaseStamina": 140,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "325",
+    "Name": "Spoink",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Psychic"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "30.6 kg",
+    "Height": "0.71 m",
+    "Candy": {
+      "Name": "Spoink candies",
+      "FamilyID": 325
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 325,
+      "Name": "Spoink candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "326",
+        "Name": "Grumpig"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 125,
+    "BaseDefense": 145,
+    "BaseStamina": 120,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "326",
+    "Name": "Grumpig",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Psychic"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "71.5 kg",
+    "Height": "0.89 m",
+    "Candy": {
+      "Name": "Spoink candies",
+      "FamilyID": 325
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "325",
+        "Name": "Spoink"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 171,
+    "BaseDefense": 211,
+    "BaseStamina": 160,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "327",
+    "Name": "Spinda",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Normal"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "5 kg",
+    "Height": "1.09 m",
+    "Candy": {
+      "Name": "Spinda candies",
+      "FamilyID": 327
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 116,
+    "BaseDefense": 116,
+    "BaseStamina": 120,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "328",
+    "Name": "Trapinch",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Ground"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "15 kg",
+    "Height": "0.71 m",
+    "Candy": {
+      "Name": "Trapinch candies",
+      "FamilyID": 328
+    },
+    "Next Evolution Requirements": {
+      "Amount": 25,
+      "Family": 328,
+      "Name": "Trapinch candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "329",
+        "Name": "Vibrava"
+      },
+      {
+        "Number": "330",
+        "Name": "Flygon"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 162,
+    "BaseDefense": 78,
+    "BaseStamina": 90,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "329",
+    "Name": "Vibrava",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Ground"
+    ],
+    "Type II": [
+      "Dragon"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "15.3 kg",
+    "Height": "1.09 m",
+    "Candy": {
+      "Name": "Trapinch candies",
+      "FamilyID": 328
+    },
+    "Next Evolution Requirements": {
+      "Amount": 100,
+      "Family": 328,
+      "Name": "Trapinch candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "330",
+        "Name": "Flygon"
+      }
+    ],
+    "Previous evolution(s)": [
+      {
+        "Number": "328",
+        "Name": "Trapinch"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 134,
+    "BaseDefense": 99,
+    "BaseStamina": 100,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "330",
+    "Name": "Flygon",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Ground"
+    ],
+    "Type II": [
+      "Dragon"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "82 kg",
+    "Height": "2.01 m",
+    "Candy": {
+      "Name": "Trapinch candies",
+      "FamilyID": 328
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "328",
+        "Name": "Trapinch"
+      },
+      {
+        "Number": "329",
+        "Name": "Vibrava"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 205,
+    "BaseDefense": 168,
+    "BaseStamina": 160,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "331",
+    "Name": "Cacnea",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Grass"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "51.3 kg",
+    "Height": "0.41 m",
+    "Candy": {
+      "Name": "Cacnea candies",
+      "FamilyID": 331
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 331,
+      "Name": "Cacnea candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "332",
+        "Name": "Cacturne"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 156,
+    "BaseDefense": 74,
+    "BaseStamina": 100,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "332",
+    "Name": "Cacturne",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Grass"
+    ],
+    "Type II": [
+      "Dark"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "77.4 kg",
+    "Height": "1.3 m",
+    "Candy": {
+      "Name": "Cacnea candies",
+      "FamilyID": 331
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "331",
+        "Name": "Cacnea"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 221,
+    "BaseDefense": 115,
+    "BaseStamina": 140,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "333",
+    "Name": "Swablu",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Normal"
+    ],
+    "Type II": [
+      "Flying"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "1.2 kg",
+    "Height": "0.41 m",
+    "Candy": {
+      "Name": "Swablu candies",
+      "FamilyID": 333
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 333,
+      "Name": "Swablu candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "334",
+        "Name": "Altaria"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 76,
+    "BaseDefense": 139,
+    "BaseStamina": 90,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "334",
+    "Name": "Altaria",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Dragon"
+    ],
+    "Type II": [
+      "Flying"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "20.6 kg",
+    "Height": "1.09 m",
+    "Candy": {
+      "Name": "Swablu candies",
+      "FamilyID": 333
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "333",
+        "Name": "Swablu"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 141,
+    "BaseDefense": 208,
+    "BaseStamina": 150,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "335",
+    "Name": "Zangoose",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Normal"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "40.3 kg",
+    "Height": "1.3 m",
+    "Candy": {
+      "Name": "Zangoose candies",
+      "FamilyID": 335
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 222,
+    "BaseDefense": 124,
+    "BaseStamina": 146,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "336",
+    "Name": "Seviper",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Poison"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "52.5 kg",
+    "Height": "2.69 m",
+    "Candy": {
+      "Name": "Seviper candies",
+      "FamilyID": 336
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 196,
+    "BaseDefense": 118,
+    "BaseStamina": 146,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "337",
+    "Name": "Lunatone",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Rock"
+    ],
+    "Type II": [
+      "Psychic"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "168 kg",
+    "Height": "0.99 m",
+    "Candy": {
+      "Name": "Lunatone candies",
+      "FamilyID": 337
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 178,
+    "BaseDefense": 163,
+    "BaseStamina": 180,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "338",
+    "Name": "Solrock",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Rock"
+    ],
+    "Type II": [
+      "Psychic"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "154 kg",
+    "Height": "1.19 m",
+    "Candy": {
+      "Name": "Solrock candies",
+      "FamilyID": 338
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 178,
+    "BaseDefense": 163,
+    "BaseStamina": 180,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "339",
+    "Name": "Barboach",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Type II": [
+      "Ground"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "1.9 kg",
+    "Height": "0.41 m",
+    "Candy": {
+      "Name": "Barboach candies",
+      "FamilyID": 339
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 339,
+      "Name": "Barboach candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "340",
+        "Name": "Whiscash"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 93,
+    "BaseDefense": 83,
+    "BaseStamina": 100,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "340",
+    "Name": "Whiscash",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Type II": [
+      "Ground"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "23.6 kg",
+    "Height": "0.89 m",
+    "Candy": {
+      "Name": "Barboach candies",
+      "FamilyID": 339
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "339",
+        "Name": "Barboach"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 151,
+    "BaseDefense": 142,
+    "BaseStamina": 220,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "341",
+    "Name": "Corphish",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "11.5 kg",
+    "Height": "0.61 m",
+    "Candy": {
+      "Name": "Corphish candies",
+      "FamilyID": 341
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 341,
+      "Name": "Corphish candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "342",
+        "Name": "Crawdaunt"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 141,
+    "BaseDefense": 113,
+    "BaseStamina": 86,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "342",
+    "Name": "Crawdaunt",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Type II": [
+      "Dark"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "32.8 kg",
+    "Height": "1.09 m",
+    "Candy": {
+      "Name": "Corphish candies",
+      "FamilyID": 341
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "341",
+        "Name": "Corphish"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 224,
+    "BaseDefense": 156,
+    "BaseStamina": 126,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "343",
+    "Name": "Baltoy",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Ground"
+    ],
+    "Type II": [
+      "Psychic"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "21.5 kg",
+    "Height": "0.51 m",
+    "Candy": {
+      "Name": "Baltoy candies",
+      "FamilyID": 343
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 343,
+      "Name": "Baltoy candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "344",
+        "Name": "Claydol"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 77,
+    "BaseDefense": 131,
+    "BaseStamina": 80,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "344",
+    "Name": "Claydol",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Ground"
+    ],
+    "Type II": [
+      "Psychic"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "108 kg",
+    "Height": "1.5 m",
+    "Candy": {
+      "Name": "Baltoy candies",
+      "FamilyID": 343
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "343",
+        "Name": "Baltoy"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 140,
+    "BaseDefense": 236,
+    "BaseStamina": 120,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "345",
+    "Name": "Lileep",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Rock"
+    ],
+    "Type II": [
+      "Grass"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "23.8 kg",
+    "Height": "0.99 m",
+    "Candy": {
+      "Name": "Lileep candies",
+      "FamilyID": 345
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 345,
+      "Name": "Lileep candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "346",
+        "Name": "Cradily"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 105,
+    "BaseDefense": 154,
+    "BaseStamina": 132,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "346",
+    "Name": "Cradily",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Rock"
+    ],
+    "Type II": [
+      "Grass"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "60.4 kg",
+    "Height": "1.5 m",
+    "Candy": {
+      "Name": "Lileep candies",
+      "FamilyID": 345
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "345",
+        "Name": "Lileep"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 152,
+    "BaseDefense": 198,
+    "BaseStamina": 172,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "347",
+    "Name": "Anorith",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Rock"
+    ],
+    "Type II": [
+      "Bug"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "12.5 kg",
+    "Height": "0.71 m",
+    "Candy": {
+      "Name": "Anorith candies",
+      "FamilyID": 347
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 347,
+      "Name": "Anorith candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "348",
+        "Name": "Armaldo"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 176,
+    "BaseDefense": 100,
+    "BaseStamina": 90,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "348",
+    "Name": "Armaldo",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Rock"
+    ],
+    "Type II": [
+      "Bug"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "68.2 kg",
+    "Height": "1.5 m",
+    "Candy": {
+      "Name": "Anorith candies",
+      "FamilyID": 347
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "347",
+        "Name": "Anorith"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 222,
+    "BaseDefense": 183,
+    "BaseStamina": 150,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "349",
+    "Name": "Feebas",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "7.4 kg",
+    "Height": "0.61 m",
+    "Candy": {
+      "Name": "Feebas candies",
+      "FamilyID": 349
+    },
+    "Next Evolution Requirements": {
+      "Amount": 100,
+      "Family": 349,
+      "Name": "Feebas candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "350",
+        "Name": "Milotic"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 29,
+    "BaseDefense": 102,
+    "BaseStamina": 40,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "350",
+    "Name": "Milotic",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "162 kg",
+    "Height": "6.2 m",
+    "Candy": {
+      "Name": "Feebas candies",
+      "FamilyID": 349
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "349",
+        "Name": "Feebas"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 192,
+    "BaseDefense": 242,
+    "BaseStamina": 190,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "351",
+    "Name": "Castform",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Normal"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "0.8 kg",
+    "Height": "0.3 m",
+    "Candy": {
+      "Name": "Castform candies",
+      "FamilyID": 351
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 139,
+    "BaseDefense": 139,
+    "BaseStamina": 140,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "352",
+    "Name": "Kecleon",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Normal"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "22 kg",
+    "Height": "0.99 m",
+    "Candy": {
+      "Name": "Kecleon candies",
+      "FamilyID": 352
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 161,
+    "BaseDefense": 212,
+    "BaseStamina": 120,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "353",
+    "Name": "Shuppet",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Ghost"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Feint Attack",
+      "Astonish"
+    ],
+    "Weight": "2.3 kg",
+    "Height": "0.61 m",
+    "Candy": {
+      "Name": "Shuppet candies",
+      "FamilyID": 353
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 353,
+      "Name": "Shuppet candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "354",
+        "Name": "Banette"
+      }
+    ],
+    "Special Attack(s)": [
+      "Ominous Wind",
+      "Night Shade",
+      "Shadow Sneak"
+    ],
+    "BaseAttack": 138,
+    "BaseDefense": 66,
+    "BaseStamina": 88,
+    "CaptureRate": 0.4,
+    "FleeRate": 0.1,
+    "BuddyDistanceNeeded": 3
+  },
+  {
+    "Number": "354",
+    "Name": "Banette",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Ghost"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Hex",
+      "Shadow Claw"
+    ],
+    "Weight": "12.5 kg",
+    "Height": "1.09 m",
+    "Candy": {
+      "Name": "Shuppet candies",
+      "FamilyID": 353
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "353",
+        "Name": "Shuppet"
+      }
+    ],
+    "Special Attack(s)": [
+      "Shadow Ball",
+      "Dazzling Gleam",
+      "Thunder"
+    ],
+    "BaseAttack": 218,
+    "BaseDefense": 127,
+    "BaseStamina": 128,
+    "CaptureRate": 0.2,
+    "FleeRate": 0.07,
+    "BuddyDistanceNeeded": 3
+  },
+  {
+    "Number": "355",
+    "Name": "Duskull",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Ghost"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Hex",
+      "Astonish"
+    ],
+    "Weight": "15 kg",
+    "Height": "0.79 m",
+    "Candy": {
+      "Name": "Duskull candies",
+      "FamilyID": 355
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 355,
+      "Name": "Duskull candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "356",
+        "Name": "Dusclops"
+      }
+    ],
+    "Special Attack(s)": [
+      "Ominous Wind",
+      "Night Shade",
+      "Shadow Sneak"
+    ],
+    "BaseAttack": 70,
+    "BaseDefense": 162,
+    "BaseStamina": 40,
+    "CaptureRate": 0.4,
+    "FleeRate": 0.1,
+    "BuddyDistanceNeeded": 3
+  },
+  {
+    "Number": "356",
+    "Name": "Dusclops",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Ghost"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Hex",
+      "Feint Attack"
+    ],
+    "Weight": "30.6 kg",
+    "Height": "1.6 m",
+    "Candy": {
+      "Name": "Duskull candies",
+      "FamilyID": 355
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "355",
+        "Name": "Duskull"
+      }
+    ],
+    "Special Attack(s)": [
+      "Shadow Punch",
+      "Ice Punch",
+      "Fire Punch"
+    ],
+    "BaseAttack": 124,
+    "BaseDefense": 234,
+    "BaseStamina": 80,
+    "CaptureRate": 0.2,
+    "FleeRate": 0.07,
+    "BuddyDistanceNeeded": 3
+  },
+  {
+    "Number": "357",
+    "Name": "Tropius",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Grass"
+    ],
+    "Type II": [
+      "Flying"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "100 kg",
+    "Height": "2.01 m",
+    "Candy": {
+      "Name": "Tropius candies",
+      "FamilyID": 357
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 136,
+    "BaseDefense": 165,
+    "BaseStamina": 198,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "358",
+    "Name": "Chimecho",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Psychic"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "1 kg",
+    "Height": "0.61 m",
+    "Candy": {
+      "Name": "Chimecho candies",
+      "FamilyID": 358
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 175,
+    "BaseDefense": 174,
+    "BaseStamina": 150,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "359",
+    "Name": "Absol",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Dark"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "47 kg",
+    "Height": "1.19 m",
+    "Candy": {
+      "Name": "Absol candies",
+      "FamilyID": 359
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 246,
+    "BaseDefense": 120,
+    "BaseStamina": 130,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "360",
+    "Name": "Wynaut",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Psychic"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "14 kg",
+    "Height": "0.61 m",
+    "Candy": {
+      "Name": "Wobbuffet candies",
+      "FamilyID": 202
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 202,
+      "Name": "Wobbuffet candies"
+    },
+    "Next evolution(s)": [],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 41,
+    "BaseDefense": 86,
+    "BaseStamina": 190,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "361",
+    "Name": "Snorunt",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Ice"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "16.8 kg",
+    "Height": "0.71 m",
+    "Candy": {
+      "Name": "Snorunt candies",
+      "FamilyID": 361
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 361,
+      "Name": "Snorunt candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "362",
+        "Name": "Glalie"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 95,
+    "BaseDefense": 95,
+    "BaseStamina": 100,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "362",
+    "Name": "Glalie",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Ice"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "256.5 kg",
+    "Height": "1.5 m",
+    "Candy": {
+      "Name": "Snorunt candies",
+      "FamilyID": 361
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "361",
+        "Name": "Snorunt"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 162,
+    "BaseDefense": 162,
+    "BaseStamina": 160,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "363",
+    "Name": "Spheal",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Ice"
+    ],
+    "Type II": [
+      "Water"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "39.5 kg",
+    "Height": "0.79 m",
+    "Candy": {
+      "Name": "Spheal candies",
+      "FamilyID": 363
+    },
+    "Next Evolution Requirements": {
+      "Amount": 25,
+      "Family": 363,
+      "Name": "Spheal candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "364",
+        "Name": "Sealeo"
+      },
+      {
+        "Number": "365",
+        "Name": "Walrein"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 95,
+    "BaseDefense": 90,
+    "BaseStamina": 140,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "364",
+    "Name": "Sealeo",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Ice"
+    ],
+    "Type II": [
+      "Water"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "87.6 kg",
+    "Height": "1.09 m",
+    "Candy": {
+      "Name": "Spheal candies",
+      "FamilyID": 363
+    },
+    "Next Evolution Requirements": {
+      "Amount": 100,
+      "Family": 363,
+      "Name": "Spheal candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "365",
+        "Name": "Walrein"
+      }
+    ],
+    "Previous evolution(s)": [
+      {
+        "Number": "363",
+        "Name": "Spheal"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 137,
+    "BaseDefense": 132,
+    "BaseStamina": 180,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "365",
+    "Name": "Walrein",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Ice"
+    ],
+    "Type II": [
+      "Water"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "150.6 kg",
+    "Height": "1.4 m",
+    "Candy": {
+      "Name": "Spheal candies",
+      "FamilyID": 363
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "363",
+        "Name": "Spheal"
+      },
+      {
+        "Number": "364",
+        "Name": "Sealeo"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 182,
+    "BaseDefense": 176,
+    "BaseStamina": 220,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "366",
+    "Name": "Clamperl",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "52.5 kg",
+    "Height": "0.41 m",
+    "Candy": {
+      "Name": "Clamperl candies",
+      "FamilyID": 366
+    },
+    "Next Evolution Requirements": {
+      "Amount": 50,
+      "Family": 366,
+      "Name": "Clamperl candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "367",
+        "Name": "Huntail"
+      },
+      {
+        "Number": "368",
+        "Name": "Gorebyss"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 133,
+    "BaseDefense": 149,
+    "BaseStamina": 70,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "367",
+    "Name": "Huntail",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "27 kg",
+    "Height": "1.7 m",
+    "Candy": {
+      "Name": "Clamperl candies",
+      "FamilyID": 366
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "366",
+        "Name": "Clamperl"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 197,
+    "BaseDefense": 194,
+    "BaseStamina": 110,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "368",
+    "Name": "Gorebyss",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "22.6 kg",
+    "Height": "1.8 m",
+    "Candy": {
+      "Name": "Clamperl candies",
+      "FamilyID": 366
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "366",
+        "Name": "Clamperl"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 211,
+    "BaseDefense": 194,
+    "BaseStamina": 110,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "369",
+    "Name": "Relicanth",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Type II": [
+      "Rock"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "23.4 kg",
+    "Height": "0.99 m",
+    "Candy": {
+      "Name": "Relicanth candies",
+      "FamilyID": 369
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 162,
+    "BaseDefense": 234,
+    "BaseStamina": 200,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "370",
+    "Name": "Luvdisc",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "8.7 kg",
+    "Height": "0.61 m",
+    "Candy": {
+      "Name": "Luvdisc candies",
+      "FamilyID": 370
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 81,
+    "BaseDefense": 134,
+    "BaseStamina": 86,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "371",
+    "Name": "Bagon",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Dragon"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "42.1 kg",
+    "Height": "0.61 m",
+    "Candy": {
+      "Name": "Bagon candies",
+      "FamilyID": 371
+    },
+    "Next Evolution Requirements": {
+      "Amount": 25,
+      "Family": 371,
+      "Name": "Bagon candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "372",
+        "Name": "Shelgon"
+      },
+      {
+        "Number": "373",
+        "Name": "Salamence"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 134,
+    "BaseDefense": 107,
+    "BaseStamina": 90,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "372",
+    "Name": "Shelgon",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Dragon"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "110.5 kg",
+    "Height": "1.09 m",
+    "Candy": {
+      "Name": "Bagon candies",
+      "FamilyID": 371
+    },
+    "Next Evolution Requirements": {
+      "Amount": 100,
+      "Family": 371,
+      "Name": "Bagon candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "373",
+        "Name": "Salamence"
+      }
+    ],
+    "Previous evolution(s)": [
+      {
+        "Number": "371",
+        "Name": "Bagon"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 172,
+    "BaseDefense": 179,
+    "BaseStamina": 130,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "373",
+    "Name": "Salamence",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Dragon"
+    ],
+    "Type II": [
+      "Flying"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "102.6 kg",
+    "Height": "1.5 m",
+    "Candy": {
+      "Name": "Bagon candies",
+      "FamilyID": 371
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "371",
+        "Name": "Bagon"
+      },
+      {
+        "Number": "372",
+        "Name": "Shelgon"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 277,
+    "BaseDefense": 168,
+    "BaseStamina": 190,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "374",
+    "Name": "Beldum",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Steel"
+    ],
+    "Type II": [
+      "Psychic"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "95.2 kg",
+    "Height": "0.61 m",
+    "Candy": {
+      "Name": "Beldum candies",
+      "FamilyID": 374
+    },
+    "Next Evolution Requirements": {
+      "Amount": 25,
+      "Family": 374,
+      "Name": "Beldum candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "375",
+        "Name": "Metang"
+      },
+      {
+        "Number": "376",
+        "Name": "Metagross"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 96,
+    "BaseDefense": 141,
+    "BaseStamina": 80,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "375",
+    "Name": "Metang",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Steel"
+    ],
+    "Type II": [
+      "Psychic"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "202.5 kg",
+    "Height": "1.19 m",
+    "Candy": {
+      "Name": "Beldum candies",
+      "FamilyID": 374
+    },
+    "Next Evolution Requirements": {
+      "Amount": 100,
+      "Family": 374,
+      "Name": "Beldum candies"
+    },
+    "Next evolution(s)": [
+      {
+        "Number": "376",
+        "Name": "Metagross"
+      }
+    ],
+    "Previous evolution(s)": [
+      {
+        "Number": "374",
+        "Name": "Beldum"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 138,
+    "BaseDefense": 185,
+    "BaseStamina": 120,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "376",
+    "Name": "Metagross",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Steel"
+    ],
+    "Type II": [
+      "Psychic"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "550 kg",
+    "Height": "1.6 m",
+    "Candy": {
+      "Name": "Beldum candies",
+      "FamilyID": 374
+    },
+    "Previous evolution(s)": [
+      {
+        "Number": "374",
+        "Name": "Beldum"
+      },
+      {
+        "Number": "375",
+        "Name": "Metang"
+      }
+    ],
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 257,
+    "BaseDefense": 247,
+    "BaseStamina": 160,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "377",
+    "Name": "Regirock",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Rock"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "230 kg",
+    "Height": "1.7 m",
+    "Candy": {
+      "Name": "Regirock candies",
+      "FamilyID": 377
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 179,
+    "BaseDefense": 356,
+    "BaseStamina": 160,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "378",
+    "Name": "Regice",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Ice"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "175 kg",
+    "Height": "1.8 m",
+    "Candy": {
+      "Name": "Regice candies",
+      "FamilyID": 378
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 179,
+    "BaseDefense": 356,
+    "BaseStamina": 160,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "379",
+    "Name": "Registeel",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Steel"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "205 kg",
+    "Height": "1.91 m",
+    "Candy": {
+      "Name": "Registeel candies",
+      "FamilyID": 379
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 143,
+    "BaseDefense": 285,
+    "BaseStamina": 160,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "380",
+    "Name": "Latias",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Dragon"
+    ],
+    "Type II": [
+      "Psychic"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "40 kg",
+    "Height": "1.4 m",
+    "Candy": {
+      "Name": "Latias candies",
+      "FamilyID": 380
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 228,
+    "BaseDefense": 268,
+    "BaseStamina": 160,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "381",
+    "Name": "Latios",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Dragon"
+    ],
+    "Type II": [
+      "Psychic"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "60 kg",
+    "Height": "2.01 m",
+    "Candy": {
+      "Name": "Latios candies",
+      "FamilyID": 381
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 268,
+    "BaseDefense": 228,
+    "BaseStamina": 160,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "382",
+    "Name": "Kyogre",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Water"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "352 kg",
+    "Height": "4.5 m",
+    "Candy": {
+      "Name": "Kyogre candies",
+      "FamilyID": 382
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 297,
+    "BaseDefense": 276,
+    "BaseStamina": 200,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "383",
+    "Name": "Groudon",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Ground"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "950 kg",
+    "Height": "3.51 m",
+    "Candy": {
+      "Name": "Groudon candies",
+      "FamilyID": 383
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 297,
+    "BaseDefense": 276,
+    "BaseStamina": 200,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "384",
+    "Name": "Rayquaza",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Dragon"
+    ],
+    "Type II": [
+      "Flying"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "206.5 kg",
+    "Height": "7.01 m",
+    "Candy": {
+      "Name": "Rayquaza candies",
+      "FamilyID": 384
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 312,
+    "BaseDefense": 187,
+    "BaseStamina": 210,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "385",
+    "Name": "Jirachi",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Steel"
+    ],
+    "Type II": [
+      "Psychic"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "1.1 kg",
+    "Height": "0.3 m",
+    "Candy": {
+      "Name": "Jirachi candies",
+      "FamilyID": 385
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 210,
+    "BaseDefense": 210,
+    "BaseStamina": 200,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
+  },
+  {
+    "Number": "386",
+    "Name": "Deoxys",
+    "Classification": "DataNotInGameMaster",
+    "Type I": [
+      "Psychic"
+    ],
+    "Weaknesses": [
+      "DataNotInGameMaster"
+    ],
+    "Fast Attack(s)": [
+      "Splash"
+    ],
+    "Weight": "60.8 kg",
+    "Height": "1.7 m",
+    "Candy": {
+      "Name": "Deoxys candies",
+      "FamilyID": 386
+    },
+    "Special Attack(s)": [
+      "Struggle"
+    ],
+    "BaseAttack": 1,
+    "BaseDefense": 1,
+    "BaseStamina": 1,
+    "CaptureRate": 0.0,
+    "FleeRate": 0.04,
+    "BuddyDistanceNeeded": 5
   }
 ]

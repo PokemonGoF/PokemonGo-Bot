@@ -35,11 +35,11 @@ class ApiWrapper(PGoApi, object):
             "device_id": ApiWrapper.DEVICE_ID,
             "device_brand": 'Apple',
             "device_model": 'iPhone',
-            "device_model_boot": 'iPhone8,2',
+            "device_model_boot": 'iPhone10,2',
             "hardware_manufacturer": 'Apple',
-            "hardware_model": 'N66AP',
+            "hardware_model": 'D21AP',
             "firmware_brand": 'iPhone OS',
-            "firmware_type": '9.3.3'
+            "firmware_type": '11.1.0'
         }
 
         PGoApi.__init__(self, device_info=device_info)
@@ -65,18 +65,18 @@ class ApiWrapper(PGoApi, object):
             key_string = self.config.username
             if file_salt is not None:
                 # Config and file are set, so use those.
-                ApiWrapper.DEVICE_ID = hashlib.md5(key_string + file_salt).hexdigest()
+                ApiWrapper.DEVICE_ID = hashlib.md5(key_string + file_salt).hexdigest()[:32]
             else:
                 # Config is set, but file isn't, so make it.
                 rand_float = random.SystemRandom().random()
                 salt = base64.b64encode((struct.pack('!d', rand_float)))
-                ApiWrapper.DEVICE_ID = hashlib.md5(key_string + salt).hexdigest()
+                ApiWrapper.DEVICE_ID = hashlib.md5(key_string + salt).hexdigest()[:32]
                 with open(did_path, "w") as text_file:
                     text_file.write("{0}".format(salt))
         else:
             if file_salt is not None:
                 # No config, but there's a file, use it.
-                ApiWrapper.DEVICE_ID = hashlib.md5(file_salt).hexdigest()
+                ApiWrapper.DEVICE_ID = hashlib.md5(file_salt).hexdigest()[:32]
             else:
                 # No config or file, so make up a reasonable default.
                 ApiWrapper.DEVICE_ID = "3d65919ca1c2fc3a8e2bd7cc3f974c34"
