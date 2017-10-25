@@ -245,8 +245,6 @@ class ThreadClass(threading.Thread):
         self.paused = True  # start out paused
         self.state = threading.Condition()
         self.Manager = Manager
-        self.cwd = os.getcwd()
-        self.loop = True
 
     def run(self):
         time.sleep(.1)
@@ -286,16 +284,13 @@ class ThreadClass(threading.Thread):
     def resume(self):
         with self.state:
             self.paused = False
-            self.CurThread = int(self.getName().replace('Thread-', '')) - 1
             self.state.notify()  # unblock self if waiting
 
     def pause(self):
         with self.state:
-            self.CurThread = int(self.getName().replace('Thread-', '')) - 1
             self.paused = True  # make self block and wait
 
     def stop(self):
-        self.CurThread = int(self.getName().replace('Thread-', '')) - 1
         self.stopped = True
 
 
@@ -317,4 +312,4 @@ def start():
 
 
 if __name__ == "__main__":
-        start()
+    start()
