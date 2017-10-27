@@ -7,6 +7,7 @@ import shutil
 import threading
 from time import gmtime, strftime, sleep
 from threading import *
+from subprocess import call
 import requests
 
 import urllib3
@@ -16,7 +17,7 @@ urllib3.disable_warnings()
 Null = ""
 proxyCur = 0
 hashkeyCur = 0
-accountNum = 0
+
 try:
     os.mkdir('configs/temp')
 except:
@@ -47,6 +48,8 @@ class Manager:
         # self.Accounts = Accounts
         self.hashkeyCur = 0
         self.proxyCur = 0
+        self.accountNum = 0
+        self.accountLeft = 0
         # Loading accounts
         try:
             with open('configs/' + MultiBotConfig[u'AccountsFile']) as accountsFile:
@@ -55,6 +58,9 @@ class Manager:
                 Accounts = random.sample(self.Accounts, len(self.Accounts))
         except IOError:
             Lprint('configs/{} does not exist'.format(MultiBotConfig[u'AccountsFile']))
+        
+        self.accountNum = len(self.Accounts)
+        self.accountLeft = self.accountNum
 
         # Loading proxies
         try:
@@ -74,11 +80,15 @@ class Manager:
 
     # get a account to run
     def GetAccount(self):
-        AccountLock.acquire()
-        AccountTemp = self.Accounts[0]
-        del self.Accounts[0]
-        AccountLock.release()
-        return AccountTemp
+        if self.accountLeft > 0:
+            AccountLock.acquire()
+            AccountTemp = self.Accounts[0]
+            del self.Accounts[0]
+            AccountLock.release()
+            self.accountLeft = self.accountLeft - 1
+            return AccountTemp
+        else:
+            return None
 
     # back to the pool
     def SetAccount(self, Account):
@@ -239,13 +249,15 @@ class ThreadClass(threading.Thread):
     def run(self):
         time.sleep(.1)
         self.resume()  # unpause self
-        while True:
+        
+        while Manager.accountLeft > 0:
             with self.state:
                 if self.paused:
                     self.state.wait()  # block until notified
             self.CurThread = int(self.getName().replace('Thread-', '')) - 1
-
             self.Account = Manager.GetAccount()
+            if self.Account == None:
+                break
             username, password = self.Account.split(':')
             Lprint('Thread-{0} using account {1}'.format(self.CurThread, username))
             try:
@@ -254,15 +266,12 @@ class ThreadClass(threading.Thread):
                     self.CurThread, MultiBotConfig[u'walker_limit_output'])
                 if MultiBotConfig[u'UseProxy']:
                     proxy = Manager.getProxy()
-                    if platform.system() == "Linux":
-                        os.system('export HTTP_PROXY="http://' + proxy + '"; export HTTPS_PROXY="https://' + proxy + '"; ' + StartCmd)
-                        # pass
-                    if platform.system() == "Windows":
-                        # pass
-                        os.system('set HTTP_PROXY="http://' + proxy + '" & set HTTPS_PROXY="https://' + proxy + '" & ' + StartCmd)
+                    if platform.system() == "Linux" or platform.system() == "darwin":
+                        call('export HTTP_PROXY="http://' + proxy + '"; export HTTPS_PROXY="https://' + proxy + '"; ' + StartCmd, shell=True)
+                    if platform.system() == "Windows" or platform.system() == "win32" or platform.system() == "cygwin":
+                        call('set HTTP_PROXY="http://' + proxy + '" & set HTTPS_PROXY="https://' + proxy + '" & ' + StartCmd, shell=True)
                 else:
-                    # pass
-                    os.system(StartCmd)
+                    call(StartCmd, shell=True)
             except Exception as e:
                 Lprint(e)
                 time.sleep(60)
@@ -270,6 +279,7 @@ class ThreadClass(threading.Thread):
                 stop()
             finally:
                 self.Manager.SetAccount(self.Account)
+        Lprint('Thread-{0} has no more accounts run. Thread stopped.'.format(self.CurThread))
 
     def resume(self):
         with self.state:
@@ -292,12 +302,13 @@ def start():
             t = ThreadClass()
             time.sleep(0.1)
             t.start()
-            time.sleep(10)
+            time.sleep(5)
     except KeyboardInterrupt:
         Lprint("stopping all Threads")
         for i in range(MultiBotConfig[u'Threads']):
             t.stop()
         stop()
+        exit(0)
 
 
 if __name__ == "__main__":
