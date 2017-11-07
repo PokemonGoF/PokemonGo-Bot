@@ -583,6 +583,7 @@ class PokemonGoBot(object):
         self.event_manager.register_event('show_best_pokemon', parameters=('pokemons'))
         self.event_manager.register_event('revived_pokemon')
         self.event_manager.register_event('healing_pokemon')
+        self.event_manager.register_event('shadowban_alert')
 
         # level up stuff
         self.event_manager.register_event(
@@ -759,6 +760,7 @@ class PokemonGoBot(object):
         )
         # database shit
         self.event_manager.register_event('catch_log')
+        self.event_manager.register_event('shadowban_log')
         self.event_manager.register_event('vanish_log')
         self.event_manager.register_event('evolve_log')
         self.event_manager.register_event('login_log')
@@ -945,6 +947,7 @@ class PokemonGoBot(object):
                 json.dump({'lat': lat, 'lng': lng, 'alt': alt, 'start_position': self.start_position}, outfile)
         except IOError as e:
             self.logger.info('[x] Error while opening location file: %s' % e)
+            
     def emit_forts_event(self,response_dict):
         map_objects = response_dict.get(
             'responses', {}
@@ -1172,6 +1175,7 @@ class PokemonGoBot(object):
                         level='info',
                         formatted="Current PGoAPI is using {} API. Niantic API Check Pass".format(PGoAPI_version_str)
                     )
+            # request notification at login to clear all inbox    
 
         self.heartbeat()
 
@@ -1205,7 +1209,7 @@ class PokemonGoBot(object):
         warn = False
 
         if response_dict:
-            self._player = response_dict['responses']['GET_PLAYER']['player_data']
+            self._player = response_dict['responses']['GET_PLAYER']['player']
             if 'warn' in response_dict['responses']['GET_PLAYER']:
                 warn = response_dict['responses']['GET_PLAYER']['warn']
             player = self._player
@@ -1583,7 +1587,7 @@ class PokemonGoBot(object):
             if self.get_inbox_time==0:
                 request.get_inbox(is_history=True,is_reverse=False)
             else:
-                request.get_inbox(is_history=False,is_reverse=False,not_before_ms=self.get_inbox_time)
+                request.get_inbox(is_history=True,is_reverse=False,not_before_ms=self.get_inbox_time)
         
             # self.get_inbox_time = int(datetime.datetime.now().strftime("%s")) * 1000
             # More Windows friendly
@@ -1596,13 +1600,14 @@ class PokemonGoBot(object):
                 self.logger.warning('Unable to login, retying')
                 self.empty_response = True
             except:
-                self.logger.warning('Error occured in heatbeat, retying')
+                self.logger.warning('Error occured in heatbeat. Message: ' + sys.exc_info()[0])
                 self.empty_response = True
 
             if not self.empty_response:
                 if responses['responses']['GET_PLAYER']['success'] == True:
                     # we get the player_data anyway, might as well store it
-                    self._player = responses['responses']['GET_PLAYER']['player_data']
+                    # self._player = responses['responses']['GET_PLAYER']['player']
+                    self._player = responses['responses']['GET_PLAYER']['player']
                     self.event_manager.emit(
                         'player_data',
                         sender=self,
@@ -1617,8 +1622,8 @@ class PokemonGoBot(object):
                     # self.logger.info("Inbox: "+format(responses['responses']['GET_INBOX']))
                 if 'notifications' in self._inbox:
                     for notification in self._inbox['notifications']:
-                        notification_date = datetime.datetime.fromtimestamp(int(notification['create_timestamp_ms']) / 1e3)
-                                                
+                        notification_date = datetime.datetime.fromtimestamp(int(notification['create_timestamp_ms']) / 1e3)                        
+                                           
                         if 2 in notification['labels']:
                             if notification['category'] == 'pokemon_hungry':
                                 gym_name = pokemon = 'Unknown'
@@ -1711,7 +1716,7 @@ class PokemonGoBot(object):
             player_stats = player()
 
             if player_stats:
-                nextlvlxp = (int(player_stats.next_level_xp) - int(player_stats.exp))
+                nextlvlxp = (int(player_stats.next_level_exp) - int(player_stats.exp))
                 self.logger.info(
                     'Level: {}'.format(player_stats.level) +
                     ' (Next Level: {} XP)'.format(nextlvlxp) +
@@ -1720,7 +1725,7 @@ class PokemonGoBot(object):
 
                 self.logger.info(
                     'Pokemon Captured: '
-                    '{}'.format(player_stats.pokemons_captured) +
+                    '{}'.format(player_stats.num_pokemon_captured) +
                     ' | Pokestops Visited: '
                     '{}'.format(player_stats.poke_stop_visits))
 
@@ -1742,15 +1747,15 @@ class PokemonGoBot(object):
 
         return forts
 
-        if order_by_distance:
-            forts.sort(key=lambda x: distance(
-                self.position[0],
-                self.position[1],
-                x['latitude'],
-                x['longitude']
-            ))
+        #if order_by_distance:
+        #    forts.sort(key=lambda x: distance(
+        #        self.position[0],
+        #        self.position[1],
+        #        x['latitude'],
+        #        x['longitude']
+        #    ))
 
-        return forts
+        #return forts
     
     def get_gyms(self, order_by_distance=False):
         forts = [fort
@@ -1773,16 +1778,14 @@ class PokemonGoBot(object):
     def get_map_objects(self, lat, lng, timestamp, cellid):
         if time.time() - self.last_time_map_object < self.config.map_object_cache_time:
             return self.last_map_object
-        
         request = self.api.create_request()
         request.get_map_objects(
-            latitude=f2i(lat),
-            longitude=f2i(lng),
-            since_timestamp_ms=timestamp,
+            player_lat=f2i(lat),
+            player_lng=f2i(lng),
+            since_time_ms=timestamp,
             cell_id=cellid
         )
         self.last_map_object = request.call()
-        
         self.emit_forts_event(self.last_map_object)
         #if self.last_map_object:
         #    print self.last_map_object

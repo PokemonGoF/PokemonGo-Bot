@@ -64,7 +64,7 @@ class _BaseInventoryComponent(_StaticInventoryComponent):
         assert self.ID_FIELD is not None
         ret = {}
         for item in inventory:
-            data = item['inventory_item_data']
+            data = item['inventory_item_data'] 
             if self.TYPE in data:
                 item = data[self.TYPE]
                 key = item[self.ID_FIELD]
@@ -90,8 +90,8 @@ class Player(_BaseInventoryComponent):
         self.bot = bot
         self._exp = None
         self._level = None
-        self.next_level_xp = None
-        self.pokemons_captured = None
+        self.next_level_exp = None
+        self.num_pokemon_captured = None
         self.poke_stop_visits = None
         self.player_stats = None
         super(_BaseInventoryComponent, self).__init__()
@@ -110,12 +110,13 @@ class Player(_BaseInventoryComponent):
 
     @exp.setter
     def exp(self, value):
-        # if new exp is larger than or equal to next_level_xp
-        if value >= self.next_level_xp:
-            self.level = self._level + 1
-            # increase next_level_xp to a big amount
+        # if new exp is larger than or equal to next_level_exp
+        if value >= self.next_level_exp:
+            if self._level != None:
+                self.level = self._level + 1
+            # increase next_level_exp to a big amount
             # will be fix on the next heartbeat
-            self.next_level_xp += 10000000
+            self.next_level_exp += 10000000
 
         self._exp = value
 
@@ -126,10 +127,10 @@ class Player(_BaseInventoryComponent):
         if not item:
             item = {}
 
-        self.next_level_xp = item.get('next_level_xp', 0)
+        self.next_level_exp = item.get('next_level_exp', 0)
         self.exp = item.get('experience', 0)
         self.level = item.get('level', 0)
-        self.pokemons_captured = item.get('pokemons_captured', 0)
+        self.num_pokemon_captured = item.get('num_pokemon_captured', 0)
         self.poke_stop_visits = item.get('poke_stop_visits', 0)
 
     def retrieve_data(self, inventory):
@@ -1320,7 +1321,7 @@ class Inventory(object):
             request = self.bot.api.create_request()
             request.get_inventory()
             inventory = request.call()
-
+            
         inventory = inventory['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
         for i in (self.pokedex, self.candy, self.items, self.pokemons, self.player):
             i.refresh(inventory)
@@ -1392,7 +1393,7 @@ class Inventory(object):
         if self.item_inventory_size is None or self.pokemon_inventory_size is None:
             request = self.bot.api.create_request()
             request.get_player()
-            player_data = request.call()['responses']['GET_PLAYER']['player_data']
+            player_data = request.call()['responses']['GET_PLAYER']['player']
             
             self.item_inventory_size = player_data['max_item_storage']
             self.pokemon_inventory_size = player_data['max_pokemon_storage']
