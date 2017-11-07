@@ -1,7 +1,7 @@
 numpy==1.11.0
 networkx==1.11
 six==1.10
-git+https://github.com/MerlionRock/pgoapi.git@develop#egg=pgoapi
+git+https://github.com/MerlionRock/pgoapi.git@7903B#egg=pgoapi
 geopy==1.11.0
 geographiclib==1.46.3
 requests==2.10.0
