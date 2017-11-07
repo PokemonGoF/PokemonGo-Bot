@@ -42,7 +42,9 @@ If this is your first time making a PR or aren't sure of the standard practice o
 
 ## Features
 - [x] Based on Python for botting on any operating system - Windows, macOS and Linux
-- [x] Allow custom hash service provider [NEW]
+- [x] Multi-bot supported 
+- [x] Able to edit bot if certain level has reached
+- [x] Allow custom hash service provider, if any
 - [x] GPS Location configuration
 - [x] Search & spin Pokestops / Gyms
 - [x] Diverse options for humanlike behavior from movement to overall game play
