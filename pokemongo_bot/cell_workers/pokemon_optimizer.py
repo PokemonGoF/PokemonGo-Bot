@@ -270,7 +270,7 @@ class PokemonOptimizer(BaseTask):
             if (not self.lock_buddy) and (len(buddy_all) > 0):
                 new_buddy = buddy_all[0]
 
-                if (not self.buddy) or (self.buddy["id"] != new_buddy.unique_id):
+                if (not self.buddy) or (self.buddy['buddy_pokemon_id'] != new_buddy.unique_id):
                     self.set_buddy_pokemon(new_buddy)
 
             # Only check bag on the first run, second run ignores if the bag is empty enough
@@ -313,7 +313,7 @@ class PokemonOptimizer(BaseTask):
             self.lock_buddy = False
             return
 
-        pokemon = next((p for p in inventory.pokemons().all() if p.unique_id == self.buddy["id"]), None)
+        pokemon = next((p for p in inventory.pokemons().all() if p.unique_id == self.buddy['buddy_pokemon_id']), None)
 
         if not pokemon:
             return
@@ -936,7 +936,7 @@ class PokemonOptimizer(BaseTask):
             self.logger.info(result)
             return False
 
-        xp = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("experience_awarded", 0)
+        xp = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("exp_awarded", 0)
         candy_awarded = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("candy_awarded", 0)
         candy = inventory.candies().get(pokemon.pokemon_id)
         evolution = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("evolved_pokemon_data", {})
@@ -1109,7 +1109,7 @@ class PokemonOptimizer(BaseTask):
 
     def favor_pokemon(self, pokemon):
         request = self.bot.api.create_request()
-        request.set_favorite_pokemon(pokemon_id=pokemon.unique_id, is_favorite=True)
+        request.set_favorite_pokemon(pokemon_id=pokemon.unique_id if pokemon.unique_id < 2**63 else pokemon.unique_id-2**64, is_favorite=True)
         response_dict = request.call()
         
         sleep(1.2)  # wait a bit after request
@@ -1132,7 +1132,7 @@ class PokemonOptimizer(BaseTask):
 
     def unfavor_pokemon(self, pokemon):
         request = self.bot.api.create_request()
-        request.set_favorite_pokemon(pokemon_id=pokemon.unique_id, is_favorite=False)
+        request.set_favorite_pokemon(pokemon_id=pokemon.unique_id if pokemon.unique_id < 2**63 else pokemon.unique_id-2**64, is_favorite=False)
         response_dict = request.call()
         
         sleep(1.2)  # wait a bit after request

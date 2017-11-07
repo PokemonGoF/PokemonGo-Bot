@@ -57,19 +57,20 @@ class CollectLevelUpReward(BaseTask):
             data = (response_dict
                     .get('responses', {})
                     .get('LEVEL_UP_REWARDS', {})
-                    .get('items_awarded', []))
+                    .get('items', []))
 
             for item in data:
-                if 'item_id' in item and str(item['item_id']) in self.bot.item_list:
-                    got_item = self.bot.item_list[str(item['item_id'])]
+                if 'item' in item and str(item['item']) in self.bot.item_list:
+                    got_item = self.bot.item_list[str(item['item'])]
                     item['name'] = got_item
                     count = 'item_count' in item and item['item_count'] or 0
-                    inventory.items().get(item['item_id']).add(count)
-            self.emit_event(
-                'level_up_reward',
-                formatted='Received level up reward: {items}',
-                data={
-                    # [{'item_id': 3, 'name': u'Ultraball', 'item_count': 10}, {'item_id': 103, 'name': u'Hyper Potion', 'item_count': 10}]
-                    'items': ', '.join(["{}x {}".format(x['item_count'], x['name']) for x in data])
-                }
+                    inventory.items().get(item['item']).add(count)
+            if data:
+                self.emit_event(
+                    'level_up_reward',
+                    formatted='Received level up reward: {items}',
+                    data={
+                        # [{'item_id': 3, 'name': u'Ultraball', 'item_count': 10}, {'item_id': 103, 'name': u'Hyper Potion', 'item_count': 10}]
+                        'items': ', '.join(["{}x {}".format(x['item_count'], x['name']) for x in data])
+                    }
             )

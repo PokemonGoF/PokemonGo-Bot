@@ -93,13 +93,13 @@ class CatchPokemon(BaseTask):
 
                 if always_catch_trash:
                     if mon_name in trash_pokemon:
-                        self.logger.info("While on the hunt for {}, I found a {}! I want that Pokemon! Will try to catch...".format(bounty_name, mon_name))
+                        self.logger.info("Catch Trash Rule: While on the hunt for {}, I found a {}! I want that Pokemon! Will try to catch...".format(bounty_name, mon_name))
                         trash_catch = True
 
                 if always_catch_family_of_vip:
                     if mon_name != bounty_name:
                         if self._is_family_of_vip(mon_to_catch['pokemon_id']):
-                            self.logger.info("While on the hunt for {}, I found a {}! I want that Pokemon! Will try to catch...".format(bounty_name, mon_name))
+                            self.logger.info("Catch Family of VIP Rule: While on the hunt for {}, I found a {}! I want that Pokemon! Will try to catch...".format(bounty_name, mon_name))
                             family_catch = True
 
                 if not family_catch and not trash_catch:
@@ -112,13 +112,14 @@ class CatchPokemon(BaseTask):
                             return WorkerResult.RUNNING
                         else:
                             return WorkerResult.SUCCESS
-                    else:
+                    # Below messgae are repeated/not neccessary
+                    #else:
                         # We have found a vip or our target...
-                        if bounty_name == mon_name:
-                            self.bot.hunter_locked_target = None
-                            self.logger.info("Found my target {}!".format(bounty_name))
-                        else:
-                            self.logger.info("While on the hunt for {}, I found a {}! I want that Pokemon! Will try to catch...".format(bounty_name, mon_name))
+                        #if bounty_name == mon_name:
+                        #    self.bot.hunter_locked_target = None
+                        #    self.logger.info("Found my target {}!".format(bounty_name))
+                        #else:
+                        #    self.logger.info("Catch VIP Rule: While on the hunt for {}, I found a {}! I want that Pokemon! Will try to catch...".format(bounty_name, mon_name))
             try:
                 if self.catch_pokemon(mon_to_catch) == WorkerResult.ERROR:
                     # give up incase something went wrong in our catch worker (ran out of balls, etc)
@@ -212,7 +213,6 @@ class CatchPokemon(BaseTask):
 
 
         for fort in forts_in_range:
-
             details = fort_details(self.bot, fort_id=fort['id'],
                                   latitude=fort['latitude'],
                                   longitude=fort['longitude'])

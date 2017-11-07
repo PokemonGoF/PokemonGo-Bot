@@ -1,4 +1,5 @@
 import random
+import string
 
 from pokemongo_bot import logger
 from pokemongo_bot.inventory import player
@@ -14,6 +15,7 @@ class CompleteTutorial(BaseTask):
 
     def initialize(self):
         self.nickname = self.config.get('nickname','')
+        self.random_nickname = self.config.get('random_nickname',False)
         self.team = self.config.get('team',0)
         self.tutorial_run = True
         self.team_run = True
@@ -69,9 +71,15 @@ class CompleteTutorial(BaseTask):
 
         # NAME_SELECTION = 4
         if not 4 in tutorial_state:
-            if not self.nickname:
+            if not self.nickname and not self.random_nickname:
                 self.logger.info("No nickname defined in config")
                 return False
+                
+            if self.random_nickname:
+                min_char = 8
+                max_char = 14
+                allchar = string.ascii_letters + string.digits
+                self.nickname = "".join(random.choice(allchar) for x in range(random.randint(min_char, max_char)))
 
             self.logger.info(u'Trying to set {} as nickname'.format(self.nickname))
             sleep(5)
@@ -97,9 +105,9 @@ class CompleteTutorial(BaseTask):
         first_pokemon_id = random.choice([1, 4, 7])
         
         request = self.bot.api.create_request()
-        request.encounter_tutorial_complete(pokemon_id=first_pokemon_id)
+        request.encounter_tutorial_complete(pokedex_id=first_pokemon_id)
         response_dict = request.call()
-        
+
         try:
             if response_dict['responses']['ENCOUNTER_TUTORIAL_COMPLETE']['result'] == 1:
                 return True
@@ -118,21 +126,21 @@ class CompleteTutorial(BaseTask):
         # Default is 0, anyway human player will stop
         # at the first choices in general, so fully
         # random on the whole avatar space is not the way to go either
-        avatar['skin']=random.randint(0,3)
-        avatar['hair']=random.randint(0,3)
-        avatar['shirt']=random.randint(0,3)
-        avatar['pants']=random.randint(0,3)
-        avatar['hat']=random.randint(0,3)
-        avatar['shoes']=random.randint(0,3)
-        avatar['eyes']=random.randint(0,3)
-        avatar['backpack']=random.randint(0,3)
+        avatar['skin']=random.randint(1,3)
+        avatar['hair']=random.randint(1,5)
+        avatar['shirt']=random.randint(1,3)
+        avatar['pants']=random.randint(1,2)
+        avatar['hat']=random.randint(1,3)
+        avatar['shoes']=random.randint(1,6)
+        avatar['eyes']=random.randint(1,4)
+        avatar['backpack']=random.randint(1,5)
         return avatar
 
     def _set_avatar(self):
         avatar = self._random_avatar()
         
         request = self.bot.api.create_request()
-        request.set_avatar(player_avatar=avatar)
+        request.set_avatar(player_avatar_proto=avatar)
         response_dict = request.call()
         
         status = response_dict['responses']['SET_AVATAR']['status']
@@ -156,7 +164,6 @@ class CompleteTutorial(BaseTask):
         request = self.bot.api.create_request()
         request.claim_codename(codename=nickname)
         response_dict = request.call()
-        
         try:
             result = response_dict['responses']['CLAIM_CODENAME']['status']
             if result == 1:
@@ -180,14 +187,12 @@ class CompleteTutorial(BaseTask):
 
     def _set_tutorial_state(self, completed):
         request = self.bot.api.create_request()
-        request.mark_tutorial_complete(tutorials_completed=[completed], 
+        request.mark_tutorial_complete(tutorial_complete=[completed], 
                                        send_marketing_emails=False,
                                        send_push_notifications=False)
         response_dict = request.call()
-        
         try:
-            self._player = response_dict['responses'][
-                'MARK_TUTORIAL_COMPLETE']['player_data']
+            self._player = response_dict['responses']['MARK_TUTORIAL_COMPLETE']['player']
             return response_dict['responses']['MARK_TUTORIAL_COMPLETE']['success']
         except KeyError:
             self.logger.error("KeyError while setting tutorial state")

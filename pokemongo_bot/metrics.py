@@ -128,7 +128,7 @@ class Metrics(object):
                         self.visits['latest'] = playerdata.get('poke_stop_visits', 0)
                         if self.visits['start'] < 0: self.visits['start'] = self.visits['latest']
 
-                        self.captures['latest'] = playerdata.get('pokemons_captured', 0)
+                        self.captures['latest'] = playerdata.get('num_pokemon_captured', 0)
                         if self.captures['start'] < 0: self.captures['start'] = self.captures['latest']
 
                         self.distance['latest'] = playerdata.get('km_walked', 0)
