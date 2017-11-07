@@ -37,7 +37,7 @@ def fort_details(bot, fort_id, latitude, longitude):
           Lookup the fort details and cache the response for future use.
           """
           request = bot.api.create_request()
-          request.fort_details(fort_id=fort_id, latitude=latitude, longitude=longitude)
+          request.fort_details(id=fort_id, latitude=latitude, longitude=longitude)
           try:
               response_dict = request.call()
               FORT_CACHE[fort_id] = response_dict['responses']['FORT_DETAILS']
@@ -52,7 +52,7 @@ def fort_details(bot, fort_id, latitude, longitude):
         Lookup the fort details and cache the response for future use.
         """
         request = bot.api.create_request()
-        request.fort_details(fort_id=fort_id, latitude=latitude, longitude=longitude)
+        request.fort_details(id=fort_id, latitude=latitude, longitude=longitude)
         try:
             response_dict = request.call()
             FORT_CACHE[fort_id] = response_dict['responses']['FORT_DETAILS']

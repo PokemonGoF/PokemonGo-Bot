@@ -252,14 +252,14 @@ class UpdateLiveStats(BaseTask):
         distance_travelled = metrics.distance_travelled()
         current_level = int(player_stats.get('level', 0))
         prev_level_xp = int(self.xp_per_level[current_level - 1][2])
-        next_level_xp = int(player_stats.get('next_level_xp', 0))
+        next_level_exp = int(player_stats.get('next_level_exp', 0))
         experience = int(player_stats.get('experience', 0))
         current_level_xp = experience - prev_level_xp
-        whole_level_xp = next_level_xp - prev_level_xp
+        whole_level_xp = next_level_exp - prev_level_xp
         level_completion_percentage = int((current_level_xp * 100) / whole_level_xp)
         experience_per_hour = int(metrics.xp_per_hour())
         # Calculate est time to level
-        remaining_xp = next_level_xp - current_level_xp
+        remaining_xp = next_level_exp - current_level_xp
         # eample; 30_000 xp remaining 3000 xp/h => 10h till level
         if experience_per_hour > 0:
             ttl = (float(remaining_xp) / float(experience_per_hour))

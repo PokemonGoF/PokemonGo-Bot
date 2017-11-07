@@ -171,7 +171,7 @@ class EvolvePokemon(BaseTask):
         response_dict = request.call()
         
         if response_dict.get('responses', {}).get('EVOLVE_POKEMON', {}).get('result', 0) == 1:
-            xp = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("experience_awarded", 0)
+            xp = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("exp_awarded", 0)
             evolution = response_dict.get("responses", {}).get("EVOLVE_POKEMON", {}).get("evolved_pokemon_data", {})
             awarded_candies = response_dict.get('responses', {}).get('EVOLVE_POKEMON', {}).get('candy_awarded', 0)
             candy = inventory.candies().get(pokemon.pokemon_id)

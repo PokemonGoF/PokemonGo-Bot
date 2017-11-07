@@ -150,7 +150,10 @@ class PokemonCatchWorker(BaseTask):
             return WorkerResult.ERROR
 
         # get pokemon data
-        pokemon_data = response['wild_pokemon']['pokemon_data'] if 'wild_pokemon' in response else response['pokemon_data']
+        if 'pokemon' not in response['pokemon']:
+            pokemon_data = response['pokemon']
+        else:
+            pokemon_data = response['pokemon']['pokemon']
         pokemon = Pokemon(pokemon_data)
 
         # check if vip pokemon
@@ -259,9 +262,9 @@ class PokemonCatchWorker(BaseTask):
             self.response_status_key = 'status'
             request.encounter(
                 encounter_id=encounter_id,
-                spawn_point_id=spawn_point_id,
-                player_latitude=player_latitude,
-                player_longitude=player_longitude
+                spawnpoint_id=spawn_point_id,
+                player_lat_degrees=player_latitude,
+                player_lng_degrees=player_longitude
             )
         elif 'fort_id' in self.pokemon:
             fort_id = self.pokemon['fort_id']
@@ -269,10 +272,10 @@ class PokemonCatchWorker(BaseTask):
             self.response_key = 'DISK_ENCOUNTER'
             self.response_status_key = 'result'
             request.disk_encounter(
-                encounter_id=encounter_id,
+                encounter_id=encounter_id if encounter_id < 2**63 else encounter_id-2**64,
                 fort_id=fort_id,
-                player_latitude=player_latitude,
-                player_longitude=player_longitude
+                player_lat_degrees=player_latitude,
+                player_lng_degrees=player_longitude
             )
         else:
             # This must be a incensed mon
@@ -662,7 +665,7 @@ class PokemonCatchWorker(BaseTask):
                 encounter_id=encounter_id,
                 pokeball=current_ball,
                 normalized_reticle_size=throw_parameters['normalized_reticle_size'],
-                spawn_point_id=self.spawn_point_guid,
+                spawn_point_guid=self.spawn_point_guid,
                 hit_pokemon=hit_pokemon,
                 spin_modifier=throw_parameters['spin_modifier'],
                 normalized_hit_position=throw_parameters['normalized_hit_position']
@@ -744,8 +747,7 @@ class PokemonCatchWorker(BaseTask):
                     self.rest_completed = False
                 pokemon.unique_id = response_dict['responses']['CATCH_POKEMON']['captured_pokemon_id']
                 self.bot.metrics.captured_pokemon(pokemon.name, pokemon.cp, pokemon.iv_display, pokemon.iv)
-
-                awards = response_dict['responses']['CATCH_POKEMON']['capture_award']
+                awards = response_dict['responses']['CATCH_POKEMON']['scores']
                 exp_gain, candy_gain, stardust_gain = self.extract_award(awards)
                 with self.bot.database as conn:
                     c = conn.cursor()

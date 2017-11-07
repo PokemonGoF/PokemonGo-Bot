@@ -55,11 +55,11 @@ class HandleSoftBan(BaseTask):
         
         request = self.bot.api.create_request()
         request.fort_search(
-            fort_id=fort_id,
-            fort_latitude=latitude,
-            fort_longitude=longitude,
-            player_latitude=f2i(self.bot.position[0]),
-            player_longitude=f2i(self.bot.position[1])
+            id=fort_id,
+            fort_lat_degrees=latitude,
+            fort_lng_degrees=longitude,
+            player_lat_degrees=f2i(self.bot.position[0]),
+            player_lng_degrees=f2i(self.bot.position[1])
         )
         request.call()
         

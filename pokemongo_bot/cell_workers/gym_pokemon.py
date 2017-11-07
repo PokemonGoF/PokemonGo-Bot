@@ -64,11 +64,11 @@ class GymPokemon(BaseTask):
         
         self.take_at_most = self.config.get('take_at_most', 20)
         if self.take_at_most > 20:
-            self.logger.warning("We can take more than 20 gyms!")
+            self.logger.warning("We cannot take more than 20 gyms!")
             self.take_at_most = 20
         self.leave_at_least_spots = self.config.get('leave_at_least_spots', 0)
         if self.leave_at_least_spots > 4:
-            self.logger.warning("There are only 6 spots in a gym, when we drop a Pokemon in that would leave 5 spots! Setting leave open spots to 4!")
+            self.logger.warning("There are only 6 spots in a gym, when we drop a Pokemon in that would leave 5 spots! Setting leave open spots reset to 4!")
             self.leave_at_least_spots = 4
         self.chain_fill_gyms = self.config.get('chain_fill_gyms', True)
         self.ignore_max_cp_pokemon = self.config.get('allow_above_cp', ["Blissey"])
@@ -441,7 +441,7 @@ class GymPokemon(BaseTask):
                 if raid_ends < datetime.now():
                     self.logger.info("No need to wait.")
                 elif (raid_ends-t).seconds > 600:
-                    self.logger.info("Need to wait long than 10 minutes, skipping")
+                    self.logger.info("Need to wait more than 10 minutes, skipping")
                     self.destination = None
                     self.recent_gyms.append(gym["id"])
                     self.raid_gyms[gym["id"]] = raid_ends

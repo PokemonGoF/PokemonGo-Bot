@@ -95,7 +95,7 @@ class HealPokemon(BaseTask):
 
         amount = inventory.items().get(item).count
         if amount > 0:
-            response_dict_revive = self.bot.api.use_item_revive(item_id=item, pokemon_id=pokemon.unique_id)
+            response_dict_revive = self.bot.api.use_item_revive(item=item, pokemon_id=pokemon.unique_id)
             action_delay(2, 3)
             if response_dict_revive:
                 result = response_dict_revive.get('responses', {}).get('USE_ITEM_REVIVE', {}).get('result', 0)
@@ -215,7 +215,7 @@ class HealPokemon(BaseTask):
             self.logger.info("Healing with a MAX potion we have %s left." % (potion_count - 1))
             healing = pokemon.hp_max - pokemon.hp
 
-        response_dict_potion = self.bot.api.use_item_potion(item_id=potion_id, pokemon_id=pokemon.unique_id)
+        response_dict_potion = self.bot.api.use_item_potion(item=potion_id, pokemon_id=pokemon.unique_id)
         # Select potion
         sleep(2)
         if response_dict_potion:
