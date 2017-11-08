@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import time
 from datetime import datetime, timedelta
 from collections import Counter
+from collections import OrderedDict
 
 from geopy.distance import great_circle
 from s2sphere import Cell, CellId, LatLng
@@ -17,6 +18,9 @@ from pokemongo_bot.worker_result import WorkerResult
 from .utils import fort_details, format_dist, distance
 
 import random
+import sys
+import json
+
 from random import uniform
 
 class PokemonHunter(BaseTask):
@@ -70,6 +74,10 @@ class PokemonHunter(BaseTask):
         # Allow the bot to run to a VIP?
         self.config_run_to_vip = self.config.get("run_to_vip", False)
         self.runs_to_vips = 0
+        # Shadowban handling
+        self.shadowban_detection = self.config.get("run_to_vip", False)
+        self.exit_if_shadowbanned = self.config.get("exit_if_shadowbanned", False)
+        self.no_rare_counts = 0
 
     def work(self):
         if not self.enabled:
@@ -254,6 +262,57 @@ class PokemonHunter(BaseTask):
                             return WorkerResult.RUNNING
 
         if self.destination is None:
+            
+            # Use this time for shadowban check
+            if self.shadowban_detection:
+                if not self.check_rare_pokemons(pokemons):
+                    self.no_rare_counts += 1
+                    self.logger.info("[Shadow Ban Detection] I cannot find any rares/uncommon pokemons. Count: " + format(self.no_rare_counts))
+                else:
+                    # Reset to zero
+                    self.logger.info("[Shadow Ban Detection] Rares/uncommon pokemons are spotted")
+                    self.no_rare_counts = 0
+                
+                if self.no_rare_counts > 3:
+                    # If more than 3 times we can't find any rares, we alert user of possible shadow bans
+                    self.emit_event(
+                        'shadowban_alert',
+                        formatted="\033[93m[Shadow Ban Alert]\033[0m More than 3 occassions we could not find any rare pokemons."
+                        )
+                    if self.no_rare_counts == 4:
+                        # Record in database once per run
+                        try:
+                            with self.bot.database as conn:
+                                c = conn.cursor()
+                                c.execute("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='shadowban_log'")
+                            result = c.fetchone()
+
+                            while True:
+                                if result[0] == 1:
+                                    conn.execute('''INSERT INTO shadowban_log (username) VALUES (?)''', (self.bot.config.username))
+                                break
+                            else:
+                                self.emit_event(
+                                    'shadowban_log',
+                                    sender=self,
+                                    level='info',
+                                    formatted="shadow_log table not found, skipping log"
+                                )
+                                
+                            user_data_shadowban = os.path.join(_base_dir, 'data', 'shadowban-%s.json' % self.bot.config.username)
+                            with open(user_data_shadowban, 'ab') as outfile:
+                                json.dump(OrderedDict({
+                                    'datetime': str(datetime.now()),
+                                    'username': self.bot.config.username
+                                }), outfile)
+                                outfile.write('\n')
+
+                        except IOError as e:
+                            self.logger.info('[x] Error while opening location file: %s' % e)
+                    
+                    if self.exit_if_shadowbanned:
+                        sys.exit(0)
+ 
             worth_pokemons = self.get_worth_pokemons(pokemons, self.config_hunt_closest_first)
 
             if len(worth_pokemons) > 0:
@@ -679,6 +738,20 @@ class PokemonHunter(BaseTask):
         # Check if we need this, or a next EVO in the Pokedex
         if any(not inventory.pokedex().seen(fid) for fid in ids):
             return True
+    
+    def check_rare_pokemons(self, pokemons):
+        current_pokemon_ids = []
+        common_pokemon_ids = [16, 19, 23, 27, 29, 32, 41, 43, 46, 52, 54, 60, 69, 
+                          2, 74, 77, 81, 98, 118, 120, 129, 161, 165, 167,177,
+                          183, 187, 191, 194, 198, 209, 218]
+        for p in pokemons:
+            current_pokemon_ids.append(p["pokemon_id"])
+        rare_poke = [p for p in current_pokemon_ids if p not in common_pokemon_ids]
+        
+        if len(rare_poke) > 0:
+            return True
+        else:
+            return False
 
     def get_worth_pokemons(self, pokemons, closest_first=False):
         if self.config_hunt_all:
@@ -686,7 +759,7 @@ class PokemonHunter(BaseTask):
         else:
             worth_pokemons = []
 
-            worth_pokemons += [p for p in pokemons if not inventory.pokedex().seen(p["pokemon_id"])]
+            # worth_pokemons += [p for p in pokemons if not inventory.pokedex().seen(p["pokemon_id"])]
 
             if self.config_hunt_vip:
                 worth_pokemons += [p for p in pokemons if p["name"] in self.bot.config.vips]
