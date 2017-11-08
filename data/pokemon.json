@@ -10613,7 +10613,7 @@
     "Fast Attack(s)": [
       "Extrasensory",
       "Snarl",
-      "Tackle"
+      "Hidden Power"
     ],
     "Weight": "187 kg",
     "Height": "2,01 m",
@@ -10625,7 +10625,8 @@
       "Hydro Pump",
       "Bubble Beam",
       "Water Pulse",
-      "Struggle"
+      "Struggle",
+	  "Water Pulse"
     ],
     "BaseAttack": 180,
     "BaseDefense": 235,
