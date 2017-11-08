@@ -2,6 +2,9 @@ from __future__ import print_function
 import json
 import logging
 import os
+import datetime
+import calendar
+import sys
 from collections import OrderedDict
 
 from pokemongo_bot.base_dir import _base_dir
@@ -1304,6 +1307,8 @@ class Moveset(object):
 class Inventory(object):
     def __init__(self, bot):
         self.bot = bot
+        self.last_holo_timestamp_ms = 0
+        self.last_timestamp_ms = 0
         self.pokedex = Pokedex()
         self.candy = Candies()
         self.items = Items()
@@ -1318,10 +1323,31 @@ class Inventory(object):
     def refresh(self, inventory=None):
         if inventory is None:
             request = self.bot.api.create_request()
-            request.get_inventory()
+            request.get_holo_inventory(last_timestamp_ms=self.last_timestamp_ms)
             inventory = request.call()
+            if 'inventory_delta' not in inventory['responses']['GET_HOLO_INVENTORY']:
+                self.bot.logger.info("No player information found, possiblity of temp ban")
+                sys.exit(0)
+            else:
+                self.last_holo_timestamp_ms = (inventory['responses']
+                                                ['GET_HOLO_INVENTORY']
+                                                ['inventory_delta']
+                                                .get('new_timestamp_ms', 0))
+        else:
+            request = self.bot.api.create_request()
+            request.get_inventory(last_timestamp_ms=self.last_timestamp_ms)
+            inventory = request.call()
+            print(format(inventory))
+            self.last_timestamp_ms = (inventory['responses']
+                                    ['GET_INVENTORY']
+                                    ['inventory_delta']
+                                    .get('new_timestamp_ms', 0))
 
-        inventory = inventory['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+        if 'GET_HOLO_INVENTORY' in inventory['responses']:
+            inventory = inventory['responses']['GET_HOLO_INVENTORY']['inventory_delta']['inventory_items']
+        else:
+            inventory = inventory['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
+            
         for i in (self.pokedex, self.candy, self.items, self.pokemons, self.player):
             i.refresh(inventory)
 

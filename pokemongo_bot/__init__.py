@@ -583,7 +583,8 @@ class PokemonGoBot(object):
         self.event_manager.register_event('show_best_pokemon', parameters=('pokemons'))
         self.event_manager.register_event('revived_pokemon')
         self.event_manager.register_event('healing_pokemon')
-
+        self.event_manager.register_event('shadowban_alert')
+        
         # level up stuff
         self.event_manager.register_event(
             'level_up',
@@ -759,6 +760,7 @@ class PokemonGoBot(object):
         )
         # database shit
         self.event_manager.register_event('catch_log')
+        self.event_manager.register_event('shadowban_log')
         self.event_manager.register_event('vanish_log')
         self.event_manager.register_event('evolve_log')
         self.event_manager.register_event('login_log')
@@ -1583,7 +1585,7 @@ class PokemonGoBot(object):
             if self.get_inbox_time==0:
                 request.get_inbox(is_history=True,is_reverse=False)
             else:
-                request.get_inbox(is_history=False,is_reverse=False,not_before_ms=self.get_inbox_time)
+                request.get_inbox(is_history=True,is_reverse=False,not_before_ms=self.get_inbox_time)
         
             # self.get_inbox_time = int(datetime.datetime.now().strftime("%s")) * 1000
             # More Windows friendly

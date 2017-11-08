@@ -11,6 +11,8 @@
                 "lock_on_target": false,
                 "lock_vip_only": true,
                 "disabled_while_camping": true,
+                "shadowban_detection": false,
+                "exit_if_shadowbanned": false,
                 "treat_unseen_as_vip": true
             }
         },

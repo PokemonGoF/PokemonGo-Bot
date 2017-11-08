@@ -22,6 +22,7 @@ class IncubateEggs(BaseTask):
         self.ready_breakable_incubators = []
         self.ready_infinite_incubators = []
         self.used_incubators = []
+        self.ready_super_incubators = []
         self.eggs = []
         self.km_walked = 0
         self.hatching_animation_delay = 4.20
@@ -35,6 +36,7 @@ class IncubateEggs(BaseTask):
         self.min_interval = self.config.get('min_interval', 120)
         self.breakable_incubator = self.config.get("breakable", [2,5,10])
         self.infinite_incubator = self.config.get("infinite", [2,5,10])
+        self.super_incubators = self.config.get("super", [2,5,10])
 
     def work(self):
         try:
@@ -69,6 +71,11 @@ class IncubateEggs(BaseTask):
             eggs = self._filter_sort_eggs(self.breakable_incubator,
                     self.breakable_longer_eggs_first)
             self._apply_incubators(eggs, self.ready_breakable_incubators)
+        if self.ready_super_incubators:
+            # get available eggs
+            eggs = self._filter_sort_eggs(self.super_incubator,
+                    self.breakable_longer_eggs_first)
+            self._apply_incubators(eggs, self.ready_super_incubators)
 
         return WorkerResult.SUCCESS
 
@@ -139,6 +146,7 @@ class IncubateEggs(BaseTask):
         temp_eggs = []
         temp_used_incubators = []
         temp_ready_breakable_incubators = []
+        temp_ready_super_incubators = []
         temp_ready_infinite_incubators = []
         inv = inventory.jsonify_inventory()
         for inv_data in inv:
@@ -158,9 +166,14 @@ class IncubateEggs(BaseTask):
                         })
                     else:
                         if incubator.get('uses_remaining') is not None:
-                            temp_ready_breakable_incubators.append({
-                                "id": incubator.get('id', -1)
-                            })
+                            if incubator.get('item_id') == 902:
+                                temp_ready_breakable_incubators.append({
+                                    "id": incubator.get('id', -1)
+                                })
+                            if incubator.get('item_id') == 903:
+                                temp_ready_super_incubators.append({
+                                    "id": incubator.get('id', -1)
+                                })
                         else:
                             temp_ready_infinite_incubators.append({
                                 "id": incubator.get('id', -1)
@@ -184,6 +197,7 @@ class IncubateEggs(BaseTask):
         if self.used_incubators:
             self.used_incubators.sort(key=lambda x: x.get("km"))
         self.ready_breakable_incubators = temp_ready_breakable_incubators
+        self.ready_super_incubators = temp_ready_super_incubators
         self.ready_infinite_incubators = temp_ready_infinite_incubators
         self.eggs = temp_eggs
         return matched_pokemon
