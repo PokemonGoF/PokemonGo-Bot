@@ -307,7 +307,8 @@ def main():
                     level='info',
                     formatted='Probably permabanned, Game Over ! Play again at https://club.pokemon.com/us/pokemon-trainer-club/sign-up/'
                 )
-                time.sleep(36000)
+                time.sleep(5)
+                sys.exit(0)
             except NoPlayerPositionSetException:
                 bot.event_manager.emit(
                     'api_error',

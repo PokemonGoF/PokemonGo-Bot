@@ -246,8 +246,9 @@ The behaviors of the bot are configured via the `tasks` key in the `config.json`
   * `infinite_random_eggs`:  Default `false` | Put a random egg in perminent incubators.
   * `breakable_longer_eggs_first`:  Default `true` | Prioritize longer eggs in breakable incubators.
   * `min_interval`: Default `120` | Minimum number of seconds between incubation updates.
-  * `infinite`: Default `[2,5,10]` | Types of eggs to be incubated in permanent incubators.
-  * `breakable`: Default `[2,5,10]` | Types of eggs to be incubated in breakable incubators.
+  * `infinite`: Default `[2,5,10]` | Types of eggs to be incubated in unlimited incubators.
+  * `breakable`: Default `[2,5,10]` | Types of eggs to be incubated in basic incubators.
+  * `super`: Default `[2,5,10]` | Types of eggs to be incubated in super incubators.
 * MoveToFort
   * `enable`: Disable or enable this task.
   * `lure_attraction`: Default `true` | Be more attracted to lured forts than non
@@ -1645,6 +1646,8 @@ Hunts down nearby Pokemon. Searches for Pokemon to complete the Pokedex, or if a
 * `treat_family_of_vip_as_vip`: `Default: false`. Should we see family of an VIP as a VIP (locking onto it if enabled)
 * `hunt_for_trash_to_fill_bag`: `Default: false`. Should we try to fill the bag with trash if a set amount of slots is left?
 * `trash_hunt_open_slots`: `Default: 25`. The amount of slots for the previous setting
+* `shadowban_detection`: `Default: false`. Enable or disable shadow ban detection (beta)
+* `exit_if_shadowbanned`: `Default: false`. Exit bot if shadow ban has been detected
 * `run_to_vip`: `Default: false`. Run to a VIP Pokemon? Running sets the speed of the walker to the walk_max value!
 
 ### Hunting family members of VIPs

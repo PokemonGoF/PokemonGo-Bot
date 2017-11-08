@@ -62,6 +62,8 @@ class SpinFort(BaseTask):
 
     def work(self):
         forts = self.get_forts_in_range()
+        current_level = inventory.player().level
+        is_pokestop = False
 
         with self.bot.database as conn:
             c = conn.cursor()
@@ -101,7 +103,10 @@ class SpinFort(BaseTask):
             # check_fort_modifier_id = check_fort_modifier[0].get('item_id')
             self.emit_event('lure_info', formatted='A lure is already in fort, skip deploying lure')
 
-        if self.use_lure and not check_fort_modifier:
+        if "type" in fort and fort["type"] == 1:
+            is_pokestop = True
+
+        if self.use_lure and not check_fort_modifier and is_pokestop:
             # check lures availiblity
             lure_count = inventory.items().get(501).count
 
@@ -130,7 +135,12 @@ class SpinFort(BaseTask):
                         self.emit_event('lure_info', formatted='Unkown Error')
             else:
                 self.emit_event('lure_not_enough', formatted='Not enough lure in inventory')
-
+                
+        if not is_pokestop and current_level < 5:
+            self.logger.info("Player level is less than 5. Gym is not accessable at this time.")
+            self.bot.fort_timeouts[fort["id"]] = (time.time() + 300) * 1000  # Don't spin for 5m
+            return WorkerResult.ERROR
+            
         request = self.bot.api.create_request()
         request.fort_search(
             fort_id=fort['id'],
@@ -152,7 +162,11 @@ class SpinFort(BaseTask):
                 egg_awarded = spin_details.get('pokemon_data_egg', None)
                 gym_badge_awarded = spin_details.get('awarded_gym_badge', None)
                 chain_hack_sequence_number = spin_details.get('chain_hack_sequence_number', 0)
-
+                raid_tickets_int = spin_details.get('raid_tickets', None)
+                raid_tickets = None
+                if raid_tickets_int:
+                    raid_tickets = inventory.Items.name_for(1401)
+                    
                 if egg_awarded is not None:
                     items_awarded[u'Egg'] = egg_awarded['egg_km_walked_target']
 
@@ -165,7 +179,10 @@ class SpinFort(BaseTask):
                 if experience_awarded or items_awarded:
                     awards = ', '.join(["{}x {}".format(items_awarded[x], x) for x in items_awarded if x != u'Egg'])
                     if egg_awarded is not None:
-                        awards += u', {} Egg'.format(egg_awarded['egg_km_walked_target'])
+                        awards += u', {} Egg'.format(egg_awarded['egg_km_walked_target'])     
+                    if raid_tickets is not None:
+                        awards += u', {}'.format(raid_tickets)
+                        
                     self.fort_spins = chain_hack_sequence_number
 
                     if "type" in fort and fort["type"] == 1:
