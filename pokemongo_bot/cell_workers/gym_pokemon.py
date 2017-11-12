@@ -448,7 +448,7 @@ class GymPokemon(BaseTask):
                 formatted=("Arrived at Gym %s." % gym_name)
             )
             gym_details = self.get_gym_details(self.destination)
-            print("\n"+format(gym_details)+"\n")
+            
             if not self.found_raid:
                 current_pokemons = self._get_pokemons_in_gym(gym_details)
                 self.drop_pokemon_in_gym(self.destination, current_pokemons)
