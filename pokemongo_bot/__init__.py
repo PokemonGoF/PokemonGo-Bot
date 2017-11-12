@@ -1783,8 +1783,12 @@ class PokemonGoBot(object):
             since_timestamp_ms=timestamp,
             cell_id=cellid
         )
-        self.last_map_object = request.call()
-        
+        try:
+            self.last_map_object = request.call()
+        except NotLoggedInException:
+            self.logger.info("Session has expired, re-login....")
+            return
+
         self.emit_forts_event(self.last_map_object)
         #if self.last_map_object:
         #    print self.last_map_object
