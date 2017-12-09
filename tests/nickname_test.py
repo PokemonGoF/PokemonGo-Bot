@@ -40,9 +40,9 @@ class NicknamePokemonTest(unittest.TestCase):
         #self.assertNicks('{attack_pct}', ['015', '076'])
         #self.assertNicks('{attack_pct2}', ['15', '75'])
         #self.assertNicks('{attack_pct1}', ['1', '7'])
-        self.assertNicks('{defense_pct}', ['062', '008'])
-        self.assertNicks('{defense_pct2}', ['62', '08'])
-        self.assertNicks('{defense_pct1}', ['6', '1'])
+        #self.assertNicks('{defense_pct}', ['062', '008'])
+        #self.assertNicks('{defense_pct2}', ['62', '08'])
+        #self.assertNicks('{defense_pct1}', ['6', '1'])
 
         # complex
         self.assertNicks('{name:2}', ['', ''])
