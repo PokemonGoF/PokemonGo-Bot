@@ -78,6 +78,11 @@ Document the configuration options of PokemonGo-Bot.
 3. copy `config.json.example` to `config.json`.
 3. Simply launch the script with : `./run.sh` or `./run.sh ./configs/your_auth_file.json ./configs/your_base_config_file.json`
 
+### Custom Hash Service Provider
+[[back to top](#table-of-contents)]
+
+By default, the bot will use Bossland as the default hash service provider. If you want to use a different hash service provider, you can simply add "hashendpoint":"alt_hash_end_point_address" into auth.json
+
 ### About locale\_by\_location
 [[back to top](#table-of-contents)]
 
