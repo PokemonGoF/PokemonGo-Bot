@@ -62,7 +62,7 @@ class NicknamePokemonTest(unittest.TestCase):
             ['48_46_948', '38_44_6E0'])
         self.assertNicks(
             '{attack_code}{attack_pct1}{defense_pct1}{ivcp_pct1}{name}',
-            ['lh164Golbat', 'nN713Rattata'])
+            ['lh004Golbat', 'nN713Rattata'])
 
     #
     def setUp(self):
