@@ -10575,7 +10575,7 @@
     ],
     "BaseAttack": 239,
     "BaseDefense": 274,
-    "BaseStamina": 212,
+    "BaseStamina": 193,
     "CaptureRate": 0.02,
     "FleeRate": 0.04,
     "BuddyDistanceNeeded": 20
@@ -14848,7 +14848,7 @@
       "DataNotInGameMaster"
     ],
     "Fast Attack(s)": [
-      "Water Gun",
+      "Waterfall",
       "Dragon Tail"
     ],
     "Weight": "162 kg",
