@@ -254,10 +254,7 @@
 			"config": {
 				"use_incense": false,
 				"use_order": [
-					"ordinary",
-					"spicy",
-					"cool",
-					"floral"
+					"ordinary"
 				]
 			}
 		},

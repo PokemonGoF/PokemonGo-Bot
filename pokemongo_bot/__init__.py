@@ -1253,22 +1253,21 @@ class PokemonGoBot(object):
         )
         # Items Output
         self.logger.info(
-            'PokeBalls: ' + str(items_inventory.get(1).count) +
+            'Poke Balls: ' + str(items_inventory.get(1).count) +
             ' | Great Balls: ' + str(items_inventory.get(2).count) +
             ' | Ultra Balls: ' + str(items_inventory.get(3).count) +
             ' | Master Balls: ' + str(items_inventory.get(4).count))
 
         self.logger.info(
-            'RazzBerries: ' + str(items_inventory.get(701).count) +
+            'Razz Berries: ' + str(items_inventory.get(701).count) +
             ' | Nanab Berries: ' + str(items_inventory.get(703).count) +
             ' | Pinap Berries: ' + str(items_inventory.get(705).count) +
-            ' | Golden RazzBerries: ' + str(items_inventory.get(706).count) +
+            ' | Golden Razz Berries: ' + str(items_inventory.get(706).count) +
             ' | Golden Nanab Berries: ' + str(items_inventory.get(707).count) +
             ' | Golden Pinap Berries: ' + str(items_inventory.get(708).count))
 
         self.logger.info(
-            'LuckyEgg: ' + str(items_inventory.get(301).count) +
-            ' | Incubator Basic: ' + str(items_inventory.get(902).count) +
+            'Incubator Basic: ' + str(items_inventory.get(902).count) +
             ' | Incubator Super: ' + str(items_inventory.get(903).count))
 
         self.logger.info(
@@ -1278,8 +1277,10 @@ class PokemonGoBot(object):
             ' | Max Potion: ' + str(items_inventory.get(104).count))
 
         self.logger.info(
-            'Incense: ' + str(items_inventory.get(401).count) +
-            ' | Lure Module: ' + str(items_inventory.get(501).count))
+            'Lucky Egg: ' + str(items_inventory.get(301).count) +
+            ' | Incense: ' + str(items_inventory.get(401).count) +
+            ' | Lure Module: ' + str(items_inventory.get(501).count) +
+            ' | Star Piece: ' + str(items_inventory.get(1404).count))
 
         self.logger.info(
             'Revive: ' + str(items_inventory.get(201).count) +
