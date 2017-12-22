@@ -183,8 +183,8 @@ class UpdateLiveInventory(BaseTask):
             'kingsrock': 'Kings Rock: {:,}'.format(self.inventory.get(1102).count),
             'metalcoat': 'Metal Coat: {:,}'.format(self.inventory.get(1103).count),
             'dragonscale': 'Dragon Scale: {:,}'.format(self.inventory.get(1104).count),
-            'upgrade': 'Upgrade: {:,}'.format(self.inventory.get(1105).count)
-            'starpiece': 'Star Piece: {:,}'.format(self.inventory.get(1404).count),
+            'upgrade': 'Upgrade: {:,}'.format(self.inventory.get(1105).count),
+            'starpiece': 'Star Piece: {:,}'.format(self.inventory.get(1404).count)
         }
 
         def get_item(item):
