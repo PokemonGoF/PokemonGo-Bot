@@ -17,7 +17,7 @@ class UseIncense(BaseTask):
         self._update_inventory()
 
         self.types = {
-          401: "Ordinary",
+          401: "Ordinary"
       }
 
     def _have_applied_incense(self):
