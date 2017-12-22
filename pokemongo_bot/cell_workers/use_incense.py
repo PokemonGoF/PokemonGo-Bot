@@ -18,9 +18,6 @@ class UseIncense(BaseTask):
 
         self.types = {
           401: "Ordinary",
-          402: "Spicy",
-          403: "Cool",
-          404: "Floral"
       }
 
     def _have_applied_incense(self):
@@ -36,23 +33,14 @@ class UseIncense(BaseTask):
         for order in self.use_order:
             if order == "ordinary" and self.incense_ordinary_count > 0:
                 return Item.ITEM_INCENSE_ORDINARY.value
-            if order == "spicy" and self.incense_spicy_count > 0:
-                return Item.ITEM_INCENSE_SPICY.value
-            if order == "cool" and self.incense_cool_count > 0:
-                return Item.ITEM_INCENSE_COOL.value
-            if order == "floral" and self.incense_floral_count > 0:
-                return Item.ITEM_INCENSE_FLORAL.value
 
         return Item.ITEM_INCENSE_ORDINARY.value
 
     def _update_inventory(self):
         self.incense_ordinary_count = inventory.items().get(Item.ITEM_INCENSE_ORDINARY.value).count
-        self.incense_spicy_count = inventory.items().get(Item.ITEM_INCENSE_SPICY.value).count
-        self.incense_cool_count = inventory.items().get(Item.ITEM_INCENSE_COOL.value).count
-        self.incense_floral_count = inventory.items().get(Item.ITEM_INCENSE_FLORAL.value).count
 
     def _has_count(self):
-        return self.incense_ordinary_count > 0 or self.incense_spicy_count > 0 or self.incense_cool_count > 0 or self.incense_floral_count > 0
+        return self.incense_ordinary_count > 0
 
     def _should_run(self):
         if self._have_applied_incense:

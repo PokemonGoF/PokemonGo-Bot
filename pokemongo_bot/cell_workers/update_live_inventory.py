@@ -31,27 +31,27 @@ class UpdateLiveInventory(BaseTask):
             see available items below (defaults to []).
 
     Available items :
-		'pokemon_bag' : pokemon in inventory (i.e. 'Pokemon Bag: 100/250')
-        'space_info': not an item but shows inventory bag space (i.e. 'Items: 140/350')
+		'pokemon_bag': pokemon in inventory (i.e. 'Pokemon Bag: 100/250')
+        'space_info': shows inventory bag space (i.e. 'Items: 140/350')
         'pokeballs'
         'greatballs'
         'ultraballs'
         'masterballs'
         'razzberries'
-        'blukberries'
         'nanabberries'
-        'wapabberries'
         'pinapberries'
+        'goldenrazzberries'
+        'goldennanabberries'
+        'goldenpinapberries'
         'luckyegg'
         'incubator'
+        'incubatorsuper'
         'troydisk'
         'potion'
         'superpotion'
         'hyperpotion'
         'maxpotion'
         'incense'
-        'incensespicy'
-        'incensecool'
         'revive'
         'maxrevive'
         'sunstone'
@@ -59,6 +59,7 @@ class UpdateLiveInventory(BaseTask):
         'metalcoat'
         'dragonscale'
         'upgrade'
+        'starpiece'
     """
 
     SUPPORTED_TASK_API_VERSION = 1
@@ -156,34 +157,34 @@ class UpdateLiveInventory(BaseTask):
         """
         available_items = {
 			'pokemon_bag': 'Pokemon: {:,}/{:,}'.format(inventory.Pokemons.get_space_used(), inventory.get_pokemon_inventory_size()),
-            'space_info': 'Items: {:,}/{:,}'.format(self.inventory.get_space_used(),
-                                                    self.inventory.get_space_used() + self.inventory.get_space_left()),
+            'space_info': 'Items: {:,}/{:,}'.format(self.inventory.get_space_used(), self.inventory.get_space_used() + self.inventory.get_space_left()),
             'pokeballs': 'Pokeballs: {:,}'.format(self.inventory.get(1).count),
-            'greatballs': 'GreatBalls: {:,}'.format(self.inventory.get(2).count),
-            'ultraballs': 'UltraBalls: {:,}'.format(self.inventory.get(3).count),
-            'masterballs': 'MasterBalls: {:,}'.format(self.inventory.get(4).count),
-            'razzberries': 'RazzBerries: {:,}'.format(self.inventory.get(701).count),
-            'blukberries': 'BlukBerries: {:,}'.format(self.inventory.get(702).count),
-            'nanabberries': 'NanabBerries: {:,}'.format(self.inventory.get(703).count),
-            'wepabberries': 'WeparBerries: {:,}'.format(self.inventory.get(704).count),
-            'pinapberries': 'PinapBerries: {:,}'.format(self.inventory.get(705).count),
-            'luckyegg': 'LuckyEgg: {:,}'.format(self.inventory.get(301).count),
+            'greatballs': 'Greatballs: {:,}'.format(self.inventory.get(2).count),
+            'ultraballs': 'Ultraballs: {:,}'.format(self.inventory.get(3).count),
+            'masterballs': 'Masterballs: {:,}'.format(self.inventory.get(4).count),
+            'razzberries': 'Razz Berries: {:,}'.format(self.inventory.get(701).count),
+            'nanabberries': 'Nanab Berries: {:,}'.format(self.inventory.get(703).count),
+            'pinapberries': 'Pinap Berries: {:,}'.format(self.inventory.get(705).count),
+            'goldenrazzberries': 'Golden Razz Berries: {:,}'.format(self.inventory.get(706).count),
+            'goldennanabberries': 'Golden Nanab Berries: {:,}'.format(self.inventory.get(707).count),
+            'goldenpinapberries': 'Golden Pinap Berries: {:,}'.format(self.inventory.get(708).count),
+            'luckyegg': 'Lucky Egg: {:,}'.format(self.inventory.get(301).count),
             'incubator': 'Incubator: {:,}'.format(self.inventory.get(902).count),
-            'troydisk': 'TroyDisk: {:,}'.format(self.inventory.get(501).count),
+            'incubatorsuper': 'Super Incubator: {:,}'.format(self.inventory.get(903).count),
+            'troydisk': 'Troy Disk: {:,}'.format(self.inventory.get(501).count),
             'potion': 'Potion: {:,}'.format(self.inventory.get(101).count),
-            'superpotion': 'SuperPotion: {:,}'.format(self.inventory.get(102).count),
-            'hyperpotion': 'HyperPotion: {:,}'.format(self.inventory.get(103).count),
-            'maxpotion': 'MaxPotion: {:,}'.format(self.inventory.get(104).count),
+            'superpotion': 'Super Potion: {:,}'.format(self.inventory.get(102).count),
+            'hyperpotion': 'Hyper Potion: {:,}'.format(self.inventory.get(103).count),
+            'maxpotion': 'Max Potion: {:,}'.format(self.inventory.get(104).count),
             'incense': 'Incense: {:,}'.format(self.inventory.get(401).count),
-            'incensespicy': 'IncenseSpicy: {:,}'.format(self.inventory.get(402).count),
-            'incensecool': 'IncenseCool: {:,}'.format(self.inventory.get(403).count),
             'revive': 'Revive: {:,}'.format(self.inventory.get(201).count),
-            'maxrevive': 'MaxRevive: {:,}'.format(self.inventory.get(202).count),
-            'sunstone': 'SunStone: {:,}'.format(self.inventory.get(1101).count),
-            'kingsrock': 'KingsRock: {:,}'.format(self.inventory.get(1102).count),
-            'metalcoat': 'MetalCoat: {:,}'.format(self.inventory.get(1103).count),
-            'dragonscale': 'DragonScale: {:,}'.format(self.inventory.get(1104).count),
+            'maxrevive': 'Max Revive: {:,}'.format(self.inventory.get(202).count),
+            'sunstone': 'Sun Stone: {:,}'.format(self.inventory.get(1101).count),
+            'kingsrock': 'Kings Rock: {:,}'.format(self.inventory.get(1102).count),
+            'metalcoat': 'Metal Coat: {:,}'.format(self.inventory.get(1103).count),
+            'dragonscale': 'Dragon Scale: {:,}'.format(self.inventory.get(1104).count),
             'upgrade': 'Upgrade: {:,}'.format(self.inventory.get(1105).count)
+            'starpiece': 'Star Piece: {:,}'.format(self.inventory.get(1404).count),
         }
 
         def get_item(item):
@@ -231,7 +232,7 @@ class UpdateLiveInventory(BaseTask):
             )
 
         self.logger.info(
-            'PokeBalls: {} | GreatBalls: {} | UltraBalls: {} | MasterBalls: {}'.format(
+            'Poke Balls: {} | Great Balls: {} | Ultra Balls: {} | Master Balls: {}'.format(
                 self.inventory.get(1).count,
                 self.inventory.get(2).count,
                 self.inventory.get(3).count,
@@ -240,25 +241,25 @@ class UpdateLiveInventory(BaseTask):
             )
 
         self.logger.info(
-            'RazzBerries: {} | BlukBerries: {} | NanabBerries: {} | WeparBerries: {} | PinapBerries: {}'.format(
+            'Razz Berries: {} | Nanab Berries: {} | Pinap Berries: {} | Golden Razz Berries: {} | Golden Nanab Berries: {} | Pinap Berries: {}'.format(
                 self.inventory.get(701).count,
-                self.inventory.get(702).count,
                 self.inventory.get(703).count,
-                self.inventory.get(704).count,
-                self.inventory.get(705).count
+                self.inventory.get(705).count,
+                self.inventory.get(706).count,
+                self.inventory.get(707).count,
+                self.inventory.get(708).count
                 )
             )
 
         self.logger.info(
-            'LuckyEgg: {} | Incubator: {} | TroyDisk: {}'.format(
-                self.inventory.get(301).count,
+            'Incubator: {} | Super Incubator: {}'.format(
                 self.inventory.get(902).count,
-                self.inventory.get(501).count
+                self.inventory.get(903).count
                 )
             )
 
         self.logger.info(
-            'Potion: {} | SuperPotion: {} | HyperPotion: {} | MaxPotion: {}'.format(
+            'Potion: {} | Super Potion: {} | Hyper Potion: {} | Max Potion: {}'.format(
                 self.inventory.get(101).count,
                 self.inventory.get(102).count,
                 self.inventory.get(103).count,
@@ -267,22 +268,23 @@ class UpdateLiveInventory(BaseTask):
             )
 
         self.logger.info(
-            'Incense: {} | IncenseSpicy: {} | IncenseCool: {}'.format(
+            'Lucky Egg: {} | Incense: {} | Troy Disk: {} | Star Pieces: {}'.format(
+                self.inventory.get(301).count,
                 self.inventory.get(401).count,
-                self.inventory.get(402).count,
-                self.inventory.get(403).count
+                self.inventory.get(501).count,
+                self.inventory.get(1404).count
                 )
             )
 
         self.logger.info(
-            'Revive: {} | MaxRevive: {}'.format(
+            'Revive: {} | Max Revive: {}'.format(
                 self.inventory.get(201).count,
                 self.inventory.get(202).count
                 )
             )
 
         self.logger.info(
-            'SunStone: {} | KingsRock: {} | MetalCoat: {} | DragonScale: {} | Upgrade: {}'.format(
+            'Sun Stone: {} | Kings Rock: {} | Metal Coat: {} | Dragon Scale: {} | Upgrade: {}'.format(
                 self.inventory.get(1101).count,
                 self.inventory.get(1102).count,
                 self.inventory.get(1103).count,
