@@ -13,9 +13,6 @@
   "202": "Max Revive",
   "301": "Lucky Egg",
   "401": "Incense Ordinary",
-  "402": "Spicy Incense",
-  "403": "Cool Incense",
-  "404": "Floral Incense",
   "501": "Troy Disk",
   "602": "X Attack",
   "603": "X Defense",
@@ -39,10 +36,11 @@
   "1103": "Metal Coat",
   "1104": "Dragon Scale",
   "1105": "Upgrade",
-  "1201": "Reroll Fast Attack",
-  "1202": "Reroll Special Attack",
+  "1201": "Move Reroll Fast Attack",
+  "1202": "Move Reroll Special Attack",
   "1301": "Rare Candy",
   "1401": "Free Raid Ticket",
   "1402": "Paid Raid Ticket",
-  "1403": "Legendary Raid Ticket"
+  "1403": "Legendary Raid Ticket",
+  "1404": "Star Piece"
 }

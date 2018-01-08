@@ -77,6 +77,23 @@ class GymPokemon(BaseTask):
         self.pick_random_pokemon = self.config.get('pick_random_pokemon', True)
         
         self.can_be_disabled_by_catch_limter = self.config.get("can_be_disabled_by_catch_limter", False)
+        
+        # For Raids
+        self.raid = self.config.get('raid', False)
+        self.raid_levels = self.config.get('raid_levels', []) #No raid if empty list
+        self.raid_only = self.config.get('raid_only', []) #Empty list to raid any Pokemon within specificed level
+        self.raid_min_players = self.config.get('raid_min_players', [])
+        self.wait_raid_start_mins = self.config.get('wait_raid_start_mins', 0) # Time to wait for raid to start. 0 to go to any raid that has started
+        self.wait_min_players_mins = self.config.get('wait_min_players_mins', 0) # Time to wait for min players in lobby to enage in raid
+        self.do_not_raid_last_x_mins = self.config.get('do_not_raid_last_x_mins', 10) # If time less than x mins, do not raid
+        self.use_paid_tickets = self.config.get('use_paid_tickets', False) # Use paid raid tickets if availible?
+        items_inventory = inventory.items()
+        self.free_raid_tickets = items_inventory.get(1401).count
+        self.paid_raid_tickets = items_inventory.get(1402).count
+        if self.use_paid_tickets == False:
+            self.paid_raid_tickets = 0
+        self.found_raid = False
+        self.raided_gyms = [] # store id of gyms we raided, do not go again
 
         self.recheck = datetime.now()
         self.walker = self.config.get('walker', 'StepWalker')
@@ -174,12 +191,44 @@ class GymPokemon(BaseTask):
             result = self.move_to_destination()
             # Can return RUNNING to move to a gym
             return result
+        
+        #if self.destination is not None and self.found_raid:
+            #result = self.move_to_raid_gym()
+            # Can return RUNNING to move to a gym
+            #return result
 
         if hasattr(self.bot, "hunter_locked_target") and self.bot.hunter_locked_target is not None:
             # Don't move to a gym when hunting for a Pokemon
             return WorkerResult.SUCCESS
 
         return WorkerResult.SUCCESS
+    
+    def check_raid(self):
+        # This function will start a raid if there is and all condition met
+        raids = self.get_gyms_in_range(raids=True)
+        for raid in raids:
+            if 'raid_info' in raid:
+                for level in self.raid_levels:
+                    if level == raid['raid_info']['raid_level']:
+                        org_time= int(raid['raid_info']['raid_battle_ms']) / 1e3
+                        raid_start_time = datetime.fromtimestamp(org_time)
+                        org_time= int(raid['raid_info']['raid_end_ms']) / 1e3
+                        raid_end_time = datetime.fromtimestamp(org_time)
+                        # if raid have not started, check time difference
+                        if raid_start_time > datetime.now():
+                            timediff = raid_start_time - datetime.now()
+                            results = divmod(timediff.days * 86400 + timediff.seconds, 60)
+                            print("There is a raid, raid level: " + format(raid['raid_info']['raid_level'])+" ID: "+format(raid['id']))
+                            print("Raid will be starting in : "+format(results[0]) +" mins")
+                            print("Raw Start Time: " + format(raid['raid_info']['raid_battle_ms'])+"\n")
+                        else:
+                            #raid has started
+                            timediff = raid_end_time - datetime.now()
+                            results = divmod(timediff.days * 86400 + timediff.seconds, 60)
+                            print("There is a raid, raid level: " + format(raid['raid_info']['raid_level'])+" ID: "+format(raid['id']))
+                            print("Raid has started, ending in: "+format(results[0]) + " mins")
+                            print("Raw End Time: " + format(raid['raid_info']['raid_end_ms'])+"\n")
+        
 
     def check_close_gym(self):
         # Check if we are walking past a gym
@@ -222,7 +271,7 @@ class GymPokemon(BaseTask):
                         return WorkerResult.SUCCESS
 
     def determin_new_destination(self):
-        gyms = self.get_gyms()
+        gyms = self.get_gyms(get_raids=False)
         if len(gyms) == 0:
             if len(self.recent_gyms) == 0 and self._should_print():
                 self.logger.info("No Gyms in range to scan!")
@@ -240,7 +289,7 @@ class GymPokemon(BaseTask):
                 # Gym can be closed for a raid or something, skipp to the next
                 if not gym['enabled']:
                     continue
-
+                    
             if 'owned_by_team' in gym:
                 if gym["owned_by_team"] == 1:
                     teams.append("Mystic")
@@ -271,12 +320,68 @@ class GymPokemon(BaseTask):
                 # self.logger.info("Info: %s" % gym)
                 self.destination = gym
                 break
+                
         if len(teams) > 0:
             count_teams = Counter(teams)
             self.logger.info("Gym Teams %s", ", ".join('{}({})'.format(key, val) for key, val in count_teams.items()))
+                
+        # let's go for a raid if enabled and has raid tickets
+        
+        self.found_raid = False
+        pokemon_in_raid = None
+        if self.raid and (self.free_raid_tickets > 0 or self.paid_raid_tickets > 0) and self.destination is None: # Only check for raid if it's not slotting pokemons 
+            self.logger.info("Checking for eligable raids")
+            self.recent_gyms = []
+            gyms = self.get_gyms(get_raids=True)
+            #print("\nRaw Gym Data: "+format(gyms)+"\n")
+            for gym in gyms:
+                # Ignore after done for 5 mins
+                self.recent_gyms.append(gym["id"])
+                if 'raid_info' in gym:
+                    for level in self.raid_levels:
+                        if level == gym['raid_info']['raid_level']:
+                            org_time= int(gym['raid_info']['raid_battle_ms']) / 1e3
+                            raid_start_time = datetime.fromtimestamp(org_time)
+                            org_time= int(gym['raid_info']['raid_end_ms']) / 1e3
+                            raid_end_time = datetime.fromtimestamp(org_time)
+                            # check if raid has started
+                            if raid_start_time < datetime.now():
+                                #raid has started
+                                timediff = raid_end_time - datetime.now()
+                                results = divmod(timediff.days * 86400 + timediff.seconds, 60)
+                                details = fort_details(self.bot, gym['id'], gym['latitude'], gym['longitude'])
+                                gym_name = details.get('name', 'Unknown')
+                                #if on going raid, check if it's in list of raid pokemon
+                                raid_pokemon_id = gym['raid_info']['raid_pokemon']['pokemon_id']
+                                raid_pokemon_name = Pokemons.name_for(raid_pokemon_id)
+                                pokemon_in_raid = [p for p in self.raid_only if p in raid_pokemon_name]
+                                if results[0] >= self.do_not_raid_last_x_mins and (len(pokemon_in_raid)>0 or len(self.raid_only)==0):
+                                    self.logger.info("There is an on-going raid. Raid level: " + format(gym['raid_info']['raid_level'])+" Name: " + gym_name + " Ending in: "+format(results[0]) + " mins")
+                                    self.logger.info("Raid Boss: " + format(raid_pokemon_name))
+                                    self.logger.info("We have enough time for raid!")
+                                    self.found_raid = True
+                                    self.destination = gym
+                                    break
+                            else:
+                                timediff = raid_start_time - datetime.now()
+                                results = divmod(timediff.days * 86400 + timediff.seconds, 60)
+                                details = fort_details(self.bot, gym['id'], gym['latitude'], gym['longitude'])
+                                gym_name = details.get('name', 'Unknown')
+                                if results[0] <= self.wait_raid_start_mins:
+                                    self.logger.info("A raid is starting soon. Raid level: " + format(gym['raid_info']['raid_level'])+" Name: " + gym_name + " Raid starting in " + format(results[0]) + " mins")
+                                    self.logger.info("It is within "+format(self.wait_raid_start_mins)+" mins")
+                                    self.found_raid = True
+                                    self.destination = gym
+                                    break
+                    if self.found_raid:
+                        break # Get out from the 1st loop as well
+                    else:
+                        self.logger.info("No suitable raids available")
+                                    
+                            # Next step, set a raid counter to say next destionation is a raid, not slot pokemon
 
     def move_to_destination(self):
-        if self.check_interval >= 4:
+        if self.check_interval >= 4 and not self.found_raid:
             self.check_interval = 0
             gyms = self.get_gyms()
             for g in gyms:
@@ -287,10 +392,10 @@ class GymPokemon(BaseTask):
                         self.destination = None
                         return WorkerResult.SUCCESS
                     break
-        else:
+        elif not self.found_raid:
             self.check_interval += 1
 
-        # Moving to a gym to deploy Pokemon
+        # Moving to a gym to deploy Pokemon / to start a raid
         unit = self.bot.config.distance_unit  # Unit to use when printing formatted distance
         lat = self.destination["latitude"]
         lng = self.destination["longitude"]
@@ -317,11 +422,18 @@ class GymPokemon(BaseTask):
                 'fort_name': u"{}".format(gym_name),
                 'distance': format_dist(dist, unit),
             }
-            self.emit_event(
-                'moving_to_fort',
-                formatted="Moving towards open Gym {fort_name} - {distance}",
-                data=fort_event_data
-            )
+            if not self.found_raid:
+                self.emit_event(
+                    'moving_to_fort',
+                    formatted="Moving towards open Gym {fort_name} - {distance}",
+                    data=fort_event_data
+                )
+            else:
+                self.emit_event(
+                    'moving_to_fort',
+                    formatted="Moving towards raid Gym {fort_name} - {distance}",
+                    data=fort_event_data
+                )
 
             step_walker = walker_factory(self.walker, self.bot, lat, lng)
 
@@ -336,22 +448,91 @@ class GymPokemon(BaseTask):
                 formatted=("Arrived at Gym %s." % gym_name)
             )
             gym_details = self.get_gym_details(self.destination)
-            current_pokemons = self._get_pokemons_in_gym(gym_details)
-            self.drop_pokemon_in_gym(self.destination, current_pokemons)
-            self.destination = None
-            if len(self.fort_pokemons) >= self.take_at_most:
-                self.logger.info("We have a max of %s Pokemon in gyms." % self.take_at_most)
-                return WorkerResult.SUCCESS
-            elif self.chain_fill_gyms:
-                # Look around if there are more gyms to fill
-                self.determin_new_destination()
-                # If there is none, we're done, else we go to the next!
-                if self.destination is None:
+            
+            if not self.found_raid:
+                current_pokemons = self._get_pokemons_in_gym(gym_details)
+                self.drop_pokemon_in_gym(self.destination, current_pokemons)
+                self.destination = None
+                if len(self.fort_pokemons) >= self.take_at_most:
+                    self.logger.info("We have a max of %s Pokemon in gyms." % self.take_at_most)
                     return WorkerResult.SUCCESS
+                elif self.chain_fill_gyms:
+                    # Look around if there are more gyms to fill
+                    self.determin_new_destination()
+                    # If there is none, we're done, else we go to the next!
+                    if self.destination is None:
+                        return WorkerResult.SUCCESS
+                    else:
+                        return WorkerResult.RUNNING
                 else:
-                    return WorkerResult.RUNNING
+                    return WorkerResult.SUCCESS
             else:
+                # we are going to do raid 
+                # steps: 1. Check if has started. if not started, we wait till start. if started we wait till max number of players in lobby reached.
+                # if all conditions met, enter lobby
+                # get ready a list of battling pokemons (using type advenage logic)
+                # start battle
+                # if failed, heal and restart the process
+                # successful raid, go to bonus capture
+                # reset raid, return success
+                gym_info = gym_details.get('gym_status_and_defenders', None)
+                if gym_info is not None:
+                    pokemon_fort_proto = gym_info.get('pokemon_fort_proto')
+                    raid_info = pokemon_fort_proto.get('raid_info')
+                    raid_level = raid_info['raid_level']
+                    raid_seed = raid_info['raid_seed']
+                    raid_end_ms = raid_info['raid_end_ms']
+                    raid_battle_ms = raid_info['raid_battle_ms']
+                    raid_starts = datetime.fromtimestamp(int(raid_info["raid_battle_ms"]) / 1e3)
+                    raid_ends = datetime.fromtimestamp(int(raid_info["raid_end_ms"]) / 1e3)
+                    self.logger.info("Raid starts: %s" % raid_starts.strftime('%Y-%m-%d %H:%M:%S.%f'))
+                    self.logger.info("Raid ends: %s" % raid_ends.strftime('%Y-%m-%d %H:%M:%S.%f'))
+                    
+                    if raid_starts < datetime.now():
+                        timediff = raid_ends - datetime.now()
+                        results = divmod(timediff.days * 86400 + timediff.seconds, 60)
+                        # No need check what pokemon anymore
+                        if results[0] >= self.do_not_raid_last_x_mins:
+                            a=0
+                        #
+                        #if raid_ends < datetime.now():
+                        #    self.logger.info("No need to wait.")
+                        #elif (raid_ends-t).seconds > 600:
+                        #    self.logger.info("Need to wait more than 10 minutes, skipping")
+                        #    self.destination = None
+                        #    self.recent_gyms.append(gym["id"])
+                        #    self.raid_gyms[gym["id"]] = raid_ends
+                        #    return WorkerResult.SUCCESS
+                        #else:
+                        #    first_time = False
+                        #    while raid_ends > datetime.now():
+                        #        raid_ending = (raid_ends-datetime.today()).seconds
+                        #        sleep_m, sleep_s = divmod(raid_ending, 60)
+                        #        sleep_h, sleep_m = divmod(sleep_m, 60)
+                        #        sleep_hms = '%02d:%02d:%02d' % (sleep_h, sleep_m, sleep_s)
+                        #        if not first_time:
+                                    # Clear the last log line!
+                        #            stdout.write("\033[1A\033[0K\r")
+                        #            stdout.flush()
+                        #        first_time = True
+                        #        self.logger.info("Waiting for %s for raid to end..." % sleep_hms)
+                        #        if raid_ending > 20:
+                        #            sleep(20)
+                        #        else:
+                        #            sleep(raid_ending)
+                        #            break
+                    else:
+                        self.logger.info("Raid has not begun yet!")
+                    
+                self.logger.info("Assume we are done with raid")
+                print("id: "+format(gym_info['pokemon_fort_proto']['id']))
+                if gym_info['pokemon_fort_proto']['id']:
+                    self.raided_gyms.append(gym_info['pokemon_fort_proto']['id'])#check if this need to be removed after successful implenation of raid feature
+                print("dropped_gyms: "+format(self.raided_gyms))
+                self.destination = None
+                self.found_raid = False
                 return WorkerResult.SUCCESS
+            
     
     def get_gym_details(self, gym):
         lat = gym['latitude']
@@ -493,22 +674,25 @@ class GymPokemon(BaseTask):
                     else:
                         sleep(lockout_ending)
                         break
+        
+        
 
-        #FortDeployPokemon
-        # self.logger.info("Trying to deploy Pokemon in gym: %s" % gym)
         gym_details = self.get_gym_details(gym)
-        # self.logger.info("Gym details: %s" % gym_details)
+        slots_available = 6 - len(gym_details['gym_status_and_defenders']['gym_defender'])
+        if slots_available <= self.leave_at_least_spots:
+            self.logger.info("Gym has %s open slots, but we don't drop Pokemon in it because that would leave less than %s open spots" % (slots_available, self.leave_at_least_spots))
+            return WorkerResult.ERROR
         fort_pokemon = self._get_best_pokemon(current_pokemons)
         pokemon_id = fort_pokemon.unique_id
-        # self.logger.info("Trying to deploy %s (%s)" % (fort_pokemon, pokemon_id))
-        # self.logger.info("Gym in control by %s. I am on team %s" % (gym["owned_by_team"], self.bot.player_data['team']))
+        
+        #print("\n Checking ID: "+format(pokemon_id) + "\n")
 
         request = self.bot.api.create_request()
         request.gym_deploy(
             fort_id=gym["id"],
             pokemon_id=pokemon_id,
-            player_lat_degrees=f2i(self.bot.position[0]),
-            player_lng_degrees=f2i(self.bot.position[1])
+            player_latitude=f2i(self.bot.position[0]),
+            player_longitude=f2i(self.bot.position[1])
         )
         # self.logger.info("Req: %s" % request)
         response_dict = request.call()
@@ -565,7 +749,7 @@ class GymPokemon(BaseTask):
                 self.logger.info('ERROR_POKEMON_IS_BUDDY')
                 return WorkerResult.ERROR
 
-    def get_gyms(self, skip_recent_filter=False):
+    def get_gyms(self, skip_recent_filter=False, get_raids=False):
         if len(self.gyms) == 0:
             self.gyms = self.bot.get_gyms(order_by_distance=True)
 
@@ -589,8 +773,12 @@ class GymPokemon(BaseTask):
         gyms = filter(lambda gym: gym["id"] not in self.blacklist, gyms)
         # Filter out gyms we already in
         gyms = filter(lambda gym: gym["id"] not in self.dropped_gyms, gyms)
+        # Filter out gyms we already raided
+        gyms = filter(lambda gym: gym["id"] not in self.raided_gyms, gyms)
+        #print("dropped gyms: "+format(self.dropped_gyms))
         # Filter ongoing raids
-        gyms = filter(lambda gym: gym["id"] not in self.raid_gyms, gyms)
+        if not get_raids:
+            gyms = filter(lambda gym: gym["id"] not in self.raid_gyms, gyms)
         # filter fake gyms
         # self.gyms = filter(lambda gym: "type" not in gym or gym["type"] != 1, self.gyms)
         # sort by current distance
@@ -603,8 +791,8 @@ class GymPokemon(BaseTask):
 
         return gyms
 
-    def get_gyms_in_range(self):
-        gyms = self.get_gyms()
+    def get_gyms_in_range(self, raids=False):
+        gyms = self.get_gyms(get_raids=raids)
 
         if self.bot.config.replicate_gps_xy_noise:
             gyms = filter(lambda fort: distance(

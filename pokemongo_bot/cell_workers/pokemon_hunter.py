@@ -11,6 +11,7 @@ from s2sphere import Cell, CellId, LatLng
 
 from pokemongo_bot import inventory
 from pokemongo_bot.base_task import BaseTask
+from pokemongo_bot.base_dir import _base_dir
 from pokemongo_bot.item_list import Item
 from pokemongo_bot.walkers.polyline_walker import PolylineWalker
 from pokemongo_bot.walkers.step_walker import StepWalker
@@ -20,6 +21,7 @@ from .utils import fort_details, format_dist, distance
 import random
 import sys
 import json
+import os
 
 from random import uniform
 
@@ -273,13 +275,13 @@ class PokemonHunter(BaseTask):
                     self.logger.info("[Shadow Ban Detection] Rares/uncommon pokemons are spotted")
                     self.no_rare_counts = 0
                 
-                if self.no_rare_counts > 3:
+                if self.no_rare_counts > 3: 
                     # If more than 3 times we can't find any rares, we alert user of possible shadow bans
                     self.emit_event(
                         'shadowban_alert',
-                        formatted="\033[93m[Shadow Ban Alert]\033[0m More than 3 occassions we could not find any rare pokemons."
+                        formatted="\033[91m[Shadow Ban Alert]\033[0m More than 3 occassions we could not find any rare pokemons."
                         )
-                    if self.no_rare_counts == 4:
+                    if self.no_rare_counts == 4: 
                         # Record in database once per run
                         try:
                             with self.bot.database as conn:
@@ -289,7 +291,7 @@ class PokemonHunter(BaseTask):
 
                             while True:
                                 if result[0] == 1:
-                                    conn.execute('''INSERT INTO shadowban_log (username) VALUES (?)''', (self.bot.config.username))
+                                    conn.execute('''INSERT INTO shadowban_log (username) VALUES (?)''', (str(self.bot.config.username),))
                                 break
                             else:
                                 self.emit_event(

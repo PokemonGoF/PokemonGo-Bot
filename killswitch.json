@@ -3,5 +3,5 @@
 	"show_warning": true,
 	"pause_bot": true,
     "activated_by": "MerlionRock",
-    "message": "Master branch user, you might not be able to use the bot until dev branch has been commited to master branch. Please wait for the update. \nThere are noted issues with the current API and subsequent bans and warnings may very well be issued and you take the risk into your own hands if you follow through."
+    "message": "API has being updated. If you see version 0.87.0, you are using the latest API. Else please do an update. \nThere are noted issues with the current API and subsequent bans and warnings may very well be issued and you take the risk into your own hands if you follow through."
 }
