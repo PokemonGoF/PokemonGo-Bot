@@ -1152,9 +1152,10 @@
     ],
     "Special Attack(s)": [
       "Discharge",
-	  "Thunder",
+      "Thunder",
       "Thunderbolt",
-      "Wild Charge"
+      "Wild Charge",
+      "Surf"
     ],
     "BaseAttack": 112,
     "BaseDefense": 101,
