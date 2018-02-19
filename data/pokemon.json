@@ -1152,9 +1152,10 @@
     ],
     "Special Attack(s)": [
       "Discharge",
-	  "Thunder",
+      "Thunder",
       "Thunderbolt",
-      "Wild Charge"
+      "Wild Charge",
+      "Surf"
     ],
     "BaseAttack": 112,
     "BaseDefense": 101,
@@ -12745,7 +12746,8 @@
     "Special Attack(s)": [
       "Crunch",
       "Disarming Voice",
-      "Flamethrower"
+      "Flamethrower",
+      "Stomp"
     ],
     "BaseAttack": 134,
     "BaseDefense": 81,
@@ -15041,8 +15043,11 @@
       "DataNotInGameMaster"
     ],
     "Fast Attack(s)": [
-      "Bite",
-      "Rock Smash"
+      "Tackle",
+      "Hex",
+      "Water Gun",
+      "Powder Snow",
+      "Ember"
     ],
     "Weight": "0.8 kg",
     "Height": "0.3 m",
@@ -15051,9 +15056,14 @@
       "FamilyID": 351
     },
     "Special Attack(s)": [
-      "Stomp",
-      "Crunch",
-      "Ancient Power"
+      "Hurricane",
+      "Energy Ball",
+      "Hydro Pump",
+      "Thunder",
+      "Blizzard",
+      "Ice Beam",
+      "Fire Blast",
+      "Solar Beam"
     ],
     "BaseAttack": 139,
     "BaseDefense": 139,
