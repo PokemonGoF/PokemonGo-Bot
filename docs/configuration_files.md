@@ -485,6 +485,17 @@ Additionally, you can specify always_release and never_release flags. For exampl
 ```
 will release all Pidgey caught.
 
+If you don't want to release shiny Pokemon, use never_release_shiny: true
+
+```"release": {
+        "any": {
+            "release_below_cp": 0,
+            "release_below_iv": 0.8,
+            "never_release_shiny": true,
+            "logic": "or"
+        }
+```
+
 ### Keep the strongest pokemon configuration (dev branch)
 [[back to top](#table-of-contents)]
 
