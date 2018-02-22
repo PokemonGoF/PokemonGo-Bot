@@ -155,6 +155,21 @@ class TransferPokemon(BaseTask):
     def should_release_pokemon(self, pokemon, keep_best_mode=False):
         release_config = self._get_release_config_for(pokemon.name)
 
+        never_release_shiny = release_config.get('never_release_shiny', 0)
+        if pokemon.shiny and never_release_shiny:
+            self.emit_event(
+                'pokemon_shiny_keep',
+                data={
+                    'pokemon': pokemon.name,
+                    'cp': pokemon.cp,
+                    'iv': pokemon.iv,
+                    'ivcp': pokemon.ivcp,
+                    'shiny': pokemon.shiny 
+                },
+            formatted="Kept Shiny {} (CP: {}, IV: {}, IVCP: {} Shiny: {})".format(pokemon.name, pokemon.cp, pokemon.iv, pokemon.ivcp, pokemon.shiny),
+            )
+        return False 
+		
         if (keep_best_mode
                 and 'never_release' not in release_config
                 and 'always_release' not in release_config

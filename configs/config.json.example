@@ -644,6 +644,7 @@
 			"release_below_cp": 0,
 			"release_below_iv": 0,
 			"release_below_ivcp": 0,
+			"never_release_shiny": true,
 			"logic": "or"
 		},
 		"// Example of always releasing Rattata:": {
