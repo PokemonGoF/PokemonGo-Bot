@@ -29,7 +29,7 @@ The project is currently setup in two main branches:
 If you discover a bug in the bot, please [search our issue tracker](https://github.com/PokemonGoF/PokemonGo-Bot/issues?q=is%3Aissue+sort%3Aupdated-desc) first. If it hasn't been reported, please [create a new issue](https://github.com/PokemonGoF/PokemonGo-Bot/issues/new) and ensure you follow the template guide so that our team can assist you as quickly as possible.
 
 ### [Feature Requests](https://github.com/PokemonGoF/PokemonGo-Bot/labels/Feature%20Request)
-If you have a great idea to improve the bot, please [search our feature tracker](https://github.com/PokemonGoF/PokemonGo-Bot/labels/Feature%20Request) first to ensure someone else hasn't already come up with the same great idea.  If it hasn't been requested, please [create a new request](https://github.com/PokemonGoF/PokemonGo-Bot/issues/new) and ensure you follow the template guide so that it doesnt get lost with the bug reports.
+If you have a great idea to improve the bot, please [search our feature tracker](https://github.com/PokemonGoF/PokemonGo-Bot/labels/Feature%20Request) first to ensure someone else hasn't already come up with the same great idea.  If it hasn't been requested, please [create a new request](https://github.com/PokemonGoF/PokemonGo-Bot/issues/new) and ensure you follow the template guide so that it doesn't get lost with the bug reports.
 While you're there vote on other feature requests to let the devs know what is most important to you.
 
 ### [Pull Requests](https://github.com/PokemonGoF/PokemonGo-Bot/pulls)
@@ -49,8 +49,8 @@ If this is your first time making a PR or aren't sure of the standard practice o
 - [x] Search & spin Pokestops / Gyms
 - [x] Diverse options for humanlike behavior from movement to overall game play
 - [x] Ability to add multiple coordinates to select between your favorite botting locations
-- [x] Support self defined path / route
-- [x] Advanced catch, evolve and transfer confuration using our PokemonOptimizer settings
+- [x] Support self-defined path / route
+- [x] Advanced catch, evolve and transfer configuration using our PokemonOptimizer settings
 - [x] Determine which pokeball to use
 - [x] Rules to determine the use of Razz and Pinap Berries
 - [x] Exchange, evolve and catch Pokemon base on pre-configured rules
@@ -59,11 +59,11 @@ If this is your first time making a PR or aren't sure of the standard practice o
 - [x] Limit the step to farm specific area for pokestops
 - [x] Limit Spin Pokestops/Catch Pokemons per day
 - [x] IV Functionality filter
-- [x] Mass rename of Pokemon with comprehenive rules
+- [x] Mass rename of Pokemon with comprehensive rules
 - [x] Adjust delay between Pokemon capture & Transfer as per configuration
 - [x] Telegram integration - reporting of bot's events
 - [x] Snipe Pokemon within a radius of 30Km, either through telegram command or local map (Example Rocket Map)
-- [x] Issue command through telegream - Activate Lucky egg / Incense, Snipping
+- [x] Issue command through telegram - Activate Lucky egg / Incense, Snipping
 - [x] Support dropping of Lure Module
 - [x] Incubate eggs & Buddy walk
 - [x] Bot is able to identify pokemon in their family
@@ -78,7 +78,7 @@ If this is your first time making a PR or aren't sure of the standard practice o
 
 ## Credits
 - [tejado](https://github.com/tejado) many thanks for the API
-- [pogodevorg](https://github.com/pogodevorg/pgoapi) Without keyphact's coordination, this would not gonna happan again.
+- [pogodevorg](https://github.com/pogodevorg/pgoapi) Without keyphact's coordination, this would not gonna happen again.
 - [Mila432](https://github.com/Mila432/Pokemon_Go_API) for the login secrets
 - [elliottcarlson](https://github.com/elliottcarlson) for the Google Auth PR
 - [AeonLucid](https://github.com/AeonLucid/POGOProtos) for improved protos
