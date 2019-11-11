@@ -4,7 +4,7 @@ six==1.10
 git+https://github.com/MerlionRock/pgoapi.git@develop#egg=pgoapi
 geopy==1.11.0
 geographiclib==1.46.3
-requests==2.10.0
+requests==2.20.0
 requests-mock==1.0.0
 s2sphere==0.2.4
 gpsoauth==0.4.0
