@@ -8,7 +8,7 @@ Yes. Please include your 2Captcha token in auth.json
 ```
 
 ### Does the bot support manual Captcha solving?
-Yes. Please download chrome driver for your os plaform and place it into the root directory of the bot.
+Yes. Please download chrome driver for your os platform and place it into the root directory of the bot.
 More information on [chrome driver here](https://sites.google.com/a/chromium.org/chromedriver/).
 
 ### How do I start the application?
