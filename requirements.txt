@@ -1,4 +1,4 @@
-numpy==1.11.0
+numpy==1.21.0
 networkx==1.11
 six==1.10
 git+https://github.com/MerlionRock/pgoapi.git@develop#egg=pgoapi
